@@ -956,9 +956,7 @@ void Render::createDescriptorSets() {
 	allocInfo.pSetLayouts = layouts.data();
 
 	descriptorSets.resize(swapChainImages.size());
-	if (vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-		Quit("Failed to allocate descriptor sets");
-	}
+	if (vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data()) != VK_SUCCESS) Quit("Failed to allocate descriptor sets");
 
 	for (int64 i = 0; i < descriptorSets.size(); i++) {
 		VkDescriptorImageInfo imageInfo{};
@@ -1077,53 +1075,8 @@ void Render::createDrawCommandBuffers() {
 
 		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) Quit("Failed to record command buffer");
 	}
-
-
-
-
-	////HHH IT WORKS
-
-	////updateUniformBuffer(0, objects[1]);
-	//if (vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
-	//	Quit("Failed to allocate command buffers");
-	//}
-
-	//for (int64 i = 0; i < commandBuffers.size(); i++) {
-	//	VkCommandBufferBeginInfo beginInfo{};
-	//	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-	//	if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) Quit("Failed to begin recording command buffer");
-
-	//	VkRenderPassBeginInfo renderPassInfo{};
-	//	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	//	renderPassInfo.renderPass = renderPass;
-	//	renderPassInfo.framebuffer = swapChainFramebuffers[i];
-	//	renderPassInfo.renderArea.offset = { 0, 0 };
-	//	renderPassInfo.renderArea.extent = swapChainExtent;
-
-
-	//	std::array<VkClearValue, 2> clearValues{};
-	//	clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//	clearValues[1].depthStencil = { 1.0f, 0 };
-
-	//	renderPassInfo.clearValueCount = static_cast<uint32>(clearValues.size());
-	//	renderPassInfo.pClearValues = clearValues.data();
-
-	//	vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-	//	vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-	//	VkBuffer vertexBuffers[] = { objects[1].geometry.vertexBuffer/* , objects[1].geometry.vertexBuffer */ };
-	//	VkDeviceSize offsets[] = { 0/*,1 */ };
-	//	vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-	//	vkCmdBindIndexBuffer(commandBuffers[i], objects[1].geometry.indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
-	//	vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
-
-	//	vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(objects[1].geometry.indices.size()), 1, 0, 0, 0);
-	//	vkCmdEndRenderPass(commandBuffers[i]);
-
-	//	if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) Quit("Failed to record command buffer");
-	//}
 }
+
 
 void Render::createSyncObjects() {
 	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
