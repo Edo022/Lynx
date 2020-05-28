@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Types">
+      <UniqueIdentifier>{098c19b5-4d38-4e64-addf-bb7eb983ed23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Types\Vector">
+      <UniqueIdentifier>{475c5a5c-f76c-4334-8708-88f29d9e545c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{9475685a-dff9-4e67-8ffc-3ef00e446395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Types\Integers">
+      <UniqueIdentifier>{59490ab3-736d-4b3f-b7fa-b3211fb2a1e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{f976d4b9-b808-4f05-9fbf-d03448d5c7b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents\Shaders">
+      <UniqueIdentifier>{9554e199-4f66-464b-b89b-f44e7451e7f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderEngine">
+      <UniqueIdentifier>{515de7d3-e2be-4374-a5bc-0acc2adafc60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderEngine\Structs">
+      <UniqueIdentifier>{86530e9f-6596-4e6c-a587-42d7813dc394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Types\Containers">
+      <UniqueIdentifier>{c4ac72fe-020d-4c14-ad88-3798de764708}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RenderEngine\Render.cpp">
+      <Filter>RenderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Types\Vectors\Vectors.h">
+      <Filter>Types\Vector</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Devices.cpp">
+      <Filter>RenderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEngine\Swapchain.cpp">
+      <Filter>RenderEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Object\Object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RenderEngine\Render.h">
+      <Filter>RenderEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Vectors\Vec2.h">
+      <Filter>Types\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Vectors\Vec3.h">
+      <Filter>Types\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Types.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ObjectGeometry.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ObjectPhysics.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Integers\Integers.h">
+      <Filter>Types\Integers</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Integers\int128_t.h">
+      <Filter>Types\Integers</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Integers\int256_t.h">
+      <Filter>Types\Integers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\Structs\_VkPhysicalDevice.h">
+      <Filter>RenderEngine\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\Structs\Vertex.h">
+      <Filter>RenderEngine\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEngine\VkWindow.h">
+      <Filter>RenderEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="macros.h" />
+    <ClInclude Include="Types\Containers\mdrArray.h">
+      <Filter>Types\Containers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Contents\shaders\shader.frag">
+      <Filter>Contents\Shaders</Filter>
+    </None>
+    <None Include="Contents\shaders\shader.vert">
+      <Filter>Contents\Shaders</Filter>
+    </None>
+    <None Include="Contents\shaders\shader.comp">
+      <Filter>Contents\Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
