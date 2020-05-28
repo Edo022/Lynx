@@ -12,7 +12,7 @@ struct QueueFamilyIndices {
 	uint32 presentFamily = -1;
 	std::vector<int32> computeFamilies;
 
-	bool isGraphicsComplete() { return graphicsFamily != -1 && presentFamily != -1; }
+	inline bool isGraphicsComplete() { return (graphicsFamily != -1 && presentFamily != -1); }
 };
 
 
@@ -20,10 +20,10 @@ struct QueueFamilyIndices {
 
 //Structure containing all useful data of a physical device
 struct _VkPhysicalDevice {
-	VkPhysicalDevice device = VK_NULL_HANDLE;		//Actual VkPhysicalDevice
+	VkPhysicalDevice device = VK_NULL_HANDLE;		//Actual VkPhysicalDevice structure
 	VkPhysicalDeviceProperties properties;			//Physical device properties
 	VkPhysicalDeviceFeatures features;				//Physical device features
-	QueueFamilyIndices indices;						//List of queue family indices
+	QueueFamilyIndices indices;						//Indices of the queue families
 	uint32 score = 0;								//Device performances evalutation
 
 	_VkPhysicalDevice(VkPhysicalDevice _device, VkPhysicalDeviceProperties _properties, VkPhysicalDeviceFeatures _features, QueueFamilyIndices _indices) {
