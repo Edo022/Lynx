@@ -28,25 +28,14 @@
 */
 
 
-MdrObject object("renderTexture");
 
 
-Render render;
-void run() { 
-	//TODO move to render
-	mdrObjectLoadObj(&object, "./Contents/Models/modelloBrutto.obj");
-	mdrSpawnObject(&render, &object);
-
-	render.run(false, 45);
-}
 
 
 int main() {
-	std::thread t(run);
-	t.detach();
+	luxInit();
 
-	render.running = true;
-	while (render.running) {
+	while (IsRunning) {
 		Sleep(1);
 	}
 

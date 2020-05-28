@@ -2,7 +2,7 @@
 
 
 #include "RenderEngine/Structs/Vertex.h"
-#include "Types/Containers/mdrArray.h"
+#include "Types/Containers/LuxArray.h"
 #include <glm/glm.hpp>
 #include <vector>
 #include <vulkan/vulkan.h>
@@ -13,20 +13,20 @@
 
 struct ObjectGeometry {
 	//Mesh data
-	MdrArray<Vertex> vertices;	//Vertices of the mesh
-	MdrArray<uint32> indices;	//Triangles of the mesh. 3 indices per tiangle //uint??_t LLID0
+	LuxArray<Vertex> vertices;	//Vertices of the mesh
+	LuxArray<uint32> indices;	//Triangles of the mesh. 3 indices per tiangle //uint??_t LLID0
 
 	//GPU buffers. Those are private variables, you shouldn't use them.
 	VkBuffer __vertexBuffer;
 	VkDeviceMemory __vertexBufferMemory;
 	VkBuffer __indexBuffer;
 	VkDeviceMemory __indexBufferMemory;
-	std::vector<VkBuffer> __uniformBuffers; //TODO use mdrARray
+	std::vector<VkBuffer> __uniformBuffers; //TODO use luxARray
 	std::vector<VkDeviceMemory> __uniformBuffersMemory;
 	glm::mat4 model;
 	//UniformBufferObject ubo{};
 
-	ObjectGeometry(MdrArray<Vertex> _vertices = {}, MdrArray<uint32> _indices = {}) {
+	ObjectGeometry(LuxArray<Vertex> _vertices = {}, LuxArray<uint32> _indices = {}) {
 		vertices = _vertices;
 		indices = _indices;
 

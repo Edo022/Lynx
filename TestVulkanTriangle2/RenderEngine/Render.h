@@ -45,7 +45,7 @@
 #include "Object/Object.h"
 #include "Types/Integers/Integers.h"
 
-#include "Types/Containers/mdrArray.h"
+#include "Types/Containers/LuxArray.h"
 
 //Re enable warnings for this header
 #pragma warning( default : 26451 )			//Arithmetic overflow
@@ -91,10 +91,6 @@ struct UniformBufferObject {
 	alignas(16) glm::mat4 view;
 	alignas(16) glm::mat4 proj;
 };
-
-
-
-
 
 
 
@@ -217,9 +213,9 @@ private:
 
 	//Geometry
 public:
-	MdrArray<MdrObject*> ObjectsQueue;
+	LuxArray<LuxObject*> ObjectsQueue;
 private:
-	MdrArray<MdrObject*> objects;
+	LuxArray<LuxObject*> objects;
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
 
@@ -361,9 +357,9 @@ private:
 
 	void createGraphicsCommandPool();
 
-	void createVertexBuffer(MdrObject* object);
+	void createVertexBuffer(LuxObject* object);
 
-	void createIndexBuffer(MdrObject* object);
+	void createIndexBuffer(LuxObject* object);
 
 	void createUniformBuffers();
 
@@ -733,7 +729,7 @@ public:
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.pCode = code;
 		createInfo.codeSize = filelength;
-
+		
 		VK_CHECK_RESULT(vkCreateShaderModule(compute.LD, &createInfo, NULL, &computeShaderModule));
 		delete[] code;
 
@@ -849,8 +845,34 @@ public:
 };
 
 
-//Adds a mdrObject to the render queue, that will be initialized and spawned before the next frame. Only allows objects with a defined geometry
-static void mdrSpawnObject(Render* render, MdrObject* object) {
+//Adds a luxObject to the render queue, that will be initialized and spawned before the next frame. Only allows objects with a defined geometry
+static void luxSpawnObject(Render* render, LuxObject* object) {
 	render->ObjectsQueue.add(object);
 	//TODO check if the object is valid
+}
+
+
+
+
+
+
+#define IsRunning render.running
+
+
+static Render render;
+static void run() {
+	LuxObject object("renderTexture");
+	luxObjectLoadObj(&object, "./Contents/Models/modelloBrutto.obj");
+	luxSpawnObject(&render, &object);
+
+	render.run(false, 45);
+}
+
+
+static void luxInit() {
+	std::thread t(run);
+	t.detach();
+	render.running = true;
+
+
 }

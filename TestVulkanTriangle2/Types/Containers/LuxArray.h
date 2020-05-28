@@ -8,8 +8,8 @@
 #include <vector>
 #include "Types/Integers/Integers.h"
 
-#ifndef __MDRARRAY
-#define __MDRARRAY
+#ifndef __LUXARRAY
+#define __LUXARRAY
 
 
 
@@ -20,7 +20,7 @@
 //The elements are not ordered, so you have to use their ID to get them
 //If you can't use a value for invalid indices, use the 'isValid' function
 template<class vecType>
-class MdrArray {
+class LuxArray {
 private:
 	uint64 dynSize, chunksDynNum;	//Allocated number of elements and chunks
 	uint64 head, tail;				//First and last free element
@@ -45,7 +45,7 @@ public:
 	//chunkSize 	number of elements allocated when the array grows. Default at 0x FFFF (65535)
 	//maxSize		the maximum size the array can have. Default at 0x FFFF FFFF (~ 4.3 billion)
 	//The number of chunks depends on their size and the maximum size of the array (chunks = maxSize / chunkSize)
-	MdrArray(/*uint64 _size = 0,*/ uint64 _chunkSize = 0xFFFF, uint64 _maxSize = 0xFFFFffff) {
+	LuxArray(/*uint64 _size = 0,*/ uint64 _chunkSize = 0xFFFF, uint64 _maxSize = 0xFFFFffff) {
 		//resize(_size);
 		chunkSize = _chunkSize;													//Set size of the chunks
 		maxSize = _maxSize;														//Set maximum size of the array
@@ -116,7 +116,7 @@ public:
 
 	//Adds an RAarray to the array, skipping all the invalid elements and placing the others in the first free index
 	//Returns a array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
-	std::vector<uint64> add(MdrArray<vecType> vec) {
+	std::vector<uint64> add(LuxArray<vecType> vec) {
 		std::vector<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
 		for (uint64 i; i < vec.size(); i++) {				//For every element of the input array

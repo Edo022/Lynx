@@ -6,7 +6,7 @@
 #include "Types/Vectors/Vectors.h"
 
 
-struct MdrObject {
+struct LuxObject {
 	std::string name;
 	uint64_t ID;
 
@@ -18,7 +18,7 @@ struct MdrObject {
 	ObjectPhysics physics;
 
 
-	MdrObject(std::string _name = "Undefined", vec3 _pos = { 0,0,0 }, dvec3 _rot = { 0,0,0 }, dvec3 _scl = { 10,10,10 }) {
+	LuxObject(std::string _name = "Undefined", vec3 _pos = { 0,0,0 }, dvec3 _rot = { 0,0,0 }, dvec3 _scl = { 10,10,10 }) {
 		name = _name;
 		pos = _pos;
 		rot = _rot;
@@ -31,10 +31,10 @@ struct MdrObject {
 
 
 //Loads an .OBJ file into the object's geometry, overwriting it
-//	object		a pointer to the MdrObject where to load the obj
+//	object		a pointer to the LuxObject where to load the obj
 //	objPath		the path to the .OBJ file
 //	Returns true if the obj loading succeed. false if the file is not found or invalid
-static bool mdrObjectLoadObj(MdrObject* object, std::string objPath) {
+static bool luxObjectLoadObj(LuxObject* object, std::string objPath) {
 	//TODO use CRAVector
 	object->geometry.vertices.clear();
 	object->geometry.indices.clear();

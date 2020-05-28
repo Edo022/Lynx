@@ -885,7 +885,7 @@ void Render::createGraphicsCommandPool() {
 	if (vkCreateCommandPool(graphics.LD, &poolInfo, nullptr, &graphicsCommandPool) != VK_SUCCESS) Quit("Failed to create graphics command pool");
 }
 
-void Render::createVertexBuffer(MdrObject* object) {
+void Render::createVertexBuffer(LuxObject* object) {
 	//Create staging buffer
 	VkDeviceSize bufferSize = sizeof(object->geometry.vertices[0]) * object->geometry.vertices.size();
 	VkBuffer stagingBuffer;
@@ -910,7 +910,7 @@ void Render::createVertexBuffer(MdrObject* object) {
 
 
 
-void Render::createIndexBuffer(MdrObject* object) {
+void Render::createIndexBuffer(LuxObject* object) {
 	//Create staging buffer
 	VkDeviceSize bufferSize = sizeof(object->geometry.indices[0]) * object->geometry.indices.size();
 	VkBuffer stagingBuffer; 

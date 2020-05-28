@@ -88,7 +88,7 @@
       <Filter>RenderEngine</Filter>
     </ClInclude>
     <ClInclude Include="macros.h" />
-    <ClInclude Include="Types\Containers\mdrArray.h">
+    <ClInclude Include="Types\Containers\LuxArray.h">
       <Filter>Types\Containers</Filter>
     </ClInclude>
   </ItemGroup>
