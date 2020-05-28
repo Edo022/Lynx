@@ -27,16 +27,16 @@ typedef _vec3<double>		doublev3,	dvec3;
 
 
 template<class t>
-static int32_t dist(_vec2<t> a, _vec2<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }
+static int32 dist(_vec2<t> a, _vec2<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }
 template<class t>
-static int64_t ldist(_vec2<t> a, _vec2<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }
+static int64 ldist(_vec2<t> a, _vec2<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }
 template<class t>
 static double ddist(_vec2<t> a, _vec2<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }
 
 
 template<class t>
-static int32_t dist(_vec3<t> a, _vec3<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }
+static int32 dist(_vec3<t> a, _vec3<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }
 template<class t>
-static int64_t ldist(_vec3<t> a, _vec3<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }
+static int64 ldist(_vec3<t> a, _vec3<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }
 template<class t>
 static double ddist(_vec3<t> a, _vec3<t> b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }

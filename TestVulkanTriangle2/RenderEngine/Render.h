@@ -547,7 +547,7 @@ private:
 	//The memory that backs the buffer is bufferMemory.
 	VkBuffer buffer;
 	VkDeviceMemory bufferMemory;
-	uint32_t bufferSize; // size of `buffer` in bytes.
+	uint32 bufferSize; // size of `buffer` in bytes.
 
 
 	std::vector<const char*> enabledLayers;
@@ -576,11 +576,11 @@ public:
 
 
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(
-		VkDebugReportFlagsEXT                       flags,
-		VkDebugReportObjectTypeEXT                  objectType,
-		uint64_t                                    object,
-		size_t                                      location,
-		int32_t                                     messageCode,
+		VkDebugReportFlagsEXT			flags,
+		VkDebugReportObjectTypeEXT		objectType,
+		uint64							object,
+		uint64							location,
+		int32							messageCode,
 		const char* pLayerPrefix,
 		const char* pMessage,
 		void* pUserData) {
@@ -694,9 +694,9 @@ public:
 		vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, NULL);
 	}
 
-	// Read file into array of bytes, and cast to uint32_t*, then return.
-	// The data has been padded, so that it fits into an array uint32_t.
-	uint32_t* readFile(uint32_t* length, const char* filename) {
+	// Read file into array of bytes, and cast to uint32*, then return.
+	// The data has been padded, so that it fits into an array uint32.
+	uint32* readFile(uint32* length, const char* filename) {
 
 		FILE* fp = fopen(filename, "rb");
 		if (fp == NULL) {
@@ -721,16 +721,16 @@ public:
 		}
 
 		*length = filesizepadded;
-		return (uint32_t*)str;
+		return (uint32*)str;
 	}
 
 	//We create a compute pipeline here.
 	void createComputePipeline() {
 		//Create a shader module. A shader module basically just encapsulates some shader code.
-		uint32_t filelength;
+		uint32 filelength;
 		// the code in comp.spv was created by running the command:
 		// glslangValidator.exe -V shader.comp
-		uint32_t* code = readFile(&filelength, "Contents/shaders/comp.spv"); //TODO use unique read file function for shaders
+		uint32* code = readFile(&filelength, "Contents/shaders/comp.spv"); //TODO use unique read file function for shaders
 		VkShaderModuleCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.pCode = code;
@@ -860,11 +860,8 @@ public:
 
 static Render render;
 static void run(bool useVSync) {
-	LuxObject object("renderTexture");
-	luxObjectLoadObj(&object, "./Contents/Models/modelloBrutto.obj");
-
 	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::shape_t> shapes; //sorry std vectors are needed to use tiny obj loader //TODO write an obj loader
 	std::vector<tinyobj::material_t> materials;
 	std::string warn, err;
 
@@ -873,19 +870,9 @@ static void run(bool useVSync) {
 	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {
 			Vertex vertex{};
-			vertex.pos = {
-				attrib.vertices[3 * (int64)(index.vertex_index) + 0],
-				attrib.vertices[3 * (int64)(index.vertex_index) + 1],
-				attrib.vertices[3 * (int64)(index.vertex_index) + 2]
-			};
-			vertex.texCoord = {
-				attrib.texcoords[2 * (int64)(index.texcoord_index) + 0],
-				attrib.texcoords[2 * (int64)(index.texcoord_index) + 1]
-			};
-			vertex.texCoord = {
-				attrib.texcoords[2 * (int64)(index.texcoord_index) + 0],
-				1.0f - attrib.texcoords[2 * (int64)(index.texcoord_index) + 1]		//flip z
-			};
+			vertex.pos = {/**/	attrib.vertices[3 * (index.vertex_index) + 0],		attrib.vertices[3 * (index.vertex_index) + 1],			attrib.vertices[3 * (index.vertex_index) + 2] };
+			vertex.texCoord = { attrib.texcoords[2 * (index.texcoord_index) + 0],	attrib.texcoords[2 * (index.texcoord_index) + 1] };
+			vertex.texCoord = { attrib.texcoords[2 * (index.texcoord_index) + 0],	1.0f - attrib.texcoords[2 * (index.texcoord_index) + 1] };//flip 
 			vertex.color = { 1.0f, 1.0f, 1.0f };
 
 			render.vertices.add(vertex);

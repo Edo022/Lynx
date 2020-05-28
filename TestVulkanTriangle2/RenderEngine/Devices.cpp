@@ -11,7 +11,7 @@
 
 //Returns the rating of a physical device
 static int ratePhysicalDevice(_VkPhysicalDevice& device) {
-	uint32_t score = 0;
+	uint32 score = 0;
 	if (device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 	score += device.properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
 	if (device.features.geometryShader) score += 1;												//Geometry shaders needed
@@ -24,7 +24,7 @@ static int ratePhysicalDevice(_VkPhysicalDevice& device) {
 //Returns the queue families of a physical device
 QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
 	//Get queue families
-	uint32_t queueFamilyCount = 0;
+	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);						//Enumerate queue families
 	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
@@ -49,7 +49,7 @@ QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
 
 //Returns true if the device supports the extensions, false if not
 bool Render::checkDeviceExtensionSupport(VkPhysicalDevice device) {
-	uint32_t extensionCount;
+	uint32 extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 	std::vector<VkExtensionProperties> availableExtensions(extensionCount);
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
@@ -106,7 +106,7 @@ bool Render::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 
 //Find all suitable physical devices, choosing the main and secondary devices according to their capabilities
 void Render::getPhysicalDevices() {
-	uint32_t deviceCount = 0;
+	uint32 deviceCount = 0;
 	std::vector<std::string> discardedPhysicalDevices;
 	std::vector<_VkPhysicalDevice> physicalDevices;
 
@@ -138,7 +138,7 @@ void Render::getPhysicalDevices() {
 	if (discardedPhysicalDevices.size() > 0) {
 		Failure printf("    Discarded devices:");
 		for (int i = 0; i < discardedPhysicalDevices.size(); i += 2) {
-			Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].data(), discardedPhysicalDevices[(int64_t)i + 1].data());
+			Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].data(), discardedPhysicalDevices[(int64)i + 1].data());
 		}
 	}
 
@@ -204,7 +204,7 @@ void Render::getPhysicalDevices() {
 
 void Render::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, std::vector<VkQueue>* computeQueues) {
 	//List unique device's queues
-	std::set<int32_t> uniqueQueueFamilyIndices;
+	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice((*PD), graphics.PD)) {													//If it's the main device for graphics,
 		uniqueQueueFamilyIndices.insert(PD->indices.graphicsFamily);						//Add his graphics family
 		uniqueQueueFamilyIndices.insert(PD->indices.presentFamily);							//And his present family
@@ -236,13 +236,13 @@ void Render::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 
 	//Fill deviceCreateInfo
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.queueCreateInfoCount = (int32_t)queueCreateInfos.size();			//Set queue infos count
+	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();			//Set queue infos count
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();						//Set queue infos
-	deviceCreateInfo.enabledExtensionCount = (int32_t)requiredDeviceExtensions.size();	//Set required extentions count
+	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
 	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
 	#ifndef NDEBUG																		//If in debug mode
-	deviceCreateInfo.enabledLayerCount = (int32_t)validationLayers.size();					//Set validation layers count
+	deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size();					//Set validation layers count
 	deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();							//Set validation layers
 	#else																				//Else
 	deviceCreateInfo.enabledLayerCount = 0;													//Disable validation layers
