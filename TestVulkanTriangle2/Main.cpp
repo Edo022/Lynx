@@ -1,12 +1,4 @@
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-
-#include "RenderEngine/Render.h"
-#include "Types/Types.h"
-#include <thread>
-#include "macros.h"
-
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 
 
@@ -29,15 +21,15 @@
 
 
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
 
+#include "RenderEngine/Render.h"
 
 
 int main() {
 	luxInit();
-
-	while (IsRunning) {
-		Sleep(1);
-	}
+	while (IsRunning) { Sleep(1); }
 
 	return 0;
 }

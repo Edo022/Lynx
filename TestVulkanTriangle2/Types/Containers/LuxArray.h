@@ -38,7 +38,7 @@ private:
 
 public:
 
-// Constructor --------------------------------------------------------------------------------------------------------- //
+	// Constructor --------------------------------------------------------------------------------------------------------- //
 
 
 	//size		initial size of the array. Max 0x 7FFF FFFF FFFF FFFE (wtf ~ 9.2 quintillion)
@@ -56,7 +56,7 @@ public:
 	}
 
 
-// Add, remove --------------------------------------------------------------------------------------------------------- //
+	// Add, remove --------------------------------------------------------------------------------------------------------- //
 
 
 	//Adds an element at the end of the array, allocating a new chunk if needed
@@ -71,7 +71,7 @@ public:
 		Tracker(dynSize) = -1;												//Set the tracker as valid
 
 		dynSize++;															//Update the number of elements
-		return dynSize - 1;	
+		return dynSize - 1;
 	}
 
 
@@ -161,7 +161,7 @@ public:
 	}
 
 
-// Status -------------------------------------------------------------------------------------------------------------- //
+	// Status -------------------------------------------------------------------------------------------------------------- //
 
 
 	//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
@@ -178,7 +178,7 @@ public:
 	bool isValid(uint64 index) { return (Tracker(index) == (uint64)-1); }
 
 
-// Get ----------------------------------------------------------------------------------------------------------------- //
+	// Get ----------------------------------------------------------------------------------------------------------------- //
 
 
 	//Returns the element at the index "index", checking if it's valid. If not, returns the invalidIndexValue
@@ -188,11 +188,11 @@ public:
 	vecType& operator [](int index) { return Data(index); }
 
 	//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-	vecType* data(uint64 chunkIndex) {return &data_[chunkIndex][0];}
+	vecType* data(uint64 chunkIndex) { return &data_[chunkIndex][0]; }
 
 	//Returns a pointer to a new array that contains all the elements in the chunks, without the invalid ones. This operation can be really slow, try to avoid using it
 	vecType* data() {
-		vecType* arr = (vecType*)malloc(sizeof(vecType)*usedSize());
+		vecType* arr = (vecType*)malloc(sizeof(vecType) * usedSize());
 		int _i = 0;
 		for (int i = 0; i < usedSize(); i++) {
 			if (isValid(i)) {
@@ -205,7 +205,7 @@ public:
 	}
 
 
-// Size ---------------------------------------------------------------------------------------------------------------- //
+	// Size ---------------------------------------------------------------------------------------------------------------- //
 
 
 	//Returns the number of elements in the array, including the free ones

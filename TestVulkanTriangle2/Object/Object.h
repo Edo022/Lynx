@@ -38,18 +38,18 @@ static bool luxObjectLoadObj(LuxObject* object, std::string objPath) {
 	//TODO use CRAVector
 	object->geometry.vertices.clear();
 	object->geometry.indices.clear();
-	
+
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	std::string warn, err;
-	
+
 	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, objPath.c_str())) {
 		printf("%s\n", (warn + err).c_str());
 		return false;
 	}
 
-	
+
 
 	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {

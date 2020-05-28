@@ -14,9 +14,9 @@ void Render::run(bool _useVSync, float _FOV) {
 
 	if (enableValidationLayers) { Failure printf("D E B U G    M O D E"); }				MainSeparator;
 	Normal  printf("Initializing GLFW window                 ");	initWindow();		SuccessNoNl printf("ok\n");
-	Normal  printf("Initializing Vulkan          ");				
-	
-	initVulkan();		
+	Normal  printf("Initializing Vulkan          ");
+
+	initVulkan();
 
 
 
@@ -349,7 +349,7 @@ void Render::mainLoop() {
 				glfwGetWindowSize(window, &lastw, &lasth);
 				glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
 				glfwMaximizeWindow(window);
-				
+
 			}
 		}
 		lastState = glfwGetKey(window, GLFW_KEY_F11);
@@ -423,7 +423,7 @@ void Render::cleanup() {
 
 	cleanupCompute();
 
-	if(graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);
+	if (graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);
 	vkDestroyDevice(compute.LD, nullptr);
 
 	//TODO fix
@@ -551,7 +551,7 @@ VkImageView Render::createImageView(VkImage image, VkFormat format, VkImageAspec
 	viewInfo.subresourceRange.layerCount = 1;
 
 	VkImageView imageView = VK_NULL_HANDLE;
-	if (vkCreateImageView(graphics.LD, &viewInfo, nullptr, &imageView) != VK_SUCCESS) Quit ("Failed to create texture image view");
+	if (vkCreateImageView(graphics.LD, &viewInfo, nullptr, &imageView) != VK_SUCCESS) Quit("Failed to create texture image view");
 
 	return imageView;
 }
@@ -692,7 +692,7 @@ VkShaderModule Render::createShaderModule(uint32* code, uint32* size) {
 
 void Render::createGraphicsPipeline() {
 	//PipelineCreateInfo struct to create the graphics pipeline
-	VkGraphicsPipelineCreateInfo pipelineInfo{};													
+	VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;
@@ -735,8 +735,8 @@ void Render::createGraphicsPipeline() {
 	VkViewport viewport{};										//Area where to render
 	viewport.x = (float)swapChainExtent.width / 2;				//Viewport start position
 	viewport.y = 0;												//Viewport start position
-	viewport.width = (float)swapChainExtent.width/2;			//Viewport size
-	viewport.height = (float)swapChainExtent.height/2;			//Viewport size
+	viewport.width = (float)swapChainExtent.width / 2;			//Viewport size
+	viewport.height = (float)swapChainExtent.height / 2;			//Viewport size
 	viewport.minDepth = 0.0f;									//Viewport minimum depth (Vulkan default)
 	viewport.maxDepth = 1.0f;									//Viewport maximum depth (Vulkan default)
 
@@ -752,14 +752,14 @@ void Render::createGraphicsPipeline() {
 
 	VkRect2D scissor2{};										//Cut from viewport
 	scissor2.offset = { 0, 0 };									//Scrissor start position
-	scissor2.extent =  swapChainExtent;							//Scrissor size. (don't cut the viewport)
+	scissor2.extent = swapChainExtent;							//Scrissor size. (don't cut the viewport)
 
 	VkRect2D scissor{};											//Cut from viewport
 	scissor.offset = { (int32)swapChainExtent.width, 0 };		//Scrissor start position
 	//scissor.offset = { (int32)swapChainExtent.width / 2, 0 };		//Scrissor start position
-	scissor.extent =  swapChainExtent;							//Scrissor size. (don't cut the viewport)
+	scissor.extent = swapChainExtent;							//Scrissor size. (don't cut the viewport)
 
-	VkViewport viewports[] = {viewport2, viewport };
+	VkViewport viewports[] = { viewport2, viewport };
 	VkRect2D scissors[] = { scissor2, scissor };
 
 	VkPipelineViewportStateCreateInfo viewportState{};
@@ -833,18 +833,18 @@ void Render::createGraphicsPipeline() {
 
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};								//Pipeline's layout infos
-	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;			
+	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 1;												//Number of descriptor set layouts
 	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;								//Descriptor set layouts (Samplers and uniform buffers)
 	pipelineLayoutInfo.pushConstantRangeCount = 0;										//Number of push constants
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;									//Push constants		↓ Create pipeline layout
-	if (vkCreatePipelineLayout(graphics.LD, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) Quit("Failed to create pipeline layout");																									
+	if (vkCreatePipelineLayout(graphics.LD, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) Quit("Failed to create pipeline layout");
 	pipelineInfo.layout = pipelineLayout;											//Save pipeline layout
 
 
 
 	//Create the graphics pipeline
-	if (vkCreateGraphicsPipelines(graphics.LD, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) Quit("Failed to create graphics pipeline");								
+	if (vkCreateGraphicsPipelines(graphics.LD, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) Quit("Failed to create graphics pipeline");
 
 	vkDestroyShaderModule(graphics.LD, fragShaderModule, nullptr);				//Destroy vertex   shader's shader module
 	vkDestroyShaderModule(graphics.LD, vertShaderModule, nullptr);				//Destroy fragment shader's shader module
@@ -913,7 +913,7 @@ void Render::createVertexBuffer(LuxObject* object) {
 void Render::createIndexBuffer(LuxObject* object) {
 	//Create staging buffer
 	VkDeviceSize bufferSize = sizeof(object->geometry.indices[0]) * object->geometry.indices.size();
-	VkBuffer stagingBuffer; 
+	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
@@ -1091,19 +1091,19 @@ void Render::createDrawCommandBuffers() {
 
 		if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) Quit("Failed to begin recording command buffer");
 
-			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-			vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+		vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-			for (int j = 0; j < objects.size(); j++) {
-				VkBuffer vertexBuffers[] = { objects[j]->geometry.__vertexBuffer };
-				VkDeviceSize offsets[] = { 0 };
-				vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-				vkCmdBindIndexBuffer(commandBuffers[i], objects[j]->geometry.__indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
-				vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
+		for (int j = 0; j < objects.size(); j++) {
+			VkBuffer vertexBuffers[] = { objects[j]->geometry.__vertexBuffer };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
+			vkCmdBindIndexBuffer(commandBuffers[i], objects[j]->geometry.__indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
+			vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 
-				vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(objects[j]->geometry.indices.size()), 1, 0, 0, 0);
-			}
-			vkCmdEndRenderPass(commandBuffers[i]);
+			vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(objects[j]->geometry.indices.size()), 1, 0, 0, 0);
+		}
+		vkCmdEndRenderPass(commandBuffers[i]);
 
 		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) Quit("Failed to record command buffer");
 	}

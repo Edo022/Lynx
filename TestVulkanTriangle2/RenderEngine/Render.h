@@ -133,7 +133,7 @@ public:
 
 
 	void checkObjects() {
-		for(int i=0;i<ObjectsQueue.size();i++) {
+		for (int i = 0; i < ObjectsQueue.size(); i++) {
 			if (ObjectsQueue.isValid(i)) {
 				createVertexBuffer(ObjectsQueue[i]);
 				createIndexBuffer(ObjectsQueue[i]);
@@ -504,11 +504,11 @@ private:
 
 
 
-/*
-The application launches a compute shader that renders the mandelbrot set,
-by rendering it into a storage buffer.
-The storage buffer is then read from the GPU, and saved as .png.
-*/
+	/*
+	The application launches a compute shader that renders the mandelbrot set,
+	by rendering it into a storage buffer.
+	The storage buffer is then read from the GPU, and saved as .png.
+	*/
 private:
 	// The pixels of the rendered mandelbrot set are in this format:
 	struct Pixel { unsigned char r, g, b, a; };
@@ -729,7 +729,7 @@ public:
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		createInfo.pCode = code;
 		createInfo.codeSize = filelength;
-		
+
 		VK_CHECK_RESULT(vkCreateShaderModule(compute.LD, &createInfo, NULL, &computeShaderModule));
 		delete[] code;
 
@@ -758,7 +758,7 @@ public:
 		pipelineCreateInfo.layout = computePipelineLayout;
 
 		//Now, we finally create the compute pipeline.
-		VK_CHECK_RESULT(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE,1, &pipelineCreateInfo,NULL, &computePipeline));
+		VK_CHECK_RESULT(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, NULL, &computePipeline));
 	}
 
 	void createComputeCommandBuffer() {
