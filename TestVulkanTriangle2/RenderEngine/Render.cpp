@@ -8,6 +8,7 @@
 
 
 void Render::run(bool _useVSync, float _FOV) {
+	//running = true; //set in lux init
 	useVSync = _useVSync;
 	FOV = _FOV;
 	stdTime start = now;
@@ -67,7 +68,12 @@ void Render::initVulkan() {
 	createTextureSampler();
 
 	//Create a void object for the render
-	checkObjects();
+	createVertexBuffer(&object);
+	createIndexBuffer(&object);
+
+	if (sc) createDrawCommandBuffers();
+
+	//checkObjects();
 
 
 	Normal printf("    Creating VK descriptor set layout... ");		createDescriptorSetLayout();		SuccessNoNl printf("ok");
@@ -326,7 +332,7 @@ void Render::mainLoop() {
 
 
 	while (!glfwWindowShouldClose(window)) {
-		checkObjects();
+		//checkObjects();
 
 		glfwPollEvents();
 		drawFrame();
@@ -405,13 +411,13 @@ void Render::cleanup() {
 
 	vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);
 
-	if (objects.isValid(0)) {
-		vkDestroyBuffer(graphics.LD, objects[0]->geometry.__indexBuffer, nullptr);
-		vkFreeMemory(graphics.LD, objects[0]->geometry.__indexBufferMemory, nullptr);
 
-		vkDestroyBuffer(graphics.LD, objects[0]->geometry.__vertexBuffer, nullptr);
-		vkFreeMemory(graphics.LD, objects[0]->geometry.__vertexBufferMemory, nullptr);
-	}
+	vkDestroyBuffer(graphics.LD, object.geometry.__indexBuffer, nullptr);
+	vkFreeMemory(graphics.LD, object.geometry.__indexBufferMemory, nullptr);
+
+	vkDestroyBuffer(graphics.LD, object.geometry.__vertexBuffer, nullptr);
+	vkFreeMemory(graphics.LD, object.geometry.__vertexBufferMemory, nullptr);
+
 
 	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
 		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);
@@ -1094,15 +1100,16 @@ void Render::createDrawCommandBuffers() {
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-		for (int j = 0; j < objects.size(); j++) {
-			VkBuffer vertexBuffers[] = { objects[j]->geometry.__vertexBuffer };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(commandBuffers[i], objects[j]->geometry.__indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
-			vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 
-			vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(objects[j]->geometry.indices.size()), 1, 0, 0, 0);
-		}
+		VkBuffer vertexBuffers[] = { object.geometry.__vertexBuffer };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
+		vkCmdBindIndexBuffer(commandBuffers[i], object.geometry.__indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
+		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
+
+		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(object.geometry.indices.size()), 1, 0, 0, 0);
+
+
 		vkCmdEndRenderPass(commandBuffers[i]);
 
 		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) Quit("Failed to record command buffer");

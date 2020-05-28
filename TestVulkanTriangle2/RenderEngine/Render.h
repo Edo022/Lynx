@@ -132,22 +132,22 @@ public:
 
 
 
-	void checkObjects() {
-		for (int i = 0; i < ObjectsQueue.size(); i++) {
-			if (ObjectsQueue.isValid(i)) {
-				createVertexBuffer(ObjectsQueue[i]);
-				createIndexBuffer(ObjectsQueue[i]);
-				objects.add(ObjectsQueue[i]);
-				ObjectsQueue.remove(i);
+	//void checkObjects() {
+	//	for (int i = 0; i < ObjectsQueue.size(); i++) {
+	//		if (ObjectsQueue.isValid(i)) {
+	//			createVertexBuffer(ObjectsQueue[i]);
+	//			createIndexBuffer(ObjectsQueue[i]);
+	//			objects.add(ObjectsQueue[i]);
+	//			ObjectsQueue.remove(i);
 
-				if (sc) createDrawCommandBuffers();
-				else {
-					sc = true;
-					break;
-				}
-			}
-		}
-	}
+	//			if (sc) createDrawCommandBuffers();
+	//			else {
+	//				sc = true;
+	//				break;
+	//			}
+	//		}
+	//	}
+	//}
 private:
 
 	//Main
@@ -213,9 +213,8 @@ private:
 
 	//Geometry
 public:
-	LuxArray<LuxObject*> ObjectsQueue;
+	LuxObject object;
 private:
-	LuxArray<LuxObject*> objects;
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
 
@@ -845,34 +844,25 @@ public:
 };
 
 
-//Adds a luxObject to the render queue, that will be initialized and spawned before the next frame. Only allows objects with a defined geometry
-static void luxSpawnObject(Render* render, LuxObject* object) {
-	render->ObjectsQueue.add(object);
-	//TODO check if the object is valid
-}
 
 
 
 
-
-
-#define IsRunning render.running
+#define Frame while(render.running)
 
 
 static Render render;
-static void run() {
+static void run(bool useVSync) {
 	LuxObject object("renderTexture");
 	luxObjectLoadObj(&object, "./Contents/Models/modelloBrutto.obj");
-	luxSpawnObject(&render, &object);
+	render.object = object;
 
-	render.run(false, 45);
+	render.run(useVSync, 45);
 }
 
-
-static void luxInit() {
-	std::thread t(run);
+//This function initializes the Lux Engine. Use it only once
+static void luxInit(bool useVSync) {
+	std::thread t(run, useVSync);
 	t.detach();
 	render.running = true;
-
-
 }

@@ -28,8 +28,11 @@
 
 
 int main() {
-	luxInit();
-	while (IsRunning) { Sleep(1); }
+	luxInit(false);
+
+	Frame{
+		Sleep(1);
+	}
 
 	return 0;
 }
