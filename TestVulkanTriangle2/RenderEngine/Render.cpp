@@ -68,8 +68,8 @@ void Render::initVulkan() {
 	createTextureSampler();
 
 	//Create a void object for the render
-	createVertexBuffer(&object);
-	createIndexBuffer(&object);
+	createVertexBuffer();
+	createIndexBuffer();
 
 	if (sc) createDrawCommandBuffers();
 
@@ -412,11 +412,11 @@ void Render::cleanup() {
 	vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);
 
 
-	vkDestroyBuffer(graphics.LD, object.geometry.__indexBuffer, nullptr);
-	vkFreeMemory(graphics.LD, object.geometry.__indexBufferMemory, nullptr);
+	vkDestroyBuffer(graphics.LD, indexBuffer, nullptr);
+	vkFreeMemory(graphics.LD, indexBufferMemory, nullptr);
 
-	vkDestroyBuffer(graphics.LD, object.geometry.__vertexBuffer, nullptr);
-	vkFreeMemory(graphics.LD, object.geometry.__vertexBufferMemory, nullptr);
+	vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);
+	vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);
 
 
 	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -891,9 +891,9 @@ void Render::createGraphicsCommandPool() {
 	if (vkCreateCommandPool(graphics.LD, &poolInfo, nullptr, &graphicsCommandPool) != VK_SUCCESS) Quit("Failed to create graphics command pool");
 }
 
-void Render::createVertexBuffer(LuxObject* object) {
+void Render::createVertexBuffer() {
 	//Create staging buffer
-	VkDeviceSize bufferSize = sizeof(object->geometry.vertices[0]) * object->geometry.vertices.size();
+	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
@@ -902,12 +902,12 @@ void Render::createVertexBuffer(LuxObject* object) {
 	//Map memory
 	void* data;
 	vkMapMemory(graphics.LD, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, object->geometry.vertices.data(), (int64)bufferSize);
+	memcpy(data, vertices.data(), (int64)bufferSize);
 	vkUnmapMemory(graphics.LD, stagingBufferMemory);
 
 	//Create vertex buffer
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, object->geometry.__vertexBuffer, object->geometry.__vertexBufferMemory);
-	copyBuffer(stagingBuffer, object->geometry.__vertexBuffer, bufferSize);
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+	copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
 	//Destroy staging buffer
 	vkDestroyBuffer(graphics.LD, stagingBuffer, nullptr);
@@ -916,9 +916,9 @@ void Render::createVertexBuffer(LuxObject* object) {
 
 
 
-void Render::createIndexBuffer(LuxObject* object) {
+void Render::createIndexBuffer() {
 	//Create staging buffer
-	VkDeviceSize bufferSize = sizeof(object->geometry.indices[0]) * object->geometry.indices.size();
+	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
@@ -926,12 +926,12 @@ void Render::createIndexBuffer(LuxObject* object) {
 	//Map memory
 	void* data;
 	vkMapMemory(graphics.LD, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, object->geometry.indices.data(), (int64)bufferSize);
+	memcpy(data, indices.data(), (int64)bufferSize);
 	vkUnmapMemory(graphics.LD, stagingBufferMemory);
 
 	//Create index buffer
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, object->geometry.__indexBuffer, object->geometry.__indexBufferMemory);
-	copyBuffer(stagingBuffer, object->geometry.__indexBuffer, bufferSize);
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+	copyBuffer(stagingBuffer, indexBuffer, bufferSize);
 
 	//Destroy staging buffer
 	vkDestroyBuffer(graphics.LD, stagingBuffer, nullptr);
@@ -1101,13 +1101,13 @@ void Render::createDrawCommandBuffers() {
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 
-		VkBuffer vertexBuffers[] = { object.geometry.__vertexBuffer };
+		VkBuffer vertexBuffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffers[i], object.geometry.__indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
+		vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
 		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 
-		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(object.geometry.indices.size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(indices.size()), 1, 0, 0, 0);
 
 
 		vkCmdEndRenderPass(commandBuffers[i]);

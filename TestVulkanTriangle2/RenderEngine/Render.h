@@ -213,10 +213,17 @@ private:
 
 	//Geometry
 public:
-	LuxObject object;
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
+	VkBuffer indexBuffer;
+	VkDeviceMemory indexBufferMemory;
+	LuxArray<Vertex> vertices;
+	LuxArray<uint32> indices;
+
 private:
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
+
 
 
 	//Textures
@@ -356,9 +363,9 @@ private:
 
 	void createGraphicsCommandPool();
 
-	void createVertexBuffer(LuxObject* object);
+	void createVertexBuffer();
 
-	void createIndexBuffer(LuxObject* object);
+	void createIndexBuffer();
 
 	void createUniformBuffers();
 
@@ -855,7 +862,37 @@ static Render render;
 static void run(bool useVSync) {
 	LuxObject object("renderTexture");
 	luxObjectLoadObj(&object, "./Contents/Models/modelloBrutto.obj");
-	render.object = object;
+
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string warn, err;
+
+	tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "./Contents/Models/modelloBrutto.obj");
+
+	for (const auto& shape : shapes) {
+		for (const auto& index : shape.mesh.indices) {
+			Vertex vertex{};
+			vertex.pos = {
+				attrib.vertices[3 * (int64)(index.vertex_index) + 0],
+				attrib.vertices[3 * (int64)(index.vertex_index) + 1],
+				attrib.vertices[3 * (int64)(index.vertex_index) + 2]
+			};
+			vertex.texCoord = {
+				attrib.texcoords[2 * (int64)(index.texcoord_index) + 0],
+				attrib.texcoords[2 * (int64)(index.texcoord_index) + 1]
+			};
+			vertex.texCoord = {
+				attrib.texcoords[2 * (int64)(index.texcoord_index) + 0],
+				1.0f - attrib.texcoords[2 * (int64)(index.texcoord_index) + 1]		//flip z
+			};
+			vertex.color = { 1.0f, 1.0f, 1.0f };
+
+			render.vertices.add(vertex);
+			render.indices.add(render.indices.size());
+		}
+	}
+
 
 	render.run(useVSync, 45);
 }
