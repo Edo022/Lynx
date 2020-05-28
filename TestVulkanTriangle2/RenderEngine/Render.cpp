@@ -665,30 +665,17 @@ void Render::createDescriptorSetLayout() {
 }
 
 
-VkShaderModule Render::createShaderModule(const std::vector<char>& code) {
+VkShaderModule Render::createShaderModule(uint32* code, uint32* size) {
 	VkShaderModuleCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32*>(code.data());
+	createInfo.codeSize = *size;
+	createInfo.pCode = code;
 
 	VkShaderModule shaderModule;
 	if (vkCreateShaderModule(graphics.LD, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
 		Quit("Failed to create shader module");
 	}
 	return shaderModule;
-}
-
-std::vector<char> Render::readShaderFromFile(const std::string& filename) {
-	std::ifstream file(filename, std::ios::ate | std::ios::binary);
-	if (!file.is_open()) Quit("Failed to read shader from file");
-
-	int64 fileSize = (int64)file.tellg();
-	std::vector<char> buffer(fileSize);
-	file.seekg(0);
-	file.read(buffer.data(), fileSize);
-
-	file.close();
-	return buffer;
 }
 
 
@@ -716,9 +703,9 @@ void Render::createGraphicsPipeline() {
 
 	//Create the structures that will fill the pipelineCreateInfo
 
-
-	VkShaderModule vertShaderModule = createShaderModule(readShaderFromFile(VERT_PATH));			//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
-	VkShaderModule fragShaderModule = createShaderModule(readShaderFromFile(FRAG_PATH));			//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
+	uint32 size = 0;
+	VkShaderModule vertShaderModule = createShaderModule(readFile(&size, VERT_PATH), &size);			//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
+	VkShaderModule fragShaderModule = createShaderModule(readFile(&size, FRAG_PATH), &size);			//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { StageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT), StageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT) };
 	pipelineInfo.stageCount = 2;																	//Set the number of stages
@@ -1191,83 +1178,6 @@ void Render::createSyncObjects() {
 }
 
 
-UniformBufferObject ubo{}; //static
-
-void Render::updateUniformBuffer(uint32 currentImage, MdrObject* object) {
-	//TODO optimize updates in vulkan source
-
-	//If the pbject needs to be updated, create the default uniform buffer matrix
-	if(object->update != 0) ubo.model = glm::mat4(1.0f);									
-
-	//Update positions
-	if ((object->update & MDR_UPDATE_OBJECT_POS_ALL_BIT) == MDR_UPDATE_OBJECT_POS_ALL_BIT) {	
-		ubo.model = glm::translate(ubo.model, glm::vec3(object->pos.x / 10, object->pos.y / 10, object->pos.z / 10));
-		object->update ^= MDR_UPDATE_OBJECT_POS_ALL_BIT;
-	}
-
-	//Update rotation
-	if ((object->update & MDR_UPDATE_OBJECT_ROT_X_BIT) == MDR_UPDATE_OBJECT_ROT_X_BIT) {	
-		ubo.model = glm::rotate(ubo.model, glm::radians((float)(object->rot.x)), glm::vec3(1.0f, 0.0f, 0.0f));
-		object->update ^= MDR_UPDATE_OBJECT_ROT_X_BIT;
-	}
-	if ((object->update & MDR_UPDATE_OBJECT_ROT_Y_BIT) == MDR_UPDATE_OBJECT_ROT_Y_BIT) {	
-		ubo.model = glm::rotate(ubo.model, glm::radians((float)(object->rot.y)), glm::vec3(0.0f, 1.0f, 0.0f));
-		object->update ^= MDR_UPDATE_OBJECT_ROT_Y_BIT;
-	}
-	if ((object->update & MDR_UPDATE_OBJECT_ROT_Z_BIT) == MDR_UPDATE_OBJECT_ROT_Z_BIT) {	
-		ubo.model = glm::rotate(ubo.model, glm::radians((float)(object->rot.z)), glm::vec3(0.0f, 0.0f, 1.0f));
-		object->update ^= MDR_UPDATE_OBJECT_ROT_Z_BIT;
-	}
-
-	//Update scale
-	if ((object->update & MDR_UPDATE_OBJECT_SCL_ALL_BIT) == MDR_UPDATE_OBJECT_SCL_ALL_BIT) {	
-		ubo.model = glm::scale(ubo.model, glm::vec3(object->scl.x / 10, object->scl.y / 10, object->scl.z / 10));
-		object->update ^= MDR_UPDATE_OBJECT_SCL_ALL_BIT;
-	}
-
-
-	//ubo.view = glm::mat4(1);
-	//ubo.proj = glm::mat4(1);
-	ubo.view = glm::lookAt(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.proj = glm::perspective(45.0f, (float)swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
-	ubo.proj[1][1] *= -1;
-
-	void* data;
-	vkMapMemory(graphics.LD, uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
-	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(graphics.LD, uniformBuffersMemory[currentImage]);
-
-
-	//TODO object based uniform buffer
-
-
-	//UniformBufferObject ubo2{};
-	////"time;"
-	//ubo2.model =
-	//	glm::scale(
-	//		glm::translate(
-	//			glm::rotate(glm::rotate(glm::rotate(glm::mat4(1.0f),
-	//				glm::radians((float)(objects[0].rot.x)), glm::vec3(1.0f, 0.0f, 0.0f)),
-	//				glm::radians((float)(objects[0].rot.y)), glm::vec3(0.0f, 1.0f, 0.0f)),
-	//				glm::radians((float)(objects[0].rot.z)), glm::vec3(0.0f, 0.0f, 1.0f)),
-	//			glm::vec3(objects[0].pos.x / 10, objects[0].pos.y / 10, /*objects[0].pos.z / 10*/1)
-	//		),
-	//		glm::vec3(objects[0].scl.x, objects[0].scl.y, objects[0].scl.z)
-	//	);
-
-
-	//ubo2.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//ubo2.proj = glm::perspective(glm::radians(FOV), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 10.0f);
-	//ubo2.proj[1][1] *= -1;
-
-	//void* data2;
-	//printf("\n\n%d\n\n",vkMapMemory(graphics.LD, uniformBuffersMemory[currentImage], 0, sizeof(ubo2), 0, &data2));
-	//memcpy(data2, &ubo2, sizeof(ubo2));
-	//vkUnmapMemory(graphics.LD, uniformBuffersMemory[currentImage]);
-}
-
-
-
 
 
 void Render::drawFrame() {
@@ -1280,9 +1190,6 @@ void Render::drawFrame() {
 		return;
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) Quit("Failed to acquire swapchain image");
-
-	updateUniformBuffer(imageIndex, objects[0]);
-	//updateUniformBuffer2(imageIndex);
 
 	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
 		vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);

@@ -6,24 +6,6 @@
 #include "Types/Vectors/Vectors.h"
 
 
-extern int64 LAST_OBJECT_ID;
-
-enum MrgrUpdateObjectBits {
-	MDR_UPDATE_OBJECT_ROT_X_BIT	= 0b00000001,		//Update only the object's x rotation
-	MDR_UPDATE_OBJECT_ROT_Y_BIT	= 0b00000010,		//Update only the object's y rotation
-	MDR_UPDATE_OBJECT_ROT_Z_BIT	= 0b00000100,		//Update only the object's z rotation
-	MDR_UPDATE_OBJECT_ROT_ALL_BITS	= 0b00000111,		//Update the object's xyz rotation
-
-	MDR_UPDATE_OBJECT_POS_ALL_BIT	= 0b00001000,		//Update the object's xyz position
-	MDR_UPDATE_OBJECT_SCL_ALL_BIT	= 0b00010000,		//Update the object's xyz scale
-
-	MDR_UPDATE_OBJECT_GEOMETRY_BIT	= 0b00100000,		//Update the object's geometry
-
-	MDR_UPDATE_OBJECT_ALL_BITS		= 0b00011111		//Update everything
-};
-
-
-
 struct MdrObject {
 	std::string name;
 	uint64_t ID;
@@ -35,11 +17,9 @@ struct MdrObject {
 	ObjectGeometry geometry;
 	ObjectPhysics physics;
 
-	uint64 update = MDR_UPDATE_OBJECT_ALL_BITS;
 
 	MdrObject(std::string _name = "Undefined", vec3 _pos = { 0,0,0 }, dvec3 _rot = { 0,0,0 }, dvec3 _scl = { 10,10,10 }) {
 		name = _name;
-		ID = LAST_OBJECT_ID++;
 		pos = _pos;
 		rot = _rot;
 		scl = _scl;

@@ -42,9 +42,6 @@ void run() {
 
 
 int main() {
-	printf("%d", sizeof(fvec3));
-	LAST_OBJECT_ID = 0;  
-
 	std::thread t(run);
 	t.detach();
 
