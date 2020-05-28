@@ -392,10 +392,6 @@ void Render::cleanupSwapChain() {
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);
 
-	for (int64 i = 0; i < swapChainImages.size(); i++) {
-		vkDestroyBuffer(graphics.LD, uniformBuffers[i], nullptr);
-		vkFreeMemory(graphics.LD, uniformBuffersMemory[i], nullptr);
-	}
 
 	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);
 }
@@ -645,13 +641,6 @@ void Render::createRenderPass() {
 
 
 void Render::createDescriptorSetLayout() {
-	VkDescriptorSetLayoutBinding uboLayoutBinding{};
-	uboLayoutBinding.binding = 0;										//Binding point in shader
-	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;//Type of descriptors
-	uboLayoutBinding.descriptorCount = 1;								//Number of descriptoes
-	uboLayoutBinding.pImmutableSamplers = nullptr;						//
-	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
 	VkDescriptorSetLayoutBinding samplerLayoutBinding{};
 	samplerLayoutBinding.binding = 1;
 	samplerLayoutBinding.descriptorCount = 1;
@@ -659,7 +648,7 @@ void Render::createDescriptorSetLayout() {
 	samplerLayoutBinding.pImmutableSamplers = nullptr;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
+	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32>(bindings.size());
@@ -940,19 +929,6 @@ void Render::createIndexBuffer() {
 
 
 
-void Render::createUniformBuffers() {
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-
-	uniformBuffers.resize(swapChainImages.size());
-	uniformBuffersMemory.resize(swapChainImages.size());
-
-	for (int64 i = 0; i < swapChainImages.size(); i++) {
-		createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
-	}
-}
-
-
-
 void Render::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes{};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -985,33 +961,20 @@ void Render::createDescriptorSets() {
 	}
 
 	for (int64 i = 0; i < descriptorSets.size(); i++) {
-		VkDescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = uniformBuffers[i];
-		bufferInfo.offset = 0;
-		bufferInfo.range = sizeof(UniformBufferObject);
-
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		imageInfo.imageView = textureImageView;
 		imageInfo.sampler = textureSampler;
 
-		std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+		std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];
-		descriptorWrites[0].dstBinding = 0;
+		descriptorWrites[0].dstBinding = 1;
 		descriptorWrites[0].dstArrayElement = 0;
-		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		descriptorWrites[0].descriptorCount = 1;
-		descriptorWrites[0].pBufferInfo = &bufferInfo;
-
-		descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[1].dstSet = descriptorSets[i];
-		descriptorWrites[1].dstBinding = 1;
-		descriptorWrites[1].dstArrayElement = 0;
-		descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[1].descriptorCount = 1;
-		descriptorWrites[1].pImageInfo = &imageInfo;
+		descriptorWrites[0].pImageInfo = &imageInfo;
 
 		vkUpdateDescriptorSets(graphics.LD, static_cast<uint32>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}

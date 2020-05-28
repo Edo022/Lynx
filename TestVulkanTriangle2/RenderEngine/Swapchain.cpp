@@ -159,7 +159,6 @@ void Render::createSwapChain() {
 	createFramebuffers();
 
 	createDescriptorPool();
-	createUniformBuffers();
 	createDescriptorSets();
 
 	createDrawCommandBuffers();

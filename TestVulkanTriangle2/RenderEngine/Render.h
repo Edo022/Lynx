@@ -85,13 +85,6 @@ struct SwapChainSupportDetails {
 	std::vector<VkSurfaceFormatKHR> formats;
 	std::vector<VkPresentModeKHR> presentModes;
 };
-//Object for Vulkan descriptor //TODO remove. it's useless
-struct UniformBufferObject {
-	alignas(16) glm::mat4 model;
-	alignas(16) glm::mat4 view;
-	alignas(16) glm::mat4 proj;
-};
-
 
 
 
@@ -221,8 +214,6 @@ public:
 	LuxArray<uint32> indices;
 
 private:
-	std::vector<VkBuffer> uniformBuffers;
-	std::vector<VkDeviceMemory> uniformBuffersMemory;
 
 
 
@@ -366,8 +357,6 @@ private:
 	void createVertexBuffer();
 
 	void createIndexBuffer();
-
-	void createUniformBuffers();
 
 	void createDescriptorPool();
 
