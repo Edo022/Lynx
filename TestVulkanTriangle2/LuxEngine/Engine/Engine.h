@@ -787,7 +787,7 @@ public:
 		//Calling vkCmdDispatch basically starts the compute pipeline, and executes the compute shader.
 		//The number of workgroups is specified in the arguments.
 		//If you are already familiar with compute shaders from OpenGL, this should be nothing new to you.
-		vkCmdDispatch(computeCommandBuffer, ceil((float)(COMPUTE_WIDTH) / WORKGROUP_SIZE), ceil((float)(COMPUTE_HEIGHT) / WORKGROUP_SIZE), 1); //one workgroup every 32 int32
+		vkCmdDispatch(computeCommandBuffer, (uint32)ceil((float)(COMPUTE_WIDTH) / WORKGROUP_SIZE), (uint32)ceil((float)(COMPUTE_HEIGHT) / WORKGROUP_SIZE), 1); //one workgroup every 32 int32
 
 		Try(vkEndCommandBuffer(computeCommandBuffer)) Quit("Fatal error"); // end recording commands.
 	}

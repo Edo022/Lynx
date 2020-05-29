@@ -820,7 +820,7 @@ void Render::createGraphicsPipeline() {
 void Render::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
-	for (int64 i = 0; i < swapChainImageViews.size(); i++) {
+	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
 		std::array<VkImageView, 2> attachments = { swapChainImageViews[i],depthImageView };
 
 		VkFramebufferCreateInfo framebufferInfo{};
@@ -924,7 +924,7 @@ void Render::createDescriptorSets() {
 	descriptorSets.resize(swapChainImages.size());
 	Try(vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data())) Quit("Failed to allocate descriptor sets");
 
-	for (int64 i = 0; i < descriptorSets.size(); i++) {
+	for (uint64 i = 0; i < descriptorSets.size(); i++) {
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		imageInfo.imageView = textureImageView;
@@ -1002,7 +1002,7 @@ void Render::createDrawCommandBuffers() {
 		Quit("Failed to allocate command buffers");
 	}
 
-	for (int64 i = 0; i < commandBuffers.size(); i++) {
+	for (uint64 i = 0; i < commandBuffers.size(); i++) {
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
