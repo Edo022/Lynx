@@ -699,8 +699,8 @@ void Render::createGraphicsPipeline() {
 	//Create the structures that will fill the pipelineCreateInfo
 
 	uint32 size = 0;
-	VkShaderModule vertShaderModule = createShaderModule(readFile(&size, VERT_PATH), &size);			//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
-	VkShaderModule fragShaderModule = createShaderModule(readFile(&size, FRAG_PATH), &size);			//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
+	VkShaderModule vertShaderModule = createShaderModule(readShaderFromFile(&size, VERT_PATH), &size);			//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
+	VkShaderModule fragShaderModule = createShaderModule(readShaderFromFile(&size, FRAG_PATH), &size);			//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { StageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT), StageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT) };
 	pipelineInfo.stageCount = 2;																	//Set the number of stages
@@ -963,7 +963,7 @@ void Render::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryP
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
 	Try(vkAllocateMemory(graphics.LD, &allocInfo, nullptr, &bufferMemory)) Quit("Failed to allocate buffer memory");
-	vkBindBufferMemory(graphics.LD, buffer, bufferMemory, 0);
+	Try(vkBindBufferMemory(graphics.LD, buffer, bufferMemory, 0)) Quit("Failed to bind buffer");
 }
 
 
@@ -1132,6 +1132,29 @@ void Render::drawFrame() {
 
 
 
+//Read a shader from a file and save it in a padded char array
+uint32* Render::readShaderFromFile(uint32* length, const char* filename) {
+	FILE* fp = fopen(filename, "rb");
+	if (fp == NULL) printf("Could not find or open file: %s\n", filename);
+
+	//Get file size.
+	fseek(fp, 0, SEEK_END);
+	long filesize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	long paddedFileSize = long(ceil(filesize / 4.0)) * 4;
+
+	//Read file contents.
+	char* str = (char*)malloc(sizeof(char) * paddedFileSize);
+	fread(str, filesize, sizeof(char), fp);
+	fclose(fp);
+
+	//Data padding. 
+	for (int i = filesize; i < paddedFileSize; i++) str[i] = 0;
+
+	*length = paddedFileSize;
+	return (uint32*)str;
+}
 
 
 

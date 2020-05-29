@@ -25,7 +25,7 @@ void Render::run2() {
 	// Buffer size of the storage buffer that will contain the rendered mandelbrot set.
 	bufferSize = sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT;
 
-	createBuffer();
+	createBuffer(bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
 	createComputeDescriptorSetLayout();
 	createDescriptorSet();
 	createComputePipeline();
@@ -33,42 +33,6 @@ void Render::run2() {
 }
 
 
-
-
-void Render::createBuffer() {
-	//We will now create a buffer. We will render the mandelbrot set into this buffer
-	//in a computer shade later.
-	VkBufferCreateInfo bufferCreateInfo = {};
-	bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	bufferCreateInfo.size = bufferSize; // buffer size in bytes. 
-	bufferCreateInfo.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT; // buffer is used as a storage buffer.
-	bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE; // buffer is exclusive to a single queue family at a time. 
-
-	Try(vkCreateBuffer(compute.LD, &bufferCreateInfo, NULL, &buffer)) Quit("Fatal error"); // create buffer.
-
-	//But the buffer doesn't allocate memory for itself, so we must do that manually.
-	//First, we find the memory requirements for the buffer.
-	VkMemoryRequirements memoryRequirements;
-	vkGetBufferMemoryRequirements(compute.LD, buffer, &memoryRequirements);
-
-	//Now use obtained memory requirements info to allocate the memory for the buffer.
-	VkMemoryAllocateInfo allocateInfo = {};
-	allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-	allocateInfo.allocationSize = memoryRequirements.size; // specify required memory.
-
-	//There are several types of memory that can be allocated, and we must choose a memory type that:
-	//1) Satisfies the memory requirements(memoryRequirements.memoryTypeBits).
-	//2) Satifies our own usage requirements. We want to be able to read the buffer memory from the GPU to the CPU
-	//   with vkMapMemory, so we set VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT.
-	//Also, by setting VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, memory written by the device(GPU) will be easily
-	//visible to the host(CPU), without having to call any extra flushing commands. So mainly for convenience, we set
-	//this flag.
-	allocateInfo.memoryTypeIndex = findMemoryType(memoryRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-	Try(vkAllocateMemory(compute.LD, &allocateInfo, NULL, &bufferMemory)) Quit("Fatal error"); // allocate memory on device.
-
-	// Now associate that allocated memory with the buffer. With that, the buffer is backed by actual memory. 
-	Try(vkBindBufferMemory(compute.LD, buffer, bufferMemory, 0)) Quit("Fatal error");
-}
 
 void Render::createComputeDescriptorSetLayout() {
 	//Here we specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point 0.
@@ -138,35 +102,8 @@ void Render::createDescriptorSet() {
 	vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, NULL);
 }
 
-// Read file into array of bytes, and cast to uint32*, then return.
-// The data has been padded, so that it fits into an array uint32.
-uint32* Render::readFile(uint32* length, const char* filename) {
 
-	FILE* fp = fopen(filename, "rb");
-	if (fp == NULL) {
-		printf("Could not find or open file: %s\n", filename);
-	}
 
-	// get file size.
-	fseek(fp, 0, SEEK_END);
-	long filesize = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-
-	long filesizepadded = long(ceil(filesize / 4.0)) * 4;
-
-	// read file contents.
-	char* str = new char[filesizepadded];
-	fread(str, filesize, sizeof(char), fp);
-	fclose(fp);
-
-	// data padding. 
-	for (int i = filesize; i < filesizepadded; i++) {
-		str[i] = 0;
-	}
-
-	*length = filesizepadded;
-	return (uint32*)str;
-}
 
 //We create a compute pipeline here.
 void Render::createComputePipeline() {
@@ -174,7 +111,7 @@ void Render::createComputePipeline() {
 	uint32 filelength;
 	// the code in comp.spv was created by running the command:
 	// glslangValidator.exe -V shader.comp
-	uint32* code = readFile(&filelength, "LuxEngine/Contents/shaders/comp.spv"); //TODO use unique read file function for shaders
+	uint32* code = readShaderFromFile(&filelength, "LuxEngine/Contents/shaders/comp.spv"); //TODO use unique read file function for shaders
 	VkShaderModuleCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	createInfo.pCode = code;

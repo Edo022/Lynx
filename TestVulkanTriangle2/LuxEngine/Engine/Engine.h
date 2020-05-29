@@ -539,12 +539,11 @@ private:
 public:
 	void run2();
 
-	void createBuffer();
 	void createComputeDescriptorSetLayout();
 	void createDescriptorSet();
 	// Read file into array of bytes, and cast to uint32*, then return.
 	// The data has been padded, so that it fits into an array uint32.
-	uint32* readFile(uint32* length, const char* filename);
+	uint32* readShaderFromFile(uint32* length, const char* filename);
 	//We create a compute pipeline here.
 	void createComputePipeline();
 	void createComputeCommandBuffer();
