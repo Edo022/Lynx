@@ -794,7 +794,7 @@ public:
 		//Calling vkCmdDispatch basically starts the compute pipeline, and executes the compute shader.
 		//The number of workgroups is specified in the arguments.
 		//If you are already familiar with compute shaders from OpenGL, this should be nothing new to you.
-		vkCmdDispatch(computeCommandBuffer, ceil((float)(COMPUTE_WIDTH * COMPUTE_HEIGHT) / WORKGROUP_SIZE), 1, 1); //one workgroup every 32 int32
+		vkCmdDispatch(computeCommandBuffer, ceil((float)(COMPUTE_WIDTH) / WORKGROUP_SIZE), ceil((float)(COMPUTE_HEIGHT) / WORKGROUP_SIZE), 1); //one workgroup every 32 int32
 
 		VK_CHECK_RESULT(vkEndCommandBuffer(computeCommandBuffer)); // end recording commands.
 	}
@@ -849,29 +849,18 @@ public:
 
 static Render render;
 static void run(bool useVSync) {
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes; //sorry std vectors are needed to use tiny obj loader //TODO write an obj loader
-	std::vector<tinyobj::material_t> materials;
-	std::string warn, err;
+	render.vertices.add(std::vector<Vertex>{
+		{ {-1, -1, 0},  { 1,1,1 },  { 0,0 } },
+		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
+		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
+		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
+	});
 
-	tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "./Contents/Models/modelloBrutto.obj");
-
-	for (const auto& shape : shapes) {
-		for (const auto& index : shape.mesh.indices) {
-			Vertex vertex{};
-			vertex.pos = {/**/	attrib.vertices[3 * (index.vertex_index) + 0],		attrib.vertices[3 * (index.vertex_index) + 1],			attrib.vertices[3 * (index.vertex_index) + 2] };
-			vertex.texCoord = { attrib.texcoords[2 * (index.texcoord_index) + 0],	attrib.texcoords[2 * (index.texcoord_index) + 1] };
-			vertex.texCoord = { attrib.texcoords[2 * (index.texcoord_index) + 0],	1.0f - attrib.texcoords[2 * (index.texcoord_index) + 1] };//flip 
-			vertex.color = { 1.0f, 1.0f, 1.0f };
-
-			render.vertices.add(vertex);
-			render.indices.add(render.indices.size());
-		}
-	}
-
+	render.indices.add(std::vector<uint32>{0, 1, 2, 2, 1, 3});
 
 	render.run(useVSync, 45);
 }
+
 
 //This function initializes the Lux Engine. Use it only once
 static void luxInit(bool useVSync) {

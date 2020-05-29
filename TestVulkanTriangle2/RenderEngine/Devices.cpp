@@ -205,11 +205,11 @@ void Render::getPhysicalDevices() {
 void Render::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, std::vector<VkQueue>* computeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
-	if (sameDevice((*PD), graphics.PD)) {													//If it's the main device for graphics,
-		uniqueQueueFamilyIndices.insert(PD->indices.graphicsFamily);						//Add his graphics family
-		uniqueQueueFamilyIndices.insert(PD->indices.presentFamily);							//And his present family
+	if (sameDevice((*PD), graphics.PD)) {												//If it's the main device for graphics,
+		uniqueQueueFamilyIndices.insert(PD->indices.graphicsFamily);					//Add his graphics family
+		uniqueQueueFamilyIndices.insert(PD->indices.presentFamily);						//And his present family
 	}
-	for (auto deviceQueueFamilyIndex : PD->indices.computeFamilies) {						//And then add every compute family, graphic ones included
+	for (auto deviceQueueFamilyIndex : PD->indices.computeFamilies) {					//And then add every compute family, graphic ones included
 		uniqueQueueFamilyIndices.insert(deviceQueueFamilyIndex);
 	}
 
@@ -230,13 +230,13 @@ void Render::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 
 	//Required extensions
 	VkPhysicalDeviceFeatures enabledDeviceFeatures{};
-	enabledDeviceFeatures.samplerAnisotropy = VK_TRUE;
-	enabledDeviceFeatures.multiViewport = VK_TRUE;		//Multiple viewports
-	enabledDeviceFeatures.fillModeNonSolid = VK_TRUE;	//Point and line render
+	enabledDeviceFeatures.samplerAnisotropy = VK_FALSE;									//No anistropy filter
+	enabledDeviceFeatures.multiViewport = VK_FALSE;										//No multiple viewports
+	enabledDeviceFeatures.fillModeNonSolid = VK_FALSE;									//No point and line render, since we don't use meshes
 
 	//Fill deviceCreateInfo
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();			//Set queue infos count
+	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();				//Set queue infos count
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();						//Set queue infos
 	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
 	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions

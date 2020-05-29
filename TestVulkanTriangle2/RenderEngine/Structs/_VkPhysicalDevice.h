@@ -18,7 +18,7 @@ struct QueueFamilyIndices {
 
 
 
-//Structure containing all useful data of a physical device
+//Structure containing all the useful data of a physical device
 struct _VkPhysicalDevice {
 	VkPhysicalDevice device = VK_NULL_HANDLE;		//Actual VkPhysicalDevice structure
 	VkPhysicalDeviceProperties properties;			//Physical device properties

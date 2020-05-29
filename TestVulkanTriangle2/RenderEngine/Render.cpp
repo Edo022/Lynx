@@ -787,7 +787,7 @@ void Render::createGraphicsPipeline() {
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;										//Define how to draw triangles //TODO  VK_POLYGON_MODE_FILL, VK_POLYGON_MODE_POINT
 	rasterizer.lineWidth = 1.0f;														//T H I C C   lines
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;										//Faces to cull
-	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;								//Define which side is visible
+	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;								//Define which side is visible
 	rasterizer.depthBiasEnable = VK_FALSE;												//Depth biases to fix shadow glitchhes. //TODO set true if needed
 	pipelineInfo.pRasterizationState = &rasterizer;									//Save rasterizer
 
