@@ -52,6 +52,9 @@
     <ClCompile Include="LuxEngine\Engine\Engine.cpp">
       <Filter>LuxEngine\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

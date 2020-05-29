@@ -176,6 +176,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp" />
     <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
     <ClCompile Include="LuxEngine\Engine\Render\Devices.cpp" />
     <ClCompile Include="LuxEngine\Engine\Render\Swapchain.cpp" />
