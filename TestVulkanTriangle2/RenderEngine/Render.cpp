@@ -725,68 +725,34 @@ void Render::createGraphicsPipeline() {
 	pipelineInfo.pInputAssemblyState = &inputAssembly;												//Save input assembly
 
 
-	//TODO manage multiple viewports
-
 	VkViewport viewport{};										//Area where to render
-	viewport.x = (float)swapChainExtent.width / 2;				//Viewport start position
-	viewport.y = 0;												//Viewport start position
-	viewport.width = (float)swapChainExtent.width / 2;			//Viewport size
-	viewport.height = (float)swapChainExtent.height / 2;			//Viewport size
-	viewport.minDepth = 0.0f;									//Viewport minimum depth (Vulkan default)
-	viewport.maxDepth = 1.0f;									//Viewport maximum depth (Vulkan default)
-
-	VkViewport viewport2{};										//Area where to render
-	viewport2.x = 0.0f;											//Viewport start position
-	viewport2.y = 0.0f;											//Viewport start position
-	//viewport2.width = (float)swapChainExtent.width/2;				//Viewport size
-	viewport2.width = (float)swapChainExtent.width;				//Viewport size
-	//viewport2.height = (float)swapChainExtent.height/2;			//Viewport size
-	viewport2.height = (float)swapChainExtent.height;			//Viewport size
-	viewport2.minDepth = 0.0f;									//Viewport depth (Vulkan default)
-	viewport2.maxDepth = 1.0f;									//Viewport depth (Vulkan default)
-
-	VkRect2D scissor2{};										//Cut from viewport
-	scissor2.offset = { 0, 0 };									//Scrissor start position
-	scissor2.extent = swapChainExtent;							//Scrissor size. (don't cut the viewport)
+	viewport.x = 0.0f;											//Viewport start position
+	viewport.y = 0.0f;											//Viewport start position
+	viewport.width = (float)swapChainExtent.width;				//Viewport width (maximum)
+	viewport.height = (float)swapChainExtent.height;			//Viewport height (maximum)
+	viewport.minDepth = 0.0f;									//Viewport depth (Vulkan default)
+	viewport.maxDepth = 1.0f;									//Viewport depth (Vulkan default)
 
 	VkRect2D scissor{};											//Cut from viewport
-	scissor.offset = { (int32)swapChainExtent.width, 0 };		//Scrissor start position
-	//scissor.offset = { (int32)swapChainExtent.width / 2, 0 };		//Scrissor start position
+	scissor.offset = { 0, 0 };									//Scrissor start position
 	scissor.extent = swapChainExtent;							//Scrissor size. (don't cut the viewport)
-
-	VkViewport viewports[] = { viewport2, viewport };
-	VkRect2D scissors[] = { scissor2, scissor };
 
 	VkPipelineViewportStateCreateInfo viewportState{};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	//viewportState.viewportCount = 2;
 	viewportState.viewportCount = 1;
-	viewportState.pViewports = viewports;
-	//viewportState.pViewports = &viewport;
+	viewportState.pViewports = &viewport;
 	viewportState.scissorCount = 1;
-	//viewportState.scissorCount = 2;
-	viewportState.pScissors = scissors;
+	viewportState.pScissors = &scissor;
 	pipelineInfo.pViewportState = &viewportState;													//Save viewport state
-
-	//Dynamic state. runtime viewport resize 
-	std::vector<VkDynamicState> dynamicStates;
-	dynamicStates.push_back(VK_DYNAMIC_STATE_VIEWPORT);	//TODO in command buffer : vkCmdSetViewport(CommandBuffer,0,1,&viewport)
-	dynamicStates.push_back(VK_DYNAMIC_STATE_SCISSOR);	//TODO in command buffer : vkCmdSetScissor(CommandBuffer,0,1,&scissors)
-
-	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = {};
-	dynamicStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicStateCreateInfo.dynamicStateCount = (uint32)dynamicStates.size();
-	dynamicStateCreateInfo.pDynamicStates = dynamicStates.data();
-
 
 
 	VkPipelineRasterizationStateCreateInfo rasterizer{};							//Rasterizer to convert primitives into pixels
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;												//Clamp based on fragment depth (Required depth clamp feature)
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;										//Define how to draw triangles //TODO  VK_POLYGON_MODE_FILL, VK_POLYGON_MODE_POINT
-	rasterizer.lineWidth = 1.0f;														//T H I C C   lines
-	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;										//Faces to cull
+	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;										//Define how to draw triangles
+	rasterizer.lineWidth = 1.0f;														//line T H I C C H N E S S
+	rasterizer.cullMode = VK_CULL_MODE_NONE;											//Faces to cull
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;								//Define which side is visible
 	rasterizer.depthBiasEnable = VK_FALSE;												//Depth biases to fix shadow glitchhes. //TODO set true if needed
 	pipelineInfo.pRasterizationState = &rasterizer;									//Save rasterizer
@@ -815,8 +781,8 @@ void Render::createGraphicsPipeline() {
 
 	VkPipelineDepthStencilStateCreateInfo depthStencil{};							//Depth stencil infos 
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-	depthStencil.depthTestEnable = VK_TRUE;												//Whether to use the depth test
-	depthStencil.depthWriteEnable = VK_TRUE;											//Whether to use depth writes
+	depthStencil.depthTestEnable = VK_FALSE;											//Whether to use the depth test
+	depthStencil.depthWriteEnable = VK_FALSE;											//Whether to use depth writes
 	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;									//Logical operation used to compare depths
 	depthStencil.depthBoundsTestEnable = VK_FALSE;										//Whether to limit the depth to a certain range
 	depthStencil.minDepthBounds = 0.0f;													//Maximum depth for depth bounds
