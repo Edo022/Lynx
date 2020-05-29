@@ -851,7 +851,7 @@ void Render::createVertexBuffer() {
 	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 
 	//Map memory
@@ -861,7 +861,7 @@ void Render::createVertexBuffer() {
 	vkUnmapMemory(graphics.LD, stagingBufferMemory);
 
 	//Create vertex buffer
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 	copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
 	//Destroy staging buffer
@@ -876,7 +876,7 @@ void Render::createIndexBuffer() {
 	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	//Map memory
 	void* data;
@@ -885,7 +885,7 @@ void Render::createIndexBuffer() {
 	vkUnmapMemory(graphics.LD, stagingBufferMemory);
 
 	//Create index buffer
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 	copyBuffer(stagingBuffer, indexBuffer, bufferSize);
 
 	//Destroy staging buffer
@@ -946,24 +946,24 @@ void Render::createDescriptorSets() {
 
 
 
-void Render::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+void Render::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = size;
 	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	Try(vkCreateBuffer(graphics.LD, &bufferInfo, nullptr, &buffer)) Quit("Failed to create buffer");
+	Try(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer)) Quit("Failed to create buffer");
 
 	VkMemoryRequirements memRequirements;
-	vkGetBufferMemoryRequirements(graphics.LD, buffer, &memRequirements);
+	vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-	Try(vkAllocateMemory(graphics.LD, &allocInfo, nullptr, &bufferMemory)) Quit("Failed to allocate buffer memory");
-	Try(vkBindBufferMemory(graphics.LD, buffer, bufferMemory, 0)) Quit("Failed to bind buffer");
+	Try(vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory)) Quit("Failed to allocate buffer memory");
+	Try(vkBindBufferMemory(device, buffer, bufferMemory, 0)) Quit("Failed to bind buffer");
 }
 
 
