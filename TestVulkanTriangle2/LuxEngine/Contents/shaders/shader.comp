@@ -21,14 +21,12 @@ layout(std430, binding = 0) buffer buf{
 
 
 void main() {
-	//X and y are inverted since rendering goes from top to bottom and from left to right
-//	uint y = (gl_GlobalInvocationID.x*WORKGROUP_SIZE+gl_LocalInvocationID.x) % HEIGHT;
-//	uint x = (gl_GlobalInvocationID.x*WORKGROUP_SIZE+gl_LocalInvocationID.x) / HEIGHT; 
-	//TODO yeet unnecessary threads
+	//Yeet unnecessary calls
+	if(gl_GlobalInvocationID.x > WIDTH || gl_GlobalInvocationID.y > HEIGHT) return;
+
 
 	uvec4 color = uvec4(gl_GlobalInvocationID.x/9,0,gl_GlobalInvocationID.y/4,255);	
-//	uvec4 color = (gl_GlobalInvocationID.x > 20) ? uvec4(gl_GlobalInvocationID.x/9,0,0,255) : uvec4(0, 0, 255, 255);			
 
-	// store the rendered mandelbrot set into a storage buffer:
+	//Store the pixel in the buffer. 4 chars as an uint32
 	imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = ((color.a & 0xFF) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.r & 0xFF) << 0);
 }

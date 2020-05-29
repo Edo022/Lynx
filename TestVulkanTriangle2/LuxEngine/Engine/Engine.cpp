@@ -998,9 +998,7 @@ void Render::createDrawCommandBuffers() {
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = (uint32)commandBuffers.size();
 
-	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data())) {
-		Quit("Failed to allocate command buffers");
-	}
+	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data())) Quit("Failed to allocate command buffers");
 
 	for (uint64 i = 0; i < commandBuffers.size(); i++) {
 		VkCommandBufferBeginInfo beginInfo{};
@@ -1028,9 +1026,7 @@ void Render::createDrawCommandBuffers() {
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 
-		VkBuffer vertexBuffers[] = { vertexBuffer };
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
+		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, &vertexBuffer, new VkDeviceSize(0));
 		vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
 		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 
@@ -1073,6 +1069,7 @@ void Render::drawFrame() {
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	uint32 imageIndex;
 
+
 	VkResult result = vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
 		recreateSwapChain();
@@ -1084,6 +1081,47 @@ void Render::drawFrame() {
 		vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	}
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
+
+	//TODO
+	runCommandBuffer();
+	//createTextureImage();
+	//for (uint64 i = 0; i < commandBuffers.size(); i++) {
+	//	VkCommandBufferBeginInfo beginInfo{};
+	//	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+	//	VkRenderPassBeginInfo renderPassInfo{};
+	//	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	//	renderPassInfo.renderPass = renderPass;
+	//	renderPassInfo.framebuffer = swapChainFramebuffers[i];
+	//	renderPassInfo.renderArea.offset = { 0, 0 };
+	//	renderPassInfo.renderArea.extent = swapChainExtent;
+
+
+	//	std::array<VkClearValue, 2> clearValues{};
+	//	clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	//	clearValues[1].depthStencil = { 1.0f, 0 };
+
+	//	renderPassInfo.clearValueCount = static_cast<uint32>(clearValues.size());
+	//	renderPassInfo.pClearValues = clearValues.data();
+
+
+	//	Try(vkBeginCommandBuffer(commandBuffers[i], &beginInfo)) Quit("Failed to begin recording command buffer");
+
+	//	vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+	//	vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+
+	//	vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, &vertexBuffer, new VkDeviceSize(0));
+	//	vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
+	//	vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
+
+	//	vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(indices.size()), 1, 0, 0, 0);
+
+
+	//	vkCmdEndRenderPass(commandBuffers[i]);
+
+	//	Try(vkEndCommandBuffer(commandBuffers[i])) Quit("Failed to record command buffer");
+	//}
 
 
 	VkSubmitInfo submitInfo{};
@@ -1102,7 +1140,7 @@ void Render::drawFrame() {
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
 
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
-
+	//vkCmdCopyImage()
 
 
 	VkPresentInfoKHR presentInfo{};
