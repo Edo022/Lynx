@@ -176,34 +176,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Object\Object.cpp" />
-    <ClCompile Include="RenderEngine\Devices.cpp" />
-    <ClCompile Include="RenderEngine\Render.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Render\Devices.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Render\Swapchain.cpp" />
+    <ClCompile Include="LuxEngine\Object\Object.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="RenderEngine\Swapchain.cpp" />
-    <ClCompile Include="Types\Vectors\Vectors.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="macros.h" />
-    <ClInclude Include="Object\Object.h" />
-    <ClInclude Include="Object\ObjectGeometry.h" />
-    <ClInclude Include="Object\ObjectPhysics.h" />
-    <ClInclude Include="RenderEngine\Render.h" />
-    <ClInclude Include="RenderEngine\Structs\Vertex.h" />
-    <ClInclude Include="RenderEngine\Structs\_VkPhysicalDevice.h" />
-    <ClInclude Include="RenderEngine\VkWindow.h" />
-    <ClInclude Include="Types\Containers\LuxArray.h" />
-    <ClInclude Include="Types\Integers\int128_t.h" />
-    <ClInclude Include="Types\Integers\int256_t.h" />
-    <ClInclude Include="Types\Integers\Integers.h" />
-    <ClInclude Include="Types\Types.h" />
-    <ClInclude Include="Types\Vectors\Vec2.h" />
-    <ClInclude Include="Types\Vectors\Vec3.h" />
+    <ClInclude Include="LuxEngine\Engine\Engine.h" />
+    <ClInclude Include="LuxEngine\Engine\Render\Structs\Vertex.h" />
+    <ClInclude Include="LuxEngine\Engine\Render\Structs\_VkPhysicalDevice.h" />
+    <ClInclude Include="LuxEngine\Engine\Render\VkWindow.h" />
+    <ClInclude Include="LuxEngine\macros.h" />
+    <ClInclude Include="LuxEngine\Object\Object.h" />
+    <ClInclude Include="LuxEngine\Object\ObjectGeometry.h" />
+    <ClInclude Include="LuxEngine\Object\ObjectPhysics.h" />
+    <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />
+    <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
+    <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
+    <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
+    <ClInclude Include="LuxEngine\Types\Types.h" />
+    <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h" />
+    <ClInclude Include="LuxEngine\Types\Vectors\Vec3.h" />
+    <ClInclude Include="LuxEngine\Types\Vectors\Vectors.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Contents\shaders\shader.comp" />
-    <None Include="Contents\shaders\shader.frag" />
-    <None Include="Contents\shaders\shader.vert" />
+    <None Include="LuxEngine\Contents\shaders\shader.comp" />
+    <None Include="LuxEngine\Contents\shaders\shader.frag" />
+    <None Include="LuxEngine\Contents\shaders\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
