@@ -64,6 +64,10 @@ void Render::initVulkan() {
 	createVertexBuffer();
 	createIndexBuffer();
 	createDrawCommandBuffers();
+
+	Normal printf("    Creating VK descriptor set layout... ");		createDescriptorSetLayout();		SuccessNoNl printf("ok");
+	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
+	Normal printf("    Creating VK sync objects...          ");		createSyncObjects();				SuccessNoNl printf("ok");
 }
 
 
