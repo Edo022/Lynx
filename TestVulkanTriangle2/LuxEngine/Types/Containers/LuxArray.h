@@ -156,8 +156,8 @@ public:
 
 	//Sets the size of the array to 0, deleting all the elements and resetting it to the initial state
 	void clear() {
-		for (int i = 0; i < chunksDynNum; i++) free(__data[i]); free(__data);		//Free data array
-		for (int i = 0; i < chunksDynNum; i++) free(__tracker[i]); free(__tracker);	//Free tracker array
+		for (int32 i = 0; i < chunksDynNum; i++) free(__data[i]); free(__data);		//Free data array
+		for (int32 i = 0; i < chunksDynNum; i++) free(__tracker[i]); free(__tracker);	//Free tracker array
 		__data = (vecType**)malloc(sizeof(vecType*) * (maxSize / chunkSize));		//Allocate data array
 		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));		//Allocate tracker array
 		chunksDynNum = __dynSize = __freeNum = 0;									//Reset number of chunk, number of elements, number of free elements
@@ -186,7 +186,7 @@ public:
 
 
 	//Use the isValid() function to check if the element can be used
-	inline vecType& operator [](int index) { return __Data(index); }
+	inline vecType& operator [](int32 index) { return __Data(index); }
 
 	//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
 	inline vecType* data(uint64 chunkIndex) { return &__data[chunkIndex][0]; }
@@ -194,8 +194,8 @@ public:
 	//Returns a pointer to a new array that contains all the elements in the chunks, without the invalid ones. This operation can be really slow, try to avoid using it
 	vecType* data() {
 		vecType* arr = (vecType*)malloc(sizeof(vecType) * usedSize());
-		int _i = 0;
-		for (int i = 0; i < usedSize(); i++) {
+		int32 _i = 0;
+		for (int32 i = 0; i < usedSize(); i++) {
 			if (isValid(i)) {
 				arr[_i] = __Data(i);
 				_i++;

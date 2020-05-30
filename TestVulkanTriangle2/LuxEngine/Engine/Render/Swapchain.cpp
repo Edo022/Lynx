@@ -28,7 +28,7 @@ VkPresentModeKHR Render::chooseSwapPresentMode(const std::vector<VkPresentModeKH
 VkExtent2D Render::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
 	if (capabilities.currentExtent.width != UINT32_MAX) return capabilities.currentExtent;
 	else {
-		int width, height;
+		int32 width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		return VkExtent2D{
 			max(capabilities.minImageExtent.width, min(capabilities.maxImageExtent.width, static_cast<uint32>(width))),
@@ -174,7 +174,7 @@ void Render::createSwapChain() {
 
 
 void Render::recreateSwapChain() {
-	int width = 0, height = 0; 	glfwGetFramebufferSize(window, &width, &height);
+	int32 width = 0, height = 0; 	glfwGetFramebufferSize(window, &width, &height);
 
 	if (width != 0 && height != 0) {
 		//glfwWaitEvents();

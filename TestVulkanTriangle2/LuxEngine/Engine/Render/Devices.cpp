@@ -1,4 +1,4 @@
-﻿#include "Render.h"
+﻿#include "LuxEngine/Engine/Engine.h"
 
 //Compares 2 _VkPhysicalDevice objects
 #define sameDevice(a,b) (a.properties.deviceID == b.properties.deviceID)
@@ -10,7 +10,7 @@
 
 
 //Returns the rating of a physical device
-static int ratePhysicalDevice(_VkPhysicalDevice& device) {
+static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
 	uint32 score = 0;
 	if (device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 	score += device.properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
@@ -30,7 +30,7 @@ QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
 
 	//Set families
-	int i = 0;
+	int32 i = 0;
 	QueueFamilyIndices indices;
 	for (const auto& queueFamily : queueFamilies) {
 		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;					//Set graphics family
@@ -137,7 +137,7 @@ void Render::getPhysicalDevices() {
 	//If there are discarded devices, print their names
 	if (discardedPhysicalDevices.size() > 0) {
 		Failure printf("    Discarded devices:");
-		for (int i = 0; i < discardedPhysicalDevices.size(); i += 2) {
+		for (int32 i = 0; i < discardedPhysicalDevices.size(); i += 2) {
 			Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].data(), discardedPhysicalDevices[(int64)i + 1].data());
 		}
 	}
@@ -178,7 +178,7 @@ void Render::getPhysicalDevices() {
 	//Create a logical device for graphics, one for computation and one for every secondary device
 	createLogicalDevice(&graphics.PD, &graphics.LD, &graphics.graphicsQueue, &graphics.presentQueue, nullptr);
 	createLogicalDevice(&compute.PD, &compute.LD, nullptr, nullptr, &compute.computeQueues);
-	for (int i = 0; i < secondary.size(); i++) {
+	for (int32 i = 0; i < secondary.size(); i++) {
 		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, nullptr, nullptr, &secondary[i].computeQueues);
 	}
 
@@ -232,7 +232,7 @@ void Render::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 	VkPhysicalDeviceFeatures enabledDeviceFeatures{};
 	enabledDeviceFeatures.samplerAnisotropy = VK_FALSE;									//No anistropy filter
 	enabledDeviceFeatures.multiViewport = VK_FALSE;										//No multiple viewports
-	enabledDeviceFeatures.fillModeNonSolid = VK_FALSE;									//No point and line render, since we don't use meshes
+	enabledDeviceFeatures.fillModeNonSolid = VK_FALSE;									//No point32 and line render, since we don't use meshes
 
 	//Fill deviceCreateInfo
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

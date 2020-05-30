@@ -26,7 +26,7 @@
 #include <chrono>
 #include <vector>
 #include <thread>
-
+#include <set>
 
 #include <cmath>
 #include <string>
@@ -148,9 +148,9 @@ private:
 
 
 	//COMPUTE 
-	const int COMPUTE_WIDTH = WIDTH; // Size of rendered mandelbrot set.
-	const int COMPUTE_HEIGHT = HEIGHT; // Size of renderered mandelbrot set.
-	const int WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
+	const int32 COMPUTE_WIDTH = WIDTH; // Size of rendered mandelbrot set.
+	const int32 COMPUTE_HEIGHT = HEIGHT; // Size of renderered mandelbrot set.
+	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
 
 
@@ -191,7 +191,7 @@ private:
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	const int MAX_FRAMES_IN_FLIGHT = 16; //Default:2
+	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2
 
 
 	//Geometry
@@ -339,7 +339,7 @@ private:
 
 
 
-	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
+	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
@@ -514,7 +514,7 @@ static Render render;
 //This function is used by the engine. You shouldn't call it
 static void __lux_run_thr_0(bool useVSync) {
 	render.vertices.add(std::vector<Vertex>{
-		{ {-1, -1, 0},  { 1,1,1 },  { 0,0 } },
+		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
 		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }

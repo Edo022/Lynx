@@ -45,7 +45,7 @@ void Render::initWindow() {
 }
 
 
-void Render::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+void Render::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
 	auto app = reinterpret_cast<Render*>(glfwGetWindowUserPointer(window));
 	app->framebufferResized = true;
 }
@@ -184,9 +184,9 @@ void Render::mainLoop() {
 		drawFrame();
 		frameNum++;
 
-		static int lastState;
-		static int lastw = 0;
-		static int lasth = 0;
+		static int32 lastState;
+		static int32 lastw = 0;
+		static int32 lasth = 0;
 
 
 		//TODO fix full screen
@@ -744,71 +744,73 @@ void Render::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags
 
 //Creates and submits a command buffer to copy from srcBuffer to dstBuffer
 void Render::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-	VkBufferCopy copyRegion{};
+	VkBufferCopy copyRegion{};												//Create buffer copy object
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
 	copyRegion.size = size;													//Set size of the copied region
-	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);	//Record the command to copy the buffer
+	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);	//Record the copy command
 	endSingleTimeCommands(commandBuffer);									//End command buffer
 }
 
 
+
+
+//Returns the index of the memory with the specified type and properties. Exits if not found
 uint32 Render::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties) {
-	VkPhysicalDeviceMemoryProperties memProperties;
+	VkPhysicalDeviceMemoryProperties memProperties;							//Get memory properties
 	vkGetPhysicalDeviceMemoryProperties(graphics.PD.device, &memProperties);
 
-	for (uint32 i = 0; i < memProperties.memoryTypeCount; i++) {
-		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) return i;
+	for (uint32 i = 0; i < memProperties.memoryTypeCount; i++) {			//Search for the memory that has the specified properties and type and return its index
+		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) return i; 
 	}
 	Quit("Failed to find suitable memory type");
 }
 
 
+
+
 void Render::createDrawCommandBuffers() {
-	commandBuffers.resize(swapChainFramebuffers.size());
+	commandBuffers.resize(swapChainFramebuffers.size());				//One command buffer for every swapchain's framebuffer 
 
-	VkCommandBufferAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo.commandPool = graphicsCommandPool;
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = (uint32)commandBuffers.size();
-
+	VkCommandBufferAllocateInfo allocInfo{};							//Create allocate infos
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;	//Set structure type
+	allocInfo.commandPool = graphicsCommandPool;						//Set command pool	
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set command buffer level
+	allocInfo.commandBufferCount = (uint32)commandBuffers.size();		//Set number of command buffers
+	//Allocate command buffers
 	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data())) Quit("Failed to allocate command buffers");
 
-	for (uint64 i = 0; i < commandBuffers.size(); i++) {
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	for (uint64 i = 0; i < commandBuffers.size(); i++) {				//For every command buffer
+		VkCommandBufferBeginInfo beginInfo{};								//Create begin info struct
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;		//Set structure type
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = swapChainFramebuffers[i];
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = swapChainExtent;
+		VkClearValue clearValues[2];										//Create clear values
+		clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };					//Color clear value
+		clearValues[1].depthStencil = { 1.0f, 0 };							//Stencil clear value
 
-
-		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
-		clearValues[1].depthStencil = { 1.0f, 0 };
-
-		renderPassInfo.clearValueCount = static_cast<uint32>(clearValues.size());
-		renderPassInfo.pClearValues = clearValues.data();
+		VkRenderPassBeginInfo renderPassInfo{};								//Create render pass infos
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;	//Set structure type
+		renderPassInfo.renderPass = renderPass;								//Set render pass
+		renderPassInfo.framebuffer = swapChainFramebuffers[i];				//Set frame buffer
+		renderPassInfo.renderArea.offset = { 0, 0 };						//No offset
+		renderPassInfo.renderArea.extent = swapChainExtent;					//Maximum extent
+		renderPassInfo.clearValueCount = 2;									//Clear values number
+		renderPassInfo.pClearValues = clearValues;							//Set clear values
 
 
-		Try(vkBeginCommandBuffer(commandBuffers[i], &beginInfo)) Quit("Failed to begin recording command buffer");
-
+		//Begin command buffer and render pass
+		Try(vkBeginCommandBuffer(commandBuffers[i], &beginInfo)) Quit("Failed to begin command buffer");
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		//Bind pipeline, vertices, indices and descriptors to che command buffer
 		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-
 		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, &vertexBuffer, new VkDeviceSize(0));
 		vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
 		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
-
+		//Draw texture
 		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(indices.size()), 1, 0, 0, 0);
 
-
+		//Eng command buffer and render pass
 		vkCmdEndRenderPass(commandBuffers[i]);
-
 		Try(vkEndCommandBuffer(commandBuffers[i])) Quit("Failed to record command buffer");
 	}
 }
@@ -840,117 +842,26 @@ void Render::createSyncObjects() {
 
 
 void Render::drawFrame() {
+	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-	uint32 imageIndex;
 
-
-	VkResult result = vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-		recreateSwapChain();
-		return;
-	}
-	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) Quit("Failed to acquire swapchain image");
-
-	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
-		vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
-	}
-	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
-
-	//TODO
-	//runCommandBuffer();
-	//createTextureImage();
-	//recreateSwapChain();
-
-
-
-	//TODO 
-
+	//Update render result
 	runCommandBuffer();
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	copyBufferToImage(buffer, textureImage, WIDTH, HEIGHT);
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
+	//Acquire swapchain image
+	uint32 imageIndex;
+	VkResult result = vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	if (result == VK_ERROR_OUT_OF_DATE_KHR) { recreateSwapChain(); return; }
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) Quit("Failed to acquire swapchain image");
+
+	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
 
-
-
-	//
-	////Now allocate a command buffer from the command pool.
-	//VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};
-	//commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	//commandBufferAllocateInfo.commandPool = computeCommandPool; // specify the command pool to allocate from. 
-	//// if the command buffer is primary, it can be directly submitted to queues. 
-	//// A secondary buffer has to be called from some primary command buffer, and cannot be directly 
-	//// submitted to a queue. To keep things simple, we use a primary command buffer. 
-	//commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	//commandBufferAllocateInfo.commandBufferCount = 1; // allocate a single command buffer. 
-	//Try(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, &computeCommandBuffer)) Quit("Fatal error"); // allocate command buffer.
-	//
-	////Now we shall start recording commands into the newly allocated command buffer.
-	//VkCommandBufferBeginInfo beginInfo = {};
-	//beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // the buffer is only submitted and used once in this application.
-	//Try(vkBeginCommandBuffer(computeCommandBuffer, &beginInfo)) Quit("Fatal error"); // start recording commands.
-
-	////We need to bind a pipeline, AND a descriptor set before we dispatch.
-	////The validation layer will NOT give warnings if you forget these, so be very careful not to forget them.
-	//vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-	//vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, NULL);
-
-	////Calling vkCmdDispatch basically starts the compute pipeline, and executes the compute shader.
-	////The number of workgroups is specified in the arguments.
-	////If you are already familiar with compute shaders from OpenGL, this should be nothing new to you.
-	//vkCmdDispatch(computeCommandBuffer, (uint32)ceil((float)(COMPUTE_WIDTH) / WORKGROUP_SIZE), (uint32)ceil((float)(COMPUTE_HEIGHT) / WORKGROUP_SIZE), 1); //one workgroup every 32 int32
-
-	//Try(vkEndCommandBuffer(computeCommandBuffer)) Quit("Fatal error"); // end recording commands.
-
-
-
-
-
-
-
-
-
-	//for (uint64 i = 0; i < commandBuffers.size(); i++) {
-	//	VkCommandBufferBeginInfo beginInfo{};
-	//	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-	//	VkRenderPassBeginInfo renderPassInfo{};
-	//	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	//	renderPassInfo.renderPass = renderPass;
-	//	renderPassInfo.framebuffer = swapChainFramebuffers[i];
-	//	renderPassInfo.renderArea.offset = { 0, 0 };
-	//	renderPassInfo.renderArea.extent = swapChainExtent;
-
-
-	//	std::array<VkClearValue, 2> clearValues{};
-	//	clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//	clearValues[1].depthStencil = { 1.0f, 0 };
-
-	//	renderPassInfo.clearValueCount = static_cast<uint32>(clearValues.size());
-	//	renderPassInfo.pClearValues = clearValues.data();
-
-
-	//	Try(vkBeginCommandBuffer(commandBuffers[i], &beginInfo)) Quit("Failed to begin recording command buffer");
-
-	//	vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-	//	vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-
-	//	vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, &vertexBuffer, new VkDeviceSize(0));
-	//	vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
-	//	vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
-
-	//	vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(indices.size()), 1, 0, 0, 0);
-
-
-	//	vkCmdEndRenderPass(commandBuffers[i]);
-
-	//	Try(vkEndCommandBuffer(commandBuffers[i])) Quit("Failed to record command buffer");
-	//}
-
-
+	//Submit to queue
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
@@ -965,11 +876,10 @@ void Render::drawFrame() {
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
-
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
-	//vkCmdCopyImage()
 
 
+	//Present
 	VkPresentInfoKHR presentInfo{};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.waitSemaphoreCount = 1;
@@ -987,7 +897,7 @@ void Render::drawFrame() {
 	}
 	else Try(result) Quit("Failed to present swapchain image");
 
-
+	//Update frame number
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
@@ -1004,10 +914,10 @@ uint32* Render::readShaderFromFile(uint32* length, const char* filename) {
 
 	//Get file size.
 	fseek(fp, 0, SEEK_END);
-	long filesize = ftell(fp);
+	int32 filesize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	long paddedFileSize = long(ceil(filesize / 4.0)) * 4;
+	int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;
 
 	//Read file contents.
 	char* str = (char*)malloc(sizeof(char) * paddedFileSize);
@@ -1015,7 +925,7 @@ uint32* Render::readShaderFromFile(uint32* length, const char* filename) {
 	fclose(fp);
 
 	//Data padding. 
-	for (int i = filesize; i < paddedFileSize; i++) str[i] = 0;
+	for (int32 i = filesize; i < paddedFileSize; i++) str[i] = 0;
 
 	*length = paddedFileSize;
 	return (uint32*)str;

@@ -25,7 +25,7 @@ void Render::run2() {
 	// Buffer size of the storage buffer that will contain the rendered mandelbrot set.
 	bufferSize = sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT;
 
-	createBuffer(compute.LD, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
+	createBuffer(compute.LD, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
 	createComputeDescriptorSetLayout();
 	createDescriptorSet();
 	createComputePipeline();
@@ -35,7 +35,7 @@ void Render::run2() {
 
 
 void Render::createComputeDescriptorSetLayout() {
-	//Here we specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point 0.
+	//Here we specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0.
 	//This binds to
 	//  layout(std140, binding = 0) buffer buf
 	//in the compute shader.
