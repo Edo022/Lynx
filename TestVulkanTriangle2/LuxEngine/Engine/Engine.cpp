@@ -48,10 +48,10 @@ void Render::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 he
 void Render::initVulkan() {
 	//Initialize vulkan
 	Normal printf("    Creating Instance...                 ");		createInstance();					SuccessNoNl printf("ok");
-	/**/												 			setupDebugMessenger();
 	Normal printf("    Creating VK Surface...               ");		createSurface();					SuccessNoNl printf("ok");	NewLine;
 	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();				NewLine;
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
+	/**/												 			setupDebugMessenger();
 
 	RunCompute();
 
