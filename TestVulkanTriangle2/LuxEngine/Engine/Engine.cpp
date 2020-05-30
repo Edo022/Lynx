@@ -82,7 +82,7 @@ void Render::initVulkan() {
 
 
 
-
+//TODO use LuxArray
 VkFormat Render::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
 	for (VkFormat format : candidates) {
 		VkFormatProperties props;
@@ -300,20 +300,20 @@ void Render::createInstance() {
 
 
 	//Extensions
-	std::vector<const char*> extensions;
+	LuxArray<const char*> extensions;
 	uint32 glfwExtensionCount;
-	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);		//Get extensions list and count
-	for (uint32 i = 0; i < glfwExtensionCount; i++) { extensions.push_back(glfwExtensions[i]); }	//Save them in a vector
-	if (enableValidationLayers) { extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); }	//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = static_cast<uint32>(extensions.size());					//Set extension count
-	createInfo.ppEnabledExtensionNames = extensions.data();										//Set extensions
+	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
+	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array
+	if (enableValidationLayers) extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);			//Add debug extension if in debug mode
+	createInfo.enabledExtensionCount = static_cast<uint32>(extensions.size());				//Set extension count
+	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
 
 
-//Add validation layers if in debug mode
+	//Add validation layers if in debug mode
 	#ifdef NDEBUG
 	createInfo.enabledLayerCount = 0;
 	createInfo.pNext = nullptr;
-	#else
+	#else //TODO use LuxStaticArray
 	//Search for validation layers
 	uint32 layerCount = 0;
 	std::vector<VkLayerProperties> availableLayers(layerCount);
@@ -372,12 +372,10 @@ void Render::createRenderPass() {
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
 	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
 	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Presentation layout
-
+	//create Ref
 	VkAttachmentReference colorAttachmentRef{};
 	colorAttachmentRef.attachment = 0;												//Attachment index
 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;			//Optimal layout for better performances
-
-
 
 	//Depth
 	VkAttachmentDescription depthAttachment{};
@@ -389,24 +387,21 @@ void Render::createRenderPass() {
 	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
 	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
 	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;	//Optimal layout for better performances
-
+	//create Ref
 	VkAttachmentReference depthAttachmentRef{};
 	depthAttachmentRef.attachment = 1;
 	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-
-
-
 	//Subpass
-	VkSubpassDescription subpass{};
-	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-	subpass.colorAttachmentCount = 1;
-	subpass.pColorAttachments = &colorAttachmentRef;
-	subpass.pDepthStencilAttachment = &depthAttachmentRef;
+	VkSubpassDescription subpass{};													//Create subpass descriptor
+	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;					//Set structure type
+	subpass.colorAttachmentCount = 1;												//Set number of attachments
+	subpass.pColorAttachments = &colorAttachmentRef;								//Previously created color attachment
+	subpass.pDepthStencilAttachment = &depthAttachmentRef;							//Previously created depth attachment
 
 
-	//Dependencies for implicit convertion
-	VkSubpassDependency dependencies[2];
+
+	VkSubpassDependency dependencies[2];											//Dependencies for implicit convertion
 	//From undefined to color
 	dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
 	dependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
@@ -426,17 +421,17 @@ void Render::createRenderPass() {
 
 
 	//Render pass
-	std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
-	VkRenderPassCreateInfo renderPassInfo{};
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-	renderPassInfo.attachmentCount = static_cast<uint32>(attachments.size());
-	renderPassInfo.pAttachments = attachments.data();
-	renderPassInfo.subpassCount = 1;
-	renderPassInfo.pSubpasses = &subpass;
-	renderPassInfo.dependencyCount = 2;
-	renderPassInfo.pDependencies = dependencies;
+	VkAttachmentDescription attachments[] = { colorAttachment, depthAttachment };
+	VkRenderPassCreateInfo renderPassInfo{};										//Create render pass infos
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;				//Set structure type
+	renderPassInfo.attachmentCount = 2;												//Set number of attachments
+	renderPassInfo.pAttachments = attachments;										//Set attachments
+	renderPassInfo.subpassCount = 1;												//Set number of subpasses
+	renderPassInfo.pSubpasses = &subpass;											//Set subpass
+	renderPassInfo.dependencyCount = 2;												//Set number of dependencies
+	renderPassInfo.pDependencies = dependencies;									//Set dependencies
 
-	//Create render pass
+	//Create render pass. Exit if an error occurs
 	Try(vkCreateRenderPass(graphics.LD, &renderPassInfo, nullptr, &renderPass)) Quit("Failed to create render pass");
 }
 
@@ -462,29 +457,19 @@ void Render::createDescriptorSetLayout() {
 }
 
 
+//Creates a shadere module from a compiled shader code and its size in bytes
 VkShaderModule Render::createShaderModule(uint32* code, uint32* size) {
-	VkShaderModuleCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = *size;
-	createInfo.pCode = code;
+	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
+	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
+	createInfo.codeSize = *size;										//Set the size of the compiled shader code
+	createInfo.pCode = code;											//Set the shader code
 
-	VkShaderModule shaderModule;
-	Try(vkCreateShaderModule(graphics.LD, &createInfo, nullptr, &shaderModule)) {
-		Quit("Failed to create shader module");
-	}
-	return shaderModule;
+	VkShaderModule shaderModule;										//Create the shader module
+	Try(vkCreateShaderModule(graphics.LD, &createInfo, nullptr, &shaderModule)) Quit("Failed to create shader module");
+	return shaderModule;												//Return the created shader module
 }
 
 
-
-#define StageInfo(_module, _stage) VkPipelineShaderStageCreateInfo {	\
-	VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,				\
-	nullptr,															\
-	0,																	\
-	_stage,																\
-	_module,															\
-	"main",																\
-	nullptr																}
 
 
 void Render::createGraphicsPipeline() {
@@ -496,72 +481,72 @@ void Render::createGraphicsPipeline() {
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
 
-
-
 	//Create the structures that will fill the pipelineCreateInfo
+	//Create shader modules
+	#define StageInfo(_module, _stage) VkPipelineShaderStageCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, nullptr, 0, _stage, _module, "main", nullptr }
+	uint32 size = 0;																						//Size of the shader code
+	VkShaderModule vertShaderModule = createShaderModule(readShaderFromFile(&size, VERT_PATH), &size);		//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
+	VkShaderModule fragShaderModule = createShaderModule(readShaderFromFile(&size, FRAG_PATH), &size);		//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
 
-	uint32 size = 0;
-	VkShaderModule vertShaderModule = createShaderModule(readShaderFromFile(&size, VERT_PATH), &size);			//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
-	VkShaderModule fragShaderModule = createShaderModule(readShaderFromFile(&size, FRAG_PATH), &size);			//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
-
+	//Create shader stages
 	VkPipelineShaderStageCreateInfo shaderStages[] = { StageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT), StageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT) };
-	pipelineInfo.stageCount = 2;																	//Set the number of stages
-	pipelineInfo.pStages = shaderStages;															//Set stages
+	pipelineInfo.stageCount = 2;																			//Set the number of stages
+	pipelineInfo.pStages = shaderStages;																	//Set stages
 
 
-	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	auto bindingDescription = Vertex::getBindingDescription();
-	auto attributeDescriptions = Vertex::getAttributeDescriptions();
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32>(attributeDescriptions.size());
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-	pipelineInfo.pVertexInputState = &vertexInputInfo;												//Save vertex input
+	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};							//Create the vertex input infos
+	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;	//Set structure type
+	auto bindingDescription = Vertex::getBindingDescription();							//Get binding   descriptions
+	auto attributeDescriptions = Vertex::getAttributeDescriptions();					//Get attrubute descriptions
+	vertexInputInfo.vertexBindingDescriptionCount = 1;									//Set number of binding   descriptions
+	vertexInputInfo.vertexAttributeDescriptionCount = (uint32)(attributeDescriptions.size());//Set number of attribute descriptions
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;					//Set binding   descriptions
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data(0);		//Set attribute descriptions
+	pipelineInfo.pVertexInputState = &vertexInputInfo;								//Save vertex input
 
 
-	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
-	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	inputAssembly.primitiveRestartEnable = VK_FALSE;
-	pipelineInfo.pInputAssemblyState = &inputAssembly;												//Save input assembly
+	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};							//Create input assembly infos	
+	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;	//Set structure type
+	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;						//Set topology type
+	inputAssembly.primitiveRestartEnable = VK_FALSE;									//Don't use the primitive restart system
+	pipelineInfo.pInputAssemblyState = &inputAssembly;								//Save input assembly
 
 
-	VkViewport viewport{};										//Area where to render
-	viewport.x = 0.0f;											//Viewport start position
-	viewport.y = 0.0f;											//Viewport start position
-	viewport.width = (float)swapChainExtent.width;				//Viewport width (maximum)
-	viewport.height = (float)swapChainExtent.height;			//Viewport height (maximum)
-	viewport.minDepth = 0.0f;									//Viewport depth (Vulkan default)
-	viewport.maxDepth = 1.0f;									//Viewport depth (Vulkan default)
+	VkViewport viewport{};															//Create the viewport. It's the area where to render
+	viewport.x = 0.0f;																	//Viewport start position
+	viewport.y = 0.0f;																	//Viewport start position
+	viewport.width = (float)swapChainExtent.width;										//Viewport width (maximum)
+	viewport.height = (float)swapChainExtent.height;									//Viewport height (maximum)
+	viewport.minDepth = 0.0f;															//Viewport depth (Vulkan default)
+	viewport.maxDepth = 1.0f;															//Viewport depth (Vulkan default)
 
-	VkRect2D scissor{};											//Cut from viewport
-	scissor.offset = { 0, 0 };									//Scrissor start position
-	scissor.extent = swapChainExtent;							//Scrissor size. (don't cut the viewport)
+	VkRect2D scissor{};																//Create the scrissor. It cuts the viewport
+	scissor.offset = { 0, 0 };															//Scrissor start position
+	scissor.extent = swapChainExtent;													//Scrissor size. (don't cut the viewport)
 
-	VkPipelineViewportStateCreateInfo viewportState{};
-	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-	viewportState.viewportCount = 1;
-	viewportState.pViewports = &viewport;
-	viewportState.scissorCount = 1;
-	viewportState.pScissors = &scissor;
-	pipelineInfo.pViewportState = &viewportState;													//Save viewport state
+	VkPipelineViewportStateCreateInfo viewportState{};								//Create viewport state infos. This structure contains the informations about viewports and scissors
+	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;		//Set structure type
+	viewportState.viewportCount = 1;													//Set number of viewports
+	viewportState.pViewports = &viewport;												//Set viewports
+	viewportState.scissorCount = 1;														//Set number of scissors
+	viewportState.pScissors = &scissor;													//Set scissors
+	pipelineInfo.pViewportState = &viewportState;									//Save viewport state
 
 
 	VkPipelineRasterizationStateCreateInfo rasterizer{};							//Rasterizer to convert primitives into pixels
-	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;		//Set structure type
 	rasterizer.depthClampEnable = VK_FALSE;												//Clamp based on fragment depth (Required depth clamp feature)
-	rasterizer.rasterizerDiscardEnable = VK_FALSE;
+	rasterizer.rasterizerDiscardEnable = VK_FALSE;										//Some dark magic I don't understand
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;										//Define how to draw triangles
-	rasterizer.lineWidth = 1.0f;														//line T H I C C H N E S S
-	rasterizer.cullMode = VK_CULL_MODE_NONE;											//Faces to cull
+	rasterizer.lineWidth = 1.0f;														//line thickness
+	rasterizer.cullMode = VK_CULL_MODE_NONE;											//Faces to cull. I don't cull any face since i only need 2 triangles to render the texture
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;								//Define which side is visible
-	rasterizer.depthBiasEnable = VK_FALSE;												//Depth biases to fix shadow glitchhes. //TODO set true if needed
+	rasterizer.depthBiasEnable = VK_FALSE;												//Depth biases to fix shadow glitches
 	pipelineInfo.pRasterizationState = &rasterizer;									//Save rasterizer
 
 
-	VkPipelineMultisampleStateCreateInfo multisampling{};							//Multisapling for antialiasing
-	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+	VkPipelineMultisampleStateCreateInfo multisampling{};							//Create multisapling for antialiasing
+	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;		//Set structure type
 	multisampling.sampleShadingEnable = VK_FALSE;										//Whether to use the sample shading (Requires minSampleShading definition)
 	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;							//Number of samples to use
 	pipelineInfo.pMultisampleState = &multisampling;								//Save multisampling infos
@@ -571,8 +556,8 @@ void Render::createGraphicsPipeline() {
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 	colorBlendAttachment.blendEnable = VK_FALSE;
 
-	VkPipelineColorBlendStateCreateInfo colorBlending{};							//Color blending infos
-	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	VkPipelineColorBlendStateCreateInfo colorBlending{};							//Create color blending infos
+	colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;		//Set structure type
 	colorBlending.logicOpEnable = VK_FALSE;												//Whether to apply logical operations
 	colorBlending.logicOp = VK_LOGIC_OP_COPY;											//Logical operations
 	colorBlending.attachmentCount = 1;													//Number of color blend attachments
@@ -582,21 +567,21 @@ void Render::createGraphicsPipeline() {
 
 
 	VkPipelineDepthStencilStateCreateInfo depthStencil{};							//Depth stencil infos 
-	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-	depthStencil.depthTestEnable = VK_FALSE;											//Whether to use the depth test
-	depthStencil.depthWriteEnable = VK_FALSE;											//Whether to use depth writes
+	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;	//Set structure type
+	depthStencil.depthTestEnable = VK_FALSE;											//Don't use depth test
+	depthStencil.depthWriteEnable = VK_FALSE;											//Don't use depth writes
 	depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;									//Logical operation used to compare depths
-	depthStencil.depthBoundsTestEnable = VK_FALSE;										//Whether to limit the depth to a certain range
+	depthStencil.depthBoundsTestEnable = VK_FALSE;										//Don't limit the depth
 	depthStencil.minDepthBounds = 0.0f;													//Maximum depth for depth bounds
 	depthStencil.maxDepthBounds = 1.0f;													//Minimum depth for depth bounds
-	depthStencil.stencilTestEnable = VK_FALSE;											//Whether to use the stencil test when testing depth
-	depthStencil.front;																	//Parameter of the stencil test
-	depthStencil.back;																	//Parameter of the stencil test
+	depthStencil.stencilTestEnable = VK_FALSE;											//Don't use stencil test
+	depthStencil.front;																	//Some dark magic
+	depthStencil.back;																	//Some dark magic
 	pipelineInfo.pDepthStencilState = &depthStencil;								//Save depth stencil
 
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};								//Pipeline's layout infos
-	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;			//Set structure type
 	pipelineLayoutInfo.setLayoutCount = 1;												//Number of descriptor set layouts
 	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;								//Descriptor set layouts (Samplers and uniform buffers)
 	pipelineLayoutInfo.pushConstantRangeCount = 0;										//Number of push constants
@@ -623,13 +608,15 @@ void Render::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
-		std::array<VkImageView, 2> attachments = { swapChainImageViews[i],depthImageView };
+		LuxArray<VkImageView> attachments(2, 2);
+		attachments.add(swapChainImageViews[i]);
+		attachments.add(depthImageView);
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = static_cast<uint32>(attachments.size());
-		framebufferInfo.pAttachments = attachments.data();
+		framebufferInfo.attachmentCount = (uint32)(attachments.size());
+		framebufferInfo.pAttachments = attachments.data(0);
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;

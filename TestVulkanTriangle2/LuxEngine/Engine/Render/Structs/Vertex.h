@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
-#include <array>
+#include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Vectors/Vectors.h"
-
+#pragma warning( disable : 26812 )	//Prefer enum class to enum
 
 
 
@@ -13,33 +13,15 @@ struct Vertex {
 	fvec3 color;
 	fvec2 texCoord;
 
-	static VkVertexInputBindingDescription getBindingDescription() {
-		VkVertexInputBindingDescription bindingDescription{};
-		bindingDescription.binding = 0;
-		bindingDescription.stride = sizeof(Vertex);
-		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		return bindingDescription;
+	inline static VkVertexInputBindingDescription getBindingDescription() {
+		return VkVertexInputBindingDescription{ 0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX };
 	}
 
-	static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions() {
-		std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
-
-		attributeDescriptions[0].binding = 0;
-		attributeDescriptions[0].location = 0;
-		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attributeDescriptions[0].offset = offsetof(Vertex, pos);
-
-		attributeDescriptions[1].binding = 0;
-		attributeDescriptions[1].location = 1;
-		attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attributeDescriptions[1].offset = offsetof(Vertex, color);
-
-		attributeDescriptions[2].binding = 0;
-		attributeDescriptions[2].location = 2;
-		attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-		attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
-
+	static LuxArray<VkVertexInputAttributeDescription> getAttributeDescriptions() {
+		LuxArray<VkVertexInputAttributeDescription> attributeDescriptions(3, 3);
+		attributeDescriptions.add(VkVertexInputAttributeDescription{ 0, 0, VK_FORMAT_R32G32B32_SFLOAT,	offsetof(Vertex, pos) });
+		attributeDescriptions.add(VkVertexInputAttributeDescription{ 1, 0, VK_FORMAT_R32G32B32_SFLOAT,	offsetof(Vertex, color) });
+		attributeDescriptions.add(VkVertexInputAttributeDescription{ 2, 0, VK_FORMAT_R32G32_SFLOAT,		offsetof(Vertex, texCoord) });
 		return attributeDescriptions;
 	}
 };
