@@ -16,9 +16,6 @@
 #include <glm/gtc/matrix_transform.hpp>		//GPU geometry transformations
 
 
-#include <stb_image.h>						//PNG and JPG importer
-#include <tiny_obj_loader.h> 				//OBJ importer 
-
 //Default C++
 #include <iostream>
 #include <fstream>
