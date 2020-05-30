@@ -6,29 +6,22 @@
 
 
 
-
 void Render::run(bool _useVSync, float _FOV) {
-	//running = true; //set in lux init
+	runRender(_useVSync, _FOV);
+}
+
+
+
+void Render::runRender(bool _useVSync, float _FOV) {
 	useVSync = _useVSync;
 	FOV = _FOV;
 	stdTime start = now;
 
 	if (enableValidationLayers) { Failure printf("D E B U G    M O D E"); }				MainSeparator;
 	Normal  printf("Initializing GLFW window                 ");	initWindow();		SuccessNoNl printf("ok\n");
-	Normal  printf("Initializing Vulkan          ");
-
-	initVulkan();
-
-
-
-
-	MainSeparator;
-
+	Normal  printf("Initializing Vulkan          ");				initVulkan();		MainSeparator;
 	Success printf("Initialization completed in %f s", ((stdDuration)(now - start)).count());
-
 	Success printf("Starting Mandragora Engine\n");					mainLoop();			MainSeparator;
-
-	//running = false
 	Normal  printf("Cleaning memory");								cleanup();			NewLine;
 }
 
@@ -46,8 +39,8 @@ void Render::initWindow() {
 
 
 void Render::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
-	auto app = reinterpret_cast<Render*>(glfwGetWindowUserPointer(window));
-	app->framebufferResized = true;
+	auto engine = reinterpret_cast<Render*>(glfwGetWindowUserPointer(window));
+	engine->framebufferResized = true;
 }
 
 
@@ -60,27 +53,17 @@ void Render::initVulkan() {
 	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();				NewLine;
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
 
-	run2();
+	RunCompute();
 
 	//Create textures
 	createTextureImage();
 	createTextureImageView();
 	createTextureSampler();
 
-	//Create a void object for the render
+	//Create an object for the render
 	createVertexBuffer();
 	createIndexBuffer();
-
-	if (sc) createDrawCommandBuffers();
-
-	//checkObjects();
-
-
-	Normal printf("    Creating VK descriptor set layout... ");		createDescriptorSetLayout();		SuccessNoNl printf("ok");
-
-	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
-
-	Normal printf("    Creating VK sync objects...          ");		createSyncObjects();				SuccessNoNl printf("ok");
+	createDrawCommandBuffers();
 }
 
 

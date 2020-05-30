@@ -103,33 +103,10 @@ public:
 	float FOV;
 	bool running;
 	bool useVSync;
-	bool initialized = false;
 
 	void run(bool _useVSync = true, float FOV = 45.0f);
 
-
-	bool sc = false;
-
-
-
-	//void checkObjects() {
-	//	for (int i = 0; i < ObjectsQueue.size(); i++) {
-	//		if (ObjectsQueue.isValid(i)) {
-	//			createVertexBuffer(ObjectsQueue[i]);
-	//			createIndexBuffer(ObjectsQueue[i]);
-	//			objects.add(ObjectsQueue[i]);
-	//			ObjectsQueue.remove(i);
-
-	//			if (sc) createDrawCommandBuffers();
-	//			else {
-	//				sc = true;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
 private:
-
 	//Main
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
@@ -191,8 +168,8 @@ private:
 	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2
 
 
-	//Geometry
 public:
+	//Geometry
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 	VkBuffer indexBuffer;
@@ -200,32 +177,27 @@ public:
 	LuxArray<Vertex> vertices;
 	LuxArray<uint32> indices;
 
+
 private:
-
-
-
 	//Textures
-	VkImage depthImage;
-	VkDeviceMemory depthImageMemory;
-	VkImageView depthImageView;
-
+	VkImage textureImage;
 	VkImageView textureImageView;
+	VkDeviceMemory textureImageMemory;
 	VkSampler textureSampler;
 
-	VkImage textureImage;
-	VkDeviceMemory textureImageMemory;
-
+	//Images
+	VkImage depthImage;
+	VkImageView depthImageView;
+	VkDeviceMemory depthImageMemory;
 
 	//Descriptors
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
 	std::vector<VkDescriptorSet> descriptorSets;
 
-
 	//Commands
 	VkCommandPool graphicsCommandPool;
 	std::vector<VkCommandBuffer> commandBuffers;
-
 
 	//Render semaphores and frames
 	std::vector<VkSemaphore> imageAvailableSemaphores;
@@ -233,7 +205,6 @@ private:
 	std::vector<VkFence> inFlightFences;
 	std::vector<VkFence> imagesInFlight;
 	int64 currentFrame = 0;
-
 
 	//Debug and validation layers data
 	const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
@@ -245,6 +216,7 @@ private:
 
 
 	//Main >> this
+	void runRender(bool _useVSync = true, float FOV = 45.0f);
 	void initWindow();	void initVulkan();
 	void mainLoop();	void FPSCounter();
 	void cleanup();		void cleanupSwapChain();
@@ -485,7 +457,7 @@ private:
 
 
 public:
-	void run2();
+	void RunCompute();
 
 	void createComputeDescriptorSetLayout();
 	void createDescriptorSet();
@@ -511,7 +483,7 @@ static Render render;
 //This function is used by the engine. You shouldn't call it
 static void __lux_run_thr_0(bool useVSync) {
 	render.vertices.add(std::vector<Vertex>{
-		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
+		{ {-1, -1, 0},  { 1,1,1 },  { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
 		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
