@@ -8,6 +8,14 @@
 
 void Render::run(bool _useVSync, float _FOV) {
 	runRender(_useVSync, _FOV);
+	RunCompute();
+
+	Success printf("Starting Mandragora Engine\n");					mainLoop();			MainSeparator;
+	Normal  printf("Cleaning memory");		 cleanupRender(); cleanupCompute();			NewLine;
+
+	vkDestroyInstance(instance, nullptr);
+	glfwDestroyWindow(window);
+	glfwTerminate();
 }
 
 
@@ -21,8 +29,6 @@ void Render::runRender(bool _useVSync, float _FOV) {
 	Normal  printf("Initializing GLFW window                 ");	initWindow();		SuccessNoNl printf("ok\n");
 	Normal  printf("Initializing Vulkan          ");				initVulkan();		MainSeparator;
 	Success printf("Initialization completed in %f s", ((stdDuration)(now - start)).count());
-	Success printf("Starting Mandragora Engine\n");					mainLoop();			MainSeparator;
-	Normal  printf("Cleaning memory");								cleanup();			NewLine;
 }
 
 
@@ -53,9 +59,10 @@ void Render::initVulkan() {
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
 	/**/												 			setupDebugMessenger();
 
-	RunCompute();
 
 	//Create textures
+	bufferSize = sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT;	//Set the size of the buffer
+	createBuffer(compute.LD, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
 	createTextureImage();
 	createTextureImageView();
 	createTextureSampler();
@@ -121,6 +128,8 @@ VkCommandBuffer Render::beginSingleTimeCommands() {
 }
 
 
+
+
 void Render::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
 	//End command recording
 	vkEndCommandBuffer(commandBuffer);
@@ -155,28 +164,20 @@ void Render::FPSCounter() {
 
 //TODO output stops when interacting with console
 void Render::mainLoop() {
-	running = true;
 	std::thread FPSCounterThr(&Render::FPSCounter, this);
 	FPSCounterThr.detach();
 	stdTime start;
 	bool fullScreen = false;
 
-	int64 frameNum = 0;
-
-
 	while (!glfwWindowShouldClose(window)) {
-		//checkObjects();
-
 		glfwPollEvents();
 		drawFrame();
-		frameNum++;
-
-		static int32 lastState;
-		static int32 lastw = 0;
-		static int32 lasth = 0;
 
 
 		//TODO fix full screen
+		static int32 lastState;
+		static int32 lastw = 0;
+		static int32 lasth = 0;
 		if (glfwGetKey(window, GLFW_KEY_F11) != lastState && glfwGetKey(window, GLFW_KEY_F11) == GLFW_RELEASE) {
 			if (fullScreen) {
 				fullScreen = false;
@@ -188,7 +189,6 @@ void Render::mainLoop() {
 				glfwGetWindowSize(window, &lastw, &lasth);
 				glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
 				glfwMaximizeWindow(window);
-
 			}
 		}
 		lastState = glfwGetKey(window, GLFW_KEY_F11);
@@ -201,10 +201,9 @@ void Render::mainLoop() {
 		FPS = 1 / elapsed_seconds.count();
 		start = now;
 	}
-
+	running = false;
 
 	vkDeviceWaitIdle(graphics.LD);
-	//running = false;
 }
 
 
@@ -229,7 +228,7 @@ void Render::cleanupSwapChain() {
 	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);
 }
 
-void Render::cleanup() {
+void Render::cleanupRender() {
 	cleanupSwapChain();
 
 	vkDestroySampler(graphics.LD, textureSampler, nullptr);
@@ -256,7 +255,6 @@ void Render::cleanup() {
 
 	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);
 
-	cleanupCompute();
 
 	if (graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);
 	vkDestroyDevice(compute.LD, nullptr);
@@ -266,11 +264,8 @@ void Render::cleanup() {
 
 	if (enableValidationLayers) DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 
-	vkDestroySurfaceKHR(instance, surface, nullptr);
-	vkDestroyInstance(instance, nullptr);
-	glfwDestroyWindow(window);
 
-	glfwTerminate();
+	vkDestroySurfaceKHR(instance, surface, nullptr);
 }
 
 

@@ -219,7 +219,7 @@ private:
 	void runRender(bool _useVSync = true, float FOV = 45.0f);
 	void initWindow();	void initVulkan();
 	void mainLoop();	void FPSCounter();
-	void cleanup();		void cleanupSwapChain();
+	void cleanupRender();		void cleanupSwapChain();
 
 
 	//Devices >> ./Devices.cpp
