@@ -179,7 +179,10 @@
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp" />
     <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
     <ClCompile Include="LuxEngine\Engine\Render\Devices.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Render\Geometry.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Render\Images.cpp" />
     <ClCompile Include="LuxEngine\Engine\Render\Swapchain.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Render\Textures.cpp" />
     <ClCompile Include="LuxEngine\Object\Object.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>

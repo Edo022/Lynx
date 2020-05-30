@@ -118,7 +118,7 @@ void Render::createComputePipeline() {
 	createInfo.codeSize = filelength;
 
 	Try(vkCreateShaderModule(compute.LD, &createInfo, NULL, &computeShaderModule)) Quit("Fatal error");
-	delete[] code;
+	free(code);
 
 	//Now let us actually create the compute pipeline.
 	//A compute pipeline is very simple compared to a graphics pipeline.
@@ -149,7 +149,7 @@ void Render::createComputePipeline() {
 }
 
 void Render::createComputeCommandBuffer() {
-	//We are getting closer to the end. In order to send commands to the device(GPU),
+	//In order to send commands to the device,
 	//we must first record commands into a command buffer.
 	//To allocate a command buffer, we must first create a command pool. So let us do that.
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};
@@ -174,11 +174,11 @@ void Render::createComputeCommandBuffer() {
 	//Now we shall start recording commands into the newly allocated command buffer.
 	VkCommandBufferBeginInfo beginInfo = {};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // the buffer is only submitted and used once in this application.
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+	//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // the buffer is only submitted and used once in this application.
 	Try(vkBeginCommandBuffer(computeCommandBuffer, &beginInfo)) Quit("Fatal error"); // start recording commands.
 
 	//We need to bind a pipeline, AND a descriptor set before we dispatch.
-
 	//The validation layer will NOT give warnings if you forget these, so be very careful not to forget them.
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, NULL);
@@ -214,7 +214,6 @@ void Render::runCommandBuffer() {
 	//and we will not be sure that the command has finished executing unless we wait for the fence.
 	//Hence, we use a fence here.
 	Try(vkWaitForFences(compute.LD, 1, &fence, VK_TRUE, 100000000000)) Quit("Fatal error");
-
 	vkDestroyFence(compute.LD, fence, NULL);
 }
 

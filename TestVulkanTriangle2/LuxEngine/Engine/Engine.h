@@ -15,6 +15,7 @@
 #include <glm/glm.hpp>						//Shader compatible geometry
 #include <glm/gtc/matrix_transform.hpp>		//GPU geometry transformations
 
+
 #include <stb_image.h>						//PNG and JPG importer
 #include <tiny_obj_loader.h> 				//OBJ importer 
 
@@ -24,14 +25,10 @@
 #include <array>
 #include <chrono>
 #include <vector>
-#include <set>
 #include <thread>
-#include <queue>
 
 
 #include <cmath>
-#include <assert.h>
-#include <stdexcept>
 #include <string>
 
 //Junk
@@ -44,8 +41,8 @@
 #include "Render/Structs/Vertex.h"
 #include "LuxEngine/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
-
 #include "LuxEngine/Types/Containers/LuxArray.h"
+
 
 //Re enable warnings for this header
 #pragma warning( default : 26451 )			//Arithmetic overflow
@@ -60,7 +57,7 @@
 
 
 
-//Debug. Idk how, but it works
+//Debug. It's dark magic, idk why or how it works, but it does
 static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
 	if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
@@ -273,105 +270,76 @@ private:
 	void createDepthResources();
 
 
+	//Geometry >> Geometry.cpp
+	void createVertexBuffer();
+	void createIndexBuffer();
+
+
+	//Textures >> Textures.cpp
+	void createTextureImage();
+	void createTextureImageView();
+	void createTextureSampler();
+
+
+	//Images >> Images.cpp
+	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
+	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
 
 
-	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
+	void createGraphicsCommandPool();
+	void createDrawCommandBuffers();
+	VkCommandBuffer beginSingleTimeCommands();
+	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
 
 
 	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 
-	void createTextureSampler();
 
 
-	void createTextureImageView();
-
-
-	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-
-
-	void createTextureImage();
-
-	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-
-
-
-
-	VkCommandBuffer beginSingleTimeCommands();
-
-	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-
-
-
-	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-
-
-	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//TODO output stops when interacting with console
 
 	void createInstance();
-
+	void createSurface();
 	void setupDebugMessenger();
 
-	void createSurface();
+
+
+	void drawFrame();
 
 
 
 
-
-
-
-	void createRenderPass();
-
-	void createDescriptorSetLayout();
 
 	void createGraphicsPipeline();
-
+	void createRenderPass();
 	void createFramebuffers();
 
-	void createGraphicsCommandPool();
 
-	void createVertexBuffer();
-
-	void createIndexBuffer();
 
 	void createDescriptorPool();
-
+	void createDescriptorSetLayout();
 	void createDescriptorSets();
 
-	void createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
-	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
 
 
 	uint32 findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties);
 
-	void createDrawCommandBuffers();
 
 	void createSyncObjects();
 
-	void drawFrame();
 
 	VkShaderModule createShaderModule(uint32* code, uint32* size);
 
 
 
+	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
@@ -415,6 +383,8 @@ private:
 
 
 
+	void createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 
 
@@ -487,33 +457,19 @@ private:
 
 
 
-
-
-
-
-
-	/*
-	The application launches a compute shader that renders the mandelbrot set,
-	by rendering it into a storage buffer.
-	The storage buffer is then read from the GPU, and saved as .png.
-	*/
 private:
-	// The pixels of the rendered mandelbrot set are in this format:
 	struct Pixel { unsigned char r, g, b, a; };
 
 	VkDebugReportCallbackEXT debugReportCallback;
 
-	//We will be creating a simple compute pipeline in this application
+	//Compute pipeline
 	VkPipeline computePipeline;
 	VkPipelineLayout computePipelineLayout;
 	VkShaderModule computeShaderModule;
 
-
-	//The command buffer is used to record commands, that will be submitted to a queue.
-	//To allocate such command buffers, we use a command pool.
+	//commands
 	VkCommandPool computeCommandPool;
 	VkCommandBuffer computeCommandBuffer;
-
 
 	//Descriptors represent resources in shaders. They allow us to use things like
 	//uniform buffers, storage buffers and images in GLSL.
@@ -524,15 +480,10 @@ private:
 	VkDescriptorSet computeDescriptorSet;
 	VkDescriptorSetLayout computeDescriptorSetLayout;
 
-
-	//The mandelbrot set will be rendered to this buffer.
-	//The memory that backs the buffer is bufferMemory.
+	//Buffer
 	VkBuffer buffer;
 	VkDeviceMemory bufferMemory;
-	uint32 bufferSize; // size of `buffer` in bytes.
-
-
-	std::vector<const char*> enabledLayers;
+	uint32 bufferSize;
 
 
 
@@ -541,13 +492,13 @@ public:
 
 	void createComputeDescriptorSetLayout();
 	void createDescriptorSet();
-	// Read file into array of bytes, and cast to uint32*, then return.
-	// The data has been padded, so that it fits into an array uint32.
+
 	uint32* readShaderFromFile(uint32* length, const char* filename);
-	//We create a compute pipeline here.
+
 	void createComputePipeline();
 	void createComputeCommandBuffer();
 	void runCommandBuffer();
+
 	void cleanupCompute();
 };
 
@@ -560,23 +511,22 @@ public:
 
 
 static Render render;
-static void run(bool useVSync) {
+//This function is used by the engine. You shouldn't call it
+static void __lux_run_thr_0(bool useVSync) {
 	render.vertices.add(std::vector<Vertex>{
 		{ {-1, -1, 0},  { 1,1,1 },  { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
 		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
 	});
-
 	render.indices.add(std::vector<uint32>{0, 1, 2, 2, 1, 3});
-
 	render.run(useVSync, 45);
 }
 
 
-//This function initializes the Lux Engine. Use it only once
+//This function initializes the Lux Engine. Call it only once
 static void luxInit(bool useVSync) {
-	std::thread t(run, useVSync);
+	std::thread t(__lux_run_thr_0, useVSync);
 	t.detach();
 	render.running = true;
 }

@@ -25,8 +25,10 @@ void main() {
 	if(gl_GlobalInvocationID.x > WIDTH || gl_GlobalInvocationID.y > HEIGHT) return;
 
 
-	uvec4 color = uvec4(gl_GlobalInvocationID.x/9,0,gl_GlobalInvocationID.y/4,255);	
+//	uvec4 color = uvec4(gl_GlobalInvocationID.x/9,0,gl_GlobalInvocationID.y/4,255);	
+//
+//	//Store the pixel in the buffer. 4 chars as an uint32
+//	imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = ((color.a & 0xFF) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.r & 0xFF) << 0);
 
-	//Store the pixel in the buffer. 4 chars as an uint32
-	imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = ((color.a & 0xFF) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.r & 0xFF) << 0);
+imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] + 1;
 }

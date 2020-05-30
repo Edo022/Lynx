@@ -55,6 +55,15 @@
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Render\Geometry.cpp">
+      <Filter>LuxEngine\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Render\Images.cpp">
+      <Filter>LuxEngine\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Render\Textures.cpp">
+      <Filter>LuxEngine\Engine\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
