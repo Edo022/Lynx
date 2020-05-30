@@ -209,67 +209,57 @@ void Render::mainLoop() {
 
 
 void Render::cleanupSwapChain() {
-	vkDestroyImageView(graphics.LD, depthImageView, nullptr);
-	vkDestroyImage(graphics.LD, depthImage, nullptr);
-	vkFreeMemory(graphics.LD, depthImageMemory, nullptr);
+	vkDestroyImage(graphics.LD, depthImage, nullptr);				//Destroy depth image
+	vkDestroyImageView(graphics.LD, depthImageView, nullptr);		//Destroy depth image view
+	vkFreeMemory(graphics.LD, depthImageMemory, nullptr);			//Free depth image memory
 
-	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);
+	vkDestroyPipeline(graphics.LD, graphicsPipeline, nullptr);		//Destroy pipeline
+	vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);	//Destroy pipeline layout
+	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
 
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, static_cast<uint32>(commandBuffers.size()), commandBuffers.data());
-
-	vkDestroyPipeline(graphics.LD, graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);
-	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);
-
-	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);
-	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);
-
-
-	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);
+	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);			//Destroy framebuffers
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, (uint32)(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
+	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);					//Destroy image views
+	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);															//destroy swapchain
+	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);													//Destroy graphics descriptor pool
 }
+
+
+
 
 void Render::cleanupRender() {
-	cleanupSwapChain();
+	cleanupSwapChain();																//Clear swapchain components
 
-	vkDestroySampler(graphics.LD, textureSampler, nullptr);
-	vkDestroyImageView(graphics.LD, textureImageView, nullptr);
+	vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler
+	vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);		//Destroy descriptor set layout
+	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);				//Destroy graphics command pool
 
-	vkDestroyImage(graphics.LD, textureImage, nullptr);
-	vkFreeMemory(graphics.LD, textureImageMemory, nullptr);
+	vkDestroyImage(graphics.LD, textureImage, nullptr);								//Destroy texture image
+	vkDestroyImageView(graphics.LD, textureImageView, nullptr);						//Destroy texture image view
+	vkFreeMemory(graphics.LD, textureImageMemory, nullptr);							//Free texture image memory
 
-	vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);
+	vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);							//Destroy vertex buffer
+	vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);							//Free vertex buffer memory
+	vkDestroyBuffer(graphics.LD, indexBuffer, nullptr);								//Destroy index buffer
+	vkFreeMemory(graphics.LD, indexBufferMemory, nullptr);							//Free index buffer memory
 
-
-	vkDestroyBuffer(graphics.LD, indexBuffer, nullptr);
-	vkFreeMemory(graphics.LD, indexBufferMemory, nullptr);
-
-	vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);
-	vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);
-
-
-	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);
-		vkDestroySemaphore(graphics.LD, imageAvailableSemaphores[i], nullptr);
-		vkDestroyFence(graphics.LD, inFlightFences[i], nullptr);
+	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {								//For every frame
+		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);			//Destroy his render semaphore
+		vkDestroySemaphore(graphics.LD, imageAvailableSemaphores[i], nullptr);			//Destroy his image  semaphore
+		vkDestroyFence(graphics.LD, inFlightFences[i], nullptr);						//Destroy his fence
 	}
 
-	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);
 
+	if (graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);	//If the compute and the graphics devices are not the same, destroy the graphics device
+	vkDestroyDevice(compute.LD, nullptr);																			//Destroy the compute device
+	for(auto device:secondary) vkDestroyDevice(device.LD, nullptr);													//Destroy all the secondary devices
 
-	if (graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);
-	vkDestroyDevice(compute.LD, nullptr);
-
-	//TODO fix
-	//for(auto device:secondary) vkDestroyDevice(device.LD, nullptr);
-
-	if (enableValidationLayers) DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-
-
-	vkDestroySurfaceKHR(instance, surface, nullptr);
+	if (enableValidationLayers) DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);					//Destroy the debug messenger if present
+	vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface
 }
 
 
-
+//Dark magic
 #define populateDebugMessengerCreateInfo(createInfo)\
 	createInfo = {};\
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;\

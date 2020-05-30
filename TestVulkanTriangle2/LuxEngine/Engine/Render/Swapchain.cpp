@@ -28,7 +28,7 @@ VkPresentModeKHR Render::chooseSwapPresentMode(const std::vector<VkPresentModeKH
 VkExtent2D Render::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
 	if (capabilities.currentExtent.width != UINT32_MAX) return capabilities.currentExtent;
 	else {
-		int32 width, height;
+		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		return VkExtent2D{
 			max(capabilities.minImageExtent.width, min(capabilities.maxImageExtent.width, static_cast<uint32>(width))),

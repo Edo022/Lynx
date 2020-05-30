@@ -217,9 +217,9 @@ private:
 
 	//Main >> this
 	void runRender(bool _useVSync = true, float FOV = 45.0f);
-	void initWindow();	void initVulkan();
-	void mainLoop();	void FPSCounter();
-	void cleanupRender();		void cleanupSwapChain();
+	void initWindow();		void initVulkan();
+	void mainLoop();		void FPSCounter();
+	void cleanupRender();	void cleanupSwapChain();
 
 
 	//Devices >> ./Devices.cpp

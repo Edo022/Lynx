@@ -11,7 +11,7 @@
 
 //Returns the rating of a physical device
 static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
-	uint32 score = 0;
+	uint32 score = 0;																			//Device performance evalutation
 	if (device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 	score += device.properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
 	if (device.features.geometryShader) score += 1;												//Geometry shaders needed
@@ -23,24 +23,20 @@ static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
 
 //Returns the queue families of a physical device
 QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
-	//Get queue families
 	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);						//Enumerate queue families
-	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);	//TODO use LuxStaticArray
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
 
 	//Set families
-	int32 i = 0;
 	QueueFamilyIndices indices;
-	for (const auto& queueFamily : queueFamilies) {
-		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;					//Set graphics family
-		if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.push_back(i);		//Add compute families
+	for (int i = 0; i < queueFamilies.size(); i++) {													//For every queue family
+		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
+		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.push_back(i);		//Add compute families
 		VkBool32 hasPresentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &hasPresentSupport);					//Set present family
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &hasPresentSupport);						//Set present family
 		if (hasPresentSupport) indices.presentFamily = i;
-		i++;
 	}
-
 	return indices;
 }
 
@@ -51,7 +47,7 @@ QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
 bool Render::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 	uint32 extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-	std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+	std::vector<VkExtensionProperties> availableExtensions(extensionCount);//TODO use LuxStaticArray
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
 	std::set<std::string> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
@@ -76,15 +72,6 @@ bool Render::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 			return false;
 		}
 	}
-
-	//Check features
-	VkPhysicalDeviceFeatures supportedFeatures;
-	vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
-	if (!supportedFeatures.samplerAnisotropy) { //TODO just don't use it if it's not supported //samplerInfo.anisotropyEnable = VK_FALSE; samplerInfo.maxAnisotropy = 1;
-		errorText = "Missing required device features";
-		return false;
-	}
-
 	return true;
 }
 
