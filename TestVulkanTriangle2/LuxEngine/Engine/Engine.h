@@ -39,6 +39,7 @@
 #include "LuxEngine/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/Containers/LuxStaticArray.h"
 
 
 //Re enable warnings for this header
@@ -304,7 +305,7 @@ private:
 	void createSyncObjects();
 
 
-	VkShaderModule createShaderModule(uint32* code, uint32* size);
+	VkShaderModule createShaderModule(VkDevice device, uint32* code, uint32* size);
 
 
 

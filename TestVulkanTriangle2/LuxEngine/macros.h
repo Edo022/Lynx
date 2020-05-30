@@ -18,7 +18,7 @@
 
 
 #define Try(f) if (f != VK_SUCCESS)
-
+#define null nullptr
 
 
 #define max(a,b)            (((a) > (b)) ? (a) : (b))

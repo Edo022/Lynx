@@ -303,17 +303,19 @@ void Render::createInstance() {
 	#ifdef NDEBUG
 	createInfo.enabledLayerCount = 0;
 	createInfo.pNext = nullptr;
-	#else //TODO use LuxStaticArray
+	#else
 	//Search for validation layers
 	uint32 layerCount = 0;
-	std::vector<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);					//Get layer count
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());	//Get layers
-	for (const char* layerName : validationLayers) {							//For every layer,
-		for (const auto& layerProperties : availableLayers) {						//Check if it's available
-			if (strcmp(layerName, layerProperties.layerName) != 0) Quit("Validation layers not available. Cannot run in debug mode.");
+	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);				//Get layer count
+	LuxStaticArray<VkLayerProperties> availableLayers((uint64)layerCount);
+	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data);	//Get layers
+	for (const char* layerName : validationLayers) {											//For every layer,
+		for (const auto& layerProperties : availableLayers) {										//Check if it's available
+			if (strcmp(layerName, layerProperties.layerName) == 0) break;
+			else if(strcmp(layerName, availableLayers.end()->layerName) == 0) Quit("Validation layers not available. Cannot run in debug mode.");
 		}
 	}
+
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 	createInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
@@ -448,14 +450,14 @@ void Render::createDescriptorSetLayout() {
 
 
 //Creates a shadere module from a compiled shader code and its size in bytes
-VkShaderModule Render::createShaderModule(uint32* code, uint32* size) {
+VkShaderModule Render::createShaderModule(VkDevice device, uint32* code, uint32* size) {
 	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
 	createInfo.codeSize = *size;										//Set the size of the compiled shader code
 	createInfo.pCode = code;											//Set the shader code
 
 	VkShaderModule shaderModule;										//Create the shader module
-	Try(vkCreateShaderModule(graphics.LD, &createInfo, nullptr, &shaderModule)) Quit("Failed to create shader module");
+	Try(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)) Quit("Failed to create shader module");
 	return shaderModule;												//Return the created shader module
 }
 
@@ -474,14 +476,14 @@ void Render::createGraphicsPipeline() {
 	//Create the structures that will fill the pipelineCreateInfo
 	//Create shader modules
 	#define StageInfo(_module, _stage) VkPipelineShaderStageCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, nullptr, 0, _stage, _module, "main", nullptr }
-	uint32 size = 0;																						//Size of the shader code
-	VkShaderModule vertShaderModule = createShaderModule(readShaderFromFile(&size, VERT_PATH), &size);		//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
-	VkShaderModule fragShaderModule = createShaderModule(readShaderFromFile(&size, FRAG_PATH), &size);		//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
+	uint32 size = 0;																								//Size of the shader code
+	VkShaderModule vertShaderModule = createShaderModule(graphics.LD, readShaderFromFile(&size, VERT_PATH), &size);	//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
+	VkShaderModule fragShaderModule = createShaderModule(graphics.LD, readShaderFromFile(&size, FRAG_PATH), &size);	//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
 
 	//Create shader stages
 	VkPipelineShaderStageCreateInfo shaderStages[] = { StageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT), StageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT) };
-	pipelineInfo.stageCount = 2;																			//Set the number of stages
-	pipelineInfo.pStages = shaderStages;																	//Set stages
+	pipelineInfo.stageCount = 2;													//Set the number of stages
+	pipelineInfo.pStages = shaderStages;											//Set stages
 
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};							//Create the vertex input infos

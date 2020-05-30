@@ -14,7 +14,7 @@
 //A 64-bit index array capable of containing billions of elements without losing performances
 //The elements are not ordered, so each element has a unique ID. The ID is returned by add functions
 //Use the isValid() function to check if an element can be used or not
-template<class vecType>
+template<class type>
 class LuxArray {
 private://I'm sorry for the public and privare sections randomly changing, but with a different variable order, the program crashes
 	uint64 chunksDynNum;			//Allocated number of chunks
@@ -33,7 +33,7 @@ private:
 public:
 	//Array's elements
 	//This is a private member, but it's in the public section for performance reasons. Use it only if you know what you're doing
-	vecType** __data;
+	type** __data;
 	//Array that stores the state of each element
 	//This is a private member, but it's in the public section for performance reasons. Use it only if you know what you're doing
 	uint64** __tracker;
@@ -55,7 +55,7 @@ public:
 		//resize(_size);
 		chunkSize = _chunkSize;													//Set size of the chunks
 		maxSize = _maxSize;														//Set maximum size of the array
-		__data = (vecType**)malloc(sizeof(vecType*) * (maxSize / chunkSize));	//Allocate data array
+		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));	//Allocate data array
 		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));	//Allocate tracker array
 		chunksDynNum = __dynSize = __freeNum = 0;								//Initialize number of chunks, number of elements and number of free elements							
 		head = tail = -1;														//Initialize head and tail
@@ -67,9 +67,9 @@ public:
 
 	//Adds an element at the end of the array, allocating a new chunk if needed
 	//Returns the ID of the element
-	uint64 append(vecType _data) {
+	uint64 append(type _data) {
 		if (__dynSize + 1 > chunksDynNum * chunkSize) {								//If the chunk is full
-			__data[chunksDynNum] = (vecType*)malloc(sizeof(vecType) * chunkSize);		//Allocate a new data chunk
+			__data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);		//Allocate a new data chunk
 			__tracker[chunksDynNum] = (uint64*)malloc(sizeof(uint64) * chunkSize);		//Allocate a new tracker chunk
 			chunksDynNum++;																//Update the number of chunks
 		}
@@ -85,7 +85,7 @@ public:
 
 	//Adds an element at the firs free index of the array
 	//Returns the ID of the element
-	uint64 add(vecType _data) {
+	uint64 add(type _data) {
 		uint64 head2 = head;
 		if (head == -1) return append(_data);			//If it has no free elements, append it
 		else {
@@ -108,7 +108,7 @@ public:
 
 	//Adds an std::array to the array, placing each element in the first free index
 	//Returns a array containing the IDs of the elements, in the same order as they were in the input
-	std::vector<uint64> add(std::vector<vecType> vec) {
+	std::vector<uint64> add(std::vector<type> vec) {
 		std::vector<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
 		for (auto i : vec) IDs.push_back(add(i));			//Add every element to the array and save its ID
@@ -120,7 +120,7 @@ public:
 
 	//Adds an RAarray to the array, skipping all the invalid elements and placing the others in the first free index
 	//Returns a array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
-	std::vector<uint64> add(LuxArray<vecType> vec) {
+	std::vector<uint64> add(LuxArray<type> vec) {
 		std::vector<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
 		for (uint64 i; i < vec.size(); i++) {				//For every element of the input array
@@ -158,7 +158,7 @@ public:
 	void clear() {
 		for (int32 i = 0; i < chunksDynNum; i++) free(__data[i]); free(__data);		//Free data array
 		for (int32 i = 0; i < chunksDynNum; i++) free(__tracker[i]); free(__tracker);	//Free tracker array
-		__data = (vecType**)malloc(sizeof(vecType*) * (maxSize / chunkSize));		//Allocate data array
+		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data array
 		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));		//Allocate tracker array
 		chunksDynNum = __dynSize = __freeNum = 0;									//Reset number of chunk, number of elements, number of free elements
 		head = tail = -1;															//Reset head and tail
@@ -186,14 +186,14 @@ public:
 
 
 	//Use the isValid() function to check if the element can be used
-	inline vecType& operator [](int32 index) { return __Data(index); }
+	inline type& operator [](uint64 index) { return __Data(index); }
 
 	//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-	inline vecType* data(uint64 chunkIndex) { return &__data[chunkIndex][0]; }
+	inline type* data(uint64 chunkIndex) { return &__data[chunkIndex][0]; }
 
 	//Returns a pointer to a new array that contains all the elements in the chunks, without the invalid ones. This operation can be really slow, try to avoid using it
-	vecType* data() {
-		vecType* arr = (vecType*)malloc(sizeof(vecType) * usedSize());
+	type* data() {
+		type* arr = (type*)malloc(sizeof(type) * usedSize());
 		int32 _i = 0;
 		for (int32 i = 0; i < usedSize(); i++) {
 			if (isValid(i)) {
