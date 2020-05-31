@@ -68,8 +68,8 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
-	std::vector<VkSurfaceFormatKHR> formats;
-	std::vector<VkPresentModeKHR> presentModes;
+	LuxStaticArray<VkSurfaceFormatKHR> formats;
+	LuxStaticArray<VkPresentModeKHR> presentModes;
 };
 
 
@@ -145,10 +145,10 @@ private:
 	struct computeDevice {
 		_VkPhysicalDevice PD;						//Main physical device for computing
 		VkDevice LD;								//Main logical device for computing
-		std::vector<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
+		LuxArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
 	}compute;
 
-	std::vector<computeDevice> secondary;			//Secondary devices and queues for computation
+	LuxStaticArray<computeDevice> secondary;		//Secondary devices and queues for computation
 
 
 
@@ -206,8 +206,8 @@ private:
 	int64 currentFrame = 0;
 
 	//Debug and validation layers data
-	const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	const std::vector<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	LuxStaticArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	LuxStaticArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
 
@@ -222,7 +222,7 @@ private:
 
 
 	//Devices >> ./Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, std::vector<VkQueue>* computeQueues);
+	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues);
 	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
@@ -230,8 +230,8 @@ private:
 
 	//Swapchain >> ./Swapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxStaticArray<VkSurfaceFormatKHR>& availableFormats);
+	VkPresentModeKHR chooseSwapPresentMode(LuxStaticArray<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	void createImageViews();

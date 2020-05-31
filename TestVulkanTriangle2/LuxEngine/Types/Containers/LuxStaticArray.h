@@ -10,19 +10,19 @@
 template <class type>
 class LuxStaticArray {
 public:
-	type* data;
-	uint64 size;
-	#define __lux_static_array_init_data(_size) size = _size; data = (type*)malloc(sizeof(type) * size)
+	type* data;		//Elements of the array
+	uint64 size;	//Size of the array
+	#define __lux_static_array_init(_size) size = _size; data = (type*)malloc(sizeof(type) * size)
 
 
 	//Creates an array with no elements
-	LuxStaticArray() { __lux_static_array_init_data(0); }
+	LuxStaticArray() { __lux_static_array_init(0); }
 	//Sets the size of the array and allocates it, without inizializing the elements
-	LuxStaticArray(uint64 initSize) { __lux_static_array_init_data(initSize); }
+	LuxStaticArray(uint64 initSize) { __lux_static_array_init(initSize); }
 
 	//Initializes the array using a list of elements of the same type
 	LuxStaticArray(std::initializer_list<type> c) {
-		__lux_static_array_init_data(c.size());
+		__lux_static_array_init(c.size());
 		std::copy(c.begin(), c.end(), data);
 	}
 
@@ -31,7 +31,7 @@ public:
 	template <class inType>
 	LuxStaticArray(void* in) {
 		inType* _in = (inType*)_in;
-		__lux_static_array_init_data(_in->end() - _in->begin());
+		__lux_static_array_init(_in->end() - _in->begin());
 		for (int i = 0; i < _in->end() - _in->begin(); i++) data[i] = (type)*_in->begin() + i;
 	}
 

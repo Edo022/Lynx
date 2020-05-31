@@ -318,8 +318,8 @@ void Engine::createInstance() {
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
-	createInfo.ppEnabledLayerNames = validationLayers.data();
+	createInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size);
+	createInfo.ppEnabledLayerNames = validationLayers.data;
 	populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
 	#endif

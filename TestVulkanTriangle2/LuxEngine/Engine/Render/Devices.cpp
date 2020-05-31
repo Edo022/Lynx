@@ -69,7 +69,7 @@ bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 	//Check swapchain
 	else {
 		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-		if (swapChainSupport.formats.empty() || swapChainSupport.presentModes.empty()) {
+		if (swapChainSupport.formats.size == 0 || swapChainSupport.presentModes.size == 0) {
 			errorText = "Unsupported swapchain";
 			return false;
 		}
@@ -144,8 +144,8 @@ void Engine::getPhysicalDevices() {
 		}
 		for (auto& physDevice : physicalDevices) {							//For every physical device that isn't the main graphics or compute device
 			if (!sameDevice(physDevice, graphics.PD) && !sameDevice(physDevice, compute.PD)) {
-				secondary.resize(secondary.size() + 1);
-				secondary[secondary.size() - 1].PD = physDevice;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
+				secondary.resize(secondary.size + 1);
+				secondary[secondary.size - 1].PD = physDevice;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
 			}
 		}
 
@@ -167,15 +167,15 @@ void Engine::getPhysicalDevices() {
 	//Create a logical device for graphics, one for computation and one for every secondary device
 	createLogicalDevice(&graphics.PD, &graphics.LD, &graphics.graphicsQueue, &graphics.presentQueue, nullptr);
 	createLogicalDevice(&compute.PD, &compute.LD, nullptr, nullptr, &compute.computeQueues);
-	for (int32 i = 0; i < secondary.size(); i++) {
+	for (int32 i = 0; i < secondary.size; i++) {
 		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, nullptr, nullptr, &secondary[i].computeQueues);
 	}
 
 	//Output created logical devices and queues
-	Success printf("    Created %lld logical devices:", 2 + secondary.size());
+	Success printf("    Created %lld logical devices:", 2 + secondary.size);
 	Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
 	Main	printf("        Main compute   |  compute queues:  %lld", compute.computeQueues.size());
-	Normal	printf("        %lld secondary devices",/*  |  secondary compute queues: %lld", secondary.size(), */secondary.size());
+	Normal	printf("        %lld secondary devices",/*  |  secondary compute queues: %lld", secondary.size, */secondary.size);
 }
 
 
@@ -191,7 +191,7 @@ void Engine::getPhysicalDevices() {
 
 
 
-void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, std::vector<VkQueue>* computeQueues) {
+void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice((*PD), graphics.PD)) {												//If it's the main device for graphics,
@@ -227,12 +227,12 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();				//Set queue infos count
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();						//Set queue infos
-	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
-	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
+	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size;		//Set required extentions count
+	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data;			//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
 	#ifndef NDEBUG																		//If in debug mode
-	deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size();					//Set validation layers count
-	deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();							//Set validation layers
+	deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size;						//Set validation layers count
+	deviceCreateInfo.ppEnabledLayerNames = validationLayers.data;							//Set validation layers
 	#else																				//Else
 	deviceCreateInfo.enabledLayerCount = 0;													//Disable validation layers
 	#endif
@@ -252,7 +252,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 				for (auto deviceComputeFamily : PD->indices.computeFamilies) {								//Add every compute queue to the main compute queue list
 					VkQueue computeQueue;
 					vkGetDeviceQueue(_logicalDevice, deviceComputeFamily, 0, &computeQueue);
-					compute.computeQueues.push_back(computeQueue);
+					compute.computeQueues.add(computeQueue);
 				}
 			}
 		}
@@ -261,7 +261,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 			for (auto deviceComputeFamily : PD->indices.computeFamilies) {									//Add every compute queue to the secondary compute queues
 				VkQueue computeQueue;
 				vkGetDeviceQueue(_logicalDevice, deviceComputeFamily, 0, &computeQueue);
-				computeQueues->push_back(computeQueue);
+				computeQueues->add(computeQueue);
 			}
 		}
 	}
