@@ -6,14 +6,12 @@
 #pragma warning( disable : 6237  )			//Always true enableValidationLayers condition 
 #pragma warning( disable : 26451 )			//stb arithmetic overflow
 
-//Third party libraries
+//Dark magic
 #include <vulkan/vulkan.h>					//Graphics
 #include <GLFW/glfw3.h>						//Window system
-
 #define GLM_FORCE_RADIANS					//Use radiants intead of degrees
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 #include <glm/glm.hpp>						//Shader compatible geometry
-#include <glm/gtc/matrix_transform.hpp>		//GPU geometry transformations
 
 
 //Default C++
@@ -52,6 +50,12 @@
 
 
 
+// Debug, structures and macros -------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
 
 
 
@@ -73,7 +77,12 @@ struct SwapChainSupportDetails {
 };
 
 
-
+//Validation layers in debug mode
+#ifdef NDEBUG	
+const bool enableValidationLayers = false;
+#else			
+const bool enableValidationLayers = true;
+#endif
 
 
 
@@ -86,12 +95,15 @@ struct SwapChainSupportDetails {
 
 
 
-//Validation layers in debug mode
-#ifdef NDEBUG	
-const bool enableValidationLayers = false;
-#else			
-const bool enableValidationLayers = true;
-#endif
+
+
+
+
+
+// Engine class -----------------------------------------------------------------------------------------------------------------------------//
+
+
+
 
 
 
@@ -113,27 +125,6 @@ private:
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkSurfaceKHR surface;
 
-	//Windows
-	GLFWwindow* window;								//Main engine's window
-	bool framebufferResized = false;				//Updates the swapchain when the window is resized
-	const uint32 WIDTH = 1920, HEIGHT = 1080;		//Default size in windowed mode
-	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
-
-
-
-
-	//COMPUTE 
-	const int32 COMPUTE_WIDTH = WIDTH; // Size of rendered mandelbrot set.
-	const int32 COMPUTE_HEIGHT = HEIGHT; // Size of renderered mandelbrot set.
-	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
-
-
-
-	const char* VERT_PATH = "LuxEngine/Contents/Shaders/vert.spv";
-	const char* FRAG_PATH = "LuxEngine/Contents/Shaders/frag.spv";
-
-
-
 	//Devices and queues
 	struct graphicsDevice {
 		_VkPhysicalDevice PD;						//Main physical device for graphics
@@ -150,7 +141,37 @@ private:
 
 	LuxStaticArray<computeDevice> secondary;		//Secondary devices and queues for computation
 
+	//Main >> this
+	void mainLoop();		void FPSCounter();
+	void createInstance();
 
+	//Devices >> ./Devices.cpp
+	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues);
+	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
+	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+
+	//Shared functions >> this
+	uint32* readShaderFromFile(uint32* length, const char* filename);
+	VkShaderModule createShaderModule(VkDevice device, uint32* code, uint32* size);
+	void createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+
+
+
+// Graphics ---------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+	//Windows
+	GLFWwindow* window;								//Main engine's window
+	bool framebufferResized = false;				//Updates the swapchain when the window is resized
+	const uint32 WIDTH = 1920, HEIGHT = 1080;		//Default size in windowed mode
+	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
+
+	const char* VERT_PATH = "LuxEngine/Contents/Shaders/vert.spv";
+	const char* FRAG_PATH = "LuxEngine/Contents/Shaders/frag.spv";
 
 	//Swapchain
 	VkSwapchainKHR swapChain;
@@ -166,7 +187,6 @@ private:
 	VkPipeline graphicsPipeline;
 	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2
 
-
 public:
 	//Geometry
 	VkBuffer vertexBuffer;
@@ -175,7 +195,6 @@ public:
 	VkDeviceMemory indexBufferMemory;
 	LuxArray<Vertex> vertices;
 	LuxArray<uint32> indices;
-
 
 private:
 	//Textures
@@ -210,25 +229,17 @@ private:
 	LuxStaticArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
-
-
-
-
-	//Main >> this
+	//Graphics >> Graphics/Graphics.cpp
 	void runRender(bool _useVSync = true, float FOV = 45.0f);
 	void initWindow();		void initVulkan();
-	void mainLoop();		void FPSCounter();
-	void cleanupRender();	void cleanupSwapChain();
+	void createSurface();
+	void createSyncObjects();
+	void setupDebugMessenger();
+	void drawFrame();
+	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
+	void cleanupRender(); 	void cleanupSwapChain();
 
-
-	//Devices >> ./Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues);
-	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
-	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
-
-	//Swapchain >> ./Swapchain.cpp
+	//Graphics swapchain >> Graphics/Swapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxStaticArray<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(LuxStaticArray<VkPresentModeKHR>& availablePresentModes);
@@ -237,58 +248,38 @@ private:
 	void createImageViews();
 	void createDepthResources();
 
-
-	//Geometry >> Geometry.cpp
+	//Graphics geometry >> Graphics/Geometry.cpp
 	void createVertexBuffer();
 	void createIndexBuffer();
 
-
-	//Textures >> Textures.cpp
+	//Graphics textures and images >> Graphics/Images.cpp
 	void createTextureImage();
 	void createTextureImageView();
 	void createTextureSampler();
 
-
-	//Images >> Images.cpp
 	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
-
-
-
+	//Graphics commands >> Graphics/Commands.cpp
 	void createGraphicsCommandPool();
 	void createDrawCommandBuffers();
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
-
-
-	VkFormat findSupportedFormat(LuxStaticArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
-
-
-
-
-
-	void createInstance();
-	void createSurface();
-	void setupDebugMessenger();
-
-
-
-	void drawFrame();
-
-
-
-
-
+	//Graphics render >> Graphics/Render.cpp
 	void createGraphicsPipeline();
 	void createRenderPass();
 	void createFramebuffers();
 
+	//Graphics miscellaneous >> Graphics/Graphics.cpp
+	VkFormat findSupportedFormat(LuxStaticArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+	uint32 findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties);
+	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
-
+	//Graphics descriptors >> Graphics/Descriptors.cpp
 	void createDescriptorPool();
 	void createDescriptorSetLayout();
 	void createDescriptorSets();
@@ -296,136 +287,16 @@ private:
 
 
 
+// Compute ----------------------------------------------------------------------------------------------------------------------------------//
 
-	uint32 findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties);
 
 
-	void createSyncObjects();
 
+	//COMPUTE 
+	const int32 COMPUTE_WIDTH = WIDTH; // Size of rendered mandelbrot set.
+	const int32 COMPUTE_HEIGHT = HEIGHT; // Size of renderered mandelbrot set.
+	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
-	VkShaderModule createShaderModule(VkDevice device, uint32* code, uint32* size);
-
-
-
-	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
-	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	void createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-private:
 	struct Pixel { unsigned char r, g, b, a; };
 
 	VkDebugReportCallbackEXT debugReportCallback;
@@ -438,9 +309,6 @@ private:
 	//commands
 	VkCommandPool computeCommandPool;
 	VkCommandBuffer computeCommandBuffer;
-
-	//Descriptors represent resources in shaders. They allow us to use things like
-	//uniform buffers, storage buffers and images in GLSL.
 
 	//A single descriptor represents a single resource, and several descriptors are organized
 	//into descriptor sets, which are basically just collections of descriptors.
@@ -455,19 +323,19 @@ private:
 
 
 
-public:
+	//Compute >> Compute/Compute.cpp
 	void RunCompute();
+	void cleanupCompute();
 
+	//Compute descriptors >> TODO
 	void createComputeDescriptorSetLayout();
 	void createDescriptorSet();
 
-	uint32* readShaderFromFile(uint32* length, const char* filename);
-
+	//Compute pipeline and command buffers >> TODO
 	void createComputePipeline();
 	void createComputeCommandBuffer();
 	void runCommandBuffer();
 
-	void cleanupCompute();
 };
 
 

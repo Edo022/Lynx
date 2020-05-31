@@ -1,7 +1,6 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include <initializer_list>
-#include <algorithm>
 
 
 //A static array that knows its size. It can be resized, but it doesn't have add or remove methods
