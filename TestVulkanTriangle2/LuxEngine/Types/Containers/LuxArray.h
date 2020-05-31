@@ -47,17 +47,16 @@ public:
 	// Constructor --------------------------------------------------------------------------------------------------------- //
 
 
-	//*   size: initial size of the array. Max 0x 7FFF FFFF FFFF FFFE (wtf ~ 9.2 quintillion)
-	//*   chunkSize: number of elements allocated when the array grows. Default at 0x FF (256)
-	//*   maxSize: the maximum size the array can have. Default at 0x FFFF (65535)
+	//*   size: initial size of the array. Max 0x 7FFF FFFF FFFF FFFE
+	//*   chunkSize: number of elements allocated when the array grows. Default at 0xFF (256)
+	//*   maxSize: the maximum size the array can have. Default at 0xFFFF (65535)
 	//The number of chunks depends on their size and the maximum size of the array (chunks = maxSize / chunkSize)
-	LuxArray(/*uint64 _size = 0,*/ uint64 _chunkSize = 0xFF, uint64 _maxSize = 0xFFFF) {
-		//resize(_size);
+	LuxArray(uint64 _chunkSize = 0xFF, uint64 _maxSize = 0xFFFF) {
 		chunkSize = _chunkSize;													//Set size of the chunks
 		maxSize = _maxSize;														//Set maximum size of the array
 		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));			//Allocate data array
 		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));	//Allocate tracker array
-		chunksDynNum = __dynSize = __freeNum = 0;								//Initialize number of chunks, number of elements and number of free elements							
+		chunksDynNum = __dynSize = __freeNum = 0;								//Initialize number of chunks, elements and free elements							
 		head = tail = -1;														//Initialize head and tail
 	}
 

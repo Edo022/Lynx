@@ -10,9 +10,9 @@
 template <class type>
 class LuxStaticArray {
 public:
-	type* data;		//Elements of the array
-	uint64 size;	//Size of the array
-	#define __lux_static_array_init(_size) size = _size; data = (type*)malloc(sizeof(type) * size)
+	type* __data;	//Elements of the array
+	uint64 __size;	//Size of the array
+	#define __lux_static_array_init(_size) __size = _size; __data = (type*)malloc(sizeof(type) * __size)
 
 
 	//Creates an array with no elements
@@ -23,7 +23,7 @@ public:
 	//Initializes the array using a list of elements of the same type
 	LuxStaticArray(std::initializer_list<type> c) {
 		__lux_static_array_init(c.size());
-		std::copy(c.begin(), c.end(), data);
+		std::copy(c.begin(), c.end(), __data);
 	}
 
 	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
@@ -32,24 +32,27 @@ public:
 	LuxStaticArray(void* in) {
 		inType* _in = (inType*)_in;
 		__lux_static_array_init(_in->end() - _in->begin());
-		for (int i = 0; i < _in->end() - _in->begin(); i++) data[i] = (type)*_in->begin() + i;
+		for (int i = 0; i < _in->end() - _in->begin(); i++) __data[i] = (type)*_in->begin() + i;
 	}
 
 
-	inline type& operator [](uint64 index) { return data[index]; }
-	inline type* begin() { return &data[0]; }
-	inline type* end() { return &data[size - 1]; }
+	inline uint64 size() { return __size; };
+	inline type* data() { return __data; };
+
+	inline type& operator [](uint64 index) { return __data[index]; }
+	inline type* begin() { return &__data[0]; }
+	inline type* end() { return &__data[__size - 1]; }
 
 	//Resizes the array
 	inline void resize(uint64 newSize) {
-		size = newSize;
-		data = (type*)realloc(data, sizeof(type) * size);
+		__size = newSize;
+		__data = (type*)realloc(__data, sizeof(type) * __size);
 	}
 
 	//Resizes the array and initializes the new elements with the val parameter's value
 	inline void resize(uint64 newSize, type val) {
-		uint64 oldSize = size;
+		uint64 oldSize = __size;
 		resize(newSize);
-		if (newSize > oldSize) for (uint64 i = oldSize; i < newSize; i++) data[i] = val;
+		if (newSize > oldSize) for (uint64 i = oldSize; i < newSize; i++) __data[i] = val;
 	}
 };

@@ -218,7 +218,7 @@ void Engine::cleanupSwapChain() {
 	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
 
 	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);			//Destroy framebuffers
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, (uint32)(commandBuffers.size), commandBuffers.data);	//Free graphics command buffers
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, (uint32)(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);					//Destroy image views
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);															//destroy swapchain
 	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);													//Destroy graphics descriptor pool
@@ -597,9 +597,9 @@ void Engine::createGraphicsPipeline() {
 
 
 void Engine::createFramebuffers() {
-	swapChainFramebuffers.resize(swapChainImageViews.size);
+	swapChainFramebuffers.resize(swapChainImageViews.size());
 
-	for (uint64 i = 0; i < swapChainImageViews.size; i++) {
+	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
 		LuxArray<VkImageView> attachments(2, 2);
 		attachments.add(swapChainImageViews[i]);
 		attachments.add(depthImageView);
@@ -633,15 +633,15 @@ void Engine::createGraphicsCommandPool() {
 void Engine::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes{};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = static_cast<uint32>(swapChainImages.size);
+	poolSizes[0].descriptorCount = static_cast<uint32>(swapChainImages.size());
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = static_cast<uint32>(swapChainImages.size);
+	poolSizes[1].descriptorCount = static_cast<uint32>(swapChainImages.size());
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = static_cast<uint32>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = static_cast<uint32>(swapChainImages.size);
+	poolInfo.maxSets = static_cast<uint32>(swapChainImages.size());
 
 	Try(vkCreateDescriptorPool(graphics.LD, &poolInfo, nullptr, &descriptorPool)) Quit("Failed to create descriptor pool");
 }
@@ -650,17 +650,17 @@ void Engine::createDescriptorPool() {
 
 void Engine::createDescriptorSets() {
 	LuxStaticArray<VkDescriptorSetLayout> layouts;
-	layouts.resize(swapChainImages.size, descriptorSetLayout);
+	layouts.resize(swapChainImages.size(), descriptorSetLayout);
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
-	allocInfo.descriptorSetCount = static_cast<uint32>(swapChainImages.size);
-	allocInfo.pSetLayouts = layouts.data;
+	allocInfo.descriptorSetCount = static_cast<uint32>(swapChainImages.size());
+	allocInfo.pSetLayouts = layouts.data();
 
-	descriptorSets.resize(swapChainImages.size);
-	Try(vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data)) Quit("Failed to allocate descriptor sets");
+	descriptorSets.resize(swapChainImages.size());
+	Try(vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data())) Quit("Failed to allocate descriptor sets");
 
-	for (uint64 i = 0; i < descriptorSets.size; i++) {
+	for (uint64 i = 0; i < descriptorSets.size(); i++) {
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		imageInfo.imageView = textureImageView;
@@ -731,17 +731,17 @@ uint32 Engine::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags propertie
 
 
 void Engine::createDrawCommandBuffers() {
-	commandBuffers.resize(swapChainFramebuffers.size);				//One command buffer for every swapchain's framebuffer 
+	commandBuffers.resize(swapChainFramebuffers.size());				//One command buffer for every swapchain's framebuffer 
 
 	VkCommandBufferAllocateInfo allocInfo{};							//Create allocate infos
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;	//Set structure type
 	allocInfo.commandPool = graphicsCommandPool;						//Set command pool	
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set command buffer level
-	allocInfo.commandBufferCount = (uint32)commandBuffers.size;			//Set number of command buffers
+	allocInfo.commandBufferCount = (uint32)commandBuffers.size();		//Set number of command buffers
 	//Allocate command buffers
-	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data)) Quit("Failed to allocate command buffers");
+	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data())) Quit("Failed to allocate command buffers");
 
-	for (uint64 i = 0; i < commandBuffers.size; i++) {					//For every command buffer
+	for (uint64 i = 0; i < commandBuffers.size(); i++) {				//For every command buffer
 		VkCommandBufferBeginInfo beginInfo{};								//Create begin info struct
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;		//Set structure type
 
@@ -782,7 +782,7 @@ void Engine::createSyncObjects() {
 	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-	imagesInFlight.resize(swapChainImages.size, VK_NULL_HANDLE);
+	imagesInFlight.resize(swapChainImages.size(), VK_NULL_HANDLE);
 
 	VkSemaphoreCreateInfo semaphoreInfo{};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

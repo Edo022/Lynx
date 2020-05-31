@@ -26,11 +26,11 @@ QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
 	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);						//Enumerate queue families
 	LuxStaticArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data);			//Save queue families
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
 
 	//Set families
 	QueueFamilyIndices indices;
-	for (int i = 0; i < queueFamilies.size; i++) {														//For every queue family
+	for (int i = 0; i < queueFamilies.size(); i++) {														//For every queue family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.push_back(i);		//Add compute families
 		VkBool32 hasPresentSupport = false;
@@ -48,7 +48,7 @@ bool Engine::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 	uint32 extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);					//Get extension count
 	LuxStaticArray<VkExtensionProperties> availableExtensions(extensionCount);
-	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data);	//Get extensions
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());	//Get extensions
 
 	std::set<std::string> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
 	for (const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);//Search for required extensions
@@ -69,7 +69,7 @@ bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 	//Check swapchain
 	else {
 		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-		if (swapChainSupport.formats.size == 0 || swapChainSupport.presentModes.size == 0) {
+		if (swapChainSupport.formats.size() == 0 || swapChainSupport.presentModes.size() == 0) {
 			errorText = "Unsupported swapchain";
 			return false;
 		}
@@ -144,8 +144,8 @@ void Engine::getPhysicalDevices() {
 		}
 		for (auto& physDevice : physicalDevices) {							//For every physical device that isn't the main graphics or compute device
 			if (!sameDevice(physDevice, graphics.PD) && !sameDevice(physDevice, compute.PD)) {
-				secondary.resize(secondary.size + 1);
-				secondary[secondary.size - 1].PD = physDevice;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
+				secondary.resize(secondary.size() + 1);
+				secondary[secondary.size() - 1].PD = physDevice;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
 			}
 		}
 
@@ -167,15 +167,15 @@ void Engine::getPhysicalDevices() {
 	//Create a logical device for graphics, one for computation and one for every secondary device
 	createLogicalDevice(&graphics.PD, &graphics.LD, &graphics.graphicsQueue, &graphics.presentQueue, nullptr);
 	createLogicalDevice(&compute.PD, &compute.LD, nullptr, nullptr, &compute.computeQueues);
-	for (int32 i = 0; i < secondary.size; i++) {
+	for (int32 i = 0; i < secondary.size(); i++) {
 		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, nullptr, nullptr, &secondary[i].computeQueues);
 	}
 
 	//Output created logical devices and queues
-	Success printf("    Created %lld logical devices:", 2 + secondary.size);
+	Success printf("    Created %lld logical devices:", 2 + secondary.size());
 	Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
 	Main	printf("        Main compute   |  compute queues:  %lld", compute.computeQueues.size());
-	Normal	printf("        %lld secondary devices",/*  |  secondary compute queues: %lld", secondary.size, */secondary.size);
+	Normal	printf("        %lld secondary devices",/*  |  secondary compute queues: %lld", secondary.size, */secondary.size());
 }
 
 
@@ -227,8 +227,8 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();				//Set queue infos count
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();						//Set queue infos
-	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size;		//Set required extentions count
-	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data;			//Set required extensions
+	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
+	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
 	#ifndef NDEBUG																		//If in debug mode
 	deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size;						//Set validation layers count
