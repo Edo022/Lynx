@@ -1,12 +1,10 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
-#include <stdlib.h>
 #include <initializer_list>
-#include <assert.h>
 #include <algorithm>
 
 
-//A static array that knows its size. It can be resized, but it doesn't have add or remove methods. For a dynamically sized array, use LuxArray
+//A static array that knows its size. It can be resized, but it doesn't have add or remove methods
 template <class type>
 class LuxStaticArray {
 public:
