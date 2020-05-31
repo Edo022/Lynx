@@ -98,7 +98,7 @@ const bool enableValidationLayers = true;
 
 
 
-class Render {
+class Engine {
 public:
 	double FPS = 0;
 	float FOV;
@@ -480,7 +480,7 @@ public:
 #define Frame while(render.running)
 
 
-static Render render;
+static Engine render;
 //This function is used by the engine. You shouldn't call it
 static void __lux_run_thr_0(bool useVSync) {
 	render.vertices.add(std::vector<Vertex>{

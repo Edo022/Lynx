@@ -6,7 +6,7 @@
 
 
 
-void Render::run(bool _useVSync, float _FOV) {
+void Engine::run(bool _useVSync, float _FOV) {
 	runRender(_useVSync, _FOV);
 	RunCompute();
 
@@ -20,7 +20,7 @@ void Render::run(bool _useVSync, float _FOV) {
 
 
 
-void Render::runRender(bool _useVSync, float _FOV) {
+void Engine::runRender(bool _useVSync, float _FOV) {
 	useVSync = _useVSync;
 	FOV = _FOV;
 	stdTime start = now;
@@ -34,7 +34,7 @@ void Render::runRender(bool _useVSync, float _FOV) {
 
 
 
-void Render::initWindow() {
+void Engine::initWindow() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
@@ -44,14 +44,14 @@ void Render::initWindow() {
 }
 
 
-void Render::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
-	auto engine = reinterpret_cast<Render*>(glfwGetWindowUserPointer(window));
+void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
+	auto engine = reinterpret_cast<Engine*>(glfwGetWindowUserPointer(window));
 	engine->framebufferResized = true;
 }
 
 
 
-void Render::initVulkan() {
+void Engine::initVulkan() {
 	//Initialize vulkan
 	Normal printf("    Creating Instance...                 ");		createInstance();					SuccessNoNl printf("ok");
 	Normal printf("    Creating VK Surface...               ");		createSurface();					SuccessNoNl printf("ok");	NewLine;
@@ -83,7 +83,7 @@ void Render::initVulkan() {
 
 
 //TODO use LuxArray
-VkFormat Render::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+VkFormat Engine::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
 	for (VkFormat format : candidates) {
 		VkFormatProperties props;
 		vkGetPhysicalDeviceFormatProperties(graphics.PD.device, format, &props);
@@ -105,7 +105,7 @@ VkFormat Render::findSupportedFormat(const std::vector<VkFormat>& candidates, Vk
 
 
 
-VkCommandBuffer Render::beginSingleTimeCommands() {
+VkCommandBuffer Engine::beginSingleTimeCommands() {
 	//Create allocate info
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -130,7 +130,7 @@ VkCommandBuffer Render::beginSingleTimeCommands() {
 
 
 
-void Render::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+void Engine::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
 	//End command recording
 	vkEndCommandBuffer(commandBuffer);
 
@@ -154,7 +154,7 @@ void Render::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
 
 
 
-void Render::FPSCounter() {
+void Engine::FPSCounter() {
 	while (running) {
 		Normal printf("%lf", FPS);
 		sleep(1000);
@@ -162,9 +162,10 @@ void Render::FPSCounter() {
 }
 
 
-//TODO output stops when interacting with console
-void Render::mainLoop() {
-	std::thread FPSCounterThr(&Render::FPSCounter, this);
+
+
+void Engine::mainLoop() {
+	std::thread FPSCounterThr(&Engine::FPSCounter, this);
 	FPSCounterThr.detach();
 	stdTime start;
 	bool fullScreen = false;
@@ -208,7 +209,7 @@ void Render::mainLoop() {
 
 
 
-void Render::cleanupSwapChain() {
+void Engine::cleanupSwapChain() {
 	vkDestroyImage(graphics.LD, depthImage, nullptr);				//Destroy depth image
 	vkDestroyImageView(graphics.LD, depthImageView, nullptr);		//Destroy depth image view
 	vkFreeMemory(graphics.LD, depthImageMemory, nullptr);			//Free depth image memory
@@ -227,7 +228,7 @@ void Render::cleanupSwapChain() {
 
 
 
-void Render::cleanupRender() {
+void Engine::cleanupRender() {
 	cleanupSwapChain();																//Clear swapchain components
 
 	vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler
@@ -273,7 +274,7 @@ void Render::cleanupRender() {
 
 
 //Create the Vulkan instance, using validation layers when in debug mode
-void Render::createInstance() {
+void Engine::createInstance() {
 	VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 
@@ -332,7 +333,7 @@ void Render::createInstance() {
 
 
 
-void Render::setupDebugMessenger() {
+void Engine::setupDebugMessenger() {
 	if (!enableValidationLayers) return;
 
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;
@@ -340,7 +341,7 @@ void Render::setupDebugMessenger() {
 	Try(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Quit("Failed to set up debug messenger");
 }
 
-void Render::createSurface() {
+void Engine::createSurface() {
 	Try(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Quit("Failed to create window surface");
 }
 
@@ -353,7 +354,7 @@ void Render::createSurface() {
 
 
 
-void Render::createRenderPass() {
+void Engine::createRenderPass() {
 	//Color
 	VkAttachmentDescription colorAttachment{};
 	colorAttachment.format = swapChainImageFormat;									//Swapchain image format
@@ -429,7 +430,7 @@ void Render::createRenderPass() {
 
 
 
-void Render::createDescriptorSetLayout() {
+void Engine::createDescriptorSetLayout() {
 	VkDescriptorSetLayoutBinding samplerLayoutBinding{};
 	samplerLayoutBinding.binding = 1;
 	samplerLayoutBinding.descriptorCount = 1;
@@ -450,7 +451,7 @@ void Render::createDescriptorSetLayout() {
 
 
 //Creates a shadere module from a compiled shader code and its size in bytes
-VkShaderModule Render::createShaderModule(VkDevice device, uint32* code, uint32* size) {
+VkShaderModule Engine::createShaderModule(VkDevice device, uint32* code, uint32* size) {
 	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
 	createInfo.codeSize = *size;										//Set the size of the compiled shader code
@@ -464,7 +465,7 @@ VkShaderModule Render::createShaderModule(VkDevice device, uint32* code, uint32*
 
 
 
-void Render::createGraphicsPipeline() {
+void Engine::createGraphicsPipeline() {
 	//PipelineCreateInfo struct to create the graphics pipeline
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -596,7 +597,7 @@ void Render::createGraphicsPipeline() {
 
 
 
-void Render::createFramebuffers() {
+void Engine::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
@@ -619,7 +620,7 @@ void Render::createFramebuffers() {
 
 
 
-void Render::createGraphicsCommandPool() {
+void Engine::createGraphicsCommandPool() {
 	VkCommandPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.queueFamilyIndex = graphics.PD.indices.graphicsFamily;
@@ -630,7 +631,7 @@ void Render::createGraphicsCommandPool() {
 
 
 
-void Render::createDescriptorPool() {
+void Engine::createDescriptorPool() {
 	std::array<VkDescriptorPoolSize, 2> poolSizes{};
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = static_cast<uint32>(swapChainImages.size());
@@ -648,7 +649,7 @@ void Render::createDescriptorPool() {
 
 
 
-void Render::createDescriptorSets() {
+void Engine::createDescriptorSets() {
 	std::vector<VkDescriptorSetLayout> layouts(swapChainImages.size(), descriptorSetLayout);
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -681,7 +682,7 @@ void Render::createDescriptorSets() {
 
 
 
-void Render::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+void Engine::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = size;
@@ -704,7 +705,7 @@ void Render::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags
 
 
 //Creates and submits a command buffer to copy from srcBuffer to dstBuffer
-void Render::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+void Engine::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
 	VkBufferCopy copyRegion{};												//Create buffer copy object
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
 	copyRegion.size = size;													//Set size of the copied region
@@ -716,7 +717,7 @@ void Render::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize siz
 
 
 //Returns the index of the memory with the specified type and properties. Exits if not found
-uint32 Render::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties) {
+uint32 Engine::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties) {
 	VkPhysicalDeviceMemoryProperties memProperties;							//Get memory properties
 	vkGetPhysicalDeviceMemoryProperties(graphics.PD.device, &memProperties);
 
@@ -729,7 +730,7 @@ uint32 Render::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags propertie
 
 
 
-void Render::createDrawCommandBuffers() {
+void Engine::createDrawCommandBuffers() {
 	commandBuffers.resize(swapChainFramebuffers.size());				//One command buffer for every swapchain's framebuffer 
 
 	VkCommandBufferAllocateInfo allocInfo{};							//Create allocate infos
@@ -777,7 +778,7 @@ void Render::createDrawCommandBuffers() {
 }
 
 
-void Render::createSyncObjects() {
+void Engine::createSyncObjects() {
 	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
@@ -802,7 +803,7 @@ void Render::createSyncObjects() {
 
 
 
-void Render::drawFrame() {
+void Engine::drawFrame() {
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -869,7 +870,7 @@ void Render::drawFrame() {
 
 
 //Read a shader from a file and save it in a padded char array
-uint32* Render::readShaderFromFile(uint32* length, const char* filename) {
+uint32* Engine::readShaderFromFile(uint32* length, const char* filename) {
 	FILE* fp = fopen(filename, "rb");
 	if (fp == NULL) printf("Could not find or open file: %s\n", filename);
 
@@ -900,7 +901,7 @@ uint32* Render::readShaderFromFile(uint32* length, const char* filename) {
 
 
 
-VKAPI_ATTR VkBool32 VKAPI_CALL Render::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+VKAPI_ATTR VkBool32 VKAPI_CALL Engine::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 	std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 	return VK_FALSE;
 }

@@ -12,7 +12,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 
-void Render::RunCompute() {
+void Engine::RunCompute() {
 	createComputeDescriptorSetLayout();
 	createDescriptorSet();
 	createComputePipeline();
@@ -22,7 +22,7 @@ void Render::RunCompute() {
 
 
 
-void Render::createComputeDescriptorSetLayout() {
+void Engine::createComputeDescriptorSetLayout() {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std140, binding = 0) buffer buf
@@ -46,7 +46,7 @@ void Render::createComputeDescriptorSetLayout() {
 
 
 
-void Render::createDescriptorSet() {
+void Engine::createDescriptorSet() {
 	VkDescriptorPoolSize descriptorPoolSize = {};
 	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	descriptorPoolSize.descriptorCount = 1;
@@ -89,7 +89,7 @@ void Render::createDescriptorSet() {
 
 
 
-void Render::createComputePipeline() {
+void Engine::createComputePipeline() {
 	uint32 fileLength;																//Create the shader module
 	computeShaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, "LuxEngine/Contents/shaders/comp.spv"), &fileLength);
 
@@ -122,7 +122,7 @@ void Render::createComputePipeline() {
 
 
 
-void Render::createComputeCommandBuffer() {
+void Engine::createComputeCommandBuffer() {
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;			//Set structure type
 	commandPoolCreateInfo.flags = 0;													//Default flags
@@ -159,7 +159,7 @@ void Render::createComputeCommandBuffer() {
 
 
 
-void Render::runCommandBuffer() {
+void Engine::runCommandBuffer() {
 	//Now we shall finally submit the recorded command buffer to a queue.
 	VkSubmitInfo submitInfo = {};															//Create submit infos to submit the command buffer to the queue
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;											//Set structure type
@@ -180,7 +180,7 @@ void Render::runCommandBuffer() {
 
 
 
-void Render::cleanupCompute() {
+void Engine::cleanupCompute() {
 	vkDestroyBuffer(compute.LD, buffer, null);										//Destroy the buffer
 	vkFreeMemory(compute.LD, bufferMemory, null);									//Free the buffer's memory
 

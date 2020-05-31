@@ -22,15 +22,15 @@ static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
 
 
 //Returns the queue families of a physical device
-QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
+QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
 	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);						//Enumerate queue families
-	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);	//TODO use LuxStaticArray
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
+	LuxStaticArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data);			//Save queue families
 
 	//Set families
 	QueueFamilyIndices indices;
-	for (int i = 0; i < queueFamilies.size(); i++) {													//For every queue family
+	for (int i = 0; i < queueFamilies.size; i++) {														//For every queue family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.push_back(i);		//Add compute families
 		VkBool32 hasPresentSupport = false;
@@ -44,20 +44,22 @@ QueueFamilyIndices Render::findQueueFamilies(VkPhysicalDevice device) {
 
 
 //Returns true if the device supports the extensions, false if not
-bool Render::checkDeviceExtensionSupport(VkPhysicalDevice device) {
+bool Engine::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 	uint32 extensionCount;
-	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-	std::vector<VkExtensionProperties> availableExtensions(extensionCount);//TODO use LuxStaticArray
-	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);					//Get extension count
+	LuxStaticArray<VkExtensionProperties> availableExtensions(extensionCount);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data);	//Get extensions
 
 	std::set<std::string> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
-	for (const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);
+	for (const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);//Search for required extensions
 	return requiredExtensions.empty();
 }
 
 
+
+
 //Returns true if the device is suitable false if not
-bool Render::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
+bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 	//Check extensions
 	if (!checkDeviceExtensionSupport(device)) {
 		errorText = "Missing required extensions";
@@ -92,7 +94,7 @@ bool Render::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 
 
 //Find all suitable physical devices, choosing the main and secondary devices according to their capabilities
-void Render::getPhysicalDevices() {
+void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
 	std::vector<std::string> discardedPhysicalDevices;
 	std::vector<_VkPhysicalDevice> physicalDevices;
@@ -189,7 +191,7 @@ void Render::getPhysicalDevices() {
 
 
 
-void Render::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, std::vector<VkQueue>* computeQueues) {
+void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, std::vector<VkQueue>* computeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice((*PD), graphics.PD)) {												//If it's the main device for graphics,

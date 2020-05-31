@@ -156,12 +156,12 @@ public:
 
 	//Sets the size of the array to 0, deleting all the elements and resetting it to the initial state
 	void clear() {
-		for (int32 i = 0; i < chunksDynNum; i++) free(__data[i]); free(__data);		//Free data array
+		for (int32 i = 0; i < chunksDynNum; i++) free(__data[i]); free(__data);			//Free data array
 		for (int32 i = 0; i < chunksDynNum; i++) free(__tracker[i]); free(__tracker);	//Free tracker array
-		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data array
-		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));		//Allocate tracker array
-		chunksDynNum = __dynSize = __freeNum = 0;									//Reset number of chunk, number of elements, number of free elements
-		head = tail = -1;															//Reset head and tail
+		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data array
+		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));			//Allocate tracker array
+		chunksDynNum = __dynSize = __freeNum = 0;										//Reset number of chunk, number of elements, number of free elements
+		head = tail = -1;																//Reset head and tail
 	}
 
 
@@ -169,7 +169,7 @@ public:
 
 
 	//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
-	signed char status(uint64 index) {
+	inline signed char status(uint64 index) {
 		if (index == (int64)-1)return -1;					//Invalid index
 		else if (index >= __dynSize) return -2;				//Index out of range
 		else if (__Tracker(index) == (uint64)-1) return 0;	//Ok

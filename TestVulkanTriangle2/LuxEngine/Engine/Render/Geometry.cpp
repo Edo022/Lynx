@@ -3,7 +3,7 @@
 
 
 
-void Render::createVertexBuffer() {
+void Engine::createVertexBuffer() {
 	//Create staging buffer
 	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 	VkBuffer stagingBuffer;
@@ -28,7 +28,7 @@ void Render::createVertexBuffer() {
 
 
 
-void Render::createIndexBuffer() {
+void Engine::createIndexBuffer() {
 	//Create staging buffer
 	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 	VkBuffer stagingBuffer;

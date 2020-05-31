@@ -5,7 +5,7 @@
 
 
 
-VkSurfaceFormatKHR Render::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+VkSurfaceFormatKHR Engine::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
 	for (const auto& availableFormat : availableFormats) {
 		if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 			return availableFormat;
@@ -16,7 +16,7 @@ VkSurfaceFormatKHR Render::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFo
 
 
 //Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-VkPresentModeKHR Render::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
+VkPresentModeKHR Engine::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
 	if (useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 	for (const auto& availablePresentMode : availablePresentModes) {
 		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
@@ -25,7 +25,7 @@ VkPresentModeKHR Render::chooseSwapPresentMode(const std::vector<VkPresentModeKH
 }
 
 
-VkExtent2D Render::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
+VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
 	if (capabilities.currentExtent.width != UINT32_MAX) return capabilities.currentExtent;
 	else {
 		int width, height;
@@ -41,7 +41,7 @@ VkExtent2D Render::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities
 
 
 
-SwapChainSupportDetails Render::querySwapChainSupport(VkPhysicalDevice device) {
+SwapChainSupportDetails Engine::querySwapChainSupport(VkPhysicalDevice device) {
 	SwapChainSupportDetails details;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
 
@@ -65,7 +65,7 @@ SwapChainSupportDetails Render::querySwapChainSupport(VkPhysicalDevice device) {
 
 
 
-void Render::createImageViews() {
+void Engine::createImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
 	for (uint32 i = 0; i < swapChainImages.size(); i++) {
 		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
@@ -75,7 +75,7 @@ void Render::createImageViews() {
 
 
 
-void Render::createDepthResources() {
+void Engine::createDepthResources() {
 	VkFormat depthFormat = findDepthFormat();
 	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
 	depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
@@ -97,7 +97,7 @@ void Render::createDepthResources() {
 
 
 
-void Render::createSwapChain() {
+void Engine::createSwapChain() {
 	//Get swapchain details
 	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(graphics.PD.device);
 
@@ -173,7 +173,7 @@ void Render::createSwapChain() {
 
 
 
-void Render::recreateSwapChain() {
+void Engine::recreateSwapChain() {
 	int32 width = 0, height = 0; 	glfwGetFramebufferSize(window, &width, &height);
 
 	if (width != 0 && height != 0) {

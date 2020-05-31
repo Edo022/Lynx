@@ -7,7 +7,7 @@
 
 
 
-void Render::createTextureImage() {
+void Engine::createTextureImage() {
 	createImage(WIDTH, HEIGHT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	copyBufferToImage(buffer, textureImage, WIDTH, HEIGHT);
@@ -17,15 +17,15 @@ void Render::createTextureImage() {
 
 
 
-void Render::createTextureImageView() {
+void Engine::createTextureImageView() {
 	textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 
 
 
-void Render::createTextureSampler() {
-	VkSamplerCreateInfo samplerInfo{};								//Sampler infos
+void Engine::createTextureSampler() {
+	VkSamplerCreateInfo samplerInfo{};							//Create sampler infos
 	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 	samplerInfo.magFilter = VK_FILTER_BEGIN_RANGE;					//VK_FILTER_LINEAR;  begin range removes filtering
 	samplerInfo.minFilter = VK_FILTER_BEGIN_RANGE;					//VK_FILTER_LINEAR;  begin range removes filtering
@@ -34,7 +34,7 @@ void Render::createTextureSampler() {
 	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;		///Repeat the texture
 	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;		///Repeat the texture
 
-	samplerInfo.anisotropyEnable = VK_FALSE;						//VK_TRUE;  no need to enable the anistropy filter since we neither use meshes or textures
+	samplerInfo.anisotropyEnable = VK_FALSE;						//No need to enable the anistropy filter since we neither use meshes or textures
 	samplerInfo.maxAnisotropy = 16;									//Maximum anistropy. Default at 16
 	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;		//Black background when the texture ends
 	samplerInfo.unnormalizedCoordinates = VK_FALSE;					//Use normalized coordinates
