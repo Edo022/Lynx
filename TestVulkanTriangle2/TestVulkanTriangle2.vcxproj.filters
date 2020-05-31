@@ -117,6 +117,9 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxStaticArray.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\LuxEngine.h">
+      <Filter>LuxEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LuxEngine\Contents\shaders\shader.comp">

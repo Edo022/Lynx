@@ -231,8 +231,8 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
 	#ifndef NDEBUG																		//If in debug mode
-	deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size;						//Set validation layers count
-	deviceCreateInfo.ppEnabledLayerNames = validationLayers.data;							//Set validation layers
+	deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size();					//Set validation layers count
+	deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();							//Set validation layers
 	#else																				//Else
 	deviceCreateInfo.enabledLayerCount = 0;													//Disable validation layers
 	#endif

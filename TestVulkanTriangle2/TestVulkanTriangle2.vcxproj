@@ -114,6 +114,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <SupportJustMyCode>true</SupportJustMyCode>
       <CallingConvention>Cdecl</CallingConvention>
+      <PreprocessKeepComments>true</PreprocessKeepComments>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -164,6 +165,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <SupportJustMyCode>true</SupportJustMyCode>
       <CallingConvention>FastCall</CallingConvention>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -191,6 +193,7 @@
     <ClInclude Include="LuxEngine\Engine\Render\Structs\Vertex.h" />
     <ClInclude Include="LuxEngine\Engine\Render\Structs\_VkPhysicalDevice.h" />
     <ClInclude Include="LuxEngine\Engine\Render\VkWindow.h" />
+    <ClInclude Include="LuxEngine\LuxEngine.h" />
     <ClInclude Include="LuxEngine\macros.h" />
     <ClInclude Include="LuxEngine\Object\Object.h" />
     <ClInclude Include="LuxEngine\Object\ObjectGeometry.h" />

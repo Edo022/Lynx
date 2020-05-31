@@ -308,7 +308,7 @@ void Engine::createInstance() {
 	uint32 layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);				//Get layer count
 	LuxStaticArray<VkLayerProperties> availableLayers((uint64)layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data);	//Get layers
+	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());	//Get layers
 	for (const char* layerName : validationLayers) {											//For every layer,
 		for (const auto& layerProperties : availableLayers) {										//Check if it's available
 			if (strcmp(layerName, layerProperties.layerName) == 0) break;
@@ -318,8 +318,8 @@ void Engine::createInstance() {
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size);
-	createInfo.ppEnabledLayerNames = validationLayers.data;
+	createInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
+	createInfo.ppEnabledLayerNames = validationLayers.data();
 	populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
 	#endif
