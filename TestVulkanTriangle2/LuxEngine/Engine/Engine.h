@@ -131,8 +131,6 @@ private:
 
 	const char* VERT_PATH = "LuxEngine/Contents/Shaders/vert.spv";
 	const char* FRAG_PATH = "LuxEngine/Contents/Shaders/frag.spv";
-	const std::string MODEL_PATH = "LuxEngine/Contents/Models/modelloBrutto.obj";
-	const std::string TEXTURE_PATH = "LuxEngine/Contents/Textures/modelloBrutto.png";
 
 
 
@@ -156,11 +154,11 @@ private:
 
 	//Swapchain
 	VkSwapchainKHR swapChain;
-	std::vector<VkImage> swapChainImages;
-	std::vector<VkImageView> swapChainImageViews;
+	LuxStaticArray<VkImage> swapChainImages;
+	LuxStaticArray<VkImageView> swapChainImageViews;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
+	LuxStaticArray<VkFramebuffer> swapChainFramebuffers;
 
 	//Render
 	VkRenderPass renderPass;
@@ -194,17 +192,17 @@ private:
 	//Descriptors
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
-	std::vector<VkDescriptorSet> descriptorSets;
+	LuxStaticArray<VkDescriptorSet> descriptorSets;
 
 	//Commands
 	VkCommandPool graphicsCommandPool;
-	std::vector<VkCommandBuffer> commandBuffers;
+	LuxStaticArray<VkCommandBuffer> commandBuffers;
 
 	//Render semaphores and frames
-	std::vector<VkSemaphore> imageAvailableSemaphores;
-	std::vector<VkSemaphore> renderFinishedSemaphores;
-	std::vector<VkFence> inFlightFences;
-	std::vector<VkFence> imagesInFlight;
+	LuxStaticArray<VkSemaphore> imageAvailableSemaphores;
+	LuxStaticArray<VkSemaphore> renderFinishedSemaphores;
+	LuxStaticArray<VkFence> inFlightFences;
+	LuxStaticArray<VkFence> imagesInFlight;
 	int64 currentFrame = 0;
 
 	//Debug and validation layers data
@@ -267,7 +265,7 @@ private:
 
 
 
-	VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+	VkFormat findSupportedFormat(LuxStaticArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
 
 

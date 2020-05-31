@@ -66,8 +66,8 @@ SwapChainSupportDetails Engine::querySwapChainSupport(VkPhysicalDevice device) {
 
 
 void Engine::createImageViews() {
-	swapChainImageViews.resize(swapChainImages.size());
-	for (uint32 i = 0; i < swapChainImages.size(); i++) {
+	swapChainImageViews.resize(swapChainImages.size);
+	for (uint32 i = 0; i < swapChainImages.size; i++) {
 		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
@@ -143,7 +143,7 @@ void Engine::createSwapChain() {
 	uint32 swapchainImageCount;
 	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, nullptr);					//Get image count
 	swapChainImages.resize(swapchainImageCount);
-	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, swapChainImages.data());	//Save images
+	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, swapChainImages.data);	//Save images
 	swapChainImageFormat = surfaceFormat.format;													//Save format
 	swapChainExtent = createInfo.imageExtent;														//Save extent
 

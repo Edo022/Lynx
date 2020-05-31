@@ -55,7 +55,7 @@ public:
 		//resize(_size);
 		chunkSize = _chunkSize;													//Set size of the chunks
 		maxSize = _maxSize;														//Set maximum size of the array
-		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));	//Allocate data array
+		__data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));			//Allocate data array
 		__tracker = (uint64**)malloc(sizeof(uint64*) * (maxSize / chunkSize));	//Allocate tracker array
 		chunksDynNum = __dynSize = __freeNum = 0;								//Initialize number of chunks, number of elements and number of free elements							
 		head = tail = -1;														//Initialize head and tail

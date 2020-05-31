@@ -10,7 +10,7 @@ void Engine::createVertexBuffer() {
 	VkDeviceMemory stagingBufferMemory;
 	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
-	//Map memory
+	//Map and copy memory
 	void* data;
 	vkMapMemory(graphics.LD, stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, vertices.data(), (int64)bufferSize);
@@ -35,7 +35,7 @@ void Engine::createIndexBuffer() {
 	VkDeviceMemory stagingBufferMemory;
 	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
-	//Map memory
+	//Map and copy memory
 	void* data;
 	vkMapMemory(graphics.LD, stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, indices.data(), (int64)bufferSize);
