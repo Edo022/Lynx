@@ -13,7 +13,7 @@
 static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
 	uint32 score = 0;																			//Device performance evalutation
 	if (device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
-	device.properties.limits.maxComputeSharedMemorySize; //TODO
+	device.properties.limits.maxComputeSharedMemorySize; //TODO non superare il limite della shader
 	score += device.properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
 	if (device.features.geometryShader) score += 1;												//Geometry shaders needed
 	return score;
