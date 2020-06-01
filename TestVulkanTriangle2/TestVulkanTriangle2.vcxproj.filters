@@ -52,25 +52,25 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\Commands.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\Swapchain.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\Pipeline.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\Commands.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\Pipeline.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\Images.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GPipeline.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GImages.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\CCommands.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\CPipeline.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
   </ItemGroup>

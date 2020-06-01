@@ -13,6 +13,7 @@
 static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
 	uint32 score = 0;																			//Device performance evalutation
 	if (device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
+	device.properties.limits.maxComputeSharedMemorySize; //TODO
 	score += device.properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
 	if (device.features.geometryShader) score += 1;												//Geometry shaders needed
 	return score;
@@ -30,9 +31,9 @@ QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
 
 	//Set families
 	QueueFamilyIndices indices;
-	for (int i = 0; i < queueFamilies.size(); i++) {														//For every queue family
+	for (int i = 0; i < queueFamilies.size(); i++) {													//For every queue family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
-		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);		//Add compute families
+		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 		VkBool32 hasPresentSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &hasPresentSupport);						//Set present family
 		if (hasPresentSupport) indices.presentFamily = i;

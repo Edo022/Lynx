@@ -178,16 +178,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LuxEngine\Engine\Compute\Commands.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Compute\CCommands.cpp" />
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Compute\Pipeline.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Compute\CPipeline.cpp" />
     <ClCompile Include="LuxEngine\Engine\Devices.cpp" />
     <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\Commands.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\Images.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\Pipeline.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\Swapchain.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Graphics\GImages.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Graphics\GPipeline.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
     <ClCompile Include="LuxEngine\Object\Object.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
