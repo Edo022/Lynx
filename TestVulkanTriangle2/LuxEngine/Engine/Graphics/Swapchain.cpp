@@ -1,5 +1,5 @@
 ﻿
-#include "../Engine.h"
+#include "LuxEngine/Engine/Engine.h"
 
 
 
@@ -14,6 +14,8 @@ VkSurfaceFormatKHR Engine::chooseSwapSurfaceFormat(LuxStaticArray<VkSurfaceForma
 }
 
 
+
+
 //Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
 VkPresentModeKHR Engine::chooseSwapPresentMode(LuxStaticArray<VkPresentModeKHR>& availablePresentModes) {
 	if (useVSync) return VK_PRESENT_MODE_FIFO_KHR;
@@ -22,6 +24,8 @@ VkPresentModeKHR Engine::chooseSwapPresentMode(LuxStaticArray<VkPresentModeKHR>&
 	}
 	return VK_PRESENT_MODE_IMMEDIATE_KHR;
 }
+
+
 
 
 VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
@@ -166,6 +170,25 @@ void Engine::createSwapChain() {
 
 
 
+
+
+
+
+void Engine::cleanupSwapChain() {
+	vkDestroyImage(graphics.LD, depthImage, nullptr);				//Destroy depth image
+	vkDestroyImageView(graphics.LD, depthImageView, nullptr);		//Destroy depth image view
+	vkFreeMemory(graphics.LD, depthImageMemory, nullptr);			//Free depth image memory
+
+	vkDestroyPipeline(graphics.LD, graphicsPipeline, nullptr);		//Destroy pipeline
+	vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);	//Destroy pipeline layout
+	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
+
+	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);			//Destroy framebuffers
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, (uint32)(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
+	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);					//Destroy image views
+	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);															//destroy swapchain
+	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);													//Destroy graphics descriptor pool
+}
 
 
 

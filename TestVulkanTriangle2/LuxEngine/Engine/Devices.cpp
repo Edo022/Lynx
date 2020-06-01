@@ -198,33 +198,33 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 		uniqueQueueFamilyIndices.insert(PD->indices.graphicsFamily);					//Add his graphics family
 		uniqueQueueFamilyIndices.insert(PD->indices.presentFamily);						//And his present family
 	}
-	forEach(PD->indices.computeFamilies, i) {					//And then add every compute family, graphic ones included
+	forEach(PD->indices.computeFamilies, i) {											//And then add every compute family, graphics ones included
 		uniqueQueueFamilyIndices.insert(PD->indices.computeFamilies[i]);
 	}
 
 
-	//Fill deviceCreateInfo structure for logical device creation
-	VkDeviceCreateInfo deviceCreateInfo{};
+
 
 	//Queue infos
-	LuxArray<VkDeviceQueueCreateInfo> queueCreateInfos;
+	LuxArray<VkDeviceQueueCreateInfo> queueCreateInfos;								//Create a queue create info array
 	for (auto queueFamilyIndex : uniqueQueueFamilyIndices) {							//For every device queue family index found
-		VkDeviceQueueCreateInfo queueCreateInfo{};
-		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		VkDeviceQueueCreateInfo queueCreateInfo{};											//Create a queue create info struct
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;					//Set structure type
 		queueCreateInfo.queueFamilyIndex = queueFamilyIndex;								//Set index
 		queueCreateInfo.queueCount = 1;														//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
 		queueCreateInfo.pQueuePriorities = new float((sameDevice((*PD), graphics.PD) || sameDevice((*PD), compute.PD)) ? 1.0f : 0.5f);
-		queueCreateInfos.add(queueCreateInfo);										//Add to queue create info vector
+		queueCreateInfos.add(queueCreateInfo);											//Add it to the queue create info array
 	}
 
 	//Required extensions
-	VkPhysicalDeviceFeatures enabledDeviceFeatures{};
+	VkPhysicalDeviceFeatures enabledDeviceFeatures{};								//Set enabled features
 	enabledDeviceFeatures.samplerAnisotropy = VK_FALSE;									//No anistropy filter
 	enabledDeviceFeatures.multiViewport = VK_FALSE;										//No multiple viewports
 	enabledDeviceFeatures.fillModeNonSolid = VK_FALSE;									//No point32 and line render, since we don't use meshes
 
 	//Fill deviceCreateInfo
-	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	VkDeviceCreateInfo deviceCreateInfo{};											//Create deviceCreateInfo structure for logical device creation
+	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;						//Set structure type
 	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();				//Set queue infos count
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();						//Set queue infos
 	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
@@ -249,7 +249,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 			}
 			if (computeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
 				compute.LD = _logicalDevice;																//Set it as the main compute logical device
-				forEach(PD->indices.computeFamilies, i) {								//Add every compute queue to the main compute queue list
+				forEach(PD->indices.computeFamilies, i) {													//Add every compute queue to the main compute queue list
 					VkQueue computeQueue;
 					vkGetDeviceQueue(_logicalDevice, PD->indices.computeFamilies[i], 0, &computeQueue);
 					compute.computeQueues.add(computeQueue);
@@ -258,7 +258,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 		}
 		else {																							//If it's none of them
 			*LD = _logicalDevice;																			//Add it to the list of secondary logical devices
-			forEach(PD->indices.computeFamilies, i) {									//Add every compute queue to the secondary compute queues
+			forEach(PD->indices.computeFamilies, i) {														//Add every compute queue to the secondary compute queues
 				VkQueue computeQueue;
 				vkGetDeviceQueue(_logicalDevice, PD->indices.computeFamilies[i], 0, &computeQueue);
 				computeQueues->add(computeQueue);

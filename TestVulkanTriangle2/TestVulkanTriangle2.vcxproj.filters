@@ -28,14 +28,14 @@
     <Filter Include="LuxEngine\Engine">
       <UniqueIdentifier>{515de7d3-e2be-4374-a5bc-0acc2adafc60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LuxEngine\Engine\Render">
-      <UniqueIdentifier>{e427b4d8-2ca0-42c4-9142-f024e6e87d69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuxEngine\Engine\Render\Structs">
-      <UniqueIdentifier>{86530e9f-6596-4e6c-a587-42d7813dc394}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuxEngine\Engine\Compute">
       <UniqueIdentifier>{da76cc61-9311-41d3-bd0f-8b72b2faea31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Engine\Graphics">
+      <UniqueIdentifier>{e427b4d8-2ca0-42c4-9142-f024e6e87d69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Engine\Graphics\Structs">
+      <UniqueIdentifier>{86530e9f-6596-4e6c-a587-42d7813dc394}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,26 +43,35 @@
     <ClCompile Include="LuxEngine\Object\Object.cpp">
       <Filter>LuxEngine\Object</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Render\Devices.cpp">
-      <Filter>LuxEngine\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Render\Swapchain.cpp">
-      <Filter>LuxEngine\Engine\Render</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Engine.cpp">
       <Filter>LuxEngine\Engine</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Render\Geometry.cpp">
-      <Filter>LuxEngine\Engine\Render</Filter>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Images.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Render\Images.cpp">
-      <Filter>LuxEngine\Engine\Render</Filter>
+    <ClCompile Include="LuxEngine\Engine\Devices.cpp">
+      <Filter>LuxEngine\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Render\Textures.cpp">
-      <Filter>LuxEngine\Engine\Render</Filter>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Commands.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Swapchain.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\Pipeline.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\Commands.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Pipeline.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,15 +111,6 @@
     <ClInclude Include="LuxEngine\Object\ObjectPhysics.h">
       <Filter>LuxEngine\Object</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Render\VkWindow.h">
-      <Filter>LuxEngine\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Render\Structs\_VkPhysicalDevice.h">
-      <Filter>LuxEngine\Engine\Render\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Render\Structs\Vertex.h">
-      <Filter>LuxEngine\Engine\Render\Structs</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Engine\Engine.h">
       <Filter>LuxEngine\Engine</Filter>
     </ClInclude>
@@ -119,6 +119,12 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\LuxEngine.h">
       <Filter>LuxEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Graphics\Structs\_VkPhysicalDevice.h">
+      <Filter>LuxEngine\Engine\Graphics\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Graphics\Structs\Vertex.h">
+      <Filter>LuxEngine\Engine\Graphics\Structs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "LuxEngine/Engine/Render/Structs/Vertex.h"
+#include "LuxEngine/Engine/Graphics/Structs/Vertex.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include <glm/glm.hpp>
 #include <vector>

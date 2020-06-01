@@ -32,8 +32,8 @@
 
 
 //Structures
-#include "Render/Structs/_VkPhysicalDevice.h"
-#include "Render/Structs/Vertex.h"
+#include "Graphics/Structs/_VkPhysicalDevice.h"
+#include "Graphics/Structs/Vertex.h"
 #include "LuxEngine/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
@@ -93,6 +93,14 @@ const bool enableValidationLayers = true;
 		VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT										\
 	);
 
+//Dark magic
+#define populateDebugMessengerCreateInfo(createInfo)\
+	createInfo = {};\
+	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;\
+	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;\
+	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;\
+	createInfo.pfnUserCallback = debugCallback;
+
 
 
 
@@ -101,7 +109,6 @@ const bool enableValidationLayers = true;
 
 
 // Engine class -----------------------------------------------------------------------------------------------------------------------------//
-
 
 
 
@@ -125,6 +132,11 @@ private:
 	VkDebugUtilsMessengerEXT debugMessenger;
 	VkSurfaceKHR surface;
 
+	//Window
+	GLFWwindow* window;								//Main engine's window
+	const uint32 WIDTH = 1920, HEIGHT = 1080;		//Default size in windowed mode
+	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
+
 	//Devices and queues
 	struct graphicsDevice {
 		_VkPhysicalDevice PD;						//Main physical device for graphics
@@ -141,9 +153,11 @@ private:
 
 	LuxStaticArray<computeDevice> secondary;		//Secondary devices and queues for computation
 
+
+
 	//Main >> this
-	void mainLoop();		void FPSCounter();
-	void createInstance();
+	void mainLoop();		void FPSCounter(); 
+	void initWindow();		void createInstance();
 
 	//Devices >> ./Devices.cpp
 	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues);
@@ -164,12 +178,7 @@ private:
 
 
 
-	//Windows
-	GLFWwindow* window;								//Main engine's window
-	bool framebufferResized = false;				//Updates the swapchain when the window is resized
-	const uint32 WIDTH = 1920, HEIGHT = 1080;		//Default size in windowed mode
-	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
-
+	bool framebufferResized = false;				//Updates the swapchain when the window is resized	
 	const char* VERT_PATH = "LuxEngine/Contents/Shaders/vert.spv";
 	const char* FRAG_PATH = "LuxEngine/Contents/Shaders/frag.spv";
 
@@ -229,15 +238,16 @@ private:
 	LuxStaticArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
+
 	//Graphics >> Graphics/Graphics.cpp
-	void runRender(bool _useVSync = true, float FOV = 45.0f);
-	void initWindow();		void initVulkan();
+	void runGraphics(bool _useVSync = true, float FOV = 45.0f);
+	void initVulkan();
 	void createSurface();
 	void createSyncObjects();
 	void setupDebugMessenger();
 	void drawFrame();
 	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
-	void cleanupRender(); 	void cleanupSwapChain();
+	void cleanupRender();
 
 	//Graphics swapchain >> Graphics/Swapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
@@ -247,12 +257,13 @@ private:
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	void createImageViews();
 	void createDepthResources();
+	void cleanupSwapChain();
 
-	//Graphics geometry >> Graphics/Geometry.cpp
+
+	//Graphics textures and images >> Graphics/Images.cpp
 	void createVertexBuffer();
 	void createIndexBuffer();
 
-	//Graphics textures and images >> Graphics/Images.cpp
 	void createTextureImage();
 	void createTextureImageView();
 	void createTextureSampler();
@@ -262,27 +273,29 @@ private:
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
+
 	//Graphics commands >> Graphics/Commands.cpp
 	void createGraphicsCommandPool();
 	void createDrawCommandBuffers();
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
-	//Graphics render >> Graphics/Render.cpp
+
+	//Graphics render and descriptors >> Graphics/Pipeline.cpp
 	void createGraphicsPipeline();
 	void createRenderPass();
 	void createFramebuffers();
 
-	//Graphics miscellaneous >> Graphics/Graphics.cpp
+	void createDescriptorPool();
+	void createDescriptorSetLayout();
+	void createDescriptorSets();
+
+
+	//Graphics other >> Graphics/Graphics.cpp
 	VkFormat findSupportedFormat(LuxStaticArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	uint32 findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
-
-	//Graphics descriptors >> Graphics/Descriptors.cpp
-	void createDescriptorPool();
-	void createDescriptorSetLayout();
-	void createDescriptorSets();
 
 
 
@@ -327,16 +340,27 @@ private:
 	void RunCompute();
 	void cleanupCompute();
 
-	//Compute descriptors >> TODO
+	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
+	void createComputePipeline();
 	void createComputeDescriptorSetLayout();
 	void createDescriptorSet();
 
-	//Compute pipeline and command buffers >> TODO
-	void createComputePipeline();
+	//Compute command buffers >> Compute/Commands.cpp
 	void createComputeCommandBuffer();
 	void runCommandBuffer();
 
 };
+
+
+
+
+
+
+
+
+// Init -------------------------------------------------------------------------------------------------------------------------------------//
+
+
 
 
 
@@ -348,7 +372,7 @@ private:
 
 static Engine render;
 //This function is used by the engine. You shouldn't call it
-static void __lux_run_thr_0(bool useVSync) {
+static void __lp_lux_init_run_thr(bool useVSync) {
 	render.vertices = {
 		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
@@ -362,7 +386,7 @@ static void __lux_run_thr_0(bool useVSync) {
 
 //This function initializes the Lux Engine. Call it only once
 static void luxInit(bool useVSync) {
-	std::thread t(__lux_run_thr_0, useVSync);
+	std::thread t(__lp_lux_init_run_thr, useVSync);
 	t.detach();
 	render.running = true;
 }
