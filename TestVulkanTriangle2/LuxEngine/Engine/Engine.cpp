@@ -27,7 +27,7 @@ void Engine::runRender(bool _useVSync, float _FOV) {
 
 	if (enableValidationLayers) { Failure printf("D E B U G    M O D E"); }				MainSeparator;
 	Normal  printf("Initializing GLFW window                 ");	initWindow();		SuccessNoNl printf("ok\n");
-	Normal  printf("Initializing Vulkan          ");				initVulkan();		MainSeparator;
+	Normal  printf("Initializing Vulkan");							initVulkan();		MainSeparator;
 	Success printf("Initialization completed in %f s", ((stdDuration)(now - start)).count());
 }
 
@@ -59,7 +59,6 @@ void Engine::initVulkan() {
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
 	/**/												 			setupDebugMessenger();
 
-
 	//Create textures
 	bufferSize = sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT;	//Set the size of the buffer
 	createBuffer(compute.LD, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
@@ -71,10 +70,10 @@ void Engine::initVulkan() {
 	createVertexBuffer();
 	createIndexBuffer();
 
-	Normal printf("    Creating VK descriptor set layout... ");		createDescriptorSetLayout();		SuccessNoNl printf("ok");
+	//Create swapchain render components
+	createDescriptorSetLayout();
 	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
-	Normal printf("    Creating VK sync objects...          ");		createSyncObjects();				SuccessNoNl printf("ok");
-
+	createSyncObjects();
 	createDrawCommandBuffers();
 }
 

@@ -193,8 +193,8 @@ public:
 	VkDeviceMemory vertexBufferMemory;
 	VkBuffer indexBuffer;
 	VkDeviceMemory indexBufferMemory;
-	LuxArray<Vertex> vertices;
-	LuxArray<uint32> indices;
+	LuxStaticArray<Vertex> vertices;
+	LuxStaticArray<uint32> indices;
 
 private:
 	//Textures
@@ -349,13 +349,13 @@ private:
 static Engine render;
 //This function is used by the engine. You shouldn't call it
 static void __lux_run_thr_0(bool useVSync) {
-	render.vertices.add(std::vector<Vertex>{
-		{ {-1, -1, 0},  { 1,1,1 },  { 0,0 } },
+	render.vertices = {
+		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
 		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
-	});
-	render.indices.add(std::vector<uint32>{0, 1, 2, 2, 1, 3});
+	};
+	render.indices = {0, 1, 2, 2, 1, 3};
 	render.run(useVSync, 45);
 }
 

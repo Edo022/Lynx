@@ -23,14 +23,13 @@ public:
 		std::copy(c.begin(), c.end(), __lp_data);
 	}
 
-	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
-	//*   in: a pointer to the container object
-	template <class inType>
-	LuxStaticArray(void* in) {
-		inType* _in = (inType*)_in;
-		__lp_lux_static_array_init(_in->end() - _in->begin());
-		for (int i = 0; i < _in->end() - _in->begin(); i++) __lp_data[i] = (type)*_in->begin() + i;
-	}
+	////Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
+	////*   in: a pointer to the container object
+	//template<class inType>
+	//LuxStaticArray(inType in) {
+	//	__lp_lux_static_array_init(((inType)in).end() - in.begin());
+	//	for (int i = 0; i < in.end() - in.begin(); i++) __lp_data[i] = (type) * (in.begin() + i);
+	//}
 
 	inline uint64 size() { return __lp_size; };
 	inline type* data() { return __lp_data; };
@@ -39,10 +38,11 @@ public:
 	inline type* begin() { return &__lp_data[0]; }
 	inline type* end() { return &__lp_data[__lp_size - 1]; }
 
-	//Resizes the array
-	inline void resize(uint64 newSize) {
+	//Resizes the array. Returns the new size
+	inline uint64 resize(uint64 newSize) {
 		__lp_size = newSize;
 		__lp_data = (type*)realloc(__lp_data, sizeof(type) * __lp_size);
+		return newSize;
 	}
 
 	//Resizes the array and initializes the new elements with the val parameter's value
