@@ -32,7 +32,7 @@ QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
 	QueueFamilyIndices indices;
 	for (int i = 0; i < queueFamilies.size(); i++) {														//For every queue family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
-		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.push_back(i);		//Add compute families
+		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);		//Add compute families
 		VkBool32 hasPresentSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &hasPresentSupport);						//Set present family
 		if (hasPresentSupport) indices.presentFamily = i;
@@ -96,8 +96,8 @@ bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 //Find all suitable physical devices, choosing the main and secondary devices according to their capabilities
 void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
-	std::vector<std::string> discardedPhysicalDevices;
-	std::vector<_VkPhysicalDevice> physicalDevices;
+	LuxArray<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
+	LuxArray<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
 
 
 	//Get physical devices
@@ -105,19 +105,19 @@ void Engine::getPhysicalDevices() {
 	if (deviceCount == 0) Quit("Failed to find GPUs with Vulkan support")
 	else {
 		//Get physical devices
-		std::vector<VkPhysicalDevice> physDevices(deviceCount);											//Get physical device count
-		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.data());							//Get physical devices
+		LuxStaticArray<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
+		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.data());					//Get physical devices
 
-		for (auto& physDev : physDevices) {																//For every physical device, create and save a _VkPhysicalDevice stucture
-			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDev, &properties);
-			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDev, &features);
+		forEach(physDevices, i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
+			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
+			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 			std::string errorText;
-			if (isDeviceSuitable(physDev, errorText)) {													//If it's suitable
-				physicalDevices.push_back(_VkPhysicalDevice(physDev, properties, features, *new QueueFamilyIndices)); //Add it to the physical devices vector
+			if (isDeviceSuitable(physDevices[i], errorText)) {										//If it's suitable
+				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices)); //Add it to the physical devices vector
 			}
 			else {																						//If not
-				discardedPhysicalDevices.push_back(properties.deviceName);									//Add it to the discarded devices vector
-				discardedPhysicalDevices.push_back(errorText);												//And save the reason of its unsuitability
+				discardedPhysicalDevices.add(properties.deviceName);									//Add it to the discarded devices vector
+				discardedPhysicalDevices.add(errorText);												//And save the reason of its unsuitability
 			}
 		}
 	}
@@ -131,31 +131,31 @@ void Engine::getPhysicalDevices() {
 		}
 	}
 
-
 	//TODO different score for graphics and compute
-	if (physicalDevices.size() > 0) {									//If there are suitable devices
-		graphics.PD = physicalDevices[0];									//set graphics device at default value
-		compute.PD = physicalDevices[0];									//set compute  device at default value
-		for (auto& physDevice : physicalDevices) {							//For every physical device
-			physDevice.indices = findQueueFamilies(physDevice.device);			//Get its queue families
-			physDevice.score = ratePhysicalDevice(physDevice);					//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
-			if (physDevice.score > graphics.PD.score || physDevice.indices.graphicsFamily != -1) graphics.PD = physDevice;
-			if (physDevice.score > compute.PD.score || physDevice.indices.computeFamilies.size() > 0) compute.PD = physDevice;
+	#define physDev (*physicalDevices[i])
+	if (physicalDevices.size() > 0) {								//If there are suitable devices
+		graphics.PD = *physicalDevices[0];								//set graphics device at default value
+		compute.PD = *physicalDevices[0];								//set compute  device at default value
+		forEach(physicalDevices, i) {									//For every physical device
+			physDev.indices = findQueueFamilies(physDev.device);			//Get its queue families
+			physDev.score = ratePhysicalDevice(physDev);					//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
+			if (physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
+			if (physDev.score > compute.PD.score || physDev.indices.computeFamilies.size() > 0) compute.PD = physDev;
 		}
-		for (auto& physDevice : physicalDevices) {							//For every physical device that isn't the main graphics or compute device
-			if (!sameDevice(physDevice, graphics.PD) && !sameDevice(physDevice, compute.PD)) {
+		forEach(physicalDevices, i) {									//For every physical device that isn't the main graphics or compute device
+			if (!sameDevice(physDev, graphics.PD) && !sameDevice(physDev, compute.PD)) {
 				secondary.resize(secondary.size() + 1);
-				secondary[secondary.size() - 1].PD = physDevice;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
+				secondary[secondary.size() - 1].PD = physDev;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
 			}
 		}
 
 		//Print the devices names, IDs, scores and tasks
 		Success printf("    Found %lld suitable device%s:", physicalDevices.size(), (physicalDevices.size() == 1) ? "" : "s");
-		for (auto& physDevice : physicalDevices) {
-			if (sameDevice(physDevice, graphics.PD) || sameDevice(physDevice, compute.PD)) Main else Normal;
-			printf("        %s  |  ID: %d  |  %d", physDevice.properties.deviceName, physDevice.properties.deviceID, physDevice.score);
-			if (sameDevice(physDevice, graphics.PD)) printf("  |  Main graphics");
-			if (sameDevice(physDevice, compute.PD)) printf("  |  Main compute");
+		forEach(physicalDevices, i) {
+			if (sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
+			printf("        %s  |  ID: %d  |  %d", physDev.properties.deviceName, physDev.properties.deviceID, physDev.score);
+			if (sameDevice(physDev, graphics.PD)) printf("  |  Main graphics");
+			if (sameDevice(physDev, compute.PD)) printf("  |  Main compute");
 		}
 	}
 	else Quit("Failed to find a suitable GPU");
@@ -198,8 +198,8 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 		uniqueQueueFamilyIndices.insert(PD->indices.graphicsFamily);					//Add his graphics family
 		uniqueQueueFamilyIndices.insert(PD->indices.presentFamily);						//And his present family
 	}
-	for (auto deviceQueueFamilyIndex : PD->indices.computeFamilies) {					//And then add every compute family, graphic ones included
-		uniqueQueueFamilyIndices.insert(deviceQueueFamilyIndex);
+	forEach(PD->indices.computeFamilies, i) {					//And then add every compute family, graphic ones included
+		uniqueQueueFamilyIndices.insert(PD->indices.computeFamilies[i]);
 	}
 
 
@@ -207,14 +207,14 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 	VkDeviceCreateInfo deviceCreateInfo{};
 
 	//Queue infos
-	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	LuxArray<VkDeviceQueueCreateInfo> queueCreateInfos;
 	for (auto queueFamilyIndex : uniqueQueueFamilyIndices) {							//For every device queue family index found
 		VkDeviceQueueCreateInfo queueCreateInfo{};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 		queueCreateInfo.queueFamilyIndex = queueFamilyIndex;								//Set index
 		queueCreateInfo.queueCount = 1;														//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
 		queueCreateInfo.pQueuePriorities = new float((sameDevice((*PD), graphics.PD) || sameDevice((*PD), compute.PD)) ? 1.0f : 0.5f);
-		queueCreateInfos.push_back(queueCreateInfo);										//Add to queue create info vector
+		queueCreateInfos.add(queueCreateInfo);										//Add to queue create info vector
 	}
 
 	//Required extensions
@@ -249,18 +249,18 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 			}
 			if (computeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
 				compute.LD = _logicalDevice;																//Set it as the main compute logical device
-				for (auto deviceComputeFamily : PD->indices.computeFamilies) {								//Add every compute queue to the main compute queue list
+				forEach(PD->indices.computeFamilies, i) {								//Add every compute queue to the main compute queue list
 					VkQueue computeQueue;
-					vkGetDeviceQueue(_logicalDevice, deviceComputeFamily, 0, &computeQueue);
+					vkGetDeviceQueue(_logicalDevice, PD->indices.computeFamilies[i], 0, &computeQueue);
 					compute.computeQueues.add(computeQueue);
 				}
 			}
 		}
 		else {																							//If it's none of them
 			*LD = _logicalDevice;																			//Add it to the list of secondary logical devices
-			for (auto deviceComputeFamily : PD->indices.computeFamilies) {									//Add every compute queue to the secondary compute queues
+			forEach(PD->indices.computeFamilies, i) {									//Add every compute queue to the secondary compute queues
 				VkQueue computeQueue;
-				vkGetDeviceQueue(_logicalDevice, deviceComputeFamily, 0, &computeQueue);
+				vkGetDeviceQueue(_logicalDevice, PD->indices.computeFamilies[i], 0, &computeQueue);
 				computeQueues->add(computeQueue);
 			}
 		}

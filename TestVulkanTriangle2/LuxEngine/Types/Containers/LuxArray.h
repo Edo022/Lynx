@@ -2,7 +2,10 @@
 
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/macros.h"
+#include "LuxEngine/Types/Containers/LuxStaticArray.h"
 #include <vector>
+
 
 #ifndef __LUXARRAY
 #define __LUXARRAY
@@ -98,10 +101,10 @@ public:
 
 	//Adds an std::array to the array, placing each element in the first free index
 	//Returns a array containing the IDs of the elements, in the same order as they were in the input
-	std::vector<uint64> add(std::vector<type> vec) {
-		std::vector<uint64> IDs;
+	LuxStaticArray<uint64> add(std::vector<type> vec) {
+		LuxStaticArray<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
-		for (auto i : vec) IDs.push_back(add(i));			//Add every element to the array and save its ID
+		forEach(vec, i) IDs[i] = add(vec[i]);			//Add every element to the array and save its ID
 		return IDs;											//Return the IDs
 	}
 
@@ -110,12 +113,12 @@ public:
 
 	//Adds an RAarray to the array, skipping all the invalid elements and placing the others in the first free index
 	//Returns a array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
-	std::vector<uint64> add(LuxArray<type> vec) {
-		std::vector<uint64> IDs;
+	LuxStaticArray<uint64> add(LuxArray<type> vec) {
+		LuxStaticArray<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
-		for (uint64 i; i < vec.size(); i++) {				//For every element of the input array
-			if (vec.isValid(i)) IDs.push_back(add(vec[i]));		//If it's valid, add it to the array and save its ID
-			else IDs.push_back(-1);								//If not, save -1 as ID
+		forEach(vec, i) {				//For every element of the input array
+			if (vec.isValid(i)) IDs[i] = add(vec[i]);		//If it's valid, add it to the array and save its ID
+			else IDs[i] = -1;								//If not, save -1 as ID
 		}
 		return IDs;											//Return the IDs
 	}

@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan.h>
 #include <LuxEngine/Types/Integers/Integers.h>
+#include "LuxEngine/Types/Containers/LuxArray.h"
 #include <vector>
 
 
@@ -10,7 +11,7 @@
 struct QueueFamilyIndices {
 	uint32 graphicsFamily = -1;
 	uint32 presentFamily = -1;
-	std::vector<int32> computeFamilies;
+	LuxArray<int32> computeFamilies;
 
 	inline bool isGraphicsComplete() { return (graphicsFamily != -1 && presentFamily != -1); }
 };
