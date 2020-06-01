@@ -437,7 +437,7 @@ void Engine::createDescriptorSetLayout() {
 	samplerLayoutBinding.pImmutableSamplers = nullptr;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { samplerLayoutBinding };
+	LuxStaticArray<VkDescriptorSetLayoutBinding> bindings = { samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32>(bindings.size());
@@ -631,7 +631,7 @@ void Engine::createGraphicsCommandPool() {
 
 
 void Engine::createDescriptorPool() {
-	std::array<VkDescriptorPoolSize, 2> poolSizes{};
+	LuxStaticArray<VkDescriptorPoolSize> poolSizes(2);
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = static_cast<uint32>(swapChainImages.size());
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -666,8 +666,8 @@ void Engine::createDescriptorSets() {
 		imageInfo.imageView = textureImageView;
 		imageInfo.sampler = textureSampler;
 
-		std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-
+		LuxStaticArray<VkWriteDescriptorSet> descriptorWrites(1);
+		descriptorWrites[0] = {};
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];
 		descriptorWrites[0].dstBinding = 1;

@@ -99,8 +99,8 @@ public:
 
 
 
-	//Adds an std::array to the array, placing each element in the first free index
-	//Returns a array containing the IDs of the elements, in the same order as they were in the input
+	//Adds an std::vector to the array, placing each element in the first free index
+	//Returns a static array containing the IDs of the elements, in the same order as they were in the input
 	LuxStaticArray<uint64> add(std::vector<type> vec) {
 		LuxStaticArray<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
@@ -111,8 +111,8 @@ public:
 
 
 
-	//Adds an RAarray to the array, skipping all the invalid elements and placing the others in the first free index
-	//Returns a array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
+	//Adds a LuxArray to the array, skipping all the invalid elements and placing the others in the first free index
+	//Returns a static array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
 	LuxStaticArray<uint64> add(LuxArray<type> vec) {
 		LuxStaticArray<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
