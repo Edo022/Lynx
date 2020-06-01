@@ -158,7 +158,7 @@ void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 he
 
 
 
-void Engine::cleanupRender() {
+void Engine::cleanupGraphics() {
 	cleanupSwapChain();																//Clear swapchain components
 
 	vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler

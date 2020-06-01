@@ -247,7 +247,7 @@ private:
 	void setupDebugMessenger();
 	void drawFrame();
 	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
-	void cleanupRender();
+	void cleanupGraphics();
 
 	//Graphics swapchain >> Graphics/Swapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
@@ -306,8 +306,8 @@ private:
 
 
 	//COMPUTE 
-	const int32 COMPUTE_WIDTH = WIDTH; // Size of rendered mandelbrot set.
-	const int32 COMPUTE_HEIGHT = HEIGHT; // Size of renderered mandelbrot set.
+	const int32 COMPUTE_WIDTH = WIDTH;
+	const int32 COMPUTE_HEIGHT = HEIGHT;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
 	struct Pixel { unsigned char r, g, b, a; };
@@ -367,20 +367,20 @@ private:
 
 
 
-#define Frame while(render.running)
+#define Frame while(engine.running)
 
 
-static Engine render;
+static Engine engine;
 //This function is used by the engine. You shouldn't call it
 static void __lp_lux_init_run_thr(bool useVSync) {
-	render.vertices = {
+	engine.vertices = {
 		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
 		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
 	};
-	render.indices = {0, 1, 2, 2, 1, 3};
-	render.run(useVSync, 45);
+	engine.indices = {0, 1, 2, 2, 1, 3};
+	engine.run(useVSync, 45);
 }
 
 
@@ -388,5 +388,5 @@ static void __lp_lux_init_run_thr(bool useVSync) {
 static void luxInit(bool useVSync) {
 	std::thread t(__lp_lux_init_run_thr, useVSync);
 	t.detach();
-	render.running = true;
+	engine.running = true;
 }

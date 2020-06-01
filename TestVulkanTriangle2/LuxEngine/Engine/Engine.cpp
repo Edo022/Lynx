@@ -29,7 +29,7 @@ void Engine::run(bool _useVSync, float _FOV) {
 	RunCompute();
 
 	Success printf("Starting Mandragora Engine\n");					mainLoop();			MainSeparator;
-	Normal  printf("Cleaning memory");		 cleanupRender(); cleanupCompute();			NewLine;
+	Normal  printf("Cleaning memory");		 cleanupGraphics(); cleanupCompute();			NewLine;
 
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);

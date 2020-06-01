@@ -46,12 +46,6 @@
     <ClCompile Include="LuxEngine\Engine\Engine.cpp">
       <Filter>LuxEngine\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\Images.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Devices.cpp">
       <Filter>LuxEngine\Engine</Filter>
     </ClCompile>
@@ -72,6 +66,12 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Graphics\Pipeline.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Images.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
