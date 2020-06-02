@@ -36,8 +36,8 @@
 #include "Graphics/Structs/Vertex.h"
 #include "LuxEngine/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
-#include "LuxEngine/Types/Containers/LuxStaticArray.h"
 
 
 //Re enable warnings for this header

@@ -25,17 +25,10 @@
 
 
 int main() {
-	//luxInit(false);
+	luxInit(false);
 
-	//Frame{
-	//	Sleep(1);
-	//}
-
-	LuxArray<float> a{ 0, 5, 2 };
-
-	LuxArray<uint32> b(&a);
-
-
-	printf("%d", b[1]);
+	Frame{
+		Sleep(1);
+	}
 	return 0;
 }

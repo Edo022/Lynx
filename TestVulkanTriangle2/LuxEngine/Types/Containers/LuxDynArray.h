@@ -3,7 +3,7 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/macros.h"
-#include "LuxEngine/Types/Containers/LuxStaticArray.h"
+#include "LuxEngine/Types/Containers/LuxArray.h"
 #include <vector>
 
 

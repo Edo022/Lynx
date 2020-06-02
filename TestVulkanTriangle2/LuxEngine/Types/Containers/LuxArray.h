@@ -5,7 +5,6 @@
 #include "LuxEngine/Types/Containers/LuxContainer.h"
 #include <initializer_list>
 #include <algorithm>
-#include <vector>
 
 
 //A static array that knows its size. It can be resized, but it doesn't have add or remove methods
