@@ -222,7 +222,7 @@ void Engine::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
-		LuxArray<VkImageView> attachments(2, 2);
+		LuxDynArray<VkImageView> attachments(2, 2);
 		attachments.add(swapChainImageViews[i]);
 		attachments.add(depthImageView);
 
@@ -256,7 +256,7 @@ void Engine::createFramebuffers() {
 
 
 void Engine::createDescriptorPool() {
-	LuxStaticArray<VkDescriptorPoolSize> poolSizes(2);
+	LuxArray<VkDescriptorPoolSize> poolSizes(2);
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	poolSizes[0].descriptorCount = static_cast<uint32>(swapChainImages.size());
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -282,7 +282,7 @@ void Engine::createDescriptorSetLayout() {
 	samplerLayoutBinding.pImmutableSamplers = nullptr;
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-	LuxStaticArray<VkDescriptorSetLayoutBinding> bindings = { samplerLayoutBinding };
+	LuxArray<VkDescriptorSetLayoutBinding> bindings = { samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	layoutInfo.bindingCount = static_cast<uint32>(bindings.size());
@@ -297,7 +297,7 @@ void Engine::createDescriptorSetLayout() {
 
 
 void Engine::createDescriptorSets() {
-	LuxStaticArray<VkDescriptorSetLayout> layouts;
+	LuxArray<VkDescriptorSetLayout> layouts;
 	layouts.resize(swapChainImages.size(), descriptorSetLayout);
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -314,7 +314,7 @@ void Engine::createDescriptorSets() {
 		imageInfo.imageView = textureImageView;
 		imageInfo.sampler = textureSampler;
 
-		LuxStaticArray<VkWriteDescriptorSet> descriptorWrites(1);
+		LuxArray<VkWriteDescriptorSet> descriptorWrites(1);
 		descriptorWrites[0] = {};
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSets[i];

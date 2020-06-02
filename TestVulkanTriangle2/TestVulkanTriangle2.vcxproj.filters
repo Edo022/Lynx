@@ -87,9 +87,6 @@
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h">
       <Filter>LuxEngine\Types\Integers</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h">
-      <Filter>LuxEngine\Types\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\Types.h">
       <Filter>LuxEngine\Types</Filter>
     </ClInclude>
@@ -114,9 +111,6 @@
     <ClInclude Include="LuxEngine\Engine\Engine.h">
       <Filter>LuxEngine\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\Containers\LuxStaticArray.h">
-      <Filter>LuxEngine\Types\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\LuxEngine.h">
       <Filter>LuxEngine</Filter>
     </ClInclude>
@@ -125,6 +119,15 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Engine\Graphics\Structs\Vertex.h">
       <Filter>LuxEngine\Engine\Graphics\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

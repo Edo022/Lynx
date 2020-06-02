@@ -11,7 +11,7 @@
 struct QueueFamilyIndices {
 	uint32 graphicsFamily = -1;
 	uint32 presentFamily = -1;
-	LuxArray<int32> computeFamilies;
+	LuxDynArray<int32> computeFamilies;
 
 	inline bool isGraphicsComplete() { return (graphicsFamily != -1 && presentFamily != -1); }
 };

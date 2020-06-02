@@ -197,7 +197,7 @@ void Engine::cleanupGraphics() {
 
 
 
-VkFormat Engine::findSupportedFormat(LuxStaticArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
+VkFormat Engine::findSupportedFormat(LuxArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
 	for (VkFormat format : candidates) {
 		VkFormatProperties props;
 		vkGetPhysicalDeviceFormatProperties(graphics.PD.device, format, &props);

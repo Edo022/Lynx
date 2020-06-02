@@ -26,7 +26,7 @@ static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
 QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
 	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);						//Enumerate queue families
-	LuxStaticArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+	LuxArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
 
 	//Set families
@@ -48,7 +48,7 @@ QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
 bool Engine::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 	uint32 extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);					//Get extension count
-	LuxStaticArray<VkExtensionProperties> availableExtensions(extensionCount);
+	LuxArray<VkExtensionProperties> availableExtensions(extensionCount);
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());	//Get extensions
 
 	std::set<std::string> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
@@ -97,8 +97,8 @@ bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 //Find all suitable physical devices, choosing the main and secondary devices according to their capabilities
 void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
-	LuxArray<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
-	LuxArray<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
+	LuxDynArray<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
+	LuxDynArray<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
 
 
 	//Get physical devices
@@ -106,7 +106,7 @@ void Engine::getPhysicalDevices() {
 	if (deviceCount == 0) Quit("Failed to find GPUs with Vulkan support")
 	else {
 		//Get physical devices
-		LuxStaticArray<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
+		LuxArray<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
 		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.data());					//Get physical devices
 
 		forEach(physDevices, i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
@@ -192,7 +192,7 @@ void Engine::getPhysicalDevices() {
 
 
 
-void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues) {
+void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxDynArray<VkQueue>* computeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice((*PD), graphics.PD)) {												//If it's the main device for graphics,
@@ -207,7 +207,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 
 
 	//Queue infos
-	LuxArray<VkDeviceQueueCreateInfo> queueCreateInfos;								//Create a queue create info array
+	LuxDynArray<VkDeviceQueueCreateInfo> queueCreateInfos;								//Create a queue create info array
 	for (auto queueFamilyIndex : uniqueQueueFamilyIndices) {							//For every device queue family index found
 		VkDeviceQueueCreateInfo queueCreateInfo{};											//Create a queue create info struct
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;					//Set structure type

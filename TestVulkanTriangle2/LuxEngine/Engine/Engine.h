@@ -72,8 +72,8 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
-	LuxStaticArray<VkSurfaceFormatKHR> formats;
-	LuxStaticArray<VkPresentModeKHR> presentModes;
+	LuxArray<VkSurfaceFormatKHR> formats;
+	LuxArray<VkPresentModeKHR> presentModes;
 };
 
 
@@ -148,10 +148,10 @@ private:
 	struct computeDevice {
 		_VkPhysicalDevice PD;						//Main physical device for computing
 		VkDevice LD;								//Main logical device for computing
-		LuxArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
+		LuxDynArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
 	}compute;
 
-	LuxStaticArray<computeDevice> secondary;		//Secondary devices and queues for computation
+	LuxArray<computeDevice> secondary;		//Secondary devices and queues for computation
 
 
 
@@ -160,7 +160,7 @@ private:
 	void initWindow();		void createInstance();
 
 	//Devices >> ./Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxArray<VkQueue>* computeQueues);
+	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxDynArray<VkQueue>* computeQueues);
 	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
@@ -184,11 +184,11 @@ private:
 
 	//Swapchain
 	VkSwapchainKHR swapChain;
-	LuxStaticArray<VkImage> swapChainImages;
-	LuxStaticArray<VkImageView> swapChainImageViews;
+	LuxArray<VkImage> swapChainImages;
+	LuxArray<VkImageView> swapChainImageViews;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
-	LuxStaticArray<VkFramebuffer> swapChainFramebuffers;
+	LuxArray<VkFramebuffer> swapChainFramebuffers;
 
 	//Render
 	VkRenderPass renderPass;
@@ -202,8 +202,8 @@ public:
 	VkDeviceMemory vertexBufferMemory;
 	VkBuffer indexBuffer;
 	VkDeviceMemory indexBufferMemory;
-	LuxStaticArray<Vertex> vertices;
-	LuxStaticArray<uint32> indices;
+	LuxArray<Vertex> vertices;
+	LuxArray<uint32> indices;
 
 private:
 	//Textures
@@ -220,22 +220,22 @@ private:
 	//Descriptors
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkDescriptorPool descriptorPool;
-	LuxStaticArray<VkDescriptorSet> descriptorSets;
+	LuxArray<VkDescriptorSet> descriptorSets;
 
 	//Commands
 	VkCommandPool graphicsCommandPool;
-	LuxStaticArray<VkCommandBuffer> commandBuffers;
+	LuxArray<VkCommandBuffer> commandBuffers;
 
 	//Render semaphores and frames
-	LuxStaticArray<VkSemaphore> imageAvailableSemaphores;
-	LuxStaticArray<VkSemaphore> renderFinishedSemaphores;
-	LuxStaticArray<VkFence> inFlightFences;
-	LuxStaticArray<VkFence> imagesInFlight;
+	LuxArray<VkSemaphore> imageAvailableSemaphores;
+	LuxArray<VkSemaphore> renderFinishedSemaphores;
+	LuxArray<VkFence> inFlightFences;
+	LuxArray<VkFence> imagesInFlight;
 	int64 currentFrame = 0;
 
 	//Debug and validation layers data
-	LuxStaticArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	LuxStaticArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
 
@@ -251,8 +251,8 @@ private:
 
 	//Graphics swapchain >> Graphics/Swapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxStaticArray<VkSurfaceFormatKHR>& availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(LuxStaticArray<VkPresentModeKHR>& availablePresentModes);
+	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxArray<VkSurfaceFormatKHR>& availableFormats);
+	VkPresentModeKHR chooseSwapPresentMode(LuxArray<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	void createImageViews();
@@ -292,7 +292,7 @@ private:
 
 
 	//Graphics other >> Graphics/Graphics.cpp
-	VkFormat findSupportedFormat(LuxStaticArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+	VkFormat findSupportedFormat(LuxArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 	uint32 findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);

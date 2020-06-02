@@ -69,8 +69,7 @@ void Engine::mainLoop() {
 		}
 		lastState = glfwGetKey(window, GLFW_KEY_F11);
 
-		//TODO mouse events
-		//printf("%d\n", glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1));
+		printf("%d\n", glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1));
 
 		//FPS counter
 		stdDuration elapsed_seconds = now - start;
@@ -111,7 +110,7 @@ void Engine::createInstance() {
 
 
 	//Extensions
-	LuxArray<const char*> extensions;
+	LuxDynArray<const char*> extensions;
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array
@@ -128,7 +127,7 @@ void Engine::createInstance() {
 	//Search for validation layers
 	uint32 layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);				//Get layer count
-	LuxStaticArray<VkLayerProperties> availableLayers((uint64)layerCount);
+	LuxArray<VkLayerProperties> availableLayers((uint64)layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());	//Get layers
 	for (const char* layerName : validationLayers) {											//For every layer,
 		for (const auto& layerProperties : availableLayers) {										//Check if it's available
