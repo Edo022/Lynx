@@ -39,6 +39,8 @@
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 
+#include "Input/MouseInput.h"
+#include "Input/KeyboardInput.h"
 
 //Re enable warnings for this header
 #pragma warning( default : 26451 )			//Arithmetic overflow

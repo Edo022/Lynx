@@ -20,13 +20,14 @@
 
 
 
-
-
 void Engine::run(bool _useVSync, float _FOV) {
 	initWindow();
 	Normal printf("    Creating Instance...                 ");		createInstance();					SuccessNoNl printf("ok");
 	runGraphics(_useVSync, _FOV);
 	RunCompute();
+
+	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
+	glfwSetKeyCallback(window, &__lp_key_callback);
 
 	Success printf("Starting Mandragora Engine\n");					mainLoop();			MainSeparator;
 	Normal  printf("Cleaning memory");		 cleanupGraphics(); cleanupCompute();			NewLine;
@@ -68,8 +69,6 @@ void Engine::mainLoop() {
 			}
 		}
 		lastState = glfwGetKey(window, GLFW_KEY_F11);
-
-		printf("%d\n", glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1));
 
 		//FPS counter
 		stdDuration elapsed_seconds = now - start;

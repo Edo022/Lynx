@@ -37,6 +37,9 @@
     <Filter Include="LuxEngine\Engine\Graphics\Structs">
       <UniqueIdentifier>{86530e9f-6596-4e6c-a587-42d7813dc394}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Engine\Input">
+      <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -128,6 +131,15 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h">
       <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\MouseInput.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\KeyboardInput.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\InputState.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
