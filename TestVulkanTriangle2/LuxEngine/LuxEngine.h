@@ -11,5 +11,10 @@
 
 
 #include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Engine/Input/Input.h"
 
-
+static void luxInit(bool useVSync = true) {
+	static Engine engine;
+	__lp_luxInit(&engine, useVSync);
+	__lp_input_state_set_engine_ptr(&engine);
+}

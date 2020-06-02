@@ -1,7 +1,5 @@
 #pragma once
 #include <GLFW/glfw3.h>
-#include "LuxEngine/Engine/Input/InputState.h"
-#include <stdio.h>
 
 
 
@@ -19,8 +17,4 @@ enum LuxMouseButtons {
 	LUX_MOUSE_BUTTON_MIDDLE = LUX_MOUSE_BUTTON_3
 };
 
-
-static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-	printf("mouse");
-}
 

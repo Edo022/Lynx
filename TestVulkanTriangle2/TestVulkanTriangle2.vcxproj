@@ -195,6 +195,7 @@
     <ClInclude Include="LuxEngine\Engine\Engine.h" />
     <ClInclude Include="LuxEngine\Engine\Graphics\Structs\Vertex.h" />
     <ClInclude Include="LuxEngine\Engine\Graphics\Structs\_VkPhysicalDevice.h" />
+    <ClInclude Include="LuxEngine\Engine\Input\Input.h" />
     <ClInclude Include="LuxEngine\Engine\Input\InputState.h" />
     <ClInclude Include="LuxEngine\Engine\Input\KeyboardInput.h" />
     <ClInclude Include="LuxEngine\Engine\Input\MouseInput.h" />

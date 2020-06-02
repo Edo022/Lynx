@@ -39,8 +39,6 @@
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 
-#include "Input/MouseInput.h"
-#include "Input/KeyboardInput.h"
 
 //Re enable warnings for this header
 #pragma warning( default : 26451 )			//Arithmetic overflow
@@ -369,26 +367,27 @@ private:
 
 
 
-#define Frame while(engine.running)
+#define Frame while(engine->running)
 
 
-static Engine engine;
+static Engine* engine;
 //This function is used by the engine. You shouldn't call it
 static void __lp_lux_init_run_thr(bool useVSync) {
-	engine.vertices = {
+	engine->vertices = {
 		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
 		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
 	};
-	engine.indices = {0, 1, 2, 2, 1, 3};
-	engine.run(useVSync, 45);
+	engine->indices = {0, 1, 2, 2, 1, 3};
+	engine->run(useVSync, 45);
 }
 
 
 //This function initializes the Lux Engine. Call it only once
-static void luxInit(bool useVSync) {
+static void __lp_luxInit(Engine* _engine, bool useVSync) {
+	engine = _engine;
 	std::thread t(__lp_lux_init_run_thr, useVSync);
 	t.detach();
-	engine.running = true;
+	engine->running = true;
 }

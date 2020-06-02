@@ -141,6 +141,9 @@
     <ClInclude Include="LuxEngine\Engine\Input\InputState.h">
       <Filter>LuxEngine\Engine\Input</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\Input.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LuxEngine\Contents\shaders\shader.comp">

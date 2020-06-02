@@ -130,6 +130,3 @@ enum LuxKeyboardKeys {
 };
 
 
-static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-	
-}
