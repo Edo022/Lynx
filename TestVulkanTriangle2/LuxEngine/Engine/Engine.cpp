@@ -126,11 +126,11 @@ void Engine::createInstance() {
 	#else
 	//Search for validation layers
 	uint32 layerCount = 0;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);				//Get layer count
+	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
 	LuxArray<VkLayerProperties> availableLayers((uint64)layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());	//Get layers
-	for (const char* layerName : validationLayers) {											//For every layer,
-		for (const auto& layerProperties : availableLayers) {										//Check if it's available
+	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());				//Get layers
+	for (const char* layerName : validationLayers) {										//For every layer,
+		for (const auto& layerProperties : availableLayers) {									//Check if it's available
 			if (strcmp(layerName, layerProperties.layerName) == 0) break;
 			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Quit("Validation layers not available. Cannot run in debug mode.");
 		}
@@ -230,7 +230,7 @@ VkShaderModule Engine::createShaderModule(VkDevice device, uint32* code, uint32*
 //*   size: the size of the buffer in bytes
 //*   usage: flags defining the usage of the buffer (VK_BUFFER_USAGE...)
 //*   properties: flags defining the properties of the memory (VK_MEMORY_PROPERTY_...)
-//*   buffer: the bìuffer object to allocate
+//*   buffer: the buffer object to allocate
 //*   memory: the memory of the buffer
 void Engine::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& memory) {
 	VkBufferCreateInfo bufferInfo{};
