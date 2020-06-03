@@ -76,6 +76,9 @@
     <ClCompile Include="LuxEngine\Engine\Compute\CPipeline.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

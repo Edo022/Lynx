@@ -24,9 +24,19 @@
 #include "LuxEngine/LuxEngine.h"
 
 
+void hh() {
+	printf("AAAAAAA");
+}
+
+
 int main() {
 	luxInit(false);
+	LuxInputState inputStateTest{ 
+		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS}, &hh } 
+	};
 
+
+	luxInputSetInputState(&inputStateTest);
 	Frame{
 		Sleep(1);
 	}

@@ -23,9 +23,11 @@ public:
 	LuxArray(uint64 initSize) { __lp_lux_static_array_init(initSize); }
 
 	//Initializes the array using a list of elements of the same type
-	LuxArray(std::initializer_list<type> c) {
+	template<class inType>
+	LuxArray(std::initializer_list<inType> c) {
 		__lp_lux_static_array_init(c.size());
-		std::copy(c.begin(), c.end(), __lp_data);
+		for (int i = 0; i < c.end() - c.begin(); i++) __lp_data[i] = (inType) * (c.begin() + i);
+		//std::copy(c.begin(), c.end(), __lp_data);
 	}
 
 	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
@@ -41,7 +43,9 @@ public:
 	inline uint64 size() override { return __lp_size; }
 	inline type* data() { return __lp_data; }
 
-	inline type& operator [](uint64 index) { return __lp_data[index]; }
+	inline type& operator [](uint64 index) { 
+		return __lp_data[index]; 
+	}
 	inline type* begin() override { return &__lp_data[0]; }
 	inline type* end() override { return &__lp_data[__lp_size - 1]; }
 

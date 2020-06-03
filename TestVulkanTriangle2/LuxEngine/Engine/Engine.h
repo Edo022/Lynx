@@ -1,5 +1,10 @@
 ﻿#pragma once
 
+#ifndef __ENGINE
+#define __ENGINE
+
+
+
 //Disabled useless warnings
 #pragma warning( disable : 26812 )			//Prefer enum class to enum
 #pragma warning( disable : 26495 )			//Uninitialized variables
@@ -38,6 +43,8 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
+
+#include "Input/Input.h"
 
 
 //Re enable warnings for this header
@@ -373,7 +380,7 @@ private:
 static Engine* engine;
 //This function is used by the engine. You shouldn't call it
 static void __lp_lux_init_run_thr(bool useVSync) {
-	engine->vertices = {
+	engine->vertices = { Vertex
 		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
 		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
 		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
@@ -391,3 +398,8 @@ static void __lp_luxInit(Engine* _engine, bool useVSync) {
 	t.detach();
 	engine->running = true;
 }
+
+
+
+
+#endif

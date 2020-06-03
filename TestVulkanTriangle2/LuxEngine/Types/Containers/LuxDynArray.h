@@ -179,7 +179,9 @@ public:
 
 
 	//Use the isValid() function to check if the element can be used
-	inline type& operator [](uint64 index) { return __lp_Data(index); }
+	inline type& operator [](uint64 index) { 
+		return __lp_Data(index); 
+	}
 
 	//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
 	inline type* data(uint64 chunkIndex) { return &__lp_data[chunkIndex][0]; }
@@ -212,3 +214,12 @@ public:
 
 
 #endif // __LUXARRAY
+
+
+
+
+
+
+
+
+

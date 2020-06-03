@@ -8,7 +8,7 @@
 
 
 enum LuxKeyState {
-	LUX_PRESS = 0x100000,
+	LUX_PRESS = 0b1000000000000000,
 	LUX_RELEASE = 0
 };
 
@@ -23,9 +23,9 @@ enum LuxKeyState {
 struct LuxKeyBinding {
 	//Each element represents a key and its action
 	//Example for the sequence "ctrl + k" : {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS, LUX_KEY_K | LUX_RELEASE}
-	LuxDynArray<int64> code;
+	LuxArray<uint16> code;
 	//This is the function that will be called when the sequence is performed
 	void* bindingCallback;
 };
 
-typedef LuxDynArray<LuxKeyBinding> InputState;
+typedef LuxArray<LuxKeyBinding> LuxInputState;
