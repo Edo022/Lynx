@@ -24,7 +24,7 @@
 #include "LuxEngine/LuxEngine.h"
 
 
-void hh() {
+void hh(LuxArray<uint16> keySequenceCode) {
 	printf("AAAAAAA");
 }
 
@@ -32,7 +32,7 @@ void hh() {
 int main() {
 	luxInit(false);
 	LuxInputState inputStateTest{ 
-		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS}, &hh } 
+		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh } 
 	};
 
 
