@@ -36,7 +36,7 @@ int main() {
 	luxInit(false);
 	LuxInputState inputStateTest{ 
 		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh },
-		LuxKeyBinding{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, &hh2 } 
+		LuxKeyBinding{ {LUX_KEY_S | LUX_PRESS}, &hh2 } 
 	};
 
 

@@ -19,11 +19,16 @@ inline static void __lp_input_set_engine_ptr(Engine* enginePtr) { __lp_input_eng
 
 inline static void luxInputSetInputState(LuxInputState* inputState) { 
 	__lp_input_states = inputState; 
+
+	//Calculate and save the maximum sequence length
 	maxInputStateSequenceLength = 0;
-	for (int i = 0; i < __lp_input_states->size(); i++) {
-		if (__lp_input_states->__lp_data[0].keySequenceCode.__lp_size > maxInputStateSequenceLength) 
-			maxInputStateSequenceLength = __lp_input_states->__lp_data[0].keySequenceCode.__lp_size;
+	for (int i = 0; i < __lp_input_states->bindings.size(); i++) {
+		if (__lp_input_states->bindings.__lp_data[0].keySequenceCode.__lp_size > maxInputStateSequenceLength) 
+			maxInputStateSequenceLength = __lp_input_states->bindings.__lp_data[0].keySequenceCode.__lp_size;
 	}
+
+	//Sort sequences
+	__lp_input_states->sort();
 }
 
 
@@ -50,16 +55,16 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 		inputKeysNum++;																							//Update the number of input keys
 	}
 
-	for (uint16 bindingIndex = 0; bindingIndex < __lp_input_states->size(); bindingIndex++) {				//For every input state's sequence
+	for (uint16 bindingIndex = 0; bindingIndex < __lp_input_states->bindings.size(); bindingIndex++) {				//For every input state's sequence
 		for (uint16 keyIndex = 0; keyIndex < inputKeysNum; keyIndex++) {										//For every key of the input sequence	//No need to check for (inputKeysNum < code.__lp_size). In that case, nothing in the for loop will be executed
-			if (inputKeyList[keyIndex] != (*__lp_input_states)[bindingIndex].keySequenceCode[keyIndex]) break;		//If it's different than the key of the sequence of the input state, exit the loop and try with the next sequence
-			else if (keyIndex == __lp_input_states->__lp_data[bindingIndex].keySequenceCode.__lp_size - 1) {		//If the sequence are equals
+			if (inputKeyList[keyIndex] != __lp_input_states->bindings[bindingIndex].keySequenceCode[keyIndex]) break;		//If it's different than the key of the sequence of the input state, exit the loop and try with the next sequence
+			else if (keyIndex == __lp_input_states->bindings.__lp_data[bindingIndex].keySequenceCode.__lp_size - 1) {		//If the sequence are equals
 				inputKeysNum = 0;																						//Reset the input sequence
-				(*__lp_input_states)[bindingIndex].bindedFunction((*__lp_input_states)[bindingIndex].keySequenceCode);	//Execute the binded function
+				__lp_input_states->bindings[bindingIndex].bindedFunction(__lp_input_states->bindings[bindingIndex].keySequenceCode);	//Execute the binded function
 				return;																									//Exit the function
 			}
 		}
-		if (bindingIndex == __lp_input_states->size()-1 && inputKeysNum >= maxInputStateSequenceLength) {		//If there are no sequences that match the input (The current binding is the last binding and the input size is greater or equal to the maximum size of a sequence of the input state)
+		if (bindingIndex == __lp_input_states->bindings.size()-1 && inputKeysNum >= maxInputStateSequenceLength) {		//If there are no sequences that match the input (The current binding is the last binding and the input size is greater or equal to the maximum size of a sequence of the input state)
 			inputKeysNum = 0;																						//Reset the input sequence
 			return;																									//Exit the function
 		}

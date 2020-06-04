@@ -4,7 +4,7 @@
 #include "MouseInput.h"
 #include "KeyboardInput.h"
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
-
+#include <initializer_list>
 
 
 enum LuxKeyState : uint16 {
@@ -30,4 +30,14 @@ struct LuxKeyBinding {
 	LuxKeyBindingCallback bindedFunction;
 };
 
-typedef LuxArray<LuxKeyBinding> LuxInputState;
+struct LuxInputState {
+	LuxArray<LuxKeyBinding> bindings;
+
+	LuxInputState(std::initializer_list<LuxKeyBinding> c) {
+		bindings = c;
+	}
+
+	void sort() {
+
+	}
+};
