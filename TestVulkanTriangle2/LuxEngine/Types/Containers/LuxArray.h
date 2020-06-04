@@ -40,7 +40,7 @@ public:
 
 
 
-	inline uint64 size() override { return __lp_size; }
+	inline uint64 size() { return __lp_size; }
 	inline type* data() { return __lp_data; }
 
 	inline type& operator [](uint64 index) { return __lp_data[index]; }

@@ -5,7 +5,8 @@
 #include "LuxEngine/Engine/Engine.h"
 #include "InputState.h"
 
-
+//TODO use [] and .size() instead of __lp_ values
+//TODO [] and .size() generates exception
 
 #define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - glfwAction - 1))
 
@@ -23,8 +24,8 @@ inline static void luxInputSetInputState(LuxInputState* inputState) {
 	//Calculate and save the maximum sequence length
 	maxInputStateSequenceLength = 0;
 	for (int i = 0; i < __lp_input_states->bindings.size(); i++) {
-		if (__lp_input_states->bindings.__lp_data[0].keySequenceCode.__lp_size > maxInputStateSequenceLength) 
-			maxInputStateSequenceLength = __lp_input_states->bindings.__lp_data[0].keySequenceCode.__lp_size;
+		if (__lp_input_states->bindings.__lp_data[0].keySequence.__lp_size > maxInputStateSequenceLength) 
+			maxInputStateSequenceLength = __lp_input_states->bindings.__lp_data[0].keySequence.__lp_size;
 	}
 
 	//Sort sequences
@@ -50,26 +51,29 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 	uint16 maxTestedInputStateSequenceLength = 0;
 	uint16 abc = (key | __lp_to_lux_act(action)); //TODO remove
 
+
+	//TODO ordered search
 	if (action != GLFW_REPEAT) {																			//If the action is not repeat
 		inputKeyList[inputKeysNum] = (key | __lp_to_lux_act(action));											//Add the key code to the input sequence
 		inputKeysNum++;																							//Update the number of input keys
-	}
 
-	for (uint16 bindingIndex = 0; bindingIndex < __lp_input_states->bindings.size(); bindingIndex++) {				//For every input state's sequence
-		for (uint16 keyIndex = 0; keyIndex < inputKeysNum; keyIndex++) {										//For every key of the input sequence	//No need to check for (inputKeysNum < code.__lp_size). In that case, nothing in the for loop will be executed
-			if (inputKeyList[keyIndex] != __lp_input_states->bindings[bindingIndex].keySequenceCode[keyIndex]) break;		//If it's different than the key of the sequence of the input state, exit the loop and try with the next sequence
-			else if (keyIndex == __lp_input_states->bindings.__lp_data[bindingIndex].keySequenceCode.__lp_size - 1) {		//If the sequence are equals
+		for (uint16 bindingIndex = 0; bindingIndex < __lp_input_states->bindings.size(); bindingIndex++) {				//For every input state's sequence
+			for (uint16 keyIndex = 0; keyIndex < inputKeysNum; keyIndex++) {										//For every key of the input sequence	//No need to check for (inputKeysNum < code.__lp_size). In that case, nothing in the for loop will be executed
+				if (inputKeyList[keyIndex] != __lp_input_states->bindings[bindingIndex].keySequence[keyIndex]) break;		//If it's different than the key of the sequence of the input state, exit the loop and try with the next sequence
+				else if (keyIndex == __lp_input_states->bindings.__lp_data[bindingIndex].keySequence.__lp_size - 1) {		//If the sequence are equals
+					inputKeysNum = 0;																						//Reset the input sequence
+					__lp_input_states->bindings[bindingIndex].bindedFunction(__lp_input_states->bindings[bindingIndex].keySequence);	//Execute the binded function
+					return;																									//Exit the function
+				}
+			}
+			if (bindingIndex == __lp_input_states->bindings.size() - 1 && inputKeysNum >= maxInputStateSequenceLength) {		//If there are no sequences that match the input (The current binding is the last binding and the input size is greater or equal to the maximum size of a sequence of the input state)
 				inputKeysNum = 0;																						//Reset the input sequence
-				__lp_input_states->bindings[bindingIndex].bindedFunction(__lp_input_states->bindings[bindingIndex].keySequenceCode);	//Execute the binded function
 				return;																									//Exit the function
 			}
 		}
-		if (bindingIndex == __lp_input_states->bindings.size()-1 && inputKeysNum >= maxInputStateSequenceLength) {		//If there are no sequences that match the input (The current binding is the last binding and the input size is greater or equal to the maximum size of a sequence of the input state)
-			inputKeysNum = 0;																						//Reset the input sequence
-			return;																									//Exit the function
-		}
 	}
 }
+
 
 
 
