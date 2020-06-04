@@ -27,12 +27,16 @@
 void hh(LuxArray<uint16> keySequenceCode) {
 	printf("AAAAAAA");
 }
+void hh2(LuxArray<uint16> keySequenceCode) {
+	printf("BBBB");
+}
 
 
 int main() {
 	luxInit(false);
 	LuxInputState inputStateTest{ 
-		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh } 
+		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh },
+		LuxKeyBinding{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, &hh2 } 
 	};
 
 
