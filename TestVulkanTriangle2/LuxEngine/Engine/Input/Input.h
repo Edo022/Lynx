@@ -32,8 +32,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 	for (int loopCurrentKey = 0; loopCurrentKey < __lp_input_key_queue_size; loopCurrentKey++) {
 		uint16 abc = (key | __lp_to_lux_act(action));
 		if (__lp_input_key_queue[loopCurrentKey] != (*__lp_input_states)[0].code[loopCurrentKey]) break;
-		//TODO  __lp_input_states->size() is 1
-		else if (loopCurrentKey == __lp_input_states->size() - 1) {
+		else if (loopCurrentKey == (*__lp_input_states).__lp_data[0].code.__lp_size - 1) {
 			__lp_input_key_queue_size = 0;
 			(*__lp_input_states)[0].bindingCallback((*__lp_input_states)[0].code);
 		}
