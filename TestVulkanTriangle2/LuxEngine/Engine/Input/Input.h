@@ -14,7 +14,7 @@ class Engine;
 extern Engine* __lp_input_engine_ptr;			//? TODO
 extern LuxInputState* __lp_input_states;		//The current input state
 //extern LuxArray<uint16> __lp_input_key_queue;	//The list of keys and actions since the last performed key sequence
-extern uint16 inputKeysNum;
+//extern uint16 inputKeysNum;
 
 inline static void __lp_input_set_engine_ptr(Engine* enginePtr) { __lp_input_engine_ptr = enginePtr; }
 inline static void luxInputSetInputState(LuxInputState* inputState) { __lp_input_states = inputState; }
@@ -31,7 +31,7 @@ static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action,
 
 static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	static LuxArray<uint16> inputKeyList(100);		//The list of keys and actions since the last performed key sequence
-	//static uint16 inputKeysNum = 0;					//The size of the current key list
+	static uint16 inputKeysNum = 0;					//The size of the current key list
 	uint16 abc = (key | __lp_to_lux_act(action));
 
 	if (action != GLFW_REPEAT) {
