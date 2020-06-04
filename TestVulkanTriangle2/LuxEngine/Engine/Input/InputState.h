@@ -25,9 +25,9 @@ typedef void (*LuxKeyBindingCallback)(LuxArray<uint16>);
 struct LuxKeyBinding {
 	//Each element represents a key and its action
 	//Example for the sequence "ctrl + k" : {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS, LUX_KEY_K | LUX_RELEASE}
-	LuxArray<uint16> code;
+	LuxArray<uint16> keySequenceCode;
 	//This is the function that will be called when the sequence is performed. It must be of type void and take the key sequence as a parameter
-	LuxKeyBindingCallback bindingCallback;
+	LuxKeyBindingCallback bindedFunction;
 };
 
 typedef LuxArray<LuxKeyBinding> LuxInputState;
