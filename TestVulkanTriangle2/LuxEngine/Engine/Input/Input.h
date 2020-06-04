@@ -24,8 +24,8 @@ inline static void luxInputSetInputState(LuxInputState* inputState) {
 	//Calculate and save the maximum sequence length
 	maxInputStateSequenceLength = 0;
 	for (int i = 0; i < __lp_input_states->bindings.size(); i++) {
-		if (__lp_input_states->bindings.__lp_data[0].keySequence.__lp_size > maxInputStateSequenceLength) 
-			maxInputStateSequenceLength = __lp_input_states->bindings.__lp_data[0].keySequence.__lp_size;
+		if (__lp_input_states->bindings.__lp_data[0].sequence.__lp_size > maxInputStateSequenceLength) 
+			maxInputStateSequenceLength = __lp_input_states->bindings.__lp_data[0].sequence.__lp_size;
 	}
 
 	//Sort sequences
@@ -59,10 +59,10 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 
 		for (uint16 bindingIndex = 0; bindingIndex < __lp_input_states->bindings.size(); bindingIndex++) {				//For every input state's sequence
 			for (uint16 keyIndex = 0; keyIndex < inputKeysNum; keyIndex++) {										//For every key of the input sequence	//No need to check for (inputKeysNum < code.__lp_size). In that case, nothing in the for loop will be executed
-				if (inputKeyList[keyIndex] != __lp_input_states->bindings[bindingIndex].keySequence[keyIndex]) break;		//If it's different than the key of the sequence of the input state, exit the loop and try with the next sequence
-				else if (keyIndex == __lp_input_states->bindings.__lp_data[bindingIndex].keySequence.__lp_size - 1) {		//If the sequence are equals
+				if (inputKeyList[keyIndex] != __lp_input_states->bindings[bindingIndex].sequence[keyIndex]) break;		//If it's different than the key of the sequence of the input state, exit the loop and try with the next sequence
+				else if (keyIndex == __lp_input_states->bindings[bindingIndex].sequence.__lp_size - 1) {		//If the sequence are equals
 					inputKeysNum = 0;																						//Reset the input sequence
-					__lp_input_states->bindings[bindingIndex].bindedFunction(__lp_input_states->bindings[bindingIndex].keySequence);	//Execute the binded function
+					__lp_input_states->bindings[bindingIndex].bindedFunction(__lp_input_states->bindings[bindingIndex].sequence);	//Execute the binded function
 					return;																									//Exit the function
 				}
 			}

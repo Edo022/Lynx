@@ -24,10 +24,10 @@ typedef void (*LuxKeyBindingCallback)(LuxArray<uint16>);
 //   -     |-----|Unused
 //   1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1   
 //   |---|Action   |---------------|Key 
-struct LuxKeyBinding {
-	//Each element represents a key and its action
+struct LuxKeySequence {
+	//The actual sequence of keys. Each element represents a key and its action
 	//Example for the sequence "ctrl + k" : {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS, LUX_KEY_K | LUX_RELEASE}
-	LuxArray<uint16> keySequence;
+	LuxArray<uint16> sequence;
 	//This is the function that will be called when the sequence is performed. It must be of type void and take the key sequence as a parameter
 	LuxKeyBindingCallback bindedFunction;
 };
@@ -36,32 +36,31 @@ struct LuxKeyBinding {
 
 
 struct LuxInputState {
-	LuxArray<LuxKeyBinding> bindings;
+	LuxArray<LuxKeySequence> bindings;
 	bool sorted = false;
 
-	LuxInputState(std::initializer_list<LuxKeyBinding> c) {
+	LuxInputState(std::initializer_list<LuxKeySequence> c) {
 		bindings = c;
 	}
 
-
+	//
 	void sort() {
 		if (!sorted) {
 			sorted = true;
-			for (int i = 0; i < bindings.size(); i++) { //For every sequence
-				//check sequence
-				for (int j = i; j < bindings.size(); j++) { //For every key binding
-					if (j == i) continue;	//Skip useless iterations
-					for (int k = 0; k < min(bindings[j].keySequence.__lp_size, bindings.__lp_data[i].keySequence.__lp_size);) {//For every key
-						if (bindings.__lp_data[j].keySequence.__lp_data[k] == bindings.__lp_data[i].keySequence.__lp_data[k]) { //If the keys are the same
-							k++;															//Check the next key
-							continue;
+			for (int i = 0; i < bindings.size(); i++) {													//For every sequence
+				for (int j = i; j < bindings.size(); j++) {													//Checking every other sequence that comes after it
+					if (j == i) continue;																		//Skip useless iterations
+					for (int k = 0; k < min(bindings[j].sequence.__lp_size, bindings[i].sequence.__lp_size);) {	//For every key of the sequence
+						if (bindings[j].sequence[k] == bindings[i].sequence[k]) {									//Compare the 2 keys at the same index of the sequences. If they are equals
+							k++;																						//Increase the key counter
+							continue;																					//And check the next key
 						}
-						if (bindings.__lp_data[j].keySequence.__lp_data[k] < bindings.__lp_data[i].keySequence.__lp_data[k]) {
-							LuxKeyBinding b = bindings.__lp_data[i];
-							bindings.__lp_data[i] = bindings.__lp_data[j];
-							bindings.__lp_data[j] = b;
+						if (bindings[j].sequence.__lp_data[k] < bindings[i].sequence[k]) {							//If the first is greater than the second
+							LuxKeySequence b = bindings[i];																//Swap the whole sequence
+							bindings[i] = bindings[j];
+							bindings[j] = b;
 						}
-						break;
+						break;																						//Exit the loop
 					}
 				}
 			}

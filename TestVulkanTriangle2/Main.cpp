@@ -35,16 +35,10 @@ void hh2(LuxArray<uint16> keySequenceCode) {
 int main() {
 	luxInit(false);
 	LuxInputState inputStateTest{ 
-		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh },
-		LuxKeyBinding{ {LUX_KEY_S | LUX_PRESS}, &hh2 } ,
-		LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_A | LUX_PRESS}, &hh2 } ,
+		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh },
+		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS}, &hh2 } ,
+		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_A | LUX_PRESS}, &hh2 } ,
 	};
-	//LuxInputState inputStateTest{ 
-	//	LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_W | LUX_RELEASE}, &hh },
-	//	LuxKeyBinding{ {LUX_KEY_S | LUX_PRESS}, &hh2 } ,
-	//	LuxKeyBinding{ {LUX_KEY_W | LUX_PRESS, LUX_KEY_A | LUX_PRESS}, &hh2 } ,
-	//	LuxKeyBinding{ {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_LEFT_CTRL | LUX_RELEASE}, &hh2 }
-	//};
 
 
 	luxInputSetInputState(&inputStateTest);

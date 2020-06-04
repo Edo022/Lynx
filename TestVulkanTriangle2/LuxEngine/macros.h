@@ -24,7 +24,7 @@
 
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
-
+#define swapVar(a,b)		a ^= b ^= a ^= b			//Swaps the contents of 2 basic type variables
 
 //#include <chrono>
 #define stdTime				std::chrono::system_clock::time_point
