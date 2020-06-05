@@ -44,7 +44,7 @@ struct LuxInputState {
 	}
 
 	//
-	void sort() {
+	void sort() {																					//If the sequence is not sorted
 		if (!sorted) {
 			sorted = true;
 			for (int i = 0; i < bindings.size(); i++) {													//For every sequence
