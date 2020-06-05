@@ -36,31 +36,33 @@ struct LuxKeySequence {
 
 
 struct LuxInputState {
-	LuxArray<LuxKeySequence> bindings;
-	bool sorted = false;
+	LuxArray<LuxKeySequence> sequences;		//The sequences of keys
+	bool sorted = false;					//Whether the sequence is sorted or not
 
+	//Initializes the input state with a list of key sequences and sorts them
 	LuxInputState(std::initializer_list<LuxKeySequence> c) {
-		bindings = c;
+		sequences = c;
+		sort();
 	}
 
-	//
+	//Sorts the sequences
 	void sort() {																					//If the sequence is not sorted
 		if (!sorted) {
 			sorted = true;
-			for (int i = 0; i < bindings.size(); i++) {													//For every sequence
-				for (int j = i; j < bindings.size(); j++) {													//Checking every other sequence that comes after it
+			for (int i = 0; i < sequences.size(); i++) {												//For every sequence
+				for (int j = i; j < sequences.size(); j++) {												//Checking every other sequence that comes after it
 					if (j == i) continue;																		//Skip useless iterations
-					for (int k = 0; k < min(bindings[j].sequence.__lp_size, bindings[i].sequence.__lp_size);) {	//For every key of the sequence
-						if (bindings[j].sequence[k] == bindings[i].sequence[k]) {									//Compare the 2 keys at the same index of the sequences. If they are equals
+					for (int k = 0; k < min(sequences.__lp_data[j].sequence.__lp_size, sequences.__lp_data[i].sequence.__lp_size);) {//For every key of the sequence
+						if (sequences.__lp_data[j].sequence[k] == sequences.__lp_data[i].sequence[k]) {									//Compare the 2 keys at the same index of the sequences. If they're equals
 							k++;																						//Increase the key counter
 							continue;																					//And check the next key
 						}
-						if (bindings[j].sequence.__lp_data[k] < bindings[i].sequence[k]) {							//If the first is greater than the second
-							LuxKeySequence b = bindings[i];																//Swap the whole sequence
-							bindings[i] = bindings[j];
-							bindings[j] = b;
+						if (sequences.__lp_data[j].sequence.__lp_data[k] < sequences.__lp_data[i].sequence[k]) {							//If the first is greater than the second
+							LuxKeySequence b = sequences.__lp_data[i];																//Swap the whole sequence
+							sequences.__lp_data[i] = sequences.__lp_data[j];
+							sequences.__lp_data[j] = b;
+							break;																						//Exit the loop
 						}
-						break;																						//Exit the loop
 					}
 				}
 			}
