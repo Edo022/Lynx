@@ -34,8 +34,8 @@ VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		return VkExtent2D{
-			max(capabilities.minImageExtent.width, min(capabilities.maxImageExtent.width, static_cast<uint32>(width))),
-			max(capabilities.minImageExtent.height, min(capabilities.maxImageExtent.height, static_cast<uint32>(height)))
+			max(capabilities.minImageExtent.width, min(capabilities.maxImageExtent.width, sc<uint32>(width))),
+			max(capabilities.minImageExtent.height, min(capabilities.maxImageExtent.height, sc<uint32>(height)))
 		};
 	}
 }
@@ -183,11 +183,11 @@ void Engine::cleanupSwapChain() {
 	vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);	//Destroy pipeline layout
 	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
 
-	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);			//Destroy framebuffers
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, (uint32)(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
-	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);					//Destroy image views
-	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);															//destroy swapchain
-	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);													//Destroy graphics descriptor pool
+	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				//Destroy framebuffers
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
+	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
+	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
+	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);														//Destroy graphics descriptor pool
 }
 
 

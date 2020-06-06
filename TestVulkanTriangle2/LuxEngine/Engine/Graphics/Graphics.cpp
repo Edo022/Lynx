@@ -10,7 +10,7 @@ void Engine::runGraphics(bool _useVSync, float _FOV) {
 
 	if (enableValidationLayers) { Failure printf("D E B U G    M O D E"); }				MainSeparator;
 	Normal  printf("Initializing Vulkan");							initVulkan();		MainSeparator;
-	Success printf("Initialization completed in %f s", ((stdDuration)(now - start)).count());
+	Success printf("Initialization completed in %f s", (sc<stdDuration>(now - start)).count());
 }
 
 

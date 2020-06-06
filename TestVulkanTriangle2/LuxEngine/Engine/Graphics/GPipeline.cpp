@@ -35,7 +35,7 @@ void Engine::createGraphicsPipeline() {
 	auto bindingDescription = Vertex::getBindingDescription();							//Get binding   descriptions
 	auto attributeDescriptions = Vertex::getAttributeDescriptions();					//Get attrubute descriptions
 	vertexInputInfo.vertexBindingDescriptionCount = 1;									//Set number of binding   descriptions
-	vertexInputInfo.vertexAttributeDescriptionCount = (uint32)(attributeDescriptions.size());//Set number of attribute descriptions
+	vertexInputInfo.vertexAttributeDescriptionCount = sc<uint32>(attributeDescriptions.size());//Set number of attribute descriptions
 	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;					//Set binding   descriptions
 	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data(0);		//Set attribute descriptions
 	pipelineInfo.pVertexInputState = &vertexInputInfo;								//Save vertex input
@@ -51,8 +51,8 @@ void Engine::createGraphicsPipeline() {
 	VkViewport viewport{};															//Create the viewport. It's the area where to render
 	viewport.x = 0.0f;																	//Viewport start position
 	viewport.y = 0.0f;																	//Viewport start position
-	viewport.width = (float)swapChainExtent.width;										//Viewport width (maximum)
-	viewport.height = (float)swapChainExtent.height;									//Viewport height (maximum)
+	viewport.width = sc<float>(swapChainExtent.width);									//Viewport width (maximum)
+	viewport.height = sc<float>(swapChainExtent.height);								//Viewport height (maximum)
 	viewport.minDepth = 0.0f;															//Viewport depth (Vulkan default)
 	viewport.maxDepth = 1.0f;															//Viewport depth (Vulkan default)
 
@@ -229,7 +229,7 @@ void Engine::createFramebuffers() {
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = (uint32)(attachments.size());
+		framebufferInfo.attachmentCount = sc<uint32>(attachments.size());
 		framebufferInfo.pAttachments = attachments.data(0);
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
@@ -258,15 +258,15 @@ void Engine::createFramebuffers() {
 void Engine::createDescriptorPool() {
 	LuxArray<VkDescriptorPoolSize> poolSizes(2);
 	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = static_cast<uint32>(swapChainImages.size());
+	poolSizes[0].descriptorCount = sc<uint32>(swapChainImages.size());
 	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = static_cast<uint32>(swapChainImages.size());
+	poolSizes[1].descriptorCount = sc<uint32>(swapChainImages.size());
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = static_cast<uint32>(poolSizes.size());
+	poolInfo.poolSizeCount = sc<uint32>(poolSizes.size());
 	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = static_cast<uint32>(swapChainImages.size());
+	poolInfo.maxSets = sc<uint32>(swapChainImages.size());
 
 	Try(vkCreateDescriptorPool(graphics.LD, &poolInfo, nullptr, &descriptorPool)) Quit("Failed to create descriptor pool");
 }
@@ -285,7 +285,7 @@ void Engine::createDescriptorSetLayout() {
 	LuxArray<VkDescriptorSetLayoutBinding> bindings = { samplerLayoutBinding };
 	VkDescriptorSetLayoutCreateInfo layoutInfo{};
 	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = static_cast<uint32>(bindings.size());
+	layoutInfo.bindingCount = sc<uint32>(bindings.size());
 	layoutInfo.pBindings = bindings.data();
 
 	Try(vkCreateDescriptorSetLayout(graphics.LD, &layoutInfo, nullptr, &descriptorSetLayout)) {
@@ -302,7 +302,7 @@ void Engine::createDescriptorSets() {
 	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
-	allocInfo.descriptorSetCount = static_cast<uint32>(swapChainImages.size());
+	allocInfo.descriptorSetCount = sc<uint32>(swapChainImages.size());
 	allocInfo.pSetLayouts = layouts.data();
 
 	descriptorSets.resize(swapChainImages.size());
@@ -324,6 +324,6 @@ void Engine::createDescriptorSets() {
 		descriptorWrites[0].descriptorCount = 1;
 		descriptorWrites[0].pImageInfo = &imageInfo;
 
-		vkUpdateDescriptorSets(graphics.LD, static_cast<uint32>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		vkUpdateDescriptorSets(graphics.LD, sc<uint32>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
 }

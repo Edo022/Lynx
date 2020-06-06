@@ -391,7 +391,7 @@ static void __lp_lux_init_run_thr(bool useVSync) {
 }
 
 
-//This function initializes the Lux Engine. Call it only once
+//Don't call this function
 static void __lp_luxInit(Engine* _engine, bool useVSync) {
 	engine = _engine;
 	std::thread t(__lp_lux_init_run_thr, useVSync);

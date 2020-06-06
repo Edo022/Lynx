@@ -14,6 +14,7 @@ enum LuxKeyState : uint16 {
 };
 
 
+typedef void (*LuxKeyBindingCallback)(LuxArray<uint16>);
 //This struct contains a sequence of keys and a function to call when the sequence is performed
 //The sequence is saved as an array of uint16. The action and the key are in the same varibale for better performances.
 //There is no limit to the length of a key sequence
@@ -21,7 +22,6 @@ enum LuxKeyState : uint16 {
 //   1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1   
 //   |---|Action   |---------------|Key 
 struct LuxKeySequence {
-	typedef void (*LuxKeyBindingCallback)(LuxArray<uint16>);
 	//The actual sequence of keys. Each element represents a key and its action
 	//e.g. "ctrl + k" = {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS}
 	LuxArray<uint16> sequence;

@@ -114,7 +114,7 @@ void Engine::createInstance() {
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array
 	if (enableValidationLayers) extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);			//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = static_cast<uint32>(extensions.size());				//Set extension count
+	createInfo.enabledExtensionCount = sc<uint32>(extensions.size());						//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
 
 
@@ -137,7 +137,7 @@ void Engine::createInstance() {
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = static_cast<uint32>(validationLayers.size());
+	createInfo.enabledLayerCount = sc<uint32>(validationLayers.size());
 	createInfo.ppEnabledLayerNames = validationLayers.data();
 	populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;

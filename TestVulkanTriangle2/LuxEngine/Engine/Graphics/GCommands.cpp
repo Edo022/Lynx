@@ -58,7 +58,7 @@ void Engine::createDrawCommandBuffers() {
 		vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
 		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
 		//Draw texture
-		vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32>(indices.size()), 1, 0, 0, 0);
+		vkCmdDrawIndexed(commandBuffers[i], sc<uint32>(indices.size()), 1, 0, 0, 0);
 
 		//Eng command buffer and render pass
 		vkCmdEndRenderPass(commandBuffers[i]);
