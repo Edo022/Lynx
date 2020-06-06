@@ -1,18 +1,13 @@
 #pragma once
 
-#ifndef  __INPUT
+#ifndef  __INPUT	//This is useless, but it doesn't work without it
 #define __INPUT
-#include "LuxEngine/Engine/Engine.h"
 #include "InputState.h"
 
 
 
 
-class Engine;
-extern Engine* __lp_input_engine_ptr;			//? TODO
 extern LuxInputState* __lp_input_states;		//The current input state
-
-inline static void __lp_input_set_engine_ptr(Engine* enginePtr) { __lp_input_engine_ptr = enginePtr; }
 inline static void luxInputSetInputState(LuxInputState* inputState) { __lp_input_states = inputState; __lp_input_states->sort(); }
 
 
@@ -31,11 +26,12 @@ static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action,
 
 //This function manages the input from the keyboard and calls the functions binded to the input state's key bindings
 static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	// 37th hour spent debugging this function. It finally works
 	static uint16 yMin = 0, yMax = __lp_input_states->sequences.size() - 1, x = 0;
 	#define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - glfwAction - 1))
 	
 	if (action != GLFW_REPEAT) {										//If the action is not repeat
-		uint16 keyCode = (key | __lp_to_lux_act(action));					//Claculate the key code
+		uint16 keyCode = (key | __lp_to_lux_act(action));					//Calculate the key code
 		int i = yMin;														//Set the loop index as the minimum y
 		while (keyCode != __lp_input_states->sequences[i].sequence[x]) {	//Find the new minimum y
 			i++;																//Increase the counter until the input key is equal to the input state sequence's key
@@ -59,7 +55,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 				break;																	//Exit the loop
 			}
 		}
-																				   // --------------------------->
+																												// UwU
 		if (yMin == yMax && x == sc<LuxArray<uint16>>(__lp_input_states->sequences[yMax].sequence).size() -1){	//If the maximum and minimum y are the same
 			__lp_input_states->sequences[yMax].bindedFunction(__lp_input_states->sequences[yMax].sequence);			//Call the binded function
 			yMin = 0;																								//Reset the minimum y
