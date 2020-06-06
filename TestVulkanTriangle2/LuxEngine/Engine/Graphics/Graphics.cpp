@@ -99,10 +99,11 @@ void Engine::drawFrame() {
 
 	//Acquire swapchain image
 	uint32 imageIndex;
-	VkResult result = vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR) { recreateSwapChain(); return; }
-	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) Quit("Failed to acquire swapchain image");
-
+	switch (vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex)) {
+		case VK_SUBOPTIMAL_KHR: case VK_SUCCESS: break;
+		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(); return;
+		default: Quit("Failed to acquire swapchain image");
+	}
 	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
@@ -113,11 +114,11 @@ void Engine::drawFrame() {
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 	static VkPresentInfoKHR presentInfo{};
-	static VkSwapchainKHR swapChains[] = { swapChain };
 
-	static bool staticInit = true;
-	if (staticInit) {
-		staticInit = false;
+	static bool h = true;
+	if (h) {
+		h = false;
+
 		//Submit to queue
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.waitSemaphoreCount = 1;
@@ -129,32 +130,34 @@ void Engine::drawFrame() {
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = swapChains;
 
 	}
 
 	//Submit to queue
 	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
-	submitInfo.pSignalSemaphores = signalSemaphores;
+	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame];
+	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame];
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
 
 
 	//Present
-	presentInfo.pWaitSemaphores = signalSemaphores;
+	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
 	presentInfo.pImageIndices = &imageIndex;
+	presentInfo.pSwapchains = &swapChain;
 
-	result = vkQueuePresentKHR(graphics.presentQueue, &presentInfo);
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || framebufferResized) {
+	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) {
+		case VK_SUCCESS: break;
+		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: goto recreateSwapchain_;
+		default: Quit("Failed to present swapchain image");
+	}
+	if (framebufferResized) {
+	recreateSwapchain_:
 		framebufferResized = false;
 		recreateSwapChain();
 		vkDeviceWaitIdle(graphics.LD);
 	}
-	else Try(result) Quit("Failed to present swapchain image");
 
 	//Update frame number
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
