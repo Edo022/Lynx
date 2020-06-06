@@ -1,10 +1,10 @@
 ﻿#pragma once
 
 #include <GLFW/glfw3.h>
-#include "MouseInput.h"
-#include "KeyboardInput.h"
-#include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include <initializer_list>
+#include "LuxEngine/macros.h"                     // for sc, min
+#include "LuxEngine/Types/Containers/LuxArray.h"  // for LuxArray
+#include "LuxEngine/Types/Integers/Integers.h"    // for uint16
 
 
 enum LuxKeyState : uint16 {
@@ -12,6 +12,8 @@ enum LuxKeyState : uint16 {
 	LUX_PRESS = 1 << 14,
 	LUX_REPEAT = 1 << 13
 };
+
+
 
 
 typedef void (*LuxKeyBindingCallback)(LuxArray<uint16>);

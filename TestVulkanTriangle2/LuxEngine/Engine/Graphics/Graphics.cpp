@@ -107,18 +107,37 @@ void Engine::drawFrame() {
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
 
+
+
+	static VkSubmitInfo submitInfo{};
+	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+	static VkPresentInfoKHR presentInfo{};
+	static VkSwapchainKHR swapChains[] = { swapChain };
+
+	static bool staticInit = true;
+	if (staticInit) {
+		staticInit = false;
+		//Submit to queue
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pWaitDstStageMask = waitStages;
+
+		//Present
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = swapChains;
+
+	}
+
 	//Submit to queue
-	VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
-	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+	VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
+	submitInfo.pWaitSemaphores = waitSemaphores;
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
-	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
@@ -126,13 +145,7 @@ void Engine::drawFrame() {
 
 
 	//Present
-	VkPresentInfoKHR presentInfo{};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores = signalSemaphores;
-	VkSwapchainKHR swapChains[] = { swapChain };
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = swapChains;
 	presentInfo.pImageIndices = &imageIndex;
 
 	result = vkQueuePresentKHR(graphics.presentQueue, &presentInfo);

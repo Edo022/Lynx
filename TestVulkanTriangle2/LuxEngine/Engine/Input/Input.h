@@ -3,7 +3,8 @@
 #ifndef  __INPUT	//This is useless, but it doesn't work without it
 #define __INPUT
 #include "InputState.h"
-
+#include "MouseInput.h"
+#include "KeyboardInput.h"
 
 
 

@@ -22,15 +22,16 @@
 
 void Engine::run(bool _useVSync, float _FOV) {
 	initWindow();
-	Normal printf("    Creating Instance...                 ");		createInstance();					SuccessNoNl printf("ok");
+	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
 	runGraphics(_useVSync, _FOV);
 	RunCompute();
 
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
 	glfwSetKeyCallback(window, &__lp_key_callback);
 
-	Success printf("Starting Mandragora Engine\n");					mainLoop();			MainSeparator;
-	Normal  printf("Cleaning memory");		 cleanupGraphics(); cleanupCompute();			NewLine;
+
+	Success printf("Starting Mandragora Engine\n");					mainLoop();									MainSeparator;
+	Normal  printf("Cleaning memory");								cleanupGraphics(); cleanupCompute();		NewLine;
 
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);
@@ -206,7 +207,7 @@ uint32* Engine::readShaderFromFile(uint32* length, const char* filename) {
 
 
 
-//Creates a shadere module from a compiled shader code and its size in bytes
+//Creates a shader module from a compiled shader code and its size in bytes
 //*   device: the logical device to use to create the shader module
 //*   code: a pointer to an int32 array containing the shader code
 //*   length: a pointer to the code length

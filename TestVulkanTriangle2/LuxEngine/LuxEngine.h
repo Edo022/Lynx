@@ -10,6 +10,8 @@
 //Class operators and size() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
 #include "LuxEngine/Engine/Engine.h"
 
+#include "LuxEngine/Engine/Input/Input.h"
+
 
 
 

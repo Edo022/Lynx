@@ -23,10 +23,10 @@ void Engine::createDrawCommandBuffers() {
 	commandBuffers.resize(swapChainFramebuffers.size());				//One command buffer for every swapchain's framebuffer 
 
 	VkCommandBufferAllocateInfo allocInfo{};							//Create allocate infos
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;	//Set structure type
-	allocInfo.commandPool = graphicsCommandPool;						//Set command pool	
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set command buffer level
-	allocInfo.commandBufferCount = (uint32)commandBuffers.size();		//Set number of command buffers
+	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
+	allocInfo.commandPool = graphicsCommandPool;							//Set command pool	
+	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set command buffer level
+	allocInfo.commandBufferCount = (uint32)commandBuffers.size();			//Set number of command buffers
 	//Allocate command buffers
 	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data())) Quit("Failed to allocate command buffers");
 
