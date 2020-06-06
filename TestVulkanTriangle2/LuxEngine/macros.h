@@ -22,7 +22,7 @@
 
 
 #define null nullptr
-#define forEach(container, iterator) for(uint64 iterator = 0; iterator < container.size(); iterator++)
+#define forEach(container, iterator)	for(uint64 iterator = 0; iterator < container.size(); iterator++)
 #define sc static_cast
 
 //functions

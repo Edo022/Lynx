@@ -115,10 +115,9 @@ void Engine::drawFrame() {
 
 	static VkPresentInfoKHR presentInfo{};
 
-	static bool h = true;
-	if (h) {
-		h = false;
-
+	static bool staticInit = true;
+	if (staticInit) {
+		staticInit = false;
 		//Submit to queue
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.waitSemaphoreCount = 1;
@@ -133,6 +132,7 @@ void Engine::drawFrame() {
 
 	}
 
+
 	//Submit to queue
 	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame];
@@ -140,6 +140,7 @@ void Engine::drawFrame() {
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
+
 
 
 	//Present
