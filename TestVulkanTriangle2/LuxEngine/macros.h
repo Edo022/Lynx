@@ -20,7 +20,7 @@
 #define Try(f) if (f != VK_SUCCESS)
 #define null nullptr
 #define forEach(container, iterator) for(uint64 iterator = 0; iterator < container.size(); iterator++)
-
+#define sc static_cast
 
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
