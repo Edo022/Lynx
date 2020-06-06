@@ -13,18 +13,18 @@ void Engine::createComputeDescriptorSetLayout() {
 	//This binds to
 	//  layout(std140, binding = 0) buffer buf
 	//in the compute shader
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};				//Create a descriptor set layout binding
-	descriptorSetLayoutBinding.binding = 0;											//Set binding in shader
-	descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;	//Set descriptor type
-	descriptorSetLayoutBinding.descriptorCount = 1;									//Set number of descriptors
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};				//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
+	descriptorSetLayoutBinding.binding = 0;											//Set the binding point in the shader
+	descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;	//Set the type of the descriptor
+	descriptorSetLayoutBinding.descriptorCount = 1;									//Set the number of descriptors
 	descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;			//Use it in the compute stage
 
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};			//Create descriptor set layout create infos
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};			//This structure contains all the descriptors of the bindings that will be used by the shader
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;//Set structure type
-	descriptorSetLayoutCreateInfo.bindingCount = 1;									//Bind one descriptor
-	descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;			//Set descriptor to bind
+	descriptorSetLayoutCreateInfo.bindingCount = 1;									//Set number of binding points
+	descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;			//Set descriptors to bind
 
-	// Create the descriptor set layout. 
+	//Create the descriptor set layout
 	Try(vkCreateDescriptorSetLayout(compute.LD, &descriptorSetLayoutCreateInfo, null, &computeDescriptorSetLayout)) Quit("Fatal error");
 }
 
@@ -71,6 +71,10 @@ void Engine::createDescriptorSet() {
 
 	vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, null);			//Update descriptor set
 }
+
+
+
+
 
 
 

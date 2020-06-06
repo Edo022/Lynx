@@ -36,7 +36,7 @@ void Engine::createComputeCommandBuffer() {
 	vkCmdBindPipeline(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
 	vkCmdBindDescriptorSets(computeCommandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, null);
 	//Dispatch the compute shader to execute it with the specified workgroups
-	vkCmdDispatch(computeCommandBuffer, (uint32)ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE), (uint32)ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE), 1);
+	vkCmdDispatch(computeCommandBuffer, sc<uint32>(ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
 	Try(vkEndCommandBuffer(computeCommandBuffer)) Quit("Fatal error");

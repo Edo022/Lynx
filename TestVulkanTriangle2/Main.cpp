@@ -24,18 +24,10 @@
 #include "LuxEngine/LuxEngine.h"
 
 
-void hh(LuxArray<uint16> keySequenceCode) {
-	printf("AAAAA");
-}
-void hh2(LuxArray<uint16> keySequenceCode) {
-	printf("BBBB");
-}
-void hh3(LuxArray<uint16> keySequenceCode) {
-	printf("CCC");
-}
-void hh4(LuxArray<uint16> keySequenceCode) {
-	printf("DD");
-}
+void hh(LuxArray<uint16> keySequenceCode) { printf("AAAAA"); }
+void hh2(LuxArray<uint16> keySequenceCode) { printf("BBBB"); }
+void hh3(LuxArray<uint16> keySequenceCode) { printf("CCC"); }
+void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
 
 
 int main() {
@@ -46,6 +38,7 @@ int main() {
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, &hh3 },
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, &hh4 }
 	};
+	
 	luxInputSetInputState(&inputStateTest);
 	Sleep(1000);
 	__lp_key_callback(nullptr, GLFW_KEY_W, 0, GLFW_PRESS, 0);
