@@ -5,7 +5,8 @@
 #define WIDTH 1920
 #define HEIGHT 1080
 #define WORKGROUP_SIZE 32
-
+#define x gl_GlobalInvocationID.x
+#define y gl_GlobalInvocationID.y
 
 
 
@@ -14,21 +15,28 @@
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
 
-layout(std430, binding = 0) buffer buf{
+layout(std430, binding = 0) buffer imageDataBuffer{
 	uint imageData[];
 };
+
+layout(std430, binding = 1) buffer vertexBuffer{
+	uint vertices[];
+};
+
 
 
 
 void main() {
 	//Yeet unnecessary calls
-	if(gl_GlobalInvocationID.x > WIDTH || gl_GlobalInvocationID.y > HEIGHT) return;
+	if(x > WIDTH || y > HEIGHT) return;
 
 
-//	uvec4 color = uvec4(gl_GlobalInvocationID.x/9,0,gl_GlobalInvocationID.y/4,255);	
+	uvec4 color = uvec4(((x)*(y))/50, 0, 0, 1);
+//	uvec4 color = (vertices[0] == 1) ? uvec4(((x)*(y))/50, 0, 0, 1) : uvec4(0,0,0,0);	
+//	uvec4 color = uvec4(x/9,0,y/4,255);	
 //
 //	//Store the pixel in the buffer. 4 chars as an uint32
-//	imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = ((color.a & 0xFF) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.r & 0xFF) << 0);
+	imageData[y*WIDTH + x] = ((color.a & 0xFF) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.r & 0xFF) << 0);
 
-imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] + 1;
+//imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] + 1;
 }

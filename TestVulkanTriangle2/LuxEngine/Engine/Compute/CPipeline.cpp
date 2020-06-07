@@ -11,7 +11,7 @@
 void Engine::createComputeDescriptorSetLayout() {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
-	//  layout(std140, binding = 0) buffer buf
+	//  layout(std430, binding = 0) buffer buf
 	//in the compute shader
 	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};				//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
 	descriptorSetLayoutBinding.binding = 0;											//Set the binding point in the shader
@@ -19,10 +19,21 @@ void Engine::createComputeDescriptorSetLayout() {
 	descriptorSetLayoutBinding.descriptorCount = 1;									//Set the number of descriptors
 	descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;			//Use it in the compute stage
 
+	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding1 = {};				//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
+	descriptorSetLayoutBinding1.binding = 1;											//Set the binding point in the shader
+	descriptorSetLayoutBinding1.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;	//Set the type of the descriptor
+	descriptorSetLayoutBinding1.descriptorCount = 1;									//Set the number of descriptors
+	descriptorSetLayoutBinding1.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;			//Use it in the compute stage
+
+	VkDescriptorSetLayoutBinding descriptorBindings[] = { descriptorSetLayoutBinding, descriptorSetLayoutBinding1 };
+
+
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};			//This structure contains all the descriptors of the bindings that will be used by the shader
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;//Set structure type
 	descriptorSetLayoutCreateInfo.bindingCount = 1;									//Set number of binding points
-	descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;			//Set descriptors to bind
+	descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;					//Set descriptors to bind
+	//descriptorSetLayoutCreateInfo.bindingCount = 2;									//Set number of binding points
+	//descriptorSetLayoutCreateInfo.pBindings = descriptorBindings;					//Set descriptors to bind
 
 	//Create the descriptor set layout
 	Try(vkCreateDescriptorSetLayout(compute.LD, &descriptorSetLayoutCreateInfo, null, &computeDescriptorSetLayout)) Quit("Fatal error");
@@ -35,7 +46,7 @@ void Engine::createComputeDescriptorSetLayout() {
 void Engine::createDescriptorSet() {
 	VkDescriptorPoolSize descriptorPoolSize = {};
 	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorPoolSize.descriptorCount = 1;
+	descriptorPoolSize.descriptorCount = 2;
 
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;		//Set structure type
@@ -55,6 +66,11 @@ void Engine::createDescriptorSet() {
 	Try(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &computeDescriptorSet)) Quit("Fatal error");
 
 
+
+
+
+
+
 	//Connect the storage buffer to the descrptor
 	VkDescriptorBufferInfo descriptorBufferInfo = {};								//Create descriptor buffer infos
 	descriptorBufferInfo.buffer = buffer;												//Set buffer
@@ -69,8 +85,40 @@ void Engine::createDescriptorSet() {
 	writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
 	writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;								//Set descriptor buffer info
 
+
+
+
+	VkDescriptorBufferInfo descriptorBufferInfo1 = {};								//Create descriptor buffer infos
+	descriptorBufferInfo1.buffer = buffer1;												//Set buffer
+	descriptorBufferInfo1.offset = 0;													//Set offset
+	descriptorBufferInfo1.range = bufferSize1;											//Set size of the buffer
+
+	VkWriteDescriptorSet writeDescriptorSet1 = {};									//Create write descriptor set
+	writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
+	writeDescriptorSet1.dstSet = computeDescriptorSet;									//Set descriptor set
+	writeDescriptorSet1.dstBinding = 0;													//Set binding
+	writeDescriptorSet1.descriptorCount = 1;												//Set number of descriptors
+	writeDescriptorSet1.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
+	writeDescriptorSet1.pBufferInfo = &descriptorBufferInfo1;								//Set descriptor buffer info
+
+	VkWriteDescriptorSet writeDescriptorSets[] = { writeDescriptorSet ,writeDescriptorSet1 };
+
+
 	vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, null);			//Update descriptor set
+	//vkUpdateDescriptorSets(compute.LD, 2, writeDescriptorSets, 0, null);			//Update descriptor set
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

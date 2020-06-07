@@ -342,6 +342,10 @@ private:
 	VkDeviceMemory bufferMemory;
 	uint32 bufferSize;
 
+	VkBuffer buffer1;
+	VkDeviceMemory bufferMemory1;
+	uint32 bufferSize1;
+
 
 
 	//Compute >> Compute/Compute.cpp

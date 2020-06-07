@@ -9,12 +9,15 @@
 
 
 void Engine::createComputeCommandBuffer() {
-	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos
+	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;			//Set structure type
 	commandPoolCreateInfo.flags = 0;													//Default flags
 	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];		//Set the compute family where to bind the command pool
 	//Create the command pool
 	Try(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &computeCommandPool)) Quit("Fatal error");
+
+
+
 
 
 	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};						//Create command buffer allocate infos to allocate the command buffer in the command pool
@@ -26,9 +29,13 @@ void Engine::createComputeCommandBuffer() {
 	Try(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, &computeCommandBuffer)) Quit("Fatal error");
 
 
+
+
+
 	VkCommandBufferBeginInfo beginInfo = {};										//Create begin infos to start recording the command buffer
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;						//Set structure type
-	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;					//Set command buffer type. It needs to be continue because it's called every frame
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;						//Set command buffer type. It needs to be continue because it's called every frame
+	//beginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;				//Set command buffer type. It needs to be continue because it's called every frame
 	//Start recording commands
 	Try(vkBeginCommandBuffer(computeCommandBuffer, &beginInfo)) Quit("Fatal error");
 
@@ -46,11 +53,12 @@ void Engine::createComputeCommandBuffer() {
 
 
 void Engine::runCommandBuffer() {
+	VkCommandBuffer computeCommandBuffers[] = { computeCommandBuffer };
 	//Now we shall finally submit the recorded command buffer to a queue.
 	VkSubmitInfo submitInfo = {};															//Create submit infos to submit the command buffer to the queue
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;											//Set structure type
 	submitInfo.commandBufferCount = 1;															//Set number of command buffers
-	submitInfo.pCommandBuffers = &computeCommandBuffer;											//Set command buffer to submit
+	submitInfo.pCommandBuffers = computeCommandBuffers;											//Set command buffer to submit
 
 	VkFence fence;																			//Create a fence object
 	VkFenceCreateInfo fenceCreateInfo = {};													//Create fence create infos to create the fence

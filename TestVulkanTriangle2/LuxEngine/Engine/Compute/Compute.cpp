@@ -13,6 +13,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::RunCompute() {
+
 	createComputeDescriptorSetLayout();
 	createDescriptorSet();
 	createComputePipeline();
