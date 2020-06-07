@@ -75,19 +75,15 @@ void Engine::createDescriptorSet() {
 
 
 
-
-
-
-
 void Engine::createComputePipeline() {
 	uint32 fileLength;																//Create the shader module
-	computeShaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, "LuxEngine/Contents/shaders/comp.spv"), &fileLength);
+	computeShaderModule[0] = createShaderModule(compute.LD, readShaderFromFile(&fileLength, "LuxEngine/Contents/shaders/comp.spv"), &fileLength);
 
 
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};						//Create shader stage infos
 	shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;	//Set structure type
 	shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;							//Use it in the compute stage
-	shaderStageCreateInfo.module = computeShaderModule;									//Set compute module
+	shaderStageCreateInfo.module = computeShaderModule[0];								//Set compute module
 	shaderStageCreateInfo.pName = "main";												//Set the main function as entry point
 
 
@@ -106,5 +102,5 @@ void Engine::createComputePipeline() {
 	//Create the compute pipeline
 	Try(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &computePipeline)) Quit("Fatal error");
 
-	vkDestroyShaderModule(compute.LD, computeShaderModule, null);					//Destroy the shader module
+	vkDestroyShaderModule(compute.LD, computeShaderModule[0], null);				//Destroy the shader module
 }

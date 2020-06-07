@@ -325,7 +325,7 @@ private:
 	//Compute pipeline
 	VkPipeline computePipeline;
 	VkPipelineLayout computePipelineLayout;
-	VkShaderModule computeShaderModule;
+	VkShaderModule computeShaderModule[10];
 
 	//commands
 	VkCommandPool computeCommandPool;
