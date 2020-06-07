@@ -30,10 +30,10 @@ void Engine::createComputeDescriptorSetLayout() {
 
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};			//This structure contains all the descriptors of the bindings that will be used by the shader
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;//Set structure type
-	descriptorSetLayoutCreateInfo.bindingCount = 1;									//Set number of binding points
-	descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;					//Set descriptors to bind
-	//descriptorSetLayoutCreateInfo.bindingCount = 2;									//Set number of binding points
-	//descriptorSetLayoutCreateInfo.pBindings = descriptorBindings;					//Set descriptors to bind
+	//descriptorSetLayoutCreateInfo.bindingCount = 1;									//Set number of binding points
+	//descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;					//Set descriptors to bind
+	descriptorSetLayoutCreateInfo.bindingCount = 2;									//Set number of binding points
+	descriptorSetLayoutCreateInfo.pBindings = descriptorBindings;					//Set descriptors to bind
 
 	//Create the descriptor set layout
 	Try(vkCreateDescriptorSetLayout(compute.LD, &descriptorSetLayoutCreateInfo, null, &computeDescriptorSetLayout)) Quit("Fatal error");
