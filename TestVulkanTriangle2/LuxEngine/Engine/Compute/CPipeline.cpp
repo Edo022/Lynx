@@ -96,7 +96,7 @@ void Engine::createDescriptorSet() {
 	VkWriteDescriptorSet writeDescriptorSet1 = {};									//Create write descriptor set
 	writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
 	writeDescriptorSet1.dstSet = computeDescriptorSet;									//Set descriptor set
-	writeDescriptorSet1.dstBinding = 0;													//Set binding
+	writeDescriptorSet1.dstBinding = 1;													//Set binding
 	writeDescriptorSet1.descriptorCount = 1;												//Set number of descriptors
 	writeDescriptorSet1.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
 	writeDescriptorSet1.pBufferInfo = &descriptorBufferInfo1;								//Set descriptor buffer info
@@ -104,8 +104,8 @@ void Engine::createDescriptorSet() {
 	VkWriteDescriptorSet writeDescriptorSets[] = { writeDescriptorSet ,writeDescriptorSet1 };
 
 
-	vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, null);			//Update descriptor set
-	//vkUpdateDescriptorSets(compute.LD, 2, writeDescriptorSets, 0, null);			//Update descriptor set
+	//vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, null);			//Update descriptor set
+	vkUpdateDescriptorSets(compute.LD, 2, writeDescriptorSets, 0, null);			//Update descriptor set
 }
 
 
