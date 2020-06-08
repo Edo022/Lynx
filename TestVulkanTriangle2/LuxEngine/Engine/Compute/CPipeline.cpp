@@ -89,9 +89,9 @@ void Engine::createDescriptorSet() {
 
 
 	VkDescriptorBufferInfo descriptorBufferInfo1 = {};								//Create descriptor buffer infos
-	descriptorBufferInfo1.buffer = buffer1;												//Set buffer
+	descriptorBufferInfo1.buffer = CBuffers[0].buffer;												//Set buffer
 	descriptorBufferInfo1.offset = 0;													//Set offset
-	descriptorBufferInfo1.range = bufferSize1;											//Set size of the buffer
+	descriptorBufferInfo1.range = CBuffers[0].size;											//Set size of the buffer
 
 	VkWriteDescriptorSet writeDescriptorSet1 = {};									//Create write descriptor set
 	writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type

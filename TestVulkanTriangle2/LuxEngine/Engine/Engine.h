@@ -312,13 +312,21 @@ private:
 
 
 
-
+	
 	//COMPUTE 
 	const int32 COMPUTE_WIDTH = WIDTH;
 	const int32 COMPUTE_HEIGHT = HEIGHT;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
 	struct Pixel { unsigned char r, g, b, a; };
+
+	//This structure groups the components of a Vulkan buffer
+	struct LuxGpuBuffer {
+		uint64 ID;				//A unique id, different for each buffer
+		uint32 size;			//The size in bytes of the buffer
+		VkBuffer buffer;		//The actual Vulkan buffer
+		VkDeviceMemory memory;	//The memory of the buffer
+	};
 
 	VkDebugReportCallbackEXT debugReportCallback;
 
@@ -342,15 +350,13 @@ private:
 	VkDeviceMemory bufferMemory;
 	uint32 bufferSize;
 
-	VkBuffer buffer1;
-	VkDeviceMemory bufferMemory1;
-	uint32 bufferSize1;
-
+	LuxDynArray<LuxGpuBuffer> CBuffers;
 
 
 	//Compute >> Compute/Compute.cpp
 	void RunCompute();
 	void cleanupCompute();
+	int64 createComputeBuffer(uint32 size);
 
 	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
 	void createComputePipeline();

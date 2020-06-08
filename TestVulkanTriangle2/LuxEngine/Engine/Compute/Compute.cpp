@@ -13,13 +13,12 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::RunCompute() {
-	bufferSize1 = 4;
-	createBuffer(compute.LD, bufferSize1, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer1, bufferMemory1);
 
+	createComputeBuffer(4);
 	void* data;
-	vkMapMemory(compute.LD, bufferMemory1, 0, bufferSize1, 0, &data);
+	vkMapMemory(compute.LD, CBuffers[0].memory, 0, CBuffers[0].size, 0, &data);
 	((uint32*)data)[0] = 1;
-	vkUnmapMemory(compute.LD, bufferMemory1);
+	vkUnmapMemory(compute.LD, CBuffers[0].memory);
 
 	createComputeDescriptorSetLayout();
 	createDescriptorSet();
@@ -41,4 +40,25 @@ void Engine::cleanupCompute() {
 	vkDestroyPipelineLayout(compute.LD, computePipelineLayout, null);				//Destroy the pipeline layout
 
 	vkDestroyCommandPool(compute.LD, computeCommandPool, null);						//Destroy the compute command pool
+}
+
+
+
+
+// Utilities --------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+//This function creates a buffer in a compute device and saves it in the LuxArray "computeBuffers"
+//*   size: the size in bytes of the buffer
+//*   Returns the buffer's index in the array. -1 if an error occurs
+int64 Engine::createComputeBuffer(uint32 size){
+	LuxGpuBuffer buffer_;
+	buffer_.size = size;
+	createBuffer(compute.LD, buffer_.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer_.buffer, buffer_.memory);
+	void* data;
+	//vkMapMemory(compute.LD, buffer_.memory, 0, buffer_.size, 0, &data);
+
+	return buffer_.ID = CBuffers.add(buffer_);
 }
