@@ -396,14 +396,14 @@ static void __lp_lux_init_run_thr(bool useVSync) {
 }
 
 
-//Don't call this function
+
+//This function is used by the engine. You shouldn't call it
 static void __lp_luxInit(Engine* _engine, bool useVSync) {
 	engine = _engine;
 	std::thread t(__lp_lux_init_run_thr, useVSync);
 	t.detach();
 	engine->running = true;
 }
-
 
 
 

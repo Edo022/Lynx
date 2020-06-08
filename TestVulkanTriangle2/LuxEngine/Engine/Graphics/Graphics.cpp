@@ -23,19 +23,11 @@ void Engine::initVulkan() {
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
 	/**/												 			setupDebugMessenger();
 
-	//Create textures
-
+	//Create image output buffer //Shared with compute pipelines
 	bufferSize = sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT;	//Set the size of the buffer
 	createBuffer(compute.LD, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
-	bufferSize1 = 4;
-	createBuffer(compute.LD, bufferSize1, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer1, bufferMemory1);
 
-	void* data;
-	vkMapMemory(compute.LD, bufferMemory1, 0, bufferSize1, 0, &data);
-	((uint32*)data)[0] = 1;
-	vkUnmapMemory(compute.LD, bufferMemory1);
-
-
+	//Create textures
 	createTextureImage();
 	createTextureImageView();
 	createTextureSampler();
