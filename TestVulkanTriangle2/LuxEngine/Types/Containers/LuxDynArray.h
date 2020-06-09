@@ -13,7 +13,7 @@
 
 
 
-//Lux Engine Array
+//Lux map
 //A 64-bit index array capable of containing billions of elements without losing performances
 //The elements are not ordered, so each element has a unique ID. The ID is returned by add functions
 //Use the isValid() function to check if an element can be used or not
@@ -38,13 +38,16 @@ private:
 public:
 
 
+
+
 	// Constructor --------------------------------------------------------------------------------------------------------- //
 
 
-	//*   size: initial size of the array. Max 0x 7FFF FFFF FFFF FFFE
-	//*   chunkSize: number of elements allocated when the array grows. Default at 0xFF (256)
-	//*   maxSize: the maximum size the array can have. Default at 0xFFFF (65535)
+
+	//Creates the array with the specified chunk and maximum size
 	//The number of chunks depends on their size and the maximum size of the array (chunks = maxSize / chunkSize)
+	//*   chunkSize: number of elements allocated when the array grows. Default at 0xFF (256). It must be <= maxSize
+	//*   maxSize: the maximum size the array can reach. Default at 0xFFFF (65535). Max 0x FFFF FFFF FFFF FFFF
 	LuxDynArray(uint64 _chunkSize = 0xFF, uint64 _maxSize = 0xFFFF) {
 		chunkSize = _chunkSize;														//Set size of the chunks
 		maxSize = _maxSize;															//Set maximum size of the array
@@ -55,7 +58,11 @@ public:
 	}
 
 
+
+
 	// Add, remove --------------------------------------------------------------------------------------------------------- //
+
+
 
 
 	//Adds an element at the end of the array, allocating a new chunk if needed
@@ -158,7 +165,11 @@ public:
 	}
 
 
+
+
 	// Status -------------------------------------------------------------------------------------------------------------- //
+
+
 
 
 	//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
@@ -175,25 +186,27 @@ public:
 	inline bool isValid(uint64 index) { return (__lp_dynSize > index && __lp_Tracker(index) == (uint64)-1); }
 
 
+
+
 	// Get ----------------------------------------------------------------------------------------------------------------- //
 
 
-	//Use the isValid() function to check if the element can be used
-	inline type& operator [](uint64 index) { 
-		return __lp_Data(index); 
-	}
 
+
+	//Use the isValid() function to check if the element can be used
+	inline type& operator [](uint64 index) { return __lp_Data(index); }
 	//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
 	inline type* data(uint64 chunkIndex) { return &__lp_data[chunkIndex][0]; }
 
-	//Returns a pointer to a new array that contains all the elements in the chunks, without the invalid ones. This operation can be really slow, try to avoid using it
+	//Returns a pointer to a new array that contains all the elements in the chunks, without the invalid ones
+	//This operation can be really slow, try to avoid using it
 	type* data() {
 		type* arr = (type*)malloc(sizeof(type) * usedSize());
-		int32 _i = 0;
+		int32 new_i = 0;
 		for (int32 i = 0; i < usedSize(); i++) {
 			if (isValid(i)) {
-				arr[_i] = __lp_Data(i);
-				_i++;
+				arr[new_i] = __lp_Data(i);
+				new_i++;
 			}
 			else i++;
 		}
@@ -201,7 +214,11 @@ public:
 	}
 
 
+
+
 	// Size ---------------------------------------------------------------------------------------------------------------- //
+
+
 
 
 	//Returns the number of elements in the array, including the free ones

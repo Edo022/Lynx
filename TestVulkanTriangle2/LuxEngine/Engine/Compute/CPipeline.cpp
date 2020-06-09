@@ -81,9 +81,9 @@ void Engine::createDescriptorSet() {
 
 	//Connect the storage buffer to the descrptor
 	VkDescriptorBufferInfo descriptorBufferInfo = {};								//Create descriptor buffer infos
-	descriptorBufferInfo.buffer = CBuffers[0].buffer;												//Set buffer
+	descriptorBufferInfo.buffer = CBuffers[0].buffer;									//Set buffer
 	descriptorBufferInfo.offset = 0;													//Set offset
-	descriptorBufferInfo.range = CBuffers[0].size;											//Set size of the buffer
+	descriptorBufferInfo.range = CBuffers[0].size;										//Set size of the buffer
 
 	VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
 	writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
@@ -97,17 +97,17 @@ void Engine::createDescriptorSet() {
 
 
 	VkDescriptorBufferInfo descriptorBufferInfo1 = {};								//Create descriptor buffer infos
-	descriptorBufferInfo1.buffer = CBuffers[1].buffer;												//Set buffer
+	descriptorBufferInfo1.buffer = CBuffers[1].buffer;									//Set buffer
 	descriptorBufferInfo1.offset = 0;													//Set offset
-	descriptorBufferInfo1.range = CBuffers[1].size;											//Set size of the buffer
+	descriptorBufferInfo1.range = CBuffers[1].size;										//Set size of the buffer
 
 	VkWriteDescriptorSet writeDescriptorSet1 = {};									//Create write descriptor set
 	writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
 	writeDescriptorSet1.dstSet = computeDescriptorSet;									//Set descriptor set
 	writeDescriptorSet1.dstBinding = 1;													//Set binding
-	writeDescriptorSet1.descriptorCount = 1;												//Set number of descriptors
+	writeDescriptorSet1.descriptorCount = 1;											//Set number of descriptors
 	writeDescriptorSet1.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
-	writeDescriptorSet1.pBufferInfo = &descriptorBufferInfo1;								//Set descriptor buffer info
+	writeDescriptorSet1.pBufferInfo = &descriptorBufferInfo1;							//Set descriptor buffer info
 
 	VkWriteDescriptorSet writeDescriptorSets[] = { writeDescriptorSet ,writeDescriptorSet1 };
 
