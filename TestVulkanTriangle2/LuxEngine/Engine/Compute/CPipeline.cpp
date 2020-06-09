@@ -9,6 +9,14 @@
 
 
 void Engine::createComputeDescriptorSetLayout() {
+	//Create buffers
+	createComputeBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+
+	createComputeBuffer(4);
+	uint32* vertices = (uint32*)mapGpuBuffer(&CBuffers[1]);
+	vertices[1] = 1;
+
+
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
@@ -73,9 +81,9 @@ void Engine::createDescriptorSet() {
 
 	//Connect the storage buffer to the descrptor
 	VkDescriptorBufferInfo descriptorBufferInfo = {};								//Create descriptor buffer infos
-	descriptorBufferInfo.buffer = buffer;												//Set buffer
+	descriptorBufferInfo.buffer = CBuffers[0].buffer;												//Set buffer
 	descriptorBufferInfo.offset = 0;													//Set offset
-	descriptorBufferInfo.range = bufferSize;											//Set size of the buffer
+	descriptorBufferInfo.range = CBuffers[0].size;											//Set size of the buffer
 
 	VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
 	writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
@@ -89,9 +97,9 @@ void Engine::createDescriptorSet() {
 
 
 	VkDescriptorBufferInfo descriptorBufferInfo1 = {};								//Create descriptor buffer infos
-	descriptorBufferInfo1.buffer = CBuffers[0].buffer;												//Set buffer
+	descriptorBufferInfo1.buffer = CBuffers[1].buffer;												//Set buffer
 	descriptorBufferInfo1.offset = 0;													//Set offset
-	descriptorBufferInfo1.range = CBuffers[0].size;											//Set size of the buffer
+	descriptorBufferInfo1.range = CBuffers[1].size;											//Set size of the buffer
 
 	VkWriteDescriptorSet writeDescriptorSet1 = {};									//Create write descriptor set
 	writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type

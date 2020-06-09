@@ -23,10 +23,6 @@ void Engine::initVulkan() {
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
 	/**/												 			setupDebugMessenger();
 
-	//Create image output buffer //Shared with compute pipelines
-	bufferSize = sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT;	//Set the size of the buffer
-	createBuffer(compute.LD, bufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer, bufferMemory);
-
 	//Create textures
 	createTextureImage();
 	createTextureImageView();
@@ -97,7 +93,7 @@ void Engine::drawFrame() {
 	runCommandBuffer();
 
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	copyBufferToImage(buffer, textureImage, WIDTH, HEIGHT);
+	if(CBuffers.isValid(0)) copyBufferToImage(CBuffers[0].buffer, textureImage, WIDTH, HEIGHT);
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	//Acquire swapchain image

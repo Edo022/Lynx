@@ -172,7 +172,7 @@ public:
 
 
 	//Returns true if the index is used, 1 if it's free or invalid (use the 'status' function for more details)
-	inline bool isValid(uint64 index) { return (__lp_Tracker(index) == (uint64)-1); }
+	inline bool isValid(uint64 index) { return (__lp_dynSize > index && __lp_Tracker(index) == (uint64)-1); }
 
 
 	// Get ----------------------------------------------------------------------------------------------------------------- //

@@ -13,13 +13,6 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::RunCompute() {
-
-	createComputeBuffer(4);
-	void* data;
-	vkMapMemory(compute.LD, CBuffers[0].memory, 0, CBuffers[0].size, 0, &data);
-	((uint32*)data)[0] = 1;
-	vkUnmapMemory(compute.LD, CBuffers[0].memory);
-
 	createComputeDescriptorSetLayout();
 	createDescriptorSet();
 	createComputePipeline();
@@ -30,8 +23,12 @@ void Engine::RunCompute() {
 
 
 void Engine::cleanupCompute() {
-	vkDestroyBuffer(compute.LD, buffer, null);										//Destroy the buffer
-	vkFreeMemory(compute.LD, bufferMemory, null);									//Free the buffer's memory
+	forEach(CBuffers, i) {
+		if (CBuffers.isValid(i)) {
+			vkDestroyBuffer(compute.LD, CBuffers[i].buffer, null);										//Destroy the buffer
+			vkFreeMemory(compute.LD, CBuffers[i].memory, null);									//Free the buffer's memory
+		}
+	}
 
 	vkDestroyDescriptorPool(compute.LD, computeDescriptorPool, null);				//Destroy the descriptor pool
 	vkDestroyDescriptorSetLayout(compute.LD, computeDescriptorSetLayout, null);		//Destroy the descriptor set layout

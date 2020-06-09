@@ -121,7 +121,8 @@ const bool enableValidationLayers = true;
 
 
 
-
+class Engine;
+static Engine* engine;
 
 
 class Engine {
@@ -322,11 +323,23 @@ private:
 
 	//This structure groups the components of a Vulkan buffer
 	struct LuxGpuBuffer {
-		uint64 ID;				//A unique id, different for each buffer
-		uint32 size;			//The size in bytes of the buffer
-		VkBuffer buffer;		//The actual Vulkan buffer
-		VkDeviceMemory memory;	//The memory of the buffer
+		uint64 ID;					//A unique id, different for each buffer
+		uint32 size;				//The size in bytes of the buffer
+		VkBuffer buffer;			//The actual Vulkan buffer
+		VkDeviceMemory memory;		//The memory of the buffer
+		bool __lp_mapped = false;	//Whether the buffer is mapped or not
 	};
+	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
+	//Mapping an already mapped buffer will overwrite the old mapping
+	//*   buffer: a pointer to a LuxGpuBuffer object. It's the buffer that will be mapped
+	//*   returns the void pointer that maps the buffer
+	void* mapGpuBuffer(LuxGpuBuffer* buffer) {
+		if (buffer->__lp_mapped) vkUnmapMemory(compute.LD, buffer->memory);
+		else buffer->__lp_mapped = true;
+		void* data;
+		vkMapMemory(compute.LD, buffer->memory, 0, buffer->size, 0, &data);
+		return data;
+	}
 
 	VkDebugReportCallbackEXT debugReportCallback;
 
@@ -346,10 +359,6 @@ private:
 	VkDescriptorSetLayout computeDescriptorSetLayout;
 
 	//Buffer
-	VkBuffer buffer;
-	VkDeviceMemory bufferMemory;
-	uint32 bufferSize;
-
 	LuxDynArray<LuxGpuBuffer> CBuffers;
 
 
@@ -388,7 +397,6 @@ private:
 #define Frame while(engine->running)
 
 
-static Engine* engine;
 //This function is used by the engine. You shouldn't call it
 static void __lp_lux_init_run_thr(bool useVSync) {
 	engine->vertices = { Vertex
