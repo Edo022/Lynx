@@ -22,12 +22,15 @@
 
 
 #include "LuxEngine/LuxEngine.h"
+#include <math.h>
 
 
 void hh(LuxArray<uint16> keySequenceCode) { printf("AAAAA"); }
 void hh2(LuxArray<uint16> keySequenceCode) { printf("BBBB"); }
 void hh3(LuxArray<uint16> keySequenceCode) { printf("CCC"); }
 void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
+
+
 
 
 int main() {

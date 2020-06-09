@@ -38,3 +38,22 @@
 #define stdDuration			std::chrono::duration<double>
 #define now					std::chrono::system_clock::now()
 
+
+
+static float s(float n) {
+	static int32_t i = 0x5F3759DF - (*(int32_t*)&n >> 1);
+	static float n2 = *(float*)&i;
+	return 1 / (n2 * (1.5 - (n * 0.5 * n2 * n2)));
+}
+
+
+#define MOD 1000000007
+static int64_t pow_(int64_t b, int64_t e) {
+	int64_t r = 1;
+	while (e > 0) {
+		if (e & 1) r *= b % MOD;
+		b *= b % MOD;
+		e >>= 1;
+	}
+	return r;
+}
