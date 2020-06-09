@@ -156,10 +156,10 @@ private:
 	struct computeDevice {
 		_VkPhysicalDevice PD;						//Main physical device for computing
 		VkDevice LD;								//Main logical device for computing
-		LuxDynArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
+		LuxMap<VkQueue> computeQueues;				//Main compute queues. Run on computeLD
 	}compute;
 
-	LuxArray<computeDevice> secondary;		//Secondary devices and queues for computation
+	LuxArray<computeDevice> secondary;				//Secondary devices and queues for computation
 
 
 
@@ -168,7 +168,7 @@ private:
 	void initWindow();		void createInstance();
 
 	//Devices >> ./Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxDynArray<VkQueue>* computeQueues);
+	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxMap<VkQueue>* computeQueues);
 	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
@@ -359,7 +359,7 @@ private:
 	VkDescriptorSetLayout computeDescriptorSetLayout;
 
 	//Buffer
-	LuxDynArray<LuxGpuBuffer> CBuffers;
+	LuxMap<LuxGpuBuffer> CBuffers;
 
 
 	//Compute >> Compute/Compute.cpp

@@ -97,8 +97,8 @@ bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 //Find all suitable physical devices, choosing the main and secondary devices according to their capabilities
 void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
-	LuxDynArray<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
-	LuxDynArray<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
+	LuxMap<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
+	LuxMap<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
 
 
 	//Get physical devices
@@ -192,7 +192,7 @@ void Engine::getPhysicalDevices() {
 
 
 
-void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxDynArray<VkQueue>* computeQueues) {
+void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxMap<VkQueue>* computeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice((*PD), graphics.PD)) {												//If it's the main device for graphics,
@@ -207,7 +207,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 
 
 	//Queue infos
-	LuxDynArray<VkDeviceQueueCreateInfo> queueCreateInfos;								//Create a queue create info array
+	LuxMap<VkDeviceQueueCreateInfo> queueCreateInfos;								//Create a queue create info array
 	for (auto queueFamilyIndex : uniqueQueueFamilyIndices) {							//For every device queue family index found
 		VkDeviceQueueCreateInfo queueCreateInfo{};											//Create a queue create info struct
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;					//Set structure type

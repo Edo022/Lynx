@@ -110,7 +110,7 @@ void Engine::createInstance() {
 
 
 	//Extensions
-	LuxDynArray<const char*> extensions;
+	LuxMap<const char*> extensions;
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array

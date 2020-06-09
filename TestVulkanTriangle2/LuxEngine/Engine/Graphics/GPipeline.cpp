@@ -222,7 +222,7 @@ void Engine::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
-		LuxDynArray<VkImageView> attachments(2, 2);
+		LuxMap<VkImageView> attachments(2, 2);
 		attachments.add(swapChainImageViews[i]);
 		attachments.add(depthImageView);
 
