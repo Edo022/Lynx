@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Types/Containers/LuxDynArray.h"
+#include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Vectors/Vectors.h"
 #pragma warning( disable : 26812 )	//Prefer enum class to enum
 

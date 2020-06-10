@@ -210,7 +210,7 @@
     <ClInclude Include="LuxEngine\Object\Object.h" />
     <ClInclude Include="LuxEngine\Object\ObjectGeometry.h" />
     <ClInclude Include="LuxEngine\Object\ObjectPhysics.h" />
-    <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h" />
+    <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />

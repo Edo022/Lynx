@@ -129,9 +129,6 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h">
-      <Filter>LuxEngine\Types\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
@@ -146,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Engine\Input\Input.h">
       <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
