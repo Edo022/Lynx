@@ -74,7 +74,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint6
 
 			VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
 			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
-			writeDescriptorSet.dstSet =CShaders[CShader].descriptorSet;					//Set descriptor set
+			writeDescriptorSet.dstSet =CShaders[CShader].descriptorSet;							//Set descriptor set
 			writeDescriptorSet.dstBinding = i;													//Set binding
 			writeDescriptorSet.descriptorCount = 1;												//Set number of descriptors
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
@@ -110,7 +110,7 @@ void Engine::CShader_create_CPipeline(const char* shaderPath, uint64 CShader) {
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};						//Create shader stage infos
 	shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;	//Set structure type
 	shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;							//Use it in the compute stage
-	shaderStageCreateInfo.module = CShaders[CShader].shaderModule;								//Set compute module
+	shaderStageCreateInfo.module = CShaders[CShader].shaderModule;						//Set compute module
 	shaderStageCreateInfo.pName = "main";												//Set the main function as entry point
 
 
@@ -125,7 +125,7 @@ void Engine::CShader_create_CPipeline(const char* shaderPath, uint64 CShader) {
 	VkComputePipelineCreateInfo pipelineCreateInfo = {};							//Create pipeline create infos 
 	pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;			//Set structure type
 	pipelineCreateInfo.stage = shaderStageCreateInfo;									//Set shader stage infos
-	pipelineCreateInfo.layout = CShaders[CShader].pipelineLayout;									//Set pipeline layout
+	pipelineCreateInfo.layout = CShaders[CShader].pipelineLayout;						//Set pipeline layout
 	//Create the compute pipeline
 	Try(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &CShaders[CShader].pipeline)) Quit("Fatal error");
 

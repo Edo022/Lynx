@@ -19,7 +19,7 @@ void Engine::CShader_create_commandBuffer(uint64 CShader) {
 
 	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};						//Create command buffer allocate infos to allocate the command buffer in the command pool
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;	//Set structure type
-	commandBufferAllocateInfo.commandPool = CShaders[CShader].commandPool;							//Set command pool where to allocate the command buffer 
+	commandBufferAllocateInfo.commandPool = CShaders[CShader].commandPool;				//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = 1;									//Allocate one command buffer
 	//Allocate command buffer
