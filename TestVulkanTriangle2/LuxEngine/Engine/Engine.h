@@ -197,6 +197,7 @@ public:
 	float FOV;
 	bool running;
 	bool useVSync;
+	bool initialized = false;
 
 	void run(bool _useVSync = true, float FOV = 45.0f);
 

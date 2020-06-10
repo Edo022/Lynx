@@ -36,7 +36,7 @@
 //#include <chrono>
 #define stdTime				std::chrono::system_clock::time_point
 #define stdDuration			std::chrono::duration<double>
-#define now					std::chrono::system_clock::now()
+#define stdNow					std::chrono::system_clock::now()
 
 
 

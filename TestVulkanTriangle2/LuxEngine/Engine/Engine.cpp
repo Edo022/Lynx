@@ -46,6 +46,7 @@ void Engine::mainLoop() {
 	FPSCounterThr.detach();
 	stdTime start;
 	bool fullScreen = false;
+	initialized = true;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -72,9 +73,9 @@ void Engine::mainLoop() {
 		lastState = glfwGetKey(window, GLFW_KEY_F11);
 
 		//FPS counter
-		stdDuration elapsed_seconds = now - start;
+		stdDuration elapsed_seconds = stdNow - start;
 		FPS = 1 / elapsed_seconds.count();
-		start = now;
+		start = stdNow;
 	}
 	running = false;
 

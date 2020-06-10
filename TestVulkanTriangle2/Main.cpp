@@ -1,4 +1,4 @@
-
+﻿
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 
 
@@ -22,8 +22,8 @@
 
 
 #include "LuxEngine/LuxEngine.h"
-#include <math.h>
-
+#include <filesystem>
+#include <iostream>
 
 void hh(LuxArray<uint16> keySequenceCode) { printf("AAAAA"); }
 void hh2(LuxArray<uint16> keySequenceCode) { printf("BBBB"); }
@@ -34,17 +34,18 @@ void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
 
 
 int main() {
-	luxInit(false);
+	//std::string path = "./";
+	//for (const auto& entry : std::filesystem::directory_iterator(path))
+	//	std::cout << entry.path() << std::endl;
+
+	LuxInit(false);
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, &hh },
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, &hh2 } ,
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, &hh3 },
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, &hh4 }
 	};
-	
 	luxInputSetInputState(&inputStateTest);
-	Sleep(1000);
-	__lp_key_callback(nullptr, GLFW_KEY_W, 0, GLFW_PRESS, 0);
 
 	Frame{
 		Sleep(1);
