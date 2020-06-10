@@ -30,7 +30,7 @@ void Engine::run(bool _useVSync, float _FOV) {
 	glfwSetKeyCallback(window, &__lp_key_callback);
 
 
-	Success printf("Starting Mandragora Engine\n");					mainLoop();									MainSeparator;
+	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 	Normal  printf("Cleaning memory");								cleanupGraphics(); cleanupCompute();		NewLine;
 
 	vkDestroyInstance(instance, nullptr);
@@ -102,9 +102,9 @@ void Engine::createInstance() {
 	//Application infos
 	VkApplicationInfo appInfo{};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "Mandragora";
+	appInfo.pApplicationName = "Lux";
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = "MandragoraEngine";
+	appInfo.pEngineName = "LuxEngine";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 	createInfo.pApplicationInfo = &appInfo;
@@ -133,7 +133,7 @@ void Engine::createInstance() {
 	for (const char* layerName : validationLayers) {										//For every layer,
 		for (const auto& layerProperties : availableLayers) {									//Check if it's available
 			if (strcmp(layerName, layerProperties.layerName) == 0) break;
-			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Quit("Validation layers not available. Cannot run in debug mode.");
+			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Quit("Validation layers not available. Cannot run in debug mode");
 		}
 	}
 
@@ -157,7 +157,7 @@ void Engine::initWindow() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-	window = glfwCreateWindow(WIDTH, HEIGHT, "Mandragora Engine", nullptr, nullptr);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Lux Engine", nullptr, nullptr);
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }

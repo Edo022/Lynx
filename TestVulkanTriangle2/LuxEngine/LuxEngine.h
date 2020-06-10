@@ -20,5 +20,5 @@
 static void LuxInit(bool useVSync = true) {
 	static Engine engine;
 	__lp_luxInit(&engine, useVSync);
-	while (!engine.initialized) Sleep(10);
+	while (!engine.initialized) sleep(10);
 }

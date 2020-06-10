@@ -31,8 +31,6 @@ void hh3(LuxArray<uint16> keySequenceCode) { printf("CCC"); }
 void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
 
 
-
-
 int main() {
 	//std::string path = "./";
 	//for (const auto& entry : std::filesystem::directory_iterator(path))
@@ -47,8 +45,9 @@ int main() {
 	};
 	luxInputSetInputState(&inputStateTest);
 
+
 	Frame{
-		Sleep(1);
+		sleep(1);
 	__noop;
 	}
 	return 0;
