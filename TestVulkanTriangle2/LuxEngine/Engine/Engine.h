@@ -123,38 +123,38 @@ const bool enableValidationLayers = true;
 
 
 // main() ---> run()
-//             |                                                   ___                 ___
-//             |-- initWindow()                                       |                   |
-//             |   |-- glfwInit()                                     |                   |
-//             |   |-- set window variable                            | main              |
-//             |   '-- set window resize callback                     |                   |
-//             |                                                      |                   |
-//             |-- createInstance()                                ___|                   |
-//             |                                                                          |
-//             |                                                   ___                    |
-//             |-- runGraphics()                                      |                   |
-//             |   '-- initVulkan()                                   |                   |
-//             |       |-- createSurface()                            |                   |
-//             |       |-- evalutate physical devices                 |                   |
-//             |       |   |-- save every suitable device data        |                   |
-//             |       |   '-- create logical devices                 |                   |
-//             |       |                                              |                   | INITIALIZE ENGINE
-//             |       |-- createGraphicsCommandPool()                |                   |
-//             |       |-- createDebugMessenger()                     | graphics          |
-//             |       |                                              |                   |
-//             |       |-- createTextureImage()                       |                   |
-//             |       |-- createTextureImageView()                   |                   |
-//             |       |-- createTextureSampler()                     |                   |
-//             |       |                                              |                   |
-//             |       |-- createVertexBuffer()                       |                   |
-//             |       |-- createIndexBuffer()                        |                   |
-//             |       |-- ?                                       ___|                   |
-//             |                                                   ___                    |
-//             |-- runCompute()                                       | compute           |
-//             |   |-- ?                                           ___|                   |
-//             |                                                   ___                    |
-//             |,- set GLFW keyboard callback                         | input             |
-//             |'- set GLFW mouse callback                         ___|                ___|
+//             |                                                   ___             ___
+//             |-- initWindow()                                       |               |
+//             |   |-- glfwInit()                                     |               |
+//             |   |-- set window variable                            | main          |
+//             |   '-- set window resize callback                     |               |
+//             |                                                      |               |
+//             |-- createInstance()                                ___|               |
+//             |                                                                      |
+//             |                                                   ___                |
+//             |-- runGraphics()                                      |               |
+//             |   '-- initVulkan()                                   |               |
+//             |       |-- createSurface()                            |               |
+//             |       |-- evalutate physical devices                 |               |
+//             |       |   |-- save every suitable device data        |               |
+//             |       |   '-- create logical devices                 |               |
+//             |       |                                              |               | INITIALIZE ENGINE
+//             |       |-- createGraphicsCommandPool()                |               |
+//             |       |-- createDebugMessenger()                     | graphics      |
+//             |       |                                              |               |
+//             |       |-- createTextureImage()                       |               |
+//             |       |-- createTextureImageView()                   |               |
+//             |       |-- createTextureSampler()                     |               |
+//             |       |                                              |               |
+//             |       |-- createVertexBuffer()                       |               |
+//             |       |-- createIndexBuffer()                        |               |
+//             |       |-- ?                                       ___|               |
+//             |                                                   ___                |
+//             |-- runCompute()                                       | compute       |
+//             |   |-- ?                                           ___|               |
+//             |                                                   ___                |
+//             |,- set GLFW keyboard callback                         | input         |
+//             |'- set GLFW mouse callback                         ___|            ___|
 //             |
 //             |
 //             |
@@ -429,7 +429,7 @@ private:
 
 	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
 	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices);
-	void CShader_create_descriptorSets();
+	void CShader_create_descriptorSets(LuxArray<uint64> bufferIndices);
 	void CShader_create_CPipeline();
 
 	//Compute command buffers >> Compute/Commands.cpp

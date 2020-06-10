@@ -36,69 +36,55 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices)
 
 
 
-void Engine::CShader_create_descriptorSets() {
-	VkDescriptorPoolSize descriptorPoolSize = {};
-	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorPoolSize.descriptorCount = 2;
+void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
+	 //Create descriptor pool and descriptor set allocate infos
+		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
+		VkDescriptorPoolSize descriptorPoolSize = {};
+		descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+		descriptorPoolSize.descriptorCount = bufferIndices.size();
 
-	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
-	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;		//Set structure type
-	descriptorPoolCreateInfo.maxSets = 1;												//Allocate only one descriptor set
-	descriptorPoolCreateInfo.poolSizeCount = 1;											//One pool size
-	descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
-	//Create descriptor pool
-	Try(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &computeDescriptorPool)) Quit("Fatal error");
+		//This struct contains the informations about the descriptor pool. a descriptor pool contains the descriptor sets
+		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
+		descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;		//Set structure type
+		descriptorPoolCreateInfo.maxSets = 1;												//Allocate only one descriptor set
+		descriptorPoolCreateInfo.poolSizeCount = 1;											//One pool size
+		descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
+		//Create descriptor pool
+		Try(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &computeDescriptorPool)) Quit("Fatal error");
 
-
-	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
-	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;	//Set structure type
-	descriptorSetAllocateInfo.descriptorPool = computeDescriptorPool;					//Set pool where to allocate the descriptor
-	descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
-	descriptorSetAllocateInfo.pSetLayouts = &computeDescriptorSetLayout;				//Set set layouts
-	//Allocate descriptor set
-	Try(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &computeDescriptorSet)) Quit("Fatal error");
-
-
-
-
-
-
-
-	//Connect the storage buffer to the descrptor
-	VkDescriptorBufferInfo descriptorBufferInfo = {};								//Create descriptor buffer infos
-	descriptorBufferInfo.buffer = CBuffers[0].buffer;									//Set buffer
-	descriptorBufferInfo.offset = 0;													//Set offset
-	descriptorBufferInfo.range = CBuffers[0].size;										//Set size of the buffer
-
-	VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
-	writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
-	writeDescriptorSet.dstSet = computeDescriptorSet;									//Set descriptor set
-	writeDescriptorSet.dstBinding = 0;													//Set binding
-	writeDescriptorSet.descriptorCount = 1;												//Set number of descriptors
-	writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
-	writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;								//Set descriptor buffer info
+		//This structure contains the informations about the descriptor set
+		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
+		descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;	//Set structure type
+		descriptorSetAllocateInfo.descriptorPool = computeDescriptorPool;					//Set descriptor pool where to allocate the descriptor
+		descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
+		descriptorSetAllocateInfo.pSetLayouts = &computeDescriptorSetLayout;				//Set set layouts
+		//Allocate descriptor set
+		Try(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &computeDescriptorSet)) Quit("Fatal error");
+	
 
 
+	//Create a descriptor set write for every buffer and update the descriptor sets
+		LuxArray<VkWriteDescriptorSet> writeDescriptorSets(bufferIndices.size());
+		forEach(bufferIndices, i) {
+			//Connect the storage buffer to the descrptor
+			VkDescriptorBufferInfo descriptorBufferInfo = {};						//Create descriptor buffer infos
+			descriptorBufferInfo.buffer = CBuffers[i].buffer;							//Set buffer
+			descriptorBufferInfo.offset = 0;											//Set offset
+			descriptorBufferInfo.range = CBuffers[i].size;								//Set size of the buffer
 
+			VkWriteDescriptorSet writeDescriptorSet = {};							//Create write descriptor set
+			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;			//Set structure type
+			writeDescriptorSet.dstSet = computeDescriptorSet;							//Set descriptor set
+			writeDescriptorSet.dstBinding = i;											//Set binding
+			writeDescriptorSet.descriptorCount = 1;										//Set number of descriptors
+			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;		//Use it as a storage
+			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;						//Set descriptor buffer info
 
-	VkDescriptorBufferInfo descriptorBufferInfo1 = {};								//Create descriptor buffer infos
-	descriptorBufferInfo1.buffer = CBuffers[1].buffer;									//Set buffer
-	descriptorBufferInfo1.offset = 0;													//Set offset
-	descriptorBufferInfo1.range = CBuffers[1].size;										//Set size of the buffer
-
-	VkWriteDescriptorSet writeDescriptorSet1 = {};									//Create write descriptor set
-	writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
-	writeDescriptorSet1.dstSet = computeDescriptorSet;									//Set descriptor set
-	writeDescriptorSet1.dstBinding = 1;													//Set binding
-	writeDescriptorSet1.descriptorCount = 1;											//Set number of descriptors
-	writeDescriptorSet1.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
-	writeDescriptorSet1.pBufferInfo = &descriptorBufferInfo1;							//Set descriptor buffer info
-
-	VkWriteDescriptorSet writeDescriptorSets[] = { writeDescriptorSet ,writeDescriptorSet1 };
-
-
-	//vkUpdateDescriptorSets(compute.LD, 1, &writeDescriptorSet, 0, null);			//Update descriptor set
-	vkUpdateDescriptorSets(compute.LD, 2, writeDescriptorSets, 0, null);			//Update descriptor set
+			writeDescriptorSets[i] = writeDescriptorSet;							//Save descriptor set
+		}
+		//Update descriptor sets
+		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), writeDescriptorSets.data(), 0, null);			
+	
 }
 
 

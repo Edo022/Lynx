@@ -57,7 +57,7 @@ void Engine::cleanupCompute() {
 int32 Engine::newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath) {
 	if (bufferIndices.size() > CBuffers.size()) return -1;
 	CShader_create_descriptorSetLayouts(bufferIndices);
-	CShader_create_descriptorSets();
+	CShader_create_descriptorSets(bufferIndices);
 	CShader_create_CPipeline();
 	CShader_create_commandBuffer();
 	return 0;
