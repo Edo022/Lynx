@@ -8,7 +8,7 @@
 
 
 
-void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices) {
+void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices, uint64 CShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
@@ -29,14 +29,14 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices)
 	descriptorSetLayoutCreateInfo.pBindings = (new LuxArray<VkDescriptorSetLayoutBinding>(descriptorSetLayoutBindings))->data(); //Set descriptors to bind
 
 	//Create the descriptor set layout
-	Try(vkCreateDescriptorSetLayout(compute.LD, new VkDescriptorSetLayoutCreateInfo(descriptorSetLayoutCreateInfo), null, &computeDescriptorSetLayout)) Quit("Fatal error");
+	Try(vkCreateDescriptorSetLayout(compute.LD, new VkDescriptorSetLayoutCreateInfo(descriptorSetLayoutCreateInfo), null, &CShaders[CShader].descriptorSetLayout)) Quit("Fatal error");
 }
 
 
 
 
 
-void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
+void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint64 CShader) {
 	{ //Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		VkDescriptorPoolSize descriptorPoolSize = {};
@@ -50,16 +50,16 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
 		descriptorPoolCreateInfo.poolSizeCount = 1;											//One pool size
 		descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
 		//Create descriptor pool
-		Try(vkCreateDescriptorPool(compute.LD, new VkDescriptorPoolCreateInfo(descriptorPoolCreateInfo), null, &computeDescriptorPool)) Quit("Fatal error");
+		Try(vkCreateDescriptorPool(compute.LD, new VkDescriptorPoolCreateInfo(descriptorPoolCreateInfo), null, &CShaders[CShader].descriptorPool)) Quit("Fatal error");
 
 		//This structure contains the informations about the descriptor set
 		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
 		descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;	//Set structure type
-		descriptorSetAllocateInfo.descriptorPool = computeDescriptorPool;					//Set descriptor pool where to allocate the descriptor
+		descriptorSetAllocateInfo.descriptorPool =CShaders[CShader].descriptorPool;	//Set descriptor pool where to allocate the descriptor
 		descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
-		descriptorSetAllocateInfo.pSetLayouts = &computeDescriptorSetLayout;				//Set set layouts
+		descriptorSetAllocateInfo.pSetLayouts = &CShaders[CShader].descriptorSetLayout;//Set set layouts
 		//Allocate descriptor set
-		Try(vkAllocateDescriptorSets(compute.LD, new VkDescriptorSetAllocateInfo(descriptorSetAllocateInfo), &computeDescriptorSet)) Quit("Fatal error");
+		Try(vkAllocateDescriptorSets(compute.LD, new VkDescriptorSetAllocateInfo(descriptorSetAllocateInfo), &CShaders[CShader].descriptorSet)) Quit("Fatal error");
 	}
 
 
@@ -68,13 +68,13 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
 		forEach(bufferIndices, i) {
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo descriptorBufferInfo = {};								//Create descriptor buffer infos
-			descriptorBufferInfo.buffer = CBuffers[i].buffer;									//Set buffer
+			descriptorBufferInfo.buffer = CGpuBuffers[i].buffer;								//Set buffer
 			descriptorBufferInfo.offset = 0;													//Set offset
-			descriptorBufferInfo.range = CBuffers[i].size;										//Set size of the buffer
+			descriptorBufferInfo.range = CGpuBuffers[i].size;									//Set size of the buffer
 
 			VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
 			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
-			writeDescriptorSet.dstSet = computeDescriptorSet;									//Set descriptor set
+			writeDescriptorSet.dstSet =CShaders[CShader].descriptorSet;					//Set descriptor set
 			writeDescriptorSet.dstBinding = i;													//Set binding
 			writeDescriptorSet.descriptorCount = 1;												//Set number of descriptors
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
@@ -102,32 +102,32 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
 
 
 
-void Engine::CShader_create_CPipeline(const char* shaderPath) {
+void Engine::CShader_create_CPipeline(const char* shaderPath, uint64 CShader) {
 	uint32 fileLength;																//Create the shader module
-	computeShaderModule[0] = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
+	CShaders[CShader].shaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
 
 
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};						//Create shader stage infos
 	shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;	//Set structure type
 	shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;							//Use it in the compute stage
-	shaderStageCreateInfo.module = computeShaderModule[0];								//Set compute module
+	shaderStageCreateInfo.module = CShaders[CShader].shaderModule;								//Set compute module
 	shaderStageCreateInfo.pName = "main";												//Set the main function as entry point
 
 
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};						//Create pipeline create infos
 	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;		//Set structure type
 	pipelineLayoutCreateInfo.setLayoutCount = 1;										//Set number of set layouts
-	pipelineLayoutCreateInfo.pSetLayouts = &computeDescriptorSetLayout;					//Set set layout
+	pipelineLayoutCreateInfo.pSetLayouts = &CShaders[CShader].descriptorSetLayout;	//Set set layout
 	//Create pipeline layout
-	Try(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, null, &computePipelineLayout)) Quit("Fatal error");
+	Try(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, null, &CShaders[CShader].pipelineLayout)) Quit("Fatal error");
 
 
 	VkComputePipelineCreateInfo pipelineCreateInfo = {};							//Create pipeline create infos 
 	pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;			//Set structure type
 	pipelineCreateInfo.stage = shaderStageCreateInfo;									//Set shader stage infos
-	pipelineCreateInfo.layout = computePipelineLayout;									//Set pipeline layout
+	pipelineCreateInfo.layout = CShaders[CShader].pipelineLayout;									//Set pipeline layout
 	//Create the compute pipeline
-	Try(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &computePipeline)) Quit("Fatal error");
+	Try(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &CShaders[CShader].pipeline)) Quit("Fatal error");
 
-	vkDestroyShaderModule(compute.LD, computeShaderModule[0], null);				//Destroy the shader module
+	vkDestroyShaderModule(compute.LD, CShaders[CShader].shaderModule, null);				//Destroy the shader module
 }

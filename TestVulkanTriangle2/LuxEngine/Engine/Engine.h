@@ -380,6 +380,28 @@ private:
 
 	struct Pixel { unsigned char r, g, b, a; };
 
+
+	VkDebugReportCallbackEXT debugReportCallback;
+
+
+	//shaders
+	struct LuxCShader {
+		//Descriptors
+		VkDescriptorPool descriptorPool;
+		VkDescriptorSet descriptorSet;
+		VkDescriptorSetLayout descriptorSetLayout;
+		//Pipeline
+		VkPipeline pipeline;
+		VkPipelineLayout pipelineLayout;
+		VkShaderModule shaderModule;
+		//Commands
+		VkCommandPool commandPool;
+		VkCommandBuffer commandBuffer;
+	};
+	LuxMap<LuxCShader> CShaders;
+
+
+	//Buffer	
 	//This structure groups the components of a Vulkan buffer
 	struct LuxGpuBuffer {
 		uint64 ID;					//A unique id, different for each buffer
@@ -399,42 +421,23 @@ private:
 		vkMapMemory(compute.LD, buffer->memory, 0, buffer->size, 0, &data);
 		return data;
 	}
-
-	VkDebugReportCallbackEXT debugReportCallback;
-
-	//Compute pipeline
-	VkPipeline computePipeline;
-	VkPipelineLayout computePipelineLayout;
-	VkShaderModule computeShaderModule[10];
-
-	//commands
-	VkCommandPool computeCommandPool;
-	VkCommandBuffer computeCommandBuffer;
-
-	//A single descriptor represents a single resource, and several descriptors are organized
-	//into descriptor sets, which are basically just collections of descriptors.
-	VkDescriptorPool computeDescriptorPool;
-	VkDescriptorSet computeDescriptorSet;
-	VkDescriptorSetLayout computeDescriptorSetLayout;
-
-	//Buffer
-	LuxMap<LuxGpuBuffer> CBuffers;
+	LuxMap<LuxGpuBuffer> CGpuBuffers;
 
 
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	uint64 createComputeBuffer(uint32 size);
+	uint64 createGpuBuffer(uint32 size);
 	int32 newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
-	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices);
-	void CShader_create_descriptorSets(LuxArray<uint64> bufferIndices);
-	void CShader_create_CPipeline(const char* shaderPath);
+	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices, uint64 CShader);
+	void CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint64 CShader);
+	void CShader_create_CPipeline(const char* shaderPath, uint64 CShader);
 
 	//Compute command buffers >> Compute/Commands.cpp
-	void CShader_create_commandBuffer();
-	void runCommandBuffer();
+	void CShader_create_commandBuffer(uint64 CShader);
+	void runCommandBuffer(uint64 CShader);
 
 };
 
