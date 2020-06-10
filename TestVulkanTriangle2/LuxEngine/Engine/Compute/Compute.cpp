@@ -17,10 +17,6 @@ void Engine::runCompute() {
 	uint64 vertices = createGpuBuffer(4);
 	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
 	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
-	//CShader_create_descriptorSetLayouts();
-	//CShader_create_descriptorSets();
-	//CShader_create_CPipeline();
-	//CShader_create_commandBuffer();
 }
 
 

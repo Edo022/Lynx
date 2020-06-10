@@ -122,51 +122,58 @@ const bool enableValidationLayers = true;
 
 
 
-// main() ---> run()
-//             |                                                   ___             ___
-//             |-- initWindow()                                       |               |
-//             |   |-- glfwInit()                                     |               |
-//             |   |-- set window variable                            | main          |
-//             |   '-- set window resize callback                     |               |
-//             |                                                      |               |
-//             |-- createInstance()                                ___|               |
-//             |                                                                      |
-//             |                                                   ___                |
-//             |-- runGraphics()                                      |               |
-//             |   '-- initVulkan()                                   |               |
-//             |       |-- createSurface()                            |               |
-//             |       |-- evalutate physical devices                 |               |
-//             |       |   |-- save every suitable device data        |               |
-//             |       |   '-- create logical devices                 |               |
-//             |       |                                              |               | INITIALIZE ENGINE
-//             |       |-- createGraphicsCommandPool()                |               |
-//             |       |-- createDebugMessenger()                     | graphics      |
-//             |       |                                              |               |
-//             |       |-- createTextureImage()                       |               |
-//             |       |-- createTextureImageView()                   |               |
-//             |       |-- createTextureSampler()                     |               |
-//             |       |                                              |               |
-//             |       |-- createVertexBuffer()                       |               |
-//             |       |-- createIndexBuffer()                        |               |
-//             |       |-- ?                                       ___|               |
-//             |                                                   ___                |
-//             |-- runCompute()                                       | compute       |
-//             |   |-- ?                                           ___|               |
-//             |                                                   ___                |
-//             |,- set GLFW keyboard callback                         | input         |
-//             |'- set GLFW mouse callback                         ___|            ___|
+//         main()
+//         |-- run()
+//         |   |                                                   ___                ___
+//         |   |-- initWindow()                                       |                  |
+//         |   |   |-- glfwInit()                                     |                  |
+//         |   |   |-- set window variable                            | main             |
+//         |   |   '-- set window resize callback                     |                  |
+//         |   |                                                      |                  |
+//         |   |-- createInstance()                                ___|                  |
+//         |   |                                                                         |
+//         |   |                                                   ___                   |
+//         |   |-- runGraphics()                                      |                  |
+//         |   |   '-- initVulkan()                                   |                  |
+//         |   |       |-- createSurface()                            |                  |
+//         |   |       |-- evalutate physical devices                 |                  |
+//         |   |       |   |-- save every suitable device data        |                  |
+//         |   |       |   '-- create logical devices                 |                  |
+//         |   |       |                                              |                  | INITIALIZE ENGINE
+//         |   |       |-- createGraphicsCommandPool()                |                  |
+//         |   |       |-- createDebugMessenger()                     | graphics         |
+//         |   |       |                                              |                  |
+//         |   |       |-- createTextureImage()                       |                  |
+//         |   |       |-- createTextureImageView()                   |                  |
+//         |   |       |-- createTextureSampler()                     |                  |
+//         |   |       |                                              |                  |
+//         |   |       |-- createVertexBuffer()                       |                  |
+//         |   |       |-- createIndexBuffer()                        |                  |
+//         |   |       |-- ?                                       ___|                  |
+//         |   |                                                   ___                   |
+//         |   |-- runCompute()                                       | compute          |
+//         |   |   |-- Create image output buffer                     |                  |
+//         |   |   |-- ?                                           ___|                  |
+//         |   |                                                   ___                   |
+//         |   |,- set GLFW keyboard callback                         | input            |
+//         |   |'- set GLFW mouse callback                         ___|               ___|
+//         |   |
+//         |   |
+//         |   |  ////////////////////////////////////////////////////////////////////////////////////
+//         |   |
+//         |   |                                                   ___                ___
+//         |   |-- mainLoop()                                         |                  |
+//         |   |   |-- run fps counter                                |                  |
+//         |   |   '---every frame                                    | render loop      |
+//         |   |   ^   |-- check GLFW events                          |                  |
+//         |   |   |   |-- render and draw frame to window            |                  | RUNNING
+//         |   |   '---'                                           ___|                  |
+//         |   |                                                                         |
+//         '-----> ?                                               ___                   |
+//             |                                                   ___| external      ___|
 //             |
 //             |
-//             |
-//             |                                                   ___
-//             |-- main loop                                          | 
-//             |   |-- run fps counter                                |
-//             |   '---frame                                          | running
-//             |   ^   |-- check GLFw events                          |
-//             |   |   |-- render and draw frame to screen            |
-//             |   '---'                                           ___|
-//             |
-//             |
+//             | /////////////////////////////////////////////////////////////////////////////////////
 //             |
 //             |                                                   ___
 //             |,- cleanupGraphics()                                  | 
@@ -226,7 +233,7 @@ private:
 	void mainLoop();		void FPSCounter(); 
 	void initWindow();		void createInstance();
 
-	//Devices >> ./Devices.cpp
+	//Devices >> Devices.cpp
 	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxMap<VkQueue>* computeQueues);
 	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
@@ -306,7 +313,7 @@ private:
 
 
 
-	//Graphics >> Graphics/Graphics.cpp
+	//Graphics >> Graphics/GGraphics.cpp
 	void runGraphics(bool _useVSync = true, float FOV = 45.0f);
 	void initVulkan();
 	void createSurface();
@@ -317,7 +324,7 @@ private:
 	void cleanupGraphics();
 
 
-	//Graphics swapchain >> Graphics/Swapchain.cpp
+	//Graphics swapchain >> Graphics/GSwapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxArray<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(LuxArray<VkPresentModeKHR>& availablePresentModes);
@@ -328,7 +335,7 @@ private:
 	void cleanupSwapChain();
 
 
-	//Graphics textures and images >> Graphics/Images.cpp
+	//Graphics textures and images >> Graphics/GImages.cpp
 	void createVertexBuffer();
 	void createIndexBuffer();
 
@@ -342,14 +349,14 @@ private:
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
 
-	//Graphics commands >> Graphics/Commands.cpp
+	//Graphics commands >> Graphics/GCommands.cpp
 	void createGraphicsCommandPool();
 	void createDrawCommandBuffers();
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
 
-	//Graphics render and descriptors >> Graphics/Pipeline.cpp
+	//Graphics render and descriptors >> Graphics/GPipeline.cpp
 	void createGraphicsPipeline();
 	void createRenderPass();
 	void createFramebuffers();
@@ -430,12 +437,12 @@ private:
 	uint64 createGpuBuffer(uint32 size);
 	int32 newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath);
 
-	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
+	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
 	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices, uint64 CShader);
 	void CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint64 CShader);
 	void CShader_create_CPipeline(const char* shaderPath, uint64 CShader);
 
-	//Compute command buffers >> Compute/Commands.cpp
+	//Compute command buffers >> Compute/CCommands.cpp
 	void CShader_create_commandBuffer(uint64 CShader);
 	void runCommandBuffer(uint64 CShader);
 
