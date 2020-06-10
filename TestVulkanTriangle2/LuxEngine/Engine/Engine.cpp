@@ -24,7 +24,7 @@ void Engine::run(bool _useVSync, float _FOV) {
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
 	runGraphics(_useVSync, _FOV);
-	RunCompute();
+	runCompute();
 
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
 	glfwSetKeyCallback(window, &__lp_key_callback);

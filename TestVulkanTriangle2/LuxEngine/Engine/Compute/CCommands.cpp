@@ -8,7 +8,7 @@
 
 
 
-void Engine::createComputeCommandBuffer() {
+void Engine::CShader_create_commandBuffer() {
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;			//Set structure type
 	commandPoolCreateInfo.flags = 0;													//Default flags

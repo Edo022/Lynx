@@ -21,7 +21,7 @@ void Engine::initVulkan() {
 	Normal printf("    Creating VK Surface...               ");		createSurface();					SuccessNoNl printf("ok");	NewLine;
 	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();				NewLine;
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
-	/**/												 			setupDebugMessenger();
+	/**/												 			createDebugMessenger();
 
 	//Create textures
 	createTextureImage();
@@ -74,7 +74,7 @@ void Engine::createSyncObjects() {
 
 
 
-void Engine::setupDebugMessenger() {
+void Engine::createDebugMessenger() {
 	if (!enableValidationLayers) return;
 
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;

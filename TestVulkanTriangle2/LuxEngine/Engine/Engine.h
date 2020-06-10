@@ -121,6 +121,65 @@ const bool enableValidationLayers = true;
 
 
 
+
+// main() ---> run()
+//             |                                                   ___                 ___
+//             |-- initWindow()                                       |                   |
+//             |   |-- glfwInit()                                     |                   |
+//             |   |-- set window variable                            | main              |
+//             |   '-- set window resize callback                     |                   |
+//             |                                                      |                   |
+//             |-- createInstance()                                ___|                   |
+//             |                                                                          |
+//             |                                                   ___                    |
+//             |-- runGraphics()                                      |                   |
+//             |   '-- initVulkan()                                   |                   |
+//             |       |-- createSurface()                            |                   |
+//             |       |-- evalutate physical devices                 |                   |
+//             |       |   |-- save every suitable device data        |                   |
+//             |       |   '-- create logical devices                 |                   |
+//             |       |                                              |                   | INITIALIZE ENGINE
+//             |       |-- createGraphicsCommandPool()                |                   |
+//             |       |-- createDebugMessenger()                     | graphics          |
+//             |       |                                              |                   |
+//             |       |-- createTextureImage()                       |                   |
+//             |       |-- createTextureImageView()                   |                   |
+//             |       |-- createTextureSampler()                     |                   |
+//             |       |                                              |                   |
+//             |       |-- createVertexBuffer()                       |                   |
+//             |       |-- createIndexBuffer()                        |                   |
+//             |       |-- ?                                       ___|                   |
+//             |                                                   ___                    |
+//             |-- runCompute()                                       | compute           |
+//             |   |-- ?                                           ___|                   |
+//             |                                                   ___                    |
+//             |,- set GLFW keyboard callback                         | input             |
+//             |'- set GLFW mouse callback                         ___|                ___|
+//             |
+//             |
+//             |
+//             |                                                   ___
+//             |-- main loop                                          | 
+//             |   |-- run fps counter                                |
+//             |   '---frame                                          | running
+//             |   ^   |-- check GLFw events                          |
+//             |   |   |-- render and draw frame to screen            |
+//             |   '---'                                           ___|
+//             |
+//             |
+//             |
+//             |                                                   ___
+//             |,- cleanupGraphics()                                  | 
+//             |'- cleanupCompute()                                   | 
+//             |                                                      | cleanup
+//             |,- destroy instance                                   |
+//             |'- destroy window                                     |
+//             |                                                      |
+//             '-- terminate GLFW                                  ___|
+
+
+
+
 class Engine;
 static Engine* engine;
 
@@ -252,7 +311,7 @@ private:
 	void initVulkan();
 	void createSurface();
 	void createSyncObjects();
-	void setupDebugMessenger();
+	void createDebugMessenger();
 	void drawFrame();
 	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
 	void cleanupGraphics();
@@ -363,18 +422,18 @@ private:
 
 
 	//Compute >> Compute/Compute.cpp
-	void RunCompute();
+	void runCompute();
 	void cleanupCompute();
 	uint64 createComputeBuffer(uint32 size);
-	int32 runShader(LuxArray<uint64> bufferIndices, const char* shaderPath);
+	int32 newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
-	void createComputeDescriptorSetLayout(LuxArray<uint64> bufferIndices);
-	void createDescriptorSet();
-	void createComputePipeline();
+	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices);
+	void CShader_create_descriptorSets();
+	void CShader_create_CPipeline();
 
 	//Compute command buffers >> Compute/Commands.cpp
-	void createComputeCommandBuffer();
+	void CShader_create_commandBuffer();
 	void runCommandBuffer();
 
 };

@@ -8,7 +8,7 @@
 
 
 
-void Engine::createComputeDescriptorSetLayout(LuxArray<uint64> bufferIndices) {
+void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
@@ -36,7 +36,7 @@ void Engine::createComputeDescriptorSetLayout(LuxArray<uint64> bufferIndices) {
 
 
 
-void Engine::createDescriptorSet() {
+void Engine::CShader_create_descriptorSets() {
 	VkDescriptorPoolSize descriptorPoolSize = {};
 	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 	descriptorPoolSize.descriptorCount = 2;
@@ -116,7 +116,7 @@ void Engine::createDescriptorSet() {
 
 
 
-void Engine::createComputePipeline() {
+void Engine::CShader_create_CPipeline() {
 	uint32 fileLength;																//Create the shader module
 	computeShaderModule[0] = createShaderModule(compute.LD, readShaderFromFile(&fileLength, "LuxEngine/Contents/shaders/comp.spv"), &fileLength);
 

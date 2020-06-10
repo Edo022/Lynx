@@ -12,16 +12,15 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 
-void Engine::RunCompute() {
+void Engine::runCompute() {
 	uint64 imageOutput = createComputeBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
 	uint64 vertices = createComputeBuffer(4);
-	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]);
-	mappedVertices[1] = 1;
-	runShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
-	//createComputeDescriptorSetLayout();
-	//createDescriptorSet();
-	//createComputePipeline();
-	//createComputeCommandBuffer();
+	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
+	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
+	//CShader_create_descriptorSetLayouts();
+	//CShader_create_descriptorSets();
+	//CShader_create_CPipeline();
+	//CShader_create_commandBuffer();
 }
 
 
@@ -50,15 +49,17 @@ void Engine::cleanupCompute() {
 // Utilities --------------------------------------------------------------------------------------------------------------------------------//
 
 
+
+
 //TODO check device limits
 //*   bufferIndices: the indices of the buffers to bind. Each index must correspond to a CBuffers's element
 //*   returns 0 if the operation succeed, 1 if the indices cannot be used, 2 if the file cannot be found, -1 if an unknown error occurs 
-int32 Engine::runShader(LuxArray<uint64> bufferIndices, const char* shaderPath) {
+int32 Engine::newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath) {
 	if (bufferIndices.size() > CBuffers.size()) return -1;
-	createComputeDescriptorSetLayout(bufferIndices);
-	createDescriptorSet();
-	createComputePipeline();
-	createComputeCommandBuffer();
+	CShader_create_descriptorSetLayouts(bufferIndices);
+	CShader_create_descriptorSets();
+	CShader_create_CPipeline();
+	CShader_create_commandBuffer();
 	return 0;
 }
 
