@@ -365,12 +365,13 @@ private:
 	//Compute >> Compute/Compute.cpp
 	void RunCompute();
 	void cleanupCompute();
-	int64 createComputeBuffer(uint32 size);
+	uint64 createComputeBuffer(uint32 size);
+	int32 runShader(LuxArray<uint64> bufferIndices, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
-	void createComputePipeline();
-	void createComputeDescriptorSetLayout();
+	void createComputeDescriptorSetLayout(LuxArray<uint64> bufferIndices);
 	void createDescriptorSet();
+	void createComputePipeline();
 
 	//Compute command buffers >> Compute/Commands.cpp
 	void createComputeCommandBuffer();

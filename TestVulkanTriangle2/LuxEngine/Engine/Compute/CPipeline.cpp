@@ -8,40 +8,25 @@
 
 
 
-void Engine::createComputeDescriptorSetLayout() {
-	//Create buffers
-	createComputeBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
-
-	createComputeBuffer(4);
-	uint32* vertices = (uint32*)mapGpuBuffer(&CBuffers[1]);
-	vertices[1] = 1;
-
-
+void Engine::createComputeDescriptorSetLayout(LuxArray<uint64> bufferIndices) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
 	//in the compute shader
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};				//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
-	descriptorSetLayoutBinding.binding = 0;											//Set the binding point in the shader
-	descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;	//Set the type of the descriptor
-	descriptorSetLayoutBinding.descriptorCount = 1;									//Set the number of descriptors
-	descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;			//Use it in the compute stage
+	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(bufferIndices.size());
+	forEach(bufferIndices, i) {
+		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
+		descriptorSetLayoutBinding.binding = i;													//Set the binding point in the shader
+		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
+		descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
+		descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;					//Use it in the compute stage
+		descriptorSetLayoutBindings[i] = descriptorSetLayoutBinding;						//Save it in the layout binding array
+	}
 
-	VkDescriptorSetLayoutBinding descriptorSetLayoutBinding1 = {};				//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
-	descriptorSetLayoutBinding1.binding = 1;											//Set the binding point in the shader
-	descriptorSetLayoutBinding1.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;	//Set the type of the descriptor
-	descriptorSetLayoutBinding1.descriptorCount = 1;									//Set the number of descriptors
-	descriptorSetLayoutBinding1.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;			//Use it in the compute stage
-
-	VkDescriptorSetLayoutBinding descriptorBindings[] = { descriptorSetLayoutBinding, descriptorSetLayoutBinding1 };
-
-
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};			//This structure contains all the descriptors of the bindings that will be used by the shader
-	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;//Set structure type
-	//descriptorSetLayoutCreateInfo.bindingCount = 1;									//Set number of binding points
-	//descriptorSetLayoutCreateInfo.pBindings = &descriptorSetLayoutBinding;					//Set descriptors to bind
-	descriptorSetLayoutCreateInfo.bindingCount = 2;									//Set number of binding points
-	descriptorSetLayoutCreateInfo.pBindings = descriptorBindings;					//Set descriptors to bind
+	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};						//This structure contains all the descriptors of the bindings that will be used by the shader
+	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Set structure type
+	descriptorSetLayoutCreateInfo.bindingCount = descriptorSetLayoutBindings.size();			//Set number of binding points
+	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBindings.data();				//Set descriptors to bind
 
 	//Create the descriptor set layout
 	Try(vkCreateDescriptorSetLayout(compute.LD, &descriptorSetLayoutCreateInfo, null, &computeDescriptorSetLayout)) Quit("Fatal error");
