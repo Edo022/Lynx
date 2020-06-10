@@ -430,7 +430,7 @@ private:
 	//Compute pipeline and descriptors >> Compute/Pipeline.cpp
 	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices);
 	void CShader_create_descriptorSets(LuxArray<uint64> bufferIndices);
-	void CShader_create_CPipeline();
+	void CShader_create_CPipeline(const char* shaderPath);
 
 	//Compute command buffers >> Compute/Commands.cpp
 	void CShader_create_commandBuffer();

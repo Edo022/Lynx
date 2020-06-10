@@ -26,10 +26,10 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices)
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};						//This structure contains all the descriptors of the bindings that will be used by the shader
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Set structure type
 	descriptorSetLayoutCreateInfo.bindingCount = descriptorSetLayoutBindings.size();			//Set number of binding points
-	descriptorSetLayoutCreateInfo.pBindings = descriptorSetLayoutBindings.data();				//Set descriptors to bind
+	descriptorSetLayoutCreateInfo.pBindings = (new LuxArray<VkDescriptorSetLayoutBinding>(descriptorSetLayoutBindings))->data(); //Set descriptors to bind
 
 	//Create the descriptor set layout
-	Try(vkCreateDescriptorSetLayout(compute.LD, &descriptorSetLayoutCreateInfo, null, &computeDescriptorSetLayout)) Quit("Fatal error");
+	Try(vkCreateDescriptorSetLayout(compute.LD, new VkDescriptorSetLayoutCreateInfo(descriptorSetLayoutCreateInfo), null, &computeDescriptorSetLayout)) Quit("Fatal error");
 }
 
 
@@ -37,7 +37,7 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices)
 
 
 void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
-	 //Create descriptor pool and descriptor set allocate infos
+	{ //Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		VkDescriptorPoolSize descriptorPoolSize = {};
 		descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -50,7 +50,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
 		descriptorPoolCreateInfo.poolSizeCount = 1;											//One pool size
 		descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
 		//Create descriptor pool
-		Try(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &computeDescriptorPool)) Quit("Fatal error");
+		Try(vkCreateDescriptorPool(compute.LD, new VkDescriptorPoolCreateInfo(descriptorPoolCreateInfo), null, &computeDescriptorPool)) Quit("Fatal error");
 
 		//This structure contains the informations about the descriptor set
 		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
@@ -59,32 +59,32 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
 		descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
 		descriptorSetAllocateInfo.pSetLayouts = &computeDescriptorSetLayout;				//Set set layouts
 		//Allocate descriptor set
-		Try(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &computeDescriptorSet)) Quit("Fatal error");
-	
+		Try(vkAllocateDescriptorSets(compute.LD, new VkDescriptorSetAllocateInfo(descriptorSetAllocateInfo), &computeDescriptorSet)) Quit("Fatal error");
+	}
 
 
-	//Create a descriptor set write for every buffer and update the descriptor sets
+	{ //Create a descriptor set write for every buffer and update the descriptor sets
 		LuxArray<VkWriteDescriptorSet> writeDescriptorSets(bufferIndices.size());
 		forEach(bufferIndices, i) {
 			//Connect the storage buffer to the descrptor
-			VkDescriptorBufferInfo descriptorBufferInfo = {};						//Create descriptor buffer infos
-			descriptorBufferInfo.buffer = CBuffers[i].buffer;							//Set buffer
-			descriptorBufferInfo.offset = 0;											//Set offset
-			descriptorBufferInfo.range = CBuffers[i].size;								//Set size of the buffer
+			VkDescriptorBufferInfo descriptorBufferInfo = {};								//Create descriptor buffer infos
+			descriptorBufferInfo.buffer = CBuffers[i].buffer;									//Set buffer
+			descriptorBufferInfo.offset = 0;													//Set offset
+			descriptorBufferInfo.range = CBuffers[i].size;										//Set size of the buffer
 
-			VkWriteDescriptorSet writeDescriptorSet = {};							//Create write descriptor set
-			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;			//Set structure type
-			writeDescriptorSet.dstSet = computeDescriptorSet;							//Set descriptor set
-			writeDescriptorSet.dstBinding = i;											//Set binding
-			writeDescriptorSet.descriptorCount = 1;										//Set number of descriptors
-			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;		//Use it as a storage
-			writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;						//Set descriptor buffer info
+			VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
+			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
+			writeDescriptorSet.dstSet = computeDescriptorSet;									//Set descriptor set
+			writeDescriptorSet.dstBinding = i;													//Set binding
+			writeDescriptorSet.descriptorCount = 1;												//Set number of descriptors
+			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
+			writeDescriptorSet.pBufferInfo = new VkDescriptorBufferInfo(descriptorBufferInfo);	//Set descriptor buffer info
 
-			writeDescriptorSets[i] = writeDescriptorSet;							//Save descriptor set
+			writeDescriptorSets[i] = writeDescriptorSet;									//Save descriptor set
 		}
 		//Update descriptor sets
-		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), writeDescriptorSets.data(), 0, null);			
-	
+		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), (new LuxArray(writeDescriptorSets))->data(), 0, null);
+	}
 }
 
 
@@ -102,9 +102,9 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices) {
 
 
 
-void Engine::CShader_create_CPipeline() {
+void Engine::CShader_create_CPipeline(const char* shaderPath) {
 	uint32 fileLength;																//Create the shader module
-	computeShaderModule[0] = createShaderModule(compute.LD, readShaderFromFile(&fileLength, "LuxEngine/Contents/shaders/comp.spv"), &fileLength);
+	computeShaderModule[0] = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
 
 
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};						//Create shader stage infos
