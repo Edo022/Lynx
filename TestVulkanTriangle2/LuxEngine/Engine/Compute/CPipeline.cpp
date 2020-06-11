@@ -8,7 +8,7 @@
 
 
 
-void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices, uint64 CShader) {
+void Engine::CShader_create_descriptorSetLayouts(LuxArray<LuxGpuBuffer> bufferIndices, LuxShader CShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
@@ -36,7 +36,7 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices,
 
 
 
-void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint64 CShader) {
+void Engine::CShader_create_descriptorSets(LuxArray<LuxGpuBuffer> bufferIndices, LuxShader CShader) {
 	{ //Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		VkDescriptorPoolSize descriptorPoolSize = {};
@@ -102,7 +102,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint6
 
 
 
-void Engine::CShader_create_CPipeline(const char* shaderPath, uint64 CShader) {
+void Engine::CShader_create_CPipeline(const char* shaderPath, LuxShader CShader) {
 	uint32 fileLength;																//Create the shader module
 	CShaders[CShader].shaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
 

@@ -22,7 +22,7 @@ void Engine::createGraphicsPipeline() {
 	#define StageInfo(_module, _stage) VkPipelineShaderStageCreateInfo { VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO, nullptr, 0, _stage, _module, "main", nullptr }
 	uint32 size = 0;																								//Size of the shader code
 	VkShaderModule vertShaderModule = createShaderModule(graphics.LD, readShaderFromFile(&size, VERT_PATH), &size);	//Create vertex   shader module from shader's file (It needs to be in a variable to be destroyed)
-	VkShaderModule fragShaderModule = createShaderModule(graphics.LD, readShaderFromFile(&size, FRAG_PATH), &size);	//Create fragment shader module from shader's file (It needs to be in a variable to be destroyed)
+	VkShaderModule fragShaderModule = createShaderModule(graphics.LD, readShaderFromFile(&size, FRAG_PATH), &size);	//Create cell shader module from shader's file (It needs to be in a variable to be destroyed)
 
 	//Create shader stages
 	VkPipelineShaderStageCreateInfo shaderStages[] = { StageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT), StageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT) };
@@ -71,7 +71,7 @@ void Engine::createGraphicsPipeline() {
 
 	VkPipelineRasterizationStateCreateInfo rasterizer{};							//Rasterizer to convert primitives into pixels
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;		//Set structure type
-	rasterizer.depthClampEnable = VK_FALSE;												//Clamp based on fragment depth (Required depth clamp feature)
+	rasterizer.depthClampEnable = VK_FALSE;												//Clamp based on cell depth (Required depth clamp feature)
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;										//Some dark magic I don't understand
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;										//Define how to draw triangles
 	rasterizer.lineWidth = 1.0f;														//line thickness
@@ -131,7 +131,7 @@ void Engine::createGraphicsPipeline() {
 	Try(vkCreateGraphicsPipelines(graphics.LD, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline)) Quit("Failed to create graphics pipeline");
 
 	vkDestroyShaderModule(graphics.LD, fragShaderModule, nullptr);				//Destroy vertex   shader's shader module
-	vkDestroyShaderModule(graphics.LD, vertShaderModule, nullptr);				//Destroy fragment shader's shader module
+	vkDestroyShaderModule(graphics.LD, vertShaderModule, nullptr);				//Destroy cell shader's shader module
 }
 
 

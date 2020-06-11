@@ -1,5 +1,26 @@
-
+﻿
 #include "LuxEngine/Engine/Engine.h"
+
+
+//     RAM MEMORY                      GPU MEMORY                                                                                                                               
+//                                      _____________________________________________________                                                                                                             
+//                                    ,'                                                     ',                                                                                                          
+//                                    |   gpu buffer         ( LuxGpuBuffers[0] )             |                                                                                                          
+//                                    |   _______________________                             |                                                                                                           
+//                                    |  |■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  |                            |                                                                                                           
+//                                    |  |■ ■ ■ ■ ■ ■            |                            |                                                                                                           
+//                                    |  '───────────────────────'                            |                                                                                                           
+//                                    |                                                       |                                                                                                           
+//                                    |                                                       |                                                                                                           
+//                                    |   shared gpu buffer  ( LuxGpuBuffers[1] )             |                                                                                                        
+//                                    |   _______________________    __                       |                                                                                                          
+//                                    |  |■|■| | |■| | | | |■| | |     | cellSize = 2         |                                                                                                           
+//                                    |  |■|■| |■| | |■| |■|■| | |   __|                      |                                                                                                           
+//                                    |  '─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─'                            |                                                                                                           
+//                                    |  |_______________________|       bufferSize = 24      |                                                                                                           
+//                                    |   cellNum  = 12                                       |                                                                                                           
+//                                    ',_____________________________________________________,'                                                                                                           
+//                                                                                                                                                     
 
 
 
@@ -13,8 +34,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	uint64 imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
-	uint64 vertices = createGpuBuffer(4);
+	LuxGpuBuffer imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+	LuxGpuBuffer vertices = createGpuBuffer(4);
 	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
 	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 }
@@ -49,14 +70,14 @@ void Engine::cleanupCompute() {
 
 
 //TODO check device limits
-//*   bufferIndices: the indices of the buffers to bind. Each index must correspond to a CGpuBuffers's element
+//*   buffers: the indices of the buffers to bind. Each index must correspond to a CGpuBuffers's element
 //*   returns the index of the created shader if the operation succeed, -1 if the indices cannot be used, -2 if the file cannot be found, -3 if an unknown error occurs 
-int32 Engine::newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath) {
-	if (bufferIndices.size() > CGpuBuffers.size()) return -1;
+int32 Engine::newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath) {
+	if (buffers.size() > CGpuBuffers.size()) return -1;
 
 	uint64 shaderIndex = CShaders.add(LuxCShader{});
-	CShader_create_descriptorSetLayouts(bufferIndices, shaderIndex);
-	CShader_create_descriptorSets(bufferIndices, shaderIndex);
+	CShader_create_descriptorSetLayouts(buffers, shaderIndex);
+	CShader_create_descriptorSets(buffers, shaderIndex);
 	CShader_create_CPipeline(shaderPath, shaderIndex);
 	CShader_create_commandBuffer(shaderIndex);
 
@@ -66,13 +87,20 @@ int32 Engine::newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath)
 
 
 
-//This function creates a buffer in a compute device and saves it in the LuxArray "computeBuffers"
+//Creates a memory buffer in a compute device and saves it in the LuxArray "computeBuffers"
 //*   size: the size in bytes of the buffer
 //*   Returns the buffer's index in the array. -1 if an error occurs
-uint64 Engine::createGpuBuffer(uint32 size){
-	LuxGpuBuffer buffer_;
+LuxGpuBuffer Engine::createGpuBuffer(uint64 size){
+	_LuxGpuBuffer buffer_;
 	buffer_.size = size;
 	createBuffer(compute.LD, buffer_.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer_.buffer, buffer_.memory);
-	void* data;
 	return buffer_.ID = CGpuBuffers.add(buffer_);
+}
+
+//Creates a buffer in a compute device and divides it in smaller parts. Useful when you need to allocate many equal and small buffers
+LuxGpuBuffer Engine::createGpuSharedBuffer(uint32 cellSize, uint32 cellNum) {
+	LuxGpuBuffer buffer = createGpuBuffer(((uint64)cellSize) * cellNum);
+	CGpuBuffers[buffer].isShared = true;
+	CGpuBuffers[buffer].cellSize = cellSize;
+	return buffer;
 }

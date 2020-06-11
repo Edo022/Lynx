@@ -189,6 +189,7 @@ const bool enableValidationLayers = true;
 
 class Engine;
 static Engine* engine;
+typedef uint64 LuxShader, LuxGpuBuffer, LuxGpuBufferCell;
 
 
 class Engine {
@@ -409,43 +410,48 @@ private:
 	LuxMap<LuxCShader> CShaders;
 
 
-	//Buffer	
+	//Buffers
 	//This structure groups the components of a Vulkan buffer
-	struct LuxGpuBuffer {
+	struct _LuxGpuBuffer {
 		uint64 ID;					//A unique id, different for each buffer
 		uint32 size;				//The size in bytes of the buffer
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
-		bool __lp_mapped = false;	//Whether the buffer is mapped or not
+		bool isMapped = false;		//Whether the buffer is mapped or not
+
+		bool isShared = false;		//Whether the buffer is shader by multiple objects or not
+		uint32 cellSize;
 	};
+	static inline LuxGpuBufferCell __lp_indicesToCell(LuxGpuBuffer buffer, uint32 cellIndex) { return (buffer << 32) & cellIndex; };
+
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
-	//*   buffer: a pointer to a LuxGpuBuffer object. It's the buffer that will be mapped
+	//*   buffer: a pointer to a _LuxGpuBuffer object. It's the buffer that will be mapped
 	//*   returns the void pointer that maps the buffer
-	void* mapGpuBuffer(LuxGpuBuffer* buffer) {
-		if (buffer->__lp_mapped) vkUnmapMemory(compute.LD, buffer->memory);
-		else buffer->__lp_mapped = true;
+	void* mapGpuBuffer(_LuxGpuBuffer* buffer) {
+		if (buffer->isMapped) vkUnmapMemory(compute.LD, buffer->memory);
+		else buffer->isMapped = true;
 		void* data;
 		vkMapMemory(compute.LD, buffer->memory, 0, buffer->size, 0, &data);
 		return data;
 	}
-	LuxMap<LuxGpuBuffer> CGpuBuffers;
-
+	LuxMap<_LuxGpuBuffer> CGpuBuffers;
 
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	uint64 createGpuBuffer(uint32 size);
-	int32 newCShader(LuxArray<uint64> bufferIndices, const char* shaderPath);
+	LuxGpuBuffer createGpuBuffer(uint64 size);
+	LuxGpuBuffer createGpuSharedBuffer(uint32 cellSize, uint32 cellNum);
+	int32 newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
-	void CShader_create_descriptorSetLayouts(LuxArray<uint64> bufferIndices, uint64 CShader);
-	void CShader_create_descriptorSets(LuxArray<uint64> bufferIndices, uint64 CShader);
-	void CShader_create_CPipeline(const char* shaderPath, uint64 CShader);
+	void CShader_create_descriptorSetLayouts(LuxArray<LuxGpuBuffer> bufferIndices, LuxShader CShader);
+	void CShader_create_descriptorSets(LuxArray<LuxGpuBuffer> bufferIndices, LuxShader CShader);
+	void CShader_create_CPipeline(const char* shaderPath, LuxShader CShader);
 
 	//Compute command buffers >> Compute/CCommands.cpp
-	void CShader_create_commandBuffer(uint64 CShader);
-	void runCommandBuffer(uint64 CShader);
+	void CShader_create_commandBuffer(LuxShader CShader);
+	void runCommandBuffer(LuxShader CShader);
 
 };
 

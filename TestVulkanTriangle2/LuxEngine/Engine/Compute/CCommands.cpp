@@ -8,7 +8,7 @@
 
 
 
-void Engine::CShader_create_commandBuffer(uint64 CShader) {
+void Engine::CShader_create_commandBuffer(LuxShader CShader) {
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;			//Set structure type
 	commandPoolCreateInfo.flags = 0;													//Default flags
@@ -46,7 +46,7 @@ void Engine::CShader_create_commandBuffer(uint64 CShader) {
 
 
 //TODO set name
-void Engine::runCommandBuffer(uint64 CShader) {
+void Engine::runCommandBuffer(LuxShader CShader) {
 	VkCommandBuffer computeCommandBuffers[] = { CShaders[CShader].commandBuffer };
 	//Submit the recorded command buffer to a queue
 	VkSubmitInfo submitInfo = {};															//Create submit infos to submit the command buffer to the queue
