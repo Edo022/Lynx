@@ -91,8 +91,14 @@ int32 Engine::newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath)
 //*   size: the size in bytes of the buffer
 //*   Returns the buffer's index in the array. -1 if an error occurs
 LuxGpuBuffer Engine::createGpuBuffer(uint64 size){
-	_LuxGpuBuffer buffer_;
-	buffer_.size = size;
-	createBuffer(compute.LD, buffer_.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer_.buffer, buffer_.memory);
-	return buffer_.ID = CGpuBuffers.add(buffer_);
+	_LuxGpuBuffer buffer;
+	buffer.size = size;
+	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
+	return buffer.ID = CGpuBuffers.add(buffer);
+}
+
+LuxGpuBuffer Engine::createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize) {
+	LuxGpuBuffer buffer = createGpuBuffer(size);
+	CGpuBuffers[buffer].fragmentSize = fragmentSize;
+	return buffer;
 }

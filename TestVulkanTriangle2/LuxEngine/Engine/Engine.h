@@ -124,66 +124,66 @@ const bool enableValidationLayers = true;
 //         ENGINE CLASS STRUCTURE
 //       
 //         main()
-//         |-- run()
-//         |   |                                                   ___                ___
-//         |   |-- initWindow()                                       |                  |
-//         |   |   |-- glfwInit()                                     |                  |
-//         |   |   |-- set window variable                            | main             |
-//         |   |   '-- set window resize callback                     |                  |
-//         |   |                                                      |                  |
-//         |   |-- createInstance()                                ___|                  |
-//         |   |                                                                         |
-//         |   |                                                   ___                   |
-//         |   |-- runGraphics()                                      |                  |
-//         |   |   '-- initVulkan()                                   |                  |
-//         |   |       |-- createSurface()                            |                  |
-//         |   |       |-- evalutate physical devices                 |                  |
-//         |   |       |   |-- save every suitable device data        |                  |
-//         |   |       |   '-- create logical devices                 |                  |
-//         |   |       |                                              |                  | INITIALIZE ENGINE
-//         |   |       |-- createGraphicsCommandPool()                |                  |
-//         |   |       |-- createDebugMessenger()                     | graphics         |
-//         |   |       |                                              |                  |
-//         |   |       |-- createTextureImage()                       |                  |
-//         |   |       |-- createTextureImageView()                   |                  |
-//         |   |       |-- createTextureSampler()                     |                  |
-//         |   |       |                                              |                  |
-//         |   |       |-- createVertexBuffer()                       |                  |
-//         |   |       |-- createIndexBuffer()                        |                  |
-//         |   |       |-- ?                                       ___|                  |
-//         |   |                                                   ___                   |
-//         |   |-- runCompute()                                       | compute          |
-//         |   |   |-- Create image output buffer                     |                  |
-//         |   |   |-- ?                                           ___|                  |
-//         |   |                                                   ___                   |
-//         |   |,- set GLFW keyboard callback                         | input            |
-//         |   |'- set GLFW mouse callback                         ___|               ___|
-//         |   |
-//         |   |
-//         |   |  ////////////////////////////////////////////////////////////////////////////////////
-//         |   |
-//         |   |                                                   ___                ___
-//         |   |-- mainLoop()                                         |                  |
-//         |   |   |-- run fps counter                                |                  |
-//         |   |   '---every frame                                    | render loop      |
-//         |   |   ^   |-- check GLFW events                          |                  |
-//         |   |   |   |-- render and draw frame to window            |                  | RUNNING
-//         |   |   '---'                                           ___|                  |
-//         |   |                                                                         |
-//         '-----> ?                                               ___                   |
-//             |                                                   ___| external      ___|
-//             |
-//             |
-//             | /////////////////////////////////////////////////////////////////////////////////////
-//             |
-//             |                                                   ___
-//             |,- cleanupGraphics()                                  | 
-//             |'- cleanupCompute()                                   | 
-//             |                                                      | cleanup
-//             |,- destroy instance                                   |
-//             |'- destroy window                                     |
-//             |                                                      |
-//             '-- terminate GLFW                                  ___|
+//         ¦-- run()
+//         ¦   │                                                   ___                ___
+//         ¦   │-- initWindow()                                       │                  │
+//         ¦   │   │-- glfwInit()                                     │                  │
+//         ¦   │   │-- set window variable                            │ main             │
+//         ¦   │   '-- set window resize callback                     │                  │
+//         ¦   │                                                      │                  │
+//         ¦   │-- createInstance()                                ___│                  │
+//         ¦   │                                                                         │
+//         ¦   │                                                   ___                   │
+//         ¦   │-- runGraphics()                                      │                  │
+//         ¦   │   '-- initVulkan()                                   │                  │
+//         ¦   │       │-- createSurface()                            │                  │
+//         ¦   │       │-- evalutate physical devices                 │                  │
+//         ¦   │       │   │-- save every suitable device data        │                  │
+//         ¦   │       │   '-- create logical devices                 │                  │
+//         ¦   │       │                                              │                  │ INITIALIZE ENGINE
+//         ¦   │       │-- createGraphicsCommandPool()                │                  │
+//         ¦   │       │-- createDebugMessenger()                     │ graphics         │
+//         ¦   │       │                                              │                  │
+//         ¦   │       │-- createTextureImage()                       │                  │
+//         ¦   │       │-- createTextureImageView()                   │                  │
+//         ¦   │       │-- createTextureSampler()                     │                  │
+//         ¦   │       │                                              │                  │
+//         ¦   │       │-- createVertexBuffer()                       │                  │
+//         ¦   │       │-- createIndexBuffer()                        │                  │
+//         ¦   │       │-- ?                                       ___│                  │
+//         ¦   │                                                   ___                   │
+//         ¦   │-- runCompute()                                       │ compute          │
+//         ¦   │   │-- Create image output buffer                     │                  │
+//         ¦   │   │-- ?                                           ___│                  │
+//         ¦   │                                                   ___                   │
+//         ¦   │,- set GLFW keyboard callback                         │ input            │
+//         ¦   │'- set GLFW mouse callback                         ___│               ___│
+//         ¦   │
+//         ¦   │
+//         ¦   │  ////////////////////////////////////////////////////////////////////////////////////
+//         ¦   │
+//         ¦   │                                                   ___                ___
+//         ¦   │-- mainLoop()                                         │                  │
+//         ¦   │   │-- run fps counter                                │                  │
+//         ¦   │   '---every frame                                    │ render loop      │
+//         ¦   │   ^   │-- check GLFW events                          │                  │
+//         ¦   │   │   │-- render and draw frame to window            │                  │ RUNNING
+//         ¦   │   '---'                                           ___│                  │
+//         ¦   │                                                                         │
+//         '-----> ?                                               ___                   │
+//             │                                                   ___│ external      ___│
+//             │
+//             │
+//             │ /////////////////////////////////////////////////////////////////////////////////////
+//             │
+//             │                                                   ___
+//             │,- cleanupGraphics()                                  │ 
+//             │'- cleanupCompute()                                   │ 
+//             │                                                      │ cleanup
+//             │,- destroy instance                                   │
+//             │'- destroy window                                     │
+//             │                                                      │
+//             '-- terminate GLFW                                  ___│
 
 
 
@@ -199,38 +199,38 @@ const bool enableValidationLayers = true;
 //                                                                                   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄                                                                                               
 //    LUX OBJECT DATA MANAGEMENT                                                    █                                                                                                                                 █
 //                                                                                  █       .──────────────────────────────.                                  .──────────────────────────────.                        █
-//                                                                                  █       | Custom size allocated buffer |                       .----------> Custom size allocated buffer |                        █
-//                                                                                  █       '──────────────────────────────'                       ¦          '──────────────────────────────'                        █
-//                                                                                  █                                                              ¦                                                                  █
-//                                                                                  █        Dynamically allocated vert buffers. 1 million class   ¦          Dynamically allocated index buffers. 1 million class    █
-//                                                                                  █        size: 3*(32+8)*1Mln*10 = 1.2Mld b = 150MB/buffer      ¦          size: 3*32*1Mln*10 = 1.2Mld b = 150MB/buffer            █
-//                                                                                  █       .────────────────────────────────────────────────.     ¦          .────────────────────────────────────────────────.      █
-//                                                                                  █       | vert 11   vert 12   vert 13   ...    vert 20   |     ¦          | indx 11   indx 12   indx 13   ...    indx 20   |      █
+//    all the buffers are saved as LuxMap s of buffer fragment index                █       | Custom size allocated buffer |                       .----------> Custom size allocated buffer |                        █
+//    and allocated in the GPU's memory.                                            █       '──────────────────────────────'                       ¦          '──────────────────────────────'                        █
+//    by default the buffers are not mapped to avoid multi threading issues         █                                                              ¦                                                                  █
+//                                                                                  █        Dynamically allocated objVsbuffers. 1 million class   ¦          Dynamically allocated index buffers. 1 million class    █
+//    objVs<n>: number n object's vertices                                          █        size: 3*(32+8)*1Mln*10 = 1.2Mld b = 150MB/buffer      ¦          size: 3*32*1Mln*10 = 9.6Mld b = 120MB/buffer            █
+//    objIs<n>: number n object's indices                                           █       .────────────────────────────────────────────────.     ¦          .────────────────────────────────────────────────.      █
+//                                                                                  █       | objVs11   objVs12   objVs13   ...    objVs20   |     ¦          | objIs11   objIs12   objIs13   ...    objIs20   |      █
 //                                                                                  █       '────────────────────────────────────────────────'     ¦          '────────────────────────────────────────────────'      █
 //                                                                                  █       .────────────────────────────────────────────────.     ¦          .────────────────────────────────────────────────.      █        
-//                                                                        .-----------------> vert 0    vert 1    vert 2    ...    vert 10   |     ¦          | indx 0    indx 1    indx 2    ...    indx 10   |      █
+//                                                                        .-----------------> objVs0    objVs1    objVs2    ...    objVs10   |     ¦          | objIs0    objIs1    objIs2    ...    objIs10   |      █
 //                                                                        ¦         █       '─────────────↑──────────────────────────────────'     ¦          '────────────────────────────────────────────────'      █
 //                                                                        ¦  .----------------------------┴----------------------------------------'                                                                  █
 //                                                                        ¦  ¦      █                                                                                                                                 █
 //                                                                        ¦  ¦      █                                                                                                                                 █
-//                                                                        ¦  ¦      █        Dynamically allocated vert buffers. 100 000 class                Dynamically allocated index buffers. 100 000 class      █
-//                                                                        ¦  ¦      █        size: 3*(32+8)*100k*100 = 1.2Mld b = 150MB/buffer                size: 3*32*100k*100 = 1.2Mld b = 150MB/buffer           █
+//                                                                        ¦  ¦      █        Dynamically allocated objVsbuffers. 100 000 class                Dynamically allocated index buffers. 100 000 class      █
+//                                                                        ¦  ¦      █        size: 3*(32+8)*100k*100 = 1.2Mld b = 150MB/buffer                size: 3*32*100k*100 = 9.6Mld b = 120MB/buffer           █
 //                                                                        ¦  ¦      █       .────────────────────────────────────────────────.                .────────────────────────────────────────────────.      █
-//                                                                        ¦  ¦      █       | vert 101  vert 102  vert 103  ...    vert 200  |                | indx 101  indx 102  indx 103  ...    indx 200  |      █
+//                                                                        ¦  ¦      █       | objVs101  objVs102  objVs103  ...    objVs200  |                | objIs101  objIs102  objIs103  ...    objIs200  |      █
 //                                                                        ¦  ¦      █       '────────────────────────────────────────────────'                '────────────────────────────────────────────────'      █
 //                                                                        ¦  ¦      █       .────────────────────────────────────────────────.                .────────────────────────────────────────────────.      █               
-//                                                                        ¦  ¦      █       | vert 0    vert 1    vert 2    ...    vert 100  |         .------> indx 0    indx 1    indx 2    ...    indx 100  |      █
+//                                                                        ¦  ¦      █       | objVs0    objVs1    objVs2    ...    objVs100  |         .------> objIs0    objIs1    objIs2    ...    objIs100  |      █
 //                                                                        ¦  ¦      █       '────────────────────────────────────────────────'         ¦      '────────────────────────────────────────────────'      █
 //                                                                        ¦  ¦      █                                                                  ¦                                                              █                  
 //                                                                        ├--¦ ------------------------------------------------------------------------'                                                              █                  
 //                                      RAM                               ¦  ¦      █                                                                                                                                 █                                                                                                   
-//           _________________________________________________________    ¦  ¦      █        Dynamically allocated vert buffers. 1000 class                   Dynamically allocated index buffers. 1000 class         █                                                                                     
-//         .'                                                         '.  ¦  ¦      █        size: 3*(32+8)*1k*10k = 1.2Mld b = 150MB/buffer                  size: 3*32*1k*10k = 1.2Mld b = 150MB/buffer             █                                                                                                                
+//           _________________________________________________________    ¦  ¦      █        Dynamically allocated objVsbuffers. 1000 class                   Dynamically allocated index buffers. 1000 class         █                                                                                     
+//         .'                                                         '.  ¦  ¦      █        size: 3*(32+8)*1k*10k = 1.2Mld b = 150MB/buffer                  size: 3*32*1k*10k = 9.6Mld b = 120MB/buffer             █                                                                                                                
 //         │                                                           │  ¦  ¦      █       .────────────────────────────────────────────────────.            .────────────────────────────────────────────────────.  █                                                                                                                      
-//         │          .────────────────────.       OBJECT              │  ¦  ¦      █       | vert 10001 vert 10002 vert 10003 ...    vert 20000 |            | vert 10001 vert 10002 vert 10003 ...    vert 20000 |  █                                                                                                                        
+//         │          .────────────────────.       OBJECT              │  ¦  ¦      █       | objVs10001 objVs10002 objVs10003 ...    objVs20000 |            | objIs10001 objIs10002 objIs10003 ...    objIs20000 |  █                                                                                                                        
 //         │  Object 0│ vert buffer index  │       ARRAY               │  ¦  ¦      █       '────────────────────────────────────────────────────'            '────────────────────────────────────────────────────'  █                                                                                                                 
 //         │  struct  │ indx buffer index  <---. .──────────────────.  │  ¦  ¦      █       .────────────────────────────────────────────────────.            .────────────────────────────────────────────────────.  █                                                                                                                          
-//  .-----------------> pos, rot, scl, phs │   ¦ │                  |  │  ¦  ¦      █    .--> vert 0     vert 1     vert 2     ...    vert 10000 |     .------> vert 0     vert 1     vert 2     ...    vert 10000 |  █                                                         
+//  .-----------------> pos, rot, scl, phs │   ¦ │                  |  │  ¦  ¦      █    .--> objVs0     objVs1     objVs2     ...    objVs10000 |     .------> objIs0     objIs1     objIs2     ...    objIs10000 |  █                                                         
 //  ¦      │          '────────────────────'   '-< LuxObject 0      >-----┤  ¦      █    ¦  '────────────────────────────────────────────────────'     ¦      '────────────────────────────────────────────────────'  █                   
 //  ¦      │          .────────────────────.     │ 920k v, 81k t    │  │  ¦  ¦      █    ¦                                                             ¦                                                              █                     
 //  ¦      │  Object 1│ vert buffer index  │     │                  │  │  '--¦ ----------¦ -----------.                                                ¦                                                              █                     
@@ -466,6 +466,10 @@ private:
 	const int32 COMPUTE_HEIGHT = HEIGHT;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
+	// 64 bit integer: 12 for the buffer index (max 4096) and 52 for the fragment index. the size is stored in the buffer
+	#define __lp_indicesToMemFrag(buffer, fragmentIndex) (((uint64)buffer << 52) | fragmentIndex)
+	#define __lp_FragmentCodeToBuffer(fragmentCode) (fragmentCode >> 52)
+	#define __lp_FragmentCodeToFragmentIndex(fragmentCode) (fragmentCode & 0xFFF00000)
 	struct Pixel { unsigned char r, g, b, a; };
 
 
@@ -497,6 +501,7 @@ private:
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
 		bool isMapped = false;		//Whether the buffer is mapped or not
+		uint64 fragmentSize = 0;	//The size of the fragments. 0 means that the buffer is not divided
 	};
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
@@ -515,6 +520,7 @@ private:
 	void runCompute();
 	void cleanupCompute();
 	LuxGpuBuffer createGpuBuffer(uint64 size);
+	LuxGpuBuffer createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize);
 	LuxGpuBuffer createGpuSharedBuffer(uint32 cellSize, uint32 cellNum);
 	int32 newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath);
 
