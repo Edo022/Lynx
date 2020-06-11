@@ -187,6 +187,44 @@ const bool enableValidationLayers = true;
 
 
 
+
+
+
+
+
+
+
+
+
+
+//                     RAM MEMORY                                                                          GPU MEMORY                                                                                                                                                            
+//           ________________________________                           ___________________________________________________________________________                                                                                                       
+//         ,'          ____________________  ',                       ,'          ______________           ______________           ______________ ',                                                                                                                                          
+//         |  Object 0| mesh mapped ptr    |  |                       |          | mesh data    |         | mesh data    |         | mesh data    | |                                                                                                                               
+//         |  struct  | physics mapped ptr <-----,                    |  Object 0| physics data | Object 1| physics data | Object 2| physics data | |                                                                                                                                 
+//  ,-----------------> pos, rot, scl      |  |  |                    |  buffer  | other        | buffer  | other        | buffer  | other        | |                                                                                                                          
+//  |      |          '--------------------'  |  |                    |          '------↑-------'         '------↑-------'         '-----↑--------' |                                                                                                                                   
+//  |      |                                  |  |                    |                 |                        |                       |          |                                                                  
+//  |      |           ____________________   |  '- LuxObject 0 ----------------------->|                        |                       |          |
+//  |      |  Object 1| mesh mapped ptr    |  |                       |                 |                        |                       |          |                                                               
+//  |      |  struct  | physics mapped ptr <------- LuxObject 1 ------------------------------------------------>|                       |          |                                                               
+//  | ,---------------> pos, rot, scl      |  |                       |                 |                        |                       |          |                                                                                      
+//  | |    |          '--------------------'  |  ,- LuxObject 2 ------------------------------------------------------------------------>|          |                                                                                      
+//  | |    |                                  |  |                    |                 |                        |                       |          |                                                                                      
+//  | |    |           ____________________   |  |                    |              ___↓________________________↓_______________________↓_____     |                                                                                                                              
+//  | |    |  Object 2| mesh mapped ptr    |  |  |                    |  ObjectData |  pos0         |           pos1          |         pos2   |    |                                                                                                                    
+//  | |    |  struct  | physics mapped ptr <-----'                    |  shared     |  rot0         |           rot1          |         rot2   |    |                                                                                                                         
+//  | | ,-------------> pos, rot, scl      |  |                       |  buffer     |  scl0         |           scl1          |         scl2   |    |                                                                                                                         
+//  | | |  |          '--------------------'  |                       |             '---↑------------------------↑-----------------------↑-----'    |                                                                                                                                
+//  | | |  ',________________________________,'                       ',________________|________________________|_______________________|_________,'                                                                                                      
+//  | | |                                          updateFromCpu/Gpu()                  |                        |                       |                                                        
+//  | | '-------------------------------------------------------------------------------'   updateFromCpu/Gpu()  |                       |                
+//  | '----------------------------------------------------------------------------------------------------------'   updateFromCpu/Gpu() |               
+//  '------------------------------------------------------------------------------------------------------------------------------------'               
+//                                                                                                                                                       
+
+
+
 class Engine;
 static Engine* engine;
 typedef uint64 LuxShader, LuxGpuBuffer, LuxGpuBufferCell;
@@ -418,12 +456,7 @@ private:
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
 		bool isMapped = false;		//Whether the buffer is mapped or not
-
-		bool isShared = false;		//Whether the buffer is shader by multiple objects or not
-		uint32 cellSize;
 	};
-	static inline LuxGpuBufferCell __lp_indicesToCell(LuxGpuBuffer buffer, uint32 cellIndex) { return (buffer << 32) & cellIndex; };
-
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
 	//*   buffer: a pointer to a _LuxGpuBuffer object. It's the buffer that will be mapped

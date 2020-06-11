@@ -96,11 +96,3 @@ LuxGpuBuffer Engine::createGpuBuffer(uint64 size){
 	createBuffer(compute.LD, buffer_.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer_.buffer, buffer_.memory);
 	return buffer_.ID = CGpuBuffers.add(buffer_);
 }
-
-//Creates a buffer in a compute device and divides it in smaller parts. Useful when you need to allocate many equal and small buffers
-LuxGpuBuffer Engine::createGpuSharedBuffer(uint32 cellSize, uint32 cellNum) {
-	LuxGpuBuffer buffer = createGpuBuffer(((uint64)cellSize) * cellNum);
-	CGpuBuffers[buffer].isShared = true;
-	CGpuBuffers[buffer].cellSize = cellSize;
-	return buffer;
-}
