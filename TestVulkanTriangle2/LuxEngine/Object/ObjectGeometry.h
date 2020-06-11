@@ -1,20 +1,14 @@
 #pragma once
 
 
-#include "LuxEngine/Engine/Graphics/Structs/Vertex.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
-#include <glm/glm.hpp>
-#include <vector>
+#include "LuxEngine/Types/Integers/Integers.h"
 #include <vulkan/vulkan.h>
-#include <tiny_obj_loader.h>
-#include <string>
 
 
 
 struct ObjectGeometry {
-
-	ObjectGeometry() {
-		//TODO
-	}
+	LuxMap<int32> vertices;		//_ x0 y0 z0 x1 y1 z1 x2 y2 ...
+	LuxMap<int32> triangles;	//4.3 billion vetices are enought, right?
 };
 
