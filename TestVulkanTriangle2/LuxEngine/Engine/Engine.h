@@ -193,10 +193,11 @@ const bool enableValidationLayers = true;
 
 
 
-/*   ↑↓<>-.'_│                                                                                                              GPU MEMORY                                                             
+/*   ↑↓<>-.'_─│¦                                                                                                            GPU MEMORY                                                             
                                                                                                _____________________________________________________________________ 
                                                                                               │ .─────────────────────────────────────────────────────────────────. │                                                                
    LUX OBJECT DATA MANAGEMENT                                                                 ││                                                                   ││                           
+                                                                                              ││       Custom size allocations for large buffers                   ││                           
                                                                                               ││      .──────────────────────────.  .──────────────────────────.   ││                          
    all the buffers are saved as LuxMap s of buffer cellment index                             ││      | Custom size allocation 0 |  | Custom size allocation 1 |   ││                          
    and allocated in the GPU's memory.                                                         ││      '─────────↑────────────────'  '─────────↑────────────────'   ││                          
