@@ -3,7 +3,7 @@
 
 
 typedef uint64 LuxShader;
-typedef uint64 LuxFrag;
+typedef uint64 LuxCell;
 
 
 // isShared: 1b

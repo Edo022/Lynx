@@ -16,7 +16,7 @@ struct LuxObject {
 	fvec3 pos;
 	fvec3 rot;
 	fvec3 scl;
-	LuxFrag mainGpuData;
+	LuxCell mainGpuData;
 
 	ObjectGeometry geometry;
 	ObjectPhysics physics;
