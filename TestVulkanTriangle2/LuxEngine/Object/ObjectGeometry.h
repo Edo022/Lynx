@@ -9,8 +9,8 @@
 
 
 struct ObjectGeometry {
-	LuxGpuBuffer vertices;
-	LuxGpuBuffer triangles;
+	LuxFrag vertices;
+	LuxFrag triangles;
 	//TODO
 };
 

@@ -5,14 +5,14 @@
 //     RAM MEMORY                      GPU MEMORY                                                                                                                               
 //                                      _____________________________________________________                                                                                                             
 //                                    ,'                                                     ',                                                                                                          
-//                                    |   gpu buffer         ( LuxGpuBuffers[0] )             |                                                                                                          
+//                                    |   gpu buffer         ( LuxFrags[0] )             |                                                                                                          
 //                                    |   _______________________                             |                                                                                                           
 //                                    |  |■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  |                            |                                                                                                           
 //                                    |  |■ ■ ■ ■ ■ ■            |                            |                                                                                                           
 //                                    |  '───────────────────────'                            |                                                                                                           
 //                                    |                                                       |                                                                                                           
 //                                    |                                                       |                                                                                                           
-//                                    |   shared gpu buffer  ( LuxGpuBuffers[1] )             |                                                                                                        
+//                                    |   shared gpu buffer  ( LuxFrags[1] )             |                                                                                                        
 //                                    |   _______________________    __                       |                                                                                                          
 //                                    |  |■|■| | |■| | | | |■| | |     | cellSize = 2         |                                                                                                           
 //                                    |  |■|■| |■| | |■| |■|■| | |   __|                      |                                                                                                           
@@ -91,7 +91,7 @@ int32 Engine::newCShader(LuxArray<LuxFrag> buffers, const char* shaderPath) {
 //*   size: the size in bytes of the buffer
 //*   Returns the buffer's index in the array. -1 if an error occurs
 LuxFrag Engine::createGpuBuffer(uint64 size){
-	_LuxGpuBuffer buffer;
+	_LuxFrag buffer;
 	buffer.size = size;
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
 	return buffer.ID = CGpuBuffers.add(buffer);

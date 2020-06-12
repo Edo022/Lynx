@@ -489,7 +489,7 @@ private:
 
 	//Buffers
 	//This structure groups the components of a Vulkan buffer
-	struct _LuxGpuBuffer {
+	struct _LuxFrag {
 		uint64 ID;					//A unique id, different for each buffer
 		uint32 size;				//The size in bytes of the buffer
 		VkBuffer buffer;			//The actual Vulkan buffer
@@ -499,16 +499,16 @@ private:
 	};
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
-	//*   buffer: a pointer to a _LuxGpuBuffer object. It's the buffer that will be mapped
+	//*   buffer: a pointer to a _LuxFrag object. It's the buffer that will be mapped
 	//*   returns the void pointer that maps the buffer
-	void* mapGpuBuffer(_LuxGpuBuffer* buffer) {
+	void* mapGpuBuffer(_LuxFrag* buffer) {
 		if (buffer->isMapped) vkUnmapMemory(compute.LD, buffer->memory);
 		else buffer->isMapped = true;
 		void* data;
 		vkMapMemory(compute.LD, buffer->memory, 0, buffer->size, 0, &data);
 		return data;
 	}
-	LuxMap<_LuxGpuBuffer> CGpuBuffers;
+	LuxMap<_LuxFrag> CGpuBuffers;
 
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
