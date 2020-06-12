@@ -8,10 +8,10 @@ typedef uint64 LuxCell;
 
 // isShared: 1b
 // buffer: 12b
-// fragIndex: 20b
-// fragSize: 31b
-#define luxFragCode(buffer, fragIndex, fragSize) (((uint64)1 << 63) | ((uint64)buffer << 51) | ((uint64)fragIndex << 31) | ((uint64)fragSize & 0x7FFFfFFF))
-#define luxIsSharedFromFragCode(fragCode) ((fragCode >> 63) & 0b1)
-#define luxBufferFromFragCode(fragCode) ((fragCode >> 51) & 0xFFF)
-#define luxFragIndexFromFragCode(fragCode) ((fragCode >> 31) & 0xfFFFF)
-#define luxFragSizeFromFragCode(fragCode) (fragCode & 0x7FFFffff)
+// cellIndex: 20b
+// cellSize: 31b
+#define __lp_cellCode(buffer, cellIndex, cellSize) (((uint64)1 << 63) | ((uint64)buffer << 51) | ((uint64)cellIndex << 31) | ((uint64)cellSize & 0x7FFFfFFF))
+#define __lp_isShared_from_cellCode(cellCode) ((cellCode >> 63) & 0b1)
+#define __lp_buffer_from_cellCode(cellCode) ((cellCode >> 51) & 0xFFF)
+#define __lp_cellIndex_from_cellCode(cellCode) ((cellCode >> 31) & 0xfFFFF)
+#define __lp_cellSize_from_cellCode(cellCode) (cellCode & 0x7FFFffff)

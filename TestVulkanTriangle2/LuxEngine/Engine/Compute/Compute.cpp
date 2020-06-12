@@ -97,8 +97,8 @@ LuxCell Engine::createGpuBuffer(uint64 size){
 	return buffer.ID = CGpuBuffers.add(buffer);
 }
 
-LuxCell Engine::createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize) {
-	LuxCell buffer = createGpuBuffer(size);
-	CGpuBuffers[buffer].fragmentSize = fragmentSize;
-	return buffer;
-}
+//LuxCell Engine::createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize) {
+//	LuxCell buffer = createGpuBuffer(size);
+//	CGpuBuffers[buffer].fragmentSize = fragmentSize;
+//	return buffer;
+//}

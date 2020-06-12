@@ -462,10 +462,6 @@ private:
 	const int32 COMPUTE_HEIGHT = HEIGHT;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
-	// 64 bit integer: 12 for the buffer index (max 4096) and 52 for the fragment index. the size is stored in the buffer
-	#define __lp_indicesToMemFrag(buffer, fragmentIndex) (((uint64)buffer << 52) | fragmentIndex)
-	#define __lp_FragmentCodeToBuffer(fragmentCode) (fragmentCode >> 52)
-	#define __lp_FragmentCodeToFragmentIndex(fragmentCode) (fragmentCode & 0xFFF00000)
 	struct Pixel { unsigned char r, g, b, a; };
 
 
@@ -497,7 +493,7 @@ private:
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
 		bool isMapped = false;		//Whether the buffer is mapped or not
-		uint64 fragmentSize = 0;	//The size of the fragments. 0 means that the buffer is not divided
+		//uint64 fragmentSize = 0;	//The size of the fragments. 0 means that the buffer is not divided
 	};
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
@@ -516,8 +512,7 @@ private:
 	void runCompute();
 	void cleanupCompute();
 	LuxCell createGpuBuffer(uint64 size);
-	LuxCell createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize);
-	LuxCell createGpuSharedBuffer(uint32 cellSize, uint32 cellNum);
+	//LuxCell createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize);
 	int32 newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
