@@ -29,7 +29,7 @@ void Engine::run(bool _useVSync, float _FOV) {
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
 	glfwSetKeyCallback(window, &__lp_key_callback);
 
-
+	compute.PD.properties.limits.maxStorageBufferRange;
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 	Normal  printf("Cleaning memory");								cleanupGraphics(); cleanupCompute();		NewLine;
 

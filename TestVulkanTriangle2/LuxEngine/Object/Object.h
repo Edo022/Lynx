@@ -4,6 +4,9 @@
 #include "ObjectPhysics.h"
 #include <string>
 #include "LuxEngine/Types/Vectors/Vectors.h"
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/EngineTypes.h"
+
 
 
 struct LuxObject {

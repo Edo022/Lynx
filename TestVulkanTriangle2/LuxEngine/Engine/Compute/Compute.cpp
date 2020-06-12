@@ -34,8 +34,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	LuxGpuBuffer imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
-	LuxGpuBuffer vertices = createGpuBuffer(4);
+	LuxFrag imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+	LuxFrag vertices = createGpuBuffer(4);
 	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
 	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 }
@@ -72,7 +72,7 @@ void Engine::cleanupCompute() {
 //TODO check device limits
 //*   buffers: the indices of the buffers to bind. Each index must correspond to a CGpuBuffers's element
 //*   returns the index of the created shader if the operation succeed, -1 if the indices cannot be used, -2 if the file cannot be found, -3 if an unknown error occurs 
-int32 Engine::newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath) {
+int32 Engine::newCShader(LuxArray<LuxFrag> buffers, const char* shaderPath) {
 	if (buffers.size() > CGpuBuffers.size()) return -1;
 
 	uint64 shaderIndex = CShaders.add(LuxCShader{});
@@ -90,15 +90,15 @@ int32 Engine::newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath)
 //Creates a memory buffer in a compute device and saves it in the LuxArray "computeBuffers"
 //*   size: the size in bytes of the buffer
 //*   Returns the buffer's index in the array. -1 if an error occurs
-LuxGpuBuffer Engine::createGpuBuffer(uint64 size){
+LuxFrag Engine::createGpuBuffer(uint64 size){
 	_LuxGpuBuffer buffer;
 	buffer.size = size;
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
 	return buffer.ID = CGpuBuffers.add(buffer);
 }
 
-LuxGpuBuffer Engine::createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize) {
-	LuxGpuBuffer buffer = createGpuBuffer(size);
+LuxFrag Engine::createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize) {
+	LuxFrag buffer = createGpuBuffer(size);
 	CGpuBuffers[buffer].fragmentSize = fragmentSize;
 	return buffer;
 }

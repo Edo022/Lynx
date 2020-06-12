@@ -43,6 +43,8 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/EngineTypes.h"
+
 
 #include "Input/Input.h"
 
@@ -191,71 +193,64 @@ const bool enableValidationLayers = true;
 
 
 
-
-
-
-                                                                          
-//                                                                                                                                                GPU MEMORY                                    
-//                                                                                   ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄                                                                                               
-//    LUX OBJECT DATA MANAGEMENT                                                    █                                                                                                                                 █
-//                                                                                  █       .──────────────────────────────.                                  .──────────────────────────────.                        █
-//    all the buffers are saved as LuxMap s of buffer fragment index                █       | Custom size allocated buffer |                       .----------> Custom size allocated buffer |                        █
-//    and allocated in the GPU's memory.                                            █       '──────────────────────────────'                       ¦          '──────────────────────────────'                        █
-//    by default the buffers are not mapped to avoid multi threading issues         █                                                              ¦                                                                  █
-//                                                                                  █        Dynamically allocated objVsbuffers. 1 million class   ¦          Dynamically allocated index buffers. 1 million class    █
-//    objVs<n>: number n object's vertices                                          █        size: 3*(32+8)*1Mln*10 = 1.2Mld b = 150MB/buffer      ¦          size: 3*32*1Mln*10 = 9.6Mld b = 120MB/buffer            █
-//    objIs<n>: number n object's indices                                           █       .────────────────────────────────────────────────.     ¦          .────────────────────────────────────────────────.      █
-//                                                                                  █       | objVs11   objVs12   objVs13   ...    objVs20   |     ¦          | objIs11   objIs12   objIs13   ...    objIs20   |      █
-//    max ~266000 class 10k or                                                      █       '────────────────────────────────────────────────'     ¦          '────────────────────────────────────────────────'      █
-//        ~2660 class 100k or                                                       █       .────────────────────────────────────────────────.     ¦          .────────────────────────────────────────────────.      █        
-//        ~266 class 1Mln                                                 .-----------------> objVs0    objVs1    objVs2    ...    objVs10   |     ¦          | objIs0    objIs1    objIs2    ...    objIs10   |      █
-//                                                                        ¦         █       '─────────────↑──────────────────────────────────'     ¦          '────────────────────────────────────────────────'      █
-//                                                                        ¦  .----------------------------┴----------------------------------------'                                                                  █
-//                                                                        ¦  ¦      █                                                                                                                                 █
-//                                                                        ¦  ¦      █                                                                                                                                 █
-//                                                                        ¦  ¦      █        Dynamically allocated objVsbuffers. 100 000 class                Dynamically allocated index buffers. 100 000 class      █
-//                                                                        ¦  ¦      █        size: 3*(32+8)*100k*100 = 1.2Mld b = 150MB/buffer                size: 3*32*100k*100 = 9.6Mld b = 120MB/buffer           █
-//                                                                        ¦  ¦      █       .────────────────────────────────────────────────.                .────────────────────────────────────────────────.      █
-//                                                                        ¦  ¦      █       | objVs101  objVs102  objVs103  ...    objVs200  |                | objIs101  objIs102  objIs103  ...    objIs200  |      █
-//                                                                        ¦  ¦      █       '────────────────────────────────────────────────'                '────────────────────────────────────────────────'      █
-//                                                                        ¦  ¦      █       .────────────────────────────────────────────────.                .────────────────────────────────────────────────.      █               
-//                                                                        ¦  ¦      █       | objVs0    objVs1    objVs2    ...    objVs100  |         .------> objIs0    objIs1    objIs2    ...    objIs100  |      █
-//                                                                        ¦  ¦      █       '────────────────────────────────────────────────'         ¦      '────────────────────────────────────────────────'      █
-//                                                                        ¦  ¦      █                                                                  ¦                                                              █                  
-//                                                                        ├--¦ ------------------------------------------------------------------------'                                                              █                  
-//                                      RAM                               ¦  ¦      █                                                                                                                                 █                                                                                                   
-//           _________________________________________________________    ¦  ¦      █        Dynamically allocated objVsbuffers. 1000 class                   Dynamically allocated index buffers. 1000 class         █                                                                                     
-//         .'                                                         '.  ¦  ¦      █        size: 3*(32+8)*1k*10k = 1.2Mld b = 150MB/buffer                  size: 3*32*1k*10k = 9.6Mld b = 120MB/buffer             █                                                                                                                
-//         │                                                           │  ¦  ¦      █       .────────────────────────────────────────────────────.            .────────────────────────────────────────────────────.  █                                                                                                                      
-//         │          .────────────────────.       OBJECT              │  ¦  ¦      █       | objVs10001 objVs10002 objVs10003 ...    objVs20000 |            | objIs10001 objIs10002 objIs10003 ...    objIs20000 |  █                                                                                                                        
-//         │  Object 0│ vert buffer index  │       ARRAY               │  ¦  ¦      █       '────────────────────────────────────────────────────'            '────────────────────────────────────────────────────'  █                                                                                                                 
-//         │  struct  │ indx buffer index  <---. .──────────────────.  │  ¦  ¦      █       .────────────────────────────────────────────────────.            .────────────────────────────────────────────────────.  █                                                                                                                          
-//  .-----------------> pos, rot, scl, phs │   ¦ │                  |  │  ¦  ¦      █    .--> objVs0     objVs1     objVs2     ...    objVs10000 |     .------> objIs0     objIs1     objIs2     ...    objIs10000 |  █                                                         
-//  ¦      │          '────────────────────'   '-< LuxObject 0      >-----┤  ¦      █    ¦  '────────────────────────────────────────────────────'     ¦      '────────────────────────────────────────────────────'  █                   
-//  ¦      │          .────────────────────.     │ 920k v, 81k t    │  │  ¦  ¦      █    ¦                                                             ¦                                                              █                     
-//  ¦      │  Object 1│ vert buffer index  │     │                  │  │  '--¦ ----------¦ -----------.                                                ¦                                                              █                     
-//  ¦      │  struct  │ indx buffer index  <-----< LuxObject 1      >--------┴-----------¦ -----------¦ -----------------------.                       ¦                                                              █                     
-//  ¦ .---------------> pos, rot, scl, phs │     │ 122k v, 5245k t  │  │            █    ¦            ¦                        ¦                       ¦                                                              █                                            
-//  ¦ ¦    │          '────────────────────'     │                  │  │            █    ¦            ¦                        ¦                       ¦                                                              █                                            
-//  ¦ ¦    │          .────────────────────.   .-< LuxObject 2      >--------------------┴------------¦ -----------------------¦ ----------------------┤                                                              █                                            
-//  ¦ ¦    │  Object 2│ vert buffer index  │   ¦ │ 6 v, 71 t        │  │            █                 ¦                        ¦                       ¦                                                              █                                            
-//  ¦ ¦    │  struct  │ indx buffer index  <---' │ ....             │  │            █             .───↓────────────────────────↓───────────────────────↓───────────.  allocated for 2Mln objects                      █                                                                                   
-//  ¦ ¦ .-------------> pos, rot, scl, phs │     '──────────────────'  │            █  ObjectData │  pos0 32x3b        │      pos1 32x3b       │      pos2  32x3b  │  size = 32*3*3 * 2 000 000                       █                                                                         
-//  ¦ ¦ ¦  │          '────────────────────'                           │            █  shared     │  rot0 32x3b        │      rot1 32x3b       │      rot2  32x3b  │  size = 576 000 000 = 72MB                       █                                                                              
-//  ¦ ¦ ¦  │                                                           │            █  buffer     │  scl0 32x3b        │      scl1 32x3b       │      scl2  32x3b  │                                                  █                                                                              
-//  ¦ ¦ ¦  '._________________________________________________________.'            █             '───↑────────────────────────↑───────────────────────↑───────────'                                                  █                                                                                     
-//  ¦ ¦ ¦                                                                           █                 ¦                        ¦                       ¦                                                              █                                                                                     
-//  ¦ ¦ ¦                                                                            ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄¦▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄¦▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄¦▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄                                                                                                      
-//  ¦ ¦ ¦                                                                                             ¦                        ¦                       ¦                                                              
-//  ¦ ¦ ¦                                                             updateFromCpu/Gpu()             ¦                        ¦                       ¦
-//  ¦ ¦ '---------------------------------------------------------------------,-----------------------'   updateFromCpu/Gpu()  ¦                       ¦                
-//  ¦ '-----------------------------------------------------------------------|-----------------------------------,------------' updateFromCpu/Gpu()   ¦                
-//  '-------------------------------------------------------------------------|-----------------------------------|----------------------,-------------'               
-//                                                                            |                                   |                      |                            
-//                                                                          Extern                              Extern                 Extern                                                  
-//                                                                                                                                                             
-//                                                                                                                                                             
-
+/*   ↑↓<>-.'_│                                                                                                                 GPU MEMORY                                                             
+                                                                                                  _____________________________________________________________________ 
+                                                                                                 │ .─────────────────────────────────────────────────────────────────. │                                                                
+      LUX OBJECT DATA MANAGEMENT                                                                 ││                                                                   ││                           
+                                                                                                 ││      .──────────────────────────.  .──────────────────────────.   ││                          
+      all the buffers are saved as LuxMap s of buffer fragment index                             ││      | Custom size allocation 0 |  | Custom size allocation 1 |   ││                          
+      and allocated in the GPU's memory.                                                         ││      '─────────↑────────────────'  '─────────↑────────────────'   ││                          
+      by default the buffers are not mapped to avoid multi threading issues        .-------------------------------'                             ¦                    ││                          
+                                                                                   ¦ .-----------------------------------------------------------'                    ││                          
+      Supported VRAM size: 48GB                                                    ¦ ¦           ││                                                                   ││                          
+      50MB per buffer. max 960 buffers                                             ¦ ¦           ││       Dynamically allocated buffers                               ││                          
+      class 2MB:     25 frags per buffer                                           ¦ ¦           ││       frag class 2MB. 1Mln frags per buffer                       ││                          
+      class 0.5MB:   100 frags per buffer                                          ¦ ¦           ││      .────────────────────────────────────────────────────────.   ││                          
+      class 5KB:     10k frags per buffer                                          ¦ ¦           ││      | frag 24      frag 25      frag 26      ... frag 47     |   ││                          
+      class 50B      1Mln frags per buffer                                         ¦ ¦           ││      '────────────────────────────────────────────────────────'   ││                          
+      custom allocation max size: 7FFFFFFF (~2.15GB)                               ¦ ¦           ││      .────────────────────────────────────────────────────────.   ││                          
+      larger structures have to be splitted across more buffers                    ¦ ¦           ││      | frag 00      frag 01      frag 02      ... frag 23     |   ││                          
+                                                                                   ¦ ¦           ││      '──────↑────────────↑────────────────────────────────────'   ││                          
+                                                                                   ¦ ¦     .--------------------'            ¦                                        ││                           
+                                                                                   ¦ ¦     ¦ .-------------------------------'                                        ││                           
+                                                                                   ¦ ¦     ¦ ¦   ││                                                                   ││                           
+    Extern                            RAM                                          ¦ ¦     ¦ ¦   ││                                                                   ││                           
+      ¦     _______________________________________________________                ¦ ¦     ¦ ¦   ││       Dynamically allocated buffers                               ││                           
+      ¦    │ .───────────────────────────────────────────────────. │               ¦ ¦     ¦ ¦   ││       frag class 0.5MB. 1Mln frags per buffer                     ││                           
+      ¦    ││                                                     ││               ¦ ¦     ¦ ¦   ││      .────────────────────────────────────────────────────────.   ││                           
+      ¦    ││    OBJECT                  .────────────────────.   ││               ¦ ¦     ¦ ¦   ││      |frag 100     frag 101     frag 102     ... frag 199     |   ││                           
+      ¦    ││    ARRAY                   │ vert buffer index  >------13800KB-------' ¦     ¦ ¦   ││      '────────────────────────────────────────────────────────'   ││                           
+      ¦    ││  .──────────────────.   .--> indx buffer index  >------972KB-----------¦ ----' ¦   ││      .────────────────────────────────────────────────────────.   ││                           
+      ¦    ││  │                  |   ¦  │ pos, rot, scl      >-----------------.    ¦       ¦   ││      |frag 000     frag 001     frag 002     ... frag 099     |   ││                           
+      ¦--------> LuxObject 0      >---'  '────────────────────'   ││            ¦    ¦       ¦   ││      '────────────────────────────────────────────────────────'   ││                           
+      ¦    ││  │ 920k v, 81k t    │      .────────────────────.   ││            ¦    ¦       ¦   ││                                                                   ││                           
+      ¦    ││  │                  │      │ vert buffer index  >------1830KB-----¦ ---¦ ------'   ││                                                                   ││                           
+      ¦--------> LuxObject 1      >------> indx buffer index  >------62400KB----¦ ---'           ││                                                                   ││                           
+      ¦    ││  │ 122k v, 5.2Mln t │      │ pos, rot, scl      >---------------. ¦                ││       Dynamically allocated buffers                               ││                           
+      ¦    ││  │                  │      '────────────────────'   ││          ¦ ¦                ││       frag class 5KB. 1Mln frags per buffer                       ││                           
+      ¦--------> LuxObject 2      >---.  .────────────────────.   ││          ¦ ¦                ││      .────────────────────────────────────────────────────────.   ││                           
+      :    ││  │ 6 v, 71 t        │   ¦  │ vert buffer index  >------90B------¦ ¦ -----.         ││      | frag 10000   frag 10001   frag 10002   ... frag 19999  |   ││                           
+      .    ││  │ ....             │   '--> indx buffer index  >------852B-----¦ ¦ ---. ¦         ││      '────────────────────────────────────────────────────────'   ││                           
+           ││  :                  :      │ pos, rot, scl      >-------------. ¦ ¦    ¦ ¦         ││      .────────────────────────────────────────────────────────.   ││                           
+           ││  .                  .      '────────────────────'   ││        ¦ ¦ ¦    ¦ ¦         ││      | frag 00000   frag 00001   frag 00002   ... frag 09999  |   ││                           
+           ││                                                     ││        ¦ ¦ ¦    ¦ ¦         ││      '──────↑────────────↑────────────────────────────────────'   ││                           
+           │'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦                                        ││                           
+           '───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'                                        ││                           
+                                                                            ¦ ¦ ¦                ││                                                                   ││                           
+                                                                            ¦ ¦ ¦                ││       Dynamically allocated buffers                               ││                           
+                                                                            ¦ ¦ ¦                ││       frag class 50B. 1Mln frags per buffer                       ││                                    
+                                                                            ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.   ││                                                  
+                                                                            ¦ ¦ ¦                ││      | frag 1000000 frag 1000001 frag 1000002 ... frag 1999999|   ││                                                    
+                                                                            ¦ ¦ ¦                ││      '────────────────────────────────────────────────────────'   ││                                             
+                                                                            ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.   ││                                                      
+                                                                            ¦ ¦ ¦                ││      | frag 0000000 frag 0000001 frag 0000002 ... frag 0999999|   ││                           
+                                                                            ¦ ¦ ¦                ││      '──────↑────────────↑────────────↑───────────────────────'   ││                           
+                                                                            ¦ ¦ ¦                │'.____________¦____________¦____________¦__________________________.'│                             
+                                                                            ¦ ¦ ¦                '──────────────¦────────────¦────────────¦────────────────────────────'                                                       
+                                                                            ¦ ¦ '------36B----------------------'            ¦            ¦                                                          
+                                                                            ¦ '--------36B-----------------------------------'            ¦                                                         
+                                                                            '----------36B------------------------------------------------'                                                        
+*/                                                                                                                                                                                                 
 
 
 
@@ -268,7 +263,6 @@ const bool enableValidationLayers = true;
 
 class Engine;
 static Engine* engine;
-typedef uint64 LuxShader, LuxGpuBuffer, LuxGpuBufferCell;
 
 
 class Engine {
@@ -519,14 +513,14 @@ private:
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	LuxGpuBuffer createGpuBuffer(uint64 size);
-	LuxGpuBuffer createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize);
-	LuxGpuBuffer createGpuSharedBuffer(uint32 cellSize, uint32 cellNum);
-	int32 newCShader(LuxArray<LuxGpuBuffer> buffers, const char* shaderPath);
+	LuxFrag createGpuBuffer(uint64 size);
+	LuxFrag createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize);
+	LuxFrag createGpuSharedBuffer(uint32 cellSize, uint32 cellNum);
+	int32 newCShader(LuxArray<LuxFrag> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
-	void CShader_create_descriptorSetLayouts(LuxArray<LuxGpuBuffer> bufferIndices, LuxShader CShader);
-	void CShader_create_descriptorSets(LuxArray<LuxGpuBuffer> bufferIndices, LuxShader CShader);
+	void CShader_create_descriptorSetLayouts(LuxArray<LuxFrag> bufferIndices, LuxShader CShader);
+	void CShader_create_descriptorSets(LuxArray<LuxFrag> bufferIndices, LuxShader CShader);
 	void CShader_create_CPipeline(const char* shaderPath, LuxShader CShader);
 
 	//Compute command buffers >> Compute/CCommands.cpp

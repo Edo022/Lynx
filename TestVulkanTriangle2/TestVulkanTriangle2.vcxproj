@@ -213,6 +213,7 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />
+    <ClInclude Include="LuxEngine\Types\EngineTypes.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
