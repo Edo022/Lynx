@@ -39,7 +39,7 @@ void Engine::CShader_create_commandBuffer(LuxShader CShader, uint32 imgIndex) {
 	vkCmdDispatch(CShaders[CShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE)), 1);
 
 
-
+	//TODO divide to dedicated command buffer and pool
 	VkBufferImageCopy region{};
 	region.bufferOffset = 0;
 	region.bufferRowLength = 0;
@@ -51,11 +51,11 @@ void Engine::CShader_create_commandBuffer(LuxShader CShader, uint32 imgIndex) {
 	region.imageOffset = { 0, 0, 0 };
 	region.imageExtent = { WIDTH, HEIGHT, 1 };
 
-	transitionImageLayout(swapChainImages[0], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL); //TODO hhhh
+	transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL); //TODO hhhh
 	if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_UNDEFINED, 1, &region);
 	//if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 1, &region);
 	//if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffer, CGpuBuffers[0].buffer, swapChainImages[1], VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 1, &region);
-	transitionImageLayout(swapChainImages[0], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
 
 	//End command buffer recording

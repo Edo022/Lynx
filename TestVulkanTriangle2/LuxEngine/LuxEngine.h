@@ -8,6 +8,8 @@
 //Any variable, macro or function whose name begins with "__lp_" is private, but it's in the public section for performance reasons
 //Don't use them if you don't know what you are doing
 //Class operators and size() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
+
+//#define LUX_RELEASE before including this header to remove all the debug macros and functions. This improves performance
 #include "LuxEngine/Engine/Engine.h"
 
 #include "LuxEngine/Engine/Input/Input.h"

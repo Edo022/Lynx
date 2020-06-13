@@ -3,6 +3,13 @@
 #ifndef __ENGINE
 #define __ENGINE
 
+//Validation layers in debug mode
+#ifdef NDEBUG	
+const bool enableValidationLayers = false;
+#define LUX_RELEASE
+#else			
+const bool enableValidationLayers = true;
+#endif
 
 
 //Disabled useless warnings
@@ -86,12 +93,6 @@ struct SwapChainSupportDetails {
 };
 
 
-//Validation layers in debug mode
-#ifdef NDEBUG	
-const bool enableValidationLayers = false;
-#else			
-const bool enableValidationLayers = true;
-#endif
 
 
 

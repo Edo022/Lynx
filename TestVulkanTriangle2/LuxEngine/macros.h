@@ -20,6 +20,10 @@
 #define Try(f) if (f != VK_SUCCESS)
 #define Quit(s)				{Failure printf("\n%s\n", s); Normal system("pause"); exit(-1);}
 
+#ifdef LUX_RELEASE
+#define Try(f) f;
+#define Quit(s) __noop;
+#endif
 
 
 
