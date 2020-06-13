@@ -108,39 +108,43 @@ void Engine::drawFrame() {
 
 
 
-	//TODO remove useless shit
+	//TODO remove useless junk
 
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	
 
 	//Submit to queue
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex];
-	//submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame];
+	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame];
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex];
+	submitInfo.pWaitDstStageMask = waitStages;
+	//TODO remove old geometry command buffers
+	//submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
-	//vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], false, -1);
+	//vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, 100000000);
 
 
 
 	//Present
 	static VkPresentInfoKHR presentInfo{};
-	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
-	presentInfo.pImageIndices = &imageIndex;
-	presentInfo.pSwapchains = &swapChain;
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
 	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = &swapChain;
+	presentInfo.pImageIndices = &imageIndex;
 
 
-	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) {
+	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) { //TODO validation layer error
+		//TODO Images passed to present must be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR or VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR but is in VK_IMAGE_LAYOUT_UNDEFINED. 
+		//TODO The Vulkan spec states: Each element of pImageIndices must be the index of a presentable image acquired from the swapchain specified by the corresponding element of the pSwapchains array, and the presented image subresource must be in the VK_IMAGE_LAYOUT_PRESENT_SRC_KHR layout at the time the operation is executed on a VkDevice 
 		case VK_SUCCESS: break;
 		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: goto recreateSwapchain_;
 		default: Quit("Failed to present swapchain image");

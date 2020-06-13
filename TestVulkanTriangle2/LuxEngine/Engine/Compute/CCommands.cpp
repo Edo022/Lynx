@@ -66,7 +66,7 @@ void Engine::CShader_create_commandBuffer(LuxShader CShader, uint32 imgIndex) {
 
 
 
-//TODO set name
+//TODO remove 
 void Engine::runCommandBuffer(LuxShader CShader, uint32 imgIndex) {
 
 	//Submit the recorded command buffer to a queue
