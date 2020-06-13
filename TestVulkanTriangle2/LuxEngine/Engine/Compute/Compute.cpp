@@ -76,10 +76,14 @@ int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
 	if (buffers.size() > CGpuBuffers.size()) return -1;
 
 	uint64 shaderIndex = CShaders.add(LuxCShader{});
+	CShaders[shaderIndex].commandBuffers.resize(swapChainImages.size());
+
 	CShader_create_descriptorSetLayouts(buffers, shaderIndex);
 	CShader_create_descriptorSets(buffers, shaderIndex);
 	CShader_create_CPipeline(shaderPath, shaderIndex);
-	CShader_create_commandBuffer(shaderIndex);
+	for (int i = 0; i < swapChainImages.size(); i++) {
+		CShader_create_commandBuffer(shaderIndex, i);
+	}
 
 	return shaderIndex;
 }

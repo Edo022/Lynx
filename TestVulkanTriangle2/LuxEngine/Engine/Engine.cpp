@@ -56,6 +56,7 @@ void Engine::mainLoop() {
 
 		glfwPollEvents();
 		drawFrame();
+		//drawFrame();
 
 
 		//TODO fix full screen

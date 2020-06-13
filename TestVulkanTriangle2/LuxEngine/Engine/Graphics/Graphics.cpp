@@ -90,7 +90,6 @@ void Engine::drawFrame() {
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
 	//Update render result
-	runCommandBuffer(0);
 
 
 	//Acquire swapchain image
@@ -100,9 +99,11 @@ void Engine::drawFrame() {
 		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(); return;
 		default: Quit("Failed to acquire swapchain image");
 	}
-	imageIndex = 0;
 	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
+
+
+	//runCommandBuffer(0, (imageIndex != 0) ? 1:0);
 
 
 
@@ -118,13 +119,14 @@ void Engine::drawFrame() {
 	submitInfo.commandBufferCount = 1;
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
+	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex];
+	//submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame];
 	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame];
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
-
+	//vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], false, -1);
 
 
 

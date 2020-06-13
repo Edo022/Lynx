@@ -8,7 +8,7 @@
 
 
 
-void Engine::CShader_create_commandBuffer(LuxShader CShader) {
+void Engine::CShader_create_commandBuffer(LuxShader CShader, uint32 imgIndex) {
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;			//Set structure type
 	commandPoolCreateInfo.flags = 0;													//Default flags
@@ -23,20 +23,20 @@ void Engine::CShader_create_commandBuffer(LuxShader CShader) {
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = 1;									//Allocate one command buffer
 	//Allocate command buffer
-	Try(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, &CShaders[CShader].commandBuffer)) Quit("Fatal error");
+	Try(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, &CShaders[CShader].commandBuffers[imgIndex])) Quit("Fatal error");
 
 
 	VkCommandBufferBeginInfo beginInfo = {};										//Create begin infos to start recording the command buffer
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;						//Set structure type
 	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;						//Set command buffer type
 	//Start recording commands
-	Try(vkBeginCommandBuffer(CShaders[CShader].commandBuffer, &beginInfo)) Quit("Fatal error");
+	Try(vkBeginCommandBuffer(CShaders[CShader].commandBuffers[imgIndex], &beginInfo)) Quit("Fatal error");
 
 	//Bind pipeline and descriptor sets to the command buffer
-	vkCmdBindPipeline(CShaders[CShader].commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipeline);
-	vkCmdBindDescriptorSets(CShaders[CShader].commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipelineLayout, 0, 1, &CShaders[CShader].descriptorSet, 0, null);
+	vkCmdBindPipeline(CShaders[CShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipeline);
+	vkCmdBindDescriptorSets(CShaders[CShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipelineLayout, 0, 1, &CShaders[CShader].descriptorSet, 0, null);
 	//Dispatch the compute shader to execute it with the specified workgroups
-	vkCmdDispatch(CShaders[CShader].commandBuffer, sc<uint32>(ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE)), 1);
+	vkCmdDispatch(CShaders[CShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE)), 1);
 
 
 
@@ -50,14 +50,16 @@ void Engine::CShader_create_commandBuffer(LuxShader CShader) {
 	region.imageSubresource.layerCount = 1;
 	region.imageOffset = { 0, 0, 0 };
 	region.imageExtent = { WIDTH, HEIGHT, 1 };
-	//transitionImageLayout(swapChainImages[0], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL); //TODO hhhh
-	if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffer, CGpuBuffers[0].buffer, swapChainImages[0], VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 1, &region);
+
+	transitionImageLayout(swapChainImages[0], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL); //TODO hhhh
+	if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_UNDEFINED, 1, &region);
+	//if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 1, &region);
 	//if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffer, CGpuBuffers[0].buffer, swapChainImages[1], VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 1, &region);
-	//transitionImageLayout(swapChainImages[0], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	transitionImageLayout(swapChainImages[0], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
 
 	//End command buffer recording
-	Try(vkEndCommandBuffer(CShaders[CShader].commandBuffer)) Quit("Fatal error");
+	Try(vkEndCommandBuffer(CShaders[CShader].commandBuffers[imgIndex])) Quit("Fatal error");
 }
 
 
@@ -65,14 +67,13 @@ void Engine::CShader_create_commandBuffer(LuxShader CShader) {
 
 
 //TODO set name
-void Engine::runCommandBuffer(LuxShader CShader) {
-	static VkCommandBuffer computeCommandBuffers[] = { CShaders[CShader].commandBuffer };
+void Engine::runCommandBuffer(LuxShader CShader, uint32 imgIndex) {
 
 	//Submit the recorded command buffer to a queue
 	static VkSubmitInfo submitInfo = {};													//Create submit infos to submit the command buffer to the queue
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;											//Set structure type
 	submitInfo.commandBufferCount = 1;															//Set number of command buffers
-	submitInfo.pCommandBuffers = computeCommandBuffers;											//Set command buffer to submit
+	submitInfo.pCommandBuffers = &CShaders[CShader].commandBuffers[imgIndex];						//Set command buffer to submit
 
 	static VkFence fence;																	//Create a fence object
 	static VkFenceCreateInfo fenceCreateInfo = {};											//Create fence create infos to create the fence

@@ -346,7 +346,8 @@ private:
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
-	const int32 MAX_FRAMES_IN_FLIGHT = 8; //Default:2
+	const int32 MAX_FRAMES_IN_FLIGHT = 2; //Default:2
+	//const int32 MAX_FRAMES_IN_FLIGHT = 8; //Default:2
 
 public:
 	//Geometry
@@ -481,7 +482,7 @@ private:
 		VkShaderModule shaderModule;
 		//Commands
 		VkCommandPool commandPool;
-		VkCommandBuffer commandBuffer;
+		LuxArray <VkCommandBuffer> commandBuffers;
 	};
 	LuxMap<LuxCShader> CShaders;
 
@@ -522,8 +523,8 @@ private:
 	void CShader_create_CPipeline(const char* shaderPath, LuxShader CShader);
 
 	//Compute command buffers >> Compute/CCommands.cpp
-	void CShader_create_commandBuffer(LuxShader CShader);
-	void runCommandBuffer(LuxShader CShader);
+	void CShader_create_commandBuffer(LuxShader CShader, uint32 imgIndex);
+	void runCommandBuffer(LuxShader CShader, uint32 imgIndex);
 
 };
 
