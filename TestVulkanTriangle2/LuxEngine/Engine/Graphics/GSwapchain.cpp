@@ -121,7 +121,7 @@ void Engine::createSwapChain() {
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
 	createInfo.imageExtent = chooseSwapExtent(swapChainSupport.capabilities);
 	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT; //TODO hhh
+	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
 	uint32 queueFamilyIndices[] = { graphics.PD.indices.graphicsFamily, graphics.PD.indices.presentFamily };
 	if (graphics.PD.indices.graphicsFamily != graphics.PD.indices.presentFamily) {
@@ -164,7 +164,7 @@ void Engine::createSwapChain() {
 	createDescriptorPool();
 	createDescriptorSets();
 
-	createDrawCommandBuffers();
+	//CShader_create_commandBuffers(0); //TODO wtf
 }
 
 

@@ -28,15 +28,10 @@ void Engine::initVulkan() {
 	createTextureImageView();
 	createTextureSampler();
 
-	//Create an object for the render
-	createVertexBuffer();
-	createIndexBuffer();
-
 	//Create swapchain render components
 	createDescriptorSetLayout();
 	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
 	createSyncObjects();
-	createDrawCommandBuffers();
 }
 
 
@@ -89,7 +84,6 @@ void Engine::drawFrame() {
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
-	//Update render result
 
 
 	//Acquire swapchain image
@@ -103,17 +97,11 @@ void Engine::drawFrame() {
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
 
-	//runCommandBuffer(0, (imageIndex != 0) ? 1:0);
 
-
-
-
-	//TODO remove useless junk
 
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	
 
-	//Submit to queue
+	//Update render result submitting the command buffers to the compute queue
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;
@@ -124,12 +112,9 @@ void Engine::drawFrame() {
 	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex];
 	submitInfo.pWaitDstStageMask = waitStages;
 	//TODO remove old geometry command buffers
-	//submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
-	//vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, 100000000);
-
 
 
 	//Present
@@ -141,10 +126,7 @@ void Engine::drawFrame() {
 	presentInfo.pSwapchains = &swapChain;
 	presentInfo.pImageIndices = &imageIndex;
 
-
-	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) { //TODO validation layer error
-		//TODO Images passed to present must be in layout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR or VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR but is in VK_IMAGE_LAYOUT_UNDEFINED. 
-		//TODO The Vulkan spec states: Each element of pImageIndices must be the index of a presentable image acquired from the swapchain specified by the corresponding element of the pSwapchains array, and the presented image subresource must be in the VK_IMAGE_LAYOUT_PRESENT_SRC_KHR layout at the time the operation is executed on a VkDevice 
+	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) { 
 		case VK_SUCCESS: break;
 		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: goto recreateSwapchain_;
 		default: Quit("Failed to present swapchain image");
@@ -182,10 +164,10 @@ void Engine::cleanupGraphics() {
 	vkDestroyImageView(graphics.LD, textureImageView, nullptr);						//Destroy texture image view
 	vkFreeMemory(graphics.LD, textureImageMemory, nullptr);							//Free texture image memory
 
-	vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);							//Destroy vertex buffer
-	vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);							//Free vertex buffer memory
-	vkDestroyBuffer(graphics.LD, indexBuffer, nullptr);								//Destroy index buffer
-	vkFreeMemory(graphics.LD, indexBufferMemory, nullptr);							//Free index buffer memory
+	//vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);							//Destroy vertex buffer
+	//vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);							//Free vertex buffer memory
+	//vkDestroyBuffer(graphics.LD, indexBuffer, nullptr);								//Destroy index buffer
+	//vkFreeMemory(graphics.LD, indexBufferMemory, nullptr);							//Free index buffer memory
 
 	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {								//For every frame
 		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);			//Destroy his render semaphore

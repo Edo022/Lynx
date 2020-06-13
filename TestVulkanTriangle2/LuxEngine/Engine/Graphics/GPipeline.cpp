@@ -150,16 +150,12 @@ void Engine::createRenderPass() {
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;							//Save rendered image
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
-	//colorAttachment.initialLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;						//Default layout
 	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
-	//colorAttachment.finalLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;					//Presentation layout
 	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Presentation layout
 	//create Ref
 	VkAttachmentReference colorAttachmentRef{};
 	colorAttachmentRef.attachment = 0;												//Attachment index
-	//colorAttachmentRef.layout = VK_IMAGE_LAYOUT_TRANSFER_DST;			//Optimal layout for better performances
 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;			//Optimal layout for better performances
-	//TODO HHHHHHH
 
 
 	//Depth

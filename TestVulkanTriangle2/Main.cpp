@@ -47,7 +47,6 @@ int main() {
 	};
 	luxInputSetInputState(&inputStateTest);
 
-	//TODO check allocation limit. 4,096 guaranteed
 
 
 	Frame{

@@ -56,10 +56,9 @@ void Engine::mainLoop() {
 
 		glfwPollEvents();
 		drawFrame();
-		//drawFrame();
 
 
-		//TODO fix full screen
+		//TODO full screen
 
 		//FPS counter
 		if (__updateFPS) {

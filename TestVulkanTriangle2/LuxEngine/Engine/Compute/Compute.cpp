@@ -2,25 +2,7 @@
 #include "LuxEngine/Engine/Engine.h"
 
 
-//     RAM MEMORY                      GPU MEMORY                                                                                                                               
-//                                      _____________________________________________________                                                                                                             
-//                                    ,'                                                     ',                                                                                                          
-//                                    |   gpu buffer         ( LuxCells[0] )             |                                                                                                          
-//                                    |   _______________________                             |                                                                                                           
-//                                    |  |■ ■ ■ ■ ■ ■ ■ ■ ■ ■ ■  |                            |                                                                                                           
-//                                    |  |■ ■ ■ ■ ■ ■            |                            |                                                                                                           
-//                                    |  '───────────────────────'                            |                                                                                                           
-//                                    |                                                       |                                                                                                           
-//                                    |                                                       |                                                                                                           
-//                                    |   shared gpu buffer  ( LuxCells[1] )             |                                                                                                        
-//                                    |   _______________________    __                       |                                                                                                          
-//                                    |  |■|■| | |■| | | | |■| | |     | cellSize = 2         |                                                                                                           
-//                                    |  |■|■| |■| | |■| |■|■| | |   __|                      |                                                                                                           
-//                                    |  '─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─'                            |                                                                                                           
-//                                    |  |_______________________|       bufferSize = 24      |                                                                                                           
-//                                    |   cellNum  = 12                                       |                                                                                                           
-//                                    ',_____________________________________________________,'                                                                                                           
-//                                                                                                                                                     
+
 
 
 
@@ -81,9 +63,7 @@ int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
 	CShader_create_descriptorSetLayouts(buffers, shaderIndex);
 	CShader_create_descriptorSets(buffers, shaderIndex);
 	CShader_create_CPipeline(shaderPath, shaderIndex);
-	for (int i = 0; i < swapChainImages.size(); i++) {
-		CShader_create_commandBuffer(shaderIndex, i);
-	}
+	CShader_create_commandBuffers(shaderIndex);
 
 	return shaderIndex;
 }

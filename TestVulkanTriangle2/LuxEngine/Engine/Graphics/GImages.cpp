@@ -9,68 +9,6 @@
 
 
 
-// Geometry ---------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-void Engine::createVertexBuffer() {
-	//Create staging buffer
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	//Map and copy memory
-	void* data;
-	vkMapMemory(graphics.LD, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (int64)bufferSize);
-	vkUnmapMemory(graphics.LD, stagingBufferMemory);
-
-	//Create vertex buffer
-	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-	copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-	//Destroy staging buffer
-	vkDestroyBuffer(graphics.LD, stagingBuffer, nullptr);
-	vkFreeMemory(graphics.LD, stagingBufferMemory, nullptr);
-}
-
-
-
-
-void Engine::createIndexBuffer() {
-	//Create staging buffer
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	//Map and copy memory
-	void* data;
-	vkMapMemory(graphics.LD, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (int64)bufferSize);
-	vkUnmapMemory(graphics.LD, stagingBufferMemory);
-
-	//Create index buffer
-	createBuffer(graphics.LD, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
-	copyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-	//Destroy staging buffer
-	vkDestroyBuffer(graphics.LD, stagingBuffer, nullptr);
-	vkFreeMemory(graphics.LD, stagingBufferMemory, nullptr);
-}
-
-
-
-
-
-
-
 
 // Textures ---------------------------------------------------------------------------------------------------------------------------------//
 
@@ -84,7 +22,7 @@ void Engine::createIndexBuffer() {
 void Engine::createTextureImage() {
 	createImage(WIDTH, HEIGHT, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	if(CGpuBuffers.isValid(0))copyBufferToImage(CGpuBuffers[0].buffer, textureImage, WIDTH, HEIGHT);//TODO fix
+	if(CGpuBuffers.isValid(0))copyBufferToImage(CGpuBuffers[0].buffer, textureImage, WIDTH, HEIGHT);
 	transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 

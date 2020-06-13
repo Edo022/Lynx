@@ -4,8 +4,8 @@
 //#include <chrono>
 //#include <thread>
 #define sleep(ms)			std::this_thread::sleep_for(std::chrono::milliseconds(ms))
-#define Sleep				UwU //UwU use "sleep(ms)" instead of this
-#define _sleep				UwU //UwU use "sleep(ms)" instead of this
+//#define Sleep(ms)			sleep(ms) //UwU use "sleep(ms)" instead of this
+//#define _sleep(ms)			sleep(sms) //UwU use "sleep(ms)" instead of this
 
 //#include "TermColor.hpp"
 //Console output

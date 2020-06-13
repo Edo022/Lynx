@@ -350,13 +350,6 @@ private:
 	const int32 MAX_FRAMES_IN_FLIGHT = 8; //Default:2
 
 public:
-	//Geometry
-	VkBuffer vertexBuffer;
-	VkDeviceMemory vertexBufferMemory;
-	VkBuffer indexBuffer;
-	VkDeviceMemory indexBufferMemory;
-	LuxArray<Vertex> vertices;
-	LuxArray<uint32> indices;
 
 private:
 	//Textures
@@ -415,9 +408,6 @@ private:
 
 
 	//Graphics textures and images >> Graphics/GImages.cpp
-	void createVertexBuffer();
-	void createIndexBuffer();
-
 	void createTextureImage();
 	void createTextureImageView();
 	void createTextureSampler();
@@ -430,7 +420,7 @@ private:
 
 	//Graphics commands >> Graphics/GCommands.cpp
 	void createGraphicsCommandPool();
-	void createDrawCommandBuffers();
+	//void createDrawCommandBuffers();
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
@@ -523,7 +513,7 @@ private:
 	void CShader_create_CPipeline(const char* shaderPath, LuxShader CShader);
 
 	//Compute command buffers >> Compute/CCommands.cpp
-	void CShader_create_commandBuffer(LuxShader CShader, uint32 imgIndex);
+	void CShader_create_commandBuffers(LuxShader CShader);
 	void runCommandBuffer(LuxShader CShader, uint32 imgIndex);
 
 };
@@ -549,13 +539,6 @@ private:
 
 //This function is used by the engine. You shouldn't call it
 static void __lp_lux_init_run_thr(bool useVSync) {
-	engine->vertices = { Vertex
-		{ {-1, -1, 0}, { 1,1,1 }, { 0,0 } },
-		{ {-1, 1, 0},	{ 1,1,1 },	{ 0,1 } },
-		{ {1, -1, 0},	{ 1,1,1 },	{ 1,0 } },
-		{ {1, 1, 0},	{ 1,1,1 },	{ 1,1 } }
-	};
-	engine->indices = {0, 1, 2, 2, 1, 3};
 	engine->run(useVSync, 45);
 }
 
