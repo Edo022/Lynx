@@ -89,11 +89,9 @@ void Engine::drawFrame() {
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
-
-	//transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-	//if(CGpuBuffers.isValid(0)) copyBufferToImage(CGpuBuffers[0].buffer, textureImage, WIDTH, HEIGHT);
-	//transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	//Update render result
 	runCommandBuffer(0);
+
 
 	//Acquire swapchain image
 	uint32 imageIndex;
@@ -102,36 +100,24 @@ void Engine::drawFrame() {
 		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(); return;
 		default: Quit("Failed to acquire swapchain image");
 	}
+	imageIndex = 0;
 	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
-	//Update render result
 
 
 
-	static VkSubmitInfo submitInfo{};
+	//TODO remove useless shit
+
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-	static VkPresentInfoKHR presentInfo{};
-
-	static bool staticInit = true;
-	if (staticInit) {
-		staticInit = false;
-		//Submit to queue
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.commandBufferCount = 1;
-		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pWaitDstStageMask = waitStages;
-
-		//Present
-		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.swapchainCount = 1;
-	}
-
-
 	//Submit to queue
+	static VkSubmitInfo submitInfo{};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pWaitDstStageMask = waitStages;
 	submitInfo.pCommandBuffers = &commandBuffers[imageIndex];
 	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame];
 	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame];
@@ -141,10 +127,16 @@ void Engine::drawFrame() {
 
 
 
+
 	//Present
+	static VkPresentInfoKHR presentInfo{};
 	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
 	presentInfo.pImageIndices = &imageIndex;
 	presentInfo.pSwapchains = &swapChain;
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.swapchainCount = 1;
+
 
 	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) {
 		case VK_SUCCESS: break;
