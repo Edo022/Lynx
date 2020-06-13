@@ -37,6 +37,8 @@ int main() {
 	//	std::cout << entry.path() << std::endl;
 
 	LuxInit(false);
+
+
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, &hh },
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, &hh2 } ,

@@ -270,6 +270,7 @@ static Engine* engine;
 class Engine {
 public:
 	double FPS = 0;
+	bool updateFPS = false;
 	float FOV;
 	bool running;
 	bool useVSync;

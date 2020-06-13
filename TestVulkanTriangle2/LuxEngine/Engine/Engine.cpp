@@ -44,37 +44,29 @@ void Engine::mainLoop() {
 	std::thread FPSCounterThr(&Engine::FPSCounter, this);
 	FPSCounterThr.detach();
 	stdTime start;
-	bool fullScreen = false;
 	initialized = true;
+	static bool __updateFPS = false;
 
 	while (!glfwWindowShouldClose(window)) {
+		if (updateFPS) {
+			updateFPS = false;
+			__updateFPS = true;
+			start = stdNow;
+		}
+
 		glfwPollEvents();
 		drawFrame();
 
 
 		//TODO fix full screen
-		static int32 lastState;
-		static int32 lastw = 0;
-		static int32 lasth = 0;
-		if (glfwGetKey(window, GLFW_KEY_F11) != lastState && glfwGetKey(window, GLFW_KEY_F11) == GLFW_RELEASE) {
-			if (fullScreen) {
-				fullScreen = false;
-				glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_TRUE);
-				glfwSetWindowSize(window, lastw, lasth);
-			}
-			else {
-				fullScreen = true;
-				glfwGetWindowSize(window, &lastw, &lasth);
-				glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
-				glfwMaximizeWindow(window);
-			}
-		}
-		lastState = glfwGetKey(window, GLFW_KEY_F11);
 
 		//FPS counter
-		stdDuration elapsed_seconds = stdNow - start;
-		FPS = 1 / elapsed_seconds.count();
-		start = stdNow;
+		if (__updateFPS) {
+			stdDuration elapsed_seconds = stdNow - start;
+			FPS = (FPS + (1 / elapsed_seconds.count()))/2;
+			printf("FPS: %lf\n", FPS);
+			__updateFPS = false;
+		}
 	}
 	running = false;
 
@@ -84,8 +76,8 @@ void Engine::mainLoop() {
 
 void Engine::FPSCounter() {
 	while (running) {
-		Normal printf("%lf", FPS);
-		sleep(1000);
+		updateFPS = true;
+		sleep(100);
 	}
 }
 
