@@ -72,41 +72,8 @@ void Engine::createDebugMessenger() {
 
 
 
-static VkCommandBuffer transition_0;
 void Engine::drawFrame() {
-	//static bool h = true;
-	//if (h) {
-	//	h = false;
-	//	//Create allocate info
-	//	VkCommandBufferAllocateInfo allocInfo{};
-	//	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	//	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	//	allocInfo.commandPool = graphicsCommandPool;
-	//	allocInfo.commandBufferCount = 1;
-	//	//Allocate command buffer
-	//	vkAllocateCommandBuffers(graphics.LD, &allocInfo, &transition_0);
-	//	//Begine command recording
-	//	VkCommandBufferBeginInfo beginInfo{};
-	//	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	//	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-	//	vkBeginCommandBuffer(transition_0, &beginInfo);
-
-
-	//	VkImageMemoryBarrier barrier{};
-	//	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-	//	barrier.oldLayout = oldLayout;
-	//	barrier.newLayout = newLayout;
-	//	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	//	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-	//	barrier.image = image;
-	//	barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-	//	barrier.subresourceRange.baseMipLevel = 0;
-	//	barrier.subresourceRange.levelCount = 1;
-	//	barrier.subresourceRange.baseArrayLayer = 0;
-	//	barrier.subresourceRange.layerCount = 1;
-
-	//}
-
+	//TODO create separated command buffer
 
 
 	//Wait fences

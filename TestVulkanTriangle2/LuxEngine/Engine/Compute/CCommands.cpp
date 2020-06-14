@@ -42,12 +42,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 
 
 
-
-
-
-
-
-
+		//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
 		VkImageMemoryBarrier barrier{};
 		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -71,10 +66,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 
 
 
-
-
-		//transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-				//TODO divide to dedicated command buffer and pool
+		//TODO divide to dedicated command buffer and pool
 		VkBufferImageCopy region{};
 		region.bufferOffset = 0;
 		region.bufferRowLength = 0;
@@ -90,8 +82,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 
 
 
-
-
+		//Create a barrier to use the swapchain image as a present source image
 		VkImageMemoryBarrier barrier1{};
 		barrier1.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 		barrier1.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
@@ -111,8 +102,8 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;
 		dstStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;
 
-		//transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 		vkCmdPipelineBarrier(CShaders[CShader].commandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &barrier1);
+
 
 
 

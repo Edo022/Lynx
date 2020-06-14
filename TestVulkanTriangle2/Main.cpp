@@ -58,7 +58,6 @@ int main() {
 
 
 	while (engine->running) {
-		LuxDebug(printf("%d\n", 15));
 		sleep(1);
 		__noop;
 	}

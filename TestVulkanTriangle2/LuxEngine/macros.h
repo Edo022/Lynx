@@ -24,8 +24,6 @@
 #define LuxRelease()		;
 
 #ifndef LUX_DEBUG
-#define Try(f)				f;
-#define Quit()				;
 #define LuxDebug()			;
 #define LuxRelease(s)		s
 #endif

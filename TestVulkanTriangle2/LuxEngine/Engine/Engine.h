@@ -266,7 +266,7 @@ public:
 	bool running;
 	bool useVSync;
 	bool __lp_initialized = false;
-	float frame = 0;
+	uint32 frame = 0;
 
 
 	void run(bool _useVSync = true, float FOV = 45.0f);
@@ -337,9 +337,8 @@ private:
 
 	//Render
 	VkRenderPass renderPass;
-	const int32 MAX_FRAMES_IN_FLIGHT = 8; //Default:2
+	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2
 
-public:
 
 private:
 	//Commands
@@ -384,7 +383,6 @@ private:
 	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
-	//void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp
@@ -412,7 +410,7 @@ private:
 
 
 
-		//COMPUTE 
+	//COMPUTE 
 	const int32 COMPUTE_WIDTH = WIDTH;
 	const int32 COMPUTE_HEIGHT = HEIGHT;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
