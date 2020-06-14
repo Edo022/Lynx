@@ -32,6 +32,12 @@ void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
 
 
 int main() {
+	LuxCell h;
+	h = __lp_cellCode(8, 2, 2000000);
+
+	h = __lp_cellCode(6, 2, 500000);
+	h = __lp_cellCode(4, 1, 10000);
+	h = __lp_cellCode(7, 199, 500000);
 	//std::string path = "./";
 	//for (const auto& entry : std::filesystem::directory_iterator(path))
 	//	std::cout << entry.path() << std::endl;

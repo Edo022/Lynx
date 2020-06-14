@@ -40,7 +40,41 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		vkCmdDispatch(CShaders[CShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE)), 1);
 
 
-		//TODO divide to dedicated command buffer and pool
+
+
+
+
+
+
+
+
+		VkImageMemoryBarrier barrier{};
+		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.image = swapChainImages[imgIndex];
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+
+		VkPipelineStageFlags srcStage, dstStage;
+		barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		srcStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+		vkCmdPipelineBarrier(CShaders[CShader].commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+
+
+
+
+
+		//transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+				//TODO divide to dedicated command buffer and pool
 		VkBufferImageCopy region{};
 		region.bufferOffset = 0;
 		region.bufferRowLength = 0;
@@ -52,9 +86,34 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		region.imageOffset = { 0, 0, 0 };
 		region.imageExtent = { swapChainExtent.width, swapChainExtent.height, 1 };
 
-		transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_UNDEFINED, 1, &region);
-		transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+		if (CGpuBuffers.isValid(0)) /*TODO remove*/ vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+
+
+
+
+		VkImageMemoryBarrier barrier1{};
+		barrier1.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		barrier1.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		barrier1.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		barrier1.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier1.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier1.image = swapChainImages[imgIndex];
+		barrier1.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier1.subresourceRange.baseMipLevel = 0;
+		barrier1.subresourceRange.levelCount = 1;
+		barrier1.subresourceRange.baseArrayLayer = 0;
+		barrier1.subresourceRange.layerCount = 1;
+
+		VkPipelineStageFlags srcStage1, dstStage1;
+		barrier1.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		barrier1.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		dstStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+		//transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+		vkCmdPipelineBarrier(CShaders[CShader].commandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &barrier1);
+
 
 
 		//End command buffer recording
