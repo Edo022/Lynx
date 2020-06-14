@@ -345,29 +345,11 @@ private:
 
 	//Render
 	VkRenderPass renderPass;
-	//VkPipelineLayout pipelineLayout;
-	//VkPipeline graphicsPipeline;
 	const int32 MAX_FRAMES_IN_FLIGHT = 8; //Default:2
 
 public:
 
 private:
-	//Textures
-	//VkImage textureImage;
-	//VkImageView textureImageView;
-	//VkDeviceMemory textureImageMemory;
-	//VkSampler textureSampler;
-
-	//Images
-	//VkImage depthImage;
-	//VkImageView depthImageView;
-	//VkDeviceMemory depthImageMemory;
-
-	//Descriptors
-	//VkDescriptorSetLayout descriptorSetLayout;
-	//VkDescriptorPool descriptorPool;
-	//LuxArray<VkDescriptorSet> descriptorSets;
-
 	//Commands
 	VkCommandPool graphicsCommandPool;
 	LuxArray<VkCommandBuffer> commandBuffers;
@@ -403,15 +385,10 @@ private:
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	void createImageViews();
-	//void createDepthResources();
 	void cleanupSwapChain();
 
 
 	//Graphics textures and images >> Graphics/GImages.cpp
-	//void createTextureImage();
-	//void createTextureImageView();
-	//void createTextureSampler();
-
 	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
@@ -420,19 +397,13 @@ private:
 
 	//Graphics commands >> Graphics/GCommands.cpp
 	void createGraphicsCommandPool();
-	//void createDrawCommandBuffers();
 	VkCommandBuffer beginSingleTimeCommands();
 	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
 
-	//Graphics render and descriptors >> Graphics/GPipeline.cpp
-	//void createGraphicsPipeline();
+	//Graphics render >> Graphics/GPipeline.cpp
 	void createRenderPass();
 	void createFramebuffers();
-
-	//void createDescriptorPool();
-	//void createDescriptorSetLayout();
-	//void createDescriptorSets();
 
 
 	//Graphics other >> Graphics/Graphics.cpp
@@ -504,7 +475,6 @@ private:
 	void runCompute();
 	void cleanupCompute();
 	LuxCell createGpuBuffer(uint64 size);
-	//LuxCell createGpuFragmentedBuffer(uint64 size, uint64 fragmentSize);
 	int32 newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp

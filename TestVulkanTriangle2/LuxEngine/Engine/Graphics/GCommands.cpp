@@ -19,56 +19,6 @@ void Engine::createGraphicsCommandPool() {
 
 
 
-//void Engine::createDrawCommandBuffers() {
-//	commandBuffers.resize(swapChainFramebuffers.size());				//One command buffer for every swapchain's framebuffer 
-//
-//	VkCommandBufferAllocateInfo allocInfo{};							//Create allocate infos
-//	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-//	allocInfo.commandPool = graphicsCommandPool;							//Set command pool	
-//	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set command buffer level
-//	allocInfo.commandBufferCount = (uint32)commandBuffers.size();			//Set number of command buffers
-//	//Allocate command buffers
-//	Try(vkAllocateCommandBuffers(graphics.LD, &allocInfo, commandBuffers.data())) Quit("Failed to allocate command buffers");
-//
-//	for (uint64 i = 0; i < commandBuffers.size(); i++) {				//For every command buffer
-//		VkCommandBufferBeginInfo beginInfo{};								//Create begin info struct
-//		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;		//Set structure type
-//
-//		VkClearValue clearValues[2];										//Create clear values
-//		clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };					//Color clear value
-//		clearValues[1].depthStencil = { 1.0f, 0 };							//Stencil clear value
-//
-//		VkRenderPassBeginInfo renderPassInfo{};								//Create render pass infos
-//		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;	//Set structure type
-//		renderPassInfo.renderPass = renderPass;								//Set render pass
-//		renderPassInfo.framebuffer = swapChainFramebuffers[i];				//Set frame buffer
-//		renderPassInfo.renderArea.offset = { 0, 0 };						//No offset
-//		renderPassInfo.renderArea.extent = swapChainExtent;					//Maximum extent
-//		renderPassInfo.clearValueCount = 2;									//Clear values number
-//		renderPassInfo.pClearValues = clearValues;							//Set clear values
-//
-//
-//		//Begin command buffer and render pass
-//		Try(vkBeginCommandBuffer(commandBuffers[i], &beginInfo)) Quit("Failed to begin command buffer");
-//		vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-//
-//		//Bind pipeline, vertices, indices and descriptors to che command buffer
-//		vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-//		vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, &vertexBuffer, new VkDeviceSize(0));
-//		vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT32); //LLID0
-//		vkCmdBindDescriptorSets(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[i], 0, nullptr);
-//		//Draw texture
-//		vkCmdDrawIndexed(commandBuffers[i], sc<uint32>(indices.size()), 1, 0, 0, 0);
-//
-//		//Eng command buffer and render pass
-//		vkCmdEndRenderPass(commandBuffers[i]);
-//		Try(vkEndCommandBuffer(commandBuffers[i])) Quit("Failed to record command buffer");
-//	}
-//}
-
-
-
-
 VkCommandBuffer Engine::beginSingleTimeCommands() {
 	//Create allocate info
 	VkCommandBufferAllocateInfo allocInfo{};

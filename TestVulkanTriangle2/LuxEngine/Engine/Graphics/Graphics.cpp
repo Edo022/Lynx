@@ -23,13 +23,6 @@ void Engine::initVulkan() {
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
 	/**/												 			createDebugMessenger();
 
-	//Create textures
-	//createTextureImage();
-	//createTextureImageView();
-	//createTextureSampler();
-
-	//Create swapchain render components
-	//createDescriptorSetLayout();
 	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
 	createSyncObjects();
 }
@@ -83,7 +76,7 @@ void Engine::createDebugMessenger() {
 void Engine::drawFrame() {
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-	if (framebufferResized) goto 	recreateSwapchain_;
+	if (framebufferResized) goto recreateSwapchain_;
 
 
 
@@ -112,13 +105,9 @@ void Engine::drawFrame() {
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex];
 	submitInfo.pWaitDstStageMask = waitStages;
-	//TODO remove old geometry command buffers
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
-	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) {
-		Quit("Failed to submit graphics command buffer");
-	}
-	//TODO crash when the window is smaller than default
+	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit graphics command buffer");
 
 
 	//Present
@@ -132,14 +121,14 @@ void Engine::drawFrame() {
 
 	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) { 
 		case VK_SUCCESS: break;
-		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: goto recreateSwapchain_;
+		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
+			recreateSwapchain_:
+			framebufferResized = false;
+			recreateSwapChain();
+			vkDeviceWaitIdle(graphics.LD);
+			break;
+		}
 		default: Quit("Failed to present swapchain image");
-	}
-	if (framebufferResized) {
-	recreateSwapchain_:
-		framebufferResized = false;
-		recreateSwapChain();
-		vkDeviceWaitIdle(graphics.LD);
 	}
 
 	//Update frame number
@@ -159,19 +148,7 @@ void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 he
 
 void Engine::cleanupGraphics() {
 	cleanupSwapChain();																//Clear swapchain components
-
-	//vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler
-	//vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);		//Destroy descriptor set layout
 	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);				//Destroy graphics command pool
-
-	//vkDestroyImage(graphics.LD, textureImage, nullptr);								//Destroy texture image
-	//vkDestroyImageView(graphics.LD, textureImageView, nullptr);						//Destroy texture image view
-	//vkFreeMemory(graphics.LD, textureImageMemory, nullptr);							//Free texture image memory
-
-	//vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);							//Destroy vertex buffer
-	//vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);							//Free vertex buffer memory
-	//vkDestroyBuffer(graphics.LD, indexBuffer, nullptr);								//Destroy index buffer
-	//vkFreeMemory(graphics.LD, indexBufferMemory, nullptr);							//Free index buffer memory
 
 	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {								//For every frame
 		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);			//Destroy his render semaphore
