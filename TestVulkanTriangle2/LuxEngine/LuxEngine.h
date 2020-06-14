@@ -9,7 +9,8 @@
 //Don't use them if you don't know what you are doing
 //Class operators and size() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
 
-//#define LUX_RELEASE before including this header to remove all the debug macros and functions. This improves performance
+//#define LUX_DEBUG before including this header to enable all the debug macros and functions.
+//This will affect performance, so don't use it in release
 #include "LuxEngine/Engine/Engine.h"
 
 #include "LuxEngine/Engine/Input/Input.h"
@@ -22,5 +23,5 @@
 static void LuxInit(bool useVSync = true) {
 	static Engine engine;
 	__lp_luxInit(&engine, useVSync);
-	while (!engine.initialized) sleep(10);
+	while (!engine.__lp_initialized) sleep(10);
 }

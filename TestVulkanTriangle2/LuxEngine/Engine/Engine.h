@@ -6,8 +6,8 @@
 //Validation layers in debug mode
 #ifdef NDEBUG	
 const bool enableValidationLayers = false;
-#define LUX_RELEASE
 #else			
+#define LUX_DEBUG
 const bool enableValidationLayers = true;
 #endif
 
@@ -271,11 +271,12 @@ static Engine* engine;
 class Engine {
 public:
 	double FPS = 0;
-	bool updateFPS = false;
 	float FOV;
 	bool running;
 	bool useVSync;
-	bool initialized = false;
+	bool __lp_initialized = false;
+	float frame = 0;
+
 
 	void run(bool _useVSync = true, float FOV = 45.0f);
 
@@ -354,7 +355,7 @@ private:
 	VkCommandPool graphicsCommandPool;
 	LuxArray<VkCommandBuffer> commandBuffers;
 
-	//Render semaphores and frames
+	//Render semaphores and frame
 	LuxArray<VkSemaphore> imageAvailableSemaphores;
 	LuxArray<VkSemaphore> renderFinishedSemaphores;
 	LuxArray<VkFence> inFlightFences;
@@ -392,7 +393,7 @@ private:
 	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
-	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+	//void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp

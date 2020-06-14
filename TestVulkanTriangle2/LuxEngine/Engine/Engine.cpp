@@ -43,16 +43,9 @@ void Engine::run(bool _useVSync, float _FOV) {
 void Engine::mainLoop() {
 	std::thread FPSCounterThr(&Engine::FPSCounter, this);
 	FPSCounterThr.detach();
-	stdTime start;
-	initialized = true;
-	static bool __updateFPS = false;
+	__lp_initialized = true;
 
 	while (!glfwWindowShouldClose(window)) {
-		if (updateFPS) {
-			updateFPS = false;
-			__updateFPS = true;
-			start = stdNow;
-		}
 
 		glfwPollEvents();
 		drawFrame();
@@ -60,24 +53,20 @@ void Engine::mainLoop() {
 
 		//TODO full screen
 
-		//FPS counter
-		if (__updateFPS) {
-			stdDuration elapsed_seconds = stdNow - start;
-			FPS = (FPS + (1 / elapsed_seconds.count()))/2;
-			printf("FPS: %lf\n", FPS);
-			__updateFPS = false;
-		}
+		frame++;
 	}
 	running = false;
-
 	vkDeviceWaitIdle(graphics.LD);
 }
 
 
 void Engine::FPSCounter() {
 	while (running) {
-		updateFPS = true;
-		sleep(100);
+		static int delay = 1000;
+		sleep(delay);
+		FPS = frame * (1000 / delay);
+		frame = 0;
+		printf("FPS: %lf\n", FPS);
 	}
 }
 

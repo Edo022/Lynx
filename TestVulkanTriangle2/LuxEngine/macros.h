@@ -1,6 +1,14 @@
 #pragma once
 
 
+
+
+#define dbg(s) \
+ifndef LUX_DEBUG\
+s\
+
+
+
 //#include <chrono>
 //#include <thread>
 #define sleep(ms)			std::this_thread::sleep_for(std::chrono::milliseconds(ms))
@@ -17,12 +25,14 @@
 #define Failure				std::cout<<termcolor::red		<< "\n";
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
-#define Try(f) if (f != VK_SUCCESS)
+#define Try(f)				if (f != VK_SUCCESS)
 #define Quit(s)				{Failure printf("\n%s\n", s); Normal system("pause"); exit(-1);}
+#define debugPrintf			printf
 
-#ifdef LUX_RELEASE
-#define Try(f) f;
-#define Quit(s) __noop;
+#ifndef LUX_DEBUG
+#define Try(f)				f;
+#define Quit()				;
+#define debugPrintf()		;
 #endif
 
 

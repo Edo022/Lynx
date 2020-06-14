@@ -54,10 +54,10 @@ int main() {
 	luxInputSetInputState(&inputStateTest);
 
 
-
-	Frame{
+	while (engine->running) {
+		debugPrintf("", 15);
 		sleep(1);
-	__noop;
+		__noop;
 	}
 	return 0;
 }

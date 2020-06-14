@@ -155,11 +155,5 @@
     <None Include="LuxEngine\Contents\shaders\shader.comp">
       <Filter>LuxEngine\Contents\Shaders</Filter>
     </None>
-    <None Include="LuxEngine\Contents\shaders\shader.frag">
-      <Filter>LuxEngine\Contents\Shaders</Filter>
-    </None>
-    <None Include="LuxEngine\Contents\shaders\shader.vert">
-      <Filter>LuxEngine\Contents\Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>
