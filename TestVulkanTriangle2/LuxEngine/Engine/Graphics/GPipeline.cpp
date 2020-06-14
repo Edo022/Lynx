@@ -256,21 +256,21 @@ void Engine::createFramebuffers() {
 
 
 
-void Engine::createDescriptorPool() {
-	LuxArray<VkDescriptorPoolSize> poolSizes(2);
-	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSizes[0].descriptorCount = sc<uint32>(swapChainImages.size());
-	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSizes[1].descriptorCount = sc<uint32>(swapChainImages.size());
-
-	VkDescriptorPoolCreateInfo poolInfo{};
-	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = sc<uint32>(poolSizes.size());
-	poolInfo.pPoolSizes = poolSizes.data();
-	poolInfo.maxSets = sc<uint32>(swapChainImages.size());
-
-	Try(vkCreateDescriptorPool(graphics.LD, &poolInfo, nullptr, &descriptorPool)) Quit("Failed to create descriptor pool");
-}
+//void Engine::createDescriptorPool() {
+//	LuxArray<VkDescriptorPoolSize> poolSizes(2);
+//	poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+//	poolSizes[0].descriptorCount = sc<uint32>(swapChainImages.size());
+//	poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+//	poolSizes[1].descriptorCount = sc<uint32>(swapChainImages.size());
+//
+//	VkDescriptorPoolCreateInfo poolInfo{};
+//	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+//	poolInfo.poolSizeCount = sc<uint32>(poolSizes.size());
+//	poolInfo.pPoolSizes = poolSizes.data();
+//	poolInfo.maxSets = sc<uint32>(swapChainImages.size());
+//
+//	Try(vkCreateDescriptorPool(graphics.LD, &poolInfo, nullptr, &descriptorPool)) Quit("Failed to create descriptor pool");
+//}
 
 
 
@@ -297,34 +297,34 @@ void Engine::createDescriptorSetLayout() {
 
 
 
-void Engine::createDescriptorSets() {
-	LuxArray<VkDescriptorSetLayout> layouts;
-	layouts.resize(swapChainImages.size(), descriptorSetLayout);
-	VkDescriptorSetAllocateInfo allocInfo{};
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-	allocInfo.descriptorPool = descriptorPool;
-	allocInfo.descriptorSetCount = sc<uint32>(swapChainImages.size());
-	allocInfo.pSetLayouts = layouts.data();
-
-	descriptorSets.resize(swapChainImages.size());
-	Try(vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data())) Quit("Failed to allocate descriptor sets");
-
-	for (uint64 i = 0; i < descriptorSets.size(); i++) {
-		VkDescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = textureImageView;
-		imageInfo.sampler = textureSampler;
-
-		LuxArray<VkWriteDescriptorSet> descriptorWrites(1);
-		descriptorWrites[0] = {};
-		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		descriptorWrites[0].dstSet = descriptorSets[i];
-		descriptorWrites[0].dstBinding = 1;
-		descriptorWrites[0].dstArrayElement = 0;
-		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		descriptorWrites[0].descriptorCount = 1;
-		descriptorWrites[0].pImageInfo = &imageInfo;
-
-		vkUpdateDescriptorSets(graphics.LD, sc<uint32>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-	}
-}
+//void Engine::createDescriptorSets() {
+//	LuxArray<VkDescriptorSetLayout> layouts;
+//	layouts.resize(swapChainImages.size(), descriptorSetLayout);
+//	VkDescriptorSetAllocateInfo allocInfo{};
+//	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+//	allocInfo.descriptorPool = descriptorPool;
+//	allocInfo.descriptorSetCount = sc<uint32>(swapChainImages.size());
+//	allocInfo.pSetLayouts = layouts.data();
+//
+//	descriptorSets.resize(swapChainImages.size());
+//	Try(vkAllocateDescriptorSets(graphics.LD, &allocInfo, descriptorSets.data())) Quit("Failed to allocate descriptor sets");
+//
+//	for (uint64 i = 0; i < descriptorSets.size(); i++) {
+//		VkDescriptorImageInfo imageInfo{};
+//		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//		imageInfo.imageView = textureImageView;
+//		imageInfo.sampler = textureSampler;
+//
+//		LuxArray<VkWriteDescriptorSet> descriptorWrites(1);
+//		descriptorWrites[0] = {};
+//		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//		descriptorWrites[0].dstSet = descriptorSets[i];
+//		descriptorWrites[0].dstBinding = 1;
+//		descriptorWrites[0].dstArrayElement = 0;
+//		descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+//		descriptorWrites[0].descriptorCount = 1;
+//		descriptorWrites[0].pImageInfo = &imageInfo;
+//
+//		vkUpdateDescriptorSets(graphics.LD, sc<uint32>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+//	}
+//}

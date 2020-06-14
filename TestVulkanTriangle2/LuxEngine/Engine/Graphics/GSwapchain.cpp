@@ -161,8 +161,8 @@ void Engine::createSwapChain() {
 	createDepthResources();
 	createFramebuffers();
 
-	createDescriptorPool();
-	createDescriptorSets();
+	//createDescriptorPool();
+	//createDescriptorSets();
 
 	//CShader_create_commandBuffers(0); //TODO wtf
 }
@@ -187,7 +187,7 @@ void Engine::cleanupSwapChain() {
 	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
-	vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);														//Destroy graphics descriptor pool
+	//vkDestroyDescriptorPool(graphics.LD, descriptorPool, nullptr);														//Destroy graphics descriptor pool
 }
 
 

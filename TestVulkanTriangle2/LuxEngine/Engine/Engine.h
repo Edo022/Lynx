@@ -365,8 +365,8 @@ private:
 
 	//Descriptors
 	VkDescriptorSetLayout descriptorSetLayout;
-	VkDescriptorPool descriptorPool;
-	LuxArray<VkDescriptorSet> descriptorSets;
+	//VkDescriptorPool descriptorPool;
+	//LuxArray<VkDescriptorSet> descriptorSets;
 
 	//Commands
 	VkCommandPool graphicsCommandPool;
@@ -430,9 +430,9 @@ private:
 	void createRenderPass();
 	void createFramebuffers();
 
-	void createDescriptorPool();
+	//void createDescriptorPool();
 	void createDescriptorSetLayout();
-	void createDescriptorSets();
+	//void createDescriptorSets();
 
 
 	//Graphics other >> Graphics/Graphics.cpp
