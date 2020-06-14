@@ -2,13 +2,6 @@
 
 
 
-
-#define dbg(s) \
-ifndef LUX_DEBUG\
-s\
-
-
-
 //#include <chrono>
 //#include <thread>
 #define sleep(ms)			std::this_thread::sleep_for(std::chrono::milliseconds(ms))
@@ -27,12 +20,14 @@ s\
 
 #define Try(f)				if (f != VK_SUCCESS)
 #define Quit(s)				{Failure printf("\n%s\n", s); Normal system("pause"); exit(-1);}
-#define debugPrintf			printf
+#define LuxDebug(s)			s
+#define LuxRelease()		;
 
 #ifndef LUX_DEBUG
 #define Try(f)				f;
 #define Quit()				;
-#define debugPrintf()		;
+#define LuxDebug()			;
+#define LuxRelease(s)		s
 #endif
 
 

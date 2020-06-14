@@ -8,7 +8,7 @@ void Engine::runGraphics(bool _useVSync, float _FOV) {
 	FOV = _FOV;
 	stdTime start = stdNow;
 
-	if (enableValidationLayers) { Failure printf("D E B U G    M O D E"); }				MainSeparator;
+	LuxDebug(Failure printf("D E B U G    M O D E");)										MainSeparator;
 	Normal  printf("Initializing Vulkan");							initVulkan();		MainSeparator;
 	Success printf("Initialization completed in %f s", (sc<stdDuration>(stdNow - start)).count());
 }
@@ -21,7 +21,7 @@ void Engine::initVulkan() {
 	Normal printf("    Creating VK Surface...               ");		createSurface();					SuccessNoNl printf("ok");	NewLine;
 	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();				NewLine;
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
-	/**/												 			createDebugMessenger();
+	/**/												 			LuxDebug(createDebugMessenger();)
 
 	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
 	createSyncObjects();
@@ -63,7 +63,7 @@ void Engine::createSyncObjects() {
 
 
 void Engine::createDebugMessenger() {
-	if (!enableValidationLayers) return;
+	//LuxRelease(return);
 
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;
 	populateDebugMessengerCreateInfo(createInfo);
@@ -196,7 +196,7 @@ void Engine::cleanupGraphics() {
 	vkDestroyDevice(compute.LD, nullptr);																			//Destroy the compute device
 	for (auto device : secondary) vkDestroyDevice(device.LD, nullptr);													//Destroy all the secondary devices
 
-	if (enableValidationLayers) DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);					//Destroy the debug messenger if present
+	LuxDebug(DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));					//Destroy the debug messenger if present
 	vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface
 }
 

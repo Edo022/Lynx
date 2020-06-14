@@ -20,6 +20,9 @@
 */
 
 
+#ifndef NDEBUG
+#define LUX_DEBUG
+#endif
 
 #include "LuxEngine/LuxEngine.h"
 #include <filesystem>
@@ -34,7 +37,7 @@ void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
 int main() {
 	LuxCell h;
 	h = __lp_cellCode(8, 2, 2000000);
-
+	
 	h = __lp_cellCode(6, 2, 500000);
 	h = __lp_cellCode(4, 1, 10000);
 	h = __lp_cellCode(7, 199, 500000);
@@ -55,7 +58,7 @@ int main() {
 
 
 	while (engine->running) {
-		debugPrintf("", 15);
+		LuxDebug(printf("%d\n", 15));
 		sleep(1);
 		__noop;
 	}

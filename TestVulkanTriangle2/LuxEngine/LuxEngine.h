@@ -9,8 +9,10 @@
 //Don't use them if you don't know what you are doing
 //Class operators and size() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
 
-//#define LUX_DEBUG before including this header to enable all the debug macros and functions.
-//This will affect performance, so don't use it in release
+//The LuxDebug() macro executes a line of code only if LUX_DEBUG is defined
+//LUX_DEBUG also enables Vulkan validation layers, when available
+//The LuxRelease() macro executes a line of code only if LUX_DEBUG is NOT defined
+//Those macros does not affect performance or code creation. LUX_DEBUG must be define BEFORE including this header
 #include "LuxEngine/Engine/Engine.h"
 
 #include "LuxEngine/Engine/Input/Input.h"

@@ -94,13 +94,13 @@ void Engine::createInstance() {
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array
-	if (enableValidationLayers) extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);			//Add debug extension if in debug mode
+	LuxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
 	createInfo.enabledExtensionCount = sc<uint32>(extensions.size());						//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
 
 
 	//Add validation layers if in debug mode
-	#ifdef NDEBUG
+	#ifndef LUX_DEBUG
 	createInfo.enabledLayerCount = 0;
 	createInfo.pNext = nullptr;
 	#else
