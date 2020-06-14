@@ -118,6 +118,7 @@ void Engine::drawFrame() {
 	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) {
 		Quit("Failed to submit graphics command buffer");
 	}
+	//TODO crash when the window is smaller than default
 
 
 	//Present

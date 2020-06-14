@@ -208,7 +208,7 @@ void Engine::recreateSwapChain() {
 		CGpuBuffers.remove(1);
 		CShaders.remove(0);
 
-		LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+		LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height);
 		LuxCell vertices = createGpuBuffer(4);
 		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
 		newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
