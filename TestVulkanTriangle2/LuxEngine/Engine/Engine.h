@@ -345,8 +345,8 @@ private:
 
 	//Render
 	VkRenderPass renderPass;
-	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
+	//VkPipelineLayout pipelineLayout;
+	//VkPipeline graphicsPipeline;
 	const int32 MAX_FRAMES_IN_FLIGHT = 8; //Default:2
 
 public:
@@ -426,8 +426,8 @@ private:
 
 
 	//Graphics render and descriptors >> Graphics/GPipeline.cpp
-	void createGraphicsPipeline();
-	void createRenderPass();
+	//void createGraphicsPipeline();
+	//void createRenderPass();
 	void createFramebuffers();
 
 	//void createDescriptorPool();

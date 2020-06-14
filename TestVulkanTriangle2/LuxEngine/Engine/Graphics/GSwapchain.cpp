@@ -154,9 +154,9 @@ void Engine::createSwapChain() {
 
 
 	createImageViews();
-	createRenderPass();
+	//createRenderPass();
 
-	createGraphicsPipeline();
+	//createGraphicsPipeline(); //TODO nxt
 
 	createDepthResources();
 	createFramebuffers();
@@ -179,8 +179,8 @@ void Engine::cleanupSwapChain() {
 	vkDestroyImageView(graphics.LD, depthImageView, nullptr);		//Destroy depth image view
 	vkFreeMemory(graphics.LD, depthImageMemory, nullptr);			//Free depth image memory
 
-	vkDestroyPipeline(graphics.LD, graphicsPipeline, nullptr);		//Destroy pipeline
-	vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);	//Destroy pipeline layout
+	//vkDestroyPipeline(graphics.LD, graphicsPipeline, nullptr);		//Destroy pipeline
+	//vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);	//Destroy pipeline layout
 	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
 
 	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				//Destroy framebuffers
