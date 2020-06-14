@@ -364,7 +364,7 @@ private:
 	VkDeviceMemory depthImageMemory;
 
 	//Descriptors
-	VkDescriptorSetLayout descriptorSetLayout;
+	//VkDescriptorSetLayout descriptorSetLayout;
 	//VkDescriptorPool descriptorPool;
 	//LuxArray<VkDescriptorSet> descriptorSets;
 
@@ -431,7 +431,7 @@ private:
 	void createFramebuffers();
 
 	//void createDescriptorPool();
-	void createDescriptorSetLayout();
+	//void createDescriptorSetLayout();
 	//void createDescriptorSets();
 
 

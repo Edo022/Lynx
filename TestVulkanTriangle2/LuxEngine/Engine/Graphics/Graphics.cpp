@@ -29,7 +29,7 @@ void Engine::initVulkan() {
 	createTextureSampler();
 
 	//Create swapchain render components
-	createDescriptorSetLayout();
+	//createDescriptorSetLayout();
 	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
 	createSyncObjects();
 }
@@ -161,7 +161,7 @@ void Engine::cleanupGraphics() {
 	cleanupSwapChain();																//Clear swapchain components
 
 	vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler
-	vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);		//Destroy descriptor set layout
+	//vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);		//Destroy descriptor set layout
 	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);				//Destroy graphics command pool
 
 	vkDestroyImage(graphics.LD, textureImage, nullptr);								//Destroy texture image
