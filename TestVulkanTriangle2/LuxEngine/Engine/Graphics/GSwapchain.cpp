@@ -78,11 +78,11 @@ void Engine::createImageViews() {
 
 
 
-void Engine::createDepthResources() {
-	VkFormat depthFormat = findDepthFormat();
-	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
-	depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
-}
+//void Engine::createDepthResources() {
+//	VkFormat depthFormat = findDepthFormat();
+//	createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+//	depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+//}
 
 
 
@@ -158,7 +158,7 @@ void Engine::createSwapChain() {
 
 	//createGraphicsPipeline(); //TODO nxt
 
-	createDepthResources();
+	//createDepthResources();
 	createFramebuffers();
 
 	//createDescriptorPool();
@@ -175,9 +175,9 @@ void Engine::createSwapChain() {
 
 
 void Engine::cleanupSwapChain() {
-	vkDestroyImage(graphics.LD, depthImage, nullptr);				//Destroy depth image
-	vkDestroyImageView(graphics.LD, depthImageView, nullptr);		//Destroy depth image view
-	vkFreeMemory(graphics.LD, depthImageMemory, nullptr);			//Free depth image memory
+	//vkDestroyImage(graphics.LD, depthImage, nullptr);				//Destroy depth image
+	//vkDestroyImageView(graphics.LD, depthImageView, nullptr);		//Destroy depth image view
+	//vkFreeMemory(graphics.LD, depthImageMemory, nullptr);			//Free depth image memory
 
 	//vkDestroyPipeline(graphics.LD, graphicsPipeline, nullptr);		//Destroy pipeline
 	//vkDestroyPipelineLayout(graphics.LD, pipelineLayout, nullptr);	//Destroy pipeline layout

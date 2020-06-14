@@ -359,9 +359,9 @@ private:
 	//VkSampler textureSampler;
 
 	//Images
-	VkImage depthImage;
-	VkImageView depthImageView;
-	VkDeviceMemory depthImageMemory;
+	//VkImage depthImage;
+	//VkImageView depthImageView;
+	//VkDeviceMemory depthImageMemory;
 
 	//Descriptors
 	//VkDescriptorSetLayout descriptorSetLayout;
@@ -403,7 +403,7 @@ private:
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	void createImageViews();
-	void createDepthResources();
+	//void createDepthResources();
 	void cleanupSwapChain();
 
 
