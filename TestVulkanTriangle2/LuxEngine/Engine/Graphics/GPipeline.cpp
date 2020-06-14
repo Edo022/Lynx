@@ -158,27 +158,28 @@ void Engine::createRenderPass() {
 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;			//Optimal layout for better performances
 
 
-	//Depth
-	VkAttachmentDescription depthAttachment{};
-	depthAttachment.format = findDepthFormat();										//Attachment format
-	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
-	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO don't clear. better performances //TODO bug when not clearing
-	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;						//Discard the image after being rendered
-	depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
-	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
-	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
-	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;	//Optimal layout for better performances
-	//create Ref
-	VkAttachmentReference depthAttachmentRef{};
-	depthAttachmentRef.attachment = 1;
-	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	////Depth
+	//VkAttachmentDescription depthAttachment{};
+	//depthAttachment.format = findDepthFormat();										//Attachment format
+	//depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
+	//depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO don't clear. better performances //TODO bug when not clearing
+	//depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;						//Discard the image after being rendered
+	//depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
+	//depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
+	//depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
+	//depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;	//Optimal layout for better performances
+	////create Ref
+	//VkAttachmentReference depthAttachmentRef{};
+	//depthAttachmentRef.attachment = 1;
+	//depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 	//Subpass
 	VkSubpassDescription subpass{};													//Create subpass descriptor
 	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;					//Set structure type
 	subpass.colorAttachmentCount = 1;												//Set number of attachments
 	subpass.pColorAttachments = &colorAttachmentRef;								//Previously created color attachment
-	subpass.pDepthStencilAttachment = &depthAttachmentRef;							//Previously created depth attachment
+	subpass.pDepthStencilAttachment = VK_NULL_HANDLE;							//Previously created depth attachment
+	//subpass.pDepthStencilAttachment = &depthAttachmentRef;							//Previously created depth attachment
 
 
 
@@ -202,11 +203,13 @@ void Engine::createRenderPass() {
 
 
 	//Render pass
-	VkAttachmentDescription attachments[] = { colorAttachment, depthAttachment };
+	//VkAttachmentDescription attachments[] = { colorAttachment, depthAttachment };
 	VkRenderPassCreateInfo renderPassInfo{};										//Create render pass infos
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;				//Set structure type
-	renderPassInfo.attachmentCount = 2;												//Set number of attachments
-	renderPassInfo.pAttachments = attachments;										//Set attachments
+	renderPassInfo.attachmentCount = 1;												//Set number of attachments
+	renderPassInfo.pAttachments = &colorAttachment;										//Set attachments
+	//renderPassInfo.attachmentCount = 2;												//Set number of attachments
+	//renderPassInfo.pAttachments = attachments;										//Set attachments
 	renderPassInfo.subpassCount = 1;												//Set number of subpasses
 	renderPassInfo.pSubpasses = &subpass;											//Set subpass
 	renderPassInfo.dependencyCount = 2;												//Set number of dependencies
@@ -223,15 +226,17 @@ void Engine::createFramebuffers() {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	for (uint64 i = 0; i < swapChainImageViews.size(); i++) {
-		LuxMap<VkImageView> attachments(2, 2);
-		attachments.add(swapChainImageViews[i]);
-		attachments.add(depthImageView);
+		//LuxMap<VkImageView> attachments(2, 2);
+		//attachments.add(swapChainImageViews[i]);
+		////attachments.add(depthImageView);
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = sc<uint32>(attachments.size());
-		framebufferInfo.pAttachments = attachments.data(0);
+		framebufferInfo.attachmentCount = 1;
+		framebufferInfo.pAttachments = &swapChainImageViews[i];
+		//framebufferInfo.attachmentCount = sc<uint32>(attachments.size());
+		//framebufferInfo.pAttachments = attachments.data(0);
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;

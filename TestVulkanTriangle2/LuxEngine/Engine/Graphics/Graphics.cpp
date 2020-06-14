@@ -24,9 +24,9 @@ void Engine::initVulkan() {
 	/**/												 			createDebugMessenger();
 
 	//Create textures
-	createTextureImage();
-	createTextureImageView();
-	createTextureSampler();
+	//createTextureImage();
+	//createTextureImageView();
+	//createTextureSampler();
 
 	//Create swapchain render components
 	//createDescriptorSetLayout();
@@ -160,13 +160,13 @@ void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 he
 void Engine::cleanupGraphics() {
 	cleanupSwapChain();																//Clear swapchain components
 
-	vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler
+	//vkDestroySampler(graphics.LD, textureSampler, nullptr);							//Destroy sampler
 	//vkDestroyDescriptorSetLayout(graphics.LD, descriptorSetLayout, nullptr);		//Destroy descriptor set layout
 	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);				//Destroy graphics command pool
 
-	vkDestroyImage(graphics.LD, textureImage, nullptr);								//Destroy texture image
-	vkDestroyImageView(graphics.LD, textureImageView, nullptr);						//Destroy texture image view
-	vkFreeMemory(graphics.LD, textureImageMemory, nullptr);							//Free texture image memory
+	//vkDestroyImage(graphics.LD, textureImage, nullptr);								//Destroy texture image
+	//vkDestroyImageView(graphics.LD, textureImageView, nullptr);						//Destroy texture image view
+	//vkFreeMemory(graphics.LD, textureImageMemory, nullptr);							//Free texture image memory
 
 	//vkDestroyBuffer(graphics.LD, vertexBuffer, nullptr);							//Destroy vertex buffer
 	//vkFreeMemory(graphics.LD, vertexBufferMemory, nullptr);							//Free vertex buffer memory

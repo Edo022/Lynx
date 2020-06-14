@@ -353,10 +353,10 @@ public:
 
 private:
 	//Textures
-	VkImage textureImage;
-	VkImageView textureImageView;
-	VkDeviceMemory textureImageMemory;
-	VkSampler textureSampler;
+	//VkImage textureImage;
+	//VkImageView textureImageView;
+	//VkDeviceMemory textureImageMemory;
+	//VkSampler textureSampler;
 
 	//Images
 	VkImage depthImage;
@@ -408,9 +408,9 @@ private:
 
 
 	//Graphics textures and images >> Graphics/GImages.cpp
-	void createTextureImage();
-	void createTextureImageView();
-	void createTextureSampler();
+	//void createTextureImage();
+	//void createTextureImageView();
+	//void createTextureSampler();
 
 	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);

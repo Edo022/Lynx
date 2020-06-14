@@ -50,7 +50,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		region.imageSubresource.baseArrayLayer = 0;
 		region.imageSubresource.layerCount = 1;
 		region.imageOffset = { 0, 0, 0 };
-		region.imageExtent = { WIDTH, HEIGHT, 1 };
+		region.imageExtent = { swapChainExtent.width, swapChainExtent.height, 1 };
 
 		transitionImageLayout(swapChainImages[imgIndex], VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 		if (CGpuBuffers.isValid(0)) vkCmdCopyBufferToImage(CShaders[CShader].commandBuffers[imgIndex], CGpuBuffers[0].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_UNDEFINED, 1, &region);
