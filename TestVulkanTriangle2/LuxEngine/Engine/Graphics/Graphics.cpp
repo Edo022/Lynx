@@ -83,6 +83,7 @@ void Engine::createDebugMessenger() {
 void Engine::drawFrame() {
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+	if (framebufferResized) goto 	recreateSwapchain_;
 
 
 
@@ -114,7 +115,9 @@ void Engine::drawFrame() {
 	//TODO remove old geometry command buffers
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
-	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit draw command buffer");
+	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) {
+		Quit("Failed to submit graphics command buffer");
+	}
 
 
 	//Present

@@ -141,80 +141,80 @@
 
 
 
-//void Engine::createRenderPass() {
-//	//Color
-//	VkAttachmentDescription colorAttachment{};
-//	colorAttachment.format = swapChainImageFormat;									//Swapchain image format
-//	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
-//	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO dont clear for better performances //TODO bug when not clearing
-//	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;							//Save rendered image
-//	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
-//	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
-//	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
-//	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Presentation layout
-//	//create Ref
-//	VkAttachmentReference colorAttachmentRef{};
-//	colorAttachmentRef.attachment = 0;												//Attachment index
-//	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;			//Optimal layout for better performances
-//
-//
-//	//Depth
-//	VkAttachmentDescription depthAttachment{};
-//	depthAttachment.format = findDepthFormat();										//Attachment format
-//	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
-//	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO don't clear. better performances //TODO bug when not clearing
-//	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;						//Discard the image after being rendered
-//	depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
-//	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
-//	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
-//	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;	//Optimal layout for better performances
-//	//create Ref
-//	VkAttachmentReference depthAttachmentRef{};
-//	depthAttachmentRef.attachment = 1;
-//	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-//
-//	//Subpass
-//	VkSubpassDescription subpass{};													//Create subpass descriptor
-//	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;					//Set structure type
-//	subpass.colorAttachmentCount = 1;												//Set number of attachments
-//	subpass.pColorAttachments = &colorAttachmentRef;								//Previously created color attachment
-//	subpass.pDepthStencilAttachment = &depthAttachmentRef;							//Previously created depth attachment
-//
-//
-//
-//	VkSubpassDependency dependencies[2];											//Dependencies for implicit convertion
-//	//From undefined to color
-//	dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
-//	dependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-//	dependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-//	dependencies[0].dstSubpass = 0;
-//	dependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-//	dependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-//	dependencies[0].dependencyFlags = 0;												//Default
-//	//From color to undefined
-//	dependencies[1].srcSubpass = 0;
-//	dependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-//	dependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-//	dependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
-//	dependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-//	dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
-//	dependencies[1].dependencyFlags = 0;												//Default
-//
-//
-//	//Render pass
-//	VkAttachmentDescription attachments[] = { colorAttachment, depthAttachment };
-//	VkRenderPassCreateInfo renderPassInfo{};										//Create render pass infos
-//	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;				//Set structure type
-//	renderPassInfo.attachmentCount = 2;												//Set number of attachments
-//	renderPassInfo.pAttachments = attachments;										//Set attachments
-//	renderPassInfo.subpassCount = 1;												//Set number of subpasses
-//	renderPassInfo.pSubpasses = &subpass;											//Set subpass
-//	renderPassInfo.dependencyCount = 2;												//Set number of dependencies
-//	renderPassInfo.pDependencies = dependencies;									//Set dependencies
-//
-//	//Create render pass. Exit if an error occurs
-//	Try(vkCreateRenderPass(graphics.LD, &renderPassInfo, nullptr, &renderPass)) Quit("Failed to create render pass");
-//}
+void Engine::createRenderPass() {
+	//Color
+	VkAttachmentDescription colorAttachment{};
+	colorAttachment.format = swapChainImageFormat;									//Swapchain image format
+	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO dont clear for better performances //TODO bug when not clearing
+	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;							//Save rendered image
+	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
+	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
+	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
+	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Presentation layout
+	//create Ref
+	VkAttachmentReference colorAttachmentRef{};
+	colorAttachmentRef.attachment = 0;												//Attachment index
+	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;			//Optimal layout for better performances
+
+
+	//Depth
+	VkAttachmentDescription depthAttachment{};
+	depthAttachment.format = findDepthFormat();										//Attachment format
+	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
+	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO don't clear. better performances //TODO bug when not clearing
+	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;						//Discard the image after being rendered
+	depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
+	depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
+	depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
+	depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;	//Optimal layout for better performances
+	//create Ref
+	VkAttachmentReference depthAttachmentRef{};
+	depthAttachmentRef.attachment = 1;
+	depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+	//Subpass
+	VkSubpassDescription subpass{};													//Create subpass descriptor
+	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;					//Set structure type
+	subpass.colorAttachmentCount = 1;												//Set number of attachments
+	subpass.pColorAttachments = &colorAttachmentRef;								//Previously created color attachment
+	subpass.pDepthStencilAttachment = &depthAttachmentRef;							//Previously created depth attachment
+
+
+
+	VkSubpassDependency dependencies[2];											//Dependencies for implicit convertion
+	//From undefined to color
+	dependencies[0].srcSubpass = VK_SUBPASS_EXTERNAL;
+	dependencies[0].srcStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+	dependencies[0].srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+	dependencies[0].dstSubpass = 0;
+	dependencies[0].dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependencies[0].dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	dependencies[0].dependencyFlags = 0;												//Default
+	//From color to undefined
+	dependencies[1].srcSubpass = 0;
+	dependencies[1].srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependencies[1].srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	dependencies[1].dstSubpass = VK_SUBPASS_EXTERNAL;
+	dependencies[1].dstStageMask = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+	dependencies[1].dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+	dependencies[1].dependencyFlags = 0;												//Default
+
+
+	//Render pass
+	VkAttachmentDescription attachments[] = { colorAttachment, depthAttachment };
+	VkRenderPassCreateInfo renderPassInfo{};										//Create render pass infos
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;				//Set structure type
+	renderPassInfo.attachmentCount = 2;												//Set number of attachments
+	renderPassInfo.pAttachments = attachments;										//Set attachments
+	renderPassInfo.subpassCount = 1;												//Set number of subpasses
+	renderPassInfo.pSubpasses = &subpass;											//Set subpass
+	renderPassInfo.dependencyCount = 2;												//Set number of dependencies
+	renderPassInfo.pDependencies = dependencies;									//Set dependencies
+
+	//Create render pass. Exit if an error occurs
+	Try(vkCreateRenderPass(graphics.LD, &renderPassInfo, nullptr, &renderPass)) Quit("Failed to create render pass");
+}
 
 
 

@@ -154,7 +154,7 @@ void Engine::createSwapChain() {
 
 
 	createImageViews();
-	//createRenderPass();
+	createRenderPass();
 
 	//createGraphicsPipeline(); //TODO nxt
 
@@ -203,5 +203,15 @@ void Engine::recreateSwapChain() {
 		vkDeviceWaitIdle(graphics.LD);
 		cleanupSwapChain();
 		createSwapChain();
+
+		CGpuBuffers.remove(0);
+		CGpuBuffers.remove(1);
+		CShaders.remove(0);
+
+		LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+		LuxCell vertices = createGpuBuffer(4);
+		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
+		newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
+
 	}
 }

@@ -427,7 +427,7 @@ private:
 
 	//Graphics render and descriptors >> Graphics/GPipeline.cpp
 	//void createGraphicsPipeline();
-	//void createRenderPass();
+	void createRenderPass();
 	void createFramebuffers();
 
 	//void createDescriptorPool();
