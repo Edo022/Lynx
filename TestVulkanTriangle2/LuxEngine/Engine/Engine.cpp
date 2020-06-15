@@ -119,7 +119,7 @@ void Engine::createInstance() {
 	for (const char* layerName : validationLayers) {										//For every layer,
 		for (const auto& layerProperties : availableLayers) {									//Check if it's available
 			if (strcmp(layerName, layerProperties.layerName) == 0) break;
-			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Quit("Validation layers not available. Cannot run in debug mode");
+			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
 		}
 	}
 
@@ -133,7 +133,7 @@ void Engine::createInstance() {
 
 
 	//Create instance
-	Try(vkCreateInstance(&createInfo, nullptr, &instance)) Quit("Failed to create instance");
+	Try(vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
 }
 
 
@@ -205,7 +205,7 @@ VkShaderModule Engine::createShaderModule(VkDevice device, uint32* code, uint32*
 	createInfo.pCode = code;											//Set the shader code
 
 	VkShaderModule shaderModule;										//Create the shader module
-	Try(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)) Quit("Failed to create shader module");
+	Try(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
 	return shaderModule;												//Return the created shader module
 }
 
@@ -225,7 +225,7 @@ void Engine::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags
 	bufferInfo.size = size;
 	bufferInfo.usage = usage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	Try(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer)) Quit("Failed to create buffer");
+	Try(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer)) Exit("Failed to create buffer");
 
 	VkMemoryRequirements memRequirements;
 	vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -235,6 +235,6 @@ void Engine::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-	Try(vkAllocateMemory(device, &allocInfo, nullptr, &memory)) Quit("Failed to allocate buffer memory");
-	Try(vkBindBufferMemory(device, buffer, memory, 0)) Quit("Failed to bind buffer");
+	Try(vkAllocateMemory(device, &allocInfo, nullptr, &memory)) Exit("Failed to allocate buffer memory");
+	Try(vkBindBufferMemory(device, buffer, memory, 0)) Exit("Failed to bind buffer");
 }

@@ -130,7 +130,7 @@ void Engine::createSwapChain() {
 
 
 	//Create swapchain
-	Try(vkCreateSwapchainKHR(graphics.LD, &createInfo, nullptr, &swapChain)) Quit("Failed to create swapchain");
+	Try(vkCreateSwapchainKHR(graphics.LD, &createInfo, nullptr, &swapChain)) Exit("Failed to create swapchain");
 
 
 	//Save data

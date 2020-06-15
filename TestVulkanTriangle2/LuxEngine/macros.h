@@ -19,7 +19,7 @@
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
 #define Try(f)				if (f != VK_SUCCESS)
-#define Quit(s)				{Failure printf("\n%s\n", s); Normal system("pause"); exit(-1);}
+#define Exit(s)				{Failure printf("\nError:\nFile %s\nFunction %s, line %d:\n\n\"%s\"\n", __FILE__, __func__, __LINE__, s); Normal system("pause"); exit(-1);} //TODO dont use additional infos in release
 #define luxDebug(s)			s
 #define luxRelease()		;
 

@@ -31,14 +31,14 @@ void Engine::initVulkan() {
 
 
 inline void Engine::createSurface() {
-	Try(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Quit("Failed to create window surface");
+	Try(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Exit("Failed to create window surface");
 }
 
 
 void Engine::createDebugMessenger() {
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;
 	populateDebugMessengerCreateInfo(createInfo);
-	Try(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Quit("Failed to set up debug messenger");
+	Try(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
 }
 
 
@@ -62,7 +62,7 @@ void Engine::createSyncObjects() {
 		if (vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
 			vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
 			vkCreateFence(graphics.LD, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
-			Quit("Failed to create synchronization objects for a frame");
+			Exit("Failed to create synchronization objects for a frame");
 		}
 	}
 }
@@ -88,7 +88,7 @@ void Engine::drawFrame() {
 	switch (vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex)) {
 		case VK_SUBOPTIMAL_KHR: case VK_SUCCESS: break;
 		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(); return;
-		default: Quit("Failed to acquire swapchain image");
+		default: Exit("Failed to acquire swapchain image");
 	}
 	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
 	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
@@ -110,7 +110,7 @@ void Engine::drawFrame() {
 	submitInfo.pWaitDstStageMask = waitStages;
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
-	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Quit("Failed to submit graphics command buffer");
+	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Exit("Failed to submit graphics command buffer");
 
 
 	//Present
@@ -132,7 +132,7 @@ void Engine::drawFrame() {
 			luxDebug(printf("Recreated swapchain\n"));
 			break;
 		}
-		default: Quit("Failed to present swapchain image");
+		default: Exit("Failed to present swapchain image");
 	}
 
 	//Update frame number
@@ -188,7 +188,7 @@ VkFormat Engine::findSupportedFormat(LuxArray<VkFormat> candidates, VkImageTilin
 			return format;
 		}
 	}
-	Quit("Failed to find a supported format");
+	Exit("Failed to find a supported format");
 }
 
 
@@ -202,7 +202,7 @@ uint32 Engine::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags propertie
 	for (uint32 i = 0; i < memProperties.memoryTypeCount; i++) {			//Search for the memory that has the specified properties and type and return its index
 		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) return i;
 	}
-	Quit("Failed to find suitable memory type");
+	Exit("Failed to find suitable memory type");
 }
 
 

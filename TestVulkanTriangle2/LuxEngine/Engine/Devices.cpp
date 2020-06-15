@@ -103,7 +103,7 @@ void Engine::getPhysicalDevices() {
 
 	//Get physical devices
 	vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-	if (deviceCount == 0) Quit("Failed to find GPUs with Vulkan support")
+	if (deviceCount == 0) Exit("Failed to find GPUs with Vulkan support")
 	else {
 		//Get physical devices
 		LuxArray<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
@@ -159,7 +159,7 @@ void Engine::getPhysicalDevices() {
 			if (sameDevice(physDev, compute.PD)) printf("  |  Main compute");
 		}
 	}
-	else Quit("Failed to find a suitable GPU");
+	else Exit("Failed to find a suitable GPU");
 
 
 
@@ -265,5 +265,5 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 			}
 		}
 	}
-	else Quit("Failed to create logical device");
+	else Exit("Failed to create logical device");
 }

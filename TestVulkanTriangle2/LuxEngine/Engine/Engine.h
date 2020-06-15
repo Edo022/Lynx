@@ -16,6 +16,7 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 #include <glm/glm.hpp>						//Shader compatible geometry
 
+//#ifdef LUX_DEBUG //TODO remove
 
 //Default C++
 #include <iostream>
@@ -25,6 +26,7 @@
 #include <vector>
 #include <thread>
 #include <set>
+//#endif //TODO remove
 
 #include <cmath>
 #include <string>
