@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning(disable : 4005) //Macro referinition
+#pragma warning(disable : 4002) //Too many arguments in luxDebug and luxRelease
 
 
 
@@ -65,3 +67,9 @@ static int64_t pow_(int64_t b, int64_t e) {
 	}
 	return r;
 }
+
+
+
+
+#pragma warning(default : 4005) //Macro referinition
+//#pragma warning(default : 4002) //Too many arguments in luxDebug and luxRelease

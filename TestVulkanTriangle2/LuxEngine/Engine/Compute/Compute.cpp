@@ -76,7 +76,7 @@ int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
 //*   Returns the buffer's index in the array. -1 if an error occurs
 LuxCell Engine::createGpuBuffer(uint64 size){
 	_LuxCell buffer;
-	buffer.size = size;
+	buffer.size = sc<uint32>(size);
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
 	return buffer.ID = CGpuBuffers.add(buffer);
 }

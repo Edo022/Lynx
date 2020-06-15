@@ -15,7 +15,7 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<LuxCell> bufferIndices
 	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(bufferIndices.size());
 	forEach(bufferIndices, i) {
 		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
-		descriptorSetLayoutBinding.binding = i;													//Set the binding point in the shader
+		descriptorSetLayoutBinding.binding = sc<uint32>(i);										//Set the binding point in the shader
 		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
 		descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
 		descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;					//Use it in the compute stage
@@ -24,7 +24,7 @@ void Engine::CShader_create_descriptorSetLayouts(LuxArray<LuxCell> bufferIndices
 
 	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};						//This structure contains all the descriptors of the bindings that will be used by the shader
 	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Set structure type
-	descriptorSetLayoutCreateInfo.bindingCount = descriptorSetLayoutBindings.size();			//Set number of binding points
+	descriptorSetLayoutCreateInfo.bindingCount = sc<uint32>(descriptorSetLayoutBindings.size());			//Set number of binding points
 	descriptorSetLayoutCreateInfo.pBindings = (new LuxArray<VkDescriptorSetLayoutBinding>(descriptorSetLayoutBindings))->data(); //Set descriptors to bind
 
 	//Create the descriptor set layout
@@ -40,7 +40,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		VkDescriptorPoolSize descriptorPoolSize = {};
 		descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-		descriptorPoolSize.descriptorCount = bufferIndices.size();
+		descriptorPoolSize.descriptorCount = sc<uint32>(bufferIndices.size());
 
 		//This struct contains the informations about the descriptor pool. a descriptor pool contains the descriptor sets
 		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
@@ -74,7 +74,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 			VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
 			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
 			writeDescriptorSet.dstSet =CShaders[CShader].descriptorSet;							//Set descriptor set
-			writeDescriptorSet.dstBinding = i;													//Set binding
+			writeDescriptorSet.dstBinding = sc<uint32>(i);										//Set binding
 			writeDescriptorSet.descriptorCount = 1;												//Set number of descriptors
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
 			writeDescriptorSet.pBufferInfo = new VkDescriptorBufferInfo(descriptorBufferInfo);	//Set descriptor buffer info
