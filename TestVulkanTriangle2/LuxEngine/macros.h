@@ -2,7 +2,7 @@
 
 
 
-//#include <chrono>
+#include <chrono>
 //#include <thread>
 #define sleep(ms)			std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 //#define Sleep(ms)			sleep(ms) //UwU use "sleep(ms)" instead of this
@@ -20,12 +20,12 @@
 
 #define Try(f)				if (f != VK_SUCCESS)
 #define Quit(s)				{Failure printf("\n%s\n", s); Normal system("pause"); exit(-1);}
-#define LuxDebug(s)			s
-#define LuxRelease()		;
+#define luxDebug(s)			s
+#define luxRelease()		;
 
 #ifndef LUX_DEBUG
-#define LuxDebug()			;
-#define LuxRelease(s)		s
+#define luxDebug()			;
+#define luxRelease(s)		s
 #endif
 
 
@@ -43,9 +43,9 @@
 
 //time
 //#include <chrono>
-#define stdTime				std::chrono::system_clock::time_point
-#define stdDuration			std::chrono::duration<double>
-#define stdNow				std::chrono::system_clock::now()
+typedef std::chrono::system_clock::time_point LuxTime;
+#define luxGetTime()				std::chrono::system_clock::now()
+#define luxTimeGetDuration(start)	((sc<std::chrono::duration<double>>(luxGetTime() - start)).count())
 
 
 //Calculates the square root of a float number. Sometimes this function is slightly slower than math.h sqrt function

@@ -6,11 +6,11 @@
 void Engine::runGraphics(bool _useVSync, float _FOV) {
 	useVSync = _useVSync;
 	FOV = _FOV;
-	stdTime start = stdNow;
+	LuxTime start = luxGetTime();
 
-	LuxDebug(Failure printf("D E B U G    M O D E");)										MainSeparator;
-	Normal  printf("Initializing Vulkan");							initVulkan();		MainSeparator;
-	Success printf("Initialization completed in %f s", (sc<stdDuration>(stdNow - start)).count());
+	luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
+	Normal  printf("Initializing Vulkan");							initVulkan();						MainSeparator;
+	Success printf("Initialization completed in %f s", luxTimeGetDuration(start));
 }
 
 
@@ -19,20 +19,28 @@ void Engine::runGraphics(bool _useVSync, float _FOV) {
 void Engine::initVulkan() {
 	//Initialize vulkan
 	Normal printf("    Creating VK Surface...               ");		createSurface();					SuccessNoNl printf("ok");	NewLine;
-	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();				NewLine;
+	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();											NewLine;
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
-	/**/												 			LuxDebug(createDebugMessenger();)
-
 	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
+
+	luxDebug(createDebugMessenger());
 	createSyncObjects();
 }
 
 
 
 
-void Engine::createSurface() {
+inline void Engine::createSurface() {
 	Try(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Quit("Failed to create window surface");
 }
+
+
+void Engine::createDebugMessenger() {
+	VkDebugUtilsMessengerCreateInfoEXT createInfo;
+	populateDebugMessengerCreateInfo(createInfo);
+	Try(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Quit("Failed to set up debug messenger");
+}
+
 
 
 
@@ -62,23 +70,16 @@ void Engine::createSyncObjects() {
 
 
 
-void Engine::createDebugMessenger() {
-	//LuxRelease(return);
-
-	VkDebugUtilsMessengerCreateInfoEXT createInfo;
-	populateDebugMessengerCreateInfo(createInfo);
-	Try(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Quit("Failed to set up debug messenger");
-}
 
 
 
 void Engine::drawFrame() {
 	//TODO create separated command buffer
 
-
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 	if (framebufferResized) goto recreateSwapchain_;
+	
 
 
 
@@ -128,6 +129,7 @@ void Engine::drawFrame() {
 			framebufferResized = false;
 			recreateSwapChain();
 			vkDeviceWaitIdle(graphics.LD);
+			luxDebug(printf("Recreated swapchain\n"));
 			break;
 		}
 		default: Quit("Failed to present swapchain image");
@@ -135,6 +137,7 @@ void Engine::drawFrame() {
 
 	//Update frame number
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+	glfwSwapBuffers(window);
 }
 
 
@@ -163,7 +166,7 @@ void Engine::cleanupGraphics() {
 	vkDestroyDevice(compute.LD, nullptr);																			//Destroy the compute device
 	for (auto device : secondary) vkDestroyDevice(device.LD, nullptr);													//Destroy all the secondary devices
 
-	LuxDebug(DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));					//Destroy the debug messenger if present
+	luxDebug(DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));					//Destroy the debug messenger if present
 	vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface
 }
 

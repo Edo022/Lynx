@@ -57,7 +57,7 @@
 
 
 
-// LuxDebug, structures and macros -------------------------------------------------------------------------------------------------------------//
+//Structures and macros -------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -66,7 +66,7 @@
 
 
 
-//LuxDebug. It's dark magic, idk why or how it works, but it does
+//It's dark magic, idk why or how it works, but it does
 static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
 	if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
@@ -86,13 +86,6 @@ struct SwapChainSupportDetails {
 
 
 
-
-#define findDepthFormat()																	\
-	findSupportedFormat(																	\
-		{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },\
-		VK_IMAGE_TILING_OPTIMAL,															\
-		VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT										\
-	);
 
 //Dark magic
 #define populateDebugMessengerCreateInfo(createInfo)\
@@ -301,7 +294,7 @@ private:
 
 
 	//Main >> this
-	void mainLoop();		void FPSCounter();
+	void mainLoop();		void FPSCounter();     void render();
 	void initWindow();		void createInstance();
 
 	//Devices >> Devices.cpp
@@ -352,7 +345,7 @@ private:
 	LuxArray<VkFence> imagesInFlight;
 	int64 currentFrame = 0;
 
-	//LuxDebug and validation layers data
+	//debug and validation layers data
 	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
 	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 

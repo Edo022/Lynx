@@ -42,22 +42,29 @@ void Engine::run(bool _useVSync, float _FOV) {
 
 void Engine::mainLoop() {
 	std::thread FPSCounterThr(&Engine::FPSCounter, this);
+	std::thread renderThr(&Engine::render, this);
 	FPSCounterThr.detach();
+	renderThr.detach();
 	__lp_initialized = true;
 
 	while (!glfwWindowShouldClose(window)) {
-
 		glfwPollEvents();
-		drawFrame();
 
 
 		//TODO full screen
-
-		frame++;
 	}
 	running = false;
 	vkDeviceWaitIdle(graphics.LD);
 }
+
+
+void Engine::render() {
+	while (running) {
+		drawFrame();
+		frame++;
+	}
+}
+
 
 
 void Engine::FPSCounter() {
@@ -94,7 +101,7 @@ void Engine::createInstance() {
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array
-	LuxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
+	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
 	createInfo.enabledExtensionCount = sc<uint32>(extensions.size());						//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
 
