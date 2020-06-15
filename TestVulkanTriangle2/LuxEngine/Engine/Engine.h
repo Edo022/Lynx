@@ -16,19 +16,23 @@ extern double* __lp_coth;
 extern double* __lp_sech;
 extern double* __lp_csch;
 
-#define FSin(degree) *(__lp_sin+(degree*1000)) //Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCos(degree) *(__lp_cos+(degree*1000)) //Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FTan(degree) *(__lp_tan+(degree*1000)) //Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCot(degree) *(__lp_cot+(degree*1000)) //Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FSec(degree) *(__lp_sec+(degree*1000)) //Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCsc(degree) *(__lp_csc+(degree*1000)) //Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FSinh(degree) *(__lp_sinh+(degree*1000) //Fast sinh function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCosh(degree) *(__lp_cosh+(degree*1000) //Fast cosh function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FTanh(degree) *(__lp_tanh+(degree*1000) //Fast tanh function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCoth(degree) *(__lp_coth+(degree*1000) //Fast coth function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FSech(degree) *(__lp_sech+(degree*1000) //Fast sech function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCsch(degree) *(__lp_csch+(degree*1000) //Fast csch function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//-0,99026806874157031508377486734485
+#define luxSign(n) ((n > 0) - (n < 0)) //-1 if the number is negative, +1 if it's positive or 0
+#define luxAbs(n) (~n + 1)
 
+//TODO fix. idk what, it's fucked up
+#define FSin(n) (luxSign(n) * __lp_sin[luxAbs(n % 360 * 1000)])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCos(n) __lp_cos[luxAbs(n) % 360 * 1000]					//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FTan(n) (luxSign(n) * __lp_tan[luxAbs(n % 360 * 1000)])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCot(n) (luxSign(n) * __lp_cot[luxAbs(n % 360 * 1000)])		//Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSec(n) __lp_sec[luxAbs(n) % 360 * 1000]					//Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCsc(n) (luxSign(n) * __lp_csc[luxAbs(n % 360 * 1000)])		//Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSinh(n) _(luxSign(n) * _lp_sinh[luxAbs(n % 360 * 1000)])	//Fast sinh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCosh(n) _(luxSign(n) * _lp_cosh[luxAbs(n % 360 * 1000)])	//Fast cosh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FTanh(n) _(luxSign(n) * _lp_tanh[luxAbs(n % 360 * 1000)])	//Fast tanh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCoth(n) _(luxSign(n) * _lp_coth[luxAbs(n % 360 * 1000)])	//Fast coth function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSech(n) _(luxSign(n) * _lp_sech[luxAbs(n % 360 * 1000)])	//Fast sech function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCsch(n) _(luxSign(n) * _lp_csch[luxAbs(n % 360 * 1000)])	//Fast csch function that uses a pre-calculated value to improve performance. 0.001 deg precision
 
 
 

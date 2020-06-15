@@ -58,6 +58,7 @@ int main() {
 
 
 	while (engine->running) {
+		printf("%lf\n", FCos(-573289));
 		sleep(1);
 		__noop;
 	}

@@ -24,7 +24,7 @@
 static void LuxInit(bool useVSync = true) {
 	static Engine engine;
 	__lp_luxInit(&engine, useVSync);
-	for (int i = 0; i < 360 * 1000; i++) {
+	for (int i = 0; i < 360000; i++) {
 		#define j ((double)i * (3.1415926535897932 / 180)) / 1000
 		*(__lp_sin + i) = sin(j);
 		*(__lp_cos + i) = cos(j);
