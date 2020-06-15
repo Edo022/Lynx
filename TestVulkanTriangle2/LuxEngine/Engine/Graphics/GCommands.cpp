@@ -13,7 +13,7 @@ void Engine::createGraphicsCommandPool() {
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.queueFamilyIndex = graphics.PD.indices.graphicsFamily;
 
-	Try(vkCreateCommandPool(graphics.LD, &poolInfo, nullptr, &graphicsCommandPool)) Exit("Failed to create graphics command pool");
+	TryVk(vkCreateCommandPool(graphics.LD, &poolInfo, nullptr, &graphicsCommandPool)) Exit("Failed to create graphics command pool");
 }
 
 

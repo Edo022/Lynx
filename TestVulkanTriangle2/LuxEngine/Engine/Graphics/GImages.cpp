@@ -35,7 +35,7 @@ void Engine::createImage(uint32 width, uint32 height, VkFormat format, VkImageTi
 	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	imageInfo.flags = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT;
 
-	Try(vkCreateImage(graphics.LD, &imageInfo, nullptr, &image)) Exit("Failed to create image");
+	TryVk(vkCreateImage(graphics.LD, &imageInfo, nullptr, &image)) Exit("Failed to create image");
 
 	VkMemoryRequirements memRequirements;
 	vkGetImageMemoryRequirements(graphics.LD, image, &memRequirements);
@@ -45,7 +45,7 @@ void Engine::createImage(uint32 width, uint32 height, VkFormat format, VkImageTi
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-	Try(vkAllocateMemory(graphics.LD, &allocInfo, nullptr, &imageMemory)) Exit("Failed to allocate image memory");
+	TryVk(vkAllocateMemory(graphics.LD, &allocInfo, nullptr, &imageMemory)) Exit("Failed to allocate image memory");
 	vkBindImageMemory(graphics.LD, image, imageMemory, 0);
 }
 
@@ -69,7 +69,7 @@ VkImageView Engine::createImageView(VkImage image, VkFormat format, VkImageAspec
 	viewInfo.subresourceRange.layerCount = 1;
 
 	VkImageView imageView = VK_NULL_HANDLE;
-	Try(vkCreateImageView(graphics.LD, &viewInfo, nullptr, &imageView)) Exit("Failed to create texture image view");
+	TryVk(vkCreateImageView(graphics.LD, &viewInfo, nullptr, &imageView)) Exit("Failed to create texture image view");
 	return imageView;
 }
 

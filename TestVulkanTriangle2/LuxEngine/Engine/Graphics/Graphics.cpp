@@ -31,14 +31,14 @@ void Engine::initVulkan() {
 
 
 inline void Engine::createSurface() {
-	Try(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Exit("Failed to create window surface");
+	TryVk(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Exit("Failed to create window surface");
 }
 
 
 void Engine::createDebugMessenger() {
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;
 	populateDebugMessengerCreateInfo(createInfo);
-	Try(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
+	TryVk(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
 }
 
 
@@ -110,7 +110,7 @@ void Engine::drawFrame() {
 	submitInfo.pWaitDstStageMask = waitStages;
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]);
-	Try(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Exit("Failed to submit graphics command buffer");
+	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Exit("Failed to submit graphics command buffer");
 
 
 	//Present

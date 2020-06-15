@@ -15,7 +15,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		commandPoolCreateInfo.flags = 0;													//Default flags
 		commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];		//Set the compute family where to bind the command pool
 		//Create the command pool
-		Try(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &CShaders[CShader].commandPool)) Exit("Unable to create command pool");
+		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &CShaders[CShader].commandPool)) Exit("Unable to create command pool");
 
 
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};						//Create command buffer allocate infos to allocate the command buffer in the command pool
@@ -24,14 +24,14 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set the command buffer as a primary level command buffer
 		commandBufferAllocateInfo.commandBufferCount = 1;									//Allocate one command buffer
 		//Allocate command buffer
-		Try(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, &CShaders[CShader].commandBuffers[imgIndex])) Exit("Unable to allocate command buffers");
+		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, &CShaders[CShader].commandBuffers[imgIndex])) Exit("Unable to allocate command buffers");
 
 
 		VkCommandBufferBeginInfo beginInfo = {};										//Create begin infos to start recording the command buffer
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;						//Set structure type
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;						//Set command buffer type
 		//Start recording commands
-		Try(vkBeginCommandBuffer(CShaders[CShader].commandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
+		TryVk(vkBeginCommandBuffer(CShaders[CShader].commandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
 
 		//Bind pipeline and descriptor sets to the command buffer
 		vkCmdBindPipeline(CShaders[CShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipeline);
@@ -108,6 +108,6 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 
 
 		//End command buffer recording
-		Try(vkEndCommandBuffer(CShaders[CShader].commandBuffers[imgIndex])) Exit("Failed to record command buffer");
+		TryVk(vkEndCommandBuffer(CShaders[CShader].commandBuffers[imgIndex])) Exit("Failed to record command buffer");
 	}
 }

@@ -65,7 +65,7 @@ void Engine::createRenderPass() {
 	renderPassInfo.pDependencies = dependencies;									//Set dependencies
 
 	//Create render pass. Exit if an error occurs
-	Try(vkCreateRenderPass(graphics.LD, &renderPassInfo, nullptr, &renderPass)) Exit("Failed to create render pass");
+	TryVk(vkCreateRenderPass(graphics.LD, &renderPassInfo, nullptr, &renderPass)) Exit("Failed to create render pass");
 }
 
 
@@ -84,7 +84,7 @@ void Engine::createFramebuffers() {
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
 
-		Try(vkCreateFramebuffer(graphics.LD, &framebufferInfo, nullptr, &swapChainFramebuffers[i])) Exit("Failed to create framebuffer");
+		TryVk(vkCreateFramebuffer(graphics.LD, &framebufferInfo, nullptr, &swapChainFramebuffers[i])) Exit("Failed to create framebuffer");
 	}
 }
 
