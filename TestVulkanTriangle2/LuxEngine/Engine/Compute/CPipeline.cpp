@@ -7,7 +7,6 @@
 
 
 
-
 void Engine::CShader_create_descriptorSetLayouts(LuxArray<LuxCell> bufferIndices, LuxShader CShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to

@@ -3,6 +3,36 @@
 #ifndef __ENGINE
 #define __ENGINE
 
+extern double* __lp_sin;
+extern double* __lp_cos;
+extern double* __lp_tan;
+extern double* __lp_cot;
+extern double* __lp_sec;
+extern double* __lp_csc;
+extern double* __lp_sinh;
+extern double* __lp_cosh;
+extern double* __lp_tanh;
+extern double* __lp_coth;
+extern double* __lp_sech;
+extern double* __lp_csch;
+
+#define FSin(degree) *(__lp_sin+(degree*1000)) //Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCos(degree) *(__lp_cos+(degree*1000)) //Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FTan(degree) *(__lp_tan+(degree*1000)) //Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCot(degree) *(__lp_cot+(degree*1000)) //Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSec(degree) *(__lp_sec+(degree*1000)) //Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCsc(degree) *(__lp_csc+(degree*1000)) //Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSinh(degree) *(__lp_sinh+(degree*1000) //Fast sinh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCosh(degree) *(__lp_cosh+(degree*1000) //Fast cosh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FTanh(degree) *(__lp_tanh+(degree*1000) //Fast tanh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCoth(degree) *(__lp_coth+(degree*1000) //Fast coth function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSech(degree) *(__lp_sech+(degree*1000) //Fast sech function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCsch(degree) *(__lp_csch+(degree*1000) //Fast csch function that uses a pre-calculated value to improve performance. 0.001 deg precision
+
+
+
+
+
 
 //Disabled useless warnings
 #pragma warning( disable : 26812 )			//Prefer enum class to enum
@@ -223,12 +253,12 @@ struct SwapChainSupportDetails {
 		││                            │ pos, rot, scl      >-------------. ¦ ¦    ¦ ¦         ││      .────────────────────────────────────────────────────────.               ¦               ¦                               ¦                      ││
 		││                            '────────────────────'   ││        ¦ ¦ ¦    ¦ ¦         ││      | cell 00000   cell 00001   cell 00002   ... cell 09999  |               ¦         .---- ¦ ----------------------------- ¦ ----.                ││
 		││                                                     ││        ¦ ¦ ¦    ¦ ¦         ││      '──────↑────────────↑──↓─────────────────────────────────' Buffer 4      ¦         ¦     ¦                               ¦     ¦                ││
-		│'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦  ¦                                                 ¦         ¦        ¦                          ¦       ¦                ││
-		'───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'  '-------------------------------------------------'         ¦     ¦                               ¦     ¦                ││
-																		 ¦ ¦ ¦                ││                                                                                         ¦     ¦                                     ¦                ││
-																		 ¦ ¦ ¦                ││                                                                                         ¦            D a r k    M a g i c     ¦     ¦                ││
-																		 ¦ ¦ ¦                ││       Dynamically allocated buffers                                                     ¦      ¦                              ¦     ¦                ││
-	   A            A            A                                       ¦ ¦ ¦                ││       cell class 50B. 1Mln cells per buffer               ↑...                          ¦     ¦    ¦                           ¦    ¦                ││
+		│'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦  ¦                                                 ¦         ¦                                           ¦                ││
+		'───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'  '-------------------------------------------------'         ¦                                           ¦                ││
+																		 ¦ ¦ ¦                ││                                                                                         ¦                                           ¦                ││
+																		 ¦ ¦ ¦                ││                                                                                         ¦            D a r k    M a g i c           ¦                ││
+																		 ¦ ¦ ¦                ││       Dynamically allocated buffers                                                     ¦                                           ¦                ││
+	   A            A            A                                       ¦ ¦ ¦                ││       cell class 50B. 1Mln cells per buffer               ↑...                          ¦                                           ¦                ││
 	   ¦            ¦        B---¦ ->B                                   ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                         ¦                                           ¦                ││
    B---¦ ->B    B-->¦-->AB       ¦-->A                                   ¦ ¦ ¦                ││      | cell 1000000 cell 1000001 cell 1000002 ... cell 1999999|                         ¦     ¦                               ¦     ¦                ││
 	   ↓            ↓            ↓                                       ¦ ¦ ¦                ││      '────────────────────────────────────────────────────────' Buffer 3                '---- ¦ ----------------------------- ¦ ----'                ││

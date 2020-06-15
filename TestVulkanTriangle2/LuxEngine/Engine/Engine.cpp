@@ -1,6 +1,18 @@
 ﻿
 
 #include "LuxEngine/Engine/Engine.h"
+double* __lp_sin = (double*)malloc(sizeof(double) * 360000);
+double* __lp_cos = (double*)malloc(sizeof(double) * 360000);
+double* __lp_tan = (double*)malloc(sizeof(double) * 360000);
+double* __lp_cot = (double*)malloc(sizeof(double) * 360000);
+double* __lp_sec = (double*)malloc(sizeof(double) * 360000);
+double* __lp_csc = (double*)malloc(sizeof(double) * 360000);
+double* __lp_sinh = (double*)malloc(sizeof(double) * 360000);
+double* __lp_cosh = (double*)malloc(sizeof(double) * 360000);
+double* __lp_tanh = (double*)malloc(sizeof(double) * 360000);
+double* __lp_coth = (double*)malloc(sizeof(double) * 360000);
+double* __lp_sech = (double*)malloc(sizeof(double) * 360000);
+double* __lp_csch = (double*)malloc(sizeof(double) * 360000);
 
 
 
