@@ -78,38 +78,38 @@ int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
 //*   size: the size in bytes of the buffer
 //*   Returns the buffer's index in the array. -1 if an error occurs
 LuxBuffer Engine::createGpuBuffer(uint64 size, LuxBufferClass bufferClass){
-	_LuxBufferStruc buffer;
-	buffer.size = sc<uint32>(size);
+	_LuxBufferStruc buffer;					//Create the buffer struct															
+	buffer.size = sc<uint32>(size);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
-	buffer.bufferClass = bufferClass;
-	
-	return CBuffers.add(buffer);
-	//return buffer.ID = CBuffers.add(buffer);
+	buffer.bufferClass = bufferClass;		//Set its class	
+	return CBuffers.add(buffer);			//Add it to the buffer array and return its index
 }
 
 
-//Creates a memory cell into a buffer. Creates a new buffer if the others are full
+
+
+//Creates a memory cell into a buffer. Allocates a new buffer if there are no compatible buffers with free cells
 //*   cellSize: the size in bytes of the cell
 //*   Returns the cell's code. -1 if an error occurs
 LuxCell Engine::createGpuCell(uint64 cellSize) {
-	LuxBufferClass bufferClass;
-	if (cellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;
+	LuxBufferClass bufferClass;																				//Create a variable that stores the class of the buffer
+	if (cellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;									//Find the required buffer class. A cell must have a size smaller than or equal to the size of the class to belong to it
 	else if (cellSize <= LUX_BUFFER_CLASS_5K) bufferClass = LUX_BUFFER_CLASS_5K;
 	else if (cellSize <= LUX_BUFFER_CLASS_500K) bufferClass = LUX_BUFFER_CLASS_500K;
 	else if (cellSize <= LUX_BUFFER_CLASS_2MLN) bufferClass = LUX_BUFFER_CLASS_2MLN;
 	else bufferClass = LUX_BUFFER_CLASS_LRG;
 	
-	if (bufferClass != LUX_BUFFER_CLASS_LRG) {
-		LuxBuffer buffer = -1;
-		forEach(CBuffers, i) {
-			if (CBuffers[i].bufferClass == bufferClass && 
-				CBuffers[i].cells.usedSize() < 50000000/*50MB*//CBuffers[i].bufferClass &&
-				CBuffers.isValid(i)) {
-				buffer = i;
-			}
-		}
-		if (buffer == (LuxBuffer)-1) buffer = createGpuBuffer(50000000/*50MB*/, bufferClass);
-		return sc<LuxCell>(__lp_cellCode(buffer, CBuffers[buffer].cells.add(sc<char>(1)), bufferClass));
+	if (bufferClass != LUX_BUFFER_CLASS_LRG) {																//If it's a static buffer
+		LuxBuffer buffer = -1;																					//Initialize the buffer variable. It stores the index of the buffer where the cell will be created
+		forEach(CBuffers, i) {																					//Find the buffer. For each of the pre-existent buffers
+			if (CBuffers[i].bufferClass == bufferClass &&															//If it's of the right class,
+				CBuffers[i].cells.usedSize() < __lp_static_buffer_size / CBuffers[i].bufferClass &&					//It has free cells
+				CBuffers.isValid(i)) {																				//And it can be used
+				buffer = i;																								//Save its index
+			}																								
+		}																									
+		if (buffer == (LuxBuffer)-1) buffer = createGpuBuffer(__lp_static_buffer_size, bufferClass);			//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
+		return sc<LuxCell>(__lp_cellCode(buffer, CBuffers[buffer].cells.add(sc<char>(1)), bufferClass));		//Create a new cell in the buffer and return its code
 	}
-	else return sc<LuxCell>(__lp_cellCode(createGpuBuffer(cellSize, LUX_BUFFER_CLASS_LRG), 0, cellSize));
+	else return sc<LuxCell>(__lp_cellCode(createGpuBuffer(cellSize, LUX_BUFFER_CLASS_LRG), 0, cellSize));	//If it's a custom size buffer, create a new buffer and return its code
 } //TODO track buffers

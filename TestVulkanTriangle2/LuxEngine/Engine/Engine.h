@@ -48,6 +48,30 @@ extern double* __lp_csch;
 
 
 
+
+
+
+
+// isShared: 1b
+// buffer: 12b
+// cellIndex: 20b
+// cellSize: 31b
+//Cell size 0 means that the buffer is not shared
+#define __lp_cellCode(buffer, cellIndex, cellSize) ((((cellSize) == 0) ? ((uint64)1 << 63) : 0) | ((uint64)(buffer) << 51) | ((uint64)(cellIndex) << 31) | ((cellSize) & 0x7FFFfFFF))
+#define __lp_isShared_from_cc(cellCode) (((cellCode) >> 63) & 0b1)
+#define __lp_buffer_from_cc(cellCode) (((cellCode) >> 51) & 0xFFF)
+#define __lp_cellIndex_from_cc(cellCode) (((cellCode) >> 31) & 0xfFFFF)
+#define __lp_cellSize_from_cc(cellCode) ((cellCode) & 0x7FFFffff)
+
+#define __lp_static_buffer_size 50000000 //50MB
+
+
+
+
+
+
+
+
 //Disabled useless warnings
 #pragma warning( disable : 26812 )			//Prefer enum class to enum
 #pragma warning( disable : 26495 )			//Uninitialized variables
@@ -220,22 +244,20 @@ struct SwapChainSupportDetails {
 
 
 
-/*
-
-
+/* ↑↓<>-.'_─│¦
                                                                                                                                                                                         Frame render
-   ↑↓<>-.'_─│¦                                                                                                            GPU MEMORY                                                         ↓
+                                                                                                                          GPU MEMORY                                                         ↓
                                                                                                ______________________________________________________________________________________________¦_________________________________________________________
                                                                                               │ .────────────────────────────────────────────────────────────────────────────────────────────¦───────────────────────────────────────────────────────. │
    LUX OBJECT DATA MANAGEMENT                                                                 ││                                                                                             ↓                                                        ││
-   This scheme represent a system with a single 1080p monitor and 48GB VRAM                   ││       Custom size allocations for large buffers                                          Shaders                   Output buffer (6.2208MB)          ││
+                                                                                              ││       Custom size allocations for large buffers                                          Shaders                   Output buffer (6.2208MB)          ││
                                                                                               ││      .──────────────────────────.  .──────────────────────────.                  .─────────────────────.           Window 0                          ││
    all the buffers are saved as LuxMap s of buffer cellment index                             ││      | Custom size allocation 2 |  | Custom size allocation 3 >-.                │       Shader 0      <--.       .──────────────────────────.       ││
    and allocated in the GPU's memory.                                                         ││      '─────────↑────────────────'  '─────────↑────────────────' '----------------> 9248141834805313536 │  ¦   .---> Custom size allocation 0 >---.   ││
    by default the buffers are not mapped to avoid multi threading issues        .-------------------------------'     Buffer 10 ↑             ¦     Buffer 11 ↑  .---------------->   20266299256898688 │  ¦   ¦   '──────────────────────────'   ¦   ││
                                                                                 ¦ .-----------------------------------------------------------'                  ¦                │          ¦          │  ¦   ¦                    Buffer 0 ↑    ¦   ││
-   Supported VRAM size: 48GB                                                    ¦ ¦           ││                                                                 ¦                │          ↓          │  ¦   ¦                                  ¦   ││
-   50MB per buffer. max 960 buffers                                             ¦ ¦           ││                                                                 ¦                │       Shader 1      <--¦---'    Output buffer (6.2208MB)      ¦   ││
+   Supported VRAM size: 48GB. 50MB per buffer. max 960 buffers                  ¦ ¦           ││                                                                 ¦                │          ↓          │  ¦   ¦                                  ¦   ││
+   Buffer class is just a fancy name for some buffers with the same cell size   ¦ ¦           ││                                                                 ¦                │       Shader 1      <--¦---'    Output buffer (6.2208MB)      ¦   ││
    class 2MB:     25 cells per buffer                                           ¦ ¦           ││       Dynamically allocated buffers                             ¦           .---->   13510803177578784 │  ¦        Window 1                      ¦   ││
    class 500KB:   100 cells per buffer                                          ¦ ¦           ││       cell class 2MB. 25 cells per buffer                 ↑...  ¦           ¦ .-->    9007201402234640 │  ¦       .──────────────────────────.   ¦   ││
    class 5KB:     10k cells per buffer                                          ¦ ¦           ││      .────────────────────────────────────────────────────────. ¦         .-¦ ¦ ->   15763026045542688 │  ¦   - - > Custom size allocation 1 >-. ¦   ││
@@ -243,9 +265,9 @@ struct SwapChainSupportDetails {
    custom allocation max size: 7FFFFFFF (~2.15GB)                               ¦ ¦           ││      '────────────────────────────────────────────────────────' Buffer 9  ¦ ¦ ¦  │          ↓          │  ¦                        Buffer 1 ↑  ¦ ¦   ││
    larger data structures must be splitted across multiple buffers              ¦ ¦           ││      .────────────────────────────────────────────────────────.           ¦ ¦ ¦  │       Shader 2      <--'                                    ¦ ¦   ││
                                                                                 ¦ ¦           ││      | cell 00      cell 01      cell 02      ... cell 23     |           ¦---¦ ->   15763026045542688 │           ↓...                        ¦ ¦   ││
-                                                                                ¦ ¦           ││      '──────↑────────────↑─────────────↓──────────────────────' Buffer 8  ¦ ¦---->   13510803177578784 │                                       ¦ ¦   ││
-    Cell code limits: max buffer index 4096, max cell index 1 048 576           ¦ ¦     .--------------------'            ¦             '----------------------------------¦ ¦ ¦ ->   18014402806449280 │                                       ¦ ¦   ││
-    max cell size 2 147 483 648                                                 ¦ ¦     ¦ .-------------------------------'                                                ¦ ¦ ¦  │          ¦          │                                       ¦ ¦   ││
+    Cell code limits: max buffer index 4096, max cell index 1 048 576           ¦ ¦           ││      '──────↑────────────↑─────────────↓──────────────────────' Buffer 8  ¦ ¦---->   13510803177578784 │                                       ¦ ¦   ││
+    max cell size 2 147 483 648                                                 ¦ ¦     .--------------------'            ¦             '----------------------------------¦ ¦ ¦ ->   18014402806449280 │                                       ¦ ¦   ││
+                                                                                ¦ ¦     ¦ .-------------------------------'                                                ¦ ¦ ¦  │          ¦          │                                       ¦ ¦   ││
                                                                                 ¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │          ↓          │                                       ¦ ¦   ││
  extern                            RAM                                          ¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │         ...         │                                       ¦ ¦   ││
    ↓     _______________________________________________________                ¦ ¦     ¦ ¦   ││       Dynamically allocated buffers                                       ¦ ¦ ¦  │   ...               │         //TODO shaders >> copy cmd    ¦ ¦   ││
