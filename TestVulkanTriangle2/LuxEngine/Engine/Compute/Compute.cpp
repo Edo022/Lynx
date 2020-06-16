@@ -16,10 +16,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	LuxCell imageOutput = createGpuCell(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
 	LuxCell vertices = createGpuCell(4);
 	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
-	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
+	newCShader({ windowOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 }
 
 
@@ -92,8 +91,8 @@ LuxBuffer Engine::createGpuBuffer(uint64 size, LuxBufferClass bufferClass){
 //*   cellSize: the size in bytes of the cell
 //*   Returns the cell's code. -1 if an error occurs
 LuxCell Engine::createGpuCell(uint64 cellSize) {
-	LuxBufferClass bufferClass;																				//Create a variable that stores the class of the buffer
-	if (cellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;									//Find the required buffer class. A cell must have a size smaller than or equal to the size of the class to belong to it
+	LuxBufferClass bufferClass;															//Create a variable that stores the class of the buffer
+	if (cellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;				//Find the required buffer class. A cell must have a size smaller than or equal to the size of the class to belong to it
 	else if (cellSize <= LUX_BUFFER_CLASS_5K) bufferClass = LUX_BUFFER_CLASS_5K;
 	else if (cellSize <= LUX_BUFFER_CLASS_500K) bufferClass = LUX_BUFFER_CLASS_500K;
 	else if (cellSize <= LUX_BUFFER_CLASS_2MLN) bufferClass = LUX_BUFFER_CLASS_2MLN;

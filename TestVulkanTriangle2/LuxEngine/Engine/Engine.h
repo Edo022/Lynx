@@ -3,6 +3,13 @@
 #ifndef __ENGINE
 #define __ENGINE
 
+#ifndef NDEBUG 
+#define LUX_DEBUG
+#else
+#undef LUX_DEBUG
+#endif
+
+
 extern double* __lp_sin;
 extern double* __lp_cos;
 extern double* __lp_tan;
@@ -339,6 +346,7 @@ private:
 	//Window
 	GLFWwindow* window;								//Main engine's window
 	const uint32 WIDTH = 1920, HEIGHT = 1080;		//Default size in windowed mode
+	LuxCell windowOutput;							//The buffer that contains the color output of the window
 	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
 
 	//Devices and queues
@@ -360,8 +368,8 @@ private:
 
 
 	//Main >> this
-	void mainLoop();		void FPSCounter();     void render();
-	void initWindow();		void createInstance();
+	void mainLoop();		void FPSCounter();			void render();
+	void initWindow();		void initWindowBuffers();	void createInstance();
 
 	//Devices >> Devices.cpp
 	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxMap<VkQueue>* computeQueues);

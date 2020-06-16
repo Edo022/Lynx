@@ -37,6 +37,7 @@ void Engine::run(bool _useVSync, float _FOV) {
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
 	runGraphics(_useVSync, _FOV);
+	initWindowBuffers();
 	runCompute();
 
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
@@ -159,6 +160,11 @@ void Engine::initWindow() {
 	window = glfwCreateWindow(WIDTH, HEIGHT, "Lux Engine", nullptr, nullptr);
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+}
+
+
+void Engine::initWindowBuffers() {
+	windowOutput = createGpuCell(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
 }
 
 

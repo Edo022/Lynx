@@ -2,7 +2,6 @@
 #include "LuxEngine/Engine/Engine.h"
 
 
-
 void Engine::runGraphics(bool _useVSync, float _FOV) {
 	useVSync = _useVSync;
 	FOV = _FOV;
