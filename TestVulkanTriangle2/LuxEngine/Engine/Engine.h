@@ -345,7 +345,7 @@ private:
 
 	//Window
 	GLFWwindow* window;								//Main engine's window
-	const uint32 WIDTH = 1920, HEIGHT = 1080;		//Default size in windowed mode
+	int32 windowWidth = 1920, windowHeight = 1080;
 	LuxCell windowOutput;							//The buffer that contains the color output of the window
 	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
 
@@ -478,8 +478,8 @@ private:
 
 
 	//COMPUTE 
-	const int32 COMPUTE_WIDTH = WIDTH;
-	const int32 COMPUTE_HEIGHT = HEIGHT;
+	const int32 COMPUTE_WIDTH = windowWidth;
+	const int32 COMPUTE_HEIGHT = windowHeight;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
 	struct Pixel { unsigned char r, g, b, a; };

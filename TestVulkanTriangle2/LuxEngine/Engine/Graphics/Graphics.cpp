@@ -144,6 +144,8 @@ void Engine::drawFrame() {
 
 void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
 	auto engine = reinterpret_cast<Engine*>(glfwGetWindowUserPointer(window));
+	engine->windowWidth = width; //TODO ...
+	engine->windowHeight = height;
 	engine->framebufferResized = true;
 }
 
