@@ -81,7 +81,7 @@ LuxBuffer Engine::createGpuBuffer(uint64 size, LuxBufferClass bufferClass){
 	_LuxBufferStruc buffer;					//Create the buffer struct															
 	buffer.size = sc<uint32>(size);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
-	buffer.bufferClass = bufferClass;		//Set its class	
+	buffer.bufferClass = bufferClass;		//Set its class	 
 	return CBuffers.add(buffer);			//Add it to the buffer array and return its index
 }
 
