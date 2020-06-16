@@ -16,8 +16,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT, LUX_BUFFER_CLASS_LRG);
-	LuxCell vertices = createGpuBuffer(4, LUX_BUFFER_CLASS_LRG);
+	LuxCell imageOutput = createGpuCell(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+	LuxCell vertices = createGpuCell(4);
 	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
 	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 }
@@ -83,7 +83,8 @@ LuxBuffer Engine::createGpuBuffer(uint64 size, LuxBufferClass bufferClass){
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
 	buffer.bufferClass = bufferClass;
 	
-	return buffer.ID = CBuffers.add(buffer);
+	return CBuffers.add(buffer);
+	//return buffer.ID = CBuffers.add(buffer);
 }
 
 
@@ -101,7 +102,9 @@ LuxCell Engine::createGpuCell(uint64 cellSize) {
 	if (bufferClass != LUX_BUFFER_CLASS_LRG) {
 		LuxBuffer buffer = -1;
 		forEach(CBuffers, i) {
-			if (CBuffers[i].bufferClass == bufferClass && CBuffers[i].cells.usedSize() == CBuffers[i].cells.size() && CBuffers.isValid(i)) {
+			if (CBuffers[i].bufferClass == bufferClass && 
+				CBuffers[i].cells.usedSize() < 50000000/*50MB*//CBuffers[i].bufferClass &&
+				CBuffers.isValid(i)) {
 				buffer = i;
 			}
 		}

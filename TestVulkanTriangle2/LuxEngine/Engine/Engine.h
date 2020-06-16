@@ -485,7 +485,7 @@ private:
 	};
 	//This structure groups the components of a Vulkan buffer
 	struct _LuxBufferStruc {
-		uint64 ID;					//A unique id, different for each buffer
+		//uint64 ID;					//A unique id, different for each buffer
 		uint32 size;				//The size in bytes of the buffer
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer

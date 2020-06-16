@@ -35,7 +35,7 @@ void main() {
 //	uvec4 color = (vertices[0] == 1) ? uvec4(((x)*(y))/50, 0, 0, 1) : uvec4(0,0,0,0);	
 //	uvec4 color = uvec4(x/9,0,y/4,255);	
 	uvec4 color = imageData[y*WIDTH + x] + uvec4(1,1,1,1);
-	imageData[y*WIDTH + x] += 1;
+	imageData[y*WIDTH + x] += 10;
 
 
 //	//Store the pixel in the buffer. 4 chars as an uint32
