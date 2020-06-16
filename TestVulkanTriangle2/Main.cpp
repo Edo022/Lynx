@@ -57,7 +57,7 @@ int main() {
 	luxInputSetInputState(&inputStateTest);
 
 
-	while (engine->running) {
+	while (engine.running) {
 		//int h = -573289;
 		//printf("%lf\n", FCos(h));
 		sleep(1);

@@ -16,7 +16,7 @@ double* __lp_sech = mallocFunc;
 double* __lp_csch = mallocFunc;
 #undef mallocFunc
 
-
+Engine engine;
 
 
 

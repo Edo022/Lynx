@@ -22,8 +22,7 @@
 
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
-	static Engine engine;
-	__lp_luxInit(&engine, useVSync);
+	__lp_luxInit(useVSync);
 	for (int i = 0; i < 360000; i++) {
 		#define j ((double)i * (3.1415926535897932 / 180)) / 1000
 		*(__lp_sin + i) = sin(j);

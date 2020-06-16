@@ -294,8 +294,6 @@ struct SwapChainSupportDetails {
 
 
 
-class Engine;
-static Engine* engine;
 
 
 class Engine {
@@ -533,22 +531,22 @@ private:
 
 
 
+extern Engine engine;
 #define Frame while(engine->running)
 
 
 //This function is used by the engine. You shouldn't call it
 static void __lp_lux_init_run_thr(bool useVSync) {
-	engine->run(useVSync, 45);
+	engine.run(useVSync, 45);
 }
 
 
 
 //This function is used by the engine. You shouldn't call it
-static void __lp_luxInit(Engine* _engine, bool useVSync) {
-	engine = _engine;
+static void __lp_luxInit( bool useVSync) {
 	std::thread t(__lp_lux_init_run_thr, useVSync);
 	t.detach();
-	engine->running = true;
+	engine.running = true;
 }
 
 
