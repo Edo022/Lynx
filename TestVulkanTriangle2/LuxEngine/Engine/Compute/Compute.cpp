@@ -16,9 +16,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
-	LuxCell vertices = createGpuBuffer(4);
-	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
+	LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT, LUX_BUFFER_CLASS_LRG);
+	LuxCell vertices = createGpuBuffer(4, LUX_BUFFER_CLASS_LRG);
+	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
 	newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 }
 
@@ -26,10 +26,10 @@ void Engine::runCompute() {
 
 
 void Engine::cleanupCompute() {
-	forEach(CGpuBuffers, i) {
-		if (CGpuBuffers.isValid(i)) {
-			vkDestroyBuffer(compute.LD, CGpuBuffers[i].buffer, null);										//Destroy the buffer
-			vkFreeMemory(compute.LD, CGpuBuffers[i].memory, null);									//Free the buffer's memory
+	forEach(CBuffers, i) {
+		if (CBuffers.isValid(i)) {
+			vkDestroyBuffer(compute.LD, CBuffers[i].buffer, null);										//Destroy the buffer
+			vkFreeMemory(compute.LD, CBuffers[i].memory, null);									//Free the buffer's memory
 		}
 	}
 
@@ -55,7 +55,7 @@ void Engine::cleanupCompute() {
 //*   buffers: the indices of the buffers to bind. Each index must correspond to a CGpuBuffers's element
 //*   returns the index of the created shader if the operation succeed, -1 if the indices cannot be used, -2 if the file cannot be found, -3 if an unknown error occurs 
 int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
-	if (buffers.size() > CGpuBuffers.size()) return -1;
+	if (buffers.size() > CBuffers.size()) return -1; //TODO check indices
 
 	uint64 shaderIndex = CShaders.add(LuxCShader{});
 	CShaders[shaderIndex].commandBuffers.resize(swapChainImages.size());
@@ -71,13 +71,42 @@ int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
 
 
 
+
+
+
 //Creates a memory buffer in a compute device and saves it in the LuxArray "computeBuffers"
 //*   size: the size in bytes of the buffer
 //*   Returns the buffer's index in the array. -1 if an error occurs
-LuxCell Engine::createGpuBuffer(uint64 size){
-	_LuxCell buffer;
+LuxBuffer Engine::createGpuBuffer(uint64 size, LuxBufferClass bufferClass){
+	_LuxBufferStruc buffer;
 	buffer.size = sc<uint32>(size);
 	createBuffer(compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, buffer.buffer, buffer.memory);
-	return buffer.ID = CGpuBuffers.add(buffer);
+	buffer.bufferClass = bufferClass;
+	
+	return buffer.ID = CBuffers.add(buffer);
 }
 
+
+//Creates a memory cell into a buffer. Creates a new buffer if the others are full
+//*   cellSize: the size in bytes of the cell
+//*   Returns the cell's code. -1 if an error occurs
+LuxCell Engine::createGpuCell(uint64 cellSize) {
+	LuxBufferClass bufferClass;
+	if (cellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;
+	else if (cellSize <= LUX_BUFFER_CLASS_5K) bufferClass = LUX_BUFFER_CLASS_5K;
+	else if (cellSize <= LUX_BUFFER_CLASS_500K) bufferClass = LUX_BUFFER_CLASS_500K;
+	else if (cellSize <= LUX_BUFFER_CLASS_2MLN) bufferClass = LUX_BUFFER_CLASS_2MLN;
+	else bufferClass = LUX_BUFFER_CLASS_LRG;
+	
+	if (bufferClass != LUX_BUFFER_CLASS_LRG) {
+		LuxBuffer buffer = -1;
+		forEach(CBuffers, i) {
+			if (CBuffers[i].bufferClass == bufferClass && CBuffers[i].cells.usedSize() == CBuffers[i].cells.size() && CBuffers.isValid(i)) {
+				buffer = i;
+			}
+		}
+		if (buffer == (LuxBuffer)-1) buffer = createGpuBuffer(50000000/*50MB*/, bufferClass);
+		return sc<LuxCell>(__lp_cellCode(buffer, CBuffers[buffer].cells.add(sc<char>(1)), bufferClass));
+	}
+	else return sc<LuxCell>(__lp_cellCode(createGpuBuffer(cellSize, LUX_BUFFER_CLASS_LRG), 0, cellSize));
+} //TODO track buffers

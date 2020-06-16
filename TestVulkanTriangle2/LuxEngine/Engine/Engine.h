@@ -223,17 +223,17 @@ struct SwapChainSupportDetails {
 /*
 
 
-																																														Frame render
+                                                                                                                                                                                        Frame render
    ↑↓<>-.'_─│¦                                                                                                            GPU MEMORY                                                         ↓
-																							   ______________________________________________________________________________________________¦_________________________________________________________
-																							  │ .────────────────────────────────────────────────────────────────────────────────────────────¦───────────────────────────────────────────────────────. │
+                                                                                               ______________________________________________________________________________________________¦_________________________________________________________
+                                                                                              │ .────────────────────────────────────────────────────────────────────────────────────────────¦───────────────────────────────────────────────────────. │
    LUX OBJECT DATA MANAGEMENT                                                                 ││                                                                                             ↓                                                        ││
    This scheme represent a system with a single 1080p monitor and 48GB VRAM                   ││       Custom size allocations for large buffers                                          Shaders                   Output buffer (6.2208MB)          ││
-																							  ││      .──────────────────────────.  .──────────────────────────.                  .─────────────────────.           Window 0                          ││
+                                                                                              ││      .──────────────────────────.  .──────────────────────────.                  .─────────────────────.           Window 0                          ││
    all the buffers are saved as LuxMap s of buffer cellment index                             ││      | Custom size allocation 2 |  | Custom size allocation 3 >-.                │       Shader 0      <--.       .──────────────────────────.       ││
    and allocated in the GPU's memory.                                                         ││      '─────────↑────────────────'  '─────────↑────────────────' '----------------> 9248141834805313536 │  ¦   .---> Custom size allocation 0 >---.   ││
    by default the buffers are not mapped to avoid multi threading issues        .-------------------------------'     Buffer 10 ↑             ¦     Buffer 11 ↑  .---------------->   20266299256898688 │  ¦   ¦   '──────────────────────────'   ¦   ││
-																				¦ .-----------------------------------------------------------'                  ¦                │          ¦          │  ¦   ¦                    Buffer 0 ↑    ¦   ││
+                                                                                ¦ .-----------------------------------------------------------'                  ¦                │          ¦          │  ¦   ¦                    Buffer 0 ↑    ¦   ││
    Supported VRAM size: 48GB                                                    ¦ ¦           ││                                                                 ¦                │          ↓          │  ¦   ¦                                  ¦   ││
    50MB per buffer. max 960 buffers                                             ¦ ¦           ││                                                                 ¦                │       Shader 1      <--¦---'    Output buffer (6.2208MB)      ¦   ││
    class 2MB:     25 cells per buffer                                           ¦ ¦           ││       Dynamically allocated buffers                             ¦           .---->   13510803177578784 │  ¦        Window 1                      ¦   ││
@@ -242,11 +242,11 @@ struct SwapChainSupportDetails {
    class 50B      1Mln cells per buffer                                         ¦ ¦           ││      | cell 24      cell 25      cell 26      ... cell 47     >-'         ¦ ¦ ¦  │          ¦          │  ¦       '──────────────────────────' ¦ ¦   ││
    custom allocation max size: 7FFFFFFF (~2.15GB)                               ¦ ¦           ││      '────────────────────────────────────────────────────────' Buffer 9  ¦ ¦ ¦  │          ↓          │  ¦                        Buffer 1 ↑  ¦ ¦   ││
    larger data structures must be splitted across multiple buffers              ¦ ¦           ││      .────────────────────────────────────────────────────────.           ¦ ¦ ¦  │       Shader 2      <--'                                    ¦ ¦   ││
-																				¦ ¦           ││      | cell 00      cell 01      cell 02      ... cell 23     |           ¦---¦ ->   15763026045542688 │           ↓...                        ¦ ¦   ││
-																				¦ ¦           ││      '──────↑────────────↑─────────────↓──────────────────────' Buffer 8  ¦ ¦---->   13510803177578784 │                                       ¦ ¦   ││
-																				¦ ¦     .--------------------'            ¦             '----------------------------------¦ ¦ ¦ ->   18014402806449280 │                                       ¦ ¦   ││
-																				¦ ¦     ¦ .-------------------------------'                                                ¦ ¦ ¦  │          ¦          │                                       ¦ ¦   ││
-																				¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │          ↓          │                                       ¦ ¦   ││
+                                                                                ¦ ¦           ││      | cell 00      cell 01      cell 02      ... cell 23     |           ¦---¦ ->   15763026045542688 │           ↓...                        ¦ ¦   ││
+                                                                                ¦ ¦           ││      '──────↑────────────↑─────────────↓──────────────────────' Buffer 8  ¦ ¦---->   13510803177578784 │                                       ¦ ¦   ││
+    Cell code limits: max buffer index 4096, max cell index 1 048 576           ¦ ¦     .--------------------'            ¦             '----------------------------------¦ ¦ ¦ ->   18014402806449280 │                                       ¦ ¦   ││
+    max cell size 2 147 483 648                                                 ¦ ¦     ¦ .-------------------------------'                                                ¦ ¦ ¦  │          ¦          │                                       ¦ ¦   ││
+                                                                                ¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │          ↓          │                                       ¦ ¦   ││
  extern                            RAM                                          ¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │         ...         │                                       ¦ ¦   ││
    ↓     _______________________________________________________                ¦ ¦     ¦ ¦   ││       Dynamically allocated buffers                                       ¦ ¦ ¦  │   ...               │         //TODO shaders >> copy cmd    ¦ ¦   ││
   Add   │ .───────────────────────────────────────────────────. │               ¦ ¦     ¦ ¦   ││       cell class 500KB. 100 cells per buffer             ↑...             ¦ ¦ ¦  │   ...               │                                       ¦ ¦   ││
@@ -262,28 +262,28 @@ struct SwapChainSupportDetails {
    ¦--------> LuxObject 2      │      │ pos, rot, scl      >---------------. ¦                ││       Dynamically allocated buffers                                           ¦   │ img >-----.          │       │ img  >-----.         │            ││
    :    ││  │ 6 v, 71 t        >---.  '────────────────────'   ││          ¦ ¦                ││       cell class 5KB. 10k cells per buffer               ↑...                 ¦   │ img >-----¦          │       │ img  >-----¦         │            ││
    .    ││  │ ....             │   ¦  .────────────────────.   ││          ¦ ¦                ││      .────────────────────────────────────────────────────────.               ¦   │ img >-----¦          │       │ img  >-----¦         │            ││
-		││  :                  :   ¦--> vert buffer index  >------90B------¦ ¦ -----.         ││      | cell 10000   cell 10001   cell 10002   ... cell 19999  |               ¦   │ ...       ¦          │       │ ...        ¦         │            ││
-		││  .                  .   '--> indx buffer index  >------852B-----¦ ¦ ---. ¦         ││      '────────────────────────────────────────────────────────' Buffer 5      ¦   '───────────¦──────────'       '────────────¦─────────'            ││
-		││                            │ pos, rot, scl      >-------------. ¦ ¦    ¦ ¦         ││      .────────────────────────────────────────────────────────.               ¦               ¦                               ¦                      ││
-		││                            '────────────────────'   ││        ¦ ¦ ¦    ¦ ¦         ││      | cell 00000   cell 00001   cell 00002   ... cell 09999  |               ¦         .---- ¦ ----------------------------- ¦ ----.                ││
-		││                                                     ││        ¦ ¦ ¦    ¦ ¦         ││      '──────↑────────────↑──↓─────────────────────────────────' Buffer 4      ¦         ¦     ¦                               ¦     ¦                ││
-		│'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦  ¦                                                 ¦         ¦                                           ¦                ││
-		'───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'  '-------------------------------------------------'         ¦                                           ¦                ││
-																		 ¦ ¦ ¦                ││                                                                                         ¦                                           ¦                ││
-																		 ¦ ¦ ¦                ││                                                                                         ¦            D a r k    M a g i c           ¦                ││
-																		 ¦ ¦ ¦                ││       Dynamically allocated buffers                                                     ¦                                           ¦                ││
-	   A            A            A                                       ¦ ¦ ¦                ││       cell class 50B. 1Mln cells per buffer               ↑...                          ¦                                           ¦                ││
-	   ¦            ¦        B---¦ ->B                                   ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                         ¦                                           ¦                ││
+        ││  :                  :   ¦--> vert buffer index  >------90B------¦ ¦ -----.         ││      | cell 10000   cell 10001   cell 10002   ... cell 19999  |               ¦   │ ...       ¦          │       │ ...        ¦         │            ││
+        ││  .                  .   '--> indx buffer index  >------852B-----¦ ¦ ---. ¦         ││      '────────────────────────────────────────────────────────' Buffer 5      ¦   '───────────¦──────────'       '────────────¦─────────'            ││
+        ││                            │ pos, rot, scl      >-------------. ¦ ¦    ¦ ¦         ││      .────────────────────────────────────────────────────────.               ¦               ¦                               ¦                      ││
+        ││                            '────────────────────'   ││        ¦ ¦ ¦    ¦ ¦         ││      | cell 00000   cell 00001   cell 00002   ... cell 09999  |               ¦         .---- ¦ ----------------------------- ¦ ----.                ││
+        ││                                                     ││        ¦ ¦ ¦    ¦ ¦         ││      '──────↑────────────↑──↓─────────────────────────────────' Buffer 4      ¦         ¦     ¦                               ¦     ¦                ││
+        │'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦  ¦                                                 ¦         ¦                                           ¦                ││
+        '───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'  '-------------------------------------------------'         ¦                                           ¦                ││
+                                                                         ¦ ¦ ¦                ││                                                                                         ¦                                           ¦                ││
+                                                                         ¦ ¦ ¦                ││                                                                                         ¦            D a r k    M a g i c           ¦                ││
+                                                                         ¦ ¦ ¦                ││       Dynamically allocated buffers                                                     ¦                                           ¦                ││
+       A            A            A                                       ¦ ¦ ¦                ││       cell class 50B. 1Mln cells per buffer               ↑...                          ¦                                           ¦                ││
+       ¦            ¦        B---¦ ->B                                   ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                         ¦                                           ¦                ││
    B---¦ ->B    B-->¦-->AB       ¦-->A                                   ¦ ¦ ¦                ││      | cell 1000000 cell 1000001 cell 1000002 ... cell 1999999|                         ¦     ¦                               ¦     ¦                ││
-	   ↓            ↓            ↓                                       ¦ ¦ ¦                ││      '────────────────────────────────────────────────────────' Buffer 3                '---- ¦ ----------------------------- ¦ ----'                ││
-	   A            AB           A                                       ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                               ¦                               ¦                      ││
-																		 ¦ ¦ ¦                ││      | cell 0000000 cell 0000001 cell 0000002 ... cell 0999999|                               ¦                               ¦                      ││
-																		 ¦ ¦ ¦                ││      '──────↑────────────↑────────────↑───────────────────────' Buffer 2                      ¦                               ¦                      ││
-																		 ¦ ¦ ¦                │'.____________¦____________¦____________¦_______________________________________________________¦_______________________________¦_____________________.'│
-																		 ¦ ¦ ¦                '──────────────¦────────────¦────────────¦───────────────────────────────────────────────────────¦───────────────────────────────¦───────────────────────'
-																		 ¦ ¦ '------36B----------------------'            ¦            ¦                                                       ↓                               ↓
-																		 ¦ '--------36B-----------------------------------'            ¦                                                 Color output                    Color output
-																		 '----------36B------------------------------------------------'
+       ↓            ↓            ↓                                       ¦ ¦ ¦                ││      '────────────────────────────────────────────────────────' Buffer 3                '---- ¦ ----------------------------- ¦ ----'                ││
+       A            AB           A                                       ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                               ¦                               ¦                      ││
+                                                                         ¦ ¦ ¦                ││      | cell 0000000 cell 0000001 cell 0000002 ... cell 0999999|                               ¦                               ¦                      ││
+                                                                         ¦ ¦ ¦                ││      '──────↑────────────↑────────────↑───────────────────────' Buffer 2                      ¦                               ¦                      ││
+                                                                         ¦ ¦ ¦                │'.____________¦____________¦____________¦_______________________________________________________¦_______________________________¦_____________________.'│
+                                                                         ¦ ¦ ¦                '──────────────¦────────────¦────────────¦───────────────────────────────────────────────────────¦───────────────────────────────¦───────────────────────'
+                                                                         ¦ ¦ '------36B----------------------'            ¦            ¦                                                       ↓                               ↓
+                                                                         ¦ '--------36B-----------------------------------'            ¦                                                 Color output                    Color output
+                                                                         '----------36B------------------------------------------------'
 */
 
 
@@ -476,32 +476,44 @@ private:
 
 
 	//Buffers
+	enum LuxBufferClass:uint32 {
+		LUX_BUFFER_CLASS_50 = 50,
+		LUX_BUFFER_CLASS_5K = 5000,
+		LUX_BUFFER_CLASS_500K = 500000,
+		LUX_BUFFER_CLASS_2MLN = 2000000,
+		LUX_BUFFER_CLASS_LRG = 0
+	};
 	//This structure groups the components of a Vulkan buffer
-	struct _LuxCell {
+	struct _LuxBufferStruc {
 		uint64 ID;					//A unique id, different for each buffer
 		uint32 size;				//The size in bytes of the buffer
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
 		bool isMapped = false;		//Whether the buffer is mapped or not
-		//uint64 fragmentSize = 0;	//The size of the fragments. 0 means that the buffer is not divided
+
+		LuxBufferClass bufferClass;
+		LuxMap<char> cells;
 	};
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
-	//*   buffer: a pointer to a _LuxCell object. It's the buffer that will be mapped
+	//*   buffer: a pointer to a _LuxBufferStruc object. It's the buffer that will be mapped
 	//*   returns the void pointer that maps the buffer
-	void* mapGpuBuffer(_LuxCell* buffer) {
+	void* mapGpuBuffer(_LuxBufferStruc* buffer) {
 		if (buffer->isMapped) vkUnmapMemory(compute.LD, buffer->memory);
 		else buffer->isMapped = true;
 		void* data;
 		vkMapMemory(compute.LD, buffer->memory, 0, buffer->size, 0, &data);
 		return data;
 	}
-	LuxMap<_LuxCell> CGpuBuffers;
+	LuxMap<_LuxBufferStruc> CBuffers;
+
+
 
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	LuxCell createGpuBuffer(uint64 size);
+	LuxBuffer createGpuBuffer(uint64 size, LuxBufferClass bufferClass);
+	LuxCell createGpuCell(uint64 cellSize);
 	int32 newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
@@ -532,7 +544,7 @@ private:
 
 
 extern Engine engine;
-#define Frame while(engine->running)
+#define Frame while(engine.running)
 
 
 //This function is used by the engine. You shouldn't call it

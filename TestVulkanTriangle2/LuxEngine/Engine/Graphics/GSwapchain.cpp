@@ -178,13 +178,13 @@ void Engine::recreateSwapChain() {
 		cleanupSwapChain();
 		createSwapChain();
 
-		CGpuBuffers.remove(0);
-		CGpuBuffers.remove(1);
+		CBuffers.remove(0);
+		CBuffers.remove(1);
 		CShaders.remove(0);
 
-		LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height);
-		LuxCell vertices = createGpuBuffer(4);
-		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CGpuBuffers[1]); mappedVertices[1] = 1;
+		LuxCell imageOutput = createGpuBuffer(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, LUX_BUFFER_CLASS_LRG);
+		LuxCell vertices = createGpuBuffer(4, LUX_BUFFER_CLASS_LRG);
+		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
 		newCShader({ imageOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 
 	}
