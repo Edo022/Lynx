@@ -178,16 +178,12 @@ void Engine::recreateSwapChain() {
 
 		CBuffers.remove(__lp_buffer_from_cc(windowOutput));
 		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height);
-		CShader_create_commandBuffers(0);
-		createGraphicsCommandPool();
 
 
-		//TODO don't reset statiic buffers
 		CShaders.clear();
 		LuxCell vertices = createGpuCell(4);
 		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
 		newCShader({ windowOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
-		//sleep(1000);
 	}
 	windowResizeFence.set(2);
-}//TODO resize one per frame
+}
