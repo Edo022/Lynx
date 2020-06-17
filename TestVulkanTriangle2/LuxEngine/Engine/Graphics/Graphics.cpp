@@ -128,7 +128,8 @@ void Engine::drawFrame() {
 			framebufferResized = false;
 			recreateSwapChain();
 			vkDeviceWaitIdle(graphics.LD);
-			luxDebug(printf("Recreated swapchain\n"));
+			printf("Recreated swapchain\n");
+			//luxDebug(printf("Recreated swapchain\n"));
 			break;
 		}
 		default: Exit("Failed to present swapchain image");
