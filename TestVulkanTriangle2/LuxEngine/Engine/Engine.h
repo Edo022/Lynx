@@ -114,7 +114,6 @@ extern double* __lp_csch;
 
 //Structures
 #include "Graphics/Structs/_VkPhysicalDevice.h"
-#include "Graphics/Structs/Vertex.h"
 #include "LuxEngine/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"

@@ -126,9 +126,6 @@
     <ClInclude Include="LuxEngine\Engine\Graphics\Structs\_VkPhysicalDevice.h">
       <Filter>LuxEngine\Engine\Graphics\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Graphics\Structs\Vertex.h">
-      <Filter>LuxEngine\Engine\Graphics\Structs</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>

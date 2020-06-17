@@ -310,7 +310,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <Optimization>Custom</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <OmitDefaultLibName>true</OmitDefaultLibName>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -347,7 +347,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
-      <Optimization>Custom</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <OmitDefaultLibName>true</OmitDefaultLibName>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -386,7 +386,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\Engine\Engine.h" />
-    <ClInclude Include="LuxEngine\Engine\Graphics\Structs\Vertex.h" />
     <ClInclude Include="LuxEngine\Engine\Graphics\Structs\_VkPhysicalDevice.h" />
     <ClInclude Include="LuxEngine\Engine\Input\Input.h" />
     <ClInclude Include="LuxEngine\Engine\Input\InputState.h" />
