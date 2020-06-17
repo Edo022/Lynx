@@ -54,7 +54,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 		//This structure contains the informations about the descriptor set
 		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
 		descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;	//Set structure type
-		descriptorSetAllocateInfo.descriptorPool =CShaders[CShader].descriptorPool;			//Set descriptor pool where to allocate the descriptor
+		descriptorSetAllocateInfo.descriptorPool = CShaders[CShader].descriptorPool;			//Set descriptor pool where to allocate the descriptor
 		descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
 		descriptorSetAllocateInfo.pSetLayouts = &CShaders[CShader].descriptorSetLayout;		//Set set layouts
 		//Allocate descriptor set
@@ -73,7 +73,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 
 			VkWriteDescriptorSet writeDescriptorSet = {};									//Create write descriptor set
 			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;					//Set structure type
-			writeDescriptorSet.dstSet =CShaders[CShader].descriptorSet;							//Set descriptor set
+			writeDescriptorSet.dstSet = CShaders[CShader].descriptorSet;						//Set descriptor set
 			writeDescriptorSet.dstBinding = sc<uint32>(i);										//Set binding
 			writeDescriptorSet.descriptorCount = 1;												//Set number of descriptors
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Use it as a storage
@@ -85,14 +85,6 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), (new LuxArray(writeDescriptorSets))->data(), 0, null);
 	}
 }
-
-
-
-
-
-
-
-
 
 
 

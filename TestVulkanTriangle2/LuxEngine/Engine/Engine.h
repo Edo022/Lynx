@@ -561,8 +561,6 @@ private:
 
 	//Compute command buffers >> Compute/CCommands.cpp
 	void CShader_create_commandBuffers(LuxShader CShader);
-	void runCommandBuffer(LuxShader CShader, uint32 imgIndex);
-
 };
 
 
