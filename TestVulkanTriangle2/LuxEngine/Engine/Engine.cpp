@@ -157,7 +157,7 @@ void Engine::initWindow() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-	window = glfwCreateWindow(windowWidth, windowHeight, "Lux Engine", nullptr, nullptr);
+	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }

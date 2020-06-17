@@ -79,6 +79,9 @@
     <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp">
       <Filter>LuxEngine\Engine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxFence.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

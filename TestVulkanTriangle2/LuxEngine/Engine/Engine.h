@@ -28,6 +28,7 @@ extern double* __lp_csch;
 #define luxAbs(n) ((n < 0) ? -n : n)
 
 //TODO fix hyperbolic functions
+//TODO add inverse functions
 #define FSin(n) (luxSign(n) * __lp_sin[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
 #define FCos(n) __lp_cos[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
 #define FTan(n) (luxSign(n) * __lp_tan[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
@@ -118,6 +119,7 @@ extern double* __lp_csch;
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/LuxFence.h"
 #include "LuxEngine/Types/EngineTypes.h"
 
 
@@ -251,6 +253,12 @@ struct SwapChainSupportDetails {
 
 
 
+
+
+
+
+
+
 /* ↑↓<>-.'_─│¦
                                                                                                                                                                                         Frame render
                                                                                                                           GPU MEMORY                                                         ↓
@@ -345,8 +353,9 @@ private:
 
 	//Window
 	GLFWwindow* window;								//Main engine's window
-	int32 windowWidth = 1920, windowHeight = 1080;
+	int32 width = 1920, height = 1080;
 	LuxCell windowOutput;							//The buffer that contains the color output of the window
+	LuxFence windowResizeFence;
 	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
 
 	//Devices and queues
@@ -421,7 +430,7 @@ private:
 
 	//debug and validation layers data
 	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
 
 
@@ -478,8 +487,8 @@ private:
 
 
 	//COMPUTE 
-	const int32 COMPUTE_WIDTH = windowWidth;
-	const int32 COMPUTE_HEIGHT = windowHeight;
+	const int32 COMPUTE_WIDTH = width;
+	const int32 COMPUTE_HEIGHT = height;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
 	struct Pixel { unsigned char r, g, b, a; };

@@ -143,10 +143,13 @@ void Engine::drawFrame() {
 
 
 void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
-	auto engine = reinterpret_cast<Engine*>(glfwGetWindowUserPointer(window));
-	engine->windowWidth = width; //TODO ...
-	engine->windowHeight = height;
-	engine->framebufferResized = true;
+	engine.windowResizeFence.wait(0); //from the last call of this function
+
+	engine.framebufferResized = true;
+	engine.windowResizeFence.set(1);
+
+	engine.windowResizeFence.wait(2); //from RecreateSwapchain()
+	engine.windowResizeFence.set(0);
 }
 
 

@@ -196,6 +196,7 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
     <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp" />
     <ClCompile Include="LuxEngine\Object\Object.cpp" />
+    <ClCompile Include="LuxEngine\Types\LuxFence.h" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>

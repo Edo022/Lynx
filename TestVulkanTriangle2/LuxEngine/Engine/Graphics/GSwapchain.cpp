@@ -32,10 +32,8 @@ VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	return VkExtent2D{
-		sc<uint32>(windowWidth),
-		sc<uint32>(windowHeight)
-		//max(capabilities.minImageExtent.width, min(capabilities.maxImageExtent.width, sc<uint32>(width))),
-		//max(capabilities.minImageExtent.height, min(capabilities.maxImageExtent.height, sc<uint32>(height)))
+		max(capabilities.minImageExtent.width, min(capabilities.maxImageExtent.width, sc<uint32>(width))),
+		max(capabilities.minImageExtent.height, min(capabilities.maxImageExtent.height, sc<uint32>(height)))
 	};
 }
 
@@ -169,25 +167,28 @@ void Engine::cleanupSwapChain() {
 
 
 void Engine::recreateSwapChain() {
-	//TODO ...
-	//glfwGetFramebufferSize(window, &windowWidth, &windowHeight); 
+	windowResizeFence.wait(1); //from framebufferResizeCallback
+	int32 width, height;
+	glfwGetFramebufferSize(window, &width, &height); 
 
-	if (windowWidth != 0 && windowHeight != 0) {
+	if (width != 0 && height != 0) {
 		//glfwWaitEvents();
 		vkDeviceWaitIdle(graphics.LD);
 		cleanupSwapChain();
 		createSwapChain();
 
 		CBuffers.remove(__lp_buffer_from_cc(windowOutput));
-		windowOutput = createGpuCell(sizeof(Pixel) * windowWidth * windowHeight);
+		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height);
 		CShader_create_commandBuffers(0);
 		createGraphicsCommandPool();
+
 
 		//TODO don't reset statiic buffers
 		CShaders.clear();
 		LuxCell vertices = createGpuCell(4);
 		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
 		newCShader({ windowOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
-
+		//sleep(1000);
 	}
+	windowResizeFence.set(2);
 }//TODO resize one per frame
