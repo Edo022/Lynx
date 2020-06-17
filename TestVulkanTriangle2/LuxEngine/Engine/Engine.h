@@ -429,7 +429,7 @@ private:
 
 	//debug and validation layers data
 	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
 
@@ -514,7 +514,7 @@ private:
 
 
 	//Buffers
-	enum LuxBufferClass:uint32 {
+	enum LuxBufferClass :uint32 {
 		LUX_BUFFER_CLASS_50 = 50,
 		LUX_BUFFER_CLASS_5K = 5000,
 		LUX_BUFFER_CLASS_500K = 500000,
@@ -527,6 +527,7 @@ private:
 		uint32 size;				//The size in bytes of the buffer
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
+		bool cpuAccessible;
 		bool isMapped = false;		//Whether the buffer is mapped or not
 
 		LuxBufferClass bufferClass;
@@ -550,8 +551,8 @@ private:
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	LuxBuffer createGpuBuffer(uint64 size, LuxBufferClass bufferClass);
-	LuxCell createGpuCell(uint64 cellSize);
+	LuxBuffer createGpuBuffer(uint64 size, LuxBufferClass bufferClass, bool cpuAccessible);
+	LuxCell createGpuCell(uint64 cellSize, bool cpuAccessible);
 	int32 newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp

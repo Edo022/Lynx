@@ -164,7 +164,7 @@ void Engine::initWindow() {
 
 
 void Engine::initWindowBuffers() {
-	windowOutput = createGpuCell(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT);
+	windowOutput = createGpuCell(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT, false);
 }
 
 

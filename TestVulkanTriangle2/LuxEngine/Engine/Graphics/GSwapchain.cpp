@@ -177,11 +177,12 @@ void Engine::recreateSwapChain() {
 		createSwapChain();
 
 		CBuffers.remove(__lp_buffer_from_cc(windowOutput));
-		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height);
+		//CBuffers.remove(__lp_buffer_from_cc(windowOutput), true); //TODO
+		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
 
 
 		CShaders.clear();
-		LuxCell vertices = createGpuCell(4);
+		LuxCell vertices = createGpuCell(4, true);
 		uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
 		newCShader({ windowOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
 	}
