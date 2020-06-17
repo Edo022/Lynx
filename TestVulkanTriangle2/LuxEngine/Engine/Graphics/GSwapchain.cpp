@@ -172,7 +172,6 @@ void Engine::recreateSwapChain() {
 	glfwGetFramebufferSize(window, &width, &height); 
 
 	if (width != 0 && height != 0) {
-		//glfwWaitEvents();
 		vkDeviceWaitIdle(graphics.LD);
 		cleanupSwapChain();
 		createSwapChain();
