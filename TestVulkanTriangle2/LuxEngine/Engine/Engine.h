@@ -91,6 +91,7 @@ extern double* __lp_csch;
 #define GLM_FORCE_RADIANS					//Use radiants intead of degrees
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 #include <glm/glm.hpp>						//Shader compatible geometry
+#include <glm/../../lpng1637/png.h>
 
 //#ifdef LUX_DEBUG //TODO remove
 
