@@ -31,15 +31,12 @@ void main() {
 	if(x > WIDTH || y > HEIGHT) return;
 
 
-//	uvec4 color = uvec4(((x)*(y))/50, 0, 0, 1);
-//	uvec4 color = (vertices[0] == 1) ? uvec4(((x)*(y))/50, 0, 0, 1) : uvec4(0,0,0,0);	
-//	uvec4 color = uvec4(x/9,0,y/4,255);	
-	uvec4 color = imageData[y*WIDTH + x] + uvec4(1,1,1,1);
-	imageData[y*WIDTH + x] += 10;
+	uvec4 color = uvec4(x,0,y,255);
+//	uvec4 color = imageData[y*WIDTH + x] + uvec4(1,0,0,1);
 
 
 //	//Store the pixel in the buffer. 4 chars as an uint32
-	imageData[y*WIDTH + x] = ((color.a & 0xFF) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.r & 0xFF) << 0);
+	imageData[y*WIDTH + x] = ((color.a & 0xFF) << 24) | ((color.r & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.b & 0xFF) << 0);
 
 
 //imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] + 1;

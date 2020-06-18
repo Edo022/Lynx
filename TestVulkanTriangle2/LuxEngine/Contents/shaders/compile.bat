@@ -1,5 +1,2 @@
 
-S:/CppLibraries/Vulkan1.2.135.0/Bin/glslc.exe shader.vert -o vert.spv
-S:/CppLibraries/Vulkan1.2.135.0/Bin/glslc.exe shader.frag -o frag.spv
-S:/CppLibraries/Vulkan1.2.135.0/Bin/glslc.exe shader.comp -o comp.spv
-pause
+S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/glslc.exe S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/shader.comp -o S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/comp.spv

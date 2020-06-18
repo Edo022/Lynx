@@ -34,6 +34,7 @@ Engine engine;
 
 
 void Engine::run(bool _useVSync, float _FOV) {
+	system("S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/compile.bat");
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
 	runGraphics(_useVSync, _FOV);
@@ -76,7 +77,7 @@ void Engine::render() {
 	while (running) {
 		drawFrame();
 		frame++;
-		sleep(0);
+		sleep(10);
 	}
 }
 
