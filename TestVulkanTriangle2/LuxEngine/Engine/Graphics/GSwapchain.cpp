@@ -159,6 +159,7 @@ void Engine::cleanupSwapChain() {
 	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
+	destroyGpuCell(windowOutput);
 }
 
 
@@ -176,8 +177,6 @@ void Engine::recreateSwapChain() {
 		cleanupSwapChain();
 		createSwapChain();
 
-		CBuffers.remove(__lp_buffer_from_cc(windowOutput));
-		//CBuffers.remove(__lp_buffer_from_cc(windowOutput), true); //TODO
 		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
 
 

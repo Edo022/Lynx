@@ -255,6 +255,13 @@ void Engine::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-	TryVk(vkAllocateMemory(device, &allocInfo, nullptr, &memory)) Exit("Failed to allocate buffer memory");
+	//TODO check out of memory
+	switch (vkAllocateMemory(device, &allocInfo, nullptr, &memory)) {
+		case VK_SUCCESS: break;
+		case VK_ERROR_OUT_OF_HOST_MEMORY:
+		case VK_ERROR_TOO_MANY_OBJECTS:
+		default: Exit("Failed to allocate buffer memory");
+	}
+	
 	TryVk(vkBindBufferMemory(device, buffer, memory, 0)) Exit("Failed to bind buffer");
 }
