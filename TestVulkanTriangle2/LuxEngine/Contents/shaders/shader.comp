@@ -2,8 +2,8 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-#define WIDTH 1920
-#define HEIGHT 1080
+#define WIDTH windowSize[0]
+#define HEIGHT windowSize[1]
 #define WORKGROUP_SIZE 32
 #define x gl_GlobalInvocationID.x
 #define y gl_GlobalInvocationID.y

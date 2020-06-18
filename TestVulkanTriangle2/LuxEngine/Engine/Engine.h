@@ -414,7 +414,7 @@ private:
 
 	//Render
 	VkRenderPass renderPass;
-	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2
+	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2 //TODO ? wtf idk
 
 
 private:
