@@ -53,17 +53,17 @@ void Engine::cleanupCompute() {
 //TODO check device limits
 //*   buffers: the indices of the buffers to bind. Each index must correspond to a CGpuBuffers's element
 //*   returns the index of the created shader if the operation succeed, -1 if the indices cannot be used, -2 if the file cannot be found, -3 if an unknown error occurs 
-int32 Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
+LuxShader Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
 	if (buffers.size() > CBuffers.size()) return -1; //TODO check indices
 
-	uint64 shaderIndex = CShaders.add(LuxCShader{});
-	CShaders[shaderIndex].commandBuffers.resize(swapChainImages.size());
+	LuxShader shader = CShaders.add(LuxCShader{});
+	CShaders[shader].commandBuffers.resize(swapChainImages.size());
 
-	CShader_create_descriptorSetLayouts(buffers, shaderIndex);
-	CShader_create_descriptorSets(buffers, shaderIndex);
-	CShader_create_CPipeline(shaderPath, shaderIndex);
-	CShader_create_commandBuffers(shaderIndex);
-	return shaderIndex;
+	CShader_create_descriptorSetLayouts(buffers, shader);
+	CShader_create_descriptorSets(buffers, shader);
+	CShader_create_CPipeline(shaderPath, shader);
+	CShader_create_commandBuffers(shader);
+	return shader;
 }
 
 

@@ -176,8 +176,8 @@ void Engine::recreateSwapChain() {
 		cleanupSwapChain();
 		createSwapChain();
 
-		CBuffers.remove(__lp_buffer_from_cc(windowOutput));
-		//CBuffers.remove(__lp_buffer_from_cc(windowOutput), true); //TODO
+		//CBuffers.remove(__lp_buffer_from_cc(windowOutput));
+		CBuffers.remove(__lp_buffer_from_cc(windowOutput), true); //TODO
 		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
 
 

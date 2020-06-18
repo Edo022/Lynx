@@ -37,8 +37,8 @@
 #define sc static_cast
 
 //functions
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#define max(a,b)            (((a) > (b)) ? (a) : (b))	//Don't use this macro with random numbers
+#define min(a,b)            (((a) < (b)) ? (a) : (b))	//Don't use this macro with random numbers
 #define swapVar(a,b)		a ^= b ^= a ^= b			//Swaps the contents of 2 basic type variables
 
 

@@ -553,7 +553,7 @@ private:
 	void cleanupCompute();
 	LuxBuffer createGpuBuffer(uint64 size, LuxBufferClass bufferClass, bool cpuAccessible);
 	LuxCell createGpuCell(uint64 cellSize, bool cpuAccessible);
-	int32 newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
+	LuxShader newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
 
 	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
 	void CShader_create_descriptorSetLayouts(LuxArray<LuxCell> bufferIndices, LuxShader CShader);
