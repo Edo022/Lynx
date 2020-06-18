@@ -76,7 +76,7 @@ void Engine::render() {
 	while (running) {
 		drawFrame();
 		frame++;
-		sleep(100);
+		sleep(0);
 	}
 }
 
