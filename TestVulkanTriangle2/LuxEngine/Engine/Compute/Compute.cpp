@@ -16,9 +16,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	LuxCell vertices = createGpuCell(4, true);
-	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
-	newCShader({ windowOutput, vertices }, "LuxEngine/Contents/shaders/comp.spv");
+	test___ = createGpuCell(4, true);
+	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[__lp_buffer_from_cc(test___)]); mappedVertices[__lp_buffer_from_cc(test___)] = 1;
+	newCShader({ windowOutput, test___ }, "LuxEngine/Contents/shaders/comp.spv");
 }
 
 

@@ -63,8 +63,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 
 		vkCmdPipelineBarrier(CShaders[CShader].commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
-
-
+  
 
 		//TODO divide to dedicated command buffer and pool
 		VkBufferImageCopy region{};
@@ -111,3 +110,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		TryVk(vkEndCommandBuffer(CShaders[CShader].commandBuffers[imgIndex])) Exit("Failed to record command buffer");
 	}
 }
+
+
+
+
