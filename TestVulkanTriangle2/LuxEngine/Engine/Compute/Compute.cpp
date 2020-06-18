@@ -16,9 +16,11 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
+	windowSize = createGpuCell(4 * 2, true);
+	uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = width, pwindowSize[1] = height;
 	test___ = createGpuCell(4, true);
-	uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[__lp_buffer_from_cc(test___)]); mappedVertices[__lp_buffer_from_cc(test___)] = 1;
-	newCShader({ windowOutput, test___ }, "LuxEngine/Contents/shaders/comp.spv");
+	uint32* mappedVertices = (uint32*)mapGpuBuffer(test___/*&CBuffers[__lp_buffer_from_cc(test___)]*/); mappedVertices[__lp_buffer_from_cc(test___)] = 1;
+	newCShader({ windowOutput, test___, windowSize }, "LuxEngine/Contents/shaders/comp.spv");
 }
 
 
@@ -54,7 +56,7 @@ void Engine::cleanupCompute() {
 //*   buffers: the indices of the buffers to bind. Each index must correspond to a CGpuBuffers's element
 //*   returns the index of the created shader if the operation succeed, -1 if the indices cannot be used, -2 if the file cannot be found, -3 if an unknown error occurs 
 LuxShader Engine::newCShader(LuxArray<LuxCell> buffers, const char* shaderPath) {
-	if (buffers.size() > CBuffers.size()) return -1; //TODO check indices
+	//if (buffers.size() > CBuffers.size()) return -1; //TODO check indices
 
 	LuxShader shader = CShaders.add(LuxCShader{});
 	CShaders[shader].commandBuffers.resize(swapChainImages.size());

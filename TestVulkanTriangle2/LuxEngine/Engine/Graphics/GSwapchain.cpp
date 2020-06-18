@@ -179,11 +179,10 @@ void Engine::recreateSwapChain() {
 
 		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
 
+		uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height;
 
 		CShaders.clear();
-		//LuxCell vertices = createGpuCell(4, true);
-		//uint32* mappedVertices = (uint32*)mapGpuBuffer(&CBuffers[1]); mappedVertices[1] = 1;
-		newCShader({ windowOutput, test___ }, "LuxEngine/Contents/shaders/comp.spv");
+		newCShader({ windowOutput, test___, windowSize }, "LuxEngine/Contents/shaders/comp.spv");
 	}
 	windowResizeFence.set(2);
 }

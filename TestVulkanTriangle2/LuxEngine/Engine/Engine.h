@@ -91,7 +91,6 @@ extern double* __lp_csch;
 #define GLM_FORCE_RADIANS					//Use radiants intead of degrees
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 #include <glm/glm.hpp>						//Shader compatible geometry
-#include <glm/../../lpng1637/png.h>
 
 //#ifdef LUX_DEBUG //TODO remove
 
@@ -354,6 +353,7 @@ private:
 	//Window
 	GLFWwindow* window;								//Main engine's window
 	int32 width = 1920, height = 1080;
+	LuxCell windowSize;
 	LuxCell windowOutput;							//The buffer that contains the color output of the window
 	LuxCell test___;
 	LuxFence windowResizeFence;
@@ -539,11 +539,12 @@ private:
 	//Mapping an already mapped buffer will overwrite the old mapping
 	//*   buffer: a pointer to a _LuxBufferStruc object. It's the buffer that will be mapped
 	//*   returns the void pointer that maps the buffer
-	void* mapGpuBuffer(_LuxBufferStruc* buffer) {
-		if (buffer->isMapped) vkUnmapMemory(compute.LD, buffer->memory);
-		else buffer->isMapped = true;
+	void* mapGpuBuffer(LuxCell cell) {
+		LuxBuffer buffer = __lp_buffer_from_cc(cell);
+		if (CBuffers[buffer].isMapped) vkUnmapMemory(compute.LD, CBuffers[buffer].memory);
+		else CBuffers[buffer].isMapped = true;
 		void* data;
-		vkMapMemory(compute.LD, buffer->memory, 0, buffer->size, 0, &data);
+		vkMapMemory(compute.LD, CBuffers[buffer].memory, 0, CBuffers[buffer].size, 0, &data);
 		return data;
 	}
 	LuxMap<_LuxBufferStruc> CBuffers;

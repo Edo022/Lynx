@@ -23,6 +23,10 @@ layout(std430, binding = 1) buffer vertexBuffer{
 	uint vertices[];
 };
 
+layout(std430, binding = 1) buffer windowSize_{
+	uint windowSize[];
+};
+
 
 
 
