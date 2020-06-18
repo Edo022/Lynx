@@ -76,6 +76,7 @@ void Engine::render() {
 	while (running) {
 		drawFrame();
 		frame++;
+		sleep(100);
 	}
 }
 
@@ -164,7 +165,7 @@ void Engine::initWindow() {
 
 
 void Engine::initWindowBuffers() {
-	windowOutput = createGpuCell(sizeof(Pixel) * COMPUTE_WIDTH * COMPUTE_HEIGHT, false);
+	windowOutput = createGpuCell(sizeof(Pixel) * width * height, false);
 }
 
 
