@@ -77,7 +77,7 @@ void Engine::render() {
 	while (running) {
 		drawFrame();
 		frame++;
-		std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+		//std::this_thread::sleep_for(std::chrono::nanoseconds(1));
 		//sleep(1);
 	}
 }

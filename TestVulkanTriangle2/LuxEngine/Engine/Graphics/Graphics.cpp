@@ -129,6 +129,7 @@ void Engine::drawFrame() {
 			recreateSwapChain();
 			vkDeviceWaitIdle(graphics.LD);
 			printf("Recreated swapchain\n");
+			//currentFrame = (currentFrame + MAX_FRAMES_IN_FLIGHT - 1) % MAX_FRAMES_IN_FLIGHT;
 			//luxDebug(printf("Recreated swapchain\n"));
 			//goto retry;
 			break;

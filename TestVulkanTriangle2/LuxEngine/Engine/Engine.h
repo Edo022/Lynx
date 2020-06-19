@@ -488,8 +488,6 @@ private:
 
 
 	//COMPUTE 
-	const int32 COMPUTE_WIDTH = width;
-	const int32 COMPUTE_HEIGHT = height;
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
 	struct Pixel { unsigned char r, g, b, a; };

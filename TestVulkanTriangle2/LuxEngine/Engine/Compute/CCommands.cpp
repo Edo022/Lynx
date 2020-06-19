@@ -37,7 +37,7 @@ void Engine::CShader_create_commandBuffers(LuxShader CShader) {
 		vkCmdBindPipeline(CShaders[CShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipeline);
 		vkCmdBindDescriptorSets(CShaders[CShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[CShader].pipelineLayout, 0, 1, &CShaders[CShader].descriptorSet, 0, null);
 		//Dispatch the compute shader to execute it with the specified workgroups
-		vkCmdDispatch(CShaders[CShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(COMPUTE_WIDTH) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(COMPUTE_HEIGHT) / WORKGROUP_SIZE)), 1);
+		vkCmdDispatch(CShaders[CShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(swapChainExtent.width) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(swapChainExtent.height) / WORKGROUP_SIZE)), 1);
 
 
 
