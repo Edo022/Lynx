@@ -401,8 +401,6 @@ private:
 
 
 	bool framebufferResized = false;				//Updates the swapchain when the window is resized	
-	const char* VERT_PATH = "LuxEngine/Contents/Shaders/vert.spv";
-	const char* FRAG_PATH = "LuxEngine/Contents/Shaders/frag.spv";
 
 	//Swapchain
 	VkSwapchainKHR swapChain;
@@ -505,7 +503,6 @@ private:
 		//Pipeline
 		VkPipeline pipeline;
 		VkPipelineLayout pipelineLayout;
-		VkShaderModule shaderModule;
 		//Commands
 		VkCommandPool commandPool;
 		LuxArray <VkCommandBuffer> commandBuffers;

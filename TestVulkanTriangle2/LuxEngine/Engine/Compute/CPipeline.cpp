@@ -48,6 +48,7 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 		descriptorPoolCreateInfo.maxSets = 1;												//Allocate only one descriptor set
 		descriptorPoolCreateInfo.poolSizeCount = 1;											//One pool size
 		descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
+		descriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;	//The descriptor sets can be freed
 		//Create descriptor pool
 		TryVk(vkCreateDescriptorPool(compute.LD, new VkDescriptorPoolCreateInfo(descriptorPoolCreateInfo), null, &CShaders[CShader].descriptorPool)) Exit("Unable to create descriptor pool");
 
@@ -95,13 +96,13 @@ void Engine::CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxS
 
 void Engine::CShader_create_CPipeline(const char* shaderPath, LuxShader CShader) {
 	uint32 fileLength;																//Create the shader module
-	CShaders[CShader].shaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
+	VkShaderModule shaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
 
 
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};						//Create shader stage infos
 	shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;	//Set structure type
 	shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;							//Use it in the compute stage
-	shaderStageCreateInfo.module = CShaders[CShader].shaderModule;						//Set compute module
+	shaderStageCreateInfo.module = shaderModule;										//Set compute module
 	shaderStageCreateInfo.pName = "main";												//Set the main function as entry point
 
 
@@ -119,5 +120,5 @@ void Engine::CShader_create_CPipeline(const char* shaderPath, LuxShader CShader)
 	pipelineCreateInfo.layout = CShaders[CShader].pipelineLayout;						//Set pipeline layout
 	//Create the compute pipeline
 	TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &CShaders[CShader].pipeline)) Exit("Unable to create comput pipeline");
-	vkDestroyShaderModule(compute.LD, CShaders[CShader].shaderModule, null);		//Destroy the shader module
+	vkDestroyShaderModule(compute.LD, shaderModule, null);							//Destroy the shader module
 }

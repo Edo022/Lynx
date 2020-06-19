@@ -2,37 +2,25 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-#define WIDTH windowSize[0]
-#define HEIGHT windowSize[1]
-#define WORKGROUP_SIZE 32
-#define x gl_GlobalInvocationID.x
-#define y gl_GlobalInvocationID.y
-
-
-
+#define width windowSize[0]			//The width of the window
+#define height windowSize[1]		//The height of the window
+#define WORKGROUP_SIZE 32			//The x and y size of the workgroup
+#define x gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
+#define y gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 
 
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
-
-layout(std430, binding = 0) buffer imageDataBuffer{
-	uint imageData[];
-};
-
-layout(std430, binding = 1) buffer vertexBuffer{
-	uint vertices[];
-};
-
-layout(std430, binding = 1) buffer windowSize_{
-	uint windowSize[];
-};
+layout(std430, binding = 0) buffer imageData_{ uint imageData[]; };
+layout(std430, binding = 1) buffer vertices_{ uint vertices[]; };
+layout(std430, binding = 2) buffer windowSize_{ uint windowSize[]; };
 
 
 
 
 void main() {
 	//Yeet unnecessary calls
-	if(x > WIDTH || y > HEIGHT) return;
+	if(x > width || y > height) return;
 
 
 	uvec4 color = uvec4(x,0,y,255);
@@ -40,7 +28,7 @@ void main() {
 
 
 //	//Store the pixel in the buffer. 4 chars as an uint32
-	imageData[y*WIDTH + x] = ((color.a & 0xFF) << 24) | ((color.r & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.b & 0xFF) << 0);
+	imageData[y*width + x] = ((color.a & 0xFF) << 24) | ((color.r & 0xFF) << 16) | ((color.g & 0xFF) << 8) | ((color.b & 0xFF) << 0);
 
 
 //imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] = imageData[gl_GlobalInvocationID.y*WIDTH + gl_GlobalInvocationID.x] + 1;

@@ -160,6 +160,7 @@ void Engine::cleanupSwapChain() {
 	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				//Destroy framebuffers
 	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
+
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
 	destroyGpuCell(windowOutput);
 }
@@ -183,8 +184,23 @@ void Engine::recreateSwapChain() {
 		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
 
 
-		CShaders.clear();
+		
+		//CShaders.clear();
+		
+		vkFreeDescriptorSets(compute.LD, CShaders[0].descriptorPool, 1, &CShaders[0].descriptorSet);
+		vkDestroyDescriptorPool(compute.LD, CShaders[0].descriptorPool, null);
+		vkDestroyDescriptorSetLayout(compute.LD, CShaders[0].descriptorSetLayout, null);
+
+		vkFreeCommandBuffers(compute.LD, CShaders[0].commandPool, 1, CShaders[0].commandBuffers.data());
+		vkDestroyCommandPool(compute.LD, CShaders[0].commandPool, null);
+		
+		vkDestroyPipelineLayout(compute.LD, CShaders[0].pipelineLayout, null);
+		vkDestroyPipeline(compute.LD, CShaders[0].pipeline, null);
+
+		CShaders.remove(0);
+		//vkFreeCommandBuffers(graphics.LD, CShaders.__lp_data[0][0].commandPool, CShaders.__lp_data[0][0].commandBuffers.__lp_size, CShaders.__lp_data[0][0].commandBuffers.__lp_data);
 		newCShader({ windowOutput, test___, windowSize }, "LuxEngine/Contents/shaders/comp.spv");
+
 	}
 	windowResizeFence.set(2);
 }

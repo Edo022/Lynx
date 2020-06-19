@@ -7,13 +7,13 @@
 
 
 
-
+//TODO render pass seems to be usee
 void Engine::createRenderPass() {
 	//Color
 	VkAttachmentDescription colorAttachment{};
 	colorAttachment.format = swapChainImageFormat;									//Swapchain image format
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Clear the image before writing to it //TODO dont clear for better performances //TODO bug when not clearing
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//TODO dont clear for better performances //Clear the image before writing to it 
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;							//Save rendered image
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
