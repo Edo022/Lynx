@@ -67,7 +67,7 @@ public:
 
 	//Adds an element at the end of the map, allocating a new chunk if needed
 	//Returns the ID of the element
-	uint64 append(type _data) {
+	uint64 __vectorcall append(type _data) {
 		if (__lp_dynSize + 1 > chunksDynNum * chunkSize) {							//If the chunk is full
 			__lp_data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);			//Allocate a new data chunk
 			__lp_tracker[chunksDynNum] = (uint64*)malloc(sizeof(uint64) * chunkSize);	//Allocate a new tracker chunk
@@ -85,7 +85,7 @@ public:
 
 	//Adds an element at the firs free index of the map
 	//Returns the ID of the element
-	uint64 add(type _data) {
+	uint64 __vectorcall add(type _data) {
 		uint64 head2 = head;
 		if (head == -1) return append(_data);				//If it has no free elements, append it
 		else {
@@ -108,7 +108,7 @@ public:
 
 	//Adds an std::vector to the map, placing each element in the first free index
 	//Returns a static map containing the IDs of the elements, in the same order as they were in the input
-	LuxArray<uint64> add(std::vector<type> vec) {
+	LuxArray<uint64> __vectorcall add(std::vector<type> vec) {
 		LuxArray<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
 		forEach(vec, i) IDs[i] = add(vec[i]);			//Add every element to the map and save its ID
@@ -120,7 +120,7 @@ public:
 
 	//Adds a LuxDynArray to the map, skipping all the invalid elements and placing the others in the first free index
 	//Returns a static map containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
-	LuxArray<uint64> add(LuxMap<type> vec) {
+	LuxArray<uint64> __vectorcall add(LuxMap<type> vec) {
 		LuxArray<uint64> IDs;
 		IDs.resize(vec.size());								//Set the number of IDs
 		forEach(vec, i) {				//For every element of the input map
@@ -155,7 +155,7 @@ public:
 
 
 	//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
-	void clear() {
+	void __vectorcall clear() {
 		for (int32 i = 0; i < chunksDynNum; i++) free(__lp_data[i]); free(__lp_data);		//Free data map
 		for (int32 i = 0; i < chunksDynNum; i++) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker map
 		__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data map
@@ -224,7 +224,7 @@ public:
 	//Returns the number of elements in the map, including the free ones
 	inline uint64 size() { return __lp_dynSize; }
 	//Returns the number of used elements
-	inline uint64 usedSize() { return __lp_dynSize - __lp_freeNum; }
+	inline uint64 __vectorcall usedSize() { return __lp_dynSize - __lp_freeNum; }
 	//Returns the number of free elements
 	inline uint64 freeSize() { return __lp_freeNum; }
 };

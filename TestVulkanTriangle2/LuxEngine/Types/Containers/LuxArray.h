@@ -24,7 +24,7 @@ public:
 
 	//Initializes the array using a list of elements of the same type
 	template<class inType>
-	LuxArray(std::initializer_list<inType> c) {
+	__vectorcall LuxArray(std::initializer_list<inType> c) {
 		__lp_lux_static_array_init(c.size());
 		for (int i = 0; i < c.end() - c.begin(); i++) __lp_data[i] = (inType) * (c.begin() + i);
 		//std::copy(c.begin(), c.end(), __lp_data);
@@ -33,7 +33,7 @@ public:
 	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
 	//*   in: a pointer to the container object
 	template<class elmType>
-	LuxArray(LuxContainer<elmType>* in) {
+	__vectorcall LuxArray(LuxContainer<elmType>* in) {
 		__lp_lux_static_array_init(in->end() - in->begin());
 		for (int i = 0; i < in->end() - in->begin(); i++) __lp_data[i] = (elmType) * (in->begin() + i);
 	}
@@ -57,7 +57,7 @@ public:
 	}
 
 	//Resizes the array and initializes the new elements with the val parameter's value
-	inline void resize(uint64 newSize, type val) {
+	inline void __vectorcall resize(uint64 newSize, type val) {
 		uint64 oldSize = __lp_size;
 		resize(newSize);
 		if (newSize > oldSize) for (uint64 i = oldSize; i < newSize; i++) __lp_data[i] = val;
