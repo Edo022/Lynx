@@ -139,6 +139,8 @@ void Engine::createSwapChain() {
 	swapChainExtent = createInfo.imageExtent;														//Save extent
 
 
+
+
 	createImageViews();
 	createRenderPass();
 
@@ -177,9 +179,9 @@ void Engine::recreateSwapChain() {
 		cleanupSwapChain();
 		createSwapChain();
 
+		uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height;
 		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
 
-		uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height;
 
 		CShaders.clear();
 		newCShader({ windowOutput, test___, windowSize }, "LuxEngine/Contents/shaders/comp.spv");

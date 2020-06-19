@@ -34,6 +34,8 @@ Engine engine;
 
 
 void Engine::run(bool _useVSync, float _FOV) {
+	LuxTime start = luxGetTime();
+
 	system("S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/compile.bat");
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
@@ -44,6 +46,7 @@ void Engine::run(bool _useVSync, float _FOV) {
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
 	glfwSetKeyCallback(window, &__lp_key_callback);
 
+	Success printf("Initialization completed in %f s", luxTimeGetDuration(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 	Normal  printf("Cleaning memory");								cleanupGraphics(); cleanupCompute();		NewLine;
 
