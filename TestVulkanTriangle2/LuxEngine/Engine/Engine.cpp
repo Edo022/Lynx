@@ -234,17 +234,17 @@ uint32* Engine::readShaderFromFile(uint32* pLength, const char* pFilePath) {
 
 
 //Creates a shader module from a compiled shader code and its size in bytes
-//*   vDevide: the logical device to use to create the shader module
+//*   vDevice: the logical device to use to create the shader module
 //*   pCode: a pointer to an int32 array containing the shader code
 //*   pLength: a pointer to the code length
-VkShaderModule Engine::createShaderModule(const VkDevice vDevide, uint32* pCode, const uint32* pLength) {
+VkShaderModule Engine::createShaderModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
 	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
 	createInfo.codeSize = *pLength;										//Set the size of the compiled shader code
 	createInfo.pCode = pCode;											//Set the shader code
 
 	VkShaderModule shaderModule;										//Create the shader module
-	TryVk(vkCreateShaderModule(vDevide, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
+	TryVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
 	return shaderModule;												//Return the created shader module
 }
 
@@ -252,35 +252,35 @@ VkShaderModule Engine::createShaderModule(const VkDevice vDevide, uint32* pCode,
 
 
 //Creates and allocates a buffer in the memory of a device
-//*   device: the logical device where to create the buffer
-//*   size: the size of the buffer in bytes
-//*   usage: flags defining the usage of the buffer (VK_BUFFER_USAGE...)
-//*   properties: flags defining the properties of the memory (VK_MEMORY_PROPERTY_...)
-//*   buffer: the buffer object to allocate
-//*   memory: the memory of the buffer
-void Engine::createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& memory) {
+//*   vDevice: the logical device where to create the buffer
+//*   vSize: the size of the buffer in bytes
+//*   vUsage: flags defining the usage of the buffer (VK_BUFFER_USAGE...)
+//*   vProperties: flags defining the properties of the memory (VK_MEMORY_PROPERTY_...)
+//*   pBuffer: the buffer object to allocate
+//*   pMemory: the memory of the buffer
+void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory) {
 	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	bufferInfo.size = size;
-	bufferInfo.usage = usage;
+	bufferInfo.size = vSize;
+	bufferInfo.usage = vUsage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	TryVk(vkCreateBuffer(device, &bufferInfo, nullptr, &buffer)) Exit("Failed to create buffer");
+	TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) Exit("Failed to create buffer");
 
 	VkMemoryRequirements memRequirements;
-	vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+	vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
+	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, vProperties);
 
 	//TODO check out of memory
-	switch (vkAllocateMemory(device, &allocInfo, nullptr, &memory)) {
+	switch (vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
 		case VK_SUCCESS: break;
 		case VK_ERROR_OUT_OF_HOST_MEMORY:
 		case VK_ERROR_TOO_MANY_OBJECTS:
 		default: Exit("Failed to allocate buffer memory");
 	}
 	
-	TryVk(vkBindBufferMemory(device, buffer, memory, 0)) Exit("Failed to bind buffer");
+	TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) Exit("Failed to bind buffer");
 }

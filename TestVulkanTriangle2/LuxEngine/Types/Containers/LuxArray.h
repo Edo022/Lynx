@@ -37,6 +37,7 @@ public:
 		__lp_lux_static_array_init(in->end() - in->begin());
 		for (int i = 0; i < in->end() - in->begin(); i++) __lp_data[i] = (elmType) * (in->begin() + i);
 	}
+	#undef __lp_lux_static_array_init
 
 
 

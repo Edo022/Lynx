@@ -58,6 +58,15 @@ public:
 	}
 
 
+	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
+	//*   in: a pointer to the container object
+	template<class elmType>
+	__vectorcall LuxMap(LuxContainer<elmType>* in) {
+		for (int i = 0; i < in->end() - in->begin(); i++) add((elmType) * (in->begin() + i));
+	}
+
+
+
 
 
 	// Add, remove --------------------------------------------------------------------------------------------------------- //
@@ -173,7 +182,7 @@ public:
 
 
 	//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
-	inline signed char status(uint64 index) {
+	inline signed char status(uint64 index) const {
 		if (index == (int64)-1)return -1;						//Invalid index
 		else if (index >= __lp_dynSize) return -2;				//Index out of range
 		else if (__lp_Tracker(index) == (uint64)-1) return 0;	//Ok
@@ -183,7 +192,7 @@ public:
 
 
 	//Returns true if the index is used, 1 if it's free or invalid (use the 'status' function for more details)
-	inline bool isValid(uint64 index) { return (__lp_dynSize > index && __lp_Tracker(index) == (uint64)-1); }
+	inline bool isValid(uint64 index) const { return (__lp_dynSize > index && __lp_Tracker(index) == (uint64)-1); }
 
 
 
@@ -194,13 +203,13 @@ public:
 
 
 	//Use the isValid() function to check if the element can be used
-	inline type& operator [](uint64 index) { return __lp_Data(index); }
+	inline type& operator [](uint64 index) const { return __lp_Data(index); }
 	//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-	inline type* data(uint64 chunkIndex) { return &__lp_data[chunkIndex][0]; }
+	inline type* data(uint64 chunkIndex) const { return &__lp_data[chunkIndex][0]; }
 
 	//Returns a pointer to a new map that contains all the elements in the chunks, without the invalid ones
 	//This operation can be really slow, try to avoid using it
-	type* data() {
+	type* data() const {
 		type* arr = (type*)malloc(sizeof(type) * usedSize());
 		int32 new_i = 0;
 		for (int32 i = 0; i < usedSize(); i++) {
@@ -222,11 +231,11 @@ public:
 
 
 	//Returns the number of elements in the map, including the free ones
-	inline uint64 size() { return __lp_dynSize; }
+	inline uint64 const size() const { return __lp_dynSize; }
 	//Returns the number of used elements
-	inline uint64 __vectorcall usedSize() { return __lp_dynSize - __lp_freeNum; }
+	inline uint64 __vectorcall usedSize() const { return __lp_dynSize - __lp_freeNum; }
 	//Returns the number of free elements
-	inline uint64 freeSize() { return __lp_freeNum; }
+	inline uint64 freeSize() const { return __lp_freeNum; }
 };
 
 

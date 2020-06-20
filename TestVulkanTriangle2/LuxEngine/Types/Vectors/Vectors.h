@@ -3,42 +3,26 @@
 
 #include "Vec2.h"
 #include "Vec3.h"
+#include "Vec4.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 
 #include <cinttypes>
 #include <math.h>
 
 
-typedef _vec2<char>			charv2,		cvec2;
-typedef _vec2<int32>		int32v2,	vec2;
-typedef _vec2<int64>		int64v2,	lvec2;
-typedef _vec2<int128>		int128v2,	llvec2;
-typedef _vec2<float>		floatv2,	fvec2;
-typedef _vec2<double>		doublev2,	dvec2;
 
-typedef _vec2<char>			charv3,		cvec3;
-typedef _vec3<int32>		int32v3,	vec3;
-typedef _vec3<int64>		int64v3,	lvec3;
-typedef _vec3<int128>		int128v3,	llvec3;
-typedef _vec3<float>		floatv3,	fvec3;
-typedef _vec3<double>		doublev3,	dvec3;
+#pragma warning( disable: 26451 )
+#define __lp_vec_def(type, typen)																																						\
+typedef _vec2<type> vec2##type;																																							\
+typedef _vec3<type> vec3##type;																																							\
+typedef _vec4<type> vec4##type;																																							\
+static inline type __vectorcall dist##typen(const _vec2<type> a, const _vec2<type> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))); }											\
+static inline type __vectorcall dist##typen(const _vec3<type> a, const _vec3<type> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2))); }						\
+static inline type __vectorcall dist##typen(const _vec4<type> a, const _vec4<type> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2))); }
 
-
-
-
-
-
-template<class t>
-static inline int32 dist(_vec2<t> a, _vec2<t> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))); }
-template<class t>
-static inline int64 ldist(_vec2<t> a, _vec2<t> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))); }
-template<class t>
-static inline double ddist(_vec2<t> a, _vec2<t> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))); }
-
-
-template<class t>
-static inline int32 dist(_vec3<t> a, _vec3<t> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2))); }
-template<class t>
-static inline int64 ldist(_vec3<t> a, _vec3<t> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2))); }
-template<class t>
-static inline double ddist(_vec3<t> a, _vec3<t> b) { return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2))); }
+__lp_vec_def(int8, Int8)	__lp_vec_def(uint8, Uint8)		__lp_vec_def(bool, Bool)		__lp_vec_def(char, Char)	
+__lp_vec_def(int16, Int16)	__lp_vec_def(uint16, Uint16)																			
+__lp_vec_def(int32, Int32)	__lp_vec_def(uint32, Uint32)	__lp_vec_def(float, Float)										
+__lp_vec_def(int64, Int64)	__lp_vec_def(uint64, Uint64)	__lp_vec_def(double, Double)
+#undef __lp_vec_def
+#pragma warning( enable: 26451 )

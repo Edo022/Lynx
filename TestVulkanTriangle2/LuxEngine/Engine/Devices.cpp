@@ -9,49 +9,56 @@
 
 
 
-//Returns the rating of a physical device
-static int32 ratePhysicalDevice(_VkPhysicalDevice& device) {
+//Rates a physical device based on its properties and features
+//*   pDevice: a pointer to the device structure where its infos are stored
+//*   Returns the rating of the physical device
+int32 Engine::ratePhysicalDevice(const _VkPhysicalDevice* pDevice) {
 	uint32 score = 0;																			//Device performance evalutation
-	if (device.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
-	device.properties.limits.maxComputeSharedMemorySize; //TODO non superare il limite della shader
-	score += device.properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
-	if (device.features.geometryShader) score += 1;												//Geometry shaders needed
+	if (pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
+	pDevice->properties.limits.maxComputeSharedMemorySize; //TODO non superare il limite della shader
+	score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
+	if (pDevice->features.geometryShader) score += 1;												//Geometry shaders needed
 	return score;
 }
 
 
 
 
-//Returns the queue families of a physical device
-QueueFamilyIndices Engine::findQueueFamilies(VkPhysicalDevice device) {
-	uint32 queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);						//Enumerate queue families
-	LuxArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());			//Save queue families
-
-	//Set families
-	QueueFamilyIndices indices;
-	for (int i = 0; i < queueFamilies.size(); i++) {													//For every queue family
-		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
-		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
-		VkBool32 hasPresentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &hasPresentSupport);						//Set present family
-		if (hasPresentSupport) indices.presentFamily = i;
+//TODO check graphics only for main graphics devices
+//Checks if a device has the required extensions and properties to run vulkan
+//*   vDevice: the physical device to check
+//*   pErrorText: a pointer to a LuxString where to store the error in case the device is not suitable
+//*   Returns true if the device is suitable, false if not
+bool Engine::isDeviceSuitable(const VkPhysicalDevice vDevice, std::string* pErrorText) {
+	//Check extensions
+	if (!checkDeviceExtensionSupport(vDevice)) {
+		*pErrorText = "Missing required extensions";
+		return false;
 	}
-	return indices;
+
+	//Check swapchain support
+	else {
+		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(vDevice);
+		if (swapChainSupport.formats.size() == 0 || swapChainSupport.presentModes.size() == 0) {
+			*pErrorText = "Unsupported swapchain";
+			return false;
+		}
+	}
+	return true;
 }
 
 
 
 
 //Returns true if the device supports the extensions, false if not
-bool Engine::checkDeviceExtensionSupport(VkPhysicalDevice device) {
+bool Engine::checkDeviceExtensionSupport(const VkPhysicalDevice vDevice) {
 	uint32 extensionCount;
-	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);					//Get extension count
+	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);					//Get extension count
 	LuxArray<VkExtensionProperties> availableExtensions(extensionCount);
-	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());	//Get extensions
+	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.data());	//Get extensions
 
-	std::set<std::string> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
+	//TODO use LuxMap
+	std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
 	for (const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);//Search for required extensions
 	return requiredExtensions.empty();
 }
@@ -59,23 +66,23 @@ bool Engine::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 
 
 
-//Returns true if the device is suitable false if not
-bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
-	//Check extensions
-	if (!checkDeviceExtensionSupport(device)) {
-		errorText = "Missing required extensions";
-		return false;
-	}
+//Finds the queue families of a physical device
+QueueFamilyIndices Engine::findQueueFamilies(const VkPhysicalDevice vDevice) {
+	uint32 queueFamilyCount = 0;
+	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
+	LuxArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.data());			//Save queue families
 
-	//Check swapchain
-	else {
-		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
-		if (swapChainSupport.formats.size() == 0 || swapChainSupport.presentModes.size() == 0) {
-			errorText = "Unsupported swapchain";
-			return false;
-		}
+	//Set families
+	QueueFamilyIndices indices;
+	for (int i = 0; i < queueFamilies.size(); i++) {													//For every queue family
+		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
+		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
+		VkBool32 hasPresentSupport = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, surface, &hasPresentSupport);						//Set present family
+		if (hasPresentSupport) indices.presentFamily = i;
 	}
-	return true;
+	return indices;
 }
 
 
@@ -94,7 +101,8 @@ bool Engine::isDeviceSuitable(VkPhysicalDevice device, std::string errorText) {
 
 
 
-//Find all suitable physical devices, choosing the main and secondary devices according to their capabilities
+//Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities,
+//Then saves them in the class members
 void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
 	LuxMap<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
@@ -112,8 +120,9 @@ void Engine::getPhysicalDevices() {
 		forEach(physDevices, i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
 			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
+			//TODO use LuxString
 			std::string errorText;
-			if (isDeviceSuitable(physDevices[i], errorText)) {										//If it's suitable
+			if (isDeviceSuitable(physDevices[i], &errorText)) {										//If it's suitable
 				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices)); //Add it to the physical devices vector
 			}
 			else {																						//If not
@@ -139,7 +148,7 @@ void Engine::getPhysicalDevices() {
 		compute.PD = *physicalDevices[0];								//set compute  device at default value
 		forEach(physicalDevices, i) {									//For every physical device
 			physDev.indices = findQueueFamilies(physDev.device);			//Get its queue families
-			physDev.score = ratePhysicalDevice(physDev);					//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
+			physDev.score = ratePhysicalDevice(&physDev);					//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 			if (physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
 			if (physDev.score > compute.PD.score || physDev.indices.computeFamilies.size() > 0) compute.PD = physDev;
 		}
@@ -160,7 +169,7 @@ void Engine::getPhysicalDevices() {
 		}
 	}
 	else Exit("Failed to find a suitable GPU");
-
+	#undef physDev
 
 
 
@@ -192,15 +201,15 @@ void Engine::getPhysicalDevices() {
 
 
 
-void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxMap<VkQueue>* computeQueues) {
+void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, VkQueue* pGraphicsQueue, VkQueue* pPresentQueue, LuxMap<VkQueue>* pComputeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
-	if (sameDevice((*PD), graphics.PD)) {												//If it's the main device for graphics,
-		uniqueQueueFamilyIndices.insert(PD->indices.graphicsFamily);					//Add his graphics family
-		uniqueQueueFamilyIndices.insert(PD->indices.presentFamily);						//And his present family
+	if (sameDevice((*pPD), graphics.PD)) {												//If it's the main device for graphics,
+		uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);					//Add his graphics family
+		uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);						//And his present family
 	}
-	forEach(PD->indices.computeFamilies, i) {											//And then add every compute family, graphics ones included
-		uniqueQueueFamilyIndices.insert(PD->indices.computeFamilies[i]);
+	forEach(pPD->indices.computeFamilies, i) {											//And then add every compute family, graphics ones included
+		uniqueQueueFamilyIndices.insert(pPD->indices.computeFamilies[i]);
 	}
 
 
@@ -213,7 +222,7 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;					//Set structure type
 		queueCreateInfo.queueFamilyIndex = queueFamilyIndex;								//Set index
 		queueCreateInfo.queueCount = 1;														//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-		queueCreateInfo.pQueuePriorities = new float((sameDevice((*PD), graphics.PD) || sameDevice((*PD), compute.PD)) ? 1.0f : 0.5f);
+		queueCreateInfo.pQueuePriorities = new float((sameDevice((*pPD), graphics.PD) || sameDevice((*pPD), compute.PD)) ? 1.0f : 0.5f);
 		queueCreateInfos.add(queueCreateInfo);											//Add it to the queue create info array
 	}
 
@@ -240,28 +249,28 @@ void Engine::createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* g
 
 	//Create the logical device and save its queues, exit if an error occurs
 	VkDevice _logicalDevice;
-	if (vkCreateDevice(PD->device, &deviceCreateInfo, nullptr, &_logicalDevice) == VK_SUCCESS) {
-		if (sameDevice((*PD), graphics.PD) || sameDevice((*PD), compute.PD)) {
-			if (sameDevice((*PD), graphics.PD)) {														//If it's the main graphics device
+	if (vkCreateDevice(pPD->device, &deviceCreateInfo, nullptr, &_logicalDevice) == VK_SUCCESS) {
+		if (sameDevice((*pPD), graphics.PD) || sameDevice((*pPD), compute.PD)) {
+			if (sameDevice((*pPD), graphics.PD)) {														//If it's the main graphics device
 				graphics.LD = _logicalDevice;																//Set it as the main graphics logical device
-				vkGetDeviceQueue(_logicalDevice, PD->indices.graphicsFamily, 0, &graphics.graphicsQueue);	//Set graphics queue
-				vkGetDeviceQueue(_logicalDevice, PD->indices.presentFamily, 0, &graphics.presentQueue);		//Set present queue
+				vkGetDeviceQueue(_logicalDevice, pPD->indices.graphicsFamily, 0, &graphics.graphicsQueue);	//Set graphics queue
+				vkGetDeviceQueue(_logicalDevice, pPD->indices.presentFamily, 0, &graphics.presentQueue);	//Set present queue
 			}
-			if (computeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
+			if (pComputeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
 				compute.LD = _logicalDevice;																//Set it as the main compute logical device
-				forEach(PD->indices.computeFamilies, i) {													//Add every compute queue to the main compute queue list
+				forEach(pPD->indices.computeFamilies, i) {													//Add every compute queue to the main compute queue list
 					VkQueue computeQueue;
-					vkGetDeviceQueue(_logicalDevice, PD->indices.computeFamilies[i], 0, &computeQueue);
+					vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 					compute.computeQueues.add(computeQueue);
 				}
 			}
 		}
 		else {																							//If it's none of them
-			*LD = _logicalDevice;																			//Add it to the list of secondary logical devices
-			forEach(PD->indices.computeFamilies, i) {														//Add every compute queue to the secondary compute queues
+			*pLD = _logicalDevice;																			//Add it to the list of secondary logical devices
+			forEach(pPD->indices.computeFamilies, i) {														//Add every compute queue to the secondary compute queues
 				VkQueue computeQueue;
-				vkGetDeviceQueue(_logicalDevice, PD->indices.computeFamilies[i], 0, &computeQueue);
-				computeQueues->add(computeQueue);
+				vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
+				pComputeQueues->add(computeQueue);
 			}
 		}
 	}

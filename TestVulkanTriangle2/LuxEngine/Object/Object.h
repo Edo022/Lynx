@@ -13,16 +13,16 @@ struct LuxObject {
 	std::string name;
 	uint64 ID;
 
-	fvec3 pos;
-	fvec3 rot;
-	fvec3 scl;
+	vec3float pos;
+	vec3float rot;
+	vec3float scl;
 	LuxCell mainGpuData;
 
 	ObjectGeometry geometry;
 	ObjectPhysics physics;
 
 
-	LuxObject(std::string _name = "Undefined", fvec3 _pos = { 0, 0, 0 }, fvec3 _rot = { 0, 0, 0 }, fvec3 _scl = { 1, 1, 1 }) {
+	LuxObject(std::string _name = "Undefined", vec3float _pos = { 0, 0, 0 }, vec3float _rot = { 0, 0, 0 }, vec3float _scl = { 1, 1, 1 }) {
 		name = _name;
 		pos = _pos;
 		rot = _rot;

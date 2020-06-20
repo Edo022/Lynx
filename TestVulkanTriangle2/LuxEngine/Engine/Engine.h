@@ -377,15 +377,16 @@ private:
 	void initWindow();		void initWindowBuffers();	void createInstance();
 
 	//Devices >> Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(_VkPhysicalDevice* PD, VkDevice* LD, VkQueue* graphicsQueue, VkQueue* presentQueue, LuxMap<VkQueue>* computeQueues);
-	bool isDeviceSuitable(VkPhysicalDevice device, std::string errorText);
-	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+	void getPhysicalDevices();		void createLogicalDevice(const _VkPhysicalDevice * pPD, VkDevice * pLD, VkQueue * pGraphicsQueue, VkQueue * pPresentQueue, LuxMap<VkQueue>* pComputeQueues);
+	static int32 ratePhysicalDevice(const _VkPhysicalDevice* pDevice);
+	bool isDeviceSuitable(const VkPhysicalDevice vDevice, std::string* pErrorText);
+	bool checkDeviceExtensionSupport(const VkPhysicalDevice device);
+	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice device);
 
 	//Shared functions >> this
 	uint32* readShaderFromFile(uint32* pLength, const char* pFilePath);
 	VkShaderModule createShaderModule(const VkDevice device, uint32* code, const uint32* size);
-	void createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
 
 
 
