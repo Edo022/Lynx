@@ -41,7 +41,7 @@ VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities
 
 
 
-SwapChainSupportDetails Engine::querySwapChainSupport(VkPhysicalDevice device) {
+Engine::SwapChainSupportDetails Engine::querySwapChainSupport(VkPhysicalDevice device) {
 	SwapChainSupportDetails details;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
 

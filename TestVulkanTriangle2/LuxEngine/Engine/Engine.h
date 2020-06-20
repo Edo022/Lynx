@@ -155,11 +155,6 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 	if (func != nullptr) func(instance, debugMessenger, pAllocator);
 }
 
-struct SwapChainSupportDetails {
-	VkSurfaceCapabilitiesKHR capabilities;
-	LuxArray<VkSurfaceFormatKHR> formats;
-	LuxArray<VkPresentModeKHR> presentModes;
-};
 
 
 
@@ -342,7 +337,7 @@ public:
 	uint32 frame = 0;
 
 
-	void run(bool _useVSync = true, float FOV = 45.0f);
+	void run(bool vUseVSync, float vFOV);
 
 private:
 	//Main
@@ -388,8 +383,8 @@ private:
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
 	//Shared functions >> this
-	uint32* readShaderFromFile(uint32* length, const char* filename);
-	VkShaderModule createShaderModule(VkDevice device, uint32* code, uint32* size);
+	uint32* readShaderFromFile(uint32* pLength, const char* pFilePath);
+	VkShaderModule createShaderModule(const VkDevice device, uint32* code, const uint32* size);
 	void createBuffer(VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
 
@@ -449,6 +444,12 @@ private:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxArray<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(LuxArray<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+	struct SwapChainSupportDetails {
+		VkSurfaceCapabilitiesKHR capabilities;
+		LuxArray<VkSurfaceFormatKHR> formats;
+		LuxArray<VkPresentModeKHR> presentModes;
+	};
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	void createImageViews();
 	void cleanupSwapChain();

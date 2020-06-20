@@ -33,13 +33,13 @@ Engine engine;
 
 
 
-void Engine::run(bool _useVSync, float _FOV) {
+void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxGetTime();
 
 	system("S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/compile.bat");
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
-	runGraphics(_useVSync, _FOV);
+	runGraphics(vUseVSync, vFOV);
 	initWindowBuffers();
 	runCompute();
 
@@ -204,12 +204,12 @@ void Engine::initWindowBuffers() {
 
 
 //Reads a shader from a file and saves it into a padded int32 array
-//*   length: a pointer to an int32 where to store the padded code length
-//*   filename: a pointer to a char array containing the path to the compiled shader file
+//*   pLength: a pointer to an int32 where to store the padded code length
+//*   pFilePath: a pointer to a char array containing the path to the compiled shader file
 //*   returns a pointer to the array where the code is saved
-uint32* Engine::readShaderFromFile(uint32* length, const char* filename) {
-	FILE* fp = fopen(filename, "rb");
-	if (fp == NULL) printf("Could not find or open file: %s\n", filename);
+uint32* Engine::readShaderFromFile(uint32* pLength, const char* pFilePath) {
+	FILE* fp = fopen(pFilePath, "rb");
+	if (fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
 
 	//Get file size.
 	fseek(fp, 0, SEEK_END);
@@ -226,7 +226,7 @@ uint32* Engine::readShaderFromFile(uint32* length, const char* filename) {
 	//Data padding. 
 	for (int32 i = filesize; i < paddedFileSize; i++) str[i] = 0;
 
-	*length = paddedFileSize;
+	*pLength = paddedFileSize;
 	return (uint32*)str;
 }
 
@@ -234,17 +234,17 @@ uint32* Engine::readShaderFromFile(uint32* length, const char* filename) {
 
 
 //Creates a shader module from a compiled shader code and its size in bytes
-//*   device: the logical device to use to create the shader module
-//*   code: a pointer to an int32 array containing the shader code
-//*   length: a pointer to the code length
-VkShaderModule Engine::createShaderModule(VkDevice device, uint32* code, uint32* length) {
+//*   vDevide: the logical device to use to create the shader module
+//*   pCode: a pointer to an int32 array containing the shader code
+//*   pLength: a pointer to the code length
+VkShaderModule Engine::createShaderModule(const VkDevice vDevide, uint32* pCode, const uint32* pLength) {
 	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
-	createInfo.codeSize = *length;										//Set the size of the compiled shader code
-	createInfo.pCode = code;											//Set the shader code
+	createInfo.codeSize = *pLength;										//Set the size of the compiled shader code
+	createInfo.pCode = pCode;											//Set the shader code
 
 	VkShaderModule shaderModule;										//Create the shader module
-	TryVk(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
+	TryVk(vkCreateShaderModule(vDevide, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
 	return shaderModule;												//Return the created shader module
 }
 
