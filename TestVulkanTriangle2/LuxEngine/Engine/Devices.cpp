@@ -1,7 +1,7 @@
 ﻿#include "LuxEngine/Engine/Engine.h"
 
 //Compares 2 _VkPhysicalDevice objects
-#define sameDevice(a,b) (a.properties.deviceID == b.properties.deviceID)
+#define sameDevice(a,b) ((a).properties.deviceID == (b).properties.deviceID)
 
 
 
@@ -175,10 +175,10 @@ void Engine::getPhysicalDevices() {
 
 	//Logical devices
 	//Create a logical device for graphics, one for computation and one for every secondary device
-	createLogicalDevice(&graphics.PD, &graphics.LD, &graphics.graphicsQueue, &graphics.presentQueue, nullptr);
-	createLogicalDevice(&compute.PD, &compute.LD, nullptr, nullptr, &compute.computeQueues);
+	createLogicalDevice(&graphics.PD, &graphics.LD, nullptr);
+	createLogicalDevice(&compute.PD, &compute.LD, &compute.computeQueues);
 	for (int32 i = 0; i < secondary.size(); i++) {
-		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, nullptr, nullptr, &secondary[i].computeQueues);
+		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 	}
 
 	//Output created logical devices and queues
@@ -200,18 +200,21 @@ void Engine::getPhysicalDevices() {
 
 
 
-
-void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, VkQueue* pGraphicsQueue, VkQueue* pPresentQueue, LuxMap<VkQueue>* pComputeQueues) {
+//Create a logical device from a physical one
+//*   pPD: a pointer to the physical device structure containing its infos
+//*   pLD: a pointer to the logical device where to store the created device
+//*   pComputeQueues: a pointer to an array of compute queues
+//*       This is used to know if the physical device is for graphics, computation or is secondary
+void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues) {
 	//List unique device's queues
 	std::set<int32> uniqueQueueFamilyIndices;
-	if (sameDevice((*pPD), graphics.PD)) {												//If it's the main device for graphics,
+	if (sameDevice(*pPD, graphics.PD)) {												//If it's the main device for graphics,
 		uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);					//Add his graphics family
 		uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);						//And his present family
 	}
 	forEach(pPD->indices.computeFamilies, i) {											//And then add every compute family, graphics ones included
 		uniqueQueueFamilyIndices.insert(pPD->indices.computeFamilies[i]);
 	}
-
 
 
 
@@ -222,7 +225,7 @@ void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, Vk
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;					//Set structure type
 		queueCreateInfo.queueFamilyIndex = queueFamilyIndex;								//Set index
 		queueCreateInfo.queueCount = 1;														//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-		queueCreateInfo.pQueuePriorities = new float((sameDevice((*pPD), graphics.PD) || sameDevice((*pPD), compute.PD)) ? 1.0f : 0.5f);
+		queueCreateInfo.pQueuePriorities = new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f);
 		queueCreateInfos.add(queueCreateInfo);											//Add it to the queue create info array
 	}
 
@@ -250,8 +253,8 @@ void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, Vk
 	//Create the logical device and save its queues, exit if an error occurs
 	VkDevice _logicalDevice;
 	if (vkCreateDevice(pPD->device, &deviceCreateInfo, nullptr, &_logicalDevice) == VK_SUCCESS) {
-		if (sameDevice((*pPD), graphics.PD) || sameDevice((*pPD), compute.PD)) {
-			if (sameDevice((*pPD), graphics.PD)) {														//If it's the main graphics device
+		if (sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) {
+			if (sameDevice(*pPD, graphics.PD)) {														//If it's the main graphics device
 				graphics.LD = _logicalDevice;																//Set it as the main graphics logical device
 				vkGetDeviceQueue(_logicalDevice, pPD->indices.graphicsFamily, 0, &graphics.graphicsQueue);	//Set graphics queue
 				vkGetDeviceQueue(_logicalDevice, pPD->indices.presentFamily, 0, &graphics.presentQueue);	//Set present queue

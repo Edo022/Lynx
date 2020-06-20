@@ -44,18 +44,18 @@ VkCommandBuffer Engine::beginSingleTimeCommands() {
 
 
 
-void Engine::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+void Engine::endSingleTimeCommands(const VkCommandBuffer vCommandBuffer) {
 	//End command recording
-	vkEndCommandBuffer(commandBuffer);
+	vkEndCommandBuffer(vCommandBuffer);
 
 	//Submit command buffer to queue
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffer;
+	submitInfo.pCommandBuffers = &vCommandBuffer;
 	vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 
 	//Free memory
 	vkQueueWaitIdle(graphics.graphicsQueue);
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, 1, &commandBuffer);
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, 1, &vCommandBuffer);
 }

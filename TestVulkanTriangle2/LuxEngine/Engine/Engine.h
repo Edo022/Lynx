@@ -377,7 +377,7 @@ private:
 	void initWindow();		void initWindowBuffers();	void createInstance();
 
 	//Devices >> Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(const _VkPhysicalDevice * pPD, VkDevice * pLD, VkQueue * pGraphicsQueue, VkQueue * pPresentQueue, LuxMap<VkQueue>* pComputeQueues);
+	void getPhysicalDevices();		void createLogicalDevice(const _VkPhysicalDevice * pPD, VkDevice * pLD, LuxMap<VkQueue>* pComputeQueues);
 	static int32 ratePhysicalDevice(const _VkPhysicalDevice* pDevice);
 	bool isDeviceSuitable(const VkPhysicalDevice vDevice, std::string* pErrorText);
 	bool checkDeviceExtensionSupport(const VkPhysicalDevice device);
@@ -430,21 +430,21 @@ private:
 
 
 	//Graphics >> Graphics/GGraphics.cpp
-	void runGraphics(bool _useVSync = true, float FOV = 45.0f);
+	void runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
 	void initVulkan();
 	void createSurface();
 	void createSyncObjects();
 	void createDebugMessenger();
 	void drawFrame();
-	static void framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height);
+	static void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
 	void cleanupGraphics();
 
 
 	//Graphics swapchain >> Graphics/GSwapchain.cpp
 	void createSwapChain();			void recreateSwapChain();
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(LuxArray<VkSurfaceFormatKHR>& availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(LuxArray<VkPresentModeKHR>& availablePresentModes);
-	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* availableFormats);
+	VkPresentModeKHR chooseSwapPresentMode(const LuxArray<VkPresentModeKHR>* availablePresentModes);
+	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities);
 
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
@@ -457,15 +457,14 @@ private:
 
 
 	//Graphics textures and images >> Graphics/GImages.cpp
-	void createImage(uint32 width, uint32 height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32 width, uint32 height);
+	VkImageView createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+	void copyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp
 	void createGraphicsCommandPool();
 	VkCommandBuffer beginSingleTimeCommands();
-	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+	void endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
 
 
 	//Graphics render >> Graphics/GPipeline.cpp
@@ -474,9 +473,9 @@ private:
 
 
 	//Graphics other >> Graphics/Graphics.cpp
-	VkFormat findSupportedFormat(LuxArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
-	uint32 findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties);
-	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+	VkFormat findSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	uint32 findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+	void copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
@@ -545,19 +544,19 @@ private:
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	LuxBuffer createGpuBuffer(uint64 size, LuxBufferClass bufferClass, bool cpuAccessible);
-	LuxCell createGpuCell(uint64 cellSize, bool cpuAccessible);
-	bool destroyGpuCell(LuxCell cell);
+	LuxBuffer createGpuBuffer(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+	LuxCell createGpuCell(const uint64 vCellSize, const bool vCpuAccessible);
+	bool destroyGpuCell(const LuxCell vCell);
 
 
 	//Compute pipeline and descriptors >> Compute/CShader.cpp
-	void CShader_createDescriptorSetLayouts(LuxArray<LuxCell> bufferIndices, LuxShader CShader);
-	void CShader_createDescriptorSets( LuxArray<LuxCell> aCells, VkDescriptorPool* pDescriptorPool, VkDescriptorSet* pDescriptorSet, VkDescriptorSetLayout* pDescriptorSetLayout);
-	void CShader_createPipeline(const char* shaderPath, LuxShader CShader);
-	void CShader_createCommandBuffers(LuxShader CShader);
+	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBufferIndices, const LuxShader vCShader);
+	void CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
+	void CShader_createPipeline(const char* shaderPath, const LuxShader vCShader);
+	void CShader_createCommandBuffers(const LuxShader vCShader);
 
-	LuxShader CShader_new(LuxArray<LuxCell> buffers, const char* shaderPath);
-	bool CShader_destroy(LuxShader shader);
+	LuxShader CShader_new(LuxArray<LuxCell>* pCells, const char* vShaderPath);
+	bool CShader_destroy(const LuxShader vCShader);
 };
 
 

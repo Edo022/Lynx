@@ -3,7 +3,6 @@
 #include <vulkan/vulkan.h>
 #include <LuxEngine/Types/Integers/Integers.h>
 #include "LuxEngine/Types/Containers/LuxMap.h"
-#include <vector>
 
 
 
@@ -27,11 +26,11 @@ struct _VkPhysicalDevice {
 	QueueFamilyIndices indices;						//Indices of the queue families
 	uint32 score = 0;								//Device performances evalutation
 
-	_VkPhysicalDevice(VkPhysicalDevice _device, VkPhysicalDeviceProperties _properties, VkPhysicalDeviceFeatures _features, QueueFamilyIndices _indices) {
-		device = _device;
-		properties = _properties;
-		features = _features;
-		indices = _indices;
+	_VkPhysicalDevice(const VkPhysicalDevice vDevice, const VkPhysicalDeviceProperties vProperties, const VkPhysicalDeviceFeatures vFeatures, const QueueFamilyIndices vIndices) {
+		device = vDevice;
+		properties = vProperties;
+		features = vFeatures;
+		indices = vIndices;
 	}
 	_VkPhysicalDevice() {}
 };

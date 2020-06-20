@@ -2,9 +2,9 @@
 #include "LuxEngine/Engine/Engine.h"
 
 
-void Engine::runGraphics(bool _useVSync, float _FOV) {
-	useVSync = _useVSync;
-	FOV = _FOV;
+void Engine::runGraphics(const bool vUseVSync, const float vFOV) {
+	useVSync = vUseVSync;
+	FOV = vFOV;
 
 	luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
 	Normal  printf("Initializing Vulkan");							initVulkan();						MainSeparator;
@@ -138,7 +138,7 @@ void Engine::drawFrame() {
 
 
 
-void Engine::framebufferResizeCallback(GLFWwindow* window, int32 width, int32 height) {
+void Engine::framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
 	engine.windowResizeFence.wait(0); //from the last call of this function
 
 	engine.framebufferResized = true;
@@ -178,13 +178,13 @@ void Engine::cleanupGraphics() {
 
 
 
-VkFormat Engine::findSupportedFormat(LuxArray<VkFormat> candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-	for (VkFormat format : candidates) {
+VkFormat Engine::findSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+	for (VkFormat format : *pCandidates) {
 		VkFormatProperties props;
 		vkGetPhysicalDeviceFormatProperties(graphics.PD.device, format, &props);
 
-		if ((tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features) ||
-			(tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)) {
+		if ((vTiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
+			(vTiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & vFeatures) == vFeatures)) {
 			return format;
 		}
 	}
@@ -195,12 +195,12 @@ VkFormat Engine::findSupportedFormat(LuxArray<VkFormat> candidates, VkImageTilin
 
 
 //Returns the index of the memory with the specified type and properties. Exits if not found
-uint32 Engine::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags properties) {
-	VkPhysicalDeviceMemoryProperties memProperties;							//Get memory properties
+uint32 Engine::findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
+	VkPhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
 	vkGetPhysicalDeviceMemoryProperties(graphics.PD.device, &memProperties);
 
 	for (uint32 i = 0; i < memProperties.memoryTypeCount; i++) {			//Search for the memory that has the specified properties and type and return its index
-		if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) return i;
+		if ((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 	}
 	Exit("Failed to find suitable memory type");
 }
@@ -208,12 +208,12 @@ uint32 Engine::findMemoryType(uint32 typeFilter, VkMemoryPropertyFlags propertie
 
 
 
-//Creates and submits a command buffer to copy from srcBuffer to dstBuffer
-void Engine::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+//Creates and submits a command buffer to copy from vSrcBuffer to dstBuffer
+void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize) {
 	VkBufferCopy copyRegion{};												//Create buffer copy object
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
-	copyRegion.size = size;													//Set size of the copied region
-	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);	//Record the copy command
+	copyRegion.size = vSize;												//Set size of the copied region
+	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
 	endSingleTimeCommands(commandBuffer);									//End command buffer
 }
 

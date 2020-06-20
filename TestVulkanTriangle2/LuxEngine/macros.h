@@ -20,7 +20,7 @@
 #define Failure				std::cout<<termcolor::red		<< "\n";
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
-#define TryVk(f)				if (f != VK_SUCCESS)
+#define TryVk(f)			if (f != VK_SUCCESS)
 #define Exit(s)				{Failure printf("\nError:\nFile %s\nFunction %s, line %d:\n\n\"%s\"\n", __FILE__, __func__, __LINE__, s); engine.running = false; Normal system("pause"); exit(-1);} //TODO dont use additional infos in release
 #define luxDebug(s)			s
 #define luxRelease()		;
@@ -33,7 +33,7 @@
 
 
 #define null nullptr
-#define forEach(container, iterator)	for(uint64 iterator = 0; iterator < container.size(); iterator++)
+#define forEach(container, iterator)	for(uint64 iterator = 0; iterator < (container).size(); iterator++)
 #define sc static_cast
 
 //functions

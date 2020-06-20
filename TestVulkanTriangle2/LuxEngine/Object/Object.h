@@ -22,11 +22,11 @@ struct LuxObject {
 	ObjectPhysics physics;
 
 
-	LuxObject(std::string _name = "Undefined", vec3float _pos = { 0, 0, 0 }, vec3float _rot = { 0, 0, 0 }, vec3float _scl = { 1, 1, 1 }) {
-		name = _name;
-		pos = _pos;
-		rot = _rot;
-		scl = _scl;
+	//TODO use LuxString
+	inline __vectorcall LuxObject(const std::string vName = "Undefined", const vec3float vPos = { 0, 0, 0 }, const vec3float vRot = { 0, 0, 0 }, const vec3float vScl = { 1, 1, 1 }) {
+		name = vName;
+		pos = vPos;
+		rot = vRot;
+		scl = vScl;
 	}
-
 };

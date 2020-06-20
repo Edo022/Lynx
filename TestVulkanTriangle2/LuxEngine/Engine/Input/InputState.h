@@ -46,7 +46,7 @@ struct LuxInputState {
 	
 	//This function sorts the sequences. You don't have to call it, they'll be sorted when needed.
 	//Additional calls to this function does not affect performances
-	void sort() {																						
+	void __vectorcall sort() {																						
 		if (!sorted) {															//If the sequence is not sorted
 			sorted = true;															//Set it as sorted
 			for (int i = 0; i < sequences.size(); i++) {							//For every key sequence
