@@ -369,9 +369,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LuxEngine\Engine\Compute\CCommands.cpp" />
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Compute\CPipeline.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp" />
     <ClCompile Include="LuxEngine\Engine\Devices.cpp" />
     <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp" />

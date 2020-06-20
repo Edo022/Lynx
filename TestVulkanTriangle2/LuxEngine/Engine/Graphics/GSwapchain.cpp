@@ -181,26 +181,12 @@ void Engine::recreateSwapChain() {
 		createSwapChain();
 
 		uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height;
-		windowOutput = createGpuCell(sizeof(Pixel) * swapChainExtent.width * swapChainExtent.height, false);
+		windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false);
 
 
 		
-		//CShaders.clear();
-		
-		vkFreeDescriptorSets(compute.LD, CShaders[0].descriptorPool, 1, &CShaders[0].descriptorSet);
-		vkDestroyDescriptorPool(compute.LD, CShaders[0].descriptorPool, null);
-		vkDestroyDescriptorSetLayout(compute.LD, CShaders[0].descriptorSetLayout, null);
-
-		vkFreeCommandBuffers(compute.LD, CShaders[0].commandPool, 1, CShaders[0].commandBuffers.data());
-		vkDestroyCommandPool(compute.LD, CShaders[0].commandPool, null);
-		
-		vkDestroyPipelineLayout(compute.LD, CShaders[0].pipelineLayout, null);
-		vkDestroyPipeline(compute.LD, CShaders[0].pipeline, null);
-
-		CShaders.remove(0);
-		//vkFreeCommandBuffers(graphics.LD, CShaders.__lp_data[0][0].commandPool, CShaders.__lp_data[0][0].commandBuffers.__lp_size, CShaders.__lp_data[0][0].commandBuffers.__lp_data);
-		newCShader({ windowOutput, test___, windowSize }, "LuxEngine/Contents/shaders/comp.spv");
-
+		CShader_destroy(0);
+		CShader_new({ windowOutput, test___, windowSize }, "LuxEngine/Contents/shaders/comp.spv");
 	}
 	windowResizeFence.set(2);
 }

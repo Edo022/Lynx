@@ -71,7 +71,6 @@ void Engine::createSyncObjects() {
 
 
 void Engine::drawFrame() {
-	//retry:
 	//TODO create separated command buffer
 
 	//Wait fences
@@ -126,10 +125,6 @@ void Engine::drawFrame() {
 			framebufferResized = false;
 			recreateSwapChain();
 			vkDeviceWaitIdle(graphics.LD);
-			printf("Recreated swapchain\n");
-			//currentFrame = (currentFrame + MAX_FRAMES_IN_FLIGHT - 1) % MAX_FRAMES_IN_FLIGHT;
-			//luxDebug(printf("Recreated swapchain\n"));
-			//goto retry;
 			break;
 		}
 		default: Exit("Failed to present swapchain image");

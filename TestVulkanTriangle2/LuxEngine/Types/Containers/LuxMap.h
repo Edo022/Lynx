@@ -136,7 +136,7 @@ public:
 	//Signs an index of the map as free, without deleting it. Returns a char for performance reasons
 	//*   index: the index to sign
 	//*   freeElm: whether to free the element or keep it in memory. Keeping it saves performances but increases memory usage
-	//*   Returns 0 if the operation succeed, status(index) if not
+	//*   Returns 0 if the operation succeeded, status(index) if not
 	signed char remove(uint64 index, bool freeElm = false) {
 		signed char r = status(index);
 

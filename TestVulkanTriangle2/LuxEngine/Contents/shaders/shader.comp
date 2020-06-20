@@ -1,6 +1,6 @@
 
 #version 450
-#extension GL_ARB_separate_shader_objects : enable
+//#extension GL_ARB_separate_shader_objects : enable
 
 #define width windowSize[0]			//The width of the window
 #define height windowSize[1]		//The height of the window

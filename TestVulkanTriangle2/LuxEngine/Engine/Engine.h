@@ -488,13 +488,8 @@ private:
 	//COMPUTE 
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 
-	struct Pixel { unsigned char r, g, b, a; };
-
-
-	VkDebugReportCallbackEXT debugReportCallback;
-
-
-	//shaders
+									 
+	//A container struct for the components of a shader
 	struct LuxCShader {
 		//Descriptors
 		VkDescriptorPool descriptorPool;
@@ -510,7 +505,7 @@ private:
 	LuxMap<LuxCShader> CShaders;
 
 
-	//Buffers
+	//Buffer classes (size of its cells)
 	enum LuxBufferClass :uint32 {
 		LUX_BUFFER_CLASS_50 = 50,
 		LUX_BUFFER_CLASS_5K = 5000,
@@ -520,15 +515,14 @@ private:
 	};
 	//This structure groups the components of a Vulkan buffer
 	struct _LuxBufferStruc {
-		//uint64 ID;					//A unique id, different for each buffer
 		uint32 size;				//The size in bytes of the buffer
 		VkBuffer buffer;			//The actual Vulkan buffer
 		VkDeviceMemory memory;		//The memory of the buffer
 		bool cpuAccessible;
 		bool isMapped = false;		//Whether the buffer is mapped or not
 
-		LuxBufferClass bufferClass;
-		LuxMap<char> cells;
+		LuxBufferClass bufferClass;	//The class of the buffer
+		LuxMap<char> cells;			//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
 	};
 	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 	//Mapping an already mapped buffer will overwrite the old mapping
@@ -549,18 +543,19 @@ private:
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	LuxShader newCShader(LuxArray<LuxCell> buffers, const char* shaderPath);
 	LuxBuffer createGpuBuffer(uint64 size, LuxBufferClass bufferClass, bool cpuAccessible);
 	LuxCell createGpuCell(uint64 cellSize, bool cpuAccessible);
 	bool destroyGpuCell(LuxCell cell);
 
-	//Compute pipeline and descriptors >> Compute/CPipeline.cpp
-	void CShader_create_descriptorSetLayouts(LuxArray<LuxCell> bufferIndices, LuxShader CShader);
-	void CShader_create_descriptorSets(LuxArray<LuxCell> bufferIndices, LuxShader CShader);
-	void CShader_create_CPipeline(const char* shaderPath, LuxShader CShader);
 
-	//Compute command buffers >> Compute/CCommands.cpp
-	void CShader_create_commandBuffers(LuxShader CShader);
+	//Compute pipeline and descriptors >> Compute/CShader.cpp
+	void CShader_createDescriptorSetLayouts(LuxArray<LuxCell> bufferIndices, LuxShader CShader);
+	void CShader_createDescriptorSets( LuxArray<LuxCell> aCells, VkDescriptorPool* pDescriptorPool, VkDescriptorSet* pDescriptorSet, VkDescriptorSetLayout* pDescriptorSetLayout);
+	void CShader_createPipeline(const char* shaderPath, LuxShader CShader);
+	void CShader_createCommandBuffers(LuxShader CShader);
+
+	LuxShader CShader_new(LuxArray<LuxCell> buffers, const char* shaderPath);
+	bool CShader_destroy(LuxShader shader);
 };
 
 
