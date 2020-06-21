@@ -1,20 +1,30 @@
 ﻿
 
 #include "LuxEngine/Engine/Engine.h"
-#define mallocFunc (double*)malloc(sizeof(double) * 360000)
-double* __lp_sin = mallocFunc;
-double* __lp_cos = mallocFunc;
-double* __lp_tan = mallocFunc;
-double* __lp_cot = mallocFunc;
-double* __lp_sec = mallocFunc;
-double* __lp_csc = mallocFunc;
-double* __lp_sinh = mallocFunc;
-double* __lp_cosh = mallocFunc;
-double* __lp_tanh = mallocFunc;
-double* __lp_coth = mallocFunc;
-double* __lp_sech = mallocFunc;
-double* __lp_csch = mallocFunc;
+#define mallocFunc(n) (double*)malloc(sizeof(double) * n)
+double* __lp_sin = mallocFunc(2 * precision);
+double* __lp_cos = mallocFunc(2 * precision);
+double* __lp_tan = mallocFunc(2 * precision);
+double* __lp_cot = mallocFunc(2 * precision);
+double* __lp_sec = mallocFunc(2 * precision);
+double* __lp_csc = mallocFunc(2 * precision);
+
+double* __lp_asin = mallocFunc(1 * precision);
+double* __lp_acos = mallocFunc(1 * precision);
+double* __lp_atan = mallocFunc(1 * precision);
+//double* __lp_acot = mallocFunc(1 * precision);
+//double* __lp_asec = mallocFunc(1 * precision);
+//double* __lp_acsc = mallocFunc(1 * precision);
+
+//
+//double* __lp_sinh;
+//double* __lp_cosh;
+//double* __lp_tanh;
+//double* __lp_coth;
+//double* __lp_sech;
+//double* __lp_csch;
 #undef mallocFunc
+
 
 Engine engine;
 

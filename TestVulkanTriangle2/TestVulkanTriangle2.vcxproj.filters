@@ -40,6 +40,9 @@
     <Filter Include="LuxEngine\Engine\Input">
       <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Maths">
+      <UniqueIdentifier>{287ad351-a124-4265-8ab2-8d93db5063e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -149,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Vectors\Vec4.h">
       <Filter>LuxEngine\Types\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Maths\Constants.h">
+      <Filter>LuxEngine\Maths</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

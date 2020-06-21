@@ -392,6 +392,7 @@
     <ClInclude Include="LuxEngine\Engine\Input\MouseInput.h" />
     <ClInclude Include="LuxEngine\LuxEngine.h" />
     <ClInclude Include="LuxEngine\macros.h" />
+    <ClInclude Include="LuxEngine\Maths\Constants.h" />
     <ClInclude Include="LuxEngine\Object\Object.h" />
     <ClInclude Include="LuxEngine\Object\ObjectGeometry.h" />
     <ClInclude Include="LuxEngine\Object\ObjectPhysics.h" />

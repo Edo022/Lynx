@@ -23,22 +23,29 @@
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
 	__lp_luxInit(useVSync);
-	for (int i = 0; i < 360000; i++) {
-		#define j ((double)i * (3.1415926535897932 / 180)) / 1000
-		*(__lp_sin + i) = sin(j);
-		*(__lp_cos + i) = cos(j);
-		*(__lp_tan + i) = tan(j);
-		*(__lp_cot + i) = 1 / tan(j);
-		*(__lp_sec + i) = 1 / cos(j);
-		*(__lp_csc + i) = 1 / sin(j);
+	for (int i = 0; i < precision; i++) {
+		double rads = (revToRad(sc<double>(i)) / precision);
+		__lp_sin[i] = sin(rads);
+		__lp_cos[i] = cos(rads);
+		__lp_tan[i] = tan(rads);
+		__lp_cot[i] = 1 / tan(rads);
+		__lp_sec[i] = 1 / cos(rads);
+		__lp_csc[i] = 1 / sin(rads);
+		
+		__lp_asin[i] = asin(rads);
+		__lp_acos[i] = acos(rads);
+		__lp_atan[i] = atan(rads);
+		//__lp_acot[i] = 1 / atan(rads);
+		//__lp_asec[i] = 1 / acos(rads);
+		//__lp_acsc[i] = 1 / asin(rads);
 
-		*(__lp_sinh + i) = sinh(j);
-		*(__lp_cosh + i) = cosh(j);
-		*(__lp_tanh + i) = tanh(j);
-		*(__lp_coth + i) = 1 / tanh(j);
-		*(__lp_sech + i) = 1 / cosh(j);
-		*(__lp_csch + i) = 1 / sinh(j);
-		#undef j
+		//*(__lp_sinh + i) = sinh(j);
+		//*(__lp_cosh + i) = cosh(j);
+		//*(__lp_tanh + i) = tanh(j);
+		//*(__lp_coth + i) = 1 / tanh(j);
+		//*(__lp_sech + i) = 1 / cosh(j);
+		//*(__lp_csch + i) = 1 / sinh(j);
 	}
+
 	while (!engine.__lp_initialized) sleep(10);
 }

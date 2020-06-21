@@ -10,47 +10,62 @@
 #endif
 
 
+const int precision = 100000;
+
 extern double* __lp_sin;
 extern double* __lp_cos;
 extern double* __lp_tan;
 extern double* __lp_cot;
 extern double* __lp_sec;
 extern double* __lp_csc;
-extern double* __lp_sinh;
-extern double* __lp_cosh;
-extern double* __lp_tanh;
-extern double* __lp_coth;
-extern double* __lp_sech;
-extern double* __lp_csch;
+
+extern double* __lp_asin;
+extern double* __lp_acos;
+extern double* __lp_atan;
+//extern double* __lp_acot;
+//extern double* __lp_asec;
+//extern double* __lp_acsc;
+//
+//extern double* __lp_sinh;
+//extern double* __lp_cosh;
+//extern double* __lp_tanh;
+//extern double* __lp_coth;
+//extern double* __lp_sech;
+//extern double* __lp_csch;
 
 //-0,99026806874157031508377486734485
-#define luxSign(n) ((n > 0) ? -1 : 1) //-1 if the number is negative, +1 if it's positive or 0
-#define luxAbs(n) ((n < 0) ? -n : n)
+#define luxSign(n) (((n) < 0) ? -1 : 1)			//-1 if the number is negative, +1 if it's positive or 0
+#define luxAbs(n) (((n) < 0) ? -(n) : (n))
 
-//TODO fix hyperbolic functions
-//TODO add inverse functions
-#define FSin(n) (luxSign(n) * __lp_sin[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCos(n) __lp_cos[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FTan(n) (luxSign(n) * __lp_tan[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCot(n) (luxSign(n) * __lp_cot[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FSec(n) __lp_sec[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCsc(n) (luxSign(n) * __lp_csc[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//TODO fix
+#define FSin(n) (luxSign(n) * __lp_sin[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCos(n) (             __lp_cos[sc<uint32> (luxAbs(n) * precision) % precision])				//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FTan(n) (luxSign(n) * __lp_tan[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCot(n) (luxSign(n) * __lp_cot[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FSec(n) (             __lp_sec[sc<uint32> (luxAbs(n) * precision) % precision])				//Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define FCsc(n) (luxSign(n) * __lp_csc[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FSin(n) (luxSign(n) * __lp_sin[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FCos(n) __lp_cos[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FTan(n) (luxSign(n) * __lp_tan[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FCot(n) (luxSign(n) * __lp_cot[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FSec(n) __lp_sec[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FCsc(n) (luxSign(n) * __lp_csc[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
 
-#define FFSin(n) (luxSign(n) * __lp_sin[luxAbs(n) * 1000])						//Fastest version of FSin macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-#define FFCos(n) __lp_cos[luxAbs(n) * 1000]										//Fastest version of FCos macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-#define FFTan(n) (luxSign(n) * __lp_tan[luxAbs(n) * 1000])						//Fastest version of FTan macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-#define FFCot(n) (luxSign(n) * __lp_cot[luxAbs(n) * 1000])						//Fastest version of FCot macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-#define FFSec(n) __lp_sec[luxAbs(n) * 1000]										//Fastest version of FSec macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-#define FFCsc(n) (luxSign(n) * __lp_csc[luxAbs(n) * 1000])						//Fastest version of FCsc macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFSin(n) (luxSign(n) * __lp_sin[luxAbs(n) * 1000])						//Fastest version of FSin macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFCos(n) __lp_cos[luxAbs(n) * 1000]										//Fastest version of FCos macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFTan(n) (luxSign(n) * __lp_tan[luxAbs(n) * 1000])						//Fastest version of FTan macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFCot(n) (luxSign(n) * __lp_cot[luxAbs(n) * 1000])						//Fastest version of FCot macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFSec(n) __lp_sec[luxAbs(n) * 1000]										//Fastest version of FSec macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFCsc(n) (luxSign(n) * __lp_csc[luxAbs(n) * 1000])						//Fastest version of FCsc macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
 
 
-
-#define FSinh(n) _(luxSign(n) * _lp_sinh[luxAbs(n % 360 * 1000)])	//Fast sinh function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCosh(n) _(luxSign(n) * _lp_cosh[luxAbs(n % 360 * 1000)])	//Fast cosh function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FTanh(n) _(luxSign(n) * _lp_tanh[luxAbs(n % 360 * 1000)])	//Fast tanh function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCoth(n) _(luxSign(n) * _lp_coth[luxAbs(n % 360 * 1000)])	//Fast coth function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FSech(n) _(luxSign(n) * _lp_sech[luxAbs(n % 360 * 1000)])	//Fast sech function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCsch(n) _(luxSign(n) * _lp_csch[luxAbs(n % 360 * 1000)])	//Fast csch function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//
+//#define FSinh(n) _(luxSign(n) * _lp_sinh[luxAbs(n % 360 * 1000)])	//Fast sinh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FCosh(n) _(luxSign(n) * _lp_cosh[luxAbs(n % 360 * 1000)])	//Fast cosh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FTanh(n) _(luxSign(n) * _lp_tanh[luxAbs(n % 360 * 1000)])	//Fast tanh function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FCoth(n) _(luxSign(n) * _lp_coth[luxAbs(n % 360 * 1000)])	//Fast coth function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FSech(n) _(luxSign(n) * _lp_sech[luxAbs(n % 360 * 1000)])	//Fast sech function that uses a pre-calculated value to improve performance. 0.001 deg precision
+//#define FCsch(n) _(luxSign(n) * _lp_csch[luxAbs(n % 360 * 1000)])	//Fast csch function that uses a pre-calculated value to improve performance. 0.001 deg precision
 
 
 
@@ -120,6 +135,7 @@ extern double* __lp_csch;
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/LuxFence.h"
 #include "LuxEngine/Types/EngineTypes.h"
+#include "LuxEngine/Maths/Constants.h"
 
 
 #include "Input/Input.h"
