@@ -46,6 +46,9 @@
     <Filter Include="LuxEngine\Math\Trigonometry">
       <UniqueIdentifier>{d2e75fc7-0898-407a-8024-00eb6ac6478b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Math\Algebra">
+      <UniqueIdentifier>{343a17dc-396e-4cab-a571-6852b28a7e61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -85,7 +88,7 @@
     <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Maths\Trigonometry\GoniometricFunctions.cpp">
+    <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClCompile>
   </ItemGroup>
@@ -159,10 +162,19 @@
     <ClInclude Include="LuxEngine\Types\Vectors\Vec4.h">
       <Filter>LuxEngine\Types\Vectors</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Maths\Constants.h">
+    <ClInclude Include="LuxEngine\Math\Constants.h">
       <Filter>LuxEngine\Math</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Maths\Trigonometry\GoniometricFunctions.h">
+    <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h">
+      <Filter>LuxEngine\Math\Trigonometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\LuxEngine.config.h">
+      <Filter>LuxEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Math\Algebra\Algebra.h">
+      <Filter>LuxEngine\Math\Algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,4 @@
 #pragma once
-#include <math.h>
 
 
 #define __lp_vec2_struct_def(name, ref) 																					\

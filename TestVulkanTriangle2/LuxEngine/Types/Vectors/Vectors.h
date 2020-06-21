@@ -7,8 +7,7 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 
 #include <cinttypes>
-#include <math.h>
-
+#include "LuxEngine/Math/Algebra/Algebra.h"
 
 
 #pragma warning( disable: 26451 )

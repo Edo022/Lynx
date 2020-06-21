@@ -14,7 +14,6 @@
 //The luxRelease() macro executes a line of code only if LUX_DEBUG is NOT defined
 //Those macros does not affect performance or code creation. LUX_DEBUG must be define BEFORE including this header
 #include "LuxEngine/Engine/Engine.h"
-
 #include "LuxEngine/Engine/Input/Input.h"
 
 
@@ -23,29 +22,7 @@
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
 	__lp_luxInit(useVSync);
-	for (int i = 0; i < FuncPrecision; i++) {
-		double rads = (revToRad(sc<double>(i)) / FuncPrecision);
-		__lp_sin[i] = sin(rads);
-		__lp_cos[i] = cos(rads);
-		__lp_tan[i] = tan(rads);
-		__lp_cot[i] = 1 / tan(rads);
-		__lp_sec[i] = 1 / cos(rads);
-		__lp_csc[i] = 1 / sin(rads);
-		
-		__lp_asin[i] = asin(rads);
-		__lp_acos[i] = acos(rads);
-		__lp_atan[i] = atan(rads);
-		//__lp_acot[i] = 1 / atan(rads);
-		//__lp_asec[i] = 1 / acos(rads);
-		//__lp_acsc[i] = 1 / asin(rads);
-
-		//*(__lp_sinh + i) = sinh(j);
-		//*(__lp_cosh + i) = cosh(j);
-		//*(__lp_tanh + i) = tanh(j);
-		//*(__lp_coth + i) = 1 / tanh(j);
-		//*(__lp_sech + i) = 1 / cosh(j);
-		//*(__lp_csch + i) = 1 / sinh(j);
-	}
+	__lp_goniometric_functions_init();
 
 	while (!engine.__lp_initialized) sleep(10);
 }
