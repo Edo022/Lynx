@@ -58,7 +58,7 @@ struct LuxInputState {
 							LuxKeySequence b = sequences[i];									//Swap the bindings and the whole sequences
 							sequences[i] = sequences[j];
 							sequences[j] = b;
-							break;																//Exit the loop of the second sequence's keys
+							break;																//Exit the loop of the second sequence keys
 						}
 					}
 				}

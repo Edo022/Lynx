@@ -32,7 +32,7 @@ void Engine::cleanupCompute() {
 	forEach(CBuffers, i) {
 		if (CBuffers.isValid(i)) {
 			vkDestroyBuffer(compute.LD, CBuffers[i].buffer, null);							//Destroy the buffer
-			vkFreeMemory(compute.LD, CBuffers[i].memory, null);								//Free the buffer's memory
+			vkFreeMemory(compute.LD, CBuffers[i].memory, null);								//Free the memory of the buffer
 		}
 	}
 
@@ -61,7 +61,7 @@ void Engine::cleanupCompute() {
 //*   vBufferClass: the class of the buffer
 //*   vCpuAccessible: whether the CPU can access the buffer or not. Non accessible memory is faster but cannot be mapped
 //*       Trying to map a non accessible cell will result in an access violation error
-//*   Returns the buffer's index in the array. -1 if an error occurs
+//*   Returns the index of the buffer in the array. -1 if an error occurs
 LuxBuffer Engine::createGpuBuffer(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible){
 	_LuxBufferStruc buffer;					//Create the buffer struct															
 	buffer.size = sc<uint32>(vSize);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
@@ -82,7 +82,7 @@ LuxBuffer Engine::createGpuBuffer(const uint64 vSize, const LuxBufferClass vBuff
 //Creates a memory cell into a buffer. Allocates a new buffer if there are no compatible buffers with free cells
 //*   vCellSize: the size in bytes of the cell
 //*   vCpuAccessible: whether the CPU can access the cell or not. Non accessible memory is faster but it cannot be mapped
-//*   Returns the cell's code. -1 if an error occurs
+//*   Returns the code of the cell. -1 if an error occurs
 LuxCell Engine::createGpuCell(const uint64 vCellSize, const bool vCpuAccessible){
 	LuxBufferClass bufferClass;																	//Create a variable that stores the class of the buffer
 	if (vCellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;						//Find the required buffer class. A cell must have a size smaller than or equal to the size of the class to belong to it

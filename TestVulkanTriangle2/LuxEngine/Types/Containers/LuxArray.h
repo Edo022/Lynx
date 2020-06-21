@@ -45,7 +45,7 @@ public:
 	}
 
 
-	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
+	//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 	//*   pArray: a pointer to the container object
 	template<class elmType>
 	inline __vectorcall LuxArray(const LuxContainer<elmType>* pArray) {

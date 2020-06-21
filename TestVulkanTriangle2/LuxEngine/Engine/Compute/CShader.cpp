@@ -25,7 +25,7 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 	//in the compute shader
 	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pBufferIndices->size());
 	forEach(*pBufferIndices, i) {
-		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader's binding point and how to use it
+		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader binding point and how to use it
 		descriptorSetLayoutBinding.binding = sc<uint32>(i);										//Set the binding point in the shader
 		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
 		descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
@@ -47,7 +47,7 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 
 //Created the descriptor pool and allocates in it the descriptor sets
 //*   pCells: an array of memory cells to bind to the shader
-//*      The shader's inputs must match those cells
+//*      The shader inputs must match those cells
 //*      the binding index is the same as their index in the array
 //*   vCShader: the shader where to create the descriptor pool and allocate the descriptor buffers
 void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
@@ -260,7 +260,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 
 //TODO check device limits
 //*   pCells: an array of memory cells to bind to the shader
-//*       The shader's inputs must match those cells
+//*       The shader inputs must match those cells
 //*       the binding index is the same as their index in the array
 //*   vShaderPath: a pointer to a string containing the path to the compiled shader file
 //*   returns the index of the created shader if the operation succeeded

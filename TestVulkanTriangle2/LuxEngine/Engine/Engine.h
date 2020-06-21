@@ -10,7 +10,7 @@
 #endif
 
 
-const int precision = 100000;
+const int FuncPrecision = 100000;
 
 extern double* __lp_sin;
 extern double* __lp_cos;
@@ -38,12 +38,35 @@ extern double* __lp_atan;
 #define luxAbs(n) (((n) < 0) ? -(n) : (n))
 
 //TODO fix
-#define FSin(n) (luxSign(n) * __lp_sin[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCos(n) (             __lp_cos[sc<uint32> (luxAbs(n) * precision) % precision])				//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FTan(n) (luxSign(n) * __lp_tan[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCot(n) (luxSign(n) * __lp_cot[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast cot function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FSec(n) (             __lp_sec[sc<uint32> (luxAbs(n) * precision) % precision])				//Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
-#define FCsc(n) (luxSign(n) * __lp_csc[sc<uint32> (luxAbs(n) * precision) % precision])		//Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
+#define fsin(n) (luxSign(n) * __lp_sin[sc<uint32> (luxAbs(n) * FuncPrecision) % FuncPrecision])		//Fast sin function that uses a pre-calculated values to improve the performance. Precision: 1/FuncPrecision
+#define fcos(n) (             __lp_cos[sc<uint32> (luxAbs(n) * FuncPrecision) % FuncPrecision])		//Fast cos function that uses a pre-calculated values to improve the performance. Precision: 1/FuncPrecision
+#define ftan(n) (luxSign(n) * __lp_tan[sc<uint32> (luxAbs(n) * FuncPrecision) % FuncPrecision])		//Fast tan function that uses a pre-calculated values to improve the performance. Precision: 1/FuncPrecision
+#define fcot(n) (luxSign(n) * __lp_cot[sc<uint32> (luxAbs(n) * FuncPrecision) % FuncPrecision])		//Fast cot function that uses a pre-calculated values to improve the performance. Precision: 1/FuncPrecision
+#define fsec(n) (             __lp_sec[sc<uint32> (luxAbs(n) * FuncPrecision) % FuncPrecision])		//Fast sec function that uses a pre-calculated values to improve the performance. Precision: 1/FuncPrecision
+#define fcsc(n) (luxSign(n) * __lp_csc[sc<uint32> (luxAbs(n) * FuncPrecision) % FuncPrecision])		//Fast csc function that uses a pre-calculated values to improve the performance. Precision: 1/FuncPrecision
+
+#define fsin1(n) (luxSign(n) * __lp_sin[(luxAbs(n) * FuncPrecision) % FuncPrecision])				//Faster version of fsin. This works only with values included in the function period. Precision: 1/FuncPrecision
+#define fcos1(n) (             __lp_cos[(luxAbs(n) * FuncPrecision) % FuncPrecision])				//Faster version of fcos. This works only with values included in the function period. Precision: 1/FuncPrecision
+#define ftan1(n) (luxSign(n) * __lp_tan[(luxAbs(n) * FuncPrecision) % FuncPrecision])				//Faster version of ftan. This works only with values included in the function period. Precision: 1/FuncPrecision
+#define fcot1(n) (luxSign(n) * __lp_cot[(luxAbs(n) * FuncPrecision) % FuncPrecision])				//Faster version of fcot. This works only with values included in the function period. Precision: 1/FuncPrecision
+#define fsec1(n) (             __lp_sec[(luxAbs(n) * FuncPrecision) % FuncPrecision])				//Faster version of fsec. This works only with values included in the function period. Precision: 1/FuncPrecision
+#define fcsc1(n) (luxSign(n) * __lp_csc[(luxAbs(n) * FuncPrecision) % FuncPrecision])				//Faster version of fcsc. This works only with values included in the function period. Precision: 1/FuncPrecision
+
+#define fsin2(n) (luxSign(n) * __lp_sin[sc<uint32> (luxAbs(n) * FuncPrecision)])					//Faster version of fsin. This works only with integral values
+#define fcos2(n) (             __lp_cos[sc<uint32> (luxAbs(n) * FuncPrecision)])					//Faster version of fcos. This works only with integral values
+#define ftan2(n) (luxSign(n) * __lp_tan[sc<uint32> (luxAbs(n) * FuncPrecision)])					//Faster version of ftan. This works only with integral values
+#define fcot2(n) (luxSign(n) * __lp_cot[sc<uint32> (luxAbs(n) * FuncPrecision)])					//Faster version of fcot. This works only with integral values
+#define fsec2(n) (             __lp_sec[sc<uint32> (luxAbs(n) * FuncPrecision)])					//Faster version of fsec. This works only with integral values
+#define fcsc2(n) (luxSign(n) * __lp_csc[sc<uint32> (luxAbs(n) * FuncPrecision)])					//Faster version of fcsc. This works only with integral values
+
+#define ffsin(n) (luxSign(n) * __lp_sin[(luxAbs(n) * FuncPrecision)])								//Fastest version of fsin. This works only with integral values included in the function period
+#define ffcos(n) (             __lp_cos[(luxAbs(n) * FuncPrecision)])								//Fastest version of fcos. This works only with integral values included in the function period
+#define fftan(n) (luxSign(n) * __lp_tan[(luxAbs(n) * FuncPrecision)])								//Fastest version of ftan. This works only with integral values included in the function period
+#define ffcot(n) (luxSign(n) * __lp_cot[(luxAbs(n) * FuncPrecision)])								//Fastest version of fcot. This works only with integral values included in the function period
+#define ffsec(n) (             __lp_sec[(luxAbs(n) * FuncPrecision)])								//Fastest version of fsec. This works only with integral values included in the function period
+#define ffcsc(n) (luxSign(n) * __lp_csc[(luxAbs(n) * FuncPrecision)])								//Fastest version of fcsc. This works only with integral values included in the function period
+
+
 //#define FSin(n) (luxSign(n) * __lp_sin[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast sin function that uses a pre-calculated value to improve performance. 0.001 deg precision
 //#define FCos(n) __lp_cos[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast cos function that uses a pre-calculated value to improve performance. 0.001 deg precision
 //#define FTan(n) (luxSign(n) * __lp_tan[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast tan function that uses a pre-calculated value to improve performance. 0.001 deg precision
@@ -51,12 +74,12 @@ extern double* __lp_atan;
 //#define FSec(n) __lp_sec[(sc<uint32>(luxAbs(n*1000)) / 1000 % 360) * 1000]			//Fast sec function that uses a pre-calculated value to improve performance. 0.001 deg precision
 //#define FCsc(n) (luxSign(n) * __lp_csc[luxAbs(sc<uint32>(n*1000) % 360000)])		//Fast csc function that uses a pre-calculated value to improve performance. 0.001 deg precision
 
-//#define FFSin(n) (luxSign(n) * __lp_sin[luxAbs(n) * 1000])						//Fastest version of FSin macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-//#define FFCos(n) __lp_cos[luxAbs(n) * 1000]										//Fastest version of FCos macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-//#define FFTan(n) (luxSign(n) * __lp_tan[luxAbs(n) * 1000])						//Fastest version of FTan macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-//#define FFCot(n) (luxSign(n) * __lp_cot[luxAbs(n) * 1000])						//Fastest version of FCot macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-//#define FFSec(n) __lp_sec[luxAbs(n) * 1000]										//Fastest version of FSec macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
-//#define FFCsc(n) (luxSign(n) * __lp_csc[luxAbs(n) * 1000])						//Fastest version of FCsc macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function's period
+//#define FFSin(n) (luxSign(n) * __lp_sin[luxAbs(n) * 1000])						//Fastest version of FSin macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function period
+//#define FFCos(n) __lp_cos[luxAbs(n) * 1000]										//Fastest version of FCos macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function period
+//#define FFTan(n) (luxSign(n) * __lp_tan[luxAbs(n) * 1000])						//Fastest version of FTan macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function period
+//#define FFCot(n) (luxSign(n) * __lp_cot[luxAbs(n) * 1000])						//Fastest version of FCot macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function period
+//#define FFSec(n) __lp_sec[luxAbs(n) * 1000]										//Fastest version of FSec macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function period
+//#define FFCsc(n) (luxSign(n) * __lp_csc[luxAbs(n) * 1000])						//Fastest version of FCsc macro (~3.5 time faster). This is intended for ultra fast computations and can only be used with integral types. This macro does not check for values greater than the function period
 
 
 //
@@ -362,7 +385,7 @@ private:
 	VkSurfaceKHR surface;
 
 	//Window
-	GLFWwindow* window;								//Main engine's window
+	GLFWwindow* window;								//Main engine window
 	int32 width = 1920, height = 1080;
 	LuxCell windowSize;
 	LuxCell windowOutput;							//The buffer that contains the color output of the window

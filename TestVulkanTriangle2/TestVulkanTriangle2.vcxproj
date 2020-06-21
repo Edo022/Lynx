@@ -379,6 +379,7 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GPipeline.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
     <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp" />
+    <ClCompile Include="LuxEngine\Maths\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\Object\Object.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
     <ClCompile Include="Main.cpp" />
@@ -393,6 +394,7 @@
     <ClInclude Include="LuxEngine\LuxEngine.h" />
     <ClInclude Include="LuxEngine\macros.h" />
     <ClInclude Include="LuxEngine\Maths\Constants.h" />
+    <ClInclude Include="LuxEngine\Maths\Trigonometry\GoniometricFunctions.h" />
     <ClInclude Include="LuxEngine\Object\Object.h" />
     <ClInclude Include="LuxEngine\Object\ObjectGeometry.h" />
     <ClInclude Include="LuxEngine\Object\ObjectPhysics.h" />

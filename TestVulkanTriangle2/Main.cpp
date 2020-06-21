@@ -48,7 +48,7 @@ int main() {
 	//	std::cout << entry.path() << std::endl;
 
 	LuxInit(false);
-	luxDebug(printf("\n%lf\n", FCos(0.54)));
+	luxDebug(printf("\n%lf\n", fcos(4.54)));
 	luxDebug(flushall());
 	
 	LuxInputState inputStateTest{

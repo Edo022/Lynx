@@ -23,8 +23,8 @@
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
 	__lp_luxInit(useVSync);
-	for (int i = 0; i < precision; i++) {
-		double rads = (revToRad(sc<double>(i)) / precision);
+	for (int i = 0; i < FuncPrecision; i++) {
+		double rads = (revToRad(sc<double>(i)) / FuncPrecision);
 		__lp_sin[i] = sin(rads);
 		__lp_cos[i] = cos(rads);
 		__lp_tan[i] = tan(rads);

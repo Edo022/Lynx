@@ -19,7 +19,7 @@ private:
 public:
 	uint64 __lp_dynSize;			//Allocated number of elements. Please use size() instead of this variable
 	uint64 __lp_freeNum;			//Number of free elements in the map. Please use usedSize() or freeSize() instead of this variable
-	type** __lp_data;				//Map's elements
+	type** __lp_data;				//Map elements
 	uint64** __lp_tracker;			//Map that stores the state of each element
 
 private:
@@ -53,7 +53,7 @@ public:
 	}
 
 
-	//Initializes the array using a container object and converting each element in the array's type. The input container must have a begin() and an end() function
+	//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 	//*   in: a pointer to the container object
 	template<class elmType>
 	__vectorcall LuxMap(const LuxContainer<elmType>* in) {

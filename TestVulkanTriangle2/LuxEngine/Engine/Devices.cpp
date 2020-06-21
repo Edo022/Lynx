@@ -206,7 +206,7 @@ void Engine::getPhysicalDevices() {
 //*   pComputeQueues: a pointer to an array of compute queues
 //*       This is used to know if the physical device is for graphics, computation or is secondary
 void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues) {
-	//List unique device's queues
+	//List the queues of the device as unique int32s
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice(*pPD, graphics.PD)) {												//If it's the main device for graphics,
 		uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);					//Add his graphics family
