@@ -93,7 +93,7 @@ LuxCell Engine::createGpuCell(const uint64 vCellSize, const bool vCpuAccessible)
 
 	if (bufferClass != LUX_BUFFER_CLASS_LRG) {													//If it's a static buffer
 		LuxBuffer buffer = -1;																		//Initialize the buffer variable. It stores the index of the buffer where the cell will be created
-		forEach(CBuffers, i) {																		//Find the buffer. For each of the pre-existent buffers
+		forEach(CBuffers, i) {																		//Find the buffer. For each of the preexistent buffers
 			if (CBuffers.isValid(i) &&																	//It can be used
 				CBuffers[i].cpuAccessible == vCpuAccessible &&											//It's of the same memory type,
 				CBuffers[i].bufferClass == bufferClass &&												//If it's of the right class,

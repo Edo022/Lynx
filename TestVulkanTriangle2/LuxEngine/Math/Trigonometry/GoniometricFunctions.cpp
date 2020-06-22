@@ -1,6 +1,5 @@
 
 #include "GoniometricFunctions.h"
-#include <stdlib.h>
 
 
 #define __lp_mallocFunc(n) (double*)malloc(sizeof(double) * n)
