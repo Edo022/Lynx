@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning(disable : 4005) //Macro referinition
 #pragma warning(disable : 4002) //Too many arguments in luxDebug and luxRelease
-
+#include "LuxEngine.config.h"
 
 
 #include <chrono>
@@ -12,12 +12,12 @@
 
 //#include "TermColor.hpp"
 //Console output
-#define NewLine				std::cout						<< "\n";
-#define Normal				std::cout<<termcolor::white		<< "\n";
-#define Success				std::cout<<termcolor::green		<< "\n";
+#define NewLine				std::cout						<< '\n';
+#define Normal				std::cout<<termcolor::white		<< '\n';
+#define Success				std::cout<<termcolor::green		<< '\n';
 #define SuccessNoNl			std::cout<<termcolor::green;
-#define Main				std::cout<<termcolor::magenta	<< "\n";
-#define Failure				std::cout<<termcolor::red		<< "\n";
+#define Main				std::cout<<termcolor::magenta	<< '\n';
+#define Failure				std::cout<<termcolor::red		<< '\n';
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
 #define TryVk(f)			if (f != VK_SUCCESS)

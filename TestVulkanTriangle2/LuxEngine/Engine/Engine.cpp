@@ -106,7 +106,7 @@ void Engine::createInstance() {
 	LuxMap<const char*> extensions;
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
-	for (uint32 i = 0; i < glfwExtensionCount; i++) extensions.add(glfwExtensions[i]);		//Save them into an array
+	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
 	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
 	createInfo.enabledExtensionCount = sc<uint32>(extensions.size());						//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
@@ -210,7 +210,7 @@ uint32* Engine::readShaderFromFile(uint32* pLength, const char* pFilePath) {
 	fclose(fp);
 
 	//Data padding. 
-	for (int32 i = filesize; i < paddedFileSize; i++) str[i] = 0;
+	for (int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;
 
 	*pLength = paddedFileSize;
 	return (uint32*)str;

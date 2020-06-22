@@ -36,7 +36,7 @@ public:
 	template<class inType>
 	inline __vectorcall LuxArray(const std::initializer_list<inType> vElements) {
 		__lp_lux_static_array_init(vElements.size());
-		for (int i = 0; i < vElements.end() - vElements.begin(); i++) __lp_data[i] = (inType) * (vElements.begin() + i);
+		for (int i = 0; i < vElements.end() - vElements.begin(); ++i) __lp_data[i] = (inType) * (vElements.begin() + i);
 	}
 	//Initializes the array using a list of elements of the same type
 	inline __vectorcall LuxArray(const std::initializer_list<type> vElements) {
@@ -50,7 +50,7 @@ public:
 	template<class elmType>
 	inline __vectorcall LuxArray(const LuxContainer<elmType>* pArray) {
 		__lp_lux_static_array_init(pArray->end() - pArray->begin());
-		for (int i = 0; i < pArray->end() - pArray->begin(); i++) __lp_data[i] = (elmType) * (pArray->begin() + i);
+		for (int i = 0; i < pArray->end() - pArray->begin(); ++i) __lp_data[i] = (elmType) * (pArray->begin() + i);
 	}
 	#undef __lp_lux_static_array_init
 
@@ -95,7 +95,7 @@ public:
 		if (vNewSize < 0) return -1;
 		uint64 oldSize = __lp_size;
 		resize(vNewSize);
-		if (vNewSize > oldSize) for (uint64 i = oldSize; i < vNewSize; i++) __lp_data[i] = vInitValue;
+		if (vNewSize > oldSize) for (uint64 i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue;
 		return vNewSize;
 	}
 };

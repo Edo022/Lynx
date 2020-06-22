@@ -75,7 +75,7 @@ QueueFamilyIndices Engine::findQueueFamilies(const VkPhysicalDevice vDevice) {
 
 	//Set families
 	QueueFamilyIndices indices;
-	for (int i = 0; i < queueFamilies.size(); i++) {													//For every queue family
+	for (int i = 0; i < queueFamilies.size(); ++i) {													//For every queue family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 		VkBool32 hasPresentSupport = false;
@@ -177,7 +177,7 @@ void Engine::getPhysicalDevices() {
 	//Create a logical device for graphics, one for computation and one for every secondary device
 	createLogicalDevice(&graphics.PD, &graphics.LD, nullptr);
 	createLogicalDevice(&compute.PD, &compute.LD, &compute.computeQueues);
-	for (int32 i = 0; i < secondary.size(); i++) {
+	for (int32 i = 0; i < secondary.size(); ++i) {
 		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 	}
 

@@ -55,7 +55,7 @@ void Engine::createSyncObjects() {
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
 		if (vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
 			vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
 			vkCreateFence(graphics.LD, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
@@ -155,7 +155,7 @@ void Engine::cleanupGraphics() {
 	cleanupSwapChain();																//Clear swapchain components
 	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);				//Destroy graphics command pool
 
-	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {								//For every frame
+	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {								//For every frame
 		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);			//Destroy his render semaphore
 		vkDestroySemaphore(graphics.LD, imageAvailableSemaphores[i], nullptr);			//Destroy his image  semaphore
 		vkDestroyFence(graphics.LD, inFlightFences[i], nullptr);						//Destroy his fence
@@ -199,7 +199,7 @@ uint32 Engine::findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFl
 	VkPhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
 	vkGetPhysicalDeviceMemoryProperties(graphics.PD.device, &memProperties);
 
-	for (uint32 i = 0; i < memProperties.memoryTypeCount; i++) {			//Search for the memory that has the specified properties and type and return its index
+	for (uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {			//Search for the memory that has the specified properties and type and return its index
 		if ((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 	}
 	Exit("Failed to find suitable memory type");

@@ -57,7 +57,7 @@ public:
 	//*   in: a pointer to the container object
 	template<class elmType>
 	__vectorcall LuxMap(const LuxContainer<elmType>* in) {
-		for (int i = 0; i < in->end() - in->begin(); i++) add((elmType) * (in->begin() + i));
+		for (int i = 0; i < in->end() - in->begin(); ++i) add((elmType) * (in->begin() + i));
 	}
 
 
@@ -160,8 +160,8 @@ public:
 
 	//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
 	inline void __vectorcall clear() {
-		for (int32 i = 0; i < chunksDynNum; i++) free(__lp_data[i]); free(__lp_data);		//Free data map
-		for (int32 i = 0; i < chunksDynNum; i++) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker map
+		for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]); free(__lp_data);		//Free data map
+		for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker map
 		__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data map
 		__lp_tracker = sc<uint64**>(malloc(sizeof(uint64*) * (maxSize / chunkSize)));		//Allocate tracker map
 		chunksDynNum = __lp_dynSize = __lp_freeNum = 0;										//Reset number of chunk, number of elements, number of free elements
@@ -207,12 +207,12 @@ public:
 	type* data() const {
 		type* arr = (type*)malloc(sizeof(type) * usedSize());
 		int32 new_i = 0;
-		for (int32 i = 0; i < usedSize(); i++) {
+		for (int32 i = 0; i < usedSize(); ++i) {
 			if (isValid(i)) {
 				arr[new_i] = __lp_Data(i);
-				new_i++;
+				++new_i;
 			}
-			else i++;
+			else ++i;
 		}
 		return arr;
 	}

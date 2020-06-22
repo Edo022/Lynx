@@ -35,7 +35,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 		uint16 keyCode = (key | __lp_to_lux_act(action));					//Calculate the key code
 		int i = yMin;														//Set the loop index as the minimum y
 		while (keyCode != __lp_input_states->sequences[i].sequence[x]) {	//Find the new minimum y
-			i++;																//Increase the counter until the input key is equal to the key of the input state sequence 
+			++i;																//Increase the counter until the input key is equal to the key of the input state sequence 
 			if (i > yMax) {														//If there are no equal keys
 				x = 0;																//Reset the key counter
 				return;																//Exit the function
@@ -45,7 +45,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 
 		while (true){														//Now find the maximum y 
 			if (keyCode == __lp_input_states->sequences[i].sequence[x]) {		//if the input key is NOT equal to the key of the input state sequence
-				i++;																//Increase the counter
+				++i;																//Increase the counter
 				if (i >= __lp_input_states->sequences.size()) {						//If there are no more different keys
 					yMax = sc<uint16>(__lp_input_states->sequences.size() - 1);		//Set the maximum y as the maximum index of the sequences
 					break;																//Exit the loop

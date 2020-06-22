@@ -67,7 +67,7 @@ Engine::SwapChainSupportDetails Engine::querySwapChainSupport(VkPhysicalDevice d
 
 void Engine::createImageViews() {
 	swapChainImageViews.resize(swapChainImages.size());
-	for (uint32 i = 0; i < swapChainImages.size(); i++) {
+	for (uint32 i = 0; i < swapChainImages.size(); ++i) {
 		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }

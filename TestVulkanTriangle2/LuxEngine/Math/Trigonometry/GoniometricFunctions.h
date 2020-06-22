@@ -4,7 +4,8 @@
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Math/Trigonometry/Trigonometry.h"
 #include "LuxEngine/macros.h"
-
+#include "LuxEngine/Types/Integers/Integers.h"
+#include <cstdlib>
 
 extern double* __lp_sin;
 extern double* __lp_cos;
@@ -23,7 +24,7 @@ extern double* __lp_atan;
 
 
 static void __lp_goniometric_functions_init() {
-	for (int i = 0; i < FUNC_PRECISION; i++) {
+	for (int i = 0; i < FUNC_PRECISION; ++i) {
 		double rads = (revToRad(sc<double>(i)) / FUNC_PRECISION);
 		__lp_sin[i] = sin(rads);
 		__lp_cos[i] = cos(rads);
@@ -53,30 +54,31 @@ static void __lp_goniometric_functions_init() {
 
 
 //TODO add
-#define fsin(n) (sign(n) * __lp_sin[sc<uint32> (abs(n) * FUNC_PRECISION) % FUNC_PRECISION])		//Fast sin function that uses a pre-calculated values to improve the performance. Precision: 1/FUNC_PRECISION
-#define fcos(n) (          __lp_cos[sc<uint32> (abs(n) * FUNC_PRECISION) % FUNC_PRECISION])		//Fast cos function that uses a pre-calculated values to improve the performance. Precision: 1/FUNC_PRECISION
-#define ftan(n) (sign(n) * __lp_tan[sc<uint32> (abs(n) * FUNC_PRECISION) % FUNC_PRECISION])		//Fast tan function that uses a pre-calculated values to improve the performance. Precision: 1/FUNC_PRECISION
-#define fcot(n) (sign(n) * __lp_cot[sc<uint32> (abs(n) * FUNC_PRECISION) % FUNC_PRECISION])		//Fast cot function that uses a pre-calculated values to improve the performance. Precision: 1/FUNC_PRECISION
-#define fsec(n) (          __lp_sec[sc<uint32> (abs(n) * FUNC_PRECISION) % FUNC_PRECISION])		//Fast sec function that uses a pre-calculated values to improve the performance. Precision: 1/FUNC_PRECISION
-#define fcsc(n) (sign(n) * __lp_csc[sc<uint32> (abs(n) * FUNC_PRECISION) % FUNC_PRECISION])		//Fast csc function that uses a pre-calculated values to improve the performance. Precision: 1/FUNC_PRECISION
+#define fsin(n) (sign(n) * __lp_sin[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])	//Fast sine function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
+//template<class T> constexpr auto __vectorcall fsin(T n) { return sign(n) * __lp_sin[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }	//Fast sine function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fcos(T n) { return           __lp_cos[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }	//Fast cosine function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall ftan(T n) { return sign(n) * __lp_tan[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }	//Fast tangent function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fcot(T n) { return sign(n) * __lp_cot[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }	//Fast cotangent function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fsec(T n) { return           __lp_sec[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }	//Fast secant function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fcsc(T n) { return sign(n) * __lp_csc[sc<uint32>(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }	//Fast cosecant function that uses a pre-calculated values to improve performance. Precision: 1/FUNC_PRECISION
 
-#define fsin1(n) (sign(n) * __lp_sin[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])				//Faster version of fsin. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
-#define fcos1(n) (          __lp_cos[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])				//Faster version of fcos. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
-#define ftan1(n) (sign(n) * __lp_tan[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])				//Faster version of ftan. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
-#define fcot1(n) (sign(n) * __lp_cot[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])				//Faster version of fcot. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
-#define fsec1(n) (          __lp_sec[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])				//Faster version of fsec. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
-#define fcsc1(n) (sign(n) * __lp_csc[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION])				//Faster version of fcsc. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fsin1(T n) { return sign(n) * __lp_sin[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }				//Faster version of fsin. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fcos1(T n) { return           __lp_cos[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }				//Faster version of fcos. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall ftan1(T n) { return sign(n) * __lp_tan[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }				//Faster version of ftan. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fcot1(T n) { return sign(n) * __lp_cot[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }				//Faster version of fcot. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fsec1(T n) { return           __lp_sec[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }				//Faster version of fsec. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
+template<class T> constexpr auto __vectorcall fcsc1(T n) { return sign(n) * __lp_csc[(abs(n) * FUNC_PRECISION) % FUNC_PRECISION]; }				//Faster version of fcsc. This works only with values included in the function period. Precision: 1/FUNC_PRECISION
 
-#define fsin2(n) (sign(n) * __lp_sin[sc<uint32> (abs(n) * FUNC_PRECISION)])						//Faster version of fsin. This works only with integral values
-#define fcos2(n) (          __lp_cos[sc<uint32> (abs(n) * FUNC_PRECISION)])						//Faster version of fcos. This works only with integral values
-#define ftan2(n) (sign(n) * __lp_tan[sc<uint32> (abs(n) * FUNC_PRECISION)])						//Faster version of ftan. This works only with integral values
-#define fcot2(n) (sign(n) * __lp_cot[sc<uint32> (abs(n) * FUNC_PRECISION)])						//Faster version of fcot. This works only with integral values
-#define fsec2(n) (          __lp_sec[sc<uint32> (abs(n) * FUNC_PRECISION)])						//Faster version of fsec. This works only with integral values
-#define fcsc2(n) (sign(n) * __lp_csc[sc<uint32> (abs(n) * FUNC_PRECISION)])						//Faster version of fcsc. This works only with integral values
+template<class T> constexpr auto __vectorcall fsin2(T n) { return sign(n) * __lp_sin[sc<uint32>(abs(n) * FUNC_PRECISION)]; }					//Faster version of fsin. This works only with integral values
+template<class T> constexpr auto __vectorcall fcos2(T n) { return           __lp_cos[sc<uint32>(abs(n) * FUNC_PRECISION)]; }					//Faster version of fcos. This works only with integral values
+template<class T> constexpr auto __vectorcall ftan2(T n) { return sign(n) * __lp_tan[sc<uint32>(abs(n) * FUNC_PRECISION)]; }					//Faster version of ftan. This works only with integral values
+template<class T> constexpr auto __vectorcall fcot2(T n) { return sign(n) * __lp_cot[sc<uint32>(abs(n) * FUNC_PRECISION)]; }					//Faster version of fcot. This works only with integral values
+template<class T> constexpr auto __vectorcall fsec2(T n) { return           __lp_sec[sc<uint32>(abs(n) * FUNC_PRECISION)]; }					//Faster version of fsec. This works only with integral values
+template<class T> constexpr auto __vectorcall fcsc2(T n) { return sign(n) * __lp_csc[sc<uint32>(abs(n) * FUNC_PRECISION)]; }					//Faster version of fcsc. This works only with integral values
 
-#define ffsin(n) (sign(n) * __lp_sin[(abs(n) * FUNC_PRECISION)])								//Fastest version of fsin. This works only with integral values included in the function period
-#define ffcos(n) (          __lp_cos[(abs(n) * FUNC_PRECISION)])								//Fastest version of fcos. This works only with integral values included in the function period
-#define fftan(n) (sign(n) * __lp_tan[(abs(n) * FUNC_PRECISION)])								//Fastest version of ftan. This works only with integral values included in the function period
-#define ffcot(n) (sign(n) * __lp_cot[(abs(n) * FUNC_PRECISION)])								//Fastest version of fcot. This works only with integral values included in the function period
-#define ffsec(n) (          __lp_sec[(abs(n) * FUNC_PRECISION)])								//Fastest version of fsec. This works only with integral values included in the function period
-#define ffcsc(n) (sign(n) * __lp_csc[(abs(n) * FUNC_PRECISION)])								//Fastest version of fcsc. This works only with integral values included in the function period
+template<class T> constexpr auto __vectorcall ffsin(T n) { return sign(n) * __lp_sin[(abs(n) * FUNC_PRECISION)]; }								//Fastest version of fsin. This works only with integral values included in the function period
+template<class T> constexpr auto __vectorcall ffcos(T n) { return           __lp_cos[(abs(n) * FUNC_PRECISION)]; }								//Fastest version of fcos. This works only with integral values included in the function period
+template<class T> constexpr auto __vectorcall fftan(T n) { return sign(n) * __lp_tan[(abs(n) * FUNC_PRECISION)]; }								//Fastest version of ftan. This works only with integral values included in the function period
+template<class T> constexpr auto __vectorcall ffcot(T n) { return sign(n) * __lp_cot[(abs(n) * FUNC_PRECISION)]; }								//Fastest version of fcot. This works only with integral values included in the function period
+template<class T> constexpr auto __vectorcall ffsec(T n) { return           __lp_sec[(abs(n) * FUNC_PRECISION)]; }								//Fastest version of fsec. This works only with integral values included in the function period
+template<class T> constexpr auto __vectorcall ffcsc(T n) { return sign(n) * __lp_csc[(abs(n) * FUNC_PRECISION)]; }								//Fastest version of fcsc. This works only with integral values included in the function period
