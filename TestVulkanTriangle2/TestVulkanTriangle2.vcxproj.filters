@@ -177,6 +177,9 @@
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxString.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="LuxEngine\Contents\shaders\shader.comp">

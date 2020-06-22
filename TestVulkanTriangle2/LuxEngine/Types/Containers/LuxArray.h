@@ -11,8 +11,7 @@
 
 
 //A static array that knows its size. It can be resized, but it doesn't have add or remove methods
-template <class type>
-class LuxArray : public LuxContainer<type> {
+template <class type> class LuxArray : public LuxContainer<type> {
 public:
 	type* __lp_data;	//Elements of the array
 	uint64 __lp_size;	//Size of the array
@@ -33,8 +32,7 @@ public:
 
 
 	//Initializes the array using a list of elements, automatically converting it to the right type
-	template<class inType>
-	inline __vectorcall LuxArray(const std::initializer_list<inType> vElements) {
+	template<class inType> inline __vectorcall LuxArray(const std::initializer_list<inType> vElements) {
 		__lp_lux_static_array_init(vElements.size());
 		for (int i = 0; i < vElements.end() - vElements.begin(); ++i) __lp_data[i] = (inType) * (vElements.begin() + i);
 	}
@@ -47,8 +45,7 @@ public:
 
 	//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 	//*   pArray: a pointer to the container object
-	template<class elmType>
-	inline __vectorcall LuxArray(const LuxContainer<elmType>* pArray) {
+	template<class elmType> inline __vectorcall LuxArray(const LuxContainer<elmType>* pArray) {
 		__lp_lux_static_array_init(pArray->end() - pArray->begin());
 		for (int i = 0; i < pArray->end() - pArray->begin(); ++i) __lp_data[i] = (elmType) * (pArray->begin() + i);
 	}
@@ -62,7 +59,7 @@ public:
 
 
 
-	inline uint64 __vectorcall size() const { return __lp_size; }
+	inline uint64 __vectorcall size() const override { return __lp_size; }
 	inline type* __vectorcall data() const { return __lp_data; }
 
 	inline type& __vectorcall operator[](const uint64 vIndex) const { return __lp_data[vIndex]; }

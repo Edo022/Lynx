@@ -51,7 +51,7 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 //*      the binding index is the same as their index in the array
 //*   vCShader: the shader where to create the descriptor pool and allocate the descriptor buffers
 void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
-	{ //Create descriptor pool and descriptor set allocate infos
+	//Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		VkDescriptorPoolSize descriptorPoolSize = {};
 		descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
@@ -75,10 +75,10 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 		descriptorSetAllocateInfo.pSetLayouts = &CShaders[vCShader].descriptorSetLayout;	//Set set layouts
 		//Allocate descriptor set
 		TryVk(vkAllocateDescriptorSets(compute.LD, new VkDescriptorSetAllocateInfo(descriptorSetAllocateInfo), &CShaders[vCShader].descriptorSet)) Exit("Unable to allocate descriptor sets");
-	}
+	
 
 
-	{ //Create a descriptor set write for every buffer and update the descriptor sets
+	 //Create a descriptor set write for every buffer and update the descriptor sets
 		LuxArray<VkWriteDescriptorSet> writeDescriptorSets(pCells->size());
 		forEach(*pCells, i) {
 			//Connect the storage buffer to the descrptor
@@ -99,7 +99,7 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 		}
 		//Update descriptor sets
 		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), (new LuxArray(writeDescriptorSets))->data(), 0, null);
-	}
+	
 }
 
 
