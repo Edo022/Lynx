@@ -320,6 +320,7 @@
       <CallingConvention>FastCall</CallingConvention>
       <PreprocessToFile>false</PreprocessToFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/Opar %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -357,6 +358,7 @@
       <CallingConvention>FastCall</CallingConvention>
       <PreprocessToFile>false</PreprocessToFile>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalOptions>/Opar %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

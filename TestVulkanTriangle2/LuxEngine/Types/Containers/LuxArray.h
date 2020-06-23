@@ -9,7 +9,8 @@
 
 
 
-
+//TODO use faster memcpy
+//TODO dont use initializer list
 //A static array that knows its size. It can be resized, but it doesn't have add or remove methods
 template <class type> class LuxArray : public LuxContainer<type> {
 public:
@@ -26,28 +27,28 @@ public:
 
 
 	//Creates an array with no elements
-	inline __vectorcall LuxArray() { __lp_lux_static_array_init(0); }
+	inline LuxArray() { __lp_lux_static_array_init(0); }
 	//Sets the size of the array and allocates it, without inizializing the elements
-	inline __vectorcall LuxArray(const uint64 vInitSize) { __lp_lux_static_array_init(vInitSize); }
+	inline LuxArray(const uint64 vInitSize) { __lp_lux_static_array_init(vInitSize); }
 
 
 	//Initializes the array using a list of elements, automatically converting it to the right type
-	template<class inType> inline __vectorcall LuxArray(const std::initializer_list<inType> vElements) {
-		__lp_lux_static_array_init(vElements.size());
-		for (int i = 0; i < vElements.end() - vElements.begin(); ++i) __lp_data[i] = (inType) * (vElements.begin() + i);
+	template<class inType> inline LuxArray(const std::initializer_list<inType>& pElements) {
+		__lp_lux_static_array_init(pElements.size());
+		for (int i = 0; i < pElements.end() - pElements.begin(); ++i) __lp_data[i] = (inType) * (pElements.begin() + i);
 	}
 	//Initializes the array using a list of elements of the same type
-	inline __vectorcall LuxArray(const std::initializer_list<type> vElements) {
-		__lp_lux_static_array_init(vElements.size());
-		memcpy(begin(), vElements.begin(), ((vElements.size() * sizeof(type))));
+	inline LuxArray(const std::initializer_list<type>& pElements) {
+		__lp_lux_static_array_init(pElements.size());
+		memcpy(begin(), pElements.begin(), ((pElements.size() * sizeof(type))));
 	}
 
 
 	//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 	//*   pArray: a pointer to the container object
-	template<class elmType> inline __vectorcall LuxArray(const LuxContainer<elmType>* pArray) {
-		__lp_lux_static_array_init(pArray->end() - pArray->begin());
-		for (int i = 0; i < pArray->end() - pArray->begin(); ++i) __lp_data[i] = (elmType) * (pArray->begin() + i);
+	template<class elmType> inline LuxArray(const LuxContainer<elmType>& pArray) {
+		__lp_lux_static_array_init(pArray.end() - pArray.begin());
+		for (int i = 0; i < pArray.end() - pArray.begin(); ++i) __lp_data[i] = (elmType) * (pArray.begin() + i);
 	}
 	#undef __lp_lux_static_array_init
 
@@ -88,11 +89,16 @@ public:
 	//*   vNewSize: the new size of the array
 	//*   vInitValue: the value to use to initialize the new elements
 	//*   Returns the new size. -1 if the size is invalid
-	inline uint64 __vectorcall resize(const uint64 vNewSize, const type vInitValue) {
+	inline uint64 __vectorcall resize(const uint64 vNewSize, const type& vInitValue) {
+		//TODO not secure
 		if (vNewSize < 0) return -1;
 		uint64 oldSize = __lp_size;
 		resize(vNewSize);
-		if (vNewSize > oldSize) for (uint64 i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue;
+		if (vNewSize > oldSize) {
+			//TODO intrinsic function copy for 16,32,64,128,256,512 bits
+			if (sizeof(vInitValue) != 1) for (uint64 i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue; //Copy the elements one by one if the're too large
+			/*TODO >> this*/ else memset(begin() + oldSize, (int)vInitValue, vNewSize - oldSize);	//Use memset for 8 bit types
+		}
 		return vNewSize;
 	}
 };

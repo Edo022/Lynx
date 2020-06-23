@@ -54,7 +54,7 @@ typedef std::chrono::system_clock::time_point LuxTime;
 static float __vectorcall __s(float n) {
 	static int32_t i = 0x5F3759DF - (*(int32_t*)&n >> 1);
 	static float n2 = *(float*)&i;
-	return 1 / (n2 * (1.5 - (n * 0.5 * n2 * n2)));
+	return sc<float>(1 / (n2 * (1.5 - (n * 0.5 * n2 * n2))));
 }
 
 //Calculates the result of b to the power of e. Way faster than math.h pow function

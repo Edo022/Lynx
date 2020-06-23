@@ -23,7 +23,7 @@ struct LuxObject {
 
 
 	//TODO use LuxString
-	inline __vectorcall LuxObject(const std::string vName = "Undefined", const vec3float vPos = { 0, 0, 0 }, const vec3float vRot = { 0, 0, 0 }, const vec3float vScl = { 1, 1, 1 }) {
+	inline LuxObject(const std::string vName = "Undefined", const vec3float vPos = { 0, 0, 0 }, const vec3float vRot = { 0, 0, 0 }, const vec3float vScl = { 1, 1, 1 }) {
 		name = vName;
 		pos = vPos;
 		rot = vRot;

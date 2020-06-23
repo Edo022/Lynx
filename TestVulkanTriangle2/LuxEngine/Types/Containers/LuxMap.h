@@ -43,7 +43,7 @@ public:
 	//The number of chunks depends on their size and the maximum size of the map (chunks = maxSize / chunkSize)
 	//*   vChunkSize: number of elements allocated when the map grows. Default at 0xFF (256). It must be <= maxSize
 	//*   vMaxSize: the maximum size the map can reach. Default at 0xFFFF (65535). Max 0x FFFF FFFF FFFF FFFF
-	__vectorcall LuxMap(const uint64 vChunkSize = 0xFF, const uint64 vMaxSize = 0xFFFF) {
+	LuxMap(const uint64 vChunkSize = 0xFF, const uint64 vMaxSize = 0xFFFF) {
 		chunkSize = vChunkSize;														//Set size of the chunks
 		maxSize = vMaxSize;															//Set maximum size of the map
 		__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));			//Allocate data map
@@ -56,7 +56,7 @@ public:
 	//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 	//*   in: a pointer to the container object
 	template<class elmType>
-	__vectorcall LuxMap(const LuxContainer<elmType>* in) {
+	LuxMap(const LuxContainer<elmType>* in) {
 		for (int i = 0; i < in->end() - in->begin(); ++i) add((elmType) * (in->begin() + i));
 	}
 

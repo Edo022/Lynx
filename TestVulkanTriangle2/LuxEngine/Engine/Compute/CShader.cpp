@@ -98,7 +98,7 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 			writeDescriptorSets[i] = writeDescriptorSet;										//Save descriptor set
 		}
 		//Update descriptor sets
-		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), (new LuxArray(writeDescriptorSets))->data(), 0, null);
+		vkUpdateDescriptorSets(compute.LD, sc<uint32>(writeDescriptorSets.size()), (new LuxArray(writeDescriptorSets))->data(), 0, null);
 	
 }
 
@@ -148,7 +148,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;	//Set structure type
 	commandBufferAllocateInfo.commandPool = CShaders[vCShader].commandPool;				//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set the command buffer as a primary level command buffer
-	commandBufferAllocateInfo.commandBufferCount = swapChainImages.size();				//Allocate one command buffer
+	commandBufferAllocateInfo.commandBufferCount = sc<uint32>(swapChainImages.size());	//Allocate one command buffer
 	//Allocate command buffer
 	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
 

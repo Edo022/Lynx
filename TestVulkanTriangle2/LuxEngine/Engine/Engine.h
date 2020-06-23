@@ -46,9 +46,7 @@
 //Default C++
 #include <iostream>
 #include <fstream>
-#include <array>
 #include <chrono>
-#include <vector>
 #include <thread>
 #include <set>
 //#endif //TODO remove
@@ -67,6 +65,7 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/LuxFence.h"
 #include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"

@@ -28,7 +28,7 @@
 #include <filesystem>
 #include <iostream>
 
-void hh(LuxArray<uint16> keySequenceCode) { printf("AAAAA"); }
+void hh1(LuxArray<uint16> keySequenceCode) { printf("AAAAA"); }
 void hh2(LuxArray<uint16> keySequenceCode) { printf("BBBB"); }
 void hh3(LuxArray<uint16> keySequenceCode) { printf("CCC"); }
 void hh4(LuxArray<uint16> keySequenceCode) { printf("DD"); }
@@ -41,15 +41,14 @@ int main() {
 	//for (const auto& entry : std::filesystem::directory_iterator(path))
 	//	std::cout << entry.path() << std::endl;
 
-	std::vector<int> h = { 15,1,2,3 };
-	*h.data() = 14;
-	*h.begin() = 14;
-
-	printf("\n%ld\n", h[0]);
+	LuxString h = "ciao";
+	LuxString hh = { ' ', 'b','b','b','b', '\0' };
+	h += hh + LuxString("gg") + "EXUPUROSION";
+	printf("%s", h.begin());
 
 	LuxInit(false);
 	LuxInputState inputStateTest{
-		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, &hh },
+		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, &hh1 },
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, &hh2 } ,
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, &hh3 },
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, &hh4 }

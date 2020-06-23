@@ -9,12 +9,12 @@ struct name {																												\
 																															\
 																															\
 	/*Constructors																											*/\
-	inline __vectorcall name() {}																							\
-	inline __vectorcall name(const t##ref _x, const t##ref _y) { x = _x; y = _y; }											\
+	inline name() {}																										\
+	inline name(const t##ref _x, const t##ref _y) { x = _x; y = _y; }														\
 																															\
 	/*Equal operators and constructors																						*/\
-	inline __vectorcall name(const name<t>& v) { *this = v; }																\
-	inline __vectorcall name(const t##ref v) { *this = v; }																	\
+	inline name(const name<t>& v) { *this = v; }																			\
+	inline name(const t##ref v) { *this = v; }																				\
 	inline void __vectorcall operator = (const name<t>##ref v) { x = v.x; y = v.y; }										\
 	inline void __vectorcall operator = (const t##ref n) { x = y = n; }														\
 																															\
