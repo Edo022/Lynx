@@ -328,7 +328,7 @@ private:
 	//Devices >> Devices.cpp
 	void getPhysicalDevices();		void createLogicalDevice(const _VkPhysicalDevice * pPD, VkDevice * pLD, LuxMap<VkQueue>* pComputeQueues);
 	static int32 ratePhysicalDevice(const _VkPhysicalDevice* pDevice);
-	bool isDeviceSuitable(const VkPhysicalDevice vDevice, std::string* pErrorText);
+	bool isDeviceSuitable(const VkPhysicalDevice vDevice, LuxString * pErrorText);
 	bool checkDeviceExtensionSupport(const VkPhysicalDevice device);
 	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice device);
 

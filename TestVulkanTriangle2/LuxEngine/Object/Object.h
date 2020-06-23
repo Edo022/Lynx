@@ -2,15 +2,15 @@
 
 #include "ObjectGeometry.h"
 #include "ObjectPhysics.h"
-#include <string>
 #include "LuxEngine/Types/Vectors/Vectors.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
 
 
 
 struct LuxObject {
-	std::string name;
+	LuxString name;
 	uint64 ID;
 
 	vec3float pos;
@@ -22,8 +22,7 @@ struct LuxObject {
 	ObjectPhysics physics;
 
 
-	//TODO use LuxString
-	inline LuxObject(const std::string vName = "Undefined", const vec3float vPos = { 0, 0, 0 }, const vec3float vRot = { 0, 0, 0 }, const vec3float vScl = { 1, 1, 1 }) {
+	inline LuxObject(const LuxString vName = "Undefined", const vec3float vPos = { 0, 0, 0 }, const vec3float vRot = { 0, 0, 0 }, const vec3float vScl = { 1, 1, 1 }) {
 		name = vName;
 		pos = vPos;
 		rot = vRot;

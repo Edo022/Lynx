@@ -41,10 +41,11 @@ int main() {
 	//for (const auto& entry : std::filesystem::directory_iterator(path))
 	//	std::cout << entry.path() << std::endl;
 
-	LuxString h = "ciao";
-	LuxString hh = { ' ', 'b','b','b','b', '\0' };
-	h += hh + LuxString("gg") + "EXUPUROSION";
-	printf("%s", h.begin());
+	//LuxString h = "hhh";
+	//h = "ciao";
+	//LuxString hh = { ' ', 'b','b','b','b', '\0' };
+	//h += hh + LuxString("gg") + "EXUPUROSION";
+	//printf("%s", h.begin());
 
 	LuxInit(false);
 	LuxInputState inputStateTest{

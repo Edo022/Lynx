@@ -8,6 +8,9 @@ class LuxString : public LuxContainer<char> {
 
 public:
 	//Constructors
+	inline LuxString() {
+		str.resize(0);
+	}
 	inline LuxString(const LuxString& pString) {
 		str.resize(pString.size());
 		memcpy(str.begin(), pString.begin(), pString.size());
@@ -30,7 +33,6 @@ public:
 	inline char* __vectorcall begin() const override { return str.begin(); }
 	inline char* __vectorcall end() const override { return str.end(); }
 	inline char& __vectorcall operator[](const uint64 vIndex) const { return str[vIndex]; }
-
 
 
 	//String concatenation

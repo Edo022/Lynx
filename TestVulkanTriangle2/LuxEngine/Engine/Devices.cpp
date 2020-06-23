@@ -29,7 +29,7 @@ int32 Engine::ratePhysicalDevice(const _VkPhysicalDevice* pDevice) {
 //*   vDevice: the physical device to check
 //*   pErrorText: a pointer to a LuxString where to store the error in case the device is not suitable
 //*   Returns true if the device is suitable, false if not
-bool Engine::isDeviceSuitable(const VkPhysicalDevice vDevice, std::string* pErrorText) {
+bool Engine::isDeviceSuitable(const VkPhysicalDevice vDevice, LuxString * pErrorText) {
 	//Check extensions
 	if (!checkDeviceExtensionSupport(vDevice)) {
 		*pErrorText = "Missing required extensions";
@@ -105,7 +105,7 @@ QueueFamilyIndices Engine::findQueueFamilies(const VkPhysicalDevice vDevice) {
 //Then saves them in the class members
 void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
-	LuxMap<std::string> discardedPhysicalDevices(0xFFFF, 0xFFFF);
+	LuxMap<LuxString> discardedPhysicalDevices(0xFFFF, 0xFFFF);
 	LuxMap<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
 
 
@@ -120,8 +120,7 @@ void Engine::getPhysicalDevices() {
 		forEach(physDevices, i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
 			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
-			//TODO use LuxString
-			std::string errorText;
+			LuxString errorText;
 			if (isDeviceSuitable(physDevices[i], &errorText)) {										//If it's suitable
 				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices)); //Add it to the physical devices vector
 			}
@@ -137,7 +136,7 @@ void Engine::getPhysicalDevices() {
 	if (discardedPhysicalDevices.size() > 0) {
 		Failure printf("    Discarded devices:");
 		for (int32 i = 0; i < discardedPhysicalDevices.size(); i += 2) {
-			Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].data(), discardedPhysicalDevices[(int64)i + 1].data());
+			Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].begin(), discardedPhysicalDevices[(int64)i + 1].begin());
 		}
 	}
 
