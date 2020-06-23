@@ -90,59 +90,59 @@ void Engine::createImageViews() {
 
 void Engine::createSwapChain() {
 	//Get swapchain details
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(graphics.PD.device);Failure printf(">> %s at line %d", __func__, __LINE__);
+	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(graphics.PD.device);Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
 	//Choose max image count. Minimum or minimum +1 if supported
-	uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;Failure printf(">> %s at line %d", __func__, __LINE__);
+	uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
-		imageCount = swapChainSupport.capabilities.maxImageCount;Failure printf(">> %s at line %d", __func__, __LINE__);
+		imageCount = swapChainSupport.capabilities.maxImageCount;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 	}
 
 
 	//swapchain creation infos
-	VkSwapchainCreateInfoKHR createInfo{};Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.surface = surface;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.minImageCount = imageCount;Failure printf(">> %s at line %d", __func__, __LINE__);
-	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(&swapChainSupport.formats);Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.imageFormat = surfaceFormat.format;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.imageColorSpace = surfaceFormat.colorSpace;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.imageExtent = chooseSwapExtent(&swapChainSupport.capabilities);Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.imageArrayLayers = 1;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;Failure printf(">> %s at line %d", __func__, __LINE__);
+	VkSwapchainCreateInfoKHR createInfo{};Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.surface = surface;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.minImageCount = imageCount;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(&swapChainSupport.formats);Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.imageFormat = surfaceFormat.format;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.imageColorSpace = surfaceFormat.colorSpace;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.imageExtent = chooseSwapExtent(&swapChainSupport.capabilities);Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.imageArrayLayers = 1;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
 	uint32 queueFamilyIndices[] = { graphics.PD.indices.graphicsFamily, graphics.PD.indices.presentFamily };
 	if (graphics.PD.indices.graphicsFamily != graphics.PD.indices.presentFamily) {
-		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;Failure printf(">> %s at line %d", __func__, __LINE__);
-		createInfo.queueFamilyIndexCount = 2;Failure printf(">> %s at line %d", __func__, __LINE__);
-		createInfo.pQueueFamilyIndices = queueFamilyIndices;Failure printf(">> %s at line %d", __func__, __LINE__);
+		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+		createInfo.queueFamilyIndexCount = 2;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+		createInfo.pQueueFamilyIndices = queueFamilyIndices;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 	}
 	else createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.presentMode = chooseSwapPresentMode(&swapChainSupport.presentModes);Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.clipped = VK_TRUE;Failure printf(">> %s at line %d", __func__, __LINE__);
-	createInfo.oldSwapchain = VK_NULL_HANDLE;Failure printf(">> %s at line %d", __func__, __LINE__);
+	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.presentMode = chooseSwapPresentMode(&swapChainSupport.presentModes);Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.clipped = VK_TRUE;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createInfo.oldSwapchain = VK_NULL_HANDLE;Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
 
 	//Create swapchain
-	TryVk(vkCreateSwapchainKHR(graphics.LD, &createInfo, nullptr, &swapChain)) Exit("Failed to create swapchain");Failure printf(">> %s at line %d", __func__, __LINE__);
+	TryVk(vkCreateSwapchainKHR(graphics.LD, &createInfo, nullptr, &swapChain)) Exit("Failed to create swapchain");Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
 
 	//Save data
 	uint32 swapchainImageCount;
-	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, nullptr);					Failure printf(">> %s at line %d", __func__, __LINE__);//Get image count
-	swapChainImages.resize(swapchainImageCount);Failure printf(">> %s at line %d", __func__, __LINE__);
-	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, swapChainImages.data());	Failure printf(">> %s at line %d", __func__, __LINE__);//Save images
-	swapChainImageFormat = surfaceFormat.format;													Failure printf(">> %s at line %d", __func__, __LINE__);//Save format
-	swapChainExtent = createInfo.imageExtent;														Failure printf(">> %s at line %d", __func__, __LINE__);//Save extent
+	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, nullptr);					Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Get image count
+	swapChainImages.resize(swapchainImageCount);Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, swapChainImages.data());	Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Save images
+	swapChainImageFormat = surfaceFormat.format;													Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Save format
+	swapChainExtent = createInfo.imageExtent;														Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Save extent
 
 
-	createImageViews();Failure printf(">> %s at line %d", __func__, __LINE__);
-	createRenderPass();Failure printf(">> %s at line %d", __func__, __LINE__);
+	createImageViews();Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	createRenderPass();Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
-	createFramebuffers();Failure printf(">> %s at line %d", __func__, __LINE__);
+	createFramebuffers();Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 }
 
 
@@ -153,14 +153,14 @@ void Engine::createSwapChain() {
 
 
 void Engine::cleanupSwapChain() {
-	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			Failure printf(">> %s at line %d", __func__, __LINE__);//Destroy render pass
+	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Destroy render pass
 
-	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				Failure printf(">> %s at line %d", __func__, __LINE__);//Destroy framebuffers
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	Failure printf(">> %s at line %d", __func__, __LINE__);//Free graphics command buffers
-	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						Failure printf(">> %s at line %d", __func__, __LINE__);//Destroy image views
+	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Destroy framebuffers
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Free graphics command buffers
+	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//Destroy image views
 
-	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																Failure printf(">> %s at line %d", __func__, __LINE__);//destroy swapchain
-	destroyGpuCell(windowOutput); Failure printf(">> %s at line %d", __func__, __LINE__);
+	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//destroy swapchain
+	destroyGpuCell(windowOutput); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 }
 
 
@@ -168,25 +168,26 @@ void Engine::cleanupSwapChain() {
 
 
 
-void Engine::recreateSwapChain() {
-	windowResizeFence.wait(1); Failure printf(">> %s at line %d", __func__, __LINE__);//from framebufferResizeCallback
-	int32 width, height;
-	glfwGetFramebufferSize(window, &width, &height); Failure printf(">> %s at line %d", __func__, __LINE__);
+void Engine::recreateSwapChain(bool windowResized) {
+	//TODO wait only if resized. when the process goes here the fence can be 2 and it dies
+	if(windowResized) windowResizeFence.wait(1); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());//from framebufferResizeCallback
+		int32 width, height;
+		glfwGetFramebufferSize(window, &width, &height); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
-	if (width != 0 && height != 0) {
-		vkDeviceWaitIdle(graphics.LD); Failure printf(">> %s at line %d", __func__, __LINE__);
-		cleanupSwapChain(); Failure printf(">> %s at line %d", __func__, __LINE__);
-		createSwapChain(); Failure printf(">> %s at line %d", __func__, __LINE__);
+		if (width != 0 && height != 0) {
+			vkDeviceWaitIdle(graphics.LD); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+				cleanupSwapChain(); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+				createSwapChain(); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 
-		uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height; Failure printf(">> %s at line %d", __func__, __LINE__);
-		windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false); Failure printf(">> %s at line %d", __func__, __LINE__);
-		//free(pwindowSize);
-		//vkUnmapMemory(compute.LD, CBuffers[__lp_buffer_from_cc(windowSize)].memory);
+				uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+				windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+				//free(pwindowSize);
+				//vkUnmapMemory(compute.LD, CBuffers[__lp_buffer_from_cc(windowSize)].memory);
 
 
-		CShader_destroy(0); Failure printf(">> %s at line %d", __func__, __LINE__);
-		LuxArray<LuxCell> cells = { windowOutput, test___, windowSize }; Failure printf(">> %s at line %d", __func__, __LINE__);
-		CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv"); Failure printf(">> %s at line %d", __func__, __LINE__);
-	}
-	windowResizeFence.set(2); Failure printf(">> %s at line %d", __func__, __LINE__);
+				CShader_destroy(0); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+			LuxArray<LuxCell> cells = { windowOutput, test___, windowSize }; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+			CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv"); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+		}
+	if (windowResized) windowResizeFence.set(2); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
 }

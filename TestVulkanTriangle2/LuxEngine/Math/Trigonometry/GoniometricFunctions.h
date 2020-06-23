@@ -26,7 +26,7 @@ extern double* __lp_atan;
 static void __lp_goniometric_functions_init() {
 	#if FUNC_PRECISION != 0
 	for (int i = 0; i < FUNC_PRECISION; ++i) {
-		double rads = (revToRad(sc<double>(i)) / FUNC_PRECISION);
+		static double rads = (revToRad(sc<double>(i)) / FUNC_PRECISION);
 		__lp_sin[i] = sin(rads);
 		__lp_cos[i] = cos(rads);
 		__lp_tan[i] = tan(rads);

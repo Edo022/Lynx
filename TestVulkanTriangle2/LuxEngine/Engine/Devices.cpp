@@ -53,13 +53,13 @@ bool Engine::isDeviceSuitable(const VkPhysicalDevice vDevice, LuxString * pError
 //Returns true if the device supports the extensions, false if not
 bool Engine::checkDeviceExtensionSupport(const VkPhysicalDevice vDevice) {
 	uint32 extensionCount;
-	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);					//Get extension count
+	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 	LuxArray<VkExtensionProperties> availableExtensions(extensionCount);
 	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.data());	//Get extensions
 
 	//TODO use LuxMap
 	std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
-	for (const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);//Search for required extensions
+	for (const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);	//Search for required extensions
 	return requiredExtensions.empty();
 }
 

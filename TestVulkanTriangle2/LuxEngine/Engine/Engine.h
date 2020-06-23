@@ -390,7 +390,7 @@ private:
 
 
 	//Graphics swapchain >> Graphics/GSwapchain.cpp
-	void createSwapChain();			void recreateSwapChain();
+	void createSwapChain();			void recreateSwapChain(bool windowResized);
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const LuxArray<VkPresentModeKHR>* availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities);
