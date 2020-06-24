@@ -296,9 +296,9 @@ private:
 	//Window
 	GLFWwindow* window;								//Main engine window
 	int32 width = 1920, height = 1080;
-	LuxCell windowSize;
-	LuxCell windowOutput;							//The buffer that contains the color output of the window
-	LuxCell test___;
+	LuxCell __windowSize;
+	LuxCell __windowOutput;							//The buffer that contains the color output of the window
+	LuxCell __vertices;
 	LuxFence windowResizeFence;
 	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
 

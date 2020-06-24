@@ -382,6 +382,7 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
     <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
+    <ClCompile Include="LuxEngine\System\System.ext.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
     <ClCompile Include="LuxEngine\Types\Object\Object.cpp" />
     <ClCompile Include="Main.cpp" />

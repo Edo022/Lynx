@@ -21,6 +21,7 @@
 
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
+	__lp_lux_get_current_working_directory();
 	__lp_luxInit(useVSync);
 	__lp_goniometric_functions_init();
 

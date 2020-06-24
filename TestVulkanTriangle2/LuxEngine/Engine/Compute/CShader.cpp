@@ -208,7 +208,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 		region.imageOffset = { 0, 0, 0 };
 		region.imageExtent = { swapChainExtent.width, swapChainExtent.height, 1 };
 
-		vkCmdCopyBufferToImage(CShaders[vCShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(windowOutput)].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		vkCmdCopyBufferToImage(CShaders[vCShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 

@@ -160,7 +160,7 @@ void Engine::cleanupSwapChain() {
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
 
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
-	destroyGpuCell(windowOutput); 
+	destroyGpuCell(__windowOutput); 
 }
 
 
@@ -179,14 +179,14 @@ void Engine::recreateSwapChain(bool windowResized) {
 				cleanupSwapChain(); 
 				createSwapChain(); 
 
-				uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height; 
-				windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false); 
+				uint32* pwindowSize = (uint32*)mapGpuBuffer(__windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height; 
+				__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false); 
 				//free(pwindowSize);
 				//vkUnmapMemory(compute.LD, CBuffers[__lp_buffer_from_cc(windowSize)].memory);
 
 
 				CShader_destroy(0); 
-			LuxArray<LuxCell> cells = { windowOutput, test___, windowSize }; 
+			LuxArray<LuxCell> cells = { __windowOutput, __vertices, __windowSize }; 
 			CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv"); 
 		}
 	if (windowResized) windowResizeFence.set(2); 

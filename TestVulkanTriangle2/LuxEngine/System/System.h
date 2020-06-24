@@ -12,25 +12,29 @@
 #endif
 
 
-#	ifdef _WIN64							//Windows
-#		include <direct.h>						//Windows directories
-#		define __lp_get_cwd _getcwd				//Windows directories
-#	elif defined __linux__					//Linux
-#		include <unistd.h>						//Linux directories
-#		define __lp_get_cwd getcwd				//Linux directories
-#	else									//Other operating systems
-#		error Unsupported operating system
+#ifdef _WIN64							//Windows
+#	include <direct.h>						//Windows directories
+#	define __lp_get_cwd _getcwd				//Windows directories
+#elif defined __linux__					//Linux
+#	include <unistd.h>						//Linux directories
+#	define __lp_get_cwd getcwd				//Linux directories
+#else									//Other operating systems
+#	error Unsupported operating system
 //#	elif defined unix || defined __unix || define __unix__	//Unix 
-#	endif
+#endif
 
 
 
+//The path to the current directory
+extern LuxString luxThisDirectory;
 
-//Rrturns the path to the current directory as a LuxString
-static inline LuxString __lp_luxGetCurrentWorkingDirectory() {
-	char buff[FILENAME_MAX];
-	__lp_get_cwd(buff, FILENAME_MAX);
-	return LuxString(buff);
+static inline void __lp_lux_get_current_working_directory() {
+	static bool once = true;
+	if (once) {
+		char buff[FILENAME_MAX];													//Create char array to store the path
+		__lp_get_cwd(buff, FILENAME_MAX);											//Get path
+		for (int i = 0; buff[i] != '\0'; i++) if (buff[i] == '\\') buff[i] = '/';	//Replace silly windows backslashes with normal slashes
+		luxThisDirectory = LuxString(buff);											//Save path
+	}
 }
-static LuxString luxCurrentWorkingDirectory = __lp_luxGetCurrentWorkingDirectory();
 

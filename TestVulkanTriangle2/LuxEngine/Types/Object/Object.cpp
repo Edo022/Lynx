@@ -1,4 +1,4 @@
 
-#include "LuxEngine/Object/Object.h"
+#include "LuxEngine/Types/Object/Object.h"
 
 int64 LAST_OBJECT_ID;

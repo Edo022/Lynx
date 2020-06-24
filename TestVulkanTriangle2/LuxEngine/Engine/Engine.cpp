@@ -22,7 +22,15 @@ Engine engine;
 void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxGetTime();
 
-	system("S:/Workspaces/VisualStudio/source/LuxEngine/Stages/8-LuxEngineRewrite/TestVulkanTriangle2/LuxEngine/Contents/shaders/compile.bat");
+
+	LuxString compileShaderCommand =
+		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/glslc.exe ") +
+		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/shader.comp -o ") +
+		luxThisDirectory + "/LuxEngine/Contents/shaders/comp.spv";
+	system(compileShaderCommand.begin());
+
+
+
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
 	runGraphics(vUseVSync, vFOV);
@@ -170,7 +178,7 @@ void Engine::initWindow() {
 
 
 void Engine::initWindowBuffers() {
-	windowOutput = createGpuCell(width * height * 4/*A8-R8-G8-B8*/, false);
+	__windowOutput = createGpuCell(width * height * 4/*A8-R8-G8-B8*/, false);
 }
 
 

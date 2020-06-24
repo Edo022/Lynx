@@ -13,8 +13,6 @@
 
 
 int main() {
-	printf("%s", luxCurrentWorkingDirectory.begin());
-
 
 	LuxInit(false);
 	LuxInputState inputStateTest{

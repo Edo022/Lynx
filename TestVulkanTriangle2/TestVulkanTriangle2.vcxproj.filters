@@ -94,6 +94,9 @@
     <ClCompile Include="LuxEngine\Types\Object\Object.cpp">
       <Filter>LuxEngine\Types\Object</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\System\System.ext.cpp">
+      <Filter>LuxEngine\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
