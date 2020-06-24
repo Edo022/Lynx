@@ -1,6 +1,6 @@
 ﻿#pragma once
+#include "LuxEngine/System/System.h"
 #include "LuxEngine/LuxEngine.config.h"
-
 #ifndef __ENGINE
 #define __ENGINE
 
@@ -60,7 +60,7 @@
 
 //Structures
 #include "Graphics/Structs/_VkPhysicalDevice.h"
-#include "LuxEngine/Object/Object.h"
+#include "LuxEngine/Types/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"

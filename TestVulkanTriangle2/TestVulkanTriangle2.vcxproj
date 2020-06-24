@@ -400,6 +400,7 @@
     <ClInclude Include="LuxEngine\Math\Constants.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h" />
+    <ClInclude Include="LuxEngine\System\System.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />
