@@ -22,9 +22,6 @@
     <Filter Include="LuxEngine\Types\Vectors">
       <UniqueIdentifier>{c601afcb-4e1b-4dd9-8bf9-7afbd536f4c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LuxEngine\Object">
-      <UniqueIdentifier>{9475685a-dff9-4e67-8ffc-3ef00e446395}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuxEngine\Engine">
       <UniqueIdentifier>{515de7d3-e2be-4374-a5bc-0acc2adafc60}</UniqueIdentifier>
     </Filter>
@@ -49,12 +46,12 @@
     <Filter Include="LuxEngine\Math\Algebra">
       <UniqueIdentifier>{343a17dc-396e-4cab-a571-6852b28a7e61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Types\Object">
+      <UniqueIdentifier>{9475685a-dff9-4e67-8ffc-3ef00e446395}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="LuxEngine\Object\Object.cpp">
-      <Filter>LuxEngine\Object</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Engine.cpp">
       <Filter>LuxEngine\Engine</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\Object\Object.cpp">
+      <Filter>LuxEngine\Types\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
@@ -116,15 +116,6 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Vectors\Vectors.h">
       <Filter>LuxEngine\Types\Vectors</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Object\Object.h">
-      <Filter>LuxEngine\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Object\ObjectGeometry.h">
-      <Filter>LuxEngine\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Object\ObjectPhysics.h">
-      <Filter>LuxEngine\Object</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Engine\Engine.h">
       <Filter>LuxEngine\Engine</Filter>
@@ -179,6 +170,15 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxString.h">
       <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Object\Object.h">
+      <Filter>LuxEngine\Types\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Object\ObjectGeometry.h">
+      <Filter>LuxEngine\Types\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Object\ObjectPhysics.h">
+      <Filter>LuxEngine\Types\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
