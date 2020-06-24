@@ -75,10 +75,10 @@ void Engine::drawFrame() {
 	//TODO create separated command buffer
 
 	//Wait fences
-	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX); 
 	if (framebufferResized) {
-		framebufferResized = false; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-		recreateSwapChain(true); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+		framebufferResized = false; 
+		recreateSwapChain(true); 
 		goto redraw;
 	}
 
@@ -87,12 +87,12 @@ void Engine::drawFrame() {
 	//Acquire swapchain image
 	uint32 imageIndex;
 	switch (vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex)) {
-		case VK_SUBOPTIMAL_KHR: case VK_SUCCESS: Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id()); break;
-		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(false); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id()); return;
-		default:  Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());Exit("Failed to acquire swapchain image");
+		case VK_SUBOPTIMAL_KHR: case VK_SUCCESS:  break;
+		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(false);  return;
+		default:  Exit("Failed to acquire swapchain image");
 	}
-	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	imagesInFlight[imageIndex] = inFlightFences[currentFrame]; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX); 
+	imagesInFlight[imageIndex] = inFlightFences[currentFrame]; 
 
 
 
@@ -101,54 +101,54 @@ void Engine::drawFrame() {
 
 	//Update render result submitting the command buffers to the compute queue
 	static VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.waitSemaphoreCount = 1; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame]; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.signalSemaphoreCount = 1; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame]; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.commandBufferCount = 1; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex]; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	submitInfo.pWaitDstStageMask = waitStages; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; 
+	submitInfo.waitSemaphoreCount = 1; 
+	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame]; 
+	submitInfo.signalSemaphoreCount = 1; 
+	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame]; 
+	submitInfo.commandBufferCount = 1; 
+	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex]; 
+	submitInfo.pWaitDstStageMask = waitStages; 
 
-	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]); 
 	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Exit("Failed to submit graphics command buffer");
-	 Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	 
 
 	//Present
 	static VkPresentInfoKHR presentInfo{};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	presentInfo.waitSemaphoreCount = 1; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame]; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	presentInfo.swapchainCount = 1; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	presentInfo.pSwapchains = &swapChain; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	presentInfo.pImageIndices = &imageIndex; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR; 
+	presentInfo.waitSemaphoreCount = 1; 
+	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame]; 
+	presentInfo.swapchainCount = 1; 
+	presentInfo.pSwapchains = &swapChain; 
+	presentInfo.pImageIndices = &imageIndex; 
 
 	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) { 
-		case VK_SUCCESS:  Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());break;
+		case VK_SUCCESS:  break;
 		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-			recreateSwapChain(false); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-			vkDeviceWaitIdle(graphics.LD); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+			recreateSwapChain(false); 
+			vkDeviceWaitIdle(graphics.LD); 
 			break;
 		}
-		default:  Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());Exit("Failed to present swapchain image");
+		default:  Exit("Failed to present swapchain image");
 	}
 
 	//Update frame number
-	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	glfwSwapBuffers(window); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT; 
+	glfwSwapBuffers(window); 
 }
 
 
 
 
 void Engine::framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-	engine.windowResizeFence.wait(0); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id()); //from the last call of this function
+	engine.windowResizeFence.wait(0);  //from the last call of this function
 
-	engine.framebufferResized = true; Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
-	engine.windowResizeFence.set(1); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	engine.framebufferResized = true; 
+	engine.windowResizeFence.set(1); 
 
-	engine.windowResizeFence.wait(2); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id()); //from RecreateSwapchain()
-	engine.windowResizeFence.set(0); Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());
+	engine.windowResizeFence.wait(2);  //from RecreateSwapchain()
+	engine.windowResizeFence.set(0); 
 }
 
 

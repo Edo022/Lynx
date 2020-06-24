@@ -22,7 +22,7 @@ Engine engine;
 void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxGetTime();
 
-	system("S:/Workspaces/VisualStudio/source/LuxEngine/Stages/7-LuxEngineMemoryManagement/TestVulkanTriangle2/LuxEngine/Contents/shaders/compile.bat");
+	system("S:/Workspaces/VisualStudio/source/LuxEngine/Stages/8-LuxEngineRewrite/TestVulkanTriangle2/LuxEngine/Contents/shaders/compile.bat");
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
 	runGraphics(vUseVSync, vFOV);

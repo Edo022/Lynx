@@ -24,6 +24,8 @@ public:
 	// Constructors -----------------------------------------------------------------------------------------------------------------------------//
 
 
+	//TODO ref or value based on size
+	//#define optimalInput(type, name) type name
 
 
 	//Creates an array with no elements
