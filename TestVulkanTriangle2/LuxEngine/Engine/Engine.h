@@ -444,12 +444,18 @@ private:
 		VkDescriptorPool descriptorPool;
 		VkDescriptorSet descriptorSet;
 		VkDescriptorSetLayout descriptorSetLayout;
+
 		//Pipeline
 		VkPipeline pipeline;
 		VkPipelineLayout pipelineLayout;
+
 		//Commands
 		VkCommandPool commandPool;
 		LuxArray <VkCommandBuffer> commandBuffers;
+
+		//Since vulkan uses pointers everywhere, I need to create the objects with malloc() to prevent them from vanishing randomly
+		//This array saves all of them so they can be free()d when the shader is destroyed
+		LuxMap<void*> __lp_ptrs;
 	};
 	LuxMap<LuxCShader> CShaders;
 
@@ -498,7 +504,7 @@ private:
 
 
 	//Compute pipeline and descriptors >> Compute/CShader.cpp
-	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBufferIndices, const LuxShader vCShader);
+	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void CShader_createPipeline(const char* shaderPath, const LuxShader vCShader);
 	void CShader_createCommandBuffers(const LuxShader vCShader);

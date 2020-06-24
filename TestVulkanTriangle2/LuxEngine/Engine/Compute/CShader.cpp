@@ -33,13 +33,16 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 		descriptorSetLayoutBindings[i] = descriptorSetLayoutBinding;						//Save it in the layout binding array
 	}
 
-	VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};						//This structure contains all the descriptors of the bindings that will be used by the shader
-	descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Set structure type
-	descriptorSetLayoutCreateInfo.bindingCount = sc<uint32>(descriptorSetLayoutBindings.size());			//Set number of binding points
-	descriptorSetLayoutCreateInfo.pBindings = (new LuxArray<VkDescriptorSetLayoutBinding>(descriptorSetLayoutBindings))->data(); //Set descriptors to bind
+	VkDescriptorSetLayoutCreateInfo* descriptorSetLayoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));//This structure contains all the descriptors of the bindings that will be used by the shader
+	descriptorSetLayoutCreateInfo->flags = 0; //default
+	descriptorSetLayoutCreateInfo->pNext = null; //default
+	descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Set structure type
+	descriptorSetLayoutCreateInfo->bindingCount = sc<uint32>(descriptorSetLayoutBindings.size());			//Set number of binding points
+	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.data()); //Set descriptors to bind
 
 	//Create the descriptor set layout
-	TryVk(vkCreateDescriptorSetLayout(compute.LD, new VkDescriptorSetLayoutCreateInfo(descriptorSetLayoutCreateInfo), null, &CShaders[vCShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+	TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, null, &CShaders[vCShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+	CShaders[vCShader].__lp_ptrs.add((void*)descriptorSetLayoutCreateInfo);
 }
 
 
@@ -65,7 +68,7 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 		descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
 		descriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;	//The descriptor sets can be freed
 		//Create descriptor pool
-		TryVk(vkCreateDescriptorPool(compute.LD, new VkDescriptorPoolCreateInfo(descriptorPoolCreateInfo), null, &CShaders[vCShader].descriptorPool)) Exit("Unable to create descriptor pool");
+		TryVk(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &CShaders[vCShader].descriptorPool)) Exit("Unable to create descriptor pool");
 
 		//This structure contains the informations about the descriptor set
 		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
@@ -74,7 +77,7 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 		descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
 		descriptorSetAllocateInfo.pSetLayouts = &CShaders[vCShader].descriptorSetLayout;	//Set set layouts
 		//Allocate descriptor set
-		TryVk(vkAllocateDescriptorSets(compute.LD, new VkDescriptorSetAllocateInfo(descriptorSetAllocateInfo), &CShaders[vCShader].descriptorSet)) Exit("Unable to allocate descriptor sets");
+		TryVk(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &CShaders[vCShader].descriptorSet)) Exit("Unable to allocate descriptor sets");
 	
 
 
@@ -82,12 +85,12 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 		LuxArray<VkWriteDescriptorSet> writeDescriptorSets(pCells->size());
 		forEach(*pCells, i) {
 			//Connect the storage buffer to the descrptor
-			VkDescriptorBufferInfo descriptorBufferInfo = {};									//Create descriptor buffer infos
-			descriptorBufferInfo.buffer = CBuffers[__lp_buffer_from_cc((*pCells)[i])].buffer;	//Set buffer
+			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
+			descriptorBufferInfo->buffer = CBuffers[__lp_buffer_from_cc((*pCells)[i])].buffer;	//Set buffer
 			uint32 offset = __lp_cellIndex_from_cc((*pCells)[i]) * __lp_cellSize_from_cc((*pCells)[i]);
 			uint32 minOffset = compute.PD.properties.limits.minStorageBufferOffsetAlignment;	//... Set offset
-			descriptorBufferInfo.offset = (__lp_isShared_from_cc((*pCells)[i]) == 0 || offset == 0) ? 0 : offset - (offset % minOffset) + minOffset;
-			descriptorBufferInfo.range = __lp_cellSize_from_cc((*pCells)[i]);					//Set size of the buffer
+			descriptorBufferInfo->offset = (__lp_isShared_from_cc((*pCells)[i]) == 0 || offset == 0) ? 0 : offset - (offset % minOffset) + minOffset;
+			descriptorBufferInfo->range = __lp_cellSize_from_cc((*pCells)[i]);					//Set size of the buffer
 
 			VkWriteDescriptorSet writeDescriptorSet = {};										//Create write descriptor set
 			writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;						//Set structure type
@@ -95,13 +98,14 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 			writeDescriptorSet.dstBinding = sc<uint32>(i);											//Set binding
 			writeDescriptorSet.descriptorCount = 1;													//Set number of descriptors
 			writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;					//Use it as a storage
-			writeDescriptorSet.pBufferInfo = new VkDescriptorBufferInfo(descriptorBufferInfo);		//Set descriptor buffer info
+			//writeDescriptorSet.pBufferInfo = &descriptorBufferInfo;		//Set descriptor buffer info
+			writeDescriptorSet.pBufferInfo = descriptorBufferInfo;		//Set descriptor buffer info
 
 			writeDescriptorSets[i] = writeDescriptorSet;										//Save descriptor set
+			CShaders[vCShader].__lp_ptrs.add((void*)descriptorBufferInfo);						//Save the struct in the pointers that needs to be freed
 		}
 		//Update descriptor sets
-		vkUpdateDescriptorSets(compute.LD, sc<uint32>(writeDescriptorSets.size()), (new LuxArray(writeDescriptorSets))->data(), 0, null);
-	
+		vkUpdateDescriptorSets(compute.LD, sc<uint32>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, null);
 }
 
 
@@ -303,12 +307,17 @@ bool Engine::CShader_destroy(const LuxShader vCShader){
 	vkFreeDescriptorSets(compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
 	vkDestroyDescriptorPool(compute.LD, CShaders[vCShader].descriptorPool, null);
 	vkDestroyDescriptorSetLayout(compute.LD, CShaders[vCShader].descriptorSetLayout, null);
+
 	//Clear command buffers and command pool
 	vkFreeCommandBuffers(compute.LD, CShaders[vCShader].commandPool, 1, CShaders[vCShader].commandBuffers.data());
 	vkDestroyCommandPool(compute.LD, CShaders[vCShader].commandPool, null);
+
 	//Clear compute pipeline and pipeline layout
 	vkDestroyPipelineLayout(compute.LD, CShaders[vCShader].pipelineLayout, null);
 	vkDestroyPipeline(compute.LD, CShaders[vCShader].pipeline, null);
+
+	//Free al the useless pointers
+	forEach(CShaders[vCShader].__lp_ptrs, i) free(CShaders[vCShader].__lp_ptrs[i]);
 
 	//Remove the shader from the shader array
 	CShaders.remove(0);
