@@ -23,9 +23,13 @@ void main() {
 	if(x > width || y > height) return;
 
 
-	uvec4 color = uvec4(x,width*height/16000,y,255);
+//	uvec4 color = uvec4(x,width*height/16000,y,255);
 //	uvec4 color = uvec4(255,0,255,0);
-	//abgr
+	uvec4 color = uvec4(0);
+//	if(vertices[0] == x && vertices[1] == y) color = uvec4(255,0,0,255);
+	if(vertices[0] < x) color = uvec4(255,0,0,255);
+//	if(vertices[0] == windowSize[0]) color = uvec4(vertices[2],0,0,255);
+
 
 	//Store the pixel in the buffer. 4 chars as an uint32
 	imageData[y*width + x] = ((color.a) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | (color.r & 0xFF);

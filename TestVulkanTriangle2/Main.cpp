@@ -48,7 +48,7 @@ int main() {
 	//LuxString hh = { ' ', 'b','b','b','b', '\0' };
 	//h += hh + LuxString("gg") + "EXUPUROSION";
 	//printf("%s", h.begin());
-
+	
 	LuxInit(false);
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, &hh1 },

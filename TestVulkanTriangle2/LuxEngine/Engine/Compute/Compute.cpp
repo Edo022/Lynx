@@ -16,10 +16,12 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
+	test___ = createGpuCell(4*2, true);
+	uint32* mappedVertices = (uint32*)mapGpuBuffer(test___); 
 	windowSize = createGpuCell(4 * 2, true);
 	uint32* pwindowSize = (uint32*)mapGpuBuffer(windowSize); pwindowSize[0] = width, pwindowSize[1] = height;
-	test___ = createGpuCell(4, true);
-	uint32* mappedVertices = (uint32*)mapGpuBuffer(test___); mappedVertices[__lp_buffer_from_cc(test___)] = 1;
+	mappedVertices[__lp_buffer_from_cc(test___)] = 10;
+	mappedVertices[__lp_buffer_from_cc(test___)+1] = 10;
 
 	LuxArray<LuxCell> cells = { windowOutput, test___, windowSize };
 	CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
@@ -102,9 +104,9 @@ LuxCell Engine::createGpuCell(const uint64 vCellSize, const bool vCpuAccessible)
 			}
 		}
 		if (buffer == (LuxBuffer)-1) buffer = createGpuBuffer(__lp_static_buffer_size, bufferClass, vCpuAccessible);		//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
-		return sc<LuxCell>(__lp_cellCode(buffer, CBuffers[buffer].cells.add(sc<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
+		return sc<LuxCell>(__lp_cellCode(1, buffer, CBuffers[buffer].cells.add(sc<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
 	}
-	else return sc<LuxCell>(__lp_cellCode(createGpuBuffer(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
+	else return sc<LuxCell>(__lp_cellCode(0, createGpuBuffer(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
 }
 
 
