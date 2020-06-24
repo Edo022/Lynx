@@ -21,7 +21,7 @@ public:
 		str.resize(i + 1);
 		memcpy(str.begin(), vString, i + 1);
 	}
-	inline LuxString(const std::initializer_list<char> vArray) {
+	inline LuxString(const std::initializer_list<char>& vArray) {
 		str.resize(vArray.size());
 		memcpy(str.begin(), vArray.begin(), vArray.size());
 	}
@@ -33,6 +33,8 @@ public:
 	inline char* __vectorcall begin() const override { return str.begin(); }
 	inline char* __vectorcall end() const override { return str.end(); }
 	inline char& __vectorcall operator[](const uint64 vIndex) const { return str[vIndex]; }
+
+
 
 
 	//String concatenation
