@@ -84,7 +84,9 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo descriptorBufferInfo = {};									//Create descriptor buffer infos
 			descriptorBufferInfo.buffer = CBuffers[__lp_buffer_from_cc((*pCells)[i])].buffer;	//Set buffer
-			descriptorBufferInfo.offset = (__lp_isShared_from_cc((*pCells)[i]) == 1) ? (__lp_cellIndex_from_cc((*pCells)[i]) * __lp_cellSize_from_cc((*pCells)[i])) : 0;													//Set offset
+			uint32 offset = __lp_cellIndex_from_cc((*pCells)[i]) * __lp_cellSize_from_cc((*pCells)[i]);
+			uint32 minOffset = compute.PD.properties.limits.minStorageBufferOffsetAlignment;	//... Set offset
+			descriptorBufferInfo.offset = (__lp_isShared_from_cc((*pCells)[i]) == 0 || offset == 0) ? 0 : offset - (offset % minOffset) + minOffset;
 			descriptorBufferInfo.range = __lp_cellSize_from_cc((*pCells)[i]);					//Set size of the buffer
 
 			VkWriteDescriptorSet writeDescriptorSet = {};										//Create write descriptor set

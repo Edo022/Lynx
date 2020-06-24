@@ -27,7 +27,8 @@ void main() {
 //	uvec4 color = uvec4(255,0,255,0);
 	uvec4 color = uvec4(0);
 //	if(vertices[0] == x && vertices[1] == y) color = uvec4(255,0,0,255);
-	if(vertices[0] < x) color = uvec4(255,0,0,255);
+//	if(vertices[0] < x) color = uvec4(255,0,0,255);
+	color = uvec4(255,0,0,255);
 //	if(vertices[0] == windowSize[0]) color = uvec4(vertices[2],0,0,255);
 
 

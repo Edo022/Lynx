@@ -14,7 +14,7 @@
 // cellIndex: 20b
 // cellSize: 31b
 //Cell size 0 means that the buffer is not shared
-#define __lp_cellCode(isShared, buffer, cellIndex, cellSize) ((isShared << 63) | ((uint64)(buffer) << 51) | ((uint64)(cellIndex) << 31) | ((cellSize) & 0x7FFFfFFF))
+#define __lp_cellCode(isShared, buffer, cellIndex, cellSize) (((uint64)isShared << 63) | ((uint64)(buffer) << 51) | ((uint64)(cellIndex) << 31) | ((cellSize) & 0x7FFFfFFF))
 #define __lp_isShared_from_cc(cellCode) (((cellCode) >> 63) & 0b1)
 #define __lp_buffer_from_cc(cellCode) (((cellCode) >> 51) & 0xFFF)
 #define __lp_cellIndex_from_cc(cellCode) (((cellCode) >> 31) & 0xfFFFF)
