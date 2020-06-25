@@ -49,6 +49,10 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 
 
 
+
+
+
+
 //Created the descriptor pool and allocates in it the descriptor sets
 //*   pCells: an array of memory cells to bind to the shader
 //*      The shader inputs must match those cells
@@ -112,6 +116,10 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 
 
 
+
+
+
+
 void Engine::CShader_createPipeline(const char* shaderPath, const LuxShader vCShader) {
 	uint32 fileLength;																//Create the shader module
 	VkShaderModule shaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
@@ -141,28 +149,53 @@ void Engine::CShader_createPipeline(const char* shaderPath, const LuxShader vCSh
 
 
 
+
+
+
+
 void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 	//Create command pool
-	VkCommandPoolCreateInfo commandPoolCreateInfo = {};								//Create command pool create infos. The command pool contains the command buffers
-	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;			//Set structure type
-	commandPoolCreateInfo.flags = 0;													//Default falgs
-	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];		//Set the compute family where to bind the command pool
+	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
+	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
+	commandPoolCreateInfo.flags = 0;														//Default falgs
+	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
 	//Create the command pool
 	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &CShaders[vCShader].commandPool)) Exit("Unable to create command pool");
 
 	//Allocate command buffers
-	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};						//Create command buffer allocate infos to allocate the command buffer in the command pool
-	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;	//Set structure type
-	commandBufferAllocateInfo.commandPool = CShaders[vCShader].commandPool;				//Set command pool where to allocate the command buffer 
-	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;					//Set the command buffer as a primary level command buffer
-	commandBufferAllocateInfo.commandBufferCount = sc<uint32>(swapChainImages.size());	//Allocate one command buffer
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};							//Create command buffer allocate infos to allocate the command buffer in the command pool
+	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
+	commandBufferAllocateInfo.commandPool = CShaders[vCShader].commandPool;					//Set command pool where to allocate the command buffer 
+	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
+	commandBufferAllocateInfo.commandBufferCount = sc<uint32>(swapChainImages.size()) + 1;	//Allocate one command buffer for each swapchain image
 	//Allocate command buffer
 	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
 
-	//Record command buffers
-	for (int imgIndex = 0; imgIndex < swapChainImages.size(); imgIndex++) {			//For every command buffer of the swapchain images
+
+	//Create compute command buffer
+	VkCommandBufferBeginInfo beginInfo = {};										//Create begin infos to start recording the command buffer
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;						//Set structure type
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;						//Set command buffer type
+	//Start recording commands
+	TryVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo)) Exit("Unable to begin command buffer recording");
+
+	//Bind pipeline and descriptor sets to the command buffer
+	vkCmdBindPipeline(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipeline);
+	vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, null);
+	//Dispatch the compute shader to execute it with the specified workgroups
+	//TODO fix
+	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
+	//vkCmdDispatch(CShaders[vCShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(swapChainExtent.width) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(swapChainExtent.height) / WORKGROUP_SIZE)), 1);
+
+	TryVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0])) Exit("Failed to record command buffer");
+
+
+
+
+	//Record present command buffers
+	for (int imgIndex = 1; imgIndex < swapChainImages.size() + 1; imgIndex++) {		//For every command buffer of the swapchain images
 		VkCommandBufferBeginInfo beginInfo = {};										//Create begin infos to start recording the command buffer
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;						//Set structure type
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;						//Set command buffer type
@@ -172,8 +205,6 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 		//Bind pipeline and descriptor sets to the command buffer
 		vkCmdBindPipeline(CShaders[vCShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipeline);
 		vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[imgIndex], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, null);
-		//Dispatch the compute shader to execute it with the specified workgroups
-		vkCmdDispatch(CShaders[vCShader].commandBuffers[imgIndex], sc<uint32>(ceil(sc<float>(swapChainExtent.width) / WORKGROUP_SIZE)), sc<uint32>(ceil(sc<float>(swapChainExtent.height) / WORKGROUP_SIZE)), 1);
 
 
 
@@ -185,7 +216,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 		barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = swapChainImages[imgIndex];
+		barrier.image = swapChainImages[imgIndex - 1];
 		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.levelCount = 1;
@@ -201,7 +232,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 		vkCmdPipelineBarrier(CShaders[vCShader].commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
 
-		//TODO divide to dedicated command buffer and pool
+
 		VkBufferImageCopy region{};
 		region.bufferOffset = 0;
 		region.bufferRowLength = 0;
@@ -213,7 +244,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 		region.imageOffset = { 0, 0, 0 };
 		region.imageExtent = { swapChainExtent.width, swapChainExtent.height, 1 };
 
-		vkCmdCopyBufferToImage(CShaders[vCShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		vkCmdCopyBufferToImage(CShaders[vCShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapChainImages[imgIndex-1], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 
@@ -224,7 +255,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 		barrier1.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 		barrier1.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier1.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier1.image = swapChainImages[imgIndex];
+		barrier1.image = swapChainImages[imgIndex - 1];
 		barrier1.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		barrier1.subresourceRange.baseMipLevel = 0;
 		barrier1.subresourceRange.levelCount = 1;
@@ -292,6 +323,10 @@ LuxShader Engine::CShader_new(const LuxArray<LuxCell>* pCells, const char* vShad
 	//Return the index of the created shader
 	return shader;
 }
+
+
+
+
 
 
 

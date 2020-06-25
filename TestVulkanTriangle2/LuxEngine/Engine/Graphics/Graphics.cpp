@@ -72,7 +72,6 @@ void Engine::createSyncObjects() {
 
 void Engine::drawFrame() {
 	redraw:
-	//TODO create separated command buffer
 
 	//Wait fences
 	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX); 
@@ -97,17 +96,18 @@ void Engine::drawFrame() {
 
 
 
-	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 	//Update render result submitting the command buffers to the compute queue
+	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	LuxArray<VkCommandBuffer> _cbs = { CShaders[0].commandBuffers[0], CShaders[0].commandBuffers[imageIndex +1] };
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; 
 	submitInfo.waitSemaphoreCount = 1; 
 	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame]; 
 	submitInfo.signalSemaphoreCount = 1; 
 	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame]; 
-	submitInfo.commandBufferCount = 1; 
-	submitInfo.pCommandBuffers = &CShaders[0].commandBuffers[imageIndex]; 
+	submitInfo.commandBufferCount = 2;
+	submitInfo.pCommandBuffers = _cbs.begin();
 	submitInfo.pWaitDstStageMask = waitStages; 
 
 	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]); 
@@ -134,7 +134,7 @@ void Engine::drawFrame() {
 	}
 
 	//Update frame number
-	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT; 
+	currentFrame = (currentFrame + 1) % (MAX_FRAMES_IN_FLIGHT -1); 
 	glfwSwapBuffers(window); 
 }
 

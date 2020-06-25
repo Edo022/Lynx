@@ -1,50 +1,31 @@
 
 #version 450
-//#extension GL_ARB_separate_shader_objects : enable
 
-//#define width windowSize[0]			//The width of the window
-//#define height windowSize[1]		//The height of the window
 #define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define x gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define y gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+#define colorOutput(x,y) __colorOutput[width * y + x]
 
 
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
-layout(std430, binding = 0) buffer imageData_{ 
-	uint imageData[];
-};
-
-//window 1 vert 2 when same buffer
-//window 2 vert 1 when different buffer 
-
-layout(std430, binding = 1) buffer windowSize_{ 
-	uint width;
-	uint height; 
-};
-//layout(std430, binding = 1) buffer windowSize_{ 
-//	uint width;
-//	uint height; 
-//};
-//
-layout(std430, binding = 2) buffer vertices_{ 
-	uint vertices[2]; 
-};
+layout(std430, binding = 0) buffer colorOutput_{ uint __colorOutput[]; };		//Buffer containing the output image
+layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };	//Width and height of the window
+layout(std430, binding = 2) buffer vertices_{ uint vertices[2]; };			//Vertices of the mesh
 
 
 
 
 void main() {
 	//Yeet unnecessary calls
-	if(x > width || y > height) return;
+//	if(x > width || y > height) return;
 
-
-	uvec4 color;
-	if(x == vertices[0] && y == vertices[1]) color = uvec4(255,0,0,255);
-	else return;
+	vec4 color;
+	color = uvec4(255,0,0,255);
 //	color = (x < vertices[0]) ? uvec4(0) : uvec4(height/(1080/255),width/(1920*2/255),0,255);
 
 
 	//Store the pixel in the buffer. 4 chars as an uint32
-	imageData[y*width + x] = ((color.a) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | (color.r & 0xFF);
+	colorOutput(vertices[0], vertices[1]) = (int(color.a) << 24) | ((int(color.b) & 0xFF) << 16) | ((int(color.g) & 0xFF) << 8) | (int(color.r) & 0xFF);
+//	colorOutput[y*width + x] = ((color.a) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | (color.r & 0xFF);
 }
