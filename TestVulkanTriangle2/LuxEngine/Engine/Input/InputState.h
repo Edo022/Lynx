@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 #include <initializer_list>
-#include "LuxEngine/macros.h"                     // for sc, min
+#include "LuxEngine/macros.h"                     // for scast, min
 #include "LuxEngine/Types/Containers/LuxArray.h"  // for LuxArray
 #include "LuxEngine/Types/Integers/Integers.h"    // for uint16
 
@@ -52,7 +52,7 @@ struct LuxInputState {
 			for (int i = 0; i < sequences.size(); ++i) {							//For every key sequence
 				for (int j = i; j < sequences.size(); ++j) {							//Checking every other sequence that comes after it
 					if (j == i) continue;													//Skip useless iterations            // ↓ For every key of the second sequence
-					for (int k = 0; k < min(sc<LuxArray<uint16>>(sequences[j].sequence).size(), sc<LuxArray<uint16>>(sequences[i].sequence).size()); ++k) {
+					for (int k = 0; k < min(scast<LuxArray<uint16>>(sequences[j].sequence).size(), scast<LuxArray<uint16>>(sequences[i].sequence).size()); ++k) {
 						if (sequences[j].sequence[k] == sequences[i].sequence[k]) continue;	//Search for the next index with different keys
 						if (sequences[j].sequence[k] < sequences[i].sequence[k]) {			//If the first is greater than the second
 							LuxKeySequence b = sequences[i];									//Swap the bindings and the whole sequences

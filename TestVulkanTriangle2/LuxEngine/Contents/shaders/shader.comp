@@ -4,12 +4,12 @@
 #define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define x gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define y gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
-#define colorOutput(x,y) __colorOutput[width * y + x]
+#define colorOutput(x,y) _lp_colorOutput[width * y + x]
 
 
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
-layout(std430, binding = 0) buffer colorOutput_{ uint __colorOutput[]; };		//Buffer containing the output image
+layout(std430, binding = 0) buffer colorOutput_{ uint _lp_colorOutput[]; };		//Buffer containing the output image
 layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };	//Width and height of the window
 layout(std430, binding = 2) buffer vertices_{ uint vertices[2]; };			//Vertices of the mesh
 

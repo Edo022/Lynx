@@ -4,14 +4,19 @@
 #include "LuxEngine.config.h"
 
 
-#include <chrono>
-//#include <thread>
-#define sleep(ms)			std::this_thread::sleep_for(std::chrono::milliseconds(ms))
-//#define Sleep(ms)			sleep(ms) //UwU use "sleep(ms)" instead of this
-//#define _sleep(ms)			sleep(sms) //UwU use "sleep(ms)" instead of this
 
-//#include "TermColor.hpp"
+//functions
+template<class T> constexpr T __vectorcall max(T a, T b) { return (a > b) ? a : b; }					//Returns the minimum value
+template<class T> constexpr T __vectorcall min(T a, T b) { return (a < b) ? a : b; }					//Returns the maximum value
+template<class T> constexpr T __vectorcall max(T a, T b, T c) { return max(max(a, b), c); }				//Returns the minimum value
+template<class T> constexpr T __vectorcall min(T a, T b, T c) { return min(min(a, b), c); }				//Returns the maximum value
+template<class T> constexpr T __vectorcall max(T a, T b, T c, T d) { return max(max(max(a, b), c), d); }//Returns the minimum value
+template<class T> constexpr T __vectorcall min(T a, T b, T c, T d) { return min(min(min(a, b), c), d); }//Returns the maximum value
+template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= a ^= b; }				//Swaps the contents of 2 basic type variables
+
+
 //Console output
+#include "TermColor.hpp"
 #define NewLine				std::cout						<< '\n';
 #define Normal				std::cout<<termcolor::white		<< '\n';
 #define Success				std::cout<<termcolor::green		<< '\n';
@@ -34,30 +39,36 @@
 #endif
 
 
-
-#define null nullptr
-#define forEach(container, iterator)	for(uint64 iterator = 0; iterator < (container).size(); iterator++)
-#define sc static_cast
-
-//functions
-#define max(a,b)            (((a) > (b)) ? (a) : (b))	//Don't use this macro with random numbers
-#define min(a,b)            (((a) < (b)) ? (a) : (b))	//Don't use this macro with random numbers
-#define swapVar(a,b)		a ^= b ^= a ^= b			//Swaps the contents of 2 basic type variables
-
+//Cause im lazy
+#define null						nullptr
+#define forEach(container, i)		for(uint64 i = 0; i < (container).size(); i++)
+#define scast						static_cast
+#define rcast						reinterpret_cast
 
 
 //time
-//#include <chrono>
+#include <chrono>
+#include <thread>
 typedef std::chrono::system_clock::time_point LuxTime;
-#define luxGetTime()				std::chrono::system_clock::now()
-#define luxTimeGetDuration(start)	((sc<std::chrono::duration<double>>(luxGetTime() - start)).count())
+#define luxStartChrono()			std::chrono::system_clock::now()
+#define luxStopChrono(start)		((scast<std::chrono::duration<double>>(luxStartChrono() - start)).count())
+#define sleep(ms)					std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 
 
+
+
+
+
+
+
+
+
+//TODO
 //Calculates the square root of a float number. Sometimes this function is slightly slower than math.h sqrt function
 static float __vectorcall __s(float n) {
 	static int32_t i = 0x5F3759DF - (*(int32_t*)&n >> 1);
 	static float n2 = *(float*)&i;
-	return sc<float>(1 / (n2 * (1.5 - (n * 0.5 * n2 * n2))));
+	return scast<float>(1 / (n2 * (1.5 - (n * 0.5 * n2 * n2))));
 }
 
 //Calculates the result of b to the power of e. Way faster than math.h pow function
@@ -75,4 +86,4 @@ static int64_t __vectorcall pow___(int64_t b, int64_t e) {
 
 
 #pragma warning(default : 4005) //Macro referinition
-//#pragma warning(default : 4002) //Too many arguments in luxDebug and luxRelease
+#pragma warning(default : 4002) //Too many arguments in luxDebug and luxRelease

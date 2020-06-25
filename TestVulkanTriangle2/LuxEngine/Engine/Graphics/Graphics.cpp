@@ -99,7 +99,7 @@ void Engine::drawFrame() {
 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	LuxArray<VkCommandBuffer> _cbs = { CShaders[0].commandBuffers[0], CShaders[0].commandBuffers[imageIndex +1] };
+	LuxArray<VkCommandBuffer> _cbs = { CShaders[1].commandBuffers[0], CShaders[0].commandBuffers[imageIndex] };
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; 
 	submitInfo.waitSemaphoreCount = 1; 
@@ -134,7 +134,7 @@ void Engine::drawFrame() {
 	}
 
 	//Update frame number
-	currentFrame = (currentFrame + 1) % (MAX_FRAMES_IN_FLIGHT -1); 
+	currentFrame = (currentFrame + 1) % (MAX_FRAMES_IN_FLIGHT); 
 	glfwSwapBuffers(window); 
 }
 

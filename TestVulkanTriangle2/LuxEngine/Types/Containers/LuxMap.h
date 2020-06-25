@@ -74,7 +74,7 @@ public:
 	uint64 __vectorcall append(const type vData) {
 		if (__lp_dynSize + 1 > chunksDynNum * chunkSize) {								//If the chunk is full
 			__lp_data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);				//Allocate a new data chunk
-			__lp_tracker[chunksDynNum] = sc<uint64*>(malloc(sizeof(uint64*) * chunkSize));	//Allocate a new tracker chunk
+			__lp_tracker[chunksDynNum] = scast<uint64*>(malloc(sizeof(uint64*) * chunkSize));	//Allocate a new tracker chunk
 			chunksDynNum++;																	//Update the number of chunks
 		}
 		__lp_Data(__lp_dynSize) = vData;												//Assign the data to the new element
@@ -148,7 +148,7 @@ public:
 		else {												//If it is,
 			__lp_Tracker(vIndex) = -1;							//Set the index as free
 			if (vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary
-			if (head == sc<uint64>(-1)) head = tail = vIndex;		//If it has no free elements, initialize head and tail.
+			if (head == scast<uint64>(-1)) head = tail = vIndex;		//If it has no free elements, initialize head and tail.
 			else tail = __lp_Tracker(tail) = vIndex;			//If it has free elements, set the new tail and update the last free index
 			__lp_freeNum++;										//Update the number of free elements
 		}
@@ -163,7 +163,7 @@ public:
 		for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]); free(__lp_data);		//Free data map
 		for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker map
 		__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data map
-		__lp_tracker = sc<uint64**>(malloc(sizeof(uint64*) * (maxSize / chunkSize)));		//Allocate tracker map
+		__lp_tracker = scast<uint64**>(malloc(sizeof(uint64*) * (maxSize / chunkSize)));		//Allocate tracker map
 		chunksDynNum = __lp_dynSize = __lp_freeNum = 0;										//Reset number of chunk, number of elements, number of free elements
 		head = tail = -1;																	//Reset head and tail
 	}
@@ -180,14 +180,14 @@ public:
 	inline signed char __vectorcall status(const uint64 vIndex) const {
 		if (vIndex == (int64)-1)return -1;							//Invalid index
 		else if (vIndex >= __lp_dynSize) return -2;					//Index out of range
-		else if (__lp_Tracker(vIndex) == sc<uint64>(-1)) return 0;	//Ok
+		else if (__lp_Tracker(vIndex) == scast<uint64>(-1)) return 0;	//Ok
 		else if (__lp_Tracker(vIndex) >= 0)return 1;				//Invalid element
 		else return -1;												//Unknown error
 	}
 
 
 	//Returns true if the index is used, 1 if it's free or invalid (use the 'status' function for more details)
-	inline bool __vectorcall isValid(const uint64 vIndex) const { return (__lp_dynSize > vIndex && __lp_Tracker(vIndex) == sc<uint64>(-1)); }
+	inline bool __vectorcall isValid(const uint64 vIndex) const { return (__lp_dynSize > vIndex && __lp_Tracker(vIndex) == scast<uint64>(-1)); }
 
 
 

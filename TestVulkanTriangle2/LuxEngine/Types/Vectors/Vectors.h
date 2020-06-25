@@ -19,9 +19,9 @@
 typedef _vec2<type> vec2##type;																																					\
 typedef _vec3<type> vec3##type;																																					\
 typedef _vec4<type> vec4##type;																																					\
-static inline type __vectorcall dist##typen(const _vec2<type>##pass a, const _vec2<type>##pass b) { return sc<type>(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))); }						\
-static inline type __vectorcall dist##typen(const _vec3<type>##pass a, const _vec3<type>##pass b) { return sc<type>(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2))); }	\
-static inline type __vectorcall dist##typen(const _vec4<type>& a, const _vec4<type>& b) { return sc<type>(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2))); }
+static inline type __vectorcall dist##typen(const _vec2<type>##pass a, const _vec2<type>##pass b) { return scast<type>(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2))); }						\
+static inline type __vectorcall dist##typen(const _vec3<type>##pass a, const _vec3<type>##pass b) { return scast<type>(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2))); }	\
+static inline type __vectorcall dist##typen(const _vec4<type>& a, const _vec4<type>& b) { return scast<type>(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2))); }
 
 __lp_vec_def(int8, Int8)			__lp_vec_def(uint8, Uint8)			__lp_vec_def(bool, Bool)		__lp_vec_def(char, Char)
 __lp_vec_def(int16, Int16, &)		__lp_vec_def(uint16, Uint16, &)	

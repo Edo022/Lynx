@@ -32,8 +32,8 @@ VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR* pCapabilitie
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	return VkExtent2D{
-		max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, sc<uint32>(width))),
-		max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, sc<uint32>(height)))
+		max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, scast<uint32>(width))),
+		max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, scast<uint32>(height)))
 	};
 }
 
@@ -156,7 +156,7 @@ void Engine::cleanupSwapChain() {
 	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
 
 	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				//Destroy framebuffers
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, sc<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
+	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, scast<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
 
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
@@ -185,9 +185,7 @@ void Engine::recreateSwapChain(bool windowResized) {
 
 		__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false);
 
-		CShader_destroy(0);
-		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
-		CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
+		CShader_destroyCp(0);		CShader_newCp();
 	}
 	if (windowResized) windowResizeFence.set(2);
 }

@@ -28,7 +28,7 @@ static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action,
 //This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	// 37th hour spent debugging this function. It finally works
-	static uint16 yMin = 0, yMax = sc<uint16>(__lp_input_states->sequences.size() - 1), x = 0;
+	static uint16 yMin = 0, yMax = scast<uint16>(__lp_input_states->sequences.size() - 1), x = 0;
 	#define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - glfwAction - 1))
 	
 	if (action != GLFW_REPEAT) {										//If the action is not repeat
@@ -47,7 +47,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 			if (keyCode == __lp_input_states->sequences[i].sequence[x]) {		//if the input key is NOT equal to the key of the input state sequence
 				++i;																//Increase the counter
 				if (i >= __lp_input_states->sequences.size()) {						//If there are no more different keys
-					yMax = sc<uint16>(__lp_input_states->sequences.size() - 1);		//Set the maximum y as the maximum index of the sequences
+					yMax = scast<uint16>(__lp_input_states->sequences.size() - 1);		//Set the maximum y as the maximum index of the sequences
 					break;																//Exit the loop
 				}
 			}
@@ -57,10 +57,10 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 			}
 		}
 																												// UwU
-		if (yMin == yMax && x == sc<LuxArray<uint16>>(__lp_input_states->sequences[yMax].sequence).size() -1){	//If the maximum and minimum y are the same
+		if (yMin == yMax && x == scast<LuxArray<uint16>>(__lp_input_states->sequences[yMax].sequence).size() -1){	//If the maximum and minimum y are the same
 			__lp_input_states->sequences[yMax].bindedFunction(__lp_input_states->sequences[yMax].sequence);			//Call the binded function
 			yMin = 0;																								//Reset the minimum y
-			yMax = sc<uint16>(__lp_input_states->sequences.size() - 1);												//Reset the maximum y
+			yMax = scast<uint16>(__lp_input_states->sequences.size() - 1);												//Reset the maximum y
 			x = 0;																									//Reset the x
 			return;																									//Exit the function
 		}

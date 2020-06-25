@@ -20,7 +20,7 @@ Engine engine;
 
 
 void Engine::run(bool vUseVSync, float vFOV) {
-	LuxTime start = luxGetTime();
+	LuxTime start = luxStartChrono();
 
 
 	LuxString compileShaderCommand =
@@ -40,7 +40,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
 	glfwSetKeyCallback(window, &__lp_key_callback);
 
-	Success printf("Initialization completed in %f s", luxTimeGetDuration(start));
+	Success printf("Initialization completed in %f s", luxStopChrono(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 	Normal  printf("Cleaning memory");								cleanupGraphics(); cleanupCompute();		NewLine;
 
@@ -116,7 +116,7 @@ void Engine::createInstance() {
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
 	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = sc<uint32>(extensions.size());						//Set extension count
+	createInfo.enabledExtensionCount = scast<uint32>(extensions.size());						//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
 
 
@@ -139,7 +139,7 @@ void Engine::createInstance() {
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = sc<uint32>(validationLayers.size());
+	createInfo.enabledLayerCount = scast<uint32>(validationLayers.size());
 	createInfo.ppEnabledLayerNames = validationLayers.data();
 	populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;

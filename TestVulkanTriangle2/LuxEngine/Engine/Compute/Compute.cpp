@@ -27,6 +27,9 @@ void Engine::runCompute() {
 	mappedVertices[1] = 10;
 
 	LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
+	CShader_newCp();
+
+
 	CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
 }
 
@@ -69,7 +72,7 @@ void Engine::cleanupCompute() {
 //*   Returns the index of the buffer in the array. -1 if an error occurs
 LuxBuffer Engine::createGpuBuffer(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible){
 	_LuxBufferStruc buffer;					//Create the buffer struct															
-	buffer.size = sc<uint32>(vSize);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
+	buffer.size = scast<uint32>(vSize);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
 	createBuffer(
 		compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
 		(vCpuAccessible) ? VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -107,9 +110,9 @@ LuxCell Engine::createGpuCell(const uint64 vCellSize, const bool vCpuAccessible)
 			}
 		}
 		if (buffer == (LuxBuffer)-1) buffer = createGpuBuffer(__lp_static_buffer_size, bufferClass, vCpuAccessible);		//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
-		return sc<LuxCell>(__lp_cellCode(1, buffer, CBuffers[buffer].cells.add(sc<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
+		return scast<LuxCell>(__lp_cellCode(1, buffer, CBuffers[buffer].cells.add(scast<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
 	}
-	else return sc<LuxCell>(__lp_cellCode(0, createGpuBuffer(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
+	else return scast<LuxCell>(__lp_cellCode(0, createGpuBuffer(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
 }
 
 
