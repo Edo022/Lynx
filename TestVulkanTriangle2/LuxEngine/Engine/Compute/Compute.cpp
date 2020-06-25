@@ -16,17 +16,17 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	__vertices = createGpuCell(4 * 2, true);
-	//uint32* mappedVertices = (uint32*)mapGpuBuffer(__vertices); 
-	//mappedVertices[__lp_buffer_from_cc(__vertices)] = 100;
-	//mappedVertices[__lp_buffer_from_cc(__vertices)+1] = 10;
-
 	__windowSize = createGpuCell(4 * 2, true);
 	uint32* pwindowSize = (uint32*)mapGpuBuffer(__windowSize); 
 	pwindowSize[0] = width;
 	pwindowSize[1] = height;
 
-	LuxArray<LuxCell> cells = { __windowOutput, __vertices, __windowSize };
+	__vertices = createGpuCell(4 * 2, true);
+	uint32* mappedVertices = (uint32*)mapGpuBuffer(__vertices); 
+	mappedVertices[__lp_buffer_from_cc(__vertices)] = 100;
+	mappedVertices[__lp_buffer_from_cc(__vertices)+1] = 10;
+
+	LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
 	CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
 }
 

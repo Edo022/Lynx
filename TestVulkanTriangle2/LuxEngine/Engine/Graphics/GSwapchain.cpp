@@ -169,25 +169,25 @@ void Engine::cleanupSwapChain() {
 
 
 void Engine::recreateSwapChain(bool windowResized) {
-	//TODO wait only if resized. when the process goes here the fence can be 2 and it dies
-	if(windowResized) windowResizeFence.wait(1); //from framebufferResizeCallback
-		int32 width, height;
-		glfwGetFramebufferSize(window, &width, &height); 
+	if (windowResized) windowResizeFence.wait(1); //from framebufferResizeCallback
+	int32 width, height;
+	glfwGetFramebufferSize(window, &width, &height);
 
-		if (width != 0 && height != 0) {
-			vkDeviceWaitIdle(graphics.LD); 
-				cleanupSwapChain(); 
-				createSwapChain(); 
-
-				uint32* pwindowSize = (uint32*)mapGpuBuffer(__windowSize); pwindowSize[0] = swapChainExtent.width, pwindowSize[1] = swapChainExtent.height; 
-				__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false); 
-				//free(pwindowSize);
-				//vkUnmapMemory(compute.LD, CBuffers[__lp_buffer_from_cc(windowSize)].memory);
+	if (width != 0 && height != 0) {
+		vkDeviceWaitIdle(graphics.LD);
+		cleanupSwapChain();
+		createSwapChain();
 
 
-				CShader_destroy(0); 
-			LuxArray<LuxCell> cells = { __windowOutput, __vertices, __windowSize }; 
-			CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv"); 
-		}
-	if (windowResized) windowResizeFence.set(2); 
+		uint32* pwindowSize = (uint32*)mapGpuBuffer(__windowSize); 
+		pwindowSize[0] = swapChainExtent.width;
+		pwindowSize[1] = swapChainExtent.height;
+
+		__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false);
+
+		CShader_destroy(0);
+		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
+		CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
+	}
+	if (windowResized) windowResizeFence.set(2);
 }

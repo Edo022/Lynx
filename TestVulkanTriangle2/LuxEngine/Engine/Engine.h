@@ -509,7 +509,7 @@ private:
 	void CShader_createPipeline(const char* shaderPath, const LuxShader vCShader);
 	void CShader_createCommandBuffers(const LuxShader vCShader);
 
-	LuxShader CShader_new(LuxArray<LuxCell>* pCells, const char* vShaderPath);
+	LuxShader CShader_new(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
 	bool CShader_destroy(const LuxShader vCShader);
 };
 

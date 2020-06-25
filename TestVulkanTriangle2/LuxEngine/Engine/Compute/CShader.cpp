@@ -30,15 +30,16 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
 		descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
 		descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;					//Use it in the compute stage
+		descriptorSetLayoutBinding.pImmutableSamplers = null;									//Default
 		descriptorSetLayoutBindings[i] = descriptorSetLayoutBinding;						//Save it in the layout binding array
 	}
 
 	VkDescriptorSetLayoutCreateInfo* descriptorSetLayoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));//This structure contains all the descriptors of the bindings that will be used by the shader
-	descriptorSetLayoutCreateInfo->flags = 0; //default
-	descriptorSetLayoutCreateInfo->pNext = null; //default
-	descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Set structure type
-	descriptorSetLayoutCreateInfo->bindingCount = sc<uint32>(descriptorSetLayoutBindings.size());			//Set number of binding points
-	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.data()); //Set descriptors to bind
+	descriptorSetLayoutCreateInfo->flags = 0;														//default
+	descriptorSetLayoutCreateInfo->pNext = null;													//default
+	descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;		//Set structure type
+	descriptorSetLayoutCreateInfo->bindingCount = sc<uint32>(descriptorSetLayoutBindings.size());	//Set number of binding points
+	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.data());				//Set descriptors layouts to bind
 
 	//Create the descriptor set layout
 	TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, null, &CShaders[vCShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
@@ -273,7 +274,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::CShader_new(LuxArray<LuxCell>* pCells, const char* vShaderPath) {
+LuxShader Engine::CShader_new(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
 

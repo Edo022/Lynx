@@ -27,7 +27,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/glslc.exe ") +
 		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/shader.comp -o ") +
 		luxThisDirectory + "/LuxEngine/Contents/shaders/comp.spv";
-	printf("%d\n", system(compileShaderCommand.begin()));
+	if("%d\n", system(compileShaderCommand.begin()) != 0) Exit("compilation error");
 
 
 
