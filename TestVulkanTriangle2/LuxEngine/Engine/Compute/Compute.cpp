@@ -16,6 +16,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
+	copyShader = CShader_newCp();
+
+
 	__windowSize = createGpuCell(4 * 2, true);
 	uint32* pwindowSize = (uint32*)mapGpuBuffer(__windowSize); 
 	pwindowSize[0] = width;
@@ -27,10 +30,7 @@ void Engine::runCompute() {
 	mappedVertices[1] = 10;
 
 	LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
-	CShader_newCp();
-
-
-	CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
+	testShader0 = CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
 }
 
 

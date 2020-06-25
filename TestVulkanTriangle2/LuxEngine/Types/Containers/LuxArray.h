@@ -24,7 +24,6 @@ public:
 	// Constructors -----------------------------------------------------------------------------------------------------------------------------//
 
 
-	//TODO ref or value based on size (< 64b)
 
 
 	//Creates an array with no elements

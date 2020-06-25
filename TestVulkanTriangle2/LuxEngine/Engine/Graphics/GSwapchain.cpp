@@ -160,7 +160,6 @@ void Engine::cleanupSwapChain() {
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
 
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
-	destroyGpuCell(__windowOutput); 
 }
 
 
@@ -179,13 +178,15 @@ void Engine::recreateSwapChain(bool windowResized) {
 		createSwapChain();
 
 
-		uint32* pwindowSize = (uint32*)mapGpuBuffer(__windowSize); 
+		uint32* pwindowSize = rcast<uint32*>(mapGpuBuffer(__windowSize));
 		pwindowSize[0] = swapChainExtent.width;
 		pwindowSize[1] = swapChainExtent.height;
 
+		destroyGpuCell(__windowOutput);
 		__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false);
 
-		CShader_destroyCp(0);		CShader_newCp();
+		CShader_destroyCp();
+		copyShader = CShader_newCp();
 	}
 	if (windowResized) windowResizeFence.set(2);
 }

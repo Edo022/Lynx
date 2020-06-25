@@ -493,6 +493,7 @@ private:
 	}
 	LuxMap<_LuxBufferStruc> CBuffers;
 
+	LuxShader copyShader, testShader0;
 
 
 	//Compute >> Compute/Compute.cpp
@@ -507,12 +508,12 @@ private:
 	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void CShader_createPipeline(const char* shaderPath, const LuxShader vCShader);
-	void CShader_createCommandBuffersCp(const LuxShader vCShader);
+	void CShader_createCommandBuffersCp();
 	void CShader_createCommandBuffers(const LuxShader vCShader);
 
 	LuxShader CShader_newCp();
 	LuxShader CShader_new(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
-	bool CShader_destroyCp(const LuxShader vCShader);
+	bool CShader_destroyCp();
 	bool CShader_destroy(const LuxShader vCShader);
 };
 

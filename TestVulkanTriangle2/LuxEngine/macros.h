@@ -5,7 +5,7 @@
 
 
 
-//functions
+//Functions
 template<class T> constexpr T __vectorcall max(T a, T b) { return (a > b) ? a : b; }					//Returns the minimum value
 template<class T> constexpr T __vectorcall min(T a, T b) { return (a < b) ? a : b; }					//Returns the maximum value
 template<class T> constexpr T __vectorcall max(T a, T b, T c) { return max(max(a, b), c); }				//Returns the minimum value
@@ -25,11 +25,13 @@ template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= 
 #define Failure				std::cout<<termcolor::red		<< '\n';
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
-#define LineInfo			Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id())
 
 
+
+//Debug
 #define TryVk(f)			if (f != VK_SUCCESS)
 #define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); engine.running = false; exit(-1);}
+#define printLineInfo		{Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());}
 #define luxDebug(s)			s
 #define luxRelease()		;
 
@@ -39,20 +41,32 @@ template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= 
 #endif
 
 
-//Cause im lazy
+//Im lazy UwU
 #define null						nullptr
 #define forEach(container, i)		for(uint64 i = 0; i < (container).size(); i++)
 #define scast						static_cast
 #define rcast						reinterpret_cast
 
 
-//time
+//Time
 #include <chrono>
 #include <thread>
 typedef std::chrono::system_clock::time_point LuxTime;
 #define luxStartChrono()			std::chrono::system_clock::now()
 #define luxStopChrono(start)		((scast<std::chrono::duration<double>>(luxStartChrono() - start)).count())
 #define sleep(ms)					std::this_thread::sleep_for(std::chrono::milliseconds(ms))
+
+
+
+
+#pragma warning(default : 4005) //Macro referinition
+#pragma warning(default : 4002) //Too many arguments in luxDebug and luxRelease
+
+
+
+
+
+
 
 
 
@@ -85,5 +99,3 @@ static int64_t __vectorcall pow___(int64_t b, int64_t e) {
 
 
 
-#pragma warning(default : 4005) //Macro referinition
-#pragma warning(default : 4002) //Too many arguments in luxDebug and luxRelease

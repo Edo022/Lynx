@@ -95,18 +95,20 @@ void Engine::drawFrame() {
 
 
 
-
+	//TODO single shader command buffer. validation error
 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	LuxArray<VkCommandBuffer> _cbs = { CShaders[1].commandBuffers[0], CShaders[0].commandBuffers[imageIndex] };
+	LuxArray<VkCommandBuffer> _cbs = { CShaders[copyShader].commandBuffers[imageIndex] };
+	//LuxArray<VkCommandBuffer> _cbs = { CShaders[testShader0].commandBuffers[0], CShaders[copyShader].commandBuffers[imageIndex] };
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; 
 	submitInfo.waitSemaphoreCount = 1; 
 	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame]; 
 	submitInfo.signalSemaphoreCount = 1; 
 	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame]; 
-	submitInfo.commandBufferCount = 2;
+	submitInfo.commandBufferCount = 1;
+	//submitInfo.commandBufferCount = 2;
 	submitInfo.pCommandBuffers = _cbs.begin();
 	submitInfo.pWaitDstStageMask = waitStages; 
 
