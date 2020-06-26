@@ -18,14 +18,14 @@ layout(std430, binding = 2) buffer vertices_{ uint vertices[2]; };			//Vertices 
 
 void main() {
 	//Yeet unnecessary calls
-//	if(x > width || y > height) return;
+	if(x >= width || y >= height) return;
 
 	vec4 color;
-	color = uvec4(255,0,0,255);
-//	color = (x < vertices[0]) ? uvec4(0) : uvec4(height/(1080/255),width/(1920*2/255),0,255);
+	color = (x > vertices[0]) ? uvec4(255,0,0,255) : uvec4(0);
+//	color = (x > vertices[0]) ? uvec4(255,0,0,255) : uvec4(0);
 
 
 	//Store the pixel in the buffer. 4 chars as an uint32
-	colorOutput(vertices[0], vertices[1]) = (int(color.a) << 24) | ((int(color.b) & 0xFF) << 16) | ((int(color.g) & 0xFF) << 8) | (int(color.r) & 0xFF);
+	_lp_colorOutput[width * y + x] = (int(color.a) << 24) | ((int(color.b) & 0xFF) << 16) | ((int(color.g) & 0xFF) << 8) | (int(color.r) & 0xFF);
 //	colorOutput[y*width + x] = ((color.a) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | (color.r & 0xFF);
 }

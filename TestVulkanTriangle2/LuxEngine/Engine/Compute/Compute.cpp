@@ -17,9 +17,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 void Engine::runCompute() {
 	{ //Create copy command buffers #LLID CCB0000
-		copyShader = CShaders.add(LuxCShader{});					//Add the shader to the shader array
+		copyShader = CShaders.add(LuxCShader{});							//Add the shader to the shader array
 		CShaders[copyShader].commandBuffers.resize(swapChainImages.size());	//Resize the command buffer array in the shader
-		__lp_createCopyCommandBuffers();								//Create command buffers and command pool
+		__lp_createCopyCommandBuffers();									//Create command buffers and command pool
 	}
 
 
@@ -28,7 +28,7 @@ void Engine::runCompute() {
 	pwindowSize[0] = width;
 	pwindowSize[1] = height;
 
-	__vertices = createGpuCell(4 * 2 * 50, true);
+	__vertices = createGpuCell(4 * 2, true);
 	uint32* mappedVertices = (uint32*)mapGpuBuffer(__vertices); 
 	mappedVertices[0] = 100;
 	mappedVertices[1] = 10;
