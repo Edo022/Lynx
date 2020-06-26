@@ -494,14 +494,12 @@ extern Engine engine;
 #define Frame while(engine.running)
 
 
-
-static void __lp__hh(bool useVSync) {
-	engine.run(useVSync, 45);
-}
+//This function is used by the engine. You shouldn't call it
+static void __lp_eng_main_run_thr(bool useVSync) { engine.run(useVSync, 45); }
 
 //This function is used by the engine. You shouldn't call it
 static void __lp_luxInit(bool useVSync) {
-	std::thread renderThr(__lp__hh, useVSync);
+	std::thread renderThr(__lp_eng_main_run_thr, useVSync);
 	renderThr.detach();
 	engine.running = true;
 }
