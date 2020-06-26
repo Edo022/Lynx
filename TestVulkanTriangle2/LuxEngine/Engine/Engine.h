@@ -508,12 +508,10 @@ private:
 	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void CShader_createPipeline(const char* shaderPath, const LuxShader vCShader);
-	void CShader_createCommandBuffersCp();
 	void CShader_createCommandBuffers(const LuxShader vCShader);
+	void __lp_createCopyCommandBuffers();
 
-	LuxShader CShader_newCp();
 	LuxShader CShader_new(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
-	bool CShader_destroyCp();
 	bool CShader_destroy(const LuxShader vCShader);
 };
 
