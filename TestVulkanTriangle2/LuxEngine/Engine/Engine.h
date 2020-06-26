@@ -285,7 +285,6 @@ public:
 	uint32 frame = 0;
 
 
-	void run(bool vUseVSync, float vFOV);
 
 private:
 	//Main
@@ -321,6 +320,7 @@ private:
 
 
 	//Main >> this
+	luxPublic(void run(bool vUseVSync, float vFOV));
 	void mainLoop();		void FPSCounter();			void render();
 	void initWindow();		void initWindowBuffers();	void createInstance();
 
@@ -502,7 +502,6 @@ private:
 	LuxBuffer createGpuBuffer(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 	LuxCell createGpuCell(const uint64 vCellSize, const bool vCpuAccessible);
 	bool destroyGpuCell(const LuxCell vCell);
-
 
 	//Compute pipeline and descriptors >> Compute/CShader.cpp
 	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);

@@ -46,6 +46,8 @@ template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= 
 #define forEach(container, i)		for(uint64 i = 0; i < (container).size(); i++)
 #define scast						static_cast
 #define rcast						reinterpret_cast
+#define luxPrivate(s)				private: s; public:		//One line private member in public members
+#define luxPublic(s)				public: s; private:		//One line public member in private members
 
 
 //Time
