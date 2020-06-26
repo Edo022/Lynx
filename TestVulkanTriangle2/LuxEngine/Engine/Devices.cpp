@@ -13,7 +13,7 @@
 //Rates a physical device based on its properties and features
 //*   pDevice: a pointer to the device structure where its infos are stored
 //*   Returns the rating of the physical device
-int32 Engine::ratePhysicalDevice(const _VkPhysicalDevice* pDevice) {
+int32 Engine::deviceRate(const _VkPhysicalDevice* pDevice) {
 	uint32 score = 0;																			//Device performance evalutation
 	if (pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 	pDevice->properties.limits.maxComputeSharedMemorySize; //TODO non superare il limite della shader
@@ -30,16 +30,16 @@ int32 Engine::ratePhysicalDevice(const _VkPhysicalDevice* pDevice) {
 //*   vDevice: the physical device to check
 //*   pErrorText: a pointer to a LuxString where to store the error in case the device is not suitable
 //*   Returns true if the device is suitable, false if not
-bool Engine::isDeviceSuitable(const VkPhysicalDevice vDevice, LuxString * pErrorText) {
+bool Engine::deviceIsSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText) {
 	//Check extensions
-	if (!checkDeviceExtensionSupport(vDevice)) {
+	if (!deviceCheckExtensions(vDevice)) {
 		*pErrorText = "Missing required extensions";
 		return false;
 	}
 
 	//Check swapchain support
 	else {
-		SwapChainSupportDetails swapChainSupport = querySwapChainSupport(vDevice);
+		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(vDevice);
 		if (swapChainSupport.formats.size() == 0 || swapChainSupport.presentModes.size() == 0) {
 			*pErrorText = "Unsupported swapchain";
 			return false;
@@ -52,7 +52,7 @@ bool Engine::isDeviceSuitable(const VkPhysicalDevice vDevice, LuxString * pError
 
 
 //Returns true if the device supports the extensions, false if not
-bool Engine::checkDeviceExtensionSupport(const VkPhysicalDevice vDevice) {
+bool Engine::deviceCheckExtensions(const VkPhysicalDevice vDevice) {
 	uint32 extensionCount;
 	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 	LuxArray<VkExtensionProperties> availableExtensions(extensionCount);
@@ -68,7 +68,7 @@ bool Engine::checkDeviceExtensionSupport(const VkPhysicalDevice vDevice) {
 
 
 //Finds the queue families of a physical device
-QueueFamilyIndices Engine::findQueueFamilies(const VkPhysicalDevice vDevice) {
+QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
 	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
 	LuxArray<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
@@ -104,7 +104,7 @@ QueueFamilyIndices Engine::findQueueFamilies(const VkPhysicalDevice vDevice) {
 
 //Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
 //Then saves them in the class members
-void Engine::getPhysicalDevices() {
+void Engine::deviceGetPhysical() {
 	uint32 deviceCount = 0;
 	LuxMap<LuxString> discardedPhysicalDevices(0xFFFF, 0xFFFF);
 	LuxMap<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
@@ -122,7 +122,7 @@ void Engine::getPhysicalDevices() {
 			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 			LuxString errorText;
-			if (isDeviceSuitable(physDevices[i], &errorText)) {										//If it's suitable
+			if (deviceIsSuitable(physDevices[i], &errorText)) {										//If it's suitable
 				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices)); //Add it to the physical devices vector
 			}
 			else {																						//If not
@@ -147,8 +147,8 @@ void Engine::getPhysicalDevices() {
 		graphics.PD = *physicalDevices[0];								//set graphics device at default value
 		compute.PD = *physicalDevices[0];								//set compute  device at default value
 		forEach(physicalDevices, i) {									//For every physical device
-			physDev.indices = findQueueFamilies(physDev.device);			//Get its queue families
-			physDev.score = ratePhysicalDevice(&physDev);					//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
+			physDev.indices = deviceGetQueueFamilies(physDev.device);		//Get its queue families
+			physDev.score = deviceRate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 			if (physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
 			if (physDev.score > compute.PD.score || physDev.indices.computeFamilies.size() > 0) compute.PD = physDev;
 		}
@@ -172,13 +172,13 @@ void Engine::getPhysicalDevices() {
 	#undef physDev
 
 
-	
+
 
 	//Create a logical device for graphics, one for computation and one for every secondary device
-	createLogicalDevice(&graphics.PD, &graphics.LD, nullptr);
-	createLogicalDevice(&compute.PD, &compute.LD, &compute.computeQueues);
+	deviceCreateLogical(&graphics.PD, &graphics.LD, nullptr);
+	deviceCreateLogical(&compute.PD, &compute.LD, &compute.computeQueues);
 	for (int32 i = 0; i < secondary.size(); ++i) {
-		createLogicalDevice(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
+		deviceCreateLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 	}
 
 	//Output created logical devices and queues
@@ -205,14 +205,14 @@ void Engine::getPhysicalDevices() {
 //*   pLD: a pointer to the logical device where to store the created device
 //*   pComputeQueues: a pointer to an array of compute queues
 //*       This is used to know if the physical device is for graphics, computation or is secondary
-void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues) {
+void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues) {
 	//List the queues of the device as unique int32s
 	std::set<int32> uniqueQueueFamilyIndices;
-	if (sameDevice(*pPD, graphics.PD)) {												//If it's the main device for graphics,
+	if (sameDevice(*pPD, graphics.PD)) {											//If it's the main device for graphics,
 		uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);					//Add his graphics family
-		uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);						//And his present family
+		uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);					//And his present family
 	}
-	forEach(pPD->indices.computeFamilies, i) {											//And then add every compute family, graphics ones included
+	forEach(pPD->indices.computeFamilies, i) {										//And then add every compute family, graphics ones included
 		uniqueQueueFamilyIndices.insert(pPD->indices.computeFamilies[i]);
 	}
 
@@ -243,9 +243,9 @@ void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, Lu
 	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
 	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
-	luxDebug(deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size();)		//Set validation layers count if in debug mode
-	luxDebug(deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();)			//Set validation layers if in debug mode
-	luxRelease(deviceCreateInfo.enabledLayerCount = 0;)									//Disable validation layers if in release mode
+	luxDebug(deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size());		//Set validation layers count if in debug mode
+	luxDebug(deviceCreateInfo.ppEnabledLayerNames = validationLayers.data());			//Set validation layers if in debug mode
+	luxRelease(deviceCreateInfo.enabledLayerCount = 0);									//Disable validation layers if in release mode
 
 
 

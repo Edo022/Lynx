@@ -32,4 +32,3 @@ struct _vec3 {
 private:
 	inline void __vectorcall init(const t _x, const t _y, const t _z) { x = _x; y = _y; z = _z; }
 };
-

@@ -98,6 +98,3 @@ static int64_t __vectorcall pow___(int64_t b, int64_t e) {
 	return r;
 }
 
-
-
-

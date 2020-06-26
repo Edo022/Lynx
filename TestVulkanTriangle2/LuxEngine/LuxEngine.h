@@ -25,5 +25,5 @@ static void LuxInit(bool useVSync = true) {
 	__lp_luxInit(useVSync);
 	__lp_goniometric_functions_init();
 
-	while (!engine.__lp_initialized) sleep(10);
+	while (!engine.initialized) sleep(10);
 }

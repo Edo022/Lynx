@@ -30,7 +30,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 	// 37th hour spent debugging this function. It finally works
 	static uint16 yMin = 0, yMax = scast<uint16>(__lp_input_states->sequences.size() - 1), x = 0;
 	#define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - glfwAction - 1))
-	
+
 	if (action != GLFW_REPEAT) {										//If the action is not repeat
 		uint16 keyCode = (key | __lp_to_lux_act(action));					//Calculate the key code
 		int i = yMin;														//Set the loop index as the minimum y
@@ -43,7 +43,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 		}
 		yMin = i;															//If there is an equal key, set the minimum y
 
-		while (true){														//Now find the maximum y 
+		while (true) {														//Now find the maximum y 
 			if (keyCode == __lp_input_states->sequences[i].sequence[x]) {		//if the input key is NOT equal to the key of the input state sequence
 				++i;																//Increase the counter
 				if (i >= __lp_input_states->sequences.size()) {						//If there are no more different keys
@@ -57,7 +57,7 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 			}
 		}
 																												// UwU
-		if (yMin == yMax && x == scast<LuxArray<uint16>>(__lp_input_states->sequences[yMax].sequence).size() -1){	//If the maximum and minimum y are the same
+		if (yMin == yMax && x == scast<LuxArray<uint16>>(__lp_input_states->sequences[yMax].sequence).size() - 1) {	//If the maximum and minimum y are the same
 			__lp_input_states->sequences[yMax].bindedFunction(__lp_input_states->sequences[yMax].sequence);			//Call the binded function
 			yMin = 0;																								//Reset the minimum y
 			yMax = scast<uint16>(__lp_input_states->sequences.size() - 1);												//Reset the maximum y

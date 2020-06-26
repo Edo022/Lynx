@@ -4,22 +4,22 @@
 
 
 
-VkSurfaceFormatKHR Engine::chooseSwapSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* availableFormats) {
-	for (const auto& availableFormat : *availableFormats) {
+VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* pAvailableFormats) {
+	for (const auto& availableFormat : *pAvailableFormats) {
 		if (availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 			return availableFormat;
 		}
 	}
-	return (*availableFormats)[0];
+	return (*pAvailableFormats)[0];
 }
 
 
 
 
 //Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-VkPresentModeKHR Engine::chooseSwapPresentMode(const LuxArray<VkPresentModeKHR>* availablePresentModes) {
+VkPresentModeKHR Engine::swapchainChoosePresentMode(const LuxArray<VkPresentModeKHR>* pAvailablePresentModes) {
 	if (useVSync) return VK_PRESENT_MODE_FIFO_KHR;
-	for (const auto& availablePresentMode : *availablePresentModes) {
+	for (const auto& availablePresentMode : *pAvailablePresentModes) {
 		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
 	}
 	return VK_PRESENT_MODE_IMMEDIATE_KHR;
@@ -28,7 +28,7 @@ VkPresentModeKHR Engine::chooseSwapPresentMode(const LuxArray<VkPresentModeKHR>*
 
 
 
-VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
+VkExtent2D Engine::swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	return VkExtent2D{
@@ -41,35 +41,25 @@ VkExtent2D Engine::chooseSwapExtent(const VkSurfaceCapabilitiesKHR* pCapabilitie
 
 
 
-Engine::SwapChainSupportDetails Engine::querySwapChainSupport(VkPhysicalDevice device) {
+Engine::SwapChainSupportDetails Engine::swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 	SwapChainSupportDetails details;
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
 
 	uint32 formatCount;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
 	if (formatCount != 0) {
 		details.formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.data());
 	}
 
 	uint32 presentModeCount;
-	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, nullptr);
 	if (presentModeCount != 0) {
 		details.presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
+		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, details.presentModes.data());
 	}
 
 	return details;
-}
-
-
-
-
-void Engine::createImageViews() {
-	swapChainImageViews.resize(swapChainImages.size());
-	for (uint32 i = 0; i < swapChainImages.size(); ++i) {
-		swapChainImageViews[i] = createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-	}
 }
 
 
@@ -88,9 +78,9 @@ void Engine::createImageViews() {
 
 
 
-void Engine::createSwapChain() {
+void Engine::swapchainCreate() {
 	//Get swapchain details
-	SwapChainSupportDetails swapChainSupport = querySwapChainSupport(graphics.PD.device);
+	SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(graphics.PD.device);
 
 	//Choose max image count. Minimum or minimum +1 if supported
 	uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
@@ -104,10 +94,10 @@ void Engine::createSwapChain() {
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 	createInfo.surface = surface;
 	createInfo.minImageCount = imageCount;
-	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(&swapChainSupport.formats);
+	VkSurfaceFormatKHR surfaceFormat = swapchainChooseSurfaceFormat(&swapChainSupport.formats);
 	createInfo.imageFormat = surfaceFormat.format;
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
-	createInfo.imageExtent = chooseSwapExtent(&swapChainSupport.capabilities);
+	createInfo.imageExtent = swapchainChooseExtent(&swapChainSupport.capabilities);
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
@@ -121,27 +111,30 @@ void Engine::createSwapChain() {
 
 	createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	createInfo.presentMode = chooseSwapPresentMode(&swapChainSupport.presentModes);
+	createInfo.presentMode = swapchainChoosePresentMode(&swapChainSupport.presentModes);
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
 
 	//Create swapchain
-	TryVk(vkCreateSwapchainKHR(graphics.LD, &createInfo, nullptr, &swapChain)) Exit("Failed to create swapchain");
+	TryVk(vkCreateSwapchainKHR(graphics.LD, &createInfo, nullptr, &swapchain)) Exit("Failed to create swapchain");
 
 
 	//Save data
 	uint32 swapchainImageCount;
-	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, nullptr);					//Get image count
-	swapChainImages.resize(swapchainImageCount);
-	vkGetSwapchainImagesKHR(graphics.LD, swapChain, &swapchainImageCount, swapChainImages.data());	//Save images
-	swapChainImageFormat = surfaceFormat.format;													//Save format
-	swapChainExtent = createInfo.imageExtent;														//Save extent
+	vkGetSwapchainImagesKHR(graphics.LD, swapchain, &swapchainImageCount, nullptr);					//Get image count
+	swapchainImages.resize(swapchainImageCount);
+	vkGetSwapchainImagesKHR(graphics.LD, swapchain, &swapchainImageCount, swapchainImages.data());	//Save images
+	swapchainImageFormat = surfaceFormat.format;													//Save format
+	swapchainExtent = createInfo.imageExtent;														//Save extent
 
 
-	createImageViews();
+	//Create image views
+	swapchainImageViews.resize(swapchainImages.size());
+	for (uint32 i = 0; i < swapchainImages.size(); ++i) swapchainImageViews[i] = swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+
+
 	createRenderPass();
-
 	createFramebuffers();
 }
 
@@ -152,15 +145,11 @@ void Engine::createSwapChain() {
 
 
 
-void Engine::cleanupSwapChain() {
-	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
-
-	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				//Destroy framebuffers
-	//TODO useless. remove var
-	//vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, scast<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
-	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
-
-	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
+void Engine::swapchainCleanup() {
+	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);														//Destroy render pass
+	for (auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
+	for (auto imageView : swapchainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);			//Destroy image views
+	vkDestroySwapchainKHR(graphics.LD, swapchain, nullptr);													//destroy swapchain
 }
 
 
@@ -168,29 +157,29 @@ void Engine::cleanupSwapChain() {
 
 
 
-void Engine::recreateSwapChain(bool windowResized) {
-	if (windowResized) windowResizeFence.wait(1); //from framebufferResizeCallback
+void Engine::swapchainRecreate(const bool vWindowResized) {
+	if (vWindowResized) windowResizeFence.wait(1); //from framebufferResizeCallback
 	int32 width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 
 	if (width != 0 && height != 0) {
 		vkDeviceWaitIdle(graphics.LD);
-		cleanupSwapChain();
-		createSwapChain();
+		swapchainCleanup();
+		swapchainCreate();
 
 
-		uint32* pwindowSize = rcast<uint32*>(mapGpuBuffer(__windowSize));
-		pwindowSize[0] = swapChainExtent.width;
-		pwindowSize[1] = swapChainExtent.height;
-
-		//TODO dont resize always
-		destroyGpuCell(__windowOutput);
-		__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false);
+		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
+		pwindowSize[0] = swapchainExtent.width;
+		pwindowSize[1] = swapchainExtent.height;
 
 		//TODO dont resize always
-		CShader_destroy(testShader0);
+		gpuCellDestroy(__windowOutput);
+		__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
+
+		//TODO dont resize always
+		cshaderDestroy(testShader0);
 		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
-		testShader0 = CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
+		testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/comp.spv");
 
 
 		{ //destroy copy command buffers
@@ -202,9 +191,9 @@ void Engine::recreateSwapChain(bool windowResized) {
 		}
 		{ //Create copy command buffers #LLID CCB0000
 			copyShader = CShaders.add(LuxCShader{});							//Add the shader to the shader array
-			CShaders[copyShader].commandBuffers.resize(swapChainImages.size());	//Resize the command buffer array in the shader
-			__lp_createCopyCommandBuffers();									//Create command buffers and command pool
+			CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
+			__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
 		}
 	}
-	if (windowResized) windowResizeFence.set(2);
+	if (vWindowResized) windowResizeFence.set(2);
 }

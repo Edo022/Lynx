@@ -27,7 +27,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/glslc.exe ") +
 		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/shader.comp -o ") +
 		luxThisDirectory + "/LuxEngine/Contents/shaders/comp.spv";
-	if("%d\n", system(compileShaderCommand.begin()) != 0) Exit("compilation error");
+	if ("%d\n", system(compileShaderCommand.begin()) != 0) Exit("compilation error");
 
 
 
@@ -42,7 +42,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
-	Normal  printf("Cleaning memory");								cleanupGraphics(); cleanupCompute();		NewLine;
+	Normal  printf("Cleaning memory");								graphicsCleanup(); cleanupCompute();		NewLine;
 
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);
@@ -53,11 +53,11 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 void Engine::mainLoop() {
-	std::thread FPSCounterThr(&Engine::FPSCounter, this);
-	std::thread renderThr(&Engine::render, this);
+	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);
+	std::thread renderThr(&Engine::runRenderThr, this);
 	FPSCounterThr.detach();
 	renderThr.detach();
-	__lp_initialized = true;
+	initialized = true;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -70,10 +70,10 @@ void Engine::mainLoop() {
 }
 
 
-void Engine::render() {
+void Engine::runRenderThr() {
 	while (running) {
-		drawFrame();
-		frame++;
+		graphicsDrawFrame();
+		frames++;
 		//std::this_thread::sleep_for(std::chrono::nanoseconds(1));
 		//sleep(1);
 	}
@@ -81,12 +81,12 @@ void Engine::render() {
 
 
 
-void Engine::FPSCounter() {
+void Engine::runFPSCounterThr() {
 	while (running) {
 		static int delay = 1000;
 		sleep(delay);
-		FPS = frame * (1000 / delay);
-		frame = 0;
+		FPS = frames * (1000 / delay);
+		frames = 0;
 		printf("FPS: %lf\n", FPS);
 	}
 }
@@ -157,7 +157,7 @@ void Engine::initWindow() {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
 	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
-	
+
 
 	unsigned char h[] = {
 		255, 0, 0, 255,
@@ -178,7 +178,7 @@ void Engine::initWindow() {
 
 
 void Engine::initWindowBuffers() {
-	__windowOutput = createGpuCell(width * height * 4/*A8-R8-G8-B8*/, false);
+	__windowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 }
 
 
@@ -201,7 +201,7 @@ void Engine::initWindowBuffers() {
 //*   pLength: a pointer to an int32 where to store the padded code length
 //*   pFilePath: a pointer to a char array containing the path to the compiled shader file
 //*   returns a pointer to the array where the code is saved
-uint32* Engine::readShaderFromFile(uint32* pLength, const char* pFilePath) {
+uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 	FILE* fp = fopen(pFilePath, "rb");								//Open the file
 	if (fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
 
@@ -221,12 +221,11 @@ uint32* Engine::readShaderFromFile(uint32* pLength, const char* pFilePath) {
 
 
 
-
 //Creates a shader module from a compiled shader code and its size in bytes
 //*   vDevice: the logical device to use to create the shader module
 //*   pCode: a pointer to an int32 array containing the shader code
 //*   pLength: a pointer to the code length
-VkShaderModule Engine::createShaderModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
+VkShaderModule Engine::cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
 	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
 	createInfo.codeSize = *pLength;										//Set the size of the compiled shader code
@@ -234,7 +233,7 @@ VkShaderModule Engine::createShaderModule(const VkDevice vDevice, uint32* pCode,
 
 	VkShaderModule shaderModule;										//Create the shader module
 	TryVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
-	free(pCode);														//Free memory #LLID CSF0000
+	free(pCode);														//{}@#][è+56547$%&TY%$.456$£"gTGTacfregMIK;;;;;;;_:__:;§*°+++àùà+Free memory #LLID CSF0000
 	return shaderModule;												//Return the created shader module
 }
 
@@ -262,7 +261,7 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, vProperties);
+	allocInfo.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, vProperties);
 
 	//TODO check out of memory
 	switch (vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
@@ -271,6 +270,23 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 		case VK_ERROR_TOO_MANY_OBJECTS:
 		default: Exit("Failed to allocate buffer memory");
 	}
-	
+
 	TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) Exit("Failed to bind buffer");
+}
+
+
+
+
+//Creates and submits a command buffer to copy from vSrcBuffer to dstBuffer
+//*   vSrcBuffer: the source buffer where to read the data
+//*   vDstBuffer: the destination buffer where to copy the data
+//*   vSize: the size in bytes of the data to copy
+void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize) {
+	VkBufferCopy copyRegion{};												//Create buffer copy object
+	copyRegion.size = vSize;												//Set size of the copied region
+	//TODO add offset and automatize cells
+	//copyRegion.dstOffset 
+	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
+	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
+	endSingleTimeCommands(commandBuffer);									//End command buffer
 }

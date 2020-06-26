@@ -4,3 +4,4 @@
 #define sc
 #define TryVk(f) if (f != VK_SUCCESS)
 #define null
+#define forEach(container, i) for(uint64 i = 0; i < (container).size(); i++)

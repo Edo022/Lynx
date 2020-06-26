@@ -33,26 +33,30 @@
 //#endif //TODO remove
 
 #include <cmath>
-#include <string>
 
 //Junk
 #include "LuxEngine/macros.h"				//Useful useless macros
 #include <TermColor.hpp>					//Colored console output
 
 
-//Structures
-#include "LuxEngine/Types/Object/Object.h"
-#include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Types/Containers/LuxMap.h"
-#include "LuxEngine/Types/Containers/LuxArray.h"
-#include "LuxEngine/Types/Containers/LuxString.h"
-#include "LuxEngine/Types/LuxFence.h"
-#include "LuxEngine/Types/EngineTypes.h"
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
-#include "LuxEngine/Engine/Devices.struct.h"
 
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
+
+#include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
+#include "LuxEngine/Types/Object/Object.h"
+#include "LuxEngine/Types/LuxFence.h"
+
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/EngineTypes.h"
+
+#include "LuxEngine/Engine/Devices.struct.h"
+#include "LuxEngine/Engine/Compute/CShader.struct.h"
+#include "LuxEngine/Engine/Compute/CBuffers.struct.h"
 
 #include "Input/Input.h"
+
 
 
 //Re enable warnings for this header
@@ -119,7 +123,7 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;\
 	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;\
 	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;\
-	createInfo.pfnUserCallback = debugCallback;
+	createInfo.pfnUserCallback = graphicsDebugCallback;
 
 
 
@@ -286,8 +290,8 @@ public:
 	float FOV;
 	bool running;
 	bool useVSync;
-	bool __lp_initialized = false;
-	uint32 frame = 0;
+	bool initialized = false;
+	uint32 frames = 0;
 
 
 
@@ -299,12 +303,11 @@ private:
 
 	//Window
 	GLFWwindow* window;								//Main engine window
-	int32 width = 1920, height = 1080;
+	int32 width = 1920, height = 1080;				//Size of the window //TODO
+	LuxFence windowResizeFence;
 	LuxCell __windowSize;
 	LuxCell __windowOutput;							//The buffer that contains the color output of the window
 	LuxCell __vertices;
-	LuxFence windowResizeFence;
-	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
 
 	//Devices and queues
 public:
@@ -317,20 +320,25 @@ private:
 
 	//Main >> this
 	luxPublic(void run(bool vUseVSync, float vFOV));
-	void mainLoop();		void FPSCounter();			void render();
+	void mainLoop();		void runFPSCounterThr();	void runRenderThr();
 	void initWindow();		void initWindowBuffers();	void createInstance();
 
 	//Devices >> Devices.cpp
-	void getPhysicalDevices();		void createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues);
-	static int32 ratePhysicalDevice(const _VkPhysicalDevice* pDevice);
-	bool isDeviceSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText);
-	bool checkDeviceExtensionSupport(const VkPhysicalDevice device);
-	QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice device);
+	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues);
+	static int32		deviceRate(const _VkPhysicalDevice* pDevice);
+	bool				deviceIsSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText);
+	bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
+	QueueFamilyIndices	deviceGetQueueFamilies(const VkPhysicalDevice vDevice);
 
 	//Shared functions >> this
-	uint32* readShaderFromFile(uint32* pLength, const char* pFilePath);
-	VkShaderModule createShaderModule(const VkDevice device, uint32* code, const uint32* size);
-	void createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath);
+	VkShaderModule	cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
+	void			createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+	void			copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
+
+
+
+
 
 
 
@@ -340,32 +348,34 @@ private:
 
 
 
-	bool framebufferResized = false;				//Updates the swapchain when the window is resized	
+
+
+
 
 	//Swapchain
-	VkSwapchainKHR swapChain;
-	LuxArray<VkImage> swapChainImages;
-	LuxArray<VkImageView> swapChainImageViews;
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
-	LuxArray<VkFramebuffer> swapChainFramebuffers;
+	VkSwapchainKHR				swapchain;
+	LuxArray<VkImage>			swapchainImages;
+	LuxArray<VkImageView>		swapchainImageViews;
+	VkFormat					swapchainImageFormat;
+	VkExtent2D					swapchainExtent;
+	LuxArray<VkFramebuffer>		swapchainFramebuffers;
 
 	//Render
-	VkRenderPass renderPass;
-	const int32 MAX_FRAMES_IN_FLIGHT = 16; //Default:2 //TODO ? wtf idk
-
-
-private:
-	//Commands
-	VkCommandPool graphicsCommandPool;
-	LuxArray<VkCommandBuffer> commandBuffers;
-
+	VkRenderPass				renderPass;
+	const int32					renderMaxFramesInFlight = 16;		//Default:2 
+	bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized	
 	//Render semaphores and frame
-	LuxArray<VkSemaphore> imageAvailableSemaphores;
-	LuxArray<VkSemaphore> renderFinishedSemaphores;
-	LuxArray<VkFence> inFlightFences;
-	LuxArray<VkFence> imagesInFlight;
-	int64 currentFrame = 0;
+	LuxArray<VkSemaphore>		renderSemaphoreImageAvailable;
+	LuxArray<VkSemaphore>		renderSemaphoreFinished;
+	LuxArray<VkFence>			renderFencesInFlight;
+	LuxArray<VkFence>			renderFencesImagesInFlight;
+	int64						renderCurrentFrame = 0;
+
+
+	//Commands
+	VkCommandPool				singleTimeCommandPool;
+	LuxArray<VkCommandBuffer>	singleTimeCommandBuffers;
+
 
 	//debug and validation layers data
 	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
@@ -375,52 +385,52 @@ private:
 
 	//Graphics >> Graphics/GGraphics.cpp
 	void runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
-	void initVulkan();
-	void createSurface();
-	void createSyncObjects();
-	void createDebugMessenger();
-	void drawFrame();
+	void graphicsInitVulkan();
+	void graphicsCreateSurface();
+	void graphicsCreateFences();
+	void graphicsCreateDebugMessenger();
+	void graphicsDrawFrame();
+	void graphicsCleanup();
 	static void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
-	void cleanupGraphics();
 
 
 	//Graphics swapchain >> Graphics/GSwapchain.cpp
-	void createSwapChain();			void recreateSwapChain(bool windowResized);
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(const LuxArray<VkPresentModeKHR>* availablePresentModes);
-	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities);
-
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR capabilities;
 		LuxArray<VkSurfaceFormatKHR> formats;
 		LuxArray<VkPresentModeKHR> presentModes;
 	};
-	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-	void createImageViews();
-	void cleanupSwapChain();
+	void swapchainCreate();
+	void swapchainRecreate(const bool vWindowResized);
+	void swapchainCleanup();
+	VkSurfaceFormatKHR		swapchainChooseSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* pAvailableFormats);
+	VkPresentModeKHR		swapchainChoosePresentMode(const LuxArray<VkPresentModeKHR>* pAvailablePresentModes);
+	VkExtent2D				swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
+	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice);
 
 
-	//Graphics textures and images >> Graphics/GImages.cpp
-	VkImageView createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-	void copyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
+
+	//Graphics images and output objects >> Graphics/GOutput.cpp
+	void			createRenderPass();
+	void			createFramebuffers();
+	VkImageView		swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+	void			swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp
-	void createGraphicsCommandPool();
-	VkCommandBuffer beginSingleTimeCommands();
-	void endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
-
-
-	//Graphics render >> Graphics/GPipeline.cpp
-	void createRenderPass();
-	void createFramebuffers();
+	void			createGraphicsCommandPool();
+	VkCommandBuffer	beginSingleTimeCommands();
+	void			endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
 
 
 	//Graphics other >> Graphics/Graphics.cpp
-	VkFormat findSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
-	uint32 findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
-	void copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
-	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+	VkFormat		graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	uint32			graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+	static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+
+
+
+
 
 
 
@@ -430,63 +440,13 @@ private:
 
 
 
-	//COMPUTE 
+
+
+
+
+	//Objects
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
-
-
-	//A container struct for the components of a shader
-	struct LuxCShader {
-		//Descriptors
-		VkDescriptorPool descriptorPool;
-		VkDescriptorSet descriptorSet;
-		VkDescriptorSetLayout descriptorSetLayout;
-
-		//Pipeline
-		VkPipeline pipeline;
-		VkPipelineLayout pipelineLayout;
-
-		//Commands
-		VkCommandPool commandPool;
-		LuxArray <VkCommandBuffer> commandBuffers;
-
-		//Since vulkan uses pointers everywhere, I need to create the objects with malloc() to prevent them from vanishing randomly
-		//This array saves all of them so they can be free()d when the shader is destroyed
-		LuxMap<void*> __lp_ptrs;
-	};
 	LuxMap<LuxCShader> CShaders;
-
-
-	//Buffer classes (size of its cells)
-	enum LuxBufferClass :uint32 {
-		LUX_BUFFER_CLASS_50 = 50,
-		LUX_BUFFER_CLASS_5K = 5000,
-		LUX_BUFFER_CLASS_500K = 500000,
-		LUX_BUFFER_CLASS_2MLN = 2000000,
-		LUX_BUFFER_CLASS_LRG = 0
-	};
-	//This structure groups the components of a Vulkan buffer
-	struct _LuxBufferStruc {
-		uint32 size;				//The size in bytes of the buffer
-		VkBuffer buffer;			//The actual Vulkan buffer
-		VkDeviceMemory memory;		//The memory of the buffer
-		bool cpuAccessible;
-		bool isMapped = false;		//Whether the buffer is mapped or not
-
-		LuxBufferClass bufferClass;	//The class of the buffer
-		LuxMap<char> cells;			//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
-	};
-	//This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
-	//Mapping an already mapped buffer will overwrite the old mapping
-	//*   buffer: a pointer to a _LuxBufferStruc object. It's the buffer that will be mapped
-	//*   returns the void pointer that maps the buffer
-	void* mapGpuBuffer(LuxCell cell) {
-		LuxBuffer buffer = __lp_buffer_from_cc(cell);
-		if (CBuffers[buffer].isMapped) vkUnmapMemory(compute.LD, CBuffers[buffer].memory);
-		else CBuffers[buffer].isMapped = true;
-		void* data;
-		vkMapMemory(compute.LD, CBuffers[buffer].memory, __lp_cellOffset_from_cc(&compute.PD, cell), CBuffers[buffer].size, 0, &data);
-		return data;
-	}
 	LuxMap<_LuxBufferStruc> CBuffers;
 
 	LuxShader copyShader, testShader0;
@@ -495,19 +455,23 @@ private:
 	//Compute >> Compute/Compute.cpp
 	void runCompute();
 	void cleanupCompute();
-	LuxBuffer createGpuBuffer(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
-	LuxCell createGpuCell(const uint64 vCellSize, const bool vCpuAccessible);
-	bool destroyGpuCell(const LuxCell vCell);
+
+	//Buffers >> Compute/Buffers.cpp
+	LuxBuffer	gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+	LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
+	bool		gpuCellDestroy(const LuxCell vCell);
+	void* gpuCellMap(const LuxCell vCell);
+
 
 	//Compute pipeline and descriptors >> Compute/CShader.cpp
-	void CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
-	void CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
-	void CShader_createPipeline(const char* shaderPath, const LuxShader vCShader);
-	void CShader_createCommandBuffers(const LuxShader vCShader);
-	void __lp_createCopyCommandBuffers();
+	void cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
+	void cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
+	void cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
+	void cshaderCommandBuffers(const LuxShader vCShader);
+	void __lp_cshaderCreateCopyCommandBuffers();
 
-	LuxShader CShader_new(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
-	bool CShader_destroy(const LuxShader vCShader);
+	LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
+	bool		cshaderDestroy(const LuxShader vCShader);
 };
 
 
@@ -531,18 +495,10 @@ extern Engine engine;
 
 
 
-
-//This function is used by the engine. You shouldn't call it
-static void __lp_lux_init_run_thr(bool useVSync) {
-	engine.run(useVSync, 45);
-}
-
-
-
 //This function is used by the engine. You shouldn't call it
 static void __lp_luxInit(bool useVSync) {
-	std::thread t(__lp_lux_init_run_thr, useVSync);
-	t.detach();
+	std::thread renderThr([useVSync]() {engine.run(useVSync, 45); }, useVSync);
+	renderThr.detach();
 	engine.running = true;
 }
 

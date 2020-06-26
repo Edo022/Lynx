@@ -13,7 +13,7 @@ void Engine::createGraphicsCommandPool() {
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.queueFamilyIndex = graphics.PD.indices.graphicsFamily;
 
-	TryVk(vkCreateCommandPool(graphics.LD, &poolInfo, nullptr, &graphicsCommandPool)) Exit("Failed to create graphics command pool");
+	TryVk(vkCreateCommandPool(graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool)) Exit("Failed to create graphics command pool");
 }
 
 
@@ -24,7 +24,7 @@ VkCommandBuffer Engine::beginSingleTimeCommands() {
 	VkCommandBufferAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandPool = graphicsCommandPool;
+	allocInfo.commandPool = singleTimeCommandPool;
 	allocInfo.commandBufferCount = 1;
 
 	//Allocate command buffer
@@ -57,5 +57,5 @@ void Engine::endSingleTimeCommands(const VkCommandBuffer vCommandBuffer) {
 
 	//Free memory
 	vkQueueWaitIdle(graphics.graphicsQueue);
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, 1, &vCommandBuffer);
+	vkFreeCommandBuffers(graphics.LD, singleTimeCommandPool, 1, &vCommandBuffer);
 }

@@ -7,32 +7,32 @@ void Engine::runGraphics(const bool vUseVSync, const float vFOV) {
 	FOV = vFOV;
 
 	luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
-	Normal  printf("Initializing Vulkan");							initVulkan();						MainSeparator;
+	Normal  printf("Initializing Vulkan");							graphicsInitVulkan();						MainSeparator;
 }
 
 
 
 
-void Engine::initVulkan() {
+void Engine::graphicsInitVulkan() {
 	//Initialize vulkan
-	Normal printf("    Creating VK Surface...               ");		createSurface();					SuccessNoNl printf("ok");	NewLine;
-	Normal printf("    Searching for physical devices...    ");		getPhysicalDevices();											NewLine;
+	Normal printf("    Creating VK Surface...               ");		graphicsCreateSurface();					SuccessNoNl printf("ok");	NewLine;
+	Normal printf("    Searching for physical devices...    ");		deviceGetPhysical();											NewLine;
 	Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool();		SuccessNoNl printf("ok");
-	Normal printf("    Creating VK swapchain...             ");		createSwapChain();					SuccessNoNl printf("ok");
+	Normal printf("    Creating VK swapchain...             ");		swapchainCreate();					SuccessNoNl printf("ok");
 
-	luxDebug(createDebugMessenger());
-	createSyncObjects();
+	luxDebug(graphicsCreateDebugMessenger());
+	graphicsCreateFences();
 }
 
 
 
 
-inline void Engine::createSurface() {
+inline void Engine::graphicsCreateSurface() {
 	TryVk(glfwCreateWindowSurface(instance, window, nullptr, &surface)) Exit("Failed to create window surface");
 }
 
 
-void Engine::createDebugMessenger() {
+void Engine::graphicsCreateDebugMessenger() {
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;
 	populateDebugMessengerCreateInfo(createInfo);
 	TryVk(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
@@ -42,11 +42,11 @@ void Engine::createDebugMessenger() {
 
 
 
-void Engine::createSyncObjects() {
-	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-	imagesInFlight.resize(swapChainImages.size(), VK_NULL_HANDLE);
+void Engine::graphicsCreateFences() {
+	renderSemaphoreImageAvailable.resize(renderMaxFramesInFlight);
+	renderSemaphoreFinished.resize(renderMaxFramesInFlight);
+	renderFencesInFlight.resize(renderMaxFramesInFlight);
+	renderFencesImagesInFlight.resize(swapchainImages.size(), VK_NULL_HANDLE);
 
 	VkSemaphoreCreateInfo semaphoreInfo{};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -55,10 +55,10 @@ void Engine::createSyncObjects() {
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-		if (vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(graphics.LD, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
+	for (int64 i = 0; i < renderMaxFramesInFlight; ++i) {
+		if (vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderSemaphoreImageAvailable[i]) != VK_SUCCESS ||
+			vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderSemaphoreFinished[i]) != VK_SUCCESS ||
+			vkCreateFence(graphics.LD, &fenceInfo, nullptr, &renderFencesInFlight[i]) != VK_SUCCESS) {
 			Exit("Failed to create synchronization objects for a frame");
 		}
 	}
@@ -70,74 +70,70 @@ void Engine::createSyncObjects() {
 
 
 
-void Engine::drawFrame() {
+void Engine::graphicsDrawFrame() {
 	redraw:
 
 	//Wait fences
-	vkWaitForFences(graphics.LD, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX); 
-	if (framebufferResized) {
-		framebufferResized = false; 
-		recreateSwapChain(true); 
+	vkWaitForFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame], VK_TRUE, UINT64_MAX);
+	if (renderFramebufferResized) {
+		renderFramebufferResized = false;
+		swapchainRecreate(true);
 		goto redraw;
 	}
 
 
-
 	//Acquire swapchain image
 	uint32 imageIndex;
-	switch (vkAcquireNextImageKHR(graphics.LD, swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex)) {
+	switch (vkAcquireNextImageKHR(graphics.LD, swapchain, UINT64_MAX, renderSemaphoreImageAvailable[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
 		case VK_SUBOPTIMAL_KHR: case VK_SUCCESS:  break;
-		case VK_ERROR_OUT_OF_DATE_KHR: recreateSwapChain(false);  return;
+		case VK_ERROR_OUT_OF_DATE_KHR: swapchainRecreate(false);  return;
 		default:  Exit("Failed to acquire swapchain image");
 	}
-	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX); 
-	imagesInFlight[imageIndex] = inFlightFences[currentFrame]; 
+	if (renderFencesImagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &renderFencesImagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+	renderFencesImagesInFlight[imageIndex] = renderFencesInFlight[renderCurrentFrame];
 
-
-
-	//TODO single shader command buffer. validation error
 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	//LuxArray<VkCommandBuffer> _cbs = { CShaders[copyShader].commandBuffers[imageIndex] };
 	LuxArray<VkCommandBuffer> _cbs = { CShaders[testShader0].commandBuffers[0], CShaders[copyShader].commandBuffers[imageIndex] };
 	static VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; 
-	submitInfo.waitSemaphoreCount = 1; 
-	submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame]; 
-	submitInfo.signalSemaphoreCount = 1; 
-	submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame]; 
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
+	submitInfo.signalSemaphoreCount = 1;
+	submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
 	//submitInfo.commandBufferCount = 1;
 	submitInfo.commandBufferCount = 2;
 	submitInfo.pCommandBuffers = _cbs.begin();
-	submitInfo.pWaitDstStageMask = waitStages; 
+	submitInfo.pWaitDstStageMask = waitStages;
 
-	vkResetFences(graphics.LD, 1, &inFlightFences[currentFrame]); 
-	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, inFlightFences[currentFrame])) Exit("Failed to submit graphics command buffer");
-	 
+	vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
+	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
+
 
 	//Present
 	static VkPresentInfoKHR presentInfo{};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR; 
-	presentInfo.waitSemaphoreCount = 1; 
-	presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame]; 
-	presentInfo.swapchainCount = 1; 
-	presentInfo.pSwapchains = &swapChain; 
-	presentInfo.pImageIndices = &imageIndex; 
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	presentInfo.waitSemaphoreCount = 1;
+	presentInfo.pWaitSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
+	presentInfo.swapchainCount = 1;
+	presentInfo.pSwapchains = &swapchain;
+	presentInfo.pImageIndices = &imageIndex;
 
-	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) { 
+	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) {
 		case VK_SUCCESS:  break;
 		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-			recreateSwapChain(false); 
-			vkDeviceWaitIdle(graphics.LD); 
+			swapchainRecreate(false);
+			vkDeviceWaitIdle(graphics.LD);
 			break;
 		}
 		default:  Exit("Failed to present swapchain image");
 	}
 
 	//Update frame number
-	currentFrame = (currentFrame + 1) % (MAX_FRAMES_IN_FLIGHT); 
-	glfwSwapBuffers(window); 
+	renderCurrentFrame = (renderCurrentFrame + 1) % (renderMaxFramesInFlight);
+	glfwSwapBuffers(window);
 }
 
 
@@ -146,24 +142,24 @@ void Engine::drawFrame() {
 void Engine::framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
 	engine.windowResizeFence.wait(0);  //from the last call of this function
 
-	engine.framebufferResized = true; 
-	engine.windowResizeFence.set(1); 
+	engine.renderFramebufferResized = true;
+	engine.windowResizeFence.set(1);
 
 	engine.windowResizeFence.wait(2);  //from RecreateSwapchain()
-	engine.windowResizeFence.set(0); 
+	engine.windowResizeFence.set(0);
 }
 
 
 
 
-void Engine::cleanupGraphics() {
-	cleanupSwapChain();																//Clear swapchain components
-	vkDestroyCommandPool(graphics.LD, graphicsCommandPool, nullptr);				//Destroy graphics command pool
+void Engine::graphicsCleanup() {
+	swapchainCleanup();																//Clear swapchain components
+	vkDestroyCommandPool(graphics.LD, singleTimeCommandPool, nullptr);				//Destroy graphics command pool
 
-	for (int64 i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {								//For every frame
-		vkDestroySemaphore(graphics.LD, renderFinishedSemaphores[i], nullptr);			//Destroy his render semaphore
-		vkDestroySemaphore(graphics.LD, imageAvailableSemaphores[i], nullptr);			//Destroy his image  semaphore
-		vkDestroyFence(graphics.LD, inFlightFences[i], nullptr);						//Destroy his fence
+	for (int64 i = 0; i < renderMaxFramesInFlight; ++i) {								//For every frame
+		vkDestroySemaphore(graphics.LD, renderSemaphoreFinished[i], nullptr);			//Destroy his render semaphore
+		vkDestroySemaphore(graphics.LD, renderSemaphoreImageAvailable[i], nullptr);			//Destroy his image  semaphore
+		vkDestroyFence(graphics.LD, renderFencesInFlight[i], nullptr);						//Destroy his fence
 	}
 
 
@@ -178,12 +174,20 @@ void Engine::cleanupGraphics() {
 
 
 
+
+
+
+
 // Other ------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
 
-VkFormat Engine::findSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+
+
+
+
+VkFormat Engine::graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 	for (VkFormat format : *pCandidates) {
 		VkFormatProperties props;
 		vkGetPhysicalDeviceFormatProperties(graphics.PD.device, format, &props);
@@ -200,7 +204,7 @@ VkFormat Engine::findSupportedFormat(const LuxArray<VkFormat>* pCandidates, cons
 
 
 //Returns the index of the memory with the specified type and properties. Exits if not found
-uint32 Engine::findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
+uint32 Engine::graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
 	VkPhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
 	vkGetPhysicalDeviceMemoryProperties(graphics.PD.device, &memProperties);
 
@@ -213,19 +217,7 @@ uint32 Engine::findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFl
 
 
 
-//Creates and submits a command buffer to copy from vSrcBuffer to dstBuffer
-void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize) {
-	VkBufferCopy copyRegion{};												//Create buffer copy object
-	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
-	copyRegion.size = vSize;												//Set size of the copied region
-	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
-	endSingleTimeCommands(commandBuffer);									//End command buffer
-}
-
-
-
-
-VKAPI_ATTR VkBool32 VKAPI_CALL Engine::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+VKAPI_ATTR VkBool32 VKAPI_CALL Engine::graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 	std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 	return VK_FALSE;
 }

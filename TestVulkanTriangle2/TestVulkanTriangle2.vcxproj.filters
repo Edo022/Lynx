@@ -64,13 +64,7 @@
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\GPipeline.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\GImages.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp">
@@ -93,6 +87,12 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\System\System.ext.cpp">
       <Filter>LuxEngine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +185,12 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Engine\Devices.struct.h">
       <Filter>LuxEngine\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Compute\CShader.struct.h">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers.struct.h">
+      <Filter>LuxEngine\Engine\Compute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

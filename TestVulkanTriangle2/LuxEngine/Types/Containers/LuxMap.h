@@ -72,16 +72,16 @@ public:
 	//Adds an element at the end of the map, allocating a new chunk if needed
 	//Returns the ID of the element
 	uint64 __vectorcall append(const type vData) {
-		if (__lp_dynSize + 1 > chunksDynNum * chunkSize) {								//If the chunk is full
-			__lp_data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);				//Allocate a new data chunk
+		if (__lp_dynSize + 1 > chunksDynNum * chunkSize) {									//If the chunk is full
+			__lp_data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);					//Allocate a new data chunk
 			__lp_tracker[chunksDynNum] = scast<uint64*>(malloc(sizeof(uint64*) * chunkSize));	//Allocate a new tracker chunk
-			chunksDynNum++;																	//Update the number of chunks
+			chunksDynNum++;																		//Update the number of chunks
 		}
-		__lp_Data(__lp_dynSize) = vData;												//Assign the data to the new element
-		__lp_Tracker(__lp_dynSize) = -1;												//Set the tracker as valid
+		__lp_Data(__lp_dynSize) = vData;													//Assign the data to the new element
+		__lp_Tracker(__lp_dynSize) = -1;													//Set the tracker as valid
 
-		__lp_dynSize++;																	//Update the number of elements
-		return __lp_dynSize - 1;														//Return the ID
+		__lp_dynSize++;																		//Update the number of elements
+		return __lp_dynSize - 1;															//Return the ID
 	}
 
 
@@ -116,7 +116,7 @@ public:
 		LuxArray<uint64> IDs;
 		IDs.resize(pVector->size());								//Set the number of IDs
 		forEach(*pVector, i) IDs[i] = add((*pVector)[i]);			//Add every element to the map and save its ID
-		return IDs;												//Return the IDs
+		return IDs;													//Return the IDs
 	}
 
 
@@ -148,7 +148,7 @@ public:
 		else {												//If it is,
 			__lp_Tracker(vIndex) = -1;							//Set the index as free
 			if (vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary
-			if (head == scast<uint64>(-1)) head = tail = vIndex;		//If it has no free elements, initialize head and tail.
+			if (head == scast<uint64>(-1)) head = tail = vIndex;//If it has no free elements, initialize head and tail.
 			else tail = __lp_Tracker(tail) = vIndex;			//If it has free elements, set the new tail and update the last free index
 			__lp_freeNum++;										//Update the number of free elements
 		}
@@ -163,7 +163,7 @@ public:
 		for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]); free(__lp_data);		//Free data map
 		for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker map
 		__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data map
-		__lp_tracker = scast<uint64**>(malloc(sizeof(uint64*) * (maxSize / chunkSize)));		//Allocate tracker map
+		__lp_tracker = scast<uint64**>(malloc(sizeof(uint64*) * (maxSize / chunkSize)));	//Allocate tracker map
 		chunksDynNum = __lp_dynSize = __lp_freeNum = 0;										//Reset number of chunk, number of elements, number of free elements
 		head = tail = -1;																	//Reset head and tail
 	}
@@ -178,11 +178,11 @@ public:
 
 	//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
 	inline signed char __vectorcall status(const uint64 vIndex) const {
-		if (vIndex == (int64)-1)return -1;							//Invalid index
-		else if (vIndex >= __lp_dynSize) return -2;					//Index out of range
+		if (vIndex == (int64)-1)return -1;								//Invalid index
+		else if (vIndex >= __lp_dynSize) return -2;						//Index out of range
 		else if (__lp_Tracker(vIndex) == scast<uint64>(-1)) return 0;	//Ok
-		else if (__lp_Tracker(vIndex) >= 0)return 1;				//Invalid element
-		else return -1;												//Unknown error
+		else if (__lp_Tracker(vIndex) >= 0)return 1;					//Invalid element
+		else return -1;													//Unknown error
 	}
 
 

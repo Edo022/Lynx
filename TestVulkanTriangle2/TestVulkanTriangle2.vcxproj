@@ -371,14 +371,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp" />
     <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp" />
     <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp" />
     <ClCompile Include="LuxEngine\Engine\Devices.cpp" />
     <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\GImages.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\GPipeline.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
     <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
@@ -388,6 +388,8 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers.struct.h" />
+    <ClInclude Include="LuxEngine\Engine\Compute\CShader.struct.h" />
     <ClInclude Include="LuxEngine\Engine\Devices.struct.h" />
     <ClInclude Include="LuxEngine\Engine\Engine.h" />
     <ClInclude Include="LuxEngine\Engine\Input\Input.h" />

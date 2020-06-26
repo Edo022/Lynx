@@ -18,13 +18,13 @@
 
 
 
-void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBufferIndices, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
 	//in the compute shader
-	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pBufferIndices->size());
-	forEach(*pBufferIndices, i) {
+	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCells->size());
+	forEach(*pCells, i) {
 		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader binding point and how to use it
 		descriptorSetLayoutBinding.binding = scast<uint32>(i);									//Set the binding point in the shader
 		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
@@ -34,7 +34,7 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 		descriptorSetLayoutBindings[i] = descriptorSetLayoutBinding;						//Save it in the layout binding array
 	}
 
-	//uint32* hhhhh = (uint32*)(mapGpuBuffer((*pBufferIndices)[0]));
+	//uint32* hhhhh = (uint32*)(gpuCellMap((*pCells)[0]));
 	//int hh__ = hhhhh[0];
 
 	VkDescriptorSetLayoutCreateInfo* descriptorSetLayoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));//This structure contains all the descriptors of the bindings that will be used by the shader
@@ -61,7 +61,7 @@ void Engine::CShader_createDescriptorSetLayouts(const LuxArray<LuxCell>* pBuffer
 //*      The shader inputs must match those cells
 //*      the binding index is the same as their index in the array
 //*   vCShader: the shader where to create the descriptor pool and allocate the descriptor buffers
-void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
 	//Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 	VkDescriptorPoolSize descriptorPoolSize = {};
@@ -120,9 +120,9 @@ void Engine::CShader_createDescriptorSets(const LuxArray<LuxCell>* pCells, const
 
 
 
-void Engine::CShader_createPipeline(const char* shaderPath, const LuxShader vCShader) {
+void Engine::cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader) {
 	uint32 fileLength;																//Create the shader module
-	VkShaderModule shaderModule = createShaderModule(compute.LD, readShaderFromFile(&fileLength, shaderPath), &fileLength);
+	VkShaderModule shaderModule = cshaderCreateModule(compute.LD, cshaderReadFromFile(&fileLength, shaderPath), &fileLength);
 
 	VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};						//Create shader stage infos
 	shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;	//Set structure type
@@ -153,7 +153,7 @@ void Engine::CShader_createPipeline(const char* shaderPath, const LuxShader vCSh
 
 
 
-void Engine::__lp_createCopyCommandBuffers() {
+void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 	//Create command pool
 	static VkCommandPoolCreateInfo commandPoolCreateInfo = {};							//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -166,13 +166,13 @@ void Engine::__lp_createCopyCommandBuffers() {
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
 	commandBufferAllocateInfo.commandPool = CShaders[copyShader].commandPool;				//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
-	commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapChainImages.size());	//Allocate one command buffer for each swapchain image
+	commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
 	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[copyShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
 
 	//Record present command buffers
-	for (int imgIndex = 0; imgIndex < swapChainImages.size(); imgIndex++) {	//For every command buffer of the swapchain images
+	for (int imgIndex = 0; imgIndex < swapchainImages.size(); imgIndex++) {	//For every command buffer of the swapchain images
 		//Start recording commands
 		VkCommandBufferBeginInfo beginInfo = {};								//Create begin infos to start recording the command buffer
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;				//Set structure type
@@ -187,7 +187,7 @@ void Engine::__lp_createCopyCommandBuffers() {
 		readToWrite.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set new layout. Destination optimal allows the image to be used as a transfer destination
 		readToWrite.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
 		readToWrite.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
-		readToWrite.image = swapChainImages[imgIndex];								//Set swapchain image
+		readToWrite.image = swapchainImages[imgIndex];								//Set swapchain image
 		readToWrite.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;		//Set the aspect mask
 		readToWrite.subresourceRange.baseMipLevel = 0;								//No mipmap
 		readToWrite.subresourceRange.levelCount = 1;								//No multi leve images
@@ -209,8 +209,8 @@ void Engine::__lp_createCopyCommandBuffers() {
 		region.imageSubresource.baseArrayLayer = 0;									//Set base layer
 		region.imageSubresource.layerCount = 1;										//No multi layer
 		region.imageOffset = { 0, 0, 0 };											//No image offset
-		region.imageExtent = { swapChainExtent.width, swapChainExtent.height, 1 };	//Copy the whole buffer
-		vkCmdCopyBufferToImage(CShaders[copyShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapChainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
+		vkCmdCopyBufferToImage(CShaders[copyShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 		//Create a barrier to use the swapchain image as a present source image
 		VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
@@ -219,7 +219,7 @@ void Engine::__lp_createCopyCommandBuffers() {
 		writeToRead.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Set new layout. Swapchain images must be in this format to be displayed on screen
 		writeToRead.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
 		writeToRead.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
-		writeToRead.image = swapChainImages[imgIndex];								//Set swapchain image
+		writeToRead.image = swapchainImages[imgIndex];								//Set swapchain image
 		writeToRead.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;		//Set the aspect mask
 		writeToRead.subresourceRange.baseMipLevel = 0;								//No mipmap
 		writeToRead.subresourceRange.levelCount = 1;								//No multi leve images
@@ -244,7 +244,7 @@ void Engine::__lp_createCopyCommandBuffers() {
 
 
 
-void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
+void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 	//Create command pool
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -275,7 +275,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
 	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
-	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapChainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapChainExtent.height) / WORKGROUP_SIZE)), 1);
+	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
 	TryVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0])) Exit("Failed to record command buffer");
@@ -307,17 +307,17 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::CShader_new(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
+LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
 	LuxShader shader = CShaders.add(LuxCShader{});					//Add the shader to the shader array
-	
-	CShader_createDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
-	CShader_createDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
-	CShader_createPipeline(vShaderPath, shader);					//Create the compute pipeline
-	CShaders[shader].commandBuffers.resize(swapChainImages.size());	//Resize the command buffer array in the shader
-	CShader_createCommandBuffers(shader);							//Create command buffers and command pool
-	
+
+	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
+	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
+	cshaderCreatePipeline(vShaderPath, shader);					//Create the compute pipeline
+	CShaders[shader].commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
+	cshaderCommandBuffers(shader);							//Create command buffers and command pool
+
 	return shader;													//Return the index of the created shader
 }
 
@@ -332,7 +332,7 @@ LuxShader Engine::CShader_new(const LuxArray<LuxCell>* pCells, const char* vShad
 //Removes a shader from the shader array, cleaning all of its components and freeing the memory
 //*   shader: the shader to destroy
 //*   returns true if the operation succeeded, false if the index is not valid
-bool Engine::CShader_destroy(const LuxShader vCShader){
+bool Engine::cshaderDestroy(const LuxShader vCShader) {
 	if (vCShader >= CShaders.size()) return false;
 
 	//Clear descriptors sets, descriptor pool and descriptor layout
