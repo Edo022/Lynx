@@ -388,8 +388,8 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LuxEngine\Engine\Devices.struct.h" />
     <ClInclude Include="LuxEngine\Engine\Engine.h" />
-    <ClInclude Include="LuxEngine\Engine\Graphics\Structs\_VkPhysicalDevice.h" />
     <ClInclude Include="LuxEngine\Engine\Input\Input.h" />
     <ClInclude Include="LuxEngine\Engine\Input\InputState.h" />
     <ClInclude Include="LuxEngine\Engine\Input\KeyboardInput.h" />

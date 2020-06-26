@@ -1,10 +1,5 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include <LuxEngine/Types/Integers/Integers.h>
-#include "LuxEngine/Types/Containers/LuxMap.h"
-
-
 
 //Available queue families of a physical device
 struct QueueFamilyIndices {
@@ -33,4 +28,21 @@ struct _VkPhysicalDevice {
 		indices = vIndices;
 	}
 	_VkPhysicalDevice() {}
+};
+
+
+
+
+
+struct graphicsDevice {
+	_VkPhysicalDevice PD;						//Main physical device for graphics
+	VkDevice LD;								//Main logical device for graphics
+	VkQueue graphicsQueue;						//Main graphics queue. Runs on graphicsLD
+	VkQueue presentQueue;						//Main graphics queue. Runs on graphicsLD
+};
+
+struct computeDevice {
+	_VkPhysicalDevice PD;						//Main physical device for computing
+	VkDevice LD;								//Main logical device for computing
+	LuxMap<VkQueue> computeQueues;				//Main compute queues. Run on computeLD
 };

@@ -41,7 +41,6 @@
 
 
 //Structures
-#include "Graphics/Structs/_VkPhysicalDevice.h"
 #include "LuxEngine/Types/Object/Object.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
@@ -50,6 +49,7 @@
 #include "LuxEngine/Types/LuxFence.h"
 #include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
+#include "LuxEngine/Engine/Devices.struct.h"
 
 
 #include "Input/Input.h"
@@ -63,6 +63,8 @@
 
 //TODO move to config file
 #define __lp_static_buffer_size 50000000 //50MB
+
+
 
 
 // isShared: 1b
@@ -305,20 +307,11 @@ private:
 	//const uint32 WIDTH = 800, HEIGHT = 600;		//Default size in windowed mode
 
 	//Devices and queues
-	luxPublic(struct graphicsDevice {
-		_VkPhysicalDevice PD;						//Main physical device for graphics
-		VkDevice LD;								//Main logical device for graphics
-		VkQueue graphicsQueue;						//Main graphics queue. Runs on graphicsLD
-		VkQueue presentQueue;						//Main graphics queue. Runs on graphicsLD
-	}graphics);
-
-	luxPublic(struct computeDevice {
-		_VkPhysicalDevice PD;						//Main physical device for computing
-		VkDevice LD;								//Main logical device for computing
-		LuxMap<VkQueue> computeQueues;				//Main compute queues. Run on computeLD
-	}compute);
-
-	luxPublic(LuxArray<computeDevice> secondary);	//Secondary devices and queues for computation
+public:
+	graphicsDevice graphics;			//Main graphics device
+	computeDevice compute;				//Main compute device
+	LuxArray<computeDevice> secondary;	//Secondary compute devices
+private:
 
 
 

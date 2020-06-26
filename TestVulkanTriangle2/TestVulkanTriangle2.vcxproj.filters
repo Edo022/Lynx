@@ -31,9 +31,6 @@
     <Filter Include="LuxEngine\Engine\Graphics">
       <UniqueIdentifier>{e427b4d8-2ca0-42c4-9142-f024e6e87d69}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LuxEngine\Engine\Graphics\Structs">
-      <UniqueIdentifier>{86530e9f-6596-4e6c-a587-42d7813dc394}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuxEngine\Engine\Input">
       <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
     </Filter>
@@ -129,9 +126,6 @@
     <ClInclude Include="LuxEngine\LuxEngine.h">
       <Filter>LuxEngine</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Graphics\Structs\_VkPhysicalDevice.h">
-      <Filter>LuxEngine\Engine\Graphics\Structs</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
@@ -188,6 +182,9 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\System\System.h">
       <Filter>LuxEngine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Devices.struct.h">
+      <Filter>LuxEngine\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

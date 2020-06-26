@@ -202,26 +202,21 @@ void Engine::initWindowBuffers() {
 //*   pFilePath: a pointer to a char array containing the path to the compiled shader file
 //*   returns a pointer to the array where the code is saved
 uint32* Engine::readShaderFromFile(uint32* pLength, const char* pFilePath) {
-	FILE* fp = fopen(pFilePath, "rb");
+	FILE* fp = fopen(pFilePath, "rb");								//Open the file
 	if (fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
 
-	//Get file size.
-	fseek(fp, 0, SEEK_END);
-	int32 filesize = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+	fseek(fp, 0, SEEK_END);											//Go to the end of the file
+	int32 filesize = ftell(fp);										//And get the file size
+	fseek(fp, 0, SEEK_SET);											//Go to the beginning of the file
+	int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded size
 
-	int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;
+	char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
+	fread(str, filesize, sizeof(char), fp);							//Read the file
+	fclose(fp);														//Close the file
+	for (int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
 
-	//Read file contents.
-	char* str = (char*)malloc(sizeof(char) * paddedFileSize);
-	fread(str, filesize, sizeof(char), fp);
-	fclose(fp);
-
-	//Data padding. 
-	for (int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;
-
-	*pLength = paddedFileSize;
-	return (uint32*)str;
+	*pLength = paddedFileSize;										//Set length
+	return (uint32*)str;											//Return the buffer 
 }
 
 
@@ -239,6 +234,7 @@ VkShaderModule Engine::createShaderModule(const VkDevice vDevice, uint32* pCode,
 
 	VkShaderModule shaderModule;										//Create the shader module
 	TryVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
+	free(pCode);														//Free memory #LLID CSF0000
 	return shaderModule;												//Return the created shader module
 }
 

@@ -9,6 +9,7 @@
 
 
 
+
 //Rates a physical device based on its properties and features
 //*   pDevice: a pointer to the device structure where its infos are stored
 //*   Returns the rating of the physical device
@@ -101,7 +102,7 @@ QueueFamilyIndices Engine::findQueueFamilies(const VkPhysicalDevice vDevice) {
 
 
 
-//Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities,
+//Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
 //Then saves them in the class members
 void Engine::getPhysicalDevices() {
 	uint32 deviceCount = 0;
@@ -171,8 +172,8 @@ void Engine::getPhysicalDevices() {
 	#undef physDev
 
 
+	
 
-	//Logical devices
 	//Create a logical device for graphics, one for computation and one for every secondary device
 	createLogicalDevice(&graphics.PD, &graphics.LD, nullptr);
 	createLogicalDevice(&compute.PD, &compute.LD, &compute.computeQueues);
@@ -242,7 +243,6 @@ void Engine::createLogicalDevice(const _VkPhysicalDevice* pPD, VkDevice* pLD, Lu
 	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
 	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
-
 	luxDebug(deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size();)		//Set validation layers count if in debug mode
 	luxDebug(deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();)			//Set validation layers if in debug mode
 	luxRelease(deviceCreateInfo.enabledLayerCount = 0;)									//Disable validation layers if in release mode
