@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ObjectGeometry.h"
-#include "ObjectPhysics.h"
+#include "LuxObjectGeometry.h"
+#include "LuxObjectPhysics.h"
 #include "LuxEngine/Types/Vectors/Vectors.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"

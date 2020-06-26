@@ -384,7 +384,7 @@
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\System\System.ext.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
-    <ClCompile Include="LuxEngine\Types\Object\Object.cpp" />
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -412,9 +412,9 @@
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
-    <ClInclude Include="LuxEngine\Types\Object\Object.h" />
-    <ClInclude Include="LuxEngine\Types\Object\ObjectGeometry.h" />
-    <ClInclude Include="LuxEngine\Types\Object\ObjectPhysics.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectGeometry.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectPhysics.h" />
     <ClInclude Include="LuxEngine\Types\Types.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec3.h" />

@@ -45,7 +45,7 @@
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
-#include "LuxEngine/Types/Object/Object.h"
+#include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
@@ -495,9 +495,13 @@ extern Engine engine;
 
 
 
+static void __lp__hh(bool useVSync) {
+	engine.run(useVSync, 45);
+}
+
 //This function is used by the engine. You shouldn't call it
 static void __lp_luxInit(bool useVSync) {
-	std::thread renderThr([useVSync]() {engine.run(useVSync, 45); }, useVSync);
+	std::thread renderThr(__lp__hh, useVSync);
 	renderThr.detach();
 	engine.running = true;
 }
