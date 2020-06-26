@@ -274,7 +274,7 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
 	commandBufferAllocateInfo.commandPool = CShaders[vCShader].commandPool;					//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
-	commandBufferAllocateInfo.commandBufferCount = 1;										//Allocate one command buffer for each swapchain image
+	commandBufferAllocateInfo.commandBufferCount = 2;										//Allocate one command buffer 
 	//Allocate command buffer
 	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
 
@@ -319,11 +319,11 @@ void Engine::CShader_createCommandBuffers(const LuxShader vCShader) {
 
 //Creates the command buffers that copy the output to the swapchain images
 LuxShader Engine::CShader_newCp() {
-	LuxShader shader = copyShader = CShaders.add(LuxCShader{});					//Add the shader to the shader array
-	CShaders[shader].commandBuffers.resize(swapChainImages.size());	//Resize the command buffer array in the shader
+	copyShader = CShaders.add(LuxCShader{});					//Add the shader to the shader array
+	CShaders[copyShader].commandBuffers.resize(swapChainImages.size());	//Resize the command buffer array in the shader
 	CShader_createCommandBuffersCp();								//Create command buffers and command pool
 
-	return shader;													//Return the index of the created shader
+	return copyShader;													//Return the index of the created shader
 }
 
 

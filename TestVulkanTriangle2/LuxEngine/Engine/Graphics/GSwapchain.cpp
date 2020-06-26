@@ -156,7 +156,8 @@ void Engine::cleanupSwapChain() {
 	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);			//Destroy render pass
 
 	for (auto framebuffer : swapChainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);				//Destroy framebuffers
-	vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, scast<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
+	//TODO useless. remove var
+	//vkFreeCommandBuffers(graphics.LD, graphicsCommandPool, scast<uint32>(commandBuffers.size()), commandBuffers.data());	//Free graphics command buffers
 	for (auto imageView : swapChainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);						//Destroy image views
 
 	vkDestroySwapchainKHR(graphics.LD, swapChain, nullptr);																//destroy swapchain
@@ -185,8 +186,13 @@ void Engine::recreateSwapChain(bool windowResized) {
 		destroyGpuCell(__windowOutput);
 		__windowOutput = createGpuCell(swapChainExtent.width * swapChainExtent.height * 4/*A8-R8-G8-B8*/, false);
 
+
+		CShader_destroy(testShader0);
+		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
+		testShader0 = CShader_new(&cells, "LuxEngine/Contents/shaders/comp.spv");
+
 		CShader_destroyCp();
-		copyShader = CShader_newCp();
+		CShader_newCp();
 	}
 	if (windowResized) windowResizeFence.set(2);
 }
