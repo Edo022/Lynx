@@ -84,7 +84,7 @@
 constexpr uint32 __lp_cellOffset_from_cc(const _VkPhysicalDevice* device, const LuxCell cell) {
 	const uint32 rawOffset = (__lp_cellIndex_from_cc(cell) * __lp_cellSize_from_cc(cell));
 	if (__lp_isShared_from_cc(cell) == 0 || rawOffset == 0) return 0;
-	else return rawOffset - (rawOffset % device->properties.limits.minStorageBufferOffsetAlignment) + device->properties.limits.minStorageBufferOffsetAlignment;
+	else return scast<uint32>(rawOffset - (rawOffset % device->properties.limits.minStorageBufferOffsetAlignment) + device->properties.limits.minStorageBufferOffsetAlignment);
 }
 
 

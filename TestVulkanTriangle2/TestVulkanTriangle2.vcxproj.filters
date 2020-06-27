@@ -91,9 +91,6 @@
     <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.ext.cpp">
-      <Filter>LuxEngine\Types\LuxObject</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
@@ -186,10 +183,13 @@
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectGeometry.h">
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectPhysics.h">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectPhysics.h">
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectLine.h">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxRenderSpace.h">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClInclude>
   </ItemGroup>
