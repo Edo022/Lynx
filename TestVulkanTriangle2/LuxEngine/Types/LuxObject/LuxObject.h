@@ -26,16 +26,18 @@ struct LuxObject {
 
 //3D object in 3D space
 struct LuxObject3D : public LuxObject {
-	vec3float32 pos;	//Position of the object
+	vec3float32 pos;	//Position of the object. The position is relative to the origin of the object
+	vec3float32 org;	//Origin of the object
 	float32 wIndex;		//Index of the object. Objects with higher wIndex will be rendered on top of others
 	vec3float32 rot;	//Rotation of the object
 	vec3float32 scl;	//Scale of the object
 };
 
 
-//2D object with 3D properties. It can be used in both 2D and 3D spaces
-struct LuxObjectt2p5D : public LuxObject {
-	vec3float32 pos;	//Position of the object
+//Base class for 2D objects with 3D properties (they can be used in both 2D and 3D spaces)
+struct LuxObjectt2i3D : public LuxObject {
+	vec3float32 pos;	//Position of the object. The position is relative to the origin of the object
+	vec3float32 org;	//Origin of the object
 	float32 wIndex;		//Index of the object for 3D space
 	float32 zIndex;		//Index of the object for 2D space
 	vec3float32 rot;	//Rotation of the object
@@ -43,10 +45,20 @@ struct LuxObjectt2p5D : public LuxObject {
 };
 
 
-//2D object in 2D space
+//Base class for 2D objects in 2D space
 struct LuxObject2D : public LuxObject {
-	vec2float32 pos;	//Position of the object. It goes from 0.0, 0.0 to 1.0, 1.0
+	vec2float32 pos;	//Position of the object. The position is relative to the origin of the object
+	vec2float32 org;	//Origin of the object
 	float32 zIndex;		//Index of the object. Objects with higher zIndex will be rendered on top of others
 	float32 rot;		//Rotation of the object
 	vec2float32 scl;	//Scale of the object
+};
+
+
+//Base class for 1D objects in 1D space
+struct luxObject1D : public LuxObject {
+	float32 pos;		//Position of the object. The position is relative to the origin of the object
+	float32 org;	//Origin of the object
+	float32 yIndex;		//Index of the object. Objects with higher yIndex will be rendered on top of others
+	float32 scl;		//Scale of the object
 };

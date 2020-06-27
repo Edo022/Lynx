@@ -13,6 +13,8 @@
 
 
 int main() {
+	float32 a = INT32_MAX;
+	printf("%f", a);
 
 	LuxInit(false);
 	LuxInputState inputStateTest{
