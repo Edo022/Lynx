@@ -14,3 +14,4 @@ struct ObjectGeometry {
 	//TODO
 };
 
+//TODO dual camera

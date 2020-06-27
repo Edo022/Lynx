@@ -21,11 +21,11 @@ void main() {
 	if(x >= width || y >= height) return;
 
 	vec4 color;
-	color = (x > vertices[0]) ? uvec4(255,0,0,255) : uvec4(0);
+	color = uvec4(255,0,0,255);
 //	color = (x > vertices[0]) ? uvec4(255,0,0,255) : uvec4(0);
 
 
 	//Store the pixel in the buffer. 4 chars as an uint32
-	_lp_colorOutput[width * y + x] = (int(color.a) << 24) | ((int(color.b) & 0xFF) << 16) | ((int(color.g) & 0xFF) << 8) | (int(color.r) & 0xFF);
+	for(int i = 0; i < 10; i++) _lp_colorOutput[width * vertices[0] + vertices[1] + i] = (int(color.a) << 24) | ((int(color.b) & 0xFF) << 16) | ((int(color.g) & 0xFF) << 8) | (int(color.r) & 0xFF);
 //	colorOutput[y*width + x] = ((color.a) << 24) | ((color.b & 0xFF) << 16) | ((color.g & 0xFF) << 8) | (color.r & 0xFF);
 }

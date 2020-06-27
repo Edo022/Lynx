@@ -254,7 +254,7 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 	bufferInfo.size = vSize;
 	bufferInfo.usage = vUsage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) Exit("Failed to create buffer");
+	TryVk (vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) Exit("Failed to create buffer");
 
 	VkMemoryRequirements memRequirements;
 	vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
@@ -265,10 +265,23 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 	allocInfo.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, vProperties);
 
 	//TODO check out of memory
+	//TODO don't quit in VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS but return an error code
 	switch (vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
 		case VK_SUCCESS: break;
-		case VK_ERROR_OUT_OF_HOST_MEMORY:
-		case VK_ERROR_TOO_MANY_OBJECTS:
+		case VK_ERROR_OUT_OF_DEVICE_MEMORY: {	//IF out of device memory, use the host memory
+			VkMemoryAllocateInfo allocInfo2{};
+			allocInfo2.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			allocInfo2.allocationSize = memRequirements.size;
+			allocInfo2.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			switch (vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
+				case VK_SUCCESS: break;
+				case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
+				default: Exit("Failed to allocate buffer memory");
+			}
+			break; 
+		}
+		case VK_ERROR_OUT_OF_HOST_MEMORY:		//TODO If out of host memory
+		case VK_ERROR_TOO_MANY_OBJECTS:	//TODO
 		default: Exit("Failed to allocate buffer memory");
 	}
 

@@ -5,3 +5,5 @@
 #define TryVk(f) if (f != VK_SUCCESS)
 #define null
 #define forEach(container, i) for(uint64 i = 0; i < (container).size(); i++)
+#define luxPrivate(s) private: s; public:
+#define luxPublic(s) public: s; private:

@@ -16,7 +16,7 @@ LuxBuffer Engine::gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBuff
 	_LuxBufferStruc buffer;					//Create the buffer struct															
 	buffer.size = scast<uint32>(vSize);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
 	createBuffer(
-		compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, //TODO unifom buffer with small cells
 		(vCpuAccessible) ? VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		&buffer.buffer, &buffer.memory
 	);

@@ -384,7 +384,7 @@
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\System\System.ext.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
-    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp" />
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.ext.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
