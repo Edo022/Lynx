@@ -49,6 +49,12 @@
     <Filter Include="LuxEngine\Types\LuxObject">
       <UniqueIdentifier>{9475685a-dff9-4e67-8ffc-3ef00e446395}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Types\LuxObject\2D">
+      <UniqueIdentifier>{28720fcf-0332-48fd-b763-1b55bb5cf71c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\LuxObject\3D">
+      <UniqueIdentifier>{ec7a58cc-5dba-4385-ab86-bed721a9fc30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -183,17 +189,14 @@
     <ClInclude Include="LuxEngine\Engine\Compute\CBuffers.struct.h">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h">
+    <ClInclude Include="LuxEngine\Types\LuxObject\Lines2D.h">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectPhysics.h">
-      <Filter>LuxEngine\Types\LuxObject</Filter>
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectLine.h">
-      <Filter>LuxEngine\Types\LuxObject</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxRenderSpace.h">
-      <Filter>LuxEngine\Types\LuxObject</Filter>
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

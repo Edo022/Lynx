@@ -412,10 +412,9 @@
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h" />
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectLine.h" />
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObjectPhysics.h" />
-    <ClInclude Include="LuxEngine\Types\LuxObject\LuxRenderSpace.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\Lines2D.h" />
     <ClInclude Include="LuxEngine\Types\Types.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec3.h" />

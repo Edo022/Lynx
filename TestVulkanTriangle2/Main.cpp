@@ -4,8 +4,8 @@
 
 
 #include "LuxEngine/LuxEngine.h"
-#include "LuxEngine/Types/LuxObject/LuxObjectLine.h"
-#include "LuxEngine/Types/LuxObject/LuxRenderSpace.h"
+#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include <iostream>
 
 
@@ -13,8 +13,8 @@
 
 
 int main() {
-	LuxObjectLine l{};
-	LuxRenderSpace2D r{};
+	LuxObjectLine l;
+	LuxRenderSpace2D r;
 
 	bool h = r.spawnObject(&l);
 	LuxObjectType t = l.objectType;

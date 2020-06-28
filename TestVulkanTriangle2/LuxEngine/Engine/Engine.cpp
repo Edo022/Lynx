@@ -33,7 +33,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 	initWindow();
-	Normal printf("Creating Instance...                     ");			createInstance();							SuccessNoNl printf("ok");
+	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
 	runGraphics(vUseVSync, vFOV);
 	initWindowBuffers();
 	runCompute();
@@ -69,14 +69,13 @@ void Engine::mainLoop() {
 	running = false;
 	vkDeviceWaitIdle(graphics.LD);
 }
+//TODO add FPS limit
 
 
 void Engine::runRenderThr() {
 	while (running) {
 		graphicsDrawFrame();
 		frames++;
-		//std::this_thread::sleep_for(std::chrono::nanoseconds(1));
-		//sleep(1);
 	}
 }
 

@@ -46,6 +46,7 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
@@ -450,6 +451,7 @@ private:
 	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
 	LuxMap<LuxCShader> CShaders;
 	LuxMap<_LuxBufferStruc> CBuffers;
+	LuxMap<LuxRenderSpace2D> CRenderSpaces;
 
 	LuxShader copyShader, testShader0;
 
