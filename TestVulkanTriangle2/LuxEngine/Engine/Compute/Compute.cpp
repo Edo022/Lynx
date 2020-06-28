@@ -18,25 +18,27 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	{ //Create copy command buffers #LLID CCB0000
-		copyShader = CShaders.add(LuxCShader{});								//Add the shader to the shader array
-		CShaders[copyShader].commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-		__lp_cshaderCreateCopyCommandBuffers();										//Create command buffers and command pool
-	}
-
+	__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
 
 	__windowSize = gpuCellCreate(4 * 2, true);
-	uint32* pwindowSize = (uint32*)gpuCellMap(__windowSize);
-	pwindowSize[0] = width;
-	pwindowSize[1] = height;
+	uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
+	pwindowSize[0] = swapchainExtent.width;
+	pwindowSize[1] = swapchainExtent.height;
+
 
 	__vertices = gpuCellCreate(4 * 2, true);
-	uint32* mappedVertices = (uint32*)gpuCellMap(__vertices);
-	mappedVertices[0] = 100;
-	mappedVertices[1] = 10;
+	uint32* pVertices = rcast<uint32*>(gpuCellMap(__vertices));
+	pVertices[0] = 100;
+	pVertices[1] = 10;
 
 	LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
 	testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/comp.spv");
+
+	{ //#LLID CCB0000 Create copy command buffers 
+		copyShader = CShaders.add(LuxCShader{});							//Add the shader to the shader array
+		CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
+		__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
+	}
 }
 
 

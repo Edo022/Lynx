@@ -19,8 +19,8 @@ typedef uint64 LuxCell, LuxBuffer;
 #define __lp_cellIndex_from_cc(cellCode) (((cellCode) >> 31) & 0xfFFFF)
 #define __lp_cellSize_from_cc(cellCode) ((cellCode) & 0x7FFFffff)
 
-constexpr uint32 __lp_cellOffset_from_cc(const _VkPhysicalDevice* device, const LuxCell cell) {
-	const uint32 rawOffset = (__lp_cellIndex_from_cc(cell) * __lp_cellSize_from_cc(cell));
-	if (__lp_isShared_from_cc(cell) == 0 || rawOffset == 0) return 0;
-	else return scast<uint32>(rawOffset - (rawOffset % device->properties.limits.minStorageBufferOffsetAlignment) + device->properties.limits.minStorageBufferOffsetAlignment);
+constexpr uint32 __lp_cellOffset_from_cc(const _VkPhysicalDevice* pDevice, const LuxCell vCell) {
+	const uint32 rawOffset = (__lp_cellIndex_from_cc(vCell) * __lp_cellSize_from_cc(vCell));
+	if (__lp_isShared_from_cc(vCell) == 0 || rawOffset == 0) return 0;
+	else return scast<uint32>(rawOffset - (rawOffset % pDevice->properties.limits.minStorageBufferOffsetAlignment) + pDevice->properties.limits.minStorageBufferOffsetAlignment);
 }

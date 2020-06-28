@@ -54,12 +54,12 @@ public:
 
 
 
-	inline LuxString __vectorcall operator + (const char* vString) {
+	inline LuxString __vectorcall operator + (const char* vString) const {
 		LuxString vLuxString(str.begin());
 		vLuxString += vString;
 		return vLuxString;
 	}
-	inline LuxString __vectorcall operator + (const LuxString& pString) {
+	inline LuxString __vectorcall operator + (const LuxString& pString) const {
 		LuxString vLuxString(str.begin());
 		vLuxString += pString;
 		return vLuxString;

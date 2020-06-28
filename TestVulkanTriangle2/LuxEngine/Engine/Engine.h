@@ -22,6 +22,7 @@
 
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
@@ -286,7 +287,7 @@ public:
 	void run(bool vUseVSync, float vFOV);
 private:
 	void mainLoop();		void runFPSCounterThr();	void runRenderThr();
-	void initWindow();		void initWindowBuffers();	void createInstance();
+	void initWindow();		void createInstance();
 
 	//Devices >> Devices.cpp
 	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues);

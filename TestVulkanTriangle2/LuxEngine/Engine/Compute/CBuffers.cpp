@@ -94,7 +94,9 @@ void* Engine::gpuCellMap(const LuxCell vCell) {
 	LuxBuffer buffer = __lp_buffer_from_cc(vCell);
 	if (CBuffers[buffer].isMapped) vkUnmapMemory(compute.LD, CBuffers[buffer].memory);
 	else CBuffers[buffer].isMapped = true;
+
+	uint32 offset = __lp_cellOffset_from_cc(&compute.PD, vCell);
 	void* data;
-	vkMapMemory(compute.LD, CBuffers[buffer].memory, __lp_cellOffset_from_cc(&compute.PD, vCell), CBuffers[buffer].size, 0, &data);
+	vkMapMemory(compute.LD, CBuffers[buffer].memory, offset, __lp_cellSize_from_cc(vCell), 0, &data);
 	return data;
 }

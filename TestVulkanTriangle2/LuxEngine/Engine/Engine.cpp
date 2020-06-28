@@ -19,25 +19,30 @@ Engine engine;
 
 
 
+static LuxString shaderPath; 
+
+static bool compileShader(const LuxString& pShaderName) {
+	LuxString compileShaderCommand =
+		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/glslc.exe ") +
+		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/") + pShaderName + LuxString(" -o ") +
+		luxThisDirectory + "/LuxEngine/Contents/shaders/comp.spv";
+	return ("%d\n", system(compileShaderCommand.begin()) == 0);
+}
+
 
 
 
 void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxStartChrono();
+	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
 
-
-	LuxString compileShaderCommand =
-		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/glslc.exe ") +
-		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/shader.comp -o ") +
-		luxThisDirectory + "/LuxEngine/Contents/shaders/comp.spv";
-	if ("%d\n", system(compileShaderCommand.begin()) != 0) Exit("compilation error");
+	if (!compileShader(LuxString{ "shader.comp" })) Exit("compilation error");
 
 
 
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
 	runGraphics(vUseVSync, vFOV);
-	initWindowBuffers();
 	runCompute();
 
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
@@ -176,11 +181,6 @@ void Engine::initWindow() {
 	glfwSetWindowIcon(window, 1, &icon);
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
-}
-
-
-void Engine::initWindowBuffers() {
-	__windowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 }
 
 

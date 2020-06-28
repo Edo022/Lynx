@@ -14,11 +14,11 @@
 
 
 int main() {
-	LuxObjectLine l;
-	LuxRenderSpace2D r;
+	//LuxObjectLine l;
+	//LuxRenderSpace2D r;
 
-	int h = l.ID;
-	int h2 = r.ID;
+	//int h = l.ID;
+	//int h2 = r.ID;
 	LuxInit(false);
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},

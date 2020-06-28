@@ -93,7 +93,7 @@ public:
 	//Returns the ID of the element
 	uint64 __vectorcall add(const type vData) {
 		uint64 head2 = head;
-		if (head == -1) return append(vData);				//If it has no free elements, append it
+		if (head == (uint64)-1) return append(vData);				//If it has no free elements, append it
 		else {
 			if (head == tail) {								//If it has only one free element
 				__lp_Data(head2) = vData;						//Replace it

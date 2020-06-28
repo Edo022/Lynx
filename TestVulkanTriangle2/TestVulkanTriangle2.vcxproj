@@ -265,7 +265,7 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\tinyobjloader;S:\CppLibraries\stb;S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -304,7 +304,7 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\tinyobjloader;S:\CppLibraries\stb;S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -342,7 +342,7 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\tinyobjloader;S:\CppLibraries\stb;S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>

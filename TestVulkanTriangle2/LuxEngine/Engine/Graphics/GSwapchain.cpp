@@ -168,20 +168,12 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 		swapchainCreate();
 
 
-		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
-		pwindowSize[0] = swapchainExtent.width;
-		pwindowSize[1] = swapchainExtent.height;
 
+
+		//TODO dont resize always
 		//TODO dont resize always
 		gpuCellDestroy(__windowOutput);
-		__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
-
-		//TODO dont resize always
 		cshaderDestroy(testShader0);
-		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
-		testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/comp.spv");
-
-
 		{ //destroy copy command buffers
 			//Clear command buffer, command pool and useless pointers
 			vkFreeCommandBuffers(compute.LD, CShaders[copyShader].commandPool, CShaders[copyShader].commandBuffers.__lp_size, CShaders[copyShader].commandBuffers.data());
@@ -189,7 +181,17 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 			forEach(CShaders[copyShader].__lp_ptrs, i) free(CShaders[copyShader].__lp_ptrs[i]);
 			CShaders.remove(copyShader);										//Remove the shader from the shader array
 		}
-		{ //Create copy command buffers #LLID CCB0000
+
+
+
+
+		__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
+		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
+		testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/comp.spv");
+		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
+		pwindowSize[0] = swapchainExtent.width;
+		pwindowSize[1] = swapchainExtent.height;
+		{ //#LLID CCB0000 Create copy command buffers 
 			copyShader = CShaders.add(LuxCShader{});							//Add the shader to the shader array
 			CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
 			__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
