@@ -5,6 +5,7 @@
 
 #include "LuxEngine/LuxEngine.h"
 #include "LuxEngine/Types/LuxObject/LuxObjectLine.h"
+#include "LuxEngine/Types/LuxObject/LuxRenderSpace.h"
 #include <iostream>
 
 
@@ -12,6 +13,12 @@
 
 
 int main() {
+	LuxObjectLine l{};
+	LuxRenderSpace2D r{};
+
+	bool h = r.spawnObject(&l);
+	LuxObjectType t = l.objectType;
+
 	LuxInit(false);
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},

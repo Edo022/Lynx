@@ -91,6 +91,9 @@
     <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.ext.cpp">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
