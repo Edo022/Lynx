@@ -13,7 +13,7 @@
 //*       Trying to map a non accessible cell will result in an access violation error
 //*   Returns the index of the buffer in the array. -1 if an error occurs
 LuxBuffer Engine::gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible) {
-	_LuxBufferStruc buffer;					//Create the buffer struct															
+	LuxBuffer_t buffer;					//Create the buffer struct															
 	buffer.size = scast<uint32>(vSize);			//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
 	createBuffer(
 		compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, //TODO unifom buffer with small cells
@@ -88,7 +88,7 @@ bool Engine::gpuCellDestroy(const LuxCell vCell) {
 
 //This function maps a buffer to a void pointer. Mapping a buffer allows the CPU to access its data
 //Mapping an already mapped buffer will overwrite the old mapping
-//*   buffer: a pointer to a _LuxBufferStruc object. It's the buffer that will be mapped
+//*   buffer: a pointer to a LuxBuffer_t object. It's the buffer that will be mapped
 //*   returns the void pointer that maps the buffer
 void* Engine::gpuCellMap(const LuxCell vCell) {
 	LuxBuffer buffer = __lp_buffer_from_cc(vCell);

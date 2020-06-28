@@ -1,5 +1,5 @@
 #pragma once
-#include "LuxEngine/Engine/Devices.struct.h"
+#include "LuxEngine/Engine/Devices_t.h"
 #include "LuxEngine/macros.h"
 #include "Integers/Integers.h"  // for uint32, uint64
 #include "vulkan/vulkan_core.h" // for VkPhysicalDeviceLimits, VkPhysicalDeviceProperties

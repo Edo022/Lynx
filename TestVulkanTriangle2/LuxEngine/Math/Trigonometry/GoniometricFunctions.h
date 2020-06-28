@@ -1,6 +1,6 @@
 
 #pragma once
-#include "LuxEngine/LuxEngine.config.h"
+#include "LuxEngine/LuxEngine_config.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Math/Trigonometry/Trigonometry.h"
 #include "LuxEngine/Types/Integers/Integers.h"

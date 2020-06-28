@@ -12,7 +12,7 @@ enum LuxBufferClass : uint32 {
 
 
 //This structure groups the components of a Vulkan buffer
-struct _LuxBufferStruc {
+struct LuxBuffer_t {
 	uint32 size;				//The size in bytes of the buffer
 	VkBuffer buffer;			//The actual Vulkan buffer
 	VkDeviceMemory memory;		//The memory of the buffer

@@ -76,9 +76,6 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Input\Input.ext.cpp">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Types\LuxFence.h">
       <Filter>LuxEngine\Types</Filter>
     </ClCompile>
@@ -88,16 +85,19 @@
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\System\System.ext.cpp">
-      <Filter>LuxEngine\System</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.ext.cpp">
+    <ClCompile Include="LuxEngine\Engine\Input\Input_e.cpp">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\System\System_e.cpp">
+      <Filter>LuxEngine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -165,9 +165,6 @@
     <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\LuxEngine.config.h">
-      <Filter>LuxEngine</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Math\Algebra\Algebra.h">
       <Filter>LuxEngine\Math\Algebra</Filter>
     </ClInclude>
@@ -180,15 +177,6 @@
     <ClInclude Include="LuxEngine\System\System.h">
       <Filter>LuxEngine\System</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Devices.struct.h">
-      <Filter>LuxEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Compute\CShader.struct.h">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers.struct.h">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClInclude>
@@ -197,6 +185,18 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h">
       <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Devices_t.h">
+      <Filter>LuxEngine\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Compute\CShader_t.h">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers_t.h">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\LuxEngine_config.h">
+      <Filter>LuxEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

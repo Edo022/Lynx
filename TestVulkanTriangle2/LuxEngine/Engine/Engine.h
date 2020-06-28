@@ -28,8 +28,8 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"
 
-#include "LuxEngine/Engine/Devices.struct.h"
-#include "LuxEngine/Engine/Compute/CBuffers.struct.h"
+#include "LuxEngine/Engine/Devices_t.h"
+#include "LuxEngine/Engine/Compute/CBuffers_t.h"
 
 #include "type_traits"                                 // for move
 #include "vcruntime_new.h"                             // for operator delete, operator new
@@ -39,7 +39,7 @@
 #include <thread>
 
 class LuxString;
-struct LuxCShader;
+struct LuxShader_t;
 struct LuxRenderSpace2D;
 
 
@@ -298,9 +298,9 @@ private:
 
 	//Shared functions >> this
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath);
-	VkShaderModule	cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
-	void			createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
-	void			copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
+	VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
+	void				createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+	void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 
 
 
@@ -350,14 +350,14 @@ private:
 
 
 	//Graphics >> Graphics/GGraphics.cpp
-	void runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
-	void graphicsInitVulkan();
-	void graphicsCreateSurface();
-	void graphicsCreateFences();
-	void graphicsCreateDebugMessenger();
-	void graphicsDrawFrame();
-	void graphicsCleanup();
-	static void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
+	void					runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
+	void					graphicsInitVulkan();
+	void					graphicsCreateSurface();
+	void					graphicsCreateFences();
+	void					graphicsCreateDebugMessenger();
+	void					graphicsDrawFrame();
+	void					graphicsCleanup();
+	static void				framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
 
 
 	//Graphics swapchain >> Graphics/GSwapchain.cpp
@@ -366,9 +366,9 @@ private:
 		LuxArray<VkSurfaceFormatKHR> formats;
 		LuxArray<VkPresentModeKHR> presentModes;
 	};
-	void swapchainCreate();
-	void swapchainRecreate(const bool vWindowResized);
-	void swapchainCleanup();
+	void					swapchainCreate();
+	void					swapchainRecreate(const bool vWindowResized);
+	void					swapchainCleanup();
 	VkSurfaceFormatKHR		swapchainChooseSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* pAvailableFormats);
 	VkPresentModeKHR		swapchainChoosePresentMode(const LuxArray<VkPresentModeKHR>* pAvailablePresentModes);
 	VkExtent2D				swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
@@ -377,21 +377,21 @@ private:
 
 
 	//Graphics images and output objects >> Graphics/GOutput.cpp
-	void			createRenderPass();
-	void			createFramebuffers();
-	VkImageView		swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-	void			swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
+	void					createRenderPass();
+	void					createFramebuffers();
+	VkImageView				swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+	void					swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp
-	void			createGraphicsCommandPool();
-	VkCommandBuffer	beginSingleTimeCommands();
-	void			endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
+	void					createGraphicsCommandPool();
+	VkCommandBuffer			beginSingleTimeCommands();
+	void					endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
 
 
 	//Graphics other >> Graphics/Graphics.cpp
-	VkFormat		graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
-	uint32			graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+	VkFormat				graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	uint32					graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
 	static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
@@ -411,31 +411,31 @@ private:
 
 
 	//Objects
-	const int32 WORKGROUP_SIZE = 32; // Workgroup size in compute shader.
-	LuxMap<LuxCShader> CShaders;
-	LuxMap<_LuxBufferStruc> CBuffers;
-	LuxMap<LuxRenderSpace2D> CRenderSpaces;
+	const int32 WORKGROUP_SIZE = 32;			//Workgroup size in compute shader
+	LuxMap<LuxShader_t> CShaders;				//List of shaders
+	LuxMap<LuxBuffer_t> CBuffers;				//List of GPU buffers
+	LuxMap<LuxRenderSpace2D> CRenderSpaces;		//List of renderSpaces
 
 	LuxShader copyShader, testShader0;
 
 
 	//Compute >> Compute/Compute.cpp
-	void runCompute();
-	void cleanupCompute();
+	void		runCompute();
+	void		cleanupCompute();
 
 	//Buffers >> Compute/Buffers.cpp
 	LuxBuffer	gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 	LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
 	bool		gpuCellDestroy(const LuxCell vCell);
-	void* gpuCellMap(const LuxCell vCell);
+	void*		gpuCellMap(const LuxCell vCell);
 
 
-	//Compute pipeline and descriptors >> Compute/CShader.cpp
-	void cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
-	void cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
-	void cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
-	void cshaderCommandBuffers(const LuxShader vCShader);
-	void __lp_cshaderCreateCopyCommandBuffers();
+	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
+	void		cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
+	void		cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
+	void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
+	void		cshaderCommandBuffers(const LuxShader vCShader);
+	void		__lp_cshaderCreateCopyCommandBuffers();
 
 	LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
 	bool		cshaderDestroy(const LuxShader vCShader);

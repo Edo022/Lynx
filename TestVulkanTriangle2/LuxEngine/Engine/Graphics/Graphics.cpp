@@ -1,7 +1,7 @@
 
 #include <vulkan/vulkan.h>
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader.struct.h"
+#include "LuxEngine/Engine/Compute/CShader_t.h"
 
 
 void Engine::runGraphics(const bool vUseVSync, const float vFOV) {

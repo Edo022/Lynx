@@ -1,6 +1,6 @@
 ﻿
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader.struct.h"
+#include "LuxEngine/Engine/Compute/CShader_t.h"
 
 
 
@@ -35,7 +35,7 @@ void Engine::runCompute() {
 	testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/comp.spv");
 
 	{ //#LLID CCB0000 Create copy command buffers 
-		copyShader = CShaders.add(LuxCShader{});							//Add the shader to the shader array
+		copyShader = CShaders.add(LuxShader_t{});							//Add the shader to the shader array
 		CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
 		__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
 	}

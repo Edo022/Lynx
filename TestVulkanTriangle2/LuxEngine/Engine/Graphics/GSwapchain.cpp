@@ -1,6 +1,6 @@
 ﻿
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader.struct.h"       
+#include "LuxEngine/Engine/Compute/CShader_t.h"       
 
 
 
@@ -186,13 +186,16 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 		__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
+
 		LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
 		testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/comp.spv");
+
 		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
+
 		{ //#LLID CCB0000 Create copy command buffers 
-			copyShader = CShaders.add(LuxCShader{});							//Add the shader to the shader array
+			copyShader = CShaders.add(LuxShader_t{});							//Add the shader to the shader array
 			CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
 			__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
 		}

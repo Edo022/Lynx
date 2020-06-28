@@ -4,7 +4,7 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 
 //A container struct for the components of a shader
-struct LuxCShader {
+struct LuxShader_t {
 	//Descriptors
 	VkDescriptorPool descriptorPool;
 	VkDescriptorSet descriptorSet;

@@ -1,6 +1,6 @@
 
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader.struct.h"
+#include "LuxEngine/Engine/Compute/CShader_t.h"
 
 
 
@@ -312,7 +312,7 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
-	LuxShader shader = CShaders.add(LuxCShader{});					//Add the shader to the shader array
+	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array
 
 	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers

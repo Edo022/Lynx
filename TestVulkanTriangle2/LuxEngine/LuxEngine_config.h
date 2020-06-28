@@ -31,8 +31,8 @@
 
 	//The size of the GPU buffers
 	//Default: 50 000 000 (50MB).    Max: 2 147 483 648 (~2GB)
-	//Larger buffers have better performance, but uses more memory
-	//Buffers smaller than (<mem bytes>/1024>) are not supported by some devices, therefore the engine will be unable to use part of the memory
+	//Larger buffers have better performance, but they increase the memory usage
+	//Buffers smaller than (<memBytes> / 1024) are not supported by some devices, therefore the engine will be unable to use part of the memory
 	//                        ^ 
-	//                        this is the sum of the bytes of the shared RAM and the VRAM of the GPU
+	//                        this is the sum of the shared RAM and the VRAM of the GPU, in bytes
 #	define GPU_STATIC_BUFFER_SIZE 50000000

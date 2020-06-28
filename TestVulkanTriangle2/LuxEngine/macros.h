@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning(disable : 4005) //Macro referinition
 #pragma warning(disable : 4002) //Too many arguments in luxDebug and luxRelease
-#include "LuxEngine.config.h"
+#include "LuxEngine_config.h"
 
 
 
