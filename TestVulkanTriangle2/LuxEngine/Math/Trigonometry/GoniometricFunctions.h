@@ -3,10 +3,11 @@
 #include "LuxEngine/LuxEngine.config.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Math/Trigonometry/Trigonometry.h"
-#include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Integers/Integers.h"
-#include <cstdlib>
+#include "LuxEngine/macros.h"
+#include "corecrt_math.h"                              // for cos, sin, tan, acos, asin, atan
 
+#if FUNC_PRECISION != 0
 extern double* __lp_sin;
 extern double* __lp_cos;
 extern double* __lp_tan;
@@ -17,6 +18,7 @@ extern double* __lp_csc;
 extern double* __lp_asin;
 extern double* __lp_acos;
 extern double* __lp_atan;
+#endif
 
 
 

@@ -1,5 +1,6 @@
 ﻿
 #include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Engine/Compute/CShader.struct.h"
 
 
 

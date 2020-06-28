@@ -1,4 +1,7 @@
 ﻿#include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Types/Containers/LuxString.h"    // for LuxMap
+#include <set>
+class LuxString;
 
 //Compares 2 _VkPhysicalDevice objects
 #define sameDevice(a,b) ((a).properties.deviceID == (b).properties.deviceID)

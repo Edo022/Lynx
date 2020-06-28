@@ -3,8 +3,11 @@
 #ifndef  __INPUT	//This is useless, but it doesn't work without it
 #define __INPUT
 #include "InputState.h"
-#include "MouseInput.h"
-#include "KeyboardInput.h"
+#include "GLFW/glfw3.h"                           // for GLFWwindow, GLFW_REPEAT
+#include "LuxEngine/macros.h"                     // for scast
+#include "LuxEngine/Types/Containers/LuxArray.h"  // for LuxArray
+#include "LuxEngine/Types/Integers/Integers.h"    // for uint16
+#include "stdio.h"                                // for printf
 
 
 

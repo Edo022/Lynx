@@ -1,5 +1,6 @@
 
 #include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Engine/Compute/CShader.struct.h"
 
 
 
@@ -70,6 +71,7 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const 
 
 	//This struct contains the informations about the descriptor pool. a descriptor pool contains the descriptor sets
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
+	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;		//Set structure type
 	descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;		//Set structure type
 	descriptorPoolCreateInfo.maxSets = 1;												//Allocate only one descriptor set
 	descriptorPoolCreateInfo.poolSizeCount = 1;											//One pool size
@@ -274,8 +276,8 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 	vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, null);
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
-	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
+	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
+	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
 	TryVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0])) Exit("Failed to record command buffer");

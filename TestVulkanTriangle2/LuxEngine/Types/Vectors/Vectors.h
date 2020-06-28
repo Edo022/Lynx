@@ -7,8 +7,8 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/macros.h"
 
-#include <cinttypes>
-#include "LuxEngine/Math/Algebra/Algebra.h"
+#include "cmath"                                // for pow, sqrt
+#include "corecrt_math.h"                       // for pow, sqrt
 
 
 #pragma warning( disable: 26451 )

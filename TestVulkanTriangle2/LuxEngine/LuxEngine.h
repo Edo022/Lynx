@@ -14,8 +14,9 @@
 //The luxRelease() macro executes a line of code only if LUX_DEBUG is NOT defined
 //Those macros does not affect performance or code creation. LUX_DEBUG must be define BEFORE including this header
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Input/Input.h"
-
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
+#include "LuxEngine/System/System.h"
+#include "macros.h"                                  // for sleep
 
 
 

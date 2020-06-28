@@ -189,14 +189,14 @@
     <ClInclude Include="LuxEngine\Engine\Compute\CBuffers.struct.h">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\LuxObject\Lines2D.h">
-      <Filter>LuxEngine\Types\LuxObject</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

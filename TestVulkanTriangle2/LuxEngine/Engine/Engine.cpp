@@ -1,6 +1,8 @@
 ﻿
 
 #include "LuxEngine/Engine/Engine.h"
+#include "Input/Input.h"          // for __lp_key_callback, __lp_mouseButtonCallback
+#include "LuxEngine/System/System.h"               // for luxThisDirectory
 Engine engine;
 
 

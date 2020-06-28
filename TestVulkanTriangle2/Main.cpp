@@ -6,7 +6,8 @@
 #include "LuxEngine/LuxEngine.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
-#include <iostream>
+#include "LuxEngine/Engine/Input/KeyboardInput.h"
+#include "LuxEngine/Engine/Input/Input.h"
 
 
 
@@ -16,9 +17,8 @@ int main() {
 	LuxObjectLine l;
 	LuxRenderSpace2D r;
 
-	bool h = r.spawnObject(&l);
-	LuxObjectType t = l.objectType;
-
+	int h = l.ID;
+	int h2 = r.ID;
 	LuxInit(false);
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},
@@ -30,9 +30,7 @@ int main() {
 
 
 	while (engine.running) {
-		//int h = -573289;
-		//printf("%lf\n", fcos(h));
-		sleep(1);
+		sleep(5);
 	}
 	return 0;
 }

@@ -1,6 +1,5 @@
 
 #pragma once
-#include <thread>
 #include "LuxEngine/macros.h"
 
 

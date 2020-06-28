@@ -1,5 +1,7 @@
 
+#include <vulkan/vulkan.h>
 #include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Engine/Compute/CShader.struct.h"
 
 
 void Engine::runGraphics(const bool vUseVSync, const float vFOV) {
@@ -95,7 +97,6 @@ void Engine::graphicsDrawFrame() {
 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	//LuxArray<VkCommandBuffer> _cbs = { CShaders[copyShader].commandBuffers[imageIndex] };
 	LuxArray<VkCommandBuffer> _cbs = { CShaders[testShader0].commandBuffers[0], CShaders[copyShader].commandBuffers[imageIndex] };
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -103,7 +104,6 @@ void Engine::graphicsDrawFrame() {
 	submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
-	//submitInfo.commandBufferCount = 1;
 	submitInfo.commandBufferCount = 2;
 	submitInfo.pCommandBuffers = _cbs.begin();
 	submitInfo.pWaitDstStageMask = waitStages;

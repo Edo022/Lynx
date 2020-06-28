@@ -7,6 +7,7 @@
 
 
 
+
 enum LuxObjectType : int32 {
 	LUX_OBJECT_TYPE__BASE = -1,
 
@@ -40,7 +41,7 @@ struct LuxObject_base0 {
 	static uint64 lastID;		//#LLID LOS000 the last assigned ID of a LuxObject 
 	//TODO optimize name. don't use strings when not needed
 	LuxString name{ "" };		//The name of the object. 
-	uint64 ID{ (uint64)-1 };	//A unique ID that indentifies the object. IDs are exclusive to spawned objects. <renderSpace>.spawnObject(&<object>)
+	uint64 ID{ ++lastID };		//A unique ID that indentifies the object
 };
 
 

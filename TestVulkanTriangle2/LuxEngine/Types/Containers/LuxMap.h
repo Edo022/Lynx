@@ -5,6 +5,8 @@
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include <vector>
+#include <stdlib.h>                               // for malloc, free
+template <class cntType> class LuxContainer;
 
 
 

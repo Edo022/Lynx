@@ -4,7 +4,8 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
 #include <initializer_list>
-#include <algorithm>
+#include "vcruntime_string.h"                         // for memcpy
+#include <stdlib.h>                                   // for malloc, realloc
 
 
 
@@ -86,6 +87,7 @@ public:
 	}
 
 	//Resizes the array and initializes the new elements with a value
+	//Use resize(<newSize>) for better performance when initialization is not needed
 	//*   vNewSize: the new size of the array
 	//*   vInitValue: the value to use to initialize the new elements
 	//*   Returns the new size. -1 if the size is invalid
@@ -94,11 +96,8 @@ public:
 		if (vNewSize < 0) return -1;
 		uint64 oldSize = __lp_size;
 		resize(vNewSize);
-		if (vNewSize > oldSize) {
-			//TODO intrinsic function copy for 16,32,64,128,256,512 bits
-			if (sizeof(vInitValue) != 1) for (uint64 i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue; //Copy the elements one by one if the're too large
-			/*TODO >> this*/ else memset(begin() + oldSize, (int)vInitValue, vNewSize - oldSize);	//Use memset for 8 bit types
-		}
+		//TODO intrinsic function copy for 16,32,64,128,256,512 bits
+		if (vNewSize > oldSize) for (uint64 i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue;
 		return vNewSize;
 	}
 };

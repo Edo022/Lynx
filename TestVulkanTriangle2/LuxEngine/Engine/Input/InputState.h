@@ -5,6 +5,7 @@
 #include "LuxEngine/macros.h"                     // for scast, min
 #include "LuxEngine/Types/Containers/LuxArray.h"  // for LuxArray
 #include "LuxEngine/Types/Integers/Integers.h"    // for uint16
+#include "minwindef.h"                            // for min
 
 
 enum LuxKeyState : uint16 {

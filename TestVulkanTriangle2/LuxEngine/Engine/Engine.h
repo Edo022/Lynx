@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "LuxEngine/System/System.h"
-#include "LuxEngine/LuxEngine.config.h"
 #ifndef __ENGINE
 #define __ENGINE
 
@@ -16,47 +14,32 @@
 #pragma warning( disable : 26451 )			//stb arithmetic overflow
 
 //Dark magic
-#include <vulkan/vulkan.h>					//Graphics
 #include <GLFW/glfw3.h>						//Window system
 #define GLM_FORCE_RADIANS					//Use radiants intead of degrees
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
-#include <glm/glm.hpp>						//Shader compatible geometry
-
-//#ifdef LUX_DEBUG //TODO remove
-
-//Default C++
-#include <iostream>
-#include <fstream>
-#include <chrono>
-#include <thread>
-#include <set>
-//#endif //TODO remove
-
-#include <cmath>
-
-//Junk
-#include "LuxEngine/macros.h"				//Useful useless macros
-#include <TermColor.hpp>					//Colored console output
 
 
-
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
 
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
-#include "LuxEngine/Types/Containers/LuxString.h"
-#include "LuxEngine/Types/LuxObject/LuxObject.h"
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"
 
 #include "LuxEngine/Engine/Devices.struct.h"
-#include "LuxEngine/Engine/Compute/CShader.struct.h"
 #include "LuxEngine/Engine/Compute/CBuffers.struct.h"
 
-#include "Input/Input.h"
+#include "type_traits"                                 // for move
+#include "vcruntime_new.h"                             // for operator delete, operator new
+#include "vulkan/vk_platform.h"                        // for VKAPI_ATTR, VKAPI_CALL
+#include "vulkan/vulkan_core.h"                        // for VkFence, VkSemaphore, VkCommandBuffer, VkImage, VkPresentModeKHR, VkSurfaceFormatKHR, VkImageView, vkGetInstanceProcAddr, VkFramebuffer, VkBuffer, VkCommandBuffer_T, VkFormat, VkPhysicalDevice, VkDebugUtilsMessengerEXT, VkDevice, VkInstance, VkInstance_T, VkAllocationCallbacks, VkDeviceSize, VkExtent2D, VkMemoryPropertyFlags, VkSurfaceCapabilitiesKHR, PFN_vkCreateDebugUtilsMessengerEXT, PFN_vkDestroyDebugUtilsMessengerEXT, VK_KHR_SWAPCHAIN_EXTENSION_NAME, VkBool32, VkBufferUsageFlags, VkCommandPool, VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCreateInfoEXT, VkDeviceMemory, VkFormatFeatureFlags, VkImageAspectFlags, VkImageTiling, VkQueue, VkRenderPass, VkResult, VkResult::VK_ERROR_EXTENSION_NOT_PRESENT, VkShaderModule, VkSurfaceKHR, VkSwapchainKHR
+#include <stdlib.h>                                    // for malloc
+#include <thread>
+
+class LuxString;
+struct LuxCShader;
+struct LuxRenderSpace2D;
 
 
 
@@ -66,27 +49,6 @@
 
 
 
-//TODO move to config file
-#define __lp_static_buffer_size 50000000 //50MB
-
-
-
-
-// isShared: 1b
-// buffer: 12b
-// cellIndex: 20b
-// cellSize: 31b
-#define __lp_cellCode(isShared, buffer, cellIndex, cellSize) (((uint64)isShared << 63) | ((uint64)(buffer) << 51) | ((uint64)(cellIndex) << 31) | ((cellSize) & 0x7FFFfFFF))
-#define __lp_isShared_from_cc(cellCode) (((cellCode) >> 63) & 0b1)
-#define __lp_buffer_from_cc(cellCode) (((cellCode) >> 51) & 0xFFF)
-#define __lp_cellIndex_from_cc(cellCode) (((cellCode) >> 31) & 0xfFFFF)
-#define __lp_cellSize_from_cc(cellCode) ((cellCode) & 0x7FFFffff)
-
-constexpr uint32 __lp_cellOffset_from_cc(const _VkPhysicalDevice* device, const LuxCell cell) {
-	const uint32 rawOffset = (__lp_cellIndex_from_cc(cell) * __lp_cellSize_from_cc(cell));
-	if (__lp_isShared_from_cc(cell) == 0 || rawOffset == 0) return 0;
-	else return scast<uint32>(rawOffset - (rawOffset % device->properties.limits.minStorageBufferOffsetAlignment) + device->properties.limits.minStorageBufferOffsetAlignment);
-}
 
 
 

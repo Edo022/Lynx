@@ -1,4 +1,8 @@
 #pragma once
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/Containers/LuxMap.h"
+#include "vulkan/vulkan_core.h"                 // for VkPhysicalDeviceFeatures, VkPhysicalDeviceProperties, VkDevice, VkDevice_T, VkPhysicalDevice, VkPhysicalDevice_T, VkQueue, VkQueue_T, VK_NULL_HANDLE
+
 
 
 //Available queue families of a physical device
