@@ -8,6 +8,7 @@
 	//This is the header to include in order to use the LuxEngine
 	//Call LuxInit() to initialize and run the engine
 	//It will open a default graphic window and start 3 threads
+	//You can configure the engine in the LuxEngine_config.h file
 
 
 

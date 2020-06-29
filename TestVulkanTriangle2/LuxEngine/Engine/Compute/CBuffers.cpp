@@ -52,9 +52,9 @@ LuxCell Engine::gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible)
 			}
 		}
 		if (buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible);		//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
-		return scast<LuxCell>(__lp_cellCode(1, buffer, CBuffers[buffer].cells.add(scast<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
+		return scast<LuxCell>(__lp_cellCode(true, buffer, CBuffers[buffer].cells.add(scast<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
 	}
-	else return scast<LuxCell>(__lp_cellCode(0, gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
+	else return scast<LuxCell>(__lp_cellCode(false, gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
 }
 
 

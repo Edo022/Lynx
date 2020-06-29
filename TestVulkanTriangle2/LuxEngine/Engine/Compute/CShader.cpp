@@ -161,15 +161,15 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
 	commandPoolCreateInfo.flags = 0;														//Default falgs
 	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &CShaders[copyShader].commandPool)) Exit("Unable to create command pool");
+	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &aa__commandPool)) Exit("Unable to create command pool");
 
 	//Allocate command buffers
 	static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-	commandBufferAllocateInfo.commandPool = CShaders[copyShader].commandPool;				//Set command pool where to allocate the command buffer 
+	commandBufferAllocateInfo.commandPool = aa__commandPool;				//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
-	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[copyShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
+	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, aa__commandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
 
@@ -179,7 +179,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		VkCommandBufferBeginInfo beginInfo = {};								//Create begin infos to start recording the command buffer
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;				//Set structure type
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;				//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
-		TryVk(vkBeginCommandBuffer(CShaders[copyShader].commandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
+		TryVk(vkBeginCommandBuffer(aa__commandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
 
 
 		//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
@@ -200,7 +200,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		VkPipelineStageFlags srcStage, dstStage;								//Create stage flags
 		srcStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Swapchain images are already in transfer stage
 		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//But i need to specify them anyway
-		vkCmdPipelineBarrier(CShaders[copyShader].commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
+		vkCmdPipelineBarrier(aa__commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
 		VkBufferImageCopy region{};												//Create bufferImageCopy region to copy the buffer to the image
 		region.bufferOffset = 0;													//No buffer offset
@@ -212,7 +212,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		region.imageSubresource.layerCount = 1;										//No multi layer
 		region.imageOffset = { 0, 0, 0 };											//No image offset
 		region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-		vkCmdCopyBufferToImage(CShaders[copyShader].commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		vkCmdCopyBufferToImage(aa__commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 		//Create a barrier to use the swapchain image as a present source image
 		VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
@@ -232,10 +232,10 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		VkPipelineStageFlags srcStage1, dstStage1;								//Create stage flags
 		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Swapchain images are already in the right stage
 		dstStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//But i need to specify them anyway
-		vkCmdPipelineBarrier(CShaders[copyShader].commandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
+		vkCmdPipelineBarrier(aa__commandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
 		//End command buffer recording
-		TryVk(vkEndCommandBuffer(CShaders[copyShader].commandBuffers[imgIndex])) Exit("Failed to record command buffer");
+		TryVk(vkEndCommandBuffer(aa__commandBuffers[imgIndex])) Exit("Failed to record command buffer");
 	}
 }
 

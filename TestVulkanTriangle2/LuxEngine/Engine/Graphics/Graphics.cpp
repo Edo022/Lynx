@@ -73,6 +73,7 @@ void Engine::graphicsCreateFences() {
 
 
 void Engine::graphicsDrawFrame() {
+	//TODO use a render fence. execute main code only when the frame render ends
 	redraw:
 
 	//Wait fences
@@ -95,21 +96,61 @@ void Engine::graphicsDrawFrame() {
 	renderFencesImagesInFlight[imageIndex] = renderFencesInFlight[renderCurrentFrame];
 
 
+
+
+
+
+	//TODO separate copy command buffers
+	//TODO don't recreate the command buffer array every time 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	LuxArray<VkCommandBuffer> _cbs = { CShaders[testShader0].commandBuffers[0], CShaders[copyShader].commandBuffers[imageIndex] };
+	static LuxArray<VkCommandBuffer> commandBuffers(CShaders.size() + 1);
+	forEach(CShaders, i) {
+		commandBuffers[i] = CShaders[i].commandBuffers[0];
+	}
+	commandBuffers[commandBuffers.size() - 1] = aa__commandBuffers[imageIndex];
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
-	submitInfo.commandBufferCount = 2;
-	submitInfo.pCommandBuffers = _cbs.begin();
+	submitInfo.commandBufferCount = commandBuffers.size();
+	submitInfo.pCommandBuffers = commandBuffers.begin();
 	submitInfo.pWaitDstStageMask = waitStages;
 
 	vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
 	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
+
+
+
+
+	////Update render result submitting the command buffers to the compute queue
+	//static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	//LuxArray<VkCommandBuffer> commandBuffers = { CShaders[testShader0].commandBuffers[0], CShaders[copyShader].commandBuffers[imageIndex] };
+	//static VkSubmitInfo submitInfo{};
+	//submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	//submitInfo.waitSemaphoreCount = 1;
+	//submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
+	//submitInfo.signalSemaphoreCount = 1;
+	//submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
+	//submitInfo.commandBufferCount = 2;
+	//submitInfo.pCommandBuffers = commandBuffers.begin();
+	//submitInfo.pWaitDstStageMask = waitStages;
+
+	//vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
+	//TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
+
+
+
+
+
+
+
+
+
+
+
 
 
 	//Present

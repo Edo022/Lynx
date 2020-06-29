@@ -21,11 +21,12 @@ Engine engine;
 
 static LuxString shaderPath; 
 
-static bool compileShader(const LuxString& pShaderName) {
+//Shader files must have the .comp extension
+static bool compileShader(const char* pShaderName) {
 	LuxString compileShaderCommand =
-		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/glslc.exe ") +
-		luxThisDirectory + LuxString("/LuxEngine/Contents/shaders/") + pShaderName + LuxString(" -o ") +
-		luxThisDirectory + "/LuxEngine/Contents/shaders/comp.spv";
+		luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " +
+		luxThisDirectory + "/LuxEngine/Contents/shaders/" + pShaderName + ".comp -o " +
+		luxThisDirectory + "/LuxEngine/Contents/shaders/" + pShaderName + ".spv";
 	return ("%d\n", system(compileShaderCommand.begin()) == 0);
 }
 
@@ -36,7 +37,10 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
 
-	if (!compileShader(LuxString{ "shader.comp" })) Exit("compilation error");
+	if (!(
+		compileShader("shader") &
+		compileShader("test0")
+		)) Exit("compilation error");
 
 
 

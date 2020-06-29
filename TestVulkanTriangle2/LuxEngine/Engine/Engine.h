@@ -102,71 +102,16 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 
 
-//         ENGINE CLASS STRUCTURE
-//       
-//         main()
-//         ¦-- run()
-//         ¦   │                                                   ___                ___
-//         ¦   │-- initWindow()                                       │                  │
-//         ¦   │   │-- glfwInit()                                     │                  │
-//         ¦   │   │-- set window variable                            │ main             │
-//         ¦   │   '-- set window resize callback                     │                  │
-//         ¦   │                                                      │                  │
-//         ¦   │-- createInstance()                                ___│                  │
-//         ¦   │                                                                         │
-//         ¦   │                                                   ___                   │
-//         ¦   │-- runGraphics()                                      │                  │
-//         ¦   │   '-- initVulkan()                                   │                  │
-//         ¦   │       │-- createSurface()                            │                  │
-//         ¦   │       │-- evalutate physical devices                 │                  │
-//         ¦   │       │   │-- save every suitable device data        │                  │
-//         ¦   │       │   '-- create logical devices                 │                  │
-//         ¦   │       │                                              │                  │ INITIALIZE ENGINE
-//         ¦   │       │-- createGraphicsCommandPool()                │                  │
-//         ¦   │       │-- createDebugMessenger()                     │ graphics         │
-//         ¦   │       │                                              │                  │
-//         ¦   │       │-- createTextureImage()                       │                  │
-//         ¦   │       │-- createTextureImageView()                   │                  │
-//         ¦   │       │-- createTextureSampler()                     │                  │
-//         ¦   │       │                                              │                  │
-//         ¦   │       │-- createVertexBuffer()                       │                  │
-//         ¦   │       │-- createIndexBuffer()                        │                  │
-//         ¦   │       │-- ?                                       ___│                  │
-//         ¦   │                                                   ___                   │
-//         ¦   │-- runCompute()                                       │ compute          │
-//         ¦   │   │-- Create image output buffer                     │                  │
-//         ¦   │   │-- ?                                           ___│                  │
-//         ¦   │                                                   ___                   │
-//         ¦   │,- set GLFW keyboard callback                         │ input            │
-//         ¦   │'- set GLFW mouse callback                         ___│               ___│
-//         ¦   │
-//         ¦   │
-//         ¦   │  ////////////////////////////////////////////////////////////////////////////////////
-//         ¦   │
-//         ¦   │                                                   ___                ___
-//         ¦   │-- mainLoop()                                         │                  │
-//         ¦   │   │-- run fps counter                                │                  │
-//         ¦   │   '---every frame                                    │ render loop      │
-//         ¦   │   ^   │-- check GLFW events                          │                  │
-//         ¦   │   │   │-- render and draw frame to window            │                  │ RUNNING
-//         ¦   │   '---'                                           ___│                  │
-//         ¦   │                                                                         │
-//         '-----> ?                                               ___                   │
-//             │                                                   ___│ external      ___│
-//             │
-//             │
-//             │ /////////////////////////////////////////////////////////////////////////////////////
-//             │
-//             │                                                   ___
-//             │,- cleanupGraphics()                                  │ 
-//             │'- cleanupCompute()                                   │ 
-//             │                                                      │ cleanup
-//             │,- destroy instance                                   │
-//             │'- destroy window                                     │
-//             │                                                      │
-//             '-- terminate GLFW                                  ___│
-
-
+/*	Threads
+                                         .---> Engine.FPSCounter --.                                                                                          
+  E|            Main --> LuxInit --------¦                         ¦                                                               
+  X|             ¦         ¦             '---> Engine.render       ¦                                                                                                         
+  E|             ¦         '-Engine.mainLoop-. .---'               ¦                                                                                                        
+  C|             ¦                           ¦ ¦ .-----------------'                                                                                                     
+   ↓             :                           ¦ ¦ ¦                                                                                                                
+                 .                           ¦ ¦ ¦                                                                                                               
+                                                                                                                                                                   
+*/
 
 
 
@@ -407,8 +352,10 @@ private:
 
 
 
+	
 
-
+	VkCommandPool aa__commandPool;
+	LuxArray <VkCommandBuffer> aa__commandBuffers;
 
 	//Objects
 	const int32 WORKGROUP_SIZE = 32;			//Workgroup size in compute shader
@@ -416,7 +363,7 @@ private:
 	LuxMap<LuxBuffer_t> CBuffers;				//List of GPU buffers
 	LuxMap<LuxRenderSpace2D> CRenderSpaces;		//List of renderSpaces
 
-	LuxShader copyShader, testShader0;
+	LuxShader /*copyShader, */testShader0;
 
 
 	//Compute >> Compute/Compute.cpp
