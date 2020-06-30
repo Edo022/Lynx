@@ -166,7 +166,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 	//Allocate command buffers
 	static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-	commandBufferAllocateInfo.commandPool = aa__commandPool;				//Set command pool where to allocate the command buffer 
+	commandBufferAllocateInfo.commandPool = aa__commandPool;								//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
 	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, aa__commandBuffers.data())) Exit("Unable to allocate command buffers");
@@ -198,8 +198,8 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		readToWrite.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set source access mask
 		readToWrite.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set destination access mask. It must be writable in order to copy the buffer in it
 		VkPipelineStageFlags srcStage, dstStage;								//Create stage flags
-		srcStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Swapchain images are already in transfer stage
-		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//But i need to specify them anyway
+		srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//The swapchain image is in color output stage		
+		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Change it to transfer stage to copy the buffer in it
 		vkCmdPipelineBarrier(aa__commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
 		VkBufferImageCopy region{};												//Create bufferImageCopy region to copy the buffer to the image
@@ -230,8 +230,8 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		writeToRead.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set source access mask
 		writeToRead.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set destination access mask. It must be readable to be displayed
 		VkPipelineStageFlags srcStage1, dstStage1;								//Create stage flags
-		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Swapchain images are already in the right stage
-		dstStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//But i need to specify them anyway
+		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//The image is in transfer stage from the buffer copy
+		dstStage1 = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//Change it to color output to present them
 		vkCmdPipelineBarrier(aa__commandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
 		//End command buffer recording
@@ -276,8 +276,8 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 	vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, null);
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
-	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
+	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
+	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
 	TryVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0])) Exit("Failed to record command buffer");
@@ -316,9 +316,9 @@ LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShade
 
 	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
-	cshaderCreatePipeline(vShaderPath, shader);					//Create the compute pipeline
+	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
 	CShaders[shader].commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-	cshaderCommandBuffers(shader);							//Create command buffers and command pool
+	cshaderCommandBuffers(shader);									//Create command buffers and command pool
 
 	return shader;													//Return the index of the created shader
 }

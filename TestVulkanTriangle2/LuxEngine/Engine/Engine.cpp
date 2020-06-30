@@ -85,6 +85,7 @@ void Engine::mainLoop() {
 
 void Engine::runRenderThr() {
 	while (running) {
+		//printf("\n%d, %d\n", swapchainExtent.width, swapchainExtent.height);
 		graphicsDrawFrame();
 		frames++;
 	}

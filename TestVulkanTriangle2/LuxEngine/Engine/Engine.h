@@ -212,7 +212,7 @@ private:
 
 	//Window
 	GLFWwindow* window;								//Main engine window
-	int32 width = 1920, height = 1080;				//Size of the window //TODO
+	int32 width = 1920*2, height = 1080*2;				//Size of the window //TODO
 	LuxFence windowResizeFence;
 	LuxCell __windowSize;
 	LuxCell __windowOutput;							//The buffer that contains the color output of the window

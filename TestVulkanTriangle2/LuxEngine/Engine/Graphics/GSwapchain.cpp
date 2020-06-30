@@ -170,41 +170,19 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 
-		//TODO dont resize always
-		//TODO dont resize always
-		//gpuCellDestroy(__windowOutput);
-		//cshaderDestroy(testShader0);
 		{ //destroy copy command buffers
-			//Clear command buffer, command pool and useless pointers
-			//vkFreeCommandBuffers(compute.LD, CShaders[copyShader].commandPool, CShaders[copyShader].commandBuffers.__lp_size, CShaders[copyShader].commandBuffers.data());
-			//vkDestroyCommandPool(compute.LD, CShaders[copyShader].commandPool, null);
-			//forEach(CShaders[copyShader].__lp_ptrs, i) free(CShaders[copyShader].__lp_ptrs[i]);
-			//CShaders.remove(copyShader);										//Remove the shader from the shader array
-
 			vkFreeCommandBuffers(compute.LD, aa__commandPool, aa__commandBuffers.__lp_size, aa__commandBuffers.data());
 			vkDestroyCommandPool(compute.LD, aa__commandPool, null);
-			//forEach(CShaders[copyShader].__lp_ptrs, i) free(CShaders[copyShader].__lp_ptrs[i]);
-			//CShaders.remove(copyShader);										//Remove the shader from the shader array
 		}
 
-
-	
-
-		//__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
-
-		//LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
-		//testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/shader.spv");
 
 		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
 
 		{ //#LLID CCB0000 Create copy command buffers 
-			aa__commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
-			__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
-			//copyShader = CShaders.add(LuxShader_t{});							//Add the shader to the shader array
-			//CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
-			//__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
+			aa__commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
+			__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool
 		}
 	}
 	if (vWindowResized) windowResizeFence.set(2);

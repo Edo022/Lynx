@@ -18,13 +18,13 @@
 
 
 
-//TODO render pass seems to be usee
+//TODO render pass seems to be useless
 void Engine::createRenderPass() {
 	//Color
 	VkAttachmentDescription colorAttachment{};
 	colorAttachment.format = swapchainImageFormat;									//Swapchain image format
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//TODO dont clear for better performances //Clear the image before writing to it 
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Don't clear for better performance
 	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;							//Save rendered image
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
@@ -36,14 +36,12 @@ void Engine::createRenderPass() {
 	colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;			//Optimal layout for better performances
 
 
-
 	//Subpass
 	VkSubpassDescription subpass{};													//Create subpass descriptor
 	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;					//Set structure type
 	subpass.colorAttachmentCount = 1;												//Set number of attachments
 	subpass.pColorAttachments = &colorAttachmentRef;								//Previously created color attachment
 	subpass.pDepthStencilAttachment = VK_NULL_HANDLE;							//Previously created depth attachment
-
 
 
 	VkSubpassDependency dependencies[2];											//Dependencies for implicit convertion

@@ -18,8 +18,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	__windowOutput = gpuCellCreate(1080 * 1920 * 4/*A8-R8-G8-B8*/, false);
-	//__windowOutput = gpuCellCreate(swapchainExtent.width * swapchainExtent.height * 4/*A8-R8-G8-B8*/, false);
+	__windowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 
 	__windowSize = gpuCellCreate(4 * 2, true);
 	uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
@@ -36,21 +35,9 @@ void Engine::runCompute() {
 	testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/shader.spv");
 
 
-
-
-	//TODO window output is resized and so all the shaders that uses that buffer have to be recreated
-	//TODO		use a static size buffer
-	//TODO			static size buffer resize glitch
-
-
-	//LuxArray<LuxCell> cells2 = {__windowOutput, }
-
 	{ //#LLID CCB0000 Create copy command buffers 
-		aa__commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
-		__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
-		//copyShader = CShaders.add(LuxShader_t{});							//Add the shader to the shader array
-		//CShaders[copyShader].commandBuffers.resize(swapchainImages.size());//Resize the command buffer array in the shader
-		//__lp_cshaderCreateCopyCommandBuffers();									//Create command buffers and command pool
+		aa__commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
+		__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool
 	}
 }
 

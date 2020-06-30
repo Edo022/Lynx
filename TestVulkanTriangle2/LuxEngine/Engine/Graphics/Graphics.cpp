@@ -100,7 +100,6 @@ void Engine::graphicsDrawFrame() {
 
 
 
-	//TODO separate copy command buffers
 	//TODO don't recreate the command buffer array every time 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -181,6 +180,8 @@ void Engine::graphicsDrawFrame() {
 
 
 void Engine::framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
+	printf("\n%d, %d\n", vWidth, vHeight);
+
 	engine.windowResizeFence.wait(0);  //from the last call of this function
 
 	engine.renderFramebufferResized = true;
