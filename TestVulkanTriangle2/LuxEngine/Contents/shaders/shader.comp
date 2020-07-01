@@ -20,9 +20,9 @@ void main() {
 	//Yeet unnecessary calls
 	if(x >= width || y >= height) return;
 
-	uvec4 color = uvec4(0);
-	if(x <= 1900) color = uvec4(255,255,255,255);
-	if(y <= 500) color.g = 128;
+	uvec4 color = uvec4(y);
+	if(x <= 1900) color = uvec4(x,y,255,255);
+	if(y <= 500) color.g = x;
 //	color = uvec4(width/10,height/5,255,255);
 //	color = (x > vertices[0]) ? uvec4(255,0,0,255) : uvec4(0);
 

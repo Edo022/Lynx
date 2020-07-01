@@ -24,12 +24,12 @@ void Engine::createRenderPass() {
 	VkAttachmentDescription colorAttachment{};
 	colorAttachment.format = swapchainImageFormat;									//Swapchain image format
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;								//Multisampling samples
-	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;							//Don't clear for better performance
-	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;							//Save rendered image
+	colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;						//Don't clear for better performance
+	colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;						//Don't save rendered image
 	colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;				//Discard stencil
 	colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;				//Discard stencil
 	colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;						//Default layout
-	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Presentation layout
+	colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Present layout
 	//create Ref
 	VkAttachmentReference colorAttachmentRef{};
 	colorAttachmentRef.attachment = 0;												//Attachment index
@@ -41,7 +41,7 @@ void Engine::createRenderPass() {
 	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;					//Set structure type
 	subpass.colorAttachmentCount = 1;												//Set number of attachments
 	subpass.pColorAttachments = &colorAttachmentRef;								//Previously created color attachment
-	subpass.pDepthStencilAttachment = VK_NULL_HANDLE;							//Previously created depth attachment
+	subpass.pDepthStencilAttachment = VK_NULL_HANDLE;								//Previously created depth attachment
 
 
 	VkSubpassDependency dependencies[2];											//Dependencies for implicit convertion
@@ -67,7 +67,7 @@ void Engine::createRenderPass() {
 	VkRenderPassCreateInfo renderPassInfo{};										//Create render pass infos
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;				//Set structure type
 	renderPassInfo.attachmentCount = 1;												//Set number of attachments
-	renderPassInfo.pAttachments = &colorAttachment;										//Set attachments
+	renderPassInfo.pAttachments = &colorAttachment;									//Set attachments
 	renderPassInfo.subpassCount = 1;												//Set number of subpasses
 	renderPassInfo.pSubpasses = &subpass;											//Set subpass
 	renderPassInfo.dependencyCount = 2;												//Set number of dependencies

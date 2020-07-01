@@ -5,8 +5,8 @@
 
 
 
-
-
+//TODO check for out of memory error in every result check
+//todo add runtime shader compiling support
 
 //Disabled useless warnings
 #pragma warning( disable : 26812 )			//Prefer enum class to enum
@@ -23,6 +23,7 @@
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
+#include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
@@ -381,10 +382,10 @@ private:
 	void		cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void		cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
-	void		cshaderCommandBuffers(const LuxShader vCShader);
+	void		cshaderCommandBuffers(const LuxShader vCShader, const LuxObjectType vObjectType);
 	void		__lp_cshaderCreateCopyCommandBuffers();
 
-	LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
+	LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath, const LuxObjectType vObjectType);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

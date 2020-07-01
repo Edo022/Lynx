@@ -170,6 +170,12 @@ void Engine::initWindow() {
 
 	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 
+	//TODO FULL SCREEN START
+	//GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	//window = glfwCreateWindow(width, height, "Lux Engine", monitor, nullptr);
+	//TODO FULL SCREEN SET (??)
+	//glfwSetWindowMonitor
+	//glfwSetWindowSize
 
 	unsigned char h[] = {
 		255, 0, 0, 255,

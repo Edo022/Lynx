@@ -246,7 +246,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 
 
 
-void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
+void Engine::cshaderCommandBuffers(const LuxShader vCShader, const LuxObjectType vObjectType) {
 	//Create command pool
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -274,10 +274,16 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 	//Bind pipeline and descriptor sets to the command buffer
 	vkCmdBindPipeline(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipeline);
 	vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, null);
+
+
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1);
-	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
+	switch (vObjectType){
+		case LUX_OBJECT_TYPE_LINE_2D_CCT: vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); break;
+		default: Exit("//TODO la shader non esiste");
+	}
+	
+	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
 	TryVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0])) Exit("Failed to record command buffer");
@@ -309,7 +315,7 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
+LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath, const LuxObjectType vObjectType) {
 	//TODO check buffers
 	//TODO check file
 	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array
@@ -318,7 +324,7 @@ LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShade
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
 	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
 	CShaders[shader].commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-	cshaderCommandBuffers(shader);									//Create command buffers and command pool
+	cshaderCommandBuffers(shader, vObjectType);									//Create command buffers and command pool
 
 	return shader;													//Return the index of the created shader
 }

@@ -124,32 +124,6 @@ void Engine::graphicsDrawFrame() {
 
 
 
-	////Update render result submitting the command buffers to the compute queue
-	//static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	//LuxArray<VkCommandBuffer> commandBuffers = { CShaders[testShader0].commandBuffers[0], CShaders[copyShader].commandBuffers[imageIndex] };
-	//static VkSubmitInfo submitInfo{};
-	//submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	//submitInfo.waitSemaphoreCount = 1;
-	//submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
-	//submitInfo.signalSemaphoreCount = 1;
-	//submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
-	//submitInfo.commandBufferCount = 2;
-	//submitInfo.pCommandBuffers = commandBuffers.begin();
-	//submitInfo.pWaitDstStageMask = waitStages;
-
-	//vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
-	//TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
-
-
-
-
-
-
-
-
-
-
-
 
 
 	//Present
@@ -180,8 +154,6 @@ void Engine::graphicsDrawFrame() {
 
 
 void Engine::framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-	printf("\n%d, %d\n", vWidth, vHeight);
-
 	engine.windowResizeFence.wait(0);  //from the last call of this function
 
 	engine.renderFramebufferResized = true;
