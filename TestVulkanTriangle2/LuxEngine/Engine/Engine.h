@@ -19,11 +19,14 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 
 
+#include <deque>
 
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
+#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
@@ -355,8 +358,8 @@ private:
 
 	
 
-	VkCommandPool aa__commandPool;
-	LuxArray <VkCommandBuffer> aa__commandBuffers;
+	VkCommandPool copyCommandPool;
+	LuxArray <VkCommandBuffer> copyCommandBuffers;
 
 	//Objects
 	const int32 WORKGROUP_SIZE = 32;			//Workgroup size in compute shader
@@ -364,6 +367,11 @@ private:
 	LuxMap<LuxBuffer_t> CBuffers;				//List of GPU buffers
 	LuxMap<LuxRenderSpace2D> CRenderSpaces;		//List of renderSpaces
 
+	//TODO use LuxQueue
+public:
+	LuxMap<LuxObject_base0*> objs;		//TODO
+	std::deque<LuxObjectUpdate> updates;
+private:
 	LuxShader /*copyShader, */testShader0;
 
 
@@ -373,19 +381,22 @@ private:
 
 	//Buffers >> Compute/Buffers.cpp
 	LuxBuffer	gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+public:
 	LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
 	bool		gpuCellDestroy(const LuxCell vCell);
-	void*		gpuCellMap(const LuxCell vCell);
+	void* gpuCellMap(const LuxCell vCell);
+private:
 
 
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
 	void		cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void		cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
 	void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
-	void		cshaderCommandBuffers(const LuxShader vCShader, const LuxObjectType vObjectType);
+	//TODO h
+	void		cshaderCommandBuffers(const LuxShader vCShader);
 	void		__lp_cshaderCreateCopyCommandBuffers();
-
-	LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath, const LuxObjectType vObjectType);
+	//TODO h
+	LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

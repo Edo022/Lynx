@@ -107,7 +107,7 @@ void Engine::graphicsDrawFrame() {
 	forEach(CShaders, i) {
 		commandBuffers[i] = CShaders[i].commandBuffers[0];
 	}
-	commandBuffers[commandBuffers.size() - 1] = aa__commandBuffers[imageIndex];
+	commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;

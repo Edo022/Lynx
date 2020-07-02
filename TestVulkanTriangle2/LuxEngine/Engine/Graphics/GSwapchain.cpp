@@ -171,8 +171,8 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 		{ //destroy copy command buffers
-			vkFreeCommandBuffers(compute.LD, aa__commandPool, aa__commandBuffers.__lp_size, aa__commandBuffers.data());
-			vkDestroyCommandPool(compute.LD, aa__commandPool, null);
+			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.__lp_size, copyCommandBuffers.data());
+			vkDestroyCommandPool(compute.LD, copyCommandPool, null);
 		}
 
 
@@ -181,7 +181,7 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 		pwindowSize[1] = swapchainExtent.height;
 
 		{ //#LLID CCB0000 Create copy command buffers 
-			aa__commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
+			copyCommandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
 			__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool
 		}
 	}

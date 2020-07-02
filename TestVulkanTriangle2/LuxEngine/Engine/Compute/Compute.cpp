@@ -47,7 +47,7 @@ void Engine::runCompute() {
 
 	//TODO vec4s requires 16-byte alignment
 	((uint32*)mapppp)[4] = 255;
-	((uint32*)mapppp)[5] = 0;
+	((uint32*)mapppp)[5] = 231;
 	((uint32*)mapppp)[6] = 0;
 	((uint32*)mapppp)[7] = 255;
 
@@ -55,12 +55,12 @@ void Engine::runCompute() {
 
 
 	LuxArray<LuxCell> cells2 = { __windowOutput, __windowSize, cell___ };
-	int hhhhh = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv", LUX_OBJECT_TYPE_LINE_2D_CCT);
+	int hhhhh = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv");
 
 
 
 	{ //#LLID CCB0000 Create copy command buffers 
-		aa__commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
+		copyCommandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
 		__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool
 	}
 }

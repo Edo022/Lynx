@@ -1,12 +1,13 @@
 
 #version 450
 
-#define WORKGROUP_SIZE 1			//The x and y size of the workgroup
+#define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define x gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define y gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 #define colToInt(v) ((v.a) << 24) | ((v.b & 0xFF) << 16) | ((v.g & 0xFF) << 8) | (v.r & 0xFF)
 
-layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
+layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
+//layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
 layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
 layout(std430, binding = 1) buffer windowSize_{ 
@@ -18,7 +19,7 @@ layout(std430, binding = 2) buffer lineData_{
 	int x0; int y0; 
 	int x1; int y1; 
 	//16
-	uvec4 color;
+	uvec4 col;
 	//4
 	float wd;
 //uint a;
@@ -29,9 +30,8 @@ layout(std430, binding = 2) buffer lineData_{
 
 
 
-void setPixelColor(int _x, int _y, vec4 col){
-	uvec4 col_ = {uint(col.r),uint(col.g),uint(col.b),uint(col.a)};
-	colorOutput[_y*width+_x] = colToInt(col_);
+void setPixelColor(uint _x, uint _y, uvec4 col){
+	colorOutput[_y*width+_x] = colToInt(col);
 }
 
 
@@ -50,22 +50,22 @@ void drawLine(){
 	if(wd == 1){
 		for(int i = 0; i < dx; i++){
 			int _y = int(dy / (dx / i));
-			setPixelColor(i + minx, _y + miny, vec4(255, 0, 0, 255));
+			setPixelColor(i + minx, _y + miny, col);
 		}
 	}
 	else{
-		int _y, /*i,*/ j;
+		int _y, i, j;
 //		for(i = 0; i < dx; i++){
-			_y = int(dy / (dx / /*i*/int(x) ));
-			setPixelColor(/*i*/int(x) + minx, _y + miny, vec4(255, 0, 0, 255));
+			_y = int(dy / (dx / /*i*/x ));
+			setPixelColor(/*i*/x + minx, _y + miny, col);
 			for(j = 1; j < int(wd);j++){
-				setPixelColor(/*i*/int(x) + minx, _y + miny + j, vec4(255, 0, 0, 255));
-				setPixelColor(/*i*/int(x) + minx + j, _y + miny, vec4(255, 0, 0, 255));
+				setPixelColor(/*i*/x + minx, _y + miny + j, col);
+				setPixelColor(/*i*/x + minx + j, _y + miny, col);
 			}
 //		}
 //		for(i = 0; i < wd; i++) for(j = 0; j < wd; j++) setPixelColor(maxx + i, maxy + j, vec4(255, 0, 0, 255));
 	}
-
+	
 
 
 //	if(wd == 1){
@@ -96,9 +96,10 @@ void drawLine(){
 
 void main() {
 	//Yeet unnecessary calls
-	if(x >= width || y >= height) return;		//Out of render
+	if(x >= distance(x0,x1)) return;
+//	if(x >= width || y >= height) return;		//Out of render
 	//TODO move null check to CPU
-	if(wd == 0 || color.a == 0) return;	//Null line
+	if(wd == 0 || col.a == 0) return;	//Null line
 
 	drawLine();
 

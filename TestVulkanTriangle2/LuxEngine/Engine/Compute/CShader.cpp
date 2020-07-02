@@ -161,15 +161,15 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
 	commandPoolCreateInfo.flags = 0;														//Default falgs
 	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &aa__commandPool)) Exit("Unable to create command pool");
+	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &copyCommandPool)) Exit("Unable to create command pool");
 
 	//Allocate command buffers
 	static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-	commandBufferAllocateInfo.commandPool = aa__commandPool;								//Set command pool where to allocate the command buffer 
+	commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
-	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, aa__commandBuffers.data())) Exit("Unable to allocate command buffers");
+	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
 
@@ -179,7 +179,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		VkCommandBufferBeginInfo beginInfo = {};								//Create begin infos to start recording the command buffer
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;				//Set structure type
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;				//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
-		TryVk(vkBeginCommandBuffer(aa__commandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
+		TryVk(vkBeginCommandBuffer(copyCommandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
 
 
 		//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
@@ -200,7 +200,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		VkPipelineStageFlags srcStage, dstStage;								//Create stage flags
 		srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//The swapchain image is in color output stage		
 		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Change it to transfer stage to copy the buffer in it
-		vkCmdPipelineBarrier(aa__commandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
+		vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
 		VkBufferImageCopy region{};												//Create bufferImageCopy region to copy the buffer to the image
 		region.bufferOffset = 0;													//No buffer offset
@@ -212,7 +212,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		region.imageSubresource.layerCount = 1;										//No multi layer
 		region.imageOffset = { 0, 0, 0 };											//No image offset
 		region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-		vkCmdCopyBufferToImage(aa__commandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 		//Create a barrier to use the swapchain image as a present source image
 		VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
@@ -232,10 +232,10 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		VkPipelineStageFlags srcStage1, dstStage1;								//Create stage flags
 		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//The image is in transfer stage from the buffer copy
 		dstStage1 = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//Change it to color output to present them
-		vkCmdPipelineBarrier(aa__commandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
+		vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
 		//End command buffer recording
-		TryVk(vkEndCommandBuffer(aa__commandBuffers[imgIndex])) Exit("Failed to record command buffer");
+		TryVk(vkEndCommandBuffer(copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
 	}
 }
 
@@ -246,7 +246,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 
 
 
-void Engine::cshaderCommandBuffers(const LuxShader vCShader, const LuxObjectType vObjectType) {
+void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 	//Create command pool
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -278,11 +278,12 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader, const LuxObjectType
 
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	switch (vObjectType){
-		case LUX_OBJECT_TYPE_LINE_2D_CCT: vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); break;
-		default: Exit("//TODO la shader non esiste");
-	}
-	
+	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); 
+	//switch (vObjectType) {
+	//	case LUX_OBJECT_TYPE_LINE_2D_CCT: vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); break;
+	//	default: Exit("//TODO la shader non esiste");
+	//}
+
 	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
@@ -315,7 +316,7 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader, const LuxObjectType
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath, const LuxObjectType vObjectType) {
+LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
 	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array
@@ -324,7 +325,7 @@ LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShade
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
 	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
 	CShaders[shader].commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-	cshaderCommandBuffers(shader, vObjectType);									//Create command buffers and command pool
+	cshaderCommandBuffers(shader);									//Create command buffers and command pool
 
 	return shader;													//Return the index of the created shader
 }

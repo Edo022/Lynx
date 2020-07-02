@@ -65,3 +65,9 @@ static void LuxInit(bool useVSync = true) {
 
 	while (!engine.initialized) sleep(10);
 }
+
+
+
+static inline void luxSpawnObject(LuxObject_base0* pObject) {
+	pObject->EID = engine.objs.add(pObject);
+}

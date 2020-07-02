@@ -29,6 +29,37 @@ enum LuxObjectType : int32 {
 
 
 
+enum class LuxObjectUpdate : uint64 {
+	LUX_OBJECT_UPDATE_POS_X	=	0x1,
+	LUX_OBJECT_UPDATE_POS_Y	=	0x2,
+	LUX_OBJECT_UPDATE_POS_Z	=	0x4,
+	LUX_OBJECT_UPDATE_POS_W	=	0x8,
+							  
+	LUX_OBJECT_UPDATE_ROT_X	=	0x10,
+	LUX_OBJECT_UPDATE_ROT_Y	=	0x20,
+	LUX_OBJECT_UPDATE_ROT_Z	=	0x40,
+							  
+	LUX_OBJECT_UPDATE_SCL_X	=	0x80,
+	LUX_OBJECT_UPDATE_SCL_Y	=	0x100,
+	LUX_OBJECT_UPDATE_SCL_Z	=	0x200,
+
+	LUX_OBJECT_UPDATE_Y_INDEX = 0x400,
+	LUX_OBJECT_UPDATE_Z_INDEX = 0x800,
+	LUX_OBJECT_UPDATE_W_INDEX = 0x1000,
+
+	LUX_OBJECT_UPDATE_WD =		0x2000,
+	LUX_OBJECT_UPDATE_WD0 =		0x4000,
+	LUX_OBJECT_UPDATE_WD1 =		0x8000,
+
+	// 16 //
+
+	LUX_OBJECT_UPDATE_COL =		0x10000,
+	LUX_OBJECT_UPDATE_COL0 =	0x20000,
+	LUX_OBJECT_UPDATE_COL1 =	0x40000,
+
+};
+
+
 
 
 
@@ -38,10 +69,25 @@ struct LuxObject_base0 {
 	LuxObjectType objectType;
 	LuxObject_base0() { objectType = LUX_OBJECT_TYPE__BASE; }
 
-	static uint64 lastID;		//#LLID LOS000 the last assigned ID of a LuxObject 
+	static uint64 lastID;				//#LLID LOS000 the last assigned ID of a LuxObject 
 	//TODO optimize name. don't use strings when not needed
-	LuxString name{ "" };		//The name of the object. 
-	uint64 ID{ ++lastID };		//A unique ID that indentifies the object
+	LuxString name{ "" };				//The name of the object. 
+	uint64 ID{ ++lastID };				//A unique ID that indentifies the object
+	LuxCell gpuCell{ (uint64)-1 };		//GPU memory containing the small data of the object
+
+	//This function update the data in the GPU
+	//*   vUpdates: the struct members to update
+	//*       The struct you are updating must contain those members
+	//*   Returns 0 if the members are updated correctly
+	//*       1 if the struct has no corresponding GPU memory (This happens when you create an object but don't spawn it)
+	//*       2 if only some members are updated becaouse the others are invalid
+	//*       -1 if all the members are invalid
+	//*       -2 if an unknown error occurs
+	int updateFromCPU(const LuxObjectUpdate vUpdates) {
+		engine.updates.push_back(vUpdates);
+	}
+
+	uint64 EID{ (uint64)-1 };			//A unique ID that only spawned objects have
 };
 
 
