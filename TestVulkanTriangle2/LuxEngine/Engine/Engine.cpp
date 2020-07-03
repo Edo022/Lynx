@@ -55,8 +55,20 @@ void Engine::run(bool vUseVSync, float vFOV) {
 		compileShader("test0")
 		)) Exit("compilation error");
 
+
+
+	initWindow();
+	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
+	runGraphics(vUseVSync, vFOV);
+
+
+
+
+
 	LuxDynamic_LuxObjectLineCCT lineTest;
 	luxSpawnObject(&lineTest);
+	lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
+
 	lineTest.setCol({ 255,231,0,255 });
 	lineTest.setWd(100);
 	lineTest.setX0(100);
@@ -65,9 +77,6 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	lineTest.setY1(100);
 
 
-	initWindow();
-	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
-	runGraphics(vUseVSync, vFOV);
 	runCompute();
 
 	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);

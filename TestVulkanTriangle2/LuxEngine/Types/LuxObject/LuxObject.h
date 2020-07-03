@@ -89,12 +89,13 @@ struct LuxObject_base0 {
 	//*       2 if only some members are updated becaouse the others are invalid
 	//*       -1 if all the members are invalid
 	//*       -2 if an unknown error occurs
-	int updateFromCPU(const LuxObjectUpdate vUpdates) {
-		engine.updates.push_back(this);
-		updates = vUpdates;
-	}
+	//int updateFromCPU(const LuxObjectUpdate vUpdates) {
+	//	engine.updates.push_back(this);
+	//	updates = vUpdates;
+	//}
 
 	uint64 EID{ (uint64)-1 };			//A unique ID that only spawned objects have
+	void* cellPtr = nullptr;
 	LuxObjectUpdate updates{ 0 };
 };
 
