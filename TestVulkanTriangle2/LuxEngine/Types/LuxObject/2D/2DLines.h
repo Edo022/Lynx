@@ -75,36 +75,25 @@ struct LuxObjectLineCCT : public LuxObjectLine_base2 {
 struct LuxDynamic_LuxObjectLineCCT : public LuxObjectLine_base2 {
 	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_LINE_2D_CCT; }
 
-	void setCol(vec4float32 col) {
-		uint32* map = (uint32*)cellPtr;
-		map[4] = col.x;
-		map[5] = col.y;
-		map[6] = col.z;
-		map[7] = col.w;
+	void hhh_() {
+		x0 = ((int32*)cellPtr) + 0;
+		y0 = ((int32*)cellPtr) + 1;
+		x1 = ((int32*)cellPtr) + 2;
+		y1 = ((int32*)cellPtr) + 3;
+
+		col = (vec4uint32*)(((int32*)cellPtr) + 4);
+
+		wd = ((float32*)cellPtr) + 8;
 	}
 
-	void setWd(float32 wd) {
-		float32* map = (float32*)cellPtr;
-		map[8] = wd;
-	}
+	int32* x0 = nullptr;
+	int32* y0 = nullptr;
+	int32* x1 = nullptr;
+	int32* y1 = nullptr;
 
-	void setX0(int32 x0) {
-		int32* map = (int32*)cellPtr;
-		map[0] = x0;
-	}
-	void setY0(int32 y0) {
-		int32* map = (int32*)cellPtr;
-		map[1] = y0;
-	}
+	vec4uint32* col = nullptr;
 
-	void setX1(int32 x1) {
-		int32* map = (int32*)cellPtr;
-		map[2] = x1;
-	}
-	void setY1(int32 y1) {
-		int32* map = (int32*)cellPtr;
-		map[3] = y1;
-	}
+	float32* wd = nullptr;
 };
 
 

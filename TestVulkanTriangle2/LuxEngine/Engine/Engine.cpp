@@ -67,14 +67,17 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 	LuxDynamic_LuxObjectLineCCT lineTest;
 	luxSpawnObject(&lineTest);
-	lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
+	std::thread h([&]() {lineTest.cellPtr = gpuCellMap(lineTest.gpuCell); });
+	h.join();
+	lineTest.hhh_();
 
-	lineTest.setCol({ 255,231,0,255 });
-	lineTest.setWd(100);
-	lineTest.setX0(100);
-	lineTest.setY0(20);
-	lineTest.setX1(2500);
-	lineTest.setY1(100);
+	*lineTest.col = vec4uint32{ 255,231,0,255 };
+
+	*lineTest.wd = 100;
+	*lineTest.x0 = 100;
+	*lineTest.y0 = 10;
+	*lineTest.x1 = 400;
+	*lineTest.y1 = 100;
 
 
 	runCompute();
