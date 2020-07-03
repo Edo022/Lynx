@@ -365,12 +365,12 @@ private:
 	const int32 WORKGROUP_SIZE = 32;			//Workgroup size in compute shader
 	LuxMap<LuxShader_t> CShaders;				//List of shaders
 	LuxMap<LuxBuffer_t> CBuffers;				//List of GPU buffers
-	LuxMap<LuxRenderSpace2D> CRenderSpaces;		//List of renderSpaces
+	LuxMap<LuxRenderSpace2D*> CRenderSpaces;		//List of renderSpaces
 
 	//TODO use LuxQueue
 public:
 	LuxMap<LuxObject_base0*> objs;		//TODO
-	std::deque<LuxObjectUpdate> updates;
+	//std::deque<LuxObject_base0*> updates;
 private:
 	LuxShader /*copyShader, */testShader0;
 

@@ -29,7 +29,7 @@ enum LuxObjectType : int32 {
 
 
 
-enum class LuxObjectUpdate : uint64 {
+enum LuxObjectUpdate : uint64 {
 	LUX_OBJECT_UPDATE_POS_X	=	0x1,
 	LUX_OBJECT_UPDATE_POS_Y	=	0x2,
 	LUX_OBJECT_UPDATE_POS_Z	=	0x4,
@@ -57,6 +57,12 @@ enum class LuxObjectUpdate : uint64 {
 	LUX_OBJECT_UPDATE_COL0 =	0x20000,
 	LUX_OBJECT_UPDATE_COL1 =	0x40000,
 
+	LUX_OBJECT_UPDATE_X0 =		0x80000,
+	LUX_OBJECT_UPDATE_Y0 =		0x100000,
+	LUX_OBJECT_UPDATE_Z0 =		0x200000,
+	LUX_OBJECT_UPDATE_X1 =		0x400000,
+	LUX_OBJECT_UPDATE_Y1 =		0x800000,
+	LUX_OBJECT_UPDATE_Z1 =		0x1000000,
 };
 
 
@@ -84,10 +90,12 @@ struct LuxObject_base0 {
 	//*       -1 if all the members are invalid
 	//*       -2 if an unknown error occurs
 	int updateFromCPU(const LuxObjectUpdate vUpdates) {
-		engine.updates.push_back(vUpdates);
+		engine.updates.push_back(this);
+		updates = vUpdates;
 	}
 
 	uint64 EID{ (uint64)-1 };			//A unique ID that only spawned objects have
+	LuxObjectUpdate updates{ 0 };
 };
 
 

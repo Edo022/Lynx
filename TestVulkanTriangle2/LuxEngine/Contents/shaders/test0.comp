@@ -16,16 +16,12 @@ layout(std430, binding = 1) buffer windowSize_{
 };
 layout(std430, binding = 2) buffer lineData_{ 
 	//16
-	int x0; int y0; 
-	int x1; int y1; 
+	int x0; int y0; //0		//4
+	int x1; int y1; //8		//12
 	//16
-	uvec4 col;
+	uvec4 col;		//16
 	//4
-	float wd;
-//uint a;
-//uint b;
-//uint c;
-//uint d;
+	float wd;		//32
 };
 
 

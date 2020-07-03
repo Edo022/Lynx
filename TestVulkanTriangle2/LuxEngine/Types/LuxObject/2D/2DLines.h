@@ -69,4 +69,41 @@ struct LuxObjectLineCCT : public LuxObjectLine_base2 {
 };
 
 
+//Variant of LuxObjectLine. This version has constant color and wd
+struct LuxDynamic_LuxObjectLineCCT : public LuxObjectLine_base2 {
+	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_LINE_2D_CCT; }
+	
+	void setCol(vec4float32 col) {
+		float32* map = (float32*)engine.gpuCellMap(gpuCell);
+		map[4] = col.x;
+		map[5] = col.y;
+		map[6] = col.z;
+		map[7] = col.w;
+	}
+
+	void setWd(float32 wd) {
+		float32* map = (float32*)engine.gpuCellMap(gpuCell);
+		map[8] = wd;
+	}
+
+	void setX0(int32 x0) {
+		int32* map = (int32*)engine.gpuCellMap(gpuCell);
+		map[0] = x0;
+	}
+	void setY0(int32 y0) {
+		int32* map = (int32*)engine.gpuCellMap(gpuCell);
+		map[1] = y0;
+	}
+
+	void setX1(int32 x1) {
+		int32* map = (int32*)engine.gpuCellMap(gpuCell);
+		map[2] = x1;
+	}
+	void setY1(int32 y1) {
+		int32* map = (int32*)engine.gpuCellMap(gpuCell);
+		map[3] = y1;
+	}
+};
+
+
 //TODO dual camera

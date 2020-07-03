@@ -30,6 +30,19 @@ static bool compileShader(const char* pShaderName) {
 	return ("%d\n", system(compileShaderCommand.begin()) == 0);
 }
 
+static inline void luxSpawnObject(LuxObject_base0* pObject) {
+	if (pObject->objectType > 0) {
+		pObject->EID = engine.objs.add(pObject);
+	}
+	else Exit("invalid object");
+
+	switch (pObject->objectType) {
+		case LUX_OBJECT_TYPE_LINE_2D_CCT:
+			pObject->gpuCell = engine.gpuCellCreate(36, true);
+			break;
+		default: Exit("TODO");
+	}
+}
 
 
 
@@ -42,6 +55,14 @@ void Engine::run(bool vUseVSync, float vFOV) {
 		compileShader("test0")
 		)) Exit("compilation error");
 
+	LuxDynamic_LuxObjectLineCCT lineTest;
+	luxSpawnObject(&lineTest);
+	lineTest.setCol({ 255,231,0,255 });
+	lineTest.setWd(100);
+	lineTest.setX0(100);
+	lineTest.setY0(20);
+	lineTest.setX1(2500);
+	lineTest.setY1(100);
 
 
 	initWindow();
@@ -83,10 +104,37 @@ void Engine::mainLoop() {
 //TODO add FPS limit
 
 
+
+#define checkBit(bits, bit) ((bits) && (bit) == (bit))
+
 void Engine::runRenderThr() {
 	while (running) {
 		//printf("\n%d, %d\n", swapchainExtent.width, swapchainExtent.height);
 		graphicsDrawFrame();
+		//while (!updates.empty()) {
+		//	#define obj updates.front()
+		//	switch (obj->objectType) {
+		//		case LUX_OBJECT_TYPE_LINE_2D_CCT: 
+		//			/*
+		//				8	int x0; int y0;
+		//				8	int x1; int y1;
+		//				16	uvec4 col;
+		//				4	float wd;
+		//			*/
+		//			if (obj->gpuCell == uint64(-1)) gpuCellCreate(36, true);
+		//			void* memory = gpuCellMap(obj->gpuCell);
+		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_X0)) 
+		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_Y0))
+		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_X1)) 
+		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_Y1))
+		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_WD)) 
+		//			break;
+		//		default: Exit("Invalid object");
+		//	}
+			//while (objUpdates != 0) {
+
+			//}
+		//}
 		frames++;
 	}
 }

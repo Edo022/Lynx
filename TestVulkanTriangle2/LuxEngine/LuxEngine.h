@@ -67,7 +67,22 @@ static void LuxInit(bool useVSync = true) {
 }
 
 
+//TODO
+//static inline void luxSpawnObject(LuxObject_base0* pObject) {
+//	if (pObject->objectType > 0) {
+//		pObject->EID = engine.objs.add(pObject);
+//	}
+//	else Exit("invalid object");
+//
+//	switch (pObject->objectType){
+//		case LUX_OBJECT_TYPE_LINE_2D_CCT:
+//			pObject->gpuCell = engine.gpuCellCreate(36, true);
+//			break;
+//		default: Exit("TODO");
+//	}
+//}
 
-static inline void luxSpawnObject(LuxObject_base0* pObject) {
-	pObject->EID = engine.objs.add(pObject);
-}
+//TODO add
+//static inline void luxSpawnObjectCopy(LuxObject_base0* pObject) {
+//	pObject->EID = engine.objs.add(pObject);
+//}
