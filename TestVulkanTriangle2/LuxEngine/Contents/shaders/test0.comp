@@ -77,8 +77,8 @@ void drawLine(){
 	vec2 lNvec = vec2(lDist.x, lDist.y) / max(lDist.x, lDist.y);		//Normalized distance vector
 
 	vec2 lRpos = { x0 + (lDist.x * lFac), y0 + (yDir * (lDist.y * lFac)) };	//Position relative to the first point
-	vec2 s0 = { x0 + (yDir * (lHwd * lNvec.y)) + lRpos.x, y0 - (lHwd * lNvec.x) + lRpos.y };
-	vec2 s1 = { x0 - (yDir * (lHwd * lNvec.y)) + lRpos.x, y0 + (lHwd * lNvec.x) + lRpos.y };
+	vec2 s0 = { lRpos.x + (yDir * (lHwd * lNvec.y)), lRpos.y - (lHwd * lNvec.x) };
+	vec2 s1 = { lRpos.x - (yDir * (lHwd * lNvec.y)), lRpos.y + (lHwd * lNvec.x) };
 
 
 //	float y = lDist.y * lFac;
@@ -99,6 +99,7 @@ void drawLine(){
 
 
 
+	//TODO
 	setPixelColor(uvec2(lRpos.xy),vec4(1,1,1,1));
 	//TODO
 	setPixelColor(uvec2(s0.xy),vec4(0,1,1,1));
