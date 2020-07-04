@@ -6,14 +6,18 @@
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 #define colToInt(v) ((v.a) << 24) | ((v.b & 0xFF) << 16) | ((v.g & 0xFF) << 8) | (v.r & 0xFF)
 
+
+
+
 layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
-//layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
 layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
+
 layout(std430, binding = 1) buffer windowSize_{ 
 	uint width;
 	uint height; 
 };
+
 layout(std430, binding = 2) buffer lineData_{ 
 	//16
 	int x0; int y0; //0		//4
@@ -29,6 +33,11 @@ layout(std430, binding = 2) buffer lineData_{
 
 
 
+
+
+
+
+
 void setPixelColor(uvec2 pos, vec4 col){
 	colorOutput[pos.y * width + pos.x] = colToInt(uvec4(uint(col.r*255), uint(col.g*255), uint(col.b*255), uint(col.a*255)));
 }
@@ -36,56 +45,54 @@ void setPixelColor(uvec2 pos, vec4 col){
 
 
 void drawLine(){ 
-	float dx = distance(x0,x1);	//x distance
-	float dy = distance(y0,y1);	//y distance
 	int minx = min(x0,x1);		//Minimum x
 	int miny = min(y0,y1);		//Minimum y
 
 
 	//TODO add special cases: vertical, horizontal
 	//TODO add vertical execution
-	//TODO long lines
 	//TODO inverse direction lines (test already in cpp)
 	//TODO antialiasing 
 
-	if(wd0 == 1){
-		for(int i = 0; i < dx; i++){
-			int _y = int(dy / (dx / i));
-			setPixelColor(uvec2(i + minx, _y + miny), col0);
-		}
-	}
-	else{
-		vec2 fac = vec2(1 / (dx / gx), 1- (1 / (dx / gx)));	//Distance from the first and second point
-		vec4 col = col0 * fac[0] + col1 * fac[1];			//Interpolated color
-		float wd = wd0 * fac[0] + wd1 * fac[1];				//Interpolated width
-		float y = dy * fac[0];
-		int i, j;						//Current y
 
-		float hWd = wd / 2;									//Half width
-		vec2 nVec = vec2(dx, dy) / max(dx, dy);				//Normalized distance vector
-		vec2 s0 = vec2(minx + (hWd * nVec.y) + gx, miny - (hWd * nVec.x) + y);	//First point of the perpendicular segment
-		vec2 s1 = vec2(minx - (hWd * nVec.y) + gx, miny + (hWd * nVec.x) + y);	//Second point of the perpendicular segment
-		
+	
+
+	float lLen = length(distance(vec2(x0, y0), vec2(x1, y1)));	//Length of the line
+	vec2 lDist = vec2(distance(x0, x1), distance(y0, y1));		//2D distance of the line points
+	float lFac = 1 / (lLen / gx);								//Factor of the position of gx in the line length
 
 
-		float sLen = length(distance(s0, s1));		//Length of the segment
-		vec2 sDist = vec2(distance(s0.x, s1.x), distance(s0.y, s1.y));
-		for(float i = 0; i < sLen; i+=0.4){
-			float sfac = 1 / (sLen / i);					//Factor of the position of I in the segment length
-			setPixelColor(uvec2(uint(s1.x + (sDist.x * (sfac))), uint(s1.y - (sDist.y * sfac))), col);
-		}
+	vec4 col = col0 * lFac + col1 * (1 - lFac);			//Interpolated color
+	float wd = wd0 * lFac + wd1 * (1 - lFac);			//Interpolated width
+
+
+
+
+	vec2 s0 = vec2(float((lDist.x * lFac) + x0), float(y0 - (lDist.y * lFac)));
+	vec2 s1 = vec2(float(x0 - (lDist.x * lFac)), float((lDist.y * lFac)) + y0);
+
+//	float y = lDist.y * lFac;
+//	float hWd = wd / 2;									//Half width
+//	vec2 nVec = vec2(lDist.x, lDist.y) / max(lDist.x, lDist.y);				//Normalized distance vector
+//	vec2 s0 = vec2(minx + (hWd * nVec.y) + gx, miny - (hWd * nVec.x) + y);	//First point of the perpendicular segment
+//	vec2 s1 = vec2(minx - (hWd * nVec.y) + gx, miny + (hWd * nVec.x) + y);	//Second point of the perpendicular segment
+	
+
+
+	float sLen = length(distance(s0, s1));							//Length of the segment
+	vec2 sDist = vec2(distance(s0.x, s1.x), distance(s0.y, s1.y));	//2D distance of the segment points
+	for(float i = 0; i < sLen; i+=0.4){
+		float sfac = 1 / (sLen / i);								//Factor of the position of I in the segment length
+		setPixelColor(uvec2(uint((sDist.x * sfac) + s1.x), uint(s1.y - (sDist.y * sfac))), col);
 	}
 }
 
 
 
 
-
-
-
 void main() {
 	//Yeet unnecessary calls
-	if(gx >= distance(x0,x1)) return;
+	if(gx >= distance(vec2(x0, y0), vec2(x1, y1))) return;
 //	if(x >= width || y >= height) return;		//Out of render
 	//TODO move null check to CPU
 	if((wd0 == 0 && wd1 == 0) || (col0.a == 0 && col1.a == 0)) return;	//Null line
@@ -105,131 +112,37 @@ void main() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//#version 450
-//
-//#define WORKGROUP_SIZE 32			//The x and y size of the workgroup
-//#define x gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
-//#define y gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
-//#define colToInt(v) ((v.a) << 24) | ((v.b & 0xFF) << 16) | ((v.g & 0xFF) << 8) | (v.r & 0xFF)
-//
-//layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
-////layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
-//
-//layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
-//layout(std430, binding = 1) buffer windowSize_{ 
-//	uint width;
-//	uint height; 
-//};
-//layout(std430, binding = 2) buffer lineData_{ 
-//	//16
-//	int x0; int y0; //0		//4
-//	int x1; int y1; //8		//12
-//	//16
-//	vec4 col0;		//16
-//	//16
-//	vec4 col1;		//32
-//	//8
-//	float wd0;		//48
-//	float wd1;		//52
-//};
-//
-//
-//
-//void setPixelColor(uint _x, uint _y, vec4 col){
-//	colorOutput[_y * width + _x] = colToInt(uvec4(uint(col.r*255), uint(col.g*255), uint(col.b*255), uint(col.a*255)));
-//}
-//
-//
-//
 //void drawLine(){ 
 //	float dx = distance(x0,x1);	//x distance
 //	float dy = distance(y0,y1);	//y distance
 //	int minx = min(x0,x1);		//Minimum x
 //	int miny = min(y0,y1);		//Minimum y
-//	int maxx = max(x0,x1);		//Maximum x
-//	int maxy = max(y0,y1);		//Maximum y
 //
 //
 //	//TODO add special cases: vertical, horizontal
 //	//TODO add vertical execution
-//	//TODO long lines
-//	//TODO add interpolation
+//	//TODO inverse direction lines (test already in cpp)
+//	//TODO antialiasing 
+//
+//
 //	
-//	if(wd0 == 1){
-//		for(int i = 0; i < dx; i++){
-//			int _y = int(dy / (dx / i));
-//			setPixelColor(i + minx, _y + miny, col0);
-//		}
-//	}
-//	else{
-//		int _y, i, j;
-////		for(i = 0; i < dx; i++){
-//			float fac = 1 / (dx / x);
-//			float invFac = 1 - fac;
-//			vec4 _col = col0 * fac + col1 * invFac;
-//			_y = int(dy * fac);
-//			setPixelColor(/*i*/x + minx, _y + miny, _col);
-//			for(j = 1; j < int(wd0);j++){
-//				setPixelColor(/*i*/x + minx, _y + miny + j, _col);
-//				setPixelColor(/*i*/x + minx + j, _y + miny, _col);
-//			}
-////		}
-////		for(i = 0; i < wd; i++) for(j = 0; j < wd; j++) setPixelColor(maxx + i, maxy + j, vec4(255, 0, 0, 255));
+//	vec2 fac = vec2(1 / (dx / gx), 1- (1 / (dx / gx)));	//Distance from the first and second point
+//	vec4 col = col0 * fac[0] + col1 * fac[1];			//Interpolated color
+//	float wd = wd0 * fac[0] + wd1 * fac[1];				//Interpolated width
+//	float y = dy * fac[0];
+//	int i, j;						//Current y
+//
+//	float hWd = wd / 2;									//Half width
+//	vec2 nVec = vec2(dx, dy) / max(dx, dy);				//Normalized distance vector
+//	vec2 s0 = vec2(minx + (hWd * nVec.y) + gx, miny - (hWd * nVec.x) + y);	//First point of the perpendicular segment
+//	vec2 s1 = vec2(minx - (hWd * nVec.y) + gx, miny + (hWd * nVec.x) + y);	//Second point of the perpendicular segment
+//	
+//
+//
+//	float sLen = length(distance(s0, s1));							//Length of the segment
+//	vec2 sDist = vec2(distance(s0.x, s1.x), distance(s0.y, s1.y));	//2D distance of the segment points
+//	for(float i = 0; i < sLen; i+=0.4){
+//		float sfac = 1 / (sLen / i);					//Factor of the position of I in the segment length
+//		setPixelColor(uvec2(uint((sDist.x * sfac) + s1.x), uint(s1.y - (sDist.y * sfac))), col);
 //	}
 //}
-//
-//
-//
-//
-//
-//
-//
-//void main() {
-//	//Yeet unnecessary calls
-//	if(x >= distance(x0,x1)) return;
-////	if(x >= width || y >= height) return;		//Out of render
-//	//TODO move null check to CPU
-//	if((wd0 == 0 && wd1 == 0) || (col0.a == 0 && col1.a == 0)) return;	//Null line
-//
-//	drawLine();
-//}
-//
-//
-//
-//
-//
-//
-//
-//
-//

@@ -278,7 +278,7 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); 
+	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 4, 1, 1); 
 	//switch (vObjectType) {
 	//	case LUX_OBJECT_TYPE_LINE_2D_CCT: vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); break;
 	//	default: Exit("//TODO la shader non esiste");
