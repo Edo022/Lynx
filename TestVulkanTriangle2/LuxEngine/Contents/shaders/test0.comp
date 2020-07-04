@@ -71,11 +71,8 @@ void drawLine(){
 
 		float sLen = length(distance(s0, s1));		//Length of the segment
 		vec2 sDist = vec2(distance(s0.x, s1.x), distance(s0.y, s1.y));
-		for(float i = 0; i < sLen; i++){
+		for(float i = 0; i < sLen; i+=0.4){
 			float sfac = 1 / (sLen / i);					//Factor of the position of I in the segment length
-			setPixelColor(uvec2(uint(s0.x), uint(s0.y)), col);
-			setPixelColor(uvec2(uint(s1.x), uint(s1.y)), vec4(0,1,0,1));
-//			setPixelColor(uvec2(uint(s1.x + sDist.x * fac), uint(s1.y - (1 - (sDist.y * sfac)))), col);
 			setPixelColor(uvec2(uint(s1.x + (sDist.x * (sfac))), uint(s1.y - (sDist.y * sfac))), col);
 		}
 	}
