@@ -40,15 +40,14 @@ void drawLine(){
 	float dy = distance(y0,y1);	//y distance
 	int minx = min(x0,x1);		//Minimum x
 	int miny = min(y0,y1);		//Minimum y
-	int maxx = max(x0,x1);		//Maximum x
-	int maxy = max(y0,y1);		//Maximum y
 
 
 	//TODO add special cases: vertical, horizontal
 	//TODO add vertical execution
 	//TODO long lines
-	//TODO add interpolation
-	
+	//TODO inverse direction lines (test already in cpp)
+	//TODO antialiasing 
+
 	if(wd0 == 1){
 		for(int i = 0; i < dx; i++){
 			int _y = int(dy / (dx / i));
