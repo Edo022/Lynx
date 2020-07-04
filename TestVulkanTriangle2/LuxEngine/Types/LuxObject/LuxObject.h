@@ -19,11 +19,7 @@ enum LuxObjectType : int32 {
 	LUX_OBJECT_TYPE_RENDER_SPACE_2D = 1,
 	LUX_OBJECT_TYPE_RENDER_SPACE_3D = 2,
 
-	LUX_OBJECT_TYPE_LINE_2D__BASE = -6,
-	LUX_OBJECT_TYPE_LINE_2D = 3,
-	LUX_OBJECT_TYPE_LINE_2D_CC = 4,
-	LUX_OBJECT_TYPE_LINE_2D_CT = 5,
-	LUX_OBJECT_TYPE_LINE_2D_CCT = 6
+	LUX_OBJECT_TYPE_2D_LINE = 3,
 };
 
 
@@ -81,22 +77,7 @@ struct LuxObject_base0 {
 	uint64 ID{ ++lastID };				//A unique ID that indentifies the object
 	LuxCell gpuCell{ (uint64)-1 };		//GPU memory containing the small data of the object
 
-	//This function update the data in the GPU
-	//*   vUpdates: the struct members to update
-	//*       The struct you are updating must contain those members
-	//*   Returns 0 if the members are updated correctly
-	//*       1 if the struct has no corresponding GPU memory (This happens when you create an object but don't spawn it)
-	//*       2 if only some members are updated becaouse the others are invalid
-	//*       -1 if all the members are invalid
-	//*       -2 if an unknown error occurs
-	//int updateFromCPU(const LuxObjectUpdate vUpdates) {
-	//	engine.updates.push_back(this);
-	//	updates = vUpdates;
-	//}
-
-	uint64 EID{ (uint64)-1 };			//A unique ID that only spawned objects have
 	void* cellPtr = nullptr;
-	LuxObjectUpdate updates{ 0 };
 };
 
 

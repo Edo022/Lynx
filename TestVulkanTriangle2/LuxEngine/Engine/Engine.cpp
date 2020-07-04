@@ -32,13 +32,13 @@ static bool compileShader(const char* pShaderName) {
 
 static inline void luxSpawnObject(LuxObject_base0* pObject) {
 	if (pObject->objectType > 0) {
-		pObject->EID = engine.objs.add(pObject);
+		engine.objs.add(pObject);
 	}
 	else Exit("invalid object");
 
 	switch (pObject->objectType) {
-		case LUX_OBJECT_TYPE_LINE_2D_CCT:
-			pObject->gpuCell = engine.gpuCellCreate(36, true);
+		case LUX_OBJECT_TYPE_2D_LINE:
+			pObject->gpuCell = engine.gpuCellCreate(14*4, true);
 			break;
 		default: Exit("TODO");
 	}
@@ -71,13 +71,16 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	h.join();
 	lineTest.hhh_();
 
-	*lineTest.col = vec4uint32{ 255,231,0,255 };
+	*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
+	*lineTest.col1 = vec4float32{ 0, 0.2, 1, 1 };
 
-	*lineTest.wd = 100;
+	*lineTest.wd0 = 100;
+	*lineTest.wd1 = 100;
+
 	*lineTest.x0 = 100;
-	*lineTest.y0 = 10;
-	*lineTest.x1 = 400;
-	*lineTest.y1 = 100;
+	*lineTest.y0 = 200;
+	*lineTest.x1 = 800;
+	*lineTest.y1 = 400;
 
 
 	runCompute();

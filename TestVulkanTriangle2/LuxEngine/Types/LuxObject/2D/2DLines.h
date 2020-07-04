@@ -7,73 +7,12 @@
 
 
 
-//Base class for 2D lines
-struct LuxObjectLine_base2 : public LuxObject2D_base1 {
-	LuxObjectLine_base2() { objectType = LUX_OBJECT_TYPE_LINE_2D__BASE; }
-
-	vec2float32 pos0{ 0,0 };		//Position of the first vertex
-	vec2float32 pos1{ 0,0 };		//Position of the second vertex
-};
-
-
-
-
-
-
-
-
-//A 2D line with a start and end position, a wd and an RGBA color for each vertex
-//Use LuxObjectLineCT, LuxObjectLineCC or LuxObjectLineCCT for better performances with constant tickness or color lines
-struct LuxObjectLine : public LuxObjectLine_base2 {
-	LuxObjectLine() { objectType = LUX_OBJECT_TYPE_LINE_2D; }
-
-	vec4float32 col0{ 0,0,0,0 };	//Color of the first vertex
-	vec4float32 col1{ 0,0,0,0 };	//Color of the second vertex
-	float32 wd0{ 1 };				//width of the first vertex
-	float32 wd1{ 1 };				//width of the second vertex
-};
-
-
-
-
-//Variant of LuxObjectLine. This version has constant wd
-struct LuxObjectLineCT : public LuxObjectLine_base2 {
-	LuxObjectLineCT() { objectType = LUX_OBJECT_TYPE_LINE_2D_CT; }
-
-	vec4float32 col0{ 0,0,0,0 };	//Color of the first vertex
-	vec4float32 col1{ 0,0,0,0 };	//Color of the second vertex
-	float32 wd{ 1 };				//width of the line
-};
-
-
-
-
-//Variant of LuxObjectLine. This version has constant color
-struct LuxObjectLineCC : public LuxObjectLine_base2 {
-	LuxObjectLineCC() { objectType = LUX_OBJECT_TYPE_LINE_2D_CC; }
-
-	vec4float32 col{ 0,0,0,0 };		//Color of the line
-	float32 wd0{ 1 };				//width of the first vertex
-	float32 wd1{ 1 };				//width of the second vertex
-};
-
-
-
-
-//Variant of LuxObjectLine. This version has constant color and wd
-struct LuxObjectLineCCT : public LuxObjectLine_base2 {
-	LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_LINE_2D_CCT; }
-
-	vec4float32 col{ 0,0,0,0 };		//Color of the line
-	float32 wd{ 1 };				//width of the line
-};
-
-
-
-
-//Variant of LuxObjectLine. This version has constant color and wd
-struct LuxDynamic_LuxObjectLineCCT : public LuxObjectLine_base2 {
-	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_LINE_2D_CCT; }
+//A bidimensional line with interpolated color and width
+//Lines with the same color or width have better performance
+//Perfectly vertical or horyzontal lines also have better performance
+//Lines with size 0 or alpha 0 are not rendered
+struct LuxDynamic_LuxObjectLineCCT : public LuxObject2D_base1 {
+	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_2D_LINE; }
 
 	void hhh_() {
 		x0 = ((int32*)cellPtr) + 0;
@@ -81,19 +20,23 @@ struct LuxDynamic_LuxObjectLineCCT : public LuxObjectLine_base2 {
 		x1 = ((int32*)cellPtr) + 2;
 		y1 = ((int32*)cellPtr) + 3;
 
-		col = (vec4uint32*)(((int32*)cellPtr) + 4);
+		col0 = (vec4float32*)(((int32*)cellPtr) + 4);
+		col1 = (vec4float32*)(((int32*)cellPtr) + 8);
 
-		wd = ((float32*)cellPtr) + 8;
+		wd0 = ((float32*)cellPtr) + 12;
+		wd1 = ((float32*)cellPtr) + 13;
 	}
 
-	int32* x0 = nullptr;
-	int32* y0 = nullptr;
-	int32* x1 = nullptr;
-	int32* y1 = nullptr;
+	int32* x0{ nullptr };			//The x position of the first point
+	int32* y0{ nullptr };			//The y position of the first point
+	int32* x1{ nullptr };			//The x position of the second point
+	int32* y1{ nullptr };			//The y position of the second point
 
-	vec4uint32* col = nullptr;
+	vec4float32* col0{ nullptr };	//Color of the first point
+	vec4float32* col1{ nullptr };	//Color of the second point
 
-	float32* wd = nullptr;
+	float32* wd0{ nullptr };		//Width of the first point
+	float32* wd1{ nullptr };		//Width of the second point
 };
 
 
