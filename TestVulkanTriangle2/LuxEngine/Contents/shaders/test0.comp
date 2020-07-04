@@ -45,8 +45,8 @@ void setPixelColor(uvec2 pos, vec4 col){
 
 
 void drawLine(){ 
-	int minx = min(x0,x1);		//Minimum x
-	int miny = min(y0,y1);		//Minimum y
+//	int minx = min(x0,x1);		//Minimum x
+//	int miny = min(y0,y1);		//Minimum y
 
 
 	//TODO add special cases: vertical, horizontal
@@ -55,28 +55,35 @@ void drawLine(){
 	//TODO antialiasing 
 
 
-	
+	float yDir = sign(y1 - y0);
+	float xDir = sign(x1 - x0);
 
-	float lLen = length(distance(vec2(x0, y0), vec2(x1, y1)));	//Length of the line
-	vec2 lDist = vec2(distance(x0, x1), distance(y0, y1));		//2D distance of the line points
-	float lFac = 1 / (lLen / gx);								//Factor of the position of gx in the line length
-
-
-	vec4 col = col0 * lFac + col1 * (1 - lFac);			//Interpolated color
-	float wd = wd0 * lFac + wd1 * (1 - lFac);			//Interpolated width
+	float lLen = length(distance(vec2(x0, y0), vec2(x1, y1)));						//Length of the line
+	vec2 lDist = { distance(x0, x1), distance(y0, y1) };							//2D distance of the line points
+	float lFac = 1 / (lLen / gx);													//Factor of the position of gx in the line length
 
 
+	vec4 col = col0 * lFac + col1 * (1 - lFac);										//Interpolated color
+	float wd = wd0 * lFac + wd1 * (1 - lFac);										//Interpolated width
 
 
-	vec2 s0 = vec2(float((lDist.x * lFac) + x0), float(y0 - (lDist.y * lFac)));
-	vec2 s1 = vec2(float(x0 - (lDist.x * lFac)), float((lDist.y * lFac)) + y0);
+
+
+	float lHwd = wd / 2;															//Half line width
+	vec2 lNvec = vec2(lDist.x, lDist.y) / max(lDist.x, lDist.y);					//Normalized distance vector
+
+	vec2 lRpos = { /*xDir **/ (lDist.x * lFac) + x0, y0 + /*yDir **/ (lDist.y * lFac) };	//Position relative to the first point
+	vec2 s0 = { x0 + (/*xDir **/ (lHwd * lNvec.y)) + lRpos.x, y0 - (/*yDir **/ (lHwd * lNvec.x)) + lRpos.y };
+	vec2 s1 = { x0 - (/*xDir **/ (lHwd * lNvec.y)) + lRpos.x, y0 + (/*yDir **/ (lHwd * lNvec.x)) + lRpos.y };
+
 
 //	float y = lDist.y * lFac;
-//	float hWd = wd / 2;									//Half width
-//	vec2 nVec = vec2(lDist.x, lDist.y) / max(lDist.x, lDist.y);				//Normalized distance vector
-//	vec2 s0 = vec2(minx + (hWd * nVec.y) + gx, miny - (hWd * nVec.x) + y);	//First point of the perpendicular segment
-//	vec2 s1 = vec2(minx - (hWd * nVec.y) + gx, miny + (hWd * nVec.x) + y);	//Second point of the perpendicular segment
+//	vec2 s0 = vec2(minx + (lHwd * lNvec.y) + gx, miny - (lHwd * lNvec.x) + y);	//First point of the perpendicular segment
+//	vec2 s1 = vec2(minx - (lHwd * lNvec.y) + gx, miny + (lHwd * lNvec.x) + y);	//Second point of the perpendicular segment
 	
+
+
+
 
 
 	float sLen = length(distance(s0, s1));							//Length of the segment
