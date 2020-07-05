@@ -45,6 +45,11 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 void drawLine(){ 
+	const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
+	const vec2 mp = {-1, 1};	//Minus-plus vector for fast vec2 operations
+	const vec2 zv = {0, 0};		//Zero vec2
+	const vec2 ov = {1, 1};		//One vec2
+
 	//TODO add special cases: vertical, horizontal
 	//TODO antialiasing 
 
@@ -52,46 +57,43 @@ void drawLine(){
 	
 
 	//Calculate length and interpolated values
-	float lLen = distance(p0, p1);				//Length of the line
-	vec2 lDist = vec2(distance(p0.x, p1.x), distance(p0.y, p1.y));				//2D distance of the line points
-//	vec2 lDist = abs(p0 - p1.y);				//2D distance of the line points
-	float lFac = 1 / (lLen / gx);				//Factor of the position of gx in the line length
+	float lLen = distance(p0, p1);					//Length of the line
+	vec2 lDist = abs(p0 - p1);						//2D distance between the line points
+	float lFac = 1 / (lLen / gx);					//Factor of the position of gx in the line length
 
-	vec4 col = mix(col0, col1, lFac);			//Interpolated color
-	float wd = mix(wd0, wd1, lFac);				//Interpolated width
-
+	vec4 col = mix(col0, col1, lFac);				//Interpolated color
+	float wd = mix(wd0, wd1, lFac);					//Interpolated width
 
 
-	//Find the sub-segment
-	vec2 dir = sign(p1 - p0);																	//Direction of the line
-	vec2 lNvec = (wd / 2) * normalize(lDist) * dir.yx;											//(normalized distance vector * half width)
+
+
+	//Find the perpendicular sub segment points
+	vec2 dir = sign(p1 - p0);						//Direction of the line
+	vec2 lNvec = dir * ((wd / 2) * normalize(lDist));	//Base segment point offset (normalized distance vector * half width)
+
+	vec2 lRpos = p0 + (dir * (lDist * lFac));		//Position relative to the first point of the line
+	vec2 s0 =  (pm * (lNvec.yx)) + lRpos;	//Fist point of the segment
+	vec2 s1 =  (mp * (lNvec.yx)) + lRpos;	//Second point of the segment
 	
-	vec2 lRpos = { p0.x + (dir.x * (lDist.x * lFac)), p0.y + (dir.y * (lDist.y * lFac)) };		//Position relative to the first point
-	vec2 s0 = { lRpos.x + (dir.y * lNvec.y), lRpos.y - (dir.x * lNvec.x) };						//First point of the segment
-	vec2 s1 = { lRpos.x - (dir.y * lNvec.y), lRpos.y + (dir.x * lNvec.x) };						//Second point of the segment
 
-	
+
 
 	//Draw the sub segment
-	float sLen = distance(s0, s1);				//Length of the segment
-	vec2 sDist = vec2(distance(s0.x, s1.x), distance(s0.y, s1.y));					//2D distance of the segment points
-//	vec2 sDist = abs(s0 - s1);					//2D distance of the segment points
-	if(dir.y < 0) { s0 -= sDist; s1 -= sDist; }
-	if(dir.x < 0) { s0 += sDist; s1 += sDist; }
-	for(float i = 0; i < sLen; i++){
-		float sfac = 1 / (sLen / i);			//Factor of the position of I in the segment length
-//		const vec2 h = {1, -1};
-
-		setPixelColor(vec2(s1.x + (dir.x * (sDist.x * sfac)), s1.y - (dir.y * (sDist.y * sfac))), col);
-//		setPixelColor(h * (dir * (sDist * sfac) + s1) , col);
+	float sLen = distance(s0, s1);					//Length of the segment
+	for(float i = 0; i < sLen; i++){				//For the segment length	
+		setPixelColor(									//Set the current pixel with the interpolated color:
+			((pm * (dir.x * dir.y)) * (dir *				//Invert position if x and y have different directions
+			(abs(s0 - s1) * (1 / (sLen / i))))				//2D segment distance * segment factor)
+			+ s1) , col										//+ segment base point
+		);	
 	}
 
-
-
-//	//TODO
-//	setPixelColor(uvec2(p0.x,p0.y),vec4(0,1,0,1));
-//	setPixelColor(uvec2(p1.x,p1.y),vec4(0,1,0,1));
-
+//	//debug
+//	setPixelColor(s0,vec4(0,1,0,1));
+//	setPixelColor(s1,vec4(0,1,0,1));
+//
+//	setPixelColor(p0,vec4(0,1,0,1));
+//	setPixelColor(p1,vec4(0,1,0,1));
 }
 
 
