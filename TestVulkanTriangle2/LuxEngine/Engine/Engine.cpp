@@ -46,6 +46,16 @@ static inline void luxSpawnObject(LuxObject_base0* pObject) {
 
 
 
+	LuxDynamic_LuxObjectLineCCT lineTest;
+	LuxFence renderFence{ 0 };
+	void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
+		renderFence.wait(1);
+		*lineTest.x1 = x;
+		*lineTest.y1 = y;
+		printf("%f, %f\n", x, y);
+		renderFence.set(0);
+	}
+
 void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
@@ -65,10 +75,8 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 
-	LuxDynamic_LuxObjectLineCCT lineTest;
 	luxSpawnObject(&lineTest);
-	std::thread h([&]() {lineTest.cellPtr = gpuCellMap(lineTest.gpuCell); });
-	h.join();
+	lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
 	lineTest.hhh_();
 
 	*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
@@ -129,7 +137,9 @@ void Engine::mainLoop() {
 void Engine::runRenderThr() {
 	while (running) {
 		//printf("\n%d, %d\n", swapchainExtent.width, swapchainExtent.height);
+		renderFence.wait(0);
 		graphicsDrawFrame();
+		renderFence.set(1);
 		//while (!updates.empty()) {
 		//	#define obj updates.front()
 		//	switch (obj->objectType) {
@@ -259,6 +269,7 @@ void Engine::initWindow() {
 	glfwSetWindowIcon(window, 1, &icon);
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+	glfwSetCursorPosCallback(window, mouseCursorPosCallback);
 }
 
 
