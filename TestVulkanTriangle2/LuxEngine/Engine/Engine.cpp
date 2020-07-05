@@ -80,7 +80,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	lineTest.hhh_();
 
 	*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
-	*lineTest.col1 = vec4float32{ 0, 0.2, 1, 1 };
+	*lineTest.col1 = vec4float32{ 0, 0.2, 1, 0 };
 
 	*lineTest.wd0 = 100;
 	*lineTest.wd1 = 200;
