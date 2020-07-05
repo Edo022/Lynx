@@ -45,43 +45,32 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 void drawLine(){ 
-//	int minx = min(x0,x1);		//Minimum x
-//	int miny = min(y0,y1);		//Minimum y
-
-
 	//TODO add special cases: vertical, horizontal
-	//TODO add vertical execution
-	//TODO inverse direction lines (test already in cpp)
 	//TODO antialiasing 
 
 
-	float xDir = ((x1 - x0 < 0) ? -1 : 1);
-	float yDir = ((y1 - y0 < 0) ? -1 : 1);
 	
 
 
-	float lLen = distance(vec2(x0, y0), vec2(x1, y1));						//Length of the line
-	vec2 lDist = { distance(x0, x1), distance(y0, y1) };							//2D distance of the line points
-	float lFac = 1 / (lLen / gx);													//Factor of the position of gx in the line length
+	float lLen = distance(vec2(x0, y0), vec2(x1, y1));		//Length of the line
+	vec2 lDist = { distance(x0, x1), distance(y0, y1) };	//2D distance of the line points
+	float lFac = 1 / (lLen / gx);							//Factor of the position of gx in the line length
 
 
-	vec4 col = mix(col0, col1, lFac);										//Interpolated color
-	float wd = mix(wd0, wd1, lFac);										//Interpolated width
+	vec4 col = mix(col0, col1, lFac);						//Interpolated color
+	float wd = mix(wd0, wd1, lFac);							//Interpolated width
 
 
 
 
-	float lHwd = wd / 2;															//Half line width
-	vec2 lNvec = vec2(lDist.x, lDist.y) / max(lDist.x, lDist.y);		//Normalized distance vector
+	float lHwd = wd / 2;																	//Half line width
+	vec2 lNvec = vec2(lDist.x, lDist.y) / max(lDist.x, lDist.y);							//Normalized distance vector
+	float xDir = ((x1 - x0 < 0) ? -1 : 1);													//-1 when the lines goes from to. 1 
+	float yDir = ((y1 - y0 < 0) ? -1 : 1);													//-1 when the lines goes from to. 1 
 
-	vec2 lRpos = { x0 + (xDir * (lDist.x * lFac)), y0 + (yDir * (lDist.y * lFac)) };	//Position relative to the first point
-//	//TODO
-//	setPixelColor(uvec2(lRpos.xy),vec4(1,1,1,1));
+	vec2 lRpos = { x0 + (xDir * (lDist.x * lFac)), y0 + (yDir * (lDist.y * lFac)) };		//Position relative to the first point
 	vec2 s0 = { lRpos.x + (yDir * (lHwd * lNvec.y)), lRpos.y - (xDir * (lHwd * lNvec.x)) };
 	vec2 s1 = { lRpos.x - (yDir * (lHwd * lNvec.y)), lRpos.y + (xDir * (lHwd * lNvec.x)) };
-//	//TODO
-//	setPixelColor(uvec2(s0.xy),vec4(0,1,1,1));
-//	setPixelColor(uvec2(s1.xy),vec4(0,1,1,1));
 
 	
 

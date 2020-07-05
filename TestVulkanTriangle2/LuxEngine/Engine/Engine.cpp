@@ -79,8 +79,8 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 	*lineTest.x0 = 100;
 	*lineTest.y0 = 200;
-	*lineTest.x1 = 3700;
-	*lineTest.y1 = 600;
+	*lineTest.x1 = 1700;
+	*lineTest.y1 = 800;
 	//*lineTest.x0 = 100;
 	//*lineTest.y0 = 800;
 	//*lineTest.x1 = 1200;
