@@ -52,11 +52,13 @@ layout(std430, binding = 2) buffer lineData_{
 void setPixelColor(vec2 pos, vec4 col){
 	uint i = uint(pos.y) * width + uint(pos.x);
 
-	vec4 lastCol = intToCol(colorOutput[i]);
-	vec4 _col = mix(lastCol, col, col.a);
+//	vec4 lastCol = intToCol(colorOutput[i]);
+//	vec4 _col = mix(lastCol, col, col.a);
+//	vec4 _col = lastCol + col*col.a;
 
-	colorOutput[i] = colToInt(vec4(0));
-	colorOutput[i] = colToInt(_col);
+	//TODO dont multiply per alpha. just copy it
+	colorOutput[i] = colToInt(col * col.a);
+//	colorOutput[i] = colToInt(_col);
 }
 
 
@@ -90,12 +92,15 @@ void drawLine(){
 
 	//Draw sub segment
 	float sLen = distance(s0, s1);						//Length of the segment
-	for(float i = 0; i < sLen; i++){					//For the segment length	
-		setPixelColor(										//Set the current pixel with the interpolated color:
+	for(float i = 0; i < sLen; i++){					//Set the current pixel with the interpolated color
+		vec2 ppos =											//Calculate the base position of the pixel to draw
 			(pm * (dir.x * dir.y)) * (dir *						//Invert position if x and y have different directions
-			abs(s0 - s1) * (1 / (sLen / i)))					//2D segment distance * segment factor
-			+ s1 , col											//+ segment base point
-		);	
+			abs(s0 - s1) * (1 / (sLen / i))) 					//2D segment distance * segment factor
+			+ s1;												//+ segment base point
+
+		setPixelColor(ppos, col);								//Set the current pixel with the interpolated color
+		setPixelColor(ppos + vec2(1,0),		col);								//Set the current pixel with the interpolated color
+		setPixelColor(ppos + vec2(0,1),		col);								//Set the current pixel with the interpolated color
 	}
 }
 
@@ -112,50 +117,3 @@ void main() {
 
 	drawLine();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//void drawLine(){ 
-//	float dx = distance(p0.x,p1.x);	//x distance
-//	float dy = distance(p0.y,p1.y);	//y distance
-//	int minx = min(p0.x,p1.x);		//Minimum x
-//	int miny = min(p0.y,p1.y);		//Minimum y
-//
-//
-//	//TODO add special cases: vertical, horizontal
-//	//TODO add vertical execution
-//	//TODO inverse direction lines (test already in cpp)
-//	//TODO antialiasing 
-//
-//
-//	
-//	vec2 fac = vec2(1 / (dx / gx), 1- (1 / (dx / gx)));	//Distance from the first and second point
-//	vec4 col = col0 * fac[0] + col1 * fac[1];			//Interpolated color
-//	float wd = wd0 * fac[0] + wd1 * fac[1];				//Interpolated width
-//	float y = dy * fac[0];
-//	int i, j;						//Current y
-//
-//	float hWd = wd / 2;									//Half width
-//	vec2 nVec = vec2(dx, dy) / max(dx, dy);				//Normalized distance vector
-//	vec2 s0 = vec2(minx + (hWd * nVec.y) + gx, miny - (hWd * nVec.x) + y);	//First point of the perpendicular segment
-//	vec2 s1 = vec2(minx - (hWd * nVec.y) + gx, miny + (hWd * nVec.x) + y);	//Second point of the perpendicular segment
-//	
-//
-//
-//	float sLen = length(distance(s0, s1));							//Length of the segment
-//	vec2 sDist = vec2(distance(s0.x, s1.x), distance(s0.y, s1.y));	//2D distance of the segment points
-//	for(float i = 0; i < sLen; i+=0.4){
-//		float sfac = 1 / (sLen / i);					//Factor of the position of I in the segment length
-//		setPixelColor(uvec2(uint((sDist.x * sfac) + s1.x), uint(s1.y - (sDist.y * sfac))), col);
-//	}
-//}

@@ -8,6 +8,7 @@
 #include "LuxEngine/Types/Containers/LuxArray.h"  // for LuxArray
 #include "LuxEngine/Types/Integers/Integers.h"    // for uint16
 #include "stdio.h"                                // for printf
+#include "LuxEngine/Engine/Engine.h"
 
 
 
@@ -21,7 +22,16 @@ inline static void luxInputSetInputState(LuxInputState* inputState) { __lp_input
 
 
 static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+	double x, y;
+	glfwGetCursorPos(window, &x, &y);
+	*engine.lineTest.x0 = (float)x;
+	*engine.lineTest.y0 = (float)y;
 	printf("mouse");
+}
+
+static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
+	*engine.lineTest.wd0 -= y * 10;
+	*engine.lineTest.wd1 -= y * 10;
 }
 
 

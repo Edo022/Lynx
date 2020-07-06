@@ -59,7 +59,6 @@ void Engine::runCompute() {
 	int hhhhh = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv");
 
 
-
 	{ //#LLID CCB0000 Create copy command buffers 
 		copyCommandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
 		__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool

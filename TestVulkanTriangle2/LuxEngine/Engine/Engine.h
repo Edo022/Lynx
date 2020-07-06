@@ -189,7 +189,23 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 
 
+/*
 
+
+Object
+	Object data				| SHARED RAM
+	pointers to object data	| RAM
+	Fast object data		| VRAM
+	Fast object cache		| VRAM
+
+		
+
+
+
+
+
+
+*/
 
 
 
@@ -199,6 +215,8 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 class Engine {
 public:
+	LuxDynamic_LuxObjectLineCCT lineTest;
+
 	double FPS = 0;
 	float FOV;
 	bool running;

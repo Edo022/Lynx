@@ -101,6 +101,11 @@ void Engine::graphicsDrawFrame() {
 
 
 	//TODO don't recreate the command buffer array every time 
+	//Clean
+	VkCommandBuffer clearCB = beginSingleTimeCommands();
+	vkCmdFillBuffer(clearCB, CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+	endSingleTimeCommands(clearCB);
+
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 	static LuxArray<VkCommandBuffer> commandBuffers(CShaders.size() + 1);

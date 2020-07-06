@@ -46,14 +46,12 @@ static inline void luxSpawnObject(LuxObject_base0* pObject) {
 
 
 
-	LuxDynamic_LuxObjectLineCCT lineTest;
-	LuxFence renderFence{ 0 };
+	//LuxFence renderFence{ 0 };
 	void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
-		renderFence.wait(1);
-		*lineTest.x1 = x;
-		*lineTest.y1 = y;
-		printf("%f, %f\n", x, y);
-		renderFence.set(0);
+		//renderFence.wait(1);
+		*engine.lineTest.x1 = x;
+		*engine.lineTest.y1 = y;
+		//renderFence.set(0);
 	}
 
 void Engine::run(bool vUseVSync, float vFOV) {
@@ -97,8 +95,9 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 	runCompute();
 
-	glfwSetMouseButtonCallback(window, &__lp_mouseButtonCallback);
-	glfwSetKeyCallback(window, &__lp_key_callback);
+	glfwSetMouseButtonCallback(window, __lp_mouseButtonCallback);
+	glfwSetScrollCallback(window, __lp_mouseWheelCallback);
+	glfwSetKeyCallback(window, __lp_key_callback);
 
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
@@ -137,9 +136,9 @@ void Engine::mainLoop() {
 void Engine::runRenderThr() {
 	while (running) {
 		//printf("\n%d, %d\n", swapchainExtent.width, swapchainExtent.height);
-		renderFence.wait(0);
+		//renderFence.wait(0);
 		graphicsDrawFrame();
-		renderFence.set(1);
+		//renderFence.set(1);
 		//while (!updates.empty()) {
 		//	#define obj updates.front()
 		//	switch (obj->objectType) {
