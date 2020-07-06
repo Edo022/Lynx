@@ -63,6 +63,7 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 
+
 void drawLine(){ 
 //	int j = 
 	const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
@@ -91,6 +92,7 @@ void drawLine(){
 	
 
 	//Draw sub segment
+	//TODOu se normal line algorithm
 	float sLen = distance(s0, s1);						//Length of the segment
 	for(float i = 0; i < sLen; i++){					//Set the current pixel with the interpolated color
 		vec2 ppos =											//Calculate the base position of the pixel to draw
@@ -100,7 +102,6 @@ void drawLine(){
 
 		setPixelColor(ppos, col);							//Set the current pixel with the interpolated color
 		setPixelColor(ppos + vec2(1,0), col);				//Additional pixel to prevent holes in the image
-		setPixelColor(ppos + vec2(0,1), col);				//Additional pixel to prevent holes in the image
 	}
 }
 

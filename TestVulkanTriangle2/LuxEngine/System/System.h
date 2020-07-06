@@ -34,6 +34,7 @@ static inline void __lp_lux_get_current_working_directory() {
 		char buff[FILENAME_MAX];													//Create char array to store the path
 		__lp_get_cwd(buff, FILENAME_MAX);											//Get path
 		for (int i = 0; buff[i] != '\0'; i++) if (buff[i] == '\\') buff[i] = '/';	//Replace silly windows backslashes with normal slashes
+		//TODO replace spaces
 		luxThisDirectory = LuxString(buff);											//Save path
 	}
 }
