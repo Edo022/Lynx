@@ -46,13 +46,7 @@ static inline void luxSpawnObject(LuxObject_base0* pObject) {
 
 
 
-	//LuxFence renderFence{ 0 };
-	void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
-		//renderFence.wait(1);
-		*engine.lineTest.x1 = x;
-		*engine.lineTest.y1 = y;
-		//renderFence.set(0);
-	}
+
 
 void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxStartChrono();
@@ -87,10 +81,23 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	*lineTest.y0 = 500;
 	*lineTest.x1 = 1700;
 	*lineTest.y1 = 800;
-	//*lineTest.x0 = 100;
-	//*lineTest.y0 = 800;
-	//*lineTest.x1 = 1200;
-	//*lineTest.y1 = 200;
+
+	
+	luxSpawnObject(&lineTest2);
+	lineTest2.cellPtr = gpuCellMap(lineTest2.gpuCell);
+	lineTest2.hhh_();
+
+	*lineTest2.col0 = vec4float32{ 1, 0.1, 0, 1 };
+	*lineTest2.col1 = vec4float32{ 0, 0.2, 1, 0 };
+
+	*lineTest2.wd0 = 100;
+	*lineTest2.wd1 = 200;
+
+	*lineTest2.x0 = 2000;
+	*lineTest2.y0 = 500;
+	*lineTest2.x1 = 1700;
+	*lineTest2.y1 = 800;
+
 
 
 	runCompute();

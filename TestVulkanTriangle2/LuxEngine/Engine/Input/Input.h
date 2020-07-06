@@ -9,7 +9,7 @@
 #include "LuxEngine/Types/Integers/Integers.h"    // for uint16
 #include "stdio.h"                                // for printf
 #include "LuxEngine/Engine/Engine.h"
-
+#include "KeyboardInput.h"
 
 
 extern LuxInputState* __lp_input_states;		//The current input state
@@ -26,8 +26,11 @@ static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action,
 	glfwGetCursorPos(window, &x, &y);
 	*engine.lineTest.x0 = (float)x;
 	*engine.lineTest.y0 = (float)y;
-	printf("mouse");
+	//printf("mouse");
 }
+
+
+
 
 static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
 	*engine.lineTest.wd0 -= y * 10;
@@ -35,12 +38,29 @@ static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
 }
 
 
+
+
+static void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
+	////renderFence.wait(1);
+	*engine.lineTest.x1 = x;
+	*engine.lineTest.y1 = y;
+	////renderFence.set(0);
+}
+
+
+
 //TODO add key seqeuence tree
 
 
 //This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	// 37th hour spent debugging this function. It finally works
+	if (key == LUX_KEY_KP_SUBTRACT) if((*engine.lineTest.col0).w > 0) *engine.lineTest.col0 -= vec4float32(0, 0, 0, 0.05);
+	if (key == LUX_KEY_KP_SUBTRACT) if((*engine.lineTest.col1).w > 0) *engine.lineTest.col1 -= vec4float32(0, 0, 0, 0.05);
+	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col0).w < 1) *engine.lineTest.col0 += vec4float32(0, 0, 0, 0.05);
+	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col1).w < 1) *engine.lineTest.col1 += vec4float32(0, 0, 0, 0.05);
+
+
+	// 37th hour spent debugging this function
 	static uint16 yMin = 0, yMax = scast<uint16>(__lp_input_states->sequences.size() - 1), x = 0;
 	#define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - glfwAction - 1))
 
@@ -84,4 +104,4 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 
 
 
-#endif // ! __INPUT
+#endif //! __INPUT

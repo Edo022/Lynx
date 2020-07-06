@@ -71,7 +71,7 @@ void Engine::graphicsCreateFences() {
 
 
 
-
+//TODO multithreaded submit and command creation
 void Engine::graphicsDrawFrame() {
 	//TODO use a render fence. execute main code only when the frame render ends
 	redraw:

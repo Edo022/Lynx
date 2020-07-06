@@ -31,32 +31,13 @@ void Engine::runCompute() {
 	pVertices[0] = 100;
 	pVertices[1] = 10;
 
-	//LuxArray<LuxCell> cells = { __windowOutput, __windowSize, __vertices };
-	//testShader0 = cshaderNew(&cells, "LuxEngine/Contents/shaders/shader.spv");
-
-	//#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
-
-
-
-	//LuxCell cell___ = gpuCellCreate(16*3, true);
-	//void* mapppp = (uint32*)gpuCellMap(cell___);
-	//((int32*)mapppp)[2] = 100;
-	//((int32*)mapppp)[3] = 20;
-	//((int32*)mapppp)[0] = 2500;
-	//((int32*)mapppp)[1] = 100;
-
-	////TODO vec4s requires 16-byte alignment
-	//((uint32*)mapppp)[4] = 255;
-	//((uint32*)mapppp)[5] = 231;
-	//((uint32*)mapppp)[6] = 0;
-	//((uint32*)mapppp)[7] = 255;
-
-	//((float32*)mapppp)[8] = 100;
 
 
 	LuxArray<LuxCell> cells2 = { __windowOutput, __windowSize, objs[0]->gpuCell };
-	//LuxArray<LuxCell> cells2 = { __windowOutput, __windowSize, cell___ };
 	int hhhhh = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv");
+
+	LuxArray<LuxCell> cells3 = { __windowOutput, __windowSize, objs[1]->gpuCell };
+	int hhhh2 = cshaderNew(&cells3, "LuxEngine/Contents/shaders/test0.spv");
 
 
 	{ //#LLID CCB0000 Create copy command buffers 

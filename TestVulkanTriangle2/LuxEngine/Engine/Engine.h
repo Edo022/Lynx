@@ -216,6 +216,7 @@ Object
 class Engine {
 public:
 	LuxDynamic_LuxObjectLineCCT lineTest;
+	LuxDynamic_LuxObjectLineCCT lineTest2;
 
 	double FPS = 0;
 	float FOV;
