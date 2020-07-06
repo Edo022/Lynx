@@ -49,13 +49,24 @@ static void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 //TODO add key seqeuence tree
 
 
 //This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == LUX_KEY_KP_SUBTRACT) if((*engine.lineTest.col0).w > 0) *engine.lineTest.col0 -= vec4float32(0, 0, 0, 0.05);
-	if (key == LUX_KEY_KP_SUBTRACT) if((*engine.lineTest.col1).w > 0) *engine.lineTest.col1 -= vec4float32(0, 0, 0, 0.05);
+	if (key == LUX_KEY_KP_SUBTRACT) (*engine.lineTest.col0).w = max((*engine.lineTest.col0).w - 0.05, 0);
+	if (key == LUX_KEY_KP_SUBTRACT) (*engine.lineTest.col1).w = max((*engine.lineTest.col1).w - 0.05, 0);
 	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col0).w < 1) *engine.lineTest.col0 += vec4float32(0, 0, 0, 0.05);
 	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col1).w < 1) *engine.lineTest.col1 += vec4float32(0, 0, 0, 0.05);
 

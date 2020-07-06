@@ -192,19 +192,67 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 /*
 
 
-Object
-	Object data				| SHARED RAM
+Dynamic Object
+	Object data | SHARED RAM --> ComputeImage() --> 
+				
+
+
 	pointers to object data	| RAM
 	Fast object data		| VRAM
 	Fast object cache		| VRAM
-
-		
-
-
-
-
-
-
+                                                                                                                                                                        
+                                                                                                                           
+                                                                                                                           
+                                                                                                    Render space assembler                    
+                                                                                                              ¦                                        
+                                                                                                              ¦                                        
+                                Object 0 cache                                                                ¦                                           
+                                .───────────────────.                                                         ¦                                        
+                                 \     .─────────.   \                                                    .───¦───────────────.                        
+                                  \     \_________\   \                                                    \  ¦  .─────────.   \                       
+        Object 0 --> Draw() -->    \   Layer 0         \  --> SortByZIndex() -----------------------------> \     \_________\   \                      
+        zindex = 2                  \                   \                                                    \    Layer 0        \                     
+                                     \___________________\                                        .───────────\                   \                    
+                                                                                                   \          ¦\___________________\                   
+                                Object 1 cache                                      .-------------> \   Layer ¦ 2  \____\                              
+                                .────────────────────.                              ¦                \        ¦          \                             
+                                 \                    \                             ¦                 \___________________\───.                        
+        Object 1 --> Draw() -->   \                    \ --> SortByZIndex() -----.  ¦                     \   ¦                \                       
+        zindex = 0                 \ Layer 1            \                        '--¦ -------------------> \                    \                      
+                                    \____________________\                          ¦                       \ Layer 1            \                     
+                                                                                    ¦                        \____________________\                    
+                                Object 2 cache                                      ¦                          ¦                                       
+                                .───────────────────.                               ¦                          ¦                                        
+                                 \              \    \                              ¦                          ¦                                         
+        Object 2 --> Draw() -->   \  Layer 2     \____\ --> SortByZIndex() ---------'                          ¦                                        
+        zindex = 1                 \                   \                                                       ¦                                        
+                                    \___________________\                                                      ¦                                        
+                                                                                                               ¦                                        
+                                                                                                               ¦                                        
+                                                                                                               ¦                                        
+                                                                                         Render space 2        ¦                                        
+                                                                                  __    \______________________¦________________\                                            Window output                                    RS2                     
+                                                                                    \                          ¦                                      					      ___________________________________________________________________________  
+                                                                                     \     Render space 0      ¦                                                             │            ___________________    │ /                                 │   │
+                                                                            Render    \    ____________________¦_____________________                                        │           │                   │   │___________________________________│   │
+                                                                             space 1   \   \                   ↓                      \                                      │   _____   │ /                 │                                           │
+                                                                                        \   \      .─ ─ ─ ─ ─ ─ ─ ─ ─ ─.               \                                     │  │     │  │ /                 │    ____________________________________   │
+                                                                                         \   \      \      .─ ─ ─ ─ ─ ─ ─ ─ ─ ─.        \                                    │  │ /   │  │ /                 │   │                                    │  │
+                                                                                          \   \      \   Lay\     .─ ─ ─ ─ ─.   \        \  ------> CopyBuffer() --------->  │  │ /   │  │ /                 │   │     .───────────────────.          │  │
+                                                                                           \   \      \      \     \_ _ _ _ _\   \        \                                  │  │ /   │  │ /                 │   │     │      .───────────────────.   │  │
+                                                                                            \   \      \ _ _ _\    Layer 0        \        \                                 │  │ /   │  │ /                 │   │     │   Lay│     .─────────.   │   │  │
+                                                                                             \   \          \  \                   \        \                                │  │ /   │  │ /                 │   │     │      │     │_________│   │   │  │
+                                                                                              \   \          \ L\_ _ _ _ _ _ _ _ _ _\        \                               │  │ /   │  │ /                 │   │     │ _____│    Layer 0        │   │  │
+                                                                                               \   \          \ _ _ _ _ _ _ _ _ _ _\          \                              │  │ /   │  │                   │   │         │  │                   │   │  │
+                                                                                                \   \                                          \                             │  │ /   │  │                   │   │         │ L│___________________│   │  │ 
+                                                                                                 \   \                                          \                            │  │     │  │                   │   │         │____________________│     │  │ 
+                                                                                                __\   \__________________________________________\                           │  │     │  │                   │   │                                    │  │ 
+                                                                                                                                                                             │  │_____│  │___________________│   │____________________________________│  │
+                                                                                                                                                                             │___________________________________________________________________________│
+                                                                                                                                                                                  RS3             RS1                             RS0
+                                                                                                                                                                                        
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
 */
 
 
@@ -379,6 +427,8 @@ private:
 
 	VkCommandPool copyCommandPool;
 	LuxArray <VkCommandBuffer> copyCommandBuffers;
+	VkCommandPool clearCommandPool;
+	VkCommandBuffer clearCommandBuffer;
 
 	//Objects
 	const int32 WORKGROUP_SIZE = 32;			//Workgroup size in compute shader

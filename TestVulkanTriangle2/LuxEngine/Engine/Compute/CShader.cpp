@@ -237,6 +237,47 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		//End command buffer recording
 		TryVk(vkEndCommandBuffer(copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//Create command pool
+	static VkCommandPoolCreateInfo commandPoolCreateInfo2 = {};							//Create command pool create infos. The command pool contains the command buffers
+	commandPoolCreateInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
+	commandPoolCreateInfo2.flags = 0;														//Default falgs
+	commandPoolCreateInfo2.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
+	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo2, null, &clearCommandPool)) Exit("Unable to create command pool");
+
+
+	//Create allocate info
+	VkCommandBufferAllocateInfo allocInfo2{};
+	allocInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocInfo2.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocInfo2.commandPool = clearCommandPool;
+	allocInfo2.commandBufferCount = 1;
+
+	//Allocate command buffer
+	vkAllocateCommandBuffers(graphics.LD, &allocInfo2, &clearCommandBuffer);
+
+	//Begine command recording
+	VkCommandBufferBeginInfo beginInfo2{};
+	beginInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+	vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
+
+	vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+
+	//End command recording
+	vkEndCommandBuffer(clearCommandBuffer);
 }
 
 

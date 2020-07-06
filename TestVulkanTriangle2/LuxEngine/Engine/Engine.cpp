@@ -30,6 +30,8 @@ static bool compileShader(const char* pShaderName) {
 	return ("%d\n", system(compileShaderCommand.begin()) == 0);
 }
 
+
+
 static inline void luxSpawnObject(LuxObject_base0* pObject) {
 	if (pObject->objectType > 0) {
 		engine.objs.add(pObject);
@@ -49,6 +51,7 @@ static inline void luxSpawnObject(LuxObject_base0* pObject) {
 
 
 void Engine::run(bool vUseVSync, float vFOV) {
+	//Init
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
 
@@ -106,10 +109,12 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	glfwSetScrollCallback(window, __lp_mouseWheelCallback);
 	glfwSetKeyCallback(window, __lp_key_callback);
 
+	//Loop
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
-	Normal  printf("Cleaning memory");								graphicsCleanup(); cleanupCompute();		NewLine;
 
+	//Exit
+	Normal  printf("Cleaning memory");								graphicsCleanup(); cleanupCompute();		NewLine;
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);
 	glfwTerminate();

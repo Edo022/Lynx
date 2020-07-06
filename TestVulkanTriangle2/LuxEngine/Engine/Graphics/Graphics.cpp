@@ -102,17 +102,20 @@ void Engine::graphicsDrawFrame() {
 
 	//TODO don't recreate the command buffer array every time 
 	//Clean
-	VkCommandBuffer clearCB = beginSingleTimeCommands();
-	vkCmdFillBuffer(clearCB, CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
-	endSingleTimeCommands(clearCB);
+	//VkCommandBuffer clearCB = beginSingleTimeCommands();
+	//vkCmdFillBuffer(clearCB, CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+	//endSingleTimeCommands(clearCB);
+
 
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	static LuxArray<VkCommandBuffer> commandBuffers(CShaders.size() + 1);
+	static LuxArray<VkCommandBuffer> commandBuffers(CShaders.size() + 2);
 	forEach(CShaders, i) {
-		commandBuffers[i] = CShaders[i].commandBuffers[0];
+		commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
 	}
 	commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
+	commandBuffers[0] = clearCommandBuffer;
+
 	static VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.waitSemaphoreCount = 1;
