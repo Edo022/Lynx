@@ -98,21 +98,12 @@ void Engine::graphicsDrawFrame() {
 
 
 
-
-
 	//TODO don't recreate the command buffer array every time 
-	//Clean
-	//VkCommandBuffer clearCB = beginSingleTimeCommands();
-	//vkCmdFillBuffer(clearCB, CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
-	//endSingleTimeCommands(clearCB);
-
-
 	//Update render result submitting the command buffers to the compute queue
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	static LuxArray<VkCommandBuffer> commandBuffers(CShaders.size() + 2);
-	forEach(CShaders, i) {
-		commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
-	}
+	LuxArray<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
+
+	forEach(CShaders, i) if(CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
 	commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
 	commandBuffers[0] = clearCommandBuffer;
 
@@ -128,8 +119,6 @@ void Engine::graphicsDrawFrame() {
 
 	vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
 	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
-
-
 
 
 

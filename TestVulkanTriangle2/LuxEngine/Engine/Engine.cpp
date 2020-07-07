@@ -55,10 +55,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
 
-	if (!(
-		compileShader("shader") &
-		compileShader("test0")
-		)) Exit("compilation error");
+	if (!(compileShader("shader") & compileShader("test0"))) Exit("compilation error");
 
 
 
@@ -132,8 +129,6 @@ void Engine::mainLoop() {
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-
-
 		//TODO full screen
 	}
 	running = false;
@@ -143,38 +138,11 @@ void Engine::mainLoop() {
 
 
 
-#define checkBit(bits, bit) ((bits) && (bit) == (bit))
 
 void Engine::runRenderThr() {
 	while (running) {
-		//printf("\n%d, %d\n", swapchainExtent.width, swapchainExtent.height);
-		//renderFence.wait(0);
 		graphicsDrawFrame();
-		//renderFence.set(1);
-		//while (!updates.empty()) {
-		//	#define obj updates.front()
-		//	switch (obj->objectType) {
-		//		case LUX_OBJECT_TYPE_LINE_2D_CCT: 
-		//			/*
-		//				8	int x0; int y0;
-		//				8	int x1; int y1;
-		//				16	uvec4 col;
-		//				4	float wd;
-		//			*/
-		//			if (obj->gpuCell == uint64(-1)) gpuCellCreate(36, true);
-		//			void* memory = gpuCellMap(obj->gpuCell);
-		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_X0)) 
-		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_Y0))
-		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_X1)) 
-		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_Y1))
-		//			if(checkBit(obj->updates, LUX_OBJECT_UPDATE_WD)) 
-		//			break;
-		//		default: Exit("Invalid object");
-		//	}
-			//while (objUpdates != 0) {
-
-			//}
-		//}
+		vkDeviceWaitIdle(compute.LD);
 		frames++;
 	}
 }

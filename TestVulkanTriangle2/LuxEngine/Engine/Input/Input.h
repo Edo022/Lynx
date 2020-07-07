@@ -71,6 +71,30 @@ static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int act
 	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col1).w < 1) *engine.lineTest.col1 += vec4float32(0, 0, 0, 0.05);
 
 
+
+
+	//FULL SCREEN
+	static int fsstate = 0;
+	static int wmx, wmy, wmw, wmh;
+	if (key == LUX_KEY_F11 && action == GLFW_PRESS) {
+		int mx, my, mw, mh;
+		glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &mx, &my, &mw, &mh);
+		if (fsstate == 0) {
+			glfwGetWindowSize(window, &wmw, &wmh);
+			glfwGetWindowPos(window, &wmx, &wmy);
+			glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), mx, my, mw, mh, GLFW_DONT_CARE);
+			fsstate = 1;
+		}
+		else if (fsstate == 1) {
+			glfwSetWindowMonitor(window, NULL, wmx, wmy, wmw, wmh, GLFW_DONT_CARE);
+			glfwRestoreWindow(window);
+			fsstate = 0;
+		}
+	}
+
+
+
+
 	// 37th hour spent debugging this function
 	static uint16 yMin = 0, yMax = scast<uint16>(__lp_input_states->sequences.size() - 1), x = 0;
 	#define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - glfwAction - 1))

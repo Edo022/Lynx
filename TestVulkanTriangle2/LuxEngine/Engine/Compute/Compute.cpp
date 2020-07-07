@@ -34,10 +34,10 @@ void Engine::runCompute() {
 
 
 	LuxArray<LuxCell> cells2 = { __windowOutput, __windowSize, objs[0]->gpuCell };
-	int hhhhh = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv");
+	ls0 = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv");
 
 	LuxArray<LuxCell> cells3 = { __windowOutput, __windowSize, objs[1]->gpuCell };
-	int hhhh2 = cshaderNew(&cells3, "LuxEngine/Contents/shaders/test0.spv");
+	ls1 = cshaderNew(&cells3, "LuxEngine/Contents/shaders/test0.spv");
 
 
 	{ //#LLID CCB0000 Create copy command buffers 

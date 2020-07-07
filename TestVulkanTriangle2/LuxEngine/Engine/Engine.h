@@ -435,6 +435,11 @@ private:
 
 
 
+
+
+
+    LuxShader ls0;
+    LuxShader ls1;
     
 
     VkCommandPool copyCommandPool;
