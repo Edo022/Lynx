@@ -55,6 +55,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
 
+
 	if (!(compileShader("shader") & compileShader("test0"))) Exit("compilation error");
 
 
@@ -69,7 +70,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 	luxSpawnObject(&lineTest);
 	lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
-	lineTest.hhh_();
+	lineTest.initPtrs();
 
 	*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
 	*lineTest.col1 = vec4float32{ 0, 0.2, 1, 0 };
@@ -85,7 +86,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	
 	luxSpawnObject(&lineTest2);
 	lineTest2.cellPtr = gpuCellMap(lineTest2.gpuCell);
-	lineTest2.hhh_();
+	lineTest2.initPtrs();
 
 	*lineTest2.col0 = vec4float32{ 1, 0.1, 0, 1 };
 	*lineTest2.col1 = vec4float32{ 0, 0.2, 1, 0 };
@@ -223,15 +224,7 @@ void Engine::createInstance() {
 void Engine::initWindow() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
 	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
-
-	//TODO FULL SCREEN START
-	//GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-	//window = glfwCreateWindow(width, height, "Lux Engine", monitor, nullptr);
-	//TODO FULL SCREEN SET (??)
-	//glfwSetWindowMonitor
-	//glfwSetWindowSize
 
 	unsigned char h[] = {
 		255, 0, 0, 255,

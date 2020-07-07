@@ -14,7 +14,7 @@
 struct LuxDynamic_LuxObjectLineCCT : public LuxObject2D_base1 {
 	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_2D_LINE; }
 
-	void hhh_() {
+	void initPtrs() {
 		x0 = ((int32*)cellPtr) + 0;
 		y0 = ((int32*)cellPtr) + 1;
 		x1 = ((int32*)cellPtr) + 2;
