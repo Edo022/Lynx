@@ -22,11 +22,9 @@ Engine engine;
 static LuxString shaderPath; 
 
 //Shader files must have the .comp extension
-static bool compileShader(const char* pShaderName) {
+static bool compileShader(const char* pShaderPath) {
 	LuxString compileShaderCommand =
-		luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " +
-		luxThisDirectory + "/LuxEngine/Contents/shaders/" + pShaderName + ".comp -o " +
-		luxThisDirectory + "/LuxEngine/Contents/shaders/" + pShaderName + ".spv";
+		luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
 	return ("%d\n", system(compileShaderCommand.begin()) == 0);
 }
 
@@ -54,7 +52,14 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//Init
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
-	if (!(compileShader("shader") & compileShader("test0"))) Exit("compilation error");
+	for (const auto& name : std::filesystem::directory_iterator(shaderPath.begin())) {
+		LuxString luxStrPath = LuxString(name.path().u8string().c_str()); luxFixWindowsPath(luxStrPath);
+		if (luxGetExtensionFromString(luxStrPath) == "comp") {
+			if (!compileShader(luxStrPath.begin())) Exit("compilation error")
+			else Normal printf("%s", luxStrPath.begin());
+		}
+	}
+
 
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
@@ -264,7 +269,7 @@ void Engine::initWindow() {
 
 
 
-// Shared functions -------------------------------------------------------------------------------------------------------------------------//
+// Shared and buffers -----------------------------------------------------------------------------------------------------------------------//
 
 
 

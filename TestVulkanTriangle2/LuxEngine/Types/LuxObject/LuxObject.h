@@ -36,12 +36,12 @@ struct LuxObject_base0 {
 	LuxObjectType objectType;
 	LuxObject_base0() { objectType = LUX_OBJECT_TYPE__BASE; }
 
-	LuxString name{ "" };				//The name of the object. 
-	static uint64 lastID;				//#LLID LOS000 the last assigned ID of a LuxObject 
-	uint64 ID{ ++lastID };				//A unique ID that indentifies the object
+	LuxString name{ "" };			//The name of the object. 
+	static uint64 lastID;			//#LLID LOS000 the last assigned ID of a LuxObject 
+	uint64 ID{ ++lastID };			//A unique ID that indentifies the object
 
-	LuxCell gpuCell{ (uint64)-1 };		//GPU memory containing the small data of the object
-	void* cellPtr = nullptr;			//Pointer to the GPU memory cell
+	LuxCell gpuCell{ (uint64)-1 };	//GPU memory containing the small data of the object
+	void* cellPtr = nullptr;		//Pointer to the GPU memory cell
 };
 
 
@@ -53,11 +53,11 @@ struct LuxObject_base0 {
 struct LuxObject3D_base1 : public LuxObject_base0 {
 	LuxObject3D_base1() { objectType = LUX_OBJECT_TYPE_3D__BASE; }
 
-	vec3float32 pos{ 0, 0, 0 };	//Position of the object. The position is relative to the origin of the object
-	vec3float32 org{ 0, 0, 0 };	//Origin of the object
-	float32 wIndex{ 0 };		//Index of the object. Objects with higher wIndex will be rendered on top of others
-	vec3float32 rot{ 0, 0, 0 };	//Rotation of the object
-	vec3float32 scl{ 0, 0, 0 };	//Scale of the object
+	vec3float32 pos{ 0, 0, 0 };		//Position of the object. The position is relative to the origin of the object
+	vec3float32 org{ 0, 0, 0 };		//Origin of the object
+	float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
+	vec3float32 rot{ 0, 0, 0 };		//Rotation of the object
+	vec3float32 scl{ 0, 0, 0 };		//Scale of the object
 };
 
 
@@ -67,12 +67,12 @@ struct LuxObject3D_base1 : public LuxObject_base0 {
 struct LuxObject2i3D_base1 : public LuxObject_base0 {
 	LuxObject2i3D_base1() { objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
 
-	vec3float32 pos{ 0, 0, 0 };	//Position of the object. The position is relative to the origin of the object
-	vec3float32 org{ 0, 0, 0 };	//Origin of the object
-	float32 wIndex{ 0 };		//Index of the object for 3D space
-	float32 zIndex{ 0 };		//Index of the object for 2D space
-	vec3float32 rot{ 0, 0, 0 };	//Rotation of the object
-	vec2float32 scl{ 0, 0 };	//Scale of the object
+	vec3float32 pos{ 0, 0, 0 };		//Position of the object. The position is relative to the origin of the object
+	vec3float32 org{ 0, 0, 0 };		//Origin of the object
+	float32 wIndex{ 0 };			//Index of the object for 3D space
+	float32 zIndex{ 0 };			//Index of the object for 2D space
+	vec3float32 rot{ 0, 0, 0 };		//Rotation of the object
+	vec2float32 scl{ 0, 0 };		//Scale of the object
 };
 
 
@@ -82,11 +82,11 @@ struct LuxObject2i3D_base1 : public LuxObject_base0 {
 struct LuxObject2D_base1 : public LuxObject_base0 {
 	LuxObject2D_base1() { objectType = LUX_OBJECT_TYPE_2D__BASE; }
 
-	vec2float32 pos{ 0, 0 };	//Position of the object. The position is relative to the origin of the object
-	vec2float32 org{ 0, 0 };	//Origin of the object
-	float32 zIndex{ 0 };		//Index of the object. Objects with higher zIndex will be rendered on top of others
-	float32 rot{ 0 };			//Rotation of the object
-	vec2float32 scl{ 0, 0 };	//Scale of the object
+	vec2float32 pos{ 0, 0 };		//Position of the object. The position is relative to the origin of the object
+	vec2float32 org{ 0, 0 };		//Origin of the object
+	float32 zIndex{ 0 };			//Index of the object. Objects with higher zIndex will be rendered on top of others
+	float32 rot{ 0 };				//Rotation of the object
+	vec2float32 scl{ 0, 0 };		//Scale of the object
 };
 
 
@@ -96,8 +96,8 @@ struct LuxObject2D_base1 : public LuxObject_base0 {
 struct luxObject1D_base1 : public LuxObject_base0 {
 	luxObject1D_base1() { objectType = LUX_OBJECT_TYPE_1D__BASE; }
 
-	float32 pos{ 0 };			//Position of the object. The position is relative to the origin of the object
-	float32 org{ 0 };			//Origin of the object
-	float32 yIndex{ 0 };		//Index of the object. Objects with higher yIndex will be rendered on top of others
-	float32 scl{ 0 };			//Scale of the object
+	float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
+	float32 org{ 0 };				//Origin of the object
+	float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
+	float32 scl{ 0 };				//Scale of the object
 };

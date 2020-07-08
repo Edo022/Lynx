@@ -26,8 +26,8 @@ void Engine::runCompute() {
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
 
-		ls0 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.spv");
-		ls1 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[1]->gpuCell }, "LuxEngine/Contents/shaders/test0.spv");
+		ls0 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
+		ls1 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[1]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
 	}
 
 	{ //#LLID CCB0000 Create copy command buffers 

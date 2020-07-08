@@ -16,10 +16,9 @@ public:
 		memcpy(str.begin(), pString.begin(), pString.size());
 	}
 	inline LuxString(const char* vString) {
-		int i = 0;
-		for (; vString[i] != '\0'; ++i);
-		str.resize(i + 1);
-		memcpy(str.begin(), vString, i + 1);
+		int64 len = strlen(vString) + 1;
+		str.resize(len);
+		memcpy(str.begin(), vString, len);
 	}
 	inline LuxString(const std::initializer_list<char>& vArray) {
 		str.resize(vArray.size());
@@ -39,29 +38,57 @@ public:
 
 	//String concatenation
 	inline void __vectorcall operator += (const LuxString& pString) {
-		uint64 oldSize = str.size();
+		uint64 oldSize = str.size() + 1;
 		str.resize(str.size() + pString.size() - 1);
 		memcpy(str.begin() + oldSize - 1, pString.begin(), pString.size());
 	}
 	inline void __vectorcall operator += (const char* vString) {
-		int i = 0;
-		for (; vString[i] != '\0'; ++i);
+		int64 len = strlen(vString) + 1;
 		uint64 oldSize = str.size();
-		str.resize(str.size() + i/*+1 -1*/);
-		memcpy(str.begin() + oldSize - 1, vString, i + 1);
+		str.resize(str.size() + len - 1);
+		memcpy(str.begin() + oldSize - 1, vString, len);
 	}
-	//inline void __vectorcall operator += (const std::initializer_list<char> vArray) {
 
 
-
-	inline LuxString __vectorcall operator + (const char* vString) const {
-		LuxString vLuxString(str.begin());
-		vLuxString += vString;
-		return vLuxString;
-	}
 	inline LuxString __vectorcall operator + (const LuxString& pString) const {
 		LuxString vLuxString(str.begin());
 		vLuxString += pString;
 		return vLuxString;
 	}
+	inline LuxString __vectorcall operator + (const char* vString) const {
+		LuxString vLuxString(str.begin());
+		vLuxString += vString;
+		return vLuxString;
+	}
+
+
+
+
+	//Compare strings
+	inline bool __vectorcall operator == (const LuxString& vString) const {
+		return ((str.__lp_size == vString.size()) && (memcmp(vString.begin(), str.begin(), str.__lp_size) == 0));
+	}
+	inline bool __vectorcall operator == (const char* vString) const {
+		return ((str.__lp_size == strlen(vString) + 1) && (memcmp(vString, str.begin(), str.__lp_size) == 0));
+	}
 };
+
+
+
+
+
+
+static LuxString luxGetExtensionFromString(const LuxString& pStr) {
+	int i; for (i = pStr.size() - 1; pStr[i] != '.' && i > 0; --i) {
+		if (pStr[i] == '/') return LuxString("");
+	}
+	return LuxString(pStr.begin() + i + 1);
+}
+
+
+static void luxFixWindowsPath(LuxString& pStr) {
+	for (auto& i : pStr) {
+		if (i == '\\') i = '/';
+		//else if(i == ' ') i = '' //TODO spaces
+	}
+}
