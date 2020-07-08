@@ -97,7 +97,7 @@ void Engine::graphicsDrawFrame() {
 
 
 	//TODO don't recreate the command buffer array every time 
-	{ //Update render result submitting the command buffers to the compute queue
+	{ //Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		LuxArray<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
