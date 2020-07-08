@@ -19,6 +19,9 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 void Engine::runCompute() {
 	{
+		spawnObjFence.set(1);
+		spawnObjFence.wait(2);
+
 		gpuCellWindowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 
 		gpuCellWindowSize = gpuCellCreate(4 * 2, true);

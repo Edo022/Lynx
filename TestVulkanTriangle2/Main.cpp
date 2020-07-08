@@ -18,7 +18,9 @@ int main() {
 
 	//int h = l.ID;
 	//int h2 = r.ID;
-	LuxInit(false);
+	engine.spawnObjFence.set(0);
+	std::thread t([&]() {LuxInit(false); });
+	engine.spawnObjFence.wait(1);
 	LuxInputState inputStateTest{
 		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},
 		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("BBBB"); } } ,
@@ -27,6 +29,45 @@ int main() {
 	};
 	luxInputSetInputState(&inputStateTest);
 
+
+
+
+
+	LuxDynamic_LuxObjectLineCCT lineTest;
+	LuxDynamic_LuxObjectLineCCT lineTest2;
+
+
+	luxSpawnObject(&lineTest);
+	lineTest.cellPtr = engine.gpuCellMap(lineTest.gpuCell);
+	lineTest.initPtrs();
+
+	*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
+	*lineTest.col1 = vec4float32{ 0, 0.2, 1, 0 };
+
+	*lineTest.wd0 = 100;
+	*lineTest.wd1 = 200;
+
+	*lineTest.x0 = 2000;
+	*lineTest.y0 = 500;
+	*lineTest.x1 = 1700;
+	*lineTest.y1 = 800;
+
+
+	luxSpawnObject(&lineTest2);
+	lineTest2.cellPtr = engine.gpuCellMap(lineTest2.gpuCell);
+	lineTest2.initPtrs();
+
+	*lineTest2.col0 = vec4float32{ 1, 0.1, 0, 1 };
+	*lineTest2.col1 = vec4float32{ 0, 0.2, 1, 0 };
+
+	*lineTest2.wd0 = 1;
+	*lineTest2.wd1 = 1;
+
+	*lineTest2.x0 = 1000;
+	*lineTest2.y0 = 500;
+	*lineTest2.x1 = 1700;
+	*lineTest2.y1 = 800;
+	engine.spawnObjFence.set(2);
 
 
 

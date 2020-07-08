@@ -275,9 +275,6 @@ Object rendering
 
 class Engine {
 public:
-	LuxDynamic_LuxObjectLineCCT lineTest;
-	LuxDynamic_LuxObjectLineCCT lineTest2;
-
 	double FPS = 0;
 	float FOV;
 	bool running;
@@ -427,7 +424,6 @@ private:
 
 
 
-
 	LuxShader ls0;
 	LuxShader ls1;
 	
@@ -445,6 +441,7 @@ private:
 
 public:
 	LuxMap<LuxObject_base0*> objs;		//TODO
+	LuxFence spawnObjFence;
 private:
 
 
@@ -499,6 +496,22 @@ static void __lp_luxInit(bool useVSync) {
 	engine.running = true;
 }
 
+
+
+
+static inline void luxSpawnObject(LuxObject_base0* pObject) {
+	if (pObject->objectType > 0) {
+		engine.objs.add(pObject);
+	}
+	else Exit("invalid object");
+
+	switch (pObject->objectType) {
+		case LUX_OBJECT_TYPE_2D_LINE:
+			pObject->gpuCell = engine.gpuCellCreate(14 * 4, true);
+			break;
+		default: Exit("TODO");
+	}
+}
 
 
 #endif

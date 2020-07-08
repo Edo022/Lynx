@@ -24,8 +24,8 @@ inline static void luxInputSetInputState(LuxInputState* inputState) { __lp_input
 static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
-	*engine.lineTest.x0 = (float)x;
-	*engine.lineTest.y0 = (float)y;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).x0 = (float)x;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).y0 = (float)y;
 	//printf("mouse");
 }
 
@@ -33,8 +33,8 @@ static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action,
 
 
 static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
-	*engine.lineTest.wd0 -= y * 10;
-	*engine.lineTest.wd1 -= y * 10;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).wd0 -= y * 10;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).wd1 -= y * 10;
 }
 
 
@@ -42,8 +42,8 @@ static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
 
 static void __lp_mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
 	////renderFence.wait(1);
-	*engine.lineTest.x1 = x;
-	*engine.lineTest.y1 = y;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).x1 = x;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).y1 = y;
 	////renderFence.set(0);
 }
 
@@ -65,10 +65,10 @@ static void __lp_mouseCursorPosCallback(GLFWwindow* window, double x, double y) 
 
 //This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 static void __lp_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == LUX_KEY_KP_SUBTRACT) (*engine.lineTest.col0).w = max((*engine.lineTest.col0).w - 0.05, 0);
-	if (key == LUX_KEY_KP_SUBTRACT) (*engine.lineTest.col1).w = max((*engine.lineTest.col1).w - 0.05, 0);
-	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col0).w < 1) *engine.lineTest.col0 += vec4float32(0, 0, 0, 0.05);
-	if (key == LUX_KEY_KP_ADD) if((*engine.lineTest.col1).w < 1) *engine.lineTest.col1 += vec4float32(0, 0, 0, 0.05);
+	if (key == LUX_KEY_KP_SUBTRACT) (*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col0).w = max((*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col0).w - 0.05, 0);
+	if (key == LUX_KEY_KP_SUBTRACT) (*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col1).w = max((*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col1).w - 0.05, 0);
+	if (key == LUX_KEY_KP_ADD) if ((*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col0).w < 1) *(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col0 += vec4float32(0, 0, 0, 0.05);
+	if (key == LUX_KEY_KP_ADD) if ((*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col1).w < 1) *(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).col1 += vec4float32(0, 0, 0, 0.05);
 
 
 

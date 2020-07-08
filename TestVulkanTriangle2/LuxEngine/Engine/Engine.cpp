@@ -30,26 +30,13 @@ static bool compileShader(const char* pShaderPath) {
 
 
 
-static inline void luxSpawnObject(LuxObject_base0* pObject) {
-	if (pObject->objectType > 0) {
-		engine.objs.add(pObject);
-	}
-	else Exit("invalid object");
-
-	switch (pObject->objectType) {
-		case LUX_OBJECT_TYPE_2D_LINE:
-			pObject->gpuCell = engine.gpuCellCreate(14*4, true);
-			break;
-		default: Exit("TODO");
-	}
-}
 
 
 
 
 
 void Engine::run(bool vUseVSync, float vFOV) {
-	//Init
+	//Start init time counter and compile shaders
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
 	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
@@ -60,48 +47,10 @@ void Engine::run(bool vUseVSync, float vFOV) {
 		}
 	}
 
-
+	//Init
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
 	runGraphics(vUseVSync, vFOV);
-
-
-
-
-	{
-		luxSpawnObject(&lineTest);
-		lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
-		lineTest.initPtrs();
-
-		*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
-		*lineTest.col1 = vec4float32{ 0, 0.2, 1, 0 };
-
-		*lineTest.wd0 = 100;
-		*lineTest.wd1 = 200;
-
-		*lineTest.x0 = 2000;
-		*lineTest.y0 = 500;
-		*lineTest.x1 = 1700;
-		*lineTest.y1 = 800;
-
-
-		luxSpawnObject(&lineTest2);
-		lineTest2.cellPtr = gpuCellMap(lineTest2.gpuCell);
-		lineTest2.initPtrs();
-
-		*lineTest2.col0 = vec4float32{ 1, 0.1, 0, 1 };
-		*lineTest2.col1 = vec4float32{ 0, 0.2, 1, 0 };
-
-		*lineTest2.wd0 = 1;
-		*lineTest2.wd1 = 1;
-
-		*lineTest2.x0 = 1000;
-		*lineTest2.y0 = 500;
-		*lineTest2.x1 = 1700;
-		*lineTest2.y1 = 800;
-	}
-
-
 	runCompute();
 
 	//Loop
