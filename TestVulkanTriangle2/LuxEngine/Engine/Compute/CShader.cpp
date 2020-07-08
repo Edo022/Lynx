@@ -156,128 +156,123 @@ void Engine::cshaderCreatePipeline(const char* shaderPath, const LuxShader vCSha
 
 
 void Engine::cshaderCreateDefaultCommandBuffers() {
-	//Create command pool
-	static VkCommandPoolCreateInfo commandPoolCreateInfo = {};							//Create command pool create infos. The command pool contains the command buffers
-	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
-	commandPoolCreateInfo.flags = 0;														//Default falgs
-	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &copyCommandPool)) Exit("Unable to create command pool");
+	{ //Copy
+		//Create command pool
+		static VkCommandPoolCreateInfo commandPoolCreateInfo = {};							//Create command pool create infos. The command pool contains the command buffers
+		commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
+		commandPoolCreateInfo.flags = 0;														//Default falgs
+		commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
+		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &copyCommandPool)) Exit("Unable to create command pool");
 
-	//Allocate command buffers
-	static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
-	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-	commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer 
-	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
-	commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
-	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.data())) Exit("Unable to allocate command buffers");
-
-
-
-	//Record present command buffers
-	for (int imgIndex = 0; imgIndex < swapchainImages.size(); imgIndex++) {	//For every command buffer of the swapchain images
-		//Start recording commands
-		VkCommandBufferBeginInfo beginInfo = {};								//Create begin infos to start recording the command buffer
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;				//Set structure type
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;				//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
-		TryVk(vkBeginCommandBuffer(copyCommandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
+		//Allocate command buffers
+		static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
+		commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
+		commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer 
+		commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
+		commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
+		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
-		//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
-		VkImageMemoryBarrier readToWrite{};										//Create memory barrier object
-		readToWrite.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
-		readToWrite.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;							//Set old layout. Swapchain images are in undefined layout after being acquired 
-		readToWrite.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set new layout. Destination optimal allows the image to be used as a transfer destination
-		readToWrite.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
-		readToWrite.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
-		readToWrite.image = swapchainImages[imgIndex];								//Set swapchain image
-		readToWrite.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;		//Set the aspect mask
-		readToWrite.subresourceRange.baseMipLevel = 0;								//No mipmap
-		readToWrite.subresourceRange.levelCount = 1;								//No multi leve images
-		readToWrite.subresourceRange.baseArrayLayer = 0;							//Set base layer
-		readToWrite.subresourceRange.layerCount = 1;								//No multi layer
-		readToWrite.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set source access mask
-		readToWrite.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set destination access mask. It must be writable in order to copy the buffer in it
-		VkPipelineStageFlags srcStage, dstStage;								//Create stage flags
-		srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//The swapchain image is in color output stage		
-		dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Change it to transfer stage to copy the buffer in it
-		vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
-		VkBufferImageCopy region{};												//Create bufferImageCopy region to copy the buffer to the image
-		region.bufferOffset = 0;													//No buffer offset
-		region.bufferRowLength = 0;													//dark magic
-		region.bufferImageHeight = 0;												//dark magic
-		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;				//Set aspect mask
-		region.imageSubresource.mipLevel = 0;										//No mipmap
-		region.imageSubresource.baseArrayLayer = 0;									//Set base layer
-		region.imageSubresource.layerCount = 1;										//No multi layer
-		region.imageOffset = { 0, 0, 0 };											//No image offset
-		region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-		vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		//Record present command buffers
+		for (int imgIndex = 0; imgIndex < swapchainImages.size(); imgIndex++) {	//For every command buffer of the swapchain images
+			//Start recording commands
+			VkCommandBufferBeginInfo beginInfo = {};								//Create begin infos to start recording the command buffer
+			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;				//Set structure type
+			beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;				//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
+			TryVk(vkBeginCommandBuffer(copyCommandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
 
-		//Create a barrier to use the swapchain image as a present source image
-		VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
-		writeToRead.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
-		writeToRead.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set old layout. Swapchain images is in dst optimal layout after being written
-		writeToRead.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Set new layout. Swapchain images must be in this format to be displayed on screen
-		writeToRead.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
-		writeToRead.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
-		writeToRead.image = swapchainImages[imgIndex];								//Set swapchain image
-		writeToRead.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;		//Set the aspect mask
-		writeToRead.subresourceRange.baseMipLevel = 0;								//No mipmap
-		writeToRead.subresourceRange.levelCount = 1;								//No multi leve images
-		writeToRead.subresourceRange.baseArrayLayer = 0;							//Set base layer
-		writeToRead.subresourceRange.layerCount = 1;								//No multi layer
-		writeToRead.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set source access mask
-		writeToRead.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set destination access mask. It must be readable to be displayed
-		VkPipelineStageFlags srcStage1, dstStage1;								//Create stage flags
-		srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//The image is in transfer stage from the buffer copy
-		dstStage1 = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//Change it to color output to present them
-		vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
-		//End command buffer recording
-		TryVk(vkEndCommandBuffer(copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
+			//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
+			VkImageMemoryBarrier readToWrite{};										//Create memory barrier object
+			readToWrite.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
+			readToWrite.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;							//Set old layout. Swapchain images are in undefined layout after being acquired 
+			readToWrite.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set new layout. Destination optimal allows the image to be used as a transfer destination
+			readToWrite.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
+			readToWrite.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
+			readToWrite.image = swapchainImages[imgIndex];								//Set swapchain image
+			readToWrite.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;		//Set the aspect mask
+			readToWrite.subresourceRange.baseMipLevel = 0;								//No mipmap
+			readToWrite.subresourceRange.levelCount = 1;								//No multi leve images
+			readToWrite.subresourceRange.baseArrayLayer = 0;							//Set base layer
+			readToWrite.subresourceRange.layerCount = 1;								//No multi layer
+			readToWrite.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set source access mask
+			readToWrite.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set destination access mask. It must be writable in order to copy the buffer in it
+			VkPipelineStageFlags srcStage, dstStage;								//Create stage flags
+			srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//The swapchain image is in color output stage		
+			dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Change it to transfer stage to copy the buffer in it
+			vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
+
+			VkBufferImageCopy region{};												//Create bufferImageCopy region to copy the buffer to the image
+			region.bufferOffset = 0;													//No buffer offset
+			region.bufferRowLength = 0;													//dark magic
+			region.bufferImageHeight = 0;												//dark magic
+			region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;				//Set aspect mask
+			region.imageSubresource.mipLevel = 0;										//No mipmap
+			region.imageSubresource.baseArrayLayer = 0;									//Set base layer
+			region.imageSubresource.layerCount = 1;										//No multi layer
+			region.imageOffset = { 0, 0, 0 };											//No image offset
+			region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
+			vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+			//Create a barrier to use the swapchain image as a present source image
+			VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
+			writeToRead.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
+			writeToRead.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set old layout. Swapchain images is in dst optimal layout after being written
+			writeToRead.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Set new layout. Swapchain images must be in this format to be displayed on screen
+			writeToRead.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
+			writeToRead.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
+			writeToRead.image = swapchainImages[imgIndex];								//Set swapchain image
+			writeToRead.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;		//Set the aspect mask
+			writeToRead.subresourceRange.baseMipLevel = 0;								//No mipmap
+			writeToRead.subresourceRange.levelCount = 1;								//No multi leve images
+			writeToRead.subresourceRange.baseArrayLayer = 0;							//Set base layer
+			writeToRead.subresourceRange.layerCount = 1;								//No multi layer
+			writeToRead.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set source access mask
+			writeToRead.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set destination access mask. It must be readable to be displayed
+			VkPipelineStageFlags srcStage1, dstStage1;								//Create stage flags
+			srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT;									//The image is in transfer stage from the buffer copy
+			dstStage1 = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//Change it to color output to present them
+			vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
+
+			//End command buffer recording
+			TryVk(vkEndCommandBuffer(copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
+		}
 	}
 
 
 
 
+	{ //Clear
+		//Create command pool
+		static VkCommandPoolCreateInfo commandPoolCreateInfo2 = {};							//Create command pool create infos. The command pool contains the command buffers
+		commandPoolCreateInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
+		commandPoolCreateInfo2.flags = 0;														//Default falgs
+		commandPoolCreateInfo2.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
+		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo2, null, &clearCommandPool)) Exit("Unable to create command pool");
 
 
+		//Create allocate info
+		VkCommandBufferAllocateInfo allocInfo2{};
+		allocInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo2.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo2.commandPool = clearCommandPool;
+		allocInfo2.commandBufferCount = 1;
 
+		//Allocate command buffer
+		vkAllocateCommandBuffers(graphics.LD, &allocInfo2, &clearCommandBuffer);
 
+		//Begine command recording
+		VkCommandBufferBeginInfo beginInfo2{};
+		beginInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
 
+		vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
 
-
-
-
-	//Create command pool
-	static VkCommandPoolCreateInfo commandPoolCreateInfo2 = {};							//Create command pool create infos. The command pool contains the command buffers
-	commandPoolCreateInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
-	commandPoolCreateInfo2.flags = 0;														//Default falgs
-	commandPoolCreateInfo2.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo2, null, &clearCommandPool)) Exit("Unable to create command pool");
-
-
-	//Create allocate info
-	VkCommandBufferAllocateInfo allocInfo2{};
-	allocInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo2.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo2.commandPool = clearCommandPool;
-	allocInfo2.commandBufferCount = 1;
-
-	//Allocate command buffer
-	vkAllocateCommandBuffers(graphics.LD, &allocInfo2, &clearCommandBuffer);
-
-	//Begine command recording
-	VkCommandBufferBeginInfo beginInfo2{};
-	beginInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-	vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
-
-	vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
-
-	//End command recording
-	vkEndCommandBuffer(clearCommandBuffer);
+		//End command recording
+		vkEndCommandBuffer(clearCommandBuffer); 
+	}
 }
 
 
@@ -287,7 +282,7 @@ void Engine::cshaderCreateDefaultCommandBuffers() {
 
 
 
-void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
+void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 	//Create command pool
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -300,7 +295,8 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
 	commandBufferAllocateInfo.commandPool = CShaders[vCShader].commandPool;					//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
-	commandBufferAllocateInfo.commandBufferCount = 2;										//Allocate one command buffer 
+	commandBufferAllocateInfo.commandBufferCount = 1;										//Allocate one command buffer 
+	CShaders[vCShader].commandBuffers.resize(1);
 	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
@@ -365,8 +361,7 @@ LuxShader Engine::cshaderNew(const LuxArray<LuxCell>& pCells, const char* vShade
 	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
 	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
-	CShaders[shader].commandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-	cshaderCommandBuffers(shader);									//Create command buffers and command pool
+	cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
 
 	return shader;													//Return the index of the created shader
 }

@@ -52,7 +52,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//Init
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
-	for (const auto& name : std::filesystem::directory_iterator(shaderPath.begin())) {
+	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
 		LuxString luxStrPath = LuxString(name.path().u8string().c_str()); luxFixWindowsPath(luxStrPath);
 		if (luxGetExtensionFromString(luxStrPath) == "comp") {
 			if (!compileShader(luxStrPath.begin())) Exit("compilation error")

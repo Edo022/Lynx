@@ -466,7 +466,7 @@ private:
 	void		cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, const LuxShader vCShader);
 	void		cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const LuxShader vCShader);
 	void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
-	void		cshaderCommandBuffers(const LuxShader vCShader);
+	void		cshaderCreateCommandBuffers(const LuxShader vCShader);
 	void		cshaderCreateDefaultCommandBuffers();
 	LuxShader	cshaderNew(const LuxArray<LuxCell>& pCells, const char* vShaderPath);
 	bool		cshaderDestroy(const LuxShader vCShader);

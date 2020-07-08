@@ -28,6 +28,8 @@ int main() {
 	luxInputSetInputState(&inputStateTest);
 
 
+
+
 	while (engine.running) {
 		sleep(5);
 	}
