@@ -155,6 +155,18 @@ void Engine::runFPSCounterThr() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //Create the Vulkan instance, using validation layers when in debug mode
 void Engine::createInstance() {
 	VkInstanceCreateInfo createInfo{};

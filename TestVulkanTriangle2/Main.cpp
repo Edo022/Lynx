@@ -11,9 +11,8 @@
 
 
 
-
-
 int main() {
+
 	//LuxObjectLine l;
 	//LuxRenderSpace2D r;
 

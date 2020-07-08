@@ -36,13 +36,12 @@ struct LuxObject_base0 {
 	LuxObjectType objectType;
 	LuxObject_base0() { objectType = LUX_OBJECT_TYPE__BASE; }
 
-	static uint64 lastID;				//#LLID LOS000 the last assigned ID of a LuxObject 
-	//TODO optimize name. don't use strings when not needed
 	LuxString name{ "" };				//The name of the object. 
+	static uint64 lastID;				//#LLID LOS000 the last assigned ID of a LuxObject 
 	uint64 ID{ ++lastID };				//A unique ID that indentifies the object
-	LuxCell gpuCell{ (uint64)-1 };		//GPU memory containing the small data of the object
 
-	void* cellPtr = nullptr;
+	LuxCell gpuCell{ (uint64)-1 };		//GPU memory containing the small data of the object
+	void* cellPtr = nullptr;			//Pointer to the GPU memory cell
 };
 
 
