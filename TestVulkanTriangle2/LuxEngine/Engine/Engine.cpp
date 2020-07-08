@@ -63,7 +63,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 
-	{ //test
+	{
 		luxSpawnObject(&lineTest);
 		lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
 		lineTest.initPtrs();
