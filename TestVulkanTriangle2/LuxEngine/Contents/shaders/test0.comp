@@ -60,9 +60,8 @@ void setPixelColor(vec2 pos, vec4 col){
 //	vec4 _col = mix(lastCol, col, col.a);
 //	vec4 _col = lastCol + col*col.a;
 
-	//TODO dont multiply per alpha. just copy '' it
-//	colorOutput[i] = colToInt(col * col.a);
-	colorOutput[i] = colToInt(vec4(rand(pos)));
+	//TODO dont multiply per alpha. just copy it
+	colorOutput[i] = colToInt(col * col.a);
 //	colorOutput[i] = colToInt(_col);
 }
 
