@@ -19,13 +19,13 @@
 
 
 
-void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, const LuxShader vCShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
 	//in the compute shader
-	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCells->size());
-	forEach(*pCells, i) {
+	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCells.size());
+	forEach(pCells, i) {
 		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader binding point and how to use it
 		descriptorSetLayoutBinding.binding = scast<uint32>(i);									//Set the binding point in the shader
 		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
@@ -62,12 +62,12 @@ void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, 
 //*      The shader inputs must match those cells
 //*      the binding index is the same as their index in the array
 //*   vCShader: the shader where to create the descriptor pool and allocate the descriptor buffers
-void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const LuxShader vCShader) {
 	//Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 	VkDescriptorPoolSize descriptorPoolSize = {};
 	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorPoolSize.descriptorCount = scast<uint32>(pCells->size());
+	descriptorPoolSize.descriptorCount = scast<uint32>(pCells.size());
 
 	//This struct contains the informations about the descriptor pool. a descriptor pool contains the descriptor sets
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
@@ -92,13 +92,13 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const 
 
 
 	//Create a descriptor set write for every buffer and update the descriptor sets
-	LuxArray<VkWriteDescriptorSet> writeDescriptorSets(pCells->size());
-	forEach(*pCells, i) {
+	LuxArray<VkWriteDescriptorSet> writeDescriptorSets(pCells.size());
+	forEach(pCells, i) {
 		//Connect the storage buffer to the descrptor
 		VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
-		descriptorBufferInfo->buffer = CBuffers[__lp_buffer_from_cc((*pCells)[i])].buffer;	//Set buffer
-		descriptorBufferInfo->offset = __lp_cellOffset_from_cc(&compute.PD, (*pCells)[i]);	//Set buffer offset
-		descriptorBufferInfo->range = __lp_cellSize_from_cc((*pCells)[i]);					//Set buffer size
+		descriptorBufferInfo->buffer = CBuffers[__lp_buffer_from_cc(pCells[i])].buffer;		//Set buffer
+		descriptorBufferInfo->offset = __lp_cellOffset_from_cc(&compute.PD, pCells[i]);		//Set buffer offset
+		descriptorBufferInfo->range = __lp_cellSize_from_cc(pCells[i]);						//Set buffer size
 
 		VkWriteDescriptorSet writeDescriptorSet = {};										//Create write descriptor set
 		writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;						//Set structure type
@@ -155,7 +155,7 @@ void Engine::cshaderCreatePipeline(const char* shaderPath, const LuxShader vCSha
 
 
 
-void Engine::__lp_cshaderCreateCopyCommandBuffers() {
+void Engine::cshaderCreateDefaultCommandBuffers() {
 	//Create command pool
 	static VkCommandPoolCreateInfo commandPoolCreateInfo = {};							//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -212,7 +212,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 		region.imageSubresource.layerCount = 1;										//No multi layer
 		region.imageOffset = { 0, 0, 0 };											//No image offset
 		region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-		vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 		//Create a barrier to use the swapchain image as a present source image
 		VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
@@ -274,7 +274,7 @@ void Engine::__lp_cshaderCreateCopyCommandBuffers() {
 	beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 	vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
 
-	vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(__windowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+	vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
 
 	//End command recording
 	vkEndCommandBuffer(clearCommandBuffer);
@@ -357,7 +357,7 @@ void Engine::cshaderCommandBuffers(const LuxShader vCShader) {
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath) {
+LuxShader Engine::cshaderNew(const LuxArray<LuxCell>& pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
 	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array

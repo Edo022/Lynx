@@ -40,7 +40,7 @@ static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
 
 
 
-static void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
+static void __lp_mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
 	////renderFence.wait(1);
 	*engine.lineTest.x1 = x;
 	*engine.lineTest.y1 = y;

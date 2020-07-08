@@ -71,13 +71,13 @@ struct LuxRenderSpace2D;
 
 //It's dark magic, idk why or how it works, but it does
 static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
-    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-    if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-    else return VK_ERROR_EXTENSION_NOT_PRESENT;
+	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+	if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+	else return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-    if (func != nullptr) func(instance, debugMessenger, pAllocator);
+	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	if (func != nullptr) func(instance, debugMessenger, pAllocator);
 }
 
 
@@ -87,11 +87,11 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 //Dark magic
 #define populateDebugMessengerCreateInfo(createInfo)\
-    createInfo = {};\
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;\
-    createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;\
-    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;\
-    createInfo.pfnUserCallback = graphicsDebugCallback;
+	createInfo = {};\
+	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;\
+	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;\
+	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;\
+	createInfo.pfnUserCallback = graphicsDebugCallback;
 
 
 
@@ -107,14 +107,14 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 
 /*	Threads
-                                         .---> Engine.FPSCounter --.                                                                                          
+										 .---> Engine.FPSCounter --.                                                                                          
   E|            Main --> LuxInit --------¦                         ¦                                                               
   X|             ¦         ¦             '---> Engine.render       ¦                                                                                                         
   E|             ¦         '-Engine.mainLoop-. .---'               ¦                                                                                                        
   C|             ¦                           ¦ ¦ .-----------------'                                                                                                     
    ↓             :                           ¦ ¦ ¦                                                                                                                
-                 .                           ¦ ¦ ¦                                                                                                               
-                                                                                                                                                                   
+				 .                           ¦ ¦ ¦                                                                                                               
+																																								   
 */
 
 
@@ -124,17 +124,17 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
 
 
 /* ↑↓<>-.'_─│¦
-                                                                                                                                                                                        Frame render
-                                                                                                                          GPU MEMORY                                                         ↓
-                                                                                               ______________________________________________________________________________________________¦_________________________________________________________
-                                                                                              │ .────────────────────────────────────────────────────────────────────────────────────────────¦───────────────────────────────────────────────────────. │
+																																														Frame render
+																														  GPU MEMORY                                                         ↓
+																							   ______________________________________________________________________________________________¦_________________________________________________________
+																							  │ .────────────────────────────────────────────────────────────────────────────────────────────¦───────────────────────────────────────────────────────. │
    LUX OBJECT DATA MANAGEMENT                                                                 ││                                                                                             ↓                                                        ││
-                                                                                              ││       Custom size allocations for large buffers                                          Shaders                   Output buffer (6.2208MB)          ││
-                                                                                              ││      .──────────────────────────.  .──────────────────────────.                  .─────────────────────.           Window 0                          ││
+																							  ││       Custom size allocations for large buffers                                          Shaders                   Output buffer (6.2208MB)          ││
+																							  ││      .──────────────────────────.  .──────────────────────────.                  .─────────────────────.           Window 0                          ││
    all the buffers are saved as LuxMap s of buffer cellment index                             ││      | Custom size allocation 2 |  | Custom size allocation 3 >-.                │       Shader 0      <--.       .──────────────────────────.       ││
    and allocated in the GPU's memory.                                                         ││      '─────────↑────────────────'  '─────────↑────────────────' '----------------> 9248141834805313536 │  ¦   .---> Custom size allocation 0 >---.   ││
    by default the buffers are not mapped to avoid multi threading issues        .-------------------------------'     Buffer 10 ↑             ¦     Buffer 11 ↑  .---------------->   20266299256898688 │  ¦   ¦   '──────────────────────────'   ¦   ││
-                                                                                ¦ .-----------------------------------------------------------'                  ¦                │          ¦          │  ¦   ¦                    Buffer 0 ↑    ¦   ││
+																				¦ .-----------------------------------------------------------'                  ¦                │          ¦          │  ¦   ¦                    Buffer 0 ↑    ¦   ││
    Supported VRAM size: 48GB. 50MB per buffer. max 960 buffers                  ¦ ¦           ││                                                                 ¦                │          ↓          │  ¦   ¦                                  ¦   ││
    Buffer class is just a fancy name for some buffers with the same cell size   ¦ ¦           ││                                                                 ¦                │       Shader 1      <--¦---'    Output buffer (6.2208MB)      ¦   ││
    class 2MB:     25 cells per buffer                                           ¦ ¦           ││       Dynamically allocated buffers                             ¦           .---->   13510803177578784 │  ¦        Window 1                      ¦   ││
@@ -143,11 +143,11 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
    class 50B      1Mln cells per buffer                                         ¦ ¦           ││      | cell 24      cell 25      cell 26      ... cell 47     >-'         ¦ ¦ ¦  │          ¦          │  ¦       '──────────────────────────' ¦ ¦   ││
    custom allocation max size: 7FFFFFFF (~2.15GB)                               ¦ ¦           ││      '────────────────────────────────────────────────────────' Buffer 9  ¦ ¦ ¦  │          ↓          │  ¦                        Buffer 1 ↑  ¦ ¦   ││
    larger data structures must be splitted across multiple buffers              ¦ ¦           ││      .────────────────────────────────────────────────────────.           ¦ ¦ ¦  │       Shader 2      <--'                                    ¦ ¦   ││
-                                                                                ¦ ¦           ││      | cell 00      cell 01      cell 02      ... cell 23     |           ¦---¦ ->   15763026045542688 │           ↓...                        ¦ ¦   ││
-    Cell code limits: max buffer index 4096, max cell index 1 048 576           ¦ ¦           ││      '──────↑────────────↑─────────────↓──────────────────────' Buffer 8  ¦ ¦---->   13510803177578784 │                                       ¦ ¦   ││
-    max cell size 2 147 483 648                                                 ¦ ¦     .--------------------'            ¦             '----------------------------------¦ ¦ ¦ ->   18014402806449280 │                                       ¦ ¦   ││
-                                                                                ¦ ¦     ¦ .-------------------------------'                                                ¦ ¦ ¦  │          ¦          │                                       ¦ ¦   ││
-                                                                                ¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │          ↓          │                                       ¦ ¦   ││
+																				¦ ¦           ││      | cell 00      cell 01      cell 02      ... cell 23     |           ¦---¦ ->   15763026045542688 │           ↓...                        ¦ ¦   ││
+	Cell code limits: max buffer index 4096, max cell index 1 048 576           ¦ ¦           ││      '──────↑────────────↑─────────────↓──────────────────────' Buffer 8  ¦ ¦---->   13510803177578784 │                                       ¦ ¦   ││
+	max cell size 2 147 483 648                                                 ¦ ¦     .--------------------'            ¦             '----------------------------------¦ ¦ ¦ ->   18014402806449280 │                                       ¦ ¦   ││
+																				¦ ¦     ¦ .-------------------------------'                                                ¦ ¦ ¦  │          ¦          │                                       ¦ ¦   ││
+																				¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │          ↓          │                                       ¦ ¦   ││
  extern                            RAM                                          ¦ ¦     ¦ ¦   ││                                                                           ¦ ¦ ¦  │         ...         │                                       ¦ ¦   ││
    ↓     _______________________________________________________                ¦ ¦     ¦ ¦   ││       Dynamically allocated buffers                                       ¦ ¦ ¦  │   ...               │         //TODO shaders >> copy cmd    ¦ ¦   ││
   Add   │ .───────────────────────────────────────────────────. │               ¦ ¦     ¦ ¦   ││       cell class 500KB. 100 cells per buffer             ↑...             ¦ ¦ ¦  │   ...               │                                       ¦ ¦   ││
@@ -163,108 +163,108 @@ static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMesse
    ¦--------> LuxObject 2      │      │ pos, rot, scl      >---------------. ¦                ││       Dynamically allocated buffers                                           ¦   │ img >-----.          │       │ img  >-----.         │            ││
    :    ││  │ 6 v, 71 t        >---.  '────────────────────'   ││          ¦ ¦                ││       cell class 5KB. 10k cells per buffer               ↑...                 ¦   │ img >-----¦          │       │ img  >-----¦         │            ││
    '    ││  │ ....             │   ¦  .────────────────────.   ││          ¦ ¦                ││      .────────────────────────────────────────────────────────.               ¦   │ img >-----¦          │       │ img  >-----¦         │            ││
-        ││  :                  :   ¦--> vert buffer index  >------90B------¦ ¦ -----.         ││      | cell 10000   cell 10001   cell 10002   ... cell 19999  |               ¦   │ ...       ¦          │       │ ...        ¦         │            ││
-        ││  '                  '   '--> indx buffer index  >------852B-----¦ ¦ ---. ¦         ││      '────────────────────────────────────────────────────────' Buffer 5      ¦   '───────────¦──────────'       '────────────¦─────────'            ││
-        ││                            │ pos, rot, scl      >-------------. ¦ ¦    ¦ ¦         ││      .────────────────────────────────────────────────────────.               ¦               ¦                               ¦                      ││
-        ││                            '────────────────────'   ││        ¦ ¦ ¦    ¦ ¦         ││      | cell 00000   cell 00001   cell 00002   ... cell 09999  |               ¦         .---- ¦ ----------------------------- ¦ ----.                ││
-        ││                                                     ││        ¦ ¦ ¦    ¦ ¦         ││      '──────↑────────────↑──↓─────────────────────────────────' Buffer 4      ¦         ¦     ¦                               ¦     ¦                ││
-        │'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦  ¦                                                 ¦         ¦                                           ¦                ││
-        '───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'  '-------------------------------------------------'         ¦                                           ¦                ││
-                                                                         ¦ ¦ ¦                ││                                                                                         ¦                                           ¦                ││
-                                                                         ¦ ¦ ¦                ││                                                                                         ¦            D a r k    M a g i c           ¦                ││
-                                                                         ¦ ¦ ¦                ││       Dynamically allocated buffers                                                     ¦                                           ¦                ││
-       A            A            A                                       ¦ ¦ ¦                ││       cell class 50B. 1Mln cells per buffer               ↑...                          ¦                                           ¦                ││
-       ¦            ¦        B---¦ ->B                                   ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                         ¦                                           ¦                ││
+		││  :                  :   ¦--> vert buffer index  >------90B------¦ ¦ -----.         ││      | cell 10000   cell 10001   cell 10002   ... cell 19999  |               ¦   │ ...       ¦          │       │ ...        ¦         │            ││
+		││  '                  '   '--> indx buffer index  >------852B-----¦ ¦ ---. ¦         ││      '────────────────────────────────────────────────────────' Buffer 5      ¦   '───────────¦──────────'       '────────────¦─────────'            ││
+		││                            │ pos, rot, scl      >-------------. ¦ ¦    ¦ ¦         ││      .────────────────────────────────────────────────────────.               ¦               ¦                               ¦                      ││
+		││                            '────────────────────'   ││        ¦ ¦ ¦    ¦ ¦         ││      | cell 00000   cell 00001   cell 00002   ... cell 09999  |               ¦         .---- ¦ ----------------------------- ¦ ----.                ││
+		││                                                     ││        ¦ ¦ ¦    ¦ ¦         ││      '──────↑────────────↑──↓─────────────────────────────────' Buffer 4      ¦         ¦     ¦                               ¦     ¦                ││
+		│'.___________________________________________________.'│        ¦ ¦ ¦    ¦ '------------------------'            ¦  ¦                                                 ¦         ¦                                           ¦                ││
+		'───────────────────────────────────────────────────────'        ¦ ¦ ¦    '---------------------------------------'  '-------------------------------------------------'         ¦                                           ¦                ││
+																		 ¦ ¦ ¦                ││                                                                                         ¦                                           ¦                ││
+																		 ¦ ¦ ¦                ││                                                                                         ¦            D a r k    M a g i c           ¦                ││
+																		 ¦ ¦ ¦                ││       Dynamically allocated buffers                                                     ¦                                           ¦                ││
+	   A            A            A                                       ¦ ¦ ¦                ││       cell class 50B. 1Mln cells per buffer               ↑...                          ¦                                           ¦                ││
+	   ¦            ¦        B---¦ ->B                                   ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                         ¦                                           ¦                ││
    B---¦ ->B    B-->¦-->AB       ¦-->A                                   ¦ ¦ ¦                ││      | cell 1000000 cell 1000001 cell 1000002 ... cell 1999999|                         ¦     ¦                               ¦     ¦                ││
-       ↓            ↓            ↓                                       ¦ ¦ ¦                ││      '────────────────────────────────────────────────────────' Buffer 3                '---- ¦ ----------------------------- ¦ ----'                ││
-       A            AB           A                                       ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                               ¦                               ¦                      ││
-                                                                         ¦ ¦ ¦                ││      | cell 0000000 cell 0000001 cell 0000002 ... cell 0999999|                               ¦                               ¦                      ││
-                                                                         ¦ ¦ ¦                ││      '──────↑────────────↑────────────↑───────────────────────' Buffer 2                      ¦                               ¦                      ││
-                                                                         ¦ ¦ ¦                │'.____________¦____________¦____________¦_______________________________________________________¦_______________________________¦_____________________.'│            
-                                                                         ¦ ¦ ¦                '──────────────¦────────────¦────────────¦───────────────────────────────────────────────────────¦───────────────────────────────¦───────────────────────'            
-                                                                         ¦ ¦ '------36B----------------------'            ¦            ¦                                                       ↓                               ↓                                    
-                                                                         ¦ '--------36B-----------------------------------'            ¦                                                 Color output                    Color output                                
-                                                                         '----------36B------------------------------------------------'                                                                                                                            
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                      
+	   ↓            ↓            ↓                                       ¦ ¦ ¦                ││      '────────────────────────────────────────────────────────' Buffer 3                '---- ¦ ----------------------------- ¦ ----'                ││
+	   A            AB           A                                       ¦ ¦ ¦                ││      .────────────────────────────────────────────────────────.                               ¦                               ¦                      ││
+																		 ¦ ¦ ¦                ││      | cell 0000000 cell 0000001 cell 0000002 ... cell 0999999|                               ¦                               ¦                      ││
+																		 ¦ ¦ ¦                ││      '──────↑────────────↑────────────↑───────────────────────' Buffer 2                      ¦                               ¦                      ││
+																		 ¦ ¦ ¦                │'.____________¦____________¦____________¦_______________________________________________________¦_______________________________¦_____________________.'│            
+																		 ¦ ¦ ¦                '──────────────¦────────────¦────────────¦───────────────────────────────────────────────────────¦───────────────────────────────¦───────────────────────'            
+																		 ¦ ¦ '------36B----------------------'            ¦            ¦                                                       ↓                               ↓                                    
+																		 ¦ '--------36B-----------------------------------'            ¦                                                 Color output                    Color output                                
+																		 '----------36B------------------------------------------------'                                                                                                                            
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	
+																																																																	  
 Object rendering                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                     
-                                                                                               Render space assembler                                                                                                                                                                           
-                                                                                                        ¦                                                                                                                                                            
-                                                                                                        ¦                                                                                                                                                             
-                                                                                                        ¦                                                                                                                                                                                 
-                                                                              Render space assembler    ¦                                                                                                                                                                                          
-                                                                                         ¦              ¦                                                                                                                                                                                 
-                                                                                         ¦              ¦     Render space assembler                                                                                                                                                          
-                                                                                         ¦              ¦              ¦                                                                                                                                                
-                                                                    SortByZIndex()       ¦              ¦              ¦                                                                                                                                               
-                                  Objects cache                     ToGlobalPos()        ¦              ¦              ¦                                                                                                                                                
-                                  .───────────────────.             .───────────────.    ¦              ¦          .───¦───────────────.                                                                                                                                
-                                   \     .─────────.   \            │               │    ¦              ¦           \  ¦  .─────────.   \                                                                                                                               
-          Object 0 --> Draw() ----> \     \_________\   \ ----------> --------------> ---¦ ------------------------> \     \_________\   \                                                                                                                              
-          Ozindex = 2                \   Layer 0         \          │               │    ¦                            \    Layer 0        \                                                                                                                             
-                                  .───\                   \         │               │    ¦              ¦  .───────────\                   \                                                                                                                            
-                                   \   \___________________\        │               │    ¦              ¦   \          ¦\___________________\                                                                                                                           
-          Object 1 --> Draw() ----> \                    \ ---------> ---.     .----> ---¦ ----------------> \   Layer ¦ 2  \____\                                                                                                                                      
-          zindex = 0              .──\ Layer 1            \         │     '. .'     │    ¦                    \        ¦          \                                                                                                                                     
-                                   \  \____________________\        │       X       │    ¦              ¦      \___________________\───.                                                                                                                                
-                                    \  Layer 2     \____\           │     .' '.     │    ¦              ¦          \   ¦                \                                                                                                                               
-          Object 2 --> Draw() -----> \                   \ ---------> ---'     '----> ---¦ -----------------------> \                    \                                                                                                                              
-          zindex = 1                  \___________________\         │               │    ¦                           \ Layer 1            \                                                                                                                             
-                                                                    :               :    ¦              ¦             \____________________\                                                                                                                            
-                                                                    '               '    ¦              ¦              ¦                                                                                                                                               
-                                                                                         ¦              ¦              ¦                                                                                                                                                
-                                                                                         ¦              ¦              ¦                                                                                                                                             
-    i input                                                                              ¦              ¦              ¦                                                                                                                                                
-    u update                                                                             ¦              ¦              ¦                                                                                                                                                
-    l draw loop                                                                          ¦              ¦              ¦                                                                                                                                                
-    r read, w write                                                                      ¦              ¦              ¦                                                                                                                                                
-                                                                                         ¦              ¦              ¦                                                                                                                                                
+																																																																								
+																																																					 
+																							   Render space assembler                                                                                                                                                                           
+																										¦                                                                                                                                                            
+																										¦                                                                                                                                                             
+																										¦                                                                                                                                                                                 
+																			  Render space assembler    ¦                                                                                                                                                                                          
+																						 ¦              ¦                                                                                                                                                                                 
+																						 ¦              ¦     Render space assembler                                                                                                                                                          
+																						 ¦              ¦              ¦                                                                                                                                                
+																	SortByZIndex()       ¦              ¦              ¦                                                                                                                                               
+								  Objects cache                     ToGlobalPos()        ¦              ¦              ¦                                                                                                                                                
+								  .───────────────────.             .───────────────.    ¦              ¦          .───¦───────────────.                                                                                                                                
+								   \     .─────────.   \            │               │    ¦              ¦           \  ¦  .─────────.   \                                                                                                                               
+		  Object 0 --> Draw() ----> \     \_________\   \ ----------> --------------> ---¦ ------------------------> \     \_________\   \                                                                                                                              
+		  Ozindex = 2                \   Layer 0         \          │               │    ¦                            \    Layer 0        \                                                                                                                             
+								  .───\                   \         │               │    ¦              ¦  .───────────\                   \                                                                                                                            
+								   \   \___________________\        │               │    ¦              ¦   \          ¦\___________________\                                                                                                                           
+		  Object 1 --> Draw() ----> \                    \ ---------> ---.     .----> ---¦ ----------------> \   Layer ¦ 2  \____\                                                                                                                                      
+		  zindex = 0              .──\ Layer 1            \         │     '. .'     │    ¦                    \        ¦          \                                                                                                                                     
+								   \  \____________________\        │       X       │    ¦              ¦      \___________________\───.                                                                                                                                
+									\  Layer 2     \____\           │     .' '.     │    ¦              ¦          \   ¦                \                                                                                                                               
+		  Object 2 --> Draw() -----> \                   \ ---------> ---'     '----> ---¦ -----------------------> \                    \                                                                                                                              
+		  zindex = 1                  \___________________\         │               │    ¦                           \ Layer 1            \                                                                                                                             
+																	:               :    ¦              ¦             \____________________\                                                                                                                            
+																	'               '    ¦              ¦              ¦                                                                                                                                               
+																						 ¦              ¦              ¦                                                                                                                                                
+																						 ¦              ¦              ¦                                                                                                                                             
+	i input                                                                              ¦              ¦              ¦                                                                                                                                                
+	u update                                                                             ¦              ¦              ¦                                                                                                                                                
+	l draw loop                                                                          ¦              ¦              ¦                                                                                                                                                
+	r read, w write                                                                      ¦              ¦              ¦                                                                                                                                                
+																						 ¦              ¦              ¦                                                                                                                                                
    2D object                                                                             ¦    .         ↓              ¦              .                                                                                                                                 
-       i, u | in object data | w SHARED                                                  ¦     \ Render space 2        ¦               \                                                                                                                                
-       i, u | Render object  | r SHARED, w VRAM                                      _ __¦ _    \______________________¦ _______________\                                            Window output                                    RS2                             
-       l    | Display cache  | w VRAM                                                    ¦  \                          ¦                                                              ___________________________________________________________________________   
-                                                                                         ↓   \     Render space 0      ¦                                                             │            ___________________    │ /                                 │   │   
+	   i, u | in object data | w SHARED                                                  ¦     \ Render space 2        ¦               \                                                                                                                                
+	   i, u | Render object  | r SHARED, w VRAM                                      _ __¦ _    \______________________¦ _______________\                                            Window output                                    RS2                             
+	   l    | Display cache  | w VRAM                                                    ¦  \                          ¦                                                              ___________________________________________________________________________   
+																						 ↓   \     Render space 0      ¦                                                             │            ___________________    │ /                                 │   │   
    3D object                                                                        Render    \    ____________________¦ _____________________                                       │           │                   │   │___________________________________│   │   
-       i, u | in object data | w SHARED --> VRAM                                     space 1   \   \                   ↓                      \                                      │   _____   │ /                 │                                           │                                                                                                                                                              
-       l    | Render object  | w VRAM                                                           \   \      .─ ─ ─ ─ ─ ─ ─ ─ ─ ─.               \                                     │  │     │  │ /                 │    ____________________________________   │                                                                                                                                                              
-                                                                                                 \   \      \      .─ ─ ─ ─ ─ ─ ─ ─ ─ ─.        \                                    │  │ /   │  │ /                 │   │                                    │  │                                                                                                                                                              
-                                                                                                  \   \      \      \     .─ ─ ─ ─ ─.   \        \  ------> CopyBuffer() --------->  │  │ /   │  │ /                 │   │     .───────────────────.          │  │                                                                                                                                                              
-                                                                                                   \   \      \      \     \_ _ _ _ _\   \        \                                  │  │ /   │  │ /                 │   │     │      .───────────────────.   │  │                                                                                                                                                              
-                                                                                                    \   \      \ _ _ _\                   \        \                                 │  │ /   │  │ /                 │   │     │   Lay│     .─────────.   │   │  │                                                                                                                                                              
-                                                                                                     \   \          \  \                   \        \                                │  │ /   │  │ /                 │   │     │      │     │_________│   │   │  │                                                                                                                                                              
-                                                                                                      \   \          \  \_ _ _ _ _ _ _ _ _ _\        \                               │  │ /   │  │ /                 │   │     │ _____│    Layer 0        │   │  │                                                                                                                                                              
-                                                                                                       \   \          \ _ _ _ _ _ _ _ _ _ _\          \                              │  │ /   │  │                   │   │         │  │                   │   │  │                                                                                                                       
-                                                                                                        \   \                                          \                             │  │ /   │  │                   │   │         │ L│___________________│   │  │                                                                                                                        
-                                                                                                         \   \                                          \                            │  │     │  │                   │   │         │____________________│     │  │                                                                                                                        
-                                                                                                    _ ____\   \__________________________________________\                           │  │     │  │                   │   │                                    │  │                                                                                                                        
-                                                                                                                                                                                     │  │_____│  │___________________│   │____________________________________│  │                                                                                                                       
-                                                                                                                                                                                     │___________________________________________________________________________│                                                                                                                       
-                                                                                                                                                                                          RS3             RS1                             RS0                                                                                                                       
-                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                 
+	   i, u | in object data | w SHARED --> VRAM                                     space 1   \   \                   ↓                      \                                      │   _____   │ /                 │                                           │                                                                                                                                                              
+	   l    | Render object  | w VRAM                                                           \   \      .─ ─ ─ ─ ─ ─ ─ ─ ─ ─.               \                                     │  │     │  │ /                 │    ____________________________________   │                                                                                                                                                              
+																								 \   \      \      .─ ─ ─ ─ ─ ─ ─ ─ ─ ─.        \                                    │  │ /   │  │ /                 │   │                                    │  │                                                                                                                                                              
+																								  \   \      \      \     .─ ─ ─ ─ ─.   \        \  ------> CopyBuffer() --------->  │  │ /   │  │ /                 │   │     .───────────────────.          │  │                                                                                                                                                              
+																								   \   \      \      \     \_ _ _ _ _\   \        \                                  │  │ /   │  │ /                 │   │     │      .───────────────────.   │  │                                                                                                                                                              
+																									\   \      \ _ _ _\                   \        \                                 │  │ /   │  │ /                 │   │     │   Lay│     .─────────.   │   │  │                                                                                                                                                              
+																									 \   \          \  \                   \        \                                │  │ /   │  │ /                 │   │     │      │     │_________│   │   │  │                                                                                                                                                              
+																									  \   \          \  \_ _ _ _ _ _ _ _ _ _\        \                               │  │ /   │  │ /                 │   │     │ _____│    Layer 0        │   │  │                                                                                                                                                              
+																									   \   \          \ _ _ _ _ _ _ _ _ _ _\          \                              │  │ /   │  │                   │   │         │  │                   │   │  │                                                                                                                       
+																										\   \                                          \                             │  │ /   │  │                   │   │         │ L│___________________│   │  │                                                                                                                        
+																										 \   \                                          \                            │  │     │  │                   │   │         │____________________│     │  │                                                                                                                        
+																									_ ____\   \__________________________________________\                           │  │     │  │                   │   │                                    │  │                                                                                                                        
+																																													 │  │_____│  │___________________│   │____________________________________│  │                                                                                                                       
+																																													 │___________________________________________________________________________│                                                                                                                       
+																																														  RS3             RS1                             RS0                                                                                                                       
+																																																																													   
+																																																																																																		
+																																																																																																		
+																																																																																																	   
+																																																																																																	  
+																																																				 
 */
 
 
@@ -275,69 +275,59 @@ Object rendering
 
 class Engine {
 public:
-    LuxDynamic_LuxObjectLineCCT lineTest;
-    LuxDynamic_LuxObjectLineCCT lineTest2;
+	LuxDynamic_LuxObjectLineCCT lineTest;
+	LuxDynamic_LuxObjectLineCCT lineTest2;
 
-    double FPS = 0;
-    float FOV;
-    bool running;
-    bool useVSync;
-    bool initialized = false;
-    uint32 frames = 0;
+	double FPS = 0;
+	float FOV;
+	bool running;
+	bool useVSync;
+	bool initialized = false;
+	uint32 frames = 0;
 
 
 
 private:
-    //Main
-    VkInstance instance;
-    VkDebugUtilsMessengerEXT debugMessenger;
-    VkSurfaceKHR surface;
+	//Main
+	VkInstance instance;
+	VkDebugUtilsMessengerEXT debugMessenger;
+	VkSurfaceKHR surface;
 
-    //Window
-    GLFWwindow* window;								//Main engine window
-    int32 width = 1920*2, height = 1080*2;				//Size of the window //TODO
-    LuxFence windowResizeFence;
-    LuxCell __windowSize;
-    LuxCell __windowOutput;							//The buffer that contains the color output of the window
-    LuxCell __vertices;
+	//Window
+	GLFWwindow* window;								//Main engine window
+	int32 width = 1920*2, height = 1080*2;				//Size of the window //TODO
+	LuxFence windowResizeFence;
+	LuxCell gpuCellWindowSize;
+	LuxCell gpuCellWindowOutput;							//The buffer that contains the color output of the window
 
-    //Devices and queues
+	//Devices and queues
 public:
-    graphicsDevice graphics;			//Main graphics device
-    computeDevice compute;				//Main compute device
-    LuxArray<computeDevice> secondary;	//Secondary compute devices
+	graphicsDevice graphics;			//Main graphics device
+	computeDevice compute;				//Main compute device
+	LuxArray<computeDevice> secondary;	//Secondary compute devices
 private:
 
 
 
-    //Main >> this
+	//Main >> this
 public:
-    void run(bool vUseVSync, float vFOV);
+	void run(bool vUseVSync, float vFOV);
 private:
-    void mainLoop();		void runFPSCounterThr();	void runRenderThr();
-    void initWindow();		void createInstance();
+	void mainLoop();		void runFPSCounterThr();	void runRenderThr();
+	void initWindow();		void createInstance();
 
-    //Devices >> Devices.cpp
-    void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues);
-    static int32		deviceRate(const _VkPhysicalDevice* pDevice);
-    bool				deviceIsSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText);
-    bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
-    QueueFamilyIndices	deviceGetQueueFamilies(const VkPhysicalDevice vDevice);
+	//Devices >> Devices.cpp
+	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues);
+	static int32		deviceRate(const _VkPhysicalDevice* pDevice);
+	bool				deviceIsSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText);
+	bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
+	QueueFamilyIndices	deviceGetQueueFamilies(const VkPhysicalDevice vDevice);
 
-    //Shared functions >> this
-    uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath);
-    VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
-    void				createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
-    void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
-
-
-
-
-
-
-
-
-    // Graphics ---------------------------------------------------------------------------------------------------------------------------------//
+	//Shared functions >> this
+	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath);
+	VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
+	void				createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+	void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 
 
 
@@ -346,81 +336,7 @@ private:
 
 
 
-    //Swapchain
-    VkSwapchainKHR				swapchain;
-    LuxArray<VkImage>			swapchainImages;
-    LuxArray<VkImageView>		swapchainImageViews;
-    VkFormat					swapchainImageFormat;
-    VkExtent2D					swapchainExtent;
-    LuxArray<VkFramebuffer>		swapchainFramebuffers;
-
-    //Render
-    VkRenderPass				renderPass;
-    const int32					renderMaxFramesInFlight = 16;		//Default:2 
-    bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized	
-    //Render semaphores and frame
-    LuxArray<VkSemaphore>		renderSemaphoreImageAvailable;
-    LuxArray<VkSemaphore>		renderSemaphoreFinished;
-    LuxArray<VkFence>			renderFencesInFlight;
-    LuxArray<VkFence>			renderFencesImagesInFlight;
-    int64						renderCurrentFrame = 0;
-
-
-    //Commands
-    VkCommandPool				singleTimeCommandPool;
-    LuxArray<VkCommandBuffer>	singleTimeCommandBuffers;
-
-
-    //debug and validation layers data
-    LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-    LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-
-
-
-    //Graphics >> Graphics/GGraphics.cpp
-    void					runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
-    void					graphicsInitVulkan();
-    void					graphicsCreateSurface();
-    void					graphicsCreateFences();
-    void					graphicsCreateDebugMessenger();
-    void					graphicsDrawFrame();
-    void					graphicsCleanup();
-    static void				framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
-
-
-    //Graphics swapchain >> Graphics/GSwapchain.cpp
-    struct SwapChainSupportDetails {
-        VkSurfaceCapabilitiesKHR capabilities;
-        LuxArray<VkSurfaceFormatKHR> formats;
-        LuxArray<VkPresentModeKHR> presentModes;
-    };
-    void					swapchainCreate();
-    void					swapchainRecreate(const bool vWindowResized);
-    void					swapchainCleanup();
-    VkSurfaceFormatKHR		swapchainChooseSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* pAvailableFormats);
-    VkPresentModeKHR		swapchainChoosePresentMode(const LuxArray<VkPresentModeKHR>* pAvailablePresentModes);
-    VkExtent2D				swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
-    SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice);
-
-
-
-    //Graphics images and output objects >> Graphics/GOutput.cpp
-    void					createRenderPass();
-    void					createFramebuffers();
-    VkImageView				swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-    void					swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
-
-
-    //Graphics commands >> Graphics/GCommands.cpp
-    void					createGraphicsCommandPool();
-    VkCommandBuffer			beginSingleTimeCommands();
-    void					endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
-
-
-    //Graphics other >> Graphics/Graphics.cpp
-    VkFormat				graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
-    uint32					graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
-    static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+	// Graphics ---------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -429,7 +345,72 @@ private:
 
 
 
-    // Compute ----------------------------------------------------------------------------------------------------------------------------------//
+	//debug and validation layers data
+	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+
+
+	//Graphics >> Graphics/GGraphics.cpp
+	LuxArray<VkSemaphore>		renderSemaphoreImageAvailable;
+	LuxArray<VkSemaphore>		renderSemaphoreFinished;
+	LuxArray<VkFence>			renderFencesInFlight;
+	LuxArray<VkFence>			renderFencesImagesInFlight;
+	int64						renderCurrentFrame = 0;
+	void						runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
+	void						graphicsInitVulkan();
+	void						graphicsCreateSurface();
+	void						graphicsCreateFences();
+	void						graphicsCreateDebugMessenger();
+	void						graphicsDrawFrame();
+	void						graphicsCleanup();
+	static void					framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
+
+
+	//Graphics swapchain >> Graphics/GSwapchain.cpp
+	VkSwapchainKHR				swapchain;
+	LuxArray<VkImage>			swapchainImages;
+	LuxArray<VkImageView>		swapchainImageViews;
+	VkFormat					swapchainImageFormat;
+	VkExtent2D					swapchainExtent;
+	LuxArray<VkFramebuffer>		swapchainFramebuffers;
+	struct SwapChainSupportDetails {
+		VkSurfaceCapabilitiesKHR capabilities;
+		LuxArray<VkSurfaceFormatKHR> formats;
+		LuxArray<VkPresentModeKHR> presentModes;
+	};
+	void						swapchainCreate();
+	void						swapchainRecreate(const bool vWindowResized);
+	void						swapchainCleanup();
+	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* pAvailableFormats);
+	VkPresentModeKHR			swapchainChoosePresentMode(const LuxArray<VkPresentModeKHR>* pAvailablePresentModes);
+	VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
+	SwapChainSupportDetails		swapchainQuerySupport(const VkPhysicalDevice vDevice);
+
+
+
+	//Graphics images and output objects >> Graphics/GOutput.cpp
+	VkRenderPass				renderPass;
+	const int32					renderMaxFramesInFlight = 16;		//Default:2 
+	bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized	
+	void						createRenderPass();
+	void						createFramebuffers();
+	VkImageView					swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+	void						swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
+
+
+	//Graphics commands >> Graphics/GCommands.cpp
+	VkCommandPool				singleTimeCommandPool;
+	LuxArray<VkCommandBuffer>	singleTimeCommandBuffers;
+	void						createGraphicsCommandPool();
+	VkCommandBuffer				beginSingleTimeCommands();
+	void						endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
+
+
+	//Graphics other >> Graphics/Graphics.cpp
+	VkFormat					graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	uint32						graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+	static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
 
@@ -438,52 +419,57 @@ private:
 
 
 
-    LuxShader ls0;
-    LuxShader ls1;
-    
+	// Compute ----------------------------------------------------------------------------------------------------------------------------------//
 
-    VkCommandPool copyCommandPool;
-    LuxArray <VkCommandBuffer> copyCommandBuffers;
-    VkCommandPool clearCommandPool;
-    VkCommandBuffer clearCommandBuffer;
 
-    //Objects
-    const int32 WORKGROUP_SIZE = 32;			//Workgroup size in compute shader
-    LuxMap<LuxShader_t> CShaders;				//List of shaders
-    LuxMap<LuxBuffer_t> CBuffers;				//List of GPU buffers
-    LuxMap<LuxRenderSpace2D*> CRenderSpaces;		//List of renderSpaces
 
-    //TODO use LuxQueue
+
+
+
+
+
+	LuxShader ls0;
+	LuxShader ls1;
+	
+
+	VkCommandPool				copyCommandPool;
+	LuxArray <VkCommandBuffer>	copyCommandBuffers;
+	VkCommandPool				clearCommandPool;
+	VkCommandBuffer				clearCommandBuffer;
+
+	//Objects
+	LuxMap<LuxShader_t>			CShaders;				//List of shaders
+	LuxMap<LuxBuffer_t>			CBuffers;				//List of GPU buffers
+	LuxMap<LuxRenderSpace2D*>	CRenderSpaces;			//List of renderSpaces
+
+
 public:
-    LuxMap<LuxObject_base0*> objs;		//TODO
-    //std::deque<LuxObject_base0*> updates;
+	LuxMap<LuxObject_base0*> objs;		//TODO
 private:
-    LuxShader /*copyShader, */testShader0;
 
 
-    //Compute >> Compute/Compute.cpp
-    void		runCompute();
-    void		cleanupCompute();
+	//Compute >> Compute/Compute.cpp
+	void		runCompute();
+	void		cleanupCompute();
 
-    //Buffers >> Compute/Buffers.cpp
-    LuxBuffer	gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+
+	//Buffers >> Compute/Buffers.cpp
+	LuxBuffer	gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 public:
-    LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
-    bool		gpuCellDestroy(const LuxCell vCell);
-    void* gpuCellMap(const LuxCell vCell);
+	LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
+	bool		gpuCellDestroy(const LuxCell vCell);
+	void*		gpuCellMap(const LuxCell vCell);
 private:
 
 
-    //Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
-    void		cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
-    void		cshaderCreateDescriptorSets(const LuxArray<LuxCell>* pCells, const LuxShader vCShader);
-    void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
-    //TODO h
-    void		cshaderCommandBuffers(const LuxShader vCShader);
-    void		__lp_cshaderCreateCopyCommandBuffers();
-    //TODO h
-    LuxShader	cshaderNew(const LuxArray<LuxCell>* pCells, const char* vShaderPath);
-    bool		cshaderDestroy(const LuxShader vCShader);
+	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
+	void		cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, const LuxShader vCShader);
+	void		cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const LuxShader vCShader);
+	void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
+	void		cshaderCommandBuffers(const LuxShader vCShader);
+	void		cshaderCreateDefaultCommandBuffers();
+	LuxShader	cshaderNew(const LuxArray<LuxCell>& pCells, const char* vShaderPath);
+	bool		cshaderDestroy(const LuxShader vCShader);
 };
 
 
@@ -508,9 +494,9 @@ extern Engine engine;
 
 //This function is used by the engine. You shouldn't call it
 static void __lp_luxInit(bool useVSync) {
-    std::thread renderThr([&]() {engine.run(useVSync, 45); });
-    renderThr.detach();
-    engine.running = true;
+	std::thread renderThr([&]() {engine.run(useVSync, 45); });
+	renderThr.detach();
+	engine.running = true;
 }
 
 

@@ -18,31 +18,21 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 
 
 void Engine::runCompute() {
-	__windowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
+	{
+		gpuCellWindowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 
-	__windowSize = gpuCellCreate(4 * 2, true);
-	uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
-	pwindowSize[0] = swapchainExtent.width;
-	pwindowSize[1] = swapchainExtent.height;
+		gpuCellWindowSize = gpuCellCreate(4 * 2, true);
+		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(gpuCellWindowSize));
+		pwindowSize[0] = swapchainExtent.width;
+		pwindowSize[1] = swapchainExtent.height;
 
-
-	__vertices = gpuCellCreate(4 * 2, true);
-	uint32* pVertices = rcast<uint32*>(gpuCellMap(__vertices));
-	pVertices[0] = 100;
-	pVertices[1] = 10;
-
-
-
-	LuxArray<LuxCell> cells2 = { __windowOutput, __windowSize, objs[0]->gpuCell };
-	ls0 = cshaderNew(&cells2, "LuxEngine/Contents/shaders/test0.spv");
-
-	LuxArray<LuxCell> cells3 = { __windowOutput, __windowSize, objs[1]->gpuCell };
-	ls1 = cshaderNew(&cells3, "LuxEngine/Contents/shaders/test0.spv");
-
+		ls0 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.spv");
+		ls1 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[1]->gpuCell }, "LuxEngine/Contents/shaders/test0.spv");
+	}
 
 	{ //#LLID CCB0000 Create copy command buffers 
 		copyCommandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-		__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool
+		cshaderCreateDefaultCommandBuffers();				//Create command buffers and command pool
 	}
 }
 
@@ -60,11 +50,4 @@ void Engine::cleanupCompute() {
 	}
 
 	//TODO fix
-	//vkDestroyDescriptorPool(compute.LD, computeDescriptorPool, null);				//Destroy the descriptor pool
-	//vkDestroyDescriptorSetLayout(compute.LD, computeDescriptorSetLayout, null);		//Destroy the descriptor set layout
-
-	//vkDestroyPipeline(compute.LD, computePipeline, null);							//Destroy the pipeline
-	//vkDestroyPipelineLayout(compute.LD, computePipelineLayout, null);				//Destroy the pipeline layout
-
-	//vkDestroyCommandPool(compute.LD, computeCommandPool, null);						//Destroy the compute command pool
 }

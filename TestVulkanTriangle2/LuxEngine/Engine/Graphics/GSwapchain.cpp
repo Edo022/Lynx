@@ -146,7 +146,7 @@ void Engine::swapchainCreate() {
 
 
 void Engine::swapchainCleanup() {
-	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);														//Destroy render pass
+	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);													//Destroy render pass
 	for (auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
 	for (auto imageView : swapchainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);			//Destroy image views
 	vkDestroySwapchainKHR(graphics.LD, swapchain, nullptr);													//destroy swapchain
@@ -168,21 +168,20 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 		swapchainCreate();
 
 
-
-
 		{ //destroy copy command buffers
 			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.__lp_size, copyCommandBuffers.data());
 			vkDestroyCommandPool(compute.LD, copyCommandPool, null);
+			vkFreeCommandBuffers(compute.LD, clearCommandPool, 1, &clearCommandBuffer);
+			vkDestroyCommandPool(compute.LD, clearCommandPool, null);
 		}
 
-
-		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(__windowSize));
+		uint32* pwindowSize = rcast<uint32*>(gpuCellMap(gpuCellWindowSize));
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
 
 		{ //#LLID CCB0000 Create copy command buffers 
 			copyCommandBuffers.resize(swapchainImages.size());	//Resize the command buffer array in the shader
-			__lp_cshaderCreateCopyCommandBuffers();				//Create command buffers and command pool
+			cshaderCreateDefaultCommandBuffers();				//Create command buffers and command pool
 		}
 	}
 	if (vWindowResized) windowResizeFence.set(2);

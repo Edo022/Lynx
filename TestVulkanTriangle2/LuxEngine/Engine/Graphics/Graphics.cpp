@@ -73,7 +73,6 @@ void Engine::graphicsCreateFences() {
 
 //TODO multithreaded submit and command creation
 void Engine::graphicsDrawFrame() {
-	//TODO use a render fence. execute main code only when the frame render ends
 	redraw:
 
 	//Wait fences
@@ -85,66 +84,65 @@ void Engine::graphicsDrawFrame() {
 	}
 
 
-	//Acquire swapchain image
 	uint32 imageIndex;
-	switch (vkAcquireNextImageKHR(graphics.LD, swapchain, UINT64_MAX, renderSemaphoreImageAvailable[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
-		case VK_SUBOPTIMAL_KHR: case VK_SUCCESS:  break;
-		case VK_ERROR_OUT_OF_DATE_KHR: swapchainRecreate(false);  return;
-		default:  Exit("Failed to acquire swapchain image");
+	{ //Acquire swapchain image
+		switch (vkAcquireNextImageKHR(graphics.LD, swapchain, UINT64_MAX, renderSemaphoreImageAvailable[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+			case VK_SUBOPTIMAL_KHR: case VK_SUCCESS:  break;
+			case VK_ERROR_OUT_OF_DATE_KHR: swapchainRecreate(false);  return;
+			default:  Exit("Failed to acquire swapchain image");
+		}
+		if (renderFencesImagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &renderFencesImagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+		renderFencesImagesInFlight[imageIndex] = renderFencesInFlight[renderCurrentFrame];
 	}
-	if (renderFencesImagesInFlight[imageIndex] != VK_NULL_HANDLE) vkWaitForFences(graphics.LD, 1, &renderFencesImagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
-	renderFencesImagesInFlight[imageIndex] = renderFencesInFlight[renderCurrentFrame];
-
-
 
 
 	//TODO don't recreate the command buffer array every time 
-	//Update render result submitting the command buffers to the compute queue
-	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	LuxArray<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
+	{ //Update render result submitting the command buffers to the compute queue
+		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		LuxArray<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
-	forEach(CShaders, i) if(CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
-	commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
-	commandBuffers[0] = clearCommandBuffer;
+		forEach(CShaders, i) if (CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
+		commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
+		commandBuffers[0] = clearCommandBuffer;
 
-	static VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
-	submitInfo.commandBufferCount = commandBuffers.size();
-	submitInfo.pCommandBuffers = commandBuffers.begin();
-	submitInfo.pWaitDstStageMask = waitStages;
+		static VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
+		submitInfo.commandBufferCount = commandBuffers.size();
+		submitInfo.pCommandBuffers = commandBuffers.begin();
+		submitInfo.pWaitDstStageMask = waitStages;
 
-	vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
-	TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
-
-
-
-
-	//Present
-	static VkPresentInfoKHR presentInfo{};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = &swapchain;
-	presentInfo.pImageIndices = &imageIndex;
-
-	switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) {
-		case VK_SUCCESS:  break;
-		case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-			swapchainRecreate(false);
-			vkDeviceWaitIdle(graphics.LD);
-			break;
-		}
-		default:  Exit("Failed to present swapchain image");
+		vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
+		TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
 	}
 
-	//Update frame number
-	renderCurrentFrame = (renderCurrentFrame + 1) % (renderMaxFramesInFlight);
-	glfwSwapBuffers(window);
+
+	{ //Present
+		static VkPresentInfoKHR presentInfo{};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = &renderSemaphoreFinished[renderCurrentFrame];
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = &swapchain;
+		presentInfo.pImageIndices = &imageIndex;
+
+		switch (vkQueuePresentKHR(graphics.presentQueue, &presentInfo)) {
+			case VK_SUCCESS:  break;
+			case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
+				swapchainRecreate(false);
+				vkDeviceWaitIdle(graphics.LD);
+				break;
+			}
+			default:  Exit("Failed to present swapchain image");
+		}
+
+		//Update frame number
+		renderCurrentFrame = (renderCurrentFrame + 1) % (renderMaxFramesInFlight);
+		glfwSwapBuffers(window); 
+	}
 }
 
 

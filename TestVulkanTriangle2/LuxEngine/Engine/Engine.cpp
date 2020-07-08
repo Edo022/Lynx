@@ -54,11 +54,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//Init
 	LuxTime start = luxStartChrono();
 	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
-
-
 	if (!(compileShader("shader") & compileShader("test0"))) Exit("compilation error");
-
-
 
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
@@ -67,45 +63,41 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 
+	{ //test
+		luxSpawnObject(&lineTest);
+		lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
+		lineTest.initPtrs();
 
-	luxSpawnObject(&lineTest);
-	lineTest.cellPtr = gpuCellMap(lineTest.gpuCell);
-	lineTest.initPtrs();
+		*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
+		*lineTest.col1 = vec4float32{ 0, 0.2, 1, 0 };
 
-	*lineTest.col0 = vec4float32{ 1, 0.1, 0, 1 };
-	*lineTest.col1 = vec4float32{ 0, 0.2, 1, 0 };
+		*lineTest.wd0 = 100;
+		*lineTest.wd1 = 200;
 
-	*lineTest.wd0 = 100;
-	*lineTest.wd1 = 200;
+		*lineTest.x0 = 2000;
+		*lineTest.y0 = 500;
+		*lineTest.x1 = 1700;
+		*lineTest.y1 = 800;
 
-	*lineTest.x0 = 2000;
-	*lineTest.y0 = 500;
-	*lineTest.x1 = 1700;
-	*lineTest.y1 = 800;
 
-	
-	luxSpawnObject(&lineTest2);
-	lineTest2.cellPtr = gpuCellMap(lineTest2.gpuCell);
-	lineTest2.initPtrs();
+		luxSpawnObject(&lineTest2);
+		lineTest2.cellPtr = gpuCellMap(lineTest2.gpuCell);
+		lineTest2.initPtrs();
 
-	*lineTest2.col0 = vec4float32{ 1, 0.1, 0, 1 };
-	*lineTest2.col1 = vec4float32{ 0, 0.2, 1, 0 };
+		*lineTest2.col0 = vec4float32{ 1, 0.1, 0, 1 };
+		*lineTest2.col1 = vec4float32{ 0, 0.2, 1, 0 };
 
-	*lineTest2.wd0 = 1;
-	*lineTest2.wd1 = 1;
+		*lineTest2.wd0 = 1;
+		*lineTest2.wd1 = 1;
 
-	*lineTest2.x0 = 1000;
-	*lineTest2.y0 = 500;
-	*lineTest2.x1 = 1700;
-	*lineTest2.y1 = 800;
-
+		*lineTest2.x0 = 1000;
+		*lineTest2.y0 = 500;
+		*lineTest2.x1 = 1700;
+		*lineTest2.y1 = 800;
+	}
 
 
 	runCompute();
-
-	glfwSetMouseButtonCallback(window, __lp_mouseButtonCallback);
-	glfwSetScrollCallback(window, __lp_mouseWheelCallback);
-	glfwSetKeyCallback(window, __lp_key_callback);
 
 	//Loop
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
@@ -221,27 +213,36 @@ void Engine::createInstance() {
 
 
 
+
 void Engine::initWindow() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 
-	unsigned char h[] = {
-		255, 0, 0, 255,
-		0, 0, 255, 255,
-		255, 0, 0, 255,
-		0, 0, 255, 255
-	};
+	{ //Set icon
+		unsigned char h[] = {
+			255, 0, 0, 255,
+			0, 0, 255, 255,
+			255, 0, 0, 255,
+			0, 0, 255, 255
+		};
+		GLFWimage icon;
+		icon.width = 2;
+		icon.height = 2;
+		icon.pixels = h;
+		glfwSetWindowIcon(window, 1, &icon);
+	}
 
-	GLFWimage icon;
-	icon.width = 2;
-	icon.height = 2;
-	icon.pixels = h;
 
-	glfwSetWindowIcon(window, 1, &icon);
-	glfwSetWindowUserPointer(window, this);
-	glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
-	glfwSetCursorPosCallback(window, mouseCursorPosCallback);
+	{ //Set callbacks
+		glfwSetWindowUserPointer(window, this);
+		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+
+		glfwSetCursorPosCallback(window, __lp_mouseCursorPosCallback);
+		glfwSetMouseButtonCallback(window, __lp_mouseButtonCallback);
+		glfwSetScrollCallback(window, __lp_mouseWheelCallback);
+		glfwSetKeyCallback(window, __lp_key_callback);
+	}
 }
 
 
