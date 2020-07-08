@@ -174,7 +174,7 @@ void Engine::graphicsCleanup() {
 
 	if (graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);	//If the compute and the graphics devices are not the same, destroy the graphics device
 	vkDestroyDevice(compute.LD, nullptr);																			//Destroy the compute device
-	for (auto device : secondary) vkDestroyDevice(device.LD, nullptr);													//Destroy all the secondary devices
+	for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);													//Destroy all the secondary devices
 
 	luxDebug(DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));					//Destroy the debug messenger if present
 	vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface

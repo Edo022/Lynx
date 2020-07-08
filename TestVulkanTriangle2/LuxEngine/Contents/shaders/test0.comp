@@ -14,6 +14,10 @@ vec4 intToCol(uint v) {
 	return vec4(float(v >> 24), float((v >> 16) & 0xFF), float((v >> 8) & 0xFF), float(v.r & 0xFF)) / 255;
 }
 
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
 
 
 
@@ -56,8 +60,9 @@ void setPixelColor(vec2 pos, vec4 col){
 //	vec4 _col = mix(lastCol, col, col.a);
 //	vec4 _col = lastCol + col*col.a;
 
-	//TODO dont multiply per alpha. just copy it
-	colorOutput[i] = colToInt(col * col.a);
+	//TODO dont multiply per alpha. just copy '' it
+//	colorOutput[i] = colToInt(col * col.a);
+	colorOutput[i] = colToInt(vec4(rand(pos)));
 //	colorOutput[i] = colToInt(_col);
 }
 
