@@ -54,11 +54,11 @@ struct LuxObject_base0 {
 struct LuxObject3D_base1 : public LuxObject_base0 {
 	LuxObject3D_base1() { objectType = LUX_OBJECT_TYPE_3D__BASE; }
 
-	vec3float32 pos{ 0, 0, 0 };		//Position of the object. The position is relative to the origin of the object
-	vec3float32 org{ 0, 0, 0 };		//Origin of the object
+	vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
+	vec3f32 org{ 0, 0, 0 };			//Origin of the object
 	float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
-	vec3float32 rot{ 0, 0, 0 };		//Rotation of the object
-	vec3float32 scl{ 0, 0, 0 };		//Scale of the object
+	vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
+	vec3f32 scl{ 0, 0, 0 };			//Scale of the object
 };
 
 
@@ -68,12 +68,12 @@ struct LuxObject3D_base1 : public LuxObject_base0 {
 struct LuxObject2i3D_base1 : public LuxObject_base0 {
 	LuxObject2i3D_base1() { objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
 
-	vec3float32 pos{ 0, 0, 0 };		//Position of the object. The position is relative to the origin of the object
-	vec3float32 org{ 0, 0, 0 };		//Origin of the object
+	vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
+	vec3f32 org{ 0, 0, 0 };			//Origin of the object
 	float32 wIndex{ 0 };			//Index of the object for 3D space
 	float32 zIndex{ 0 };			//Index of the object for 2D space
-	vec3float32 rot{ 0, 0, 0 };		//Rotation of the object
-	vec2float32 scl{ 0, 0 };		//Scale of the object
+	vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
+	vec2f32 scl{ 0, 0 };			//Scale of the object
 };
 
 
@@ -83,11 +83,11 @@ struct LuxObject2i3D_base1 : public LuxObject_base0 {
 struct LuxObject2D_base1 : public LuxObject_base0 {
 	LuxObject2D_base1() { objectType = LUX_OBJECT_TYPE_2D__BASE; }
 
-	vec2float32 pos{ 0, 0 };		//Position of the object. The position is relative to the origin of the object
-	vec2float32 org{ 0, 0 };		//Origin of the object
+	vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
+	vec2f32 org{ 0, 0 };			//Origin of the object
 	float32 zIndex{ 0 };			//Index of the object. Objects with higher zIndex will be rendered on top of others
 	float32 rot{ 0 };				//Rotation of the object
-	vec2float32 scl{ 0, 0 };		//Scale of the object
+	vec2f32 scl{ 0, 0 };			//Scale of the object
 };
 
 
