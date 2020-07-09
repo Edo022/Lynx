@@ -5,7 +5,7 @@
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include <vector>
-#include <stdlib.h>                               // for malloc, free
+//#include <stdlib.h>                               // for malloc, free
 template <class cntType> class LuxContainer;
 
 
@@ -140,7 +140,7 @@ public:
 
 
 	//Signs an index of the map as free, without deleting it. Returns a char for performance reasons
-	//*   vIndex: the index to sign
+	//*   vIndex: the index to signNz
 	//*   freeElm: whether to free the element or keep it in memory. Keeping it saves performances but increases memory usage
 	//*   Returns 0 if the operation succeeded, status(index) if not
 	signed char __vectorcall remove(const uint64 vIndex, const bool vFreeElm = false) {

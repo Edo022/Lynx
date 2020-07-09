@@ -39,7 +39,7 @@
 #include "vcruntime_new.h"                             // for operator delete, operator new
 #include "vulkan/vk_platform.h"                        // for VKAPI_ATTR, VKAPI_CALL
 #include "vulkan/vulkan_core.h"                        // for VkFence, VkSemaphore, VkCommandBuffer, VkImage, VkPresentModeKHR, VkSurfaceFormatKHR, VkImageView, vkGetInstanceProcAddr, VkFramebuffer, VkBuffer, VkCommandBuffer_T, VkFormat, VkPhysicalDevice, VkDebugUtilsMessengerEXT, VkDevice, VkInstance, VkInstance_T, VkAllocationCallbacks, VkDeviceSize, VkExtent2D, VkMemoryPropertyFlags, VkSurfaceCapabilitiesKHR, PFN_vkCreateDebugUtilsMessengerEXT, PFN_vkDestroyDebugUtilsMessengerEXT, VK_KHR_SWAPCHAIN_EXTENSION_NAME, VkBool32, VkBufferUsageFlags, VkCommandPool, VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCreateInfoEXT, VkDeviceMemory, VkFormatFeatureFlags, VkImageAspectFlags, VkImageTiling, VkQueue, VkRenderPass, VkResult, VkResult::VK_ERROR_EXTENSION_NOT_PRESENT, VkShaderModule, VkSurfaceKHR, VkSwapchainKHR
-#include <stdlib.h>                                    // for malloc
+//#include <stdlib.h>                                    // for malloc
 #include <thread>
 
 class LuxString;

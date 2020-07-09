@@ -11,9 +11,12 @@
 //Lines with the same color or width have better performance
 //Perfectly vertical or horyzontal lines also have better performance
 //Lines with size 0 or alpha 0 are not rendered
-struct LuxDynamic_LuxObjectLineCCT : public LuxObject2D_base1 {
-	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_2D_LINE; }
+struct LuxObject2DLine : public LuxObject2D_base1 {
+	LuxObject2DLine() { objectType = LUX_OBJECT_TYPE_2D_LINE; }
 
+	//Initializes the pointers to the shared memory
+	//This is needed to read or write data in the object
+	//This function should be called only after the object is begin spawned
 	void initPtrs() final override {
 		p0 = (vec2i32*)(((int32*)cellPtr) + 0);
 		p1 = (vec2i32*)(((int32*)cellPtr) + 2);

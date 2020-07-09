@@ -35,7 +35,7 @@ int main() {
 
 
 	{
-		LuxDynamic_LuxObjectLineCCT lineTest;
+		LuxObject2DLine lineTest;
 		luxSpawnObject(&lineTest);
 		*lineTest.col0 = vec4f32{ 1, 0.1, 0, 1 };
 		*lineTest.col1 = vec4f32{ 0, 0.2, 1, 0 };
@@ -44,7 +44,7 @@ int main() {
 		*lineTest.p0 = vec2i32{ 2000, 500 };
 		*lineTest.p1 = vec2i32{ 1700, 800 };
 
-		LuxDynamic_LuxObjectLineCCT lineTest2;
+		LuxObject2DLine lineTest2;
 		luxSpawnObject(&lineTest2);
 		*lineTest2.col0 = vec4f32{ 1, 0.1, 0, 1 };
 		*lineTest2.col1 = vec4f32{ 0, 0.2, 1, 0 };
@@ -54,7 +54,6 @@ int main() {
 		*lineTest2.p1 = vec2i32{ 1700, 800 };
 		engine.spawnObjFence.set(2);
 	}
-
 
 	while (engine.running) {
 		sleep(5);
