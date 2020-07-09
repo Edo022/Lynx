@@ -441,8 +441,7 @@ private:
 
 public:
 	LuxMap<LuxObject_base0*> objs;		//TODO
-	LuxFence spawnObjFence;
-	LuxFence objfence;
+	LuxFence spawnObjectFence;
 private:
 
 

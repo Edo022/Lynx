@@ -12,15 +12,9 @@
 
 
 int main() {
-
 	//LuxObjectLine l;
 	//LuxRenderSpace2D r;
-
-	//int h = l.ID;
-	//int h2 = r.ID;
-	engine.spawnObjFence.set(0);
-	std::thread t([&]() {LuxInit(false); });
-	//engine.spawnObjFence.wait(1);
+	LuxInit(false);
 
 
 	LuxInputState inputStateTest{
@@ -31,8 +25,6 @@ int main() {
 	};
 	luxInputSetInputState(&inputStateTest);
 
-
-	sleep(2000);
 
 	{
 		LuxObject2DLine lineTest;
@@ -52,7 +44,6 @@ int main() {
 		//*lineTest2.wd1 = 1;
 		//*lineTest2.p0 = vec2i32{ 2000, 500 };
 		//*lineTest2.p1 = vec2i32{ 1700, 800 };
-		//engine.spawnObjFence.set(2);
 	}
 
 	while (engine.running) {
