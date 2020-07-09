@@ -511,6 +511,8 @@ static inline void luxSpawnObject(LuxObject_base0* pObject) {
 			break;
 		default: Exit("TODO");
 	}
+	pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
+	pObject->initPtrs();
 }
 
 

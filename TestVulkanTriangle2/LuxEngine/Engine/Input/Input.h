@@ -24,8 +24,7 @@ inline static void luxInputSetInputState(LuxInputState* inputState) { __lp_input
 static void __lp_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
-	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).x0 = (float)x;
-	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).y0 = (float)y;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).p0 = vec2int32{ (int32)x, (int32)y };
 	//printf("mouse");
 }
 
@@ -42,8 +41,7 @@ static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
 
 static void __lp_mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
 	////renderFence.wait(1);
-	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).x1 = x;
-	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).y1 = y;
+	*(*(rcast<LuxDynamic_LuxObjectLineCCT*>(engine.objs[0]))).p1 = vec2int32{ (int32)x, (int32)y };
 	////renderFence.set(0);
 }
 

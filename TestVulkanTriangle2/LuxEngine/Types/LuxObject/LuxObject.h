@@ -42,6 +42,7 @@ struct LuxObject_base0 {
 
 	LuxCell gpuCell{ (uint64)-1 };	//GPU memory containing the small data of the object
 	void* cellPtr = nullptr;		//Pointer to the GPU memory cell
+	virtual void initPtrs() = 0;
 };
 
 

@@ -14,29 +14,25 @@
 struct LuxDynamic_LuxObjectLineCCT : public LuxObject2D_base1 {
 	LuxDynamic_LuxObjectLineCCT() { objectType = LUX_OBJECT_TYPE_2D_LINE; }
 
-	void initPtrs() {
-		x0 = ((int32*)cellPtr) + 0;
-		y0 = ((int32*)cellPtr) + 1;
-		x1 = ((int32*)cellPtr) + 2;
-		y1 = ((int32*)cellPtr) + 3;
+	void initPtrs() final override {
+		p0 = (vec2i32*)(((int32*)cellPtr) + 0);
+		p1 = (vec2i32*)(((int32*)cellPtr) + 2);
 
-		col0 = (vec4float32*)(((int32*)cellPtr) + 4);
-		col1 = (vec4float32*)(((int32*)cellPtr) + 8);
+		col0 = (vec4f32*)(((int32*)cellPtr) + 4);
+		col1 = (vec4f32*)(((int32*)cellPtr) + 8);
 
 		wd0 = ((float32*)cellPtr) + 12;
 		wd1 = ((float32*)cellPtr) + 13;
 	}
 
-	int32* x0{ nullptr };			//The x position of the first point
-	int32* y0{ nullptr };			//The y position of the first point
-	int32* x1{ nullptr };			//The x position of the second point
-	int32* y1{ nullptr };			//The y position of the second point
+	vec2i32* p0{ nullptr };		//First point of the line
+	vec2i32* p1{ nullptr };		//Second point of the line
 
-	vec4float32* col0{ nullptr };	//Color of the first point
-	vec4float32* col1{ nullptr };	//Color of the second point
+	vec4f32* col0{ nullptr };	//Color of the first point
+	vec4f32* col1{ nullptr };	//Color of the second point
 
-	float32* wd0{ nullptr };		//Width of the first point
-	float32* wd1{ nullptr };		//Width of the second point
+	float32* wd0{ nullptr };	//Width of the first point
+	float32* wd1{ nullptr };	//Width of the second point
 };
 
 
