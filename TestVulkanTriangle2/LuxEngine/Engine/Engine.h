@@ -69,29 +69,8 @@ struct LuxRenderSpace2D;
 
 
 
-//It's dark magic, idk why or how it works, but it does
-static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
-	auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-	if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-	else return VK_ERROR_EXTENSION_NOT_PRESENT;
-}
-static void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-	if (func != nullptr) func(instance, debugMessenger, pAllocator);
-}
 
 
-
-
-
-
-//Dark magic
-#define populateDebugMessengerCreateInfo(createInfo)\
-	createInfo = {};\
-	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;\
-	createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;\
-	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;\
-	createInfo.pfnUserCallback = graphicsDebugCallback;
 
 
 
@@ -272,7 +251,6 @@ Object rendering
 
 
 
-
 class Engine {
 public:
 	double FPS = 0;
@@ -292,7 +270,7 @@ public:
 
 	//Window
 	GLFWwindow* window;								//Main engine window
-	int32 width = 1920*2, height = 1080*2;				//Size of the window //TODO
+	int32 width = 1920 * 2, height = 1080 * 2;				//Size of the window //TODO
 	LuxFence windowResizeFence;
 	LuxCell gpuCellWindowSize;
 	LuxCell gpuCellWindowOutput;							//The buffer that contains the color output of the window
@@ -407,6 +385,7 @@ private:
 	//Graphics other >> Graphics/Graphics.cpp
 	VkFormat					graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
 	uint32						graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+public:
 	static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
@@ -419,14 +398,14 @@ private:
 	// Compute ----------------------------------------------------------------------------------------------------------------------------------//
 
 
-
+	//TODO reuse objects instead of destroying them
 
 
 
 
 	LuxShader ls0;
 	LuxShader ls1;
-	
+
 
 	VkCommandPool				copyCommandPool;
 	LuxArray <VkCommandBuffer>	copyCommandBuffers;
@@ -440,7 +419,7 @@ private:
 
 
 public:
-	LuxMap<LuxObject_base0*> objs;		//TODO
+	LuxMap<lux::obj::Base*> objs;		//TODO
 	LuxFence spawnObjectFence;
 private:
 
@@ -476,7 +455,7 @@ public:
 
 
 
-// Init -------------------------------------------------------------------------------------------------------------------------------------//
+	// Init -------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -488,28 +467,66 @@ public:
 extern Engine engine;
 #define Frame while(engine.running)
 
-
-//This function is used by the engine. You shouldn't call it
-static void __lp_luxInit(bool useVSync) {
-	std::thread renderThr([&]() {engine.run(useVSync, 45); });
-	renderThr.detach();
-	engine.running = true;
-}
-
-
-
-
-static inline void luxSpawnObject(LuxObject_base0* pObject) {
-	if (pObject->objectType > 0) {
-		engine.objs.add(pObject);
+namespace lux::_engine {
+	//This function is used by the engine. You shouldn't call it
+	static void __lp_luxInit(bool useVSync) {
+		std::thread renderThr([&]() {engine.run(useVSync, 45); });
+		renderThr.detach();
+		engine.running = true;
 	}
-	else Exit("invalid object");
-
-	pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
-	pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
-	pObject->initPtrs();
-	engine.cshaderNew(LuxArray<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
 }
 
+
+namespace lux::obj {
+	static inline void spawnObject(Base* pObject) {
+		if (pObject->objectType > 0) {
+			engine.objs.add(pObject);
+		}
+		else Exit("invalid object");
+
+		pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
+		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
+		pObject->initPtrs();
+		engine.cshaderNew(LuxArray<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
+	}
+}
+
+
+
+
+
+
+
+
+// External debug functions -----------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+//It's dark magic, idk why or how it works, but it does
+namespace lux::_engine {
+	static inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+		if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+		else return VK_ERROR_EXTENSION_NOT_PRESENT;
+	}
+	static inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+		if (func != nullptr) func(instance, debugMessenger, pAllocator);
+	}
+
+	//Dark magic
+	static constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+		createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+		createInfo.pfnUserCallback = engine.graphicsDebugCallback;
+	}
+}
 
 #endif

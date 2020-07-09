@@ -74,21 +74,3 @@ public:
 };
 
 
-
-
-
-
-static LuxString luxGetExtensionFromString(const LuxString& pStr) {
-	int i; for (i = pStr.size() - 1; pStr[i] != '.' && i > 0; --i) {
-		if (pStr[i] == '/') return LuxString("");
-	}
-	return LuxString(pStr.begin() + i + 1);
-}
-
-
-static void luxFixWindowsPath(LuxString& pStr) {
-	for (auto& i : pStr) {
-		if (i == '\\') i = '/';
-		//else if(i == ' ') i = '' //TODO spaces
-	}
-}

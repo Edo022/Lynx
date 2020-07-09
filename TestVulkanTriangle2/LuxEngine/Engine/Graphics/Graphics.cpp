@@ -36,8 +36,8 @@ inline void Engine::graphicsCreateSurface() {
 
 void Engine::graphicsCreateDebugMessenger() {
 	VkDebugUtilsMessengerCreateInfoEXT createInfo;
-	populateDebugMessengerCreateInfo(createInfo);
-	TryVk(CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
+	lux::_engine::populateDebugMessengerCreateInfo(createInfo);
+	TryVk(lux::_engine::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
 }
 
 
@@ -176,9 +176,9 @@ void Engine::graphicsCleanup() {
 
 	if (graphics.PD.properties.deviceID != compute.PD.properties.deviceID) vkDestroyDevice(graphics.LD, nullptr);	//If the compute and the graphics devices are not the same, destroy the graphics device
 	vkDestroyDevice(compute.LD, nullptr);																			//Destroy the compute device
-	//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);													//Destroy all the secondary devices
+	//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);											//Destroy all the secondary devices
 
-	luxDebug(DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));					//Destroy the debug messenger if present
+	luxDebug(lux::_engine::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));						//Destroy the debug messenger if present
 	vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface
 }
 

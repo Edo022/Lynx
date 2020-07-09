@@ -16,19 +16,19 @@ int main() {
 	//LuxRenderSpace2D r;
 	LuxInit(false);
 
-
-	LuxInputState inputStateTest{
-		LuxKeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},
-		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("BBBB"); } } ,
-		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("CCC"); } },
-		LuxKeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("DD"); } }
+	
+	lux::input::InputState inputStateTest{
+		lux::input::KeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},
+		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("BBBB"); } } ,
+		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("CCC"); } },
+		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("DD"); } }
 	};
-	luxInputSetInputState(&inputStateTest);
+	lux::input::setInputState(&inputStateTest);
 
 
 	{
-		LuxObject2DLine lineTest;
-		luxSpawnObject(&lineTest);
+		lux::obj::Line2D lineTest;
+		lux::obj::spawnObject(&lineTest);
 		*lineTest.col0 = vec4f32{ 1, 0.1, 0, 1 };
 		*lineTest.col1 = vec4f32{ 0, 0.2, 1, 0 };
 		*lineTest.wd0 = 100;
@@ -36,8 +36,8 @@ int main() {
 		*lineTest.p0 = vec2i32{ 2000, 500 };
 		*lineTest.p1 = vec2i32{ 1700, 800 };
 
-		//LuxObject2DLine lineTest2;
-		//luxSpawnObject(&lineTest2);
+		//Line2D lineTest2;
+		//spawnObject(&lineTest2);
 		//*lineTest2.col0 = vec4f32{ 1, 0.1, 0, 1 };
 		//*lineTest2.col1 = vec4f32{ 0, 0.2, 1, 0 };
 		//*lineTest2.wd0 = 1;
@@ -45,6 +45,7 @@ int main() {
 		//*lineTest2.p0 = vec2i32{ 2000, 500 };
 		//*lineTest2.p1 = vec2i32{ 1700, 800 };
 	}
+
 
 	while (engine.running) {
 		sleep(5);

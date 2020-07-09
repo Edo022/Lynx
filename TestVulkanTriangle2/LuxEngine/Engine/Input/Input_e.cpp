@@ -1,3 +1,3 @@
 #include "Input.h"
 
-LuxInputState* __lp_input_states;
+lux::input::InputState* lux::input::inStates;

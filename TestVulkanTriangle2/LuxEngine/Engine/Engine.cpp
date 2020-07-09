@@ -1,7 +1,7 @@
 ﻿
 
 #include "LuxEngine/Engine/Engine.h"
-#include "Input/Input.h"          // for __lp_key_callback, __lp_mouseButtonCallback
+#include "Input/Input.h"          // for keyCallback, mouseButtonCallback
 #include "LuxEngine/System/System.h"               // for luxThisDirectory
 Engine engine;
 
@@ -23,8 +23,7 @@ static LuxString shaderPath;
 
 //Shader files must have the .comp extension
 static bool compileShader(const char* pShaderPath) {
-	LuxString compileShaderCommand =
-		luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
+	LuxString compileShaderCommand = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
 	return ("%d\n", system(compileShaderCommand.begin()) == 0);
 }
 
@@ -38,10 +37,10 @@ static bool compileShader(const char* pShaderPath) {
 void Engine::run(bool vUseVSync, float vFOV) {
 	//Start init time counter and compile shaders
 	LuxTime start = luxStartChrono();
-	shaderPath = luxThisDirectory + "/LuxEngine/Contents/shaders/";
+	shaderPath = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/";
 	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
-		LuxString luxStrPath = LuxString(name.path().u8string().c_str()); luxFixWindowsPath(luxStrPath);
-		if (luxGetExtensionFromString(luxStrPath) == "comp") {
+		LuxString luxStrPath = LuxString(name.path().u8string().c_str()); lux::System::fixWindowsPath(luxStrPath);
+		if (lux::System::getExtensionFromPath(luxStrPath) == "comp") {
 			if (!compileShader(luxStrPath.begin())) Exit("compilation error")
 			else Normal printf("%s", luxStrPath.begin());
 		}
@@ -168,7 +167,7 @@ void Engine::createInstance() {
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 	createInfo.enabledLayerCount = scast<uint32>(validationLayers.size());
 	createInfo.ppEnabledLayerNames = validationLayers.data();
-	populateDebugMessengerCreateInfo(debugCreateInfo);
+	lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
 	#endif
 
@@ -204,10 +203,10 @@ void Engine::initWindow() {
 		glfwSetWindowUserPointer(window, this);
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 
-		glfwSetCursorPosCallback(window, __lp_mouseCursorPosCallback);
-		glfwSetMouseButtonCallback(window, __lp_mouseButtonCallback);
-		glfwSetScrollCallback(window, __lp_mouseWheelCallback);
-		glfwSetKeyCallback(window, __lp_key_callback);
+		glfwSetCursorPosCallback(window, lux::input::mouseCursorPosCallback);
+		glfwSetMouseButtonCallback(window, lux::input::mouseButtonCallback);
+		glfwSetScrollCallback(window, lux::input::mouseAxisCallback);
+		glfwSetKeyCallback(window, lux::input::keyCallback);
 	}
 }
 

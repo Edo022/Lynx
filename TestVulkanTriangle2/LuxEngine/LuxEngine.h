@@ -59,30 +59,12 @@
 
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
-	__lp_lux_get_current_working_directory();
-	__lp_luxInit(useVSync);
+	lux::System::__lp_get_current_working_directory();
+	lux::_engine::__lp_luxInit(useVSync);
 	__lp_goniometric_functions_init();
 
 	while (!engine.initialized) sleep(10);
 }
 
 
-//TODO
-//static inline void luxSpawnObject(LuxObject_base0* pObject) {
-//	if (pObject->objectType > 0) {
-//		pObject->EID = engine.objs.add(pObject);
-//	}
-//	else Exit("invalid object");
-//
-//	switch (pObject->objectType){
-//		case LUX_OBJECT_TYPE_LINE_2D_CCT:
-//			pObject->gpuCell = engine.gpuCellCreate(36, true);
-//			break;
-//		default: Exit("TODO");
-//	}
-//}
 
-//TODO add
-//static inline void luxSpawnObjectCopy(LuxObject_base0* pObject) {
-//	pObject->EID = engine.objs.add(pObject);
-//}
