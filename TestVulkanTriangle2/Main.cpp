@@ -11,11 +11,12 @@
 
 
 
+
 int main() {
 	//LuxObjectLine l;
 	//LuxRenderSpace2D r;
 	LuxInit(false);
-
+	
 	
 	lux::input::InputState inputStateTest{
 		lux::input::KeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},

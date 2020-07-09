@@ -56,7 +56,6 @@
 #include "macros.h"                                  // for sleep
 
 
-
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
 	lux::System::__lp_get_current_working_directory();
