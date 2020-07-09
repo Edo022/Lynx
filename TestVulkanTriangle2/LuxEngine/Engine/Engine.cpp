@@ -22,9 +22,11 @@ Engine engine;
 static LuxString shaderPath; 
 
 //Shader files must have the .comp extension
-static bool compileShader(const char* pShaderPath) {
-	LuxString compileShaderCommand = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
-	return ("%d\n", system(compileShaderCommand.begin()) == 0);
+namespace lux::_engine {
+	static bool compileShader(const char* pShaderPath) {
+		LuxString compileShaderCommand = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
+		return ("%d\n", system(compileShaderCommand.begin()) == 0);
+	}
 }
 
 
@@ -41,7 +43,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
 		LuxString luxStrPath = LuxString(name.path().u8string().c_str()); lux::System::fixWindowsPath(luxStrPath);
 		if (lux::System::getExtensionFromPath(luxStrPath) == "comp") {
-			if (!compileShader(luxStrPath.begin())) Exit("compilation error")
+			if (!lux::_engine::compileShader(luxStrPath.begin())) Exit("compilation error")
 			else Normal printf("%s", luxStrPath.begin());
 		}
 	}

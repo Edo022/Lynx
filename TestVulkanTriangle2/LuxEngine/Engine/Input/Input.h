@@ -22,7 +22,6 @@ namespace lux::input {
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
 		*(*(rcast<lux::obj::Line2D*>(engine.objs[0]))).p0 = vec2i32{ (int32)x, (int32)y };
-		//printf("mouse");
 	}
 
 
@@ -33,9 +32,7 @@ namespace lux::input {
 
 
 	static void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
-		////renderFence.wait(1);
-		//*(*(rcast<Line2D*>(engine.objs[0]))).p1 = vec2i32{ (int32)x, (int32)y };
-		////renderFence.set(0);
+		//*(*(rcast<lux::obj::Line2D*>(engine.objs[0]))).p1 = vec2i32{ (int32)x, (int32)y };
 	}
 
 

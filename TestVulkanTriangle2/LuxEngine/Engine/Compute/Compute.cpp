@@ -7,16 +7,6 @@
 
 
 
-//Dark magic. Don't worry, it works
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64 object, uint64 location, int32 messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData) {
-	printf("Debug Report: %s: %s\n", pLayerPrefix, pMessage);
-	return VK_FALSE;
-}
-
-
-
-
-
 void Engine::runCompute() {
 	{
 		gpuCellWindowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
