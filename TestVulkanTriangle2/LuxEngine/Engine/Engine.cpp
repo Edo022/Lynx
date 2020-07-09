@@ -19,8 +19,6 @@ Engine engine;
 
 
 
-static LuxString shaderPath; 
-
 //Shader files must have the .comp extension
 namespace lux::_engine {
 	static bool compileShader(const char* pShaderPath) {

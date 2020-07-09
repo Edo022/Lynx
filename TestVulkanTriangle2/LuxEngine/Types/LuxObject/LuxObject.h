@@ -44,6 +44,7 @@ namespace lux::obj {
 		void* cellPtr = nullptr;				//Pointer to the GPU memory cell
 		virtual void initPtrs() = 0;			//Initializes the pointers in the struct
 		inline virtual int32 getCellSize() = 0;	//Size of the object data
+		LuxString shaderName{ "" };				//The name of the shader that renders the object
 	};
 
 

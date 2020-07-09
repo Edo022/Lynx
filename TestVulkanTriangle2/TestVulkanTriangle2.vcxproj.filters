@@ -204,7 +204,7 @@
       <Filter>LuxEngine\Contents\Shaders</Filter>
     </None>
     <None Include="cpp.hint" />
-    <None Include="LuxEngine\Contents\shaders\test0.comp">
+    <None Include="LuxEngine\Contents\shaders\Line2D.comp">
       <Filter>LuxEngine\Contents\Shaders</Filter>
     </None>
   </ItemGroup>

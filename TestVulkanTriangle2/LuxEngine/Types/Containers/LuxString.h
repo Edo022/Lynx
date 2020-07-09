@@ -38,7 +38,7 @@ public:
 
 	//String concatenation
 	inline void __vectorcall operator += (const LuxString& pString) {
-		uint64 oldSize = str.size() + 1;
+		uint64 oldSize = str.size();
 		str.resize(str.size() + pString.size() - 1);
 		memcpy(str.begin() + oldSize - 1, pString.begin(), pString.size());
 	}

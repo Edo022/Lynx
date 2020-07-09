@@ -29,6 +29,8 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Types/LuxFence.h"
 
+#include "LuxEngine/System/System.h"
+
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"
 
@@ -407,6 +409,7 @@ public:
 
 	LuxShader ls0;
 	LuxShader ls1;
+	LuxString shaderPath;
 
 
 	VkCommandPool				copyCommandPool;
@@ -489,7 +492,7 @@ namespace lux::obj {
 		pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
 		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
 		pObject->initPtrs();
-		engine.cshaderNew(LuxArray<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
+		engine.cshaderNew(LuxArray<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin());
 	}
 }
 
