@@ -263,7 +263,7 @@ VkShaderModule Engine::cshaderCreateModule(const VkDevice vDevice, uint32* pCode
 
 	VkShaderModule shaderModule;										//Create the shader module
 	TryVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
-	free(pCode);														//{}@#][è+56547$%&TY%$.456$£"gTGTacfregMIK;;;;;;;_:__:;§*°+++àùà+Free memory #LLID CSF0000
+	free(pCode);														//#LLID CSF0000 Free memory 
 	return shaderModule;												//Return the created shader module
 }
 

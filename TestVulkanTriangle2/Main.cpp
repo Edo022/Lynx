@@ -20,7 +20,7 @@ int main() {
 	//int h2 = r.ID;
 	engine.spawnObjFence.set(0);
 	std::thread t([&]() {LuxInit(false); });
-	engine.spawnObjFence.wait(1);
+	//engine.spawnObjFence.wait(1);
 
 
 	LuxInputState inputStateTest{
@@ -32,7 +32,7 @@ int main() {
 	luxInputSetInputState(&inputStateTest);
 
 
-
+	sleep(2000);
 
 	{
 		LuxObject2DLine lineTest;
@@ -44,15 +44,15 @@ int main() {
 		*lineTest.p0 = vec2i32{ 2000, 500 };
 		*lineTest.p1 = vec2i32{ 1700, 800 };
 
-		LuxObject2DLine lineTest2;
-		luxSpawnObject(&lineTest2);
-		*lineTest2.col0 = vec4f32{ 1, 0.1, 0, 1 };
-		*lineTest2.col1 = vec4f32{ 0, 0.2, 1, 0 };
-		*lineTest2.wd0 = 1;
-		*lineTest2.wd1 = 1;
-		*lineTest2.p0 = vec2i32{ 2000, 500 };
-		*lineTest2.p1 = vec2i32{ 1700, 800 };
-		engine.spawnObjFence.set(2);
+		//LuxObject2DLine lineTest2;
+		//luxSpawnObject(&lineTest2);
+		//*lineTest2.col0 = vec4f32{ 1, 0.1, 0, 1 };
+		//*lineTest2.col1 = vec4f32{ 0, 0.2, 1, 0 };
+		//*lineTest2.wd0 = 1;
+		//*lineTest2.wd1 = 1;
+		//*lineTest2.p0 = vec2i32{ 2000, 500 };
+		//*lineTest2.p1 = vec2i32{ 1700, 800 };
+		//engine.spawnObjFence.set(2);
 	}
 
 	while (engine.running) {

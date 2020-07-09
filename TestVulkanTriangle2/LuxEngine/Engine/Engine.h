@@ -284,7 +284,7 @@ public:
 
 
 
-private:
+public:
 	//Main
 	VkInstance instance;
 	VkDebugUtilsMessengerEXT debugMessenger;
@@ -442,6 +442,7 @@ private:
 public:
 	LuxMap<LuxObject_base0*> objs;		//TODO
 	LuxFence spawnObjFence;
+	LuxFence objfence;
 private:
 
 
@@ -456,7 +457,7 @@ public:
 	LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
 	bool		gpuCellDestroy(const LuxCell vCell);
 	void*		gpuCellMap(const LuxCell vCell);
-private:
+public:
 
 
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
@@ -505,14 +506,10 @@ static inline void luxSpawnObject(LuxObject_base0* pObject) {
 	}
 	else Exit("invalid object");
 
-	switch (pObject->objectType) {
-		case LUX_OBJECT_TYPE_2D_LINE:
-			pObject->gpuCell = engine.gpuCellCreate(14 * 4, true);
-			break;
-		default: Exit("TODO");
-	}
+	pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
 	pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
 	pObject->initPtrs();
+	engine.cshaderNew(LuxArray<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
 }
 
 

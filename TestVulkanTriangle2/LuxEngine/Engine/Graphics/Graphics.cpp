@@ -96,6 +96,7 @@ void Engine::graphicsDrawFrame() {
 	}
 
 
+	if(!objfence.check(0)) objfence.wait(2);
 	//TODO don't recreate the command buffer array every time 
 	{ //Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -118,6 +119,7 @@ void Engine::graphicsDrawFrame() {
 		vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
 		TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
 	}
+	objfence.set(0);
 
 
 	{ //Present

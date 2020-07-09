@@ -41,7 +41,7 @@ static void __lp_mouseWheelCallback(GLFWwindow* window, double x, double y) {
 
 static void __lp_mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
 	////renderFence.wait(1);
-	*(*(rcast<LuxObject2DLine*>(engine.objs[0]))).p1 = vec2i32{ (int32)x, (int32)y };
+	//*(*(rcast<LuxObject2DLine*>(engine.objs[0]))).p1 = vec2i32{ (int32)x, (int32)y };
 	////renderFence.set(0);
 }
 

@@ -20,7 +20,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallbackFn(VkDebugReportFlagsEX
 void Engine::runCompute() {
 	{
 		spawnObjFence.set(1);
-		spawnObjFence.wait(2);
+		//spawnObjFence.wait(2);
 
 		gpuCellWindowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 
@@ -29,8 +29,8 @@ void Engine::runCompute() {
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
 
-		ls0 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
-		ls1 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[1]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
+		//ls0 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[0]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
+		//ls1 = cshaderNew(LuxArray<LuxCell>{ gpuCellWindowOutput, gpuCellWindowSize, objs[1]->gpuCell }, "LuxEngine/Contents/shaders/test0.comp.spv");
 	}
 
 	{ //#LLID CCB0000 Create copy command buffers 

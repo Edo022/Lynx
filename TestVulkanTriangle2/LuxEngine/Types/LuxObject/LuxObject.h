@@ -36,13 +36,14 @@ struct LuxObject_base0 {
 	LuxObjectType objectType;
 	LuxObject_base0() { objectType = LUX_OBJECT_TYPE__BASE; }
 
-	LuxString name{ "" };			//The name of the object. 
-	static uint64 lastID;			//#LLID LOS000 the last assigned ID of a LuxObject 
-	uint64 ID{ ++lastID };			//A unique ID that indentifies the object
+	LuxString name{ "" };					//The name of the object. 
+	static uint64 lastID;					//#LLID LOS000 the last assigned ID of a LuxObject 
+	uint64 ID{ ++lastID };					//A unique ID that indentifies the object
 
-	LuxCell gpuCell{ (uint64)-1 };	//GPU memory containing the small data of the object
-	void* cellPtr = nullptr;		//Pointer to the GPU memory cell
-	virtual void initPtrs() = 0;
+	LuxCell gpuCell{ (uint64)-1 };			//GPU memory containing the small data of the object
+	void* cellPtr = nullptr;				//Pointer to the GPU memory cell
+	virtual void initPtrs() = 0;			//Initializes the pointers in the struct
+	inline virtual int32 getCellSize() = 0;	//Size of the object data
 };
 
 

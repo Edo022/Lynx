@@ -356,12 +356,15 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 LuxShader Engine::cshaderNew(const LuxArray<LuxCell>& pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
+	objfence.wait(0);
+	objfence.set(1);
 	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array
 
 	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
 	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
 	cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
+	objfence.set(2);
 
 	return shader;													//Return the index of the created shader
 }

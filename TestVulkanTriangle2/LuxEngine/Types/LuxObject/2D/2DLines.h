@@ -28,6 +28,8 @@ struct LuxObject2DLine : public LuxObject2D_base1 {
 		wd1 = ((float32*)cellPtr) + 13;
 	}
 
+	inline int32 getCellSize() final override { return 14 * 4; }
+
 	vec2i32* p0{ nullptr };		//First point of the line
 	vec2i32* p1{ nullptr };		//Second point of the line
 
