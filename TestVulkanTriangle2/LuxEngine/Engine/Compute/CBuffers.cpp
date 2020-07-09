@@ -51,10 +51,10 @@ LuxCell Engine::gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible)
 				buffer = i;																					//Save its index
 			}
 		}
-		if (buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible);		//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
-		return scast<LuxCell>(__lp_cellCode(true, buffer, CBuffers[buffer].cells.add(scast<char>(1)), bufferClass));				//Create a new cell in the buffer and return its code
+		if (buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible);					//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
+		return scast<LuxCell>(__lp_cellCode(true, buffer, scast<uint32>(CBuffers[buffer].cells.add(scast<char>(1))), bufferClass));	//Create a new cell in the buffer and return its code
 	}
-	else return scast<LuxCell>(__lp_cellCode(false, gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
+	else return scast<LuxCell>(__lp_cellCode(false, scast<uint32>(gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible)), 0, vCellSize));//If it's a custom size buffer, create a new buffer and return its code
 }
 
 

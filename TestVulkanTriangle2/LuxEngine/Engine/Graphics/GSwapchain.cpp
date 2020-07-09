@@ -169,7 +169,7 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 		{ //destroy copy command buffers
-			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.__lp_size, copyCommandBuffers.data());
+			vkFreeCommandBuffers(compute.LD, copyCommandPool, scast<uint32>(copyCommandBuffers.__lp_size), copyCommandBuffers.data());
 			vkDestroyCommandPool(compute.LD, copyCommandPool, null);
 			vkFreeCommandBuffers(compute.LD, clearCommandPool, 1, &clearCommandBuffer);
 			vkDestroyCommandPool(compute.LD, clearCommandPool, null);
