@@ -20,6 +20,6 @@ struct LuxShader_t {
 
 	//Since vulkan uses pointers everywhere, I need to create the objects with malloc() to prevent them from vanishing randomly
 	//This array saves all of them so they can be free()d when the shader is destroyed
-	LuxMap<void*> __lp_ptrs;
+	LuxMap<void*, uint32> __lp_ptrs;
 };
 

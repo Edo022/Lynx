@@ -384,6 +384,8 @@
     <ClCompile Include="LuxEngine\Engine\Input\Input_e.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\System\System_e.cpp" />
+    <ClCompile Include="LuxEngine\Threads\ThreadPool_e.cpp" />
+    <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -405,6 +407,8 @@
     <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h" />
     <ClInclude Include="LuxEngine\System\System.h" />
+    <ClInclude Include="LuxEngine\Threads\ThreadPool.h" />
+    <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />

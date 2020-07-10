@@ -3,27 +3,46 @@
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 
 
+
+
 namespace lux::obj {
-	//A 2D space where to render LuxObject s
-	//The position of a 2D LuxObject is relative to the size of the renderSpace
-	//    -1, -1 is the beginning of the render space. +1, +1 is its end
-	//    Out of view objects will be cropped if the renderSpaces does not allow outOfViewRender
-	//A renderSpace can also contain other renderSpace s. They'll be rendered like every other object
-	struct LuxRenderSpace2D : public Base2D {
-		static const LuxObjectType objectType = LUX_OBJECT_TYPE_RENDER_SPACE_2D;
-		LuxMap<const Base2D*> objects;
-		bool outOfViewRender = false;
+	static inline void spawnObject(Base* pObject);
 
 
-		//This function adds an objects tto the render queue of the render space and assigns it an object ID
-		//*   pObject: the object to spawn. It must be a subStruct of Base2D, but not a base struct
-		//*   Returns true if the object is spawned correctly, false if the object is invalid or an error occurs
-		bool spawnObject(const Base2D* pObject) {
-			if (pObject->objectType < 0) return false;
-			objects.add(pObject);
+
+	//A 2D space where to render lux objects
+	//The position of the object is relative to the size and position of the render space
+	//    It goes from 0, 0 to +1, +1
+	//    Out of view objects will be cropped if the renderSpaces does not allowOutOfViewRender
+	//This render space can only be placed in other 2D render spaces or 
+	struct RenderSpace2D : public Base2D {
+		static const ObjectType objectType = LUX_OBJECT_TYPE_RENDER_SPACE_2D;
+		LuxMap<const Base*, uint32> objects;
+		bool allowOutOfViewRender = false;
+
+
+		//TODO allocate on different thread
+		//TODO allocation is alwais waited
+		//This function spawn an object in the render space
+		//    A 2D render space only allows 2D objects. Trying to spawn a non 2D object will result in an error
+		//*   pObject: a pointer to the object to spawn. It must be a sub struct of lux::obj::Base2D
+		//*   vWaitAllocation: whether to wait or not the allocation of the object
+		//*       Members of non allocated objects cannot be read or written
+		//*       Trying to access a non allocated member will cause a runtime exception
+		//*       You can check if an object has been allocated through is "allocated" bool variable
+		//*   Returns true if the object is spawned correctly, false if the object is invalid
+		bool spawnObject(Base* pObject, const bool vWaitAllocation = true) {
+			if (pObject->objectType < 0 || pObject->objectType >= 3000 || pObject->objectType < 2000) return false;
+			lux::obj::spawnObject(pObject);
+
 			return true;
 		}
-		//TODO
+		
+
+		void initPtrs() final override {}
+		inline int32 getCellSize() final override { return 0; }
+
+
 	};
 }
 //TODO add 3d render space

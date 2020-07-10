@@ -109,8 +109,8 @@ QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice
 //Then saves them in the class members
 void Engine::deviceGetPhysical() {
 	uint32 deviceCount = 0;
-	LuxMap<LuxString> discardedPhysicalDevices(0xFFFF, 0xFFFF);
-	LuxMap<_VkPhysicalDevice*> physicalDevices(0xFFFF, 0xFFFF);
+	LuxMap<LuxString, uint32> discardedPhysicalDevices(0xFFFF, 0xFFFF);
+	LuxMap<_VkPhysicalDevice*, uint32> physicalDevices(0xFFFF, 0xFFFF);
 
 
 	//Get physical devices
@@ -208,7 +208,7 @@ void Engine::deviceGetPhysical() {
 //*   pLD: a pointer to the logical device where to store the created device
 //*   pComputeQueues: a pointer to an array of compute queues
 //*       This is used to know if the physical device is for graphics, computation or is secondary
-void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues) {
+void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue, uint32>* pComputeQueues) {
 	//List the queues of the device as unique int32s
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice(*pPD, graphics.PD)) {											//If it's the main device for graphics,
@@ -222,7 +222,7 @@ void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, Lu
 
 
 	//Queue infos
-	LuxMap<VkDeviceQueueCreateInfo> queueCreateInfos;								//Create a queue create info array
+	LuxMap<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;								//Create a queue create info array
 	for (auto queueFamilyIndex : uniqueQueueFamilyIndices) {							//For every device queue family index found
 		VkDeviceQueueCreateInfo queueCreateInfo{};											//Create a queue create info struct
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;					//Set structure type

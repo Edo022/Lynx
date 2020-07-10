@@ -30,12 +30,14 @@
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/System/System.h"
+//#include "LuxEngine/Threads/ThreadPool.h"
 
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"
 
 #include "LuxEngine/Engine/Devices_t.h"
 #include "LuxEngine/Engine/Compute/CBuffers_t.h"
+#include "LuxEngine/Engine/Compute/CShader_t.h"
 
 #include "type_traits"                                 // for move
 #include "vcruntime_new.h"                             // for operator delete, operator new
@@ -46,7 +48,7 @@
 
 class LuxString;
 struct LuxShader_t;
-struct LuxRenderSpace2D;
+struct RenderSpace2D;
 
 
 
@@ -294,7 +296,7 @@ private:
 	void initWindow();		void createInstance();
 
 	//Devices >> Devices.cpp
-	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue>* pComputeQueues);
+	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue, uint32>* pComputeQueues);
 	static int32		deviceRate(const _VkPhysicalDevice* pDevice);
 	bool				deviceIsSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText);
 	bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
@@ -323,8 +325,8 @@ private:
 
 
 	//debug and validation layers data
-	LuxArray<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	LuxArray<const char*> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	LuxArray<const char*, uint32> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	LuxArray<const char*, uint32> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
 
@@ -418,13 +420,12 @@ public:
 	VkCommandBuffer				clearCommandBuffer;
 
 	//Objects
-	LuxMap<LuxShader_t>			CShaders;				//List of shaders
-	LuxMap<LuxBuffer_t>			CBuffers;				//List of GPU buffers
-	LuxMap<LuxRenderSpace2D*>	CRenderSpaces;			//List of renderSpaces
+	LuxMap<LuxShader_t, uint32>			CShaders;				//List of shaders
+	LuxMap<LuxBuffer_t, uint32>			CBuffers;				//List of GPU buffers
+	LuxMap<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			//List of renderSpaces
 
 
-public:
-	LuxMap<lux::obj::Base*> objs;		//TODO
+	LuxMap<lux::obj::Base*, uint32> objs;		//TODO
 	LuxFence spawnObjectFence;
 private:
 
@@ -476,6 +477,7 @@ namespace lux::_engine {
 	//This function is used by the engine. You shouldn't call it
 	static void __lp_luxInit(bool useVSync) {
 		std::thread renderThr([&]() {engine.run(useVSync, 45); });
+		//renderThr.join();
 		renderThr.detach();
 		engine.running = true;
 	}
@@ -493,6 +495,7 @@ namespace lux::obj {
 		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
 		pObject->initPtrs();
 		engine.cshaderNew(LuxArray<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin());
+		pObject->allocated = true;
 	}
 }
 

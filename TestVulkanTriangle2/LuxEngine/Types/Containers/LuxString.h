@@ -3,7 +3,7 @@
 
 //TODO use faster memcpy
 //TODO dont use initializer list
-class LuxString : public LuxContainer<char> {
+class LuxString : public LuxContainer<char, uint32> {
 	LuxArray<char> str;
 
 public:
@@ -28,7 +28,7 @@ public:
 
 
 	//Inherted from LuxContainer and operators
-	inline uint64 __vectorcall size() const override { return str.size(); }
+	inline uint32 __vectorcall size() const override { return str.size(); }
 	inline char* __vectorcall begin() const override { return str.begin(); }
 	inline char* __vectorcall end() const override { return str.end(); }
 	inline char& __vectorcall operator[](const uint64 vIndex) const { return str[vIndex]; }

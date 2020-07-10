@@ -18,12 +18,12 @@ namespace lux::obj {
 		//This is needed to read or write data in the object
 		//This function should be called only after the object is begin spawned
 		void initPtrs() final override {
-			p0 = (vec2i32*)((char8*)cellPtr + 0);		//    8    |    0  - 7     |    0 +
-			p1 = (vec2i32*)((char8*)cellPtr + 8);		//    8    |    8  - 15    |    0
-			col0 = (vec4f32*)((char8*)cellPtr + 16);	//    16   |    16 - 31    |    1 +
-			col1 = (vec4f32*)((char8*)cellPtr + 32);	//    16   |    32 - 47    |    2 +
-			wd0 = (float32*)((char8*)cellPtr + 48);		//    4    |    48 - 51    |    3 +
-			wd1 = (float32*)((char8*)cellPtr + 52);		//    4    |    52 - 55    |    3
+			p0 = (vec2i32*)((int8*)cellPtr + 0);		//    8    |    0  - 7     |    0 +
+			p1 = (vec2i32*)((int8*)cellPtr + 8);		//    8    |    8  - 15    |    0
+			col0 = (vec4f32*)((int8*)cellPtr + 16);		//    16   |    16 - 31    |    1 +
+			col1 = (vec4f32*)((int8*)cellPtr + 32);		//    16   |    32 - 47    |    2 +
+			wd0 = (float32*)((int8*)cellPtr + 48);		//    4    |    48 - 51    |    3 +
+			wd1 = (float32*)((int8*)cellPtr + 52);		//    4    |    52 - 55    |    3
 		}
 
 		inline int32 getCellSize() final override { return 56; }

@@ -75,7 +75,6 @@ void Engine::mainLoop() {
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		//TODO full screen
 	}
 	running = false;
 	vkDeviceWaitIdle(graphics.LD);
@@ -137,15 +136,16 @@ void Engine::createInstance() {
 
 
 	//Extensions
-	LuxMap<const char*> extensions;
+	LuxMap<const char*, uint32> extensions;
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
 	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = scast<uint32>(extensions.size());						//Set extension count
+	createInfo.enabledExtensionCount = extensions.size();						//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
-
-
+	//TODO ^ here. error. only one extension saved
+	//TODO fix LuxMap automatic constructor chunk size = 1
+	 
 	//Add validation layers if in debug mode
 	#ifndef LUX_DEBUG
 	createInfo.enabledLayerCount = 0;
@@ -165,7 +165,7 @@ void Engine::createInstance() {
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = scast<uint32>(validationLayers.size());
+	createInfo.enabledLayerCount = validationLayers.size();
 	createInfo.ppEnabledLayerNames = validationLayers.data();
 	lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
@@ -173,7 +173,9 @@ void Engine::createInstance() {
 
 
 	//Create instance
-	TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
+	VkResult h;
+	TryVk(h = vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
+	
 }
 
 

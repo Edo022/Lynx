@@ -55,6 +55,9 @@
     <Filter Include="LuxEngine\Types\LuxObject\3D">
       <UniqueIdentifier>{ec7a58cc-5dba-4385-ab86-bed721a9fc30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Threads">
+      <UniqueIdentifier>{1a62e772-3a71-48bd-89d6-091d04c3f69a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -99,6 +102,12 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
       <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Threads\ThreadPool_e.cpp">
+      <Filter>LuxEngine\Threads</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +206,12 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\LuxEngine_config.h">
       <Filter>LuxEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Threads\ThreadPool.h">
+      <Filter>LuxEngine\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

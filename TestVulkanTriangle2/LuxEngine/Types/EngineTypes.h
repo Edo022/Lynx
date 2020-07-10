@@ -40,3 +40,17 @@ static constexpr uint32 __lp_cellOffset_from_cc(const _VkPhysicalDevice* pDevice
 	if (__lp_isShared_from_cc(vCell) == 0 || rawOffset == 0) return 0;
 	else return scast<uint32>(rawOffset - (rawOffset % pDevice->properties.limits.minStorageBufferOffsetAlignment) + pDevice->properties.limits.minStorageBufferOffsetAlignment);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

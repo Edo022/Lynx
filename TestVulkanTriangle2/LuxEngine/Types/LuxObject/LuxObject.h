@@ -8,18 +8,24 @@
 
 
 namespace lux::obj {
-	enum LuxObjectType : int32 {
-		LUX_OBJECT_TYPE__BASE = -1,
+	//The type of the object (simulates reflection)
+	//    Negative values    = base struct
+	//    +-1000 to +-1999   = 1D object
+	//    +-2000 to +-2999   = 2D object
+	//    +-3000 to +-3999   = 3D object
+	//    +-4000 to +-4999   = 2DI3D object
+	enum ObjectType : int32 {
+		LUX_OBJECT_TYPE__BASE				= -1,
 
-		LUX_OBJECT_TYPE_3D__BASE = -2,
-		LUX_OBJECT_TYPE_2i3D__BASE = -3,
-		LUX_OBJECT_TYPE_2D__BASE = -4,
-		LUX_OBJECT_TYPE_1D__BASE = -5,
+		LUX_OBJECT_TYPE_3D__BASE			= -3000,
+		LUX_OBJECT_TYPE_2i3D__BASE			= -4000,
+		LUX_OBJECT_TYPE_2D__BASE			= -2000,
+		LUX_OBJECT_TYPE_1D__BASE			= -1000,
 
-		LUX_OBJECT_TYPE_RENDER_SPACE_2D = 1,
-		LUX_OBJECT_TYPE_RENDER_SPACE_3D = 2,
+		LUX_OBJECT_TYPE_RENDER_SPACE_2D		= +2000,
+		LUX_OBJECT_TYPE_RENDER_SPACE_3D		= +3000,
 
-		LUX_OBJECT_TYPE_2D_LINE = 3,
+		LUX_OBJECT_TYPE_2D_LINE				= +2001,
 	};
 
 
@@ -33,13 +39,14 @@ namespace lux::obj {
 
 	//Base class for render objects
 	struct Base {
-		LuxObjectType objectType;
+		ObjectType objectType;
 		Base() { objectType = LUX_OBJECT_TYPE__BASE; }
 
 		LuxString name{ "" };					//The name of the object. 
 		static uint64 lastID;					//#LLID LOS000 the last assigned ID of a LuxObject 
 		uint64 ID{ ++lastID };					//A unique ID that indentifies the object
 
+		bool allocated = false;					//Whether the object is allocated or not
 		LuxCell gpuCell{ (uint64)-1 };			//GPU memory containing the small data of the object
 		void* cellPtr = nullptr;				//Pointer to the GPU memory cell
 		virtual void initPtrs() = 0;			//Initializes the pointers in the struct
