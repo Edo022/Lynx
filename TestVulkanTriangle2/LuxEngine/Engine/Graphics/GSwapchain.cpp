@@ -29,11 +29,11 @@ VkPresentModeKHR Engine::swapchainChoosePresentMode(const LuxArray<VkPresentMode
 
 
 VkExtent2D Engine::swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
-	int width, height;
+	int32 width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	return VkExtent2D{
-		max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, scast<uint32>(width))),
-		max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, scast<uint32>(height)))
+		max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, (uint32)width)),
+		max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
 	};
 }
 
@@ -169,7 +169,7 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 		{ //destroy copy command buffers
-			vkFreeCommandBuffers(compute.LD, copyCommandPool, scast<uint32>(copyCommandBuffers.__lp_size), copyCommandBuffers.data());
+			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.size(), copyCommandBuffers.data());
 			vkDestroyCommandPool(compute.LD, copyCommandPool, null);
 			vkFreeCommandBuffers(compute.LD, clearCommandPool, 1, &clearCommandBuffer);
 			vkDestroyCommandPool(compute.LD, clearCommandPool, null);

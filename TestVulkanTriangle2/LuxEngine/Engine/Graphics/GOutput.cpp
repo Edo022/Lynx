@@ -83,7 +83,7 @@ void Engine::createRenderPass() {
 void Engine::createFramebuffers() {
 	swapchainFramebuffers.resize(swapchainImageViews.size());
 
-	for (uint64 i = 0; i < swapchainImageViews.size(); ++i) {
+	for (uint32 i = 0; i < swapchainImageViews.size(); ++i) {
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = renderPass;

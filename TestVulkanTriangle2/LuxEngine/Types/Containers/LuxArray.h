@@ -3,6 +3,7 @@
 
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
+#include "LuxEngine/macros.h"
 #include <initializer_list>
 #include "vcruntime_string.h"                         // for memcpy
 #include <stdlib.h>                                   // for malloc, realloc
@@ -35,12 +36,12 @@ public:
 
 	//Initializes the array using a list of elements, automatically converting it to the right type
 	template<class inType> inline LuxArray(const std::initializer_list<inType>& pElements) {
-		__lp_lux_static_array_init(pElements.size());
+		__lp_lux_static_array_init((alloc)pElements.size());
 		for (int i = 0; i < pElements.end() - pElements.begin(); ++i) __lp_data[i] = (inType) * (pElements.begin() + i);
 	}
 	//Initializes the array using a list of elements of the same type
 	inline LuxArray(const std::initializer_list<type>& pElements) {
-		__lp_lux_static_array_init(pElements.size());
+		__lp_lux_static_array_init(scast<alloc>(pElements.size()));
 		memcpy(begin(), pElements.begin(), ((pElements.size() * sizeof(type))));
 	}
 

@@ -36,7 +36,7 @@ namespace lux::input{
 
 
 	struct InputState {
-		LuxArray<KeySequence> sequences;		//The sequences of keys
+		LuxArray<KeySequence, uint16> sequences;		//The sequences of keys
 		bool sorted = false;					//Whether the sequence is sorted or not
 
 		//Initializes the input state with a list of key sequences and sorts them
@@ -50,10 +50,10 @@ namespace lux::input{
 		void __vectorcall sort() {
 			if (!sorted) {															//If the sequence is not sorted
 				sorted = true;															//Set it as sorted
-				for (int i = 0; i < sequences.size(); ++i) {							//For every key sequence
-					for (int j = i; j < sequences.size(); ++j) {							//Checking every other sequence that comes after it
-						if (j == i) continue;													//Skip useless iterations            // ↓ For every key of the second sequence
-						for (int k = 0; k < min(scast<LuxArray<uint16>>(sequences[j].sequence).size(), scast<LuxArray<uint16>>(sequences[i].sequence).size()); ++k) {
+				for (uint16 i = 0; i < sequences.size(); ++i) {							//For every key sequence
+					for (uint16 j = i; j < sequences.size(); ++j) {							//Checking every other sequence that comes after it
+						if (j == i) continue;													//Skip useless iterations            
+						for (uint16 k = 0; k < min(sequences[j].sequence.size(), sequences[i].sequence.size()); ++k) {//For every key of the second sequence
 							if (sequences[j].sequence[k] == sequences[i].sequence[k]) continue;	//Search for the next index with different keys
 							if (sequences[j].sequence[k] < sequences[i].sequence[k]) {			//If the first is greater than the second
 								KeySequence b = sequences[i];									//Swap the bindings and the whole sequences

@@ -22,6 +22,7 @@
 #include <deque>
 
 #include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
@@ -43,7 +44,6 @@
 #include "vcruntime_new.h"                             // for operator delete, operator new
 #include "vulkan/vk_platform.h"                        // for VKAPI_ATTR, VKAPI_CALL
 #include "vulkan/vulkan_core.h"                        // for VkFence, VkSemaphore, VkCommandBuffer, VkImage, VkPresentModeKHR, VkSurfaceFormatKHR, VkImageView, vkGetInstanceProcAddr, VkFramebuffer, VkBuffer, VkCommandBuffer_T, VkFormat, VkPhysicalDevice, VkDebugUtilsMessengerEXT, VkDevice, VkInstance, VkInstance_T, VkAllocationCallbacks, VkDeviceSize, VkExtent2D, VkMemoryPropertyFlags, VkSurfaceCapabilitiesKHR, PFN_vkCreateDebugUtilsMessengerEXT, PFN_vkDestroyDebugUtilsMessengerEXT, VK_KHR_SWAPCHAIN_EXTENSION_NAME, VkBool32, VkBufferUsageFlags, VkCommandPool, VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCreateInfoEXT, VkDeviceMemory, VkFormatFeatureFlags, VkImageAspectFlags, VkImageTiling, VkQueue, VkRenderPass, VkResult, VkResult::VK_ERROR_EXTENSION_NOT_PRESENT, VkShaderModule, VkSurfaceKHR, VkSwapchainKHR
-//#include <stdlib.h>                                    // for malloc
 #include <thread>
 
 class LuxString;
@@ -274,10 +274,10 @@ public:
 
 	//Window
 	GLFWwindow* window;								//Main engine window
-	int32 width = 1920 * 2, height = 1080 * 2;				//Size of the window //TODO
+	int32 width = 1920 * 2, height = 1080 * 2;		//Size of the window //TODO
 	LuxFence windowResizeFence;
 	LuxCell gpuCellWindowSize;
-	LuxCell gpuCellWindowOutput;							//The buffer that contains the color output of the window
+	LuxCell gpuCellWindowOutput;					//The buffer that contains the color output of the window
 
 	//Devices and queues
 public:
@@ -296,7 +296,7 @@ private:
 	void initWindow();		void createInstance();
 
 	//Devices >> Devices.cpp
-	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue, uint32>* pComputeQueues);
+	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxDynArray<VkQueue>* pComputeQueues);
 	static int32		deviceRate(const _VkPhysicalDevice* pDevice);
 	bool				deviceIsSuitable(const VkPhysicalDevice vDevice, LuxString* pErrorText);
 	bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
@@ -335,7 +335,7 @@ private:
 	LuxArray<VkSemaphore>		renderSemaphoreFinished;
 	LuxArray<VkFence>			renderFencesInFlight;
 	LuxArray<VkFence>			renderFencesImagesInFlight;
-	int64						renderCurrentFrame = 0;
+	int32						renderCurrentFrame = 0;
 	void						runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
 	void						graphicsInitVulkan();
 	void						graphicsCreateSurface();
@@ -436,9 +436,9 @@ private:
 
 
 	//Buffers >> Compute/Buffers.cpp
-	LuxBuffer	gpuBufferCreate(const uint64 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+	LuxBuffer	gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 public:
-	LuxCell		gpuCellCreate(const uint64 vCellSize, const bool vCpuAccessible);
+	LuxCell		gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
 	bool		gpuCellDestroy(const LuxCell vCell);
 	void* gpuCellMap(const LuxCell vCell);
 public:
@@ -477,7 +477,6 @@ namespace lux::_engine {
 	//This function is used by the engine. You shouldn't call it
 	static void __lp_luxInit(bool useVSync) {
 		std::thread renderThr([&]() {engine.run(useVSync, 45); });
-		//renderThr.join();
 		renderThr.detach();
 		engine.running = true;
 	}

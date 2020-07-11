@@ -35,8 +35,8 @@ int main() {
 
 		lux::obj::Line2D lineTest;
 		renderSpace.spawnObject(&lineTest);
-		*lineTest.col0 = vec4f32{ 1, 0.1, 0, 1 };
-		*lineTest.col1 = vec4f32{ 0, 0.2, 1, 0 };
+		*lineTest.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
+		*lineTest.col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
 		*lineTest.wd0 = 100;
 		*lineTest.wd1 = 200;
 		*lineTest.p0 = vec2i32{ 2000, 500 };

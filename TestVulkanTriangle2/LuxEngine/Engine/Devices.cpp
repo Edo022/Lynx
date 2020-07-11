@@ -79,7 +79,7 @@ QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice
 
 	//Set families
 	QueueFamilyIndices indices;
-	for (int i = 0; i < queueFamilies.size(); ++i) {													//For every queue family
+	for (uint32 i = 0; i < queueFamilies.size(); ++i) {													//For every queue family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 		if (queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 		VkBool32 hasPresentSupport = false;
@@ -121,7 +121,7 @@ void Engine::deviceGetPhysical() {
 		LuxArray<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
 		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.data());					//Get physical devices
 
-		forEach(physDevices, i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
+		for(uint32 i = 0; i < physDevices.size(); ++i) {											//For every physical device, create and save a _VkPhysicalDevice stucture
 			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 			LuxString errorText;
@@ -139,7 +139,7 @@ void Engine::deviceGetPhysical() {
 	//If there are discarded devices, print their names
 	if (discardedPhysicalDevices.size() > 0) {
 		Failure printf("    Discarded devices:");
-		for (int32 i = 0; i < discardedPhysicalDevices.size(); i += 2) {
+		for (uint32 i = 0; i < discardedPhysicalDevices.size(); i += 2) {
 			Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].begin(), discardedPhysicalDevices[(int64)i + 1].begin());
 		}
 	}
@@ -149,13 +149,13 @@ void Engine::deviceGetPhysical() {
 	if (physicalDevices.size() > 0) {								//If there are suitable devices
 		graphics.PD = *physicalDevices[0];								//set graphics device at default value
 		compute.PD = *physicalDevices[0];								//set compute  device at default value
-		forEach(physicalDevices, i) {									//For every physical device
+		for(uint32 i = 0; i < physicalDevices.size(); ++i) {				//For every physical device
 			physDev.indices = deviceGetQueueFamilies(physDev.device);		//Get its queue families
 			physDev.score = deviceRate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 			if (physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
 			if (physDev.score > compute.PD.score || physDev.indices.computeFamilies.size() > 0) compute.PD = physDev;
 		}
-		forEach(physicalDevices, i) {									//For every physical device that isn't the main graphics or compute device
+		for(uint32 i = 0; i < physicalDevices.size(); ++i) {				//For every physical device that isn't the main graphics or compute device
 			if (!sameDevice(physDev, graphics.PD) && !sameDevice(physDev, compute.PD)) {
 				secondary.resize(secondary.size() + 1);
 				secondary[secondary.size() - 1].PD = physDev;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
@@ -163,8 +163,8 @@ void Engine::deviceGetPhysical() {
 		}
 
 		//Print the devices names, IDs, scores and tasks
-		Success printf("    Found %lld suitable device%s:", physicalDevices.size(), (physicalDevices.size() == 1) ? "" : "s");
-		forEach(physicalDevices, i) {
+		Success printf("    Found %ld suitable device%s:", (uint32)physicalDevices.size(), (physicalDevices.size() == 1) ? "" : "s");
+		for(uint32 i = 0; i < physicalDevices.size(); ++i) {
 			if (sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
 			printf("        %s  |  ID: %d  |  %d", physDev.properties.deviceName, physDev.properties.deviceID, physDev.score);
 			if (sameDevice(physDev, graphics.PD)) printf("  |  Main graphics");
@@ -180,15 +180,15 @@ void Engine::deviceGetPhysical() {
 	//Create a logical device for graphics, one for computation and one for every secondary device
 	deviceCreateLogical(&graphics.PD, &graphics.LD, nullptr);
 	deviceCreateLogical(&compute.PD, &compute.LD, &compute.computeQueues);
-	for (int32 i = 0; i < secondary.size(); ++i) {
+	for (uint32 i = 0; i < secondary.size(); ++i) {
 		deviceCreateLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 	}
 
 	//Output created logical devices and queues
-	Success printf("    Created %lld logical devices:", 2 + secondary.size());
+	Success printf("    Created %ld logical devices:", 2 + (int32)secondary.size());
 	Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
-	Main	printf("        Main compute   |  compute queues:  %lld", compute.computeQueues.size());
-	Normal	printf("        %lld secondary devices",/*  |  secondary compute queues: %lld", secondary.size, */secondary.size());
+	Main	printf("        Main compute   |  compute queues:  %ld", (int32)compute.computeQueues.size());
+	Normal	printf("        %ld secondary devices",/*  |  secondary compute queues: %lld", secondary.size, */(int32)secondary.size());
 }
 
 
@@ -208,14 +208,14 @@ void Engine::deviceGetPhysical() {
 //*   pLD: a pointer to the logical device where to store the created device
 //*   pComputeQueues: a pointer to an array of compute queues
 //*       This is used to know if the physical device is for graphics, computation or is secondary
-void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxMap<VkQueue, uint32>* pComputeQueues) {
+void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, LuxDynArray<VkQueue>* pComputeQueues) {
 	//List the queues of the device as unique int32s
 	std::set<int32> uniqueQueueFamilyIndices;
 	if (sameDevice(*pPD, graphics.PD)) {											//If it's the main device for graphics,
 		uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);					//Add his graphics family
 		uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);					//And his present family
 	}
-	forEach(pPD->indices.computeFamilies, i) {										//And then add every compute family, graphics ones included
+	for(uint32 i = 0; i < pPD->indices.computeFamilies.size(); ++i) {					//And then add every compute family, graphics ones included
 		uniqueQueueFamilyIndices.insert(pPD->indices.computeFamilies[i]);
 	}
 
@@ -263,7 +263,7 @@ void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, Lu
 			}
 			if (pComputeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
 				compute.LD = _logicalDevice;																//Set it as the main compute logical device
-				forEach(pPD->indices.computeFamilies, i) {													//Add every compute queue to the main compute queue list
+				for(uint32 i = 0; i < pPD->indices.computeFamilies.size(); ++i) {													//Add every compute queue to the main compute queue list
 					VkQueue computeQueue;
 					vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 					compute.computeQueues.add(computeQueue);
@@ -272,7 +272,7 @@ void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, Lu
 		}
 		else {																							//If it's none of them
 			*pLD = _logicalDevice;																			//Add it to the list of secondary logical devices
-			forEach(pPD->indices.computeFamilies, i) {														//Add every compute queue to the secondary compute queues
+			for(uint32 i = 0; i < pPD->indices.computeFamilies.size(); ++i) {														//Add every compute queue to the secondary compute queues
 				VkQueue computeQueue;
 				vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 				pComputeQueues->add(computeQueue);

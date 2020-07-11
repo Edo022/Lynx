@@ -1,7 +1,6 @@
 #pragma once
 
-template<class t>
-struct vec4_t {
+template<class t> struct vec4_t {
 	t x = 0;
 	t y = 0;
 	t z = 0;

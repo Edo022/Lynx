@@ -7,7 +7,7 @@
 
 
 
-template<class type, class alloc> struct LuxDynArray : public LuxArray<type, alloc> {
+template<class type, class alloc = uint32> struct LuxDynArray : public LuxArray<type, alloc> {
 	alloc chunkSize;
 
 	//Creates an array with no elements
@@ -41,11 +41,12 @@ template<class type, class alloc> struct LuxDynArray : public LuxArray<type, all
 	//*   vElement: the element to add
 	//*   Returns the index of the element in the array
 	inline alloc __vectorcall add(const type& vElement) {
-		this->resize(this->__lp_size + 1, vElement);
+		return this->resize(this->__lp_size + 1, vElement);
 	}
 
 	//Returns a reference to the last element of the array (easy way to array[array.size() - 1])
 	inline type& last(){ return (*this)[this->__lp_size - 1]; }
+	//inline type& __vectorcall operator [] (const alloc vIndex){return (*this).LuxArray::__lp_data[vIndex]; }
 	inline alloc __vectorcall size() const override { return this->__lp_size; }
 	inline type* __vectorcall end() const override { return &this->__lp_data[this->__lp_size - 1]; }
 };

@@ -29,7 +29,7 @@ void Engine::runCompute() {
 
 
 void Engine::cleanupCompute() {
-	forEach(CBuffers, i) {
+	for(uint32 i = 0; i < CBuffers.size(); ++i) {
 		if (CBuffers.isValid(i)) {
 			vkDestroyBuffer(compute.LD, CBuffers[i].buffer, null);							//Destroy the buffer
 			vkFreeMemory(compute.LD, CBuffers[i].memory, null);								//Free the memory of the buffer

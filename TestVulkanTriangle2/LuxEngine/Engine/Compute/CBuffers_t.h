@@ -20,5 +20,5 @@ struct LuxBuffer_t {
 	bool isMapped = false;		//Whether the buffer is mapped or not
 
 	LuxBufferClass bufferClass;	//The class of the buffer
-	LuxMap<char, uint32> cells;			//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
+	LuxMap<int8, uint32> cells;			//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
 };

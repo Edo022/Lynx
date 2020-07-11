@@ -25,9 +25,9 @@ void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, 
 	//  layout(std430, binding = 0) buffer buf
 	//in the compute shader
 	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCells.size());
-	forEach(pCells, i) {
+	for(uint32 i = 0; i < pCells.size(); ++i) {
 		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader binding point and how to use it
-		descriptorSetLayoutBinding.binding = scast<uint32>(i);									//Set the binding point in the shader
+		descriptorSetLayoutBinding.binding = i;													//Set the binding point in the shader
 		descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
 		descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
 		descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;					//Use it in the compute stage
@@ -42,7 +42,7 @@ void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, 
 	descriptorSetLayoutCreateInfo->flags = 0;														//default
 	descriptorSetLayoutCreateInfo->pNext = null;													//default
 	descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;		//Set structure type
-	descriptorSetLayoutCreateInfo->bindingCount = scast<uint32>(descriptorSetLayoutBindings.size());	//Set number of binding points
+	descriptorSetLayoutCreateInfo->bindingCount = descriptorSetLayoutBindings.size();				//Set number of binding points
 	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.data());				//Set descriptors layouts to bind
 
 	//Create the descriptor set layout
@@ -67,7 +67,7 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const 
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 	VkDescriptorPoolSize descriptorPoolSize = {};
 	descriptorPoolSize.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-	descriptorPoolSize.descriptorCount = scast<uint32>(pCells.size());
+	descriptorPoolSize.descriptorCount = pCells.size();
 
 	//This struct contains the informations about the descriptor pool. a descriptor pool contains the descriptor sets
 	VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};						//Create descriptor pool create infos
@@ -93,7 +93,7 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const 
 
 	//Create a descriptor set write for every buffer and update the descriptor sets
 	LuxArray<VkWriteDescriptorSet> writeDescriptorSets(pCells.size());
-	forEach(pCells, i) {
+	for(uint32 i = 0; i < pCells.size(); ++i) {
 		//Connect the storage buffer to the descrptor
 		VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
 		descriptorBufferInfo->buffer = CBuffers[__lp_buffer_from_cc(pCells[i])].buffer;		//Set buffer
@@ -103,7 +103,7 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const 
 		VkWriteDescriptorSet writeDescriptorSet = {};										//Create write descriptor set
 		writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;						//Set structure type
 		writeDescriptorSet.dstSet = CShaders[vCShader].descriptorSet;							//Set descriptor set
-		writeDescriptorSet.dstBinding = scast<uint32>(i);										//Set binding
+		writeDescriptorSet.dstBinding = i;														//Set binding
 		writeDescriptorSet.descriptorCount = 1;													//Set number of descriptors
 		writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;					//Use it as a storage
 		writeDescriptorSet.pBufferInfo = descriptorBufferInfo;									//Set descriptor buffer info
@@ -112,7 +112,7 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const 
 		CShaders[vCShader].__lp_ptrs.add((void*)descriptorBufferInfo);						//Save the struct in the pointers that needs to be freed
 	}
 	//Update descriptor sets
-	vkUpdateDescriptorSets(compute.LD, scast<uint32>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, null);
+	vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), writeDescriptorSets.data(), 0, null);
 }
 
 
@@ -169,13 +169,13 @@ void Engine::cshaderCreateDefaultCommandBuffers() {
 		commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
 		commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer 
 		commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
-		commandBufferAllocateInfo.commandBufferCount = scast<uint32>(swapchainImages.size());	//Allocate one command buffer for each swapchain image
+		commandBufferAllocateInfo.commandBufferCount = swapchainImages.size();					//Allocate one command buffer for each swapchain image
 		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.data())) Exit("Unable to allocate command buffers");
 
 
 
 		//Record present command buffers
-		for (int imgIndex = 0; imgIndex < swapchainImages.size(); imgIndex++) {	//For every command buffer of the swapchain images
+		for (uint32 imgIndex = 0; imgIndex < swapchainImages.size(); imgIndex++) {	//For every command buffer of the swapchain images
 			//Start recording commands
 			VkCommandBufferBeginInfo beginInfo = {};								//Create begin infos to start recording the command buffer
 			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;				//Set structure type
@@ -397,7 +397,7 @@ bool Engine::cshaderDestroy(const LuxShader vCShader) {
 	vkDestroyPipeline(compute.LD, CShaders[vCShader].pipeline, null);
 
 	//Free all the useless pointers
-	forEach(CShaders[vCShader].__lp_ptrs, i) free(CShaders[vCShader].__lp_ptrs[i]);
+	for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size(); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
 
 	//Remove the shader from the shader array
 	CShaders.remove(vCShader);

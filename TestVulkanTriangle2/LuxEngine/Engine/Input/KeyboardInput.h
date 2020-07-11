@@ -1,7 +1,7 @@
 #pragma once
 
 
-enum LuxKeyboardKeys {
+enum LuxKeyboardKeys : uint16 {
 	LUX_KEY_SPACE = 32,
 	LUX_KEY_APOSTROPHE = 39,
 	LUX_KEY_COMMA = 44,

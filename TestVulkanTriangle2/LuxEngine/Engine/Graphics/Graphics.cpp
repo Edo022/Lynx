@@ -57,7 +57,7 @@ void Engine::graphicsCreateFences() {
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-	for (int64 i = 0; i < renderMaxFramesInFlight; ++i) {
+	for (int32 i = 0; i < renderMaxFramesInFlight; ++i) {
 		if (vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderSemaphoreImageAvailable[i]) != VK_SUCCESS ||
 			vkCreateSemaphore(graphics.LD, &semaphoreInfo, nullptr, &renderSemaphoreFinished[i]) != VK_SUCCESS ||
 			vkCreateFence(graphics.LD, &fenceInfo, nullptr, &renderFencesInFlight[i]) != VK_SUCCESS) {
@@ -102,7 +102,7 @@ void Engine::graphicsDrawFrame() {
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		LuxArray<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
-		forEach(CShaders, i) if (CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
+		for(uint32 i = 0; i < CShaders.size(); ++i) if (CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
 		commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
 		commandBuffers[0] = clearCommandBuffer;
 
@@ -167,7 +167,7 @@ void Engine::graphicsCleanup() {
 	swapchainCleanup();																//Clear swapchain components
 	vkDestroyCommandPool(graphics.LD, singleTimeCommandPool, nullptr);				//Destroy graphics command pool
 
-	for (int64 i = 0; i < renderMaxFramesInFlight; ++i) {								//For every frame
+	for (int32 i = 0; i < renderMaxFramesInFlight; ++i) {								//For every frame
 		vkDestroySemaphore(graphics.LD, renderSemaphoreFinished[i], nullptr);			//Destroy his render semaphore
 		vkDestroySemaphore(graphics.LD, renderSemaphoreImageAvailable[i], nullptr);			//Destroy his image  semaphore
 		vkDestroyFence(graphics.LD, renderFencesInFlight[i], nullptr);						//Destroy his fence

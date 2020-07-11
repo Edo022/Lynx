@@ -154,7 +154,7 @@ void Engine::createInstance() {
 	//Search for validation layers
 	uint32 layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
-	LuxArray<VkLayerProperties> availableLayers((uint64)layerCount);
+	LuxArray<VkLayerProperties> availableLayers(layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());				//Get layers
 	for (const char* layerName : validationLayers) {										//For every layer,
 		for (const auto& layerProperties : availableLayers) {									//Check if it's available
