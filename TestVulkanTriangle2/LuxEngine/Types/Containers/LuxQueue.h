@@ -7,7 +7,7 @@
 
 //A queue with dynamic size
 namespace lux {
-	template<class type, class alloc> struct Queue {
+	template<class type, class alloc = uint32> struct Queue {
 		alloc size;
 		lux::DynArray<type, alloc> _front, _back;
 

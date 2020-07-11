@@ -2,4 +2,5 @@
 #include "ThreadPool.h"
 
 
-lux::Map<lux::LuxThreadPool, uint32> threadPools;
+lux::Array<std::thread, uint32> lux::Thread::threads;
+lux::Queue<void*> lux::Thread::functions;

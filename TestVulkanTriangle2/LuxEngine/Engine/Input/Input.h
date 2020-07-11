@@ -46,9 +46,6 @@ namespace lux::input {
 
 	//This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-		if ((uint16)key == LUX_KEY_KP_SUBTRACT) *(rcast<lux::obj::Line2D*>(engine.objs[0]))->col0 -= vec4f32(0.0f, 0.0f, 0.0f, 0.05f);
-		if ((uint16)key == LUX_KEY_KP_ADD) *(rcast<lux::obj::Line2D*>(engine.objs[0]))->col0 += vec4f32(0.0f, 0.0f, 0.0f, 0.05f);
-
 		//FULL SCREEN
 		static int fsstate = 0;
 		static int wmx, wmy, wmw, wmh;

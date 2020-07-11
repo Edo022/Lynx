@@ -32,58 +32,6 @@ struct vec2_t {
 
 
 
-
-	////Swizzling
-	//#define __lp_vec2_swizzling(a, b)		inline vec2_t<t> __vectorcall a##b()			{ return vec2_t<t>(a, b); }
-	//#define __lp_vec3_swizzling(a, b, c)	inline vec3_t<t> __vectorcall a##b##c()		{ return vec3_t<t>(a, b, c); }
-	//#define __lp_vec4_swizzling(a, b, c, d)	inline vec4_t<t> __vectorcall a##b##c##d()	{ return vec4_t<t>(a, b, c, d); }
-
-	//__lp_vec2_swizzling(y, x);
-	//__lp_vec2_swizzling(x, x);
-	//__lp_vec2_swizzling(y, y);
-
-
-
-
-	//__lp_vec3_swizzling(x, x, x);
-	//__lp_vec3_swizzling(y, y, y);
-
-	//__lp_vec3_swizzling(x, y, y);
-	//__lp_vec3_swizzling(y, x, y);
-	//__lp_vec3_swizzling(y, y, x);
-
-	//__lp_vec3_swizzling(y, x, x);
-	//__lp_vec3_swizzling(x, y, x);
-	//__lp_vec3_swizzling(x, x, y);
-
-
-
-
-	//__lp_vec4_swizzling(x, x, x, x);
-	//__lp_vec4_swizzling(y, y, y, y);
-
-	//__lp_vec4_swizzling(y, x, x, x);
-	//__lp_vec4_swizzling(x, y, x, x);
-	//__lp_vec4_swizzling(x, x, y, x);
-	//__lp_vec4_swizzling(x, x, x, y);
-
-	//__lp_vec4_swizzling(x, y, y, y);
-	//__lp_vec4_swizzling(y, x, y, y);
-	//__lp_vec4_swizzling(y, y, x, y);
-	//__lp_vec4_swizzling(y, y, y, x);
-
-	//__lp_vec4_swizzling(x, x, y, y);
-	//__lp_vec4_swizzling(y, x, x, y);
-	//__lp_vec4_swizzling(y, y, x, x);
-	//__lp_vec4_swizzling(x, y, y, x);
-
-
-
-
-	//#undef __lp_vec2_swizzling
-	//#undef __lp_vec3_swizzling
-	//#undef __lp_vec4_swizzling
-
 private:
 	inline void __vectorcall init(const t& _x, const t& _y) { x = _x; y = _y; }
 };
