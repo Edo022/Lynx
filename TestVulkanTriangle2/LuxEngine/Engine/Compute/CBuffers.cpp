@@ -6,7 +6,7 @@
 
 
 
-//Creates a memory buffer in a compute device and saves it in the LuxArray "computeBuffers"
+//Creates a memory buffer in a compute device and saves it in the lux::Array "computeBuffers"
 //*   vSize: the size in bytes of the buffer
 //*   vBufferClass: the class of the buffer
 //*   vCpuAccessible: whether the CPU can access the buffer or not. Non accessible memory is faster but cannot be mapped

@@ -4,7 +4,7 @@
 
 
 
-VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const LuxArray<VkSurfaceFormatKHR>* pAvailableFormats) {
+VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats) {
 	for (const auto& availableFormat : *pAvailableFormats) {
 		if (availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 			return availableFormat;
@@ -17,7 +17,7 @@ VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const LuxArray<VkSurface
 
 
 //Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-VkPresentModeKHR Engine::swapchainChoosePresentMode(const LuxArray<VkPresentModeKHR>* pAvailablePresentModes) {
+VkPresentModeKHR Engine::swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes) {
 	if (useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 	for (const auto& availablePresentMode : *pAvailablePresentModes) {
 		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;

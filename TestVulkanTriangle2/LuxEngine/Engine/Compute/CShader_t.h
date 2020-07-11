@@ -16,10 +16,10 @@ struct LuxShader_t {
 
 	//Commands
 	VkCommandPool commandPool;
-	LuxArray <VkCommandBuffer> commandBuffers;
+	lux::Array <VkCommandBuffer> commandBuffers;
 
 	//Since vulkan uses pointers everywhere, I need to create the objects with malloc() to prevent them from vanishing randomly
 	//This array saves all of them so they can be free()d when the shader is destroyed
-	LuxDynArray<void*> __lp_ptrs;
+	lux::DynArray<void*> __lp_ptrs;
 };
 

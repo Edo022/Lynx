@@ -5,7 +5,7 @@
 #include "InputState.h"
 #include "GLFW/glfw3.h"                           // for GLFWwindow, GLFW_REPEAT
 #include "LuxEngine/macros.h"                     // for scast
-#include "LuxEngine/Types/Containers/LuxArray.h"  // for LuxArray
+#include "LuxEngine/Types/Containers/LuxArray.h"  // for lux::Array
 #include "LuxEngine/Types/Integers/Integers.h"    // for uint16
 #include "stdio.h"                                // for printf
 #include "LuxEngine/Engine/Engine.h"

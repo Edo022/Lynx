@@ -17,7 +17,7 @@ namespace lux::obj {
 	//This render space can only be placed in other 2D render spaces or 
 	struct RenderSpace2D : public Base2D {
 		static const ObjectType objectType = LUX_OBJECT_TYPE_RENDER_SPACE_2D;
-		LuxMap<const Base*, uint32> objects;
+		lux::Map<const Base*, uint32> objects;
 		bool allowOutOfViewRender = false;
 
 

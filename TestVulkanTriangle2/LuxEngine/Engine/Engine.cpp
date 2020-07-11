@@ -22,7 +22,7 @@ Engine engine;
 //Shader files must have the .comp extension
 namespace lux::_engine {
 	static bool compileShader(const char* pShaderPath) {
-		LuxString compileShaderCommand = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
+		lux::String compileShaderCommand = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
 		return ("%d\n", system(compileShaderCommand.begin()) == 0);
 	}
 }
@@ -36,10 +36,11 @@ namespace lux::_engine {
 
 void Engine::run(bool vUseVSync, float vFOV) {
 	//Start init time counter and compile shaders
+	//TODO create specific function to get some extensions or all the files
 	LuxTime start = luxStartChrono();
 	shaderPath = lux::System::luxThisDirectory + "/LuxEngine/Contents/shaders/";
 	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
-		LuxString luxStrPath = LuxString(name.path().u8string().c_str()); lux::System::fixWindowsPath(luxStrPath);
+		lux::String luxStrPath = lux::String(name.path().u8string().c_str()); lux::System::fixWindowsPath(luxStrPath);
 		if (lux::System::getExtensionFromPath(luxStrPath) == "comp") {
 			if (!lux::_engine::compileShader(luxStrPath.begin())) Exit("compilation error")
 			else Normal printf("%s", luxStrPath.begin());
@@ -136,15 +137,13 @@ void Engine::createInstance() {
 
 
 	//Extensions
-	LuxMap<const char*, uint32> extensions;
+	lux::Map<const char*, uint32> extensions;
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
-	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = extensions.size();						//Set extension count
+	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
+	createInfo.enabledExtensionCount = extensions.size();									//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
-	//TODO ^ here. error. only one extension saved
-	//TODO fix LuxMap automatic constructor chunk size = 1
 	 
 	//Add validation layers if in debug mode
 	#ifndef LUX_DEBUG
@@ -154,7 +153,7 @@ void Engine::createInstance() {
 	//Search for validation layers
 	uint32 layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
-	LuxArray<VkLayerProperties> availableLayers(layerCount);
+	lux::Array<VkLayerProperties> availableLayers(layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());				//Get layers
 	for (const char* layerName : validationLayers) {										//For every layer,
 		for (const auto& layerProperties : availableLayers) {									//Check if it's available
@@ -173,9 +172,7 @@ void Engine::createInstance() {
 
 
 	//Create instance
-	VkResult h;
-	TryVk(h = vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
-	
+	TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
 }
 
 

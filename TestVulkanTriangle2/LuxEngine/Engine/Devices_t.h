@@ -9,7 +9,7 @@
 struct QueueFamilyIndices {
 	uint32 graphicsFamily = -1;
 	uint32 presentFamily = -1;
-	LuxDynArray<uint32> computeFamilies;
+	lux::DynArray<uint32> computeFamilies;
 
 	inline bool isGraphicsComplete() { return (graphicsFamily != -1 && presentFamily != -1); }
 };
@@ -44,5 +44,5 @@ struct graphicsDevice {
 struct computeDevice {
 	_VkPhysicalDevice PD;						//Main physical device for computing
 	VkDevice LD;								//Main logical device for computing
-	LuxDynArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
+	lux::DynArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
 };

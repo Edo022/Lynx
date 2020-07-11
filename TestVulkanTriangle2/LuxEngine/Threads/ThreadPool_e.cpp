@@ -2,4 +2,4 @@
 #include "ThreadPool.h"
 
 
-LuxMap<LuxThreadPool, uint32> threadPools;
+lux::Map<lux::LuxThreadPool, uint32> threadPools;

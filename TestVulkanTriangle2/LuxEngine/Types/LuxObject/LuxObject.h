@@ -42,7 +42,7 @@ namespace lux::obj {
 		ObjectType objectType;
 		Base() { objectType = LUX_OBJECT_TYPE__BASE; }
 
-		LuxString name{ "" };					//The name of the object. 
+		lux::String name{ "" };					//The name of the object. 
 		static uint64 lastID;					//#LLID LOS000 the last assigned ID of a LuxObject 
 		uint64 ID{ ++lastID };					//A unique ID that indentifies the object
 
@@ -51,7 +51,7 @@ namespace lux::obj {
 		void* cellPtr = nullptr;				//Pointer to the GPU memory cell
 		virtual void initPtrs() = 0;			//Initializes the pointers in the struct
 		inline virtual int32 getCellSize() = 0;	//Size of the object data
-		LuxString shaderName{ "" };				//The name of the shader that renders the object
+		lux::String shaderName{ "" };				//The name of the shader that renders the object
 	};
 
 

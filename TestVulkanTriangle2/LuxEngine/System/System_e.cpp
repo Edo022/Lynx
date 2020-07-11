@@ -1,4 +1,4 @@
 
 #include "System.h"
 
-LuxString lux::System::luxThisDirectory;
+lux::String lux::System::luxThisDirectory;

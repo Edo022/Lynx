@@ -100,7 +100,7 @@ void Engine::graphicsDrawFrame() {
 	{ //Update render result submitting the command buffers to the compute queues
 		spawnObjectFence.wait(0, 2);	//Wait spawn events. 0 if there are no spawns to wait, 2 if an object was spawned
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-		LuxArray<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
+		lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
 		for(uint32 i = 0; i < CShaders.size(); ++i) if (CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
 		commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
@@ -198,7 +198,7 @@ void Engine::graphicsCleanup() {
 
 
 
-VkFormat Engine::graphicsFindSupportedFormat(const LuxArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+VkFormat Engine::graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 	for (VkFormat format : *pCandidates) {
 		VkFormatProperties props;
 		vkGetPhysicalDeviceFormatProperties(graphics.PD.device, format, &props);

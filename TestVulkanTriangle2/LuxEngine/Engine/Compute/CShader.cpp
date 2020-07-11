@@ -19,12 +19,12 @@
 
 
 
-void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, const LuxShader vCShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
 	//in the compute shader
-	LuxArray<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCells.size());
+	lux::Array<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCells.size());
 	for(uint32 i = 0; i < pCells.size(); ++i) {
 		VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = {};						//Create a descriptor set layout binding. The binding describes what to bind in a shader binding point and how to use it
 		descriptorSetLayoutBinding.binding = i;													//Set the binding point in the shader
@@ -62,7 +62,7 @@ void Engine::cshaderCreateDescriptorSetLayouts(const LuxArray<LuxCell>& pCells, 
 //*      The shader inputs must match those cells
 //*      the binding index is the same as their index in the array
 //*   vCShader: the shader where to create the descriptor pool and allocate the descriptor buffers
-void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, const LuxShader vCShader) {
 	//Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 	VkDescriptorPoolSize descriptorPoolSize = {};
@@ -92,7 +92,7 @@ void Engine::cshaderCreateDescriptorSets(const LuxArray<LuxCell>& pCells, const 
 
 
 	//Create a descriptor set write for every buffer and update the descriptor sets
-	LuxArray<VkWriteDescriptorSet> writeDescriptorSets(pCells.size());
+	lux::Array<VkWriteDescriptorSet> writeDescriptorSets(pCells.size());
 	for(uint32 i = 0; i < pCells.size(); ++i) {
 		//Connect the storage buffer to the descrptor
 		VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
@@ -348,12 +348,12 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 //*   pCells: an array of memory cells to bind to the shader
 //*       The shader inputs must match those cells
 //*       the binding index is the same as their index in the array
-//*   vShaderPath: a pointer to a LuxString containing the path to the compiled shader file
+//*   vShaderPath: a pointer to a lux::String containing the path to the compiled shader file
 //*   returns the index of the created shader if the operation succeeded
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::cshaderNew(const LuxArray<LuxCell>& pCells, const char* vShaderPath) {
+LuxShader Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
 	spawnObjectFence.wait(0);

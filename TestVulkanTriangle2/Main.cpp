@@ -21,10 +21,10 @@ int main() {
 	
 	//sleep(4000);
 	lux::input::InputState inputStateTest{
-		lux::input::KeySequence{ {LUX_KEY_W | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("AAAAA"); }},
-		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("BBBB"); } } ,
-		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, [](LuxArray<uint16> keySequenceCode) {  printf("CCC"); } },
-		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, [](LuxArray<uint16> keySequenceCode) {  printf("DD"); } }
+		lux::input::KeySequence{ {LUX_KEY_W | LUX_PRESS}, [](lux::Array<uint16> keySequenceCode) {  printf("AAAAA"); }},
+		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_S | LUX_RELEASE}, [](lux::Array<uint16> keySequenceCode) {  printf("BBBB"); } } ,
+		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_A | LUX_RELEASE}, [](lux::Array<uint16> keySequenceCode) {  printf("CCC"); } },
+		lux::input::KeySequence{ {LUX_KEY_S | LUX_PRESS, LUX_KEY_A | LUX_PRESS, LUX_KEY_D | LUX_PRESS}, [](lux::Array<uint16> keySequenceCode) {  printf("DD"); } }
 	};
 	lux::input::setInputState(&inputStateTest);
 
