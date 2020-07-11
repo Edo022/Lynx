@@ -8,6 +8,7 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Engine/Input/KeyboardInput.h"
 #include "LuxEngine/Engine/Input/Input.h"
+#include "LuxEngine/Threads/ThreadPool.h"
 
 
 //namespace lux::obj {
@@ -15,8 +16,9 @@
 //}
 
 
-void h() {
-	printf("\nUwU\n");
+int h(const char* b) {
+	printf("\n%s",b);
+	return 0;
 }
 
 
@@ -24,7 +26,7 @@ lux::obj::Line2D lineTest;
 int main() {
 	LuxInit(false);
 	
-	lux::Thread::sendToExecQueue(h);
+	lux::Thread::sendToExecQueue(h, lux::Thread::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION");
 
 
 	{
