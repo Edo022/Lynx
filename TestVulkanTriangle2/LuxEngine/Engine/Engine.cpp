@@ -22,7 +22,7 @@ Engine engine;
 //Shader files must have the .comp extension
 namespace lux::_engine {
 	static bool compileShader(const char* pShaderPath) {
-		lux::String compileShaderCommand = lux::System::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
+		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
 		return ("%d\n", system(compileShaderCommand.begin()) == 0);
 	}
 }
@@ -38,10 +38,10 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//Start init time counter and compile shaders
 	//TODO create specific function to get some extensions or all the files
 	LuxTime start = luxStartChrono();
-	shaderPath = lux::System::dir::thisDir + "/LuxEngine/Contents/shaders/";
+	shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";
 	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
-		lux::String luxStrPath = lux::String(name.path().u8string().c_str()); lux::System::dir::fixWindowsPath(luxStrPath);
-		if (lux::System::dir::getExtensionFromPath(luxStrPath) == "comp") {
+		lux::String luxStrPath = lux::String(name.path().u8string().c_str()); lux::sys::dir::fixWindowsPath(luxStrPath);
+		if (lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 			if (!lux::_engine::compileShader(luxStrPath.begin())) Exit("compilation error")
 			else Normal printf("%s", luxStrPath.begin());
 		}

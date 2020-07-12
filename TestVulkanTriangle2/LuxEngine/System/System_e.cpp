@@ -1,6 +1,6 @@
 
 #include "System.h"
 
-lux::String lux::System::dir::thisDir = "";
-uint32		lux::System::threadNum = 0;
+lux::String lux::sys::dir::thisDir = "";
+uint32		lux::sys::threadNum = 0;
 

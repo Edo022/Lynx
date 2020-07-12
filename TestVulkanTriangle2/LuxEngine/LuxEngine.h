@@ -59,8 +59,8 @@
 
 //This function initializes the Lux Engine. Call it only once
 static void LuxInit(bool useVSync = true) {
-	lux::System::__lp_init_system();
-	lux::Thread::__lp_init_thread();
+	lux::sys::__lp_init_system();
+	lux::thr::__lp_init_thread();
 	lux::_engine::__lp_luxInit(useVSync);
 	__lp_goniometric_functions_init();
 

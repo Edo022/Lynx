@@ -13,18 +13,24 @@
 #endif
 
 
-#ifdef _WIN64												//Windows
-#	include <direct.h>											//Windows directories
-#	define __lp_get_cwd _getcwd									//Windows directories
-#	define __lp_get_nopt(n)										/*Windows number of threads*/\
-		n = std::thread::hardware_concurrency();
+#ifdef _WIN64														//Windows
+#	include <direct.h>													//  DIR | For _getcwd()
+#	define __lp_get_cwd _getcwd											//  DIR | Get current working directory
+#	define __lp_get_nopt(n)	n = std::thread::hardware_concurrency();	//  THR | Get number of physical threads
+#	include <windows.h>													//  THR | For SuspendThread() and ResumeThread()
+#	define __lp_suspend_thr(th) SuspendThread(th)						//  THR | Function to suspend a thread
+#	define __lp_resume_thr(th) ResumeThread(th)							//  THR | Function to resume a thread
 															
-#elif defined __linux__										//Linux
-#	include <unistd.h>											//Linux directories
-#	define __lp_get_cwd getcwd									//Linux directories
-#	define __lp_get_nopt(n) sysconf(n = _SC_NPROCESSORS_ONLN);	//Linux number of threads
+#elif defined __linux__												//Linux
+#	include <unistd.h>													//  DIR | For getcwd()
+#	define __lp_get_cwd getcwd											//  DIR | Get current working directory
+#	define __lp_get_nopt(n) sysconf(n = _SC_NPROCESSORS_ONLN);			//  THR | Get nuber of physical threads
+//  TODO																//  THR | For SuspendThread() and ResumeThread() // TODO tkill
+//  TODO																//  THR | Function to suspend a thread
+//  TODO																//  THR | Function to resume a thread
+#	error use tkill - TODO - thread pool unimplemented 
 
-#else														//Other operating systems
+#else																//Other operating systems
 #	error Unsupported operating system
 //#	elif defined unix || defined __unix || define __unix__	//Unix 
 #endif
@@ -36,7 +42,7 @@
 
 
 
-namespace lux::System {
+namespace lux::sys {
 	namespace dir {
 		//Path to the current directory
 		extern lux::String thisDir;
@@ -78,14 +84,14 @@ namespace lux::System {
 
 	static void __lp_init_system() {
 		static bool once = true;
-		if (once) {
-			once = false;
+		if (once) {								//Execute only once
 			char buff[FILENAME_MAX];				//Create char array to store the path
 			__lp_get_cwd(buff, FILENAME_MAX);		//Get path
 			dir::thisDir = lux::String(buff);		//Save path
-			dir::fixWindowsPath(dir::thisDir);	//Replace silly windows backslashes with normal slashes
+			dir::fixWindowsPath(dir::thisDir);		//Replace silly windows backslashes with normal slashes
 
-			__lp_get_nopt(threadNum);
+			__lp_get_nopt(threadNum);				//Get number of physical threads
 		}
+		once = false;
 	}
 }

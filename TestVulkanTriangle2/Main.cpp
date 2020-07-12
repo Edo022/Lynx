@@ -16,8 +16,8 @@
 //}
 
 
-int h(const char* b) {
-	printf("\n%s",b);
+int h(const char* b, int hh) {
+	printf("\n%s %d \n",b, hh);
 	return 0;
 }
 
@@ -26,7 +26,7 @@ lux::obj::Line2D lineTest;
 int main() {
 	LuxInit(false);
 	
-	lux::Thread::sendToExecQueue(h, lux::Thread::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION");
+	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 
 
 	{

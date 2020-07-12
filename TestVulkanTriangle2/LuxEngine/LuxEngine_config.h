@@ -27,7 +27,7 @@
 	//This depends on the number of physical threads of the CPU and the complexity of the program
 	//Too much threads slow down everything, but too few cannot handle much functions
 	//The optimal value is around 2 to 4 times the number of physical threads
-#	define G_THREAD_POOL_SIZE lux::System::threadNum * 4
+#	define G_THREAD_POOL_SIZE lux::sys::threadNum * 4
 
 
 
