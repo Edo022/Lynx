@@ -64,10 +64,10 @@ namespace lux {
 
 
 		inline alloc __vectorcall size() const override { return __lp_size; }
-		inline type* __vectorcall data() const { return __lp_data; }
+		inline bool __vectorcall empty() const override { return __lp_size == 0; }
 
 		inline type& __vectorcall operator[](const alloc vIndex) const { return __lp_data[vIndex]; }
-		inline type* __vectorcall begin() const override { return &__lp_data[0]; }
+		inline type* __vectorcall begin() const override { return __lp_data; }
 		inline type* __vectorcall end() const override { return &__lp_data[__lp_size - 1]; }
 
 

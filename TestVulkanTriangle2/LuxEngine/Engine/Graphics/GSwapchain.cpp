@@ -49,14 +49,14 @@ Engine::SwapChainSupportDetails Engine::swapchainQuerySupport(const VkPhysicalDe
 	vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
 	if (formatCount != 0) {
 		details.formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.begin());
 	}
 
 	uint32 presentModeCount;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, nullptr);
 	if (presentModeCount != 0) {
 		details.presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, details.presentModes.data());
+		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, details.presentModes.begin());
 	}
 
 	return details;
@@ -124,7 +124,7 @@ void Engine::swapchainCreate() {
 	uint32 swapchainImageCount;
 	vkGetSwapchainImagesKHR(graphics.LD, swapchain, &swapchainImageCount, nullptr);					//Get image count
 	swapchainImages.resize(swapchainImageCount);
-	vkGetSwapchainImagesKHR(graphics.LD, swapchain, &swapchainImageCount, swapchainImages.data());	//Save images
+	vkGetSwapchainImagesKHR(graphics.LD, swapchain, &swapchainImageCount, swapchainImages.begin());	//Save images
 	swapchainImageFormat = surfaceFormat.format;													//Save format
 	swapchainExtent = createInfo.imageExtent;														//Save extent
 
@@ -169,7 +169,7 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 		{ //destroy copy command buffers
-			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.size(), copyCommandBuffers.data());
+			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.size(), copyCommandBuffers.begin());
 			vkDestroyCommandPool(compute.LD, copyCommandPool, null);
 			vkFreeCommandBuffers(compute.LD, clearCommandPool, 1, &clearCommandBuffer);
 			vkDestroyCommandPool(compute.LD, clearCommandPool, null);

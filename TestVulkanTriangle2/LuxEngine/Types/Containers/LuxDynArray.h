@@ -45,9 +45,13 @@ namespace lux {
 		}
 
 		//Returns a reference to the last element of the array (easy way to array[array.size() - 1])
-		inline type& last() { return (*this)[this->__lp_size - 1]; }
-		//inline type& __vectorcall operator [] (const alloc vIndex){return (*this).Array::__lp_data[vIndex]; }
+		inline type& __vectorcall last() { return (*this)[this->__lp_size - 1]; }
+		//Returns the size of the array
 		inline alloc __vectorcall size() const override { return this->__lp_size; }
+		//Returns true if the array is empty, false if not
+		inline bool __vectorcall empty() const override { return this->__lp_size == 0; }
+
+		inline type* __vectorcall begin() const override { return &this->__lp_data[0]; }
 		inline type* __vectorcall end() const override { return &this->__lp_data[this->__lp_size - 1]; }
 	};
 }

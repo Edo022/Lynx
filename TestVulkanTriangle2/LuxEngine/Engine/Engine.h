@@ -476,8 +476,8 @@ namespace lux::obj {
 		pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
 		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
 		pObject->initPtrs();
-		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin());
 		pObject->allocated = true;
+		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin());
 	}
 }
 

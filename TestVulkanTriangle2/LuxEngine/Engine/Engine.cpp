@@ -68,11 +68,15 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 void Engine::mainLoop() {
+	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  User input"));
 	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);
 	std::thread renderThr(&Engine::runRenderThr, this);
 	FPSCounterThr.detach();
 	renderThr.detach();
 	initialized = true;
+
+	//wchar_t thrName[100];
+	//std::mbstowcs(thrName, "hhhhh", 100);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -86,6 +90,7 @@ void Engine::mainLoop() {
 
 
 void Engine::runRenderThr() {
+	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  Render"));
 	while (running) {
 		graphicsDrawFrame();
 		vkDeviceWaitIdle(compute.LD);
@@ -96,6 +101,7 @@ void Engine::runRenderThr() {
 
 
 void Engine::runFPSCounterThr() {
+	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  FPS counter"));
 	while (running) {
 		static int delay = 1000;
 		sleep(delay);
@@ -154,7 +160,7 @@ void Engine::createInstance() {
 	uint32 layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
 	lux::Array<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());				//Get layers
+	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());				//Get layers
 	for (const char* layerName : validationLayers) {										//For every layer,
 		for (const auto& layerProperties : availableLayers) {									//Check if it's available
 			if (strcmp(layerName, layerProperties.layerName) == 0) break;
@@ -165,7 +171,7 @@ void Engine::createInstance() {
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 	createInfo.enabledLayerCount = validationLayers.size();
-	createInfo.ppEnabledLayerNames = validationLayers.data();
+	createInfo.ppEnabledLayerNames = validationLayers.begin();
 	lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
 	#endif

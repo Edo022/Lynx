@@ -5,6 +5,7 @@
 #include "LuxEngine/Types/Containers/LuxQueue.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/System/System.h"
+#include <tuple>
 #include <thread>
 
 
@@ -13,38 +14,82 @@
 //TODO use tkill on linux
 
 namespace lux::thr {
-	//std::thread::native_handle_type ht = std::thread::native_handle();
 	//TODO create LuxThread with platform specific suspend and resume functions
-	typedef void (*ExecQueueFunc)();
-	extern Array<std::thread> threads;
-	extern Queue<void*> maxpq;
-	extern Queue<void*> highpq;
-	extern Queue<void*> lowpq;
-	extern Queue<void*> minpq;
-
-
 	enum Priority : uint16 {
 		LUX_PRIORITY_MAX,
 		LUX_PRIORITY_HIGH,
 		LUX_PRIORITY_LOW,
 		LUX_PRIORITY_MIN
 	};
+
+
+
 	
+	//Base function of ExecFuncData to allow differently templated ExecFuncData structs to be saved in the same array
+	struct ExecFuncDataBase {
+		virtual void exec() {};
+	};
+
+	//Executable Function Data
+	//This struct stores a function call with its parameters
+	//The exec() function executes the function with the saved parameters 
+	//The return value is copied in the return pointer
+	template<class FType, class ...PTypes> struct ExecFuncData : public ExecFuncDataBase {
+		void exec() final override {
+			std::apply(func, params);
+			//printf("%d", std::apply(func, params));
+		}
+		FType func;
+		std::tuple<PTypes...> params;
+	};
+
+
+
+
+	typedef void (*ExecQueueFunc)();
+	extern Array<std::thread*> threads;
+	extern Queue<ExecFuncDataBase*> maxpq;
+	extern Queue<ExecFuncDataBase*> highpq;
+	extern Queue<ExecFuncDataBase*> lowpq;
+	extern Queue<ExecFuncDataBase*> minpq;
+	
+
+
+
+	static void __lp_thr_loop(const uint32 vThrID) {
+		luxDebug(char thrNumStr[100]);
+		luxDebug(String thrNumStrL = itoa(vThrID, thrNumStr, 10));
+		luxDebug(String thrName = "\tLuxEngine  |  GTP ");
+		luxDebug(thrName += thrNumStrL);
+		luxDebug(wchar_t lthn[100]);
+		luxDebug(const char* thrn = thrName.begin());
+		luxDebug(mbstowcs(lthn, thrn, strlen(thrn) + 1));
+		luxDebug(SetThreadDescription(GetCurrentThread(), lthn));
+
+		while (true) {
+			sleep(10);
+			if (!maxpq.empty()) {
+				static bool _h_ = true;
+				if (_h_) {
+					_h_ = false;
+					sleep(1000); //TODO delete
+					maxpq.front()->exec();
+					maxpq.popFront();
+				}
+			}
+		}
+	}
 
 	static void __lp_init_thread() {
 		threads.resize(G_THREAD_POOL_SIZE);
+		//threads.resize(G_THREAD_POOL_SIZE);
+		for(int32 i = 0; i < threads.size(); ++i){
+			threads[i] = new std::thread(__lp_thr_loop, i); 
+			sleep(10);
+		}
 	}
 
-	//namespace {
-		struct qElmBase {
-			virtual void exec() = 0;
-			Priority priority;
-		};
-		template<class FuncType, class... ParamTypes> struct qElm : public qElmBase {
-			FuncType func; /*uint32 funcTypeSize = sizeof(FuncType);*/
-			ParamTypes params;
-		};
-	//}
+
 
 	//Sends a function to an exec queue of the global thread pool
 	//When the function will be executed and which queue it will be assigned to depends on the priority
@@ -56,12 +101,12 @@ namespace lux::thr {
 	//*       LUX_PRIORITY_MIN : execute when there are no higher priority functions left 
 	//*       the number of functions executed at the same time depends on G_THREAD_POOL_SIZE (see LuxEngine_config.h)
 	//*   vParams: the parameters of the function call. Their types must be the same as the function declaration
-	//*   
-	template<class FuncType, class... ParamTypes> static void sendToExecQueue(const FuncType& vFunc, const Priority vPriority, const ParamTypes& ... vParams) {
-		qElm elm;
-		elm.func = vFunc;
-		elm.priority = vPriority;
-		elm.params = vParams;
-		//vFunc(vParams...);
+	template<class FType, class... PTypes> static void sendToExecQueue(FType vFunc, const Priority vPriority, PTypes ...vParams) {
+		ExecFuncData<FType, PTypes...>* cntv = new ExecFuncData<FType, PTypes...>;
+		cntv->func = vFunc;
+		cntv->params = std::make_tuple(vParams...);
+
+		//TODO add push fences
+		maxpq.pushFront(cntv);
 	}
 }

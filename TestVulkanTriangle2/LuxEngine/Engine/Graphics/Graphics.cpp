@@ -98,11 +98,19 @@ void Engine::graphicsDrawFrame() {
 
 	//TODO don't recreate the command buffer array every time 
 	{ //Update render result submitting the command buffers to the compute queues
-		spawnObjectFence.wait(0, 2);	//Wait spawn events. 0 if there are no spawns to wait, 2 if an object was spawned
+		//TODO both threads are wainting for 0. this causes an exception
+		//TODO add incorporated mutex to fences
+		spawnObjectFence.wait(0);	//Wait spawn events. 0 if there are no spawns to wait, 2 if an object was spawned
+		spawnObjectFence.set(1);
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
-		for(uint32 i = 0; i < CShaders.size(); ++i) if (CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers[0];
+		for (uint32 i = 0; i < CShaders.size(); ++i) {
+			//TODO FUCKING EXCEPTION 
+			if (CShaders.isValid(i)) {
+				commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
+			}
+		}
 		commandBuffers[commandBuffers.size() - 1] = copyCommandBuffers[imageIndex];
 		commandBuffers[0] = clearCommandBuffer;
 

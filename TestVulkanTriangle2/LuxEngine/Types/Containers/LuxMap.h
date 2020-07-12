@@ -191,7 +191,10 @@ namespace lux {
 
 
 		//Returns true if the index is used, 1 if it's free or invalid (use the 'status' function for more details)
-		inline bool __vectorcall isValid(const alloc vIndex) const { return (__lp_dynSize > vIndex && __lp_Tracker(vIndex) == scast<alloc>(-1)); }
+		inline bool __vectorcall isValid(const alloc vIndex) const { 
+			if(vIndex > __lp_dynSize - 1) return false;
+			return (__lp_Tracker(vIndex) == scast<alloc>(-1)); 
+		}
 
 
 

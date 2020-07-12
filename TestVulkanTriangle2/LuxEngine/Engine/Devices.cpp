@@ -59,7 +59,7 @@ bool Engine::deviceCheckExtensions(const VkPhysicalDevice vDevice) {
 	uint32 extensionCount;
 	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 	lux::Array<VkExtensionProperties> availableExtensions(extensionCount);
-	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.data());	//Get extensions
+	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin());	//Get extensions
 
 	//TODO use LuxMap
 	std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin(), requiredDeviceExtensions.end());
@@ -75,7 +75,7 @@ QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice
 	uint32 queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
 	lux::Array<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.data());			//Save queue families
+	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin());		//Save queue families
 
 	//Set families
 	QueueFamilyIndices indices;
@@ -119,7 +119,7 @@ void Engine::deviceGetPhysical() {
 	else {
 		//Get physical devices
 		lux::Array<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
-		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.data());					//Get physical devices
+		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin());				//Get physical devices
 
 		for(uint32 i = 0; i < physDevices.size(); ++i) {											//For every physical device, create and save a _VkPhysicalDevice stucture
 			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
@@ -244,10 +244,10 @@ void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lu
 	deviceCreateInfo.queueCreateInfoCount = (int32)queueCreateInfos.size();				//Set queue infos count
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();						//Set queue infos
 	deviceCreateInfo.enabledExtensionCount = (int32)requiredDeviceExtensions.size();	//Set required extentions count
-	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();			//Set required extensions
+	deviceCreateInfo.ppEnabledExtensionNames = requiredDeviceExtensions.begin();		//Set required extensions
 	deviceCreateInfo.pEnabledFeatures = &enabledDeviceFeatures;							//Set physical device enabled features
 	luxDebug(deviceCreateInfo.enabledLayerCount = (int32)validationLayers.size());		//Set validation layers count if in debug mode
-	luxDebug(deviceCreateInfo.ppEnabledLayerNames = validationLayers.data());			//Set validation layers if in debug mode
+	luxDebug(deviceCreateInfo.ppEnabledLayerNames = validationLayers.begin());			//Set validation layers if in debug mode
 	luxRelease(deviceCreateInfo.enabledLayerCount = 0);									//Disable validation layers if in release mode
 
 

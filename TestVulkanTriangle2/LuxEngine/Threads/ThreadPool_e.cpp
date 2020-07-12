@@ -2,8 +2,8 @@
 #include "ThreadPool.h"
 
 
-lux::Array<std::thread, uint32> lux::thr::threads;
-lux::Queue<void*> lux::thr::maxpq;
-lux::Queue<void*> lux::thr::highpq;
-lux::Queue<void*> lux::thr::lowpq;
-lux::Queue<void*> lux::thr::minpq;
+lux::Array<std::thread*> lux::thr::threads;
+lux::Queue<lux::thr::ExecFuncDataBase*> lux::thr::maxpq;
+lux::Queue<lux::thr::ExecFuncDataBase*> lux::thr::highpq;
+lux::Queue<lux::thr::ExecFuncDataBase*> lux::thr::lowpq;
+lux::Queue<lux::thr::ExecFuncDataBase*> lux::thr::minpq;

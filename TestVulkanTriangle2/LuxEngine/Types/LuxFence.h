@@ -14,7 +14,7 @@ private:
 public:
 	//Waits until the fence has the same value of v
 	//A 2ms sleep every iteration uses way less CPU than iterating the loop every time, and the thread can do other things while waiting
-	inline void wait(const char8 v) const { while (value != v) { sleep(2); } }
+	inline void wait(const char8 v) const { while (value != v) { sleep(1); } }
 
 	//Same as wait(const char) but it waits until the value is the same as a or b
 	inline void wait(const char8 a, const char8 b) { while (value != a && value != b) { sleep(2); } }

@@ -38,6 +38,7 @@ namespace lux {
 
 		//Inherted from LuxContainer and operators
 		inline uint32 __vectorcall size() const override { return str.size(); }
+		inline bool __vectorcall empty() const override { return str.size() == 0; }
 		inline char8* __vectorcall begin() const override { return str.begin(); }
 		inline char8* __vectorcall end() const override { return str.end(); }
 		inline char8& __vectorcall operator[](const uint32 vIndex) const { return str[vIndex]; }

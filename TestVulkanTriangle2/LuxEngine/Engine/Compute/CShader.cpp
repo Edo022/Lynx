@@ -43,7 +43,7 @@ void Engine::cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells
 	descriptorSetLayoutCreateInfo->pNext = null;													//default
 	descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;		//Set structure type
 	descriptorSetLayoutCreateInfo->bindingCount = descriptorSetLayoutBindings.size();				//Set number of binding points
-	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.data());				//Set descriptors layouts to bind
+	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.begin());				//Set descriptors layouts to bind
 
 	//Create the descriptor set layout
 	TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, null, &CShaders[vCShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
@@ -112,7 +112,7 @@ void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, cons
 		CShaders[vCShader].__lp_ptrs.add((void*)descriptorBufferInfo);						//Save the struct in the pointers that needs to be freed
 	}
 	//Update descriptor sets
-	vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), writeDescriptorSets.data(), 0, null);
+	vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), writeDescriptorSets.begin(), 0, null);
 }
 
 
@@ -170,7 +170,7 @@ void Engine::cshaderCreateDefaultCommandBuffers() {
 		commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer 
 		commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 		commandBufferAllocateInfo.commandBufferCount = swapchainImages.size();					//Allocate one command buffer for each swapchain image
-		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.data())) Exit("Unable to allocate command buffers");
+		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.begin())) Exit("Unable to allocate command buffers");
 
 
 
@@ -297,7 +297,7 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = 1;										//Allocate one command buffer 
 	CShaders[vCShader].commandBuffers.resize(1);
-	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.data())) Exit("Unable to allocate command buffers");
+	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.__lp_data)) Exit("Unable to allocate command buffers");
 
 
 
@@ -356,15 +356,15 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 LuxShader Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
-	spawnObjectFence.wait(0);
-	spawnObjectFence.set(1);
+	//TODO both threads are wainting for 0. this causes an exception
+	if(spawnObjectFence.check(0)) spawnObjectFence.set(2);
 	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array
 
 	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
 	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
 	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
 	cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
-	spawnObjectFence.set(2);
+	spawnObjectFence.set(0);
 
 	return shader;													//Return the index of the created shader
 }
@@ -389,7 +389,7 @@ bool Engine::cshaderDestroy(const LuxShader vCShader) {
 	vkDestroyDescriptorSetLayout(compute.LD, CShaders[vCShader].descriptorSetLayout, null);
 
 	//Clear command buffers and command pool
-	vkFreeCommandBuffers(compute.LD, CShaders[vCShader].commandPool, 1, CShaders[vCShader].commandBuffers.data());
+	vkFreeCommandBuffers(compute.LD, CShaders[vCShader].commandPool, 1, CShaders[vCShader].commandBuffers.begin());
 	vkDestroyCommandPool(compute.LD, CShaders[vCShader].commandPool, null);
 
 	//Clear compute pipeline and pipeline layout
