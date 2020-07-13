@@ -62,30 +62,25 @@ namespace lux::thr {
 		luxDebug(String thrName = "\tLuxEngine  |  GTP ");
 		luxDebug(thrName += thrNumStrL);
 		luxDebug(wchar_t lthn[100]);
-		luxDebug(const char* thrn = thrName.begin());
+		luxDebug(const char* thrn = thrName.begin( ));
 		luxDebug(mbstowcs(lthn, thrn, strlen(thrn) + 1));
-		luxDebug(SetThreadDescription(GetCurrentThread(), lthn));
+		luxDebug(SetThreadDescription(GetCurrentThread( ), lthn));
+		static bool _h_ = true;
 
-		while (true) {
+		while(true) {
 			sleep(10);
-			if (!maxpq.empty()) {
-				static bool _h_ = true;
-				if (_h_) {
-					_h_ = false;
-					sleep(1000); //TODO delete
-					maxpq.front()->exec();
-					maxpq.popFront();
-				}
+			if(!maxpq.empty( )) {
+				maxpq.front( )->exec( );
+				maxpq.popFront( );
 			}
 		}
 	}
 
-	static void __lp_init_thread() {
+	static void __lp_init_thread( ) {
 		threads.resize(G_THREAD_POOL_SIZE);
-		//threads.resize(G_THREAD_POOL_SIZE);
-		for(int32 i = 0; i < threads.size(); ++i){
-			threads[i] = new std::thread(__lp_thr_loop, i); 
-			sleep(10);
+		for(int32 i = 0; i < threads.size( ); ++i){
+			threads[i] = new std::thread(__lp_thr_loop, i);
+			sleep(100);
 		}
 	}
 

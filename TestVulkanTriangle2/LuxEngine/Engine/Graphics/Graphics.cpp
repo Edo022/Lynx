@@ -98,15 +98,9 @@ void Engine::graphicsDrawFrame() {
 
 	//TODO don't recreate the command buffer array every time 
 	{ //Update render result submitting the command buffers to the compute queues
-		//TODO both threads are wainting for 0. this causes an exception
-		//TODO add incorporated mutex to fences
-		if (CShaders_stg.size() > 0) {
-			LuxShader shader = CShaders.add(CShaders_stg.front()->shader);
-			cshaderCreateDescriptorSetLayouts(CShaders_stg.front()->cells, shader);				//Create descriptor layouts, 
-			cshaderCreateDescriptorSets(CShaders_stg.front()->cells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
-			cshaderCreatePipeline(CShaders_stg.front()->shaderPath, shader);						//Create the compute pipeline
-			cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
-
+		while(CShaders_stg.size( ) > 0) {
+			CShaders.add(CShaders_stg.front()->shader);
+			delete(CShaders_stg.front());
 			CShaders_stg.popFront();
 		}
 

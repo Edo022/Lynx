@@ -434,12 +434,12 @@ public:
 	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			//List of renderSpaces
 	lux::Map<lux::obj::Base*, uint32> objs;		//TODO
 	lux::String shaderPath;
-	void		cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, const LuxShader vCShader);
-	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, const LuxShader vCShader);
-	void		cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader);
-	void		cshaderCreateCommandBuffers(const LuxShader vCShader);
+	void		cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
+	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
+	void		cshaderCreatePipeline(const char* shaderPath, LuxShader_t* pCShader);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader);
 	void		cshaderCreateDefaultCommandBuffers();
-	LuxShader	cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

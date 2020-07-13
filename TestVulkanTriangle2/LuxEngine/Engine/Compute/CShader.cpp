@@ -19,7 +19,7 @@
 
 
 
-void Engine::cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader) {
 	//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
 	//This binds to
 	//  layout(std430, binding = 0) buffer buf
@@ -46,8 +46,8 @@ void Engine::cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells
 	descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.begin());				//Set descriptors layouts to bind
 
 	//Create the descriptor set layout
-	TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, null, &CShaders[vCShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
-	CShaders[vCShader].__lp_ptrs.add((void*)descriptorSetLayoutCreateInfo);
+	TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, null, &pCShader->descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+	pCShader->__lp_ptrs.add((void*)descriptorSetLayoutCreateInfo);
 }
 
 
@@ -62,7 +62,7 @@ void Engine::cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells
 //*      The shader inputs must match those cells
 //*      the binding index is the same as their index in the array
 //*   vCShader: the shader where to create the descriptor pool and allocate the descriptor buffers
-void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, const LuxShader vCShader) {
+void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader) {
 	//Create descriptor pool and descriptor set allocate infos
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 	VkDescriptorPoolSize descriptorPoolSize = {};
@@ -78,16 +78,16 @@ void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, cons
 	descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
 	descriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;	//The descriptor sets can be freed
 	//Create descriptor pool
-	TryVk(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &CShaders[vCShader].descriptorPool)) Exit("Unable to create descriptor pool");
+	TryVk(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &pCShader->descriptorPool)) Exit("Unable to create descriptor pool");
 
 	//This structure contains the informations about the descriptor set
 	VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;	//Set structure type
-	descriptorSetAllocateInfo.descriptorPool = CShaders[vCShader].descriptorPool;		//Set descriptor pool where to allocate the descriptor
+	descriptorSetAllocateInfo.descriptorPool = pCShader->descriptorPool;		//Set descriptor pool where to allocate the descriptor
 	descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
-	descriptorSetAllocateInfo.pSetLayouts = &CShaders[vCShader].descriptorSetLayout;	//Set set layouts
+	descriptorSetAllocateInfo.pSetLayouts = &pCShader->descriptorSetLayout;	//Set set layouts
 	//Allocate descriptor set
-	TryVk(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &CShaders[vCShader].descriptorSet)) Exit("Unable to allocate descriptor sets");
+	TryVk(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet)) Exit("Unable to allocate descriptor sets");
 
 
 
@@ -102,14 +102,14 @@ void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, cons
 
 		VkWriteDescriptorSet writeDescriptorSet = {};										//Create write descriptor set
 		writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;						//Set structure type
-		writeDescriptorSet.dstSet = CShaders[vCShader].descriptorSet;							//Set descriptor set
+		writeDescriptorSet.dstSet = pCShader->descriptorSet;							//Set descriptor set
 		writeDescriptorSet.dstBinding = i;														//Set binding
 		writeDescriptorSet.descriptorCount = 1;													//Set number of descriptors
 		writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;					//Use it as a storage
 		writeDescriptorSet.pBufferInfo = descriptorBufferInfo;									//Set descriptor buffer info
 
 		writeDescriptorSets[i] = writeDescriptorSet;										//Save descriptor set
-		CShaders[vCShader].__lp_ptrs.add((void*)descriptorBufferInfo);						//Save the struct in the pointers that needs to be freed
+		pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);						//Save the struct in the pointers that needs to be freed
 	}
 	//Update descriptor sets
 	vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size(), writeDescriptorSets.begin(), 0, null);
@@ -122,7 +122,7 @@ void Engine::cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, cons
 
 
 
-void Engine::cshaderCreatePipeline(const char* shaderPath, const LuxShader vCShader) {
+void Engine::cshaderCreatePipeline(const char* shaderPath, LuxShader_t* pCShader) {
 	uint32 fileLength;																//Create the shader module
 	VkShaderModule shaderModule = cshaderCreateModule(compute.LD, cshaderReadFromFile(&fileLength, shaderPath), &fileLength);
 
@@ -135,16 +135,16 @@ void Engine::cshaderCreatePipeline(const char* shaderPath, const LuxShader vCSha
 	VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};						//Create pipeline create infos
 	pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;		//Set structure type
 	pipelineLayoutCreateInfo.setLayoutCount = 1;										//Set number of set layouts
-	pipelineLayoutCreateInfo.pSetLayouts = &CShaders[vCShader].descriptorSetLayout;		//Set set layout
+	pipelineLayoutCreateInfo.pSetLayouts = &pCShader->descriptorSetLayout;		//Set set layout
 	//Create pipeline layout
-	TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, null, &CShaders[vCShader].pipelineLayout)) Exit("Unable to create pipeline layout");
+	TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, null, &pCShader->pipelineLayout)) Exit("Unable to create pipeline layout");
 
 	VkComputePipelineCreateInfo pipelineCreateInfo = {};							//Create pipeline create infos 
 	pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;			//Set structure type
 	pipelineCreateInfo.stage = shaderStageCreateInfo;									//Set shader stage infos
-	pipelineCreateInfo.layout = CShaders[vCShader].pipelineLayout;						//Set pipeline layout
+	pipelineCreateInfo.layout = pCShader->pipelineLayout;						//Set pipeline layout
 	//Create the compute pipeline
-	TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &CShaders[vCShader].pipeline)) Exit("Unable to create comput pipeline");
+	TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &pCShader->pipeline)) Exit("Unable to create comput pipeline");
 	vkDestroyShaderModule(compute.LD, shaderModule, null);							//Destroy the shader module
 }
 
@@ -282,22 +282,22 @@ void Engine::cshaderCreateDefaultCommandBuffers() {
 
 
 
-void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
+void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader) {
 	//Create command pool
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
 	commandPoolCreateInfo.flags = 0;														//Default falgs
 	commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &CShaders[vCShader].commandPool)) Exit("Unable to create command pool");
+	TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &pCShader->commandPool)) Exit("Unable to create command pool");
 
 	//Allocate command buffers
 	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};							//Create command buffer allocate infos to allocate the command buffer in the command pool
 	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-	commandBufferAllocateInfo.commandPool = CShaders[vCShader].commandPool;					//Set command pool where to allocate the command buffer 
+	commandBufferAllocateInfo.commandPool = pCShader->commandPool;					//Set command pool where to allocate the command buffer 
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 	commandBufferAllocateInfo.commandBufferCount = 1;										//Allocate one command buffer 
-	CShaders[vCShader].commandBuffers.resize(1);
-	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, CShaders[vCShader].commandBuffers.__lp_data)) Exit("Unable to allocate command buffers");
+	pCShader->commandBuffers.resize(1);
+	TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.__lp_data)) Exit("Unable to allocate command buffers");
 
 
 
@@ -306,16 +306,16 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 	VkCommandBufferBeginInfo beginInfo = {};											//Create begin infos to start recording the command buffer
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;							//Set structure type
 	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;							//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
-	TryVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo)) Exit("Unable to begin command buffer recording");
+	TryVk(vkBeginCommandBuffer(pCShader->commandBuffers[0], &beginInfo)) Exit("Unable to begin command buffer recording");
 
 	//Bind pipeline and descriptor sets to the command buffer
-	vkCmdBindPipeline(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipeline);
-	vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShaders[vCShader].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, null);
+	vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pCShader->pipeline);
+	vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pCShader->pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, null);
 
 
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 4, 1, 1); 
+	vkCmdDispatch(pCShader->commandBuffers[0], 4, 1, 1); 
 	//switch (vObjectType) {
 	//	case LUX_OBJECT_TYPE_LINE_2D_CCT: vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); break;
 	//	default: Exit("//TODO la shader non esiste");
@@ -324,7 +324,7 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
 
 	//End command buffer recording
-	TryVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0])) Exit("Failed to record command buffer");
+	TryVk(vkEndCommandBuffer(pCShader->commandBuffers[0])) Exit("Failed to record command buffer");
 }
 
 
@@ -343,32 +343,30 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 
 
 
-//Creates a new shader and saves it in the CShader array
-//All the shaders created with this function must be destroyed with CShader_destroy(shader)
+//Add a shader in the staging queue. The shader will be created and used by the rendering thread
+//All the shaders created with this function must be destroyed with CShaderDestroy(shader)
 //*   pCells: an array of memory cells to bind to the shader
 //*       The shader inputs must match those cells
 //*       the binding index is the same as their index in the array
 //*   vShaderPath: a pointer to a lux::String containing the path to the compiled shader file
-//*   returns the index of the created shader if the operation succeeded
+//*   returns 0 if the shader was created and loaded successfully
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-LuxShader Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath) {
-	 sleep(100);
+int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath) {
 	//TODO check buffers
 	//TODO check file
-	//TODO both threads are wainting for 0. this causes an exception
-	 CShaders_stg_t* shdstgt = new CShaders_stg_t{ LuxShader_t{}, pCells, vShaderPath };
-	 CShaders_stg.pushFront(shdstgt);					//Add the shader to the shader array
+	CShaders_stg_t* shaderStgPtr = new CShaders_stg_t{ LuxShader_t{ }, pCells, vShaderPath };
 
-	//cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
-	//cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
-	//cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
-	//cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
+	cshaderCreateDescriptorSetLayouts(shaderStgPtr->cells, &shaderStgPtr->shader);	//Create descriptor layouts, 
+	cshaderCreateDescriptorSets(shaderStgPtr->cells, &shaderStgPtr->shader);		//Descriptor pool, descriptor sets and descriptor buffers
+	cshaderCreatePipeline(shaderStgPtr->shaderPath, &shaderStgPtr->shader);			//Create the compute pipeline
+	cshaderCreateCommandBuffers(&shaderStgPtr->shader);								//Create command buffers and command pool
 
-	return -1;													//Return the index of the created shader
+	CShaders_stg.pushFront(shaderStgPtr);											//Add the shader to the shader array
+
+	return 0;
 }
-
 
 
 
