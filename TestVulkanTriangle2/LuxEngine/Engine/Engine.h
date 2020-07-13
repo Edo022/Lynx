@@ -25,16 +25,17 @@
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
-#include "LuxEngine/Types/LuxObject/LuxObject.h"
-#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
+#include "LuxEngine/Types/Containers/LuxQueue.h"
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/System/System.h"
 //#include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Types/LuxObject/LuxObject.h"
+#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 
-#include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Types/EngineTypes.h"
 
 #include "LuxEngine/Engine/Devices_t.h"
 #include "LuxEngine/Engine/Compute/CBuffers_t.h"
@@ -329,7 +330,6 @@ public:
 	lux::Array<VkFence>			renderFencesInFlight;
 	lux::Array<VkFence>			renderFencesImagesInFlight;
 	int32						renderCurrentFrame = 0;
-	LuxFence					spawnObjectFence;
 	void						runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
 	void						graphicsInitVulkan();
 	void						graphicsCreateSurface();
@@ -413,9 +413,15 @@ public:
 
 public:
 	//Buffers >> Compute/Buffers.cpp
+	struct CShaders_stg_t {
+		LuxShader_t shader;
+		lux::Array<LuxCell> cells;
+		const char* shaderPath;
+	};
 	lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
 	lux::Map<LuxShader_t, uint32>	CShaders;				//List of shaders
-	LuxBuffer	gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+	lux::Queue<CShaders_stg_t*>		CShaders_stg;			//Staging queue for CShaders
+	LuxBuffer						gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 	LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
 	bool							gpuCellDestroy(const LuxCell vCell);
 	void*							gpuCellMap(const LuxCell vCell);

@@ -100,13 +100,21 @@ void Engine::graphicsDrawFrame() {
 	{ //Update render result submitting the command buffers to the compute queues
 		//TODO both threads are wainting for 0. this causes an exception
 		//TODO add incorporated mutex to fences
-		spawnObjectFence.wait(0);	//Wait spawn events. 0 if there are no spawns to wait, 2 if an object was spawned
-		spawnObjectFence.set(1);
+		if (CShaders_stg.size() > 0) {
+			LuxShader shader = CShaders.add(CShaders_stg.front()->shader);
+			cshaderCreateDescriptorSetLayouts(CShaders_stg.front()->cells, shader);				//Create descriptor layouts, 
+			cshaderCreateDescriptorSets(CShaders_stg.front()->cells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
+			cshaderCreatePipeline(CShaders_stg.front()->shaderPath, shader);						//Create the compute pipeline
+			cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
+
+			CShaders_stg.popFront();
+		}
+
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
 		for (uint32 i = 0; i < CShaders.size(); ++i) {
-			//TODO FUCKING EXCEPTION 
+			//TODO EXCEPTION 
 			if (CShaders.isValid(i)) {
 				commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
 			}
@@ -126,7 +134,6 @@ void Engine::graphicsDrawFrame() {
 
 		vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
 		TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
-		spawnObjectFence.set(0);
 	}
 
 

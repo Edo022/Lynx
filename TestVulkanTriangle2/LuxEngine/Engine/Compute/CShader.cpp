@@ -354,19 +354,19 @@ void Engine::cshaderCreateCommandBuffers(const LuxShader vCShader) {
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
 LuxShader Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath) {
+	 sleep(100);
 	//TODO check buffers
 	//TODO check file
 	//TODO both threads are wainting for 0. this causes an exception
-	if(spawnObjectFence.check(0)) spawnObjectFence.set(2);
-	LuxShader shader = CShaders.add(LuxShader_t{});					//Add the shader to the shader array
+	 CShaders_stg_t* shdstgt = new CShaders_stg_t{ LuxShader_t{}, pCells, vShaderPath };
+	 CShaders_stg.pushFront(shdstgt);					//Add the shader to the shader array
 
-	cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
-	cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
-	cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
-	cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
-	spawnObjectFence.set(0);
+	//cshaderCreateDescriptorSetLayouts(pCells, shader);				//Create descriptor layouts, 
+	//cshaderCreateDescriptorSets(pCells, shader);					//Descriptor pool, descriptor sets and descriptor buffers
+	//cshaderCreatePipeline(vShaderPath, shader);						//Create the compute pipeline
+	//cshaderCreateCommandBuffers(shader);									//Create command buffers and command pool
 
-	return shader;													//Return the index of the created shader
+	return -1;													//Return the index of the created shader
 }
 
 
