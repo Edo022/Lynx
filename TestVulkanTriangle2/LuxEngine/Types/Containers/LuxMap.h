@@ -16,7 +16,7 @@ template <class cntType, class alloc> class ContainerBase;
 //The elements are not ordered, so each element has a unique ID. The ID is returned by add functions
 //Use the isValid() function to check if an element can be used or not
 namespace lux {
-	template<class type, class alloc> class Map {
+	template<class type, class alloc = uint64> class Map {
 	private:
 		alloc chunksDynNum;			//Allocated number of chunks
 	public:

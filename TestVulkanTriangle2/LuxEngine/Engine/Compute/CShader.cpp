@@ -282,7 +282,7 @@ void Engine::cshaderCreateDefaultCommandBuffers() {
 
 
 
-void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader) {
+void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 	//Create command pool
 	VkCommandPoolCreateInfo commandPoolCreateInfo = {};									//Create command pool create infos. The command pool contains the command buffers
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
@@ -315,13 +315,7 @@ void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader) {
 
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	//TODO fix
-	vkCmdDispatch(pCShader->commandBuffers[0], 4, 1, 1); 
-	//switch (vObjectType) {
-	//	case LUX_OBJECT_TYPE_LINE_2D_CCT: vkCmdDispatch(CShaders[vCShader].commandBuffers[0], 1, 1, 1); break;
-	//	default: Exit("//TODO la shader non esiste");
-	//}
-
-	//vkCmdDispatch(CShaders[vCShader].commandBuffers[0], scast<uint32>(ceil(scast<float>(swapchainExtent.width) / WORKGROUP_SIZE)), scast<uint32>(ceil(scast<float>(swapchainExtent.height) / WORKGROUP_SIZE)), 1);
+	vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCounty, vGroupCountz); 
 
 	//End command buffer recording
 	TryVk(vkEndCommandBuffer(pCShader->commandBuffers[0])) Exit("Failed to record command buffer");
@@ -353,17 +347,17 @@ void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader) {
 //*       -1 if one or more buffers cannot be used
 //*       -2 if the file does not exist
 //*       -3 if an unknown error occurs //TODO
-int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath) {
+int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 	//TODO check buffers
 	//TODO check file
 	CShaders_stg_t* shaderStgPtr = new CShaders_stg_t{ LuxShader_t{ }, pCells, vShaderPath };
 
-	cshaderCreateDescriptorSetLayouts(shaderStgPtr->cells, &shaderStgPtr->shader);	//Create descriptor layouts, 
-	cshaderCreateDescriptorSets(shaderStgPtr->cells, &shaderStgPtr->shader);		//Descriptor pool, descriptor sets and descriptor buffers
-	cshaderCreatePipeline(shaderStgPtr->shaderPath, &shaderStgPtr->shader);			//Create the compute pipeline
-	cshaderCreateCommandBuffers(&shaderStgPtr->shader);								//Create command buffers and command pool
+	cshaderCreateDescriptorSetLayouts(shaderStgPtr->cells, &shaderStgPtr->shader);					//Create descriptor layouts, 
+	cshaderCreateDescriptorSets(shaderStgPtr->cells, &shaderStgPtr->shader);						//Descriptor pool, descriptor sets and descriptor buffers
+	cshaderCreatePipeline(shaderStgPtr->shaderPath, &shaderStgPtr->shader);							//Create the compute pipeline
+	cshaderCreateCommandBuffers(&shaderStgPtr->shader, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool
 
-	CShaders_stg.pushFront(shaderStgPtr);											//Add the shader to the shader array
+	CShaders_stg.pushFront(shaderStgPtr);															//Add the shader to the shader array
 
 	return 0;
 }

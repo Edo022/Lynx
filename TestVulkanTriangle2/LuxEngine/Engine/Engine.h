@@ -437,9 +437,9 @@ public:
 	void		cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
 	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
 	void		cshaderCreatePipeline(const char* shaderPath, LuxShader_t* pCShader);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	void		cshaderCreateDefaultCommandBuffers();
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 
@@ -483,7 +483,7 @@ namespace lux::obj {
 		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
 		pObject->initPtrs();
 		pObject->allocated = true;
-		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin());
+		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin(), 4, 1, 1);
 	}
 }
 

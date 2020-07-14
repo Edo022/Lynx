@@ -25,7 +25,8 @@ int h(const char* b, int hh) {
 lux::obj::Line2D lineTest;
 int main() {
 	LuxInit(false);
-	
+	//sleep(1000);
+	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 
 
@@ -41,16 +42,16 @@ int main() {
 		*lineTest.p1 = vec2i32{ 1700, 800 };
 
 
-		lux::input::InputState ist{
+		lux::input::InputState testIS{
 			lux::input::KeySequence{{LUX_KEY_KP_ADD | LUX_PRESS }, [](lux::Array<uint16> keySequenceCode) { *lineTest.col0 -= vec4f32(0.0f, 0.0f, 0.0f, 0.05f); }},
 			lux::input::KeySequence{{LUX_KEY_KP_SUBTRACT | LUX_PRESS }, [](lux::Array<uint16> keySequenceCode) { *lineTest.col0 += vec4f32(0.0f, 0.0f, 0.0f, 0.05f); }}
 		};
-		lux::input::setInputState(&ist);
+		lux::input::setInputState(&testIS);
 	}
 
 
-
-	while (engine.running) {
+	//sleep(1000);
+	while(engine.running) {
 		sleep(5);
 	}
 	return 0;

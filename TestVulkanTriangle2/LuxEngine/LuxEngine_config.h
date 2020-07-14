@@ -25,9 +25,10 @@
 
 	//The number of logical threads in the global thread pool
 	//This depends on the number of physical threads of the CPU and the complexity of the program
-	//Too much threads slow down everything, but too few cannot handle much functions
-	//By default they're as much as the physical threads
-#	define G_THREAD_POOL_SIZE lux::sys::threadNum
+	//Too much threads slow down the engine, but too few cannot handle much functions
+	//The actual running threads will never be more than the physical threads, but since a thread can be suspended, the pool must be large enough to contain all the active and suspended threads
+	//By default they're the double of the physical threads
+#	define G_THREAD_POOL_SIZE lux::sys::threadNum * 2
 
 
 

@@ -108,7 +108,6 @@ void Engine::graphicsDrawFrame() {
 		lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize() + 2);
 
 		for (uint32 i = 0; i < CShaders.size(); ++i) {
-			//TODO EXCEPTION 
 			if (CShaders.isValid(i)) {
 				commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
 			}
