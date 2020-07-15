@@ -384,7 +384,6 @@
     <ClCompile Include="LuxEngine\Engine\Input\Input_e.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\System\System_e.cpp" />
-    <ClCompile Include="LuxEngine\Threads\ThreadPool_e.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp" />
@@ -417,6 +416,7 @@
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
+    <ClInclude Include="LuxEngine\Types\LuxFenceDE.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h" />

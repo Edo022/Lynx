@@ -4,6 +4,7 @@
 
 
 
+		//TODO automatic back to front and viceversa in queues
 
 //A queue with dynamic size
 namespace lux {

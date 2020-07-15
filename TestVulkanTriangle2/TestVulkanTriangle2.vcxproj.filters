@@ -103,9 +103,6 @@
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Threads\ThreadPool_e.cpp">
-      <Filter>LuxEngine\Threads</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClCompile>
@@ -212,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h">
       <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxFenceDE.h">
+      <Filter>LuxEngine\Types</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

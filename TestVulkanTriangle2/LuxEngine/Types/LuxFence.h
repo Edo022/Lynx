@@ -6,6 +6,7 @@
 #include <mutex>
 
 
+//TODO update use thread pool fence system
 //A struct used to synchronize threads
 #pragma optimize( "g", off )	//Turn off global optimization. If the compiler optimizes the loop, it will be skipped and the program will probably freeze or crash
 struct LuxFence {

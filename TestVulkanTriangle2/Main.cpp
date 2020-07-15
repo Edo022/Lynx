@@ -3,6 +3,7 @@
 
 
 
+#include <time.h>
 #include "LuxEngine/LuxEngine.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
@@ -26,8 +27,6 @@ lux::obj::Line2D lineTest;
 int main() {
 	LuxInit(false);
 	//sleep(1000);
-	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
-	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 
 
 	{
@@ -40,7 +39,7 @@ int main() {
 		*lineTest.wd1 = 200;
 		*lineTest.p0 = vec2i32{ 2000, 500 };
 		*lineTest.p1 = vec2i32{ 1700, 800 };
-
+		
 
 		lux::input::InputState testIS{
 			lux::input::KeySequence{{LUX_KEY_KP_ADD | LUX_PRESS }, [](lux::Array<uint16> keySequenceCode) { *lineTest.col0 -= vec4f32(0.0f, 0.0f, 0.0f, 0.05f); }},
@@ -50,9 +49,14 @@ int main() {
 	}
 
 
-	//sleep(1000);
+
+		srand(time(NULL));
+	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
+	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 	while(engine.running) {
-		sleep(5);
+		lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
+		sleep(rand( ) % 20);
+		//sleep(10);
 	}
 	return 0;
 }
