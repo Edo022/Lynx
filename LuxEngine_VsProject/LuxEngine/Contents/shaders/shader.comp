@@ -1,0 +1,33 @@
+
+#version 450
+
+#define WORKGROUP_SIZE 32			//The x and y size of the workgroup
+#define x gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
+#define y gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+#define colToInt(v) ((v.a) << 24) | ((v.b & 0xFF) << 16) | ((v.g & 0xFF) << 8) | (v.r & 0xFF)
+
+
+layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
+
+layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };		//Buffer containing the output image
+layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };	//Width and height of the window
+layout(std430, binding = 2) buffer vertices_{ uint vertices[2]; };			//Vertices of the mesh
+
+
+
+
+void main() {
+	//Yeet unnecessary calls
+	if(x >= width || y >= height) return;
+
+	uvec4 color = uvec4(y);
+	if(x <= 1900) color = uvec4(x,y,255,255);
+	if(y <= 500) color.g = x;
+//	color = uvec4(width/10,height/5,255,255);
+//	color = (x > vertices[0]) ? uvec4(255,0,0,255) : uvec4(0);
+
+
+	//Store the pixel in the buffer. 4 chars as an uint32
+	colorOutput[y * width + x] = colToInt(color);
+//	for(int i = 0; i < 10; i++) colorOutput[width * vertices[0] + vertices[1] + i] = (int(color.a) << 24) | ((int(color.b) & 0xFF) << 16) | ((int(color.g) & 0xFF) << 8) | (int(color.r) & 0xFF);
+}
