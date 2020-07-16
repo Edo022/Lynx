@@ -1,0 +1,28 @@
+﻿  CCommands.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Compute\CCommands.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  Compute.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Compute\Compute.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  CPipeline.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Compute\CPipeline.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  Devices.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Devices.cpp(1,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  Engine.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Engine.cpp(3,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  GCommands.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Graphics\GCommands.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  Graphics.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Graphics\Graphics.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  GImages.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Graphics\GImages.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  GPipeline.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Graphics\GPipeline.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  GSwapchain.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Graphics\GSwapchain.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Engine/Engine.h': No such file or directory
+  Input.ext.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Engine\Input\InputState.h(3,10): fatal error C1083: Cannot open include file: 'GLFW/glfw3.h': No such file or directory
+  Object.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\Object\Object.cpp(2,10): fatal error C1083: Cannot open include file: 'LuxEngine/Object/Object.h': No such file or directory
+  Main.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\macros.h(46,3): error C2443: operand size conflict
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\5-LuxEngineGraphicsOptimization\TestVulkanTriangle2\LuxEngine\macros.h(47,1): error C2443: operand size conflict
+  Generating Code...

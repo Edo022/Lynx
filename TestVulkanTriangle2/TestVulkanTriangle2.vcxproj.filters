@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="LuxEngine">
+      <UniqueIdentifier>{cb88332a-222d-471f-ba33-1e1eef35b7bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Contents">
+      <UniqueIdentifier>{f976d4b9-b808-4f05-9fbf-d03448d5c7b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Contents\Shaders">
+      <UniqueIdentifier>{9554e199-4f66-464b-b89b-f44e7451e7f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types">
+      <UniqueIdentifier>{798e3401-2ffe-473b-b86c-619a9399b42b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\Containers">
+      <UniqueIdentifier>{cfba8c0e-015f-4e4f-9ef7-d76430c7816f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\Integers">
+      <UniqueIdentifier>{2133de48-2c1d-40f8-ab98-e8054c8583c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\Vectors">
+      <UniqueIdentifier>{c601afcb-4e1b-4dd9-8bf9-7afbd536f4c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Engine">
+      <UniqueIdentifier>{515de7d3-e2be-4374-a5bc-0acc2adafc60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Engine\Compute">
+      <UniqueIdentifier>{da76cc61-9311-41d3-bd0f-8b72b2faea31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Engine\Graphics">
+      <UniqueIdentifier>{e427b4d8-2ca0-42c4-9142-f024e6e87d69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Engine\Input">
+      <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Math">
+      <UniqueIdentifier>{287ad351-a124-4265-8ab2-8d93db5063e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Math\Trigonometry">
+      <UniqueIdentifier>{d2e75fc7-0898-407a-8024-00eb6ac6478b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Math\Algebra">
+      <UniqueIdentifier>{343a17dc-396e-4cab-a571-6852b28a7e61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\System">
+      <UniqueIdentifier>{508ce054-8ea7-4be5-88d2-cc862193eff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\LuxObject">
+      <UniqueIdentifier>{9475685a-dff9-4e67-8ffc-3ef00e446395}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\LuxObject\2D">
+      <UniqueIdentifier>{28720fcf-0332-48fd-b763-1b55bb5cf71c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Types\LuxObject\3D">
+      <UniqueIdentifier>{ec7a58cc-5dba-4385-ab86-bed721a9fc30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Threads">
+      <UniqueIdentifier>{1a62e772-3a71-48bd-89d6-091d04c3f69a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="LuxEngine\Engine\Engine.cpp">
+      <Filter>LuxEngine\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Devices.cpp">
+      <Filter>LuxEngine\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxFence.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
+      <Filter>LuxEngine\Math\Trigonometry</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
+      <Filter>LuxEngine\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Input\Input_e.cpp">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\System\System_e.cpp">
+      <Filter>LuxEngine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\SpawnObject.cpp">
+      <Filter>LuxEngine\Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LuxEngine\macros.h">
+      <Filter>LuxEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Integers\int128_t.h">
+      <Filter>LuxEngine\Types\Integers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Integers\int256_t.h">
+      <Filter>LuxEngine\Types\Integers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Integers\Integers.h">
+      <Filter>LuxEngine\Types\Integers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Types.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h">
+      <Filter>LuxEngine\Types\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Vectors\Vec3.h">
+      <Filter>LuxEngine\Types\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Vectors\Vectors.h">
+      <Filter>LuxEngine\Types\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Engine.h">
+      <Filter>LuxEngine\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\LuxEngine.h">
+      <Filter>LuxEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\MouseInput.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\KeyboardInput.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\InputState.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Input\Input.h">
+      <Filter>LuxEngine\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\EngineTypes.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Vectors\Vec4.h">
+      <Filter>LuxEngine\Types\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Math\Constants.h">
+      <Filter>LuxEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h">
+      <Filter>LuxEngine\Math\Trigonometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Math\Algebra\Algebra.h">
+      <Filter>LuxEngine\Math\Algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h">
+      <Filter>LuxEngine\Math\Trigonometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxString.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\System\System.h">
+      <Filter>LuxEngine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Devices_t.h">
+      <Filter>LuxEngine\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Compute\CShader_t.h">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers_t.h">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\LuxEngine_config.h">
+      <Filter>LuxEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Threads\ThreadPool.h">
+      <Filter>LuxEngine\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h">
+      <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxFenceDE.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LuxEngine\Contents\shaders\shader.comp">
+      <Filter>LuxEngine\Contents\Shaders</Filter>
+    </None>
+    <None Include="cpp.hint" />
+    <None Include="LuxEngine\Contents\shaders\Line2D.comp">
+      <Filter>LuxEngine\Contents\Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
