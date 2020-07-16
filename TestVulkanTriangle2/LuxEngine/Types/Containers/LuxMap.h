@@ -44,16 +44,16 @@ namespace lux {
 
 		//Creates the map with the specified chunk and maximum size
 		//The number of chunks depends on their size and the maximum size of the map (chunks = maxSize / chunkSize)
-		//*   vChunkSize: number of elements allocated when the map grows
+		//*   vChunkSize: | number of elements allocated when the map grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		//*   vMaxSize: the maximum size the map can reach
+		//*   vMaxSize:   | the maximum size the map can reach
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
 			chunkSize{ vChunkSize }, maxSize{ vMaxSize }, head{ (iter)-1 }, tail{ (iter)-1 }, chunksDynNum{ (iter)0 }, __lp_dynSize{ (iter)0 }, __lp_freeNum{ (iter)0 } {
-			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data map
-			__lp_tracker = (iter**)malloc(sizeof(iter*) * (maxSize / chunkSize));	//Allocate tracker map
+			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data 
+			__lp_tracker = (iter**)malloc(sizeof(iter*) * (maxSize / chunkSize));	//Allocate tracker 
 		}
 
 
@@ -142,9 +142,9 @@ namespace lux {
 
 
 		//Signs an index of the map as free, without deleting it. Returns a char for performance reasons
-		//*   vIndex: the index to signNz
-		//*   freeElm: whether to free the element or keep it in memory. Keeping it saves performances but increases memory usage
-		//*   Returns 0 if the operation succeeded, status(index) if not
+		//*   vIndex:  | the index to signNz
+		//*   freeElm: | whether to free the element or not. Keeping it in memory saves performances but increases memory usage
+		//*   Returns  | 0 if the operation succeeded, status(index) if not
 		signed char __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
 			signed char r = status(vIndex);
 
@@ -152,7 +152,7 @@ namespace lux {
 			else {												//If it is,
 				__lp_Tracker(vIndex) = -1;							//Set the index as free
 				if (vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary
-				if (head == scast<iter>(-1)) head = tail = vIndex;//If it has no free elements, initialize head and tail.
+				if (head == scast<iter>(-1)) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
 				else tail = __lp_Tracker(tail) = vIndex;			//If it has free elements, set the new tail and update the last free index
 				__lp_freeNum++;										//Update the number of free elements
 			}
@@ -164,10 +164,10 @@ namespace lux {
 
 		//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
 		inline void __vectorcall clear() {
-			for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]); free(__lp_data);		//Free data map
-			for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker map
-			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data map
-			__lp_tracker = scast<iter**>(malloc(sizeof(iter*) * (maxSize / chunkSize)));		//Allocate tracker map
+			for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]); free(__lp_data);		//Free data
+			for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker
+			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data
+			__lp_tracker = scast<iter**>(malloc(sizeof(iter*) * (maxSize / chunkSize)));		//Allocate tracker
 			chunksDynNum = __lp_dynSize = __lp_freeNum = 0;										//Reset number of chunk, number of elements, number of free elements
 			head = tail = -1;																	//Reset head and tail
 		}

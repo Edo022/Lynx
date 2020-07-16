@@ -7,7 +7,7 @@
 //UwU
 	//This is the header to include in order to use the LuxEngine
 	//Call LuxInit() to initialize and run the engine
-	//It will open a default graphic window and start 3 threads
+	//It will open a default graphic window
 	//You can configure the engine in the LuxEngine_config.h file
 
 
@@ -32,7 +32,7 @@
 	//Class operators and size() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
 	//The luxDebug()   macro executes a line of code only if LUX_DEBUG is defined
 	//The luxRelease() macro executes a line of code only if LUX_DEBUG is NOT defined
-	//luxDebug and luxRelease macros do not affect performance or code creation. They just remove a line of code
+	//luxDebug and luxRelease macros do not affect performance or code generation. They just remove a line of code
 	//LUX_DEBUG also enables Vulkan validation layers, when available. They'll affect performance
 	//LUX_DEBUG must be define BEFORE including this header
 
@@ -55,8 +55,6 @@
 
 
 #include "LuxEngine/Engine/Engine.h"
-#include "macros.h"                                  // for sleep
-
 
 //Initializes the Lux Engine
 //Objects will automatically call this function when created
