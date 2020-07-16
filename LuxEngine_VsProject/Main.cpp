@@ -1,4 +1,5 @@
-﻿
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 //regex per contare le linee di codice non vuote
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 
@@ -24,22 +25,22 @@ int h(const char* b, int hh) {
 }
 
 
-lux::obj::Line2D* lineTest = new lux::obj::Line2D( );
 int main() {
 	LuxInit(false);
 	//sleep(1000);
 	
 
 	{
-		lux::obj::RenderSpace2D renderSpace;
-
-		renderSpace.spawnObject(lineTest);
+		lux::obj::Line2D* lineTest = new lux::obj::Line2D( );
 		*lineTest->col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
 		*lineTest->col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
 		*lineTest->wd0 = 100;
 		*lineTest->wd1 = 200;
 		*lineTest->p0 = vec2i32{ 2000, 500 };
 		*lineTest->p1 = vec2i32{ 1700, 800 };
+
+		lux::obj::RenderSpace2D renderSpace;
+		renderSpace.spawnObject(lineTest);
 		
 
 		//lux::input::InputState testIS{

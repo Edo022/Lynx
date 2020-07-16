@@ -1,4 +1,5 @@
-﻿#include "LuxEngine/Engine/Engine.h"
+﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+#include "LuxEngine/Engine/Engine.h"
 #include "LuxEngine/Types/Containers/LuxString.h"    // for LuxMap
 #include <set>
 class lux::String;

@@ -1,4 +1,4 @@
-
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 #include "GoniometricFunctions.h"
 
 #if FUNC_PRECISION != 0

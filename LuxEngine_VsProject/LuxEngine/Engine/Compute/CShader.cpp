@@ -1,4 +1,4 @@
-
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 #include "LuxEngine/Engine/Engine.h"
 #include "LuxEngine/Engine/Compute/CShader_t.h"
 
