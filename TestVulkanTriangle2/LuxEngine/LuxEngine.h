@@ -50,22 +50,18 @@
 		//In that case, the new maximum memory will be (GPU_STATIC_BUFFER_SIZE * 1024)
 
 
+
+
+
+
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
-#include "LuxEngine/System/System.h"
-#include "LuxEngine/Threads/ThreadPool.h"
 #include "macros.h"                                  // for sleep
 
 
-//This function initializes the Lux Engine. Call it only once
-static void LuxInit(bool useVSync = true) {
-	lux::sys::__lp_init_system();
-	lux::thr::__lp_init_thread();
-	lux::_engine::__lp_luxInit(useVSync);
-	__lp_goniometric_functions_init();
-
-	while (!engine.initialized) sleep(10);
-}
+//Initializes the Lux Engine
+//Objects will automatically call this function when created
+//    They need the engine to be initialized to allocate their data
+static void LuxInit(bool useVSync = true) { lux::engine( ).init(useVSync); }
 
 
 

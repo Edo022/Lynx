@@ -10,12 +10,12 @@
 #include <thread>
 
 
-//TODO dont pool with while in fence.wait
-//TODO use suspend and resume instead
+//TODO create a fence that uses suspend and resume instead of while checks
 //TODO use tkill on linux
+//TODO create LuxThread with platform specific suspend and resume functions
 
 namespace lux::thr {
-	//TODO create LuxThread with platform specific suspend and resume functions
+	//TODO fix queue priority
 	enum Priority : uint16 {
 		LUX_PRIORITY_MAX = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
 		LUX_PRIORITY_HIGH = 3,	//execute only after all the max priority functions have been executed
@@ -55,7 +55,7 @@ namespace lux::thr {
 	};
 
 
-	//TODO move to normal fences
+
 	namespace{
 		FenceDE stgAddFence;				//This fence controls the add and read/remove operations of the statging queue
 		HANDLE mngThr;						//The handle of the thread that controls the pool
@@ -106,16 +106,15 @@ namespace lux::thr {
 			if(!stg.empty( )){											//Check if new functions were added to the queues
 				stgAddFence.startFirst();
 				while(stg.size( ) > 0){									//For each element of the queue
-					//TODO
+					//TODO do something if there are no enought threads
 					if(thrStates.usedSize( ) < sys::threadNum){					//If there is a free thread
 						uint32 thrIndex = thrStates.add(ThrState::RUNNING);			//Set its state to RUNNING and save its index (automatically calculated by the add() function)
-						threads[thrIndex].exec = stg.front( );							//Set its exec data
-						stg.popFront( );												//Remove the exec data from the queue
+						threads[thrIndex].exec = stg.front( );						//Set its exec data
+						stg.popFront( );											//Remove the exec data from the queue
 						ResumeThread(threads[thrIndex].thr->native_handle( ));		//#LLID THR0000 Resume the thread (it suspended itself after executing the last function)
 					}
 				}
 				stgAddFence.endFirst();
-				//TODO dont set if there are no enought threads
 				SuspendThread(GetCurrentThread( ));							//Suspend the thread (the mng thread, not the one that was free)
 			}
 		}
@@ -158,13 +157,6 @@ namespace lux::thr {
 		cntv->func = vFunc;							//Set the function
 		cntv->params = std::make_tuple(vParams...);	//Set the parameters
 		
-		//TODO add push fences
-		//switch(vPriority){						//Assign the data to a queue based on its priority
-		//	case LUX_PRIORITY_MAX:	maxpq.pushFront(cntv);	break;
-		//	case LUX_PRIORITY_HIGH:	highpq.pushFront(cntv);	break;
-		//	case LUX_PRIORITY_LOW:	lowpq.pushFront(cntv);	break;
-		//	case LUX_PRIORITY_MIN:	minpq.pushFront(cntv);	break;
-		//}
 		stgAddFence.startSecond();
 		stg.pushFront(cntv);						//Assign the data to the staging queue
 		stgAddFence.endSecond();

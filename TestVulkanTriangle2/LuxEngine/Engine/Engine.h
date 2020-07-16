@@ -31,7 +31,8 @@
 #include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/System/System.h"
-//#include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
+#include "LuxEngine/Threads/ThreadPool.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
@@ -304,6 +305,26 @@ public:
 
 
 
+	//Initializes the engine object and all the Lux namespace
+	//Don't call this function. Use LuxInit( ) instead
+	void init(bool useVSync) {
+		static bool once = true;
+		if(once){
+			once = false;
+			lux::sys::__lp_init_system( );
+			lux::thr::__lp_init_thread( );
+			__lp_goniometric_functions_init( );
+
+			std::thread renderThr(&Engine::run, this, useVSync, 45);
+			renderThr.detach( );
+			running = true;
+
+			while(!initialized) sleep(10);
+		}
+	}
+
+
+
 
 
 
@@ -459,33 +480,25 @@ public:
 
 
 
-extern Engine engine;
+//extern Engine engine;
 #define Frame while(engine.running)
 
-namespace lux::_engine {
-	//This function is used by the engine. You shouldn't call it
-	static void __lp_luxInit(bool useVSync) {
-		std::thread renderThr([&]() {engine.run(useVSync, 45); });
-		renderThr.detach();
-		engine.running = true;
-	}
-}
 
 
-namespace lux::obj {
-	static inline void spawnObject(Base* pObject) {
-		if (pObject->objectType > 0) {
-			engine.objs.add(pObject);
-		}
-		else Exit("invalid object");
-
-		pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
-		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
-		pObject->initPtrs();
-		pObject->allocated = true;
-		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin(), 4, 1, 1);
-	}
-}
+//namespace lux::obj {
+//	static inline void spawnObject(Base* pObject) {
+//		if (pObject->objectType > 0) {
+//			engine.objs.add(pObject);
+//		}
+//		else Exit("invalid object");
+//
+//		pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
+//		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
+//		pObject->initPtrs();
+//		pObject->allocated = true;
+//		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin(), 4, 1, 1);
+//	}
+//}
 
 
 
@@ -504,6 +517,7 @@ namespace lux::obj {
 
 
 //It's dark magic, idk why or how it works, but it does
+namespace lux{ Engine& engine( ); }
 namespace lux::_engine {
 	static inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
@@ -521,8 +535,66 @@ namespace lux::_engine {
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		createInfo.pfnUserCallback = engine.graphicsDebugCallback;
+		createInfo.pfnUserCallback = lux::engine().graphicsDebugCallback;
 	}
 }
 
 #endif
+
+
+
+
+
+
+
+
+//TODO fast memcpy codes
+//#include <immintrin.h>
+//#include <assert.h>
+//#include <cstdint>
+///* ... */
+//void fastMemcpy(void *pvDest, void *pvSrc, size_t nBytes) {
+//  assert(nBytes % 32 == 0);
+//  assert((intptr_t(pvDest) & 31) == 0);
+//  assert((intptr_t(pvSrc) & 31) == 0);
+//  const __m256i *pSrc = reinterpret_cast<const __m256i*>(pvSrc);
+//  __m256i *pDest = reinterpret_cast<__m256i*>(pvDest);
+//  int64_t nVects = nBytes / sizeof(*pSrc);
+//  for (; nVects > 0; nVects--, pSrc++, pDest++) {
+//    const __m256i loaded = _mm256_stream_load_si256(pSrc);
+//    _mm256_stream_si256(pDest, loaded);
+//  }
+//  _mm_sfence();
+//}
+
+
+//"
+//On Ryzen 1800X with single memory channel filled completely (2 slots, 16 GB DDR4 in each), the following code is 1.56 times faster than memcpy() on MSVC++2017 compiler. 
+//If you fill both memory channels with 2 DDR4 modules, i.e. you have all 4 DDR4 slots busy, you may get further 2 times faster memory copying. 
+//For triple-(quad-)channel memory systems, you can get further 1.5(2.0) times faster memory copying if the code is extended to analogous AVX512 code. 
+//With AVX2-only triple/quad channel systems with all slots busy are not expected to be faster because to load them fully you need to load/store more than 32 bytes at once 
+//(48 bytes for triple- and 64-bytes for quad-channel systems), while AVX2 can load/store no more than 32 bytes at once. 
+//Though multithreading on some systems can alleviate this without AVX512 or even AVX2.
+//
+//So here is the copy code that assumes you are copying a large block of memory whose size is a multiple of 32 and the block is 32-byte aligned.
+//
+//For non-multiple size and non-aligned blocks, prologue/epilogue code can be written reducing the width to 16 (SSE4.1), 8, 4, 2 and finally 1 byte at once for the block head and tail. 
+//Also in the middle a local array of 2-3 __m256i values can be used as a proxy between aligned reads from the source and aligned writes to the destination.
+//"
+
+
+
+
+
+
+
+
+
+
+
+
+//TODO
+//"
+//punti per le mesh + curve per le superfici solide
+//>>>>>>>>>>>>>>>
+//"

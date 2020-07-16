@@ -30,7 +30,7 @@ template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= 
 
 //Debug
 #define TryVk(f)			if ((f) != VK_SUCCESS)
-#define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); engine.running = false; exit(-1);}
+#define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); lux::engine().running = false; exit(-1);}
 #define printLineInfo		{Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());}
 #define luxDebug(s)			s
 #define luxRelease()		;

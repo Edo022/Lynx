@@ -42,15 +42,3 @@ static constexpr uint32 __lp_cellOffset_from_cc(const _VkPhysicalDevice* pDevice
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-

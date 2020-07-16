@@ -29,6 +29,7 @@ namespace lux::input{
 		//e.g. "ctrl + k" = {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS}
 		lux::Array<uint16> sequence;
 		//This is the function that will be called when the sequence is performed. It must be of type void and take a KeySequence as a parameter
+		//TODO use ExecFuncData
 		LuxKeyBindingCallback bindedFunction;
 	};
 

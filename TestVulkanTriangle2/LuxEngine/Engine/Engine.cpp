@@ -3,7 +3,7 @@
 #include "LuxEngine/Engine/Engine.h"
 #include "Input/Input.h"          // for keyCallback, mouseButtonCallback
 #include "LuxEngine/System/System.h"               // for luxThisDirectory
-Engine engine;
+//Engine engine;
 
 
 
@@ -19,15 +19,23 @@ Engine engine;
 
 
 
-//Shader files must have the .comp extension
 namespace lux::_engine {
+	//Deprecated function 
+	//TODO remove
+	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
 		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
 		return ("%d\n", system(compileShaderCommand.begin()) == 0);
 	}
 }
 
-
+namespace lux{
+	//This function returns a reference of the engine object
+	Engine& engine( ){
+		static Engine engine_;
+		return engine_;
+	}
+}
 
 
 
@@ -337,3 +345,16 @@ void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, co
 	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
 	endSingleTimeCommands(commandBuffer);									//End command buffer
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

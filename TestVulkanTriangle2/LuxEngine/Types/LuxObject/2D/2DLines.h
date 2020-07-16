@@ -12,7 +12,14 @@ namespace lux::obj {
 	//Perfectly vertical or horyzontal lines also have better performance
 	//Lines with size 0 or alpha 0 are not rendered
 	struct Line2D : public Base2D {
-		Line2D() { objectType = LUX_OBJECT_TYPE_2D_LINE; shaderName = "Line2D"; }
+		Line2D() {
+			objectType = LUX_OBJECT_TYPE_2D_LINE;	//Set object type
+			shaderName = "Line2D";					//Set rendering shader
+			this->allocate();						//Allocate object data
+		}
+
+
+
 
 		//Initializes the pointers to the shared memory
 		//This is needed to read or write data in the object

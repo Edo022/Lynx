@@ -15,19 +15,19 @@
 
 namespace lux::input {
 	extern InputState* inStates;		//The current input state
-	inline static void setInputState(InputState* inputState) { inStates = inputState; inStates->sort(); }
+	inline static void setInputState(InputState* inputState) { inStates = inputState; inStates->sort( ); }
 
 
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
-		*(rcast<lux::obj::Line2D*>(engine.objs[0]))->p0 = vec2i32{ (int32)x, (int32)y };
+		*(rcast<lux::obj::Line2D*>(lux::engine( ).objs[0]))->p0 = vec2i32{ (int32)x, (int32)y };
 	}
 
 
 	static void mouseAxisCallback(GLFWwindow* window, double x, double y) {
-		*(rcast<lux::obj::Line2D*>(engine.objs[0]))->wd0 -= (float32)y * 10;
-		*(rcast<lux::obj::Line2D*>(engine.objs[0]))->wd1 -= (float32)y * 10;
+		*(rcast<lux::obj::Line2D*>(lux::engine( ).objs[0]))->wd0 -= (float32)y * 10;
+		*(rcast<lux::obj::Line2D*>(lux::engine( ).objs[0]))->wd1 -= (float32)y * 10;
 	}
 
 
@@ -50,22 +50,29 @@ namespace lux::input {
 		//FULL SCREEN
 		static int fsstate = 0;
 		static int wmx, wmy, wmw, wmh;
-		if (key == LUX_KEY_F11 && action == GLFW_PRESS) {
+		if(key == LUX_KEY_F11 && action == GLFW_PRESS) {
 			int mx, my, mw, mh;
-			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &mx, &my, &mw, &mh);
-			if (fsstate == 0) {
+			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor( ), &mx, &my, &mw, &mh);
+			if(fsstate == 0) {
 				glfwGetWindowSize(window, &wmw, &wmh);
 				glfwGetWindowPos(window, &wmx, &wmy);
-				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), mx, my, mw, mh, GLFW_DONT_CARE);
+				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor( ), mx, my, mw, mh, GLFW_DONT_CARE);
 				fsstate = 1;
 			}
-			else if (fsstate == 1) {
+			else if(fsstate == 1) {
 				glfwSetWindowMonitor(window, NULL, wmx, wmy, wmw, wmh, GLFW_DONT_CARE);
 				glfwRestoreWindow(window);
 				fsstate = 0;
 			}
 		}
 
+
+		//static int vsstate = 0;
+		//if(key == LUX_KEY_F && action == GLFW_PRESS) {
+		//	if(vsstate == 0) lux::engine().useVSync = false;
+		//	else if(vsstate == 1) lux::engine().useVSync = true;
+
+		//}
 
 
 

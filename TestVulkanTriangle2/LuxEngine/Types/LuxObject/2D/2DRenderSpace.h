@@ -6,7 +6,7 @@
 
 
 namespace lux::obj {
-	static inline void spawnObject(Base* pObject);
+	inline void spawnObject(Base* pObject);
 
 
 
@@ -31,12 +31,7 @@ namespace lux::obj {
 		//*       Trying to access a non allocated member will cause a runtime exception
 		//*       You can check if an object has been allocated through is "allocated" bool variable
 		//*   Returns true if the object is spawned correctly, false if the object is invalid
-		bool spawnObject(Base* pObject, const bool vWaitAllocation = true) {
-			if (pObject->objectType < 0 || pObject->objectType >= 3000 || pObject->objectType < 2000) return false;
-			lux::obj::spawnObject(pObject);
-
-			return true;
-		}
+		bool spawnObject(Base* pObject, const bool vWaitAllocation = true);
 		
 
 		void initPtrs() final override {}

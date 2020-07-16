@@ -8,8 +8,8 @@
 
 //A queue with dynamic size
 namespace lux {
-	template<class type, class alloc = uint32> struct Queue {
-		lux::DynArray<type, alloc> _front, _back;
+	template<class type, class iter = uint32> struct Queue {
+		lux::DynArray<type, iter> _front, _back;
 
 		inline Queue() : _front{ 0xFF }, _back{ 0xFF } { }
 
@@ -24,10 +24,10 @@ namespace lux {
 		inline void popFront() { _front.resize(_front.__lp_size - 1); }
 
 
-		inline type& operator [](const alloc vIndex) { return (vIndex < _back.__lp_size) ? _back[_back.__lp_size - 1 - vIndex] : _front[vIndex - (_back.__lp_size - 1)]; }
+		inline type& operator [](const iter vIndex) { return (vIndex < _back.__lp_size) ? _back[_back.__lp_size - 1 - vIndex] : _front[vIndex - (_back.__lp_size - 1)]; }
 		inline type& front() { return _front.last(); }
 		inline type& back() { return _back.last(); }
-		inline alloc size() { return _front.size() + _back.size(); }
+		inline iter size() { return _front.size() + _back.size(); }
 		inline bool empty() { return size() == 0; }
 	};
 }
