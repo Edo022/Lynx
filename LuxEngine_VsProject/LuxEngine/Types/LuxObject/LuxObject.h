@@ -46,7 +46,6 @@ namespace lux{
 		struct Base {
 			ObjectType objectType;
 			Base( ) { objectType = LUX_OBJECT_TYPE__BASE; }
-
 			void allocate( );
 
 			lux::String name{ "" };					//The name of the object. 
@@ -57,12 +56,11 @@ namespace lux{
 			LuxCell gpuCell{ (uint64)-1 };			//GPU memory containing the small data of the object
 			void* cellPtr = nullptr;				//Pointer to the GPU memory cell
 			virtual void initPtrs( ) = 0;			//Initializes the pointers in the struct
-			inline virtual int32 getCellSize( ) = 0;	//Size of the object data
+			inline virtual int32 getCellSize( ) = 0;//Size of the object data
 			lux::String shaderName{ "" };			//The name of the shader that renders the object
+
+			Base* parent;							//The parent of the object
 		};
-
-
-		inline void spawnObject(Base* pObject);
 
 
 
@@ -122,14 +120,8 @@ namespace lux{
 
 
 
-
-
-
-
-
-
-
-
+		struct RenderSpace2D;
+		void addRenderSpace(RenderSpace2D* pRenderSpace);
 	}
 }
 #endif // !__LUX_OBJ

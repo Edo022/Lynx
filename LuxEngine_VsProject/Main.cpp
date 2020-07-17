@@ -4,6 +4,7 @@
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 
 
+//TODO add memory pool
 
 #include <time.h>
 #include "LuxEngine/LuxEngine.h"
@@ -40,16 +41,13 @@ int main() {
 		*lineTest->p1 = vec2i32{ 1700, 800 };
 
 		lux::obj::RenderSpace2D renderSpace;
-		renderSpace.spawnObject(lineTest);
-		
+		renderSpace.addChild(lineTest);
 
-		//lux::input::InputState testIS{
-		//	lux::input::KeySequence{{LUX_KEY_KP_ADD | LUX_PRESS }, [](lux::Array<uint16> keySequenceCode) { *lineTest->col0 -= vec4f32(0.0f, 0.0f, 0.0f, 0.05f); }},
-		//	lux::input::KeySequence{{LUX_KEY_KP_SUBTRACT | LUX_PRESS }, [](lux::Array<uint16> keySequenceCode) { *lineTest->col0 += vec4f32(0.0f, 0.0f, 0.0f, 0.05f); }}
-		//};
-		//lux::input::setInputState(&testIS);
+		//TODO
+		lux::obj::addRenderSpace(&renderSpace);
+		Engine& engine_ = lux::engine( );
+		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest->gpuCell }, (engine_.shaderPath + lineTest->shaderName + ".comp.spv").begin( ), 4, 1, 1);
 	}
-
 
 
 	srand(time(NULL));
@@ -62,3 +60,6 @@ int main() {
 	}
 	return 0;
 }
+
+
+//TODO ! la memoria pre allocata dei buffer della GPU non distingue memoria locale e condivisa

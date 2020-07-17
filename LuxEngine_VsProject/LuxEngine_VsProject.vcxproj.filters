@@ -106,8 +106,8 @@
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\SpawnObject.cpp">
-      <Filter>LuxEngine\Engine</Filter>
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

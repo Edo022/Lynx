@@ -383,11 +383,11 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp" />
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
     <ClCompile Include="LuxEngine\Engine\Input\Input_e.cpp" />
-    <ClCompile Include="LuxEngine\Engine\SpawnObject.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\System\System_e.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
     <ClCompile Include="LuxEngine\Types\LuxFence.h" />
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>

@@ -453,7 +453,7 @@ public:
 	LuxShader ls0;
 	LuxShader ls1;
 	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			//List of renderSpaces
-	lux::Map<lux::obj::Base*, uint32> objs;		//TODO
+	//lux::Map<lux::obj::Base*, uint32> objs;		//TODO
 	lux::String shaderPath;
 	void		cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
 	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
