@@ -28,11 +28,11 @@ namespace lux {
 	private:
 		iter head;					//First free element
 		iter tail;					//Last free element
-		iter chunkSize;			//Size of the chunks
+		iter chunkSize;				//Size of the chunks
 		iter maxSize;				//Maximum number of elements in the map
 
-		#define __lp_Data(index) __lp_data[index / chunkSize][index % chunkSize]			//Get a data    element using only one index instead of index in the chunk and chunk index
-		#define __lp_Tracker(index) __lp_tracker[index / chunkSize][index % chunkSize]		//Get a tracker element using only one index instead of index in the chunk and chunk index
+		#define __lp_Data(index) __lp_data[(index) / chunkSize][(index) % chunkSize]			//Get a data    element using only one index instead of index in the chunk and chunk index
+		#define __lp_Tracker(index) __lp_tracker[(index) / chunkSize][(index) % chunkSize]		//Get a tracker element using only one index instead of index in the chunk and chunk index
 	public:
 
 
@@ -75,7 +75,7 @@ namespace lux {
 
 		//Adds an element at the end of the map, allocating a new chunk if needed
 		//Returns the ID of the element
-		iter __vectorcall append(const type vData) {
+		iter __vectorcall append(const type& vData) {
 			if (__lp_dynSize + 1 > chunksDynNum * chunkSize) {									//If the chunk is full
 				__lp_data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);					//Allocate a new data chunk
 				__lp_tracker[chunksDynNum] = scast<iter*>(malloc(sizeof(iter*) * chunkSize));		//Allocate a new tracker chunk
@@ -93,7 +93,7 @@ namespace lux {
 
 		//Adds an element at the firs free index of the map
 		//Returns the ID of the element
-		iter __vectorcall add(const type vData) {
+		iter __vectorcall add(const type& vData) {
 			iter head2 = head;
 			if (head == (iter)-1) return append(vData);		//If it has no free elements, append it
 			else {
@@ -163,13 +163,15 @@ namespace lux {
 
 
 		//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
-		inline void __vectorcall clear() {
-			for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]); free(__lp_data);		//Free data
-			for (int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]); free(__lp_tracker);	//Free tracker
-			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));					//Allocate data
-			__lp_tracker = scast<iter**>(malloc(sizeof(iter*) * (maxSize / chunkSize)));		//Allocate tracker
-			chunksDynNum = __lp_dynSize = __lp_freeNum = 0;										//Reset number of chunk, number of elements, number of free elements
-			head = tail = -1;																	//Reset head and tail
+		inline void __vectorcall clear( ) {
+			for(int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]);						//Free data
+			free(__lp_data);																//Free data
+			for(int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]);					//Free tracker
+			free(__lp_tracker);																//Free tracker
+			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));				//Allocate data
+			__lp_tracker = scast<iter**>(malloc(sizeof(iter*) * (maxSize / chunkSize)));	//Allocate tracker
+			chunksDynNum = __lp_dynSize = __lp_freeNum = 0;									//Reset number of chunk, number of elements, number of free elements
+			head = tail = -1;																//Reset head and tail
 		}
 
 
@@ -182,7 +184,7 @@ namespace lux {
 
 		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
 		inline signed char __vectorcall status(const iter vIndex) const {
-			if (vIndex == (int64)-1)return -1;								//Invalid index
+			if (vIndex == (iter)-1)return -1;								//Invalid index
 			else if (vIndex >= __lp_dynSize) return -2;						//Index out of range
 			else if (__lp_Tracker(vIndex) == scast<iter>(-1)) return 0;	//Ok
 			else if (__lp_Tracker(vIndex) >= 0)return 1;					//Invalid element

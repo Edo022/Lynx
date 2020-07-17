@@ -1,0 +1,432 @@
+﻿cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+  CBuffers.cpp
+  CShader.cpp
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+  Compute.cpp
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+  Devices.cpp
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+  Engine.cpp
+  GCommands.cpp
+  GOutput.cpp
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+  GSwapchain.cpp
+  Graphics.cpp
+  Input_e.cpp
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+cl : command line warning D9002: ignoring unknown option '/arch:IA32'
+  SpawnObject.cpp
+  GoniometricFunctions.cpp
+  System_e.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.cpp(251,17): warning C4244: 'initializing': conversion from '__int64' to 'int32', possible loss of data
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.cpp(247,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Devices.cpp(253,3): warning C4002: too many arguments for function-like macro invocation 'luxRelease'
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Input\Input_e.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Compute\CBuffers.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\Graphics.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Compute\Compute.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\SpawnObject.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\GCommands.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\GOutput.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Graphics\GSwapchain.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Compute\CShader.cpp)
+  LuxQueue.h
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Engine.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Engine.cpp)
+  LuxFence.h
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file LuxEngine\Engine\Devices.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file LuxEngine\Engine\Devices.cpp)
+  LuxObject_e.cpp
+  Main.cpp
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(76,4): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details. (compiling source file Main.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(80,4): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. (compiling source file Main.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(128,22): warning C4018: '<': signed/unsigned mismatch (compiling source file Main.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Threads\ThreadPool.h(133,22): warning C4018: '<': signed/unsigned mismatch (compiling source file Main.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\Main.cpp(55,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612,1): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ] (compiling source file Main.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\type_traits(1612): message : see reference to function template instantiation 'void std::_Invoker_pmf_pointer::_Call<_Ty,Engine*,bool,int>(_Decayed,_Ty1 &&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=void (__cdecl Engine::* )(bool,float),
+              _Decayed=void (__cdecl Engine::* )(bool,float),
+              _Ty1=Engine *
+          ] (compiling source file Main.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl Engine::* )(bool,float),Engine*,bool,int>(_Callable &&,Engine *&&,bool &&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file Main.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ] (compiling source file Main.cpp)
+S:\Junk\VisualStudio2019\Enterprise\VC\Tools\MSVC\14.26.28801\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept' being compiled (compiling source file Main.cpp)
+S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\TestVulkanTriangle2\LuxEngine\Engine\Engine.h(318): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl Engine::* )(bool,float),Engine*,bool&,int,0>(_Fn &&,Engine *&&,bool &,int &&)' being compiled
+          with
+          [
+              _Fn=void (__cdecl Engine::* )(bool,float)
+          ] (compiling source file Main.cpp)
+  TestVulkanTriangle2.vcxproj -> S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\x64\Debug\LuxEngine.exe

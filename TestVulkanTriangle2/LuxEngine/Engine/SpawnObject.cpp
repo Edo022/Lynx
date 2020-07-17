@@ -1,4 +1,5 @@
-// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+
+
 #include "Engine.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 

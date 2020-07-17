@@ -1,4 +1,5 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+﻿
+
 #include "LuxEngine/Engine/Engine.h"
 #include "LuxEngine/Engine/Compute/CShader_t.h"       
 
@@ -174,7 +175,7 @@
 				vkDestroyCommandPool(compute.LD, clearCommandPool, null);
 			}
 
-			uint32* pwindowSize = rcast<uint32*>(gpuCellMap(gpuCellWindowSize));
+			uint32* pwindowSize = scast<uint32*>(gpuCellMap(gpuCellWindowSize));
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
 

@@ -1,4 +1,5 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+﻿
+
 #include "LuxEngine/Engine/Engine.h"
 #include "LuxEngine/Types/Containers/LuxString.h"    // for LuxMap
 #include <set>
@@ -19,7 +20,8 @@ class lux::String;
 	int32 Engine::deviceRate(const _VkPhysicalDevice* pDevice) {
 		uint32 score = 0;																			//Device performance evalutation
 		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
-		pDevice->properties.limits.maxComputeSharedMemorySize; //TODO non superare il limite della shader
+		//TODO non superare il limite della shader
+		//pDevice->properties.limits.maxComputeSharedMemorySize; 
 		score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
 		if(pDevice->features.geometryShader) score += 1;												//Geometry shaders needed
 		return score;

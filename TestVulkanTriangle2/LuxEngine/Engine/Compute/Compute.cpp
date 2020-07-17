@@ -1,4 +1,5 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+﻿
+
 #include "LuxEngine/Engine/Engine.h"
 #include "LuxEngine/Engine/Compute/CShader_t.h"
 
@@ -11,7 +12,7 @@
 			gpuCellWindowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
 
 			gpuCellWindowSize = gpuCellCreate(4 * 2, true);
-			uint32* pwindowSize = rcast<uint32*>(gpuCellMap(gpuCellWindowSize));
+			uint32* pwindowSize = scast<uint32*>(gpuCellMap(gpuCellWindowSize));
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
 		}

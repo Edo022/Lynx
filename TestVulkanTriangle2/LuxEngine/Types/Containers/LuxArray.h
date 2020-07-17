@@ -38,7 +38,7 @@ namespace lux {
 		//Initializes the array using a list of elements, automatically converting it to the right type
 		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
 			__lp_lux_static_array_init((iter)pElements.size());
-			for (int i = 0; i < pElements.end() - pElements.begin(); ++i) __lp_data[i] = (inType) * (pElements.begin() + i);
+			for (uint64 i = 0; i < pElements.end() - pElements.begin(); ++i) __lp_data[i] = (inType) * (pElements.begin() + i);
 		}
 		//Initializes the array using a list of elements of the same type
 		inline Array(const std::initializer_list<type>& pElements) {
@@ -51,7 +51,7 @@ namespace lux {
 		//*   pArray: a pointer to the container object
 		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) {
 			__lp_lux_static_array_init(pArray.end() - pArray.begin());
-			for (int i = 0; i < pArray.end() - pArray.begin(); ++i) __lp_data[i] = (elmType) * (pArray.begin() + i);
+			for (uint64 i = 0; i < pArray.end() - pArray.begin(); ++i) __lp_data[i] = (elmType) * (pArray.begin() + i);
 		}
 		#undef __lp_lux_static_array_init
 
@@ -82,10 +82,13 @@ namespace lux {
 		//*   vNewSize: the new size of the array
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize) {
-			if (vNewSize < 0) return -1;
-			__lp_size = vNewSize;
-			__lp_data = (type*)realloc(__lp_data, sizeof(type) * __lp_size);
-			return vNewSize;
+			if(vNewSize < 0) return -1;
+			type* __lp_data_r = (type*)realloc(__lp_data, sizeof(type) * vNewSize);
+			if(__lp_data_r != nullptr){
+				__lp_size = vNewSize;
+				__lp_data = __lp_data_r;
+			}
+			return __lp_size;
 		}
 
 		//Resizes the array and initializes the new elements with a value

@@ -73,6 +73,18 @@ namespace lux {
 
 
 
+		inline void __vectorcall operator = (const String& pString) {
+			str.resize(pString.size());
+			memcpy(str.begin(), pString.begin(), pString.size());
+		}
+		inline void __vectorcall operator = (const char8* vString) {
+			int32 len = strlenl(vString) + 1;
+			str.resize(len);
+			memcpy(str.begin(), vString, len);
+		}
+
+
+
 
 		//Compare strings
 		inline bool __vectorcall operator == (const String& vString) const {

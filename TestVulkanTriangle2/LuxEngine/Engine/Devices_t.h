@@ -25,7 +25,7 @@ struct _VkPhysicalDevice {
 	QueueFamilyIndices indices;					//Indices of the queue families
 	uint32 score = 0;							//Device performances evalutation
 
-	_VkPhysicalDevice(const VkPhysicalDevice vDevice, const VkPhysicalDeviceProperties vProperties, const VkPhysicalDeviceFeatures vFeatures, const QueueFamilyIndices vIndices) :
+	_VkPhysicalDevice(const VkPhysicalDevice vDevice, const VkPhysicalDeviceProperties& vProperties, const VkPhysicalDeviceFeatures& vFeatures, const QueueFamilyIndices& vIndices) :
 		device{ vDevice }, properties{ vProperties }, features{ vFeatures }, indices{ vIndices } {}
 	_VkPhysicalDevice() {}
 };

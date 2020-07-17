@@ -1,4 +1,4 @@
-﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+﻿
 
 #include "LuxEngine/Engine/Engine.h"
 #include "Input/Input.h"          // for keyCallback, mouseButtonCallback
@@ -25,7 +25,7 @@ namespace lux::_engine {
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
 		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
-		return ("%d\n", system(compileShaderCommand.begin()) == 0);
+		return system(compileShaderCommand.begin()) == 0;
 	}
 }
 
@@ -247,9 +247,9 @@ uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 	FILE* fp = fopen(pFilePath, "rb");								//Open the file
 	if (fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
 
-	fseek(fp, 0, SEEK_END);											//Go to the end of the file
-	int32 filesize = ftell(fp);										//And get the file size
-	fseek(fp, 0, SEEK_SET);											//Go to the beginning of the file
+	_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
+	int32 filesize = _ftelli64(fp);									//And get the file size
+	_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
 	int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded size
 
 	char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)

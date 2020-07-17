@@ -55,7 +55,7 @@ template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= 
 #include <thread>
 typedef std::chrono::system_clock::time_point LuxTime;
 #define luxStartChrono()			std::chrono::system_clock::now()
-#define luxStopChrono(start)		((scast<std::chrono::duration<double>>(luxStartChrono() - start)).count())
+#define luxStopChrono(start)		((scast<std::chrono::duration<double>>(luxStartChrono() - (start))).count())
 #define sleep(ms)					std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 
 
