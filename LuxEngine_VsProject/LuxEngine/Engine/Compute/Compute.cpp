@@ -17,7 +17,7 @@
 			pwindowSize[1] = swapchainExtent.height;
 		}
 
-		{ //#LLID CCB0000 Create copy command buffers 
+		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
 			cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}

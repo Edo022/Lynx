@@ -138,7 +138,7 @@
 		//Create pipeline layout
 		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, null, &pCShader->pipelineLayout)) Exit("Unable to create pipeline layout");
 
-		VkComputePipelineCreateInfo pipelineCreateInfo = {};							//Create pipeline create infos 
+		VkComputePipelineCreateInfo pipelineCreateInfo = {};							//Create pipeline create infos
 		pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;			//Set structure type
 		pipelineCreateInfo.stage = shaderStageCreateInfo;									//Set shader stage infos
 		pipelineCreateInfo.layout = pCShader->pipelineLayout;						//Set pipeline layout
@@ -166,7 +166,7 @@
 			//Allocate command buffers
 			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
 			commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-			commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer 
+			commandBufferAllocateInfo.commandPool = copyCommandPool;								//Set command pool where to allocate the command buffer
 			commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
 			commandBufferAllocateInfo.commandBufferCount = swapchainImages.size( );					//Allocate one command buffer for each swapchain image
 			TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.begin( ))) Exit("Unable to allocate command buffers");
@@ -185,7 +185,7 @@
 				//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
 				VkImageMemoryBarrier readToWrite{};										//Create memory barrier object
 				readToWrite.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
-				readToWrite.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;							//Set old layout. Swapchain images are in undefined layout after being acquired 
+				readToWrite.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;							//Set old layout. Swapchain images are in undefined layout after being acquired
 				readToWrite.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set new layout. Destination optimal allows the image to be used as a transfer destination
 				readToWrite.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
 				readToWrite.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;					//Queue families unset
@@ -198,7 +198,7 @@
 				readToWrite.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;						//Set source access mask
 				readToWrite.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;					//Set destination access mask. It must be writable in order to copy the buffer in it
 				VkPipelineStageFlags srcStage, dstStage;								//Create stage flags
-				srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//The swapchain image is in color output stage		
+				srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;					//The swapchain image is in color output stage
 				dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Change it to transfer stage to copy the buffer in it
 				vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
@@ -292,9 +292,9 @@
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};							//Create command buffer allocate infos to allocate the command buffer in the command pool
 		commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;		//Set structure type
-		commandBufferAllocateInfo.commandPool = pCShader->commandPool;					//Set command pool where to allocate the command buffer 
+		commandBufferAllocateInfo.commandPool = pCShader->commandPool;					//Set command pool where to allocate the command buffer
 		commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;						//Set the command buffer as a primary level command buffer
-		commandBufferAllocateInfo.commandBufferCount = 1;										//Allocate one command buffer 
+		commandBufferAllocateInfo.commandBufferCount = 1;										//Allocate one command buffer
 		pCShader->commandBuffers.resize(1);
 		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.__lp_data)) Exit("Unable to allocate command buffers");
 
@@ -351,7 +351,7 @@
 		//TODO check file
 		CShaders_stg_t* shaderStgPtr = new CShaders_stg_t{ LuxShader_t{ }, pCells, vShaderPath };
 
-		cshaderCreateDescriptorSetLayouts(shaderStgPtr->cells, &shaderStgPtr->shader);					//Create descriptor layouts, 
+		cshaderCreateDescriptorSetLayouts(shaderStgPtr->cells, &shaderStgPtr->shader);					//Create descriptor layouts,
 		cshaderCreateDescriptorSets(shaderStgPtr->cells, &shaderStgPtr->shader);						//Descriptor pool, descriptor sets and descriptor buffers
 		cshaderCreatePipeline(shaderStgPtr->shaderPath, &shaderStgPtr->shader);							//Create the compute pipeline
 		cshaderCreateCommandBuffers(&shaderStgPtr->shader, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool

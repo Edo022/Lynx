@@ -18,8 +18,8 @@ typedef uint64 LuxCell;
 // .            |    shared    max          shift    |    dedicated    max             shift
 // isShared:    |    1b        0            << 63    |    1b           1               << 63
 // buffer:      |    11b       2 048        << 52    |    11b          2 048           << 52
-// cellIndex:   |    26b       67 108 864   << 26    |    -            -               -    
-// cellSize:    |    26b       67 108 864   -        |    32b          4 294 967 296   -    
+// cellIndex:   |    26b       67 108 864   << 26    |    -            -               -
+// cellSize:    |    26b       67 108 864   -        |    32b          4 294 967 296   -
 static constexpr LuxCell __lp_cellCode(bool vIsShared, uint32 vBuffer, uint32 vCellIndex, uint64 vCellSize) {
 	//uint64 code = vCellSize;
 	//if (vIsShared) code |= ((scast<uint64>(vCellIndex) & 0x3FFffff) << 26);

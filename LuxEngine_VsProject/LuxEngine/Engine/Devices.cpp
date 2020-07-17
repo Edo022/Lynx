@@ -21,7 +21,7 @@ class lux::String;
 		uint32 score = 0;																			//Device performance evalutation
 		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 		//TODO non superare il limite della shader
-		//pDevice->properties.limits.maxComputeSharedMemorySize; 
+		//pDevice->properties.limits.maxComputeSharedMemorySize;
 		score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
 		if(pDevice->features.geometryShader) score += 1;												//Geometry shaders needed
 		return score;

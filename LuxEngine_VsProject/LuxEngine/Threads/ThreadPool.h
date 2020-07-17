@@ -17,10 +17,10 @@
 namespace lux::thr {
 	//TODO fix queue priority
 	enum Priority : uint16 {
-		LUX_PRIORITY_MAX = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
+		LUX_PRIORITY_MAX  = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
 		LUX_PRIORITY_HIGH = 3,	//execute only after all the max priority functions have been executed
-		LUX_PRIORITY_LOW = 2,	//execute only after all the higher priority functions have been executed
-		LUX_PRIORITY_MIN = 1	//execute when there are no higher priority functions left
+		LUX_PRIORITY_LOW  = 2,	//execute only after all the higher priority functions have been executed
+		LUX_PRIORITY_MIN  = 1	//execute when there are no higher priority functions left
 	};
 	enum class ThrState : uint8 {
 		RUNNING,
@@ -35,7 +35,7 @@ namespace lux::thr {
 	};
 	//Executable Function Data
 	//This struct stores a function call with its parameters
-	//The exec() function executes the function with the saved parameters 
+	//The exec() function executes the function with the saved parameters
 	//The return value is copied in the return pointer
 	template<class FType, class ...PTypes> struct ExecFuncData : public ExecFuncDataBase {
 		void exec( ) final override {
@@ -85,7 +85,7 @@ namespace lux::thr {
 		while(true) {
 			0;													//#LLID THR0000 The thread will continue from here when it's resumed
 			if(thrStates[vThrIndex] == ThrState::RUNNING){		//If a function was assigned to the thread
-				//TODO save return							
+				//TODO save return
 				threads[vThrIndex].exec->exec( );					//Execute it and save the retun value in the return address
 				delete(threads[vThrIndex].exec);					//Free the pointer to the function data
 				thrStates.remove(vThrIndex);						//Remove the thread state from the map
@@ -132,7 +132,7 @@ namespace lux::thr {
 		}
 		for(int32 i = 0; i < threads.size( ); ++i){ thrStates.remove(i); }							//Remove all the elements of the states map (the map will remain the same size but it will have n free items)
 		std::thread mngThrv(__lp_thr_mng); 															//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
-		DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);		
+		DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);
 		mngThrv.detach( );
 	}
 
@@ -156,7 +156,7 @@ namespace lux::thr {
 		ExecFuncData<FType, PTypes...>* cntv = new ExecFuncData<FType, PTypes...>;	//Create the function data structure
 		cntv->func = vFunc;							//Set the function
 		cntv->params = std::make_tuple(vParams...);	//Set the parameters
-		
+
 		stgAddFence.startSecond();
 		stg.pushFront(cntv);						//Assign the data to the staging queue
 		stgAddFence.endSecond();

@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuxEngine", "LuxEngine_VsProject\LuxEngine_VsProject.vcxproj", "{530BC3AF-C3B2-463D-9312-B7D380C2F537}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HUD_test", "HUD_test\HUD_test.vcxproj", "{ED2913CD-834F-4939-A439-2BC9E266E704}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -33,6 +35,22 @@ Global
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release|x64.Build.0 = Release|x64
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release|x86.ActiveCfg = Release|Win32
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release|x86.Build.0 = Release|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Debug|x64.ActiveCfg = Debug|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Debug|x64.Build.0 = Debug|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Debug|x86.ActiveCfg = Debug|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Debug|x86.Build.0 = Debug|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 256 Enhanced|x64.ActiveCfg = Release|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 256 Enhanced|x64.Build.0 = Release|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 256 Enhanced|x86.ActiveCfg = Release|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 256 Enhanced|x86.Build.0 = Release|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 512 Enhanced|x64.ActiveCfg = Release|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 512 Enhanced|x64.Build.0 = Release|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 512 Enhanced|x86.ActiveCfg = Release|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 512 Enhanced|x86.Build.0 = Release|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release|x64.ActiveCfg = Release|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release|x64.Build.0 = Release|x64
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release|x86.ActiveCfg = Release|Win32
+		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

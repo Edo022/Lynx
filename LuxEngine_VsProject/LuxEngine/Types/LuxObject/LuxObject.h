@@ -48,8 +48,8 @@ namespace lux{
 			Base( ) { objectType = LUX_OBJECT_TYPE__BASE; }
 			void allocate( );
 
-			lux::String name{ "" };					//The name of the object. 
-			static uint64 lastID;					//#LLID LOS000 the last assigned ID of a LuxObject 
+			lux::String name{ "" };					//The name of the object.
+			static uint64 lastID;					//#LLID LOS000 the last assigned ID of a LuxObject
 			uint64 ID{ ++lastID };					//A unique ID that indentifies the object
 
 			bool allocated = false;					//Whether the object is allocated or not

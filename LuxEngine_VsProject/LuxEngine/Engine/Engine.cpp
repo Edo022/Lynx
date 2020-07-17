@@ -20,11 +20,12 @@
 
 
 namespace lux::_engine {
-	//Deprecated function 
+	//Deprecated function
 	//TODO remove
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";
+		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";  //lib
+		//lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv"; //No .lib
 		return system(compileShaderCommand.begin()) == 0;
 	}
 }
@@ -45,14 +46,21 @@ namespace lux{
 void Engine::run(bool vUseVSync, float vFOV) {
 	//Start init time counter and compile shaders
 	//TODO create specific function to get some extensions or all the files
-	LuxTime start = luxStartChrono();
-	shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";
-	for (const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin())) {
-		lux::String luxStrPath = lux::String(name.path().u8string().c_str()); lux::sys::dir::fixWindowsPath(luxStrPath);
-		if (lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-			if (!lux::_engine::compileShader(luxStrPath.begin())) Exit("compilation error")
-			else Normal printf("%s", luxStrPath.begin());
+	lux::sys::dir::thisDir;
+	LuxTime start = luxStartChrono( );
+	shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
+	//shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
+	try {
+		for(const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin( ))) {
+			lux::String luxStrPath = lux::String(name.path( ).u8string( ).c_str( )); lux::sys::dir::fixWindowsPath(luxStrPath);
+			if(lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
+				if(!lux::_engine::compileShader(luxStrPath.begin( ))) Exit("compilation error")
+				else Normal printf("%s", luxStrPath.begin( ));
+			}
 		}
+	}
+	catch(const std::system_error& e) {
+		std::cout << "system_error. code: " << e.code( ) << "\nmessage: " << e.what( ) << '\n';
 	}
 
 	//Init
@@ -158,7 +166,7 @@ void Engine::createInstance() {
 	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
 	createInfo.enabledExtensionCount = extensions.size();									//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
-	 
+
 	//Add validation layers if in debug mode
 	#ifndef LUX_DEBUG
 	createInfo.enabledLayerCount = 0;
@@ -258,7 +266,7 @@ uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 	for (int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
 
 	*pLength = paddedFileSize;										//Set length
-	return (uint32*)str;											//Return the buffer 
+	return (uint32*)str;											//Return the buffer
 }
 
 
@@ -275,7 +283,7 @@ VkShaderModule Engine::cshaderCreateModule(const VkDevice vDevice, uint32* pCode
 
 	VkShaderModule shaderModule;										//Create the shader module
 	TryVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
-	free(pCode);														//#LLID CSF0000 Free memory 
+	free(pCode);														//#LLID CSF0000 Free memory
 	return shaderModule;												//Return the created shader module
 }
 
@@ -319,7 +327,7 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 				case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
 				default: Exit("Failed to allocate buffer memory");
 			}
-			break; 
+			break;
 		}
 		case VK_ERROR_OUT_OF_HOST_MEMORY:		//TODO If out of host memory
 		case VK_ERROR_TOO_MANY_OBJECTS:	//TODO
@@ -340,7 +348,7 @@ void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, co
 	VkBufferCopy copyRegion{};												//Create buffer copy object
 	copyRegion.size = vSize;												//Set size of the copied region
 	//TODO add offset and automatize cells
-	//copyRegion.dstOffset 
+	//copyRegion.dstOffset
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
 	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
 	endSingleTimeCommands(commandBuffer);									//End command buffer

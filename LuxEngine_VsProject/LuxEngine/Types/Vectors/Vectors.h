@@ -39,7 +39,7 @@ static inline vec4##typen __vectorcall abs(const vec4##typen& v) { return vec4##
 																																					\
 static inline type __vectorcall length(const vec2##typen##pass v) { return scast<type>(sqrt(v.x * v.x + v.y * v.y)); }								\
 static inline type __vectorcall length(const vec3##typen##pass v) { return scast<type>(sqrt(v.x * v.x + v.y * v.y + v.z * v.z));  }					\
-static inline type __vectorcall length(const vec4##typen& v) { return scast<type>(sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w)); }			
+static inline type __vectorcall length(const vec4##typen& v) { return scast<type>(sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w)); }
 
 __lp_vec_def(int8, i8)			__lp_vec_def(uint8, u8)			__lp_vec_def(bool, b)				__lp_vec_def(char8, c8)
 __lp_vec_def(int16, i16, &)		__lp_vec_def(uint16, u16, &)										__lp_vec_def(char16, c16, &)

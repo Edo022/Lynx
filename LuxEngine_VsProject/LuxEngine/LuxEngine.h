@@ -18,7 +18,7 @@
 //Names
 	//variableName			//functionName		//macroName		//basicTypeName
 	//ComplexTypeName		//FileName
-	//CONFIG_MACRO_NAME		//ENUM_MEMBER_NAME		
+	//CONFIG_MACRO_NAME		//ENUM_MEMBER_NAME
 	//Any variable, macro or function whose name begins with "__lp_" is private, but it's in the public section for performance reasons
 	//Don't use them if you don't know what you're doing
 	//Files ending with _t only contains the structures needed by the file with the same name
@@ -40,11 +40,11 @@
 //System
 	//Supported operating systems:
 		//Windows 10
-		//TODO 
+		//TODO
 	//Supported compilers:
 		//Visual studio 2019 C++
 		//?
-	//Max (GPU + shared) memory: 
+	//Max (GPU + shared) memory:
 		//51200MB
 		//This value can be increased by using larger GPU buffers. See GPU_STATIC_BUFFER_SIZE in LuxEngine_config.h
 		//In that case, the new maximum memory will be (GPU_STATIC_BUFFER_SIZE * 1024)

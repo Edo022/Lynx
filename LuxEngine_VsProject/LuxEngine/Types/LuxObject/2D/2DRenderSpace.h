@@ -6,7 +6,7 @@
 
 
 namespace lux::obj {
-	//A 2D space that allows objects to be rendered 
+	//A 2D space that allows objects to be rendered
 	//The position of the object is relative to the size and position of the render space
 	//    It goes from 0, 0 to +1, +1
 	//    Out of view objects will be cropped if the renderSpaces does not allowOutOfViewRender
@@ -25,7 +25,7 @@ namespace lux::obj {
 			pObject->parent = this;
 			return children.add(pObject);
 		}
-		
+
 
 		void initPtrs() final override {}
 		inline int32 getCellSize() final override { return 0; }

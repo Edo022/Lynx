@@ -1,7 +1,7 @@
 ﻿
 
 #include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader_t.h"       
+#include "LuxEngine/Engine/Compute/CShader_t.h"
 
 
 	VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats) {
@@ -179,7 +179,7 @@
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
 
-			{ //#LLID CCB0000 Create copy command buffers 
+			{ //#LLID CCB0000 Create copy command buffers
 				copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
 				cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 			}

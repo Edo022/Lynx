@@ -2,7 +2,7 @@
 #include "LuxArray.h"
 
 //TODO use faster memcpy
-//TODO dont use initializer 
+//TODO dont use initializer
 
 
 //32-bit integer strlen

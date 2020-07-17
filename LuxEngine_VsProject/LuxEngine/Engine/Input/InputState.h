@@ -22,8 +22,8 @@ namespace lux::input{
 	//The sequence is saved as an array of uint16. The action and the key are in the same varibale for better performances.
 	//There is no limit to the length of a key sequence
 	//   -     |-----|Unused
-	//   1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1   
-	//   |---|Action   |---------------|Key 
+	//   1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 1
+	//   |---|Action   |---------------|Key
 	struct KeySequence {
 		//The actual sequence of keys. Each element represents a key and its action
 		//e.g. "ctrl + k" = {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS}
@@ -54,7 +54,7 @@ namespace lux::input{
 				sorted = true;															//Set it as sorted
 				for (uint16 i = 0; i < sequences.size(); ++i) {							//For every key sequence
 					for (uint16 j = i; j < sequences.size(); ++j) {							//Checking every other sequence that comes after it
-						if (j == i) continue;													//Skip useless iterations            
+						if (j == i) continue;													//Skip useless iterations
 						for (uint16 k = 0; k < min(sequences[j].sequence.size(), sequences[i].sequence.size()); ++k) {//For every key of the second sequence
 							if (sequences[j].sequence[k] == sequences[i].sequence[k]) continue;	//Search for the next index with different keys
 							if (sequences[j].sequence[k] < sequences[i].sequence[k]) {			//If the first is greater than the second
@@ -68,5 +68,5 @@ namespace lux::input{
 				}
 			}
 		}
-	}; 
+	};
 }

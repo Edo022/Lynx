@@ -97,7 +97,7 @@
 		}
 
 
-		//TODO don't recreate the command buffer array every time 
+		//TODO don't recreate the command buffer array every time
 		{ //Update render result submitting the command buffers to the compute queues
 			while(CShaders_stg.size( ) > 0) {
 				CShaders.add(CShaders_stg.front( )->shader);

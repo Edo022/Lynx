@@ -20,7 +20,7 @@
 #	include <windows.h>													//  THR | For SuspendThread() and ResumeThread()
 #	define __lp_suspend_thr(th) SuspendThread(th)						//  THR | Function to suspend a thread
 #	define __lp_resume_thr(th) ResumeThread(th)							//  THR | Function to resume a thread
-															
+
 #elif defined __linux__												//Linux
 #	include <unistd.h>													//  DIR | For getcwd()
 #	define __lp_get_cwd getcwd											//  DIR | Get current working directory
@@ -28,11 +28,11 @@
 //  TODO																//  THR | For SuspendThread() and ResumeThread() // TODO tkill
 //  TODO																//  THR | Function to suspend a thread
 //  TODO																//  THR | Function to resume a thread
-#	error use tkill - TODO - thread pool unimplemented 
+#	error use tkill - TODO - thread pool unimplemented
 
 #else																//Other operating systems
 #	error Unsupported operating system
-//#	elif defined unix || defined __unix || define __unix__	//Unix 
+//#	elif defined unix || defined __unix || define __unix__	//Unix
 #endif
 
 

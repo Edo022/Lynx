@@ -7,7 +7,7 @@ namespace lux{
 	//startFirst() and endFisrt() functions mark the start and the end of the operation from the first thread
 	//Same goes for startSecond() and endSecond()
 	//When a thread have to start an operation, waits until the other thread has finished its job
-	//In the very rare case where both threads start in the exact same moment, the second thread will wait for the first 
+	//In the very rare case where both threads start in the exact same moment, the second thread will wait for the first
 	//If you stop or suspend one of the threads, use quit() to prevent the other thread to wait forever
 	//You can use those functions multiple times in the same thread. Be sure to use an end function for every start
 	//    If you don't, you will probably cause a deadlock
