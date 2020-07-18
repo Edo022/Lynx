@@ -21,13 +21,15 @@ namespace lux::input {
 	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
-		*(rcast<lux::obj::Line2D*>(lux::engine( ).CRenderSpaces[0]->children[0]))->p0 = vec2i32{ (int32)x, (int32)y };
+		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->p0 = vec2i32{ (int32)x, (int32)y };
+		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	static void mouseAxisCallback(GLFWwindow* window, double x, double y) {
-		*(rcast<lux::obj::Line2D*>(lux::engine( ).CRenderSpaces[0]->children[0]))->wd0 -= (float32)y * 10;
-		*(rcast<lux::obj::Line2D*>(lux::engine( ).CRenderSpaces[0]->children[0]))->wd1 -= (float32)y * 10;
+		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->wd0 -= (float32)y * 10;
+		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->wd1 -= (float32)y * 10;
+		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->update();
 	}
 
 

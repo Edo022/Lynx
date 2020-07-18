@@ -31,8 +31,8 @@
 	void Engine::cleanupCompute( ) {
 		for(uint32 i = 0; i < CBuffers.size( ); ++i) {
 			if(CBuffers.isValid(i)) {
-				vkDestroyBuffer(compute.LD, CBuffers[i].buffer, null);							//Destroy the buffer
-				vkFreeMemory(compute.LD, CBuffers[i].memory, null);								//Free the memory of the buffer
+				vkDestroyBuffer(compute.LD, CBuffers[i].buffer, nullptr);							//Destroy the buffer
+				vkFreeMemory(compute.LD, CBuffers[i].memory, nullptr);								//Free the memory of the buffer
 			}
 		}
 

@@ -1,6 +1,5 @@
 #pragma once
 #pragma warning(disable : 4005) //Macro referinition
-#pragma warning(disable : 4002) //Too many arguments in luxDebug and luxRelease
 #include "LuxEngine_config.h"
 
 
@@ -30,24 +29,20 @@ template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= 
 
 //Debug
 #define TryVk(f)			if ((f) != VK_SUCCESS)
-#define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); lux::engine().running = false; exit(-1);}
+#define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); lux::getEngine().running = false; exit(-1);}
 #define printLineInfo		{Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());}
 #define luxDebug(s)			s
-#define luxRelease()		;
+#define luxRelease(s)		;
 
 #ifndef LUX_DEBUG
-#define luxDebug()			;
+#define luxDebug(s)			;
 #define luxRelease(s)		s
 #endif
 
 
 //Im lazy UwU
-#define null						nullptr
-#define forEach(container, i)		for(uint64 i = 0; i < (container).size(); i++)
 #define scast						static_cast
 #define rcast						reinterpret_cast
-#define luxPrivate(s)				private: s; public:		//One line private member in public members
-#define luxPublic(s)				public: s; private:		//One line public member in private members
 
 
 //Time
@@ -62,7 +57,6 @@ typedef std::chrono::system_clock::time_point LuxTime;
 
 
 #pragma warning(default : 4005) //Macro referinition
-#pragma warning(default : 4002) //Too many arguments in luxDebug and luxRelease
 
 
 

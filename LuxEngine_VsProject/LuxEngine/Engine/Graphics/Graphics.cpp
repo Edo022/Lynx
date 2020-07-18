@@ -160,13 +160,13 @@
 
 
 	void Engine::framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-		lux::engine().windowResizeFence.wait(0);  //from the last call of this function
+		lux::getEngine().windowResizeFence.wait(0);  //from the last call of this function
 
-		lux::engine().renderFramebufferResized = true;
-		lux::engine().windowResizeFence.set(1);
+		lux::getEngine().renderFramebufferResized = true;
+		lux::getEngine().windowResizeFence.set(1);
 
-		lux::engine().windowResizeFence.wait(2);  //from RecreateSwapchain()
-		lux::engine().windowResizeFence.set(0);
+		lux::getEngine().windowResizeFence.wait(2);  //from RecreateSwapchain()
+		lux::getEngine().windowResizeFence.set(0);
 	}
 
 

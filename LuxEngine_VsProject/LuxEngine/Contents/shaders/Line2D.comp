@@ -29,12 +29,12 @@ layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_
 
 layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
 
-layout(std430, binding = 1) buffer windowSize_{ 
+layout(std430, binding = 1) buffer windowSize_{
 	uint width;
-	uint height; 
+	uint height;
 };
 
-layout(std430, binding = 2) buffer lineData_{ 
+layout(std430, binding = 2) buffer lineData_{
 	//16
 	ivec2 p0; //0		//4
 	ivec2 p1; //8		//12
@@ -68,7 +68,7 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 
-void drawLine(){ 
+void drawLine(){
 	const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
 	const vec2 mp = {-1, 1};	//Minus-plus vector for fast vec2 operations
 
@@ -90,10 +90,10 @@ void drawLine(){
 	vec2 lRpos = p0 + dir * lDist * lFac;				//Position relative to the first point of the line	(line base point + (direction *  normalized 2D line distance * line factor))
 	vec2 s0 = sbOffset.yx * mp + lRpos;					//Fist point of the segment							(inverted base segment offset * -x + relative position)
 	vec2 s1 = sbOffset.yx * pm + lRpos;					//Second point of the segment						(inverted base segment offset * -y + relative position)
-	
+
 
 	//Draw sub segment
-	float sLen = distance(s1, s0);						//Length of the segment	
+	float sLen = distance(s1, s0);						//Length of the segment
 	for(float i = 0; i < sLen; i++){					//Set the current pixel with the interpolated color
 		vec2 ppos =											//Calculate the base position of the pixel to draw
 			(pm * (dir.x * dir.y)) * (dir *						//Invert position if x and y have different directions

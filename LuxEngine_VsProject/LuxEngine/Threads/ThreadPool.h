@@ -72,12 +72,14 @@ namespace lux::thr {
 
 	static void __lp_thr_loop(const uint32 vThrIndex) {
 		{ //Set thread name for debugging
-			String ThrNum = "\0 2 4 6 8 0";
-			luxDebug(String thrNumStrL = itoa(vThrIndex, ThrNum.begin( ), 10));
+			luxDebug(String ThrNum = "\0 2 4 6 8 0");
+			luxDebug(_itoa_s(vThrIndex, ThrNum.begin( ), ThrNum.size( ), 10));
 			luxDebug(String thrName = "\tLuxEngine  |  GTP ");
-			luxDebug(thrName += thrNumStrL);
+			luxDebug(thrName += ThrNum);
 			luxDebug(wchar_t lthn[100]);
+			#pragma warning( disable:4996 )
 			luxDebug(mbstowcs(lthn, thrName.begin( ), thrName.size( ) + 1));
+			#pragma warning( default:4996 )
 			luxDebug(SetThreadDescription(GetCurrentThread( ), lthn));
 		}
 
@@ -125,12 +127,12 @@ namespace lux::thr {
 
 	static void __lp_init_thread( ) {
 		threads.resize(G_THREAD_POOL_SIZE);															//Resize the thread pool
-		for(int32 i = 0; i < threads.size( ); ++i){													//For each thread
+		for(uint32 i = 0; i < threads.size( ); ++i){													//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);											//Initialize it with the thread loop function
 			thrStates.add(ThrState::FREE);																//Add an element to the states map
 			//Suspended in function
 		}
-		for(int32 i = 0; i < threads.size( ); ++i){ thrStates.remove(i); }							//Remove all the elements of the states map (the map will remain the same size but it will have n free items)
+		for(uint32 i = 0; i < threads.size( ); ++i){ thrStates.remove(i); }							//Remove all the elements of the states map (the map will remain the same size but it will have n free items)
 		std::thread mngThrv(__lp_thr_mng); 															//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
 		DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);
 		mngThrv.detach( );

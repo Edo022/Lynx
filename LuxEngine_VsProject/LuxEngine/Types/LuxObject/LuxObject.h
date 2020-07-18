@@ -25,17 +25,17 @@ namespace lux{
 		//    +-3000 to +-3999   = 3D object
 		//    +-4000 to +-4999   = 2DI3D object
 		enum ObjectType : int32 {
-			LUX_OBJECT_TYPE__BASE = -1,
+			LUX_OBJECT_TYPE__BASE           = -1,
 
-			LUX_OBJECT_TYPE_3D__BASE = -3000,
-			LUX_OBJECT_TYPE_2i3D__BASE = -4000,
-			LUX_OBJECT_TYPE_2D__BASE = -2000,
-			LUX_OBJECT_TYPE_1D__BASE = -1000,
+			LUX_OBJECT_TYPE_3D__BASE        = -3000,
+			LUX_OBJECT_TYPE_2i3D__BASE      = -4000,
+			LUX_OBJECT_TYPE_2D__BASE        = -2000,
+			LUX_OBJECT_TYPE_1D__BASE        = -1000,
 
 			LUX_OBJECT_TYPE_RENDER_SPACE_2D = +2000,
 			LUX_OBJECT_TYPE_RENDER_SPACE_3D = +3000,
 
-			LUX_OBJECT_TYPE_2D_LINE = +2001,
+			LUX_OBJECT_TYPE_2D_LINE         = +2001,
 		};
 
 
@@ -45,21 +45,21 @@ namespace lux{
 		//Base class for render objects
 		struct Base {
 			ObjectType objectType;
-			Base( ) { objectType = LUX_OBJECT_TYPE__BASE; }
+			Base( ) : objectType(LUX_OBJECT_TYPE__BASE) { }
 			void allocate( );
 
-			lux::String name{ "" };					//The name of the object.
-			static uint64 lastID;					//#LLID LOS000 the last assigned ID of a LuxObject
-			uint64 ID{ ++lastID };					//A unique ID that indentifies the object
+			lux::String name{ "" };							//The name of the object.
+			static uint64 lastID;							//#LLID LOS000 the last assigned ID of a LuxObject
+			uint64 ID{ ++lastID };							//A unique ID that indentifies the object
 
-			bool allocated = false;					//Whether the object is allocated or not
-			LuxCell gpuCell{ (uint64)-1 };			//GPU memory containing the small data of the object
-			void* cellPtr = nullptr;				//Pointer to the GPU memory cell
-			virtual void initPtrs( ) = 0;			//Initializes the pointers in the struct
-			inline virtual int32 getCellSize( ) = 0;//Size of the object data
-			lux::String shaderName{ "" };			//The name of the shader that renders the object
+			bool allocated = false;							//Whether the object is allocated or not
+			LuxCell gpuCell{ (uint64)-1 };					//GPU memory containing the small data of the object
+			void* cellPtr{ nullptr };						//Pointer to the GPU memory cell
+			virtual void update( ) = 0;						//Initializes the pointers in the struct
+			inline virtual int32 getCellSize( ) const = 0;	//Size of the object data
+			lux::String shaderName{ "" };					//The name of the shader that renders the object
 
-			Base* parent;							//The parent of the object
+			Base* parent{ nullptr };						//The parent of the object
 		};
 
 
@@ -103,6 +103,9 @@ namespace lux{
 			float32 zIndex{ 0 };			//Index of the object. Objects with higher zIndex will be rendered on top of others
 			float32 rot{ 0 };				//Rotation of the object
 			vec2f32 scl{ 0, 0 };			//Scale of the object
+
+			vec2i32 minLim{ 0, 0 };			//The limit of the object render. It depends on the parent of the object and its properties
+			vec2i32 maxLim{ 0, 0 };			//The limit of the object render. It depends on the parent of the object and its properties
 		};
 
 

@@ -31,7 +31,7 @@
 			descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
 			descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
 			descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;					//Use it in the compute stage
-			descriptorSetLayoutBinding.pImmutableSamplers = null;									//Default
+			descriptorSetLayoutBinding.pImmutableSamplers = nullptr;									//Default
 			descriptorSetLayoutBindings[i] = descriptorSetLayoutBinding;						//Save it in the layout binding array
 		}
 
@@ -40,13 +40,13 @@
 
 		VkDescriptorSetLayoutCreateInfo* descriptorSetLayoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));//This structure contains all the descriptors of the bindings that will be used by the shader
 		descriptorSetLayoutCreateInfo->flags = 0;														//default
-		descriptorSetLayoutCreateInfo->pNext = null;													//default
+		descriptorSetLayoutCreateInfo->pNext = nullptr;													//default
 		descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;		//Set structure type
 		descriptorSetLayoutCreateInfo->bindingCount = descriptorSetLayoutBindings.size( );				//Set number of binding points
 		descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.begin( ));				//Set descriptors layouts to bind
 
 		//Create the descriptor set layout
-		TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, null, &pCShader->descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+		TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, nullptr, &pCShader->descriptorSetLayout)) Exit("Unable to create descriptor set layout");
 		pCShader->__lp_ptrs.add((void*)descriptorSetLayoutCreateInfo);
 	}
 
@@ -77,7 +77,7 @@
 		descriptorPoolCreateInfo.pPoolSizes = &descriptorPoolSize;							//Set pool size
 		descriptorPoolCreateInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;	//The descriptor sets can be freed
 		//Create descriptor pool
-		TryVk(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, null, &pCShader->descriptorPool)) Exit("Unable to create descriptor pool");
+		TryVk(vkCreateDescriptorPool(compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool)) Exit("Unable to create descriptor pool");
 
 		//This structure contains the informations about the descriptor set
 		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {};						//Create descriptor set allocate infos
@@ -111,7 +111,7 @@
 			pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);						//Save the struct in the pointers that needs to be freed
 		}
 		//Update descriptor sets
-		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size( ), writeDescriptorSets.begin( ), 0, null);
+		vkUpdateDescriptorSets(compute.LD, writeDescriptorSets.size( ), writeDescriptorSets.begin( ), 0, nullptr);
 	}
 
 
@@ -136,15 +136,15 @@
 		pipelineLayoutCreateInfo.setLayoutCount = 1;										//Set number of set layouts
 		pipelineLayoutCreateInfo.pSetLayouts = &pCShader->descriptorSetLayout;		//Set set layout
 		//Create pipeline layout
-		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, null, &pCShader->pipelineLayout)) Exit("Unable to create pipeline layout");
+		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, nullptr, &pCShader->pipelineLayout)) Exit("Unable to create pipeline layout");
 
 		VkComputePipelineCreateInfo pipelineCreateInfo = {};							//Create pipeline create infos
 		pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;			//Set structure type
 		pipelineCreateInfo.stage = shaderStageCreateInfo;									//Set shader stage infos
 		pipelineCreateInfo.layout = pCShader->pipelineLayout;						//Set pipeline layout
 		//Create the compute pipeline
-		TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, null, &pCShader->pipeline)) Exit("Unable to create comput pipeline");
-		vkDestroyShaderModule(compute.LD, shaderModule, null);							//Destroy the shader module
+		TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pCShader->pipeline)) Exit("Unable to create comput pipeline");
+		vkDestroyShaderModule(compute.LD, shaderModule, nullptr);							//Destroy the shader module
 	}
 
 
@@ -161,7 +161,7 @@
 			commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
 			commandPoolCreateInfo.flags = 0;														//Default falgs
 			commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-			TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &copyCommandPool)) Exit("Unable to create command pool");
+			TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, nullptr, &copyCommandPool)) Exit("Unable to create command pool");
 
 			//Allocate command buffers
 			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};					//Create command buffer allocate infos to allocate the command buffer in the command pool
@@ -248,7 +248,7 @@
 			commandPoolCreateInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
 			commandPoolCreateInfo2.flags = 0;														//Default falgs
 			commandPoolCreateInfo2.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-			TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo2, null, &clearCommandPool)) Exit("Unable to create command pool");
+			TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo2, nullptr, &clearCommandPool)) Exit("Unable to create command pool");
 
 
 			//Create allocate info
@@ -287,7 +287,7 @@
 		commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
 		commandPoolCreateInfo.flags = 0;														//Default falgs
 		commandPoolCreateInfo.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, null, &pCShader->commandPool)) Exit("Unable to create command pool");
+		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, nullptr, &pCShader->commandPool)) Exit("Unable to create command pool");
 
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};							//Create command buffer allocate infos to allocate the command buffer in the command pool
@@ -309,7 +309,7 @@
 
 		//Bind pipeline and descriptor sets to the command buffer
 		vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pCShader->pipeline);
-		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pCShader->pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, null);
+		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pCShader->pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
 
 
 		//Dispatch the compute shader to execute it with the specified workgroups and descriptors
@@ -376,16 +376,16 @@
 
 		//Clear descriptors sets, descriptor pool and descriptor layout
 		vkFreeDescriptorSets(compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
-		vkDestroyDescriptorPool(compute.LD, CShaders[vCShader].descriptorPool, null);
-		vkDestroyDescriptorSetLayout(compute.LD, CShaders[vCShader].descriptorSetLayout, null);
+		vkDestroyDescriptorPool(compute.LD, CShaders[vCShader].descriptorPool, nullptr);
+		vkDestroyDescriptorSetLayout(compute.LD, CShaders[vCShader].descriptorSetLayout, nullptr);
 
 		//Clear command buffers and command pool
 		vkFreeCommandBuffers(compute.LD, CShaders[vCShader].commandPool, 1, CShaders[vCShader].commandBuffers.begin( ));
-		vkDestroyCommandPool(compute.LD, CShaders[vCShader].commandPool, null);
+		vkDestroyCommandPool(compute.LD, CShaders[vCShader].commandPool, nullptr);
 
 		//Clear compute pipeline and pipeline layout
-		vkDestroyPipelineLayout(compute.LD, CShaders[vCShader].pipelineLayout, null);
-		vkDestroyPipeline(compute.LD, CShaders[vCShader].pipeline, null);
+		vkDestroyPipelineLayout(compute.LD, CShaders[vCShader].pipelineLayout, nullptr);
+		vkDestroyPipeline(compute.LD, CShaders[vCShader].pipeline, nullptr);
 
 		//Free all the useless pointers
 		for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);

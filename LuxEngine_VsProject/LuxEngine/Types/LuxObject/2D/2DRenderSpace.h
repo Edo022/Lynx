@@ -27,8 +27,8 @@ namespace lux::obj {
 		}
 
 
-		void initPtrs() final override {}
-		inline int32 getCellSize() final override { return 0; }
+		void update() final override {}
+		inline int32 getCellSize() const final override { return 0; }
 	};
 }
 //TODO add 3d render space

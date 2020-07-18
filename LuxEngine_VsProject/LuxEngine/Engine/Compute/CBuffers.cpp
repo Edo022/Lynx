@@ -69,8 +69,8 @@
 			//TODO choose device
 			if(CBuffers[buffer].bufferClass == LUX_BUFFER_CLASS_LRG) {
 				destroyBuffer:
-				vkDestroyBuffer(graphics.LD, CBuffers[buffer].buffer, null);
-				vkFreeMemory(graphics.LD, CBuffers[buffer].memory, null);
+				vkDestroyBuffer(graphics.LD, CBuffers[buffer].buffer, nullptr);
+				vkFreeMemory(graphics.LD, CBuffers[buffer].memory, nullptr);
 				CBuffers.remove(buffer, false);
 				return true;
 			}

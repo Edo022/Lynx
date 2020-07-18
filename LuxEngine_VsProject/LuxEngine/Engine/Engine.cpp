@@ -32,7 +32,7 @@ namespace lux::_engine {
 
 namespace lux{
 	//This function returns a reference of the engine object
-	Engine& engine( ){
+	inline Engine& getEngine( ){
 		static Engine engine_;
 		return engine_;
 	}
@@ -252,11 +252,12 @@ void Engine::initWindow() {
 //*   pFilePath: a pointer to a char array containing the path to the compiled shader file
 //*   returns a pointer to the array where the code is saved
 uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
-	FILE* fp = fopen(pFilePath, "rb");								//Open the file
+	FILE* fp;
+	fopen_s(&fp, pFilePath, "rb");									//Open the file
 	if (fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
 
 	_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
-	int32 filesize = _ftelli64(fp);									//And get the file size
+	int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file size
 	_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
 	int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded size
 

@@ -170,9 +170,9 @@
 
 			{ //destroy copy command buffers
 				vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.size( ), copyCommandBuffers.begin( ));
-				vkDestroyCommandPool(compute.LD, copyCommandPool, null);
+				vkDestroyCommandPool(compute.LD, copyCommandPool, nullptr);
 				vkFreeCommandBuffers(compute.LD, clearCommandPool, 1, &clearCommandBuffer);
-				vkDestroyCommandPool(compute.LD, clearCommandPool, null);
+				vkDestroyCommandPool(compute.LD, clearCommandPool, nullptr);
 			}
 
 			uint32* pwindowSize = scast<uint32*>(gpuCellMap(gpuCellWindowSize));

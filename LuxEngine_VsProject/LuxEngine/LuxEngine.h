@@ -59,7 +59,7 @@
 //Initializes the Engine
 //Objects will automatically call this function when created
 //    They need the engine to be initialized to allocate their data
-static void LuxInit(bool useVSync = true) { lux::engine( ).init(useVSync); }
+static void LuxInit(bool useVSync = true) { lux::getEngine( ).init(useVSync); }
 
 
 

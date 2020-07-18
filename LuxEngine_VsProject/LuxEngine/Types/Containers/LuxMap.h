@@ -118,9 +118,9 @@ namespace lux {
 		//Returns a static array containing the IDs of the elements, in the same order as they were in the input
 		Array<iter> __vectorcall add(const std::vector<type>* pVector) {
 			Array<iter> IDs;
-			IDs.resize(pVector->size());								//Set the number of IDs
-			forEach(*pVector, i) IDs[i] = add((*pVector)[i]);			//Add every element to the map and save its ID
-			return IDs;													//Return the IDs
+			IDs.resize(pVector->size());												//Set the number of IDs
+			for(int32 i = 0; i < pVector->size( ); i++) IDs[i] = add((*pVector)[i]);	//Add every element to the map and save its ID
+			return IDs;																	//Return the IDs
 		}
 
 
@@ -130,9 +130,9 @@ namespace lux {
 		//Returns a static array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
 		Array<iter> __vectorcall add(const Map<type, iter>* vContainer) {
 			Array<iter> IDs;
-			IDs.resize(vContainer->size());								//Set the number of IDs
-			forEach(*vContainer, i) {									//For every element of the input map
-				if (vContainer->isValid(i)) IDs[i] = add((*vContainer)[i]);	//If it's valid, add it to the map and save its ID
+			IDs.resize(vContainer->size( ));								//Set the number of IDs
+			for(iter i = 0; i < vContainer->size( ); i++){				//For every element of the input map
+				if(vContainer->isValid(i)) IDs[i] = add((*vContainer)[i]);	//If it's valid, add it to the map and save its ID
 				else IDs[i] = -1;											//If not, save -1 as ID
 			}
 			return IDs;													//Return the IDs
@@ -148,11 +148,11 @@ namespace lux {
 		signed char __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
 			signed char r = status(vIndex);
 
-			if (r != 0) return r;								//If the index is not valid, return the error code
+			if(r != 0) return r;								//If the index is not valid, return the error code
 			else {												//If it is,
 				__lp_Tracker(vIndex) = -1;							//Set the index as free
-				if (vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary
-				if (head == scast<iter>(-1)) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
+				if(vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary
+				if(head == scast<iter>(-1)) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
 				else tail = __lp_Tracker(tail) = vIndex;			//If it has free elements, set the new tail and update the last free index
 				__lp_freeNum++;										//Update the number of free elements
 			}
@@ -184,10 +184,10 @@ namespace lux {
 
 		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
 		inline signed char __vectorcall status(const iter vIndex) const {
-			if (vIndex == (iter)-1)return -1;								//Invalid index
-			else if (vIndex >= __lp_dynSize) return -2;						//Index out of range
-			else if (__lp_Tracker(vIndex) == scast<iter>(-1)) return 0;	//Ok
-			else if (__lp_Tracker(vIndex) >= 0)return 1;					//Invalid element
+			if(vIndex == (iter)-1)return -1;								//Invalid index
+			else if(vIndex >= __lp_dynSize) return -2;						//Index out of range
+			else if(__lp_Tracker(vIndex) == scast<iter>(-1)) return 0;	//Ok
+			else if(__lp_Tracker(vIndex) >= 0)return 1;					//Invalid element
 			else return -1;													//Unknown error
 		}
 
@@ -213,11 +213,11 @@ namespace lux {
 
 		//Returns a pointer to a new map that contains all the elements in the chunks, without the invalid ones
 		//This operation can be really slow, try to avoid using it
-		type* data() const {
-			type* arr = (type*)malloc(sizeof(type) * usedSize());
+		type* data( ) const {
+			type* arr = (type*)malloc(sizeof(type) * usedSize( ));
 			iter new_i = 0;
-			for (iter i = 0; i < usedSize(); ++i) {
-				if (isValid(i)) {
+			for(iter i = 0; i < usedSize( ); ++i) {
+				if(isValid(i)) {
 					arr[new_i] = __lp_Data(i);
 					++new_i;
 				}
@@ -235,11 +235,11 @@ namespace lux {
 
 
 		//Returns the number of elements in the map, including the free ones
-		inline iter const size() const { return __lp_dynSize; }
+		inline iter const size( ) const { return __lp_dynSize; }
 		//Returns the number of used elements
-		inline iter __vectorcall usedSize() const { return __lp_dynSize - __lp_freeNum; }
+		inline iter __vectorcall usedSize( ) const { return __lp_dynSize - __lp_freeNum; }
 		//Returns the number of free elements
-		inline iter freeSize() const { return __lp_freeNum; }
+		inline iter freeSize( ) const { return __lp_freeNum; }
 	};
 }
 #undef __lp_Data
