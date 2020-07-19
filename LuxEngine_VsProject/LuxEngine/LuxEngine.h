@@ -46,8 +46,8 @@
 		//?
 	//Max (GPU + shared) memory:
 		//51200MB
-		//This value can be increased by using larger GPU buffers. See GPU_STATIC_BUFFER_SIZE in LuxEngine_config.h
-		//In that case, the new maximum memory will be (GPU_STATIC_BUFFER_SIZE * 1024)
+		//This value can be increased by using larger GPU buffers. See LUX_CNF_GPU_STATIC_BUFFER_SIZE in LuxEngine_config.h
+		//In that case, the new maximum memory will be (LUX_CNF_GPU_STATIC_BUFFER_SIZE * 1024)
 
 
 

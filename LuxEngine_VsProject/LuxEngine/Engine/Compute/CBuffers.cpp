@@ -47,11 +47,11 @@
 				if(CBuffers.isValid(i) &&																	//It can be used
 					CBuffers[i].cpuAccessible == vCpuAccessible &&											//It's of the same memory type,
 					CBuffers[i].bufferClass == bufferClass &&												//If it's of the right class,
-					CBuffers[i].cells.usedSize( ) < GPU_STATIC_BUFFER_SIZE / CBuffers[i].bufferClass) {		//And it has free cells,
+					CBuffers[i].cells.usedSize( ) < LUX_CNF_GPU_STATIC_BUFFER_SIZE / CBuffers[i].bufferClass) {		//And it has free cells,
 					buffer = i;																					//Save its index
 				}
 			}
-			if(buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible);			//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
+			if(buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(LUX_CNF_GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible);			//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
 			return __lp_cellCode(true, buffer, CBuffers[buffer].cells.add(1), bufferClass);										//Create a new cell in the buffer and return its code
 		}
 		else return __lp_cellCode(false, gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize);	//If it's a custom size buffer, create a new buffer and return its code

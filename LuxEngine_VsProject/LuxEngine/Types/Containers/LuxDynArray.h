@@ -14,7 +14,7 @@ namespace lux {
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize{ vChunkSize } { Array<type, iter>::Array(); }
+		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize(vChunkSize) { Array<type, iter>::Array( ); }
 
 
 
@@ -45,13 +45,13 @@ namespace lux {
 		}
 
 		//Returns a reference to the last element of the array (easy way to array[array.size() - 1])
-		inline type& __vectorcall last() { return (*this)[this->__lp_size - 1]; }
+		inline type& __vectorcall last( ) { return (*this)[this->__lp_size - 1]; }
 		//Returns the size of the array
-		inline iter __vectorcall size() const override { return this->__lp_size; }
+		inline iter __vectorcall size( ) const override { return this->__lp_size; }
 		//Returns true if the array is empty, false if not
-		inline bool __vectorcall empty() const override { return this->__lp_size == 0; }
+		inline bool __vectorcall empty( ) const override { return this->__lp_size == 0; }
 
-		inline type* __vectorcall begin() const override { return &this->__lp_data[0]; }
-		inline type* __vectorcall end() const override { return &this->__lp_data[this->__lp_size - 1]; }
+		inline type* __vectorcall begin( ) const override { return &this->__lp_data[0]; }
+		inline type* __vectorcall end( ) const override { return &this->__lp_data[this->__lp_size - 1]; }
 	};
 }

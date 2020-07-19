@@ -72,15 +72,15 @@ namespace lux::thr {
 
 	static void __lp_thr_loop(const uint32 vThrIndex) {
 		{ //Set thread name for debugging
-			luxDebug(String ThrNum = "\0 2 4 6 8 0");
-			luxDebug(_itoa_s(vThrIndex, ThrNum.begin( ), ThrNum.size( ), 10));
-			luxDebug(String thrName = "\tLuxEngine  |  GTP ");
-			luxDebug(thrName += ThrNum);
-			luxDebug(wchar_t lthn[100]);
 			#pragma warning( disable:4996 )
+			luxDebug(String ThrNum = "\0 2 4 6 8 0");
+			luxDebug(String thrNumStrL = _itoa(vThrIndex, ThrNum.begin( ), 10));
+			luxDebug(String thrName = "\tLuxEngine  |  GTP ");
+			luxDebug(thrName += thrNumStrL);
+			luxDebug(wchar_t lthn[100]);
 			luxDebug(mbstowcs(lthn, thrName.begin( ), thrName.size( ) + 1));
-			#pragma warning( default:4996 )
 			luxDebug(SetThreadDescription(GetCurrentThread( ), lthn));
+			#pragma warning( default:4996 )
 		}
 
 		SuspendThread(GetCurrentThread());
@@ -126,7 +126,7 @@ namespace lux::thr {
 
 
 	static void __lp_init_thread( ) {
-		threads.resize(G_THREAD_POOL_SIZE);															//Resize the thread pool
+		threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);															//Resize the thread pool
 		for(uint32 i = 0; i < threads.size( ); ++i){													//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);											//Initialize it with the thread loop function
 			thrStates.add(ThrState::FREE);																//Add an element to the states map
@@ -150,7 +150,7 @@ namespace lux::thr {
 	//*   vPriority | the priority of the function (LUX_PRIORITY_MAX, LUX_PRIORITY_HIGH...)
 	//*   pReturn   | a pointer to the variable where to store the function return value. Use nullptr for void functions
 	//*   vParams   | the parameters of the function call. Their types must be the same as the function declaration
-	//The maximum number of functions executed at the "same time" is defined by G_THREAD_POOL_SIZE (see LuxEngine_config.h)
+	//The maximum number of functions executed at the "same time" is defined by LUX_CNF_GLOBAL_THREAD_POOL_SIZE (see LuxEngine_config.h)
 	//The actual number of running threads is limited to the number of physical threads in the CPU
 	//Use pointers or references to improve performance. The parameters have to be copied several times during the process
 	template<class FType, class... PTypes> static void sendToExecQueue(FType vFunc, const Priority vPriority, PTypes ...vParams) {

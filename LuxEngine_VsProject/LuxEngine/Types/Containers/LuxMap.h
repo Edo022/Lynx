@@ -51,7 +51,7 @@ namespace lux {
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
-			chunkSize{ vChunkSize }, maxSize{ vMaxSize }, head{ (iter)-1 }, tail{ (iter)-1 }, chunksDynNum{ (iter)0 }, __lp_dynSize{ (iter)0 }, __lp_freeNum{ (iter)0 } {
+			chunkSize(vChunkSize), maxSize(vMaxSize), head((iter)-1), tail((iter)-1), chunksDynNum((iter)0), __lp_dynSize((iter)0), __lp_freeNum((iter)0) {
 			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data
 			__lp_tracker = (iter**)malloc(sizeof(iter*) * (maxSize / chunkSize));	//Allocate tracker
 		}
@@ -61,7 +61,7 @@ namespace lux {
 		//*   in: a pointer to the container object
 		template<class elmType>
 		Map(const ContainerBase<elmType, iter>* in) {
-			for (int i = 0; i < in->end() - in->begin(); ++i) add((elmType) * (in->begin() + i));
+			for(int i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
 		}
 
 
@@ -76,7 +76,7 @@ namespace lux {
 		//Adds an element at the end of the map, allocating a new chunk if needed
 		//Returns the ID of the element
 		iter __vectorcall append(const type& vData) {
-			if (__lp_dynSize + 1 > chunksDynNum * chunkSize) {									//If the chunk is full
+			if(__lp_dynSize + 1 > chunksDynNum * chunkSize) {									//If the chunk is full
 				__lp_data[chunksDynNum] = (type*)malloc(sizeof(type) * chunkSize);					//Allocate a new data chunk
 				__lp_tracker[chunksDynNum] = scast<iter*>(malloc(sizeof(iter*) * chunkSize));		//Allocate a new tracker chunk
 				chunksDynNum++;																		//Update the number of chunks
@@ -95,9 +95,9 @@ namespace lux {
 		//Returns the ID of the element
 		iter __vectorcall add(const type& vData) {
 			iter head2 = head;
-			if (head == (iter)-1) return append(vData);		//If it has no free elements, append it
+			if(head == (iter)-1) return append(vData);		//If it has no free elements, append it
 			else {
-				if (head == tail) {								//If it has only one free element
+				if(head == tail) {								//If it has only one free element
 					__lp_Data(head2) = vData;						//Replace it
 					head = tail = __lp_Tracker(head2) = -1;			//And reset head and tail
 				}
@@ -118,7 +118,7 @@ namespace lux {
 		//Returns a static array containing the IDs of the elements, in the same order as they were in the input
 		Array<iter> __vectorcall add(const std::vector<type>* pVector) {
 			Array<iter> IDs;
-			IDs.resize(pVector->size());												//Set the number of IDs
+			IDs.resize(pVector->size( ));												//Set the number of IDs
 			for(int32 i = 0; i < pVector->size( ); i++) IDs[i] = add((*pVector)[i]);	//Add every element to the map and save its ID
 			return IDs;																	//Return the IDs
 		}
