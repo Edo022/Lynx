@@ -14,27 +14,40 @@ struct vec2_t {
 	//Constructors
 	inline vec2_t() {}
 	inline vec2_t(const t& _x, const t& _y) { x = _x; y = _y; }
+	template<class ta, class tb> inline vec2_t(const ta& _x, const tb& _y) { x = (t)_x; y = (t)_y; }
+
 
 	//Assignment operators and constructors
-	inline vec2_t(const vec2_t<t>& v) { *this = v; }
-	inline vec2_t(const t& v) { *this = v; }
+	/**/			   inline vec2_t(const vec2_t<t>& v) { *this = v; }
+	/**/			   inline vec2_t(const t& v) { *this = v; }
+	/**/			   inline void __vectorcall operator = (const vec2_t<t>& v) { x = v.x; y = v.y; }
+	/**/			   inline void __vectorcall operator = (const t& n) { x = y = n; }
 	template<class vt> inline vec2_t(const vec2_t<vt>& v) { *this = v;}
 	template<class vt> inline vec2_t(const vt& v) { *this = v; }
-	inline void __vectorcall operator = (const vec2_t<t>& v) { x = v.x; y = v.y; }
-	inline void __vectorcall operator = (const t& n) { x = y = n; }
 	template<class vt> inline void __vectorcall operator = (const vec2_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); }
 	template<class vt> inline void __vectorcall operator = (const vt& n) { x = y = (t)n; }
 
-	//Add, subtract, multiply and divide operators
-	template<class vt> inline vec2_t<t> __vectorcall operator + (const vec2_t<vt>& v) const { return vec2_t<t>{ scast<t>(x + v.x), scast<t>(y + v.y) }; }
-	template<class vt> inline vec2_t<t> __vectorcall operator * (const vec2_t<vt>& v) const { return vec2_t<t>{ scast<t>(x * v.x), scast<t>(y * v.y) }; }
-	template<class vt> inline vec2_t<t> __vectorcall operator - (const vec2_t<vt>& v) const { return vec2_t<t>{ scast<t>(x - v.x), scast<t>(y - v.y) }; }
-	template<class vt> inline vec2_t<t> __vectorcall operator / (const vec2_t<vt>& v) const { return vec2_t<t>{ scast<t>(x / v.x), scast<t>(y / v.y) }; }
-	template<class vt> inline void __vectorcall operator += (const vec2_t<t>& v) { init(x + v.x, y + v.y); }
-	template<class vt> inline void __vectorcall operator *= (const vec2_t<t>& v) { init(x * v.x, y * v.y); }
-	template<class vt> inline void __vectorcall operator -= (const vec2_t<t>& v) { init(x - v.x, y - v.y); }
-	template<class vt> inline void __vectorcall operator /= (const vec2_t<t>& v) { init(x / v.x, y / v.y); }
 
+	//Add, subtract, multiply and divide operators with vectors
+	template<class vt> inline vec2_t<t> __vectorcall operator + (const vec2_t<vt>& v) const { return { x + v.x, y + v.y }; }
+	template<class vt> inline vec2_t<t> __vectorcall operator * (const vec2_t<vt>& v) const { return { x * v.x, y * v.y }; }
+	template<class vt> inline vec2_t<t> __vectorcall operator - (const vec2_t<vt>& v) const { return { x - v.x, y - v.y }; }
+	template<class vt> inline vec2_t<t> __vectorcall operator / (const vec2_t<vt>& v) const { return { x / v.x, y / v.y }; }
+	template<class vt> inline void __vectorcall operator += (const vec2_t<vt>& v) { x += v.x; y += v.y; }
+	template<class vt> inline void __vectorcall operator *= (const vec2_t<vt>& v) { x *= v.x; y *= v.y; }
+	template<class vt> inline void __vectorcall operator -= (const vec2_t<vt>& v) { x -= v.x; y -= v.y; }
+	template<class vt> inline void __vectorcall operator /= (const vec2_t<vt>& v) { x /= v.x; y /= v.y; }
+
+
+	//Add, subtract, multiply and divide operators with values
+	template<class vt> inline vec2_t<t> __vectorcall operator + (const vt& n) const { return { x + n, y + n }; }
+	template<class vt> inline vec2_t<t> __vectorcall operator * (const vt& n) const { return { x * n, y * n }; }
+	template<class vt> inline vec2_t<t> __vectorcall operator - (const vt& n) const { return { x - n, y - n }; }
+	template<class vt> inline vec2_t<t> __vectorcall operator / (const vt& n) const { return { x / n, y / n }; }
+	template<class vt> inline void __vectorcall operator += (const vt& n) { x += n; y += n; }
+	template<class vt> inline void __vectorcall operator *= (const vt& n) { x *= n; y *= n; }
+	template<class vt> inline void __vectorcall operator -= (const vt& n) { x -= n; y -= n; }
+	template<class vt> inline void __vectorcall operator /= (const vt& n) { x /= n; y /= n; }
 
 
 private:

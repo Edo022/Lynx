@@ -22,10 +22,9 @@ namespace lux::obj {
 		void update() final override {
 			//if(parent != nullptr) parent->setChildLimits(childIndex);
 			vec2i32 h = { 1920, 1080/2 };
-
-			vec2f32 hh = dist2D(minLim, maxLim);
-			vec2f32 hh1 = (p0 - h);
-			vec2f32 hh2 = (p0 - h) * dist2D(minLim, maxLim);
+			//vec2f32 hh = dist2D(minLim, maxLim);
+			//vec2f32 hh1 = (p0 - h);
+			//vec2i32 hh2 = (p0 - h) * dist2D(minLim, maxLim);
 			*(vec2i32*)((int8*)cellPtr + 0) = (p0 - h) * dist2D(minLim, maxLim) + h;		//    8    |    0  - 7     |    0 +
 			*(vec2i32*)((int8*)cellPtr + 8) = (p1 - h) * dist2D(minLim, maxLim) + h;		//    8    |    8  - 15    |    0
 			*(vec4f32*)((int8*)cellPtr + 16) = col0;	//    16   |    16 - 31    |    1 +
