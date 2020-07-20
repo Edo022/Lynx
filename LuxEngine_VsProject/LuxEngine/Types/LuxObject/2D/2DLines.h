@@ -21,12 +21,14 @@ namespace lux::obj {
 		//This function should be called only after the object is begin spawned
 		void update() final override {
 			//if(parent != nullptr) parent->setChildLimits(childIndex);
-			vec2i32 h = { 1920, 1080/2 };
-			//vec2f32 hh = dist2D(minLim, maxLim);
-			//vec2f32 hh1 = (p0 - h);
-			//vec2i32 hh2 = (p0 - h) * dist2D(minLim, maxLim);
-			*(vec2i32*)((int8*)cellPtr + 0) = (p0 - h) * dist2D(minLim, maxLim) + h;		//    8    |    0  - 7     |    0 +
-			*(vec2i32*)((int8*)cellPtr + 8) = (p1 - h) * dist2D(minLim, maxLim) + h;		//    8    |    8  - 15    |    0
+			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
+			vec2i32 pMaxLim = vec2i32(1920 * 2, 1080) * maxLim;
+
+			vec2f32 hh = dist2D(minLim, maxLim);
+			vec2f32 hh1 = (p0 - pMinLim);
+			vec2i32 hh2 = (p0 - pMinLim) * dist2D(minLim, maxLim);
+			*(vec2i32*)((int8*)cellPtr + 0) = (p0 - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    0  - 7     |    0 +
+			*(vec2i32*)((int8*)cellPtr + 8) = (p1 - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    8  - 15    |    0
 			*(vec4f32*)((int8*)cellPtr + 16) = col0;	//    16   |    16 - 31    |    1 +
 			*(vec4f32*)((int8*)cellPtr + 32) = col1;	//    16   |    32 - 47    |    2 +
 			*(float32*)((int8*)cellPtr + 48) = wd0;		//    4    |    48 - 51    |    3 +

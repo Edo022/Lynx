@@ -1,7 +1,14 @@
 #pragma once
 
-template<class t>
-struct vec3_t {
+
+
+//A tridimensional vector
+//Supports
+//   +, *, -, /, =, ==, *=, +=, -=, /= operations with all types of vectors or values
+//   dist, dist3D, absv, signv, length functions with vectors of the same type
+//== operator do not perform any type cast
+
+template<class t> struct vec3_t {
 	t x = 0;
 	t y = 0;
 	t z = 0;
@@ -13,7 +20,7 @@ struct vec3_t {
 	template<class ta, class tb, class tc> inline vec3_t(const ta& _x, const tb& _y, const tc& _z) { x = (t)_x; y = (t)_y; z = (t)_z; }
 
 
-	//Assignment operators and constructors
+	//Assignment operators, constructors and compare operators
 	/**/			   inline vec3_t(const vec3_t<t>& v) { *this = v; }
 	/**/			   inline vec3_t(const t& v) { *this = v; }
 	/**/			   inline void __vectorcall operator = (const vec3_t<t>& v) { x = v.x; y = v.y; z = v.z; }
@@ -22,6 +29,8 @@ struct vec3_t {
 	template<class vt> inline vec3_t(const vt& v) { *this = v; }
 	template<class vt> inline void __vectorcall operator = (const vec3_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); z = (t)(v.z); }
 	template<class vt> inline void __vectorcall operator = (const vt& n) { x = y = z = (t)n; }
+	template<class vt> inline void __vectorcall operator == (const vec3_t<vt>& v) { return x == v.x && y == v.y && z == v.z; }
+	template<class vt> inline void __vectorcall operator == (const vt& n) { return x == n && y == n && y == n; }
 
 
 	//Add, subtract, multiply and divide operators with vectors

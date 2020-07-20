@@ -61,7 +61,7 @@ namespace lux{
 			virtual void update( ) = 0;						//Updates the object data in the shared memory				| object type				| -
 																//														|							|
 			//Sets the render limits of a child object																	| object type				| -
-			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
+			virtual bool setChildLimits(const int32 vChildIndex) const = 0;
 		};
 
 
@@ -121,12 +121,14 @@ namespace lux{
 			//TODO add absolute pixel position and scale
 			Base2D* parent{ nullptr };						//Parent of the object
 			lux::Map<Base2D*, uint32> children;				//Children of the object
-			virtual void setChildLimits(const uint32 vChildIndex) const override {
+			virtual bool setChildLimits(const int32 vChildIndex) const override {
+				if(vChildIndex >= children.size( )) return false;
 				children[vChildIndex]->minLim = minLim;
 				children[vChildIndex]->maxLim = maxLim;
+				return true;
 			}
 			vec2f32 minLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
-			vec2f32 maxLim{ 1, 0.5 };							//The limit of the object render. It depends on the parent of the object and its properties
+			vec2f32 maxLim{ 1, 1 };							//The limit of the object render. It depends on the parent of the object and its properties
 		};
 
 

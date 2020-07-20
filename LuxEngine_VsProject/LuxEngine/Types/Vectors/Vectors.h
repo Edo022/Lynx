@@ -35,9 +35,9 @@ __lp_vec_def(int64, i64)		__lp_vec_def(uint64, u64)	__lp_vec_def(float64, f64)
 //TODO use intrinsic functions whenever possible
 //TODO explicit custom type convertion
 //For some reason Intellisense throws random errors in this line. You can ignore them
-template<class t> static inline constexpr auto	__vectorcall distance(const vec2_t<t>& a, const vec2_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }										  //Returns the Euclidean distance between 2 vectors
-template<class t> static inline constexpr auto	__vectorcall distance(const vec3_t<t>& a, const vec3_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }					  //Returns the Euclidean distance between 2 vectors
-template<class t> static inline constexpr auto	__vectorcall distance(const vec4_t<t>& a, const vec4_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2)); } //Returns the Euclidean distance between 2 vectors
+template<class t> static inline constexpr auto	__vectorcall dist(const vec2_t<t>& a, const vec2_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }										  //Returns the Euclidean distance between 2 vectors
+template<class t> static inline constexpr auto	__vectorcall dist(const vec3_t<t>& a, const vec3_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }					  //Returns the Euclidean distance between 2 vectors
+template<class t> static inline constexpr auto	__vectorcall dist(const vec4_t<t>& a, const vec4_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2)); } //Returns the Euclidean distance between 2 vectors
 
 template<class t> static inline constexpr vec2_t<t> __vectorcall signvNz(const vec2_t<t>& v) { return { signNz(v.x), signNz(v.y) }; }							//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
 template<class t> static inline constexpr vec3_t<t> __vectorcall signvNz(const vec3_t<t>& v) { return { signNz(v.x), signNz(v.y), signNz(v.z) }; }				//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)

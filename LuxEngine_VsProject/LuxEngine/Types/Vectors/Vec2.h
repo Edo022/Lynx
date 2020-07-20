@@ -5,8 +5,14 @@ template<class t> struct vec3_t;
 template<class t> struct vec4_t;
 
 
-template<class t>
-struct vec2_t {
+
+//A bidimensional vector
+//Supports
+//   +, *, -, /, =, ==, *=, +=, -=, /= operations with vectors or values of every type
+//   dist, dist2D, absv, signv, length functions with vectors of the same type
+//   initialization and copy constructors with vectors or values of every type
+//== operator do not perform any type cast
+template<class t> struct vec2_t {
 	t x = 0;
 	t y = 0;
 
@@ -17,7 +23,7 @@ struct vec2_t {
 	template<class ta, class tb> inline vec2_t(const ta& _x, const tb& _y) { x = (t)_x; y = (t)_y; }
 
 
-	//Assignment operators and constructors
+	//Assignment operators, constructors and compare operators
 	/**/			   inline vec2_t(const vec2_t<t>& v) { *this = v; }
 	/**/			   inline vec2_t(const t& v) { *this = v; }
 	/**/			   inline void __vectorcall operator = (const vec2_t<t>& v) { x = v.x; y = v.y; }
@@ -26,6 +32,8 @@ struct vec2_t {
 	template<class vt> inline vec2_t(const vt& v) { *this = v; }
 	template<class vt> inline void __vectorcall operator = (const vec2_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); }
 	template<class vt> inline void __vectorcall operator = (const vt& n) { x = y = (t)n; }
+	template<class vt> inline void __vectorcall operator == (const vec2_t<vt>& v) { return x == v.x && y == v.y; }
+	template<class vt> inline void __vectorcall operator == (const vt& n) { return x == n && y == n; }
 
 
 	//Add, subtract, multiply and divide operators with vectors

@@ -4,8 +4,32 @@
 
 
 
-
 namespace lux::obj {
+	enum class AlignmentType : int8{
+		Horizontal,
+		Vertical,
+		FixedHorizontal,
+		FixedVertical,
+		FixedGrid,
+		Free
+	};
+
+	enum class FlowType : int8{
+		LeftToRight,
+		RightToLeft,
+		TopToBottom,
+		BottomToTop
+	};
+
+	enum class AlignmentBase : int8{
+		Top,
+		Bottom,
+		Right,
+		Left,
+		Center
+	};
+
+
 	//A 2D space that allows objects to be rendered
 	//The position of the object is relative to the size and position of the render space
 	//    It goes from 0, 0 (beginning of the render space) to +1, +1 (end of the render space)
@@ -15,7 +39,19 @@ namespace lux::obj {
 	//Render spaces with no parent will be rendered directly in the window
 	struct RenderSpace2D : public Base2D {
 		static const ObjectType objectType = LUX_OBJECT_TYPE_RENDER_SPACE_2D;
-		bool allowOutOfViewRender = false;
+		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
+
+		AlignmentType alignment;	//Type of children alignmen
+		uint32 xNum;				//General value for horizontally aligned children number
+		uint32 yNum;				//General value for vertically aligned children number
+		FlowType xFlow;				//General value for children horizontal direction
+		FlowType yFlow;				//General value for children vertical direction
+
+
+		RenderSpace2D(AlignmentType alignment, uint32 xNum = 2, uint32 yNum = 2, FlowType xFlow = FlowType::LeftToRight, FlowType yFlow = FlowType::TopToBottom) :
+			alignment(alignment), xNum(xNum), yNum(yNum), xFlow(xFlow), yFlow(yFlow) {
+		}
+
 
 
 		//Adds an object to the render space children
@@ -28,11 +64,37 @@ namespace lux::obj {
 			return pObject->childIndex;
 		}
 
-		//Updates the render limit of the child with a specific index
+		//Updates the render limit of the child with at specific index
 		//It depends on the render space properties and children alignment
-		void setChildLimits(const uint32 vChildIndex) const final override {
-			children[vChildIndex]->minLim = minLim;
-			children[vChildIndex]->maxLim = maxLim;
+		//A negative index is equal to the n-th last element (using index -5 with a render space with 8 children is the same as using index 2)
+		//Returns false if the index is invalid
+		bool setChildLimits(const int32 vChildIndex) const final override {
+			if(vChildIndex >= children.size( )) return false;
+			switch(alignment){
+				case AlignmentType::FixedHorizontal:
+				{
+					auto xElmLen = abs(minLim.x - maxLim.x) / xNum;
+					children[vChildIndex]->minLim = { minLim.x + (xElmLen * vChildIndex), minLim.y };
+					children[vChildIndex]->maxLim = { minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y };
+					break;
+				}
+				case AlignmentType::FixedVertical:
+				{
+					auto yElmLen = abs(minLim.y - maxLim.y) / xNum;
+					children[vChildIndex]->minLim = { minLim.x, minLim.y + (yElmLen * vChildIndex) };
+					children[vChildIndex]->maxLim = { maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen };
+					break;
+				}
+				//case AlignmentType::Vertical:
+				//case AlignmentType::Horizontal:
+				case AlignmentType::Free:
+					children[vChildIndex]->minLim = minLim;
+					children[vChildIndex]->maxLim = maxLim;
+					break;
+				default:
+					exit(-123);
+			}
+			return true;
 		}
 
 

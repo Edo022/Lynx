@@ -27,6 +27,10 @@ int main() {
 	//sleep(1000);
 
 
+	vec2i32 hhh = {10, 9 };
+	hhh *= 0.5;
+
+
 	{
 		lux::obj::Line2D lineTest;
 		lineTest.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
@@ -37,7 +41,7 @@ int main() {
 		lineTest.p1 = vec2i32{ 1700, 800 };
 		lineTest.update();
 
-		lux::obj::RenderSpace2D renderSpace;
+		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
 		renderSpace.addChild(&lineTest);
 
 		//TODO
