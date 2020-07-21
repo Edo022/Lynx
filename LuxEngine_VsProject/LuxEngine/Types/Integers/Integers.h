@@ -1,23 +1,20 @@
 #pragma once
-#include <cinttypes>
-#include "int128_t.h"
-#include "int256_t.h"
 
 
 
 
-typedef int8_t			int8;		//Signed 8-bit integer
-typedef int16_t			int16;		//Signed 16-bit integer
-typedef int32_t			int32;		//Signed 32-bit integer
-typedef int64_t			int64;		//Signed 64-bit integer
+typedef signed char			int8;		//Signed 8-bit integer
+typedef signed short		int16;		//Signed 16-bit integer
+typedef signed int			int32;		//Signed 32-bit integer
+typedef signed long long	int64;		//Signed 64-bit integer
 //typedef int128_t		int128;
 //typedef int256_t		int256;
 //typedef int512_t		int512;
 
-typedef uint8_t			uint8;		//Unsigned 8-bit integer. Same as char8, but specific to integer types
-typedef uint16_t		uint16;		//Unsigned 16-bit integer
-typedef uint32_t		uint32;		//Unsigned 32-bit integer
-typedef uint64_t		uint64;		//Unsigned 64-bit integer
+typedef unsigned char		uint8;		//Unsigned 8-bit integer. Same as char8, but specific to integer types
+typedef unsigned short		uint16;		//Unsigned 16-bit integer
+typedef unsigned int		uint32;		//Unsigned 32-bit integer
+typedef unsigned long long	uint64;		//Unsigned 64-bit integer
 //typedef uint128_t		uint128;
 //typedef uint256_t		uint256;
 //typedef uint512_t		int512;

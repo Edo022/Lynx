@@ -4,13 +4,13 @@
 
 
 //Functions
-template<class T> constexpr T __vectorcall max(T a, T b) { return (a > b) ? a : b; }					//Returns the minimum value
-template<class T> constexpr T __vectorcall min(T a, T b) { return (a < b) ? a : b; }					//Returns the maximum value
-template<class T> constexpr T __vectorcall max(T a, T b, T c) { return max(max(a, b), c); }				//Returns the minimum value
-template<class T> constexpr T __vectorcall min(T a, T b, T c) { return min(min(a, b), c); }				//Returns the maximum value
-template<class T> constexpr T __vectorcall max(T a, T b, T c, T d) { return max(max(max(a, b), c), d); }//Returns the minimum value
-template<class T> constexpr T __vectorcall min(T a, T b, T c, T d) { return min(min(min(a, b), c), d); }//Returns the maximum value
-template<class T> constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= a ^= b; }				//Swaps the contents of 2 basic type variables
+template<class T> static inline constexpr T __vectorcall max(T a, T b) { return (a > b) ? a : b; }						//Returns the minimum value
+template<class T> static inline constexpr T __vectorcall min(T a, T b) { return (a < b) ? a : b; }						//Returns the maximum value
+template<class T> static inline constexpr T __vectorcall max(T a, T b, T c) { return max(max(a, b), c); }				//Returns the minimum value
+template<class T> static inline constexpr T __vectorcall min(T a, T b, T c) { return min(min(a, b), c); }				//Returns the maximum value
+template<class T> static inline constexpr T __vectorcall max(T a, T b, T c, T d) { return max(max(max(a, b), c), d); }	//Returns the minimum value
+template<class T> static inline constexpr T __vectorcall min(T a, T b, T c, T d) { return min(min(min(a, b), c), d); }	//Returns the maximum value
+template<class T> static inline constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= a ^= b; }					//Swaps the contents of 2 basic type variables
 
 
 //Console output
