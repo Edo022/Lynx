@@ -3,6 +3,8 @@
 
 #pragma once
 #include "LuxDynArray.h"
+#include "LuxEngine/macros.h"
+#include "LuxEngine/Types/Integers/Integers.h"
 
 
 

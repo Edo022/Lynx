@@ -52,20 +52,29 @@
 
 
 
-#include "math.h"                                // for pow, sqrt
+#include <math.h>					// for pow, sqrt
+#include <initializer_list>		//TODO remove
+#include <vcruntime_string.h>		// for memcpy
+#include <stdlib.h>					// for malloc, realloc
+
+
 
 #include "LuxEngine_config.h"
 #	include "LuxEngine/macros.h"
 //#	include "LuxEngine/Math/Algebra/Algebra.h" (included in Types.h)
 #		include "LuxEngine/Types/Types.h"
 
-#include "LuxEngine/Types/Containers/LuxArray.h"
+
+
+
+//#include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Engine/Engine.h"
 
 //Initializes the Engine
 //Objects will automatically call this function when created
 //    They need the engine to be initialized to allocate their data
-static void LuxInit(bool useVSync = true) { lux::getEngine( ).init(useVSync); }
+static void LuxInit(bool useVSync = true) { /*lux::getEngine( ).init(useVSync);*/ }
+//static void LuxInit(bool useVSync = true) { lux::getEngine( ).init(useVSync); }
 
 
 

@@ -1,12 +1,9 @@
 
 #pragma once
 
-#include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Types/Containers/LuxContainer.h"
 #include "LuxEngine/macros.h"
-#include <initializer_list>
-#include "vcruntime_string.h"                         // for memcpy
-#include <stdlib.h>                                   // for malloc, realloc
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/Containers/LuxContainer.h" //TODO stfu
 
 
 
@@ -15,6 +12,9 @@
 //TODO dont use initializer list
 //A static array that knows its size. It can be resized, but it doesn't have add or remove methods
 namespace lux {
+	//template <class type, class iter> class ContainerBase;
+
+
 	template <class type, class iter = uint32> class Array : public ContainerBase<type, iter> {
 	public:
 		type* __lp_data;	//Elements of the array

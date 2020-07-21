@@ -6,6 +6,7 @@
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
+
 #include <vector>
 //#include <stdlib.h>                               // for malloc, free
 
