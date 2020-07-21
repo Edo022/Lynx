@@ -2,8 +2,13 @@
 #include "LuxEngine/System/System.h"
 
 
-lux::String lux::sys::dir::thisDir = "";
-uint32		lux::sys::threadNum = 0;
+
+
+lux::String lux::sys::dir::thisDir = "";				//Path to the current directory
+//TODO move to lux::thr
+uint32		lux::sys::threadNum = 0;					//Number of threads in the main CPU
+
+
 
 
 namespace lux::sys{
@@ -32,6 +37,19 @@ namespace lux::sys{
 			for(; pStr[i] != '/' && i > 0; --i);
 			return lux::String(pStr.begin( ) + i + 1);
 		}
+	}
 
+
+	void __lp_init_system( ) {
+		static bool once = true;
+		if(once) {								//Execute only once
+			char buff[FILENAME_MAX];				//Create char array to store the path
+			__lp_get_cwd(buff, FILENAME_MAX);		//Get path
+			dir::thisDir = lux::String(buff);		//Save path
+			dir::fixWindowsPath(dir::thisDir);		//Replace silly windows backslashes with normal slashes
+
+			__lp_get_nopt(threadNum);				//Get number of physical threads
+		}
+		once = false;
 	}
 }

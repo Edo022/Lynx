@@ -44,33 +44,12 @@
 
 namespace lux::sys {
 	namespace dir {
-		//Path to the current directory
-		extern lux::String thisDir;
-
-
+		extern String thisDir;
 		void fixWindowsPath(lux::String& pStr);
 		lux::String getExtensionFromPath(const lux::String& pStr);
 		lux::String getFileNameFromPath(const lux::String& pStr);
 	}
 
-
-
-
-
-	//Number of physical threads
 	extern uint32 threadNum;
-
-
-	static void __lp_init_system() {
-		static bool once = true;
-		if (once) {								//Execute only once
-			char buff[FILENAME_MAX];				//Create char array to store the path
-			__lp_get_cwd(buff, FILENAME_MAX);		//Get path
-			dir::thisDir = lux::String(buff);		//Save path
-			dir::fixWindowsPath(dir::thisDir);		//Replace silly windows backslashes with normal slashes
-
-			__lp_get_nopt(threadNum);				//Get number of physical threads
-		}
-		once = false;
-	}
+	void __lp_init_system();
 }

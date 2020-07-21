@@ -91,9 +91,6 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\System\System_e.cpp">
-      <Filter>LuxEngine\System</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClCompile>
@@ -111,6 +108,9 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\System\System.cpp">
       <Filter>LuxEngine\System</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp">
+      <Filter>LuxEngine\Threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
