@@ -91,9 +91,6 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\System\System_e.cpp">
       <Filter>LuxEngine\System</Filter>
     </ClCompile>
@@ -108,6 +105,12 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Input\Input_e.cpp">
       <Filter>LuxEngine\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
+      <Filter>LuxEngine\Engine\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\System\System.cpp">
+      <Filter>LuxEngine\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

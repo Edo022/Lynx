@@ -1,9 +1,48 @@
 ﻿
 
 #include "LuxEngine/Engine/Engine.h"
-#include "Input/Input.h"          // for keyCallback, mouseButtonCallback
-#include "LuxEngine/System/System.h"               // for luxThisDirectory
-//Engine engine;
+#include "Input/Input.h"
+#include "LuxEngine/System/System.h"
+
+
+
+
+
+
+
+// External debug functions ---------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+//namespace lux::_engine {
+//	//It's dark magic, idk why or how it works, but it does
+//	static inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+//		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+//		if(func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+//		else return VK_ERROR_EXTENSION_NOT_PRESENT;
+//	}
+//	//Dunno
+//	static inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+//		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+//		if(func != nullptr) func(instance, debugMessenger, pAllocator);
+//	}
+//
+//	//More dark magic
+//	static constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+//		createInfo = { };
+//		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+//		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+//		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+//		createInfo.pfnUserCallback = lux::getEngine( ).graphicsDebugCallback;
+//	}
+//}
+
+
 
 
 
@@ -35,6 +74,27 @@ namespace lux{
 	inline Engine& getEngine( ){
 		static Engine engine_;
 		return engine_;
+	}
+}
+
+
+
+
+//Initializes the engine object and all the Lux namespace
+//Don't call this function. Use LuxInit( ) instead
+void Engine::init(bool useVSync) {
+	static bool once = true;
+	if(once){
+		once = false;
+		lux::sys::__lp_init_system( );
+		lux::thr::__lp_init_thread( );
+		__lp_goniometric_functions_init( );
+
+		std::thread renderThr(&Engine::run, this, useVSync, 45);
+		renderThr.detach( );
+		running = true;
+
+		while(!initialized) sleep(10);
 	}
 }
 
@@ -367,3 +427,13 @@ void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, co
 
 
 
+
+
+
+
+
+	//Dunno
+	inline void lux::_engine::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+		if(func != nullptr) func(instance, debugMessenger, pAllocator);
+	}

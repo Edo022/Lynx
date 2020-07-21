@@ -65,7 +65,7 @@ struct RenderSpace2D;
 
 
 
-//Structures and macros -------------------------------------------------------------------------------------------------------------//
+// External debug functions ---------------------------------------------------------------------------------------------------------//
 
 
 
@@ -73,7 +73,13 @@ struct RenderSpace2D;
 
 
 
-
+class Engine;
+namespace lux{ inline Engine& getEngine( ); }
+//namespace lux::_engine {
+//	inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+//	inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+//	constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+//}
 
 
 
@@ -267,11 +273,12 @@ public:
 
 
 
-public:
+
 	//Main >> this
 	VkInstance					instance;
 	VkDebugUtilsMessengerEXT	debugMessenger;
 	VkSurfaceKHR				surface;
+	void init(bool useVSync);
 	void run(bool vUseVSync, float vFOV);
 	void mainLoop();		void runFPSCounterThr();	void runRenderThr();
 
@@ -304,23 +311,6 @@ public:
 
 
 
-	//Initializes the engine object and all the Lux namespace
-	//Don't call this function. Use LuxInit( ) instead
-	void init(bool useVSync) {
-		static bool once = true;
-		if(once){
-			once = false;
-			lux::sys::__lp_init_system( );
-			lux::thr::__lp_init_thread( );
-			__lp_goniometric_functions_init( );
-
-			std::thread renderThr(&Engine::run, this, useVSync, 45);
-			renderThr.detach( );
-			running = true;
-
-			while(!initialized) sleep(10);
-		}
-	}
 
 
 
@@ -403,7 +393,6 @@ public:
 	//Graphics other >> Graphics/Graphics.cpp
 	VkFormat					graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
 	uint32						graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
-public:
 	static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
@@ -431,7 +420,7 @@ public:
 	void						cleanupCompute();
 
 
-public:
+
 	//Buffers >> Compute/Buffers.cpp
 	struct CShaders_stg_t {
 		LuxShader_t shader;
@@ -445,7 +434,7 @@ public:
 	LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
 	bool							gpuCellDestroy(const LuxCell vCell);
 	void*							gpuCellMap(const LuxCell vCell);
-public:
+
 
 
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
@@ -463,41 +452,7 @@ public:
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 
-
-
-
-
-
-
-
-// Init -------------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-//extern Engine engine;
-#define Frame while(engine.running)
-
-
-
-//namespace lux::obj {
-//	static inline void spawnObject(Base* pObject) {
-//		if (pObject->objectType > 0) {
-//			engine.objs.add(pObject);
-//		}
-//		else Exit("invalid object");
-//
-//		pObject->gpuCell = engine.gpuCellCreate(pObject->getCellSize(), true);
-//		pObject->cellPtr = engine.gpuCellMap(pObject->gpuCell);
-//		pObject->initPtrs();
-//		pObject->allocated = true;
-//		engine.cshaderNew(lux::Array<LuxCell>{ engine.gpuCellWindowOutput, engine.gpuCellWindowSize, engine.objs[0]->gpuCell }, (engine.shaderPath + pObject->shaderName + ".comp.spv").begin(), 4, 1, 1);
-//	}
-//}
+#endif
 
 
 
@@ -506,40 +461,31 @@ public:
 
 
 
-// External debug functions -----------------------------------------------------------------------------------------------------------------//
 
 
 
 
-
-
-
-
-namespace lux{ inline Engine& getEngine( ); }
 namespace lux::_engine {
 	//It's dark magic, idk why or how it works, but it does
-	static inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+	inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-		if (func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+		if(func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
 		else return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
-	//Dunno
-	static inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-		if (func != nullptr) func(instance, debugMessenger, pAllocator);
-	}
+	inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 
 	//More dark magic
 	static constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
-		createInfo = {};
+		createInfo = { };
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		createInfo.pfnUserCallback = lux::getEngine().graphicsDebugCallback;
+		createInfo.pfnUserCallback = lux::getEngine( ).graphicsDebugCallback;
 	}
 }
 
-#endif
+
+
 
 
 
@@ -590,11 +536,5 @@ namespace lux::_engine {
 
 
 
-
-
-
 //TODO
-//"
-//punti per le mesh + curve per le superfici solide
-//>>>>>>>>>>>>>>>
-//"
+//Interpolated point mesh rig

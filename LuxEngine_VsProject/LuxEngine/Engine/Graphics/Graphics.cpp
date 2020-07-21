@@ -5,12 +5,15 @@
 #include "LuxEngine/Engine/Compute/CShader_t.h"
 
 
+
+
+
 	void Engine::runGraphics(const bool vUseVSync, const float vFOV) {
 		useVSync = vUseVSync;
 		FOV = vFOV;
 
 		luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
-		Normal  printf("Initializing Vulkan");							graphicsInitVulkan( );						MainSeparator;
+		Normal  printf("Initializing Vulkan");							graphicsInitVulkan( );				MainSeparator;
 	}
 
 
@@ -18,7 +21,7 @@
 
 	void Engine::graphicsInitVulkan( ) {
 		//Initialize vulkan
-		Normal printf("    Creating VK Surface...               ");		graphicsCreateSurface( );					SuccessNoNl printf("ok");	NewLine;
+		Normal printf("    Creating VK Surface...               ");		graphicsCreateSurface( );			SuccessNoNl printf("ok");	NewLine;
 		Normal printf("    Searching for physical devices...    ");		deviceGetPhysical( );											NewLine;
 		Normal printf("    Creating VK command pool...          ");		createGraphicsCommandPool( );		SuccessNoNl printf("ok");
 		Normal printf("    Creating VK swapchain...             ");		swapchainCreate( );					SuccessNoNl printf("ok");
