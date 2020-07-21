@@ -21,13 +21,6 @@ namespace lux::obj {
 		BottomToTop
 	};
 
-	enum class AlignmentBase : int8{
-		Top,
-		Bottom,
-		Right,
-		Left,
-		Center
-	};
 
 
 	//A 2D space that allows objects to be rendered
@@ -42,14 +35,14 @@ namespace lux::obj {
 		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
 
 		AlignmentType alignment;	//Type of children alignmen
-		uint32 xNum;				//General value for horizontally aligned children number
-		uint32 yNum;				//General value for vertically aligned children number
-		FlowType xFlow;				//General value for children horizontal direction
-		FlowType yFlow;				//General value for children vertical direction
+		uint32 xNum;				//Number of horizontally aligned children
+		uint32 yNum;				//Number of vertically aligned children
+		FlowType xFlow;				//Children horizontal direction
+		FlowType yFlow;				//Children vertical direction
 
 
-		RenderSpace2D(AlignmentType alignment, uint32 xNum = 2, uint32 yNum = 2, FlowType xFlow = FlowType::LeftToRight, FlowType yFlow = FlowType::TopToBottom) :
-			alignment(alignment), xNum(xNum), yNum(yNum), xFlow(xFlow), yFlow(yFlow) {
+		RenderSpace2D(AlignmentType alignment, uint32 xNum = 2, uint32 yNum = 2, FlowType xFlow = FlowType::LeftToRight, FlowType yFlow = FlowType::TopToBottom)
+			: alignment(alignment), xNum(xNum), yNum(yNum), xFlow(xFlow), yFlow(yFlow) {
 		}
 
 

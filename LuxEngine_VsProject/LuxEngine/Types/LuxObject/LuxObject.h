@@ -16,6 +16,15 @@
 
 namespace lux{
 	namespace obj {
+		enum class limitAlignment : int8{
+			Top,
+			Bottom,
+			Right,
+			Left,
+			Center
+		};
+
+
 		//The type of the object (simulates reflection)
 		//    Negative values    = base struct
 		//    +-1000 to +-1999   = 1D object
@@ -127,8 +136,9 @@ namespace lux{
 				children[vChildIndex]->maxLim = maxLim;
 				return true;
 			}
-			vec2f32 minLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
-			vec2f32 maxLim{ 1, 1 };							//The limit of the object render. It depends on the parent of the object and its properties
+			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
+			vec2f32 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
+			limitAlignment limitAlignment{ limitAlignment::Center }; 	//The alignment of the object within its limits
 		};
 
 
