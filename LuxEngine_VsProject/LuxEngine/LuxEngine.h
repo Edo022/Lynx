@@ -52,8 +52,14 @@
 
 
 
+#include "math.h"                                // for pow, sqrt
 
+#include "LuxEngine_config.h"
+#	include "LuxEngine/macros.h"
+//#	include "LuxEngine/Math/Algebra/Algebra.h" (included in Types.h)
+#		include "LuxEngine/Types/Types.h"
 
+#include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Engine/Engine.h"
 
 //Initializes the Engine

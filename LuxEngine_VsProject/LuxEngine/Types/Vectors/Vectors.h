@@ -4,10 +4,8 @@
 #include "Vec2.h"
 #include "Vec3.h"
 #include "Vec4.h"
-#include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/macros.h"
-#include "LuxEngine/Math/Algebra/Algebra.h"
-#include "math.h"                                // for pow, sqrt
+#include "LuxEngine/Types/Integers/Integers.h"
 
 
 

@@ -21,7 +21,6 @@
 
 #include <deque>
 
-#include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"

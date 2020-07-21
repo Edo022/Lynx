@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 //A tridimensional vector
 //Supports
 //   +, *, -, /, =, ==, *=, +=, -=, /= operations with all types of vectors or values

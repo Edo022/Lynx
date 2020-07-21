@@ -1,6 +1,5 @@
 #pragma once
 #pragma warning(disable : 4005) //Macro referinition
-#include "LuxEngine_config.h"
 
 
 
