@@ -91,6 +91,9 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
+      <Filter>LuxEngine\Types\LuxObject</Filter>
+    </ClCompile>
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClCompile>
@@ -106,17 +109,11 @@
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp">
       <Filter>LuxEngine\Threads</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Input\InputState.cpp">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Input\Input.cpp">
       <Filter>LuxEngine\Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DLines.cpp">
-      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.cpp">
-      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    <ClCompile Include="LuxEngine\Engine\Input\InputState.cpp">
+      <Filter>LuxEngine\Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

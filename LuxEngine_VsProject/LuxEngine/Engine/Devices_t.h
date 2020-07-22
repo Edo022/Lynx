@@ -1,7 +1,7 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
-#include "vulkan/vulkan.h"
+#include "vulkan/vulkan_core.h"                 // for VkPhysicalDeviceFeatures, VkPhysicalDeviceProperties, VkDevice, VkDevice_T, VkPhysicalDevice, VkPhysicalDevice_T, VkQueue, VkQueue_T, VK_NULL_HANDLE
 
 
 
@@ -11,7 +11,7 @@ struct QueueFamilyIndices {
 	uint32 presentFamily = -1;
 	lux::DynArray<uint32> computeFamilies;
 
-	inline bool isGraphicsComplete( ) { return (graphicsFamily != -1 && presentFamily != -1); }
+	inline bool isGraphicsComplete() { return (graphicsFamily != -1 && presentFamily != -1); }
 };
 
 
@@ -27,7 +27,7 @@ struct _VkPhysicalDevice {
 
 	_VkPhysicalDevice(const VkPhysicalDevice vDevice, const VkPhysicalDeviceProperties& vProperties, const VkPhysicalDeviceFeatures& vFeatures, const QueueFamilyIndices& vIndices) :
 		device{ vDevice }, properties{ vProperties }, features{ vFeatures }, indices{ vIndices } {}
-	_VkPhysicalDevice( ) {}
+	_VkPhysicalDevice() {}
 };
 
 
@@ -44,5 +44,5 @@ struct graphicsDevice {
 struct computeDevice {
 	_VkPhysicalDevice PD;						//Main physical device for computing
 	VkDevice LD;								//Main logical device for computing
-	lux::DynArray<VkQueue> computeQueues;		//Main compute queues. Run on computeLD
+	lux::DynArray<VkQueue> computeQueues;			//Main compute queues. Run on computeLD
 };

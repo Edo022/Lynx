@@ -65,7 +65,7 @@ namespace lux::_engine {
 	static bool compileShader(const char* pShaderPath) {
 		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";  //lib
 		//lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv"; //No .lib
-		return system(compileShaderCommand.begin( )) == 0;
+		return system(compileShaderCommand.begin()) == 0;
 	}
 }
 
@@ -124,38 +124,38 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	}
 
 	//Init
-	initWindow( );
-	Normal printf("Creating Instance...                     ");			createInstance( );						SuccessNoNl printf("ok");
+	initWindow();
+	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
 	runGraphics(vUseVSync, vFOV);
-	runCompute( );
+	runCompute();
 
 	//Loop
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
-	Success printf("Starting Lux Engine\n");						mainLoop( );									MainSeparator;
+	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 
 	//Exit
-	Normal  printf("Cleaning memory");								graphicsCleanup( ); cleanupCompute( );		NewLine;
+	Normal  printf("Cleaning memory");								graphicsCleanup(); cleanupCompute();		NewLine;
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);
-	glfwTerminate( );
+	glfwTerminate();
 }
 
 
 
 
-void Engine::mainLoop( ) {
-	luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  User input"));
+void Engine::mainLoop() {
+	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  User input"));
 	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);
 	std::thread renderThr(&Engine::runRenderThr, this);
-	FPSCounterThr.detach( );
-	renderThr.detach( );
+	FPSCounterThr.detach();
+	renderThr.detach();
 	initialized = true;
 
 	//wchar_t thrName[100];
 	//std::mbstowcs(thrName, "hhhhh", 100);
 
-	while(!glfwWindowShouldClose(window)) {
-		glfwPollEvents( );
+	while (!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
 	}
 	running = false;
 	vkDeviceWaitIdle(graphics.LD);
@@ -165,10 +165,10 @@ void Engine::mainLoop( ) {
 
 
 
-void Engine::runRenderThr( ) {
-	luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  Render"));
-	while(running) {
-		graphicsDrawFrame( );
+void Engine::runRenderThr() {
+	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  Render"));
+	while (running) {
+		graphicsDrawFrame();
 		vkDeviceWaitIdle(compute.LD);
 		frames++;
 	}
@@ -176,9 +176,9 @@ void Engine::runRenderThr( ) {
 
 
 
-void Engine::runFPSCounterThr( ) {
-	luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  FPS counter"));
-	while(running) {
+void Engine::runFPSCounterThr() {
+	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  FPS counter"));
+	while (running) {
 		static int delay = 1000;
 		sleep(delay);
 		FPS = frames * (1000 / delay);
@@ -203,12 +203,12 @@ void Engine::runFPSCounterThr( ) {
 
 
 //Create the Vulkan instance, using validation layers when in debug mode
-void Engine::createInstance( ) {
-	VkInstanceCreateInfo createInfo{ };
+void Engine::createInstance() {
+	VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 
 	//Application infos
-	VkApplicationInfo appInfo{ };
+	VkApplicationInfo appInfo{};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "LuxEngine";
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -222,9 +222,9 @@ void Engine::createInstance( ) {
 	lux::Map<const char*, uint32> extensions;
 	uint32 glfwExtensionCount;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
-	for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
+	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
 	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = extensions.size( );									//Set extension count
+	createInfo.enabledExtensionCount = extensions.size();									//Set extension count
 	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
 
 	//Add validation layers if in debug mode
@@ -236,18 +236,18 @@ void Engine::createInstance( ) {
 	uint32 layerCount = 0;
 	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
 	lux::Array<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));				//Get layers
-	for(const char* layerName : validationLayers) {										//For every layer,
-		for(const auto& layerProperties : availableLayers) {									//Check if it's available
-			if(strcmp(layerName, layerProperties.layerName) == 0) break;
-			else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
+	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());				//Get layers
+	for (const char* layerName : validationLayers) {										//For every layer,
+		for (const auto& layerProperties : availableLayers) {									//Check if it's available
+			if (strcmp(layerName, layerProperties.layerName) == 0) break;
+			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
 		}
 	}
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = validationLayers.size( );
-	createInfo.ppEnabledLayerNames = validationLayers.begin( );
+	createInfo.enabledLayerCount = validationLayers.size();
+	createInfo.ppEnabledLayerNames = validationLayers.begin();
 	lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
 	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
 	#endif
@@ -260,8 +260,8 @@ void Engine::createInstance( ) {
 
 
 
-void Engine::initWindow( ) {
-	glfwInit( );
+void Engine::initWindow() {
+	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 
@@ -314,7 +314,7 @@ void Engine::initWindow( ) {
 uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 	FILE* fp;
 	fopen_s(&fp, pFilePath, "rb");									//Open the file
-	if(fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
+	if (fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
 
 	_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
 	int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file size
@@ -324,7 +324,7 @@ uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 	char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
 	fread(str, filesize, sizeof(char), fp);							//Read the file
 	fclose(fp);														//Close the file
-	for(int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
+	for (int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
 
 	*pLength = paddedFileSize;										//Set length
 	return (uint32*)str;											//Return the buffer
@@ -337,7 +337,7 @@ uint32* Engine::cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 //*   pCode: a pointer to an int32 array containing the shader code
 //*   pLength: a pointer to the code length
 VkShaderModule Engine::cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
-	VkShaderModuleCreateInfo createInfo{ };								//Create shader module infos
+	VkShaderModuleCreateInfo createInfo{};								//Create shader module infos
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
 	createInfo.codeSize = *pLength;										//Set the size of the compiled shader code
 	createInfo.pCode = pCode;											//Set the shader code
@@ -359,31 +359,31 @@ VkShaderModule Engine::cshaderCreateModule(const VkDevice vDevice, uint32* pCode
 //*   pBuffer: the buffer object to allocate
 //*   pMemory: the memory of the buffer
 void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory) {
-	VkBufferCreateInfo bufferInfo{ };
+	VkBufferCreateInfo bufferInfo{};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = vSize;
 	bufferInfo.usage = vUsage;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) Exit("Failed to create buffer");
+	TryVk (vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) Exit("Failed to create buffer");
 
 	VkMemoryRequirements memRequirements;
 	vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
 
-	VkMemoryAllocateInfo allocInfo{ };
+	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
 	allocInfo.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, vProperties);
 
 	//TODO check out of memory
 	//TODO don't quit in VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS but return an error code
-	switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
+	switch (vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
 		case VK_SUCCESS: break;
 		case VK_ERROR_OUT_OF_DEVICE_MEMORY: {	//IF out of device memory, use the host memory
-			VkMemoryAllocateInfo allocInfo2{ };
+			VkMemoryAllocateInfo allocInfo2{};
 			allocInfo2.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 			allocInfo2.allocationSize = memRequirements.size;
 			allocInfo2.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-			switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
+			switch (vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 				case VK_SUCCESS: break;
 				case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
 				default: Exit("Failed to allocate buffer memory");
@@ -406,11 +406,11 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 //*   vDstBuffer: the destination buffer where to copy the data
 //*   vSize: the size in bytes of the data to copy
 void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize) {
-	VkBufferCopy copyRegion{ };												//Create buffer copy object
+	VkBufferCopy copyRegion{};												//Create buffer copy object
 	copyRegion.size = vSize;												//Set size of the copied region
 	//TODO add offset and automatize cells
 	//copyRegion.dstOffset
-	VkCommandBuffer commandBuffer = beginSingleTimeCommands( );				//Start command buffer
+	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
 	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
 	endSingleTimeCommands(commandBuffer);									//End command buffer
 }
@@ -430,10 +430,10 @@ void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, co
 
 
 
-//TODO
+
 
 	//Dunno
-inline void lux::_engine::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-	if(func != nullptr) func(instance, debugMessenger, pAllocator);
-}
+	inline void lux::_engine::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+		if(func != nullptr) func(instance, debugMessenger, pAllocator);
+	}

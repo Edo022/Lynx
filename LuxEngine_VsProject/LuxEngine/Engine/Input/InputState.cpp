@@ -6,8 +6,8 @@
 
 namespace lux::input{
 	//This function sorts the sequences. You don't have to call it, they'll be sorted when needed.
-//Additional calls to this function does not affect performances
-//TODO use specific string sorting function
+	//Additional calls to this function does not affect performances
+	//TODO use specific string sorting function
 	void __vectorcall InputState::sort( ) {
 		if(!sorted) {															//If the sequence is not sorted
 			sorted = true;															//Set it as sorted

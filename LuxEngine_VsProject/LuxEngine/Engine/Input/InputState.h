@@ -19,6 +19,7 @@ namespace lux::input{
 	};
 
 
+
 	typedef void (*LuxKeyBindingCallback)(lux::Array<uint16>);
 	//This struct contains a sequence of keys and a function to call when the sequence is performed
 	//The sequence is saved as an array of uint16. The action and the key are in the same varibale for better performances.
@@ -40,12 +41,15 @@ namespace lux::input{
 
 	struct InputState {
 		lux::Array<KeySequence, uint16> sequences;		//The sequences of keys
-		bool sorted = false;							//Whether the sequence is sorted or not
+		bool sorted = false;					//Whether the sequence is sorted or not
 
 		//TODO use ExecFuncData
 		//Initializes the input state with a list of key sequences and sorts them
-		InputState(std::initializer_list<KeySequence> c) : sequences{ c } { sort( ); }
+		InputState(std::initializer_list<KeySequence> c) {
+			sequences = c;
+			sort();
+		}
 
-		void __vectorcall sort( );
+		void __vectorcall sort();
 	};
 }

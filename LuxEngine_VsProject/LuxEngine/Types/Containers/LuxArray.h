@@ -30,7 +30,7 @@ namespace lux {
 
 
 		//Creates an array with no elements
-		inline Array( ) :__lp_size{ 0 }, __lp_data{ nullptr } { }
+		inline Array( ) :__lp_size(0), __lp_data(nullptr) { }
 		//Sets the size of the array and allocates it, without inizializing the elements
 		inline Array(const iter vInitSize) { __lp_lux_static_array_init(vInitSize); }
 
@@ -38,8 +38,7 @@ namespace lux {
 		//Initializes the array using a list of elements, automatically converting it to the right type
 		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
 			__lp_lux_static_array_init((iter)pElements.size( ));
-			//TODO dunno random errors
-			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) __lp_data[i] = *(type*)(pElements.begin( ) + i);
+			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) __lp_data[i] = (inType) * (pElements.begin( ) + i);
 		}
 		//Initializes the array using a list of elements of the same type
 		inline Array(const std::initializer_list<type>& pElements) {
@@ -102,7 +101,7 @@ namespace lux {
 			if(vNewSize < 0) return -1;
 			iter oldSize = __lp_size;
 			resize(vNewSize);
-			//TODO intrinsic function copy
+			//TODO intrinsic function copy for 16,32,64,128,256,512 bits
 			if(vNewSize > oldSize) for(iter i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue;
 			return vNewSize;
 		}
