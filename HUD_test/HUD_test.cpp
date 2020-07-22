@@ -9,6 +9,7 @@
 #include <time.h>
 
 #include "LuxEngine/LuxEngine.h"
+#include "LuxEngine/Engine/Input/Input.h"
 
 
 //namespace lux::obj {
@@ -19,6 +20,11 @@
 int h(const char* b, int hh) {
 	printf("\n%s %d \n",b, hh);
 	return 0;
+}
+
+
+void hg(lux::Array<uint16>){
+	printf("\nKEYYYY");
 }
 
 
@@ -49,6 +55,13 @@ int main() {
 		Engine& engine_ = lux::getEngine( );
 		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, (engine_.shaderPath + lineTest.shaderName + ".comp.spv").begin( ), 4, 1, 1);
 	}
+
+
+	lux::input::InputState is({
+		lux::input::KeySequence{ LUX_KEY_W | lux::input::LuxKeyState::LUX_PRESS, hg },
+		lux::input::KeySequence{ LUX_KEY_A | lux::input::LuxKeyState::LUX_PRESS, hg }
+		});
+	lux::input::setInputState(&is);
 
 
 	srand(time(NULL));

@@ -10,9 +10,9 @@ lux::input::InputState* lux::input::inStates;
 
 
 namespace lux::input{
-	inline void setInputState(InputState* inputState) {
-		inStates = inputState; inStates->sort( );
-	}
+	//inline void setInputState(InputState* inputState) {
+	//	inStates = inputState; inStates->sort( );
+	//}
 
 	//GLFWmousebuttonfun
 
@@ -77,7 +77,6 @@ namespace lux::input{
 
 
 		static uint16 yMin = 0, yMax = lux::input::inStates->sequences.size( ) - 1, x = 0;
-		#define __lp_to_lux_act(glfwAction) ((uint16)1 << (16 - (glfwAction) - 1))
 
 		if(action != GLFW_REPEAT) {												//If the action is not repeat
 			uint16 keyCode = (key | __lp_to_lux_act(action));						//Calculate the key code
