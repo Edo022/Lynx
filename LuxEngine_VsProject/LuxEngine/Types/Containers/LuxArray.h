@@ -17,8 +17,8 @@ namespace lux {
 
 	template <class type, class iter = uint32> class Array : public ContainerBase<type, iter> {
 	public:
-		type* __lp_data;	//Elements of the array
-		iter __lp_size;	//Size of the array
+		type* __lp_data{ nullptr };	//Elements of the array
+		iter __lp_size{ 0 };		//Size of the array
 		#define __lp_lux_static_array_init(_size) __lp_size = _size; __lp_data = (type*)malloc(sizeof(type) * __lp_size)
 
 
@@ -83,12 +83,15 @@ namespace lux {
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize) {
 			if(vNewSize < 0) return -1;
-			type* __lp_data_r = (type*)realloc(__lp_data, sizeof(type) * vNewSize);
-			if(__lp_data_r != nullptr){
-				__lp_size = vNewSize;
-				__lp_data = __lp_data_r;
+			else if(vNewSize == 0) {
+				free(__lp_data);//TODO dont free with global memory pool
+				__lp_data = nullptr;
+				return __lp_size = 0;
 			}
-			return __lp_size;
+
+			type* __lp_data_r = (type*)realloc(__lp_data, sizeof(type) * vNewSize);
+			if(__lp_data_r != nullptr)__lp_data = __lp_data_r;
+			return __lp_size = vNewSize;
 		}
 
 		//Resizes the array and initializes the new elements with a value

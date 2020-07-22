@@ -22,6 +22,9 @@ namespace lux::obj {
 	};
 
 
+	//TODO add click events
+	//TODO add object boundary debug draw
+
 
 	//A 2D space that allows objects to be rendered
 	//The position of the object is relative to the size and position of the render space

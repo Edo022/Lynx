@@ -45,15 +45,25 @@ int main() {
 		lineTest.wd1 = 200;
 		lineTest.p0 = vec2i32{ 2000, 500 };
 		lineTest.p1 = vec2i32{ 1700, 800 };
-		lineTest.update();
+
+		lux::obj::Line2D lineTest2;
+		lineTest2.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
+		lineTest2.col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
+		lineTest2.wd0 = 100;
+		lineTest2.wd1 = 200;
+		lineTest2.p0 = vec2i32{ 2000, 500 };
+		lineTest2.p1 = vec2i32{ 1700, 800 };
+
 
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
 		renderSpace.addChild(&lineTest);
+		renderSpace.addChild(&lineTest2);
 
 		//TODO
-		lux::obj::addRenderSpace(&renderSpace);
 		Engine& engine_ = lux::getEngine( );
 		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, (engine_.shaderPath + lineTest.shaderName + ".comp.spv").begin( ), 4, 1, 1);
+		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, (engine_.shaderPath + lineTest.shaderName + ".comp.spv").begin( ), 4, 1, 1);
+		lux::obj::addRenderSpace(&renderSpace);
 	}
 
 

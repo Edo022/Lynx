@@ -14,7 +14,7 @@ namespace lux {
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize(vChunkSize) { Array<type, iter>::Array( ); }
+		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
 
 
 
@@ -32,6 +32,7 @@ namespace lux {
 		//*   vInitValue | the value to use to initialize the new elements
 		//*   Returns    | the new size
 		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
+			//TODO not secure
 			Array<type, iter>::resize((vNewSize == 0) ? 0 : step(vNewSize, chunkSize), vInitValue);
 			return this->__lp_size = vNewSize;
 		}
@@ -41,7 +42,9 @@ namespace lux {
 		//*   vElement | the element to add
 		//*   Returns  | the index of the element in the array
 		inline iter __vectorcall add(const type& vElement) {
-			return this->resize(this->__lp_size + 1, vElement);
+			this->resize(this->__lp_size + 1);
+			this->__lp_data[this->__lp_size - 1] = vElement;
+			return this->__lp_size - 1;
 		}
 
 		//Returns a reference to the last element of the array (easy way to array[array.size() - 1])

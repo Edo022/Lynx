@@ -17,22 +17,22 @@ namespace lux::input{
 	//GLFWmousebuttonfun
 
 
-	void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-		double x, y;
+	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
+		float64 x, y;
 		glfwGetCursorPos(window, &x, &y);
 		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->p0 = vec2i32{ (int32)x, (int32)y };
 		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->update( );
 	}
 
 
-	void mouseAxisCallback(GLFWwindow* window, double x, double y) {
+	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
 		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->wd0 -= (float32)y * 10;
 		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->wd1 -= (float32)y * 10;
 		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->update( );
 	}
 
 
-	void mouseCursorPosCallback(GLFWwindow* window, double x, double y) {
+	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
 		//*(rcast<lux::obj::Line2D*>(engine.objs[0]))->p1 = vec2i32{ (int32)x, (int32)y };
 		__noop;
 	}
@@ -47,12 +47,14 @@ namespace lux::input{
 
 
 	//This function manages the input from the keyboard and calls the functions binded to the input state key bindings
-	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	//TODO
+	//BROKEN FUNCTION
+	void keyCallback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
 		//FULL SCREEN
-		static int fsstate = 0;
-		static int wmx, wmy, wmw, wmh;
+		static int32 fsstate = 0;
+		static int32 wmx, wmy, wmw, wmh;
 		if(key == LUX_KEY_F11 && action == GLFW_PRESS) {
-			int mx, my, mw, mh;
+			int32 mx, my, mw, mh;
 			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor( ), &mx, &my, &mw, &mh);
 			if(fsstate == 0) {
 				glfwGetWindowSize(window, &wmw, &wmh);

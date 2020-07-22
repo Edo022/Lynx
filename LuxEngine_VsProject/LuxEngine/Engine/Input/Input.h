@@ -14,12 +14,12 @@ namespace lux::input {
 	inline void setInputState(InputState* inputState){ inStates = inputState; inStates->sort( ); };
 
 	//Converts a glfw action to a lux key state
-	static inline constexpr uint16 __lp_to_lux_act(int glfwAction) { return (uint16)1 << (16 - (glfwAction)-1); }
+	static inline constexpr uint16 __lp_to_lux_act(int32 glfwAction) { return (uint16)1 << (16 - (glfwAction)-1); }
 
-	void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-	void mouseAxisCallback(GLFWwindow* window, double x, double y);
-	void mouseCursorPosCallback(GLFWwindow* window, double x, double y);
-	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods);
+	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y);
+	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y);
+	void keyCallback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods);
 }
 
 
