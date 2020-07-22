@@ -5,15 +5,15 @@
 
 
 namespace lux::thr {
-		FenceDE stgAddFence;				//This fence controls the add and read/remove operations of the staging queue
-		HANDLE mngThr;						//The handle of the thread that controls the pool
-		Array<ThrPoolElm> threads;			//The threads of the thread pool with their states and functions
-		Map<ThrState, uint32> thrStates;	//This map contains the states of the threads. It's also used like a linked list to automatically find the next free thread
-		Queue<ExecFuncDataBase*> maxpq;		//List of maximum priority functions waiting to be executed
-		Queue<ExecFuncDataBase*> highpq;	//List of high priority functions waiting to be executed
-		Queue<ExecFuncDataBase*> lowpq;		//List of low priority functions waiting to be executed
-		Queue<ExecFuncDataBase*> minpq;		//List of minimum priority functions waiting to be executed
-		Queue<ExecFuncDataBase*> stg;		//Staging queue
+	FenceDE stgAddFence;				//This fence controls the add and read/remove operations of the staging queue
+	HANDLE mngThr;						//The handle of the thread that controls the pool
+	Array<ThrPoolElm> threads;			//The threads of the thread pool with their states and functions
+	Map<ThrState, uint32> thrStates;	//This map contains the states of the threads. It's also used like a linked list to automatically find the next free thread
+	Queue<ExecFuncDataBase*> maxpq;		//List of maximum priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> highpq;	//List of high priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> lowpq;		//List of low priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> minpq;		//List of minimum priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> stg;		//Staging queue
 
 
 
