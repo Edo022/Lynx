@@ -1,6 +1,6 @@
 
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.h>						//For glfwCreateWindowSurface
 #include "LuxEngine/Engine/Engine.h"
 #include "LuxEngine/Engine/Compute/CShader_t.h"
 

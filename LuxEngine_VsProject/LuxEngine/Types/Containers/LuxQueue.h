@@ -8,14 +8,14 @@
 
 
 
-		//TODO automatic back to front and viceversa in queues
+//TODO automatic back to front and viceversa in queues
 
 //A queue with dynamic size
 namespace lux {
 	template<class type, class iter = uint32> struct Queue {
 		lux::DynArray<type, iter> _front, _back;
 
-		inline Queue( ) : _front(0xFF), _back(0xFF) { }
+		inline Queue( ) : _front{ 0xFF }, _back{ 0xFF } { }
 
 
 		//Adds an element at the back of the queue

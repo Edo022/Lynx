@@ -1,7 +1,5 @@
 #pragma once
-#include <vulkan/vulkan.h>
-#include "LuxEngine/Types/Containers/LuxArray.h"
-#include "LuxEngine/Types/Containers/LuxDynArray.h"
+
 
 //A container struct for the components of a shader
 struct LuxShader_t {

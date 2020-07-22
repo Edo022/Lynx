@@ -5,6 +5,9 @@
 
 
 
+uint64 lux::obj::Base::lastID = (uint64)-1;	//#LLID LOS000 initialize the last object ID at -1 so the first object will have ID 0
+
+
 
 
 //Adds a render space with no parent to the engine
@@ -12,8 +15,6 @@ namespace lux::obj{
 	void addRenderSpace(RenderSpace2D* pRenderSpace){
 		lux::getEngine( ).CRenderSpaces.add(pRenderSpace);
 	}
-
-
 
 
 	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
@@ -26,5 +27,13 @@ namespace lux::obj{
 		cellPtr = lux::getEngine( ).gpuCellMap(gpuCell);						//Map the cell pointer to the cell
 		//update( );														//Initialize the pointers to the data
 		allocated = true;													//Set allocation state to allocated
+	}
+
+
+	bool Base2D::setChildLimits(const uint32 vChildIndex) const {
+		if(vChildIndex >= children.size( )) return false;
+		children[vChildIndex]->minLim = minLim;
+		children[vChildIndex]->maxLim = maxLim;
+		return true;
 	}
 }

@@ -14,7 +14,7 @@ namespace lux {
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize(vChunkSize) { Array<type, iter>::Array( ); }
+		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize{ vChunkSize } { Array<type, iter>::Array( ); }
 
 
 

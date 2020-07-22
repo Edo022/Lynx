@@ -8,15 +8,17 @@
 #include "minwindef.h"                            // for min
 
 
-enum LuxKeyState : uint16 {
-	LUX_RELEASE = 1 << 15,
-	LUX_PRESS = 1 << 14,
-	LUX_REPEAT = 1 << 13
-};
 
 
 
 namespace lux::input{
+	enum LuxKeyState : uint16 {
+		LUX_RELEASE = 1 << 15,
+		LUX_PRESS = 1 << 14,
+		LUX_REPEAT = 1 << 13
+	};
+
+
 	typedef void (*LuxKeyBindingCallback)(lux::Array<uint16>);
 	//This struct contains a sequence of keys and a function to call when the sequence is performed
 	//The sequence is saved as an array of uint16. The action and the key are in the same varibale for better performances.
@@ -38,35 +40,12 @@ namespace lux::input{
 
 	struct InputState {
 		lux::Array<KeySequence, uint16> sequences;		//The sequences of keys
-		bool sorted = false;					//Whether the sequence is sorted or not
+		bool sorted = false;							//Whether the sequence is sorted or not
 
 		//TODO use ExecFuncData
 		//Initializes the input state with a list of key sequences and sorts them
-		InputState(std::initializer_list<KeySequence> c) {
-			sequences = c;
-			sort();
-		}
+		InputState(std::initializer_list<KeySequence> c) : sequences{ c } { sort( ); }
 
-		//This function sorts the sequences. You don't have to call it, they'll be sorted when needed.
-		//Additional calls to this function does not affect performances
-		void __vectorcall sort() {
-			if (!sorted) {															//If the sequence is not sorted
-				sorted = true;															//Set it as sorted
-				for (uint16 i = 0; i < sequences.size(); ++i) {							//For every key sequence
-					for (uint16 j = i; j < sequences.size(); ++j) {							//Checking every other sequence that comes after it
-						if (j == i) continue;													//Skip useless iterations
-						for (uint16 k = 0; k < min(sequences[j].sequence.size(), sequences[i].sequence.size()); ++k) {//For every key of the second sequence
-							if (sequences[j].sequence[k] == sequences[i].sequence[k]) continue;	//Search for the next index with different keys
-							if (sequences[j].sequence[k] < sequences[i].sequence[k]) {			//If the first is greater than the second
-								KeySequence b = sequences[i];									//Swap the bindings and the whole sequences
-								sequences[i] = sequences[j];
-								sequences[j] = b;
-								break;																//Exit the loop of the second sequence keys
-							}
-						}
-					}
-				}
-			}
-		}
+		void __vectorcall sort( );
 	};
 }

@@ -52,7 +52,7 @@ namespace lux {
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
-			chunkSize(vChunkSize), maxSize(vMaxSize), head((iter)-1), tail((iter)-1), chunksDynNum((iter)0), __lp_dynSize((iter)0), __lp_freeNum((iter)0) {
+			chunkSize{ vChunkSize }, maxSize{ vMaxSize }, head{ (iter)-1 }, tail{ (iter)-1 }, chunksDynNum{ (iter)0 }, __lp_dynSize{ (iter)0 }, __lp_freeNum{ (iter)0 } {
 			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data
 			__lp_tracker = (iter**)malloc(sizeof(iter*) * (maxSize / chunkSize));	//Allocate tracker
 		}
