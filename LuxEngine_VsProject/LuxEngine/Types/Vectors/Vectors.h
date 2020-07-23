@@ -19,9 +19,9 @@ typedef vec2_t<type> v2##typen, vec2##typen;	\
 typedef vec3_t<type> v3##typen, vec3##typen;	\
 typedef vec4_t<type> v4##typen, vec4##typen;	\
 
-__lp_vec_def(int8, i8)			__lp_vec_def(uint8, u8)		__lp_vec_def(bool, b)			__lp_vec_def(char8, c8)
-__lp_vec_def(int16, i16)		__lp_vec_def(uint16, u16)									__lp_vec_def(char16, c16)
-__lp_vec_def(int32, i32)		__lp_vec_def(uint32, u32)	__lp_vec_def(float32, f32)		__lp_vec_def(char32, c32)
+__lp_vec_def(int8, i8)			__lp_vec_def(uint8, u8)		__lp_vec_def(bool, b)			__lp_vec_def(wchar8, w8)	__lp_vec_def(char8, c8)
+__lp_vec_def(int16, i16)		__lp_vec_def(uint16, u16)									__lp_vec_def(wchar16, w16)
+__lp_vec_def(int32, i32)		__lp_vec_def(uint32, u32)	__lp_vec_def(float32, f32)		__lp_vec_def(wchar32, w32)
 __lp_vec_def(int64, i64)		__lp_vec_def(uint64, u64)	__lp_vec_def(float64, f64)
 #undef __lp_vec_def
 #pragma warning( default: 26451 )

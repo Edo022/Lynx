@@ -178,7 +178,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(MSBuildProjectDirectory);S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\TermColor;S:\CppLibraries\glfw3\include;S:\CppLibraries\Vulkan1.2.135.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <OmitDefaultLibName>false</OmitDefaultLibName>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -193,6 +193,7 @@
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessToFile>false</PreprocessToFile>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

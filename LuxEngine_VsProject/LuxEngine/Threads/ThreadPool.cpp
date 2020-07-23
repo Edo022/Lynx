@@ -3,7 +3,6 @@
 
 
 
-
 namespace lux::thr {
 	FenceDE stgAddFence;				//This fence controls the add and read/remove operations of the staging queue
 	HANDLE mngThr;						//The handle of the thread that controls the pool

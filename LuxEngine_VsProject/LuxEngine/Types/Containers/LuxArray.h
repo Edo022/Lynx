@@ -1,10 +1,7 @@
-
 #pragma once
-
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h" //TODO stfu
-
 
 
 

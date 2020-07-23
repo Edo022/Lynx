@@ -22,9 +22,10 @@ typedef unsigned long long	uint64;		//Unsigned 64-bit integer
 
 
 
-typedef char			char8;		//UTF8 character (normal unsigned char)
-typedef char16_t		char16;		//UTF16 character
-typedef char32_t		char32;		//UTF32 character
+typedef char			char8;
+typedef char8_t			wchar8;		//UTF8 character (normal unsigned char)
+typedef char16_t		wchar16;		//UTF16 character
+typedef char32_t		wchar32;		//UTF32 character
 
 
 

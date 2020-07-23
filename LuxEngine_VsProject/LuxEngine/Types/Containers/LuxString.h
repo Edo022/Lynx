@@ -12,6 +12,9 @@ namespace lux {
 	static inline constexpr uint32 strlenl(const char8* str) {
 		for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len;
 	}
+	static inline constexpr uint32 strlenl(const wchar8* str) {
+		for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len;
+	}
 
 
 	class String : public ContainerBase<char8, uint32> {
@@ -27,6 +30,11 @@ namespace lux {
 			memcpy(str.begin( ), pString.begin( ), pString.size( ));
 		}
 		inline String(const char8* vString) {
+			int32 len = strlenl(vString) + 1;
+			str.resize(len);
+			memcpy(str.begin( ), vString, len);
+		}
+		inline String(const wchar8* vString) {
 			int32 len = strlenl(vString) + 1;
 			str.resize(len);
 			memcpy(str.begin( ), vString, len);
