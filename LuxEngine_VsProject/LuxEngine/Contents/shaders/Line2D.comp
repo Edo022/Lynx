@@ -5,20 +5,20 @@
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 
-uint colToInt(vec4 v) {
-	v *= 255;
-	return uint((uint(v.a) << 24) | ((uint(v.b) & 0xFF) << 16) | ((uint(v.g) & 0xFF) << 8) | (uint(v.r) & 0xFF));
-}
-
-vec4 intToCol(uint v) {
-	return vec4(float(v >> 24), float((v >> 16) & 0xFF), float((v >> 8) & 0xFF), float(v.r & 0xFF)) / 255;
-}
+//uint colToInt(vec4 v) {
+//	v *= 255;
+//	return uint((uint(v.a) << 24) | ((uint(v.b) & 0xFF) << 16) | ((uint(v.g) & 0xFF) << 8) | (uint(v.r) & 0xFF));
+//}
+//
+//vec4 intToCol(uint v) {
+//	return vec4(float(v >> 24), float((v >> 16) & 0xFF), float((v >> 8) & 0xFF), float(v.r & 0xFF)) / 255;
+//}
 
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
-
+//TODO squared distance aa*bb
 
 
 
@@ -27,7 +27,8 @@ float rand(vec2 co){
 
 layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
 
-layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
+//layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
+layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
 
 layout(std430, binding = 1) buffer windowSize_{
 	uint width;
@@ -54,15 +55,14 @@ layout(std430, binding = 2) buffer lineData_{
 
 
 void setPixelColor(vec2 pos, vec4 col){
-	uint i = uint(pos.y) * width + uint(pos.x);
-
-//	vec4 lastCol = intToCol(colorOutput[i]);
-//	vec4 _col = mix(lastCol, col, col.a);
-//	vec4 _col = lastCol + col*col.a;
+//	uint i = uint(pos.y) * width + uint(pos.x);
 
 	//TODO dont multiply per alpha. just copy it
-	colorOutput[i] = colToInt(col * col.a);
-//	colorOutput[i] = colToInt(_col);
+//	colorOutput[i] = colToInt(col * col.a);
+//	colorOutput[i] = col;
+
+	colorOutput[uint(pos.y) * width + uint(pos.x)] = col;
+
 }
 
 
@@ -100,6 +100,7 @@ void drawLine(){
 			abs(s1 - s0) * (1 / (sLen / i))) 					//2D segment distance * segment factor
 			+ s0;												//+ segment base point
 
+		//TODO use triangle rasterization method
 		setPixelColor(ppos, col);							//Set the current pixel with the interpolated color
 		setPixelColor(ppos + vec2(1, 0), col);				//Additional pixel to prevent holes in the image
 	}
@@ -118,4 +119,3 @@ void main() {
 
 	drawLine();
 }
-

@@ -27,12 +27,13 @@ template<class t> struct vec2_t {
 	/**/			   inline vec2_t(const t& v) { *this = v; }
 	/**/			   inline void __vectorcall operator = (const vec2_t<t>& v) { x = v.x; y = v.y; }
 	/**/			   inline void __vectorcall operator = (const t& n) { x = y = n; }
+						//inline void __vectorcall operator == (const vec2_t<t>& v) { return x == v.x && y == v.y; }
 	template<class vt> inline vec2_t(const vec2_t<vt>& v) { *this = v;}
 	template<class vt> inline vec2_t(const vt& v) { *this = v; }
 	template<class vt> inline void __vectorcall operator = (const vec2_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); }
 	template<class vt> inline void __vectorcall operator = (const vt& n) { x = y = (t)n; }
 	template<class vt> inline void __vectorcall operator == (const vec2_t<vt>& v) { return x == v.x && y == v.y; }
-	template<class vt> inline void __vectorcall operator == (const vt& n) { return x == n && y == n; }
+	//template<class vt> inline void __vectorcall operator == (const vt& n) { return x == n && y == n; }
 
 
 	//Add, subtract, multiply and divide operators with vectors
@@ -44,6 +45,11 @@ template<class t> struct vec2_t {
 	template<class vt> inline void __vectorcall operator *= (const vec2_t<vt>& v) { x *= v.x; y *= v.y; }
 	template<class vt> inline void __vectorcall operator -= (const vec2_t<vt>& v) { x -= v.x; y -= v.y; }
 	template<class vt> inline void __vectorcall operator /= (const vec2_t<vt>& v) { x /= v.x; y /= v.y; }
+
+	template<class vt> inline bool __vectorcall operator < (const vec2_t<vt>& v) { return ((x < v.x) && (y < v.y)); }
+	template<class vt> inline bool __vectorcall operator > (const vec2_t<vt>& v) { return ((x > v.x) && (y > v.y)); }
+	template<class vt> inline bool __vectorcall operator <= (const vec2_t<vt>& v) { return ((x <= v.x) && (y <= v.y)); }
+	template<class vt> inline bool __vectorcall operator >= (const vec2_t<vt>& v) { return ((x >= v.x) && (y >= v.y)); }
 
 
 	//Add, subtract, multiply and divide operators with values

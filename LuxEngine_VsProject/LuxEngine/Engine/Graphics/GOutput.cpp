@@ -19,7 +19,7 @@
 
 
 
-//TODO render pass seems to be useless
+//TODO render pass is useless
 	void Engine::createRenderPass( ) {
 		//Color
 		VkAttachmentDescription colorAttachment{};

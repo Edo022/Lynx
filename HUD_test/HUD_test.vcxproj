@@ -149,7 +149,8 @@
       <AdditionalIncludeDirectories>$(SolutionDir)LuxEngine_VsProject;%(AdditionalIncludeDirectories);S:\CppLibraries\Vulkan1.2.135.0\Third-Party\Include;S:\CppLibraries\Vulkan1.2.135.0\Include;S:\CppLibraries\glfw3\include;S:\CppLibraries\TermColor</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

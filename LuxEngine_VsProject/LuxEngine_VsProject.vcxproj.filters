@@ -231,5 +231,8 @@
     <None Include="LuxEngine\Contents\shaders\Line2D.comp">
       <Filter>LuxEngine\Contents\Shaders</Filter>
     </None>
+    <None Include="LuxEngine\Contents\shaders\FloatToIntBuffer.comp">
+      <Filter>LuxEngine\Contents\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

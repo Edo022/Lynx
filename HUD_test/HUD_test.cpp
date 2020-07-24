@@ -2,14 +2,15 @@
 
 //regex per contare le linee di codice non vuote
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
+//TODO squared distance aa*bb
 
 
 //TODO add memory pool
 
 #include <time.h>
-
 #include "LuxEngine/LuxEngine.h"
 #include "LuxEngine/Engine/Input/Input.h"
+#include "LuxEngine/macros.h"
 
 
 //namespace lux::obj {
@@ -40,7 +41,7 @@ int main() {
 	{
 		lux::obj::Line2D lineTest;
 		lineTest.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
-		lineTest.col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
+		lineTest.col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f };
 		lineTest.wd0 = 100;
 		lineTest.wd1 = 200;
 		lineTest.p0 = vec2i32{ 2000, 500 };
@@ -48,7 +49,7 @@ int main() {
 
 		lux::obj::Line2D lineTest2;
 		lineTest2.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
-		lineTest2.col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
+		lineTest2.col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f };
 		lineTest2.wd0 = 100;
 		lineTest2.wd1 = 200;
 		lineTest2.p0 = vec2i32{ 2000, 500 };
@@ -61,8 +62,10 @@ int main() {
 
 		//TODO
 		Engine& engine_ = lux::getEngine( );
-		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, (engine_.shaderPath + lineTest.shaderName + ".comp.spv").begin( ), 4, 1, 1);
-		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, (engine_.shaderPath + lineTest.shaderName + ".comp.spv").begin( ), 4, 1, 1);
+		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, lineTest.shaderName, 4, 1, 1);
+		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, lineTest.shaderName, 4, 1, 1);
+		//engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, "FloatToIntBuffer", engine_.swapchainExtent.width / 32, engine_.swapchainExtent.height / 32, 1);
+		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, "FloatToIntBuffer", engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 
@@ -83,6 +86,35 @@ int main() {
 		sleep(10);
 	}
 	return 0;
+}
+
+
+
+
+
+
+#undef max
+#undef min
+
+
+
+auto distToPoint(vec2f32 a, vec2f32 b, vec2f32 p){
+	float32 l2 = pow(dist(a, b), 2);
+	if(l2 == 0) return dist(p, a);
+	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / l2)))));
+}
+
+auto distToPoint2(vec2f32 a, vec2f32 b, vec2f32 p){
+	if(pow(dist(a, b), 2) == 0) return dist(p, a);
+	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / pow(dist(a, b), 2))))));
+}
+
+auto distToPoint2D(vec2f32 a, vec2f32 b, vec2f32 p){
+	return dist(p, ((a.x == b.x && a.y == b.y) ? a : (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2))))))));
+}
+//Distnce to point for lines with non zero length
+auto distToPoint2D_nz(vec2f32 a, vec2f32 b, vec2f32 p){
+	return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2)))))));
 }
 
 

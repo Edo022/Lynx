@@ -1,0 +1,34 @@
+
+#version 450
+
+#define WORKGROUP_SIZE 32			//The x and y size of the workgroup
+#define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
+#define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+
+
+
+
+
+layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
+
+layout(std430, binding = 0) buffer From_{ vec4 From[]; };
+layout(std430, binding = 1) buffer To_{ uint To[]; };
+
+layout(std430, binding = 2) buffer windowSize_{
+	uint width;
+	uint height;
+};
+
+
+
+
+
+
+
+void main(){
+	if(gx >= width || gy >= height) return;
+
+	uint i = gy * width + gx;
+//	if(gx<100 || gy < 200) From[i] = vec4(gx/(float(width)/255),gy/(float(height)/255),0,0) / 255;
+	To[i] = (uint(From[i].a*255) << 24) | (uint(From[i].b*255) << 16) | (uint(From[i].g*255) << 8) | uint(From[i].r*255);
+}

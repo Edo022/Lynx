@@ -108,18 +108,18 @@
 				CShaders_stg.popFront( );
 			}
 
+
 			static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 			lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize( ) + 2);
 
+			commandBuffers[0] = clearCommandBuffer;
 			for(uint32 i = 0; i < CShaders.size( ); ++i) {
-				if(CShaders.isValid(i)) {
-					commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
-				}
+				if(CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
 			}
 			commandBuffers[commandBuffers.size( ) - 1] = copyCommandBuffers[imageIndex];
-			commandBuffers[0] = clearCommandBuffer;
 
-			static VkSubmitInfo submitInfo{};
+
+			static VkSubmitInfo submitInfo{ };
 			submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 			submitInfo.waitSemaphoreCount = 1;
 			submitInfo.pWaitSemaphores = &renderSemaphoreImageAvailable[renderCurrentFrame];

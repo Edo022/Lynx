@@ -208,11 +208,12 @@
 				region.bufferImageHeight = 0;												//dark magic
 				region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;				//Set aspect mask
 				region.imageSubresource.mipLevel = 0;										//No mipmap
-				region.imageSubresource.baseArrayLayer = 0;									//Set base layer
+				region.imageSubresource.baseArrayLayer = 0;									//Set base
 				region.imageSubresource.layerCount = 1;										//No multi layer
 				region.imageOffset = { 0, 0, 0 };											//No image offset
 				region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput_i)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				//vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 				//Create a barrier to use the swapchain image as a present source image
 				VkImageMemoryBarrier writeToRead{};										//Create memory barrier object
@@ -242,6 +243,7 @@
 
 
 
+
 		{ //Clear
 			//Create command pool
 			static VkCommandPoolCreateInfo commandPoolCreateInfo2 = {};							//Create command pool create infos. The command pool contains the command buffers
@@ -267,7 +269,8 @@
 			beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 			vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
 
-			vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+			//vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput_i)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+			vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4 * 4, 0);
 
 			//End command recording
 			vkEndCommandBuffer(clearCommandBuffer);
@@ -341,15 +344,15 @@
 	//*   pCells: an array of memory cells to bind to the shader
 	//*       The shader inputs must match those cells
 	//*       the binding index is the same as their index in the array
-	//*   vShaderPath: a pointer to a lux::String containing the path to the compiled shader file
+	//*   vShaderPath: The path of the shader that will be executed (Without extension. From LuxEngine/Contents/Shaders/)
 	//*   returns 0 if the shader was created and loaded successfully
 	//*       -1 if one or more buffers cannot be used
 	//*       -2 if the file does not exist
 	//*       -3 if an unknown error occurs //TODO
-	int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells,const lux::String& vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 		//TODO check buffers
 		//TODO check file
-		CShaders_stg_t* shaderStgPtr = new CShaders_stg_t{ LuxShader_t{ }, pCells, vShaderPath };
+		CShaders_stg_t* shaderStgPtr = new CShaders_stg_t{ LuxShader_t{ }, pCells, (shaderPath + vShaderPath + ".comp.spv").begin( ) };
 
 		cshaderCreateDescriptorSetLayouts(shaderStgPtr->cells, &shaderStgPtr->shader);					//Create descriptor layouts,
 		cshaderCreateDescriptorSets(shaderStgPtr->cells, &shaderStgPtr->shader);						//Descriptor pool, descriptor sets and descriptor buffers

@@ -285,10 +285,11 @@ public:
 
 	//Window >> this
 	GLFWwindow*					window;										//Main engine window
-	int32						width = 1920 * 2, height = 1080 * 2;		//Size of the window //TODO
+	int32						width = 1920 * 2, height = 1080;			//Size of the window //TODO
 	LuxFence					windowResizeFence;
 	LuxCell						gpuCellWindowSize;
 	LuxCell						gpuCellWindowOutput;						//The buffer that contains the color output of the window
+	LuxCell						gpuCellWindowOutput_i;						//The buffer that contains the color output of the window
 	void initWindow();		void createInstance();
 
 
@@ -448,7 +449,7 @@ public:
 	void		cshaderCreatePipeline(const char* shaderPath, LuxShader_t* pCShader);
 	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	void		cshaderCreateDefaultCommandBuffers();
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const char* vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const lux::String& vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

@@ -9,7 +9,8 @@
 
 	void Engine::runCompute( ) {
 		{
-			gpuCellWindowOutput = gpuCellCreate(width * height * 4/*A8-R8-G8-B8*/, false);
+			gpuCellWindowOutput_i = gpuCellCreate(width * height * 4	/*A8-R8-G8-B8     UI*/, false);
+			gpuCellWindowOutput = gpuCellCreate(width * height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);
 
 			gpuCellWindowSize = gpuCellCreate(4 * 2, true);
 			uint32* pwindowSize = scast<uint32*>(gpuCellMap(gpuCellWindowSize));

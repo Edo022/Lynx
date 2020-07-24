@@ -2,15 +2,16 @@
 #pragma warning(disable : 4005) //Macro referinition
 
 
-
+#undef max
+#undef min
 //Functions
-template<class T> static inline constexpr T __vectorcall max(T a, T b) { return (a > b) ? a : b; }						//Returns the minimum value
-template<class T> static inline constexpr T __vectorcall min(T a, T b) { return (a < b) ? a : b; }						//Returns the maximum value
-template<class T> static inline constexpr T __vectorcall max(T a, T b, T c) { return max(max(a, b), c); }				//Returns the minimum value
-template<class T> static inline constexpr T __vectorcall min(T a, T b, T c) { return min(min(a, b), c); }				//Returns the maximum value
-template<class T> static inline constexpr T __vectorcall max(T a, T b, T c, T d) { return max(max(max(a, b), c), d); }	//Returns the minimum value
-template<class T> static inline constexpr T __vectorcall min(T a, T b, T c, T d) { return min(min(min(a, b), c), d); }	//Returns the maximum value
-template<class T> static inline constexpr T __vectorcall swapVar(T a, T b) { return a ^= b ^= a ^= b; }					//Swaps the contents of 2 basic type variables
+template<class ta, class tb>						static inline constexpr auto __vectorcall max(const ta a, const tb b)							{ return (a > b) ? a : b; }				//Returns the minimum value
+template<class ta, class tb>						static inline constexpr auto __vectorcall min(const ta a, const tb b)							{ return (a < b) ? a : b; }				//Returns the maximum value
+template<class ta, class tb, class tc>				static inline constexpr auto __vectorcall max(const ta a, const tb b, const tc c)				{ return max(max(a, b), c); }			//Returns the minimum value
+template<class ta, class tb, class tc>				static inline constexpr auto __vectorcall min(const ta a, const tb b, const tc c)				{ return min(min(a, b), c); }			//Returns the maximum value
+template<class ta, class tb, class tc, class td>	static inline constexpr auto __vectorcall max(const ta a, const tb b, const tc c, const td d)	{ return max(max(max(a, b), c), d); }	//Returns the minimum value
+template<class ta, class tb, class tc, class td>	static inline constexpr auto __vectorcall min(const ta a, const tb b, const tc c, const td d)	{ return min(min(min(a, b), c), d); }	//Returns the maximum value
+template<class ta, class tb>						static inline constexpr void __vectorcall swapVar(ta a, tb b)									{ a ^= b ^= a ^= b; }					//Swaps the contents of 2 basic type variables
 
 
 //Console output

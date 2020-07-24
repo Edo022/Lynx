@@ -62,7 +62,7 @@ namespace lux {
 		//*   in: a pointer to the container object
 		template<class elmType>
 		Map(const ContainerBase<elmType, iter>* in) {
-			for(int i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
+			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
 		}
 
 
@@ -165,9 +165,9 @@ namespace lux {
 
 		//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
 		inline void __vectorcall clear( ) {
-			for(int32 i = 0; i < chunksDynNum; ++i) free(__lp_data[i]);						//Free data
+			for(iter i = 0; i < chunksDynNum; ++i) free(__lp_data[i]);						//Free data
 			free(__lp_data);																//Free data
-			for(int32 i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]);					//Free tracker
+			for(iter i = 0; i < chunksDynNum; ++i) free(__lp_tracker[i]);					//Free tracker
 			free(__lp_tracker);																//Free tracker
 			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));				//Allocate data
 			__lp_tracker = scast<iter**>(malloc(sizeof(iter*) * (maxSize / chunkSize)));	//Allocate tracker
