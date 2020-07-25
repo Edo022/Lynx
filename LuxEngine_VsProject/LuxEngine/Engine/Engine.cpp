@@ -155,7 +155,7 @@ void Engine::mainLoop() {
 	//std::mbstowcs(thrName, "hhhhh", 100);
 
 	while (!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
+		glfwWaitEvents();
 	}
 	running = false;
 	vkDeviceWaitIdle(graphics.LD);
@@ -169,7 +169,8 @@ void Engine::runRenderThr() {
 	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  Render"));
 	while (running) {
 		graphicsDrawFrame();
-		vkDeviceWaitIdle(compute.LD);
+		//TODO it does nothing but it's probably important, somehow. dunno
+		//vkDeviceWaitIdle(compute.LD);
 		frames++;
 	}
 }

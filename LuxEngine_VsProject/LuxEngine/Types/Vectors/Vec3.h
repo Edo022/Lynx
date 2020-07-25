@@ -19,7 +19,7 @@ template<class t> struct vec3_t {
 	template<class ta, class tb, class tc> inline vec3_t(const ta& _x, const tb& _y, const tc& _z) { x = (t)_x; y = (t)_y; z = (t)_z; }
 
 
-	//Assignment operators, constructors and compare operators
+	//Assignment operators, constructors and comparison operators
 	/**/			   inline vec3_t(const vec3_t<t>& v) { *this = v; }
 	/**/			   inline vec3_t(const t& v) { *this = v; }
 	/**/			   inline void __vectorcall operator = (const vec3_t<t>& v) { x = v.x; y = v.y; z = v.z; }
