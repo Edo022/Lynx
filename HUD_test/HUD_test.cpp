@@ -99,25 +99,26 @@ int main() {
 
 
 static inline auto __vectorcall distToPoint(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	float32 l2 = pow(dist(a, b), 2);
+	float32 l2 = (pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 	if(l2 == 0) return dist(p, a);
 	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / l2)))));
 }
 
 static inline auto __vectorcall distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p){
 	if(pow(dist(a, b), 2) == 0) return dist(p, a);
-	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / pow(dist(a, b), 2))))));
+	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))));
 }
 
 
 
 
 static inline auto __vectorcall distToPoint2D(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	return dist(p, ((a == b) ? a : (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2))))))));
+	return dist(p, ((a == b) ? a : (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))))));
 }
 //Distnce to point for lines with non zero length
 static inline auto __vectorcall distToPoint2D_nz(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2)))))));
+	return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2))))))));
+	//return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2)))))));
 }
 
 
