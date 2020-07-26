@@ -8,13 +8,6 @@ struct LuxShader_t {
 	//Descriptors
 	VkDescriptorPool descriptorPool;
 	VkDescriptorSet descriptorSet;
-	VkDescriptorSetLayout descriptorSetLayout;
-
-	//Pipeline
-	VkShaderModule shaderModule;
-	VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
-	VkPipeline pipeline;
-	VkPipelineLayout pipelineLayout;
 
 	//Commands
 	VkCommandPool commandPool;

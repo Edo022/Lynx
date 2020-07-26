@@ -438,8 +438,6 @@ public:
 		const char* shaderPath;
 	};
 	lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
-	lux::Map<LuxShader_t, uint32>	CShaders;				//List of shaders
-	lux::Queue<CShaders_stg_t*>		CShaders_stg;			//Staging queue for CShaders
 	LuxBuffer						gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 	LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
 	bool							gpuCellDestroy(const LuxCell vCell);
@@ -461,12 +459,14 @@ public:
 		VkPipeline pipeline;
 		lux::DynArray<void*> __lp_ptrs;
 	} ;
-	lux::Array<DefRenderShader_t> defRenderShaders;
-	void		cshaderCreateLayout(uint32 pCellNum, DefRenderShader_t* pCShader, const char* shaderPath);
-	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader, defRenderShader vRenderShader);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const defRenderShader vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	lux::Array<DefRenderShader_t> defRenderShaders;			//Default render shaders
+	lux::Map<LuxShader_t, uint32>	CShaders;				//Per-object shaders
+	lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const defRenderShader vRenderShader, const lux::String& vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	void		cshaderCreateDefLayout(const defRenderShader vRenderShader, const uint32 pCellNum);
+	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, defRenderShader vRenderShader);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const defRenderShader vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const defRenderShader vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

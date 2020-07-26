@@ -100,23 +100,28 @@
 		}
 
 
+
+
 		//TODO don't recreate the command buffer array every time
 		{ //Update render result submitting the command buffers to the compute queues
-			while(CShaders_stg.size( ) > 0) {
-				CShaders.add(CShaders_stg.front( )->shader);
-				delete(CShaders_stg.front( ));
-				CShaders_stg.popFront( );
-			}
-
+			//while(CShaders_stg.size( ) > 0) {
+			//	CShaders.add(*CShaders_stg.front( ));
+			//	delete(CShaders_stg.front( ));
+			//	CShaders_stg.popFront( );
+			//}
 
 			static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 			lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize( ) + 2);
+			addShaderFence.startFirst( );
+			{
 
-			commandBuffers[0] = clearCommandBuffer;
-			for(uint32 i = 0; i < CShaders.size( ); ++i) {
-				if(CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
+				commandBuffers[0] = clearCommandBuffer;
+				for(uint32 i = 0; i < CShaders.size( ); ++i) {
+					if(CShaders.isValid(i)) commandBuffers[i + 1] = CShaders[i].commandBuffers.__lp_data[0];
+				}
+				commandBuffers[commandBuffers.size( ) - 1] = copyCommandBuffers[imageIndex];
+				addShaderFence.endFirst( );
 			}
-			commandBuffers[commandBuffers.size( ) - 1] = copyCommandBuffers[imageIndex];
 
 
 			static VkSubmitInfo submitInfo{ };
@@ -132,6 +137,8 @@
 			vkResetFences(graphics.LD, 1, &renderFencesInFlight[renderCurrentFrame]);
 			TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, renderFencesInFlight[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
 		}
+
+
 
 
 		{ //Present

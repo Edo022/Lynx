@@ -26,8 +26,8 @@
 
 		//Create default shaders
 		defRenderShaders.resize(defRenderShader::LUX_DEF_SHADER_NUM, { });
-		cshaderCreateLayout(3, &defRenderShaders[0], (shaderPath + "Line2D" + ".comp.spv").begin( ));
-		cshaderCreateLayout(3, &defRenderShaders[1],  (shaderPath + "FloatToIntBuffer" + ".comp.spv").begin( ));
+		cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
+		cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
 	}
 
 
