@@ -8,6 +8,7 @@
 
 
 	void Engine::runCompute( ) {
+
 		{
 			gpuCellWindowOutput_i = gpuCellCreate(width * height * 4	/*A8-R8-G8-B8     UI*/, false);
 			gpuCellWindowOutput = gpuCellCreate(width * height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);
@@ -22,6 +23,11 @@
 			copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
 			cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}
+
+		//Create default shaders
+		defRenderShaders.resize(defRenderShader::LUX_DEF_SHADER_NUM, { });
+		cshaderCreateLayout(3, &defRenderShaders[0], (shaderPath + "Line2D" + ".comp.spv").begin( ));
+		cshaderCreateLayout(3, &defRenderShaders[1],  (shaderPath + "FloatToIntBuffer" + ".comp.spv").begin( ));
 	}
 
 

@@ -262,6 +262,15 @@ Object rendering
 
 
 
+
+enum defRenderShader : uint32 {
+	LUX_DEF_SHADER_LINE_2D,
+	LUX_DEF_SHADER_COPY,
+	LUX_DEF_SHADER_NUM
+};
+
+
+
 class Engine {
 public:
 	double FPS = 0;
@@ -444,12 +453,20 @@ public:
 	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			//List of renderSpaces
 	//lux::Map<lux::obj::Base*, uint32> objs;		//TODO
 	lux::String shaderPath;
-	void		cshaderCreateDescriptorSetLayouts(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
-	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader);
-	void		cshaderCreatePipeline(const char* shaderPath, LuxShader_t* pCShader);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	struct DefRenderShader_t{
+		VkDescriptorSetLayout descriptorSetLayout;
+		VkShaderModule shaderModule;
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
+		VkPipelineLayout pipelineLayout;
+		VkPipeline pipeline;
+		lux::DynArray<void*> __lp_ptrs;
+	} ;
+	lux::Array<DefRenderShader_t> defRenderShaders;
+	void		cshaderCreateLayout(uint32 pCellNum, DefRenderShader_t* pCShader, const char* shaderPath);
+	void		cshaderCreateDescriptorSets(const lux::Array<LuxCell>& pCells, LuxShader_t* pCShader, defRenderShader vRenderShader);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const defRenderShader vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	void		cshaderCreateDefaultCommandBuffers();
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const lux::String& vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const defRenderShader vRenderShader, const lux::String& vShaderPath, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 
