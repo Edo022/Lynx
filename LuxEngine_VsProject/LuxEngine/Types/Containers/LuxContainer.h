@@ -8,5 +8,7 @@ namespace lux {
 		virtual inline type* __vectorcall end( ) const = 0;
 		virtual inline iter __vectorcall size( ) const = 0;
 		virtual inline bool __vectorcall empty( ) const = 0;
+
+
 	};
 }

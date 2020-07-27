@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable : 4005) //Macro referinition
+#include "LuxEngine_config.h"
 
 
 #undef max
@@ -22,6 +23,7 @@ template<class ta, class tb>						static inline constexpr void __vectorcall swap
 #define SuccessNoNl			std::cout<<termcolor::green;
 #define Main				std::cout<<termcolor::magenta	<< '\n';
 #define Failure				std::cout<<termcolor::red		<< '\n';
+#define Warning				std::cout<<termcolor::yellow	<< '\n';
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
 

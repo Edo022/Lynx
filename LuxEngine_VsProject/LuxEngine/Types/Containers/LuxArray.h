@@ -5,6 +5,8 @@
 
 
 
+
+
 //TODO use faster memcpy
 //TODO dont use initializer list
 //A static array that knows its size. It can be resized, but it doesn't have add or remove methods
@@ -18,6 +20,20 @@ namespace lux {
 		iter __lp_size{ 0 };		//Size of the array
 		#define __lp_lux_static_array_init(_size) __lp_size = _size; __lp_data = (type*)malloc(sizeof(type) * __lp_size)
 
+		//Debug only
+		//TODO add negative value check
+		#ifdef LUX_DEBUG
+		void checkSize(const iter vInitSize){
+			if(vInitSize > 1000 * 1000 * 1000 * 16 /*16GB*/){
+				Failure printf("Error: \nFile %s", __FILE__);
+				Failure printf("Function %s, line %d:", __func__, __LINE__);
+				Failure printf("Something went wrong .-. You were trying to allocate %dGB of memory\n", vInitSize / (1000 * 1000));
+				Failure printf("This error will not be reported in release mode. Make sure to fix it");
+				Normal system("pause");
+				exit(-1);
+			}
+		}
+		#endif
 
 
 
@@ -25,12 +41,16 @@ namespace lux {
 
 
 
-
 		//Creates an array with no elements
 		inline Array( ) :__lp_size(0), __lp_data(nullptr) { }
 		//Sets the size of the array and allocates it, without inizializing the elements
-		inline Array(const iter vInitSize) { __lp_lux_static_array_init(vInitSize); }
-
+		inline Array(const iter vInitSize) {
+			//TODO checek only in debug mode
+			//TODO luxDebug bugged
+			//checkSize(vInitSize);
+			luxDebug(checkSize(vInitSize));
+			__lp_lux_static_array_init(vInitSize);
+		}
 
 		//Initializes the array using a list of elements, automatically converting it to the right type
 		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
@@ -79,6 +99,7 @@ namespace lux {
 		//*   vNewSize: the new size of the array
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize) {
+			luxDebug(checkSize(vNewSize));
 			if(vNewSize < 0) return -1;
 			else if(vNewSize == 0) {
 				free(__lp_data);//TODO dont free with global memory pool
@@ -97,6 +118,7 @@ namespace lux {
 		//*   vInitValue: the value to use to initialize the new elements
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
+			luxDebug(checkSize(vNewSize));
 			//TODO not secure
 			if(vNewSize < 0) return -1;
 			iter oldSize = __lp_size;

@@ -37,7 +37,7 @@ int main() {
 	vec2i32 hhh = {10, 9 };
 	hhh *= 0.5;
 
-
+	//sleep(2000);
 	{
 		lux::obj::Line2D lineTest;
 		lineTest.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
@@ -62,10 +62,10 @@ int main() {
 
 		//TODO
 		Engine& engine_ = lux::getEngine( );
+		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, LUX_DEF_SHADER_COPY, engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
 		//engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, "FloatToIntBuffer", engine_.swapchainExtent.width / 32, engine_.swapchainExtent.height / 32, 1);
-		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, LUX_DEF_SHADER_COPY, engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 

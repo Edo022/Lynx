@@ -71,7 +71,7 @@ namespace lux::_engine {
 
 namespace lux{
 	//This function returns a reference of the engine object
-	inline Engine& getEngine( ){
+	Engine& getEngine( ){
 		static Engine engine_;
 		return engine_;
 	}
@@ -146,8 +146,8 @@ void Engine::run(bool vUseVSync, float vFOV) {
 void Engine::mainLoop() {
 	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  User input"));
 	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);
-	std::thread renderThr(&Engine::runRenderThr, this);
 	FPSCounterThr.detach();
+	std::thread renderThr(&Engine::runRenderThr, this);
 	renderThr.detach();
 	initialized = true;
 
@@ -434,7 +434,7 @@ void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, co
 
 
 	//Dunno
-	inline void lux::_engine::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-		if(func != nullptr) func(instance, debugMessenger, pAllocator);
-	}
+	//inline void lux::_engine::DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+	//	auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+	//	if(func != nullptr) func(instance, debugMessenger, pAllocator);
+	//}

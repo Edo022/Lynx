@@ -345,10 +345,12 @@ public:
 
 
 	//Graphics >> Graphics/GGraphics.cpp
-	lux::Array<VkSemaphore>		renderSemaphoreImageAvailable;
-	lux::Array<VkSemaphore>		renderSemaphoreFinished;
-	lux::Array<VkFence>			renderFencesInFlight;
-	lux::Array<VkFence>			renderFencesImagesInFlight;
+	lux::Array<VkSemaphore>		drawFrameImageAquiredSemaphore;
+	lux::Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
+	lux::Array<VkSemaphore>		drawFrameCopySemaphore;
+	lux::Array<VkSemaphore>		drawFrameClearSemaphore;
+	lux::Array<VkFence>			drawFrameImageRenderedFence;
+	//lux::Array<VkFence>			renderFencesImagesInFlight;
 	int32						renderCurrentFrame = 0;
 	void						runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
 	void						graphicsInitVulkan();
@@ -384,7 +386,7 @@ public:
 
 	//Graphics images and output objects >> Graphics/GOutput.cpp
 	VkRenderPass				renderPass;
-	const int32					renderMaxFramesInFlight = 16;		//Default:2
+	const int32					renderMaxFramesInFlight = 4;		//Default:2
 	bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized
 	void						createRenderPass();
 	void						createFramebuffers();
@@ -490,7 +492,12 @@ namespace lux::_engine {
 		if(func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
 		else return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
-	inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+	//inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+	inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+		if(func != nullptr) func(instance, debugMessenger, pAllocator);
+	}
+
 
 	//More dark magic
 	static constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {

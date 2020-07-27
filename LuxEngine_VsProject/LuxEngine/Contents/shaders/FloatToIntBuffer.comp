@@ -28,7 +28,11 @@ layout(std430, binding = 2) buffer windowSize_{
 void main(){
 	if(gx >= width || gy >= height) return;
 
+
+
+////	if(gx<100 || gy < 200) From[i] = vec4(gx/(float(width)/255),gy/(float(height)/255),0,0) / 255;
+
 	uint i = gy * width + gx;
-//	if(gx<100 || gy < 200) From[i] = vec4(gx/(float(width)/255),gy/(float(height)/255),0,0) / 255;
 	To[i] = (uint(From[i].a*255) << 24) | (uint(From[i].b*255) << 16) | (uint(From[i].g*255) << 8) | uint(From[i].r*255);
+	From[i] = vec4(.1,0,0,1);
 }

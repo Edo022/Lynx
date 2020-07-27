@@ -4,3 +4,4 @@
 #define sc
 #define TryVk(f) if (f != VK_SUCCESS)
 #define null
+#define luxDebug(s)
