@@ -435,7 +435,6 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="LuxEngine\Contents\shaders\FloatToIntBuffer.comp" />
-    <None Include="LuxEngine\Contents\shaders\shader.comp" />
     <None Include="LuxEngine\Contents\shaders\Line2D.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

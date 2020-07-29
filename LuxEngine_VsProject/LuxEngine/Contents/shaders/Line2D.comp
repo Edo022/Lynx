@@ -4,37 +4,20 @@
 #define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
+const vec2 mp = {-1, 1};	//Minus-plus vector for fast vec2 operations
+float rand(vec2 co){ return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453); }
 
-//uint colToInt(vec4 v) {
-//	v *= 255;
-//	return uint((uint(v.a) << 24) | ((uint(v.b) & 0xFF) << 16) | ((uint(v.g) & 0xFF) << 8) | (uint(v.r) & 0xFF));
-//}
-//
-//vec4 intToCol(uint v) {
-//	return vec4(float(v >> 24), float((v >> 16) & 0xFF), float((v >> 8) & 0xFF), float(v.r & 0xFF)) / 255;
-//}
-
-float rand(vec2 co){
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
 
 //TODO squared distance aa*bb
 
 
 
 
-
-
 layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
 
-//layout(std430, binding = 0) buffer colorOutput_{ uint colorOutput[]; };
 layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
-
-layout(std430, binding = 1) buffer windowSize_{
-	uint width;
-	uint height;
-};
-
+layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer lineData_{
 	//16
 	ivec2 p0; //0		//4
@@ -55,25 +38,13 @@ layout(std430, binding = 2) buffer lineData_{
 
 
 void setPixelColor(vec2 pos, vec4 col){
-//	uint i = uint(pos.y) * width + uint(pos.x);
-
-	//TODO dont multiply per alpha. just copy it
-//	colorOutput[i] = colToInt(col * col.a);
-//	colorOutput[i] = col;
-
 	colorOutput[uint(pos.y) * width + uint(pos.x)] = col;
-
 }
 
 
 
 
 void drawLine(){
-	const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
-	const vec2 mp = {-1, 1};	//Minus-plus vector for fast vec2 operations
-
-
-
 	//Calculate length and interpolated values
 	vec2 lDist = abs(p0 - p1);							//2D distance between the line points
 	float lFac = 1 / (distance(p0, p1) / gx);			//Factor of the position of gx in the line length	(inverse of (line length / shader call x))

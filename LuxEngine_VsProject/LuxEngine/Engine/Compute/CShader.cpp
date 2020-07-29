@@ -147,9 +147,9 @@ void Engine::cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array
 	for(uint32 i = 0; i < pCells.size( ); ++i) {
 		//Connect the storage buffer to the descrptor
 		VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
-		descriptorBufferInfo->buffer = CBuffers[__lp_buffer_from_cc(pCells[i])].buffer;		//Set buffer
-		descriptorBufferInfo->offset = __lp_cellOffset_from_cc(&compute.PD, pCells[i]);		//Set buffer offset
-		descriptorBufferInfo->range = __lp_cellSize_from_cc(pCells[i]);						//Set buffer size
+		descriptorBufferInfo->buffer = CBuffers[getBufferIndex(pCells[i])].buffer;		//Set buffer
+		descriptorBufferInfo->offset = getCellOffset(&compute.PD, pCells[i]);		//Set buffer offset
+		descriptorBufferInfo->range = getCellSize(pCells[i]);						//Set buffer size
 
 		VkWriteDescriptorSet writeDescriptorSet = { };										//Create write descriptor set
 		writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;						//Set structure type
@@ -232,8 +232,8 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			region.imageSubresource.layerCount = 1;										//No multi layer
 			region.imageOffset = { 0, 0, 0 };											//No image offset
 			region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-			vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput_i)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-			//vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[getBufferIndex(gpuCellWindowOutput_i)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			//vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[getBufferIndex(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 			//Create a barrier to use the swapchain image as a present source image
 			VkImageMemoryBarrier writeToRead{ };										//Create memory barrier object
@@ -289,8 +289,8 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 		beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 		vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
 
-		//vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput_i)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
-		vkCmdFillBuffer(clearCommandBuffer, CBuffers[__lp_buffer_from_cc(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4 * 4, 0);
+		//vkCmdFillBuffer(clearCommandBuffer, CBuffers[getBufferIndex(gpuCellWindowOutput_i)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
+		vkCmdFillBuffer(clearCommandBuffer, CBuffers[getBufferIndex(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4 * 4, 0);
 
 		//End command recording
 		vkEndCommandBuffer(clearCommandBuffer);

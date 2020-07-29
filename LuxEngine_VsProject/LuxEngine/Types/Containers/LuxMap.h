@@ -145,11 +145,9 @@ namespace lux {
 		//Signs an index of the map as free, without deleting it. Returns a char for performance reasons
 		//*   vIndex:  | the index to signNz
 		//*   freeElm: | whether to free the element or not. Keeping it in memory saves performances but increases memory usage
-		//*   Returns  | 0 if the operation succeeded, status(index) if not
-		signed char __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
-			signed char r = status(vIndex);
-
-			if(r != 0) return r;								//If the index is not valid, return the error code
+		//*   Returns  | true if the operation succeeded, false if the index is invalid or an error occurred
+		bool __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
+			if(isValid(vIndex) != 0) return false;				//Check for index validity
 			else {												//If it is,
 				__lp_Tracker(vIndex) = -1;							//Set the index as free
 				if(vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary

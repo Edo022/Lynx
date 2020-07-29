@@ -31,13 +31,10 @@ void hg(lux::Array<uint16>){
 
 int main() {
 	LuxInit(false);
-	//sleep(1000);
 
 
-	vec2i32 hhh = {10, 9 };
-	hhh *= 0.5;
 
-	//sleep(2000);
+
 	{
 		lux::obj::Line2D lineTest;
 		lineTest.col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
@@ -65,16 +62,15 @@ int main() {
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, LUX_DEF_SHADER_COPY, engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
-		//engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, "FloatToIntBuffer", engine_.swapchainExtent.width / 32, engine_.swapchainExtent.height / 32, 1);
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 
 
-	lux::input::InputState is({
+	lux::input::InputState inputStateTest({
 		lux::input::KeySequence{ LUX_KEY_W | lux::input::LuxKeyState::LUX_PRESS, hg },
 		lux::input::KeySequence{ LUX_KEY_A | lux::input::LuxKeyState::LUX_PRESS, hg }
 		});
-	lux::input::setInputState(&is);
+	lux::input::setInputState(&inputStateTest);
 
 
 	srand(time(NULL));
@@ -82,7 +78,7 @@ int main() {
 	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 	while(lux::getEngine( ).running) {
 		//lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
-		//sleep(rand( ) % 20);
+
 		sleep(10);
 	}
 	return 0;
@@ -93,33 +89,30 @@ int main() {
 
 
 
-#undef max
-#undef min
+//#undef max
+//#undef min
+//
+//static inline auto __vectorcall distToPoint(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//	float32 l2 = (pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
+//	if(l2 == 0) return dist(p, a);
+//	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / l2)))));
+//}
+//
+//static inline auto __vectorcall distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//	if(pow(dist(a, b), 2) == 0) return dist(p, a);
+//	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))));
+//}
+//
+//
+//
+//
+//static inline auto __vectorcall distToPoint2D(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//	return dist(p, ((a == b) ? a : (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))))));
+//}
+////Distnce to point for lines with non zero length
+//static inline auto __vectorcall distToPoint2D_nz(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//	return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2))))))));
+//	//return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2)))))));
+//}
 
-
-
-static inline auto __vectorcall distToPoint(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	float32 l2 = (pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
-	if(l2 == 0) return dist(p, a);
-	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / l2)))));
-}
-
-static inline auto __vectorcall distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	if(pow(dist(a, b), 2) == 0) return dist(p, a);
-	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))));
-}
-
-
-
-
-static inline auto __vectorcall distToPoint2D(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	return dist(p, ((a == b) ? a : (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))))));
-}
-//Distnce to point for lines with non zero length
-static inline auto __vectorcall distToPoint2D_nz(const vec2f32& a, const vec2f32& b, const vec2f32& p){
-	return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2))))))));
-	//return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2)))))));
-}
-
-
-//TODO ! la memoria pre allocata dei buffer della GPU non distingue memoria locale e condivisa
+////TODO separate local and host memory in gpu memory pool
