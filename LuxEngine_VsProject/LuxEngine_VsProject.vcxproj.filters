@@ -79,9 +79,6 @@
     <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp">
       <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Types\LuxFence.h">
-      <Filter>LuxEngine\Types</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp">
       <Filter>LuxEngine\Engine\Compute</Filter>
     </ClCompile>

@@ -3,9 +3,9 @@
 //regex per contare le linee di codice non vuote
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 //TODO squared distance aa*bb
-
-
 //TODO add memory pool
+
+
 
 #include <time.h>
 #include "LuxEngine/LuxEngine.h"
@@ -13,9 +13,10 @@
 #include "LuxEngine/macros.h"
 
 
-//namespace lux::obj {
-//	using h = Line2D;
-//}
+
+
+
+
 
 
 int h(const char* b, int hh) {
@@ -31,8 +32,6 @@ void hg(lux::Array<uint16>){
 
 int main() {
 	LuxInit(false);
-
-
 
 
 	{
@@ -59,7 +58,6 @@ int main() {
 
 		//TODO
 		Engine& engine_ = lux::getEngine( );
-		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize}, LUX_DEF_SHADER_COPY, engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
 		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
 		lux::obj::addRenderSpace(&renderSpace);

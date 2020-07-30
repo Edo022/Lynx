@@ -27,7 +27,6 @@
 #include "LuxEngine/Types/Containers/LuxQueue.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/EngineTypes.h"
-#include "LuxEngine/Types/LuxFence.h"
 
 #include "LuxEngine/System/System.h"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
@@ -271,6 +270,7 @@ enum defRenderShader : uint32 {
 
 
 
+//TODO mote to lux::core namespace
 class Engine {
 public:
 	double FPS = 0;
@@ -295,7 +295,7 @@ public:
 	//Window >> this
 	GLFWwindow*					window;										//Main engine window
 	int32						width = 1920 * 2, height = 1080;			//Size of the window //TODO
-	LuxFence					windowResizeFence;
+	lux::FenceDE				windowResizeFence;
 	LuxCell						gpuCellWindowSize;
 	LuxCell						gpuCellWindowOutput;						//The buffer that contains the color output of the window
 	LuxCell						gpuCellWindowOutput_i;						//The buffer that contains the color output of the window
@@ -352,10 +352,8 @@ public:
 	lux::Array<VkFence>			drawFrameImageRenderedFence;
 	//lux::Array<VkFence>			renderFencesImagesInFlight;
 	int32						renderCurrentFrame = 0;
-	void						runGraphics(const bool vUseVSync = true, const float vFOV = 45.0f);
-	void						graphicsInitVulkan();
-	void						graphicsCreateSurface();
-	void						graphicsCreateFences();
+	void						graphicsInit(const bool vUseVSync = true, const float vFOV = 45.0f);
+	void						graphicsCreateSyncObjs();
 	void						graphicsCreateDebugMessenger();
 	void						graphicsDrawFrame();
 	void						graphicsCleanup();
@@ -426,10 +424,9 @@ public:
 	//Compute >> Compute/Compute.cpp
 	VkCommandPool				copyCommandPool;
 	lux::Array<VkCommandBuffer>	copyCommandBuffers;
-	VkCommandPool				clearCommandPool;
 	VkCommandBuffer				clearCommandBuffer;
-	void						runCompute();
-	void						cleanupCompute();
+	void						computeInit();
+	void						computeCleanup();
 
 
 
@@ -460,9 +457,9 @@ public:
 		VkPipelineLayout pipelineLayout;
 		VkPipeline pipeline;
 		lux::DynArray<void*> __lp_ptrs;
-	} ;
-	lux::Array<DefRenderShader_t> defRenderShaders;			//Default render shaders
-	lux::Map<LuxShader_t, uint32>	CShaders;				//Per-object shaders
+	};
+	lux::Array<DefRenderShader_t>	CShadersLayouts;		//Layout of the render shaders
+	lux::Map<LuxShader_t, uint32>	CShaders;					//Per-object shaders
 	lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();
 	void		cshaderCreateDefLayout(const defRenderShader vRenderShader, const uint32 pCellNum);

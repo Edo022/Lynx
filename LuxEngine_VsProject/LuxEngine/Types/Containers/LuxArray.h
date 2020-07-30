@@ -1,7 +1,7 @@
 #pragma once
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Types/Containers/LuxContainer.h" //TODO stfu
+#include "LuxEngine/Types/Containers/LuxContainer.h"
 
 
 
@@ -9,11 +9,8 @@
 
 //TODO use faster memcpy
 //TODO dont use initializer list
-//A static array that knows its size. It can be resized, but it doesn't have add or remove methods
+//A static array that knows its size. It can be resized, but it doesn't have add or remove functions
 namespace lux {
-	//template <class type, class iter> class ContainerBase;
-
-
 	template <class type, class iter = uint32> class Array : public ContainerBase<type, iter> {
 	public:
 		type* __lp_data{ nullptr };	//Elements of the array
@@ -21,19 +18,14 @@ namespace lux {
 		#define __lp_lux_static_array_init(_size) __lp_size = _size; __lp_data = (type*)malloc(sizeof(type) * __lp_size)
 
 		//Debug only
-		//TODO add negative value check
-		#ifdef LUX_DEBUG
-		void checkSize(const iter vInitSize){
-			if(vInitSize > 1000 * 1000 * 1000 * 16 /*16GB*/){
-				Failure printf("Error: \nFile %s", __FILE__);
-				Failure printf("Function %s, line %d:", __func__, __LINE__);
-				Failure printf("Something went wrong .-. You were trying to allocate %dGB of memory\n", vInitSize / (1000 * 1000));
+		luxDebug(void checkSize(const iter vInitSize){
+			if(vInitSize == scast<iter>(-1) && vInitSize > 0){
+				Failure printf("Error:");
+				Failure printf("Something went wrong .-. You were trying to allocate %u bytes of memory", scast<iter>(vInitSize));
 				Failure printf("This error will not be reported in release mode. Make sure to fix it");
-				Normal system("pause");
-				exit(-1);
+				system("pause"); exit(-1);
 			}
-		}
-		#endif
+		})
 
 
 
@@ -45,11 +37,8 @@ namespace lux {
 		inline Array( ) :__lp_size(0), __lp_data(nullptr) { }
 		//Sets the size of the array and allocates it, without inizializing the elements
 		inline Array(const iter vInitSize) {
-			//TODO checek only in debug mode
-			//TODO luxDebug bugged
-			//checkSize(vInitSize);
 			luxDebug(checkSize(vInitSize));
-			__lp_lux_static_array_init(vInitSize);
+			__lp_lux_static_array_init((vInitSize >= 0) ? vInitSize : 0);
 		}
 
 		//Initializes the array using a list of elements, automatically converting it to the right type
@@ -123,7 +112,7 @@ namespace lux {
 			if(vNewSize < 0) return -1;
 			iter oldSize = __lp_size;
 			resize(vNewSize);
-			//TODO intrinsic function copy for 16,32,64,128,256,512 bits
+			//TODO use intrinsic function copy with automatic loop unwrap
 			if(vNewSize > oldSize) for(iter i = oldSize; i < vNewSize; ++i) __lp_data[i] = vInitValue;
 			return vNewSize;
 		}

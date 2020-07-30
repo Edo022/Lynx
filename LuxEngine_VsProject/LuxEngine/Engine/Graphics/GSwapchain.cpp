@@ -160,7 +160,7 @@
 
 
 	void Engine::swapchainRecreate(const bool vWindowResized) {
-		if(vWindowResized) windowResizeFence.wait(1); //from framebufferResizeCallback
+		if(vWindowResized) windowResizeFence.startFirst();
 		int32 width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 
@@ -173,8 +173,6 @@
 			{ //destroy copy command buffers
 				vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.size( ), copyCommandBuffers.begin( ));
 				vkDestroyCommandPool(compute.LD, copyCommandPool, nullptr);
-				vkFreeCommandBuffers(compute.LD, clearCommandPool, 1, &clearCommandBuffer);
-				vkDestroyCommandPool(compute.LD, clearCommandPool, nullptr);
 			}
 
 			uint32* pwindowSize = scast<uint32*>(gpuCellMap(gpuCellWindowSize));
@@ -186,5 +184,5 @@
 				cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 			}
 		}
-		if(vWindowResized) windowResizeFence.set(2);
+		if(vWindowResized) windowResizeFence.endFirst();
 	}

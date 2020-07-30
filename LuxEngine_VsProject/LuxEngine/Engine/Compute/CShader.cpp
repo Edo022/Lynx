@@ -19,85 +19,76 @@
 
 
 
-//This function creates the descriptor sets layuot, the pipeline layout and the pipeline
-//*   pCellNum | The number of cells to bing to the shader. The shader inputs must match those cells
-//*   vCShader | the shader where to create the descriptor pool and allocate the descriptor buffers
-   //TODO remove shader path
+//TODO remove shader path
 //TODO use automatic default shader assignment
+//This function creates the descriptor sets layout, the pipeline and the pipeline layout of a shader
+//*   vRenderShader | the type of the shader
+//*   pCellNum      | The number of cells to bing to the shader. The shader inputs must match those cells
 void Engine::cshaderCreateDefLayout(const defRenderShader vRenderShader, const uint32 pCellNum) {
-//void Engine::cshaderCreateLayout(uint32 pCellNum, LuxShader_t* pCShader, const char* shaderPath) {
-	{ //Create descriptor sets layout
-		//Specify a binding of type VK_DESCRIPTOR_TYPE_STORAGE_BUFFER to the binding point32 0
-		//This binds to
-		//  layout(std430, binding = 0) buffer buf
-		//in the compute shader
-
-		lux::Array<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings(pCellNum);
-		for(uint32 i = 0; i < pCellNum; ++i) {
-			VkDescriptorSetLayoutBinding descriptorSetLayoutBinding = { };						//Create a descriptor set layout binding. The binding describes what to bind in a shader binding point and how to use it
-			descriptorSetLayoutBinding.binding = i;													//Set the binding point in the shader
-			descriptorSetLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;			//Set the type of the descriptor
-			descriptorSetLayoutBinding.descriptorCount = 1;											//Set the number of descriptors
-			descriptorSetLayoutBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;					//Use it in the compute stage
-			descriptorSetLayoutBinding.pImmutableSamplers = nullptr;									//Default
-			descriptorSetLayoutBindings[i] = descriptorSetLayoutBinding;						//Save it in the layout binding array
+	{ //Create descriptor set layout
+		lux::Array<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
+		for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for every cell
+			VkDescriptorSetLayoutBinding bindingLayout = { };							//The binding layout describes what to bind in a shader binding point and how to use it
+			bindingLayout.binding = i;														//Binding point in the shader
+			bindingLayout.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;				//Type of the descriptor. It depends on the type of data that needs to be bound
+			bindingLayout.descriptorCount = 1;												//Number of descriptors
+			bindingLayout.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;							//Stage where to use the layout
+			bindingLayout.pImmutableSamplers = nullptr;										//Default
+			bindingLayouts[i] = bindingLayout;											//Save it in the layout binding array
 		}
 
-		//uint32* hhhhh = (uint32*)(gpuCellMap((*pCells)[0]));
-		//int hh__ = hhhhh[0];
-
-		VkDescriptorSetLayoutCreateInfo* descriptorSetLayoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));//This structure contains all the descriptors of the bindings that will be used by the shader
-		descriptorSetLayoutCreateInfo->flags = 0;														//default
-		descriptorSetLayoutCreateInfo->pNext = nullptr;													//default
-		descriptorSetLayoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;		//Set structure type
-		descriptorSetLayoutCreateInfo->bindingCount = descriptorSetLayoutBindings.size( );				//Set number of binding points
-		descriptorSetLayoutCreateInfo->pBindings = (descriptorSetLayoutBindings.begin( ));				//Set descriptors layouts to bind
+		//Create a VkDescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the VkDescriptorSetLayout
+		VkDescriptorSetLayoutCreateInfo* layoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));
+		layoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Structure type
+		layoutCreateInfo->bindingCount = bindingLayouts.size( );						//Number of binding layouts
+		layoutCreateInfo->pBindings = (bindingLayouts.begin( ));						//The binding layouts
+		layoutCreateInfo->flags = 0;													//default
+		layoutCreateInfo->pNext = nullptr;												//default
 
 		//Create the descriptor set layout
-		TryVk(vkCreateDescriptorSetLayout(compute.LD, descriptorSetLayoutCreateInfo, nullptr, &defRenderShaders[vRenderShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
-		defRenderShaders[vRenderShader].__lp_ptrs.add((void*)descriptorSetLayoutCreateInfo);
+		TryVk(vkCreateDescriptorSetLayout(compute.LD, layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+		CShadersLayouts[vRenderShader].__lp_ptrs.add((void*)layoutCreateInfo);
 	}
 
 
 
 
 	{ //Create pipeline layout
-		//Set shader file name and create the shader module
 		lux::String shaderFileName;
-		switch(vRenderShader) {
+		switch(vRenderShader) {																	//Set shader file name
 			case LUX_DEF_SHADER_LINE_2D: shaderFileName = "Line2D"; break;
 			case LUX_DEF_SHADER_COPY: shaderFileName = "FloatToIntBuffer"; break;
-			default: break;
+			default: break; //TODO add unknown shader check
 		}
-		uint32 fileLength;																//Create the shader module
-		defRenderShaders[vRenderShader].shaderModule = cshaderCreateModule(compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
+		uint32 fileLength;																		//Create the shader module
+		CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
 
-		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = { };						//Create shader stage infos
-		shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;	//Set structure type
-		shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;							//Use it in the compute stage
-		shaderStageCreateInfo.module = defRenderShaders[vRenderShader].shaderModule;								//Set shader module
-		shaderStageCreateInfo.pName = "main";												//Set the main function as entry point
-		defRenderShaders[vRenderShader].shaderStageCreateInfo = shaderStageCreateInfo;
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = { };							//Create shader stage infos
+		shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;			//Set structure type
+		shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;									//Use it in the compute stage
+		shaderStageCreateInfo.module = CShadersLayouts[vRenderShader].shaderModule;					//Set shader module
+		shaderStageCreateInfo.pName = "main";														//Set the main function as entry point
+		CShadersLayouts[vRenderShader].shaderStageCreateInfo = shaderStageCreateInfo;			//Save the shader stage infos in the default shader object
 
-		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { };						//Create pipeline layout creation infos
-		pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;		//Set structure type
-		pipelineLayoutCreateInfo.setLayoutCount = 1;										//Set number of set layouts
-		pipelineLayoutCreateInfo.pSetLayouts = &defRenderShaders[vRenderShader].descriptorSetLayout;				//Set set layout
+		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = { };								//Create pipeline layout creation infos
+		pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;				//Structure type
+		pipelineLayoutCreateInfo.setLayoutCount = 1;												//Number of set layouts
+		pipelineLayoutCreateInfo.pSetLayouts = &CShadersLayouts[vRenderShader].descriptorSetLayout;//Set set layout
 		//Create pipeline layout
-		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, nullptr, &defRenderShaders[vRenderShader].pipelineLayout)) Exit("Unable to create pipeline layout");
+		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipelineLayout)) Exit("Unable to create pipeline layout");
 	}
 
 
 
 
-	{ //Create pipeline
-		VkComputePipelineCreateInfo pipelineCreateInfo = { };							//Create pipeline creation infos
-		pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;			//Set structure type
-		pipelineCreateInfo.stage = defRenderShaders[vRenderShader].shaderStageCreateInfo;									//Set shader stage infos
-		pipelineCreateInfo.layout = defRenderShaders[vRenderShader].pipelineLayout;						//Set pipeline layout
+	{ //Create the pipeline
+		VkComputePipelineCreateInfo pipelineCreateInfo = { };									//Create pipeline creation infos
+		pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;					//Structure type
+		pipelineCreateInfo.stage = CShadersLayouts[vRenderShader].shaderStageCreateInfo;			//Use the previously created shader stage creation infos
+		pipelineCreateInfo.layout = CShadersLayouts[vRenderShader].pipelineLayout;					//Use the previously created pipeline layout
 		//Create the compute pipeline
-		TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &defRenderShaders[vRenderShader].pipeline)) Exit("Unable to create comput pipeline");
-		vkDestroyShaderModule(compute.LD, defRenderShaders[vRenderShader].shaderModule, nullptr);							//Destroy the shader module
+		TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipeline)) Exit("Unable to create comput pipeline");
+		vkDestroyShaderModule(compute.LD, CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
 	}
 }
 
@@ -107,8 +98,8 @@ void Engine::cshaderCreateDefLayout(const defRenderShader vRenderShader, const u
 
 
 
-//TODO fix description
 
+//TODO fix description
 //Creates the descriptor pool and allocates in it the descriptor sets
 //*   pCells   | an array of memory cells to bind to the shader
 //*      The shader inputs must match those cells
@@ -136,7 +127,7 @@ void Engine::cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array
 	descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;	//Set structure type
 	descriptorSetAllocateInfo.descriptorPool = pCShader->descriptorPool;		//Set descriptor pool where to allocate the descriptor
 	descriptorSetAllocateInfo.descriptorSetCount = 1;									//Allocate a single descriptor
-	descriptorSetAllocateInfo.pSetLayouts = &defRenderShaders[vRenderShader].descriptorSetLayout;	//Set set layouts
+	descriptorSetAllocateInfo.pSetLayouts = &CShadersLayouts[vRenderShader].descriptorSetLayout;	//Set set layouts
 	//Allocate descriptor set
 	TryVk(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet)) Exit("Unable to allocate descriptor sets");
 
@@ -203,7 +194,7 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 
 
 			//Create a barrier to use the swapchain image as a transfer destination optimal to copy the buffer in it
-			VkImageMemoryBarrier readToWrite{ };										//Create memory barrier object
+			VkImageMemoryBarrier readToWrite{ };									//Create memory barrier object
 			readToWrite.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
 			readToWrite.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;							//Set old layout. Swapchain images are in undefined layout after being acquired
 			readToWrite.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set new layout. Destination optimal allows the image to be used as a transfer destination
@@ -222,7 +213,7 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;									//Change it to transfer stage to copy the buffer in it
 			vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
-			VkBufferImageCopy region{ };												//Create bufferImageCopy region to copy the buffer to the image
+			VkBufferImageCopy region{ };											//Create bufferImageCopy region to copy the buffer to the image
 			region.bufferOffset = 0;													//No buffer offset
 			region.bufferRowLength = 0;													//dark magic
 			region.bufferImageHeight = 0;												//dark magic
@@ -236,7 +227,7 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			//vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[getBufferIndex(gpuCellWindowOutput)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 			//Create a barrier to use the swapchain image as a present source image
-			VkImageMemoryBarrier writeToRead{ };										//Create memory barrier object
+			VkImageMemoryBarrier writeToRead{ };									//Create memory barrier object
 			writeToRead.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;					//Set structure type
 			writeToRead.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;				//Set old layout. Swapchain images is in dst optimal layout after being written
 			writeToRead.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;					//Set new layout. Swapchain images must be in this format to be displayed on screen
@@ -258,42 +249,6 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			//End command buffer recording
 			TryVk(vkEndCommandBuffer(copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
 		}
-	}
-
-
-
-
-
-	{ //Clear
-		//Create command pool
-		static VkCommandPoolCreateInfo commandPoolCreateInfo2 = { };							//Create command pool create infos. The command pool contains the command buffers
-		commandPoolCreateInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;				//Set structure type
-		commandPoolCreateInfo2.flags = 0;														//Default falgs
-		commandPoolCreateInfo2.queueFamilyIndex = compute.PD.indices.computeFamilies[0];			//Set the compute family where to bind the command pool
-		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo2, nullptr, &clearCommandPool)) Exit("Unable to create command pool");
-
-
-		//Create allocate info
-		VkCommandBufferAllocateInfo allocInfo2{ };
-		allocInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo2.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo2.commandPool = clearCommandPool;
-		allocInfo2.commandBufferCount = 1;
-
-		//Allocate command buffer
-		vkAllocateCommandBuffers(graphics.LD, &allocInfo2, &clearCommandBuffer);
-
-		//Begine command recording
-		VkCommandBufferBeginInfo beginInfo2{ };
-		beginInfo2.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo2.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
-		vkBeginCommandBuffer(clearCommandBuffer, &beginInfo2);
-
-		//vkCmdFillBuffer(clearCommandBuffer, CBuffers[getBufferIndex(gpuCellWindowOutput_i)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4, 0);
-		vkCmdFillBuffer(clearCommandBuffer, CBuffers[getBufferIndex(gpuCellWindowOutput)].buffer, 0, swapchainExtent.width * swapchainExtent.height * 4 * 4, 0);
-
-		//End command recording
-		vkEndCommandBuffer(clearCommandBuffer);
 	}
 }
 
@@ -355,8 +310,8 @@ void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader, const defRenderS
 	//n += 1;
 	//Bind pipeline and descriptor sets to the command buffer
 
-	vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, defRenderShaders[vRenderShader].pipeline);
-	vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, defRenderShaders[vRenderShader].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
+	vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vRenderShader].pipeline);
+	vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vRenderShader].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
 
 
 

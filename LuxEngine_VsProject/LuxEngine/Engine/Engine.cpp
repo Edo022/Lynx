@@ -126,15 +126,15 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//Init
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
-	runGraphics(vUseVSync, vFOV);
-	runCompute();
+	graphicsInit(vUseVSync, vFOV);
+	computeInit();
 
 	//Loop
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 
 	//Exit
-	Normal  printf("Cleaning memory");								graphicsCleanup(); cleanupCompute();		NewLine;
+	Normal  printf("Cleaning memory");								graphicsCleanup(); computeCleanup();		NewLine;
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);
 	glfwTerminate();

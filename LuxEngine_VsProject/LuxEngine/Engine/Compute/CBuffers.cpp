@@ -14,16 +14,13 @@
 //			TODO fix
 //*   Returns        | the index of the created buffer. -1 if an error occurs
 LuxBuffer Engine::gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible) {
-	LuxBuffer_t buffer;					//Create the buffer struct
-	buffer.size = vSize;				//Set its size and create the vkBuffer as an host visible storage buffer with transfer source capabilities
-	createBuffer(
-		compute.LD, buffer.size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+	LuxBuffer_t buffer(vSize, vBufferClass, vCpuAccessible);	//Create the buffer struct
+	createBuffer(												//Create the vkBuffer as a storage buffer with transfer source and destination capabilities
+		compute.LD, vSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 		(vCpuAccessible) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		&buffer.buffer, &buffer.memory
 	);
-	buffer.bufferClass = vBufferClass;		//Set its class
-	buffer.cpuAccessible = vCpuAccessible;	//Set CPU accessibility
-	return CBuffers.add(buffer);			//Add it to the buffer array and return its index
+	return CBuffers.add(buffer);								//Add it to the buffer array and return its index
 }
 
 

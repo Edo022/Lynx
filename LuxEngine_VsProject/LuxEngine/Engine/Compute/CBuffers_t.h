@@ -13,12 +13,16 @@ enum LuxBufferClass : uint32 {
 
 //This structure groups the components of a Vulkan buffer
 struct LuxBuffer_t {
-	uint32 size;				//The size in bytes of the buffer
-	VkBuffer buffer;			//The actual Vulkan buffer
-	VkDeviceMemory memory;		//The memory of the buffer
-	bool cpuAccessible;
-	bool isMapped = false;		//Whether the buffer is mapped or not
+	uint32 size;					//The size in bytes of the buffer
+	LuxBufferClass bufferClass;		//The class of the buffer
+	bool cpuAccessible;				//Whether the buffer is accessible from the CPU
 
-	LuxBufferClass bufferClass;	//The class of the buffer
-	lux::Map<int8, uint32> cells;			//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
+	VkBuffer buffer;				//The actual Vulkan buffer
+	VkDeviceMemory memory;			//The memory of the buffer
+	lux::Map<int8, uint32> cells;	//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
+	bool isMapped{ false };			//Whether or not the buffer is mapped
+
+	LuxBuffer_t(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible) :
+		size{ vSize }, bufferClass{ vBufferClass }, cpuAccessible{ vCpuAccessible } {
+	}
 };
