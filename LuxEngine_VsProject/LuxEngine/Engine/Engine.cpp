@@ -10,44 +10,6 @@
 
 
 
-// External debug functions ---------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-//namespace lux::_engine {
-//	//It's dark magic, idk why or how it works, but it does
-//	static inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
-//		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-//		if(func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-//		else return VK_ERROR_EXTENSION_NOT_PRESENT;
-//	}
-//	//Dunno
-//	static inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-//		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-//		if(func != nullptr) func(instance, debugMessenger, pAllocator);
-//	}
-//
-//	//More dark magic
-//	static constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
-//		createInfo = { };
-//		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-//		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-//		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-//		createInfo.pfnUserCallback = lux::getEngine( ).graphicsDebugCallback;
-//	}
-//}
-
-
-
-
-
-
-
 
 // Main -------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -143,24 +105,19 @@ void Engine::run(bool vUseVSync, float vFOV) {
 
 
 
-void Engine::mainLoop() {
-	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  User input"));
-	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);
-	FPSCounterThr.detach();
-	std::thread renderThr(&Engine::runRenderThr, this);
-	renderThr.detach();
+void Engine::mainLoop( ) {
+	luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  User input"));
+	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);		FPSCounterThr.detach( );
+	std::thread renderThr(&Engine::runRenderThr, this);				renderThr.detach( );
 	initialized = true;
 
-	//wchar_t thrName[100];
-	//std::mbstowcs(thrName, "hhhhh", 100);
 
-	while (!glfwWindowShouldClose(window)) {
-		glfwWaitEvents();
+	while(!glfwWindowShouldClose(window)) {
+		glfwWaitEvents( );
 	}
 	running = false;
 	vkDeviceWaitIdle(graphics.LD);
 }
-//TODO add FPS limit
 
 
 
@@ -177,6 +134,7 @@ void Engine::runRenderThr() {
 
 
 
+//TODO add FPS limit
 void Engine::runFPSCounterThr() {
 	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  FPS counter"));
 	while (running) {
@@ -204,19 +162,16 @@ void Engine::runFPSCounterThr() {
 
 
 //Create the Vulkan instance, using validation layers when in debug mode
-void Engine::createInstance() {
-	VkInstanceCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-
+void Engine::createInstance( ) {
 	//Application infos
-	VkApplicationInfo appInfo{};
-	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "LuxEngine";
-	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = "LuxEngine";
-	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_0;
-	createInfo.pApplicationInfo = &appInfo;
+	VkApplicationInfo appInfo{
+		.sType{ VK_STRUCTURE_TYPE_APPLICATION_INFO },
+		.pApplicationName{ "LuxEngine" },
+		.applicationVersion{ VK_MAKE_VERSION(1, 0, 0) },
+		.pEngineName{ "LuxEngine" },
+		.engineVersion{ VK_MAKE_VERSION(1, 0, 0) },
+		.apiVersion{ VK_API_VERSION_1_0 },
+	};
 
 
 	//Extensions
@@ -225,8 +180,7 @@ void Engine::createInstance() {
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
 	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
-	createInfo.enabledExtensionCount = extensions.size();									//Set extension count
-	createInfo.ppEnabledExtensionNames = extensions.data(0);								//Set extensions
+
 
 	//Add validation layers if in debug mode
 	#ifndef LUX_DEBUG
@@ -239,7 +193,7 @@ void Engine::createInstance() {
 	lux::Array<VkLayerProperties> availableLayers(layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());				//Get layers
 	for (const char* layerName : validationLayers) {										//For every layer,
-		for (const auto& layerProperties : availableLayers) {									//Check if it's available
+		for (const auto& layerProperties : availableLayers) {								//Check if it's available
 			if (strcmp(layerName, layerProperties.layerName) == 0) break;
 			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
 		}
@@ -247,14 +201,22 @@ void Engine::createInstance() {
 
 	//Set debugCreateInfo structure
 	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	createInfo.enabledLayerCount = validationLayers.size();
-	createInfo.ppEnabledLayerNames = validationLayers.begin();
 	lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
-	createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
 	#endif
 
 
+
+
 	//Create instance
+	VkInstanceCreateInfo createInfo{
+		.sType{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO },
+		luxDebug(.pNext{ (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo }),
+		.pApplicationInfo{ &appInfo },
+		luxDebug(.enabledLayerCount{ validationLayers.size( ) }),
+		luxDebug(.ppEnabledLayerNames{ validationLayers.begin( ) }),
+		.enabledExtensionCount{ extensions.size( ) },
+		.ppEnabledExtensionNames{ extensions.data(0) },
+	};
 	TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
 }
 
@@ -273,10 +235,11 @@ void Engine::initWindow() {
 			255, 0, 0, 255,
 			0, 0, 255, 255
 		};
-		GLFWimage icon;
-		icon.width = 2;
-		icon.height = 2;
-		icon.pixels = h;
+		GLFWimage icon{
+			.width{ 2 },
+			.height{ 2 },
+			.pixels{ h },
+		};
 		glfwSetWindowIcon(window, 1, &icon);
 	}
 
@@ -288,6 +251,7 @@ void Engine::initWindow() {
 		glfwSetCursorPosCallback(window, lux::input::mouseCursorPosCallback);
 		glfwSetMouseButtonCallback(window, lux::input::mouseButtonCallback);
 		glfwSetScrollCallback(window, lux::input::mouseAxisCallback);
+
 		glfwSetKeyCallback(window, lux::input::keyCallback);
 	}
 }

@@ -7,8 +7,7 @@
 
 
 
-void Engine::computeInit
-( ) {
+void Engine::computeInit( ) {
 	{ //Initialize window buffers and size
 		gpuCellWindowOutput_i = gpuCellCreate(width * height * 4	/*A8-R8-G8-B8     UI*/, false);
 		gpuCellWindowOutput = gpuCellCreate(width * height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);
@@ -25,7 +24,7 @@ void Engine::computeInit
 	}
 
 	{ //Create default shaders
-		CShadersLayouts.resize(defRenderShader::LUX_DEF_SHADER_NUM, { });
+		CShadersLayouts.resize(renderShaderLayout::LUX_DEF_SHADER_NUM, { });
 		cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
 		cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
 		Engine& engine_ = lux::getEngine( );

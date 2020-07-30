@@ -262,7 +262,7 @@ Object rendering
 
 
 
-enum defRenderShader : uint32 {
+enum renderShaderLayout : uint32 {
 	LUX_DEF_SHADER_LINE_2D,
 	LUX_DEF_SHADER_COPY,
 	LUX_DEF_SHADER_NUM
@@ -462,10 +462,10 @@ public:
 	lux::Map<LuxShader_t, uint32>	CShaders;					//Per-object shaders
 	lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();
-	void		cshaderCreateDefLayout(const defRenderShader vRenderShader, const uint32 pCellNum);
-	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, defRenderShader vRenderShader);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const defRenderShader vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const defRenderShader vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	void		cshaderCreateDefLayout(const renderShaderLayout vRenderShader, const uint32 pCellNum);
+	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, renderShaderLayout vRenderShader);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const renderShaderLayout vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const renderShaderLayout vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 
