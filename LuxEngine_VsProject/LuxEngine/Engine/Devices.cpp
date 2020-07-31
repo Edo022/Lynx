@@ -228,7 +228,7 @@ void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lu
 	for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 		queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type
-			.queueFamilyIndex{ queueFamilyIndex },								//Set index
+			.queueFamilyIndex{ (uint32)queueFamilyIndex },								//Set index
 			.queueCount{ 1 },													//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
 			.pQueuePriorities{ new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f) },
 		});
@@ -244,11 +244,11 @@ void Engine::deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lu
 	//Fill deviceCreateInfo
 	VkDeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
 		.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
-		.queueCreateInfoCount{ (int32)queueCreateInfos.size( ) },			//Set queue infos count
+		.queueCreateInfoCount{ (uint32)queueCreateInfos.size( ) },			//Set queue infos count
 		.pQueueCreateInfos{ queueCreateInfos.data( ) },						//Set queue infos
-		luxDebug(.enabledLayerCount{ (int32)validationLayers.size( ) }),	//Set validation layer count if in debug mode
+		luxDebug(.enabledLayerCount{ (uint32)validationLayers.size( ) }),	//Set validation layer count if in debug mode
 		luxDebug(.ppEnabledLayerNames{ validationLayers.begin( ) }),		//Set validation layers if in debug mode
-		.enabledExtensionCount{ (int32)requiredDeviceExtensions.size( ) },	//Set required extentions count
+		.enabledExtensionCount{ (uint32)requiredDeviceExtensions.size( ) },	//Set required extentions count
 		.ppEnabledExtensionNames{ requiredDeviceExtensions.begin( ) },		//Set required extensions
 		.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
 	};

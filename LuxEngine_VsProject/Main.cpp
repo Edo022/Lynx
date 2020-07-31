@@ -33,12 +33,12 @@
 //
 //	{
 //		lux::obj::Line2D* lineTest = new lux::obj::Line2D( );
-//		*lineTest->col0 = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
-//		*lineTest->col1 = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
-//		*lineTest->wd0 = 100;
-//		*lineTest->wd1 = 200;
-//		*lineTest->p0 = vec2i32{ 2000, 500 };
-//		*lineTest->p1 = vec2i32{ 1700, 800 };
+//		*lineTest->fc = vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f };
+//		*lineTest->sc = vec4f32{ 0.0f, 0.2f, 1.0f, 0.0f };
+//		*lineTest->fw = 100;
+//		*lineTest->sw = 200;
+//		*lineTest->fp = vec2i32{ 2000, 500 };
+//		*lineTest->sp = vec2i32{ 1700, 800 };
 //
 //		lux::obj::RenderSpace2D renderSpace;
 //		renderSpace.addChild(lineTest);

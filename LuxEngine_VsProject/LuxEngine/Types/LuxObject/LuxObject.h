@@ -62,10 +62,8 @@ namespace lux{
 			uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
 																//														|							|
 			void allocate( );								//Allocates a memory cell for the object data				| object type				| -
-			bool allocated = false;							//Whether the object is allocated or not					| none						| object instance
 			LuxCell gpuCell{ (uint64)-1 };					//GPU memory containing the small data of the object		| object type				| object instance
 			void* cellPtr{ nullptr };						//Pointer to the GPU memory cell							| none						| object instance
-			lux::String shaderName{ "" };					//The name of the shader that renders the object			| none						| object type
 			inline virtual int32 getCellSize( ) const = 0;	//Size of the object data									| none						| object type
 			virtual void update( ) = 0;						//Updates the object data in the shared memory				| object type				| -
 																//														|							|
@@ -81,7 +79,6 @@ namespace lux{
 			Base3D( ) { objectType = LUX_OBJECT_TYPE_3D__BASE; }
 
 			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
-			vec3f32 org{ 0, 0, 0 };			//Origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
 			vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
 			vec3f32 scl{ 0, 0, 0 };			//Scale of the object
@@ -106,7 +103,6 @@ namespace lux{
 			Base2DI3D( ) { objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
 
 			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
-			vec3f32 org{ 0, 0, 0 };			//Origin of the object
 			float32 wIndex{ 0 };			//Index of the object for 3D space
 			float32 zIndex{ 0 };			//Index of the object for 2D space
 			vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
@@ -122,7 +118,6 @@ namespace lux{
 
 			//TODO add absolute pixel position and scale
 			vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
-			vec2f32 org{ 0, 0 };			//Origin of the object
 			float32 zIndex{ 0 };			//Index of the object. Objects with higher zIndex will be rendered on top of others
 			float32 rot{ 0 };				//Rotation of the object
 			vec2f32 scl{ 0, 0 };			//Scale of the object
@@ -150,7 +145,6 @@ namespace lux{
 			Base1D( ) { objectType = LUX_OBJECT_TYPE_1D__BASE; }
 
 			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
-			float32 org{ 0 };				//Origin of the object
 			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
 			float32 scl{ 0 };				//Scale of the object
 

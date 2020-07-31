@@ -350,7 +350,6 @@ public:
 	lux::Array<VkSemaphore>		drawFrameCopySemaphore;
 	lux::Array<VkSemaphore>		drawFrameClearSemaphore;
 	lux::Array<VkFence>			drawFrameImageRenderedFence;
-	//lux::Array<VkFence>			renderFencesImagesInFlight;
 	int32						renderCurrentFrame = 0;
 	void						graphicsInit(const bool vUseVSync = true, const float vFOV = 45.0f);
 	void						graphicsCreateSyncObjs();
@@ -389,7 +388,6 @@ public:
 	void						createRenderPass();
 	void						createFramebuffers();
 	VkImageView					swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-	void						swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp
@@ -431,11 +429,6 @@ public:
 
 
 	//Buffers >> Compute/Buffers.cpp
-	struct CShaders_stg_t {
-		LuxShader_t shader;
-		lux::Array<LuxCell> cells;
-		const char* shaderPath;
-	};
 	lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
 	LuxBuffer						gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 	LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
@@ -450,15 +443,7 @@ public:
 	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			//List of renderSpaces
 	//lux::Map<lux::obj::Base*, uint32> objs;		//TODO
 	lux::String shaderPath;
-	struct DefRenderShader_t{
-		VkDescriptorSetLayout descriptorSetLayout;
-		VkShaderModule shaderModule;
-		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
-		VkPipelineLayout pipelineLayout;
-		VkPipeline pipeline;
-		lux::DynArray<void*> __lp_ptrs;
-	};
-	lux::Array<DefRenderShader_t>	CShadersLayouts;		//Layout of the render shaders
+	lux::Array<LuxShaderLayout_t>	CShadersLayouts;		//Layout of the render shaders
 	lux::Map<LuxShader_t, uint32>	CShaders;					//Per-object shaders
 	lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();

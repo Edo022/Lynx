@@ -147,26 +147,3 @@ VkImageView Engine::swapchainCreateImageView(const VkImage vImage, const VkForma
 	TryVk(vkCreateImageView(graphics.LD, &viewInfo, nullptr, &imageView)) Exit("Failed to create texture image view");
 	return imageView;
 }
-
-
-
-
-void Engine::swapchainCopyBufferToImage(const VkBuffer vBuffer, const  VkImage vImage, const uint32 vWidth, const uint32 vHeight) {
-	VkCommandBuffer commandBuffer = beginSingleTimeCommands( );
-
-	VkBufferImageCopy region{
-		.bufferOffset{ 0 },
-		.bufferRowLength{ 0 },
-		.bufferImageHeight{ 0 },
-		.imageSubresource{
-			.aspectMask{ VK_IMAGE_ASPECT_COLOR_BIT },
-			.mipLevel{ 0 },
-			.baseArrayLayer{ 0 },
-			.layerCount{ 1 },
-		},
-		.imageOffset{ 0, 0, 0 },
-		.imageExtent{ vWidth, vHeight, 1 },
-	};
-	vkCmdCopyBufferToImage(commandBuffer, vBuffer, vImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
-	endSingleTimeCommands(commandBuffer);
-}

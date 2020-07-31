@@ -24,7 +24,5 @@ namespace lux::obj{
 		lux::getEngine( ).init(false);											//Initialize the engine
 		gpuCell = lux::getEngine( ).gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
 		cellPtr = lux::getEngine( ).gpuCellMap(gpuCell);						//Map the cell pointer to the cell
-		//update( );														//Initialize the pointers to the data
-		allocated = true;													//Set allocation state to allocated
 	}
 }
