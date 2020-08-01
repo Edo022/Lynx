@@ -242,13 +242,6 @@ Object rendering
 
 
 
-//Default render shaders layouts
-//The identifier value corresponds to the index of the shader layout in the engine's default shader layouts array
-enum renderShaderLayout : uint32 {
-	LUX_DEF_SHADER_LINE_2D,
-	LUX_DEF_SHADER_COPY,
-	LUX_DEF_SHADER_NUM
-};
 
 
 
@@ -431,10 +424,10 @@ public:
 	lux::DynArray<VkCommandBuffer>	CShadersCBs; //Per-object command buffers
 	lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();
-	void		cshaderCreateDefLayout(const renderShaderLayout vRenderShader, const uint32 pCellNum);
-	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, renderShaderLayout vShaderLayout);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const renderShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const renderShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	void		cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);
+	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, ShaderLayout vShaderLayout);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

@@ -112,6 +112,9 @@
     <ClCompile Include="LuxEngine\Engine\Input\InputState.cpp">
       <Filter>LuxEngine\Engine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DLines.cpp">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

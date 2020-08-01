@@ -24,10 +24,11 @@ int h(const char* b, int hh) {
 	return 0;
 }
 
-
 void hg(lux::Array<uint16>){
 	printf("\nKEYYYY");
 }
+
+
 
 
 int main( ) {
@@ -52,11 +53,6 @@ int main( ) {
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
 		renderSpace.addChild(&lineTest);
 		renderSpace.addChild(&lineTest2);
-
-		//TODO move to object constructor
-		Engine& engine_ = lux::getEngine( );
-		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
-		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest2.gpuCell }, LUX_DEF_SHADER_LINE_2D, 4, 1, 1);
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 

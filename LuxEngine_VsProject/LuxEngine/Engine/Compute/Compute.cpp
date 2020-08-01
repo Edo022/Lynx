@@ -24,7 +24,7 @@ void Engine::computeInit( ) {
 	}
 
 	{ //Create default shaders
-		CShadersLayouts.resize(renderShaderLayout::LUX_DEF_SHADER_NUM, { });
+		CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
 		cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
 		cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
 		Engine& engine_ = lux::getEngine( );

@@ -7,11 +7,9 @@
 #include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
-//#include "LuxEngine/Engine/Engine.h"
-//
-//
-//class Engine;
-//extern Engine engine;
+#include "LuxEngine/Engine/Compute/CShader_t.h"
+
+
 
 
 namespace lux{
@@ -54,6 +52,7 @@ namespace lux{
 			//												Description													Structure differences		Value differences
 			//												----------------------------------------------------------------------------------------------------------
 			ObjectType objectType;							//Thte type of the object									| object type				| object type
+			ShaderLayout shaderLayout;						//Thte shader layout of the object							| object type				| object type
 			Base( ) : objectType(LUX_OBJECT_TYPE__BASE) { }		//														|							|
 																//														|							|
 			lux::String name{ "" };							//The name of the object.									| none						| object instance

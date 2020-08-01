@@ -10,11 +10,13 @@ namespace lux::obj {
 	//A bidimensional line with interpolated color and width
 	//Lines with width 0 or alpha 0 are not rendered
 	struct Line2D : public Base2D {
+		void init( );
+
+
 		//Creates a Line2D object
 		//Automatically initializes the object type and the GPU memory
 		Line2D( ) {
-			objectType = LUX_OBJECT_TYPE_2D_LINE;	//Set object type
-			this->allocate( );						//Allocate object data
+			init();
 		}
 
 		//Creates a Line2D object with the specified points, colors and widths
@@ -28,8 +30,7 @@ namespace lux::obj {
 		//*   vSw | width of the second point
 		Line2D(const vec2i32& pFp, const vec2i32& pSp, const vec4f32& pFc, const vec4f32& pSc, const float32 vFw, const float32 vSw) :
 			fp{ pFp }, sp{ pSp }, fc{ pFc }, sc{ pSc }, fw{ vFw }, sw{ vSw } {
-			objectType = LUX_OBJECT_TYPE_2D_LINE;	//Set object type
-			this->allocate( );						//Allocate object data
+			init( );
 		}
 
 
@@ -41,9 +42,6 @@ namespace lux::obj {
 			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
 			vec2i32 pMaxLim = vec2i32(1920 * 2, 1080) * maxLim;
 
-			vec2f32 hh = dist2D(minLim, maxLim);
-			vec2f32 hh1 = (fp - pMinLim);
-			vec2i32 hh2 = (fp - pMinLim) * dist2D(minLim, maxLim);
 			*(vec2i32*)((int8*)cellPtr + 0) = (fp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    0  - 7     |    0 +
 			*(vec2i32*)((int8*)cellPtr + 8) = (sp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    8  - 15    |    0
 			*(vec4f32*)((int8*)cellPtr + 16) = fc;														//    16   |    16 - 31    |    1 +
@@ -55,6 +53,7 @@ namespace lux::obj {
 			//TODO recalculate limits for children
 		}
 
+		//TODO convert to variable. or convert the variable to function. idk
 		inline int32 getCellSize() const final override { return 56; }
 
 		vec2i32 fp{ 0, 0 };			//First point of the line
