@@ -63,22 +63,34 @@ LuxCell Engine::gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible)
 //*   returns | true if the operation succeeded, false if the cell is invalid
 bool Engine::gpuCellDestroy(const LuxCell vCell) {
 	LuxBuffer buffer = getBufferIndex(vCell);								//Get buffer index
-	//TODO check only in debug mode
-	if(!CBuffers.isValid(buffer)) return false;								//If the buffer index is not valid, return false
+	//TODO Use lux output console
+	if(!CBuffers.isValid(buffer)) {
+		Failure printf("Something went wrong .-.");
+		Failure printf("you were trying to use an invalid index buffer %llu", buffer);
+		return false;								//If the buffer index is not valid, return false
+	}
 
 	if(CBuffers.isValid(buffer)) {												//If it's not removed
 		if(CBuffers[buffer].bufferClass == LUX_BUFFER_CLASS_LRG) {					//And the buffer is a custom size buffer
 			destroyBuffer://TODO destroy the old if there is one (rm if n+1 fb)
-			//TODO check only in debug mode
-			if(!CBuffers.isValid(buffer)) return false;									//If the buffer index is not valid, return false
+			//TODO Use lux output console
+			if(!CBuffers.isValid(buffer)) {
+				Failure printf("Something went wrong .-.");
+				Failure printf("you were trying to use an invalid index buffer %llu", buffer);
+				return false;									//If the buffer index is not valid, return false
+			}
 			vkDestroyBuffer(graphics.LD, CBuffers[buffer].buffer, nullptr);				//destroy the GPU buffer structure
 			vkFreeMemory(graphics.LD, CBuffers[buffer].memory, nullptr);				//Free the buffer's memory
 			CBuffers.remove(buffer, false);												//Remove the buffer from the buffer array
 			return true;
 		}
 		else {																		//If it's a fixed size buffer
-			//TODO check only in debug mode
-			if(CBuffers[buffer].cells.remove(getCellIndex(vCell))) return false;		//And the cell index is invalid, return false
+			//TODO Use lux output console
+			if(CBuffers[buffer].cells.remove(getCellIndex(vCell))) {
+				Failure printf("Something went wrong .-.");
+				Failure printf("you were trying to use an invalid cell index %llu", getCellIndex(vCell));
+				return false;		//And the cell index is invalid, return false
+			}
 			if(CBuffers[buffer].cells.usedSize( ) == 0) goto destroyBuffer;				//If it's valid, remove the cell. If there are no cells left, destroy the buffer
 		}
 	}
@@ -94,8 +106,12 @@ bool Engine::gpuCellDestroy(const LuxCell vCell) {
 //*   returns | the void pointer that maps the buffer, nullptr if an error occurs
 void* Engine::gpuCellMap(const LuxCell vCell) {
 	LuxBuffer buffer = getBufferIndex(vCell);														//Get the buffer index
-	//TODO check only in debug mode
-	if(!CBuffers.isValid(buffer)) return nullptr;													//If the buffer index is not valid, return nullptr
+	//TODO Use lux output console
+	if(!CBuffers.isValid(buffer)) {
+		Failure printf("Something went wrong .-.");
+		Failure printf("you were trying to use an invalid index buffer %llu", buffer);
+		return nullptr;													//If the buffer index is not valid, return nullptr
+	}
 
 	if(CBuffers[buffer].isMapped) vkUnmapMemory(compute.LD, CBuffers[buffer].memory);				//If it's already mapped, unmap the shared memory
 	else CBuffers[buffer].isMapped = true;															//If not, set it as mapped

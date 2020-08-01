@@ -6,7 +6,8 @@
 
 
 //TODO check for out of memory error in every result check
-//todo add runtime shader compiling support
+//TODO add runtime shader compiling support
+//TODO use per-point momentum in object physics
 
 //Disabled useless warnings
 #pragma warning( disable : 26812 )			//Prefer enum class to enum
@@ -74,11 +75,6 @@ struct RenderSpace2D;
 
 class Engine;
 namespace lux{ inline Engine& getEngine( ); }
-//namespace lux::_engine {
-//	inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-//	inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
-//	constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-//}
 
 
 
@@ -95,23 +91,8 @@ namespace lux{ inline Engine& getEngine( ); }
 
 
 
-/*	Threads
-										 .---> Engine.FPSCounter --.
-  E|            Main --> LuxInit --------¦                         ¦
-  X|             ¦         ¦             '---> Engine.render       ¦
-  E|             ¦         '-Engine.mainLoop-. .---'               ¦
-  C|             ¦                           ¦ ¦ .-----------------'
-   ↓             :                           ¦ ¦ ¦
-				 .                           ¦ ¦ ¦
 
-*/
-
-
-
-
-
-
-
+//TODO update
 /* ↑↓<>-.'_─│¦
 																																														Frame render
 																														  GPU MEMORY                                                         ↓
@@ -121,7 +102,7 @@ namespace lux{ inline Engine& getEngine( ); }
 																							  ││       Custom size allocations for large buffers                                          Shaders                   Output buffer (6.2208MB)          ││
 																							  ││      .──────────────────────────.  .──────────────────────────.                  .─────────────────────.           Window 0                          ││
    all the buffers are saved as LuxMap s of buffer cellment index                             ││      | Custom size allocation 2 |  | Custom size allocation 3 >-.                │       Shader 0      <--.       .──────────────────────────.       ││
-   and allocated in the GPU's memory.                                                         ││      '─────────↑────────────────'  '─────────↑────────────────' '----------------> 9248141834805313536 │  ¦   .---> Custom size allocation 0 >---.   ││
+   and allocated in the GPU's memory.                                                         ││      '──────s───↑────────────────'  '─────────↑────────────────' '----------------> 9248141834805313536 │  ¦   .---> Custom size allocation 0 >---.   ││
    by default the buffers are not mapped to avoid multi threading issues        .-------------------------------'     Buffer 10 ↑             ¦     Buffer 11 ↑  .---------------->   20266299256898688 │  ¦   ¦   '──────────────────────────'   ¦   ││
 																				¦ .-----------------------------------------------------------'                  ¦                │          ¦          │  ¦   ¦                    Buffer 0 ↑    ¦   ││
    Supported VRAM size: 48GB. 50MB per buffer. max 960 buffers                  ¦ ¦           ││                                                                 ¦                │          ↓          │  ¦   ¦                                  ¦   ││
@@ -261,7 +242,8 @@ Object rendering
 
 
 
-
+//Default render shaders layouts
+//The identifier value corresponds to the index of the shader layout in the engine's default shader layouts array
 enum renderShaderLayout : uint32 {
 	LUX_DEF_SHADER_LINE_2D,
 	LUX_DEF_SHADER_COPY,
@@ -440,17 +422,19 @@ public:
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
 	LuxShader ls0;
 	LuxShader ls1;
-	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			//List of renderSpaces
-	//lux::Map<lux::obj::Base*, uint32> objs;		//TODO
+	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
 	lux::String shaderPath;
-	lux::Array<LuxShaderLayout_t>	CShadersLayouts;		//Layout of the render shaders
-	lux::Map<LuxShader_t, uint32>	CShaders;					//Per-object shaders
+	lux::Array<LuxShaderLayout_t>	CShadersLayouts;				//Layout of the render shaders
+	lux::Map<LuxShader_t, uint32>	CShaders;						//Per-object shaders
+	//TODO divide render stages
+	//TODO use lux map with no effect command buffers in invalid indices, instead of recreating the entire command buffers
+	lux::DynArray<VkCommandBuffer>	CShadersCBs; //Per-object command buffers
 	lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();
 	void		cshaderCreateDefLayout(const renderShaderLayout vRenderShader, const uint32 pCellNum);
-	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, renderShaderLayout vRenderShader);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const renderShaderLayout vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const renderShaderLayout vRenderShader, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, renderShaderLayout vShaderLayout);
+	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const renderShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const renderShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 	bool		cshaderDestroy(const LuxShader vCShader);
 };
 

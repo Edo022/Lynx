@@ -91,12 +91,13 @@ void Engine::graphicsDrawFrame( ) {
 
 
 	//TODO don't recreate the command buffer array every time
+	//TODO use a staging buffer
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT };
 	{ //Update render result submitting the command buffers to the compute queues
 		addShaderFence.startFirst( );
-		lux::Array<VkCommandBuffer> commandBuffers(CShaders.usedSize( ));
 		for(uint32 i = 0; i < CShaders.size( ); ++i) {
-			if(CShaders.isValid(i)) commandBuffers[i] = CShaders[i].commandBuffers[0];
+			CShadersCBs.resize(CShaders.usedSize( ));
+			if(CShaders.isValid(i)) CShadersCBs[i] = CShaders[i].commandBuffers[0];
 		}
 		addShaderFence.endFirst( );
 
@@ -109,8 +110,8 @@ void Engine::graphicsDrawFrame( ) {
 		};
 		submitInfo.pWaitSemaphores = &drawFrameImageAquiredSemaphore[renderCurrentFrame];
 		submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
-		submitInfo.commandBufferCount = commandBuffers.size( );
-		submitInfo.pCommandBuffers = commandBuffers.begin( );
+		submitInfo.commandBufferCount = CShadersCBs.size( );
+		submitInfo.pCommandBuffers = CShadersCBs.begin( );
 		TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, nullptr)) Exit("Failed to submit graphics command buffer");
 	}
 

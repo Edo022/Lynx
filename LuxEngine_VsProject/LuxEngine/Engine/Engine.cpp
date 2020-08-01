@@ -366,6 +366,7 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 
 
 
+//TODO remove if not used
 //Creates and submits a command buffer to copy from vSrcBuffer to dstBuffer
 //*   vSrcBuffer: the source buffer where to read the data
 //*   vDstBuffer: the destination buffer where to copy the data
