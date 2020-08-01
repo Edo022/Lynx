@@ -11,6 +11,6 @@ namespace lux::obj{
 		this->allocate( );						//Allocate object data
 
 		Engine& engine_ = lux::getEngine( );
-		engine_.cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, gpuCell }, shaderLayout, 4, 1, 1);
+		lux::core::c::cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, gpuCell }, shaderLayout, 4, 1, 1);
 	}
 }

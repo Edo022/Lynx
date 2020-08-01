@@ -10,7 +10,7 @@
 //Adds a render space with no parent to the engine
 namespace lux::obj{
 	void addRenderSpace(RenderSpace2D* pRenderSpace){
-		lux::getEngine().CRenderSpaces.add(pRenderSpace);
+		lux::core::c::CRenderSpaces.add(pRenderSpace);
 	}
 
 

@@ -28,15 +28,15 @@ namespace lux::core::c{
 
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(lux::getEngine( ).swapchainImages.size( ));	//Resize the command buffer array in the shader
-			lux::getEngine().cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
+			lux::core::c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}
 
 		{ //Create default shaders
 			lux::core::c::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
-			lux::getEngine().cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
-			lux::getEngine().cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
+			lux::core::c::cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
+			lux::core::c::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
 			Engine& engine_ = lux::getEngine( );
-			lux::getEngine().cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize },
+			lux::core::c::cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize },
 				LUX_DEF_SHADER_COPY, engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
 		}
 	}

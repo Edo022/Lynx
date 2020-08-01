@@ -181,7 +181,7 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 		{ //#LLID CCB0000 Create copy command buffers
 			lux::core::c::copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
-			lux::getEngine().cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
+			lux::core::c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}
 	}
 	if(vWindowResized) windowResizeFence.endFirst( );

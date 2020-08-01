@@ -418,7 +418,7 @@ public:
 
 
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
-	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
+	//lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
 	//lux::String shaderPath;
 	//lux::Array<LuxShaderLayout_t>	CShadersLayouts;				//Layout of the render shaders
 	//lux::Map<LuxShader_t, uint32>	CShaders;						//Per-object shaders
@@ -426,12 +426,12 @@ public:
 	//TODO use lux map with no effect command buffers in invalid indices, instead of recreating the entire command buffers
 	//lux::DynArray<VkCommandBuffer>	CShadersCBs; //Per-object command buffers
 	//lux::FenceDE addShaderFence;
-	void		cshaderCreateDefaultCommandBuffers();
-	void		cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);
-	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, ShaderLayout vShaderLayout);
-	void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	int32		cshaderNew(const lux::Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	bool		cshaderDestroy(const LuxShader vCShader);
+	//void		cshaderCreateDefaultCommandBuffers();
+	//void		cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);
+	//void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, ShaderLayout vShaderLayout);
+	//void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	//int32		cshaderNew(const lux::Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	//bool		cshaderDestroy(const LuxShader vCShader);
 };
 
 #endif
