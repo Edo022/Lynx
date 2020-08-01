@@ -17,11 +17,11 @@ namespace lux::core::c{
 
 	void computeInit( ) {
 		{ //Initialize window buffers and size
-			lux::getEngine( ).gpuCellWindowOutput_i = lux::core::c::gpuCellCreate(lux::getEngine( ).width * lux::getEngine( ).height * 4	/*A8-R8-G8-B8     UI*/, false);
-			lux::getEngine( ).gpuCellWindowOutput = lux::core::c::gpuCellCreate(lux::getEngine( ).width * lux::getEngine( ).height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);
+			lux::core::g::gpuCellWindowOutput_i = lux::core::c::gpuCellCreate(lux::core::g::width * lux::core::g::height * 4	/*A8-R8-G8-B8     UI*/, false);
+			lux::core::g::gpuCellWindowOutput = lux::core::c::gpuCellCreate(lux::core::g::width * lux::core::g::height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);
 
-			lux::getEngine( ).gpuCellWindowSize = lux::core::c::gpuCellCreate(4 * 2, true);
-			uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::getEngine( ).gpuCellWindowSize));
+			lux::core::g::gpuCellWindowSize = lux::core::c::gpuCellCreate(4 * 2, true);
+			uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::core::g::gpuCellWindowSize));
 			pwindowSize[0] = lux::getEngine( ).swapchainExtent.width;
 			pwindowSize[1] = lux::getEngine( ).swapchainExtent.height;
 		}
@@ -35,9 +35,8 @@ namespace lux::core::c{
 			lux::core::c::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
 			lux::core::c::cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
 			lux::core::c::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
-			Engine& engine_ = lux::getEngine( );
-			lux::core::c::cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowOutput_i, engine_.gpuCellWindowSize },
-				LUX_DEF_SHADER_COPY, engine_.width / 32 + 1, engine_.height / 32 + 1, 1);
+			lux::core::c::cshaderNew({ lux::core::g::gpuCellWindowOutput, lux::core::g::gpuCellWindowOutput_i, lux::core::g::gpuCellWindowSize },
+				LUX_DEF_SHADER_COPY, lux::core::g::width / 32 + 1, lux::core::g::height / 32 + 1, 1);
 		}
 	}
 

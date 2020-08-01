@@ -1,7 +1,7 @@
 
 
 #include "LuxEngine/Core/Engine.h"
-
+#include "LuxEngine/Core/Graphics/GOutput.h"
 
 
 
@@ -15,6 +15,12 @@
 
 
 
+
+
+
+namespace lux::core::g{
+	bool renderFramebufferResized = false;
+}
 
 
 

@@ -252,7 +252,7 @@ namespace lux::core::c{
 				.imageOffset{ 0, 0, 0 },									//No image offset
 				};
 				region.imageExtent = { lux::getEngine( ).swapchainExtent.width, lux::getEngine( ).swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(lux::core::c::copyCommandBuffers[imgIndex], lux::core::c::CBuffers[getBufferIndex(lux::getEngine( ).gpuCellWindowOutput_i)].buffer, lux::getEngine( ).swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(lux::core::c::copyCommandBuffers[imgIndex], lux::core::c::CBuffers[getBufferIndex(lux::core::g::gpuCellWindowOutput_i)].buffer, lux::getEngine( ).swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 				//Create a barrier to use the swapchain image as a present source image

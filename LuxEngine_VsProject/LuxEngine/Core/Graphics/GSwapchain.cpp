@@ -31,7 +31,7 @@ VkPresentModeKHR Engine::swapchainChoosePresentMode(const lux::Array<VkPresentMo
 
 VkExtent2D Engine::swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 	int32 width, height;
-	glfwGetFramebufferSize(window, &width, &height);
+	glfwGetFramebufferSize(lux::core::g::window, &width, &height);
 	return VkExtent2D{
 		max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, (uint32)width)),
 		max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
@@ -160,9 +160,9 @@ void Engine::swapchainCleanup( ) {
 
 
 void Engine::swapchainRecreate(const bool vWindowResized) {
-	if(vWindowResized) windowResizeFence.startFirst( );
+	if(vWindowResized) lux::core::g::windowResizeFence.startFirst( );
 	int32 width, height;
-	glfwGetFramebufferSize(window, &width, &height);
+	glfwGetFramebufferSize(lux::core::g::window, &width, &height);
 
 	if(width != 0 && height != 0) {
 		vkDeviceWaitIdle(graphics.LD);
@@ -175,7 +175,7 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 			vkDestroyCommandPool(compute.LD, lux::core::c::copyCommandPool, nullptr);
 		}
 
-		uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(gpuCellWindowSize));
+		uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::core::g::gpuCellWindowSize));
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
 
@@ -184,5 +184,5 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 			lux::core::c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}
 	}
-	if(vWindowResized) windowResizeFence.endFirst( );
+	if(vWindowResized) lux::core::g::windowResizeFence.endFirst( );
 }

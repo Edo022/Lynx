@@ -40,10 +40,13 @@
 
 
 #include "LuxEngine/Core/Devices_t.h"
+#include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Compute/Compute.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 #include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Core/Graphics/GOutput.h"
+#include "LuxEngine/Core/Graphics/Graphics.h"
 //#include "LuxEngine/Core/Compute/CBuffers_t.h"
 
 #include "type_traits"                                 // for move
@@ -273,12 +276,12 @@ public:
 
 
 	//Window >> this
-	GLFWwindow*					window;										//Main engine window
-	int32						width = 1920 * 2, height = 1080;			//Size of the window //TODO
-	lux::FenceDE				windowResizeFence;
-	LuxCell						gpuCellWindowSize;
-	LuxCell						gpuCellWindowOutput;						//The buffer that contains the color output of the window
-	LuxCell						gpuCellWindowOutput_i;						//The buffer that contains the color output of the window
+	//GLFWwindow*					window;										//Main engine window
+	//int32						width = 1920 * 2, height = 1080;			//Size of the window //TODO
+	//lux::FenceDE				windowResizeFence;
+	//LuxCell						gpuCellWindowSize;
+	//LuxCell						gpuCellWindowOutput;						//The buffer that contains the color output of the window
+	//LuxCell						gpuCellWindowOutput_i;						//The buffer that contains the color output of the window
 	void initWindow();		void createInstance();
 
 
@@ -325,18 +328,18 @@ public:
 
 
 	//Graphics >> Graphics/GGraphics.cpp
-	lux::Array<VkSemaphore>		drawFrameImageAquiredSemaphore;
-	lux::Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
-	lux::Array<VkSemaphore>		drawFrameCopySemaphore;
-	lux::Array<VkSemaphore>		drawFrameClearSemaphore;
-	lux::Array<VkFence>			drawFrameImageRenderedFence;
-	int32						renderCurrentFrame = 0;
-	void						graphicsInit(const bool vUseVSync = true, const float vFOV = 45.0f);
-	void						graphicsCreateSyncObjs();
-	void						graphicsCreateDebugMessenger();
-	void						graphicsDrawFrame();
-	void						graphicsCleanup();
-	static void					framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
+	//lux::Array<VkSemaphore>		drawFrameImageAquiredSemaphore;
+	//lux::Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
+	//lux::Array<VkSemaphore>		drawFrameCopySemaphore;
+	//lux::Array<VkSemaphore>		drawFrameClearSemaphore;
+	//lux::Array<VkFence>			drawFrameImageRenderedFence;
+	//int32						renderCurrentFrame = 0;
+	//void						graphicsInit(const bool vUseVSync = true, const float vFOV = 45.0f);
+	//void						graphicsCreateSyncObjs();
+	//void						graphicsCreateDebugMessenger();
+	//void						graphicsDrawFrame();
+	//void						graphicsCleanup();
+	//static void					framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
 
 
 	//Graphics swapchain >> Graphics/GSwapchain.cpp
@@ -364,7 +367,7 @@ public:
 	//Graphics images and output objects >> Graphics/GOutput.cpp
 	VkRenderPass				renderPass;
 	const int32					renderMaxFramesInFlight = 4;		//Default:2
-	bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized
+	//bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized
 	void						createRenderPass();
 	void						createFramebuffers();
 	VkImageView					swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
@@ -379,9 +382,9 @@ public:
 
 
 	//Graphics other >> Graphics/Graphics.cpp
-	VkFormat					graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
-	uint32						graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
-	static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+	//VkFormat					graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	//uint32						graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+	//static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
 
 
@@ -466,7 +469,7 @@ namespace lux::_engine {
 		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		createInfo.pfnUserCallback = lux::getEngine( ).graphicsDebugCallback;
+		createInfo.pfnUserCallback = lux::core::g::graphicsDebugCallback;
 	}
 }
 

@@ -10,7 +10,6 @@ namespace lux::obj{
 		shaderLayout = LUX_DEF_SHADER_LINE_2D;	//Set shader layout
 		this->allocate( );						//Allocate object data
 
-		Engine& engine_ = lux::getEngine( );
-		lux::core::c::cshaderNew({ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, gpuCell }, shaderLayout, 4, 1, 1);
+		lux::core::c::cshaderNew({ lux::core::g::gpuCellWindowOutput, lux::core::g::gpuCellWindowSize, gpuCell }, shaderLayout, 4, 1, 1);
 	}
 }

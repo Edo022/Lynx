@@ -384,6 +384,7 @@
     <ClCompile Include="LuxEngine\Core\Graphics\GOutput.cpp" />
     <ClCompile Include="LuxEngine\Core\Graphics\Graphics.cpp" />
     <ClCompile Include="LuxEngine\Core\Graphics\GSwapchain.cpp" />
+    <ClCompile Include="LuxEngine\Core\Graphics\Window.cpp" />
     <ClCompile Include="LuxEngine\Core\Input\Input.cpp" />
     <ClCompile Include="LuxEngine\Core\Input\InputState.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
@@ -402,6 +403,9 @@
     <ClInclude Include="LuxEngine\Core\Compute\CShader_t.h" />
     <ClInclude Include="LuxEngine\Core\Devices_t.h" />
     <ClInclude Include="LuxEngine\Core\Engine.h" />
+    <ClInclude Include="LuxEngine\Core\Graphics\GOutput.h" />
+    <ClInclude Include="LuxEngine\Core\Graphics\Graphics.h" />
+    <ClInclude Include="LuxEngine\Core\Graphics\Window.h" />
     <ClInclude Include="LuxEngine\Core\Input\Input.h" />
     <ClInclude Include="LuxEngine\Core\Input\InputState.h" />
     <ClInclude Include="LuxEngine\Core\Input\KeyboardInput.h" />

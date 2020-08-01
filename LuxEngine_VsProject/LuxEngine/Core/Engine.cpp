@@ -88,7 +88,7 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//Init
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
-	graphicsInit(vUseVSync, vFOV);
+	lux::core::g::graphicsInit(vUseVSync, vFOV);
 	lux::core::c::computeInit();
 
 	//Loop
@@ -96,9 +96,9 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 
 	//Exit
-	Normal  printf("Cleaning memory");								graphicsCleanup(); lux::core::c::computeCleanup();		NewLine;
+	Normal  printf("Cleaning memory");								lux::core::g::graphicsCleanup(); lux::core::c::computeCleanup();		NewLine;
 	vkDestroyInstance(instance, nullptr);
-	glfwDestroyWindow(window);
+	glfwDestroyWindow(lux::core::g::window);
 	glfwTerminate();
 }
 
@@ -112,7 +112,7 @@ void Engine::mainLoop( ) {
 	initialized = true;
 
 
-	while(!glfwWindowShouldClose(window)) {
+	while(!glfwWindowShouldClose(lux::core::g::window)) {
 		glfwWaitEvents( );
 	}
 	running = false;
@@ -125,7 +125,7 @@ void Engine::mainLoop( ) {
 void Engine::runRenderThr() {
 	luxDebug(SetThreadDescription(GetCurrentThread(), L"\tLuxEngine  |  Render"));
 	while (running) {
-		graphicsDrawFrame();
+		lux::core::g::graphicsDrawFrame();
 		//TODO it does nothing but it's probably important, somehow. dunno
 		//vkDeviceWaitIdle(compute.LD);
 		frames++;
@@ -226,7 +226,7 @@ void Engine::createInstance( ) {
 void Engine::initWindow() {
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
+	lux::core::g::window = glfwCreateWindow(lux::core::g::width, lux::core::g::height, "Lux Engine", nullptr, nullptr);
 
 	{ //Set icon
 		unsigned char h[] = {
@@ -240,19 +240,19 @@ void Engine::initWindow() {
 			.height{ 2 },
 			.pixels{ h },
 		};
-		glfwSetWindowIcon(window, 1, &icon);
+		glfwSetWindowIcon(lux::core::g::window, 1, &icon);
 	}
 
 
 	{ //Set callbacks
-		glfwSetWindowUserPointer(window, this);
-		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+		glfwSetWindowUserPointer(lux::core::g::window, this);
+		glfwSetFramebufferSizeCallback(lux::core::g::window, lux::core::g::framebufferResizeCallback);
 
-		glfwSetCursorPosCallback(window, lux::input::mouseCursorPosCallback);
-		glfwSetMouseButtonCallback(window, lux::input::mouseButtonCallback);
-		glfwSetScrollCallback(window, lux::input::mouseAxisCallback);
+		glfwSetCursorPosCallback(lux::core::g::window, lux::input::mouseCursorPosCallback);
+		glfwSetMouseButtonCallback(lux::core::g::window, lux::input::mouseButtonCallback);
+		glfwSetScrollCallback(lux::core::g::window, lux::input::mouseAxisCallback);
 
-		glfwSetKeyCallback(window, lux::input::keyCallback);
+		glfwSetKeyCallback(lux::core::g::window, lux::input::keyCallback);
 	}
 }
 
@@ -337,7 +337,7 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, vProperties);
+	allocInfo.memoryTypeIndex = lux::core::g::graphicsFindMemoryType(memRequirements.memoryTypeBits, vProperties);
 
 	//TODO check out of memory
 	//TODO don't quit in VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS but return an error code
@@ -347,7 +347,7 @@ void Engine::createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, cons
 			VkMemoryAllocateInfo allocInfo2{};
 			allocInfo2.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 			allocInfo2.allocationSize = memRequirements.size;
-			allocInfo2.memoryTypeIndex = graphicsFindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			allocInfo2.memoryTypeIndex = lux::core::g::graphicsFindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 			switch (vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 				case VK_SUCCESS: break;
 				case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
