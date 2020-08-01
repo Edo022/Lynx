@@ -20,15 +20,15 @@ namespace lux::input{
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y;
 		glfwGetCursorPos(window, &x, &y);
-		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->fp = vec2i32{ (int32)x, (int32)y };
-		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->update( );
+		rcast<lux::obj::Line2D*>(lux::getEngine().CRenderSpaces[0]->children[0])->fp = vec2i32{ (int32)x, (int32)y };
+		rcast<lux::obj::Line2D*>(lux::getEngine().CRenderSpaces[0]->children[0])->update( );
 	}
 
 
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
-		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
-		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
-		rcast<lux::obj::Line2D*>(lux::getEngine( ).CRenderSpaces[0]->children[0])->update( );
+		rcast<lux::obj::Line2D*>(lux::getEngine().CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
+		rcast<lux::obj::Line2D*>(lux::getEngine().CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
+		rcast<lux::obj::Line2D*>(lux::getEngine().CRenderSpaces[0]->children[0])->update( );
 	}
 
 

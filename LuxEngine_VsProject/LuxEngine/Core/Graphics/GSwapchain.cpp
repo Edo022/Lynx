@@ -1,7 +1,7 @@
 ﻿
-
 #include "LuxEngine/Core/Engine.h"
-#include "LuxEngine/Core/Compute/CShader_t.h"
+
+
 
 
 VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats) {
@@ -171,17 +171,17 @@ void Engine::swapchainRecreate(const bool vWindowResized) {
 
 
 		{ //destroy copy command buffers
-			vkFreeCommandBuffers(compute.LD, copyCommandPool, copyCommandBuffers.size( ), copyCommandBuffers.begin( ));
-			vkDestroyCommandPool(compute.LD, copyCommandPool, nullptr);
+			vkFreeCommandBuffers(compute.LD, lux::core::c::copyCommandPool, lux::core::c::copyCommandBuffers.size( ), lux::core::c::copyCommandBuffers.begin( ));
+			vkDestroyCommandPool(compute.LD, lux::core::c::copyCommandPool, nullptr);
 		}
 
-		uint32* pwindowSize = scast<uint32*>(gpuCellMap(gpuCellWindowSize));
+		uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(gpuCellWindowSize));
 		pwindowSize[0] = swapchainExtent.width;
 		pwindowSize[1] = swapchainExtent.height;
 
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
-			cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
+			lux::core::c::copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
+			lux::getEngine().cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}
 	}
 	if(vWindowResized) windowResizeFence.endFirst( );

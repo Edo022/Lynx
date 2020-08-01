@@ -1,6 +1,11 @@
 #pragma once
 
 
+
+
+
+
+
 //Buffer classes (size of its cells)
 enum LuxBufferClass : uint32 {
 	LUX_BUFFER_CLASS_50 = 50,
@@ -26,3 +31,13 @@ struct LuxBuffer_t {
 		size{ vSize }, bufferClass{ vBufferClass }, cpuAccessible{ vCpuAccessible } {
 	}
 };
+
+
+namespace lux::core::c{
+	extern lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
+
+	LuxBuffer	gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+	LuxCell		gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
+	bool		gpuCellDestroy(const LuxCell vCell);
+	void*		gpuCellMap(const LuxCell vCell);
+}

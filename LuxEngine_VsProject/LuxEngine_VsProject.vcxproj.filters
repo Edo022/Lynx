@@ -216,10 +216,16 @@
     <ClInclude Include="LuxEngine\Core\Input\MouseInput.h">
       <Filter>LuxEngine\Core\Input</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Core\Compute\CBuffers_t.h">
+    <ClInclude Include="LuxEngine\Core\Compute\CBuffers.h">
+      <Filter>LuxEngine\Core\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Compute\Compute.h">
       <Filter>LuxEngine\Core\Compute</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Core\Compute\CShader_t.h">
+      <Filter>LuxEngine\Core\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Compute\CShader.hhh">
       <Filter>LuxEngine\Core\Compute</Filter>
     </ClInclude>
   </ItemGroup>

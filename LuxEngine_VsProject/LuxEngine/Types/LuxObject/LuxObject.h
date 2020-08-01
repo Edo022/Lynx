@@ -7,6 +7,7 @@
 #include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
+//#include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 
 

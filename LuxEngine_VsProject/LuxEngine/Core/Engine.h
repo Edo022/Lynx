@@ -35,11 +35,16 @@
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
+#include "LuxEngine/Types/LuxFenceDE.h"
+
 
 
 #include "LuxEngine/Core/Devices_t.h"
-#include "LuxEngine/Core/Compute/CBuffers_t.h"
+#include "LuxEngine/Core/Compute/Compute.h"
+#include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
+//#include "LuxEngine/Core/Compute/CShader.h"
+//#include "LuxEngine/Core/Compute/CBuffers_t.h"
 
 #include "type_traits"                                 // for move
 #include "vcruntime_new.h"                             // for operator delete, operator new
@@ -395,26 +400,24 @@ public:
 
 
 	//Compute >> Compute/Compute.cpp
-	VkCommandPool				copyCommandPool;
-	lux::Array<VkCommandBuffer>	copyCommandBuffers;
-	VkCommandBuffer				clearCommandBuffer;
-	void						computeInit();
-	void						computeCleanup();
+	//VkCommandPool				copyCommandPool;
+	//lux::Array<VkCommandBuffer>	copyCommandBuffers;
+	//VkCommandBuffer				clearCommandBuffer;
+	//void						computeInit();
+	//void						computeCleanup();
 
 
 
 	//Buffers >> Compute/Buffers.cpp
-	lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
-	LuxBuffer						gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
-	LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
-	bool							gpuCellDestroy(const LuxCell vCell);
-	void*							gpuCellMap(const LuxCell vCell);
+	//lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
+	//LuxBuffer						gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
+	//LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
+	//bool							gpuCellDestroy(const LuxCell vCell);
+	//void*							gpuCellMap(const LuxCell vCell);
 
 
 
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
-	LuxShader ls0;
-	LuxShader ls1;
 	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
 	lux::String shaderPath;
 	lux::Array<LuxShaderLayout_t>	CShadersLayouts;				//Layout of the render shaders

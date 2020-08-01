@@ -70,10 +70,10 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//TODO create specific function to get some extensions or all the files
 	lux::sys::dir::thisDir;
 	LuxTime start = luxStartChrono( );
-	shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
+	lux::getEngine().shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
 	//shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
 	try {
-		for(const auto& name : std::filesystem::recursive_directory_iterator(shaderPath.begin( ))) {
+		for(const auto& name : std::filesystem::recursive_directory_iterator(lux::getEngine().shaderPath.begin( ))) {
 			lux::String luxStrPath = lux::String(name.path( ).u8string( ).c_str( )); lux::sys::dir::fixWindowsPath(luxStrPath);
 			if(lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 				if(!lux::_engine::compileShader(luxStrPath.begin( ))) Exit("compilation error")
@@ -89,14 +89,14 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	initWindow();
 	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
 	graphicsInit(vUseVSync, vFOV);
-	computeInit();
+	lux::core::c::computeInit();
 
 	//Loop
 	Success printf("Initialization completed in %f s", luxStopChrono(start));
 	Success printf("Starting Lux Engine\n");						mainLoop();									MainSeparator;
 
 	//Exit
-	Normal  printf("Cleaning memory");								graphicsCleanup(); computeCleanup();		NewLine;
+	Normal  printf("Cleaning memory");								graphicsCleanup(); lux::core::c::computeCleanup();		NewLine;
 	vkDestroyInstance(instance, nullptr);
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -143,7 +143,7 @@ void Engine::cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array
 	for(uint32 i = 0; i < pCells.size( ); ++i) {
 		//Connect the storage buffer to the descrptor
 		VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
-		descriptorBufferInfo->buffer = CBuffers[getBufferIndex(pCells[i])].buffer;	//Set buffer
+		descriptorBufferInfo->buffer = lux::core::c::CBuffers[getBufferIndex(pCells[i])].buffer;	//Set buffer
 		descriptorBufferInfo->offset = getCellOffset(&compute.PD, pCells[i]);		//Set buffer offset
 		descriptorBufferInfo->range = getCellSize(pCells[i]);						//Set buffer size
 
@@ -177,16 +177,16 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			.flags{ 0 },														//Default falgs
 			.queueFamilyIndex{ compute.PD.indices.computeFamilies[0] },			//Set the compute family where to bind the command pool
 		};
-		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, nullptr, &copyCommandPool)) Exit("Unable to create command pool");
+		TryVk(vkCreateCommandPool(compute.LD, &commandPoolCreateInfo, nullptr, &lux::core::c::copyCommandPool)) Exit("Unable to create command pool");
 
 		//Allocate one command buffer for each swapchain image
 		static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },			//Set structure type
 			.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },							//Set the command buffer as a primary level command buffer
 		};
-		commandBufferAllocateInfo.commandPool = copyCommandPool;			//Set command pool where to allocate the command buffer
+		commandBufferAllocateInfo.commandPool = lux::core::c::copyCommandPool;			//Set command pool where to allocate the command buffer
 		commandBufferAllocateInfo.commandBufferCount = swapchainImages.size( );
-		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.begin( ))) Exit("Unable to allocate command buffers");
+		TryVk(vkAllocateCommandBuffers(compute.LD, &commandBufferAllocateInfo, lux::core::c::copyCommandBuffers.begin( ))) Exit("Unable to allocate command buffers");
 
 
 
@@ -198,7 +198,7 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 				.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 				.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 			};
-			TryVk(vkBeginCommandBuffer(copyCommandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
+			TryVk(vkBeginCommandBuffer(lux::core::c::copyCommandBuffers[imgIndex], &beginInfo)) Exit("Unable to begin command buffer recording");
 
 
 			//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
@@ -222,7 +222,7 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			VkPipelineStageFlags 										//Create stage flags
 				srcStage{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },	//The swapchain image is in color output stage
 				dstStage{ VK_PIPELINE_STAGE_TRANSFER_BIT };					//Change it to transfer stage to copy the buffer in it
-			vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
+			vkCmdPipelineBarrier(lux::core::c::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
 			VkBufferImageCopy region{ 								//Create bufferImageCopy region to copy the buffer into the image
 				.bufferOffset{ 0 },										//No buffer offset
@@ -237,7 +237,7 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			.imageOffset{ 0, 0, 0 },									//No image offset
 			};
 			region.imageExtent = { swapchainExtent.width, swapchainExtent.height, 1 };	//Copy the whole buffer
-			vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], CBuffers[getBufferIndex(gpuCellWindowOutput_i)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			vkCmdCopyBufferToImage(lux::core::c::copyCommandBuffers[imgIndex], lux::core::c::CBuffers[getBufferIndex(gpuCellWindowOutput_i)].buffer, swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 			//Create a barrier to use the swapchain image as a present source image
@@ -261,10 +261,10 @@ void Engine::cshaderCreateDefaultCommandBuffers( ) {
 			VkPipelineStageFlags 								//Create stage flags
 				srcStage1{ VK_PIPELINE_STAGE_TRANSFER_BIT },				//The image is in transfer stage from the buffer copy
 				dstStage1{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };	//Change it to color output to present them
-			vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
+			vkCmdPipelineBarrier(lux::core::c::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
 			//End command buffer recording
-			TryVk(vkEndCommandBuffer(copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
+			TryVk(vkEndCommandBuffer(lux::core::c::copyCommandBuffers[imgIndex])) Exit("Failed to record command buffer");
 		}
 	}
 }

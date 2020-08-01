@@ -145,7 +145,7 @@ void Engine::graphicsDrawFrame( ) {
 		};
 		submitInfo.pWaitSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
 		submitInfo.pSignalSemaphores = &drawFrameCopySemaphore[renderCurrentFrame];
-		submitInfo.pCommandBuffers = &copyCommandBuffers[imageIndex];
+		submitInfo.pCommandBuffers = &lux::core::c::copyCommandBuffers[imageIndex];
 
 		vkResetFences(graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
 		TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
