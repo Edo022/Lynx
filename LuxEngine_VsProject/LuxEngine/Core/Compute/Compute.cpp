@@ -32,7 +32,7 @@ namespace lux::core::c{
 		}
 
 		{ //Create default shaders
-			lux::getEngine().CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
+			lux::core::c::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
 			lux::getEngine().cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
 			lux::getEngine().cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
 			Engine& engine_ = lux::getEngine( );

@@ -1,6 +1,7 @@
 
 
 #include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 
 
@@ -16,6 +17,16 @@
 
 
 
+
+
+namespace lux::core::c{
+	String						shaderPath;
+	Array<LuxShaderLayout_t>	CShadersLayouts;
+	Map<LuxShader_t, uint32>	CShaders;
+	DynArray<VkCommandBuffer>	CShadersCBs;
+	FenceDE						addShaderFence;
+
+}
 
 
 
@@ -44,8 +55,8 @@ void Engine::cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint
 		layoutCreateInfo->pNext = nullptr;												//default
 
 		//Create the descriptor set layout
-		TryVk(vkCreateDescriptorSetLayout(compute.LD, layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
-		CShadersLayouts[vRenderShader].__lp_ptrs.add((void*)layoutCreateInfo);
+		TryVk(vkCreateDescriptorSetLayout(compute.LD, layoutCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+		lux::core::c::CShadersLayouts[vRenderShader].__lp_ptrs.add((void*)layoutCreateInfo);
 	}
 
 
@@ -59,14 +70,14 @@ void Engine::cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint
 			case LUX_DEF_SHADER_COPY: shaderFileName = "FloatToIntBuffer"; break;
 			default: break; //TODO add unknown shader check
 		}
-		CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
+		lux::core::c::CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(compute.LD, cshaderReadFromFile(&fileLength, (lux::core::c::shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
 
 
 		//Create stage info
-		CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
+		lux::core::c::CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
 			.sType{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO },		//Set structure type
 			.stage{ VK_SHADER_STAGE_COMPUTE_BIT },								//Use it in the compute stage
-			.module{ CShadersLayouts[vRenderShader].shaderModule },				//Set shader module
+			.module{ lux::core::c::CShadersLayouts[vRenderShader].shaderModule },				//Set shader module
 			.pName{ "main" },													//Set the main function as entry point
 		};
 
@@ -75,9 +86,9 @@ void Engine::cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint
 		VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
 			.sType{ VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO },				//Structure type
 			.setLayoutCount{ 1 },												//Number of set layouts
-			.pSetLayouts{ &CShadersLayouts[vRenderShader].descriptorSetLayout },	//Set set layout
+			.pSetLayouts{ &lux::core::c::CShadersLayouts[vRenderShader].descriptorSetLayout },	//Set set layout
 		};
-		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipelineLayout)) Exit("Unable to create pipeline layout");
+		TryVk(vkCreatePipelineLayout(compute.LD, &pipelineLayoutCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].pipelineLayout)) Exit("Unable to create pipeline layout");
 	}
 
 
@@ -86,11 +97,11 @@ void Engine::cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint
 	{ //Create the pipeline
 		VkComputePipelineCreateInfo pipelineCreateInfo = { 						//Create pipeline creation infos
 			.sType{ VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO },			//Structure type
-			.stage{ CShadersLayouts[vRenderShader].shaderStageCreateInfo },		//Use the previously created shader stage creation infos
-			.layout{ CShadersLayouts[vRenderShader].pipelineLayout },			//Use the previously created pipeline layout
+			.stage{ lux::core::c::CShadersLayouts[vRenderShader].shaderStageCreateInfo },		//Use the previously created shader stage creation infos
+			.layout{ lux::core::c::CShadersLayouts[vRenderShader].pipelineLayout },			//Use the previously created pipeline layout
 		};
-		TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipeline)) Exit("Unable to create comput pipeline");
-		vkDestroyShaderModule(compute.LD, CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
+		TryVk(vkCreateComputePipelines(compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].pipeline)) Exit("Unable to create comput pipeline");
+		vkDestroyShaderModule(compute.LD, lux::core::c::CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
 	}
 }
 
@@ -131,7 +142,7 @@ void Engine::cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array
 		.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO },			//Set structure type
 		.descriptorPool{ pCShader->descriptorPool },						//Set descriptor pool where to allocate the descriptor
 		.descriptorSetCount{ 1 },											//Allocate a single descriptor
-		.pSetLayouts{ &CShadersLayouts[vShaderLayout].descriptorSetLayout },//Set set layouts
+		.pSetLayouts{ &lux::core::c::CShadersLayouts[vShaderLayout].descriptorSetLayout },//Set set layouts
 	};
 	TryVk(vkAllocateDescriptorSets(compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet)) Exit("Unable to allocate descriptor sets");
 
@@ -314,8 +325,8 @@ void Engine::cshaderCreateCommandBuffers(LuxShader_t* pCShader, const ShaderLayo
 
 
 	//Bind pipeline and descriptors
-	vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
-	vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
+	vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, lux::core::c::CShadersLayouts[vShaderLayout].pipeline);
+	vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, lux::core::c::CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
 	//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 	vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCounty, vGroupCountz);
 
@@ -357,9 +368,9 @@ int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const ShaderLayout v
 	cshaderCreateDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
 	cshaderCreateCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool
 
-	addShaderFence.startSecond( );
-	CShaders.add(shader);																			//Add the shader to the shader array
-	addShaderFence.endSecond( );
+	lux::core::c::addShaderFence.startSecond( );
+	lux::core::c::CShaders.add(shader);																			//Add the shader to the shader array
+	lux::core::c::addShaderFence.endSecond( );
 
 	return 0;
 }
@@ -377,20 +388,20 @@ int32 Engine::cshaderNew(const lux::Array<LuxCell>& pCells, const ShaderLayout v
 //*   shader  | the shader to destroy
 //*   returns | true if the operation succeeded, false if the index is invalid
 bool Engine::cshaderDestroy(const LuxShader vCShader) {
-	if(vCShader >= CShaders.size( )) return false;
+	if(vCShader >= lux::core::c::CShaders.size( )) return false;
 
 	//Clear descriptors sets, descriptor pool and descriptor layout
-	vkFreeDescriptorSets(compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
-	vkDestroyDescriptorPool(compute.LD, CShaders[vCShader].descriptorPool, nullptr);
+	vkFreeDescriptorSets(compute.LD, lux::core::c::CShaders[vCShader].descriptorPool, 1, &lux::core::c::CShaders[vCShader].descriptorSet);
+	vkDestroyDescriptorPool(compute.LD, lux::core::c::CShaders[vCShader].descriptorPool, nullptr);
 
 	//Clear command buffers and command pool
-	vkFreeCommandBuffers(compute.LD, CShaders[vCShader].commandPool, 1, CShaders[vCShader].commandBuffers.begin( ));
-	vkDestroyCommandPool(compute.LD, CShaders[vCShader].commandPool, nullptr);
+	vkFreeCommandBuffers(compute.LD, lux::core::c::CShaders[vCShader].commandPool, 1, lux::core::c::CShaders[vCShader].commandBuffers.begin( ));
+	vkDestroyCommandPool(compute.LD, lux::core::c::CShaders[vCShader].commandPool, nullptr);
 
 	//Free all the useless pointers
-	for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
+	for(uint32 i = 0; i < lux::core::c::CShaders[vCShader].__lp_ptrs.size( ); ++i) free(lux::core::c::CShaders[vCShader].__lp_ptrs[i]);
 
 	//Remove the shader from the shader array
-	CShaders.remove(vCShader);
+	lux::core::c::CShaders.remove(vCShader);
 	return true;
 }

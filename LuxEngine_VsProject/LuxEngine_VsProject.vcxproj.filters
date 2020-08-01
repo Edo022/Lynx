@@ -225,7 +225,7 @@
     <ClInclude Include="LuxEngine\Core\Compute\CShader_t.h">
       <Filter>LuxEngine\Core\Compute</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Core\Compute\CShader.hhh">
+    <ClInclude Include="LuxEngine\Core\Compute\CShader.h">
       <Filter>LuxEngine\Core\Compute</Filter>
     </ClInclude>
   </ItemGroup>

@@ -70,10 +70,10 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	//TODO create specific function to get some extensions or all the files
 	lux::sys::dir::thisDir;
 	LuxTime start = luxStartChrono( );
-	lux::getEngine().shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
+	lux::core::c::shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
 	//shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
 	try {
-		for(const auto& name : std::filesystem::recursive_directory_iterator(lux::getEngine().shaderPath.begin( ))) {
+		for(const auto& name : std::filesystem::recursive_directory_iterator(lux::core::c::shaderPath.begin( ))) {
 			lux::String luxStrPath = lux::String(name.path( ).u8string( ).c_str( )); lux::sys::dir::fixWindowsPath(luxStrPath);
 			if(lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 				if(!lux::_engine::compileShader(luxStrPath.begin( ))) Exit("compilation error")

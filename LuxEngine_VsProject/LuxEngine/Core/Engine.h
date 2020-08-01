@@ -43,7 +43,7 @@
 #include "LuxEngine/Core/Compute/Compute.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
-//#include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Core/Compute/CShader.h"
 //#include "LuxEngine/Core/Compute/CBuffers_t.h"
 
 #include "type_traits"                                 // for move
@@ -419,13 +419,13 @@ public:
 
 	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
 	lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
-	lux::String shaderPath;
-	lux::Array<LuxShaderLayout_t>	CShadersLayouts;				//Layout of the render shaders
-	lux::Map<LuxShader_t, uint32>	CShaders;						//Per-object shaders
+	//lux::String shaderPath;
+	//lux::Array<LuxShaderLayout_t>	CShadersLayouts;				//Layout of the render shaders
+	//lux::Map<LuxShader_t, uint32>	CShaders;						//Per-object shaders
 	//TODO divide render stages
 	//TODO use lux map with no effect command buffers in invalid indices, instead of recreating the entire command buffers
-	lux::DynArray<VkCommandBuffer>	CShadersCBs; //Per-object command buffers
-	lux::FenceDE addShaderFence;
+	//lux::DynArray<VkCommandBuffer>	CShadersCBs; //Per-object command buffers
+	//lux::FenceDE addShaderFence;
 	void		cshaderCreateDefaultCommandBuffers();
 	void		cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);
 	void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, ShaderLayout vShaderLayout);

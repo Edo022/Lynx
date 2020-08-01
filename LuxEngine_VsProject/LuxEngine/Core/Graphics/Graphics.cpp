@@ -65,7 +65,7 @@ void Engine::graphicsCreateSyncObjs( ) {
 
 //TODO multithreaded submit and command creation
 void Engine::graphicsDrawFrame( ) {
-	if(CShaders.usedSize( ) <= 1) return;
+	if(lux::core::c::CShaders.usedSize( ) <= 1) return;
 	vkWaitForFences(graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 	redraw:
 
@@ -94,12 +94,12 @@ void Engine::graphicsDrawFrame( ) {
 	//TODO use a staging buffer
 	static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT };
 	{ //Update render result submitting the command buffers to the compute queues
-		addShaderFence.startFirst( );
-		for(uint32 i = 0; i < CShaders.size( ); ++i) {
-			CShadersCBs.resize(CShaders.usedSize( ));
-			if(CShaders.isValid(i)) CShadersCBs[i] = CShaders[i].commandBuffers[0];
+		lux::core::c::addShaderFence.startFirst( );
+		for(uint32 i = 0; i < lux::core::c::CShaders.size( ); ++i) {
+			lux::core::c::CShadersCBs.resize(lux::core::c::CShaders.usedSize( ));
+			if(lux::core::c::CShaders.isValid(i)) lux::core::c::CShadersCBs[i] = lux::core::c::CShaders[i].commandBuffers[0];
 		}
-		addShaderFence.endFirst( );
+		lux::core::c::addShaderFence.endFirst( );
 
 		static VkSubmitInfo submitInfo{
 			.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
@@ -110,8 +110,8 @@ void Engine::graphicsDrawFrame( ) {
 		};
 		submitInfo.pWaitSemaphores = &drawFrameImageAquiredSemaphore[renderCurrentFrame];
 		submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
-		submitInfo.commandBufferCount = CShadersCBs.size( );
-		submitInfo.pCommandBuffers = CShadersCBs.begin( );
+		submitInfo.commandBufferCount = lux::core::c::CShadersCBs.size( );
+		submitInfo.pCommandBuffers = lux::core::c::CShadersCBs.begin( );
 		TryVk(vkQueueSubmit(graphics.graphicsQueue, 1, &submitInfo, nullptr)) Exit("Failed to submit graphics command buffer");
 	}
 
@@ -124,7 +124,7 @@ void Engine::graphicsDrawFrame( ) {
 			.waitSemaphoreCount{ 1 },
 			.pWaitDstStageMask{ waitStages },
 			.commandBufferCount{ 1 },
-			.pCommandBuffers{ &CShaders[0].commandBuffers[0] },
+			.pCommandBuffers{ &lux::core::c::CShaders[0].commandBuffers[0] },
 			.signalSemaphoreCount{ 1 },
 		};
 		submitInfo.pWaitSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
