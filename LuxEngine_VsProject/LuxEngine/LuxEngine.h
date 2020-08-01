@@ -68,7 +68,7 @@
 
 
 //#include "LuxEngine/Types/Containers/LuxArray.h"
-#include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Core/Engine.h"
 
 //Initializes the Engine
 //Objects will automatically call this function when created

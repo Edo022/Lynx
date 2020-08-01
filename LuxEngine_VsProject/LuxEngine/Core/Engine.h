@@ -37,9 +37,9 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 
 
-#include "LuxEngine/Engine/Devices_t.h"
-#include "LuxEngine/Engine/Compute/CBuffers_t.h"
-#include "LuxEngine/Engine/Compute/CShader_t.h"
+#include "LuxEngine/Core/Devices_t.h"
+#include "LuxEngine/Core/Compute/CBuffers_t.h"
+#include "LuxEngine/Core/Compute/CShader_t.h"
 
 #include "type_traits"                                 // for move
 #include "vcruntime_new.h"                             // for operator delete, operator new

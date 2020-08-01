@@ -375,17 +375,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Devices.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Engine.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Input\Input.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Input\InputState.cpp" />
+    <ClCompile Include="LuxEngine\Core\Compute\CBuffers.cpp" />
+    <ClCompile Include="LuxEngine\Core\Compute\Compute.cpp" />
+    <ClCompile Include="LuxEngine\Core\Compute\CShader.cpp" />
+    <ClCompile Include="LuxEngine\Core\Devices.cpp" />
+    <ClCompile Include="LuxEngine\Core\Engine.cpp" />
+    <ClCompile Include="LuxEngine\Core\Graphics\GCommands.cpp" />
+    <ClCompile Include="LuxEngine\Core\Graphics\GOutput.cpp" />
+    <ClCompile Include="LuxEngine\Core\Graphics\Graphics.cpp" />
+    <ClCompile Include="LuxEngine\Core\Graphics\GSwapchain.cpp" />
+    <ClCompile Include="LuxEngine\Core\Input\Input.cpp" />
+    <ClCompile Include="LuxEngine\Core\Input\InputState.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
@@ -396,14 +396,14 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers_t.h" />
-    <ClInclude Include="LuxEngine\Engine\Compute\CShader_t.h" />
-    <ClInclude Include="LuxEngine\Engine\Devices_t.h" />
-    <ClInclude Include="LuxEngine\Engine\Engine.h" />
-    <ClInclude Include="LuxEngine\Engine\Input\Input.h" />
-    <ClInclude Include="LuxEngine\Engine\Input\InputState.h" />
-    <ClInclude Include="LuxEngine\Engine\Input\KeyboardInput.h" />
-    <ClInclude Include="LuxEngine\Engine\Input\MouseInput.h" />
+    <ClInclude Include="LuxEngine\Core\Compute\CBuffers_t.h" />
+    <ClInclude Include="LuxEngine\Core\Compute\CShader_t.h" />
+    <ClInclude Include="LuxEngine\Core\Devices_t.h" />
+    <ClInclude Include="LuxEngine\Core\Engine.h" />
+    <ClInclude Include="LuxEngine\Core\Input\Input.h" />
+    <ClInclude Include="LuxEngine\Core\Input\InputState.h" />
+    <ClInclude Include="LuxEngine\Core\Input\KeyboardInput.h" />
+    <ClInclude Include="LuxEngine\Core\Input\MouseInput.h" />
     <ClInclude Include="LuxEngine\LuxEngine_config.h" />
     <ClInclude Include="LuxEngine\LuxEngine.h" />
     <ClInclude Include="LuxEngine\macros.h" />

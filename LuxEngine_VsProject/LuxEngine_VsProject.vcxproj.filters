@@ -22,18 +22,6 @@
     <Filter Include="LuxEngine\Types\Vectors">
       <UniqueIdentifier>{c601afcb-4e1b-4dd9-8bf9-7afbd536f4c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LuxEngine\Engine">
-      <UniqueIdentifier>{515de7d3-e2be-4374-a5bc-0acc2adafc60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuxEngine\Engine\Compute">
-      <UniqueIdentifier>{da76cc61-9311-41d3-bd0f-8b72b2faea31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuxEngine\Engine\Graphics">
-      <UniqueIdentifier>{e427b4d8-2ca0-42c4-9142-f024e6e87d69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuxEngine\Engine\Input">
-      <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LuxEngine\Math">
       <UniqueIdentifier>{287ad351-a124-4265-8ab2-8d93db5063e1}</UniqueIdentifier>
     </Filter>
@@ -58,35 +46,23 @@
     <Filter Include="LuxEngine\Threads">
       <UniqueIdentifier>{1a62e772-3a71-48bd-89d6-091d04c3f69a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Core">
+      <UniqueIdentifier>{515de7d3-e2be-4374-a5bc-0acc2adafc60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Core\Compute">
+      <UniqueIdentifier>{da76cc61-9311-41d3-bd0f-8b72b2faea31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Core\Graphics">
+      <UniqueIdentifier>{e427b4d8-2ca0-42c4-9142-f024e6e87d69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Core\Input">
+      <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="LuxEngine\Engine\Engine.cpp">
-      <Filter>LuxEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Devices.cpp">
-      <Filter>LuxEngine\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\Graphics.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\Compute.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\GCommands.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\GSwapchain.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\CShader.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Graphics\GOutput.cpp">
-      <Filter>LuxEngine\Engine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
       <Filter>LuxEngine\Types\LuxObject</Filter>
@@ -97,23 +73,47 @@
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Compute\CBuffers.cpp">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\System\System.cpp">
       <Filter>LuxEngine\System</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp">
       <Filter>LuxEngine\Threads</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Input\Input.cpp">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Engine\Input\InputState.cpp">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DLines.cpp">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Devices.cpp">
+      <Filter>LuxEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Engine.cpp">
+      <Filter>LuxEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Input\Input.cpp">
+      <Filter>LuxEngine\Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Input\InputState.cpp">
+      <Filter>LuxEngine\Core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Graphics\GCommands.cpp">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Graphics\GOutput.cpp">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Graphics\Graphics.cpp">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Graphics\GSwapchain.cpp">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Compute\Compute.cpp">
+      <Filter>LuxEngine\Core\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Compute\CShader.cpp">
+      <Filter>LuxEngine\Core\Compute</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Compute\CBuffers.cpp">
+      <Filter>LuxEngine\Core\Compute</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,9 +141,6 @@
     <ClInclude Include="LuxEngine\Types\Vectors\Vectors.h">
       <Filter>LuxEngine\Types\Vectors</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Engine.h">
-      <Filter>LuxEngine\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\LuxEngine.h">
       <Filter>LuxEngine</Filter>
     </ClInclude>
@@ -152,18 +149,6 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h">
       <Filter>LuxEngine\Types\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Input\MouseInput.h">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Input\KeyboardInput.h">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Input\InputState.h">
-      <Filter>LuxEngine\Engine\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Input\Input.h">
-      <Filter>LuxEngine\Engine\Input</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h">
       <Filter>LuxEngine\Types\Containers</Filter>
@@ -201,15 +186,6 @@
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h">
       <Filter>LuxEngine\Types\LuxObject</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Devices_t.h">
-      <Filter>LuxEngine\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Compute\CShader_t.h">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Engine\Compute\CBuffers_t.h">
-      <Filter>LuxEngine\Engine\Compute</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\LuxEngine_config.h">
       <Filter>LuxEngine</Filter>
     </ClInclude>
@@ -221,6 +197,30 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\LuxFenceDE.h">
       <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Devices_t.h">
+      <Filter>LuxEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Engine.h">
+      <Filter>LuxEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Input\Input.h">
+      <Filter>LuxEngine\Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Input\InputState.h">
+      <Filter>LuxEngine\Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Input\KeyboardInput.h">
+      <Filter>LuxEngine\Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Input\MouseInput.h">
+      <Filter>LuxEngine\Core\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Compute\CBuffers_t.h">
+      <Filter>LuxEngine\Core\Compute</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Compute\CShader_t.h">
+      <Filter>LuxEngine\Core\Compute</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

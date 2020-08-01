@@ -9,7 +9,7 @@
 
 #include <time.h>
 #include "LuxEngine/LuxEngine.h"
-#include "LuxEngine/Engine/Input/Input.h"
+#include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/macros.h"
 
 

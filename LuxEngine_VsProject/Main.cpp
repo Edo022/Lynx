@@ -10,8 +10,8 @@
 //#include "LuxEngine/LuxEngine.h"
 //#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 //#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
-//#include "LuxEngine/Engine/Input/KeyboardInput.h"
-//#include "LuxEngine/Engine/Input/Input.h"
+//#include "LuxEngine/Core/Input/KeyboardInput.h"
+//#include "LuxEngine/Core/Input/Input.h"
 //#include "LuxEngine/Threads/ThreadPool.h"
 //
 //

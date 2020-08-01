@@ -1,7 +1,7 @@
 ﻿
 
-#include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader_t.h"
+#include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/Compute/CShader_t.h"
 
 
 VkSurfaceFormatKHR Engine::swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats) {

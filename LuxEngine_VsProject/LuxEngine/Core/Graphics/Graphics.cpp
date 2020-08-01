@@ -1,8 +1,8 @@
 
 
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Engine/Engine.h"
-#include "LuxEngine/Engine/Compute/CShader_t.h"
+#include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/Compute/CShader_t.h"
 
 
 

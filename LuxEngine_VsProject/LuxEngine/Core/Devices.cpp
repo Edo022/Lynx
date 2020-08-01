@@ -1,6 +1,6 @@
 ﻿
 
-#include "LuxEngine/Engine/Engine.h"
+#include "LuxEngine/Core/Engine.h"
 #include "LuxEngine/Types/Containers/LuxString.h"    // for LuxMap
 #include <set>
 class lux::String;
