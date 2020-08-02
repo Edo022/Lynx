@@ -47,7 +47,7 @@
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
-//#include "LuxEngine/Core/Compute/CBuffers_t.h"
+
 
 #include "type_traits"                                 // for move
 #include "vcruntime_new.h"                             // for operator delete, operator new
@@ -365,12 +365,12 @@ public:
 
 
 	//Graphics images and output objects >> Graphics/GOutput.cpp
-	VkRenderPass				renderPass;
-	const int32					renderMaxFramesInFlight = 4;		//Default:2
+	//VkRenderPass				renderPass;
+	//const int32					renderMaxFramesInFlight = 4;		//Default:2
 	//bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized
-	void						createRenderPass();
-	void						createFramebuffers();
-	VkImageView					swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+	//void						createRenderPass();
+	//void						createFramebuffers();
+	//VkImageView					swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
 
 
 	//Graphics commands >> Graphics/GCommands.cpp

@@ -133,11 +133,11 @@ void Engine::swapchainCreate( ) {
 
 	//Create image views
 	swapchainImageViews.resize(swapchainImages.size( ));
-	for(uint32 i = 0; i < swapchainImages.size( ); ++i) swapchainImageViews[i] = swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+	for(uint32 i = 0; i < swapchainImages.size( ); ++i) swapchainImageViews[i] = lux::core::g::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
-	createRenderPass( );
-	createFramebuffers( );
+	lux::core::g::createRenderPass( );
+	lux::core::g::createFramebuffers( );
 }
 
 
@@ -148,7 +148,7 @@ void Engine::swapchainCreate( ) {
 
 
 void Engine::swapchainCleanup( ) {
-	vkDestroyRenderPass(graphics.LD, renderPass, nullptr);													//Destroy render pass
+	vkDestroyRenderPass(graphics.LD, lux::core::g::renderPass, nullptr);													//Destroy render pass
 	for(auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
 	for(auto imageView : swapchainImageViews) vkDestroyImageView(graphics.LD, imageView, nullptr);			//Destroy image views
 	vkDestroySwapchainKHR(graphics.LD, swapchain, nullptr);													//destroy swapchain

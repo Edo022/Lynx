@@ -51,11 +51,11 @@ namespace lux::core::g{
 
 
 	void graphicsCreateSyncObjs( ) {
-		lux::core::g::drawFrameImageAquiredSemaphore.resize(lux::getEngine( ).renderMaxFramesInFlight);
-		lux::core::g::drawFrameObjectsRenderedSemaphore.resize(lux::getEngine( ).renderMaxFramesInFlight);
-		lux::core::g::drawFrameCopySemaphore.resize(lux::getEngine( ).renderMaxFramesInFlight);
-		lux::core::g::drawFrameClearSemaphore.resize(lux::getEngine( ).renderMaxFramesInFlight);
-		lux::core::g::drawFrameImageRenderedFence.resize(lux::getEngine( ).renderMaxFramesInFlight);
+		lux::core::g::drawFrameImageAquiredSemaphore.resize(lux::core::g::renderMaxFramesInFlight);
+		lux::core::g::drawFrameObjectsRenderedSemaphore.resize(lux::core::g::renderMaxFramesInFlight);
+		lux::core::g::drawFrameCopySemaphore.resize(lux::core::g::renderMaxFramesInFlight);
+		lux::core::g::drawFrameClearSemaphore.resize(lux::core::g::renderMaxFramesInFlight);
+		lux::core::g::drawFrameImageRenderedFence.resize(lux::core::g::renderMaxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{ };
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -64,7 +64,7 @@ namespace lux::core::g{
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for(int32 i = 0; i < lux::getEngine( ).renderMaxFramesInFlight; ++i) {
+		for(int32 i = 0; i < lux::core::g::renderMaxFramesInFlight; ++i) {
 			if(vkCreateSemaphore(lux::getEngine( ).graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameImageAquiredSemaphore[i]) != VK_SUCCESS ||
 				vkCreateSemaphore(lux::getEngine( ).graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameObjectsRenderedSemaphore[i]) != VK_SUCCESS ||
 				vkCreateSemaphore(lux::getEngine( ).graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameCopySemaphore[i]) != VK_SUCCESS ||
@@ -195,7 +195,7 @@ namespace lux::core::g{
 		}
 
 		//Update frame number and flush the window data
-		lux::core::g::renderCurrentFrame = (lux::core::g::renderCurrentFrame + 1) % (lux::getEngine( ).renderMaxFramesInFlight);
+		lux::core::g::renderCurrentFrame = (lux::core::g::renderCurrentFrame + 1) % (lux::core::g::renderMaxFramesInFlight);
 		glfwSwapBuffers(lux::core::g::window);
 	}
 
@@ -210,7 +210,7 @@ namespace lux::core::g{
 		lux::getEngine( ).swapchainCleanup( );																//Clear swapchain components
 		vkDestroyCommandPool(lux::getEngine( ).graphics.LD, lux::getEngine( ).singleTimeCommandPool, nullptr);					//Destroy graphics command pool
 
-		for(int32 i = 0; i < lux::getEngine( ).renderMaxFramesInFlight; ++i) {								//Destroy sync objects
+		for(int32 i = 0; i < lux::core::g::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
 			vkDestroySemaphore(lux::getEngine( ).graphics.LD, lux::core::g::drawFrameImageAquiredSemaphore[i], nullptr);
 			vkDestroySemaphore(lux::getEngine( ).graphics.LD, lux::core::g::drawFrameObjectsRenderedSemaphore[i], nullptr);
 			vkDestroySemaphore(lux::getEngine( ).graphics.LD, lux::core::g::drawFrameCopySemaphore[i], nullptr);
