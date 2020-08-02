@@ -240,6 +240,9 @@
     <ClInclude Include="LuxEngine\Core\Graphics\GOutput.h">
       <Filter>LuxEngine\Core\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Graphics\GCommands.h">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -40,6 +40,7 @@
 
 
 #include "LuxEngine/Core/Devices_t.h"
+#include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Compute/Compute.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
@@ -47,6 +48,7 @@
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
+#include "LuxEngine/Core/Graphics/GCommands.h"
 
 
 #include "type_traits"                                 // for move
@@ -282,7 +284,7 @@ public:
 	//LuxCell						gpuCellWindowSize;
 	//LuxCell						gpuCellWindowOutput;						//The buffer that contains the color output of the window
 	//LuxCell						gpuCellWindowOutput_i;						//The buffer that contains the color output of the window
-	void initWindow();		void createInstance();
+	//void initWindow();		void createInstance();
 
 
 	//Devices >> Devices.cpp
@@ -374,11 +376,11 @@ public:
 
 
 	//Graphics commands >> Graphics/GCommands.cpp
-	VkCommandPool				singleTimeCommandPool;
-	lux::Array<VkCommandBuffer>	singleTimeCommandBuffers;
-	void						createGraphicsCommandPool();
-	VkCommandBuffer				beginSingleTimeCommands();
-	void						endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
+	//VkCommandPool				singleTimeCommandPool;
+	//lux::Array<VkCommandBuffer>	singleTimeCommandBuffers;
+	//void						createGraphicsCommandPool();
+	//VkCommandBuffer				beginSingleTimeCommands();
+	//void						endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
 
 
 	//Graphics other >> Graphics/Graphics.cpp

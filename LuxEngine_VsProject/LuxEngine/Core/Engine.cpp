@@ -86,8 +86,8 @@ void Engine::run(bool vUseVSync, float vFOV) {
 	}
 
 	//Init
-	initWindow();
-	Normal printf("Creating Instance...                     ");			createInstance();						SuccessNoNl printf("ok");
+	lux::core::g::initWindow();
+	Normal printf("Creating Instance...                     ");			lux::core::g::createInstance();						SuccessNoNl printf("ok");
 	lux::core::g::graphicsInit(vUseVSync, vFOV);
 	lux::core::c::computeInit();
 
@@ -146,115 +146,6 @@ void Engine::runFPSCounterThr() {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Create the Vulkan instance, using validation layers when in debug mode
-void Engine::createInstance( ) {
-	//Application infos
-	VkApplicationInfo appInfo{
-		.sType{ VK_STRUCTURE_TYPE_APPLICATION_INFO },
-		.pApplicationName{ "LuxEngine" },
-		.applicationVersion{ VK_MAKE_VERSION(1, 0, 0) },
-		.pEngineName{ "LuxEngine" },
-		.engineVersion{ VK_MAKE_VERSION(1, 0, 0) },
-		.apiVersion{ VK_API_VERSION_1_0 },
-	};
-
-
-	//Extensions
-	lux::Map<const char*, uint32> extensions;
-	uint32 glfwExtensionCount;
-	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
-	for (uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
-	luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
-
-
-	//Add validation layers if in debug mode
-	#ifndef LUX_DEBUG
-	createInfo.enabledLayerCount = 0;
-	createInfo.pNext = nullptr;
-	#else
-	//Search for validation layers
-	uint32 layerCount = 0;
-	vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
-	lux::Array<VkLayerProperties> availableLayers(layerCount);
-	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());				//Get layers
-	for (const char* layerName : validationLayers) {										//For every layer,
-		for (const auto& layerProperties : availableLayers) {								//Check if it's available
-			if (strcmp(layerName, layerProperties.layerName) == 0) break;
-			else if (strcmp(layerName, availableLayers.end()->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
-		}
-	}
-
-	//Set debugCreateInfo structure
-	VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-	lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
-	#endif
-
-
-
-
-	//Create instance
-	VkInstanceCreateInfo createInfo{
-		.sType{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO },
-		luxDebug(.pNext{ (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo }),
-		.pApplicationInfo{ &appInfo },
-		luxDebug(.enabledLayerCount{ validationLayers.size( ) }),
-		luxDebug(.ppEnabledLayerNames{ validationLayers.begin( ) }),
-		.enabledExtensionCount{ extensions.size( ) },
-		.ppEnabledExtensionNames{ extensions.data(0) },
-	};
-	TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
-}
-
-
-
-
-void Engine::initWindow() {
-	glfwInit();
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	lux::core::g::window = glfwCreateWindow(lux::core::g::width, lux::core::g::height, "Lux Engine", nullptr, nullptr);
-
-	{ //Set icon
-		unsigned char h[] = {
-			255, 0, 0, 255,
-			0, 0, 255, 255,
-			255, 0, 0, 255,
-			0, 0, 255, 255
-		};
-		GLFWimage icon{
-			.width{ 2 },
-			.height{ 2 },
-			.pixels{ h },
-		};
-		glfwSetWindowIcon(lux::core::g::window, 1, &icon);
-	}
-
-
-	{ //Set callbacks
-		glfwSetWindowUserPointer(lux::core::g::window, this);
-		glfwSetFramebufferSizeCallback(lux::core::g::window, lux::core::g::framebufferResizeCallback);
-
-		glfwSetCursorPosCallback(lux::core::g::window, lux::input::mouseCursorPosCallback);
-		glfwSetMouseButtonCallback(lux::core::g::window, lux::input::mouseButtonCallback);
-		glfwSetScrollCallback(lux::core::g::window, lux::input::mouseAxisCallback);
-
-		glfwSetKeyCallback(lux::core::g::window, lux::input::keyCallback);
-	}
-}
 
 
 
@@ -376,9 +267,9 @@ void Engine::copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, co
 	copyRegion.size = vSize;												//Set size of the copied region
 	//TODO add offset and automatize cells
 	//copyRegion.dstOffset
-	VkCommandBuffer commandBuffer = beginSingleTimeCommands();				//Start command buffer
+	VkCommandBuffer commandBuffer = lux::core::g::beginSingleTimeCommands();				//Start command buffer
 	vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
-	endSingleTimeCommands(commandBuffer);									//End command buffer
+	lux::core::g::endSingleTimeCommands(commandBuffer);									//End command buffer
 }
 
 

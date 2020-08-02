@@ -35,7 +35,7 @@ namespace lux::core::g{
 		//Initialize vulkan
 		TryVk(glfwCreateWindowSurface(lux::getEngine( ).instance, lux::core::g::window, nullptr, &lux::getEngine( ).surface)) Exit("Failed to create window surface");
 		Normal printf("    Searching for physical devices...    ");		lux::getEngine( ).deviceGetPhysical( );											NewLine;
-		lux::getEngine( ).createGraphicsCommandPool( );
+		lux::core::g::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");		lux::getEngine( ).swapchainCreate( );					SuccessNoNl printf("ok");
 
 		luxDebug(graphicsCreateDebugMessenger( ));
@@ -208,7 +208,7 @@ namespace lux::core::g{
 
 	void graphicsCleanup( ) {
 		lux::getEngine( ).swapchainCleanup( );																//Clear swapchain components
-		vkDestroyCommandPool(lux::getEngine( ).graphics.LD, lux::getEngine( ).singleTimeCommandPool, nullptr);					//Destroy graphics command pool
+		vkDestroyCommandPool(lux::getEngine( ).graphics.LD, lux::core::g::singleTimeCommandPool, nullptr);					//Destroy graphics command pool
 
 		for(int32 i = 0; i < lux::core::g::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
 			vkDestroySemaphore(lux::getEngine( ).graphics.LD, lux::core::g::drawFrameImageAquiredSemaphore[i], nullptr);
