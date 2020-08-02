@@ -350,12 +350,12 @@ public:
 
 
 	//Graphics swapchain >> Graphics/GSwapchain.cpp
-	VkSwapchainKHR				swapchain;
-	lux::Array<VkImage>			swapchainImages;
-	lux::Array<VkImageView>		swapchainImageViews;
-	VkFormat					swapchainImageFormat;
-	VkExtent2D					swapchainExtent;
-	lux::Array<VkFramebuffer>	swapchainFramebuffers;
+	//VkSwapchainKHR				swapchain;
+	//lux::Array<VkImage>			swapchainImages;
+	//lux::Array<VkImageView>		swapchainImageViews;
+	//VkFormat					swapchainImageFormat;
+	//VkExtent2D					swapchainExtent;
+	//lux::Array<VkFramebuffer>	swapchainFramebuffers;
 	//struct SwapChainSupportDetails {
 	//	VkSurfaceCapabilitiesKHR		capabilities;
 	//	lux::Array<VkSurfaceFormatKHR>	formats;

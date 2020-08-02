@@ -200,14 +200,14 @@ namespace lux::core::c{
 				.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },							//Set the command buffer as a primary level command buffer
 			};
 			commandBufferAllocateInfo.commandPool = lux::core::c::copyCommandPool;			//Set command pool where to allocate the command buffer
-			commandBufferAllocateInfo.commandBufferCount = lux::getEngine( ).swapchainImages.size( );
+			commandBufferAllocateInfo.commandBufferCount = lux::core::g::swapchainImages.size( );
 			TryVk(vkAllocateCommandBuffers(lux::getEngine().compute.LD, &commandBufferAllocateInfo, lux::core::c::copyCommandBuffers.begin( ))) Exit("Unable to allocate command buffers");
 
 
 
 
 			//Record a present command buffers for each swapchain images
-			for(uint32 imgIndex = 0; imgIndex < lux::getEngine( ).swapchainImages.size( ); imgIndex++) {
+			for(uint32 imgIndex = 0; imgIndex < lux::core::g::swapchainImages.size( ); imgIndex++) {
 				//Start recording commands
 				VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos to start recording the command buffer
 					.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
@@ -233,7 +233,7 @@ namespace lux::core::c{
 						.layerCount{ 1 },										//No multi layer
 				},
 				};
-				readToWrite.image = lux::getEngine( ).swapchainImages[imgIndex];			//Set swapchain image
+				readToWrite.image = lux::core::g::swapchainImages[imgIndex];			//Set swapchain image
 				VkPipelineStageFlags 										//Create stage flags
 					srcStage{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },	//The swapchain image is in color output stage
 					dstStage{ VK_PIPELINE_STAGE_TRANSFER_BIT };					//Change it to transfer stage to copy the buffer in it
@@ -251,8 +251,8 @@ namespace lux::core::c{
 				},
 				.imageOffset{ 0, 0, 0 },									//No image offset
 				};
-				region.imageExtent = { lux::getEngine( ).swapchainExtent.width, lux::getEngine( ).swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(lux::core::c::copyCommandBuffers[imgIndex], lux::core::c::CBuffers[getBufferIndex(lux::core::g::gpuCellWindowOutput_i)].buffer, lux::getEngine( ).swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				region.imageExtent = { lux::core::g::swapchainExtent.width, lux::core::g::swapchainExtent.height, 1 };	//Copy the whole buffer
+				vkCmdCopyBufferToImage(lux::core::c::copyCommandBuffers[imgIndex], lux::core::c::CBuffers[getBufferIndex(lux::core::g::gpuCellWindowOutput_i)].buffer, lux::core::g::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 				//Create a barrier to use the swapchain image as a present source image
@@ -272,7 +272,7 @@ namespace lux::core::c{
 						.layerCount{ 1 },										//No multi layer
 				},
 				};
-				writeToRead.image = lux::getEngine( ).swapchainImages[imgIndex];		//Set swapchain image
+				writeToRead.image = lux::core::g::swapchainImages[imgIndex];		//Set swapchain image
 				VkPipelineStageFlags 								//Create stage flags
 					srcStage1{ VK_PIPELINE_STAGE_TRANSFER_BIT },				//The image is in transfer stage from the buffer copy
 					dstStage1{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };	//Change it to color output to present them

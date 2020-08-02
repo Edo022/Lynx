@@ -14,11 +14,12 @@ namespace lux::core::g{
 	};
 
 
-
-
-	//extern graphicsDevice		graphics;		//Main graphics device
-	//extern computeDevice		compute;		//Main compute device
-	//extern Array<computeDevice>	secondary;		//Secondary compute devices
+	extern VkSwapchainKHR		swapchain;
+	extern Array<VkImage>		swapchainImages;
+	extern Array<VkImageView>	swapchainImageViews;
+	extern VkFormat				swapchainImageFormat;
+	extern VkExtent2D			swapchainExtent;
+	extern Array<VkFramebuffer>	swapchainFramebuffers;
 
 
 	void						swapchainCreate();

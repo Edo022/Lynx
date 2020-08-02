@@ -10,9 +10,12 @@
 
 
 namespace lux::core::g{
-	//graphicsDevice			graphics;
-	//computeDevice			compute;
-	//Array<computeDevice>	secondary;
+	VkSwapchainKHR			swapchain;
+	Array<VkImage>			swapchainImages;
+	Array<VkImageView>		swapchainImageViews;
+	VkFormat				swapchainImageFormat;
+	VkExtent2D				swapchainExtent;
+	Array<VkFramebuffer>	swapchainFramebuffers;
 
 
 
@@ -136,21 +139,21 @@ namespace lux::core::g{
 
 
 		//Create swapchain
-		TryVk(vkCreateSwapchainKHR(lux::getEngine().graphics.LD, &createInfo, nullptr, &lux::getEngine().swapchain)) Exit("Failed to create swapchain");
+		TryVk(vkCreateSwapchainKHR(lux::getEngine().graphics.LD, &createInfo, nullptr, &lux::core::g::swapchain)) Exit("Failed to create swapchain");
 
 
 		//Save data
 		uint32 swapchainImageCount;
-		vkGetSwapchainImagesKHR(lux::getEngine().graphics.LD, lux::getEngine().swapchain, &swapchainImageCount, nullptr);					//Get image count
-		lux::getEngine().swapchainImages.resize(swapchainImageCount);
-		vkGetSwapchainImagesKHR(lux::getEngine().graphics.LD, lux::getEngine().swapchain, &swapchainImageCount, lux::getEngine().swapchainImages.begin( ));	//Save images
-		lux::getEngine().swapchainImageFormat = surfaceFormat.format;													//Save format
-		lux::getEngine().swapchainExtent = createInfo.imageExtent;														//Save extent
+		vkGetSwapchainImagesKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, &swapchainImageCount, nullptr);					//Get image count
+		lux::core::g::swapchainImages.resize(swapchainImageCount);
+		vkGetSwapchainImagesKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, &swapchainImageCount, lux::core::g::swapchainImages.begin( ));	//Save images
+		lux::core::g::swapchainImageFormat = surfaceFormat.format;													//Save format
+		lux::core::g::swapchainExtent = createInfo.imageExtent;														//Save extent
 
 
 		//Create image views
-		lux::getEngine().swapchainImageViews.resize(lux::getEngine().swapchainImages.size( ));
-		for(uint32 i = 0; i < lux::getEngine().swapchainImages.size( ); ++i) lux::getEngine().swapchainImageViews[i] = lux::core::g::swapchainCreateImageView(lux::getEngine().swapchainImages[i], lux::getEngine().swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		lux::core::g::swapchainImageViews.resize(lux::core::g::swapchainImages.size( ));
+		for(uint32 i = 0; i < lux::core::g::swapchainImages.size( ); ++i) lux::core::g::swapchainImageViews[i] = lux::core::g::swapchainCreateImageView(lux::core::g::swapchainImages[i], lux::core::g::swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
 		lux::core::g::createRenderPass( );
@@ -166,9 +169,9 @@ namespace lux::core::g{
 
 	void swapchainCleanup( ) {
 		vkDestroyRenderPass(lux::getEngine().graphics.LD, lux::core::g::renderPass, nullptr);													//Destroy render pass
-		for(auto framebuffer : lux::getEngine().swapchainFramebuffers) vkDestroyFramebuffer(lux::getEngine().graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
-		for(auto imageView : lux::getEngine().swapchainImageViews) vkDestroyImageView(lux::getEngine().graphics.LD, imageView, nullptr);			//Destroy image views
-		vkDestroySwapchainKHR(lux::getEngine().graphics.LD, lux::getEngine().swapchain, nullptr);													//destroy swapchain
+		for(auto framebuffer : lux::core::g::swapchainFramebuffers) vkDestroyFramebuffer(lux::getEngine().graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
+		for(auto imageView : lux::core::g::swapchainImageViews) vkDestroyImageView(lux::getEngine().graphics.LD, imageView, nullptr);			//Destroy image views
+		vkDestroySwapchainKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, nullptr);													//destroy swapchain
 	}
 
 
@@ -193,11 +196,11 @@ namespace lux::core::g{
 			}
 
 			uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::core::g::gpuCellWindowSize));
-			pwindowSize[0] = lux::getEngine().swapchainExtent.width;
-			pwindowSize[1] = lux::getEngine().swapchainExtent.height;
+			pwindowSize[0] = lux::core::g::swapchainExtent.width;
+			pwindowSize[1] = lux::core::g::swapchainExtent.height;
 
 			{ //#LLID CCB0000 Create copy command buffers
-				lux::core::c::copyCommandBuffers.resize(lux::getEngine().swapchainImages.size( ));	//Resize the command buffer array in the shader
+				lux::core::c::copyCommandBuffers.resize(lux::core::g::swapchainImages.size( ));	//Resize the command buffer array in the shader
 				lux::core::c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 			}
 		}

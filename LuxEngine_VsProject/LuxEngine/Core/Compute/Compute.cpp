@@ -22,12 +22,12 @@ namespace lux::core::c{
 
 			lux::core::g::gpuCellWindowSize = lux::core::c::gpuCellCreate(4 * 2, true);
 			uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::core::g::gpuCellWindowSize));
-			pwindowSize[0] = lux::getEngine( ).swapchainExtent.width;
-			pwindowSize[1] = lux::getEngine( ).swapchainExtent.height;
+			pwindowSize[0] = lux::core::g::swapchainExtent.width;
+			pwindowSize[1] = lux::core::g::swapchainExtent.height;
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(lux::getEngine( ).swapchainImages.size( ));	//Resize the command buffer array in the shader
+			copyCommandBuffers.resize(lux::core::g::swapchainImages.size( ));	//Resize the command buffer array in the shader
 			lux::core::c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 		}
 

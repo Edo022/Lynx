@@ -98,7 +98,7 @@ namespace lux::core::g{
 
 		uint32 imageIndex;
 		{ //Acquire swapchain image
-			switch(vkAcquireNextImageKHR(lux::getEngine().graphics.LD, lux::getEngine( ).swapchain, /*1000*1000*5*/INT_MAX /*5s*/, lux::core::g::drawFrameImageAquiredSemaphore[lux::core::g::renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+			switch(vkAcquireNextImageKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, /*1000*1000*5*/INT_MAX /*5s*/, lux::core::g::drawFrameImageAquiredSemaphore[lux::core::g::renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
 				case VK_ERROR_OUT_OF_DATE_KHR: lux::core::g::swapchainRecreate(false);  return;
 				default: Failure printf("Failed to aquire swapchain image");
@@ -177,7 +177,7 @@ namespace lux::core::g{
 				.sType{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR },
 				.waitSemaphoreCount{ 1 },
 				.swapchainCount{ 1 },
-				.pSwapchains{ &lux::getEngine( ).swapchain },
+				.pSwapchains{ &lux::core::g::swapchain },
 			};
 			presentInfo.pWaitSemaphores = &lux::core::g::drawFrameCopySemaphore[lux::core::g::renderCurrentFrame];
 			presentInfo.pImageIndices = &imageIndex;

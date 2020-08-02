@@ -33,7 +33,7 @@ namespace lux::core::g{
 	void createRenderPass( ) {
 		//Color
 		VkAttachmentDescription colorAttachment{
-			.format{ lux::getEngine().swapchainImageFormat },						//Swapchain image format
+			.format{ lux::core::g::swapchainImageFormat },						//Swapchain image format
 			.samples{ VK_SAMPLE_COUNT_1_BIT },						//Multisampling samples
 			.loadOp{ VK_ATTACHMENT_LOAD_OP_DONT_CARE },				//Don't clear for better performance
 			.storeOp{ VK_ATTACHMENT_STORE_OP_DONT_CARE },			//Don't save rendered image
@@ -101,19 +101,19 @@ namespace lux::core::g{
 
 
 	void createFramebuffers( ) {
-		lux::getEngine().swapchainFramebuffers.resize(lux::getEngine().swapchainImageViews.size( ));
+		lux::core::g::swapchainFramebuffers.resize(lux::core::g::swapchainImageViews.size( ));
 
-		for(uint32 i = 0; i < lux::getEngine().swapchainImageViews.size( ); ++i) {
+		for(uint32 i = 0; i < lux::core::g::swapchainImageViews.size( ); ++i) {
 			VkFramebufferCreateInfo framebufferInfo{
 				.sType{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO },
 				.renderPass{ lux::core::g::renderPass },
 				.attachmentCount{ 1 },
-				.pAttachments{ &lux::getEngine().swapchainImageViews[i] },
-				.width{ lux::getEngine().swapchainExtent.width },
-				.height{ lux::getEngine().swapchainExtent.height },
+				.pAttachments{ &lux::core::g::swapchainImageViews[i] },
+				.width{ lux::core::g::swapchainExtent.width },
+				.height{ lux::core::g::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			TryVk(vkCreateFramebuffer(lux::getEngine().graphics.LD, &framebufferInfo, nullptr, &lux::getEngine().swapchainFramebuffers[i])) Exit("Failed to create framebuffer");
+			TryVk(vkCreateFramebuffer(lux::getEngine().graphics.LD, &framebufferInfo, nullptr, &lux::core::g::swapchainFramebuffers[i])) Exit("Failed to create framebuffer");
 		}
 	}
 
