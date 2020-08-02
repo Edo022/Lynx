@@ -1,6 +1,6 @@
 
 #include "LuxObject.h"
-#include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/LuxCore.h"
 
 
 

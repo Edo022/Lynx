@@ -85,9 +85,6 @@
     <ClCompile Include="LuxEngine\Core\Devices.cpp">
       <Filter>LuxEngine\Core</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Core\Engine.cpp">
-      <Filter>LuxEngine\Core</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Core\Input\Input.cpp">
       <Filter>LuxEngine\Core\Input</Filter>
     </ClCompile>
@@ -117,6 +114,9 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\Core\Graphics\Window.cpp">
       <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Core\LuxCore.cpp">
+      <Filter>LuxEngine\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,9 +204,6 @@
     <ClInclude Include="LuxEngine\Core\Devices_t.h">
       <Filter>LuxEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Core\Engine.h">
-      <Filter>LuxEngine\Core</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Core\Input\Input.h">
       <Filter>LuxEngine\Core\Input</Filter>
     </ClInclude>
@@ -247,6 +244,9 @@
       <Filter>LuxEngine\Core\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Core\Devices.h">
+      <Filter>LuxEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\LuxCore.h">
       <Filter>LuxEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿
 
-#include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Devices_t.h"
 #include "LuxEngine/Core/Devices.h"
 #include <set>

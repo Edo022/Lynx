@@ -20,30 +20,29 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 
 
-#include <deque>
 
+//Core types
 #include "LuxEngine/Core/Devices_t.h"
 #include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 
-
+//Common data types
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Containers/LuxQueue.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 
+//External engine components
 #include "LuxEngine/System/System.h"
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
+#include "LuxEngine/Types/LuxFenceDE.h"
 #include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
-#include "LuxEngine/Types/LuxFenceDE.h"
 
-
-
-
+//Core
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Compute/Compute.h"
@@ -54,17 +53,6 @@
 #include "LuxEngine/Core/Graphics/GCommands.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Devices.h"
-
-
-#include "type_traits"                                 // for move
-#include "vcruntime_new.h"                             // for operator delete, operator new
-#include "vulkan/vk_platform.h"                        // for VKAPI_ATTR, VKAPI_CALL
-#include "vulkan/vulkan_core.h"                        // for VkFence, VkSemaphore, VkCommandBuffer, VkImage, VkPresentModeKHR, VkSurfaceFormatKHR, VkImageView, vkGetInstanceProcAddr, VkFramebuffer, VkBuffer, VkCommandBuffer_T, VkFormat, VkPhysicalDevice, VkDebugUtilsMessengerEXT, VkDevice, VkInstance, VkInstance_T, VkAllocationCallbacks, VkDeviceSize, VkExtent2D, VkMemoryPropertyFlags, VkSurfaceCapabilitiesKHR, PFN_vkCreateDebugUtilsMessengerEXT, PFN_vkDestroyDebugUtilsMessengerEXT, VK_KHR_SWAPCHAIN_EXTENSION_NAME, VkBool32, VkBufferUsageFlags, VkCommandPool, VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT, VkDebugUtilsMessengerCallbackDataEXT, VkDebugUtilsMessengerCreateInfoEXT, VkDeviceMemory, VkFormatFeatureFlags, VkImageAspectFlags, VkImageTiling, VkQueue, VkRenderPass, VkResult, VkResult::VK_ERROR_EXTENSION_NOT_PRESENT, VkShaderModule, VkSurfaceKHR, VkSwapchainKHR
-#include <thread>
-
-class lux::String;
-struct LuxShader_t;
-struct RenderSpace2D;
 
 
 
@@ -282,27 +270,6 @@ public:
 	void mainLoop();		void runFPSCounterThr();	void runRenderThr();
 
 
-	//Window >> this
-	//GLFWwindow*					window;										//Main engine window
-	//int32						width = 1920 * 2, height = 1080;			//Size of the window //TODO
-	//lux::FenceDE				windowResizeFence;
-	//LuxCell						gpuCellWindowSize;
-	//LuxCell						gpuCellWindowOutput;						//The buffer that contains the color output of the window
-	//LuxCell						gpuCellWindowOutput_i;						//The buffer that contains the color output of the window
-	//void initWindow();		void createInstance();
-
-
-	//Devices >> Devices.cpp
-	//graphicsDevice				graphics;									//Main graphics device
-	//computeDevice				compute;									//Main compute device
-	//lux::Array<computeDevice>	secondary;									//Secondary compute devices
-	//void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lux::DynArray<VkQueue>* pComputeQueues);
-	//static int32		deviceRate(const _VkPhysicalDevice* pDevice);
-	//bool				deviceIsSuitable(const VkPhysicalDevice vDevice, lux::String* pErrorText);
-	//bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
-	//QueueFamilyIndices	deviceGetQueueFamilies(const VkPhysicalDevice vDevice);
-
-
 	//Shared functions >> this
 	uint32*				cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
@@ -310,138 +277,10 @@ public:
 	void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 
 
-
-
-
-
-
-
-
-
-
-	// Graphics ---------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
 	//debug and validation layers data
 	lux::Array<const char*, uint32> validationLayers = { "VK_LAYER_KHRONOS_validation" };
 	lux::Array<const char*, uint32> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
-
-
-	//Graphics >> Graphics/GGraphics.cpp
-	//lux::Array<VkSemaphore>		drawFrameImageAquiredSemaphore;
-	//lux::Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
-	//lux::Array<VkSemaphore>		drawFrameCopySemaphore;
-	//lux::Array<VkSemaphore>		drawFrameClearSemaphore;
-	//lux::Array<VkFence>			drawFrameImageRenderedFence;
-	//int32						renderCurrentFrame = 0;
-	//void						graphicsInit(const bool vUseVSync = true, const float vFOV = 45.0f);
-	//void						graphicsCreateSyncObjs();
-	//void						graphicsCreateDebugMessenger();
-	//void						graphicsDrawFrame();
-	//void						graphicsCleanup();
-	//static void					framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
-
-
-	//Graphics swapchain >> Graphics/GSwapchain.cpp
-	//VkSwapchainKHR				swapchain;
-	//lux::Array<VkImage>			swapchainImages;
-	//lux::Array<VkImageView>		swapchainImageViews;
-	//VkFormat					swapchainImageFormat;
-	//VkExtent2D					swapchainExtent;
-	//lux::Array<VkFramebuffer>	swapchainFramebuffers;
-	//struct SwapChainSupportDetails {
-	//	VkSurfaceCapabilitiesKHR		capabilities;
-	//	lux::Array<VkSurfaceFormatKHR>	formats;
-	//	lux::Array<VkPresentModeKHR>	presentModes;
-	//};
-	//void						swapchainCreate();
-	//void						swapchainRecreate(const bool vWindowResized);
-	//void						swapchainCleanup();
-	//VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats);
-	//VkPresentModeKHR			swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes);
-	//VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
-	//SwapChainSupportDetails		swapchainQuerySupport(const VkPhysicalDevice vDevice);
-
-
-
-	//Graphics images and output objects >> Graphics/GOutput.cpp
-	//VkRenderPass				renderPass;
-	//const int32					renderMaxFramesInFlight = 4;		//Default:2
-	//bool						renderFramebufferResized = false;	//Updates the swapchain when the window is resized
-	//void						createRenderPass();
-	//void						createFramebuffers();
-	//VkImageView					swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-
-
-	//Graphics commands >> Graphics/GCommands.cpp
-	//VkCommandPool				singleTimeCommandPool;
-	//lux::Array<VkCommandBuffer>	singleTimeCommandBuffers;
-	//void						createGraphicsCommandPool();
-	//VkCommandBuffer				beginSingleTimeCommands();
-	//void						endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
-
-
-	//Graphics other >> Graphics/Graphics.cpp
-	//VkFormat					graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
-	//uint32						graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
-	//static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
-
-
-
-
-
-
-
-
-	// Compute ----------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-	//TODO reuse objects dont destroy them
-	//TODO restore() function to restore an object and reuse it instead of destroying it
-	//TODO restore function tipo in destroy function description
-
-
-	//Compute >> Compute/Compute.cpp
-	//VkCommandPool				copyCommandPool;
-	//lux::Array<VkCommandBuffer>	copyCommandBuffers;
-	//VkCommandBuffer				clearCommandBuffer;
-	//void						computeInit();
-	//void						computeCleanup();
-
-
-
-	//Buffers >> Compute/Buffers.cpp
-	//lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
-	//LuxBuffer						gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
-	//LuxCell							gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
-	//bool							gpuCellDestroy(const LuxCell vCell);
-	//void*							gpuCellMap(const LuxCell vCell);
-
-
-
-	//Compute pipeline, descriptors and shaders >> Compute/CShader.cpp
-	//lux::Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
-	//lux::String shaderPath;
-	//lux::Array<LuxShaderLayout_t>	CShadersLayouts;				//Layout of the render shaders
-	//lux::Map<LuxShader_t, uint32>	CShaders;						//Per-object shaders
-	//TODO divide render stages
-	//TODO use lux map with no effect command buffers in invalid indices, instead of recreating the entire command buffers
-	//lux::DynArray<VkCommandBuffer>	CShadersCBs; //Per-object command buffers
-	//lux::FenceDE addShaderFence;
-	//void		cshaderCreateDefaultCommandBuffers();
-	//void		cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);
-	//void		cshaderCreateDescriptorSets(LuxShader_t* pCShader, const lux::Array<LuxCell>& pCells, ShaderLayout vShaderLayout);
-	//void		cshaderCreateCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	//int32		cshaderNew(const lux::Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	//bool		cshaderDestroy(const LuxShader vCShader);
 };
 
 #endif

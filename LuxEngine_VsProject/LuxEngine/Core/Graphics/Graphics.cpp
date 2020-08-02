@@ -1,7 +1,7 @@
 
 
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
 

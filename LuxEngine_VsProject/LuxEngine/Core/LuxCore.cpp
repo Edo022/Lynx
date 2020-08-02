@@ -1,6 +1,6 @@
 ﻿
 
-#include "LuxEngine/Core/Engine.h"
+#include "LuxEngine/Core/LuxCore.h"
 #include "Input/Input.h"
 #include "LuxEngine/System/System.h"
 
