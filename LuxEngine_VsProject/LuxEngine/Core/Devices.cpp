@@ -1,11 +1,9 @@
 ﻿
 
 #include "LuxEngine/Core/Engine.h"
-#include "LuxEngine/Types/Containers/LuxString.h"    // for LuxMap
 #include "LuxEngine/Core/Devices_t.h"
 #include "LuxEngine/Core/Devices.h"
 #include <set>
-class lux::String;
 
 //Compares 2 _VkPhysicalDevice objects
 #define sameDevice(a,b) ((a).properties.deviceID == (b).properties.deviceID)
@@ -27,9 +25,9 @@ namespace lux::core::g{
 
 
 
-//Rates a physical device based on its properties and features
-//*   pDevice: a pointer to the device structure where its infos are stored
-//*   Returns the rating of the physical device
+	//Rates a physical device based on its properties and features
+	//*   pDevice: a pointer to the device structure where its infos are stored
+	//*   Returns the rating of the physical device
 	int32 deviceRate(const _VkPhysicalDevice* pDevice) {
 		uint32 score = 0;																			//Device performance evalutation
 		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
@@ -39,71 +37,71 @@ namespace lux::core::g{
 		if(pDevice->features.geometryShader) score += 1;												//Geometry shaders needed
 		return score;
 	}
-}
 
 
 
 
-//TODO check graphics only for main graphics devices
-//Checks if a device has the required extensions and properties to run vulkan
-//*   vDevice: the physical device to check
-//*   pErrorText: a pointer to a lux::String where to store the error in case the device is not suitable
-//*   Returns true if the device is suitable, false if not
-bool Engine::deviceIsSuitable(const VkPhysicalDevice vDevice, lux::String* pErrorText) {
-	//Check extensions
-	if(!deviceCheckExtensions(vDevice)) {
-		*pErrorText = "Missing required extensions";
-		return false;
-	}
 
-	//Check swapchain support
-	else {
-		lux::core::g::SwapChainSupportDetails swapChainSupport = lux::core::g::swapchainQuerySupport(vDevice);
-		if(swapChainSupport.formats.size( ) == 0 || swapChainSupport.presentModes.size( ) == 0) {
-			*pErrorText = "Unsupported swapchain";
+	//TODO check graphics only for main graphics devices
+	//Checks if a device has the required extensions and properties to run vulkan
+	//*   vDevice: the physical device to check
+	//*   pErrorText: a pointer to a lux::String where to store the error in case the device is not suitable
+	//*   Returns true if the device is suitable, false if not
+	bool deviceIsSuitable(const VkPhysicalDevice vDevice, lux::String* pErrorText) {
+		//Check extensions
+		if(!deviceCheckExtensions(vDevice)) {
+			*pErrorText = "Missing required extensions";
 			return false;
 		}
+
+		//Check swapchain support
+		else {
+			lux::core::g::SwapChainSupportDetails swapChainSupport = lux::core::g::swapchainQuerySupport(vDevice);
+			if(swapChainSupport.formats.size( ) == 0 || swapChainSupport.presentModes.size( ) == 0) {
+				*pErrorText = "Unsupported swapchain";
+				return false;
+			}
+		}
+		return true;
 	}
-	return true;
-}
 
 
 
 
-//Returns true if the device supports the extensions, false if not
-bool Engine::deviceCheckExtensions(const VkPhysicalDevice vDevice) {
-	uint32 extensionCount;
-	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
-	lux::Array<VkExtensionProperties> availableExtensions(extensionCount);
-	vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
+	//Returns true if the device supports the extensions, false if not
+	bool deviceCheckExtensions(const VkPhysicalDevice vDevice) {
+		uint32 extensionCount;
+		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
+		lux::Array<VkExtensionProperties> availableExtensions(extensionCount);
+		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
 
-	//TODO use LuxMap
-	std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin( ), requiredDeviceExtensions.end( ));
-	for(const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);	//Search for required extensions
-	return requiredExtensions.empty( );
-}
-
-
-
-
-//Finds the queue families of a physical device
-QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
-	uint32 queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
-	lux::Array<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin( ));		//Save queue families
-
-	//Set families
-	QueueFamilyIndices indices;
-	for(uint32 i = 0; i < queueFamilies.size( ); ++i) {													//For every queue family
-		if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
-		if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
-		VkBool32 hasPresentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, surface, &hasPresentSupport);						//Set present family
-		if(hasPresentSupport) indices.presentFamily = i;
+		//TODO use LuxMap
+		std::set<const char*> requiredExtensions(lux::getEngine( ).requiredDeviceExtensions.begin( ), lux::getEngine( ).requiredDeviceExtensions.end( ));
+		for(const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);	//Search for required extensions
+		return requiredExtensions.empty( );
 	}
-	return indices;
-}
+
+
+
+
+	//Finds the queue families of a physical device
+	QueueFamilyIndices deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
+		uint32 queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
+		lux::Array<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin( ));		//Save queue families
+
+		//Set families
+		QueueFamilyIndices indices;
+		for(uint32 i = 0; i < queueFamilies.size( ); ++i) {													//For every queue family
+			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
+			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
+			VkBool32 hasPresentSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, lux::getEngine( ).surface, &hasPresentSupport);						//Set present family
+			if(hasPresentSupport) indices.presentFamily = i;
+		}
+		return indices;
+	}
 
 
 
@@ -112,7 +110,7 @@ QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice
 
 
 
-//-----------------------------------------------------------------------------------------------------------------------------//
+	//-----------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -120,7 +118,7 @@ QueueFamilyIndices Engine::deviceGetQueueFamilies(const VkPhysicalDevice vDevice
 
 
 
-namespace lux::core::g{
+
 	//Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
 	//Then saves them in the class members
 	void deviceGetPhysical( ) {
@@ -130,18 +128,18 @@ namespace lux::core::g{
 
 
 		//Get physical devices
-		vkEnumeratePhysicalDevices(lux::getEngine().instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(lux::getEngine( ).instance, &deviceCount, nullptr);
 		if(deviceCount == 0) Exit("Failed to find GPUs with Vulkan support")
 		else {
 			//Get physical devices
 			lux::Array<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
-			vkEnumeratePhysicalDevices(lux::getEngine().instance, &deviceCount, physDevices.begin( ));				//Get physical devices
+			vkEnumeratePhysicalDevices(lux::getEngine( ).instance, &deviceCount, physDevices.begin( ));				//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.size( ); ++i) {											//For every physical device, create and save a _VkPhysicalDevice stucture
 				VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 				VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 				lux::String errorText;
-				if(lux::getEngine().deviceIsSuitable(physDevices[i], &errorText)) {										//If it's suitable
+				if(deviceIsSuitable(physDevices[i], &errorText)) {										//If it's suitable
 					physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices)); //Add it to the physical devices vector
 				}
 				else {																						//If not
@@ -166,7 +164,7 @@ namespace lux::core::g{
 			lux::core::g::graphics.PD = *physicalDevices[0];								//set graphics device at default value
 			lux::core::g::compute.PD = *physicalDevices[0];								//set compute  device at default value
 			for(uint32 i = 0; i < physicalDevices.size( ); ++i) {				//For every physical device
-				physDev.indices = lux::getEngine().deviceGetQueueFamilies(physDev.device);		//Get its queue families
+				physDev.indices = deviceGetQueueFamilies(physDev.device);		//Get its queue families
 				physDev.score = deviceRate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 				if(physDev.score > lux::core::g::graphics.PD.score || physDev.indices.graphicsFamily != -1) lux::core::g::graphics.PD = physDev;
 				if(physDev.score > lux::core::g::compute.PD.score || physDev.indices.computeFamilies.size( ) > 0) lux::core::g::compute.PD = physDev;
@@ -260,10 +258,10 @@ namespace lux::core::g{
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
 			.queueCreateInfoCount{ (uint32)queueCreateInfos.size( ) },			//Set queue infos count
 			.pQueueCreateInfos{ queueCreateInfos.data( ) },						//Set queue infos
-			luxDebug(.enabledLayerCount{ (uint32)lux::getEngine().validationLayers.size( ) }),	//Set validation layer count if in debug mode
-			luxDebug(.ppEnabledLayerNames{ lux::getEngine().validationLayers.begin( ) }),		//Set validation layers if in debug mode
-			.enabledExtensionCount{ (uint32)lux::getEngine().requiredDeviceExtensions.size( ) },	//Set required extentions count
-			.ppEnabledExtensionNames{ lux::getEngine().requiredDeviceExtensions.begin( ) },		//Set required extensions
+			luxDebug(.enabledLayerCount{ (uint32)lux::getEngine( ).validationLayers.size( ) }),	//Set validation layer count if in debug mode
+			luxDebug(.ppEnabledLayerNames{ lux::getEngine( ).validationLayers.begin( ) }),		//Set validation layers if in debug mode
+			.enabledExtensionCount{ (uint32)lux::getEngine( ).requiredDeviceExtensions.size( ) },	//Set required extentions count
+			.ppEnabledExtensionNames{ lux::getEngine( ).requiredDeviceExtensions.begin( ) },		//Set required extensions
 			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
 		};
 		luxRelease(deviceCreateInfo.enabledLayerCount = 0);						//Disable validation layers if in release mode
