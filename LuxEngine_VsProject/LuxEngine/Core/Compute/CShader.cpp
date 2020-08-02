@@ -59,7 +59,7 @@ namespace lux::core::c{
 			layoutCreateInfo->pNext = nullptr;												//default
 
 			//Create the descriptor set layout
-			TryVk(vkCreateDescriptorSetLayout(lux::getEngine().compute.LD, layoutCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
+			TryVk(vkCreateDescriptorSetLayout(lux::core::g::compute.LD, layoutCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].descriptorSetLayout)) Exit("Unable to create descriptor set layout");
 			lux::core::c::CShadersLayouts[vRenderShader].__lp_ptrs.add((void*)layoutCreateInfo);
 		}
 
@@ -74,7 +74,7 @@ namespace lux::core::c{
 				case LUX_DEF_SHADER_COPY: shaderFileName = "FloatToIntBuffer"; break;
 				default: break; //TODO add unknown shader check
 			}
-			lux::core::c::CShadersLayouts[vRenderShader].shaderModule = lux::getEngine( ).cshaderCreateModule(lux::getEngine().compute.LD, lux::getEngine( ).cshaderReadFromFile(&fileLength, (lux::core::c::shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
+			lux::core::c::CShadersLayouts[vRenderShader].shaderModule = lux::getEngine( ).cshaderCreateModule(lux::core::g::compute.LD, lux::getEngine( ).cshaderReadFromFile(&fileLength, (lux::core::c::shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
 
 
 			//Create stage info
@@ -92,7 +92,7 @@ namespace lux::core::c{
 				.setLayoutCount{ 1 },												//Number of set layouts
 				.pSetLayouts{ &lux::core::c::CShadersLayouts[vRenderShader].descriptorSetLayout },	//Set set layout
 			};
-			TryVk(vkCreatePipelineLayout(lux::getEngine().compute.LD, &pipelineLayoutCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].pipelineLayout)) Exit("Unable to create pipeline layout");
+			TryVk(vkCreatePipelineLayout(lux::core::g::compute.LD, &pipelineLayoutCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].pipelineLayout)) Exit("Unable to create pipeline layout");
 		}
 
 
@@ -104,8 +104,8 @@ namespace lux::core::c{
 				.stage{ lux::core::c::CShadersLayouts[vRenderShader].shaderStageCreateInfo },		//Use the previously created shader stage creation infos
 				.layout{ lux::core::c::CShadersLayouts[vRenderShader].pipelineLayout },			//Use the previously created pipeline layout
 			};
-			TryVk(vkCreateComputePipelines(lux::getEngine().compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].pipeline)) Exit("Unable to create comput pipeline");
-			vkDestroyShaderModule(lux::getEngine().compute.LD, lux::core::c::CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
+			TryVk(vkCreateComputePipelines(lux::core::g::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &lux::core::c::CShadersLayouts[vRenderShader].pipeline)) Exit("Unable to create comput pipeline");
+			vkDestroyShaderModule(lux::core::g::compute.LD, lux::core::c::CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
 		}
 	}
 
@@ -136,7 +136,7 @@ namespace lux::core::c{
 			.poolSizeCount{ 1 },												//One pool size
 			.pPoolSizes{ &descriptorPoolSize },									//Set pool size
 		};
-		TryVk(vkCreateDescriptorPool(lux::getEngine().compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool)) Exit("Unable to create descriptor pool");
+		TryVk(vkCreateDescriptorPool(lux::core::g::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool)) Exit("Unable to create descriptor pool");
 
 
 
@@ -148,7 +148,7 @@ namespace lux::core::c{
 			.descriptorSetCount{ 1 },											//Allocate a single descriptor
 			.pSetLayouts{ &lux::core::c::CShadersLayouts[vShaderLayout].descriptorSetLayout },//Set set layouts
 		};
-		TryVk(vkAllocateDescriptorSets(lux::getEngine().compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet)) Exit("Unable to allocate descriptor sets");
+		TryVk(vkAllocateDescriptorSets(lux::core::g::compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet)) Exit("Unable to allocate descriptor sets");
 
 
 
@@ -159,7 +159,7 @@ namespace lux::core::c{
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
 			descriptorBufferInfo->buffer = lux::core::c::CBuffers[getBufferIndex(pCells[i])].buffer;	//Set buffer
-			descriptorBufferInfo->offset = getCellOffset(&lux::getEngine().compute.PD, pCells[i]);		//Set buffer offset
+			descriptorBufferInfo->offset = getCellOffset(&lux::core::g::compute.PD, pCells[i]);		//Set buffer offset
 			descriptorBufferInfo->range = getCellSize(pCells[i]);						//Set buffer size
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 					//Create write descriptor set
@@ -173,7 +173,7 @@ namespace lux::core::c{
 			pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);			//Save the struct in the pointers that needs to be freed
 		}
 		//Update descriptor sets
-		vkUpdateDescriptorSets(lux::getEngine().compute.LD, writeDescriptorSets.size( ), writeDescriptorSets.begin( ), 0, nullptr);
+		vkUpdateDescriptorSets(lux::core::g::compute.LD, writeDescriptorSets.size( ), writeDescriptorSets.begin( ), 0, nullptr);
 	}
 
 
@@ -190,9 +190,9 @@ namespace lux::core::c{
 			static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
 				.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },				//Set structure type
 				.flags{ 0 },														//Default falgs
-				.queueFamilyIndex{ lux::getEngine().compute.PD.indices.computeFamilies[0] },			//Set the compute family where to bind the command pool
+				.queueFamilyIndex{ lux::core::g::compute.PD.indices.computeFamilies[0] },			//Set the compute family where to bind the command pool
 			};
-			TryVk(vkCreateCommandPool(lux::getEngine().compute.LD, &commandPoolCreateInfo, nullptr, &lux::core::c::copyCommandPool)) Exit("Unable to create command pool");
+			TryVk(vkCreateCommandPool(lux::core::g::compute.LD, &commandPoolCreateInfo, nullptr, &lux::core::c::copyCommandPool)) Exit("Unable to create command pool");
 
 			//Allocate one command buffer for each swapchain image
 			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
@@ -201,7 +201,7 @@ namespace lux::core::c{
 			};
 			commandBufferAllocateInfo.commandPool = lux::core::c::copyCommandPool;			//Set command pool where to allocate the command buffer
 			commandBufferAllocateInfo.commandBufferCount = lux::core::g::swapchainImages.size( );
-			TryVk(vkAllocateCommandBuffers(lux::getEngine().compute.LD, &commandBufferAllocateInfo, lux::core::c::copyCommandBuffers.begin( ))) Exit("Unable to allocate command buffers");
+			TryVk(vkAllocateCommandBuffers(lux::core::g::compute.LD, &commandBufferAllocateInfo, lux::core::c::copyCommandBuffers.begin( ))) Exit("Unable to allocate command buffers");
 
 
 
@@ -303,9 +303,9 @@ namespace lux::core::c{
 		VkCommandPoolCreateInfo commandPoolCreateInfo = { 				//Create command pool create infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },			//Set structure type
 			.flags{ 0 },													//Default falgs
-			.queueFamilyIndex{ lux::getEngine().compute.PD.indices.computeFamilies[0] },		//Set the compute family where to bind the command pool
+			.queueFamilyIndex{ lux::core::g::compute.PD.indices.computeFamilies[0] },		//Set the compute family where to bind the command pool
 		};
-		TryVk(vkCreateCommandPool(lux::getEngine().compute.LD, &commandPoolCreateInfo, nullptr, &pCShader->commandPool)) Exit("Unable to create command pool");
+		TryVk(vkCreateCommandPool(lux::core::g::compute.LD, &commandPoolCreateInfo, nullptr, &pCShader->commandPool)) Exit("Unable to create command pool");
 
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 		//Create command buffer allocate infos
@@ -315,7 +315,7 @@ namespace lux::core::c{
 			.commandBufferCount{ 1 },										//Allocate one command buffer
 		};
 		pCShader->commandBuffers.resize(1);
-		TryVk(vkAllocateCommandBuffers(lux::getEngine().compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.__lp_data)) Exit("Unable to allocate command buffers");
+		TryVk(vkAllocateCommandBuffers(lux::core::g::compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.__lp_data)) Exit("Unable to allocate command buffers");
 
 
 
@@ -396,12 +396,12 @@ namespace lux::core::c{
 		if(vCShader >= lux::core::c::CShaders.size( )) return false;
 
 		//Clear descriptors sets, descriptor pool and descriptor layout
-		vkFreeDescriptorSets(lux::getEngine().compute.LD, lux::core::c::CShaders[vCShader].descriptorPool, 1, &lux::core::c::CShaders[vCShader].descriptorSet);
-		vkDestroyDescriptorPool(lux::getEngine().compute.LD, lux::core::c::CShaders[vCShader].descriptorPool, nullptr);
+		vkFreeDescriptorSets(lux::core::g::compute.LD, lux::core::c::CShaders[vCShader].descriptorPool, 1, &lux::core::c::CShaders[vCShader].descriptorSet);
+		vkDestroyDescriptorPool(lux::core::g::compute.LD, lux::core::c::CShaders[vCShader].descriptorPool, nullptr);
 
 		//Clear command buffers and command pool
-		vkFreeCommandBuffers(lux::getEngine().compute.LD, lux::core::c::CShaders[vCShader].commandPool, 1, lux::core::c::CShaders[vCShader].commandBuffers.begin( ));
-		vkDestroyCommandPool(lux::getEngine().compute.LD, lux::core::c::CShaders[vCShader].commandPool, nullptr);
+		vkFreeCommandBuffers(lux::core::g::compute.LD, lux::core::c::CShaders[vCShader].commandPool, 1, lux::core::c::CShaders[vCShader].commandBuffers.begin( ));
+		vkDestroyCommandPool(lux::core::g::compute.LD, lux::core::c::CShaders[vCShader].commandPool, nullptr);
 
 		//Free all the useless pointers
 		for(uint32 i = 0; i < lux::core::c::CShaders[vCShader].__lp_ptrs.size( ); ++i) free(lux::core::c::CShaders[vCShader].__lp_ptrs[i]);

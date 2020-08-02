@@ -53,7 +53,7 @@
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
-//#include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Core/Devices.h"
 
 
 #include "type_traits"                                 // for move
@@ -293,9 +293,9 @@ public:
 
 
 	//Devices >> Devices.cpp
-	graphicsDevice				graphics;									//Main graphics device
-	computeDevice				compute;									//Main compute device
-	lux::Array<computeDevice>	secondary;									//Secondary compute devices
+	//graphicsDevice				graphics;									//Main graphics device
+	//computeDevice				compute;									//Main compute device
+	//lux::Array<computeDevice>	secondary;									//Secondary compute devices
 	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lux::DynArray<VkQueue>* pComputeQueues);
 	static int32		deviceRate(const _VkPhysicalDevice* pDevice);
 	bool				deviceIsSuitable(const VkPhysicalDevice vDevice, lux::String* pErrorText);

@@ -101,7 +101,7 @@ namespace lux::core::g{
 
 	void swapchainCreate( ) {
 		//Get swapchain details
-		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(lux::getEngine().graphics.PD.device);
+		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(lux::core::g::graphics.PD.device);
 
 		//Choose max image count. Minimum or minimum +1 if supported
 		uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
@@ -123,8 +123,8 @@ namespace lux::core::g{
 			.imageUsage{ VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT },
 		};
 
-		uint32 queueFamilyIndices[] = { lux::getEngine().graphics.PD.indices.graphicsFamily, lux::getEngine().graphics.PD.indices.presentFamily };
-		if(lux::getEngine().graphics.PD.indices.graphicsFamily != lux::getEngine().graphics.PD.indices.presentFamily) {
+		uint32 queueFamilyIndices[] = { lux::core::g::graphics.PD.indices.graphicsFamily, lux::core::g::graphics.PD.indices.presentFamily };
+		if(lux::core::g::graphics.PD.indices.graphicsFamily != lux::core::g::graphics.PD.indices.presentFamily) {
 			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 			createInfo.queueFamilyIndexCount = 2;
 			createInfo.pQueueFamilyIndices = queueFamilyIndices;
@@ -139,14 +139,14 @@ namespace lux::core::g{
 
 
 		//Create swapchain
-		TryVk(vkCreateSwapchainKHR(lux::getEngine().graphics.LD, &createInfo, nullptr, &lux::core::g::swapchain)) Exit("Failed to create swapchain");
+		TryVk(vkCreateSwapchainKHR(lux::core::g::graphics.LD, &createInfo, nullptr, &lux::core::g::swapchain)) Exit("Failed to create swapchain");
 
 
 		//Save data
 		uint32 swapchainImageCount;
-		vkGetSwapchainImagesKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, &swapchainImageCount, nullptr);					//Get image count
+		vkGetSwapchainImagesKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, &swapchainImageCount, nullptr);					//Get image count
 		lux::core::g::swapchainImages.resize(swapchainImageCount);
-		vkGetSwapchainImagesKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, &swapchainImageCount, lux::core::g::swapchainImages.begin( ));	//Save images
+		vkGetSwapchainImagesKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, &swapchainImageCount, lux::core::g::swapchainImages.begin( ));	//Save images
 		lux::core::g::swapchainImageFormat = surfaceFormat.format;													//Save format
 		lux::core::g::swapchainExtent = createInfo.imageExtent;														//Save extent
 
@@ -168,10 +168,10 @@ namespace lux::core::g{
 
 
 	void swapchainCleanup( ) {
-		vkDestroyRenderPass(lux::getEngine().graphics.LD, lux::core::g::renderPass, nullptr);													//Destroy render pass
-		for(auto framebuffer : lux::core::g::swapchainFramebuffers) vkDestroyFramebuffer(lux::getEngine().graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
-		for(auto imageView : lux::core::g::swapchainImageViews) vkDestroyImageView(lux::getEngine().graphics.LD, imageView, nullptr);			//Destroy image views
-		vkDestroySwapchainKHR(lux::getEngine().graphics.LD, lux::core::g::swapchain, nullptr);													//destroy swapchain
+		vkDestroyRenderPass(lux::core::g::graphics.LD, lux::core::g::renderPass, nullptr);													//Destroy render pass
+		for(auto framebuffer : lux::core::g::swapchainFramebuffers) vkDestroyFramebuffer(lux::core::g::graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
+		for(auto imageView : lux::core::g::swapchainImageViews) vkDestroyImageView(lux::core::g::graphics.LD, imageView, nullptr);			//Destroy image viewslux::core::g::compute
+		vkDestroySwapchainKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, nullptr);													//destroy swapchain
 	}
 
 
@@ -185,14 +185,14 @@ namespace lux::core::g{
 		glfwGetFramebufferSize(lux::core::g::window, &width, &height);
 
 		if(width != 0 && height != 0) {
-			vkDeviceWaitIdle(lux::getEngine().graphics.LD);
+			vkDeviceWaitIdle(lux::core::g::graphics.LD);
 			swapchainCleanup( );
 			swapchainCreate( );
 
 
 			{ //destroy copy command buffers
-				vkFreeCommandBuffers(lux::getEngine().compute.LD, lux::core::c::copyCommandPool, lux::core::c::copyCommandBuffers.size( ), lux::core::c::copyCommandBuffers.begin( ));
-				vkDestroyCommandPool(lux::getEngine().compute.LD, lux::core::c::copyCommandPool, nullptr);
+				vkFreeCommandBuffers(lux::core::g::compute.LD, lux::core::c::copyCommandPool, lux::core::c::copyCommandBuffers.size( ), lux::core::c::copyCommandBuffers.begin( ));
+				vkDestroyCommandPool(lux::core::g::compute.LD, lux::core::c::copyCommandPool, nullptr);
 			}
 
 			uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::core::g::gpuCellWindowSize));

@@ -25,7 +25,7 @@ namespace lux::core::c{
 	LuxBuffer gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible) {
 		LuxBuffer_t buffer(vSize, vBufferClass, vCpuAccessible);	//Create the buffer struct
 		lux::getEngine( ).createBuffer(												//Create the vkBuffer as a storage buffer with transfer source and destination capabilities
-			lux::getEngine().compute.LD, vSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			lux::core::g::compute.LD, vSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			(vCpuAccessible) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			&buffer.buffer, &buffer.memory
 		);
@@ -89,8 +89,8 @@ namespace lux::core::c{
 					return false;									//If the buffer index is not valid, return false
 				}
 				else{
-					vkDestroyBuffer(lux::getEngine( ).graphics.LD, lux::core::c::CBuffers[buffer].buffer, nullptr);				//destroy the GPU buffer structure
-					vkFreeMemory(lux::getEngine( ).graphics.LD, lux::core::c::CBuffers[buffer].memory, nullptr);				//Free the buffer's memory
+					vkDestroyBuffer(lux::core::g::graphics.LD, lux::core::c::CBuffers[buffer].buffer, nullptr);				//destroy the GPU buffer structure
+					vkFreeMemory(lux::core::g::graphics.LD, lux::core::c::CBuffers[buffer].memory, nullptr);				//Free the buffer's memory
 					lux::core::c::CBuffers.remove(buffer, false);												//Remove the buffer from the buffer array
 					return true;
 				}
@@ -128,10 +128,10 @@ namespace lux::core::c{
 			return nullptr;													//If the buffer index is not valid, return nullptr
 		}
 
-		if(lux::core::c::CBuffers[buffer].isMapped) vkUnmapMemory(lux::getEngine().compute.LD, lux::core::c::CBuffers[buffer].memory);				//If it's already mapped, unmap the shared memory
+		if(lux::core::c::CBuffers[buffer].isMapped) vkUnmapMemory(lux::core::g::compute.LD, lux::core::c::CBuffers[buffer].memory);				//If it's already mapped, unmap the shared memory
 		else lux::core::c::CBuffers[buffer].isMapped = true;															//If not, set it as mapped
 		void* data;																						//Create the pointer and assign it the mapped memory address
-		vkMapMemory(lux::getEngine().compute.LD, lux::core::c::CBuffers[buffer].memory, getCellOffset(&lux::getEngine().compute.PD, vCell), getCellSize(vCell), 0, &data);
+		vkMapMemory(lux::core::g::compute.LD, lux::core::c::CBuffers[buffer].memory, getCellOffset(&lux::core::g::compute.PD, vCell), getCellSize(vCell), 0, &data);
 		return data;																					//Return the pointer
 	}
 }

@@ -246,7 +246,7 @@
     <ClInclude Include="LuxEngine\Core\Graphics\GSwapchain.h">
       <Filter>LuxEngine\Core\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Core\Devices.hhh">
+    <ClInclude Include="LuxEngine\Core\Devices.h">
       <Filter>LuxEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
