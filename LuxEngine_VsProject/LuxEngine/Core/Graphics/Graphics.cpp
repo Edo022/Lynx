@@ -34,7 +34,7 @@ namespace lux::core::g{
 
 		//Initialize vulkan
 		TryVk(glfwCreateWindowSurface(lux::getEngine( ).instance, lux::core::g::window, nullptr, &lux::getEngine( ).surface)) Exit("Failed to create window surface");
-		Normal printf("    Searching for physical devices...    ");		lux::getEngine( ).deviceGetPhysical( );											NewLine;
+		Normal printf("    Searching for physical devices...    ");		lux::core::g::deviceGetPhysical( );											NewLine;
 		lux::core::g::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");		lux::core::g::swapchainCreate( );					SuccessNoNl printf("ok");
 

@@ -296,8 +296,8 @@ public:
 	//graphicsDevice				graphics;									//Main graphics device
 	//computeDevice				compute;									//Main compute device
 	//lux::Array<computeDevice>	secondary;									//Secondary compute devices
-	void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lux::DynArray<VkQueue>* pComputeQueues);
-	static int32		deviceRate(const _VkPhysicalDevice* pDevice);
+	//void deviceGetPhysical();		void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lux::DynArray<VkQueue>* pComputeQueues);
+	//static int32		deviceRate(const _VkPhysicalDevice* pDevice);
 	bool				deviceIsSuitable(const VkPhysicalDevice vDevice, lux::String* pErrorText);
 	bool				deviceCheckExtensions(const VkPhysicalDevice vDevice);
 	QueueFamilyIndices	deviceGetQueueFamilies(const VkPhysicalDevice vDevice);

@@ -9,4 +9,7 @@ namespace lux::core::g{
 	extern Array<computeDevice>	secondary;		//Secondary compute devices
 
 
+	void	deviceGetPhysical();
+	void	deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, lux::DynArray<VkQueue>* pComputeQueues);
+	static	int32 deviceRate(const _VkPhysicalDevice* pDevice);
 }
