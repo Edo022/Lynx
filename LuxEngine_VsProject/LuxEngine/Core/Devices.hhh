@@ -1,0 +1,12 @@
+
+#pragma once
+
+
+
+namespace lux::core::g{
+//	extern lux::core::g::graphicsDevice		graphics;		//Main graphics device
+//	extern lux::core::g::computeDevice		compute;		//Main compute device
+//	extern lux::Array<computeDevice>	secondary;		//Secondary compute devices
+
+
+}

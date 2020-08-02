@@ -25,7 +25,7 @@ namespace lux::core::c{
 	LuxBuffer gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible) {
 		LuxBuffer_t buffer(vSize, vBufferClass, vCpuAccessible);	//Create the buffer struct
 		lux::getEngine( ).createBuffer(												//Create the vkBuffer as a storage buffer with transfer source and destination capabilities
-			lux::getEngine( ).compute.LD, vSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			lux::getEngine().compute.LD, vSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			(vCpuAccessible) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			&buffer.buffer, &buffer.memory
 		);
@@ -88,10 +88,12 @@ namespace lux::core::c{
 					Failure printf("you were trying to use an invalid index buffer %u", buffer);
 					return false;									//If the buffer index is not valid, return false
 				}
-				vkDestroyBuffer(lux::getEngine( ).graphics.LD, lux::core::c::CBuffers[buffer].buffer, nullptr);				//destroy the GPU buffer structure
-				vkFreeMemory(lux::getEngine( ).graphics.LD, lux::core::c::CBuffers[buffer].memory, nullptr);				//Free the buffer's memory
-				lux::core::c::CBuffers.remove(buffer, false);												//Remove the buffer from the buffer array
-				return true;
+				else{
+					vkDestroyBuffer(lux::getEngine( ).graphics.LD, lux::core::c::CBuffers[buffer].buffer, nullptr);				//destroy the GPU buffer structure
+					vkFreeMemory(lux::getEngine( ).graphics.LD, lux::core::c::CBuffers[buffer].memory, nullptr);				//Free the buffer's memory
+					lux::core::c::CBuffers.remove(buffer, false);												//Remove the buffer from the buffer array
+					return true;
+				}
 			}
 			else {																		//If it's a fixed size buffer
 				//TODO Use lux output console
@@ -100,7 +102,11 @@ namespace lux::core::c{
 					Failure printf("you were trying to use an invalid cell index %u", getCellIndex(vCell));
 					return false;		//And the cell index is invalid, return false
 				}
-				if(lux::core::c::CBuffers[buffer].cells.usedSize( ) == 0) goto destroyBuffer;				//If it's valid, remove the cell. If there are no cells left, destroy the buffer
+				else{
+					if(lux::core::c::CBuffers[buffer].cells.usedSize( ) == 0) goto destroyBuffer;				//If it's valid, remove the cell. If there are no cells left, destroy the buffer
+					//TODO idk
+					else Exit("Something went wrong .-.");
+				}
 			}
 		}
 		else return false;
@@ -122,10 +128,10 @@ namespace lux::core::c{
 			return nullptr;													//If the buffer index is not valid, return nullptr
 		}
 
-		if(lux::core::c::CBuffers[buffer].isMapped) vkUnmapMemory(lux::getEngine( ).compute.LD, lux::core::c::CBuffers[buffer].memory);				//If it's already mapped, unmap the shared memory
+		if(lux::core::c::CBuffers[buffer].isMapped) vkUnmapMemory(lux::getEngine().compute.LD, lux::core::c::CBuffers[buffer].memory);				//If it's already mapped, unmap the shared memory
 		else lux::core::c::CBuffers[buffer].isMapped = true;															//If not, set it as mapped
 		void* data;																						//Create the pointer and assign it the mapped memory address
-		vkMapMemory(lux::getEngine( ).compute.LD, lux::core::c::CBuffers[buffer].memory, getCellOffset(&lux::getEngine( ).compute.PD, vCell), getCellSize(vCell), 0, &data);
+		vkMapMemory(lux::getEngine().compute.LD, lux::core::c::CBuffers[buffer].memory, getCellOffset(&lux::getEngine().compute.PD, vCell), getCellSize(vCell), 0, &data);
 		return data;																					//Return the pointer
 	}
 }

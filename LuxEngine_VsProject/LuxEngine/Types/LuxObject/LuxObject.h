@@ -7,12 +7,16 @@
 #include "LuxEngine/Types/EngineTypes.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
-//#include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 
 
 
 
+
+
+//TODO reuse objects dont destroy them
+//TODO restore() function to restore an object and reuse it instead of destroying it
+//TODO restore function tipo in destroy function description
 namespace lux{
 	namespace obj {
 		enum class limitAlignment : int8{

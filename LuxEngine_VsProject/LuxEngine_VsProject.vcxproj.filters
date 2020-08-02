@@ -243,6 +243,12 @@
     <ClInclude Include="LuxEngine\Core\Graphics\GCommands.h">
       <Filter>LuxEngine\Core\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Graphics\GSwapchain.h">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Devices.hhh">
+      <Filter>LuxEngine\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

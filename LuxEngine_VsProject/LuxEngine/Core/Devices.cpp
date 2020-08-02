@@ -2,6 +2,7 @@
 
 #include "LuxEngine/Core/Engine.h"
 #include "LuxEngine/Types/Containers/LuxString.h"    // for LuxMap
+#include "LuxEngine/Core/Devices_t.h"
 #include <set>
 class lux::String;
 
@@ -44,7 +45,7 @@ bool Engine::deviceIsSuitable(const VkPhysicalDevice vDevice, lux::String* pErro
 
 	//Check swapchain support
 	else {
-		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(vDevice);
+		lux::core::g::SwapChainSupportDetails swapChainSupport = lux::core::g::swapchainQuerySupport(vDevice);
 		if(swapChainSupport.formats.size( ) == 0 || swapChainSupport.presentModes.size( ) == 0) {
 			*pErrorText = "Unsupported swapchain";
 			return false;

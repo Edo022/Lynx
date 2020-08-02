@@ -49,8 +49,8 @@ namespace lux::core::c{
 	void computeCleanup( ) {
 		for(uint32 i = 0; i < lux::core::c::CBuffers.size( ); ++i) {
 			if(lux::core::c::CBuffers.isValid(i)) {									//For every buffer
-				vkDestroyBuffer(lux::getEngine( ).compute.LD, lux::core::c::CBuffers[i].buffer, nullptr);	//Destroy the buffer
-				vkFreeMemory(lux::getEngine( ).compute.LD, lux::core::c::CBuffers[i].memory, nullptr);		//Free its memory
+				vkDestroyBuffer(lux::getEngine().compute.LD, lux::core::c::CBuffers[i].buffer, nullptr);	//Destroy the buffer
+				vkFreeMemory(lux::getEngine().compute.LD, lux::core::c::CBuffers[i].memory, nullptr);		//Free its memory
 			}
 		}
 	}

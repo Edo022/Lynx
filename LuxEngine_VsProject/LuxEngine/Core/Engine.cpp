@@ -116,7 +116,7 @@ void Engine::mainLoop( ) {
 		glfwWaitEvents( );
 	}
 	running = false;
-	vkDeviceWaitIdle(graphics.LD);
+	vkDeviceWaitIdle(lux::getEngine().graphics.LD);
 }
 
 

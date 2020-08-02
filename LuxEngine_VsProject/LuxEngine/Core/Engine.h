@@ -22,12 +22,16 @@
 
 #include <deque>
 
+#include "LuxEngine/Core/Devices_t.h"
+#include "LuxEngine/Types/EngineTypes.h"
+#include "LuxEngine/Core/Compute/CShader_t.h"
+
+
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Containers/LuxQueue.h"
 #include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Types/EngineTypes.h"
 
 #include "LuxEngine/System/System.h"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
@@ -39,16 +43,17 @@
 
 
 
-#include "LuxEngine/Core/Devices_t.h"
+
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Compute/Compute.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
-#include "LuxEngine/Core/Compute/CShader_t.h"
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.h"
+//#include "LuxEngine/Core/Devices.h"
 
 
 #include "type_traits"                                 // for move
@@ -351,18 +356,18 @@ public:
 	VkFormat					swapchainImageFormat;
 	VkExtent2D					swapchainExtent;
 	lux::Array<VkFramebuffer>	swapchainFramebuffers;
-	struct SwapChainSupportDetails {
-		VkSurfaceCapabilitiesKHR		capabilities;
-		lux::Array<VkSurfaceFormatKHR>	formats;
-		lux::Array<VkPresentModeKHR>	presentModes;
-	};
-	void						swapchainCreate();
-	void						swapchainRecreate(const bool vWindowResized);
-	void						swapchainCleanup();
-	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats);
-	VkPresentModeKHR			swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes);
-	VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
-	SwapChainSupportDetails		swapchainQuerySupport(const VkPhysicalDevice vDevice);
+	//struct SwapChainSupportDetails {
+	//	VkSurfaceCapabilitiesKHR		capabilities;
+	//	lux::Array<VkSurfaceFormatKHR>	formats;
+	//	lux::Array<VkPresentModeKHR>	presentModes;
+	//};
+	//void						swapchainCreate();
+	//void						swapchainRecreate(const bool vWindowResized);
+	//void						swapchainCleanup();
+	//VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats);
+	//VkPresentModeKHR			swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes);
+	//VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
+	//SwapChainSupportDetails		swapchainQuerySupport(const VkPhysicalDevice vDevice);
 
 
 
