@@ -39,7 +39,7 @@ namespace lux::core::g{
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
 	VkPresentModeKHR swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes) {
-		if(lux::getEngine().useVSync) return VK_PRESENT_MODE_FIFO_KHR;
+		if(lux::core::useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
 		}

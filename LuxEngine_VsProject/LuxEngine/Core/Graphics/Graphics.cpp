@@ -27,8 +27,8 @@ namespace lux::core::g{
 
 
 	void graphicsInit(const bool vUseVSync, const float vFOV) {
-		lux::getEngine().useVSync = vUseVSync;
-		lux::getEngine().FOV = vFOV;
+		lux::core::useVSync = vUseVSync;
+		lux::core::FOV = vFOV;
 
 		luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
 

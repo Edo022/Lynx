@@ -12,7 +12,15 @@
 
 
 
+namespace lux::core{
+	double	FPS;
+	float	FOV;
+	//bool		running;
+	bool	useVSync;
+	bool initialized = false;
+	//uint32 frames = 0;
 
+}
 // Main -------------------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -58,7 +66,7 @@ void Engine::init(bool useVSync) {
 		renderThr.detach( );
 		running = true;
 
-		while(!initialized) sleep(10);
+		while(!lux::core::initialized) sleep(10);
 	}
 }
 
@@ -111,7 +119,7 @@ void Engine::mainLoop( ) {
 	luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  User input"));
 	std::thread FPSCounterThr(&Engine::runFPSCounterThr, this);		FPSCounterThr.detach( );
 	std::thread renderThr(&Engine::runRenderThr, this);				renderThr.detach( );
-	initialized = true;
+	lux::core::initialized = true;
 
 
 	while(!glfwWindowShouldClose(lux::core::g::window)) {
@@ -142,9 +150,9 @@ void Engine::runFPSCounterThr() {
 	while (running) {
 		static int delay = 1000;
 		sleep(delay);
-		FPS = frames * (1000 / delay);
+		lux::core::FPS = frames * (1000 / delay);
 		frames = 0;
-		printf("FPS: %lf\n", FPS);
+		printf("FPS: %lf\n", lux::core::FPS);
 	}
 }
 

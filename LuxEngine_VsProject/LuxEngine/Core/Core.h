@@ -3,11 +3,11 @@
 
 
 namespace lux::core{
-	//extern double	FPS;
-	//extern float	FOV;
+	extern double	FPS;
+	extern float	FOV;
 	//extern bool		running;
-	//extern bool		useVSync;
-	//extern bool		initialized;
+	extern bool		useVSync;
+	extern bool		initialized;
 	//extern uint32	frames;
 
 	//extern VkInstance				instance;

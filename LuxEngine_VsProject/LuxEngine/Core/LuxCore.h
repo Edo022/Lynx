@@ -252,11 +252,11 @@ Object rendering
 //TODO move to lux::core namespace
 class Engine {
 public:
-	double FPS = 0;
-	float FOV;
+	//double FPS = 0;
+	//float FOV;
 	bool running;
-	bool useVSync;
-	bool initialized = false;
+	//bool useVSync;
+	//bool initialized = false;
 	uint32 frames = 0;
 
 
