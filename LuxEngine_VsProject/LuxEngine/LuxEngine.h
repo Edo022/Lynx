@@ -1,5 +1,7 @@
 
 #pragma once
+#define GLM_FORCE_RADIANS					//Use radiants intead of degrees
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 
 
 
@@ -52,10 +54,8 @@
 
 
 
-#include <math.h>					// for pow, sqrt
-#include <initializer_list>		//TODO remove
-#include <vcruntime_string.h>		// for memcpy
-#include <stdlib.h>					// for malloc, realloc
+
+
 
 
 

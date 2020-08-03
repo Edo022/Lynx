@@ -115,10 +115,7 @@
     <ClCompile Include="LuxEngine\Core\Graphics\Window.cpp">
       <Filter>LuxEngine\Core\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Core\LuxCore.cpp">
-      <Filter>LuxEngine\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="LuxEngine\Core\Core_tmp_fix.cpp">
+    <ClCompile Include="LuxEngine\Core\Core.cpp">
       <Filter>LuxEngine\Core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -247,9 +244,6 @@
       <Filter>LuxEngine\Core\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Core\Devices.h">
-      <Filter>LuxEngine\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Core\LuxCore.h">
       <Filter>LuxEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Core\Core.h">

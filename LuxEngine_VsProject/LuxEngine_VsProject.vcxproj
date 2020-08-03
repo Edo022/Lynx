@@ -378,9 +378,8 @@
     <ClCompile Include="LuxEngine\Core\Compute\CBuffers.cpp" />
     <ClCompile Include="LuxEngine\Core\Compute\Compute.cpp" />
     <ClCompile Include="LuxEngine\Core\Compute\CShader.cpp" />
-    <ClCompile Include="LuxEngine\Core\Core_tmp_fix.cpp" />
     <ClCompile Include="LuxEngine\Core\Devices.cpp" />
-    <ClCompile Include="LuxEngine\Core\LuxCore.cpp" />
+    <ClCompile Include="LuxEngine\Core\Core.cpp" />
     <ClCompile Include="LuxEngine\Core\Graphics\GCommands.cpp" />
     <ClCompile Include="LuxEngine\Core\Graphics\GOutput.cpp" />
     <ClCompile Include="LuxEngine\Core\Graphics\Graphics.cpp" />
@@ -405,7 +404,6 @@
     <ClInclude Include="LuxEngine\Core\Core.h" />
     <ClInclude Include="LuxEngine\Core\Devices.h" />
     <ClInclude Include="LuxEngine\Core\Devices_t.h" />
-    <ClInclude Include="LuxEngine\Core\LuxCore.h" />
     <ClInclude Include="LuxEngine\Core\Graphics\GCommands.h" />
     <ClInclude Include="LuxEngine\Core\Graphics\GOutput.h" />
     <ClInclude Include="LuxEngine\Core\Graphics\Graphics.h" />

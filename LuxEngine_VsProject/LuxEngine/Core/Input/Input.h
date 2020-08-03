@@ -2,7 +2,6 @@
 
 #ifndef  __INPUT	//This is useless, but it doesn't work without it
 #define __INPUT
-#include "LuxEngine/Core/LuxCore.h"
 #include "InputState.h"
 #include "LuxEngine/macros.h"                     // for scast
 #include "KeyboardInput.h"

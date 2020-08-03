@@ -1,5 +1,7 @@
 ﻿
 
+#include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
 #include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/System/System.h"
