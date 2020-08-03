@@ -27,14 +27,14 @@ namespace lux::core::g{
 	void		graphicsDrawFrame();
 	void		graphicsCleanup();
 	static void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-		windowResizeFence.startSecond( );  //from the last call of this function
-		renderFramebufferResized = true;
-		windowResizeFence.endSecond( );
+		wnd::windowResizeFence.startSecond( );  //from the last call of this function
+		out::renderFramebufferResized = true;
+		wnd::windowResizeFence.endSecond( );
 	}
 
 
 
-	VkFormat	graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	VkFormat	graphicsFindSupportedFormat(const Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
 	uint32		graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
 	luxDebug(static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) Failure

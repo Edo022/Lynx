@@ -7,7 +7,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::g::wnd{
 	extern GLFWwindow*		window;								//Main engine window
 	extern int32			width, height;	//Size of the window //TODO
 	extern FenceDE			windowResizeFence;

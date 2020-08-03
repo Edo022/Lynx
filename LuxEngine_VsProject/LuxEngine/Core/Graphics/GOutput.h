@@ -5,7 +5,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::g::out{
 	extern VkRenderPass		renderPass;
 	extern const int32		renderMaxFramesInFlight;	//Default:2
 	extern bool				renderFramebufferResized;	//Updates the swapchain when the window is resized

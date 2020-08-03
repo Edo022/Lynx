@@ -16,18 +16,6 @@
 
 
 
-namespace lux::_engine {
-	//Deprecated function
-	//TODO remove
-	//Compiles a shader from a file. Shader files must have the .comp extension
-	static bool compileShader(const char* pShaderPath) {
-		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";  //lib
-		//lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv"; //No .lib
-		return system(compileShaderCommand.begin()) == 0;
-	}
-}
-
-
 
 
 namespace lux::core{
@@ -54,14 +42,28 @@ namespace lux::core{
 
 
 
-//Initializes the engine object and all the Lux namespace
-//Don't call this function. Use LuxInit( ) instead
+	//Deprecated function
+	//TODO remove
+	//Compiles a shader from a file. Shader files must have the .comp extension
+	static bool compileShader(const char* pShaderPath) {
+		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";  //lib
+		//lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv"; //No .lib
+		return system(compileShaderCommand.begin( )) == 0;
+	}
+
+
+
+
+
+
+	//Initializes the engine object and all the Lux namespace
+	//Don't call this function. Use LuxInit( ) instead
 	void init(bool useVSync) {
 		static bool once = true;
 		if(once){
 			once = false;
-			lux::sys::__lp_init_system( );
-			lux::thr::__lp_init_thread( );
+			sys::__lp_init_system( );
+			thr::__lp_init_thread( );
 			__lp_goniometric_functions_init( );
 
 			std::thread renderThr(&run, useVSync, 45);
@@ -80,15 +82,15 @@ namespace lux::core{
 	void run(bool vUseVSync, float vFOV) {
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
-		lux::sys::dir::thisDir;
+		sys::dir::thisDir;
 		LuxTime start = luxStartChrono( );
-		c::shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
-		//shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
+		c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
+		//shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
 		try {
-			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaderPath.begin( ))) {
-				lux::String luxStrPath = lux::String(name.path( ).u8string( ).c_str( )); lux::sys::dir::fixWindowsPath(luxStrPath);
-				if(lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!lux::_engine::compileShader(luxStrPath.begin( ))) Exit("compilation error")
+			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
+				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);
+				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
+					if(!compileShader(luxStrPath.begin( ))) Exit("compilation error")
 					else Normal printf("%s", luxStrPath.begin( ));
 				}
 			}
@@ -98,8 +100,8 @@ namespace lux::core{
 		}
 
 		//Init
-		g::initWindow( );
-		Normal printf("Creating Instance...                     ");			g::createInstance( );						SuccessNoNl printf("ok");
+		g::wnd::initWindow( );
+		Normal printf("Creating Instance...                     ");			g::wnd::createInstance( );						SuccessNoNl printf("ok");
 		g::graphicsInit(vUseVSync, vFOV);
 		c::computeInit( );
 
@@ -110,7 +112,7 @@ namespace lux::core{
 		//Exit
 		Normal  printf("Cleaning memory");								g::graphicsCleanup( ); c::computeCleanup( );		NewLine;
 		vkDestroyInstance(instance, nullptr);
-		glfwDestroyWindow(g::window);
+		glfwDestroyWindow(g::wnd::window);
 		glfwTerminate( );
 	}
 
@@ -124,11 +126,11 @@ namespace lux::core{
 		initialized = true;
 
 
-		while(!glfwWindowShouldClose(g::window)) {
+		while(!glfwWindowShouldClose(g::wnd::window)) {
 			glfwWaitEvents( );
 		}
 		running = false;
-		vkDeviceWaitIdle(g::graphics.LD);
+		vkDeviceWaitIdle(dvc::graphics.LD);
 	}
 
 

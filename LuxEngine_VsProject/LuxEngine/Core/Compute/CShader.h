@@ -16,9 +16,9 @@
 
 
 
-namespace lux::core::c{
+namespace lux::core::c::shaders{
 	extern String									shaderPath;			//Path to the shaders folder
-	extern Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
+	extern Map<obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
 	extern Array<LuxShaderLayout_t>					CShadersLayouts;	//Layout of the render shaders
 	extern Map<LuxShader_t, uint32>					CShaders;			//Per-object shaders
 	//TODO divide render stages

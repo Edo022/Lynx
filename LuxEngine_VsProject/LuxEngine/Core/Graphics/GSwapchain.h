@@ -7,11 +7,11 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::g::swapchain{
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR		capabilities;
-		lux::Array<VkSurfaceFormatKHR>	formats;
-		lux::Array<VkPresentModeKHR>	presentModes;
+		Array<VkSurfaceFormatKHR>	formats;
+		Array<VkPresentModeKHR>	presentModes;
 	};
 
 
@@ -26,8 +26,8 @@ namespace lux::core::g{
 	void						swapchainCreate();
 	void						swapchainRecreate(const bool vWindowResized);
 	void						swapchainCleanup();
-	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const lux::Array<VkSurfaceFormatKHR>* pAvailableFormats);
-	VkPresentModeKHR			swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes);
+	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const Array<VkSurfaceFormatKHR>* pAvailableFormats);
+	VkPresentModeKHR			swapchainChoosePresentMode(const Array<VkPresentModeKHR>* pAvailablePresentModes);
 	VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 	SwapChainSupportDetails		swapchainQuerySupport(const VkPhysicalDevice vDevice);
 }

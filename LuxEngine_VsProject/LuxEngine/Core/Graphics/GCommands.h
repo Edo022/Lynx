@@ -6,7 +6,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::g::cmd{
 	extern VkCommandPool			singleTimeCommandPool;
 	extern Array<VkCommandBuffer>	singleTimeCommandBuffers;
 

@@ -6,7 +6,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::g::cmd{
 	VkCommandPool			singleTimeCommandPool;
 	Array<VkCommandBuffer>	singleTimeCommandBuffers;
 
@@ -16,9 +16,9 @@ namespace lux::core::g{
 	void createGraphicsCommandPool( ) {
 		VkCommandPoolCreateInfo poolInfo{ };
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		poolInfo.queueFamilyIndex = g::graphics.PD.indices.graphicsFamily;
+		poolInfo.queueFamilyIndex = dvc::graphics.PD.indices.graphicsFamily;
 
-		TryVk(vkCreateCommandPool(g::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool)) Exit("Failed to create graphics command pool");
+		TryVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool)) Exit("Failed to create graphics command pool");
 	}
 
 
@@ -33,7 +33,7 @@ namespace lux::core::g{
 			.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },
 			.commandBufferCount{ 1 },
 		};
-		vkAllocateCommandBuffers(g::graphics.LD, &allocInfo, &commandBuffer);
+		vkAllocateCommandBuffers(dvc::graphics.LD, &allocInfo, &commandBuffer);
 
 		//Begin command recording
 		VkCommandBufferBeginInfo beginInfo{
@@ -59,10 +59,10 @@ namespace lux::core::g{
 			.commandBufferCount{ 1 },
 			.pCommandBuffers = { &vCommandBuffer },
 		};
-		vkQueueSubmit(g::graphics.graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 
 		//Free memory
-		vkQueueWaitIdle(g::graphics.graphicsQueue);
-		vkFreeCommandBuffers(g::graphics.LD, singleTimeCommandPool, 1, &vCommandBuffer);
+		vkQueueWaitIdle(dvc::graphics.graphicsQueue);
+		vkFreeCommandBuffers(dvc::graphics.LD, singleTimeCommandPool, 1, &vCommandBuffer);
 	}
 }

@@ -7,7 +7,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::g::wnd{
 	GLFWwindow* window;
 	int32			width = 1920 * 2, height = 1080;
 	FenceDE			windowResizeFence;
@@ -32,7 +32,7 @@ namespace lux::core::g{
 
 
 		//Extensions
-		lux::Map<const char*, uint32> extensions;
+		Map<const char*, uint32> extensions;
 		uint32 glfwExtensionCount;
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
@@ -47,7 +47,7 @@ namespace lux::core::g{
 		//Search for validation layers
 		uint32 layerCount = 0;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
-		lux::Array<VkLayerProperties> availableLayers(layerCount);
+		Array<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));				//Get layers
 		for(const char* layerName : validationLayers) {										//For every layer,
 			for(const auto& layerProperties : availableLayers) {								//Check if it's available
@@ -58,7 +58,7 @@ namespace lux::core::g{
 
 		//Set debugCreateInfo structure
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-		lux::core::debug::populateDebugMessengerCreateInfo(debugCreateInfo);
+		debug::populateDebugMessengerCreateInfo(debugCreateInfo);
 		#endif
 
 
@@ -83,7 +83,7 @@ namespace lux::core::g{
 	void initWindow( ) {
 		glfwInit( );
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		g::window = glfwCreateWindow(g::width, g::height, "Lux Engine", nullptr, nullptr);
+		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 
 		{ //Set icon
 			unsigned char h[] = {
@@ -97,19 +97,19 @@ namespace lux::core::g{
 				.height{ 2 },
 				.pixels{ h },
 			};
-			glfwSetWindowIcon(g::window, 1, &icon);
+			glfwSetWindowIcon(window, 1, &icon);
 		}
 
 
 		{ //Set callbacks
-			glfwSetWindowUserPointer(g::window, nullptr);
-			glfwSetFramebufferSizeCallback(g::window, g::framebufferResizeCallback);
+			glfwSetWindowUserPointer(window, nullptr);
+			glfwSetFramebufferSizeCallback(window, g::framebufferResizeCallback);
 
-			glfwSetCursorPosCallback(g::window, lux::input::mouseCursorPosCallback);
-			glfwSetMouseButtonCallback(g::window, lux::input::mouseButtonCallback);
-			glfwSetScrollCallback(g::window, lux::input::mouseAxisCallback);
+			glfwSetCursorPosCallback(window, input::mouseCursorPosCallback);
+			glfwSetMouseButtonCallback(window, input::mouseButtonCallback);
+			glfwSetScrollCallback(window, input::mouseAxisCallback);
 
-			glfwSetKeyCallback(g::window, lux::input::keyCallback);
+			glfwSetKeyCallback(window, input::keyCallback);
 		}
 	}
 }
