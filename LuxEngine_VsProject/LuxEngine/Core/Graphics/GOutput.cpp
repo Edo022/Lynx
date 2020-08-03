@@ -34,7 +34,7 @@ namespace lux::core::g{
 	void createRenderPass( ) {
 		//Color
 		VkAttachmentDescription colorAttachment{
-			.format{ lux::core::g::swapchainImageFormat },						//Swapchain image format
+			.format{ g::swapchainImageFormat },						//Swapchain image format
 			.samples{ VK_SAMPLE_COUNT_1_BIT },						//Multisampling samples
 			.loadOp{ VK_ATTACHMENT_LOAD_OP_DONT_CARE },				//Don't clear for better performance
 			.storeOp{ VK_ATTACHMENT_STORE_OP_DONT_CARE },			//Don't save rendered image
@@ -91,7 +91,7 @@ namespace lux::core::g{
 		};
 
 		//Create render pass. Exit if an error occurs
-		TryVk(vkCreateRenderPass(lux::core::g::graphics.LD, &renderPassInfo, nullptr, &lux::core::g::renderPass)) Exit("Failed to create render pass");
+		TryVk(vkCreateRenderPass(g::graphics.LD, &renderPassInfo, nullptr, &g::renderPass)) Exit("Failed to create render pass");
 	}
 
 
@@ -102,19 +102,19 @@ namespace lux::core::g{
 
 
 	void createFramebuffers( ) {
-		lux::core::g::swapchainFramebuffers.resize(lux::core::g::swapchainImageViews.size( ));
+		g::swapchainFramebuffers.resize(g::swapchainImageViews.size( ));
 
-		for(uint32 i = 0; i < lux::core::g::swapchainImageViews.size( ); ++i) {
+		for(uint32 i = 0; i < g::swapchainImageViews.size( ); ++i) {
 			VkFramebufferCreateInfo framebufferInfo{
 				.sType{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO },
-				.renderPass{ lux::core::g::renderPass },
+				.renderPass{ g::renderPass },
 				.attachmentCount{ 1 },
-				.pAttachments{ &lux::core::g::swapchainImageViews[i] },
-				.width{ lux::core::g::swapchainExtent.width },
-				.height{ lux::core::g::swapchainExtent.height },
+				.pAttachments{ &g::swapchainImageViews[i] },
+				.width{ g::swapchainExtent.width },
+				.height{ g::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			TryVk(vkCreateFramebuffer(lux::core::g::graphics.LD, &framebufferInfo, nullptr, &lux::core::g::swapchainFramebuffers[i])) Exit("Failed to create framebuffer");
+			TryVk(vkCreateFramebuffer(g::graphics.LD, &framebufferInfo, nullptr, &g::swapchainFramebuffers[i])) Exit("Failed to create framebuffer");
 		}
 	}
 
@@ -156,7 +156,7 @@ namespace lux::core::g{
 		},
 		};
 		VkImageView imageView = VK_NULL_HANDLE;
-		TryVk(vkCreateImageView(lux::core::g::graphics.LD, &viewInfo, nullptr, &imageView)) Exit("Failed to create texture image view");
+		TryVk(vkCreateImageView(g::graphics.LD, &viewInfo, nullptr, &imageView)) Exit("Failed to create texture image view");
 		return imageView;
 	}
 }

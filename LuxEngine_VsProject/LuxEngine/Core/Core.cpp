@@ -66,9 +66,9 @@ namespace lux::core{
 
 			std::thread renderThr(&run, useVSync, 45);
 			renderThr.detach( );
-			lux::core::running = true;
+			running = true;
 
-			while(!lux::core::initialized) sleep(10);
+			while(!initialized) sleep(10);
 		}
 	}
 
@@ -82,10 +82,10 @@ namespace lux::core{
 		//TODO create specific function to get some extensions or all the files
 		lux::sys::dir::thisDir;
 		LuxTime start = luxStartChrono( );
-		lux::core::c::shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
+		c::shaderPath = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
 		//shaderPath = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
 		try {
-			for(const auto& name : std::filesystem::recursive_directory_iterator(lux::core::c::shaderPath.begin( ))) {
+			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaderPath.begin( ))) {
 				lux::String luxStrPath = lux::String(name.path( ).u8string( ).c_str( )); lux::sys::dir::fixWindowsPath(luxStrPath);
 				if(lux::sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!lux::_engine::compileShader(luxStrPath.begin( ))) Exit("compilation error")
@@ -98,19 +98,19 @@ namespace lux::core{
 		}
 
 		//Init
-		lux::core::g::initWindow( );
-		Normal printf("Creating Instance...                     ");			lux::core::g::createInstance( );						SuccessNoNl printf("ok");
-		lux::core::g::graphicsInit(vUseVSync, vFOV);
-		lux::core::c::computeInit( );
+		g::initWindow( );
+		Normal printf("Creating Instance...                     ");			g::createInstance( );						SuccessNoNl printf("ok");
+		g::graphicsInit(vUseVSync, vFOV);
+		c::computeInit( );
 
 		//Loop
 		Success printf("Initialization completed in %f s", luxStopChrono(start));
 		Success printf("Starting Lux Engine\n");						mainLoop( );									MainSeparator;
 
 		//Exit
-		Normal  printf("Cleaning memory");								lux::core::g::graphicsCleanup( ); lux::core::c::computeCleanup( );		NewLine;
+		Normal  printf("Cleaning memory");								g::graphicsCleanup( ); c::computeCleanup( );		NewLine;
 		vkDestroyInstance(instance, nullptr);
-		glfwDestroyWindow(lux::core::g::window);
+		glfwDestroyWindow(g::window);
 		glfwTerminate( );
 	}
 
@@ -121,14 +121,14 @@ namespace lux::core{
 		luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  User input"));
 		std::thread FPSCounterThr(&runFPSCounterThr);		FPSCounterThr.detach( );
 		std::thread renderThr(&runRenderThr);				renderThr.detach( );
-		lux::core::initialized = true;
+		initialized = true;
 
 
-		while(!glfwWindowShouldClose(lux::core::g::window)) {
+		while(!glfwWindowShouldClose(g::window)) {
 			glfwWaitEvents( );
 		}
-		lux::core::running = false;
-		vkDeviceWaitIdle(lux::core::g::graphics.LD);
+		running = false;
+		vkDeviceWaitIdle(g::graphics.LD);
 	}
 
 
@@ -136,8 +136,8 @@ namespace lux::core{
 
 	void runRenderThr( ) {
 		luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  Render"));
-		while(lux::core::running) {
-			lux::core::g::graphicsDrawFrame( );
+		while(running) {
+			g::graphicsDrawFrame( );
 			//TODO it does nothing but it's probably important, somehow. dunno
 			//vkDeviceWaitIdle(compute.LD);
 			frames++;
@@ -149,12 +149,12 @@ namespace lux::core{
 	//TODO add FPS limit
 	void runFPSCounterThr( ) {
 		luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  FPS counter"));
-		while(lux::core::running) {
+		while(running) {
 			static int delay = 1000;
 			sleep(delay);
-			lux::core::FPS = frames * (1000 / delay);
+			FPS = frames * (1000 / delay);
 			frames = 0;
-			printf("FPS: %lf\n", lux::core::FPS);
+			printf("FPS: %lf\n", FPS);
 		}
 	}
 }

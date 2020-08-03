@@ -31,35 +31,35 @@ namespace lux::core::g{
 
 
 	void graphicsInit(const bool vUseVSync, const float vFOV) {
-		lux::core::useVSync = vUseVSync;
-		lux::core::FOV = vFOV;
+		useVSync = vUseVSync;
+		FOV = vFOV;
 
 		luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
 
 		//Initialize vulkan
-		TryVk(glfwCreateWindowSurface(lux::core::instance, lux::core::g::window, nullptr, &lux::core::surface)) Exit("Failed to create window surface");
-		Normal printf("    Searching for physical devices...    ");		lux::core::g::deviceGetPhysical( );											NewLine;
-		lux::core::g::createGraphicsCommandPool( );
-		Normal printf("    Creating VK swapchain...             ");		lux::core::g::swapchainCreate( );					SuccessNoNl printf("ok");
+		TryVk(glfwCreateWindowSurface(instance, g::window, nullptr, &surface)) Exit("Failed to create window surface");
+		Normal printf("    Searching for physical devices...    ");		g::deviceGetPhysical( );											NewLine;
+		g::createGraphicsCommandPool( );
+		Normal printf("    Creating VK swapchain...             ");		g::swapchainCreate( );					SuccessNoNl printf("ok");
 
 		luxDebug(graphicsCreateDebugMessenger( ));
 		graphicsCreateSyncObjs( );
 	}
 
 
-	luxDebug(void lux::core::g::graphicsCreateDebugMessenger( ) {
+	luxDebug(void g::graphicsCreateDebugMessenger( ) {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
-		lux::_engine::populateDebugMessengerCreateInfo(createInfo);
-		TryVk(lux::_engine::CreateDebugUtilsMessengerEXT(lux::core::instance, &createInfo, nullptr, &lux::core::debugMessenger)) Exit("Failed to set up debug messenger");
+		lux::core::debug::populateDebugMessengerCreateInfo(createInfo);
+		TryVk(lux::core::debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) Exit("Failed to set up debug messenger");
 	});
 
 
 	void graphicsCreateSyncObjs( ) {
-		lux::core::g::drawFrameImageAquiredSemaphore.resize(lux::core::g::renderMaxFramesInFlight);
-		lux::core::g::drawFrameObjectsRenderedSemaphore.resize(lux::core::g::renderMaxFramesInFlight);
-		lux::core::g::drawFrameCopySemaphore.resize(lux::core::g::renderMaxFramesInFlight);
-		lux::core::g::drawFrameClearSemaphore.resize(lux::core::g::renderMaxFramesInFlight);
-		lux::core::g::drawFrameImageRenderedFence.resize(lux::core::g::renderMaxFramesInFlight);
+		g::drawFrameImageAquiredSemaphore.resize(g::renderMaxFramesInFlight);
+		g::drawFrameObjectsRenderedSemaphore.resize(g::renderMaxFramesInFlight);
+		g::drawFrameCopySemaphore.resize(g::renderMaxFramesInFlight);
+		g::drawFrameClearSemaphore.resize(g::renderMaxFramesInFlight);
+		g::drawFrameImageRenderedFence.resize(g::renderMaxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{ };
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -68,12 +68,12 @@ namespace lux::core::g{
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for(int32 i = 0; i < lux::core::g::renderMaxFramesInFlight; ++i) {
-			if(vkCreateSemaphore(lux::core::g::graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameImageAquiredSemaphore[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(lux::core::g::graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameObjectsRenderedSemaphore[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(lux::core::g::graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameCopySemaphore[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(lux::core::g::graphics.LD, &semaphoreInfo, nullptr, &lux::core::g::drawFrameClearSemaphore[i]) != VK_SUCCESS ||
-				vkCreateFence(lux::core::g::graphics.LD, &fenceInfo, nullptr, &lux::core::g::drawFrameImageRenderedFence[i]) != VK_SUCCESS
+		for(int32 i = 0; i < g::renderMaxFramesInFlight; ++i) {
+			if(vkCreateSemaphore(g::graphics.LD, &semaphoreInfo, nullptr, &g::drawFrameImageAquiredSemaphore[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(g::graphics.LD, &semaphoreInfo, nullptr, &g::drawFrameObjectsRenderedSemaphore[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(g::graphics.LD, &semaphoreInfo, nullptr, &g::drawFrameCopySemaphore[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(g::graphics.LD, &semaphoreInfo, nullptr, &g::drawFrameClearSemaphore[i]) != VK_SUCCESS ||
+				vkCreateFence(g::graphics.LD, &fenceInfo, nullptr, &g::drawFrameImageRenderedFence[i]) != VK_SUCCESS
 				){
 				Exit("Failed to create vulkan sync objects");
 			}
@@ -87,24 +87,24 @@ namespace lux::core::g{
 
 	//TODO multithreaded submit and command creation
 	void graphicsDrawFrame( ) {
-		if(lux::core::c::CShaders.usedSize( ) <= 1) return;
-		vkWaitForFences(lux::core::g::graphics.LD, 1, &lux::core::g::drawFrameImageRenderedFence[lux::core::g::renderCurrentFrame], false, INT_MAX);
+		if(c::CShaders.usedSize( ) <= 1) return;
+		vkWaitForFences(g::graphics.LD, 1, &g::drawFrameImageRenderedFence[g::renderCurrentFrame], false, INT_MAX);
 		redraw:
 
 
 
 
-		if(lux::core::g::renderFramebufferResized) {
-			lux::core::g::renderFramebufferResized = false;
-			lux::core::g::swapchainRecreate(true);
+		if(g::renderFramebufferResized) {
+			g::renderFramebufferResized = false;
+			g::swapchainRecreate(true);
 			goto redraw;
 		}
 
 		uint32 imageIndex;
 		{ //Acquire swapchain image
-			switch(vkAcquireNextImageKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, /*1000*1000*5*/INT_MAX /*5s*/, lux::core::g::drawFrameImageAquiredSemaphore[lux::core::g::renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+			switch(vkAcquireNextImageKHR(g::graphics.LD, g::swapchain, /*1000*1000*5*/INT_MAX /*5s*/, g::drawFrameImageAquiredSemaphore[g::renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-				case VK_ERROR_OUT_OF_DATE_KHR: lux::core::g::swapchainRecreate(false);  return;
+				case VK_ERROR_OUT_OF_DATE_KHR: g::swapchainRecreate(false);  return;
 				default: Failure printf("Failed to aquire swapchain image");
 			}
 		}
@@ -116,12 +116,12 @@ namespace lux::core::g{
 		//TODO use a staging buffer
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT };
 		{ //Update render result submitting the command buffers to the compute queues
-			lux::core::c::addShaderFence.startFirst( );
-			for(uint32 i = 0; i < lux::core::c::CShaders.size( ); ++i) {
-				lux::core::c::CShadersCBs.resize(lux::core::c::CShaders.usedSize( ));
-				if(lux::core::c::CShaders.isValid(i)) lux::core::c::CShadersCBs[i] = lux::core::c::CShaders[i].commandBuffers[0];
+			c::addShaderFence.startFirst( );
+			for(uint32 i = 0; i < c::CShaders.size( ); ++i) {
+				c::CShadersCBs.resize(c::CShaders.usedSize( ));
+				if(c::CShaders.isValid(i)) c::CShadersCBs[i] = c::CShaders[i].commandBuffers[0];
 			}
-			lux::core::c::addShaderFence.endFirst( );
+			c::addShaderFence.endFirst( );
 
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
@@ -130,11 +130,11 @@ namespace lux::core::g{
 				.pWaitDstStageMask{ waitStages },
 				.signalSemaphoreCount{ 1 },
 			};
-			submitInfo.pWaitSemaphores = &lux::core::g::drawFrameImageAquiredSemaphore[lux::core::g::renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &lux::core::g::drawFrameObjectsRenderedSemaphore[lux::core::g::renderCurrentFrame];
-			submitInfo.commandBufferCount = lux::core::c::CShadersCBs.size( );
-			submitInfo.pCommandBuffers = lux::core::c::CShadersCBs.begin( );
-			TryVk(vkQueueSubmit(lux::core::g::graphics.graphicsQueue, 1, &submitInfo, nullptr)) Exit("Failed to submit graphics command buffer");
+			submitInfo.pWaitSemaphores = &g::drawFrameImageAquiredSemaphore[g::renderCurrentFrame];
+			submitInfo.pSignalSemaphores = &g::drawFrameObjectsRenderedSemaphore[g::renderCurrentFrame];
+			submitInfo.commandBufferCount = c::CShadersCBs.size( );
+			submitInfo.pCommandBuffers = c::CShadersCBs.begin( );
+			TryVk(vkQueueSubmit(g::graphics.graphicsQueue, 1, &submitInfo, nullptr)) Exit("Failed to submit graphics command buffer");
 		}
 
 
@@ -146,12 +146,12 @@ namespace lux::core::g{
 				.waitSemaphoreCount{ 1 },
 				.pWaitDstStageMask{ waitStages },
 				.commandBufferCount{ 1 },
-				.pCommandBuffers{ &lux::core::c::CShaders[0].commandBuffers[0] },
+				.pCommandBuffers{ &c::CShaders[0].commandBuffers[0] },
 				.signalSemaphoreCount{ 1 },
 			};
-			submitInfo.pWaitSemaphores = &lux::core::g::drawFrameObjectsRenderedSemaphore[lux::core::g::renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &lux::core::g::drawFrameClearSemaphore[lux::core::g::renderCurrentFrame];
-			TryVk(vkQueueSubmit(lux::core::g::graphics.graphicsQueue, 1, &submitInfo, nullptr)) Exit("Failed to submit graphics command buffer");
+			submitInfo.pWaitSemaphores = &g::drawFrameObjectsRenderedSemaphore[g::renderCurrentFrame];
+			submitInfo.pSignalSemaphores = &g::drawFrameClearSemaphore[g::renderCurrentFrame];
+			TryVk(vkQueueSubmit(g::graphics.graphicsQueue, 1, &submitInfo, nullptr)) Exit("Failed to submit graphics command buffer");
 		}
 
 
@@ -165,12 +165,12 @@ namespace lux::core::g{
 				.commandBufferCount{ 1 },
 				.signalSemaphoreCount{ 1 },
 			};
-			submitInfo.pWaitSemaphores = &lux::core::g::drawFrameClearSemaphore[lux::core::g::renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &lux::core::g::drawFrameCopySemaphore[lux::core::g::renderCurrentFrame];
-			submitInfo.pCommandBuffers = &lux::core::c::copyCommandBuffers[imageIndex];
+			submitInfo.pWaitSemaphores = &g::drawFrameClearSemaphore[g::renderCurrentFrame];
+			submitInfo.pSignalSemaphores = &g::drawFrameCopySemaphore[g::renderCurrentFrame];
+			submitInfo.pCommandBuffers = &c::copyCommandBuffers[imageIndex];
 
-			vkResetFences(lux::core::g::graphics.LD, 1, &lux::core::g::drawFrameImageRenderedFence[lux::core::g::renderCurrentFrame]);
-			TryVk(vkQueueSubmit(lux::core::g::graphics.graphicsQueue, 1, &submitInfo, lux::core::g::drawFrameImageRenderedFence[lux::core::g::renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
+			vkResetFences(g::graphics.LD, 1, &g::drawFrameImageRenderedFence[g::renderCurrentFrame]);
+			TryVk(vkQueueSubmit(g::graphics.graphicsQueue, 1, &submitInfo, g::drawFrameImageRenderedFence[g::renderCurrentFrame])) Exit("Failed to submit graphics command buffer");
 		}
 
 
@@ -181,16 +181,16 @@ namespace lux::core::g{
 				.sType{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR },
 				.waitSemaphoreCount{ 1 },
 				.swapchainCount{ 1 },
-				.pSwapchains{ &lux::core::g::swapchain },
+				.pSwapchains{ &g::swapchain },
 			};
-			presentInfo.pWaitSemaphores = &lux::core::g::drawFrameCopySemaphore[lux::core::g::renderCurrentFrame];
+			presentInfo.pWaitSemaphores = &g::drawFrameCopySemaphore[g::renderCurrentFrame];
 			presentInfo.pImageIndices = &imageIndex;
 
-			switch(vkQueuePresentKHR(lux::core::g::graphics.presentQueue, &presentInfo)) {
+			switch(vkQueuePresentKHR(g::graphics.presentQueue, &presentInfo)) {
 				case VK_SUCCESS:  break;
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-					lux::core::g::swapchainRecreate(false);
-					vkDeviceWaitIdle(lux::core::g::graphics.LD);
+					g::swapchainRecreate(false);
+					vkDeviceWaitIdle(g::graphics.LD);
 					break;
 				}
 				default:  Exit("Failed to present swapchain image");
@@ -199,8 +199,8 @@ namespace lux::core::g{
 		}
 
 		//Update frame number and flush the window data
-		lux::core::g::renderCurrentFrame = (lux::core::g::renderCurrentFrame + 1) % (lux::core::g::renderMaxFramesInFlight);
-		glfwSwapBuffers(lux::core::g::window);
+		g::renderCurrentFrame = (g::renderCurrentFrame + 1) % (g::renderMaxFramesInFlight);
+		glfwSwapBuffers(g::window);
 	}
 
 
@@ -211,24 +211,24 @@ namespace lux::core::g{
 
 
 	void graphicsCleanup( ) {
-		lux::core::g::swapchainCleanup( );																//Clear swapchain components
-		vkDestroyCommandPool(lux::core::g::graphics.LD, lux::core::g::singleTimeCommandPool, nullptr);					//Destroy graphics command pool
+		g::swapchainCleanup( );																//Clear swapchain components
+		vkDestroyCommandPool(g::graphics.LD, g::singleTimeCommandPool, nullptr);					//Destroy graphics command pool
 
-		for(int32 i = 0; i < lux::core::g::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
-			vkDestroySemaphore(lux::core::g::graphics.LD, lux::core::g::drawFrameImageAquiredSemaphore[i], nullptr);
-			vkDestroySemaphore(lux::core::g::graphics.LD, lux::core::g::drawFrameObjectsRenderedSemaphore[i], nullptr);
-			vkDestroySemaphore(lux::core::g::graphics.LD, lux::core::g::drawFrameCopySemaphore[i], nullptr);
-			vkDestroySemaphore(lux::core::g::graphics.LD, lux::core::g::drawFrameClearSemaphore[i], nullptr);
-			vkDestroyFence(lux::core::g::graphics.LD, lux::core::g::drawFrameImageRenderedFence[i], nullptr);
+		for(int32 i = 0; i < g::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
+			vkDestroySemaphore(g::graphics.LD, g::drawFrameImageAquiredSemaphore[i], nullptr);
+			vkDestroySemaphore(g::graphics.LD, g::drawFrameObjectsRenderedSemaphore[i], nullptr);
+			vkDestroySemaphore(g::graphics.LD, g::drawFrameCopySemaphore[i], nullptr);
+			vkDestroySemaphore(g::graphics.LD, g::drawFrameClearSemaphore[i], nullptr);
+			vkDestroyFence(g::graphics.LD, g::drawFrameImageRenderedFence[i], nullptr);
 		}
 
 
-		if(lux::core::g::graphics.PD.properties.deviceID != lux::core::g::compute.PD.properties.deviceID) vkDestroyDevice(lux::core::g::graphics.LD, nullptr);	//If the compute and the graphics devices are not the same, destroy the graphics device
-		vkDestroyDevice(lux::core::g::compute.LD, nullptr);																			//Destroy the compute device
+		if(g::graphics.PD.properties.deviceID != g::compute.PD.properties.deviceID) vkDestroyDevice(g::graphics.LD, nullptr);	//If the compute and the graphics devices are not the same, destroy the graphics device
+		vkDestroyDevice(g::compute.LD, nullptr);																			//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);											//Destroy all the secondary devices
 
-		luxDebug(lux::_engine::DestroyDebugUtilsMessengerEXT(lux::core::instance, lux::core::debugMessenger, nullptr));						//Destroy the debug messenger if present
-		vkDestroySurfaceKHR(lux::core::instance, lux::core::surface, nullptr);																//Destroy the vulkan surface
+		luxDebug(lux::core::debug::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));						//Destroy the debug messenger if present
+		vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface
 	}
 
 
@@ -252,7 +252,7 @@ namespace lux::core::g{
 	VkFormat graphicsFindSupportedFormat(const lux::Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 		for(VkFormat format : *pCandidates) {
 			VkFormatProperties props;
-			vkGetPhysicalDeviceFormatProperties(lux::core::g::graphics.PD.device, format, &props);
+			vkGetPhysicalDeviceFormatProperties(g::graphics.PD.device, format, &props);
 
 			if((vTiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
 				(vTiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & vFeatures) == vFeatures)) {
@@ -268,7 +268,7 @@ namespace lux::core::g{
 	//Returns the index of the memory with the specified type and properties
 	uint32 graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
 		VkPhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
-		vkGetPhysicalDeviceMemoryProperties(lux::core::g::graphics.PD.device, &memProperties);
+		vkGetPhysicalDeviceMemoryProperties(g::graphics.PD.device, &memProperties);
 
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;

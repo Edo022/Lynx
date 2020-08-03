@@ -49,7 +49,7 @@ namespace lux::core::g{
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
 		lux::Array<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));				//Get layers
-		for(const char* layerName : lux::core::validationLayers) {										//For every layer,
+		for(const char* layerName : validationLayers) {										//For every layer,
 			for(const auto& layerProperties : availableLayers) {								//Check if it's available
 				if(strcmp(layerName, layerProperties.layerName) == 0) break;
 				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
@@ -58,7 +58,7 @@ namespace lux::core::g{
 
 		//Set debugCreateInfo structure
 		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-		lux::_engine::populateDebugMessengerCreateInfo(debugCreateInfo);
+		lux::core::debug::populateDebugMessengerCreateInfo(debugCreateInfo);
 		#endif
 
 
@@ -69,12 +69,12 @@ namespace lux::core::g{
 			.sType{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO },
 			luxDebug(.pNext{ (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo }),
 			.pApplicationInfo{ &appInfo },
-			luxDebug(.enabledLayerCount{ lux::core::validationLayers.size( ) }),
-			luxDebug(.ppEnabledLayerNames{ lux::core::validationLayers.begin( ) }),
+			luxDebug(.enabledLayerCount{ validationLayers.size( ) }),
+			luxDebug(.ppEnabledLayerNames{ validationLayers.begin( ) }),
 			.enabledExtensionCount{ extensions.size( ) },
 			.ppEnabledExtensionNames{ extensions.data(0) },
 		};
-		TryVk(vkCreateInstance(&createInfo, nullptr, &lux::core::instance)) Exit("Failed to create instance");
+		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) Exit("Failed to create instance");
 	}
 
 
@@ -83,7 +83,7 @@ namespace lux::core::g{
 	void initWindow( ) {
 		glfwInit( );
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		lux::core::g::window = glfwCreateWindow(lux::core::g::width, lux::core::g::height, "Lux Engine", nullptr, nullptr);
+		g::window = glfwCreateWindow(g::width, g::height, "Lux Engine", nullptr, nullptr);
 
 		{ //Set icon
 			unsigned char h[] = {
@@ -97,19 +97,19 @@ namespace lux::core::g{
 				.height{ 2 },
 				.pixels{ h },
 			};
-			glfwSetWindowIcon(lux::core::g::window, 1, &icon);
+			glfwSetWindowIcon(g::window, 1, &icon);
 		}
 
 
 		{ //Set callbacks
-			glfwSetWindowUserPointer(lux::core::g::window, nullptr);
-			glfwSetFramebufferSizeCallback(lux::core::g::window, lux::core::g::framebufferResizeCallback);
+			glfwSetWindowUserPointer(g::window, nullptr);
+			glfwSetFramebufferSizeCallback(g::window, g::framebufferResizeCallback);
 
-			glfwSetCursorPosCallback(lux::core::g::window, lux::input::mouseCursorPosCallback);
-			glfwSetMouseButtonCallback(lux::core::g::window, lux::input::mouseButtonCallback);
-			glfwSetScrollCallback(lux::core::g::window, lux::input::mouseAxisCallback);
+			glfwSetCursorPosCallback(g::window, lux::input::mouseCursorPosCallback);
+			glfwSetMouseButtonCallback(g::window, lux::input::mouseButtonCallback);
+			glfwSetScrollCallback(g::window, lux::input::mouseAxisCallback);
 
-			glfwSetKeyCallback(lux::core::g::window, lux::input::keyCallback);
+			glfwSetKeyCallback(g::window, lux::input::keyCallback);
 		}
 	}
 }

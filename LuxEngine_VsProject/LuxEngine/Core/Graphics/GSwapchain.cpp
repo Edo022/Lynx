@@ -41,7 +41,7 @@ namespace lux::core::g{
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
 	VkPresentModeKHR swapchainChoosePresentMode(const lux::Array<VkPresentModeKHR>* pAvailablePresentModes) {
-		if(lux::core::useVSync) return VK_PRESENT_MODE_FIFO_KHR;
+		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
 		}
@@ -53,7 +53,7 @@ namespace lux::core::g{
 
 	VkExtent2D swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width, height;
-		glfwGetFramebufferSize(lux::core::g::window, &width, &height);
+		glfwGetFramebufferSize(g::window, &width, &height);
 		return VkExtent2D{
 			max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
@@ -66,20 +66,20 @@ namespace lux::core::g{
 
 	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 		SwapChainSupportDetails details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, lux::core::surface, &details.capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
 
 		uint32 formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, lux::core::surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
 		if(formatCount != 0) {
 			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, lux::core::surface, &formatCount, details.formats.begin( ));
+			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.begin( ));
 		}
 
 		uint32 presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, lux::core::surface, &presentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, nullptr);
 		if(presentModeCount != 0) {
 			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, lux::core::surface, &presentModeCount, details.presentModes.begin( ));
+			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, details.presentModes.begin( ));
 		}
 
 		return details;
@@ -103,7 +103,7 @@ namespace lux::core::g{
 
 	void swapchainCreate( ) {
 		//Get swapchain details
-		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(lux::core::g::graphics.PD.device);
+		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(g::graphics.PD.device);
 
 		//Choose max image count. Minimum or minimum +1 if supported
 		uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
@@ -116,7 +116,7 @@ namespace lux::core::g{
 		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(&swapChainSupport.formats) };
 		VkSwapchainCreateInfoKHR createInfo{
 			.sType{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR },
-			.surface{ lux::core::surface },
+			.surface{ surface },
 			.minImageCount{ imageCount },
 			.imageFormat{ surfaceFormat.format },
 			.imageColorSpace{ surfaceFormat.colorSpace },
@@ -125,8 +125,8 @@ namespace lux::core::g{
 			.imageUsage{ VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT },
 		};
 
-		uint32 queueFamilyIndices[] = { lux::core::g::graphics.PD.indices.graphicsFamily, lux::core::g::graphics.PD.indices.presentFamily };
-		if(lux::core::g::graphics.PD.indices.graphicsFamily != lux::core::g::graphics.PD.indices.presentFamily) {
+		uint32 queueFamilyIndices[] = { g::graphics.PD.indices.graphicsFamily, g::graphics.PD.indices.presentFamily };
+		if(g::graphics.PD.indices.graphicsFamily != g::graphics.PD.indices.presentFamily) {
 			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 			createInfo.queueFamilyIndexCount = 2;
 			createInfo.pQueueFamilyIndices = queueFamilyIndices;
@@ -141,25 +141,25 @@ namespace lux::core::g{
 
 
 		//Create swapchain
-		TryVk(vkCreateSwapchainKHR(lux::core::g::graphics.LD, &createInfo, nullptr, &lux::core::g::swapchain)) Exit("Failed to create swapchain");
+		TryVk(vkCreateSwapchainKHR(g::graphics.LD, &createInfo, nullptr, &g::swapchain)) Exit("Failed to create swapchain");
 
 
 		//Save data
 		uint32 swapchainImageCount;
-		vkGetSwapchainImagesKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, &swapchainImageCount, nullptr);					//Get image count
-		lux::core::g::swapchainImages.resize(swapchainImageCount);
-		vkGetSwapchainImagesKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, &swapchainImageCount, lux::core::g::swapchainImages.begin( ));	//Save images
-		lux::core::g::swapchainImageFormat = surfaceFormat.format;													//Save format
-		lux::core::g::swapchainExtent = createInfo.imageExtent;														//Save extent
+		vkGetSwapchainImagesKHR(g::graphics.LD, g::swapchain, &swapchainImageCount, nullptr);					//Get image count
+		g::swapchainImages.resize(swapchainImageCount);
+		vkGetSwapchainImagesKHR(g::graphics.LD, g::swapchain, &swapchainImageCount, g::swapchainImages.begin( ));	//Save images
+		g::swapchainImageFormat = surfaceFormat.format;													//Save format
+		g::swapchainExtent = createInfo.imageExtent;														//Save extent
 
 
 		//Create image views
-		lux::core::g::swapchainImageViews.resize(lux::core::g::swapchainImages.size( ));
-		for(uint32 i = 0; i < lux::core::g::swapchainImages.size( ); ++i) lux::core::g::swapchainImageViews[i] = lux::core::g::swapchainCreateImageView(lux::core::g::swapchainImages[i], lux::core::g::swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		g::swapchainImageViews.resize(g::swapchainImages.size( ));
+		for(uint32 i = 0; i < g::swapchainImages.size( ); ++i) g::swapchainImageViews[i] = g::swapchainCreateImageView(g::swapchainImages[i], g::swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
-		lux::core::g::createRenderPass( );
-		lux::core::g::createFramebuffers( );
+		g::createRenderPass( );
+		g::createFramebuffers( );
 	}
 
 
@@ -170,10 +170,10 @@ namespace lux::core::g{
 
 
 	void swapchainCleanup( ) {
-		vkDestroyRenderPass(lux::core::g::graphics.LD, lux::core::g::renderPass, nullptr);													//Destroy render pass
-		for(auto framebuffer : lux::core::g::swapchainFramebuffers) vkDestroyFramebuffer(lux::core::g::graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
-		for(auto imageView : lux::core::g::swapchainImageViews) vkDestroyImageView(lux::core::g::graphics.LD, imageView, nullptr);			//Destroy image viewslux::core::g::compute
-		vkDestroySwapchainKHR(lux::core::g::graphics.LD, lux::core::g::swapchain, nullptr);													//destroy swapchain
+		vkDestroyRenderPass(g::graphics.LD, g::renderPass, nullptr);													//Destroy render pass
+		for(auto framebuffer : g::swapchainFramebuffers) vkDestroyFramebuffer(g::graphics.LD, framebuffer, nullptr);	//Destroy framebuffers
+		for(auto imageView : g::swapchainImageViews) vkDestroyImageView(g::graphics.LD, imageView, nullptr);			//Destroy image viewslux::core::g::compute
+		vkDestroySwapchainKHR(g::graphics.LD, g::swapchain, nullptr);													//destroy swapchain
 	}
 
 
@@ -182,30 +182,30 @@ namespace lux::core::g{
 
 
 	void swapchainRecreate(const bool vWindowResized) {
-		if(vWindowResized) lux::core::g::windowResizeFence.startFirst( );
+		if(vWindowResized) g::windowResizeFence.startFirst( );
 		int32 width, height;
-		glfwGetFramebufferSize(lux::core::g::window, &width, &height);
+		glfwGetFramebufferSize(g::window, &width, &height);
 
 		if(width != 0 && height != 0) {
-			vkDeviceWaitIdle(lux::core::g::graphics.LD);
+			vkDeviceWaitIdle(g::graphics.LD);
 			swapchainCleanup( );
 			swapchainCreate( );
 
 
 			{ //destroy copy command buffers
-				vkFreeCommandBuffers(lux::core::g::compute.LD, lux::core::c::copyCommandPool, lux::core::c::copyCommandBuffers.size( ), lux::core::c::copyCommandBuffers.begin( ));
-				vkDestroyCommandPool(lux::core::g::compute.LD, lux::core::c::copyCommandPool, nullptr);
+				vkFreeCommandBuffers(g::compute.LD, c::copyCommandPool, c::copyCommandBuffers.size( ), c::copyCommandBuffers.begin( ));
+				vkDestroyCommandPool(g::compute.LD, c::copyCommandPool, nullptr);
 			}
 
-			uint32* pwindowSize = scast<uint32*>(lux::core::c::gpuCellMap(lux::core::g::gpuCellWindowSize));
-			pwindowSize[0] = lux::core::g::swapchainExtent.width;
-			pwindowSize[1] = lux::core::g::swapchainExtent.height;
+			uint32* pwindowSize = scast<uint32*>(c::gpuCellMap(g::gpuCellWindowSize));
+			pwindowSize[0] = g::swapchainExtent.width;
+			pwindowSize[1] = g::swapchainExtent.height;
 
 			{ //#LLID CCB0000 Create copy command buffers
-				lux::core::c::copyCommandBuffers.resize(lux::core::g::swapchainImages.size( ));	//Resize the command buffer array in the shader
-				lux::core::c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
+				c::copyCommandBuffers.resize(g::swapchainImages.size( ));	//Resize the command buffer array in the shader
+				c::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
 			}
 		}
-		if(vWindowResized) lux::core::g::windowResizeFence.endFirst( );
+		if(vWindowResized) g::windowResizeFence.endFirst( );
 	}
 }
