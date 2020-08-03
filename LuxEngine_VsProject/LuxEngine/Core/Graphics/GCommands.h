@@ -1,5 +1,8 @@
 
 #pragma once
+#include "vulkan/vulkan.h"
+#include "LuxEngine/Types/Containers/LuxArray.h"
+
 
 
 

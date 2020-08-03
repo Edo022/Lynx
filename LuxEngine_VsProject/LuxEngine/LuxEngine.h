@@ -61,19 +61,13 @@
 
 #include "LuxEngine_config.h"
 #	include "LuxEngine/macros.h"
-//#	include "LuxEngine/Math/Algebra/Algebra.h" (included in Types.h)
-#		include "LuxEngine/Types/Types.h"
+#include "LuxEngine/Core/Core.h"
 
-
-
-
-//#include "LuxEngine/Types/Containers/LuxArray.h"
-#include "LuxEngine/Core/LuxCore.h"
 
 //Initializes the Engine
 //Objects will automatically call this function when created
 //    They need the engine to be initialized to allocate their data
-static void LuxInit(bool useVSync = true) { lux::getEngine().init(useVSync); }
+static void LuxInit(bool useVSync = true) { lux::core::init(useVSync); }
 
 
 

@@ -1,7 +1,8 @@
 
 
-#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.h"
+#include "LuxEngine/Core/Devices.h"
 
 
 

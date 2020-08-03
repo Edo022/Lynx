@@ -1,7 +1,15 @@
 
 #pragma once
 #include "LuxEngine/Core/Compute/CShader_t.h"
-
+#include "LuxEngine/Core/Compute/CBuffers.h"
+#include "LuxEngine/Core/Compute/Compute.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.h"
+#include "LuxEngine/Core/Graphics/Window.h"
+#include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
+#include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Types/LuxFenceDE.h"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 
 
 

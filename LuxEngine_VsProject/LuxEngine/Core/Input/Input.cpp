@@ -1,5 +1,6 @@
 
 #include "LuxEngine/Core/Input/Input.h"
+#include "LuxEngine/Core/Compute/CShader.h"
 
 
 

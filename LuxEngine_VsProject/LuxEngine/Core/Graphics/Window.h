@@ -1,5 +1,9 @@
 
 #pragma once
+#include "GLFW/glfw3.h"
+#include "LuxEngine/Types/LuxFenceDE.h"
+#include "LuxEngine/Types/EngineTypes.h"
+
 
 
 

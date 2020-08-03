@@ -1,9 +1,12 @@
 ﻿
 
-#include "LuxEngine/Core/LuxCore.h"
-#include "LuxEngine/Core/Devices_t.h"
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.h"
+#include "LuxEngine/Types/Containers/LuxMap.h"
+
 #include <set>
+
 
 //Compares 2 _VkPhysicalDevice objects
 #define sameDevice(a,b) ((a).properties.deviceID == (b).properties.deviceID)
@@ -76,7 +79,7 @@ namespace lux::core::g{
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
 
 		//TODO use LuxMap
-		std::set<const char*> requiredExtensions(lux::getEngine( ).requiredDeviceExtensions.begin( ), lux::getEngine( ).requiredDeviceExtensions.end( ));
+		std::set<const char*> requiredExtensions(lux::core::requiredDeviceExtensions.begin( ), lux::core::requiredDeviceExtensions.end( ));
 		for(const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);	//Search for required extensions
 		return requiredExtensions.empty( );
 	}
@@ -97,7 +100,7 @@ namespace lux::core::g{
 			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 			VkBool32 hasPresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, lux::getEngine().surface, &hasPresentSupport);						//Set present family
+			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, lux::core::surface, &hasPresentSupport);						//Set present family
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
 		return indices;
@@ -128,12 +131,12 @@ namespace lux::core::g{
 
 
 		//Get physical devices
-		vkEnumeratePhysicalDevices(lux::getEngine().instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(lux::core::instance, &deviceCount, nullptr);
 		if(deviceCount == 0) Exit("Failed to find GPUs with Vulkan support")
 		else {
 			//Get physical devices
 			lux::Array<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
-			vkEnumeratePhysicalDevices(lux::getEngine().instance, &deviceCount, physDevices.begin( ));				//Get physical devices
+			vkEnumeratePhysicalDevices(lux::core::instance, &deviceCount, physDevices.begin( ));				//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.size( ); ++i) {											//For every physical device, create and save a _VkPhysicalDevice stucture
 				VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
@@ -258,10 +261,10 @@ namespace lux::core::g{
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
 			.queueCreateInfoCount{ (uint32)queueCreateInfos.size( ) },			//Set queue infos count
 			.pQueueCreateInfos{ queueCreateInfos.data( ) },						//Set queue infos
-			luxDebug(.enabledLayerCount{ (uint32)lux::getEngine( ).validationLayers.size( ) }),	//Set validation layer count if in debug mode
-			luxDebug(.ppEnabledLayerNames{ lux::getEngine( ).validationLayers.begin( ) }),		//Set validation layers if in debug mode
-			.enabledExtensionCount{ (uint32)lux::getEngine( ).requiredDeviceExtensions.size( ) },	//Set required extentions count
-			.ppEnabledExtensionNames{ lux::getEngine( ).requiredDeviceExtensions.begin( ) },		//Set required extensions
+			luxDebug(.enabledLayerCount{ (uint32)lux::core::validationLayers.size( ) }),	//Set validation layer count if in debug mode
+			luxDebug(.ppEnabledLayerNames{ lux::core::validationLayers.begin( ) }),		//Set validation layers if in debug mode
+			.enabledExtensionCount{ (uint32)lux::core::requiredDeviceExtensions.size( ) },	//Set required extentions count
+			.ppEnabledExtensionNames{ lux::core::requiredDeviceExtensions.begin( ) },		//Set required extensions
 			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
 		};
 		luxRelease(deviceCreateInfo.enabledLayerCount = 0);						//Disable validation layers if in release mode

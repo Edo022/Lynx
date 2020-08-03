@@ -1,6 +1,9 @@
 
 #pragma once
-
+#include "vulkan/vulkan.h"
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
+#include "LuxEngine/Core/Devices_t.h"
 
 
 namespace lux::core::g{

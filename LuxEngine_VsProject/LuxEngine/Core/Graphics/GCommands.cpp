@@ -1,7 +1,7 @@
 
 
-#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Devices.h"
 
 
 

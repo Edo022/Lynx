@@ -43,17 +43,17 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 
 //Core
-#include "LuxEngine/Core/Input/Input.h"
-#include "LuxEngine/Core/Graphics/Window.h"
-#include "LuxEngine/Core/Compute/Compute.h"
-#include "LuxEngine/Core/Compute/CBuffers.h"
-#include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Core/Graphics/GOutput.h"
-#include "LuxEngine/Core/Graphics/Graphics.h"
-#include "LuxEngine/Core/Graphics/GCommands.h"
-#include "LuxEngine/Core/Graphics/GSwapchain.h"
-#include "LuxEngine/Core/Devices.h"
-#include "LuxEngine/Core/Core.h"
+//#include "LuxEngine/Core/Input/Input.h"
+//#include "LuxEngine/Core/Graphics/Window.h"
+//#include "LuxEngine/Core/Compute/Compute.h"
+//#include "LuxEngine/Core/Compute/CBuffers.h"
+//#include "LuxEngine/Core/Compute/CShader.h"
+//#include "LuxEngine/Core/Graphics/GOutput.h"
+//#include "LuxEngine/Core/Graphics/Graphics.h"
+//#include "LuxEngine/Core/Graphics/GCommands.h"
+//#include "LuxEngine/Core/Graphics/GSwapchain.h"
+//#include "LuxEngine/Core/Devices.h"
+//#include "LuxEngine/Core/Core.h"
 
 
 
@@ -254,33 +254,33 @@ class Engine {
 public:
 	//double FPS = 0;
 	//float FOV;
-	bool running;
+	//bool running;
 	//bool useVSync;
 	//bool initialized = false;
-	uint32 frames = 0;
+	//uint32 frames = 0;
 
 
 
 
-	//Main >> this
-	VkInstance					instance;
-	VkDebugUtilsMessengerEXT	debugMessenger;
-	VkSurfaceKHR				surface;
-	void init(bool useVSync);
-	void run(bool vUseVSync, float vFOV);
-	void mainLoop();		void runFPSCounterThr();	void runRenderThr();
+	////Main >> this
+	//VkInstance					instance;
+	//VkDebugUtilsMessengerEXT	debugMessenger;
+	//VkSurfaceKHR				surface;
+	//void init(bool useVSync);
+	//void run(bool vUseVSync, float vFOV);
+	//void mainLoop();		void runFPSCounterThr();	void runRenderThr();
 
 
-	//Shared functions >> this
+	////Shared functions >> this
 	//uint32*				cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	//VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
 	//void				createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
 	//void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 
 
-	//debug and validation layers data
-	lux::Array<const char*, uint32> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	lux::Array<const char*, uint32> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	////debug and validation layers data
+	//lux::Array<const char*, uint32> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+	//lux::Array<const char*, uint32> requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 };
 
@@ -297,28 +297,6 @@ public:
 
 
 
-namespace lux::_engine {
-	//It's dark magic, idk why or how it works, but it does
-	inline VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
-		auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-		if(func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-		else return VK_ERROR_EXTENSION_NOT_PRESENT;
-	}
-	inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-		auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-		if(func != nullptr) func(instance, debugMessenger, pAllocator);
-	}
-
-
-	//More dark magic
-	static constexpr inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
-		createInfo = { };
-		createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-		createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-		createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		createInfo.pfnUserCallback = lux::core::g::graphicsDebugCallback;
-	}
-}
 
 
 

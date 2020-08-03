@@ -1,5 +1,13 @@
 
 #pragma once
+#include "vulkan/vulkan.h"
+#include "LuxEngine/macros.h"
+#include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/LuxFenceDE.h"
+#include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Core/Graphics/Window.h"
+#include "LuxEngine/Core/Graphics/Graphics.h"
+#include "LuxEngine/Core/Graphics/GOutput.h"
 
 
 
@@ -18,7 +26,7 @@ namespace lux::core::g{
 	void		graphicsCreateDebugMessenger();
 	void		graphicsDrawFrame();
 	void		graphicsCleanup();
-	static 	void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
+	static void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
 		windowResizeFence.startSecond( );  //from the last call of this function
 		renderFramebufferResized = true;
 		windowResizeFence.endSecond( );

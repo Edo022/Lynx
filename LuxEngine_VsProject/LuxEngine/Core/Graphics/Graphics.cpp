@@ -1,9 +1,13 @@
 
 
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Core/LuxCore.h"
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
+#include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.h"
+#include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Core/Devices.h"
 
 
 
@@ -33,7 +37,7 @@ namespace lux::core::g{
 		luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
 
 		//Initialize vulkan
-		TryVk(glfwCreateWindowSurface(lux::getEngine().instance, lux::core::g::window, nullptr, &lux::getEngine().surface)) Exit("Failed to create window surface");
+		TryVk(glfwCreateWindowSurface(lux::core::instance, lux::core::g::window, nullptr, &lux::core::surface)) Exit("Failed to create window surface");
 		Normal printf("    Searching for physical devices...    ");		lux::core::g::deviceGetPhysical( );											NewLine;
 		lux::core::g::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");		lux::core::g::swapchainCreate( );					SuccessNoNl printf("ok");
@@ -46,7 +50,7 @@ namespace lux::core::g{
 	luxDebug(void lux::core::g::graphicsCreateDebugMessenger( ) {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		lux::_engine::populateDebugMessengerCreateInfo(createInfo);
-		TryVk(lux::_engine::CreateDebugUtilsMessengerEXT(lux::getEngine().instance, &createInfo, nullptr, &lux::getEngine().debugMessenger)) Exit("Failed to set up debug messenger");
+		TryVk(lux::_engine::CreateDebugUtilsMessengerEXT(lux::core::instance, &createInfo, nullptr, &lux::core::debugMessenger)) Exit("Failed to set up debug messenger");
 	});
 
 
@@ -223,8 +227,8 @@ namespace lux::core::g{
 		vkDestroyDevice(lux::core::g::compute.LD, nullptr);																			//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);											//Destroy all the secondary devices
 
-		luxDebug(lux::_engine::DestroyDebugUtilsMessengerEXT(lux::getEngine().instance, lux::getEngine().debugMessenger, nullptr));						//Destroy the debug messenger if present
-		vkDestroySurfaceKHR(lux::getEngine().instance, lux::getEngine().surface, nullptr);																//Destroy the vulkan surface
+		luxDebug(lux::_engine::DestroyDebugUtilsMessengerEXT(lux::core::instance, lux::core::debugMessenger, nullptr));						//Destroy the debug messenger if present
+		vkDestroySurfaceKHR(lux::core::instance, lux::core::surface, nullptr);																//Destroy the vulkan surface
 	}
 
 

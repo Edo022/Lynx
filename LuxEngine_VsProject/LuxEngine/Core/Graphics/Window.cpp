@@ -1,6 +1,8 @@
 
-#include "LuxEngine/Core/LuxCore.h"
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Graphics/Window.h"
+#include "LuxEngine/Core/Input/Input.h"
+#include "LuxEngine/Types/Containers/LuxMap.h"
 
 
 
@@ -47,7 +49,7 @@ namespace lux::core::g{
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
 		lux::Array<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));				//Get layers
-		for(const char* layerName : lux::getEngine().validationLayers) {										//For every layer,
+		for(const char* layerName : lux::core::validationLayers) {										//For every layer,
 			for(const auto& layerProperties : availableLayers) {								//Check if it's available
 				if(strcmp(layerName, layerProperties.layerName) == 0) break;
 				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) Exit("Validation layers not available. Cannot run in debug mode");
@@ -67,12 +69,12 @@ namespace lux::core::g{
 			.sType{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO },
 			luxDebug(.pNext{ (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo }),
 			.pApplicationInfo{ &appInfo },
-			luxDebug(.enabledLayerCount{ lux::getEngine().validationLayers.size( ) }),
-			luxDebug(.ppEnabledLayerNames{ lux::getEngine().validationLayers.begin( ) }),
+			luxDebug(.enabledLayerCount{ lux::core::validationLayers.size( ) }),
+			luxDebug(.ppEnabledLayerNames{ lux::core::validationLayers.begin( ) }),
 			.enabledExtensionCount{ extensions.size( ) },
 			.ppEnabledExtensionNames{ extensions.data(0) },
 		};
-		TryVk(vkCreateInstance(&createInfo, nullptr, &lux::getEngine().instance)) Exit("Failed to create instance");
+		TryVk(vkCreateInstance(&createInfo, nullptr, &lux::core::instance)) Exit("Failed to create instance");
 	}
 
 

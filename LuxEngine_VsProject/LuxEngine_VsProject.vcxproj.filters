@@ -118,6 +118,9 @@
     <ClCompile Include="LuxEngine\Core\LuxCore.cpp">
       <Filter>LuxEngine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Core\Core_tmp_fix.cpp">
+      <Filter>LuxEngine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

@@ -67,7 +67,7 @@ int main( ) {
 	srand(time(NULL));
 	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 	lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
-	while(lux::getEngine().running) {
+	while(lux::core::running) {
 		//lux::thr::sendToExecQueue(h, lux::thr::LUX_PRIORITY_MAX, "UwU EKUSUPUROSION", 12345);
 
 		sleep(10);

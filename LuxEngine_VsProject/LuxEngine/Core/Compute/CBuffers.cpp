@@ -1,7 +1,10 @@
 
 
-#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
+#include "LuxEngine/Core/Graphics/Graphics.h"
+#include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Devices.h"
+
 
 
 

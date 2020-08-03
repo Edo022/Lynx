@@ -1,6 +1,8 @@
 ﻿
-#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
+#include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -64,20 +66,20 @@ namespace lux::core::g{
 
 	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 		SwapChainSupportDetails details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, lux::getEngine().surface, &details.capabilities);
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, lux::core::surface, &details.capabilities);
 
 		uint32 formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, lux::getEngine().surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, lux::core::surface, &formatCount, nullptr);
 		if(formatCount != 0) {
 			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, lux::getEngine().surface, &formatCount, details.formats.begin( ));
+			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, lux::core::surface, &formatCount, details.formats.begin( ));
 		}
 
 		uint32 presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, lux::getEngine().surface, &presentModeCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, lux::core::surface, &presentModeCount, nullptr);
 		if(presentModeCount != 0) {
 			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, lux::getEngine().surface, &presentModeCount, details.presentModes.begin( ));
+			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, lux::core::surface, &presentModeCount, details.presentModes.begin( ));
 		}
 
 		return details;
@@ -114,7 +116,7 @@ namespace lux::core::g{
 		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(&swapChainSupport.formats) };
 		VkSwapchainCreateInfoKHR createInfo{
 			.sType{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR },
-			.surface{ lux::getEngine().surface },
+			.surface{ lux::core::surface },
 			.minImageCount{ imageCount },
 			.imageFormat{ surfaceFormat.format },
 			.imageColorSpace{ surfaceFormat.colorSpace },

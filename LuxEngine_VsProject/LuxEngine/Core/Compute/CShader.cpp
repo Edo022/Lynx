@@ -1,8 +1,6 @@
 
 
-#include "LuxEngine/Core/LuxCore.h"
 #include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Core/Compute/CShader_t.h"
 
 
 
