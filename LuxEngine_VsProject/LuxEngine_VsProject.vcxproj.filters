@@ -249,6 +249,9 @@
     <ClInclude Include="LuxEngine\Core\LuxCore.h">
       <Filter>LuxEngine\Core</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Core\Core.h">
+      <Filter>LuxEngine\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

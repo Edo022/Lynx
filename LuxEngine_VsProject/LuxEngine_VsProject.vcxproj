@@ -401,6 +401,7 @@
     <ClInclude Include="LuxEngine\Core\Compute\Compute.h" />
     <ClInclude Include="LuxEngine\Core\Compute\CShader.h" />
     <ClInclude Include="LuxEngine\Core\Compute\CShader_t.h" />
+    <ClInclude Include="LuxEngine\Core\Core.h" />
     <ClInclude Include="LuxEngine\Core\Devices.h" />
     <ClInclude Include="LuxEngine\Core\Devices_t.h" />
     <ClInclude Include="LuxEngine\Core\LuxCore.h" />

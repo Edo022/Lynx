@@ -19,7 +19,8 @@ namespace lux::core::c{
 	extern FenceDE									addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 
 
-
+	uint32*				cshaderReadFromFile(uint32* pLength, const char* pFilePath);
+	VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
 
 	void	cshaderCreateDefaultCommandBuffers();
 	void	cshaderCreateDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);

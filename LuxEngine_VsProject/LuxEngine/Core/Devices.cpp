@@ -97,7 +97,7 @@ namespace lux::core::g{
 			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 			VkBool32 hasPresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, lux::getEngine( ).surface, &hasPresentSupport);						//Set present family
+			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, lux::getEngine().surface, &hasPresentSupport);						//Set present family
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
 		return indices;
@@ -128,12 +128,12 @@ namespace lux::core::g{
 
 
 		//Get physical devices
-		vkEnumeratePhysicalDevices(lux::getEngine( ).instance, &deviceCount, nullptr);
+		vkEnumeratePhysicalDevices(lux::getEngine().instance, &deviceCount, nullptr);
 		if(deviceCount == 0) Exit("Failed to find GPUs with Vulkan support")
 		else {
 			//Get physical devices
 			lux::Array<VkPhysicalDevice> physDevices(deviceCount);								//Get physical device count
-			vkEnumeratePhysicalDevices(lux::getEngine( ).instance, &deviceCount, physDevices.begin( ));				//Get physical devices
+			vkEnumeratePhysicalDevices(lux::getEngine().instance, &deviceCount, physDevices.begin( ));				//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.size( ); ++i) {											//For every physical device, create and save a _VkPhysicalDevice stucture
 				VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);

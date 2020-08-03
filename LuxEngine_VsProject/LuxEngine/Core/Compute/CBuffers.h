@@ -36,6 +36,9 @@ struct LuxBuffer_t {
 namespace lux::core::c{
 	extern lux::Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
 
+	void		createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+	void		copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
+
 	LuxBuffer	gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
 	LuxCell		gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
 	bool		gpuCellDestroy(const LuxCell vCell);

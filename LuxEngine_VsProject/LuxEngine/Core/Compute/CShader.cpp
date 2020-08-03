@@ -34,6 +34,63 @@ namespace lux::core::c{
 
 
 
+	//Reads a shader from a file and saves it into a padded int32 array
+	//*   pLength: a pointer to an int32 where to store the padded code length
+	//*   pFilePath: a pointer to a char array containing the path to the compiled shader file
+	//*   returns a pointer to the array where the code is saved
+	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
+		FILE* fp;
+		fopen_s(&fp, pFilePath, "rb");									//Open the file
+		if(fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
+
+		_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
+		int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file size
+		_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
+		int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded size
+
+		char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
+		fread(str, filesize, sizeof(char), fp);							//Read the file
+		fclose(fp);														//Close the file
+		for(int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
+
+		*pLength = paddedFileSize;										//Set length
+		return (uint32*)str;											//Return the buffer
+	}
+
+
+
+	//Creates a shader module from a compiled shader code and its size in bytes
+	//*   vDevice: the logical device to use to create the shader module
+	//*   pCode: a pointer to an int32 array containing the shader code
+	//*   pLength: a pointer to the code length
+	VkShaderModule cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
+		VkShaderModuleCreateInfo createInfo{ };								//Create shader module infos
+		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
+		createInfo.codeSize = *pLength;										//Set the size of the compiled shader code
+		createInfo.pCode = pCode;											//Set the shader code
+
+		VkShaderModule shaderModule;										//Create the shader module
+		TryVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule)) Exit("Failed to create shader module");
+		free(pCode);														//#LLID CSF0000 Free memory
+		return shaderModule;												//Return the created shader module
+	}
+
+
+
+
+
+
+
+
+	// Shader components ------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
 	//This function creates the descriptor sets layout, the pipeline and the pipeline layout of a shader
 	//*   vRenderShader | the type of the shader
 	//*   pCellNum      | The number of cells to bing to the shader. The shader inputs must match those cells
@@ -74,7 +131,7 @@ namespace lux::core::c{
 				case LUX_DEF_SHADER_COPY: shaderFileName = "FloatToIntBuffer"; break;
 				default: break; //TODO add unknown shader check
 			}
-			lux::core::c::CShadersLayouts[vRenderShader].shaderModule = lux::getEngine( ).cshaderCreateModule(lux::core::g::compute.LD, lux::getEngine( ).cshaderReadFromFile(&fileLength, (lux::core::c::shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
+			lux::core::c::CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(lux::core::g::compute.LD, cshaderReadFromFile(&fileLength, (lux::core::c::shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
 
 
 			//Create stage info
@@ -346,8 +403,8 @@ namespace lux::core::c{
 
 
 
-
 	// Create and destroy shaders ---------------------------------------------------------------------------------------------------------------//
+
 
 
 

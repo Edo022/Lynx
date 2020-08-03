@@ -53,6 +53,7 @@
 #include "LuxEngine/Core/Graphics/GCommands.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -248,7 +249,7 @@ Object rendering
 
 
 
-//TODO mote to lux::core namespace
+//TODO move to lux::core namespace
 class Engine {
 public:
 	double FPS = 0;
@@ -271,10 +272,10 @@ public:
 
 
 	//Shared functions >> this
-	uint32*				cshaderReadFromFile(uint32* pLength, const char* pFilePath);
-	VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
-	void				createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
-	void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
+	//uint32*				cshaderReadFromFile(uint32* pLength, const char* pFilePath);
+	//VkShaderModule		cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
+	//void				createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
+	//void				copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 
 
 	//debug and validation layers data
