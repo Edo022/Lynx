@@ -1,5 +1,6 @@
 ﻿
 #pragma once
+#include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "vulkan/vulkan.h"
@@ -189,6 +190,7 @@ namespace lux::core{
 	void runFPSCounterThr( );
 	void runRenderThr( );
 
+	void perror(const String& pMessage, const bool vFatalError = false, const int32 vErrorCore = -1);
 
 
 

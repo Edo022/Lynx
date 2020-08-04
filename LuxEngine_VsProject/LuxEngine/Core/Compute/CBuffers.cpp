@@ -1,5 +1,6 @@
 
 
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
@@ -34,7 +35,7 @@ namespace lux::core::c::buffers{
 		bufferInfo.size = vSize;
 		bufferInfo.usage = vUsage;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) Exit("Failed to create buffer");
+		TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) perror("Failed to create buffer");
 
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
@@ -56,16 +57,16 @@ namespace lux::core::c::buffers{
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
-					default: Exit("Failed to allocate buffer memory");
+					default: perror("Failed to allocate buffer memory");
 				}
 				break;
 			}
-			case VK_ERROR_OUT_OF_HOST_MEMORY:		//TODO If out of host memory
-			case VK_ERROR_TOO_MANY_OBJECTS:	//TODO
-			default: Exit("Failed to allocate buffer memory");
+			case VK_ERROR_OUT_OF_HOST_MEMORY:	//TODO If out of host memory
+			case VK_ERROR_TOO_MANY_OBJECTS:		//TODO
+			default: perror("Failed to allocate buffer memory");
 		}
 
-		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) Exit("Failed to bind buffer");
+		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) perror("Failed to bind buffer");
 	}
 
 
@@ -81,9 +82,9 @@ namespace lux::core::c::buffers{
 		copyRegion.size = vSize;												//Set size of the copied region
 		//TODO add offset and automatize cells
 		//copyRegion.dstOffset
-		VkCommandBuffer commandBuffer = g::cmd::beginSingleTimeCommands( );				//Start command buffer
+		VkCommandBuffer commandBuffer = g::cmd::beginSingleTimeCommands( );		//Start command buffer
 		vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
-		g::cmd::endSingleTimeCommands(commandBuffer);									//End command buffer
+		g::cmd::endSingleTimeCommands(commandBuffer);							//End command buffer
 	}
 
 
@@ -108,7 +109,7 @@ namespace lux::core::c::buffers{
 			(vCpuAccessible) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			&buffer.buffer, &buffer.memory
 		);
-		return buffers::CBuffers.add(buffer);								//Add it to the buffer array and return its index
+		return buffers::CBuffers.add(buffer);						//Add it to the buffer array and return its index
 	}
 
 
@@ -128,16 +129,16 @@ namespace lux::core::c::buffers{
 
 		if(bufferClass != LUX_BUFFER_CLASS_LRG) {														//If it's a static buffer
 			LuxBuffer buffer = -1;																			//Initialize the buffer variable. It stores the index of the buffer where the cell will be created
-			for(uint32 i = 0; i < buffers::CBuffers.size( ); ++i) {													//Find the buffer. For each of the preexistent buffers
-				if(buffers::CBuffers.isValid(i) &&																		//It can be used
-					buffers::CBuffers[i].cpuAccessible == vCpuAccessible &&												//It's of the same memory type,
-					buffers::CBuffers[i].bufferClass == bufferClass &&													//If it's of the right class,
+			for(uint32 i = 0; i < buffers::CBuffers.size( ); ++i) {											//Find the buffer. For each of the preexistent buffers
+				if(buffers::CBuffers.isValid(i) &&																//It can be used
+					buffers::CBuffers[i].cpuAccessible == vCpuAccessible &&										//It's of the same memory type,
+					buffers::CBuffers[i].bufferClass == bufferClass &&											//If it's of the right class,
 					buffers::CBuffers[i].cells.usedSize( ) < LUX_CNF_GPU_STATIC_BUFFER_SIZE / buffers::CBuffers[i].bufferClass) {	//And it has free cells,
 					buffer = i;																					//Save its index
 				}
 			}
 			if(buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(LUX_CNF_GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible);	//If no buffer was found, create a new one with the specified class and a size equal to the static buffer default size and save its index
-			return createLuxCell(true, buffer, buffers::CBuffers[buffer].cells.add(1), bufferClass);										//If there is buffer of the same type, create a new cell in it and return its code
+			return createLuxCell(true, buffer, buffers::CBuffers[buffer].cells.add(1), bufferClass);							//If there is buffer of the same type, create a new cell in it and return its code
 		}
 		else return createLuxCell(false, gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible), 0, vCellSize);	//If it's a custom size buffer, create a new buffer and return its code
 	}
@@ -150,27 +151,28 @@ namespace lux::core::c::buffers{
 	//*   vCell   | the LuxCell to destroy
 	//*   returns | true if the operation succeeded, false if the cell is invalid
 	bool gpuCellDestroy(const LuxCell vCell) {
-		LuxBuffer buffer = getBufferIndex(vCell);								//Get buffer index
+		LuxBuffer buffer = getBufferIndex(vCell);		//Get buffer index
+		//TODO fix buffer validity check
 		//TODO Use lux output console
 		if(!buffers::CBuffers.isValid(buffer)) {
 			Failure printf("Something went wrong .-.");
 			Failure printf("you were trying to use an invalid index buffer %u", buffer);
-			return false;								//If the buffer index is not valid, return false
+			return false;																//If the buffer index is not valid, return false
 		}
 
-		if(buffers::CBuffers.isValid(buffer)) {												//If it's not removed
-			if(buffers::CBuffers[buffer].bufferClass == LUX_BUFFER_CLASS_LRG) {					//And the buffer is a custom size buffer
+		if(buffers::CBuffers.isValid(buffer)) {											//If it's not removed
+			if(buffers::CBuffers[buffer].bufferClass == LUX_BUFFER_CLASS_LRG) {				//And the buffer is a custom size buffer
 				destroyBuffer://TODO destroy the old if there is one (rm if n+1 fb)
 				//TODO Use lux output console
-				if(!buffers::CBuffers.isValid(buffer)) {
+				if(!buffers::CBuffers.isValid(buffer)) {										//And its index is invalid
 					Failure printf("Something went wrong .-.");
 					Failure printf("you were trying to use an invalid index buffer %u", buffer);
-					return false;									//If the buffer index is not valid, return false
+					return false;																	//Return false
 				}
-				else{
-					vkDestroyBuffer(dvc::graphics.LD, buffers::CBuffers[buffer].buffer, nullptr);				//destroy the GPU buffer structure
-					vkFreeMemory(dvc::graphics.LD, buffers::CBuffers[buffer].memory, nullptr);				//Free the buffer's memory
-					buffers::CBuffers.remove(buffer, false);												//Remove the buffer from the buffer array
+				else{																			//If it's valid
+					vkDestroyBuffer(dvc::graphics.LD, buffers::CBuffers[buffer].buffer, nullptr);	//destroy the GPU buffer structure
+					vkFreeMemory(dvc::graphics.LD, buffers::CBuffers[buffer].memory, nullptr);		//Free the buffer's memory
+					buffers::CBuffers.remove(buffer, false);										//Remove the buffer from the buffer array
 					return true;
 				}
 			}
@@ -184,7 +186,7 @@ namespace lux::core::c::buffers{
 				else{
 					if(buffers::CBuffers[buffer].cells.usedSize( ) == 0) goto destroyBuffer;				//If it's valid, remove the cell. If there are no cells left, destroy the buffer
 					//TODO idk
-					else Exit("Something went wrong .-.");
+					else perror("Something went wrong .-.");
 				}
 			}
 		}

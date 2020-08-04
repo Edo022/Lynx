@@ -1,6 +1,7 @@
 
 
 #include "LuxEngine/Core/Graphics/GOutput.h"
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Devices.h"
 
@@ -91,7 +92,7 @@ namespace lux::core::g::out{
 		};
 
 		//Create render pass. Exit if an error occurs
-		TryVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass)) Exit("Failed to create render pass");
+		TryVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass)) perror("Failed to create render pass");
 	}
 
 
@@ -114,7 +115,7 @@ namespace lux::core::g::out{
 				.height{ swapchain::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			TryVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i])) Exit("Failed to create framebuffer");
+			TryVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i])) perror("Failed to create framebuffer");
 		}
 	}
 
@@ -156,7 +157,7 @@ namespace lux::core::g::out{
 		},
 		};
 		VkImageView imageView = VK_NULL_HANDLE;
-		TryVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView)) Exit("Failed to create texture image view");
+		TryVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView)) perror("Failed to create texture image view");
 		return imageView;
 	}
 }

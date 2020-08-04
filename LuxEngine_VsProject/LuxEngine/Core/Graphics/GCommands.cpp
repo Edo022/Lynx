@@ -1,5 +1,6 @@
 
 
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
 #include "LuxEngine/Core/Devices.h"
 
@@ -18,7 +19,7 @@ namespace lux::core::g::cmd{
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		poolInfo.queueFamilyIndex = dvc::graphics.PD.indices.graphicsFamily;
 
-		TryVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool)) Exit("Failed to create graphics command pool");
+		TryVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool)) perror("Failed to create graphics command pool");
 	}
 
 

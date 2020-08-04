@@ -90,7 +90,7 @@ namespace lux::core{
 			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
 				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin( ))) Exit("compilation error")
+					if(!compileShader(luxStrPath.begin( ))) perror("compilation error");
 					else Normal printf("%s", luxStrPath.begin( ));
 				}
 			}
@@ -158,6 +158,26 @@ namespace lux::core{
 			frames = 0;
 			printf("FPS: %lf\n", FPS);
 		}
+	}
+
+
+
+
+
+
+
+
+
+	//Prints an error in the console
+	//*   pMessage    | the error message
+	//*   vFatalError | if true, the engine will stop its execution
+	void perror(const String& pMessage, const bool vFatalError, const int32 vErrorCore){
+		running = false;
+		if(vFatalError) { Failure printf("Fatal error:"); }
+		else { Failure printf("Error:"); }
+		Failure printf("%s", pMessage.begin( ));
+		if(!vFatalError) return;
+		system("pause"); exit(0);
 	}
 }
 
