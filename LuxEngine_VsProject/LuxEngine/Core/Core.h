@@ -190,7 +190,7 @@ namespace lux::core{
 	void runFPSCounterThr( );
 	void runRenderThr( );
 
-	void perror(const String& pMessage, const bool vFatalError = false, const int32 vErrorCore = -1);
+	void perror(const String& pMessage, const bool vFatalError = false, const int32 vErrorCode = -1);
 
 
 

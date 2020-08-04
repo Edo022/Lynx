@@ -154,43 +154,29 @@ namespace lux::core::c::buffers{
 		LuxBuffer buffer = getBufferIndex(vCell);		//Get buffer index
 		//TODO fix buffer validity check
 		//TODO Use lux output console
-		if(!buffers::CBuffers.isValid(buffer)) {
-			Failure printf("Something went wrong .-.");
-			Failure printf("you were trying to use an invalid index buffer %u", buffer);
-			return false;																//If the buffer index is not valid, return false
+		if(!buffers::CBuffers.isValid(buffer)) {										//If the buffer index is invalid
+			perror("Something went wrong .-.  you were trying to use an invalid index buffer (see error code)", false, buffer);
+			return false;																	//Print an error and return false
 		}
-
-		if(buffers::CBuffers.isValid(buffer)) {											//If it's not removed
+		else {																			//If it's valid
 			if(buffers::CBuffers[buffer].bufferClass == LUX_BUFFER_CLASS_LRG) {				//And the buffer is a custom size buffer
 				destroyBuffer://TODO destroy the old if there is one (rm if n+1 fb)
-				//TODO Use lux output console
-				if(!buffers::CBuffers.isValid(buffer)) {										//And its index is invalid
-					Failure printf("Something went wrong .-.");
-					Failure printf("you were trying to use an invalid index buffer %u", buffer);
-					return false;																	//Return false
-				}
-				else{																			//If it's valid
-					vkDestroyBuffer(dvc::graphics.LD, buffers::CBuffers[buffer].buffer, nullptr);	//destroy the GPU buffer structure
-					vkFreeMemory(dvc::graphics.LD, buffers::CBuffers[buffer].memory, nullptr);		//Free the buffer's memory
-					buffers::CBuffers.remove(buffer, false);										//Remove the buffer from the buffer array
-					return true;
-				}
+				vkDestroyBuffer(dvc::graphics.LD, buffers::CBuffers[buffer].buffer, nullptr);	//destroy the GPU buffer structure
+				vkFreeMemory(dvc::graphics.LD, buffers::CBuffers[buffer].memory, nullptr);		//Free the buffer's memory
+				buffers::CBuffers.remove(buffer, false);										//Remove the buffer from the buffer array
+				return true;
 			}
-			else {																		//If it's a fixed size buffer
-				//TODO Use lux output console
-				if(buffers::CBuffers[buffer].cells.remove(getCellIndex(vCell))) {
-					Failure printf("Something went wrong .-.");
-					Failure printf("you were trying to use an invalid cell index %u", getCellIndex(vCell));
-					return false;		//And the cell index is invalid, return false
+			else {																			//If it's a fixed size buffer
+				if(buffers::CBuffers[buffer].cells.remove(getCellIndex(vCell))) {				//Try to remove the cell from the buffer's cells
+					perror("Something went wrong .-.  you were trying to use an invalid cell buffer (see error code)", false, buffer);
+					return false;																//If the cell index is invalid, print an error and return false
 				}
-				else{
-					if(buffers::CBuffers[buffer].cells.usedSize( ) == 0) goto destroyBuffer;				//If it's valid, remove the cell. If there are no cells left, destroy the buffer
-					//TODO idk
-					else perror("Something went wrong .-.");
+				else{																			//If it's valid, remove the cell
+					if(buffers::CBuffers[buffer].cells.usedSize( ) == 0) goto destroyBuffer;		//If there are no cells left, destroy the buffer
+					return true;																	//Otherwise do nothing and return true
 				}
 			}
 		}
-		else return false;
 	}
 
 
@@ -201,18 +187,17 @@ namespace lux::core::c::buffers{
 	//*   buffer  | a pointer to a LuxBuffer_t object. It's the buffer that will be mapped
 	//*   returns | the void pointer that maps the buffer, nullptr if an error occurs
 	void* gpuCellMap(const LuxCell vCell) {
-		LuxBuffer buffer = getBufferIndex(vCell);														//Get the buffer index
+		LuxBuffer buffer = getBufferIndex(vCell);		//Get the buffer index
 		//TODO Use lux output console
-		if(!buffers::CBuffers.isValid(buffer)) {
-			Failure printf("Something went wrong .-.");
-			Failure printf("you were trying to use an invalid index buffer %u", buffer);
-			return nullptr;													//If the buffer index is not valid, return nullptr
+		if(!buffers::CBuffers.isValid(buffer)) {		//If the buffer index is not valid
+			Failure printf("Something went wrong .-.  you were trying to use an invalid index buffer (see error core)", false, buffer);
+			return nullptr;									//print an error and return nullptr
 		}
 
-		if(buffers::CBuffers[buffer].isMapped) vkUnmapMemory(dvc::compute.LD, buffers::CBuffers[buffer].memory);				//If it's already mapped, unmap the shared memory
-		else buffers::CBuffers[buffer].isMapped = true;															//If not, set it as mapped
-		void* data;																						//Create the pointer and assign it the mapped memory address
+		if(buffers::CBuffers[buffer].isMapped) vkUnmapMemory(dvc::compute.LD, buffers::CBuffers[buffer].memory);//If it's already mapped, unmap the shared memory
+		else buffers::CBuffers[buffer].isMapped = true;			//If not, set it as mapped
+		void* data;												//Create the pointer and assign it the mapped memory address
 		vkMapMemory(dvc::compute.LD, buffers::CBuffers[buffer].memory, getCellOffset(&dvc::compute.PD, vCell), getCellSize(vCell), 0, &data);
-		return data;																					//Return the pointer
+		return data;											//Return the pointer
 	}
 }
