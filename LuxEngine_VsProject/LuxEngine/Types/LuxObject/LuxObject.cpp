@@ -10,6 +10,9 @@
 
 //Adds a render space with no parent to the engine
 namespace lux::obj{
+	uint64 Base::lastID = 0;	//#LLID LOS000 initialize the last object ID
+
+
 	void addRenderSpace(RenderSpace2D* pRenderSpace){
 		core::c::shaders::CRenderSpaces.add(pRenderSpace);
 	}

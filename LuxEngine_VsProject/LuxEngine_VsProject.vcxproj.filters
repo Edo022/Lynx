@@ -64,9 +64,6 @@
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject_e.cpp">
-      <Filter>LuxEngine\Types\LuxObject</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClCompile>

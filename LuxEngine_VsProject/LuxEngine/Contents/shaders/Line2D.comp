@@ -42,13 +42,11 @@ layout(std430, binding = 3) buffer lineData_{
 void setPixelColor(vec2 pos, vec4 col){
 	uint i = uint(pos.y) * width + uint(pos.x);
 
+	//TODO use ordered render and component cache
 	if(zBuffer[i] <= ID){
-		zBuffer[i] = ID;
+	zBuffer[i] = ID;
 		colorOutput[i] = col;
 	}
-
-	//TODO remove this silly workaround
-//	if(colorOutput[i].x <= ID) colorOutput[i] = vec4(float(ID/2)+.5);
 }
 
 
