@@ -18,7 +18,8 @@ layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_
 
 layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
 layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
-layout(std430, binding = 2) buffer lineData_{
+layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
+layout(std430, binding = 3) buffer lineData_{
 	//16
 	ivec2 p0; //0		//4
 	ivec2 p1; //8		//12
@@ -26,9 +27,10 @@ layout(std430, binding = 2) buffer lineData_{
 	vec4 col0;		//16
 	//16
 	vec4 col1;		//32
-	//8
+	//12
 	float wd0;		//48
 	float wd1;		//52
+	uint ID;		//56
 };
 
 
@@ -38,7 +40,15 @@ layout(std430, binding = 2) buffer lineData_{
 
 
 void setPixelColor(vec2 pos, vec4 col){
-	colorOutput[uint(pos.y) * width + uint(pos.x)] = col;
+	uint i = uint(pos.y) * width + uint(pos.x);
+
+	if(zBuffer[i] <= ID){
+		zBuffer[i] = ID;
+		colorOutput[i] = col;
+	}
+
+	//TODO remove this silly workaround
+//	if(colorOutput[i].x <= ID) colorOutput[i] = vec4(float(ID/2)+.5);
 }
 
 

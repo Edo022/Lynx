@@ -79,8 +79,9 @@ layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size
 
 layout(std430, binding = 0) buffer From_{ vec4 From[]; };
 layout(std430, binding = 1) buffer To_{ uint To[]; };
+layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 
-layout(std430, binding = 2) buffer windowSize_{
+layout(std430, binding = 3) buffer windowSize_{
 	uint width;
 	uint height;
 };
@@ -93,12 +94,10 @@ layout(std430, binding = 2) buffer windowSize_{
 
 void main(){
 	if(gx >= width || gy >= height) return;
-
-
-
-////	if(gx<100 || gy < 200) From[i] = vec4(gx/(float(width)/255),gy/(float(height)/255),0,0) / 255;
-
 	uint i = gy * width + gx;
+
+
 	To[i] = (uint(From[i].a*255) << 24) | (uint(From[i].b*255) << 16) | (uint(From[i].g*255) << 8) | uint(From[i].r*255);
-	From[i] = vec4(.1,0,0,1);
+	From[i] = vec4(0,0,0,1);
+	zBuffer[i] = 0;
 }

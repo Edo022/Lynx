@@ -14,6 +14,7 @@ namespace lux::core::g::wnd{
 	extern LuxCell			gpuCellWindowSize;
 	extern LuxCell			gpuCellWindowOutput;				//The buffer that contains the color output of the window
 	extern LuxCell			gpuCellWindowOutput_i;				//The buffer that contains the color output of the window
+	extern LuxCell			gpuCellWindowZBuffer;
 
 	void initWindow();
 	void createInstance();

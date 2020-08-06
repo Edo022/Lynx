@@ -48,7 +48,10 @@ namespace lux::obj {
 			*(vec4f32*)((int8*)cellPtr + 32) = sc;														//    16   |    32 - 47    |    2 +
 			*(float32*)((int8*)cellPtr + 48) = fw;														//    4    |    48 - 51    |    3 +
 			*(float32*)((int8*)cellPtr + 52) = sw;														//    4    |    52 - 55    |    3
-			//7x trailing padding																		//    7    |    56 - 63
+			//TODO move to one-time init
+			//TODO use full 64bit int or just 32 for all objects
+			*(uint32*)((int8*)cellPtr + 56) = (uint32)ID;												//    4    |    56 - 59    |    3
+			//4x trailing padding																		//    4    |    60 - 63
 
 			//TODO recalculate limits for children
 		}

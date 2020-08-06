@@ -14,6 +14,7 @@ namespace lux::core::g::wnd{
 	LuxCell			gpuCellWindowSize;
 	LuxCell			gpuCellWindowOutput;
 	LuxCell			gpuCellWindowOutput_i;
+	LuxCell			gpuCellWindowZBuffer;
 
 
 

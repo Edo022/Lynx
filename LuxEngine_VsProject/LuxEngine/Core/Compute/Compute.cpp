@@ -24,6 +24,7 @@ namespace lux::core::c{
 		{ //Initialize window buffers and size
 			g::wnd::gpuCellWindowOutput_i = buffers::gpuCellCreate(g::wnd::width * g::wnd::height * 4	/*A8-R8-G8-B8     UI*/, false);
 			g::wnd::gpuCellWindowOutput = buffers::gpuCellCreate(g::wnd::width * g::wnd::height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);
+			g::wnd::gpuCellWindowZBuffer = buffers::gpuCellCreate(g::wnd::width * g::wnd::height * 4, false);
 
 			g::wnd::gpuCellWindowSize = buffers::gpuCellCreate(4 * 2, true);
 			uint32* pwindowSize = scast<uint32*>(buffers::gpuCellMap(g::wnd::gpuCellWindowSize));
@@ -38,9 +39,9 @@ namespace lux::core::c{
 
 		{ //Create default shaders
 			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
-			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 3);
-			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 3);
-			shaders::cshaderNew({ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, g::wnd::gpuCellWindowSize },
+			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 4);
+			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 4);
+			shaders::cshaderNew({ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
 				LUX_DEF_SHADER_COPY, g::wnd::width / 32 + 1, g::wnd::height / 32 + 1, 1);
 		}
 	}
