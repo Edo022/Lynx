@@ -97,7 +97,10 @@ void main(){
 	uint i = gy * width + gx;
 
 
-	To[i] = (uint(From[i].a*255) << 24) | (uint(From[i].b*255) << 16) | (uint(From[i].g*255) << 8) | uint(From[i].r*255);
-	From[i] = vec4(0,0,0,1);
+//	To[i] = (uint(From[i]));
+//	To[i] = (uint(0));
+	To[i] = packUnorm4x8(From[i]);
+//	return;
+	From[i] = vec4(0);
 	zBuffer[i] = 0;
 }

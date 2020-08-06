@@ -261,8 +261,10 @@ namespace lux::core::dvc{
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
 			.queueCreateInfoCount{ (uint32)queueCreateInfos.size( ) },			//Set queue infos count
 			.pQueueCreateInfos{ queueCreateInfos.data( ) },						//Set queue infos
-			luxDebug(.enabledLayerCount{ (uint32)validationLayers.size( ) }),	//Set validation layer count if in debug mode
-			luxDebug(.ppEnabledLayerNames{ validationLayers.begin( ) }),		//Set validation layers if in debug mode
+			#ifdef LUX_DEBUG
+			.enabledLayerCount{ (uint32)validationLayers.size( ) },				//Set validation layer count if in debug mode
+			.ppEnabledLayerNames{ validationLayers.begin( ) },					//Set validation layers if in debug mode
+			#endif
 			.enabledExtensionCount{ (uint32)requiredDeviceExtensions.size( ) },	//Set required extentions count
 			.ppEnabledExtensionNames{ requiredDeviceExtensions.begin( ) },		//Set required extensions
 			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features

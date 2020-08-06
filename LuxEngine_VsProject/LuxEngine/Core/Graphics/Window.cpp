@@ -40,6 +40,26 @@ namespace lux::core::g::wnd{
 		luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
 
 
+
+
+		//Create debugCreateInfo structure
+		luxDebug(VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo);
+		luxDebug(debug::populateDebugMessengerCreateInfo(debugCreateInfo));
+
+		//Create instance
+		VkInstanceCreateInfo createInfo{
+			.sType{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO },
+			#ifdef LUX_DEBUG
+			.pNext{ (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo },
+			#endif
+			.pApplicationInfo{ &appInfo },
+			#ifdef LUX_DEBUG
+			.enabledLayerCount{ validationLayers.size( ) },
+			.ppEnabledLayerNames{ validationLayers.begin( ) },
+			#endif
+			.enabledExtensionCount{ extensions.size( ) },
+			.ppEnabledExtensionNames{ extensions.data(0) },
+		};
 		//Add validation layers if in debug mode
 		#ifndef LUX_DEBUG
 		createInfo.enabledLayerCount = 0;
@@ -56,25 +76,8 @@ namespace lux::core::g::wnd{
 				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) perror("Validation layers not available. Cannot run in debug mode");
 			}
 		}
-
-		//Set debugCreateInfo structure
-		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
-		debug::populateDebugMessengerCreateInfo(debugCreateInfo);
 		#endif
 
-
-
-
-		//Create instance
-		VkInstanceCreateInfo createInfo{
-			.sType{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO },
-			luxDebug(.pNext{ (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo }),
-			.pApplicationInfo{ &appInfo },
-			luxDebug(.enabledLayerCount{ validationLayers.size( ) }),
-			luxDebug(.ppEnabledLayerNames{ validationLayers.begin( ) }),
-			.enabledExtensionCount{ extensions.size( ) },
-			.ppEnabledExtensionNames{ extensions.data(0) },
-		};
 		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) perror("Failed to create instance");
 	}
 

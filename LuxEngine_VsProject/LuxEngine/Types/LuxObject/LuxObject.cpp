@@ -18,13 +18,11 @@ namespace lux::obj{
 	}
 
 
-
-
 	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
 	//An object needs to be allocated before being read or written
 	void Base::allocate( ){
 		if(objectType >= 3000 || objectType < 2000) return;
-		//TODO add initialization for 1d, 2.3d and 3d non base objects
+		//TODO add initialization for 1d, 2.5d and 3d non base objects
 		core::init(false);											//Initialize the engine
 		//TODO use GPU local memory
 		gpuCell = core::c::buffers::gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
