@@ -6,4 +6,4 @@
 /x64/
 /LuxEngine_VsProject/x64/
 /HUD_test/x64/
-*.spv
+/LuxEngine_VsProject/Contents/shaders/*.spv
