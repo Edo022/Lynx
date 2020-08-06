@@ -1,9 +1,6 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
+﻿
 /.vs/
 /x64/
 /LuxEngine_VsProject/x64/
 /HUD_test/x64/
-/LuxEngine_VsProject/Contents/shaders/*.spv
+/LuxEngine_VsProject/Contents/shaders/*.comp.spv
