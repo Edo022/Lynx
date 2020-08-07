@@ -40,13 +40,11 @@ void setPixelColor(vec2 pos, vec4 col){
 
 void main() {
 	vec2 dist = abs(fp - sp);
+	//TODO use pre calculated workgroup count
 	if(gx > dist.x || gy > dist.y) return;
 
-//	setPixelColor(vec2(0,0), vec4(0,1,0,1));
 	setPixelColor(vec2(fp.x + gx, fp.y), vec4(0,1,0,1));
 	setPixelColor(vec2(fp.x + gx, sp.y), vec4(0,1,0,1));
 	setPixelColor(vec2(fp.x, fp.y + gy), vec4(0,1,0,1));
 	setPixelColor(vec2(sp.x, fp.y + gy), vec4(0,1,0,1));
-//	setPixelColor(fp + vec2(g) * (dist / 100), vec4(0,1,0,1));
-//	setPixelColor(vec2(i,j),vec4(0,1,0,1));
 }
