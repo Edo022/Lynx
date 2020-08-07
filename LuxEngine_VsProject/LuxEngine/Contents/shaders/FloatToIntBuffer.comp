@@ -70,6 +70,7 @@
 #define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+#define g gl_GlobalInvocationID
 
 
 
