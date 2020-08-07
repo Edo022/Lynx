@@ -82,6 +82,7 @@
     <CopyLocalDeploymentContent>false</CopyLocalDeploymentContent>
     <CopyLocalDebugSymbols>true</CopyLocalDebugSymbols>
     <SourcePath>S:\Workspaces\VisualStudio\source\LuxEngine\Stages\9-LuxEngine3D\LuxEngine_VsProject\LuxEngine;$(SourcePath)</SourcePath>
+    <ExtensionsToDeleteOnClean>*.spv;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

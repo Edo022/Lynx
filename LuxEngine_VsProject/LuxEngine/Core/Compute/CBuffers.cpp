@@ -35,7 +35,7 @@ namespace lux::core::c::buffers{
 		bufferInfo.size = vSize;
 		bufferInfo.usage = vUsage;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) perror("Failed to create buffer");
+		TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) printError("Failed to create buffer");
 
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
@@ -57,16 +57,16 @@ namespace lux::core::c::buffers{
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
-					default: perror("Failed to allocate buffer memory");
+					default: printError("Failed to allocate buffer memory");
 				}
 				break;
 			}
 			case VK_ERROR_OUT_OF_HOST_MEMORY:	//TODO If out of host memory
 			case VK_ERROR_TOO_MANY_OBJECTS:		//TODO
-			default: perror("Failed to allocate buffer memory");
+			default: printError("Failed to allocate buffer memory");
 		}
 
-		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) perror("Failed to bind buffer");
+		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) printError("Failed to bind buffer");
 	}
 
 
@@ -155,7 +155,7 @@ namespace lux::core::c::buffers{
 		//TODO fix buffer validity check
 		//TODO Use lux output console
 		if(!buffers::CBuffers.isValid(buffer)) {										//If the buffer index is invalid
-			perror("Something went wrong .-.  you were trying to use an invalid index buffer (see error code)", false, buffer);
+			printError("Something went wrong .-.  you were trying to use an invalid index buffer (see error code)", buffer, false);
 			return false;																	//Print an error and return false
 		}
 		else {																			//If it's valid
@@ -168,7 +168,7 @@ namespace lux::core::c::buffers{
 			}
 			else {																			//If it's a fixed size buffer
 				if(buffers::CBuffers[buffer].cells.remove(getCellIndex(vCell))) {				//Try to remove the cell from the buffer's cells
-					perror("Something went wrong .-.  you were trying to use an invalid cell buffer (see error code)", false, buffer);
+					printError("Something went wrong .-.  you were trying to use an invalid cell buffer (see error code)", buffer, false);
 					return false;																//If the cell index is invalid, print an error and return false
 				}
 				else{																			//If it's valid, remove the cell

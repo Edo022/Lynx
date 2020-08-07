@@ -19,6 +19,9 @@
 //TODO restore function tipo in destroy function description
 namespace lux{
 	namespace obj {
+		struct Border2D;
+
+
 		enum class limitAlignment : int8{
 			Top,
 			Bottom,
@@ -35,17 +38,18 @@ namespace lux{
 		//    +-3000 to +-3999   = 3D object
 		//    +-4000 to +-4999   = 2DI3D object
 		enum ObjectType : int32 {
-			LUX_OBJECT_TYPE__BASE = -1,
+			LUX_OBJECT_TYPE__BASE           = -1,
 
-			LUX_OBJECT_TYPE_3D__BASE = -3000,
-			LUX_OBJECT_TYPE_2i3D__BASE = -4000,
-			LUX_OBJECT_TYPE_2D__BASE = -2000,
-			LUX_OBJECT_TYPE_1D__BASE = -1000,
+			LUX_OBJECT_TYPE_3D__BASE        = -3000,
+			LUX_OBJECT_TYPE_2i3D__BASE      = -4000,
+			LUX_OBJECT_TYPE_2D__BASE        = -2000,
+			LUX_OBJECT_TYPE_1D__BASE        = -1000,
 
 			LUX_OBJECT_TYPE_RENDER_SPACE_2D = +2000,
 			LUX_OBJECT_TYPE_RENDER_SPACE_3D = +3000,
 
-			LUX_OBJECT_TYPE_2D_LINE = +2001,
+			LUX_OBJECT_TYPE_2D_LINE         = +2001,
+			LUX_OBJECT_TYPE_2D_BORDER       = +2002,
 		};
 
 
@@ -70,6 +74,8 @@ namespace lux{
 			void* cellPtr{ nullptr };						//Pointer to the GPU memory cell							| none						| object instance
 			inline virtual int32 getCellSize( ) const = 0;	//Size of the object data									| none						| object type
 			virtual void update( ) = 0;						//Updates the object data in the shared memory				| object type				| -
+																//														|							|
+			bool debug = false;								//Defines if the object is used for graphic debugging		| none						| object instance
 																//														|							|
 			//Sets the render limits of a child object																	| object type				| -
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
@@ -118,7 +124,7 @@ namespace lux{
 
 		//Base class for 2D objects in 2D space
 		struct Base2D : public Base {
-			Base2D( ) { objectType = LUX_OBJECT_TYPE_2D__BASE; }
+			Base2D( );
 
 			//TODO add absolute pixel position and scale
 			vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
@@ -131,13 +137,18 @@ namespace lux{
 			lux::Map<Base2D*, uint32> children;				//Children of the object
 			virtual bool setChildLimits(const uint32 vChildIndex) const override {
 				if(vChildIndex >= children.size( )) return false;
-				children[vChildIndex]->minLim = minLim;
-				children[vChildIndex]->maxLim = maxLim;
+				children[vChildIndex]->setMinLim(minLim);
+				children[vChildIndex]->setMaxLim(maxLim);
 				return true;
 			}
 			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
 			vec2f32 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
+			void __vectorcall setMinLim(vec2f32 vMinLim);
+			void __vectorcall setMaxLim(vec2f32 vMaxLim);
 			limitAlignment limitAlignment{ limitAlignment::Center }; 	//The alignment of the object within its limits
+
+
+			Border2D* debugBorder = nullptr;										//Debug. Used to draw the object limits
 		};
 
 

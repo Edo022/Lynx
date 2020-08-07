@@ -132,7 +132,7 @@ namespace lux::core::dvc{
 
 		//Get physical devices
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-		if(deviceCount == 0) perror("Failed to find GPUs with Vulkan support");
+		if(deviceCount == 0) printError("Failed to find GPUs with Vulkan support");
 		else {
 			//Get physical devices
 			Array<VkPhysicalDevice> physDevices(deviceCount);																//Get physical device count
@@ -188,7 +188,7 @@ namespace lux::core::dvc{
 				if(sameDevice(physDev, compute.PD)) printf("  |  Main compute");
 			}
 		}
-		else perror("Failed to find a suitable GPU");
+		else printError("Failed to find a suitable GPU");
 		#undef physDev
 
 
@@ -299,6 +299,6 @@ namespace lux::core::dvc{
 				}
 			}
 		}
-		else perror("Failed to create logical device");
+		else printError("Failed to create logical device");
 	}
 }

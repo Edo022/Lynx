@@ -37,7 +37,7 @@ namespace lux::core::g{
 		luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
 
 		//Initialize vulkan
-		TryVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface)) perror("Failed to create window surface");
+		TryVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface)) printError("Failed to create window surface");
 		Normal printf("    Searching for physical devices...    ");		dvc::deviceGetPhysical( );											NewLine;
 		cmd::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");		swapchain::swapchainCreate( );					SuccessNoNl printf("ok");
@@ -50,7 +50,7 @@ namespace lux::core::g{
 	luxDebug(void graphicsCreateDebugMessenger( ) {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
-		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) perror("Failed to set up debug messenger");
+		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger");
 	});
 
 
@@ -75,7 +75,7 @@ namespace lux::core::g{
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameClearSemaphore[i]) != VK_SUCCESS ||
 				vkCreateFence(dvc::graphics.LD, &fenceInfo, nullptr, &drawFrameImageRenderedFence[i]) != VK_SUCCESS
 				){
-				perror("Failed to create vulkan sync objects");
+				printError("Failed to create vulkan sync objects");
 			}
 		}
 	}
@@ -117,8 +117,8 @@ namespace lux::core::g{
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT };
 		{ //Update render result submitting the command buffers to the compute queues
 			c::shaders::addShaderFence.startFirst( );
+			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedSize( ));
 			for(uint32 i = 0; i < c::shaders::CShaders.size( ); ++i) {
-				c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedSize( ));
 				if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
 			c::shaders::addShaderFence.endFirst( );
@@ -134,7 +134,7 @@ namespace lux::core::g{
 			submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.commandBufferCount = c::shaders::CShadersCBs.size( );
 			submitInfo.pCommandBuffers = c::shaders::CShadersCBs.begin( );
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) perror("Failed to submit graphics command buffer");
+			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer");
 		}
 
 
@@ -151,7 +151,7 @@ namespace lux::core::g{
 			};
 			submitInfo.pWaitSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) perror("Failed to submit graphics command buffer");
+			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer");
 		}
 
 
@@ -170,7 +170,7 @@ namespace lux::core::g{
 			submitInfo.pCommandBuffers = &c::copyCommandBuffers[imageIndex];
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) perror("Failed to submit graphics command buffer");
+			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) printError("Failed to submit graphics command buffer");
 		}
 
 
@@ -193,7 +193,7 @@ namespace lux::core::g{
 					vkDeviceWaitIdle(dvc::graphics.LD);
 					break;
 				}
-				default:  perror("Failed to present swapchain image");
+				default:  printError("Failed to present swapchain image");
 			}
 
 		}
@@ -259,7 +259,7 @@ namespace lux::core::g{
 				return format;
 			}
 		}
-		perror("Failed to find a supported format");
+		printError("Failed to find a supported format");
 	}
 
 
@@ -273,6 +273,6 @@ namespace lux::core::g{
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
-		perror("Failed to find suitable memory type");
+		printError("Failed to find suitable memory type");
 	}
 }

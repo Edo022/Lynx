@@ -12,6 +12,7 @@
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/LuxEngine.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
+#include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Threads/ThreadPool.h"
 
@@ -39,6 +40,7 @@ int main( ) {
 
 
 	{
+		lux::obj::Line2D* lineTest3;
 		lux::obj::Line2D lineTest{
 			vec2f32{ 2000, 500 }, vec2f32{ 1700, 800 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
@@ -56,6 +58,13 @@ int main( ) {
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
 		renderSpace.addChild(&lineTest);
 		renderSpace.addChild(&lineTest2);
+		//TODO automatize object search
+		lineTest.debugBorder->update( );
+		lineTest2.debugBorder->update( );
+		renderSpace.addChild(lineTest.debugBorder);
+		renderSpace.addChild(lineTest2.debugBorder);
+		//renderSpace.addChild(lineTest2.debugBorder);
+
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 

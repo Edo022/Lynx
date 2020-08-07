@@ -77,8 +77,8 @@
 
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1 ) in;
 
-layout(std430, binding = 0) buffer From_{ vec4 From[]; };
-layout(std430, binding = 1) buffer To_{ uint To[]; };
+layout(std430, binding = 0) buffer src_{ vec4 src[]; };
+layout(std430, binding = 1) buffer dst_{ uint dst[]; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 
 layout(std430, binding = 3) buffer windowSize_{
@@ -96,11 +96,7 @@ void main(){
 	if(gx >= width || gy >= height) return;
 	uint i = gy * width + gx;
 
-
-//	To[i] = (uint(From[i]));
-//	To[i] = (uint(0));
-	To[i] = packUnorm4x8(From[i]);
-//	return;
-	From[i] = vec4(0);
+	dst[i] = packUnorm4x8(src[i]);
+	src[i] = vec4(0);
 	zBuffer[i] = 0;
 }

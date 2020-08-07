@@ -40,6 +40,7 @@ namespace lux::core::c{
 		{ //Create default shaders
 			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
 			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_LINE_2D, 4);
+			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_BORDER_2D, 4);
 			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 4);
 			shaders::cshaderNew({ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
 				LUX_DEF_SHADER_COPY, g::wnd::width / 32 + 1, g::wnd::height / 32 + 1, 1);

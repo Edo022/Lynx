@@ -34,6 +34,8 @@ namespace lux::obj {
 		}
 
 
+		//TODO convert to variable. or convert the variable to function. idk
+		inline int32 getCellSize() const final override { return 60; }
 
 
 		//Updates the object data in the GPU memory
@@ -56,8 +58,6 @@ namespace lux::obj {
 			//TODO recalculate limits for children
 		}
 
-		//TODO convert to variable. or convert the variable to function. idk
-		inline int32 getCellSize() const final override { return 56; }
 
 		vec2i32 fp{ 0, 0 };			//First point of the line
 		vec2i32 sp{ 0, 0 };			//Second point of the line

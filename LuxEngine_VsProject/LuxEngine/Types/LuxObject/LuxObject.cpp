@@ -1,7 +1,8 @@
 
-#include "LuxObject.h"
 #include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Types/LuxObject/LuxObject.h"
+#include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
 
 
 
@@ -27,5 +28,36 @@ namespace lux::obj{
 		//TODO use GPU local memory
 		gpuCell = core::c::buffers::gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
 		cellPtr = core::c::buffers::gpuCellMap(gpuCell);						//Map the cell pointer to the cell
+	}
+
+
+	//TODO use inline functions in release
+	void __vectorcall Base2D::setMinLim(vec2f32 vMinLim){
+		minLim = vMinLim;
+		if(!debug){
+			if(debugBorder == nullptr) {
+				debugBorder = new Border2D( );
+				debugBorder->debug = true;
+			}
+			debugBorder->sp = vMinLim;
+			debugBorder->update( );
+		}
+	}
+	//TODO use inline functions in release
+	void __vectorcall Base2D::setMaxLim(vec2f32 vMaxLim){
+		maxLim = vMaxLim;
+		if(!debug){
+			if(debugBorder == nullptr) {
+				debugBorder = new Border2D( );
+				debugBorder->debug = true;
+			}
+			debugBorder->sp = vMaxLim;
+			debugBorder->update( );
+		}
+	}
+
+
+	Base2D::Base2D( ){
+		objectType = LUX_OBJECT_TYPE_2D__BASE;
 	}
 }

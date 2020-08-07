@@ -1,5 +1,4 @@
 #pragma once
-
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 
 
@@ -70,22 +69,22 @@ namespace lux::obj {
 				case AlignmentType::FixedHorizontal:
 				{
 					auto xElmLen = abs(minLim.x - maxLim.x) / xNum;
-					children[vChildIndex]->minLim = { minLim.x + (xElmLen * vChildIndex), minLim.y };
-					children[vChildIndex]->maxLim = { minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y };
+					children[vChildIndex]->setMinLim({ minLim.x + (xElmLen * vChildIndex), minLim.y });
+					children[vChildIndex]->setMaxLim({ minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y });
 					break;
 				}
 				case AlignmentType::FixedVertical:
 				{
 					auto yElmLen = abs(minLim.y - maxLim.y) / xNum;
-					children[vChildIndex]->minLim = { minLim.x, minLim.y + (yElmLen * vChildIndex) };
-					children[vChildIndex]->maxLim = { maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen };
+					children[vChildIndex]->setMinLim({ minLim.x, minLim.y + (yElmLen * vChildIndex) });
+					children[vChildIndex]->setMaxLim({ maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen });
 					break;
 				}
 				//case AlignmentType::Vertical:
 				//case AlignmentType::Horizontal:
 				case AlignmentType::Free:
-					children[vChildIndex]->minLim = minLim;
-					children[vChildIndex]->maxLim = maxLim;
+					children[vChildIndex]->setMinLim(minLim);
+					children[vChildIndex]->setMaxLim(maxLim);
 					break;
 				default:
 					exit(-123);

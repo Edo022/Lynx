@@ -21,8 +21,8 @@ layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 layout(std430, binding = 3) buffer lineData_{
 	//16
-	ivec2 p0; //0		//4
-	ivec2 p1; //8		//12
+	ivec2 p0;		//0
+	ivec2 p1;		//8
 	//16
 	vec4 col0;		//16
 	//16

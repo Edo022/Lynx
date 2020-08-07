@@ -246,6 +246,9 @@
     <ClInclude Include="LuxEngine\Core\Core.h">
       <Filter>LuxEngine\Core</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DBorder.h">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -253,6 +256,9 @@
       <Filter>LuxEngine\Contents\Shaders</Filter>
     </None>
     <None Include="LuxEngine\Contents\shaders\FloatToIntBuffer.comp">
+      <Filter>LuxEngine\Contents\Shaders</Filter>
+    </None>
+    <None Include="LuxEngine\Contents\shaders\Border2D.comp">
       <Filter>LuxEngine\Contents\Shaders</Filter>
     </None>
   </ItemGroup>

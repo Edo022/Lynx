@@ -431,6 +431,7 @@
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
     <ClInclude Include="LuxEngine\Types\LuxFenceDE.h" />
+    <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DBorder.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h" />
@@ -442,6 +443,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="LuxEngine\Contents\shaders\Border2D.comp" />
     <None Include="LuxEngine\Contents\shaders\FloatToIntBuffer.comp" />
     <None Include="LuxEngine\Contents\shaders\Line2D.comp" />
   </ItemGroup>
