@@ -18,7 +18,14 @@ layout(std430, binding = 3) buffer objData_{
 	//4
 	uint ID;	 //16
 };
-
+//TODO use push constants for object data
+//layout(std430, push_constant) uniform PushConstants {
+//		//16
+//	vec2 fp;	 //0
+//	vec2 sp;	 //8
+//	//4
+//	uint ID;	 //16
+//} objData;
 
 
 

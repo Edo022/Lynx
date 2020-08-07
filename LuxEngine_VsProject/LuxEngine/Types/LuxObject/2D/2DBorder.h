@@ -17,11 +17,9 @@ namespace lux::obj{
 		}
 		void init( ){
 			objectType = LUX_OBJECT_TYPE_2D_BORDER;
-			shaderLayout = LUX_DEF_SHADER_BORDER_2D;
+			shaderLayout = LUX_DEF_SHADER_2D_BORDER;
 			this->allocate( );
 
-			//core::c::shaders::cshaderNew({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, gpuCell }, shaderLayout, 1, 1, 1);
-			//core::c::shaders::cshaderNew({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, gpuCell }, shaderLayout, sp.x - fp.x, sp.y - fp.y, 1);
 			//TODO just update the shaders when needed with the right workgroup count
 			//TODO remove useless out-of-range check in shaders
 			core::c::shaders::cshaderNew({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, gpuCell }, shaderLayout, 1980*2, 1080, 1);

@@ -15,8 +15,9 @@ namespace lux::obj {
 
 		//Creates a Line2D object
 		//Automatically initializes the object type and the GPU memory
-		Line2D( ) {
-			init();
+		Line2D( ) :
+			fp{ 0, 0 }, sp{ 0, 0 }, fc{ 0, 0, 0, 0 }, sc{ 0, 0, 0, 0 }, fw{ 0 }, sw{ 0 } {
+			init( );
 		}
 
 		//Creates a Line2D object with the specified points, colors and widths
@@ -59,12 +60,12 @@ namespace lux::obj {
 		}
 
 
-		vec2i32 fp{ 0, 0 };			//First point of the line
-		vec2i32 sp{ 0, 0 };			//Second point of the line
-		vec4f32 fc{ 0, 0, 0, 0 };	//Color of the first point
-		vec4f32 sc{ 0, 0, 0, 0 };	//Color of the second point
-		float32 fw{ 0 };			//Width of the first point
-		float32 sw{ 0 };			//Width of the second point
+		vec2i32 fp;		//First point of the line
+		vec2i32 sp;		//Second point of the line
+		vec4f32 fc;		//Color of the first point
+		vec4f32 sc;		//Color of the second point
+		float32 fw;		//Width of the first point
+		float32 sw;		//Width of the second point
 	};
 }
 

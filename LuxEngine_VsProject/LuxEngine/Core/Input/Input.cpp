@@ -20,8 +20,7 @@ namespace lux::input{
 
 
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
-		float64 x, y;
-		glfwGetCursorPos(window, &x, &y);
+		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->fp = vec2i32{ (int32)x, (int32)y };
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
 	}
@@ -36,6 +35,12 @@ namespace lux::input{
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
 		//*(rcast<lux::obj::Line2D*>(engine.objs[0]))->sp = vec2i32{ (int32)x, (int32)y };
+		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)x)/(1920*2), ((float32)y)/1080 };
+		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->setChildLimits(0);
+		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->setChildLimits(1);
+		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
+		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[1])->update( );
+
 		__noop;
 	}
 

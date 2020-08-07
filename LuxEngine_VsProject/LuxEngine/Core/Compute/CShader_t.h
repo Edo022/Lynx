@@ -9,8 +9,8 @@
 //Default render shaders layouts
 //The identifier value corresponds to the index of the shader layout in the engine's default shader layouts array
 enum ShaderLayout : uint32 {
-	LUX_DEF_SHADER_LINE_2D,
-	LUX_DEF_SHADER_BORDER_2D,
+	LUX_DEF_SHADER_2D_LINE,
+	LUX_DEF_SHADER_2D_BORDER,
 	LUX_DEF_SHADER_COPY,
 	LUX_DEF_SHADER_NUM			//The number of shader layouts
 };

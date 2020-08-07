@@ -125,8 +125,8 @@ namespace lux::core::c::shaders{
 			//Create shader module
 			String shaderFileName; uint32 fileLength;
 			switch(vRenderShader) {																	//Set shader file name
-				case LUX_DEF_SHADER_LINE_2D: shaderFileName = "Line2D"; break;
-				case LUX_DEF_SHADER_BORDER_2D: shaderFileName = "Border2D"; break;
+				case LUX_DEF_SHADER_2D_LINE: shaderFileName = "Line2D"; break;
+				case LUX_DEF_SHADER_2D_BORDER: shaderFileName = "Border2D"; break;
 				case LUX_DEF_SHADER_COPY: shaderFileName = "FloatToIntBuffer"; break;
 				default: printError("Unknown shader", vRenderShader, true);
 			}
