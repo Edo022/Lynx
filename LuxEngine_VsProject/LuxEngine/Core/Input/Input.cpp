@@ -40,8 +40,6 @@ namespace lux::input{
 		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->setChildLimits(1);
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[1])->update( );
-
-		__noop;
 	}
 
 

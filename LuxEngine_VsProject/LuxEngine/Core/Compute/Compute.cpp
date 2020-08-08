@@ -34,7 +34,7 @@ namespace lux::core::c{
 
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(g::swapchain::swapchainImages.size( ));	//Resize the command buffer array in the shader
-			shaders::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
+			shaders::cshaderCreateDefaultCommandBuffers( );						//Create command buffers and command pool
 		}
 
 		{ //Create default shaders
@@ -43,11 +43,9 @@ namespace lux::core::c{
 			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_2D_BORDER, 4);
 			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 4);
 			shaders::cshaderNew({ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
-				LUX_DEF_SHADER_COPY, g::wnd::width / 32 + 1, g::wnd::height / 32 + 1, 1);
+				LUX_DEF_SHADER_COPY, (g::wnd::width * g::wnd::height) / (32*32) + 1, 1, 1);
 		}
 	}
-
-
 
 
 
