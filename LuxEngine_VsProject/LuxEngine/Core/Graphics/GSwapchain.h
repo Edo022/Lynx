@@ -25,7 +25,7 @@ namespace lux::core::g::swapchain{
 
 	void						swapchainCreate();
 	void						swapchainRecreate(const bool vWindowResized);
-	void						swapchainCleanup();
+	void						cleanup();
 	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const Array<VkSurfaceFormatKHR>* pAvailableFormats);
 	VkPresentModeKHR			swapchainChoosePresentMode(const Array<VkPresentModeKHR>* pAvailablePresentModes);
 	VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);

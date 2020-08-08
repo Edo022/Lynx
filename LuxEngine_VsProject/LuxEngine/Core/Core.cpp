@@ -102,7 +102,7 @@ namespace lux::core{
 		//Init
 		g::wnd::initWindow( );
 		Normal printf("Creating Instance...                     ");			g::wnd::createInstance( );						SuccessNoNl printf("ok");
-		g::graphicsInit(vUseVSync, vFOV);
+		g::init(vUseVSync, vFOV);
 		c::computeInit( );
 
 		//Loop
@@ -110,7 +110,7 @@ namespace lux::core{
 		Success printf("Starting Lux Engine\n");						mainLoop( );									MainSeparator;
 
 		//Exit
-		Normal  printf("Cleaning memory");								g::graphicsCleanup( ); c::computeCleanup( );		NewLine;
+		Normal  printf("Cleaning memory");								g::cleanup( ); c::computeCleanup( );		NewLine;
 		vkDestroyInstance(instance, nullptr);
 		glfwDestroyWindow(g::wnd::window);
 		glfwTerminate( );
@@ -139,7 +139,7 @@ namespace lux::core{
 	void runRenderThr( ) {
 		luxDebug(SetThreadDescription(GetCurrentThread( ), L"\tLuxEngine  |  Render"));
 		while(running) {
-			g::graphicsDrawFrame( );
+			g::drawFrame( );
 			//TODO it does nothing but it's probably important, somehow. dunno
 			//vkDeviceWaitIdle(compute.LD);
 			frames++;

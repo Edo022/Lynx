@@ -43,7 +43,7 @@ namespace lux::core::c::buffers{
 		VkMemoryAllocateInfo allocInfo{ };
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = g::graphicsFindMemoryType(memRequirements.memoryTypeBits, vProperties);
+		allocInfo.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, vProperties);
 
 		//TODO check out of memory
 		//TODO don't quit in VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS but return an error code
@@ -53,7 +53,7 @@ namespace lux::core::c::buffers{
 				VkMemoryAllocateInfo allocInfo2{ };
 				allocInfo2.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 				allocInfo2.allocationSize = memRequirements.size;
-				allocInfo2.memoryTypeIndex = g::graphicsFindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+				allocInfo2.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory

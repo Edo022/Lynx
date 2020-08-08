@@ -451,10 +451,9 @@ namespace lux::core::c::shaders{
 
 
 		//LuxShader_t& _shader = CShaders[shader];
-		addShaderFence.startSecond( );
-		createDescriptorSets(&CShaders[shader], pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
+		//TODO updating the descriptor sets makes the engine crash
+		//createDescriptorSets(&CShaders[shader], pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
 		createCommandBuffers(&CShaders[shader], vShaderLayout, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool
-		addShaderFence.endSecond( );
 	}
 
 

@@ -30,7 +30,7 @@ namespace lux::core::g{
 
 
 
-	void graphicsInit(const bool vUseVSync, const float vFOV) {
+	void init(const bool vUseVSync, const float vFOV) {
 		useVSync = vUseVSync;
 		FOV = vFOV;
 
@@ -42,19 +42,21 @@ namespace lux::core::g{
 		cmd::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");		swapchain::swapchainCreate( );					SuccessNoNl printf("ok");
 
-		luxDebug(graphicsCreateDebugMessenger( ));
-		graphicsCreateSyncObjs( );
+		luxDebug(createDebugMessenger( ));
+		createSyncObjs( );
 	}
 
 
-	luxDebug(void graphicsCreateDebugMessenger( ) {
+	#ifdef LUX_DEBUG
+	void createDebugMessenger( ) {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
 		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger");
-	});
+	};
+	#endif
 
 
-	void graphicsCreateSyncObjs( ) {
+	void createSyncObjs( ) {
 		drawFrameImageAquiredSemaphore.resize(out::renderMaxFramesInFlight);
 		drawFrameObjectsRenderedSemaphore.resize(out::renderMaxFramesInFlight);
 		drawFrameCopySemaphore.resize(out::renderMaxFramesInFlight);
@@ -86,7 +88,7 @@ namespace lux::core::g{
 
 
 	//TODO multithreaded submit and command creation
-	void graphicsDrawFrame( ) {
+	void drawFrame( ) {
 		if(c::shaders::CShaders.usedSize( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 
@@ -95,6 +97,7 @@ namespace lux::core::g{
 
 		redraw:
 		if(out::renderFramebufferResized) {
+			out::renderFramebufferResized = false;
 			swapchain::swapchainRecreate(true);
 			goto redraw;
 		}
@@ -209,8 +212,8 @@ namespace lux::core::g{
 
 
 
-	void graphicsCleanup( ) {
-		swapchain::swapchainCleanup( );																//Clear swapchain components
+	void cleanup( ) {
+		swapchain::cleanup( );																//Clear swapchain components
 		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);					//Destroy graphics command pool
 
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
@@ -248,7 +251,7 @@ namespace lux::core::g{
 
 
 
-	VkFormat graphicsFindSupportedFormat(const Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+	VkFormat findSupportedFormat(const Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 		for(VkFormat format : *pCandidates) {
 			VkFormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);
@@ -265,7 +268,7 @@ namespace lux::core::g{
 
 
 	//Returns the index of the memory with the specified type and properties
-	uint32 graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
+	uint32 findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
 		VkPhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
 		vkGetPhysicalDeviceMemoryProperties(dvc::graphics.PD.device, &memProperties);
 

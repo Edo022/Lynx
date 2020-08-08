@@ -21,12 +21,12 @@ namespace lux::core::g{
 	extern int32				renderCurrentFrame;
 
 
-	void		graphicsInit(const bool vUseVSync, const float vFOV);
-	void		graphicsCreateSyncObjs();
-	void		graphicsCreateDebugMessenger();
-	void		graphicsDrawFrame();
-	void		graphicsCleanup();
-	static void framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
+	void			init(const bool vUseVSync, const float vFOV);
+	void			createSyncObjs( );
+	luxDebug(void	createDebugMessenger( ));
+	void			drawFrame( );
+	void			cleanup( );
+	static void	framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
 		wnd::windowResizeFence.startSecond( );  //from the last call of this function
 		out::renderFramebufferResized = true;
 		wnd::windowResizeFence.endSecond( );
@@ -34,9 +34,9 @@ namespace lux::core::g{
 
 
 
-	VkFormat	graphicsFindSupportedFormat(const Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
-	uint32		graphicsFindMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
-	luxDebug(static VKAPI_ATTR VkBool32 VKAPI_CALL graphicsDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+	VkFormat	findSupportedFormat(const Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	uint32		findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
+	luxDebug(static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) Failure
 		else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) Warning
 			printf("Validation layer error\n %s", pCallbackData->pMessage);
