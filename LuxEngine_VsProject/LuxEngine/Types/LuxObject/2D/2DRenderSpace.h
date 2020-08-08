@@ -44,7 +44,7 @@ namespace lux::obj {
 
 		RenderSpace2D(AlignmentType alignment, uint32 xNum = 2, uint32 yNum = 2, FlowType xFlow = FlowType::LeftToRight, FlowType yFlow = FlowType::TopToBottom)
 			: alignment(alignment), xNum(xNum), yNum(yNum), xFlow(xFlow), yFlow(yFlow) {
-			objectType = LUX_OBJECT_TYPE_2D_RENDER_SPACE;
+			luxInitObject(2, RENDER_SPACE);
 		}
 
 

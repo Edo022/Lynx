@@ -147,7 +147,7 @@ namespace lux {
 		//*   freeElm: | whether to free the element or not. Keeping it in memory saves performances but increases memory usage
 		//*   Returns  | true if the operation succeeded, false if the index is invalid or an error occurred
 		bool __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
-			if(isValid(vIndex) != 0) return false;				//Check for index validity
+			if(!isValid(vIndex)) return false;					//Check for index validity
 			else {												//If it is,
 				__lp_Tracker(vIndex) = -1;							//Set the index as free
 				if(vFreeElm) free(&__lp_Data(vIndex));				//Free the element if necessary
@@ -191,10 +191,10 @@ namespace lux {
 		}
 
 
-		//Returns true if the index is used, 1 if it's free or invalid (use the 'status' function for more details)
+		//Returns true if the index is used, false if it's free or invalid (use the 'status' function for more details)
 		inline bool __vectorcall isValid(const iter vIndex) const {
-			if(vIndex > __lp_dynSize - 1) return false;
-			return (__lp_Tracker(vIndex) == scast<iter>(-1));
+			if(vIndex > __lp_dynSize - 1) return false;			//Return false if the index is out of range
+			return (__lp_Tracker(vIndex) == scast<iter>(-1));	//Return true if the index is used, false if it's free
 		}
 
 

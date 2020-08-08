@@ -34,16 +34,19 @@ namespace lux::core::c{
 
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(g::swapchain::swapchainImages.size( ));	//Resize the command buffer array in the shader
-			shaders::cshaderCreateDefaultCommandBuffers( );						//Create command buffers and command pool
+			shaders::createDefaultCommandBuffers( );						//Create command buffers and command pool
 		}
 
 		{ //Create default shaders
 			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
-			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_2D_LINE, 4);
-			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_2D_BORDER, 4);
-			shaders::cshaderCreateDefLayout(LUX_DEF_SHADER_COPY, 4);
-			shaders::cshaderNew({ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
-				LUX_DEF_SHADER_COPY, (g::wnd::width * g::wnd::height) / (32*32) + 1, 1, 1);
+			shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4);
+			shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4);
+			shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4);
+
+			shaders::clearShader = shaders::newShader(
+				{ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
+				LUX_DEF_SHADER_CLEAR, (g::wnd::width * g::wnd::height) / (32 * 32) + 1, 1, 1
+			);
 		}
 	}
 

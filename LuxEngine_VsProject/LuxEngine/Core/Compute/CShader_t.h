@@ -11,8 +11,10 @@
 enum ShaderLayout : uint32 {
 	LUX_DEF_SHADER_2D_LINE,
 	LUX_DEF_SHADER_2D_BORDER,
-	LUX_DEF_SHADER_COPY,
-	LUX_DEF_SHADER_NUM			//The number of shader layouts
+	LUX_DEF_SHADER_2D_RENDER_SPACE,		//Useless. It's just to allow the use of luxInitObject in render spaces
+	LUX_DEF_SHADER_3D_RENDER_SPACE,		//Useless. It's just to allow the use of luxInitObject in render spaces
+	LUX_DEF_SHADER_CLEAR,				//Default shader used to copy and clear the output buffer
+	LUX_DEF_SHADER_NUM					//The number of shader layouts
 };
 
 

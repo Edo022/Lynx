@@ -89,13 +89,12 @@ namespace lux::core::g{
 	void graphicsDrawFrame( ) {
 		if(c::shaders::CShaders.usedSize( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
+
+
+
+
 		redraw:
-
-
-
-
 		if(out::renderFramebufferResized) {
-			out::renderFramebufferResized = false;
 			swapchain::swapchainRecreate(true);
 			goto redraw;
 		}
@@ -191,7 +190,7 @@ namespace lux::core::g{
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
 					swapchain::swapchainRecreate(false);
 					vkDeviceWaitIdle(dvc::graphics.LD);
-					break;
+					goto redraw;
 				}
 				default:  printError("Failed to present swapchain image");
 			}

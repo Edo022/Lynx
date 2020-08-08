@@ -20,7 +20,7 @@ namespace lux::obj{
 
 			//TODO just update the shaders when needed with the right workgroup count
 			//TODO remove useless out-of-range check in shaders
-			core::c::shaders::cshaderNew({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, gpuCell }, shaderLayout, 1980*2, 1080, 1);
+			core::c::shaders::newShader({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, gpuCell }, shaderLayout, 1980*2, 1080, 1);
 		}
 
 

@@ -182,30 +182,43 @@ namespace lux::core::g::swapchain{
 
 
 	void swapchainRecreate(const bool vWindowResized) {
-		if(vWindowResized) wnd::windowResizeFence.startFirst( );
-		int32 width, height;
-		glfwGetFramebufferSize(wnd::window, &width, &height);
-
-		if(width != 0 && height != 0) {
-			vkDeviceWaitIdle(dvc::graphics.LD);
-			swapchainCleanup( );
-			swapchainCreate( );
+		if(vWindowResized) wnd::windowResizeFence.startFirst( );	//Sync with framebufferResizeCallback
+		static bool recreatingSwapchain = false;
 
 
-			{ //destroy copy command buffers
-				vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.size( ), c::copyCommandBuffers.begin( ));
-				vkDestroyCommandPool(dvc::compute.LD, c::copyCommandPool, nullptr);
+		//Execute this only once at a time
+		if(!recreatingSwapchain){
+			recreatingSwapchain = true;
+			//Get new window size
+			static int32 width, height;
+			glfwGetFramebufferSize(wnd::window, &width, &height);
+
+
+			//TODO dont destroy it every time
+			if(width != 0 && height != 0) {			//If the window contains pixels
+				vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
+				swapchainCleanup( );					//Clean the old swapchain
+				swapchainCreate( );						//Create a new swapchain
+
+
+				{	//Destroy copy command buffers
+					vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.size( ), c::copyCommandBuffers.begin( ));
+					vkDestroyCommandPool(dvc::compute.LD, c::copyCommandPool, nullptr);
+
+					//#LLID CCB0000 Recreate copy command buffers
+					c::copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
+					c::shaders::createDefaultCommandBuffers( );				//Create command buffers and command pool
+				}
+
+				//Recreate clear shader
+				c::shaders::updateShader(c::shaders::clearShader,
+					{ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
+					LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1
+				);
 			}
-
-			uint32* pwindowSize = scast<uint32*>(c::buffers::gpuCellMap(wnd::gpuCellWindowSize));
-			pwindowSize[0] = swapchainExtent.width;
-			pwindowSize[1] = swapchainExtent.height;
-
-			{ //#LLID CCB0000 Create copy command buffers
-				c::copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
-				c::shaders::cshaderCreateDefaultCommandBuffers( );				//Create command buffers and command pool
-			}
+			out::renderFramebufferResized = false;					//Updatet buffer resized variable to allow DrawFrame function it to draw a new frame
+			recreatingSwapchain = false;
 		}
-		if(vWindowResized) wnd::windowResizeFence.endFirst( );
+		if(vWindowResized) wnd::windowResizeFence.endFirst( );		//Sync with framebufferResizeCallback
 	}
 }

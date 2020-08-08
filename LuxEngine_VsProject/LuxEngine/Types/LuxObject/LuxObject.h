@@ -83,6 +83,10 @@ namespace lux{
 			//Sets the render limits of a child object																	| object type				| -
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
 		};
+		#define luxInitObject(dimensions_, objectType_)						\
+			objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;	\
+			shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
+			this->allocate( );
 
 
 
@@ -163,10 +167,6 @@ namespace lux{
 			luxRelease(inline) void __vectorcall setMaxLim(vec2f32 vMaxLim)luxRelease({ maxLim = vMaxLim; });
 			luxDebug(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
 		};
-		#define luxInitObject(dimensions_, objectType_)						\
-			objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;	\
-			shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
-			this->allocate( );
 
 
 
