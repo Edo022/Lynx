@@ -8,7 +8,7 @@
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
-
+#include "LuxEngine/macros.h"
 
 
 
@@ -75,11 +75,15 @@ namespace lux{
 			inline virtual int32 getCellSize( ) const = 0;	//Size of the object data									| none						| object type
 			virtual void update( ) = 0;						//Updates the object data in the shared memory				| object type				| -
 																//														|							|
-			bool debug = false;								//Defines if the object is used for graphic debugging		| none						| object instance
+			luxDebug(bool debug = false;)					//Defines if the object is used for graphic debugging		| none						| object instance
 																//														|							|
 			//Sets the render limits of a child object																	| object type				| -
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
 		};
+
+
+
+
 
 
 
@@ -141,14 +145,12 @@ namespace lux{
 				children[vChildIndex]->setMaxLim(maxLim);
 				return true;
 			}
+			limitAlignment limitAlignment{ limitAlignment::Center }; 	//The alignment of the object within its limits
 			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
 			vec2f32 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
-			void __vectorcall setMinLim(vec2f32 vMinLim);
-			void __vectorcall setMaxLim(vec2f32 vMaxLim);
-			limitAlignment limitAlignment{ limitAlignment::Center }; 	//The alignment of the object within its limits
-
-
-			Border2D* debugBorder = nullptr;										//Debug. Used to draw the object limits
+			luxRelease(inline) void __vectorcall setMinLim(vec2f32 vMinLim)luxRelease({ minLim = vMinLim; });
+			luxRelease(inline) void __vectorcall setMaxLim(vec2f32 vMaxLim)luxRelease({ maxLim = vMaxLim; });
+			luxDebug(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
 		};
 
 

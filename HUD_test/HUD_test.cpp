@@ -59,10 +59,9 @@ int main( ) {
 		renderSpace.addChild(&lineTest);
 		renderSpace.addChild(&lineTest2);
 		//TODO automatize object search
-		lineTest.debugBorder->update( );
-		lineTest2.debugBorder->update( );
-		renderSpace.addChild(lineTest.debugBorder);
-		renderSpace.addChild(lineTest2.debugBorder);
+		//lineTest.debugBorder->update( );
+		//lineTest2.debugBorder->update( );
+		//renderSpace.addChild(lineTest.debugBorder);
 		//renderSpace.addChild(lineTest2.debugBorder);
 
 		lux::obj::addRenderSpace(&renderSpace);

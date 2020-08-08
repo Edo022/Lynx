@@ -31,7 +31,9 @@ namespace lux::obj{
 	}
 
 
-	//TODO use inline functions in release
+
+
+	#ifdef LUX_DEBUG
 	void __vectorcall Base2D::setMinLim(vec2f32 vMinLim){
 		minLim = vMinLim;
 		if(!debug){
@@ -43,7 +45,6 @@ namespace lux::obj{
 			debugBorder->update( );
 		}
 	}
-	//TODO use inline functions in release
 	void __vectorcall Base2D::setMaxLim(vec2f32 vMaxLim){
 		maxLim = vMaxLim;
 		if(!debug){
@@ -55,6 +56,9 @@ namespace lux::obj{
 			debugBorder->update( );
 		}
 	}
+	#endif
+
+
 
 
 	Base2D::Base2D( ){
