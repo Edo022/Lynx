@@ -45,14 +45,17 @@ namespace lux{
 			LUX_OBJECT_TYPE_2D__BASE        = -2000,
 			LUX_OBJECT_TYPE_1D__BASE        = -1000,
 
-			LUX_OBJECT_TYPE_RENDER_SPACE_2D = +2000,
-			LUX_OBJECT_TYPE_RENDER_SPACE_3D = +3000,
+			LUX_OBJECT_TYPE_2D_RENDER_SPACE = +2000,
+			LUX_OBJECT_TYPE_3D_RENDER_SPACE = +3000,
 
 			LUX_OBJECT_TYPE_2D_LINE         = +2001,
 			LUX_OBJECT_TYPE_2D_BORDER       = +2002,
 		};
-
-
+		#define BASE
+		#define RENDER_SPACE
+		#define RENDER_SPACE
+		#define LINE
+		#define BORDER
 
 
 
@@ -111,6 +114,10 @@ namespace lux{
 
 
 
+
+
+
+
 		//Base class for 2D objects with 3D properties (they can be used in both 2D and 3D spaces)
 		struct Base2DI3D : public Base {
 			//TODO
@@ -122,6 +129,10 @@ namespace lux{
 			vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
 			vec2f32 scl{ 0, 0 };			//Scale of the object
 		};
+
+
+
+
 
 
 
@@ -151,7 +162,15 @@ namespace lux{
 			luxRelease(inline) void __vectorcall setMinLim(vec2f32 vMinLim)luxRelease({ minLim = vMinLim; });
 			luxRelease(inline) void __vectorcall setMaxLim(vec2f32 vMaxLim)luxRelease({ maxLim = vMaxLim; });
 			luxDebug(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
-		};
+		}
+		#define luxInitObject(dimensions_, objectType_)						\
+			objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;	\
+			shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
+			this->allocate( );
+
+
+
+
 
 
 

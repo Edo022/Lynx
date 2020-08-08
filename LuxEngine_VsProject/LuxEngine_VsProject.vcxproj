@@ -392,6 +392,7 @@
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DLines.cpp" />
+    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>

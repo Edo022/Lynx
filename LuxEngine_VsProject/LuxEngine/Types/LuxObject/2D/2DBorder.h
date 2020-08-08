@@ -16,9 +16,7 @@ namespace lux::obj{
 			init( );
 		}
 		void init( ){
-			objectType = LUX_OBJECT_TYPE_2D_BORDER;
-			shaderLayout = LUX_DEF_SHADER_2D_BORDER;
-			this->allocate( );
+			luxInitObject(2, BORDER);
 
 			//TODO just update the shaders when needed with the right workgroup count
 			//TODO remove useless out-of-range check in shaders

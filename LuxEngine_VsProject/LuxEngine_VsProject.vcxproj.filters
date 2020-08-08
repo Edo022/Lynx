@@ -115,6 +115,9 @@
     <ClCompile Include="LuxEngine\Core\Core.cpp">
       <Filter>LuxEngine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.cpp">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
