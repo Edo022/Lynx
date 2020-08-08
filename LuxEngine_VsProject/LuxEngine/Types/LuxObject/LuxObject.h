@@ -162,7 +162,7 @@ namespace lux{
 			luxRelease(inline) void __vectorcall setMinLim(vec2f32 vMinLim)luxRelease({ minLim = vMinLim; });
 			luxRelease(inline) void __vectorcall setMaxLim(vec2f32 vMaxLim)luxRelease({ maxLim = vMaxLim; });
 			luxDebug(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
-		}
+		};
 		#define luxInitObject(dimensions_, objectType_)						\
 			objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;	\
 			shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
