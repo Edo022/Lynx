@@ -23,16 +23,13 @@ namespace lux::core::c::buffers{
 	struct LuxBuffer_t {
 		uint32 size;					//The size in bytes of the buffer
 		LuxBufferClass bufferClass;		//The class of the buffer
-		bool cpuAccessible;				//Whether the buffer is accessible from the CPU
+		bool cpuAccessible;				//Whether or not the buffer is accessible from the CPU
+		bool readOnly;					//Whether or not the buffer is read only from the shader
 
 		VkBuffer buffer;				//The actual Vulkan buffer
 		VkDeviceMemory memory;			//The memory of the buffer
 		lux::Map<int8, uint32> cells;	//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
 		bool isMapped{ false };			//Whether or not the buffer is mapped
-
-		LuxBuffer_t(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible) :
-			size{ vSize }, bufferClass{ vBufferClass }, cpuAccessible{ vCpuAccessible } {
-		}
 	};
 
 
@@ -43,8 +40,8 @@ namespace lux::core::c::buffers{
 	void		createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
 	void		copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);
 
-	LuxBuffer	gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible);
-	LuxCell		gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible);
+	LuxBuffer	gpuBufferCreate(const uint32 vSize, const LuxBufferClass vBufferClass, const bool vCpuAccessible, const bool vReadOnly);
+	LuxCell		gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible, const bool vReadOnly = false);
 	bool		gpuCellDestroy(const LuxCell vCell);
 	void* gpuCellMap(const LuxCell vCell);
 }

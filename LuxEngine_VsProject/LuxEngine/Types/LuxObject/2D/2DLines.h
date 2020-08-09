@@ -81,14 +81,12 @@ namespace lux::obj {
 			*fp = (fp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
 			*sp = (sp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
 		}
-		inline void setFp(const vec2i32& vFp){
-			fp_temp = vFp;
-			update();
-		}
-		inline void setSp(const vec2i32& vSp){
-			sp_temp = vSp;
-			update();
-		}
+
+		inline void setFp(const vec2i32& vFp){ fp_temp = vFp; update(); }
+		inline void setSp(const vec2i32& vSp){ sp_temp = vSp; update(); }
+
+
+
 	private:
 		vec2i32* fp;		//First point of the line
 		vec2i32* sp;		//Second point of the line
