@@ -87,7 +87,7 @@ int main( ) {
 }
 
 
-
+//TODO use suspend and resume thread functions in fences
 
 
 

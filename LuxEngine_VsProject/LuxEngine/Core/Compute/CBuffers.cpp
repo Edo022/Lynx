@@ -190,7 +190,7 @@ namespace lux::core::c::buffers{
 		LuxBuffer buffer = getBufferIndex(vCell);		//Get the buffer index
 		//TODO Use lux output console
 		if(!buffers::CBuffers.isValid(buffer)) {		//If the buffer index is not valid
-			Failure printf("Something went wrong .-.  you were trying to use an invalid index buffer (see error core)", false, buffer);
+			Failure core::printError("Something went wrong .-.  you were trying to use an invalid index buffer (see error core)", false, buffer);
 			return nullptr;									//print an error and return nullptr
 		}
 

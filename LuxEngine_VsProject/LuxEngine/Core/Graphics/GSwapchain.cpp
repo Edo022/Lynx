@@ -183,22 +183,18 @@ namespace lux::core::g::swapchain{
 
 	void swapchainRecreate(const bool vWindowResized) {
 		if(vWindowResized) wnd::windowResizeFence.startFirst( );	//Sync with framebufferResizeCallback
-		static bool recreatingSwapchain = false;
 
-
-
-		//Get new window size
-		static int32 width, height;
-		glfwGetFramebufferSize(wnd::window, &width, &height);
 
 
 		//TODO dont destroy it every time
+		static int32 width, height;	glfwGetFramebufferSize(wnd::window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
-			cleanup( );					//Clean the old swapchain
-			swapchainCreate( );						//Create a new swapchain
+			swapchain::cleanup( );					//Clean the old swapchain
+			swapchain::swapchainCreate( );			//Create a new swapchain
 
 
+			//Update the window size buffer
 			uint32* pwindowSize = scast<uint32*>(c::buffers::gpuCellMap(wnd::gpuCellWindowSize));
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
@@ -217,7 +213,6 @@ namespace lux::core::g::swapchain{
 				{ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },
 				LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1
 			);
-			recreatingSwapchain = false;
 		}
 		if(vWindowResized) wnd::windowResizeFence.endFirst( );		//Sync with framebufferResizeCallback
 	}

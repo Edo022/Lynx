@@ -87,12 +87,12 @@ namespace lux::core::g{
 
 
 
+
+
 	//TODO multithreaded submit and command creation
 	void drawFrame( ) {
 		if(c::shaders::CShaders.usedSize( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
-
-
 
 
 		redraw:
@@ -101,6 +101,10 @@ namespace lux::core::g{
 			swapchain::swapchainRecreate(true);
 			goto redraw;
 		}
+
+
+
+
 
 		uint32 imageIndex;
 		{ //Acquire swapchain image
@@ -116,7 +120,7 @@ namespace lux::core::g{
 
 		//TODO don't recreate the command buffer array every time
 		//TODO use a staging buffer
-		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_ALL_COMMANDS_BIT };
+		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{ //Update render result submitting the command buffers to the compute queues
 			c::shaders::addShaderFence.startFirst( );
 			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedSize( ));
@@ -141,16 +145,15 @@ namespace lux::core::g{
 
 
 
-
 		{ //Convert and clear
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
 				.waitSemaphoreCount{ 1 },
 				.pWaitDstStageMask{ waitStages },
 				.commandBufferCount{ 1 },
-				.pCommandBuffers{ &c::shaders::CShaders[0].commandBuffers[0] },
 				.signalSemaphoreCount{ 1 },
 			};
+			submitInfo.pCommandBuffers = &c::shaders::CShaders[0].commandBuffers[0];
 			submitInfo.pWaitSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
 			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer");
@@ -190,6 +193,7 @@ namespace lux::core::g{
 
 			switch(vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo)) {
 				case VK_SUCCESS:  break;
+					//TODO
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
 					swapchain::swapchainRecreate(false);
 					vkDeviceWaitIdle(dvc::graphics.LD);
@@ -213,8 +217,8 @@ namespace lux::core::g{
 
 
 	void cleanup( ) {
-		swapchain::cleanup( );																//Clear swapchain components
-		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);					//Destroy graphics command pool
+		swapchain::cleanup( );																	//Clear swapchain components
+		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);			//Destroy graphics command pool
 
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
 			vkDestroySemaphore(dvc::graphics.LD, drawFrameImageAquiredSemaphore[i], nullptr);
