@@ -20,12 +20,12 @@ namespace lux::core::c::shaders{
 	extern String							shaderPath;			//Path to the shaders folder
 	extern Map<obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
 	extern Array<LuxShaderLayout_t>			CShadersLayouts;	//Layout of the render shaders
-	extern Map<LuxShader_t, uint32>			CShaders;			//Per-object shaders
-	//TODO divide render stages
-	//TODO use lux map with no effect command buffers in invalid indices, instead of recreating the entire command buffers
-	extern DynArray<VkCommandBuffer>		CShadersCBs;		//Per-object command buffers
-	extern FenceDE							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 
+	extern VkCommandPool					commandPool;		//The command pool where render spaces commands are submitted
+	extern Map<LuxShader_t, uint32>			CShaders;			//Per-object shaders
+	extern DynArray<VkCommandBuffer>		CShadersCBs;		//Per-object command buffers
+
+	extern FenceDE							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 	extern LuxShader						clearShader;
 
 

@@ -21,10 +21,12 @@ namespace lux::core::c::shaders{
 	String									shaderPath;
 	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
 	Array<LuxShaderLayout_t>				CShadersLayouts;
+
+	VkCommandPool							commandPool;
 	Map<LuxShader_t, uint32>				CShaders;
 	DynArray<VkCommandBuffer>				CShadersCBs;
-	FenceDE									addShaderFence;
 
+	FenceDE									addShaderFence;
 	LuxShader								clearShader;
 
 
@@ -40,7 +42,10 @@ namespace lux::core::c::shaders{
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 		FILE* fp;
 		fopen_s(&fp, pFilePath, "rb");									//Open the file
-		if(fp == NULL) printf("Could not find or open file: %s\n", pFilePath);
+		if(fp == NULL) {
+			printf("Could not find or open file: %s\n", pFilePath);
+			return;
+		}
 
 		_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
 		int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file size
@@ -260,6 +265,18 @@ namespace lux::core::c::shaders{
 
 	//This function creates the default command buffers for lux rendering
 	void createDefaultCommandBuffers( ) {
+		{ //Render command pool
+			VkCommandPoolCreateInfo commandPoolCreateInfo = { 					//Create command pool create infos
+				.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },				//Set structure type
+				.flags{ VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT },			//Command buffers and pool can be reset
+				.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },	//Set the compute family where to bind the command pool
+			};
+			TryVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &commandPool)) printError("Unable to create command pool");
+		}
+
+
+
+
 		{ //Copy
 			//Create command pool
 			static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
@@ -374,18 +391,10 @@ namespace lux::core::c::shaders{
 	//*   vGroupCountz  | the number of workgroups in the z axis
 	//The workgroup size is define in the GLSL shader
 	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
-		//Create command pool to contain the command buffers
-		VkCommandPoolCreateInfo commandPoolCreateInfo = { 				//Create command pool create infos
-			.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },			//Set structure type
-			.flags{ VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT },		//Command buffers and pool can be reset
-			.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },		//Set the compute family where to bind the command pool
-		};
-		TryVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &pCShader->commandPool)) printError("Unable to create command pool");
-
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 		//Create command buffer allocate infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },		//Set structure type
-			.commandPool{ pCShader->commandPool },							//Set command pool where to allocate the command buffer
+			.commandPool{ commandPool },							//Set command pool where to allocate the command buffer
 			.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },						//Set the command buffer as a primary level command buffer
 			.commandBufferCount{ 1 },										//Allocate one command buffer
 		};
@@ -516,8 +525,8 @@ namespace lux::core::c::shaders{
 		vkDestroyDescriptorPool(dvc::compute.LD, CShaders[vCShader].descriptorPool, nullptr);
 
 		//Clear command buffers and command pool
-		vkFreeCommandBuffers(dvc::compute.LD, CShaders[vCShader].commandPool, 1, CShaders[vCShader].commandBuffers.begin( ));
-		vkDestroyCommandPool(dvc::compute.LD, CShaders[vCShader].commandPool, nullptr);
+		vkFreeCommandBuffers(dvc::compute.LD, commandPool, 1, CShaders[vCShader].commandBuffers.begin( ));
+		vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Free all the useless pointers
 		for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
