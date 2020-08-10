@@ -93,13 +93,13 @@ namespace lux::core::c::shaders{
 	//This function creates the descriptor sets layout, the pipeline and the pipeline layout of a shader
 	//*   vRenderShader | the type of the shader
 	//*   pCellNum      | The number of cells to bing to the shader. The shader inputs must match those cells
-	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum) {
+	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const Array<bool> pIsReadOnly) {
 		{ //Create descriptor set layout
 			Array<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
 				bindingLayouts[i] = VkDescriptorSetLayoutBinding{ 						//The binding layout describes what to bind in a shader binding point and how to use it
 					.binding{ i },														//Binding point in the shader
-					.descriptorType{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },				//Type of the descriptor. It depends on the type of data that needs to be bound
+					.descriptorType{ (pIsReadOnly[i]) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },				//Type of the descriptor. It depends on the type of data that needs to be bound
 					.descriptorCount{ 1 },												//Number of descriptors
 					.stageFlags{ VK_SHADER_STAGE_COMPUTE_BIT },							//Stage where to use the layout
 					.pImmutableSamplers{ nullptr },										//Default
@@ -181,17 +181,32 @@ namespace lux::core::c::shaders{
 	//*   vShaderLayout | the shader layout
 	void createDescriptorSets(LuxShader_t* pCShader, const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
-		VkDescriptorPoolSize descriptorPoolSize = {
+		uint32 storageCount = 0, uniformCount = 0;
+		for(int i = 0; i < pCells.size( ); i++){
+			if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly){
+				uniformCount++;
+			}
+			else {
+				storageCount++;
+			}
+		}
+		Array<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));
+		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize {
 			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
-			.descriptorCount{ pCells.size( ) },
+			.descriptorCount{ storageCount },
 		};
+		if(uniformCount != 0) sizes[1] = VkDescriptorPoolSize {
+			.type{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },
+			.descriptorCount{ uniformCount },
+		};
+
 		//Create the descriptor pool that will contain the descriptor sets
 		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {				//This struct contains the informations about the descriptor pool
 			.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO },			//Set structure type
 			.flags{ VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT },		//The descriptor sets can be freed
 			.maxSets{ 1 },														//Allocate only one descriptor set
-			.poolSizeCount{ 1 },												//One pool size
-			.pPoolSizes{ &descriptorPoolSize },									//Set pool size
+			.poolSizeCount{ sizes.size() },												//One pool size
+			.pPoolSizes{ sizes.begin() },									//Set pool size
 		};
 		TryVk(vkCreateDescriptorPool(dvc::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool)) printError("Unable to create descriptor pool");
 
@@ -216,7 +231,8 @@ namespace lux::core::c::shaders{
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
 			descriptorBufferInfo->buffer = c::buffers::CBuffers[getBufferIndex(pCells[i])].buffer;	//Set buffer
-			descriptorBufferInfo->offset = getCellOffset(&dvc::compute.PD, pCells[i]);		//Set buffer offset
+			if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly) descriptorBufferInfo->offset = getCellOffsetUniform(&dvc::compute.PD, pCells[i]);		//Set buffer offset
+			else descriptorBufferInfo->offset = getCellOffset(&dvc::compute.PD, pCells[i]);		//Set buffer offset
 			descriptorBufferInfo->range = getCellSize(pCells[i]);						//Set buffer size
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 					//Create write descriptor set
@@ -224,7 +240,9 @@ namespace lux::core::c::shaders{
 				.dstSet{ pCShader->descriptorSet },									//Set descriptor set
 				.dstBinding{ i },													//Set binding
 				.descriptorCount{ 1 },												//Set number of descriptors
-				.descriptorType{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },				//Use it as a storage
+				.descriptorType{
+					(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly) ?
+					VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER: VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },				//Use it as a storage
 				.pBufferInfo{ descriptorBufferInfo },								//Set descriptor buffer info
 			};
 			pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);			//Save the struct in the pointers that needs to be freed

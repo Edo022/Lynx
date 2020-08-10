@@ -20,7 +20,8 @@ layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_
 layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
 layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
-layout(std430, binding = 3) buffer lineData_{
+//TODO automatic binding type generation
+layout(binding = 3) uniform lineData_{
 	//16
 	ivec2 p0;		//0
 	ivec2 p1;		//8

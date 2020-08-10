@@ -35,5 +35,10 @@ static constexpr uint32 getCellOffset(const _VkPhysicalDevice* pDevice, const Lu
 	if (getCellType(vCell) == 0 || rawOffset == 0) return 0;
 	else return scast<uint32>(rawOffset - (rawOffset % pDevice->properties.limits.minStorageBufferOffsetAlignment) + pDevice->properties.limits.minStorageBufferOffsetAlignment);
 }
+static constexpr uint32 getCellOffsetUniform(const _VkPhysicalDevice* pDevice, const LuxCell vCell) {								//Returns the offset of a LuxCell
+	const uint32 rawOffset = (getCellIndex(vCell) * getCellSize(vCell));
+	if (getCellType(vCell) == 0 || rawOffset == 0) return 0;
+	else return scast<uint32>(rawOffset - (rawOffset % pDevice->properties.limits.minUniformBufferOffsetAlignment) + pDevice->properties.limits.minUniformBufferOffsetAlignment);
+}
 
 

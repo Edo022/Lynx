@@ -2,6 +2,8 @@
 
 
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
+#include "LuxEngine/Core/Compute/CBuffers.h"
+#include "LuxEngine/Core/Devices.h"
 #include <vulkan/vulkan.h>
 
 
@@ -47,7 +49,7 @@ namespace lux::obj {
 			*sw = vSw;
 		}
 
-
+		//TODO automatically calculate the offset of the variables with device's minStorageBufferOffset and minUniformBufferOffset
 		//TODO convert to variable. or convert the variable to function. idk
 		inline int32 getCellSize( ) const final override { return 60; }
 
@@ -80,6 +82,12 @@ namespace lux::obj {
 			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
 			*fp = (fp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
 			*sp = (sp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+
+			void* h = core::c::buffers::gpuCellMap(gpuCell);
+			void* h2 = core::c::buffers::gpuCellMap(localCell);
+			memcpy(h2, h, getCellSize( ));
+			//if(core::c::buffers::CBuffers[getBufferIndex(gpuCell)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(gpuCell)].memory);
+			//if(core::c::buffers::CBuffers[getBufferIndex(gpuCell)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(localCell)].memory);
 		}
 
 		inline void setFp(const vec2i32& vFp){ fp_temp = vFp; update(); }

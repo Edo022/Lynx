@@ -28,6 +28,8 @@ namespace lux::obj{
 		//TODO use GPU local memory
 		gpuCell = core::c::buffers::gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
 		cellPtr = core::c::buffers::gpuCellMap(gpuCell);						//Map the cell pointer to the cell
+		//TODO
+		localCell = core::c::buffers::gpuCellCreate(getCellSize( ), true, true);		//Create the cell taht contains the object data
 	}
 
 

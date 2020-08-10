@@ -2,6 +2,8 @@
 
 //regex per contare le linee di codice non vuote
 //^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
+//stessa cosa ma comprendendo i commenti
+//^(/)|(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 //TODO squared distance aa*bb
 //TODO add memory pool
 
@@ -93,14 +95,14 @@ int main( ) {
 
 //#undef max
 //#undef min
-//
+ //
 //static inline auto __vectorcall distToPoint(const vec2f32& a, const vec2f32& b, const vec2f32& p){
 //	float32 l2 = (pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 //	if(l2 == 0) return dist(p, a);
 //	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / l2)))));
 //}
 //
-//static inline auto __vectorcall distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+	//static inline auto __vectorcall distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p){
 //	if(pow(dist(a, b), 2) == 0) return dist(p, a);
 //	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))));
 //}

@@ -39,9 +39,9 @@ namespace lux::core::c{
 
 		{ //Create default shaders
 			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
-			shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4);
-			shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4);
-			shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4);
+			shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4, { false, false, false, true });
+			shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { false, false, false, false });
+			shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { false, false, false, false });
 
 			shaders::clearShader = shaders::newShader(
 				{ g::wnd::gpuCellWindowOutput, g::wnd::gpuCellWindowOutput_i, core::g::wnd::gpuCellWindowZBuffer, g::wnd::gpuCellWindowSize },

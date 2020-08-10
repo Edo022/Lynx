@@ -15,9 +15,9 @@
 //type: the type of the function and the vectors
 //typen: the type but with the capital letter
 #define __lp_vec_def(type, typen)				\
-typedef vec2_t<type> v2##typen, vec2##typen;	\
-typedef vec3_t<type> v3##typen, vec3##typen;	\
-typedef vec4_t<type> v4##typen, vec4##typen;	\
+typedef vec2_t<type> typen##vec2, vec2##typen;	\
+typedef vec3_t<type> typen##vec3, vec3##typen;	\
+typedef vec4_t<type> typen##vec4, vec4##typen;	\
 
 __lp_vec_def(int8, i8)			__lp_vec_def(uint8, u8)		__lp_vec_def(bool, b)			__lp_vec_def(wchar8, w8)	__lp_vec_def(char8, c8)
 __lp_vec_def(int16, i16)		__lp_vec_def(uint16, u16)									__lp_vec_def(wchar16, w16)

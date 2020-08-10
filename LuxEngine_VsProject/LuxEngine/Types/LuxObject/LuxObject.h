@@ -75,6 +75,7 @@ namespace lux{
 			void allocate( );								//Allocates a memory cell for the object data				| object type				| -
 			LuxCell gpuCell{ (uint64)-1 };					//GPU memory containing the small data of the object		| object type				| object instance
 			void* cellPtr{ nullptr };						//Pointer to the GPU memory cell							| none						| object instance
+			LuxCell localCell{ (uint64)-1 };				//Lolcal GPU copy of gpuCell								| object type				| object instance
 			inline virtual int32 getCellSize( ) const = 0;	//Size of the object data									| none						| object type
 			virtual void update( ) = 0;						//Updates the object data in the shared memory				| object type				| -
 																//														|							|
@@ -84,6 +85,7 @@ namespace lux{
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
 		};
 		#define luxInitObject(dimensions_, objectType_)						\
+			/*TODO automatic enum creation*/\
 			objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;	\
 			shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
 			this->allocate( );
