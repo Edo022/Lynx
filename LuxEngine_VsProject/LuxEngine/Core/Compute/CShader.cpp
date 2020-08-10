@@ -377,7 +377,7 @@ namespace lux::core::c::shaders{
 		//Create command pool to contain the command buffers
 		VkCommandPoolCreateInfo commandPoolCreateInfo = { 				//Create command pool create infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },			//Set structure type
-			.flags{ 0 },													//Default falgs
+			.flags{ VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT },		//Command buffers and pool can be reset
 			.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },		//Set the compute family where to bind the command pool
 		};
 		TryVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &pCShader->commandPool)) printError("Unable to create command pool");
@@ -468,15 +468,34 @@ namespace lux::core::c::shaders{
 
 	//Updates the cells, layout or group conunts of a shader
 	//*   Way faster than destroying and creating it again
-	void updateShader(const LuxShader shader, const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	void updateShaderCall(const LuxShader shader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 		//TODO dont destroy the shader but reuse it
 		//CShaders.remove(shader);
 
 
-		//LuxShader_t& _shader = CShaders[shader];
-		//TODO updating the descriptor sets makes the engine crash
-		//createDescriptorSets(&CShaders[shader], pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
-		createCommandBuffers(&CShaders[shader], vShaderLayout, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool
+		////LuxShader_t& _shader = CShaders[shader];
+		//////TODO updating the descriptor sets makes the engine crash
+		//////createDescriptorSets(&CShaders[shader], pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
+		//createCommandBuffers(&CShaders[shader], vShaderLayout, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool
+
+
+		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
+			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
+			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
+		};
+		TryVk(vkBeginCommandBuffer(CShaders[shader].commandBuffers[0], &beginInfo)) printError("Unable to begin command buffer recording");
+
+
+		//Bind pipeline and descriptors
+		vkCmdBindPipeline(CShaders[shader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindDescriptorSets(CShaders[shader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &CShaders[shader].descriptorSet, 0, nullptr);
+		//Dispatch the compute shader to execute it with the specified workgroups and descriptors
+		vkCmdDispatch(CShaders[shader].commandBuffers[0], vGroupCountX, vGroupCounty, vGroupCountz);
+
+
+		//End command buffer recording
+		TryVk(vkEndCommandBuffer(CShaders[shader].commandBuffers[0])) printError("Failed to record command buffer");
+
 	}
 
 
