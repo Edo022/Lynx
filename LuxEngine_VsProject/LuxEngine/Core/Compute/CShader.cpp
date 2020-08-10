@@ -395,6 +395,11 @@ namespace lux::core::c::shaders{
 
 
 
+
+
+
+
+		//TODO change only those lines when updating a shader
 		//Create compute command buffer and start recording commands
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type

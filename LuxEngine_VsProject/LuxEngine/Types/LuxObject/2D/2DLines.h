@@ -7,7 +7,7 @@
 #include <vulkan/vulkan.h>
 
 
-
+//TODO per-children-group shader command buffers. static shaders are recreated when the objects changes
 namespace lux::obj {
 	//A bidimensional line with interpolated color and width
 	//Lines with width 0 or alpha 0 are not rendered
@@ -57,28 +57,6 @@ namespace lux::obj {
 		//Updates the object data in the GPU memory
 		void update( ) final override {
 			//TODO USE IN-SHADER MATRIX TRANSFORM
-
-			//if(parent != nullptr) parent->setChildLimits(childIndex);
-			//vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
-			//vec2i32 pMaxLim = vec2i32(1920 * 2, 1080) * maxLim;
-
-
-			////TODO fix
-			//*fp = (*fp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    0  - 7     |    0 +
-			//*sp = (*sp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    8  - 15    |    0
-			//*(vec2i32*)((int8*)cellPtr + 0) = (fp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    0  - 7     |    0 +
-			//*(vec2i32*)((int8*)cellPtr + 8) = (sp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;		//    8    |    8  - 15    |    0
-			//*(vec4f32*)((int8*)cellPtr + 16) = fc;														//    16   |    16 - 31    |    1 +
-			//*(vec4f32*)((int8*)cellPtr + 32) = sc;														//    16   |    32 - 47    |    2 +
-			//*(float32*)((int8*)cellPtr + 48) = fw;														//    4    |    48 - 51    |    3 +
-			//*(float32*)((int8*)cellPtr + 52) = sw;														//    4    |    52 - 55    |    3
-			////TODO move to one-time init
-			////TODO use full 64bit int or just 32 for all objects
-			//*(uint32*)((int8*)cellPtr + 56) = (uint32)ID;												//    4    |    56 - 59    |    3
-			////4x trailing padding																		//    4    |    60 - 63
-
-			////TODO recalculate limits for children
-
 			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
 			*fp = (fp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
 			*sp = (sp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
