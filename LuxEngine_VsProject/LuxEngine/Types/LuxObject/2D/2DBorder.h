@@ -6,12 +6,12 @@
 
 namespace lux::obj{
 	struct Border2D : public Base2D{
-	private:
+	//private:
 		vec2f32* fp = { nullptr };
 		vec2f32* sp = { nullptr };
-	public:
-		vec2f32 fp_tmp;
-		vec2f32 sp_tmp;
+	//public:
+	//	vec2f32 fp_tmp;
+	//	vec2f32 sp_tmp;
 
 
 		Border2D( ){
@@ -44,16 +44,16 @@ namespace lux::obj{
 		inline int32 getCellSize( ) const final override { return 20; }
 
 
-		void update( ) final override {
-			vec2f32 f = { 1920 * 2, 1080 };
+		//void update( ) final override {
+		//	vec2f32 f = { 1920 * 2, 1080 };
 
-			//TODO automatize default object properties and functions
-			*fp = fp_tmp * f;		//    8    |    0  - 7     |    0 +
-			*sp = sp_tmp * f;		//    8    |    8  - 15    |    0
-			//*(uint32*)((int8*)render.dataPtr + 16) = (uint32)common.ID;	//    4    |    16 - 19    |    1 +
-			//12x trailing padding							//    12   |    20 - 31
-			updateBase();
-			//TODO recalculate limits for children
-		}
+		//	//TODO automatize default object properties and functions
+		//	*fp = fp_tmp * f;		//    8    |    0  - 7     |    0 +
+		//	*sp = sp_tmp * f;		//    8    |    8  - 15    |    0
+		//	//*(uint32*)((int8*)render.dataPtr + 16) = (uint32)common.ID;	//    4    |    16 - 19    |    1 +
+		//	//12x trailing padding							//    12   |    20 - 31
+		//	updateBase();
+		//	//TODO recalculate limits for children
+		//}
 	};
 }

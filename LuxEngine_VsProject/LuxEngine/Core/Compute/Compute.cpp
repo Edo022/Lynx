@@ -34,7 +34,7 @@ namespace lux::core::c{
 
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(g::swapchain::swapchainImages.size( ));	//Resize the command buffer array in the shader
-			shaders::createDefaultCommandBuffers( );						//Create command buffers and command pool
+			shaders::createDefaultCommandBuffers( );							//Create command buffers and command pool
 		}
 
 		{ //Create default shaders

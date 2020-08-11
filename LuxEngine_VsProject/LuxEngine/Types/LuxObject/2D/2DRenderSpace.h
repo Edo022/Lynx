@@ -52,7 +52,7 @@ namespace lux::obj {
 		bool setChildLimits(const uint32 vChildIndex) const final override;
 
 		//void update( ) final override { for(int i = 0; i < children.size( ); i++) if(children.isValid(i)) children[i]->update( ); }
-		void update( ) final override { }
+		//void update( ) final override { }
 		inline int32 getCellSize( ) const final override { return 0; }
 	};
 }

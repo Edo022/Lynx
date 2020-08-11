@@ -39,12 +39,12 @@ namespace lux::obj {
 		//*   pSc | color of the second point
 		//*   vFw | width of the first point
 		//*   vSw | width of the second point
-		Line2D(const vec2i32& pFp, const vec2i32& pSp, const vec4f32& pFc, const vec4f32& pSc, const float32 vFw, const float32 vSw) {
+		Line2D(const vec2f32& pFp, const vec2f32& pSp, const vec4f32& pFc, const vec4f32& pSc, const float32 vFw, const float32 vSw) {
 			init( );
 			//TODO use full 64bit int or just 32 for all objects
 
 			setFp(pFp);
-			setFp(pSp);
+			setSp(pSp);
 			*fc = pFc;
 			*sc = pSc;
 			*fw = vFw;
@@ -57,44 +57,56 @@ namespace lux::obj {
 
 
 		//Updates the object data in the GPU memory
-		void update( ) final override {
-			//TODO USE IN-SHADER MATRIX TRANSFORM
+		//void update( ) final override {
+		//	//TODO USE IN-SHADER MATRIX TRANSFORM
+		//	vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
+		//	*fp = (fp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+		//	*sp = (sp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+
+		//	//void* h = core::c::buffers::gpuCellMap(render.data);
+		//	//void* h2 = core::c::buffers::gpuCellMap(render.localData);
+		//	//memcpy(h2, h, getCellSize( ));
+
+
+		//	//VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
+		//	//vkCmdUpdateBuffer(
+		//	//	cb, core::c::buffers::CBuffers[getBufferIndex(render.localData)].buffer,
+		//	//	getCellOffset(&core::dvc::compute.PD, render.localData), getCellSize(), h
+		//	//);
+		//	//core::g::cmd::endSingleTimeCommands(cb);
+		//	////core::g::pendingObjectUpdatesFence.startSecond();
+		//	////if(render.updated){
+		//	////	render.updated = false;
+		//	////	core::g::objUpdates2D.add(this);
+		//	////}
+		//	////core::g::pendingObjectUpdatesFence.endSecond();
+		//	//if(core::c::buffers::CBuffers[getBufferIndex(data)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(data)].memory);
+		//	//if(core::c::buffers::CBuffers[getBufferIndex(data)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(localData)].memory);
+			//updateBase();
+		//}
+
+		inline void setFp(const vec2f32& vFp){
 			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
-			*fp = (fp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
-			*sp = (sp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
-
-			//void* h = core::c::buffers::gpuCellMap(render.data);
-			//void* h2 = core::c::buffers::gpuCellMap(render.localData);
-			//memcpy(h2, h, getCellSize( ));
-
-
-			//VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
-			//vkCmdUpdateBuffer(
-			//	cb, core::c::buffers::CBuffers[getBufferIndex(render.localData)].buffer,
-			//	getCellOffset(&core::dvc::compute.PD, render.localData), getCellSize(), h
-			//);
-			//core::g::cmd::endSingleTimeCommands(cb);
-			////core::g::pendingObjectUpdatesFence.startSecond();
-			////if(render.updated){
-			////	render.updated = false;
-			////	core::g::objUpdates2D.add(this);
-			////}
-			////core::g::pendingObjectUpdatesFence.endSecond();
-			//if(core::c::buffers::CBuffers[getBufferIndex(data)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(data)].memory);
-			//if(core::c::buffers::CBuffers[getBufferIndex(data)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(localData)].memory);
-			updateBase();
+			*fp = (vFp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+			//*fp = vFp;
+			update( );
 		}
-
-		inline void setFp(const vec2i32& vFp){ fp_temp = vFp; update(); }
-		inline void setSp(const vec2i32& vSp){ sp_temp = vSp; update(); }
+		inline void setSp(const vec2f32& vSp){
+			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
+			*sp = (vSp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+			//*sp = vSp;
+			update( );
+		}
+		//inline void setFp(const vec2i32& vFp){ fp_temp = vFp; update(); }
+		//inline void setSp(const vec2i32& vSp){ sp_temp = vSp; update(); }
 
 
 
 	private:
-		vec2i32* fp;		//First point of the line
-		vec2i32* sp;		//Second point of the line
-		vec2i32 fp_temp;		//TODO remove. Temporary workaround for the absence of a shader matrix transform
-		vec2i32 sp_temp;		//TODO remove. Temporary workaround for the absence of a shader matrix transform
+		vec2f32* fp;		//First point of the line
+		vec2f32* sp;		//Second point of the line
+		//vec2i32 fp_temp;		//TODO remove. Temporary workaround for the absence of a shader matrix transform
+		//vec2i32 sp_temp;		//TODO remove. Temporary workaround for the absence of a shader matrix transform
 	public:
 
 		vec4f32* fc;		//Color of the first point

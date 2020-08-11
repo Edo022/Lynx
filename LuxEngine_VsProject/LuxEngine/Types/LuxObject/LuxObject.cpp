@@ -51,7 +51,8 @@ namespace lux::obj{
 				debugBorder = new Border2D( );
 				debugBorder->debug = true;
 			}
-			debugBorder->fp_tmp = vMinLim;
+			//debugBorder->fp_tmp = vMinLim;
+			*debugBorder->fp = vMinLim;
 			debugBorder->update( );
 		}
 	}
@@ -62,7 +63,8 @@ namespace lux::obj{
 				debugBorder = new Border2D( );
 				debugBorder->debug = true;
 			}
-			debugBorder->sp_tmp = vMaxLim;
+			//debugBorder->sp_tmp = vMaxLim;
+			*debugBorder->sp = vMaxLim;
 			debugBorder->update( );
 		}
 	}

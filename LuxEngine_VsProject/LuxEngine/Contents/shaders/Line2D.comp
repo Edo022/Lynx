@@ -23,8 +23,8 @@ layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 //TODO automatic binding type generation
 layout(binding = 3) uniform lineData_{
 	//16
-	ivec2 p0;		//0
-	ivec2 p1;		//8
+	vec2 fp0;		//0
+	vec2 fp1;		//8
 	//16
 	vec4 col0;		//16
 	//16
@@ -55,6 +55,9 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 void drawLine(){
+	ivec2 p0 = ivec2(fp0 * vec2(width, height));
+	ivec2 p1 = ivec2(fp1 * vec2(width, height));
+
 	//Calculate length and interpolated values
 	vec2 lDist = abs(p0 - p1);							//2D distance between the line points
 	float lFac = 1 / (distance(p0, p1) / gx);			//Factor of the position of gx in the line length	(inverse of (line length / shader call x))
@@ -94,6 +97,9 @@ void drawLine(){
 
 
 void main() {
+	ivec2 p0 = ivec2(fp0 * vec2(width, height));
+	ivec2 p1 = ivec2(fp1 * vec2(width, height));
+
 	if(gx >= distance(vec2(p0.x, p0.y), vec2(p1.x, p1.y))) return;			//Yeet unnecessary calls
 	//TODO implement and add to render optimization exceptions (vertical, horyzontal, width 1, non rendered)
 	if((wd0 == 0 && wd1 == 0) || (col0.a == 0 && col1.a == 0)) return;		//Null line

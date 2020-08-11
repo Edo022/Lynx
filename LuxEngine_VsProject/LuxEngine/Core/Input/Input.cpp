@@ -18,10 +18,13 @@ namespace lux::input{
 
 	//GLFWmousebuttonfun
 
-
+	#define gtollx(n) ((n) / core::g::swapchain::swapchainExtent.width)
+	#define gtolly(n) ((n) / core::g::swapchain::swapchainExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
+
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
-		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(vec2i32{ (int32)x, (int32)y });
+		//rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(vec2i32{ (int32)x, (int32)y });
+		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(vec2i32{ gtollx(x), gtolly(y) });
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
 	}
 
@@ -34,8 +37,11 @@ namespace lux::input{
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
+		printf("\n%f, %f", gtollx(x), gtolly(y));
+		flushall();
 		//*(rcast<lux::obj::Line2D*>(engine.objs[0]))->sp = vec2i32{ (int32)x, (int32)y };
-		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)x)/(1920*2), ((float32)y)/1080 };
+		//rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)x) / (1920 * 2), ((float32)y) / 1080 };
+		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
 		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->setChildLimits(0);
 		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->setChildLimits(1);
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );

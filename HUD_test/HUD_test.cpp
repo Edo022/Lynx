@@ -47,15 +47,14 @@ int main( ) {
 
 
 	{
-		lux::obj::Line2D* lineTest3;
 		lux::obj::Line2D lineTest{
-			vec2f32{ 2000, 500 }, vec2f32{ 1700, 800 },
+			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
 
 		lux::obj::Line2D lineTest2{
-			vec2f32{ 2000, 500 }, vec2f32{ 1700, 800 },
+			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};

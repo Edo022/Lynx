@@ -166,6 +166,10 @@ namespace lux{
 				children[vChildIndex]->setMaxLim(maxLim);
 				return true;
 			}
+			void update( ) final override{
+				updateBase( );
+				for(int i = 0; i < children.size( ); i++) if(children.isValid(i)) children[i]->update( );
+			}
 			limitAlignment limitAlignment{ limitAlignment::Center }; 	//The alignment of the object within its limits
 			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
 			vec2f32 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
