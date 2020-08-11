@@ -179,6 +179,7 @@ namespace lux::core::g{
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
 			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) printError("Failed to submit graphics command buffer");
+			//TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) goto redraw;
 		}
 
 

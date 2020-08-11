@@ -22,6 +22,7 @@ namespace lux::obj{
 		fw = (float32*)((int8*)render.data + 48);					//    4    |    48 - 51    |    3 +
 		sw = (float32*)((int8*)render.data + 52);					//    4    |    52 - 55    |    3
 		*(uint32*)((int8*)render.data + 56) = (uint32)common.ID;		//    4    |    56 - 59    |    3
+		//*(uint32*)((int8*)render.data + 56+8) = (uint32)common.ID;		//    4    |    56 - 59    |    3
 		//4x trailing padding											//    4    |    60 - 63
 
 		//TODO just update the shaders when needed with the right workgroup count

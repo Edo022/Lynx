@@ -51,9 +51,14 @@ namespace lux::obj {
 			*sw = vSw;
 		}
 
+		//TODO lux::mem::cpy
+		//TODO unwrap until n < 16, than switch on n and unwrap n-times
+
+
 		//TODO automatically calculate the offset of the variables with device's minStorageBufferOffset and minUniformBufferOffset
 		//TODO convert to variable. or convert the variable to function. idk
 		inline int32 getCellSize( ) const final override { return 60; }
+		//inline int32 getCellSize( ) const final override { return 80; }
 
 
 		//Updates the object data in the GPU memory
@@ -86,17 +91,32 @@ namespace lux::obj {
 		//}
 
 		inline void setFp(const vec2f32& vFp){
-			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
-			*fp = (vFp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
-			//*fp = vFp;
-			update( );
+			_fp = vFp;
+			//vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
+			//*fp = (vFp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+			////*fp = vFp;
+			//update( );
 		}
 		inline void setSp(const vec2f32& vSp){
-			vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
-			*sp = (vSp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
-			//*sp = vSp;
-			update( );
+			_sp = vSp;
+			//vec2i32 pMinLim = vec2i32(1920 * 2, 1080) * minLim;
+			//*sp = (vSp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+			////*sp = vSp;
+			//update( );
 		}
+
+
+		void recalculateCoords( ) final override {
+			//vec2i32 pMinLim = vec2i32(core::g::swapchain::swapchainExtent.width, core::g::swapchain::swapchainExtent.height) * minLim;
+			//*fp = (_fp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+			//*sp = (_sp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
+
+			//vec2i32 pMinLim = vec2i32(core::g::swapchain::swapchainExtent.width, core::g::swapchain::swapchainExtent.height) * minLim;
+			*fp = _fp * dist2D(minLim, maxLim) + minLim;
+			*sp = _sp * dist2D(minLim, maxLim) + minLim;
+			//update( );
+		}
+
 		//inline void setFp(const vec2i32& vFp){ fp_temp = vFp; update(); }
 		//inline void setSp(const vec2i32& vSp){ sp_temp = vSp; update(); }
 
@@ -105,6 +125,8 @@ namespace lux::obj {
 	private:
 		vec2f32* fp;		//First point of the line
 		vec2f32* sp;		//Second point of the line
+		vec2f32 _fp;		//First point of the line
+		vec2f32 _sp;		//Second point of the line
 		//vec2i32 fp_temp;		//TODO remove. Temporary workaround for the absence of a shader matrix transform
 		//vec2i32 sp_temp;		//TODO remove. Temporary workaround for the absence of a shader matrix transform
 	public:

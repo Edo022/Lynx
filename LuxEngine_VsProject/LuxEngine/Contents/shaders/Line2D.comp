@@ -48,6 +48,7 @@ void setPixelColor(vec2 pos, vec4 col){
 	if(zBuffer[i] <= ID){
 	zBuffer[i] = ID;
 		colorOutput[i] = col;
+//		colorOutput[i] = vec4(float(ID)/2);
 	}
 }
 
@@ -57,7 +58,6 @@ void setPixelColor(vec2 pos, vec4 col){
 void drawLine(){
 	ivec2 p0 = ivec2(fp0 * vec2(width, height));
 	ivec2 p1 = ivec2(fp1 * vec2(width, height));
-
 	//Calculate length and interpolated values
 	vec2 lDist = abs(p0 - p1);							//2D distance between the line points
 	float lFac = 1 / (distance(p0, p1) / gx);			//Factor of the position of gx in the line length	(inverse of (line length / shader call x))

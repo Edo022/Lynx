@@ -84,6 +84,7 @@ namespace lux{
 			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -
 			void allocate( );									//Allocates a memory cell for the object data				| object type				| -
 			void updateBase( );
+			virtual void recalculateCoords( ){}
 		};
 
 
@@ -165,10 +166,16 @@ namespace lux{
 				children[vChildIndex]->setMinLim(minLim);
 				children[vChildIndex]->setMaxLim(maxLim);
 				return true;
+				//TODO update per-object data
+			//TODO add  recalculateCoords( ) to all objects
 			}
 			void update( ) final override{
 				updateBase( );
-				for(int i = 0; i < children.size( ); i++) if(children.isValid(i)) children[i]->update( );
+				for(int i = 0; i < children.size( ); i++) if(children.isValid(i)) {
+					setChildLimits(i);
+					children[i]->recalculateCoords( );
+					children[i]->update( );
+				}
 			}
 			limitAlignment limitAlignment{ limitAlignment::Center }; 	//The alignment of the object within its limits
 			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties

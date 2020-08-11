@@ -35,6 +35,7 @@ namespace lux::obj{
 
 
 	void Base::updateBase( ){
+		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
 		core::g::pendingObjectUpdatesFence.startSecond( );
 		if(render.updated){
 			render.updated = false;
@@ -53,7 +54,8 @@ namespace lux::obj{
 			}
 			//debugBorder->fp_tmp = vMinLim;
 			*debugBorder->fp = vMinLim;
-			debugBorder->update( );
+			//Updated from parent update() function
+			//debugBorder->update( );
 		}
 	}
 	void __vectorcall Base2D::setMaxLim(vec2f32 vMaxLim){
@@ -65,7 +67,8 @@ namespace lux::obj{
 			}
 			//debugBorder->sp_tmp = vMaxLim;
 			*debugBorder->sp = vMaxLim;
-			debugBorder->update( );
+			//Updated from parent update() function
+			//debugBorder->update( );
 		}
 	}
 	#endif
