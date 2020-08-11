@@ -46,7 +46,7 @@
 //		//TODO
 //		lux::obj::addRenderSpace(&renderSpace);
 //		Engine& engine_ = lux::engine( );
-//		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest->gpuCell }, (engine_.shaderPath + lineTest->shaderName + ".comp.spv").begin( ), 4, 1, 1);
+//		engine_.cshaderNew(lux::Array<LuxCell>{ engine_.gpuCellWindowOutput, engine_.gpuCellWindowSize, lineTest->data }, (engine_.shaderPath + lineTest->shaderName + ".comp.spv").begin( ), 4, 1, 1);
 //	}
 //
 //

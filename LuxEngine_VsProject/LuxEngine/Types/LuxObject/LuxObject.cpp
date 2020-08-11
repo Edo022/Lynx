@@ -11,7 +11,7 @@
 
 //Adds a render space with no parent to the engine
 namespace lux::obj{
-	uint64 Base::lastID = 0;	//#LLID LOS000 initialize the last object ID
+	uint64 Base::Common::lastID = 0;	//#LLID LOS000 initialize the last object ID
 
 
 	void addRenderSpace(RenderSpace2D* pRenderSpace){
@@ -22,18 +22,26 @@ namespace lux::obj{
 	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
 	//An object needs to be allocated before being read or written
 	void Base::allocate( ){
-		if(objectType >= 3000 || objectType < 2000) return;
+		if(common.objectType >= 3000 || common.objectType < 2000) return;
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
 		core::init(false);											//Initialize the engine
 		//TODO use GPU local memory
-		gpuCell = core::c::buffers::gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
-		cellPtr = core::c::buffers::gpuCellMap(gpuCell);						//Map the cell pointer to the cell
+		//render.data = core::c::buffers::gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
+		render.data = malloc(getCellSize( ));		//Create the cell taht contains the object data
+		//render.dataPtr = core::c::buffers::gpuCellMap(render.data);						//Map the cell pointer to the cell
 		//TODO
-		localCell = core::c::buffers::gpuCellCreate(getCellSize( ), true, true);		//Create the cell taht contains the object data
+		render.localData = core::c::buffers::gpuCellCreate(getCellSize( ), false, true);		//Create the cell taht contains the object data
 	}
 
 
-
+	void Base::updateBase( ){
+		core::g::pendingObjectUpdatesFence.startSecond( );
+		if(render.updated){
+			render.updated = false;
+			core::g::objUpdates2D.add(this);
+		}
+		core::g::pendingObjectUpdatesFence.endSecond( );
+	}
 
 	#ifdef LUX_DEBUG
 	void __vectorcall Base2D::setMinLim(vec2f32 vMinLim){
@@ -43,7 +51,7 @@ namespace lux::obj{
 				debugBorder = new Border2D( );
 				debugBorder->debug = true;
 			}
-			debugBorder->sp = vMinLim;
+			debugBorder->fp_tmp = vMinLim;
 			debugBorder->update( );
 		}
 	}
@@ -54,7 +62,7 @@ namespace lux::obj{
 				debugBorder = new Border2D( );
 				debugBorder->debug = true;
 			}
-			debugBorder->sp = vMaxLim;
+			debugBorder->sp_tmp = vMaxLim;
 			debugBorder->update( );
 		}
 	}
@@ -64,6 +72,6 @@ namespace lux::obj{
 
 
 	Base2D::Base2D( ){
-		objectType = LUX_OBJECT_TYPE_2D__BASE;
+		common.objectType = LUX_OBJECT_TYPE_2D__BASE;
 	}
 }

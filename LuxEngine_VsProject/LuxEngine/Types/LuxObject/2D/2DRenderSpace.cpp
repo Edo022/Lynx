@@ -10,9 +10,9 @@ namespace lux::obj {
 	//Returns the child index
 	bool RenderSpace2D::addChild(Base2D* pObject){
 		pObject->parent = this;
-		setChildLimits(pObject->childIndex = children.add(pObject));
+		setChildLimits(pObject->common.childIndex = children.add(pObject));
 		pObject->update( );
-		return pObject->childIndex;
+		return pObject->common.childIndex;
 	}
 
 

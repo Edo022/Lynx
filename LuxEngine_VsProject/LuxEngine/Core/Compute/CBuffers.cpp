@@ -117,8 +117,8 @@ namespace lux::core::c::buffers{
 			dvc::compute.LD, vSize,
 			//Choose type. Uniform buffer if the data fits in the max uniform buffer size and it's a read only buffer, Storage buffer otherwise
 			//TODO wrong maxUniformBufferRange. It's UINT_MAX, for some reason
-			(vReadOnly && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ?
-			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			((vReadOnly && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ?
+			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			//Choose memory type. Shared memory if it needs to be accessed by the CPU, local GPU memory if not
 			(vCpuAccessible) ?
 			(VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,

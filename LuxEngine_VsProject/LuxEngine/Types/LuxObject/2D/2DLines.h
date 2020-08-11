@@ -4,6 +4,8 @@
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Graphics/Graphics.h"
 #include <vulkan/vulkan.h>
 
 
@@ -61,11 +63,26 @@ namespace lux::obj {
 			*fp = (fp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
 			*sp = (sp_temp - pMinLim) * dist2D(minLim, maxLim) + pMinLim;
 
-			void* h = core::c::buffers::gpuCellMap(gpuCell);
-			void* h2 = core::c::buffers::gpuCellMap(localCell);
-			memcpy(h2, h, getCellSize( ));
-			//if(core::c::buffers::CBuffers[getBufferIndex(gpuCell)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(gpuCell)].memory);
-			//if(core::c::buffers::CBuffers[getBufferIndex(gpuCell)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(localCell)].memory);
+			//void* h = core::c::buffers::gpuCellMap(render.data);
+			//void* h2 = core::c::buffers::gpuCellMap(render.localData);
+			//memcpy(h2, h, getCellSize( ));
+
+
+			//VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
+			//vkCmdUpdateBuffer(
+			//	cb, core::c::buffers::CBuffers[getBufferIndex(render.localData)].buffer,
+			//	getCellOffset(&core::dvc::compute.PD, render.localData), getCellSize(), h
+			//);
+			//core::g::cmd::endSingleTimeCommands(cb);
+			////core::g::pendingObjectUpdatesFence.startSecond();
+			////if(render.updated){
+			////	render.updated = false;
+			////	core::g::objUpdates2D.add(this);
+			////}
+			////core::g::pendingObjectUpdatesFence.endSecond();
+			//if(core::c::buffers::CBuffers[getBufferIndex(data)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(data)].memory);
+			//if(core::c::buffers::CBuffers[getBufferIndex(data)].isMapped) vkUnmapMemory(core::dvc::compute.LD, core::c::buffers::CBuffers[getBufferIndex(localData)].memory);
+			updateBase();
 		}
 
 		inline void setFp(const vec2i32& vFp){ fp_temp = vFp; update(); }

@@ -8,6 +8,7 @@
 #include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
+#include "LuxEngine/Types/LuxObject/LuxObject.h"
 
 
 
@@ -19,6 +20,8 @@ namespace lux::core::g{
 	extern Array<VkSemaphore>	drawFrameClearSemaphore;
 	extern Array<VkFence>		drawFrameImageRenderedFence;
 	extern int32				renderCurrentFrame;
+	extern DynArray<obj::Base*>	objUpdates2D;
+	extern FenceDE				pendingObjectUpdatesFence;
 
 
 	void			init(const bool vUseVSync, const float vFOV);

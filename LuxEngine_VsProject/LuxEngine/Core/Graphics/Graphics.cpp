@@ -8,6 +8,9 @@
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Devices.h"
+#include "LuxEngine/Types/LuxObject/LuxObject.h"
+//#include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
+//#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 
 
 
@@ -22,8 +25,8 @@ namespace lux::core::g{
 	Array<VkSemaphore>	drawFrameClearSemaphore;
 	Array<VkFence>		drawFrameImageRenderedFence;
 	int32				renderCurrentFrame = 0;
-
-
+	DynArray<obj::Base*>	objUpdates2D;
+	FenceDE				pendingObjectUpdatesFence;
 
 
 
@@ -207,6 +210,26 @@ namespace lux::core::g{
 		//Update frame number and flush the window data
 		renderCurrentFrame = (renderCurrentFrame + 1) % (out::renderMaxFramesInFlight);
 		glfwSwapBuffers(wnd::window);
+
+
+
+
+		if(objUpdates2D.size( ) > 0){
+			pendingObjectUpdatesFence.startFirst( );
+			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
+			for(int i = 0; i < objUpdates2D.size( ); i++){
+				//void* dataPtr = c::buffers::gpuCellMap(objUpdates2D[i]->render.data);
+				vkCmdUpdateBuffer(
+					cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
+					//getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData), objUpdates2D[i]->getCellSize( ), dataPtr
+					getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData), objUpdates2D[i]->getCellSize( ), objUpdates2D[i]->render.data
+				);
+				objUpdates2D[i]->render.updated = true;
+			}
+			core::g::cmd::endSingleTimeCommands(cb);
+			objUpdates2D.resize(0);
+			pendingObjectUpdatesFence.endFirst( );
+		}
 	}
 
 

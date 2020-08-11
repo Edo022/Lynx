@@ -59,35 +59,39 @@ namespace lux{
 
 
 
-		//Base class for render objects
-		struct Base {
-			//												Description													Structure differences		Value differences
-			//												----------------------------------------------------------------------------------------------------------
-			ObjectType objectType;							//Thte type of the object									| object type				| object type
-			ShaderLayout shaderLayout;						//Thte shader layout of the object							| object type				| object type
-			Base( ) : objectType(LUX_OBJECT_TYPE__BASE) { }		//														|							|
-																//														|							|
-			lux::String name{ "" };							//The name of the object.									| none						| object instance
-			static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lux object			| none						| none
-			uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
-			uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
-																//														|							|
-			void allocate( );								//Allocates a memory cell for the object data				| object type				| -
-			LuxCell gpuCell{ (uint64)-1 };					//GPU memory containing the small data of the object		| object type				| object instance
-			void* cellPtr{ nullptr };						//Pointer to the GPU memory cell							| none						| object instance
-			LuxCell localCell{ (uint64)-1 };				//Lolcal GPU copy of gpuCell								| object type				| object instance
-			inline virtual int32 getCellSize( ) const = 0;	//Size of the object data									| none						| object type
-			virtual void update( ) = 0;						//Updates the object data in the shared memory				| object type				| -
-																//														|							|
-			luxDebug(bool debug = false;)					//Defines if the object is used for graphic debugging		| none						| object instance
-																//														|							|
-			//Sets the render limits of a child object																	| object type				| -
+		//Base class for render objects							Description													Structure differences		Value differences
+		struct Base { //			   							----------------------------------------------------------------------------------------------------------
+			Base( ) { common.objectType = LUX_OBJECT_TYPE__BASE; }	//														|							|
+			struct Common{
+				ObjectType objectType;							//Thte type of the object									| object type				| object type
+				lux::String name{ "" };							//The name of the object.									| none						| object instance
+				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lux object			| none						| none
+				uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
+				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
+			} common;
+			luxDebug(bool debug = false;)						//Defines if the object is used for graphical debugging		| none						| object instance
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
+
+
+			struct Render{
+				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
+				void* data{ nullptr };							//Object tdata stored in RAM								| none						| object instance
+				LuxCell localData{ (uint64)-1 };				//Local GPU copy of data									| object type				| object instance
+				bool updated{ true };
+				LuxCell cache{ (uint64)-1 };					//Object cache that avoids draws when not needed			| object type				| object instance
+			} render;
+			inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
+			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -
+			void allocate( );									//Allocates a memory cell for the object data				| object type				| -
+			void updateBase( );
 		};
-		#define luxInitObject(dimensions_, objectType_)						\
-			/*TODO automatic enum creation*/\
-			objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;	\
-			shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
+
+
+
+		//TODO automatic enum creation
+		#define luxInitObject(dimensions_, objectType_)								\
+			common.objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;		\
+			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
 			this->allocate( );
 
 
@@ -99,7 +103,7 @@ namespace lux{
 
 		//3D object in 3D space
 		struct Base3D : public Base {
-			Base3D( ) { objectType = LUX_OBJECT_TYPE_3D__BASE; }
+			Base3D( ) { common.objectType = LUX_OBJECT_TYPE_3D__BASE; }
 
 			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
@@ -127,7 +131,7 @@ namespace lux{
 		//Base class for 2D objects with 3D properties (they can be used in both 2D and 3D spaces)
 		struct Base2DI3D : public Base {
 			//TODO
-			Base2DI3D( ) { objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
+			Base2DI3D( ) { common.objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
 
 			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object for 3D space
@@ -180,7 +184,7 @@ namespace lux{
 		//Base class for 1D objects in 1D space
 		struct Base1D : public Base {
 			//TODO
-			Base1D( ) { objectType = LUX_OBJECT_TYPE_1D__BASE; }
+			Base1D( ) { common.objectType = LUX_OBJECT_TYPE_1D__BASE; }
 
 			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
 			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others

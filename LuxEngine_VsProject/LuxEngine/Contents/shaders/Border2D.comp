@@ -11,7 +11,7 @@ layout (local_size_x = 1, local_size_y = 1, local_size_z = 1 ) in;
 layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
 layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
-layout(std430, binding = 3) buffer objData_{
+layout(binding = 3) uniform objData_{
 	//16
 	vec2 fp;	 //0
 	vec2 sp;	 //8

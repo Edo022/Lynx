@@ -44,7 +44,7 @@ namespace lux::core::c::shaders{
 		fopen_s(&fp, pFilePath, "rb");									//Open the file
 		if(fp == NULL) {
 			printf("Could not find or open file: %s\n", pFilePath);
-			return;
+			return 0;
 		}
 
 		_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
@@ -422,7 +422,8 @@ namespace lux::core::c::shaders{
 		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
 		//Dispatch the compute shader to execute it with the specified workgroups and descriptors
 		vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCounty, vGroupCountz);
-
+		//TODO update local buffers with this
+		//vkCmdUpdateBuffer
 
 		//End command buffer recording
 		TryVk(vkEndCommandBuffer(pCShader->commandBuffers[0])) printError("Failed to record command buffer");

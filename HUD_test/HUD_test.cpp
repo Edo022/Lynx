@@ -36,6 +36,11 @@ void hg(lux::Array<uint16>){
 
 
 
+//TODO
+//TODO object cache
+//TODO object secondary buffers
+//TODO
+
 
 int main( ) {
 	LuxInit(false);
