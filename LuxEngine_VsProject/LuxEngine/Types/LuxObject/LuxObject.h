@@ -18,7 +18,7 @@
 //TODO restore() function to restore an object and reuse it instead of destroying it
 //TODO restore function tipo in destroy function description
 namespace lux{
-	namespace obj {
+	namespace obj { //This namespace contains all the structures and functions of render objects
 		struct Border2D;
 
 
@@ -75,7 +75,7 @@ namespace lux{
 
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
-				void* data{ nullptr };							//Object tdata stored in RAM								| none						| object instance
+				int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
 				LuxCell localData{ (uint64)-1 };				//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
 				LuxCell cache{ (uint64)-1 };					//Object cache that avoids draws when not needed			| object type				| object instance
@@ -150,7 +150,7 @@ namespace lux{
 
 		//Base class for 2D objects in 2D space
 		struct Base2D : public Base {
-			Base2D( );
+			Base2D( ){ common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
 
 			//TODO add absolute pixel position and scale
 			vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object

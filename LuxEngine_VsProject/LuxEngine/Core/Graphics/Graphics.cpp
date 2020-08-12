@@ -219,13 +219,14 @@ namespace lux::core::g{
 			pendingObjectUpdatesFence.startFirst( );
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
 			for(int i = 0; i < objUpdates2D.size( ); i++){
+				objUpdates2D[i]->render.updated = true;
 				//void* dataPtr = c::buffers::gpuCellMap(objUpdates2D[i]->render.data);
 				vkCmdUpdateBuffer(
 					cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
-					//getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData), objUpdates2D[i]->getCellSize( ), dataPtr
-					getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData), objUpdates2D[i]->getCellSize( ), objUpdates2D[i]->render.data
+					getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData),
+					objUpdates2D[i]->getCellSize( ),
+					(void*)objUpdates2D[i]->render.data
 				);
-				objUpdates2D[i]->render.updated = true;
 			}
 			core::g::cmd::endSingleTimeCommands(cb);
 			objUpdates2D.resize(0);
@@ -236,7 +237,9 @@ namespace lux::core::g{
 
 
 
-
+	//TODO fix cell size
+	//TODO cell size is not taking into account the additional size of the cell before it due to the minimum cell offset
+	//TODO make the base cell offset a multiple of the offsetted size
 
 
 

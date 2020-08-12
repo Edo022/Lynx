@@ -57,6 +57,7 @@ namespace lux::obj {
 
 		//TODO automatically calculate the offset of the variables with device's minStorageBufferOffset and minUniformBufferOffset
 		//TODO convert to variable. or convert the variable to function. idk
+		//TODO calculate offset and cell size at runtime with an everything array
 		inline int32 getCellSize( ) const final override { return 60; }
 		//inline int32 getCellSize( ) const final override { return 80; }
 

@@ -3,13 +3,17 @@
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 #define g gl_GlobalInvocationID
+const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
+const vec2 mp = {-1, 1};	//Minus-plus vector for fast vec2 operations
+const vec2 pz = {1, 0};		//
+const vec2 zp = {0, 1};		//
 
 
 
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1 ) in;
 
 layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
-layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
+layout(std430, binding = 1) buffer windowSize_{ uvec2 window; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 layout(std140, binding = 3) uniform objData_{
 	//16
@@ -33,7 +37,7 @@ layout(std140, binding = 3) uniform objData_{
 
 
 void setPixelColor(vec2 pos, vec4 col){
-	uint i = uint(pos.y) * width + uint(pos.x);
+	uint i = uint(pos.y) * window.x + uint(pos.x);
 
 	//TODO use ordered render and component cache
 	zBuffer[i] = -1;
@@ -44,18 +48,29 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 void main() {
-	ivec2 fp = ivec2(ffp * vec2(width, height));
-	ivec2 sp = ivec2(fsp * vec2(width, height));
+	vec2 fp = ffp * window;
+	vec2 sp = fsp * window;
 
-	vec2 dist = abs(fp - sp);
+//	vec2 dist = abs(fp - sp);
 	//TODO use pre calculated workgroup count
-	if(gx > dist.x || gy > dist.y) return;
+	if(gx > abs(fp.x - sp.x)) return;
 
-	setPixelColor(vec2(fp.x + gx, fp.y), vec4(0,1,0,1));
-	setPixelColor(vec2(fp.x + gx, sp.y), vec4(0,1,0,1));
-	setPixelColor(vec2(fp.x, fp.y + gy), vec4(0,1,0,1));
-	setPixelColor(vec2(sp.x, fp.y + gy), vec4(0,1,0,1));
+	setPixelColor(fp + vec2(gx + 1, 0), vec4(0,1,0,1));
+	setPixelColor(fp + vec2(gx + 1, sp.y), vec4(0,1,0,1));
 
+	setPixelColor(sp, vec4(1,0,0,1));
+
+
+
+//	setPixelColor(fp, vec4(1, 0,0,1));
+//	setPixelColor(vec2(fp.x + gx, sp.y), vec4(0,1,0,1));
+
+//	setPixelColor(vec2(fp.x, fp.y + gy), vec4(0,1,0,1));
+//	setPixelColor(vec2(sp.x, fp.y + gy), vec4(0,1,0,1));
+//
 //	setPixelColor(vec2(sp), vec4(1,0,0,1));
 //	setPixelColor(vec2(fp), vec4(1,0,0,1));
+
+//	setPixelColor(fp, vec4(1,0,0,1));
+//	setPixelColor(sp + vec2(gx,0), vec4(1,0,0,1));
 }
