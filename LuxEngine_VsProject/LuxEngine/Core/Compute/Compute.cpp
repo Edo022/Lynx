@@ -20,7 +20,7 @@ namespace lux::core::c{
 
 
 
-	void computeInit( ) {
+	void init( ) {
 		{ //Initialize window buffers and size
 			g::wnd::gpuCellWindowOutput_i = buffers::gpuCellCreate(g::wnd::width * g::wnd::height * 4	/*A8-R8-G8-B8     UI*/, false);
 			g::wnd::gpuCellWindowOutput = buffers::gpuCellCreate(g::wnd::width * g::wnd::height * 4 * 4	/*A32-R32-G32-B32 UF*/, false);

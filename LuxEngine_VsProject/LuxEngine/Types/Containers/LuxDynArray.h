@@ -22,7 +22,7 @@ namespace lux {
 		//*   vNewSize | new size of the array
 		//*   Returns  | the new size
 		inline iter __vectorcall resize(const iter vNewSize) {
-			Array<type, iter>::resize((vNewSize == 0) ? 0 : step(vNewSize, chunkSize));
+			Array<type, iter>::resize((vNewSize == 0) ? 0 : multipleOf(vNewSize, chunkSize));
 			return this->__lp_size = vNewSize;
 		}
 
@@ -33,7 +33,7 @@ namespace lux {
 		//*   Returns    | the new size
 		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
 			//TODO not secure
-			Array<type, iter>::resize((vNewSize == 0) ? 0 : step(vNewSize, chunkSize), vInitValue);
+			Array<type, iter>::resize((vNewSize == 0) ? 0 : multipleOf(vNewSize, chunkSize), vInitValue);
 			return this->__lp_size = vNewSize;
 		}
 

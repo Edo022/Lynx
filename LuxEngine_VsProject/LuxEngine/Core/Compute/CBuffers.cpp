@@ -13,7 +13,16 @@
 
 
 namespace lux::core::c::buffers{
+	Array<uint32> uniformSizes{ 50, 5000, 500000, 2000000, 0 };
+	Array<uint32> storageSizes{ 50, 5000, 500000, 2000000, 0 };
 	Map<LuxBuffer_t, uint32> CBuffers; //List of GPU buffers
+
+	void init( ){
+		for(int i = 0; i < (uint32)LuxBufferClass::LUX_BUFFER_CLASS_NUM; i++){
+			uniformSizes[i] = scast<uint32>(multipleOf(uniformSizes[i], dvc::compute.PD.properties.limits.minStorageBufferOffsetAlignment));
+			storageSizes[i] = scast<uint32>(multipleOf(storageSizes[i], dvc::compute.PD.properties.limits.minUniformBufferOffsetAlignment));
+		}
+	}
 
 
 
@@ -136,28 +145,28 @@ namespace lux::core::c::buffers{
 	//*   vCpuAccessible | whether the CPU can access the cell or not. Non accessible memory is faster but it cannot be mapped
 	//*   Returns        | the code of the cell. -1 if an error occurs
 	LuxCell gpuCellCreate(const uint32 vCellSize, const bool vCpuAccessible, const bool vReadOnly) {
-		LuxBufferClass bufferClass;														//Create a variable that stores the class of the buffer
-		if(vCellSize <= LUX_BUFFER_CLASS_50) bufferClass = LUX_BUFFER_CLASS_50;			//Find the required buffer class. A cell must have a size smaller than or equal to the size of the class to belong to it
-		else if(vCellSize <= LUX_BUFFER_CLASS_5K) bufferClass = LUX_BUFFER_CLASS_5K;
-		else if(vCellSize <= LUX_BUFFER_CLASS_500K) bufferClass = LUX_BUFFER_CLASS_500K;
-		else if(vCellSize <= LUX_BUFFER_CLASS_2MLN) bufferClass = LUX_BUFFER_CLASS_2MLN;
-		else bufferClass = LUX_BUFFER_CLASS_LRG;
+		LuxBufferClass bClass;														//Create a variable that stores the class of the buffer
+		if(vCellSize <= LUX_BUFFER_CLASS_50)		bClass = LUX_BUFFER_CLASS_50; 		//Find the required buffer class. A cell must have a size smaller than or equal to the size of theUniformto belong to i] : [bufferStorageClassesSizest
+		else if(vCellSize <= LUX_BUFFER_CLASS_5K)	bClass = LUX_BUFFER_CLASS_5K;
+		else if(vCellSize <= LUX_BUFFER_CLASS_500K) bClass = LUX_BUFFER_CLASS_500K;
+		else if(vCellSize <= LUX_BUFFER_CLASS_2MLN) bClass = LUX_BUFFER_CLASS_2MLN;
+		else bClass = LUX_BUFFER_CLASS_LRG;
 
-		if(bufferClass != LUX_BUFFER_CLASS_LRG) {										//If it's a static buffer
+		if(bClass != LUX_BUFFER_CLASS_LRG) {										//If it's a static buffer
 			LuxBuffer buffer = -1;															//Initialize the buffer variable. It stores the index of the buffer where the cell will be created
 			for(uint32 i = 0; i < buffers::CBuffers.size( ); ++i) {							//Find the buffer. For each of the preexistent buffers
 				if(buffers::CBuffers.isValid(i) &&												//If it can be used,
 					buffers::CBuffers[i].readOnly == vReadOnly &&								//It has the same type,
 					buffers::CBuffers[i].cpuAccessible == vCpuAccessible &&						//same memory type,
-					buffers::CBuffers[i].bufferClass == bufferClass &&							//same class,    //And it has free cells,
+					buffers::CBuffers[i].bufferClass == bClass &&								//same class,    //And it has free cells,
 					buffers::CBuffers[i].cells.usedSize( ) < LUX_CNF_GPU_STATIC_BUFFER_SIZE / buffers::CBuffers[i].bufferClass) {
 					buffer = i;																		//Save its index
 				}
 			}
 			//If there are no buffers of the same type, create a new one with the specified class and properties and save its index
 			//If there is a buffer of the same type, create a new cell in it and return its code
-			if(buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(LUX_CNF_GPU_STATIC_BUFFER_SIZE, bufferClass, vCpuAccessible, vReadOnly);
-			return createLuxCell(true, buffer, buffers::CBuffers[buffer].cells.add(1), bufferClass);
+			if(buffer == (LuxBuffer)-1) buffer = gpuBufferCreate(LUX_CNF_GPU_STATIC_BUFFER_SIZE, bClass, vCpuAccessible, vReadOnly);
+			return createLuxCell(true, buffer, buffers::CBuffers[buffer].cells.add(1), (vReadOnly) ? storageSizes[bClass] : uniformSizes[bClass]);
 		}
 		//If it's a custom size buffer, create a new buffer and return its code
 		else return createLuxCell(false, gpuBufferCreate(vCellSize, LUX_BUFFER_CLASS_LRG, vCpuAccessible, vReadOnly), 0, vCellSize);

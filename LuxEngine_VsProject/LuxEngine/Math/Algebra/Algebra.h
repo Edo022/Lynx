@@ -15,18 +15,19 @@ template<class T> inline constexpr T __lp_abs(const T n) { return (n < 0) ? -n :
 
 
 
-//Returns the value of a number n aligned to the first step of an offset o larger than n
-//    e.g. step(21, 6) returns 24
-//*   n: the number to align
-//*   o: the offset
-template<class T> inline constexpr T step(const T n, const T o) { return (n % o == 0) ? n : (n - (n % o) + o); }
+//Returns the first multiple of m larger than or equal to n
+//   e.g. multipleOf(21, 6) returns 24
+//   e.g. multipleOf(15, 3) returns 15
+template<class tn, class tm> inline constexpr auto multipleOf(const tn n, const tm m) { 
+	return (n % m == 0) ? n : (n - (n % m) + m); 
+}
 
 
 
 //Returns the maximum number of variables with size s that fits in b bytes, with a minimum of 1 variable
-//e.g. fit(sizeof(int32), 15) returns 3
-//e.g. fit(sizeof(int32), 3) returns 1
-inline constexpr uint64 fit(const uint64 s, const uint64 b) {  return step(b, s) / s; }
+//   e.g. fit(sizeof(int32), 15) returns 3
+//   e.g. fit(sizeof(int32), 3) returns 1
+inline constexpr uint64 fit(const uint64 s, const uint64 b) {  return multipleOf(b, s) / s; }
 
 
 #pragma warning ( default:4146 ) //Unary minus operator applied to unsigned type

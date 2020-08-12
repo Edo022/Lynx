@@ -9,14 +9,20 @@
 
 
 namespace lux::core::c::buffers{
-	//Buffer classes (size of its cells)
+	//Buffer classes
+	//The class of a buffer defines how large are its cells
+	//The actual size depends on the device properties, but it's guaranteed to be at least as the class name says
 	enum LuxBufferClass : uint32 {
-		LUX_BUFFER_CLASS_50 = 50,
-		LUX_BUFFER_CLASS_5K = 5000,
-		LUX_BUFFER_CLASS_500K = 500000,
-		LUX_BUFFER_CLASS_2MLN = 2000000,
-		LUX_BUFFER_CLASS_LRG = 0
+		LUX_BUFFER_CLASS_50,
+		LUX_BUFFER_CLASS_5K,
+		LUX_BUFFER_CLASS_500K,
+		LUX_BUFFER_CLASS_2MLN,
+		LUX_BUFFER_CLASS_LRG,
+		LUX_BUFFER_CLASS_NUM
 	};
+	extern Array<uint32> uniformSizes;
+	extern Array<uint32> storageSizes;
+	void init( );
 
 
 	//This structure groups the components of a Vulkan buffer
@@ -31,11 +37,11 @@ namespace lux::core::c::buffers{
 		lux::Map<int8, uint32> cells;	//This array contains no data. It's used to save the state of a cell (used or free) //TODO use a LuxBitArray
 		bool isMapped{ false };			//Whether or not the buffer is mapped
 	};
-
-
-
-
 	extern Map<LuxBuffer_t, uint32>	CBuffers;				//List of GPU buffers
+
+
+
+
 
 	void		createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory);
 	void		copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize);

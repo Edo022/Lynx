@@ -103,7 +103,8 @@ namespace lux::core{
 		g::wnd::initWindow( );
 		Normal printf("Creating Instance...                     ");			g::wnd::createInstance( );						SuccessNoNl printf("ok");
 		g::init(vUseVSync, vFOV);
-		c::computeInit( );
+		c::buffers::init( );
+		c::init( );
 
 		//Loop
 		Success printf("Initialization completed in %f s", luxStopChrono(start));
