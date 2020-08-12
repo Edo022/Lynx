@@ -174,12 +174,12 @@ namespace lux::core{
 	extern bool		initialized;
 	extern uint32	frames;
 
-	extern VkInstance				instance;
-	extern VkDebugUtilsMessengerEXT	debugMessenger;
-	extern VkSurfaceKHR				surface;
+	extern VkInstance					instance;
+	extern VkDebugUtilsMessengerEXT		debugMessenger;
+	extern VkSurfaceKHR					surface;
 
-	extern Array<const char*, uint32> validationLayers;
-	extern Array<const char*, uint32> requiredDeviceExtensions;
+	extern Array<const char*, uint32>	validationLayers;
+	extern Array<const char*, uint32>	requiredDeviceExtensions;
 
 
 

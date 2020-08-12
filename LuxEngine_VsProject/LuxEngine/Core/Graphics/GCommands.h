@@ -10,7 +10,7 @@ namespace lux::core::g::cmd{
 	extern VkCommandPool			singleTimeCommandPool;
 	extern Array<VkCommandBuffer>	singleTimeCommandBuffers;
 
-	void				createGraphicsCommandPool();
-	VkCommandBuffer		beginSingleTimeCommands();
+	void				createGraphicsCommandPool( );
+	VkCommandBuffer		beginSingleTimeCommands( );
 	void				endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
 }

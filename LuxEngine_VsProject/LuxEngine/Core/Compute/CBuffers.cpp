@@ -127,7 +127,7 @@ namespace lux::core::c::buffers{
 			//Choose type. Uniform buffer if the data fits in the max uniform buffer size and it's a read only buffer, Storage buffer otherwise
 			//TODO wrong maxUniformBufferRange. It's UINT_MAX, for some reason
 			((vReadOnly && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ?
-			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			//Choose memory type. Shared memory if it needs to be accessed by the CPU, local GPU memory if not
 			(vCpuAccessible) ?
 			(VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
@@ -153,14 +153,14 @@ namespace lux::core::c::buffers{
 		else bClass = LUX_BUFFER_CLASS_LRG;
 
 		if(bClass != LUX_BUFFER_CLASS_LRG) {										//If it's a static buffer
-			LuxBuffer buffer = -1;															//Initialize the buffer variable. It stores the index of the buffer where the cell will be created
-			for(uint32 i = 0; i < buffers::CBuffers.size( ); ++i) {							//Find the buffer. For each of the preexistent buffers
-				if(buffers::CBuffers.isValid(i) &&												//If it can be used,
-					buffers::CBuffers[i].readOnly == vReadOnly &&								//It has the same type,
-					buffers::CBuffers[i].cpuAccessible == vCpuAccessible &&						//same memory type,
-					buffers::CBuffers[i].bufferClass == bClass &&								//same class,    //And it has free cells,
+			LuxBuffer buffer = -1;														//Initialize the buffer variable. It stores the index of the buffer where the cell will be created
+			for(uint32 i = 0; i < buffers::CBuffers.size( ); ++i) {						//Find the buffer. For each of the preexistent buffers
+				if(buffers::CBuffers.isValid(i) &&											//If it can be used,
+					buffers::CBuffers[i].readOnly == vReadOnly &&							//It has the same type,
+					buffers::CBuffers[i].cpuAccessible == vCpuAccessible &&					//same memory type,
+					buffers::CBuffers[i].bufferClass == bClass &&							//same class,    //And it has free cells,
 					buffers::CBuffers[i].cells.usedSize( ) < LUX_CNF_GPU_STATIC_BUFFER_SIZE / buffers::CBuffers[i].bufferClass) {
-					buffer = i;																		//Save its index
+					buffer = i;																	//Save its index
 				}
 			}
 			//If there are no buffers of the same type, create a new one with the specified class and properties and save its index

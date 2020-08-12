@@ -25,9 +25,9 @@ extern double* __lp_atan;
 
 
 
-static void __lp_goniometric_functions_init() {
+static void __lp_goniometric_functions_init( ) {
 	#ifdef LUX_CNF_USE_FFUNCTIONS
-	for (int i = 0; i < LUX_CNF_FFUNCTIONS_PRECISION; ++i) {
+	for(int i = 0; i < LUX_CNF_FFUNCTIONS_PRECISION; ++i) {
 		static double rads = (revToRad(scast<double>(i)) / LUX_CNF_FFUNCTIONS_PRECISION);
 		__lp_sin[i] = sin(rads);
 		__lp_cos[i] = cos(rads);

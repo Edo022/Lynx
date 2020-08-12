@@ -53,7 +53,7 @@ namespace lux::thr {
 			0;															//#LLID THR0001 The thread will continue from here when it's resumed
 			if(!stg.empty( )){											//Check if new functions were added to the queues
 				stgAddFence.startFirst( );
-				while(stg.size( ) > 0){									//For each element of the queue
+				while(stg.size( ) > 0){										//For each element of the queue
 					//TODO do something if there are no enought threads
 					if(thrStates.usedSize( ) < sys::threadNum){					//If there is a free thread
 						uint32 thrIndex = thrStates.add(ThrState::RUNNING);			//Set its state to RUNNING and save its index (automatically calculated by the add() function)

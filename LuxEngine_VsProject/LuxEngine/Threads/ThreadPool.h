@@ -21,10 +21,10 @@
 namespace lux::thr {
 	//TODO fix queue priority
 	enum Priority : uint16 {
-		LUX_PRIORITY_MAX  = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
+		LUX_PRIORITY_MAX = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
 		LUX_PRIORITY_HIGH = 3,	//execute only after all the max priority functions have been executed
-		LUX_PRIORITY_LOW  = 2,	//execute only after all the higher priority functions have been executed
-		LUX_PRIORITY_MIN  = 1	//execute when there are no higher priority functions left
+		LUX_PRIORITY_LOW = 2,	//execute only after all the higher priority functions have been executed
+		LUX_PRIORITY_MIN = 1	//execute when there are no higher priority functions left
 	};
 	enum class ThrState : uint8 {
 		RUNNING,

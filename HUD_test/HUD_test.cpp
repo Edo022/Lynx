@@ -6,6 +6,8 @@
 //^(/)|(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 //TODO squared distance aa*bb
 //TODO add memory pool
+//TODO lux::mem::cpy
+//TODO unwrap until n < 16, than switch on n and unwrap n-times
 
 
 
@@ -64,12 +66,7 @@ int main( ) {
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
 		renderSpace.addChild(&lineTest);
 		renderSpace.addChild(&lineTest2);
-		//TODO automatize object search
-		//lineTest.debugBorder->update( );
-		//lineTest2.debugBorder->update( );
-		//renderSpace.addChild(lineTest.debugBorder);
-		//renderSpace.addChild(lineTest2.debugBorder);
-
+		//TODO automatize object search //TODO wtf does this mean
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 

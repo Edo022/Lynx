@@ -51,5 +51,5 @@ namespace lux::sys {
 	}
 
 	extern uint32 threadNum;
-	void __lp_init_system();
+	void __lp_init_system( );
 }

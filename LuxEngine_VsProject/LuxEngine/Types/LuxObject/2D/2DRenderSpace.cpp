@@ -1,6 +1,6 @@
 
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
-
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -40,11 +40,12 @@ namespace lux::obj {
 			//case AlignmentType::Vertical:
 			//case AlignmentType::Horizontal:
 			case AlignmentType::Free:
+			{
 				children[vChildIndex]->setMinLim(minLim);
 				children[vChildIndex]->setMaxLim(maxLim);
 				break;
-			default:
-				exit(-123);
+			}
+			default: core::printError("Unknown children alignment type. If you see this error, it's probably a bug in the engine", -2, true);
 		}
 		return true;
 	}

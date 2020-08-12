@@ -39,11 +39,8 @@ namespace lux::core{
 
 
 
-	//680
-	//680
-	//660
-	//680
-	//680
+
+
 
 
 	//Deprecated function
@@ -105,17 +102,22 @@ namespace lux::core{
 
 		//Init
 		g::wnd::initWindow( );
-		Normal printf("Creating Instance...                     ");			g::wnd::createInstance( );						SuccessNoNl printf("ok");
+		Normal	printf("Creating Instance...                     ");
+		g::wnd::createInstance( );
+		SuccessNoNl printf("ok");
+
 		g::init(vUseVSync, vFOV);
 		c::buffers::init( );
 		c::init( );
 
 		//Loop
 		Success printf("Initialization completed in %f s", luxStopChrono(start));
-		Success printf("Starting Lux Engine\n");						mainLoop( );									MainSeparator;
+		Success printf("Starting Lux Engine\n");
+		mainLoop( );								MainSeparator;
 
 		//Exit
-		Normal  printf("Cleaning memory");								g::cleanup( ); c::computeCleanup( );		NewLine;
+		Normal  printf("Cleaning memory\n");
+		g::cleanup( ); c::computeCleanup( );
 		vkDestroyInstance(instance, nullptr);
 		glfwDestroyWindow(g::wnd::window);
 		glfwTerminate( );
@@ -130,10 +132,7 @@ namespace lux::core{
 		std::thread renderThr(&runRenderThr);				renderThr.detach( );
 		initialized = true;
 
-
-		while(!glfwWindowShouldClose(g::wnd::window)) {
-			glfwWaitEvents( );
-		}
+		while(!glfwWindowShouldClose(g::wnd::window)) glfwWaitEvents( );
 		running = false;
 		vkDeviceWaitIdle(dvc::graphics.LD);
 	}

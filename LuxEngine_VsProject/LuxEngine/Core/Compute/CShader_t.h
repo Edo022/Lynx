@@ -40,13 +40,9 @@ struct LuxShaderLayout_t{
 
 //This struct contains the elements of a shader instance
 struct LuxShader_t {
-	//Descriptors
 	VkDescriptorPool descriptorPool;						//A descriptor pool containing the descriptor sets
 	VkDescriptorSet descriptorSet;							//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
-
-	//Commands
 	lux::Array <VkCommandBuffer> commandBuffers;			//The command buffers to execute the shader or other vulkan commands
-
 	lux::DynArray<void*> __lp_ptrs;							//Same as LuxShaderLayout_t
 };
 

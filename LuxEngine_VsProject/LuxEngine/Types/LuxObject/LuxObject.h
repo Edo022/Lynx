@@ -17,6 +17,7 @@
 //TODO reuse objects dont destroy them
 //TODO restore() function to restore an object and reuse it instead of destroying it
 //TODO restore function tipo in destroy function description
+//TODO recycle()
 namespace lux{
 	namespace obj { //This namespace contains all the structures and functions of render objects
 		struct Border2D;
@@ -166,13 +167,12 @@ namespace lux{
 				children[vChildIndex]->setMinLim(minLim);
 				children[vChildIndex]->setMaxLim(maxLim);
 				return true;
-				//TODO update per-object data
-			//TODO add  recalculateCoords( ) to all objects
 			}
 			void update( ) final override{
 				updateBase( );
 				for(int i = 0; i < children.size( ); i++) if(children.isValid(i)) {
 					setChildLimits(i);
+					//TODO add  recalculateCoords( ) in all objects
 					children[i]->recalculateCoords( );
 					children[i]->update( );
 				}

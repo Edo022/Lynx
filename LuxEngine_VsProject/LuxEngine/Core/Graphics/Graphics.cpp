@@ -19,14 +19,14 @@
 
 
 namespace lux::core::g{
-	Array<VkSemaphore>	drawFrameImageAquiredSemaphore;
-	Array<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
-	Array<VkSemaphore>	drawFrameCopySemaphore;
-	Array<VkSemaphore>	drawFrameClearSemaphore;
-	Array<VkFence>		drawFrameImageRenderedFence;
-	int32				renderCurrentFrame = 0;
+	Array<VkSemaphore>		drawFrameImageAquiredSemaphore;
+	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
+	Array<VkSemaphore>		drawFrameCopySemaphore;
+	Array<VkSemaphore>		drawFrameClearSemaphore;
+	Array<VkFence>			drawFrameImageRenderedFence;
+	int32					renderCurrentFrame = 0;
 	DynArray<obj::Base*>	objUpdates2D;
-	FenceDE				pendingObjectUpdatesFence;
+	FenceDE					pendingObjectUpdatesFence;
 
 
 
@@ -37,17 +37,21 @@ namespace lux::core::g{
 		useVSync = vUseVSync;
 		FOV = vFOV;
 
-		luxDebug(Failure printf("D E B U G    M O D E"));													MainSeparator;
+		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
 
 		//Initialize vulkan
 		TryVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface)) printError("Failed to create window surface");
-		Normal printf("    Searching for physical devices...    ");		dvc::deviceGetPhysical( );											NewLine;
+		Normal printf("    Searching for physical devices...    \n");
+		dvc::deviceGetPhysical( );
 		cmd::createGraphicsCommandPool( );
-		Normal printf("    Creating VK swapchain...             ");		swapchain::swapchainCreate( );					SuccessNoNl printf("ok");
+		Normal printf("    Creating VK swapchain...             ");
+		swapchain::swapchainCreate( );
 
 		luxDebug(createDebugMessenger( ));
 		createSyncObjs( );
 	}
+
+
 
 
 	#ifdef LUX_DEBUG
@@ -57,6 +61,8 @@ namespace lux::core::g{
 		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger");
 	};
 	#endif
+
+
 
 
 	void createSyncObjs( ) {
@@ -179,7 +185,6 @@ namespace lux::core::g{
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
 			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) printError("Failed to submit graphics command buffer");
-			//TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) goto redraw;
 		}
 
 
@@ -197,7 +202,7 @@ namespace lux::core::g{
 
 			switch(vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo)) {
 				case VK_SUCCESS:  break;
-					//TODO
+				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
 					swapchain::swapchainRecreate(false);
 					vkDeviceWaitIdle(dvc::graphics.LD);
@@ -215,12 +220,13 @@ namespace lux::core::g{
 
 
 
+		//TODO parallelize work from a secondary render thread
+		//Fix objects update requests
 		if(objUpdates2D.size( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
 			for(int i = 0; i < objUpdates2D.size( ); i++){
 				objUpdates2D[i]->render.updated = true;
-				//void* dataPtr = c::buffers::gpuCellMap(objUpdates2D[i]->render.data);
 				vkCmdUpdateBuffer(
 					cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
 					getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData),
@@ -237,9 +243,7 @@ namespace lux::core::g{
 
 
 
-	//TODO fix cell size
-	//TODO cell size is not taking into account the additional size of the cell before it due to the minimum cell offset
-	//TODO make the base cell offset a multiple of the offsetted size
+
 
 
 
@@ -255,13 +259,13 @@ namespace lux::core::g{
 			vkDestroyFence(dvc::graphics.LD, drawFrameImageRenderedFence[i], nullptr);
 		}
 
+		//If the compute and the graphics devices are not the same, destroy the graphics device
+		if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) vkDestroyDevice(dvc::graphics.LD, nullptr);
+		vkDestroyDevice(dvc::compute.LD, nullptr);												//Destroy the compute device
+		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);					//Destroy all the secondary devices
 
-		if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) vkDestroyDevice(dvc::graphics.LD, nullptr);	//If the compute and the graphics devices are not the same, destroy the graphics device
-		vkDestroyDevice(dvc::compute.LD, nullptr);																			//Destroy the compute device
-		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);											//Destroy all the secondary devices
-
-		luxDebug(debug::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));						//Destroy the debug messenger if present
-		vkDestroySurfaceKHR(instance, surface, nullptr);																//Destroy the vulkan surface
+		luxDebug(debug::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));		//Destroy the debug messenger if present
+		vkDestroySurfaceKHR(instance, surface, nullptr);										//Destroy the vulkan surface
 	}
 
 
@@ -272,8 +276,6 @@ namespace lux::core::g{
 
 
 	// Other ------------------------------------------------------------------------------------------------------------------------------------//
-
-
 
 
 

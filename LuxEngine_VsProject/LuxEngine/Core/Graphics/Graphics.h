@@ -24,6 +24,8 @@ namespace lux::core::g{
 	extern FenceDE				pendingObjectUpdatesFence;
 
 
+
+
 	void			init(const bool vUseVSync, const float vFOV);
 	void			createSyncObjs( );
 	luxDebug(void	createDebugMessenger( ));

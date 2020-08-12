@@ -23,7 +23,7 @@
 namespace lux::core::g::out{
 	VkRenderPass	renderPass;
 	const int32		renderMaxFramesInFlight = 8;
-	bool			 renderFramebufferResized = false;
+	bool			renderFramebufferResized = false;
 
 
 
@@ -35,7 +35,7 @@ namespace lux::core::g::out{
 	void createRenderPass( ) {
 		//Color
 		VkAttachmentDescription colorAttachment{
-			.format{ swapchain::swapchainImageFormat },						//Swapchain image format
+			.format{ swapchain::swapchainImageFormat },				//Swapchain image format
 			.samples{ VK_SAMPLE_COUNT_1_BIT },						//Multisampling samples
 			.loadOp{ VK_ATTACHMENT_LOAD_OP_DONT_CARE },				//Don't clear for better performance
 			.storeOp{ VK_ATTACHMENT_STORE_OP_DONT_CARE },			//Don't save rendered image
@@ -59,7 +59,7 @@ namespace lux::core::g::out{
 
 		//Dependencies for implicit convertion
 		VkSubpassDependency dependencies[2]{
-			{ //From undefined to color
+			{	//From undefined to color
 				.srcSubpass{ VK_SUBPASS_EXTERNAL },
 				.dstSubpass{ 0 },
 				.srcStageMask{ VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT },
@@ -67,16 +67,15 @@ namespace lux::core::g::out{
 				.srcAccessMask{ VK_ACCESS_MEMORY_READ_BIT },
 				.dstAccessMask{ VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT },
 				.dependencyFlags{ 0 },
-			},
-		{ //From color to undefined
-			.srcSubpass{ 0 },
-			.dstSubpass{ VK_SUBPASS_EXTERNAL },
-			.srcStageMask{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },
-			.dstStageMask{ VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT },
-			.srcAccessMask{ VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT },
-			.dstAccessMask{ VK_ACCESS_MEMORY_READ_BIT },
-			.dependencyFlags{ 0 },
-		}
+			}, { //From color to undefined
+				.srcSubpass{ 0 },
+				.dstSubpass{ VK_SUBPASS_EXTERNAL },
+				.srcStageMask{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },
+				.dstStageMask{ VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT },
+				.srcAccessMask{ VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT },
+				.dstAccessMask{ VK_ACCESS_MEMORY_READ_BIT },
+				.dependencyFlags{ 0 },
+			}
 		};
 
 
@@ -92,7 +91,7 @@ namespace lux::core::g::out{
 		};
 
 		//Create render pass. Exit if an error occurs
-		TryVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass)) printError("Failed to create render pass");
+		TryVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass)) printError("Failed to create render pass", -1, true);
 	}
 
 
@@ -115,7 +114,7 @@ namespace lux::core::g::out{
 				.height{ swapchain::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			TryVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i])) printError("Failed to create framebuffer");
+			TryVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i])) printError("Failed to create framebuffer", -1, true);
 		}
 	}
 
@@ -148,13 +147,13 @@ namespace lux::core::g::out{
 				.b{ VK_COMPONENT_SWIZZLE_IDENTITY },
 				.a{ VK_COMPONENT_SWIZZLE_IDENTITY },
 		},
-		.subresourceRange{
-				.aspectMask{ vAspectFlags },
-				.baseMipLevel{ 0 },
-				.levelCount{ 1 },
-				.baseArrayLayer{ 0 },
-				.layerCount{ 1 },
-		},
+			.subresourceRange{
+					.aspectMask{ vAspectFlags },
+					.baseMipLevel{ 0 },
+					.levelCount{ 1 },
+					.baseArrayLayer{ 0 },
+					.layerCount{ 1 },
+			},
 		};
 		VkImageView imageView = VK_NULL_HANDLE;
 		TryVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView)) printError("Failed to create texture image view");

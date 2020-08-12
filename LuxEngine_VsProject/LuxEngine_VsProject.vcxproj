@@ -391,6 +391,7 @@
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
+    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DBorder.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DLines.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.cpp" />
     <ClCompile Include="LuxEngine\Types\LuxObject\LuxObject.cpp" />
@@ -436,7 +437,6 @@
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h" />
-    <ClInclude Include="LuxEngine\Types\Types.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec3.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec4.h" />

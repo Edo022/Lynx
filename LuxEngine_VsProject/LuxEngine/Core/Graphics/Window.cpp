@@ -33,7 +33,7 @@ namespace lux::core::g::wnd{
 
 
 		//Extensions
-		Map<const char*, uint32> extensions;
+		DynArray<const char*> extensions;
 		uint32 glfwExtensionCount;
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
@@ -58,7 +58,7 @@ namespace lux::core::g::wnd{
 			.ppEnabledLayerNames{ validationLayers.begin( ) },
 			#endif
 			.enabledExtensionCount{ extensions.size( ) },
-			.ppEnabledExtensionNames{ extensions.data(0) },
+			.ppEnabledExtensionNames{ extensions.begin( ) },
 		};
 		//Add validation layers if in debug mode
 		#ifndef LUX_DEBUG
@@ -67,18 +67,18 @@ namespace lux::core::g::wnd{
 		#else
 		//Search for validation layers
 		uint32 layerCount = 0;
-		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);								//Get layer count
+		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);					//Get layer count
 		Array<VkLayerProperties> availableLayers(layerCount);
-		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));				//Get layers
-		for(const char* layerName : validationLayers) {										//For every layer,
-			for(const auto& layerProperties : availableLayers) {								//Check if it's available
-				if(strcmp(layerName, layerProperties.layerName) == 0) break;
-				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) printError("Validation layers not available. Cannot run in debug mode");
+		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));	//Get layers
+		for(const char* layerName : validationLayers) {									//For every layer,
+			for(const auto& layerProperties : availableLayers) {							//Check if it's available
+				if(strcmp(layerName, layerProperties.layerName) == 0) break;					//If not, exit
+				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) printError("Validation layers not available. Cannot run in debug mode", -1, true);
 			}
 		}
 		#endif
 
-		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) printError("Failed to create instance");
+		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) printError("Failed to create instance", -1, true);
 	}
 
 

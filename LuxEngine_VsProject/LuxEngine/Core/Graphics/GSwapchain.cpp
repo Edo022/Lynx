@@ -28,7 +28,8 @@ namespace lux::core::g::swapchain{
 
 	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const Array<VkSurfaceFormatKHR>* pAvailableFormats) {
 		for(const auto& availableFormat : *pAvailableFormats) {
-			//if(availableFormat.format == VK_FORMAT_R32G32B32A32_SFLOAT && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+			//TODO use best format available when not specified
+			//TODO use RGBA8 format in shaders when better formats are not available
 			if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 				return availableFormat;
 			}
@@ -149,8 +150,8 @@ namespace lux::core::g::swapchain{
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &swapchainImageCount, nullptr);					//Get image count
 		swapchainImages.resize(swapchainImageCount);
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &swapchainImageCount, swapchainImages.begin( ));	//Save images
-		swapchainImageFormat = surfaceFormat.format;													//Save format
-		swapchainExtent = createInfo.imageExtent;														//Save extent
+		swapchainImageFormat = surfaceFormat.format;															//Save format
+		swapchainExtent = createInfo.imageExtent;																//Save extent
 
 
 		//Create image views
@@ -181,10 +182,10 @@ namespace lux::core::g::swapchain{
 
 
 
+
+
 	void swapchainRecreate(const bool vWindowResized) {
 		if(vWindowResized) wnd::windowResizeFence.startFirst( );	//Sync with framebufferResizeCallback
-
-
 
 		//TODO dont destroy it every time
 		static int32 width, height;	glfwGetFramebufferSize(wnd::window, &width, &height);

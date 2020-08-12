@@ -56,8 +56,8 @@ namespace lux::core::c{
 	//TODO fix
 	void computeCleanup( ) {
 		for(uint32 i = 0; i < buffers::CBuffers.size( ); ++i) {
-			if(buffers::CBuffers.isValid(i)) {									//For every buffer
-				vkDestroyBuffer(dvc::compute.LD, buffers::CBuffers[i].buffer, nullptr);	//Destroy the buffer
+			if(buffers::CBuffers.isValid(i)) {											//For every buffer
+				vkDestroyBuffer(dvc::compute.LD, buffers::CBuffers[i].buffer, nullptr);		//Destroy the buffer
 				vkFreeMemory(dvc::compute.LD, buffers::CBuffers[i].memory, nullptr);		//Free its memory
 			}
 		}

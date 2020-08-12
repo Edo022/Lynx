@@ -118,6 +118,9 @@
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.cpp">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DBorder.cpp">
+      <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
@@ -131,9 +134,6 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h">
       <Filter>LuxEngine\Types\Integers</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Types\Types.h">
-      <Filter>LuxEngine\Types</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h">
       <Filter>LuxEngine\Types\Vectors</Filter>

@@ -7,6 +7,7 @@ template<class t> struct vec4_t {
 	t w = 0;
 
 
+	//TODO
 	//Constructors
 	inline vec4_t() {}
 	inline vec4_t(const t& _x, const t& _y, const t& _z, const t& _w) { x = _x; y = _y; z = _z; w = _w; }

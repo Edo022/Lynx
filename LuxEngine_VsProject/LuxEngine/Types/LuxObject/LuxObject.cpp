@@ -24,13 +24,9 @@ namespace lux::obj{
 	void Base::allocate( ){
 		if(common.objectType >= 3000 || common.objectType < 2000) return;
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
-		core::init(false);											//Initialize the engine
-		//TODO use GPU local memory
-		//render.data = core::c::buffers::gpuCellCreate(getCellSize( ), true);		//Create the cell taht contains the object data
-		render.data = (int8*)malloc(getCellSize( ));		//Create the cell taht contains the object data
-		//render.dataPtr = core::c::buffers::gpuCellMap(render.data);						//Map the cell pointer to the cell
-		//TODO
-		render.localData = core::c::buffers::gpuCellCreate(getCellSize( ), false, true);		//Create the cell taht contains the object data
+		core::init(false);																	//Initialize the engine
+		render.data = (int8*)malloc(getCellSize( ));										//Create the cell taht contains the object data
+		render.localData = core::c::buffers::gpuCellCreate(getCellSize( ), false, true);	//Create the cell taht contains the object data
 	}
 
 
@@ -58,9 +54,7 @@ namespace lux::obj{
 				debugBorder = new Border2D( );
 				debugBorder->debug = true;
 			}
-			//debugBorder->fp_tmp = vMinLim;
 			*debugBorder->fp = vMinLim;
-			//Updated from parent update() function
 			debugBorder->update( );
 		}
 	}
@@ -71,9 +65,7 @@ namespace lux::obj{
 				debugBorder = new Border2D( );
 				debugBorder->debug = true;
 			}
-			//debugBorder->sp_tmp = vMaxLim;
 			*debugBorder->sp = vMaxLim;
-			//Updated from parent update() function
 			debugBorder->update( );
 		}
 	}

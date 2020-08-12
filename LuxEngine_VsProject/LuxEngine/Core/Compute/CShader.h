@@ -34,9 +34,8 @@ namespace lux::core::c::shaders{
 	uint32*			cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	VkShaderModule	cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
 
-	void			createDefaultCommandBuffers();
+	void			createDefaultCommandBuffers( );
 	void			createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const Array<bool> pIsReadOnly);
-	//void			createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum);
 	void			createDescriptorSets(LuxShader_t* pCShader, const Array<LuxCell>& pCells, ShaderLayout vShaderLayout);
 	void			createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
 

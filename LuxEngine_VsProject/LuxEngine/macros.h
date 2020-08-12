@@ -17,7 +17,6 @@ template<class ta, class tb>						static inline constexpr void __vectorcall swap
 
 //Console output
 #include "TermColor.hpp"
-#define NewLine				std::cout						<< '\n';
 #define Normal				std::cout<<termcolor::white		<< '\n';
 #define Success				std::cout<<termcolor::green		<< '\n';
 #define SuccessNoNl			std::cout<<termcolor::green;
@@ -31,8 +30,6 @@ template<class ta, class tb>						static inline constexpr void __vectorcall swap
 
 //Debug
 #define TryVk(f)			if ((f) != VK_SUCCESS)
-//#define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); exit(-1);}
-//#define Exit(s)				{Failure printf("\nError:"); luxDebug(printf("\nFile %s", __FILE__)); printf("\nFunction %s, line %d:\n\n\"%s\"\n", __func__, __LINE__, s); Normal system("pause"); running = false; exit(-1);}
 #define printLineInfo		{Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());}
 #define luxDebug(s)			s
 #define luxRelease(s)
