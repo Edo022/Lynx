@@ -31,17 +31,15 @@ namespace lux::obj{
 			//core::dvc::compute.PD.properties.limits.minUniformBufferOffsetAlignment;
 			luxInitObject(2, BORDER);							// size    | range         | chunk
 			fp = (vec2f32*)(render.data + 0);					//    8    |    0  - 7     |    0 +
-			//8x padding										//    8    |    8  - 16    |    0
-			sp = (vec2f32*)(render.data + 16);					//    8    |    17 - 24    |    1 +
-			//8x padding										//    8    |    25 - 32    |    1
-			*(uint32*)(render.data + 32) = (uint32)common.ID;	//    4    |    33 - 36    |    2 +
-			//4x trailing padding								//    4    |    37 - 40
+			sp = (vec2f32*)(render.data + 8);					//    8    |    8  - 15    |    0
+			*(uint32*)(render.data + 16) = (uint32)common.ID;	//    4    |    16 - 19    |    1 +
+			//4x trailing padding								//    4    |    20 - 23
 
 			//TODO just update the shaders when needed with the right workgroup count
 			//TODO remove useless out-of-range check in shaders
 			//core::c::shaders::newShader({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, render.data }, render.shaderLayout, 1980 * 2, 1080, 1);
 			//core::c::shaders::newShader({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, 1980 * 2, 1080, 1);
-			core::c::shaders::newShader({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, 1980 * 2, 1, 1);
+			core::c::shaders::newShader({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, core::g::wnd::width / 32 + 1, 1, 1);
 			//TODO remove
 			printf("\nCreated debug border");
 			flushall();

@@ -60,9 +60,6 @@ namespace lux::obj{
 			}
 			//debugBorder->fp_tmp = vMinLim;
 			*debugBorder->fp = vMinLim;
-			//TODO remove
-			printf("\nDebug border min limit set to %f, %f", (*debugBorder->fp).x, (*debugBorder->fp).y);
-			flushall();
 			//Updated from parent update() function
 			debugBorder->update( );
 		}
@@ -76,9 +73,6 @@ namespace lux::obj{
 			}
 			//debugBorder->sp_tmp = vMaxLim;
 			*debugBorder->sp = vMaxLim;
-			//TODO remove
-			printf("\nDebug border max limit set to %f, %f", (*debugBorder->sp).x, (*debugBorder->sp).y);
-			flushall();
 			//Updated from parent update() function
 			debugBorder->update( );
 		}
