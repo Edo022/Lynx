@@ -225,7 +225,7 @@ namespace lux::core::g{
 		if(objUpdates2D.size( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
-			for(int i = 0; i < objUpdates2D.size( ); i++){
+			for(uint32 i = 0; i < objUpdates2D.size( ); i++){
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
 					cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
@@ -294,7 +294,8 @@ namespace lux::core::g{
 				return format;
 			}
 		}
-		printError("Failed to find a supported format");
+		printError("Failed to find a supported format", -1, true);
+		return VK_FORMAT_UNDEFINED;
 	}
 
 
@@ -309,5 +310,6 @@ namespace lux::core::g{
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
 		printError("Failed to find suitable memory type");
+		return -1;
 	}
 }

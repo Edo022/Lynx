@@ -187,7 +187,7 @@ namespace lux::core::c::shaders{
 	void createDescriptorSets(LuxShader_t* pCShader, const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
-		for(int i = 0; i < pCells.size( ); i++){
+		for(uint32 i = 0; i < pCells.size( ); i++){
 			if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly){
 				uniformCount++;
 			}

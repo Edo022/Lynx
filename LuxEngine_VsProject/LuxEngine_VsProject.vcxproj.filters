@@ -60,7 +60,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
       <Filter>LuxEngine\Math\Trigonometry</Filter>
     </ClCompile>

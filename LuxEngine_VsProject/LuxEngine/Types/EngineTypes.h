@@ -7,7 +7,7 @@
 
 
 
-typedef uint64 LuxShader, LuxBuffer;
+typedef uint32 LuxBuffer, LuxShader;
 typedef uint64 LuxCell;
 
 

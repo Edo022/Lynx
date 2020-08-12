@@ -41,6 +41,7 @@ namespace lux {
 			__lp_lux_static_array_init((vInitSize >= 0) ? vInitSize : 0);
 		}
 
+		//TODO use lux EverythingArray
 		//Initializes the array using a list of elements, automatically converting it to the right type
 		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
 			__lp_lux_static_array_init((iter)pElements.size( ));

@@ -170,7 +170,7 @@ namespace lux{
 			}
 			void update( ) final override{
 				updateBase( );
-				for(int i = 0; i < children.size( ); i++) if(children.isValid(i)) {
+				for(uint32 i = 0; i < children.size( ); i++) if(children.isValid(i)) {
 					setChildLimits(i);
 					//TODO add  recalculateCoords( ) in all objects
 					children[i]->recalculateCoords( );
