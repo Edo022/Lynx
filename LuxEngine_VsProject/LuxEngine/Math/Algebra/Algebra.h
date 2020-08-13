@@ -18,8 +18,14 @@ template<class T> inline constexpr T __lp_abs(const T n) { return (n < 0) ? -n :
 //Returns the first multiple of m larger than or equal to n
 //   e.g. multipleOf(21, 6) returns 24
 //   e.g. multipleOf(15, 3) returns 15
-template<class tn, class tm> inline constexpr auto multipleOf(const tn n, const tm m) { 
-	return (n % m == 0) ? n : (n - (n % m) + m); 
+template<class tn, class tm> inline constexpr auto multipleOf(const tn n, const tm m) {
+	return (n % m) ? (n - (n % m) + m) : n;
+}
+//Returns the largest multiple of m smaller than or equal to n
+//   e.g. multipleOf(21, 6) returns 18
+//   e.g. multipleOf(15, 3) returns 15
+template<class tn, class tm> inline constexpr auto mmultipleOf(const tn n, const tm m) {
+	return (n - (n % m));
 }
 
 

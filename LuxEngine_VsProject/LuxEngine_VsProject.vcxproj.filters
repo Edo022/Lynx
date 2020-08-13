@@ -58,6 +58,9 @@
     <Filter Include="LuxEngine\Core\Input">
       <UniqueIdentifier>{34842cef-8c91-42f1-a265-42e962063329}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Memory">
+      <UniqueIdentifier>{fe5058aa-e6ab-45a4-9265-3c7bf7ac4521}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DBorder.cpp">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Memory\Memory.cpp">
+      <Filter>LuxEngine\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DBorder.h">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Memory\Memory.h">
+      <Filter>LuxEngine\Memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -189,7 +189,7 @@
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <Optimization>Disabled</Optimization>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessToFile>false</PreprocessToFile>
@@ -284,7 +284,7 @@
       <SupportJustMyCode>true</SupportJustMyCode>
       <CallingConvention>FastCall</CallingConvention>
       <PreprocessToFile>false</PreprocessToFile>
-      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <AdditionalOptions>
       </AdditionalOptions>
     </ClCompile>
@@ -388,6 +388,7 @@
     <ClCompile Include="LuxEngine\Core\Input\Input.cpp" />
     <ClCompile Include="LuxEngine\Core\Input\InputState.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
+    <ClCompile Include="LuxEngine\Memory\Memory.cpp" />
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
@@ -420,6 +421,7 @@
     <ClInclude Include="LuxEngine\Math\Constants.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h" />
+    <ClInclude Include="LuxEngine\Memory\Memory.h" />
     <ClInclude Include="LuxEngine\System\System.h" />
     <ClInclude Include="LuxEngine\Threads\ThreadPool.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h" />

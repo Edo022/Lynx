@@ -8,7 +8,7 @@
 //TODO add memory pool
 //TODO lux::mem::cpy
 //TODO unwrap until n < 16, than switch on n and unwrap n-times
-
+//TODO merge node to merge aligned objects in a unique cloud/image
 
 
 #include <time.h>
@@ -19,6 +19,7 @@
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Memory/Memory.h";
 
 
 
@@ -36,15 +37,72 @@ void hg(lux::Array<uint16>){
 	printf("\nKEYYYY");
 }
 
-
+//0000017baf9ef070
+//1100100100
 
 //TODO
 //TODO object cache
 //TODO object secondary buffers
 //TODO
 
+//TODO 256 enhanced do not compile
+
+//TODO break memory pool placeholder pointers if the the memory is full
+//TODO align memory allocation and sizes to 32 bytes
+#include <intrin.h>
+#include <assert.h>
+
+
+
+
+
+
+
+size_t constexpr n( ){ return multipleOf(1100100100, 32); }
+
 
 int main( ) {
+	char* hhh = (char*)_aligned_malloc(n( ), 32);
+	hhh[0] = 'c';
+	hhh[1] = 'i';
+	hhh[2] = 'a';
+	hhh[3] = 'o';
+	hhh[4] = '\0';
+	void* hh = _aligned_malloc(n( ), 32);
+
+
+
+	LuxTime t = luxStartChrono( );
+	for(int i = 0; i < 10; i++){
+		//memcpy(hh, hhh, n( ));
+		lux::mem::cpy(hhh, hh, n( ));
+	}
+	printf("%llf", luxStopChrono(t));
+
+	return 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	LuxInit(false);
 
 
