@@ -161,7 +161,9 @@ Object rendering
 
 
 
-
+enum LuxDefValues{
+	LUX_AUTO = -1
+};
 
 
 

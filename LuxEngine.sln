@@ -10,23 +10,18 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Release - 256 Enhanced|x64 = Release - 256 Enhanced|x64
 		Release - 512 Enhanced|x64 = Release - 512 Enhanced|x64
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Debug|x64.ActiveCfg = Debug|x64
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Debug|x64.Build.0 = Debug|x64
-		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release - 256 Enhanced|x64.ActiveCfg = Release - 256 Enhanced|x64
-		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release - 256 Enhanced|x64.Build.0 = Release - 256 Enhanced|x64
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release - 512 Enhanced|x64.ActiveCfg = Release - 512 Enhanced|x64
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release - 512 Enhanced|x64.Build.0 = Release - 512 Enhanced|x64
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release|x64.ActiveCfg = Release|x64
 		{530BC3AF-C3B2-463D-9312-B7D380C2F537}.Release|x64.Build.0 = Release|x64
 		{ED2913CD-834F-4939-A439-2BC9E266E704}.Debug|x64.ActiveCfg = Debug|x64
 		{ED2913CD-834F-4939-A439-2BC9E266E704}.Debug|x64.Build.0 = Debug|x64
-		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 256 Enhanced|x64.ActiveCfg = Release - 256 Enhanced|x64
-		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 256 Enhanced|x64.Build.0 = Release - 256 Enhanced|x64
 		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 512 Enhanced|x64.ActiveCfg = Release|x64
 		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release - 512 Enhanced|x64.Build.0 = Release|x64
 		{ED2913CD-834F-4939-A439-2BC9E266E704}.Release|x64.ActiveCfg = Release|x64

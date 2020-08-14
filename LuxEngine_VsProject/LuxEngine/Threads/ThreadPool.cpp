@@ -38,6 +38,7 @@ namespace lux::thr {
 				delete(threads[vThrIndex].exec);					//Free the pointer to the function data
 				thrStates.remove(vThrIndex);						//Remove the thread state from the map
 			}
+
 			SuspendThread(GetCurrentThread( ));					//Suspend the thread
 		}
 	}
