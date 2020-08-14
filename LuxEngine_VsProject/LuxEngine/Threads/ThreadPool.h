@@ -46,8 +46,7 @@ namespace lux::thr {
 	template<class FType, class ...PTypes> struct ExecFuncData : public ExecFuncDataBase {
 		void exec( ) final override {
 			std::apply(func, params);
-			*fence = true;
-			//printf("%d", std::apply(func, params));
+			if(fence) *fence = true;
 		}
 		FType func;
 		Priority priority;

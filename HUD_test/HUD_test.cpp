@@ -64,57 +64,13 @@ size_t constexpr n( ){ return multipleOf(4100100100, 32); }
 //size_t constexpr n( ){ return multipleOf(1100100100, 32); }
 
 
+void qualcosa( ){
+	sleep(2000);
+}
+
 int main( ) {
 	LuxInit(false);
-	char* hhh = (char*)_aligned_malloc(n( ), 32);
-	hhh[0] = 'c';
-	hhh[1] = 'i';
-	hhh[2] = 'a';
-	hhh[3] = 'o';
-	hhh[4] = '\0';
-	void* hh = _aligned_malloc(n( ), 32);
-
-	// num = 7, ns = 4, num-ns = 3
-	//
-	// 0 1 2 3 4 5 6
-	// ns----> <---- n-ns
-	//       ^
-	// ^src
-	//         ^
-
-	LuxTime t = luxStartChrono( );
-	//for(int i = 0; i < 200; i++){
-	for(int i = 0; i < 10; i++){
-		//memcpy(hh, hhh, n( ));
-		lux::mem::cpy(hhh, hh, n( ), 2);
-	}
-	printf("%llf", luxStopChrono(t));
-
-	return 0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	//lux::mem::cpy(hhh, hh, n( ), 2);
 
 	{
 		lux::obj::Line2D lineTest{
