@@ -23,9 +23,9 @@ namespace lux::mem{
 	//*  thr | LUX_TRUE to use multithreading, LUX_FALSE to use 1 thread. Default: LUX_AUTO
 	//*   Multithreading cannot be used in operations with small buffers, as it would negatively affect performance
 	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr){
-		luxDebug(if((uint64)src % 32 != 0)	param_error("src", "Misaligned address. You should use this function only with pointers allocated with lux::mem::alloc"));
-		luxDebug(if((uint64)dst % 32 != 0)	param_error("dst", "Misaligned address. You should use this function only with pointers allocated with lux::mem::alloc"));
-		luxDebug(if(num % 32 != 0)			param_error("num", "Misaligned size. You should use this function only with pointers allocated with lux::mem::alloc"));
+		luxDebug(if((uint64)src % 32 != 0)	param_error(src, "Misaligned address. You should use this function only with pointers allocated with lux::mem::alloc"));
+		luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. You should use this function only with pointers allocated with lux::mem::alloc"));
+		luxDebug(if(num % 32 != 0)			param_error(num, "Misaligned size. You should use this function only with pointers allocated with lux::mem::alloc"));
 
 		switch(thr){
 			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase;
@@ -37,7 +37,7 @@ namespace lux::mem{
 				cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
 				while(!thrf) sleep(5); break;
 			}
-			default: param_error("thr", "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
+			default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
 		}
 	}
 

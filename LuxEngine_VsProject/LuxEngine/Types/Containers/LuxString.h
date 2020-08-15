@@ -80,6 +80,12 @@ namespace lux {
 			vLuxString += vString;
 			return vLuxString;
 		}
+		inline String __vectorcall operator + (const uint32 vValue) const {
+			String vLuxString(str.begin( ));
+			char b[20];
+			vLuxString += itoa(vValue, b, 10);
+			return vLuxString;
+		}
 
 
 

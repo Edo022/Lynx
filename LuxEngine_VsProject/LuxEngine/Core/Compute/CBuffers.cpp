@@ -44,7 +44,7 @@ namespace lux::core::c::buffers{
 		bufferInfo.size = vSize;
 		bufferInfo.usage = vUsage;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) printError("Failed to create buffer");
+		TryVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer)) printError("Failed to create buffer", true, -1);
 
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
@@ -66,16 +66,16 @@ namespace lux::core::c::buffers{
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: //TODO add case. same as next out of host memory
-					default: printError("Failed to allocate buffer memory");
+					default: printError("Failed to allocate buffer memory", true, -1);
 				}
 				break;
 			}
 			case VK_ERROR_OUT_OF_HOST_MEMORY:	//TODO If out of host memory
 			case VK_ERROR_TOO_MANY_OBJECTS:		//TODO
-			default: printError("Failed to allocate buffer memory");
+			default: printError("Failed to allocate buffer memory", true, -1);
 		}
 
-		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) printError("Failed to bind buffer");
+		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) printError("Failed to bind buffer", true, -1);
 	}
 
 
@@ -219,7 +219,7 @@ namespace lux::core::c::buffers{
 		LuxBuffer buffer = getBufferIndex(vCell);		//Get the buffer index
 		//TODO Use lux output console
 		if(!buffers::CBuffers.isValid(buffer)) {		//If the buffer index is not valid
-			Failure core::printError("Something went wrong .-.  you were trying to use an invalid index buffer (see error core)", false, buffer);
+			Failure printError("Something went wrong .-.  you were trying to use an invalid index buffer (see error core)", false, buffer);
 			return nullptr;									//print an error and return nullptr
 		}
 

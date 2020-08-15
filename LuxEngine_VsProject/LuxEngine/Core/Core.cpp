@@ -91,7 +91,7 @@ namespace lux::core{
 			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
 				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin( ))) printError("compilation error");
+					if(!compileShader(luxStrPath.begin( ))) printError("compilation error", true, -1);
 					else Normal printf("%s", luxStrPath.begin( ));
 				}
 			}
@@ -176,9 +176,9 @@ namespace lux::core{
 	//*   pMessage    | the error message
 	//*   vFatalError | if true, the engine will stop its execution
 	//*   vErrorCode  | the code the process will exit with. It will also be displayed in the console
-	void printError(const String& pMessage, const bool vFatalError, const int32 vErrorCode){
+	void _printError(const String& pMessage, const bool vFatalError, const int32 vErrorCode){
 		running = false;
-		Failure printf("%srror:\nCode %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.begin( ));
+		Failure printf("%srror. Code: %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.begin( ));
 		if(vFatalError) system("pause"); exit(vErrorCode);
 	}
 }

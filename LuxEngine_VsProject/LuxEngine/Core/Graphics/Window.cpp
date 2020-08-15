@@ -73,12 +73,12 @@ namespace lux::core::g::wnd{
 		for(const char* layerName : validationLayers) {									//For every layer,
 			for(const auto& layerProperties : availableLayers) {							//Check if it's available
 				if(strcmp(layerName, layerProperties.layerName) == 0) break;					//If not, exit
-				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) printError("Validation layers not available. Cannot run in debug mode", true);
+				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) printError("Validation layers not available. Cannot run in debug mode", true, -1);
 			}
 		}
 		#endif
 
-		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) printError("Failed to create instance", true);
+		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) printError("Failed to create instance", true, -1);
 	}
 
 

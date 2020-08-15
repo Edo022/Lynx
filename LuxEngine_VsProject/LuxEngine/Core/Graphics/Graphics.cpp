@@ -40,7 +40,7 @@ namespace lux::core::g{
 		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
 
 		//Initialize vulkan
-		TryVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface)) printError("Failed to create window surface");
+		TryVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface)) printError("Failed to create window surface", true, -1);
 		Normal printf("    Searching for physical devices...    \n");
 		dvc::deviceGetPhysical( );
 		cmd::createGraphicsCommandPool( );
@@ -58,7 +58,7 @@ namespace lux::core::g{
 	void createDebugMessenger( ) {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
-		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger");
+		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger", false, -1);
 	};
 	#endif
 
@@ -86,7 +86,7 @@ namespace lux::core::g{
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameClearSemaphore[i]) != VK_SUCCESS ||
 				vkCreateFence(dvc::graphics.LD, &fenceInfo, nullptr, &drawFrameImageRenderedFence[i]) != VK_SUCCESS
 				){
-				printError("Failed to create vulkan sync objects");
+				printError("Failed to create vulkan sync objects", true, -1);
 			}
 		}
 	}
@@ -149,7 +149,7 @@ namespace lux::core::g{
 			submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.commandBufferCount = c::shaders::CShadersCBs.size( );
 			submitInfo.pCommandBuffers = c::shaders::CShadersCBs.begin( );
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer");
+			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer", false, -1);
 		}
 
 
@@ -165,7 +165,7 @@ namespace lux::core::g{
 			submitInfo.pCommandBuffers = &c::shaders::CShaders[0].commandBuffers[0];
 			submitInfo.pWaitSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer");
+			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer", false, -1);
 		}
 
 
@@ -184,7 +184,7 @@ namespace lux::core::g{
 			submitInfo.pCommandBuffers = &c::copyCommandBuffers[imageIndex];
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) printError("Failed to submit graphics command buffer");
+			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) printError("Failed to submit graphics command buffer", false, -1);
 		}
 
 
@@ -208,7 +208,7 @@ namespace lux::core::g{
 					vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
-				default:  printError("Failed to present swapchain image");
+				default:  printError("Failed to present swapchain image", false, -1);
 			}
 
 		}
@@ -294,7 +294,7 @@ namespace lux::core::g{
 				return format;
 			}
 		}
-		printError("Failed to find a supported format", true);
+		printError("Failed to find a supported format", true, -1);
 		return VK_FORMAT_UNDEFINED;
 	}
 
@@ -309,7 +309,7 @@ namespace lux::core::g{
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
-		printError("Failed to find suitable memory type");
+		printError("Failed to find suitable memory type", true, -1);
 		return -1;
 	}
 }

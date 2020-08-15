@@ -51,9 +51,9 @@ void hg(lux::Array<uint16>){
 
 int main( ) {
 	LuxInit(false);
-	//void* hh = malloc(2002001);
-	//void* hhh = malloc(2002001);
-	//lux::mem::cpy(hhh, hh, 2002001, LUX_TRUE);
+	void* hh = malloc(2002001);
+	void* hhh = malloc(2002001);
+	lux::mem::cpy(hhh, hh, 2002001, LUX_TRUE);
 
 	{
 		//TODO automatize object search //TODO wtf does this mean
