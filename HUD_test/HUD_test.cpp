@@ -6,14 +6,11 @@
 //^(/)|(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 //TODO squared distance aa*bb
 //TODO add memory pool
-//TODO lux::mem::cpy
-//TODO unwrap until n < 16, than switch on n and unwrap n-times
 //TODO merge node to merge aligned objects in a unique cloud/image
+//TODO use specific lux memory mangamente functions in lux container types
+//TODO use intrinsic functions with vector and matrices types
+//TODO limit vector types to float, double, int32, uint32
 
-//#include "LuxEngine/Memory/Memory.h";
-//#define memcpy(a,b,s)  lux::mem::cpy(b,a,s);
-
-//#define malloc(s) _aligned_malloc(s, 32);
 #include <time.h>
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Core/Input/Input.h"
@@ -23,8 +20,6 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Threads/ThreadPool.h"
 #include "LuxEngine/Memory/Memory.h";
-
-
 
 
 
@@ -47,50 +42,34 @@ void hg(lux::Array<uint16>){
 //TODO object secondary buffers
 //TODO
 
-//TODO 256 enhanced do not compile
-
 //TODO break memory pool placeholder pointers if the the memory is full
 //TODO align memory allocation and sizes to 32 bytes
-#include <intrin.h>
-#include <assert.h>
 
 
 
 
-
-
-
-size_t constexpr n( ){ return multipleOf(4100100100, 32); }
-//size_t constexpr n( ){ return multipleOf(1100100100, 32); }
-
-
-void qualcosa( ){
-	sleep(2000);
-}
 
 int main( ) {
 	LuxInit(false);
-	//lux::mem::cpy(hhh, hh, n( ), 2);
+	//void* hh = malloc(2002001);
+	//void* hhh = malloc(2002001);
+	//lux::mem::cpy(hhh, hh, 2002001, LUX_TRUE);
 
 	{
+		//TODO automatize object search //TODO wtf does this mean
+		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
 		lux::obj::Line2D lineTest{
 			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
-
+		renderSpace.addChild(&lineTest);
 		lux::obj::Line2D lineTest2{
 			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
-
-
-
-		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
-		renderSpace.addChild(&lineTest);
 		renderSpace.addChild(&lineTest2);
-		//TODO automatize object search //TODO wtf does this mean
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 

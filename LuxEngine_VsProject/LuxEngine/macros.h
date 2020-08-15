@@ -32,10 +32,10 @@ template<class ta, class tb>						static inline constexpr void __vectorcall swap
 #define TryVk(f)			if ((f) != VK_SUCCESS)
 #define printLineInfo		{Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());}
 #define luxDebug(s)			s
-#define luxRelease(s)
+#define luxRelease(s)		;
 
 #ifndef LUX_DEBUG
-#define luxDebug(s)
+#define luxDebug(s)			;
 #define luxRelease(s)		s
 #endif
 

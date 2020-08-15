@@ -294,7 +294,7 @@ namespace lux::core::g{
 				return format;
 			}
 		}
-		printError("Failed to find a supported format", -1, true);
+		printError("Failed to find a supported format", true);
 		return VK_FORMAT_UNDEFINED;
 	}
 

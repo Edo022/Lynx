@@ -234,6 +234,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <AdditionalOptions>
       </AdditionalOptions>
+      <EnableModules>true</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -297,7 +298,15 @@
     <ClCompile Include="LuxEngine\Core\Input\Input.cpp" />
     <ClCompile Include="LuxEngine\Core\Input\InputState.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
-    <ClCompile Include="LuxEngine\Memory\Memory.cpp" />
+    <ClCompile Include="LuxEngine\Memory\Memory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release - 512 Enhanced|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release - 512 Enhanced|x64'">true</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release - 512 Enhanced|x64'">/EHsc /MD /experimental:module /module:output S:\Workspaces\VisualStudio\source\LuxEngine\Stages\11-LuxEngine2D\LuxEngine_VsProject\LuxEngine\Memory\Memory.ifc -c S:\Workspaces\VisualStudio\source\LuxEngine\Stages\11-LuxEngine2D\LuxEngine_VsProject\LuxEngine\Memory\Memory.ixx %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />

@@ -176,13 +176,10 @@ namespace lux::core{
 	//*   pMessage    | the error message
 	//*   vFatalError | if true, the engine will stop its execution
 	//*   vErrorCode  | the code the process will exit with. It will also be displayed in the console
-	void printError(const String& pMessage, const int32 vErrorCode, const bool vFatalError){
+	void printError(const String& pMessage, const bool vFatalError, const int32 vErrorCode){
 		running = false;
-		if(vFatalError) { Failure printf("Fatal error:\nCode %d\n", vErrorCode); }
-		else { Failure printf("Error:\nCode %d\n", vErrorCode); }
-		Failure printf("\"%s\"", pMessage.begin( ));
-		if(!vFatalError) return;
-		system("pause"); exit(vErrorCode);
+		Failure printf("%srror:\nCode %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.begin( ));
+		if(vFatalError) system("pause"); exit(vErrorCode);
 	}
 }
 

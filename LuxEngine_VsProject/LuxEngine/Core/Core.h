@@ -161,7 +161,9 @@ Object rendering
 
 
 
-enum LuxDefValues{
+enum LuxBool : int16{
+	LUX_TRUE = 1,
+	LUX_FALSE = 0,
 	LUX_AUTO = -1
 };
 
@@ -192,7 +194,13 @@ namespace lux::core{
 	void runFPSCounterThr( );
 	void runRenderThr( );
 
-	void printError(const String& pMessage, const int32 vErrorCode = -1, const bool vFatalError = false);
+
+	void printError(const String& pMessage, const bool vFatalError = false, const int32 vErrorCode = -1);
+	//TODO add if-included check for LuxString
+	#define param_error(paramName, errorInfo) luxDebug(																						\
+		lux::core::printError(lux::String("Invalid value passed to '") + paramName + "' parameter of function '" + __FUNCTION__ + "'\n"		\
+		+ errorInfo + "\nThis error will not be reported in release mode", true);															\
+	) luxRelease(;)
 
 
 

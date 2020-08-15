@@ -91,7 +91,7 @@ namespace lux::core::g::out{
 		};
 
 		//Create render pass. Exit if an error occurs
-		TryVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass)) printError("Failed to create render pass", -1, true);
+		TryVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass)) printError("Failed to create render pass", true);
 	}
 
 
@@ -114,7 +114,7 @@ namespace lux::core::g::out{
 				.height{ swapchain::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			TryVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i])) printError("Failed to create framebuffer", -1, true);
+			TryVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i])) printError("Failed to create framebuffer", true);
 		}
 	}
 

@@ -45,11 +45,13 @@ namespace lux::thr {
 	//The return value is copied in the return pointer
 	template<class FType, class ...PTypes> struct ExecFuncData : public ExecFuncDataBase {
 		void exec( ) final override {
-			std::apply(func, params);
+			//if(_return) *_return = std::apply(func, params);
+			/*else*/ std::apply(func, params);
 			if(fence) *fence = true;
 		}
 		FType func;
 		Priority priority;
+		//FType* _return;
 		bool* fence;
 		std::tuple<PTypes...> params;
 	};
@@ -88,18 +90,19 @@ namespace lux::thr {
 	//*   pReturn   | a pointer to the variable where to store the function return value. Use nullptr for void functions
 	//*   pFence    | a pointer to a bool variable that will be set to true when the thread returns. Use nullptr if you dont need one
 	//*   vParams   | the parameters of the function call. Their types must be the same as the function declaration
-	//The maximum number of functions executed at the "same time" is defined by LUX_CNF_GLOBAL_THREAD_POOL_SIZE (see LuxEngine_config.h)
+	//The maximum number of functions executed "at the same time" is defined by LUX_CNF_GLOBAL_THREAD_POOL_SIZE (see LuxEngine_config.h)
 	//The actual number of running threads is limited to the number of physical threads in the CPU
-	//Use pointers or references to improve performance. The parameters have to be copied several times during the process
-	template<class FType, class... PTypes> void sendToExecQueue(FType vFunc, const Priority vPriority, bool* const pFence, PTypes ...vParams) {
+	//Use pointers or references to improve performance. The parameters needs to be copied several times before they can be used
+	template<class FType, class... PTypes> void sendToExecQueue(FType vFunc, const Priority vPriority/*, FType* pReturn*/, bool* const pFence, PTypes ...vParams) {
 		//TODO add return ptr
-		ExecFuncData<FType, PTypes...>* cntv = new ExecFuncData<FType, PTypes...>;	//Create the function data structure
-		cntv->func = vFunc;							//Set the function
-		cntv->fence = pFence;						//Set the fence
-		cntv->params = std::make_tuple(vParams...);	//Set the parameters
+		ExecFuncData<FType, PTypes...>* execData = new ExecFuncData<FType, PTypes...>;	//Create the function data structure
+		execData->func = vFunc;							//Set the function
+		//execData->_return = pReturn;					//Set the function
+		execData->fence = pFence;						//Set the fence
+		execData->params = std::make_tuple(vParams...);	//Set the parameters
 
 		stgAddFence.startSecond( );
-		stg.pushFront(cntv);						//Assign the data to the staging queue
+		stg.pushFront(execData);						//Assign the data to the staging queue
 		stgAddFence.endSecond( );
 		ResumeThread(mngThr);						//#LLID THR0001 Resume the thread (it suspended itself after assigning the last functions)
 	}
