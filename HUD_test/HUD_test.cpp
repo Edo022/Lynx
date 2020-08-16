@@ -19,7 +19,7 @@
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Threads/ThreadPool.h"
-#include "LuxEngine/Memory/Memory.h";
+#include "LuxEngine/Memory/Ram/Memory.h";
 
 
 
@@ -51,9 +51,13 @@ void hg(lux::Array<uint16>){
 
 int main( ) {
 	LuxInit(false);
-	void* hh = malloc(2002001);
-	void* hhh = malloc(2002001);
-	lux::mem::cpy(hhh, hh, 2002001, LUX_TRUE);
+	//#define n multipleOf(4200200200,32)
+	//void* hh = _aligned_malloc(n, 32);
+	//void* hhh = _aligned_malloc(n, 32);
+	//for(int i = 0; i < 10; i++){
+	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);
+	//}
+	lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
 
 	{
 		//TODO automatize object search //TODO wtf does this mean
@@ -124,3 +128,9 @@ int main( ) {
 //}
 
 ////TODO separate local and host memory in gpu memory pool
+
+
+
+
+
+

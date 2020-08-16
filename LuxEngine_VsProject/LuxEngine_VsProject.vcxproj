@@ -307,6 +307,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release - 512 Enhanced|x64'">/EHsc /MD /experimental:module /module:output S:\Workspaces\VisualStudio\source\LuxEngine\Stages\11-LuxEngine2D\LuxEngine_VsProject\LuxEngine\Memory\Memory.ifc -c S:\Workspaces\VisualStudio\source\LuxEngine\Stages\11-LuxEngine2D\LuxEngine_VsProject\LuxEngine\Memory\Memory.ixx %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp" />
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
@@ -339,7 +340,9 @@
     <ClInclude Include="LuxEngine\Math\Constants.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h" />
+    <ClInclude Include="LuxEngine\Memory\Gpu\VMemory.h" />
     <ClInclude Include="LuxEngine\Memory\Memory.h" />
+    <ClInclude Include="LuxEngine\Memory\Ram\Memory.h" />
     <ClInclude Include="LuxEngine\System\System.h" />
     <ClInclude Include="LuxEngine\Threads\ThreadPool.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h" />

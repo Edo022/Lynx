@@ -61,6 +61,12 @@
     <Filter Include="LuxEngine\Memory">
       <UniqueIdentifier>{fe5058aa-e6ab-45a4-9265-3c7bf7ac4521}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuxEngine\Memory\Gpu">
+      <UniqueIdentifier>{2262faf0-d691-4ed7-bb8c-258c8e8054e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LuxEngine\Memory\Ram">
+      <UniqueIdentifier>{fdd49de6-33b6-4235-9e01-97db170662ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp">
@@ -124,7 +130,10 @@
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Memory\Memory.cpp">
-      <Filter>LuxEngine\Memory</Filter>
+      <Filter>LuxEngine\Memory\Ram</Filter>
+    </ClCompile>
+    <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp">
+      <Filter>LuxEngine\Memory\Ram</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -257,11 +266,17 @@
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DBorder.h">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Memory\Memory.h">
-      <Filter>LuxEngine\Memory</Filter>
-    </ClInclude>
     <ClInclude Include="LuxEngine\Types\Containers\LuxList.h">
       <Filter>LuxEngine\Types\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Memory\Memory.h">
+      <Filter>LuxEngine\Memory\Ram</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Memory\Ram\Memory.h">
+      <Filter>LuxEngine\Memory\Ram</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Memory\Gpu\VMemory.h">
+      <Filter>LuxEngine\Memory\Gpu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
