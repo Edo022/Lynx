@@ -260,7 +260,7 @@
     <ClInclude Include="LuxEngine\Memory\Memory.h">
       <Filter>LuxEngine\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Types\Containers\OmniArray.h">
+    <ClInclude Include="LuxEngine\Types\Containers\LuxList.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
   </ItemGroup>

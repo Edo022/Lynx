@@ -347,7 +347,7 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxString.h" />
-    <ClInclude Include="LuxEngine\Types\Containers\OmniArray.h" />
+    <ClInclude Include="LuxEngine\Types\Containers\LuxList.h" />
     <ClInclude Include="LuxEngine\Types\EngineTypes.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
