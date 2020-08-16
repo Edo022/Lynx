@@ -129,9 +129,6 @@
     <ClCompile Include="LuxEngine\Types\LuxObject\2D\2DBorder.cpp">
       <Filter>LuxEngine\Types\LuxObject\2D</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Memory\Memory.cpp">
-      <Filter>LuxEngine\Memory\Ram</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp">
       <Filter>LuxEngine\Memory\Ram</Filter>
     </ClCompile>
@@ -269,14 +266,11 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxList.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="LuxEngine\Memory\Memory.h">
-      <Filter>LuxEngine\Memory\Ram</Filter>
+    <ClInclude Include="LuxEngine\Memory\Gpu\VMemory.h">
+      <Filter>LuxEngine\Memory\Gpu</Filter>
     </ClInclude>
     <ClInclude Include="LuxEngine\Memory\Ram\Memory.h">
       <Filter>LuxEngine\Memory\Ram</Filter>
-    </ClInclude>
-    <ClInclude Include="LuxEngine\Memory\Gpu\VMemory.h">
-      <Filter>LuxEngine\Memory\Gpu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
