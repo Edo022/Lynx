@@ -7,6 +7,7 @@
 #include "LuxEngine/System/System.h"
 #include "Input/Input.h"
 #include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Memory/Gpu/VMemory.h"
 
 
 
@@ -108,6 +109,7 @@ namespace lux::core{
 
 		g::init(vUseVSync, vFOV);
 		c::buffers::init( );
+		vmem::init( );
 		c::init( );
 
 		//Loop

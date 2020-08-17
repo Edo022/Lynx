@@ -298,6 +298,7 @@
     <ClCompile Include="LuxEngine\Core\Input\Input.cpp" />
     <ClCompile Include="LuxEngine\Core\Input\InputState.cpp" />
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
+    <ClCompile Include="LuxEngine\Memory\Gpu\VMemory.cpp" />
     <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp" />
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />

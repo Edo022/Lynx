@@ -59,7 +59,7 @@ namespace lux::thr {
 
 	struct ThrPoolElm{
 		std::thread* thr{ nullptr };			//The actual thread
-		ExecFuncDataBase* exec{ nullptr };		//A pointer to the data of the function to execute
+		ExecFuncDataBase* exec{ nullptr };		//A pointer to the function data
 	};
 
 

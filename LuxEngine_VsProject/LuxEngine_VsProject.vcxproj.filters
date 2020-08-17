@@ -132,6 +132,9 @@
     <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp">
       <Filter>LuxEngine\Memory\Ram</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Memory\Gpu\VMemory.cpp">
+      <Filter>LuxEngine\Memory\Gpu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

@@ -57,7 +57,7 @@ int main( ) {
 	//for(int i = 0; i < 10; i++){
 	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);
 	//}
-	lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
+
 
 	{
 		//TODO automatize object search //TODO wtf does this mean
