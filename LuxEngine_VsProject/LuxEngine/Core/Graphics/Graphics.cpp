@@ -228,8 +228,10 @@ namespace lux::core::g{
 			for(uint32 i = 0; i < objUpdates2D.size( ); i++){
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
-					cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
-					getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData),
+					cb, vmem::buffers[objUpdates2D[i]->render.localData.bufferTypeIndex].buffers[objUpdates2D[i]->render.localData.bufferIndex].buffer,
+					//cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
+					vmem::getCellOffset(objUpdates2D[i]->render.localData),
+					//getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData),
 					objUpdates2D[i]->getCellSize( ),
 					(void*)objUpdates2D[i]->render.data
 				);

@@ -15,8 +15,8 @@ namespace lux::vmem{
 	//*   vCellClass | the class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
 	//Returns the allocated cell
 	//e.g.
-	//lux::VMemCell foo = lux::vmem::alloc(100, LUX_CELL_CLASS_B);
-	VMemCell alloc(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
+	//lux::vramCell foo = lux::vmem::alloc(100, LUX_CELL_CLASS_B);
+	Cell alloc(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
 		//TODO special case class 0
 		//Set cell class if LUX_CELL_CLASS_AUTO was used
 		if(vCellClass == LUX_CELL_CLASS_AUTO) {
@@ -34,10 +34,10 @@ namespace lux::vmem{
 		uint32 bufferTypeIndex = genBufferTypeIndex(vCellClass, vAllocType);
 		Map<MemBuffer, uint32>& typeBuffers = (buffers[bufferTypeIndex].buffers);	//List of buffers where to search for a free buffer
 		uint64 cellNum = bufferSize / buffers[bufferTypeIndex].cellClass;			//Number of cells in each buffer
-		VMemCell cell{
-			.cellSize = vSize,																//With the specified size,
-			.address = nullptr,																//No address,
-			.allocType = vAllocType															//And the buffer's allocation type
+		Cell cell{
+			.cellSize = vSize,
+			.address = nullptr,
+			.bufferTypeIndex = bufferTypeIndex
 		};
 
 		//Search for a buffer with the same properties and a free cell. If there is one, allocate the cell in it and return
@@ -64,5 +64,27 @@ namespace lux::vmem{
 			);
 			return cell;
 		}
+	}
+
+
+
+
+
+
+
+	//Returns the address of a cell
+	//Only cells allocated in shared memory can be mapped
+	void* map(Cell& pCell){
+		void* data;
+		vkMapMemory(core::dvc::compute.LD, getCellMemory(pCell), getCellOffset(pCell), getCellClass(pCell), 0, &data);
+		return data;
+	}
+
+
+
+	//TODO add free function
+	//Frees a video memory cell
+	void free(Cell& pCell){
+
 	}
 }

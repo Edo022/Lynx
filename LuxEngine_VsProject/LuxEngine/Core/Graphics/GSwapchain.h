@@ -2,6 +2,7 @@
 #pragma once
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Memory/Gpu/VMemory.h"
 
 
 

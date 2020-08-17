@@ -3,7 +3,7 @@
 #include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
-
+#include "LuxEngine/Memory/Gpu/VMemory.h"
 
 
 
@@ -11,10 +11,14 @@ namespace lux::core::g::wnd{
 	GLFWwindow* window;
 	int32			width = 1920 * 2, height = 1080;
 	FenceDE			windowResizeFence;
-	LuxCell			gpuCellWindowSize;
-	LuxCell			gpuCellWindowOutput;
-	LuxCell			gpuCellWindowOutput_i;
-	LuxCell			gpuCellWindowZBuffer;
+	vmem::Cell			gpuCellWindowSize;
+	//LuxCell			gpuCellWindowSize;
+	vmem::Cell			gpuCellWindowOutput;
+	//LuxCell			gpuCellWindowOutput;
+	vmem::Cell			gpuCellWindowOutput_i;
+	//LuxCell			gpuCellWindowOutput_i;
+	vmem::Cell			gpuCellWindowZBuffer;
+	//LuxCell			gpuCellWindowZBuffer;
 
 
 

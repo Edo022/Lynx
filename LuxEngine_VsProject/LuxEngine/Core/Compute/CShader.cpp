@@ -184,11 +184,14 @@ namespace lux::core::c::shaders{
 	//*      The shader inputs must match those cells
 	//*      the binding index is the same as their index in the array
 	//*   vShaderLayout | the shader layout
-	void createDescriptorSets(LuxShader_t* pCShader, const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout) {
+	void createDescriptorSets(LuxShader_t* pCShader, const Array<vmem::Cell>& pCells, const ShaderLayout vShaderLayout) {
+	//void createDescriptorSets(LuxShader_t* pCShader, const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.size( ); i++){
-			if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly){
+			if(vmem::isUniform(vmem::buffers[pCells[i].bufferTypeIndex].allocType)){
+			//if(c::buffers::CBuffers[pCells[i].bufferIndex].readOnly){
+			//if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly){
 				uniformCount++;
 			}
 			else {
@@ -235,10 +238,14 @@ namespace lux::core::c::shaders{
 		for(uint32 i = 0; i < pCells.size( ); ++i) {
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
-			descriptorBufferInfo->buffer = c::buffers::CBuffers[getBufferIndex(pCells[i])].buffer;	//Set buffer    //Set buffer offset
-			if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly) descriptorBufferInfo->offset = getCellOffset(&dvc::compute.PD, pCells[i]);
-			else descriptorBufferInfo->offset = getCellOffset(&dvc::compute.PD, pCells[i]);			//Set buffer offset
-			descriptorBufferInfo->range = getCellSize(pCells[i]);									//Set buffer size
+			descriptorBufferInfo->buffer = vmem::buffers[pCells[i].bufferTypeIndex].buffers[pCells[i].bufferIndex].buffer;	//Set buffer    //Set buffer offset
+			//descriptorBufferInfo->buffer = c::buffers::CBuffers[getBufferIndex(pCells[i])].buffer;	//Set buffer    //Set buffer offset
+			if(vmem::isUniform(vmem::buffers[pCells[i].bufferTypeIndex].allocType)) descriptorBufferInfo->offset = vmem::getCellOffset(pCells[i]);
+			//if(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly) descriptorBufferInfo->offset = getCellOffset(&dvc::compute.PD, pCells[i]);
+			else descriptorBufferInfo->offset = vmem::getCellOffset(pCells[i]);			//Set buffer offset
+			//else descriptorBufferInfo->offset = getCellOffset(&dvc::compute.PD, pCells[i]);			//Set buffer offset
+			descriptorBufferInfo->range = pCells[i].cellSize;									//Set buffer size
+			//descriptorBufferInfo->range = getCellSize(pCells[i]);									//Set buffer size
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 						//Create write descriptor set
 				.sType{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET },					//Set structure type
@@ -246,7 +253,8 @@ namespace lux::core::c::shaders{
 				.dstBinding{ i },													//Set binding
 				.descriptorCount{ 1 },												//Set number of descriptors
 				.descriptorType{
-					(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly) ?	//Use it as a storage
+					(vmem::isUniform(vmem::buffers[pCells[i].bufferTypeIndex].allocType)) ?	//Use it as a storage
+					//(c::buffers::CBuffers[getBufferIndex(pCells[i])].readOnly) ?	//Use it as a storage
 					VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 				.pBufferInfo{ descriptorBufferInfo },								//Set descriptor buffer info
 			};
@@ -344,7 +352,8 @@ namespace lux::core::c::shaders{
 				.imageOffset{ 0, 0, 0 },										//No image offset
 				};
 				region.imageExtent = { g::swapchain::swapchainExtent.width, g::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(c::copyCommandBuffers[imgIndex], c::buffers::CBuffers[getBufferIndex(g::wnd::gpuCellWindowOutput_i)].buffer, g::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(c::copyCommandBuffers[imgIndex], vmem::buffers[g::wnd::gpuCellWindowOutput_i.bufferTypeIndex].buffers[g::wnd::gpuCellWindowOutput_i.bufferIndex].buffer, g::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				//vkCmdCopyBufferToImage(c::copyCommandBuffers[imgIndex], c::buffers::CBuffers[getBufferIndex(g::wnd::gpuCellWindowOutput_i)].buffer, g::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 				//Create a barrier to use the swapchain image as a present source image
@@ -452,7 +461,8 @@ namespace lux::core::c::shaders{
 	//*   vGroupCountz  | the number of workgroups in the z axis
 	//*   returns       | the index of the shader
 	//*       -1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
-	LuxShader newShader(const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	LuxShader newShader(const Array<vmem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	//LuxShader newShader(const Array<LuxCell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 		//TODO check buffers
 		//TODO check file
 		LuxShader_t shader;
