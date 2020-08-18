@@ -45,9 +45,10 @@ void hg(lux::Array<uint16>){
 //TODO break memory pool placeholder pointers if the the memory is full
 //TODO align memory allocation and sizes to 32 bytes
 
+//TODO static objects have ordered vertices
+//TODO dynamic objects are static if not modified for a certain time
 
-
-
+//TODO fix map constructor default parameters (chunkSize is 1)
 
 int main( ) {
 	LuxInit(false);

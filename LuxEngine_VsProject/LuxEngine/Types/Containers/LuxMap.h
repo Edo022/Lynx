@@ -95,9 +95,9 @@ namespace lux {
 		//Adds an element at the firs free index of the map
 		//Returns the ID of the element
 		iter __vectorcall add(const type& vData) {
-			iter head2 = head;
 			if(head == (iter)-1) return append(vData);		//If it has no free elements, append it
 			else {
+				iter head2 = head;
 				if(head == tail) {								//If it has only one free element
 					__lp_Data(head2) = vData;						//Replace it
 					head = tail = __lp_Tracker(head2) = -1;			//And reset head and tail

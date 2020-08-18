@@ -18,7 +18,7 @@ namespace lux::vmem{
 	//Allocate a cell with the lux::vmem::alloc function
 	struct Cell {
 		uint64 cellSize;			//Size of the cell in bytes
-		void* address;				//Address of the cell. The same as you would get with malloc
+		//void* address;				//Address of the cell. The same as you would get with malloc
 		uint32 bufferTypeIndex;		//Type of buffer allocation
 		uint32 bufferIndex;			//Index of the buffer where the cell is allocated
 		uint32 cellIndex;			//Index of the cell in the buffer
@@ -30,7 +30,7 @@ namespace lux::vmem{
 
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
-	enum CellClass : uint32{
+	enum CellClass : uint32 {
 		LUX_CELL_CLASS_A = 32,						//32 bytes. The minimum size of a cell
 		LUX_CELL_CLASS_B = LUX_CELL_CLASS_A * 16,	//16x LUX_CELL_CLASS_A. 512 B per cell (~0.5KB)
 		LUX_CELL_CLASS_C = LUX_CELL_CLASS_A * 32,	//32x LUX_CELL_CLASS_A. 1024 B per cell (~1KB)
@@ -41,7 +41,7 @@ namespace lux::vmem{
 		LUX_CELL_CLASS_AUTO = (uint32)-1,			//Choose a class large enough to contain the cell
 	};
 	const uint32 bufferSize = LUX_CELL_CLASS_L * 6;	//Size of each buffer. 50331648 B (~50MB)
-	enum CellClassIndex : uint32{
+	enum CellClassIndex : uint32 {
 		LUX_CELL_CLASS_INDEX_A = 0b000,
 		LUX_CELL_CLASS_INDEX_B = 0b001,
 		LUX_CELL_CLASS_INDEX_C = 0b010,
@@ -55,29 +55,29 @@ namespace lux::vmem{
 
 	//TODO check for alllocation number limit
 	//TODO use multiple devices
-	enum AllocType : uint32{
+	enum AllocType : uint32 {
 		LUX_ALLOC_TYPE_DEDICATED_STORAGE = 0b00,	//Storage buffer in dedicated GPU memory
 		LUX_ALLOC_TYPE_DEDICATED_UNIFORM = 0b01,	//Uniform buffer in dedicated GPU memory
 		LUX_ALLOC_TYPE_SHARED_STORAGE =/**/0b10,	//Storage buffer in shared RAM memory
 		LUX_ALLOC_TYPE_SHARED_UNIFORM =/**/0b11,	//Uniform buffer in shared RAM memory
 		LUX_ALLOC_TYPE_NUM							//Number of LUX_ALLOC_TYPE values
 	};
-	constexpr bool isUniform(const AllocType vAllocType) { return (vAllocType & 0b1); }
-	constexpr bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
-	//Returns an index based on the cell class
-	constexpr uint32 getCellClassIndex(const CellClass vClass){
-		switch(vClass){
-			#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
-			_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0)
-		}
+	static constexpr inline bool isUniform(const AllocType vAllocType) {
+		return (vAllocType & 0b1);
 	}
+	static constexpr inline bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
+	//Returns an index based on the cell class
+	#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
+	static constexpr inline uint32 getCellClassIndex(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
+	#define _case(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
+	static constexpr inline CellClass getCellClassValue(const uint32 vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
 
-	struct MemBuffer{
+	struct MemBuffer {
 		VkBuffer buffer;				//The actual Vulkan buffer
 		VkDeviceMemory memory;			//The memory of the buffer
 		Map<bool, uint32> cells;		//The cells in the buffer
 	};
-	struct MemBufferType{
+	struct MemBufferType {
 		CellClass cellClass;			//The class of the cells
 		AllocType allocType;			//The buffer allocation type
 		Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
@@ -85,19 +85,24 @@ namespace lux::vmem{
 
 
 
-
 	extern uint32 maxAlloc;						//The maximum number of allocated buffers. Depends on the gpu properties
-	extern Array<MemBufferType> buffers;		//Allocated VRAM buffers
+	extern Array<MemBufferType> buffers;		//VRAM allocated buffers
+
+
 	static inline void init( ){
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
 		buffers.resize(LUX_CELL_CLASS_NUM * LUX_ALLOC_TYPE_NUM);
 
 		//Init buffer types
+		uint32 index;
 		for(uint32 i = 0; i < LUX_CELL_CLASS_NUM; ++i){
 			for(uint32 j = 0; j < LUX_ALLOC_TYPE_NUM; ++j){
-				buffers[i * LUX_CELL_CLASS_NUM + j].cellClass = (CellClass)i;
-				buffers[i * LUX_CELL_CLASS_NUM + j].allocType = (AllocType)j;
+				index = (i << 2) | j;
+				buffers[index].cellClass = (CellClass)getCellClassValue(i);
+				buffers[index].allocType = (AllocType)j;
+				//32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+				buffers[index].buffers = Map<MemBuffer, uint32>(32, 4096);
 			}
 		}
 	}
@@ -110,7 +115,9 @@ namespace lux::vmem{
 	//Generates the index of a buffer from the cell class and allocation type
 	// 1 0 1 | 0 1
 	// class | type
-	constexpr uint32 genBufferTypeIndex(const CellClass vClass, const AllocType vAllocType){ return (getCellClassIndex(vClass) << 2) | vAllocType; }
+	constexpr uint32 genBufferTypeIndex(const CellClass vClass, const AllocType vAllocType){
+		return (getCellClassIndex(vClass) << 2) | vAllocType;
+	}
 	static inline CellClass getCellClass(const Cell& pCell){ return buffers[pCell.bufferTypeIndex].cellClass; }
 	static inline uint32 getCellOffset(const Cell& pCell){ return getCellClass(pCell) * pCell.cellIndex; }
 	static inline VkDeviceMemory getCellMemory(const Cell& pCell){ return buffers[pCell.bufferTypeIndex].buffers[pCell.bufferIndex].memory; }
