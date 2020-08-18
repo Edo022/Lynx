@@ -10,6 +10,8 @@
 
 
 namespace lux::rem{
+	//TODO check for alllocation number limit
+	//TODO use multiple devices
 
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
@@ -34,10 +36,6 @@ namespace lux::rem{
 		LUX_CELL_CLASS_INDEX_0 = 0b110,
 		LUX_CELL_CLASS_NUM 							//Number of LUX_CELL_CLASS values
 	};
-
-
-	//TODO check for alllocation number limit
-	//TODO use multiple devices
 	enum AllocType : uint32 {
 		LUX_ALLOC_TYPE_DEDICATED_STORAGE = 0b00,	//Storage buffer in dedicated GPU memory
 		LUX_ALLOC_TYPE_DEDICATED_UNIFORM = 0b01,	//Uniform buffer in dedicated GPU memory
