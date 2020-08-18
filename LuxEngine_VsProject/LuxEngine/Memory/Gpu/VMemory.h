@@ -3,31 +3,13 @@
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
+#include <intrin.h>
 
 
 
 
 
-
-namespace lux::ram{
-	// |--------------------------------- VRAM -------------------------------|
-	// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
-	// |-cell-||-cell-||-cell-|
-	//A video memory cell
-	//A cell is a fixed-size partition of memory inside an allocated GPU buffer
-	//Allocate a cell with the lux::ram::alloc function
-	struct Cell {
-		uint64 cellSize;			//Size of the cell in bytes
-		//void* address;				//Address of the cell. The same as you would get with malloc
-		uint32 bufferTypeIndex;		//Type of buffer allocation
-		uint32 bufferIndex;			//Index of the buffer where the cell is allocated
-		uint32 cellIndex;			//Index of the cell in the buffer
-		uint32 __256padding;
-		//TODO AVX2 = operator
-		//TODO shared pointer
-	};
-
-
+namespace lux::rem{
 
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
@@ -63,15 +45,6 @@ namespace lux::ram{
 		LUX_ALLOC_TYPE_SHARED_UNIFORM =/**/0b11,	//Uniform buffer in shared RAM memory
 		LUX_ALLOC_TYPE_NUM							//Number of LUX_ALLOC_TYPE values
 	};
-	static constexpr inline bool isUniform(const AllocType vAllocType) {
-		return (vAllocType & 0b1);
-	}
-	static constexpr inline bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
-	//Returns an index based on the cell class
-	#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
-	static constexpr inline uint32 getCellClassIndex(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
-	#define _case(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
-	static constexpr inline CellClass getCellClassValue(const uint32 vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
 
 	struct MemBuffer {
 		VkBuffer buffer;				//The actual Vulkan buffer
@@ -83,6 +56,37 @@ namespace lux::ram{
 		AllocType allocType;			//The buffer allocation type
 		Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
 	};
+
+	// |--------------------------------- VRAM -------------------------------|
+	// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
+	// |-cell-||-cell-||-cell-|
+	//A video memory cell
+	//A cell is a fixed-size partition of memory inside an allocated GPU buffer
+	//Allocate a cell with the lux::rem::alloc function
+	struct Cell {
+		uint64 cellSize;			//Size of the cell in bytes
+		//void* address;			//Address of the cell. The same as you would get with malloc
+		MemBufferType* bufferType;	//Type of buffer allocation
+		MemBuffer* buffer;			//Index of the buffer where the cell is allocated
+		uint32 cellIndex;			//Index of the cell in the buffer
+		//uint32 __padding__;
+
+		//void operator = (Cell&& pCell){ _mm256_stream_si256((__m256i*)this, _mm256_stream_load_si256((__m256i*) & pCell)); }
+		//TODO shared pointer
+	};
+
+
+
+	static constexpr inline bool isUniform(const AllocType vAllocType) {
+		return (vAllocType & 0b1);
+	}
+	static constexpr inline bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
+	//Returns an index based on the cell class
+	#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
+	static constexpr inline uint32 getCellClassIndex(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
+	#define _case(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
+	static constexpr inline CellClass getCellClassValue(const uint32 vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
+
 
 
 
@@ -119,7 +123,7 @@ namespace lux::ram{
 	constexpr uint32 genBufferTypeIndex(const CellClass vClass, const AllocType vAllocType){
 		return (getCellClassIndex(vClass) << 2) | vAllocType;
 	}
-	static inline CellClass getCellClass(const Cell& pCell){ return buffers[pCell.bufferTypeIndex].cellClass; }
+	static inline CellClass getCellClass(const Cell& pCell){ return pCell.bufferType->cellClass; }
 	static inline uint32 getCellOffset(const Cell& pCell){ return getCellClass(pCell) * pCell.cellIndex; }
-	static inline VkDeviceMemory getCellMemory(const Cell& pCell){ return buffers[pCell.bufferTypeIndex].buffers[pCell.bufferIndex].memory; }
+	static inline VkDeviceMemory getCellMemory(const Cell& pCell){ return pCell.buffer->memory; }
 }

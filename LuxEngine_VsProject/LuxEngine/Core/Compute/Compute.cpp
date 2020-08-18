@@ -22,12 +22,12 @@ namespace lux::core::c{
 
 	void init( ) {
 		{ //Initialize window buffers and size
-			g::wnd::gpuCellWindowOutput_i = ram::alloc(g::wnd::width * g::wnd::height * 4 /*A8-R8-G8-B8 UI*/, ram::LUX_CELL_CLASS_AUTO, ram::LUX_ALLOC_TYPE_DEDICATED_STORAGE);
-			g::wnd::gpuCellWindowOutput = ram::alloc(g::wnd::width * g::wnd::height * 4 * 4 /*A32-R32-G32-B32 UF*/, ram::LUX_CELL_CLASS_AUTO, ram::LUX_ALLOC_TYPE_DEDICATED_STORAGE);
-			g::wnd::gpuCellWindowZBuffer = ram::alloc(g::wnd::width * g::wnd::height * 4, ram::LUX_CELL_CLASS_AUTO, ram::LUX_ALLOC_TYPE_DEDICATED_STORAGE);
+			g::wnd::gpuCellWindowOutput_i = rem::alloc(g::wnd::width * g::wnd::height * 4 /*A8-R8-G8-B8 UI*/, rem::LUX_CELL_CLASS_AUTO, rem::LUX_ALLOC_TYPE_DEDICATED_STORAGE);
+			g::wnd::gpuCellWindowOutput = rem::alloc(g::wnd::width * g::wnd::height * 4 * 4 /*A32-R32-G32-B32 UF*/, rem::LUX_CELL_CLASS_AUTO, rem::LUX_ALLOC_TYPE_DEDICATED_STORAGE);
+			g::wnd::gpuCellWindowZBuffer = rem::alloc(g::wnd::width * g::wnd::height * 4, rem::LUX_CELL_CLASS_AUTO, rem::LUX_ALLOC_TYPE_DEDICATED_STORAGE);
 
-			g::wnd::gpuCellWindowSize = ram::alloc(4 * 2,  ram::LUX_CELL_CLASS_AUTO, ram::LUX_ALLOC_TYPE_SHARED_STORAGE);
-			uint32* pwindowSize = scast<uint32*>(ram::map(g::wnd::gpuCellWindowSize));
+			g::wnd::gpuCellWindowSize = rem::alloc(4 * 2,  rem::LUX_CELL_CLASS_AUTO, rem::LUX_ALLOC_TYPE_SHARED_STORAGE);
+			uint32* pwindowSize = scast<uint32*>(rem::map(g::wnd::gpuCellWindowSize));
 
 			pwindowSize[0] = g::swapchain::swapchainExtent.width;
 			pwindowSize[1] = g::swapchain::swapchainExtent.height;
@@ -56,11 +56,11 @@ namespace lux::core::c{
 
 	//TODO fix
 	void computeCleanup( ) {
-		for(uint32 i = 0; i < ram::buffers.size( ); ++i) {
-			for(int32 j = 0; j < ram::buffers[i].buffers.size( ); ++j){
-				if(ram::buffers[i].buffers.isValid(j)){
-					vkDestroyBuffer(dvc::compute.LD, ram::buffers[i].buffers[j].buffer, nullptr);
-					vkFreeMemory(dvc::compute.LD, ram::buffers[i].buffers[j].memory, nullptr);
+		for(uint32 i = 0; i < rem::buffers.size( ); ++i) {
+			for(int32 j = 0; j < rem::buffers[i].buffers.size( ); ++j){
+				if(rem::buffers[i].buffers.isValid(j)){
+					vkDestroyBuffer(dvc::compute.LD, rem::buffers[i].buffers[j].buffer, nullptr);
+					vkFreeMemory(dvc::compute.LD, rem::buffers[i].buffers[j].memory, nullptr);
 				}
 			}
 		}
