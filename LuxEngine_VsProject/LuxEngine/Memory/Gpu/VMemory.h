@@ -81,9 +81,9 @@ namespace lux::rem{
 	static constexpr inline bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
 	//Returns an index based on the cell class
 	#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
-	static constexpr inline uint32 getCellClassIndex(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
-	#define _case(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
-	static constexpr inline CellClass getCellClassValue(const uint32 vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) } }
+	static constexpr inline uint32 getCellClassIndex(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } }
+	#define _case2(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
+	static constexpr inline CellClass getCellClassValue(const uint32 vClass){ switch(vClass){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } }
 
 
 

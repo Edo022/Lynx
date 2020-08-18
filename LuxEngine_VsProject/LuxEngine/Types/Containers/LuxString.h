@@ -83,7 +83,9 @@ namespace lux {
 		inline String __vectorcall operator + (const uint32 vValue) const {
 			String vLuxString(str.begin( ));
 			char b[20];
-			vLuxString += itoa(vValue, b, 10);
+			#pragma warning ( disable : 4996  )
+			vLuxString += _itoa(vValue, b, 10);
+			#pragma warning ( default : 4996  )
 			return vLuxString;
 		}
 

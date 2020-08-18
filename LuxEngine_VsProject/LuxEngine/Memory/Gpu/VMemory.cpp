@@ -43,7 +43,7 @@ namespace lux::rem{
 
 		if(vCellClass != LUX_CELL_CLASS_0){											//If the cell is a fixed size cell
 			uint64 cellNum = bufferSize / buffers[bufferTypeIndex].cellClass;			//Get the maximum number of cells in each buffer
-			for(int32 i = 0; i < typeBuffers.size( ); i++){								//Search for a suitable buffer
+			for(uint32 i = 0; i < typeBuffers.size( ); i++){								//Search for a suitable buffer
 				if(typeBuffers.isValid(i) && (typeBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
 					cell.buffer = &typeBuffers[i];												//Set it as the cell's buffet
 					cell.cellIndex = typeBuffers[i].cells.add(true);							//Add to it a new cell, assign the cell index
