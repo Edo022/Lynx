@@ -88,3 +88,4 @@ namespace lux::core::c::buffers{
 		vkCmdCopyBuffer(commandBuffer, vSrcBuffer, vDstBuffer, 1, &copyRegion);	//Record the copy command
 		g::cmd::endSingleTimeCommands(commandBuffer);							//End command buffer
 	}
+}
