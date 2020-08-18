@@ -113,14 +113,13 @@ namespace lux::rem{
 
 	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
 	void* map(Cell& pCell);
+	static inline void unmap(Cell& pCell){ vkUnmapMemory(core::dvc::compute.LD, pCell.buffer->memory); }
 	void free(Cell& pCell);
 
 	//Generates the index of a buffer from the cell class and allocation type
 	// 1 0 1 | 0 1
 	// class | type
-	constexpr uint32 genBufferTypeIndex(const CellClass vClass, const AllocType vAllocType){
-		return (getCellClassIndex(vClass) << 2) | vAllocType;
-	}
+	static inline constexpr uint32 genBufferTypeIndex(const CellClass vClass, const AllocType vAllocType){ return (getCellClassIndex(vClass) << 2) | vAllocType; }
 	static inline CellClass getCellClass(const Cell& pCell){ return pCell.bufferType->cellClass; }
 	static inline uint32 getCellOffset(const Cell& pCell){ return getCellClass(pCell) * pCell.cellIndex; }
 	static inline VkDeviceMemory getCellMemory(const Cell& pCell){ return pCell.buffer->memory; }

@@ -28,9 +28,9 @@ namespace lux::core::c{
 
 			g::wnd::gpuCellWindowSize = rem::alloc(4 * 2,  rem::LUX_CELL_CLASS_AUTO, rem::LUX_ALLOC_TYPE_SHARED_STORAGE);
 			uint32* pwindowSize = scast<uint32*>(rem::map(g::wnd::gpuCellWindowSize));
-
 			pwindowSize[0] = g::swapchain::swapchainExtent.width;
 			pwindowSize[1] = g::swapchain::swapchainExtent.height;
+			rem::unmap(g::wnd::gpuCellWindowSize);
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers

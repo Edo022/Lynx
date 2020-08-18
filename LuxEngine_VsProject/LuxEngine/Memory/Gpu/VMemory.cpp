@@ -76,6 +76,7 @@ namespace lux::rem{
 
 	//Returns the address of a cell
 	//Only cells allocated in shared memory can be mapped
+	//Always lux::vmem::unmap() cells when  you don't need to access their data
 	void* map(Cell& pCell){
 		void* data;
 		vkMapMemory(core::dvc::compute.LD, getCellMemory(pCell), getCellOffset(pCell), getCellClass(pCell), 0, &data);
