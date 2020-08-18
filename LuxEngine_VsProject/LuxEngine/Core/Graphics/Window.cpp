@@ -11,14 +11,10 @@ namespace lux::core::g::wnd{
 	GLFWwindow* window;
 	int32			width = 1920 * 2, height = 1080;
 	FenceDE			windowResizeFence;
-	vmem::Cell			gpuCellWindowSize;
-	//LuxCell			gpuCellWindowSize;
-	vmem::Cell			gpuCellWindowOutput;
-	//LuxCell			gpuCellWindowOutput;
-	vmem::Cell			gpuCellWindowOutput_i;
-	//LuxCell			gpuCellWindowOutput_i;
-	vmem::Cell			gpuCellWindowZBuffer;
-	//LuxCell			gpuCellWindowZBuffer;
+	ram::Cell			gpuCellWindowSize;
+	ram::Cell			gpuCellWindowOutput;
+	ram::Cell			gpuCellWindowOutput_i;
+	ram::Cell			gpuCellWindowZBuffer;
 
 
 

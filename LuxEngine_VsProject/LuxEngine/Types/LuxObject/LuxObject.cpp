@@ -26,8 +26,7 @@ namespace lux::obj{
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
 		core::init(false);																	//Initialize the engine
 		render.data = (int8*)malloc(getCellSize( ));										//Create the cell taht contains the object data
-		render.localData = vmem::alloc(getCellSize( ), vmem::LUX_CELL_CLASS_AUTO, vmem::LUX_ALLOC_TYPE_SHARED_UNIFORM);	//Create the cell taht contains the object data
-		//render.localData = core::c::buffers::gpuCellCreate(getCellSize( ), false, true);	//Create the cell taht contains the object data
+		render.localData = ram::alloc(getCellSize( ), ram::LUX_CELL_CLASS_AUTO, ram::LUX_ALLOC_TYPE_SHARED_UNIFORM);	//Create the cell taht contains the object data
 	}
 
 

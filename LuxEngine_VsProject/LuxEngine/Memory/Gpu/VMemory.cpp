@@ -3,7 +3,7 @@
 
 
 
-namespace lux::vmem{
+namespace lux::ram{
 	uint32 maxAlloc;
 	Array<MemBufferType> buffers;
 
@@ -15,7 +15,7 @@ namespace lux::vmem{
 	//*   vCellClass | the class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
 	//Returns the allocated cell
 	//e.g.
-	//lux::vramCell foo = lux::vmem::alloc(100, LUX_CELL_CLASS_B);
+	//lux::vramCell foo = lux::ram::alloc(100, LUX_CELL_CLASS_B);
 	Cell alloc(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
 		//TODO special case class 0
 		//Set cell class if LUX_CELL_CLASS_AUTO was used

@@ -9,13 +9,13 @@
 
 
 
-namespace lux::vmem{
+namespace lux::ram{
 	// |--------------------------------- VRAM -------------------------------|
 	// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
 	// |-cell-||-cell-||-cell-|
 	//A video memory cell
 	//A cell is a fixed-size partition of memory inside an allocated GPU buffer
-	//Allocate a cell with the lux::vmem::alloc function
+	//Allocate a cell with the lux::ram::alloc function
 	struct Cell {
 		uint64 cellSize;			//Size of the cell in bytes
 		//void* address;				//Address of the cell. The same as you would get with malloc
@@ -24,6 +24,7 @@ namespace lux::vmem{
 		uint32 cellIndex;			//Index of the cell in the buffer
 		uint32 __256padding;
 		//TODO AVX2 = operator
+		//TODO shared pointer
 	};
 
 

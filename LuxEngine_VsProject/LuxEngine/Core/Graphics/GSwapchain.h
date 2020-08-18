@@ -10,9 +10,9 @@
 
 namespace lux::core::g::swapchain{
 	struct SwapChainSupportDetails {
-		VkSurfaceCapabilitiesKHR		capabilities;
+		VkSurfaceCapabilitiesKHR	capabilities;
 		Array<VkSurfaceFormatKHR>	formats;
-		Array<VkPresentModeKHR>	presentModes;
+		Array<VkPresentModeKHR>		presentModes;
 	};
 
 

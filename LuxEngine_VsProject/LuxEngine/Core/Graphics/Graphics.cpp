@@ -9,8 +9,6 @@
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
-//#include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
-//#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 
 
 
@@ -228,10 +226,8 @@ namespace lux::core::g{
 			for(uint32 i = 0; i < objUpdates2D.size( ); i++){
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
-					cb, vmem::buffers[objUpdates2D[i]->render.localData.bufferTypeIndex].buffers[objUpdates2D[i]->render.localData.bufferIndex].buffer,
-					//cb, core::c::buffers::CBuffers[getBufferIndex(objUpdates2D[i]->render.localData)].buffer,
-					vmem::getCellOffset(objUpdates2D[i]->render.localData),
-					//getCellOffset(&core::dvc::compute.PD, objUpdates2D[i]->render.localData),
+					cb, ram::buffers[objUpdates2D[i]->render.localData.bufferTypeIndex].buffers[objUpdates2D[i]->render.localData.bufferIndex].buffer,
+					ram::getCellOffset(objUpdates2D[i]->render.localData),
 					objUpdates2D[i]->getCellSize( ),
 					(void*)objUpdates2D[i]->render.data
 				);
