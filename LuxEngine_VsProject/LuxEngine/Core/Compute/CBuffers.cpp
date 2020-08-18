@@ -24,6 +24,27 @@ namespace lux::core::c::buffers{
 
 
 
+	void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
+		return nullptr;
+	}
+	void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
+		return nullptr;
+	}
+	void freeCallback(void* pUserData, void* pMemory){
+	}
+	void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){
+	}
+	void internalFreeCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){
+	}
+	//PFN_vkFreeFunction
+
+
+
+
+
+
+
+
 	//Creates and allocates a buffer in the memory of a device
 	//*   vDevice: the logical device where to create the buffer
 	//*   vSize: the size of the buffer in bytes
@@ -42,11 +63,21 @@ namespace lux::core::c::buffers{
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
 
-		VkMemoryAllocateInfo allocInfo{ };
-		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, vProperties);
-
+		VkMemoryAllocateInfo allocInfo{
+			.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+			.allocationSize = memRequirements.size,
+			.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, vProperties)
+		};
+		//TODO use custom allocator to allocate aligned buffers
+		VkAllocationCallbacks allocator{
+			.pUserData = nullptr,
+			.pfnAllocation = allocateCallback,
+			.pfnReallocation =reallocateCallback,
+			.pfnFree = freeCallback,
+			.pfnInternalAllocation = internalAllocCallback,
+			.pfnInternalFree =internalFreeCallback,
+		};
+		//PFN_vkAllocationFunction
 		//TODO check out of memory
 		//TODO don't quit in VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS but return an error code
 		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
@@ -70,6 +101,10 @@ namespace lux::core::c::buffers{
 
 		TryVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0)) printError("Failed to bind buffer", true, -1);
 	}
+
+
+
+
 
 
 

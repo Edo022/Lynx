@@ -55,7 +55,7 @@ namespace lux::rem{
 			cell.buffer = &typeBuffers[typeBuffers.add(MemBuffer{ 0, 0, (vCellClass == LUX_CELL_CLASS_0) ? Map<bool, uint32>(1, 1) : Map<bool, uint32>(bufferSize / vCellClass, bufferSize / vCellClass) })];
 			cell.cellIndex = (vCellClass == LUX_CELL_CLASS_0) ? 0 : cell.buffer->cells.add(true);
 			core::c::buffers::createBuffer(												//Set the cell index. Create a new vk buffer
-				core::dvc::compute.LD, (vCellClass == LUX_CELL_CLASS_0) ? vSize : (uint32)vCellClass,
+				core::dvc::compute.LD, (vCellClass == LUX_CELL_CLASS_0) ? vSize : bufferSize,
 				((isUniform(vAllocType) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 				(isShared(vAllocType)) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 				&cell.buffer->buffer, &cell.buffer->memory								//with the buffer's buffer and device memory
