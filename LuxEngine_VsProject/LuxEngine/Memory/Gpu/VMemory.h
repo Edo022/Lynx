@@ -74,36 +74,15 @@ namespace lux::rem{
 
 	static constexpr inline bool isUniform(const AllocType vAllocType) { return (vAllocType & 0b1); }
 	static constexpr inline bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
-	#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
-	//Returns an index based on the cell class
-	static constexpr inline uint32 getCellClassIndex(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } }
-	#define _case2(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
-	static constexpr inline CellClass getCellClassValue(const uint32 vClass){ switch(vClass){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } }
 
 
 
 
 	extern uint32 maxAlloc;						//The maximum number of allocated buffers. Depends on the gpu properties
 	extern Array<MemBufferType> buffers;		//VRAM allocated buffers
+	void init( );
 
 
-	static inline void init( ){
-		//Set max allocation count and resize buffer types array
-		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers.resize(LUX_CELL_CLASS_NUM * LUX_ALLOC_TYPE_NUM);
-
-		//Init buffer types
-		uint32 index;
-		for(uint32 i = 0; i < LUX_CELL_CLASS_NUM; ++i){
-			for(uint32 j = 0; j < LUX_ALLOC_TYPE_NUM; ++j){
-				index = (i << 2) | j;
-				buffers[index].cellClass = (CellClass)getCellClassValue(i);
-				buffers[index].allocType = (AllocType)j;
-				//32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
-				buffers[index].buffers = Map<MemBuffer, uint32>(32, 4096);
-			}
-		}
-	}
 
 
 	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
