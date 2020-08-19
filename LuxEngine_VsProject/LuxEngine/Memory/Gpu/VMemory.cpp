@@ -34,16 +34,18 @@ namespace lux::rem{
 
 
 
-		uint32 bufferTypeIndex = genBufferTypeIndex(vCellClass, vAllocType);		//Get buffer index from type and class
-		Map<MemBuffer, uint32>& typeBuffers = (buffers[bufferTypeIndex].buffers);	//Get list of buffers where to search for a free cell
+		// 1 0 1 | 0 1
+		// class | type
+		uint32 typeIndex = (getCellClassIndex(vCellClass) << 2) | vAllocType;		//Get buffer index from type and class
+		Map<MemBuffer, uint32>& typeBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
 		Cell cell{																	//Cell object
 			.cellSize = vSize,
-			.bufferType = &buffers[bufferTypeIndex]
+			.bufferType = &buffers[typeIndex]
 		};
 
 		if(vCellClass != LUX_CELL_CLASS_0){											//If the cell is a fixed size cell
-			uint64 cellNum = bufferSize / buffers[bufferTypeIndex].cellClass;			//Get the maximum number of cells in each buffer
-			for(uint32 i = 0; i < typeBuffers.size( ); i++){								//Search for a suitable buffer
+			uint64 cellNum = bufferSize / buffers[typeIndex].cellClass;					//Get the maximum number of cells in each buffer
+			for(uint32 i = 0; i < typeBuffers.size( ); i++){							//Search for a suitable buffer
 				if(typeBuffers.isValid(i) && (typeBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
 					cell.buffer = &typeBuffers[i];												//Set it as the cell's buffet
 					cell.cellIndex = typeBuffers[i].cells.add(true);							//Add to it a new cell, assign the cell index
@@ -53,7 +55,7 @@ namespace lux::rem{
 		}{																			//If there are no free buffers or the cell is a custom size cell
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
 			cell.buffer = &typeBuffers[typeBuffers.add(MemBuffer{ 0, 0, (vCellClass == LUX_CELL_CLASS_0) ? Map<bool, uint32>(1, 1) : Map<bool, uint32>(bufferSize / vCellClass, bufferSize / vCellClass) })];
-			cell.cellIndex = (vCellClass == LUX_CELL_CLASS_0) ? 0 : cell.buffer->cells.add(true);
+			cell.cellIndex = (vCellClass) ? 0 : cell.buffer->cells.add(true);
 			core::c::buffers::createBuffer(												//Set the cell index. Create a new vk buffer
 				core::dvc::compute.LD, (vCellClass == LUX_CELL_CLASS_0) ? vSize : bufferSize,
 				((isUniform(vAllocType) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -79,7 +81,7 @@ namespace lux::rem{
 	//Always lux::vmem::unmap() cells when  you don't need to access their data
 	void* map(Cell& pCell){
 		void* data;
-		vkMapMemory(core::dvc::compute.LD, getCellMemory(pCell), getCellOffset(pCell), getCellClass(pCell), 0, &data);
+		vkMapMemory(core::dvc::compute.LD, pCell.buffer->memory, getCellOffset(pCell), pCell.bufferType->cellClass, 0, &data);
 		return data;
 	}
 

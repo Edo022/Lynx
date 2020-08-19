@@ -48,9 +48,7 @@ namespace lux::core{
 	//TODO remove
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		lux::String compileShaderCommand = lux::sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv";  //lib
-		//lux::String compileShaderCommand = lux::sys::dir::thisDir + "/LuxEngine/Contents/shaders/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv"; //No .lib
-		return system(compileShaderCommand.begin( )) == 0;
+		return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
 	}
 
 
@@ -84,10 +82,9 @@ namespace lux::core{
 	void run(bool vUseVSync, float vFOV) {
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
-		sys::dir::thisDir;
 		LuxTime start = luxStartChrono( );
 		c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
-		//shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
+		//c::shaders::shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
 				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);
