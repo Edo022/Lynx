@@ -188,7 +188,7 @@ namespace lux::core::c::shaders{
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.size( ); i++){
-			if(rem::isUniform(pCells[i].bufferType->allocType)) uniformCount++;
+			if(rem::isUniform(pCells[i]->bufferType->allocType)) uniformCount++;
 			else storageCount++;
 		}
 		Array<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));
@@ -231,10 +231,10 @@ namespace lux::core::c::shaders{
 		for(uint32 i = 0; i < pCells.size( ); ++i) {
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
-			descriptorBufferInfo->buffer = pCells[i].buffer->buffer;				//Set buffer    //Set buffer offset
-			if(rem::isUniform(pCells[i].bufferType->allocType)) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
+			descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;				//Set buffer    //Set buffer offset
+			if(rem::isUniform(pCells[i]->bufferType->allocType)) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
 			else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);		//Set buffer offset
-			descriptorBufferInfo->range = pCells[i].cellSize;						//Set buffer size
+			descriptorBufferInfo->range = pCells[i]->cellSize;						//Set buffer size
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 						//Create write descriptor set
 				.sType{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET },					//Set structure type
@@ -242,7 +242,7 @@ namespace lux::core::c::shaders{
 				.dstBinding{ i },													//Set binding
 				.descriptorCount{ 1 },												//Set number of descriptors
 				.descriptorType{
-					(rem::isUniform(pCells[i].bufferType->allocType)) ?	//Use it as a storage
+					(rem::isUniform(pCells[i]->bufferType->allocType)) ?	//Use it as a storage
 					VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 				.pBufferInfo{ descriptorBufferInfo },								//Set descriptor buffer info
 			};
@@ -340,7 +340,7 @@ namespace lux::core::c::shaders{
 				.imageOffset{ 0, 0, 0 },										//No image offset
 				};
 				region.imageExtent = { g::swapchain::swapchainExtent.width, g::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(c::copyCommandBuffers[imgIndex], g::wnd::gpuCellWindowOutput_i.buffer->buffer, g::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(c::copyCommandBuffers[imgIndex], g::wnd::gpuCellWindowOutput_i->buffer->buffer, g::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 				//Create a barrier to use the swapchain image as a present source image

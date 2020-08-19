@@ -45,11 +45,11 @@ namespace lux::rem{
 
 
 
-
+	class Cell_t;
 	struct MemBuffer {
 		VkBuffer buffer;				//Vulkan buffer object
 		VkDeviceMemory memory;			//Vulkan buffer memory
-		Map<bool, uint32> cells;		//Cells in the buffer
+		Map<Cell_t, uint32> cells;		//Cells in the buffer
 	};
 	struct MemBufferType {
 		CellClass cellClass;			//Class of the cells
@@ -62,13 +62,14 @@ namespace lux::rem{
 	//A video memory cell
 	//A cell is a fixed-size partition of memory inside an allocated GPU buffer
 	//Allocate a cell with the lux::rem::alloc function
-	struct Cell {
+	struct Cell_t {
 		uint64 cellSize;			//Size of the cell in bytes
 		//void* address;			//Address of the cell. The same as you would get with malloc
 		MemBufferType* bufferType;	//Type of buffer allocation
 		MemBuffer* buffer;			//Index of the buffer where the cell is allocated
 		uint32 cellIndex;			//Index of the cell in the buffer
 	};
+	typedef Cell_t* Cell;
 
 
 
@@ -86,12 +87,12 @@ namespace lux::rem{
 
 
 	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
-	void* map(Cell& pCell);
-	static inline void unmap(Cell& pCell){ vkUnmapMemory(core::dvc::compute.LD, pCell.buffer->memory); }
-	void free(Cell& pCell);
+	void* map(Cell pCell);
+	static inline void unmap(Cell pCell){ vkUnmapMemory(core::dvc::compute.LD, pCell->buffer->memory); }
+	void free(Cell pCell);
 
 	//Generates the index of a buffer from the cell class and allocation type
 	// 1 0 1 | 0 1
 	// class | type
-	static inline uint32 getCellOffset(const Cell& pCell){ return pCell.bufferType->cellClass * pCell.cellIndex; }
+	static inline uint32 getCellOffset(const Cell pCell){ return pCell->bufferType->cellClass * pCell->cellIndex; }
 }

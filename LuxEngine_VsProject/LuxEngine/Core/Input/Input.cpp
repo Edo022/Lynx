@@ -1,6 +1,7 @@
 
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.h"
 
 
@@ -29,8 +30,10 @@ namespace lux::input{
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
-		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
-		rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->update( );
+		if(core::c::shaders::CRenderSpaces.size( ) > 0){
+			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
+			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->update( );
+		}
 	}
 
 

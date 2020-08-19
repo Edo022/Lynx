@@ -78,11 +78,9 @@ namespace lux{
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
 				int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
-				rem::Cell localData{ (uint64)-1 };				//Local GPU copy of data									| object type				| object instance
-				//LuxCell localData{ (uint64)-1 };				//Local GPU copy of data									| object type				| object instance
+				rem::Cell localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
-				rem::Cell cache{ (uint64)-1 };					//Object cache that avoids draws when not needed			| object type				| object instance
-				//LuxCell cache{ (uint64)-1 };					//Object cache that avoids draws when not needed			| object type				| object instance
+				rem::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
 			} render;
 			inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
 			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -

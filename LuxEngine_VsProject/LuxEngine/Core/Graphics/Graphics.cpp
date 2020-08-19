@@ -226,7 +226,7 @@ namespace lux::core::g{
 			for(uint32 i = 0; i < objUpdates2D.size( ); i++){
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
-					cb, objUpdates2D[i]->render.localData.buffer->buffer,
+					cb, objUpdates2D[i]->render.localData->buffer->buffer,
 					rem::getCellOffset(objUpdates2D[i]->render.localData),
 					objUpdates2D[i]->getCellSize( ),
 					(void*)objUpdates2D[i]->render.data
