@@ -7,9 +7,9 @@ namespace lux::rem{
 	uint32 maxAlloc;
 	Array<MemBufferType> buffers;
 
-	#define _case(n) case LUX_CELL_CLASS_##n: return LUX_CELL_CLASS_INDEX_##n;
+	#define _case(n) case CELL_CLASS_##n: return CELL_CLASS_INDEX_##n;
 	static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } }
-	#define _case2(n) case LUX_CELL_CLASS_INDEX_##n: return LUX_CELL_CLASS_##n;
+	#define _case2(n) case CELL_CLASS_INDEX_##n: return CELL_CLASS_##n;
 	static constexpr inline CellClass classEnumFromIndex(const uint32 vClass){ switch(vClass){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } }
 
 
@@ -21,12 +21,12 @@ namespace lux::rem{
 	void init( ){
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers.resize(LUX_CELL_CLASS_NUM * LUX_ALLOC_TYPE_NUM);
+		buffers.resize(CELL_CLASS_NUM * ALLOC_TYPE_NUM);
 
 		//Init buffer types
 		uint32 index;
-		for(uint32 i = 0; i < LUX_CELL_CLASS_NUM; ++i){
-			for(uint32 j = 0; j < LUX_ALLOC_TYPE_NUM; ++j){
+		for(uint32 i = 0; i < CELL_CLASS_NUM; ++i){
+			for(uint32 j = 0; j < ALLOC_TYPE_NUM; ++j){
 				index = (i << 2) | j;
 				buffers[index].cellClass = (CellClass)classEnumFromIndex(i);
 				buffers[index].allocType = (AllocType)j;
@@ -39,22 +39,26 @@ namespace lux::rem{
 
 
 	//This function allocates a video memory cell into a buffer
-	//*   vSize      | the size of the cell
-	//*   vCellClass | the class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
-	//Returns the allocated cell
-	//e.g.
-	//lux::vramCell foo = lux::rem::alloc(100, LUX_CELL_CLASS_B);
+	//*   vSize      | size of the cell
+	//*   vCellClass | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
+	//*   vAllocType | type of buffer where to allocate the cell
+	//*       Cells allocated in shared memory are accessible from both CPU and GPU (cpu needs to map() the cell to use it)
+	//*       Cells allocated in dedicated memory are only accessible from GPU
+	//*       Uniform buffers are read only for the GPU. Useful when you need to pass small data to a shader
+	//*       Storage buffers are larger and the GPU can write in it, bet they have worse performance
+	//*   Returns    | the allocated Cell object
+	//e.g.   lux::rem::Cell foo = lux::rem::alloc(100, lux::rem::CELL_CLASS_AUTO, lux::rem::ALLOC_TYPE_DEDICATED_STORAGE);
 	Cell alloc(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
-		//Set cell class if LUX_CELL_CLASS_AUTO was used
-		if(vCellClass == LUX_CELL_CLASS_AUTO) {
+		//Set cell class if CELL_CLASS_AUTO was used
+		if(vCellClass == CELL_CLASS_AUTO) {
 			vCellClass =
-				(vSize <= LUX_CELL_CLASS_A) ? LUX_CELL_CLASS_A :
-				(vSize <= LUX_CELL_CLASS_B) ? LUX_CELL_CLASS_B :
-				(vSize <= LUX_CELL_CLASS_C) ? LUX_CELL_CLASS_C :
-				(vSize <= LUX_CELL_CLASS_D) ? LUX_CELL_CLASS_D :
-				(vSize <= LUX_CELL_CLASS_Q) ? LUX_CELL_CLASS_Q :
-				(vSize <= LUX_CELL_CLASS_L) ? LUX_CELL_CLASS_L :
-				LUX_CELL_CLASS_0;
+				(vSize <= CELL_CLASS_A) ? CELL_CLASS_A :
+				(vSize <= CELL_CLASS_B) ? CELL_CLASS_B :
+				(vSize <= CELL_CLASS_C) ? CELL_CLASS_C :
+				(vSize <= CELL_CLASS_D) ? CELL_CLASS_D :
+				(vSize <= CELL_CLASS_Q) ? CELL_CLASS_Q :
+				(vSize <= CELL_CLASS_L) ? CELL_CLASS_L :
+				CELL_CLASS_0;
 		}
 
 
@@ -99,9 +103,10 @@ namespace lux::rem{
 
 
 
-	//Returns the address of a cell
+	//Maps a lux::rem::Cell to a memory address in order to use it from the CPU
+	//Returns the address of the cell as a void pointer
 	//Only cells allocated in shared memory can be mapped
-	//Always lux::vmem::unmap() cells when  you don't need to access their data
+	//Always lux::vmem::unmap() cells when you don't need to access their data
 	void* map(Cell& pCell){
 		void* data;
 		vkMapMemory(core::dvc::compute.LD, pCell.buffer->memory, getCellOffset(pCell), pCell.bufferType->cellClass, 0, &data);

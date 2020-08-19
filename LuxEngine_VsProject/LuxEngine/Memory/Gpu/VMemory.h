@@ -15,33 +15,33 @@ namespace lux::rem{
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
 	enum CellClass : uint32 {
-		LUX_CELL_CLASS_A = 32,						//32 bytes. The minimum size of a cell
-		LUX_CELL_CLASS_B = LUX_CELL_CLASS_A * 16,	//16x LUX_CELL_CLASS_A. 512 B per cell (~0.5KB)
-		LUX_CELL_CLASS_C = LUX_CELL_CLASS_A * 32,	//32x LUX_CELL_CLASS_A. 1024 B per cell (~1KB)
-		LUX_CELL_CLASS_D = LUX_CELL_CLASS_A * 64,	//64x LUX_CELL_CLASS_A. 2048 B per cell (~2KB)
-		LUX_CELL_CLASS_Q = LUX_CELL_CLASS_D * 64,	//64x LUX_CELL_CLASS_D. 131072 B per cell (~130KB)
-		LUX_CELL_CLASS_L = LUX_CELL_CLASS_Q * 64,	//64x LUX_CELL_CLASS_Q. 8388608 B per cell (~8.4MB)
-		LUX_CELL_CLASS_0 = 0,						//Dedicated buffer for cells larger than LUX_CELL_CLASS_L
-		LUX_CELL_CLASS_AUTO = (uint32)-1,			//Choose a class large enough to contain the cell
+		CELL_CLASS_A = 32,						//32 bytes. The minimum size of a cell
+		CELL_CLASS_B = CELL_CLASS_A * 16,	//16x CELL_CLASS_A. 512 B per cell (~0.5KB)
+		CELL_CLASS_C = CELL_CLASS_A * 32,	//32x CELL_CLASS_A. 1024 B per cell (~1KB)
+		CELL_CLASS_D = CELL_CLASS_A * 64,	//64x CELL_CLASS_A. 2048 B per cell (~2KB)
+		CELL_CLASS_Q = CELL_CLASS_D * 64,	//64x CELL_CLASS_D. 131072 B per cell (~130KB)
+		CELL_CLASS_L = CELL_CLASS_Q * 64,	//64x CELL_CLASS_Q. 8388608 B per cell (~8.4MB)
+		CELL_CLASS_0 = 0,						//Dedicated buffer for cells larger than CELL_CLASS_L
+		CELL_CLASS_AUTO = (uint32)-1,			//Choose a class large enough to contain the cell
 	};
 	enum CellClassIndex : uint32 {
-		LUX_CELL_CLASS_INDEX_A = 0b000,
-		LUX_CELL_CLASS_INDEX_B = 0b001,
-		LUX_CELL_CLASS_INDEX_C = 0b010,
-		LUX_CELL_CLASS_INDEX_D = 0b011,
-		LUX_CELL_CLASS_INDEX_Q = 0b100,
-		LUX_CELL_CLASS_INDEX_L = 0b101,
-		LUX_CELL_CLASS_INDEX_0 = 0b110,
-		LUX_CELL_CLASS_NUM 							//Number of LUX_CELL_CLASS values
+		CELL_CLASS_INDEX_A = 0b000,
+		CELL_CLASS_INDEX_B = 0b001,
+		CELL_CLASS_INDEX_C = 0b010,
+		CELL_CLASS_INDEX_D = 0b011,
+		CELL_CLASS_INDEX_Q = 0b100,
+		CELL_CLASS_INDEX_L = 0b101,
+		CELL_CLASS_INDEX_0 = 0b110,
+		CELL_CLASS_NUM 							//Number of LUX_CELL_CLASS values
 	};
 	enum AllocType : uint32 {
-		LUX_ALLOC_TYPE_DEDICATED_STORAGE = 0b00,	//Storage buffer in dedicated GPU memory
-		LUX_ALLOC_TYPE_DEDICATED_UNIFORM = 0b01,	//Uniform buffer in dedicated GPU memory
-		LUX_ALLOC_TYPE_SHARED_STORAGE =/**/0b10,	//Storage buffer in shared RAM memory
-		LUX_ALLOC_TYPE_SHARED_UNIFORM =/**/0b11,	//Uniform buffer in shared RAM memory
-		LUX_ALLOC_TYPE_NUM							//Number of LUX_ALLOC_TYPE values
+		ALLOC_TYPE_DEDICATED_STORAGE = 0b00,	//Storage buffer in dedicated GPU memory
+		ALLOC_TYPE_DEDICATED_UNIFORM = 0b01,	//Uniform buffer in dedicated GPU memory
+		ALLOC_TYPE_SHARED_STORAGE =/**/0b10,	//Storage buffer in shared RAM memory
+		ALLOC_TYPE_SHARED_UNIFORM =/**/0b11,	//Uniform buffer in shared RAM memory
+		ALLOC_TYPE_NUM							//Number of LUX_ALLOC_TYPE values
 	};
-	const uint32 bufferSize = LUX_CELL_CLASS_L * 6;	//Size of each buffer. 50331648 B (~50MB)
+	const uint32 bufferSize = CELL_CLASS_L * 6;	//Size of each buffer. 50331648 B (~50MB)
 
 
 
@@ -72,8 +72,8 @@ namespace lux::rem{
 
 
 
-	static constexpr inline bool isUniform(const AllocType vAllocType) { return (vAllocType & 0b1); }
-	static constexpr inline bool isShared(const AllocType vAllocType) { return ((vAllocType >> 1) & 0b1); }
+	static constexpr inline bool isUniform(const AllocType vAllocType) { return vAllocType & 0b1; }
+	static constexpr inline bool isShared(const AllocType vAllocType) { return vAllocType >> 1; }
 
 
 
