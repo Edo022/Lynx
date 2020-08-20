@@ -24,12 +24,6 @@ namespace lux::rem{
 		AllocType allocType;			//Buffer allocation type
 		Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
 	};
-	// |--------------------------------- VRAM -------------------------------|
-	// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
-	// |-cell-||-cell-||-cell-|
-	//A video memory cell
-	//A cell is a fixed-size partition of memory inside an allocated GPU buffer
-	//Allocate a cell with the lux::rem::alloc function
 	struct Cell_t {
 		uint64 cellSize;			//Size of the cell in bytes
 		MemBufferType* bufferType;	//Type of buffer allocation
@@ -40,6 +34,8 @@ namespace lux::rem{
 		inline void unmap(){ vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
 	};
 	typedef Cell_t* Cell;
+	static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
+
 	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
 	void free(Cell pCell);
 
@@ -48,13 +44,4 @@ namespace lux::rem{
 	extern uint32 maxAlloc;						//The maximum number of allocated buffers. Depends on the gpu properties
 	extern Array<MemBufferType> buffers;		//VRAM allocated buffers
 	void init( );
-
-
-
-
-
-	//Generates the index of a buffer from the cell class and allocation type
-	// 1 0 1 | 0 1
-	// class | type
-	static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 }

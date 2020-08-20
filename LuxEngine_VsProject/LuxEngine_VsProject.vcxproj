@@ -348,6 +348,7 @@
     <ClInclude Include="LuxEngine\Types\Integers\int128_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\int256_t.h" />
     <ClInclude Include="LuxEngine\Types\Integers\Integers.h" />
+    <ClInclude Include="LuxEngine\Types\LuxBool.h" />
     <ClInclude Include="LuxEngine\Types\LuxFenceDE.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DBorder.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h" />

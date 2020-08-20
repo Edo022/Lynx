@@ -6,7 +6,6 @@
 #include "LuxEngine/Types/LuxFenceDE.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Core/Graphics/Window.h"
-#include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 

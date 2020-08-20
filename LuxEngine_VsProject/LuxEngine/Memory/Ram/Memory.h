@@ -1,13 +1,48 @@
-#pragma once
+﻿#pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
-#include <intrin.h>
+#include "LuxEngine/Memory/Ram/Memory2.h"
 
 
 
 
 
 namespace lux{
+/*
+    A cell is a fixed-size partition of memory inside an allocated buffer
+    Cells are allocated in RAM memory with lux::ram::alloc, in VRAM or shared memory with lux::rem::alloc
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+                                RAM                        SHARED                                  VRAM
+                                                     uniform   storage                      uniform   storage
+                 .─────────────────────────────────.────────────────────.            .──────────────────────────────────.
+        Buffer 0 │ cell0  cell1  cell2  cell3..    ¦ cell0.. | cell0..  │            │ cell0  cell1.. | cell0  cell1..  │
+                 │─────────────────────────────────¦─────────|──────────│            │────────────────|─────────────────│
+        Buffer 1 │ cell0  cell1  cell2  cell3..    ¦ cell0.. | cell0..  │            │ cell0  cell1.. | cell0  cell1..  │
+        ...      │─────────────────────────────────¦─────────|──────────│            │────────────────|─────────────────│
+                 │                                 ¦                    │            │                                  │
+                 '───────────────↑─────────────────'──↑────↑────↑────↑──'            '────────↑───────────────↑─────────'
+                                 ¦                    ¦    R    ¦   R/W                       R              R/W
+                                R/W                  R/W   ¦   R/W   ¦                        ¦               ¦
+                                 ¦                    ¦    '----¦ ---'------------------------'---------------¦
+                                 ¦------ map() -------'---------'                                             ¦
+                                CPU                                                                          GPU
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+    lux::            │     ram::alloc()       rem::alloc()   | rem::alloc()         rem::alloc()      | rem::alloc()
+    lux::AllocType:: │         -              SHARED_UNIFORM | SHARED_STORAGE       DEDICATED_UNIFORM | DEDICATED_STORAGE
+
+*/
+
+
+
+
+
+
+
+
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
 	enum class CellClass : uint32 {
@@ -39,10 +74,9 @@ namespace lux{
 	};
 	static const uint32 bufferSize = (uint32)CellClass::CLASS_L * 6;	//Size of each buffer. 50331648 B (~50MB)
 	#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
-	static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } }
+	static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } };
 	#define _case2(n) case CellClassIndex::INDEX_##n: return CellClass::CLASS_##n;
-	static constexpr inline CellClass classEnumFromIndex(const CellClassIndex vIndex){ switch(vIndex){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } }
-
+	static constexpr inline CellClass classEnumFromIndex(const CellClassIndex vIndex){ switch(vIndex){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } };
 
 
 
@@ -56,27 +90,23 @@ namespace lux{
 			CellClass cellClass;			//Class of the cells
 			Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
 		};
-		// |--------------------------------- VRAM -------------------------------|
-		// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
-		// |-cell-||-cell-||-cell-|
-		//A video memory cell
-		//A cell is a fixed-size partition of memory inside an allocated GPU buffer
-		//Allocate a cell with the lux::rem::alloc function
 		struct Cell_t {
-			uint64 cellSize;			//Size of the cell in bytes
-			void* address;				//Address of the cell. The same as you would get with malloc
-			MemBufferType* bufferType;	//Type of buffer allocation
-			MemBuffer* buffer;			//Index of the buffer where the cell is allocated
-			uint32 cellIndex;			//Index of the cell in the buffer
+			uint64 cellSize;				//Size of the cell in bytes
+			void* address;					//Address of the cell. The same as you would get with malloc
+			MemBufferType* bufferType;		//Type of buffer allocation
+			MemBuffer* buffer;				//Index of the buffer where the cell is allocated
+			uint32 cellIndex;				//Index of the cell in the buffer
 		};
 		typedef Cell_t* Cell;
+		static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
+
 		Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
 		void free(Cell pCell);
 
 
 
 
-		extern Array<MemBufferType> buffers;		//VRAM allocated buffers
+		extern Array<MemBufferType> buffers;	//Allocated buffers
 		void init( );
 		void breakMemoryPool( );
 	}

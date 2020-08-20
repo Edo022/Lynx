@@ -60,16 +60,10 @@ namespace lux::ram{
 			}
 		}{																			//If there are no free buffers or the cell is a custom size cell
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
-			MemBuffer& buffer = typeBuffers[typeBuffers.add(MemBuffer{ 0, 0, !(uint32)vCellClass ? Map<Cell_t, uint32>(1, 1) : Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) })];
+			MemBuffer& buffer = typeBuffers[typeBuffers.add(MemBuffer{ _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1) })];
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->buffer = &buffer;
-			cell->cellIndex = !(uint32)vCellClass ? 0 : cellIndex;
-			core::c::buffers::createBuffer(												//Set the cell index. Create a new vk buffer
-				core::dvc::compute.LD, !(uint32)vCellClass ? vSize : bufferSize,		//#LLID STRT 0000 isUniform()
-				((((uint32)vAllocType & 0b1) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-				((uint32)vAllocType >> 1) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-				&buffer.buffer, &buffer.memory								//with the buffer's buffer and device memory
-			);																			//And
+			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;
 			return cell;																//return the cell object
 		}
 		//TODO incorrect maxUniformBufferRange. It's UINT_MAX, for some reason

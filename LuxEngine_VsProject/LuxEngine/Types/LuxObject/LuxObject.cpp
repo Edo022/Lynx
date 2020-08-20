@@ -3,6 +3,7 @@
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
+#include "LuxEngine/Memory/Ram/Memory.h"
 
 
 
