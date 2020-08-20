@@ -75,7 +75,7 @@ namespace lux::ram{
 
 	//TODO check new cell class
 	void realloc(const Cell& pCell, const uint64 vSize, const CellClass vCellClass){
-		if(vSize < (uint32)pCell->bufferType->cellClass && ((uint32)vCellClass || vCellClass == pCell->bufferType->cellClass)) [[likely]] pCell->cellSize = vSize;
+		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pCell->cellSize = vSize;
 		else if(vSize != pCell->cellSize) [[unlikely]] {
 			ram::free(pCell);
 			Cell cell = alloc(vSize, vCellClass);
