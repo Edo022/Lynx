@@ -1,5 +1,5 @@
 #include "LuxEngine/Memory/Ram/Memory.h"
-
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -30,6 +30,8 @@ namespace lux::ram{
 	//*   Returns    | the allocated Cell object
 	//e.g.   lux::ram::Cell foo = lux::ram::alloc(100, lux::CellClass::AUTO);
 	Cell alloc(const uint64 vSize, CellClass vCellClass){
+		param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
+
 		//TODO fix comments
 		//Set cell class if CellClass::AUTO was used
 		if(vCellClass == CellClass::AUTO) {
@@ -70,6 +72,16 @@ namespace lux::ram{
 
 
 
+
+	//TODO check new cell class
+	void realloc(const Cell& pCell, const uint64 vSize, const CellClass vCellClass){
+		if(vSize < (uint32)pCell->bufferType->cellClass && ((uint32)vCellClass || vCellClass == pCell->bufferType->cellClass)) [[likely]] pCell->cellSize = vSize;
+		else if(vSize != pCell->cellSize) [[unlikely]] {
+			ram::free(pCell);
+			Cell cell = alloc(vSize, vCellClass);
+			pCell->address = cell->address; pCell->buffer = cell->buffer; pCell->cellSize = cell->cellSize; pCell->bufferType = cell->bufferType; pCell->cellIndex = cell->cellIndex;
+		}
+	}
 
 
 

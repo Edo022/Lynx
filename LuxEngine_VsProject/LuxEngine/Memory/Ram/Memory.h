@@ -3,6 +3,9 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Memory/Ram/Memory2.h"
 #include "LuxEngine/Memory/Memory_t.h"
+#ifndef LUX_RAM_MEMORY
+#define LUX_RAM_MEMORY
+#endif
 
 
 
@@ -45,6 +48,7 @@
 
 namespace lux::ram{
 	Cell alloc(const uint64 vSize, const CellClass vCellClass);
+	void realloc(const Cell& pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
 	void free(Cell pCell);
 
 

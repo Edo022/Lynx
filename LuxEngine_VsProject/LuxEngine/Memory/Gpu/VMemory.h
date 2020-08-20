@@ -13,7 +13,7 @@
 //TODO check for alllocation number limit
 //TODO use multiple devices
 namespace lux::rem{
-	class Cell_t;
+	struct Cell_t;
 	struct MemBuffer {
 		VkBuffer buffer;				//Vulkan buffer object
 		VkDeviceMemory memory;			//Vulkan buffer memory

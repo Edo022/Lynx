@@ -9,7 +9,6 @@
 #include "LuxEngine/macros.h"
 
 
-//TODO add lux::mem_gpu to manage gpu dedicated and shared memory
 //TODO add [no AVX2] performance warning
 //TODO add AVX512 when supported //or don't. it's probably useless
 namespace lux::mem{
@@ -28,8 +27,7 @@ namespace lux::mem{
 		luxDebug(if(num % 32 != 0)			param_error(num, "The size is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
 
 		switch(thr){
-			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase;
-				//[[falltrhough]];
+			case LUX_AUTO: [[fallthrough]]; if(num > 32 * 64 * 128) goto __2thrCase;
 			case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
 			case LUX_TRUE: { __2thrCase:
 				uint64 numShift = multipleOf(num / 2, 32); bool thrf = false;

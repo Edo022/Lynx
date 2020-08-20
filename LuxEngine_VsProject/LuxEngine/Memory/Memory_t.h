@@ -49,7 +49,7 @@ namespace lux{
 
 
 	namespace ram{
-		class Cell_t;
+		struct Cell_t;
 		struct MemBuffer {
 			void* memory;					//Address of the buffer
 			Map<Cell_t, uint32> cells;		//Cells in the buffer
