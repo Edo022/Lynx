@@ -32,7 +32,6 @@ namespace lux::rem{
 	//Allocate a cell with the lux::rem::alloc function
 	struct Cell_t {
 		uint64 cellSize;			//Size of the cell in bytes
-		//void* address;			//Address of the cell. The same as you would get with malloc
 		MemBufferType* bufferType;	//Type of buffer allocation
 		MemBuffer* buffer;			//Index of the buffer where the cell is allocated
 		uint32 cellIndex;			//Index of the cell in the buffer

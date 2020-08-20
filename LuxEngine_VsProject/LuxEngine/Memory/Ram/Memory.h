@@ -38,6 +38,10 @@ namespace lux{
 		NUM							//Number of LUX_ALLOC_TYPE values
 	};
 	static const uint32 bufferSize = (uint32)CellClass::CLASS_L * 6;	//Size of each buffer. 50331648 B (~50MB)
+	#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
+	static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } }
+	#define _case2(n) case CellClassIndex::INDEX_##n: return CellClass::CLASS_##n;
+	static constexpr inline CellClass classEnumFromIndex(const CellClassIndex vIndex){ switch(vIndex){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } }
 
 
 
@@ -66,30 +70,14 @@ namespace lux{
 			uint32 cellIndex;			//Index of the cell in the buffer
 		};
 		typedef Cell_t* Cell;
-
-
-
-		//static constexpr inline bool isUniform(const AllocType vAllocType) { return vAllocType & 0b1; }
-		//static constexpr inline bool isShared(const AllocType vAllocType) { return vAllocType >> 1; }
-
-
-
-
-		//extern uint32 maxAlloc;						//The maximum number of allocated buffers. Depends on the gpu properties
-		//extern Array<MemBufferType> buffers;		//VRAM allocated buffers
-		//void init( );
+		Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
+		void free(Cell pCell);
 
 
 
 
-		//Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
-		//void* map(Cell pCell);
-		//static inline void unmap(Cell pCell){ vkUnmapMemory(core::dvc::compute.LD, pCell->buffer->memory); }
-		//void free(Cell pCell);
-
-		////Generates the index of a buffer from the cell class and allocation type
-		//// 1 0 1 | 0 1
-		//// class | type
-		//static inline uint32 getCellOffset(const Cell pCell){ return pCell->bufferType->cellClass * pCell->cellIndex; }
+		extern Array<MemBufferType> buffers;		//VRAM allocated buffers
+		void init( );
+		void breakMemoryPool( );
 	}
 }

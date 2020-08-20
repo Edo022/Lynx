@@ -20,6 +20,7 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Threads/ThreadPool.h"
 #include "LuxEngine/Memory/Ram/Memory.h";
+#include "LuxEngine/Memory/Gpu/VMemory.h";
 
 
 
@@ -59,7 +60,6 @@ int main( ) {
 	//for(int i = 0; i < 10; i++){
 	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);
 	//}
-
 
 	{
 		//TODO automatize object search //TODO wtf does this mean

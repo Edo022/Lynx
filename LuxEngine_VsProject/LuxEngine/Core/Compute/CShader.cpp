@@ -188,7 +188,7 @@ namespace lux::core::c::shaders{
 		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.size( ); i++){
-			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;
+			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;	//#LLID STRT 0003
 			else storageCount++;
 		}
 		Array<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));
@@ -231,7 +231,7 @@ namespace lux::core::c::shaders{
 		for(uint32 i = 0; i < pCells.size( ); ++i) {
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
-			descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;				//Set buffer    //Set buffer offset
+			descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;				//Set buffer    //#LLID STRT 0002 Set buffer offset
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
 			else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);		//Set buffer offset
 			descriptorBufferInfo->range = pCells[i]->cellSize;						//Set buffer size
@@ -242,7 +242,7 @@ namespace lux::core::c::shaders{
 				.dstBinding{ i },													//Set binding
 				.descriptorCount{ 1 },												//Set number of descriptors
 				.descriptorType{
-					((uint32)pCells[i]->bufferType->allocType & 0b1) ?	//Use it as a storage
+					((uint32)pCells[i]->bufferType->allocType & 0b1) ?				//#LLID STRT 0001 Use it as a storage
 					VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 				.pBufferInfo{ descriptorBufferInfo },								//Set descriptor buffer info
 			};
