@@ -106,6 +106,7 @@ namespace lux::core{
 
 		g::init(vUseVSync, vFOV);
 		c::buffers::init( );
+		ram::init( );
 		rem::init( );
 		c::init( );
 

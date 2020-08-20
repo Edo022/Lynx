@@ -54,12 +54,13 @@ void hg(lux::Array<uint16>){
 
 int main( ) {
 	LuxInit(false);
-	//#define n multipleOf(4200200200,32)
-	//void* hh = _aligned_malloc(n, 32);
-	//void* hhh = _aligned_malloc(n, 32);
-	//for(int i = 0; i < 10; i++){
-	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);
-	//}
+	#define n multipleOf(4200200200,32)
+	lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
+	lux::ram::Cell hhh = lux::ram::alloc(n, lux::CellClass::AUTO);
+	for(int i = 0; i < 10; i++){
+		lux::mem::cpy(hhh->address, hh->address, n, LUX_TRUE);
+	}
+	return 0;
 
 	{
 		//TODO automatize object search //TODO wtf does this mean

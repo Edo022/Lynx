@@ -29,7 +29,7 @@ namespace lux::ram{
 	//*   vCellClass | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
 	//*   Returns    | the allocated Cell object
 	//e.g.   lux::ram::Cell foo = lux::ram::alloc(100, lux::CellClass::AUTO);
-	Cell alloc(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
+	Cell alloc(const uint64 vSize, CellClass vCellClass){
 		//TODO fix comments
 		//Set cell class if CellClass::AUTO was used
 		if(vCellClass == CellClass::AUTO) {
