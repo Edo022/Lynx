@@ -41,12 +41,8 @@ namespace lux::rem{
 		inline void unmap(){ vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
 	};
 	typedef Cell_t* Cell;
-
-
-
-	static constexpr inline bool isUniform(const AllocType vAllocType) { return (uint32)vAllocType & 0b1; }
-	static constexpr inline bool isShared(const AllocType vAllocType) { return (uint32)vAllocType >> 1; }
-
+	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
+	void free(Cell pCell);
 
 
 
@@ -57,8 +53,6 @@ namespace lux::rem{
 
 
 
-	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
-	void free(Cell pCell);
 
 	//Generates the index of a buffer from the cell class and allocation type
 	// 1 0 1 | 0 1

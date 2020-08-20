@@ -43,29 +43,29 @@ namespace lux{
 
 
 	namespace ram{
-		//class Cell_t;
-		//struct MemBuffer {
-		//	void* memory;					//Address of the buffer
-		//	Map<Cell_t, uint32> cells;		//Cells in the buffer
-		//};
-		//struct MemBufferType {
-		//	CellClass cellClass;			//Class of the cells
-		//	Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
-		//};
-		//// |--------------------------------- VRAM -------------------------------|
-		//// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
-		//// |-cell-||-cell-||-cell-|
-		////A video memory cell
-		////A cell is a fixed-size partition of memory inside an allocated GPU buffer
-		////Allocate a cell with the lux::rem::alloc function
-		//struct Cell_t {
-		//	uint64 cellSize;			//Size of the cell in bytes
-		//	void* address;				//Address of the cell. The same as you would get with malloc
-		//	MemBufferType* bufferType;	//Type of buffer allocation
-		//	MemBuffer* buffer;			//Index of the buffer where the cell is allocated
-		//	uint32 cellIndex;			//Index of the cell in the buffer
-		//};
-		//typedef Cell_t* Cell;
+		class Cell_t;
+		struct MemBuffer {
+			void* memory;					//Address of the buffer
+			Map<Cell_t, uint32> cells;		//Cells in the buffer
+		};
+		struct MemBufferType {
+			CellClass cellClass;			//Class of the cells
+			Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
+		};
+		// |--------------------------------- VRAM -------------------------------|
+		// |------- Buffer0 ------||------- Buffer1 ------||------- Buffer2 ------|
+		// |-cell-||-cell-||-cell-|
+		//A video memory cell
+		//A cell is a fixed-size partition of memory inside an allocated GPU buffer
+		//Allocate a cell with the lux::rem::alloc function
+		struct Cell_t {
+			uint64 cellSize;			//Size of the cell in bytes
+			void* address;				//Address of the cell. The same as you would get with malloc
+			MemBufferType* bufferType;	//Type of buffer allocation
+			MemBuffer* buffer;			//Index of the buffer where the cell is allocated
+			uint32 cellIndex;			//Index of the cell in the buffer
+		};
+		typedef Cell_t* Cell;
 
 
 
