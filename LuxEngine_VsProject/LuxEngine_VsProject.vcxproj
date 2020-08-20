@@ -300,6 +300,7 @@
     <ClCompile Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.cpp" />
     <ClCompile Include="LuxEngine\Memory\Gpu\VMemory.cpp" />
     <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp" />
+    <ClCompile Include="LuxEngine\Memory\Ram\Memory2.cpp" />
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
@@ -334,6 +335,7 @@
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h" />
     <ClInclude Include="LuxEngine\Memory\Gpu\VMemory.h" />
     <ClInclude Include="LuxEngine\Memory\Ram\Memory.h" />
+    <ClInclude Include="LuxEngine\Memory\Ram\Memory2.h" />
     <ClInclude Include="LuxEngine\System\System.h" />
     <ClInclude Include="LuxEngine\Threads\ThreadPool.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxDynArray.h" />

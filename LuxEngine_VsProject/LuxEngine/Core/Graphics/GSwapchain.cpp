@@ -196,10 +196,10 @@ namespace lux::core::g::swapchain{
 
 
 			//Update the window size buffer
-			uint32* pwindowSize = scast<uint32*>(rem::map(wnd::gpuCellWindowSize));
+			uint32* pwindowSize = scast<uint32*>(wnd::gpuCellWindowSize->map( ));
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
-			rem::unmap(g::wnd::gpuCellWindowSize);
+			g::wnd::gpuCellWindowSize->unmap( );
 
 			{	//Destroy copy command buffers
 				vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.size( ), c::copyCommandBuffers.begin( ));

@@ -1,63 +1,129 @@
-
-#include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Core/Core.h"
-#include <intrin.h>
-
 #include "LuxEngine/Memory/Ram/Memory.h"
-#include "LuxEngine/Threads/ThreadPool.h"
-#include "LuxEngine/Math/Algebra/Algebra.h"
-#include "LuxEngine/macros.h"
-
-
-//TODO add lux::mem_gpu to manage gpu dedicated and shared memory
-//TODO add [no AVX2] performance warning
-//TODO add AVX512 when supported //or don't. it's probably useless
-namespace lux::mem{
-	//memcpy, but faster. The performance difference is much more noticeable in dual / quad channel systems, or systems with high frequency RAM / low frequency CPU
-	//The function will not return until all threads have completed the operation
-	//Use lux::mem::async::cpy to asynchronously copy data in a buffer
-	//Source and destination buffers should not overlap. If they do, it's undefined behaviour
-	//*  src | address of the source buffer
-	//*  dst | address of the destination buffer
-	//*  num | number of bytes to copy
-	//*  thr | LUX_TRUE to use multithreading, LUX_FALSE to use 1 thread. Default: LUX_AUTO
-	//*   Multithreading cannot be used in operations with small buffers, as it would negatively affect performance
-	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr){
-		luxDebug(if((uint64)src % 32 != 0)	param_error(src, "The address is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
-		luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "The address is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
-		luxDebug(if(num % 32 != 0)			param_error(num, "The size is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
-
-		switch(thr){
-			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase;
-				//[[falltrhough]];
-			case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
-			case LUX_TRUE: { __2thrCase:
-				uint64 numShift = multipleOf(num / 2, 32); bool thrf = false;
-				lux::thr::sendToExecQueue(cpy_thr, lux::thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
-				cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
-				while(!thrf) sleep(5); break;
-			}
-			default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
-		}
-	}
 
 
 
 
-	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num){
-		//Copy bytes with index >= 2048
-		#define iter _mm256_stream_si256(dst++, _mm256_stream_load_si256(src++));
-		#define iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter;
-		//for(uint64 a = (num = (num / 32 + !!(num % 32))) / 64; a; --a) { iter16 iter16 iter16 iter16 }
-		for(uint64 a = (num = (num / 32 + !!(num % 32))) / 64; a; --a) { iter16 iter16 iter16 iter16 }
+namespace lux::ram{
+	//uint32 maxAlloc;
+	//Array<MemBufferType> buffers;
 
-		//Copy all the remaining bytes //sorry UwU
-		switch(num % 64){
-			case 0: return; case 1: iter return; case 2: iter iter return; case 3: iter iter iter return; case 4: iter iter iter iter return; case 5: iter iter iter iter iter return; case 6: iter iter iter iter iter iter return; case 7: iter iter iter iter iter iter iter return; case 8: iter iter iter iter iter iter iter iter return; case 9: iter iter iter iter iter iter iter iter iter return; case 10: iter iter iter iter iter iter iter iter iter iter return; case 11: iter iter iter iter iter iter iter iter iter iter iter return; case 12: iter iter iter iter iter iter iter iter iter iter iter iter return; case 13: iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 14: iter iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 15: iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter return;
-			case 16: iter16 return; case 17: iter16 iter return; case 18: iter16 iter iter return; case 19: iter16 iter iter iter return; case 20: iter16 iter iter iter iter return; case 21: iter16 iter iter iter iter iter return; case 22: iter16 iter iter iter iter iter iter return; case 23: iter16 iter iter iter iter iter iter iter return; case 24: iter16 iter iter iter iter iter iter iter iter return; case 25: iter16 iter iter iter iter iter iter iter iter iter return; case 26: iter16 iter iter iter iter iter iter iter iter iter iter return; case 27: iter16 iter iter iter iter iter iter iter iter iter iter iter return; case 28: iter16 iter iter iter iter iter iter iter iter iter iter iter iter return; case 29: iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 30: iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 31: iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter return;
-			case 32: iter16 iter16 return; case 33: iter16 iter16 iter return; case 34: iter16 iter16 iter iter return; case 35: iter16 iter16 iter iter iter return; case 36: iter16 iter16 iter iter iter iter return; case 37: iter16 iter16 iter iter iter iter iter return; case 38: iter16 iter16 iter iter iter iter iter iter return; case 39: iter16 iter16 iter iter iter iter iter iter iter return; case 40: iter16 iter16 iter iter iter iter iter iter iter iter return; case 41: iter16 iter16 iter iter iter iter iter iter iter iter iter return; case 42: iter16 iter16 iter iter iter iter iter iter iter iter iter iter return; case 43: iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter return; case 44: iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter return; case 45: iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 46: iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 47: iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter return;
-			case 48: iter16 iter16 iter16 return; case 49: iter16 iter16 iter16 iter return; case 50: iter16 iter16 iter16 iter iter return; case 51: iter16 iter16 iter16 iter iter iter return; case 52: iter16 iter16 iter16 iter iter iter iter return; case 53: iter16 iter16 iter16 iter iter iter iter iter return; case 54: iter16 iter16 iter16 iter iter iter iter iter iter return; case 55: iter16 iter16 iter16 iter iter iter iter iter iter iter return; case 56: iter16 iter16 iter16 iter iter iter iter iter iter iter iter return; case 57: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter return; case 58: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter iter return; case 59: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter return; case 60: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter return; case 61: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 62: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter return; case 63: iter16 iter16 iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter return;
-		}
-		_mm_sfence( );
-	}
+	//#define _case(n) case CellClass::CLASS_##n: return CellClass::CLASS_INDEX_##n;
+	//static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){ switch(vClass){ _case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) _case(0) default: return (uint32)-1; } }
+	//#define _case2(n) case CellClass::CLASS_INDEX_##n: return CellClass::CLASS_##n;
+	//static constexpr inline CellClass classEnumFromIndex(const uint32 vClass){ switch(vClass){ _case2(A) _case2(B) _case2(C) _case2(D) _case2(Q) _case2(L) _case2(0) default: return (CellClass)-1; } }
+
+
+
+
+
+
+
+	//void init( ){
+	//	//Set max allocation count and resize buffer types array
+	//	maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
+	//	buffers.resize(CellClass::CLASS_NUM * ALLOC_TYPE_NUM);
+
+	//	//Init buffer types
+	//	uint32 index;
+	//	for(uint32 i = 0; i < CellClass::CLASS_NUM; ++i){
+	//		for(uint32 j = 0; j < ALLOC_TYPE_NUM; ++j){
+	//			index = (i << 2) | j;
+	//			buffers[index].cellClass = (CellClass)classEnumFromIndex(i);
+	//			buffers[index].allocType = (AllocType)j;
+	//			buffers[index].buffers = Map<MemBuffer, uint32>(32, 4096); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+	//		}
+	//	}
+	//}
+
+
+
+
+	////This function allocates a video memory cell into a buffer
+	////*   vSize      | size of the cell
+	////*   vCellClass | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
+	////*   vAllocType | type of buffer where to allocate the cell
+	////*       Cells allocated in shared memory are accessible from both CPU and GPU (cpu needs to map() the cell to use it)
+	////*       Cells allocated in dedicated memory are only accessible from GPU
+	////*       Uniform buffers are read only for the GPU. Useful when you need to pass small data to a shader
+	////*       Storage buffers are larger and the GPU can write in it, bet they have worse performance
+	////*   Returns    | the allocated Cell object
+	////e.g.   lux::rem::Cell foo = lux::rem::alloc(100, lux::CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
+	//Cell alloc(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
+	//	//TODO fix comments
+	//	//Set cell class if CellClass::AUTO was used
+	//	if(vCellClass == CellClass::AUTO) {
+	//		vCellClass =
+	//			(vSize <= CellClass::CLASS_A) ? CellClass::CLASS_A :
+	//			(vSize <= CellClass::CLASS_B) ? CellClass::CLASS_B :
+	//			(vSize <= CellClass::CLASS_C) ? CellClass::CLASS_C :
+	//			(vSize <= CellClass::CLASS_D) ? CellClass::CLASS_D :
+	//			(vSize <= CellClass::CLASS_Q) ? CellClass::CLASS_Q :
+	//			(vSize <= CellClass::CLASS_L) ? CellClass::CLASS_L :
+	//			CellClass::CLASS_0;
+	//	}
+
+
+
+	//	uint32 typeIndex = (classIndexFromEnum(vCellClass) << 2) | vAllocType;		//Get buffer index from type and class
+	//	Map<MemBuffer, uint32>& typeBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
+	//	//Cell_t cell{																	//Cell object
+	//	//	.cellSize = vSize,
+	//	//	.bufferType = &buffers[typeIndex]
+	//	//};
+
+	//	uint32 cellIndex;
+	//	if(vCellClass){																//If the cell is a fixed size cell
+	//		uint64 cellNum = bufferSize / vCellClass;									//Get the maximum number of cells in each buffer
+	//		for(uint32 i = 0; i < typeBuffers.size( ); i++){							//Search for a suitable buffer
+	//			if(typeBuffers.isValid(i) && (typeBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
+	//				Cell cell = &typeBuffers[i].cells[(cellIndex = typeBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
+	//				cell->buffer = &typeBuffers[i];												//Set it as the cell's buffer
+	//				cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
+	//				return cell;																//And return the cell object
+	//			}
+	//		}
+	//	}{																			//If there are no free buffers or the cell is a custom size cell
+	//		//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
+	//		MemBuffer& buffer = typeBuffers[typeBuffers.add(MemBuffer{ 0, 0, !vCellClass ? Map<Cell_t, uint32>(1, 1) : Map<Cell_t, uint32>(bufferSize / vCellClass, bufferSize / vCellClass) })];
+	//		Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
+	//		cell->buffer = &buffer;
+	//		cell->cellIndex = !vCellClass ? 0 : cellIndex;
+	//		core::c::buffers::createBuffer(												//Set the cell index. Create a new vk buffer
+	//			core::dvc::compute.LD, !vCellClass ? vSize : bufferSize,
+	//			((isUniform(vAllocType) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+	//			isShared(vAllocType) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+	//			&buffer.buffer, &buffer.memory								//with the buffer's buffer and device memory
+	//		);																			//And
+	//		return cell;																//return the cell object
+	//	}
+	//	//TODO incorrect maxUniformBufferRange. It's UINT_MAX, for some reason
+	//}
+
+
+
+
+
+
+
+
+
+
+	////Maps a lux::rem::Cell to a memory address in order to use it from the CPU
+	////Returns the address of the cell as a void pointer
+	////Only cells allocated in shared memory can be mapped
+	////Always lux::vmem::unmap() cells when you don't need to access their data
+	//void* map(Cell pCell){
+	//	void* data;
+	//	vkMapMemory(core::dvc::compute.LD, pCell->buffer->memory, getCellOffset(pCell), pCell->bufferType->cellClass, 0, &data);
+	//	return data;
+	//}
+
+
+
+	////Frees a video memory cell
+	//void free(Cell pCell){
+	//	//TODO destroy buffers from asyncrhonous garbage collector
+	//	pCell->buffer->cells.remove(pCell->cellIndex);
+	//	//if(pCell.buffer->cells.usedSize() == 0) pCell.bufferType->buffers.remove(pCell)
+	//}
 }

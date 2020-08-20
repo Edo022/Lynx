@@ -49,6 +49,7 @@ void hg(lux::Array<uint16>){
 //TODO dynamic objects are static if not modified for a certain time
 
 //TODO fix map constructor default parameters (chunkSize is 1)
+//TODO fix map linked free list. Use it even with one element
 
 int main( ) {
 	LuxInit(false);
