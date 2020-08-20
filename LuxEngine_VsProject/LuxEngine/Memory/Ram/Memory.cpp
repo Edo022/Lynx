@@ -55,6 +55,7 @@ namespace lux::ram{
 					Cell cell = &typeBuffers[i].cells[(cellIndex = typeBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
 					cell->buffer = &typeBuffers[i];												//Set it as the cell's buffer
 					cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
+					cell->address = (void*)((uint8*)&typeBuffers[i].memory + getCellOffset(cell));
 					return cell;																//And return the cell object
 				}
 			}
@@ -64,6 +65,7 @@ namespace lux::ram{
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->buffer = &buffer;
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;
+			cell->address = (void*)((uint8*)buffer.memory + getCellOffset(cell));
 			return cell;																//return the cell object
 		}
 		//TODO incorrect maxUniformBufferRange. It's UINT_MAX, for some reason
