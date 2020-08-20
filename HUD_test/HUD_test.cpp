@@ -49,18 +49,19 @@ void hg(lux::Array<uint16>){
 //TODO static objects have ordered vertices
 //TODO dynamic objects are static if not modified for a certain time
 
-//TODO fix map constructor default parameters (chunkSize is 1)
 //TODO fix map linked free list. Use it even with one element
+//TODO add capacity function to dynamic containers
+
 
 int main( ) {
 	LuxInit(false);
-	#define n multipleOf(4200200200,32)
-	lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
-	lux::ram::Cell hhh = lux::ram::alloc(n, lux::CellClass::AUTO);
-	for(int i = 0; i < 10; i++){
-		lux::mem::cpy(hhh->address, hh->address, n, LUX_TRUE);
-	}
-	return 0;
+	//#define n multipleOf(4200200200,32)
+	//lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
+	//lux::ram::Cell hhh = lux::ram::alloc(n, lux::CellClass::AUTO);
+	//for(int i = 0; i < 10; i++){
+	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);
+	//}
+	//return 0;
 
 	{
 		//TODO automatize object search //TODO wtf does this mean

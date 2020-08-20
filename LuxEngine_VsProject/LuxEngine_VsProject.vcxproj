@@ -334,6 +334,7 @@
     <ClInclude Include="LuxEngine\Math\Trigonometry\GoniometricFunctions.h" />
     <ClInclude Include="LuxEngine\Math\Trigonometry\Trigonometry.h" />
     <ClInclude Include="LuxEngine\Memory\Gpu\VMemory.h" />
+    <ClInclude Include="LuxEngine\Memory\Memory_t.h" />
     <ClInclude Include="LuxEngine\Memory\Ram\Memory.h" />
     <ClInclude Include="LuxEngine\Memory\Ram\Memory2.h" />
     <ClInclude Include="LuxEngine\System\System.h" />

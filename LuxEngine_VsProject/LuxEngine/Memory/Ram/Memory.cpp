@@ -66,7 +66,6 @@ namespace lux::ram{
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;
 			return cell;																//return the cell object
 		}
-		//TODO incorrect maxUniformBufferRange. It's UINT_MAX, for some reason
 	}
 
 
