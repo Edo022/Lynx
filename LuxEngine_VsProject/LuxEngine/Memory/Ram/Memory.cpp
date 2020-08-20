@@ -53,9 +53,8 @@ namespace lux::ram{
 			for(uint32 i = 0; i < typeBuffers.size( ); i++){							//Search for a suitable buffer
 				if(typeBuffers.isValid(i) && (typeBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
 					Cell cell = &typeBuffers[i].cells[(cellIndex = typeBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
-					cell->buffer = &typeBuffers[i];												//Set it as the cell's buffer
+					cell->address = (void*)((uint8*)(cell->buffer = &typeBuffers[i])->memory + getCellOffset(cell));
 					cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
-					cell->address = (void*)((uint8*)&typeBuffers[i].memory + getCellOffset(cell));
 					return cell;																//And return the cell object
 				}
 			}
@@ -63,9 +62,8 @@ namespace lux::ram{
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
 			MemBuffer& buffer = typeBuffers[typeBuffers.add(MemBuffer{ _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1) })];
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
-			cell->buffer = &buffer;
+			cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell));
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;
-			cell->address = (void*)((uint8*)buffer.memory + getCellOffset(cell));
 			return cell;																//return the cell object
 		}
 		//TODO incorrect maxUniformBufferRange. It's UINT_MAX, for some reason
