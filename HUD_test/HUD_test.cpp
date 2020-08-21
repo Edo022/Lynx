@@ -53,16 +53,19 @@ void hg(lux::Array<uint16>){
 //TODO add capacity function to dynamic containers
 
 
+
+
+
 int main( ) {
 	LuxInit(false);
-	//#define n multipleOf(4200200200,32)
-	//lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
-	////lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
-	//lux::ram::Cell hhh = lux::ram::alloc(n, lux::CellClass::AUTO);
-	//for(int i = 0; i < 10; i++){
-	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);
-	//}
-	//return 0;
+	#define n multipleOf(4200,32)
+	lux::ram::ptr<char> p0 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	//TODO fix misalignment with ++ operator
+	*(p0+0) = 'h'; ++p0; *(p0) = 'a'; *(p0+1) = 'a'; *(p0+2) = 'i'; *(p0+3) = '\0';
+	lux::ram::ptr<char> p1 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	lux::mem::cpy(p0.cell->address, p1.cell->address, n, LUX_TRUE);
+	printf("%s", (char*)p1.cell->address);
+	return 0;
 
 	{
 		//TODO automatize object search //TODO wtf does this mean

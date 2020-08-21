@@ -1,7 +1,7 @@
 #pragma once
-#include "LuxArray.h"
-#include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Memory/Ram/Memory.h"
+#include "LuxEngine/macros.h"
 
 //TODO use faster memcpy
 //TODO dont use initializer

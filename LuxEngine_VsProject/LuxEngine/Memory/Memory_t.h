@@ -67,5 +67,30 @@ namespace lux{
 		};
 		typedef Cell_t* Cell;
 		static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
+
+		//TODO use only ptr s
+
+
+		template<class type> struct ptr{
+			Cell_t* cell;
+			inline ptr( ){ cell = nullptr; }
+			inline ptr(Cell vCell){ cell = vCell; }
+
+			inline void operator=(Cell vCell){ cell = vCell; }
+			inline void operator=(ptr<type>& pPtr){ cell->address = pPtr.cell->address; }
+			inline bool operator==(ptr<type>& pPtr){ return cell->address == pPtr.cell->address; }
+			inline void operator=(type* vPtr){ cell->address = (void*)vPtr; }
+			inline bool operator==(type* vPtr){ return cell->address == (void*)vPtr; }
+
+
+			inline type* operator+(uint64 v){ return ((type*)cell->address) + v; }
+			inline type* operator-(uint64 v){ return ((type*)cell->address) - v; }
+			inline void operator+=(uint64 v){ cell->address = (void*)(((type*)cell->address) + v); }
+			inline void operator-=(uint64 v){ cell->address = (void*)(((type*)cell->address) - v); }
+			inline void operator++( ){ cell->address = (void*)(((type*)cell->address) + 1); }
+			inline void operator--( ){ cell->address = (void*)(((type*)cell->address) - 1); }
+
+			inline type& operator*( ){ return (*((type*)cell->address)); }
+		};
 	}
 }
