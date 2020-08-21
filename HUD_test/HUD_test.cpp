@@ -57,6 +57,7 @@ int main( ) {
 	LuxInit(false);
 	//#define n multipleOf(4200200200,32)
 	//lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
+	////lux::ram::Cell hh = lux::ram::alloc(n, lux::CellClass::AUTO);
 	//lux::ram::Cell hhh = lux::ram::alloc(n, lux::CellClass::AUTO);
 	//for(int i = 0; i < 10; i++){
 	//	lux::mem::cpy(hhh, hh, n, LUX_TRUE);

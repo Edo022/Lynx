@@ -22,7 +22,7 @@
 
 namespace lux::core::g::out{
 	VkRenderPass	renderPass;
-	const int32		renderMaxFramesInFlight = 8;
+	const int32		renderMaxFramesInFlight = 2;
 	bool			renderFramebufferResized = false;
 
 

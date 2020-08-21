@@ -3,9 +3,6 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Memory/Ram/Memory2.h"
 #include "LuxEngine/Memory/Memory_t.h"
-#ifndef LUX_RAM_MEMORY
-#define LUX_RAM_MEMORY
-#endif
 
 
 

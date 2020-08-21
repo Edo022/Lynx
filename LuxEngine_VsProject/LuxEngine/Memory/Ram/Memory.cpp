@@ -30,7 +30,8 @@ namespace lux::ram{
 	//*   Returns    | the allocated Cell object
 	//e.g.   lux::ram::Cell foo = lux::ram::alloc(100, lux::CellClass::AUTO);
 	Cell alloc(const uint64 vSize, CellClass vCellClass){
-		param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
+		luxDebug(if(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize) param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
+		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
 
 		//TODO fix comments
 		//Set cell class if CellClass::AUTO was used
