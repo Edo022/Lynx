@@ -61,16 +61,16 @@ int main( ) {
 	//alignedIntervalCut(10, 25, 4, &a, &b, &c);
 
 	LuxInit(false);
-	#define n multipleOf(4200,32)
-	lux::ram::ptr<char> p0 = lux::ram::alloc(n, lux::CellClass::AUTO);
-	*(p0+0) = 'h'; *(p0+1) = 'a'; *(p0+2) = 'a'; *(p0+3) = 'i'; *(p0+4) = '\0';
+	//#define n multipleOf(4200,32)
+	//lux::ram::ptr<char> p0 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	//*(p0+0) = 'h'; *(p0+1) = 'a'; *(p0+2) = 'a'; *(p0+3) = 'i'; *(p0+4) = '\0';
 
-	//TODO fix misalignment with ++ operator
-	lux::ram::ptr<char> p1 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	////TODO fix misalignment with ++ operator
+	//lux::ram::ptr<char> p1 = lux::ram::alloc(n, lux::CellClass::AUTO);
 
-	lux::mem::cpy(p0.cell->address, p1.cell->address, n, LUX_FALSE);
-	printf("%s", (char*)p1.cell->address);
-	return 0;
+	//lux::mem::cpy(p0, p1, n, LUX_FALSE);
+	//printf("%s", (char*)p1.cell->address);
+	//return 0;
 
 
 

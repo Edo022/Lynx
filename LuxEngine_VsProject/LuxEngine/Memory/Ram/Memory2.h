@@ -7,6 +7,6 @@
 
 namespace lux::mem{
 	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr = LUX_AUTO);
-	static inline void cpy(const ram::Cell_t* const src, ram::Cell_t* const dst, uint64 num, const LuxBool thr = LUX_AUTO){ cpy(src->address, dst->address, num, thr); }
+	template<class t> static inline void cpy(const ram::ptr<t>& const src, ram::ptr<t>& const dst, uint64 num, const LuxBool thr = LUX_AUTO){ cpy(src.cell->address, dst.cell->address, num, thr); }
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);
 };
