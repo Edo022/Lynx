@@ -19,8 +19,8 @@
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
 #include "LuxEngine/Threads/ThreadPool.h"
-#include "LuxEngine/Memory/Ram/Memory.h";
-#include "LuxEngine/Memory/Gpu/VMemory.h";
+#include "LuxEngine/Memory/Ram/Memory.h"
+#include "LuxEngine/Memory/Gpu/VMemory.h"
 
 
 
@@ -57,15 +57,22 @@ void hg(lux::Array<uint16>){
 
 
 int main( ) {
+	//int a,b,c;
+	//alignedIntervalCut(10, 25, 4, &a, &b, &c);
+
 	LuxInit(false);
 	#define n multipleOf(4200,32)
 	lux::ram::ptr<char> p0 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	*(p0+0) = 'h'; *(p0+1) = 'a'; *(p0+2) = 'a'; *(p0+3) = 'i'; *(p0+4) = '\0';
+
 	//TODO fix misalignment with ++ operator
-	*(p0+0) = 'h'; ++p0; *(p0) = 'a'; *(p0+1) = 'a'; *(p0+2) = 'i'; *(p0+3) = '\0';
 	lux::ram::ptr<char> p1 = lux::ram::alloc(n, lux::CellClass::AUTO);
-	lux::mem::cpy(p0.cell->address, p1.cell->address, n, LUX_TRUE);
+
+	lux::mem::cpy(p0.cell->address, p1.cell->address, n, LUX_FALSE);
 	printf("%s", (char*)p1.cell->address);
 	return 0;
+
+
 
 	{
 		//TODO automatize object search //TODO wtf does this mean

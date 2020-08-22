@@ -22,16 +22,16 @@ namespace lux::mem{
 	//*  thr | LUX_TRUE to use multithreading, LUX_FALSE to use 1 thread. Default: LUX_AUTO
 	//*   Multithreading cannot be used in operations with small buffers, as it would negatively affect performance
 	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr){
-		luxDebug(if((uint64)src % 32 != 0)	param_error(src, "The address is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
-		luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "The address is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
-		luxDebug(if(num % 32 != 0)			param_error(num, "The size is misaligned. You should use this function only with pointers allocated with lux::mem::alloc"));
+		luxDebug(if((uint64)src % 32 != 0)	param_error(src, "Misaligned address. This function should only be used with aligned addresses and size. Use ucpy to copy unaligned data (this will negatively affect performance)"));
+		luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. This function should only be used with aligned addresses and size. Use ucpy to copy unaligned data (this will negatively affect performance)"));
+		luxDebug(if(num % 32 != 0)			param_error(num, "Misaligned size. This function should only be used with aligned addresses and size. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 
 		switch(thr){
-			case LUX_AUTO: [[fallthrough]]; if(num > 32 * 64 * 128) goto __2thrCase;
+			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
 			case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
 			case LUX_TRUE: { __2thrCase:
 				uint64 numShift = multipleOf(num / 2, 32); bool thrf = false;
-				lux::thr::sendToExecQueue(cpy_thr, lux::thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
+				lux::thr::sendToExecQueue(cpy_thr, thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
 				cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
 				while(!thrf) sleep(5); break;
 			}
