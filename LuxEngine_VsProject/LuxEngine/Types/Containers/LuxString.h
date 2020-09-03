@@ -6,6 +6,7 @@
 //TODO use faster memcpy
 //TODO dont use initializer
 
+//TODO compile with clang
 
 //32-bit integer strlen
 namespace lux {

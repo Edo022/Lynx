@@ -36,14 +36,13 @@ namespace lux::ram{
 		//TODO fix comments
 		//Set cell class if CellClass::AUTO was used
 		if(vCellClass == CellClass::AUTO) {
-			vCellClass =
-				(vSize <= (uint32)CellClass::CLASS_A) ? CellClass::CLASS_A :
-				(vSize <= (uint32)CellClass::CLASS_B) ? CellClass::CLASS_B :
-				(vSize <= (uint32)CellClass::CLASS_C) ? CellClass::CLASS_C :
-				(vSize <= (uint32)CellClass::CLASS_D) ? CellClass::CLASS_D :
-				(vSize <= (uint32)CellClass::CLASS_Q) ? CellClass::CLASS_Q :
-				(vSize <= (uint32)CellClass::CLASS_L) ? CellClass::CLASS_L :
-				CellClass::CLASS_0;
+			if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vCellClass = CellClass::CLASS_A;
+			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vCellClass = CellClass::CLASS_B;
+			else if(vSize <= (uint32)CellClass::CLASS_C) [[unlikely]] vCellClass = CellClass::CLASS_C;
+			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] vCellClass = CellClass::CLASS_D;
+			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] vCellClass = CellClass::CLASS_Q;
+			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] vCellClass = CellClass::CLASS_L;
+			else [[likely]] vCellClass = CellClass::CLASS_0;
 		}
 
 
