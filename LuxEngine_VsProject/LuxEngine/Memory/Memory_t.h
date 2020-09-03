@@ -71,8 +71,15 @@ namespace lux{
 		//TODO use only ptr s
 
 
+		//Like a normal pointer, but better
+		//Allocate the pointer with lux::mem::alloc
+		//This pointer will automatically be freed once it is not longer used by any thread
+		//You can also manually free it with the lux::mem:free function
+		//    Accessing the memory of a freed pointer will result in undefined behaviour
 		template<class type> struct ptr{
-			Cell_t* cell;
+			Cell_t* cell{ nullptr };
+			type* address{ nullptr };
+
 			inline ptr( ){ cell = nullptr; }
 			inline ptr(Cell vCell){ cell = vCell; }
 
@@ -88,7 +95,9 @@ namespace lux{
 			inline void operator+=(uint64 v){ cell->address = (void*)(((type*)cell->address) + v); }
 			inline void operator-=(uint64 v){ cell->address = (void*)(((type*)cell->address) - v); }
 			inline void operator++( ){ cell->address = (void*)(((type*)cell->address) + 1); }
+			//template<class _type> _type* operator++( int ){ return p.cell->address = (void*)(((_type*)(p.cell->address)) + 1); }
 			inline void operator--( ){ cell->address = (void*)(((type*)cell->address) - 1); }
+			//inline void operator--( ptr<type> &p ){ p.cell->address = (void*)(((type*)p.cell->address) - 1); }
 
 			inline type& operator*( ){ return (*((type*)cell->address)); }
 		};
