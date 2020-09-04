@@ -8,7 +8,6 @@
 
 
 
-
 namespace lux{
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
@@ -48,28 +47,35 @@ namespace lux{
 
 
 
+	luxDebug(void __lp_printWarning(const char* text));
 	namespace ram{
 		struct Cell_t;
 		struct MemBuffer {
 			void* memory;					//Address of the buffer
 			Map<Cell_t, uint32> cells;		//Cells in the buffer
+			uint32 bufferIndex;				//Index of the buffer in the MemBufferType buffers array
 		};
 		struct MemBufferType {
 			CellClass cellClass;			//Class of the cells
 			Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
 		};
 		struct Cell_t {
+			uint32 owners;					//Number of lux::mem::ptr instances that point to an address of the cell
 			uint64 cellSize;				//Size of the cell in bytes
 			void* address;					//Address of the cell. The same as you would get with malloc
 			MemBufferType* bufferType;		//Type of buffer allocation
 			MemBuffer* buffer;				//Index of the buffer where the cell is allocated
 			uint32 cellIndex;				//Index of the cell in the buffer
+			void freeCell();
 		};
+		//TODO remove alias
 		typedef Cell_t* Cell;
 		static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 
-		//TODO use only ptr s
 
+
+
+		//TODO use only ptr s
 
 		//Like a normal pointer, but better
 		//Allocate the pointer with lux::mem::alloc
@@ -77,29 +83,52 @@ namespace lux{
 		//You can also manually free it with the lux::mem:free function
 		//    Accessing the memory of a freed pointer will result in undefined behaviour
 		template<class type> struct ptr{
+			//TODO use dedicated address for pointer instances
 			Cell_t* cell{ nullptr };
 			type* address{ nullptr };
+			luxDebug(bool initialized = false);
+			#define checkInit if(!initialized __lp_printWarning("Unable to access the memory of an uninitialized pointer")
+			//TODO warning when address is out of cell range
 
+
+			inline void init( ){ cell->owners++; }
 			inline ptr( ){ cell = nullptr; }
-			inline ptr(Cell vCell){ cell = vCell; }
+			inline ptr(Cell vCell) : cell{ vCell }, address{ (type*)vCell->address } { init( ); }
+			inline ptr(Cell vCell, type* vAddress) : cell{ vCell }, address{ vAddress }{ init( ); }
+			inline ptr(ptr<type>& pPtr) : cell{ pPtr.cell }, address{ pPtr.address }{ init( ); }
+			template<class pType> explicit inline ptr(ptr<pType>& pPtr) : cell{ pPtr.cell }, address{ (type*)pPtr.address }{ init( ); }
 
-			inline void operator=(Cell vCell){ cell = vCell; }
-			inline void operator=(ptr<type>& pPtr){ cell->address = pPtr.cell->address; }
-			inline bool operator==(ptr<type>& pPtr){ return cell->address == pPtr.cell->address; }
-			inline void operator=(type* vPtr){ cell->address = (void*)vPtr; }
-			inline bool operator==(type* vPtr){ return cell->address == (void*)vPtr; }
+			//TODO print warning if using a raw pointer
+			inline void operator=(Cell vCell){ cell = vCell; init( ); }
+			inline void operator=(ptr<type>& pPtr){ cell = pPtr.cell; init( ); }
+			//inline void operator=(type* vPtr){ cell->address = (void*)vPtr; lux::core:: }
+
+			template<class pType> inline bool operator==(ptr<pType>& pPtr){
+				luxDebug(__lp_printWarning("Comparison operator should not be used with different pointer types"));
+				return (void*)address == (void*)pPtr.address;
+			}
+			inline bool operator==(type* vPtr){ return (void*)address == (void*)vPtr; }
 
 
-			inline type* operator+(uint64 v){ return ((type*)cell->address) + v; }
-			inline type* operator-(uint64 v){ return ((type*)cell->address) - v; }
-			inline void operator+=(uint64 v){ cell->address = (void*)(((type*)cell->address) + v); }
-			inline void operator-=(uint64 v){ cell->address = (void*)(((type*)cell->address) - v); }
-			inline void operator++( ){ cell->address = (void*)(((type*)cell->address) + 1); }
-			//template<class _type> _type* operator++( int ){ return p.cell->address = (void*)(((_type*)(p.cell->address)) + 1); }
-			inline void operator--( ){ cell->address = (void*)(((type*)cell->address) - 1); }
-			//inline void operator--( ptr<type> &p ){ p.cell->address = (void*)(((type*)p.cell->address) - 1); }
 
-			inline type& operator*( ){ return (*((type*)cell->address)); }
+
+			//TODO print warning if using a raw pointer //??
+			inline ptr<type> operator+(uint64 v){ return ptr<type>{cell, address + v}; }
+			inline uint64 operator+(type* vPtr){ return (uint64)address + (uint64)vPtr; }
+			inline ptr<type> operator-(uint64 v){ return ptr<type>{cell, address - v}; }
+			inline uint64 operator-(type* vPtr){ return (uint64)address - (uint64)vPtr; }
+
+			inline void operator+=(uint64 v){ address += v; }
+			inline void operator-=(uint64 v){ address -= v; }
+			inline void operator++( ){ address++; }
+			inline void operator--( ){ address--; }
+
+			inline type& operator*( ){ return *address; }
+
+
+
+
+			~ptr( ){ if((--(cell->owners)) == 0) cell->freeCell( ); }
 		};
 	}
 }

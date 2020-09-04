@@ -48,21 +48,27 @@ namespace lux::ram{
 
 
 		uint32 typeIndex = classIndexFromEnum(vCellClass);							//Get buffer index from type and class
-		Map<MemBuffer, uint32>& typeBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
+		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vCellClass){														//If the cell is a fixed size cell
 			uint64 cellNum = bufferSize / (uint32)vCellClass;							//Get the maximum number of cells in each buffer
-			for(uint32 i = 0; i < typeBuffers.size( ); i++){							//Search for a suitable buffer
-				if(typeBuffers.isValid(i) && (typeBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
-					Cell cell = &typeBuffers[i].cells[(cellIndex = typeBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
-					cell->address = (void*)((uint8*)(cell->buffer = &typeBuffers[i])->memory + getCellOffset(cell));
+			for(uint32 i = 0; i < subBuffers.size( ); i++){							//Search for a suitable buffer
+				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
+					//Cell cell = &subBuffers[i].cells[(cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
+						cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] });
+						Cell cell = &subBuffers[i].cells[cellIndex];
+						cell->buffer = &subBuffers[i];
+					//cell->address = (void*)((uint8*)(cell->buffer = &subBuffers[i])->memory + getCellOffset(cell));
 					cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
+						cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell));
 					return cell;																//And return the cell object
 				}
 			}
 		}{																			//If there are no free buffers or the cell is a custom size cell
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
-			MemBuffer& buffer = typeBuffers[typeBuffers.add(MemBuffer{ _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1) })];
+			uint32 bufferIndex;
+			MemBuffer& buffer = subBuffers[bufferIndex = subBuffers.add(MemBuffer{ .memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), .cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1), .bufferIndex = (uint32)-1})];
+			buffer.bufferIndex = bufferIndex;
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell));
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;
@@ -91,6 +97,6 @@ namespace lux::ram{
 	void free(Cell pCell){
 		//TODO destroy buffers from asyncrhonous garbage collector
 		pCell->buffer->cells.remove(pCell->cellIndex);
-		//if(pCell.buffer->cells.usedSize() == 0) pCell.bufferType->buffers.remove(pCell)
+		if(pCell->buffer->cells.usedSize() == 0) pCell->bufferType->buffers.remove(pCell->buffer->bufferIndex);
 	}
 }

@@ -138,6 +138,9 @@
     <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp">
       <Filter>LuxEngine\Memory\Ram</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Memory\Ram\Memory_t.cpp">
+      <Filter>LuxEngine\Memory\Ram</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

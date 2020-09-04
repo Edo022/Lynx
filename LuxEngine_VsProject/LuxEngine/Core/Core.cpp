@@ -181,6 +181,10 @@ namespace lux::core{
 		Failure printf("%srror. Code: %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.begin( ));
 		if(vFatalError) system("pause"); exit(vErrorCode);
 	}
+
+	void _printWarning(const String& pMessage){
+		Warning printf("Warning: %s\n", pMessage.begin( ));
+	}
 }
 
 

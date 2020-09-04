@@ -21,6 +21,7 @@ namespace lux {
 	class String : public ContainerBase<char8, uint32> {
 		Array<char8> str;
 
+
 	public:
 		//Constructors
 		inline String( ) {

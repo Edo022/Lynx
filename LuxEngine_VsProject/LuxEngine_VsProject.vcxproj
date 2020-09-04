@@ -303,6 +303,7 @@
     <ClCompile Include="LuxEngine\Memory\Gpu\VMemory.cpp" />
     <ClCompile Include="LuxEngine\Memory\Ram\Memory.cpp" />
     <ClCompile Include="LuxEngine\Memory\Ram\Memory2.cpp" />
+    <ClCompile Include="LuxEngine\Memory\Ram\Memory_t.cpp" />
     <ClCompile Include="LuxEngine\System\System.cpp" />
     <ClCompile Include="LuxEngine\Threads\ThreadPool.cpp" />
     <ClCompile Include="LuxEngine\Types\Containers\LuxQueue.h" />
