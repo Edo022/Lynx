@@ -87,7 +87,6 @@ namespace lux{
 			Cell_t* cell{ nullptr };
 			type* address{ nullptr };
 			luxDebug(bool initialized = false);
-			#define checkInit if(!initialized __lp_printWarning("Unable to access the memory of an uninitialized pointer")
 			//TODO warning when address is out of cell range
 
 
@@ -118,12 +117,17 @@ namespace lux{
 			inline ptr<type> operator-(uint64 v){ return ptr<type>{cell, address - v}; }
 			inline uint64 operator-(type* vPtr){ return (uint64)address - (uint64)vPtr; }
 
-			inline void operator+=(uint64 v){ address += v; }
-			inline void operator-=(uint64 v){ address -= v; }
-			inline void operator++( ){ address++; }
-			inline void operator--( ){ address--; }
+			#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) __lp_printWarning("A lux::mem::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+			#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     __lp_printWarning("A lux::mem::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+			inline void operator+=(uint64 v){ address += v; checkp; }
+			inline void operator-=(uint64 v){ address -= v; checkm; }
+			inline void operator++( ){ address++; checkp;}
+			inline void operator--( ){ address--; checkm;}
 
-			inline type& operator*( ){ return *address; }
+			inline type& operator*( ){
+				luxDebug(if(!initialized) __lp_printWarning("Unable to access the memory of an uninitialized lux::mem::ptr. A pointer should always be initialized with the lux::mem::alloc function or using one of its constructors"));
+				return *address;
+			}
 
 
 
