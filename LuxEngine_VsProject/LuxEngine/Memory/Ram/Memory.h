@@ -45,7 +45,7 @@
 
 namespace lux::ram{
 	Cell alloc(const uint64 vSize, const CellClass vCellClass);
-	void realloc(const Cell& pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
+	void realloc(Cell& const pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
 	void free(Cell pCell);
 
 

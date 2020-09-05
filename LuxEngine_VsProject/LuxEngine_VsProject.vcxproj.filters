@@ -290,6 +290,9 @@
     <ClInclude Include="LuxEngine\Memory\Memory_t.h">
       <Filter>LuxEngine\Memory\Ram</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Nothing.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

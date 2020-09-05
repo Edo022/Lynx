@@ -2,7 +2,7 @@
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
-
+#include "LuxEngine/Types/Nothing.h"
 
 
 
@@ -25,7 +25,7 @@ namespace lux {
 				Failure printf("This error will not be reported in release mode. Make sure to fix it");
 				system("pause"); exit(-1);
 			}
-		})
+		});
 
 
 
@@ -34,7 +34,13 @@ namespace lux {
 
 
 		//Creates an array with no elements
-		inline Array( ) :__lp_size(0), __lp_data(nullptr) { }
+		//inline Array(const Nothing) { *this = *this; }
+		inline Array(const Nothing) : __lp_data{ __lp_data }, __lp_size{ __lp_size } { }
+		inline Array( ) {
+			__lp_size = 0;
+			//__lp_data = (type*)malloc(sizeof(type));
+			__lp_data = nullptr;
+		}
 		//Sets the size of the array and allocates it, without inizializing the elements
 		inline Array(const iter vInitSize) {
 			luxDebug(checkSize(vInitSize));
@@ -94,6 +100,7 @@ namespace lux {
 			else if(vNewSize == 0) {
 				free(__lp_data);//TODO dont free with global memory pool
 				__lp_data = nullptr;
+				//__lp_data = (type*)realloc(__lp_data, sizeof(type));
 				return __lp_size = 0;
 			}
 

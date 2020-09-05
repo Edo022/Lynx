@@ -358,6 +358,7 @@
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DLines.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\2D\2DRenderSpace.h" />
     <ClInclude Include="LuxEngine\Types\LuxObject\LuxObject.h" />
+    <ClInclude Include="LuxEngine\Types\Nothing.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec2.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec3.h" />
     <ClInclude Include="LuxEngine\Types\Vectors\Vec4.h" />

@@ -3,12 +3,13 @@
 #include "LuxArray.h"
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
-
+#include "LuxEngine/Types/Nothing.h"
 
 
 namespace lux {
 	template<class type, class iter = uint32> struct DynArray : public Array<type, iter> {
 		iter chunkSize;
+		inline DynArray(const Nothing){ }
 
 		//Creates an array with no elements
 		//*   vChunkSize | the number of new elements allocated when the array grows

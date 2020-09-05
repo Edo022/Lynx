@@ -101,7 +101,11 @@ namespace lux::core{
 
 
 
+	void preInit( );
 	void init(bool useVSync);
+	struct LuxEngineInitializer{ LuxEngineInitializer( ){ lux::core::preInit( ); } };
+	extern LuxEngineInitializer luxEngineInitializer; //This variable is used to inizialize the engine before any other variable or function call
+
 	void run(bool vUseVSync, float vFOV);
 	void mainLoop( );
 	void runFPSCounterThr( );

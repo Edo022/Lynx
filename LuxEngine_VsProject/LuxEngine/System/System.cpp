@@ -1,12 +1,12 @@
 
 #include "LuxEngine/System/System.h"
+#include "LuxEngine/Types/Containers/LuxString.h"
 
+#include <new>
 
-
-
-lux::String lux::sys::dir::thisDir = "";				//Path to the current directory
+lux::String lux::sys::dir::thisDir(lux::DontInitialize( ));	//Path to the current directory //Initialized in __lp_init_system function
 //TODO move to lux::thr
-uint32		lux::sys::threadNum = 0;					//Number of threads in the main CPU
+uint32		lux::sys::threadNum = 0;						//Number of threads in the main CPU
 
 
 
@@ -14,8 +14,11 @@ uint32		lux::sys::threadNum = 0;					//Number of threads in the main CPU
 namespace lux::sys{
 	namespace dir{
 		//Replaces backslashes with normal slashes
-		void fixWindowsPath(lux::String& pStr) {
-			for (auto& i : pStr) {
+		void fixWindowsPath(String& pStr) {
+			//pStr.empty();
+			//pStr.begin();
+			//pStr.end();
+			for (char8& i : pStr) {
 				if (i == '\\') i = '/';
 				//else if(i == ' ') i = '' //TODO spaces
 			}
@@ -43,13 +46,12 @@ namespace lux::sys{
 	void __lp_init_system( ) {
 		static bool once = true;
 		if(once) {								//Execute only once
+			once = false;
 			char buff[FILENAME_MAX];				//Create char array to store the path
 			__lp_get_cwd(buff, FILENAME_MAX);		//Get path
-			dir::thisDir = lux::String(buff);		//Save path
+			dir::thisDir.String::String(lux::String(buff));		//Save path
 			dir::fixWindowsPath(dir::thisDir);		//Replace silly windows backslashes with normal slashes
-
 			__lp_get_nopt(threadNum);				//Get number of physical threads
 		}
-		once = false;
 	}
 }

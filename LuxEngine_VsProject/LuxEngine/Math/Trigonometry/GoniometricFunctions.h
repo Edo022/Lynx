@@ -27,6 +27,21 @@ extern double* __lp_atan;
 
 static void __lp_goniometric_functions_init( ) {
 	#ifdef LUX_CNF_USE_FFUNCTIONS
+
+	#define __lp_mallocFunc(n) (double*)malloc(sizeof(double) * (n))
+	__lp_sin = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_cos = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_tan = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_cot = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_sec = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_csc = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+
+	__lp_asin = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_acos = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	__lp_atan = __lp_mallocFunc(LUX_CNF_FFUNCTIONS_PRECISION);
+	#undef __lp_mallocFunc
+
+
 	for(int i = 0; i < LUX_CNF_FFUNCTIONS_PRECISION; ++i) {
 		static double rads = (revToRad(scast<double>(i)) / LUX_CNF_FFUNCTIONS_PRECISION);
 		__lp_sin[i] = sin(rads);

@@ -6,6 +6,7 @@
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
+#include "LuxEngine/Types/Nothing.h"
 
 #include <vector>
 //#include <stdlib.h>                               // for malloc, free
@@ -43,6 +44,8 @@ namespace lux {
 
 
 
+		inline Map(const Nothing){ }
+
 		//Creates the map with the specified chunk and maximum size
 		//The number of chunks depends on their size and the maximum size of the map (chunks = maxSize / chunkSize)
 		//*   vChunkSize: | number of elements allocated when the map grows
@@ -51,7 +54,7 @@ namespace lux {
 		//*   vMaxSize:   | the maximum size the map can reach
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
-		Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
+		inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
 			chunkSize(vChunkSize), maxSize(vMaxSize), head((iter)-1), tail((iter)-1), chunksDynNum((iter)0), __lp_dynSize((iter)0), __lp_freeNum((iter)0) {
 			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data
 			__lp_tracker = (iter**)malloc(sizeof(iter*) * (maxSize / chunkSize));	//Allocate tracker
@@ -61,7 +64,7 @@ namespace lux {
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   in: a pointer to the container object
 		template<class elmType>
-		Map(const ContainerBase<elmType, iter>* in) {
+		inline Map(const ContainerBase<elmType, iter>* in) {
 			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
 		}
 

@@ -35,9 +35,15 @@ namespace lux::core{
 	Array<const char*, uint32>	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 
-	// Main -------------------------------------------------------------------------------------------------------------------------------------//
 
 
+
+
+
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------//
+
+	LuxEngineInitializer luxEngineInitializer;
 
 
 
@@ -56,16 +62,26 @@ namespace lux::core{
 
 
 
+	//READ HERE IF UR TRYING TO UNDERSTAND HOW THIS WORKS
+
+
+	void preInit( ){
+		static bool once = true;
+		if(once){
+			once = false;
+			ram::init( );
+			sys::__lp_init_system( );
+			thr::__lp_init_thread( );
+			__lp_goniometric_functions_init( );
+		}
+	}
+
 	//Initializes the engine object and all the Lux namespace
 	//Don't call this function. Use LuxInit( ) instead
 	void init(bool useVSync) {
 		static bool once = true;
 		if(once){
 			once = false;
-			sys::__lp_init_system( );
-			thr::__lp_init_thread( );
-			__lp_goniometric_functions_init( );
-
 			std::thread renderThr(&run, useVSync, 45);
 			renderThr.detach( );
 			running = true;
@@ -106,7 +122,7 @@ namespace lux::core{
 
 		g::init(vUseVSync, vFOV);
 		c::buffers::init( );
-		ram::init( );
+		//ram is inizialized in init function as it's required for everything
 		rem::init( );
 		c::init( );
 

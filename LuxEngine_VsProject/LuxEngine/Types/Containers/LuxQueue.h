@@ -1,20 +1,19 @@
-
-
-
 #pragma once
 #include "LuxDynArray.h"
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Integers/Integers.h"
+#include "LuxEngine/Types/Nothing.h"
 
 
 
-		//TODO automatic back to front and viceversa in queues
+//TODO automatic back to front and viceversa in queues
 
 //A queue with dynamic size
 namespace lux {
 	template<class type, class iter = uint32> struct Queue {
 		lux::DynArray<type, iter> _front, _back;
 
+		inline Queue(const Nothing){ }
 		inline Queue( ) : _front(0xFF), _back(0xFF) { }
 
 

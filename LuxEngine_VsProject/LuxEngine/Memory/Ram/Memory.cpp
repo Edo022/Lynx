@@ -24,11 +24,12 @@ namespace lux::ram{
 
 
 
-	//This function allocates a memory cell into a buffer
+	//This function allocates a memory cell or a pointer into a buffer
 	//*   vSize      | size of the cell
 	//*   vCellClass | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
 	//*   Returns    | the allocated Cell object
-	//e.g.   lux::ram::Cell foo = lux::ram::alloc(100, lux::CellClass::AUTO);
+	//e.g.   lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
+	//e.g.   same as int* foo = (int*)malloc(100);
 	Cell alloc(const uint64 vSize, CellClass vCellClass){
 		luxDebug(if(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize) param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
 		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
@@ -80,7 +81,11 @@ namespace lux::ram{
 
 
 	//TODO check new cell class
-	void realloc(const Cell& pCell, const uint64 vSize, const CellClass vCellClass){
+	void realloc(Cell& const pCell, const uint64 vSize, const CellClass vCellClass){
+		if(!pCell->address) {
+			pCell = alloc(vSize, vCellClass);
+			return;
+		}
 		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pCell->cellSize = vSize;
 		else if(vSize != pCell->cellSize) [[unlikely]] {
 			ram::free(pCell);
