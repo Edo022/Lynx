@@ -11,7 +11,7 @@
 
 
 namespace lux::core::g::cmd{
-	PostInitializerSource(LUX_H_GCOMMANDS);
+	PostInitializer(LUX_H_GCOMMANDS);
 	VkCommandPool			singleTimeCommandPool = singleTimeCommandPool;
 	Array<VkCommandBuffer>	singleTimeCommandBuffers(DontInitialize( ));
 

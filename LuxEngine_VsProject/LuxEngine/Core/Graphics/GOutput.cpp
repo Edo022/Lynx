@@ -20,7 +20,7 @@
 
 
 namespace lux::core::g::out{
-	PostInitializerSource(LUX_H_GOUTPUT);
+	PostInitializer(LUX_H_GOUTPUT);
 	VkRenderPass		renderPass = renderPass;
 	bool				renderFramebufferResized = renderFramebufferResized;
 	//constexpr int32	renderMaxFramesInFlight = 2;

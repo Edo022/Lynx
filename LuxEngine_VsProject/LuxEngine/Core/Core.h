@@ -104,11 +104,10 @@ namespace lux::core{
 	void preInit( );
 	void init(bool useVSync);
 	struct PreInitializer{ PreInitializer( ){ lux::core::preInit( ); } };
-	//struct PreInitializer{ PreInitializer( ){ lux::core::preInit( ); lux::core::init( false ); } };
 	struct PostInitializer{ PostInitializer( ){ lux::core::init(false); } };
+	//TODO this probably depends on the link order
 	extern PreInitializer luxPreInitializer; //This variable is used to inizialize the engine before any other variable or function call
-	#define PostInitializerHeader(fileName) extern lux::core::PostInitializer luxGeneratedPostInitializer_##fileName
-	#define PostInitializerSource(fileName) lux::core::PostInitializer luxGeneratedPostInitializer_##fileName
+	#define PostInitializer(fileName) lux::core::PostInitializer luxGeneratedPostInitializer_##fileName
 
 	//Main
 	void run(bool vUseVSync, float vFOV);

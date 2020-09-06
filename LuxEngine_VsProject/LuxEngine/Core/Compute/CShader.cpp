@@ -17,7 +17,7 @@
 
 
 namespace lux::core::c::shaders{
-	PostInitializerSource(LUX_H_CSHADER);
+	PostInitializer(LUX_H_CSHADER);
 	String									shaderPath(DontInitialize( ));
 	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces(DontInitialize( ));
 	Array<LuxShaderLayout_t>				CShadersLayouts(DontInitialize( ));

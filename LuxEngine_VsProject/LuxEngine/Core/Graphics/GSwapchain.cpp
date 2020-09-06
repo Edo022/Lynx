@@ -11,7 +11,7 @@
 
 
 namespace lux::core::g::swapchain{
-	PostInitializerSource(LUX_H_GSWAPCHAIN);
+	PostInitializer(LUX_H_GSWAPCHAIN);
 	VkSwapchainKHR			swapchain = swapchain;
 	Array<VkImage>			swapchainImages(DontInitialize( ));
 	Array<VkImageView>		swapchainImageViews(DontInitialize( ));

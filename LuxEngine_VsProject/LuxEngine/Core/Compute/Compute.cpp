@@ -12,7 +12,7 @@
 
 
 namespace lux::core::c{
-	PostInitializerSource(LUX_H_COMPUTE);
+	PostInitializer(LUX_H_COMPUTE);
 	VkCommandPool			copyCommandPool = copyCommandPool;
 	Array<VkCommandBuffer>	copyCommandBuffers = copyCommandBuffers;
 	VkCommandBuffer			clearCommandBuffer = clearCommandBuffer;

@@ -17,7 +17,7 @@
 
 
 namespace lux::core::dvc{
-	PostInitializerSource(LUX_H_DEVICES);
+	PostInitializer(LUX_H_DEVICES);
 	graphicsDevice			graphics(DontInitialize( ));	//Main graphics device
 	computeDevice			compute(DontInitialize( ));		//Main compute device
 	Array<computeDevice>	secondary(DontInitialize( ));	//Secondary compute devices

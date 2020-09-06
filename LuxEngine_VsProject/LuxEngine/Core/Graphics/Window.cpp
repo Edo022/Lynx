@@ -10,7 +10,7 @@
 
 
 namespace lux::core::g::wnd{
-	PostInitializerSource(LUX_H_WINDOW);
+	PostInitializer(LUX_H_WINDOW);
 	GLFWwindow* window = window;
 	int32			width = width, height = height;
 	FenceDE			windowResizeFence(DontInitialize( ));
@@ -18,7 +18,6 @@ namespace lux::core::g::wnd{
 	rem::Cell		gpuCellWindowOutput = gpuCellWindowOutput;
 	rem::Cell		gpuCellWindowOutput_i = gpuCellWindowOutput_i;
 	rem::Cell		gpuCellWindowZBuffer = gpuCellWindowZBuffer;
-	//PostInitializerSource(LUX_H_WINDOW);
 
 
 
