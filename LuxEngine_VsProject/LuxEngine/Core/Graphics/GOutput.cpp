@@ -32,7 +32,7 @@ namespace lux::core::g::out{
 
 
 
-	void init( ){
+	void preInit( ){
 		renderPass = nullptr;
 		renderFramebufferResized = false;
 	}

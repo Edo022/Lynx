@@ -13,7 +13,7 @@ namespace lux::core::g::out{
 	//PostInitializerHeader(LUX_H_GOUTPUT);
 
 
-	void init( );
+	void preInit( );
 	void			createRenderPass( );
 	void			createFramebuffers( );
 	VkImageView		swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);

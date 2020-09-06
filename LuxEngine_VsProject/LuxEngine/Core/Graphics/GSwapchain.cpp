@@ -25,7 +25,7 @@ namespace lux::core::g::swapchain{
 
 
 
-	void init( ){
+	void preInit( ){
 		swapchain = nullptr;
 		swapchainImages.Array::Array( );
 		swapchainImageViews.Array::Array( );

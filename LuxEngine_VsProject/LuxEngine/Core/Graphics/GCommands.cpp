@@ -19,7 +19,7 @@ namespace lux::core::g::cmd{
 
 
 
-	void init( ){
+	void preInit( ){
 		singleTimeCommandPool = nullptr;
 		singleTimeCommandBuffers.Array::Array( );
 	}

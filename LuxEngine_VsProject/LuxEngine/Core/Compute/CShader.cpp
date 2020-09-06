@@ -36,7 +36,7 @@ namespace lux::core::c::shaders{
 
 
 
-	void init( ){
+	void preInit( ){
 		shaderPath.String::String( );
 		CRenderSpaces.Map::Map( );
 		CShadersLayouts.Array::Array( );

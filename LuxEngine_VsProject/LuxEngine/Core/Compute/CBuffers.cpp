@@ -2,9 +2,7 @@
 
 #include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
-#include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
-#include "LuxEngine/Core/Devices.h"
 
 
 
@@ -13,17 +11,6 @@
 
 
 namespace lux::core::c::buffers{
-	void init( ){
-
-	}
-
-
-
-
-
-
-
-
 	void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
 		return nullptr;
 	}

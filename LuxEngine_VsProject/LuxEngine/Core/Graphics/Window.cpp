@@ -23,7 +23,7 @@ namespace lux::core::g::wnd{
 
 
 
-	void init( ){
+	void preInit( ){
 		window = nullptr;
 		width = 1920 * 2, height = 1080;
 		windowResizeFence.FenceDE::FenceDE( );

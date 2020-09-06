@@ -78,20 +78,19 @@ namespace lux::core{
 			once = false;
 			ram::init( );
 			sys::__lp_init_system( );
-			thr::__lp_init_thread( );
+			//TODO uncomment
+			//thr::__lp_init_thread( );
 			__lp_goniometric_functions_init( );
 
-			c::_init( );
-			//c::buffers::_init( );
-			c::shaders::init( );
-
-			g::_init( );
-			g::cmd::init( );
-			g::out::init( );
-			g::swapchain::init( );
-			g::wnd::init( );
-
-			dvc::init( );
+			dvc::         preInit( );
+			c::           preInit( );
+			//c::buffers::    preInit( );
+			c::shaders::      preInit( );
+			g::           preInit( );
+			g::cmd::          preInit( );
+			g::out::          preInit( );
+			g::swapchain::    preInit( );
+			g::wnd::          preInit( );
 		}
 	}
 
@@ -102,6 +101,7 @@ namespace lux::core{
 		static bool once = true;
 		if(once){
 			once = false;
+			printf("HHHH\n");
 			std::thread renderThr(&run, useVSync, 45);
 			renderThr.detach( );
 			running = true;

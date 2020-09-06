@@ -74,8 +74,8 @@ namespace lux::thr {
 
 	void __lp_init_thread( ) {
 		threads.Array::Array(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
-		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);												//Resize the thread pool
 		thrStates.Map::Map(2048, 2048);
+		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);												//Resize the thread pool
 		for(uint32 i = 0; i < threads.size( ); ++i){													//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);											//Initialize it with the thread loop function
 			thrStates.add(ThrState::FREE);																//Add an element to the states map

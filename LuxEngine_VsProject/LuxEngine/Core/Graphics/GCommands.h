@@ -14,7 +14,7 @@ namespace lux::core::g::cmd{
 	//PostInitializerHeader(LUX_H_GCOMMANDS);
 
 
-	void init( );
+	void preInit( );
 	void				createGraphicsCommandPool( );
 	VkCommandBuffer		beginSingleTimeCommands( );
 	void				endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);

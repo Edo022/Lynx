@@ -30,7 +30,7 @@ namespace lux::core::g{
 
 
 
-	void _init( ) {
+	void preInit( ) {
 		drawFrameImageAquiredSemaphore.Array::Array( );
 		drawFrameObjectsRenderedSemaphore.Array::Array( );
 		drawFrameCopySemaphore.Array::Array( );

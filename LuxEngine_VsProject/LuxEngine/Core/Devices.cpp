@@ -29,7 +29,7 @@ namespace lux::core::dvc{
 
 
 
-	void init( ){
+	void preInit( ){
 		graphics.graphicsDevice::graphicsDevice( );
 		compute.computeDevice::computeDevice( );
 		secondary.Array::Array( );

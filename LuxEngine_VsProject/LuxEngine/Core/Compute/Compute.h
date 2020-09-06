@@ -13,7 +13,7 @@ namespace lux::core::c{
 	extern VkCommandBuffer			clearCommandBuffer;
 	//PostInitializerHeader(LUX_H_COMPUTE);
 
-	void _init( );
+	void preInit( );
 	void init( );
 	void computeCleanup( );
 }

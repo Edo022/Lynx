@@ -27,7 +27,7 @@ namespace lux::core::g::swapchain{
 	//PostInitializerHeader(LUX_H_GSWAPCHAIN);
 
 
-	void init( );
+	void preInit( );
 	void						swapchainCreate( );
 	void						swapchainRecreate(const bool vWindowResized);
 	void						cleanup( );

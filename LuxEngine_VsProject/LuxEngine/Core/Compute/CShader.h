@@ -34,7 +34,7 @@ namespace lux::core::c::shaders{
 
 
 
-	void init( );
+	void preInit( );
 
 	uint32*			cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	VkShaderModule	cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);

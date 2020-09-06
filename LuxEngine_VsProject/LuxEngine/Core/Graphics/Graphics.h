@@ -27,7 +27,7 @@ namespace lux::core::g{
 
 
 
-	void			_init( );
+	void			preInit( );
 	void			init(const bool vUseVSync, const float vFOV);
 	void			createSyncObjs( );
 	luxDebug(void	createDebugMessenger( ));

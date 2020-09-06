@@ -19,7 +19,7 @@ namespace lux::core::g::wnd{
 	//PostInitializerHeader(LUX_H_WINDOW);
 
 
-	void init( );
+	void preInit( );
 	void initWindow( );
 	void createInstance( );
 }

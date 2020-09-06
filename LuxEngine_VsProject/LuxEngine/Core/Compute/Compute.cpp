@@ -20,7 +20,7 @@ namespace lux::core::c{
 
 
 
-	void _init( ) {
+	void preInit( ) {
 		copyCommandPool = nullptr;
 		copyCommandBuffers.Array::Array( );
 		clearCommandBuffer = nullptr;
