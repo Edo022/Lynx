@@ -1,4 +1,6 @@
 #pragma once
+#include "LuxEngine/Types/Nothing.h"
+
 
 
 #pragma optimize( "g", off )	//Turn off global optimization. If the compiler optimizes the loop, it will be skipped and the program will probably freeze or crash
@@ -12,7 +14,10 @@ namespace lux{
 	//You can use those functions multiple times in the same thread. Be sure to use an end function for every start
 	//    If you don't, you will probably cause a deadlock
 	struct FenceDE{
-		bool thr1{ false }, thr2{ true };
+		bool thr1, thr2;
+		FenceDE( ) : thr1{ false }, thr2{ true } { }
+		FenceDE(const Nothing) : thr1{ thr1 }, thr2{ thr2 } { }
+
 		inline void __vectorcall startFirst( ){ while(thr2); thr1 = true; }
 		inline void __vectorcall endFirst( ){ thr1 = false; }
 

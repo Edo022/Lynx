@@ -17,13 +17,23 @@
 
 
 namespace lux::core::dvc{
-	graphicsDevice			graphics;		//Main graphics device
-	computeDevice			compute;		//Main compute device
-	Array<computeDevice>	secondary;		//Secondary compute devices
+	PostInitializerSource(LUX_H_DEVICES);
+	graphicsDevice			graphics(DontInitialize( ));	//Main graphics device
+	computeDevice			compute(DontInitialize( ));		//Main compute device
+	Array<computeDevice>	secondary(DontInitialize( ));	//Secondary compute devices
 
 
 
 
+
+
+
+
+	void init( ){
+		graphics.graphicsDevice::graphicsDevice( );
+		compute.computeDevice::computeDevice( );
+		secondary.Array::Array( );
+	}
 
 
 

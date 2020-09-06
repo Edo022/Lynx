@@ -1,7 +1,6 @@
 
 
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Compute/CShader_t.h"
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
@@ -9,7 +8,7 @@
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
-
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -17,21 +16,34 @@
 
 
 namespace lux::core::g{
-	Array<VkSemaphore>		drawFrameImageAquiredSemaphore;
-	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
-	Array<VkSemaphore>		drawFrameCopySemaphore;
-	Array<VkSemaphore>		drawFrameClearSemaphore;
-	Array<VkFence>			drawFrameImageRenderedFence;
-	int32					renderCurrentFrame = 0;
-	DynArray<obj::Base*>	objUpdates2D;
-	FenceDE					pendingObjectUpdatesFence;
+	PostInitializerSource(LUX_H_GRAPHICS);
+	Array<VkSemaphore>		drawFrameImageAquiredSemaphore(DontInitialize( ));
+	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore(DontInitialize( ));
+	Array<VkSemaphore>		drawFrameCopySemaphore(DontInitialize( ));
+	Array<VkSemaphore>		drawFrameClearSemaphore(DontInitialize( ));
+	Array<VkFence>			drawFrameImageRenderedFence(DontInitialize( ));
+	int32					renderCurrentFrame = renderCurrentFrame;
+	DynArray<obj::Base*>	objUpdates2D(DontInitialize( ));
+	FenceDE					pendingObjectUpdatesFence(DontInitialize( ));
 
 
 
 
 
+	void _init( ) {
+		drawFrameImageAquiredSemaphore.Array::Array( );
+		drawFrameObjectsRenderedSemaphore.Array::Array( );
+		drawFrameCopySemaphore.Array::Array( );
+		drawFrameClearSemaphore.Array::Array( );
+		drawFrameImageRenderedFence.Array::Array( );
+		renderCurrentFrame = 0;
+		objUpdates2D.DynArray::DynArray( );
+		pendingObjectUpdatesFence.FenceDE::FenceDE( );
+	}
 
-	void init(const bool vUseVSync, const float vFOV) {
+
+
+	void init(const bool vUseVSync, const float vFOV){
 		useVSync = vUseVSync;
 		FOV = vFOV;
 

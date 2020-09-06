@@ -2,7 +2,7 @@
 #include <vulkan/vulkan.h>
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Types/Containers/LuxDynArray.h"
-
+#define LUX_H_CSHADER_T
 
 
 

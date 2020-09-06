@@ -62,12 +62,3 @@
 #include "LuxEngine_config.h"
 #	include "LuxEngine/macros.h"
 #include "LuxEngine/Core/Core.h"
-
-
-//Initializes the Engine
-//Objects will automatically call this function when created
-//    They need the engine to be initialized to allocate their data
-static void LuxInit(bool useVSync = true) { lux::core::init(useVSync); }
-
-
-

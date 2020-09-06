@@ -8,6 +8,8 @@
 #include "LuxEngine/Core/Graphics/Window.h"
 #include "LuxEngine/Core/Graphics/GOutput.h"
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
+#define LUX_H_GRAPHICS
+//#include "LuxEngine/Core/Core.h"
 
 
 
@@ -21,10 +23,11 @@ namespace lux::core::g{
 	extern int32				renderCurrentFrame;
 	extern DynArray<obj::Base*>	objUpdates2D;
 	extern FenceDE				pendingObjectUpdatesFence;
+	//PostInitializerHeader(LUX_H_GRAPHICS);
 
 
 
-
+	void			_init( );
 	void			init(const bool vUseVSync, const float vFOV);
 	void			createSyncObjs( );
 	luxDebug(void	createDebugMessenger( ));

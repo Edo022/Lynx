@@ -1,9 +1,8 @@
 
 
-#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Graphics/GCommands.h"
 #include "LuxEngine/Core/Devices.h"
-
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -12,8 +11,18 @@
 
 
 namespace lux::core::g::cmd{
-	VkCommandPool			singleTimeCommandPool;
-	Array<VkCommandBuffer>	singleTimeCommandBuffers;
+	PostInitializerSource(LUX_H_GCOMMANDS);
+	VkCommandPool			singleTimeCommandPool = singleTimeCommandPool;
+	Array<VkCommandBuffer>	singleTimeCommandBuffers(DontInitialize( ));
+
+
+
+
+
+	void init( ){
+		singleTimeCommandPool = nullptr;
+		singleTimeCommandBuffers.Array::Array( );
+	}
 
 
 

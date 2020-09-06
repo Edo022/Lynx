@@ -3,6 +3,8 @@
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Memory/Gpu/VMemory.h"
+#define LUX_H_GSWAPCHAIN
+//#include "LuxEngine/Core/Core.h"
 
 
 
@@ -22,8 +24,10 @@ namespace lux::core::g::swapchain{
 	extern VkFormat				swapchainImageFormat;
 	extern VkExtent2D			swapchainExtent;
 	extern Array<VkFramebuffer>	swapchainFramebuffers;
+	//PostInitializerHeader(LUX_H_GSWAPCHAIN);
 
 
+	void init( );
 	void						swapchainCreate( );
 	void						swapchainRecreate(const bool vWindowResized);
 	void						cleanup( );

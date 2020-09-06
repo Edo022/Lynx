@@ -4,23 +4,32 @@
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
-#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Devices.h"
-
+#include "LuxEngine/Core/Core.h"
 
 
 
 
 
 namespace lux::core::c{
-	VkCommandPool			copyCommandPool;
-	Array<VkCommandBuffer>	copyCommandBuffers;
-	VkCommandBuffer			clearCommandBuffer;
+	PostInitializerSource(LUX_H_COMPUTE);
+	VkCommandPool			copyCommandPool = copyCommandPool;
+	Array<VkCommandBuffer>	copyCommandBuffers = copyCommandBuffers;
+	VkCommandBuffer			clearCommandBuffer = clearCommandBuffer;
 
 
 
 
-	void init( ) {
+	void _init( ) {
+		copyCommandPool = nullptr;
+		copyCommandBuffers.Array::Array( );
+		clearCommandBuffer = nullptr;
+	}
+
+
+
+
+	void init(){
 		{ //Initialize window buffers and size
 			g::wnd::gpuCellWindowOutput_i = rem::alloc(g::wnd::width * g::wnd::height * 4 /*A8-R8-G8-B8 UI*/, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
 			g::wnd::gpuCellWindowOutput = rem::alloc(g::wnd::width * g::wnd::height * 4 * 4 /*A32-R32-G32-B32 UF*/, CellClass::AUTO, AllocType::DEDICATED_STORAGE);

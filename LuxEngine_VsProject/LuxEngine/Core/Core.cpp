@@ -3,7 +3,13 @@
 #include "LuxEngine/Threads/ThreadPool.h"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
 #include "LuxEngine/Core/Core.h"
+
 #include "LuxEngine/Core/Compute/CShader.h"
+#include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Graphics/GOutput.h"
+#include "LuxEngine/Core/Graphics/Graphics.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.h"
+
 #include "LuxEngine/System/System.h"
 #include "Input/Input.h"
 #include "LuxEngine/Types/Integers/Integers.h"
@@ -43,8 +49,9 @@ namespace lux::core{
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 
-	LuxEngineInitializer luxEngineInitializer;
-
+	PreInitializer preInitializer;
+	//PostInitializer postInitializer;
+	//No post initializer. It's called in engine init cpps that include the Core header
 
 
 
@@ -60,7 +67,7 @@ namespace lux::core{
 
 
 
-
+	//TODO fix nothing constructors of all the containers
 
 	//READ HERE IF UR TRYING TO UNDERSTAND HOW THIS WORKS
 
@@ -73,10 +80,23 @@ namespace lux::core{
 			sys::__lp_init_system( );
 			thr::__lp_init_thread( );
 			__lp_goniometric_functions_init( );
+
+			c::_init( );
+			//c::buffers::_init( );
+			c::shaders::init( );
+
+			g::_init( );
+			g::cmd::init( );
+			g::out::init( );
+			g::swapchain::init( );
+			g::wnd::init( );
+
+			dvc::init( );
 		}
 	}
 
-	//Initializes the engine object and all the Lux namespace
+
+	//Initializes the Lux namespace
 	//Don't call this function. Use LuxInit( ) instead
 	void init(bool useVSync) {
 		static bool once = true;

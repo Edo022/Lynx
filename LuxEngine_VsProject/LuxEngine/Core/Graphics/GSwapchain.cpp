@@ -10,18 +10,29 @@
 
 
 
-
 namespace lux::core::g::swapchain{
-	VkSwapchainKHR			swapchain;
-	Array<VkImage>			swapchainImages;
-	Array<VkImageView>		swapchainImageViews;
-	VkFormat				swapchainImageFormat;
-	VkExtent2D				swapchainExtent;
-	Array<VkFramebuffer>	swapchainFramebuffers;
+	PostInitializerSource(LUX_H_GSWAPCHAIN);
+	VkSwapchainKHR			swapchain = swapchain;
+	Array<VkImage>			swapchainImages(DontInitialize( ));
+	Array<VkImageView>		swapchainImageViews(DontInitialize( ));
+	VkFormat				swapchainImageFormat = swapchainImageFormat;
+	VkExtent2D				swapchainExtent = swapchainExtent;
+	Array<VkFramebuffer>	swapchainFramebuffers(DontInitialize( ));
 
 
 
 
+
+
+
+	void init( ){
+		swapchain = nullptr;
+		swapchainImages.Array::Array( );
+		swapchainImageViews.Array::Array( );
+		swapchainImageFormat = VK_FORMAT_END_RANGE;
+		swapchainExtent = { };
+		swapchainFramebuffers.Array::Array( );
+	}
 
 
 

@@ -55,9 +55,9 @@ void hg(lux::Array<uint16>){
 
 
 
-
+//TODO fix high ram usage (3GB wtf)
 int main( ) {
-	LuxInit(false);
+	//LuxInit(false);
 	////#define n multipleOf(4200,32)
 	//#define n 5
 	//lux::ram::ptr<char> p0 = lux::ram::alloc(n, lux::CellClass::AUTO);

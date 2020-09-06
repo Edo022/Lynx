@@ -4,17 +4,35 @@
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Memory/Gpu/VMemory.h"
+#include "LuxEngine/Core/Core.h"
+
 
 
 
 namespace lux::core::g::wnd{
-	GLFWwindow* window;
-	int32			width = 1920 * 2, height = 1080;
-	FenceDE			windowResizeFence;
-	rem::Cell		gpuCellWindowSize;
-	rem::Cell		gpuCellWindowOutput;
-	rem::Cell		gpuCellWindowOutput_i;
-	rem::Cell		gpuCellWindowZBuffer;
+	PostInitializerSource(LUX_H_WINDOW);
+	GLFWwindow* window = window;
+	int32			width = width, height = height;
+	FenceDE			windowResizeFence(DontInitialize( ));
+	rem::Cell		gpuCellWindowSize = gpuCellWindowSize;
+	rem::Cell		gpuCellWindowOutput = gpuCellWindowOutput;
+	rem::Cell		gpuCellWindowOutput_i = gpuCellWindowOutput_i;
+	rem::Cell		gpuCellWindowZBuffer = gpuCellWindowZBuffer;
+	//PostInitializerSource(LUX_H_WINDOW);
+
+
+
+
+
+	void init( ){
+		window = nullptr;
+		width = 1920 * 2, height = 1080;
+		windowResizeFence.FenceDE::FenceDE( );
+		gpuCellWindowSize = nullptr;
+		gpuCellWindowOutput = nullptr;
+		gpuCellWindowOutput_i = nullptr;
+		gpuCellWindowZBuffer = nullptr;
+	}
 
 
 

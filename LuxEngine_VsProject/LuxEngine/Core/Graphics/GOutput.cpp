@@ -1,10 +1,9 @@
 
 
 #include "LuxEngine/Core/Graphics/GOutput.h"
-#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Devices.h"
-
+#include "LuxEngine/Core/Core.h"
 
 
 
@@ -21,13 +20,22 @@
 
 
 namespace lux::core::g::out{
-	VkRenderPass	renderPass;
-	const int32		renderMaxFramesInFlight = 2;
-	bool			renderFramebufferResized = false;
+	PostInitializerSource(LUX_H_GOUTPUT);
+	VkRenderPass		renderPass = renderPass;
+	bool				renderFramebufferResized = renderFramebufferResized;
+	//constexpr int32	renderMaxFramesInFlight = 2;
 
 
 
 
+
+
+
+
+	void init( ){
+		renderPass = nullptr;
+		renderFramebufferResized = false;
+	}
 
 
 

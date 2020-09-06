@@ -4,6 +4,9 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
 #include "LuxEngine/Core/Devices_t.h"
+#define LUX_H_DEVICES
+
+
 
 
 namespace lux::core::dvc{
@@ -12,6 +15,7 @@ namespace lux::core::dvc{
 	extern Array<computeDevice>	secondary;		//Secondary compute devices
 
 
+	void init( );
 	void				deviceGetPhysical( );
 	void				deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, DynArray<VkQueue>* pComputeQueues);
 	static				int32 deviceRate(const _VkPhysicalDevice* pDevice);

@@ -10,6 +10,8 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Types/LuxFenceDE.h"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
+#define LUX_H_CSHADER
+//#include "LuxEngine/Core/Core.h"
 
 
 
@@ -27,9 +29,12 @@ namespace lux::core::c::shaders{
 
 	extern FenceDE							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 	extern LuxShader						clearShader;
+	//PostInitializerHeader(LUX_H_CSHADER);
 
 
 
+
+	void init( );
 
 	uint32*			cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	VkShaderModule	cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);

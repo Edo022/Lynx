@@ -82,7 +82,7 @@ Object rendering
 
 
 
-
+//TODO variable initialization depends on link order
 namespace lux::core{
 	extern double	FPS;
 	extern float	FOV;
@@ -100,12 +100,17 @@ namespace lux::core{
 
 
 
-
+	//Initialization
 	void preInit( );
 	void init(bool useVSync);
-	struct LuxEngineInitializer{ LuxEngineInitializer( ){ lux::core::preInit( ); } };
-	extern LuxEngineInitializer luxEngineInitializer; //This variable is used to inizialize the engine before any other variable or function call
+	struct PreInitializer{ PreInitializer( ){ lux::core::preInit( ); } };
+	//struct PreInitializer{ PreInitializer( ){ lux::core::preInit( ); lux::core::init( false ); } };
+	struct PostInitializer{ PostInitializer( ){ lux::core::init(false); } };
+	extern PreInitializer luxPreInitializer; //This variable is used to inizialize the engine before any other variable or function call
+	#define PostInitializerHeader(fileName) extern lux::core::PostInitializer luxGeneratedPostInitializer_##fileName
+	#define PostInitializerSource(fileName) lux::core::PostInitializer luxGeneratedPostInitializer_##fileName
 
+	//Main
 	void run(bool vUseVSync, float vFOV);
 	void mainLoop( );
 	void runFPSCounterThr( );
@@ -157,7 +162,6 @@ namespace lux::core{
 
 
 
-//TODO fast memcpy codes
 //#include <immintrin.h>
 //#include <assert.h>
 //#include <cstdint>
@@ -175,23 +179,3 @@ namespace lux::core{
 //  }
 //  _mm_sfence();
 //}
-
-
-//"
-//On Ryzen 1800X with single memory channel filled completely (2 slots, 16 GB DDR4 in each), the following code is 1.56 times faster than memcpy() on MSVC++2017 compiler.
-//If you fill both memory channels with 2 DDR4 modules, i.e. you have all 4 DDR4 slots busy, you may get further 2 times faster memory copying.
-//For triple-(quad-)channel memory systems, you can get further 1.5(2.0) times faster memory copying if the code is extended to analogous AVX512 code.
-//With AVX2-only triple/quad channel systems with all slots busy are not expected to be faster because to load them fully you need to load/store more than 32 bytes at once
-//(48 bytes for triple- and 64-bytes for quad-channel systems), while AVX2 can load/store no more than 32 bytes at once.
-//Though multithreading on some systems can alleviate this without AVX512 or even AVX2.
-//
-//So here is the copy code that assumes you are copying a large block of memory whose size is a multiple of 32 and the block is 32-byte aligned.
-//
-//For non-multiple size and non-aligned blocks, prologue/epilogue code can be written reducing the width to 16 (SSE4.1), 8, 4, 2 and finally 1 byte at once for the block head and tail.
-//Also in the middle a local array of 2-3 __m256i values can be used as a proxy between aligned reads from the source and aligned writes to the destination.
-//"
-
-
-
-//TODO
-//Interpolated point mesh rig

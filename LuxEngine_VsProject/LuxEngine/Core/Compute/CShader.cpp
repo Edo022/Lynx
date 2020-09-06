@@ -8,7 +8,6 @@
 
 
 
-
 // Shader components create functions -------------------------------------------------------------------------------------------------------//
 
 
@@ -18,19 +17,37 @@
 
 
 namespace lux::core::c::shaders{
-	String									shaderPath;
-	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
-	Array<LuxShaderLayout_t>				CShadersLayouts;
+	PostInitializerSource(LUX_H_CSHADER);
+	String									shaderPath(DontInitialize( ));
+	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces(DontInitialize( ));
+	Array<LuxShaderLayout_t>				CShadersLayouts(DontInitialize( ));
 
-	VkCommandPool							commandPool;
-	Map<LuxShader_t, uint32>				CShaders;
-	DynArray<VkCommandBuffer>				CShadersCBs;
+	VkCommandPool							commandPool{ commandPool };
+	Map<LuxShader_t, uint32>				CShaders(DontInitialize( ));
+	DynArray<VkCommandBuffer>				CShadersCBs(DontInitialize( ));
 
-	FenceDE									addShaderFence;
-	LuxShader								clearShader;
+	FenceDE									addShaderFence(DontInitialize( ));
+	LuxShader								clearShader{ clearShader };
 
 
 
+
+
+
+
+
+	void init( ){
+		shaderPath.String::String( );
+		CRenderSpaces.Map::Map( );
+		CShadersLayouts.Array::Array( );
+
+		commandPool = nullptr;
+		CShaders.Map::Map( );
+		CShadersCBs.DynArray::DynArray( );
+
+		addShaderFence.FenceDE::FenceDE( );
+		clearShader = 0;
+	}
 
 
 
@@ -60,6 +77,7 @@ namespace lux::core::c::shaders{
 		*pLength = paddedFileSize;										//Set length
 		return (uint32*)str;											//Return the buffer
 	}
+
 
 
 
