@@ -185,7 +185,7 @@ namespace lux {
 
 
 		//Inherted from LuxContainer and operators
-		inline uint32 __vectorcall size( ) const override { return str.cell->cellSize; }
+		inline uint32 __vectorcall size( ) const override { return (uint32)str.cell->cellSize; }
 		inline bool __vectorcall empty( ) const override { return str.cell->cellSize == 0; }
 		inline char8* __vectorcall begin( ) const override { return str.address; }
 		inline char8* __vectorcall end( ) const override { return str.address + str.cell->cellSize; }
@@ -196,13 +196,13 @@ namespace lux {
 
 		//String concatenation
 		inline void __vectorcall operator += (const String& pString) {
-			uint32 oldSize = str.cell->cellSize;
+			uint32 oldSize = (uint32)str.cell->cellSize;
 			lux::ram::realloc(str.cell, str.cell->cellSize + pString.size( ) - 1);
 			memcpy(str + oldSize - 1, pString.str, pString.size( ));
 		}
 		inline void __vectorcall operator += (const char8* vString) {
 			int32 len = strlenl(vString) + 1;
-			uint32 oldSize = str.cell->cellSize;
+			uint32 oldSize = (uint32)str.cell->cellSize;
 			lux::ram::realloc(str.cell, str.cell->cellSize + len - 1);
 			memcpy(str + oldSize - 1, vString, len);
 		}

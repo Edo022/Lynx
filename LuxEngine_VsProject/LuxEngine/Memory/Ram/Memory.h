@@ -42,7 +42,7 @@
 
 
 
-
+#pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
 namespace lux::ram{
 	Cell alloc(const uint64 vSize, const CellClass vCellClass);
 	void realloc(Cell& const pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
@@ -53,3 +53,4 @@ namespace lux::ram{
 	void init( );
 	void breakMemoryPool( );
 }
+#pragma warning( default : 4227 )

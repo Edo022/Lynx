@@ -14,7 +14,7 @@
 namespace lux::core::c{
 	PostInitializer(LUX_H_COMPUTE);
 	VkCommandPool			copyCommandPool = copyCommandPool;
-	Array<VkCommandBuffer>	copyCommandBuffers = copyCommandBuffers;
+	Array<VkCommandBuffer>	copyCommandBuffers(DontInitialize( ));
 	VkCommandBuffer			clearCommandBuffer = clearCommandBuffer;
 
 

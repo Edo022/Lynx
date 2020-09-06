@@ -141,7 +141,7 @@ namespace lux::core{
 		SuccessNoNl printf("ok");
 
 		g::init(vUseVSync, vFOV);
-		c::buffers::init( );
+		//c::buffers::init( );
 		//ram is inizialized in init function as it's required for everything
 		rem::init( );
 		c::init( );
