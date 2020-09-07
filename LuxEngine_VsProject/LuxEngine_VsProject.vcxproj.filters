@@ -141,6 +141,9 @@
     <ClCompile Include="LuxEngine\Memory\Ram\Memory_t.cpp">
       <Filter>LuxEngine\Memory\Ram</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Core\ConsoleOutput.cpp">
+      <Filter>LuxEngine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="LuxEngine\Types\Nothing.h">
       <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="LuxEngine\Core\ConsoleOutput.h">
+      <Filter>LuxEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

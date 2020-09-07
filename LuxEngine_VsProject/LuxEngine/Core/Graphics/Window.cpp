@@ -4,7 +4,8 @@
 #include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Memory/Gpu/VMemory.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/ConsoleOutput.h"
+//#include "LuxEngine/Core/Core.h"
 
 
 

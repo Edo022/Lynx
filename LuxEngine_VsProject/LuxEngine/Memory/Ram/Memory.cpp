@@ -1,5 +1,6 @@
 #include "LuxEngine/Memory/Ram/Memory.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/ConsoleOutput.h"
+//#include "LuxEngine/Core/Core.h"
 
 
 
@@ -60,7 +61,7 @@ namespace lux::ram{
 						Cell cell = &subBuffers[i].cells[cellIndex];
 						cell->buffer = &subBuffers[i];
 					//cell->address = (void*)((uint8*)(cell->buffer = &subBuffers[i])->memory + getCellOffset(cell));
-					cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
+						cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
 						cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell));
 					return cell;																//And return the cell object
 				}
@@ -68,7 +69,26 @@ namespace lux::ram{
 		}{																			//If there are no free buffers or the cell is a custom size cell
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
 			uint32 bufferIndex;
-			MemBuffer& buffer = subBuffers[bufferIndex = subBuffers.add(MemBuffer{ .memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), .cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1), .bufferIndex = (uint32)-1})];
+
+			//MemBuffer& buffer = subBuffers[bufferIndex = subBuffers.add(MemBuffer{ .memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), .cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1), .bufferIndex = (uint32)-1})];
+			//TODO remove debug junk
+			int __h = (
+				(uint32)vCellClass ? (sizeof(lux::ram::Cell_t) * (bufferSize / (uint32)vCellClass)) : 32 +	//tracker map chunk size +
+				((uint32)vCellClass ? bufferSize : vSize, 32))												//alloc size
+				/ (1000 * 1000);																			//to MBs
+
+
+			// - too many byffers are created
+			bufferIndex = subBuffers.add(
+				MemBuffer{
+					.memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32),
+					.cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize) : Map<Cell_t, uint32>(1, 1),
+					.bufferIndex = (uint32)-1
+				}
+			);
+			//^ bufferIndex does not increase and that's ok
+			MemBuffer& buffer = subBuffers[bufferIndex];
+
 			buffer.bufferIndex = bufferIndex;
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell));

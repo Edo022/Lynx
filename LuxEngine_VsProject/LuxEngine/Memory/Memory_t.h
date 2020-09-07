@@ -1,6 +1,7 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Core/ConsoleOutput.h"
 
 
 
@@ -47,7 +48,7 @@ namespace lux{
 
 
 
-	luxDebug(void __lp_printWarning(const char* text));
+	//luxDebug(void __lp_printWarning(const char* text));
 	namespace ram{
 		struct Cell_t;
 		struct MemBuffer {
@@ -99,7 +100,7 @@ namespace lux{
 			inline void operator=(const ptr<type>& pPtr){ if(cell) cell->owners--; cell = pPtr.cell; address = pPtr.address; cell->owners++; }
 
 			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const {
-				luxDebug(__lp_printWarning("Comparison operator should not be used with different pointer types"));
+				luxDebug(printWarning("Comparison operator should not be used with different pointer types"));
 				return (void*)address == (void*)pPtr.address;
 			}
 			inline bool operator==(const type* vPtr) const { return (void*)address == (void*)vPtr; }
@@ -113,8 +114,8 @@ namespace lux{
 			inline ptr<type> operator-(const uint64 v) const { return ptr<type>{cell, address - v}; }
 			inline uint64 operator-(const type* vPtr) const { return (uint64)address - (uint64)vPtr; }
 
-			#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) __lp_printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
-			#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     __lp_printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+			#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+			#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			inline void operator+=(uint64 v){ address += v; checkp; }
 			inline void operator-=(uint64 v){ address -= v; checkm; }
 			inline void operator++( ){ address++; checkp;}
@@ -122,8 +123,8 @@ namespace lux{
 
 			//TODO improve warnings and output object address or nanme
 			inline type& operator*( ){
-				luxDebug(if(!cell) __lp_printWarning("Unable to access the memory of an uninitialized lux::ram::ptr. A pointer should always be initialized with the lux::ram::alloc function or using one of its constructors"));
-				luxDebug(if(!address) __lp_printWarning("Unable to access the memory of a null lux::ram::ptr"));
+				luxDebug(if(!cell) printWarning("Unable to access the memory of an uninitialized lux::ram::ptr. A pointer should always be initialized with the lux::ram::alloc function or using one of its constructors"));
+				luxDebug(if(!address) printWarning("Unable to access the memory of a null lux::ram::ptr"));
 				return *address;
 			}
 

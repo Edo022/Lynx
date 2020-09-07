@@ -14,7 +14,7 @@
 #include "Input/Input.h"
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Memory/Gpu/VMemory.h"
-
+#include "LuxEngine/Core/ConsoleOutput.h"
 
 
 
@@ -50,8 +50,6 @@ namespace lux::core{
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 
 	PreInitializer preInitializer;
-	//PostInitializer postInitializer;
-	//No post initializer. It's called in engine init cpps that include the Core header
 
 
 
@@ -66,8 +64,6 @@ namespace lux::core{
 
 
 
-
-	//TODO fix nothing constructors of all the containers
 
 	//READ HERE IF UR TRYING TO UNDERSTAND HOW THIS WORKS
 
@@ -95,13 +91,15 @@ namespace lux::core{
 	}
 
 
+
+
 	//Initializes the Lux namespace
 	//Don't call this function. Use LuxInit( ) instead
 	void init(bool useVSync) {
 		static bool once = true;
 		if(once){
 			once = false;
-			printf("HHHH\n");
+			//printf("HHHH\n");
 			std::thread renderThr(&run, useVSync, 45);
 			renderThr.detach( );
 			running = true;
@@ -118,6 +116,7 @@ namespace lux::core{
 	void run(bool vUseVSync, float vFOV) {
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
+		//TODO internal shader compilation
 		LuxTime start = luxStartChrono( );
 		c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
 		//c::shaders::shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
@@ -198,28 +197,6 @@ namespace lux::core{
 			frames = 0;
 			printf("FPS: %lf\n", FPS);
 		}
-	}
-
-
-
-
-
-
-
-
-
-	//Prints an error in the console
-	//*   pMessage    | the error message
-	//*   vFatalError | if true, the engine will stop its execution
-	//*   vErrorCode  | the code the process will exit with. It will also be displayed in the console
-	void _printError(const String& pMessage, const bool vFatalError, const int32 vErrorCode){
-		running = false;
-		Failure printf("%srror. Code: %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.begin( ));
-		if(vFatalError) system("pause"); exit(vErrorCode);
-	}
-
-	void _printWarning(const String& pMessage){
-		Warning printf("Warning: %s\n", pMessage.begin( ));
 	}
 }
 

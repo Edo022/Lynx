@@ -7,6 +7,7 @@
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
 #include "LuxEngine/Types/Nothing.h"
+#include "LuxEngine/Core/ConsoleOutput.h"
 
 #include <vector>
 //#include <stdlib.h>                               // for malloc, free
@@ -44,7 +45,10 @@ namespace lux {
 
 
 
-		inline Map(const Nothing){ }
+		inline Map(const Nothing) : chunksDynNum{ chunksDynNum },
+			__lp_dynSize{ __lp_dynSize }, __lp_freeNum{ __lp_freeNum }, __lp_data{ __lp_data }, __lp_tracker{ __lp_tracker },
+			head{ head }, tail{ tail }, chunkSize{ chunkSize }, maxSize{ maxSize } {
+		}
 
 		//Creates the map with the specified chunk and maximum size
 		//The number of chunks depends on their size and the maximum size of the map (chunks = maxSize / chunkSize)
@@ -56,6 +60,7 @@ namespace lux {
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
 			chunkSize(vChunkSize), maxSize(vMaxSize), head((iter)-1), tail((iter)-1), chunksDynNum((iter)0), __lp_dynSize((iter)0), __lp_freeNum((iter)0) {
+			luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
 			__lp_data = (type**)malloc(sizeof(type*) * (maxSize / chunkSize));		//Allocate data
 			__lp_tracker = (iter**)malloc(sizeof(iter*) * (maxSize / chunkSize));	//Allocate tracker
 		}

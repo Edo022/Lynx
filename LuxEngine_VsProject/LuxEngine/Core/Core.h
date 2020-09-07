@@ -5,7 +5,7 @@
 #include "LuxEngine/Core/Graphics/Graphics.h"
 #include "LuxEngine/Types/LuxBool.h"
 #include "vulkan/vulkan.h"
-
+//#include "LuxEngine/Core/ConsoleOutput.h"
 
 
 
@@ -114,17 +114,6 @@ namespace lux::core{
 	void mainLoop( );
 	void runFPSCounterThr( );
 	void runRenderThr( );
-
-
-	void _printError(const String& pMessage, const bool vFatalError = false, const int32 vErrorCode = -1);
-	void _printWarning(const String& pMessage);
-	#define printError(pMessage, vFatalError, vErrorCode) lux::core::_printError(lux::String("Function ") + __FUNCTION__ + ", line " + __LINE__ + "\n\n" + (pMessage), vFatalError, vErrorCode)
-	#define printWarning(pMessage) lux::core::_printError(lux::String("Function ") + __FUNCTION__ + ", line " + __LINE__ + "\n\n" + (pMessage))
-
-	#define param_error(paramName, errorInfo) luxDebug(																				\
-		printError(lux::String("Invalid value passed to '") + (#paramName) + "' parameter of function '" + __FUNCTION__ + "'\n"		\
-		+ (errorInfo) + "\nThis error will not be reported in release mode", true, -1)												\
-	) luxRelease(;)
 
 
 

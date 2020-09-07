@@ -137,6 +137,7 @@
 #include "LuxEngine/Memory/Ram/Memory.h"
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Types/Nothing.h"
+#include "LuxEngine/Types/Containers/LuxContainer.h"
 
 //TODO use faster memcpy
 //TODO dont use initializer
