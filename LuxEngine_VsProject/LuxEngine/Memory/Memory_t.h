@@ -52,7 +52,7 @@ namespace lux{
 	namespace ram{
 		struct Cell_t;
 		struct MemBuffer {
-			void* memory;					//Address of the buffer
+			void* memory = nullptr;			//Address of the buffer
 			Map<Cell_t, uint32> cells;		//Cells in the buffer
 			uint32 bufferIndex;				//Index of the buffer in the MemBufferType buffers array
 		};
@@ -131,7 +131,7 @@ namespace lux{
 
 
 
-			~ptr( ){ if(address) { if((--(cell->owners)) == 0) cell->freeCell( ); }  }
+			~ptr( ){ if(address) { if(!--cell->owners) cell->freeCell( ); } }
 			inline operator type*( ) const;
 			inline type& operator [](const uint64 i) const { return address[i]; }
 			inline type& operator [](const uint32 i) const { return address[i]; }

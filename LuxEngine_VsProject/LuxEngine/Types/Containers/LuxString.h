@@ -144,6 +144,8 @@
 
 //TODO compile with clang
 
+//TODO add stack/heap allocation option to string constructor
+
 
 //32-bit integer strlen
 namespace lux {
@@ -159,7 +161,9 @@ namespace lux {
 	public:
 		lux::ram::ptr<char8> str;
 		//Constructors
-		inline String(const Nothing) : str{ str } { }
+		inline String(const Nothing) : str{ str } {
+			int TODO_delete_this = 0;
+		}
 		inline String( ){
 			str = lux::ram::alloc(1, lux::CellClass::AUTO);
 			str[0] = '\0';

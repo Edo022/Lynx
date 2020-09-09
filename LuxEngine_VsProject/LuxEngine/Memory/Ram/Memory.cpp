@@ -6,6 +6,7 @@
 
 namespace lux::ram{
 	Array<MemBufferType> buffers;
+	uint32 allocated = 0;
 
 
 
@@ -32,11 +33,13 @@ namespace lux::ram{
 	//e.g.   lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
 	//e.g.   same as int* foo = (int*)malloc(100);
 	Cell alloc(const uint64 vSize, CellClass vCellClass){
+
+
 		luxDebug(if(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize) param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
 		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
 
 		//TODO fix comments
-		//Set cell class if CellClass::AUTO was used
+		//Set cell class if CellClass::AUTO is used
 		if(vCellClass == CellClass::AUTO) {
 			if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vCellClass = CellClass::CLASS_A;
 			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vCellClass = CellClass::CLASS_B;
@@ -48,7 +51,7 @@ namespace lux::ram{
 		}
 
 
-
+		//TODO change map members names
 		uint32 typeIndex = classIndexFromEnum(vCellClass);							//Get buffer index from type and class
 		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
@@ -67,26 +70,39 @@ namespace lux::ram{
 				}
 			}
 		}{																			//If there are no free buffers or the cell is a custom size cell
+
+
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
 			uint32 bufferIndex;
 
 			//MemBuffer& buffer = subBuffers[bufferIndex = subBuffers.add(MemBuffer{ .memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), .cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1), .bufferIndex = (uint32)-1})];
-			//TODO remove debug junk
-			int __h = (
-				(uint32)vCellClass ? (sizeof(lux::ram::Cell_t) * (bufferSize / (uint32)vCellClass)) : 32 +	//tracker map chunk size +
-				((uint32)vCellClass ? bufferSize : vSize, 32))												//alloc size
-				/ (1000 * 1000);																			//to MBs
+			//Fixed size new buffer
+			if((uint32)vCellClass) {
+				bufferIndex = subBuffers.add(
+					MemBuffer{
+						//! ^ If there is already an allocated buffer, don't reallocate the memory
+						.cells = Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize),
+						.bufferIndex = (uint32)-1
+					}
+				);
+				if(!subBuffers[bufferIndex].memory) subBuffers[bufferIndex].memory =_aligned_malloc(bufferSize, 32);
+				allocated += bufferSize;
+				Main printf("allocated MBs: %d",allocated/1000000);
+			}
+			//Custom size new buffer
+			else {
+				bufferIndex = subBuffers.add(
+					MemBuffer{
+						//! ^ If there is already an allocated buffer, don't reallocate the memory
+						.cells = Map<Cell_t, uint32>(1, 1),
+						.bufferIndex = (uint32)-1
+					}
+				);
+				if(!subBuffers[bufferIndex].memory) subBuffers[bufferIndex].memory =_aligned_malloc(vSize, 32);
+				allocated += vSize;
+				Main printf("allocated MBs: %d",allocated/1000000);
+			}
 
-
-			// - too many byffers are created
-			bufferIndex = subBuffers.add(
-				MemBuffer{
-					.memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32),
-					.cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize) : Map<Cell_t, uint32>(1, 1),
-					.bufferIndex = (uint32)-1
-				}
-			);
-			//^ bufferIndex does not increase and that's ok
 			MemBuffer& buffer = subBuffers[bufferIndex];
 
 			buffer.bufferIndex = bufferIndex;
@@ -122,6 +138,11 @@ namespace lux::ram{
 	void free(Cell pCell){
 		//TODO destroy buffers from asyncrhonous garbage collector
 		pCell->buffer->cells.remove(pCell->cellIndex);
-		if(pCell->buffer->cells.usedSize() == 0) pCell->bufferType->buffers.remove(pCell->buffer->bufferIndex);
+		if(pCell->buffer->cells.usedSize( ) == 0) {
+			pCell->bufferType->buffers.remove(pCell->buffer->bufferIndex);
+			//TODO free only if there is not enough memory
+		}
 	}
 }
+
+//TODO automatica string subclass if memory pool is not available

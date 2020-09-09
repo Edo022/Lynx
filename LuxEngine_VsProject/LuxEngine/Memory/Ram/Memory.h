@@ -3,7 +3,7 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Memory/Ram/Memory2.h"
 #include "LuxEngine/Memory/Memory_t.h"
-
+//TODO write better memory graph
 
 
 
@@ -50,6 +50,7 @@ namespace lux::ram{
 
 
 	extern Array<MemBufferType> buffers;	//Allocated buffers
+    extern uint32 allocated;
 	void init( );
 	void breakMemoryPool( );
 }
