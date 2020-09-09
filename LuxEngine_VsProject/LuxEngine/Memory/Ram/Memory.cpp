@@ -28,88 +28,60 @@ namespace lux::ram{
 
 	//This function allocates a memory cell or a pointer into a buffer
 	//*   vSize      | size of the cell
-	//*   vCellClass | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
+	//*   vClass     | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
 	//*   Returns    | the allocated Cell object
 	//e.g.   lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
 	//e.g.   same as int* foo = (int*)malloc(100);
-	Cell alloc(const uint64 vSize, CellClass vCellClass){
-
-
-		luxDebug(if(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize) param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
+	Cell alloc(const uint64 vSize, CellClass vClass){
+		luxDebug(if(vClass != CellClass::AUTO && (uint32)vClass < vSize) param_error(vClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
 		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
 
-		//TODO fix comments
-		//Set cell class if CellClass::AUTO is used
-		if(vCellClass == CellClass::AUTO) {
-			if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vCellClass = CellClass::CLASS_A;
-			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vCellClass = CellClass::CLASS_B;
-			else if(vSize <= (uint32)CellClass::CLASS_C) [[unlikely]] vCellClass = CellClass::CLASS_C;
-			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] vCellClass = CellClass::CLASS_D;
-			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] vCellClass = CellClass::CLASS_Q;
-			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] vCellClass = CellClass::CLASS_L;
-			else [[likely]] vCellClass = CellClass::CLASS_0;
+		//Set cell class if CellClass::AUTO was used
+		if(vClass == CellClass::AUTO) {
+			if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vClass = CellClass::CLASS_A;
+			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vClass = CellClass::CLASS_B;
+			else if(vSize <= (uint32)CellClass::CLASS_C) [[unlikely]] vClass = CellClass::CLASS_C;
+			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] vClass = CellClass::CLASS_D;
+			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] vClass = CellClass::CLASS_Q;
+			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] vClass = CellClass::CLASS_L;
+			else [[likely]] vClass = CellClass::CLASS_0;
 		}
 
 
 		//TODO change map members names
-		uint32 typeIndex = classIndexFromEnum(vCellClass);							//Get buffer index from type and class
-		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
+		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
+		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
-		if((uint32)vCellClass){														//If the cell is a fixed size cell
-			uint64 cellNum = bufferSize / (uint32)vCellClass;							//Get the maximum number of cells in each buffer
-			for(uint32 i = 0; i < subBuffers.size( ); i++){							//Search for a suitable buffer
-				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {//If a buffer is valid and it has a free cell
-					//Cell cell = &subBuffers[i].cells[(cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
-						cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] });
-						Cell cell = &subBuffers[i].cells[cellIndex];
-						cell->buffer = &subBuffers[i];
-					//cell->address = (void*)((uint8*)(cell->buffer = &subBuffers[i])->memory + getCellOffset(cell));
-						cell->cellIndex = cellIndex;												//Add to it a new cell, assign the cell index
-						cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell));
-					return cell;																//And return the cell object
+		if((uint32)vClass){																			//If the cell is a fixed size cell
+			uint64 cellNum = bufferSize / (uint32)vClass;												//Get the maximum number of cells in each buffer
+			for(uint32 i = 0; i < subBuffers.size( ); i++){												//Search for a suitable buffer
+				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {					//If a buffer is valid and it has a free cell
+					cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] });
+					Cell cell = &subBuffers[i].cells[cellIndex];											//<^ Create a new cell in the buffer and set the its buffer, index and address
+					cell->buffer = &subBuffers[i];
+					cell->cellIndex = cellIndex;
+					cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell));
+					return cell;
 				}
 			}
-		}{																			//If there are no free buffers or the cell is a custom size cell
-
-
-			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
+		}{																							//If there are no free buffers or the cell is a custom size cell
 			uint32 bufferIndex;
+			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
+				.cells = (uint32)vClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vClass, bufferSize) : Map<Cell_t, uint32>(1, 1),
+			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
+			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
+			if(!buffer.memory) buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
 
-			//MemBuffer& buffer = subBuffers[bufferIndex = subBuffers.add(MemBuffer{ .memory = _aligned_malloc((uint32)vCellClass ? bufferSize : vSize, 32), .cells = (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1), .bufferIndex = (uint32)-1})];
-			//Fixed size new buffer
-			if((uint32)vCellClass) {
-				bufferIndex = subBuffers.add(
-					MemBuffer{
-						//! ^ If there is already an allocated buffer, don't reallocate the memory
-						.cells = Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize),
-						.bufferIndex = (uint32)-1
-					}
-				);
-				if(!subBuffers[bufferIndex].memory) subBuffers[bufferIndex].memory =_aligned_malloc(bufferSize, 32);
-				allocated += bufferSize;
-				Main printf("allocated MBs: %d",allocated/1000000);
-			}
-			//Custom size new buffer
-			else {
-				bufferIndex = subBuffers.add(
-					MemBuffer{
-						//! ^ If there is already an allocated buffer, don't reallocate the memory
-						.cells = Map<Cell_t, uint32>(1, 1),
-						.bufferIndex = (uint32)-1
-					}
-				);
-				if(!subBuffers[bufferIndex].memory) subBuffers[bufferIndex].memory =_aligned_malloc(vSize, 32);
-				allocated += vSize;
-				Main printf("allocated MBs: %d",allocated/1000000);
-			}
 
-			MemBuffer& buffer = subBuffers[bufferIndex];
-
-			buffer.bufferIndex = bufferIndex;
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
-			cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell));
-			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;
-			return cell;																//return the cell object
+			cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell));	//<^ Create a new cell in the new buffer. Set its address
+			cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom size cells
+
+
+			//TODO remove
+			allocated += (uint32)vClass ? bufferSize : vSize;
+			Main printf("allocated MBs: %d", allocated / 1000000);
+			return cell;
 		}
 	}
 
