@@ -11,7 +11,7 @@
 
 //TODO add [no AVX2] performance warning
 //TODO add AVX512 when supported //or don't. it's probably useless
-namespace lux::mem{
+namespace lux::ram{
 	//memcpy, but faster. The performance difference is much more noticeable in dual / quad channel systems, or systems with high frequency RAM / low frequency CPU
 	//The function will not return until all threads have completed the operation
 	//Use lux::mem::async::cpy to asynchronously copy data in a buffer
