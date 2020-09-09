@@ -111,8 +111,11 @@ namespace lux{
 			//TODO print warning if using a raw pointer //??
 			inline ptr<type> operator+(const uint64 v) const { return ptr<type>{cell, address + v}; }
 			inline uint64 operator+(const type* vPtr) const { return (uint64)address + (uint64)vPtr; }
+			inline uint64 operator+(const ptr<type>& vPtr) const { return (uint64)address + (uint64)vPtr.address; }
 			inline ptr<type> operator-(const uint64 v) const { return ptr<type>{cell, address - v}; }
 			inline uint64 operator-(const type* vPtr) const { return (uint64)address - (uint64)vPtr; }
+			inline uint64 operator-(const ptr<type>& vPtr) const { return (uint64)address - (uint64)vPtr.address; }
+
 
 			#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
