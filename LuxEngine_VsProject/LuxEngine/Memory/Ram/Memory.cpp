@@ -65,9 +65,10 @@ namespace lux::ram{
 				}
 			}
 		}{																							//If there are no free buffers or the cell is a custom size cell
-			uint32 bufferIndex;
+			uint32 bufferIndex, cellsNum = bufferSize / (uint32)vClass;
 			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
-				.cells = (uint32)vClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vClass, bufferSize) : Map<Cell_t, uint32>(1, 1),
+				//! reminder to myself. The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass). Plz dont make the same error again
+				.cells = (uint32)vClass ? Map<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map<Cell_t, uint32>(1, 1),
 			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
 			if(!buffer.memory) buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
