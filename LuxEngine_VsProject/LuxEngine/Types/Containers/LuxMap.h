@@ -24,7 +24,7 @@ namespace lux {
 		iter size_;			//Number of allocated elements. Use size() instead of this variable
 		iter freeSize_;		//Number of free elements in the map. Use usedSize() or freeSize() instead of this variable
 		type** data_;		//Map elements
-		iter** tracker_;		//Map that stores the state of each element
+		iter** tracker_;	//Map that stores the state of each element
 
 	private:
 		iter _head;			//First free element
@@ -33,7 +33,7 @@ namespace lux {
 		iter _maxSize;		//Maximum number of elements in the map
 
 		#define __lp_Data(index) data_[(index) / _chunkSize][(index) % _chunkSize]			//Get a data    element using only one index instead of index in the chunk and chunk index
-		#define __lp_Tracker(index) tracker_[(index) / _chunkSize][(index) % _chunkSize]		//Get a tracker element using only one index instead of index in the chunk and chunk index
+		#define __lp_Tracker(index) tracker_[(index) / _chunkSize][(index) % _chunkSize]	//Get a tracker element using only one index instead of index in the chunk and chunk index
 	public:
 
 

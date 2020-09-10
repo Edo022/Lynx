@@ -2,7 +2,7 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
-
+#include "LuxEngine/Types/Nothing.h"
 
 
 
@@ -84,12 +84,13 @@ namespace lux{
 		//You can also manually free it with the lux::mem:free function
 		//    Accessing the memory of a freed pointer will result in undefined behaviour
 		template<class type> struct ptr{
-			Cell_t* cell{ nullptr };			//A pointer to a lux::ram::Cell_t object that contains the cell informations
-			type* address{ nullptr };			//The address the pointer points to
+			Cell_t* cell;			//A pointer to a lux::ram::Cell_t object that contains the cell informations
+			type* address;			//The address the pointer points to
 
 
 
-			inline ptr( ){ cell = nullptr; }
+			inline ptr( ) : cell{ nullptr }, address{ nullptr } { }
+			inline ptr(Nothing) : cell{ cell }, address{ address }{ }
 			inline ptr(Cell vCell) : cell{ vCell }, address{ (type*)vCell->address } { cell->owners++; }
 			inline ptr(Cell vCell, type* vAddress) : cell{ vCell }, address{ vAddress }{ cell->owners++; }
 			inline ptr(ptr<type>& pPtr) : cell{ pPtr.cell }, address{ pPtr.address }{ cell->owners++; }
