@@ -32,12 +32,13 @@ namespace lux::ram{
 	//*   Returns    | the allocated Cell object
 	//e.g.   lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
 	//e.g.   same as int* foo = (int*)malloc(100);
-	Cell alloc(const uint64 vSize, CellClass vClass){
+	Cell alloc(const uint64 vSize, CellClass vClass, const bool vForceDedicatedBuffer){
 		luxDebug(if(vClass != CellClass::AUTO && (uint32)vClass < vSize) param_error(vClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
 		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
 
-		//Set cell class if CellClass::AUTO was used
-		if(vClass == CellClass::AUTO) {
+		//Set cell class if CellClass::AUTO was used or set it to custom size buffer if vForceDedicatedBuffer is true
+		if(vForceDedicatedBuffer) vClass = CellClass::CLASS_0;
+		else if(vClass == CellClass::AUTO) {
 			if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vClass = CellClass::CLASS_A;
 			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vClass = CellClass::CLASS_B;
 			else if(vSize <= (uint32)CellClass::CLASS_C) [[unlikely]] vClass = CellClass::CLASS_C;
@@ -48,7 +49,6 @@ namespace lux::ram{
 		}
 
 
-		//TODO change map members names
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
 		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
@@ -65,7 +65,7 @@ namespace lux::ram{
 				}
 			}
 		}{																							//If there are no free buffers or the cell is a custom size cell
-			uint32 bufferIndex, cellsNum = bufferSize / (uint32)vClass;
+			uint32 bufferIndex, cellsNum = (uint32)vClass ? bufferSize / (uint32)vClass : 1;
 			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
 				//! reminder to myself. The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass). Plz dont make the same error again
 				.cells = (uint32)vClass ? Map<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map<Cell_t, uint32>(1, 1),
@@ -82,6 +82,7 @@ namespace lux::ram{
 			//TODO remove
 			allocated += (uint32)vClass ? bufferSize : vSize;
 			Main printf("allocated MBs: %d", allocated / 1000000);
+			system("pause");
 			return cell;
 		}
 	}
