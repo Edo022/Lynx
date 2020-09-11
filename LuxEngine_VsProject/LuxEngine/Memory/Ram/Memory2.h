@@ -1,4 +1,7 @@
-#pragma once
+#ifndef LUX_H_MEMORY_2
+# define LUX_H_MEMORY_2
+
+
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/LuxBool.h"
 #include "LuxEngine/Memory/Memory_t.h"
@@ -12,3 +15,4 @@ namespace lux::ram{
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);
 };
 #pragma warning( default : 4227 )
+#endif

@@ -4,8 +4,9 @@
 
 
 
+
 namespace lux::ram{
-	Array<MemBufferType> buffers;
+	MemBufferType* buffers;
 	uint32 allocated = 0;
 
 
@@ -14,7 +15,7 @@ namespace lux::ram{
 
 
 	void init( ){
-		buffers.resize((uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
 
 		//Init buffer types
 		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
@@ -122,4 +123,4 @@ namespace lux::ram{
 	}
 }
 
-//TODO automatica string subclass if memory pool is not available
+//TODO automatic string subclass if memory pool is not available

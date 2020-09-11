@@ -1,4 +1,7 @@
-#pragma once
+#ifndef LUX_H_MEMORY_T
+#  define LUX_H_MEMORY_T
+
+
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
@@ -145,3 +148,4 @@ namespace lux{
 		template<class type> ptr<type>::operator type*( ) const {return address;}
 	}
 }
+#endif
