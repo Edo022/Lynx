@@ -5,8 +5,8 @@
 
 
 namespace lux::rem{
-	uint32 maxAlloc;
-	Array<MemBufferType> buffers;
+	uint32 maxAlloc{ maxAlloc };
+	MemBufferType* buffers{ buffers };
 
 
 
@@ -16,7 +16,7 @@ namespace lux::rem{
 	void init( ){
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers.resize((uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
 
 		//Init buffer types
 		uint32 index;

@@ -7,7 +7,6 @@
 #include "LuxEngine/Core/ConsoleOutput.h"
 #include "LuxEngine/Memory/Ram/Memory.h"
 
-#include <vector>
 
 
 
@@ -114,33 +113,6 @@ namespace lux {
 				return head2;
 			}
 		}
-
-
-
-
-		////Adds the elements of an std::vector to the map, placing each element in the first free index
-		////Returns a static array containing the IDs of the elements, in the same order as they were in the input
-		//Array<iter> __vectorcall add(const std::vector<type>* pVector) {
-		//	Array<iter> IDs;
-		//	IDs.resize(pVector->size( ));												//Set the number of IDs
-		//	for(int32 i = 0; i < pVector->size( ); i++) IDs[i] = add((*pVector)[i]);	//Add every element to the map and save its ID
-		//	return IDs;
-		//}
-
-
-
-
-		////Adds the elements of a LuxContainer to the map, skipping the invalid ones and placing the others in the first free index
-		////Returns a static array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
-		//Array<iter> __vectorcall add(const Map<type, iter>* vContainer) {
-		//	Array<iter> IDs;
-		//	IDs.resize(vContainer->size( ));								//Set the number of IDs
-		//	for(iter i = 0; i < vContainer->size( ); i++){					//For every element of the input map
-		//		if(vContainer->isValid(i)) IDs[i] = add((*vContainer)[i]);		//If it's valid, add it to the map and save its ID
-		//		else IDs[i] = -1;												//If not, save -1 as ID
-		//	}
-		//	return IDs;
-		//}
 
 
 

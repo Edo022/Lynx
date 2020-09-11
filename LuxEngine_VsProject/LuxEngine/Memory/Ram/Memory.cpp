@@ -6,8 +6,8 @@
 
 
 namespace lux::ram{
-	MemBufferType* buffers;
-	uint32 allocated = 0;
+	MemBufferType* buffers{ buffers };
+	uint32 allocated{ allocated };
 
 
 
