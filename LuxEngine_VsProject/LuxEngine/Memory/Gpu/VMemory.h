@@ -1,10 +1,9 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Core/Devices.h"
-#include "LuxEngine/Types/Containers/LuxMap.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Memory/Ram/Memory.h"
-#include <intrin.h>
+#include "LuxEngine/Types/Containers/LuxMap_NMP_S.h"
 
 
 
@@ -17,12 +16,12 @@ namespace lux::rem{
 	struct MemBuffer {
 		VkBuffer buffer;				//Vulkan buffer object
 		VkDeviceMemory memory;			//Vulkan buffer memory
-		Map<Cell_t, uint32> cells;		//Cells in the buffer
+		Map_NMP_S<Cell_t, uint32> cells;		//Cells in the buffer
 	};
 	struct MemBufferType {
 		CellClass cellClass;			//Class of the cells
 		AllocType allocType;			//Buffer allocation type
-		Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
+		Map_NMP_S<MemBuffer, uint32> buffers;	//Buffers containing the cells
 	};
 	struct Cell_t {
 		uint64 cellSize;			//Size of the cell in bytes

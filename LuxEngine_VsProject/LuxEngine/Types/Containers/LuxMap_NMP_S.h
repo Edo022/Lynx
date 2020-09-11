@@ -1,21 +1,20 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/macros.h"
+//#include "LuxEngine/Types/Containers/LuxArray.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
-#include "LuxEngine/Types/Nothing.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
-#include "LuxEngine/Memory/Ram/Memory.h"
-
+#include "LuxEngine/Types/Nothing.h"
 #include <vector>
 
 
 
+
 namespace lux {
-	//Like an array, but capable of containing billions of elements without losing performances
-	//The elements are not ordered, so each element has a unique ID. The ID is returned by the add functions
-	//Use the isValid() function to check if an element can be used or not
-	template<class type, class iter = uint64> class Map {
+	//Specifically optimized lux::Map for engine internal use
+	//Don't use it. It's slower
+	template<class type, class iter = uint64> class Map_NMP_S {
 	public:
 		type** data_;		//Elements
 		iter** tracker_;	//State of each element
@@ -40,7 +39,7 @@ namespace lux {
 
 
 
-		inline Map(const Nothing) : _chunkNum{ _chunkNum },
+		inline Map_NMP_S(const Nothing) : _chunkNum{ _chunkNum },
 			size_{ size_ }, freeSize_{ freeSize_ }, data_{ data_ }, tracker_{ tracker_ },
 			head_{ head_ }, tail_{ tail_ }, _chunkSize{ _chunkSize }, _maxSize{ _maxSize } {
 		}
@@ -53,7 +52,7 @@ namespace lux {
 		//*   vMaxSize:   | the maximum size the map can reach
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
-		inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
+		inline Map_NMP_S(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
 			_chunkSize(vChunkSize), _maxSize(vMaxSize), head_((iter)-1), tail_((iter)-1), _chunkNum(0), size_(0), freeSize_(0) {
 			luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
 			data_ = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
@@ -64,7 +63,7 @@ namespace lux {
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   in: a pointer to the container object
 		template<class elmType>
-		inline Map(const ContainerBase<elmType, iter>* in) {
+		inline Map_NMP_S(const ContainerBase<elmType, iter>* in) {
 			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
 		}
 

@@ -3,7 +3,7 @@
 
 
 #include "LuxEngine/Types/Integers/Integers.h"
-#include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Types/Containers/LuxMap_NMP_S.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
 #include "LuxEngine/Types/Nothing.h"
 
@@ -56,12 +56,12 @@ namespace lux{
 		struct Cell_t;
 		struct MemBuffer {
 			void* memory = nullptr;			//Address of the buffer
-			Map<Cell_t, uint32> cells;		//Cells in the buffer
+			Map_NMP_S<Cell_t, uint32> cells;		//Cells in the buffer
 			uint32 bufferIndex;				//Index of the buffer in the MemBufferType buffers array
 		};
 		struct MemBufferType {
 			CellClass cellClass;			//Class of the cells
-			Map<MemBuffer, uint32> buffers;	//Buffers containing the cells
+			Map_NMP_S<MemBuffer, uint32> buffers;	//Buffers containing the cells
 		};
 		struct Cell_t {
 			uint32 owners;					//Number of lux::ram::ptr instances that point to an address of the cell

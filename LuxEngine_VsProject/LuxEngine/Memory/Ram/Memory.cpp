@@ -20,7 +20,7 @@ namespace lux::ram{
 		//Init buffer types
 		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
 			buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
-			buffers[i].buffers = Map<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
 		}
 	}
 
@@ -52,7 +52,7 @@ namespace lux::ram{
 
 
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
-		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
+		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vClass){																			//If the cell is a fixed size cell
 			uint64 cellNum = bufferSize / (uint32)vClass;												//Get the maximum number of cells in each buffer
@@ -70,7 +70,7 @@ namespace lux::ram{
 			uint32 bufferIndex, cellsNum = (uint32)vClass ? bufferSize / (uint32)vClass : 1;
 			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
 				//! The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
-				.cells = (uint32)vClass ? Map<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map<Cell_t, uint32>(1, 1),
+				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
 			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
 			if(!buffer.memory) {

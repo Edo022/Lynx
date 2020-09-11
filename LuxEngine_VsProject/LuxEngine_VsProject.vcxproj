@@ -348,6 +348,7 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxMap.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxContainer.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxArray.h" />
+    <ClInclude Include="LuxEngine\Types\Containers\LuxMap_NMP_S.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxString.h" />
     <ClInclude Include="LuxEngine\Types\Containers\LuxList.h" />
     <ClInclude Include="LuxEngine\Types\EngineTypes.h" />

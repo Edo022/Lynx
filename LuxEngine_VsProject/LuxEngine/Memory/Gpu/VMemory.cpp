@@ -25,7 +25,7 @@ namespace lux::rem{
 				index = (i << 2) | j;
 				buffers[index].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
 				buffers[index].allocType = (AllocType)j;
-				buffers[index].buffers = Map<MemBuffer, uint32>(32, 4096); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+				buffers[index].buffers = Map_NMP_S<MemBuffer, uint32>(32, 4096); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
 			}
 		}
 	}
@@ -64,7 +64,7 @@ namespace lux::rem{
 
 
 		uint32 typeIndex = (classIndexFromEnum(vCellClass) << 2) | (uint32)vAllocType;		//Get buffer index from type and class
-		Map<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);					//Get list of buffers where to search for a free cell
+		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);					//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vCellClass){																//If the cell is a fixed size cell
 			uint64 cellNum = bufferSize / (uint32)vCellClass;									//Get the maximum number of cells in each buffer
@@ -76,9 +76,11 @@ namespace lux::rem{
 					return cell;																		//Return the cell object
 				}
 			}
+			//TODO fix
+			//TODO copy RAM cells
 		}{																					//If there are no free buffers or the cell is a custom size cell
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
-			MemBuffer& buffer = subBuffers[subBuffers.add(MemBuffer{ 0, 0, (uint32)vCellClass ? Map<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map<Cell_t, uint32>(1, 1) })];
+			MemBuffer& buffer = subBuffers[subBuffers.add(MemBuffer{ 0, 0, (uint32)vCellClass ? Map_NMP_S<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map_NMP_S<Cell_t, uint32>(1, 1) })];
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->buffer = &buffer;																//Create a new buffer and set it as the cell's buffer
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;								//Add a new cell and set the cell index
