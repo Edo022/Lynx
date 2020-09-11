@@ -27,11 +27,12 @@ namespace lux::ram{
 
 
 	//This function allocates a memory cell or a pointer into a buffer
-	//*   vSize      | size of the cell
-	//*   vClass     | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
-	//*   Returns    | the allocated Cell object
-	//e.g.   lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
-	//e.g.   same as int* foo = (int*)malloc(100);
+	//*   vSize                 | size of the cell
+	//*   vClass                | class of the cell. This is the maximum size the cell can reach before it needs to be copied
+	//*   vForceDedicatedBuffer | if true, the memory will be allocated in a new buffer instead of a fixed size cell
+	//*   Returns               | the allocated Cell object
+	//e.g. lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
+	//e.g. same as int* foo = (int*)malloc(100);
 	Cell alloc(const uint64 vSize, CellClass vClass, const bool vForceDedicatedBuffer){
 		luxDebug(if(vClass != CellClass::AUTO && (uint32)vClass < vSize) param_error(vClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
 		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
@@ -67,11 +68,16 @@ namespace lux::ram{
 		}{																							//If there are no free buffers or the cell is a custom size cell
 			uint32 bufferIndex, cellsNum = (uint32)vClass ? bufferSize / (uint32)vClass : 1;
 			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
-				//! reminder to myself. The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass). Plz dont make the same error again
+				//! The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
 				.cells = (uint32)vClass ? Map<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map<Cell_t, uint32>(1, 1),
 			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
-			if(!buffer.memory) buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
+			if(!buffer.memory) {
+				buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
+				//TODO remove
+				allocated += (uint32)vClass ? bufferSize : vSize;
+				Main printf("allocated MBs: %d", allocated / 1000000);
+			}
 
 
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
@@ -79,10 +85,7 @@ namespace lux::ram{
 			cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom size cells
 
 
-			//TODO remove
-			allocated += (uint32)vClass ? bufferSize : vSize;
-			Main printf("allocated MBs: %d", allocated / 1000000);
-			system("pause");
+			//system("pause");
 			return cell;
 		}
 	}
