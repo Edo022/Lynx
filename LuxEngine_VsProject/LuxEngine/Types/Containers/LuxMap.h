@@ -19,8 +19,8 @@
 namespace lux {
 	template<class type, class iter = uint64> class Map {
 	public:
-		type** data_;		//Map elements
-		iter** tracker_;	//Map that stores the state of each element
+		type** data_;		//Elements
+		iter** tracker_;	//State of each element
 		iter head_;			//First free element
 		iter tail_;			//Last free element
 		iter size_;			//Number of allocated elements. Use size() instead of this variable
@@ -109,7 +109,7 @@ namespace lux {
 				}
 				else {											//If it has more than one
 					head_ = __lp_Tracker(head2);					//Update head_
-					__lp_Tracker(head2) = -1;						//Update the status of the first
+					__lp_Tracker(head2) = -1;						//Update the state of the first
 					__lp_Data(head2) = vData;						//Replace it
 				}
 				freeSize_--;										//Update the number of free elements
@@ -185,7 +185,7 @@ namespace lux {
 
 
 		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
-		inline signed char __vectorcall status(const iter vIndex) const {
+		inline signed char __vectorcall state(const iter vIndex) const {
 			if(vIndex == (iter)-1)return -1;								//Invalid index
 			else if(vIndex >= size_) return -2;								//Index out of range
 			else if(__lp_Tracker(vIndex) == (iter)-1) return 0;				//Ok
@@ -194,7 +194,7 @@ namespace lux {
 		}
 
 
-		//Returns true if the index is used, false if it's free or invalid (use the status function for more details)
+		//Returns true if the index is used, false if it's free or invalid (use the state function for more details)
 		inline bool __vectorcall isValid(const iter vIndex) const {
 			if(vIndex > size_ - 1) return false;				//Return false if the index is out of range
 			return (__lp_Tracker(vIndex) == (iter)-1);			//Return true if the index is used, false if it's free

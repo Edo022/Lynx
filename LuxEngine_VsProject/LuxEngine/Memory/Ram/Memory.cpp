@@ -94,8 +94,8 @@ namespace lux::ram{
 
 
 	//TODO check new cell class
-	void realloc(Cell& const pCell, const uint64 vSize, const CellClass vCellClass){
-		if(!pCell->address) {
+	void realloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
+		if(!pCell->address) [[unlikely]] {
 			pCell = alloc(vSize, vCellClass);
 			return;
 		}
@@ -112,7 +112,7 @@ namespace lux::ram{
 
 
 	//Frees a video memory cell
-	void free(Cell pCell){
+	void free(Cell_t* pCell){
 		//TODO destroy buffers from asyncrhonous garbage collector
 		pCell->buffer->cells.remove(pCell->cellIndex);
 		if(pCell->buffer->cells.usedSize( ) == 0) {

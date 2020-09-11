@@ -80,10 +80,14 @@
 #pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
 namespace lux::ram{
 	Cell alloc(const uint64 vSize, CellClass vCellClass, const bool vForceDedicatedBuffer = false);
-	template<class t> static inline void realloc(const ptr<t>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO) { realloc(pPtr.cell, vSize, vCellClass); }
-	void realloc(Cell& const pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
-	template<class t> static inline void free(const ptr<t>& pPtr) { free(pPtr.cell); }
-	void free(Cell pCell);
+
+	template<class t> static inline void realloc(ptr<t>& const pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO) { realloc(pPtr.cell, vSize, vCellClass); }
+	void realloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
+
+	template<class t> static inline void free(ptr<t>& const pPtr) { free(pPtr.cell); }
+	void free(Cell_t* pCell);
+
+
 
 
 	extern Array<MemBufferType> buffers;	//Allocated buffers

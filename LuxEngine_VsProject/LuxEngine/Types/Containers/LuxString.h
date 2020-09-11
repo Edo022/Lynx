@@ -29,7 +29,7 @@ namespace lux {
 
 		inline void __vectorcall concatenate(const char8* vString, const uint32 size) {
 			uint64 oldSize = str.cell->cellSize;
-			ram::realloc(str.cell, str.cell->cellSize + size - 1);
+			ram::realloc(str, str.cell->cellSize + size - 1);
 			ram::cpy(vString, str + oldSize - 1, size);
 		}
 
@@ -44,7 +44,7 @@ namespace lux {
 		}
 		inline String(const String& pString) {
 			str = ram::alloc(pString.size( ), CellClass::AUTO);
-			ram::cpy(pString.begin( ), str, pString.size( ));
+			ram::cpy(pString.str, str, pString.size( ));
 		}
 		inline String(const char8* vString) {
 			int32 len = strlenl(vString) + 1;
@@ -81,7 +81,8 @@ namespace lux {
 		inline void __vectorcall operator += (const uint32 vValue)	{ char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b); }
 		inline void __vectorcall operator += (const int32 vValue)	{ char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b); }
 		#pragma warning ( default : 4996  )
-		inline void __vectorcall operator += (const char8 vChar) { ram::realloc(str.cell, str.cell->cellSize + 1); *(str + str.cell->cellSize) = vChar; }
+		//TODO automatize size
+		inline void __vectorcall operator += (const char8 vChar) { ram::realloc(str, str.cell->cellSize + 1); *(str + str.cell->cellSize) = vChar; }
 
 
 
@@ -98,15 +99,14 @@ namespace lux {
 
 
 
-		//TODO automatically reassign address in realloc function
 		inline void __vectorcall operator = (const String& pString) {
-			ram::realloc(str.cell, pString.size( ), CellClass::AUTO);
+			ram::realloc(str, pString.size( ), CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
-			ram::cpy(pString.begin( ), str, pString.size( ));
+			ram::cpy(pString.str, str, pString.size( ));
 		}
 		inline void __vectorcall operator = (const char8* vString) {
 			int32 len = strlenl(vString) + 1;
-			ram::realloc(str.cell, len, CellClass::AUTO);
+			ram::realloc(str, len, CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
 			ram::cpy(vString, str, len);
 		}
@@ -116,7 +116,7 @@ namespace lux {
 
 		//Compare strings
 		inline bool __vectorcall operator == (const String& vString) const {
-			return ((str.cell->cellSize == vString.size( )) && (memcmp(vString.begin( ), str.address, str.cell->cellSize) == 0));
+			return ((str.cell->cellSize == vString.size( )) && (memcmp(vString.str, str.address, str.cell->cellSize) == 0));
 		}
 		inline bool __vectorcall operator == (const char* vString) const {
 			return ((str.cell->cellSize == strlenl(vString) + 1) && (memcmp(vString, str.address, str.cell->cellSize) == 0));
