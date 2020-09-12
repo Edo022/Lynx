@@ -189,22 +189,22 @@ namespace lux {
 		//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
 		inline type* __vectorcall begin(const iter vChunkIndex) const { return &data_[vChunkIndex][0]; }
 
-		//DEPRECATED FUNCTION
-		//TODO remove
-		//Returns a pointer to a new map that contains all the elements in the chunks, without the invalid ones
-		//This operation can be really slow, try to avoid using it
-		type* data( ) const {
-			type* arr = (type*)malloc(sizeof(type) * usedSize( ));
-			iter new_i = 0;
-			for(iter i = 0; i < usedSize( ); ++i) {
-				if(isValid(i)) {
-					arr[new_i] = __lp_Data(i);
-					++new_i;
-				}
-				else ++i;
-			}
-			return arr;
-		}
+		////DEPRECATED FUNCTION
+		////TODO remove
+		////Returns a pointer to a new map that contains all the elements in the chunks, without the invalid ones
+		////This operation can be really slow, try to avoid using it
+		//type* data( ) const {
+		//	type* arr = (type*)malloc(sizeof(type) * usedSize( ));
+		//	iter new_i = 0;
+		//	for(iter i = 0; i < usedSize( ); ++i) {
+		//		if(isValid(i)) {
+		//			arr[new_i] = __lp_Data(i);
+		//			++new_i;
+		//		}
+		//		else ++i;
+		//	}
+		//	return arr;
+		//}
 
 
 

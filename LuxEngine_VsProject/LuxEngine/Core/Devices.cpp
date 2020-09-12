@@ -249,7 +249,7 @@ namespace lux::core::dvc{
 
 
 		//Queue infos
-		Map<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
+		DynArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
 				.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type
@@ -270,7 +270,7 @@ namespace lux::core::dvc{
 		VkDeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
 			.queueCreateInfoCount{ (uint32)queueCreateInfos.size( ) },			//Set queue infos count
-			.pQueueCreateInfos{ queueCreateInfos.data( ) },						//Set queue infos
+			.pQueueCreateInfos{ queueCreateInfos.begin( ) },						//Set queue infos
 			#ifdef LUX_DEBUG
 			.enabledLayerCount{ (uint32)validationLayers.size( ) },				//Set validation layer count if in debug mode
 			.ppEnabledLayerNames{ validationLayers.begin( ) },					//Set validation layers if in debug mode

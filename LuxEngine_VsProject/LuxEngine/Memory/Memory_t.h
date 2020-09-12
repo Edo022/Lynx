@@ -50,6 +50,8 @@ namespace lux{
 
 
 
+//TODO print warning if something is called on an uninitialized structure
+
 
 	//luxDebug(void __lp_printWarning(const char* text));
 	namespace ram{
@@ -96,14 +98,19 @@ namespace lux{
 			inline ptr(Nothing) : cell{ cell }, address{ address }{ }
 			inline ptr(Cell vCell) : cell{ vCell }, address{ (type*)vCell->address } { cell->owners++; }
 			inline ptr(Cell vCell, type* vAddress) : cell{ vCell }, address{ vAddress }{ cell->owners++; }
-			//TODO check for nullptrs in any lux struct constructor
+
+			//TODO check for self nullptrs in any struct with Nothing constructors
+			//TODO or just print an error idk
+			//inline ptr(ptr<type>& pPtr) :
+			//	cell{ (pPtr) ? pPtr.cell : nullptr }, address{ (pPtr) ? pPtr.address : nullptr } {
+			//	if(cell) cell->owners++;
+			//}
 			inline ptr(ptr<type>& pPtr) :
-				cell{ (pPtr) ? pPtr.cell : nullptr }, address{ (pPtr) ? pPtr.address : nullptr } {
-				if(cell) cell->owners++;
+				cell{ pPtr.cell }, address{ pPtr.address } {
+				cell->owners++;
 			}
 			template<class pType> explicit inline ptr(ptr<pType>& pPtr) : cell{ pPtr.cell }, address{ (type*)pPtr.address }{ cell->owners++; }
 
-			//TODO print warning if using a raw pointer
 			inline void operator=(const Cell vCell){
 				//Decrease the owner count if the pointer was bound to a cell
 				if(cell) {
@@ -120,6 +127,8 @@ namespace lux{
 				luxDebug(printWarning("Comparison operator should not be used with different pointer types"));
 				return (void*)address == (void*)pPtr.address;
 			}
+			//TODO print warning if using a raw pointer
+			//TODO or just use sparse pointers idk
 			inline bool operator==(const type* vPtr) const { return (void*)address == (void*)vPtr; }
 
 
