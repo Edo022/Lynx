@@ -1,9 +1,11 @@
 
 #include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Core/Core.h"
 
-
+//TODO "so that whatever file is being initialized, the execution get caught by the post initializer and it inizializes everything the engine needs"
 
 namespace lux::thr {
+	PostInitializer(LUX_H_THREAD_POOL);
 	FenceDE stgAddFence;						//This fence controls the add and read/remove operations of the staging queue
 	HANDLE mngThr;								//The handle of the thread that controls the pool
 	Array<ThrPoolElm> threads(lux::DontInitialize( ));		//The threads of the thread pool with their states and functions

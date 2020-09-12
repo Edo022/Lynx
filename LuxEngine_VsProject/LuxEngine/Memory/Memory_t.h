@@ -96,11 +96,24 @@ namespace lux{
 			inline ptr(Nothing) : cell{ cell }, address{ address }{ }
 			inline ptr(Cell vCell) : cell{ vCell }, address{ (type*)vCell->address } { cell->owners++; }
 			inline ptr(Cell vCell, type* vAddress) : cell{ vCell }, address{ vAddress }{ cell->owners++; }
-			inline ptr(ptr<type>& pPtr) : cell{ pPtr.cell }, address{ pPtr.address }{ cell->owners++; }
+			//TODO check for nullptrs in any lux struct constructor
+			inline ptr(ptr<type>& pPtr) :
+				cell{ (pPtr) ? pPtr.cell : nullptr }, address{ (pPtr) ? pPtr.address : nullptr } {
+				if(cell) cell->owners++;
+			}
 			template<class pType> explicit inline ptr(ptr<pType>& pPtr) : cell{ pPtr.cell }, address{ (type*)pPtr.address }{ cell->owners++; }
 
 			//TODO print warning if using a raw pointer
-			inline void operator=(const Cell vCell){ if(cell) cell->owners--; cell = vCell; address = (type*)vCell->address; cell->owners++; }
+			inline void operator=(const Cell vCell){
+				//Decrease the owner count if the pointer was bound to a cell
+				if(cell) {
+					cell->owners--;
+				}
+					cell = vCell;
+					address = (type*)vCell->address;
+					cell->owners++;
+				//else printError("cell is uninitialized");
+			}
 			inline void operator=(const ptr<type>& pPtr){ if(cell) cell->owners--; cell = pPtr.cell; address = pPtr.address; cell->owners++; }
 
 			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const {
@@ -141,7 +154,9 @@ namespace lux{
 			~ptr( ){ if(address) { if(!--cell->owners) cell->freeCell( ); } }
 			inline operator type*( ) const;
 			inline type& operator [](const uint64 i) const { return address[i]; }
-			inline type& operator [](const uint32 i) const { return address[i]; }
+			inline type& operator [](const uint32 i) const {
+				return address[i];
+			}
 			inline type& operator [](const int i) const { return address[i]; }
 		};
 

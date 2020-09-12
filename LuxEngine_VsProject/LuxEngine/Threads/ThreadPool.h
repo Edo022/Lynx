@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "LuxEngine/LuxEngine_config.h"
@@ -9,7 +8,7 @@
 #include "LuxEngine/Types/Containers/LuxQueue.h"
 #include <tuple>
 #include <thread>
-
+#define LUX_H_THREAD_POOL
 
 
 

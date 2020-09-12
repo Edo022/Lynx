@@ -9,7 +9,7 @@ namespace lux::out{
 	void _printWarning(const std::string& pMessage);
 
 
-	#define printError(pMessage, vFatalError, vErrorCode) lux::out::_printError(std::string("Function ").append(__FUNCTION__).append(", line ").append(std::to_string(__LINE__)).append("\n\n").append(pMessage), vFatalError, vErrorCode)
+	#define printError(pMessage, vFatalError, vErrorCode) lux::out::_printError(std::string("Function ").append(__FUNCTION__).append(", line ").append(std::to_string((unsigned long long)__LINE__)).append("\n\n").append(pMessage), vFatalError, vErrorCode)
 	#define printWarning(pMessage) lux::out::_printError(std::string("Function ").append(__FUNCTION__).append(", line ").append(std::to_string(__LINE__)).append("\n\n").append(pMessage))
 
 	#define param_error(paramName, errorInfo) luxDebug(																				\

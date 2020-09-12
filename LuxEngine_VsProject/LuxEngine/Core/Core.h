@@ -90,6 +90,7 @@ namespace lux::core{
 	extern bool		useVSync;
 	extern bool		initialized;
 	extern uint32	frames;
+	//extern bool postInitialized = false;
 
 	extern VkInstance					instance;
 	extern VkDebugUtilsMessengerEXT		debugMessenger;

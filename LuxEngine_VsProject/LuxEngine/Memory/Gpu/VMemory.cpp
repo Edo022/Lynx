@@ -61,7 +61,7 @@ namespace lux::rem{
 				CellClass::CLASS_0;
 		}
 
-
+		//TODO fix like ram cells
 
 		uint32 typeIndex = (classIndexFromEnum(vCellClass) << 2) | (uint32)vAllocType;		//Get buffer index from type and class
 		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);					//Get list of buffers where to search for a free cell

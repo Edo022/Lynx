@@ -4,6 +4,8 @@
 
 
 
+//TODO background cell preallocation
+
 
 namespace lux::ram{
 	MemBufferType* buffers{ buffers };
@@ -70,10 +72,13 @@ namespace lux::ram{
 			uint32 bufferIndex, cellsNum = (uint32)vClass ? bufferSize / (uint32)vClass : 1;
 			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
 				//! The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
-				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+				//.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
 			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
-			if(!buffer.memory) {
+			//TODO set right like
+			//if(!buffer.memory) {
+			if(true) {
 				buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
 				//TODO remove
 				allocated += (uint32)vClass ? bufferSize : vSize;

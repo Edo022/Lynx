@@ -4,10 +4,11 @@
 
 namespace lux{
 	//A struct that contains nothing and does nothing
-	//Used for constructors that doesn't initialize the structure members or other very specific cases
 	struct Nothing{ };
 
 
-	//A function used as parameter in a constructor to not make it initialize the structure
+	//Used by constructors of some Lux structures to skip the default object initialization by initializing its members with their own value
+	//Use it only if you have already initialized the structure. Initializing an uninitialized structure with its value is ub
+	//e.g.  lux::Array<int> UwU(lux::DontInitialize( ));
 	static constexpr inline const Nothing DontInitialize( ){ return Nothing{ }; }
 }
