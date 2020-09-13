@@ -302,6 +302,9 @@
     <ClInclude Include="LuxEngine\Types\Containers\LuxMap_NMP_S.h">
       <Filter>LuxEngine\Types\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="LuxEngine\Types\Nothing_sc_p.h">
+      <Filter>LuxEngine\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

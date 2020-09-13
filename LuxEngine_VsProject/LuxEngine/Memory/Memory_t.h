@@ -5,9 +5,9 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxMap_NMP_S.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
-#include "LuxEngine/Types/Nothing.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
-#include "LuxEngine/macros.h"
+#include "LuxEngine/Types/Nothing.h"
+#include "LuxEngine/Types/Nothing_sc_p.h"
 
 
 
@@ -101,28 +101,7 @@ namespace lux{
 		template<class type> struct ptr{
 			Cell_t* cell;			//A pointer to a lux::ram::Cell_t object that contains the cell informations
 			type* address;			//The address the pointer points to
-
-			//Uninitialized check
-			#define lux_sc_v 0x94FFD489B48994FF
-			#define lux_sc_F luxDebug(lux_sc_F_f( ));						// void foo( ) { lux_sc_F ... }
-			#define lux_sc_N luxDebug2(initialized{ lux_sc_N_f( ) },)		// s( lux::Nothing ) : lux_sc_N { ... }
-			#define lux_sc_C luxDebug2(initialized{ lux_sc_C_f( ) },)		// s( ) : lux_sc_C { ... }
-			#ifdef LUX_DEBUG
-			uint64 initialized = lux_sc_v;
-
-			void lux_sc_F_f( ) const {	//Operators and Functions
-				if(initialized != lux_sc_v) printError("Structures must be initialized before using their pointers or non assignment/init/constructor functions", true, -1);
-			}
-			uint64 lux_sc_N_f( ){	//lux::Nothing constructor
-				if(initialized != lux_sc_v) printError("Structures created with a lux::Nothing constructor must be initialized before their default initialization", true, -1);
-				return lux_sc_v;
-			}
-			uint64 lux_sc_C_f( ){	//Other constructors
-				return lux_sc_v;
-			}
-			#endif
-
-
+			lux_sc_generate_structure_body;
 
 
 			//####################################################################################################################################################################//
