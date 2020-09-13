@@ -103,19 +103,22 @@ namespace lux{
 			type* address;			//The address the pointer points to
 
 			//Uninitialized check
-			#define lux_ptr_initialized 0x94FFD489B48994FF
+			#define lux_sc_v 0x94FFD489B48994FF
+			#define lux_sc_F luxDebug(lux_sc_F_f( ));						// void foo( ) { lux_sc_F ... }
+			#define lux_sc_N luxDebug2(initialized{ lux_sc_N_f( ) },)		// s( lux::Nothing ) : lux_sc_N { ... }
+			#define lux_sc_C luxDebug2(initialized{ lux_sc_C_f( ) },)		// s( ) : lux_sc_C { ... }
 			#ifdef LUX_DEBUG
-			uint64 initialized = lux_ptr_initialized;
-			uint64 checkPtrsf( ){	//Functions
-				if(initialized != lux_ptr_initialized) printError("Structures must be initialized before using their pointers or non assignment/init/constructor functions", true, -1);
-				return lux_ptr_initialized;
+			uint64 initialized = lux_sc_v;
+
+			void lux_sc_F_f( ) const {	//Operators and Functions
+				if(initialized != lux_sc_v) printError("Structures must be initialized before using their pointers or non assignment/init/constructor functions", true, -1);
 			}
-			uint64 checkPtrsn( ){	//lux::Nothing constructor
-				if(initialized != lux_ptr_initialized) printError("Structures created with a lux::Nothing constructor must be initialized before their normal initialization", true, -1);
-				return lux_ptr_initialized;
+			uint64 lux_sc_N_f( ){	//lux::Nothing constructor
+				if(initialized != lux_sc_v) printError("Structures created with a lux::Nothing constructor must be initialized before their default initialization", true, -1);
+				return lux_sc_v;
 			}
-			uint64 checkPtrsc( ){	//Normal constructors
-				return lux_ptr_initialized;
+			uint64 lux_sc_C_f( ){	//Other constructors
+				return lux_sc_v;
 			}
 			#endif
 
@@ -143,30 +146,23 @@ namespace lux{
 
 
 
-
-			inline ptr( ) :								luxDebug2(initialized{ checkPtrsc( ) },)	cell{ nullptr },		address{ nullptr }					{ }
-			inline ptr(Nothing) :						luxDebug2(initialized{ checkPtrsn( ) },)	cell{ cell },			address{ address }					{ }
-			inline ptr(Cell vCell) :					luxDebug2(initialized{ checkPtrsc( ) },)	cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
-			inline ptr(Cell vCell, type* vAddress) :	luxDebug2(initialized{ checkPtrsc( ) },)	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
-			inline ptr(ptr<type>& pPtr) :				luxDebug2(initialized{ checkPtrsc( ) },)	cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
+			//TODO add check in other classes
+			inline ptr( ) :								lux_sc_C	cell{ nullptr },		address{ nullptr }					{ }
+			inline ptr(Nothing) :						lux_sc_N	cell{ cell },			address{ address }					{ }
+			inline ptr(Cell vCell) :					lux_sc_C	cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
+			inline ptr(Cell vCell, type* vAddress) :	lux_sc_C	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
+			inline ptr(ptr<type>& pPtr) :				lux_sc_C	cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
 			//TODO pointer is not checked bu used
 			template<class pType>
-			explicit inline ptr(ptr<pType>& pPtr) :		luxDebug2(initialized{ checkPtrsc( ) },)	cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ cell->owners++; }
+			explicit inline ptr(ptr<pType>& pPtr) :		lux_sc_C	cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ cell->owners++; }
 
-			//TODO check for self nullptrs in any struct with Nothing constructors
-			//TODO or just print an error idk
-			//inline ptr(ptr<type>& pPtr) :
-			//	cell{ (pPtr) ? pPtr.cell : nullptr }, address{ (pPtr) ? pPtr.address : nullptr } {
-			//	if(cell) cell->owners++;
-			//}
 
-			inline void operator=(Cell_t* const vCell){		luxDebug(checkPtrsf( )); if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	cell->owners++; }
-			inline void operator=(const ptr<type>& pPtr){	luxDebug(checkPtrsf( )); if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				cell->owners++; }
-				//Decrease the owner count if the pointer was bound to a cell
-				//else printError("cell is uninitialized");
+			inline void operator=(Cell_t* const vCell){		lux_sc_F	if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	cell->owners++; }
+			inline void operator=(const ptr<type>& pPtr){	lux_sc_F	if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				cell->owners++; }
 
 
 			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const {
+				lux_sc_F;
 				luxDebug(printWarning("Comparison operator should not be used with different pointer types"));
 				return (void*)address == (void*)pPtr.address;
 			}
@@ -178,35 +174,36 @@ namespace lux{
 
 
 			//TODO print warning if using a raw pointer //??
-			inline ptr<type> operator+(const uint64 v) const { return ptr<type>{cell, address + v}; }
-			inline ptr<type> operator+(const uint32 v) const { return ptr<type>{cell, address + v}; }
-			inline ptr<type> operator+(const int64 v) const { return ptr<type>{cell, address + v}; }
-			inline ptr<type> operator+(const int32 v) const { return ptr<type>{cell, address + v}; }
-			inline uint64 operator+(const type* vPtr) const { return (uint64)address + (uint64)vPtr; }
-			inline uint64 operator+(const ptr<type>& vPtr) const { return (uint64)address + (uint64)vPtr.address; }
-			inline ptr<type> operator-(const uint64 v) const { return ptr<type>{cell, address - v}; }
-			inline ptr<type> operator-(const uint32 v) const { return ptr<type>{cell, address - v}; }
-			inline ptr<type> operator-(const int64 v) const { return ptr<type>{cell, address - v}; }
-			inline ptr<type> operator-(const int32 v) const { return ptr<type>{cell, address - v}; }
-			inline uint64 operator-(const type* vPtr) const { return (uint64)address - (uint64)vPtr; }
-			inline uint64 operator-(const ptr<type>& vPtr) const { return (uint64)address - (uint64)vPtr.address; }
+			inline ptr<type>	operator+(const uint64		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
+			inline ptr<type>	operator+(const uint32		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
+			inline ptr<type>	operator+(const int64		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
+			inline ptr<type>	operator+(const int32		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
+			inline uint64		operator+(const type*		vPtr) const { lux_sc_F return (uint64)			address	+	(uint64)vPtr;			}
+			inline uint64		operator+(const ptr<type>&	vPtr) const { lux_sc_F return (uint64)			address	+	(uint64)vPtr.address;	}
+			inline ptr<type>	operator-(const uint64		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
+			inline ptr<type>	operator-(const uint32		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
+			inline ptr<type>	operator-(const int64		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
+			inline ptr<type>	operator-(const int32		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
+			inline uint64		operator-(const type*		vPtr) const { lux_sc_F return (uint64)			address	-	(uint64)vPtr;			}
+			inline uint64		operator-(const ptr<type>&	vPtr) const { lux_sc_F return (uint64)			address	-	(uint64)vPtr.address;	}
 
 
 			#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
-			inline void operator+=(uint64 v){ address += v; checkp; }
-			inline void operator+=(uint32 v){ address += v; checkp; }
-			inline void operator+=(int64 v){ address += v; checkp; }
-			inline void operator+=(int32 v){ address += v; checkp; }
-			inline void operator-=(uint64 v){ address -= v; checkm; }
-			inline void operator-=(uint32 v){ address -= v; checkm; }
-			inline void operator-=(int64 v){ address -= v; checkm; }
-			inline void operator-=(int32 v){ address -= v; checkm; }
-			inline void operator++( ){ address++; checkp;}
-			inline void operator--( ){ address--; checkm;}
+			inline void			operator+=(uint64	v	)	{ lux_sc_F address	+= v;	checkp; }
+			inline void			operator+=(uint32	v	)	{ lux_sc_F address	+= v;	checkp; }
+			inline void			operator+=(int64	v	)	{ lux_sc_F address	+= v;	checkp; }
+			inline void			operator+=(int32	v	)	{ lux_sc_F address	+= v;	checkp; }
+			inline void			operator-=(uint64	v	)	{ lux_sc_F address	-= v;	checkm; }
+			inline void			operator-=(uint32	v	)	{ lux_sc_F address	-= v;	checkm; }
+			inline void			operator-=(int64	v	)	{ lux_sc_F address	-= v;	checkm; }
+			inline void			operator-=(int32	v	)	{ lux_sc_F address	-= v;	checkm; }
+			inline void			operator++(				)	{ lux_sc_F address	++;		checkp; }
+			inline void			operator--(				)	{ lux_sc_F address	--;		checkm; }
 
 			//TODO improve warnings and output object address or nanme
-			inline type& operator*( ){
+			inline type& operator*( ) const {
+				lux_sc_F;
 				luxDebug(if(!cell) printWarning("Unable to access the memory of an uninitialized lux::ram::ptr. A pointer should always be initialized with the lux::ram::alloc function or using one of its constructors"));
 				luxDebug(if(!address) printWarning("Unable to access the memory of a null lux::ram::ptr"));
 				return *address;
@@ -218,14 +215,14 @@ namespace lux{
 			~ptr( ){ if(address) { if(!--cell->owners) cell->freeCell( ); } }		//Decrease the cell's owner count when the pointer is destroyed
 			inline operator type*( ) const;											//ram::ptr<type> to type* implicit conversion
 			inline operator bool( ) const;											//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) for if(ptr != nullptr) like normal pointers)
-			inline type& operator [](const uint64 i) const { return address[i]; }
-			inline type& operator [](const uint32 i) const { return address[i]; }
-			inline type& operator [](const int64 i) const { return address[i]; }
-			inline type& operator [](const int32 i) const { return address[i]; }
+			inline type& operator [](const uint64 i)	const { lux_sc_F return address[i]; }
+			inline type& operator [](const uint32 i)	const { lux_sc_F return address[i]; }
+			inline type& operator [](const int64 i)		const { lux_sc_F return address[i]; }
+			inline type& operator [](const int32 i)		const { lux_sc_F return address[i]; }
 		};
 
-		template<class type> ptr<type>::operator type*( ) const { return address; }
-		template<class type> ptr<type>::operator bool( ) const { return address; }
+		template<class type> ptr<type>::operator type*( )	const { lux_sc_F return address; }
+		template<class type> ptr<type>::operator bool( )	const { lux_sc_F return address; }
 	}
 }
 #endif
