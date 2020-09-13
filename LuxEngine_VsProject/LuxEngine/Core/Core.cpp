@@ -75,7 +75,8 @@ namespace lux::core{
 			ram::init( );
 			sys::__lp_init_system( );
 			//TODO uncomment
-			//thr::__lp_init_thread( );
+			thr::preInit( );
+			thr::__lp_init_thread( );
 			__lp_goniometric_functions_init( );
 
 			dvc::         preInit( );

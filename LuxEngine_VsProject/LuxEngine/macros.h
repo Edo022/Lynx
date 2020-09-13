@@ -3,6 +3,7 @@
 #include "LuxEngine_config.h"
 
 
+//TODO remove this header
 #undef max
 #undef min
 //Functions
@@ -31,12 +32,20 @@ template<class ta, class tb>						static inline constexpr void __vectorcall swap
 //Debug
 #define TryVk(f)			if ((f) != VK_SUCCESS)
 #define printLineInfo		{Failure printf(">> %s, line %d, thread %d", __func__, __LINE__, std::this_thread::get_id());}
-#define luxDebug(s)			s
-#define luxRelease(s)		;
+#define luxDebug(s)					s
+#define luxDebug2(s0, s1)			s0,s1
+#define luxDebug3(s0, s1, s2)		s0,s1,s2
+#define luxRelease(s)				;
+#define luxRelease2(s0, s1)			;
+#define luxRelease3(s0, s1, s2)		;
 
 #ifndef LUX_DEBUG
-#define luxDebug(s)			;
-#define luxRelease(s)		s
+#define luxDebug(s)					;
+#define luxDebug2(s0, s1)			;
+#define luxDebug3(s0, s1, s2)		;
+#define luxRelease(s)				s
+#define luxRelease2(s0, s1)			s0,s1
+#define luxRelease3(s0, s1, s2)		s0,s1,s2
 #endif
 
 

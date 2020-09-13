@@ -76,7 +76,7 @@ namespace lux::thr {
 
 
 
-
+	void preInit( );
 	void __lp_thr_loop(const uint32 vThrIndex);
 	void __lp_thr_mng( );
 	void __lp_init_thread( );

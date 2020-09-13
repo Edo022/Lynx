@@ -6,15 +6,25 @@
 
 namespace lux::thr {
 	PostInitializer(LUX_H_THREAD_POOL);
-	FenceDE stgAddFence;						//This fence controls the add and read/remove operations of the staging queue
-	HANDLE mngThr;								//The handle of the thread that controls the pool
-	Array<ThrPoolElm> threads(lux::DontInitialize( ));		//The threads of the thread pool with their states and functions
-	Map<ThrState, uint32> thrStates(lux::DontInitialize( )); //This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+	FenceDE stgAddFence(lux::DontInitialize());					//This fence controls the add and read/remove operations of the staging queue
+	HANDLE mngThr = mngThr;										//The handle of the thread that controls the pool
+	Array<ThrPoolElm> threads(lux::DontInitialize( ));			//The threads of the thread pool with their states and functions
+	Map<ThrState, uint32> thrStates(lux::DontInitialize( ));	//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+
+	//TODO create with nothing constructor
 	Queue<ExecFuncDataBase*> maxpq;				//List of maximum priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> highpq;			//List of high priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> lowpq;				//List of low priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> minpq;				//List of minimum priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> stg;				//Staging queue
+
+
+
+
+	void preInit( ){
+		threads.Array::Array(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+		thrStates.Map::Map(2048, 2048);
+	}
 
 
 
@@ -75,8 +85,6 @@ namespace lux::thr {
 
 
 	void __lp_init_thread( ) {
-		threads.Array::Array(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
-		thrStates.Map::Map(2048, 2048);
 		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);												//Resize the thread pool
 		for(uint32 i = 0; i < threads.size( ); ++i){													//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);											//Initialize it with the thread loop function
