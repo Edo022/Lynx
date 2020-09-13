@@ -12,7 +12,9 @@
 
 
 namespace lux::core::c{
+	#pragma optimize("", off);
 	PostInitializer(LUX_H_COMPUTE);
+	#pragma optimize("", on);
 	VkCommandPool			copyCommandPool = copyCommandPool;
 	Array<VkCommandBuffer>	copyCommandBuffers(DontInitialize( ));
 	VkCommandBuffer			clearCommandBuffer = clearCommandBuffer;

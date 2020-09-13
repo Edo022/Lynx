@@ -16,7 +16,9 @@
 
 
 namespace lux::core::g{
+	#pragma optimize("", off);
 	PostInitializer(LUX_H_GRAPHICS);
+	#pragma optimize("", on);
 	Array<VkSemaphore>		drawFrameImageAquiredSemaphore(DontInitialize( ));
 	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore(DontInitialize( ));
 	Array<VkSemaphore>		drawFrameCopySemaphore(DontInitialize( ));

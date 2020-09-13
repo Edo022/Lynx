@@ -5,7 +5,9 @@
 //TODO "so that whatever file is being initialized, the execution get caught by the post initializer and it inizializes everything the engine needs"
 
 namespace lux::thr {
+	#pragma optimize("", off);
 	PostInitializer(LUX_H_THREAD_POOL);
+	#pragma optimize("", on);
 	FenceDE stgAddFence(lux::DontInitialize());					//This fence controls the add and read/remove operations of the staging queue
 	HANDLE mngThr = mngThr;										//The handle of the thread that controls the pool
 	Array<ThrPoolElm> threads(lux::DontInitialize( ));			//The threads of the thread pool with their states and functions
@@ -84,7 +86,7 @@ namespace lux::thr {
 
 
 
-	void __lp_init_thread( ) {
+	void init( ) {
 		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);												//Resize the thread pool
 		for(uint32 i = 0; i < threads.size( ); ++i){													//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);											//Initialize it with the thread loop function

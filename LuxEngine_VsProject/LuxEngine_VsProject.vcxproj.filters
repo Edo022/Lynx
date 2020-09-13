@@ -144,6 +144,7 @@
     <ClCompile Include="LuxEngine\Core\ConsoleOutput.cpp">
       <Filter>LuxEngine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="LuxEngine\Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

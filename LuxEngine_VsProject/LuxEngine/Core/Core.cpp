@@ -37,8 +37,8 @@ namespace lux::core{
 	VkDebugUtilsMessengerEXT	debugMessenger;
 	VkSurfaceKHR				surface;
 
-	Array<const char*, uint32>	validationLayers = { "VK_LAYER_KHRONOS_validation" };
-	Array<const char*, uint32>	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	Array<const char*, uint32>	validationLayers(DontInitialize( ));
+	Array<const char*, uint32>	requiredDeviceExtensions(DontInitialize( ));
 
 
 
@@ -49,10 +49,22 @@ namespace lux::core{
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 
+	#pragma optimize("", off);
 	PreInitializer preInitializer;
+	#pragma optimize("", on);
+
+	//TODO merge post initializers in a single header
 
 
 
+
+
+
+
+	void preInit_( ){
+		validationLayers.Array::Array( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
+		requiredDeviceExtensions.Array::Array( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	}
 
 
 	//Deprecated function
@@ -64,30 +76,34 @@ namespace lux::core{
 
 
 
+	//TODO remove debug stuff from release config
+	//TODO https://docs.microsoft.com/en-us/cpp/build/how-to-debug-a-release-build?view=vs-2019
 
-	//READ HERE IF UR TRYING TO UNDERSTAND HOW THIS WORKS
+	//TODO check performance when LUX_DEBUG is defined
 
 
+	#pragma optimize("g", off);
 	void preInit( ){
 		static bool once = true;
 		if(once){
 			once = false;
+
 			ram::init( );
-			sys::__lp_init_system( );
-			//TODO uncomment
+			sys::init( );
 			thr::preInit( );
-			thr::__lp_init_thread( );
+			thr::init( );
 			__lp_goniometric_functions_init( );
 
-			dvc::         preInit( );
-			c::           preInit( );
+			core::			preInit_( ); //This
+			dvc::			preInit( );
+			c::				preInit( );
 			//c::buffers::    preInit( );
-			c::shaders::      preInit( );
-			g::           preInit( );
-			g::cmd::          preInit( );
-			g::out::          preInit( );
-			g::swapchain::    preInit( );
-			g::wnd::          preInit( );
+			c::shaders::		preInit( );
+			g::				preInit( );
+			g::cmd::			preInit( );
+			g::out::			preInit( );
+			g::swapchain::		preInit( );
+			g::wnd::			preInit( );
 		}
 	}
 
@@ -108,10 +124,11 @@ namespace lux::core{
 			while(!initialized) sleep(10);
 		}
 	}
+	#pragma optimize("g", on);
 
 
 
-
+	//TODO differently ordered variable initialization
 
 
 	void run(bool vUseVSync, float vFOV) {
@@ -200,5 +217,4 @@ namespace lux::core{
 		}
 	}
 }
-
 

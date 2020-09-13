@@ -17,7 +17,9 @@
 
 
 namespace lux::core::c::shaders{
+	#pragma optimize("", off);
 	PostInitializer(LUX_H_CSHADER);
+	#pragma optimize("", on);
 	String									shaderPath(DontInitialize( ));
 	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces(DontInitialize( ));
 	Array<LuxShaderLayout_t>				CShadersLayouts(DontInitialize( ));

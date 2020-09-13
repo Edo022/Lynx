@@ -11,7 +11,9 @@
 
 
 namespace lux::core::g::wnd{
+	#pragma optimize("", off);
 	PostInitializer(LUX_H_WINDOW);
+	#pragma optimize("", on);
 	GLFWwindow* window = window;
 	int32			width = width, height = height;
 	FenceDE			windowResizeFence(DontInitialize( ));

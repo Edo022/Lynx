@@ -35,14 +35,14 @@ template<class ta, class tb>						static inline constexpr void __vectorcall swap
 #define luxDebug(s)					s
 #define luxDebug2(s0, s1)			s0,s1
 #define luxDebug3(s0, s1, s2)		s0,s1,s2
-#define luxRelease(s)				;
-#define luxRelease2(s0, s1)			;
-#define luxRelease3(s0, s1, s2)		;
+#define luxRelease(s)
+#define luxRelease2(s0, s1)
+#define luxRelease3(s0, s1, s2)
 
 #ifndef LUX_DEBUG
-#define luxDebug(s)					;
-#define luxDebug2(s0, s1)			;
-#define luxDebug3(s0, s1, s2)		;
+#define luxDebug(s)
+#define luxDebug2(s0, s1)
+#define luxDebug3(s0, s1, s2)
 #define luxRelease(s)				s
 #define luxRelease2(s0, s1)			s0,s1
 #define luxRelease3(s0, s1, s2)		s0,s1,s2

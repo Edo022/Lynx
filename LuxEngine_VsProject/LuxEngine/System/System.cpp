@@ -4,9 +4,9 @@
 
 #include <new>
 
-lux::String lux::sys::dir::thisDir(lux::DontInitialize( ));	//Path to the current directory //Initialized in __lp_init_system function
+lux::String lux::sys::dir::thisDir(lux::DontInitialize( ));	//Path to the current directory //Initialized in init function
 //TODO move to lux::thr
-uint32		lux::sys::threadNum = 0;						//Number of threads in the main CPU
+uint32		lux::sys::threadNum = lux::sys::threadNum;						//Number of threads in the main CPU
 
 
 
@@ -43,7 +43,7 @@ namespace lux::sys{
 	}
 
 
-	void __lp_init_system( ) {
+	void init( ) {
 		static bool once = true;
 		if(once) {								//Execute only once
 			once = false;

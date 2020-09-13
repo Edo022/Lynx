@@ -79,7 +79,7 @@ namespace lux::thr {
 	void preInit( );
 	void __lp_thr_loop(const uint32 vThrIndex);
 	void __lp_thr_mng( );
-	void __lp_init_thread( );
+	void init( );
 
 	//Sends a function to an exec queue of the global thread pool
 	//When the function will be executed and which queue it will be assigned to depends on its priority

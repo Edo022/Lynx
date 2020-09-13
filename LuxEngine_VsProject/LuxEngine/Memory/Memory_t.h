@@ -99,9 +99,9 @@ namespace lux{
 		//You can also manually free it with the lux::mem:free function
 		//    Accessing the memory of a freed pointer is ub
 		template<class type> struct ptr{
+			lux_sc_generate_debug_structure_body;
 			Cell_t* cell;			//A pointer to a lux::ram::Cell_t object that contains the cell informations
 			type* address;			//The address the pointer points to
-			lux_sc_generate_structure_body;
 
 
 			//####################################################################################################################################################################//
