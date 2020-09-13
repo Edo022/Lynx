@@ -6,7 +6,7 @@
 #include "LuxEngine/Types/LuxBool.h"
 #include "vulkan/vulkan.h"
 //#include "LuxEngine/Core/ConsoleOutput.h"
-
+#define LUX_H_CORE
 
 
 

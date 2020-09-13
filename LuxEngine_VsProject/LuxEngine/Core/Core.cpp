@@ -26,6 +26,9 @@
 
 
 namespace lux::core{
+	#pragma optimize("", off);
+	PostInitializer(LUX_H_CORE);
+	#pragma optimize("", on);
 	double						FPS;
 	float						FOV;
 	bool						running;
@@ -49,17 +52,13 @@ namespace lux::core{
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 
-	#pragma optimize("", off);
-	PreInitializer preInitializer;
-	#pragma optimize("", on);
-
 	//TODO merge post initializers in a single header
 
 
 
 
 
-
+	//TODO fix functions
 
 	void preInit_( ){
 		validationLayers.Array::Array( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
@@ -89,21 +88,19 @@ namespace lux::core{
 			once = false;
 
 			ram::init( );
-			sys::init( );
-			thr::preInit( );
-			thr::init( );
-			__lp_goniometric_functions_init( );
-
-			core::			preInit_( ); //This
-			dvc::			preInit( );
-			c::				preInit( );
-			//c::buffers::    preInit( );
-			c::shaders::		preInit( );
-			g::				preInit( );
-			g::cmd::			preInit( );
-			g::out::			preInit( );
-			g::swapchain::		preInit( );
-			g::wnd::			preInit( );
+			;	__lp_goniometric_functions_init( );
+			;	sys::init( );
+			;		thr::preInit( ); thr::init( );
+			;			core::preInit_( ); //This
+			;			dvc::preInit( );
+			;			c::preInit( );
+			;			//c::buffers::    preInit( );
+			;				c::shaders::preInit( );
+			;			g::preInit( );
+			;				g::cmd::preInit( );
+			;				g::out::preInit( );
+			;				g::swapchain::preInit( );
+			;				g::wnd::preInit( );
 		}
 	}
 
