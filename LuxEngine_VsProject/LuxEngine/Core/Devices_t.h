@@ -48,7 +48,7 @@ struct graphicsDevice {
 
 
 struct computeDevice {
-	computeDevice(const lux::Nothing) : PD{ PD }, LD{ LD }, computeQueues{ lux::DontInitialize( ) } { }
+	computeDevice(const lux::Nothing) : PD{ PD }, LD{ LD }, computeQueues{ lux::NoInitLuxClass( ) } { }
 	computeDevice( ) : PD( ), LD{ nullptr }, computeQueues( ) { }
 
 	_VkPhysicalDevice PD;					//Main physical device for computing

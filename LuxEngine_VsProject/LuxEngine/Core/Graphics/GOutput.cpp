@@ -19,12 +19,12 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_GOUTPUT);
+#pragma optimize("", on);
 namespace lux::core::g::out{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_GOUTPUT);
-	#pragma optimize("", on);
-	VkRenderPass		renderPass = renderPass;
-	bool				renderFramebufferResized = renderFramebufferResized;
+	VkRenderPass		NoInitVar(renderPass);
+	bool				NoInitVar(renderFramebufferResized);
 
 
 

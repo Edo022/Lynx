@@ -10,12 +10,12 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_GCOMMANDS);
+#pragma optimize("", on);
 namespace lux::core::g::cmd{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_GCOMMANDS);
-	#pragma optimize("", on);
-	VkCommandPool			singleTimeCommandPool = singleTimeCommandPool;
-	Array<VkCommandBuffer>	singleTimeCommandBuffers(DontInitialize( ));
+	VkCommandPool			NoInitVar(singleTimeCommandPool);
+	Array<VkCommandBuffer>	singleTimeCommandBuffers(NoInitLuxClass( ));
 
 
 

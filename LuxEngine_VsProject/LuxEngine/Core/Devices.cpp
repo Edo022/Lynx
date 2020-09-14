@@ -16,13 +16,13 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_DEVICES);
+#pragma optimize("", on);
 namespace lux::core::dvc{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_DEVICES);
-	#pragma optimize("", on);
-	graphicsDevice			graphics(DontInitialize( ));	//Main graphics device
-	computeDevice			compute(DontInitialize( ));		//Main compute device
-	Array<computeDevice>	secondary(DontInitialize( ));	//Secondary compute devices
+	graphicsDevice			graphics(NoInitLuxClass( ));	//Main graphics device
+	computeDevice			compute(NoInitLuxClass( ));		//Main compute device
+	Array<computeDevice>	secondary(NoInitLuxClass( ));	//Secondary compute devices
 
 
 

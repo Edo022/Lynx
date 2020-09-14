@@ -15,18 +15,18 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_GRAPHICS);
+#pragma optimize("", on);
 namespace lux::core::g{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_GRAPHICS);
-	#pragma optimize("", on);
-	Array<VkSemaphore>		drawFrameImageAquiredSemaphore(DontInitialize( ));
-	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore(DontInitialize( ));
-	Array<VkSemaphore>		drawFrameCopySemaphore(DontInitialize( ));
-	Array<VkSemaphore>		drawFrameClearSemaphore(DontInitialize( ));
-	Array<VkFence>			drawFrameImageRenderedFence(DontInitialize( ));
-	int32					renderCurrentFrame = renderCurrentFrame;
-	DynArray<obj::Base*>	objUpdates2D(DontInitialize( ));
-	FenceDE					pendingObjectUpdatesFence(DontInitialize( ));
+	Array<VkSemaphore>		drawFrameImageAquiredSemaphore(NoInitLuxClass( ));
+	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore(NoInitLuxClass( ));
+	Array<VkSemaphore>		drawFrameCopySemaphore(NoInitLuxClass( ));
+	Array<VkSemaphore>		drawFrameClearSemaphore(NoInitLuxClass( ));
+	Array<VkFence>			drawFrameImageRenderedFence(NoInitLuxClass( ));
+	int32					NoInitVar(renderCurrentFrame);
+	DynArray<obj::Base*>	objUpdates2D(NoInitLuxClass( ));
+	FenceDE					pendingObjectUpdatesFence(NoInitLuxClass( ));
 
 
 

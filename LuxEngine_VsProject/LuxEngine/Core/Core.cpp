@@ -25,23 +25,23 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_CORE);
+#pragma optimize("", on);
 namespace lux::core{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_CORE);
-	#pragma optimize("", on);
-	double						FPS;
-	float						FOV;
-	bool						running;
-	bool						useVSync;
-	bool						initialized = false;
-	uint32						frames = 0;
+	double						NoInitVar(FPS);
+	float						NoInitVar(FOV);
+	bool						NoInitVar(running);
+	bool						NoInitVar(useVSync);
+	bool						NoInitVar(initialized);
+	uint32						NoInitVar(frames);
 
-	VkInstance					instance;
-	VkDebugUtilsMessengerEXT	debugMessenger;
-	VkSurfaceKHR				surface;
+	VkInstance					NoInitVar(instance);
+	VkDebugUtilsMessengerEXT	NoInitVar(debugMessenger);
+	VkSurfaceKHR				NoInitVar(surface);
 
-	Array<const char*, uint32>	validationLayers(DontInitialize( ));
-	Array<const char*, uint32>	requiredDeviceExtensions(DontInitialize( ));
+	Array<const char*, uint32>	validationLayers(NoInitLuxClass( ));
+	Array<const char*, uint32>	requiredDeviceExtensions(NoInitLuxClass( ));
 
 
 
@@ -61,6 +61,8 @@ namespace lux::core{
 	//TODO fix functions
 
 	void preInit_( ){
+		initialized = false;
+		frames = 0;
 		validationLayers.Array::Array( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
 		requiredDeviceExtensions.Array::Array( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}

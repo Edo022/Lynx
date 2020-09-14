@@ -4,14 +4,15 @@
 
 //TODO "so that whatever file is being initialized, the execution get caught by the post initializer and it inizializes everything the engine needs"
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_THREAD_POOL);
+#pragma optimize("", on);
 namespace lux::thr {
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_THREAD_POOL);
-	#pragma optimize("", on);
-	FenceDE stgAddFence(lux::DontInitialize());					//This fence controls the add and read/remove operations of the staging queue
-	HANDLE mngThr = mngThr;										//The handle of the thread that controls the pool
-	Array<ThrPoolElm> threads(lux::DontInitialize( ));			//The threads of the thread pool with their states and functions
-	Map<ThrState, uint32> thrStates(lux::DontInitialize( ));	//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+	//TODO check if the variables are initialized properly
+	FenceDE stgAddFence(lux::NoInitLuxClass());					//This fence controls the add and read/remove operations of the staging queue
+	HANDLE NoInitVar(mngThr);										//The handle of the thread that controls the pool
+	Array<ThrPoolElm> threads(lux::NoInitLuxClass( ));			//The threads of the thread pool with their states and functions
+	Map<ThrState, uint32> thrStates(lux::NoInitLuxClass( ));	//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 
 	//TODO create with nothing constructor
 	Queue<ExecFuncDataBase*> maxpq;				//List of maximum priority functions waiting to be executed

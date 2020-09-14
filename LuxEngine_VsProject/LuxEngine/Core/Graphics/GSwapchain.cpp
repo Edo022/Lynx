@@ -10,16 +10,16 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_GSWAPCHAIN);
+#pragma optimize("", on);
 namespace lux::core::g::swapchain{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_GSWAPCHAIN);
-	#pragma optimize("", on);
-	VkSwapchainKHR			swapchain = swapchain;
-	Array<VkImage>			swapchainImages(DontInitialize( ));
-	Array<VkImageView>		swapchainImageViews(DontInitialize( ));
-	VkFormat				swapchainImageFormat = swapchainImageFormat;
-	VkExtent2D				swapchainExtent = swapchainExtent;
-	Array<VkFramebuffer>	swapchainFramebuffers(DontInitialize( ));
+	VkSwapchainKHR			NoInitVar(swapchain);
+	Array<VkImage>			swapchainImages(NoInitLuxClass( ));
+	Array<VkImageView>		swapchainImageViews(NoInitLuxClass( ));
+	VkFormat				NoInitVar(swapchainImageFormat);
+	VkExtent2D				NoInitVar(swapchainExtent);
+	Array<VkFramebuffer>	swapchainFramebuffers(NoInitLuxClass( ));
 
 
 

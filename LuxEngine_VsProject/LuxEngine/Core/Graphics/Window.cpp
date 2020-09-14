@@ -10,17 +10,17 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_WINDOW);
+#pragma optimize("", on);
 namespace lux::core::g::wnd{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_WINDOW);
-	#pragma optimize("", on);
 	GLFWwindow* window = window;
-	int32			width = width, height = height;
-	FenceDE			windowResizeFence(DontInitialize( ));
-	rem::Cell		gpuCellWindowSize = gpuCellWindowSize;
-	rem::Cell		gpuCellWindowOutput = gpuCellWindowOutput;
-	rem::Cell		gpuCellWindowOutput_i = gpuCellWindowOutput_i;
-	rem::Cell		gpuCellWindowZBuffer = gpuCellWindowZBuffer;
+	int32			NoInitVar(width), NoInitVar(height);
+	FenceDE			windowResizeFence(NoInitLuxClass( ));
+	rem::Cell		NoInitVar(gpuCellWindowSize);
+	rem::Cell		NoInitVar(gpuCellWindowOutput);
+	rem::Cell		NoInitVar(gpuCellWindowOutput_i);
+	rem::Cell		NoInitVar(gpuCellWindowZBuffer);
 
 
 

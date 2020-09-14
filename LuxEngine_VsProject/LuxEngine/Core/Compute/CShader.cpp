@@ -16,20 +16,20 @@
 
 
 
+#pragma optimize("", off);
+PostInitializer(LUX_H_CSHADER);
+#pragma optimize("", on);
 namespace lux::core::c::shaders{
-	#pragma optimize("", off);
-	PostInitializer(LUX_H_CSHADER);
-	#pragma optimize("", on);
-	String									shaderPath(DontInitialize( ));
-	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces(DontInitialize( ));
-	Array<LuxShaderLayout_t>				CShadersLayouts(DontInitialize( ));
+	String									shaderPath(NoInitLuxClass( ));
+	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces(NoInitLuxClass( ));
+	Array<LuxShaderLayout_t>				CShadersLayouts(NoInitLuxClass( ));
 
-	VkCommandPool							commandPool{ commandPool };
-	Map<LuxShader_t, uint32>				CShaders(DontInitialize( ));
-	DynArray<VkCommandBuffer>				CShadersCBs(DontInitialize( ));
+	VkCommandPool							NoInitVar(commandPool);
+	Map<LuxShader_t, uint32>				CShaders(NoInitLuxClass( ));
+	DynArray<VkCommandBuffer>				CShadersCBs(NoInitLuxClass( ));
 
-	FenceDE									addShaderFence(DontInitialize( ));
-	LuxShader								clearShader{ clearShader };
+	FenceDE									addShaderFence(NoInitLuxClass( ));
+	LuxShader								NoInitVar(clearShader);
 
 
 
