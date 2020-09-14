@@ -7,7 +7,7 @@
 //TODO squared distance aa*bb
 //TODO add memory pool
 //TODO merge node to merge aligned objects in a unique cloud/image
-//TODO use specific lux memory mangamente functions in lux container types
+//TODO use specific lux memory management functions in lux container types
 //TODO use intrinsic functions with vector and matrices types
 //TODO limit vector types to float, double, int32, uint32
 
@@ -55,7 +55,6 @@ void hg(lux::Array<uint16>){
 
 
 
-//TODO fix high ram usage (3GB wtf)
 int main( ) {
 	//LuxInit(false);
 	////#define n multipleOf(4200,32)
