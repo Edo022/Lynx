@@ -199,8 +199,11 @@ namespace lux{
 			inline type& operator [](const int64 i)		const { lux_sc_F return address[i]; }
 			inline type& operator [](const int32 i)		const { lux_sc_F return address[i]; }
 
-			uint64 prior( ){return 0; }
-			uint64 after( ){ return 0;}
+			inline ptr<type> begin( ) const { lux_sc_F return ptr<type>(cell); }
+			inline ptr<type> end( ) const { lux_sc_F return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
+			inline uint64 __vectorcall size( )  const { lux_sc_F return cell->cellSize; }
+			inline uint64 __vectorcall prior( ) const { lux_sc_F return (uint64)address - (uint64)cell->address; }
+			inline uint64 __vectorcall after( ) const { lux_sc_F return ((uint64)cell->address + cell->cellSize) - (uint64)address;}
 		};
 
 		template<class type> ptr<type>::operator type*( )	const { lux_sc_F return address; }

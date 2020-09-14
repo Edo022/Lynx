@@ -64,25 +64,26 @@ namespace lux {
 
 
 		//Inherited from LuxContainer and operators
-		inline uint32 __vectorcall	size( )							const override { lux_sc_F; return (uint32)((str + str.cell->cellSize) - str);	}
-		inline bool __vectorcall	empty( )						const override { lux_sc_F; return str.cell->cellSize == 0;						}
-		inline char8* __vectorcall	begin( )						const override { lux_sc_F; return str.address;									}
-		inline char8* __vectorcall	end( )							const override { lux_sc_F; return str.address + str.cell->cellSize;				}
-		inline char8& __vectorcall	operator[](const uint32 vIndex) const			{ lux_sc_F; return str[vIndex];									}
+		inline uint32 __vectorcall	size( )							const override { lux_sc_F; return (uint32)str.size( );		}
+		inline bool __vectorcall	empty( )						const override { lux_sc_F; return str.size( ) == 0;			}
+		inline char8* __vectorcall	begin( )						const override { lux_sc_F; return str.begin( );				}
+		inline char8* __vectorcall	end( )							const override { lux_sc_F; return str.end( );				}
+		inline char8& __vectorcall	operator[](const uint32 vIndex) const		   { lux_sc_F; return str[vIndex];				}
 
 
 
 
 		//String concatenation
 		#pragma warning ( disable : 4996  )
-		inline void __vectorcall operator += (const String& pString)	{ lux_sc_F; concatenate(pString.str.address, pString.size( ));								}
-		inline void __vectorcall operator += (const char8* vString)		{ lux_sc_F; concatenate(vString, strlenl(vString) + 1);										}
-		inline void __vectorcall operator += (const uint64 vValue)		{ lux_sc_F; char b[20 + 1]; _ui64toa(vValue, b, 10);	operator += (b);					}
-		inline void __vectorcall operator += (const int64 vValue)		{ lux_sc_F; char b[20 + 1]; _i64toa(vValue, b, 10);		operator += (b);					}
-		inline void __vectorcall operator += (const uint32 vValue)		{ lux_sc_F; char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);					}
-		inline void __vectorcall operator += (const int32 vValue)		{ lux_sc_F; char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);					}
+		inline void __vectorcall operator += (const String& pString)	{ lux_sc_F; concatenate(pString.str.address, pString.size( ));				}
+		inline void __vectorcall operator += (const char8* vString)		{ lux_sc_F; concatenate(vString, strlenl(vString) + 1);						}
+		inline void __vectorcall operator += (const uint64 vValue)		{ lux_sc_F; char b[20 + 1]; _ui64toa(vValue, b, 10);	operator += (b);	}
+		inline void __vectorcall operator += (const int64 vValue)		{ lux_sc_F; char b[20 + 1]; _i64toa(vValue, b, 10);		operator += (b);	}
+		inline void __vectorcall operator += (const uint32 vValue)		{ lux_sc_F; char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
+		inline void __vectorcall operator += (const int32 vValue)		{ lux_sc_F; char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
+		inline void __vectorcall operator += (const char8 vChar)		{ lux_sc_F; ram::realloc(str, str.size( ) + 1); *str.end( ) = vChar;		}
 		//TODO automatize size
-		inline void __vectorcall operator += (const char8 vChar)		{ lux_sc_F; ram::realloc(str, str.cell->cellSize + 1); *(str + str.cell->cellSize) = vChar; }
+		//inline void __vectorcall operator += (const char8 vChar)		{ lux_sc_F; ram::realloc(str, str.cell->cellSize + 1); *(str + str.cell->cellSize) = vChar; }
 		#pragma warning ( default : 4996  )
 
 
