@@ -193,11 +193,14 @@ namespace lux{
 
 			~ptr( ){ if(address) { if(!--cell->owners) cell->freeCell( ); } }		//Decrease the cell's owner count when the pointer is destroyed
 			inline operator type*( ) const;											//ram::ptr<type> to type* implicit conversion
-			inline operator bool( ) const;											//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) for if(ptr != nullptr) like normal pointers)
+			inline operator bool( ) const;											//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
 			inline type& operator [](const uint64 i)	const { lux_sc_F return address[i]; }
 			inline type& operator [](const uint32 i)	const { lux_sc_F return address[i]; }
 			inline type& operator [](const int64 i)		const { lux_sc_F return address[i]; }
 			inline type& operator [](const int32 i)		const { lux_sc_F return address[i]; }
+
+			uint64 prior( ){return 0; }
+			uint64 after( ){ return 0;}
 		};
 
 		template<class type> ptr<type>::operator type*( )	const { lux_sc_F return address; }

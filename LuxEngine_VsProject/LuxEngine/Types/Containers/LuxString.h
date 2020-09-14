@@ -63,7 +63,7 @@ namespace lux {
 
 
 
-		//Inherted from LuxContainer and operators
+		//Inherited from LuxContainer and operators
 		inline uint32 __vectorcall	size( )							const override { lux_sc_F; return (uint32)((str + str.cell->cellSize) - str);	}
 		inline bool __vectorcall	empty( )						const override { lux_sc_F; return str.cell->cellSize == 0;						}
 		inline char8* __vectorcall	begin( )						const override { lux_sc_F; return str.address;									}
@@ -73,7 +73,6 @@ namespace lux {
 
 
 
-		//TODO add realloc for lux ptrs
 		//String concatenation
 		#pragma warning ( disable : 4996  )
 		inline void __vectorcall operator += (const String& pString)	{ lux_sc_F; concatenate(pString.str.address, pString.size( ));								}
@@ -85,7 +84,6 @@ namespace lux {
 		//TODO automatize size
 		inline void __vectorcall operator += (const char8 vChar)		{ lux_sc_F; ram::realloc(str, str.cell->cellSize + 1); *(str + str.cell->cellSize) = vChar; }
 		#pragma warning ( default : 4996  )
-
 
 
 		//TODO improve concatenation performance
@@ -101,6 +99,7 @@ namespace lux {
 
 
 
+		//Assignment
 		inline void __vectorcall operator = (const String& pString) {
 			lux_sc_F;
 			ram::realloc(str, pString.size( ), CellClass::AUTO);
@@ -118,7 +117,7 @@ namespace lux {
 
 
 
-		//Compare strings
+		//Comparison
 		inline bool __vectorcall operator == (const String& vString) const {
 			lux_sc_F;
 			return ((str.cell->cellSize == vString.size( )) && (memcmp(vString.str, str.address, str.cell->cellSize) == 0));
