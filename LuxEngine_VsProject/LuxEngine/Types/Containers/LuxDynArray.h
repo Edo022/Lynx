@@ -13,13 +13,13 @@ namespace lux {
 	template<class type, class iter = uint32> struct DynArray : public Array<type, iter> {
 		lux_sc_generate_debug_structure_body;
 		iter chunkSize;
-		inline DynArray(const Nothing) : lux_sc_N { }
+		inline DynArray(const Nothing) luxDebug(: lux_sc_N) { }
 
 		//Creates an array with no elements
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : lux_sc_C, chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
+		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : luxDebug2(lux_sc_C,) chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
 
 
 

@@ -6,8 +6,8 @@
 
 #define lux_sc_v 0x94FFD489B48994FF
 #define lux_sc_F luxDebug(lux_sc_F_f( ));							// void foo( ) { lux_sc_F ... }
-#define lux_sc_N luxDebug(lux_sc_initialized{ lux_sc_N_f( ) })		// s( lux::Nothing ) : lux_sc_N, { ... }
-#define lux_sc_C luxDebug(lux_sc_initialized{ lux_sc_C_f( ) })		// s( ) : lux_sc_C, { ... }
+#define lux_sc_C luxDebug(lux_sc_initialized{ lux_sc_C_f( ) })		// s( ) : luxDebug2(lux_sc_C,) { ... }
+#define lux_sc_N luxDebug(lux_sc_initialized{ lux_sc_N_f( ) })		// s( lux::Nothing ) luxDebug(: lux_sc_N) { ... }
 
 
 #define lux_sc_generate_debug_structure_body								\

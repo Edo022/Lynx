@@ -41,7 +41,7 @@ namespace lux {
 
 
 
-		inline Map(const Nothing) : lux_sc_N, _chunkNum{ _chunkNum },
+		inline Map(const Nothing) : luxDebug2(lux_sc_N,) _chunkNum{ _chunkNum },
 			size_{ size_ }, freeSize_{ freeSize_ }, data_{ data_ }, tracker_{ tracker_ },
 			head_{ head_ }, tail_{ tail_ }, _chunkSize{ _chunkSize }, _maxSize{ _maxSize } {
 		}
@@ -55,7 +55,7 @@ namespace lux {
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
-			lux_sc_C, _chunkSize(vChunkSize), _maxSize(vMaxSize), head_((iter)-1), tail_((iter)-1), _chunkNum(0), size_(0), freeSize_(0) {
+			luxDebug2(lux_sc_C,) _chunkSize(vChunkSize), _maxSize(vMaxSize), head_((iter)-1), tail_((iter)-1), _chunkNum(0), size_(0), freeSize_(0) {
 			luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
 			data_ = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
@@ -67,7 +67,7 @@ namespace lux {
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   in: a pointer to the container object
 		template<class elmType>
-		inline Map(const ContainerBase<elmType, iter>* in) : lux_sc_C {
+		inline Map(const ContainerBase<elmType, iter>* in) luxDebug(: lux_sc_C) {
 			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
 		}
 
