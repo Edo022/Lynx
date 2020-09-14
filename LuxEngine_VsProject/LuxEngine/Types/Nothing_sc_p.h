@@ -5,7 +5,7 @@
 
 
 #define lux_sc_v 0x94FFD489B48994FF
-#define lux_sc_F luxDebug(lux_sc_F_f( ));							// void foo( ) { lux_sc_F ... }
+#define lux_sc_F luxDebug(lux_sc_F_f( ))							// void foo( ) { lux_sc_F ... }
 //#define lux_sc_N luxDebug(lux_sc_initialized{ lux_sc_N_f( ) })		// s( lux::Nothing ) luxDebug(: lux_sc_N) { ... }
 #define lux_sc_generate_nothing_constructor(structName)				inline structName(const lux::Nothing) : luxDebug2(lux_sc_initialized{ lux_sc_N_f( ) },)
 

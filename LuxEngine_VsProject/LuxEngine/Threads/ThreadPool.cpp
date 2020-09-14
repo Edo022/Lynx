@@ -88,14 +88,14 @@ namespace lux::thr {
 
 
 	void init( ) {
-		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);												//Resize the thread pool
-		for(uint32 i = 0; i < threads.size( ); ++i){													//For each thread
-			threads[i].thr = new std::thread(__lp_thr_loop, i);											//Initialize it with the thread loop function
-			thrStates.add(ThrState::FREE);																//Add an element to the states map
+		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);				//Resize the thread pool
+		for(uint32 i = 0; i < threads.size( ); ++i){					//For each thread
+			threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
+			thrStates.add(ThrState::FREE);								//Add an element to the states Map. A Map is used to improve the performance by avoiding to search for a free thread
 			//Suspended in function
 		}
-		for(uint32 i = 0; i < threads.size( ); ++i){ thrStates.remove(i); }							//Remove all the elements of the states map (the map will remain the same size but it will have n free items)
-		std::thread mngThrv(__lp_thr_mng); 															//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
+		for(uint32 i = 0; i < threads.size( ); ++i){ thrStates.remove(i); }		//Remove all the elements of the states map (the map will remain the same size but it will have n free items)
+		std::thread mngThrv(__lp_thr_mng); 										//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
 		DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);
 		mngThrv.detach( );
 	}

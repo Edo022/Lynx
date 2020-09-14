@@ -162,32 +162,32 @@ namespace lux{
 
 
 			//TODO print warning if using a raw pointer //??
-			inline ptr<type>	operator+(const uint64		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
-			inline ptr<type>	operator+(const uint32		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
-			inline ptr<type>	operator+(const int64		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
-			inline ptr<type>	operator+(const int32		v	) const { lux_sc_F return ptr<type>{cell,	address	+	v};						}
-			inline uint64		operator+(const type*		vPtr) const { lux_sc_F return (uint64)			address	+	(uint64)vPtr;			}
-			inline uint64		operator+(const ptr<type>&	vPtr) const { lux_sc_F return (uint64)			address	+	(uint64)vPtr.address;	}
-			inline ptr<type>	operator-(const uint64		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
-			inline ptr<type>	operator-(const uint32		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
-			inline ptr<type>	operator-(const int64		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
-			inline ptr<type>	operator-(const int32		v	) const { lux_sc_F return ptr<type>{cell,	address	-	v};						}
-			inline uint64		operator-(const type*		vPtr) const { lux_sc_F return (uint64)			address	-	(uint64)vPtr;			}
-			inline uint64		operator-(const ptr<type>&	vPtr) const { lux_sc_F return (uint64)			address	-	(uint64)vPtr.address;	}
+			inline ptr<type>	operator+(const uint64		v	) const { lux_sc_F; return ptr<type>{cell,	address	+	v};						}
+			inline ptr<type>	operator+(const uint32		v	) const { lux_sc_F; return ptr<type>{cell,	address	+	v};						}
+			inline ptr<type>	operator+(const int64		v	) const { lux_sc_F; return ptr<type>{cell,	address	+	v};						}
+			inline ptr<type>	operator+(const int32		v	) const { lux_sc_F; return ptr<type>{cell,	address	+	v};						}
+			inline uint64		operator+(const type*		vPtr) const { lux_sc_F; return (uint64)			address	+	(uint64)vPtr;			}
+			inline uint64		operator+(const ptr<type>&	vPtr) const { lux_sc_F; return (uint64)			address	+	(uint64)vPtr.address;	}
+			inline ptr<type>	operator-(const uint64		v	) const { lux_sc_F; return ptr<type>{cell,	address	-	v};						}
+			inline ptr<type>	operator-(const uint32		v	) const { lux_sc_F; return ptr<type>{cell,	address	-	v};						}
+			inline ptr<type>	operator-(const int64		v	) const { lux_sc_F; return ptr<type>{cell,	address	-	v};						}
+			inline ptr<type>	operator-(const int32		v	) const { lux_sc_F; return ptr<type>{cell,	address	-	v};						}
+			inline uint64		operator-(const type*		vPtr) const { lux_sc_F; return (uint64)			address	-	(uint64)vPtr;			}
+			inline uint64		operator-(const ptr<type>&	vPtr) const { lux_sc_F; return (uint64)			address	-	(uint64)vPtr.address;	}
 
 
 			#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
-			inline void			operator+=(uint64	v	)	{ lux_sc_F address	+= v;	checkp; }
-			inline void			operator+=(uint32	v	)	{ lux_sc_F address	+= v;	checkp; }
-			inline void			operator+=(int64	v	)	{ lux_sc_F address	+= v;	checkp; }
-			inline void			operator+=(int32	v	)	{ lux_sc_F address	+= v;	checkp; }
-			inline void			operator-=(uint64	v	)	{ lux_sc_F address	-= v;	checkm; }
-			inline void			operator-=(uint32	v	)	{ lux_sc_F address	-= v;	checkm; }
-			inline void			operator-=(int64	v	)	{ lux_sc_F address	-= v;	checkm; }
-			inline void			operator-=(int32	v	)	{ lux_sc_F address	-= v;	checkm; }
-			inline void			operator++(				)	{ lux_sc_F address	++;		checkp; }
-			inline void			operator--(				)	{ lux_sc_F address	--;		checkm; }
+			inline void			operator+=(uint64	v	)	{ lux_sc_F; address	+= v;	checkp; }
+			inline void			operator+=(uint32	v	)	{ lux_sc_F; address	+= v;	checkp; }
+			inline void			operator+=(int64	v	)	{ lux_sc_F; address	+= v;	checkp; }
+			inline void			operator+=(int32	v	)	{ lux_sc_F; address	+= v;	checkp; }
+			inline void			operator-=(uint64	v	)	{ lux_sc_F; address	-= v;	checkm; }
+			inline void			operator-=(uint32	v	)	{ lux_sc_F; address	-= v;	checkm; }
+			inline void			operator-=(int64	v	)	{ lux_sc_F; address	-= v;	checkm; }
+			inline void			operator-=(int32	v	)	{ lux_sc_F; address	-= v;	checkm; }
+			inline void			operator++(				)	{ lux_sc_F; address	++;		checkp; }
+			inline void			operator--(				)	{ lux_sc_F; address	--;		checkm; }
 
 			//TODO improve warnings and output object address or nanme
 			inline type& operator*( ) const {
@@ -203,20 +203,20 @@ namespace lux{
 			~ptr( ){ if(address) { if(!--cell->owners) cell->freeCell( ); } }		//Decrease the cell's owner count when the pointer is destroyed
 			inline operator type*( ) const;											//ram::ptr<type> to type* implicit conversion
 			inline operator bool( ) const;											//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
-			inline type& operator [](const uint64 i)	const { lux_sc_F return address[i]; }
-			inline type& operator [](const uint32 i)	const { lux_sc_F return address[i]; }
-			inline type& operator [](const int64 i)		const { lux_sc_F return address[i]; }
-			inline type& operator [](const int32 i)		const { lux_sc_F return address[i]; }
+			inline type& operator [](const uint64 i)	const { lux_sc_F; return address[i]; }
+			inline type& operator [](const uint32 i)	const { lux_sc_F; return address[i]; }
+			inline type& operator [](const int64 i)		const { lux_sc_F; return address[i]; }
+			inline type& operator [](const int32 i)		const { lux_sc_F; return address[i]; }
 
-			inline ptr<type> begin( ) const { lux_sc_F return ptr<type>(cell); }
-			inline ptr<type> end( ) const { lux_sc_F return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
-			inline uint64 __vectorcall size( )  const { lux_sc_F return cell->cellSize; }
-			inline uint64 __vectorcall prior( ) const { lux_sc_F return (uint64)address - (uint64)cell->address; }
-			inline uint64 __vectorcall after( ) const { lux_sc_F return ((uint64)cell->address + cell->cellSize) - (uint64)address;}
+			inline ptr<type> begin( ) const { lux_sc_F; return ptr<type>(cell); }
+			inline ptr<type> end( ) const { lux_sc_F; return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
+			inline uint64 __vectorcall size( )   const { lux_sc_F; return cell->cellSize; }
+			inline uint64 __vectorcall prior( )  const { lux_sc_F; return (uint64)address - (uint64)cell->address; }
+			inline uint64 __vectorcall latter( ) const { lux_sc_F; return ((uint64)cell->address + cell->cellSize) - (uint64)address;}
 		};
 
-		template<class type> ptr<type>::operator type*( )	const { lux_sc_F return address; }
-		template<class type> ptr<type>::operator bool( )	const { lux_sc_F return address; }
+		template<class type> ptr<type>::operator type*( )	const { lux_sc_F; return address; }
+		template<class type> ptr<type>::operator bool( )	const { lux_sc_F; return address; }
 	}
 }
 #endif
