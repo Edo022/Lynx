@@ -5,9 +5,7 @@
 //stessa cosa ma comprendendo i commenti
 //^(/)|(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 //TODO squared distance aa*bb
-//TODO add memory pool
 //TODO merge node to merge aligned objects in a unique cloud/image
-//TODO use specific lux memory management functions in lux container types
 //TODO use intrinsic functions with vector and matrices types
 //TODO limit vector types to float, double, int32, uint32
 

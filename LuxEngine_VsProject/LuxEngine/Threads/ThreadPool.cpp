@@ -8,18 +8,17 @@
 PostInitializer(LUX_H_THREAD_POOL);
 #pragma optimize("", on)
 namespace lux::thr {
-	//TODO check if the variables are initialized properly
 	FenceDE					NoInitLux(stgAddFence);		//This fence controls the add and read/remove operations of the staging queue
 	HANDLE					NoInitVar(mngThr);			//The handle of the thread that controls the pool
 	Array<ThrPoolElm>		NoInitLux(threads);			//The threads of the thread pool with their states and functions
 	Map<ThrState, uint32>	NoInitLux(thrStates);		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 
-	//TODO create with nothing constructor
-	Queue<ExecFuncDataBase*> maxpq;				//List of maximum priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> highpq;			//List of high priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> lowpq;				//List of low priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> minpq;				//List of minimum priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> stg;				//Staging queue
+
+	Queue<ExecFuncDataBase*> NoInitLux(maxpq);			//List of maximum priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> NoInitLux(highpq);			//List of high priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> NoInitLux(lowpq);			//List of low priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> NoInitLux(minpq);			//List of minimum priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> NoInitLux(stg);			//Staging queue
 
 
 
@@ -27,6 +26,12 @@ namespace lux::thr {
 	void preInit( ){
 		threads.Array::Array(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.Map::Map(2048, 2048);
+
+		maxpq.Queue::Queue( );
+		highpq.Queue::Queue( );
+		lowpq.Queue::Queue( );
+		minpq.Queue::Queue( );
+		stg.Queue::Queue( );
 	}
 
 
@@ -88,7 +93,6 @@ namespace lux::thr {
 
 
 	void init( ) {
-		//threads.resize(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);				//Resize the thread pool
 		for(uint32 i = 0; i < threads.size( ); ++i){					//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
 			thrStates.add(ThrState::FREE);								//Add an element to the states Map. A Map is used to improve the performance by avoiding to search for a free thread

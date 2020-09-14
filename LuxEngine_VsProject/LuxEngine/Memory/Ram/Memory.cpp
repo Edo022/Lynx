@@ -99,7 +99,6 @@ namespace lux::ram{
 
 
 
-	//TODO check new cell class
 	void realloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
 		if(!pCell->address) [[unlikely]] {
 			pCell = alloc(vSize, vCellClass);
@@ -128,4 +127,3 @@ namespace lux::ram{
 	}
 }
 
-//TODO automatic string subclass if memory pool is not available

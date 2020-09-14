@@ -80,7 +80,6 @@ namespace lux::core{
 	//TODO remove debug stuff from release config
 	//TODO https://docs.microsoft.com/en-us/cpp/build/how-to-debug-a-release-build?view=vs-2019
 
-	//TODO check performance when LUX_DEBUG is defined
 
 
 	#pragma optimize("g", off)
@@ -127,7 +126,6 @@ namespace lux::core{
 
 
 
-	//TODO differently ordered variable initialization
 
 
 	void run(bool vUseVSync, float vFOV) {

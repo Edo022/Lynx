@@ -48,7 +48,7 @@ namespace lux::rem{
 		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
 		luxDebug(if(vAllocType >= AllocType::NUM || (int32)vAllocType < 0) param_error(vAllocType, "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'"));
 
-		//TODO fix comments
+
 		//Set cell class if CellClass::AUTO was used
 		if(vCellClass == CellClass::AUTO) {
 			vCellClass =
@@ -77,7 +77,7 @@ namespace lux::rem{
 				}
 			}
 			//TODO fix
-			//TODO copy RAM cells
+			//TODO like RAM cells
 		}{																					//If there are no free buffers or the cell is a custom size cell
 			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
 			MemBuffer& buffer = subBuffers[subBuffers.add(MemBuffer{ 0, 0, (uint32)vCellClass ? Map_NMP_S<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map_NMP_S<Cell_t, uint32>(1, 1) })];
