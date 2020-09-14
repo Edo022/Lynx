@@ -16,9 +16,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_DEVICES);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::dvc{
 	graphicsDevice			NoInitLux(graphics);	//Main graphics device
 	computeDevice			NoInitLux(compute);		//Main compute device

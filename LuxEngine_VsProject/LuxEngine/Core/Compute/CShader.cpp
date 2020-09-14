@@ -16,9 +16,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_CSHADER);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::c::shaders{
 	String									NoInitLux(shaderPath);
 	Map<lux::obj::RenderSpace2D*, uint32>	NoInitLux(CRenderSpaces);

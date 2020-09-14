@@ -15,9 +15,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_GRAPHICS);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::g{
 	Array<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
 	Array<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);

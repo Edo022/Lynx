@@ -11,9 +11,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_COMPUTE);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::c{
 	VkCommandPool			NoInitVar(copyCommandPool);
 	Array<VkCommandBuffer>	NoInitLux(copyCommandBuffers);

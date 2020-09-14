@@ -10,9 +10,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_GCOMMANDS);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::g::cmd{
 	VkCommandPool			NoInitVar(singleTimeCommandPool);
 	Array<VkCommandBuffer>	NoInitLux(singleTimeCommandBuffers);

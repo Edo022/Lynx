@@ -102,7 +102,7 @@ namespace lux::core{
 
 
 	//Initialization
-	#pragma optimize("", off);
+	#pragma optimize("", off)
 	void preInit_( );
 	void preInit( );
 	void init(bool useVSync);
@@ -113,7 +113,7 @@ namespace lux::core{
 	#define PostInitializer(fileName)										\
 		lux::core::PreInitializer luxGeneratedPreInitializer_##fileName;	\
 		lux::core::PostInitializer luxGeneratedPostInitializer_##fileName
-	#pragma optimize("", on);
+	#pragma optimize("", on)
 
 	//Main
 	void run(bool vUseVSync, float vFOV);

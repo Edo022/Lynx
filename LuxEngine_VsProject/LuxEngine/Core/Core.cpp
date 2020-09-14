@@ -25,9 +25,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_CORE);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core{
 	double						NoInitVar(FPS);
 	float						NoInitVar(FOV);
@@ -83,7 +83,7 @@ namespace lux::core{
 	//TODO check performance when LUX_DEBUG is defined
 
 
-	#pragma optimize("g", off);
+	#pragma optimize("g", off)
 	void preInit( ){
 		static bool once = true;
 		if(once){
@@ -123,7 +123,7 @@ namespace lux::core{
 			while(!initialized) sleep(10);
 		}
 	}
-	#pragma optimize("g", on);
+	#pragma optimize("g", on)
 
 
 

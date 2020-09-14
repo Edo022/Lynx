@@ -4,9 +4,9 @@
 
 //TODO "so that whatever file is being initialized, the execution get caught by the post initializer and it inizializes everything the engine needs"
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_THREAD_POOL);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::thr {
 	//TODO check if the variables are initialized properly
 	FenceDE					NoInitLux(stgAddFence);		//This fence controls the add and read/remove operations of the staging queue

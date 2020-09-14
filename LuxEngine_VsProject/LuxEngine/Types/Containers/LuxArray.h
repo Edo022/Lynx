@@ -3,7 +3,7 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
 #include "LuxEngine/Types/Nothing.h"
-
+#include "LuxEngine/Types/Nothing_sc_p.h"
 
 
 
@@ -13,6 +13,7 @@
 namespace lux {
 	template <class type, class iter = uint32> class Array : public ContainerBase<type, iter> {
 	public:
+		lux_sc_generate_debug_structure_body;
 		type* __lp_data{ nullptr };	//Elements of the array
 		iter __lp_size{ 0 };		//Size of the array
 		#define __lp_lux_static_array_init(_size) __lp_size = _size; __lp_data = (type*)malloc(sizeof(type) * __lp_size)
@@ -35,26 +36,26 @@ namespace lux {
 
 		//Creates an array with no elements
 		//inline Array(const Nothing) { *this = *this; }
-		inline Array(const Nothing) : __lp_data{ __lp_data }, __lp_size{ __lp_size } { }
+		inline Array(const Nothing) : lux_sc_N, __lp_data{ __lp_data }, __lp_size{ __lp_size } { }
 		inline Array( ) {
 			__lp_size = 0;
 			//__lp_data = (type*)malloc(sizeof(type));
 			__lp_data = nullptr;
 		}
 		//Sets the size of the array and allocates it, without inizializing the elements
-		inline Array(const iter vInitSize) {
+		inline Array(const iter vInitSize) : lux_sc_C {
 			luxDebug(checkSize(vInitSize));
 			__lp_lux_static_array_init((vInitSize >= 0) ? vInitSize : 0);
 		}
 
 		//TODO use lux EverythingArray
 		//Initializes the array using a list of elements, automatically converting it to the right type
-		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
+		template<class inType> inline Array(const std::initializer_list<inType>& pElements) : lux_sc_C {
 			__lp_lux_static_array_init((iter)pElements.size( ));
 			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) __lp_data[i] = (inType) * (pElements.begin( ) + i);
 		}
 		//Initializes the array using a list of elements of the same type
-		inline Array(const std::initializer_list<type>& pElements) {
+		inline Array(const std::initializer_list<type>& pElements) : lux_sc_C {
 			__lp_lux_static_array_init(scast<iter>(pElements.size( )));
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
 		}
@@ -62,7 +63,7 @@ namespace lux {
 
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   pArray: a pointer to the container object
-		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) {
+		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) : lux_sc_C {
 			__lp_lux_static_array_init(pArray.end( ) - pArray.begin( ));
 			for(uint64 i = 0; i < pArray.end( ) - pArray.begin( ); ++i) __lp_data[i] = (elmType) * (pArray.begin( ) + i);
 		}
@@ -76,12 +77,12 @@ namespace lux {
 
 
 
-		inline iter __vectorcall size( ) const override { return __lp_size; }
-		inline bool __vectorcall empty( ) const override { return __lp_size == 0; }
+		inline iter __vectorcall size( ) const override { lux_sc_F; return __lp_size; }
+		inline bool __vectorcall empty( ) const override { lux_sc_F; return __lp_size == 0; }
 
 		inline type& __vectorcall operator[](const iter vIndex) const { return __lp_data[vIndex]; }
-		inline type* __vectorcall begin( ) const override { return __lp_data; }
-		inline type* __vectorcall end( ) const override { return &__lp_data[__lp_size - 1]; }
+		inline type* __vectorcall begin( ) const override { lux_sc_F; return __lp_data; }
+		inline type* __vectorcall end( ) const override { lux_sc_F; return &__lp_data[__lp_size - 1]; }
 
 
 
@@ -95,6 +96,7 @@ namespace lux {
 		//*   vNewSize: the new size of the array
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize) {
+			lux_sc_F;
 			luxDebug(checkSize(vNewSize));
 			if(vNewSize < 0) return -1;
 			else if(vNewSize == 0) {
@@ -115,6 +117,7 @@ namespace lux {
 		//*   vInitValue: the value to use to initialize the new elements
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
+			lux_sc_F;
 			luxDebug(checkSize(vNewSize));
 			//TODO not secure
 			if(vNewSize < 0) return -1;

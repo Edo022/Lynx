@@ -10,9 +10,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_GSWAPCHAIN);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::g::swapchain{
 	VkSwapchainKHR			NoInitVar(swapchain);
 	Array<VkImage>			NoInitLux(swapchainImages);

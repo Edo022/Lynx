@@ -4,18 +4,22 @@
 #include "LuxEngine/macros.h"
 #include "LuxEngine/Math/Algebra/Algebra.h"
 #include "LuxEngine/Types/Nothing.h"
+#include "LuxEngine/Types/Nothing_sc_p.h"
+
+
 
 
 namespace lux {
 	template<class type, class iter = uint32> struct DynArray : public Array<type, iter> {
+		lux_sc_generate_debug_structure_body;
 		iter chunkSize;
-		inline DynArray(const Nothing){ }
+		inline DynArray(const Nothing) : lux_sc_N { }
 
 		//Creates an array with no elements
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
+		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : lux_sc_C, chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
 
 
 
@@ -23,6 +27,7 @@ namespace lux {
 		//*   vNewSize | new size of the array
 		//*   Returns  | the new size
 		inline iter __vectorcall resize(const iter vNewSize) {
+			lux_sc_F;
 			Array<type, iter>::resize((vNewSize == 0) ? 0 : multipleOf(vNewSize, chunkSize));
 			return this->__lp_size = vNewSize;
 		}
@@ -33,6 +38,7 @@ namespace lux {
 		//*   vInitValue | the value to use to initialize the new elements
 		//*   Returns    | the new size
 		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
+			lux_sc_F;
 			//TODO not secure
 			Array<type, iter>::resize((vNewSize == 0) ? 0 : multipleOf(vNewSize, chunkSize), vInitValue);
 			return this->__lp_size = vNewSize;
@@ -43,19 +49,20 @@ namespace lux {
 		//*   vElement | the element to add
 		//*   Returns  | the index of the element in the array
 		inline iter __vectorcall add(const type& vElement) {
+			lux_sc_F;
 			this->resize(this->__lp_size + 1);
 			this->__lp_data[this->__lp_size - 1] = vElement;
 			return this->__lp_size - 1;
 		}
 
 		//Returns a reference to the last element of the array (easy way to array[array.size() - 1])
-		inline type& __vectorcall last( ) { return (*this)[this->__lp_size - 1]; }
+		inline type& __vectorcall last( ) { lux_sc_F; return (*this)[this->__lp_size - 1]; }
 		//Returns the size of the array
-		inline iter __vectorcall size( ) const override { return this->__lp_size; }
+		inline iter __vectorcall size( ) const override { lux_sc_F; return this->__lp_size; }
 		//Returns true if the array is empty, false if not
-		inline bool __vectorcall empty( ) const override { return this->__lp_size == 0; }
+		inline bool __vectorcall empty( ) const override { lux_sc_F; return this->__lp_size == 0; }
 
-		inline type* __vectorcall begin( ) const override { return &this->__lp_data[0]; }
-		inline type* __vectorcall end( ) const override { return &this->__lp_data[this->__lp_size - 1]; }
+		inline type* __vectorcall begin( ) const override { lux_sc_F; return &this->__lp_data[0]; }
+		inline type* __vectorcall end( ) const override { lux_sc_F; return &this->__lp_data[this->__lp_size - 1]; }
 	};
 }

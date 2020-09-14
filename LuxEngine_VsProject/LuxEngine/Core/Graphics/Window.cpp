@@ -10,9 +10,9 @@
 
 
 
-#pragma optimize("", off);
+#pragma optimize("", off)
 PostInitializer(LUX_H_WINDOW);
-#pragma optimize("", on);
+#pragma optimize("", on)
 namespace lux::core::g::wnd{
 	GLFWwindow* window = window;
 	int32			NoInitVar(width), NoInitVar(height);
