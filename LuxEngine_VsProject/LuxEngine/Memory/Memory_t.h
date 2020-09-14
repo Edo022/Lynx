@@ -208,10 +208,15 @@ namespace lux{
 			inline type& operator [](const int64 i)		const { lux_sc_F; return address[i]; }
 			inline type& operator [](const int32 i)		const { lux_sc_F; return address[i]; }
 
+			//Returns the first address of the allocated memory block
 			inline ptr<type> begin( ) const { lux_sc_F; return ptr<type>(cell); }
+			//Returns the last address of the allocated memory block
 			inline ptr<type> end( ) const { lux_sc_F; return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
+			//Returns the total size of the allocated memory
 			inline uint64 __vectorcall size( )   const { lux_sc_F; return cell->cellSize; }
+			//Returns the number of allocated bytes before the pointer
 			inline uint64 __vectorcall prior( )  const { lux_sc_F; return (uint64)address - (uint64)cell->address; }
+			//Returns the number of allocated bytes after the pointer
 			inline uint64 __vectorcall latter( ) const { lux_sc_F; return ((uint64)cell->address + cell->cellSize) - (uint64)address;}
 		};
 
