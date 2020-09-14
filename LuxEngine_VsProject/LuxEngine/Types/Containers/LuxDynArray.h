@@ -8,18 +8,18 @@
 
 
 
-
+//TODO dont inherit from array
 namespace lux {
 	template<class type, class iter = uint32> struct DynArray : public Array<type, iter> {
 		lux_sc_generate_debug_structure_body;
 		iter chunkSize;
-		inline DynArray(const Nothing) luxDebug(: lux_sc_N) { }
+		lux_sc_generate_nothing_constructor(DynArray) chunkSize{ chunkSize } { this->Array<type, iter>::Array( ); }
 
 		//Creates an array with no elements
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : luxDebug2(lux_sc_C,) chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
+		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : chunkSize(vChunkSize) { this->Array<type, iter>::Array( ); }
 
 
 

@@ -7,3 +7,4 @@
 #define luxDebug(s)
 #define lux_sc_generate_structure_body luxDebug(uint64 initialized = lux_sc_v); luxDebug(void lux_sc_F_f( ) const { if(initialized != lux_sc_v) printError("Structures must be initialized before using their pointers or non assignment/init/constructor functions", true, -1); }) luxDebug(uint64 lux_sc_N_f( ){ if(initialized != lux_sc_v) printError("Structures created with a lux::Nothing constructor must be initialized before their default initialization", true, -1); return lux_sc_v; }) luxDebug(uint64 lux_sc_C_f( ){ return lux_sc_v; })
 #define lux_sc_C luxDebug2(lux_sc_initialized{ lux_sc_C_f( ) },)
+#define lux_sc_generate_nothing_constructor(structName) inline##structName(const lux::Nothing) : luxDebug2(lux_sc_initialized{ lux_sc_N_f( ) },)

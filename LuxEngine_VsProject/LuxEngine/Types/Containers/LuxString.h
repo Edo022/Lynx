@@ -40,21 +40,21 @@ namespace lux {
 
 	public:
 		//Constructors
-		inline String(const Nothing) : luxDebug2(lux_sc_N,) str{ str } { }
+		lux_sc_generate_nothing_constructor(String) str{ str } { }
 		inline String( ){
 			str = ram::alloc(1, CellClass::AUTO);
 			str[0] = '\0';
 		}
-		inline String(const String& pString) luxDebug(: lux_sc_C) {
+		inline String(const String& pString) {
 			str = ram::alloc(pString.size( ), CellClass::AUTO);
 			ram::cpy(pString.str, str, pString.size( ));
 		}
-		inline String(const char8* vString) luxDebug(: lux_sc_C) {
+		inline String(const char8* vString) {
 			int32 len = strlenl(vString) + 1;
 			str = ram::alloc(len, CellClass::AUTO);
 			ram::cpy(vString, str, len);
 		}
-		inline String(const wchar8* vString) luxDebug(: lux_sc_C) {
+		inline String(const wchar8* vString) {
 			int32 len = strlenl(vString) + 1;
 			str = ram::alloc(len, CellClass::AUTO);
 			ram::cpy(vString, str, len);

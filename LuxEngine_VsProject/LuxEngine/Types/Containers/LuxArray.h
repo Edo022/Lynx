@@ -36,26 +36,26 @@ namespace lux {
 
 		//Creates an array with no elements
 		//inline Array(const Nothing) { *this = *this; }
-		inline Array(const Nothing) : luxDebug2(lux_sc_N,) __lp_data{ __lp_data }, __lp_size{ __lp_size } { }
+		lux_sc_generate_nothing_constructor(Array) __lp_data{ __lp_data }, __lp_size{ __lp_size } { }
 		inline Array( ) {
 			__lp_size = 0;
 			//__lp_data = (type*)malloc(sizeof(type));
 			__lp_data = nullptr;
 		}
 		//Sets the size of the array and allocates it, without inizializing the elements
-		inline Array(const iter vInitSize) luxDebug(: lux_sc_C) {
+		inline Array(const iter vInitSize) {
 			luxDebug(checkSize(vInitSize));
 			__lp_lux_static_array_init((vInitSize >= 0) ? vInitSize : 0);
 		}
 
 		//TODO use lux EverythingArray
 		//Initializes the array using a list of elements, automatically converting it to the right type
-		template<class inType> inline Array(const std::initializer_list<inType>& pElements) luxDebug(: lux_sc_C) {
+		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
 			__lp_lux_static_array_init((iter)pElements.size( ));
 			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) __lp_data[i] = (inType) * (pElements.begin( ) + i);
 		}
 		//Initializes the array using a list of elements of the same type
-		inline Array(const std::initializer_list<type>& pElements) luxDebug(: lux_sc_C) {
+		inline Array(const std::initializer_list<type>& pElements) {
 			__lp_lux_static_array_init(scast<iter>(pElements.size( )));
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
 		}
@@ -63,7 +63,7 @@ namespace lux {
 
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   pArray: a pointer to the container object
-		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) luxDebug(: lux_sc_C) {
+		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) {
 			__lp_lux_static_array_init(pArray.end( ) - pArray.begin( ));
 			for(uint64 i = 0; i < pArray.end( ) - pArray.begin( ); ++i) __lp_data[i] = (elmType) * (pArray.begin( ) + i);
 		}

@@ -126,14 +126,14 @@ namespace lux{
 
 
 			//TODO add check in other classes
-			inline ptr( ) :								luxDebug2(lux_sc_C,)	cell{ nullptr },		address{ nullptr }					{ }
-			inline ptr(Nothing) :						luxDebug2(lux_sc_N,)	cell{ cell },			address{ address }					{ }
-			inline ptr(Cell vCell) :					luxDebug2(lux_sc_C,)	cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
-			inline ptr(Cell vCell, type* vAddress) :	luxDebug2(lux_sc_C,)	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
-			inline ptr(ptr<type>& pPtr) :				luxDebug2(lux_sc_C,)	cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
+			inline ptr( ) :								cell{ nullptr },		address{ nullptr }					{ }
+			lux_sc_generate_nothing_constructor(ptr)	cell{ cell },			address{ address }					{ }
+			inline ptr(Cell vCell) :					cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
+			inline ptr(Cell vCell, type* vAddress) :	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
+			inline ptr(ptr<type>& pPtr) :				cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
 			//TODO pointer is not checked bu used
 			template<class pType>
-			explicit inline ptr(ptr<pType>& pPtr) :		luxDebug2(lux_sc_C,)	cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ cell->owners++; }
+			explicit inline ptr(ptr<pType>& pPtr) :		cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ cell->owners++; }
 
 
 			inline void operator=(Cell_t* const vCell){		lux_sc_F	if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	cell->owners++; }
