@@ -136,8 +136,17 @@ namespace lux{
 			explicit inline ptr(ptr<pType>& pPtr) :		cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ cell->owners++; }
 
 
-			inline void operator=(Cell_t* const vCell){		lux_sc_F	if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	cell->owners++; }
-			inline void operator=(const ptr<type>& pPtr){	lux_sc_F	if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				cell->owners++; }
+			inline void operator=(Cell_t* const vCell){		/*lux_sc_F*/
+							//TODO ASSIGNMENT OPERATOR BREAKS EVEERYTHING IF THE STRUCT IS NOT INITIALIZED
+
+			if(cell){
+				cell->owners--;
+			}
+			cell = vCell;
+			address = (type*)vCell->address;
+			cell->owners++;
+			}
+			inline void operator=(const ptr<type>& pPtr){	/*lux_sc_F*/ if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				cell->owners++; }
 
 
 			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const {

@@ -17,8 +17,8 @@ namespace lux {
 	template<class type, class iter = uint64> class Map {
 	public:
 		lux_sc_generate_debug_structure_body;
-		ram::ptr<type*> data_;		//Elements
-		ram::ptr<iter*> tracker_;	//State of each element
+		ram::ptr<ram::ptr<type>> data_;		//Elements
+		ram::ptr<ram::ptr<iter>> tracker_;	//State of each element
 
 		iter head_;			//First free element
 		iter tail_;			//Last free element
@@ -60,6 +60,14 @@ namespace lux {
 			luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
 			data_ = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
+			//memset(data_.address, 0, data_.size( ));
+			//memset(tracker_.address, 0, tracker_.size( ));
+			//data_[0] = ram::ptr<type>{ };
+			//TODO ALWAYS MANUALLY CALL THE CONSTRUCTOR OF A PTR FROM AN ALLOCATED BLOCK MEMORY
+			//TODO ASSIGNMENT OPERATOR BREAKS EVEERYTHING IF THE STRUCT IS NOT INITIALIZED
+			//data_[0].ptr<type>::ptr( );
+
+
 			//data_ = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			//tracker_ = (iter**)malloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
 		}
@@ -86,8 +94,13 @@ namespace lux {
 		iter __vectorcall append(const type& vData) {
 			lux_sc_F;
 			if(size_ + 1 > _chunkNum * _chunkSize) {								//If the chunk is full
-				data_[_chunkNum] = (type*)malloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
-				tracker_[_chunkNum] = (iter*)(malloc(sizeof(iter*) * _chunkSize));		//Allocate a new tracker chunk
+				//data_[_chunkNum] = (type*)malloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
+				//tracker_[_chunkNum] = (iter*)(malloc(sizeof(iter*) * _chunkSize));		//Allocate a new tracker chunk
+				//TODO ???
+				data_[_chunkNum].ptr<type>::ptr( );
+				tracker_[_chunkNum].ptr<iter>::ptr( );
+				data_[_chunkNum] = ram::alloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
+				tracker_[_chunkNum] = ram::alloc(sizeof(iter*) * _chunkSize);		//Allocate a new tracker chunk
 				_chunkNum++;															//Update the number of chunks
 			}
 			__lp_Data(size_) = vData;												//Assign the data to the new element
@@ -151,6 +164,9 @@ namespace lux {
 			for(iter i = 0; i < _chunkNum; ++i) free(tracker_[i]);	free(tracker_);		//Free tracker
 			data_    = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data
 			tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));			//Reallocate tracker
+			//memset(data_.address, 0, data_.size( ));
+			//memset(tracker_.address, 0, tracker_.size( ));
+
 			//data_    = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data
 			//tracker_ = (iter**)malloc(sizeof(iter*) * (_maxSize / _chunkSize));			//Reallocate tracker
 			_chunkNum = size_ = freeSize_ = 0;											//Reset number of chunk, elements and free elements

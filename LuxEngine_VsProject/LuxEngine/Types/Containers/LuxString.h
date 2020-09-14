@@ -82,9 +82,8 @@ namespace lux {
 		inline void __vectorcall operator += (const uint32 vValue)		{ lux_sc_F; char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
 		inline void __vectorcall operator += (const int32 vValue)		{ lux_sc_F; char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
 		inline void __vectorcall operator += (const char8 vChar)		{ lux_sc_F; ram::realloc(str, str.size( ) + 1); *str.end( ) = vChar;		}
-		//TODO automatize size
-		//inline void __vectorcall operator += (const char8 vChar)		{ lux_sc_F; ram::realloc(str, str.cell->cellSize + 1); *(str + str.cell->cellSize) = vChar; }
 		#pragma warning ( default : 4996  )
+
 
 
 		//TODO improve concatenation performance
@@ -121,11 +120,11 @@ namespace lux {
 		//Comparison
 		inline bool __vectorcall operator == (const String& vString) const {
 			lux_sc_F;
-			return ((str.cell->cellSize == vString.size( )) && (memcmp(vString.str, str.address, str.cell->cellSize) == 0));
+			return ((str.size( ) == vString.size( )) && (memcmp(vString.str, str.address, str.size( )) == 0));
 		}
 		inline bool __vectorcall operator == (const char* vString) const {
 			lux_sc_F;
-			return ((str.cell->cellSize == strlenl(vString) + 1) && (memcmp(vString, str.address, str.cell->cellSize) == 0));
+			return ((str.size( ) == strlenl(vString) + 1) && (memcmp(vString, str.address, str.size( )) == 0));
 		}
 	};
 }
