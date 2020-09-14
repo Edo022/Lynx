@@ -16,7 +16,7 @@ PostInitializer(LUX_H_WINDOW);
 namespace lux::core::g::wnd{
 	GLFWwindow* window = window;
 	int32			NoInitVar(width), NoInitVar(height);
-	FenceDE			windowResizeFence(NoInitLuxClass( ));
+	FenceDE			NoInitLux(windowResizeFence);
 	rem::Cell		NoInitVar(gpuCellWindowSize);
 	rem::Cell		NoInitVar(gpuCellWindowOutput);
 	rem::Cell		NoInitVar(gpuCellWindowOutput_i);

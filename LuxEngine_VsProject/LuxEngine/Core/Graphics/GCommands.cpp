@@ -15,7 +15,7 @@ PostInitializer(LUX_H_GCOMMANDS);
 #pragma optimize("", on);
 namespace lux::core::g::cmd{
 	VkCommandPool			NoInitVar(singleTimeCommandPool);
-	Array<VkCommandBuffer>	singleTimeCommandBuffers(NoInitLuxClass( ));
+	Array<VkCommandBuffer>	NoInitLux(singleTimeCommandBuffers);
 
 
 

@@ -40,8 +40,8 @@ namespace lux::core{
 	VkDebugUtilsMessengerEXT	NoInitVar(debugMessenger);
 	VkSurfaceKHR				NoInitVar(surface);
 
-	Array<const char*, uint32>	validationLayers(NoInitLuxClass( ));
-	Array<const char*, uint32>	requiredDeviceExtensions(NoInitLuxClass( ));
+	Array<const char*, uint32>	NoInitLux(validationLayers);
+	Array<const char*, uint32>	NoInitLux(requiredDeviceExtensions);
 
 
 

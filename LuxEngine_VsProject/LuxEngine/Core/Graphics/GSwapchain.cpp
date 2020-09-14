@@ -15,11 +15,11 @@ PostInitializer(LUX_H_GSWAPCHAIN);
 #pragma optimize("", on);
 namespace lux::core::g::swapchain{
 	VkSwapchainKHR			NoInitVar(swapchain);
-	Array<VkImage>			swapchainImages(NoInitLuxClass( ));
-	Array<VkImageView>		swapchainImageViews(NoInitLuxClass( ));
+	Array<VkImage>			NoInitLux(swapchainImages);
+	Array<VkImageView>		NoInitLux(swapchainImageViews);
 	VkFormat				NoInitVar(swapchainImageFormat);
 	VkExtent2D				NoInitVar(swapchainExtent);
-	Array<VkFramebuffer>	swapchainFramebuffers(NoInitLuxClass( ));
+	Array<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
 
 
 

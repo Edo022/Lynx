@@ -20,9 +20,9 @@
 PostInitializer(LUX_H_DEVICES);
 #pragma optimize("", on);
 namespace lux::core::dvc{
-	graphicsDevice			graphics(NoInitLuxClass( ));	//Main graphics device
-	computeDevice			compute(NoInitLuxClass( ));		//Main compute device
-	Array<computeDevice>	secondary(NoInitLuxClass( ));	//Secondary compute devices
+	graphicsDevice			NoInitLux(graphics);	//Main graphics device
+	computeDevice			NoInitLux(compute);		//Main compute device
+	Array<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
 
 
 

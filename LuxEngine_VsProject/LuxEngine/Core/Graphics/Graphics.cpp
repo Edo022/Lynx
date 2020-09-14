@@ -19,14 +19,14 @@
 PostInitializer(LUX_H_GRAPHICS);
 #pragma optimize("", on);
 namespace lux::core::g{
-	Array<VkSemaphore>		drawFrameImageAquiredSemaphore(NoInitLuxClass( ));
-	Array<VkSemaphore>		drawFrameObjectsRenderedSemaphore(NoInitLuxClass( ));
-	Array<VkSemaphore>		drawFrameCopySemaphore(NoInitLuxClass( ));
-	Array<VkSemaphore>		drawFrameClearSemaphore(NoInitLuxClass( ));
-	Array<VkFence>			drawFrameImageRenderedFence(NoInitLuxClass( ));
+	Array<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
+	Array<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);
+	Array<VkSemaphore>		NoInitLux(drawFrameCopySemaphore);
+	Array<VkSemaphore>		NoInitLux(drawFrameClearSemaphore);
+	Array<VkFence>			NoInitLux(drawFrameImageRenderedFence);
 	int32					NoInitVar(renderCurrentFrame);
-	DynArray<obj::Base*>	objUpdates2D(NoInitLuxClass( ));
-	FenceDE					pendingObjectUpdatesFence(NoInitLuxClass( ));
+	DynArray<obj::Base*>	NoInitLux(objUpdates2D);
+	FenceDE					NoInitLux(pendingObjectUpdatesFence);
 
 
 
