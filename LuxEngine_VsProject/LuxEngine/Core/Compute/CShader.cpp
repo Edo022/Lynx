@@ -415,7 +415,7 @@ namespace lux::core::c::shaders{
 			.commandBufferCount{ 1 },										//Allocate one command buffer
 		};
 		pCShader->commandBuffers.resize(1);
-		TryVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.__lp_data)) printError("Unable to allocate command buffers", false, -2);
+		TryVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.begin( ))) printError("Unable to allocate command buffers", false, -2);
 
 
 

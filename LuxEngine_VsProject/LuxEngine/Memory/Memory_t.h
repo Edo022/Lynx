@@ -208,9 +208,9 @@ namespace lux{
 			inline type& operator [](const int64 i)		const { lux_sc_F; return address[i]; }
 			inline type& operator [](const int32 i)		const { lux_sc_F; return address[i]; }
 
-			//Returns the first address of the allocated memory block
+			//Returns the first address of the allocated memory block as a lux::ptr
 			inline ptr<type> begin( ) const { lux_sc_F; return ptr<type>(cell); }
-			//Returns the last address of the allocated memory block
+			//Returns the last address of the allocated memory block as a lux::ptr
 			inline ptr<type> end( ) const { lux_sc_F; return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
 			//Returns the total size of the allocated memory
 			inline uint64 __vectorcall size( )   const { lux_sc_F; return cell->cellSize; }

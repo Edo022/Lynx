@@ -247,7 +247,8 @@ namespace lux::core::g{
 				);
 			}
 			core::g::cmd::endSingleTimeCommands(cb);
-			objUpdates2D.resize(0);
+			//objUpdates2D.resize(0);
+			objUpdates2D.clear( );
 			pendingObjectUpdatesFence.endFirst( );
 		}
 	}

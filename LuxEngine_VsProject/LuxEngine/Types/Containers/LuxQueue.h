@@ -30,8 +30,8 @@ namespace lux {
 
 
 		inline type& operator [](const iter vIndex) { lux_sc_F; return (vIndex < _back.size( )) ? _back[_back.size( ) - 1 - vIndex] : _front[vIndex - (_back.size( ) - 1)]; }
-		inline type& front( )	{ lux_sc_F; return _front.last( ); }
-		inline type& back( )	{ lux_sc_F; return _back.last( ); }
+		inline type& front( )	{ lux_sc_F; return *_front.end( ); }
+		inline type& back( )	{ lux_sc_F; return *_back.end( ); }
 		inline iter size( )		{ lux_sc_F; return _front.size( ) + _back.size( ); }
 		inline bool empty( )	{ lux_sc_F; return size( ) == 0; }
 	};
