@@ -16,10 +16,9 @@ namespace lux {
 		lux_sc_generate_debug_structure_body;
 		type* data_;	//Elements of the array
 		iter size_;		//Size of the array
-		//type* data_{ nullptr };	//Elements of the array
-		//iter size_{ 0 };		//Size of the array
 
-		//Debug only
+
+
 		luxDebug(void checkSize(const iter vInitSize){
 			if(vInitSize == scast<iter>(-1) && vInitSize > 0){
 				Failure printf("Error:");
@@ -41,7 +40,6 @@ namespace lux {
 		//Sets the size of the array and allocates it, without inizializing the elements
 		inline Array(const iter vInitSize) : size_{ vInitSize }, data_{ (type*)malloc(sizeof(type) * vInitSize) } {
 			luxDebug(checkSize(vInitSize));
-			//__lp_lux_static_array_init((vInitSize >= 0) ? vInitSize : 0);
 		}
 
 		//TODO remove
@@ -64,7 +62,6 @@ namespace lux {
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   pArray: a pointer to the container object
 		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) : size_{ pArray.size( ) }, data_{ (type*)malloc(sizeof(type) * pArray.size( )) } {
-			//__lp_lux_static_array_init(pArray.end( ) - pArray.begin( ));
 			for(uint64 i = 0; i < pArray.end( ) - pArray.begin( ); ++i) data_[i] = (elmType) * (pArray.begin( ) + i);
 		}
 		#undef __lp_lux_static_array_init
@@ -72,22 +69,6 @@ namespace lux {
 
 
 
-		// Get, set, begin, end ---------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-		inline iter __vectorcall size( )	const override	{ lux_sc_F; return size_; }
-		inline bool __vectorcall empty( )	const override	{ lux_sc_F; return !size_; }
-
-		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
-		inline type* __vectorcall begin( )	const override	{ lux_sc_F; return data_; }
-		inline type* __vectorcall end( )	const override	{ lux_sc_F; return &data_[size_ - 1]; }
-
-
-
-
-		// Resize -----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -98,14 +79,6 @@ namespace lux {
 		inline iter __vectorcall resize(const iter vNewSize) {
 			lux_sc_F;
 			luxDebug(checkSize(vNewSize));
-			//if(vNewSize < 0) return -1;
-			//else if(vNewSize == 0) {
-			//	free(data_);//TODO dont free with global memory pool
-			//	data_ = nullptr;
-			//	//__lp_data = (type*)realloc(__lp_data, sizeof(type));
-			//	return size_ = 0;
-			//}
-
 			type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
 			if(__lp_data_r != nullptr)data_ = __lp_data_r;
 			return size_ = vNewSize;
@@ -113,11 +86,11 @@ namespace lux {
 
 
 		void clear( ){
-				free(data_);//TODO dont free with global memory pool
-				data_ = nullptr;
-				//__lp_data = (type*)realloc(__lp_data, sizeof(type));
-				return size_ = 0;
+			free(data_);//TODO dont free with global memory pool
+			data_ = nullptr;
+			return size_ = 0;
 		}
+
 
 		//TODO remove
 		//Resizes the array and initializes the new elements with a value
@@ -136,6 +109,19 @@ namespace lux {
 			if(vNewSize > oldSize) for(iter i = oldSize; i < vNewSize; ++i) data_[i] = vInitValue;
 			return vNewSize;
 		}
+
+
+
+
+
+
+
+
+		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
+		inline iter __vectorcall size( )	const override	{ lux_sc_F; return size_; }
+		inline bool __vectorcall empty( )	const override	{ lux_sc_F; return !size_; }
+		inline type* __vectorcall begin( )	const override	{ lux_sc_F; return data_; }
+		inline type* __vectorcall end( )	const override	{ lux_sc_F; return &data_[size_ - 1]; }
 	};
 }
 #undef __lp_lux_static_array_init
