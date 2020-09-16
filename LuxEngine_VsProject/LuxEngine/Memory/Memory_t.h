@@ -82,9 +82,7 @@ namespace lux{
 			uint32 cellIndex;				//Index of the cell in the buffer
 			void freeCell();
 		};
-		//TODO remove alias
-		typedef Cell_t* Cell;
-		static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
+		static inline uint32 getCellOffset(const Cell_t* pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 
 
 
@@ -127,9 +125,10 @@ namespace lux{
 
 			//TODO add check in other classes
 			inline ptr( ) :								cell{ nullptr },		address{ nullptr }					{ }
+			inline ptr( type* vAddress ) :				cell{ nullptr },		address{ vAddress }					{ }
 			lux_sc_generate_nothing_constructor(ptr)	cell{ cell },			address{ address }					{ }
-			inline ptr(Cell vCell) :					cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
-			inline ptr(Cell vCell, type* vAddress) :	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
+			inline ptr(Cell_t* vCell) :					cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
+			inline ptr(Cell_t* vCell, type* vAddress) :	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
 			inline ptr(ptr<type>& pPtr) :				cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
 			//TODO pointer is not checked bu used
 			template<class pType>
@@ -146,7 +145,19 @@ namespace lux{
 			address = (type*)vCell->address;
 			cell->owners++;
 			}
-			inline void operator=(const ptr<type>& pPtr){	/*lux_sc_F*/ if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				cell->owners++; }
+			inline void operator=(const ptr<type>& pPtr){
+				//printf("AAA");
+				//TODO SELF-MEMSET TO 0 IN OPERATOR=
+				//TODO DONT CHECK IF SELF MEMSETTED
+				//lux_sc_F;
+				//printf("bBB");
+				if(cell) {
+					cell->owners--;
+				}
+				cell = pPtr.cell;
+				address = pPtr.address;
+				cell->owners++;
+			}
 
 
 			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const {

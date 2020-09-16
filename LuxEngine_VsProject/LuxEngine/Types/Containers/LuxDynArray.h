@@ -24,20 +24,47 @@
 //TODO Array<int> reassign(foo, ptr);
 //TODO or maybe it's a bad idea. multiple threads or objects modifying the same data... idk
 
+//TODO add .move function in containers instead of .reassign
+//TODO .moved arrays becomes invalid
+
+//TODO add contructor of string from lux containers of chars
+
+
+
+//IMPORTANT
+//CELLS CANNOT BE UNALLOCATED
+//assigning nullptr will only set the address to nullptr
+//the cell itself always contains at least 1 byte
+
+//This is to avoit the need to check for nullptr everywhere
+
+
+
 
 namespace lux {
+	//TODO move nullptr 1 initialization to memory
+	//TODO manage reallocation with chunks larger than the maximum cell size
 	template<class type, class iter = uint32> struct DynArray : public ContainerBase<type, iter> {
 		lux_sc_generate_debug_structure_body;
-		type* data_;	//Elements of the array
+		ram::ptr<type> data_;	//Elements of the array
+		//type* data_;	//Elements of the array
 		iter size_;		//Size of the array
 
-		iter chunkSize;
-		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ }, size_{ size_ }, chunkSize{ chunkSize } { }
+		//iter chunkSize;
+		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ }, size_{ size_ } { }
 		//Creates an array with no elements
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray(const iter vChunkSize = fit(sizeof(type), 500000)) : data_{ nullptr }, size_{ 0 }, chunkSize{ vChunkSize }  { }
+		inline DynArray( ) : data_{ ram::alloc(1) }, size_{ 0 } { }
+
+		//TODO check if the itersator can handle all the elements
+		//TODO sizeof(cIter) > sizeof(iter)
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::alloc(pContainer.size( )) }, size_{ pContainer.size( ) }{
+			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
+			//Not copied correctly
+		}
+		//TODO add .bytes function to containers
 
 
 		//Resizes the array without initializing the new elements
@@ -46,8 +73,9 @@ namespace lux {
 		//TODO totally useless. Just don't return
 		inline iter __vectorcall resize(const iter vNewSize) {
 			lux_sc_F;
-			type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
-			if(__lp_data_r != nullptr)data_ = __lp_data_r;
+			//type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
+			//if(__lp_data_r != nullptr)data_ = __lp_data_r;
+			ram::realloc(data_, vNewSize);
 			return size_ = vNewSize;
 
 		}
@@ -55,7 +83,6 @@ namespace lux {
 		void clear( ){
 			free(data_);//TODO dont free with global memory pool
 			data_ = nullptr;
-			//__lp_data = (type*)realloc(__lp_data, sizeof(type));
 			size_ = 0;
 		}
 
@@ -71,6 +98,7 @@ namespace lux {
 
 		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
 		inline iter __vectorcall size( )	const override { lux_sc_F; return size_; }
+		inline uint64 __vectorcall bytes( )	const override { lux_sc_F; return size_ * sizeof(type); }
 		inline bool __vectorcall empty( )	const override { lux_sc_F; return !size_; }
 		inline type* __vectorcall begin( )	const override { lux_sc_F; return &data_[0]; }
 		inline type* __vectorcall end( )	const override { lux_sc_F; return &data_[size_ - 1]; }

@@ -16,7 +16,7 @@ namespace lux {
 		lux::DynArray<type, iter> _front, _back;
 
 		lux_sc_generate_nothing_constructor(Queue) _front(getConstNothing( )), _back(getConstNothing( )) { }
-		inline Queue( ) : _front(0xFF), _back(0xFF) { }
+		inline Queue( ) : _front( ), _back( ) { }
 
 
 		//Adds an element at the back of the queue

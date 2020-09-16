@@ -12,6 +12,9 @@ struct QueueFamilyIndices {
 	uint32 presentFamily = (uint32)-1;
 	lux::DynArray<uint32> computeFamilies;
 
+	QueueFamilyIndices( ) :graphicsFamily{ (uint32)-1 }, presentFamily{ (uint32)-1 }, computeFamilies( ) { }
+	QueueFamilyIndices(const QueueFamilyIndices& e) :graphicsFamily{ e.graphicsFamily }, presentFamily{ e.presentFamily }, computeFamilies{ e.computeFamilies } { }
+
 	inline bool isGraphicsComplete( ) { return (graphicsFamily != -1 && presentFamily != -1); }
 };
 

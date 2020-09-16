@@ -65,6 +65,7 @@ namespace lux {
 
 		//Inherited from LuxContainer and operators
 		inline uint32 __vectorcall	size( )							const override { lux_sc_F; return (uint32)str.size( );		}
+		inline uint64 __vectorcall bytes( )							const override { lux_sc_F; return str.size( ) /* *sizeof(char8)*/; }
 		inline bool __vectorcall	empty( )						const override { lux_sc_F; return str.size( ) == 0;			}
 		inline char8* __vectorcall	begin( )						const override { lux_sc_F; return str.begin( );				}
 		inline char8* __vectorcall	end( )							const override { lux_sc_F; return str.end( );				}

@@ -54,6 +54,7 @@ namespace lux::core::g::wnd{
 
 		//Extensions
 		DynArray<const char*> extensions;
+		//TODO manage nullptr in add functions
 		uint32 glfwExtensionCount;
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array

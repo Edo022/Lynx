@@ -90,6 +90,8 @@ namespace lux {
 			data_ = nullptr;
 			return size_ = 0;
 		}
+		//TODO FIX ALL CLEAR FUNCTIONS IN LUX CONTAINERS
+
 
 
 		//TODO remove
@@ -101,27 +103,40 @@ namespace lux {
 		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
 			lux_sc_F;
 			luxDebug(checkSize(vNewSize));
+
 			//TODO not secure
 			if(vNewSize < 0) return -1;
 			iter oldSize = size_;
 			resize(vNewSize);
+
 			//TODO use intrinsic function copy with automatic loop unwrap
-			if(vNewSize > oldSize) for(iter i = oldSize; i < vNewSize; ++i) data_[i] = vInitValue;
+			if(vNewSize > oldSize) for(iter i = oldSize; i < vNewSize; ++i) {
+				memset(&data_[i], 0, sizeof(type));
+				data_[i] = vInitValue;
+			}
+			//TODO self-memset in operator= if not initialized
 			return vNewSize;
 		}
 
 
+		template<class iType> inline void operator=(const ContainerBase<type, iType>& pContainer) {
+			data_ = (type*)malloc(pContainer.bytes( ));
+			memcpy(data_, pContainer.begin( ), pContainer.bytes( ));
+			size_ = pContainer.size( );
+		}
 
-
-
+		///////////////////////////////////////////////////////////////////////
+		//TODO SPECIFIC TEMPLATED MALLOC FUNCTIONS THAT INITIALIZES THE MEMORY WITH OR WITHOUT A VALUE. THEY CALL THE OBJECT CONSTRUCTOR
+		///////////////////////////////////////////////////////////////////////
 
 
 
 		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
-		inline iter __vectorcall size( )	const override	{ lux_sc_F; return size_; }
-		inline bool __vectorcall empty( )	const override	{ lux_sc_F; return !size_; }
-		inline type* __vectorcall begin( )	const override	{ lux_sc_F; return data_; }
-		inline type* __vectorcall end( )	const override	{ lux_sc_F; return &data_[size_ - 1]; }
+		inline iter __vectorcall size( )	const override { lux_sc_F; return size_; }
+		inline uint64 __vectorcall bytes( )	const override { lux_sc_F; return size_ * sizeof(type); }
+		inline bool __vectorcall empty( )	const override { lux_sc_F; return !size_; }
+		inline type* __vectorcall begin( )	const override { lux_sc_F; return data_; }
+		inline type* __vectorcall end( )	const override { lux_sc_F; return &data_[size_ - 1]; }
 	};
 }
 #undef __lp_lux_static_array_init
