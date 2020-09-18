@@ -32,7 +32,7 @@ namespace lux {
 
 		inline void __vectorcall concatenate(const char8* vString, const uint32 size) {
 			uint64 oldSize = str.cell->cellSize;
-			ram::realloc(str, str.cell->cellSize + size - 1);
+			ram::dRealloc(str, str.cell->cellSize + size - 1);
 			ram::cpy(vString, str + oldSize - 1, size);
 		}
 
@@ -41,23 +41,21 @@ namespace lux {
 	public:
 		//Constructors
 		lux_sc_generate_nothing_constructor(String) str{ str } { }
-		inline String( ){
-			str = ram::alloc(1, CellClass::AUTO);
-			str[0] = '\0';
+		inline String( ) :							str{ ram::dAlloc<char8>(sizeof(char8), 1)   }	{ str[0] = '\0';								}
+		inline String(const String& pString) :		str{ ram::dAlloc<char8>(pString.size( ), 1) }	{ ram::cpy(pString.str, str, pString.size( ));	}
+		//TODO add constructor that takes the size in input. IF it's already known, there is no reason to recalculate it
+		inline String(const char8* vString) :		str{ ram::dAlloc<char8>(strlenl(vString) + 1, 1) }		{
+			//int32 len = strlenl(vString) + 1;
+			//str = ram::alloc(len, CellClass::AUTO);
+			//ram::cpy(vString, str, len);
+			ram::cpy(vString, str, str.size( ));
 		}
-		inline String(const String& pString) {
-			str = ram::alloc(pString.size( ), CellClass::AUTO);
-			ram::cpy(pString.str, str, pString.size( ));
-		}
-		inline String(const char8* vString) {
-			int32 len = strlenl(vString) + 1;
-			str = ram::alloc(len, CellClass::AUTO);
-			ram::cpy(vString, str, len);
-		}
-		inline String(const wchar8* vString) {
-			int32 len = strlenl(vString) + 1;
-			str = ram::alloc(len, CellClass::AUTO);
-			ram::cpy(vString, str, len);
+		//TODO remove
+		inline String(const wchar8* vString) :		str{ ram::dAlloc<char8>(strlenl(vString) + 1, 1) } {
+			//int32 len = strlenl(vString) + 1;
+			//str = ram::alloc(len, CellClass::AUTO);
+			//ram::cpy(vString, str, len);
+			ram::cpy(vString, str, str.size( ));
 		}
 
 
@@ -103,16 +101,19 @@ namespace lux {
 		//Assignment
 		inline void __vectorcall operator = (const String& pString) {
 			lux_sc_F;
-			ram::realloc(str, pString.size( ), CellClass::AUTO);
+			ram::dRealloc(str, pString.size( ), CellClass::AUTO);
+			//ram::realloc(str, pString.size( ), CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
 			ram::cpy(pString.str, str, pString.size( ));
 		}
 		inline void __vectorcall operator = (const char8* vString) {
 			lux_sc_F;
-			int32 len = strlenl(vString) + 1;
-			ram::realloc(str, len, CellClass::AUTO);
+			//int32 len = strlenl(vString) + 1;
+			ram::dRealloc(str, strlenl(vString) + 1, CellClass::AUTO);
+			//ram::realloc(str, len, CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
-			ram::cpy(vString, str, len);
+			//ram::cpy(vString, str, len);
+			ram::cpy(vString, str, str.size( ));
 		}
 
 

@@ -1,8 +1,11 @@
 #include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
+#include <exception>
 
 
 
+
+//TODO real time indicator in nodes that changed based on the execution time of the node (runtime, compile time, one time runtime...)
 
 namespace lux::out{
 	//Prints an error in the console
@@ -12,7 +15,8 @@ namespace lux::out{
 	void _printError(const std::string& pMessage, const bool vFatalError, const int32 vErrorCode){
 		lux::core::running = false;
 		Failure printf("%srror. Code: %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.c_str( ));
-		if(vFatalError) system("pause"); exit(vErrorCode);
+		if(vFatalError) throw std::out_of_range("lux_test");
+		//if(vFatalError) { system("pause"); exit(vErrorCode); }
 	}
 
 

@@ -44,6 +44,7 @@
 namespace lux {
 	//TODO move nullptr 1 initialization to memory
 	//TODO manage reallocation with chunks larger than the maximum cell size
+	//TODO remove size. It's already in the pointer
 	template<class type, class iter = uint32> struct DynArray : public ContainerBase<type, iter> {
 		lux_sc_generate_debug_structure_body;
 		ram::ptr<type> data_;	//Elements of the array
@@ -56,12 +57,14 @@ namespace lux {
 		//*   vChunkSize | the number of new elements allocated when the array grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		inline DynArray( ) : data_{ ram::alloc(1) }, size_{ 0 } { }
+		inline DynArray( ) : size_{ 0 } ,
+			data_{ ram::dAlloc<type>(max(sizeof(type), (uint64)CellClass::CLASS_B), 1, CellClass::CLASS_B) }{
+		}
 
 		//TODO check if the itersator can handle all the elements
 		//TODO sizeof(cIter) > sizeof(iter)
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::alloc(pContainer.size( )) }, size_{ pContainer.size( ) }{
-			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : DynArray( ) {
+			ram::cpy(pContainer.begin( ), data_.address, pContainer.bytes( ));
 			//Not copied correctly
 		}
 		//TODO add .bytes function to containers
@@ -75,15 +78,17 @@ namespace lux {
 			lux_sc_F;
 			//type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
 			//if(__lp_data_r != nullptr)data_ = __lp_data_r;
-			ram::realloc(data_, vNewSize);
+			ram::dRealloc(data_, vNewSize);
+			//ram::realloc(data_, vNewSize);
 			return size_ = vNewSize;
 
 		}
 
 		void clear( ){
-			free(data_);//TODO dont free with global memory pool
-			data_ = nullptr;
-			size_ = 0;
+			ram::free(data_);//TODO dont free with global memory pool
+			//data_ = nullptr;
+			//size_ = 0;
+			this->DynArray::DynArray( );
 		}
 
 		//Adds an element to the end of the array
@@ -93,6 +98,8 @@ namespace lux {
 			lux_sc_F;
 			resize(size_ + 1);
 			data_[size_ - 1] = vElement;
+			//TODO .end() returns an invalid pointer, probably. "error reading a character of string"
+			//*data_.end( ) = vElement;
 			return size_ - 1;
 		}
 

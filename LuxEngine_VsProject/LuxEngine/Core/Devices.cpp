@@ -138,8 +138,10 @@ namespace lux::core::dvc{
 	//Then saves them in the class members
 	void deviceGetPhysical( ) {
 		uint32 deviceCount = 0;
-		Map<String, uint32> discardedPhysicalDevices(0xFFFF, 0xFFFF);
-		Map<_VkPhysicalDevice*, uint32> physicalDevices(0xFFFF, 0xFFFF);
+		Map<String, uint32> discardedPhysicalDevices;
+		Map<_VkPhysicalDevice*, uint32> physicalDevices;
+		//Map<String, uint32> discardedPhysicalDevices(0xFFFF, 0xFFFF);
+		//Map<_VkPhysicalDevice*, uint32> physicalDevices(0xFFFF, 0xFFFF);
 
 
 		//Get physical devices

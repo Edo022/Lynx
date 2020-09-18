@@ -36,7 +36,7 @@ namespace lux::core::c::shaders{
 
 
 
-
+	//TODO FIX ARRAY: IT'S WHAT GENERATES ALL THE ERRORS
 
 	void preInit( ){
 		shaderPath.String::String( );
@@ -141,7 +141,8 @@ namespace lux::core::c::shaders{
 
 			//Create the descriptor set layout
 			TryVk(vkCreateDescriptorSetLayout(dvc::compute.LD, layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout)) printError("Unable to create descriptor set layout", false, -2);
-			CShadersLayouts[vRenderShader].__lp_ptrs.add((void*)layoutCreateInfo);
+			//TODO remove
+			//CShadersLayouts[vRenderShader].__lp_ptrs.add((void*)layoutCreateInfo);
 		}
 
 
@@ -532,7 +533,7 @@ namespace lux::core::c::shaders{
 		vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Free all the useless pointers
-		for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
+		//for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
 
 		//Remove the shader from the shader array
 		CShaders.remove(vCShader);

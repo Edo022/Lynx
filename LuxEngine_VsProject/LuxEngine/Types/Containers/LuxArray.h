@@ -36,10 +36,19 @@ namespace lux {
 		//TODO check all the parameters
 		lux_sc_generate_nothing_constructor(Array) data_{ data_ }, size_{ size_ } { }
 		//Creates an array with no elements
-		inline Array( ) : size_{ 0 }, data_{ nullptr } { }
+		//inline Array( ) : size_{ 0 }, data_{ nullptr } { }
+		inline Array( ) : size_{ 0 }, data_{ (type*)malloc(sizeof(type)) } { }
+
+		//TODO remove
+		//TODO just use a CTArray
 		//Sets the size of the array and allocates it, without inizializing the elements
 		inline Array(const iter vInitSize) : size_{ vInitSize }, data_{ (type*)malloc(sizeof(type) * vInitSize) } {
 			luxDebug(checkSize(vInitSize));
+			type* _type = new type( );
+			for(uint32 i = 0; i < vInitSize; i++) {
+				memcpy(&data_[i], _type, sizeof(type));
+			}
+			delete(_type);
 		}
 
 		//TODO remove
@@ -87,8 +96,9 @@ namespace lux {
 
 		void clear( ){
 			free(data_);//TODO dont free with global memory pool
-			data_ = nullptr;
-			return size_ = 0;
+			//data_ = nullptr;
+			//return size_ = 0;
+			this->Array::Array( );
 		}
 		//TODO FIX ALL CLEAR FUNCTIONS IN LUX CONTAINERS
 

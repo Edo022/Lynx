@@ -125,8 +125,10 @@ namespace lux{
 
 			//TODO add check in other classes
 			inline ptr( ) :								cell{ nullptr },		address{ nullptr }					{ }
-			inline ptr( type* vAddress ) :				cell{ nullptr },		address{ vAddress }					{ }
+			//inline ptr( type* vAddress ) :				cell{ nullptr },		address{ vAddress }					{ }
 			lux_sc_generate_nothing_constructor(ptr)	cell{ cell },			address{ address }					{ }
+			//TODO fix
+			//TODO add = that do not modify the owner count
 			inline ptr(Cell_t* vCell) :					cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
 			inline ptr(Cell_t* vCell, type* vAddress) :	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
 			inline ptr(ptr<type>& pPtr) :				cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
@@ -200,6 +202,11 @@ namespace lux{
 			inline void			operator++(				)	{ lux_sc_F; address	++;		checkp; }
 			inline void			operator--(				)	{ lux_sc_F; address	--;		checkm; }
 
+
+			inline bool operator==(ptr<type> p) {return p.address == address;}
+			inline bool operator!=(ptr<type> p) {return p.address != address;}
+
+
 			//TODO improve warnings and output object address or nanme
 			inline type& operator*( ) const {
 				lux_sc_F;
@@ -212,8 +219,8 @@ namespace lux{
 
 
 			~ptr( ){ if(address) { if(!--cell->owners) cell->freeCell( ); } }		//Decrease the cell's owner count when the pointer is destroyed
-			inline operator type*( ) const;											//ram::ptr<type> to type* implicit conversion
-			inline operator bool( ) const;											//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
+			inline operator type*( ) const { lux_sc_F; return address; };			//ram::ptr<type> to type* implicit conversion
+			inline operator bool( ) const { lux_sc_F; return address; };			//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
 			inline type& operator [](const uint64 i)	const { lux_sc_F; return address[i]; }
 			inline type& operator [](const uint32 i)	const { lux_sc_F; return address[i]; }
 			inline type& operator [](const int64 i)		const { lux_sc_F; return address[i]; }
@@ -224,15 +231,17 @@ namespace lux{
 			//Returns the last address of the allocated memory block as a lux::ptr
 			inline ptr<type> end( ) const { lux_sc_F; return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
 			//Returns the total size of the allocated memory
-			inline uint64 __vectorcall size( )   const { lux_sc_F; return cell->cellSize; }
+			inline uint64 __vectorcall size( )   const {
+				lux_sc_F; return cell->cellSize;
+			}
 			//Returns the number of allocated bytes before the pointer
 			inline uint64 __vectorcall prior( )  const { lux_sc_F; return (uint64)address - (uint64)cell->address; }
 			//Returns the number of allocated bytes after the pointer
 			inline uint64 __vectorcall latter( ) const { lux_sc_F; return ((uint64)cell->address + cell->cellSize) - (uint64)address;}
 		};
 
-		template<class type> ptr<type>::operator type*( )	const { lux_sc_F; return address; }
-		template<class type> ptr<type>::operator bool( )	const { lux_sc_F; return address; }
+		//template<class type> ptr<type>::operator type*( )	const { lux_sc_F; return address; }
+		//template<class type> ptr<type>::operator bool( )	const { lux_sc_F; return address; }
 	}
 }
 #endif

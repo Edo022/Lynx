@@ -99,7 +99,7 @@ namespace lux::core::g::wnd{
 		}
 		#endif
 
-		TryVk(vkCreateInstance(&createInfo, nullptr, &instance)) printError("Failed to create instance", true, -1);
+		TryVk(vkCreateInstance(&createInfo, nullptr, &core::instance)) printError("Failed to create instance", true, -1);
 	}
 
 

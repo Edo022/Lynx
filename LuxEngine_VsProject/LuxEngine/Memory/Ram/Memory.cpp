@@ -97,6 +97,21 @@ namespace lux::ram{
 	}
 
 
+	template<class type> ptr<type> vAlloc(const uint64 vSize, const CellClass vClass, const type& pValue){
+		ptr<type> ptr = ram::alloc(vSize, vClass);
+		for(auto e : ptr) e = pValue;
+		return ptr;
+	}
+
+
+	template<class type> ptr<type> dAlloc(const uint64 vSize, const CellClass vClass){
+		ptr<type> ptr = ram::alloc(vSize, vClass);
+		for(auto e : ptr) e = type( );
+		return ptr;
+	}
+
+
+
 
 
 	void realloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
@@ -106,12 +121,18 @@ namespace lux::ram{
 		}
 		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pCell->cellSize = vSize;
 		else if(vSize != pCell->cellSize) [[unlikely]] {
-			ram::free(pCell);
 		//TODO fix
 			//Cell_t* cell = alloc(vSize, vCellClass);
 			//pCell->address = cell->address; pCell->buffer = cell->buffer; pCell->cellSize = cell->cellSize; pCell->bufferType = cell->bufferType; pCell->cellIndex = cell->cellIndex;
 			Cell_t* cell = alloc(vSize, vCellClass);
-			pCell->address = cell->address; pCell->buffer = cell->buffer; pCell->cellSize = cell->cellSize; pCell->bufferType = cell->bufferType; pCell->cellIndex = cell->cellIndex;
+			memcpy(cell, pCell, pCell->cellSize);
+
+			ram::free(pCell);
+			pCell->address = cell->address;
+			pCell->buffer = cell->buffer;
+			pCell->cellSize = cell->cellSize;
+			pCell->bufferType = cell->bufferType;
+			pCell->cellIndex = cell->cellIndex;
 			//pCell = alloc(vSize, vCellClass);
 		}
 	}
@@ -120,7 +141,7 @@ namespace lux::ram{
 
 
 
-	//Frees a video memory cell
+	//Frees a memory cell
 	void free(Cell_t* pCell){
 		//TODO destroy buffers from asyncrhonous garbage collector
 		pCell->buffer->cells.remove(pCell->cellIndex);

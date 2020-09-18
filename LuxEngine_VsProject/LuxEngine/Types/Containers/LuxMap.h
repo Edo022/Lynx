@@ -10,14 +10,19 @@
 
 
 
+//TODO always initialize data with class B
+
+
+
 namespace lux {
 	//Like an array, but capable of containing billions of elements without losing performance
 	//The elements are not ordered, so each element has a unique ID. The ID is returned by the add functions
 	//Use the isValid() function to check if an element can be used or not
-	template<class type, class iter = uint64> class Map {
+	//template<class type, class iter = uint64> class Map {
+	template<class type, class iter = uint64, uint64 chunkSize = 5000000 /*5MB*/, uint64 elmPerChunk = chunkSize / sizeof(ram::ptr<int>)> class Map {
 	public:
 		lux_sc_generate_debug_structure_body;
-		ram::ptr<ram::ptr<type>> data_;		//Elements
+		ram::ptr<ram::ptr<type>> chunks_;		//Elements
 		ram::ptr<ram::ptr<iter>> tracker_;	//State of each element
 
 		iter head_;			//First free element
@@ -27,11 +32,11 @@ namespace lux {
 
 	private:
 		iter _chunkNum;		//Number of allocated chunks
-		iter _chunkSize;	//Size of the chunks
-		iter _maxSize;		//Maximum number of elements in the map
+		//iter _chunkSize;	//Size of the chunks
+		//iter _maxSize;		//Maximum number of elements in the map
 
-		#define __lp_Data(index) data_[(index) / _chunkSize][(index) % _chunkSize]			//Get a data    element using only one index instead of index in the chunk and chunk index
-		#define __lp_Tracker(index) tracker_[(index) / _chunkSize][(index) % _chunkSize]	//Get a tracker element using only one index instead of index in the chunk and chunk index
+		#define __lp_Data(index) chunks_[(index) / chunkSize][(index) % chunkSize]			//Get a data    element using only one index instead of index in the chunk and chunk index
+		#define __lp_Tracker(index) tracker_[(index) / chunkSize][(index) % chunkSize]	//Get a tracker element using only one index instead of index in the chunk and chunk index
 	public:
 
 
@@ -39,12 +44,12 @@ namespace lux {
 
 		// Constructor --------------------------------------------------------------------------------------------------------- //
 
-
+		//TODO remove Cell_t* constructor from lux ptrs
 
 		//inline Map(const Nothing) : luxDebug2(lux_sc_N,)
 		lux_sc_generate_nothing_constructor(Map) _chunkNum{ _chunkNum },
-			size_{ size_ }, freeSize_{ freeSize_ }, data_{ data_ }, tracker_{ tracker_ },
-			head_{ head_ }, tail_{ tail_ }, _chunkSize{ _chunkSize }, _maxSize{ _maxSize } {
+			size_{ size_ }, freeSize_{ freeSize_ }, chunks_{ chunks_ }, tracker_{ tracker_ },
+			head_{ head_ }, tail_{ tail_ } {
 		}
 
 		//Creates the map with the specified chunk and maximum size
@@ -55,28 +60,33 @@ namespace lux {
 		//*   vMaxSize:   | the maximum size the map can reach
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
-		inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
-			_chunkSize(vChunkSize), _maxSize(vMaxSize), head_((iter)-1), tail_((iter)-1), _chunkNum(0), size_(0), freeSize_(0) {
-			luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
-			data_ = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
-			tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
+		//inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
+		inline Map( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
+			//luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
+			chunks_{ ram::vAlloc<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B - 1, ram::ptr<type>( ), CellClass::CLASS_B) },
+			tracker_{ ram::vAlloc<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B - 1, ram::ptr<iter>( ), CellClass::CLASS_B) } {
+		}
+			//data_ = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
+			//tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
 			//memset(data_.address, 0, data_.size( ));
 			//memset(tracker_.address, 0, tracker_.size( ));
 			//data_[0] = ram::ptr<type>{ };
 			//TODO ALWAYS MANUALLY CALL THE CONSTRUCTOR OF A PTR FROM AN ALLOCATED BLOCK MEMORY
+			//TODO ^ nop
 			//TODO ASSIGNMENT OPERATOR BREAKS EVEERYTHING IF THE STRUCT IS NOT INITIALIZED
+			//TODO ^ nop
 			//data_[0].ptr<type>::ptr( );
 
 
 			//data_ = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			//tracker_ = (iter**)malloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
-		}
+		//}
 
 
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   in: a pointer to the container object
 		template<class elmType>
-		inline Map(const ContainerBase<elmType, iter>* in) {
+		inline Map(const ContainerBase<elmType, iter>* in) : Map( ) {
 			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
 		}
 
@@ -88,19 +98,18 @@ namespace lux {
 
 
 
-
 		//Adds an element at the end of the map, allocating a new chunk if needed
 		//Returns the ID of the element
 		iter __vectorcall append(const type& vData) {
 			lux_sc_F;
-			if(size_ + 1 > _chunkNum * _chunkSize) {								//If the chunk is full
+			if(size_ + 1 > _chunkNum * chunkSize) {								//If the chunk is full
 				//data_[_chunkNum] = (type*)malloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
 				//tracker_[_chunkNum] = (iter*)(malloc(sizeof(iter*) * _chunkSize));		//Allocate a new tracker chunk
 				//TODO ???
-				data_[_chunkNum].ptr<type>::ptr( );
-				tracker_[_chunkNum].ptr<iter>::ptr( );
-				data_[_chunkNum] = ram::alloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
-				tracker_[_chunkNum] = ram::alloc(sizeof(iter*) * _chunkSize);		//Allocate a new tracker chunk
+				//chunks_[_chunkNum].ptr<type>::ptr( );
+				//tracker_[_chunkNum].ptr<iter>::ptr( );
+				chunks_[_chunkNum] = ram::dAlloc<type>(sizeof(type), elmPerChunk);
+				tracker_[_chunkNum] = ram::dAlloc<iter>(sizeof(iter*), elmPerChunk);
 				_chunkNum++;															//Update the number of chunks
 			}
 			__lp_Data(size_) = vData;												//Assign the data to the new element
@@ -160,17 +169,24 @@ namespace lux {
 		//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
 		inline void __vectorcall clear( ) {
 			lux_sc_F;
-			for(iter i = 0; i < _chunkNum; ++i) free(data_[i]);		free(data_);		//Free data
-			for(iter i = 0; i < _chunkNum; ++i) free(tracker_[i]);	free(tracker_);		//Free tracker
-			data_    = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data
-			tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));			//Reallocate tracker
-			//memset(data_.address, 0, data_.size( ));
-			//memset(tracker_.address, 0, tracker_.size( ));
+			for(iter i = 0; i < _chunkNum; ++i) {
+			//for(iter i = 0; i < _chunkNum; ++i) {
+				ram::free(chunks_[i]);
+				ram::free(tracker_[i]);
+			}
+			ram::free(tracker_);
+			ram::free(chunks_);
+			//for(iter i = 0; i < _chunkNum; ++i) free(tracker_[i]);	free(tracker_);		//Free tracker
+			//chunks_    = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data
+			//tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));			//Reallocate tracker
+			////memset(data_.address, 0, data_.size( ));
+			////memset(tracker_.address, 0, tracker_.size( ));
 
-			//data_    = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data
-			//tracker_ = (iter**)malloc(sizeof(iter*) * (_maxSize / _chunkSize));			//Reallocate tracker
-			_chunkNum = size_ = freeSize_ = 0;											//Reset number of chunk, elements and free elements
-			head_ = tail_ = -1;															//Reset head_ and tail_
+			////data_    = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data
+			////tracker_ = (iter**)malloc(sizeof(iter*) * (_maxSize / _chunkSize));			//Reallocate tracker
+			//_chunkNum = size_ = freeSize_ = 0;											//Reset number of chunk, elements and free elements
+			//head_ = tail_ = -1;															//Reset head_ and tail_
+			this->Map::Map( );
 		}
 
 
@@ -181,22 +197,22 @@ namespace lux {
 
 
 
-		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid or there is an error, -2 if the index is out of range
+		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid, -2 if the index is out of range
 		inline signed char __vectorcall state(const iter vIndex) const {
 			lux_sc_F;
-			if(vIndex == (iter)-1)return -1;								//Invalid index
+			if(vIndex < 0) return -1;										//Invalid index
 			else if(vIndex >= size_) return -2;								//Index out of range
-			else if(__lp_Tracker(vIndex) == (iter)-1) return 0;				//Ok
-			else if(__lp_Tracker(vIndex) >= 0) return 1;					//Invalid element
-			else return -1;													//Unknown error
+			else if(__lp_Tracker(vIndex) == (iter)-1) return 0;				//Used element //OK
+			//else if(__lp_Tracker(vIndex) >= 0) return 1;
+			else return 1;					//Free element
 		}
 
 
 		//Returns true if the index is used, false if it's free or invalid (use the state function for more details)
 		inline bool __vectorcall isValid(const iter vIndex) const {
 			lux_sc_F;
-			if(vIndex > size_ - 1) return false;				//Return false if the index is out of range
-			return (__lp_Tracker(vIndex) == (iter)-1);			//Return true if the index is used, false if it's free
+			if(vIndex >= size_) return false;				//Return false if the index is out of range
+			else return (__lp_Tracker(vIndex) == (iter)-1);			//Return true if the index is used, false if it's free
 		}
 
 
@@ -210,7 +226,7 @@ namespace lux {
 		//Use the isValid() function to check if the element can be used
 		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return __lp_Data(vIndex); }
 		//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-		inline type* __vectorcall begin(const iter vChunkIndex) const { lux_sc_F; return &data_[vChunkIndex][0]; }
+		inline type* __vectorcall begin(const iter vChunkIndex) const { lux_sc_F; return &chunks_[vChunkIndex][0]; }
 
 		////DEPRECATED FUNCTION
 		////TODO remove

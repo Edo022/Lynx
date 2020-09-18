@@ -25,7 +25,8 @@ namespace lux::thr {
 
 	void preInit( ){
 		threads.Array::Array(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
-		thrStates.Map::Map(2048, 2048);
+		thrStates.Map::Map( );
+		//thrStates.Map::Map(2048, 2048);
 
 		maxpq.Queue::Queue( );
 		highpq.Queue::Queue( );
