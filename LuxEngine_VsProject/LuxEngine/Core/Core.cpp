@@ -64,10 +64,6 @@ namespace lux::core{
 		initialized = false;
 		frames = 0;
 
-		//instance = new VkInstance_T();
-		//debugMessenger = new VkDebugUtilsMessengerEXT_T();
-		//surface = new VkSurfaceKHR_T( );
-
 		validationLayers.Array::Array( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
 		requiredDeviceExtensions.Array::Array( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
@@ -119,7 +115,6 @@ namespace lux::core{
 		static bool once = true;
 		if(once){
 			once = false;
-			//printf("HHHH\n");
 			std::thread renderThr(&run, useVSync, 45);
 			renderThr.detach( );
 			running = true;

@@ -58,7 +58,7 @@ namespace lux {
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
 		inline DynArray( ) : size_{ 0 } ,
-			data_{ ram::dAlloc<type>(max(sizeof(type), (uint64)CellClass::CLASS_B), 1, CellClass::CLASS_B) }{
+			data_{ ram::AllocDA<type>(max(sizeof(type), (uint64)CellClass::CLASS_B), 1, CellClass::CLASS_B) }{
 		}
 
 		//TODO check if the itersator can handle all the elements

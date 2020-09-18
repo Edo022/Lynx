@@ -267,7 +267,7 @@ namespace lux::core::c::shaders{
 					VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 				.pBufferInfo{ descriptorBufferInfo },								//Set descriptor buffer info
 			};
-			pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);				//Save the struct in the pointers that needs to be freed
+			//pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);				//Save the struct in the pointers that needs to be freed
 		}
 		//Update descriptor sets
 		vkUpdateDescriptorSets(dvc::compute.LD, writeDescriptorSets.size( ), writeDescriptorSets.begin( ), 0, nullptr);

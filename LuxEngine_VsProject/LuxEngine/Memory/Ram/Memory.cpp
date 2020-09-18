@@ -104,7 +104,7 @@ namespace lux::ram{
 	}
 
 
-	template<class type> ptr<type> dAlloc(const uint64 vSize, const CellClass vClass){
+	template<class type> ptr<type> AllocDA(const uint64 vSize, const CellClass vClass){
 		ptr<type> ptr = ram::alloc(vSize, vClass);
 		for(auto e : ptr) e = type( );
 		return ptr;
@@ -115,25 +115,22 @@ namespace lux::ram{
 
 
 	void realloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
+		//If the cell is not allocated, allocate it and return
 		if(!pCell->address) [[unlikely]] {
 			pCell = alloc(vSize, vCellClass);
 			return;
 		}
-		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pCell->cellSize = vSize;
+		//If the class doesn't need to be changed
+		//(class specified but it's the same as before or class is auto) and (size is within the class minimum and maximum size)
+		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] {
+			pCell->cellSize = vSize;
+		}
+		//else (if the class has to be changed)
 		else if(vSize != pCell->cellSize) [[unlikely]] {
-		//TODO fix
-			//Cell_t* cell = alloc(vSize, vCellClass);
-			//pCell->address = cell->address; pCell->buffer = cell->buffer; pCell->cellSize = cell->cellSize; pCell->bufferType = cell->bufferType; pCell->cellIndex = cell->cellIndex;
-			Cell_t* cell = alloc(vSize, vCellClass);
-			memcpy(cell, pCell, pCell->cellSize);
-
-			ram::free(pCell);
-			pCell->address = cell->address;
-			pCell->buffer = cell->buffer;
-			pCell->cellSize = cell->cellSize;
-			pCell->bufferType = cell->bufferType;
-			pCell->cellIndex = cell->cellIndex;
-			//pCell = alloc(vSize, vCellClass);
+			Cell_t * cell = alloc(vSize, vCellClass);	//Allocate a new cell
+			memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
+			ram::free(pCell);							//Free the old memory
+			pCell = cell;								//Update the cell (and all the pointers pointing to it)
 		}
 	}
 

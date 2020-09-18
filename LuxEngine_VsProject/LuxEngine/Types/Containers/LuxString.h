@@ -41,17 +41,17 @@ namespace lux {
 	public:
 		//Constructors
 		lux_sc_generate_nothing_constructor(String) str{ str } { }
-		inline String( ) :							str{ ram::dAlloc<char8>(sizeof(char8), 1)   }	{ str[0] = '\0';								}
-		inline String(const String& pString) :		str{ ram::dAlloc<char8>(pString.size( ), 1) }	{ ram::cpy(pString.str, str, pString.size( ));	}
+		inline String( ) :							str{ ram::AllocDA<char8>(sizeof(char8), 1)   }	{ str[0] = '\0';								}
+		inline String(const String& pString) :		str{ ram::AllocDA<char8>(pString.size( ), 1) }	{ ram::cpy(pString.str, str, pString.size( ));	}
 		//TODO add constructor that takes the size in input. IF it's already known, there is no reason to recalculate it
-		inline String(const char8* vString) :		str{ ram::dAlloc<char8>(strlenl(vString) + 1, 1) }		{
+		inline String(const char8* vString) :		str{ ram::AllocDA<char8>(strlenl(vString) + 1, 1) }		{
 			//int32 len = strlenl(vString) + 1;
 			//str = ram::alloc(len, CellClass::AUTO);
 			//ram::cpy(vString, str, len);
 			ram::cpy(vString, str, str.size( ));
 		}
 		//TODO remove
-		inline String(const wchar8* vString) :		str{ ram::dAlloc<char8>(strlenl(vString) + 1, 1) } {
+		inline String(const wchar8* vString) :		str{ ram::AllocDA<char8>(strlenl(vString) + 1, 1) } {
 			//int32 len = strlenl(vString) + 1;
 			//str = ram::alloc(len, CellClass::AUTO);
 			//ram::cpy(vString, str, len);

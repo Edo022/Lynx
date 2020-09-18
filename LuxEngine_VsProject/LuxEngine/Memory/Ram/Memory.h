@@ -6,9 +6,11 @@
 #include "LuxEngine/Memory/Ram/Memory2.h"
 #include "LuxEngine/Memory/Memory_t.h"
 
-//TODO just duplicate the lux array or use a normal array
+
 
 //TODO throw exception when an error occurs
+//TODO decrease default map chunkSize
+
 
 /*
 
@@ -71,70 +73,44 @@
 #pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
 namespace lux::ram{
 
-	//TODO use those functions everythere instead of randomly calling constructors on uninitialized data
 	//Allocates a block of memory without initializing it
 	Cell_t* alloc(const uint64 vSize, CellClass vCellClass = CellClass::AUTO, const bool vForceDedicatedBuffer = false);
+
 	//Allocates a memory block large enough to contain <vNum> <vSize>-bytes elements and initializes each element with the value of pValue
 	template<class type> ptr<type> vAlloc(const uint64 vSize, const uint64 vNum, const type& pValue, const CellClass vClass = CellClass::AUTO){
-		//ptr<type> ptr = ram::alloc(vSize * vNum, vClass);
 		ptr<type> ptr = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
-		//for(auto e : ptr) e = pValue;
-		//for(uint32 i = 0; i < vSize; i++) ptr[i] = type( );
-		for(uint32 i = 0; i < vSize; i++){
-			memcpy(&ptr[i], &pValue, sizeof(type));
-		}
+		for(uint32 i = 0; i < vSize; i++) memcpy(&ptr[i], &pValue, sizeof(type));
 		return ptr;
 	}
 
-	//TODO rename and reorder this mess
-	////TODO rename avAlloc and adAlloc
-	//template<class type> ptr<type> vAlloc2(const uint64 vSize, const type& pValue, const CellClass vClass = CellClass::AUTO){ ptr<type> ptr = ram::alloc(vSize * vNum, vClass); for(auto e : ptr) e = pValue; return ptr; }
-	//Allocates a memory block large enough to contain <vNum> <vSize>-bytes elements and calls the default constructor of each element
-	template<class type> ptr<type> dAlloc(const uint64 vSize, const uint64 vNum, const CellClass vClass = CellClass::AUTO){
-		//ram::ptr<type> ptr = ram::alloc(vSize * vNum, vClass);
-		ram::ptr<type> ptr = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
-		//for(auto e : ptr) e = type( );
-		//for(type* a = ptr; a++; a != ptr.end( )) {
-		type* _type = new type();
-		for(uint32 i = 0; i < vSize; i++) {
-			//*a = type( );
-			//ptr[i] = type( );
 
-			memcpy(&ptr[i], _type, sizeof(type));
-		}
-		//free(_type);
+	//Allocate Default Array
+	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and calls the default constructor of each element
+	//You need to specify the type when calling this function
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDA<int32>(1234);
+	template<class type> ptr<type> AllocDA(const uint64 vSize, const uint64 vNum, const CellClass vClass = CellClass::AUTO){
+		ram::ptr<type> ptr = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
+		type* _type = new type( );
+		for(uint32 i = 0; i < vSize; i++) memcpy(&ptr[i], _type, sizeof(type));
 		delete(_type);
-		//TODO for some reason, returning the ptr direclty makes it to cast to a normal pointer
-		//return ptr;
 		return (ram::ptr<type>)ptr;
 	}
-	template<class type> ptr<type> dAlloc2(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
-		ptr<type> ptr = ram::alloc(vSize, vClass);
-		//for(auto e : ptr) e = type( );
-		//for(uint32 i = 0; i < vSize; i++) ptr[i] = type( );
-		type* _type = new type();
-		for(uint32 i = 0; i < vSize; i++) {
-			memcpy(&ptr[i], _type, sizeof(type));
-		}
-		//free(_type);
-		delete(_type);
 
-		return ptr;
-	}
-	template<class type> Cell_t* dAlloc2c(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
+
+	template<class type> Cell_t* AllocDBc(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
 		Cell_t* ptr = ram::alloc(vSize, vClass);
-		//for(auto e : ptr) e = type( );
-		//for(type* a = (type*)ptr->address; a++; a != (type*)((uint64)ptr->address + ptr->cellSize)) *a = type( );
-		type* _type = new type();
-		for(uint32 i = 0; i < vSize; i++) {
-			//((type*)ptr->address)[i] = type( );
-			memcpy(&((type*)ptr->address)[i], _type, vSize);
-		}
-		//free(_type);
+		type* _type = new type( );
+		for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)ptr->address)[i], _type, sizeof(type));
 		delete(_type);
 		return ptr;
 	}
-	//non può.
+	//Allocate Default Block
+	//Allocates a block of memory and initializes it by calling the default constructor of each element
+	//You need to specify the type when calling this function
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDB<int32>(302732);
+	template<class type> ptr<type> inline AllocDB(const uint64 vSize, const CellClass vClass = CellClass::AUTO){ return ram::AllocDBc(vSize, vClass); }
+
+
 
 
 	void free(Cell_t* pCell);
@@ -147,13 +123,12 @@ namespace lux::ram{
 	}
 	template<class t> static inline void dRealloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
 		if(!pCell->address) [[unlikely]] {
-			//pCell = dAlloc2<t>(vSize, vCellClass);
-			pCell = dAlloc2c<t>(vSize, vCellClass);
+			pCell = AllocDBc<t>(vSize, vCellClass);
 			return;
 		}
 		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pCell->cellSize = vSize;
 		else if(vSize != pCell->cellSize) [[unlikely]] {
-			Cell_t* cell = dAlloc2c<t>(vSize, vCellClass);
+			Cell_t* cell = AllocDBc<t>(vSize, vCellClass);
 			memcpy(cell, pCell, pCell->cellSize);
 
 			ram::free(pCell);
@@ -162,7 +137,6 @@ namespace lux::ram{
 	}
 	template<class t> static inline void dRealloc(ptr<t>& pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
 		dRealloc<t>(pCell.cell, vSize, vCellClass);
-		//dRealloc(pCell.cell, vSize);
 	}
 
 

@@ -15,10 +15,10 @@
 
 
 namespace lux {
-	//Like an array, but capable of containing billions of elements without losing performance
-	//The elements are not ordered, so each element has a unique ID. The ID is returned by the add functions
-	//Use the isValid() function to check if an element can be used or not
-	//template<class type, class iter = uint64> class Map {
+	//An array with non-contiguous data capable of containing millions of elements without affecting performance
+	//New elements are written over previously deleted elements, or concatenated if there are none
+	//Useful if you need to constantly add or remove elements
+	//Use the isValid() function to check if an element is valid or has been removed
 	template<class type, class iter = uint64, uint64 chunkSize = 5000000 /*5MB*/, uint64 elmPerChunk = chunkSize / sizeof(ram::ptr<int>)> class Map {
 	public:
 		lux_sc_generate_debug_structure_body;
@@ -108,8 +108,8 @@ namespace lux {
 				//TODO ???
 				//chunks_[_chunkNum].ptr<type>::ptr( );
 				//tracker_[_chunkNum].ptr<iter>::ptr( );
-				chunks_[_chunkNum] = ram::dAlloc<type>(sizeof(type), elmPerChunk);
-				tracker_[_chunkNum] = ram::dAlloc<iter>(sizeof(iter*), elmPerChunk);
+				chunks_[_chunkNum] = ram::AllocDA<type>(sizeof(type), elmPerChunk);
+				tracker_[_chunkNum] = ram::AllocDA<iter>(sizeof(iter*), elmPerChunk);
 				_chunkNum++;															//Update the number of chunks
 			}
 			__lp_Data(size_) = vData;												//Assign the data to the new element
