@@ -5,7 +5,7 @@
 #include "LuxEngine/Types/Integers/Integers.h"
 #include "LuxEngine/Memory/Ram/Memory2.h"
 #include "LuxEngine/Memory/Memory_t.h"
-
+#include "LuxEngine/Core/ConsoleOutput.h"
 
 
 //TODO throw exception when an error occurs
@@ -76,39 +76,54 @@ namespace lux::ram{
 	//Allocates a block of memory without initializing it
 	Cell_t* alloc(const uint64 vSize, CellClass vCellClass = CellClass::AUTO, const bool vForceDedicatedBuffer = false);
 
-	//Allocates a memory block large enough to contain <vNum> <vSize>-bytes elements and initializes each element with the value of pValue
-	template<class type> ptr<type> vAlloc(const uint64 vSize, const uint64 vNum, const type& pValue, const CellClass vClass = CellClass::AUTO){
-		ptr<type> ptr = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
-		for(uint32 i = 0; i < vSize; i++) memcpy(&ptr[i], &pValue, sizeof(type));
-		return ptr;
+
+
+	template<class type> Cell_t* AllocVAc(const uint64 vSize, const uint64 vNum, const type& pValue, const CellClass vClass = CellClass::AUTO){
+		Cell_t* cell = ram::alloc(vSize * vNum, vClass);
+		//Cell_t* cell = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
+		for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], &pValue, sizeof(type));
+		return cell;
 	}
+	//"Allocate Value Array"
+	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and initializes each element with the pValue value
+	//You MUST specify the type when calling this function
+	//e.g.   lux::ram::ptr<float> p = lux::ram::AllocDA<int32>(sizeof(float), 8, 3.14159f);
+	//Not specifying the type can lead to runtime errors or other stuff you don't wanna see
+	template<class type> ptr<type> AllocVA(const uint64 vSize, const uint64 vNum, const type& pValue, const CellClass vClass = CellClass::AUTO){ return AllocVAc<type>(vSize, vNum, pValue, vClass); }
 
 
-	//Allocate Default Array
+
+
+	//TODO create object in allocated memory and skip first copy
+	template<class type> Cell_t* AllocDAc(const uint64 vSize, const uint64 vNum, const CellClass vClass = CellClass::AUTO){
+		Cell_t* cell = ram::alloc(vSize * vNum, vClass);//Allocate a new cell (If the cellSize is too small, throw an error)
+		//Cell_t* cell = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);//Allocate a new cell (If the cellSize is too small, throw an error)
+		type* _type = new type( );																		   //Create an object with the default value (it's created in the allocated address to save space and performance)
+		for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], _type, sizeof(type));		   //For each element, memcpy the value in its address
+		delete(_type);																					   //Return the inizialized cell
+		return cell;
+	}
+	//"Allocate Default Array"
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and calls the default constructor of each element
 	//You need to specify the type when calling this function
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDA<int32>(1234);
-	template<class type> ptr<type> AllocDA(const uint64 vSize, const uint64 vNum, const CellClass vClass = CellClass::AUTO){
-		ram::ptr<type> ptr = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
-		type* _type = new type( );
-		for(uint32 i = 0; i < vSize; i++) memcpy(&ptr[i], _type, sizeof(type));
-		delete(_type);
-		return (ram::ptr<type>)ptr;
-	}
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDA<int32>(sizeof(int32), 27);
+	template<class type> ptr<type> inline AllocDA(const uint64 vSize, const uint64 vNum, const CellClass vClass = CellClass::AUTO) { return ram::AllocDAc<type>(vSize, vNum, vClass); }
 
 
-	template<class type> Cell_t* AllocDBc(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
-		Cell_t* ptr = ram::alloc(vSize, vClass);
-		type* _type = new type( );
-		for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)ptr->address)[i], _type, sizeof(type));
-		delete(_type);
-		return ptr;
+
+
+	//TODO create object in allocated memory and skip first copy
+	template<class type> Cell_t* AllocDBc(const uint64 vSize, const CellClass vClass = CellClass::AUTO) {
+		Cell_t* cell = ram::alloc(vSize, vClass);													//Allocate a new cell
+		type* _type = new type( );																	//Create an object with the default value (it's created in the allocated address to save space and performance)
+		for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], _type, sizeof(type));	//For each element, memcpy the value in its address
+		delete(_type); return cell;																	//Return the inizialized cell
 	}
-	//Allocate Default Block
+	//"Allocate Default Block"
 	//Allocates a block of memory and initializes it by calling the default constructor of each element
 	//You need to specify the type when calling this function
 	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDB<int32>(302732);
-	template<class type> ptr<type> inline AllocDB(const uint64 vSize, const CellClass vClass = CellClass::AUTO){ return ram::AllocDBc(vSize, vClass); }
+	template<class type> ptr<type> inline AllocDB(const uint64 vSize, const CellClass vClass = CellClass::AUTO){ return ram::AllocDBc<type>(vSize, vClass); }
 
 
 

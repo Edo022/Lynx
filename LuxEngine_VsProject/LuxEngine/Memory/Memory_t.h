@@ -210,7 +210,6 @@ namespace lux{
 			//TODO improve warnings and output object address or nanme
 			inline type& operator*( ) const {
 				lux_sc_F;
-				luxDebug(if(!cell) printWarning("Unable to access the memory of an uninitialized lux::ram::ptr. A pointer should always be initialized with the lux::ram::alloc function or using one of its constructors"));
 				luxDebug(if(!address) printWarning("Unable to access the memory of a null lux::ram::ptr"));
 				return *address;
 			}
@@ -226,22 +225,14 @@ namespace lux{
 			inline type& operator [](const int64 i)		const { lux_sc_F; return address[i]; }
 			inline type& operator [](const int32 i)		const { lux_sc_F; return address[i]; }
 
-			//Returns the first address of the allocated memory block as a lux::ptr
-			inline ptr<type> begin( ) const { lux_sc_F; return ptr<type>(cell); }
-			//Returns the last address of the allocated memory block as a lux::ptr
-			inline ptr<type> end( ) const { lux_sc_F; return ptr<type>(cell, (type*)((uint64)cell->address + cell->cellSize)); }
-			//Returns the total size of the allocated memory
-			inline uint64 __vectorcall size( )   const {
-				lux_sc_F; return cell->cellSize;
-			}
-			//Returns the number of allocated bytes before the pointer
-			inline uint64 __vectorcall prior( )  const { lux_sc_F; return (uint64)address - (uint64)cell->address; }
-			//Returns the number of allocated bytes after the pointer
-			inline uint64 __vectorcall latter( ) const { lux_sc_F; return ((uint64)cell->address + cell->cellSize) - (uint64)address;}
+			inline type*	 __vectorcall begin( )	const { lux_sc_F; return (type*)cell->address;									} //Returns the first address of the allocated memory block as a normal pointer
+			inline ptr<type> __vectorcall beginp( )	const { lux_sc_F; return ptr<type>(cell);										} //Returns the first address of the allocated memory block as a lux::ram::ptr
+			inline type*	 __vectorcall end( )	const { lux_sc_F; return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the last  address of the allocated memory block as a normal pointer
+			inline ptr<type> __vectorcall endp( )	const { lux_sc_F; return ptr<type>(cell, (int8*)cell->address + cell->cellSize);} //Returns the last  address of the allocated memory block as a lux::ram::ptr
+			inline uint64 __vectorcall size( )	const { lux_sc_F; return cell->cellSize;											} //Returns the total size of the allocated memory
+			inline uint64 __vectorcall prior( )	const { lux_sc_F; return (uint8*)address - (uint64)cell->address;					} //Returns the number of allocated bytes before the pointer
+			inline uint64 __vectorcall latter( )const { lux_sc_F; return (int8*)cell->address + cell->cellSize - (uint64)address;	} //Returns the number of allocated bytes after  the pointer
 		};
-
-		//template<class type> ptr<type>::operator type*( )	const { lux_sc_F; return address; }
-		//template<class type> ptr<type>::operator bool( )	const { lux_sc_F; return address; }
 	}
 }
 #endif

@@ -62,9 +62,10 @@ namespace lux {
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		//inline Map(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
 		inline Map( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
+			//TODO substitute with AllocDA
 			//luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
-			chunks_{ ram::vAlloc<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B - 1, ram::ptr<type>( ), CellClass::CLASS_B) },
-			tracker_{ ram::vAlloc<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B - 1, ram::ptr<iter>( ), CellClass::CLASS_B) } {
+			chunks_{ ram::AllocVA<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B - 1, ram::ptr<type>( )) },
+			tracker_{ ram::AllocVA<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B - 1, ram::ptr<iter>( )) } {
 		}
 			//data_ = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			//tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker

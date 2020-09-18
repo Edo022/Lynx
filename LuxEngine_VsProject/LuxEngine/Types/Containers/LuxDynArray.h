@@ -9,6 +9,8 @@
 #include "LuxEngine/Memory/Ram/Memory.h"
 #include "LuxEngine/Types/Containers/LuxContainer.h"
 
+#include "LuxEngine/Core/ConsoleOutput.h"
+
 
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sended back to the queue
@@ -48,26 +50,18 @@ namespace lux {
 	template<class type, class iter = uint32> struct DynArray : public ContainerBase<type, iter> {
 		lux_sc_generate_debug_structure_body;
 		ram::ptr<type> data_;	//Elements of the array
-		//type* data_;	//Elements of the array
-		iter size_;		//Size of the array
+		iter size_;				//Size of the array
 
-		//iter chunkSize;
+
 		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ }, size_{ size_ } { }
-		//Creates an array with no elements
-		//*   vChunkSize | the number of new elements allocated when the array grows
-		//*       Larger chunks improve performance but use more memory
-		//*       Default at ~500KB (depends on the type)
-		inline DynArray( ) : size_{ 0 } ,
-			data_{ ram::AllocDA<type>(max(sizeof(type), (uint64)CellClass::CLASS_B), 1, CellClass::CLASS_B) }{
-		}
+		//TODO add Minimum CellClass values
+		//TODO dont use max macro if using minimum value
+		inline DynArray( ) : size_{ 0 } , data_{ ram::AllocDB<type>(max(sizeof(type), (uint64)CellClass::CLASS_B)) } { }
 
-		//TODO check if the itersator can handle all the elements
-		//TODO sizeof(cIter) > sizeof(iter)
 		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : DynArray( ) {
-			ram::cpy(pContainer.begin( ), data_.address, pContainer.bytes( ));
-			//Not copied correctly
+			luxDebug(if(sizeof(cIter) > sizeof(iter))) param_error(pContainer, "The iterator of a container must be of a larger tpe than the iterator of the container used to initialize it");
+			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
 		}
-		//TODO add .bytes function to containers
 
 
 		//Resizes the array without initializing the new elements
@@ -85,9 +79,7 @@ namespace lux {
 		}
 
 		void clear( ){
-			ram::free(data_);//TODO dont free with global memory pool
-			//data_ = nullptr;
-			//size_ = 0;
+			ram::free(data_);
 			this->DynArray::DynArray( );
 		}
 
@@ -98,17 +90,18 @@ namespace lux {
 			lux_sc_F;
 			resize(size_ + 1);
 			data_[size_ - 1] = vElement;
-			//TODO .end() returns an invalid pointer, probably. "error reading a character of string"
-			//*data_.end( ) = vElement;
 			return size_ - 1;
 		}
 
-		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
-		inline iter __vectorcall size( )	const override { lux_sc_F; return size_; }
-		inline uint64 __vectorcall bytes( )	const override { lux_sc_F; return size_ * sizeof(type); }
-		inline bool __vectorcall empty( )	const override { lux_sc_F; return !size_; }
-		inline type* __vectorcall begin( )	const override { lux_sc_F; return &data_[0]; }
-		inline type* __vectorcall end( )	const override { lux_sc_F; return &data_[size_ - 1]; }
+
+		inline type&	__vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
+
+		inline iter		__vectorcall size( )	const override { lux_sc_F; return size_;				}
+		inline uint64	__vectorcall bytes( )	const override { lux_sc_F; return size_ * sizeof(type); }
+		inline bool		__vectorcall empty( )	const override { lux_sc_F; return !size_;				}
+
+		inline type*	__vectorcall begin( )	const override { lux_sc_F; return &data_[0];			}
+		inline type*	__vectorcall end( )		const override { lux_sc_F; return &data_[size_ - 1];	}
 	};
 }
 

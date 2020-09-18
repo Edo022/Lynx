@@ -97,7 +97,7 @@ namespace lux::ram{
 	}
 
 
-	template<class type> ptr<type> vAlloc(const uint64 vSize, const CellClass vClass, const type& pValue){
+	template<class type> ptr<type> AllocVA(const uint64 vSize, const CellClass vClass, const type& pValue){
 		ptr<type> ptr = ram::alloc(vSize, vClass);
 		for(auto e : ptr) e = pValue;
 		return ptr;
