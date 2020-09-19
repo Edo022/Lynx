@@ -121,17 +121,38 @@ namespace lux{
 
 			//####################################################################################################################################################################//
 
+			luxDebug(bool checkConstructParam__pPtrUninit(ptr<type>& pPtr) {
+				if(pPtr.lux_sc_initialized != lux_sc_v)
+					param_error(pPtr, "An uninitialized lux::ram::ptr have been passed to a copy constructor of another lux::ram::ptr");
+				return true;
+			});
+			luxDebug(bool checkConstructParam__vCellNullptr(Cell_t* vCell) {
+				if(pPtr.lux_sc_initialized != lux_sc_v)
+					param_error(pPtr, "An uninitialized lux::ram::ptr have been passed to a copy constructor of another lux::ram::ptr");
+				return true;
+			});
+			#define condNoResFun(value, fun) luxDebug((func(value)) ? value : value) luxRelease(value)
 
 
 			//TODO add check in other classes
 			lux_sc_generate_nothing_constructor(ptr)	cell{ cell },			address{ address }					{ }
 			inline ptr( ) :								cell{ nullptr },		address{ nullptr }					{ }
 			inline ptr(Cell_t* vCell) :					cell{ vCell },			address{ (type*)vCell->address }	{ cell->owners++; }
+			// [#] No init required
+
 			inline ptr(Cell_t* vCell, type* vAddress) :	cell{ vCell },			address{ vAddress }					{ cell->owners++; }
-			inline ptr(ptr<type>& pPtr) :				cell{ pPtr.cell },		address{ pPtr.address }				{ cell->owners++; }
-			//TODO pointer is not checked bu used
+			// [#] No init required
+			// [#] vCell is nullptr, but vAddress no
+			// [#] vAddress is nullptr, but vCell no
+
+			inline ptr(ptr<type>& pPtr) :				cell{ condNoResFun(pPtr.cell, checkConstructParam__pPtrUninit) },		address{ pPtr.address }				{ cell->owners++; }
+			// [#] No init required
+			// [#] uninitialized ptr   |  print error
+
 			template<class pType>
-			explicit inline ptr(ptr<pType>& pPtr) :		cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ cell->owners++; }
+			explicit inline ptr(ptr<pType>& pPtr) :		cell{ condNoResFun(pPtr.cell, checkConstructParam__pPtrUninit) },		address{ (type*)pPtr.address }		{ cell->owners++; }
+			// [#] No init required
+			// [#] uninitialized ptr   |  print error
 
 
 
@@ -181,13 +202,14 @@ namespace lux{
 			inline operator bool( )		const { lux_sc_F; return address; }			//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
 			inline type& operator [](const uint64 i)const { lux_sc_F; return address[i]; }
 
-			inline type*	 __vectorcall begin( )	const { lux_sc_F; return (type*)cell->address;									} //Returns the first address of the allocated memory block as a normal pointer
-			inline ptr<type> __vectorcall beginp( )	const { lux_sc_F; return ptr<type>(cell);										} //Returns the first address of the allocated memory block as a lux::ram::ptr
-			inline type*	 __vectorcall end( )	const { lux_sc_F; return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the last  address of the allocated memory block as a normal pointer
-			inline ptr<type> __vectorcall endp( )	const { lux_sc_F; return ptr<type>(cell, (int8*)cell->address + cell->cellSize);} //Returns the last  address of the allocated memory block as a lux::ram::ptr
-			inline uint64 __vectorcall size( )	const { lux_sc_F; return cell->cellSize;											} //Returns the total size of the allocated memory
-			inline uint64 __vectorcall prior( )	const { lux_sc_F; return (uint8*)address - (uint64)cell->address;					} //Returns the number of allocated bytes before the pointer
-			inline uint64 __vectorcall latter( )const { lux_sc_F; return (int8*)cell->address + cell->cellSize - (uint64)address;	} //Returns the number of allocated bytes after  the pointer
+			inline type*	 __vectorcall begin( )	const { lux_sc_F; return (type*)cell->address;										} //Returns the first address of the allocated memory block as a normal pointer
+			inline ptr<type> __vectorcall beginp( )	const { lux_sc_F; return ptr<type>(cell);											} //Returns the first address of the allocated memory block as a lux::ram::ptr
+			inline type*	 __vectorcall end( )	const { lux_sc_F; return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the address of the object past the last object in the memory block as a normal pointer. Don't dereference it
+			inline ptr<type> __vectorcall endp( )	const { lux_sc_F; return ptr<type>(cell, (int8*)cell->address + cell->cellSize);} //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
+			inline type&	 __vectorcall last( )	const { lux_sc_F; return *(type*)((int8*)cell->address + cell->cellSize); } //Returns a reference to the last element in the allocated memory block
+			inline uint64 __vectorcall size( )	const { lux_sc_F; return cell->cellSize;												} //Returns the total size of the allocated memory
+			inline uint64 __vectorcall prior( )	const { lux_sc_F; return (uint8*)address - (uint64)cell->address;						} //Returns the number of allocated bytes before the pointer
+			inline uint64 __vectorcall latter( )const { lux_sc_F; return (int8*)cell->address + cell->cellSize - (uint64)address;		} //Returns the number of allocated bytes after  the pointer
 		};
 	}
 }

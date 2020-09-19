@@ -191,6 +191,7 @@ namespace lux::core::g{
 				.commandBufferCount{ 1 },
 				.signalSemaphoreCount{ 1 },
 			};
+			//TODO maybe the normal array is bugged
 			submitInfo.pWaitSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameCopySemaphore[renderCurrentFrame];
 			submitInfo.pCommandBuffers = &c::copyCommandBuffers[imageIndex];

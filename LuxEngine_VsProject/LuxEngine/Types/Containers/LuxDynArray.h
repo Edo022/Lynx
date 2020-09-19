@@ -51,16 +51,33 @@ namespace lux {
 		lux_sc_generate_debug_structure_body;
 		ram::ptr<type> data_;	//Elements of the array
 		iter size_;				//Size of the array
+		//TODO divide static and dynamic pointers.
+		//TODO static pointers  can allocate and use memory but no be increased or changed
+		//TODO or just make it const
 
 
 		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ }, size_{ size_ } { }
+		// uninitialized tructure       | k | print error
+		// data_ is invalid/unallocated | k | Data cannot be invalid if the constructor was called. print an error if it's not initialized
+		// data_ is nullptr             | k | Data cannot be nullptr. It's managed by the class and the class won't assign nullptr to it
+
+
+
 		//TODO add Minimum CellClass values
-		//TODO dont use max macro if using minimum value
-		inline DynArray( ) : size_{ 0 } , data_{ ram::AllocDB<type>(max(sizeof(type), (uint64)CellClass::CLASS_B)) } { }
+		//TODO USE CLASS B
+		inline DynArray( ) : size_{ 0 } , data_{ ram::alloc(0) } { }
+		// [#] No init required
+
+
+		//inline DynArray( ) : size_{ 0 } , data_{ ram::alloc(0, CellClass::CLASS_B) } { }
 
 		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : DynArray( ) {
 			luxDebug(if(sizeof(cIter) > sizeof(iter))) param_error(pContainer, "The iterator of a container must be of a larger tpe than the iterator of the container used to initialize it");
 			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
+			// [#] No init required
+			// [#] Iterator is too small     | k | print error
+			// [#] pContainer is initialized | k | checked in the functions of the container
+			// [#]
 		}
 
 
@@ -70,17 +87,28 @@ namespace lux {
 		//TODO totally useless. Just don't return
 		inline iter __vectorcall resize(const iter vNewSize) {
 			lux_sc_F;
-			//type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
-			//if(__lp_data_r != nullptr)data_ = __lp_data_r;
-			ram::dRealloc(data_, vNewSize);
-			//ram::realloc(data_, vNewSize);
-			return size_ = vNewSize;
+			luxDebug(if(vNewSize < 0)) param_error(vNewSize, "The size of a container cannot be negative");
 
+			//if(vNewSize){
+				//type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
+				//if(__lp_data_r != nullptr)data_ = __lp_data_r;
+				ram::dRealloc(data_, vNewSize);
+				//ram::realloc(data_, vNewSize);
+				//return size_ = vNewSize;
+				size_ = vNewSize;
+			//}
+			//else clear( );
+			return data_.size( );
+			// [#] uninitialized structure   | k | print error
+			// [#] vNewSize is negative      | ? | print error
+			// [#] vNewSize is 0             | k | the dRealloc->alloc function will take care of this
 		}
 
 		void clear( ){
+			lux_sc_F;
 			ram::free(data_);
 			this->DynArray::DynArray( );
+			// [#] uninitialized structure   | k | print error
 		}
 
 		//Adds an element to the end of the array
@@ -88,20 +116,54 @@ namespace lux {
 		//*   Returns  | the index of the element in the array
 		inline iter __vectorcall add(const type& vElement) {
 			lux_sc_F;
+			//luxDebug(if(vElement))
 			resize(size_ + 1);
-			data_[size_ - 1] = vElement;
-			return size_ - 1;
+			//*data_.end( ) = vElement;
+			//data_[data_.size( ) - 1] = vElement;
+			data_.last( ) = vElement;
+			//return size_ - 1;
+			return data_.size( ) - 1;
+			// [#] uninitialized structure   | k | print error
+			// [#] uninitialized vElement    |  >>> NOT CHECKED <<<
+
 		}
 
 
-		inline type&	__vectorcall operator[](const iter vIndex) const { lux_sc_F; return data_[vIndex]; }
 
-		inline iter		__vectorcall size( )	const override { lux_sc_F; return size_;				}
+		//TODO FIX
+		inline iter		__vectorcall size( )	const override { lux_sc_F; return size_; }
+		// [#] uninitialized structure   | k | print error
+
+		//inline iter		__vectorcall size( )	const override { lux_sc_F; return data_.size( ); }
+		//TODO FIX
+		//TODO DEBUG RESIZE FUNCTIONS
+
+
 		inline uint64	__vectorcall bytes( )	const override { lux_sc_F; return size_ * sizeof(type); }
-		inline bool		__vectorcall empty( )	const override { lux_sc_F; return !size_;				}
+		// [#] uninitialized structure   | k | print error
 
-		inline type*	__vectorcall begin( )	const override { lux_sc_F; return &data_[0];			}
-		inline type*	__vectorcall end( )		const override { lux_sc_F; return &data_[size_ - 1];	}
+		inline bool		__vectorcall empty( )	const override { lux_sc_F; return !data_.size( );				}
+		// [#] uninitialized structure   | k | print error
+
+		inline type* __vectorcall begin( )	const override { lux_sc_F; return data_.begin( ); }
+		//inline type*	__vectorcall begin( )	const override { lux_sc_F; return data_;			}
+		//inline type*	__vectorcall begin( )	const override { lux_sc_F; return &data_[0];			}
+		// [#] uninitialized structure   | k | print error
+
+
+		inline type* __vectorcall end( )		const override { lux_sc_F; return data_.end( ); }
+		//inline type*	__vectorcall end( )		const override { lux_sc_F; return &data_[size_ - 1];	}
+		// [#] uninitialized structure   | k | print error
+
+		inline type&	__vectorcall operator[](const iter vIndex) const {
+			lux_sc_F;
+			luxDebug(if(vIndex < 0))		param_error(vIndex, "Index cannot be negative");
+			luxDebug(if(vIndex >= size_))	param_error(vIndex, "Index is out of range");
+			return data_[vIndex];
+		}
+		// [#] uninitialized structure   | k | print error
+		// [#] Index is negative         | k | print error
+		// [#] Index is out of range     | k | print error
 	};
 }
 

@@ -73,8 +73,33 @@
 #pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
 namespace lux::ram{
 
+	Cell_t* alloc__(const uint64 vSize, const CellClass vClass = CellClass::AUTO);
 	//Allocates a block of memory without initializing it
-	Cell_t* alloc(const uint64 vSize, CellClass vCellClass = CellClass::AUTO, const bool vForceDedicatedBuffer = false);
+	inline Cell_t* alloc(const uint64 vSize, CellClass vClass = CellClass::AUTO, const bool vForceDedicatedBuffer = false){
+		luxDebug(if(vClass != CellClass::AUTO && (uint32)vClass < vSize) param_error(vClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
+		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
+
+
+		//Set cell class if CellClass::AUTO was used or set it to custom size buffer if vForceDedicatedBuffer is true
+		if(vForceDedicatedBuffer) vClass = CellClass::CLASS_0;
+		else if(vClass == CellClass::AUTO) {
+			/**/ if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vClass = CellClass::CLASS_A;
+			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vClass = CellClass::CLASS_B;
+			else if(vSize <= (uint32)CellClass::CLASS_C) [[unlikely]] vClass = CellClass::CLASS_C;
+			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] vClass = CellClass::CLASS_D;
+			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] vClass = CellClass::CLASS_Q;
+			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] vClass = CellClass::CLASS_L;
+			else [[likely]] vClass = CellClass::CLASS_0;
+		}
+
+
+		if(!vSize) {
+			Cell_t* cell = alloc__(vSize, vClass);
+			cell->cellSize = 0;
+			return cell;
+		}
+		else return alloc__(vSize, vClass);
+	}
 
 
 
@@ -114,7 +139,7 @@ namespace lux::ram{
 
 	//TODO create object in allocated memory and skip first copy
 	template<class type> Cell_t* AllocDBc(const uint64 vSize, const CellClass vClass = CellClass::AUTO) {
-		Cell_t* cell = ram::alloc(vSize, vClass);													//Allocate a new cell
+		Cell_t* cell = ram::alloc(multipleOf(vSize, sizeof(type)), vClass);							//Allocate a new cell
 		type* _type = new type( );																	//Create an object with the default value (it's created in the allocated address to save space and performance)
 		for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], _type, sizeof(type));	//For each element, memcpy the value in its address
 		delete(_type); return cell;																	//Return the inizialized cell
@@ -123,6 +148,7 @@ namespace lux::ram{
 	//Allocates a block of memory and initializes it by calling the default constructor of each element
 	//You need to specify the type when calling this function
 	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDB<int32>(302732);
+	//The type can be omitted only if the size is 0
 	template<class type> ptr<type> inline AllocDB(const uint64 vSize, const CellClass vClass = CellClass::AUTO){ return ram::AllocDBc<type>(vSize, vClass); }
 
 
@@ -147,7 +173,8 @@ namespace lux::ram{
 			memcpy(cell, pCell, pCell->cellSize);
 
 			ram::free(pCell);
-			pCell->address = cell->address; pCell->buffer = cell->buffer; pCell->cellSize = cell->cellSize; pCell->bufferType = cell->bufferType; pCell->cellIndex = cell->cellIndex;
+			//pCell->address = cell->address; pCell->buffer = cell->buffer; pCell->cellSize = cell->cellSize; pCell->bufferType = cell->bufferType; pCell->cellIndex = cell->cellIndex;
+			*pCell = *cell;
 		}
 	}
 	template<class t> static inline void dRealloc(ptr<t>& pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){

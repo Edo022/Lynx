@@ -36,23 +36,7 @@ namespace lux::ram{
 	//*   Returns               | the allocated Cell object
 	//e.g. lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
 	//e.g. same as int* foo = (int*)malloc(100);
-	Cell_t* alloc(const uint64 vSize, CellClass vClass, const bool vForceDedicatedBuffer){
-		luxDebug(if(vClass != CellClass::AUTO && (uint32)vClass < vSize) param_error(vClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
-		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
-
-		//Set cell class if CellClass::AUTO was used or set it to custom size buffer if vForceDedicatedBuffer is true
-		if(vForceDedicatedBuffer) vClass = CellClass::CLASS_0;
-		else if(vClass == CellClass::AUTO) {
-			if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] vClass = CellClass::CLASS_A;
-			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] vClass = CellClass::CLASS_B;
-			else if(vSize <= (uint32)CellClass::CLASS_C) [[unlikely]] vClass = CellClass::CLASS_C;
-			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] vClass = CellClass::CLASS_D;
-			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] vClass = CellClass::CLASS_Q;
-			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] vClass = CellClass::CLASS_L;
-			else [[likely]] vClass = CellClass::CLASS_0;
-		}
-
-
+	Cell_t* alloc__(const uint64 vSize, const CellClass vClass){
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
 		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
@@ -130,7 +114,7 @@ namespace lux::ram{
 			Cell_t * cell = alloc(vSize, vCellClass);	//Allocate a new cell
 			memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
 			ram::free(pCell);							//Free the old memory
-			pCell = cell;								//Update the cell (and all the pointers pointing to it)
+			*pCell = *cell;								//Update the cell (and all the pointers pointing to it)
 		}
 	}
 
