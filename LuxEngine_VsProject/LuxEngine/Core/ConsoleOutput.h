@@ -1,6 +1,9 @@
 #pragma once
 //#include "LuxEngine/Types/Containers/LuxString.h"
 #include <string>
+#include <stdio.h>
+#include "LuxEngine/macros.h"
+#include <exception>
 
 
 
@@ -11,6 +14,30 @@ namespace lux::out{
 
 	#define printError(pMessage, vFatalError, vErrorCode) lux::out::_printError(std::string("Function ").append(__FUNCTION__).append(", line ").append(std::to_string((unsigned long long)__LINE__)).append("\n\n").append(pMessage), vFatalError, vErrorCode)
 	#define printWarning(pMessage) lux::out::_printError(std::string("Function ").append(__FUNCTION__).append(", line ").append(std::to_string(__LINE__)).append("\n\n").append(pMessage))
+
+	#define lux_error(condition, formatString, ...) luxDebug(								\
+		if(condition) {																		\
+			Failure printf("Error in function %s, line %d:\n", __FUNCTION__, __LINE__);		\
+			Failure printf(__VA_ARGS__);													\
+			throw std::exception("UwU");													\
+		}																					\
+	)
+	#define param_error_2(condition, param, formatString, ...) luxDebug(											\
+		if(condition) {																								\
+			Failure printf("Error in function %s, line %d:\n", __FUNCTION__, __LINE__);								\
+			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\".\n", ##param, __FUNCTION__)	\
+			Failure printf(__VA_ARGS__);																			\
+			throw std::exception("UwU");																			\
+		}																											\
+	)
+	#define ptr_validity(ptr, __type, formatString, ...) { luxDebug(						\
+		if(ptr){																			\
+			try{ __type __var = *ptr; }														\
+			catch(std::exception e) { param_error(ptr, formatString, __VA_ARGS__); }		\
+		}																					\
+	)}
+
+
 
 	#define param_error(paramName, errorInfo) luxDebug(																				\
 		printError(std::string("Invalid value passed to '").append(#paramName).append("' parameter of function '").append(__FUNCTION__).append("'\n")		\

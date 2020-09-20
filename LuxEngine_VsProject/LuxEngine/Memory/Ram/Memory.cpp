@@ -28,6 +28,7 @@ namespace lux::ram{
 
 
 
+	//TODO CHECK MEMORY FULL
 
 	//This function allocates a memory cell or a pointer into a buffer
 	//*   vSize                 | size of the cell
