@@ -81,6 +81,7 @@ namespace lux {
 		//TODO add Minimum CellClass values
 		//TODO USE CLASS B
 		inline DynArray( ) : size_{ 0 } , data_{ ram::alloc(0) } { }
+		//inline DynArray( ) : size_{ 0 } , data_{ nullptr } { }
 		// [#] No init required
 		//OK
 

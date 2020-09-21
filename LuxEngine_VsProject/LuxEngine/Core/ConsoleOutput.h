@@ -10,7 +10,7 @@
 namespace lux::out{
 	void _printError(const std::string& pMessage, const bool vFatalError = false, const int32 vErrorCode = -1);
 	void _printWarning(const std::string& pMessage);
-
+	void __stop__();
 
 	//#define printError(pMessage, vFatalError, vErrorCode) lux::out::_printError(std::string("Function ").append(__FUNCTION__).append(", line ").append(std::to_string((unsigned long long)__LINE__)).append("\n\n").append(pMessage), vFatalError, vErrorCode)
 	#define printError(pMessage, vFatalError, vErrorCode) lux::out::_printError(std::string("Function ").append("h").append(", line ").append(std::to_string((unsigned long long)__LINE__)).append("\n\n").append(pMessage), vFatalError, vErrorCode)
@@ -23,7 +23,8 @@ namespace lux::out{
 			Failure printf("Error in function %s, line %d:\n", "h", __LINE__);				\
 			/*Failure printf("Error in function %s, line %d:\n", __FUNCTION__, __LINE__);		*/\
 			Failure printf(__VA_ARGS__);											\
-			throw std::exception("UwU");													\
+			/*throw std::exception("UwU");													*/\
+			lux::out::__stop__();\
 		}																					\
 	)
 	#define param_error_2(condition, param, ...) luxDebug(													\
@@ -33,7 +34,8 @@ namespace lux::out{
 			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\".\n", #param, "h");	\
 			/*Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\".\n", #param, __FUNCTION__);	*/\
 			Failure printf(__VA_ARGS__);																	\
-			throw std::exception("UwU");																			\
+			/*throw std::exception("UwU");																			*/\
+			lux::out::__stop__();\
 		}																											\
 	)
 	#define ptr_validity(ptr, __type, ...) { luxDebug(						\

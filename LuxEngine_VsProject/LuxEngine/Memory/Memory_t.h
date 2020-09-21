@@ -125,25 +125,27 @@ namespace lux{
 
 			#ifdef LUX_DEBUG
 				bool __ptrC(const ptr<type>& pPtr) const {
-					if(pPtr.lux_sc_initialized != lux_sc_v) param_error(pPtr, "An uninitialized lux::ram::ptr have been passed to a copy constructor of another lux::ram::ptr");
+					isInit(pPtr);
+					//if(pPtr.lux_sc_initialized != lux_sc_v) param_error(pPtr, "An uninitialized lux::ram::ptr have been passed to a copy constructor of another lux::ram::ptr");
 					return true;
 				};
 				void __ptrCf(const ptr<type>& pPtr) const {
-					if(pPtr.lux_sc_initialized != lux_sc_v)
-						param_error(pPtr, "Uninitialized lux::ram::ptr passed to a function of a lux::ram::ptr");
+					isInit(pPtr);
+					//if(pPtr.lux_sc_initialized != lux_sc_v)
+						//param_error(pPtr, "Uninitialized lux::ram::ptr passed to a function of a lux::ram::ptr");
 				};
 
 
 				bool __cellAdrC(Cell_t* vCell, type* vAddress) const {
-					/**/ if(!vCell && vAddress) param_error(vCell, "nullptr cell used to initialize a lux::ram::ptr. If a pointer has a valid address, the cell must also be valid");
-					else if(vCell && !vAddress) param_error(vCell, "nullptr address used to initialize a lux::ram::ptr. If a pointer has a valid cell, the address must be in its range");
+					param_error_2(!vCell && vAddress, vCell, "nullptr cell used to initialize a lux::ram::ptr. If a pointer has a valid address, the cell must also be valid");
+					param_error_2(vCell && !vAddress, vCell, "nullptr address used to initialize a lux::ram::ptr. If a pointer has a valid cell, the address must be in its range");
 					//ok, if they're both nullptr the ptr is initialized with nullptr
 
 					ptr_validity(vAddress, type, "Invalid address used to initialize a lux::ram::ptr");
 					ptr_validity(vCell, Cell_t, "Invalid Cell_t pointer used to initialize a lux::ram::ptr");
 					return true;
 				};
-				#endif
+			#endif
 
 
 
@@ -160,7 +162,18 @@ namespace lux{
 			//#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			#define checkm luxDebug(if(address < begin( ))                 printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			//#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
-			#define checka luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize || (uint64)address < (uint64)cell->address)) printWarning("The assigned address is out of the allocated block range. Reading or writing to this address is undefined behaviour and can cause runtime errors")
+
+			#define __checka__err__ "The assigned address is out of the allocated block range. Reading or writing to this address is undefined behaviour and can cause runtime errors"
+			#define checka luxDebug(																				\
+				if(address && ((uint64)address < (uint64)cell->address)){											\
+					if(cell->cellSize){																				\
+						lux_error((uint64)address >= ((uint64)cell->address) + cell->cellSize, __checka__err__);	\
+					}																								\
+					else{																							\
+						lux_error((uint64)address != (uint64)cell->address + cell->cellSize, __checka__err__);		\
+					}																								\
+				}																									\
+			);
 
 
 
@@ -174,7 +187,9 @@ namespace lux{
 
 
 
-
+			//TODO #define macro(a,b) otherMacros(a,b)
+			//TODO #define otherMacro(a,b) finalMacro(a##b)
+			//TODO macro(__FUNC, TION__)
 
 			//TODO add check in other classes
 			//TODO check pointer validity with try catch on general exception

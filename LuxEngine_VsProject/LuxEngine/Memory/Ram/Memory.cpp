@@ -62,8 +62,8 @@ namespace lux::ram{
 			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
 			//TODO set right like
-			//if(!buffer.memory) {
-			if(true) {
+			if(!buffer.memory) {
+			//if(true) {
 				buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
 				//TODO remove
 				allocated += (uint32)vClass ? bufferSize : vSize;

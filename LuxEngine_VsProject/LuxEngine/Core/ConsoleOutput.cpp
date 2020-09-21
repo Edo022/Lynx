@@ -15,7 +15,7 @@ namespace lux::out{
 	void _printError(const std::string& pMessage, const bool vFatalError, const int32 vErrorCode){
 		lux::core::running = false;
 		Failure printf("%srror. Code: %d\n%s\n", vFatalError ? "Fatal e" : "E", vErrorCode, pMessage.c_str( ));
-		if(vFatalError) throw std::out_of_range("lux_test");
+		/*if(vFatalError) */throw std::out_of_range("lux_test");
 		//if(vFatalError) { system("pause"); exit(vErrorCode); }
 	}
 
@@ -23,5 +23,11 @@ namespace lux::out{
 
 	void _printWarning(const std::string& pMessage){
 		Warning printf("Warning: %s\n", pMessage.c_str( ));
+	}
+
+
+	void __stop__( ){
+		lux::core::running = false;
+		throw std::exception("UwU");
 	}
 }

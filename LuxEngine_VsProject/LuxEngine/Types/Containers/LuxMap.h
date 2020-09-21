@@ -21,6 +21,7 @@ namespace lux {
 	//Use the isValid() function to check if an element is valid or has been removed
 	template<class type, class iter = uint64, uint64 chunkSize = 5000000 /*5MB*/, uint64 elmPerChunk = chunkSize / sizeof(ram::ptr<int>)> class Map {
 	public:
+		//lux_sc_generate_debug_structure_body_func_only;
 		lux_sc_generate_debug_structure_body;
 		ram::ptr<ram::ptr<type>> chunks_;		//Elements
 		ram::ptr<ram::ptr<iter>> tracker_;	//State of each element
@@ -51,6 +52,8 @@ namespace lux {
 			size_{ size_ }, freeSize_{ freeSize_ }, chunks_{ chunks_ }, tracker_{ tracker_ },
 			head_{ head_ }, tail_{ tail_ } {
 		}
+		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
+		//OK
 
 		//Creates the map with the specified chunk and maximum size
 		//The number of chunks depends on their size and the maximum size of the map (chunks = _maxSize / _chunkSize)
@@ -67,6 +70,9 @@ namespace lux {
 			chunks_{ ram::AllocVA<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B - 1, ram::ptr<type>( )) },
 			tracker_{ ram::AllocVA<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B - 1, ram::ptr<iter>( )) } {
 		}
+		// [#] No init required
+		//OK
+
 			//data_ = ram::alloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			//tracker_ = ram::alloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
 			//memset(data_.address, 0, data_.size( ));
@@ -87,11 +93,13 @@ namespace lux {
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   in: a pointer to the container object
 		template<class elmType>
-		inline Map(const ContainerBase<elmType, iter>* in) : Map( ) {
-			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
+		inline Map(const ContainerBase<elmType, iter>& pContainer) : Map( ) {
+			isInit(pContainer);
+			for(iter i = 0; i < pContainer.end( ) - pContainer.begin( ); ++i) add((elmType) * (pContainer.begin( ) + i));
 		}
-
-
+		// [#] No init required
+		// [#] pContainer is uninitialized   | k | print error
+		//OK
 
 
 
@@ -119,6 +127,8 @@ namespace lux {
 			size_++;																//Update the number of elements
 			return size_ - 1;														//Return the ID
 		}
+		// [#] Structure is uninitialized  | k | print error
+		//OK
 
 
 
@@ -143,6 +153,8 @@ namespace lux {
 				return head2;
 			}
 		}
+		// [#] Structure is uninitialized  | k | print error
+		//OK
 
 
 
@@ -153,16 +165,23 @@ namespace lux {
 		//*   Returns  | true if the operation succeeded, false if the index is invalid or an error occurred
 		bool __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
 			checkInit;
-			if(!isValid(vIndex)) return false;						//Check for index validity
-			else {													//If it's valid,
+			//if(!isValid(vIndex)) return false;						//Check for index validity
+			param_error_2(!isValid(vIndex), vIndex, "Index is invalid or negative");
+
+			//else {													//If it's valid,
 				__lp_Tracker(vIndex) = -1;								//Set the index as free
 				if(vFreeElm) free(&__lp_Data(vIndex));					//Free the element if necessary
 				if(head_ == (iter)-1) head_ = tail_ = vIndex;			//If it has no free elements, initialize head_ and tail_.
 				else tail_ = __lp_Tracker(tail_) = vIndex;				//If it has free elements, set the new tail_ and update the last free index
 				freeSize_++;											//Update the number of free elements
-			}
+			//}
 			return 0;
 		}
+		// [#] Structure is uninitialized  | k | print error
+		// [#] vIndex is negative          | k | print error
+		// [#] vIndex is out of range      | k | print error
+		// [#] vIndex is invalid           | k | print error
+		//OK
 
 
 
@@ -189,7 +208,8 @@ namespace lux {
 			//head_ = tail_ = -1;															//Reset head_ and tail_
 			this->Map::Map( );
 		}
-
+		// [#] Structure is uninitialized  | k | print error
+		//OK
 
 
 
@@ -207,15 +227,17 @@ namespace lux {
 			//else if(__lp_Tracker(vIndex) >= 0) return 1;
 			else return 1;					//Free element
 		}
-
+		// [#] Structure is uninitialized  | k | print error
+		//OK
 
 		//Returns true if the index is used, false if it's free or invalid (use the state function for more details)
 		inline bool __vectorcall isValid(const iter vIndex) const {
 			checkInit;
-			if(vIndex >= size_) return false;				//Return false if the index is out of range
+			if(vIndex >= size_ || vIndex < 0) return false;				//Return false if the index is out of range
 			else return (__lp_Tracker(vIndex) == (iter)-1);			//Return true if the index is used, false if it's free
 		}
-
+		// [#] Structure is uninitialized  | k | print error
+		//OK
 
 
 
@@ -225,9 +247,21 @@ namespace lux {
 
 
 		//Use the isValid() function to check if the element can be used
-		inline type& __vectorcall operator[](const iter vIndex) const { checkInit; return __lp_Data(vIndex); }
+		inline type& __vectorcall operator[](const iter vIndex) const { checkInit; param_error_2(!isValid(vIndex), vIndex, "Index is invalid or negative"); return __lp_Data(vIndex); }
+		// [#] Structure is uninitialized  | k | print error
+		// [#] vIndex is negative          | k | print error
+		// [#] vIndex is out of range      | k | print error
+		// [#] vIndex is invalid           | k | print error
+		//OK
+
 		//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-		inline type* __vectorcall begin(const iter vChunkIndex) const { checkInit; return &chunks_[vChunkIndex][0]; }
+		inline type* __vectorcall begin(const iter vChunkIndex) const { checkInit; param_error_2(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0]; }
+		// [#] Structure is uninitialized  | k | print error
+		// [#] vChunkIndex is negative     | k | print error
+		// [#] vChunkIndex is out of range | k | print error
+		// [#] vChunkIndex is invalid      | k | print error
+		//OK
+
 
 		////DEPRECATED FUNCTION
 		////TODO remove
@@ -256,10 +290,19 @@ namespace lux {
 
 		//Returns the number of elements in the map, including the free ones
 		inline iter __vectorcall size( ) const { checkInit; return size_; }
+		// [#] Structure is uninitialized  | k | print error
+		//OK
+
 		//Returns the number of used elements
 		inline iter __vectorcall usedSize( ) const { checkInit; return size_ - freeSize_; }
+		// [#] Structure is uninitialized  | k | print error
+		//OK
+
 		//Returns the number of free elements
 		inline iter __vectorcall freeSize( ) const { checkInit; return freeSize_; }
+		// [#] Structure is uninitialized  | k | print error
+		//OK
+
 	};
 }
 #undef __lp_Data

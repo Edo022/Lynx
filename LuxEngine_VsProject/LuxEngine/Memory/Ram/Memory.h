@@ -94,7 +94,7 @@ namespace lux::ram{
 
 
 		if(!vSize) {
-			Cell_t* cell = alloc__(vSize, vClass);
+			Cell_t* cell = alloc__(1, vClass);
 			cell->cellSize = 0;
 			return cell;
 		}
