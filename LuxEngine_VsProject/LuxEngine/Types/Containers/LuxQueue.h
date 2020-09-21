@@ -20,19 +20,19 @@ namespace lux {
 
 
 		//Adds an element at the back of the queue
-		inline void pushBack(const type& vElement)	{ lux_sc_F; _back.add(vElement); }
+		inline void pushBack(const type& vElement)	{ checkInit; _back.add(vElement); }
 		//Adds an element at the front of the queue
-		inline void pushFront(const type& vElement) { lux_sc_F; _front.add(vElement); }
+		inline void pushFront(const type& vElement) { checkInit; _front.add(vElement); }
 		//Removes an element from the back of the queue
-		inline void popBack(const type& vElement)	{ lux_sc_F; _back.resize(_back.size( ) - 1); }
+		inline void popBack(const type& vElement)	{ checkInit; _back.resize(_back.size( ) - 1); }
 		//Removes an element from the front of the queue
-		inline void popFront( )						{ lux_sc_F; _front.resize(_front.size( ) - 1); }
+		inline void popFront( )						{ checkInit; _front.resize(_front.size( ) - 1); }
 
 
-		inline type& operator [](const iter vIndex) { lux_sc_F; return (vIndex < _back.size( )) ? _back[_back.size( ) - 1 - vIndex] : _front[vIndex - (_back.size( ) - 1)]; }
-		inline type& front( )	{ lux_sc_F; return *_front.end( ); }
-		inline type& back( )	{ lux_sc_F; return *_back.end( ); }
-		inline iter size( )		{ lux_sc_F; return _front.size( ) + _back.size( ); }
-		inline bool empty( )	{ lux_sc_F; return size( ) == 0; }
+		inline type& operator [](const iter vIndex) { checkInit; return (vIndex < _back.size( )) ? _back[_back.size( ) - 1 - vIndex] : _front[vIndex - (_back.size( ) - 1)]; }
+		inline type& front( )	{ checkInit; return *_front.end( ); }
+		inline type& back( )	{ checkInit; return *_back.end( ); }
+		inline iter size( )		{ checkInit; return _front.size( ) + _back.size( ); }
+		inline bool empty( )	{ checkInit; return size( ) == 0; }
 	};
 }

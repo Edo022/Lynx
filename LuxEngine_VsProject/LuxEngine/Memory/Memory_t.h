@@ -123,37 +123,42 @@ namespace lux{
 
 			//####################################################################################################################################################################//
 
-			luxDebug(bool __ptrC(ptr<type>& pPtr) {
-				if(pPtr.lux_sc_initialized != lux_sc_v) param_error(pPtr, "An uninitialized lux::ram::ptr have been passed to a copy constructor of another lux::ram::ptr");
-				return true;
-			});
-			luxDebug(void __ptrCf(ptr<type>& pPtr) { if(pPtr.lux_sc_initialized != lux_sc_v) param_error(pPtr, "Uninitialized lux::ram::ptr passed to a function of a lux::ram::ptr"); });
+			#ifdef LUX_DEBUG
+				bool __ptrC(const ptr<type>& pPtr) const {
+					if(pPtr.lux_sc_initialized != lux_sc_v) param_error(pPtr, "An uninitialized lux::ram::ptr have been passed to a copy constructor of another lux::ram::ptr");
+					return true;
+				};
+				void __ptrCf(const ptr<type>& pPtr) const {
+					if(pPtr.lux_sc_initialized != lux_sc_v)
+						param_error(pPtr, "Uninitialized lux::ram::ptr passed to a function of a lux::ram::ptr");
+				};
 
 
-			luxDebug(bool __cellAdrC(Cell_t* vCell, type* vAddress) {
-				/**/ if(!vCell && vAddress) param_error(vCell, "nullptr cell used to initialize a lux::ram::ptr. If a pointer has a valid address, the cell must also be valid");
-				else if(vCell && !vAddress) param_error(vCell, "nullptr address used to initialize a lux::ram::ptr. If a pointer has a valid cell, the address must be in its range");
-				//ok, if they're both nullptr the ptr is initialized with nullptr
+				bool __cellAdrC(Cell_t* vCell, type* vAddress) const {
+					/**/ if(!vCell && vAddress) param_error(vCell, "nullptr cell used to initialize a lux::ram::ptr. If a pointer has a valid address, the cell must also be valid");
+					else if(vCell && !vAddress) param_error(vCell, "nullptr address used to initialize a lux::ram::ptr. If a pointer has a valid cell, the address must be in its range");
+					//ok, if they're both nullptr the ptr is initialized with nullptr
 
-				ptr_validity(vAddress, type, "Invalid address used to initialize a lux::ram::ptr");
-				ptr_validity(vCell, Cell_t, "Invalid Cell_t pointer used to initialize a lux::ram::ptr");
-				return true;
-			});
-
-
-
-
-			#define constructExec(fun, ...) luxDebug(lux_sc_initialized{fun(__VA_ARGS__) ? lux_sc_initialized : lux_sc_initialized},)
-
-
-			#define checkNullptr if(!address) { printError((String("function \"") + __FUNCTION__ + "\" have been called on a lux::ram::ptr with value nullptr")).begin( ), true, -1); }
+					ptr_validity(vAddress, type, "Invalid address used to initialize a lux::ram::ptr");
+					ptr_validity(vCell, Cell_t, "Invalid Cell_t pointer used to initialize a lux::ram::ptr");
+					return true;
+				};
+				#endif
 
 
 
 
-			#define checkp luxDebug(if(address >= end( )) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+
+			#define checkNullptr lux_error(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", "h")
+			//#define checkNullptr lux_error(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", __FUNCTION__)
+			#define checkSizeD   lux_error(size( ) == 0, "Cannot dereference a pointer pointing to a 0-byte memory allocation")
+			//#define checkSize  lux_error(size( ) == 0, "This function cannot be called on pointers pointing to a 0-byte memory allocation")
+
+
+
+			#define checkp luxDebug(if(address >= end( ) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			//#define checkp luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize) printWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
-			#define checkm luxDebug(if(address < begin( ))                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+			#define checkm luxDebug(if(address < begin( ))                 printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			//#define checkm luxDebug(if((uint64)address < (uint64)cell->address)                     printWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
 			#define checka luxDebug(if((uint64)address >= ((uint64)cell->address) + cell->cellSize || (uint64)address < (uint64)cell->address)) printWarning("The assigned address is out of the allocated block range. Reading or writing to this address is undefined behaviour and can cause runtime errors")
 
@@ -176,22 +181,22 @@ namespace lux{
 			//TODO check nullptr in every function. only in debug mode
 			//TODO use dummy cell to improve performance and dont check for nullptrs when increasing or decreasing owner counts
 			lux_sc_generate_nothing_constructor(ptr)	cell{ cell },			address{ address }					{ }
-			// [#] No init required
+			//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
 			//OK
 
 			inline ptr( ) :								cell{ nullptr },		address{ nullptr }					{ }
 			// [#] No init required
 			//OK
 
-			inline ptr(Cell_t* const vCell) :			cell{ vCell },		address{ (vcell) ? (type*)vCell->address : nullptr }	{ if(vCell) {cell->owners++; checka}; }
+			inline ptr(Cell_t* const vCell) :			cell{ vCell },		address{ (vCell) ? (type*)vCell->address : nullptr }	{ if(vCell) {cell->owners++; checka; } }
 			// [#] No init required
 			// [#] vCell is nullptr                      | k | It CAN be. If it's nullptr, address is also set to nullptr and the owner count not modified. This is the case of ram::ptr foo(nullptr);
 			// [#] vCell is invalid                      | k | print error
 			// [#] vCell is a casted tpe and not a vCell | k | compiler throws an error
 			// [#] the new address is out of range       | k | print an error (only if it's not nullptr)
-			//! dunno
+			//OK
 
-			inline ptr(Cell_t* vCell, type* vAddress) :	constructExec(__cellAdrC, vCell, vAddress)  cell{ vCell },		address{ vAddress }					{ if(vCell){cell->owners++; checka}; }
+			inline ptr(Cell_t* vCell, type* vAddress) :	constructExec(__cellAdrC, vCell, vAddress)  cell{ vCell },		address{ vAddress }					{ if(vCell){cell->owners++; checka; } }
 			// [#] No init required
 			// [#] vCell is nullptr, but vAddress no     | k | print an error
 			// [#] vAddress is nullptr, but vCell no     | k | print an error
@@ -201,7 +206,7 @@ namespace lux{
 			// [#] the new address is out of range       | k | print an error (only if it's not nullptr)
 			//OK
 
-			inline ptr(ptr<type>& pPtr) : constructExec(__ptrC, pPtr)  cell{ pPtr.cell }, address{ pPtr.address }				{ if(vCell){ cell->owners++; checka }; }
+			inline ptr(ptr<type>& pPtr) : constructExec(__ptrC, pPtr)  cell{ pPtr.cell }, address{ pPtr.address }				{ if(pPtr){ cell->owners++; checka; } }
 			// [#] No init required
 			// [#] ptr's address is nullptr              | k | it can be. If it is, the owner count is not modified
 			// [#] uninitialized ptr                     | k | print error
@@ -209,7 +214,7 @@ namespace lux{
 			//OK
 
 			template<class pType>
-			explicit inline ptr(ptr<pType>& pPtr) :		constructExec(__ptrC, pPtr)  cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ if(vCell){cell->owners++; checka}; }
+			explicit inline ptr(ptr<pType>& pPtr) :		constructExec(__ptrC, pPtr)  cell{ pPtr.cell },		address{ (type*)pPtr.address }		{ if(pPtr){cell->owners++; checka;} }
 			// [#] No init required
 			// [#] ptr's address is nullptr              | k | it can be. If it is, the owner count is not modified
 			// [#] uninitialized ptr                     | k | print error
@@ -267,17 +272,17 @@ namespace lux{
 			// [#] No init of vPtr required
 			//OK
 
-			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const { lux_sc_F; return (void*)address == (void*)pPtr.address; }
+			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const { checkInit; return (void*)address == (void*)pPtr.address; }
 			// [#] No init required
 			// [#] No init of pPtr required
 			//OK
 
 
 			//TODO improve warnings and output object address or nanme
-			inline type& operator*( ) const { lux_sc_F; checkNullptr; lux_error(size( ) == 0, "Cannot dereference a pointer pointing to 0-byte memory allocation") return *address; }
+			inline type& operator*( ) const { checkInit; checkNullptr; checkSizeD; return *address; }
 			// [#] Uninitialized structure | k | print error
-			// [#] allocated size is 0     | k | print error
 			// [#] address is nullptr      | k | print error
+			// [#] allocated size is 0     | k | print error
 			//OK
 
 
@@ -304,37 +309,37 @@ namespace lux{
 
 			//TODO print warning if using a raw pointer //??
 			//TODO or just use sparse pointers idk
-			#define op_p(t) inline ptr<type>operator+(const t			v	) const { lux_sc_F; checkNullptr; return ptr<type>{cell,	address	+ v};						}
+			#define op_p(t) inline ptr<type>operator+(const t			v	) const { checkInit; checkNullptr; return ptr<type>{cell,	address	+ v};						}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			//OK
 
-			inline uint64					operator+(const type*		vPtr) const { lux_sc_F; checkNullptr; param_error_2(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address	+	(uint64)vPtr;			}
+			inline uint64					operator+(const type*		vPtr) const { checkInit; checkNullptr; param_error_2(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address	+	(uint64)vPtr;			}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			// [#] vPtr is nullptr         | k | print error
 			// [#] vPtr is invalid         | k | no need to check it here. The result will be checked in the assignment functions
 			//OK
 
-			inline uint64					operator+(const ptr<type>&	vPtr) const { lux_sc_F; checkNullptr; luxDebug(__ptrCf(vPtr)); return (uint64)			address	+	(uint64)vPtr.address;	}
+			inline uint64					operator+(const ptr<type>&	vPtr) const { checkInit; checkNullptr; luxDebug(__ptrCf(vPtr)); return (uint64)			address	+	(uint64)vPtr.address;	}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			// [#] pPtr is uninitialized   | k | print error
 			//OK
 
-			#define op_m(t) inline ptr<type>operator-(const t			v	) const { lux_sc_F; checkNullptr; return ptr<type>{cell,	address	- v};						}
+			#define op_m(t) inline ptr<type>operator-(const t			v	) const { checkInit; checkNullptr; return ptr<type>{cell,	address	- v};						}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			//OK
 
-			inline uint64					operator-(const type*		vPtr) const { lux_sc_F; checkNullptr; param_error_2(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address - (uint64)vPtr;				}
+			inline uint64					operator-(const type*		vPtr) const { checkInit; checkNullptr; param_error_2(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address - (uint64)vPtr;				}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			// [#] vPtr is nullptr         | k | print error
 			// [#] vPtr is invalid         | k | no need to check it here. The result will be checked in the assignment functions
 			//OK
 
-			inline uint64					operator-(const ptr<type>&	vPtr) const { lux_sc_F; checkNullptr; luxDebug(__ptrCf(vPtr)); return (uint64)			address - (uint64)vPtr.address;		}
+			inline uint64					operator-(const ptr<type>&	vPtr) const { checkInit; checkNullptr; luxDebug(__ptrCf(vPtr)); return (uint64)			address - (uint64)vPtr.address;		}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			// [#] pPtr is uninitialized   | k | print error
@@ -359,28 +364,32 @@ namespace lux{
 
 
 
-			inline void			operator+=(uint64 v)	{ lux_sc_F; checkNullptr; address += v;	checkp; }
+			inline void			operator+=(uint64 v)	{ checkInit; checkNullptr; checkSize; address += v;	checkp; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
+			// [#] size is 0                  | k | print error
 			//OK
 
-			inline void			operator-=(uint64 v)	{ lux_sc_F; checkNullptr; address -= v;	checkm; }
+			inline void			operator-=(uint64 v)	{ checkInit; checkNullptr; checkSize; address -= v;	checkm; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
+			// [#] size is 0                  | k | print error
 			//OK
 
-			inline void			operator++( )			{ lux_sc_F; checkNullptr; address++;	checkp; }
+			inline void			operator++( )			{ checkInit; checkNullptr; checkSize; address++;	checkp; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
+			// [#] size is 0                  | k | print error
 			//OK
 
-			inline void			operator--( )			{ lux_sc_F; checkNullptr; address--;	checkm; }
+			inline void			operator--( )			{ checkInit; checkNullptr; checkSize; address--;	checkm; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
+			// [#] size is 0                  | k | print error
 			//OK
 
 
@@ -402,28 +411,84 @@ namespace lux{
 
 
 
-
+			//TODO add negative index in containers
 
 
 			~ptr( ){ if(address) if(!--cell->owners) cell->freeCell( ); }			//Decrease the cell's owner count when the pointer is destroyed
-			inline operator type*( )	const { lux_sc_F; luxDebug(if(!address) lux_error("Cannot dereference a nullptr")); return address; }			//ram::ptr<type> to type* implicit conversion
+			// [#] No init required
+			//OK
+
+			inline operator type*( )	const { checkInit; checkSize; lux_error(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
+			// [#] size is 0                  | k | print error
+			//OK
 
-			inline operator bool( )		const { lux_sc_F; return !!address; }			//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
+			inline operator bool( )		const { checkInit; return !!address; }			//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | it can be
+			//OK
 
-			inline type& operator [](const uint64 i)const { lux_sc_F; return address[i]; }
+			inline type& operator [](const uint64 vIndex)const { checkInit; checkSize; param_error_2((vIndex < 0 && vIndex > prior( )) || (vIndex >= 0 && vIndex > latter( )), vIndex, "Index is out of range"); return address[vIndex]; }
+			// [#] Uninitialized structure    | k | print error
+			// [#] address is nullptr         | k | it can be
+			// [#] vIndex is negative         | k | print error
+			// [#] vIndex is out of range     | k | print error
+			// [#] size is 0                  | k | print error
+			//OK
 
-			inline type*	 __vectorcall begin( )	const { lux_sc_F; return (type*)cell->address;										} //Returns the first address of the allocated memory block as a normal pointer
-			inline ptr<type> __vectorcall beginp( )	const { lux_sc_F; return ptr<type>(cell);											} //Returns the first address of the allocated memory block as a lux::ram::ptr
-			inline type*	 __vectorcall end( )	const { lux_sc_F; return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the address of the object past the last object in the memory block as a normal pointer. Don't dereference it
-			inline ptr<type> __vectorcall endp( )	const { lux_sc_F; return ptr<type>(cell, (int8*)cell->address + cell->cellSize);} //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
-			inline type&	 __vectorcall last( )	const { lux_sc_F; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
-			inline uint64 __vectorcall size( )	const { lux_sc_F; return cell->cellSize;												} //Returns the total size of the allocated memory
-			inline uint64 __vectorcall prior( )	const { lux_sc_F; return (uint8*)address - (uint64)cell->address;						} //Returns the number of allocated bytes before the pointer
-			inline uint64 __vectorcall latter( )const { lux_sc_F; return (int8*)cell->address + cell->cellSize - (uint64)address;		} //Returns the number of allocated bytes after  the pointer
+
+
+
+
+			inline type*	 __vectorcall begin( )	const { checkInit; checkNullptr; /*checkSize;*/ return (type*)cell->address;										} //Returns the first address of the allocated memory block as a normal pointer
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
+			inline ptr<type> __vectorcall beginp( )	const { checkInit; checkNullptr; /*checkSize;*/ return ptr<type>(cell);											} //Returns the first address of the allocated memory block as a lux::ram::ptr
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
+			inline type*	 __vectorcall end( )	const { checkInit; checkNullptr; /*checkSize;*/ return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the address of the object past the last object in the memory block as a normal pointer. Don't dereference it
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
+			inline ptr<type> __vectorcall endp( )	const { checkInit; checkNullptr; /*checkSize;*/ return ptr<type>(cell, (type*)((int8*)cell->address + cell->cellSize));} //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
+			inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			// [#] size is 0                  | k | print error
+			//OK
+
+			inline uint64 __vectorcall size( )	const { checkInit; checkNullptr; /*checkSize;*/ return cell->cellSize;												} //Returns the total size of the allocated memory
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
+			inline uint64 __vectorcall prior( )	const { checkInit; checkNullptr; /*checkSize;*/ return (uint64)address - (uint64)cell->address;						} //Returns the number of allocated bytes before the pointer
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
+			inline uint64 __vectorcall latter( )const { checkInit; checkNullptr; /*checkSize;*/ return (uint64)cell->address + cell->cellSize - (uint64)address;		} //Returns the number of allocated bytes after  the pointer
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] size is 0                  | k | print error
+			//OK
+
 		};
 	}
 }

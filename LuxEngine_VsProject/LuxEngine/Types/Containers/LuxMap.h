@@ -102,7 +102,7 @@ namespace lux {
 		//Adds an element at the end of the map, allocating a new chunk if needed
 		//Returns the ID of the element
 		iter __vectorcall append(const type& vData) {
-			lux_sc_F;
+			checkInit;
 			if(size_ + 1 > _chunkNum * chunkSize) {								//If the chunk is full
 				//data_[_chunkNum] = (type*)malloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
 				//tracker_[_chunkNum] = (iter*)(malloc(sizeof(iter*) * _chunkSize));		//Allocate a new tracker chunk
@@ -126,7 +126,7 @@ namespace lux {
 		//Adds an element at the firs free index of the map
 		//Returns the ID of the element
 		iter __vectorcall add(const type& vData) {
-			lux_sc_F;
+			checkInit;
 			if(head_ == (iter)-1) return append(vData);			//If it has no free elements, append it
 			else {
 				iter head2 = head_;
@@ -152,7 +152,7 @@ namespace lux {
 		//*   freeElm: | whether to free the element or not. Keeping it in memory saves performances but increases memory usage
 		//*   Returns  | true if the operation succeeded, false if the index is invalid or an error occurred
 		bool __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
-			lux_sc_F;
+			checkInit;
 			if(!isValid(vIndex)) return false;						//Check for index validity
 			else {													//If it's valid,
 				__lp_Tracker(vIndex) = -1;								//Set the index as free
@@ -169,7 +169,7 @@ namespace lux {
 
 		//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
 		inline void __vectorcall clear( ) {
-			lux_sc_F;
+			checkInit;
 			for(iter i = 0; i < _chunkNum; ++i) {
 			//for(iter i = 0; i < _chunkNum; ++i) {
 				ram::free(chunks_[i]);
@@ -200,7 +200,7 @@ namespace lux {
 
 		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid, -2 if the index is out of range
 		inline signed char __vectorcall state(const iter vIndex) const {
-			lux_sc_F;
+			checkInit;
 			if(vIndex < 0) return -1;										//Invalid index
 			else if(vIndex >= size_) return -2;								//Index out of range
 			else if(__lp_Tracker(vIndex) == (iter)-1) return 0;				//Used element //OK
@@ -211,7 +211,7 @@ namespace lux {
 
 		//Returns true if the index is used, false if it's free or invalid (use the state function for more details)
 		inline bool __vectorcall isValid(const iter vIndex) const {
-			lux_sc_F;
+			checkInit;
 			if(vIndex >= size_) return false;				//Return false if the index is out of range
 			else return (__lp_Tracker(vIndex) == (iter)-1);			//Return true if the index is used, false if it's free
 		}
@@ -225,9 +225,9 @@ namespace lux {
 
 
 		//Use the isValid() function to check if the element can be used
-		inline type& __vectorcall operator[](const iter vIndex) const { lux_sc_F; return __lp_Data(vIndex); }
+		inline type& __vectorcall operator[](const iter vIndex) const { checkInit; return __lp_Data(vIndex); }
 		//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-		inline type* __vectorcall begin(const iter vChunkIndex) const { lux_sc_F; return &chunks_[vChunkIndex][0]; }
+		inline type* __vectorcall begin(const iter vChunkIndex) const { checkInit; return &chunks_[vChunkIndex][0]; }
 
 		////DEPRECATED FUNCTION
 		////TODO remove
@@ -255,11 +255,11 @@ namespace lux {
 
 
 		//Returns the number of elements in the map, including the free ones
-		inline iter __vectorcall size( ) const { lux_sc_F; return size_; }
+		inline iter __vectorcall size( ) const { checkInit; return size_; }
 		//Returns the number of used elements
-		inline iter __vectorcall usedSize( ) const { lux_sc_F; return size_ - freeSize_; }
+		inline iter __vectorcall usedSize( ) const { checkInit; return size_ - freeSize_; }
 		//Returns the number of free elements
-		inline iter __vectorcall freeSize( ) const { lux_sc_F; return freeSize_; }
+		inline iter __vectorcall freeSize( ) const { checkInit; return freeSize_; }
 	};
 }
 #undef __lp_Data
