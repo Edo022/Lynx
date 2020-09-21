@@ -433,10 +433,13 @@ namespace lux{
 			// [#] No init required
 			//OK
 
-			inline operator type*( )	const { checkInit; checkSize; lux_error(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
+			inline operator type*( )	const { checkInit; /*checkSize; */lux_error(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
-			// [#] size is 0                  | k | print error
+
+			//TODO it can be. maybe
+			//// [#] size is 0                  | k | print error
+			// [#] size is 0                  | k | If size is 0, the pointer still has an address. It just contains no data and can overlap
 			//OK
 
 			inline operator bool( )		const { checkInit; return !!address; }			//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
@@ -480,7 +483,8 @@ namespace lux{
 			//// [#] size is 0                  | k | print error
 			//OK
 
-			inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
+			inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return ((type*)address)[size( ) - 1]; } //Returns a reference to the last element in the allocated memory block
+			//inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
 			// [#] size is 0                  | k | print error

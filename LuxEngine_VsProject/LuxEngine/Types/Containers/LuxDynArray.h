@@ -88,7 +88,8 @@ namespace lux {
 
 		//inline DynArray( ) : size_{ 0 } , data_{ ram::alloc(0, CellClass::CLASS_B) } { }
 
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : DynArray( ) {
+		//template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : DynArray( ) {
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : size_{ pContainer.size( ) }, data_{ ram::alloc(pContainer.size( )) } {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
@@ -151,7 +152,16 @@ namespace lux {
 			resize(size_ + 1);
 			//*data_.end( ) = vElement;
 			//data_[data_.size( ) - 1] = vElement;
+			//TODO REMOVE
+			////TODO "initializing std array of const char pointers"
+
+			//TODO THIS WORKS
+			//type& elm = data_.last( );
+			//elm = vElement;
+			//TODO BUT THIS DOES NOT
 			data_.last( ) = vElement;
+
+
 			//return size_ - 1;
 			return data_.size( ) - 1;
 		}
@@ -195,8 +205,8 @@ namespace lux {
 
 		inline type&	__vectorcall operator[](const iter vIndex) const {
 			checkInit;  checkSize;
-			param_error_2(vIndex < 0, vIndex,  "Index cannot be negative");
-			param_error_2(vIndex >= 0, vIndex, "Index is out of range");
+			param_error_2(vIndex < 0,		 vIndex, "Index cannot be negative");
+			param_error_2(vIndex >= size( ), vIndex, "Index is out of range");
 			return data_[vIndex];
 		}
 		// [#] uninitialized structure   | k | print error
