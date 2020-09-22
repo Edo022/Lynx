@@ -19,7 +19,7 @@ namespace lux {
 	//New elements are written over previously deleted elements, or concatenated if there are none
 	//Useful if you need to constantly add or remove elements
 	//Use the isValid() function to check if an element is valid or has been removed
-	template<class type, class iter = uint64, uint64 chunkSize = 5000000 /*5MB*/, uint64 elmPerChunk = chunkSize / sizeof(ram::ptr<int>)> class Map {
+	template<class type, class iter = uint64, uint64 chunkSize = 50000 /*50 KB*/, uint64 elmPerChunk = chunkSize / sizeof(ram::ptr<int>)> class Map {
 	public:
 		//lux_sc_generate_debug_structure_body_func_only;
 		lux_sc_generate_debug_structure_body;

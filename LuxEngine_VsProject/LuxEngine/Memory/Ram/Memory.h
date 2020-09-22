@@ -141,12 +141,15 @@ namespace lux::ram{
 
 
 
-	template<class type> Cell_t* AllocVAc(const uint64 vSize, const uint64 vNum, const type& pValue, CellClass vClass = CellClass::AUTO){
-		evaluateCellClass(vSize * vNum, vClass);
-		Cell_t* cell = ram::alloc_(vSize * vNum, vClass);
+	template<class type> Cell_t* AllocVAc(uint64 vSize, const uint64 vNum, const type& pValue, CellClass vClass = CellClass::AUTO){
+		uint64 size = vSize * vNum;
+		evaluateCellClass(size, vClass);
+		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
+		Cell_t* cell = ram::alloc_(size, vClass);
 		//Cell_t* cell = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);
 		//for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], &pValue, sizeof(type));
-		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy(&((type*)cell->address)[i], &pValue, sizeof(type));
+		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : size); i+=sizeof(type)) memcpy(&((type*)cell->address)[i], &pValue, sizeof(type));
+		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : size); i+=sizeof(type)) memcpy((char*)cell->address + i, pValue, sizeof(type));
 		return cell;
 	}
 	//"Allocate Value Array"
@@ -160,15 +163,19 @@ namespace lux::ram{
 
 
 	//TODO create object in allocated memory and skip first copy
-	template<class type> Cell_t* AllocDAc(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO){
-		evaluateCellClass(vSize * vNum, vClass);
-		Cell_t* cell = ram::alloc_(vSize * vNum, vClass);//Allocate a new cell (If the cellSize is too small, throw an error)
+	template<class type> Cell_t* AllocDAc(uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO){
+		uint64 size = vSize * vNum;
+		evaluateCellClass(size, vClass);
+		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
+		Cell_t* cell = ram::alloc_(size, vClass);//Allocate a new cell (If the cellSize is too small, throw an error)
 		//Cell_t* cell = ram::alloc(vSize * vNum, (vSize * vNum) < (uint64)vClass ? vClass : CellClass::AUTO);//Allocate a new cell (If the cellSize is too small, throw an error)
 		type* _type = new type( );																		   //Create an object with the default value (it's created in the allocated address to save space and performance)
 		//for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], _type, sizeof(type));		   //For each element, memcpy the value in its address
 		//TODO wtf the index is over 1 million
-		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i += sizeof(type)) {
-			memcpy(&((type*)cell->address)[i], _type, sizeof(type));		   //For each element, memcpy the value in its address
+		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : size); i += sizeof(type)) {
+			//TODO MEMCPY IS PROBABLY BUGGED
+			memcpy((char*)cell->address + i, _type, sizeof(type));		   //For each element, memcpy the value in its address
+			//memcpy(&((type*)cell->address)[i], _type, sizeof(type));		   //For each element, memcpy the value in its address
 		}
 		delete(_type);																					   //Return the inizialized cell
 		return cell;
@@ -183,14 +190,16 @@ namespace lux::ram{
 
 
 	//TODO create object in allocated memory and skip first copy
-	template<class type> Cell_t* AllocDBc(const uint64 vSize, CellClass vClass = CellClass::AUTO) {
-		param_error_2(vSize % sizeof(type) != 0, vSize, "The size must be a multiple of the size of the type used to call this function");
+	template<class type> Cell_t* AllocDBc(uint64 vSize, CellClass vClass = CellClass::AUTO) {
 		evaluateCellClass(vSize, vClass);
+		//if(vClass == CellClass::CLASS_0) vSize = multipleOf(vSize, sizeof(type));
+		param_error_2(vSize % sizeof(type) != 0, vSize, "The size must be a multiple of the size of the type used to call this function");
 		//Cell_t* cell = ram::alloc(multipleOf(vSize, sizeof(type)), vClass);							//Allocate a new cell
 		Cell_t* cell = ram::alloc_(vSize, vClass);							//Allocate a new cell
 		type* _type = new type( );																	//Create an object with the default value (it's created in the allocated address to save space and performance)
 		//for(uint32 i = 0; i < vSize; i++) memcpy(&((type*)cell->address)[i], _type, sizeof(type));	//For each element, memcpy the value in its address
-		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy(&((type*)cell->address)[i], _type, sizeof(type));	//For each element, memcpy the value in its address
+		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy(&((type*)cell->address)[i], _type, sizeof(type));	//For each element, memcpy the value in its address
+		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy((char*)cell->address + i, _type, sizeof(type));	//For each element, memcpy the value in its address
 		delete(_type); return cell;																	//Return the inizialized cell
 	}
 	//"Allocate Default Block"
