@@ -37,14 +37,17 @@ namespace lux {
 		}
 
 
-
+		//TODO ALLOCATE INITIALIZED THE [SIZE] BYTES BUT NOT THE WHOLE CELL.
+		//TODO AND RESIZE DOES NOT INITIALIZE DATA BUT ONLY CHANGE THE SIZE VARIABLE
+		//TODO THIS PROBABLY CAUSES SOME OF THE RUNTIME ERRORS
 	public:
 		//Constructors
 		lux_sc_generate_nothing_constructor(String) str{ str } { }
 		// [#] No init required
 		//OK
 
-		inline String( ) :							str{ ram::AllocDB<char8>(sizeof(char8))   }	{ str[0] = '\0';								}
+		//String size cannot be 0. the '\0' is always present and occupies one byte
+		inline String( ) :							str{ ram::AllocDB<char8>(1, CellClass::AT_LEAST_CLASS_B)   }	{ str[0] = '\0';								}
 		// [#] No init required
 		//OK
 

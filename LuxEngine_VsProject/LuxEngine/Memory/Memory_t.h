@@ -19,14 +19,21 @@ namespace lux{
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
 	enum class CellClass : uint32 {
-		CLASS_A = 32,				//32 bytes. The minimum size of a cell
-		CLASS_B = CLASS_A * 16,		//16x CLASS_A. 512 B per cell (~0.5KB)
-		CLASS_C = CLASS_A * 32,		//32x CLASS_A. 1024 B per cell (~1KB)
-		CLASS_D = CLASS_A * 64,		//64x CLASS_A. 2048 B per cell (~2KB)
-		CLASS_Q = CLASS_D * 64,		//64x CLASS_D. 131072 B per cell (~130KB)
-		CLASS_L = CLASS_Q * 64,		//64x CLASS_Q. 8388608 B per cell (~8.4MB)
-		CLASS_0 = 0,				//Dedicated buffer for cells larger than CellClass::CLASS_L
-		AUTO = (uint32)-1,			//Choose a class large enough to contain the cell
+		CLASS_A = 32U,					//32 bytes. The minimum size of a cell
+		CLASS_B = CLASS_A * 16,			//16x CLASS_A. 512 B per cell (~0.5KB)
+		CLASS_C = CLASS_A * 32,			//32x CLASS_A. 1024 B per cell (~1KB)
+		CLASS_D = CLASS_A * 64,			//64x CLASS_A. 2048 B per cell (~2KB)
+		CLASS_Q = CLASS_D * 64,			//64x CLASS_D. 131072 B per cell (~130KB)
+		CLASS_L = CLASS_Q * 64,			//64x CLASS_Q. 8388608 B per cell (~8.4MB)
+		CLASS_0 = 0,					//Dedicated buffer for cells larger than CellClass::CLASS_L
+		AUTO = (uint32)-1,				//Choose a class large enough to contain the cell
+
+		AT_LEAST_CLASS_A = 1 + CLASS_A,	//Like AUTO, but the class will only change if the specified one is too small
+		AT_LEAST_CLASS_B = 1 + CLASS_B,	//Like AUTO, but the class will only change if the specified one is too small
+		AT_LEAST_CLASS_C = 1 + CLASS_C,	//Like AUTO, but the class will only change if the specified one is too small
+		AT_LEAST_CLASS_D = 1 + CLASS_D,	//Like AUTO, but the class will only change if the specified one is too small
+		AT_LEAST_CLASS_Q = 1 + CLASS_Q,	//Like AUTO, but the class will only change if the specified one is too small
+		AT_LEAST_CLASS_L = 1 + CLASS_L,	//Like AUTO, but the class will only change if the specified one is too small
 	};
 	enum class CellClassIndex : uint32 {
 		INDEX_A = 0b000,

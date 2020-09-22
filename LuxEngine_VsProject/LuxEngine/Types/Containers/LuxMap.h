@@ -67,8 +67,9 @@ namespace lux {
 		inline Map( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
 			//TODO substitute with AllocDA
 			//luxDebug(if(vChunkSize > vMaxSize) param_error(vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size"));
-			chunks_{ ram::AllocVA<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B - 1, ram::ptr<type>( )) },
-			tracker_{ ram::AllocVA<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B - 1, ram::ptr<iter>( )) } {
+			//TODO NOT SECURE
+			chunks_{  ram::AllocDA<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B) },
+			tracker_{ ram::AllocDA<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B) } {
 		}
 		// [#] No init required
 		//OK
@@ -166,7 +167,8 @@ namespace lux {
 		bool __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
 			checkInit;
 			//if(!isValid(vIndex)) return false;						//Check for index validity
-			param_error_2(!isValid(vIndex), vIndex, "Index is invalid or negative");
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative");
+			param_error_2(vIndex > size( ), vIndex, "Index is out of range");
 
 			//else {													//If it's valid,
 				__lp_Tracker(vIndex) = -1;								//Set the index as free
@@ -247,7 +249,12 @@ namespace lux {
 
 
 		//Use the isValid() function to check if the element can be used
-		inline type& __vectorcall operator[](const iter vIndex) const { checkInit; param_error_2(!isValid(vIndex), vIndex, "Index is invalid or negative"); return __lp_Data(vIndex); }
+		inline type& __vectorcall operator[](const iter vIndex) const {
+			//checkInit; param_error_2(!isValid(vIndex), vIndex, "Index is invalid or negative");
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative");
+			param_error_2(vIndex > size( ), vIndex, "Index is out of range");
+			return __lp_Data(vIndex);
+		}
 		// [#] Structure is uninitialized  | k | print error
 		// [#] vIndex is negative          | k | print error
 		// [#] vIndex is out of range      | k | print error

@@ -111,9 +111,6 @@
     <ClCompile Include="LuxEngine\Core\Compute\Compute.cpp">
       <Filter>LuxEngine\Core\Compute</Filter>
     </ClCompile>
-    <ClCompile Include="LuxEngine\Core\Compute\CShader.cpp">
-      <Filter>LuxEngine\Core\Compute</Filter>
-    </ClCompile>
     <ClCompile Include="LuxEngine\Core\Compute\CBuffers.cpp">
       <Filter>LuxEngine\Core\Compute</Filter>
     </ClCompile>
@@ -145,6 +142,9 @@
       <Filter>LuxEngine\Core</Filter>
     </ClCompile>
     <ClCompile Include="LuxEngine\Test.cpp" />
+    <ClCompile Include="LuxEngine\Core\Compute\CShader.cpp">
+      <Filter>LuxEngine\Core\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LuxEngine\macros.h">

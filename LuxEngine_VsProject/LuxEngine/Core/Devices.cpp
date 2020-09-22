@@ -253,6 +253,8 @@ namespace lux::core::dvc{
 
 
 		//Queue infos
+		//TODO for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
+		//TODO other simes, a GPU memory cell creates an exception when the lines are generated for the first time
 		DynArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
