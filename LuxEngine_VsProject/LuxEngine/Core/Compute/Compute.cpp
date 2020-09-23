@@ -51,7 +51,7 @@ namespace lux::core::c{
 
 		{ //Create default shaders
 			//TODO fix
-			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM, { });
+			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
 			shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4, { 0, 0, 0, 1 });
 			shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
 			shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { 0, 0, 0, 0 });

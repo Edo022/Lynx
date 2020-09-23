@@ -6,8 +6,6 @@
 #include "LuxEngine/Types/Nothing_sc_p.h"
 
 
-
-//TODO use faster memcpy
 //TODO dont use initializer list
 //A static array that knows its size. It can be resized, but it doesn't have add or remove functions
 namespace lux {
@@ -20,61 +18,35 @@ namespace lux {
 
 
 
-		//luxDebug(void checkSize(const iter vInitSize){
-		//	if(vInitSize == scast<iter>(-1) && vInitSize > 0){
-		//		Failure printf("Error:");
-		//		Failure printf("Something went wrong .-. You were trying to allocate %u bytes of memory", scast<iter>(vInitSize));
-		//		Failure printf("This error will not be reported in release mode. Make sure to fix it");
-		//		system("pause"); exit(-1);
-		//	}
-		//})
-
-
 
 		// Constructors -----------------------------------------------------------------------------------------------------------------------------//
 
 
-		//TODO check all the parameters
+
+
 		lux_sc_generate_nothing_constructor(Array) data_{ data_ }, size_{ size_ } { }
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
-		//OK
 
 
 		//Creates an array with no elements
-		//inline Array( ) : size_{ 0 }, data_{ nullptr } { }
 		inline Array( ) : size_{ 0 }, data_{ (type*)malloc(sizeof(type)) } { }
-		// [#] No init required
-		//OK
 
-		//TODO remove
-		//TODO just use a CTArray
+
 		//Sets the size of the array and allocates it, without inizializing the elements
 		inline Array(const iter vInitSize) : size_{ vInitSize }, data_{ (type*)malloc(sizeof(type) * vInitSize) } {
-			//luxDebug(checkSize(vInitSize));
 			type* _type = new type( );
-			for(uint32 i = 0; i < vInitSize; i++) {
-				memcpy(&data_[i], _type, sizeof(type));
-			}
+			for(uint32 i = 0; i < vInitSize; i++) memcpy(&data_[i], _type, sizeof(type));
 			delete(_type);
 		}
-		// [#] No init required
-		//OK
-
 
 
 		//TODO remove
 		#define __lp_lux_static_array_init(_size) size_ = _size; data_ = (type*)malloc(sizeof(type) * size_)
-		//TODO remove
-		//TODO use lux EverythingArray
 		//Initializes the array using a list of elements, automatically converting it to the right type
 		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
 			__lp_lux_static_array_init((iter)pElements.size( ));
 			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) data_[i] = (inType) * (pElements.begin( ) + i);
 		}
-		// [#] No init required
-		//OK
-
-
 
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
@@ -82,9 +54,6 @@ namespace lux {
 			__lp_lux_static_array_init(scast<iter>(pElements.size( )));
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
 		}
-		// [#] No init required
-		//OK
-
 
 
 		luxDebug(template<class elmType> bool __isInit(const ContainerBase<elmType, iter>& pArray){ isInit(pArray); return false; })
@@ -93,15 +62,12 @@ namespace lux {
 		template<class elmType> inline Array(const ContainerBase<elmType, iter>& pArray) : constructExec(__isInit, pArray) size_{ pArray.size( ) }, data_{ (type*)malloc(sizeof(type) * pArray.size( )) } {
 			for(uint64 i = 0; i < pArray.end( ) - pArray.begin( ); ++i) data_[i] = (elmType) * (pArray.begin( ) + i);
 		}
-		// [#] No init required
-		// [#] pArray is uninitialized | k | print error
-		//OK
-
 		#undef __lp_lux_static_array_init
 
 
 
 
+		// Add, remove --------------------------------------------------------------------------------------------------------- //
 
 
 
@@ -111,100 +77,44 @@ namespace lux {
 		//*   Returns the new size. (alloc)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
-			//luxDebug(checkSize(vNewSize));
 			type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
 			if(__lp_data_r != nullptr)data_ = __lp_data_r;
 			else printError("Nullptr returned by malloc", true, -1);
 			return size_ = vNewSize;
 		}
-		// [#] Structure is uninitialized   | k | print error
-		// [#] vNewSize is negative         | k | print error
-		//OK
 
 
-		void clear( ){
-			free(data_);//TODO dont free with global memory pool
-			//data_ = nullptr;
-			//return size_ = 0;
+		inline void __vectorcall clear( ){
+			free(data_);
 			this->Array::Array( );
 		}
-		// [#] No init required
-		//OK
-		//TODO FIX ALL CLEAR FUNCTIONS IN LUX CONTAINERS
 
 
-
-		//TODO remove
-		//Resizes the array and initializes the new elements with a value
-		//Use resize(<newSize>) for better performance when initialization is not needed
-		//*   vNewSize: the new size of the array
-		//*   vInitValue: the value to use to initialize the new elements
-		//*   Returns the new size. (alloc)-1 if the size is invalid
-		inline iter __vectorcall resize(const iter vNewSize, const type& vInitValue) {
-			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
-			//luxDebug(checkSize(vNewSize));
-
-			//TODO not secure
-			//if(vNewSize < 0) return -1;
-			iter oldSize = size_;
-			resize(vNewSize);
-
-			//TODO use intrinsic function copy with automatic loop unwrap
-			if(vNewSize > oldSize) for(iter i = oldSize; i < vNewSize; ++i) {
-				memset(&data_[i], 0, sizeof(type));
-				data_[i] = vInitValue;
-			}
-			//TODO self-memset in operator= if not initialized
-			return vNewSize;
-		}
-		// [#] Structure is uninitialized   | k | print error
-		// [#] vNewSize is negative         | k | print error
-		//OK
-
-
-		template<class iType> inline void operator=(const ContainerBase<type, iType>& pContainer) {
+		template<class cIter> inline void operator=(const ContainerBase<type, cIter>& pContainer) {
 			isInit(pContainer);
 			data_ = (type*)malloc(pContainer.bytes( ));
 			memcpy(data_, pContainer.begin( ), pContainer.bytes( ));
 			size_ = pContainer.size( );
 		}
-		// [#] No init required
-		// [#] pContainer is uninitialized | ok | print error
-		//OK
-
-
-		///////////////////////////////////////////////////////////////////////
-		//TODO SPECIFIC TEMPLATED MALLOC FUNCTIONS THAT INITIALIZES THE MEMORY WITH OR WITHOUT A VALUE. THEY CALL THE OBJECT CONSTRUCTOR
-		///////////////////////////////////////////////////////////////////////
 
 
 
-		inline type& __vectorcall operator[](const iter vIndex) const { checkInit; checkSize; param_error_2(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); return data_[vIndex]; }
-		// [#] Structure is uninitialized   | k | print error
-		// [#] Index is negative            | k | print error
-		// [#] Size is 0                    | k | print error
-		//OK
 
-		inline iter __vectorcall size( )	const override { checkInit; return size_; }
-		// [#] Structure is uninitialized   | k | print error
-		//OK
+		// Get ----------------------------------------------------------------------------------------------------------------- //
 
-		inline uint64 __vectorcall bytes( )	const override { checkInit; return size_ * sizeof(type); }
-		// [#] Structure is uninitialized   | k | print error
-		//OK
 
-		inline bool __vectorcall empty( )	const override { checkInit; return !size_; }
-		// [#] Structure is uninitialized   | k | print error
-		//OK
 
-		inline type* __vectorcall begin( )	const override { checkInit; return data_; }
-		// [#] Structure is uninitialized   | k | print error
-		//OK
 
-		inline type* __vectorcall end( )	const override { checkInit; return &data_[size_ - 1]; }
-		// [#] Structure is uninitialized   | k | print error
-		//OK
+		inline iter		__vectorcall size( )	const override { checkInit; return size_;					}
+		inline uint64	__vectorcall bytes( )	const override { checkInit; return size_ * sizeof(type);	}
+		inline bool		__vectorcall empty( )	const override { checkInit; return !size_;					}
+		inline type*	__vectorcall begin( )	const override { checkInit; return data_;					}
+		inline type*	__vectorcall end( )		const override { checkInit; return &data_[size_ - 1];		}
 
+		inline type&	__vectorcall operator[](const iter vIndex) const {
+			checkInit; checkSize; param_error_2(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); param_error_2(vIndex >= size( ), vIndex, "Index is out of range");
+			return data_[vIndex];
+		}
 	};
 }
 #undef __lp_lux_static_array_init
