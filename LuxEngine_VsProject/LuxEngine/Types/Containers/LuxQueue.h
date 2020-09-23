@@ -8,6 +8,7 @@
 
 
 //TODO automatic back to front and viceversa in queues
+//TODO FIX QUEUES
 
 //A queue with dynamic size
 namespace lux {

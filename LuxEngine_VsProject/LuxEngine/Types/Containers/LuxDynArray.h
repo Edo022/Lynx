@@ -31,12 +31,10 @@
 //TODO add contructor of string from lux containers of chars
 //TODO add additional data in errors
 namespace lux {
-	//TODO remove size. It's already in the pointer
 	template<class type, class iter = uint32> struct DynArray : public ContainerBase<type, iter> {
 	private:
 		lux_sc_generate_debug_structure_body_func_only;
 		ram::ptr<type> data_;	//Elements of the array
-		iter size_;				//Size of the array
 	public:
 
 
@@ -47,15 +45,15 @@ namespace lux {
 
 
 
-		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ }, size_{ size_ } { }
+		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ } { }
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
-		inline DynArray( ) : size_{ 0 }, data_{ ram::AllocDB<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
+		inline DynArray( ) : data_{ ram::AllocDB<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
 
 
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : size_{ pContainer.size( ) }, data_{ ram::alloc(pContainer.size( )) } {
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::alloc(pContainer.size( )) } {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
@@ -76,7 +74,6 @@ namespace lux {
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
 			ram::dRealloc(data_, vNewSize);
-			size_ = vNewSize;
 			return data_.size( );
 		}
 
@@ -94,7 +91,7 @@ namespace lux {
 		//*   Returns  | the index of the element in the array
 		inline iter __vectorcall add(const type& vElement) {
 			checkInit;
-			resize(size_ + 1);
+			resize(data_.size() + 1);
 			data_.last( ) = vElement;
 			return data_.size( ) - 1;
 		}
@@ -107,9 +104,9 @@ namespace lux {
 
 
 
-		inline iter		__vectorcall size( )	const override { checkInit; return size_;					}
-		inline uint64	__vectorcall bytes( )	const override { checkInit; return size_ * sizeof(type);	}
-		inline bool		__vectorcall empty( )	const override { checkInit; return !data_.size( );			}
+		inline iter		__vectorcall size( )	const override { checkInit; return data_.size( );			}
+		inline uint64	__vectorcall bytes( )	const override { checkInit; return size( ) * sizeof(type);	}
+		inline bool		__vectorcall empty( )	const override { checkInit; return !size( );				}
 		inline type*	__vectorcall begin( )	const override { checkInit; return data_.begin( );			}
 		inline type*	__vectorcall end( )		const override { checkInit; return data_.end( );			}
 

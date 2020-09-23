@@ -154,10 +154,10 @@ namespace lux {
 		//Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid, -2 if the index is out of range
 		inline signed char __vectorcall state(const iter vIndex) const {
 			checkInit;
-			if(vIndex < 0) return -1;										//Invalid index
-			else if(vIndex >= size_) return -2;								//Index out of range
-			else if(__lp_Tracker(vIndex) == (iter)-1) return 0;				//Used element //OK
-			else return 1;													//Free element
+			if(vIndex < 0) return -1;								//Invalid index
+			else if(vIndex >= size_) return -2;						//Index out of range
+			else if(__lp_Tracker(vIndex) == (iter)-1) return 0;		//Used element //OK
+			else return 1;											//Free element
 		}
 
 
@@ -178,13 +178,14 @@ namespace lux {
 
 		//Use the isValid() function to check if the element can be used or has been deleted
 		inline type& __vectorcall operator[](const iter vIndex) const {
-			param_error_2(vIndex < 0, vIndex, "Index cannot be negative");
-			param_error_2(vIndex > size( ), vIndex, "Index is out of range");
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > size( ), vIndex, "Index is out of range");
 			return __lp_Data(vIndex);
 		}
 
 		//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-		inline type* __vectorcall begin(const iter vChunkIndex) const { checkInit; param_error_2(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0]; }
+		inline type* __vectorcall begin(const iter vChunkIndex) const {
+			checkInit; param_error_2(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
+		}
 
 
 

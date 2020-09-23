@@ -7,8 +7,9 @@
 
 
 //TODO dont use initializer list
-//A static array that knows its size. It can be resized, but it doesn't have add or remove functions
+//TODO MAKE IT COMPLETELY COMPILE TIME
 namespace lux {
+	//A static array that knows its size. It can be resized, but it doesn't have add or remove functions
 	template <class type, class iter = uint32> class Array : public ContainerBase<type, iter> {
 	private:
 		lux_sc_generate_debug_structure_body_func_only;

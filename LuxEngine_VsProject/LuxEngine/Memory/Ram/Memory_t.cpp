@@ -6,5 +6,3 @@ void lux::ram::Cell_t::freeCell( ){
 	lux::ram::free(this);
 }
 
-
-//luxDebug(void __lp_printWarning(const char* text){ printWarning(text); })

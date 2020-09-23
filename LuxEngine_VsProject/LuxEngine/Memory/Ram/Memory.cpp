@@ -28,8 +28,42 @@ namespace lux::ram{
 
 
 
-	//TODO CHECK MEMORY FULL
 
+
+
+	//TODO use offset as constant instead of literal
+	void evaluateCellClass(const uint64 vSize, CellClass& pClass) {
+		//Check AT_LEAST values. Set class to AUTO if it's too small. If it fits, assign it the normal class value
+		if(pClass != CellClass::AUTO && (uint32)pClass % 32 == 1) [[unlikely]] {
+			if((uint32)pClass < vSize) pClass = CellClass::AUTO;
+			else pClass = (CellClass)((uint64)pClass - 1);
+		}
+		//Choose cell class if it's AUTO
+		if(pClass == CellClass::AUTO) [[likely]] {
+			/**/ if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] pClass = CellClass::CLASS_A;
+			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] pClass = CellClass::CLASS_B;
+			else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]] pClass = CellClass::CLASS_C;
+			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] pClass = CellClass::CLASS_D;
+			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] pClass = CellClass::CLASS_Q;
+			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] pClass = CellClass::CLASS_L;
+			else										 [[unlikely]] pClass = CellClass::CLASS_0;
+		}
+
+		param_error_2(vSize > 0xFFFFffff, vSize, "Cell size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", vSize);
+		param_error_2((uint32)pClass < vSize, pClass,
+			"Requested %lu-bytes class for %llu-bytes allocation. The cell class must be large enought to contain the cell. %s",
+			(uint32)pClass, vSize, "Use lux::CellClass::AUTO to automatically choose it");
+	}
+
+
+
+
+
+
+
+
+
+	//TODO CHECK MEMORY FULL
 	//This function allocates a memory cell or a pointer into a buffer
 	//*   vSize                 | size of the cell
 	//*   vClass                | class of the cell. This is the maximum size the cell can reach before it needs to be copied
