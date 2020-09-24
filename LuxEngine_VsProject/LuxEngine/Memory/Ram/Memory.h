@@ -258,18 +258,19 @@ namespace lux::ram{
 		//}
 	}
 
-	template<class t> static inline void reallocDB(ptr<t>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
-		if(!pPtr.address) [[unlikely]] {
-			pPtr = AllocBck<t>(vSize, vCellClass);
-			return;
-		}
-		if((vCellClass == CellClass::AUTO && vSize < (uint32)pPtr.cell->bufferType->cellClass) || (vCellClass == pPtr.cell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pPtr.cell->cellSize = vSize;
-		else if(vSize != pPtr.size( )) [[unlikely]] {
-			ram::ptr<t> ptr_ = AllocBck<t>(vSize, vCellClass);
-			memcpy(ptr_, pPtr, pPtr.size( ));
-			ram::free(pPtr);
-			pPtr = ptr_;
-		}
+	template<class type> static inline void reallocDB(ptr<type>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
+		//if(!pPtr.address) [[unlikely]] {
+		//	pPtr = AllocBck<t>(vSize, vCellClass);
+		//	return;
+		//}
+		//if((vCellClass == CellClass::AUTO && vSize < (uint32)pPtr.cell->bufferType->cellClass) || (vCellClass == pPtr.cell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pPtr.cell->cellSize = vSize;
+		//else if(vSize != pPtr.size( )) [[unlikely]] {
+		//	ram::ptr<t> ptr_ = AllocBck<t>(vSize, vCellClass);
+		//	memcpy(ptr_, pPtr, pPtr.size( ));
+		//	ram::free(pPtr);
+		//	pPtr = ptr_;
+		//}
+		reallocVB<type>(pPtr, vSize, type( ), vCellClass);
 	}
 
 
