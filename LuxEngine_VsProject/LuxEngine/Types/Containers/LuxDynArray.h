@@ -47,13 +47,13 @@ namespace lux {
 
 		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ } { }
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
-		inline DynArray( ) : data_{ ram::AllocDB<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
+		inline DynArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
 
 
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocUB(pContainer.size( )) } {
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocBck(pContainer.size( )) } {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));

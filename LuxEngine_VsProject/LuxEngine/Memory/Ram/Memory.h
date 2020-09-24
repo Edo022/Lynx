@@ -21,7 +21,7 @@
 	 ¦ '-- BUFFER 0| / TP0                       ¦                                                                                           ¦ '- BUFFER 0 TP7    \ |          ¦             Worst case + data structures size:
 	 ¦    .────────|/ ─────────────.             ¦                                                                                           ¦   .─────────────────\|────.     ¦                 RAM     | 1,057,563,648 (~1.06GB) allocated   | 151,998,786 (~152MB) used
 	 ¦    │  cell 0    cell class  <------.------¦ ------------------------------------------------------------------------------------------¦ -->  cell class   cell 0  │     ¦                 VRAM    | [no changes]                        | [no changes]
-	 ¦    │  cell 1                │	  ¦      ¦                                                                                      .----¦ -->  allocUB type   cell 1  │     ¦                           a = (64 + sizeof(lux::ram::Cell_t)) = 384, b = (64 + sizeof(lux::vram::Cell_t)) = 288
+	 ¦    │  cell 1                │	  ¦      ¦                                                                                      .----¦ -->  allocBck type   cell 1  │     ¦                           a = (64 + sizeof(lux::ram::Cell_t)) = 384, b = (64 + sizeof(lux::vram::Cell_t)) = 288
 	 ¦    │  cell 2                │	  ¦      ¦                                                                                      ¦    ¦   │               cell 2  │     ¦                           e = (6 + 384 + 24576 + 24576 + 24576 + 24576) = 98,694
 	 ¦    │  ...                   │	  ¦      ¦                                                                                      ¦    ¦   │                ...    │     ¦                           905,969,664 + (a * e) + (b * e * 4) = 905,969,664 + 151,593,984 = 1,057,563,648 (~1.06GB)
 	 ¦    '──────.      .──────────'	  ¦      ¦                                                                                      ¦    ¦   '──────.      .─────────'     ¦
@@ -43,7 +43,7 @@
 										  ¦      ¦                                                                                      ¦--------------------------------------'
 ─────────────────────────────────────────────────¦ ─────────────────────────────────────────────────────────────────────────────────────¦ ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 					 │                           ^                                                                                      ^                                                                                                                                                                                  │
-   allocate          │                     lux::ram::allocUB                                                                        lux::rem::allocUB                                                                                                           lux::rem::allocUB                                                │  allocate
+   allocate          │                    lux::ram::alloc--                                                                        lux::rem::alloc                                                                                                          lux::rem::alloc                                                │  allocate
    CPU access        │   R/W   ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W        R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W               -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   │  CPU access
    GPU access        │    -    ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -         R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R               R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   │  GPU access
    allocation        │    -    ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -         SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU               DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   │  allocation
@@ -95,6 +95,10 @@ namespace lux::ram{
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass);
 
 
+	template<class type> inline void init_memory(void* const vAddr, const uint64 vSize, const type& pValue){
+		for(uint32 i = 0; i < vSize; i+=sizeof(type)) memcpy((char*)vAddr + i, &pValue, sizeof(type));
+	}
+
 
 
 
@@ -110,34 +114,33 @@ namespace lux::ram{
 
 
 
-	//"Allocate Uninitialized Block"
 	//Allocates a block of memory without initializing it
-	inline Cell_t* allocUB(const uint64 vSize, CellClass vClass = CellClass::AUTO) {
+	//Specify the type as template argument to initialize it
+	inline Cell_t* allocBck(const uint64 vSize, CellClass vClass = CellClass::AUTO) {
 		evaluateCellClass(vSize, vClass);
 		return alloc_call(vSize, vClass, false);
 	}
 
-	//"Allocate Default Block"
 	//Allocates a block of memory and initializes it by calling the default constructor of each element
 	//You need to specify the type when calling this function
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDB<int32>(302732);
-	//The type can be omitted only if the size is 0
-	template<class type> inline ptr<type> allocVB(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
+	//If you don't, the elements will remain uninitialized
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocBck<int32>(302732);
+	template<class type> inline ptr<type> allocBck(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
 		evaluateCellClass(vSize, vClass);
 		param_error_2(vSize % sizeof(type) != 0, vSize, "The type is %llu bytes large and vSize (%llu) is not a multiple of it. If not zero, vSize must be a multiple of the type's size", sizeof(type), vSize);
 		Cell_t* cell = ram::alloc_call(vSize, vClass);
-		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
+		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
+		init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
 		return cell;
 
 	}
 
-	//"Allocate Default Block"
 	//Allocates a block of memory and initializes it by calling the default constructor of each element
 	//You need to specify the type when calling this function
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocDB<int32>(302732);
-	//The type can be omitted only if the size is 0
-	template<class type> inline ptr<type> AllocDB(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
-		return allocVB<type>(vSize, type( ), vClass);
+	//If you don't, the elements will remain uninitialized
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocBck<int32>(302732);
+	template<class type> inline ptr<type> AllocBck(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
+		return allocBck<type>(vSize, type( ), vClass);
 	}
 
 
@@ -156,34 +159,34 @@ namespace lux::ram{
 
 
 
-	//"Allocate Uninitialized Array"
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements without initializing them
-	inline Cell_t* allocUA(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO) {
+	//Specify the type as template argument to initialize the elements
+	inline Cell_t* allocArr(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO) {
 		evaluateCellClass(vSize * vNum, vClass);
 		return alloc_call(vSize * vNum, vClass, false);
 	}
 
-	//"Allocate Value Array"
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and initializes each element with the pValue value
-	//You MUST specify the type when calling this function
-	//e.g.   lux::ram::ptr<float> p = lux::ram::allocDA<int32>(sizeof(float), 8, 3.14159f);
-	//Not specifying the type can lead to runtime errors or other stuff you don't wanna see
-	template<class type> inline ptr<type> allocVA(uint64 vSize, const uint64 vNum, const type& pValue, CellClass vClass = CellClass::AUTO){
+	//You need to specify the type when calling this function
+	//If you don't, the elements will remain uninitialized
+	//e.g.   lux::ram::ptr<float> p = lux::ram::allocArr<int32>(sizeof(float), 8, 3.14159f);
+	template<class type> inline ptr<type> allocArr(uint64 vSize, const uint64 vNum, const type& pValue, CellClass vClass = CellClass::AUTO){
 		uint64 size = vSize * vNum;
 		evaluateCellClass(size, vClass);
 		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
 		Cell_t* cell = ram::alloc_call(size, vClass);
-		for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : size); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
+		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : size); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
+		init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
 		return cell;
 
 	}
 
-	//"Allocate Default Array"
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and calls the default constructor of each element
 	//You need to specify the type when calling this function
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::allocDA<int32>(sizeof(int32), 27);
-	template<class type> inline ptr<type> allocDA(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO) {
-		return allocVA<type>(vSize, vNum, type( ), vClass);
+	//If you don't, the elements will remain uninitialized
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::allocArr<int32>(sizeof(int32), 27);
+	template<class type> inline ptr<type> allocArr(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO) {
+		return allocArr<type>(vSize, vNum, type( ), vClass);
 	}
 
 
@@ -216,12 +219,12 @@ namespace lux::ram{
 	//TODO initialize only new elements
 	template<class t> static inline void reallocDB(ptr<t>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
 		if(!pPtr.address) [[unlikely]] {
-			pPtr = AllocDB<t>(vSize, vCellClass);
+			pPtr = AllocBck<t>(vSize, vCellClass);
 			return;
 		}
 		if((vCellClass == CellClass::AUTO && vSize < (uint32)pPtr.cell->bufferType->cellClass) || (vCellClass == pPtr.cell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pPtr.cell->cellSize = vSize;
 		else if(vSize != pPtr.size( )) [[unlikely]] {
-			ram::ptr<t> ptr_ = AllocDB<t>(vSize, vCellClass);
+			ram::ptr<t> ptr_ = AllocBck<t>(vSize, vCellClass);
 			memcpy(ptr_, pPtr, pPtr.size( ));
 			ram::free(pPtr);
 			pPtr = ptr_;

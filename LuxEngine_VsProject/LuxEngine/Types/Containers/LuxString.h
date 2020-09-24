@@ -44,13 +44,13 @@ namespace lux {
 		lux_sc_generate_nothing_constructor(String) str{ str } { }
 
 		//String size cannot be 0. the '\0' is always present and occupies one byte
-		inline String( ) : str{ ram::AllocDB<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
-		inline String(const String& pString) : str{ ram::allocUB(pString.size( )) }		{ ram::cpy(pString.str, str, pString.size( )); }
-		inline String(const char8* vString) : str{ ram::allocUB(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
-		inline String(const char8* vString, uint64 vSize) : str{ ram::allocUB(vSize) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String( ) : str{ ram::AllocBck<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
+		inline String(const String& pString) : str{ ram::allocBck(pString.size( )) }		{ ram::cpy(pString.str, str, pString.size( )); }
+		inline String(const char8* vString) : str{ ram::allocBck(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(const char8* vString, uint64 vSize) : str{ ram::allocBck(vSize) }	{ ram::cpy(vString, str, str.size( )); }
 
 		//TODO remove
-		inline String(const wchar8* vString) : str{ ram::allocUB(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(const wchar8* vString) : str{ ram::allocBck(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
 
 
 

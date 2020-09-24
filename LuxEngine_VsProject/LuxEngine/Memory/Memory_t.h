@@ -101,7 +101,7 @@ namespace lux{
 
 
 		//Like a normal pointer, but better
-		//Allocate memory to the pointer with lux::ram::allocUB
+		//Allocate memory to the pointer with lux::ram::allocBck
 		//This pointer will automatically be freed once it is not longer used by any thread
 		//You can also manually free it with the lux::mem:free function
 		//    Accessing the memory of a freed pointer is ub

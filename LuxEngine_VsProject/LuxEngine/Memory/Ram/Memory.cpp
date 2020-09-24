@@ -69,7 +69,7 @@ namespace lux::ram{
 	//*   vClass                | class of the cell. This is the maximum size the cell can reach before it needs to be copied
 	//*   vForceDedicatedBuffer | if true, the memory will be allocated in a new buffer instead of a fixed size cell
 	//*   Returns               | the allocated Cell object
-	//e.g. lux::ram::ptr<int> foo = lux::ram::allocUB(100, lux::CellClass::AUTO);
+	//e.g. lux::ram::ptr<int> foo = lux::ram::allocBck(100, lux::CellClass::AUTO);
 	//e.g. same as int* foo = (int*)malloc(100);
 	Cell_t* alloc_internal(const uint64 vSize, const CellClass vClass){
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
@@ -116,15 +116,15 @@ namespace lux::ram{
 	}
 
 
-	template<class type> ptr<type> allocVA(const uint64 vSize, const CellClass vClass, const type& pValue){
-		ptr<type> ptr = ram::allocUB(vSize, vClass);
+	template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass, const type& pValue){
+		ptr<type> ptr = ram::allocBck(vSize, vClass);
 		for(auto e : ptr) e = pValue;
 		return ptr;
 	}
 
 
-	template<class type> ptr<type> allocDA(const uint64 vSize, const CellClass vClass){
-		ptr<type> ptr = ram::allocUB(vSize, vClass);
+	template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass){
+		ptr<type> ptr = ram::allocBck(vSize, vClass);
 		for(auto e : ptr) e = type( );
 		return ptr;
 	}
@@ -136,7 +136,7 @@ namespace lux::ram{
 	void reallocUB(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
 		//If the cell is not allocated, allocate it and return
 		if(!pCell->address) [[unlikely]] {
-			pCell = allocUB(vSize, vCellClass);
+			pCell = allocBck(vSize, vCellClass);
 			return;
 		}
 		//If the class doesn't need to be changed
@@ -146,7 +146,7 @@ namespace lux::ram{
 		}
 		//else (if the class has to be changed)
 		else if(vSize != pCell->cellSize) [[unlikely]] {
-			Cell_t * cell = allocUB(vSize, vCellClass);	//Allocate a new cell
+			Cell_t * cell = allocBck(vSize, vCellClass);	//Allocate a new cell
 			memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
 			ram::free(pCell);							//Free the old memory
 			*pCell = *cell;								//Update the cell (and all the pointers pointing to it)
