@@ -52,7 +52,7 @@ static inline constexpr auto alignedIntervalCut(const t f, const t s, const t o,
 }
 
 
-//Returns the maximum number of variables with size s that fits in b bytes, with a minimum of 1 variable
+//Returns the maximum number of variables with count s that fits in b bytes, with a minimum of 1 variable
 //   e.g. fit(sizeof(int32), 15) returns 3
 //   e.g. fit(sizeof(int32), 3) returns 1
 static inline constexpr uint64 fit(const uint64 s, const uint64 b) {  return multipleOf(b, s) / s; }

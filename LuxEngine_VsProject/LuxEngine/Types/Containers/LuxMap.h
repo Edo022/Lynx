@@ -26,8 +26,8 @@ namespace lux {
 
 		iter head_;			//First free element
 		iter tail_;			//Last free element
-		iter size_;			//Number of allocated elements. Use size() instead of this variable
-		iter freeSize_;		//Number of free elements in the map. Use usedSize() or freeSize() instead of this variable
+		iter size_;			//Number of allocated elements. Use count() instead of this variable
+		iter freeSize_;		//Number of free elements in the map. Use usedCount() or freeCount() instead of this variable
 
 		iter _chunkNum;		//Number of allocated chunks
 
@@ -120,7 +120,7 @@ namespace lux {
 		//*       Not freeing it saves performance but uses more memory
 		//*       It will always be freed if the ramaining memory is too low
 		void __vectorcall remove(const iter vIndex, const bool vFreeElm = false) {
-			checkInit; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > size( ), vIndex, "Index is out of range");
+			checkInit; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > count( ), vIndex, "Index is out of range");
 			__lp_Tracker(vIndex) = -1;								//Set the index as free
 			if(vFreeElm) free(&__lp_Data(vIndex));					//Free the element if necessary
 			if(head_ == (iter)-1) head_ = tail_ = vIndex;			//If it has no free elements, initialize head_ and tail_.
@@ -178,7 +178,7 @@ namespace lux {
 
 		//Use the isValid() function to check if the element can be used or has been deleted
 		inline type& __vectorcall operator[](const iter vIndex) const {
-			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > size( ), vIndex, "Index is out of range");
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > count( ), vIndex, "Index is out of range");
 			return __lp_Data(vIndex);
 		}
 
@@ -196,9 +196,9 @@ namespace lux {
 
 
 
-		inline iter __vectorcall size( ) const { checkInit; return size_; }					//Returns the number of elements in the map, including the free ones
-		inline iter __vectorcall usedSize( ) const { checkInit; return size_ - freeSize_; }	//Returns the number of used elements
-		inline iter __vectorcall freeSize( ) const { checkInit; return freeSize_; }			//Returns the number of free elements
+		inline iter __vectorcall count( ) const { checkInit; return size_; }					//Returns the number of elements in the map, including the free ones
+		inline iter __vectorcall usedCount( ) const { checkInit; return size_ - freeSize_; }	//Returns the number of used elements
+		inline iter __vectorcall freeCount( ) const { checkInit; return freeSize_; }			//Returns the number of free elements
 	};
 }
 #undef __lp_Data

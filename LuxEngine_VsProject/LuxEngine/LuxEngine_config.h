@@ -59,9 +59,9 @@
 	//A global memory pool is required for memory profiling
 	//TODO add option
 #	define LUX_CNF_USE_GLOBAL_MEMORY_POOL
-	//The size of the memory chunks allocated by the global memory pool
+	//The count of the memory chunks allocated by the global memory pool
 	//Larger chunks have better performance but uses more memory
-	//Every allocation larger than the largest cell size willl be allocated as a single chunk
+	//Every allocation larger than the largest cell count willl be allocated as a single chunk
 	//Default: 100 000 000 (100MB)
 	//TODO add memory pool
 #	define LUX_CNF_GLOBAL_MEMORY_POOL_CHUNK_SIZE 100000000
@@ -84,13 +84,13 @@
 
 
 
-	//The size of the GPU memory pool buffers
+	//The count of the GPU memory pool buffers
 	//#LLID ECF0000 buffer limits infos
 	//Default: 50 000 000 (50MB)
 	//	Theorical max: 4 294 967 296 (~4GB). Sometimes Vulkan does not allow buffers larger than 2GB
 	//	Guaranteed max: 2 147 483 648 (~2GB)
 	//Larger buffers have better performance, but they increase the memory usage
-	//Buffers smaller than (<memBytes> / 1024) are not supported by some devices, therefore the engine will be unable to use part of the memory with that buffer size
+	//Buffers smaller than (<memBytes> / 1024) are not supported by some devices, therefore the engine will be unable to use part of the memory with that buffer count
 	//                        ^
 	//                        this is the sum of the shared RAM and the VRAM of the GPU, in bytes
 #	define LUX_CNF_GPU_STATIC_BUFFER_SIZE 50000000

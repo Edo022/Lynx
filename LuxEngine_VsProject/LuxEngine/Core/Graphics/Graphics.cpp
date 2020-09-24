@@ -112,7 +112,7 @@ namespace lux::core::g{
 
 	//TODO multithreaded submit and command creation
 	void drawFrame( ) {
-		if(c::shaders::CShaders.usedSize( ) <= 1) return;
+		if(c::shaders::CShaders.usedCount( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 
 
@@ -144,8 +144,8 @@ namespace lux::core::g{
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{ //Update render result submitting the command buffers to the compute queues
 			c::shaders::addShaderFence.startFirst( );
-			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedSize( ));
-			for(uint32 i = 0; i < c::shaders::CShaders.size( ); ++i) {
+			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
+			for(uint32 i = 0; i < c::shaders::CShaders.count( ); ++i) {
 				if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
 			c::shaders::addShaderFence.endFirst( );
@@ -159,7 +159,7 @@ namespace lux::core::g{
 			};
 			submitInfo.pWaitSemaphores = &drawFrameImageAquiredSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
-			submitInfo.commandBufferCount = c::shaders::CShadersCBs.size( );
+			submitInfo.commandBufferCount = c::shaders::CShadersCBs.count( );
 			submitInfo.pCommandBuffers = c::shaders::CShadersCBs.begin( );
 			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer", false, -1);
 		}
@@ -235,10 +235,10 @@ namespace lux::core::g{
 
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
-		if(objUpdates2D.size( ) > 0){
+		if(objUpdates2D.count( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
-			for(uint32 i = 0; i < objUpdates2D.size( ); i++){
+			for(uint32 i = 0; i < objUpdates2D.count( ); i++){
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
 					cb, objUpdates2D[i]->render.localData->buffer->buffer,

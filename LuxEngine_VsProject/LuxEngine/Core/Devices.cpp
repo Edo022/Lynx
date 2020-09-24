@@ -48,7 +48,7 @@ namespace lux::core::dvc{
 		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 		//TODO dont create shaders larger than the device limit
 		//pDevice->properties.limits.maxComputeSharedMemorySize;
-		score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible size of textures affects graphics quality
+		score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible count of textures affects graphics quality
 		if(pDevice->features.geometryShader) score += 1;												//Geometry shaders needed
 		return score;
 	}
@@ -72,7 +72,7 @@ namespace lux::core::dvc{
 		//Check swapchain support
 		else {
 			g::swapchain::SwapChainSupportDetails swapChainSupport = g::swapchain::swapchainQuerySupport(vDevice);
-			if(swapChainSupport.formats.size( ) == 0 || swapChainSupport.presentModes.size( ) == 0) {
+			if(swapChainSupport.formats.count( ) == 0 || swapChainSupport.presentModes.count( ) == 0) {
 				*pErrorText = "Unsupported swapchain";
 				return false;
 			}
@@ -108,7 +108,7 @@ namespace lux::core::dvc{
 
 		//Set families
 		QueueFamilyIndices indices;
-		for(uint32 i = 0; i < queueFamilies.size( ); ++i) {													//For every queue family
+		for(uint32 i = 0; i < queueFamilies.count( ); ++i) {													//For every queue family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 			VkBool32 hasPresentSupport = false;
@@ -152,7 +152,7 @@ namespace lux::core::dvc{
 			Array<VkPhysicalDevice> physDevices(deviceCount);																//Get physical device count
 			vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin( ));										//Get physical devices
 
-			for(uint32 i = 0; i < physDevices.size( ); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
+			for(uint32 i = 0; i < physDevices.count( ); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
 				VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 				VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 				String errorText;
@@ -168,34 +168,34 @@ namespace lux::core::dvc{
 
 
 		//If there are discarded devices, print their names
-		if(discardedPhysicalDevices.size( ) > 0) {
+		if(discardedPhysicalDevices.count( ) > 0) {
 			Failure printf("    Discarded devices:");
-			for(uint32 i = 0; i < discardedPhysicalDevices.size( ); i += 2) {
+			for(uint32 i = 0; i < discardedPhysicalDevices.count( ); i += 2) {
 				Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].begin( ), discardedPhysicalDevices[(int64)i + 1].begin( ));
 			}
 		}
 
 		//TODO different score for graphics and compute
 		#define physDev (*physicalDevices[i])
-		if(physicalDevices.size( ) > 0) {								//If there are suitable devices
+		if(physicalDevices.count( ) > 0) {								//If there are suitable devices
 			graphics.PD = *physicalDevices[0];								//set graphics device at default value
 			compute.PD = *physicalDevices[0];								//set compute  device at default value
-			for(uint32 i = 0; i < physicalDevices.size( ); ++i) {				//For every physical device
+			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device
 				physDev.indices = deviceGetQueueFamilies(physDev.device);		//Get its queue families
 				physDev.score = deviceRate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
-				if(physDev.score > compute.PD.score || physDev.indices.computeFamilies.size( ) > 0) compute.PD = physDev;
+				if(physDev.score > compute.PD.score || physDev.indices.computeFamilies.count( ) > 0) compute.PD = physDev;
 			}
-			for(uint32 i = 0; i < physicalDevices.size( ); ++i) {				//For every physical device that isn't the main graphics or compute device
+			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device that isn't the main graphics or compute device
 				if(!sameDevice(physDev, graphics.PD) && !sameDevice(physDev, compute.PD)) {
-					secondary.resize(secondary.size( ) + 1);
-					secondary[secondary.size( ) - 1].PD = physDev;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
+					secondary.resize(secondary.count( ) + 1);
+					secondary[secondary.count( ) - 1].PD = physDev;				//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
 				}
 			}
 
 			//Print the devices names, IDs, scores and tasks
-			Success printf("    Found %ld suitable device%s:", (uint32)physicalDevices.size( ), (physicalDevices.size( ) == 1) ? "" : "s");
-			for(uint32 i = 0; i < physicalDevices.size( ); ++i) {
+			Success printf("    Found %ld suitable device%s:", (uint32)physicalDevices.count( ), (physicalDevices.count( ) == 1) ? "" : "s");
+			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {
 				if(sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
 				printf("        %s  |  ID: %d  |  %d", physDev.properties.deviceName, physDev.properties.deviceID, physDev.score);
 				if(sameDevice(physDev, graphics.PD)) printf("  |  Main graphics");
@@ -211,15 +211,15 @@ namespace lux::core::dvc{
 		//Create a logical device for graphics, one for computation and one for every secondary device
 		deviceCreateLogical(&graphics.PD, &graphics.LD, nullptr);
 		deviceCreateLogical(&compute.PD, &compute.LD, &compute.computeQueues);
-		for(uint32 i = 0; i < secondary.size( ); ++i) {
+		for(uint32 i = 0; i < secondary.count( ); ++i) {
 			deviceCreateLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 		}
 
 		//Output created logical devices and queues
-		Success printf("    Created %ld logical devices:", 2 + (int32)secondary.size( ));
+		Success printf("    Created %ld logical devices:", 2 + (int32)secondary.count( ));
 		Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
-		Main	printf("        Main compute   |  compute queues:  %ld", (int32)compute.computeQueues.size( ));
-		Normal	printf("        %ld secondary devices",/*  |  secondary compute queues: %lld", secondary.size, */(int32)secondary.size( ));
+		Main	printf("        Main compute   |  compute queues:  %ld", (int32)compute.computeQueues.count( ));
+		Normal	printf("        %ld secondary devices",/*  |  secondary compute queues: %lld", secondary.count, */(int32)secondary.count( ));
 	}
 
 
@@ -246,7 +246,7 @@ namespace lux::core::dvc{
 			uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);		//Add his graphics family
 			uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);		//And his present family
 		}
-		for(uint32 i = 0; i < pPD->indices.computeFamilies.size( ); ++i) {		//And then add every compute family, graphics ones included
+		for(uint32 i = 0; i < pPD->indices.computeFamilies.count( ); ++i) {		//And then add every compute family, graphics ones included
 			uniqueQueueFamilyIndices.insert(pPD->indices.computeFamilies[i]);
 		}
 
@@ -275,13 +275,13 @@ namespace lux::core::dvc{
 		//Fill deviceCreateInfo
 		VkDeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
-			.queueCreateInfoCount{ (uint32)queueCreateInfos.size( ) },			//Set queue infos count
+			.queueCreateInfoCount{ (uint32)queueCreateInfos.count( ) },			//Set queue infos count
 			.pQueueCreateInfos{ queueCreateInfos.begin( ) },						//Set queue infos
 			#ifdef LUX_DEBUG
-			.enabledLayerCount{ (uint32)validationLayers.size( ) },				//Set validation layer count if in debug mode
+			.enabledLayerCount{ (uint32)validationLayers.count( ) },				//Set validation layer count if in debug mode
 			.ppEnabledLayerNames{ validationLayers.begin( ) },					//Set validation layers if in debug mode
 			#endif
-			.enabledExtensionCount{ (uint32)requiredDeviceExtensions.size( ) },	//Set required extentions count
+			.enabledExtensionCount{ (uint32)requiredDeviceExtensions.count( ) },	//Set required extentions count
 			.ppEnabledExtensionNames{ requiredDeviceExtensions.begin( ) },		//Set required extensions
 			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
 		};
@@ -299,7 +299,7 @@ namespace lux::core::dvc{
 				}
 				if(pComputeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
 					compute.LD = _logicalDevice;																//Set it as the main compute logical device
-					for(uint32 i = 0; i < pPD->indices.computeFamilies.size( ); ++i) {							//Add every compute queue to the main compute queue list
+					for(uint32 i = 0; i < pPD->indices.computeFamilies.count( ); ++i) {							//Add every compute queue to the main compute queue list
 						VkQueue computeQueue;
 						vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 						compute.computeQueues.add(computeQueue);
@@ -308,7 +308,7 @@ namespace lux::core::dvc{
 			}
 			else {																							//If it's none of them
 				*pLD = _logicalDevice;																			//Add it to the list of secondary logical devices
-				for(uint32 i = 0; i < pPD->indices.computeFamilies.size( ); ++i) {								//Add every compute queue to the secondary compute queues
+				for(uint32 i = 0; i < pPD->indices.computeFamilies.count( ); ++i) {								//Add every compute queue to the secondary compute queues
 					VkQueue computeQueue;
 					vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 					pComputeQueues->add(computeQueue);

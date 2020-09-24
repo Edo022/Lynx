@@ -67,9 +67,9 @@ namespace lux::core::c::shaders{
 		}
 
 		_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
-		int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file size
+		int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file count
 		_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
-		int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded size
+		int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
 
 		char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
 		fread(str, filesize, sizeof(char), fp);							//Read the file
@@ -83,14 +83,14 @@ namespace lux::core::c::shaders{
 
 
 
-	//Creates a shader module from a compiled shader code and its size in bytes
+	//Creates a shader module from a compiled shader code and its count in bytes
 	//*   vDevice: the logical device to use to create the shader module
 	//*   pCode: a pointer to an int32 array containing the shader code
 	//*   pLength: a pointer to the code length
 	VkShaderModule cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
 		VkShaderModuleCreateInfo createInfo{ };								//Create shader module infos
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
-		createInfo.codeSize = *pLength;										//Set the size of the compiled shader code
+		createInfo.codeSize = *pLength;										//Set the count of the compiled shader code
 		createInfo.pCode = pCode;											//Set the shader code
 
 		VkShaderModule shaderModule;										//Create the shader module
@@ -134,7 +134,7 @@ namespace lux::core::c::shaders{
 			//Create a VkDescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the VkDescriptorSetLayout
 			VkDescriptorSetLayoutCreateInfo* layoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));
 			layoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Structure type
-			layoutCreateInfo->bindingCount = bindingLayouts.size( );						//Number of binding layouts
+			layoutCreateInfo->bindingCount = bindingLayouts.count( );						//Number of binding layouts
 			layoutCreateInfo->pBindings = (bindingLayouts.begin( ));						//The binding layouts
 			layoutCreateInfo->flags = 0;													//default
 			layoutCreateInfo->pNext = nullptr;												//default
@@ -206,9 +206,9 @@ namespace lux::core::c::shaders{
 	//*      the binding index is the same as their index in the array
 	//*   vShaderLayout | the shader layout
 	void createDescriptorSets(LuxShader_t* pCShader, const Array<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
-		//This struct defines the size of a descriptor pool (how many descriptor sets it can contain)
+		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
-		for(uint32 i = 0; i < pCells.size( ); i++){
+		for(uint32 i = 0; i < pCells.count( ); i++){
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;	//#LLID STRT 0003
 			else storageCount++;
 		}
@@ -227,8 +227,8 @@ namespace lux::core::c::shaders{
 			.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO },			//Set structure type
 			.flags{ VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT },		//The descriptor sets can be freed
 			.maxSets{ 1 },														//Allocate only one descriptor set
-			.poolSizeCount{ sizes.size( ) },									//One pool size
-			.pPoolSizes{ sizes.begin( ) },										//Set pool size
+			.poolSizeCount{ sizes.count( ) },									//One pool count
+			.pPoolSizes{ sizes.begin( ) },										//Set pool count
 		};
 		TryVk(vkCreateDescriptorPool(dvc::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool)) printError("Unable to create descriptor pool", false, -2);
 
@@ -248,14 +248,14 @@ namespace lux::core::c::shaders{
 
 
 		//Create a descriptor set write for each buffer and update the descriptor sets
-		Array<VkWriteDescriptorSet> writeDescriptorSets(pCells.size( ));
-		for(uint32 i = 0; i < pCells.size( ); ++i) {
+		Array<VkWriteDescriptorSet> writeDescriptorSets(pCells.count( ));
+		for(uint32 i = 0; i < pCells.count( ); ++i) {
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
 			descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;				//Set buffer    //#LLID STRT 0002 Set buffer offset
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
 			else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);		//Set buffer offset
-			descriptorBufferInfo->range = pCells[i]->cellSize;						//Set buffer size
+			descriptorBufferInfo->range = pCells[i]->cellSize;						//Set buffer count
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 						//Create write descriptor set
 				.sType{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET },					//Set structure type
@@ -270,7 +270,7 @@ namespace lux::core::c::shaders{
 			//pCShader->__lp_ptrs.add((void*)descriptorBufferInfo);				//Save the struct in the pointers that needs to be freed
 		}
 		//Update descriptor sets
-		vkUpdateDescriptorSets(dvc::compute.LD, writeDescriptorSets.size( ), writeDescriptorSets.begin( ), 0, nullptr);
+		vkUpdateDescriptorSets(dvc::compute.LD, writeDescriptorSets.count( ), writeDescriptorSets.begin( ), 0, nullptr);
 	}
 
 
@@ -309,14 +309,14 @@ namespace lux::core::c::shaders{
 				.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },							//Set the command buffer as a primary level command buffer
 			};
 			commandBufferAllocateInfo.commandPool = c::copyCommandPool;			//Set command pool where to allocate the command buffer
-			commandBufferAllocateInfo.commandBufferCount = g::swapchain::swapchainImages.size( );
+			commandBufferAllocateInfo.commandBufferCount = g::swapchain::swapchainImages.count( );
 			TryVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, c::copyCommandBuffers.begin( ))) printError("Unable to allocate command buffers", false, -2);
 
 
 
 
 			//Record a present command buffers for each swapchain images
-			for(uint32 imgIndex = 0; imgIndex < g::swapchain::swapchainImages.size( ); imgIndex++) {
+			for(uint32 imgIndex = 0; imgIndex < g::swapchain::swapchainImages.count( ); imgIndex++) {
 				//Start recording commands
 				VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos to start recording the command buffer
 					.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
@@ -406,7 +406,7 @@ namespace lux::core::c::shaders{
 	//*   vGroupCountX  | the number of workgroups in the x axis
 	//*   vGroupCounty  | the number of workgroups in the y axis
 	//*   vGroupCountz  | the number of workgroups in the z axis
-	//The workgroup size is define in the GLSL shader
+	//The workgroup count is define in the GLSL shader
 	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 		//Create command buffer allocate infos
@@ -522,7 +522,7 @@ namespace lux::core::c::shaders{
 	//*   shader  | the shader to destroy
 	//*   returns | true if the operation succeeded, false if the index is invalid
 	bool destroyShader(const LuxShader vCShader) {
-		if(vCShader >= CShaders.size( )) return false;
+		if(vCShader >= CShaders.count( )) return false;
 
 		//Clear descriptors sets, descriptor pool and descriptor layout
 		vkFreeDescriptorSets(dvc::compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
@@ -533,7 +533,7 @@ namespace lux::core::c::shaders{
 		vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Free all the useless pointers
-		//for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.size( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
+		//for(uint32 i = 0; i < CShaders[vCShader].__lp_ptrs.count( ); ++i) free(CShaders[vCShader].__lp_ptrs[i]);
 
 		//Remove the shader from the shader array
 		CShaders.remove(vCShader);

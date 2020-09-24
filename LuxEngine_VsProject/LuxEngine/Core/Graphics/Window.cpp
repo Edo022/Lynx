@@ -75,10 +75,10 @@ namespace lux::core::g::wnd{
 			#endif
 			.pApplicationInfo{ &appInfo },
 			#ifdef LUX_DEBUG
-			.enabledLayerCount{ validationLayers.size( ) },
+			.enabledLayerCount{ validationLayers.count( ) },
 			.ppEnabledLayerNames{ validationLayers.begin( ) },
 			#endif
-			.enabledExtensionCount{ extensions.size( ) },
+			.enabledExtensionCount{ extensions.count( ) },
 			.ppEnabledExtensionNames{ extensions.begin( ) },
 		};
 		//Add validation layers if in debug mode

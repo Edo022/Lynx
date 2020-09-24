@@ -34,8 +34,8 @@ namespace lux::rem{
 
 
 	//This function allocates a video memory cell into a buffer
-	//*   vSize      | size of the cell
-	//*   vCellClass | class of the cell. This is the maximum size the cell can reach before it needs to be reallocated
+	//*   vSize      | count of the cell
+	//*   vCellClass | class of the cell. This is the maximum count the cell can reach before it needs to be reallocated
 	//*   vAllocType | type of buffer where to allocate the cell
 	//*       Cells allocated in shared memory are accessible from both CPU and GPU (cpu needs to map() the cell to use it)
 	//*       Cells allocated in dedicated memory are only accessible from GPU
@@ -66,7 +66,7 @@ namespace lux::rem{
 		uint32 typeIndex = (classIndexFromEnum(vCellClass) << 2) | (uint32)vAllocType;		//Get buffer index from type and class
 		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);					//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
-		if((uint32)vCellClass){																//If the cell is a fixed size cell
+		if((uint32)vCellClass){																//If the cell is a fixed count cell
 			uint64 cellNum = bufferSize / (uint32)vCellClass;									//Get the maximum number of cells in each buffer
 			for(uint32 i = 0; i < subBuffers.size( ); i++){										//Search for a suitable buffer
 				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {			//If a buffer is valid and it has a free cell
@@ -78,8 +78,8 @@ namespace lux::rem{
 			}
 			//TODO fix
 			//TODO like RAM cells
-		}{																					//If there are no free buffers or the cell is a custom size cell
-			//Create a new buffer with 1 cell for custom size cells, or the max number of cells for fixed size cells. Then set it as the cell's buffer
+		}{																					//If there are no free buffers or the cell is a custom count cell
+			//Create a new buffer with 1 cell for custom count cells, or the max number of cells for fixed count cells. Then set it as the cell's buffer
 			MemBuffer& buffer = subBuffers[subBuffers.add(MemBuffer{ 0, 0, (uint32)vCellClass ? Map_NMP_S<Cell_t, uint32>(bufferSize / (uint32)vCellClass, bufferSize / (uint32)vCellClass) : Map_NMP_S<Cell_t, uint32>(1, 1) })];
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->buffer = &buffer;																//Create a new buffer and set it as the cell's buffer
@@ -120,6 +120,6 @@ namespace lux::rem{
 	void free(Cell pCell){
 		//TODO destroy buffers from asyncrhonous garbage collector
 		pCell->buffer->cells.remove(pCell->cellIndex);
-		//if(pCell.buffer->cells.usedSize() == 0) pCell.bufferType->buffers.remove(pCell)
+		//if(pCell.buffer->cells.usedCount() == 0) pCell.bufferType->buffers.remove(pCell)
 	}
 }

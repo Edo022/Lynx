@@ -53,10 +53,10 @@ namespace lux {
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocBck(pContainer.size( )) } {
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocBck(pContainer.count( )) } {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
-			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
+			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
 		}
 
 
@@ -68,8 +68,8 @@ namespace lux {
 
 
 		//Resizes the array without initializing the new elements
-		//*   vNewSize | new size of the array
-		//*   Returns  | the new size
+		//*   vNewSize | new count of the array
+		//*   Returns  | the new count
 		//TODO totally useless. Just don't return
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
@@ -104,14 +104,14 @@ namespace lux {
 
 
 
-		inline iter		__vectorcall size( )	const override { checkInit; return data_.size( );			}
-		inline uint64	__vectorcall bytes( )	const override { checkInit; return size( ) * sizeof(type);	}
-		inline bool		__vectorcall empty( )	const override { checkInit; return !size( );				}
+		inline iter		__vectorcall count( )	const override { checkInit; return data_.size( );			}
+		inline uint64	__vectorcall size( )	const override { checkInit; return count( ) * sizeof(type);	}
+		inline bool		__vectorcall empty( )	const override { checkInit; return !count( );				}
 		inline type*	__vectorcall begin( )	const override { checkInit; return data_.begin( );			}
 		inline type*	__vectorcall end( )		const override { checkInit; return data_.end( );			}
 
 		inline type&	__vectorcall operator[](const iter vIndex) const {
-			checkInit;  checkSize; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex >= size( ), vIndex, "Index is out of range");
+			checkInit;  checkCount; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex >= count( ), vIndex, "Index is out of range");
 			return data_[vIndex];
 		}
 	};

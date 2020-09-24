@@ -18,8 +18,8 @@ namespace lux {
 		iter** tracker_;	//State of each element
 		iter head_;			//First free element
 		iter tail_;			//Last free element
-		iter size_;			//Number of allocated elements. Use size() instead of this variable
-		iter freeSize_;		//Number of free elements in the map. Use usedSize() or freeSize() instead of this variable
+		iter size_;			//Number of allocated elements. Use count() instead of this variable
+		iter freeSize_;		//Number of free elements in the map. Use usedCount() or freeCount() instead of this variable
 
 	private:
 		iter _chunkNum;		//Number of allocated chunks
@@ -42,12 +42,12 @@ namespace lux {
 			head_{ head_ }, tail_{ tail_ }, _chunkSize{ _chunkSize }, _maxSize{ _maxSize } {
 		}
 
-		//Creates the map with the specified chunk and maximum size
-		//The number of chunks depends on their size and the maximum size of the map (chunks = _maxSize / _chunkSize)
+		//Creates the map with the specified chunk and maximum count
+		//The number of chunks depends on their count and the maximum count of the map (chunks = _maxSize / _chunkSize)
 		//*   vChunkSize: | number of elements allocated when the map grows
 		//*       Larger chunks improve performance but use more memory
 		//*       Default at ~500KB (depends on the type)
-		//*   vMaxSize:   | the maximum size the map can reach
+		//*   vMaxSize:   | the maximum count the map can reach
 		//*       It must be larger than vChunkSize
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		inline Map_NMP_S(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
@@ -119,8 +119,8 @@ namespace lux {
 		////Returns a static array containing the IDs of the elements, in the same order as they were in the input
 		//Array<iter> __vectorcall add(const std::vector<type>* pVector) {
 		//	Array<iter> IDs;
-		//	IDs.resize(pVector->size( ));												//Set the number of IDs
-		//	for(int32 i = 0; i < pVector->size( ); i++) IDs[i] = add((*pVector)[i]);	//Add every element to the map and save its ID
+		//	IDs.resize(pVector->count( ));												//Set the number of IDs
+		//	for(int32 i = 0; i < pVector->count( ); i++) IDs[i] = add((*pVector)[i]);	//Add every element to the map and save its ID
 		//	return IDs;
 		//}
 
@@ -131,8 +131,8 @@ namespace lux {
 		////Returns a static array containing the IDs of the elements, in the same order as they were in the input (invalid indices have -1 as ID)
 		//Array<iter> __vectorcall add(const Map<type, iter>* vContainer) {
 		//	Array<iter> IDs;
-		//	IDs.resize(vContainer->size( ));								//Set the number of IDs
-		//	for(iter i = 0; i < vContainer->size( ); i++){					//For every element of the input map
+		//	IDs.resize(vContainer->count( ));								//Set the number of IDs
+		//	for(iter i = 0; i < vContainer->count( ); i++){					//For every element of the input map
 		//		if(vContainer->isValid(i)) IDs[i] = add((*vContainer)[i]);		//If it's valid, add it to the map and save its ID
 		//		else IDs[i] = -1;												//If not, save -1 as ID
 		//	}
@@ -161,7 +161,7 @@ namespace lux {
 
 
 
-		//Sets the size of the map to 0, deleting all the elements and resetting it to the initial state
+		//Sets the count of the map to 0, deleting all the elements and resetting it to the initial state
 		inline void __vectorcall clear( ) {
 			for(iter i = 0; i < _chunkNum; ++i) free(data_[i]);		free(data_);		//Free data
 			for(iter i = 0; i < _chunkNum; ++i) free(tracker_[i]);	free(tracker_);		//Free tracker

@@ -65,9 +65,9 @@ namespace lux::ram{
 
 	//TODO CHECK MEMORY FULL
 	//This function allocates a memory cell or a pointer into a buffer
-	//*   vSize                 | size of the cell
-	//*   vClass                | class of the cell. This is the maximum size the cell can reach before it needs to be copied
-	//*   vForceDedicatedBuffer | if true, the memory will be allocated in a new buffer instead of a fixed size cell
+	//*   vSize                 | count of the cell
+	//*   vClass                | class of the cell. This is the maximum count the cell can reach before it needs to be copied
+	//*   vForceDedicatedBuffer | if true, the memory will be allocated in a new buffer instead of a fixed count cell
 	//*   Returns               | the allocated Cell object
 	//e.g. lux::ram::ptr<int> foo = lux::ram::allocBck(100, lux::CellClass::AUTO);
 	//e.g. same as int* foo = (int*)malloc(100);
@@ -75,7 +75,7 @@ namespace lux::ram{
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
 		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
-		if((uint32)vClass){																			//If the cell is a fixed size cell
+		if((uint32)vClass){																			//If the cell is a fixed count cell
 			uint64 cellNum = bufferSize / (uint32)vClass;												//Get the maximum number of cells in each buffer
 			for(uint32 i = 0; i < subBuffers.size( ); i++){												//Search for a suitable buffer
 				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {					//If a buffer is valid and it has a free cell
@@ -87,13 +87,13 @@ namespace lux::ram{
 					return cell;
 				}
 			}
-		}{																							//If there are no free buffers or the cell is a custom size cell
+		}{																							//If there are no free buffers or the cell is a custom count cell
 			uint32 bufferIndex, cellsNum = (uint32)vClass ? bufferSize / (uint32)vClass : 1;
 			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
-				//! The map requires the chunk size and the max size. bufferSize is the size in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
+				//! The map requires the chunk count and the max count. bufferSize is the count in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
 				//.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
 				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
-			});																							//^ Create in it 1 cell for custom size cells, or the maximum number of cells for fixed size cells
+			});																							//^ Create in it 1 cell for custom count cells, or the maximum number of cells for fixed count cells
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
 			//TODO set right like
 			if(!buffer.memory) {
@@ -107,7 +107,7 @@ namespace lux::ram{
 
 			Cell_t* cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell));	//<^ Create a new cell in the new buffer. Set its address
-			cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom size cells
+			cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom count cells
 
 
 			//system("pause");
@@ -140,7 +140,7 @@ namespace lux::ram{
 			return;
 		}
 		//If the class doesn't need to be changed
-		//(class specified but it's the same as before or class is auto) and (size is within the class minimum and maximum size)
+		//(class specified but it's the same as before or class is auto) and (count is within the class minimum and maximum count)
 		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] {
 			pCell->cellSize = vSize;
 		}

@@ -31,7 +31,7 @@
 
 
 //Performance
-	//Class operators and size() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
+	//Class operators and count() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
 	//The luxDebug()   macro executes a line of code only if LUX_DEBUG is defined
 	//The luxRelease() macro executes a line of code only if LUX_DEBUG is NOT defined
 	//luxDebug and luxRelease macros do not affect performance or code generation. They just remove a line of code

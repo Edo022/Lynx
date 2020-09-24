@@ -28,7 +28,7 @@ namespace lux::sys{
 		//e.g. getExtensionFromPath("/home/dir/file.txt") returns "txt"
 		//Directories or files with no exention returns ""
 		lux::String getExtensionFromPath(const lux::String& pStr) {
-			uint32 i = pStr.size( ) - 1;
+			uint32 i = pStr.count( ) - 1;
 			for(; pStr[i] != '.' && i > 0; --i) if(pStr[i] == '/') return lux::String("");
 			return lux::String(pStr.begin( ) + i + 1);
 		}
@@ -36,7 +36,7 @@ namespace lux::sys{
 		//Returns a lux::String containing the name of the file
 		//e.g. getFileNameFromPath("/home/dir/file.txt") returns "file.txt"
 		lux::String getFileNameFromPath(const lux::String& pStr) {
-			uint32 i = pStr.size( ) - 1;
+			uint32 i = pStr.count( ) - 1;
 			for(; pStr[i] != '/' && i > 0; --i);
 			return lux::String(pStr.begin( ) + i + 1);
 		}

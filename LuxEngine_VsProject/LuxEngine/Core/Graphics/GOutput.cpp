@@ -111,9 +111,9 @@ namespace lux::core::g::out{
 
 
 	void createFramebuffers( ) {
-		swapchain::swapchainFramebuffers.resize(swapchain::swapchainImageViews.size( ));
+		swapchain::swapchainFramebuffers.resize(swapchain::swapchainImageViews.count( ));
 
-		for(uint32 i = 0; i < swapchain::swapchainImageViews.size( ); ++i) {
+		for(uint32 i = 0; i < swapchain::swapchainImageViews.count( ); ++i) {
 			VkFramebufferCreateInfo framebufferInfo{
 				.sType{ VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO },
 				.renderPass{ renderPass },

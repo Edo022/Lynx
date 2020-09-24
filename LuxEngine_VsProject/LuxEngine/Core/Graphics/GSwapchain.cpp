@@ -168,8 +168,8 @@ namespace lux::core::g::swapchain{
 
 
 		//Create image views
-		swapchainImageViews.resize(swapchainImages.size( ));
-		for(uint32 i = 0; i < swapchainImages.size( ); ++i) swapchainImageViews[i] = out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		swapchainImageViews.resize(swapchainImages.count( ));
+		for(uint32 i = 0; i < swapchainImages.count( ); ++i) swapchainImageViews[i] = out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
 		out::createRenderPass( );
@@ -208,18 +208,18 @@ namespace lux::core::g::swapchain{
 			swapchain::swapchainCreate( );			//Create a new swapchain
 
 
-			//Update the window size buffer
+			//Update the window count buffer
 			uint32* pwindowSize = scast<uint32*>(wnd::gpuCellWindowSize->map( ));
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
 			g::wnd::gpuCellWindowSize->unmap( );
 
 			{	//Destroy copy command buffers
-				vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.size( ), c::copyCommandBuffers.begin( ));
+				vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.count( ), c::copyCommandBuffers.begin( ));
 				vkDestroyCommandPool(dvc::compute.LD, c::copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				c::copyCommandBuffers.resize(swapchainImages.size( ));	//Resize the command buffer array in the shader
+				c::copyCommandBuffers.resize(swapchainImages.count( ));	//Resize the command buffer array in the shader
 				c::shaders::createDefaultCommandBuffers( );				//Create command buffers and command pool
 			}
 

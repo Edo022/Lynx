@@ -19,7 +19,7 @@ namespace lux{
 	//Bytes to allocate for each cell
 	//Buffer classes and addresses are 32-byte aligned to allow the use of AVX2 and match the GPU minimum offsets
 	enum class CellClass : uint32 {
-		CLASS_A = 32U,					//32 bytes. The minimum size of a cell
+		CLASS_A = 32U,					//32 bytes. The minimum count of a cell
 		CLASS_B = CLASS_A * 16,			//16x CLASS_A. 512 B per cell (~0.5KB)
 		CLASS_C = CLASS_A * 32,			//32x CLASS_A. 1024 B per cell (~1KB)
 		CLASS_D = CLASS_A * 64,			//64x CLASS_A. 2048 B per cell (~2KB)
@@ -161,7 +161,7 @@ namespace lux{
 			#define checkNullptr lux_error(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", "h")
 			//#define checkNullptr lux_error(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", __FUNCTION__)
 			#define checkSizeD   lux_error(size( ) == 0, "Cannot dereference a pointer pointing to a 0-byte memory allocation")
-			//#define checkSize  lux_error(size( ) == 0, "This function cannot be called on pointers pointing to a 0-byte memory allocation")
+			//#define checkCount  lux_error(count( ) == 0, "This function cannot be called on pointers pointing to a 0-byte memory allocation")
 
 
 
@@ -304,7 +304,7 @@ namespace lux{
 			inline type& operator*( ) const { checkInit; checkNullptr; checkSizeD; return *address; }
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
-			// [#] allocated size is 0     | k | print error
+			// [#] allocated count is 0     | k | print error
 			//OK
 
 
@@ -390,28 +390,28 @@ namespace lux{
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
-			// [#] size is 0                  | k | print error
+			// [#] count is 0                  | k | print error
 			//OK
 
 			inline void			operator-=(uint64 v)	{ checkInit; checkNullptr; checkSize; address -= v;	checkm; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
-			// [#] size is 0                  | k | print error
+			// [#] count is 0                  | k | print error
 			//OK
 
 			inline void			operator++( )			{ checkInit; checkNullptr; checkSize; address++;	checkp; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
-			// [#] size is 0                  | k | print error
+			// [#] count is 0                  | k | print error
 			//OK
 
 			inline void			operator--( )			{ checkInit; checkNullptr; checkSize; address--;	checkm; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 			// [#] address goes out of range  | k | print error
-			// [#] size is 0                  | k | print error
+			// [#] count is 0                  | k | print error
 			//OK
 
 
@@ -440,13 +440,13 @@ namespace lux{
 			// [#] No init required
 			//OK
 
-			inline operator type*( )	const { checkInit; /*checkSize; */lux_error(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
+			inline operator type*( )	const { checkInit; /*checkCount; */lux_error(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 
 			//TODO it can be. maybe
-			//// [#] size is 0                  | k | print error
-			// [#] size is 0                  | k | If size is 0, the pointer still has an address. It just contains no data and can overlap
+			//// [#] count is 0                  | k | print error
+			// [#] count is 0                  | k | If count is 0, the pointer still has an address. It just contains no data and can overlap
 			//OK
 
 			inline operator bool( )		const { checkInit; return !!address; }			//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
@@ -459,60 +459,60 @@ namespace lux{
 			// [#] address is nullptr         | k | it can be
 			// [#] vIndex is negative         | k | print error
 			// [#] vIndex is out of range     | k | print error
-			// [#] size is 0                  | k | print error
+			// [#] count is 0                  | k | print error
 			//OK
 
 
 
 
 
-			inline type*	 __vectorcall begin( )	const { checkInit; checkNullptr; /*checkSize;*/ return (type*)cell->address;										} //Returns the first address of the allocated memory block as a normal pointer
+			inline type*	 __vectorcall begin( )	const { checkInit; checkNullptr; /*checkCount;*/ return (type*)cell->address;										} //Returns the first address of the allocated memory block as a normal pointer
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
-			inline ptr<type> __vectorcall beginp( )	const { checkInit; checkNullptr; /*checkSize;*/ return ptr<type>(cell);											} //Returns the first address of the allocated memory block as a lux::ram::ptr
+			inline ptr<type> __vectorcall beginp( )	const { checkInit; checkNullptr; /*checkCount;*/ return ptr<type>(cell);											} //Returns the first address of the allocated memory block as a lux::ram::ptr
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
-			inline type*	 __vectorcall end( )	const { checkInit; checkNullptr; /*checkSize;*/ return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the address of the object past the last object in the memory block as a normal pointer. Don't dereference it
+			inline type*	 __vectorcall end( )	const { checkInit; checkNullptr; /*checkCount;*/ return (type*)((int8*)cell->address + cell->cellSize);		} //Returns the address of the object past the last object in the memory block as a normal pointer. Don't dereference it
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
-			inline ptr<type> __vectorcall endp( )	const { checkInit; checkNullptr; /*checkSize;*/ return ptr<type>(cell, (type*)((int8*)cell->address + cell->cellSize));} //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
+			inline ptr<type> __vectorcall endp( )	const { checkInit; checkNullptr; /*checkCount;*/ return ptr<type>(cell, (type*)((int8*)cell->address + cell->cellSize));} //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
 			inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return ((type*)address)[size( ) - 1]; } //Returns a reference to the last element in the allocated memory block
-			//inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
+			//inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkCount; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			// [#] size is 0                  | k | print error
+			// [#] count is 0                  | k | print error
 			//OK
 
-			inline uint64 __vectorcall size( )	const { checkInit; checkNullptr; /*checkSize;*/ return cell->cellSize;												} //Returns the total size of the allocated memory
+			inline uint64 __vectorcall size( )	const { checkInit; checkNullptr; /*checkCount;*/ return cell->cellSize;												} //Returns the total count of the allocated memory
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
-			inline uint64 __vectorcall prior( )	const { checkInit; checkNullptr; /*checkSize;*/ return (uint64)address - (uint64)cell->address;						} //Returns the number of allocated bytes before the pointer
+			inline uint64 __vectorcall prior( )	const { checkInit; checkNullptr; /*checkCount;*/ return (uint64)address - (uint64)cell->address;						} //Returns the number of allocated bytes before the pointer
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
-			inline uint64 __vectorcall latter( )const { checkInit; checkNullptr; /*checkSize;*/ return (uint64)cell->address + cell->cellSize - (uint64)address;		} //Returns the number of allocated bytes after  the pointer
+			inline uint64 __vectorcall latter( )const { checkInit; checkNullptr; /*checkCount;*/ return (uint64)cell->address + cell->cellSize - (uint64)address;		} //Returns the number of allocated bytes after  the pointer
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
-			//// [#] size is 0                  | k | print error
+			//// [#] count is 0                  | k | print error
 			//OK
 
 		};

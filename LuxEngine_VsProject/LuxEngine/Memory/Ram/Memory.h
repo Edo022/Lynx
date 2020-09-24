@@ -12,13 +12,13 @@
 /*
 
 			   CELL 0 ------------------.-.
-			  .──────────────────────.  ¦ ¦                      CPU/GPU access       allocation types                                                CELL 0 ------------------.             50,331,648 bytes per buffer (Fixed size buffers only)
+			  .──────────────────────.  ¦ ¦                      CPU/GPU access       allocation types                                                CELL 0 ------------------.             50,331,648 bytes per buffer (Fixed count buffers only)
 	   .-------> buffer   cellIndex  <--' ¦                                                                                                          .──────────────────────.  ¦             worst case:
 	 .-¦ ------> type     address    <----'<-----.               R : read             SU : SHARED_UNIFORM                                      .----->  buffer   cellIndex  <--'                 RAM     | 905,969,664 (~906MB)   allocated    | 404,082 (~405KB) used
 	 ¦ ¦      │  owners   cellSize   <-----------¦               W : write            SS : SHARED_STORAGE                                    .-¦ ---->  type     cellSize   <--.                 VRAM    | 603,979,776 (~604MB)   allocated    | 269,388 (~269KB) used
 	 ¦ ¦      '────.   .─────────────'           ¦               - : none             DU : DEDICATED_UNIFORM                                 ¦ ¦     '──────────.   .───────'  ¦                           50,331,648 * (7-1) * n                (1 + 33 + 513 + 1025 + 2049 + 131071) * n
 	 ¦ ¦   RAM     |  /                          ¦                                    DS : DEDICATED_STORAGE                                 ¦ ¦  VRAM / SHARED  \  |          ¦
-	 ¦ '-- BUFFER 0| / TP0                       ¦                                                                                           ¦ '- BUFFER 0 TP7    \ |          ¦             Worst case + data structures size:
+	 ¦ '-- BUFFER 0| / TP0                       ¦                                                                                           ¦ '- BUFFER 0 TP7    \ |          ¦             Worst case + data structures count:
 	 ¦    .────────|/ ─────────────.             ¦                                                                                           ¦   .─────────────────\|────.     ¦                 RAM     | 1,057,563,648 (~1.06GB) allocated   | 151,998,786 (~152MB) used
 	 ¦    │  cell 0    cell class  <------.------¦ ------------------------------------------------------------------------------------------¦ -->  cell class   cell 0  │     ¦                 VRAM    | [no changes]                        | [no changes]
 	 ¦    │  cell 1                │	  ¦      ¦                                                                                      .----¦ -->  allocBck type   cell 1  │     ¦                           a = (64 + sizeof(lux::ram::Cell_t)) = 384, b = (64 + sizeof(lux::vram::Cell_t)) = 288
@@ -83,7 +83,7 @@ namespace lux::ram{
 
 	Cell_t* alloc_internal(const uint64 vSize, const CellClass vClass = CellClass::AUTO);
 	inline Cell_t* alloc_call(const uint64 vSize, CellClass vClass = CellClass::AUTO, const bool vForceDedicatedBuffer = false){
-		//The size cannot be zero. If it is, allocate 1 byte and set the size variable back to zero
+		//The count cannot be zero. If it is, allocate 1 byte and set the count variable back to zero
 		if(!vSize) {
 			Cell_t* cell = alloc_internal(1, vClass);
 			cell->cellSize = 0;
@@ -175,7 +175,7 @@ namespace lux::ram{
 		evaluateCellClass(size, vClass);
 		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
 		Cell_t* cell = ram::alloc_call(size, vClass);
-		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : size); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
+		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : count); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
 		init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
 		return cell;
 

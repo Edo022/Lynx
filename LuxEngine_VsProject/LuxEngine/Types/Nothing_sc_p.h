@@ -35,5 +35,6 @@
 
 
 #define isInit(var)				luxDebug(param_error_2(var.lux_sc_initialized != lux_sc_v, var, "A structure must be initialized before being used"));
-#define checkSize				lux_error(size( ) == 0, "This function cannot be called on pointers pointing to a 0-byte memory allocation")
+#define checkCount				lux_error(count( ) == 0, "This function cannot be called on containers with size 0")
+#define checkSize				lux_error(size( ) == 0,  "This function cannot be called on pointers pointing to a 0-byte memory allocation")
 #define constructExec(fun, ...) luxDebug(lux_sc_dummy{fun(__VA_ARGS__) ? lux_sc_dummy : lux_sc_dummy},)

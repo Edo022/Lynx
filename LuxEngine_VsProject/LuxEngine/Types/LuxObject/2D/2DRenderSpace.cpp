@@ -21,7 +21,7 @@ namespace lux::obj {
 	//A negative index is equal to the n-th last element (using index -5 with a render space with 8 children is the same as using index 2)
 	//Returns false if the index is invalid
 	bool RenderSpace2D::setChildLimits(const uint32 vChildIndex) const {
-		if(vChildIndex >= children.size( )) return false;
+		if(vChildIndex >= children.count( )) return false;
 		switch(alignment){
 			case AlignmentType::FixedHorizontal:
 			{

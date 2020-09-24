@@ -45,7 +45,7 @@ namespace lux::thr {
 			luxDebug(String thrName = "\tLuxEngine  |  GTP ");
 			luxDebug(thrName += thrNumStrL);
 			luxDebug(wchar_t lthn[100]);
-			luxDebug(mbstowcs(lthn, thrName.begin( ), thrName.size( ) + 1));
+			luxDebug(mbstowcs(lthn, thrName.begin( ), thrName.count( ) + 1));
 			luxDebug(SetThreadDescription(GetCurrentThread( ), lthn));
 			#pragma warning( default:4996 )
 		}
@@ -77,7 +77,7 @@ namespace lux::thr {
 				stgAddFence.startFirst( );
 				while(stg.size( ) > 0){										//For each element of the queue
 					//TODO do something if there are no enought threads
-					if(thrStates.usedSize( ) < sys::threadNum){					//If there is a free thread
+					if(thrStates.usedCount( ) < sys::threadNum){					//If there is a free thread
 						uint32 thrIndex = thrStates.add(ThrState::RUNNING);			//Set its state to RUNNING and save its index (automatically calculated by the add() function)
 						threads[thrIndex].exec = stg.front( );						//Set its exec data
 						stg.popFront( );											//Remove the exec data from the queue
@@ -94,12 +94,12 @@ namespace lux::thr {
 
 
 	void init( ) {
-		for(uint32 i = 0; i < threads.size( ); ++i){					//For each thread
+		for(uint32 i = 0; i < threads.count( ); ++i){					//For each thread
 			threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
 			thrStates.add(ThrState::FREE);								//Add an element to the states Map. A Map is used to improve the performance by avoiding to search for a free thread
 			//Suspended in function
 		}
-		for(uint32 i = 0; i < threads.size( ); ++i){ thrStates.remove(i); }		//Remove all the elements of the states map (the map will remain the same size but it will have n free items)
+		for(uint32 i = 0; i < threads.count( ); ++i){ thrStates.remove(i); }		//Remove all the elements of the states map (the map will remain the same count but it will have n free items)
 		std::thread mngThrv(__lp_thr_mng); 										//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
 		DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);
 		mngThrv.detach( );

@@ -22,9 +22,9 @@ namespace lux::ram{
 	//*  thr | LUX_TRUE to use multithreading, LUX_FALSE to use 1 thread. Default: LUX_AUTO
 	//*   Multithreading cannot be used in operations with small buffers, as it would negatively affect performance
 	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr){
-		//luxDebug(if((uint64)src % 32 != 0)	param_error(src, "Misaligned address. This function should only be used with aligned addresses and size. Use ucpy to copy unaligned data (this will negatively affect performance)"));
-		//luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. This function should only be used with aligned addresses and size. Use ucpy to copy unaligned data (this will negatively affect performance)"));
-		//luxDebug(if(num % 32 != 0)			param_error(num, "Misaligned size. This function should only be used with aligned addresses and size. Use ucpy to copy unaligned data (this will negatively affect performance)"));
+		//luxDebug(if((uint64)src % 32 != 0)	param_error(src, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
+		//luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
+		//luxDebug(if(num % 32 != 0)			param_error(num, "Misaligned count. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 
 		switch(thr){
 			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];

@@ -34,7 +34,7 @@ namespace lux::core::c::buffers{
 
 	//Creates and allocates a buffer in the memory of a device
 	//*   vDevice: the logical device where to create the buffer
-	//*   vSize: the size of the buffer in bytes
+	//*   vSize: the count of the buffer in bytes
 	//*   vUsage: flags defining the usage of the buffer (VK_BUFFER_USAGE...)
 	//*   vProperties: flags defining the properties of the memory (VK_MEMORY_PROPERTY_...)
 	//*   pBuffer: the buffer object to allocate
@@ -100,10 +100,10 @@ namespace lux::core::c::buffers{
 	//Creates and submits a command buffer to copy from vSrcBuffer to dstBuffer
 	//*   vSrcBuffer: the source buffer where to read the data
 	//*   vDstBuffer: the destination buffer where to copy the data
-	//*   vSize: the size in bytes of the data to copy
+	//*   vSize: the count in bytes of the data to copy
 	void copyBuffer(const VkBuffer vSrcBuffer, const VkBuffer vDstBuffer, const VkDeviceSize vSize) {
 		VkBufferCopy copyRegion{ };												//Create buffer copy object
-		copyRegion.size = vSize;												//Set size of the copied region
+		copyRegion.size = vSize;												//Set count of the copied region
 		//TODO add offset and automatize cells
 		//copyRegion.dstOffset
 		VkCommandBuffer commandBuffer = g::cmd::beginSingleTimeCommands( );		//Start command buffer

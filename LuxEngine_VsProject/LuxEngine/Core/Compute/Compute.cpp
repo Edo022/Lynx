@@ -32,7 +32,7 @@ namespace lux::core::c{
 
 
 	void init(){
-		{ //Initialize window buffers and size
+		{ //Initialize window buffers and count
 			g::wnd::gpuCellWindowOutput_i = rem::allocBck(g::wnd::width * g::wnd::height * 4 /*A8-R8-G8-B8 UI*/, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
 			g::wnd::gpuCellWindowOutput = rem::allocBck(g::wnd::width * g::wnd::height * 4 * 4 /*A32-R32-G32-B32 UF*/, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
 			g::wnd::gpuCellWindowZBuffer = rem::allocBck(g::wnd::width * g::wnd::height * 4, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
@@ -45,7 +45,7 @@ namespace lux::core::c{
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(g::swapchain::swapchainImages.size( ));	//Resize the command buffer array in the shader
+			copyCommandBuffers.resize(g::swapchain::swapchainImages.count( ));	//Resize the command buffer array in the shader
 			shaders::createDefaultCommandBuffers( );							//Create command buffers and command pool
 		}
 
@@ -68,7 +68,7 @@ namespace lux::core::c{
 
 	//TODO fix
 	void computeCleanup( ) {
-		for(uint32 i = 0; i < /*rem::buffers.size( )*/(uint32)CellClassIndex::NUM * (uint32)AllocType::NUM; ++i) {
+		for(uint32 i = 0; i < /*rem::buffers.count( )*/(uint32)CellClassIndex::NUM * (uint32)AllocType::NUM; ++i) {
 			for(uint32 j = 0; j < rem::buffers[i].buffers.size( ); ++j){
 				if(rem::buffers[i].buffers.isValid(j)){
 					vkDestroyBuffer(dvc::compute.LD, rem::buffers[i].buffers[j].buffer, nullptr);

@@ -26,7 +26,7 @@ namespace lux::obj {
 
 
 	//A 2D space that allows objects to be rendered
-	//The position of the object is relative to the size and position of the render space
+	//The position of the object is relative to the count and position of the render space
 	//    It goes from 0, 0 (beginning of the render space) to +1, +1 (end of the render space)
 	//    Out of view objects will be cropped if the renderSpaces does not allowOutOfViewRender
 	//    Use setChildLimits() to get the region of screen assigned to a child of the render space
