@@ -95,6 +95,7 @@ namespace lux::ram{
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass);
 
 
+	//TODO UNROLL
 	template<class type> inline void init_memory(void* const vAddr, const uint64 vSize, const type& pValue){
 		for(uint32 i = 0; i < vSize; i+=sizeof(type)) memcpy((char*)vAddr + i, &pValue, sizeof(type));
 	}
@@ -130,7 +131,8 @@ namespace lux::ram{
 		param_error_2(vSize % sizeof(type) != 0, vSize, "The type is %llu bytes large and vSize (%llu) is not a multiple of it. If not zero, vSize must be a multiple of the type's size", sizeof(type), vSize);
 		Cell_t* cell = ram::alloc_call(vSize, vClass);
 		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
-		init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
+		//init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
+		init_memory<type>(cell->address, vSize, pValue);
 		return cell;
 
 	}
@@ -176,7 +178,8 @@ namespace lux::ram{
 		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
 		Cell_t* cell = ram::alloc_call(size, vClass);
 		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : count); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
-		init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
+		//init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
+		init_memory<type>(cell->address, size, pValue);
 		return cell;
 
 	}
@@ -196,17 +199,17 @@ namespace lux::ram{
 
 
 
-	// Reallocate and free ----------------------------------------------------------------------------------------------------- //
-
-
-
-
-
-
-
-
+	// Block reallocation ------------------------------------------------------------------------------------------------------ //
 	void free(Cell_t* pCell);
 	template<class t> static inline void free(ptr<t>& pPtr) { ram::free(pPtr.cell); }
+
+
+
+
+
+
+
+
 
 
 	void reallocUB(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
@@ -217,6 +220,44 @@ namespace lux::ram{
 
 
 	//TODO initialize only new elements
+	template<class type> static inline void reallocVB(ptr<type>& pPtr, const uint64 vSize, const type& pValue, CellClass vCellClass = CellClass::AUTO){
+		evaluateCellClass(vSize, vCellClass);
+
+		if(!pPtr.address) [[unlikely]] {
+			pPtr = allocBck(vSize, vCellClass);
+			//TODO REMOVE INIZIALIZATION OF THE WHOLE CELL
+			//TODO INITIALIZE HERE TOO
+			init_memory(pPtr.end( ), vSize, pValue);
+			return;
+		}
+		else [[likely]] {
+			int64 d = pPtr.size( ) - vSize;
+			if(d < 0) [[unlikely]] pPtr.cell->cellSize = vSize;
+			else if(d > 0) [[likely]] {
+				if(d <= (int64)vCellClass) [[likely]] {
+					pPtr.cell->cellSize = vSize;
+					init_memory(pPtr.end( ), (uint64)d, pValue);
+				}
+				else [[unlikely]] {
+					ram::ptr<type> ptr_ = allocBck(vSize, vCellClass);
+					memcpy(ptr_, pPtr, pPtr.size( ));
+					init_memory(pPtr.end(), (uint64)d, pValue);
+					ram::free(pPtr);
+					pPtr = ptr_;
+				}
+			}
+			else [[unlikely]] return;
+		}
+		//if((vCellClass == CellClass::AUTO && vSize < (uint32)pPtr.cell->bufferType->cellClass) || (vCellClass == pPtr.cell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pPtr.cell->cellSize = vSize;
+		//else if(vSize != pPtr.size( )) [[unlikely]] {
+		//	ram::ptr<t> ptr_ = AllocBck(vSize, vCellClass);
+		//	init_memory(ptr_.end( ), vSize, pValue);
+		//	memcpy(ptr_, pPtr, pPtr.size( ));
+		//	ram::free(pPtr);
+		//	pPtr = ptr_;
+		//}
+	}
+
 	template<class t> static inline void reallocDB(ptr<t>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
 		if(!pPtr.address) [[unlikely]] {
 			pPtr = AllocBck<t>(vSize, vCellClass);
