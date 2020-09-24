@@ -73,7 +73,7 @@ namespace lux {
 		//TODO totally useless. Just don't return
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			ram::reallocDB(data_, vNewSize);
+			ram::reallocBck(data_, vNewSize);
 			return data_.size( );
 		}
 

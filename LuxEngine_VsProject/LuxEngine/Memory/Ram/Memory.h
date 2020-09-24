@@ -64,7 +64,7 @@
 
 
 
-
+//TODO draw graph of the allocation/reallocation process
 
 // Main ------------------------------------------------------------------------------------------------------------------------ //
 
@@ -82,7 +82,7 @@ namespace lux::ram{
 
 
 	Cell_t* alloc_internal(const uint64 vSize, const CellClass vClass = CellClass::AUTO);
-	inline Cell_t* alloc_call(const uint64 vSize, CellClass vClass = CellClass::AUTO, const bool vForceDedicatedBuffer = false){
+	inline Cell_t* alloc_call(const uint64 vSize, CellClass vClass = CellClass::AUTO){
 		//The count cannot be zero. If it is, allocate 1 byte and set the count variable back to zero
 		if(!vSize) {
 			Cell_t* cell = alloc_internal(1, vClass);
@@ -116,31 +116,30 @@ namespace lux::ram{
 
 
 	//Allocates a block of memory without initializing it
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocBck(302732);
 	//Specify the type as template argument to initialize it
 	inline Cell_t* allocBck(const uint64 vSize, CellClass vClass = CellClass::AUTO) {
 		evaluateCellClass(vSize, vClass);
-		return alloc_call(vSize, vClass, false);
+		return alloc_call(vSize, vClass);
 	}
 
-	//Allocates a block of memory and initializes it by calling the default constructor of each element
+	//Allocates a block of memory and initializes each element with the pValue value
+	//e.g.   lux::ram::ptr<float> p = lux::ram::AllocBck<float>(302732, 15.0f);
 	//You need to specify the type when calling this function
 	//If you don't, the elements will remain uninitialized
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocBck<int32>(302732);
 	template<class type> inline ptr<type> allocBck(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
 		evaluateCellClass(vSize, vClass);
 		param_error_2(vSize % sizeof(type) != 0, vSize, "The type is %llu bytes large and vSize (%llu) is not a multiple of it. If not zero, vSize must be a multiple of the type's size", sizeof(type), vSize);
 		Cell_t* cell = ram::alloc_call(vSize, vClass);
-		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : vSize); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
-		//init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
 		init_memory<type>(cell->address, vSize, pValue);
 		return cell;
 
 	}
 
 	//Allocates a block of memory and initializes it by calling the default constructor of each element
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocBck<int32>(302732);
 	//You need to specify the type when calling this function
 	//If you don't, the elements will remain uninitialized
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::AllocBck<int32>(302732);
 	template<class type> inline ptr<type> AllocBck(const uint64 vSize, const CellClass vClass = CellClass::AUTO){
 		return allocBck<type>(vSize, type( ), vClass);
 	}
@@ -162,32 +161,31 @@ namespace lux::ram{
 
 
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements without initializing them
+	//e.g.   lux::ram::ptr<float> p = lux::ram::allocArr(sizeof(float), 8);
 	//Specify the type as template argument to initialize the elements
 	inline Cell_t* allocArr(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO) {
 		evaluateCellClass(vSize * vNum, vClass);
-		return alloc_call(vSize * vNum, vClass, false);
+		return alloc_call(vSize * vNum, vClass);
 	}
 
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and initializes each element with the pValue value
+	//e.g.   lux::ram::ptr<float> p = lux::ram::allocArr<float>(sizeof(float), 8, 3.14159f);
 	//You need to specify the type when calling this function
 	//If you don't, the elements will remain uninitialized
-	//e.g.   lux::ram::ptr<float> p = lux::ram::allocArr<int32>(sizeof(float), 8, 3.14159f);
 	template<class type> inline ptr<type> allocArr(uint64 vSize, const uint64 vNum, const type& pValue, CellClass vClass = CellClass::AUTO){
 		uint64 size = vSize * vNum;
 		evaluateCellClass(size, vClass);
 		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
 		Cell_t* cell = ram::alloc_call(size, vClass);
-		//for(uint32 i = 0; i < ((uint32)vClass ? (uint32)vClass : count); i+=sizeof(type)) memcpy((char*)cell->address + i, &pValue, sizeof(type));
-		//init_memory<type>(cell->address, (uint32)vClass ? (uint32)vClass : vSize, pValue);
 		init_memory<type>(cell->address, size, pValue);
 		return cell;
 
 	}
 
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and calls the default constructor of each element
+	//e.g.   lux::ram::ptr<int32> p = lux::ram::allocArr<int32>(sizeof(int32), 27);
 	//You need to specify the type when calling this function
 	//If you don't, the elements will remain uninitialized
-	//e.g.   lux::ram::ptr<int32> p = lux::ram::allocArr<int32>(sizeof(int32), 27);
 	template<class type> inline ptr<type> allocArr(const uint64 vSize, const uint64 vNum, CellClass vClass = CellClass::AUTO) {
 		return allocArr<type>(vSize, vNum, type( ), vClass);
 	}
@@ -209,69 +207,56 @@ namespace lux::ram{
 
 
 
-
-
-
-	void reallocUB(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
-	template<class t> static inline void reallocUB(ptr<t>& const pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO) {
-		ram::reallocUB(pPtr.cell, vSize, vCellClass);
+	//Reallocates a block of memory without initializing it
+	//e.g.   lux::ram::reallocBck(p, 100);
+	//Specify the type as template argument to initialize it
+	void reallocBck(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
+	template<class t> static inline void reallocBck(ptr<t>& const pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO) {
+		ram::reallocBck(pPtr.cell, vSize, vCellClass);
 	}
 
 
-
-	//TODO initialize only new elements
-	template<class type> static inline void reallocVB(ptr<type>& pPtr, const uint64 vSize, const type& pValue, CellClass vCellClass = CellClass::AUTO){
+	//Reallocates a block of memory and initializes each of the new elements with the pValue value
+	//e.g.   lux::ram::reallocBck<float>(p, 100, 0.1f);
+	//You need to specify the type when calling this function
+	//If you don't, the elements will remain uninitialized
+	template<class type> static inline void reallocBck(ptr<type>& pPtr, const uint64 vSize, const type& pValue, CellClass vCellClass = CellClass::AUTO){
 		evaluateCellClass(vSize, vCellClass);
 
-		if(!pPtr.address) [[unlikely]] {
-			pPtr = allocBck(vSize, vCellClass);
-			//TODO REMOVE INIZIALIZATION OF THE WHOLE CELL
-			//TODO INITIALIZE HERE TOO
-			init_memory(pPtr.end( ), vSize, pValue);
+		if(!pPtr.address) [[unlikely]] {						//If the pointer has not been allocated
+			pPtr = alloc_call(vSize, vCellClass);					//Allocate it
+			init_memory(pPtr.end( ), vSize, pValue);				//And initialize the memory
 			return;
 		}
-		else [[likely]] {
-			int64 d = pPtr.size( ) - vSize;
-			if(d < 0) [[unlikely]] pPtr.cell->cellSize = vSize;
-			else if(d > 0) [[likely]] {
-				if(d <= (int64)vCellClass) [[likely]] {
-					pPtr.cell->cellSize = vSize;
-					init_memory(pPtr.end( ), (uint64)d, pValue);
+		else [[likely]] {										//If it's allocated
+			int64 d = pPtr.size( ) - vSize;							//Calculate the differenze of size between the current size and the new size
+			if(d < 0) [[unlikely]] pPtr.cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
+			else if(d > 0) [[likely]] {								//If it's larger
+				if(d <= (int64)vCellClass) [[likely]] {					//But not larger than the maximum cell size
+					pPtr.cell->cellSize = vSize;							//Change the cellSize variable
+					init_memory(pPtr.end( ), (uint64)d, pValue);			//And initialize the new elements
 				}
-				else [[unlikely]] {
-					ram::ptr<type> ptr_ = allocBck(vSize, vCellClass);
-					memcpy(ptr_, pPtr, pPtr.size( ));
-					init_memory(pPtr.end(), (uint64)d, pValue);
-					ram::free(pPtr);
-					pPtr = ptr_;
+				else [[unlikely]] {										//If it's also larger than the cell
+					ram::ptr<type> ptr_ = alloc_call(vSize, vCellClass);	//Allocate a new pointer
+					memcpy(ptr_, pPtr, pPtr.size( ));						//Copy the old data
+					init_memory(pPtr.end(), (uint64)d, pValue);				//Initialize the new elements
+					ram::free(pPtr);										//Free the old cell
+					*pPtr.cell = *ptr_.cell;								//Overwrite the cell itself. This is necessary in order to keep the pointers updated
+					pPtr = ptr_;											//Overwrite the old pointer
 				}
 			}
-			else [[unlikely]] return;
+			else [[unlikely]] return;								//If it has the same size, do nothing
 		}
-		//if((vCellClass == CellClass::AUTO && vSize < (uint32)pPtr.cell->bufferType->cellClass) || (vCellClass == pPtr.cell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pPtr.cell->cellSize = vSize;
-		//else if(vSize != pPtr.size( )) [[unlikely]] {
-		//	ram::ptr<t> ptr_ = AllocBck(vSize, vCellClass);
-		//	init_memory(ptr_.end( ), vSize, pValue);
-		//	memcpy(ptr_, pPtr, pPtr.size( ));
-		//	ram::free(pPtr);
-		//	pPtr = ptr_;
-		//}
 	}
 
-	template<class type> static inline void reallocDB(ptr<type>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
-		//if(!pPtr.address) [[unlikely]] {
-		//	pPtr = AllocBck<t>(vSize, vCellClass);
-		//	return;
-		//}
-		//if((vCellClass == CellClass::AUTO && vSize < (uint32)pPtr.cell->bufferType->cellClass) || (vCellClass == pPtr.cell->bufferType->cellClass && vSize < (uint32)vCellClass)) [[likely]] pPtr.cell->cellSize = vSize;
-		//else if(vSize != pPtr.size( )) [[unlikely]] {
-		//	ram::ptr<t> ptr_ = AllocBck<t>(vSize, vCellClass);
-		//	memcpy(ptr_, pPtr, pPtr.size( ));
-		//	ram::free(pPtr);
-		//	pPtr = ptr_;
-		//}
-		reallocVB<type>(pPtr, vSize, type( ), vCellClass);
-	}
+
+	////Reallocates a block of memory and initializes the new elements by calling their default constructor
+	////e.g.   lux::ram::reallocBck<float>(p, 100);
+	////You need to specify the type when calling this function
+	////If you don't, the new elements will remain uninitialized
+	//template<class type> static inline void reallocBck(ptr<type>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
+	//	reallocBck<type>(pPtr, vSize, type( ), vCellClass);
+	//}
 
 
 

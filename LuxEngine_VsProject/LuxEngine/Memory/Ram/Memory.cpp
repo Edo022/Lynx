@@ -133,7 +133,7 @@ namespace lux::ram{
 
 
 
-	void reallocUB(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
+	void reallocBck(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
 		//If the cell is not allocated, allocate it and return
 		if(!pCell->address) [[unlikely]] {
 			pCell = allocBck(vSize, vCellClass);
