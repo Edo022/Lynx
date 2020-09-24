@@ -53,7 +53,7 @@ namespace lux {
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::alloc(pContainer.size( )) } {
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocUB(pContainer.size( )) } {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.bytes( ));
@@ -73,7 +73,7 @@ namespace lux {
 		//TODO totally useless. Just don't return
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			ram::dRealloc(data_, vNewSize);
+			ram::reallocDB(data_, vNewSize);
 			return data_.size( );
 		}
 

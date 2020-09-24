@@ -75,7 +75,7 @@ namespace lux {
 
 		//Resizes the array without initializing the new elements
 		//*   vNewSize: the new size of the array
-		//*   Returns the new size. (alloc)-1 if the size is invalid
+		//*   Returns the new size. (allocUB)-1 if the size is invalid
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
 			type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);

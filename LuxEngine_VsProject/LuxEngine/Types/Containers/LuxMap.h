@@ -18,7 +18,7 @@ namespace lux {
 	//New elements are written over previously deleted elements, or concatenated if there are none
 	//Useful if you need to constantly add or remove elements
 	//Use the isValid() function to check if an element is valid or has been removed
-	template<class type, class iter = uint64, uint64 elmPerChunk = max(50100 / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class Map {
+	template<class type, class iter = uint64, uint64 elmPerChunk = max(50000/*50KB*/ / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class Map {
 	private:
 		lux_sc_generate_debug_structure_body;
 		ram::ptr<ram::ptr<type>> chunks_;		//Elements
@@ -50,8 +50,8 @@ namespace lux {
 
 
 		inline Map( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
-			chunks_{  ram::AllocDA<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B) },
-			tracker_{ ram::AllocDA<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B) } {
+			chunks_{  ram::allocDA<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B) },
+			tracker_{ ram::allocDA<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B) } {
 		}
 
 
@@ -76,8 +76,8 @@ namespace lux {
 		iter __vectorcall append(const type& vData) {
 			checkInit;
 			if(size_ + 1 > _chunkNum * chunkSize) {									//If the chunk is full
-				chunks_[_chunkNum] = ram::AllocDA<type>(sizeof(type), elmPerChunk);
-				tracker_[_chunkNum] = ram::AllocDA<iter>(sizeof(iter*), elmPerChunk);
+				chunks_[_chunkNum] = ram::allocDA<type>(sizeof(type), elmPerChunk);
+				tracker_[_chunkNum] = ram::allocDA<iter>(sizeof(iter*), elmPerChunk);
 				_chunkNum++;															//Update the number of chunks
 			}
 			__lp_Data(size_) = vData;												//Assign the data to the new element

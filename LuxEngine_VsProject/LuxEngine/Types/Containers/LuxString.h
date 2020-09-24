@@ -27,7 +27,7 @@ namespace lux {
 
 		inline void __vectorcall concatenate(const char8* vString, const uint32 size) {
 			uint64 oldSize = str.cell->cellSize;
-			ram::dRealloc(str, str.cell->cellSize + size - 1);
+			ram::reallocDB(str, str.cell->cellSize + size - 1);
 			ram::cpy(vString, str + oldSize - 1, size);
 		}
 
@@ -45,12 +45,12 @@ namespace lux {
 
 		//String size cannot be 0. the '\0' is always present and occupies one byte
 		inline String( ) : str{ ram::AllocDB<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
-		inline String(const String& pString) : str{ ram::alloc(pString.size( )) }		{ ram::cpy(pString.str, str, pString.size( )); }
-		inline String(const char8* vString) : str{ ram::alloc(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
-		inline String(const char8* vString, uint64 vSize) : str{ ram::alloc(vSize) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(const String& pString) : str{ ram::allocUB(pString.size( )) }		{ ram::cpy(pString.str, str, pString.size( )); }
+		inline String(const char8* vString) : str{ ram::allocUB(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(const char8* vString, uint64 vSize) : str{ ram::allocUB(vSize) }	{ ram::cpy(vString, str, str.size( )); }
 
 		//TODO remove
-		inline String(const wchar8* vString) : str{ ram::alloc(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(const wchar8* vString) : str{ ram::allocUB(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
 
 
 
@@ -86,7 +86,7 @@ namespace lux {
 		inline void __vectorcall operator += (const int64 vValue)		{ checkInit; char b[20 + 1]; _i64toa(vValue, b, 10);	operator += (b);	}
 		inline void __vectorcall operator += (const uint32 vValue)		{ checkInit; char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
 		inline void __vectorcall operator += (const int32 vValue)		{ checkInit; char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
-		inline void __vectorcall operator += (const char8 vChar)		{ checkInit; ram::realloc(str, str.size( ) + 1); *str.end( ) = vChar;		}
+		inline void __vectorcall operator += (const char8 vChar)		{ checkInit; ram::reallocUB(str, str.size( ) + 1); *str.end( ) = vChar;		}
 		#pragma warning ( default : 4996  )
 
 		#define __lp_strcat_body(var) String vLuxString(str.address); vLuxString += var; return vLuxString;
@@ -108,7 +108,7 @@ namespace lux {
 
 		inline void __vectorcall operator = (const String& pString) {
 			checkInit; isInit(pString);
-			ram::dRealloc(str, pString.size( ), CellClass::AUTO);
+			ram::reallocDB(str, pString.size( ), CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
 			ram::cpy(pString.str, str, pString.size( ));
 		}
@@ -116,7 +116,7 @@ namespace lux {
 
 		inline void __vectorcall operator = (const char8* vString) {
 			checkInit;
-			ram::dRealloc(str, strlenl(vString) + 1, CellClass::AUTO);
+			ram::reallocDB(str, strlenl(vString) + 1, CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
 			ram::cpy(vString, str, str.size( ));
 		}

@@ -35,7 +35,7 @@ namespace lux::rem{
 	typedef Cell_t* Cell;
 	static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 
-	Cell alloc(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
+	Cell allocUB(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
 	void free(Cell pCell);
 
 

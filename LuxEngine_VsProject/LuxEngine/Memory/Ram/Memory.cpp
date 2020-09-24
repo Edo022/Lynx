@@ -69,9 +69,9 @@ namespace lux::ram{
 	//*   vClass                | class of the cell. This is the maximum size the cell can reach before it needs to be copied
 	//*   vForceDedicatedBuffer | if true, the memory will be allocated in a new buffer instead of a fixed size cell
 	//*   Returns               | the allocated Cell object
-	//e.g. lux::ram::ptr<int> foo = lux::ram::alloc(100, lux::CellClass::AUTO);
+	//e.g. lux::ram::ptr<int> foo = lux::ram::allocUB(100, lux::CellClass::AUTO);
 	//e.g. same as int* foo = (int*)malloc(100);
-	Cell_t* alloc__(const uint64 vSize, const CellClass vClass){
+	Cell_t* alloc_internal(const uint64 vSize, const CellClass vClass){
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
 		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
@@ -116,15 +116,15 @@ namespace lux::ram{
 	}
 
 
-	template<class type> ptr<type> AllocVA(const uint64 vSize, const CellClass vClass, const type& pValue){
-		ptr<type> ptr = ram::alloc(vSize, vClass);
+	template<class type> ptr<type> allocVA(const uint64 vSize, const CellClass vClass, const type& pValue){
+		ptr<type> ptr = ram::allocUB(vSize, vClass);
 		for(auto e : ptr) e = pValue;
 		return ptr;
 	}
 
 
-	template<class type> ptr<type> AllocDA(const uint64 vSize, const CellClass vClass){
-		ptr<type> ptr = ram::alloc(vSize, vClass);
+	template<class type> ptr<type> allocDA(const uint64 vSize, const CellClass vClass){
+		ptr<type> ptr = ram::allocUB(vSize, vClass);
 		for(auto e : ptr) e = type( );
 		return ptr;
 	}
@@ -133,10 +133,10 @@ namespace lux::ram{
 
 
 
-	void realloc(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
+	void reallocUB(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
 		//If the cell is not allocated, allocate it and return
 		if(!pCell->address) [[unlikely]] {
-			pCell = alloc(vSize, vCellClass);
+			pCell = allocUB(vSize, vCellClass);
 			return;
 		}
 		//If the class doesn't need to be changed
@@ -146,7 +146,7 @@ namespace lux::ram{
 		}
 		//else (if the class has to be changed)
 		else if(vSize != pCell->cellSize) [[unlikely]] {
-			Cell_t * cell = alloc(vSize, vCellClass);	//Allocate a new cell
+			Cell_t * cell = allocUB(vSize, vCellClass);	//Allocate a new cell
 			memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
 			ram::free(pCell);							//Free the old memory
 			*pCell = *cell;								//Update the cell (and all the pointers pointing to it)

@@ -57,14 +57,14 @@ int main( ) {
 	//LuxInit(false);
 	////#define n multipleOf(4200,32)
 	//#define n 5
-	//lux::ram::ptr<char> p0 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	//lux::ram::ptr<char> p0 = lux::ram::allocUB(n, lux::CellClass::AUTO);
 	//*p0 = 'h';
 	//++p0;
 	//*p0 = 'a';
 	//*(p0+1) = 'a'; *(p0+2) = 'i'; *(p0+3) = '\0';
 
 	////TODO fix misalignment with ++ operator
-	//lux::ram::ptr<char> p1 = lux::ram::alloc(n, lux::CellClass::AUTO);
+	//lux::ram::ptr<char> p1 = lux::ram::allocUB(n, lux::CellClass::AUTO);
 
 	//lux::mem::cpy(p0 - 1, p1, n, LUX_FALSE);
 	//printf("%s", p1.cell->address);
