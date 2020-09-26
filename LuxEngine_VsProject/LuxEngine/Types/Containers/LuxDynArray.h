@@ -10,7 +10,7 @@
 #include "LuxEngine/Types/Containers/LuxContainer.h"
 
 #include "LuxEngine/Core/ConsoleOutput.h"
-
+#include <initializer_list>
 
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sended back to the queue
@@ -38,7 +38,8 @@ namespace lux {
 	public:
 
 
-
+		//TODO REMOVE ALLOC ARR IMPLEMENTATION. just call allocBck with size*count as size
+		//TODO same with realloc
 
 		// Constructors -------------------------------------------------------------------------------------------------------- //
 
@@ -46,19 +47,30 @@ namespace lux {
 
 
 		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ } { }
+		luxDebug(bool checkNeg(iter n) { param_error_2(n < 0, n, "Size cannot be negative"); return true; })
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
 		inline DynArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
+
+		inline DynArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::allocArr<type>(sizeof(type), vCount, CellClass::AT_LEAST_CLASS_B) } { }
 
 
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocBck(pContainer.count( )) } {
+		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocArr(sizeof(type), pContainer.count( ), CellClass::AT_LEAST_CLASS_B) } {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
 		}
 
+		//TODO remove
+		//Initializes the array using a list of elements of the same type
+		inline DynArray(const std::initializer_list<type>& pElements) : data_{ ram::allocArr(sizeof(type), pElements.size( )) } {
+			//TODO ^ C strings get destroyed when the function returns
+			//param_error_2(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
+
+			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
+		}
 
 
 
@@ -73,7 +85,7 @@ namespace lux {
 		//TODO totally useless. Just don't return
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			ram::reallocBck(data_, vNewSize);
+			ram::reallocArr<type>(data_, sizeof(type), vNewSize, type( ));
 			return data_.size( );
 		}
 
@@ -104,7 +116,7 @@ namespace lux {
 
 
 
-		inline iter		__vectorcall count( )	const override { checkInit; return data_.size( );			}
+		inline iter		__vectorcall count( )	const override { checkInit; return data_.count( );			}
 		inline uint64	__vectorcall size( )	const override { checkInit; return count( ) * sizeof(type);	}
 		inline bool		__vectorcall empty( )	const override { checkInit; return !count( );				}
 		inline type*	__vectorcall begin( )	const override { checkInit; return data_.begin( );			}
@@ -118,3 +130,4 @@ namespace lux {
 }
 
 
+//TODO check if non secure C pointers were used. Like const char* strings

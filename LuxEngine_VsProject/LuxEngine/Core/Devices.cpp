@@ -22,7 +22,7 @@ PostInitializer(LUX_H_DEVICES);
 namespace lux::core::dvc{
 	graphicsDevice			NoInitLux(graphics);	//Main graphics device
 	computeDevice			NoInitLux(compute);		//Main compute device
-	Array<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
+	DynArray<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
 
 
 
@@ -34,7 +34,7 @@ namespace lux::core::dvc{
 	void preInit( ){
 		graphics.graphicsDevice::graphicsDevice( );
 		compute.computeDevice::computeDevice( );
-		secondary.Array::Array( );
+		secondary.DynArray::DynArray( );
 	}
 
 
@@ -87,11 +87,13 @@ namespace lux::core::dvc{
 	bool deviceCheckExtensions(const VkPhysicalDevice vDevice) {
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
-		Array<VkExtensionProperties> availableExtensions(extensionCount);
+		DynArray<VkExtensionProperties> availableExtensions;
+		availableExtensions.resize(extensionCount);
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
 
 		//TODO use LuxMap
-		std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin( ), requiredDeviceExtensions.end( ));
+		//std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin( ), requiredDeviceExtensions.end( ));
+		std::set<const char*> requiredExtensions(requiredDeviceExtensions, requiredDeviceExtensions);
 		for(const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);		//Search for required extensions
 		return requiredExtensions.empty( );
 	}
@@ -103,7 +105,8 @@ namespace lux::core::dvc{
 	QueueFamilyIndices deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
 		uint32 queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
-		Array<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		DynArray<VkQueueFamilyProperties> queueFamilies;
+		queueFamilies.resize(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin( ));		//Save queue families
 
 		//Set families
@@ -149,7 +152,8 @@ namespace lux::core::dvc{
 		if(deviceCount == 0) printError("Failed to find GPUs with Vulkan support", true, -1);
 		else {
 			//Get physical devices
-			Array<VkPhysicalDevice> physDevices(deviceCount);																//Get physical device count
+			DynArray<VkPhysicalDevice> physDevices;																//Get physical device count
+			physDevices.resize(deviceCount);
 			vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin( ));										//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.count( ); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
@@ -278,11 +282,15 @@ namespace lux::core::dvc{
 			.queueCreateInfoCount{ (uint32)queueCreateInfos.count( ) },			//Set queue infos count
 			.pQueueCreateInfos{ queueCreateInfos.begin( ) },						//Set queue infos
 			#ifdef LUX_DEBUG
-			.enabledLayerCount{ (uint32)validationLayers.count( ) },				//Set validation layer count if in debug mode
-			.ppEnabledLayerNames{ validationLayers.begin( ) },					//Set validation layers if in debug mode
+			//.enabledLayerCount{ (uint32)validationLayers.count( ) },				//Set validation layer count if in debug mode
+			//.ppEnabledLayerNames{ &(validationLayers.begin( )->begin( )) },					//Set validation layers if in debug mode
+			.enabledLayerCount{ validationLayersNum },				//Set validation layer count if in debug mode
+			.ppEnabledLayerNames{ validationLayers },					//Set validation layers if in debug mode
 			#endif
-			.enabledExtensionCount{ (uint32)requiredDeviceExtensions.count( ) },	//Set required extentions count
-			.ppEnabledExtensionNames{ requiredDeviceExtensions.begin( ) },		//Set required extensions
+			//.enabledExtensionCount{ (uint32)requiredDeviceExtensions.count( ) },	//Set required extentions count
+			//.ppEnabledExtensionNames{ requiredDeviceExtensions.begin( )->begin( ) },		//Set required extensions
+			.enabledExtensionCount{ requiredDeviceExtensionsNum },	//Set required extentions count
+			.ppEnabledExtensionNames{ requiredDeviceExtensions },		//Set required extensions
 			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
 		};
 		luxRelease(deviceCreateInfo.enabledLayerCount = 0);						//Disable validation layers if in release mode

@@ -1,7 +1,7 @@
 
 #pragma once
 #include "vulkan/vulkan.h"
-#include "LuxEngine/Types/Containers/LuxArray.h"
+#include "LuxEngine/Types/Containers/LuxDynArray.h"
 #define LUX_H_GCOMMANDS
 
 
@@ -9,7 +9,7 @@
 
 namespace lux::core::g::cmd{
 	extern VkCommandPool			singleTimeCommandPool;
-	extern Array<VkCommandBuffer>	singleTimeCommandBuffers;
+	extern DynArray<VkCommandBuffer>	singleTimeCommandBuffers;
 
 
 	void preInit( );

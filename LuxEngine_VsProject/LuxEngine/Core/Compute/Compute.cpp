@@ -16,7 +16,7 @@ PostInitializer(LUX_H_COMPUTE);
 #pragma optimize("", on)
 namespace lux::core::c{
 	VkCommandPool			NoInitVar(copyCommandPool);
-	Array<VkCommandBuffer>	NoInitLux(copyCommandBuffers);
+	DynArray<VkCommandBuffer>	NoInitLux(copyCommandBuffers);
 	VkCommandBuffer			NoInitVar(clearCommandBuffer);
 
 
@@ -24,7 +24,7 @@ namespace lux::core::c{
 
 	void preInit( ) {
 		copyCommandPool = nullptr;
-		copyCommandBuffers.Array::Array( );
+		copyCommandBuffers.DynArray::DynArray( );
 		clearCommandBuffer = nullptr;
 	}
 

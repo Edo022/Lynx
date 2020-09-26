@@ -7,8 +7,8 @@
 
 
 namespace lux::core::c{
-	extern  VkCommandPool			copyCommandPool;
-	extern Array<VkCommandBuffer>	copyCommandBuffers;
+	extern VkCommandPool			copyCommandPool;
+	extern DynArray<VkCommandBuffer>	copyCommandBuffers;
 	extern VkCommandBuffer			clearCommandBuffer;
 
 	void preInit( );

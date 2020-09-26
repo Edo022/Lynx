@@ -19,11 +19,11 @@
 PostInitializer(LUX_H_GRAPHICS);
 #pragma optimize("", on)
 namespace lux::core::g{
-	Array<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
-	Array<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);
-	Array<VkSemaphore>		NoInitLux(drawFrameCopySemaphore);
-	Array<VkSemaphore>		NoInitLux(drawFrameClearSemaphore);
-	Array<VkFence>			NoInitLux(drawFrameImageRenderedFence);
+	DynArray<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
+	DynArray<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);
+	DynArray<VkSemaphore>		NoInitLux(drawFrameCopySemaphore);
+	DynArray<VkSemaphore>		NoInitLux(drawFrameClearSemaphore);
+	DynArray<VkFence>			NoInitLux(drawFrameImageRenderedFence);
 	int32					NoInitVar(renderCurrentFrame);
 	DynArray<obj::Base*>	NoInitLux(objUpdates2D);
 	FenceDE					NoInitLux(pendingObjectUpdatesFence);
@@ -33,11 +33,11 @@ namespace lux::core::g{
 
 
 	void preInit( ) {
-		drawFrameImageAquiredSemaphore.Array::Array( );
-		drawFrameObjectsRenderedSemaphore.Array::Array( );
-		drawFrameCopySemaphore.Array::Array( );
-		drawFrameClearSemaphore.Array::Array( );
-		drawFrameImageRenderedFence.Array::Array( );
+		drawFrameImageAquiredSemaphore.DynArray::DynArray( );
+		drawFrameObjectsRenderedSemaphore.DynArray::DynArray( );
+		drawFrameCopySemaphore.DynArray::DynArray( );
+		drawFrameClearSemaphore.DynArray::DynArray( );
+		drawFrameImageRenderedFence.DynArray::DynArray( );
 		renderCurrentFrame = 0;
 		objUpdates2D.DynArray::DynArray( );
 		pendingObjectUpdatesFence.FenceDE::FenceDE( );
@@ -298,7 +298,7 @@ namespace lux::core::g{
 
 
 
-	VkFormat findSupportedFormat(const Array<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+	VkFormat findSupportedFormat(const DynArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 		for(VkFormat format : *pCandidates) {
 			VkFormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);

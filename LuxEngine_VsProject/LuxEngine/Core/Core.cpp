@@ -40,8 +40,12 @@ namespace lux::core{
 	VkDebugUtilsMessengerEXT	NoInitVar(debugMessenger);
 	VkSurfaceKHR				NoInitVar(surface);
 
-	Array<const char*, uint32>	NoInitLux(validationLayers);
-	Array<const char*, uint32>	NoInitLux(requiredDeviceExtensions);
+	const char**				NoInitVar(validationLayers);
+	const char**				NoInitVar(requiredDeviceExtensions);
+	uint32						NoInitVar(validationLayersNum);
+	uint32						NoInitVar(requiredDeviceExtensionsNum);
+	//DynArray<const String>	NoInitLux(validationLayers);
+	//DynArray<const String>	NoInitLux(requiredDeviceExtensions);
 
 
 
@@ -64,8 +68,12 @@ namespace lux::core{
 		initialized = false;
 		frames = 0;
 
-		validationLayers.Array::Array( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
-		requiredDeviceExtensions.Array::Array( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		validationLayers =			(const char**)malloc(sizeof(const char*) * (validationLayersNum = 1));
+		requiredDeviceExtensions =	(const char**)malloc(sizeof(const char*) * (requiredDeviceExtensionsNum = 1));
+		validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
+		requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		//validationLayers.DynArray::DynArray( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
+		//requiredDeviceExtensions.DynArray::DynArray( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
 

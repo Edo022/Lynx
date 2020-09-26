@@ -10,7 +10,7 @@ PostInitializer(LUX_H_THREAD_POOL);
 namespace lux::thr {
 	FenceDE					NoInitLux(stgAddFence);		//This fence controls the add and read/remove operations of the staging queue
 	HANDLE					NoInitVar(mngThr);			//The handle of the thread that controls the pool
-	Array<ThrPoolElm>		NoInitLux(threads);			//The threads of the thread pool with their states and functions
+	DynArray<ThrPoolElm>		NoInitLux(threads);			//The threads of the thread pool with their states and functions
 	Map<ThrState, uint32>	NoInitLux(thrStates);		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 
 
@@ -24,7 +24,7 @@ namespace lux::thr {
 
 
 	void preInit( ){
-		threads.Array::Array(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+		threads.DynArray::DynArray(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.Map::Map( );
 		//thrStates.Map::Map(2048, 2048);
 

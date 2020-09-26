@@ -12,7 +12,7 @@
 namespace lux::core::dvc{
 	extern graphicsDevice		graphics;		//Main graphics device
 	extern computeDevice		compute;		//Main compute device
-	extern Array<computeDevice>	secondary;		//Secondary compute devices
+	extern DynArray<computeDevice>	secondary;		//Secondary compute devices
 
 
 	void preInit( );

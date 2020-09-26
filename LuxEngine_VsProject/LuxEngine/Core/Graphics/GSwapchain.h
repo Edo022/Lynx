@@ -13,17 +13,17 @@
 namespace lux::core::g::swapchain{
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR	capabilities;
-		Array<VkSurfaceFormatKHR>	formats;
-		Array<VkPresentModeKHR>		presentModes;
+		DynArray<VkSurfaceFormatKHR>	formats;
+		DynArray<VkPresentModeKHR>		presentModes;
 	};
 
 
 	extern VkSwapchainKHR		swapchain;
-	extern Array<VkImage>		swapchainImages;
-	extern Array<VkImageView>	swapchainImageViews;
+	extern DynArray<VkImage>		swapchainImages;
+	extern DynArray<VkImageView>	swapchainImageViews;
 	extern VkFormat				swapchainImageFormat;
 	extern VkExtent2D			swapchainExtent;
-	extern Array<VkFramebuffer>	swapchainFramebuffers;
+	extern DynArray<VkFramebuffer>	swapchainFramebuffers;
 
 
 
@@ -32,8 +32,8 @@ namespace lux::core::g::swapchain{
 	void						swapchainCreate( );
 	void						swapchainRecreate(const bool vWindowResized);
 	void						cleanup( );
-	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const Array<VkSurfaceFormatKHR>* pAvailableFormats);
-	VkPresentModeKHR			swapchainChoosePresentMode(const Array<VkPresentModeKHR>* pAvailablePresentModes);
+	VkSurfaceFormatKHR			swapchainChooseSurfaceFormat(const DynArray<VkSurfaceFormatKHR>* pAvailableFormats);
+	VkPresentModeKHR			swapchainChoosePresentMode(const DynArray<VkPresentModeKHR>* pAvailablePresentModes);
 	VkExtent2D					swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 	SwapChainSupportDetails		swapchainQuerySupport(const VkPhysicalDevice vDevice);
 }

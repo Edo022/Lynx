@@ -66,7 +66,7 @@ namespace lux::thr {
 
 	extern FenceDE stgAddFence;
 	extern HANDLE mngThr;
-	extern Array<ThrPoolElm> threads;
+	extern DynArray<ThrPoolElm> threads;
 	extern Map<ThrState, uint32> thrStates;
 	extern Queue<ExecFuncDataBase*> maxpq;
 	extern Queue<ExecFuncDataBase*> highpq;

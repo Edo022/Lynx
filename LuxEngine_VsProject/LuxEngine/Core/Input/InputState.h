@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <initializer_list>
 #include "LuxEngine/macros.h"                     // for scast, min
-#include "LuxEngine/Types/Containers/LuxArray.h"  // for lux::Array
+#include "LuxEngine/Types/Containers/LuxDynArray.h"  // for lux::Array
 #include "LuxEngine/Types/Integers/Integers.h"    // for uint16
 #include "minwindef.h"                            // for min
 
@@ -20,7 +20,7 @@ namespace lux::input{
 
 
 
-	typedef void (*LuxKeyBindingCallback)(lux::Array<uint16>);
+	typedef void (*LuxKeyBindingCallback)(lux::DynArray<uint16>);
 	//This struct contains a sequence of keys and a function to call when the sequence is performed
 	//The sequence is saved as an array of uint16. The action and the key are in the same varibale for better performances.
 	//There is no limit to the length of a key sequence
@@ -30,7 +30,7 @@ namespace lux::input{
 	struct KeySequence {
 		//The actual sequence of keys. Each element represents a key and its action
 		//e.g. "ctrl + k" = {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS}
-		lux::Array<uint16> sequence;
+		lux::DynArray<uint16> sequence;
 		//This is the function that will be called when the sequence is performed. It must be of type void and take a KeySequence as a parameter
 		//TODO use ExecFuncData
 		LuxKeyBindingCallback bindedFunction;
@@ -40,7 +40,7 @@ namespace lux::input{
 
 
 	struct InputState {
-		lux::Array<KeySequence, uint16> sequences;		//The sequences of keys
+		lux::DynArray<KeySequence, uint16> sequences;		//The sequences of keys
 		bool sorted = false;					//Whether the sequence is sorted or not
 
 		//TODO use ExecFuncData

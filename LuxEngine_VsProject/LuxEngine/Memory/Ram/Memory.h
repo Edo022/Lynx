@@ -65,6 +65,7 @@
 
 
 //TODO draw graph of the allocation/reallocation process
+//TODO MAKE THE ARRAY COMPILE TIME
 
 // Main ------------------------------------------------------------------------------------------------------------------------ //
 
@@ -257,6 +258,30 @@ namespace lux::ram{
 	//template<class type> static inline void reallocBck(ptr<type>& pPtr, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO){
 	//	reallocBck<type>(pPtr, vSize, type( ), vCellClass);
 	//}
+
+
+
+
+
+
+
+	//Reallocates a block of memory without initializing it
+	//e.g.   lux::ram::reallocBck(p, 100);
+	//Specify the type as template argument to initialize it
+	void reallocArr(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass = CellClass::AUTO);
+	template<class t> static inline void reallocArr(ptr<t>& const pPtr,const uint64 vSize, const uint64 vCount, const CellClass vCellClass = CellClass::AUTO) {
+		ram::reallocBck(pPtr, vSize * vCount, vCellClass);
+	}
+
+
+	//Reallocates a block of memory and initializes each of the new elements with the pValue value
+	//e.g.   lux::ram::reallocBck<float>(p, 100, 0.1f);
+	//You need to specify the type when calling this function
+	//If you don't, the elements will remain uninitialized
+	template<class type> static inline void reallocArr(ptr<type>& pPtr, const uint64 vSize, const uint64 vCount, const type& pValue, CellClass vCellClass = CellClass::AUTO){
+		ram::reallocBck<type>(pPtr, vSize * vCount, pValue, vCellClass);
+	}
+
 
 
 

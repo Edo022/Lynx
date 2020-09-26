@@ -15,11 +15,11 @@ PostInitializer(LUX_H_GSWAPCHAIN);
 #pragma optimize("", on)
 namespace lux::core::g::swapchain{
 	VkSwapchainKHR			NoInitVar(swapchain);
-	Array<VkImage>			NoInitLux(swapchainImages);
-	Array<VkImageView>		NoInitLux(swapchainImageViews);
+	DynArray<VkImage>			NoInitLux(swapchainImages);
+	DynArray<VkImageView>		NoInitLux(swapchainImageViews);
 	VkFormat				NoInitVar(swapchainImageFormat);
 	VkExtent2D				NoInitVar(swapchainExtent);
-	Array<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
+	DynArray<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
 
 
 
@@ -29,17 +29,17 @@ namespace lux::core::g::swapchain{
 
 	void preInit( ){
 		swapchain = nullptr;
-		swapchainImages.Array::Array( );
-		swapchainImageViews.Array::Array( );
+		swapchainImages.DynArray::DynArray( );
+		swapchainImageViews.DynArray::DynArray( );
 		swapchainImageFormat = VK_FORMAT_END_RANGE;
 		swapchainExtent = { };
-		swapchainFramebuffers.Array::Array( );
+		swapchainFramebuffers.DynArray::DynArray( );
 	}
 
 
 
 
-	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const Array<VkSurfaceFormatKHR>* pAvailableFormats) {
+	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const DynArray<VkSurfaceFormatKHR>* pAvailableFormats) {
 		for(const auto& availableFormat : *pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
@@ -54,7 +54,7 @@ namespace lux::core::g::swapchain{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR swapchainChoosePresentMode(const Array<VkPresentModeKHR>* pAvailablePresentModes) {
+	VkPresentModeKHR swapchainChoosePresentMode(const DynArray<VkPresentModeKHR>* pAvailablePresentModes) {
 		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;

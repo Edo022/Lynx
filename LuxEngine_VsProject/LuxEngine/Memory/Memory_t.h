@@ -497,7 +497,13 @@ namespace lux{
 			// [#] count is 0                  | k | print error
 			//OK
 
-			inline uint64 __vectorcall size( )	const { checkInit; checkNullptr; /*checkCount;*/ return cell->cellSize;												} //Returns the total count of the allocated memory
+			inline uint64 __vectorcall size( )	const { checkInit; checkNullptr; /*checkCount;*/ return cell->cellSize;												} //Returns the total size of the allocated memory
+			// [#] Uninitialized structure    | k | print error
+			// [#] address or cell is nullptr | k | print error
+			//// [#] count is 0                  | k | print error
+			//OK
+
+			inline uint64 __vectorcall count( )	const { checkInit; checkNullptr; /*checkCount;*/ return cell->cellSize / sizeof(type);												} //Returns the number of elements in the allocated memory (use this only if you have allocated the memory with an allocArr function or you are sure that the size is a multiple of the type's size)
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error
 			//// [#] count is 0                  | k | print error

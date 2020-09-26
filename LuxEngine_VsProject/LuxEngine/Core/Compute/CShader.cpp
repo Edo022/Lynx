@@ -22,7 +22,7 @@ PostInitializer(LUX_H_CSHADER);
 namespace lux::core::c::shaders{
 	String									NoInitLux(shaderPath);
 	Map<lux::obj::RenderSpace2D*, uint32>	NoInitLux(CRenderSpaces);
-	Array<LuxShaderLayout_t>				NoInitLux(CShadersLayouts);
+	DynArray<LuxShaderLayout_t>				NoInitLux(CShadersLayouts);
 
 	VkCommandPool							NoInitVar(commandPool);
 	Map<LuxShader_t, uint32>				NoInitLux(CShaders);
@@ -41,7 +41,7 @@ namespace lux::core::c::shaders{
 	void preInit( ){
 		shaderPath.String::String( );
 		CRenderSpaces.Map::Map( );
-		CShadersLayouts.Array::Array( );
+		CShadersLayouts.DynArray::DynArray( );
 
 		commandPool = nullptr;
 		CShaders.Map::Map( );
@@ -118,9 +118,9 @@ namespace lux::core::c::shaders{
 	//This function creates the descriptor sets layout, the pipeline and the pipeline layout of a shader
 	//*   vRenderShader | the type of the shader
 	//*   pCellNum      | The number of cells to bing to the shader. The shader inputs must match those cells
-	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const Array<bool> pIsReadOnly) {
+	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const DynArray<bool>& pIsReadOnly) {
 		{ //Create descriptor set layout
-			Array<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
+			DynArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
 				bindingLayouts[i] = VkDescriptorSetLayoutBinding{ 						//The binding layout describes what to bind in a shader binding point and how to use it
 					.binding{ i },														//Binding point in the shader
@@ -205,14 +205,14 @@ namespace lux::core::c::shaders{
 	//*      The shader inputs must match those cells
 	//*      the binding index is the same as their index in the array
 	//*   vShaderLayout | the shader layout
-	void createDescriptorSets(LuxShader_t* pCShader, const Array<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
+	void createDescriptorSets(LuxShader_t* pCShader, const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count( ); i++){
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;	//#LLID STRT 0003
 			else storageCount++;
 		}
-		Array<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));
+		DynArray<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));
 		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{
 			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 			.descriptorCount{ storageCount },
@@ -248,7 +248,7 @@ namespace lux::core::c::shaders{
 
 
 		//Create a descriptor set write for each buffer and update the descriptor sets
-		Array<VkWriteDescriptorSet> writeDescriptorSets(pCells.count( ));
+		DynArray<VkWriteDescriptorSet> writeDescriptorSets(pCells.count( ));
 		for(uint32 i = 0; i < pCells.count( ); ++i) {
 			//Connect the storage buffer to the descrptor
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));	//Create descriptor buffer infos
@@ -469,7 +469,7 @@ namespace lux::core::c::shaders{
 	//*   vGroupCountz  | the number of workgroups in the z axis
 	//*   returns       | the index of the shader
 	//*       -1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
-	LuxShader newShader(const Array<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	LuxShader newShader(const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
 		//TODO check buffers
 		//TODO check file
 		LuxShader_t shader;

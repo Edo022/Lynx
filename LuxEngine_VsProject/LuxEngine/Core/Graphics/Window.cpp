@@ -53,12 +53,15 @@ namespace lux::core::g::wnd{
 
 
 		//Extensions
-		DynArray<const char*> extensions;
+		//DynArray<const char*> extensions;
+		const char** extensions;
 		//TODO manage nullptr in add functions
 		uint32 glfwExtensionCount;
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
-		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions.add(glfwExtensions[i]);		//Save them into an array
-		luxDebug(extensions.add(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
+
+		extensions = (const char**)malloc(sizeof(const char**) * (glfwExtensionCount + 1));
+		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions[i] = glfwExtensions[i];		//Save them into an array
+		luxDebug(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));							//Add debug extension if in debug mode
 
 
 
@@ -75,11 +78,15 @@ namespace lux::core::g::wnd{
 			#endif
 			.pApplicationInfo{ &appInfo },
 			#ifdef LUX_DEBUG
-			.enabledLayerCount{ validationLayers.count( ) },
-			.ppEnabledLayerNames{ validationLayers.begin( ) },
+			//.enabledLayerCount{ validationLayers.count( ) },
+			//.ppEnabledLayerNames{ validationLayers.begin( )->begin( ) },
+			.enabledLayerCount{ validationLayersNum },
+			.ppEnabledLayerNames{ validationLayers },
 			#endif
-			.enabledExtensionCount{ extensions.count( ) },
-			.ppEnabledExtensionNames{ extensions.begin( ) },
+			.enabledExtensionCount{ glfwExtensionCount + 1 },
+			.ppEnabledExtensionNames{ extensions },
+			//.enabledExtensionCount{ extensions.count( ) },
+			//.ppEnabledExtensionNames{ extensions.begin( ) },
 		};
 		//Add validation layers if in debug mode
 		#ifndef LUX_DEBUG
@@ -89,19 +96,30 @@ namespace lux::core::g::wnd{
 		//Search for validation layers
 		uint32 layerCount = 0;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);					//Get layer count
-		Array<VkLayerProperties> availableLayers(layerCount);
+		DynArray<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));	//Get layers
-		for(const char* layerName : validationLayers) {									//For every layer,
+		//for(const char* layerName : validationLayers) {									//For every layer,
+		//	for(const auto& layerProperties : availableLayers) {							//Check if it's available
+		//		if(strcmp(layerName, layerProperties.layerName) == 0) break;					//If not, exit
+		//		else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) printError("Validation layers not available. Cannot run in debug mode", true, -1);
+		//	}
+		//}
+		//for(const String& layerName : validationLayers) {									//For every layer,
+		//	for(const auto& layerProperties : availableLayers) {							//Check if it's available
+		//		if(layerName == layerProperties.layerName) break;					//If not, exit
+		//		else if(layerName == availableLayers.end( )->layerName) printError("Validation layers not available. Cannot run in debug mode", true, -1);
+		//	}
+		//}
+		for(uint32 i = 0; i < validationLayersNum; i++) {									//For every layer,
 			for(const auto& layerProperties : availableLayers) {							//Check if it's available
-				if(strcmp(layerName, layerProperties.layerName) == 0) break;					//If not, exit
-				else if(strcmp(layerName, availableLayers.end( )->layerName) == 0) printError("Validation layers not available. Cannot run in debug mode", true, -1);
+				if(validationLayers[i] == layerProperties.layerName) break;					//If not, exit
+				else if(validationLayers[i] == availableLayers.end( )->layerName) printError("Validation layers not available. Cannot run in debug mode", true, -1);
 			}
 		}
 		#endif
 
 		TryVk(vkCreateInstance(&createInfo, nullptr, &core::instance)) printError("Failed to create instance", true, -1);
 	}
-
 
 
 
