@@ -89,7 +89,11 @@ namespace lux::core::dvc{
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 		DynArray<VkExtensionProperties> availableExtensions;
 		availableExtensions.resize(extensionCount);
+		return true;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
+		//Sleep(2000);
+		//TODO MAYBE THE DEVICE STRUCTURE ITSELF GETS DESTROYED
+
 
 		//TODO use LuxMap
 		//std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin( ), requiredDeviceExtensions.end( ));

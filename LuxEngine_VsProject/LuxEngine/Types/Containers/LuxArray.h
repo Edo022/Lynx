@@ -98,8 +98,11 @@ namespace lux {
 
 		template<class cIter> inline void operator=(const ContainerBase<type, cIter>& pContainer) {
 			isInit(pContainer);
-			param_error_2(pContainer.size( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
+			//param_error_2(pContainer.size( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
+			param_error_2(pContainer.count( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
+			//data_ = (type*)malloc(pContainer.count( ));
 			data_ = (type*)malloc(pContainer.size( ));
+			//memcpy(data_, pContainer.begin( ), pContainer.count( ));
 			memcpy(data_, pContainer.begin( ), pContainer.size( ));
 			//size_ = pContainer.size( );
 		}

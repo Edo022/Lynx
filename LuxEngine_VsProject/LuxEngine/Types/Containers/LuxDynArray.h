@@ -61,6 +61,7 @@ namespace lux {
 			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
+			//ram::cpy(pContainer.begin( ), data_, pContainer.count( ));
 		}
 
 		//TODO remove
@@ -86,7 +87,8 @@ namespace lux {
 		inline iter __vectorcall resize(const iter vNewSize) {
 			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
 			ram::reallocArr<type>(data_, sizeof(type), vNewSize, type( ));
-			return data_.size( );
+			//return data_.size( );
+			return data_.count( );
 		}
 
 
@@ -103,9 +105,11 @@ namespace lux {
 		//*   Returns  | the index of the element in the array
 		inline iter __vectorcall add(const type& vElement) {
 			checkInit;
-			resize(data_.size() + 1);
+			//resize(data_.size() + 1);
+			resize(data_.count() + 1);
 			data_.last( ) = vElement;
-			return data_.size( ) - 1;
+			//return data_.size( ) - 1;
+			return data_.count( ) - 1;
 		}
 
 
@@ -125,6 +129,10 @@ namespace lux {
 		inline type&	__vectorcall operator[](const iter vIndex) const {
 			checkInit;  checkCount; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex >= count( ), vIndex, "Index is out of range");
 			return data_[vIndex];
+		}
+
+		~DynArray( ){
+			printf("hh");
 		}
 	};
 }

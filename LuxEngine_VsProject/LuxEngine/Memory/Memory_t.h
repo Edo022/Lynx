@@ -490,7 +490,7 @@ namespace lux{
 			//// [#] count is 0                  | k | print error
 			//OK
 
-			inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return ((type*)address)[size( ) - 1]; } //Returns a reference to the last element in the allocated memory block
+			inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkSize; return ((type*)address)[count( ) - 1]; } //Returns a reference to the last element in the allocated memory block
 			//inline type&	 __vectorcall last( )	const { checkInit; checkNullptr; checkCount; return *(((type*)((int8*)cell->address + cell->cellSize)) - 1); } //Returns a reference to the last element in the allocated memory block
 			// [#] Uninitialized structure    | k | print error
 			// [#] address or cell is nullptr | k | print error

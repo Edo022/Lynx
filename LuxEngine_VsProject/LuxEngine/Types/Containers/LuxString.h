@@ -60,9 +60,12 @@ namespace lux {
 
 
 
-		inline uint32	__vectorcall count( )	const override { checkInit; return (uint32)str.size( );	}
-		inline uint64	__vectorcall size( )	const override { checkInit; return str.size( );			}
-		inline bool		__vectorcall empty( )	const override { checkInit; return !str.size( );		}
+		//inline uint32	__vectorcall count( )	const override { checkInit; return (uint32)str.size( );	}
+		//inline uint64	__vectorcall size( )	const override { checkInit; return str.size( );			}
+		//inline bool		__vectorcall empty( )	const override { checkInit; return !str.size( );		}
+		inline uint32	__vectorcall count( )	const override { checkInit; return (uint32)str.count( );	}
+		inline uint64	__vectorcall size( )	const override { checkInit; return str.count( );			}
+		inline bool		__vectorcall empty( )	const override { checkInit; return !str.count( );		}
 		inline char8*	__vectorcall begin( )	const override { checkInit; return str.begin( );		}
 		inline char8*	__vectorcall end( )		const override { checkInit; return str.end( );			}
 
@@ -86,7 +89,8 @@ namespace lux {
 		inline void __vectorcall operator += (const int64 vValue)		{ checkInit; char b[20 + 1]; _i64toa(vValue, b, 10);	operator += (b);	}
 		inline void __vectorcall operator += (const uint32 vValue)		{ checkInit; char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
 		inline void __vectorcall operator += (const int32 vValue)		{ checkInit; char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
-		inline void __vectorcall operator += (const char8 vChar)		{ checkInit; ram::reallocBck(str, str.size( ) + 1); *str.end( ) = vChar;		}
+		//inline void __vectorcall operator += (const char8 vChar)		{ checkInit; ram::reallocBck(str, str.size( ) + 1); *str.end( ) = vChar;		}
+		inline void __vectorcall operator += (const char8 vChar)		{ checkInit; ram::reallocBck(str, str.count( ) + 1); *str.end( ) = vChar;		}
 		#pragma warning ( default : 4996  )
 
 		#define __lp_strcat_body(var) String vLuxString(str.address); vLuxString += var; return vLuxString;
@@ -118,7 +122,8 @@ namespace lux {
 			checkInit;
 			ram::reallocBck(str, strlenl(vString) + 1, CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
-			ram::cpy(vString, str, str.size( ));
+			//ram::cpy(vString, str, str.size( ));
+			ram::cpy(vString, str, str.count( ));
 		}
 
 
@@ -126,13 +131,15 @@ namespace lux {
 
 		inline bool __vectorcall operator == (const String& pString) const {
 			checkInit; isInit(pString);
-			return ((str.size( ) == pString.count( )) && (memcmp(pString.str, str.address, str.size( )) == 0));
+			//return ((str.size( ) == pString.count( )) && (memcmp(pString.str, str.address, str.size( )) == 0));
+			return ((str.count( ) == pString.count( )) && (memcmp(pString.str, str.address, str.count( )) == 0));
 		}
 
 
 		inline bool __vectorcall operator == (const char* vString) const {
 			checkInit;
-			return ((str.size( ) == strlenl(vString) + 1) && (memcmp(vString, str.address, str.size( )) == 0));
+			//return ((str.size( ) == strlenl(vString) + 1) && (memcmp(vString, str.address, str.size( )) == 0));
+			return ((str.count( ) == strlenl(vString) + 1) && (memcmp(vString, str.address, str.count( )) == 0));
 		}
 	};
 }
