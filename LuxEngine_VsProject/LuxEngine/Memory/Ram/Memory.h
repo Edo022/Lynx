@@ -230,10 +230,10 @@ namespace lux::ram{
 			return;
 		}
 		else [[likely]] {										//If it's allocated
-			int64 d = pPtr.size( ) - vSize;							//Calculate the differenze of size between the current size and the new size
+			int64 d = vSize - pPtr.size( );							//Calculate the differenze of size between the current size and the new size
 			if(d < 0) [[unlikely]] pPtr.cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
 			else if(d > 0) [[likely]] {								//If it's larger
-				if(d <= (int64)vCellClass) [[likely]] {					//But not larger than the maximum cell size
+				if(vSize <= (int64)vCellClass) [[likely]] {				//But not larger than the maximum cell size
 					pPtr.cell->cellSize = vSize;							//Change the cellSize variable
 					init_memory(pPtr.end( ), (uint64)d, pValue);			//And initialize the new elements
 				}

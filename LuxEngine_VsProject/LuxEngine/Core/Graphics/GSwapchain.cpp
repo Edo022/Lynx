@@ -40,7 +40,7 @@ namespace lux::core::g::swapchain{
 
 
 	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const DynArray<VkSurfaceFormatKHR>* pAvailableFormats) {
-		for(const auto& availableFormat : *pAvailableFormats) {
+		for(auto& availableFormat : *pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
 			if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {

@@ -6,7 +6,7 @@
 #include "LuxEngine/Types/Containers/LuxMap.h"
 
 #include <set>
-
+#include <vector>
 
 //Compares 2 _VkPhysicalDevice objects
 #define sameDevice(a,b) ((a).properties.deviceID == (b).properties.deviceID)
@@ -85,22 +85,45 @@ namespace lux::core::dvc{
 
 	//Returns true if the device supports the extensions, false if not
 	bool deviceCheckExtensions(const VkPhysicalDevice vDevice) {
+		////OK
+		//uint32 extensionCount;
+		//vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
+		//VkExtensionProperties* availableExtensions = (VkExtensionProperties*)malloc(sizeof(VkExtensionProperties) * extensionCount);
+		//vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions);	//Get extensions
+
+		//std::set<const char*> requiredExtensions(requiredDeviceExtensions, requiredDeviceExtensions);
+		//for(uint32 i = 0; i < extensionCount; i++) requiredExtensions.erase(availableExtensions[i].extensionName);		//Search for required extensions
+		//return requiredExtensions.empty( );
+
+
+
+
+		//TODO#############################################################################################################
+
+		//TODO FIX ERROR
+		//TODO CALLING THE CONSTRUCTOR WITH THE COUNT VALUE WORKS
+		//TODO BUT CALLING THE DEFAULT CONSTRUCTOR AND THEN USING THE RESIZE FUNCTION BREAKS EVERYTHING
+		//TODO     IN THIS CASE, THE HANDLE "VDEVICE" IS SET TO NULLPTR BY THE vkEnumerateDeviceExtensionProperties FUNCTION
+		//TODO     AND I DONT KNOW WHY. IT MAKES NO SENSE
+		//! HANDLES ARE IN A LUX RTARRAY TOO. CHECK NOT USING IT FIXES THE BUG
+
+		//TODO#############################################################################################################
+
+
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
-		DynArray<VkExtensionProperties> availableExtensions;
-		availableExtensions.resize(extensionCount);
-		return true;
+		//TODO OK
+			DynArray<VkExtensionProperties> availableExtensions(extensionCount);
+		//TODO ERROR
+			//DynArray<VkExtensionProperties> availableExtensions;
+			//availableExtensions.resize(extensionCount);
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
-		//Sleep(2000);
-		//TODO MAYBE THE DEVICE STRUCTURE ITSELF GETS DESTROYED
 
-
-		//TODO use LuxMap
-		//std::set<const char*> requiredExtensions(requiredDeviceExtensions.begin( ), requiredDeviceExtensions.end( ));
 		std::set<const char*> requiredExtensions(requiredDeviceExtensions, requiredDeviceExtensions);
 		for(const auto& extension : availableExtensions) requiredExtensions.erase(extension.extensionName);		//Search for required extensions
 		return requiredExtensions.empty( );
 	}
+
 
 
 
@@ -156,8 +179,9 @@ namespace lux::core::dvc{
 		if(deviceCount == 0) printError("Failed to find GPUs with Vulkan support", true, -1);
 		else {
 			//Get physical devices
-			DynArray<VkPhysicalDevice> physDevices;																//Get physical device count
-			physDevices.resize(deviceCount);
+			DynArray<VkPhysicalDevice> physDevices(deviceCount);																//Get physical device count
+			//DynArray<VkPhysicalDevice> physDevices;																//Get physical device count
+			//physDevices.resize(deviceCount);
 			vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin( ));										//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.count( ); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture

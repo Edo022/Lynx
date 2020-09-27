@@ -51,7 +51,12 @@ namespace lux {
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
 		inline DynArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
 
+		//NO
 		inline DynArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::allocArr<type>(sizeof(type), vCount, CellClass::AT_LEAST_CLASS_B) } { }
+		//OK
+		//inline DynArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } {
+		//	resize(vCount);
+		//}
 
 
 		//Initializes the array using a container object of a compatible type
