@@ -1,0 +1,81 @@
+#version 450
+
+#define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
+#define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+#define g gl_GlobalInvocationID
+const ivec2 ipm = {1, -1};
+const ivec2 imp = {-1, 1};
+const ivec2 ipz = {1, 0};
+const ivec2 izp = {0, 1};
+const vec2 pm = {1, -1};
+const vec2 mp = {-1, 1};
+const vec2 pz = {1, 0};
+const vec2 zp = {0, 1};
+const vec4 col = {0, 1, 0, 1};
+
+
+layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
+
+layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
+layout(std430, binding = 1) buffer windowSize_{ uvec2 window; };
+layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
+layout(std140, binding = 3) uniform objData_{
+	//16
+	vec2 ffp;	 //0
+	vec2 fsp;	 //8
+	//4
+	uint ID;	 //16
+};
+//TODO use push constants for object data
+//layout(std430, push_constant) uniform PushConstants {
+//		//16
+//	vec2 fp;	 //0
+//	vec2 sp;	 //8
+//	//4
+//	uint ID;	 //16
+//} objData;
+
+
+
+
+
+
+void setPixelColor(vec2 pos, vec4 col){
+	uint i = uint(pos.y) * window.x + uint(pos.x);
+
+	//TODO use ordered render and component cache
+	zBuffer[i] = -1;
+	colorOutput[i] = col;
+}
+
+
+
+
+
+void rh( ){
+	vec2 fp = ffp * window;
+
+	vec2 dist = abs(fp - (fsp * window));
+	if(gx > dist.x) return;
+	setPixelColor(pz * gx + fp, col);
+	setPixelColor(fp + vec2(gx, dist.y), col);
+}
+
+
+void rv( ){
+	vec2 fp = ffp * window;
+
+	vec2 dist = abs(fp - (fsp * window));
+	if(gx > dist.y) return;
+	setPixelColor(zp * gx + fp, col);
+	setPixelColor(fp + vec2(dist.x, gx), col);
+}
+
+
+
+
+	//TODO use pre calculated workgroup count
+void main() {
+	rh();
+	rv();
+}

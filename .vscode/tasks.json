@@ -1,0 +1,134 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "glfw test",
+            "command": "/usr/bin/g++",
+            "args": [
+                "testglfw.cpp", 
+                "-g",                                               //Default debug infos
+                "-std=c++2a",                                       //C++20
+                "-I./",                                         //CWD include
+                "-pthread",                                         //Thre
+                "-Ideps/glfw-3.3.2/include",                    //GLFW include
+                "-Ideps/glfw-3.3.2/deps",                       //GLFW include
+                "-Ldeps/glfw-3.3.2/build/debug/src",            //GLFW include
+                "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+                "-o", "Test.out"                                   //Output
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "type": "shell",
+            "label": "Build LuxEngine - Debug",
+            "command": "/usr/bin/g++",
+            "args": [
+                //Source
+                    "Test.cpp", 
+                    "LuxEngine/Memory/Ram/Memory_t.cpp", 
+                    "LuxEngine/Memory/Ram/Memory.cpp", 
+                    "LuxEngine/Memory/Ram/Memory2.cpp", 
+                    "LuxEngine/System/System.cpp", 
+                    "LuxEngine/Memory/Gpu/VMemory.cpp", 
+                    "LuxEngine/Threads/ThreadPool.cpp", 
+                    "LuxEngine/Types/LuxObject/LuxObject.cpp", 
+                    "LuxEngine/Types/LuxObject/2D/2DBorder.cpp", 
+                    "LuxEngine/Types/LuxObject/2D/2DLines.cpp", 
+                    "LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp", 
+                    "LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp",
+                    "LuxEngine/Core/*.cpp",
+                    "LuxEngine/Core/Compute/*.cpp",
+                    "LuxEngine/Core/Graphics/*.cpp",
+                    "LuxEngine/Core/Input/*.cpp",
+
+                //
+                    "-g",               //Default debug infos
+                    "-std=c++2a",       //C++20
+                    "-mavx",            //AVX2
+
+                //
+                    "-I./",             //CWD include
+                    "-pthread",         //Threads
+
+                //Vulkan
+                    "-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
+                    "-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
+                    "-ldl", "-lvulkan",
+
+                //GLFW
+                    "-Ideps/glfw-3.3.2/include",
+                    "-Ideps/glfw-3.3.2/deps",
+                    "-Ldeps/glfw-3.3.2/build/debug/src",
+                    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+
+                //Output
+                    "-o", "Test.out"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "type": "shell",
+            "label": "Build current file - Debug",
+            "command": "/usr/bin/g++",
+            "args": [
+                //Source
+                    "${file}",
+
+                //
+                    "-g",               //Default debug infos
+                    "-std=c++2a",       //C++20
+                    "-mavx",            //AVX2
+
+                //
+                    "-I./",             //CWD include
+                    "-pthread",         //Threads
+
+                //Vulkan
+                    "-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
+                    "-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
+                    "-ldl", "-lvulkan",
+
+                //GLFW
+                    "-Ideps/glfw-3.3.2/include",
+                    "-Ideps/glfw-3.3.2/deps",
+                    "-Ldeps/glfw-3.3.2/build/debug/src",
+                    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+
+                //Output
+                    "-o", "Test.out"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ],
+    "version": "2.0.0"
+}
+
