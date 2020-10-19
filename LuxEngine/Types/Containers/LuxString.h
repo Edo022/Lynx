@@ -108,7 +108,7 @@ namespace lux {
 
 		// Assignment and comparison ------------------------------------------------------------------------------------------- //
 
-
+ 
 
 
 		inline void operator = (const String& pString) {
