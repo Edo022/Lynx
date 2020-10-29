@@ -5,4 +5,4 @@
 int main(){
     glfwInit();
     return 0;
-}  
+} 
