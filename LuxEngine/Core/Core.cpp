@@ -11,13 +11,12 @@
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 
 #include "LuxEngine/System/System.h"
-#include "Input/Input.h"
+#include "LuxEngine/Core/Input/Input.h"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
 
-
-
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
@@ -29,25 +28,45 @@
 PostInitializer(LUX_H_CORE);
 #pragma optimize("", on)
 namespace lux::core{
-	double						NoInitVar(FPS);
-	float						NoInitVar(FOV);
-	bool						NoInitVar(running);
-	bool						NoInitVar(useVSync);
-	bool						NoInitVar(initialized);
-	uint32						NoInitVar(frames);
+	// double						NoInitVar(FPS);
+	// float						NoInitVar(FOV);
+	// bool						NoInitVar(running);
+	// bool						NoInitVar(useVSync);
+	// bool						NoInitVar(initialized);
+	// uint32						NoInitVar(frames);
 
-	VkInstance					NoInitVar(instance);
-	VkDebugUtilsMessengerEXT	NoInitVar(debugMessenger);
-	VkSurfaceKHR				NoInitVar(surface);
+	// VkInstance					NoInitVar(instance);
+	// VkDebugUtilsMessengerEXT	NoInitVar(debugMessenger);
+	// VkSurfaceKHR				NoInitVar(surface);
 
-	const char**				NoInitVar(validationLayers);
-	const char**				NoInitVar(requiredDeviceExtensions);
-	uint32						NoInitVar(validationLayersNum);
-	uint32						NoInitVar(requiredDeviceExtensionsNum);
+	// const char**				NoInitVar(validationLayers);
+	// const char**				NoInitVar(requiredDeviceExtensions);
+	// uint32						NoInitVar(validationLayersNum);
+	// uint32						NoInitVar(requiredDeviceExtensionsNum);
+	// //DynArray<const String>	NoInitLux(validationLayers);
+	// //DynArray<const String>	NoInitLux(requiredDeviceExtensions);
+	double			FPS;
+	float			FOV;
+	bool			running;
+	bool			useVSync;
+	bool			initialized = false;
+	uint32			frames = 0;
+
+	VkInstance   				instance = (VkInstance)malloc(sizeof(VkInstance));
+	VkSurfaceKHR 				surface  = (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
+	VkDebugUtilsMessengerEXT	debugMessenger;
+
+	uint32 			validationLayersNum        	= 1;
+	const  char** 	validationLayers         	= (const char**)malloc(sizeof(const char*) * validationLayersNum);
+	uint32 			requiredDeviceExtensionsNum	= 1;
+	const  char** 	requiredDeviceExtensions 	= (const char**)malloc(sizeof(const char*) * requiredDeviceExtensionsNum);
 	//DynArray<const String>	NoInitLux(validationLayers);
 	//DynArray<const String>	NoInitLux(requiredDeviceExtensions);
 
-
+	AutoInit(LUX_H_CORE){
+		validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
+		requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	}
 
 
 
@@ -62,19 +81,19 @@ namespace lux::core{
 
 
 
-	//TODO fix functions
+	//FIXME fix functions
 
 	void preInit_( ){
-		initialized = false;
-		frames = 0;
+		// initialized = false;
+		// frames = 0;
 
-		instance = (VkInstance)malloc(sizeof(VkInstance));
-		surface = (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
+		// instance = (VkInstance)malloc(sizeof(VkInstance));
+		// surface = (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
 
-		validationLayers =			(const char**)malloc(sizeof(const char*) * (validationLayersNum = 1));
-		requiredDeviceExtensions =	(const char**)malloc(sizeof(const char*) * (requiredDeviceExtensionsNum = 1));
-		validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
-		requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+		// validationLayers =			(const char**)malloc(sizeof(const char*) * (validationLayersNum = 1));
+		// requiredDeviceExtensions =	(const char**)malloc(sizeof(const char*) * (requiredDeviceExtensionsNum = 1));
+		// validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
+		// requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 		//validationLayers.DynArray::DynArray( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
 		//requiredDeviceExtensions.DynArray::DynArray( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
@@ -111,7 +130,7 @@ namespace lux::core{
 			;			core::preInit_( ); //This
 			;			dvc::preInit( );
 			;			c::preInit( );
-			;			//c::buffers::    preInit( );
+			// // ;			//c::buffers::    preInit( );
 			;				c::shaders::preInit( );
 			;			g::preInit( );
 			;				g::cmd::preInit( );
@@ -193,7 +212,7 @@ namespace lux::core{
 
 
 	void mainLoop( ) {
-		//TODO fix
+		//FIXME fix
 		#ifdef _WIN64
 		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  User input"));
 		#elif defined __linux__
@@ -211,7 +230,7 @@ namespace lux::core{
 
 
 	void runRenderThr( ) {
-		//TODO fix
+		//FIXME fix
 		#ifdef _WIN64
 		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  Render"));
 		#elif defined __linux__
@@ -228,7 +247,7 @@ namespace lux::core{
 
 	//TODO add FPS limit
 	void runFPSCounterThr( ) {
-		//TODO fix
+		//FIXME fix
 		#ifdef _WIN64
 		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  FPS counter"));
 		#elif defined __linux__

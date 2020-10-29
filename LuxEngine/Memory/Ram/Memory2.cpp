@@ -17,7 +17,7 @@
 namespace lux::ram{
 	//memcpy, but faster. The performance difference is much more noticeable in dual / quad channel systems, or systems with high frequency RAM / low frequency CPU
 	//The function will not return until all threads have completed the operation
-	//Use lux::mem::async::cpy to asynchronously copy data in a buffer
+	//Use lux::mem::acpy to asynchronously copy data in a buffer
 	//Source and destination buffers should not overlap. If they do, it's undefined behaviour
 	//*  src | address of the source buffer
 	//*  dst | address of the destination buffer
@@ -33,7 +33,7 @@ namespace lux::ram{
 			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
 			case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
 			case LUX_TRUE: { __2thrCase:
-				uint64 numShift = multipleOf(num / 2, 32); bool thrf = false;
+				uint64 numShift = multipleOf(num / 2, LuxMemOffset); bool thrf = false;
 				lux::thr::sendToExecQueue(cpy_thr, thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
 				cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
 				while(!thrf) sleep(5); break;

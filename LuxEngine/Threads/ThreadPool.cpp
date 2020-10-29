@@ -31,6 +31,8 @@ namespace lux::thr {
 		// threads.DynArray::DynArray(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		threads = DynArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		// thrStates.Map::Map( );
+		//FIXME clear cannot be used with uninitialized containers
+		//FIXME This __should__ be intialized, but for some reason, it's not
 		thrStates.clear();
 		//thrStates.Map::Map(2048, 2048);
 

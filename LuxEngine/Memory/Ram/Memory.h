@@ -96,7 +96,7 @@ namespace lux::ram{
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass);
 
 
-	//TODO UNROLL
+	//TODO UNROLL LOOP
 	template<class type> inline void init_memory(void* const vAddr, const uint64 vSize, const type& pValue){
 		for(uint32 i = 0; i < vSize; i+=sizeof(type)) memcpy((char*)vAddr + i, &pValue, sizeof(type));
 	}

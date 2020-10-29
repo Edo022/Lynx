@@ -1,30 +1,42 @@
 #include "LuxEngine/Memory/Ram/Memory.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
 #include <cstring>
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 //#include "LuxEngine/Core/Core.h"
 
 
 
 //TODO background cell preallocation
-
+//TODO REMOVE EXPLICIT INITIALIZATION OF ENGINE NAMESPACES
 
 namespace lux::ram{
-	MemBufferType* buffers{ buffers };
-	uint32 allocated{ allocated };
+	MemBufferType* buffers;
+	uint32 allocated;
 
+
+	AutoInit(LUX_H_MEMORY){
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
+		//Init buffer types
+		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
+			buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
+			//TODO choose number of buffers based on the system memory
+			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+		}
+	}
 
 
 
 
 
 	void init( ){
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
+		// buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
 
-		//Init buffer types
-		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
-			buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
-			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
-		}
+		// //Init buffer types
+		// for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
+		// 	buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
+		// 	//TODO choose number of buffers based on the system memory
+		// 	buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+		// }
 	}
 
 
@@ -35,7 +47,7 @@ namespace lux::ram{
 	//TODO use offset as constant instead of literal
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass) {
 		//Check AT_LEAST values. Set class to AUTO if it's too small. If it fits, assign it the normal class value
-		if(pClass != CellClass::AUTO && (uint32)pClass % 32 == 1) {
+		if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {
 			if((uint32)pClass < vSize) pClass = CellClass::AUTO;
 			else pClass = (CellClass)((uint64)pClass - 1);
 		}
@@ -100,11 +112,11 @@ namespace lux::ram{
 			if(!buffer.memory) {
 			//if(true) {
 				#ifdef _WIN64
-				buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, 32);//Allocate new memory if the buffer has not already been allocated
+				buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, LuxMemOffset);//Allocate new memory if the buffer has not already been allocated
 				#elif defined __linux__
-				buffer.memory = aligned_alloc(32, (uint32)vClass ? bufferSize : vSize);//Allocate new memory if the buffer has not already been allocated
+				buffer.memory = aligned_alloc(LuxMemOffset, (uint32)vClass ? bufferSize : vSize);//Allocate new memory if the buffer has not already been allocated
 				#endif
-				
+
 				//TODO remove
 				allocated += (uint32)vClass ? bufferSize : vSize;
 				Main printf("allocated MBs: %d", allocated / 1000000);
@@ -150,7 +162,7 @@ namespace lux::ram{
 		}
 		//If the class doesn't need to be changed
 		//(class specified but it's the same as before or class is auto) and (count is within the class minimum and maximum count)
-		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) { 
+		if((vCellClass == CellClass::AUTO && vSize < (uint32)pCell->bufferType->cellClass) || (vCellClass == pCell->bufferType->cellClass && vSize < (uint32)vCellClass)) {
 			[[likely]];
 			pCell->cellSize = vSize;
 		}

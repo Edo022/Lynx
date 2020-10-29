@@ -1,134 +1,114 @@
 {
-    "tasks": [
-        {
-            "type": "shell",
-            "label": "glfw test",
-            "command": "/usr/bin/g++",
-            "args": [
-                "testglfw.cpp", 
-                "-g",                                               //Default debug infos
-                "-std=c++2a",                                       //C++20
-                "-I./",                                         //CWD include
-                "-pthread",                                         //Thre
-                "-Ideps/glfw-3.3.2/include",                    //GLFW include
-                "-Ideps/glfw-3.3.2/deps",                       //GLFW include
-                "-Ldeps/glfw-3.3.2/build/debug/src",            //GLFW include
-                "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
-                "-o", "Test.out"                                   //Output
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "glfw test",
+			"command": "/usr/bin/g++",
+			"args": [
+				"testglfw.cpp",
+				"-g",                                           //Default debug infos
+				"-std=c++2a",                                   //C++20
+				"-I./",                                         //CWD include
+				"-pthread",                                     //Thre
+				"-Ideps/glfw-3.3.2/include",                    //GLFW include
+				"-Ideps/glfw-3.3.2/deps",                       //GLFW include
+				"-Ldeps/glfw-3.3.2/build/debug/src",            //GLFW include
+				"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+				"-o", "Test.out"                                //Output
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
 
-        {
-            "type": "shell",
-            "label": "Build LuxEngine - Debug",
-            "command": "/usr/bin/g++",
-            "args": [
-                //Source
-                    "Test.cpp", 
-                    "LuxEngine/Memory/Ram/Memory_t.cpp", 
-                    "LuxEngine/Memory/Ram/Memory.cpp", 
-                    "LuxEngine/Memory/Ram/Memory2.cpp", 
-                    "LuxEngine/System/System.cpp", 
-                    "LuxEngine/Memory/Gpu/VMemory.cpp", 
-                    "LuxEngine/Threads/ThreadPool.cpp", 
-                    "LuxEngine/Types/LuxObject/LuxObject.cpp", 
-                    "LuxEngine/Types/LuxObject/2D/2DBorder.cpp", 
-                    "LuxEngine/Types/LuxObject/2D/2DLines.cpp", 
-                    "LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp", 
-                    "LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp",
-                    "LuxEngine/Core/*.cpp",
-                    "LuxEngine/Core/Compute/*.cpp",
-                    "LuxEngine/Core/Graphics/*.cpp",
-                    "LuxEngine/Core/Input/*.cpp",
+		{
+			"type": "shell",
+			"label": "Build LuxEngine - Debug",
+			"command": "/usr/bin/g++",
+			"args": [
+				//Source
+					//RAM memory pool
+						//Containers, Pointers
+							//VRAM memory pool
+								//Graphics
+									//Render objects
 
-                //
-                    "-g",               //Default debug infos
-                    "-std=c++2a",       //C++20
-                    "-mavx",            //AVX2
+					//>> Initializer >> Engine start
+					//>> Other user defined variables
+					//>> Main function call >> Everything else
 
-                //
-                    "-I./",             //CWD include
-                    "-pthread",         //Threads
+					//TODO wait the default initialization of the variables
+					//TODO don't force it with the initializer
 
-                //Vulkan
-                    "-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
-                    "-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
-                    "-ldl", "-lvulkan",
+					//FIXME segfault in specific lux map
+					//Start engine
+					"LuxEngine/Memory/Ram/Memory_t.cpp",
+					"LuxEngine/Memory/Ram/Memory.cpp",			//Create RAM memory pool (Lux pointers, all Lux containers)
+					"LuxEngine/Memory/Ram/Memory2.cpp",			//Memory management functions
+					/**/"LuxEngine/Memory/Gpu/VMemory.cpp", 	//Create GPU memory pool (Vulka, Lux render objects)
+					/**/"LuxEngine/System/System.cpp",			//Unify system specific functions and types (thread suspend and resume, threads, cwd)
+					/*    */"LuxEngine/Threads/ThreadPool.cpp",	//Create global thread pool
 
-                //GLFW
-                    "-Ideps/glfw-3.3.2/include",
-                    "-Ideps/glfw-3.3.2/deps",
-                    "-Ldeps/glfw-3.3.2/build/debug/src",
-                    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+					//Indipendent units
+					"LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp",
 
-                //Output
-                    "-o", "Test.out"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
 
-        {
-            "type": "shell",
-            "label": "Build current file - Debug",
-            "command": "/usr/bin/g++",
-            "args": [
-                //Source
-                    "${file}",
+					"LuxEngine/Types/LuxObject/LuxObject.cpp",
+					"LuxEngine/Types/LuxObject/2D/2DBorder.cpp",
+					"LuxEngine/Types/LuxObject/2D/2DLines.cpp",
+					"LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp",
+					"LuxEngine/Core/*.cpp",
+					"LuxEngine/Core/Compute/*.cpp",
+					"LuxEngine/Core/Graphics/*.cpp",
+					"LuxEngine/Core/Input/*.cpp",
 
-                //
-                    "-g",               //Default debug infos
-                    "-std=c++2a",       //C++20
-                    "-mavx",            //AVX2
+					//User defined units
+					"Test.cpp",
 
-                //
-                    "-I./",             //CWD include
-                    "-pthread",         //Threads
 
-                //Vulkan
-                    "-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
-                    "-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
-                    "-ldl", "-lvulkan",
+				//Def
+					"-g",               //Default debug infos
+					"-O0",              //No optimizations
+					"-std=c++2a",       //C++20
+					"-mavx",            //AVX2
 
-                //GLFW
-                    "-Ideps/glfw-3.3.2/include",
-                    "-Ideps/glfw-3.3.2/deps",
-                    "-Ldeps/glfw-3.3.2/build/debug/src",
-                    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+				//Def
+					"-I./",             //CWD include
+					"-pthread",         //Threads
 
-                //Output
-                    "-o", "Test.out"
-            ],
-            "options": {
-                "cwd": "${workspaceFolder}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
-    ],
-    "version": "2.0.0"
+				//Vulkan
+					"-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
+					"-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
+					"-ldl", "-lvulkan",
+
+				//GLFW
+					"-Ideps/glfw-3.3.2/include",
+					"-Ideps/glfw-3.3.2/deps",
+					"-Ldeps/glfw-3.3.2/build/debug/src",
+					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+
+				//Output
+					"-o", "Test.out"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+	],
+	"version": "2.0.0"
 }
 
