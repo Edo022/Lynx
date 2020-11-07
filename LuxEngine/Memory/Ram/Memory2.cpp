@@ -29,17 +29,19 @@ namespace lux::ram{
 		//luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 		//luxDebug(if(num % 32 != 0)			param_error(num, "Misaligned count. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 
-		switch(thr){
-			case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
-			case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
-			case LUX_TRUE: { __2thrCase:
-				uint64 numShift = multipleOf(num / 2, LuxMemOffset); bool thrf = false;
-				lux::thr::sendToExecQueue(cpy_thr, thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
-				cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
-				while(!thrf) sleep(5); break;
-			}
-			default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
-		}
+		// switch(thr){
+			// case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
+			// case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
+			// case LUX_TRUE: { __2thrCase:
+			// 	uint64 numShift = multipleOf(num / 2, LuxMemOffset); bool thrf = false;
+			// 	lux::thr::sendToExecQueue(cpy_thr, thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
+			// 	cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
+			// 	while(!thrf) sleep(5); break;
+			// }
+			// default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
+		// }
+
+		cpy_thr((__m256i*)src, (__m256i*)dst, num);
 	}
 
 

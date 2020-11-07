@@ -70,7 +70,8 @@ namespace lux::thr {
 
 
 
-	void __lp_thr_loop(const uint32 vThrIndex) {
+	// void __lp_thr_loop(const uint32 vThrIndex) {
+	void* __lp_thr_loop(void* vThrIndex) {
 		#ifdef _WIN64
 		{ //Set thread name for debugging
 			// #pragma warning( disable:4996 )
@@ -91,15 +92,17 @@ namespace lux::thr {
 		while(true) sleep(10);
 		while(true) {
 			0;													//#LLID THR0000 The thread will continue from here when it's resumed
-			if(thrStates[vThrIndex] == ThrState::RUNNING){		//If a function was assigned to the thread
+			if(thrStates[*((uint32*)vThrIndex)] == ThrState::RUNNING){		//If a function was assigned to the thread
 				//TODO save return
-				threads[vThrIndex].exec->exec( );					//Execute it and save the retun value in the return address
-				delete(threads[vThrIndex].exec);					//Free the pointer to the function data
-				thrStates.remove(vThrIndex);						//Remove the thread state from the map
+				threads[*((uint32*)vThrIndex)].exec->exec( );					//Execute it and save the retun value in the return address
+				delete(threads[*((uint32*)vThrIndex)].exec);					//Free the pointer to the function data
+				thrStates.remove(*((uint32*)vThrIndex));						//Remove the thread state from the map
 			}
 
-			__lp_suspend_thr(__lp_get_thr( ));					//Suspend the thread
+			// __lp_suspend_thr(__lp_get_thr( ));					//Suspend the thread
+			pthread_kill(pthread_self(), SIGSTOP);
 		}
+		return nullptr;
 	}
 
 
@@ -111,7 +114,9 @@ namespace lux::thr {
 		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  GTP MNG"));
 		#elif defined __linux__
 		#endif
-		__lp_suspend_thr(__lp_get_thr( ));
+		// __lp_suspend_thr(__lp_get_thr( ));
+		pthread_kill(pthread_self(), SIGSTOP);
+
 		while(true){
 			0;															//#LLID THR0001 The thread will continue from here when it's resumed
 			if(!stg.empty( )){											//Check if new functions were added to the queues
@@ -122,11 +127,13 @@ namespace lux::thr {
 						uint32 thrIndex = thrStates.add(ThrState::RUNNING);			//Set its state to RUNNING and save its index (automatically calculated by the add() function)
 						threads[thrIndex].exec = stg.front( );						//Set its exec data
 						stg.popFront( );											//Remove the exec data from the queue
-						__lp_resume_thr(threads[thrIndex].thr->native_handle( ));		//#LLID THR0000 Resume the thread (it suspended itself after executing the last function)
+						// __lp_resume_thr(threads[thrIndex].thr->native_handle( ));		//#LLID THR0000 Resume the thread (it suspended itself after executing the last function)
+						pthread_kill(threads[thrIndex].thr, SIGCONT);
 					}
 				}
 				stgAddFence.endFirst( );
-				__lp_suspend_thr(__lp_get_thr( ));							//Suspend the thread (the mng thread, not the one that was free)
+				// __lp_suspend_thr(__lp_get_thr( ));							//Suspend the thread (the mng thread, not the one that was free)
+				pthread_kill(pthread_self(), SIGSTOP);
 			}
 		}
 	}
@@ -136,7 +143,9 @@ namespace lux::thr {
 
 	void init( ) {
 		for(uint32 i = 0; i < threads.count( ); ++i){					//For each thread
-			threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
+			// threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
+			pthread_create(&threads[i].thr, nullptr, __lp_thr_loop, new int(i));
+
 			thrStates.add(ThrState::FREE);								//Add an element to the states Map. A Map is used to improve the performance by avoiding to search for a free thread
 			//Suspended in function
 		}

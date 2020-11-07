@@ -57,8 +57,8 @@ namespace lux::thr {
 
 
 	struct ThrPoolElm{
-		std::thread* thr{ nullptr };			//The actual thread
-		// std::thread::native_handle_type
+		// std::thread* thr{ nullptr };			//The actual thread
+		pthread_t thr;			//The actual thread
 		ExecFuncDataBase* exec{ nullptr };		//A pointer to the function data
 	};
 
@@ -83,7 +83,8 @@ namespace lux::thr {
 
 
 	void preInit( );
-	void __lp_thr_loop(const uint32 vThrIndex);
+	// void* __lp_thr_loop(const uint32 vThrIndex);
+	void* __lp_thr_loop(void* vThrIndex);
 	void __lp_thr_mng( );
 	void init( );
 
@@ -109,6 +110,7 @@ namespace lux::thr {
 		stgAddFence.startSecond( );
 		stg.pushFront(execData);						//Assign the data to the staging queue
 		stgAddFence.endSecond( );
-		__lp_resume_thr(mngThr);						//#LLID THR0001 Resume the thread (it suspended itself after assigning the last functions)
+		// __lp_resume_thr(mngThr);						//#LLID THR0001 Resume the thread (it suspended itself after assigning the last functions)
+		pthread_kill(mngThr, SIGCONT);
 	}
 }

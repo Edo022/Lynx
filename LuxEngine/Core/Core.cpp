@@ -106,7 +106,8 @@ namespace lux::core{
 		#ifdef _WIN64
 		return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
 		#elif defined __linux__
-		return system((c::shaders::shaderPath + "/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
+		// return system((c::shaders::shaderPath + "/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
+		return system((lux::sys::dir::thisDir + "/deps/Vulkan_1.2.154.0_linux/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
 		#endif
 	}
 
@@ -168,8 +169,8 @@ namespace lux::core{
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation
 		LuxTime start = luxStartChrono( );
-		c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
-		//c::shaders::shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
+		// c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
+		c::shaders::shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
 				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);

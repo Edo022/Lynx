@@ -64,7 +64,11 @@
         "variant": "cpp",
         "*.gen": "cpp",
         "*.def": "cpp",
-        "stop_token": "cpp"
+        "stop_token": "cpp",
+        "forward_list": "cpp",
+        "ranges": "cpp",
+        "regex": "cpp",
+        "valarray": "cpp"
     },
     "todo-tree.general.tagGroups": {
         "FIXME": [

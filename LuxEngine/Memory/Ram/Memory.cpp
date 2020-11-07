@@ -93,7 +93,7 @@ namespace lux::ram{
 			for(uint32 i = 0; i < subBuffers.size( ); i++){												//Search for a suitable buffer
 				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {					//If a buffer is valid and it has a free cell
 					cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] });
-					Cell_t* cell = &subBuffers[i].cells[cellIndex];											//<^ Create a new cell in the buffer and set the its buffer, index and address
+					Cell_t* cell = &subBuffers[i].cells[cellIndex];											//<^ Create a new cell in the buffer and set its buffer, index and address
 					cell->buffer = &subBuffers[i];
 					cell->cellIndex = cellIndex;
 					cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell));
@@ -169,7 +169,10 @@ namespace lux::ram{
 		//else (if the class has to be changed)
 		else if(vSize != pCell->cellSize) {
 			Cell_t * cell = allocBck(vSize, vCellClass);	//Allocate a new cell
-			memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
+			//BUG memcpy copies the data in the cells structure and not the address they are pointing to
+			//FIXME wtf is this? cells don't have an implicit pointer conversion
+			// memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
+			memcpy(cell->address, pCell->address, pCell->cellSize);		//Copy the old data in the new cell
 			ram::free(pCell);							//Free the old memory
 			*pCell = *cell;								//Update the cell (and all the pointers pointing to it)
 		}
