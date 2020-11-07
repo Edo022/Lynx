@@ -3,6 +3,7 @@
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
@@ -10,16 +11,22 @@
 
 
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_GSWAPCHAIN);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_GSWAPCHAIN);
+// #pragma optimize("", on)
 namespace lux::core::g::swapchain{
-	VkSwapchainKHR			NoInitVar(swapchain);
-	DynArray<VkImage>			NoInitLux(swapchainImages);
-	DynArray<VkImageView>		NoInitLux(swapchainImageViews);
-	VkFormat				NoInitVar(swapchainImageFormat);
-	VkExtent2D				NoInitVar(swapchainExtent);
-	DynArray<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
+	// VkSwapchainKHR			NoInitVar(swapchain);
+	// DynArray<VkImage>			NoInitLux(swapchainImages);
+	// DynArray<VkImageView>		NoInitLux(swapchainImageViews);
+	// VkFormat				NoInitVar(swapchainImageFormat);
+	// VkExtent2D				NoInitVar(swapchainExtent);
+	// DynArray<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
+	VkSwapchainKHR			swapchain;
+	DynArray<VkImage>			swapchainImages;
+	DynArray<VkImageView>		swapchainImageViews;
+	VkFormat				swapchainImageFormat;
+	VkExtent2D				swapchainExtent;
+	DynArray<VkFramebuffer>	swapchainFramebuffers;
 
 
 
@@ -27,7 +34,8 @@ namespace lux::core::g::swapchain{
 
 
 
-	void preInit( ){
+	// void preInit( ){
+	AutoInit(LUX_H_GSWAPCHAIN){
 		// swapchain = nullptr;
 		// swapchainImages.DynArray::DynArray( );
 		// swapchainImageViews.DynArray::DynArray( );

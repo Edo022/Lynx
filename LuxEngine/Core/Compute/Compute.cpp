@@ -6,26 +6,27 @@
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
 
-
-#pragma optimize("", off)
-PostInitializer(LUX_H_COMPUTE);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_COMPUTE);
+// #pragma optimize("", on)
 namespace lux::core::c{
-	VkCommandPool			NoInitVar(copyCommandPool);
-	DynArray<VkCommandBuffer>	NoInitLux(copyCommandBuffers);
-	VkCommandBuffer			NoInitVar(clearCommandBuffer);
+	// VkCommandPool			NoInitVar(copyCommandPool);
+	// DynArray<VkCommandBuffer>	NoInitLux(copyCommandBuffers);
+	// VkCommandBuffer			NoInitVar(clearCommandBuffer);
+	VkCommandPool			copyCommandPool;
+	DynArray<VkCommandBuffer>	copyCommandBuffers;
+	VkCommandBuffer			clearCommandBuffer;
 
 
 
 
-	void preInit( ) {
-		copyCommandPool = nullptr;
-		// copyCommandBuffers.DynArray::DynArray( );
-		copyCommandBuffers = DynArray<VkCommandBuffer>( );
+	// void preInit( ) {
+	AutoInit(LUX_H_COMPUTE) {
 		clearCommandBuffer = nullptr;
 	}
 

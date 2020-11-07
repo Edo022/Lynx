@@ -6,27 +6,36 @@
 #include "LuxEngine/Memory/Gpu/VMemory.h"
 #include "LuxEngine/Core/ConsoleOutput.h"
 //#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_WINDOW);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_WINDOW);
+// #pragma optimize("", on)
 namespace lux::core::g::wnd{
+	// GLFWwindow* window = window;
+	// int32			NoInitVar(width), NoInitVar(height);
+	// FenceDE			NoInitLux(windowResizeFence);
+	// rem::Cell		NoInitVar(gpuCellWindowSize);
+	// rem::Cell		NoInitVar(gpuCellWindowOutput);
+	// rem::Cell		NoInitVar(gpuCellWindowOutput_i);
+	// rem::Cell		NoInitVar(gpuCellWindowZBuffer);
 	GLFWwindow* window = window;
-	int32			NoInitVar(width), NoInitVar(height);
-	FenceDE			NoInitLux(windowResizeFence);
-	rem::Cell		NoInitVar(gpuCellWindowSize);
-	rem::Cell		NoInitVar(gpuCellWindowOutput);
-	rem::Cell		NoInitVar(gpuCellWindowOutput_i);
-	rem::Cell		NoInitVar(gpuCellWindowZBuffer);
+	int32			width, height;
+	FenceDE			windowResizeFence;
+	rem::Cell		gpuCellWindowSize;
+	rem::Cell		gpuCellWindowOutput;
+	rem::Cell		gpuCellWindowOutput_i;
+	rem::Cell		gpuCellWindowZBuffer;
 
 
 
 
 
-	void preInit( ){
+	// void preInit( ){
+	AutoInit(LUX_H_WINDOW){
 		window = nullptr;
 		width = 1920 * 2, height = 1080;
 		// windowResizeFence.FenceDE::FenceDE( );

@@ -1,4 +1,5 @@
 #pragma once
+#define LUX_H_VMEMORY
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"

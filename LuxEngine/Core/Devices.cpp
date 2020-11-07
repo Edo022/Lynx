@@ -4,6 +4,7 @@
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 #include <set>
 #include <vector>
@@ -16,13 +17,16 @@
 
 
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_DEVICES);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_DEVICES);
+// #pragma optimize("", on)
 namespace lux::core::dvc{
-	graphicsDevice			NoInitLux(graphics);	//Main graphics device
-	computeDevice			NoInitLux(compute);		//Main compute device
-	DynArray<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
+	// graphicsDevice			NoInitLux(graphics);	//Main graphics device
+	// computeDevice			NoInitLux(compute);		//Main compute device
+	// DynArray<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
+	graphicsDevice			graphics;	//Main graphics device
+	computeDevice			compute;		//Main compute device
+	DynArray<computeDevice>	secondary;	//Secondary compute devices
 
 
 
@@ -31,7 +35,8 @@ namespace lux::core::dvc{
 
 
 
-	void preInit( ){
+	// void preInit( ){
+	AutoInit(LUX_H_DEVICES){
 		// graphics.graphicsDevice::graphicsDevice( );
 		// compute.computeDevice::computeDevice( );
 		// secondary.DynArray::DynArray( );

@@ -48,6 +48,9 @@
 					//TODO don't force it with the initializer
 
 					//FIXME segfault in specific lux map
+
+					"LuxEngine/Core/InitCore.cpp",
+
 					//Start engine
 					"LuxEngine/Memory/Ram/Memory_t.cpp",
 					"LuxEngine/Memory/Ram/Memory.cpp",			//Create RAM memory pool (Lux pointers, all Lux containers)
@@ -64,7 +67,9 @@
 					"LuxEngine/Types/LuxObject/2D/2DBorder.cpp",
 					"LuxEngine/Types/LuxObject/2D/2DLines.cpp",
 					"LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp",
-					"LuxEngine/Core/*.cpp",
+					"LuxEngine/Core/Devices.cpp",
+					"LuxEngine/Core/ConsoleOutput.cpp",
+					"LuxEngine/Core/Core.cpp",
 					"LuxEngine/Core/Compute/*.cpp",
 					"LuxEngine/Core/Graphics/*.cpp",
 					"LuxEngine/Core/Input/*.cpp",
@@ -78,6 +83,7 @@
 					"-O0",              //No optimizations
 					"-std=c++2a",       //C++20
 					"-mavx",            //AVX2
+					"-pipe",            //
 
 				//Def
 					"-I./",             //CWD include

@@ -24,9 +24,9 @@
 
 
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_CORE);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_CORE);
+// #pragma optimize("", on)
 namespace lux::core{
 	// double						NoInitVar(FPS);
 	// float						NoInitVar(FOV);
@@ -126,17 +126,17 @@ namespace lux::core{
 			ram::init( );
 			;	__lp_goniometric_functions_init( );
 			;	sys::init( );
-			;		thr::preInit( ); thr::init( );
+			// ;		thr::preInit( ); thr::init( );
 			;			core::preInit_( ); //This
-			;			dvc::preInit( );
-			;			c::preInit( );
+			// ;			dvc::preInit( );
+			// ;			c::preInit( );
 			// // ;			//c::buffers::    preInit( );
-			;				c::shaders::preInit( );
-			;			g::preInit( );
-			;				g::cmd::preInit( );
-			;				g::out::preInit( );
-			;				g::swapchain::preInit( );
-			;				g::wnd::preInit( );
+			// ;				c::shaders::preInit( );
+			// ;			g::preInit( );
+			// ;				g::cmd::preInit( );
+			// ;				g::out::preInit( );
+			// ;				g::swapchain::preInit( );
+			// ;				g::wnd::preInit( );
 		}
 	}
 
@@ -192,7 +192,7 @@ namespace lux::core{
 		g::init(vUseVSync, vFOV);
 		//c::buffers::init( );
 		//ram is inizialized in init function as it's required for everything
-		rem::init( );
+		// rem::init( );
 		c::init( );
 
 		//Loop

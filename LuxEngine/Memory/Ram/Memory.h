@@ -98,6 +98,7 @@ namespace lux::ram{
 
 	//TODO UNROLL LOOP
 	template<class type> inline void init_memory(void* const vAddr, const uint64 vSize, const type& pValue){
+		sleep(100);
 		for(uint32 i = 0; i < vSize; i+=sizeof(type)) memcpy((char*)vAddr + i, &pValue, sizeof(type));
 	}
 

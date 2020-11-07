@@ -61,7 +61,10 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "*.inc": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "*.gen": "cpp",
+        "*.def": "cpp",
+        "stop_token": "cpp"
     },
     "todo-tree.general.tagGroups": {
         "FIXME": [

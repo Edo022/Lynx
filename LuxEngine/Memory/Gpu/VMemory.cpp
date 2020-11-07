@@ -6,10 +6,10 @@
 //TODO use constant for offset
 
 namespace lux::rem{
-	// uint32 maxAlloc{ maxAlloc };
-	// MemBufferType* buffers{ buffers };
-	uint32 maxAlloc;
-	MemBufferType* buffers;
+	// // uint32 maxAlloc{ maxAlloc };
+	// // MemBufferType* buffers{ buffers };
+	// uint32 maxAlloc;
+	// MemBufferType* buffers;
 
 
 

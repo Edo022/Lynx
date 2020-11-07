@@ -1,5 +1,6 @@
 
 #pragma once
+#define LUX_H_SYSTEM
 #include <filesystem>
 #include <stdio.h>
 #include <thread>

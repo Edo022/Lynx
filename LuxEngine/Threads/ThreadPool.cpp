@@ -1,52 +1,72 @@
 
 #include "LuxEngine/Threads/ThreadPool.h"
 #include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 //TODO "so that whatever file is being initialized, the execution get caught by the post initializer and it inizializes everything the engine needs"
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_THREAD_POOL);
-#pragma optimize("", on)
+//TODO
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_THREAD_POOL);
+// #pragma optimize("", on)
 namespace lux::thr {
-	FenceDE					NoInitLux(stgAddFence);		//This fence controls the add and read/remove operations of the staging queue
-	#ifdef _WIN64
-	HANDLE NoInitVar(mngThr);	//The handle of the thread that controls the pool
-	#elif defined __linux__
-	pthread_t NoInitVar(mngThr);
-	#endif
-	DynArray<ThrPoolElm>		NoInitLux(threads);			//The threads of the thread pool with their states and functions
-	Map<ThrState, uint32>	NoInitLux(thrStates);		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+	// // FenceDE					NoInitLux(stgAddFence);		//This fence controls the add and read/remove operations of the staging queue
+	// // #ifdef _WIN64
+	// // HANDLE NoInitVar(mngThr);	//The handle of the thread that controls the pool
+	// // #elif defined __linux__
+	// // pthread_t NoInitVar(mngThr);
+	// // #endif
+	// // DynArray<ThrPoolElm>		NoInitLux(threads);			//The threads of the thread pool with their states and functions
+	// // Map<ThrState, uint32>	NoInitLux(thrStates);		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 
 
-	Queue<ExecFuncDataBase*> NoInitLux(maxpq);			//List of maximum priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> NoInitLux(highpq);			//List of high priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> NoInitLux(lowpq);			//List of low priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> NoInitLux(minpq);			//List of minimum priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> NoInitLux(stg);			//Staging queue
+	// // Queue<ExecFuncDataBase*> NoInitLux(maxpq);			//List of maximum priority functions waiting to be executed
+	// // Queue<ExecFuncDataBase*> NoInitLux(highpq);			//List of high priority functions waiting to be executed
+	// // Queue<ExecFuncDataBase*> NoInitLux(lowpq);			//List of low priority functions waiting to be executed
+	// // Queue<ExecFuncDataBase*> NoInitLux(minpq);			//List of minimum priority functions waiting to be executed
+	// // Queue<ExecFuncDataBase*> NoInitLux(stg);			//Staging queue
+	// FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
+	// #ifdef _WIN64
+	// HANDLE NoInitVar(mngThr);	//The handle of the thread that controls the pool
+	// #elif defined __linux__
+	// pthread_t mngThr;
+	// #endif
+	// DynArray<ThrPoolElm>		threads;			//The threads of the thread pool with their states and functions
+	// Map<ThrState, uint32>	thrStates;		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+
+
+	// Queue<ExecFuncDataBase*> maxpq;			//List of maximum priority functions waiting to be executed
+	// Queue<ExecFuncDataBase*> highpq;			//List of high priority functions waiting to be executed
+	// Queue<ExecFuncDataBase*> lowpq;			//List of low priority functions waiting to be executed
+	// Queue<ExecFuncDataBase*> minpq;			//List of minimum priority functions waiting to be executed
+	// Queue<ExecFuncDataBase*> stg;			//Staging queue
 
 
 
 
-	void preInit( ){
-		// threads.DynArray::DynArray(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
-		threads = DynArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
-		// thrStates.Map::Map( );
-		//FIXME clear cannot be used with uninitialized containers
-		//FIXME This __should__ be intialized, but for some reason, it's not
-		thrStates.clear();
-		//thrStates.Map::Map(2048, 2048);
+	// // void preInit( ){
+	// AutoInit(LUX_H_THREAD_POOL){
+	// 	// threads.DynArray::DynArray(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+	// 	threads = DynArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+	// 	// thrStates.Map::Map( );
+	// 	//FIXME clear cannot be used with uninitialized containers
+	// 	//FIXME This __should__ be intialized, but for some reason, it's not
+	// 	thrStates.clear();
+	// 	//thrStates.Map::Map(2048, 2048);
 
-		// maxpq.Queue::Queue( );
-		// highpq.Queue::Queue( );
-		// lowpq.Queue::Queue( );
-		// minpq.Queue::Queue( );
-		// stg.Queue::Queue( );
-		maxpq.clear();
-		highpq.clear();
-		lowpq.clear();
-		minpq.clear();
-		stg.clear();
-	}
+	// 	// maxpq.Queue::Queue( );
+	// 	// highpq.Queue::Queue( );
+	// 	// lowpq.Queue::Queue( );
+	// 	// minpq.Queue::Queue( );
+	// 	// stg.Queue::Queue( );
+	// 	maxpq.clear();
+	// 	highpq.clear();
+	// 	lowpq.clear();
+	// 	minpq.clear();
+	// 	stg.clear();
+
+	// 	lux::thr::init();
+	// }
 
 
 
@@ -67,7 +87,8 @@ namespace lux::thr {
 		#elif defined __linux__
 		#endif
 
-		__lp_suspend_thr(__lp_get_thr( ));
+		// __lp_suspend_thr(__lp_get_thr( ));
+		while(true) sleep(10);
 		while(true) {
 			0;													//#LLID THR0000 The thread will continue from here when it's resumed
 			if(thrStates[vThrIndex] == ThrState::RUNNING){		//If a function was assigned to the thread

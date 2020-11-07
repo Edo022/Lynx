@@ -10,19 +10,19 @@
 //TODO REMOVE EXPLICIT INITIALIZATION OF ENGINE NAMESPACES
 
 namespace lux::ram{
-	MemBufferType* buffers;
-	uint32 allocated;
+	// MemBufferType* buffers;
+	// uint32 allocated;
 
 
-	AutoInit(LUX_H_MEMORY){
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
-		//Init buffer types
-		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
-			buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
-			//TODO choose number of buffers based on the system memory
-			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
-		}
-	}
+	// AutoInit(LUX_H_MEMORY){
+	// 	buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
+	// 	//Init buffer types
+	// 	for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
+	// 		buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
+	// 		//TODO choose number of buffers based on the system memory
+	// 		buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+	// 	}
+	// }
 
 
 

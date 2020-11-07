@@ -10,29 +10,38 @@
 #include "LuxEngine/Types/LuxObject/LuxObject.h"
 #include "LuxEngine/Core/Core.h"
 #include <limits.h>
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
 
-
-#pragma optimize("", off)
-PostInitializer(LUX_H_GRAPHICS);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_GRAPHICS);
+// #pragma optimize("", on)
 namespace lux::core::g{
-	DynArray<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
-	DynArray<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);
-	DynArray<VkSemaphore>		NoInitLux(drawFrameCopySemaphore);
-	DynArray<VkSemaphore>		NoInitLux(drawFrameClearSemaphore);
-	DynArray<VkFence>			NoInitLux(drawFrameImageRenderedFence);
-	int32					NoInitVar(renderCurrentFrame);
-	DynArray<obj::Base*>	NoInitLux(objUpdates2D);
-	FenceDE					NoInitLux(pendingObjectUpdatesFence);
+	// DynArray<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
+	// DynArray<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);
+	// DynArray<VkSemaphore>		NoInitLux(drawFrameCopySemaphore);
+	// DynArray<VkSemaphore>		NoInitLux(drawFrameClearSemaphore);
+	// DynArray<VkFence>			NoInitLux(drawFrameImageRenderedFence);
+	// int32					NoInitVar(renderCurrentFrame);
+	// DynArray<obj::Base*>	NoInitLux(objUpdates2D);
+	// FenceDE					NoInitLux(pendingObjectUpdatesFence);
+	DynArray<VkSemaphore>		drawFrameImageAquiredSemaphore;
+	DynArray<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
+	DynArray<VkSemaphore>		drawFrameCopySemaphore;
+	DynArray<VkSemaphore>		drawFrameClearSemaphore;
+	DynArray<VkFence>			drawFrameImageRenderedFence;
+	int32					renderCurrentFrame;
+	DynArray<obj::Base*>	objUpdates2D;
+	FenceDE					pendingObjectUpdatesFence;
 
 
 
 
 
-	void preInit( ) {
+	// void preInit( ) {
+	AutoInit(LUX_H_GRAPHICS) {
 		// drawFrameImageAquiredSemaphore.DynArray::DynArray( );
 		// drawFrameObjectsRenderedSemaphore.DynArray::DynArray( );
 		// drawFrameCopySemaphore.DynArray::DynArray( );

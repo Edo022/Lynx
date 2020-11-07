@@ -22,6 +22,17 @@
 
 
 
+
+
+
+#define LUH_H_TEST_TU
+PostInitializer(LUH_H_TEST_TU);
+
+
+
+
+
+
 //TODO LIMIT FORCED PREINITIALIZATION TO MEMORY POOL ONLY
 
 int h(const char* b, int hh) {

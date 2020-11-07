@@ -4,6 +4,7 @@
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
 #include "LuxEngine/Core/Devices.h"
 #include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
@@ -19,12 +20,14 @@
 
 
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_GOUTPUT);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_GOUTPUT);
+// #pragma optimize("", on)
 namespace lux::core::g::out{
-	VkRenderPass		NoInitVar(renderPass);
-	bool				NoInitVar(renderFramebufferResized);
+	// VkRenderPass		NoInitVar(renderPass);
+	// bool				NoInitVar(renderFramebufferResized);
+	VkRenderPass		renderPass;
+	bool				renderFramebufferResized;
 
 
 
@@ -33,7 +36,8 @@ namespace lux::core::g::out{
 
 
 
-	void preInit( ){
+	// void preInit( ){
+	AutoInit(LUX_H_GOUTPUT){
 		renderPass = nullptr;
 		renderFramebufferResized = false;
 	}

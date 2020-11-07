@@ -1,16 +1,19 @@
 
 #include "LuxEngine/System/System.h"
 #include "LuxEngine/Types/Containers/LuxString.h"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 #include <new>
 //TODO remove nothing constructors
 //TODO remove LuxNoInit and VarNoInit macros
 
-lux::String lux::sys::dir::thisDir;	//Path to the current directory //Initialized in init function
-//TODO move to lux::thr
-// uint32		lux::sys::threadNum = lux::sys::threadNum;						//Number of threads in the main CPU
-uint32		lux::sys::threadNum;						//Number of threads in the main CPU
-
+// lux::String lux::sys::dir::thisDir;	//Path to the current directory //Initialized in init function
+// //TODO move to lux::thr
+// // uint32		lux::sys::threadNum = lux::sys::threadNum;						//Number of threads in the main CPU
+// uint32		lux::sys::threadNum;						//Number of threads in the main CPU
+// AutoInit(LUX_H_SYSTEM){
+// 	lux::sys::init();
+// }
 
 
 
@@ -59,3 +62,6 @@ namespace lux::sys{
 		}
 	}
 }
+
+
+

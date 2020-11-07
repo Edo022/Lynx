@@ -2,7 +2,7 @@
 
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Core.h"
-
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 
@@ -16,20 +16,32 @@
 
 
 
-#pragma optimize("", off)
-PostInitializer(LUX_H_CSHADER);
-#pragma optimize("", on)
+// #pragma optimize("", off)
+// PostInitializer(LUX_H_CSHADER);
+// #pragma optimize("", on)
 namespace lux::core::c::shaders{
-	String									NoInitLux(shaderPath);
-	Map<lux::obj::RenderSpace2D*, uint32>	NoInitLux(CRenderSpaces);
-	DynArray<LuxShaderLayout_t>				NoInitLux(CShadersLayouts);
+	// String									NoInitLux(shaderPath);
+	// Map<lux::obj::RenderSpace2D*, uint32>	NoInitLux(CRenderSpaces);
+	// DynArray<LuxShaderLayout_t>				NoInitLux(CShadersLayouts);
 
-	VkCommandPool							NoInitVar(commandPool);
-	Map<LuxShader_t, uint32>				NoInitLux(CShaders);
-	DynArray<VkCommandBuffer>				NoInitLux(CShadersCBs);
+	// VkCommandPool							NoInitVar(commandPool);
+	// Map<LuxShader_t, uint32>				NoInitLux(CShaders);
+	// DynArray<VkCommandBuffer>				NoInitLux(CShadersCBs);
 
-	FenceDE									NoInitLux(addShaderFence);
-	LuxShader								NoInitVar(clearShader);
+	// FenceDE									NoInitLux(addShaderFence);
+	// LuxShader								NoInitVar(clearShader);
+	String									shaderPath;
+	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
+	DynArray<LuxShaderLayout_t>				CShadersLayouts;
+
+	// VkCommandPool							commandPool;
+	VkCommandPool							commandPool = nullptr;
+	Map<LuxShader_t, uint32>				CShaders;
+	DynArray<VkCommandBuffer>				CShadersCBs;
+
+	FenceDE									addShaderFence;
+	// LuxShader								clearShader;
+	LuxShader								clearShader = 0;
 
 
 
@@ -38,24 +50,26 @@ namespace lux::core::c::shaders{
 
 	//TODO FIX ARRAY: IT'S WHAT GENERATES ALL THE ERRORS
 
-	void preInit( ){
-		// shaderPath.String::String( );
-		// CRenderSpaces.Map::Map( );
-		// CShadersLayouts.DynArray::DynArray( );
-		shaderPath = String( );
-		CRenderSpaces = Map<lux::obj::RenderSpace2D*, uint32>( );
-		CShadersLayouts = DynArray<LuxShaderLayout_t>( );
+	// // void preInit( ){
+	// AutoInit(LUX_H_CSHADER){
+	// 	// shaderPath.String::String( );
+	// 	// CRenderSpaces.Map::Map( );
+	// 	// CShadersLayouts.DynArray::DynArray( );
+
+		// shaderPath = String( );
+		// CRenderSpaces = Map<lux::obj::RenderSpace2D*, uint32>( );
+		// CShadersLayouts = DynArray<LuxShaderLayout_t>( );
 
 		// CShaders.Map::Map( );
 		// CShadersCBs.DynArray::DynArray( );
-		commandPool = nullptr;
-		CShaders = Map<LuxShader_t, uint32>( );
-		CShadersCBs = DynArray<VkCommandBuffer>( );
+		// commandPool = nullptr;
+		// CShaders = Map<LuxShader_t, uint32>( );
+		// CShadersCBs = DynArray<VkCommandBuffer>( );
 
-		// addShaderFence.FenceDE::FenceDE( );
-		addShaderFence = FenceDE( );
-		clearShader = 0;
-	}
+		// // addShaderFence.FenceDE::FenceDE( );
+		// addShaderFence = FenceDE( );
+		// clearShader = 0;
+	// }
 
 
 
