@@ -91,8 +91,8 @@ namespace lux::thr{
 
 
 #include <stdlib.h>
-#define HH
-AutoInit(HH){
+#define LUX_H_INIT_CORE
+AutoInit(LUX_H_INIT_CORE){
 	putenv("VK_LAYER_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
 	putenv("LD_LIBRARY_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/lib");
 }
