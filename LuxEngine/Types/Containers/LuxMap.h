@@ -185,7 +185,16 @@ namespace lux {
 
 		//Use the isValid() function to check if the element can be used or has been deleted
 		inline type& operator[](const iter vIndex) const {
-			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > count( ), vIndex, "Index is out of range");
+			//FIXME
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); 
+			// param_error_2(vIndex > count( ), vIndex, "Index is out of range");
+			if(vIndex >= count( )) {																								
+				Failure printf("Error in function %s, line %d:", __FUNCTION__, __LINE__);								
+				Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\".\n", vIndex, __FUNCTION__);	
+				Failure printf("Index cannot be negative");																			
+				lux::out::__stop__();																					
+			}																											
+
 			return __lp_Data(vIndex);
 		}
 
