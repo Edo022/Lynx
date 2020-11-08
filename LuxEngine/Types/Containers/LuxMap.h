@@ -185,7 +185,7 @@ namespace lux {
 
 		//Use the isValid() function to check if the element can be used or has been deleted
 		inline type& operator[](const iter vIndex) const {
-			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > count( ), vIndex, "Index is out of range");
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > count( ) - 1, vIndex, "Index is out of range");
 			return __lp_Data(vIndex);
 		}
 

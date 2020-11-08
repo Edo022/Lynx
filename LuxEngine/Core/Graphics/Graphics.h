@@ -47,15 +47,15 @@ namespace lux::core::g{
 	uint32		findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
 	luxDebug(static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-			Failure printf("\nValidation layer error: ");
+			Failure printf("Validation layer error: ");
 		}
 		else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-			Warning printf("\nValidation layer warning: ");
+			Warning printf("Validation layer warning: ");
 		}
 		else{
-			Normal printf("\nValidation layer info: ");
+			Normal printf("Validation layer info: ");
 		}
-		printf("%s", pCallbackData->pMessage); Normal;
+		printf("%s", pCallbackData->pMessage); NormalNoNl;
 		return VK_FALSE;
 	})
 }

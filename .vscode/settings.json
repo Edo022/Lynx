@@ -68,7 +68,14 @@
         "forward_list": "cpp",
         "ranges": "cpp",
         "regex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "strstream": "cpp",
+        "bitset": "cpp",
+        "compare": "cpp",
+        "complex": "cpp",
+        "concepts": "cpp",
+        "cfenv": "cpp",
+        "typeindex": "cpp"
     },
     "todo-tree.general.tagGroups": {
         "FIXME": [

@@ -19,6 +19,7 @@ template<class ta, class tb>						static inline constexpr void swapVar(ta a, tb 
 //Console output
 #include "deps/TermColor.hpp"
 #define Normal				std::cout<<termcolor::white		<< '\n';
+#define NormalNoNl			std::cout<<termcolor::white;
 #define Success				std::cout<<termcolor::green		<< '\n';
 #define SuccessNoNl			std::cout<<termcolor::green;
 #define Main				std::cout<<termcolor::magenta	<< '\n';
