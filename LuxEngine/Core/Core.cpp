@@ -65,6 +65,8 @@ namespace lux::core{
 
 	AutoInit(LUX_H_CORE){
 		validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
+		// validationLayers[0] =			{ "VK_LAYER_LUNARG_standard_validation" };
+		// validationLayers[0] =			{ "VkLayer_khronos_validation" };
 		requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
