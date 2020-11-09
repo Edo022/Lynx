@@ -7,6 +7,8 @@
 
 //TODO real time indicator in nodes that changed based on the execution time of the node (runtime, compile time, one time runtime...)
 
+//TODO implement a real output console
+
 namespace lux::out{
 	//Prints an error in the console
 	//*   pMessage    | the error message

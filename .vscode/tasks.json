@@ -74,6 +74,10 @@
 					"LuxEngine/Core/Graphics/*.cpp",
 					"LuxEngine/Core/Input/*.cpp",
 
+					"LuxEngine/Core/StartCore.cpp",
+
+
+					
 					//User defined units
 					"Test.cpp",
 

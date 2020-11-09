@@ -155,7 +155,7 @@ namespace lux::core{
 			std::thread renderThr(&run, useVSync, 45);
 			running = true;
 
-			while(!initialized) sleep(10);
+			// while(!initialized) sleep(10);
 			//renderThr.detach( );
 			renderThr.join( );
 		}

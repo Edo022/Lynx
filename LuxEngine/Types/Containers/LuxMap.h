@@ -185,16 +185,7 @@ namespace lux {
 
 		//Use the isValid() function to check if the element can be used or has been deleted
 		inline type& operator[](const iter vIndex) const {
-			//FIXME
-			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); 
-			// param_error_2(vIndex > count( ), vIndex, "Index is out of range");
-			if(vIndex >= count( )) {																								
-				Failure printf("Error in function %s, line %d:", __FUNCTION__, __LINE__);								
-				Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\".\n", vIndex, __FUNCTION__);	
-				Failure printf("Index cannot be negative");																			
-				lux::out::__stop__();																					
-			}																											
-
+			param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex >= count( ), vIndex, "Index is out of range");
 			return __lp_Data(vIndex);
 		}
 
@@ -204,7 +195,8 @@ namespace lux {
 		}
 
 
-
+//TODO add function to send multiple functions to the thread pool to allow them to be execute simultaneously
+//TODO while preventing their threads to go in deadlock if synchronized
 
 		// Size ---------------------------------------------------------------------------------------------------------------- //
 

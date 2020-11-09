@@ -26,7 +26,7 @@
 
 
 #define LUH_H_TEST_TU
-PostInitializer(LUH_H_TEST_TU);
+// PostInitializer(LUH_H_TEST_TU);
 
 
 

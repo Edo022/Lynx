@@ -1,13 +1,10 @@
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-#include "LuxEngine/Memory/Ram/Memory.h"
-#include "LuxEngine/Memory/Gpu/VMemory.h"
-#include "LuxEngine/System/System.h"
-#include "LuxEngine/Threads/ThreadPool.h"
 
 
 
 
 //Initialize RAM memory pool
+#include "LuxEngine/Memory/Ram/Memory.h"
 namespace lux::ram{
 	MemBufferType* buffers;
 	uint32 allocated;
@@ -28,6 +25,7 @@ namespace lux::ram{
 
 
 //Initialize GPU memory pool
+#include "LuxEngine/Memory/Gpu/VMemory.h"
 namespace lux::rem{
 	uint32 maxAlloc;
 	MemBufferType* buffers;
@@ -40,6 +38,7 @@ namespace lux::rem{
 
 
 //Initialize system 
+#include "LuxEngine/System/System.h"
 namespace lux::sys{
 	String dir::thisDir;	//Path to the current directory //Initialized in init function
 
@@ -57,6 +56,7 @@ namespace lux::sys{
 
 
 //Initialize thread pool
+#include "LuxEngine/Threads/ThreadPool.h"
 namespace lux::thr{
 	FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
 	#ifdef _WIN64
@@ -90,9 +90,24 @@ namespace lux::thr{
 }
 
 
-#include <stdlib.h>
 #define LUX_H_INIT_CORE
+#include <stdlib.h>
+// #include "LuxEngine/Core/Core.h"
 AutoInit(LUX_H_INIT_CORE){
-	putenv("VK_LAYER_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wwrite-strings"
+	putenv(  "VK_LAYER_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
+	// putenv("LD_LIBRARY_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/lib/libVkLayer_khronos_validation.so");
 	putenv("LD_LIBRARY_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/lib");
+	#pragma GCC diagnostic pop
 }
+
+
+
+// #include "LuxEngine/Core/Core.h"
+// namespace lux::core{
+// 	struct PreInitializer{ PreInitializer( ){ lux::core::preInit( ); } };
+// 	struct PostInitializer{ PostInitializer( ){ lux::core::init(false); } };
+// 	//TODO this probably depends on the link order
+// 	extern PreInitializer luxPreInitializer; //This variable is used to inizialize the engine before any other variable or function call
+// }
