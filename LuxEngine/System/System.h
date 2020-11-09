@@ -28,7 +28,7 @@
 #elif defined __linux__												//Linux
 #	include <unistd.h>													//  DIR | For getcwd()
 #	define __lp_get_cwd getcwd											//  DIR | Get current working directory
-#	define __lp_get_nopt(n) sysconf(n = _SC_NPROCESSORS_ONLN);			//  THR | Get nuber of physical threads
+#	define __lp_get_nopt(n) n = std::thread::hardware_concurrency();	//  THR | Get nuber of physical threads
 #	include <pthread.h>													//  THR | For SuspendThread() and ResumeThread()
 #	include <signal.h>													//  THR | For SuspendThread() and ResumeThread()
 #	define __lp_suspend_thr(th) pthread_kill(th, SIGSTOP)				//  THR | Function to suspend a thread

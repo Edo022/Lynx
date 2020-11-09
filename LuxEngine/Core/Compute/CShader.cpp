@@ -193,8 +193,10 @@ namespace lux::core::c::shaders{
 			CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
 				.sType{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO },		//Set structure type
 				.stage{ VK_SHADER_STAGE_COMPUTE_BIT },								//Use it in the compute stage
+				#ifndef __INTELLISENSE__ //Intellisense sees "module" as the C++ module keyword
 				.module{ CShadersLayouts[vRenderShader].shaderModule },				//Set shader module
 				.pName{ "main" },													//Set the main function as entry point
+				#endif
 			};
 
 

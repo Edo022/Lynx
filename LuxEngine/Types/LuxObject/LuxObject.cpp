@@ -48,6 +48,7 @@ namespace lux::obj{
 
 	//In debug mode, setMinLim and setMaxLim functions of non debug objects also update the debug border
 	#ifdef LUX_DEBUG
+	//TODO set debug border only in debug mode
 	void Base2D::setMinLim(vec2f32 vMinLim){
 		minLim = vMinLim;
 		if(!debug){

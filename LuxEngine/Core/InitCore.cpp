@@ -76,6 +76,8 @@ namespace lux::thr{
 
 
 	AutoInit(LUX_H_THREAD_POOL){
+		//TODO remove useless debug junk
+		int h = LUX_CNF_GLOBAL_THREAD_POOL_SIZE;
 		threads = DynArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.clear();
 
