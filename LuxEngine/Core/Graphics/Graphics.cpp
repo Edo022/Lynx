@@ -257,9 +257,13 @@ namespace lux::core::g{
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
 			for(uint32 i = 0; i < objUpdates2D.count( ); i++){
 				objUpdates2D[i]->render.updated = true;
+				//TODO remove debug junk
+				if(objUpdates2D[i]->common.objectType > 0) objUpdates2D[i]->getCellSize( );
 				vkCmdUpdateBuffer(
 					cb, objUpdates2D[i]->render.localData->buffer->buffer,
 					rem::getCellOffset(objUpdates2D[i]->render.localData),
+					//TODO test if this works with a normal program
+					//BUG
 					objUpdates2D[i]->getCellSize( ),
 					(void*)objUpdates2D[i]->render.data
 				);

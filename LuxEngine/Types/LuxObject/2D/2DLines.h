@@ -53,7 +53,7 @@ namespace lux::obj {
 		}
 
 
-		//TODO calculate offset and cell count at runtime with an everything array
+		//TODO calculate offset and cell count at runtime
 		inline int32 getCellSize( ) const final override { return 60; }
 
 		//TODO add loca-global-other coordinate system and convertions

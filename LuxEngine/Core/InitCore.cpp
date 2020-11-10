@@ -98,9 +98,10 @@ namespace lux::thr{
 AutoInit(LUX_H_INIT_CORE){
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
-	putenv(  "VK_LAYER_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
-	// putenv("LD_LIBRARY_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/lib/libVkLayer_khronos_validation.so");
-	putenv("LD_LIBRARY_PATH=deps/Vulkan_1.2.154.0_linux/x86_64/lib");
+	//FIXME use the "libVkLayer_khronos_validation.so" library in the deps folder. Not the one in the default lib location
+	//FIXME "LD_LIBRARY_PATH" env variables doesn't work
+	putenv(  "VK_LAYER_PATH=./deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
+	putenv("LD_LIBRARY_PATH=./deps/Vulkan_1.2.154.0_linux/x86_64/lib");
 	#pragma GCC diagnostic pop
 }
 
