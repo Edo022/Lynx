@@ -216,10 +216,11 @@ namespace lux::core{
 
 	void mainLoop( ) {
 		//FIXME fix
-		#ifdef _WIN64
-		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  User input"));
-		#elif defined __linux__
-		#endif
+		// #ifdef _WIN64
+		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  User input"));
+		// #elif defined __linux__
+		// #endif
+		luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
 		std::thread FPSCounterThr(&runFPSCounterThr);		FPSCounterThr.detach( );
 		std::thread renderThr(&runRenderThr);				renderThr.detach( );
 		initialized = true;
@@ -234,10 +235,11 @@ namespace lux::core{
 
 	void runRenderThr( ) {
 		//FIXME fix
-		#ifdef _WIN64
-		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  Render"));
-		#elif defined __linux__
-		#endif
+		// #ifdef _WIN64
+		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  Render"));
+		// #elif defined __linux__
+		// #endif
+		luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
 		while(running) {
 			g::drawFrame( );
 			//TODO it does nothing but it's probably important, somehow. dunno
@@ -251,10 +253,11 @@ namespace lux::core{
 	//TODO add FPS limit
 	void runFPSCounterThr( ) {
 		//FIXME fix
-		#ifdef _WIN64
-		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  FPS counter"));
-		#elif defined __linux__
-		#endif
+		// #ifdef _WIN64
+		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  FPS counter"));
+		// #elif defined __linux__
+		// #endif
+		luxDebug(pthread_setname_np(pthread_self(), "Lux | FPS"));
 		while(running) {
 			static int delay = 1000;
 			sleep(delay);

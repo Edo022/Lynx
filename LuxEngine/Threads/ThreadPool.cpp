@@ -2,6 +2,8 @@
 #include "LuxEngine/Threads/ThreadPool.h"
 #include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
+#include <stdlib.h>
+
 
 //TODO "so that whatever file is being initialized, the execution get caught by the post initializer and it inizializes everything the engine needs"
 
@@ -72,21 +74,24 @@ namespace lux::thr {
 
 	// void __lp_thr_loop(const uint32 vThrIndex) {
 	void* __lp_thr_loop(void* vThrIndex) {
-		#ifdef _WIN64
-		{ //Set thread name for debugging
-			// #pragma warning( disable:4996 )
-			luxDebug(String ThrNum = "\0 2 4 6 8 0");
-			luxDebug(String thrNumStrL = 
-			_itoa(vThrIndex, ThrNum.begin( ), 10));
-			luxDebug(String thrName = "\tLuxEngine  |  GTP ");
-			luxDebug(thrName += thrNumStrL);
-			luxDebug(wchar_t lthn[100]);
-			luxDebug(mbstowcs(lthn, thrName.begin( ), thrName.count( ) + 1));
-			luxDebug(SetThreadDescription(GetCurrentThread( ), lthn));
-			// #pragma warning( default:4996 )
-		}
-		#elif defined __linux__
-		#endif
+		// #ifdef _WIN64
+		// { //Set thread name for debugging
+		// 	// #pragma warning( disable:4996 )
+		// 	luxDebug(String ThrNum = "\0 2 4 6 8 0");
+		// 	luxDebug(String thrNumStrL = 
+		// 	_itoa(vThrIndex, ThrNum.begin( ), 10));
+		// 	luxDebug(String thrName = "\tLuxEngine  |  GTP ");
+		// 	luxDebug(thrName += thrNumStrL);
+		// 	luxDebug(wchar_t lthn[100]);
+		// 	luxDebug(mbstowcs(lthn, thrName.begin( ), thrName.count( ) + 1));
+		// 	luxDebug(SetThreadDescription(GetCurrentThread( ), lthn));
+		// 	// #pragma warning( default:4996 )
+		// }
+		// #elif defined __linux__
+		// #endif
+		//TODO add + operators with integers and float values for lux strings
+		//FIXME add thread number in thread name
+		luxDebug(pthread_setname_np(pthread_self(), "Lux | GTP "));
 
 		// __lp_suspend_thr(__lp_get_thr( ));
 		while(true) sleep(10);
@@ -110,10 +115,12 @@ namespace lux::thr {
 
 
 	void __lp_thr_mng( ) {
-		#ifdef _WIN64
-		luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  GTP MNG"));
-		#elif defined __linux__
-		#endif
+		// #ifdef _WIN64
+		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  GTP MNG"));
+		// #elif defined __linux__
+		// #endif
+		luxDebug(pthread_setname_np(pthread_self(), "Lux | GTP Mng"));
+
 		// __lp_suspend_thr(__lp_get_thr( ));
 		pthread_kill(pthread_self(), SIGSTOP);
 
