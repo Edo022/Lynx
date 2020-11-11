@@ -29,13 +29,13 @@ namespace lux::out{
 
 
 	void __stop__( ){
-		lux::core::running = false;
+		// lux::core::running = false;
 
 		//TODO fix
 		#ifdef _WIN64
 		throw std::exception("UwU");
 		#elif defined __linux__
-		throw std::out_of_range("UwU");
+		// throw std::out_of_range("UwU");
 		#endif
 	}
 }

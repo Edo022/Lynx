@@ -248,25 +248,43 @@ namespace lux::core::g{
 		glfwSwapBuffers(wnd::window);
 
 
+		//TODO fences
+		//calls      |                    A----.                   |    void A(){                 |   void B(){
+		//           |      A  B---.  B  B  B  | B----.            |        fence.startFirst();   |       fence.startSecond();
+		//           |      |      |  |  |  |  |      |            |        ...                   |       ...
+		//unordered  |      AAAAAA-BB-BB-BB-BB-AAAAAA-BB           |        fence.endFirst();     |       fence.endSecond();
+		//ordered    |      AAAAAA-BB----------AAAAAA-BB           |    }                         |   }
+		//once		 |      AAAAAA-BB-------------------           |                              |
+		//           |                                             |                              |
+		//           -----------------------------------> t        |                              |
+
 
 
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
 		if(objUpdates2D.count( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
+			usleep(1000*1000);
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
-			for(uint32 i = 0; i < objUpdates2D.count( ); i++){
+			for(uint32 i = 0; i < objUpdates2D.count( ); i++){ //BUG found ya
 				objUpdates2D[i]->render.updated = true;
 				//TODO remove debug junk
-				if(objUpdates2D[i]->common.objectType > 0) objUpdates2D[i]->getCellSize( );
-				vkCmdUpdateBuffer(
-					cb, objUpdates2D[i]->render.localData->buffer->buffer,
-					rem::getCellOffset(objUpdates2D[i]->render.localData),
-					//TODO test if this works with a normal program
-					//BUG
-					objUpdates2D[i]->getCellSize( ),
-					(void*)objUpdates2D[i]->render.data
-				);
+				//TODO add check. maybe. idk
+				//if(objUpdates2D[i]->common.objectType > 0)
+				// try{
+					vkCmdUpdateBuffer(
+						cb, objUpdates2D[i]->render.localData->buffer->buffer,
+						rem::getCellOffset(objUpdates2D[i]->render.localData),
+						//TODO test if this works with a normal program
+						//BUG
+						//BUG THE BUG ONLY OCCURS WITH THE FIRST OR SECOND 2D_LINE OBJECT UPDATED
+						//BUG AND ONLY WHEN THE OTHER SYNCHRONIZED THREAD ENDS ITS FENCE
+						//BUG PART OF THE VTABLE IS MODIFIED BY SOME THREAD. BUT JUST THE FIRST 2 BYTES
+						objUpdates2D[i]->getCellSize( ),
+						(void*)objUpdates2D[i]->render.data
+					);
+				// }
+				// catch(...){}
 			}
 			core::g::cmd::endSingleTimeCommands(cb);
 			//objUpdates2D.resize(0);

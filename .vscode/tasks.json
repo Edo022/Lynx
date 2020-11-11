@@ -77,14 +77,14 @@
 					"LuxEngine/Core/StartCore.cpp",
 
 
-					
+
 					//User defined units
 					"Test.cpp",
 
 
 				//Def
 					// "-g",               //Default debug infos
-					"-g3",               //Max debug infos
+					"-ggdb3",           //Max debug infos
 					"-O0",              //No optimizations
 					"-std=c++2a",       //C++20
 					"-mavx",            //AVX2

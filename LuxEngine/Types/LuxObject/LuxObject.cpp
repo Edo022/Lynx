@@ -39,14 +39,19 @@ namespace lux::obj{
 		if(render.updated){
 			render.updated = false;
 			core::g::objUpdates2D.add(this);
+			sleep(500);
+			int hfrewfvgrefre = 0;
 		}
+		sleep(500);
 		core::g::pendingObjectUpdatesFence.endSecond( );
+		sleep(500);
+		sleep(500);
 	}
 
 
 
 
-	//In debug mode, setMinLim and setMaxLim functions of non debug objects also update the debug border
+	//In debug mode, setMinLim and setMaxLim functions of non debug objects and update the debug border
 	#ifdef LUX_DEBUG
 	//TODO set debug border only in debug mode
 	void Base2D::setMinLim(vec2f32 vMinLim){

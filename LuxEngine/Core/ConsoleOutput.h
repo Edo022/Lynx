@@ -27,13 +27,16 @@ namespace lux::out{
 			lux::out::__stop__();														\
 		}																				\
 	)
-	#define param_error_2(condition, param, ...) luxDebug(															\
-		if(condition) {																								\
-			Failure printf("Error in file %s,\nFunction %s, line %d:", __FILE__, __FUNCTION__, __LINE__);								\
-			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\".", #param, __FUNCTION__);	\
-			Failure printf(__VA_ARGS__);																			\
-			lux::out::__stop__();																					\
-		}																											\
+	#define param_error_2(condition, param, ...) luxDebug(																			\
+		if(condition) {																												\
+			/*Failure printf("Error in file %s, function %s, line %d:", __FILE__, __FUNCTION__, __LINE__);*/						\
+			/*Failure printf("Error in file %s, function %s, line %d:", __FILE__, __builtin_FUNCTION(), __LINE__);*/				\
+			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);											\
+			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
+			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\": %s\n", #param, __FUNCTION__, __VA_ARGS__);	\
+			/* Failure printf(__VA_ARGS__);*/																						\
+			lux::out::__stop__();																									\
+		}																															\
 	)
 	#define ptr_validity(ptr, __type, ...) { luxDebug(						\
 		if(ptr){															\

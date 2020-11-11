@@ -249,7 +249,7 @@ namespace lux::core{
 	}
 
 
-
+// #include "LuxEngine/Core/Graphics/Graphics.h"
 	//TODO add FPS limit
 	void runFPSCounterThr( ) {
 		//FIXME fix
@@ -258,13 +258,24 @@ namespace lux::core{
 		// #elif defined __linux__
 		// #endif
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | FPS"));
-		while(running) {
-			static int delay = 1000;
-			sleep(delay);
-			FPS = frames * (1000 / delay);
-			frames = 0;
-			printf("FPS: %lf\n", FPS);
+
+		//TODO remove debug junk
+		int last = lux::core::g::objUpdates2D.count();
+		while(true){
+			if(lux::core::g::objUpdates2D.count() != last) {
+				last = lux::core::g::objUpdates2D.count();
+				// throw(std::out_of_range("changed"));
+			}
 		}
+
+
+		// while(running) {
+		// 	static int delay = 1000;
+		// 	sleep(delay);
+		// 	FPS = frames * (1000 / delay);
+		// 	frames = 0;
+		// 	printf("FPS: %lf\n", FPS);
+		// }
 	}
 }
 
