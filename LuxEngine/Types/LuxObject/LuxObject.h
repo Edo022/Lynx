@@ -82,7 +82,8 @@ namespace lux{
 				bool updated{ true };
 				rem::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
 			} render;
-			inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
+			// inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
+			int32 cellSize = 0;
 			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -
 			void allocate( );									//Allocates a memory cell for the object data				| object type				| -
 			void updateBase( );

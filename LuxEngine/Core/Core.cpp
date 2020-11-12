@@ -147,6 +147,7 @@ namespace lux::core{
 
 
 	//Initializes the Lux namespace
+	//TODO fix comment
 	//Don't call this function. Use LuxInit( ) instead
 	void init(bool useVSync) {
 		static bool once = true;

@@ -64,22 +64,13 @@ void hg(lux::DynArray<uint16>){
 
 
 
+void runArrayTest();
+
 int main( ) {
-	//LuxInit(false);
-	////#define n multipleOf(4200,32)
-	//#define n 5
-	//lux::ram::ptr<char> p0 = lux::ram::allocBck(n, lux::CellClass::AUTO);
-	//*p0 = 'h';
-	//++p0;
-	//*p0 = 'a';
-	//*(p0+1) = 'a'; *(p0+2) = 'i'; *(p0+3) = '\0';
-
-	////TODO fix misalignment with ++ operator
-	//lux::ram::ptr<char> p1 = lux::ram::allocBck(n, lux::CellClass::AUTO);
-
-	//lux::mem::cpy(p0 - 1, p1, n, LUX_FALSE);
-	//printf("%s", p1.cell->address);
-	//return 0;
+	// //TODO remove debug junk ..
+	// 	runArrayTest();
+	// 	return 0;
+	// //TODO remove debug junk ^^
 
 
 
@@ -103,6 +94,7 @@ int main( ) {
 		lux::obj::addRenderSpace(&renderSpace);
 	}
 
+	// sleep(5000);
 
 	lux::input::InputState inputStateTest({
 		lux::input::KeySequence{ LUX_KEY_W | lux::input::LuxKeyState::LUX_PRESS, hg },
@@ -160,3 +152,17 @@ int main( ) {
 
 
 
+
+
+
+
+
+
+
+
+
+// void runArrayTest(){
+// 	lux::DynArray<int> a;
+
+	
+// }

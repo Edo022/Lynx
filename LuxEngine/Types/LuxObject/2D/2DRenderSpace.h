@@ -51,7 +51,8 @@ namespace lux::obj {
 		bool addChild(Base2D* pObject);
 		bool setChildLimits(const uint32 vChildIndex) const final override;
 
-		inline int32 getCellSize( ) const final override { return 0; }
+		//! 0 BY DEFAULT
+		// inline int32 getCellSize( ) const final override { return 0; }
 	};
 }
 //TODO add 3d render space

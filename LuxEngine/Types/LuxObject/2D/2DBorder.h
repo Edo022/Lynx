@@ -24,6 +24,6 @@ namespace lux::obj{
 
 
 		//TODO calculate offset and cell count at runtime with an everything array
-		inline int32 getCellSize( ) const final override { return 40; }
+		// inline int32 getCellSize( ) const final override { return 40; }
 	};
 }

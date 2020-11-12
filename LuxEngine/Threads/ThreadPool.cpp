@@ -78,7 +78,7 @@ namespace lux::thr {
 		// { //Set thread name for debugging
 		// 	// #pragma warning( disable:4996 )
 		// 	luxDebug(String ThrNum = "\0 2 4 6 8 0");
-		// 	luxDebug(String thrNumStrL = 
+		// 	luxDebug(String thrNumStrL =
 		// 	_itoa(vThrIndex, ThrNum.begin( ), 10));
 		// 	luxDebug(String thrName = "\tLuxEngine  |  GTP ");
 		// 	luxDebug(thrName += thrNumStrL);
@@ -149,20 +149,21 @@ namespace lux::thr {
 
 
 	void init( ) {
-		for(uint32 i = 0; i < threads.count( ); ++i){					//For each thread
-			// threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
-			pthread_create(&threads[i].thr, nullptr, __lp_thr_loop, new int(i));
+		//TODO UNCOMMENT
+		// for(uint32 i = 0; i < threads.count( ); ++i){					//For each thread
+		// 	// threads[i].thr = new std::thread(__lp_thr_loop, i);			//Initialize it with the thread loop function
+		// 	pthread_create(&threads[i].thr, nullptr, __lp_thr_loop, new int(i));
 
-			thrStates.add(ThrState::FREE);								//Add an element to the states Map. A Map is used to improve the performance by avoiding to search for a free thread
-			//Suspended in function
-		}
-		for(uint32 i = 0; i < threads.count( ); ++i){ thrStates.remove(i); }		//Remove all the elements of the states map (the map will remain the same count but it will have n free items)
-		std::thread mngThrv(__lp_thr_mng); 										//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
-		#ifdef _WIN64
-		DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);
-		#elif defined __linux__
-		mngThr = mngThrv.native_handle( );
-		#endif
-		mngThrv.detach( );
+		// 	thrStates.add(ThrState::FREE);								//Add an element to the states Map. A Map is used to improve the performance by avoiding to search for a free thread
+		// 	//Suspended in function
+		// }
+		// for(uint32 i = 0; i < threads.count( ); ++i){ thrStates.remove(i); }		//Remove all the elements of the states map (the map will remain the same count but it will have n free items)
+		// std::thread mngThrv(__lp_thr_mng); 										//Start mng thread and duplicate the handle (a thread handle becomes invalid when detached)
+		// #ifdef _WIN64
+		// DuplicateHandle(GetCurrentProcess( ), mngThrv.native_handle( ), GetCurrentProcess( ), &mngThr, DUPLICATE_SAME_ACCESS, 0, 0);
+		// #elif defined __linux__
+		// mngThr = mngThrv.native_handle( );
+		// #endif
+		// mngThrv.detach( );
 	}
 }

@@ -264,9 +264,13 @@ namespace lux::core::g{
 		//Fix objects update requests
 		if(objUpdates2D.count( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
-			usleep(1000*1000);
+			// sleep(500);
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
+			// sleep(500);
+			// sleep(500);
+			// sleep(500);
 			for(uint32 i = 0; i < objUpdates2D.count( ); i++){ //BUG found ya
+			// sleep(500);
 				objUpdates2D[i]->render.updated = true;
 				//TODO remove debug junk
 				//TODO add check. maybe. idk
@@ -280,7 +284,8 @@ namespace lux::core::g{
 						//BUG THE BUG ONLY OCCURS WITH THE FIRST OR SECOND 2D_LINE OBJECT UPDATED
 						//BUG AND ONLY WHEN THE OTHER SYNCHRONIZED THREAD ENDS ITS FENCE
 						//BUG PART OF THE VTABLE IS MODIFIED BY SOME THREAD. BUT JUST THE FIRST 2 BYTES
-						objUpdates2D[i]->getCellSize( ),
+						// objUpdates2D[i]->getCellSize( ),
+						objUpdates2D[i]->cellSize,
 						(void*)objUpdates2D[i]->render.data
 					);
 				// }
