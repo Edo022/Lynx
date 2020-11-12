@@ -69,11 +69,13 @@ void runArrayTest();
 int main( ) {
 	// //TODO remove debug junk ..
 		runArrayTest();
-		return 0;
+		// return 0;
 	// //TODO remove debug junk ^^
 
 
 
+	//BUG THOSE VARIABLES ARE PROBABLY THE CAUSE OF ALL THE BUGS
+	//BUG THEY GET DESTROYED WHEN THEY GO OUT OF SCOPE BUT THE POINTER IN THE HEAP REMAINS
 	{
 		//TODO automatize object search //TODO wtf does this mean
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
@@ -91,7 +93,7 @@ int main( ) {
 			100, 200
 		};
 		renderSpace.addChild(&lineTest2);
-		lux::obj::addRenderSpace(&renderSpace);
+		lux::obj::addRenderSpace(new lux::obj::RenderSpace2D(renderSpace));
 	}
 
 	// sleep(5000);

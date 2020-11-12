@@ -45,27 +45,27 @@ namespace lux::ram{
 
 
 	//TODO use offset as constant instead of literal
+	//!OK
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass) {
-		//Check AT_LEAST values. Set class to AUTO if it's too small. If it fits, assign it the normal class value
-		if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {
-			if((uint32)pClass < vSize) pClass = CellClass::AUTO;
-			else pClass = (CellClass)((uint64)pClass - 1);
+		if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
+			if(vSize > ((uint32)pClass - 1)) pClass = CellClass::AUTO;				//If the class is too small, set it to AUTO
+			else pClass = (CellClass)((uint64)pClass - 1);							//If it's large enough, assign the normal class value
 		}
-		//Choose cell class if it's AUTO
-		if(pClass == CellClass::AUTO) { [[likely]]
-			/**/ if(vSize <= (uint32)CellClass::CLASS_A) [[likely]] pClass = CellClass::CLASS_A;
-			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]] pClass = CellClass::CLASS_B;
-			else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]] pClass = CellClass::CLASS_C;
-			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] pClass = CellClass::CLASS_D;
-			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] pClass = CellClass::CLASS_Q;
-			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] pClass = CellClass::CLASS_L;
-			else										 pClass = CellClass::CLASS_0;
+		if(pClass == CellClass::AUTO) { [[likely]]								//Choose cell class if it's AUTO
+			/**/ if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]		pClass = CellClass::CLASS_A;
+			else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]]		pClass = CellClass::CLASS_B;
+			else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]]		pClass = CellClass::CLASS_C;
+			else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]]	pClass = CellClass::CLASS_D;
+			else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]]	pClass = CellClass::CLASS_Q;
+			else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]]	pClass = CellClass::CLASS_L;
+			else														pClass = CellClass::CLASS_0;
 		}
 
 		param_error_2(vSize > 0xFFFFffff, vSize, "Cell size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", vSize);
 		param_error_2((uint32)pClass < vSize, pClass,
 			"Requested %lu-bytes class for %llu-bytes allocation. The cell class must be large enought to contain the cell. %s",
-			(uint32)pClass, vSize, "Use lux::CellClass::AUTO to automatically choose it");
+			(uint32)pClass, vSize, "Use lux::CellClass::AUTO to automatically choose it"
+		);
 	}
 
 

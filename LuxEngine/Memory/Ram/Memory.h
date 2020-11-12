@@ -76,12 +76,13 @@
 
 
 
-#pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
+// #pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
 namespace lux::ram{
 	extern MemBufferType* buffers;	//Allocated buffers
 	extern uint32 allocated;			//TODO remove
 
 
+	//!
 	Cell_t* alloc_internal(const uint64 vSize, const CellClass vClass = CellClass::AUTO);
 	inline Cell_t* alloc_call(const uint64 vSize, CellClass vClass = CellClass::AUTO){
 		//The count cannot be zero. If it is, allocate 1 byte and set the count variable back to zero
@@ -174,14 +175,15 @@ namespace lux::ram{
 	//e.g.   lux::ram::ptr<float> p = lux::ram::allocArr<float>(sizeof(float), 8, 3.14159f);
 	//You need to specify the type when calling this function
 	//If you don't, the elements will remain uninitialized
+	//!OK
 	template<class type> inline ptr<type> allocArr(uint64 vSize, const uint64 vNum, const type& pValue, CellClass vClass = CellClass::AUTO){
 		uint64 size = vSize * vNum;
 		evaluateCellClass(size, vClass);
-		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));
-		Cell_t* cell = ram::alloc_call(size, vClass);
-		init_memory<type>(cell->address, size, pValue);
+		//TODO add debug warning if this happens
+		if(vClass == CellClass::CLASS_0) size = multipleOf(size, sizeof(type));		//If the class is a dedicated buffer, align the size to a multiple of the type size
+		Cell_t* cell = ram::alloc_call(size, vClass);								//Allocate the memory
+		init_memory<type>(cell->address, size, pValue);								//Initialize the memory
 		return cell;
-
 	}
 
 	//Allocates a block of memory containing <vNum> <vSize>-bytes elements and calls the default constructor of each element
@@ -290,5 +292,5 @@ namespace lux::ram{
 	void init( );
 	void breakMemoryPool( );
 }
-#pragma warning( default : 4227 )
+// #pragma warning( default : 4227 )
 #endif
