@@ -1,8 +1,8 @@
 ﻿
-#include "LuxEngine/Core/Graphics/GSwapchain.h"
-#include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Core/Devices.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Devices.hpp"
+#include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
 

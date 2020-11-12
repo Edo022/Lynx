@@ -1,6 +1,6 @@
-#include "LuxEngine/Core/Core.h"
-#include "LuxEngine/Core/Compute/CBuffers.h"
-#include "LuxEngine/Core/Graphics/GCommands.h"
+#include "LuxEngine/Core/Core.hpp"
+#include "LuxEngine/Core/Compute/CBuffers.hpp"
+#include "LuxEngine/Core/Graphics/GCommands.hpp"
 
 
 

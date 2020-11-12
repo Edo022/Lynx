@@ -1,6 +1,6 @@
 
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
+#include "LuxEngine/Core/Core.hpp"
 
 
 

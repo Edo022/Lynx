@@ -1,5 +1,5 @@
-#include "LuxEngine/Core/Core.h"
-#include "LuxEngine/Core/ConsoleOutput.h"
+#include "LuxEngine/Core/Core.hpp"
+#include "LuxEngine/Core/ConsoleOutput.hpp"
 #include <exception>
 
 

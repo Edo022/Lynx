@@ -1,5 +1,5 @@
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/Core.hpp"
 
 #define LUX_NH_START_CORE
 namespace lux::core{

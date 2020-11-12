@@ -1,10 +1,10 @@
 
-#include "LuxEngine/Core/Core.h"
-#include "LuxEngine/Core/Graphics/Window.h"
-#include "LuxEngine/Core/Input/Input.h"
-#include "LuxEngine/Types/Containers/LuxMap.h"
-#include "LuxEngine/Memory/Gpu/VMemory.h"
-#include "LuxEngine/Core/ConsoleOutput.h"
+#include "LuxEngine/Core/Core.hpp"
+#include "LuxEngine/Core/Graphics/Window.hpp"
+#include "LuxEngine/Core/Input/Input.hpp"
+#include "LuxEngine/Types/Containers/LuxMap.hpp"
+#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/ConsoleOutput.hpp"
 //#include "LuxEngine/Core/Core.h"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 

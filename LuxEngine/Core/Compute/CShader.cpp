@@ -1,5 +1,5 @@
-#include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
@@ -19,6 +19,7 @@
 
 
 namespace lux::core::c::shaders{
+	String									shaderPath;
 	Map<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
 	DynArray<LuxShaderLayout_t>				CShadersLayouts;
 

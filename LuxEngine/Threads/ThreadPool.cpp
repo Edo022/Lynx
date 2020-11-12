@@ -1,6 +1,6 @@
 
-#include "LuxEngine/Threads/ThreadPool.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Threads/ThreadPool.hpp"
+#include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include <stdlib.h>
 

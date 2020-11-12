@@ -10,15 +10,15 @@
 //TODO limit vector types to float, double, int32, uint32
 
 #include <time.h>
-#include "LuxEngine/macros.h"
-#include "LuxEngine/Core/Input/Input.h"
-#include "LuxEngine/LuxEngine.h"
-#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
-#include "LuxEngine/Types/LuxObject/2D/2DBorder.h"
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.h"
-#include "LuxEngine/Threads/ThreadPool.h"
-#include "LuxEngine/Memory/Ram/Memory.h"
-#include "LuxEngine/Memory/Gpu/VMemory.h"
+#include "LuxEngine/macros.hpp"
+#include "LuxEngine/Core/Input/Input.hpp"
+#include "LuxEngine/LuxEngine.hpp"
+#include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
+#include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
+#include "LuxEngine/Threads/ThreadPool.hpp"
+#include "LuxEngine/Memory/Ram/Memory.hpp"
+#include "LuxEngine/Memory/Gpu/VMemory.hpp"
 
 
 

@@ -1,5 +1,5 @@
-#include "LuxEngine/Memory/Ram/Memory.h"
-#include "LuxEngine/Core/ConsoleOutput.h"
+#include "LuxEngine/Memory/Ram/Memory.hpp"
+#include "LuxEngine/Core/ConsoleOutput.hpp"
 #include <cstring>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 //#include "LuxEngine/Core/Core.h"

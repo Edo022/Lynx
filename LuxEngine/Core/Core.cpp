@@ -1,20 +1,20 @@
 ﻿
 
-#include "LuxEngine/Threads/ThreadPool.h"
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Threads/ThreadPool.hpp"
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
+#include "LuxEngine/Core/Core.hpp"
 
-#include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Core/Graphics/GCommands.h"
-#include "LuxEngine/Core/Graphics/GOutput.h"
-#include "LuxEngine/Core/Graphics/Graphics.h"
-#include "LuxEngine/Core/Graphics/GSwapchain.h"
+#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Graphics/GCommands.hpp"
+#include "LuxEngine/Core/Graphics/GOutput.hpp"
+#include "LuxEngine/Core/Graphics/Graphics.hpp"
+#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
 
-#include "LuxEngine/System/System.h"
-#include "LuxEngine/Core/Input/Input.h"
+#include "LuxEngine/System/System.hpp"
+#include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Memory/Gpu/VMemory.h"
-#include "LuxEngine/Core/ConsoleOutput.h"
+#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/ConsoleOutput.hpp"
 
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 

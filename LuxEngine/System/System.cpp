@@ -1,6 +1,6 @@
 
-#include "LuxEngine/System/System.h"
-#include "LuxEngine/Types/Containers/LuxString.h"
+#include "LuxEngine/System/System.hpp"
+#include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
 #include <new>

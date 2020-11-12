@@ -4,7 +4,7 @@
 
 
 //Initialize RAM memory pool
-#include "LuxEngine/Memory/Ram/Memory.h"
+#include "LuxEngine/Memory/Ram/Memory.hpp"
 namespace lux::ram{
 	MemBufferType* buffers;
 	uint32 allocated;
@@ -25,7 +25,7 @@ namespace lux::ram{
 
 
 //Initialize GPU memory pool
-#include "LuxEngine/Memory/Gpu/VMemory.h"
+#include "LuxEngine/Memory/Gpu/VMemory.hpp"
 namespace lux::rem{
 	uint32 maxAlloc;
 	MemBufferType* buffers;
@@ -38,7 +38,7 @@ namespace lux::rem{
 
 
 //Initialize system
-#include "LuxEngine/System/System.h"
+#include "LuxEngine/System/System.hpp"
 namespace lux::sys{
 	String dir::thisDir;	//Path to the current directory //Initialized in init function
 
@@ -56,7 +56,7 @@ namespace lux::sys{
 
 
 //Initialize thread pool
-#include "LuxEngine/Threads/ThreadPool.h"
+#include "LuxEngine/Threads/ThreadPool.hpp"
 namespace lux::thr{
 	FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
 	#ifdef _WIN64

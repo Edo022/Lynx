@@ -1,9 +1,9 @@
 ﻿
 //TODO USE MOVE SEMANTICS
-#include "LuxEngine/Core/Core.h"
-#include "LuxEngine/Core/Devices.h"
-#include "LuxEngine/Core/Graphics/GSwapchain.h"
-#include "LuxEngine/Types/Containers/LuxMap.h"
+#include "LuxEngine/Core/Core.hpp"
+#include "LuxEngine/Core/Devices.hpp"
+#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Types/Containers/LuxMap.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
 #include <set>

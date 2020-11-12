@@ -1,7 +1,7 @@
 
-#include "LuxEngine/Core/Core.h"
-#include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Types/LuxObject/2D/2DLines.h"
+#include "LuxEngine/Core/Core.hpp"
+#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
 
 
 

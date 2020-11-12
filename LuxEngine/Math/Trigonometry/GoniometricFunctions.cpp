@@ -1,6 +1,6 @@
 
 
-#include "GoniometricFunctions.h"
+#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
 
 #ifdef LUX_CNF_USE_FFUNCTIONS
 double* __lp_sin;

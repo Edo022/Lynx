@@ -1,5 +1,5 @@
-#include "LuxEngine/Memory/Gpu/VMemory.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Core.hpp"
 
 
 

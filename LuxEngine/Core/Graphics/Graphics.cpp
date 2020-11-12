@@ -1,14 +1,14 @@
 
 
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Core/Compute/CShader_t.h"
-#include "LuxEngine/Core/Graphics/Graphics.h"
-#include "LuxEngine/Core/Graphics/GCommands.h"
-#include "LuxEngine/Core/Graphics/GSwapchain.h"
-#include "LuxEngine/Core/Compute/CShader.h"
-#include "LuxEngine/Core/Devices.h"
-#include "LuxEngine/Types/LuxObject/LuxObject.h"
-#include "LuxEngine/Core/Core.h"
+#include "LuxEngine/Core/Compute/CShader_t.hpp"
+#include "LuxEngine/Core/Graphics/Graphics.hpp"
+#include "LuxEngine/Core/Graphics/GCommands.hpp"
+#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Devices.hpp"
+#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Core/Core.hpp"
 #include <limits.h>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
