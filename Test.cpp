@@ -68,8 +68,8 @@ void runArrayTest();
 
 int main( ) {
 	// //TODO remove debug junk ..
-	// 	runArrayTest();
-	// 	return 0;
+		runArrayTest();
+		return 0;
 	// //TODO remove debug junk ^^
 
 
@@ -161,8 +161,11 @@ int main( ) {
 
 
 
-// void runArrayTest(){
-// 	lux::DynArray<int> a;
-
-	
-// }
+void runArrayTest(){
+	lux::ram::ptr<int> a = lux::ram::allocBck(10);
+	lux::ram::ptr<int> b = lux::ram::allocBck(32);
+	lux::ram::ptr<int> c = lux::ram::allocBck(256);
+	lux::ram::ptr<int> d = lux::ram::allocBck(256);
+	lux::ram::ptr<int> e = lux::ram::allocBck(256);
+	int h = 0;
+}

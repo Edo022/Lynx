@@ -134,18 +134,18 @@ namespace lux::ram{
 	}
 
 
-	template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass, const type& pValue){
-		ptr<type> ptr = ram::allocBck(vSize, vClass);
-		for(auto e : ptr) e = pValue;
-		return ptr;
-	}
+	// template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass, const type& pValue){
+	// 	ptr<type> ptr = ram::allocBck(vSize, vClass);
+	// 	for(auto e : ptr) e = pValue;
+	// 	return ptr;
+	// }
 
 
-	template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass){
-		ptr<type> ptr = ram::allocBck(vSize, vClass);
-		for(auto e : ptr) e = type( );
-		return ptr;
-	}
+	// template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass){
+	// 	ptr<type> ptr = ram::allocBck(vSize, vClass);
+	// 	for(auto e : ptr) e = type( );
+	// 	return ptr;
+	// }
 
 
 

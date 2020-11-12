@@ -171,7 +171,7 @@ namespace lux{
 				return true;
 			}
 			void update( ) final override{
-				updateBase( );
+				updateBase( ); //BUG segfault, pure virtual called
 				for(uint32 i = 0; i < children.count( ); i++) if(children.isValid(i)) {
 					setChildLimits(i);
 					//TODO add  recalculateCoords( ) in all objects

@@ -88,7 +88,7 @@ namespace lux::core::g{
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
 		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger", false, -1);
-	};
+	}
 	#endif
 
 
