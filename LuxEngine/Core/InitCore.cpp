@@ -8,7 +8,7 @@
 namespace lux::ram{
 	MemBufferType* buffers;
 	uint32 allocated;
-    
+
 
 	AutoInit(LUX_H_MEMORY){
 		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
@@ -37,7 +37,7 @@ namespace lux::rem{
 
 
 
-//Initialize system 
+//Initialize system
 #include "LuxEngine/System/System.h"
 namespace lux::sys{
 	String dir::thisDir;	//Path to the current directory //Initialized in init function
@@ -99,7 +99,7 @@ AutoInit(LUX_H_INIT_CORE){
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 	//FIXME use the "libVkLayer_khronos_validation.so" library in the deps folder. Not the one in the default lib location
-	//FIXME "LD_LIBRARY_PATH" env variables doesn't work
+	//FIXME "LD_LIBRARY_PATH" env variable doesn't work
 	putenv(  "VK_LAYER_PATH=./deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
 	putenv("LD_LIBRARY_PATH=./deps/Vulkan_1.2.154.0_linux/x86_64/lib");
 	#pragma GCC diagnostic pop

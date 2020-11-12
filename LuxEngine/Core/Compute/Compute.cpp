@@ -1,6 +1,4 @@
-﻿
-
-#include "LuxEngine/Core/Compute/Compute.h"
+﻿#include "LuxEngine/Core/Compute/Compute.h"
 #include "LuxEngine/Core/Compute/CBuffers.h"
 #include "LuxEngine/Core/Compute/CShader.h"
 #include "LuxEngine/Core/Graphics/GSwapchain.h"
@@ -11,48 +9,34 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_COMPUTE);
-// #pragma optimize("", on)
 namespace lux::core::c{
-	// VkCommandPool			NoInitVar(copyCommandPool);
-	// DynArray<VkCommandBuffer>	NoInitLux(copyCommandBuffers);
-	// VkCommandBuffer			NoInitVar(clearCommandBuffer);
-	VkCommandPool			copyCommandPool;
+	VkCommandPool				copyCommandPool = nullptr;
 	DynArray<VkCommandBuffer>	copyCommandBuffers;
-	VkCommandBuffer			clearCommandBuffer;
+	VkCommandBuffer				clearCommandBuffer = nullptr;
 
 
 
-
-	// void preInit( ) {
-	AutoInit(LUX_H_COMPUTE) {
-		clearCommandBuffer = nullptr;
-	}
-
-
-
-
+	//Initializes the compute objects
+	//> Engine internal use
 	void init(){
 		{ //Initialize window buffers and count
-			g::wnd::gpuCellWindowOutput_i = rem::allocBck(g::wnd::width * g::wnd::height * 4 /*A8-R8-G8-B8 UI*/, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
-			g::wnd::gpuCellWindowOutput = rem::allocBck(g::wnd::width * g::wnd::height * 4 * 4 /*A32-R32-G32-B32 UF*/, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
-			g::wnd::gpuCellWindowZBuffer = rem::allocBck(g::wnd::width * g::wnd::height * 4, CellClass::AUTO, AllocType::DEDICATED_STORAGE);
+			g::wnd::gpuCellWindowOutput_i	= rem::allocBck(g::wnd::width * g::wnd::height * 4, 	CellClass::AUTO, AllocType::DEDICATED_STORAGE); //A8-R8-G8-B8 UI
+			g::wnd::gpuCellWindowOutput		= rem::allocBck(g::wnd::width * g::wnd::height * 4 * 4,	CellClass::AUTO, AllocType::DEDICATED_STORAGE); //A32-R32-G32-B32 UF
+			g::wnd::gpuCellWindowZBuffer 	= rem::allocBck(g::wnd::width * g::wnd::height * 4, 	CellClass::AUTO, AllocType::DEDICATED_STORAGE);
 
-			g::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, AllocType::SHARED_STORAGE);
-			uint32* pwindowSize = scast<uint32*>(g::wnd::gpuCellWindowSize->map());
-			pwindowSize[0] = g::swapchain::swapchainExtent.width;
-			pwindowSize[1] = g::swapchain::swapchainExtent.height;
-			g::wnd::gpuCellWindowSize->unmap();
+			g::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, AllocType::SHARED_STORAGE);	//Create cell for window size //TODO use dedicated storage and update every time
+			uint32* pwindowSize = (uint32*)(g::wnd::gpuCellWindowSize->map());								//Map window size cell //TODO use gpu pointer instead of raw cell
+			pwindowSize[0] = g::swapchain::swapchainExtent.width;											//Set width
+			pwindowSize[1] = g::swapchain::swapchainExtent.height;											//Set height
+			g::wnd::gpuCellWindowSize->unmap();																//Unmap
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(g::swapchain::swapchainImages.count( ));	//Resize the command buffer array in the shader
-			shaders::createDefaultCommandBuffers( );							//Create command buffers and command pool
+			copyCommandBuffers.resize(g::swapchain::swapchainImages.count( ));			//Resize the command buffer array in the shader
+			shaders::createDefaultCommandBuffers( );									//Create command buffers and command pool
 		}
 
-		{ //Create default shaders
-			//TODO fix
+		{ //Create default shaders //TODO fix
 			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
 			shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4, { 0, 0, 0, 1 });
 			shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
@@ -68,7 +52,8 @@ namespace lux::core::c{
 
 
 
-	//TODO fix
+	//Frees and destroys the compute objects //TODO fix
+	//> Engine internal use
 	void computeCleanup( ) {
 		for(uint32 i = 0; i < /*rem::buffers.count( )*/(uint32)CellClassIndex::NUM * (uint32)AllocType::NUM; ++i) {
 			for(uint32 j = 0; j < rem::buffers[i].buffers.size( ); ++j){

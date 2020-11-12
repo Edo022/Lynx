@@ -1,6 +1,7 @@
 #pragma once
-#include "vulkan/vulkan.h"
 #define LUX_H_CBUFFERS
+#include "vulkan/vulkan.h"
+
 
 
 
