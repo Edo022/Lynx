@@ -109,4 +109,5 @@
             "type":"text-and-comment"
         }
     },
+    "editor.fontFamily": "'monospace', 'monospace', monospace, 'monospace'"
 }
