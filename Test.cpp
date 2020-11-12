@@ -93,6 +93,7 @@ int main( ) {
 			100, 200
 		};
 		renderSpace.addChild(&lineTest2);
+		//TODO FIX OR ADD WARNING WHEN THE VARIABLE GETS DESTROYED
 		lux::obj::addRenderSpace(new lux::obj::RenderSpace2D(renderSpace));
 	}
 
