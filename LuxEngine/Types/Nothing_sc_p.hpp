@@ -6,7 +6,7 @@
 
 #define lux_sc_v 0x94FFD489B48994FF
 #define checkInit luxDebug(lux_sc_F_f( ))	// void foo( ) lux_sc_F, var{ 0 } {...}
-#define lux_sc_generate_nothing_constructor(structName)	inline structName(const lux::Nothing) : luxDebug2(lux_sc_dummy{ lux_sc_N_f( ) },)
+#define lux_sc_generate_nothing_constructor(structName)	inline structName(const lux::Nothing) : luxDebug(lux_sc_dummy{ lux_sc_N_f( ) },)
 //TODO check if it has been initialized
 
 

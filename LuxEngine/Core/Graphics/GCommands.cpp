@@ -39,7 +39,7 @@ namespace lux::core::g::cmd{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },
 			.queueFamilyIndex{ dvc::graphics.PD.indices.graphicsFamily }
 		};
-		TryVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool)) printError("Failed to create graphics command pool", true, -1);
+		luxCheckVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool), "Failed to create graphics command pool");
 	}
 
 

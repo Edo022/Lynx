@@ -69,7 +69,7 @@ namespace lux::core::g{
 		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
 
 		//Initialize vulkan
-		TryVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface)) printError("Failed to create window surface", true, -1);
+		luxCheckVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
 		Normal printf("    Searching for physical devices...    \n");
 		dvc::deviceGetPhysical( );
 		cmd::createGraphicsCommandPool( );
@@ -87,7 +87,7 @@ namespace lux::core::g{
 	void createDebugMessenger( ) {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
-		TryVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger)) printError("Failed to set up debug messenger", false, -1);
+		luxCheckVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "Failed to set up debug messenger");
 	}
 	#endif
 
@@ -178,7 +178,7 @@ namespace lux::core::g{
 			submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.commandBufferCount = c::shaders::CShadersCBs.count( );
 			submitInfo.pCommandBuffers = c::shaders::CShadersCBs.begin( );
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer", false, -1);
+			luxCheckVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 		}
 
 
@@ -194,7 +194,7 @@ namespace lux::core::g{
 			submitInfo.pCommandBuffers = &c::shaders::CShaders[0].commandBuffers[0];
 			submitInfo.pWaitSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr)) printError("Failed to submit graphics command buffer", false, -1);
+			luxCheckVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 		}
 
 
@@ -214,7 +214,7 @@ namespace lux::core::g{
 			submitInfo.pCommandBuffers = &c::copyCommandBuffers[imageIndex];
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
-			TryVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame])) printError("Failed to submit graphics command buffer", false, -1);
+			luxCheckVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame]), "Failed to submit graphics command buffer");
 		}
 
 
