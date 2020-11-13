@@ -109,14 +109,14 @@ namespace lux::core::g{
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {
-			if(vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameImageAquiredSemaphore[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameObjectsRenderedSemaphore[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameCopySemaphore[i]) != VK_SUCCESS ||
-				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameClearSemaphore[i]) != VK_SUCCESS ||
-				vkCreateFence(dvc::graphics.LD, &fenceInfo, nullptr, &drawFrameImageRenderedFence[i]) != VK_SUCCESS
-				){
-				printError("Failed to create vulkan sync objects", true, -1);
-			}
+			luxCheckCond(
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameImageAquiredSemaphore[i])	!= VK_SUCCESS ||
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameObjectsRenderedSemaphore[i])	!= VK_SUCCESS ||
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameCopySemaphore[i])			!= VK_SUCCESS ||
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameClearSemaphore[i])			!= VK_SUCCESS ||
+				vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &drawFrameImageRenderedFence[i])		!= VK_SUCCESS,
+				"Failed to create vulkan sync objects"
+			);
 		}
 	}
 
@@ -238,7 +238,7 @@ namespace lux::core::g{
 					vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
-				default:  printError("Failed to present swapchain image", false, -1);
+				default:  luxCheckCond(true, "Failed to present swapchain image");
 			}
 
 		}
@@ -352,7 +352,7 @@ namespace lux::core::g{
 				return format;
 			}
 		}
-		printError("Failed to find a supported format", true, -1);
+		luxCheckCond(true, "Failed to find a supported format");
 		return VK_FORMAT_UNDEFINED;
 	}
 
@@ -367,7 +367,7 @@ namespace lux::core::g{
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
-		printError("Failed to find suitable memory type", true, -1);
+		luxCheckCond(true, "Failed to find suitable memory type");
 		return -1;
 	}
 }

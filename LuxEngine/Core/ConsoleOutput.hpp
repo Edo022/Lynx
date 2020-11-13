@@ -70,11 +70,4 @@ namespace lux::out{
 			catch(std::exception e) { luxCheckParam(true, ptr, __VA_ARGS__); }	\
 		}																		\
 	)}
-
-
-	//TODO REMOVE
-	#define param_error(paramName, errorInfo) luxDebug(																				\
-		printError(std::string("Invalid value passed to '").append(#paramName).append("' parameter of function '").append("h").append("'\n")		\
-		.append(errorInfo).append("\nThis error will not be reported in release mode"), true, -1)												\
-	) luxRelease(;)
 }

@@ -21,10 +21,10 @@
 #define lux_sc_generate_debug_structure_body_func_only	luxDebug(			\
 	char lux_sc_dummy = 'L';												\
 	inline void lux_sc_F_f( ) const {	/*Operators and Functions*/			\
-		if(this->lux_sc_initialized != lux_sc_v) printError("Structures must be initialized before using their pointers or non assignment/init/constructor functions", true, -1);		\
+		luxCheckCond(this->lux_sc_initialized != lux_sc_v, "Structures must be initialized before using their pointers or non assignment/init/constructor functions");		\
 	}																		\
 	inline char lux_sc_N_f( ){			/*lux::Nothing constructor*/		\
-		if(this->lux_sc_initialized != lux_sc_v) printError("Structures created with a lux::Nothing constructor must be initialized before their default initialization", true, -1);	\
+		luxCheckCond(this->lux_sc_initialized != lux_sc_v, "Structures created with a lux::Nothing constructor must be initialized before their default initialization");	\
 		return 0;															\
 	}																		\
 )
