@@ -45,7 +45,7 @@ namespace lux::obj {
 				children[vChildIndex]->setMaxLim(maxLim);
 				break;
 			}
-			default: luxCheckCond(true, "Unknown children alignment type. If you see this error, it's probably a bug in the engine");
+			default: luxPrintError("Unknown children alignment type. If you see this error, it's probably a bug in the engine");
 		}
 		return true;
 	}

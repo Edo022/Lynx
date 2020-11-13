@@ -238,7 +238,7 @@ namespace lux::core::g{
 					vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
-				default:  luxCheckCond(true, "Failed to present swapchain image");
+				default:  luxPrintError("Failed to present swapchain image");
 			}
 
 		}
@@ -352,7 +352,7 @@ namespace lux::core::g{
 				return format;
 			}
 		}
-		luxCheckCond(true, "Failed to find a supported format");
+		luxPrintError("Failed to find a supported format");
 		return VK_FORMAT_UNDEFINED;
 	}
 
@@ -367,7 +367,7 @@ namespace lux::core::g{
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
-		luxCheckCond(true, "Failed to find suitable memory type");
+		luxPrintError("Failed to find suitable memory type");
 		return -1;
 	}
 }

@@ -185,7 +185,7 @@ namespace lux::core::dvc{
 		//Get physical devices
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 		// sleep(500);
-		if(deviceCount == 0) luxCheckCond(true, "Failed to find GPUs with Vulkan support")
+		if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")
 		//FIXME remove else
 		//BUG this doesn't work without the else.  probably a synchronization problem
 		else {
@@ -245,7 +245,7 @@ namespace lux::core::dvc{
 				if(sameDevice(physDev, compute.PD)) printf("  |  Main compute");
 			}
 		}
-		else luxCheckCond(true, "Failed to find a suitable GPU");
+		else luxPrintError("Failed to find a suitable GPU");
 		#undef physDev
 
 
@@ -362,6 +362,6 @@ namespace lux::core::dvc{
 				}
 			}
 		}
-		else luxCheckCond(true, "Failed to create logical device");
+		else luxPrintError("Failed to create logical device");
 	}
 }

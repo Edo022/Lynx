@@ -178,7 +178,7 @@ namespace lux::core{
 			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
 				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin( ))) luxCheckCond(true, "compilation error")
+					if(!compileShader(luxStrPath.begin( ))) luxPrintError("compilation error")
 					else Normal printf("%s", luxStrPath.begin( ));
 				}
 			}

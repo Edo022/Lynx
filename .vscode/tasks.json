@@ -68,7 +68,7 @@
 					"LuxEngine/Types/LuxObject/2D/2DLines.cpp",
 					"LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp",
 					"LuxEngine/Core/Devices.cpp",
-					"LuxEngine/Core/ConsoleOutput.cpp",
+					// "LuxEngine/Core/ConsoleOutput.cpp",
 					"LuxEngine/Core/Core.cpp",
 					"LuxEngine/Core/Compute/*.cpp",
 					"LuxEngine/Core/Graphics/*.cpp",
