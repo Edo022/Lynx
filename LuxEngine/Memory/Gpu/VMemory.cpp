@@ -47,9 +47,9 @@ namespace lux::rem{
 	//*   Returns    | the allocated Cell object
 	//e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
 	Cell allocBck(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
-		luxDebug(if(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize) param_error(vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it"));
-		luxDebug(if(vSize > 0xFFFFffff) param_error(vSize, "The cell size cannot exceed 0xFFFFFFFF bytes"));
-		luxDebug(if(vAllocType >= AllocType::NUM || (int32)vAllocType < 0) param_error(vAllocType, "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'"));
+		luxCheckParam(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize, 	vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
+		luxCheckParam(vSize > 0xFFFFffff, 											vSize,		"The cell size cannot exceed 0xFFFFFFFF bytes");
+		luxCheckParam(vAllocType >= AllocType::NUM || (int32)vAllocType < 0,		vAllocType, "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'");
 
 
 		//Set cell class if CellClass::AUTO was used
