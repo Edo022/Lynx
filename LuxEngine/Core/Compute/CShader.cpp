@@ -399,11 +399,11 @@ namespace lux::core::c::shaders{
 	//*   pCShader -----| the shader where to create the command buffer
 	//*   vShaderLayout | the render type
 	//*   vGroupCountX -| the number of workgroups in the x axis
-	//*   vGroupCounty -| the number of workgroups in the y axis
-	//*   vGroupCountz -| the number of workgroups in the z axis
+	//*   vGroupCountY -| the number of workgroups in the y axis
+	//*   vGroupCountZ -| the number of workgroups in the z axis
 	//The workgroup count is define in the GLSL shader
 	//> Engine internal use
-	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 		//Create command buffer allocate infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },		//Set structure type
@@ -433,7 +433,7 @@ namespace lux::core::c::shaders{
 		//Bind pipeline and descriptors and run the compute shader
 		vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
 		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
-		vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCounty, vGroupCountz);
+		vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 		//End command buffer recording
 		TryVk(vkEndCommandBuffer(pCShader->commandBuffers[0])) printError("Failed to record command buffer", false, -2);
@@ -461,18 +461,21 @@ namespace lux::core::c::shaders{
 	//*   --- The shader inputs must match those cells. The binding index is the same as their index in the array
 	//*   vShaderLayout | the layout of the shader
 	//*   vGroupCountX -| the number of workgroups in the x axis
-	//*   vGroupCounty -| the number of workgroups in the y axis
-	//*   vGroupCountz -| the number of workgroups in the z axis
+	//*   vGroupCountY -| the number of workgroups in the y axis
+	//*   vGroupCountZ -| the number of workgroups in the z axis
 	//*   returns ------| the index of the shader
 	//*   --- -1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
 	//> Engine internal use
-	LuxShader newShader(const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	LuxShader newShader(const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
-		//TODO check buffers
+		param_error_2(pCells.count() == 0, pCells, "A shader must use at least one cell. The provided cell array has size 0");
+		param_error_2(vGroupCountX < 1, vGroupCountX, "The group count must be at least 1");
+		param_error_2(vGroupCountY < 1, vGroupCountY, "The group count must be at least 1");
+		param_error_2(vGroupCountZ < 1, vGroupCountZ, "The group count must be at least 1");
 		LuxShader_t shader;
 
 		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
-		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCounty, vGroupCountz);	//Create command buffers and command pool
+		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ);	//Create command buffers and command pool
 
 		addShaderFence.startSecond( );
 		LuxShader i = CShaders.add(shader);														//Add the shader to the shader array
@@ -490,7 +493,7 @@ namespace lux::core::c::shaders{
 	//Updates the cells, layout or group conunts of a shader
 	//*   Way faster than destroying and creating it again
 	//> Engine internal use
-	void updateShaderCall(const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz) {
+	void updateShaderCall(const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
@@ -501,7 +504,7 @@ namespace lux::core::c::shaders{
 		//Bind pipeline and descriptors and run the compute shader
 		vkCmdBindPipeline(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
 		vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, nullptr);
-		vkCmdDispatch(CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCounty, vGroupCountz);
+		vkCmdDispatch(CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 
 		//End command buffer recording

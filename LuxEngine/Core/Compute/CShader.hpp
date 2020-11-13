@@ -41,9 +41,9 @@ namespace lux::core::c::shaders{
 	void			createDefaultCommandBuffers( );
 	void			createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const DynArray<bool>& pIsReadOnly);
 	void			createDescriptorSets(LuxShader_t* pCShader, const DynArray<rem::Cell>& pCells, ShaderLayout vShaderLayout);
-	void			createCommandBuffers( LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	void			createCommandBuffers( LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 
-	LuxShader		newShader(const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
-	void			updateShaderCall(  const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCounty, const uint32 vGroupCountz);
+	LuxShader		newShader(const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
+	void			updateShaderCall(  const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 	bool			destroyShader(     const LuxShader vCShader);
 }
