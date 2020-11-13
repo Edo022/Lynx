@@ -19,16 +19,16 @@
 
 
 namespace lux::core::c::shaders{
-	extern String							shaderPath;			//Path to the shaders folder
+	extern String								shaderPath;			//Path to the shaders folder
 	extern RAArray<obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
-	extern RTArray<LuxShaderLayout_t>		CShadersLayouts;	//Layout of the render shaders
+	extern RTArray<LuxShaderLayout_t>			CShadersLayouts;	//Layout of the render shaders
 
-	extern VkCommandPool					commandPool;		//The command pool where render spaces commands are submitted
+	extern VkCommandPool						commandPool;		//The command pool where render spaces commands are submitted
 	extern RAArray<LuxShader_t, uint32>			CShaders;			//Per-object shaders
-	extern RTArray<VkCommandBuffer>		CShadersCBs;		//Per-object command buffers
+	extern RTArray<VkCommandBuffer>				CShadersCBs;		//Per-object command buffers
 
-	extern FenceDE							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
-	extern LuxShader						clearShader;
+	extern FenceDE								addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
+	extern LuxShader							clearShader;
 
 
 

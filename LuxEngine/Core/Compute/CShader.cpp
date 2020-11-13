@@ -19,16 +19,16 @@
 
 
 namespace lux::core::c::shaders{
-	String									shaderPath;
+	String										shaderPath;
 	RAArray<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
-	RTArray<LuxShaderLayout_t>				CShadersLayouts;
+	RTArray<LuxShaderLayout_t>					CShadersLayouts;
 
-	VkCommandPool							commandPool = nullptr;
+	VkCommandPool								commandPool = nullptr;
 	RAArray<LuxShader_t, uint32>				CShaders;
-	RTArray<VkCommandBuffer>				CShadersCBs;
+	RTArray<VkCommandBuffer>					CShadersCBs;
 
-	FenceDE									addShaderFence;
-	LuxShader								clearShader = 0;
+	FenceDE										addShaderFence;
+	LuxShader									clearShader = 0;
 
 
 

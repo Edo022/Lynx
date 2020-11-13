@@ -14,7 +14,9 @@
 
 //TODO add optional negative index support
 namespace lux {
+	//"Random Access Array"
 	//An array with non-contiguous data capable of containing millions of elements without affecting performance
+	//Uses the global memory pool
 	//New elements are written over previously deleted elements, or concatenated if there are none
 	//Useful if you need to constantly add or remove elements
 	//Use the isValid() function to check if an element is valid or has been removed

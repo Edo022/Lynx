@@ -32,6 +32,8 @@
 //TODO add contructor of string from lux containers of chars
 //TODO add additional data in errors
 namespace lux {
+	//"RunTime Array"
+	//A dynamic array that uses the global memory pool
 	template<class type, class iter = uint32> struct RTArray : public ContainerBase<type, iter> {
 	private:
 		lux_sc_generate_debug_structure_body_func_only;

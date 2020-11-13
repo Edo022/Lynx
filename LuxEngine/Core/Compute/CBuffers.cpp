@@ -40,11 +40,12 @@ namespace lux::core::c::buffers{
 	//*   pBuffer: the buffer object to allocate
 	//*   pMemory: the memory of the buffer
 	void createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory) {
-		VkBufferCreateInfo bufferInfo{ };
-		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		bufferInfo.size = vSize;
-		bufferInfo.usage = vUsage;
-		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		VkBufferCreateInfo bufferInfo{
+			.sType			= VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size			= vSize,
+			.usage			= vUsage,
+			.sharingMode	= VK_SHARING_MODE_EXCLUSIVE
+		};
 		luxCheckVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer), "Failed to create buffer");
 
 		VkMemoryRequirements memRequirements;
@@ -66,10 +67,11 @@ namespace lux::core::c::buffers{
 		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
 			case VK_SUCCESS: break;
 			case VK_ERROR_OUT_OF_DEVICE_MEMORY: {			//If out of dedicated memory, use the shared memory
-				VkMemoryAllocateInfo allocInfo2{ };
-				allocInfo2.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-				allocInfo2.allocationSize = memRequirements.size;
-				allocInfo2.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+				VkMemoryAllocateInfo allocInfo2{
+					.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+					.allocationSize = memRequirements.size,
+					.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+				};
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: goto CaseOutOfHostMemory;

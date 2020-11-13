@@ -9,7 +9,8 @@
 //TODO dont use initializer list
 //TODO MAKE IT COMPLETELY COMPILE TIME
 namespace lux {
-	//A static array that knows its count. It can be resized, but it doesn't have add or remove functions
+	//A static array that knows its count ////It can be resized, but it doesn't have add or remove functions
+	//This array does NOT use the memory pool. All the data is allocated when the variable gets initialized
 	template <class type, uint64 count_> class CTArray : public ContainerBase<type, uint64> {
 	private:
 		lux_sc_generate_debug_structure_body_func_only;
