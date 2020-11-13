@@ -32,7 +32,7 @@
 //TODO add contructor of string from lux containers of chars
 //TODO add additional data in errors
 namespace lux {
-	template<class type, class iter = uint32> struct DynArray : public ContainerBase<type, iter> {
+	template<class type, class iter = uint32> struct RTArray : public ContainerBase<type, iter> {
 	private:
 		lux_sc_generate_debug_structure_body_func_only;
 		ram::ptr<type> data_;	//Elements of the array
@@ -47,13 +47,13 @@ namespace lux {
 
 
 
-		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ } { }
+		lux_sc_generate_nothing_constructor(RTArray) data_{ data_ } { }
 		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
-		inline DynArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
+		inline RTArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
 
 		//NO
-		inline DynArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::allocArr<type>(sizeof(type), vCount, CellClass::AT_LEAST_CLASS_B) } { }
+		inline RTArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::allocArr<type>(sizeof(type), vCount, CellClass::AT_LEAST_CLASS_B) } { }
 		//OK
 		//inline DynArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } {
 		//	resize(vCount);
@@ -63,7 +63,7 @@ namespace lux {
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocArr(sizeof(type), pContainer.count( ), CellClass::AT_LEAST_CLASS_B) } {
+		template<class cIter> inline RTArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocArr(sizeof(type), pContainer.count( ), CellClass::AT_LEAST_CLASS_B) } {
 			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
@@ -72,7 +72,7 @@ namespace lux {
 
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
-		inline DynArray(const std::initializer_list<type>& pElements) : data_{ ram::allocArr(sizeof(type), pElements.size( )) } {
+		inline RTArray(const std::initializer_list<type>& pElements) : data_{ ram::allocArr(sizeof(type), pElements.size( )) } {
 			//TODO ^ C strings get destroyed when the function returns
 			//luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 
@@ -142,7 +142,7 @@ namespace lux {
 			return data_[vIndex];
 		}
 
-		~DynArray( ){
+		~RTArray( ){
 			printf("hh");
 		}
 	};

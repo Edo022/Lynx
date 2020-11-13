@@ -1,5 +1,3 @@
-
-
 #include "LuxEngine/Core/Graphics/GCommands.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
@@ -11,25 +9,10 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_GCOMMANDS);
-// #pragma optimize("", on)
+
 namespace lux::core::g::cmd{
-	// VkCommandPool			NoInitVar(singleTimeCommandPool);
-	// DynArray<VkCommandBuffer>	NoInitLux(singleTimeCommandBuffers);
-	VkCommandPool			singleTimeCommandPool;
-	DynArray<VkCommandBuffer>	singleTimeCommandBuffers;
-
-
-
-
-
-	// void preInit( ){
-	AutoInit(LUX_H_GCOMMANDS){
-		singleTimeCommandPool = nullptr;
-		// singleTimeCommandBuffers.DynArray::DynArray( );
-		singleTimeCommandBuffers = DynArray<VkCommandBuffer>( );
-	}
+	VkCommandPool				singleTimeCommandPool = nullptr;
+	RTArray<VkCommandBuffer>	singleTimeCommandBuffers;
 
 
 

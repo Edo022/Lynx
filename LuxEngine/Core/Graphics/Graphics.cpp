@@ -27,13 +27,13 @@ namespace lux::core::g{
 	// int32					NoInitVar(renderCurrentFrame);
 	// DynArray<obj::Base*>	NoInitLux(objUpdates2D);
 	// FenceDE					NoInitLux(pendingObjectUpdatesFence);
-	DynArray<VkSemaphore>		drawFrameImageAquiredSemaphore;
-	DynArray<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
-	DynArray<VkSemaphore>		drawFrameCopySemaphore;
-	DynArray<VkSemaphore>		drawFrameClearSemaphore;
-	DynArray<VkFence>			drawFrameImageRenderedFence;
+	RTArray<VkSemaphore>		drawFrameImageAquiredSemaphore;
+	RTArray<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
+	RTArray<VkSemaphore>		drawFrameCopySemaphore;
+	RTArray<VkSemaphore>		drawFrameClearSemaphore;
+	RTArray<VkFence>			drawFrameImageRenderedFence;
 	int32					renderCurrentFrame;
-	DynArray<obj::Base*>	objUpdates2D;
+	RTArray<obj::Base*>	objUpdates2D;
 	FenceDE					pendingObjectUpdatesFence;
 
 
@@ -50,13 +50,13 @@ namespace lux::core::g{
 		// renderCurrentFrame = 0;
 		// objUpdates2D.DynArray::DynArray( );
 		// pendingObjectUpdatesFence.FenceDE::FenceDE( );
-		drawFrameImageAquiredSemaphore = DynArray<VkSemaphore>( );
-		drawFrameObjectsRenderedSemaphore = DynArray<VkSemaphore>( );
-		drawFrameCopySemaphore = DynArray<VkSemaphore>( );
-		drawFrameClearSemaphore = DynArray<VkSemaphore>( );
-		drawFrameImageRenderedFence = DynArray<VkFence>( );
+		drawFrameImageAquiredSemaphore = RTArray<VkSemaphore>( );
+		drawFrameObjectsRenderedSemaphore = RTArray<VkSemaphore>( );
+		drawFrameCopySemaphore = RTArray<VkSemaphore>( );
+		drawFrameClearSemaphore = RTArray<VkSemaphore>( );
+		drawFrameImageRenderedFence = RTArray<VkFence>( );
 		renderCurrentFrame = 0;
-		objUpdates2D = DynArray<obj::Base*>( );
+		objUpdates2D = RTArray<obj::Base*>( );
 		pendingObjectUpdatesFence = FenceDE( );
 	}
 
@@ -342,7 +342,7 @@ namespace lux::core::g{
 
 
 
-	VkFormat findSupportedFormat(const DynArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+	VkFormat findSupportedFormat(const RTArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 		for(VkFormat format : *pCandidates) {
 			VkFormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);

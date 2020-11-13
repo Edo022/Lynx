@@ -38,6 +38,6 @@ struct LuxShaderLayout_t{
 struct LuxShader_t {
 	VkDescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
 	VkDescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
-	lux::DynArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
+	lux::RTArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 };
 

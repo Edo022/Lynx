@@ -18,7 +18,7 @@ namespace lux {
 	//New elements are written over previously deleted elements, or concatenated if there are none
 	//Useful if you need to constantly add or remove elements
 	//Use the isValid() function to check if an element is valid or has been removed
-	template<class type, class iter = uint64, uint64 elmPerChunk = max(50000/*50KB*/ / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class Map {
+	template<class type, class iter = uint64, uint64 elmPerChunk = max(50000/*50KB*/ / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class RAArray {
 	private:
 		lux_sc_generate_debug_structure_body;
 		ram::ptr<ram::ptr<type>> chunks_;		//Elements
@@ -43,13 +43,13 @@ namespace lux {
 
 
 
-		lux_sc_generate_nothing_constructor(Map) _chunkNum{ _chunkNum }, size_{ size_ }, freeSize_{ freeSize_ },
+		lux_sc_generate_nothing_constructor(RAArray) _chunkNum{ _chunkNum }, size_{ size_ }, freeSize_{ freeSize_ },
 			chunks_{ chunks_ }, tracker_{ tracker_ }, head_{ head_ }, tail_{ tail_ } {
 		}
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
 
 
-		inline Map( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
+		inline RAArray( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
 			chunks_{  ram::allocArr<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B) },
 			tracker_{ ram::allocArr<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B) } {
 		}
@@ -58,7 +58,7 @@ namespace lux {
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class elmType> inline Map(const ContainerBase<elmType, iter>& pContainer) : Map( ) {
+		template<class elmType> inline RAArray(const ContainerBase<elmType, iter>& pContainer) : RAArray( ) {
 			isInit(pContainer);
 			for(iter i = 0; i < pContainer.end( ) - pContainer.begin( ); ++i) add((elmType) * (pContainer.begin( ) + i));
 		}

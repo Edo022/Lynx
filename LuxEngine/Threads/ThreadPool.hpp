@@ -72,8 +72,8 @@ namespace lux::thr {
 	#elif defined __linux__
 	extern pthread_t mngThr;
 	#endif
-	extern DynArray<ThrPoolElm> threads;
-	extern Map<ThrState, uint32> thrStates;
+	extern RTArray<ThrPoolElm> threads;
+	extern RAArray<ThrState, uint32> thrStates;
 	extern Queue<ExecFuncDataBase*> maxpq;
 	extern Queue<ExecFuncDataBase*> highpq;
 	extern Queue<ExecFuncDataBase*> lowpq;

@@ -17,13 +17,13 @@
 
 
 namespace lux::core::g{
-	extern DynArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
-	extern DynArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
-	extern DynArray<VkSemaphore>	drawFrameCopySemaphore;
-	extern DynArray<VkSemaphore>	drawFrameClearSemaphore;
-	extern DynArray<VkFence>		drawFrameImageRenderedFence;
+	extern RTArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
+	extern RTArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
+	extern RTArray<VkSemaphore>	drawFrameCopySemaphore;
+	extern RTArray<VkSemaphore>	drawFrameClearSemaphore;
+	extern RTArray<VkFence>		drawFrameImageRenderedFence;
 	extern int32				renderCurrentFrame;
-	extern DynArray<obj::Base*>	objUpdates2D;
+	extern RTArray<obj::Base*>	objUpdates2D;
 	extern FenceDE				pendingObjectUpdatesFence;
 
 
@@ -43,7 +43,7 @@ namespace lux::core::g{
 
 
 
-	VkFormat	findSupportedFormat(const DynArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	VkFormat	findSupportedFormat(const RTArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
 	uint32		findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
 	luxDebug(static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {

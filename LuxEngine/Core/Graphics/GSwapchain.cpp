@@ -22,11 +22,11 @@ namespace lux::core::g::swapchain{
 	// VkExtent2D				NoInitVar(swapchainExtent);
 	// DynArray<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
 	VkSwapchainKHR			swapchain;
-	DynArray<VkImage>			swapchainImages;
-	DynArray<VkImageView>		swapchainImageViews;
+	RTArray<VkImage>			swapchainImages;
+	RTArray<VkImageView>		swapchainImageViews;
 	VkFormat				swapchainImageFormat;
 	VkExtent2D				swapchainExtent;
-	DynArray<VkFramebuffer>	swapchainFramebuffers;
+	RTArray<VkFramebuffer>	swapchainFramebuffers;
 
 
 
@@ -43,8 +43,8 @@ namespace lux::core::g::swapchain{
 		// swapchainExtent = { };
 		// swapchainFramebuffers.DynArray::DynArray( );
 		swapchain = nullptr;
-		swapchainImages = DynArray<VkImage>( );
-		swapchainImageViews = DynArray<VkImageView>( );
+		swapchainImages = RTArray<VkImage>( );
+		swapchainImageViews = RTArray<VkImageView>( );
 		//TODO check if the windows API updates this
 		#ifdef _WIN64
 		swapchainImageFormat = VkFormat::VK_FORMAT_END_RANGE;
@@ -52,13 +52,13 @@ namespace lux::core::g::swapchain{
 		swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
 		#endif
 		swapchainExtent = { };
-		swapchainFramebuffers = DynArray<VkFramebuffer>( );
+		swapchainFramebuffers = RTArray<VkFramebuffer>( );
 	}
 
 
 
 
-	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const DynArray<VkSurfaceFormatKHR>* pAvailableFormats) {
+	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const RTArray<VkSurfaceFormatKHR>* pAvailableFormats) {
 		for(auto& availableFormat : *pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
@@ -73,7 +73,7 @@ namespace lux::core::g::swapchain{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR swapchainChoosePresentMode(const DynArray<VkPresentModeKHR>* pAvailablePresentModes) {
+	VkPresentModeKHR swapchainChoosePresentMode(const RTArray<VkPresentModeKHR>* pAvailablePresentModes) {
 		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;

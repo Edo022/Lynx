@@ -10,7 +10,7 @@
 //TODO MAKE IT COMPLETELY COMPILE TIME
 namespace lux {
 	//A static array that knows its count. It can be resized, but it doesn't have add or remove functions
-	template <class type, uint64 count_> class Array : public ContainerBase<type, uint64> {
+	template <class type, uint64 count_> class CTArray : public ContainerBase<type, uint64> {
 	private:
 		lux_sc_generate_debug_structure_body_func_only;
 		type* data_;	//Elements of the array
@@ -25,12 +25,12 @@ namespace lux {
 
 
 
-		lux_sc_generate_nothing_constructor(Array) data_{ data_ }/*, size_{ size_ } */{ }
+		lux_sc_generate_nothing_constructor(CTArray) data_{ data_ }/*, size_{ size_ } */{ }
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
 
 
 		//Creates an array with no elements
-		inline Array( ) :/* size_{ 0 },*/ data_{ (type*)malloc(sizeof(type) * count_) } {
+		inline CTArray( ) :/* size_{ 0 },*/ data_{ (type*)malloc(sizeof(type) * count_) } {
 			type* _type = new type( );
 			for(uint32 i = 0; i < count_; i++) memcpy(&data_[i], _type, sizeof(type));
 			delete(_type);
@@ -48,14 +48,14 @@ namespace lux {
 		//TODO remove
 		#define __lp_lux_static_array_init/*(_size)*//* size_ = _size;*/ data_ = (type*)malloc(sizeof(type) * count_)
 		//Initializes the array using a list of elements, automatically converting it to the right type
-		template<class inType> inline Array(const std::initializer_list<inType>& pElements) {
+		template<class inType> inline CTArray(const std::initializer_list<inType>& pElements) {
 			__lp_lux_static_array_init;
 			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) data_[i] = (inType) * (pElements.begin( ) + i);
 		}
 
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
-		inline Array(const std::initializer_list<type>& pElements) {
+		inline CTArray(const std::initializer_list<type>& pElements) {
 			luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 			__lp_lux_static_array_init;
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
@@ -65,7 +65,7 @@ namespace lux {
 		luxDebug(template<class elmType, class elmIter> bool __isInit(const ContainerBase<elmType, elmIter>& pArray){ isInit(pArray); return false; })
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   pArray: a pointer to the container object
-		template<class elmType, class elmIter> inline Array(const ContainerBase<elmType, elmIter>& pArray) : constructExec(__isInit, pArray) /*size_{ pArray.size( ) }, */data_{ (type*)malloc(sizeof(type) * pArray.size( )) } {
+		template<class elmType, class elmIter> inline CTArray(const ContainerBase<elmType, elmIter>& pArray) : constructExec(__isInit, pArray) /*size_{ pArray.size( ) }, */data_{ (type*)malloc(sizeof(type) * pArray.size( )) } {
 			for(uint64 i = 0; i < pArray.end( ) - pArray.begin( ); ++i) data_[i] = (elmType) * (pArray.begin( ) + i);
 		}
 		#undef __lp_lux_static_array_init

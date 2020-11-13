@@ -10,7 +10,7 @@
 struct QueueFamilyIndices {
 	uint32 graphicsFamily = (uint32)-1;
 	uint32 presentFamily = (uint32)-1;
-	lux::DynArray<uint32> computeFamilies;
+	lux::RTArray<uint32> computeFamilies;
 
 	QueueFamilyIndices( ) :graphicsFamily{ (uint32)-1 }, presentFamily{ (uint32)-1 }, computeFamilies( ) { }
 	QueueFamilyIndices(const QueueFamilyIndices& e) : graphicsFamily{ e.graphicsFamily }, presentFamily{ e.presentFamily }, computeFamilies{ e.computeFamilies } { }
@@ -56,5 +56,5 @@ struct computeDevice {
 
 	_VkPhysicalDevice PD;					//Main physical device for computing
 	VkDevice LD;							//Main logical device for computing
-	lux::DynArray<VkQueue> computeQueues;	//Main compute queues. Run on computeLD
+	lux::RTArray<VkQueue> computeQueues;	//Main compute queues. Run on computeLD
 };

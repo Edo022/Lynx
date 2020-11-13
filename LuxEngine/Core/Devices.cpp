@@ -26,7 +26,7 @@ namespace lux::core::dvc{
 	// DynArray<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
 	graphicsDevice			graphics;	//Main graphics device
 	computeDevice			compute;		//Main compute device
-	DynArray<computeDevice>	secondary;	//Secondary compute devices
+	RTArray<computeDevice>	secondary;	//Secondary compute devices
 
 
 
@@ -42,7 +42,7 @@ namespace lux::core::dvc{
 		// secondary.DynArray::DynArray( );
 		graphics = graphicsDevice( );
 		compute = computeDevice( );
-		secondary = DynArray<computeDevice>( );
+		secondary = RTArray<computeDevice>( );
 	}
 
 
@@ -121,7 +121,7 @@ namespace lux::core::dvc{
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 		//TODO OK
-			DynArray<VkExtensionProperties> availableExtensions(extensionCount);
+			RTArray<VkExtensionProperties> availableExtensions(extensionCount);
 		//TODO ERROR
 			//DynArray<VkExtensionProperties> availableExtensions;
 			//availableExtensions.resize(extensionCount);
@@ -140,7 +140,7 @@ namespace lux::core::dvc{
 	QueueFamilyIndices deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
 		uint32 queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
-		DynArray<VkQueueFamilyProperties> queueFamilies;
+		RTArray<VkQueueFamilyProperties> queueFamilies;
 		queueFamilies.resize(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin( ));		//Save queue families
 
@@ -176,24 +176,18 @@ namespace lux::core::dvc{
 	//Then saves them in the class members
 	void deviceGetPhysical( ) {
 		uint32 deviceCount = 0;
-		DynArray<String> discardedPhysicalDevices;
-		DynArray<_VkPhysicalDevice*> physicalDevices;
-		//Map<String, uint32> discardedPhysicalDevices(0xFFFF, 0xFFFF);
-		//Map<_VkPhysicalDevice*, uint32> physicalDevices(0xFFFF, 0xFFFF);
+		RTArray<String> discardedPhysicalDevices;
+		RTArray<_VkPhysicalDevice*> physicalDevices;
 
 
-		//Get physical devices
-		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-		// sleep(500);
-		if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")
+		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);							//Get physical device count
+		if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")			//Check if there is at least one deice that supports vulkan
 		//FIXME remove else
-		//BUG this doesn't work without the else.  probably a synchronization problem
+		//BUG this doesn't work without the else.  probably a thread synchronization problem
 		else {
 			//Get physical devices
-			DynArray<VkPhysicalDevice> physDevices(deviceCount);																//Get physical device count
-			//DynArray<VkPhysicalDevice> physDevices;																//Get physical device count
-			//physDevices.resize(deviceCount);
-			vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin( ));										//Get physical devices
+			RTArray<VkPhysicalDevice> physDevices(deviceCount);									//Create physical device array
+			vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin( ));				//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.count( ); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
 				VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
@@ -219,6 +213,7 @@ namespace lux::core::dvc{
 		}
 
 		//TODO different score for graphics and compute
+		//TODO add support for multi gpu systems
 		#define physDev (*physicalDevices[i])
 		if(physicalDevices.count( ) > 0) {								//If there are suitable devices
 			graphics.PD = *physicalDevices[0];								//set graphics device at default value
@@ -282,7 +277,7 @@ namespace lux::core::dvc{
 	//*   pLD: a pointer to the logical device where to store the created device
 	//*   pComputeQueues: a pointer to an array of compute queues
 	//*       This is used to know if the physical device is for graphics, computation or is secondary
-	void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, DynArray<VkQueue>* pComputeQueues) {
+	void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RTArray<VkQueue>* pComputeQueues) {
 		//List the queues of the device as unique int32s
 		std::set<int32> uniqueQueueFamilyIndices;
 		if(sameDevice(*pPD, graphics.PD)) {									//If it's the main device for graphics,
@@ -298,7 +293,7 @@ namespace lux::core::dvc{
 		//Queue infos
 		//TODO for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
 		//TODO other simes, a GPU memory cell creates an exception when the lines are generated for the first time
-		DynArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
+		RTArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
 				.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type

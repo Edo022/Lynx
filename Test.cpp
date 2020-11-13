@@ -40,7 +40,7 @@ int h(const char* b, int hh) {
 	return 0;
 }
 
-void hg(lux::DynArray<uint16>){
+void hg(lux::RTArray<uint16>){
 	printf("\nKEYYYY");
 }
 

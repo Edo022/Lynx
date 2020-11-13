@@ -8,8 +8,8 @@
 
 
 namespace lux::core::g::cmd{
-	extern VkCommandPool			singleTimeCommandPool;
-	extern DynArray<VkCommandBuffer>	singleTimeCommandBuffers;
+	extern VkCommandPool				singleTimeCommandPool;
+	extern RTArray<VkCommandBuffer>	singleTimeCommandBuffers;
 
 
 	void preInit( );

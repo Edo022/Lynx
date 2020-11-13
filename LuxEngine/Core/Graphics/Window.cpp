@@ -106,7 +106,7 @@ namespace lux::core::g::wnd{
 		//Search for validation layers
 		uint32 layerCount = 0;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);					//Get layer count
-		DynArray<VkLayerProperties> availableLayers(layerCount);
+		RTArray<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));	//Get layers
 		//for(const char* layerName : validationLayers) {									//For every layer,
 		//	for(const auto& layerProperties : availableLayers) {							//Check if it's available

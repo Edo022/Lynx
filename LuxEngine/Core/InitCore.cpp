@@ -64,8 +64,8 @@ namespace lux::thr{
 	#elif defined __linux__
 	pthread_t mngThr;
 	#endif
-	DynArray<ThrPoolElm>		threads;			//The threads of the thread pool with their states and functions
-	Map<ThrState, uint32>	thrStates;		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+	RTArray<ThrPoolElm>		threads;			//The threads of the thread pool with their states and functions
+	RAArray<ThrState, uint32>	thrStates;		//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 
 
 	Queue<ExecFuncDataBase*> maxpq;			//List of maximum priority functions waiting to be executed
@@ -78,7 +78,7 @@ namespace lux::thr{
 	AutoInit(LUX_H_THREAD_POOL){
 		//TODO remove useless debug junk
 		int h = LUX_CNF_GLOBAL_THREAD_POOL_SIZE;
-		threads = DynArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+		threads = RTArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.clear();
 
 		maxpq.clear();
