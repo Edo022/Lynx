@@ -132,7 +132,7 @@ namespace lux::ram{
 	//If you don't, the elements will remain uninitialized
 	template<class type> inline ptr<type> allocBck(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
 		evaluateCellClass(vSize, vClass);
-		param_error_2(vSize % sizeof(type) != 0, vSize, "The type is %llu bytes large and vSize (%llu) is not a multiple of it. If not zero, vSize must be a multiple of the type's size", sizeof(type), vSize);
+		luxCheckParam(vSize % sizeof(type) != 0, vSize, "The type is %llu bytes large and vSize (%llu) is not a multiple of it. If not zero, vSize must be a multiple of the type's size", sizeof(type), vSize);
 		Cell_t* cell = ram::alloc_call(vSize, vClass);
 		init_memory<type>(cell->address, vSize, pValue);
 		return cell;

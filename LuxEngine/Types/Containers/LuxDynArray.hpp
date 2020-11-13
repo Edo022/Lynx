@@ -48,7 +48,7 @@ namespace lux {
 
 
 		lux_sc_generate_nothing_constructor(DynArray) data_{ data_ } { }
-		luxDebug(bool checkNeg(iter n) { param_error_2(n < 0, n, "Size cannot be negative"); return true; })
+		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
 		//! [#] Structure is uninitialized            | >>> NOT CHECKED <<<
 		inline DynArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
 
@@ -64,7 +64,7 @@ namespace lux {
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
 		template<class cIter> inline DynArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocArr(sizeof(type), pContainer.count( ), CellClass::AT_LEAST_CLASS_B) } {
-			param_error_2(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
+			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
 			//ram::cpy(pContainer.begin( ), data_, pContainer.count( ));
@@ -74,7 +74,7 @@ namespace lux {
 		//Initializes the array using a list of elements of the same type
 		inline DynArray(const std::initializer_list<type>& pElements) : data_{ ram::allocArr(sizeof(type), pElements.size( )) } {
 			//TODO ^ C strings get destroyed when the function returns
-			//param_error_2(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
+			//luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
 		}
@@ -92,7 +92,7 @@ namespace lux {
 		//*   Returns  | the new count
 		//TODO totally useless. Just don't return
 		inline iter resize(const iter vNewSize) {
-			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
+			checkInit; luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
 			ram::reallocArr<type>(data_, sizeof(type), vNewSize, type( ));
 			//return data_.size( );
 			return data_.count( );
@@ -138,7 +138,7 @@ namespace lux {
 		inline type*  end( )	const override { checkInit; return data_.end( );			}
 
 		inline type&  operator[](const iter vIndex) const {
-			checkInit;  checkCount; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex >= count( ), vIndex, "Index is out of range");
+			checkInit;  checkCount; luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
 			return data_[vIndex];
 		}
 

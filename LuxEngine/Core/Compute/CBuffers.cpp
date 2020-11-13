@@ -78,12 +78,12 @@ namespace lux::core::c::buffers{
 				break;
 			}
 			case VK_ERROR_OUT_OF_HOST_MEMORY: { //TODO free cells when there is not much memory left
-				lux_error(true, "Vulkan error: Out of host memory");
+				luxCheckCond(true, "Vulkan error: Out of host memory");
 				break;
 			}
 			case VK_ERROR_TOO_MANY_OBJECTS: {
 				CaseOutOfHostMemory:
-				lux_error(true, "Vulkan error: Too many objects. This error is caused by the engine. Contact the developer. He thought this couldn't happen, but somehow it did");
+				luxCheckCond(true, "Vulkan error: Too many objects. This error is caused by the engine. Contact the developer. He thought this couldn't happen, but somehow it did");
 				break;
 			}
 			default: printError("Failed to allocate buffer memory", true, -1);

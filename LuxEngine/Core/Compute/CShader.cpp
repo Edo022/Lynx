@@ -468,10 +468,10 @@ namespace lux::core::c::shaders{
 	//> Engine internal use
 	LuxShader newShader(const DynArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
-		param_error_2(pCells.count() == 0, pCells, "A shader must use at least one cell. The provided cell array has size 0");
-		param_error_2(vGroupCountX < 1, vGroupCountX, "The group count must be at least 1");
-		param_error_2(vGroupCountY < 1, vGroupCountY, "The group count must be at least 1");
-		param_error_2(vGroupCountZ < 1, vGroupCountZ, "The group count must be at least 1");
+		luxCheckParam(pCells.count() == 0, pCells, "A shader must use at least one cell. The provided cell array has size 0");
+		luxCheckParam(vGroupCountX < 1, vGroupCountX, "The group count must be at least 1");
+		luxCheckParam(vGroupCountY < 1, vGroupCountY, "The group count must be at least 1");
+		luxCheckParam(vGroupCountZ < 1, vGroupCountZ, "The group count must be at least 1");
 		LuxShader_t shader;
 
 		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers

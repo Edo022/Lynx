@@ -56,7 +56,7 @@ namespace lux {
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
 		inline Array(const std::initializer_list<type>& pElements) {
-			param_error_2(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
+			luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 			__lp_lux_static_array_init;
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
 		}
@@ -82,7 +82,7 @@ namespace lux {
 		////*   vNewSize: the new count of the array
 		////*   Returns the new count. (allocBck)-1 if the count is invalid
 		//inline uint64 resize(const iter vNewSize) {
-		//	checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
+		//	checkInit; luxCheckParam(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
 		//	type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
 		//	if(__lp_data_r != nullptr)data_ = __lp_data_r;
 		//	else printError("Nullptr returned by malloc", true, -1);
@@ -98,8 +98,8 @@ namespace lux {
 
 		template<class cIter> inline void operator=(const ContainerBase<type, cIter>& pContainer) {
 			isInit(pContainer);
-			//param_error_2(pContainer.size( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
-			param_error_2(pContainer.count( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
+			//luxCheckParam(pContainer.size( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
+			luxCheckParam(pContainer.count( ) > count_, pContainer, "%d-elements CTArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
 			//data_ = (type*)malloc(pContainer.count( ));
 			data_ = (type*)malloc(pContainer.size( ));
 			//memcpy(data_, pContainer.begin( ), pContainer.count( ));
@@ -122,7 +122,7 @@ namespace lux {
 		inline type*	end( )		const override { checkInit; return &data_[count_];		}
 
 		inline type&	operator[](const uint64 vIndex) const {
-			checkInit; checkCount; param_error_2(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); param_error_2(vIndex >= count_, vIndex, "Index is out of range");
+			checkInit; checkCount; luxCheckParam(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); luxCheckParam(vIndex >= count_, vIndex, "Index is out of range");
 			return data_[vIndex];
 		}
 	};
@@ -238,7 +238,7 @@ namespace lux {
 //		//*   vNewSize: the new count of the array
 //		//*   Returns the new count. (allocBck)-1 if the count is invalid
 //		inline iter resize(const iter vNewSize) {
-//			checkInit; param_error_2(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
+//			checkInit; luxCheckParam(vNewSize < 0, vNewSize, "The size of an array cannot be negative");
 //			type* __lp_data_r = (type*)realloc(data_, sizeof(type) * vNewSize);
 //			if(__lp_data_r != nullptr)data_ = __lp_data_r;
 //			else printError("Nullptr returned by malloc", true, -1);
@@ -274,7 +274,7 @@ namespace lux {
 //		inline type*	end( )		const override { checkInit; return &data_[size_ - 1];		}
 //
 //		inline type&	operator[](const iter vIndex) const {
-//			checkInit; checkCount; param_error_2(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); param_error_2(vIndex >= count( ), vIndex, "Index is out of range");
+//			checkInit; checkCount; luxCheckParam(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
 //			return data_[vIndex];
 //		}
 //	};

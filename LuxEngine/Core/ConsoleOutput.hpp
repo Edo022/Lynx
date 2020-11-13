@@ -19,32 +19,43 @@ namespace lux::out{
 
 
 
-	#define lux_error(condition, ...)													\
-		luxDebug(																		\
-		if(condition) {																	\
-			Failure printf("Error in function %s, line %d:", __FUNCTION__, __LINE__);	\
-			Failure printf(__VA_ARGS__);												\
-			lux::out::__stop__();														\
-		}																				\
-	)
-	#define param_error_2(condition, param, ...) luxDebug(																			\
+	//Prints an error if the condition is not satisfied, specifying the line, function, file and thread where the error occurred
+	//Debug mode only
+	//*   condition | The condition to check
+	//*   __args ---| printf arguments to print the error
+	#define luxCheckCond(condition, ...) luxDebug({																					\
 		if(condition) {																												\
-			/*Failure printf("Error in file %s, function %s, line %d:", __FILE__, __FUNCTION__, __LINE__);*/						\
-			/*Failure printf("Error in file %s, function %s, line %d:", __FILE__, __builtin_FUNCTION(), __LINE__);*/				\
-			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);											\
+			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
+			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
+			Failure printf(__VA_ARGS__);																							\
+			NormalNoNl lux::out::__stop__();																						\
+		}																															\
+	)}
+	//Prints an error if the condition is not satisfied, specifying the line, function, file and thread where the error occurred
+	//Debug mode only
+	//*   condition | The condition to check
+	//*   param ----| The function parameter to check
+	//*   __args ---| printf arguments to print the error
+	#define luxCheckParam(condition, param, ...) luxDebug({																			\
+		if(condition) {																												\
+			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
 			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\": %s\n", #param, __FUNCTION__, __VA_ARGS__);	\
-			/* Failure printf(__VA_ARGS__);*/																						\
-			lux::out::__stop__();																									\
+			NormalNoNl lux::out::__stop__();																						\
 		}																															\
-	)
-	#define ptr_validity(ptr, __type, ...) { luxDebug(						\
-		if(ptr){															\
-			try{ __type __var = *ptr; }										\
-			catch(std::exception e) { param_error(ptr, __VA_ARGS__); }		\
-		}																	\
 	)}
-
+	//Prints an error if the pointer is unallocated or invalid. This check can still fail
+	//nullptr is considered valid
+	//*   ptr ---| The pointer to check
+	//*   __type | The type of the pointer
+	//*   __args | printf arguments to print the error
+	//Debug mode only
+	#define luxCheckRawPtr(ptr, __type, ...) luxDebug({							\
+		if(ptr){																\
+			try{ __type __var = *ptr; }											\
+			catch(std::exception e) { luxCheckParam(true, ptr, __VA_ARGS__); }	\
+		}																		\
+	)}
 
 
 	//TODO REMOVE

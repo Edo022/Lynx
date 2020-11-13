@@ -144,12 +144,12 @@ namespace lux{
 
 
 				bool __cellAdrC(Cell_t* vCell, type* vAddress) const {
-					param_error_2(!vCell && vAddress, vCell, "nullptr cell used to initialize a lux::ram::ptr. If a pointer has a valid address, the cell must also be valid");
-					param_error_2(vCell && !vAddress, vCell, "nullptr address used to initialize a lux::ram::ptr. If a pointer has a valid cell, the address must be in its range");
+					luxCheckParam(!vCell && vAddress, vCell, "nullptr cell used to initialize a lux::ram::ptr. If a pointer has a valid address, the cell must also be valid");
+					luxCheckParam(vCell && !vAddress, vCell, "nullptr address used to initialize a lux::ram::ptr. If a pointer has a valid cell, the address must be in its range");
 					//ok, if they're both nullptr the ptr is initialized with nullptr
 
-					ptr_validity(vAddress, type, "Invalid address used to initialize a lux::ram::ptr");
-					ptr_validity(vCell, Cell_t, "Invalid Cell_t pointer used to initialize a lux::ram::ptr");
+					luxCheckRawPtr(vAddress, type, "Invalid address used to initialize a lux::ram::ptr");
+					luxCheckRawPtr(vCell, Cell_t, "Invalid Cell_t pointer used to initialize a lux::ram::ptr");
 					return true;
 				};
 			#endif
@@ -158,10 +158,10 @@ namespace lux{
 
 
 
-			#define checkNullptr lux_error(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", "h")
-			//#define checkNullptr lux_error(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", __FUNCTION__)
-			#define checkSizeD   lux_error(size( ) == 0, "Cannot dereference a pointer pointing to a 0-byte memory allocation")
-			//#define checkCount  lux_error(count( ) == 0, "This function cannot be called on pointers pointing to a 0-byte memory allocation")
+			#define checkNullptr luxCheckCond(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", "h")
+			//#define checkNullptr luxCheckCond(!address, "function %s  have been called on a lux::ram::ptr with value nullptr", __FUNCTION__)
+			#define checkSizeD   luxCheckCond(size( ) == 0, "Cannot dereference a pointer pointing to a 0-byte memory allocation")
+			//#define checkCount  luxCheckCond(count( ) == 0, "This function cannot be called on pointers pointing to a 0-byte memory allocation")
 
 
 
@@ -174,10 +174,10 @@ namespace lux{
 			#define checka luxDebug(																				\
 				if(address && ((uint64)address < (uint64)cell->address)){											\
 					if(cell->cellSize){																				\
-						lux_error((uint64)address >= ((uint64)cell->address) + cell->cellSize, __checka__err__);	\
+						luxCheckCond((uint64)address >= ((uint64)cell->address) + cell->cellSize, __checka__err__);	\
 					}																								\
 					else{																							\
-						lux_error((uint64)address != (uint64)cell->address + cell->cellSize, __checka__err__);		\
+						luxCheckCond((uint64)address != (uint64)cell->address + cell->cellSize, __checka__err__);		\
 					}																								\
 				}																									\
 			);
@@ -261,7 +261,7 @@ namespace lux{
 			//TODO don't use dummy cell. It can cause bugs
 			//inline void operator=(Cell_t* const vCell){		if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	cell->owners++; checka; }
 			//inline void operator=(const ptr<type>& pPtr){	if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				cell->owners++; checka; }
-			inline void operator=(Cell_t* const vCell){		ptr_validity(vCell, Cell_t, "Invalid pointer passed to assignment operator") if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	if(cell) cell->owners++; checka; }
+			inline void operator=(Cell_t* const vCell){		luxCheckRawPtr(vCell, Cell_t, "Invalid pointer passed to assignment operator") if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	if(cell) cell->owners++; checka; }
 			// [#] cell  is nullptr        | k | it can be. If it is, don't change owner count
 			// [#] vCell is nullptr        | k | it can be. If it is, don't change its owner count
 			// [#] vCell is invalid        | k | print error
@@ -336,7 +336,7 @@ namespace lux{
 			// [#] address is nullptr      | k | print error
 			//OK
 
-			inline uint64					operator+(const type*		vPtr) const { checkInit; checkNullptr; param_error_2(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address	+	(uint64)vPtr;			}
+			inline uint64					operator+(const type*		vPtr) const { checkInit; checkNullptr; luxCheckParam(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address	+	(uint64)vPtr;			}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			// [#] vPtr is nullptr         | k | print error
@@ -354,7 +354,7 @@ namespace lux{
 			// [#] address is nullptr      | k | print error
 			//OK
 
-			inline uint64					operator-(const type*		vPtr) const { checkInit; checkNullptr; param_error_2(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address - (uint64)vPtr;				}
+			inline uint64					operator-(const type*		vPtr) const { checkInit; checkNullptr; luxCheckParam(vPtr == nullptr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics"); return (uint64)			address - (uint64)vPtr;				}
 			// [#] Uninitialized structure | k | print error
 			// [#] address is nullptr      | k | print error
 			// [#] vPtr is nullptr         | k | print error
@@ -440,7 +440,7 @@ namespace lux{
 			// [#] No init required
 			//OK
 
-			inline operator type*( )	const { checkInit; /*checkCount; */lux_error(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
+			inline operator type*( )	const { checkInit; /*checkCount; */luxCheckCond(!address, "Cannot dereference a nullptr"); return address; }			//ram::ptr<type> to type* implicit conversion
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | print error
 
@@ -454,7 +454,7 @@ namespace lux{
 			// [#] address is nullptr         | k | it can be
 			//OK
 
-			inline type& operator [](const uint64 vIndex)const { checkInit; checkSize; param_error_2((vIndex < 0 && vIndex > prior( )) || (vIndex >= 0 && vIndex > latter( )), vIndex, "Index is out of range"); return address[vIndex]; }
+			inline type& operator [](const uint64 vIndex)const { checkInit; checkSize; luxCheckParam((vIndex < 0 && vIndex > prior( )) || (vIndex >= 0 && vIndex > latter( )), vIndex, "Index is out of range"); return address[vIndex]; }
 			// [#] Uninitialized structure    | k | print error
 			// [#] address is nullptr         | k | it can be
 			// [#] vIndex is negative         | k | print error

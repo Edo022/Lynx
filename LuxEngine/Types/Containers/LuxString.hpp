@@ -70,7 +70,7 @@ namespace lux {
 		inline char8*	end( )		const override { checkInit; return str.end( );			}
 
 		inline char8&	operator[](const uint32 vIndex) const		   {
-			checkInit; param_error_2(vIndex < 0, vIndex, "Index cannot be negative"); param_error_2(vIndex > count(), vIndex, "Index is out of range");
+			checkInit; luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex > count(), vIndex, "Index is out of range");
 			return str[vIndex];
 		}
 

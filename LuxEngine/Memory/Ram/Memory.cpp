@@ -61,8 +61,8 @@ namespace lux::ram{
 			else														pClass = CellClass::CLASS_0;
 		}
 
-		param_error_2(vSize > 0xFFFFffff, vSize, "Cell size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", vSize);
-		param_error_2((uint32)pClass < vSize, pClass,
+		luxCheckParam(vSize > 0xFFFFffff, vSize, "Cell size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", vSize);
+		luxCheckParam((uint32)pClass < vSize, pClass,
 			"Requested %lu-bytes class for %llu-bytes allocation. The cell class must be large enought to contain the cell. %s",
 			(uint32)pClass, vSize, "Use lux::CellClass::AUTO to automatically choose it"
 		);
