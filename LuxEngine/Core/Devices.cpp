@@ -184,7 +184,10 @@ namespace lux::core::dvc{
 
 		//Get physical devices
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+		// sleep(500);
 		if(deviceCount == 0) luxCheckCond(true, "Failed to find GPUs with Vulkan support")
+		//FIXME remove else
+		//BUG this doesn't work without the else.  probably a synchronization problem
 		else {
 			//Get physical devices
 			DynArray<VkPhysicalDevice> physDevices(deviceCount);																//Get physical device count
