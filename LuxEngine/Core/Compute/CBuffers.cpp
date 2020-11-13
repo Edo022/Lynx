@@ -73,7 +73,7 @@ namespace lux::core::c::buffers{
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: goto CaseOutOfHostMemory;
-					default: printError("Failed to allocate buffer memory", true, -1);
+					default: luxCheckCond(true, "Failed to allocate buffer memory");
 				}
 				break;
 			}
@@ -86,7 +86,7 @@ namespace lux::core::c::buffers{
 				luxCheckCond(true, "Vulkan error: Too many objects. This error is caused by the engine. Contact the developer. He thought this couldn't happen, but somehow it did");
 				break;
 			}
-			default: printError("Failed to allocate buffer memory", true, -1);
+			default: luxCheckCond(true, "Failed to allocate buffer memory");
 		}
 
 		luxCheckVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0), "Failed to bind buffer");

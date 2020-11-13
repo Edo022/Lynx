@@ -148,7 +148,7 @@ namespace lux::core::c::shaders{
 				case LUX_DEF_SHADER_2D_LINE: shaderFileName = "Line2D"; break;
 				case LUX_DEF_SHADER_2D_BORDER: shaderFileName = "Border2D"; break;
 				case LUX_DEF_SHADER_CLEAR: shaderFileName = "FloatToIntBuffer"; break;
-				default: printError("Unknown shader", vRenderShader, true);
+				default: luxCheckCond(true, "Unknown shader: %d", vRenderShader);
 			}
 			CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
 
