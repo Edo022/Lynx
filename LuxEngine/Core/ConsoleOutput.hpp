@@ -19,7 +19,7 @@ namespace lux::out{
 
 
 
-	//Prints an error if the condition is not satisfied, specifying the line, function, file and thread where the error occurred
+	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
 	//Debug mode only
 	//*   condition | The condition to check
 	//*   __args ---| printf arguments to print the error
@@ -31,7 +31,7 @@ namespace lux::out{
 			NormalNoNl lux::out::__stop__();																						\
 		}																															\
 	)}
-	//Prints an error if the condition is not satisfied, specifying the line, function, file and thread where the error occurred
+	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
 	//Debug mode only
 	//*   condition | The condition to check
 	//*   param ----| The function parameter to check
@@ -41,6 +41,20 @@ namespace lux::out{
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
 			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\": %s\n", #param, __FUNCTION__, __VA_ARGS__);	\
+			NormalNoNl lux::out::__stop__();																						\
+		}																															\
+	)}
+	//Prints an error if the vulkan function does not return VK_SUCCESS, specifying the line, function, file and thread where the error occurred
+	//Debug mode only
+	//*   funcCall | The call to the vulkan function to check
+	//*   __args --| printf arguments to print the error
+	#define luxCheckVk(funcCall, ...) luxDebug({																					\
+		uint64 callRes = funcCall; const char* callStr = #funcCall;																	\
+		if(callRes != VK_SUCCESS) {																									\
+			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
+			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
+			Failure printf("The Vulkan function call \"%s\" returned %d", callStr, callRes);										\
+			Failure printf(__VA_ARGS__);																							\
 			NormalNoNl lux::out::__stop__();																						\
 		}																															\
 	)}
