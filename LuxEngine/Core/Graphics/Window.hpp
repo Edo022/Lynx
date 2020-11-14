@@ -1,4 +1,3 @@
-
 #pragma once
 #define LUX_H_WINDOW
 #include "GLFW/glfw3.h"

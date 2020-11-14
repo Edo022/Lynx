@@ -1,4 +1,3 @@
-
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Core/Compute/CShader.hpp"
 #include "LuxEngine/Core/Core.hpp"
@@ -7,12 +6,16 @@
 
 
 
-lux::input::InputState* lux::input::inStates;
 
 
 
 
 namespace lux::input{
+	InputState* inStates;
+
+
+
+
 	#define gtollx(n) ((n) / core::g::swapchain::swapchainExtent.width)
 	#define gtolly(n) ((n) / core::g::swapchain::swapchainExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
@@ -25,7 +28,7 @@ namespace lux::input{
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
 		*rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
 		*rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
-		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
+		 rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
 	}
 
 
@@ -41,7 +44,7 @@ namespace lux::input{
 
 
 
-
+	//FIXME swrite a working input function
 	//TODO add key seqeuence tree
 
 

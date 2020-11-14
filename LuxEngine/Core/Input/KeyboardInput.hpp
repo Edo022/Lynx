@@ -1,4 +1,7 @@
 #pragma once
+#define LUX_H_KEYBOARD_INPUT
+
+
 
 
 enum LuxKeyboardKeys : uint16 {

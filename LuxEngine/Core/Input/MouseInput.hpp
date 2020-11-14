@@ -1,4 +1,6 @@
 #pragma once
+#define LUX_H_MOUSE_INPUT
+
 
 
 

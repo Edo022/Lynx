@@ -1,11 +1,10 @@
 ﻿#pragma once
-
+#define LUX_H_INPUT_STATE
 #include "GLFW/glfw3.h"
 #include <initializer_list>
-#include "LuxEngine/macros.hpp"                     // for scast, min
-#include "LuxEngine/Types/Containers/LuxDynArray.hpp"  // for lux::Array
-#include "LuxEngine/Types/Integers/Integers.hpp"    // for uint16
-// #include "minwindef.h"                            // for min
+#include "LuxEngine/macros.hpp"
+#include "LuxEngine/Types/Containers/LuxDynArray.hpp"
+#include "LuxEngine/Types/Integers/Integers.hpp"
 
 
 
@@ -17,6 +16,7 @@ namespace lux::input{
 		LUX_PRESS = 1 << 14,
 		LUX_REPEAT = 1 << 13
 	};
+
 
 
 
