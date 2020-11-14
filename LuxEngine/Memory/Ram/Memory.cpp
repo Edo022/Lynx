@@ -2,7 +2,6 @@
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include <cstring>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-//#include "LuxEngine/Core/Core.h"
 
 
 
@@ -14,38 +13,10 @@ namespace lux::ram{
 	// uint32 allocated;
 
 
-	// AutoInit(LUX_H_MEMORY){
-	// 	buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
-	// 	//Init buffer types
-	// 	for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
-	// 		buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
-	// 		//TODO choose number of buffers based on the system memory
-	// 		buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
-	// 	}
-	// }
 
 
 
 
-
-	void init( ){
-		// buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
-
-		// //Init buffer types
-		// for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
-		// 	buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
-		// 	//TODO choose number of buffers based on the system memory
-		// 	buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
-		// }
-	}
-
-
-
-
-
-
-	//TODO use offset as constant instead of literal
-	//!OK
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass) {
 		if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
 			if(vSize > ((uint32)pClass - 1)) pClass = CellClass::AUTO;				//If the class is too small, set it to AUTO
@@ -110,7 +81,6 @@ namespace lux::ram{
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
 			//TODO set right like
 			if(!buffer.memory) {
-			//if(true) {
 				#ifdef _WIN64
 				buffer.memory = _aligned_malloc((uint32)vClass ? bufferSize : vSize, LuxMemOffset);//Allocate new memory if the buffer has not already been allocated
 				#elif defined __linux__
@@ -128,34 +98,18 @@ namespace lux::ram{
 			cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom count cells
 
 
-			//system("pause");
 			return cell;
 		}
 	}
 
 
-	// template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass, const type& pValue){
-	// 	ptr<type> ptr = ram::allocBck(vSize, vClass);
-	// 	for(auto e : ptr) e = pValue;
-	// 	return ptr;
-	// }
 
-
-	// template<class type> ptr<type> allocArr(const uint64 vSize, const CellClass vClass){
-	// 	ptr<type> ptr = ram::allocBck(vSize, vClass);
-	// 	for(auto e : ptr) e = type( );
-	// 	return ptr;
-	// }
 
 
 
 
 
 	void reallocBck(Cell_t* pCell, const uint64 vSize, const CellClass vCellClass){
-		//FIXME pCell can be nullptr. probably.
-		//FIXME it's the same as when pCell->address is nullpt
-		//If the cell is not allocated, allocate it and return
-		// if(!pCell->address) { [[unlikely]]
 		if(!pCell || !pCell->address) { [[unlikely]]
 			pCell = allocBck(vSize, vCellClass);
 			return;
@@ -168,13 +122,10 @@ namespace lux::ram{
 		}
 		//else (if the class has to be changed)
 		else if(vSize != pCell->cellSize) {
-			Cell_t * cell = allocBck(vSize, vCellClass);	//Allocate a new cell
-			//BUG memcpy copies the data in the cells structure and not the address they are pointing to
-			//FIXME wtf is this? cells don't have an implicit pointer conversion
-			// memcpy(cell, pCell, pCell->cellSize);		//Copy the old data in the new cell
+			Cell_t * cell = allocBck(vSize, vCellClass);				//Allocate a new cell
 			memcpy(cell->address, pCell->address, pCell->cellSize);		//Copy the old data in the new cell
-			ram::free(pCell);							//Free the old memory
-			*pCell = *cell;								//Update the cell (and all the pointers pointing to it)
+			ram::free(pCell);											//Free the old memory
+			*pCell = *cell;												//Update the cell (and all the pointers pointing to it)
 		}
 	}
 

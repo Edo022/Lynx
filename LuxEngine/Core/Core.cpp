@@ -1,6 +1,4 @@
-﻿
-
-#include "LuxEngine/Threads/ThreadPool.hpp"
+﻿#include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
@@ -24,51 +22,25 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_CORE);
-// #pragma optimize("", on)
+
 namespace lux::core{
-	// double						NoInitVar(FPS);
-	// float						NoInitVar(FOV);
-	// bool						NoInitVar(running);
-	// bool						NoInitVar(useVSync);
-	// bool						NoInitVar(initialized);
-	// uint32						NoInitVar(frames);
+	double	FPS;
+	float	FOV;
+	bool	running;
+	bool	useVSync;
+	bool	initialized = false;
+	uint32	frames 		= 0;
 
-	// VkInstance					NoInitVar(instance);
-	// VkDebugUtilsMessengerEXT	NoInitVar(debugMessenger);
-	// VkSurfaceKHR				NoInitVar(surface);
-
-	// const char**				NoInitVar(validationLayers);
-	// const char**				NoInitVar(requiredDeviceExtensions);
-	// uint32						NoInitVar(validationLayersNum);
-	// uint32						NoInitVar(requiredDeviceExtensionsNum);
-	// //DynArray<const String>	NoInitLux(validationLayers);
-	// //DynArray<const String>	NoInitLux(requiredDeviceExtensions);
-	double			FPS;
-	float			FOV;
-	bool			running;
-	bool			useVSync;
-	bool			initialized = false;
-	uint32			frames = 0;
-
-	VkInstance   				instance = (VkInstance)malloc(sizeof(VkInstance));
-	VkSurfaceKHR 				surface  = (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
+	VkInstance   				instance 					= (VkInstance)  malloc(sizeof(VkInstance  ));
+	VkSurfaceKHR 				surface  					= (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
 	VkDebugUtilsMessengerEXT	debugMessenger;
 
-	uint32 			validationLayersNum        	= 1;
-	const  char** 	validationLayers         	= (const char**)malloc(sizeof(const char*) * validationLayersNum);
-	uint32 			requiredDeviceExtensionsNum	= 1;
-	const  char** 	requiredDeviceExtensions 	= (const char**)malloc(sizeof(const char*) * requiredDeviceExtensionsNum);
-	//DynArray<const String>	NoInitLux(validationLayers);
-	//DynArray<const String>	NoInitLux(requiredDeviceExtensions);
+	uint32 						validationLayersNum        	= 1;
+	const  char** 				validationLayers         	= { new const char*{ "VK_LAYER_KHRONOS_validation"   }};
+	uint32 						requiredDeviceExtensionsNum	= 1;
+	const  char** 				requiredDeviceExtensions 	= { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
 
-	AutoInit(LUX_H_CORE){
-		validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
-		// validationLayers[0] =			{ "VK_LAYER_LUNARG_standard_validation" };
-		// validationLayers[0] =			{ "VkLayer_khronos_validation" };
-		requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-	}
+
 
 
 
@@ -77,28 +49,11 @@ namespace lux::core{
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 
-	//TODO merge post initializers in a single header
 
 
 
 
 
-	//FIXME fix functions
-
-	void preInit_( ){
-		// initialized = false;
-		// frames = 0;
-
-		// instance = (VkInstance)malloc(sizeof(VkInstance));
-		// surface = (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
-
-		// validationLayers =			(const char**)malloc(sizeof(const char*) * (validationLayersNum = 1));
-		// requiredDeviceExtensions =	(const char**)malloc(sizeof(const char*) * (requiredDeviceExtensionsNum = 1));
-		// validationLayers[0] =			{ "VK_LAYER_KHRONOS_validation" };
-		// requiredDeviceExtensions[0] =	{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-		//validationLayers.DynArray::DynArray( );			validationLayers = { "VK_LAYER_KHRONOS_validation" };
-		//requiredDeviceExtensions.DynArray::DynArray( );	requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-	}
 
 
 	//Deprecated function
@@ -108,38 +63,19 @@ namespace lux::core{
 		#ifdef _WIN64
 		return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
 		#elif defined __linux__
-		// return system((c::shaders::shaderPath + "/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
 		return system((lux::sys::dir::thisDir + "/deps/Vulkan_1.2.154.0_linux/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
 		#endif
 	}
 
 
 
-	//TODO remove debug stuff from release config
-	//TODO https://docs.microsoft.com/en-us/cpp/build/how-to-debug-a-release-build?view=vs-2019
 
-
-
-	#pragma optimize("g", off)
 	void preInit( ){
 		static bool once = true;
 		if(once){
 			once = false;
-
-			ram::init( );
-			;	__lp_goniometric_functions_init( );
-			;	sys::init( );
-			// ;		thr::preInit( ); thr::init( );
-			;			core::preInit_( ); //This
-			// ;			dvc::preInit( );
-			// ;			c::preInit( );
-			// // ;			//c::buffers::    preInit( );
-			// ;				c::shaders::preInit( );
-			// ;			g::preInit( );
-			// ;				g::cmd::preInit( );
-			// ;				g::out::preInit( );
-			// ;				g::swapchain::preInit( );
-			// ;				g::wnd::preInit( );
+			__lp_goniometric_functions_init( );
+			sys::init( );
 		}
 	}
 
@@ -156,12 +92,9 @@ namespace lux::core{
 			std::thread renderThr(&run, useVSync, 45);
 			running = true;
 
-			// while(!initialized) sleep(10);
-			//renderThr.detach( );
 			renderThr.join( );
 		}
 	}
-	#pragma optimize("g", on)
 
 
 
@@ -216,11 +149,6 @@ namespace lux::core{
 
 
 	void mainLoop( ) {
-		//FIXME fix
-		// #ifdef _WIN64
-		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  User input"));
-		// #elif defined __linux__
-		// #endif
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
 		std::thread FPSCounterThr(&runFPSCounterThr);		FPSCounterThr.detach( );
 		std::thread renderThr(&runRenderThr);				renderThr.detach( );
@@ -235,11 +163,6 @@ namespace lux::core{
 
 
 	void runRenderThr( ) {
-		//FIXME fix
-		// #ifdef _WIN64
-		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  Render"));
-		// #elif defined __linux__
-		// #endif
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
 		while(running) {
 			g::drawFrame( );
@@ -250,33 +173,17 @@ namespace lux::core{
 	}
 
 
-// #include "LuxEngine/Core/Graphics/Graphics.h"
+
 	//TODO add FPS limit
 	void runFPSCounterThr( ) {
-		//FIXME fix
-		// #ifdef _WIN64
-		// luxDebug(SetThreadDescription(__lp_get_thr( ), L"\tLuxEngine  |  FPS counter"));
-		// #elif defined __linux__
-		// #endif
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | FPS"));
-
-		//TODO remove debug junk
-		int last = lux::core::g::objUpdates2D.count();
-		while(true){
-			if(lux::core::g::objUpdates2D.count() != last) {
-				last = lux::core::g::objUpdates2D.count();
-				// throw(std::out_of_range("changed"));
-			}
+		while(running) {
+			static int delay = 1000;
+			sleep(delay);
+			FPS = frames * (1000 / delay);
+			frames = 0;
+			printf("FPS: %lf\n", FPS);
 		}
-
-
-		// while(running) {
-		// 	static int delay = 1000;
-		// 	sleep(delay);
-		// 	FPS = frames * (1000 / delay);
-		// 	frames = 0;
-		// 	printf("FPS: %lf\n", FPS);
-		// }
 	}
 }
 
