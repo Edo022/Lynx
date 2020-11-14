@@ -1,8 +1,7 @@
-
 #pragma once
+#define LUX_H_GCOMMANDS
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/LuxDynArray.hpp"
-#define LUX_H_GCOMMANDS
 
 
 

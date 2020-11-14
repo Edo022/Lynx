@@ -1,10 +1,9 @@
-
-
 #include "LuxEngine/Core/Graphics/GOutput.hpp"
 #include "LuxEngine/Core/Graphics/GSwapchain.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
+
 
 
 
@@ -20,27 +19,14 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_GOUTPUT);
-// #pragma optimize("", on)
+
 namespace lux::core::g::out{
-	// VkRenderPass		NoInitVar(renderPass);
-	// bool				NoInitVar(renderFramebufferResized);
-	VkRenderPass		renderPass;
-	bool				renderFramebufferResized;
+	VkRenderPass	renderPass = nullptr;
+	bool			renderFramebufferResized = false;
 
 
 
 
-
-
-
-
-	// void preInit( ){
-	AutoInit(LUX_H_GOUTPUT){
-		renderPass = nullptr;
-		renderFramebufferResized = false;
-	}
 
 
 
@@ -147,7 +133,6 @@ namespace lux::core::g::out{
 
 
 
-
 	VkImageView swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
 		VkImageViewCreateInfo viewInfo{
 			.sType{ VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO },
@@ -159,7 +144,7 @@ namespace lux::core::g::out{
 				.g{ VK_COMPONENT_SWIZZLE_IDENTITY },
 				.b{ VK_COMPONENT_SWIZZLE_IDENTITY },
 				.a{ VK_COMPONENT_SWIZZLE_IDENTITY },
-		},
+			},
 			.subresourceRange{
 					.aspectMask{ vAspectFlags },
 					.baseMipLevel{ 0 },

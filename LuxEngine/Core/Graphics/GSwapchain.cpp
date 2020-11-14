@@ -1,5 +1,4 @@
-﻿
-#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+﻿#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
 #include "LuxEngine/Core/Compute/CShader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
@@ -11,49 +10,22 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_GSWAPCHAIN);
-// #pragma optimize("", on)
+
 namespace lux::core::g::swapchain{
-	// VkSwapchainKHR			NoInitVar(swapchain);
-	// DynArray<VkImage>			NoInitLux(swapchainImages);
-	// DynArray<VkImageView>		NoInitLux(swapchainImageViews);
-	// VkFormat				NoInitVar(swapchainImageFormat);
-	// VkExtent2D				NoInitVar(swapchainExtent);
-	// DynArray<VkFramebuffer>	NoInitLux(swapchainFramebuffers);
-	VkSwapchainKHR			swapchain;
-	RTArray<VkImage>			swapchainImages;
-	RTArray<VkImageView>		swapchainImageViews;
-	VkFormat				swapchainImageFormat;
-	VkExtent2D				swapchainExtent;
+	VkSwapchainKHR			swapchain = nullptr;
+	RTArray<VkImage>		swapchainImages;
+	RTArray<VkImageView>	swapchainImageViews;
+	#ifdef _WIN64
+		VkFormat			swapchainImageFormat = VkFormat::VK_FORMAT_END_RANGE;
+	#elif defined __linux__
+		VkFormat			swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
+	#endif
+	VkExtent2D				swapchainExtent = { };
 	RTArray<VkFramebuffer>	swapchainFramebuffers;
 
 
 
 
-
-
-
-	// void preInit( ){
-	AutoInit(LUX_H_GSWAPCHAIN){
-		// swapchain = nullptr;
-		// swapchainImages.DynArray::DynArray( );
-		// swapchainImageViews.DynArray::DynArray( );
-		// swapchainImageFormat = VK_FORMAT_END_RANGE;
-		// swapchainExtent = { };
-		// swapchainFramebuffers.DynArray::DynArray( );
-		swapchain = nullptr;
-		swapchainImages = RTArray<VkImage>( );
-		swapchainImageViews = RTArray<VkImageView>( );
-		//TODO check if the windows API updates this
-		#ifdef _WIN64
-		swapchainImageFormat = VkFormat::VK_FORMAT_END_RANGE;
-		#elif defined __linux__
-		swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
-		#endif
-		swapchainExtent = { };
-		swapchainFramebuffers = RTArray<VkFramebuffer>( );
-	}
 
 
 
@@ -92,7 +64,6 @@ namespace lux::core::g::swapchain{
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
 		};
 	}
-
 
 
 

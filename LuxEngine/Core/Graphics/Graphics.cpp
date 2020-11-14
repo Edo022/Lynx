@@ -1,5 +1,3 @@
-
-
 #include <vulkan/vulkan.h>
 #include "LuxEngine/Core/Compute/CShader_t.hpp"
 #include "LuxEngine/Core/Graphics/Graphics.hpp"
@@ -15,50 +13,33 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_GRAPHICS);
-// #pragma optimize("", on)
+
+
+
+
+// Init and debug ---------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
 namespace lux::core::g{
-	// DynArray<VkSemaphore>		NoInitLux(drawFrameImageAquiredSemaphore);
-	// DynArray<VkSemaphore>		NoInitLux(drawFrameObjectsRenderedSemaphore);
-	// DynArray<VkSemaphore>		NoInitLux(drawFrameCopySemaphore);
-	// DynArray<VkSemaphore>		NoInitLux(drawFrameClearSemaphore);
-	// DynArray<VkFence>			NoInitLux(drawFrameImageRenderedFence);
-	// int32					NoInitVar(renderCurrentFrame);
-	// DynArray<obj::Base*>	NoInitLux(objUpdates2D);
-	// FenceDE					NoInitLux(pendingObjectUpdatesFence);
-	RTArray<VkSemaphore>		drawFrameImageAquiredSemaphore;
-	RTArray<VkSemaphore>		drawFrameObjectsRenderedSemaphore;
-	RTArray<VkSemaphore>		drawFrameCopySemaphore;
-	RTArray<VkSemaphore>		drawFrameClearSemaphore;
-	RTArray<VkFence>			drawFrameImageRenderedFence;
-	int32					renderCurrentFrame;
-	RTArray<obj::Base*>	objUpdates2D;
+	RTArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
+	RTArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
+	RTArray<VkSemaphore>	drawFrameCopySemaphore;
+	RTArray<VkSemaphore>	drawFrameClearSemaphore;
+	RTArray<VkFence>		drawFrameImageRenderedFence;
+	int32					renderCurrentFrame = 0;
+	RTArray<obj::Base*>		objUpdates2D;
 	FenceDE					pendingObjectUpdatesFence;
 
 
 
 
 
-	// void preInit( ) {
-	AutoInit(LUX_H_GRAPHICS) {
-		// drawFrameImageAquiredSemaphore.DynArray::DynArray( );
-		// drawFrameObjectsRenderedSemaphore.DynArray::DynArray( );
-		// drawFrameCopySemaphore.DynArray::DynArray( );
-		// drawFrameClearSemaphore.DynArray::DynArray( );
-		// drawFrameImageRenderedFence.DynArray::DynArray( );
-		// renderCurrentFrame = 0;
-		// objUpdates2D.DynArray::DynArray( );
-		// pendingObjectUpdatesFence.FenceDE::FenceDE( );
-		drawFrameImageAquiredSemaphore = RTArray<VkSemaphore>( );
-		drawFrameObjectsRenderedSemaphore = RTArray<VkSemaphore>( );
-		drawFrameCopySemaphore = RTArray<VkSemaphore>( );
-		drawFrameClearSemaphore = RTArray<VkSemaphore>( );
-		drawFrameImageRenderedFence = RTArray<VkFence>( );
-		renderCurrentFrame = 0;
-		objUpdates2D = RTArray<obj::Base*>( );
-		pendingObjectUpdatesFence = FenceDE( );
-	}
 
 
 
@@ -95,19 +76,19 @@ namespace lux::core::g{
 
 
 	void createSyncObjs( ) {
-		drawFrameImageAquiredSemaphore.resize(out::renderMaxFramesInFlight);
-		drawFrameObjectsRenderedSemaphore.resize(out::renderMaxFramesInFlight);
-		drawFrameCopySemaphore.resize(out::renderMaxFramesInFlight);
-		drawFrameClearSemaphore.resize(out::renderMaxFramesInFlight);
-		drawFrameImageRenderedFence.resize(out::renderMaxFramesInFlight);
+		drawFrameImageAquiredSemaphore		.resize(out::renderMaxFramesInFlight);
+		drawFrameObjectsRenderedSemaphore	.resize(out::renderMaxFramesInFlight);
+		drawFrameCopySemaphore				.resize(out::renderMaxFramesInFlight);
+		drawFrameClearSemaphore				.resize(out::renderMaxFramesInFlight);
+		drawFrameImageRenderedFence			.resize(out::renderMaxFramesInFlight);
 
-		VkSemaphoreCreateInfo semaphoreInfo{ };
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-
-		VkFenceCreateInfo fenceInfo{ };
-		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-
+		VkSemaphoreCreateInfo semaphoreInfo{
+			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
+		};
+		VkFenceCreateInfo fenceInfo{
+			.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+			.flags = VK_FENCE_CREATE_SIGNALED_BIT
+		};
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {
 			luxCheckCond(
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameImageAquiredSemaphore[i])	!= VK_SUCCESS ||
@@ -127,12 +108,22 @@ namespace lux::core::g{
 
 
 
+// Draw loop --------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
 	//TODO multithreaded submit and command creation
 	void drawFrame( ) {
 		if(c::shaders::CShaders.usedCount( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 
 
+		//Redraw frame if necessary
 		redraw:
 		if(out::renderFramebufferResized) {
 			out::renderFramebufferResized = false;
@@ -141,12 +132,10 @@ namespace lux::core::g{
 		}
 
 
-
-
-
+		//Acquire swapchain image
 		uint32 imageIndex;
-		{ //Acquire swapchain image
-			switch(vkAcquireNextImageKHR(dvc::graphics.LD, swapchain::swapchain, /*1000*1000*5*/INT_MAX /*5s*/, drawFrameImageAquiredSemaphore[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+		{
+			switch(vkAcquireNextImageKHR(dvc::graphics.LD, swapchain::swapchain, INT_MAX, drawFrameImageAquiredSemaphore[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
 				case VK_ERROR_OUT_OF_DATE_KHR: swapchain::swapchainRecreate(false);  return;
 				default: Failure printf("Failed to aquire swapchain image");
@@ -158,8 +147,9 @@ namespace lux::core::g{
 
 		//TODO don't recreate the command buffer array every time
 		//TODO use a staging buffer
+		//Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
-		{ //Update render result submitting the command buffers to the compute queues
+		{
 			c::shaders::addShaderFence.startFirst( );
 			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
 			for(uint32 i = 0; i < c::shaders::CShaders.count( ); ++i) {
@@ -183,7 +173,7 @@ namespace lux::core::g{
 
 
 
-		{ //Convert and clear
+		{ //Convert and clear shader
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
 				.waitSemaphoreCount{ 1 },
@@ -200,7 +190,7 @@ namespace lux::core::g{
 
 
 
-		{ //Copy
+		{ //Copy shader
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
 				.waitSemaphoreCount{ 1 },
@@ -208,10 +198,9 @@ namespace lux::core::g{
 				.commandBufferCount{ 1 },
 				.signalSemaphoreCount{ 1 },
 			};
-			//TODO maybe the normal array is bugged
-			submitInfo.pWaitSemaphores = &drawFrameClearSemaphore[renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &drawFrameCopySemaphore[renderCurrentFrame];
-			submitInfo.pCommandBuffers = &c::copyCommandBuffers[imageIndex];
+			submitInfo.pWaitSemaphores   = &drawFrameClearSemaphore[renderCurrentFrame];
+			submitInfo.pSignalSemaphores = &drawFrameCopySemaphore [renderCurrentFrame];
+			submitInfo.pCommandBuffers   = &c::copyCommandBuffers  [imageIndex];
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
 			luxCheckVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame]), "Failed to submit graphics command buffer");
@@ -220,7 +209,7 @@ namespace lux::core::g{
 
 
 
-		{ //Present
+		{ //Present frame
 			static VkPresentInfoKHR presentInfo{
 				.sType{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR },
 				.waitSemaphoreCount{ 1 },
@@ -228,7 +217,7 @@ namespace lux::core::g{
 				.pSwapchains{ &swapchain::swapchain },
 			};
 			presentInfo.pWaitSemaphores = &drawFrameCopySemaphore[renderCurrentFrame];
-			presentInfo.pImageIndices = &imageIndex;
+			presentInfo.pImageIndices   = &imageIndex;
 
 			switch(vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo)) {
 				case VK_SUCCESS:  break;
@@ -248,55 +237,36 @@ namespace lux::core::g{
 		glfwSwapBuffers(wnd::window);
 
 
-		//TODO fences
-		//calls      |                    A----.                   |    void A(){                 |   void B(){
-		//           |      A  B---.  B  B  B  | B----.            |        fence.startFirst();   |       fence.startSecond();
-		//           |      |      |  |  |  |  |      |            |        ...                   |       ...
-		//unordered  |      AAAAAA-BB-BB-BB-BB-AAAAAA-BB           |        fence.endFirst();     |       fence.endSecond();
-		//ordered    |      AAAAAA-BB----------AAAAAA-BB           |    }                         |   }
-		//once		 |      AAAAAA-BB-------------------           |                              |
-		//           |                                             |                              |
-		//           -----------------------------------> t        |                              |
-
 
 
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
 		if(objUpdates2D.count( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
-			// sleep(500);
 			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
-			// sleep(500);
-			// sleep(500);
-			// sleep(500);
-			for(uint32 i = 0; i < objUpdates2D.count( ); i++){ //BUG found ya
-			// sleep(500);
+			for(uint32 i = 0; i < objUpdates2D.count( ); i++){
 				objUpdates2D[i]->render.updated = true;
-				//TODO remove debug junk
-				//TODO add check. maybe. idk
-				//if(objUpdates2D[i]->common.objectType > 0)
-				// try{
-					vkCmdUpdateBuffer(
-						cb, objUpdates2D[i]->render.localData->buffer->buffer,
-						rem::getCellOffset(objUpdates2D[i]->render.localData),
-						//TODO test if this works with a normal program
-						//BUG
-						//BUG THE BUG ONLY OCCURS WITH THE FIRST OR SECOND 2D_LINE OBJECT UPDATED
-						//BUG AND ONLY WHEN THE OTHER SYNCHRONIZED THREAD ENDS ITS FENCE
-						//BUG PART OF THE VTABLE IS MODIFIED BY SOME THREAD. BUT JUST THE FIRST 2 BYTES
-						// objUpdates2D[i]->getCellSize( ),
-						objUpdates2D[i]->cellSize,
-						(void*)objUpdates2D[i]->render.data
-					);
-				// }
-				// catch(...){}
+				vkCmdUpdateBuffer(
+					cb, objUpdates2D[i]->render.localData->buffer->buffer,
+					rem::getCellOffset(objUpdates2D[i]->render.localData),
+					objUpdates2D[i]->cellSize,
+					(void*)objUpdates2D[i]->render.data
+				);
 			}
 			core::g::cmd::endSingleTimeCommands(cb);
-			//objUpdates2D.resize(0);
 			objUpdates2D.clear( );
 			pendingObjectUpdatesFence.endFirst( );
 		}
 	}
+
+
+
+
+
+
+
+
+// Clean memory -----------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -333,7 +303,7 @@ namespace lux::core::g{
 
 
 
-	// Other ------------------------------------------------------------------------------------------------------------------------------------//
+// Other ------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -347,8 +317,8 @@ namespace lux::core::g{
 			VkFormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);
 
-			if((vTiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
-				(vTiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & vFeatures) == vFeatures)) {
+			if(( vTiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
+				(vTiling == VK_IMAGE_TILING_LINEAR  && (props.linearTilingFeatures  & vFeatures) == vFeatures)) {
 				return format;
 			}
 		}

@@ -1,8 +1,7 @@
-
 #pragma once
+#define LUX_H_GOUTPUT
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#define LUX_H_GOUTPUT
 
 
 
@@ -13,7 +12,7 @@ namespace lux::core::g::out{
 	extern bool				renderFramebufferResized;		//Updates the swapchain when the window is resized
 
 
-	void preInit( );
+	void 			preInit( );
 	void			createRenderPass( );
 	void			createFramebuffers( );
 	VkImageView		swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);

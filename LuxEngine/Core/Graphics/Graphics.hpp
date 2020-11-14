@@ -1,5 +1,5 @@
-
 #pragma once
+#define LUX_H_GRAPHICS
 #include "vulkan/vulkan.h"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
@@ -8,11 +8,11 @@
 #include "LuxEngine/Core/Graphics/Window.hpp"
 #include "LuxEngine/Core/Graphics/GOutput.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
-#define LUX_H_GRAPHICS
 
-//TODO LIK ALL CPPS ONE BY ONE
-//TODO REMOVE PREINIT MEMBER
-//TODO USE LINK ORDER INSTEAD
+
+
+
+
 
 
 
@@ -52,9 +52,7 @@ namespace lux::core::g{
 		else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
 			Warning printf("Validation layer warning: ");
 		}
-		else{
-			Normal printf("Validation layer info: ");
-		}
+		else{ Normal printf("Validation layer info: "); }
 		printf("%s", pCallbackData->pMessage); NormalNoNl;
 		return VK_FALSE;
 	})

@@ -3,6 +3,16 @@
 
 
 
+//calls      |                    A----.                   |    void A(){                 |   void B(){
+//           |      A  B---.  B  B  B  | B----.            |        fence.startFirst();   |       fence.startSecond();
+//           |      |      |  |  |  |  |      |            |        ...                   |       ...
+//unordered  |      AAAAAA-BB-BB-BB-BB-AAAAAA-BB           |        fence.endFirst();     |       fence.endSecond();
+//ordered    |      AAAAAA-BB----------AAAAAA-BB           |    }                         |   }
+//once		 |      AAAAAA-BB-------------------           |                              |
+//           |                                             |                              |
+//           -----------------------------------> t        |                              |
+
+
 #pragma optimize( "g", off )	//Turn off global optimization. If the compiler optimizes the loop, it will be skipped and the program will probably freeze or crash
 namespace lux{
 	//This struct is used to synchronize operations from 2 different threads so that they can't overlap
