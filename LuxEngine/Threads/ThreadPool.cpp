@@ -47,7 +47,7 @@ namespace lux::thr {
 
 
 	// // void preInit( ){
-	// AutoInit(LUX_H_THREAD_POOL){
+	// luxAutoInit(LUX_H_THREAD_POOL){
 	// 	// threads.DynArray::DynArray(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 	// 	threads = DynArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 	// 	// thrStates.Map::Map( );

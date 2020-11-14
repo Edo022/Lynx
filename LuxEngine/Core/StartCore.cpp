@@ -1,13 +1,14 @@
+#define LUX_NH_START_CORE
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
-#define LUX_NH_START_CORE
+
+
+
 namespace lux::core{
-    AutoInit(LUX_NH_START_CORE){
-    	lux::core::preInit( );
-        //TODO use lux threads instead of std threads
-    	std::thread __t__(lux::core::init, false);
-        __t__.detach();
+    luxAutoInit(LUX_NH_START_CORE){
+    	std::thread __t__(lux::core::run, false, 45);
+        __t__.detach(); //TODO join thread from main thread when the program exits
         while(!initialized) sleep(10);
     }
 }

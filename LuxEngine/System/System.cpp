@@ -11,7 +11,7 @@
 // //TODO move to lux::thr
 // // uint32		lux::sys::threadNum = lux::sys::threadNum;						//Number of threads in the main CPU
 // uint32		lux::sys::threadNum;						//Number of threads in the main CPU
-// AutoInit(LUX_H_SYSTEM){
+// luxAutoInit(LUX_H_SYSTEM){
 // 	lux::sys::init();
 // }
 

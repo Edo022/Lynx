@@ -35,15 +35,15 @@ namespace lux::core::dvc{
 
 
 
-	// void preInit( ){
-	AutoInit(LUX_H_DEVICES){
-		// graphics.graphicsDevice::graphicsDevice( );
-		// compute.computeDevice::computeDevice( );
-		// secondary.DynArray::DynArray( );
-		graphics = graphicsDevice( );
-		compute = computeDevice( );
-		secondary = RTArray<computeDevice>( );
-	}
+	// // void preInit( ){
+	// luxAutoInit(LUX_H_DEVICES){
+	// 	// graphics.graphicsDevice::graphicsDevice( );
+	// 	// compute.computeDevice::computeDevice( );
+	// 	// secondary.DynArray::DynArray( );
+	// 	graphics = graphicsDevice( );
+	// 	compute = computeDevice( );
+	// 	secondary = RTArray<computeDevice>( );
+	// }
 
 
 

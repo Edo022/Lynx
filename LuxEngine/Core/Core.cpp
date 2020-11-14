@@ -70,37 +70,15 @@ namespace lux::core{
 
 
 
-	void preInit( ){
-		static bool once = true;
-		if(once){
-			once = false;
-			__lp_goniometric_functions_init( );
-			sys::init( );
-		}
-	}
-
-
-
-
-	//Initializes the Lux namespace
-	//TODO fix comment
-	//Don't call this function. Use LuxInit( ) instead
-	void init(bool useVSync) {
-		static bool once = true;
-		if(once){
-			once = false;
-			std::thread renderThr(&run, useVSync, 45);
-			running = true;
-
-			renderThr.join( );
-		}
-	}
-
 
 
 
 
 	void run(bool vUseVSync, float vFOV) {
+		running = true;
+		__lp_goniometric_functions_init( );
+		sys::init( );
+
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation

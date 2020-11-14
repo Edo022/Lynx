@@ -93,10 +93,6 @@ namespace lux::core{
 
 
 
-	//Initialization
-	void preInit( );
-	void init(bool useVSync);
-
 	//Main
 	void run(bool vUseVSync, float vFOV);
 	void mainLoop( );

@@ -1,9 +1,12 @@
-//An initializer function automatically called after the default initialization of the translation unit's variables
-//This function cannot be used in headers
-#define AutoInit(tu)                             	\
-	void tu##_AutoInit();							\
-	struct tu##_AutoInitializer{                   	\
-		tu##_AutoInitializer() { tu##_AutoInit(); }	\
-	};												\
-	tu##_AutoInitializer tu##_Initializer;			\
-	void tu##_AutoInit()
+
+//Creates a function that will be called during the global variable initialization
+//This macro can only be used in the global scope of .cpp files
+#define luxAutoInit(tu)                            		\
+	namespace luxAutoInitFunc{							\
+		void tu##_AutoInit_f();							\
+		struct tu##_AutoInit_t{                   		\
+			tu##_AutoInit_t() { tu##_AutoInit_f(); }	\
+		};												\
+		tu##_AutoInit_t tu##_Initializer;				\
+	}													\
+	void luxAutoInitFunc::tu##_AutoInit_f() //{ ... } 	//Implementation

@@ -10,7 +10,7 @@ namespace lux::ram{
 	uint32 allocated;
 
 
-	AutoInit(LUX_H_MEMORY){
+	luxAutoInit(LUX_H_MEMORY){
 		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
 		//Init buffer types
 		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
@@ -31,7 +31,7 @@ namespace lux::rem{
 	MemBufferType* buffers;
 
 
-	AutoInit(LUX_H_VMEMORY){lux::rem::init();}
+	luxAutoInit(LUX_H_VMEMORY){lux::rem::init();}
 }
 
 
@@ -47,7 +47,7 @@ namespace lux::sys{
 	uint32		threadNum;						//Number of threads in the main CPU
 
 
-	AutoInit(LUX_H_SYSTEM){
+	luxAutoInit(LUX_H_SYSTEM){
 		lux::sys::init();
 	}
 }
@@ -59,6 +59,7 @@ namespace lux::sys{
 #include "LuxEngine/Threads/ThreadPool.hpp"
 namespace lux::thr{
 	FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
+	//TODO use lux threads
 	#ifdef _WIN64
 	HANDLE NoInitVar(mngThr);	//The handle of the thread that controls the pool
 	#elif defined __linux__
@@ -69,13 +70,13 @@ namespace lux::thr{
 
 
 	Queue<ExecFuncDataBase*> maxpq;			//List of maximum priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> highpq;			//List of high priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> highpq;		//List of high priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> lowpq;			//List of low priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> minpq;			//List of minimum priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> stg;			//Staging queue
 
 
-	AutoInit(LUX_H_THREAD_POOL){
+	luxAutoInit(LUX_H_THREAD_POOL){
 		//TODO remove useless debug junk
 		int h = LUX_CNF_GLOBAL_THREAD_POOL_SIZE;
 		threads = RTArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
@@ -95,7 +96,7 @@ namespace lux::thr{
 #define LUX_H_INIT_CORE
 #include <stdlib.h>
 // #include "LuxEngine/Core/Core.h"
-AutoInit(LUX_H_INIT_CORE){
+luxAutoInit(LUX_H_INIT_CORE){
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 	//FIXME use the "libVkLayer_khronos_validation.so" library in the deps folder. Not the one in the default lib location
