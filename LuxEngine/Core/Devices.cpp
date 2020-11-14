@@ -17,13 +17,7 @@
 
 
 
-// #pragma optimize("", off)
-// PostInitializer(LUX_H_DEVICES);
-// #pragma optimize("", on)
 namespace lux::core::dvc{
-	// graphicsDevice			NoInitLux(graphics);	//Main graphics device
-	// computeDevice			NoInitLux(compute);		//Main compute device
-	// DynArray<computeDevice>	NoInitLux(secondary);	//Secondary compute devices
 	graphicsDevice			graphics;	//Main graphics device
 	computeDevice			compute;		//Main compute device
 	RTArray<computeDevice>	secondary;	//Secondary compute devices
@@ -31,19 +25,6 @@ namespace lux::core::dvc{
 
 
 
-
-
-
-
-	// // void preInit( ){
-	// luxAutoInit(LUX_H_DEVICES){
-	// 	// graphics.graphicsDevice::graphicsDevice( );
-	// 	// compute.computeDevice::computeDevice( );
-	// 	// secondary.DynArray::DynArray( );
-	// 	graphics = graphicsDevice( );
-	// 	compute = computeDevice( );
-	// 	secondary = RTArray<computeDevice>( );
-	// }
 
 
 
@@ -93,37 +74,22 @@ namespace lux::core::dvc{
 
 	//Returns true if the device supports the extensions, false if not
 	bool deviceCheckExtensions(const VkPhysicalDevice vDevice) {
-		////OK
-		//uint32 extensionCount;
-		//vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
-		//VkExtensionProperties* availableExtensions = (VkExtensionProperties*)malloc(sizeof(VkExtensionProperties) * extensionCount);
-		//vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions);	//Get extensions
-
-		//std::set<const char*> requiredExtensions(requiredDeviceExtensions, requiredDeviceExtensions);
-		//for(uint32 i = 0; i < extensionCount; i++) requiredExtensions.erase(availableExtensions[i].extensionName);		//Search for required extensions
-		//return requiredExtensions.empty( );
-
-
-
-
-		//TODO#############################################################################################################
-
-		//TODO FIX ERROR
-		//TODO CALLING THE CONSTRUCTOR WITH THE COUNT VALUE WORKS
-		//TODO BUT CALLING THE DEFAULT CONSTRUCTOR AND THEN USING THE RESIZE FUNCTION BREAKS EVERYTHING
-		//TODO     IN THIS CASE, THE HANDLE "VDEVICE" IS SET TO NULLPTR BY THE vkEnumerateDeviceExtensionProperties FUNCTION
-		//TODO     AND I DONT KNOW WHY. IT MAKES NO SENSE
+		//BUG FIX ERROR
+		//BUG CALLING THE CONSTRUCTOR WITH THE COUNT VALUE WORKS
+		//BUG BUT CALLING THE DEFAULT CONSTRUCTOR AND THEN USING THE RESIZE FUNCTION BREAKS EVERYTHING
+		//BUG     IN THIS CASE, THE HANDLE "VDEVICE" IS SET TO NULLPTR BY THE vkEnumerateDeviceExtensionProperties FUNCTION
+		//BUG     AND I DONT KNOW WHY. IT MAKES NO SENSE
 		//! HANDLES ARE IN A LUX RTARRAY TOO. CHECK IF NOT USING IT FIXES THE BUG
-
-		//TODO#############################################################################################################
-
-
+		//BUG#############################################################################################################
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
-		//TODO OK
+		//BUG OK
 			RTArray<VkExtensionProperties> availableExtensions(extensionCount);
-		//TODO ERROR
-			//DynArray<VkExtensionProperties> availableExtensions;
+		//BUG ERROR
+			// RTArray<VkExtensionProperties> availableExtensions(1);
+			// availableExtensions.resize(extensionCount);
+		//BUG ERROR
+			//RTArray<VkExtensionProperties> availableExtensions;
 			//availableExtensions.resize(extensionCount);
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
 
@@ -181,9 +147,10 @@ namespace lux::core::dvc{
 
 
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);							//Get physical device count
-		if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")			//Check if there is at least one deice that supports vulkan
+		// if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")			//Check if there is at least one deice that supports vulkan
 		//FIXME remove else
 		//BUG this doesn't work without the else.  probably a thread synchronization problem
+		if(false) {}
 		else {
 			//Get physical devices
 			RTArray<VkPhysicalDevice> physDevices(deviceCount);									//Create physical device array
@@ -267,11 +234,6 @@ namespace lux::core::dvc{
 
 
 
-
-
-
-
-
 	//Create a logical device from a physical one
 	//*   pPD: a pointer to the physical device structure containing its infos
 	//*   pLD: a pointer to the logical device where to store the created device
@@ -305,29 +267,22 @@ namespace lux::core::dvc{
 
 		//Required extensions
 		VkPhysicalDeviceFeatures enabledDeviceFeatures{ 					//Set enabled features
-			.fillModeNonSolid{ VK_FALSE },										//No point32 and line render, since we don't use meshes
-			.multiViewport{ VK_FALSE },											//No multiple viewports
-			.samplerAnisotropy{ VK_FALSE },										//No anistropy filter
+			.fillModeNonSolid{	VK_FALSE },										//No point32 and line render, since we don't use meshes
+			.multiViewport{ 	VK_FALSE },										//No multiple viewports
+			.samplerAnisotropy{	VK_FALSE },										//No anistropy filter
 		};
 
 		//Fill deviceCreateInfo
 		VkDeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
 			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
 			.queueCreateInfoCount{ (uint32)queueCreateInfos.count( ) },			//Set queue infos count
-			.pQueueCreateInfos{ queueCreateInfos.begin( ) },						//Set queue infos
-			#ifdef LUX_DEBUG
-			//.enabledLayerCount{ (uint32)validationLayers.count( ) },				//Set validation layer count if in debug mode
-			//.ppEnabledLayerNames{ &(validationLayers.begin( )->begin( )) },					//Set validation layers if in debug mode
-			.enabledLayerCount{ validationLayersNum },				//Set validation layer count if in debug mode
-			.ppEnabledLayerNames{ validationLayers },					//Set validation layers if in debug mode
-			#endif
-			//.enabledExtensionCount{ (uint32)requiredDeviceExtensions.count( ) },	//Set required extentions count
-			//.ppEnabledExtensionNames{ requiredDeviceExtensions.begin( )->begin( ) },		//Set required extensions
-			.enabledExtensionCount{ requiredDeviceExtensionsNum },	//Set required extentions count
-			.ppEnabledExtensionNames{ requiredDeviceExtensions },		//Set required extensions
+			.pQueueCreateInfos{ queueCreateInfos.begin( ) },					//Set queue infos
+			.enabledLayerCount{ luxDebug(validationLayersNum) luxRelease(0) },	//Set validation layer count if in debug mode
+			luxDebug(.ppEnabledLayerNames{ validationLayers },)					//Set validation layers      if in debug mode
+			.enabledExtensionCount{ requiredDeviceExtensionsNum },				//Set required extentions count
+			.ppEnabledExtensionNames{ requiredDeviceExtensions },				//Set required extensions
 			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
 		};
-		luxRelease(deviceCreateInfo.enabledLayerCount = 0);						//Disable validation layers if in release mode
 
 
 		//Create the logical device and save its queues, exit if an error occurs
