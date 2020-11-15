@@ -29,7 +29,6 @@ namespace lux::core{
 	bool	running;
 	bool	useVSync;
 	bool	initialized = false;
-	uint32	frames 		= 0;
 
 	VkInstance   				instance 					= (VkInstance)  malloc(sizeof(VkInstance  ));
 	VkSurfaceKHR 				surface  					= (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
@@ -143,10 +142,11 @@ namespace lux::core{
 	void runRenderThr( ) {
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
 		while(running) {
+			LuxTime renderTime = luxStartChrono();
 			g::drawFrame( );
 			//TODO it does nothing but it's probably important, somehow. dunno
 			//vkDeviceWaitIdle(compute.LD);
-			frames++;
+			FPS = luxStopChrono(renderTime);
 		}
 	}
 
@@ -158,9 +158,9 @@ namespace lux::core{
 		while(running) {
 			static int delay = 1000;
 			sleep(delay);
-			FPS = frames * (1000 / delay);
-			frames = 0;
-			printf("FPS: %lf\n", FPS);
+			printf("FPS: %lf\n", 1/FPS);
+			// FPS = frames * (1000 / delay);
+			// frames = 0;
 		}
 	}
 }

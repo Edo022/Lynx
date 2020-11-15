@@ -13,6 +13,8 @@
 //           -----------------------------------> t        |                              |
 
 
+
+
 #pragma optimize( "g", off )	//Turn off global optimization. If the compiler optimizes the loop, it will be skipped and the program will probably freeze or crash
 namespace lux{
 	//This struct is used to synchronize operations from 2 different threads so that they can't overlap
@@ -36,5 +38,42 @@ namespace lux{
 
 		inline void quit( ){ thr2 = thr1 = false; }
 	};
+
+
+
+
+
+
+
+	//The checked value is always 1 to prevent race conditions
+	//Even if the other thread didn't finish to write the variable, it can only skip one iteration or read it as false
+
+
+	//Allows only one thread at a time to execute the code between the lock() and unlock() function calls
+	//The mutex must alwas be unlocked to prevent a deadlock
+	//This structure don't have a thread limit
+	struct mutex{
+		char k = 1;
+		void lock(){ while(!k){ } k = 0; }
+		void unlock(){ k = 1; }
+	};
+
+
+	//Forces any thread to stop in the wait() function call until the fence gets signaled
+	//In the case it's already signaled, nothing will happen
+	//This structure don't have a thread limit
+	template<int us = 100> struct pollFence{
+		char s = 1;
+		void wait(){ while(!s){ usleep(us); } }
+		void signal(){ s = 0; }
+		void reset(){ s = 1; }
+	};
+
+
+	// struct eventFence{
+	// 	char s = 1;
+	// 	void signal(){ }
+	// };
+
 }
 #pragma optimize( "g", on )

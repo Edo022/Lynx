@@ -1,8 +1,10 @@
-
 #pragma once
 #include "LuxEngine/Math/Constants.hpp"
 
 
+
+
+//TODO probably useless
 template<class t> static inline t revToRad(t n) { return n * PI2; }		//Converts a value from revolutions to radiants
 template<class t> static inline t radToRev(t n) { return n / PI2; }		//Converts a value from radiants to revolutions
 

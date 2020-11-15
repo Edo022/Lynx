@@ -90,6 +90,7 @@
 					"-std=c++2a",       //C++20
 					"-mavx",            //AVX2
 					"-pipe",            //
+					// "-fsanitize=address,undefined,leak",
 
 				//Def
 					"-I./",             //CWD include
