@@ -43,7 +43,7 @@ namespace lux::obj{
 			core::g::objUpdates2D.add(this);
 			//TODO remove debug junk
 			if(core::g::objUpdates2D[0]->common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_LINE){
-				sleep(500);
+				// sleep(500);
 				int hfrewfvgrefre = 0;
 			}
 		}

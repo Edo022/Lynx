@@ -17,7 +17,8 @@ namespace lux::thr {
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | GTP "));
 
 		// __lp_suspend_thr(__lp_get_thr( ));
-		while(true) sleep(10);
+		pthread_kill(pthread_self(), SIGSTOP);		//Suspend the thread
+		// while(true) sleep(10);
 		while(true) {
 			0;													//#LLID THR0000 The thread will continue from here when it's resumed
 			if(thrStates[*((uint32*)vThrIndex)] == ThrState::RUNNING){		//If a function was assigned to the thread

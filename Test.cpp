@@ -67,13 +67,6 @@ void hg(lux::RTArray<uint16>){
 void runArrayTest();
 
 int main( ) {
-	// //TODO remove debug junk ..
-		runArrayTest();
-		// return 0;
-	// //TODO remove debug junk ^^
-
-
-
 	{
 		//TODO automatize object search //TODO wtf does this mean
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
@@ -147,26 +140,3 @@ int main( ) {
 //}
 
 ////TODO separate local and host memory in gpu memory pool
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void runArrayTest(){
-	lux::ram::ptr<int> a = lux::ram::allocBck(10);
-	lux::ram::ptr<int> b = lux::ram::allocBck(32);
-	lux::ram::ptr<int> c = lux::ram::allocBck(256);
-	lux::ram::ptr<int> d = lux::ram::allocBck(256);
-	lux::ram::ptr<int> e = lux::ram::allocBck(256);
-	int h = 0;
-}
