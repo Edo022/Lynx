@@ -9,26 +9,24 @@
 
 
 
-
 //TODO check for alllocation number limit
-//TODO use multiple devices
 namespace lux::rem{
 	struct Cell_t;
 	struct MemBuffer {
-		VkBuffer buffer;				//Vulkan buffer object
-		VkDeviceMemory memory;			//Vulkan buffer memory
-		Map_NMP_S<Cell_t, uint32> cells;		//Cells in the buffer
+		VkBuffer buffer;					//Vulkan buffer object
+		VkDeviceMemory memory;				//Vulkan buffer memory
+		Map_NMP_S<Cell_t, uint32> cells;	//Cells in the buffer
 	};
 	struct MemBufferType {
-		CellClass cellClass;			//Class of the cells
-		AllocType allocType;			//Buffer allocation type
-		Map_NMP_S<MemBuffer, uint32> buffers;	//Buffers containing the cells
+		CellClass cellClass;				//Class of the cells
+		AllocType allocType;				//Buffer allocation type
+		Map_NMP_S<MemBuffer, uint32> buffers;//Buffers containing the cells
 	};
 	struct Cell_t {
-		uint64 cellSize;			//Size of the cell in bytes
-		MemBufferType* bufferType;	//Type of buffer allocation
-		MemBuffer* buffer;			//Index of the buffer where the cell is allocated
-		uint32 cellIndex;			//Index of the cell in the buffer
+		uint64 cellSize;					//Size of the cell in bytes
+		MemBufferType* bufferType;			//Type of buffer allocation
+		MemBuffer* buffer;					//Index of the buffer where the cell is allocated
+		uint32 cellIndex;					//Index of the cell in the buffer
 
 		void* map();
 		inline void unmap(){ vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
@@ -41,7 +39,7 @@ namespace lux::rem{
 
 
 
-	extern uint32 maxAlloc;						//The maximum number of allocated buffers. Depends on the gpu properties
+	extern uint32 maxAlloc;				//The maximum number of allocated buffers. Depends on the gpu properties
 	extern MemBufferType* buffers;		//VRAM allocated buffers
 	void init( );
 }

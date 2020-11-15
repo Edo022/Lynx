@@ -1,15 +1,11 @@
 
-#include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/Core.hpp"
-#ifdef _WIN64
-#include <intrin.h>
-#elif defined __linux__
-#include <x86intrin.h>
-#endif
 #include "LuxEngine/Memory/Ram/Memory2.hpp"
+#include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include "LuxEngine/macros.hpp"
+
+
 
 
 //TODO add [no AVX2] performance warning

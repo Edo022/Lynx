@@ -9,14 +9,6 @@
 //TODO REMOVE EXPLICIT INITIALIZATION OF ENGINE NAMESPACES
 
 namespace lux::ram{
-	// MemBufferType* buffers;
-	// uint32 allocated;
-
-
-
-
-
-
 	void evaluateCellClass(const uint64 vSize, CellClass& pClass) {
 		if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
 			if(vSize > ((uint32)pClass - 1)) pClass = CellClass::AUTO;				//If the class is too small, set it to AUTO

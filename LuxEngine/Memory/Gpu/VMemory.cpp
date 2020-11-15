@@ -6,16 +6,6 @@
 //TODO use constant for offset
 
 namespace lux::rem{
-	// // uint32 maxAlloc{ maxAlloc };
-	// // MemBufferType* buffers{ buffers };
-	// uint32 maxAlloc;
-	// MemBufferType* buffers;
-
-
-
-
-
-
 	void init( ){
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
@@ -37,14 +27,14 @@ namespace lux::rem{
 
 
 	//This function allocates a video memory cell into a buffer
-	//*   vSize      | count of the cell
+	//*   vSize -----| count of the cell
 	//*   vCellClass | class of the cell. This is the maximum count the cell can reach before it needs to be reallocated
 	//*   vAllocType | type of buffer where to allocate the cell
-	//*       Cells allocated in shared memory are accessible from both CPU and GPU (cpu needs to map() the cell to use it)
-	//*       Cells allocated in dedicated memory are only accessible from GPU
-	//*       Uniform buffers are read only for the GPU. Useful when you need to pass small data to a shader
-	//*       Storage buffers are larger and the GPU can write in it, bet they have worse performance
-	//*   Returns    | the allocated Cell object
+	//*    ---Cells allocated in shared memory are accessible from both CPU and GPU (cpu needs to map() the cell to use it)
+	//*    ---Cells allocated in dedicated memory are only accessible from GPU
+	//*    ---Uniform buffers are read only for the GPU. Useful when you need to pass small data to a shader
+	//*    ---Storage buffers are larger and the GPU can write in it, bet they have worse performance
+	//*   Returns ---| the allocated Cell object
 	//e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
 	Cell allocBck(const uint64 vSize, CellClass vCellClass, const AllocType vAllocType){
 		luxCheckParam(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize, 	vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
@@ -61,13 +51,13 @@ namespace lux::rem{
 				(vSize <= (uint32)CellClass::CLASS_D) ? CellClass::CLASS_D :
 				(vSize <= (uint32)CellClass::CLASS_Q) ? CellClass::CLASS_Q :
 				(vSize <= (uint32)CellClass::CLASS_L) ? CellClass::CLASS_L :
-				CellClass::CLASS_0;
+														CellClass::CLASS_0;
 		}
 
 		//TODO fix like ram cells
 
 		uint32 typeIndex = (classIndexFromEnum(vCellClass) << 2) | (uint32)vAllocType;		//Get buffer index from type and class
-		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);					//Get list of buffers where to search for a free cell
+		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vCellClass){																//If the cell is a fixed count cell
 			uint64 cellNum = bufferSize / (uint32)vCellClass;									//Get the maximum number of cells in each buffer

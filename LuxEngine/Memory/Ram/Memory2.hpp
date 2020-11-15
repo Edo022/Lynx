@@ -1,7 +1,5 @@
-#ifndef LUX_H_MEMORY_2
+#pragma once
 #define LUX_H_MEMORY_2
-
-
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/LuxBool.hpp"
 #include "LuxEngine/Memory/Memory_t.hpp"
@@ -12,7 +10,8 @@
 #endif
 
 
-// #pragma warning( disable : 4227 )    //"Anachronism used: qualifiers on reference are ignored"
+
+
 namespace lux::ram{
 	#define LuxMemOffset 32
 
@@ -22,5 +21,3 @@ namespace lux::ram{
 	}
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);
 };
-// #pragma warning( default : 4227 )
-#endif
