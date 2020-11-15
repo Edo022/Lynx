@@ -59,11 +59,8 @@ namespace lux::core{
 	//TODO remove
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		#ifdef _WIN64
-		return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
-		#elif defined __linux__
-		return system((lux::sys::dir::thisDir + "/deps/Vulkan_1.2.154.0_linux/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;
-		#endif
+		win(  return system((c::shaders::shaderPath + "/glslc.exe "                                    + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
+		linux(return system((lux::sys::dir::thisDir + "/deps/Vulkan_1.2.154.0_linux/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
 	}
 
 

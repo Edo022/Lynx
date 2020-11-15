@@ -1,4 +1,3 @@
-
 #pragma once
 #define LUX_H_SYSTEM
 #include <filesystem>
@@ -9,8 +8,8 @@
 
 
 
-#if !defined _MSC_VER || !defined __cplusplus		//Use only C++ visual studio compiler
-// #	error Visual studio C++ compiler required
+#if !defined __GNUC__ || !defined __cplusplus		//Use only gcc
+#	error gcc compiler required
 #endif
 
 
@@ -36,11 +35,9 @@
 #	define __lp_get_thr()  gettid()						//  THR | Function to get the current thread ID
 #	define win(...)
 #	define linux(...) __VA_ARGS__
-// #	error use tkill - TODO - thread pool unimplemented
 
 #else																//Other operating systems
 #	error Unsupported operating system
-//#	elif defined unix || defined __unix || define __unix__	//Unix
 #endif
 
 
