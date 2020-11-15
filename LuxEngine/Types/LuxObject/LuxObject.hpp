@@ -173,7 +173,6 @@ namespace lux{
 			void update( ) final override{
 				updateBase( );
 				for(uint32 i = 0; i < children.count( ); i++) if(children.isValid(i)) {
-					//BUG segfault, pure virtual called
 					setChildLimits(i);
 					//TODO add  recalculateCoords( ) in all objects
 					children[i]->recalculateCoords( );

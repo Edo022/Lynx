@@ -42,9 +42,9 @@
 //System
 	//Supported operating systems:
 		//Windows 10
-		//TODO
+		//Linux
 	//Supported compilers:
-		//Visual studio 2019 C++
+		//gcc
 		//?
 	//Max (GPU + shared) memory:
 		//51200MB

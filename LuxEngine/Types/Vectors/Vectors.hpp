@@ -10,8 +10,6 @@
 
 
 
-// #pragma warning( disable: 26451 )
-// #pragma warning( disable: 4003 )	//No enough arguments for macro
 //type: the type of the function and the vectors
 //typen: the type but with the capital letter
 #define __lp_vec_def(type, typen)				\
@@ -24,8 +22,6 @@ __lp_vec_def(int16, i16)		__lp_vec_def(uint16, u16)									__lp_vec_def(wchar16
 __lp_vec_def(int32, i32)		__lp_vec_def(uint32, u32)	__lp_vec_def(float32, f32)		__lp_vec_def(wchar32, w32)
 __lp_vec_def(int64, i64)		__lp_vec_def(uint64, u64)	__lp_vec_def(float64, f64)
 #undef __lp_vec_def
-// #pragma warning( default: 26451 )
-// #pragma warning( default: 4003 )	//No enough arguments for macro
 
 
 

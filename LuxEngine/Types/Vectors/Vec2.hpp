@@ -25,18 +25,18 @@ template<class t> struct vec2_t {
 
 
 	//Assignment operators, constructors and comparison operators
-	/**/			   inline vec2_t(const vec2_t<t>& v) { *this = v; }
-	/**/			   inline vec2_t(const t& v) { *this = v; }
-	/**/			   inline void operator = (const vec2_t<t>& v) { x = v.x; y = v.y; }
-	/**/			   inline void operator = (const t& n) { x = y = n; }
-	template<class vt> explicit inline vec2_t(const vec2_t<vt>& v) { *this = v;}
-	template<class vt> inline vec2_t(const vt& v) { *this = v; }
-	template<class vt> inline void operator = (const vec2_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); }
-	template<class vt> inline void operator = (const vt& n) { x = y = (t)n; }
-	template<class vt> inline bool operator != (const vec2_t<vt>& v) const { return x != v.x || y != v.y; }
-	template<class vt> inline bool operator != (const vt& n) const { return x != n || y != n; }
+	/**/			   inline          vec2_t(const vec2_t<t>& v ) { *this = v; }
+	/**/			   inline          vec2_t(const t& v         ) { *this = v; }
+	template<class vt> inline          vec2_t(const vt& v        ) { *this = v; }
+	template<class vt> explicit inline vec2_t(const vec2_t<vt>& v) { *this = v; }
+	/**/			   inline void operator =  (const vec2_t<t>& v ) { x = v.x; y = v.y;           }
+	/**/			   inline void operator =  (const t& n         ) { x =      y = n;             }
+	template<class vt> inline void operator =  (const vec2_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); }
+	template<class vt> inline void operator =  (const vt& n        ) { x =           y = (t)n;     }
+	template<class vt> inline bool operator != (const vec2_t<vt>& v) const { return x != v.x || y != v.y;    }
+	template<class vt> inline bool operator != (const vt& n        ) const { return x != n   || y != n;      }
 	template<class vt> inline bool operator == (const vec2_t<vt>& v) const { return !(x != v.x || y != v.y); }
-	template<class vt> inline bool operator == (const vt& n) const { return !(x != n || y != n); }
+	template<class vt> inline bool operator == (const vt& n        ) const { return !(x != n   || y != n);   }
 
 
 
@@ -52,8 +52,8 @@ template<class t> struct vec2_t {
 	template<class vt> inline void operator -= (const vec2_t<vt>& v) { x -= v.x; y -= v.y; }
 	template<class vt> inline void operator /= (const vec2_t<vt>& v) { x /= v.x; y /= v.y; }
 
-	template<class vt> inline bool operator < (const vec2_t<vt>& v) { return ((x < v.x) && (y < v.y)); }
-	template<class vt> inline bool operator > (const vec2_t<vt>& v) { return ((x > v.x) && (y > v.y)); }
+	template<class vt> inline bool operator <  (const vec2_t<vt>& v) { return ((x < v.x) && (y < v.y));   }
+	template<class vt> inline bool operator >  (const vec2_t<vt>& v) { return ((x > v.x) && (y > v.y));   }
 	template<class vt> inline bool operator <= (const vec2_t<vt>& v) { return ((x <= v.x) && (y <= v.y)); }
 	template<class vt> inline bool operator >= (const vec2_t<vt>& v) { return ((x >= v.x) && (y >= v.y)); }
 
@@ -71,8 +71,8 @@ template<class t> struct vec2_t {
 	template<class vt> inline void operator -= (const vt& n) { x -= n; y -= n; }
 	template<class vt> inline void operator /= (const vt& n) { x /= n; y /= n; }
 
-	template<class vt> inline bool operator < (const vt& v) { return ((x < v) && (y < v)); }
-	template<class vt> inline bool operator > (const vt& v) { return ((x > v) && (y > v)); }
+	template<class vt> inline bool operator < (const vt& v ) { return ((x < v) && (y < v));   }
+	template<class vt> inline bool operator > (const vt& v ) { return ((x > v) && (y > v));   }
 	template<class vt> inline bool operator <= (const vt& v) { return ((x <= v) && (y <= v)); }
 	template<class vt> inline bool operator >= (const vt& v) { return ((x >= v) && (y >= v)); }
 
