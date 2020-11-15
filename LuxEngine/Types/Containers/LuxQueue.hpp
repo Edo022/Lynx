@@ -1,5 +1,5 @@
 #pragma once
-#include "LuxEngine/Types/Containers/LuxDynArray.hpp"
+#include "LuxEngine/Types/Containers/RTArray.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Nothing.hpp"

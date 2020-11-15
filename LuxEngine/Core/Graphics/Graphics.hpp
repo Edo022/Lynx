@@ -4,7 +4,7 @@
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-#include "LuxEngine/Types/Containers/LuxArray.hpp"
+#include "LuxEngine/Types/Containers/CTArray.hpp"
 #include "LuxEngine/Core/Graphics/Window.hpp"
 #include "LuxEngine/Core/Graphics/GOutput.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"

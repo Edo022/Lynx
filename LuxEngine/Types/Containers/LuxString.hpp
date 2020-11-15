@@ -1,8 +1,9 @@
 #pragma once
+#define LUX_H_STRING
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Memory/Ram/Memory.hpp"
 #include "LuxEngine/macros.hpp"
-#include "LuxEngine/Types/Containers/LuxContainer.hpp"
+#include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #include "LuxEngine/Types/Nothing.hpp"
 #include "LuxEngine/Types/Nothing_sc_p.hpp"
 
@@ -12,7 +13,7 @@
 
 
 namespace lux {
-	static inline constexpr uint32 strlenl(const char8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
+	static inline constexpr uint32 strlenl(const char8* str ) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 	static inline constexpr uint32 strlenl(const wchar8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 
 
@@ -44,10 +45,10 @@ namespace lux {
 		lux_sc_generate_nothing_constructor(String) str{ str } { }
 
 		//String count cannot be 0. the '\0' is always present and occupies one byte
-		inline String( ) : str{ ram::AllocBck<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
-		inline String(const String& pString) : str{ ram::allocBck(pString.count( )) }		{ ram::cpy(pString.str, str, pString.count( )); }
-		inline String(const char8* vString) : str{ ram::allocBck(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
-		inline String(const char8* vString, uint64 vSize) : str{ ram::allocBck(vSize) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(                                  ) : str{ ram::AllocBck<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
+		inline String(const String& pString             ) : str{ ram::allocBck(pString.count( )) }	   { ram::cpy(pString.str, str, pString.count( )); }
+		inline String(const char8* vString              ) : str{ ram::allocBck(strlenl(vString) + 1) } { ram::cpy(vString,     str, str.size( ));      }
+		inline String(const char8* vString, uint64 vSize) : str{ ram::allocBck(vSize) }	               { ram::cpy(vString,     str, str.size( ));      }
 
 		//TODO remove
 		inline String(const wchar8* vString) : str{ ram::allocBck(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
@@ -60,16 +61,13 @@ namespace lux {
 
 
 
-		//inline uint32	count( )	const override { checkInit; return (uint32)str.size( );	}
-		//inline uint64	size( )	const override { checkInit; return str.size( );			}
-		//inline bool		empty( )	const override { checkInit; return !str.size( );		}
-		inline uint32	count( )	const override { checkInit; return (uint32)str.count( );	}
-		inline uint64	size( )	const override { checkInit; return str.count( );			}
-		inline bool		empty( )	const override { checkInit; return !str.count( );		}
-		inline char8*	begin( )	const override { checkInit; return str.begin( );		}
-		inline char8*	end( )		const override { checkInit; return str.end( );			}
+		inline uint32 count( ) const override { checkInit; return (uint32)str.count( ); }
+		inline uint64 size(  ) const override { checkInit; return str.count( );         }
+		inline bool	  empty( ) const override { checkInit; return !str.count( );        }
+		inline char8* begin( ) const override { checkInit; return str.begin( );	        }
+		inline char8* end(   ) const override { checkInit; return str.end( );           }
 
-		inline char8&	operator[](const uint32 vIndex) const		   {
+		inline char8&	operator[](const uint32 vIndex) const {
 			checkInit; luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex > count(), vIndex, "Index is out of range");
 			return str[vIndex];
 		}
@@ -95,13 +93,13 @@ namespace lux {
 		#pragma warning ( default : 4996  )
 
 		#define __lp_strcat_body(var) String vLuxString(str.address); vLuxString += var; return vLuxString;
-		inline String operator + (const String& pString)	const { checkInit; __lp_strcat_body(pString);	}
-		inline String operator + (const char8* vString)	const { checkInit; __lp_strcat_body(vString);	}
-		inline String operator + (const uint64 vValue)		const { checkInit; __lp_strcat_body(vValue);	}
-		inline String operator + (const int64 vValue)		const { checkInit; __lp_strcat_body(vValue);	}
-		inline String operator + (const uint32 vValue)		const { checkInit; __lp_strcat_body(vValue);	}
-		inline String operator + (const int32 vValue)		const { checkInit; __lp_strcat_body(vValue);	}
-		inline String operator + (const char8 vChar)		const { checkInit; __lp_strcat_body(vChar);		}
+		inline String operator + (const String& pString) const { checkInit; __lp_strcat_body(pString); }
+		inline String operator + (const char8* vString ) const { checkInit; __lp_strcat_body(vString); }
+		inline String operator + (const uint64 vValue  ) const { checkInit; __lp_strcat_body(vValue ); }
+		inline String operator + (const int64 vValue   ) const { checkInit; __lp_strcat_body(vValue ); }
+		inline String operator + (const uint32 vValue  ) const { checkInit; __lp_strcat_body(vValue ); }
+		inline String operator + (const int32 vValue   ) const { checkInit; __lp_strcat_body(vValue ); }
+		inline String operator + (const char8 vChar    ) const { checkInit; __lp_strcat_body(vChar  ); }
 
 
 
@@ -123,7 +121,6 @@ namespace lux {
 			checkInit;
 			ram::reallocBck(str, strlenl(vString) + 1, CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
-			//ram::cpy(vString, str, str.size( ));
 			ram::cpy(vString, str, str.count( ));
 		}
 
@@ -132,14 +129,12 @@ namespace lux {
 
 		inline bool operator == (const String& pString) const {
 			checkInit; isInit(pString);
-			//return ((str.size( ) == pString.count( )) && (memcmp(pString.str, str.address, str.size( )) == 0));
 			return ((str.count( ) == pString.count( )) && (memcmp(pString.str, str.address, str.count( )) == 0));
 		}
 
 
 		inline bool operator == (const char* vString) const {
 			checkInit;
-			//return ((str.size( ) == strlenl(vString) + 1) && (memcmp(vString, str.address, str.size( )) == 0));
 			return ((str.count( ) == strlenl(vString) + 1) && (memcmp(vString, str.address, str.count( )) == 0));
 		}
 	};

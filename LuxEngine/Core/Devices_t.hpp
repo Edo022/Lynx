@@ -1,7 +1,7 @@
 #pragma once
 #define LUX_H_DEVICES_T
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Types/Containers/LuxDynArray.hpp"
+#include "LuxEngine/Types/Containers/RTArray.hpp"
 #include "vulkan/vulkan_core.h"
 #include "LuxEngine/Types/Nothing.hpp"
 

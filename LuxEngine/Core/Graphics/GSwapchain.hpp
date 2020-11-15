@@ -1,7 +1,7 @@
 #pragma once
 #define LUX_H_GSWAPCHAIN
 #include "vulkan/vulkan.h"
-#include "LuxEngine/Types/Containers/LuxArray.hpp"
+#include "LuxEngine/Types/Containers/CTArray.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"
 
 

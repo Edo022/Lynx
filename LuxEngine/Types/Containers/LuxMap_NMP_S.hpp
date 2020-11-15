@@ -2,10 +2,11 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
-#include "LuxEngine/Types/Containers/LuxContainer.hpp"
+#include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include "LuxEngine/Types/Nothing.hpp"
 
+//FIXME remove this structure
 
 
 

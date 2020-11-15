@@ -1,8 +1,8 @@
 #pragma once
 #define LUX_H_CSHADER_T
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Types/Containers/LuxArray.hpp"
-#include "LuxEngine/Types/Containers/LuxDynArray.hpp"
+#include "LuxEngine/Types/Containers/CTArray.hpp"
+#include "LuxEngine/Types/Containers/RTArray.hpp"
 
 
 

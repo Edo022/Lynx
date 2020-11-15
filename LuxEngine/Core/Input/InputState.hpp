@@ -3,7 +3,7 @@
 #include "GLFW/glfw3.h"
 #include <initializer_list>
 #include "LuxEngine/macros.hpp"
-#include "LuxEngine/Types/Containers/LuxDynArray.hpp"
+#include "LuxEngine/Types/Containers/RTArray.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 
 
