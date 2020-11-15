@@ -1,4 +1,3 @@
-
 #include "LuxEngine/System/System.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"

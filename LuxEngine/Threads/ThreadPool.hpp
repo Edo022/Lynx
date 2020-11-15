@@ -1,5 +1,5 @@
 #pragma once
-
+#define LUX_H_THREAD_POOL
 #include "LuxEngine/LuxEngine_config.hpp"
 #include "LuxEngine/System/System.hpp"
 
@@ -8,14 +8,13 @@
 #include "LuxEngine/Types/Containers/LuxQueue.hpp"
 #include <tuple>
 #include <thread>
-#define LUX_H_THREAD_POOL
 
 
 
 
 //TODO create a fence that uses suspend and resume instead of while checks
-//TODO use tkill on linux
 //TODO create LuxThread with platform specific suspend and resume functions
+
 
 namespace lux::thr {
 	//TODO fix queue priority
@@ -86,7 +85,6 @@ namespace lux::thr {
 	// void* __lp_thr_loop(const uint32 vThrIndex);
 	void* __lp_thr_loop(void* vThrIndex);
 	void __lp_thr_mng( );
-	void init( );
 
 	//Sends a function to an exec queue of the global thread pool
 	//When the function will be executed and which queue it will be assigned to depends on its priority
@@ -110,7 +108,6 @@ namespace lux::thr {
 		stgAddFence.startSecond( );
 		stg.pushFront(execData);						//Assign the data to the staging queue
 		stgAddFence.endSecond( );
-		// __lp_resume_thr(mngThr);						//#LLID THR0001 Resume the thread (it suspended itself after assigning the last functions)
 		pthread_kill(mngThr, SIGCONT);
 	}
 }

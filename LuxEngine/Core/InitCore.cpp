@@ -87,8 +87,6 @@ namespace lux::thr{
 		lowpq.clear();
 		minpq.clear();
 		stg.clear();
-
-		lux::thr::init();
 	}
 }
 
