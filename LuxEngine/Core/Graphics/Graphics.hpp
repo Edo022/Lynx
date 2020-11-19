@@ -4,7 +4,7 @@
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-#include "LuxEngine/Types/Containers/CTArray.hpp"
+#include "LuxEngine/Types/Containers/CtArray.hpp"
 #include "LuxEngine/Core/Graphics/Window.hpp"
 #include "LuxEngine/Core/Graphics/GOutput.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
@@ -17,13 +17,13 @@
 
 
 namespace lux::core::g{
-	extern RTArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
-	extern RTArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
-	extern RTArray<VkSemaphore>	drawFrameCopySemaphore;
-	extern RTArray<VkSemaphore>	drawFrameClearSemaphore;
-	extern RTArray<VkFence>		drawFrameImageRenderedFence;
+	extern RtArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
+	extern RtArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
+	extern RtArray<VkSemaphore>	drawFrameCopySemaphore;
+	extern RtArray<VkSemaphore>	drawFrameClearSemaphore;
+	extern RtArray<VkFence>		drawFrameImageRenderedFence;
 	extern int32				renderCurrentFrame;
-	extern RTArray<obj::Base*>	objUpdates2D;
+	extern RtArray<obj::Base*>	objUpdates2D;
 	extern FenceDE				pendingObjectUpdatesFence;
 
 
@@ -43,7 +43,7 @@ namespace lux::core::g{
 
 
 
-	VkFormat	findSupportedFormat(const RTArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
+	VkFormat	findSupportedFormat(const RtArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures);
 	uint32		findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties);
 	luxDebug(static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {

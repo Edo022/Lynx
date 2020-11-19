@@ -13,15 +13,15 @@
 
 namespace lux::core::g::swapchain{
 	VkSwapchainKHR			swapchain = nullptr;
-	RTArray<VkImage>		swapchainImages;
-	RTArray<VkImageView>	swapchainImageViews;
+	RtArray<VkImage>		swapchainImages;
+	RtArray<VkImageView>	swapchainImageViews;
 	#ifdef _WIN64
 		VkFormat			swapchainImageFormat = VkFormat::VK_FORMAT_END_RANGE;
 	#elif defined __linux__
 		VkFormat			swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
 	#endif
 	VkExtent2D				swapchainExtent = { };
-	RTArray<VkFramebuffer>	swapchainFramebuffers;
+	RtArray<VkFramebuffer>	swapchainFramebuffers;
 
 
 
@@ -30,7 +30,7 @@ namespace lux::core::g::swapchain{
 
 
 
-	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const RTArray<VkSurfaceFormatKHR>* pAvailableFormats) {
+	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats) {
 		for(auto& availableFormat : *pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
@@ -45,7 +45,7 @@ namespace lux::core::g::swapchain{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR swapchainChoosePresentMode(const RTArray<VkPresentModeKHR>* pAvailablePresentModes) {
+	VkPresentModeKHR swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes) {
 		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;

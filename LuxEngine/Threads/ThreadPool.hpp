@@ -4,7 +4,7 @@
 #include "LuxEngine/System/System.hpp"
 
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-#include "LuxEngine/Types/Containers/RAArray.hpp"
+#include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Types/Containers/LuxQueue.hpp"
 #include <tuple>
 #include <thread>
@@ -71,8 +71,8 @@ namespace lux::thr {
 	#elif defined __linux__
 	extern pthread_t mngThr;
 	#endif
-	extern RTArray<ThrPoolElm> threads;
-	extern RAArray<ThrState, uint32> thrStates;
+	extern RtArray<ThrPoolElm> threads;
+	extern RaArray<ThrState, uint32> thrStates;
 	extern Queue<ExecFuncDataBase*> maxpq;
 	extern Queue<ExecFuncDataBase*> highpq;
 	extern Queue<ExecFuncDataBase*> lowpq;

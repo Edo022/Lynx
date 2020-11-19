@@ -6,7 +6,7 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/EngineTypes.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
-#include "LuxEngine/Types/Containers/RAArray.hpp"
+#include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/Compute/CShader_t.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/macros.hpp"
@@ -163,7 +163,7 @@ namespace lux{
 
 			//TODO add absolute pixel position and scale
 			Base2D* parent{ nullptr };						//Parent of the object
-			lux::RAArray<Base2D*, uint32> children;				//Children of the object
+			lux::RaArray<Base2D*, uint32> children;				//Children of the object
 			virtual bool setChildLimits(const uint32 vChildIndex) const override {
 				if(vChildIndex >= children.count( )) return false;
 				children[vChildIndex]->setMinLim(minLim);

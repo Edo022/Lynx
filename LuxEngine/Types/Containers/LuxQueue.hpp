@@ -1,5 +1,5 @@
 #pragma once
-#include "LuxEngine/Types/Containers/RTArray.hpp"
+#include "LuxEngine/Types/Containers/RtArray.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Nothing.hpp"
@@ -14,7 +14,7 @@
 namespace lux {
 	template<class type, class iter = uint32> struct Queue {
 		lux_sc_generate_debug_structure_body;
-		lux::RTArray<type, iter> _front, _back;
+		lux::RtArray<type, iter> _front, _back;
 
 		lux_sc_generate_nothing_constructor(Queue) _front(getConstNothing( )), _back(getConstNothing( )) { }
 		inline Queue( ) : _front( ), _back( ) { }

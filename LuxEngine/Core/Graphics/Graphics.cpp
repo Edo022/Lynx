@@ -27,13 +27,13 @@
 
 
 namespace lux::core::g{
-	RTArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
-	RTArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
-	RTArray<VkSemaphore>	drawFrameCopySemaphore;
-	RTArray<VkSemaphore>	drawFrameClearSemaphore;
-	RTArray<VkFence>		drawFrameImageRenderedFence;
+	RtArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
+	RtArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
+	RtArray<VkSemaphore>	drawFrameCopySemaphore;
+	RtArray<VkSemaphore>	drawFrameClearSemaphore;
+	RtArray<VkFence>		drawFrameImageRenderedFence;
 	int32					renderCurrentFrame = 0;
-	RTArray<obj::Base*>		objUpdates2D;
+	RtArray<obj::Base*>		objUpdates2D;
 	FenceDE					pendingObjectUpdatesFence;
 
 
@@ -312,7 +312,7 @@ namespace lux::core::g{
 
 
 
-	VkFormat findSupportedFormat(const RTArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
+	VkFormat findSupportedFormat(const RtArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
 		for(VkFormat format : *pCandidates) {
 			VkFormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);

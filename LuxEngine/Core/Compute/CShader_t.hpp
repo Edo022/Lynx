@@ -1,8 +1,8 @@
 #pragma once
 #define LUX_H_CSHADER_T
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Types/Containers/CTArray.hpp"
-#include "LuxEngine/Types/Containers/RTArray.hpp"
+#include "LuxEngine/Types/Containers/CtArray.hpp"
+#include "LuxEngine/Types/Containers/RtArray.hpp"
 
 
 
@@ -38,6 +38,6 @@ struct LuxShaderLayout_t{
 struct LuxShader_t {
 	VkDescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
 	VkDescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
-	lux::RTArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
+	lux::RtArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 };
 

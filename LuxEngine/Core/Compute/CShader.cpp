@@ -20,12 +20,12 @@
 
 namespace lux::core::c::shaders{
 	String										shaderPath;
-	RAArray<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
-	RTArray<LuxShaderLayout_t>					CShadersLayouts;
+	RaArray<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;
+	RtArray<LuxShaderLayout_t>					CShadersLayouts;
 
 	VkCommandPool								commandPool = nullptr;
-	RAArray<LuxShader_t, uint32>				CShaders;
-	RTArray<VkCommandBuffer>					CShadersCBs;
+	RaArray<LuxShader_t, uint32>				CShaders;
+	RtArray<VkCommandBuffer>					CShadersCBs;
 
 	FenceDE										addShaderFence;
 	LuxShader									clearShader = 0;
@@ -113,9 +113,9 @@ namespace lux::core::c::shaders{
 	//*   vRenderShader | the type of the shader
 	//*   pCellNum -----| The number of cells to bing to the shader. The shader inputs must match those cells
 	//> Engine internal use
-	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RTArray<bool>& pIsReadOnly) {
+	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly) {
 		{ //Create descriptor set layout
-			RTArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
+			RtArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
 				bindingLayouts[i] = VkDescriptorSetLayoutBinding{ 						//The binding layout describes what to bind in a shader binding point and how to use it
 					.binding{ i },														//Binding point in the shader
@@ -201,14 +201,14 @@ namespace lux::core::c::shaders{
 	//*   --- the binding index is the same as their index in the array
 	//*   vShaderLayout | the shader layout
 	//> Engine internal use
-	void createDescriptorSets(LuxShader_t* pCShader, const RTArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
+	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count( ); i++){										//For every cell
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;					//#LLID STRT 0003 Count uniform and
 			else storageCount++;																//storage cells requested
 		}
-		RTArray<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));	//Create an array of descriptor sizes with one element for each descriptor type
+		RtArray<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));	//Create an array of descriptor sizes with one element for each descriptor type
 		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{								//If there is at least one storage descriptor
 			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },											//Set the element type as storage
 			.descriptorCount{ storageCount },													//And set the number of descriptors
@@ -244,7 +244,7 @@ namespace lux::core::c::shaders{
 
 
 		//Create a descriptor set write for each buffer and update the descriptor sets
-		RTArray<VkWriteDescriptorSet> writeDescriptorSets(pCells.count( ));
+		RtArray<VkWriteDescriptorSet> writeDescriptorSets(pCells.count( ));
 		for(uint32 i = 0; i < pCells.count( ); ++i) {
 			//Connect the storage buffer to the descrptor									//Create descriptor buffer infos
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));
@@ -466,7 +466,7 @@ namespace lux::core::c::shaders{
 	//*   returns ------| the index of the shader
 	//*   --- -1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
 	//> Engine internal use
-	LuxShader newShader(const RTArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	LuxShader newShader(const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
 		luxCheckParam(pCells.count() == 0, pCells, "A shader must use at least one cell. The provided cell array has size 0");
 		luxCheckParam(vGroupCountX < 1, vGroupCountX, "The group count must be at least 1");

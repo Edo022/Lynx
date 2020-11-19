@@ -11,7 +11,7 @@
 
 namespace lux::core::c{
 	VkCommandPool				copyCommandPool    = nullptr;
-	RTArray<VkCommandBuffer>	copyCommandBuffers;
+	RtArray<VkCommandBuffer>	copyCommandBuffers;
 	VkCommandBuffer				clearCommandBuffer = nullptr;
 
 

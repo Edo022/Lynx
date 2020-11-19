@@ -3,7 +3,7 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Graphics/GSwapchain.hpp"
-#include "LuxEngine/Types/Containers/RAArray.hpp"
+#include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
 #include <set>
@@ -20,7 +20,7 @@
 namespace lux::core::dvc{
 	graphicsDevice			graphics;	//Main graphics device
 	computeDevice			compute;		//Main compute device
-	RTArray<computeDevice>	secondary;	//Secondary compute devices
+	RtArray<computeDevice>	secondary;	//Secondary compute devices
 
 
 
@@ -79,17 +79,17 @@ namespace lux::core::dvc{
 		//BUG BUT CALLING THE DEFAULT CONSTRUCTOR AND THEN USING THE RESIZE FUNCTION BREAKS EVERYTHING
 		//BUG     IN THIS CASE, THE HANDLE "VDEVICE" IS SET TO NULLPTR BY THE vkEnumerateDeviceExtensionProperties FUNCTION
 		//BUG     AND I DONT KNOW WHY. IT MAKES NO SENSE
-		//! HANDLES ARE IN A LUX RTARRAY TOO. CHECK IF NOT USING IT FIXES THE BUG
+		//! HANDLES ARE IN A LUX RtArray TOO. CHECK IF NOT USING IT FIXES THE BUG
 		//BUG#############################################################################################################
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 		//BUG OK
-			RTArray<VkExtensionProperties> availableExtensions(extensionCount);
+			RtArray<VkExtensionProperties> availableExtensions(extensionCount);
 		//BUG ERROR
-			// RTArray<VkExtensionProperties> availableExtensions(1);
+			// RtArray<VkExtensionProperties> availableExtensions(1);
 			// availableExtensions.resize(extensionCount);
 		//BUG ERROR
-			//RTArray<VkExtensionProperties> availableExtensions;
+			//RtArray<VkExtensionProperties> availableExtensions;
 			//availableExtensions.resize(extensionCount);
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
 
@@ -106,7 +106,7 @@ namespace lux::core::dvc{
 	QueueFamilyIndices deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
 		uint32 queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
-		RTArray<VkQueueFamilyProperties> queueFamilies;
+		RtArray<VkQueueFamilyProperties> queueFamilies;
 		queueFamilies.resize(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin( ));		//Save queue families
 
@@ -142,8 +142,8 @@ namespace lux::core::dvc{
 	//Then saves them in the class members
 	void deviceGetPhysical( ) {
 		uint32 deviceCount = 0;
-		RTArray<String> discardedPhysicalDevices;
-		RTArray<_VkPhysicalDevice*> physicalDevices;
+		RtArray<String> discardedPhysicalDevices;
+		RtArray<_VkPhysicalDevice*> physicalDevices;
 
 
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);							//Get physical device count
@@ -153,7 +153,7 @@ namespace lux::core::dvc{
 		if(false) {}
 		else {
 			//Get physical devices
-			RTArray<VkPhysicalDevice> physDevices(deviceCount);									//Create physical device array
+			RtArray<VkPhysicalDevice> physDevices(deviceCount);									//Create physical device array
 			vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin( ));				//Get physical devices
 
 			for(uint32 i = 0; i < physDevices.count( ); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
@@ -239,7 +239,7 @@ namespace lux::core::dvc{
 	//*   pLD: a pointer to the logical device where to store the created device
 	//*   pComputeQueues: a pointer to an array of compute queues
 	//*       This is used to know if the physical device is for graphics, computation or is secondary
-	void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RTArray<VkQueue>* pComputeQueues) {
+	void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues) {
 		//List the queues of the device as unique int32s
 		std::set<int32> uniqueQueueFamilyIndices;
 		if(sameDevice(*pPD, graphics.PD)) {									//If it's the main device for graphics,
@@ -255,7 +255,7 @@ namespace lux::core::dvc{
 		//Queue infos
 		//TODO for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
 		//TODO other simes, a GPU memory cell creates an exception when the lines are generated for the first time
-		RTArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
+		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
 				.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type

@@ -1,7 +1,7 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Graphics/Window.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
-#include "LuxEngine/Types/Containers/RAArray.hpp"
+#include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
@@ -68,7 +68,7 @@ namespace lux::core::g::wnd{
 		luxDebug(																		//Search for validation layers
 			uint32 layerCount = 0;
 			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
-			RTArray<VkLayerProperties> availableLayers(layerCount);
+			RtArray<VkLayerProperties> availableLayers(layerCount);
 			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));		//Get layers
 			for(uint32 i = 0; i < validationLayersNum; i++) {									//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
