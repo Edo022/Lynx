@@ -205,7 +205,7 @@ namespace lux {
 
 
 
-
+		//TODO add size
 		inline iter count(     ) const { checkInit; return size_;             } //Returns the number of elements in the map, including the free ones
 		inline iter usedCount( ) const { checkInit; return size_ - freeSize_; } //Returns the number of used elements
 		inline iter freeCount( ) const { checkInit; return freeSize_;         } //Returns the number of free elements
