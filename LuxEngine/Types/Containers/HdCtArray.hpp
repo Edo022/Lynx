@@ -9,30 +9,12 @@
 
 
 namespace lux{
-    struct dummy{};
-
+    template<class ...types> struct HdCtArray;
     namespace __pvt{
-        //Get_t iteration action
-        enum __action : uint32{
-            CONT = (uint32)-1,
-            DESC = 0,
-            GETV = 1
-        };
-
-
-
-        //TODO RECURSIVELY ADD PARAMETERS AND CALL FUNCTION AT THE LAST ONE
-
-        //TODO ci sono diversi tipi di superfici
-        //TODO questi tipi vengono calcolati automaticamente e salvati nei dati dell'oggetto
-        //TODO così in runtime non serve calcolarli. devono essere ricalcolati in background se l'oggetto viene modificato
-        //TODO ogni superficie ha dei punti caratteristici da cui dipendono le sue proprietà fisiche (non grafica)
-        //TODO i punti vengono calcolati dopo aver trovato il tipo e sono probabilment indici a dei punti normali
-        //TODO nn
-        //TODO
         //common virtual functions, Seq declaration, unspecialized get_t definition
         #define genGetVFunc inline virtual seq<index, type, types...>* getArr() = 0;
         template<uint32 index, class type, class ...types> struct seq;
+        enum __action : uint32{ CONT = (uint32)-1, DESC = 0, GETV = 1 };
         template <__action act, uint32 index, class type, class... types> struct get_t{ };
 
 
@@ -65,30 +47,39 @@ namespace lux{
             inline virtual seq<index, type, types...>* getArr() final override { return this; }
             inline void ctGet(const type& _val, const types&... vals){ val = _val; this->lux::__pvt::seq<index - 1, types...>::ctGet(vals...); }
             inline void* rtGet(const uint32 _index){ return (getOriginalSize() - 1 - index == _index) ? (void*)&val : this->lux::__pvt::seq<index - 1, types...>::rtGet(_index); }
-            template<class funcType, class retType, class ...packTypes> inline void exec(funcType func, retType* __ret, packTypes&... packVals){
-                this->lux::__pvt::seq<index - 1, types...>::template exec<funcType, retType, packTypes..., type>(func, __ret, packVals..., val);
+            template<class funcType, class retType, class ...argsTypes> inline void exec(funcType _func, retType* _ret, argsTypes&... _args){
+                this->lux::__pvt::seq<index - 1, types...>::template exec<funcType, retType, argsTypes..., type>(_func, _ret, _args..., val);
             }
-            template<class objType, class funcType, class retType, class ...packTypes> inline void exec(objType& object, funcType func, retType* __ret, packTypes&... packVals){
-                this->lux::__pvt::seq<index - 1, types...>::template exec<objType, funcType, retType, packTypes...>(object, func, __ret, packVals...);
-                // lux::__pvt::execObj_t<objType, funcType, retType, packTypes..., type>::exec(object, func, __ret, packVals..., val);
+            template<class objType, class funcType, class retType, class ...argsTypes> inline void execObj(objType& _obj, funcType _func, retType* _ret, argsTypes&... _args){
+                this->lux::__pvt::seq<index - 1, types...>::template execObj<objType, funcType, retType, argsTypes...>(_obj, _func, _ret, _args...);
             }
         };
 
 
 
+        //Don't use this struct. Just don't
+        struct NoRet_t{};
+        template<class funcType, class ...argsTypes> struct exec_thr{
+            funcType _func;
+            lux::HdCtArray<argsTypes...> _args;
+        };
 
-        template<class funcType, class retType, class ...packTypes> struct exec_t{
-            static void exec(funcType func, retType* __ret, packTypes&... packVals){ *__ret = func(packVals...); }
+        //Execute functions
+        template<class funcType, class retType, class ...argsTypes> struct exec_t{
+            static void exec(funcType _func, retType* _ret, argsTypes&... _args){ *_ret = _func(_args...); }
         };
-        template<class funcType, class ...packTypes> struct exec_t<funcType, void, packTypes...> {
-            static void exec(funcType func, void* ret, packTypes&... packVals){ func(packVals...); }
+        template<class funcType, class ...argsTypes> struct exec_t<funcType, NoRet_t, argsTypes...> {
+            static void exec(funcType _func, NoRet_t* _ret, argsTypes&... _args){ _func(_args...); }
         };
-        template<class objType, class funcType, class retType, class ...packTypes> struct execObj_t{
-            static void exec(objType& object, funcType func, retType* __ret, packTypes&... packVals){ *__ret = (object.*func)(packVals...); }
+
+        //Execute member functions
+        template<class objType, class funcType, class retType, class ...argsTypes> struct execObj_t{
+            static void execObj(objType& _obj, funcType _func, retType* _ret, argsTypes&... _args){ *_ret = (_obj.*_func)(_args...); }
         };
-        template<class objType, class funcType, class ...packTypes> struct execObj_t<objType, funcType, void, packTypes...> {
-            static void exec(objType& object, funcType func, void* ret, packTypes&... packVals){ (object.*func)(packVals...); }
+        template<class objType, class funcType, class ...argsTypes> struct execObj_t<objType, funcType, NoRet_t, argsTypes...> {
+            static void execObj(objType& _obj, funcType _func, NoRet_t* _ret, argsTypes&... _args){ (_obj.*_func)(_args...); }
         };
+
         //Stop at index 0 (seq specialization)
         template<class type> struct seq<0, type> :
         public get_t<CONT, 0, type>,
@@ -98,14 +89,18 @@ namespace lux{
             inline virtual seq<0, type>* getArr() final override { return this; }
             void ctGet(const type& _val){ val = _val; }
             inline void* rtGet(const uint32 _index){ return (void*)&val; }
-            template<class funcType, class retType, class ...packTypes> inline void exec(funcType func, retType* __ret, packTypes&... packVals){
-                lux::__pvt::execObj_t<funcType, retType, packTypes..., type>::exec(func, __ret, packVals..., val);
+            template<class funcType, class retType, class ...argsTypes> inline void exec(funcType _func, retType* _ret, argsTypes&... _args){
+                lux::__pvt::exec_t<funcType, retType, argsTypes..., type>::exec(_func, _ret, _args..., val);
             }
-            template<class objType, class funcType, class retType, class ...packTypes> inline void exec(objType& object, funcType func, retType* __ret, packTypes&... packVals){
-                lux::__pvt::execObj_t<objType, funcType, retType, packTypes..., type>::exec(object, func, __ret, packVals..., val);
+            template<class objType, class funcType, class retType, class ...argsTypes> inline void execObj(objType& _obj, funcType _func, retType* _ret, argsTypes&... _args){
+                lux::__pvt::execObj_t<objType, funcType, retType, argsTypes..., type>::execObj(_obj, _func, _ret, _args..., val);
             }
         };
     }
+
+
+
+
 
 
 
@@ -143,7 +138,7 @@ namespace lux{
             this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, retType>(pFunc, &pReturn);
         }
         template<class funcType>                inline void exec(funcType pFunc                  ){
-            this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, void   >(pFunc, nullptr );
+            this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, lux::__pvt::NoRet_t>(pFunc, nullptr );
         }
         //Calls a function of a class instance using the array elements as arguments
         //pObject | The class instance containing the function
@@ -151,10 +146,10 @@ namespace lux{
         //pReturn | The variable where to store the return value
         //pReturn can be omitted to ignore the return value or call void functions
         template<class objType, class funcType, class retType> inline void exec(objType& pObject, funcType pFunc, retType& pReturn){
-            this->lux::__pvt::seq<seqIndex, types...>::template exec<objType, funcType, retType>(pObject, pFunc, &pReturn);
+            this->lux::__pvt::seq<seqIndex, types...>::template execObj<objType, funcType, retType>(pObject, pFunc, &pReturn);
         }
         template<class objType, class funcType               > inline void exec(objType& pObject, funcType pFunc                  ){
-            this->lux::__pvt::seq<seqIndex, types...>::template exec<objType, funcType, void   >(pObject, pFunc, nullptr );
+            this->lux::__pvt::seq<seqIndex, types...>::template execObj<objType, funcType, lux::__pvt::NoRet_t>(pObject, pFunc, nullptr );
         }
     };
     #undef seqIndex
