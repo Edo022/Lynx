@@ -7,10 +7,9 @@
 
 
 //UwU
-	//This is the header to include in order to use the LuxEngine
-	//Call LuxInit() to initialize and run the engine
-	//It will open a default graphic window
-	//You can configure the engine in the LuxEngine_config.h file
+	//This is the main header of the Lux Engine
+	//The engine is initialized before anything else
+	//The "LuxEngine_config.hpp" file contains configuration macros to change the program behaviour
 
 
 
@@ -18,25 +17,9 @@
 
 
 //Names
-	//variableName			//functionName		//macroName		//basicTypeName
-	//ComplexTypeName		//FileName
-	//CONFIG_MACRO_NAME		//ENUM_MEMBER_NAME
-	//Any variable, macro or function whose name begins with "__lp_" is private, but it's in the public section for performance reasons
-	//Don't use them if you don't know what you're doing
-	//Files ending with _t only contains the structures needed by the file with the same name
-	//Files ending with _e only contains the extern variables and static members needed by the file with the same name
-	//Function parameters passed by value have a name that starts with a lowercase v
-	//Function parameters passed by reference or pointers have a name that starts with a lowercase p
-	//Some types are just indices of the instanciated objects, like LuxShader or LuxCell. The actual type has the same name, but it ends with _t
+	//Names of function parameters passed by value start with a lowercase 'v'
+	//Names of function parameters passed by reference or pointers start with a lowercase 'p'
 
-
-//Performance
-	//Class operators and count() and data() functions are inlined, so the performance is the same as using the __lp_ variables directly
-	//The luxDebug()   macro executes a line of code only if LUX_DEBUG is defined
-	//The luxRelease() macro executes a line of code only if LUX_DEBUG is NOT defined
-	//luxDebug and luxRelease macros do not affect performance or code generation. They just remove a line of code
-	//LUX_DEBUG also enables Vulkan validation layers, when available. They'll affect performance
-	//LUX_DEBUG must be define BEFORE including this header
 
 
 //System
@@ -45,11 +28,10 @@
 		//Linux
 	//Supported compilers:
 		//gcc
-		//?
 	//Max (GPU + shared) memory:
 		//51200MB
 		//This value can be increased by using larger GPU buffers. See LUX_CNF_GPU_STATIC_BUFFER_SIZE in LuxEngine_config.h
-		//In that case, the new maximum memory will be (LUX_CNF_GPU_STATIC_BUFFER_SIZE * 1024)
+		//In that case, the maximum memory will be (LUX_CNF_GPU_STATIC_BUFFER_SIZE * 1024)
 
 
 

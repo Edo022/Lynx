@@ -59,14 +59,14 @@ namespace lux::core{
 	//TODO remove
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		win(  return system((c::shaders::shaderPath + "/glslc.exe "                                    + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
+		win10(return system((c::shaders::shaderPath + "/glslc.exe "                                    + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
 		linux(return system((lux::sys::dir::thisDir + "/deps/Vulkan_1.2.154.0_linux/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
 	}
 
 
 
 
-
+//TODO remove random "----|" thing from function documentation
 
 
 
@@ -108,7 +108,7 @@ namespace lux::core{
 		c::init( );
 
 		//Loop
-		Success printf("Initialization completed in %f s", luxStopChrono(start));
+		Success printf("Initialization completed in %f seconds", luxStopChrono(start));
 		Success printf("Starting Lux Engine\n");
 		mainLoop( );								MainSeparator;
 
@@ -130,7 +130,6 @@ namespace lux::core{
 		initialized = true;
 
 		while(!glfwWindowShouldClose(g::wnd::window)) glfwWaitEvents( );
-		running = false;
 		vkDeviceWaitIdle(dvc::graphics.LD);
 	}
 

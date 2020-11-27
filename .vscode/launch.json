@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Test.out",
+            "program": "${workspaceFolder}/LuxEngine.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -22,10 +22,8 @@
                     "ignoreFailures": true
                 },
                 {
-                    "text": "handle SIGSTOP nostop noprint pass"       //Suspend thread
-                },
-                {
-                    "text": "handle SIGCONT nostop noprint pass"        //Resume thread
+                    "text": "handle SIGSTOP nostop noprint pass" },{      //Suspend thread
+                    "text": "handle SIGCONT nostop noprint pass"          //Resume thread
                 }
             ]
         }

@@ -108,7 +108,7 @@
 					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
 
 				//Output
-					"-o", "Test.out"
+					"-o", "LuxEngine.out"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"
