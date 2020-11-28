@@ -1,4 +1,4 @@
-﻿#include "LuxEngine/Threads/ThreadPool.hpp"
+﻿#include "LuxEngine/Threads/Thread.hpp"
 #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
@@ -125,8 +125,8 @@ namespace lux::core{
 
 	void mainLoop( ) {
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
-		std::thread FPSCounterThr(&runFPSCounterThr);		FPSCounterThr.detach( );
-		std::thread renderThr(&runRenderThr);				renderThr.detach( );
+		lux::thread FPSCounterThr(runFPSCounterThr);		FPSCounterThr.detach( );
+		lux::thread renderThr(runRenderThr);				renderThr.detach( );
 		initialized = true;
 
 		while(!glfwWindowShouldClose(g::wnd::window)) glfwWaitEvents( );
