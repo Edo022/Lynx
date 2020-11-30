@@ -4,6 +4,7 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Graphics/Graphics.hpp"
 #include "LuxEngine/Types/LuxBool.hpp"
+#include "LuxEngine/Threads/Thread.hpp"
 #include "vulkan/vulkan.h"
 
 
@@ -89,6 +90,10 @@ namespace lux::core{
 	extern const char**				requiredDeviceExtensions;
 	extern uint32					validationLayersNum;
 	extern uint32					requiredDeviceExtensionsNum;
+
+	extern lux::thread FPSCounterThr;
+	extern lux::thread renderThr;
+
 
 
 

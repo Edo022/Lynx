@@ -26,24 +26,34 @@ namespace lux{
 			}
 		};
 	}
+	#pragma GCC diagnostic pop
 	struct thread /*: __pvt::thread_ctor_t<1, int>, __pvt::thread_ctor_t<0, int>*/ {
 		pthread_t thr;
 		//pFunc | The function to initialize the thread with
 		//pArgs | List of function arguments
 		//e.g. lux::thread t(&sum, {2, 2});
-		template<class funcType, class argType, class ...argsTypes> thread(const funcType pFunc, const lux::HdCtArray<argType, argsTypes...>& pArgs) {
+		template<class funcType, class argType, class ...argsTypes> inline thread(const funcType pFunc, const lux::HdCtArray<argType, argsTypes...>& pArgs) {
+			operator()(pFunc, pArgs);
+		}
+		template<class funcType> inline thread(const funcType pFunc) { operator()(pFunc); }
+		thread(){ thr = 0; }
+
+
+
+
+		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HdCtArray<argType, argsTypes...>& pArgs) {
 			lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argsTypes...>));
 			func_args->_func = pFunc;
 			func_args->_args = pArgs;
 			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<1, funcType, argType, argsTypes...>::mt_func, func_args);
 		}
-		template<class funcType> thread(const funcType pFunc) {
+		template<class funcType> void operator()(const funcType pFunc) {
 			funcType* func_args = (funcType*)malloc(sizeof(funcType));
 			*func_args = pFunc;
 			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<0, funcType>::mt_func, func_args);
 		}
-	#pragma GCC diagnostic pop
-		thread(){ thr = 0; }
+
+
 
 
 		//Blocks the execution of a thread. It can be resumed with the resume() function

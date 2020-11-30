@@ -62,21 +62,20 @@ int main( ) {
 	{
 		//TODO automatize object search //TODO wtf does this mean
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
-		lux::obj::Border2D testBorder({0, 0}, {1, 1});
 		lux::obj::Line2D lineTest{
 			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
 		// usleep(1000*1000);
-		renderSpace.addChild(&lineTest);
+		renderSpace.addChild(new lux::obj::Line2D(lineTest));
 		lux::obj::Line2D lineTest2{
 			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
-		renderSpace.addChild(&lineTest2);
-		//TODO FIX OR ADD WARNING WHEN THE VARIABLE GETS DESTROYED
+		renderSpace.addChild(new lux::obj::Line2D(lineTest2));
+		//FIXME FIX OR ADD WARNING WHEN THE VARIABLE GETS DESTROYED
 		lux::obj::addRenderSpace(new lux::obj::RenderSpace2D(renderSpace));
 	}
 
@@ -97,6 +96,8 @@ int main( ) {
 
 		sleep(10);
 	}
+	lux::core::FPSCounterThr.join();
+	lux::core::renderThr.join();
 	return 0;
 }
 

@@ -176,7 +176,8 @@ namespace lux::core::g::swapchain{
 	void cleanup( ) {
 		vkDestroyRenderPass(dvc::graphics.LD, out::renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
-		for(auto imageView : swapchainImageViews) vkDestroyImageView(dvc::graphics.LD, imageView, nullptr);				//Destroy image views
+		for(auto imageView   : swapchainImageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView  , nullptr);		//Destroy image views
+		//FIXME validation layer error
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);													//destroy swapchain
 	}
 

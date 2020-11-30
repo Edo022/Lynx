@@ -1,5 +1,4 @@
-﻿#include "LuxEngine/Threads/Thread.hpp"
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
+﻿#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
 #include "LuxEngine/Core/Compute/CShader.hpp"
@@ -39,6 +38,8 @@ namespace lux::core{
 	uint32 						requiredDeviceExtensionsNum	= 1;
 	const  char** 				requiredDeviceExtensions 	= { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
 
+	lux::thread FPSCounterThr;
+	lux::thread renderThr;
 
 
 
@@ -125,8 +126,8 @@ namespace lux::core{
 
 	void mainLoop( ) {
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
-		lux::thread FPSCounterThr(runFPSCounterThr);		FPSCounterThr.detach( );
-		lux::thread renderThr(runRenderThr);				renderThr.detach( );
+		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach( );
+		renderThr(runRenderThr);				//renderThr.detach( );
 		initialized = true;
 
 		while(!glfwWindowShouldClose(g::wnd::window)) glfwWaitEvents( );
