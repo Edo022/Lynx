@@ -10,7 +10,7 @@
 
 
 
-namespace lux::core::g::cmd{
+namespace lux::core::render::cmd{
 	VkCommandPool				singleTimeCommandPool = nullptr;
 	RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
 

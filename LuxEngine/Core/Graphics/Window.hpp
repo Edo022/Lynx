@@ -8,7 +8,7 @@
 
 
 //TODO use ptrs instead of cells
-namespace lux::core::g::wnd{
+namespace lux::core::render::wnd{
 	extern GLFWwindow*	window;					//Main engine window
 	extern int32		width, height;			//Size of the window //TODO
 	extern FenceDE		windowResizeFence;

@@ -6,7 +6,7 @@
 
 
 
-namespace lux::core::g::cmd{
+namespace lux::core::render::cmd{
 	extern VkCommandPool			singleTimeCommandPool;
 	extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
 

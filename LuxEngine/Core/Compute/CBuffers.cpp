@@ -54,7 +54,7 @@ namespace lux::core::c::buffers{
 		VkMemoryAllocateInfo allocInfo{
 			.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 			.allocationSize = memRequirements.size,
-			.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, vProperties)
+			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
 		};
 		VkAllocationCallbacks allocator{
 			.pUserData = nullptr,
@@ -70,7 +70,7 @@ namespace lux::core::c::buffers{
 				VkMemoryAllocateInfo allocInfo2{
 					.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 					.allocationSize = memRequirements.size,
-					.memoryTypeIndex = g::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
+					.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
 				};
 				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
 					case VK_SUCCESS: break;

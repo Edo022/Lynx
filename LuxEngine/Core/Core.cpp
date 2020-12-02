@@ -97,12 +97,12 @@ namespace lux::core{
 		}
 
 		//Init
-		g::wnd::initWindow( );
+		render::wnd::initWindow( );
 		Normal	printf("Creating Instance...                     ");
-		g::wnd::createInstance( );
+		render::wnd::createInstance( );
 		SuccessNoNl printf("ok");
 
-		g::init(vUseVSync, vFOV);
+		render::init(vUseVSync, vFOV);
 		//c::buffers::init( );
 		//ram is inizialized in init function as it's required for everything
 		// rem::init( );
@@ -115,9 +115,9 @@ namespace lux::core{
 
 		//Exit
 		Normal  printf("Cleaning memory\n");
-		g::cleanup( ); c::computeCleanup( );
+		render::cleanup( ); c::computeCleanup( );
 		vkDestroyInstance(instance, nullptr);
-		glfwDestroyWindow(g::wnd::window);
+		glfwDestroyWindow(render::wnd::window);
 		glfwTerminate( );
 	}
 
@@ -130,7 +130,7 @@ namespace lux::core{
 		renderThr(runRenderThr);				//renderThr.detach( );
 		initialized = true;
 
-		while(!glfwWindowShouldClose(g::wnd::window)) glfwWaitEvents( );
+		while(!glfwWindowShouldClose(render::wnd::window)) glfwWaitEvents( );
 		vkDeviceWaitIdle(dvc::graphics.LD);
 	}
 
@@ -141,7 +141,7 @@ namespace lux::core{
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
 		while(running) {
 			LuxTime renderTime = luxStartChrono();
-			g::drawFrame( );
+			render::drawFrame( );
 			//TODO it does nothing but it's probably important, somehow. dunno
 			//vkDeviceWaitIdle(compute.LD);
 			FPS = luxStopChrono(renderTime);

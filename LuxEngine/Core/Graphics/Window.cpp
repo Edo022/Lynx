@@ -13,7 +13,7 @@
 
 
 
-namespace lux::core::g::wnd{
+namespace lux::core::render::wnd{
 	GLFWwindow* window 					= nullptr;
 	int32		width = 1920 * 2, height = 1080; //TODO
 	FenceDE		windowResizeFence;
@@ -107,7 +107,7 @@ namespace lux::core::g::wnd{
 
 		{ //Set callbacks
 			glfwSetWindowUserPointer(window, nullptr);
-			glfwSetFramebufferSizeCallback(window, g::framebufferResizeCallback);
+			glfwSetFramebufferSizeCallback(window, render::framebufferResizeCallback);
 
 			glfwSetCursorPosCallback(window, input::mouseCursorPosCallback);
 			glfwSetMouseButtonCallback(window, input::mouseButtonCallback);

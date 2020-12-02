@@ -11,7 +11,7 @@
 
 
 
-namespace lux::core::g::swapchain{
+namespace lux::core::render::swapchain{
 	VkSwapchainKHR			swapchain = nullptr;
 	RtArray<VkImage>		swapchainImages;
 	RtArray<VkImageView>	swapchainImageViews;
@@ -203,7 +203,7 @@ namespace lux::core::g::swapchain{
 			uint32* pwindowSize = scast<uint32*>(wnd::gpuCellWindowSize->map( ));
 			pwindowSize[0] = swapchainExtent.width;
 			pwindowSize[1] = swapchainExtent.height;
-			g::wnd::gpuCellWindowSize->unmap( );
+			render::wnd::gpuCellWindowSize->unmap( );
 
 			{	//Destroy copy command buffers
 				vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.count( ), c::copyCommandBuffers.begin( ));

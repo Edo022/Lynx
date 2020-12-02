@@ -13,6 +13,6 @@ namespace lux::obj{
 		//4x trailing padding								//    4    |    20 - 23
 
 		//TODO add static objects with specific workgroup count
-		core::c::shaders::newShader({ core::g::wnd::gpuCellWindowOutput, core::g::wnd::gpuCellWindowSize, core::g::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, core::g::wnd::width / 32 + 1, 1, 1);
+		core::c::shaders::newShader({ core::render::wnd::gpuCellWindowOutput, core::render::wnd::gpuCellWindowSize, core::render::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, core::render::wnd::width / 32 + 1, 1, 1);
 	}
 }

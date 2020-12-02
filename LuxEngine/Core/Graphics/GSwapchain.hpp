@@ -9,7 +9,7 @@
 
 
 
-namespace lux::core::g::swapchain{
+namespace lux::core::render::swapchain{
 	struct SwapChainSupportDetails {
 		VkSurfaceCapabilitiesKHR	capabilities;
 		RtArray<VkSurfaceFormatKHR>	formats;

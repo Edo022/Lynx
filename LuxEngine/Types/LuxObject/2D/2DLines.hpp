@@ -13,7 +13,7 @@
 //TODO per-children-group shader command buffers. static shaders are recreated when the objects changes
 namespace lux::obj {
 	//A bidimensional line with interpolated color and width
-	//Lines with width 0 or alpha 0 are not rendered
+	//Lines with 0 width or 0 alpha are not rendered
 	struct Line2D : public Base2D {
 		void init( );
 

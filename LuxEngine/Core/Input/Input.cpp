@@ -16,8 +16,8 @@ namespace lux::input{
 
 
 
-	#define gtollx(n) ((n) / core::g::swapchain::swapchainExtent.width)
-	#define gtolly(n) ((n) / core::g::swapchain::swapchainExtent.height)
+	#define gtollx(n) ((n) / core::render::swapchain::swapchainExtent.width)
+	#define gtolly(n) ((n) / core::render::swapchain::swapchainExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(vec2f32{ gtollx(x), gtolly(y) });

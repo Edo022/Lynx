@@ -16,7 +16,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::render{
 	extern RtArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
 	extern RtArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
 	extern RtArray<VkSemaphore>	drawFrameCopySemaphore;

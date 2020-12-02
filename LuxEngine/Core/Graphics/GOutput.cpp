@@ -20,7 +20,7 @@
 
 
 
-namespace lux::core::g::out{
+namespace lux::core::render::out{
 	VkRenderPass	renderPass = nullptr;
 	bool			renderFramebufferResized = false;
 

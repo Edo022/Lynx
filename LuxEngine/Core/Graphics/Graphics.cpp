@@ -26,7 +26,7 @@
 
 
 
-namespace lux::core::g{
+namespace lux::core::render{
 	RtArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
 	RtArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
 	RtArray<VkSemaphore>	drawFrameCopySemaphore;
@@ -243,7 +243,7 @@ namespace lux::core::g{
 		//Fix objects update requests
 		if(objUpdates2D.count( ) > 0){
 			pendingObjectUpdatesFence.startFirst( );
-			VkCommandBuffer cb = core::g::cmd::beginSingleTimeCommands( );
+			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands( );
 			for(uint32 i = 0; i < objUpdates2D.count( ); i++){
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
@@ -253,7 +253,7 @@ namespace lux::core::g{
 					(void*)objUpdates2D[i]->render.data
 				);
 			}
-			core::g::cmd::endSingleTimeCommands(cb);
+			core::render::cmd::endSingleTimeCommands(cb);
 			objUpdates2D.clear( );
 			pendingObjectUpdatesFence.endFirst( );
 		}
