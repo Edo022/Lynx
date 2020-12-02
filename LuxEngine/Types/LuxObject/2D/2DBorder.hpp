@@ -1,5 +1,5 @@
 #pragma once
-#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Render/CShader.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 
 

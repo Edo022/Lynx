@@ -7,7 +7,7 @@
 #include "LuxEngine/Types/EngineTypes.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Core/Compute/CShader_t.hpp"
+#include "LuxEngine/Core/Render/CShader_t.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/macros.hpp"
 

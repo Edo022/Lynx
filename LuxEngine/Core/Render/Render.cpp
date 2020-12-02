@@ -1,9 +1,9 @@
 #include <vulkan/vulkan.h>
-#include "LuxEngine/Core/Compute/CShader_t.hpp"
+#include "LuxEngine/Core/Render/CShader_t.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/GSwapchain.hpp"
-#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Render/CShader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 #include "LuxEngine/Core/Core.hpp"

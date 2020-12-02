@@ -1,4 +1,4 @@
-#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Render/CShader.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 

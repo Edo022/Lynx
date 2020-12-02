@@ -1,5 +1,5 @@
 #include "LuxEngine/Core/Input/Input.hpp"
-#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Render/CShader.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
 

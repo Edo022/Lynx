@@ -70,7 +70,7 @@
 					"LuxEngine/Core/Devices.cpp",
 					// "LuxEngine/Core/ConsoleOutput.cpp",
 					"LuxEngine/Core/Core.cpp",
-					"LuxEngine/Core/Compute/*.cpp",
+					"LuxEngine/Core/Render/*.cpp",
 					"LuxEngine/Core/Render/*.cpp",
 					"LuxEngine/Core/Input/*.cpp",
 

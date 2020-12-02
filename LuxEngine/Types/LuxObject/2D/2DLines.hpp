@@ -2,7 +2,7 @@
 
 
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
-#include "LuxEngine/Core/Compute/CBuffers.hpp"
+#include "LuxEngine/Core/Render/CBuffers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"

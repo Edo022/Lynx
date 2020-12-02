@@ -1,7 +1,7 @@
 ﻿#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
-#include "LuxEngine/Core/Compute/CShader.hpp"
+#include "LuxEngine/Core/Render/CShader.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/GOutput.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"

@@ -1,5 +1,5 @@
 #include "LuxEngine/Core/Core.hpp"
-#include "LuxEngine/Core/Compute/CBuffers.hpp"
+#include "LuxEngine/Core/Render/CBuffers.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 
 

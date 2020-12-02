@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_COMPUTE
-#include "LuxEngine/Core/Compute/CShader_t.hpp"
+#include "LuxEngine/Core/Render/CShader_t.hpp"
 
 
 
