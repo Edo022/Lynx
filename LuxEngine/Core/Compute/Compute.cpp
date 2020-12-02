@@ -1,7 +1,7 @@
 ﻿#include "LuxEngine/Core/Compute/Compute.hpp"
 #include "LuxEngine/Core/Compute/CBuffers.hpp"
 #include "LuxEngine/Core/Compute/CShader.hpp"
-#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/GSwapchain.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"

@@ -1,5 +1,5 @@
 #include "LuxEngine/Core/Core.hpp"
-#include "LuxEngine/Core/Graphics/Window.hpp"
+#include "LuxEngine/Core/Render/Window.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"

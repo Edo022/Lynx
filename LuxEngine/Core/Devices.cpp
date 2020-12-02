@@ -2,7 +2,7 @@
 //TODO USE MOVE SEMANTICS
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Devices.hpp"
-#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/GSwapchain.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 

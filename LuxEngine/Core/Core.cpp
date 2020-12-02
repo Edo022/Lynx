@@ -2,10 +2,10 @@
 #include "LuxEngine/Core/Core.hpp"
 
 #include "LuxEngine/Core/Compute/CShader.hpp"
-#include "LuxEngine/Core/Graphics/GCommands.hpp"
-#include "LuxEngine/Core/Graphics/GOutput.hpp"
-#include "LuxEngine/Core/Graphics/Graphics.hpp"
-#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/GCommands.hpp"
+#include "LuxEngine/Core/Render/GOutput.hpp"
+#include "LuxEngine/Core/Render/Render.hpp"
+#include "LuxEngine/Core/Render/GSwapchain.hpp"
 
 #include "LuxEngine/System/System.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"

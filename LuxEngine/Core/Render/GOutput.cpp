@@ -1,5 +1,5 @@
-#include "LuxEngine/Core/Graphics/GOutput.hpp"
-#include "LuxEngine/Core/Graphics/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/GOutput.hpp"
+#include "LuxEngine/Core/Render/GSwapchain.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"

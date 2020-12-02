@@ -1,4 +1,4 @@
-#include "LuxEngine/Core/Graphics/GCommands.hpp"
+#include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"

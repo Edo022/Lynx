@@ -4,8 +4,8 @@
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 #include "LuxEngine/Core/Compute/CBuffers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
-#include "LuxEngine/Core/Graphics/GCommands.hpp"
-#include "LuxEngine/Core/Graphics/Graphics.hpp"
+#include "LuxEngine/Core/Render/GCommands.hpp"
+#include "LuxEngine/Core/Render/Render.hpp"
 // #include "LuxEngine/Types/Vectors/Vectors.h"
 #include <vulkan/vulkan.h>
 

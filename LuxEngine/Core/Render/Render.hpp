@@ -5,8 +5,8 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
 #include "LuxEngine/Types/Containers/CtArray.hpp"
-#include "LuxEngine/Core/Graphics/Window.hpp"
-#include "LuxEngine/Core/Graphics/GOutput.hpp"
+#include "LuxEngine/Core/Render/Window.hpp"
+#include "LuxEngine/Core/Render/GOutput.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 
 

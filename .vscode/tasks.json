@@ -71,7 +71,7 @@
 					// "LuxEngine/Core/ConsoleOutput.cpp",
 					"LuxEngine/Core/Core.cpp",
 					"LuxEngine/Core/Compute/*.cpp",
-					"LuxEngine/Core/Graphics/*.cpp",
+					"LuxEngine/Core/Render/*.cpp",
 					"LuxEngine/Core/Input/*.cpp",
 
 					"LuxEngine/Core/StartCore.cpp",

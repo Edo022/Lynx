@@ -1,2 +1,4 @@
 deps/
 *.out
+linecounter.json
+linecounter.txt
