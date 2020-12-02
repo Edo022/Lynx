@@ -77,7 +77,6 @@ Object rendering
 
 namespace lux::core{
 	extern double	FPS;
-	extern float	FOV;
 	extern bool		running;
 	extern bool		useVSync;
 	extern bool		initialized;
@@ -98,7 +97,7 @@ namespace lux::core{
 
 
 	//Main
-	void run(bool vUseVSync, float vFOV);
+	void run(bool vUseVSync);
 	void mainLoop( );
 	void runFPSCounterThr( );
 	void runRenderThr( );

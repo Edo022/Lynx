@@ -24,7 +24,6 @@
 
 namespace lux::core{
 	double	FPS;
-	float	FOV;
 	bool	running;
 	bool	useVSync;
 	bool	initialized = false;
@@ -71,7 +70,7 @@ namespace lux::core{
 
 
 
-	void run(bool vUseVSync, float vFOV) {
+	void run(bool vUseVSync) {
 		running = true;
 		__lp_goniometric_functions_init( );
 		sys::init( );
@@ -102,7 +101,7 @@ namespace lux::core{
 		render::wnd::createInstance( );
 		SuccessNoNl printf("ok");
 
-		render::init(vUseVSync, vFOV);
+		render::init(vUseVSync);
 		//c::buffers::init( );
 		//ram is inizialized in init function as it's required for everything
 		// rem::init( );

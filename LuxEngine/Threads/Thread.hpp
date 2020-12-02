@@ -42,7 +42,7 @@ namespace lux{
 
 
 		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HdCtArray<argType, argsTypes...>& pArgs) {
-			lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argsTypes...>));
+			lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argType, argsTypes...>));
 			func_args->_func = pFunc;
 			func_args->_args = pArgs;
 			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<1, funcType, argType, argsTypes...>::mt_func, func_args);

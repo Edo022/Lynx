@@ -9,7 +9,7 @@ namespace lux::core{
     luxAutoInit(LUX_NH_START_CORE){
     	// std::thread __t__(lux::core::run, false, 45);
         // __t__.detach(); //TODO join thread from main thread when the program exits
-        lux::thread t(lux::core::run, lux::HdCtArray{false, 45});
+        lux::thread t(lux::core::run, lux::HdCtArray{ false });
         t.detach();
         while(!initialized) sleep(10);
     }

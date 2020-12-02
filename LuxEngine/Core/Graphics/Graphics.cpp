@@ -43,9 +43,8 @@ namespace lux::core::render{
 
 
 
-	void init(const bool vUseVSync, const float vFOV){
+	void init(const bool vUseVSync){
 		useVSync = vUseVSync;
-		FOV = vFOV;
 
 		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
 

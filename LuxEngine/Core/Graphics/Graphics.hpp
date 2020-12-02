@@ -30,7 +30,7 @@ namespace lux::core::render{
 
 
 	void			preInit( );
-	void			init(const bool vUseVSync, const float vFOV);
+	void			init(const bool vUseVSync);
 	void			createSyncObjs( );
 	luxDebug(void	createDebugMessenger( ));
 	void			drawFrame( );
