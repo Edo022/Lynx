@@ -16,10 +16,10 @@ namespace lux::core::dvc{
 
 
 	void preInit( );
-	void				deviceGetPhysical( );
-	void				deviceCreateLogical(   const _VkPhysicalDevice* pPD,     VkDevice* pLD, RtArray<VkQueue>* pComputeQueues);
-	static int32		deviceRate(            const _VkPhysicalDevice* pDevice													);
-	bool				deviceIsSuitable(      const VkPhysicalDevice   vDevice, String* pErrorText								);
-	bool				deviceCheckExtensions( const VkPhysicalDevice   vDevice													);
-	QueueFamilyIndices	deviceGetQueueFamilies(const VkPhysicalDevice   vDevice													);
+	void				getPhysical( );
+	void				createLogical(   const _VkPhysicalDevice* pPD,     VkDevice* pLD, RtArray<VkQueue>* pComputeQueues);
+	static int32		rate(            const _VkPhysicalDevice* pDevice													);
+	bool				isSuitable(      const VkPhysicalDevice   vDevice, String* pErrorText								);
+	bool				checkExtensions( const VkPhysicalDevice   vDevice													);
+	QueueFamilyIndices	getQueueFamilies(const VkPhysicalDevice   vDevice													);
 }

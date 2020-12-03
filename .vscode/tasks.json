@@ -2,7 +2,7 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "glfw test",
+			"label": "Debug   | Build application",
 			"command": "/usr/bin/g++",
 			"args": [
 				"testglfw.cpp",
@@ -30,7 +30,7 @@
 
 		{
 			"type": "shell",
-			"label": "Build LuxEngine - Debug",
+			"label": "Debug   | Build LuxEngine",
 			"command": "/usr/bin/g++",
 			"args": [
 				//Source
@@ -71,7 +71,7 @@
 					// "LuxEngine/Core/ConsoleOutput.cpp",
 					"LuxEngine/Core/Core.cpp",
 					"LuxEngine/Core/Render/*.cpp",
-					"LuxEngine/Core/Render/*.cpp",
+					//"LuxEngine/Core/Render/*.cpp",
 					"LuxEngine/Core/Input/*.cpp",
 
 					"LuxEngine/Core/StartCore.cpp",
@@ -109,6 +109,50 @@
 
 				//Output
 					"-o", "LuxEngine.out"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+
+
+
+
+
+
+
+
+
+		{
+			"type": "shell",
+			"label": "Release | Build application",
+			//"command": "/usr/bin/g++",
+			"command": "python3 /home/Edo/Desktop/h.py \n python3 /home/Edo/Desktop/h.py",
+			"args": [
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Release | Build LuxEngine",
+			"command": "/usr/bin/g++",
+			"args": [
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"

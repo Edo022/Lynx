@@ -51,7 +51,7 @@ namespace lux::core::render{
 		//Initialize vulkan
 		luxCheckVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
 		Normal printf("    Searching for physical devices...    \n");
-		dvc::deviceGetPhysical( );
+		dvc::getPhysical( );
 		cmd::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");
 		swapchain::swapchainCreate( );

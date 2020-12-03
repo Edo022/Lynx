@@ -32,7 +32,7 @@ namespace lux::core::dvc{
 	//Rates a physical device based on its properties and features
 	//*   pDevice: a pointer to the device structure where its infos are stored
 	//*   Returns the rating of the physical device
-	int32 deviceRate(const _VkPhysicalDevice* pDevice) {
+	int32 rate(const _VkPhysicalDevice* pDevice) {
 		uint32 score = 0;																				//Device performance evalutation
 		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 		//TODO dont create shaders larger than the device limit
@@ -51,9 +51,9 @@ namespace lux::core::dvc{
 	//*   vDevice: the physical device to check
 	//*   pErrorText: a pointer to a lux::String where to store the error in case the device is not suitable
 	//*   Returns true if the device is suitable, false if not
-	bool deviceIsSuitable(const VkPhysicalDevice vDevice, String* pErrorText) {
+	bool isSuitable(const VkPhysicalDevice vDevice, String* pErrorText) {
 		//Check extensions
-		if(!deviceCheckExtensions(vDevice)) {
+		if(!checkExtensions(vDevice)) {
 			*pErrorText = "Missing required extensions";
 			return false;
 		}
@@ -73,24 +73,14 @@ namespace lux::core::dvc{
 
 
 	//Returns true if the device supports the extensions, false if not
-	bool deviceCheckExtensions(const VkPhysicalDevice vDevice) {
-		//BUG FIX ERROR
-		//BUG CALLING THE CONSTRUCTOR WITH THE COUNT VALUE WORKS
-		//BUG BUT CALLING THE DEFAULT CONSTRUCTOR AND THEN USING THE RESIZE FUNCTION BREAKS EVERYTHING
-		//BUG     IN THIS CASE, THE HANDLE "VDEVICE" IS SET TO NULLPTR BY THE vkEnumerateDeviceExtensionProperties FUNCTION
-		//BUG     AND I DONT KNOW WHY. IT MAKES NO SENSE
-		//! HANDLES ARE IN A LUX RtArray TOO. CHECK IF NOT USING IT FIXES THE BUG
-		//BUG#############################################################################################################
+	bool checkExtensions(const VkPhysicalDevice vDevice) {
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
 		//BUG OK
-			RtArray<VkExtensionProperties> availableExtensions(extensionCount);
+		RtArray<VkExtensionProperties> availableExtensions(extensionCount);
 		//BUG ERROR
-			// RtArray<VkExtensionProperties> availableExtensions(1);
-			// availableExtensions.resize(extensionCount);
-		//BUG ERROR
-			//RtArray<VkExtensionProperties> availableExtensions;
-			//availableExtensions.resize(extensionCount);
+		// RtArray<VkExtensionProperties> availableExtensions(1);
+		// availableExtensions.resize(extensionCount);
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin( ));	//Get extensions
 
 		std::set<const char*> requiredExtensions(requiredDeviceExtensions, requiredDeviceExtensions);
@@ -103,7 +93,7 @@ namespace lux::core::dvc{
 
 
 	//Finds the queue families of a physical device
-	QueueFamilyIndices deviceGetQueueFamilies(const VkPhysicalDevice vDevice) {
+	QueueFamilyIndices getQueueFamilies(const VkPhysicalDevice vDevice) {
 		uint32 queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
 		RtArray<VkQueueFamilyProperties> queueFamilies;
@@ -140,17 +130,15 @@ namespace lux::core::dvc{
 
 	//Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
 	//Then saves them in the class members
-	void deviceGetPhysical( ) {
+	void getPhysical( ) {
 		uint32 deviceCount = 0;
 		RtArray<String> discardedPhysicalDevices;
 		RtArray<_VkPhysicalDevice*> physicalDevices;
 
 
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);							//Get physical device count
-		// if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")			//Check if there is at least one deice that supports vulkan
-		//FIXME remove else
-		//BUG this doesn't work without the else.  probably a thread synchronization problem
-		if(false) {}
+		if(deviceCount == 0) luxPrintError("Failed to find GPUs with Vulkan support")			//Check if there is at least one deice that supports vulkan
+		//BUG this doesn't work without the {}
 		else {
 			//Get physical devices
 			RtArray<VkPhysicalDevice> physDevices(deviceCount);									//Create physical device array
@@ -160,7 +148,7 @@ namespace lux::core::dvc{
 				VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 				VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 				String errorText;
-				if(deviceIsSuitable(physDevices[i], &errorText)) {																//If it's suitable
+				if(isSuitable(physDevices[i], &errorText)) {																//If it's suitable
 					physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices));	//Add it to the physical devices vector
 				}
 				else {																												//If not
@@ -186,8 +174,8 @@ namespace lux::core::dvc{
 			graphics.PD = *physicalDevices[0];								//set graphics device at default value
 			compute.PD = *physicalDevices[0];								//set compute  device at default value
 			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device
-				physDev.indices = deviceGetQueueFamilies(physDev.device);		//Get its queue families
-				physDev.score = deviceRate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
+				physDev.indices = getQueueFamilies(physDev.device);		//Get its queue families
+				physDev.score = rate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
 				if(physDev.score > compute.PD.score || physDev.indices.computeFamilies.count( ) > 0) compute.PD = physDev;
 			}
@@ -214,10 +202,10 @@ namespace lux::core::dvc{
 
 
 		//Create a logical device for graphics, one for computation and one for every secondary device
-		deviceCreateLogical(&graphics.PD, &graphics.LD, nullptr);
-		deviceCreateLogical(&compute.PD, &compute.LD, &compute.computeQueues);
+		createLogical(&graphics.PD, &graphics.LD, nullptr);
+		createLogical(&compute.PD, &compute.LD, &compute.computeQueues);
 		for(uint32 i = 0; i < secondary.count( ); ++i) {
-			deviceCreateLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
+			createLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 		}
 
 		//Output created logical devices and queues
@@ -239,7 +227,7 @@ namespace lux::core::dvc{
 	//*   pLD: a pointer to the logical device where to store the created device
 	//*   pComputeQueues: a pointer to an array of compute queues
 	//*       This is used to know if the physical device is for graphics, computation or is secondary
-	void deviceCreateLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues) {
+	void createLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues) {
 		//List the queues of the device as unique int32s
 		std::set<int32> uniqueQueueFamilyIndices;
 		if(sameDevice(*pPD, graphics.PD)) {									//If it's the main device for graphics,
@@ -251,7 +239,7 @@ namespace lux::core::dvc{
 		}
 
 
-
+		//BUG HERE \, \,
 		//Queue infos
 		//TODO for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
 		//TODO other simes, a GPU memory cell creates an exception when the lines are generated for the first time
@@ -262,8 +250,11 @@ namespace lux::core::dvc{
 				.queueFamilyIndex{ (uint32)queueFamilyIndex },						//Set index
 				.queueCount{ 1 },													//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
 				.pQueuePriorities{ new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f) },
-				});
+			});
 		}
+		//BUG HERE ^^
+
+
 
 		//Required extensions
 		VkPhysicalDeviceFeatures enabledDeviceFeatures{ 					//Set enabled features

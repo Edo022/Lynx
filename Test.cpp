@@ -1,9 +1,4 @@
 
-
-//regex per contare le linee di codice non vuote
-//^(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
-//stessa cosa ma comprendendo i commenti
-//^(/)|(?!(\s*\*))(?!(\s*\-\-\>))(?!(\s*\<\!\-\-))(?!(\s*\n))(?!(\s*\*\/))(?!(\s*\/\*))(?!(\s*\/\/\/))(?!(\s*\/\/))(?!(\s(using))).*$
 //TODO squared distance aa*bb
 //TODO merge node to merge aligned objects in a unique cloud/image
 //TODO use intrinsic functions with vector and matrices types
@@ -19,11 +14,6 @@
 #include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Memory/Ram/Memory.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"
-
-
-
-
-
 
 //TODO LIMIT FORCED PREINITIALIZATION TO MEMORY POOL ONLY
 
