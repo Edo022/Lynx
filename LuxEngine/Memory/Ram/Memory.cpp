@@ -49,14 +49,14 @@ namespace lux::ram{
 	//e.g. same as int* foo = (int*)malloc(100);
 	Cell_t* alloc_internal(const uint64 vSize, const CellClass vClass){
 		uint32 typeIndex = classIndexFromEnum(vClass);												//Get buffer index from type and class
-		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);							//Get list of buffers where to search for a free cell
+		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);					//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vClass){																			//If the cell is a fixed count cell
 			uint64 cellNum = bufferSize / (uint32)vClass;												//Get the maximum number of cells in each buffer
 			for(uint32 i = 0; i < subBuffers.size( ); i++){												//Search for a suitable buffer
 				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {					//If a buffer is valid and it has a free cell
 					cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] });
-					Cell_t* cell = &subBuffers[i].cells[cellIndex];											//<^ Create a new cell in the buffer and set its buffer, index and address
+					Cell_t* cell = &subBuffers[i].cells[cellIndex];	 //<^ Create a new cell in the buffer and set its buffer, index and address
 					cell->buffer = &subBuffers[i];
 					cell->cellIndex = cellIndex;
 					cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell));

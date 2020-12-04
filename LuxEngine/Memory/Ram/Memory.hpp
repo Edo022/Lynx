@@ -132,7 +132,6 @@ namespace lux::ram{
 		Cell_t* cell = ram::alloc_call(vSize, vClass);
 		init_memory<type>(cell->address, vSize, pValue);
 		return cell;
-
 	}
 
 	//Allocates a block of memory and initializes it by calling the default constructor of each element

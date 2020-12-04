@@ -86,6 +86,7 @@
 					// "-g",               //Default debug infos
 					"-ggdb3",           //Max debug infos
 					"-O0",              //No optimizations
+					// "-gp",			//gprof informations
 					// "-Ofast",              //No optimizations
 					"-std=c++2a",       //C++20
 					"-mavx",            //AVX2

@@ -91,7 +91,7 @@ namespace lux::core::dvc{
 
 
 
-
+	//BUG 33 IS REMOVED FROM HERE
 	//Finds the queue families of a physical device
 	QueueFamilyIndices getQueueFamilies(const VkPhysicalDevice vDevice) {
 		uint32 queueFamilyCount = 0;
@@ -110,7 +110,7 @@ namespace lux::core::dvc{
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
 		return indices;
-	}
+	} //TODO save if a structure that uses a pointer is created in the stack or the heap
 
 
 
@@ -174,7 +174,7 @@ namespace lux::core::dvc{
 			graphics.PD = *physicalDevices[0];								//set graphics device at default value
 			compute.PD = *physicalDevices[0];								//set compute  device at default value
 			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device
-				physDev.indices = getQueueFamilies(physDev.device);		//Get its queue families
+				physDev.indices = getQueueFamilies(physDev.device);		//Get its queue families //BUG THE 33 ELM GETS REMOVED FROM HERE
 				physDev.score = rate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
 				if(physDev.score > compute.PD.score || physDev.indices.computeFamilies.count( ) > 0) compute.PD = physDev;
@@ -243,7 +243,9 @@ namespace lux::core::dvc{
 		//Queue infos
 		//TODO for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
 		//TODO other simes, a GPU memory cell creates an exception when the lines are generated for the first time
-		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
+		//BUG queueCreateInfos data_.address has the same address of the pPD variable data_.address
+		//BUG this shouldn't happen.
+		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array //TODO FIX BUG AND USE CT ARRAY. idk
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
 				.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type
@@ -253,7 +255,7 @@ namespace lux::core::dvc{
 			});
 		}
 		//BUG HERE ^^
-
+		//BUG only in the second call
 
 
 		//Required extensions

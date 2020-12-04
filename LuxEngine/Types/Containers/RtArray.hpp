@@ -74,7 +74,7 @@ namespace lux {
 
 
 		inline ~RtArray(){
-			data_.~ptr();
+			// data_.~ptr();
 		}
 
 
