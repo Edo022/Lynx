@@ -112,9 +112,9 @@ namespace lux::core{
 			if(func != nullptr) return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
 			else return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
-		inline void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-			if(func != nullptr) func(instance, debugMessenger, pAllocator);
+		inline void DestroyDebugUtilsMessengerEXT(VkInstance vInstance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(vInstance, "vkDestroyDebugUtilsMessengerEXT");
+			if(func != nullptr) func(vInstance, debugMessenger, pAllocator);
 		}
 
 

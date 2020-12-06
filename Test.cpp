@@ -4,6 +4,9 @@
 //TODO use intrinsic functions with vector and matrices types
 //TODO limit vector types to float, double, int32, uint32
 
+//TODO "node" type that takes nodes in input
+//TODO blender-like collection generator
+
 #include <time.h>
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
@@ -49,6 +52,9 @@ void hg(lux::RtArray<uint16>){
 void runArrayTest();
 
 int main( ) {
+	// int h[5] = {1, 2 ,3 ,4 ,5};
+	// while(true) int h = 0;
+
 	{
 		//TODO automatize object search //TODO wtf does this mean
 		lux::obj::RenderSpace2D renderSpace(lux::obj::AlignmentType::FixedHorizontal, 2);
@@ -88,7 +94,7 @@ int main( ) {
 	}
 	lux::core::FPSCounterThr.join();
 	lux::core::renderThr.join();
-	return 0;
+	// return 0;
 }
 
 

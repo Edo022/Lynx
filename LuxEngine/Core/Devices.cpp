@@ -239,13 +239,10 @@ namespace lux::core::dvc{
 		}
 
 
-		//BUG HERE \, \,
 		//Queue infos
-		//TODO for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
-		//TODO other simes, a GPU memory cell creates an exception when the lines are generated for the first time
-		//BUG queueCreateInfos data_.address has the same address of the pPD variable data_.address
-		//BUG this shouldn't happen.
-		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array //TODO FIX BUG AND USE CT ARRAY. idk
+		//FIXME for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
+		//TODO use unique elements RtArray variant instead of std set
+		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
 				.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type
@@ -254,8 +251,6 @@ namespace lux::core::dvc{
 				.pQueuePriorities{ new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f) },
 			});
 		}
-		//BUG HERE ^^
-		//BUG only in the second call
 
 
 		//Required extensions

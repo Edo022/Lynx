@@ -1,4 +1,5 @@
 deps/
-*.out
+out/
+Build/
 linecounter.json
 linecounter.txt

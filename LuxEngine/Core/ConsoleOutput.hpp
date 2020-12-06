@@ -89,5 +89,5 @@ namespace lux::out{
 			try{ __type __var = *ptr; }											\
 			catch(std::exception e) { luxCheckParam(true, ptr, __VA_ARGS__); }	\
 		}																		\
-	)}
+	)};
 }

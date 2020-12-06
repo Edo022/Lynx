@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/LuxEngine.out",
+            "program": "${workspaceFolder}/Build/Linux/LuxEngineDebug",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -39,11 +39,10 @@ layout(std140, binding = 3) uniform objData_{
 
 
 
-
+//TODO use ordered render and component cache
 void setPixelColor(vec2 pos, vec4 col){
 	uint i = uint(pos.y) * window.x + uint(pos.x);
 
-	//TODO use ordered render and component cache
 	zBuffer[i] = -1;
 	colorOutput[i] = col;
 }
@@ -74,7 +73,7 @@ void rv( ){
 
 
 
-	//TODO use pre calculated workgroup count
+//TODO use pre calculated workgroup count
 void main() {
 	rh();
 	rv();
