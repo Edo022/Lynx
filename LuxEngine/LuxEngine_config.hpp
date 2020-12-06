@@ -14,14 +14,9 @@
 
 
 
+	//LUX_DEBUG
 	//This macro defines if the program is compiled in debug or in release mode
 	//Lines in luxDebug() macro will only be executed in debug mode
-	// #define NDEBUG
-#	ifndef NDEBUG
-#		define LUX_DEBUG
-#	else
-#		undef LUX_DEBUG
-#	endif
 
 
 
