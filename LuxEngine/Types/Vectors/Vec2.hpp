@@ -10,7 +10,7 @@ template<class t> struct vec4_t;
 //   +, *, -, /, =, ==, *=, +=, -=, /= operations with vectors or values of every type
 //   dist, dist2D, absv, signv, length functions with vectors of the same type
 //   initialization and copy constructors with vectors or values of every type
-//== operator do not perform any type cast
+//== operator does not perform any type cast
 template<class t> struct vec2_t {
 	t x = 0;
 	t y = 0;

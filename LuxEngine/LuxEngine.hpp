@@ -1,5 +1,6 @@
 
 #pragma once
+//TODO
 #define GLM_FORCE_RADIANS					//Use radiants intead of degrees
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 
@@ -7,7 +8,7 @@
 
 
 //UwU
-	//This is the main header of the Lux Engine
+	//TODO
 	//The engine is initialized before anything else
 	//The "LuxEngine_config.hpp" file contains configuration macros to change the program behaviour
 
@@ -30,17 +31,5 @@
 		//gcc
 	//Max (GPU + shared) memory:
 		//51200MB
-		//This value can be increased by using larger GPU buffers. See LUX_CNF_GPU_STATIC_BUFFER_SIZE in LuxEngine_config.h
-		//In that case, the maximum memory will be (LUX_CNF_GPU_STATIC_BUFFER_SIZE * 1024)
-
-
-
-
-
-
-
-
-
-#include "LuxEngine_config.hpp"
-#	include "LuxEngine/macros.hpp"
-#include "LuxEngine/Core/Core.hpp"
+		//This value can be increased by using larger GPU buffers (LUX_CNF_GPU_STATIC_BUFFER_SIZE)
+		//Maximum memory will = (LUX_CNF_GPU_STATIC_BUFFER_SIZE * 1024)

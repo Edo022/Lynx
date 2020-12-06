@@ -5,7 +5,7 @@
 //Supports
 //   +, *, -, /, =, ==, *=, +=, -=, /= operations with all types of vectors or values
 //   dist, dist3D, absv, signv, length functions with vectors of the same type
-//== operator do not perform any type cast
+//== operator does not perform any type cast
 
 template<class t> struct vec3_t {
 	t x = 0;

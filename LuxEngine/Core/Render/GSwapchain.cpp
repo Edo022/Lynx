@@ -70,6 +70,7 @@ namespace lux::core::render::swapchain{
 
 	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 		SwapChainSupportDetails details;
+		//BUG HERE
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
 
 		uint32 formatCount;

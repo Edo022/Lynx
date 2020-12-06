@@ -16,9 +16,9 @@ namespace lux::obj {
 	}
 
 
+	//TODO add negative index
 	//Updates the render limit of the child with at specific index
 	//It depends on the render space properties and children alignment
-	//A negative index is equal to the n-th last element (using index -5 with a render space with 8 children is the same as using index 2)
 	//Returns false if the index is invalid
 	bool RenderSpace2D::setChildLimits(const uint32 vChildIndex) const {
 		if(vChildIndex >= children.count( )) return false;

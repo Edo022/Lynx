@@ -10,8 +10,6 @@
 
 
 
-//type: the type of the function and the vectors
-//typen: the type but with the capital letter
 #define __lp_vec_def(type, typen)				\
 typedef vec2_t<type> typen##vec2, vec2##typen;	\
 typedef vec3_t<type> typen##vec3, vec3##typen;	\
@@ -27,8 +25,7 @@ __lp_vec_def(int64, i64)		__lp_vec_def(uint64, u64)	__lp_vec_def(float64, f64)
 
 
 //TODO use intrinsic functions whenever possible
-//TODO explicit custom type convertion
-//For some reason Intellisense throws random errors in this line. You can ignore them
+//TODO explicit custom type conversion
 template<class t> static inline constexpr auto dist(const vec2_t<t>& a, const vec2_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }										  //Returns the Euclidean distance between 2 vectors
 template<class t> static inline constexpr auto dist(const vec3_t<t>& a, const vec3_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }					  //Returns the Euclidean distance between 2 vectors
 template<class t> static inline constexpr auto dist(const vec4_t<t>& a, const vec4_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2)); } //Returns the Euclidean distance between 2 vectors
