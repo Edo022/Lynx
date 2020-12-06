@@ -39,7 +39,7 @@
 					"LuxEngine/LuxEngineBuild.cpp",
 					"Test.cpp",
 				//No debug infos, optimizations for fast code
-					"-g0", "-Ofast",
+					"-ggdb3", "-Ofast",
 					"-std=c++2a", "-mavx", "-pipe",
 				//CWD include, threads
 					"-I./", "-pthread",

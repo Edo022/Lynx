@@ -43,10 +43,9 @@ namespace lux::core::render::wnd{
 		uint32 glfwExtensionCount;
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 
-		extensions = (const char**)malloc(sizeof(const char**) * (glfwExtensionCount + 1));
+		extensions = (const char**)malloc(sizeof(const char**) * (glfwExtensionCount luxDebug(+ 1)));
 		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions[i] = glfwExtensions[i];		//Save them into an array
 		luxDebug(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
-
 
 
 
@@ -61,7 +60,7 @@ namespace lux::core::render::wnd{
 			.pApplicationInfo				{ &appInfo 												},
 			.enabledLayerCount				{ luxDebug(validationLayersNum) luxRelease(0)			},
 			luxDebug(.ppEnabledLayerNames	{ validationLayers 										},)
-			.enabledExtensionCount			{ glfwExtensionCount + 1 								},
+			.enabledExtensionCount			{ glfwExtensionCount luxDebug(+ 1) 						},
 			.ppEnabledExtensionNames		{ extensions 											}
 		};
 		//Add validation layers if in debug mode

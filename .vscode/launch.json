@@ -5,10 +5,33 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Build/Linux/LuxEngineDebug",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "text": "handle SIGSTOP nostop noprint pass" },{      //Suspend thread
+                    "text": "handle SIGCONT nostop noprint pass"          //Resume thread
+                }
+            ]
+        },
+        {
+            "name": "Release",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Build/Linux/LuxEngineRelease",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
