@@ -31,12 +31,12 @@ template<class ta, class tb>						static inline constexpr void swapVar(ta a, tb 
 
 
 //Debug
-#define luxDebug(...)				__VA_ARGS__
-#define luxRelease(...)
-
-#ifndef LUX_DEBUG
-#define luxDebug(...)
-#define luxRelease(...)				__VA_ARGS__
+#ifdef LUX_DEBUG
+#	define luxDebug(...)				__VA_ARGS__
+#	define luxRelease(...)
+#else
+#	define luxDebug(...)
+#	define luxRelease(...)				__VA_ARGS__
 #endif
 
 

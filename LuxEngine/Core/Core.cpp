@@ -81,13 +81,13 @@ namespace lux::core{
 		LuxTime start = luxStartChrono( );
 		// c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
 		c::shaders::shaderPath = sys::dir::thisDir + "/LuxEngine/Contents/shaders/";    //No .lib
-		//FIXME DONT USE STD MARCIO
+		//FIXME DONT USE STD
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator(c::shaders::shaderPath.begin( ))) {
 				String luxStrPath = String(name.path( ).u8string( ).c_str( )); sys::dir::fixWindowsPath(luxStrPath);
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!compileShader(luxStrPath.begin( ))) luxPrintError("compilation error")
-					else Normal printf("%s", luxStrPath.begin( ));
+					else{ Normal printf("%s", luxStrPath.begin( )); }
 				}
 			}
 		}
