@@ -18,7 +18,7 @@
 #include "LuxEngine/Memory/Ram/Memory.hpp"
 #include "LuxEngine/Memory/Gpu/VMemory.hpp"
 
-//TODO LIMIT FORCED PREINITIALIZATION TO MEMORY POOL ONLY
+
 
 int h(const char* b, int hh) {
 	printf("\n%s %d \n",b, hh);
@@ -29,8 +29,7 @@ void hg(lux::RtArray<uint16>){
 	printf("\nKEYYYY");
 }
 
-//0000017baf9ef070
-//1100100100
+
 
 //TODO
 //TODO object cache

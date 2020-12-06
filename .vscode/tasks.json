@@ -12,7 +12,7 @@
 					"-g3", "-ggdb3", "-pg", "-O0",
 					"-std=c++2a", "-mavx", "-pipe",
 				//CWD include, threads
-					"-I./", "-pthread",
+					"-I./", /*"-static", */"-pthread",
 				//Vulkan
 					"-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
 					"-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
