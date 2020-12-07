@@ -1,5 +1,4 @@
 #pragma once
-#include "LuxEngine/Types/Nothing.hpp"
 #include "LuxEngine/Threads/Thread.hpp"
 
 
@@ -21,7 +20,7 @@ namespace lux{
 	struct FenceDE{
 		bool thr1, thr2;
 		FenceDE( ) : thr1{ false }, thr2{ true } { }
-		FenceDE(const Nothing) : thr1{ thr1 }, thr2{ thr2 } { }
+
 
 		inline void startFirst( ){ while(thr2) lux::thr::self::yield(); thr1 = true; }
 		inline void endFirst( ){ thr1 = false; }

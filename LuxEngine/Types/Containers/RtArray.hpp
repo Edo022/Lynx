@@ -4,7 +4,6 @@
 #include "LuxEngine/Types/Containers/CtArray.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
-#include "LuxEngine/Types/Nothing.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 
 #include "LuxEngine/Memory/Ram/Memory.hpp"

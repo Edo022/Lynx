@@ -3,7 +3,6 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Containers/RtArray.hpp"
 #include "vulkan/vulkan_core.h"
-#include "LuxEngine/Types/Nothing.hpp"
 
 
 
@@ -29,7 +28,6 @@ struct QueueFamilyIndices {
 
 //Structure containing all the useful data of a physical device
 struct _VkPhysicalDevice {
-	_VkPhysicalDevice(const lux::Nothing) : device{ device  }, properties{ properties  }, features{ features  }, indices{ indices  }, score{ score } { }
 	_VkPhysicalDevice( ) :					device{ nullptr }, properties{             }, features{           }, indices{          }, score{ 0     } { }
 	_VkPhysicalDevice(const VkPhysicalDevice vDevice, const VkPhysicalDeviceProperties& vProperties, const VkPhysicalDeviceFeatures& vFeatures, const QueueFamilyIndices& vIndices) :
 											device{ vDevice }, properties{ vProperties }, features{ vFeatures }, indices{ vIndices }, score{ 0     } { }
@@ -46,7 +44,6 @@ struct _VkPhysicalDevice {
 
 
 struct graphicsDevice {
-	graphicsDevice(const lux::Nothing) : PD{ PD }, LD{ LD      }, graphicsQueue{ graphicsQueue }, presentQueue{ presentQueue } { }
 	graphicsDevice( ) : 				 PD(    ), LD{ nullptr }, graphicsQueue{ nullptr       }, presentQueue{ nullptr      } { }
 
 	_VkPhysicalDevice	PD;					//Main physical device for graphics
@@ -59,7 +56,6 @@ struct graphicsDevice {
 
 
 struct computeDevice {
-	computeDevice(const lux::Nothing) : PD{ PD }, LD{ LD      }, computeQueues(computeQueues) { }
 	computeDevice( ) : 					PD(    ), LD{ nullptr }, computeQueues(             ) { }
 
 	_VkPhysicalDevice	PD;					//Main physical device for computing

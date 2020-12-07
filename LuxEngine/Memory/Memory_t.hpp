@@ -4,7 +4,6 @@
 #include "LuxEngine/Memory/LuxMap_NMP_S.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
-#include "LuxEngine/Types/Nothing.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 
 

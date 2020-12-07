@@ -4,7 +4,6 @@
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
-#include "LuxEngine/Types/Nothing.hpp"
 
 //FIXME remove this structure
 
@@ -38,10 +37,6 @@ namespace lux {
 
 
 
-		inline Map_NMP_S(const Nothing) : _chunkNum{ _chunkNum },
-			size_{ size_ }, freeSize_{ freeSize_ }, data_{ data_ }, tracker_{ tracker_ },
-			head_{ head_ }, tail_{ tail_ }, _chunkSize{ _chunkSize }, _maxSize{ _maxSize } {
-		}
 
 		//Creates the map with the specified chunk and maximum count
 		//The number of chunks depends on their count and the maximum count of the map (chunks = _maxSize / _chunkSize)

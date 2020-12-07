@@ -4,7 +4,6 @@
 #include "LuxEngine/Memory/Ram/Memory.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
-#include "LuxEngine/Types/Nothing.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 
 
