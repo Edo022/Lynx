@@ -13,10 +13,11 @@
 //A queue with dynamic count
 namespace lux {
 	template<class type, class iter = uint32> struct Queue {
-		lux_sc_generate_debug_structure_body;
+	private:
+		genInitCheck;
+	public:
 		lux::RtArray<type, iter> _front, _back;
 
-		lux_sc_generate_nothing_constructor(Queue) _front(getConstNothing( )), _back(getConstNothing( )) { }
 		inline Queue( ) : _front( ), _back( ) { }
 
 		inline void clear( ){

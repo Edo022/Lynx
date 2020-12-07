@@ -16,7 +16,7 @@ namespace lux {
 	//This array does NOT use the memory pool. All the data is allocated when the variable gets initialized
 	template <class type, uint64 count_> class CtArray : public ContainerBase<type, uint64> {
 	private:
-		lux_sc_generate_debug_structure_body_func_only;
+		genInitCheck;
 		type* data_;	//Elements of the array
 	public:
 

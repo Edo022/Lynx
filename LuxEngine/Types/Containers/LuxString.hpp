@@ -23,7 +23,7 @@ namespace lux {
 	//TODO improve concatenation performance
 	class String : public ContainerBase<char8, uint32>{
 	private:
-		lux_sc_generate_debug_structure_body_func_only;
+		genInitCheck;
 		ram::ptr<char8> str;
 
 		inline void concatenate(const char8* vString, const uint32 size) {
@@ -41,8 +41,6 @@ namespace lux {
 
 
 
-
-		lux_sc_generate_nothing_constructor(String) str{ str } { }
 
 		//String count cannot be 0. the '\0' is always present and occupies one byte
 		inline String(                                  ) : str{ ram::AllocBck<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
@@ -110,7 +108,7 @@ namespace lux {
 
 
 		inline void operator = (const String& pString) {
-			checkInit; isInit(pString);
+			checkInit; checkInitParam(pString);
 			ram::reallocBck(str, pString.count( ), CellClass::AUTO);
 			str.address = (char8*)str.cell->address;
 			ram::cpy(pString.str, str, pString.count( ));
@@ -128,7 +126,7 @@ namespace lux {
 
 
 		inline bool operator == (const String& pString) const {
-			checkInit; isInit(pString);
+			checkInit; checkInitParam(pString);
 			return ((str.count( ) == pString.count( )) && (memcmp(pString.str, str.address, str.count( )) == 0));
 		}
 

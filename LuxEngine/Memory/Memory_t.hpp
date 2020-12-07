@@ -103,12 +103,12 @@ namespace lux{
 		//You can also manually free it with the lux::mem:free function
 		//    Accessing the memory of a freed pointer is ub
 		template<class type/*, class ptrType = ram::*/> struct ptr{
-			lux_sc_generate_debug_structure_body;
+			genInitCheck;
 			Cell_t* cell;			//A pointer to a lux::ram::Cell_t object that contains the cell informations
 			type* address;			//The address the pointer points to
 
 
-			//####################################################################################################################################################################//
+			//#######################################################################################################//
 
 			//! PLS READ ME
 			//Due to the lux::Nothing constructor property of initializing the class members with their own value, pointers must be initialized before it gets called
@@ -128,8 +128,8 @@ namespace lux{
 			//####################################################################################################################################################################//
 
 			#ifdef LUX_DEBUG
-				bool __ptrC( const ptr<type>& pPtr) const { isInit(pPtr); return true; }
-				void __ptrCf(const ptr<type>& pPtr) const { isInit(pPtr);              }
+				bool __ptrC( const ptr<type>& pPtr) const { checkInitParam(pPtr); return true; }
+				void __ptrCf(const ptr<type>& pPtr) const { checkInitParam(pPtr);              }
 
 
 				bool __cellAdrC(Cell_t* vCell, type* vAddress) const {
@@ -168,7 +168,6 @@ namespace lux{
 
 			//TODO check nullptr in every function. only in debug mode
 			//TODO use dummy cell to improve performance and dont check for nullptrs when increasing or decreasing owner counts
-			lux_sc_generate_nothing_constructor(ptr)	                                                           cell{ cell      }, address{ address             }  { }
 			inline ptr( ) :								                                                           cell{ nullptr   }, address{ nullptr             }  { }
 			inline ptr(Cell_t* const vCell) :			                                                           cell{ vCell     }, address{ (vCell) ? (type*)vCell->address : nullptr }	{ if(vCell) {cell->owners++; checka; } }
 			inline ptr(Cell_t* vCell, type* vAddr) :	                  constructExec(__cellAdrC, vCell, vAddr)  cell{ vCell     }, address{ vAddr               }  { if(vCell){ cell->owners++; checka; } }

@@ -23,7 +23,7 @@ namespace lux {
 	//Use the isValid() function to check if an element is valid or has been removed
 	template<class type, class iter = uint64, uint64 elmPerChunk = max(50000/*50KB*/ / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class RaArray {
 	private:
-		lux_sc_generate_debug_structure_body;
+		genInitCheck;
 		ram::ptr<ram::ptr<type>> chunks_;		//Elements
 		ram::ptr<ram::ptr<iter>> tracker_;		//State of each element
 
@@ -44,11 +44,6 @@ namespace lux {
 		// Constructors -------------------------------------------------------------------------------------------------------- //
 
 
-
-
-		lux_sc_generate_nothing_constructor(RaArray) _chunkNum{ _chunkNum }, size_{ size_ }, freeSize_{ freeSize_ },
-			chunks_{ chunks_ }, tracker_{ tracker_ }, head_{ head_ }, tail_{ tail_ } {
-		}
 
 
 		inline RaArray( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },

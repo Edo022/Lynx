@@ -48,7 +48,7 @@
 namespace lux {
 	template <class type, class iter> class ContainerBase {
 	public:
-		lux_sc_generate_debug_structure_body;
+		genInitCheck;
 
 		virtual inline type*	begin( ) const = 0;		//Returns a pointer to the first element of the container
 		virtual inline type*	end(   ) const = 0;		//Returns a pointer to the element after the last element of the container

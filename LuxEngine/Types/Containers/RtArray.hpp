@@ -37,7 +37,7 @@ namespace lux {
 	//A dynamic array that uses the global memory pool
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 	private:
-		lux_sc_generate_debug_structure_body_func_only;
+		genInitCheck;
 		ram::ptr<type> data_;	//Elements of the array
 	public:
 
@@ -49,7 +49,6 @@ namespace lux {
 
 
 
-		lux_sc_generate_nothing_constructor(RtArray) data_{ data_ } { }
 		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
 		inline RtArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
 		inline RtArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::allocArr<type>(sizeof(type), vCount, CellClass::AT_LEAST_CLASS_B) } { }
@@ -59,7 +58,7 @@ namespace lux {
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
 		template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocArr(sizeof(type), pContainer.count( ), CellClass::AT_LEAST_CLASS_B) } {
 			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
-			isInit(pContainer);
+			checkInitParam(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
 		}
 

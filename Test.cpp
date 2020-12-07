@@ -10,7 +10,7 @@
 #include <time.h>
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
-#include "LuxEngine/LuxEngine.hpp"
+#include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
