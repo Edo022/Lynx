@@ -99,8 +99,8 @@ luxAutoInit(LUX_H_INIT_CORE){
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 	//FIXME use the "libVkLayer_khronos_validation.so" library in the deps folder. Not the one in the default lib location
 	//FIXME "LD_LIBRARY_PATH" env variable doesn't work
-	putenv(  "VK_LAYER_PATH=./deps/Vulkan_1.2.154.0_linux/x86_64/etc/vulkan/explicit_layer.d");
-	putenv("LD_LIBRARY_PATH=./deps/Vulkan_1.2.154.0_linux/x86_64/lib");
+	putenv(  "VK_LAYER_PATH=./deps/Linux/Vulkan-1.2.154.0/x86_64/etc/vulkan/explicit_layer.d");
+	putenv("LD_LIBRARY_PATH=./deps/Linux/Vulkan-1.2.154.0/x86_64/lib");
 	#pragma GCC diagnostic pop
 }
 

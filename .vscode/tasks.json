@@ -15,13 +15,13 @@
 				//CWD include, threads
 					"-I./", /*"-static", */"-pthread",
 				//Vulkan
-					"-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
-					"-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
+					"-Ideps/Linux/Vulkan-1.2.154.0/x86_64/include",
+					"-Ldeps/Linux/Vulkan-1.2.154.0/x86_64/lib",
 					"-ldl", "-lvulkan",
 				//GLFW
-					"-Ideps/glfw-3.3.2/include",
-					"-Ideps/glfw-3.3.2/deps",
-					"-Ldeps/glfw-3.3.2/build/debug/src",
+					"-Ideps/Shared/glfw-3.3.2/include",
+					"-Ideps/Shared/glfw-3.3.2/deps",
+					"-Ldeps/Shared/glfw-3.3.2/build/debug/src",
 					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
 				//Output
 					"-o", "./Build/Linux/LuxEngineDebug"
@@ -44,13 +44,13 @@
 				//CWD include, threads
 					"-I./", "-pthread",
 				//Vulkan
-					"-Ideps/Vulkan_1.2.154.0_linux/x86_64/include",
-					"-Ldeps/Vulkan_1.2.154.0_linux/x86_64/lib",
+					"-Ideps/Linux/Vulkan-1.2.154.0/x86_64/include",
+					"-Ldeps/Linux/Vulkan-1.2.154.0/x86_64/lib",
 					"-ldl", "-lvulkan",
 				//GLFW
-					"-Ideps/glfw-3.3.2/include",
-					"-Ideps/glfw-3.3.2/deps",
-					"-Ldeps/glfw-3.3.2/build/debug/src",
+					"-Ideps/Shared/glfw-3.3.2/include",
+					"-Ideps/Shared/glfw-3.3.2/deps",
+					"-Ldeps/Shared/glfw-3.3.2/build/debug/src",
 					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
 				//Output
 					"-o", "./Build/Linux/LuxEngineRelease"
@@ -69,9 +69,9 @@
 				"-std=c++2a",
 				"-I./",                                         //CWD include
 				"-pthread",                                     //Thre
-				"-Ideps/glfw-3.3.2/include",                    //GLFW include
-				"-Ideps/glfw-3.3.2/deps",                       //GLFW include
-				"-Ldeps/glfw-3.3.2/build/debug/src",            //GLFW include
+				"-Ideps/Shared/glfw-3.3.2/include",                    //GLFW include
+				"-Ideps/Shared/glfw-3.3.2/deps",                       //GLFW include
+				"-Ldeps/Shared/glfw-3.3.2/build/debug/src",            //GLFW include
 				"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
 				"-o", "Test.out"                                //Output
 			],
