@@ -3,7 +3,7 @@
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Nothing.hpp"
-#include "LuxEngine/Types/Nothing_sc_p.hpp"
+#include "LuxEngine/Tests/StructureInit.hpp"
 
 
 

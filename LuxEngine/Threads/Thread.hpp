@@ -8,6 +8,7 @@
 //TODO minimize copies
 //TODO fix memory leaks
 
+
 namespace lux{
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wpointer-arith"
@@ -70,8 +71,22 @@ namespace lux{
 
 		inline void join(){ pthread_join(thr, nullptr); }
 		inline void detach(){ pthread_detach(thr); }
+		inline void yield(){ pthread_yield(); }
 	};
 
-	namespace thr{ static inline thread thisThread(){ thread thr; thr.thr = pthread_self(); return thr; } }
-	// namespace thr{ static inline thread thisThread(){ return thread{.thr = pthread_self()}; } }
+	namespace thr{
+		struct self{
+			static inline void suspend(){ pthread_kill(pthread_self(), SIGSTOP); }
+			static inline void resume() { pthread_kill(pthread_self(), SIGCONT); }
+
+			static inline void setName(const char* pName){ pthread_setname_np(pthread_self(), pName); }
+			static inline const char* getName(const char* pName){ char* name; pthread_getname_np(pthread_self(), name, 16); return name; }
+
+			static inline void detach(){ pthread_detach(pthread_self()); }
+			static inline void yield(){ pthread_yield(); }
+
+			//Returns the calling thread as a lux::thread structure
+			inline thread operator()(){ thread thr; thr.thr = pthread_self(); return thr; }
+		};
+	}
 };

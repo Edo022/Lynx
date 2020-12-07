@@ -1,7 +1,7 @@
 #pragma once
 #define LUX_H_CONTAINER_BASE
 #include "LuxEngine/Types/Nothing.hpp"
-#include "LuxEngine/Types/Nothing_sc_p.hpp"
+#include "LuxEngine/Tests/StructureInit.hpp"
 
 
 

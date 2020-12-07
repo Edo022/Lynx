@@ -7,7 +7,7 @@
 #include "LuxEngine/Types/Nothing.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include "LuxEngine/Memory/Ram/Memory.hpp"
-#include "LuxEngine/Types/Nothing_sc_p.hpp"
+#include "LuxEngine/Tests/StructureInit.hpp"
 
 
 

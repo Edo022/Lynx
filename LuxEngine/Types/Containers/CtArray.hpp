@@ -4,7 +4,7 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #include "LuxEngine/Types/Nothing.hpp"
-#include "LuxEngine/Types/Nothing_sc_p.hpp"
+#include "LuxEngine/Tests/StructureInit.hpp"
 
 
 

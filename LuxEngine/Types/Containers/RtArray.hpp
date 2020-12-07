@@ -5,7 +5,7 @@
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include "LuxEngine/Types/Nothing.hpp"
-#include "LuxEngine/Types/Nothing_sc_p.hpp"
+#include "LuxEngine/Tests/StructureInit.hpp"
 
 #include "LuxEngine/Memory/Ram/Memory.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"

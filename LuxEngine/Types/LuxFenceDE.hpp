@@ -1,6 +1,6 @@
 #pragma once
 #include "LuxEngine/Types/Nothing.hpp"
-
+#include "LuxEngine/Threads/Thread.hpp"
 
 
 //calls      |                    A----.                   |    void A(){                 |   void B(){
@@ -23,10 +23,10 @@ namespace lux{
 		FenceDE( ) : thr1{ false }, thr2{ true } { }
 		FenceDE(const Nothing) : thr1{ thr1 }, thr2{ thr2 } { }
 
-		inline void startFirst( ){ while(thr2); thr1 = true; }
+		inline void startFirst( ){ while(thr2) lux::thr::self::yield(); thr1 = true; }
 		inline void endFirst( ){ thr1 = false; }
 
-		inline void startSecond( ){ r: while(thr1); thr2 = true; if(thr1 && thr2) goto r; }
+		inline void startSecond( ){ r: while(thr1) lux::thr::self::yield(); thr2 = true; if(thr1 && thr2) goto r; }
 		inline void endSecond( ){ thr2 = false; }
 
 		inline void quit( ){ thr2 = thr1 = false; }
@@ -55,9 +55,9 @@ namespace lux{
 	//Forces any thread to stop in the wait() function call until the fence gets signaled
 	//In the case it's already signaled, nothing will happen
 	//This structure don't have a thread limit
-	template<int us = 100> struct pollFence{
+	struct pollFence{
 		char s = 1;
-		void wait(){ while(!s){ usleep(us); } }
+		void wait(){ while(!s){ lux::thr::self::yield(); } }
 		void signal(){ s = 0; }
 		void reset(){ s = 1; }
 	};
