@@ -62,7 +62,7 @@ namespace lux::core::c::buffers{
 			.allocationSize = memRequirements.size,
 			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
 		};
-		const VkAllocationCallbacks* allocator = new VkAllocationCallbacks{
+		const VkAllocationCallbacks allocator{
 			.pUserData = nullptr,
 			.pfnAllocation = allocateCallback,
 			.pfnReallocation = reallocateCallback,
@@ -74,7 +74,7 @@ namespace lux::core::c::buffers{
 			// .pfnInternalFree,
 		};
 		// switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
-		switch(vkAllocateMemory(vDevice, &allocInfo, allocator, pMemory)) {
+		switch(vkAllocateMemory(vDevice, &allocInfo, &allocator, pMemory)) {
 			case VK_SUCCESS: break;
 			case VK_ERROR_OUT_OF_DEVICE_MEMORY: {			//If out of dedicated memory, use the shared memory
 				VkMemoryAllocateInfo allocInfo2{
