@@ -37,9 +37,6 @@ namespace lux{
 
 
 
-	//The checked value is always 1 to prevent race conditions
-	//Even if the other thread didn't finish to write the variable, it can only skip one iteration or read it as false
-
 
 	//Allows only one thread at a time to execute the code between the lock() and unlock() function calls
 	//The mutex must alwas be unlocked to prevent a deadlock

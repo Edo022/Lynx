@@ -11,18 +11,24 @@
 
 namespace lux::core::c::buffers{
 	//TODO use custom allocations for shared memory with those callbacks
-	void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-		return nullptr;
+	//FIXME add alignment
+	inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
+		//FIXME add function that does not initialize the data
+		auto p = (lux::ram::AllocBck<char>(size));
+		pUserData = &p;
+		return ((lux::ram::ptr<char>*)pUserData)->address;
 	}
-	void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-		return nullptr;
+	inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
+		lux::ram::reallocBck(*(lux::ram::ptr<char>*)pUserData, size);
+		return ((lux::ram::ptr<char>*)pUserData)->address;
 	}
-	void freeCallback(void* pUserData, void* pMemory){
+	inline void freeCallback(void* pUserData, void* pMemory){
+		lux::ram::free(*(lux::ram::ptr<char>*)pUserData);
 	}
-	void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){
-	}
-	void internalFreeCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){
-	}
+	//TODO remove those functions. Theyre probably useless
+	//TODO or separate gpu shared allocations from normal ones
+	inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
+	inline void internalFreeCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
 	//PFN_vkFreeFunction
 
 
@@ -56,15 +62,19 @@ namespace lux::core::c::buffers{
 			.allocationSize = memRequirements.size,
 			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
 		};
-		VkAllocationCallbacks allocator{
+		static const VkAllocationCallbacks allocator{
 			.pUserData = nullptr,
 			.pfnAllocation = allocateCallback,
-			.pfnReallocation =reallocateCallback,
+			.pfnReallocation = reallocateCallback,
 			.pfnFree = freeCallback,
-			.pfnInternalAllocation = internalAllocCallback,
-			.pfnInternalFree =internalFreeCallback,
+			.pfnInternalAllocation = nullptr,
+			.pfnInternalFree = nullptr,
+			//TODO
+			// .pfnInternalAllocation,
+			// .pfnInternalFree,
 		};
-		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
+		// switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
+		switch(vkAllocateMemory(vDevice, &allocInfo, &allocator, pMemory)) {
 			case VK_SUCCESS: break;
 			case VK_ERROR_OUT_OF_DEVICE_MEMORY: {			//If out of dedicated memory, use the shared memory
 				VkMemoryAllocateInfo allocInfo2{
