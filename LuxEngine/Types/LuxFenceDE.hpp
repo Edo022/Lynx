@@ -46,14 +46,14 @@ namespace lux{
 	//This structure don't have a thread limit
 	struct mutex{
 		char k = 1;
-		void lock(){ while(!k){ } k = 0; }
+		void lock(){ while(!k){ lux::thr::self::yield(); } k = 0; }
 		void unlock(){ k = 1; }
 	};
 
 
 	//Forces any thread to stop in the wait() function call until the fence gets signaled
 	//In the case it's already signaled, nothing will happen
-	//This structure don't have a thread limit
+	//This structure doesn't have a thread limit
 	struct pollFence{
 		char s = 1;
 		void wait(){ while(!s){ lux::thr::self::yield(); } }
