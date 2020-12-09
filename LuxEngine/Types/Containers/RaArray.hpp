@@ -46,8 +46,8 @@ namespace lux {
 
 
 		inline RaArray( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
-			chunks_{  ram::allocArr<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B) },
-			tracker_{ ram::allocArr<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B) } {
+			chunks_ (sizeof(ram::ptr<type>) * (uint64)CellClass::CLASS_B, ram::ptr<type>()),
+			tracker_(sizeof(ram::ptr<iter>) * (uint64)CellClass::CLASS_B, ram::ptr<iter>()) {
 		}
 
 
@@ -72,8 +72,8 @@ namespace lux {
 		iter append(const type& vData) {
 			checkInit;
 			if(size_ + 1 > _chunkNum * chunkSize) {									//If the chunk is full
-				chunks_[_chunkNum] = ram::allocArr<type>(sizeof(type), elmPerChunk);
-				tracker_[_chunkNum] = ram::allocArr<iter>(sizeof(iter*), elmPerChunk);
+				chunks_ [_chunkNum].reallocArr(elmPerChunk, type());
+				tracker_[_chunkNum].reallocArr(elmPerChunk, iter());
 				_chunkNum++;															//Update the number of chunks
 			}
 			__lp_Data(size_) = vData;												//Assign the data to the new element
@@ -131,19 +131,19 @@ namespace lux {
 		inline void clear( ) {
 			checkInit;
 			for(iter i = 0; i < _chunkNum; ++i) {
-				ram::free(chunks_[i]);
-				ram::free(tracker_[i]);
+				chunks_ [i].free();
+				tracker_[i].free();
 			}
-			ram::free(tracker_);
-			ram::free(chunks_);
+			chunks_ .free();
+			tracker_.free();
 
 			// this->Map::Map( );
 			//TODO fix
 			//TODO constructor. remove
 			head_ = tail_ = (iter)-1;
 			_chunkNum = size_ = freeSize_ = 0;
-			chunks_  = ram::allocArr<ram::ptr<type>>(sizeof(ram::ptr<type>), (uint64)CellClass::CLASS_B);
-			tracker_ = ram::allocArr<ram::ptr<iter>>(sizeof(ram::ptr<iter>), (uint64)CellClass::CLASS_B);
+			chunks_ .reallocArr((uint64)CellClass::CLASS_B, ram::ptr<type>());
+			tracker_.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<iter>());
 		}
 
 

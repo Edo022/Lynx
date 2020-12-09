@@ -3,6 +3,5 @@
 
 
 void lux::ram::Cell_t::freeCell( ){
-	lux::ram::free(this);
+	lux::ram::__pvt::free(this);
 }
-

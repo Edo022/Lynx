@@ -1,10 +1,14 @@
 {
 	"tasks": [
-		{
+		{ //FIXME UPDATE ALL CONFIGURATIONS
 			"type": "shell",
 			"label": "Build LuxEngine   | Linux   | Debug  ",
-			"command": "/usr/bin/g++",
+			"command": "",
 			"args": [
+				"python3", "LuxEngine/LuxEngineBuild.cpp.py",
+				"\n",
+				"/usr/bin/g++",
+
 				//Source files
 					"LuxEngine/LuxEngineBuild.cpp",
 					"Test.cpp",
@@ -24,13 +28,21 @@
 					"-Ldeps/Shared/glfw-3.3.2/build/debug/src",
 					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
 				//Output
-					"-o", "./Build/Linux/LuxEngineDebug"
+					"-o", "./Build/Linux/LuxEngineDebug",
+
+				"\n",
+				"rm", "./LuxEngine/LuxEngineBuild.cpp"
 			],
 			"options": { "cwd": "${workspaceFolder}" },
 			"problemMatcher": [ "$gcc" ],
 			"group": { "kind": "build", "isDefault": true }
 		},
 		{
+//			GCC has Profile-Guided Optimisations features. There isn't a lot of precise GCC documentation about it, but nevertheless getting it to run is quite straightforward.
+//    			first compile your program with -fprofile-generate.
+//    			let the program run (the execution time will be significantly slower as the code is also generating profile information into .gcda files).
+//    			recompile the program with -fprofile-use. If your application is multi-threaded also add the -fprofile-correction flag.
+
 			"type": "shell",
 			"label": "Build LuxEngine   | Linux   | Release",
 			"command": "/usr/bin/g++",
@@ -39,7 +51,7 @@
 					"LuxEngine/LuxEngineBuild.cpp",
 					"Test.cpp",
 				//No debug infos, optimizations for fast code
-					"-ggdb3", "-Ofast",
+					"-g0", "-Ofast", "-frename-registers", "-funroll-loops",
 					"-std=c++2a", "-mavx", "-pipe",
 				//CWD include, threads
 					"-I./", "-pthread",

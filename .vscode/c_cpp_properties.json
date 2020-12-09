@@ -3,7 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",                                                //LuxEngine
+                "${workspaceFolder}/",                                                  //LuxEngine
                 "${workspaceFolder}/deps/Shared/glfw-3.3.2/include",                    //GLFW
                 "${workspaceFolder}/deps/Shared/glfw-3.3.2/deps",                       //GLFW
                 "${workspaceFolder}/deps/Linux/Vulkan-1.2.154.0/x86_64/include"         //Vulkan

@@ -31,7 +31,7 @@ namespace lux::out{
 	#define luxPrintWarning(...){																						\
 		char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);													\
 		Warning printf("Warning in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);		\
-		Warning printf(__VA_ARGS__); NormalNoNl;																					\
+		Warning printf(__VA_ARGS__); fflush(stdout); NormalNoNl;																					\
 	}
 
 
@@ -49,7 +49,7 @@ namespace lux::out{
 		if(condition) {																												\
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
-			Failure printf(__VA_ARGS__); NormalNoNl __lux_out_stop__																\
+			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__																\
 		}																															\
 	})
 	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
@@ -62,7 +62,7 @@ namespace lux::out{
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
 			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\": %s\n", #param, __FUNCTION__, __VA_ARGS__);	\
-			NormalNoNl __lux_out_stop__																								\
+			fflush(stdout); NormalNoNl __lux_out_stop__																								\
 		}																															\
 	})
 	//Prints an error if the vulkan function does not return VK_SUCCESS, specifying the line, function, file and thread where the error occurred
@@ -75,7 +75,7 @@ namespace lux::out{
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
 			Failure printf("The Vulkan function call \"%s\" returned %d", callStr, callRes);										\
-			Failure printf(__VA_ARGS__); NormalNoNl __lux_out_stop__																\
+			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__																\
 		}																															\
 	})
 	//Prints an error if the pointer is unallocated or invalid. This check can still fail

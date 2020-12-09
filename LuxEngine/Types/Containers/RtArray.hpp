@@ -49,13 +49,13 @@ namespace lux {
 
 
 		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
-		inline RtArray( ) : data_{ ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B) } { }
-		inline RtArray(iter vCount) : constructExec(checkNeg, vCount) data_{ ram::allocArr<type>(sizeof(type), vCount, CellClass::AT_LEAST_CLASS_B) } { }
+		inline RtArray( ) : data_(0, type(), CellClass::AT_LEAST_CLASS_B) { }
+		inline RtArray(iter vCount) : constructExec(checkNeg, vCount) data_(sizeof(type) * vCount, type(), CellClass::AT_LEAST_CLASS_B) { }
 
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pContainer) : data_{ ram::allocArr(sizeof(type), pContainer.count( ), CellClass::AT_LEAST_CLASS_B) } {
+		template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pContainer) : data_(sizeof(type) * pContainer.count( ), CellClass::AT_LEAST_CLASS_B) {
 			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
 			checkInitParam(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
@@ -63,7 +63,7 @@ namespace lux {
 
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
-		inline RtArray(const std::initializer_list<type>& pElements) : data_{ ram::allocArr(sizeof(type), pElements.size( )) } {
+		inline RtArray(const std::initializer_list<type>& pElements) : data_(sizeof(type) * pElements.size( ), CellClass::AT_LEAST_CLASS_B) {
 			//TODO ^ C strings get destroyed when the function returns
 			//luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 
@@ -90,7 +90,7 @@ namespace lux {
 		//TODO totally useless. Just don't return
 		inline iter resize(const iter vNewSize) {
 			checkInit; luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			ram::reallocArr<type>(data_, sizeof(type), vNewSize, type( ));
+			data_.reallocArr(vNewSize, type( ));
 			return data_.count( );
 		}
 
@@ -98,12 +98,12 @@ namespace lux {
 		//Resets the array to its initial state, freeing the memory and resizing it to 0
 		inline void clear( ){
 			checkInit;
-			ram::free(data_);
+			data_.free();
 
 			//TODO dont call this directly. add construct function
 			// this->DynArray::DynArray( );
 			//TODO constructor
-			data_ = ram::AllocBck<type>(0, CellClass::AT_LEAST_CLASS_B);
+			data_.realloc(0, type(), CellClass::AT_LEAST_CLASS_B);
 		}
 
 

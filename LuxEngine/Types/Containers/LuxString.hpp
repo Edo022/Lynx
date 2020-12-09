@@ -27,7 +27,7 @@ namespace lux {
 
 		inline void concatenate(const char8* vString, const uint32 size) {
 			uint64 oldSize = str.cell->cellSize;
-			ram::reallocBck(str, str.cell->cellSize + size - 1);
+			str.realloc(str.cell->cellSize + size - 1);
 			ram::cpy(vString, str + oldSize - 1, size);
 		}
 
@@ -42,13 +42,14 @@ namespace lux {
 
 
 		//String count cannot be 0. the '\0' is always present and occupies one byte
-		inline String(                                  ) : str{ ram::AllocBck<char8>(1, CellClass::AT_LEAST_CLASS_B) }	{ str[0] = '\0'; }
-		inline String(const String& pString             ) : str{ ram::allocBck(pString.count( )) }	   { ram::cpy(pString.str, str, pString.count( )); }
-		inline String(const char8* vString              ) : str{ ram::allocBck(strlenl(vString) + 1) } { ram::cpy(vString,     str, str.size( ));      }
-		inline String(const char8* vString, uint64 vSize) : str{ ram::allocBck(vSize) }	               { ram::cpy(vString,     str, str.size( ));      }
+		//TODO the elements are probably uninitialized
+		inline String(                                  ) : str(1, char8(), CellClass::AT_LEAST_CLASS_B)	{ str[0] = '\0'; }
+		inline String(const String& pString             ) : str(pString.count( ))	  { ram::cpy(pString.str, str, pString.count( )); }
+		inline String(const char8* vString              ) : str(strlenl(vString) + 1) { ram::cpy(vString,     str, str.size( ));      }
+		inline String(const char8* vString, uint64 vSize) : str(vSize)	              { ram::cpy(vString,     str, str.size( ));      }
 
 		//TODO remove
-		inline String(const wchar8* vString) : str{ ram::allocBck(strlenl(vString) + 1) }	{ ram::cpy(vString, str, str.size( )); }
+		inline String(const wchar8* vString) : str(strlenl(vString) + 1)	{ ram::cpy(vString, str, str.size( )); }
 
 
 
@@ -86,7 +87,7 @@ namespace lux {
 		// inline void operator += (const uint32 vValue)		{ checkInit; char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
 		// inline void operator += (const int32 vValue)		{ checkInit; char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
 		//inline void operator += (const char8 vChar)		{ checkInit; ram::reallocBck(str, str.size( ) + 1); *str.end( ) = vChar;		}
-		inline void operator += (const char8 vChar)		{ checkInit; ram::reallocBck(str, str.count( ) + 1); *str.end( ) = vChar;		}
+		inline void operator += (const char8 vChar)		{ checkInit; str.realloc(str.count( ) + 1); *str.end( ) = vChar;		}
 		#pragma warning ( default : 4996  )
 
 		#define __lp_strcat_body(var) String vLuxString(str.address); vLuxString += var; return vLuxString;
@@ -108,7 +109,7 @@ namespace lux {
 
 		inline void operator = (const String& pString) {
 			checkInit; checkInitParam(pString);
-			ram::reallocBck(str, pString.count( ), CellClass::AUTO);
+			str.realloc(pString.count( ));
 			str.address = (char8*)str.cell->address;
 			ram::cpy(pString.str, str, pString.count( ));
 		}
@@ -116,7 +117,7 @@ namespace lux {
 
 		inline void operator = (const char8* vString) {
 			checkInit;
-			ram::reallocBck(str, strlenl(vString) + 1, CellClass::AUTO);
+			str.realloc(strlenl(vString) + 1);
 			str.address = (char8*)str.cell->address;
 			ram::cpy(vString, str, str.count( ));
 		}
