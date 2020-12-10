@@ -5,12 +5,11 @@
 			"label": "Build LuxEngine   | Linux   | Debug  ",
 			"command": "",
 			"args": [
-				"python3", "LuxEngine/LuxEngineBuild.cpp.py",
-				"\n",
 				"/usr/bin/g++",
 
 				//Source files
-					"LuxEngine/LuxEngineBuild.cpp",
+					"-x", "c++",
+					"LuxEngine/LuxEngineBuild.cpp.build",
 					"Test.cpp",
 				//Max debug infos, Additional gprof informations, no optimizations, Lux Engine security checks
 					"-g3", "-ggdb3", "-pg", "-O0",
@@ -29,9 +28,6 @@
 					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
 				//Output
 					"-o", "./Build/Linux/LuxEngineDebug",
-
-				"\n",
-				"rm", "./LuxEngine/LuxEngineBuild.cpp"
 			],
 			"options": { "cwd": "${workspaceFolder}" },
 			"problemMatcher": [ "$gcc" ],
@@ -48,6 +44,7 @@
 			"command": "/usr/bin/g++",
 			"args": [
 				//Source files
+					"-x", "c++",
 					"LuxEngine/LuxEngineBuild.cpp",
 					"Test.cpp",
 				//No debug infos, optimizations for fast code
