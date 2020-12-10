@@ -38,9 +38,9 @@ namespace lux::core::c::shaders{
 
 
 	//Reads a shader from a file and saves it into a padded int32 array
-	//*   pLength --| a pointer to an int32 where to store the padded code length
-	//*   pFilePath | a pointer to a char array containing the path to the compiled shader file
-	//*   returns --| a pointer to the array where the code is saved
+	//*   pLength: a pointer to an int32 where to store the padded code length
+	//*   pFilePath: a pointer to a char array containing the path to the compiled shader file
+	//*   returns: a pointer to the array where the code is saved
 	//> Engine internal use
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 		FILE* fp;
@@ -77,9 +77,9 @@ namespace lux::core::c::shaders{
 
 
 	//Creates a shader module from a compiled shader code and its length in bytes
-	//*   vDevice | the logical device to use to create the shader module
-	//*   pCode --| a pointer to an int32 array containing the shader code
-	//*   pLength | a pointer to the code length
+	//*   vDevice: the logical device to use to create the shader module
+	//*   pCode: a pointer to an int32 array containing the shader code
+	//*   pLength: a pointer to the code length
 	//> Engine internal use
 	VkShaderModule cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
 		VkShaderModuleCreateInfo createInfo{ };								//Create shader module infos
@@ -110,8 +110,8 @@ namespace lux::core::c::shaders{
 
 
 	//Creates the descriptor sets layout, the pipeline and the pipeline layout of a shader
-	//*   vRenderShader | the type of the shader
-	//*   pCellNum -----| The number of cells to bing to the shader. The shader inputs must match those cells
+	//*   vRenderShader: the type of the shader
+	//*   pCellNum: The number of cells to bing to the shader. The shader inputs must match those cells
 	//> Engine internal use
 	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly) {
 		{ //Create descriptor set layout
@@ -195,11 +195,11 @@ namespace lux::core::c::shaders{
 
 
 	//Creates the descriptor pool and allocates in it the descriptor sets
-	//*   pCShader -----| a pointer to the shader where to create the descriptor pool and allocate the descriptor buffers
-	//*   pCells -------| an array of memory cells to bind to the shader
+	//*   pCShader: a pointer to the shader where to create the descriptor pool and allocate the descriptor buffers
+	//*   pCells: an array of memory cells to bind to the shader
 	//*   --- The shader inputs must match those cells
 	//*   --- the binding index is the same as their index in the array
-	//*   vShaderLayout | the shader layout
+	//*   vShaderLayout: the shader layout
 	//> Engine internal use
 	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
@@ -396,11 +396,11 @@ namespace lux::core::c::shaders{
 
 
 	//Creates the shader command buffer that binds pipeline and descriptors and runs the shader
-	//*   pCShader -----| the shader where to create the command buffer
-	//*   vShaderLayout | the render type
-	//*   vGroupCountX -| the number of workgroups in the x axis
-	//*   vGroupCountY -| the number of workgroups in the y axis
-	//*   vGroupCountZ -| the number of workgroups in the z axis
+	//*   pCShader: the shader where to create the command buffer
+	//*   vShaderLayout: the render type
+	//*   vGroupCountX: the number of workgroups in the x axis
+	//*   vGroupCountY: the number of workgroups in the y axis
+	//*   vGroupCountZ: the number of workgroups in the z axis
 	//The workgroup count is define in the GLSL shader
 	//> Engine internal use
 	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
@@ -457,13 +457,13 @@ namespace lux::core::c::shaders{
 
 	//Add a shader in the staging queue. The shader will be created and used by the rendering thread
 	//All the shaders created with this function must be destroyed with CShaderDestroy(shader)
-	//*   pCells -------| an array of memory cells to bind to the shader
+	//*   pCells: an array of memory cells to bind to the shader
 	//*   --- The shader inputs must match those cells. The binding index is the same as their index in the array
-	//*   vShaderLayout | the layout of the shader
-	//*   vGroupCountX -| the number of workgroups in the x axis
-	//*   vGroupCountY -| the number of workgroups in the y axis
-	//*   vGroupCountZ -| the number of workgroups in the z axis
-	//*   returns ------| the index of the shader
+	//*   vShaderLayout: the layout of the shader
+	//*   vGroupCountX: the number of workgroups in the x axis
+	//*   vGroupCountY: the number of workgroups in the y axis
+	//*   vGroupCountZ: the number of workgroups in the z axis
+	//*   returns: the index of the shader
 	//*   --- -1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
 	//> Engine internal use
 	LuxShader newShader(const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
@@ -521,8 +521,8 @@ namespace lux::core::c::shaders{
 	//TODO choose device
 	//TODO remove command buffer from command buffer dynarray
 	//Removes a shader from the shader array, cleaning all of its components and freeing the memory
-	//*   shader -| the shader to destroy
-	//*   returns | true if the operation succeeded, false if the index is invalid
+	//*   shader: the shader to destroy
+	//*   returns: true if the operation succeeded, false if the index is invalid
 	//> Engine internal use
 	bool destroyShader(const LuxShader vCShader) {
 		if(vCShader >= CShaders.count( )) return false;

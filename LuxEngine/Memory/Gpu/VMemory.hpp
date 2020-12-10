@@ -18,7 +18,7 @@ namespace lux::rem{
 	};
 	struct MemBufferType {
 		CellClass cellClass;				//Class of the cells
-		AllocType allocType;				//Buffer allocation type
+		lux::__pvt::AllocType allocType;				//Buffer allocation type
 		Map_NMP_S<MemBuffer, uint32> buffers;//Buffers containing the cells
 	};
 	struct Cell_t {
@@ -33,7 +33,7 @@ namespace lux::rem{
 	typedef Cell_t* Cell;
 	static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 
-	Cell allocBck(const uint64 vSize, const CellClass vCellClass, const AllocType vAllocType);
+	Cell allocBck(const uint64 vSize, const CellClass vCellClass, const lux::__pvt::AllocType vAllocType);
 	void free(Cell pCell);
 
 

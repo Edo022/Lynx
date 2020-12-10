@@ -132,8 +132,8 @@ namespace lux{
 		inline uint32 count() const { return sizeof...(types); }
 
 		//Calls a function using the array elements as arguments
-		//pFunc --| The function to call
-		//pReturn | The variable where to store the return value
+		//*   pFunc: The function to call
+		//*   pReturn: The variable where to store the return value
 		//pReturn can be omitted to ignore the return value or call void functions
 		template<class funcType, class retType> inline void exec(funcType pFunc, retType& pReturn){
 			this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, retType>(pFunc, &pReturn);
@@ -142,9 +142,9 @@ namespace lux{
 			this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, lux::__pvt::NoRet_t>(pFunc, nullptr );
 		}
 		//Calls a function of a class instance using the array elements as arguments
-		//pObject | The class instance containing the function
-		//pFunc --| The function to call
-		//pReturn | The variable where to store the return value
+		//*   pObject: The class instance containing the function
+		//*   pFunc: The function to call
+		//*   pReturn: The variable where to store the return value
 		//pReturn can be omitted to ignore the return value or call void functions
 		template<class objType, class funcType, class retType> inline void exec(objType& pObject, funcType pFunc, retType& pReturn){
 			this->lux::__pvt::seq<seqIndex, types...>::template execObj<objType, funcType, retType>(pObject, pFunc, &pReturn);

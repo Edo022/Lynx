@@ -3,7 +3,10 @@
 
 
 
-//Initialize RAM memory pool
+
+
+
+//TODO
 #include "LuxEngine/Memory/Ram/Memory.hpp"
 namespace lux::ram{
 	MemBufferType* buffers;
@@ -11,10 +14,10 @@ namespace lux::ram{
 
 
 	luxAutoInit(LUX_H_MEMORY){
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)CellClassIndex::NUM * (uint32)AllocType::NUM);
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::__pvt::AllocType::NUM);
 		//Init buffer types
-		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
-			buffers[i].cellClass = (CellClass)classEnumFromIndex((CellClassIndex)i);
+		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
+			buffers[i].cellClass = (CellClass)lux::__pvt::classEnumFromIndex((lux::__pvt::CellClassIndex)i);
 			//TODO choose number of buffers based on the system memory
 			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
 		}
@@ -43,6 +46,8 @@ namespace lux::sys{
 	String dir::thisDir;	//Path to the current directory //Initialized in init function
 
 	//TODO move to lux::thr
+	//FIXME idk what happened here.
+	//FIXME threadNum should be initialized
 	// uint32		threadNum = lux::sys::threadNum;						//Number of threads in the main CPU
 	uint32		threadNum;						//Number of threads in the main CPU
 

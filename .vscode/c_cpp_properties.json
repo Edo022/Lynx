@@ -1,12 +1,12 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "LuxEngine",
             "includePath": [
-                "${workspaceFolder}/",                                                  //LuxEngine
-                "${workspaceFolder}/deps/Shared/glfw-3.3.2/include",                    //GLFW
-                "${workspaceFolder}/deps/Shared/glfw-3.3.2/deps",                       //GLFW
-                "${workspaceFolder}/deps/Linux/Vulkan-1.2.154.0/x86_64/include"         //Vulkan
+                "${workspaceFolder}/", //LuxEngine
+                "${workspaceFolder}/deps/Shared/glfw-3.3.2/include", //GLFW
+                "${workspaceFolder}/deps/Shared/glfw-3.3.2/deps", //GLFW
+                "${workspaceFolder}/deps/Linux/Vulkan-1.2.154.0/x86_64/include" //Vulkan
                 //TODO add windows dependencies
             ],
             "defines": [],

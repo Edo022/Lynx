@@ -108,7 +108,7 @@ namespace lux {
 
 
 		inline void operator = (const String& pString) {
-			checkInit; checkInitParam(pString);
+			checkInit; isInit(pString);
 			str.realloc(pString.count( ));
 			str.address = (char8*)str.cell->address;
 			ram::cpy(pString.str, str, pString.count( ));
@@ -126,7 +126,7 @@ namespace lux {
 
 
 		inline bool operator == (const String& pString) const {
-			checkInit; checkInitParam(pString);
+			checkInit; isInit(pString);
 			return ((str.count( ) == pString.count( )) && (memcmp(pString.str, str.address, str.count( )) == 0));
 		}
 

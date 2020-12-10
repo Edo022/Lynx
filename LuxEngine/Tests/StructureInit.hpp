@@ -5,7 +5,7 @@
 
 
 namespace lux::__pvt{
-	//Use checkInit; or checkInitParam(param); to
+	//Use checkInit; or isInit(param); to
 	constexpr uint64 init_val = 0x94FFD489B48994FF;
 	//Private variables used in initialization checks. Those members cannot be inherited
 	#define genInitCheck	luxDebug(uint64 __pvt_init_val = lux::__pvt::init_val; char __pvt_dummy = 'L')
@@ -17,8 +17,8 @@ namespace lux::__pvt{
 	#define checkSize				luxCheckCond(size( ) == 0,  "This function cannot be called on pointers pointing to a 0-bytes memory block")
 	//Checks if a function parameter is initialized
 	#define checkInit 				luxCheckCond(this->__pvt_init_val != lux::__pvt::init_val, "This function cannot be called on uninitialized structures");
-	//Checks if a function parameter is initialized
-	#define checkInitParam(var)		luxDebug(luxCheckParam(var.__pvt_init_val != lux::__pvt::init_val, var, "The structure is uninitialized"));
+	//Checks if a variable is initialized
+	#define isInit(var)		luxDebug(luxCheckParam(var.__pvt_init_val != lux::__pvt::init_val, var, "The structure is uninitialized"));
 	//Executes a function in a costructor. Debug mode only
 	#define constructExec(fun, ...) luxDebug(__pvt_dummy{ fun(__VA_ARGS__) ? 'L' : 'K' },)
 }

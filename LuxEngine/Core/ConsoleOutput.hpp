@@ -28,10 +28,10 @@ namespace lux::out{
 
 
 	//Prints a warning, specifying the line, function, file and thread
-	#define luxPrintWarning(...){																						\
+	#define luxPrintWarning(...){																									\
 		char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);													\
 		Warning printf("Warning in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);		\
-		Warning printf(__VA_ARGS__); fflush(stdout); NormalNoNl;																					\
+		Warning printf(__VA_ARGS__); fflush(stdout); NormalNoNl;																	\
 	}
 
 
@@ -42,49 +42,49 @@ namespace lux::out{
 
 
 	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
-	//*   condition | The condition to check
-	//*   __args ---| printf arguments to print the error
+	//*   condition: The condition to check
+	//*   __args: printf arguments to print the error
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	#define luxCheckCond(condition, ...) luxRelease(;) luxDebug({																					\
+	#define luxCheckCond(condition, ...) luxRelease(;) luxDebug({																	\
 		if(condition) {																												\
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
-			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__																\
+			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__												\
 		}																															\
 	})
 	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
-	//*   condition | The condition to check
-	//*   param ----| The function parameter to check
-	//*   __args ---| printf arguments to print the error
+	//*   condition: The condition to check
+	//*   param: The function parameter to check
+	//*   __args: printf arguments to print the error
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	#define luxCheckParam(condition, param, ...) luxRelease(;) luxDebug({																			\
+	#define luxCheckParam(condition, param, ...) luxRelease(;) luxDebug({															\
 		if(condition) {																												\
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
 			Failure printf("Invalid value passed to \"%s\" parameter of function \"%s\": %s\n", #param, __FUNCTION__, __VA_ARGS__);	\
-			fflush(stdout); NormalNoNl __lux_out_stop__																								\
+			fflush(stdout); NormalNoNl __lux_out_stop__																				\
 		}																															\
 	})
 	//Prints an error if the vulkan function does not return VK_SUCCESS, specifying the line, function, file and thread where the error occurred
-	//*   funcCall | The call to the vulkan function to check
-	//*   __args --| printf arguments to print the error
+	//*   funcCall: The call to the vulkan function to check
+	//*   __args: printf arguments to print the error
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	#define luxCheckVk(funcCall, ...) luxRelease(;) luxDebug({																					\
+	#define luxCheckVk(funcCall, ...) luxRelease(;) luxDebug({																		\
 		uint64 callRes = funcCall; const char* callStr = #funcCall;																	\
 		if(callRes != VK_SUCCESS) {																									\
 			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
 			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
 			Failure printf("The Vulkan function call \"%s\" returned %d", callStr, callRes);										\
-			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__																\
+			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__												\
 		}																															\
 	})
 	//Prints an error if the pointer is unallocated or invalid. This check can still fail
 	//nullptr is considered valid
-	//*   ptr ---| The pointer to check
-	//*   __type | The type of the pointer
-	//*   __args | printf arguments to print the error
+	//*   ptr: The pointer to check
+	//*   __type: The type of the pointer
+	//*   __args: printf arguments to print the error
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	#define luxCheckRawPtr(ptr, __type, ...) luxRelease(;) luxDebug({							\
+	#define luxCheckRawPtr(ptr, __type, ...) luxRelease(;) luxDebug({			\
 		if(ptr){																\
 			try{ __type __var = *ptr; }											\
 			catch(std::exception e) { luxCheckParam(true, ptr, __VA_ARGS__); }	\

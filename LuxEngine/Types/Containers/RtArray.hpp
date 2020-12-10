@@ -57,7 +57,7 @@ namespace lux {
 		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
 		template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pContainer) : data_(sizeof(type) * pContainer.count( ), CellClass::AT_LEAST_CLASS_B) {
 			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
-			checkInitParam(pContainer);
+			isInit(pContainer);
 			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
 		}
 

@@ -100,11 +100,11 @@ namespace lux::thr {
 	//Sends a function to an exec queue of the global thread pool
 	//When the function will be executed and which queue it will be assigned to depends on its priority
 	//A low priority function can be suspended to free a thread and execute one with higher priority
-	//*   vFunc ----| the function to execute
-	//*   vPriority | the priority of the function (LUX_PRIORITY_MAX, LUX_PRIORITY_HIGH... )
-	//*   pReturn --| a pointer to the variable where to store the function return value. Use nullptr for void functions
-	//*   pFence ---| a pointer to a bool variable that will be set to true when the thread returns. Use nullptr if you dont need one
-	//*   vParams --| the parameters of the function call. Their types must be the same as the function declaration
+	//*   vFunc: the function to execute
+	//*   vPriority: the priority of the function (LUX_PRIORITY_MAX, LUX_PRIORITY_HIGH... )
+	//*   pReturn: a pointer to the variable where to store the function return value. Use nullptr for void functions
+	//*   pFence: a pointer to a bool variable that will be set to true when the thread returns. Use nullptr if you dont need one
+	//*   vParams: the parameters of the function call. Their types must be the same as the function declaration
 	//The maximum number of functions executed "at the same time" is defined by LUX_CNF_GLOBAL_THREAD_POOL_SIZE (see LuxEngine_config.h)
 	//The actual number of running threads is limited to the number of physical threads in the CPU
 	//Use pointers or references to improve performance. The parameters needs to be copied several times before they can be used
