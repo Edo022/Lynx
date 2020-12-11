@@ -85,14 +85,17 @@ namespace lux {
 
 
 
-		inline uint64 count( ) const override { checkInit; return count_;				 }
-		inline uint64 size(  ) const override { checkInit; return count_ * sizeof(type); }
-		inline bool	  empty( ) const override { checkInit; return !count_;			     }
-		inline type*  begin( ) const override { checkInit; return data_;		 	     }
-		inline type*  end(   ) const override { checkInit; return &data_[count_];	     }
+		inline uint64 count( ) const override { checkInit(); return count_;				   }
+		inline uint64 size(  ) const override { checkInit(); return count_ * sizeof(type); }
+		inline bool	  empty( ) const override { checkInit(); return !count_;			   }
+		inline type*  begin( ) const override { checkInit(); return data_;		 	       }
+		inline type*  end(   ) const override { checkInit(); return &data_[count_];	       }
 
 		inline type&	operator[](const uint64 vIndex) const {
-			checkInit; checkCount; luxCheckParam(vIndex < 0, vIndex, "The index of an array cannot be negative yet"); luxCheckParam(vIndex >= count_, vIndex, "Index is out of range");
+			checkInit();
+			luxCheckCond(count() == 0,              "This function cannot be called on containers with size 0");
+			luxCheckParam(vIndex < 0, vIndex,       "The index of an array cannot be negative yet");
+			luxCheckParam(vIndex >= count_, vIndex, "Index is out of range");
 			return data_[vIndex];
 		}
 	};

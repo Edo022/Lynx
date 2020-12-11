@@ -89,7 +89,7 @@ namespace lux {
 		//*   Returns  | the new count
 		//TODO totally useless. Just don't return
 		inline iter resize(const iter vNewSize) {
-			checkInit; luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
+			checkInit(); luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
 			data_.reallocArr(vNewSize, type( ));
 			return data_.count( );
 		}
@@ -97,7 +97,7 @@ namespace lux {
 
 		//Resets the array to its initial state, freeing the memory and resizing it to 0
 		inline void clear( ){
-			checkInit;
+			checkInit();
 			data_.free();
 
 			//TODO dont call this directly. add construct function
@@ -111,7 +111,7 @@ namespace lux {
 		//*   vElement | the element to add
 		//*   Returns  | the index of the element in the array
 		inline iter add(const type& vElement) {
-			checkInit;
+			checkInit();
 			resize(data_.count() + 1);
 			data_.last( ) = vElement;
 			return data_.count( ) - 1;
@@ -125,14 +125,17 @@ namespace lux {
 
 
 
-		inline iter	  count( )	const override { checkInit; return data_.count( );			}
-		inline uint64 size( )	const override { checkInit; return count( ) * sizeof(type);	}
-		inline bool	  empty( )	const override { checkInit; return !count( );				}
-		inline type*  begin( )	const override { checkInit; return data_.begin( );			}
-		inline type*  end( )	const override { checkInit; return data_.end( );			}
+		inline iter	  count( )	const override { checkInit(); return data_.count( );		  }
+		inline uint64 size( )	const override { checkInit(); return count( ) * sizeof(type); }
+		inline bool	  empty( )	const override { checkInit(); return !count( );				  }
+		inline type*  begin( )	const override { checkInit(); return data_.begin( );		  }
+		inline type*  end( )	const override { checkInit(); return data_.end( );			  }
 
 		inline type&  operator[](const iter vIndex) const {
-			checkInit;  checkCount; luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
+			checkInit();
+			luxCheckCond(count() == 0,                "This function cannot be called on containers with size 0");
+			luxCheckParam(vIndex < 0, vIndex,         "Index cannot be negative");
+			luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
 			return data_[vIndex];
 		}
 	};
