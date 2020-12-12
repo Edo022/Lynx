@@ -6,12 +6,18 @@
 
 
 namespace lux::ram{
-    //Like a normal pointer, but better
-    //Allocate memory to the pointer with lux::ram::allocBck
-    //This pointer will automatically be freed once it is not longer used by any thread
-    //You can also manually free it with the lux::mem:free function
-    //    Accessing the memory of a freed pointer is ub
-    template<class type/*, class ptrType = ram::*/> struct ptr{
+    #define addr  0
+    #define alloc 1
+    /**
+     * @brief Like a normal pointer, but better.
+     * @tparam type The type of data the pointer points to (int, float, etc... )
+     * @tparam kind can be "alloc" or "addr". alloc pointers allocate memory and can be freed.
+     *         addr ones can only point to it.
+     *         A block of memory becomes invalid when all the alloc pointers pointing to it go out of scope, or .free() is explicitly called.
+     *         alloc pointers can only be initialized with an allocation or another alloc pointer.
+     *         addr  pointers can only be initialized with a normal C pointer or another alloc/addr pointer.
+     */
+    template<class type, int32 kind> struct ptr{
         genInitCheck;
         Cell_t* cell;			//A pointer to a lux::ram::Cell_t object that contains the cell informations
         type* address;			//The address the pointer points to
@@ -55,7 +61,7 @@ namespace lux::ram{
         //lux::ram::ptr<int32> p(302732);
         inline ptr(const uint64 vSize, CellClass vClass = CellClass::AUTO){
             evaluateCellClass(vSize, vClass);
-            alloc(vSize, vClass);
+            alloc_(vSize, vClass);
             ++cell->owners;
         }
 
@@ -173,7 +179,7 @@ namespace lux::ram{
          * @param vClass class of the cell. This is the maximum count the cell can reach before it needs to be copied
          * @return The allocated Cell object
         */
-        void alloc(const uint64 vSize, const CellClass vClass){
+        void alloc_(const uint64 vSize, const CellClass vClass){
             uint32 typeIndex = lux::__pvt::classIndexFromEnum(vClass);							//Get buffer index from type and class
             Map_NMP_S<MemBuffer, uint32>& subBuffers = (lux::ram::buffers[typeIndex].buffers);	//Get list of buffers where to search for a free cell
             uint32 cellIndex;
@@ -242,7 +248,7 @@ namespace lux::ram{
             evaluateCellClass(vSize, vCellClass);
 
             if(!address) { [[unlikely]]						//If the pointer has not been allocated
-                alloc(vSize, vCellClass);					//Allocate it
+                alloc_(vSize, vCellClass);					//Allocate it
                 return;
             }
             else { 													//If it's allocated
@@ -278,7 +284,7 @@ namespace lux::ram{
             }
             else {
                 evaluateCellClass(vSize, vCellClass);
-                alloc(vSize, vCellClass);
+                alloc_(vSize, vCellClass);
                 init_memory(address, size(), pValue);
             }
         }

@@ -1,7 +1,7 @@
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
-#include "LuxEngine/Core/LuxAutoInit.hpp"
 #include <cstring>
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 
 
 //TODO background cell preallocation
