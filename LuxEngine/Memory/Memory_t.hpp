@@ -200,10 +200,10 @@ namespace lux{
 			inline void operator=(const ptr<type>& pPtr){ isInit(pPtr);
 				if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				if(cell) cell->owners++; checka;
 			}
-			inline bool operator==(ptr<type>	   pPtr) const { return pPtr.address   == address;     }
-			inline bool operator==(const type*	   vPtr) const { return (void*)address == (void*)vPtr; }
-			inline bool operator!=(ptr<type>	   pPtr) const { return pPtr.address   != address;     }
-			inline bool operator!=(const type*     vPtr) const { return (void*)address != (void*)vPtr; }
+			inline bool operator==(ptr<type>   pPtr) const { return pPtr.address   == address;     }
+			inline bool operator==(const type* vPtr) const { return (void*)address == (void*)vPtr; }
+			inline bool operator!=(ptr<type>   pPtr) const { return pPtr.address   != address;     }
+			inline bool operator!=(const type* vPtr) const { return (void*)address != (void*)vPtr; }
 			template<class pType> inline bool operator==(const ptr<pType>& pPtr) const { checkInit(); return (void*)address == (void*)pPtr.address; }
 			template<class pType> inline bool operator!=(const ptr<pType>& pPtr) const { checkInit(); return (void*)address != (void*)pPtr.address; }
 
@@ -211,18 +211,17 @@ namespace lux{
 
 
 			//Add, subtract
-			#define as_nullptrCheck luxCheckParam(!vPtr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics")
-			inline     uint64  operator+(const type*	  vPtr) const { checkInit(); checkNullptr(); as_nullptrCheck; return (uint64)address + (uint64)vPtr;         }
-			inline     uint64  operator+(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr)     return (uint64)address + (uint64)pPtr.address; }
-			inline     uint64  operator-(const type*	  vPtr) const { checkInit(); checkNullptr(); as_nullptrCheck; return (uint64)address - (uint64)vPtr;         }
-			inline     uint64  operator-(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr)     return (uint64)address - (uint64)pPtr.address; }
+			inline     uint64  operator+(const type*	  vPtr) const { checkInit(); checkNullptr();               return (uint64)address + (uint64)vPtr;         }
+			inline     uint64  operator+(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr); return (uint64)address + (uint64)pPtr.address; }
+			inline     uint64  operator-(const type*	  vPtr) const { checkInit(); checkNullptr();               return (uint64)address - (uint64)vPtr;         }
+			inline     uint64  operator-(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr); return (uint64)address - (uint64)pPtr.address; }
 
-			template<class ValType> inline ptr<type> operator+(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address + vVal)); }
-			template<class ValType> inline ptr<type> operator-(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address - vVal)); }
+			template<class valType> inline ptr<type> operator+(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address + vVal)); }
+			template<class valType> inline ptr<type> operator-(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address - vVal)); }
 
 
-			template<class ValType> inline void operator+=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address += vVal; checkp; }
-			template<class ValType> inline void operator-=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address -= vVal; checkm; }
+			template<class valType> inline void operator+=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address += vVal; checkp; }
+			template<class valType> inline void operator-=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address -= vVal; checkm; }
 			inline void operator++( ){ checkInit(); checkNullptr(); checkSize(); address++;    checkp; }
 			inline void operator--( ){ checkInit(); checkNullptr(); checkSize(); address--;    checkm; }
 
