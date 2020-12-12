@@ -109,13 +109,13 @@ namespace lux{
 			Map_NMP_S<MemBuffer, uint32> buffers;			//Buffers containing the cells
 		};
 		struct Cell_t {
-			uint32 						owners;				//Number of lux::ram::ptr instances that point to an address of the cell
-			uint64 						cellSize;			//Size of the cell in bytes
-			void* 						address;			//Address of the cell. The same as you would get with malloc
-			MemBufferType* 				bufferType;			//Type of buffer allocation
-			MemBuffer* 					buffer;				//Index of the buffer where the cell is allocated
-			uint32 						cellIndex;			//Index of the cell in the buffer
-			void freeCell();
+			uint32 			owners;				//Number of lux::ram::ptr instances that point to an address of the cell
+			uint64 			cellSize;			//Size of the cell in bytes
+			void* 			address;			//Address of the cell. The same as you would get with malloc
+			MemBufferType* 	bufferType;			//Type of buffer allocation
+			MemBuffer* 		buffer;				//Index of the buffer where the cell is allocated
+			uint32 			cellIndex;			//Index of the cell in the buffer
+			void free();
 		};
 		static inline uint32 getCellOffset(const Cell_t* pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 		extern MemBufferType* 	buffers;	//Allocated buffers
@@ -190,7 +190,7 @@ namespace lux{
 			}
 
 
-
+//TODO ADD WARNING WHEN ACCESSING FREED MEMORY. SPECIFY HOW IT WAS FREED
 
 			//TODO improve warnings and output object address or nanme
 			//Assignment and comparison
@@ -212,27 +212,25 @@ namespace lux{
 
 			//Add, subtract
 			#define as_nullptrCheck luxCheckParam(!vPtr, vPtr, "Cannot use nullptr as a value in lux::ram::ptr arithmetics")
-			#define op_p(t) inline ptr<type>operator+(const t			v	) const { checkInit(); checkNullptr(); return ptr<type>{cell,	address	+ v}; }
-			#define op_m(t) inline ptr<type>operator-(const t			v	) const { checkInit(); checkNullptr(); return ptr<type>{cell,	address	- v}; }
-			inline uint64					operator+(const type*		vPtr) const { checkInit(); checkNullptr(); as_nullptrCheck; return (uint64)address + (uint64)vPtr;         }
-			inline uint64					operator+(const ptr<type>&	pPtr) const { checkInit(); checkNullptr(); isInit(pPtr)     return (uint64)address + (uint64)pPtr.address; }
-			inline uint64					operator-(const type*		vPtr) const { checkInit(); checkNullptr(); as_nullptrCheck; return (uint64)address - (uint64)vPtr;         }
-			inline uint64					operator-(const ptr<type>&	pPtr) const { checkInit(); checkNullptr(); isInit(pPtr)     return (uint64)address - (uint64)pPtr.address; }
+			inline     uint64  operator+(const type*	  vPtr) const { checkInit(); checkNullptr(); as_nullptrCheck; return (uint64)address + (uint64)vPtr;         }
+			inline     uint64  operator+(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr)     return (uint64)address + (uint64)pPtr.address; }
+			inline     uint64  operator-(const type*	  vPtr) const { checkInit(); checkNullptr(); as_nullptrCheck; return (uint64)address - (uint64)vPtr;         }
+			inline     uint64  operator-(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr)     return (uint64)address - (uint64)pPtr.address; }
 
-			op_p(uint64) op_p(uint32) op_p(uint16) op_p(uint8) op_p(int64) op_p(int32) op_p(int16) op_p(int8);
-			op_m(uint64) op_m(uint32) op_m(uint16) op_m(uint8) op_m(int64) op_m(int32) op_m(int16) op_m(int8);
+			template<class ValType> inline ptr<type> operator+(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address + vVal)); }
+			template<class ValType> inline ptr<type> operator-(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address - vVal)); }
 
 
-			inline void operator+=(uint64 v) { checkInit(); checkNullptr(); checkSize(); address += v; checkp; }
-			inline void operator-=(uint64 v) { checkInit(); checkNullptr(); checkSize(); address -= v; checkm; }
-			inline void operator++( )        { checkInit(); checkNullptr(); checkSize(); address++;    checkp; }
-			inline void operator--( )        { checkInit(); checkNullptr(); checkSize(); address--;    checkm; }
+			template<class ValType> inline void operator+=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address += vVal; checkp; }
+			template<class ValType> inline void operator-=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address -= vVal; checkm; }
+			inline void operator++( ){ checkInit(); checkNullptr(); checkSize(); address++;    checkp; }
+			inline void operator--( ){ checkInit(); checkNullptr(); checkSize(); address--;    checkm; }
 
 
 
 
 			//Implicit conversion
-			~ptr( ){ if(address) if(!--cell->owners) cell->freeCell( ); }		//Decrease the cell's owner count when the pointer is destroyed
+			~ptr( ){ if(address) if(!--cell->owners) cell->free( ); }		//Decrease the cell's owner count when the pointer is destroyed
 			inline operator type*( ) const { checkInit(); luxCheckCond(!address, "Cannot dereference a nullptr"); return address; }	//ram::ptr<type> to type* implicit conversion
 			inline operator bool(  ) const { checkInit(); return !!address; }		//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
 
@@ -428,16 +426,9 @@ namespace lux{
 
 
 
-
 			void free(){
-			//TODO destroy buffers from asyncrhonous garbage collector
-				cell->buffer->cells.remove(cell->cellIndex);
-				if(cell->buffer->cells.usedSize( ) == 0) {
-					cell->bufferType->buffers.remove(cell->buffer->bufferIndex);
-					//TODO free only if there is not enough memory
-				}
+				cell->free();
 			}
-
 		};
 	}
 }
