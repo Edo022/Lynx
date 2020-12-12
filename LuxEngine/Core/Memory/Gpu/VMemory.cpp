@@ -1,4 +1,4 @@
-#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
 

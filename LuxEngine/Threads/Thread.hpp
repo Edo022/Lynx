@@ -1,8 +1,8 @@
 #pragma once
 #define LUX_H_THREAD
 #include <pthread.h>
-#include <signal.h>
-#include <stdlib.h>
+#include <csignal>
+#include <cstdlib>
 #include "LuxEngine/Types/Containers/HdCtArray.hpp"
 
 //TODO minimize copies

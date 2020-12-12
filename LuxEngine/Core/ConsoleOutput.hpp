@@ -1,7 +1,7 @@
 #pragma once
 #define LUX_H_CONSOLE_OUTPUT
 #include <string>
-#include <stdio.h>
+#include <cstdio>
 #include "LuxEngine/macros.hpp"
 #include <exception>
 

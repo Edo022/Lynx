@@ -3,10 +3,10 @@
 
 
 
-#include "LuxEngine/Memory/Memory_t.cpp"
-#include "LuxEngine/Memory/Ram/Memory.cpp"
-#include "LuxEngine/Memory/Ram/Memory2.cpp"
-#include "LuxEngine/Memory/Gpu/VMemory.cpp"
+#include "LuxEngine/Core/Memory/Cell_t.cpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.cpp"
+//#include "LuxEngine/Core/Memory/Ram/Memory2.cpp"
+#include "LuxEngine/Core/Memory/Gpu/VMemory.cpp"
 
 #include "LuxEngine/System/System.cpp"
 #include "LuxEngine/Threads/ThreadPool.cpp"

@@ -1,5 +1,5 @@
 
-#include "LuxEngine/Memory/Ram/Memory2.hpp"
+#include "LuxEngine/Core/Memory/Ram/Memory2.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"

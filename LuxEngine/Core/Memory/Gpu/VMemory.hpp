@@ -3,7 +3,7 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/CBuffers.hpp"
-#include "LuxEngine/Memory/Ram/Memory.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 
 
 
@@ -18,7 +18,7 @@ namespace lux::rem{
 	};
 	struct MemBufferType {
 		CellClass cellClass;				//Class of the cells
-		lux::__pvt::AllocType allocType;				//Buffer allocation type
+		lux::__pvt::AllocType allocType;	//Buffer allocation type
 		Map_NMP_S<MemBuffer, uint32> buffers;//Buffers containing the cells
 	};
 	struct Cell_t {

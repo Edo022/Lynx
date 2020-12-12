@@ -1,9 +1,9 @@
 #pragma once
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/macros.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
-#include "LuxEngine/Types/Containers/ContainerBase.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Tests/StructureInit.hpp"
+#include "LuxEngine/macros.hpp"
+// #include "LuxEngine/Types/Containers/ContainerBase.hpp"
 
 //FIXME remove this structure
 
@@ -54,12 +54,12 @@ namespace lux {
 		}
 
 
-		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
-		//*   in: a pointer to the container object
-		template<class elmType>
-		inline Map_NMP_S(const ContainerBase<elmType, iter>* in) {
-			for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
-		}
+		// //Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
+		// //*   in: a pointer to the container object
+		// template<class elmType>
+		// inline Map_NMP_S(const ContainerBase<elmType, iter>* in) {
+		// 	for(iter i = 0; i < in->end( ) - in->begin( ); ++i) add((elmType) * (in->begin( ) + i));
+		// }
 
 
 

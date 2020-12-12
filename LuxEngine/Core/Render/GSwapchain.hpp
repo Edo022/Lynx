@@ -2,7 +2,7 @@
 #define LUX_H_GSWAPCHAIN
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/CtArray.hpp"
-#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 
 
 

@@ -7,7 +7,7 @@
 
 
 //TODO
-#include "LuxEngine/Memory/Ram/Memory.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 namespace lux::ram{
 	MemBufferType* buffers;
 	uint32 allocated;
@@ -28,7 +28,7 @@ namespace lux::ram{
 
 
 //Initialize GPU memory pool
-#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 namespace lux::rem{
 	uint32 maxAlloc;
 	MemBufferType* buffers;
@@ -97,7 +97,7 @@ namespace lux::thr{
 
 
 #define LUX_H_INIT_CORE
-#include <stdlib.h>
+#include <cstdlib>
 // #include "LuxEngine/Core/Core.h"
 luxAutoInit(LUX_H_INIT_CORE){
 	#pragma GCC diagnostic push

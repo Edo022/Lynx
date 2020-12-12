@@ -7,7 +7,7 @@
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 #include "LuxEngine/Core/Core.hpp"
-#include <limits.h>
+#include <climits>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
 

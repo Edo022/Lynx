@@ -1,12 +1,8 @@
 #pragma once
 #define LUX_H_RAARRAY
-#include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
-#include "LuxEngine/Memory/Ram/Memory.hpp"
-#include "LuxEngine/Tests/StructureInit.hpp"
 
 
 

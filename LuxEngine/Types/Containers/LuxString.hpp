@@ -1,10 +1,8 @@
 #pragma once
 #define LUX_H_STRING
-#include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Memory/Ram/Memory.hpp"
-#include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
-#include "LuxEngine/Tests/StructureInit.hpp"
+
+
 
 
 

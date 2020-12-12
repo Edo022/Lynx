@@ -1,6 +1,11 @@
 #pragma once
 #define LUX_H_CONTAINER_BASE
+#include "LuxEngine/Types/Integers/Integers.hpp"
+#include "LuxEngine/Core/ConsoleOutput.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
+#include "LuxEngine/Types/LuxPointer.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
+
 
 
 

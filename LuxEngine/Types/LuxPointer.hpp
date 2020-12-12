@@ -1,0 +1,310 @@
+#pragma once
+#define LUX_H_POINTER
+#include "LuxEngine/Core/Memory/Cell_t.hpp"
+
+
+
+
+namespace lux::ram{
+    //Like a normal pointer, but better
+    //Allocate memory to the pointer with lux::ram::allocBck
+    //This pointer will automatically be freed once it is not longer used by any thread
+    //You can also manually free it with the lux::mem:free function
+    //    Accessing the memory of a freed pointer is ub
+    template<class type/*, class ptrType = ram::*/> struct ptr{
+        genInitCheck;
+        Cell_t* cell;			//A pointer to a lux::ram::Cell_t object that contains the cell informations
+        type* address;			//The address the pointer points to
+
+
+
+
+
+
+
+
+        #define checkNullptr() luxCheckCond(!address,     "function %s  have been called on a lux::ram::ptr with value nullptr", __FUNCTION__)
+        #define checkSize()    luxCheckCond(size( ) == 0, "This function cannot be called on pointers pointing to a 0-bytes memory block"    )
+        #define checkSizeD()   luxCheckCond(size( ) == 0, "Cannot dereference a pointer pointing to a 0-byte memory allocation"              )
+
+        //TODO add option to disable specific warnings
+        #define checkp luxDebug(if(address >= end( ) + cell->cellSize) luxPrintWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+        #define checkm luxDebug(if(address < begin( ))                 luxPrintWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+
+        #define __checka__err__ "The assigned address is out of the allocated block range. Reading or writing to this address is undefined behaviour and can cause runtime errors"
+        #define checka luxDebug(																								\
+            if(address && ((uint64)address < (uint64)cell->address)){															\
+                if(cell->cellSize) luxCheckCond((uint64)address >= ((uint64)cell->address) + cell->cellSize, __checka__err__)	\
+                else               luxCheckCond((uint64)address !=  (uint64)cell->address  + cell->cellSize, __checka__err__)	\
+            }																													\
+        );
+
+
+
+
+        //TODO check nullptr in every function. only in debug mode
+        //TODO use dummy cell to improve performance and dont check for nullptrs when increasing or decreasing owner counts
+        inline ptr( ) :							                cell{  nullptr }, address{  nullptr          } { }
+        inline ptr(Cell_t* vCell, type* vAddr) :                cell{  vCell   }, address{  vAddr            } { if(vCell){ cell->owners++; checka; } }
+        inline ptr(ptr<type>& pPtr)				{ isInit(pPtr); cell = pPtr.cell; address = pPtr.address;        if(pPtr ){ cell->owners++; checka; } }
+        template<class pType>
+        explicit inline ptr(ptr<pType>& pPtr) 	{ isInit(pPtr); cell = pPtr.cell; address = (type*)pPtr.address; if(pPtr ){ cell->owners++; checka; } }
+
+        //Allocates a block of memory without initializing it
+        //e.g.
+        //lux::ram::ptr<int32> p(302732);
+        inline ptr(const uint64 vSize, CellClass vClass = CellClass::AUTO){
+            evaluateCellClass(vSize, vClass);
+            alloc(vSize, vClass);
+            ++cell->owners;
+        }
+
+        //Allocates a block of memory and initializes each element with the pValue value
+        //e.g.
+        //lux::ram::ptr<float> p(302732, 15.0f);
+        inline ptr(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO) : ptr(vSize, vClass) {
+            init_memory(cell->address, vSize, pValue);
+            ++cell->owners;
+        }
+
+
+//TODO ADD WARNING WHEN ACCESSING FREED MEMORY. SPECIFY HOW IT WAS FREED
+
+        //TODO improve warnings and output object address or nanme
+        //Assignment and comparison
+        inline void operator=(Cell_t* const   vCell){
+            luxCheckRawPtr(vCell, Cell_t, "Invalid pointer passed to assignment operator")
+            if(cell) cell->owners--;	cell = vCell;		address = (type*)vCell->address;	if(cell) cell->owners++; checka; }
+        inline void operator=(const ptr<type>& pPtr){ isInit(pPtr);
+            if(cell) cell->owners--;	cell = pPtr.cell;	address = pPtr.address;				if(cell) cell->owners++; checka;
+        }
+        inline bool operator==(ptr<type>   pPtr) const { return pPtr.address   == address;     }
+        inline bool operator==(const type* vPtr) const { return (void*)address == (void*)vPtr; }
+        inline bool operator!=(ptr<type>   pPtr) const { return pPtr.address   != address;     }
+        inline bool operator!=(const type* vPtr) const { return (void*)address != (void*)vPtr; }
+        template<class pType> inline bool operator==(const ptr<pType>& pPtr) const { checkInit(); return (void*)address == (void*)pPtr.address; }
+        template<class pType> inline bool operator!=(const ptr<pType>& pPtr) const { checkInit(); return (void*)address != (void*)pPtr.address; }
+
+
+
+
+        //Add, subtract
+        inline     uint64  operator+(const type*	  vPtr) const { checkInit(); checkNullptr();               return (uint64)address + (uint64)vPtr;         }
+        inline     uint64  operator+(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr); return (uint64)address + (uint64)pPtr.address; }
+        inline     uint64  operator-(const type*	  vPtr) const { checkInit(); checkNullptr();               return (uint64)address - (uint64)vPtr;         }
+        inline     uint64  operator-(const ptr<type>& pPtr) const { checkInit(); checkNullptr(); isInit(pPtr); return (uint64)address - (uint64)pPtr.address; }
+
+        template<class valType> inline ptr<type> operator+(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address + vVal)); }
+        template<class valType> inline ptr<type> operator-(const valType vVal) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((uint64)address - vVal)); }
+
+
+        template<class valType> inline void operator+=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address += vVal; checkp; }
+        template<class valType> inline void operator-=(valType vVal){ checkInit(); checkNullptr(); checkSize(); address -= vVal; checkm; }
+        inline void operator++( ){ checkInit(); checkNullptr(); checkSize(); address++;    checkp; }
+        inline void operator--( ){ checkInit(); checkNullptr(); checkSize(); address--;    checkm; }
+
+
+
+
+        //Implicit conversion
+        ~ptr( ){ if(address) if(!--cell->owners) cell->free( ); }		//Decrease the cell's owner count when the pointer is destroyed
+        inline operator type*( ) const { checkInit(); luxCheckCond(!address, "Cannot dereference a nullptr"); return address; }	//ram::ptr<type> to type* implicit conversion
+        inline operator bool(  ) const { checkInit(); return !!address; }		//ram::ptr<type> to bool implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
+
+
+
+
+        //Get element
+        inline type&     operator[](const uint64 vIndex)const { checkInit(); checkSize(); luxCheckParam((vIndex < 0 && vIndex > prior( )) || (vIndex >= 0 && vIndex > latter( )), vIndex, "Index is out of range"); return address[vIndex]; }
+        inline type&     operator*( ) const { checkInit(); checkNullptr(); checkSizeD(); return *address; }
+        inline type&	 last(      ) const { checkInit(); checkNullptr(); checkSize();  return ((type*)address)[count( ) - 1];	 } //Returns a reference to the last element in the allocated memory block
+        inline type*	 begin(     ) const { checkInit(); checkNullptr(); return (type*)cell->address;							 } //Returns the first address of the allocated memory block as a normal pointer
+        inline ptr<type> beginp(    ) const { checkInit(); checkNullptr(); return ptr<type>(cell);								 } //Returns the first address of the allocated memory block as a lux::ram::ptr
+        inline type*	 end(       ) const { checkInit(); checkNullptr(); return (type*)((int8*)cell->address + cell->cellSize);} //Returns the address of the object past the last object in the memory block as a normal pointer. Don't dereference it
+        inline ptr<type> endp(      ) const { checkInit(); checkNullptr(); return ptr<type>(cell, (type*)((int8*)cell->address + cell->cellSize));} //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
+
+        //Count
+        inline uint64 size(         ) const { checkInit(); checkNullptr(); return cell->cellSize;								 } //Returns the total size of the allocated memory
+        inline uint64 count(        ) const { checkInit(); checkNullptr(); return cell->cellSize / sizeof(type);				 } //Returns the number of elements in the allocated memory (use this only if you have allocated the memory with an allocArr function or you are sure that the size is a multiple of the type's size)
+        inline uint64 prior(        ) const { checkInit(); checkNullptr(); return (uint64)address - (uint64)cell->address;		 } //Returns the number of allocated bytes before the pointer
+        inline uint64 latter(       ) const { checkInit(); checkNullptr(); return (uint64)cell->address + cell->cellSize - (uint64)address;	} 	//Returns the number of allocated bytes after  the pointer
+
+
+
+
+
+
+
+
+    private:
+        void evaluateCellClass(const uint64 vSize, CellClass& pClass){
+            if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
+                if(vSize > ((uint32)pClass - 1)) pClass = CellClass::AUTO;				//If the class is too small, set it to AUTO
+                else pClass = (CellClass)((uint64)pClass - 1);							//If it's large enough, assign the normal class value
+            }
+            if(pClass == CellClass::AUTO) { [[likely]]								//Choose cell class if it's AUTO
+                        if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]	  pClass = CellClass::CLASS_A;
+                else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]]	  pClass = CellClass::CLASS_B;
+                else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]]	  pClass = CellClass::CLASS_C;
+                else if(vSize <= (uint32)CellClass::CLASS_D) [[unlikely]] pClass = CellClass::CLASS_D;
+                else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] pClass = CellClass::CLASS_Q;
+                else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] pClass = CellClass::CLASS_L;
+                else													  pClass = CellClass::CLASS_0;
+            }
+
+            luxCheckParam(vSize > 0xFFFFffff, vSize, "Cell size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", vSize);
+            luxCheckParam((uint32)pClass < vSize, pClass,
+                "Requested %lu-bytes class for %llu-bytes allocation. The cell class must be large enought to contain the cell. %s",
+                (uint32)pClass, vSize, "Use lux::CellClass::AUTO to automatically choose it"
+            );
+        }
+
+
+
+
+        //FIXME MERGE WITH alloc(...)
+        //TODO CHECK MEMORY FULL
+        //TODO fix all the documentation
+        /**
+         * Allocates a memory cell or a pointer into a buffer
+         * same as int* foo = (int*)malloc(100);
+         * lux::ram::ptr<int> foo = lux::ram::allocBck(100, lux::CellClass::AUTO);
+         * @param vSize count of the cell
+         * @param vClass class of the cell. This is the maximum count the cell can reach before it needs to be copied
+         * @return The allocated Cell object
+        */
+        void alloc(const uint64 vSize, const CellClass vClass){
+            uint32 typeIndex = lux::__pvt::classIndexFromEnum(vClass);							//Get buffer index from type and class
+            Map_NMP_S<MemBuffer, uint32>& subBuffers = (lux::ram::buffers[typeIndex].buffers);	//Get list of buffers where to search for a free cell
+            uint32 cellIndex;
+            if((uint32)vClass){																	//If the cell is a fixed count cell
+                uint64 cellNum = lux::__pvt::bufferSize / (uint32)vClass;							//Get the maximum number of cells in each buffer
+                for(uint32 i = 0; i < subBuffers.size( ); i++){										//Search for a suitable buffer
+                    if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {			//If a buffer is valid and it has a free cell
+                        cellIndex = subBuffers[i].cells.add(Cell_t{											//Create a new cell in the buffer
+                            .cellSize = vSize,
+                            .bufferType = &lux::ram::buffers[typeIndex]
+                        });
+                        cell = &subBuffers[i].cells[cellIndex];
+                        cell->buffer = &subBuffers[i];														//and set its buffer, index and address
+                        cell->cellIndex = cellIndex;
+                        address = (type*)(cell->address = (void*)((uint8*)(cell->buffer->memory) + getCellOffset(cell)));
+                        return;
+                    }
+                }
+            }{																							//If there are no free buffers or the cell is a custom count cell
+                uint32 bufferIndex, cellsNum = (uint32)vClass ? lux::__pvt::bufferSize / (uint32)vClass : 1;
+                bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
+                    //FIXME USE A NORMAL RaArray THAT ALLOCATES WITH MALLOC
+                    //! The map requires the chunk count and the max count. bufferSize is the count in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
+                    //.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+                    .cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+                });																							//^ Create in it 1 cell for custom count cells, or the maximum number of cells for fixed count cells
+                MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
+                //TODO set right like
+                if(!buffer.memory) {
+                    buffer.memory = //Allocate new memory if the buffer has not already been allocated
+                        win10(_aligned_malloc((uint32)vClass ? lux::__pvt::bufferSize : vSize, LuxMemOffset);)
+                        linux( aligned_alloc( LuxMemOffset, (uint32)vClass ? lux::__pvt::bufferSize : vSize);)
+
+                    //TODO remove
+                    lux::ram::allocated += (uint32)vClass ? lux::__pvt::bufferSize : vSize;
+                    Main printf("allocated MBs: %d", allocated / 1000000);
+                }
+
+
+                cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{
+                    .cellSize = vSize,
+                    .bufferType = &buffers[typeIndex]
+                })];
+                address = (type*)(cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell)));	//<^ Create a new cell in the new buffer. Set its address
+                cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom count cells
+            }
+        }
+
+
+
+
+        //TODO UNROLL LOOP
+        inline void init_memory(void* const vAddr, const uint64 vSize, const type& pValue){
+            for(uint32 i = 0; i < vSize; i+=sizeof(type)) memcpy((char*)vAddr + i, &pValue, sizeof(type));
+        }
+
+
+
+
+    public:
+        //Reallocates the pointer to a block of memory of vSize bytes without initializing it
+        //e.g.
+        //lux::ram::ptr<int32> p(4);	//Allocate 4B (1 int)
+        //p.reallocBck(100);			//Reallocate to 100B (4 copied + 96 uninitialized) (25 ints)
+        inline void realloc(const uint64 vSize, CellClass vCellClass = CellClass::AUTO) {
+            evaluateCellClass(vSize, vCellClass);
+
+            if(!address) { [[unlikely]]						//If the pointer has not been allocated
+                alloc(vSize, vCellClass);					//Allocate it
+                return;
+            }
+            else { 													//If it's allocated
+                int64 d = vSize - size( );							//Calculate the difference in size between the current size and the new size
+                if(d < 0) [[unlikely]] cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
+                else if(d > 0) { [[likely]]							//If it's larger
+                    if(vSize <= (int64)vCellClass) { [[likely]]			//But not larger than the maximum cell size
+                        cell->cellSize = vSize;								//Change the cellSize variable
+                    }
+                    else {												//If it's also larger than the cell
+                        ram::ptr<type> ptr_(vSize, vCellClass);				//Allocate a new pointer
+                        memcpy(ptr_, address, size( ));						//Copy the old data
+                        free();												//Free the old cell
+                        *this = ptr_;										//Overwrite the cell itself. This is necessary in order to keep the pointers updated
+                    }
+                }
+                else [[unlikely]] return;							//If it has the same size, do nothing
+            }
+
+        }
+
+
+        //Reallocates the pointer to a block of memory of vSize bytes and initializes each of the new elements with the pValue value
+        //e.g.
+        //lux::ram::ptr<float> p(4);	//Allocate 4B (1 float)
+        //p.realloc(100, 0.1f);			//Reallocate to 100B (4 copied + 96 as floats with value 0.1f) (25 floats)
+        inline void realloc(const uint64 vSize, const type& pValue, CellClass vCellClass = CellClass::AUTO){
+            if(address){
+                int64 d = vSize - size( );
+                auto end_ = end();
+                realloc(vSize, vCellClass);
+                if(d > 0) init_memory(end_, d, pValue);
+            }
+            else {
+                evaluateCellClass(vSize, vCellClass);
+                alloc(vSize, vCellClass);
+                init_memory(address, size(), pValue);
+            }
+        }
+
+
+        //Reallocates the pointer to a block of memory containing vCount elements without initializing them
+        //e.g.
+        //lux::ram::ptr<float> p(100);	//Allocate 100B (25 floats)
+        //p.reallocArr(100);			//Reallocate to 100 floats (400B) (25 copied + 75 uninitialized)
+        void reallocArr(const uint64 vCount, const CellClass vCellClass = CellClass::AUTO){
+            realloc(sizeof(type) * vCount, vCellClass);
+        }
+
+
+        //Reallocates the pointer to a block of memory containing vCount elements initializing them with the pValue value
+        //e.g.
+        //lux::ram::ptr<float> p(100);	//Allocate 100B (25 floats)
+        //p.reallocArr(100, 0.1f);		//Reallocate to 100 floats (400B) (25 copied + 75 with value 0.1)
+        inline void reallocArr(const uint64 vCount, const type& pValue, CellClass vCellClass = CellClass::AUTO){
+            realloc(sizeof(type) * vCount, pValue, vCellClass);
+        }
+
+
+
+        void free(){
+            cell->free();
+        }
+    };
+}

@@ -1,5 +1,5 @@
-#include "LuxEngine/Memory/Memory_t.hpp"
-#include "LuxEngine/Memory/Ram/Memory.hpp"
+#include "LuxEngine/Core/Memory/Cell_t.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 
 
 

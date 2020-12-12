@@ -7,7 +7,7 @@
 //TODO "node" type that takes nodes in input
 //TODO blender-like collection generator
 
-#include <time.h>
+#include <ctime>
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Core/Core.hpp"
@@ -15,8 +15,8 @@
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 #include "LuxEngine/Threads/ThreadPool.hpp"
-#include "LuxEngine/Memory/Ram/Memory.hpp"
-#include "LuxEngine/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
+#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 
 
 

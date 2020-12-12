@@ -5,7 +5,7 @@
 #include "LuxEngine/Math/Trigonometry/Trigonometry.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/macros.hpp"
-#include <math.h>
+#include <cmath>
 
 
 

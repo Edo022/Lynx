@@ -1,17 +1,13 @@
 ﻿
 #pragma once
 #define LUX_H_RTARRAY
-#include "LuxEngine/Types/Containers/CtArray.hpp"
-#include "LuxEngine/macros.hpp"
-#include "LuxEngine/Math/Algebra/Algebra.hpp"
-#include "LuxEngine/Tests/StructureInit.hpp"
-
-#include "LuxEngine/Memory/Ram/Memory.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
-
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include <initializer_list>
 #include <cstring>
+
+
+
 
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sended back to the queue

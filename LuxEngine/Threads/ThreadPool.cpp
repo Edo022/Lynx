@@ -1,7 +1,7 @@
 #include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-#include <stdlib.h>
+#include <cstdlib>
 
 
 
