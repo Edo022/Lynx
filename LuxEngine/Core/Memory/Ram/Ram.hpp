@@ -1,7 +1,6 @@
 ﻿#pragma once
 #define LUX_H_MEMORY
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/Memory/Ram/Memory2.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include <cstring>
 
@@ -12,6 +11,7 @@
 #endif
 
 #include "LuxEngine/Types/LuxPointer.hpp"
+#include "LuxEngine/Types/LuxBool.hpp"
 
 /*
 .
