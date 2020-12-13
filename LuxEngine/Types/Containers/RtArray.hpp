@@ -33,7 +33,7 @@ namespace lux {
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 	private:
 		genInitCheck;
-		ram::ptr<type> data_;	//Elements of the array
+		ram::ptr<type, alloc> data_;	//Elements of the array
 	public:
 
 

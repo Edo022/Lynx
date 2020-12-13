@@ -14,17 +14,17 @@ namespace lux::core::c::buffers{
 	//FIXME add alignment
 	inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
 		//FIXME add function that does not initialize the data
-		((lux::ram::ptr<char>*)pUserData)->realloc(size);
-		return ((lux::ram::ptr<char>*)pUserData)->address;
+		((lux::ram::ptr<char, alloc>*)pUserData)->realloc(size);
+		return ((lux::ram::ptr<char, alloc>*)pUserData)->address;
 	}
 	inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
 		// lux::ram::reallocBck(*(lux::ram::ptr<char>*)pUserData, size);
-		((lux::ram::ptr<char>*)pUserData)->realloc(size);
-		return ((lux::ram::ptr<char>*)pUserData)->address;
+		((lux::ram::ptr<char, alloc>*)pUserData)->realloc(size);
+		return ((lux::ram::ptr<char, alloc>*)pUserData)->address;
 	}
 	inline void freeCallback(void* pUserData, void* pMemory){
 		// lux::ram::free(*(lux::ram::ptr<char>*)pUserData);
-		((lux::ram::ptr<char>*)pUserData)->free();
+		((lux::ram::ptr<char, alloc>*)pUserData)->free();
 	}
 	//TODO remove those functions. Theyre probably useless
 	//TODO or separate gpu shared allocations from normal ones
@@ -64,7 +64,7 @@ namespace lux::core::c::buffers{
 			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
 		};
 		const VkAllocationCallbacks allocator{
-			.pUserData = new lux::ram::ptr<char>(),
+			.pUserData = new lux::ram::ptr<char, alloc>(),
 			.pfnAllocation = allocateCallback,
 			.pfnReallocation = reallocateCallback,
 			.pfnFree = freeCallback,

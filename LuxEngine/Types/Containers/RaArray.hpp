@@ -19,8 +19,8 @@ namespace lux {
 	template<class type, class iter = uint64, uint64 elmPerChunk = max(50000/*50KB*/ / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class RaArray {
 	private:
 		genInitCheck;
-		ram::ptr<ram::ptr<type>> chunks_;		//Elements
-		ram::ptr<ram::ptr<iter>> tracker_;		//State of each element
+		ram::ptr<ram::ptr<type, alloc>, alloc> chunks_;		//Elements
+		ram::ptr<ram::ptr<iter, alloc>, alloc> tracker_;	//State of each element
 
 		iter head_;			//First free element
 		iter tail_;			//Last free element
@@ -42,8 +42,8 @@ namespace lux {
 
 
 		inline RaArray( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
-			chunks_ (sizeof(ram::ptr<type>) * (uint64)CellClass::CLASS_B, ram::ptr<type>()),
-			tracker_(sizeof(ram::ptr<iter>) * (uint64)CellClass::CLASS_B, ram::ptr<iter>()) {
+			chunks_ (sizeof(ram::ptr<type>) * (uint64)CellClass::CLASS_B, ram::ptr<type, alloc>()),
+			tracker_(sizeof(ram::ptr<iter>) * (uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>()) {
 		}
 
 
@@ -138,8 +138,8 @@ namespace lux {
 			//TODO constructor. remove
 			head_ = tail_ = (iter)-1;
 			_chunkNum = size_ = freeSize_ = 0;
-			chunks_ .reallocArr((uint64)CellClass::CLASS_B, ram::ptr<type>());
-			tracker_.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<iter>());
+			chunks_ .reallocArr((uint64)CellClass::CLASS_B, ram::ptr<type, alloc>());
+			tracker_.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>());
 		}
 
 

@@ -8,7 +8,7 @@
 				"/usr/bin/g++",
 
 				//Source files
-					"-x", "c++",
+					"-xc++",
 					"LuxEngine/LuxEngineBuild.cpp.build",
 					"Test.cpp",
 				//Max debug infos, Additional gprof informations, no optimizations, Lux Engine security checks
@@ -44,7 +44,7 @@
 			"command": "/usr/bin/g++",
 			"args": [
 				//Source files
-					"-x", "c++",
+					"-xc++",
 					"LuxEngine/LuxEngineBuild.cpp",
 					"Test.cpp",
 				//No debug infos, optimizations for fast code

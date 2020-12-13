@@ -21,11 +21,11 @@ namespace lux {
 	class String : public ContainerBase<char8, uint32>{
 	private:
 		genInitCheck;
-		ram::ptr<char8> str;
+		ram::ptr<char8, alloc> str;
 
 		inline void concatenate(const char8* vString, const uint32 size) {
-			uint64 oldSize = str.cell->cellSize;
-			str.realloc(str.cell->cellSize + size - 1);
+			uint64 oldSize = str.size();
+			str.realloc(str.size() + size - 1);
 			ram::cpy(vString, str + oldSize - 1, size);
 		}
 
