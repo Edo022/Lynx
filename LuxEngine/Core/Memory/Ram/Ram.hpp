@@ -10,7 +10,7 @@
 #include <x86intrin.h>
 #endif
 
-#include "LuxEngine/Types/LuxPointer.hpp"
+#include "LuxEngine/Types/Pointer.hpp"
 #include "LuxEngine/Types/LuxBool.hpp"
 
 /*

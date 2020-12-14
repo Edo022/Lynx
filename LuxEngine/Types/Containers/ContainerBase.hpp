@@ -3,7 +3,7 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
-#include "LuxEngine/Types/LuxPointer.hpp"
+#include "LuxEngine/Types/Pointer.hpp"
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 
 
