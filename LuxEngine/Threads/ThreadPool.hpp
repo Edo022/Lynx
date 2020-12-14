@@ -77,11 +77,7 @@ namespace lux::thr {
 
 	extern FenceDE stgAddFence;
 	//TODO move to system header
-	#ifdef _WIN64
-	extern HANDLE mngThr;
-	#elif defined __linux__
-	extern pthread_t mngThr;
-	#endif
+	extern win10(HANDLE)linux(pthread_t) mngThr;
 	extern RtArray<ThrPoolElm> threads;
 	extern RaArray<ThrState, uint32> thrStates;
 	extern Queue<ExecFuncDataBase*> maxpq;
@@ -92,7 +88,6 @@ namespace lux::thr {
 
 
 
-	void preInit( );
 	// void* __lp_thr_loop(const uint32 vThrIndex);
 	void* __lp_thr_loop(void* vThrIndex);
 	void __lp_thr_mng( );

@@ -2,15 +2,39 @@
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 #include <cstring>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-
-
 //TODO background cell preallocation
-
-
-
 //TODO add [no AVX2] performance warning
 //TODO add AVX512 when supported //or don't. it's probably useless
+
+
+
+
+
+
+
+
 namespace lux::ram{
+	MemBufferType* buffers;
+	uint32 allocated;
+
+
+	luxAutoInit(LUX_H_MEMORY){
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM);
+		//Init buffer types
+		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
+			buffers[i].cellClass = (CellClass)lux::__pvt::classEnumFromIndex((lux::__pvt::CellClassIndex)i);
+			//TODO choose number of buffers based on the system memory
+			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+		}
+	}
+
+
+
+
+
+
+
+
 	//memcpy, but faster. The performance difference is much more noticeable in dual / quad channel systems, or systems with high frequency RAM / low frequency CPU
 	//The function will not return until all threads have completed the operation
 	//Use lux::mem::acpy to asynchronously copy data in a buffer

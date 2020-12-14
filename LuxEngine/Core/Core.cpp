@@ -43,6 +43,19 @@ namespace lux::core{
 
 
 
+	luxAutoInit(LUX_H_INIT_CORE){
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wwrite-strings"
+		//FIXME use the "libVkLayer_khronos_validation.so" library in the deps folder. Not the one in the default lib location
+		//FIXME "LD_LIBRARY_PATH" env variable doesn't work
+		putenv(  "VK_LAYER_PATH=./deps/Linux/Vulkan-1.2.154.0/x86_64/etc/vulkan/explicit_layer.d");
+		putenv("LD_LIBRARY_PATH=./deps/Linux/Vulkan-1.2.154.0/x86_64/lib");
+		#pragma GCC diagnostic pop
+	}
+
+
+
+
 
 
 
@@ -73,7 +86,7 @@ namespace lux::core{
 	void run(bool vUseVSync) {
 		running = true;
 		__lp_goniometric_functions_init( );
-		sys::init( );
+		// sys::init( );
 
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files

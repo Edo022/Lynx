@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_POINTER
-#include "LuxEngine/Core/Memory/Cell_t.hpp"
+#include "LuxEngine/Core/Memory/Ram/Cell_t.hpp"
 //TODO add option to disable specific warnings
 //TODO add macro to disable specific warnings on specific object instances
 

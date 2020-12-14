@@ -21,5 +21,4 @@ namespace lux::sys {
 	}
 
 	extern uint32 threadNum;
-	void init( );
 }

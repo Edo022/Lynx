@@ -1,23 +1,32 @@
 #include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Core/Core.hpp"
-
-
-
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 //TODO use constant for offset
 
+
+
+
+
+
+
+
 namespace lux::rem{
-	void init( ){
+	uint32 maxAlloc;
+	MemBufferType* buffers;
+
+
+	luxAutoInit(LUX_H_VMEMORY){
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::__pvt::AllocType::NUM);
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM);
 
 		//Init buffer types
 		uint32 index;
 		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
-			for(uint32 j = 0; j < (uint32)lux::__pvt::AllocType::NUM; ++j){
+			for(uint32 j = 0; j < (uint32)lux::AllocType::NUM; ++j){
 				index = (i << 2) | j;
 				buffers[index].cellClass = (CellClass)classEnumFromIndex((lux::__pvt::CellClassIndex)i);
-				buffers[index].allocType = (lux::__pvt::AllocType)j;
+				buffers[index].allocType = (lux::AllocType)j;
 				buffers[index].buffers = Map_NMP_S<MemBuffer, uint32>(32, 4096); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
 			}
 		}
@@ -36,10 +45,10 @@ namespace lux::rem{
 	//*    ---Storage buffers are larger and the GPU can write in it, bet they have worse performance
 	//*   Returns: the allocated Cell object
 	//e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
-	Cell allocBck(const uint64 vSize, CellClass vCellClass, const lux::__pvt::AllocType vAllocType){
+	Cell allocBck(const uint64 vSize, CellClass vCellClass, const lux::AllocType vAllocType){
 		luxCheckParam(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize, 	vCellClass, "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
 		luxCheckParam(vSize > 0xFFFFffff, 											vSize,		"The cell size cannot exceed 0xFFFFFFFF bytes");
-		luxCheckParam(vAllocType >= lux::__pvt::AllocType::NUM || (int32)vAllocType < 0,		vAllocType, "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'");
+		luxCheckParam(vAllocType >= lux::AllocType::NUM || (int32)vAllocType < 0,		vAllocType, "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'");
 
 
 		//Set cell class if CellClass::AUTO was used

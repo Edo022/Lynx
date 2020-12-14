@@ -1,11 +1,10 @@
 
-#include "LuxEngine/Core/InitCore.cpp"
 
 
 //TODO check link order
-#include "LuxEngine/Core/Memory/Cell_t.cpp"
-//#include "LuxEngine/Types/LuxPointer.cpp"
 #include "LuxEngine/Core/Memory/Ram/Ram.cpp"
+#include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
+//#include "LuxEngine/Types/LuxPointer.cpp"
 #include "LuxEngine/Core/Memory/Gpu/VMemory.cpp"
 
 #include "LuxEngine/System/System.cpp"

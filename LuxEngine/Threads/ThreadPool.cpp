@@ -11,6 +11,40 @@
 
 
 namespace lux::thr {
+	FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
+	//TODO use lux threads
+	win10(HANDLE)linux(pthread_t) mngThr;								//The handle of the thread that controls the pool
+	RtArray<ThrPoolElm>		threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);	//The threads of the thread pool with their states and functions
+	RaArray<ThrState, uint32>	thrStates;								//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
+
+
+	Queue<ExecFuncDataBase*> maxpq;			//List of maximum priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> highpq;		//List of high priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> lowpq;			//List of low priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> minpq;			//List of minimum priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> stg;			//Staging queue
+
+
+	luxAutoInit(LUX_H_THREAD_POOL){
+		//TODO remove useless debug junk
+		// int h = LUX_CNF_GLOBAL_THREAD_POOL_SIZE;
+		// threads = RtArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+		thrStates.clear();
+
+		maxpq.clear();
+		highpq.clear();
+		lowpq.clear();
+		minpq.clear();
+		stg.clear();
+	}
+
+
+
+
+
+
+
+
 	void* __lp_thr_loop(void* vThrIndex) {
 		//TODO add + operators with integers and float values for lux strings
 		//FIXME add thread number in thread name
