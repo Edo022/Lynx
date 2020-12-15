@@ -5,6 +5,8 @@
 #include "LuxEngine/macros.hpp"
 // #include "LuxEngine/Types/Containers/ContainerBase.hpp"
 
+
+
 //FIXME remove this structure
 
 
@@ -84,6 +86,19 @@ namespace lux {
 			size_++;																//Update the number of elements
 			return size_ - 1;														//Return the ID
 		}
+		//Adds an element at the end of the map, allocating a new chunk if needed
+		//TODO
+		iter append() {
+			if(size_ + 1 > _chunkNum * _chunkSize) {								//If the chunk is full
+				data_[_chunkNum] = (type*)malloc(sizeof(type) * _chunkSize);			//Allocate a new data chunk
+				tracker_[_chunkNum] = (iter*)(malloc(sizeof(iter*) * _chunkSize));		//Allocate a new tracker chunk
+				_chunkNum++;															//Update the number of chunks
+			}
+			__lp_Tracker(size_) = -1;												//Set the tracker as valid
+
+			size_++;																//Update the number of elements
+			return size_ - 1;														//Return the ID
+		}
 
 
 
@@ -105,6 +120,38 @@ namespace lux {
 				}
 				freeSize_--;										//Update the number of free elements
 				return head2;
+			}
+		}
+
+
+
+
+		struct add_ret_nmp_s_deprecated{
+			iter i;
+			bool n;
+		};
+		//FIXME fix
+		//Adds an element at the firs free index of the map
+		// //Returns the index of the element. The index is negative if the elements is reused, positive if it's new
+		add_ret_nmp_s_deprecated add() {
+			if(head_ == (iter)-1) return add_ret_nmp_s_deprecated{
+				append(),			//If it has no free elements, append it
+				false
+			};
+			else {
+				iter head2 = head_;
+				if(head_ == tail_) {							//If it has only one free element
+					head_ = tail_ = __lp_Tracker(head2) = -1;		//And reset head_ and tail_
+				}
+				else {											//If it has more than one
+					head_ = __lp_Tracker(head2);					//Update head_
+					__lp_Tracker(head2) = -1;						//Update the state of the first
+				}
+				freeSize_--;										//Update the number of free elements
+				return add_ret_nmp_s_deprecated{
+					head2,
+					true
+				};
 			}
 		}
 

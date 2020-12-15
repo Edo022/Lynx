@@ -391,15 +391,22 @@ namespace lux::ram{
 			}
 		}{																							//If there are no free buffers or the cell is a custom count cell
 			uint32 bufferIndex, cellsNum = (uint32)vClass ? lux::__pvt::bufferSize / (uint32)vClass : 1;
-			bufferIndex = subBuffers.add(MemBuffer{														//Create a new buffer and save the buffer index
+			auto add_ret_val = subBuffers.add();																//^ Create in it 1 cell for custom count cells, or the maximum number of cells for fixed count cells
+			bufferIndex = add_ret_val.i;
+			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
+
+			//FIXME DONT REALLOCATE IF THE ELEMENT IS RECYCLED
+			//TODO
+			//BUG HUGE PERFORMANCE LOSS
+			if(!add_ret_val.n) {	//Initialize the buffer if it's a new element
+				// bufferIndex *= -1;
+
+
 				//FIXME USE A NORMAL RaArray THAT ALLOCATES WITH MALLOC
 				//! The map requires the chunk count and the max count. bufferSize is the count in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
 				//.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
-				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
-			});																							//^ Create in it 1 cell for custom count cells, or the maximum number of cells for fixed count cells
-			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
-			//TODO set right like
-			if(!buffer.memory) {
+buffer				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+
 				buffer.memory = //Allocate new memory if the buffer has not already been allocated
 					win10(_aligned_malloc((uint32)vClass ? lux::__pvt::bufferSize : vSize, LuxMemOffset);)
 					linux( aligned_alloc( LuxMemOffset, (uint32)vClass ? lux::__pvt::bufferSize : vSize);)
@@ -426,30 +433,30 @@ namespace lux::ram{
 
 
 
-template<class type> void lux::ram::ptr<type, alloc>::realloc(const uint64 vSize, CellClass vCellClass) {
-    evaluateCellClass(vSize, vCellClass);
+	template<class type> void lux::ram::ptr<type, alloc>::realloc(const uint64 vSize, CellClass vCellClass) {
+		evaluateCellClass(vSize, vCellClass);
 
-    if(!this->address) { [[unlikely]]				//If the pointer has not been allocated
-        alloc_(vSize, vCellClass);					//Allocate it
-        return;
-    }
-    else { 													//If it's allocated
-        int64 d = vSize - size( );							//Calculate the difference in size between the current size and the new size
-        if(d < 0) [[unlikely]] cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
-        else if(d > 0) { [[likely]]							//If it's larger
-            if(vSize <= (int64)vCellClass) { [[likely]]			//But not larger than the maximum cell size
-                cell->cellSize = vSize;								//Change the cellSize variable
-            }
-            else {												//If it's also larger than the cell
-                ram::ptr<type, alloc> ptr_(vSize, vCellClass);		//Allocate a new pointer
-                memcpy(ptr_, this->address, size( ));				//Copy the old data
-                free();												//Free the old cell
-                *this = ptr_;										//Overwrite the cell itself. This is necessary in order to keep the pointers updated
-            }
-        }
-        else [[unlikely]] return;							//If it has the same size, do nothing
-    }
-}
+		if(!this->address) { [[unlikely]]				//If the pointer has not been allocated
+			alloc_(vSize, vCellClass);					//Allocate it
+			return;
+		}
+		else { 													//If it's allocated
+			int64 d = vSize - size( );							//Calculate the difference in size between the current size and the new size
+			if(d < 0) [[unlikely]] cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
+			else if(d > 0) { [[likely]]							//If it's larger
+				if(vSize <= (int64)vCellClass) { [[likely]]			//But not larger than the maximum cell size
+					cell->cellSize = vSize;								//Change the cellSize variable
+				}
+				else {												//If it's also larger than the cell
+					ram::ptr<type, alloc> ptr_(vSize, vCellClass);		//Allocate a new pointer
+					memcpy(ptr_, this->address, size( ));				//Copy the old data
+					free();												//Free the old cell
+					*this = ptr_;										//Overwrite the cell itself. This is necessary in order to keep the pointers updated
+				}
+			}
+			else [[unlikely]] return;							//If it has the same size, do nothing
+		}
+	}
 
 
 

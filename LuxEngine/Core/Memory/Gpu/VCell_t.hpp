@@ -24,7 +24,7 @@ namespace lux{
         };
         struct MemBufferType {
             CellClass cellClass;				//Class of the cells
-            lux::AllocType allocType;	//Buffer allocation type
+            lux::AllocType allocType;	        //Buffer allocation type
             Map_NMP_S<MemBuffer, uint32> buffers;//Buffers containing the cells
         };
         struct Cell_t {
