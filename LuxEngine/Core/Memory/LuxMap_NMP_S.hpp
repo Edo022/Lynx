@@ -126,18 +126,12 @@ namespace lux {
 
 
 
-		struct add_ret_nmp_s_deprecated{
-			iter i;
-			bool n;
-		};
 		//FIXME fix
 		//Adds an element at the firs free index of the map
-		// //Returns the index of the element. The index is negative if the elements is reused, positive if it's new
-		add_ret_nmp_s_deprecated add() {
-			if(head_ == (iter)-1) return add_ret_nmp_s_deprecated{
-				append(),			//If it has no free elements, append it
-				false
-			};
+		//Returns a struct containing the index and a bool that is true if the element is new
+		auto add() {
+			struct ret_vals{ iter index; bool init };
+			if(head_ == (iter)-1) return ret_vals{ append(), true };//If it has no free elements, append it
 			else {
 				iter head2 = head_;
 				if(head_ == tail_) {							//If it has only one free element
@@ -148,10 +142,7 @@ namespace lux {
 					__lp_Tracker(head2) = -1;						//Update the state of the first
 				}
 				freeSize_--;										//Update the number of free elements
-				return add_ret_nmp_s_deprecated{
-					head2,
-					true
-				};
+				return ret_vals{ head2, false };
 			}
 		}
 

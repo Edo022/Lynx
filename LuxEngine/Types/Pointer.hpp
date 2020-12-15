@@ -389,27 +389,21 @@ namespace lux::ram{
 					return;
 				}
 			}
-		}{																							//If there are no free buffers or the cell is a custom count cell
-			uint32 bufferIndex, cellsNum = (uint32)vClass ? lux::__pvt::bufferSize / (uint32)vClass : 1;
-			auto add_ret_val = subBuffers.add();																//^ Create in it 1 cell for custom count cells, or the maximum number of cells for fixed count cells
-			bufferIndex = add_ret_val.i;
-			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;				//Set the buffer index of the created buffer
+		}{																					//If there are no free buffers or the cell is a custom count cell
+			uint32 cellsNum = (uint32)vClass ? lux::__pvt::bufferSize / (uint32)vClass : 1;		//Create 1 cell in it for custom count cells, or the maximum number of cells for fixed count cells
+			auto[bufferIndex, init] = subBuffers.add();											//Save the buffer index
+			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;		//Save the buffer object
 
-			//FIXME DONT REALLOCATE IF THE ELEMENT IS RECYCLED
-			//TODO
-			//BUG HUGE PERFORMANCE LOSS
-			if(!add_ret_val.n) {	//Initialize the buffer if it's a new element
-				// bufferIndex *= -1;
-
-
+			if(init) {	//Initialize the buffer if it's a new element
 				//FIXME USE A NORMAL RaArray THAT ALLOCATES WITH MALLOC
 				//! The map requires the chunk count and the max count. bufferSize is the count in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
 				//.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
-buffer				.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+				buffer.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
 
 				buffer.memory = //Allocate new memory if the buffer has not already been allocated
-					win10(_aligned_malloc((uint32)vClass ? lux::__pvt::bufferSize : vSize, LuxMemOffset);)
-					linux( aligned_alloc( LuxMemOffset, (uint32)vClass ? lux::__pvt::bufferSize : vSize);)
+					win10(_aligned_malloc((uint32)vClass ? lux::__pvt::bufferSize : vSize, LuxMemOffset))
+					linux( aligned_alloc( LuxMemOffset, (uint32)vClass ? lux::__pvt::bufferSize : vSize))
+				;
 
 				//TODO remove
 				lux::ram::allocated += (uint32)vClass ? lux::__pvt::bufferSize : vSize;
