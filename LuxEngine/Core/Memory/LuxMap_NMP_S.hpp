@@ -130,7 +130,7 @@ namespace lux {
 		//Adds an element at the firs free index of the map
 		//Returns a struct containing the index and a bool that is true if the element is new
 		auto add() {
-			struct ret_vals{ iter index; bool init };
+			struct ret_vals{ iter index; bool init; };
 			if(head_ == (iter)-1) return ret_vals{ append(), true };//If it has no free elements, append it
 			else {
 				iter head2 = head_;

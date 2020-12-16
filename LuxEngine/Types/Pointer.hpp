@@ -1,6 +1,8 @@
 #pragma once
 #define LUX_H_POINTER
 #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp"
+#include "LuxEngine/System/SystemMacros.hpp"
+#include "cstring"
 //TODO add option to disable specific warnings
 //TODO add macro to disable specific warnings on specific object instances
 
@@ -372,12 +374,12 @@ namespace lux::ram{
 	//TODO CHECK MEMORY FULL
 	template<class type> void lux::ram::ptr<type, alloc>::alloc_(const uint64 vSize, const CellClass vClass){
 		uint32 typeIndex = lux::__pvt::classIndexFromEnum(vClass);							//Get buffer index from type and class
-		Map_NMP_S<MemBuffer, uint32>& subBuffers = (lux::ram::buffers[typeIndex].buffers);	//Get list of buffers where to search for a free cell
+		__nmp_RaArray<MemBuffer, uint32, 32>& subBuffers = lux::ram::buffers[typeIndex].buffers;	//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vClass){																	//If the cell is a fixed count cell
 			uint64 cellNum = lux::__pvt::bufferSize / (uint32)vClass;							//Get the maximum number of cells in each buffer
-			for(uint32 i = 0; i < subBuffers.size( ); i++){										//Search for a suitable buffer
-				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {			//If a buffer is valid and it has a free cell
+			for(uint32 i = 0; i < subBuffers.count( ); i++){										//Search for a suitable buffer
+				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedCount( ) < cellNum)) {			//If a buffer is valid and it has a free cell
 					cellIndex = subBuffers[i].cells.add(Cell_t{											//Create a new cell in the buffer
 						.cellSize = vSize,
 						.bufferType = &lux::ram::buffers[typeIndex]
@@ -395,10 +397,11 @@ namespace lux::ram{
 			MemBuffer& buffer = subBuffers[bufferIndex]; buffer.bufferIndex = bufferIndex;		//Save the buffer object
 
 			if(init) {	//Initialize the buffer if it's a new element
+				//TODO CLEANUP COMMENTS
 				//FIXME USE A NORMAL RaArray THAT ALLOCATES WITH MALLOC
 				//! The map requires the chunk count and the max count. bufferSize is the count in bytes of the whole buffer, not the number of cells. The number of cells is (bufferSize / (uint32)vClass)
 				//.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(max(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
-				buffer.cells = (uint32)vClass ? Map_NMP_S<Cell_t, uint32>(min(/*384*/24576, cellsNum), cellsNum) : Map_NMP_S<Cell_t, uint32>(1, 1),
+				buffer.cells = (uint32)vClass ? __nmp_RaArray<Cell_t, uint32, 32>() : __nmp_RaArray<Cell_t, uint32, 32>(), //FIXME USE CASTED POINTER INSTEAD OF NMP_RAARRAY
 
 				buffer.memory = //Allocate new memory if the buffer has not already been allocated
 					win10(_aligned_malloc((uint32)vClass ? lux::__pvt::bufferSize : vSize, LuxMemOffset))

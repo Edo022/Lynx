@@ -24,7 +24,8 @@ namespace lux::ram{
 		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
 			buffers[i].cellClass = (CellClass)lux::__pvt::classEnumFromIndex((lux::__pvt::CellClassIndex)i);
 			//TODO choose number of buffers based on the system memory
-			buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+			// buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
+			buffers[i].buffers = __nmp_RaArray<MemBuffer, uint32, 32>(); //64 buffers per chunk, max 8192 buffers
 		}
 	}
 

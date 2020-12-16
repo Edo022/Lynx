@@ -11,5 +11,5 @@ void lux::ram::Cell_t::free( ){
 
 	//TODO this does not free the cell. it just makes the element invalid
 	//TODO check if the cell is accidentally being re-allocated or not
-	if(buffer->cells.usedSize( ) == 0) bufferType->buffers.remove(buffer->bufferIndex);
+	if(buffer->cells.usedCount() == 0) bufferType->buffers.remove(buffer->bufferIndex);
 }

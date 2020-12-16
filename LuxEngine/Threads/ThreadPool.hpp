@@ -24,6 +24,8 @@
 //TODO nn
 //TODO
 
+//TODO add function to send multiple functions to the thread pool to allow them to be execute simultaneously
+//TODO while preventing their threads to go in deadlock if synchronized
 
 
 
