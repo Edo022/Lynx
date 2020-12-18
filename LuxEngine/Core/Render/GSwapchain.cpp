@@ -71,12 +71,18 @@ namespace lux::core::render::swapchain{
 	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 		SwapChainSupportDetails details;
 		//BUG HERE
+		//BUG ONLY IN THE SECOND CALL
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
 
 		uint32 formatCount;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
 		if(formatCount != 0) {
 			details.formats.resize(formatCount);
+			//BUG
+			//BUG "details.formats.begin( )"" and
+			//BUG "dvc::compute.PD.indices.computeFamilies[0]"
+			//BUG HAVE THE SAME ADDRESS
+			//BUG AND THE SAME CELL
 			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.begin( ));
 		}
 

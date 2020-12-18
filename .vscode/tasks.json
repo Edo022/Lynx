@@ -11,9 +11,11 @@
 					"-xc++",
 					"LuxEngine/LuxEngineBuild.cpp.build",
 					"Test.cpp",
-				//Max debug infos, Additional gprof informations, no optimizations, Lux Engine security checks
+					// "TestPointer.cpp",
+				//Max debug infos, Additional gprof informations, no optimizations, no inline, Lux Engine security checks
 					"-g3", "-ggdb3", "-pg", "-O0",
 					"-std=c++2a", "-mavx", "-pipe",
+					"-fno-inline-small-functions",
 					"-DLUX_DEBUG",
 				//CWD include, threads
 					"-I./", /*"-static", */"-pthread",

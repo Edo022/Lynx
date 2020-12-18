@@ -90,3 +90,7 @@ typedef std::chrono::system_clock::time_point LuxTime;
 // 	return r;
 // }
 
+
+
+// #define pure __attribute__ ((pure))
+// #define hot  __attribute__ ((hot))

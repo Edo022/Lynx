@@ -7,17 +7,16 @@
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 
-
 #ifdef __lux_no_gmp
 #	include "LuxEngine/Tests/StructureInit.hpp"
 #	include "cstring"
 #	define gmp(...)
-#	define dft(...) __VA_ARGS__
+#	define def(...) __VA_ARGS__
 #	define __RaArrayName __nmp_RaArray
 #else
 #	include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #	define gmp(...) __VA_ARGS__
-#	define dft(...)
+#	define def(...)
 #	define __RaArrayName RaArray
 #endif
 
@@ -26,6 +25,7 @@
 
 
 
+//FIXME OK
 //TODO add optional negative index support
 namespace lux {
 	//"Random Access Array"
@@ -34,11 +34,12 @@ namespace lux {
 	//New elements are written over previously deleted elements, or concatenated if there are none
 	//Useful if you need to constantly add or remove elements
 	//Use the isValid() function to check if an element is valid or has been removed
+	//TODO remove 3rd and 4th template parameters if theyre useless
 	template<class type, class iter = uint64, uint64 elmPerChunk = max(50000/*50KB*/ / sizeof(type), 4), uint64 chunkSize = sizeof(type)* elmPerChunk> class __RaArrayName{
 	private:
 		genInitCheck;
-		gmp(ram::ptr<ram::ptr<type, alloc>, alloc>)dft(type**) chunks_  dft(= nullptr);	//Elements
-		gmp(ram::ptr<ram::ptr<iter, alloc>, alloc>)dft(iter**) tracker_ dft(= nullptr);	//State of each element
+		gmp(ram::ptr<ram::ptr<type, alloc>, alloc>)def(type**) chunks_  def(= nullptr);	//Elements
+		gmp(ram::ptr<ram::ptr<iter, alloc>, alloc>)def(iter**) tracker_ def(= nullptr);	//State of each element
 
 		iter head_;			//First free element
 		iter tail_;			//Last free element
@@ -60,9 +61,9 @@ namespace lux {
 
 
 		inline __RaArrayName( ) : head_{ (iter)-1 }, tail_{ (iter)-1 }, _chunkNum{ 0 }, size_{ 0 }, freeSize_{ 0 },
-			chunks_  gmp((sizeof(ram::ptr<type>) * (uint64)CellClass::CLASS_B, ram::ptr<type, alloc>())) dft({ (type**)malloc(sizeof(type*) * (uint64)CellClass::CLASS_B) }),
-			tracker_ gmp((sizeof(ram::ptr<iter>) * (uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>())) dft({ (iter**)malloc(sizeof(iter*) * (uint64)CellClass::CLASS_B) }) {
-			dft(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i){ chunks_[i] = nullptr; tracker_[i] = nullptr; })
+			chunks_  gmp((sizeof(ram::ptr<type>) * (uint64)CellClass::CLASS_B, ram::ptr<type, alloc>())) def({ (type**)malloc(sizeof(type*) * (uint64)CellClass::CLASS_B) }),
+			tracker_ gmp((sizeof(ram::ptr<iter>) * (uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>())) def({ (iter**)malloc(sizeof(iter*) * (uint64)CellClass::CLASS_B) }) {
+			def(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i){ chunks_[i] = nullptr; tracker_[i] = nullptr; })
 		}
 
 
@@ -91,9 +92,9 @@ namespace lux {
 		iter append(const type& vData) {
 			checkInit();
 			if(size_ + 1 > _chunkNum * chunkSize) {									//If the chunk is full
-				chunks_ [_chunkNum] gmp(.reallocArr(elmPerChunk, type())) dft(= (type*)std::realloc(chunks_ [_chunkNum], elmPerChunk * sizeof(type)));
-				tracker_[_chunkNum] gmp(.reallocArr(elmPerChunk, iter())) dft(= (iter*)std::realloc(tracker_[_chunkNum], elmPerChunk * sizeof(iter)));
-				dft(for(int i = 0; i < elmPerChunk; ++i){
+				chunks_ [_chunkNum] gmp(.reallocArr(elmPerChunk, type())) def(= (type*)std::realloc(chunks_ [_chunkNum], elmPerChunk * sizeof(type)));
+				tracker_[_chunkNum] gmp(.reallocArr(elmPerChunk, iter())) def(= (iter*)std::realloc(tracker_[_chunkNum], elmPerChunk * sizeof(iter)));
+				def(for(int i = 0; i < elmPerChunk; ++i){
 					type __type_ = type();  iter __iter_ = iter();
 					memcpy(&chunks_ [_chunkNum][i], &__type_, sizeof(type));
 					memcpy(&tracker_[_chunkNum][i], &__iter_, sizeof(iter));
@@ -103,17 +104,16 @@ namespace lux {
 			__lp_Data(size_) = vData;												//Assign the data to the new element
 			__lp_Tracker(size_) = -1;												//Set the tracker as valid
 
-			size_++;																//Update the number of elements
-			return size_ - 1;														//Return the ID
+			return size_++;														//Update the number of elements and return the ID
 		}
 		//Adds an element at the end of the map, allocating a new chunk if needed
 		//Returns the ID of the element
 		iter append() {
 			checkInit();
 			if(size_ + 1 > _chunkNum * chunkSize) {									//If the chunk is full
-				chunks_ [_chunkNum] gmp(.reallocArr(elmPerChunk, type())) dft(= (type*)std::realloc(chunks_ [_chunkNum], elmPerChunk * sizeof(type)));
-				tracker_[_chunkNum] gmp(.reallocArr(elmPerChunk, iter())) dft(= (iter*)std::realloc(tracker_[_chunkNum], elmPerChunk * sizeof(iter)));
-				dft(for(int i = 0; i < elmPerChunk; ++i){
+				chunks_ [_chunkNum] gmp(.reallocArr(elmPerChunk, type())) def(= (type*)std::realloc(chunks_ [_chunkNum], elmPerChunk * sizeof(type)));
+				tracker_[_chunkNum] gmp(.reallocArr(elmPerChunk, iter())) def(= (iter*)std::realloc(tracker_[_chunkNum], elmPerChunk * sizeof(iter)));
+				def(for(int i = 0; i < elmPerChunk; ++i){
 					type __type_ = type();  iter __iter_ = iter();
 					memcpy(&chunks_ [_chunkNum][i], &__type_, sizeof(type));
 					memcpy(&tracker_[_chunkNum][i], &__iter_, sizeof(iter));
@@ -122,8 +122,7 @@ namespace lux {
 			}
 			__lp_Tracker(size_) = -1;												//Set the tracker as valid
 
-			size_++;																//Update the number of elements
-			return size_ - 1;														//Return the ID
+			return size_++;														//Update the number of elements and return the ID
 		}
 
 
@@ -133,21 +132,25 @@ namespace lux {
 		//TODO FIX DOCUMENTATION
 		//Adds an element at the firs free index of the map
 		//Returns the ID of the element
+		//TODO
 		iter add(const type& vData) {
 			checkInit();
 			if(head_ == (iter)-1) return append(vData);			//If it has no free elements, append it
 			else {
 				iter head2 = head_;
 				if(head_ == tail_) {							//If it has only one free element
-					__lp_Data(head2) = vData;						//Replace it
-					head_ = tail_ = __lp_Tracker(head2) = -1;		//And reset head_ and tail_
+					__lp_Data(head_) = vData;						//Replace it
+					head_ = tail_ = __lp_Tracker(head_) = -1;		//And reset head_ and tail_
 				}
 				else {											//If it has more than one
-					head_ = __lp_Tracker(head2);					//Update head_
+					__lp_Data(head_) = vData;						//Replace it
+					head_ = __lp_Tracker(head_);					//Update head_
 					__lp_Tracker(head2) = -1;						//Update the state of the first
-					__lp_Data(head2) = vData;						//Replace it
 				}
 				freeSize_--;										//Update the number of free elements
+				if(head_ == 23){ //BUG 23 gets removed even if it shouldn't
+					int h32424 = 434;
+				}
 				return head2;
 			}
 		}
@@ -160,10 +163,10 @@ namespace lux {
 			else {
 				iter head2 = head_;
 				if(head_ == tail_) {								//If it has only one, free element
-					head_ = tail_ = __lp_Tracker(head2) = -1;			//And reset head_ and tail_
+					head_ = tail_ = __lp_Tracker(head_) = -1;			//And reset head_ and tail_
 				}
 				else {												//If it has more than one
-					head_ = __lp_Tracker(head2);						//Update head_
+					head_ = __lp_Tracker(head_);						//Update head_
 					__lp_Tracker(head2) = -1;							//Update the state of the first
 				}
 				freeSize_--;										//Update the number of free elements
@@ -195,17 +198,17 @@ namespace lux {
 		inline void clear( ) {
 			checkInit();
 			for(iter i = 0; i < _chunkNum; ++i) {
-				gmp(chunks_ [i].free()) dft(free(chunks_ ));
-				gmp(tracker_[i].free()) dft(free(tracker_));
+				gmp(chunks_ [i].free()) def(free(chunks_ ));
+				gmp(tracker_[i].free()) def(free(tracker_));
 			}
-			gmp(chunks_ .free()) dft(free(chunks_ )); dft(chunks_  = nullptr;)
-			gmp(tracker_.free()) dft(free(tracker_)); dft(tracker_ = nullptr;)
+			gmp(chunks_ .free()) def(free(chunks_ )); def(chunks_  = nullptr;)
+			gmp(tracker_.free()) def(free(tracker_)); def(tracker_ = nullptr;)
 
 			head_ = tail_ = (iter)-1;
 			_chunkNum = size_ = freeSize_ = 0;
-			chunks_  gmp(.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<type, alloc>())) dft(= (type**)std::realloc(chunks_,  (uint64)CellClass::CLASS_B * sizeof(type*)));
-			tracker_ gmp(.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>())) dft(= (iter**)std::realloc(tracker_, (uint64)CellClass::CLASS_B * sizeof(iter*)));
-			dft(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i){ chunks_[i] = nullptr; tracker_[i] = nullptr; })
+			chunks_  gmp(.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<type, alloc>())) def(= (type**)std::realloc(chunks_,  (uint64)CellClass::CLASS_B * sizeof(type*)));
+			tracker_ gmp(.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>())) def(= (iter**)std::realloc(tracker_, (uint64)CellClass::CLASS_B * sizeof(iter*)));
+			def(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i){ chunks_[i] = nullptr; tracker_[i] = nullptr; })
 		}
 
 

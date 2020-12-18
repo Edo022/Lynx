@@ -13,6 +13,7 @@
 
 
 namespace lux::out{
+	#define LUX_PAUSE_ON_ERROR
 	#if defined LUX_DEBUG && defined LUX_PAUSE_ON_ERROR
 		#define __lux_out_stop__ throw std::out_of_range("UwU");
 	#else
