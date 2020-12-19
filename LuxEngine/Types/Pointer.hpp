@@ -102,13 +102,13 @@ namespace lux::ram{
 
 
 			template<class pType>
-			constexpr inline bool operator==(const ptr_b<pType>& pPtr) noexcept const { checkInit(); return (void*)address == (void*)pPtr.address; }
-			constexpr inline bool operator==(ptr_b<type> pPtr        ) noexcept const { checkInit(); return pPtr.address   == address;             }
-			constexpr inline bool operator==(const type* vPtr        ) noexcept const { checkInit(); return (void*)address == (void*)vPtr;         }
+			constexpr inline bool operator==(const ptr_b<pType>& pPtr) const noexcept { checkInit(); return (void*)address == (void*)pPtr.address; }
+			constexpr inline bool operator==(ptr_b<type> pPtr        ) const noexcept { checkInit(); return pPtr.address   == address;             }
+			constexpr inline bool operator==(const type* vPtr        ) const noexcept { checkInit(); return (void*)address == (void*)vPtr;         }
 			template<class pType>
-			constexpr inline bool operator!=(const ptr_b<pType>& pPtr) noexcept const { checkInit(); return (void*)address != (void*)pPtr.address; }
-			constexpr inline bool operator!=(ptr_b<type> pPtr        ) noexcept const { checkInit(); return pPtr.address   != address;             }
-			constexpr inline bool operator!=(const type* vPtr        ) noexcept const { checkInit(); return (void*)address != (void*)vPtr;         }
+			constexpr inline bool operator!=(const ptr_b<pType>& pPtr) const noexcept { checkInit(); return (void*)address != (void*)pPtr.address; }
+			constexpr inline bool operator!=(ptr_b<type> pPtr        ) const noexcept { checkInit(); return pPtr.address   != address;             }
+			constexpr inline bool operator!=(const type* vPtr        ) const noexcept { checkInit(); return (void*)address != (void*)vPtr;         }
 
 
 
@@ -334,12 +334,12 @@ namespace lux::ram{
 		template<class pType> inline void operator-=(const pType* vPtr) noexcept { checkInit(); this->addres -= vPtr; checkm; }
 		template<class vType> inline void operator-=(const vType  vVal) noexcept { checkInit(); this->addres -= vVal; checkm; }
 		
-		template<class pType> inline ptr<type, alloc> operator+(const __pvt::ptr_b<pType> pPtr) noexcept const { checkInit(); return ptr<type, alloc>(cell, this->address + pPtr.address); }
-		template<class pType> inline ptr<type, alloc> operator+(const pType*              vPtr) noexcept const { checkInit(); return ptr<type, alloc>(cell, this->address + vPtr);         }
-		template<class vType> inline ptr<type, alloc> operator+(const vType               vVal) noexcept const { checkInit(); return ptr<type, alloc>(cell, this->address + vVal);         }
-		template<class pType> inline ptr<type, alloc> operator-(const __pvt::ptr_b<pType> pPtr) noexcept const { checkInit(); return ptr<type, alloc>(cell, this->address - pPtr.address); }
-		template<class pType> inline ptr<type, alloc> operator-(const pType*              vPtr) noexcept const { checkInit(); return ptr<type, alloc>(cell, this->address - vPtr);         }
-		template<class vType> inline ptr<type, alloc> operator-(const vType               vVal) noexcept const { checkInit(); return ptr<type, alloc>(cell, this->address - vVal);         }
+		template<class pType> inline ptr<type, alloc> operator+(const __pvt::ptr_b<pType> pPtr) const noexcept { checkInit(); return ptr<type, alloc>(cell, this->address + pPtr.address); }
+		template<class pType> inline ptr<type, alloc> operator+(const pType*              vPtr) const noexcept { checkInit(); return ptr<type, alloc>(cell, this->address + vPtr);         }
+		template<class vType> inline ptr<type, alloc> operator+(const vType               vVal) const noexcept { checkInit(); return ptr<type, alloc>(cell, this->address + vVal);         }
+		template<class pType> inline ptr<type, alloc> operator-(const __pvt::ptr_b<pType> pPtr) const noexcept { checkInit(); return ptr<type, alloc>(cell, this->address - pPtr.address); }
+		template<class pType> inline ptr<type, alloc> operator-(const pType*              vPtr) const noexcept { checkInit(); return ptr<type, alloc>(cell, this->address - vPtr);         }
+		template<class vType> inline ptr<type, alloc> operator-(const vType               vVal) const noexcept { checkInit(); return ptr<type, alloc>(cell, this->address - vVal);         }
 //FIXME rename address addr
 
 
@@ -371,10 +371,10 @@ namespace lux::ram{
 
 
 
-		inline uint64 size(         ) noexcept const { checkInit(); checkNullptr(); return cell->cellSize;								 } //Returns the total size of the allocated memory
-		inline uint64 count(        ) noexcept const { checkInit(); checkNullptr(); return cell->cellSize / sizeof(type);				 } //Returns the number of elements in the allocated memory (use this only if you have allocated the memory with an allocArr function or you are sure that the size is a multiple of the type's size)
-		inline uint64 prior(        ) noexcept const { checkInit(); checkNullptr(); return (uint64)this->address - (uint64)cell->address;		 } //Returns the number of allocated bytes before the pointer
-		inline uint64 latter(       ) noexcept const { checkInit(); checkNullptr(); return (uint64)cell->address + cell->cellSize - (uint64)this->address;	} 	//Returns the number of allocated bytes after  the pointer
+		inline uint64 size(         ) const noexcept { checkInit(); checkNullptr(); return cell->cellSize;								 } //Returns the total size of the allocated memory
+		inline uint64 count(        ) const noexcept { checkInit(); checkNullptr(); return cell->cellSize / sizeof(type);				 } //Returns the number of elements in the allocated memory (use this only if you have allocated the memory with an allocArr function or you are sure that the size is a multiple of the type's size)
+		inline uint64 prior(        ) const noexcept { checkInit(); checkNullptr(); return (uint64)this->address - (uint64)cell->address;		 } //Returns the number of allocated bytes before the pointer
+		inline uint64 latter(       ) const noexcept { checkInit(); checkNullptr(); return (uint64)cell->address + cell->cellSize - (uint64)this->address;	} 	//Returns the number of allocated bytes after  the pointer
 
 
 
@@ -682,12 +682,12 @@ namespace lux::ram{
 		template<class pType> constexpr inline void operator-=(const pType* vPtr) noexcept { checkInit(); this->addres += vPtr; }
 		template<class vType> constexpr inline void operator-=(const vType  vVal) noexcept { checkInit(); this->addres += vVal; }
 		
-		template<class pType> constexpr inline type* operator+(const __pvt::ptr_b<pType> pPtr) noexcept const { checkInit(); return this->address + pPtr.address; }
-		template<class pType> constexpr inline type* operator+(const pType*              vPtr) noexcept const { checkInit(); return this->address + vPtr;         }
-		template<class vType> constexpr inline type* operator+(const vType               vVal) noexcept const { checkInit(); return this->address + vVal;         }
-		template<class pType> constexpr inline type* operator-(const __pvt::ptr_b<pType> pPtr) noexcept const { checkInit(); return this->address - pPtr.address; }
-		template<class pType> constexpr inline type* operator-(const pType*              vPtr) noexcept const { checkInit(); return this->address - vPtr;         }
-		template<class vType> constexpr inline type* operator-(const vType               vVal) noexcept const { checkInit(); return this->address - vVal;         }
+		template<class pType> constexpr inline type* operator+(const __pvt::ptr_b<pType> pPtr) const noexcept { checkInit(); return this->address + pPtr.address; }
+		template<class pType> constexpr inline type* operator+(const pType*              vPtr) const noexcept { checkInit(); return this->address + vPtr;         }
+		template<class vType> constexpr inline type* operator+(const vType               vVal) const noexcept { checkInit(); return this->address + vVal;         }
+		template<class pType> constexpr inline type* operator-(const __pvt::ptr_b<pType> pPtr) const noexcept { checkInit(); return this->address - pPtr.address; }
+		template<class pType> constexpr inline type* operator-(const pType*              vPtr) const noexcept { checkInit(); return this->address - vPtr;         }
+		template<class vType> constexpr inline type* operator-(const vType               vVal) const noexcept { checkInit(); return this->address - vVal;         }
 
 
 
