@@ -16,6 +16,7 @@
 					"-g3", "-ggdb3", "-pg", "-O0",
 					"-std=c++2a", "-mavx", "-pipe",
 					"-fno-inline-small-functions",
+					"-fverbose-asm",
 					"-DLUX_DEBUG",
 				//CWD include, threads
 					"-I./", /*"-static", */"-pthread",

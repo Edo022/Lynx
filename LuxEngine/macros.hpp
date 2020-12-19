@@ -39,9 +39,9 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 //Im lazy UwU
-#define scast						static_cast
-#define rcast						reinterpret_cast
-
+#define scast   static_cast
+#define rcast   reinterpret_cast
+#define noop    (void)0
 
 //Time
 #include <chrono>
