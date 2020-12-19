@@ -18,6 +18,6 @@ namespace lux{
 		//constructExec(func, ...) -- Executes a function in a costructor. Debug mode only. Requires genInitCheck;
 		#define checkInit() luxCheckCond(this->__pvt_init_val != lux::__pvt::init_val,      "This function cannot be called on uninitialized structures")
 		#define isInit(var)	luxCheckParam( var.__pvt_init_val != lux::__pvt::init_val, var, "Uninitialized structure used")
-		#define constructExec(...) luxDebug(__pvt_dummy{ [](){__VA_ARGS__; return char(0x293)}()},)
+		#define constructExec(...) luxDebug(__pvt_dummy{ [&](){__VA_ARGS__; return char(0x293); }()},)
 	}
 }

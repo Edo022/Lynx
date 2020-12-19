@@ -23,7 +23,7 @@ namespace lux{
 
 		struct Cell_t {
 			uint32 			owners;				//Number of lux::ram::ptr instances that point to an address of the cell
-			uint64 			cellSize;			//Size of the cell in bytes
+			uint64 			cellSize;			//Size of the cell in bytes //FIXME add option to choose to cache variables like this or not (this value can be retrieved from the buffer type, but it's slower)
 			void* 			address;			//Address of the cell. The same as you would get with malloc
 			MemBufferType* 	bufferType;			//Type of buffer allocation
 			MemBuffer* 		buffer;				//Index of the buffer where the cell is allocated

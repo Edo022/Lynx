@@ -81,8 +81,8 @@
 
 // 		inline __RaArrayName( ) : head{ (iter)-1 }, tail{ (iter)-1 }, used_{ 0 }, free_{ 0 },
 // 			gmp(	//Allocate 0 pointers in a B class
-// 				chunks_ (0, ram::ptr<type, alloc>(), CellCLass::AT_LEAST_CLASS_B),
-// 				tracker_(0, ram::ptr<iter, alloc>(), CellCLass::AT_LEAST_CLASS_B)
+// 				chunks_ (0, ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
+// 				tracker_(0, ram::ptr<iter, alloc>(), CellClass::AT_LEAST_CLASS_B)
 // 			)def(	//Allocate
 // 				chunks_ { (type**)malloc(sizeof(type*) * (uint64)CellClass::CLASS_B) },
 // 				tracker_{ (iter**)malloc(sizeof(iter*) * (uint64)CellClass::CLASS_B) }

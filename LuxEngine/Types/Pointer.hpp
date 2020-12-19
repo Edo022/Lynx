@@ -186,7 +186,10 @@ namespace lux::ram{
 	template<class type> struct ptr<type, alloc> : public __pvt::ptr_b<type> {
 	private:
 		genInitCheck;
-		ptr(Cell_t* _cell, type* address_) :cell{_cell}{ this->address = address_; }
+		inline ptr(Cell_t* _cell, type* address_) : cell{_cell  } { this->address = address_; }
+		//THOSE FUNCTIONS SET CELL AND ADDRESS TO NULLPTR, REGARDLESS OF THE VALUE OF ADDRESS_
+		inline ptr(type* address_) : cell{nullptr} { this->address = nullptr; }
+		inline void operator=(type* address_) { cell = this->address = nullptr; }
 
 		//Memory allocation
 		void evaluateCellClass(const uint64 vSize, CellClass& pClass);
@@ -387,8 +390,8 @@ namespace lux::ram{
 		 */
 		inline ptr<type, alloc> deepCopy() const {
 			if(this->address) {
-				ptr<type, alloc> _ptr(cell->size());
-				ram::cpy(address, _ptr, size());
+				ptr<type, alloc> _ptr(cell->cellSize);
+				ram::cpy(this->address, _ptr, size());
 				return _ptr;
 			}
 			else return ptr<type, alloc>(nullptr, nullptr);
@@ -422,7 +425,7 @@ namespace lux::ram{
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		void realloc(const uint64 vSize, CellClass vCellClass = CellClass::AUTO);
+		void realloc(const uint64 vSize, CellClass vClass = CellClass::AUTO);
 
 
 		/**
@@ -431,17 +434,17 @@ namespace lux::ram{
 		 * @param pValue Value each element will be initialized with
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		inline void realloc(const uint64 vSize, const type& pValue, CellClass vCellClass = CellClass::AUTO){
-			checkInit(); checkAllocSize(vSize, vCellClass);
+		inline void realloc(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
+			checkInit(); checkAllocSize(vSize, vClass);
 			if(this->address){
 				int64 d = vSize - size( );
 				auto end_ = end();
-				realloc(vSize, vCellClass);
+				realloc(vSize, vClass);
 				if(d > 0) init_memory(end_, d, pValue);
 			}
 			else {
-				evaluateCellClass(vSize, vCellClass);
-				alloc_(vSize, vCellClass);
+				evaluateCellClass(vSize, vClass);
+				alloc_(vSize, vClass);
 				init_memory(this->address, size(), pValue);
 			}
 		}
@@ -452,9 +455,9 @@ namespace lux::ram{
 		 * @param vCount Number of elements
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		void reallocArr(const uint64 vCount, const CellClass vCellClass = CellClass::AUTO){
-			checkInit(); checkAllocSize(vSize, vCellClass);
-			realloc(sizeof(type) * vCount, vCellClass);
+		void reallocArr(const uint64 vCount, const CellClass vClass = CellClass::AUTO){
+			checkInit(); checkAllocSize(vSize, vClass);
+			realloc(sizeof(type) * vCount, vClass);
 		}
 
 
@@ -464,9 +467,9 @@ namespace lux::ram{
 		 * @param pValue Value each element will be initialized with
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		inline void reallocArr(const uint64 vCount, const type& pValue, CellClass vCellClass = CellClass::AUTO){
-			checkInit(); checkAllocSize(vSize, vCellClass);
-			realloc(sizeof(type) * vCount, pValue, vCellClass);
+		inline void reallocArr(const uint64 vCount, const type& pValue, CellClass vClass = CellClass::AUTO){
+			checkInit(); checkAllocSize(vSize, vClass);
+			realloc(sizeof(type) * vCount, pValue, vClass);
 		}
 
 
@@ -574,23 +577,23 @@ namespace lux::ram{
 
 
 
-	template<class type> void lux::ram::ptr<type, alloc>::realloc(const uint64 vSize, CellClass vCellClass) {
-		checkInit(); checkAllocSize(vSize, vCellClass);
-		evaluateCellClass(vSize, vCellClass);
+	template<class type> void lux::ram::ptr<type, alloc>::realloc(const uint64 vSize, CellClass vClass) {
+		checkInit(); checkAllocSize(vSize, vClass);
+		evaluateCellClass(vSize, vClass);
 
 		if(!this->address) { [[unlikely]]				//If the pointer has not been allocated
-			alloc_(vSize, vCellClass);					//Allocate it
+			alloc_(vSize, vClass);					//Allocate it
 			return;
 		}
 		else { 													//If it's allocated
 			int64 d = vSize - size( );							//Calculate the difference in size between the current size and the new size
 			if(d < 0) [[unlikely]] cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
 			else if(d > 0) { [[likely]]							//If it's larger
-				if(vSize <= (int64)vCellClass) { [[likely]]			//But not larger than the maximum cell size
+				if(vSize <= (int64)vClass) { [[likely]]			//But not larger than the maximum cell size
 					cell->cellSize = vSize;								//Change the cellSize variable
 				}
 				else {												//If it's also larger than the cell
-					ram::ptr<type, alloc> ptr_(vSize, vCellClass);		//Allocate a new pointer
+					ram::ptr<type, alloc> ptr_(vSize, vClass);		//Allocate a new pointer
 					memcpy(ptr_, this->address, size( ));				//Copy the old data
 					free();												//Free the old cell
 					*this = ptr_;										//Overwrite the cell itself. This is necessary in order to keep the pointers updated

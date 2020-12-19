@@ -55,6 +55,7 @@ namespace lux {
 	template <class type, class iter> class ContainerBase {
 	public:
 		genInitCheck;
+		//FIXME move data array to base class to avoid the use of virtual functions. theyre slow af
 
 		virtual inline type*	begin( ) const = 0;		//Returns a pointer to the first element of the container
 		virtual inline type*	end(   ) const = 0;		//Returns a pointer to the element after the last element of the container
