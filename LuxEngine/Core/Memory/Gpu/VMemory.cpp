@@ -12,13 +12,13 @@
 
 namespace lux::rem{
 	uint32 maxAlloc;
-	MemBufferType* buffers;
+	Type_t* buffers;
 
 
 	luxAutoInit(LUX_H_VMEMORY){
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM);
+		buffers = (Type_t*)malloc(sizeof(Type_t) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM);
 
 		//Init buffer types
 		uint32 index;
@@ -27,7 +27,7 @@ namespace lux::rem{
 				index = (i << 2) | j;
 				buffers[index].cellClass = (CellClass)classEnumFromIndex((lux::__pvt::CellClassIndex)i);
 				buffers[index].allocType = (lux::AllocType)j;
-				buffers[index].buffers = __nmp_RaArray<MemBuffer, uint32, 32>(); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+				buffers[index].buffers = __nmp_RaArray<Buffer_t, uint32, 32>(); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
 			}
 		}
 	}
@@ -66,7 +66,7 @@ namespace lux::rem{
 		//TODO fix like ram cells
 
 		uint32 typeIndex = (lux::__pvt::classIndexFromEnum(vClass) << 2) | (uint32)vAllocType;		//Get buffer index from type and class
-		__nmp_RaArray<MemBuffer, uint32, 32>& subBuffers = buffers[typeIndex].buffers;			//Get list of buffers where to search for a free cell
+		__nmp_RaArray<Buffer_t, uint32, 32>& subBuffers = buffers[typeIndex].buffers;			//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
 		if((uint32)vClass){																//If the cell is a fixed count cell
 			uint64 cellNum = lux::__pvt::bufferSize / (uint32)vClass;									//Get the maximum number of cells in each buffer
@@ -82,7 +82,7 @@ namespace lux::rem{
 			//TODO like RAM cells
 		}{																					//If there are no free buffers or the cell is a custom count cell
 			//Create a new buffer with 1 cell for custom count cells, or the max number of cells for fixed count cells. Then set it as the cell's buffer
-			MemBuffer& buffer = subBuffers[subBuffers.add(MemBuffer{ 0, 0, (uint32)vClass ? __nmp_RaArray<Cell_t, uint32, 32>() : __nmp_RaArray<Cell_t, uint32, 32>() })];  //FIXME USE CASTED POINTER INSTEAD OF NMP_RAARRAY
+			Buffer_t& buffer = subBuffers[subBuffers.add(Buffer_t{ 0, 0, (uint32)vClass ? __nmp_RaArray<Cell_t, uint32, 32>() : __nmp_RaArray<Cell_t, uint32, 32>() })];  //FIXME USE CASTED POINTER INSTEAD OF NMP_RAARRAY
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->buffer = &buffer;																//Create a new buffer and set it as the cell's buffer
 			cell->cellIndex = (uint32)vClass ? cellIndex : 0;								//Add a new cell and set the cell index

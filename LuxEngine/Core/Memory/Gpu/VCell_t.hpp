@@ -18,33 +18,33 @@ namespace lux{
 		NUM							//Number of LUX_ALLOC_TYPE values
 	};
     namespace rem{
-        struct MemBuffer; inline void __unmap(MemBuffer* __buffer);
-        struct MemBufferType;
+        struct Buffer_t; inline void __unmap(Buffer_t* __buffer);
+        struct Type_t;
 
 
         struct Cell_t {
             uint64 cellSize;					//Size of the cell in bytes
-            MemBufferType* bufferType;			//Type of buffer allocation
-            MemBuffer* buffer;					//Index of the buffer where the cell is allocated
+            Type_t* bufferType;			//Type of buffer allocation
+            Buffer_t* buffer;					//Index of the buffer where the cell is allocated
             uint32 cellIndex;					//Index of the cell in the buffer
 
             void* map();
             inline void unmap(){ __unmap(buffer); }
         };
-        struct MemBuffer {
+        struct Buffer_t {
             VkBuffer buffer;					//Vulkan buffer object
             VkDeviceMemory memory;				//Vulkan buffer memory
             // Map_NMP_S<Cell_t, uint32> cells;	//Cells in the buffer
             __nmp_RaArray<Cell_t, uint32, 32> cells;	//Cells in the buffer
             // inline void unmap(){ vkUnmapMemory(core::dvc::compute.LD, memory); }
         };
-        inline void __unmap(MemBuffer* __buffer){ vkUnmapMemory(core::dvc::compute.LD, __buffer->memory); }
+        inline void __unmap(Buffer_t* __buffer){ vkUnmapMemory(core::dvc::compute.LD, __buffer->memory); }
 
-        struct MemBufferType {
+        struct Type_t {
             CellClass cellClass;				//Class of the cells
             lux::AllocType allocType;	        //Buffer allocation type
-            // Map_NMP_S<MemBuffer, uint32> buffers;//Buffers containing the cells
-            __nmp_RaArray<MemBuffer, uint32, 32> buffers;//Buffers containing the cells
+            // Map_NMP_S<Buffer_t, uint32> buffers;//Buffers containing the cells
+            __nmp_RaArray<Buffer_t, uint32, 32> buffers;//Buffers containing the cells
         };
     }
 }

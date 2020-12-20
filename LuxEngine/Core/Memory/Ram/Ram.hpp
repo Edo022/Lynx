@@ -5,9 +5,24 @@
 #include <cstring>
 
 #ifdef _WIN64
-#include <intrin.h>
+#	include <intrin.h>
+#	include <windows.h>
+	namespace lux::ram{
+		//System RAM in bytes
+		const uint64 systemMemory = [](){
+			MEMORYSTATUSEX status;
+			status.dwLength = sizeof(status);
+			GlobalMemoryStatusEx(&status);
+			return status.ullTotalPhys;
+		}();
+	}
 #elif defined __linux__
-#include <x86intrin.h>
+#	include <x86intrin.h>
+#	include <unistd.h>
+	namespace lux::ram{
+		//System RAM in bytes
+		const uint64 systemMemory = sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
+	}
 #endif
 
 #include "LuxEngine/Types/Pointer.hpp"
@@ -72,9 +87,9 @@
 
 namespace lux::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp too
-	struct MemBufferType;
-	extern MemBufferType* 	buffers;	//Allocated buffers
-	extern uint32 			allocated;	//TODO remove
+	struct Type_t;
+	extern Type_t types[];		//Allocated buffers
+	extern uint32  allocated;	//TODO remove
 
 
 

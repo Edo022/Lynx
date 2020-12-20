@@ -20,5 +20,5 @@ namespace lux::rem{
 
 
 	extern uint32 maxAlloc;				//The maximum number of allocated buffers. Depends on the gpu properties
-	extern MemBufferType* buffers;		//VRAM allocated buffers
+	extern Type_t* buffers;		//VRAM allocated buffers
 }

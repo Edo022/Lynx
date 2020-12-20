@@ -13,19 +13,26 @@
 
 
 
+//TODO choose number of buffers based on the system memory
 namespace lux::ram{
-	MemBufferType* buffers;
+	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
 	uint32 allocated;
 
 
 	luxAutoInit(LUX_H_MEMORY){
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM);
-		//Init buffer types
+		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
-			buffers[i].cellClass = (CellClass)lux::__pvt::classEnumFromIndex((lux::__pvt::CellClassIndex)i);
-			//TODO choose number of buffers based on the system memory
-			// buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
-			buffers[i].buffers = __nmp_RaArray<MemBuffer, uint32, 32>(); //64 buffers per chunk, max 8192 buffers
+			uint32 cellsNum = systemMemory / (uint64)lux::__pvt::classEnumFromIndex(i);
+			uint32 buffsNum = systemMemory / lux::__pvt::bufferSize;
+			types[i] = {
+				.cellClass = lux::__pvt::classEnumFromIndex(i),
+				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),		//Max number of buffers. Initialize them with nullptr
+				.cells =   (Cell_t*)malloc(sizeof(Cell_t) * cellsNum),		//Max number of cells
+				.cellsll = (uint32*)malloc(sizeof(uint32) * cellsNum),		//Max number of cells
+				.head = 0, .tail = cellsNum - 1,								//head 0, tail max. The array starts completely free
+				.cellsPerBuff = cellsNum / buffsNum
+			};
+			for(int j = 0; j < cellsNum - 1;){ types[i].cellsll[j] = ++j; }	//Initialize each element except the last one to point to the next cell
 		}
 	}
 
@@ -62,14 +69,15 @@ namespace lux::ram{
 			// default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
 		// }
 
-		cpy_thr((__m256i*)src, (__m256i*)dst, num);
+		// // cpy_thr((__m256i*)src, (__m256i*)dst, num);
+		memcpy(dst, src, num);
 	}
 
 
 
 	//TODO implement correct cpy_thr
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num){
-		memcpy(dst, src, num);
+		// // // // memcpy(dst, src, num);
 		////Copy bytes with index >= 2048
 		//#define iter _mm256_stream_si256(dst++, _mm256_stream_load_si256(src++));
 		//#define iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter;

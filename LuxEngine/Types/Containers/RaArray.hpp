@@ -1,7 +1,8 @@
 #pragma once
-#define LUX_H_RAARRAY
-#include "LuxEngine/macros.hpp"
+#define LUX_H_CellMng_t
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
+#include "LuxEngine/Types/Containers/ContainerBase.hpp"
+#include "LuxEngine/Types/Pointer.hpp"
 
 
 
@@ -20,7 +21,7 @@ namespace lux {
 	 * @tparam iter Type of the elements indices. Must be an integer type. Default: uint32
 	 * @tparam chunkClass Class of each chunk in the array. Default: CellClass::CLASS_D (2KB)
 	 */
-	template<class type, class iter = uint32, CellClass chunkClass = CellClass::CLASS_D> class RaArray{
+	template<class type, class iter = uint32, CellClass chunkClass = CellClass::CLASS_D> class CellMng_t{
 	private:
 		genInitCheck;
 		ram::ptr<ram::ptr<type, alloc>, alloc> chunks_;		//Elements
@@ -34,7 +35,7 @@ namespace lux {
 		constexpr inline type& chunks (iter index) const { return  chunks_[(index) / (uint64)chunkClass][(index) % (uint64)chunkClass]; }	//Get a chunk   element using only one index instead of index in the chunk and chunk index
 		constexpr inline iter& tracker(iter index) const { return tracker_[(index) / (uint64)chunkClass][(index) % (uint64)chunkClass]; }	//Get a tracker element using only one index instead of index in the chunk and chunk index
 
-		
+
 	public:
 
 
@@ -50,21 +51,21 @@ namespace lux {
 		/**
 		 * @brief Creates an array with size 0 and no preallocated chunks
 		 */
-		inline RaArray( ) : head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 },
-			chunks_ (0, ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
-			tracker_(0, ram::ptr<iter, alloc>(), CellClass::AT_LEAST_CLASS_B) {
-		}		
-		
-		
-		
-		
+		inline CellMng_t( ) : head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 },
+			chunks_ (0, CellClass::AT_LEAST_CLASS_B),
+			tracker_(0, CellClass::AT_LEAST_CLASS_B) {
+		}
+
+
+
+
 		/**
 		 * @brief Initializes the array by copying each element from a lux::ContainerBase subclass
 		 * @param pCont The container object to copy elements from.
-		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and 
+		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : constructExec(isInit(pCont)) RaArray( ) {
+		template<class eType, class iType> inline CellMng_t(const ContainerBase<eType, iType>& pCont) : /*constructExec(isInit(pCont))*/ CellMng_t( ) {
 			//TODO check sizes in constructexec
 			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*pCont.begin( )));
 		}
@@ -73,17 +74,17 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array by copying each element from a RaArray. Removed elements are preserved.
-		 * @param pCont The RaArray to copy elements from. 
-		 *		It must be a valid RaArray instance with a compatible type and 
+		 * @brief Initializes the array by copying each element from a CellMng_t. Removed elements are preserved.
+		 * @param pCont The CellMng_t to copy elements from.
+		 *		It must be a valid CellMng_t instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : constructExec(isInit(pCont))
+		template<class eType, class iType> inline CellMng_t(const CellMng_t<eType, iType>& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
-			chunks_  (pCont.chunks_ .deepCopy()), 
+			chunks_  (pCont.chunks_ .deepCopy()),
 			tracker_ (pCont.tracker_.deepCopy()){
 			//TODO check sizes in constructexec
-			for(int i = 0; i < pCont.chunks_.count(); ++i){ 
+			for(int i = 0; i < pCont.chunks_.count(); ++i){
 				chunks_[i] = pCont.chunks_[i].deepCopy();   //Deeper copy
 				tracker_[i] = pCont.tracker_[i].deepCopy(); //UwU
 			}
@@ -95,13 +96,13 @@ namespace lux {
 		/**
 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) : constructExec(isInit(pCont))
+		inline CellMng_t(const CellMng_t<type, iter>& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			chunks_ (pCont.chunks_ .deepCopy()), tracker_ (pCont.tracker_.deepCopy()){
 			// chunks_ (pCont.chunks_ .size(), ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
 			// tracker_(pCont.tracker_.size(), ram::ptr<iter, alloc>(), CellClass::AT_LEAST_CLASS_B) {
 			// for(iter i = 0; i < pCont.end( ) - pCont.begin( ); ++i) add((elmType) * (pCont.begin( ) + i));
-			for(int i = 0; i < pCont.chunks_.count(); ++i){ 
+			for(int i = 0; i < pCont.chunks_.count(); ++i){
 				chunks_[i] = pCont.chunks_[i].deepCopy();
 				tracker_[i] = pCont.tracker_[i].deepCopy();
 			}
@@ -113,7 +114,7 @@ namespace lux {
 		/**
 		 * @brief Move constructor
 		 */
-		inline RaArray(RaArray<type, iter>&& pCont) : constructExec(isInit(pCont))
+		inline CellMng_t(CellMng_t<type, iter>&& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			chunks_{pCont.chunks_}, tracker_{pCont.tracker_} {
 			pCont.chunks_ = pCont.tracker_ = nullptr; //FIXME
@@ -222,8 +223,8 @@ namespace lux {
 
 			head = tail = (iter)-1;
 			size_ = free_ = 0;
-			chunks_ .reallocArr(0, ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B);
-			tracker_.reallocArr(0, ram::ptr<iter, alloc>(), CellClass::AT_LEAST_CLASS_B);
+			chunks_ .reallocArr(0, CellClass::AT_LEAST_CLASS_B);
+			tracker_.reallocArr(0, CellClass::AT_LEAST_CLASS_B);
 		}
 
 
@@ -270,8 +271,8 @@ namespace lux {
 
 		// //Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
 		// /**
-		//  * @param vChunkIndex 
-		//  * @return type* 
+		//  * @param vChunkIndex
+		//  * @return type*
 		//  */
 		// inline type* begin(const iter vChunkIndex) const {
 		// 	checkInit(); luxCheckParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
