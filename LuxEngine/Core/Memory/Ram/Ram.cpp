@@ -18,8 +18,15 @@ namespace lux::ram{
 	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
 	uint32 allocated;
 
+	uint32 head, tail;
+	Cell_t* cells;				//Cells
+	uint32* tracker;
+
+
+
 
 	luxAutoInit(LUX_H_MEMORY){
+		uint32 totCells = 0;
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
 			uint32 cellsNum = systemMemory / (uint64)lux::__pvt::classEnumFromIndex(i);
@@ -27,13 +34,20 @@ namespace lux::ram{
 			types[i] = {
 				.cellClass = lux::__pvt::classEnumFromIndex(i),
 				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),		//Max number of buffers. Initialize them with nullptr
-				.cells =   (Cell_t*)malloc(sizeof(Cell_t) * cellsNum),		//Max number of cells
-				.cellsll = (uint32*)malloc(sizeof(uint32) * cellsNum),		//Max number of cells
-				.head = 0, .tail = cellsNum - 1,								//head 0, tail max. The array starts completely free
+				// .cells =   (Cell_t*)malloc(sizeof(Cell_t) * cellsNum),		//Max number of cells
+				.tracker_ = (uint32*)malloc(sizeof(uint32) * cellsNum),		//Max number of cells
+				.head = 0, .tail = cellsNum - 1,							//head 0, tail max. The array starts completely free
 				.cellsPerBuff = cellsNum / buffsNum
 			};
-			for(int j = 0; j < cellsNum - 1;){ types[i].cellsll[j] = ++j; }	//Initialize each element except the last one to point to the next cell
+			for(uint32 j = 0; j < cellsNum - 1;) types[i].tracker_[j] = ++j; //Initialize each element except the last one to point to the next cell
+			totCells += cellsNum;
 		}
+
+		//Same with the cells array
+		head = 0; tail = totCells;
+		cells   = (Cell_t*)malloc(sizeof(Cell_t) * totCells);
+		tracker = (uint32*)malloc(sizeof(uint32) * totCells);
+		for(uint32 i = 0; i < totCells - 1;) tracker[i] = ++i;
 	}
 
 

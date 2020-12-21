@@ -153,30 +153,28 @@ namespace lux::ram{
 
 
 
-	#define checkNullptr()  luxCheckCond(!this->address,     "function %s  have been called on a lux::ram::ptr with value nullptr", __FUNCTION__)
-	#define checkNullptrD() luxCheckCond(!this->address,     "Cannot dereference a null pointer"                                                )
+	#define checkNullptr()																										\
+		luxCheckCond(!this->address,											"Unable to call this function on an null pointer")\
+		luxCheckCond(this->address == (type*)lux::__pvt::CellState::FREED,      "Unable to call this function on an invalid pointer: The memory block it owns have been manually freed")																				\
+		luxCheckCond(this->address == (type*)lux::__pvt::CellState::OUTOFSCOPE, "Unable to call this function on an invalid pointer: All the pointers owning the memory went out of scope and were destroyed")
+	#define checkNullptrD() luxCheckCond(!this->address, "Cannot dereference a null pointer")
 
-	#define checkp luxDebug(if(this->address >= end( ) + cell->cellSize) luxPrintWarning("A lux::ram::ptr has probably been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
-	#define checkm luxDebug(if(this->address < begin( ))                 luxPrintWarning("A lux::ram::ptr has probably been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and can cause runtime errors"))
+	#define checkp luxDebug(if(this->address >= end( ) + cell->cellSize) luxPrintWarning("A lux::ram::ptr has been increased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and WILL cause runtime errors"))
+	#define checkm luxDebug(if(this->address < begin( ))                 luxPrintWarning("A lux::ram::ptr has been decreased too much and now points to an unallocated address. Reading or writing to this address is undefined behaviour and WILL cause runtime errors"))
 
-	#define __checka__err__ "The assigned address is out of the allocated block range. Reading or writing to this address is undefined behaviour and can cause runtime errors"
-	#define checka luxDebug(																									\
-		if(this->address && ((uint64)this->address < (uint64)cell->address)){													\
-			if(cell->cellSize) luxCheckCond((uint64)this->address >= ((uint64)cell->address) + cell->cellSize, __checka__err__)	\
-			else               luxCheckCond((uint64)this->address !=  (uint64)cell->address  + cell->cellSize, __checka__err__)	\
-		}																														\
-	);
+	#define checka luxDebug(if(this->address && ((uint64)this->address < (uint64)cell->address)){								\
+		if(cell->cellSize) luxCheckCond((uint64)this->address >= ((uint64)cell->address) + cell->cellSize, "The assigned address is not in the allocated block range. Reading or writing to this address is undefined behaviour and WILL cause runtime errors")			\
+		else               luxCheckCond((uint64)this->address !=  (uint64)cell->address  + cell->cellSize, "The assigned address is not in the allocated block range. Reading or writing to this address is undefined behaviour and WILL cause runtime errors")			\
+	});
+
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO){											\
 		luxCheckParam(var > 0xFFFFffff, var, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
-		luxCheckParam((uint32)_class < var, _class,																				\
-			"%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s"\
-			, (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it"										\
-		)});
+		luxCheckParam((uint32)_class < var, _class, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it"					\
+	)});
 
-	#define checkCell() \
-		luxCheckCond(cell->state == lux::__pvt::CellState::FREED,      "Unable to call this function on an invalid pointer: The memory block it owns have been manually freed")\
-		luxCheckCond(cell->state == lux::__pvt::CellState::OUTOFSCOPE, "Unable to call this function on an invalid pointer: All the pointers owning the memory went out of scope and were destroyed")
+
+
 
 	/**
 	 * @brief alloc specialization of lux::ram::ptr.
@@ -211,7 +209,7 @@ namespace lux::ram{
 
 	public:
 		Cell_t* cell; //A pointer to a lux::ram::Cell_t object that contains the cell informations
-
+		luxDebug(ptr<uint32, alloc>* nextOwner;)
 
 
 
@@ -290,7 +288,7 @@ namespace lux::ram{
 		// Assignment --------------------------------------------------------------------------------------------------------------------//
 		//TODO add dummy cell
 
-
+//BUG fix free function. Fix error checks. Add error checks in documentation
 
 
 		//Move assignment
@@ -432,7 +430,33 @@ namespace lux::ram{
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		void realloc(const uint64 vSize, CellClass vClass = CellClass::AUTO);
+		void realloc(const uint64 vSize, CellClass vClass = CellClass::AUTO){
+			checkInit(); checkAllocSize(vSize, vClass);
+			evaluateCellClass(vSize, vClass);
+
+			if(!this->address) { [[unlikely]]					//If the pointer has not been allocated
+				alloc_(vSize, vClass);								//Allocate it
+				return;
+			}
+			else { 												//If it's allocated
+				int64 d = vSize - size( );							//Calculate the difference in size between the current size and the new size
+				if(d < 0) [[unlikely]] cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
+				else if(d > 0) { [[likely]]							//If it's larger
+					if(vSize <= (int64)vClass) { [[likely]]			//But not larger than the maximum cell size
+						cell->cellSize = vSize;								//Change the cellSize variable
+					}
+					else {												//If it's also larger than the cell
+						ram::ptr<type, alloc> ptr_(vSize, vClass);		//Allocate a new pointer //BUG DONT CREATE A NEW POINTER BUT CHANGE THE CELL OBJECT
+						memcpy(ptr_, this->address, size( ));				//Copy the old data //BUG ok
+						free();												//Free the old cell //BUG DONT FREE THE CELL
+						*this = ptr_;										//Overwrite the cell itself. This is necessary in order to keep the pointers updated
+					}
+				}
+				else [[unlikely]] return;							//If it has the same size, do nothing
+			}
+		}
+
+
 
 
 		/**
@@ -441,7 +465,7 @@ namespace lux::ram{
 		 * @param pValue Value each element will be initialized with
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		inline void realloc(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
+		void realloc(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
 			checkInit(); checkAllocSize(vSize, vClass);
 			if(this->address/* luxDebug(|| cell->state != lux::__pvt::CellState::ALLOC)*/){
 				int64 d = vSize - size( );
@@ -462,7 +486,7 @@ namespace lux::ram{
 		 * @param vCount Number of elements
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		void reallocArr(const uint64 vCount, const CellClass vClass = CellClass::AUTO){
+		inline void reallocArr(const uint64 vCount, const CellClass vClass = CellClass::AUTO){
 			checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);
 			realloc(sizeof(type) * vCount, vClass);
 		}
@@ -492,24 +516,31 @@ namespace lux::ram{
 		 * @brief Frees the memory block owned by the pointer.
 		 *		The memory will become invalid and unaccessible for any other pointer currently using it
 		 */
-		inline void free(){
-			checkCell();
+		inline void free(){ //BUG FIX FREE, FIX BASE REALLOC
+			checkNullptr();
 			// cell->free();
 			//Cache type index and buffer type
-			if((uint32)cell->type){								//For fixed size cells
-				const uint32 typeIndex = cell->type;				//Cache type index
-				auto& type_ = types[typeIndex];						//Cache buffer type instance
+			if((uint32)cell->typeIndex){							//For fixed size cells
+				auto& type_ = types[cell->typeIndex];				//Cache buffer type instance
+				// const uint32 cellIndex = cell->cellIndex % type_.cellsPerBuff;//Cache buffer-local cell index
 
-				type_.cellsll[cell->cellIndex] = type_.tail;		//Save old tail in the cell's ll element
-				type_.tail = cell->cellIndex;						//Update tail
+				type_.tracker_[cell->localIndex] = type_.tail;		//Save old buffer tail in the cell's ll element
+				type_.tail = cell->localIndex;						//Update tail
 			}
-			else{												//Fox custom size cells
+			else{												//For custom size cells
 				std::free(cell->address);							//Just free the buffer
-				luxRelease(std::free(cell);)						//Free the  cell if in release mode
 			}														//The cell is only needed in debug mode as it contains informations about how the buffer was freed
 
-			luxDebug(cell->address = nullptr;)					//Reset cell address if in debug mode
-			luxDebug(cell->state = lux::__pvt::CellState::FREED;)//Set  cell state   if in debug mode
+			tracker[cell->cellIndex] = tail;					//Save old cell tail
+			tail = cell->cellIndex;								//Update tail
+
+			#ifdef LUX_DEBUG
+			// cell->state = lux::__pvt::CellState::FREED;			//Set  cell state   if in debug mode
+			for(ptr<uint32, alloc>* p = cell->firstOwner; p != cell->lastOwner; p = p->nextOwner){
+				p->address = (uint32*)lux::__pvt::CellState::FREED; //!This gets reset when assigning a new address from operator=
+				p->cell = nullptr;
+			}
+			#endif
 		}
 	};
 
@@ -550,36 +581,36 @@ namespace lux::ram{
 		using namespace lux::__pvt;
 		if((uint32)vClass){											//For fixed class cells
 			auto& type_ = types[classIndexFromEnum(vClass)];			//Cache global cell index
-			const uint32 i = type_.head;								//Cache head
-			const uint32 buffIndex = i / type_.cellsPerBuff;			//Cache buffer index
-			const uint32 cellIndex = i % type_.cellsPerBuff;			//Cache buffer-local cell index
+			const uint32 tHead = type_.head;							//Cache head (cell index in the buffer type)
+			const uint32 buffIndex = tHead / type_.cellsPerBuff;		//Cache buffer index
+			const uint32 localIndex = tHead % type_.cellsPerBuff;		//Cache buffer-local cell index
 
-			if(!type_.memory[buffIndex]) type_.memory[buffIndex] =		//Allocate a new buffer if necessary
-				win10(_aligned_malloc(bufferSize, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, bufferSize))
-			;
+			//Allocate a new buffer, if necessary
+			if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, bufferSize));
 
-			cell = &(type_.cells[i] = {									//Create a new cell and set it as the pointer's cell
-				.cellIndex = i,												//Global cell index as cell index
-				.address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * cellIndex
-			});																//^ Get the buffer local cell index and use it to calculate the cell address
-			type_.head = type_.cellsll[i];								//Update head
+			//Create a new cell and set it as the pointer's cell.
+			cell = &(cells[head] = {									//Get the buffer local cell index and use it to calculate the cell address
+				.address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex
+				.localIndex = localIndex;								//Set local index
+			});
+			type_.head = type_.tracker_[tHead];						//Update type head
 		}
 
 
 		else{														//For custom size cells
 			uint64 size = vSize / LuxIncSize * (LuxIncSize + 1);		//Calculate the new size
-			cell = (Cell_t*)malloc(sizeof(Cell_t));						//Allocate a new cell object out of the memory pool
-			*cell = {													//Initialize the cell object
-				.cellIndex = 0,												//No cell index
-				.address = win10(_aligned_malloc(size, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, size))
-			};																//^ Allocate new buffer
+			//Create a new cell and set it as the pointer's cell. 		//Allocate a new buffer
+			cell = &(cells[head] = { .address = win10(_aligned_malloc(size, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, size)) });
 		}
 
 
-		cell->owners = 1;											//Set 1 owner: this pointer
-		cell->cellSize = vSize;										//Set size specified in function call
-		cell->type = classIndexFromEnum(vClass);					//Set cell class INDEX
-		luxDebug(cell->state = CellState::ALLOC);
+		cell->owners = 1;							//Set 1 owner: this pointer
+		cell->cellSize = vSize;						//Set size specified in function call
+		cell->type = classIndexFromEnum(vClass);	//Set cell type index
+		luxDebug(cell->state = CellState::ALLOC);	//Add cell state info if in debug mode
+
+		cell->cellIndex = head,						//Set global cell index as cell index
+		head = tracker[head];						//Update cell head
 
 
 
@@ -638,39 +669,6 @@ namespace lux::ram{
 // 			this->address = (type*)(cell->address = (void*)((uint8*)(cell->buffer = &buffer)->memory + getCellOffset(cell)));	//<^ Create a new cell in the new buffer. Set its address
 // 			cell->cellIndex = (uint32)vClass ? cellIndex : 0;											//Set its index. 0 for custom count cells
 // 		}
-	}
-
-
-
-
-
-
-
-
-	template<class type> void lux::ram::ptr<type, alloc>::realloc(const uint64 vSize, CellClass vClass) {
-		checkInit(); checkAllocSize(vSize, vClass);
-		evaluateCellClass(vSize, vClass);
-
-		if(!this->address) { [[unlikely]]				//If the pointer has not been allocated
-			alloc_(vSize, vClass);					//Allocate it
-			return;
-		}
-		else { 													//If it's allocated
-			int64 d = vSize - size( );							//Calculate the difference in size between the current size and the new size
-			if(d < 0) [[unlikely]] cell->cellSize = vSize;		//If the new size is smaller, change the cellSize variable and return
-			else if(d > 0) { [[likely]]							//If it's larger
-				if(vSize <= (int64)vClass) { [[likely]]			//But not larger than the maximum cell size
-					cell->cellSize = vSize;								//Change the cellSize variable
-				}
-				else {												//If it's also larger than the cell
-					ram::ptr<type, alloc> ptr_(vSize, vClass);		//Allocate a new pointer //BUG DONT CREATE A NEW POINTER BUT CHANGE THE CELL OBJECT
-					memcpy(ptr_, this->address, size( ));				//Copy the old data //BUG ok
-					free();												//Free the old cell //BUG DONT FREE THE CELL
-					*this = ptr_;										//Overwrite the cell itself. This is necessary in order to keep the pointers updated
-				}
-			}
-			else [[unlikely]] return;							//If it has the same size, do nothing
-		}
 	}
 
 

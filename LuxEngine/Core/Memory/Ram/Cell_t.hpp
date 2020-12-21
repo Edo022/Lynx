@@ -35,23 +35,33 @@ namespace lux{
 	namespace ram{
 		struct Buffer_t;
 		struct Type_t;
+		struct Cell_t;
+
+		template<class type, uint32 kind> struct ptr;
 
 		//! If you modify those variables change the declarations in Ram.hpp too
 		extern Type_t types[];		//Allocated buffers
 		extern uint32 allocated;	//TODO remove
 
+		extern uint32 head, tail;
+		extern Cell_t* cells;				//Cells
+		extern uint32* tracker;
+
 
 
 		struct Cell_t {
-			uint32 		owners;		//Number of lux::ram::ptr instances that point to an address of the cell
-			uint32 		cellIndex;	//Index of the cell
-			uint32 		cellSize;	//Size of the cell in bytes //FIXME add option to choose to cache variables like this or not (this value can be retrieved from the buffer type, but it's slower)
+			uint16 		typeIndex;	//INDEX of the buffer type
+			uint16 		owners;		//Number of lux::ram::ptr instances that owns the cell
+			uint32 		cellIndex;	//Index of the cell in the cells array
+			uint32		localIndex;	//Index of the cell in the allocated buffer
+			uint32 		cellSize;	//Size of the cell in bytes
 			// Type_t* 	type;		//Type of buffer allocation
-			uint32 		type;		//INDEX of the type
 			// Buffer_t* 	buffer;		//Index of the buffer where the cell is allocated
 			void* 		address;	//Address of the cell. The same as you would get with malloc
-			luxDebug(lux::__pvt::CellState state;)
-			void free();
+			// luxDebug(lux::__pvt::CellState state;)
+			luxDebug(ptr<uint32, 0>* lastOwner;) //0 == alloc
+			luxDebug(ptr<uint32, 0>* firstOwner;)
+			// void free();
 		};
 		// struct Buffer_t { //TODO rename as Buffer_t
 		// 	void* memory = nullptr;	//Address of the buffer
@@ -59,12 +69,12 @@ namespace lux{
 		// 	Cell_t* cells;			//Cells in the buffer //FIXME CHOOSE NUMBER OF CELLS PER BUFFER OR SOMETHING IDK
 		// };
 		struct Type_t { //TODO rename as Type_t
-			const CellClass cellClass;	//Class of the cells
+			CellClass cellClass;	//Class of the cells
 			// Buffer_t* buffers;		//Buffers containing the cells
 			//!
 			void** memory;	//Addresses of the buffers
-			Cell_t* cells;				//Cells
-			uint32* cellsll;
+			// Cell_t* cells;				//Cells
+			uint32* tracker_;
 			uint32 head, tail;
 			uint32 cellsPerBuff; //cellsPerBuff = cellsNum / buffsNum
 		};
