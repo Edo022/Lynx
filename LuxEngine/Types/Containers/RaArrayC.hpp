@@ -26,8 +26,10 @@ template<class type, class iter = uint32> struct RaArrayC{
 
 	inline iter add(const type& pElm){
 		checkInit();
-		data[tail] = pElm;
-		tail = lnkd[tail];
+		iter tail_ = tail;		//Cache tail
+		data[tail_] = pElm;		//Set element
+		tail = lnkd[tail_];		//Update tail
+		return tail_;			//Return old tail
 	}
 
 	inline void remove(const iter vIndex){
