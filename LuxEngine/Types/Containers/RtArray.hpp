@@ -33,7 +33,7 @@ namespace lux {
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 	private:
 		genInitCheck;
-		ram::ptr<type, alloc> data_;	//Elements of the array
+		ram::Alloc<type> data_;	//Elements of the array
 	public:
 
 
@@ -46,7 +46,7 @@ namespace lux {
 
 		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
 		inline RtArray( ) : data_(0, type(), CellClass::AT_LEAST_CLASS_B) { }
-		inline RtArray(iter vCount) : constructExec(checkNeg, vCount) data_(sizeof(type) * vCount, type(), CellClass::AT_LEAST_CLASS_B) { }
+		inline RtArray(iter vCount) : constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative")) data_(sizeof(type) * vCount, type(), CellClass::AT_LEAST_CLASS_B) { }
 
 		//Initializes the array using a container object of a compatible type
 		//*   pContainer | The container object to copy elements from
@@ -109,7 +109,7 @@ namespace lux {
 		inline iter add(const type& vElement) {
 			checkInit();
 			resize(data_.count() + 1);
-			data_.last( ) = vElement;
+			*(data_.end( ) - 1) = vElement;
 			return data_.count( ) - 1;
 		}
 

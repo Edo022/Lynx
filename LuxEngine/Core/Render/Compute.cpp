@@ -55,13 +55,13 @@ namespace lux::core::c{
 	//Frees and destroys the compute objects //TODO fix
 	//> Engine internal use
 	void computeCleanup( ) {
-		for(uint32 i = 0; i < /*rem::buffers.count( )*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
-			for(uint32 j = 0; j < rem::buffers[i].buffers.count( ); ++j){
-				if(rem::buffers[i].buffers.isValid(j)){
-					vkDestroyBuffer(dvc::compute.LD, rem::buffers[i].buffers[j].buffer, nullptr);
-					vkFreeMemory(dvc::compute.LD, rem::buffers[i].buffers[j].memory, nullptr);
-				}
-			}
-		}
+		// for(uint32 i = 0; i < /*rem::buffers.count( )*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
+		// 	for(uint32 j = 0; j < rem::buffers[i].buffers.count( ); ++j){
+		// 		if(rem::buffers[i].buffers.isValid(j)){
+		// 			vkDestroyBuffer(dvc::compute.LD, rem::buffers[i].buffers[j].buffer, nullptr);
+		// 			vkFreeMemory(dvc::compute.LD, rem::buffers[i].buffers[j].memory, nullptr);
+		// 		}
+		// 	}
+		// }
 	}
 }

@@ -2,6 +2,9 @@
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 
 
+//Cell used in null allocations to skip some nullptr checks
+lux::ram::Cell_t lux::ram::dummyCell = { .owners = 0, .cellSize = 0, .address = nullptr };
+
 
 
 // void lux::ram::Cell_t::free( ){

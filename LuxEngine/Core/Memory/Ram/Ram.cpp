@@ -34,7 +34,6 @@ namespace lux::ram{
 			types[i] = {
 				.cellClass = lux::__pvt::classEnumFromIndex(i),
 				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),		//Max number of buffers. Initialize them with nullptr
-				// .cells =   (Cell_t*)malloc(sizeof(Cell_t) * cellsNum),		//Max number of cells
 				.tracker_ = (uint32*)malloc(sizeof(uint32) * cellsNum),		//Max number of cells
 				.head = 0, .tail = cellsNum - 1,							//head 0, tail max. The array starts completely free
 				.cellsPerBuff = cellsNum / buffsNum

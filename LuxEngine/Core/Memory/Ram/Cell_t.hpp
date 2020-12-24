@@ -1,7 +1,8 @@
 #pragma once
 #define LUX_H_CELL_T
 #include "LuxEngine/Core/Memory/Shared.hpp"
-#include "LuxEngine/Core/Memory/CellMng_t.hpp"
+// #include "LuxEngine/Core/Memory/CellMng_t.hpp"
+#include "LuxEngine/Types/Containers/RaArrayC.hpp"
 
 
 // #ifdef _WIN64
@@ -33,11 +34,11 @@
 #define LuxIncSize ((uint32)CellClass::CLASS_L / 2)
 namespace lux{
 	namespace ram{
+		template<class type> struct Alloc;
 		struct Buffer_t;
 		struct Type_t;
 		struct Cell_t;
 
-		template<class type, uint32 kind> struct ptr;
 
 		//! If you modify those variables change the declarations in Ram.hpp too
 		extern Type_t types[];		//Allocated buffers
@@ -59,8 +60,8 @@ namespace lux{
 			// Buffer_t* 	buffer;		//Index of the buffer where the cell is allocated
 			void* 		address;	//Address of the cell. The same as you would get with malloc
 			// luxDebug(lux::__pvt::CellState state;)
-			luxDebug(ptr<uint32, 0>* lastOwner;) //0 == alloc
-			luxDebug(ptr<uint32, 0>* firstOwner;)
+			luxDebug(Alloc<uint32>* lastOwner;) //0 == alloc
+			luxDebug(Alloc<uint32>* firstOwner;)
 			// void free();
 		};
 		// struct Buffer_t { //TODO rename as Buffer_t
@@ -74,10 +75,13 @@ namespace lux{
 			//!
 			void** memory;	//Addresses of the buffers
 			// Cell_t* cells;				//Cells
-			uint32* tracker_;
+			// uint32* tracker_;
+			RaArrayC<bool> cells;
 			uint32 head, tail;
 			uint32 cellsPerBuff; //cellsPerBuff = cellsNum / buffsNum
 		};
 		// static inline uint32 getCellOffset(const Cell_t* pCell){ return (uint32)pCell->type->cellClass * pCell->cellIndex; }
+
+		extern Cell_t dummyCell;
 	}
 }

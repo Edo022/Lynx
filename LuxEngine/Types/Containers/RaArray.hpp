@@ -24,8 +24,10 @@ namespace lux {
 	template<class type, class iter = uint32, CellClass chunkClass = CellClass::CLASS_D> class CellMng_t{
 	private:
 		genInitCheck;
-		ram::ptr<ram::ptr<type, alloc>, alloc> chunks_;		//Elements
-		ram::ptr<ram::ptr<iter, alloc>, alloc> tracker_;	//State of each element
+		// ram::ptr<ram::ptr<type, alloc>, alloc> chunks_;		//Elements
+		// ram::ptr<ram::ptr<iter, alloc>, alloc> tracker_;	//State of each element
+		ram::Alloc<ram::Alloc<type>> chunks_;		//Elements
+		ram::Alloc<ram::Alloc<iter>> tracker_;	//State of each element
 
 		iter head;		//First free element
 		iter tail;		//Last free element
