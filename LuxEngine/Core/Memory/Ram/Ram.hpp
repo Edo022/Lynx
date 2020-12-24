@@ -26,7 +26,7 @@
 #endif
 
 #include "LuxEngine/Types/Pointer.hpp"
-#include "LuxEngine/Types/LuxBool.hpp"
+// #include "LuxEngine/Types/LuxBool.hpp"
 
 /*
 .
@@ -98,8 +98,8 @@ namespace lux::ram{
 
 
 
-	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr = LUX_AUTO);
-	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num, const LuxBool thr = LUX_AUTO){
+	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/);
+	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/){
 		cpy(src, dst, num, thr);
 	}
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);

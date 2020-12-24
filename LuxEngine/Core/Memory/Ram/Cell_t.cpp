@@ -7,11 +7,6 @@ lux::ram::Cell_t lux::ram::dummyCell = { .owners = 0, .cellSize = 0, .address = 
 
 
 
-// void lux::ram::Cell_t::free( ){
-// 	buffer->cells.remove(cellIndex);
-// 	if(buffer->cells.usedCount() == 0) bufferType->buffers.remove(buffer->bufferIndex);
-// }
-
 
 
 //TODO destroy buffers from asyncrhonous garbage collector
