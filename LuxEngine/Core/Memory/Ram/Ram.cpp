@@ -1,7 +1,10 @@
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
-#include <cstring>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
+
+#include "LuxEngine/Types/Pointer.hpp"
+
+#include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
 //TODO add AVX512 when supported //or don't. it's probably useless
@@ -18,10 +21,10 @@ namespace lux::ram{
 	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
 	uint32 allocated;
 
-	uint32 head, tail;
-	Cell_t* cells;				//Cells
-	uint32* tracker;
-
+	// uint32 head, tail;
+	// Cell_t* cells;				//Cells
+	// uint32* tracker;
+	RaArrayC<Cell_t> cells;
 
 
 
@@ -34,19 +37,21 @@ namespace lux::ram{
 			types[i] = {
 				.cellClass = lux::__pvt::classEnumFromIndex(i),
 				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),		//Max number of buffers. Initialize them with nullptr
-				.tracker_ = (uint32*)malloc(sizeof(uint32) * cellsNum),		//Max number of cells
-				.head = 0, .tail = cellsNum - 1,							//head 0, tail max. The array starts completely free
+				// .tracker_ = (uint32*)malloc(sizeof(uint32) * cellsNum),		//Max number of cells
+				// .head = 0, .tail = cellsNum - 1,							//head 0, tail max. The array starts completely free
 				.cellsPerBuff = cellsNum / buffsNum
 			};
-			for(uint32 j = 0; j < cellsNum - 1;) types[i].tracker_[j] = ++j; //Initialize each element except the last one to point to the next cell
+			types[i].cells.init(cellsNum);
+			// for(uint32 j = 0; j < cellsNum - 1;) types[i].tracker_[j] = ++j; //Initialize each element except the last one to point to the next cell
 			totCells += cellsNum;
 		}
 
 		//Same with the cells array
-		head = 0; tail = totCells;
-		cells   = (Cell_t*)malloc(sizeof(Cell_t) * totCells);
-		tracker = (uint32*)malloc(sizeof(uint32) * totCells);
-		for(uint32 i = 0; i < totCells - 1;) tracker[i] = ++i;
+		cells.init(totCells);
+		// head = 0; tail = totCells;
+		// cells   = (Cell_t*)malloc(sizeof(Cell_t) * totCells);
+		// tracker = (uint32*)malloc(sizeof(uint32) * totCells);
+		// for(uint32 i = 0; i < totCells - 1;) tracker[i] = ++i;
 	}
 
 

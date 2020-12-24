@@ -44,10 +44,10 @@ namespace lux{
 		extern Type_t types[];		//Allocated buffers
 		extern uint32 allocated;	//TODO remove
 
-		extern uint32 head, tail;
-		extern Cell_t* cells;				//Cells
-		extern uint32* tracker;
-
+		// extern uint32 head, tail;
+		// extern Cell_t* cells;				//Cells
+		// extern uint32* tracker;
+		extern RaArrayC<Cell_t> cells;
 
 
 		struct Cell_t {
@@ -76,8 +76,8 @@ namespace lux{
 			void** memory;	//Addresses of the buffers
 			// Cell_t* cells;				//Cells
 			// uint32* tracker_;
-			RaArrayC<bool> cells;
-			uint32 head, tail;
+			RaArrayC<bool> cells; //TODO use optimized uint64 array
+			// uint32 head, tail;
 			uint32 cellsPerBuff; //cellsPerBuff = cellsNum / buffsNum
 		};
 		// static inline uint32 getCellOffset(const Cell_t* pCell){ return (uint32)pCell->type->cellClass * pCell->cellIndex; }

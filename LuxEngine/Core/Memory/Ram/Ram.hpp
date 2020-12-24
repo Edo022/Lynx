@@ -91,10 +91,10 @@ namespace lux::ram{
 	extern Type_t types[];		//Allocated buffers
 	extern uint32  allocated;	//TODO remove
 
-	extern uint32 head, tail;
-	extern Cell_t* cells;				//Cells
-	extern uint32* tracker;
-
+	// extern uint32 head, tail;
+	// extern Cell_t* cells;				//Cells
+	// extern uint32* tracker;
+	extern RaArrayC<Cell_t> cells;
 
 
 

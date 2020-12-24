@@ -12,13 +12,16 @@ template<class type, class iter = uint32> struct RaArrayC{
 	iter head, tail, count_;
 
 
-	RaArrayC(const iter vCount){
+	inline RaArrayC(){}
+	void init(const iter vCount){
 		luxCheckParam(vCount < 0, vCount, "Count cannot be negative");
 		data = (type*)malloc(sizeof(type) * vCount);
 		lnkd = (iter*)malloc(sizeof(iter) * vCount);
+		tail = 0; head = vCount - 1;
 		for(int i = 0; i < vCount - 1;) lnkd[i] = ++i;
 		count_ = vCount;
 	}
+
 
 
 	inline iter add(const type& pElm){
