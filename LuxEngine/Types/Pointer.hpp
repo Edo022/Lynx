@@ -280,7 +280,7 @@ namespace lux::ram{
 
 
 
-		inline ~Alloc( ) noexcept { //FIXME dummy cell
+		inline ~Alloc( ) noexcept {
 			if(cell->address) {
 				if(!--cell->owners) {
 					free();

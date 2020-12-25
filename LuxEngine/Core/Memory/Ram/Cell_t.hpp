@@ -35,7 +35,6 @@
 namespace lux{
 	namespace ram{
 		template<class type> struct Alloc;
-		struct Buffer_t;
 		struct Type_t;
 		struct Cell_t;
 
@@ -47,21 +46,21 @@ namespace lux{
 
 
 		struct Cell_t {
-			uint16 		typeIndex;	//INDEX of the buffer type
-			uint16 		owners;		//Number of lux::ram::ptr instances that owns the cell
-			uint32 		cellIndex;	//Index of the cell in the cells array
-			uint32		localIndex;	//Index of the cell in the allocated buffer
-			uint32 		cellSize;	//Size of the cell in bytes
-			void* 		address;	//Address of the cell. The same as you would get with malloc
-			luxDebug(Alloc<uint32>* lastOwner;) //0 == alloc
+			uint16 typeIndex;		//INDEX of the buffer type
+			uint16 owners;			//Number of lux::ram::ptr instances that owns the cell
+			uint32 cellIndex;		//Index of the cell in the cells array
+			uint32 localIndex;		//Index of the cell in the type allocations
+			uint32 cellSize;		//Size of the cell in bytes
+			void*  address;			//Address of the cell
+			luxDebug(Alloc<uint32>* lastOwner;)
 			luxDebug(Alloc<uint32>* firstOwner;)
 		};
 
-		struct Type_t { //TODO rename as Type_t
+		struct Type_t {
 			CellClass cellClass;	//Class of the cells
-			void** memory;	//Addresses of the buffers
-			RaArrayC<bool> cells; //TODO use optimized uint64 array
-			uint32 cellsPerBuff; //cellsPerBuff = cellsNum / buffsNum
+			void** memory;			//Addresses of the buffers
+			RaArrayC<bool> cells;	//TODO use optimized uint64 array
+			uint32 cellsPerBuff;	//Number of cells in each buffer
 		};
 
 		extern Cell_t dummyCell;
