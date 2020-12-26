@@ -20,10 +20,7 @@ namespace lux{
     namespace rem{
         // struct Buffer_t; inline void __unmap(Buffer_t* __buffer);
         struct VType_t;
-        struct VCell_t;
-
         extern VType_t types[];
-        extern RaArray<VCell_t> cells;
 
 
         struct VCell_t {
@@ -57,5 +54,7 @@ namespace lux{
             RaArrayC<bool> cells;       //TODO use optimized uint64 array
             uint32 cellsPerBuffer;      //Number of cells in each buffer
         };
+
+        extern RaArrayC<VCell_t> vcells;
     }
 }

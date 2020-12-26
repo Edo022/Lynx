@@ -1,48 +1,25 @@
 #pragma once
 #define LUX_H_CELL_T
 #include "LuxEngine/Core/Memory/Shared.hpp"
-// #include "LuxEngine/Core/Memory/CellMng_t.hpp"
 #include "LuxEngine/Types/Containers/RaArrayC.hpp"
-
-
-// #ifdef _WIN64
-// #	include <windows.h>
-// 	namespace lux::ram{
-// 		//System RAM in bytes
-// 		const uint64 systemMemory = [](){
-// 			MEMORYSTATUSEX status;
-// 			status.dwLength = sizeof(status);
-// 			GlobalMemoryStatusEx(&status);
-// 			return status.ullTotalPhys;
-// 		}();
-// 	}
-// #elif defined(__linux__)
-// #	include <unistd.h>
-// 	namespace lux::ram{
-// 		//System RAM in bytes
-// 		const uint64 systemMemory = sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
-// 	}
-// #endif
+#include "LuxEngine/Types/Dummy.hpp"
 
 
 
 
 
 
-// #define LuxMemOffset 32
+
+
 #define LuxMemOffset 512
 #define LuxIncSize ((uint32)CellClass::CLASS_L / 2)
 namespace lux{
 	namespace ram{
 		template<class type> struct Alloc;
-		struct Type_t;
-		struct Cell_t;
-
-
 		//! If you modify those variables change the declarations in Ram.hpp too
+		struct Type_t;
 		extern Type_t types[];		//Allocated buffers
 		extern uint32 allocated;	//TODO remove
-		extern RaArrayC<Cell_t> cells;
 
 
 		struct Cell_t {
@@ -52,8 +29,8 @@ namespace lux{
 			uint32 localIndex;		//Index of the cell in the type allocations
 			uint32 cellSize;		//Size of the cell in bytes
 			void*  address;			//Address of the cell
-			luxDebug(Alloc<uint32>* lastOwner;)
-			luxDebug(Alloc<uint32>* firstOwner;)
+			luxDebug(Alloc<Dummy>* lastOwner;)
+			luxDebug(Alloc<Dummy>* firstOwner;)
 		};
 
 		struct Type_t {
@@ -63,6 +40,7 @@ namespace lux{
 			uint32 cellsPerBuff;	//Number of cells in each buffer
 		};
 
+		extern RaArrayC<Cell_t> cells;
 		extern Cell_t dummyCell;
 	}
 }

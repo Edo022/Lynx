@@ -1,4 +1,4 @@
-#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 //TODO use constant for offset
@@ -12,7 +12,8 @@
 
 namespace lux::rem{
 	uint32 maxAlloc;
-	Type_t* buffers;
+	// Type_t* buffers;
+    RaArrayC<VCell_t> vcells;
 
 
 	luxAutoInit(LUX_H_VMEMORY){

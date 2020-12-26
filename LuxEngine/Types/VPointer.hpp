@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_POINTER
-#include "LuxEngine/Core/Memory/Gpu/VCell_t.hpp"
+#include "LuxEngine/Core/Memory/VRam/VCell_t.hpp"
 #include "LuxEngine/System/SystemMacros.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 #include "LuxEngine/Tests/CondChecks.hpp"
@@ -54,23 +54,6 @@ namespace lux::ram{
 	template<class type> struct VAlloc {
 	private:
 		genInitCheck;
-
-		//Memory allocation
-		constexpr static void evaluateCellClass(const uint64 vSize, CellClass& pClass) noexcept {
-			if(pClass != CellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
-				if(vSize > ((uint32)pClass - 1)) pClass = CellClass::AUTO;				//If the class is too small, set it to AUTO
-				else pClass = (CellClass)((uint64)pClass - 1);							//If it's large enough, assign the normal class value
-			}
-			if(pClass == CellClass::AUTO) { [[likely]]								//Choose cell class if it's AUTO
-				if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]	  pClass = CellClass::CLASS_A;
-				else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]]	  pClass = CellClass::CLASS_B;
-				else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]]	  pClass = CellClass::CLASS_C;
-				else if(vSize <= (uint32)CellClass::CLASS_D) [[likely]]   pClass = CellClass::CLASS_D;
-				else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] pClass = CellClass::CLASS_Q;
-				else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] pClass = CellClass::CLASS_L;
-				else										 			  pClass = CellClass::CLASS_0;
-			} //TODO use direct access array
-		}
 
 		void alloc_(const uint64 vSize, const CellClass vClass);
 		void realloc_(const uint64 vSize, const CellClass vClass);

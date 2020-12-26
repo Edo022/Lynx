@@ -16,7 +16,7 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 #include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
-#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
 
 
 int h(const char* b, int hh) {
