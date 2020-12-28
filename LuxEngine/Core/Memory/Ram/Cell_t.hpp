@@ -29,8 +29,8 @@ namespace lux{
 			uint32 localIndex;		//Index of the cell in the type allocations
 			uint32 cellSize;		//Size of the cell in bytes
 			void*  address;			//Address of the cell
-			luxDebug(Alloc<Dummy>* lastOwner;)
-			luxDebug(Alloc<Dummy>* firstOwner;)
+			luxDebug(ram::Alloc<Dummy>* lastOwner;)
+			luxDebug(ram::Alloc<Dummy>* firstOwner;)
 		};
 
 		struct Type_t {

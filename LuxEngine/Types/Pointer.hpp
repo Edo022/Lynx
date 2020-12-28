@@ -39,7 +39,7 @@
 
 
 
-namespace lux::ram{
+namespace lux::rem{
 	#define checkSize()     luxCheckCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
 	#define checkSizeD()    luxCheckCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
@@ -91,7 +91,7 @@ namespace lux::ram{
 		}
 
 		void alloc_(const uint64 vSize, const CellClass vClass);
-		void realloc_(const uint64 vSize, const CellClass vClass);
+		// void realloc_(const uint64 vSize, const CellClass vClass);
 		inline void init_memory(void* const vAddr, const uint64 vSize, const type& pValue){
 			for(uint32 i = 0; i < vSize; i+=sizeof(type)) memcpy((char*)vAddr + i, &pValue, sizeof(type));
 		}
@@ -107,8 +107,8 @@ namespace lux::ram{
 	public:
 		Cell_t* cell; //A pointer to a lux::ram::Cell_t object that contains the cell informations //TODO cache address with option
 		luxDebug(mutable lux::__pvt::CellState state;)
-		luxDebug(mutable Alloc<Dummy>* prevOwner;)
-		luxDebug(mutable Alloc<Dummy>* nextOwner;)
+		luxDebug(mutable ram::Alloc<Dummy>* prevOwner;)
+		luxDebug(mutable ram::Alloc<Dummy>* nextOwner;)
 
 
 
@@ -128,26 +128,26 @@ namespace lux::ram{
 		 * @brief Copy constructor. This function will only copy the pointer address and cell, not the data it points to
 		 * @param pPtr The pointer to copy. It must be a valid alloc lux::ram::ptr instance
 		 */
-		inline Alloc(const Alloc<type>& vAlloc) : constructExec(isInit(vAlloc); isAlloc(vAlloc))
+		inline Alloc(const ram::Alloc<type>& vAlloc) : constructExec(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } luxDebug(,state{ vAlloc.state }) {
 			cell->owners++;
 			luxDebug(
 				prevOwner = cell->lastOwner;
 				nextOwner = nullptr;
-				cell->lastOwner = (Alloc<Dummy>*)this;
+				cell->lastOwner = (ram::Alloc<Dummy>*)this;
 			)
 		}
 		/**
 		 * @brief Create a pointer by copying another pointer's address and cell
 		 * @param pPtr The pointer to copy. It must be a valid alloc lux::ram::ptr instance of a compatible type
 		 */
-		template<class aType> explicit inline Alloc(const Alloc<aType> vAlloc) : constructExec(isInit(vAlloc); isAlloc(vAlloc))
+		template<class aType> explicit inline Alloc(const ram::Alloc<aType> vAlloc) : constructExec(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } luxDebug(,state{ vAlloc.state }) {
 			cell->owners++;
 			luxDebug(
 				prevOwner = cell->lastOwner;
 				nextOwner = nullptr;
-				cell->lastOwner = (Alloc<Dummy>*)this;
+				cell->lastOwner = (ram::Alloc<Dummy>*)this;
 			)
 		}
 
@@ -162,7 +162,7 @@ namespace lux::ram{
 			luxDebug(
 				prevOwner = cell->lastOwner;
 				nextOwner = nullptr;
-				cell->lastOwner = (Alloc<Dummy>*)this;
+				cell->lastOwner = (ram::Alloc<Dummy>*)this;
 			)
 		}
 
@@ -182,7 +182,7 @@ namespace lux::ram{
 			++cell->owners;
 			luxDebug(state = lux::__pvt::CellState::ALLOC;)
 			luxDebug(
-				cell->firstOwner = cell->lastOwner = ((Alloc<Dummy>*)this);
+				cell->firstOwner = cell->lastOwner = ((ram::Alloc<Dummy>*)this);
 				prevOwner = nextOwner = nullptr;
 			)
 		}
@@ -198,7 +198,7 @@ namespace lux::ram{
 			init_memory(cell->address, vSize, pValue);
 			luxDebug(state = lux::__pvt::CellState::ALLOC;)
 			luxDebug(
-				cell->firstOwner = cell->lastOwner = ((Alloc<Dummy>*)this);
+				cell->firstOwner = cell->lastOwner = ((ram::Alloc<Dummy>*)this);
 				prevOwner = nextOwner = nullptr;
 			)
 		}
@@ -212,20 +212,20 @@ namespace lux::ram{
 
 
 		//Move assignment
-		inline void operator=(Alloc<type>&& vAlloc){
+		inline void operator=(ram::Alloc<type>&& vAlloc){
 			isInit(vAlloc); isAlloc(vAlloc);
 			cell = vAlloc.cell;				vAlloc.cell = nullptr;
 			luxDebug(state = vAlloc.state;)
 			luxDebug(
 				if(prevOwner) prevOwner->nextOwner = nextOwner;
 				if(nextOwner) nextOwner->prevOwner = prevOwner;
-				prevOwner = (Alloc<Dummy>*)&vAlloc;
+				prevOwner = (ram::Alloc<Dummy>*)&vAlloc;
 				nextOwner = vAlloc.nextOwner;
-				vAlloc.nextOwner = (Alloc<Dummy>*)this;
+				vAlloc.nextOwner = (ram::Alloc<Dummy>*)this;
 			)
 		}
 		//Copy assignment
-		inline void operator=(const Alloc<type>& vAlloc){
+		inline void operator=(const ram::Alloc<type>& vAlloc){
 			isInit(vAlloc); isAlloc(vAlloc);
 			cell->owners--;
 			cell = vAlloc.cell;
@@ -234,9 +234,9 @@ namespace lux::ram{
 			luxDebug(
 				if(prevOwner) prevOwner->nextOwner = nextOwner;
 				if(nextOwner) nextOwner->prevOwner = prevOwner;
-				prevOwner = (Alloc<Dummy>*)&vAlloc;
+				prevOwner = (ram::Alloc<Dummy>*)&vAlloc;
 				nextOwner = vAlloc.nextOwner;
-				vAlloc.nextOwner = (Alloc<Dummy>*)this;
+				vAlloc.nextOwner = (ram::Alloc<Dummy>*)this;
 			)
 		}
 		//Assignment
@@ -249,9 +249,9 @@ namespace lux::ram{
 			luxDebug(
 				if(prevOwner) prevOwner->nextOwner = nextOwner;
 				if(nextOwner) nextOwner->prevOwner = prevOwner;
-				prevOwner = (Alloc<Dummy>*)&vAlloc;
+				prevOwner = (ram::Alloc<Dummy>*)&vAlloc;
 				nextOwner = vAlloc.nextOwner;
-				vAlloc.nextOwner = (Alloc<Dummy>*)this;
+				vAlloc.nextOwner = (ram::Alloc<Dummy>*)this;
 			)
 		}
 
@@ -314,11 +314,11 @@ namespace lux::ram{
 		inline Alloc<type> deepCopy() const {
 			checkInit(); checkAlloc();
 			if(cell->address) {
-				Alloc<type> alloc(cell->cellSize);
+				ram::Alloc<type> alloc(cell->cellSize);
 				memcpy(alloc, cell->address, size());
 				return alloc;
 			}
-			else return Alloc<type>();
+			else return ram::Alloc<type>();
 		}
 
 
@@ -467,12 +467,12 @@ namespace lux::ram{
 			checkNullptr();
 			if((uint32)cell->typeIndex) types[cell->cellIndex].cells.remove(cell->localIndex);	//For fixed  size cells, free the allocation object
 			else std::free(cell->address);														//For custom size cells, free the entire buffer
-			cells.remove(cell->cellIndex);														//And then free the cell object
+			ram::cells.remove(cell->cellIndex);														//And then free the cell object
 			//Any other cell member will be overwritten
 
 			#ifdef LUX_DEBUG 																	//If in debug mode //FIXME set owners
 			if(state != lux::__pvt::CellState::OUTOFSCOPE) state = lux::__pvt::CellState::FREED;	//Get cell state
-			for(Alloc<Dummy>* p = cell->firstOwner; p; /*p = p->nextOwner*/){		//Loop through the owners of the cell
+			for(ram::Alloc<Dummy>* p = cell->firstOwner; p; /*p = p->nextOwner*/){		//Loop through the owners of the cell
 				p->state = state;																		//Update their cell state
 				p->cell = nullptr;																		//And set the cell to nullpt, to make it clear that the cell has been freed
 
@@ -500,8 +500,8 @@ namespace lux::ram{
 	template<class type> void lux::ram::Alloc<type>::alloc_(const uint64 vSize, const CellClass vClass){
 		using namespace lux::__pvt;
 
-		const uint32 cellIndex = cells.add(Cell_t{});
-		cell = &cells[cellIndex];
+		const uint32 cellIndex = ram::cells.add(Cell_t{});
+		cell = &ram::cells[cellIndex];
 		cell->cellIndex  = cellIndex;
 		cell->owners = 1;								//Set 1 owner: this pointer
 		cell->cellSize = vSize;							//Set size specified in function call

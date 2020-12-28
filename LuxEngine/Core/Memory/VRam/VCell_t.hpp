@@ -2,7 +2,7 @@
 #define LUX_H_VCELL_T
 #include "LuxEngine/Core/Memory/Shared.hpp"
 #include "LuxEngine/Types/Containers/RaArrayC.hpp"
-
+#include "vulkan/vulkan.h"
 
 
 
@@ -23,11 +23,16 @@ namespace lux{
         extern VType_t types[];
 
 
+
+        struct CSVCell{
+            
+        }
+
         struct VCell_t {
             uint16 typeIndex;		    //INDEX of the buffer type
             uint32 cellIndex;		    //Index of the cell in the cells array
             uint32 localIndex;          //Index of the cell in the type allocations
-            uint64 cellSize;		    //Size of the cell in bytes
+            uint64 cellSize;		    //Size of the cell in bytes, or a pointer to a custom size cell
             // Buffer_t* buffer;					//Index of the buffer where the cell is allocated
 
             // void* map();

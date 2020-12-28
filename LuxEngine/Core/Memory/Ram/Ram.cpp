@@ -27,7 +27,6 @@ namespace lux::ram{
 
 
 	luxAutoInit(LUX_H_MEMORY){
-		uint32 totCells = 0;
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
 			uint32 cellsNum = systemMemory / (uint64)lux::__pvt::classEnumFromIndex(i);
@@ -38,9 +37,8 @@ namespace lux::ram{
 				.cellsPerBuff = cellsNum / buffsNum
 			};
 			types[i].cells.init(cellsNum);
-			totCells += cellsNum;
 		}
-		cells.init(totCells);
+		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);		//Preallocate the max number of cells of the class with the min size
 	}
 
 
