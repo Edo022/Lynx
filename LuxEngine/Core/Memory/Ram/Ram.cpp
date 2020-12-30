@@ -33,7 +33,7 @@ namespace lux::ram{
 			uint32 buffsNum = systemMemory / lux::__pvt::bufferSize;
 			types[i] = {
 				.cellClass = lux::__pvt::classEnumFromIndex(i),
-				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),		//Max number of buffers. Initialize them with nullptr
+				.memory =  (void** )calloc(sizeof(void*), buffsNum),		//Max number of buffers. Initialize them with nullptr
 				.cellsPerBuff = cellsNum / buffsNum
 			};
 			types[i].cells.init(cellsNum);

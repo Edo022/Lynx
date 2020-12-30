@@ -399,8 +399,6 @@ namespace lux::rem{
 
 
 
-	//FIXME FIX OWNER COUNT IN REALLOC FUNCTIONS (OR ONLY CALL FROM REALLOC)
-	//TODO CHECK MEMORY FUL
 	template<class type> void lux::rem::VAlloc<type>::alloc_(const uint64 vSize, const CellClass vClass){
 		using namespace lux::__pvt;
 

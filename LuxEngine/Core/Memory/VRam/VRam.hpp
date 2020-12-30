@@ -11,6 +11,8 @@
 
 //TODO check for alllocation number limit
 namespace lux::rem{
+	extern VType_t types[];
+	extern RaArrayC<VCell_t> vcells;
 	extern uint32 maxAlloc;				//The maximum number of allocated buffers. Depends on the gpu properties
 
 

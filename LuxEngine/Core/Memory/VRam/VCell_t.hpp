@@ -24,16 +24,22 @@ namespace lux{
 
 
 
-        struct CSVCell{
-            
-        }
+        struct CsVCell_t{ //FIXME use converted VCell_t s if this needs too many allocations
+            CellClass cellClass;		//Class of the cells
+            lux::AllocType allocType;   //Buffer allocation type
+        };
+        union offset_cell_t{
+            uint64 offset;
+            CsVCell_t* csCell;
+        };
 
         struct VCell_t {
             uint16 typeIndex;		    //INDEX of the buffer type
             uint32 cellIndex;		    //Index of the cell in the cells array
             uint32 localIndex;          //Index of the cell in the type allocations
-            uint64 cellSize;		    //Size of the cell in bytes, or a pointer to a custom size cell
-            // Buffer_t* buffer;					//Index of the buffer where the cell is allocated
+            uint32 cellSize;		    //Size of the cell in bytes
+            offset_cell_t offset_cell;  //Offset of the cell, or a pointer to a custom size cell infos struct
+            // uint64 addr_offset;         //Offset of the cell, or a pointer to a custom size cell infos struct
 
             // void* map();
             // inline void unmap(){ __unmap(buffer); }
