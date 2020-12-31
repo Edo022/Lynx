@@ -403,7 +403,7 @@ namespace lux::rem{
 		using namespace lux::__pvt;
 
 		const uint32 cellIndex = cells.add(Cell_t{});
-		cell = &cells[cellIndex];
+		vcell = &vcells[cellIndex];
 		cell->cellIndex  = cellIndex;
 		cell->owners = 1;								//Set 1 owner: this pointer
 		cell->cellSize = vSize;							//Set size specified in function call
