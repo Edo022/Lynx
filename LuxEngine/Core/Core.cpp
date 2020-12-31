@@ -10,7 +10,7 @@
 #include "LuxEngine/System/System.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
+#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp""
 #include "LuxEngine/Core/ConsoleOutput.hpp"
 
 #include "LuxEngine/Core/LuxAutoInit.hpp"
