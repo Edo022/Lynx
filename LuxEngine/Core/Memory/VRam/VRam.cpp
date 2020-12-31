@@ -12,8 +12,8 @@
 
 namespace lux::rem{
 	uint32 maxAlloc;
-	// Type_t* buffers;
-    RaArrayC<VCell_t> vcells;
+	Type_t* buffers;
+    // RaArrayC<VCell_t> vcells;
 
 
 	luxAutoInit(LUX_H_VMEMORY){
