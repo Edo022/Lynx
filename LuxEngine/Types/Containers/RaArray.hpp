@@ -21,7 +21,7 @@ namespace lux {
 	 * @tparam iter Type of the elements indices. Must be an integer type. Default: uint32
 	 * @tparam chunkClass Class of each chunk in the array. Default: CellClass::CLASS_D (2KB)
 	 */
-	template<class type, class iter = uint32, CellClass chunkClass = CellClass::CLASS_D> class CellMng_t{
+	template<class type, class iter = uint32, CellClass chunkClass = CellClass::CLASS_D> class RaArray{
 	private:
 		genInitCheck;
 		ram::Alloc<ram::Alloc<type>> chunks_;		//Elements
@@ -51,7 +51,7 @@ namespace lux {
 		/**
 		 * @brief Creates an array with size 0 and no preallocated chunks
 		 */
-		inline CellMng_t( ) : head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 },
+		inline RaArray( ) : head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 },
 			chunks_ (0, CellClass::AT_LEAST_CLASS_B),
 			tracker_(0, CellClass::AT_LEAST_CLASS_B) {
 		}
@@ -65,7 +65,7 @@ namespace lux {
 		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline CellMng_t(const ContainerBase<eType, iType>& pCont) : /*constructExec(isInit(pCont))*/ CellMng_t( ) {
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*constructExec(isInit(pCont))*/ RaArray( ) {
 			//TODO check sizes in constructexec
 			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*pCont.begin( )));
 		}
@@ -74,12 +74,12 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array by copying each element from a CellMng_t. Removed elements are preserved.
-		 * @param pCont The CellMng_t to copy elements from.
-		 *		It must be a valid CellMng_t instance with a compatible type and
+		 * @brief Initializes the array by copying each element from a RaArray. Removed elements are preserved.
+		 * @param pCont The RaArray to copy elements from.
+		 *		It must be a valid RaArray instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline CellMng_t(const CellMng_t<eType, iType>& pCont) : constructExec(isInit(pCont))
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			chunks_  (pCont.chunks_ .deepCopy()),
 			tracker_ (pCont.tracker_.deepCopy()){
@@ -96,7 +96,7 @@ namespace lux {
 		/**
 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
-		inline CellMng_t(const CellMng_t<type, iter>& pCont) : constructExec(isInit(pCont))
+		inline RaArray(const RaArray<type, iter>& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			chunks_ (pCont.chunks_ .deepCopy()), tracker_ (pCont.tracker_.deepCopy()){
 			// chunks_ (pCont.chunks_ .size(), ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
@@ -114,7 +114,7 @@ namespace lux {
 		/**
 		 * @brief Move constructor
 		 */
-		inline CellMng_t(CellMng_t<type, iter>&& pCont) : constructExec(isInit(pCont))
+		inline RaArray(RaArray<type, iter>&& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			chunks_{pCont.chunks_}, tracker_{pCont.tracker_} {
 			pCont.chunks_ = pCont.tracker_ = nullptr; //FIXME
