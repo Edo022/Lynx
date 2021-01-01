@@ -13,6 +13,16 @@ template<class type, class iter = uint32> struct RaArrayC{
 
 
 	inline RaArrayC(){}
+
+
+	//Move constructor
+	inline RaArrayC(RaArrayC&& rArray) :
+		data{ rArray.data }, lnkd{ rArray.lnkd },
+		head{ rArray.head }, tail{ rArray.tail }, count_{ rArray.count_ } {
+		rArray.data = nullptr; rArray.lnkd = nullptr;
+	}
+
+
 	void init(const iter vCount){
 		luxCheckParam(vCount < 0, vCount, "Count cannot be negative");
 		data = (type*)malloc(sizeof(type) * vCount);
@@ -21,6 +31,17 @@ template<class type, class iter = uint32> struct RaArrayC{
 		for(int i = 0; i < vCount - 1;) lnkd[i] = ++i;
 		count_ = vCount;
 	}
+
+
+
+
+	//Move assignment
+	inline void operator=(RaArrayC&& rArray){
+		data = rArray.data; lnkd = rArray.lnkd;
+		head = rArray.head; tail = rArray.tail; count_ = rArray.count_;
+		rArray.data = nullptr; rArray.lnkd = nullptr;
+	}
+
 
 
 
@@ -47,7 +68,7 @@ template<class type, class iter = uint32> struct RaArrayC{
 	inline iter count() const noexcept { checkInit(); return count_; }
 
 	inline ~RaArrayC(){
-		free(data);
-		free(lnkd);
+		if(data) free(data);
+		if(lnkd) free(lnkd);
 	}
 };

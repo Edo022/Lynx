@@ -32,7 +32,7 @@ namespace lux::thr {
 		thrStates.clear();
 
 		maxpq.clear();
-		highpq.clear();
+		highpq.clear(); //TODO FIX AND PUSH IN BOTH BRANCHES
 		lowpq.clear();
 		minpq.clear();
 		stg.clear();

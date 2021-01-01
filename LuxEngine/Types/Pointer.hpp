@@ -44,13 +44,13 @@ namespace lux::ram{
 	#define checkSizeD()    luxCheckCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 	#define checkAlloc() \
-		luxCheckCond(state == lux::__pvt::CellState::FREED,      "Unable to call this function on an invalid allocation: The memory block have been manually freed")\
-		luxCheckCond(state == lux::__pvt::CellState::OUTOFSCOPE, "Unable to call this function on an invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
+		luxCheckCond(state == lux::__pvt::CellState::FREED,        "Unable to call this function on an invalid allocation: The memory block have been manually freed")\
+		luxCheckCond(state == lux::__pvt::CellState::OUTOFSCOPE,   "Unable to call this function on an invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
 	#define isAlloc(a)\
 		luxCheckCond(a.state == lux::__pvt::CellState::FREED,      "Invalid allocation: The memory block have been manually freed")\
 		luxCheckCond(a.state == lux::__pvt::CellState::OUTOFSCOPE, "Invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
-	#define checkNullptr()  luxCheckCond(!cell, "Unable to call this function on an unallocated memory block")
-	#define checkNullptrD() luxCheckCond(!cell->address, "Cannot dereference an unallocated memory block")
+	#define checkNullptr()  luxCheckCond(!cell->address,           "Unable to call this function on an unallocated memory block")
+	#define checkNullptrD() luxCheckCond(!cell->address,           "Cannot dereference an unallocated memory block")
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO){											\
@@ -410,16 +410,19 @@ namespace lux::ram{
 		 */
 		void realloc(const uint64 vSize, const type& pValue, CellClass vClass = CellClass::AUTO){
 			checkInit(); checkAllocSize(vSize, vClass);
-			if(cell->address/* luxDebug(|| cell->state != lux::__pvt::CellState::ALLOC)*/){
-				int64 d = vSize - size( );
-				auto end_ = end();
-				realloc(vSize, vClass);
-				if(d > 0) init_memory(end_, d, pValue);
+			if(cell->address){							//If the memory is already allocated
+				int64 d = vSize - size( );					//Get size difference
+				if(d > 0){									//If the new size is larger
+					auto end_ = end();							//Save the last address
+					realloc(vSize, vClass);						//Reallocate the block
+					init_memory(end_, d, pValue);				//Initialize the memory
+				}
+				else realloc(vSize, vClass);				//If it's smaller, just reallocate the block
 			}
-			else {
-				evaluateCellClass(vSize, vClass);
-				alloc_(vSize, vClass);
-				init_memory(cell->address, size(), pValue);
+			else {										//If the memory is nullptr
+				evaluateCellClass(vSize, vClass);			//Get cell class
+				alloc_(vSize, vClass);						//Allocate the block normally
+				init_memory(cell->address, size(), pValue);	//Initialize the memory
 			}
 		}
 
@@ -464,23 +467,25 @@ namespace lux::ram{
 		 */
 		//TODO add free function to erase memory contents
 		inline void free(){
-			checkNullptr();
-			if((uint32)cell->typeIndex) types[cell->cellIndex].cells.remove(cell->localIndex);	//For fixed  size cells, free the allocation object
-			else std::free(cell->address);														//For custom size cells, free the entire buffer
-			cells.remove(cell->cellIndex);														//And then free the cell object
-			//Any other cell member will be overwritten
+			// checkNullptr();
+			if(cell->address){
+				if((uint32)cell->typeIndex) types[cell->cellIndex].cells.remove(cell->localIndex);	//For fixed  size cells, free the allocation object
+				else std::free(cell->address);														//For custom size cells, free the entire buffer
+				cells.remove(cell->cellIndex);														//And then free the cell object
+				//Any other cell member will be overwritten
 
-			#ifdef LUX_DEBUG 																	//If in debug mode //FIXME set owners
-			if(state != lux::__pvt::CellState::OUTOFSCOPE) state = lux::__pvt::CellState::FREED;	//Get cell state
-			for(Alloc<Dummy>* p = cell->firstOwner; p; /*p = p->nextOwner*/){		//Loop through the owners of the cell
-				p->state = state;																		//Update their cell state
-				p->cell = nullptr;																		//And set the cell to nullpt, to make it clear that the cell has been freed
+				#ifdef LUX_DEBUG 																	//If in debug mode //FIXME set owners
+					if(state != lux::__pvt::CellState::OUTOFSCOPE) state = lux::__pvt::CellState::FREED;	//Get cell state
+					for(Alloc<Dummy>* p = cell->firstOwner; p; /*p = p->nextOwner*/){		//Loop through the owners of the cell
+						p->state = state;																		//Update their cell state
+						p->cell = nullptr;																		//And set the cell to nullpt, to make it clear that the cell has been freed
 
-				auto next_ = p->nextOwner;
-				p->prevOwner = p->nextOwner = nullptr;
-				p = next_;
+						auto next_ = p->nextOwner;
+						p->prevOwner = p->nextOwner = nullptr;
+						p = next_;
+					}
+				#endif
 			}
-			#endif
 		}
 
 
