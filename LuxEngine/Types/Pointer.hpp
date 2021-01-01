@@ -479,7 +479,8 @@ namespace lux::ram{
 					if(state != lux::__pvt::CellState::OUTOFSCOPE) state = lux::__pvt::CellState::FREED;	//Get cell state
 					for(Alloc<Dummy>* p = cell->firstOwner; p; /*p = p->nextOwner*/){		//Loop through the owners of the cell
 						p->state = state;																		//Update their cell state
-						p->cell = nullptr;																		//And set the cell to nullpt, to make it clear that the cell has been freed
+						// p->cell = nullptr;																		//And set the cell to nullpt, to make it clear that the cell has been freed
+						p->cell = &dummyCell;																	//And set the cell to nullpt, to make it clear that the cell has been freed
 
 						auto next_ = p->nextOwner;
 						p->prevOwner = p->nextOwner = nullptr;
