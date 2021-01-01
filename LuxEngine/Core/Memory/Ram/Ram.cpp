@@ -27,18 +27,25 @@ namespace lux::ram{
 
 
 	luxAutoInit(LUX_H_MEMORY){
+		using namespace lux::__pvt;
+
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
-		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
-			uint32 cellsNum = systemMemory / (uint64)lux::__pvt::classEnumFromIndex(i);
-			uint32 buffsNum = systemMemory / lux::__pvt::bufferSize;
+		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
+			uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
+			uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
 			types[i] = {
-				.cellClass = lux::__pvt::classEnumFromIndex(i),
-				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),		//Max number of buffers. Initialize them with nullptr
-				.cellsPerBuff = cellsNum / buffsNum
+				.cellClass = classEnumFromIndex(i),									//Set class index
+				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
+				.cellsPerBuff = cellsPerBuff
 			};
-			types[i].cells.init(cellsNum);
+			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
 		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);
+		// #ifdef LUX_DEBUG
+		// 	for(int i = 0; i < systemMemory / (uint64)lux::CellClass::CLASS_A; ++i){
+		// 		cells[i].__pvt_init_val = lux::__pvt::init_val;
+		// 	}
+		// #endif
 	}
 
 

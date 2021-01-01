@@ -176,8 +176,8 @@ namespace lux::ram{
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
 		inline Alloc(const uint64 vSize, CellClass vClass = CellClass::AUTO){
-			checkAllocSize(vSize, vClass);
 			evaluateCellClass(vSize, vClass);
+			checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass);
 			++cell->owners;
 			luxDebug(state = lux::__pvt::CellState::ALLOC;)
@@ -359,8 +359,9 @@ namespace lux::ram{
 		//FIXME or create specific array type that puts new cells in the first free element with the smallest index
 		//FIXME add __behaviour__ template parameter to specify those things
 		void realloc(const uint64 vSize, CellClass vClass = CellClass::AUTO){
-			checkInit(); checkAllocSize(vSize, vClass);
+			checkInit();
 			evaluateCellClass(vSize, vClass);
+			checkAllocSize(vSize, vClass);
 
 			if(!cell->address) { [[unlikely]]									//If the memory is unallocated
 				alloc_(vSize, vClass);												//Allocate it
@@ -469,7 +470,7 @@ namespace lux::ram{
 		inline void free(){
 			// checkNullptr();
 			if(cell->address){
-				if((uint32)cell->typeIndex) types[cell->cellIndex].cells.remove(cell->localIndex);	//For fixed  size cells, free the allocation object
+				if((uint32)cell->typeIndex) types[cell->typeIndex].cells.remove(cell->localIndex);	//For fixed  size cells, free the allocation object
 				else std::free(cell->address);														//For custom size cells, free the entire buffer
 				cells.remove(cell->cellIndex);														//And then free the cell object
 				//Any other cell member will be overwritten
@@ -507,10 +508,12 @@ namespace lux::ram{
 
 		const uint32 cellIndex = cells.add(Cell_t{});
 		cell = &cells[cellIndex];
-		cell->cellIndex  = cellIndex;
-		cell->owners = 1;								//Set 1 owner: this pointer
-		cell->cellSize = vSize;							//Set size specified in function call
-		cell->typeIndex = classIndexFromEnum(vClass);	//Set cell type index
+		*cell = Cell_t{
+			.typeIndex = classIndexFromEnum(vClass),	//Set cell type index
+			.owners = 1,								//Set 1 owner: this pointer
+			.cellIndex  = cellIndex,
+			.cellSize = vSize,							//Set size specified in function call
+		};
 		luxDebug(state = CellState::ALLOC);				//Add cell state info if in debug mode
 
 		if((uint32)vClass){											//For fixed class cells

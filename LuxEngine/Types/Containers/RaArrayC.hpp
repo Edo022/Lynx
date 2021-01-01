@@ -28,8 +28,9 @@ template<class type, class iter = uint32> struct RaArrayC{
 		data = (type*)malloc(sizeof(type) * vCount);
 		lnkd = (iter*)malloc(sizeof(iter) * vCount);
 		tail = 0; head = vCount - 1;
-		for(int i = 0; i < vCount - 1;) lnkd[i] = ++i;
+		for(int i = 0; i < vCount - 1; ++i) lnkd[i] = i + 1;
 		count_ = vCount;
+		// luxDebug(__pvt_init_val = lux::__pvt::init_val;)
 	}
 
 

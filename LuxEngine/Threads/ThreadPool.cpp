@@ -31,7 +31,7 @@ namespace lux::thr {
 		// threads = RtArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.clear();
 
-		maxpq.clear();
+		maxpq.clear();	//BUG FIX UNINITIALIZED STRUCTS
 		highpq.clear(); //TODO FIX AND PUSH IN BOTH BRANCHES
 		lowpq.clear();
 		minpq.clear();

@@ -218,8 +218,8 @@ namespace lux {
 				chunks_ [i].free();
 				tracker_[i].free();
 			}
-			chunks_ .free();
-			tracker_.free();
+			// chunks_ .free(); //BUG dont free
+			// tracker_.free();
 
 			head = tail = (iter)-1;
 			size_ = free_ = 0;
