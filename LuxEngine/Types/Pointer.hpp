@@ -413,7 +413,7 @@ namespace lux::ram{
 			checkInit(); checkAllocSize(vSize, vClass);
 			if(cell->address){							//If the memory is already allocated
 				int64 d = vSize - size( );					//Get size difference
-				if(d > 0){									//If the new size is larger
+				if(d > 0 && size( ) > 0){						//If the cell contains more than 0 bytes and new size is larger
 					auto end_ = end();							//Save the last address
 					realloc(vSize, vClass);						//Reallocate the block
 					init_memory(end_, d, pValue);				//Initialize the memory
