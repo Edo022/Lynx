@@ -136,8 +136,11 @@ namespace lux {
 		iter append() {
 			checkInit();
 			if(size_ + 1 > chunks_.count() * (uint64)chunkClass) {					//If the chunk is full
-				chunks_ [chunks_.count()].reallocArr((uint64)chunkClass, type());		//Create a new one
-				tracker_[chunks_.count()].reallocArr((uint64)chunkClass, iter());
+			//BUG use contiguous array
+				// chunks_ [chunks_.count()].reallocArr((uint64)chunkClass, type());		//Create a new one
+				// tracker_[chunks_.count()].reallocArr((uint64)chunkClass, iter());
+				chunks_ .reallocArr((uint64)chunkClass, type());		//Create a new one
+				tracker_.reallocArr((uint64)chunkClass, iter());
 			}
 			tracker(size_) = -1;	//Set the tracker as valid
 			return size_++;			//Update the number of elements and return the ID
