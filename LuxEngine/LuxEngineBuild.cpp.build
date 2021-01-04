@@ -2,6 +2,7 @@
 
 
 //TODO check link order
+#include "LuxEngine/Tests/StructureInit.cpp"
 #include "LuxEngine/Core/Memory/Ram/Ram.cpp"
 #include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
 #include "LuxEngine/Core/Devices.cpp"

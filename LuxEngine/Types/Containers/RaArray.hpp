@@ -519,7 +519,7 @@ namespace lux {
 			auto i = add();
 			data[i] = vData;
 			return i;
-		}
+		}//BUG not initializing the element leaves it in an uninitialized state that is illegal for some operator= functions
 
 
 

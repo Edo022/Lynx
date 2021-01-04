@@ -213,7 +213,7 @@ namespace lux::ram{
 
 		//Move assignment
 		inline void operator=(Alloc<type>&& vAlloc){
-			isInit(vAlloc); isAlloc(vAlloc);
+			checkInit(); isInit(vAlloc); isAlloc(vAlloc);
 			cell = vAlloc.cell;				vAlloc.cell = nullptr;
 			luxDebug(state = vAlloc.state;)
 			luxDebug(
@@ -226,7 +226,7 @@ namespace lux::ram{
 		}
 		//Copy assignment
 		inline void operator=(const Alloc<type>& vAlloc){
-			isInit(vAlloc); isAlloc(vAlloc);
+			checkInit(); isInit(vAlloc); isAlloc(vAlloc);
 			cell->owners--;
 			cell = vAlloc.cell;
 			cell->owners++;
@@ -241,7 +241,7 @@ namespace lux::ram{
 		}
 		//Assignment
 		template<class aType> inline void operator=(const Alloc<aType> vAlloc){
-			isInit(vAlloc); isAlloc(vAlloc);
+			checkInit(); isInit(vAlloc); isAlloc(vAlloc);
 			cell->owners--;
 			cell = vAlloc.cell;
 			cell->owners++;
@@ -510,10 +510,10 @@ namespace lux::ram{
 		const uint32 cellIndex = cells.add(Cell_t{});
 		cell = &cells[cellIndex];
 		*cell = Cell_t{
-			.typeIndex = classIndexFromEnum(vClass),	//Set cell type index
+			.typeIndex = (uint16)classIndexFromEnum(vClass),	//Set cell type index
 			.owners = 1,								//Set 1 owner: this pointer
 			.cellIndex  = cellIndex,
-			.cellSize = vSize,							//Set size specified in function call
+			.cellSize = (uint32)vSize,							//Set size specified in function call
 		};
 		luxDebug(state = CellState::ALLOC);				//Add cell state info if in debug mode
 
