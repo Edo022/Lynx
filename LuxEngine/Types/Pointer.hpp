@@ -43,14 +43,19 @@ namespace lux::ram{
 	#define checkSize()     luxCheckCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
 	#define checkSizeD()    luxCheckCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
+
 	#define checkAlloc() \
 		luxCheckCond(state == lux::__pvt::CellState::FREED,        "Unable to call this function on an invalid allocation: The memory block have been manually freed")\
 		luxCheckCond(state == lux::__pvt::CellState::OUTOFSCOPE,   "Unable to call this function on an invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
 	#define isAlloc(a)\
 		luxCheckCond(a.state == lux::__pvt::CellState::FREED,      "Invalid allocation: The memory block have been manually freed")\
 		luxCheckCond(a.state == lux::__pvt::CellState::OUTOFSCOPE, "Invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
-	#define checkNullptr()  luxCheckCond(!cell->address,           "Unable to call this function on an unallocated memory block")
-	#define checkNullptrD() luxCheckCond(!cell->address,           "Cannot dereference an unallocated memory block")
+
+
+	#define checkNullptr()
+		luxCheckCond(state == lux::__pvt::CellStateNULLPTR,        "Unable to call this function on an unallocated memory block")
+	#define checkNullptrD()
+		luxCheckCond(state == lux::__pvt::CellStateNULLPTR,        "Cannot dereference an unallocated memory block")
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO){											\
@@ -117,9 +122,10 @@ namespace lux::ram{
 		 *		Initializes it with the .realloc function before accessing its memory
 		 */
 		inline Alloc( ) : cell{ &dummyCell } {
-			luxDebug(state = lux::__pvt::CellState::ALLOC;)
+			luxDebug(state = lux::__pvt::CellState::NULLPTR;)
 			luxDebug(prevOwner = nextOwner = nullptr;)
 		}
+		inline Alloc(const std::nullptr_t null) : Alloc( ) { }
 
 
 
@@ -254,6 +260,17 @@ namespace lux::ram{
 				vAlloc.nextOwner = (Alloc<Dummy>*)this;
 			)
 		}
+		//nullptr
+		inline void operator=(const std::nullptr_t null){
+			cell->owners--;
+			cell = &ram::dummyCell;
+			luxDebug(state = lux::__pvt::CellState::NULLPTR;)
+			luxDebug(
+				if(prevOwner) prevOwner->nextOwner = nextOwner;
+				if(nextOwner) nextOwner->prevOwner = prevOwner;
+				prevOwner = nextOwner = nullptr;
+			)
+		}
 
 		//different types of pointers are converted with the explicit conversion operator
 
@@ -284,9 +301,11 @@ namespace lux::ram{
 			luxCheckParam((vIndex < 0 || vIndex >= count()), vIndex, "Index is out of range");
 			return ((type*)(cell->address))[vIndex];
 		}
-		inline type& operator*( ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }
-		inline type* begin(     ) const { checkInit(); checkNullptr();  checkSize();  return (type*)cell->address;							 } //Returns the first address of the allocated memory block as a lux::ram::ptr
-		inline type* end(       ) const { checkInit(); checkNullptr();  checkSize();  return (type*)((int8*)cell->address + cell->cellSize); } //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
+		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }
+		inline type* operator->( ) const { checkInit(); checkNullptrD(); return cell->address; }
+		//FIXME return ram::ptr<type> instead of type*
+		inline type* begin(      ) const { checkInit(); checkNullptr();  checkSize();  return (type*)cell->address;							 } //Returns the first address of the allocated memory block as a lux::ram::ptr
+		inline type* end(        ) const { checkInit(); checkNullptr();  checkSize();  return (type*)((int8*)cell->address + cell->cellSize); } //Returns the address of the object past the last object in the memory block as a lux::ram::ptr. Don't dereference it
 
 
 
@@ -612,5 +631,8 @@ namespace lux::ram{
 		#define checkNullptrD() luxCheckCond(address == nullptr, "Cannot dereference a nullptr pointer")
 		inline type& operator[](const uint64 vIndex) const { checkInit(); checkNullptrD(); return address[vIndex]; }
 		inline type& operator* (                   ) const { checkInit(); checkNullptrD(); return *address; }
+		inline type* operator->(                   ) const { checkInit(); checkNullptrD(); return address; }
+		inline operator type*( ) const { checkInit(); return (type*)address; }	//ram::ptr<type> to type* implicit conversion
+		inline operator bool(  ) const { checkInit(); return !!address;      }	//ram::ptr<type> to bool  implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
 	};
 }

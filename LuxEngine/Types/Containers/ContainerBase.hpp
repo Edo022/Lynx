@@ -9,6 +9,7 @@
 #	include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 //#endif
 
+#include <new>
 
 
 
@@ -54,17 +55,37 @@
 namespace lux {
 	template <class type, class iter> class ContainerBase {
 	public:
-		genInitCheck;
 		//FIXME move data array to base class to avoid the use of virtual functions. theyre slow af
-
-		virtual inline type*	begin( ) const = 0;		//Returns a pointer to the first element of the container
-		virtual inline type*	end(   ) const = 0;		//Returns a pointer to the element after the last element of the container
-		virtual inline iter		count( ) const = 0;		//Returns the number of elements in the container
-		virtual inline uint64	size(  ) const = 0;		//Returns the size in bytes of the data contained in the container
-		virtual inline bool		empty( ) const = 0;		//Returns true if the container has size 0, false otherwise
-
-		inline auto& operator=(const ContainerBase<type, iter>& pCont){
-			return *this;
+		genInitCheck;
+		ram::Alloc<type> data;	//Elements of the array
+		template<class type_, class... types, iter index> inline void init(type_&& vElm, types&&... vElms){
+			init<type_, index>(vElm);
+			init<type_, types..., index + 1>(vElm, vElms...);
 		}
+		template<class type_, iter index> inline void init(type_&& vElm){ data[index] = (type)vElm; }
+
+
+
+		inline ContainerBase() : data((int)0) {}
+		inline ContainerBase(const iter vCount) :
+			constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
+			data(sizeof(type) * vCount) {
+			for(int i = 0; i < vCount; i++) new(&data[i]) type();
+		}
+		template<class... types> inline ContainerBase(types&&... vElms) : ContainerBase(sizeof...(vElms)) { init<types..., 0>(vElms...); }
+		inline ~ContainerBase(){
+			for(int i = 0; i < count(); i++) data[i].~type();
+		}
+
+		inline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
+		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
+		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container
+		inline bool	empty( ) const { return !count(); 						};	//Returns true if the container has size 0, false otherwise
+		// inline uint64 size(  ) const { return };		//Returns the size in bytes of the data contained in the container
+
+		// inline auto& operator=(const ContainerBase<type, iter>& pCont){
+
+		// 	return *this;
+		// }
 	};
 }

@@ -31,7 +31,8 @@ namespace lux{
 		enum class CellState : uint32{
 			ALLOC      = 1,
 			FREED      = 2,
-			OUTOFSCOPE = 3
+			OUTOFSCOPE = 3,
+			NULLPTR    = 4
 		};
 		#endif
 
