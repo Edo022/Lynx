@@ -478,6 +478,7 @@ namespace lux::core::c::shaders{
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ);	//Create command buffers and command pool
 
 		addShaderFence.startSecond( );
+		// shader.
 		LuxShader i = CShaders.add(shader);	 //BUG for some reason, i has a huge value											//Add the shader to the shader array
 		addShaderFence.endSecond( );
 		return i;

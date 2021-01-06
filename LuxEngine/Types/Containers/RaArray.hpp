@@ -516,8 +516,9 @@ namespace lux {
 		 */
 		inline iter add(const type& vData) {
 			checkInit();
-			auto i = add();
+			auto i = add(); //BUG add specific function for allocations that needs to be initialized
 			data[i] = vData;
+			// data[i] = type(vData);
 			return i;
 		}//BUG not initializing the element leaves it in an uninitialized state that is illegal for some operator= functions
 

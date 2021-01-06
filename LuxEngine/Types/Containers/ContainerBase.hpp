@@ -62,5 +62,9 @@ namespace lux {
 		virtual inline iter		count( ) const = 0;		//Returns the number of elements in the container
 		virtual inline uint64	size(  ) const = 0;		//Returns the size in bytes of the data contained in the container
 		virtual inline bool		empty( ) const = 0;		//Returns true if the container has size 0, false otherwise
+
+		inline auto& operator=(const ContainerBase<type, iter>& pCont){
+			return *this;
+		}
 	};
 }

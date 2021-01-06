@@ -503,7 +503,7 @@ namespace lux::ram{
 
 
 	//FIXME FIX OWNER COUNT IN REALLOC FUNCTIONS (OR ONLY CALL FROM REALLOC)
-	//TODO CHECK MEMORY FUL
+	//TODO CHECK MEMORY FULL
 	template<class type> void lux::ram::Alloc<type>::alloc_(const uint64 vSize, const CellClass vClass){
 		using namespace lux::__pvt;
 
