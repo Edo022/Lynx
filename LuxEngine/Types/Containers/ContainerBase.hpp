@@ -61,14 +61,20 @@ namespace lux {
 		ram::Alloc<type> data;	//Elements of the array
 
 
+		void destroy(){
+			for(int i = 0; i < count(); i++) data[i].~type();
+		}
 
 
-		// template<iter index, class type_, class... types> inline void init(const type_& vElm, const types&... vElms){
-		// 	init<index, type_>(vElm);
-		// 	init<index + 1, type_, types...>(vElms...);
-		// }
+		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
+			destroy();							//Destroy old elements
+			data.reallocArr(pCont.count());				//Allocate new elements
+			for(int i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type();						//Initialize new elements
+				data[i] = (type)pCont[(cIter)i];			//Assign new elements
+			}
+		}
 
-		// template<iter index, class type_> inline void init(const type_& vElm){ data[index] = (type)vElm; }
 
 
 
@@ -77,20 +83,17 @@ namespace lux {
 		inline ContainerBase(const iter vCount) :
 			constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
 			data(sizeof(type) * vCount) {
-			for(int i = 0; i < vCount; i++) new(&data[i]) type();
+			for(int i = 0; i < vCount; ++i) new(&data[i]) type();
 		}
 
 
-		// template<class... types> inline ContainerBase(const types&... vElms) : ContainerBase((iter)sizeof...(vElms)) {
-		// 	init<(iter)0, types...>(vElms...);
-		// }
 		inline ContainerBase(const std::initializer_list<type>& vElms) : ContainerBase(vElms.size()) {
 			iter i = 0;
 			for(auto elm : vElms) data[i++] = elm;
 		}
 
 		inline ~ContainerBase(){
-			for(int i = 0; i < count(); i++) data[i].~type();
+			destroy();
 		}
 
 
@@ -100,5 +103,7 @@ namespace lux {
 		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
 		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container
 		inline bool	empty( ) const { return !count(); 						};	//Returns true if the container has size 0, false otherwise
+
+		inline auto& operator[](iter vIndex) const { return data[vIndex]; }
 	};
 }

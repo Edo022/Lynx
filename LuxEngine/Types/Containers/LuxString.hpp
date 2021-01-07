@@ -43,7 +43,7 @@ namespace lux {
 
 		//String count cannot be 0. the '\0' is always present and occupies one byte
 		//TODO the elements are probably uninitialized
-		inline String(                                  ) : Super(1, '\0') { }
+		inline String(                                  ) : Super(1) { Super::data[0] = '\0'; }
 		inline String(const String& pString             ) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
 		inline String(const char8* vString              ) : Super(strlenl(vString) + 1) { ram::cpy(vString,      Super::data, Super::data.size( ));      }
 		inline String(const char8* vString, uint64 vSize) : Super(vSize)	            { ram::cpy(vString,      Super::data, Super::data.size( ));      }
@@ -70,7 +70,7 @@ namespace lux {
 			checkInit();
 			luxCheckParam(vIndex < 0,       vIndex, "Index cannot be negative");
 			luxCheckParam(vIndex > count(), vIndex, "Index is out of range");
-			return Super::data[vIndex];
+			return Super::operator[](vIndex);
 		}
 
 
@@ -152,6 +152,7 @@ namespace lux {
 			checkInit();
 			return ((Super::data.count( ) == strlenl(vString) + 1) && (memcmp(vString, Super::data, Super::data.count( )) == 0));
 		}
+		#undef Super
 	};
 }
 

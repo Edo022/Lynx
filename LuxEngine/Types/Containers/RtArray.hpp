@@ -7,7 +7,7 @@
 #include <cstring>
 
 
-
+//FIXME use always_inline
 
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sended back to the queue
@@ -64,18 +64,17 @@ namespace lux {
 		}
 
 
-		/**
-		 * @brief Copy constructor
-		 */
+		///@brief copy constructor
 		inline RtArray(const RtArray<type, iter>& pCont) : RtArray<type, iter>((Super)pCont) { }
 
+		///@brief Move constructor
+		inline RtArray(RtArray<type, iter>&& pCont){ operator=(pCont); }
 
-		/**
-		 * @brief Move constructor
-		 */
-		inline RtArray(RtArray<type, iter>&& pCont){
-			Super::data = pCont.data;	pCont.data = nullptr;
-		}
+		///@brief copy assignment //FIXME return reference chain
+		inline /*auto&*/void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); /*return*/ }
+
+		///@brief Move assignment
+		inline void operator=(RtArray<type, iter>&& pCont){ Super::data = pCont.data; pCont.data = nullptr; }
 
 
 
@@ -99,7 +98,8 @@ namespace lux {
 		//Resets the array to its initial state, freeing the memory and resizing it to 0
 		inline void clear( ){
 			checkInit();
-			Super::data.free();
+			Super::destroy();	//Free old elements
+			// Super::data.free();
 
 			//TODO dont call this directly. add construct function
 			// this->DynArray::DynArray( );
@@ -134,7 +134,7 @@ namespace lux {
 			luxCheckCond(Super::count() == 0,                "This function cannot be called on containers with size 0");
 			luxCheckParam(vIndex < 0, vIndex,         "Index cannot be negative");
 			luxCheckParam(vIndex >= Super::count( ), vIndex, "Index is out of range");
-			return Super::data[vIndex];
+			return Super::operator[](vIndex);
 		}
 		#undef Super
 	};

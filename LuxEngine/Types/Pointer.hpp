@@ -52,10 +52,10 @@ namespace lux::ram{
 		luxCheckCond(a.state == lux::__pvt::CellState::OUTOFSCOPE, "Invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
 
 
-	#define checkNullptr()
-		luxCheckCond(state == lux::__pvt::CellStateNULLPTR,        "Unable to call this function on an unallocated memory block")
-	#define checkNullptrD()
-		luxCheckCond(state == lux::__pvt::CellStateNULLPTR,        "Cannot dereference an unallocated memory block")
+	#define checkNullptr()\
+		luxCheckCond(state == lux::__pvt::CellState::NULLPTR,      "Unable to call this function on an unallocated memory block")
+	#define checkNullptrD()\
+		luxCheckCond(state == lux::__pvt::CellState::NULLPTR,      "Cannot dereference an unallocated memory block")
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO){											\
@@ -512,6 +512,10 @@ namespace lux::ram{
 
 		inline operator type*( ) const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
 		inline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
+
+		inline bool operator==(ram::Alloc<type> vPtr){ return vPtr.cell == cell; /*Same as checking addresses*/ }
+		inline bool operator!=(ram::Alloc<type> vPtr){ return vPtr.cell != cell; /*Same as checking addresses*/ }
+		//TODO add == and != for Alloc-ptr
 	};
 
 
@@ -634,5 +638,8 @@ namespace lux::ram{
 		inline type* operator->(                   ) const { checkInit(); checkNullptrD(); return address; }
 		inline operator type*( ) const { checkInit(); return (type*)address; }	//ram::ptr<type> to type* implicit conversion
 		inline operator bool(  ) const { checkInit(); return !!address;      }	//ram::ptr<type> to bool  implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
+
+		inline bool operator==(ram::ptr<type> vPtr){ return vPtr.address == address; }
+		inline bool operator!=(ram::ptr<type> vPtr){ return vPtr.address != address; }
 	};
 }
