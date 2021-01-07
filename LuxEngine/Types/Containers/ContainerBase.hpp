@@ -10,6 +10,7 @@
 //#endif
 
 #include <new>
+#include <initializer_list>
 
 
 
@@ -58,11 +59,17 @@ namespace lux {
 		//FIXME move data array to base class to avoid the use of virtual functions. theyre slow af
 		genInitCheck;
 		ram::Alloc<type> data;	//Elements of the array
-		template<class type_, class... types, iter index> inline void init(type_&& vElm, types&&... vElms){
-			init<type_, index>(vElm);
-			init<type_, types..., index + 1>(vElm, vElms...);
-		}
-		template<class type_, iter index> inline void init(type_&& vElm){ data[index] = (type)vElm; }
+
+
+
+
+		// template<iter index, class type_, class... types> inline void init(const type_& vElm, const types&... vElms){
+		// 	init<index, type_>(vElm);
+		// 	init<index + 1, type_, types...>(vElms...);
+		// }
+
+		// template<iter index, class type_> inline void init(const type_& vElm){ data[index] = (type)vElm; }
+
 
 
 
@@ -72,20 +79,26 @@ namespace lux {
 			data(sizeof(type) * vCount) {
 			for(int i = 0; i < vCount; i++) new(&data[i]) type();
 		}
-		template<class... types> inline ContainerBase(types&&... vElms) : ContainerBase(sizeof...(vElms)) { init<types..., 0>(vElms...); }
+
+
+		// template<class... types> inline ContainerBase(const types&... vElms) : ContainerBase((iter)sizeof...(vElms)) {
+		// 	init<(iter)0, types...>(vElms...);
+		// }
+		inline ContainerBase(const std::initializer_list<type>& vElms) : ContainerBase(vElms.size()) {
+			iter i = 0;
+			for(auto elm : vElms) data[i++] = elm;
+		}
+
 		inline ~ContainerBase(){
 			for(int i = 0; i < count(); i++) data[i].~type();
 		}
+
+
+
 
 		inline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
 		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
 		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container
 		inline bool	empty( ) const { return !count(); 						};	//Returns true if the container has size 0, false otherwise
-		// inline uint64 size(  ) const { return };		//Returns the size in bytes of the data contained in the container
-
-		// inline auto& operator=(const ContainerBase<type, iter>& pCont){
-
-		// 	return *this;
-		// }
 	};
 }

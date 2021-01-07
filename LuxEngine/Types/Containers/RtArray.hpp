@@ -34,8 +34,6 @@ namespace lux {
 		#define Super ContainerBase<type, iter>
 	private:
 		genInitCheck;
-		// ram::Alloc<type> data_;	//Elements of the array
-
 	public:
 
 
@@ -46,27 +44,11 @@ namespace lux {
 
 
 
-		// luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
 		inline RtArray(           ) : Super(      ) { }
 		inline RtArray(iter vCount) : Super(vCount) { }
 
-		template<class... types> inline RtArray(types&&... vElms) : Super{ vElms... } { }
-		// //Initializes the array using a container object of a compatible type
-		// //*   pContainer | The container object to copy elements from
-		// //*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		// template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pCont) :
-		// 	ContainerBase<type, iter>(pCont.count( )) {
-		// 	//FIXME check count and not iterator
-		// 	luxCheckParam(sizeof(cIter) > sizeof(iter), pCont, "The iterator of a container must be larger than the one of the container used to initialize it");
-		// 	isInit(pCont);
-		// 	// ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
-		// 	for(int i = 0; i < pCont.count(); ++i){ operator[](i) = *(pCont.begin() + i); }
-		// }
+		inline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } { }
 
-
-		//*Initializes the array using a container object of a compatible type
-		//*   pContainer | The container object to copy elements from
-		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
 
 		/**
 		 * @brief Initializes the array with a lux::ContainerBase subclass instance by calling operator= on each element
@@ -80,6 +62,8 @@ namespace lux {
 			// ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
 			for(int i = 0; i < pCont.count(); ++i){ operator[](i) = (type)*(pCont.begin() + i); }
 		}
+
+
 		/**
 		 * @brief Copy constructor
 		 */
@@ -92,24 +76,6 @@ namespace lux {
 		inline RtArray(RtArray<type, iter>&& pCont){
 			Super::data = pCont.data;	pCont.data = nullptr;
 		}
-
-
-
-
-		// //TODO remove
-		// //Initializes the array using a list of elements of the same type
-		// inline RtArray(const std::initializer_list<type>& pElements) : data_(sizeof(type) * pElements.size( ), CellClass::AT_LEAST_CLASS_B) {
-		// 	//TODO ^ C strings get destroyed when the function returns
-		// 	//luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
-
-		// 	memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
-		// }
-
-
-		// inline ~RtArray(){
-		// 	// data_.~ptr();
-		// }
-
 
 
 
@@ -160,11 +126,8 @@ namespace lux {
 
 
 
-		// inline iter	  count( )	const override { checkInit(); return data_.count( );		  }
 		inline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
-		// inline bool	  empty( )	const override { checkInit(); return !count( );				  }
-		// inline type*  begin( )	const override { checkInit(); return data_.begin( );		  }
-		// inline type*  end( )	const override { checkInit(); return data_.end( );			  }
+
 
 		inline type&  operator[](const iter vIndex) const {
 			checkInit();
