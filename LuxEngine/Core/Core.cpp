@@ -97,7 +97,7 @@ namespace lux::core{
 		//FIXME DONT USE STD
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin( ))) {
-				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXME
+				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXMEz
 				win10(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!compileShader(luxStrPath.begin( ))) luxPrintError("compilation error")

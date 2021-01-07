@@ -78,7 +78,7 @@ int main( ) {
 	lux::input::InputState inputStateTest({
 		lux::input::KeySequence{ LUX_KEY_W | lux::input::LuxKeyState::LUX_PRESS, hg },
 		lux::input::KeySequence{ LUX_KEY_A | lux::input::LuxKeyState::LUX_PRESS, hg }
-		});
+	});
 	lux::input::setInputState(&inputStateTest);
 
 

@@ -29,7 +29,7 @@ namespace lux::core::c::buffers{
 	//TODO remove those functions. Theyre probably useless
 	//TODO or separate gpu shared allocations from normal ones
 	inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
-	inline void internalFreeCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
+	inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
 	//PFN_vkFreeFunction
 
 

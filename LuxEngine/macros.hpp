@@ -7,7 +7,7 @@
 #undef max
 #undef min
 //Functions
-template<class ta, class tb>						static inline constexpr void swapVar(ta a, tb b)		 { a ^= b ^= a ^= b; }       //Swaps the contents of 2 basic type variables
+template<class ta, class tb>						static inline constexpr void swapVar(ta& a, tb& b)		 { a ^= b ^= a ^= b; }       //Swaps the contents of 2 basic type variables
 template<class ta, class tb>						static inline constexpr auto max(const ta a, const tb b) { return (a > b) ? a : b; } //Returns the minimum value
 template<class ta, class tb>						static inline constexpr auto min(const ta a, const tb b) { return (a < b) ? a : b; } //Returns the maximum value
 template<class ta, class tb, class tc, class ...tn> static inline constexpr auto max(const ta a, const tb b, const tc c, const tn... n) { return max(a, b, c, n...); }

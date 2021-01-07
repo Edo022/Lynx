@@ -44,17 +44,17 @@ namespace lux::ram{
 	#define checkSizeD()    luxCheckCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 
-	#define checkAlloc() \
+	#define checkAlloc() 	\
 		luxCheckCond(state == lux::__pvt::CellState::FREED,        "Unable to call this function on an invalid allocation: The memory block have been manually freed")\
 		luxCheckCond(state == lux::__pvt::CellState::OUTOFSCOPE,   "Unable to call this function on an invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
-	#define isAlloc(a)\
+	#define isAlloc(a)		\
 		luxCheckCond(a.state == lux::__pvt::CellState::FREED,      "Invalid allocation: The memory block have been manually freed")\
 		luxCheckCond(a.state == lux::__pvt::CellState::OUTOFSCOPE, "Invalid allocation: All the Alloc instances owning the memory went out of scope and were destroyed")
 
 
-	#define checkNullptr()\
+	#define checkNullptr()	\
 		luxCheckCond(state == lux::__pvt::CellState::NULLPTR,      "Unable to call this function on an unallocated memory block")
-	#define checkNullptrD()\
+	#define checkNullptrD()	\
 		luxCheckCond(state == lux::__pvt::CellState::NULLPTR,      "Cannot dereference an unallocated memory block")
 
 
