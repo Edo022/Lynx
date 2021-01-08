@@ -94,7 +94,7 @@ namespace lux {
 		inline ContainerBase(const iter vCount) :
 			constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
 			data{ vCount } {
-			initRange(0, count());
+			initRange(0, count() - 1);
 		}
 
 

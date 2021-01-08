@@ -245,8 +245,8 @@ namespace lux {
 			destroy();
 			head = tail = (iter)-1;
 			size_ = free_ = 0;
-			data.reallocArr(nullptr);
-			lnkd.reallocArr(nullptr);
+			data.reallocArr(0);
+			lnkd.reallocArr(0);
 		}
 
 
@@ -285,7 +285,7 @@ namespace lux {
 		// Get ----------------------------------------------------------------------------------------------------------------- //
 
 
-
+//FIXME add all constructors and assignment operators
 
 		inline type& operator[](const iter vIndex) const noexcept {
 			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative");

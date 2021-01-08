@@ -47,9 +47,13 @@ namespace lux {
 		//String count cannot be 0. the '\0' is always present and occupies one byte
 		//TODO the elements are probably uninitialized
 		inline String(                                  ) : Super(1) { Super::data[0] = '\0'; }
-		inline String(const String& pString             ) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
 		inline String(const char8* vString              ) : Super(strlenl(vString) + 1) { ram::cpy(vString,      Super::data, Super::data.size( ));      }
 		inline String(const char8* vString, uint64 vSize) : Super(vSize)	            { ram::cpy(vString,      Super::data, Super::data.size( ));      }
+
+		//Move and copy constructors
+		inline String(String&& pString){ Super::move((Super)pString); }
+		// inline String(const String& pString) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
+		inline String(const String& pString) : Super(pString) { }
 
 		//TODO remove
 		// inline String(const wchar8* vString) : Super(strlenl(vString) + 1)	{ ram::cpy(vString, Super::data, Super::data.size( )); }
@@ -122,6 +126,11 @@ namespace lux {
 		// Assignment and comparison ------------------------------------------------------------------------------------------- //
 
 
+
+		//move assignment
+		inline void operator = (String&& pString) {
+			Super::move((Super)pString);
+		}
 
 		//copy assignment
 		inline void operator = (const String& pString) {
