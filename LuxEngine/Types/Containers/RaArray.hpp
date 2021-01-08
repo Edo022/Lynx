@@ -326,7 +326,7 @@
 
 
 
-
+//FIXME MAKE THIS A CONTAINER BASE SUBCLASS
 
 
 #pragma once
@@ -362,6 +362,10 @@ namespace lux {
 		iter tail;		//Last free element
 		iter size_;		//Number of allocated elements
 		iter free_;		//Number of free elements in the map
+
+		void destroy(){
+			for(int i = 0; i < count(); i++) data[i].~type();
+		}
 
 
 	public:
@@ -427,13 +431,6 @@ namespace lux {
 		inline RaArray(const RaArray<type, iter>& pCont) : constructExec(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			data(pCont.data.deepCopy()), lnkd(pCont.lnkd.deepCopy()){
-			// // chunks_ (pCont.chunks_ .size(), ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
-			// // tracker_(pCont.tracker_.size(), ram::ptr<iter, alloc>(), CellClass::AT_LEAST_CLASS_B) {
-			// // for(iter i = 0; i < pCont.end( ) - pCont.begin( ); ++i) add((elmType) * (pCont.begin( ) + i));
-			// for(int i = 0; i < pCont.chunks_.count(); ++i){
-			// 	chunks_[i] = pCont.chunks_[i].deepCopy();
-			// 	tracker_[i] = pCont.tracker_[i].deepCopy();
-			// }
 		}
 
 
@@ -468,10 +465,13 @@ namespace lux {
 				// tracker_[chunks_.count()].reallocArr((uint64)chunkClass, iter());
 				data.reallocArr(count() + 1, type());		//Create a new one
 				lnkd.reallocArr(count() + 1, iter());
+
 			// }
+
 			lnkd[size_] = -1;	//Set the tracker as valid
 			return size_++;			//Update the number of elements and return the ID
 		}
+		//BUG RAARRAY DOES NOT INITIALIZE NEW ELEMENTS
 
 
 		/**
@@ -495,17 +495,21 @@ namespace lux {
 		 */
 		auto add() {
 			checkInit();
-			if(head == (iter)-1) return append();		//If it has no free elements, append it
+			if(head == (iter)-1) {				//If it has no free elements, append it
+				int ret = append();					//Append the new element
+				new(&data[ret]) type();				//Initialize it
+				return ret;							//Return its index
+			}
 			iter head2 = head;
-			if(head == tail) {							//If it has only one free element
-				head = tail = lnkd[head] = -1;			//Reset head, tail and tracker
+			if(head == tail) {					//If it has only one free element
+				head = tail = lnkd[head] = -1;		//Reset head, tail and tracker
 			}
-			else {										//If it has more than one
-				head = lnkd[head];						//Update head
-				lnkd[head2] = -1;						//Update tracker of the old head element
+			else {								//If it has more than one
+				head = lnkd[head];					//Update head
+				lnkd[head2] = -1;					//Update tracker of the old head element
 			}
-			free_--;									//Update number of free elements
-			return head2;
+			free_--;							//Update number of free elements
+			return head2;						//Return the index of the new element
 		}
 
 
@@ -522,7 +526,7 @@ namespace lux {
 			return i;
 		}//BUG not initializing the element leaves it in an uninitialized state that is illegal for some operator= functions
 
-
+//BUG CHECK IF AGGREGATE INITIALIZATION CALLS COPY CONSTRUCTOR OF NON UNINIT COPYABLE STRUCTS
 
 
 		/**
@@ -552,10 +556,11 @@ namespace lux {
 			// chunks_ .free(); //BUG dont free
 			// tracker_.free();
 
+			destroy();
 			head = tail = (iter)-1;
 			size_ = free_ = 0;
-			data.reallocArr(0, CellClass::AT_LEAST_CLASS_B);
-			lnkd.reallocArr(0, CellClass::AT_LEAST_CLASS_B);
+			data.reallocArr(0);
+			lnkd.reallocArr(0);
 		}
 
 

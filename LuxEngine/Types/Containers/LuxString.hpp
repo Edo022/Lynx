@@ -20,15 +20,18 @@ namespace lux {
 	//TODO add constructor that takes the count in input. IF it's already known, there is no reason to recalculate it
 	//TODO improve concatenation performance
 	class String : public ContainerBase<char8, uint32>{
-		#define Super ContainerBase<char8, uint32>
+		using Super = ContainerBase<char8, uint32>;
 	private:
 		genInitCheck;
 		// ram::Alloc<char8> str;
 
-		inline void cat(const char8* vString, const uint32 size) {
-			uint64 oldSize = Super::data.size();
-			Super::data.realloc(Super::data.size() + size - 1);
-			ram::cpy(vString, Super::data + oldSize - 1, size);
+
+		//FIXME FIX
+		inline void cat(const char8* vString) {
+			// uint64 oldSize = Super::data.size();
+			// Super::data.realloc(Super::data.size() + size - 1);
+			// ram::cpy(vString, Super::data + oldSize - 1, size);
+			Super::cat(String(vString));
 		}
 
 	public:
@@ -81,9 +84,8 @@ namespace lux {
 
 
 
-		#pragma warning ( disable : 4996  )
-		inline void operator += (const String& pString) { checkInit(); cat(pString.Super::data, pString.count( )); }
-		inline void operator += (const char8* vString ) { checkInit(); cat(vString, strlenl(vString) + 1); }
+		inline void operator += (const String& pString) { checkInit(); cat(pString.Super::data); }
+		inline void operator += (const char8* vString ) { checkInit(); cat(vString); }
 
 		//TODO write itoa functions
 		// inline void operator += (const uint64 vValue)		{ checkInit(); char b[20 + 1]; _ui64toa(vValue, b, 10);	operator += (b);	}
@@ -91,19 +93,22 @@ namespace lux {
 		// inline void operator += (const uint32 vValue)		{ checkInit(); char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
 		// inline void operator += (const int32 vValue)		{ checkInit(); char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
 		//inline void operator += (const char8 vChar)		{ checkInit(); ram::reallocBck(str, str.size( ) + 1); *str.end( ) = vChar;		}
-		inline void operator += (const char8 vChar)		{ checkInit(); Super::data.realloc(Super::data.count( ) + 1); *Super::data.end( ) = vChar;		}
+		// inline void operator += (const char8 vChar)		{ checkInit(); Super::data.realloc(Super::data.count( ) + 1); *Super::data.end( ) = vChar;		}
 
 
-		#define __lp_strcat_body(var) String vLuxString(Super::data); vLuxString += var; return vLuxString;
+		//TODO use sum chain struct instead of copying the string data
 		inline String operator + (const String& pString) const {
 			checkInit();
-			//TODO use sum chain struct instead of copying the string data
-			__lp_strcat_body(pString);
+			String vLuxString(Super::data);
+			vLuxString += pString;
+			return vLuxString;
 		}
+		//TODO use sum chain struct instead of copying the string data
 		inline String operator + (const char8* vString ) const {
 			checkInit();
-			//TODO use sum chain struct instead of copying the string data
-			__lp_strcat_body(vString);
+			String vLuxString(Super::data);
+			vLuxString += vString;
+			return vLuxString;
 		}
 		// inline String operator + (const uint64 vValue  ) const { checkInit(); __lp_strcat_body(vValue ); }
 		// inline String operator + (const int64 vValue   ) const { checkInit(); __lp_strcat_body(vValue ); }
@@ -121,23 +126,13 @@ namespace lux {
 		//copy assignment
 		inline void operator = (const String& pString) {
 			checkInit(); isInit(pString);
-			Super::data.realloc(pString.count( ));
+			Super::copy(pString);
+			// Super::data.realloc(pString.count( ));
 			// str.address = (char8*)str.cell->address;
-			ram::cpy(pString.data, Super::data, Super::data.count( ));
-			//FIXME dont copy old data
-			//FIXME add parameter to realloc that prevents old data to be copied
+			// ram::cpy(pString.data, Super::data, Super::data.count( ));
 		}
-
-
 		//Copy from C-style string
-		inline void operator = (const char8* vString) {
-			checkInit();
-			Super::data.realloc(strlenl(vString) + 1);
-			// str.address = (char8*)str.cell->address;
-			ram::cpy(vString, Super::data, Super::data.count( ));
-			//FIXME dont copy old data
-			//FIXME add parameter to realloc that prevents old data to be copied
-		}
+		inline void operator = (const char8* vString) { operator=(String(vString)); }
 
 
 
@@ -152,7 +147,6 @@ namespace lux {
 			checkInit();
 			return ((Super::data.count( ) == strlenl(vString) + 1) && (memcmp(vString, Super::data, Super::data.count( )) == 0));
 		}
-		#undef Super
 	};
 }
 

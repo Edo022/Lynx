@@ -31,7 +31,7 @@ namespace lux {
 	//"RunTime Array"
 	//A dynamic array that uses the global memory pool
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
-		#define Super ContainerBase<type, iter>
+		using Super = ContainerBase<type, iter>;
 	private:
 		genInitCheck;
 	public:
@@ -51,30 +51,23 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array with a lux::ContainerBase subclass instance by calling operator= on each element
+		 * @brief Initializes the array with a lux::ContainerBase subclass instance by calling the copy constructor on each element
 		 * @param pCont The container to copy elements from
+		 * @param vConstruct If true, the elements are initialized before calling the copy constructor.
+		 *		This is required for arrays containing elements that need to be initialized before calling the copy constructor,
+		 *		such as lux::ContainerBase, lux::ram::Alloc or any object that has this type of member.
+		 *		This is always false with built-in types
 		 */
-		template<class cType, class cIter> inline RtArray(const ContainerBase<cType, cIter>& pCont) :
-			Super(pCont.count( )) {
-			//FIXME check count and not iterator
-			luxCheckParam(sizeof(cIter) > sizeof(iter), pCont, "The iterator of a container must be larger than the one of the container used to initialize it");
-			isInit(pCont);
-			// ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
-			for(int i = 0; i < pCont.count(); ++i){ operator[](i) = (type)*(pCont.begin() + i); }
+		template<class cType, class cIter> inline RtArray(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) :
+			Super(pCont, vConstruct) {
 		}
 
 
-		///@brief copy constructor
-		inline RtArray(const RtArray<type, iter>& pCont) : RtArray<type, iter>((Super)pCont) { }
+		inline RtArray(const RtArray<type, iter>& pCont) : Super(pCont) { }										//copy constructor
+		inline RtArray(RtArray<type, iter>&& pCont){ Super::move((ContainerBase<type, iter>&&)pCont); }			//Move constructor
+		inline void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); /*return*/ }		//copy assignment //FIXME return reference chain
+		inline void operator=(RtArray<type, iter>&& pCont){ Super::move((ContainerBase<type, iter>&&)pCont); }	//Move assignment
 
-		///@brief Move constructor
-		inline RtArray(RtArray<type, iter>&& pCont){ operator=(pCont); }
-
-		///@brief copy assignment //FIXME return reference chain
-		inline /*auto&*/void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); /*return*/ }
-
-		///@brief Move assignment
-		inline void operator=(RtArray<type, iter>&& pCont){ Super::data = pCont.data; pCont.data = nullptr; }
 
 
 
@@ -86,12 +79,13 @@ namespace lux {
 
 		//Resizes the array without initializing the new elements
 		//*   vNewSize | new count of the array
-		//*   Returns  | the new count
-		//TODO totally useless. Just don't return
-		inline iter resize(const iter vNewSize) {
-			checkInit(); luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			Super::data.reallocArr(vNewSize, type( ));
-			return Super::data.count( );
+		// //*   Returns  | the new count
+		// //TODO totally useless. Just don't return
+		// inline iter resize(const iter vNewSize) {
+		inline void resize(const iter vNewSize) {
+			Super::resize(vNewSize);
+			// Super::data.reallocArr(vNewSize, type( ));
+			// return Super::data.count( );
 		}
 
 
@@ -113,9 +107,10 @@ namespace lux {
 		//*   Returns  | the index of the element in the array
 		inline iter add(const type& vElement) {
 			checkInit();
-			resize(Super::data.count() + 1);
-			*(Super::data.end( ) - 1) = vElement;
-			return Super::data.count( ) - 1;
+			auto oldCount = Super::count();
+			resize(Super::count() + 1);
+			operator[](oldCount) = vElement;
+			return oldCount;
 		}
 
 
@@ -125,7 +120,7 @@ namespace lux {
 
 
 
-
+		//TODO add specific functions for count
 		inline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
 
 
@@ -136,7 +131,6 @@ namespace lux {
 			luxCheckParam(vIndex >= Super::count( ), vIndex, "Index is out of range");
 			return Super::operator[](vIndex);
 		}
-		#undef Super
 	};
 }
 
