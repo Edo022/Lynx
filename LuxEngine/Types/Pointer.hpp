@@ -263,21 +263,21 @@ namespace lux::ram{
 				vAlloc.nextOwner = (Alloc<Dummy>*)this;
 			)
 		}
-		//Assignment
-		template<class aType> inline void operator=(const Alloc<aType> vAlloc){
-			checkInit(); isInit(vAlloc); isAlloc(vAlloc);
-			cell->owners--;
-			cell = vAlloc.cell;
-			cell->owners++;
-			luxDebug(state = vAlloc.state;)
-			luxDebug(
-				if(prevOwner) prevOwner->nextOwner = nextOwner;
-				if(nextOwner) nextOwner->prevOwner = prevOwner;
-				prevOwner = (Alloc<Dummy>*)&vAlloc;
-				nextOwner = vAlloc.nextOwner;
-				vAlloc.nextOwner = (Alloc<Dummy>*)this;
-			)
-		}
+		// //Assignment
+		// template<class aType> inline void operator=(const Alloc<aType> vAlloc){
+		// 	checkInit(); isInit(vAlloc); isAlloc(vAlloc);
+		// 	cell->owners--;
+		// 	cell = vAlloc.cell;
+		// 	cell->owners++;
+		// 	luxDebug(state = vAlloc.state;)
+		// 	luxDebug(
+		// 		if(prevOwner) prevOwner->nextOwner = nextOwner;
+		// 		if(nextOwner) nextOwner->prevOwner = prevOwner;
+		// 		prevOwner = (Alloc<Dummy>*)&vAlloc;
+		// 		nextOwner = vAlloc.nextOwner;
+		// 		vAlloc.nextOwner = (Alloc<Dummy>*)this;
+		// 	)
+		// }
 		//nullptr
 		inline void operator=(const std::nullptr_t null){
 			cell->owners--;
