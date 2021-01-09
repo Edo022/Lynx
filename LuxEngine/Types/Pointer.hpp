@@ -200,7 +200,7 @@ namespace lux::ram{
 		inline Alloc(const uint64 vSize, CellClass vClass = CellClass::AUTO){
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass); //init_memory(cell->address, vSize, vConstruct);
-			++cell->owners;
+			// ++cell->owners; //!no. owners already set in alloc_
 			luxDebug(state = lux::__pvt::CellState::ALLOC;)
 			luxDebug(
 				cell->firstOwner = cell->lastOwner = ((Alloc<Dummy>*)this);
