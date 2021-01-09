@@ -13,7 +13,7 @@ namespace lux {
 	//FIXME REMOVE. USE NORMAL STRLEN
 	static inline constexpr uint32 strlenl(const char8* str ) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 	static inline constexpr uint32 strlenl(const wchar8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
-
+	#define updateView() luxDebug(viewer = (char*)Super::data)
 
 
 
@@ -23,6 +23,7 @@ namespace lux {
 		using Super = ContainerBase<char8, uint32>;
 	private:
 		genInitCheck;
+		luxDebug(const char* viewer;)
 		// ram::Alloc<char8> str;
 
 
@@ -32,6 +33,7 @@ namespace lux {
 			// Super::data.realloc(Super::data.size() + size - 1);
 			// ram::cpy(vString, Super::data + oldSize - 1, size);
 			Super::cat(String(vString));
+			updateView();
 		}
 
 	public:
@@ -46,14 +48,14 @@ namespace lux {
 
 		//String count cannot be 0. the '\0' is always present and occupies one byte
 		//TODO the elements are probably uninitialized
-		inline String(                                  ) : Super(1) { Super::data[0] = '\0'; }
-		inline String(const char8* vString              ) : Super(strlenl(vString) + 1) { ram::cpy(vString,      Super::data, Super::data.size( ));      }
-		inline String(const char8* vString, uint64 vSize) : Super(vSize)	            { ram::cpy(vString,      Super::data, Super::data.size( ));      }
+		inline String(                                  ) : Super(1) { Super::data[0] = '\0'; updateView(); }
+		inline String(const char8* vString              ) : Super(strlenl(vString) + 1) { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
+		inline String(const char8* vString, uint64 vSize) : Super(vSize)	            { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
 
 		//Move and copy constructors
-		inline String(String&& pString){ Super::move(pString); }
+		inline String(String&& pString){ Super::move(pString); updateView(); }
 		// inline String(const String& pString) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
-		inline String(const String& pString) : Super(pString) { }
+		inline String(const String& pString) : Super(pString) { updateView(); }
 
 		//TODO remove
 		// inline String(const wchar8* vString) : Super(strlenl(vString) + 1)	{ ram::cpy(vString, Super::data, Super::data.size( )); }
@@ -130,6 +132,7 @@ namespace lux {
 		//move assignment
 		inline void operator = (String&& pString) {
 			Super::move(pString);
+			updateView();
 		}//BUG move rvalues instead of casting them
 
 		//copy assignment
@@ -139,9 +142,10 @@ namespace lux {
 			// Super::data.realloc(pString.count( ));
 			// str.address = (char8*)str.cell->address;
 			// ram::cpy(pString.data, Super::data, Super::data.count( ));
+			updateView();
 		}
 		//Copy from C-style string
-		inline void operator = (const char8* vString) { operator=(String(vString)); }
+		inline void operator = (const char8* vString) { operator=(String(vString)); updateView(); }
 
 
 
