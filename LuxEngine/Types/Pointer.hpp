@@ -544,6 +544,7 @@ namespace lux::ram{
 						p->prevOwner = p->nextOwner = nullptr;
 						p = next_;
 					}
+					cell->firstOwner = cell->lastOwner = nullptr;
 				#endif
 			}
 		}
