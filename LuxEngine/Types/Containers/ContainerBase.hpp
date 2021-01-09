@@ -81,7 +81,7 @@ namespace lux {
 		template<class cType, class cIter> void cat(const ContainerBase<cType, cIter>& pCont){
 			auto oldCount = count();
 			data.reallocArr(count() + pCont.count());
-			for(iter i = oldCount; i < count(); ++i) new(&data[i]) type((cType)pCont[(cIter)i]);
+			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
 		}
 
 
