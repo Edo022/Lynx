@@ -136,7 +136,7 @@ namespace lux {
 
 
 
-		inline void move(ContainerBase<type, iter>&& pCont){
+		inline void move(ContainerBase<type, iter>& pCont){
 			data = pCont.data; pCont.data = nullptr;
 		}
 

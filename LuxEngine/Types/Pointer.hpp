@@ -371,7 +371,7 @@ namespace lux::ram{
 
 
 		inline ~Alloc( ) noexcept {
-			if(cell->address) {
+			if(cell) {
 				if(!--cell->owners) {
 					luxDebug(state = lux::__pvt::CellState::OUTOFSCOPE;)
 					free();

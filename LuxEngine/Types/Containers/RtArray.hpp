@@ -64,10 +64,10 @@ namespace lux {
 
 
 		inline RtArray(const RtArray<type, iter>& pCont) : Super(pCont) { }										//copy constructor
-		inline RtArray(RtArray<type, iter>&& pCont){ Super::move((Super)pCont); }			//Move constructor
+		inline RtArray(RtArray<type, iter>&& pCont){ Super::move(pCont); }			//Move constructor
 		inline void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); /*return*/ }		//copy assignment //FIXME return reference chain
-		inline void operator=(RtArray<type, iter>&& pCont){ Super::move((Super)pCont); }	//Move assignment
-
+		inline void operator=(RtArray<type, iter>&& pCont){ Super::move(pCont); }	//Move assignment
+//BUG move rvalues instead of casting them
 
 
 

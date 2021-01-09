@@ -51,7 +51,7 @@ namespace lux {
 		inline String(const char8* vString, uint64 vSize) : Super(vSize)	            { ram::cpy(vString,      Super::data, Super::data.size( ));      }
 
 		//Move and copy constructors
-		inline String(String&& pString){ Super::move((Super)pString); }
+		inline String(String&& pString){ Super::move(pString); }
 		// inline String(const String& pString) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
 		inline String(const String& pString) : Super(pString) { }
 
@@ -129,8 +129,8 @@ namespace lux {
 
 		//move assignment
 		inline void operator = (String&& pString) {
-			Super::move((Super)pString);
-		}
+			Super::move(pString);
+		}//BUG move rvalues instead of casting them
 
 		//copy assignment
 		inline void operator = (const String& pString) {
