@@ -32,6 +32,7 @@ namespace lux {
 			// uint64 oldSize = Super::data.size();
 			// Super::data.realloc(Super::data.size() + size - 1);
 			// ram::cpy(vString, Super::data + oldSize - 1, size);
+			Super::resize(Super::count() - 1); //Remove \0
 			Super::cat(String(vString));
 			updateView();
 		}

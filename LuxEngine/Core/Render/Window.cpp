@@ -64,7 +64,7 @@ namespace lux::core::render::wnd{
 			.ppEnabledExtensionNames		{ extensions 											}
 		};
 		//Add validation layers if in debug mode
-		luxDebug(																		//Search for validation layers
+		#ifdef LUX_DEBUG																		//Search for validation layers
 			uint32 layerCount = 0;
 			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
 			RtArray<VkLayerProperties> availableLayers(layerCount);
@@ -75,7 +75,7 @@ namespace lux::core::render::wnd{
 					else if(validationLayers[i] == availableLayers.end( )->layerName) luxPrintError("Validation layers not available. Cannot run in debug mode");
 				}
 			}
-		);
+		#endif
 
 		int hh = vkCreateInstance(&createInfo, nullptr, &core::instance);
 	}
