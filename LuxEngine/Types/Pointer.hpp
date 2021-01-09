@@ -342,8 +342,8 @@ namespace lux::ram{
 
 
 
-		inline uint64 size()  const noexcept { checkInit(); checkNullptr(); return cell->cellSize;                } //Returns the total size of the allocated memory
-		inline uint64 count() const noexcept { checkInit(); checkNullptr(); return cell->cellSize / sizeof(type); } //Returns the number of elements in the allocated memory (use this only if you have allocated the memory with an allocArr function or you are sure that the size is a multiple of the type's size)
+		inline uint64 size()  const noexcept { return cell->cellSize;                } //Returns the total size of the allocated memory
+		inline uint64 count() const noexcept { return cell->cellSize / sizeof(type); } //Returns the number of elements in the allocated memory (use this only if you have allocated the memory with an allocArr function or you are sure that the size is a multiple of the type's size)
 
 
 
