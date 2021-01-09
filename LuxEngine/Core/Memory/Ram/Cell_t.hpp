@@ -23,7 +23,7 @@ namespace lux{
 
 
 		struct Cell_t {
-			uint16 typeIndex;		//INDEX of the buffer type
+			uint16 typeIndex;		//INDEX of the buffer type. -1 for custom size cells
 			uint16 owners;			//Number of lux::ram::ptr instances that owns the cell
 			uint32 cellIndex;		//Index of the cell in the cells array
 			uint32 localIndex;		//Index of the cell in the type allocations

@@ -401,6 +401,7 @@ namespace lux::ram{
 		//FIXME or create specific array type that puts new cells in the first free element with the smallest index
 		//FIXME add __behaviour__ template parameter to specify those things
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::AUTO){
+			using namespace lux::__pvt;
 			checkInit();
 			evaluateCellClass(vSize, vClass);
 			checkAllocSize(vSize, vClass);
@@ -414,12 +415,12 @@ namespace lux::ram{
 					[[likely]] cell->cellSize = vSize;									//change the cellSize variable and return //FIXME move to fixed size cell
 				}
 				else{																//If it's larger than the maximum cell size //TODO check realloc and free returns
-					if(cell->typeIndex){
+					// if(cell->typeIndex){
+					if((uint32)cell->typeIndex != (uint32)-1){						//If the cell is a fixed size cell
 						type* oldAddr = (type*)cell->address;							//Save the old address
 						types[cell->typeIndex].cells.remove(cell->localIndex);			//Remove old allocation
 						//! ^ this doesn't remove or invalidate the cell object but only the buffer's cell tracker. This is to allow other objects to use the same cell even after a reallocation
 						if((uint32)vClass){												//Fixed size --> fixed
-							cell->typeIndex = lux::__pvt::classIndexFromEnum(vClass);		//Set the new type index
 							auto& type_ = types[cell->typeIndex];							//Cache buffer type
 
 							cell->localIndex = type_.cells.add(true);						//Create a new allocation and save its index
@@ -427,13 +428,14 @@ namespace lux::ram{
 							cell->address = (char*)type_.memory[cell->localIndex / type_.cellsPerBuff] + (uint64)type_.cellClass * cell->localIndex;
 						}
 						else{															//Fixed size --> custom
-							cell->typeIndex = 0;											//Set the new type index
+							// cell->typeIndex = -1;											//Set the new type index
 
 							uint64 size_ = vSize / LuxIncSize * (LuxIncSize + 1);			//Calculate the new size and allocate the new memory
 							cell->address = win10(_aligned_malloc(size_, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, size_));
 						}
 						if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory
 						//! ^ The cell still has the same size as before, so it's fine to use it to copy the old data
+						cell->typeIndex = classIndexFromEnum(vClass);		//Set the new type index
 						cell->cellSize = vSize;											//Set the new cell size
 					}
 					//FIXME use normal malloc if the data doesnt need to be copied
@@ -516,7 +518,8 @@ namespace lux::ram{
 		inline void free(){
 			// checkNullptr();
 			if(cell->address){
-				if((uint32)cell->typeIndex) types[cell->typeIndex].cells.remove(cell->localIndex);	//For fixed  size cells, free the allocation object
+				if((uint32)cell->typeIndex != (uint32)-1)											//For fixed  size cells,
+					types[cell->typeIndex].cells.remove(cell->localIndex);								//free the allocation object
 				else std::free(cell->address);														//For custom size cells, free the entire buffer
 				cells.remove(cell->cellIndex);														//And then free the cell object
 				//Any other cell member will be overwritten

@@ -58,8 +58,9 @@ namespace lux{
 		static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){
 			switch(vClass){
 				#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
-				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)// _case(0)
-				default: luxPrintError("Invalid cell class %d", (uint32)vClass) return (uint32)-1;
+				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)// _case(0)							//Fixed size classes
+				case CellClass::CLASS_0: return (uint32)-1;													//Custom size class
+				luxDebug(default: luxCheckParam(true, vClass, "Invalid cell class %d", (uint32)vClass));	//Invalid class
 			}
 		}
 		//Returns the CellClass value of a CellClassIndex
