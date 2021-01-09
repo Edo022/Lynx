@@ -93,7 +93,7 @@ namespace lux {
 		inline ContainerBase() : data{ nullptr } {}
 		inline ContainerBase(const iter vCount) :
 			constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
-			data{ vCount } {
+			data{ sizeof(type) * vCount } {
 			initRange(0, count() - 1);
 		}
 
@@ -104,7 +104,7 @@ namespace lux {
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
 			)
-			data{ pCont.count() } {		//Allocate new elements
+			data{ sizeof(type) * pCont.count() } {		//Allocate new elements
 			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type();						//Initialize new elements
 				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
@@ -144,7 +144,7 @@ namespace lux {
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) {
 			destroy();									//Destroy old elements
-			data.reallocArr(pCont.count(), false);		//Allocate new elements
+			data.reallocArr(sizeof(type) * pCont.count(), false);		//Allocate new elements
 			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type();						//Initialize new elements
 				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
