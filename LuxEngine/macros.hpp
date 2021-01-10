@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning(disable : 4005) //Macro referinition
 #include "LuxEngine_config.hpp"
 
 
@@ -28,8 +27,8 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-//Debug
-#ifdef LUX_DEBUG
+//Debug. Expand debug macros but gray out "#ifdef LUX_DEBUG"s
+#if defined(LUX_DEBUG) || defined(__INTELLISENSE__)
 #	define luxDebug(...)				__VA_ARGS__
 #	define luxRelease(...)
 #else
@@ -54,7 +53,6 @@ typedef std::chrono::system_clock::time_point LuxTime;
 
 
 
-#pragma warning(default : 4005) //Macro referinition
 
 
 

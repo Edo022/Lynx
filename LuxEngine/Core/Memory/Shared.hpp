@@ -31,8 +31,7 @@ namespace lux{
 		enum class CellState : uint32{
 			ALLOC      = 1,
 			FREED      = 2,
-			OUTOFSCOPE = 3,
-			NULLPTR    = 4
+			NULLPTR    = 4,
 		};
 		#endif
 
@@ -56,11 +55,12 @@ namespace lux{
 
 		//Returns the CellClassIndex value of a CellClass
 		static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){
+			// luxCheckParam(true, vClass, "Invalid cell class %d", (uint32)vClass);							//Invalid class
 			switch(vClass){
 				#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
 				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)// _case(0)							//Fixed size classes
 				case CellClass::CLASS_0: return (uint32)-1;													//Custom size class
-				luxDebug(default: luxCheckParam(true, vClass, "Invalid cell class %d", (uint32)vClass));	//Invalid class
+				default: return -2;
 			}
 		}
 		//Returns the CellClass value of a CellClassIndex

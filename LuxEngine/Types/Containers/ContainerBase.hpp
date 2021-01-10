@@ -92,14 +92,14 @@ namespace lux {
 
 		inline ContainerBase() : data{ nullptr } {}
 		inline ContainerBase(const iter vCount) :
-			constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
+			checkInitList(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
 			initRange(0, count() - 1);
 		}
 
 
 		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) : //{
-			constructExec(
+			checkInitList(
 				isInit(pCont); luxCheckParam(sizeof(cIter) > sizeof(iter), pCont,
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
@@ -137,6 +137,12 @@ namespace lux {
 
 
 		inline void move(ContainerBase<type, iter>& pCont){
+			data = pCont.data; pCont.data = nullptr;
+		}
+
+
+		inline void moveAssignment(ContainerBase<type, iter>& pCont){
+
 			data = pCont.data; pCont.data = nullptr;
 		}
 

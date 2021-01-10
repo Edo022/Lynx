@@ -65,8 +65,8 @@ namespace lux {
 		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*constructExec(isInit(pCont))*/ RaArray( ) {
-			//TODO check sizes in constructexec
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*checkInitList(isInit(pCont))*/ RaArray( ) {
+			//TODO check sizes in checkInitList
 			//FIXME preallocate all the elements before looping them
 			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*i));
 		}
@@ -80,13 +80,13 @@ namespace lux {
 		 *		It must be a valid RaArray instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : //constructExec(isInit(pCont))
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : //checkInitList(isInit(pCont))
 			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ } {
 			RaArray() {
 			// data(pCont.data.deepCopy()),
 			// lnkd(pCont.lnkd.deepCopy()){
 			for(int i = 0; i < pCont.count(); ++i) add(pCont[i]);
-			//TODO check sizes in constructexec
+			//TODO check sizes in checkInitList
 			// for(int i = 0; i < pCont.chunks_.count(); ++i){
 			// 	chunks_[i] = pCont.chunks_[i].deepCopy();   //Deeper copy
 			// 	tracker_[i] = pCont.tracker_[i].deepCopy(); //UwU
@@ -99,7 +99,7 @@ namespace lux {
 		/**
 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) : //constructExec(isInit(pCont))
+		inline RaArray(const RaArray<type, iter>& pCont) : //checkInitList(isInit(pCont))
 			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			//data(pCont.data.deepCopy()), lnkd(pCont.lnkd.deepCopy()){
 			RaArray(){
@@ -112,7 +112,7 @@ namespace lux {
 		/**
 		 * @brief Move constructor
 		 */
-		inline RaArray(RaArray<type, iter>&& pCont) : constructExec(isInit(pCont))
+		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			data{ pCont.data }, lnkd{ pCont.lnkd } {
 			pCont.data = pCont.lnkd = nullptr; //FIXME

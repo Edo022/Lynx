@@ -53,8 +53,8 @@
 // 		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
 // 		 *		less elements than the maximum number of elements of the array you are initializing
 // 		 */
-// 		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*constructExec(isInit(pCont))*/ RaArray( ) {
-// 			//TODO check sizes in constructexec
+// 		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*checkInitList(isInit(pCont))*/ RaArray( ) {
+// 			//TODO check sizes in checkInitList
 // 			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*pCont.begin( )));
 // 		}
 
@@ -67,11 +67,11 @@
 // 		 *		It must be a valid RaArray instance with a compatible type and
 // 		 *		less elements than the maximum number of elements of the array you are initializing
 // 		 */
-// 		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : constructExec(isInit(pCont))
+// 		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : checkInitList(isInit(pCont))
 // 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 // 			chunks_  (pCont.chunks_ .deepCopy()),
 // 			tracker_ (pCont.tracker_.deepCopy()){
-// 			//TODO check sizes in constructexec
+// 			//TODO check sizes in checkInitList
 // 			for(int i = 0; i < pCont.chunks_.count(); ++i){
 // 				chunks_[i] = pCont.chunks_[i].deepCopy();   //Deeper copy
 // 				tracker_[i] = pCont.tracker_[i].deepCopy(); //UwU
@@ -84,7 +84,7 @@
 // 		/**
 // 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 // 		 */
-// 		inline RaArray(const RaArray<type, iter>& pCont) : constructExec(isInit(pCont))
+// 		inline RaArray(const RaArray<type, iter>& pCont) : checkInitList(isInit(pCont))
 // 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 // 			chunks_ (pCont.chunks_ .deepCopy()), tracker_ (pCont.tracker_.deepCopy()){
 // 			// chunks_ (pCont.chunks_ .size(), ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
@@ -102,7 +102,7 @@
 // 		/**
 // 		 * @brief Move constructor
 // 		 */
-// 		inline RaArray(RaArray<type, iter>&& pCont) : constructExec(isInit(pCont))
+// 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
 // 			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 // 			chunks_{pCont.chunks_}, tracker_{pCont.tracker_} {
 // 			pCont.chunks_ = pCont.tracker_ = nullptr; //FIXME
