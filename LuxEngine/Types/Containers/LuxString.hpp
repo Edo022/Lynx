@@ -132,7 +132,7 @@ namespace lux {
 
 		//move assignment
 		inline void operator = (String&& pString) {
-			Super::move(pString); //BUG MOVE THE CELL'S FIRST AND LAST OWNERS TOO
+			Super::move(pString); //BUG THIS
 			updateView();
 		}
 
