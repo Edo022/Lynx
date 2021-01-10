@@ -288,7 +288,7 @@ namespace lux::ram{
 		//Move assignment //FIXME call copy assignment
 		inline void operator=(Alloc<type>&& vAlloc){
 			checkInit(); isInit(vAlloc); isAlloc(vAlloc);
-			if(--cell->owners){
+			if(!--cell->owners){
 				free();
 			};
 			popOwner();
@@ -319,7 +319,7 @@ namespace lux::ram{
 		//Copy assignment
 		inline void operator=(const Alloc<type>& vAlloc){
 			checkInit(); isInit(vAlloc); isAlloc(vAlloc);
-			if(--cell->owners){
+			if(!--cell->owners){
 				free();
 			};
 			popOwner();
@@ -360,7 +360,7 @@ namespace lux::ram{
 		// }
 		//nullptr
 		inline void operator=(const std::nullptr_t null){
-			if(--cell->owners){
+			if(!--cell->owners){
 				free();
 			};
 			popOwner();
