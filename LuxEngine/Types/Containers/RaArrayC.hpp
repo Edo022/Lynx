@@ -13,6 +13,7 @@ template<class type, class iter = uint32> struct RaArrayC{
 
 
 	inline RaArrayC(){}
+	// inline RaArrayC() : data{ nullptr }, lnkd{ nullptr } {}
 
 
 	//Move constructor
