@@ -143,7 +143,7 @@ namespace lux {
 			new(&data[size_]) type();//Initialize new element
 
 			lnkd[size_] = -1;	//Set the tracker as valid
-			return ++size_;			//Update the number of elements and return the ID
+			return size_++;			//Update the number of elements and return the ID
 		}
 		//BUG RAARRAY DOES NOT INITIALIZE NEW ELEMENTS
 
