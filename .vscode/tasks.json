@@ -21,8 +21,8 @@
 				//CWD include, threads
 					"-I./", /*"-static", */"-pthread",
 				//Vulkan
-					"-Ideps/Linux/Vulkan-1.2.154.0/x86_64/include",
-					"-Ldeps/Linux/Vulkan-1.2.154.0/x86_64/lib",
+					"-Ideps/Linux/Vulkan-1.2.162.0/x86_64/include",
+					"-Ldeps/Linux/Vulkan-1.2.162.0/x86_64/lib",
 					"-ldl", "-lvulkan",
 				//GLFW
 					"-Ideps/Shared/glfw-3.3.2/include",
@@ -56,8 +56,8 @@
 				//CWD include, threads
 					"-I./", "-pthread",
 				//Vulkan
-					"-Ideps/Linux/Vulkan-1.2.154.0/x86_64/include",
-					"-Ldeps/Linux/Vulkan-1.2.154.0/x86_64/lib",
+					"-Ideps/Linux/Vulkan-1.2.162.0/x86_64/include",
+					"-Ldeps/Linux/Vulkan-1.2.162.0/x86_64/lib",
 					"-ldl", "-lvulkan",
 				//GLFW
 					"-Ideps/Shared/glfw-3.3.2/include",
