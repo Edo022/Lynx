@@ -12,8 +12,8 @@
 //A queue with dynamic count
 namespace lux {
 	template<class type, class iter = uint32> struct Queue {
-	private:
 		genInitCheck;
+	private:
 	public:
 		lux::RtArray<type, iter> _front, _back;
 

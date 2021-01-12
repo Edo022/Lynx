@@ -22,8 +22,8 @@ namespace lux {
 	 * @tparam chunkClass Class of each chunk in the array. Default: CellClass::CLASS_D (2KB)
 	 */
 	template<class type, class iter = uint32> class RaArray{
-	private:
 		genInitCheck;
+	private:
 		ram::Alloc<type> data;	//Elements
 		ram::Alloc<iter> lnkd;	//State of each element
 

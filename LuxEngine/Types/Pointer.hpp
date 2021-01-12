@@ -73,8 +73,8 @@ namespace lux::ram{
 	 * @tparam type The type of data the pointer points to (int, float, etc... )
 	 */
 	template<class type> struct Alloc {
-	private:
 		genInitCheck;
+	private:
 
 		//Memory allocation
 		constexpr static void evaluateCellClass(const uint64 vSize, CellClass& pClass) noexcept {

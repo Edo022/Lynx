@@ -32,8 +32,8 @@ namespace lux {
 	//A dynamic array that uses the global memory pool
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 		using Super = ContainerBase<type, iter>;
-	private:
 		genInitCheck;
+	private:
 	public:
 
 
