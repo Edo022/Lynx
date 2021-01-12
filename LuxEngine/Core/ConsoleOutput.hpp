@@ -26,9 +26,10 @@ namespace lux::out{
 
 	template<class... types> static void printError(char* message = "UwU", types... params, callerInfo){
 		//Create output string
-		char* out = "%s\n%s\n\n  %s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
+		const char* bgn = "%s\n%s\n\n  %s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
-		out = (char*)realloc(out, strlen(out) + strlen(message) + strlen(end) + 1);
+		char* out = (char*)malloc(strlen(bgn) + strlen(out) + strlen(message) + strlen(end) + 1);
+		strcpy(out, bgn);
 		strcat(out, message);
 		strcat(out, end);
 
