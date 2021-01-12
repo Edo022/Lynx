@@ -12,25 +12,27 @@
 namespace lux::core::c::buffers{
 	//TODO use custom allocations for shared memory with those callbacks
 	//FIXME add alignment
+
 	inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-		//FIXME add function that does not initialize the data
 		((ram::Alloc<char>*)pUserData)->realloc(size);
 		return ((ram::Alloc<char>*)pUserData);
 	}
+
 	inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-		// lux::ram::reallocBck(*(lux::ram::ptr<char>*)pUserData, size);
 		((ram::Alloc<char>*)pUserData)->realloc(size);
 		return ((ram::Alloc<char>*)pUserData);
 	}
+
 	inline void freeCallback(void* pUserData, void* pMemory){
-		// lux::ram::free(*(lux::ram::ptr<char>*)pUserData);
 		((ram::Alloc<char>*)pUserData)->free();
 	}
+
 	//TODO remove those functions. Theyre probably useless
 	//TODO or separate gpu shared allocations from normal ones
 	inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
 	inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
 	//PFN_vkFreeFunction
+	//FIXME FIX
 
 
 
