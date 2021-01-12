@@ -9,6 +9,9 @@
 #	include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 //#endif
 
+#include <new>
+#include <initializer_list>
+#include <cmath>
 
 
 
@@ -55,11 +58,121 @@ namespace lux {
 	template <class type, class iter> class ContainerBase {
 	public:
 		genInitCheck;
+		ram::Alloc<type> data;	//Elements of the array
 
-		virtual inline type*	begin( ) const = 0;		//Returns a pointer to the first element of the container
-		virtual inline type*	end(   ) const = 0;		//Returns a pointer to the element after the last element of the container
-		virtual inline iter		count( ) const = 0;		//Returns the number of elements in the container
-		virtual inline uint64	size(  ) const = 0;		//Returns the size in bytes of the data contained in the container
-		virtual inline bool		empty( ) const = 0;		//Returns true if the container has size 0, false otherwise
+
+
+
+		// Inititalize and destroy elements ---------------------------------------------------------------------------------------------------------//
+
+
+
+
+		inline void initRange(iter vFrom, iter vTo){ for(iter i = vFrom; i < vTo + 1; ++i) new(&data[i]) type(); }
+		inline void destroy(                      ){ for(iter i = 0;     i < count(); ++i) data[i].~type();      }
+
+		void resize(const iter vSize){
+			checkInit(); luxCheckParam(vSize < 0, vSize, "The size of a container cannot be negative");
+			auto oldCount = count();
+			data.reallocArr(vSize);
+			initRange(oldCount, count() - 1);
+		}
+
+		template<class cType, class cIter> void cat(const ContainerBase<cType, cIter>& pCont){
+			auto oldCount = count();
+			data.reallocArr(oldCount + pCont.count());
+			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
+		}
+
+
+		// Constructors -----------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+		inline ContainerBase() : data{ nullptr } {}
+		inline ContainerBase(const iter vCount) :
+			checkInitList(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
+			data{ sizeof(type) * vCount } {
+			initRange(0, count() - 1);
+		}
+
+
+		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) : //{
+			checkInitList(
+				isInit(pCont); luxCheckParam(sizeof(cIter) > sizeof(iter), pCont,
+				"The iterator of a container must be large enough to contain all the elements.\
+				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
+			)
+			data{ sizeof(type) * pCont.count() } {		//Allocate new elements
+			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type();						//Initialize new elements
+				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
+			}
+			else for(iter i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
+			}
+		}
+
+
+		inline ContainerBase(const std::initializer_list<type>& vElms) :
+			ContainerBase(vElms.size()) {
+			iter i = 0;
+			for(auto elm : vElms) data[i++] = elm;
+		}
+
+		inline ~ContainerBase(){
+			if(data) {		//Free data if the array was not moved
+				destroy();
+				data.free();
+			}
+		}
+
+
+
+
+		// Move and assignment ----------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+		inline void move(ContainerBase<type, iter>& pCont){
+			data = pCont.data; pCont.data = nullptr;
+		}
+
+
+		inline void moveAssignment(ContainerBase<type, iter>& pCont){
+
+			data = pCont.data; pCont.data = nullptr;
+		}
+
+
+		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
+		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) {
+			destroy();									//Destroy old elements
+			data.reallocArr(sizeof(type) * pCont.count(), false);		//Allocate new elements
+			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type();						//Initialize new elements
+				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
+			}
+			else for(iter i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type();						//Initialize new elements
+			}
+		}
+
+
+
+
+		// Get size and elements --------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+		inline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
+		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
+		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container //FIXME dont cast
+		inline bool	empty( ) const { return !count(); 						};	//Returns true if the container has size 0, false otherwise
+
+		inline auto& operator[](iter vIndex) const { return data[vIndex]; }
 	};
 }

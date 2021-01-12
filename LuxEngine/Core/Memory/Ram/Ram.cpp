@@ -1,7 +1,11 @@
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 #include "LuxEngine/Core/ConsoleOutput.hpp"
-#include <cstring>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
+
+// #include "LuxEngine/Types/Pointer.hpp"
+#include "LuxEngine/Core/Memory/Shared.hpp"
+
+#include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
 //TODO add AVX512 when supported //or don't. it's probably useless
@@ -13,20 +17,35 @@
 
 
 
+//TODO choose number of buffers based on the system memory
 namespace lux::ram{
-	MemBufferType* buffers;
+	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
 	uint32 allocated;
+
+	RaArrayC<Cell_t> cells;
+
 
 
 	luxAutoInit(LUX_H_MEMORY){
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM);
-		//Init buffer types
-		for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
-			buffers[i].cellClass = (CellClass)lux::__pvt::classEnumFromIndex((lux::__pvt::CellClassIndex)i);
-			//TODO choose number of buffers based on the system memory
-			// buffers[i].buffers = Map_NMP_S<MemBuffer, uint32>(32, 8192); //64 buffers per chunk, max 8192 buffers
-			buffers[i].buffers = __nmp_RaArray<MemBuffer, uint32, 32>(); //64 buffers per chunk, max 8192 buffers
+		using namespace lux::__pvt;
+
+		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
+		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i){
+			uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
+			uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
+			types[i] = {
+				.cellClass = classEnumFromIndex(i),									//Set class index
+				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
+				.cellsPerBuff = cellsPerBuff
+			};
+			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
+		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);
+		// #ifdef LUX_DEBUG
+		// 	for(int i = 0; i < systemMemory / (uint64)lux::CellClass::CLASS_A; ++i){
+		// 		cells[i].__pvt_init_val = lux::__pvt::init_val;
+		// 	}
+		// #endif
 	}
 
 
@@ -45,7 +64,7 @@ namespace lux::ram{
 	//*  num | number of bytes to copy
 	//*  thr | LUX_TRUE to use multithreading, LUX_FALSE to use 1 thread. Default: LUX_AUTO
 	//*   Multithreading cannot be used in operations with small buffers, as it would negatively affect performance
-	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr){
+	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr*/){
 		//luxDebug(if((uint64)src % 32 != 0)	param_error(src, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 		//luxDebug(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 		//luxDebug(if(num % 32 != 0)			param_error(num, "Misaligned count. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
@@ -62,14 +81,15 @@ namespace lux::ram{
 			// default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
 		// }
 
-		cpy_thr((__m256i*)src, (__m256i*)dst, num);
+		// // cpy_thr((__m256i*)src, (__m256i*)dst, num);
+		memcpy(dst, src, num);
 	}
 
 
 
 	//TODO implement correct cpy_thr
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num){
-		memcpy(dst, src, num);
+		// // // // memcpy(dst, src, num);
 		////Copy bytes with index >= 2048
 		//#define iter _mm256_stream_si256(dst++, _mm256_stream_load_si256(src++));
 		//#define iter16 iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter iter;

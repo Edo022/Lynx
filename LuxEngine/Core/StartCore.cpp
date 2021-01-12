@@ -13,7 +13,8 @@ namespace lux::core{
         //FIXME uncomment this
         lux::thread t(lux::core::run, lux::HdCtArray{ false });
         t.detach();
-        while(!initialized) sleep(10);
+        // while(!initialized) sleep(10);
+        while(!initialized) lux::thr::self::yield();
         //FIXME
 
     }

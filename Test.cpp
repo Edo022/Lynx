@@ -49,7 +49,7 @@ void hg(lux::RtArray<uint16>){
 
 void runArrayTest();
 
-int main( ) {
+int main( ) { //BUG vulkan finds 32 compute queues wtf
 	// int h[5] = {1, 2 ,3 ,4 ,5};
 	// while(true) int h = 0;
 
@@ -78,7 +78,7 @@ int main( ) {
 	lux::input::InputState inputStateTest({
 		lux::input::KeySequence{ LUX_KEY_W | lux::input::LuxKeyState::LUX_PRESS, hg },
 		lux::input::KeySequence{ LUX_KEY_A | lux::input::LuxKeyState::LUX_PRESS, hg }
-		});
+	});
 	lux::input::setInputState(&inputStateTest);
 
 

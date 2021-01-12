@@ -5,13 +5,28 @@
 #include <cstring>
 
 #ifdef _WIN64
-#include <intrin.h>
+#	include <intrin.h>
+#	include <windows.h>
+	namespace lux::ram{
+		//System RAM in bytes
+		const uint64 systemMemory = [](){
+			MEMORYSTATUSEX status;
+			status.dwLength = sizeof(status);
+			GlobalMemoryStatusEx(&status);
+			return status.ullTotalPhys;
+		}();
+	}
 #elif defined __linux__
-#include <x86intrin.h>
+#	include <x86intrin.h>
+#	include <unistd.h>
+	namespace lux::ram{
+		//System RAM in bytes
+		const uint64 systemMemory = sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
+	}
 #endif
 
 #include "LuxEngine/Types/Pointer.hpp"
-#include "LuxEngine/Types/LuxBool.hpp"
+// #include "LuxEngine/Types/LuxBool.hpp"
 
 /*
 .
@@ -72,16 +87,20 @@
 
 namespace lux::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp too
-	struct MemBufferType;
-	extern MemBufferType* 	buffers;	//Allocated buffers
-	extern uint32 			allocated;	//TODO remove
+	struct Type_t;
+	extern Type_t types[];		//Allocated buffers
+	extern uint32  allocated;	//TODO remove
+
+	// extern uint32 head, tail;
+	// extern Cell_t* cells;				//Cells
+	// extern uint32* tracker;
+	extern RaArrayC<Cell_t> cells;
 
 
 
-
-	void cpy(const void* const src, void* const dst, uint64 num, const LuxBool thr = LUX_AUTO);
-	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t, addr>& dst, uint64 num, const LuxBool thr = LUX_AUTO){
-		cpy(src.cell->address, dst.cell->address, num, thr);
+	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/);
+	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/){
+		cpy(src, dst, num/*, thr*/);
 	}
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);
 

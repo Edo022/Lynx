@@ -116,7 +116,7 @@ namespace lux{
 		HdCtArray(const types&... vals){
 			this->lux::__pvt::seq<seqIndex, types...>::ctGet(vals...);
 		}
-		virtual uint64 getOriginalSize(){ return count(); }
+		// virtual uint64 getOriginalSize(){ return count(); } //FIXME ??
 
 		//Returns a reference to an element
 		//This can only be used with compile time known indices

@@ -7,7 +7,7 @@
 #include <cstring>
 
 
-
+//FIXME use always_inline
 
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sended back to the queue
@@ -31,9 +31,9 @@ namespace lux {
 	//"RunTime Array"
 	//A dynamic array that uses the global memory pool
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
-	private:
+		using Super = ContainerBase<type, iter>;
 		genInitCheck;
-		ram::ptr<type, alloc> data_;	//Elements of the array
+	private:
 	public:
 
 
@@ -44,33 +44,30 @@ namespace lux {
 
 
 
-		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
-		inline RtArray( ) : data_(0, type(), CellClass::AT_LEAST_CLASS_B) { }
-		inline RtArray(iter vCount) : constructExec(checkNeg, vCount) data_(sizeof(type) * vCount, type(), CellClass::AT_LEAST_CLASS_B) { }
+		inline RtArray(           ) : Super(      ) { }
+		inline RtArray(iter vCount) : Super(vCount) { }
 
-		//Initializes the array using a container object of a compatible type
-		//*   pContainer | The container object to copy elements from
-		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pContainer) : data_(sizeof(type) * pContainer.count( ), CellClass::AT_LEAST_CLASS_B) {
-			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
-			isInit(pContainer);
-			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
-		}
+		inline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } { }
 
-		//TODO remove
-		//Initializes the array using a list of elements of the same type
-		inline RtArray(const std::initializer_list<type>& pElements) : data_(sizeof(type) * pElements.size( ), CellClass::AT_LEAST_CLASS_B) {
-			//TODO ^ C strings get destroyed when the function returns
-			//luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 
-			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
+		/**
+		 * @brief Initializes the array with a lux::ContainerBase subclass instance by calling the copy constructor on each element
+		 * @param pCont The container to copy elements from
+		 * @param vConstruct If true, the elements are initialized before calling the copy constructor.
+		 *		This is required for arrays containing elements that need to be initialized before calling the copy constructor,
+		 *		such as lux::ContainerBase, lux::ram::Alloc or any object that has this type of member.
+		 *		This is always false with built-in types
+		 */
+		template<class cType, class cIter> inline RtArray(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) :
+			Super(pCont, vConstruct) {
 		}
 
 
-		inline ~RtArray(){
-			// data_.~ptr();
-		}
-
+		inline RtArray(const RtArray<type, iter>& pCont) : Super(pCont) { }										//copy constructor
+		inline RtArray(RtArray<type, iter>&& pCont){ Super::move(pCont); }			//Move constructor
+		inline void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); /*return*/ }		//copy assignment //FIXME return reference chain
+		inline void operator=(RtArray<type, iter>&& pCont){ Super::move(pCont); }	//Move assignment
+//BUG move rvalues instead of casting them
 
 
 
@@ -82,24 +79,26 @@ namespace lux {
 
 		//Resizes the array without initializing the new elements
 		//*   vNewSize | new count of the array
-		//*   Returns  | the new count
-		//TODO totally useless. Just don't return
-		inline iter resize(const iter vNewSize) {
-			checkInit(); luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			data_.reallocArr(vNewSize, type( ));
-			return data_.count( );
+		// //*   Returns  | the new count
+		// //TODO totally useless. Just don't return
+		// inline iter resize(const iter vNewSize) {
+		inline void resize(const iter vNewSize) {
+			Super::resize(vNewSize);
+			// Super::data.reallocArr(vNewSize, type( ));
+			// return Super::data.count( );
 		}
 
 
 		//Resets the array to its initial state, freeing the memory and resizing it to 0
 		inline void clear( ){
 			checkInit();
-			data_.free();
+			Super::destroy();	//Free old elements
+			// Super::data.free();
 
 			//TODO dont call this directly. add construct function
 			// this->DynArray::DynArray( );
 			//TODO constructor
-			data_.realloc(0, type(), CellClass::AT_LEAST_CLASS_B);
+			Super::data.realloc(0, type(), CellClass::AT_LEAST_CLASS_B);
 		}
 
 
@@ -108,9 +107,10 @@ namespace lux {
 		//*   Returns  | the index of the element in the array
 		inline iter add(const type& vElement) {
 			checkInit();
-			resize(data_.count() + 1);
-			data_.last( ) = vElement;
-			return data_.count( ) - 1;
+			auto oldCount = Super::count();
+			resize(Super::count() + 1);
+			operator[](oldCount) = vElement;
+			return oldCount;
 		}
 
 
@@ -120,19 +120,16 @@ namespace lux {
 
 
 
+		//TODO add specific functions for count
+		inline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
 
-		inline iter	  count( )	const override { checkInit(); return data_.count( );		  }
-		inline uint64 size( )	const override { checkInit(); return count( ) * sizeof(type); }
-		inline bool	  empty( )	const override { checkInit(); return !count( );				  }
-		inline type*  begin( )	const override { checkInit(); return data_.begin( );		  }
-		inline type*  end( )	const override { checkInit(); return data_.end( );			  }
 
 		inline type&  operator[](const iter vIndex) const {
 			checkInit();
-			luxCheckCond(count() == 0,                "This function cannot be called on containers with size 0");
+			luxCheckCond(Super::count() == 0,                "This function cannot be called on containers with size 0");
 			luxCheckParam(vIndex < 0, vIndex,         "Index cannot be negative");
-			luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
-			return data_[vIndex];
+			luxCheckParam(vIndex >= Super::count( ), vIndex, "Index is out of range");
+			return Super::operator[](vIndex);
 		}
 	};
 }

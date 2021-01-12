@@ -28,7 +28,7 @@ namespace lux::sys{
 			once = false;
 			char buff[FILENAME_MAX];				//Create char array to store the path
 			__lp_get_cwd(buff, FILENAME_MAX);		//Get path
-			dir::thisDir = String(lux::String(buff));		//Save path
+			dir::thisDir = String(buff);		//Save path
 			dir::fixWindowsPath(dir::thisDir);		//Replace silly windows backslashes with normal slashes
 			__lp_get_nopt(threadNum);				//Get number of physical threads
 		}

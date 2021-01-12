@@ -31,11 +31,11 @@ namespace lux::thr {
 		// threads = RtArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.clear();
 
-		maxpq.clear();
-		highpq.clear();
-		lowpq.clear();
-		minpq.clear();
-		stg.clear();
+		// maxpq.clear();
+		// highpq.clear();
+		// lowpq.clear();
+		// minpq.clear();
+		// stg.clear();
 	}
 
 

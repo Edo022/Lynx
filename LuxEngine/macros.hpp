@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning(disable : 4005) //Macro referinition
 #include "LuxEngine_config.hpp"
 
 
@@ -7,7 +6,7 @@
 #undef max
 #undef min
 //Functions
-template<class ta, class tb>						static inline constexpr void swapVar(ta a, tb b)		 { a ^= b ^= a ^= b; }       //Swaps the contents of 2 basic type variables
+template<class ta, class tb>						static inline constexpr void swapVar(ta& a, tb& b)		 { a ^= b ^= a ^= b; }       //Swaps the contents of 2 basic type variables
 template<class ta, class tb>						static inline constexpr auto max(const ta a, const tb b) { return (a > b) ? a : b; } //Returns the minimum value
 template<class ta, class tb>						static inline constexpr auto min(const ta a, const tb b) { return (a < b) ? a : b; } //Returns the maximum value
 template<class ta, class tb, class tc, class ...tn> static inline constexpr auto max(const ta a, const tb b, const tc c, const tn... n) { return max(a, b, c, n...); }
@@ -15,21 +14,21 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 //Console output
-#include "deps/Shared/TermColor.hpp"
-#define Normal				std::cout<<termcolor::white		<< '\n';
-#define NormalNoNl			std::cout<<termcolor::white;
-#define Success				std::cout<<termcolor::green		<< '\n';
-#define SuccessNoNl			std::cout<<termcolor::green;
-#define Main				std::cout<<termcolor::magenta	<< '\n';
-#define Failure				std::cout<<termcolor::red		<< '\n';
-#define Warning				std::cout<<termcolor::yellow	<< '\n';
+#include "LuxEngine/Core/__tmp__OutputColor.hpp"
+#define Normal				std::cout << __tmp_output_color::white		<< '\n';
+#define NormalNoNl			std::cout << __tmp_output_color::white;
+#define Success				std::cout << __tmp_output_color::green		<< '\n';
+#define SuccessNoNl			std::cout << __tmp_output_color::green;
+#define Main				std::cout << __tmp_output_color::magenta	<< '\n';
+#define Failure				std::cout << __tmp_output_color::red		<< '\n';
+#define Warning				std::cout << __tmp_output_color::yellow	<< '\n';
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
 
 
 
-//Debug
-#ifdef LUX_DEBUG
+//Debug. Expand debug macros but gray out "#ifdef LUX_DEBUG"s
+#if defined(LUX_DEBUG) || defined(__INTELLISENSE__)
 #	define luxDebug(...)				__VA_ARGS__
 #	define luxRelease(...)
 #else
@@ -39,9 +38,9 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 //Im lazy UwU
-#define scast						static_cast
-#define rcast						reinterpret_cast
-
+#define scast   static_cast
+#define rcast   reinterpret_cast
+#define noop    (void)0
 
 //Time
 #include <chrono>
@@ -54,7 +53,6 @@ typedef std::chrono::system_clock::time_point LuxTime;
 
 
 
-#pragma warning(default : 4005) //Macro referinition
 
 
 

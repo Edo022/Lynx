@@ -44,24 +44,23 @@ namespace lux::core::c::shaders{
 	//> Engine internal use
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 		FILE* fp;
-		#ifdef _WIN64
-		fopen_s(&fp, pFilePath, "rb");									//Open the file
-		#elif defined __linux__
-		fp = fopen(pFilePath, "rb");									//Open the file
-		#endif
-		if(fp == NULL) {
+		win10(fopen_s(&fp, pFilePath, "rb"));							//Open the file
+		linux(fp = fopen(pFilePath, "rb"));
+		if(!fp) {
 			printf("Could not find or open file: %s\n", pFilePath);
 			return 0;
 		}
-		#ifdef _WIN64
-		_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
-		int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file count
-		_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
-		#elif defined __linux__
-		fseek(fp, 0, SEEK_END);										//Go to the end of the file
-		int32 filesize = scast<int32>(ftell(fp));					//And get the file count
-		fseek(fp, 0, SEEK_SET);										//Go to the beginning of the file
-		#endif
+		win10(
+			_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
+			int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file count
+			_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
+		)
+		linux(
+			fseek(fp, 0, SEEK_END);
+			int32 filesize = scast<int32>(ftell(fp));
+			fseek(fp, 0, SEEK_SET);
+		)
+
 		int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
 
 		char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
@@ -208,7 +207,7 @@ namespace lux::core::c::shaders{
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;					//#LLID STRT 0003 Count uniform and
 			else storageCount++;																//storage cells requested
 		}
-		RtArray<VkDescriptorPoolSize> sizes((storageCount != 0) + (uniformCount != 0));	//Create an array of descriptor sizes with one element for each descriptor type
+		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + !!uniformCount);	//Create an array of descriptor sizes with one element for each descriptor type
 		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{								//If there is at least one storage descriptor
 			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },											//Set the element type as storage
 			.descriptorCount{ storageCount },													//And set the number of descriptors
@@ -478,7 +477,8 @@ namespace lux::core::c::shaders{
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ);	//Create command buffers and command pool
 
 		addShaderFence.startSecond( );
-		LuxShader i = CShaders.add(shader);														//Add the shader to the shader array
+		// shader.
+		LuxShader i = CShaders.add(shader);	 //BUG for some reason, i has a huge value											//Add the shader to the shader array
 		addShaderFence.endSecond( );
 		return i;
 	}

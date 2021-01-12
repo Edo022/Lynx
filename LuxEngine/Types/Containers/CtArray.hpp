@@ -13,9 +13,10 @@
 namespace lux {
 	//A static array that knows its count
 	//This array does NOT use the memory pool. All the data is allocated when the variable gets initialized
-	template <class type, uint64 count_> class CtArray : public ContainerBase<type, uint64> {
-	private:
+	// template <class type, uint64 count_> class CtArray : public ContainerBase<type, uint64> {
+	template <class type, uint64 count_> class CtArray {
 		genInitCheck;
+	private:
 		type* data_;	//Elements of the array
 	public:
 
@@ -57,7 +58,7 @@ namespace lux {
 		luxDebug(template<class elmType, class elmIter> bool __isInit(const ContainerBase<elmType, elmIter>& pArray){ isInit(pArray); return false; })
 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 		//*   pArray: a pointer to the container object
-		template<class elmType, class elmIter> inline CtArray(const ContainerBase<elmType, elmIter>& pArray) : constructExec(__isInit, pArray) /*size_{ pArray.size( ) }, */data_{ (type*)malloc(sizeof(type) * pArray.size( )) } {
+		template<class elmType, class elmIter> inline CtArray(const ContainerBase<elmType, elmIter>& pArray) : checkInitList(__isInit, pArray) /*size_{ pArray.size( ) }, */data_{ (type*)malloc(sizeof(type) * pArray.size( )) } {
 			for(uint64 i = 0; i < pArray.end( ) - pArray.begin( ); ++i) data_[i] = (elmType) * (pArray.begin( ) + i);
 		}
 		#undef __lp_lux_static_array_init
