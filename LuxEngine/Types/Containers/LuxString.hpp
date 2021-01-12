@@ -21,8 +21,8 @@ namespace lux {
 	//TODO improve concatenation performance
 	class String : public ContainerBase<char8, uint32>{
 		using Super = ContainerBase<char8, uint32>;
-	private:
 		genInitCheck;
+	private:
 		luxDebug(const char* viewer;)
 		// ram::Alloc<char8> str;
 
