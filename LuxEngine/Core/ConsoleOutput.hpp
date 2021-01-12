@@ -26,7 +26,7 @@ namespace lux::out{
 
 	template<class... types> static void printError(char* message = "UwU", types... params, callerInfo){
 		//Create output string
-		const char* bgn = "%s\n%s\n\n  %s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
+		const char* bgn = "%s\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
 		char* out = (char*)malloc(strlen(bgn) + strlen(out) + strlen(message) + strlen(end) + 1);
 		strcpy(out, bgn);
@@ -35,7 +35,7 @@ namespace lux::out{
 
 		//Output
 		char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);
-		printf(out,
+		Failure printf(out,
 			"######################################",
 			"Lux runtime error:",
 
@@ -49,6 +49,7 @@ namespace lux::out{
 
 			"######################################"
 		);
+		Normal;
 	}
 
 
