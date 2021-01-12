@@ -44,12 +44,11 @@ namespace lux::out{
 			"Function ", caller.function_name(),
 			"Line     ", caller.line(),
 
-			message,
 			params...,
 
 			"######################################"
 		);
-		Normal;
+		fflush(stdout); Normal;
 	}
 
 
