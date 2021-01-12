@@ -94,7 +94,7 @@ namespace lux {
 
 		inline type&	operator[](const uint64 vIndex) const {
 			checkInit();
-			luxCheckCond(count() == 0,              "This function cannot be called on containers with size 0");
+			checkCond(count() == 0,              "This function cannot be called on containers with size 0");
 			luxCheckParam(vIndex < 0, vIndex,       "The index of an array cannot be negative yet");
 			luxCheckParam(vIndex >= count_, vIndex, "Index is out of range");
 			return data_[vIndex];

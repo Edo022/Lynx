@@ -40,19 +40,19 @@
 
 
 namespace lux::ram{
-	#define checkSize()     luxCheckCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
-	#define checkSizeD()    luxCheckCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
+	#define checkSize()     lux::out::checkCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
+	#define checkSizeD()    lux::out::checkCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 
-	#define checkAlloc()  luxCheckCond(state == lux::__pvt::CellState::FREED,   \
+	#define checkAlloc()  lux::out::checkCond(state == lux::__pvt::CellState::FREED,   \
 		"Unable to call this function on an invalid allocation: The memory block have been manually freed")
 	#define isAlloc(a) luxCheckParam(a.state == lux::__pvt::CellState::FREED, a,\
 		"Use of invalid allocation: The memory block have been manually freed")
 
 
-	#define checkNullptr()  luxCheckCond(state == lux::__pvt::CellState::NULLPTR,\
+	#define checkNullptr()  lux::out::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Unable to call this function on an unallocated memory block")
-	#define checkNullptrD() luxCheckCond(state == lux::__pvt::CellState::NULLPTR,\
+	#define checkNullptrD() lux::out::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Cannot dereference an unallocated memory block")
 
 
@@ -764,7 +764,7 @@ namespace lux::ram{
 
 
 		#undef checkNullptrD
-		#define checkNullptrD() luxCheckCond(address == nullptr, "Cannot dereference a nullptr pointer")
+		#define checkNullptrD() lux::out::checkCond(address == nullptr, "Cannot dereference a nullptr pointer")
 		inline type& operator[](const uint64 vIndex) const { checkInit(); checkNullptrD(); return address[vIndex]; }
 		inline type& operator* (                   ) const { checkInit(); checkNullptrD(); return *address; }
 		inline type* operator->(                   ) const { checkInit(); checkNullptrD(); return address; }

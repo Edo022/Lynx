@@ -4,7 +4,9 @@
 #include <cstdio>
 #include "LuxEngine/macros.hpp"
 #include <exception>
-#include <experimental/source_location>
+#include <execinfo.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 
 
@@ -22,11 +24,20 @@ namespace lux::out{
 
 
 
-	#define callerInfo const std::experimental::source_location& caller = std::experimental::source_location::current()
+	static auto getBacktrace(){
+        int *array[512];
+        auto size = backtrace((void**)array, 512);
 
-	template<class... types> static void printError(char* message = "UwU", types... params, callerInfo){
+        char* str = (char*)malloc(512);
+        for(auto i = 0; i < size; ++i) {
+            sprintf(str, "addr2line -f -e a.out --demangle %x", array[i]);
+            system(str); printf("\n");
+        }
+	}
+
+	template<class... types> static void printError(char* message = "UwU", const types... params, callerInfo){
 		//Create output string
-		const char* bgn = "%s\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
+		const char* bgn = "%s\n\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
 		char* out = (char*)malloc(strlen(bgn) + strlen(out) + strlen(message) + strlen(end) + 1);
 		strcpy(out, bgn);
@@ -36,7 +47,8 @@ namespace lux::out{
 		//Output
 		char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);
 		Failure printf(out,
-			"######################################",
+			"###############################################################",
+
 			"Lux runtime error:",
 
 			"Thread   ", __thrName__,
@@ -46,7 +58,7 @@ namespace lux::out{
 
 			params...,
 
-			"######################################"
+			"###############################################################"
 		);
 		fflush(stdout); Normal;
 	}
@@ -61,7 +73,7 @@ namespace lux::out{
 
 	//Prints an error, specifying the line, function, file and thread where the error occurred
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	// #define luxPrintError(...)		luxCheckCond(true, __VA_ARGS__)
+	// #define luxPrintError(...)		checkCond(true, __VA_ARGS__)
 	#define luxPrintError(...)		lux::out::printError();/*BUG FIXME*/
 
 
@@ -80,17 +92,13 @@ namespace lux::out{
 
 
 	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
-	//*   condition: The condition to check
-	//*   __args: printf arguments to print the error
+	//*   vCond: The condition to check
+	//*   pMessage: printf format string
+	//*   vArgs: printf parameters
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	#define luxCheckCond(condition, ...) luxRelease(;) luxDebug({																	\
-		if(condition) {																												\
-			/*char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												*/\
-			/*Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	*/\
-			/*Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl __lux_out_stop__												*/\
-			lux::out::printError();/*BUG FIXME*/\
-		}																															\
-	})
+	template<class... types> static forceInline void checkCond(const bool vCond, const char* pMessage, const types... vArgs, callerInfo) {
+		if(vCond) lux::out::printError<types...>((const char*)pMessage, vArgs..., caller);
+	}
 	//Prints an error if the condition is satisfied, specifying the line, function, file and thread where the error occurred
 	//*   condition: The condition to check
 	//*   param: The function parameter to check

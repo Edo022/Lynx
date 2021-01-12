@@ -76,7 +76,8 @@
         "concepts": "cpp",
         "cfenv": "cpp",
         "typeindex": "cpp",
-        "parentbad": "cpp"
+        "parentbad": "cpp",
+        "source_location": "cpp"
     },
     "todo-tree.general.tagGroups": {
         "FIXME": [

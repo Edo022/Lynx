@@ -89,7 +89,7 @@ namespace lux::core::render{
 			.flags = VK_FENCE_CREATE_SIGNALED_BIT
 		};
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {
-			luxCheckCond(
+			lux::out::checkCond(
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameImageAquiredSemaphore[i])	!= VK_SUCCESS ||
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameObjectsRenderedSemaphore[i])	!= VK_SUCCESS ||
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameCopySemaphore[i])			!= VK_SUCCESS ||
