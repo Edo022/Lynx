@@ -1,7 +1,7 @@
 #pragma once
 #define LUX_H_CONTAINER_BASE
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 
 //#ifndef __lux_no_gmp //RaArray specific

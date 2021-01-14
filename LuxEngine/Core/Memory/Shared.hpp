@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_CELL_T_SHARED
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 
 
