@@ -174,7 +174,7 @@ namespace lux::core::dvc{
 			graphics.PD = *physicalDevices[0];								//set graphics device at default value
 			compute.PD = *physicalDevices[0];								//set compute  device at default value
 			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device
-				physDev.indices = getQueueFamilies(physDev.device);		//Get its queue families //BUG THE 33 ELM GETS REMOVED FROM HERE
+				physDev.indices = getQueueFamilies(physDev.device);		//Get its queue families
 				physDev.score = rate(&physDev);							//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1) graphics.PD = physDev;
 				if(physDev.score > compute.PD.score || physDev.indices.computeFamilies.count( ) > 0) compute.PD = physDev;

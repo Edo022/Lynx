@@ -500,15 +500,17 @@ namespace lux::ram{
 			evaluateCellClass(vSize, vClass);
 			checkAllocSize(vSize, vClass);
 
-			if(!cell->address) { [[unlikely]]									//If the memory is unallocated
-				alloc_(vSize, vClass);												//Allocate it
+			if(!cell->address) { [[unlikely]]									//If the memory is unallocated //BUG DONT USE NULLPTR BUT REASSIGNNNNN
+				alloc_(vSize, vClass);												//Allocate it			   //BUG or not. its probably fine
+				//!^ Ok. Owners count is set back to 1 if the address was nullptr. nullptr allocations are not shared
+				pushOwner();
 			}
 			else { 																//If it's allocated
 				if(																	//And the new size is smaller than the maximum cell size
 					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= vSize / LuxIncSize * (LuxIncSize + 1)) ) {
 					[[likely]] cell->cellSize = vSize;									//change the cellSize variable and return //FIXME move to fixed size cell
 				}
-				else{																//If it's larger than the maximum cell size //TODO check realloc and free returns
+				else{															//If it's larger than the maximum cell size //TODO check realloc and free returns
 					// if(cell->typeIndex){
 					if((uint32)cell->typeIndex != (uint32)-1){						//If the cell is a fixed size cell
 						type* oldAddr = (type*)cell->address;							//Save the old address
@@ -665,7 +667,9 @@ namespace lux::ram{
 		cell = &cells[cellIndex];
 		*cell = Cell_t{
 			.typeIndex = (uint16)classIndexFromEnum(vClass),	//Set cell type index
-			.owners = 1,								//Set 1 owner: this pointer
+			.owners = 1,								//Set 1 owner: this pointer //BUG DONT. ASSIGN OWNERS FROM POINTER CONSTRUCTORS
+			//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
+			//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
 			.cellIndex  = cellIndex,
 			.cellSize = (uint32)vSize,							//Set size specified in function call
 		};

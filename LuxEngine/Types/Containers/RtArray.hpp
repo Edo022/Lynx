@@ -105,7 +105,7 @@ namespace lux {
 		//Adds an element to the end of the array
 		//*   vElement | the element to add
 		//*   Returns  | the index of the element in the array
-		inline iter add(const type& vElement) {
+		inline iter add(const type& vElement) { //BUG NULLPTR NOT CHECKED
 			checkInit();
 			auto oldCount = Super::count();
 			resize(Super::count() + 1);

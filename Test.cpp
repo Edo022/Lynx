@@ -61,7 +61,7 @@ int main( ) { //BUG vulkan finds 32 compute queues wtf
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
-		// usleep(1000*1000);
+
 		renderSpace.addChild(new lux::obj::Line2D(lineTest));
 		lux::obj::Line2D lineTest2{
 			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
