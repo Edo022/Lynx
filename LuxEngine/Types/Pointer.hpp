@@ -732,11 +732,14 @@ namespace lux::ram{
 		genInitCheck;
 
 
+		constexpr inline ptr(nullptr_t) : address{ nullptr } {}
+		constexpr inline ptr() : ptr(nullptr) {};
+
 		//Copy C pointers
 		template<class pType>
-		constexpr explicit inline ptr(  pType* vPtr){ dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor"); this->address = (type*)vPtr; }
-		constexpr          inline ptr(  type * vPtr){ dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor"); this->address =        vPtr; }
-		constexpr inline void operator=(type * vPtr){ dbg::checkRawPtr(vPtr, "Invalid pointer passed to operator="  ); this->address =        vPtr; }
+		constexpr explicit inline ptr(  pType* vPtr){ /*dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor");*/ this->address = (type*)vPtr; }
+		constexpr          inline ptr(  type * vPtr){ /*dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor");*/ this->address =        vPtr; }
+		constexpr inline void operator=(type * vPtr){ /*dbg::checkRawPtr(vPtr, "Invalid pointer passed to operator="  );*/ this->address =        vPtr; }
 
 		//Copy Lux pointers
 		template<class pType>

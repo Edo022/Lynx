@@ -13,19 +13,22 @@ namespace lux::core::c::buffers{
 	//TODO use custom allocations for shared memory with those callbacks
 	//FIXME add alignment
 
-	inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-		((ram::Alloc<char>*)pUserData)->realloc(size);
-		return ((ram::Alloc<char>*)pUserData);
-	}
 
-	inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-		((ram::Alloc<char>*)pUserData)->realloc(size);
-		return ((ram::Alloc<char>*)pUserData);
-	}
+	//FIXME lux pointers cant be used as they need to be initialized
 
-	inline void freeCallback(void* pUserData, void* pMemory){
-		((ram::Alloc<char>*)pUserData)->free();
-	}
+	// inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
+	// 	((ram::Alloc<char>*)pUserData)->realloc(size);
+	// 	return pUserData;
+	// }
+
+	// inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
+	// 	((ram::Alloc<char>*)pUserData)->realloc(size);
+	// 	return pUserData;
+	// }
+
+	// inline void freeCallback(void* pUserData, void* pMemory){
+	// 	((ram::Alloc<char>*)pUserData)->free();
+	// }
 
 	//TODO remove those functions. Theyre probably useless
 	//TODO or separate gpu shared allocations from normal ones
@@ -65,19 +68,20 @@ namespace lux::core::c::buffers{
 			.allocationSize = memRequirements.size,
 			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
 		};
-		const VkAllocationCallbacks allocator{
-			.pUserData = new ram::Alloc<char>(),
-			.pfnAllocation = allocateCallback,
-			.pfnReallocation = reallocateCallback,
-			.pfnFree = freeCallback,
-			.pfnInternalAllocation = nullptr,
-			.pfnInternalFree = nullptr,
-			//TODO
-			// .pfnInternalAllocation,
-			// .pfnInternalFree,
-		};
-		// switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
-		switch(vkAllocateMemory(vDevice, &allocInfo, &allocator, pMemory)) {
+		//FIXME USE CUSTOM ALLOCATOR
+		// const VkAllocationCallbacks allocator{
+		// 	.pUserData = new ram::Alloc<char>(),
+		// 	.pfnAllocation = allocateCallback,
+		// 	.pfnReallocation = reallocateCallback,
+		// 	.pfnFree = freeCallback,
+		// 	.pfnInternalAllocation = internalAllocCallback,
+		// 	.pfnInternalFree = internalFreeCallback,
+		// 	//TODO
+		// 	// .pfnInternalAllocation,
+		// 	// .pfnInternalFree,
+		// };
+		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
+		// switch(vkAllocateMemory(vDevice, &allocInfo, new VkAllocationCallbacks(allocator), pMemory)) {
 			case VK_SUCCESS: break;
 			case VK_ERROR_OUT_OF_DEVICE_MEMORY: {			//If out of dedicated memory, use the shared memory
 				VkMemoryAllocateInfo allocInfo2{
