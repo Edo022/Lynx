@@ -17,7 +17,7 @@
 
 namespace lux::dbg{
 	//Returns the name of the executable file
-	const char* getExecName(){
+	static const char* getExecName(){
 		#if defined(PLATFORM_POSIX) || defined(__linux__)
 			FILE* f = fopen("/proc/self/comm", "r");
 			char* name = (char*)malloc(256);		//Create name buffer
@@ -36,7 +36,7 @@ namespace lux::dbg{
 
 
 	//Returns a string containing the output lines of a console command
-	char* exec(const char* cmd, const int vMaxLineLen = 8192) {
+	static char* exec(const char* cmd, const int vMaxLineLen = 8192) {
 		FILE* pipe = popen(cmd, "r");				//Open console and run the command
 		if (!pipe) printf("Traceback error\n");		//Check for file validity
 
@@ -98,7 +98,7 @@ namespace lux::dbg{
 
 
 
-	template<class... types> void printError(const char* vMessage, const types&... pParams){
+	template<class... types> static void printError(const char* vMessage, const types&... pParams){
 		//Create output string
 		const char* bgn = "%s\n\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
@@ -167,7 +167,7 @@ namespace lux::dbg{
 	//*   param: The function parameter to check
 	//*   __args: printf arguments to print the error
 	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	template<class... types> void alwaysInline checkParam(const bool vCond, const char* vVarName, const char* vMessage, const types&... pParams) {
+	template<class... types> static void alwaysInline checkParam(const bool vCond, const char* vVarName, const char* vMessage, const types&... pParams) {
 		if(vCond) {
 			char* str = (char*)malloc(4192);
 			sprintf(str, "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s", vVarName, caller::func(), vMessage);
