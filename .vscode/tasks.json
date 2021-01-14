@@ -13,11 +13,10 @@
 					"Test.cpp",
 					// "TestPointer.cpp",
 				//Max debug infos, Additional gprof informations, no optimizations, no inline, Lux Engine security checks
-					"-g3", "-ggdb3", "-pg", "-O0", "-fno-elide-constructors",
+					"-g3", "-ggdb3", "-pg", "-rdynamic", "-DLUX_DEBUG",
+					"-O0", "-fno-elide-constructors", "-fno-inline-small-functions",
 					"-std=c++2a", "-mavx", "-pipe",
-					"-fno-inline-small-functions",
 					"-fverbose-asm",
-					"-DLUX_DEBUG",
 				//CWD include, threads
 					"-I./", /*"-static", */"-pthread",
 				//Vulkan
