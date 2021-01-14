@@ -213,9 +213,9 @@ namespace lux {
 		 */
 		void remove(const iter vIndex) {
 			checkInit();
-			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative");
-			luxCheckParam(vIndex > count( ), vIndex, "Index is out of range");
-			luxCheckParam(!isValid(vIndex), vIndex, "Cannot remove element at index %d. It was already deleted", vIndex);
+			dbg::checkParam(vIndex < 0, "vIndex", "Index cannot be negative");
+			dbg::checkParam(vIndex > count( ), "vIndex", "Index is out of range");
+			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
 			data[vIndex].~type();							//Destroy the element
 			lnkd[vIndex] = -1;								//Set the index as free
@@ -274,8 +274,8 @@ namespace lux {
 		 */
 		inline bool isValid(const iter vIndex) const noexcept {
 			checkInit();
-			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative");
-			luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
+			dbg::checkParam(vIndex < 0, "vIndex", "Index cannot be negative");
+			dbg::checkParam(vIndex >= count( ), "vIndex", "Index is out of range");
 			return (lnkd[vIndex] == (iter)-1);
 		}
 
@@ -288,8 +288,8 @@ namespace lux {
 //FIXME add all constructors and assignment operators
 
 		inline type& operator[](const iter vIndex) const noexcept {
-			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative");
-			luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
+			dbg::checkParam(vIndex < 0, "vIndex", "Index cannot be negative");
+			dbg::checkParam(vIndex >= count( ), "vIndex", "Index is out of range");
 			return data[vIndex];
 		}
 
@@ -299,7 +299,7 @@ namespace lux {
 		//  * @return type*
 		//  */
 		// inline type* begin(const iter vChunkIndex) const {
-		// 	checkInit(); luxCheckParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
+		// 	checkInit(); dbg::checkParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
 		// }
 
 

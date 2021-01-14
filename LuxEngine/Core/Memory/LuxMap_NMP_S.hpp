@@ -50,7 +50,7 @@ namespace lux {
 		//*       Default at 0xFF * vChunkSize. ~127MB (depends on the type)
 		inline Map_NMP_S(const iter vChunkSize = fit(sizeof(type), 500000), const iter vMaxSize = fit(sizeof(type), 500000) * 0xFF) :
 			_chunkSize(vChunkSize), _maxSize(vMaxSize), head_((iter)-1), tail_((iter)-1), _chunkNum(0), size_(0), freeSize_(0) {
-			luxCheckParam(vChunkSize > vMaxSize, vMaxSize, "The maximum size of a lux::Map must be larger or equal to the chunk size");
+			dbg::checkParam(vChunkSize > vMaxSize, "vMaxSize", "The maximum size of a lux::Map must be larger or equal to the chunk size");
 			data_ = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));	//Allocate data
 			tracker_ = (iter**)malloc(sizeof(iter*) * (_maxSize / _chunkSize));	//Allocate tracker
 		}

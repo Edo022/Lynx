@@ -41,6 +41,9 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define scast   static_cast
 #define rcast   reinterpret_cast
 #define noop    (void)0
+#define alwaysInline __attribute__ ((__always_inline__))
+#define neverInline  __attribute__ ((__noinline__     ))
+
 
 //Time
 #include <chrono>

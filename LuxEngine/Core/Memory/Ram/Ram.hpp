@@ -1,7 +1,7 @@
 ﻿#pragma once
 #define LUX_H_MEMORY
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 #include <cstring>
 
 #ifdef _WIN64

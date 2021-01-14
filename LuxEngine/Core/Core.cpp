@@ -11,7 +11,7 @@
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
@@ -100,7 +100,7 @@ namespace lux::core{
 				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXMEz
 				win10(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin( ))) luxPrintError("compilation error")
+					if(!compileShader(luxStrPath.begin( ))) dbg::printError("compilation error");
 					else{ Normal printf("%s", luxStrPath.begin( )); }
 				}
 			}

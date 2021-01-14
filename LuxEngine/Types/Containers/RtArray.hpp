@@ -126,9 +126,9 @@ namespace lux {
 
 		inline type&  operator[](const iter vIndex) const {
 			checkInit();
-			luxCheckCond(Super::count() == 0,                "This function cannot be called on containers with size 0");
-			luxCheckParam(vIndex < 0, vIndex,         "Index cannot be negative");
-			luxCheckParam(vIndex >= Super::count( ), vIndex, "Index is out of range");
+			lux::dbg::checkCond(Super::count() == 0,                "This function cannot be called on containers with size 0");
+			dbg::checkParam(vIndex < 0, "vIndex",         "Index cannot be negative");
+			dbg::checkParam(vIndex >= Super::count( ), "vIndex", "Index is out of range");
 			return Super::operator[](vIndex);
 		}
 	};

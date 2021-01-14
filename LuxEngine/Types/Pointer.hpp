@@ -40,26 +40,26 @@
 
 
 namespace lux::ram{
-	#define checkSize()     luxCheckCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
-	#define checkSizeD()    luxCheckCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
+	#define checkSize()     lux::dbg::checkCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
+	#define checkSizeD()    lux::dbg::checkCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 
-	#define checkAlloc()  luxCheckCond(state == lux::__pvt::CellState::FREED,   \
+	#define checkAlloc()  lux::dbg::checkCond(state == lux::__pvt::CellState::FREED,   \
 		"Unable to call this function on an invalid allocation: The memory block have been manually freed")
-	#define isAlloc(a) luxCheckParam(a.state == lux::__pvt::CellState::FREED, a,\
+	#define isAlloc(a) dbg::checkParam(a.state == lux::__pvt::CellState::FREED, #a,\
 		"Use of invalid allocation: The memory block have been manually freed")
 
 
-	#define checkNullptr()  luxCheckCond(state == lux::__pvt::CellState::NULLPTR,\
+	#define checkNullptr()  lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Unable to call this function on an unallocated memory block")
-	#define checkNullptrD() luxCheckCond(state == lux::__pvt::CellState::NULLPTR,\
+	#define checkNullptrD() lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Cannot dereference an unallocated memory block")
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO){											\
-		luxCheckParam(var > 0xFFFFffff, var, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
-		luxCheckParam((uint32)_class < var, _class, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it"					\
-	)});
+		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
+		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
+	});
 
 
 
@@ -400,7 +400,7 @@ namespace lux::ram{
 
 		inline type&     operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
-			luxCheckParam((vIndex < 0 || vIndex >= count()), vIndex, "Index is out of range");
+			dbg::checkParam((vIndex < 0 || vIndex >= count()), "vIndex", "Index is out of range");
 			return ((type*)(cell->address))[vIndex];
 		}
 		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }
@@ -732,16 +732,22 @@ namespace lux::ram{
 		genInitCheck;
 
 
-		///@param vPtr A C pointer used to initialize the pointer
-		template<class ptrType> constexpr inline ptr(ptrType* vPtr){
-			luxCheckRawPtr(vPtr, ptrType, "invalid pointer passed to constructor");
-			this->address = vPtr;
-		}
+		constexpr inline ptr(nullptr_t) : address{ nullptr } {}
+		constexpr inline ptr() : ptr(nullptr) {};
 
-		template<class ptrType> constexpr inline void operator=(ptrType* vPtr){
-			luxCheckRawPtr(vPtr, ptrType, "invalid pointer passed to operator=");
-			this->address = vPtr;
-		}
+		//Copy C pointers
+		template<class pType>
+		constexpr explicit inline ptr(  pType* vPtr){ /*dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor");*/ this->address = (type*)vPtr; }
+		constexpr          inline ptr(  type * vPtr){ /*dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor");*/ this->address =        vPtr; }
+		constexpr inline void operator=(type * vPtr){ /*dbg::checkRawPtr(vPtr, "Invalid pointer passed to operator="  );*/ this->address =        vPtr; }
+
+		//Copy Lux pointers
+		template<class pType>
+		constexpr explicit inline ptr(  ptr<pType>* vPtr){ this->address = (type*)vPtr.address; }
+		constexpr          inline ptr(  ptr<type> * vPtr){ this->address =        vPtr.address; }
+		constexpr inline void operator=(ptr<type> * vPtr){ this->address =        vPtr.address; }
+
+
 
 
 
@@ -751,9 +757,7 @@ namespace lux::ram{
 		constexpr inline type* operator--(int) noexcept { checkInit(); return   address--; }
 		constexpr inline type* operator--(   ) noexcept { checkInit(); return --address;   }
 
-		// template<class pType> constexpr inline void operator+=(const pType* vPtr) noexcept { checkInit(); address += vPtr; }
 		template<class vType> constexpr inline void operator+=(const vType  vVal) noexcept { checkInit(); address += vVal; }
-		// template<class pType> constexpr inline void operator-=(const pType* vPtr) noexcept { checkInit(); address += vPtr; }
 		template<class vType> constexpr inline void operator-=(const vType  vVal) noexcept { checkInit(); address += vVal; }
 
 		template<class pType> constexpr inline uint64 operator+(const pType* vPtr) const noexcept { checkInit(); return address + vPtr; }
@@ -764,7 +768,7 @@ namespace lux::ram{
 
 
 		#undef checkNullptrD
-		#define checkNullptrD() luxCheckCond(address == nullptr, "Cannot dereference a nullptr pointer")
+		#define checkNullptrD() lux::dbg::checkCond(address == nullptr, "Cannot dereference a nullptr pointer")
 		inline type& operator[](const uint64 vIndex) const { checkInit(); checkNullptrD(); return address[vIndex]; }
 		inline type& operator* (                   ) const { checkInit(); checkNullptrD(); return *address; }
 		inline type* operator->(                   ) const { checkInit(); checkNullptrD(); return address; }

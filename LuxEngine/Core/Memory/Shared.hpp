@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_CELL_T_SHARED
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 
 
@@ -55,7 +55,7 @@ namespace lux{
 
 		//Returns the CellClassIndex value of a CellClass
 		static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){
-			// luxCheckParam(true, vClass, "Invalid cell class %d", (uint32)vClass);							//Invalid class
+			// dbg::checkParam(true, vClass, "Invalid cell class %d", (uint32)vClass);							//Invalid class
 			switch(vClass){
 				#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
 				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)// _case(0)							//Fixed size classes
@@ -76,7 +76,7 @@ namespace lux{
 				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L) //_case(0)
 				default:
 					if((uint64)vClass == 0) return 0b110; //old class 0 index
-					else { luxPrintError("Invalid cell class %d", (uint32)vClass) return (uint32)-1;}
+					else { dbg::printError("Invalid cell class %d", (uint32)vClass); return (uint32)-1;}
 			}
 		}
 		//DEPRECATED VERSION OF classEnumFromIndex
