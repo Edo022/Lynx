@@ -89,7 +89,7 @@ namespace lux::core::render{
 			.flags = VK_FENCE_CREATE_SIGNALED_BIT
 		};
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {
-			lux::out::checkCond(
+			lux::dbg::checkCond(
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameImageAquiredSemaphore[i])	!= VK_SUCCESS ||
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameObjectsRenderedSemaphore[i])	!= VK_SUCCESS ||
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &drawFrameCopySemaphore[i])			!= VK_SUCCESS ||
@@ -226,7 +226,7 @@ namespace lux::core::render{
 					vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
-				default:  luxPrintError("Failed to present swapchain image");
+				default:  dbg::printError("Failed to present swapchain image");
 			}
 
 		}
@@ -321,7 +321,7 @@ namespace lux::core::render{
 				return format;
 			}
 		}
-		luxPrintError("Failed to find a supported format");
+		dbg::printError("Failed to find a supported format");
 		return VK_FORMAT_UNDEFINED;
 	}
 
@@ -336,7 +336,7 @@ namespace lux::core::render{
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
-		luxPrintError("Failed to find suitable memory type");
+		dbg::printError("Failed to find suitable memory type");
 		return -1;
 	}
 }

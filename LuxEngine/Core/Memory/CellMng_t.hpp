@@ -187,7 +187,7 @@
 // 		 * @param vIndex Index of the element to remove
 // 		 */
 // 		void remove(const iter vIndex) {
-// 			checkInit(); luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex > count( ), vIndex, "Index is out of range");
+// 			checkInit(); dbg::checkParam(vIndex < 0, vIndex, "Index cannot be negative"); dbg::checkParam(vIndex > count( ), vIndex, "Index is out of range");
 // 			tracker(vIndex) = -1;								//Set the index as free
 // 			if(head == (iter)-1) head = tail = vIndex;			//If it has no free elements, initialize head and tail.
 // 			else tail = tracker(tail) = vIndex;					//If it has free elements, set the new tail and update the last free index
@@ -240,7 +240,7 @@
 // 		 */
 // 		inline bool isValid(const iter vIndex) const noexcept {
 // 			checkInit();
-// 			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
+// 			dbg::checkParam(vIndex < 0, vIndex, "Index cannot be negative"); dbg::checkParam(vIndex >= count( ), vIndex, "Index is out of range");
 // 			return (tracker(vIndex) == (iter)-1);
 // 		}
 
@@ -253,7 +253,7 @@
 
 
 // 		inline type& operator[](const iter vIndex) const noexcept {
-// 			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
+// 			dbg::checkParam(vIndex < 0, vIndex, "Index cannot be negative"); dbg::checkParam(vIndex >= count( ), vIndex, "Index is out of range");
 // 			return chunks(vIndex);
 // 		}
 
@@ -263,7 +263,7 @@
 // 		//  * @return type*
 // 		//  */
 // 		// inline type* begin(const iter vChunkIndex) const {
-// 		// 	checkInit(); luxCheckParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
+// 		// 	checkInit(); dbg::checkParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
 // 		// }
 
 

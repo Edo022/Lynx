@@ -25,8 +25,8 @@ namespace lux{
 		//checkInit() -- Checks if a function parameter is initialized
 		//isInit(var) -- Checks if a variable is initialized
 		//checkInitList(func, ...) -- Executes a function in a costructor. Debug mode only. Requires genInitCheck;
-		#define checkInit() lux::out::checkCond(this->__pvt_init_val != lux::__pvt::init_val,      "This function cannot be called on uninitialized structures")
-		#define isInit(var)	luxCheckParam( var.__pvt_init_val != lux::__pvt::init_val, var, "Uninitialized structure used")
+		#define checkInit() lux::dbg::checkCond(this->__pvt_init_val != lux::__pvt::init_val,      "This function cannot be called on uninitialized structures")
+		#define isInit(var)	dbg::checkParam( var.__pvt_init_val != lux::__pvt::init_val, #var, "Uninitialized structure used")
 		#define checkInitList(...) luxDebug(__pvt_dummy{ [&](){__VA_ARGS__; return char(0x293); }()},)
 
 

@@ -100,7 +100,7 @@ namespace lux::core{
 				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXMEz
 				win10(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin( ))) luxPrintError("compilation error")
+					if(!compileShader(luxStrPath.begin( ))) dbg::printError("compilation error");
 					else{ Normal printf("%s", luxStrPath.begin( )); }
 				}
 			}

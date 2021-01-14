@@ -49,7 +49,7 @@ namespace lux {
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
 		inline CtArray(const std::initializer_list<type>& pElements) {
-			luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
+			dbg::checkParam(pElements.size( ) > count_, "pElements", "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 			__lp_lux_static_array_init;
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
 		}
@@ -73,7 +73,7 @@ namespace lux {
 
 		template<class cIter> inline void operator=(const ContainerBase<type, cIter>& pContainer) {
 			isInit(pContainer);
-			luxCheckParam(pContainer.count( ) > count_, pContainer, "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
+			dbg::checkParam(pContainer.count( ) > count_, "pContainer", "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pContainer.size( ));
 			data_ = (type*)malloc(pContainer.size( ));
 			memcpy(data_, pContainer.begin( ), pContainer.size( ));
 		}
@@ -95,8 +95,8 @@ namespace lux {
 		inline type&	operator[](const uint64 vIndex) const {
 			checkInit();
 			checkCond(count() == 0,              "This function cannot be called on containers with size 0");
-			luxCheckParam(vIndex < 0, vIndex,       "The index of an array cannot be negative yet");
-			luxCheckParam(vIndex >= count_, vIndex, "Index is out of range");
+			dbg::checkParam(vIndex < 0, "vIndex",       "The index of an array cannot be negative yet");
+			dbg::checkParam(vIndex >= count_, "vIndex", "Index is out of range");
 			return data_[vIndex];
 		}
 	};

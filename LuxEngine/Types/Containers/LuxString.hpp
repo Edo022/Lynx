@@ -78,8 +78,8 @@ namespace lux {
 
 		inline char8& operator[](const uint32 vIndex) const {
 			checkInit();
-			luxCheckParam(vIndex < 0,       vIndex, "Index cannot be negative");
-			luxCheckParam(vIndex > count(), vIndex, "Index is out of range");
+			dbg::checkParam(vIndex < 0,       "vIndex", "Index cannot be negative");
+			dbg::checkParam(vIndex > count(), "vIndex", "Index is out of range");
 			return Super::operator[](vIndex);
 		}
 

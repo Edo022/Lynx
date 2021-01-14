@@ -72,7 +72,7 @@ namespace lux::core::render::wnd{
 			for(uint32 i = 0; i < validationLayersNum; i++) {									//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
 					if(validationLayers[i] == layerProperties.layerName) break;					//If not, exit
-					else if(validationLayers[i] == availableLayers.end( )->layerName) luxPrintError("Validation layers not available. Cannot run in debug mode");
+					else if(validationLayers[i] == availableLayers.end( )->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
 				}
 			}
 		#endif

@@ -147,7 +147,7 @@ namespace lux::core::c::shaders{
 				case LUX_DEF_SHADER_2D_LINE: shaderFileName = "Line2D"; break;
 				case LUX_DEF_SHADER_2D_BORDER: shaderFileName = "Border2D"; break;
 				case LUX_DEF_SHADER_CLEAR: shaderFileName = "FloatToIntBuffer"; break;
-				default: luxPrintError("Unknown shader: %d", vRenderShader);
+				default: dbg::printError("Unknown shader: %d", vRenderShader);
 			}
 			CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin( )), &fileLength);
 
@@ -467,10 +467,10 @@ namespace lux::core::c::shaders{
 	//> Engine internal use
 	LuxShader newShader(const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
-		luxCheckParam(pCells.count() == 0, pCells, "A shader must use at least one cell. The provided cell array has size 0");
-		luxCheckParam(vGroupCountX < 1, vGroupCountX, "The group count must be at least 1");
-		luxCheckParam(vGroupCountY < 1, vGroupCountY, "The group count must be at least 1");
-		luxCheckParam(vGroupCountZ < 1, vGroupCountZ, "The group count must be at least 1");
+		dbg::checkParam(pCells.count() == 0, "pCells", "A shader must use at least one cell. The provided cell array has size 0");
+		dbg::checkParam(vGroupCountX < 1, "vGroupCountX", "The group count must be at least 1");
+		dbg::checkParam(vGroupCountY < 1, "vGroupCountY", "The group count must be at least 1");
+		dbg::checkParam(vGroupCountZ < 1, "vGroupCountZ", "The group count must be at least 1");
 		LuxShader_t shader;
 
 		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers

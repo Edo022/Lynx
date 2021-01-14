@@ -40,26 +40,26 @@
 
 
 namespace lux::ram{
-	#define checkSize()     lux::out::checkCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
-	#define checkSizeD()    lux::out::checkCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
+	#define checkSize()     lux::dbg::checkCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
+	#define checkSizeD()    lux::dbg::checkCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 
-	#define checkAlloc()  lux::out::checkCond(state == lux::__pvt::CellState::FREED,   \
+	#define checkAlloc()  lux::dbg::checkCond(state == lux::__pvt::CellState::FREED,   \
 		"Unable to call this function on an invalid allocation: The memory block have been manually freed")
-	#define isAlloc(a) luxCheckParam(a.state == lux::__pvt::CellState::FREED, a,\
+	#define isAlloc(a) dbg::checkParam(a.state == lux::__pvt::CellState::FREED, #a,\
 		"Use of invalid allocation: The memory block have been manually freed")
 
 
-	#define checkNullptr()  lux::out::checkCond(state == lux::__pvt::CellState::NULLPTR,\
+	#define checkNullptr()  lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Unable to call this function on an unallocated memory block")
-	#define checkNullptrD() lux::out::checkCond(state == lux::__pvt::CellState::NULLPTR,\
+	#define checkNullptrD() lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Cannot dereference an unallocated memory block")
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO){											\
-		luxCheckParam(var > 0xFFFFffff, var, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
-		luxCheckParam((uint32)_class < var, _class, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it"					\
-	)});
+		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
+		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
+	});
 
 
 
@@ -400,7 +400,7 @@ namespace lux::ram{
 
 		inline type&     operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
-			luxCheckParam((vIndex < 0 || vIndex >= count()), vIndex, "Index is out of range");
+			dbg::checkParam((vIndex < 0 || vIndex >= count()), "vIndex", "Index is out of range");
 			return ((type*)(cell->address))[vIndex];
 		}
 		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }
@@ -764,7 +764,7 @@ namespace lux::ram{
 
 
 		#undef checkNullptrD
-		#define checkNullptrD() lux::out::checkCond(address == nullptr, "Cannot dereference a nullptr pointer")
+		#define checkNullptrD() lux::dbg::checkCond(address == nullptr, "Cannot dereference a nullptr pointer")
 		inline type& operator[](const uint64 vIndex) const { checkInit(); checkNullptrD(); return address[vIndex]; }
 		inline type& operator* (                   ) const { checkInit(); checkNullptrD(); return *address; }
 		inline type* operator->(                   ) const { checkInit(); checkNullptrD(); return address; }

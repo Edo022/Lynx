@@ -207,7 +207,7 @@
 // 		//*       Not freeing it saves performance but uses more memory
 // 		//*       It will always be freed if the ramaining memory is too low
 // 		void remove(const iter vIndex, const bool vFreeElm = false) {
-// 			checkInit(); luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex > count( ), vIndex, "Index is out of range");
+// 			checkInit(); dbg::checkParam(vIndex < 0, vIndex, "Index cannot be negative"); dbg::checkParam(vIndex > count( ), vIndex, "Index is out of range");
 // 			__lp_Tracker(vIndex) = -1;								//Set the index as free
 // 			if(vFreeElm) free(&__lp_Data(vIndex));					//Free the element if necessary
 // 			if(head_ == (iter)-1) head_ = tail_ = vIndex;			//If it has no free elements, initialize head_ and tail_.
@@ -270,13 +270,13 @@
 
 // 		//Use the isValid() function to check if the element can be used or has been deleted
 // 		inline type& operator[](const iter vIndex) const {
-// 			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
+// 			dbg::checkParam(vIndex < 0, vIndex, "Index cannot be negative"); dbg::checkParam(vIndex >= count( ), vIndex, "Index is out of range");
 // 			return __lp_Data(vIndex);
 // 		}
 
 // 		//Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
 // 		inline type* begin(const iter vChunkIndex) const {
-// 			checkInit(); luxCheckParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
+// 			checkInit(); dbg::checkParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
 // 		}
 
 

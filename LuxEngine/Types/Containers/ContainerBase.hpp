@@ -72,7 +72,7 @@ namespace lux {
 		inline void destroy(                      ){ for(iter i = 0;     i < count(); ++i) data[i].~type();      }
 
 		void resize(const iter vSize){
-			checkInit(); luxCheckParam(vSize < 0, vSize, "The size of a container cannot be negative");
+			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
 			initRange(oldCount, count() - 1);
@@ -92,7 +92,7 @@ namespace lux {
 
 		inline ContainerBase() : data{ nullptr } {}
 		inline ContainerBase(const iter vCount) :
-			checkInitList(luxCheckParam(vCount < 0, vCount, "Count cannot be negative"))
+			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
 			initRange(0, count() - 1);
 		}
@@ -100,7 +100,7 @@ namespace lux {
 
 		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) : //{
 			checkInitList(
-				isInit(pCont); luxCheckParam(sizeof(cIter) > sizeof(iter), pCont,
+				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
 			)
