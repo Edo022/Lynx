@@ -732,16 +732,19 @@ namespace lux::ram{
 		genInitCheck;
 
 
-		///@param vPtr A C pointer used to initialize the pointer
-		template<class ptrType> constexpr inline ptr(ptrType* vPtr){
-			luxCheckRawPtr(vPtr, ptrType, "invalid pointer passed to constructor");
-			this->address = vPtr;
-		}
+		//Copy C pointers
+		template<class pType>
+		constexpr explicit inline ptr(  pType* vPtr){ dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor"); this->address = (type*)vPtr; }
+		constexpr          inline ptr(  type * vPtr){ dbg::checkRawPtr(vPtr, "Invalid pointer passed to constructor"); this->address =        vPtr; }
+		constexpr inline void operator=(type * vPtr){ dbg::checkRawPtr(vPtr, "Invalid pointer passed to operator="  ); this->address =        vPtr; }
 
-		template<class ptrType> constexpr inline void operator=(ptrType* vPtr){
-			luxCheckRawPtr(vPtr, ptrType, "invalid pointer passed to operator=");
-			this->address = vPtr;
-		}
+		//Copy Lux pointers
+		template<class pType>
+		constexpr explicit inline ptr(  ptr<pType>* vPtr){ this->address = (type*)vPtr.address; }
+		constexpr          inline ptr(  ptr<type> * vPtr){ this->address =        vPtr.address; }
+		constexpr inline void operator=(ptr<type> * vPtr){ this->address =        vPtr.address; }
+
+
 
 
 
@@ -751,9 +754,7 @@ namespace lux::ram{
 		constexpr inline type* operator--(int) noexcept { checkInit(); return   address--; }
 		constexpr inline type* operator--(   ) noexcept { checkInit(); return --address;   }
 
-		// template<class pType> constexpr inline void operator+=(const pType* vPtr) noexcept { checkInit(); address += vPtr; }
 		template<class vType> constexpr inline void operator+=(const vType  vVal) noexcept { checkInit(); address += vVal; }
-		// template<class pType> constexpr inline void operator-=(const pType* vPtr) noexcept { checkInit(); address += vPtr; }
 		template<class vType> constexpr inline void operator-=(const vType  vVal) noexcept { checkInit(); address += vVal; }
 
 		template<class pType> constexpr inline uint64 operator+(const pType* vPtr) const noexcept { checkInit(); return address + vPtr; }
