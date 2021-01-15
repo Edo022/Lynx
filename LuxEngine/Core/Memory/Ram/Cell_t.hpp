@@ -16,7 +16,7 @@
 namespace lux{
 	namespace ram{
 		template<class type> struct Alloc;
-		//! If you modify those variables change the declarations in Ram.hpp too
+		//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 		struct Type_t;
 		extern Type_t types[];		//Allocated buffers
 		extern uint32 allocated;	//TODO remove

@@ -14,13 +14,13 @@
 
 
 namespace lux::core::render::wnd{
-	GLFWwindow* window 					= nullptr;
+	GLFWwindow* window = nullptr;
 	int32		width = 1920 * 2, height = 1080; //TODO
 	FenceDE		windowResizeFence;
-	rem::Cell	gpuCellWindowSize 		= nullptr;
-	rem::Cell	gpuCellWindowOutput 	= nullptr;
-	rem::Cell	gpuCellWindowOutput_i 	= nullptr;
-	rem::Cell	gpuCellWindowZBuffer	= nullptr;
+	rem::Cell	gpuCellWindowSize 	  = nullptr;
+	rem::Cell	gpuCellWindowOutput   = nullptr;
+	rem::Cell	gpuCellWindowOutput_i = nullptr;
+	rem::Cell	gpuCellWindowZBuffer  = nullptr;
 
 
 
@@ -28,12 +28,12 @@ namespace lux::core::render::wnd{
 	//Create the Vulkan instance, using validation layers when in debug mode
 	void createInstance( ) {
 		VkApplicationInfo appInfo{
-			.sType				{ VK_STRUCTURE_TYPE_APPLICATION_INFO	},
-			.pApplicationName	{ "LuxEngine" 							},
-			.applicationVersion	{ VK_MAKE_VERSION(1, 0, 0) 				},
-			.pEngineName		{ "LuxEngine" 							},
-			.engineVersion		{ VK_MAKE_VERSION(1, 0, 0) 				},
-			.apiVersion			{ VK_API_VERSION_1_2 					},
+			.sType              { VK_STRUCTURE_TYPE_APPLICATION_INFO },
+			.pApplicationName   { "LuxEngine"                        },
+			.applicationVersion { VK_MAKE_VERSION(1, 0, 0)           },
+			.pEngineName        { "LuxEngine"                        },
+			.engineVersion      { VK_MAKE_VERSION(1, 0, 0)           },
+			.apiVersion         { VK_API_VERSION_1_2                 },
 		};
 
 
@@ -55,13 +55,13 @@ namespace lux::core::render::wnd{
 
 		//Create instance
 		VkInstanceCreateInfo createInfo{
-			.sType							{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO 				},
+			.sType							{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO      },
 			.pNext							{ luxDebug((VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo) luxRelease(nullptr) },
-			.pApplicationInfo				{ &appInfo 												},
-			.enabledLayerCount				{ luxDebug(validationLayersNum) luxRelease(0)			},
-			luxDebug(.ppEnabledLayerNames	{ validationLayers 										},)
-			.enabledExtensionCount			{ glfwExtensionCount luxDebug(+ 1) 						},
-			.ppEnabledExtensionNames		{ extensions 											}
+			.pApplicationInfo				{ &appInfo 									  },
+			.enabledLayerCount				{ luxDebug(validationLayersNum) luxRelease(0) },
+			luxDebug(.ppEnabledLayerNames	{ validationLayers 							  },)
+			.enabledExtensionCount			{ glfwExtensionCount luxDebug(+ 1) 			  },
+			.ppEnabledExtensionNames		{ extensions 								  }
 		};
 		//Add validation layers if in debug mode
 		#ifdef LUX_DEBUG																		//Search for validation layers
@@ -77,7 +77,7 @@ namespace lux::core::render::wnd{
 			}
 		#endif
 
-		int hh = vkCreateInstance(&createInfo, nullptr, &core::instance);
+		vkCreateInstance(&createInfo, nullptr, &core::instance);
 		free(extensions);
 	}
 
@@ -106,14 +106,14 @@ namespace lux::core::render::wnd{
 
 
 		{ //Set callbacks
-			glfwSetWindowUserPointer(window, nullptr);
+			glfwSetWindowUserPointer      (window, nullptr);
 			glfwSetFramebufferSizeCallback(window, render::framebufferResizeCallback);
 
-			glfwSetCursorPosCallback(window, input::mouseCursorPosCallback);
-			glfwSetMouseButtonCallback(window, input::mouseButtonCallback);
-			glfwSetScrollCallback(window, input::mouseAxisCallback);
+			glfwSetCursorPosCallback      (window, input::mouseCursorPosCallback);
+			glfwSetMouseButtonCallback    (window, input::mouseButtonCallback);
+			glfwSetScrollCallback         (window, input::mouseAxisCallback);
 
-			glfwSetKeyCallback(window, input::keyCallback);
+			glfwSetKeyCallback            (window, input::keyCallback);
 		}
 	}
 }

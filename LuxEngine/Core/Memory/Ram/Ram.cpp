@@ -1,10 +1,7 @@
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-
-// #include "LuxEngine/Types/Pointer.hpp"
 #include "LuxEngine/Core/Memory/Shared.hpp"
-
 #include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
@@ -17,12 +14,11 @@
 
 
 
-//TODO choose number of buffers based on the system memory
 namespace lux::ram{
+	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
 	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
-	uint32 allocated;
-
 	RaArrayC<Cell_t> cells;
+	uint32 allocated;
 
 
 
@@ -41,11 +37,6 @@ namespace lux::ram{
 			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
 		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);
-		// #ifdef LUX_DEBUG
-		// 	for(int i = 0; i < systemMemory / (uint64)lux::CellClass::CLASS_A; ++i){
-		// 		cells[i].__pvt_init_val = lux::__pvt::init_val;
-		// 	}
-		// #endif
 	}
 
 
@@ -54,7 +45,7 @@ namespace lux::ram{
 
 
 
-
+//FIXME
 	//memcpy, but faster. The performance difference is much more noticeable in dual / quad channel systems, or systems with high frequency RAM / low frequency CPU
 	//The function will not return until all threads have completed the operation
 	//Use lux::mem::acpy to asynchronously copy data in a buffer

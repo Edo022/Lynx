@@ -36,8 +36,6 @@ namespace lux{
 		#endif
 
 		//Indices corresponding to lux::CellClass values
-		//Engine iternal use
-		//FIXME REMOVE
 		enum class CellClassIndex : uint32 {
 			INDEX_A = 0b000,
 			INDEX_B = 0b001,
@@ -45,28 +43,34 @@ namespace lux{
 			INDEX_D = 0b011,
 			INDEX_Q = 0b100,
 			INDEX_L = 0b101,
-			// INDEX_0 = 0b110,
 			NUM 						//Number of LUX_CELL_CLASS values
 		};
 		//Size of each buffer. 100663296 B (~100MB)
-		//FIXME REMOVE
 		static const uint32 bufferSize = (uint32)CellClass::CLASS_L * 6;
 
 
 		//Returns the CellClassIndex value of a CellClass
 		static constexpr inline uint32 classIndexFromEnum(const CellClass vClass){
-			// dbg::checkParam(true, vClass, "Invalid cell class %d", (uint32)vClass);							//Invalid class
 			switch(vClass){
 				#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
-				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)// _case(0)							//Fixed size classes
-				case CellClass::CLASS_0: return (uint32)-1;													//Custom size class
-				default: return -2;
+				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)	//Fixed size classes
+				case CellClass::CLASS_0: return (uint32)-1;				//Custom size class
+				default: return -2; //This is just to suppress the warning
 			}
 		}
 		//Returns the CellClass value of a CellClassIndex
 		static constexpr CellClass classes[] = { CellClass::CLASS_A, CellClass::CLASS_B, CellClass::CLASS_C, CellClass::CLASS_D, CellClass::CLASS_Q, CellClass::CLASS_L };
 		static constexpr inline CellClass classEnumFromIndex(const CellClassIndex vIndex){ return classes[(uint64)vIndex]; }
 		static constexpr inline CellClass classEnumFromIndex(const uint64         vIndex){ return classes[        vIndex]; }
+
+
+
+
+
+
+
+
+
 
 
 		//DEPRECATED VERSION OF classIndexFromEnum

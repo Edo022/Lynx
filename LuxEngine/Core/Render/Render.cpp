@@ -27,11 +27,11 @@
 
 
 namespace lux::core::render{
-	RtArray<VkSemaphore>	drawFrameImageAquiredSemaphore;
-	RtArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore;
-	RtArray<VkSemaphore>	drawFrameCopySemaphore;
-	RtArray<VkSemaphore>	drawFrameClearSemaphore;
-	RtArray<VkFence>		drawFrameImageRenderedFence;
+	RtArray<VkSemaphore>	drawFrameImageAquiredSemaphore   (out::renderMaxFramesInFlight);
+	RtArray<VkSemaphore>	drawFrameObjectsRenderedSemaphore(out::renderMaxFramesInFlight);
+	RtArray<VkSemaphore>	drawFrameCopySemaphore           (out::renderMaxFramesInFlight);
+	RtArray<VkSemaphore>	drawFrameClearSemaphore          (out::renderMaxFramesInFlight);
+	RtArray<VkFence>		drawFrameImageRenderedFence      (out::renderMaxFramesInFlight);
 	int32					renderCurrentFrame = 0;
 	RtArray<obj::Base*>		objUpdates2D;
 	FenceDE					pendingObjectUpdatesFence;
@@ -75,12 +75,6 @@ namespace lux::core::render{
 
 
 	void createSyncObjs( ) {
-		drawFrameImageAquiredSemaphore		.resize(out::renderMaxFramesInFlight);
-		drawFrameObjectsRenderedSemaphore	.resize(out::renderMaxFramesInFlight);
-		drawFrameCopySemaphore				.resize(out::renderMaxFramesInFlight);
-		drawFrameClearSemaphore				.resize(out::renderMaxFramesInFlight);
-		drawFrameImageRenderedFence			.resize(out::renderMaxFramesInFlight);
-
 		VkSemaphoreCreateInfo semaphoreInfo{
 			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
 		};
@@ -163,10 +157,10 @@ namespace lux::core::render{
 				.pWaitDstStageMask{ waitStages },
 				.signalSemaphoreCount{ 1 },
 			};
-			submitInfo.pWaitSemaphores = &drawFrameImageAquiredSemaphore[renderCurrentFrame];
+			submitInfo.pWaitSemaphores   = &drawFrameImageAquiredSemaphore   [renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameObjectsRenderedSemaphore[renderCurrentFrame];
 			submitInfo.commandBufferCount = c::shaders::CShadersCBs.count( );
-			submitInfo.pCommandBuffers = c::shaders::CShadersCBs.begin( );
+			submitInfo.pCommandBuffers    = c::shaders::CShadersCBs.begin( );
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 		}
 
@@ -279,11 +273,11 @@ namespace lux::core::render{
 		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);			//Destroy graphics command pool
 
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {								//Destroy sync objects
-			vkDestroySemaphore(dvc::graphics.LD, drawFrameImageAquiredSemaphore[i], nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, drawFrameImageAquiredSemaphore[i],    nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, drawFrameObjectsRenderedSemaphore[i], nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, drawFrameCopySemaphore[i], nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, drawFrameClearSemaphore[i], nullptr);
-			vkDestroyFence(dvc::graphics.LD, drawFrameImageRenderedFence[i], nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, drawFrameCopySemaphore[i],            nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, drawFrameClearSemaphore[i],           nullptr);
+			vkDestroyFence    (dvc::graphics.LD, drawFrameImageRenderedFence[i],       nullptr);
 		}
 
 		//If the compute and the graphics devices are not the same, destroy the graphics device

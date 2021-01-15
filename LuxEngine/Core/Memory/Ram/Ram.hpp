@@ -26,7 +26,6 @@
 #endif
 
 #include "LuxEngine/Types/Pointer.hpp"
-// #include "LuxEngine/Types/LuxBool.hpp"
 
 /*
 .
@@ -86,15 +85,11 @@
 
 
 namespace lux::ram{
-	//! If you modify those variables change the declarations in Cell_t.hpp too
+	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
 	struct Type_t;
-	extern Type_t types[];		//Allocated buffers
-	extern uint32  allocated;	//TODO remove
-
-	// extern uint32 head, tail;
-	// extern Cell_t* cells;				//Cells
-	// extern uint32* tracker;
+	extern Type_t types[];			//Allocated buffers
 	extern RaArrayC<Cell_t> cells;
+	extern uint32  allocated;		//TODO remove
 
 
 

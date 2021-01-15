@@ -15,11 +15,7 @@ namespace lux::core::render::swapchain{
 	VkSwapchainKHR			swapchain = nullptr;
 	RtArray<VkImage>		swapchainImages;
 	RtArray<VkImageView>	swapchainImageViews;
-	#ifdef _WIN64
-		VkFormat			swapchainImageFormat = VkFormat::VK_FORMAT_END_RANGE;
-	#elif defined __linux__
-		VkFormat			swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
-	#endif
+	VkFormat				swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
 	VkExtent2D				swapchainExtent = { };
 	RtArray<VkFramebuffer>	swapchainFramebuffers;
 
@@ -60,7 +56,7 @@ namespace lux::core::render::swapchain{
 		int32 width, height;
 		glfwGetFramebufferSize(wnd::window, &width, &height);
 		return VkExtent2D{
-			max(pCapabilities->minImageExtent.width, min(pCapabilities->maxImageExtent.width, (uint32)width)),
+			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
 		};
 	}
@@ -70,19 +66,12 @@ namespace lux::core::render::swapchain{
 
 	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 		SwapChainSupportDetails details;
-		//BUG HERE
-		//BUG ONLY IN THE SECOND CALL
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
 
 		uint32 formatCount;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
 		if(formatCount != 0) {
 			details.formats.resize(formatCount);
-			//BUG
-			//BUG "details.formats.begin( )"" and
-			//BUG "dvc::compute.PD.indices.computeFamilies[0]"
-			//BUG HAVE THE SAME ADDRESS
-			//BUG AND THE SAME CELL
 			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.begin( ));
 		}
 
