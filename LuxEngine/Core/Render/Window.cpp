@@ -33,17 +33,17 @@ namespace lux::core::render::wnd{
 			.applicationVersion	{ VK_MAKE_VERSION(1, 0, 0) 				},
 			.pEngineName		{ "LuxEngine" 							},
 			.engineVersion		{ VK_MAKE_VERSION(1, 0, 0) 				},
-			.apiVersion			{ VK_API_VERSION_1_0 					},
+			.apiVersion			{ VK_API_VERSION_1_2 					},
 		};
 
 
 		//Extensions
-		const char** extensions;
 		//TODO manage nullptr in add functions
 		uint32 glfwExtensionCount;
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
+		//! ^ Freed by GLFW
 
-		extensions = (const char**)malloc(sizeof(const char**) * (glfwExtensionCount luxDebug(+ 1)));
+		const char** extensions = (const char**)malloc(sizeof(const char*) * (glfwExtensionCount luxDebug(+ 1)));
 		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions[i] = glfwExtensions[i];		//Save them into an array
 		luxDebug(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
 
@@ -78,6 +78,7 @@ namespace lux::core::render::wnd{
 		#endif
 
 		int hh = vkCreateInstance(&createInfo, nullptr, &core::instance);
+		free(extensions);
 	}
 
 
