@@ -37,11 +37,12 @@ namespace lux::core::c::shaders{
 
 
 
-	//Reads a shader from a file and saves it into a padded int32 array
-	//*   pLength: a pointer to an int32 where to store the padded code length
-	//*   pFilePath: a pointer to a char array containing the path to the compiled shader file
-	//*   returns: a pointer to the array where the code is saved
-	//> Engine internal use
+	/**
+	 * @brief Reads a shader from a file and saves it into a padded int32 array
+	 * @param pLength A pointer to an int32 where to store the padded code length
+	 * @param pFilePath A pointer to a char array containing the path to the compiled shader file
+	 * @return A pointer to the array where the code was saved
+	 */
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 		FILE* fp;
 		win10(fopen_s(&fp, pFilePath, "rb"));							//Open the file
@@ -75,16 +76,20 @@ namespace lux::core::c::shaders{
 
 
 
-	//Creates a shader module from a compiled shader code and its length in bytes
-	//*   vDevice: the logical device to use to create the shader module
-	//*   pCode: a pointer to an int32 array containing the shader code
-	//*   pLength: a pointer to the code length
-	//> Engine internal use
+	/**
+	 * @brief Creates a shader module from a compiled shader code and its length in bytes.
+	 *		The shader code is freen when the function returns
+	 * @param vDevice The logical device to use to create the shader module
+	 * @param pCode A pointer to an int32 array containing the shader code
+	 * @param pLength A pointer to the code length
+	 * @return The created shader module
+	 */
 	VkShaderModule cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
-		VkShaderModuleCreateInfo createInfo{ };								//Create shader module infos
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;		//Set structure type
-		createInfo.codeSize = *pLength;										//Set the count of the compiled shader code
-		createInfo.pCode = pCode;											//Set the shader code
+		VkShaderModuleCreateInfo createInfo{ 							//Create shader module infos
+			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,			//Set structure type
+			.codeSize = *pLength,											//Set the count of the compiled shader code
+			.pCode = pCode													//Set the shader code
+		};
 
 		VkShaderModule shaderModule;										//Create the shader module
 		dbg::checkVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule), "Failed to create shader module");
@@ -108,10 +113,12 @@ namespace lux::core::c::shaders{
 
 
 
-	//Creates the descriptor sets layout, the pipeline and the pipeline layout of a shader
-	//*   vRenderShader: the type of the shader
-	//*   pCellNum: The number of cells to bing to the shader. The shader inputs must match those cells
-	//> Engine internal use
+	/**
+	 * @brief reates the descriptor sets layout, the pipeline and the pipeline layout of a shader
+	 * @param vRenderShader the type of the shader
+	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
+	 * @param pIsReadOnly //FIXME REMOVE
+	 */
 	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly) {
 		{ //Create descriptor set layout
 			RtArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
@@ -126,15 +133,15 @@ namespace lux::core::c::shaders{
 			}
 
 			//Create a VkDescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the VkDescriptorSetLayout
-			VkDescriptorSetLayoutCreateInfo* layoutCreateInfo = (VkDescriptorSetLayoutCreateInfo*)malloc(sizeof(VkDescriptorSetLayoutCreateInfo));
-			layoutCreateInfo->sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;	//Structure type
-			layoutCreateInfo->bindingCount = bindingLayouts.count( );						//Number of binding layouts
-			layoutCreateInfo->pBindings = (bindingLayouts.begin( ));						//The binding layouts
-			layoutCreateInfo->flags = 0;													//default
-			layoutCreateInfo->pNext = nullptr;												//default
-
+			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{
+				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,	//Structure type
+				.pNext = nullptr,	 											//default
+				.flags = 0,	 													//default
+				.bindingCount = bindingLayouts.count( ),	 					//Number of binding layouts
+				.pBindings = (bindingLayouts.begin( ))	 						//The binding layouts
+			};
 			//Create the descriptor set layout
-			dbg::checkVk(vkCreateDescriptorSetLayout(dvc::compute.LD, layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
+			dbg::checkVk(vkCreateDescriptorSetLayout(dvc::compute.LD, &layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
 		}
 
 
@@ -156,7 +163,7 @@ namespace lux::core::c::shaders{
 			CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
 				.sType{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO },		//Set structure type
 				.stage{ VK_SHADER_STAGE_COMPUTE_BIT },								//Use it in the compute stage
-				#ifndef __INTELLISENSE__ //Intellisense sees "module" as the C++ module keyword. This code is enabled during compilation
+				#ifndef __INTELLISENSE__ 	//! Intellisense sees "module" as the C++ module keyword. This code is enabled during compilation
 				.module{ CShadersLayouts[vRenderShader].shaderModule },				//Set shader module
 				.pName{ "main" },													//Set the main function as entry point
 				#endif
@@ -193,37 +200,39 @@ namespace lux::core::c::shaders{
 
 
 
-	//Creates the descriptor pool and allocates in it the descriptor sets
-	//*   pCShader: a pointer to the shader where to create the descriptor pool and allocate the descriptor buffers
-	//*   pCells: an array of memory cells to bind to the shader
-	//*   --- The shader inputs must match those cells
-	//*   --- the binding index is the same as their index in the array
-	//*   vShaderLayout: the shader layout
-	//> Engine internal use
+	//FIXME USE RAM POINTERS
+	/**
+	 * @brief Creates the descriptor pool and allocates in it the descriptor sets
+	 * @param pCShader A pointer to the shader where to create the descriptor pool and allocate the descriptor buffers
+	 *		The shader inputs must match those cells
+	 *		the binding index is the same as their index in the array
+	 * @param pCells An array of memory cells to bind to the shader
+	 * @param vShaderLayout The shader layout
+	 */
 	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
-		for(uint32 i = 0; i < pCells.count( ); i++){										//For every cell
-			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;					//#LLID STRT 0003 Count uniform and
-			else storageCount++;																//storage cells requested
+		for(uint32 i = 0; i < pCells.count( ); i++){								//For every cell
+			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;			//#LLID STRT 0003 Count uniform and
+			else storageCount++;														//storage cells requested
 		}
-		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + !!uniformCount);	//Create an array of descriptor sizes with one element for each descriptor type
-		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{								//If there is at least one storage descriptor
-			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },											//Set the element type as storage
-			.descriptorCount{ storageCount },													//And set the number of descriptors
+		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + !!uniformCount);		//Create an array of descriptor sizes with one element for each descriptor type
+		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{							//If there is at least one storage descriptor
+			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },									//Set the element type as storage
+			.descriptorCount{ storageCount },											//And set the number of descriptors
 		};
-		if(uniformCount != 0) sizes[(storageCount != 0)] = VkDescriptorPoolSize{			//If there is at least one uniform descriptor
-			.type{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },											//Set the element type as uniform
-			.descriptorCount{ uniformCount },													//And set the number of descriptors
+		if(uniformCount != 0) sizes[(storageCount != 0)] = VkDescriptorPoolSize{	//If there is at least one uniform descriptor
+			.type{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },									//Set the element type as uniform
+			.descriptorCount{ uniformCount },											//And set the number of descriptors
 		};
 
 		//Create the descriptor pool that will contain the descriptor sets
-		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {								//This struct contains the informations about the descriptor pool
-			.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO },							//Set structure type
-			.flags{ VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT },						//Allow the descriptor sets to be freed
-			.maxSets{ 1 },																		//Allocate only one descriptor set
-			.poolSizeCount{ sizes.count( ) },													//Use one pool size
-			.pPoolSizes{ sizes.begin( ) },														//Set the pool size
+		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {						//This struct contains the informations about the descriptor pool
+			.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO },					//Set structure type
+			.flags{ VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT },				//Allow the descriptor sets to be freed
+			.maxSets{ 1 },																//Allocate only one descriptor set
+			.poolSizeCount{ sizes.count( ) },											//Use one pool size
+			.pPoolSizes{ sizes.begin( ) },												//Set the pool size
 		};
 		dbg::checkVk(vkCreateDescriptorPool(dvc::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool), "Unable to create descriptor pool");
 
@@ -394,14 +403,15 @@ namespace lux::core::c::shaders{
 
 
 
-	//Creates the shader command buffer that binds pipeline and descriptors and runs the shader
-	//*   pCShader: the shader where to create the command buffer
-	//*   vShaderLayout: the render type
-	//*   vGroupCountX: the number of workgroups in the x axis
-	//*   vGroupCountY: the number of workgroups in the y axis
-	//*   vGroupCountZ: the number of workgroups in the z axis
-	//The workgroup count is define in the GLSL shader
-	//> Engine internal use
+	/**
+	 * @brief Creates the shader command buffer that binds pipeline and descriptors and runs the shader
+	 *		The workgroup count is define in the GLSL shader
+	 * @param pCShader The shader where to create the command buffer
+	 * @param vShaderLayout The render type
+	 * @param vGroupCountX The number of workgroups in the x axis
+	 * @param vGroupCountY The number of workgroups in the y axis
+	 * @param vGroupCountZ The number of workgroups in the z axis
+	 */
 	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 		//Create command buffer allocate infos
@@ -416,10 +426,6 @@ namespace lux::core::c::shaders{
 
 
 
-
-
-
-
 		//TODO change only those lines when updating a shader
 		//Create compute command buffer and start recording commands
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
@@ -430,9 +436,9 @@ namespace lux::core::c::shaders{
 
 
 		//Bind pipeline and descriptors and run the compute shader
-		vkCmdBindPipeline(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindPipeline      (pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
 		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
-		vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
+		vkCmdDispatch          (pCShader->commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 		//End command buffer recording
 		dbg::checkVk(vkEndCommandBuffer(pCShader->commandBuffers[0]), "Failed to record command buffer");
@@ -454,17 +460,20 @@ namespace lux::core::c::shaders{
 
 
 
-	//Add a shader in the staging queue. The shader will be created and used by the rendering thread
-	//All the shaders created with this function must be destroyed with CShaderDestroy(shader)
-	//*   pCells: an array of memory cells to bind to the shader
-	//*   --- The shader inputs must match those cells. The binding index is the same as their index in the array
-	//*   vShaderLayout: the layout of the shader
-	//*   vGroupCountX: the number of workgroups in the x axis
-	//*   vGroupCountY: the number of workgroups in the y axis
-	//*   vGroupCountZ: the number of workgroups in the z axis
-	//*   returns: the index of the shader
-	//*   --- -1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
-	//> Engine internal use
+	//FIXME
+	/**
+	 * @brief Adds a shader in the staging queue. The shader will be created and used by the rendering thread
+	 *		All the shaders created with this function must be destroyed with CShaderDestroy(shader)
+	 * @param pCells An array of memory cells to bind to the shader
+	 *		The shader inputs must match those cells. The binding index is the same as their index in the array
+	 * @param vShaderLayout The layout of the shader
+	 * @param vGroupCountX  The number of workgroups in the x axis
+	 * @param vGroupCountY  The number of workgroups in the y axis
+	 * @param vGroupCountZ  The number of workgroups in the z axis
+	 * @return The index of the shader
+	 *		-1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
+	 *	//FIXME
+	 */
 	LuxShader newShader(const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
 		dbg::checkParam(pCells.count() == 0, "pCells", "A shader must use at least one cell. The provided cell array has size 0");
@@ -478,7 +487,7 @@ namespace lux::core::c::shaders{
 
 		addShaderFence.startSecond( );
 		// shader.
-		LuxShader i = CShaders.add(shader);	 //BUG for some reason, i has a huge value											//Add the shader to the shader array
+		LuxShader i = CShaders.add(shader);
 		addShaderFence.endSecond( );
 		return i;
 	}
@@ -490,9 +499,10 @@ namespace lux::core::c::shaders{
 
 
 
-	//Updates the cells, layout or group conunts of a shader
-	//*   Way faster than destroying and creating it again
-	//> Engine internal use
+	/**
+	 * @brief Updates the cells, layout or group conunts of a shader
+	 *		Way faster than destroying and creating it again
+	 */
 	void updateShaderCall(const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
@@ -502,9 +512,9 @@ namespace lux::core::c::shaders{
 
 
 		//Bind pipeline and descriptors and run the compute shader
-		vkCmdBindPipeline(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindPipeline      (CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
 		vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, nullptr);
-		vkCmdDispatch(CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
+		vkCmdDispatch          (CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 
 		//End command buffer recording
@@ -520,15 +530,17 @@ namespace lux::core::c::shaders{
 
 	//TODO choose device
 	//TODO remove command buffer from command buffer dynarray
-	//Removes a shader from the shader array, cleaning all of its components and freeing the memory
-	//*   shader: the shader to destroy
-	//*   returns: true if the operation succeeded, false if the index is invalid
-	//> Engine internal use
+	/**
+	 * @brief Removes a shader from the shader array, cleaning all of its components and freeing the memory
+	 *
+	 * @param vCShader The shader to destroy
+	 * @return True if the operation succeeded, false if the index is invalid
+	 */
 	bool destroyShader(const LuxShader vCShader) {
 		if(vCShader >= CShaders.count( )) return false;
 
 		//Clear descriptors sets, descriptor pool and descriptor layout
-		vkFreeDescriptorSets(dvc::compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
+		vkFreeDescriptorSets   (dvc::compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
 		vkDestroyDescriptorPool(dvc::compute.LD, CShaders[vCShader].descriptorPool, nullptr);
 
 		//Clear command buffers and command pool
