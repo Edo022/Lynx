@@ -36,7 +36,7 @@ namespace lux::core::c::buffers{
 			.usage       = vUsage,
 			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
 		};
-		luxCheckVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer), "Failed to create buffer");
+		dbg::checkVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer), "Failed to create buffer");
 
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
@@ -82,6 +82,6 @@ namespace lux::core::c::buffers{
 			default: CaseAllocFailure: dbg::printError("Failed to allocate buffer memory");
 		}
 
-		luxCheckVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0), "Failed to bind buffer");
+		dbg::checkVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0), "Failed to bind buffer");
 	}
 }

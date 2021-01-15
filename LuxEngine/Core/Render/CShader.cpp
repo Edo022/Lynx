@@ -87,7 +87,7 @@ namespace lux::core::c::shaders{
 		createInfo.pCode = pCode;											//Set the shader code
 
 		VkShaderModule shaderModule;										//Create the shader module
-		luxCheckVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule), "Failed to create shader module");
+		dbg::checkVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule), "Failed to create shader module");
 		free(pCode);														//#LLID CSF0000 Free memory
 		return shaderModule;												//Return the created shader module
 	}
@@ -134,7 +134,7 @@ namespace lux::core::c::shaders{
 			layoutCreateInfo->pNext = nullptr;												//default
 
 			//Create the descriptor set layout
-			luxCheckVk(vkCreateDescriptorSetLayout(dvc::compute.LD, layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
+			dbg::checkVk(vkCreateDescriptorSetLayout(dvc::compute.LD, layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
 		}
 
 
@@ -169,7 +169,7 @@ namespace lux::core::c::shaders{
 				.setLayoutCount{ 1 },												//Number of set layouts
 				.pSetLayouts{ &CShadersLayouts[vRenderShader].descriptorSetLayout },//Set set layout
 			};
-			luxCheckVk(vkCreatePipelineLayout(dvc::compute.LD, &pipelineLayoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipelineLayout), "Unable to create pipeline layout");
+			dbg::checkVk(vkCreatePipelineLayout(dvc::compute.LD, &pipelineLayoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipelineLayout), "Unable to create pipeline layout");
 		}
 
 
@@ -181,7 +181,7 @@ namespace lux::core::c::shaders{
 				.stage{ CShadersLayouts[vRenderShader].shaderStageCreateInfo },		//Use the previously created shader stage creation infos
 				.layout{ CShadersLayouts[vRenderShader].pipelineLayout },			//Use the previously created pipeline layout
 			};
-			luxCheckVk(vkCreateComputePipelines(dvc::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipeline), "Unable to create comput pipeline");
+			dbg::checkVk(vkCreateComputePipelines(dvc::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipeline), "Unable to create comput pipeline");
 			vkDestroyShaderModule(dvc::compute.LD, CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
 		}
 	}
@@ -225,7 +225,7 @@ namespace lux::core::c::shaders{
 			.poolSizeCount{ sizes.count( ) },													//Use one pool size
 			.pPoolSizes{ sizes.begin( ) },														//Set the pool size
 		};
-		luxCheckVk(vkCreateDescriptorPool(dvc::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool), "Unable to create descriptor pool");
+		dbg::checkVk(vkCreateDescriptorPool(dvc::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool), "Unable to create descriptor pool");
 
 
 
@@ -237,7 +237,7 @@ namespace lux::core::c::shaders{
 			.descriptorSetCount{ 1 },															//Allocate a single descriptor
 			.pSetLayouts{ &CShadersLayouts[vShaderLayout].descriptorSetLayout },				//Set set layouts
 		};
-		luxCheckVk(vkAllocateDescriptorSets(dvc::compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet), "Unable to allocate descriptor sets");
+		dbg::checkVk(vkAllocateDescriptorSets(dvc::compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet), "Unable to allocate descriptor sets");
 
 
 
@@ -282,7 +282,7 @@ namespace lux::core::c::shaders{
 				.flags{ VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT },			//Command buffers and pool can be reset
 				.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },	//Set the compute family where to bind the command pool
 			};
-			luxCheckVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &commandPool), "Unable to create command pool");
+			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &commandPool), "Unable to create command pool");
 		}
 
 
@@ -295,7 +295,7 @@ namespace lux::core::c::shaders{
 				.flags{ 0 },														//Default falgs
 				.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },	//Set the compute family where to bind the command pool
 			};
-			luxCheckVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &c::copyCommandPool), "Unable to create command pool");
+			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &c::copyCommandPool), "Unable to create command pool");
 
 			//Allocate one command buffer for each swapchain image
 			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
@@ -304,7 +304,7 @@ namespace lux::core::c::shaders{
 			};
 			commandBufferAllocateInfo.commandPool = c::copyCommandPool;			//Set command pool where to allocate the command buffer
 			commandBufferAllocateInfo.commandBufferCount = render::swapchain::swapchainImages.count( );
-			luxCheckVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, c::copyCommandBuffers.begin( )), "Unable to allocate command buffers");
+			dbg::checkVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, c::copyCommandBuffers.begin( )), "Unable to allocate command buffers");
 
 
 
@@ -316,7 +316,7 @@ namespace lux::core::c::shaders{
 					.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 					.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 				};
-				luxCheckVk(vkBeginCommandBuffer(c::copyCommandBuffers[imgIndex], &beginInfo), "Unable to begin command buffer recording");
+				dbg::checkVk(vkBeginCommandBuffer(c::copyCommandBuffers[imgIndex], &beginInfo), "Unable to begin command buffer recording");
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
@@ -382,7 +382,7 @@ namespace lux::core::c::shaders{
 				vkCmdPipelineBarrier(c::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
 				//End command buffer recording
-				luxCheckVk(vkEndCommandBuffer(c::copyCommandBuffers[imgIndex]), "Failed to record command buffer");
+				dbg::checkVk(vkEndCommandBuffer(c::copyCommandBuffers[imgIndex]), "Failed to record command buffer");
 			}
 		}
 	}
@@ -411,7 +411,7 @@ namespace lux::core::c::shaders{
 			.commandBufferCount{ 1 },										//Allocate one command buffer
 		};
 		pCShader->commandBuffers.resize(1);
-		luxCheckVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.begin( )), "Unable to allocate command buffers");
+		dbg::checkVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.begin( )), "Unable to allocate command buffers");
 
 
 
@@ -426,7 +426,7 @@ namespace lux::core::c::shaders{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
-		luxCheckVk(vkBeginCommandBuffer(pCShader->commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
+		dbg::checkVk(vkBeginCommandBuffer(pCShader->commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
 
 
 		//Bind pipeline and descriptors and run the compute shader
@@ -435,7 +435,7 @@ namespace lux::core::c::shaders{
 		vkCmdDispatch(pCShader->commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 		//End command buffer recording
-		luxCheckVk(vkEndCommandBuffer(pCShader->commandBuffers[0]), "Failed to record command buffer");
+		dbg::checkVk(vkEndCommandBuffer(pCShader->commandBuffers[0]), "Failed to record command buffer");
 	}
 
 
@@ -498,7 +498,7 @@ namespace lux::core::c::shaders{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
-		luxCheckVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
+		dbg::checkVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
 
 
 		//Bind pipeline and descriptors and run the compute shader
@@ -508,7 +508,7 @@ namespace lux::core::c::shaders{
 
 
 		//End command buffer recording
-		luxCheckVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0]), "Failed to record command buffer");
+		dbg::checkVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0]), "Failed to record command buffer");
 	}
 
 

@@ -44,17 +44,6 @@ namespace lux::dbg{
 
 
 
-
-
-
-
-
-	//Prints an error, specifying the line, function, file and thread where the error occurred
-	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	// #define dbg::printError(...)		checkCond(true, __VA_ARGS__)
-	// #define dbg::printError(...)		lux::out::printError();/*BUG FIXME*/
-
-
 	//Prints a warning, specifying the line, function, file and thread
 	#define luxPrintWarning(...){																									\
 		char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);													\
@@ -65,10 +54,7 @@ namespace lux::dbg{
 
 
 
-
-
-
-
+	//FIXME FIX DEBUG FUNCTIONS INLINING
 	/**
 	 * @brief Prints pMessage as error if vCond is true
 	 */
@@ -87,19 +73,12 @@ namespace lux::dbg{
 		}
 	}
 
-	//Prints an error if the vulkan function does not return VK_SUCCESS, specifying the line, function, file and thread where the error occurred
-	//*   funcCall: The call to the vulkan function to check
-	//*   __args: printf arguments to print the error
-	//Debug mode only. #define LUX_PAUSE_ON_ERROR to make the program stop when an error occurs
-	#define luxCheckVk(funcCall, ...) luxRelease(;) luxDebug({																		\
-		uint64 callRes = funcCall; const char* callStr = #funcCall;																	\
-		if(callRes != VK_SUCCESS) {																									\
-			char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);												\
-			Failure printf("Error in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);	\
-			Failure printf("The Vulkan function call \"%s\" returned %d", callStr, callRes);										\
-			Failure printf(__VA_ARGS__); fflush(stdout); NormalNoNl /*__lux_out_stop__*/											\
-		}																															\
-	})
+	/**
+	 * @brief Prints an error if vResult is not VK_SUCCESS
+	 */
+	template<class... types> static void checkVk(const int/*VkResult*/ vResult, const char* vMessage, types... vArgs) {
+		checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
+	}
 
 	/**
 	 * @brief Prints an error if the pointer is not valid.

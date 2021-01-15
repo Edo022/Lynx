@@ -152,7 +152,7 @@ namespace lux::core::render::swapchain{
 
 
 		//Create swapchain
-		luxCheckVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
+		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
 
 
 		//Save data

@@ -90,7 +90,7 @@ namespace lux::core::render::out{
 		};
 
 		//Create render pass. Exit if an error occurs
-		luxCheckVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
+		dbg::checkVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
 	}
 
 
@@ -113,7 +113,7 @@ namespace lux::core::render::out{
 				.height{ swapchain::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			luxCheckVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i]), "Failed to create framebuffer");
+			dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i]), "Failed to create framebuffer");
 		}
 	}
 
@@ -154,7 +154,7 @@ namespace lux::core::render::out{
 			},
 		};
 		VkImageView imageView = VK_NULL_HANDLE;
-		luxCheckVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
+		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
 		return imageView;
 	}
 }

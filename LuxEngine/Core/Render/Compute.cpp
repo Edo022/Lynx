@@ -20,9 +20,9 @@ namespace lux::core::c{
 	//> Engine internal use
 	void init(){
 		{ //Initialize window buffers and count
-			render::wnd::gpuCellWindowOutput_i	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A8-R8-G8-B8 UI
-			render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4,	CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A32-R32-G32-B32 UF
-			render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
+			render::wnd::gpuCellWindowOutput_i	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A8-R8-G8-B8 UI
+			render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A32-R32-G32-B32 UF
+			render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
 
 			render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::SHARED_STORAGE);	//Create cell for window size //TODO use dedicated storage and update every time
 			uint32* pwindowSize = (uint32*)(render::wnd::gpuCellWindowSize->map());								//Map window size cell //TODO use gpu pointer instead of raw cell
@@ -36,7 +36,7 @@ namespace lux::core::c{
 			shaders::createDefaultCommandBuffers( );									//Create command buffers and command pool
 		}
 
-		{ //Create default shaders //TODO fix
+		{ //Create default shaders //FIXME fix that 01010001 thing
 			shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
 			shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4, { 0, 0, 0, 1 });
 			shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
