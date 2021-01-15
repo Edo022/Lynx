@@ -12,6 +12,7 @@ namespace lux{
 		#define genInitCheck	luxDebug(uint64 __pvt_init_val = lux::__pvt::init_val; char __pvt_dummy = 'L')
 	}
 
+	//TODO
 	enum class error : uint32 {
 		STRUCT_INIT,			//Checks if a structure is initialized
 		DEREFERENCE_NULLPTR,	//Checks if an element of a nullptr allocation has been used

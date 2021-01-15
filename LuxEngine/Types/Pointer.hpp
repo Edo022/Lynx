@@ -400,7 +400,7 @@ namespace lux::ram{
 
 		inline type&     operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
-			dbg::checkParam((vIndex < 0 || vIndex >= count()), "vIndex", "Index is out of range");
+			dbg::checkIndex(vIndex, 0, count(), "vIndex");
 			return ((type*)(cell->address))[vIndex];
 		}
 		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }

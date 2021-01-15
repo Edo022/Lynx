@@ -11,9 +11,14 @@
 
 
 
-
+//TODO output to console window
 namespace lux::dbg{
-	template<class... types> static void printError(const char* vMessage, const types&... pParams){
+	enum class outputType{
+		info,
+		warning,
+		error
+	};
+	template<class... types> static void print(outputType vType, const char* vMessage, const types&... pParams){
 		//Create output string
 		const char* bgn = "%s\n\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
@@ -24,10 +29,10 @@ namespace lux::dbg{
 
 		//Output
 		char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-		Failure printf(out,
+		if(vType == outputType::info) Failure else if(vType == outputType::warning) Warning else Normal printf(out,
 			"###############################################################",
 
-			"Lux runtime error:",
+			(vType == outputType::info) ? "" : (vType == outputType::warning) ? "Warning" : "Error:",
 
 			"Thread   ", thrName,
 			"File     ", caller::file(),
@@ -41,15 +46,12 @@ namespace lux::dbg{
 		fflush(stdout); Normal;
 	}
 
+	template<class... types> static void printError  (const char* vMessage, const types&... pParams){ print(outputType::error  , vMessage, pParams...); }
+	template<class... types> static void printWarning(const char* vMessage, const types&... pParams){ print(outputType::warning, vMessage, pParams...); }
 
 
 
-	//Prints a warning, specifying the line, function, file and thread
-	#define luxPrintWarning(...){																									\
-		char __thrName__[16]; pthread_getname_np(pthread_self(), __thrName__, 16);													\
-		Warning printf("Warning in thread %s, file %s\nfunction %s, line %d:", __thrName__, __FILE__, __FUNCTION__, __LINE__);		\
-		Warning printf(__VA_ARGS__); fflush(stdout); NormalNoNl;																	\
-	}
+
 
 
 
@@ -63,7 +65,7 @@ namespace lux::dbg{
 	}
 
 	/**
-	 * @brief Prints an error specifying that a parameter value is not valid
+	 * @brief Prints pMessage as error if vCond is true, specifying that a function parameter value is not valid
 	 */
 	template<class... types> static void checkParam(const bool vCond, const char* vParamName, const char* vMessage, const types&... pParams) {
 		if(vCond) {
@@ -74,14 +76,22 @@ namespace lux::dbg{
 	}
 
 	/**
-	 * @brief Prints an error if vResult is not VK_SUCCESS
+	 * @brief Prints pMessage as error if vResult is not VK_SUCCESS
 	 */
 	template<class... types> static void checkVk(const int/*VkResult*/ vResult, const char* vMessage, types... vArgs) {
 		checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
 	}
 
 	/**
-	 * @brief Prints an error if the pointer is not valid.
+	 * @brief Prints pMessage as error if vIndex is not between vMin and vMax
+	 */
+	template<class nType, class xType, class iType, class... types>
+	static void checkIndex(const iType vIndex, const nType vMin, const xType vMax, const char* vParamName) {
+		checkParam(vIndex < vMin || vIndex > vMax, vParamName, "Index %lls is out of range. Min: %lls, Max: %llu", (int64)vIndex, (int64)vMin, (int64)vMax);
+	}
+
+	/**
+	 * @brief Prints pMessage as error if the pointer is not valid.
 	 *		This function is unreliable and very likely to not detect all the invalid pointers.
 	 *		It should only be used as additional security check
 	 */

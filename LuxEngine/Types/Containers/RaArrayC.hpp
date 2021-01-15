@@ -56,14 +56,14 @@ namespace lux{
 		}
 
 		inline void remove(const iter vIndex){
-			checkInit(); dbg::checkParam(vIndex < 0 || vIndex >= count(), "vIndex", "Index is out of range");
+			checkInit(); dbg::checkIndex(vIndex, 0, count(), "vIndex");
 			// lnkd[head] = head = vIndex;
 			lnkd[head] = vIndex;
 			head = vIndex;
 		}
 
 		inline type& operator[](const iter vIndex) const {
-			checkInit(); dbg::checkParam(vIndex < 0 || vIndex >= count(), "vIndex", "Index is out of range");
+			checkInit(); dbg::checkIndex(vIndex, 0, count(), "vIndex");
 			return data[vIndex];
 		}
 
