@@ -146,11 +146,11 @@ namespace lux::core::render::out{
 				.a{ VK_COMPONENT_SWIZZLE_IDENTITY },
 			},
 			.subresourceRange{
-					.aspectMask{ vAspectFlags },
-					.baseMipLevel{ 0 },
-					.levelCount{ 1 },
-					.baseArrayLayer{ 0 },
-					.layerCount{ 1 },
+				.aspectMask{ vAspectFlags },
+				.baseMipLevel{ 0 },
+				.levelCount{ 1 },
+				.baseArrayLayer{ 0 },
+				.layerCount{ 1 },
 			},
 		};
 		VkImageView imageView = VK_NULL_HANDLE;

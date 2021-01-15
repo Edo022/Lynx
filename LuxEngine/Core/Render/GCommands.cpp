@@ -28,8 +28,10 @@ namespace lux::core::render::cmd{
 
 
 
-	//Creates, allocates and begins a command buffer for a single time submit
-	//Returns the command buffer
+	/**
+	 * @brief Creates, allocates and begins a command buffer for a single time submit
+	 * @return Returns the command buffer
+	 */
 	VkCommandBuffer beginSingleTimeCommands( ) {
 		VkCommandBuffer commandBuffer;
 		VkCommandBufferAllocateInfo allocInfo{
@@ -50,7 +52,9 @@ namespace lux::core::render::cmd{
 
 
 
-	//Ends and submits a single time submit command. Then waits until it's executed and frees its memory
+	/** //TODO probably useless
+	 * @brief Ends and submits a single time submit command. Then waits until it's executed and frees its memory
+	 */
 	void endSingleTimeCommands(const VkCommandBuffer vCommandBuffer) {
 		vkEndCommandBuffer(vCommandBuffer);
 		VkSubmitInfo submitInfo{
