@@ -13,12 +13,12 @@
 
 //TODO output to console window
 namespace lux::dbg{
-	enum class outputType{
+	enum class Severity{
 		info,
 		warning,
 		error
 	};
-	template<class... types> static void print(outputType vType, const char* vMessage, const types&... pParams){
+	template<class... types> static void print(Severity vSeverity, const char* vMessage, const types&... pParams){
 		//Create output string
 		const char* bgn = "%s\n\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
@@ -29,10 +29,10 @@ namespace lux::dbg{
 
 		//Output
 		char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-		if(vType == outputType::info) Failure else if(vType == outputType::warning) Warning else Normal printf(out,
+		if(vSeverity == Severity::info) Failure else if(vSeverity == Severity::warning) Warning else Normal printf(out,
 			"###############################################################",
 
-			(vType == outputType::info) ? "" : (vType == outputType::warning) ? "Warning" : "Error:",
+			(vSeverity == Severity::info) ? "" : (vSeverity == Severity::warning) ? "Warning" : "Error:",
 
 			"Thread   ", thrName,
 			"File     ", caller::file(),
@@ -46,8 +46,8 @@ namespace lux::dbg{
 		fflush(stdout); Normal;
 	}
 
-	template<class... types> static void printError  (const char* vMessage, const types&... pParams){ print(outputType::error  , vMessage, pParams...); }
-	template<class... types> static void printWarning(const char* vMessage, const types&... pParams){ print(outputType::warning, vMessage, pParams...); }
+	template<class... types> static void printError  (const char* vMessage, const types&... pParams){ print(Severity::error  , vMessage, pParams...); }
+	template<class... types> static void printWarning(const char* vMessage, const types&... pParams){ print(Severity::warning, vMessage, pParams...); }
 
 
 

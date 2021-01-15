@@ -3,7 +3,6 @@
 #include <execinfo.h>
 #include <cxxabi.h>
 #include <fstream>
-#include <exception>
 
 
 
@@ -52,19 +51,32 @@ namespace lux::dbg{
 
 
 
-    namespace{
-        //Returns the call file, function and line of the vIndex backtraced function
-        //(0 is the function you are calling this from, 1 is its caller)
-        static neverInline auto getBacktrace(int vIndex, bool vGetFunc = true){
-            ++vIndex; 									//Skip call to this function
-            void* calls[vIndex + 1];					//Create address buffer
-            auto size = backtrace(calls, vIndex + 1);	//Get calls addresses
+	/**
+	 * @brief Returns the call file, function and line of the vIndex backtraced function
+	 *		(0 is the function you are calling this from, 1 is its caller)
+	 */
+	static neverInline auto getBacktrace(int vIndex, bool vGetFunc = true){
+		++vIndex; 									//Skip call to this function
+		void* calls[vIndex + 1];					//Create address buffer
+		auto size = backtrace(calls, vIndex + 1);	//Get calls addresses
 
-            char* str = (char*)malloc(128);				//Create addr2line command (-1 is to get the actual instruction address)
-            sprintf(str, "addr2line%s -e %s --demangle %x", (vGetFunc) ? " -f" : "", getExecName(), (char*)calls[vIndex] - 1);
-            return cmdOutput(str);						//Get file infos from address and return
-        }
-    }
+		char* str = (char*)malloc(128);				//Create addr2line command (-1 is to get the actual instruction address)
+		sprintf(str, "addr2line%s -e %s --demangle %x", (vGetFunc) ? " -f" : "", getExecName(), (char*)calls[vIndex] - 1);
+		return cmdOutput(str);						//Get file infos from address and return
+	}
+
+
+
+
+
+
+
+
+	// Get self or caller informations --------------------------------------------------------------------------------------------------------------//
+
+
+
+
 
 
 
@@ -119,21 +131,21 @@ namespace lux::dbg{
 		/**
 		 * @brief Alias for __LINE__ or dbg::caller::file(0);
 		 */
-		static neverInline auto line(){
+		static alwaysInline auto line(){
 			return dbg::caller::line(0);
 		}
 
 		/**
 		 * @brief Alias for __FUNCTION__, __func__ or dbg::caller::func(0);
 		 */
-		static neverInline auto func(){
+		static alwaysInline auto func(){
             return dbg::caller::func(0);
         }
 
 		/**
 		 * @brief Alias for __FILE__ or dbg::caller::file(0)
 		 */
-		static neverInline auto file(){
+		static alwaysInline auto file(){
             return dbg::caller::file(0);
 		}
     };
