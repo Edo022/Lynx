@@ -88,10 +88,12 @@ namespace lux::rem{
 			cell->buffer = &buffer;																//Create a new buffer and set it as the cell's buffer
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;								//Add a new cell and set the cell index
 			core::c::buffers::createBuffer(														//Create a new vk buffer
-				core::dvc::compute.LD,(uint32)vCellClass ? lux::__pvt::bufferSize : vSize,					//#LLID STRT 0000 isUniform()
+				&buffer.buffer,
 				((((uint32)vAllocType & 0b1) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+				(uint32)vCellClass ? lux::__pvt::bufferSize : vSize,					//#LLID STRT 0000 isUniform()
+				&buffer.memory,
 				((uint32)vAllocType >> 1) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-				&buffer.buffer, &buffer.memory
+				core::dvc::compute.LD
 			);
 			return cell;
 		}

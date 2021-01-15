@@ -108,7 +108,7 @@ namespace lux::dbg{
 	 */
 	template<class pType, class... aTypes> static void checkRawPtr(pType* vPtr, const char* vMessage, aTypes... vArgs){
 		if(vPtr){
-			try{ pType tmp = *vPtr; }
+			try{ char tmp = *(char*)vPtr; }
 			catch(std::exception e) { dbg::printError(vMessage, vArgs...); }
 		}
 	}

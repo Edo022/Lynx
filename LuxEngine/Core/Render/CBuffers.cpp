@@ -10,53 +10,31 @@
 
 
 namespace lux::core::c::buffers{
-	//TODO use custom allocations for shared memory with those callbacks
-	//FIXME add alignment
-
-
-	//FIXME lux pointers cant be used as they need to be initialized
-
-	// inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-	// 	((ram::Alloc<char>*)pUserData)->realloc(size);
-	// 	return pUserData;
-	// }
-
-	// inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){
-	// 	((ram::Alloc<char>*)pUserData)->realloc(size);
-	// 	return pUserData;
-	// }
-
-	// inline void freeCallback(void* pUserData, void* pMemory){
-	// 	((ram::Alloc<char>*)pUserData)->free();
-	// }
-
-	//TODO remove those functions. Theyre probably useless
-	//TODO or separate gpu shared allocations from normal ones
-	inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
-	inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
-	//PFN_vkFreeFunction
-	//FIXME FIX
+	//TODO use user defined callbacks
+	// inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){}
+	// inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){}
+	// inline void freeCallback(void* pUserData, void* pMemory){}
+	// inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
+	// inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
 
 
 
 
-
-
-
-
-	//Creates and allocates a buffer in the memory of a device
-	//*   vDevice: the logical device where to create the buffer
-	//*   vSize: the count of the buffer in bytes
-	//*   vUsage: flags defining the usage of the buffer (VK_BUFFER_USAGE...)
-	//*   vProperties: flags defining the properties of the memory (VK_MEMORY_PROPERTY_...)
-	//*   pBuffer: the buffer object to allocate
-	//*   pMemory: the memory of the buffer
-	void createBuffer(const VkDevice vDevice, const VkDeviceSize vSize, const VkBufferUsageFlags vUsage, const VkMemoryPropertyFlags vProperties, VkBuffer* pBuffer, VkDeviceMemory* pMemory) {
+	/**
+	 * @brief Allocates a buffer in the VRAM of a device
+	 * @param pBuffer The buffer object to allocate
+	 * @param vUsage Vulkan buffer usage flags
+	 * @param vSize The size in bytes of the allocation
+	 * @param pMemory The memory of the buffer
+	 * @param vProperties Vulkan memory properties flags
+	 * @param vDevice The logical device where to allocate the buffer
+	 */
+	void createBuffer(VkBuffer* pBuffer, const VkBufferUsageFlags vUsage, const VkDeviceSize vSize, VkDeviceMemory* pMemory, const VkMemoryPropertyFlags vProperties, const VkDevice vDevice) {
 		VkBufferCreateInfo bufferInfo{
-			.sType			= VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-			.size			= vSize,
-			.usage			= vUsage,
-			.sharingMode	= VK_SHARING_MODE_EXCLUSIVE
+			.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+			.size        = vSize,
+			.usage       = vUsage,
+			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
 		};
 		luxCheckVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer), "Failed to create buffer");
 
@@ -68,7 +46,7 @@ namespace lux::core::c::buffers{
 			.allocationSize = memRequirements.size,
 			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
 		};
-		//FIXME USE CUSTOM ALLOCATOR
+		//TODO USE CUSTOM ALLOCATOR
 		// const VkAllocationCallbacks allocator{
 		// 	.pUserData = new ram::Alloc<char>(),
 		// 	.pfnAllocation = allocateCallback,
@@ -76,12 +54,8 @@ namespace lux::core::c::buffers{
 		// 	.pfnFree = freeCallback,
 		// 	.pfnInternalAllocation = internalAllocCallback,
 		// 	.pfnInternalFree = internalFreeCallback,
-		// 	//TODO
-		// 	// .pfnInternalAllocation,
-		// 	// .pfnInternalFree,
 		// };
-		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr, pMemory)) {
-		// switch(vkAllocateMemory(vDevice, &allocInfo, new VkAllocationCallbacks(allocator), pMemory)) {
+		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr/*, new VkAllocationCallbacks(allocator)*/, pMemory)) { //TODO
 			case VK_SUCCESS: break;
 			case VK_ERROR_OUT_OF_DEVICE_MEMORY: {			//If out of dedicated memory, use the shared memory
 				VkMemoryAllocateInfo allocInfo2{
@@ -89,23 +63,23 @@ namespace lux::core::c::buffers{
 					.allocationSize = memRequirements.size,
 					.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
 				};
-				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr, pMemory)) {
+				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr/*, new VkAllocationCallbacks(allocator)*/, pMemory)) { //TODO
 					case VK_SUCCESS: break;
 					case VK_ERROR_OUT_OF_HOST_MEMORY: goto CaseOutOfHostMemory;
-					default: dbg::printError("Failed to allocate buffer memory");
+					default: goto CaseAllocFailure;
 				}
 				break;
 			}
-			case VK_ERROR_OUT_OF_HOST_MEMORY: { //TODO free cells when there is not much memory left
+			case VK_ERROR_OUT_OF_HOST_MEMORY: {
+				CaseOutOfHostMemory:
 				dbg::printError("Vulkan error: Out of host memory");
 				break;
 			}
 			case VK_ERROR_TOO_MANY_OBJECTS: {
-				CaseOutOfHostMemory:
-				dbg::printError("Vulkan error: Too many objects. This error is caused by the engine. Contact the developer. He thought this couldn't happen, but somehow it did");
+				dbg::printError("Vulkan error: Too many objects. This error is caused by the engine. Contact the developer");
 				break;
 			}
-			default: dbg::printError("Failed to allocate buffer memory");
+			default: CaseAllocFailure: dbg::printError("Failed to allocate buffer memory");
 		}
 
 		luxCheckVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0), "Failed to bind buffer");
