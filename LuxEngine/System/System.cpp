@@ -24,13 +24,13 @@ namespace lux::sys{
 
 	luxAutoInit(LUX_H_SYSTEM){
 		static bool once = true;
-		if(once) {								//Execute only once
+		if(once) {									//Execute only once
 			once = false;
-			char buff[FILENAME_MAX];				//Create char array to store the path
-			__lp_get_cwd(buff, FILENAME_MAX);		//Get path
-			dir::thisDir = String(buff);		//Save path
-			dir::fixWindowsPath(dir::thisDir);		//Replace silly windows backslashes with normal slashes
-			__lp_get_nopt(threadNum);				//Get number of physical threads
+			char buff[FILENAME_MAX];					//Create char array to store the path
+			__lp_get_cwd(buff, FILENAME_MAX);			//Get path
+			dir::thisDir = buff;						//Save path
+			win10(dir::fixWindowsPath(dir::thisDir);)	//Replace silly windows backslashes with normal slashes
+			__lp_get_nopt(threadNum);					//Get number of physical threads
 		}
 	}
 

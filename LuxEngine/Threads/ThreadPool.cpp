@@ -19,8 +19,8 @@ namespace lux::thr {
 
 
 	Queue<ExecFuncDataBase*> maxpq;			//List of maximum priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> highpq;		//List of high priority functions waiting to be executed
-	Queue<ExecFuncDataBase*> lowpq;			//List of low priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> highpq;		//List of high    priority functions waiting to be executed
+	Queue<ExecFuncDataBase*> lowpq;			//List of low     priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> minpq;			//List of minimum priority functions waiting to be executed
 	Queue<ExecFuncDataBase*> stg;			//Staging queue
 
@@ -28,14 +28,14 @@ namespace lux::thr {
 	luxAutoInit(LUX_H_THREAD_POOL){
 		//TODO remove useless debug junk
 		// int h = LUX_CNF_GLOBAL_THREAD_POOL_SIZE;
-		// threads = RtArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+		threads = RtArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
 		thrStates.clear();
 
 		// maxpq.clear();
 		// highpq.clear();
 		// lowpq.clear();
 		// minpq.clear();
-		// stg.clear();
+		stg.clear();
 	}
 
 
