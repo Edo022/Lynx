@@ -102,8 +102,8 @@ namespace lux::core::dvc{
 
 		//Set families
 		QueueFamilyIndices indices;
-		for(uint32 i = 0; i < queueFamilies.count( ); ++i) {													//For every queue family
-			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;				//Set graphics family
+		for(uint32 i = 0; i < queueFamilies.count( ); ++i) {												//For every queue family
+			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;					//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT) indices.computeFamilies.add(i);				//Add compute families
 			VkBool32 hasPresentSupport = false;
 			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, surface, &hasPresentSupport);						//Set present family

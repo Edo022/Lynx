@@ -168,7 +168,7 @@ namespace lux::ram{
 			// state = lux::__pvt::CellState::NULLPTR;
 		}
 		inline Alloc(const std::nullptr_t null) : Alloc( ) { }
-
+		//FIXME null name is probably useless
 
 
 
@@ -193,7 +193,7 @@ namespace lux::ram{
 		template<class aType> explicit inline Alloc(const Alloc<aType>& vAlloc, const Dummy dummy = Dummy{}) :
 			checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } {
-			cell->owners++;
+			cell->owners++; //BUG DONT SHARE DATA BUT COPY IT
 			// luxDebug(
 			// 	prevOwner = cell->lastOwner;
 			// 	nextOwner = nullptr;
