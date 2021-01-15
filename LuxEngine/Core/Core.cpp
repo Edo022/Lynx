@@ -1,4 +1,4 @@
-﻿#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
+﻿// #include "LuxEngine/Math/Trigonometry/GoniometricFunctions.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
 #include "LuxEngine/Core/Render/CShader.hpp"
@@ -43,18 +43,6 @@ namespace lux::core{
 
 
 
-	// luxAutoInit(LUX_H_INIT_CORE){
-	// 	#pragma GCC diagnostic push
-	// 	#pragma GCC diagnostic ignored "-Wwrite-strings"
-	// 	//FIXME use the "libVkLayer_khronos_validation.so" library in the deps folder. Not the one in the default lib location
-	// 	//FIXME "LD_LIBRARY_PATH" env variable doesn't work
-	// 	putenv(  "VK_LAYER_PATH=./deps/Linux/Vulkan-1.2.162.0/x86_64/etc/vulkan/explicit_layer.d");
-	// 	putenv("LD_LIBRARY_PATH=./deps/Linux/Vulkan-1.2.162.0/x86_64/lib");
-	// 	#pragma GCC diagnostic pop
-	// }
-
-
-
 
 
 
@@ -68,8 +56,8 @@ namespace lux::core{
 
 
 
-	//Deprecated function
 	//TODO remove
+	//Deprecated function
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
 		win10(return system((c::shaders::shaderPath + "/glslc.exe "                                    + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
@@ -79,14 +67,8 @@ namespace lux::core{
 
 
 
-//TODO remove random "----|" thing from function documentation
-
-
-
 	void run(bool vUseVSync) {
 		running = true;
-		__lp_goniometric_functions_init( );
-		// sys::init( );
 
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
@@ -116,9 +98,6 @@ namespace lux::core{
 		SuccessNoNl printf("ok");
 
 		render::init(vUseVSync);
-		//c::buffers::init( );
-		//ram is inizialized in init function as it's required for everything
-		// rem::init( );
 		c::init( );
 
 		//Loop
@@ -170,8 +149,6 @@ namespace lux::core{
 			static int delay = 1000;
 			sleep(delay);
 			printf("FPS: %lf\n", 1/FPS);
-			// FPS = frames * (1000 / delay);
-			// frames = 0;
 		}
 	}
 }

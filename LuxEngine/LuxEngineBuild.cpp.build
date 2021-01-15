@@ -14,7 +14,7 @@
 
 #include "LuxEngine/System/System.cpp"
 #include "LuxEngine/Threads/ThreadPool.cpp"
-#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp"
+    //#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp"
 
 #include "LuxEngine/Types/LuxObject/LuxObject.cpp"
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.cpp"
