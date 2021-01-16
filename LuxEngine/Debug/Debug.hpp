@@ -30,7 +30,7 @@ namespace lux::dbg{
 
 		//Output
 		char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-		if(vSeverity == Severity::info) Failure else if(vSeverity == Severity::warning) Warning else Normal printf(out,
+		if(vSeverity == Severity::info) Normal else if(vSeverity == Severity::warning) Warning else Failure printf(out,
 			"###############################################################",
 
 			(vSeverity == Severity::info) ? "" : (vSeverity == Severity::warning) ? "Warning" : "Error:",
