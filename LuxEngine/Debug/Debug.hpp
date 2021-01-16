@@ -23,7 +23,7 @@ namespace lux::dbg{
 		//Create output string
 		const char* bgn = "%s\n\n%s\n\n%s\"%s\"\n%s\"%s\"\n%s\"%s\"\n%s%d\n\n";
 		const char* end = "\n\n%s";
-		char* out = (char*)malloc(strlen(bgn) + strlen(out) + strlen(vMessage) + strlen(end) + 1);
+		char* out = (char*)malloc(strlen(bgn) + strlen(vMessage) + strlen(end) + 1);
 		strcpy(out, bgn);
 		strcat(out, vMessage);
 		strcat(out, end);
