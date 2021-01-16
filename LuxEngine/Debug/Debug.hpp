@@ -23,21 +23,19 @@ namespace lux::dbg{
 		//Create output string
 
 		const char* bgn =
-			"%s%s\n"		//"Error"
+			"%s%s\n\n"		//"Error"
+			"%s\"%s\"\n"	//Thread
 			"%s\"%s\"\n"	//File
 			"%s\"%s\"\n"	//Function
-			"%s\"%s\"\n"	//Line
-			"%s%d\n\n"		//Error message
+			"%s%d\n\n"		//Line
 		;
 		const char* end = "%s";
 		char* out = (char*)malloc(strlen(bgn) + strlen(vMessage) + strlen(end) + 1);
-		strcpy(out, bgn);
-		strcat(out, vMessage);
-		strcat(out, end);
+		sprintf(out, "%s%s%s", bgn, vMessage, end);
 
 		//Output
 		char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-		if(vSeverity == Severity::info) Normal else if(vSeverity == Severity::warning) Warning else Failure printf(out,
+		char* out__ = (char*)malloc(8192); snprintf(out__, 8192, out,
 			"\n\n--------------------------------------------------------------------------\n",
 			(vSeverity == Severity::info) ? "" : (vSeverity == Severity::warning) ? "Warning" : "Error:",
 
@@ -49,7 +47,8 @@ namespace lux::dbg{
 			pParams...,
 			"\n--------------------------------------------------------------------------\n\n"
 		);
-		Normal; fflush(stdout);
+		if(vSeverity == Severity::info) Normal else if(vSeverity == Severity::warning) Warning else Failure printf(out__);
+		Normal; fflush(stdout); free(out);
 		if(vSeverity == Severity::error) throw std::runtime_error("U.U");
 	}
 
@@ -76,9 +75,12 @@ namespace lux::dbg{
 	 */
 	template<class... types> static neverInline void checkParam(const bool vCond, const char* vParamName, const char* vMessage, const types&... pParams) {
 		if(vCond) {
-			char* str = (char*)malloc(4192);
-			sprintf(str, "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s", vParamName, caller::func(), vMessage);
+			auto callerFunc = caller::func();
+			const char* fstr = "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s";
+			char* str = (char*)malloc(strlen(fstr) + strlen(vParamName) + strlen(callerFunc) + strlen(vMessage) + 1);
+			sprintf(str, fstr, vParamName, callerFunc, vMessage);
 			lux::dbg::printError(str, pParams...);
+			free(str);
 		}
 	}
 
@@ -94,7 +96,7 @@ namespace lux::dbg{
 	 */
 	template<class nType, class xType, class iType, class... types>
 	static neverInline void checkIndex(const iType vIndex, const nType vMin, const xType vMax, const char* vParamName) {
-		checkParam(vIndex < vMin || vIndex > vMax, vParamName, "Index %lls is out of range. Min: %lls, Max: %llu", (int64)vIndex, (int64)vMin, (int64)vMax);
+		checkParam(vIndex < vMin || vIndex > vMax, vParamName, "Index %lld is out of range. Min: %lld, Max: %lld", (int64)vIndex, (int64)vMin, (int64)vMax);
 	}
 
 	/**
