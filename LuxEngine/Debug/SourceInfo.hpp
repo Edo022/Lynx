@@ -1,3 +1,5 @@
+#pragma once
+#define LUX_H_SOURCE_INFO
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include <cstring>
 #include <execinfo.h>

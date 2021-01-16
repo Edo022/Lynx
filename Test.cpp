@@ -72,7 +72,7 @@ int main( ) { //BUG vulkan finds 32 compute queues wtf
 		//FIXME FIX OR ADD WARNING WHEN THE VARIABLE GETS DESTROYED
 		lux::obj::addRenderSpace(new lux::obj::RenderSpace2D(renderSpace));
 	}
-
+//TODO add pool groups
 	// sleep(5000);
 
 	lux::input::InputState inputStateTest({

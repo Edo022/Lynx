@@ -1,10 +1,11 @@
 #pragma once
-#define LUX_H_CONSOLE_OUTPUT
+#define LUX_H_DEBUG
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Debug/SourceInfo.hpp"
 #include <cstdio>
 #include <cstring>
+#include <exception>
 
 
 
@@ -43,7 +44,8 @@ namespace lux::dbg{
 
 			"###############################################################"
 		);
-		fflush(stdout); Normal;
+		Normal; fflush(stdout);
+		if(vSeverity == Severity::error) throw std::runtime_error("U.U");
 	}
 
 	template<class... types> static void printError  (const char* vMessage, const types&... pParams){ print(Severity::error  , vMessage, pParams...); }
