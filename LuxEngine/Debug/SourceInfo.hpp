@@ -37,7 +37,7 @@ namespace lux::dbg{
 	 * @param vCmd Command to execute
 	 * @param vMaxLineLen Maximum length of each line of the output
 	 */
-	static char* cmdOutput(const char* vCmd, const int vMaxLineLen = 8192) {
+	static char* cmdOutput(const char* vCmd, const uint32 vMaxLineLen = 8192) {
 		FILE* f = popen(vCmd, "r");				//Open console and run the command
 		if (!f) printf("Traceback error\n");		//Check for file validity
 
@@ -57,8 +57,8 @@ namespace lux::dbg{
 	 * @brief Returns the call file, function and line of the vIndex backtraced function
 	 *		(0 is the function you are calling this from, 1 is its caller)
 	 */
-	static neverInline auto getBacktrace(int vIndex, bool vGetFunc = true){
-		++vIndex; 									//Skip call to this function
+	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true){
+		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
 		auto size = backtrace(calls, vIndex + 1);	//Get calls addresses
 
@@ -133,22 +133,22 @@ namespace lux::dbg{
 		/**
 		 * @brief Alias for __LINE__ or dbg::caller::file(0);
 		 */
-		static alwaysInline auto line(){
-			return dbg::caller::line(0);
+		static neverInline auto line(){
+			return dbg::caller::line();
 		}
 
 		/**
 		 * @brief Alias for __FUNCTION__, __func__ or dbg::caller::func(0);
 		 */
-		static alwaysInline auto func(){
-            return dbg::caller::func(0);
+		static neverInline auto func(){
+            return dbg::caller::func();
         }
 
 		/**
 		 * @brief Alias for __FILE__ or dbg::caller::file(0)
 		 */
-		static alwaysInline auto file(){
-            return dbg::caller::file(0);
+		static neverInline auto file(){
+            return dbg::caller::file();
 		}
     };
 }

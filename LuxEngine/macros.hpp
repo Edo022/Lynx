@@ -29,20 +29,23 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 //Debug. Expand debug macros but gray out "#ifdef LUX_DEBUG"s
 #if defined(LUX_DEBUG) || defined(__INTELLISENSE__)
-#	define luxDebug(...)				__VA_ARGS__
-#	define luxRelease(...)
+#	define luxDebug(...) __VA_ARGS__                                //Executes a line of code only if in debug   mode
+#	define luxRelease(...)                                          //Executes a line of code only if in release mode
+#   define alwaysInline inline                                      //Indicates that a function must be inlined. Functions are never inlined, in debug mode
+#   define forceInline __attribute__ ((__always_inline__)) inline   //Inlines a function even if in debug mode
 #else
 #	define luxDebug(...)
-#	define luxRelease(...)				__VA_ARGS__
+#	define luxRelease(...) __VA_ARGS__
+#   define alwaysInline __attribute__ ((__always_inline__)) inline
+#   define forceInline alwaysInline
 #endif
 
 
 //Im lazy UwU
 #define scast   static_cast
 #define rcast   reinterpret_cast
-#define noop    (void)0
-#define alwaysInline __attribute__ ((__always_inline__)) inline
-#define neverInline  __attribute__ ((__noinline__     ))
+#define noop    ((void)0)
+#define neverInline  __attribute__ ((__noinline__))
 
 
 //Time
