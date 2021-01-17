@@ -106,7 +106,6 @@ namespace lux {
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
 			)
-			// data{ sizeof(type) * pCont.count() } {		//Allocate new elements
 			data{ pCont.size() } {		//Allocate new elements
 			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type();						//Initialize new elements
@@ -152,7 +151,6 @@ namespace lux {
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) {
 			destroy();									//Destroy old elements
-			// data.reallocArr(sizeof(type) * pCont.count(), false);		//Allocate new elements
 			data.reallocArr(pCont.count(), false);
 			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type();						//Initialize new elements
@@ -173,7 +171,7 @@ namespace lux {
 
 		inline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
 		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
-		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container //FIXME dont cast
+		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container
 		inline uint64 size() const { return data.size();					};	//Returns the size in bytes of the contianer
 		inline bool	empty( ) const { return !count(); 						};	//Returns true if the container has size 0, false otherwise
 

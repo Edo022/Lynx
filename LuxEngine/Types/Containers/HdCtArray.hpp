@@ -106,23 +106,25 @@ namespace lux{
 
 
 	#define seqIndex (sizeof...(types) - 1)
-	//"Heterogeneous Data Compile Time Array" (lux::__pvt::seq uint32erface)
-	//An array that can contain elements of different types
-	//Size and types must be known at compile time
-	//e.g.  lux::HdCtArray<uint32, float32, bool> arr = { 1, 5.10f, true };
-	//e.g.  lux::HdCtArray arr = { 1, false, false };
+	/**
+	 * @brief "Heterogeneous Data Compile Time Array" (lux::__pvt::seq uint32erface).
+	 *		An array that constains elements of different types.
+	 *		Size and types must be known at compile time.
+	 *		e.g.  lux::HdCtArray arr = { 1, false, false };
+	 */
 	template<class ...types> struct HdCtArray : __pvt::seq<seqIndex, types...>{
 		HdCtArray(){}
 		HdCtArray(const types&... vals){
 			this->lux::__pvt::seq<seqIndex, types...>::ctGet(vals...);
 		}
-		// virtual uint64 getOriginalSize(){ return count(); } //FIXME ??
 
-		//Returns a reference to an element
-		//This can only be used with compile time known indices
-		//Use operator[] to retrieve values in runtime. e.g.
-		//arr.get<2>() = false;
-		//bool isRuntime = arr.get<2>();
+
+		/**
+		 * @brief Returns a reference to an element
+		 *		This can only be used with compile time known indices
+		 *		Use operator[] to retrieve values in runtime. e.g.
+		 * @tparam getIndex The index of the element
+		 */
 		template<uint32 getIndex> inline auto& get(){
 			return this->lux::__pvt::seq<seqIndex, types...>::template get_t<lux::__pvt::CONT, seqIndex, types...>::template getFunc<seqIndex - getIndex>();
 		}
@@ -131,21 +133,31 @@ namespace lux{
 		inline void* operator[](const uint32 index) { return this->lux::__pvt::seq<seqIndex, types...>::rtGet(index); }
 		inline uint32 count() const { return sizeof...(types); }
 
-		//Calls a function using the array elements as arguments
-		//*   pFunc: The function to call
-		//*   pReturn: The variable where to store the return value
-		//pReturn can be omitted to ignore the return value or call void functions
+
+
+
+		/**
+		 * @brief Calls a function using the array elements as arguments
+		 * @param pFunc: The function to call
+		 * @param pReturn: A variable where to store the return value
+		 */
 		template<class funcType, class retType> inline void exec(funcType pFunc, retType& pReturn){
 			this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, retType>(pFunc, &pReturn);
 		}
 		template<class funcType>                inline void exec(funcType pFunc                  ){
 			this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, lux::__pvt::NoRet_t>(pFunc, nullptr );
 		}
-		//Calls a function of a class instance using the array elements as arguments
-		//*   pObject: The class instance containing the function
-		//*   pFunc: The function to call
-		//*   pReturn: The variable where to store the return value
+
+
+
+
 		//pReturn can be omitted to ignore the return value or call void functions
+		/**
+		 * @brief Calls a member function using the array elements as arguments
+		 * @param pObject The object to call the function on
+		 * @param pFunc The member function to call
+		 * @param pReturn A variable where to store the return value
+		 */
 		template<class objType, class funcType, class retType> inline void exec(objType& pObject, funcType pFunc, retType& pReturn){
 			this->lux::__pvt::seq<seqIndex, types...>::template execObj<objType, funcType, retType>(pObject, pFunc, &pReturn);
 		}
@@ -154,4 +166,11 @@ namespace lux{
 		}
 	};
 	#undef seqIndex
+
+
+	//HdCtArray alias
+	template<class... types> struct L : HdCtArray<types...>{
+		L() : HdCtArray(){}
+		L(const types&... vals) : HdCtArray(vals){}
+	};
 }
