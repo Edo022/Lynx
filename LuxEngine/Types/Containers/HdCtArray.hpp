@@ -233,12 +233,16 @@ namespace lux{
 
 		/**
 		 * @brief Runtime version of get. Returns a reference to an element.
-		 *		Requires the element type to be explicitly specified.   e.g. arr.get<int>(4); //Returns the 4th element as an int&
+		 *		Requires the element type to be explicitly specified.   e.g. arr.get<int>(4); //Returns the 4th element as an int&.
+		 *		If the type is not specified, the element address is returned as a void*
 		 * @param vIndex The index of the element
 		 * @tparam eType The type of the element
 		 */
 		template<class eType> alwaysInline eType& rtGet(const uint32 index) {
 			return (eType&)*(eType*)(__pvt::seq<seqIndex, types...>::rtGet(index));
+		}
+		alwaysInline void* rtGet(const uint32 index){
+			return __pvt::seq<seqIndex, types...>::rtGet(index);
 		}
 
 		/**
