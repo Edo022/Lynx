@@ -113,8 +113,8 @@ namespace lux{
 	 *		e.g.  lux::HdCtArray arr = { 1, false, false };
 	 */
 	template<class ...types> struct HdCtArray : __pvt::seq<seqIndex, types...>{
-		HdCtArray(){}
-		HdCtArray(types... vals){
+		alwaysInline HdCtArray(){}
+		alwaysInline HdCtArray(types... vals){
 			this->lux::__pvt::seq<seqIndex, types...>::ctGet(vals...);
 		}
 		virtual uint64 getOriginalSize(){ return count(); }
@@ -126,13 +126,13 @@ namespace lux{
 		 *		Use operator[] to retrieve values in runtime. e.g.
 		 * @tparam getIndex The index of the element
 		 */
-		template<uint32 getIndex> inline auto& get(){
+		template<uint32 getIndex> alwaysInline auto& get(){
 			return this->lux::__pvt::seq<seqIndex, types...>::template get_t<lux::__pvt::CONT, seqIndex, types...>::template getFunc<seqIndex - getIndex>();
 		}
 
 		//Returns the address of an element as a void pointer
-		inline void* operator[](const uint32 index) { return this->lux::__pvt::seq<seqIndex, types...>::rtGet(index); }
-		inline uint32 count() const { return sizeof...(types); }
+		alwaysInline void* operator[](const uint32 index) { return this->lux::__pvt::seq<seqIndex, types...>::rtGet(index); }
+		alwaysInline uint32 count() const { return sizeof...(types); }
 
 
 
@@ -142,10 +142,10 @@ namespace lux{
 		 * @param pFunc: The function to call
 		 * @param pReturn: A variable where to store the return value
 		 */
-		template<class funcType, class retType> inline void exec(funcType pFunc, retType& pReturn){
+		template<class funcType, class retType> alwaysInline void exec(funcType pFunc, retType& pReturn){
 			this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, retType>(pFunc, &pReturn);
 		}
-		template<class funcType>                inline void exec(funcType pFunc                  ){
+		template<class funcType>                alwaysInline void exec(funcType pFunc                  ){
 			this->lux::__pvt::seq<seqIndex, types...>::template exec<funcType, lux::__pvt::NoRet_t>(pFunc, nullptr );
 		}
 
@@ -159,10 +159,10 @@ namespace lux{
 		 * @param pFunc The member function to call
 		 * @param pReturn A variable where to store the return value
 		 */
-		template<class objType, class funcType, class retType> inline void exec(objType& pObject, funcType pFunc, retType& pReturn){
+		template<class objType, class funcType, class retType> alwaysInline void exec(objType& pObject, funcType pFunc, retType& pReturn){
 			this->lux::__pvt::seq<seqIndex, types...>::template execObj<objType, funcType, retType>(pObject, pFunc, &pReturn);
 		}
-		template<class objType, class funcType               > inline void exec(objType& pObject, funcType pFunc                  ){
+		template<class objType, class funcType               > alwaysInline void exec(objType& pObject, funcType pFunc                  ){
 			this->lux::__pvt::seq<seqIndex, types...>::template execObj<objType, funcType, lux::__pvt::NoRet_t>(pObject, pFunc, nullptr );
 		}
 	};
@@ -171,7 +171,7 @@ namespace lux{
 
 	//HdCtArray alias
 	template<class... types> struct L : HdCtArray<types...>{
-		L() : HdCtArray<types...>(){}
-		L(const types&... vals) : HdCtArray<types...>(vals...){}
+		alwaysInline L() : HdCtArray<types...>(){}
+		alwaysInline L(const types&... vals) : HdCtArray<types...>(vals...){}
 	};
 }
