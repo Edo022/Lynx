@@ -114,9 +114,10 @@ namespace lux{
 	 */
 	template<class ...types> struct HdCtArray : __pvt::seq<seqIndex, types...>{
 		HdCtArray(){}
-		HdCtArray(const types&... vals){
+		HdCtArray(types... vals){
 			this->lux::__pvt::seq<seqIndex, types...>::ctGet(vals...);
 		}
+		virtual uint64 getOriginalSize(){ return count(); }
 
 
 		/**
