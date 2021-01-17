@@ -39,8 +39,8 @@ namespace lux{
 	namespace __pvt{
 		enum __action : uint32{ CHCK = (uint32)-1, DESC = 0, GETV = 1 };					//Enum defining actions for get_t element iterations
 		template <__action act, uint32 index, class type, class... types> struct get_t{ };	//Unspecialized get_t class. This is used to iterate through the elemenets of the array
-		template<uint32 index, class type, class ...types> struct seq;						//seq forward declaration for getArr function
-		#define genGetVFunc alwaysInline virtual seq<index, type, types...>* getArr() = 0;		//getArr function shared by all the get_t specializations. Returns the HdCtArray object address
+		template<uint32 index, class type, class ...types> struct seq;						//seq forward declaration for getArr func_tion
+		#define genGetVFunc alwaysInline virtual seq<index, type, types...>* getArr() = 0;		//getArr func_tion shared by all the get_t specializations. Returns the HdCtArray object address
 
 		//CHCK specialization: Checks if the required index is the same as the current one. If true, returns the element. If false, runs another iteration
 		template <uint32 index, class type, class... types> struct get_t<CHCK, index, type, types...>{
@@ -75,7 +75,7 @@ namespace lux{
 
 
 
-		// Execute (exec function) helper structures --------------------------------------------------------------------------------------------------//
+		// Execute (exec func_tion) helper structures --------------------------------------------------------------------------------------------------//
 
 
 
@@ -85,30 +85,30 @@ namespace lux{
 
 
 
-		struct NoRet_t{};											//Dummy return type for void functions
-		template<class fType, class ...aTypes> struct exec_thr{		//Structure containing the function call informations
-			fType _func;												//Function pointer
-			lux::HdCtArray<aTypes...> _args;							//Function arguments
+		struct NoRet_t{};											//Dummy return type for void func_tions
+		template<class func_t, class ...args_ts> struct exec_thr{		//Structure containing the func_tion call informations
+			func_t _func;												//func_tion pointer
+			lux::HdCtArray<args_ts...> _args;							//func_tion arguments
 		};
 
 
-		//Executes a non-void non-member function
-		template<class fType, class rType, class ...aTypes> struct exec_t{
-			static alwaysInline void exec(fType _func, rType* _ret, aTypes&... _args){ *_ret = _func(_args...); }
+		//Executes a non-void non-member func_tion
+		template<class func_t, class ret_t, class ...args_ts> struct exec_t{
+			static alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){ *_ret = _func(_args...); }
 		};
-		//exec_t specialization. Executes a void non-member function //FIXME REMOVE. merge with automatic return value
-		template<class fType, class ...aTypes> struct exec_t<fType, NoRet_t, aTypes...> {
-			static alwaysInline void exec(fType _func, NoRet_t* _ret, aTypes&... _args){ _func(_args...); }
+		//exec_t specialization. Executes a void non-member func_tion //FIXME REMOVE. merge with automatic return value
+		template<class func_t, class ...args_ts> struct exec_t<func_t, NoRet_t, args_ts...> {
+			static alwaysInline void exec(func_t _func, NoRet_t* _ret, args_ts&... _args){ _func(_args...); }
 		};
 
 
-		//Executes a non-void member function
-		template<class oType, class fType, class rType, class ...aTypes> struct execObj_t{
-			static alwaysInline void execObj(oType& _obj, fType _func, rType* _ret, aTypes&... _args){ *_ret = (_obj.*_func)(_args...); }
+		//Executes a non-void member func_tion
+		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct execObj_t{
+			static alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){ *_ret = (_obj.*_func)(_args...); }
 		};
-		//execObj_t specialization. Executes a void member function //FIXME REMOVE. merge with automatic return value
-		template<class oType, class fType, class ...aTypes> struct execObj_t<oType, fType, NoRet_t, aTypes...> {
-			static alwaysInline void execObj(oType& _obj, fType _func, NoRet_t* _ret, aTypes&... _args){ (_obj.*_func)(_args...); }
+		//execObj_t specialization. Executes a void member func_tion //FIXME REMOVE. merge with automatic return value
+		template<class obj_t, class func_t, class ...args_ts> struct execObj_t<obj_t, func_t, NoRet_t, args_ts...> {
+			static alwaysInline void execObj(obj_t& _obj, func_t _func, NoRet_t* _ret, args_ts&... _args){ (_obj.*_func)(_args...); }
 		};
 
 
@@ -149,20 +149,20 @@ namespace lux{
 				;
 			}
 
-			//Executes a standard function
-			template<class fType, class rType, class ...aTypes> alwaysInline void exec(fType _func, rType* _ret, aTypes&... _args){
-				seq<index - 1, types...>::template exec<fType, rType, aTypes..., type>(_func, _ret, _args..., val);
+			//Executes a standard func_tion
+			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){
+				seq<index - 1, types...>::template exec<func_t, ret_t, args_ts..., type>(_func, _ret, _args..., val);
 			}
 
-			//Executes a member function
-			template<class oType, class fType, class rType, class ...aTypes> alwaysInline void execObj(oType& _obj, fType _func, rType* _ret, aTypes&... _args){
-				seq<index - 1, types...>::template execObj<oType, fType, rType, aTypes...>(_obj, _func, _ret, _args...);
+			//Executes a member func_tion
+			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){
+				seq<index - 1, types...>::template execObj<obj_t, func_t, ret_t, args_ts...>(_obj, _func, _ret, _args...);
 			}
 
-			//fType:  Function type
-			//rType:  Return type
-			//aTypes: Function arguments types
-			//oType:  Object type
+			//func_t:  func_tion type
+			//ret_t:  Return type
+			//args_ts: func_tion arguments types
+			//obj_t:  Object type
 		};
 
 
@@ -181,11 +181,11 @@ namespace lux{
 			alwaysInline virtual seq<0, type>* getArr() override { return this; }
 			alwaysInline void init(const type& _val){ val = _val; }
 			alwaysInline void* rtGet(const uint32 _index){ return (void*)&val; }
-			template<class fType, class rType, class ...aTypes> alwaysInline void exec(fType _func, rType* _ret, aTypes&... _args){
-				exec_t<fType, rType, aTypes..., type>::exec(_func, _ret, _args..., val);
+			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){
+				exec_t<func_t, ret_t, args_ts..., type>::exec(_func, _ret, _args..., val);
 			}
-			template<class oType, class fType, class rType, class ...aTypes> alwaysInline void execObj(oType& _obj, fType _func, rType* _ret, aTypes&... _args){
-				execObj_t<oType, fType, rType, aTypes..., type>::execObj(_obj, _func, _ret, _args..., val);
+			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){
+				execObj_t<obj_t, func_t, ret_t, args_ts..., type>::execObj(_obj, _func, _ret, _args..., val);
 			}
 		};
 	}
@@ -251,33 +251,33 @@ namespace lux{
 
 		//FIXME return the value directly
 		/**
-		 * @brief Calls a function using the array elements as arguments
-		 * @param pFunc: The function to call
+		 * @brief Calls a func_tion using the array elements as arguments
+		 * @param pFunc: The func_tion to call
 		 * @param pReturn: A variable where to store the return value
 		 */
-		template<class fType, class rType> alwaysInline void exec(fType pFunc, rType& pReturn){
-			__pvt::seq<seqIndex, types...>::template exec<fType, rType>(pFunc, &pReturn);
+		template<class func_t, class ret_t> alwaysInline void exec(func_t pFunc, ret_t& pReturn){
+			__pvt::seq<seqIndex, types...>::template exec<func_t, ret_t>(pFunc, &pReturn);
 		}
-		template<class fType> alwaysInline void exec(fType pFunc){
-			__pvt::seq<seqIndex, types...>::template exec<fType, __pvt::NoRet_t>(pFunc, nullptr );
+		template<class func_t> alwaysInline void exec(func_t pFunc){
+			__pvt::seq<seqIndex, types...>::template exec<func_t, __pvt::NoRet_t>(pFunc, nullptr );
 		}
 
 
 
 
-		//pReturn can be omitted to ignore the return value or call void functions
+		//pReturn can be omitted to ignore the return value or call void func_tions
 		//FIXME return the value directly
 		/**
-		 * @brief Calls a member function using the array elements as arguments
-		 * @param pObject The object to call the function on
-		 * @param pFunc The member function to call
+		 * @brief Calls a member func_tion using the array elements as arguments
+		 * @param pObject The object to call the func_tion on
+		 * @param pFunc The member func_tion to call
 		 * @param pReturn A variable where to store the return value
 		 */
-		template<class oType, class fType, class rType> alwaysInline void exec(oType& pObject, fType pFunc, rType& pReturn){
-			__pvt::seq<seqIndex, types...>::template execObj<oType, fType, rType>(pObject, pFunc, &pReturn);
+		template<class obj_t, class func_t, class ret_t> alwaysInline void exec(obj_t& pObject, func_t pFunc, ret_t& pReturn){
+			__pvt::seq<seqIndex, types...>::template execObj<obj_t, func_t, ret_t>(pObject, pFunc, &pReturn);
 		}
-		template<class oType, class fType> alwaysInline void exec(oType& pObject, fType pFunc){
-			__pvt::seq<seqIndex, types...>::template execObj<oType, fType, __pvt::NoRet_t>(pObject, pFunc, nullptr );
+		template<class obj_t, class func_t> alwaysInline void exec(obj_t& pObject, func_t pFunc){
+			__pvt::seq<seqIndex, types...>::template execObj<obj_t, func_t, __pvt::NoRet_t>(pObject, pFunc, nullptr );
 		}
 	};
 	#undef seqIndex
