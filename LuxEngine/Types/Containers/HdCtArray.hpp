@@ -170,7 +170,7 @@ namespace lux{
 
 	//HdCtArray alias
 	template<class... types> struct L : HdCtArray<types...>{
-		L() : HdCtArray(){}
-		L(const types&... vals) : HdCtArray(vals){}
+		L() : HdCtArray<types...>(){}
+		L(const types&... vals) : HdCtArray<types...>(vals...){}
 	};
 }
