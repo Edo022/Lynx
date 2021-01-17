@@ -224,7 +224,7 @@ namespace lux{
 		/**
 		 * @brief Returns a reference to an element.
 		 *		This can only be used with compile time known indices.
-		 *		Use operator[] to retrieve values in runtime
+		 *		Use rtGet<type>(index) to retrieve values in runtime
 		 * @tparam vIndex The index of the element
 		 */
 		template<uint32 vIndex> alwaysInline auto& get(){
@@ -232,10 +232,14 @@ namespace lux{
 		}
 
 		/**
-		 * @brief Runtime version of get. Returns the address of an element as a void* pointer
+		 * @brief Runtime version of get. Returns a reference to an element.
+		 *		Requires the element type to be explicitly specified.   e.g. arr.get<int>(4); //Returns the 4th element as an int&
 		 * @param vIndex The index of the element
+		 * @tparam eType The type of the element
 		 */
-		alwaysInline void* operator[](const uint32 index) { return this->lux::__pvt::seq<seqIndex, types...>::rtGet(index); }
+		template<class eType> alwaysInline eType& rtGet(const uint32 index) {
+			return (eType&)*(eType*)(this->lux::__pvt::seq<seqIndex, types...>::rtGet(index));
+		}
 
 		/**
 		 * @brief Returns the number of elements in the array
