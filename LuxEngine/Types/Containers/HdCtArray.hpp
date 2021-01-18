@@ -227,7 +227,8 @@ namespace lux{
 		 *		Use rtGet<type>(index) to retrieve values in runtime
 		 * @tparam vIndex The index of the element
 		 */
-		template<uint32 vIndex> alwaysInline auto& get(){
+		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(types)) {
+			// luxDebug(static_assert(vIndex >= 2, "Index is out of range"));
 			return __pvt::seq<seqIndex, types...>::template get_t<__pvt::CHCK, seqIndex, types...>::template getFunc<seqIndex - vIndex>();
 		}
 
@@ -241,6 +242,10 @@ namespace lux{
 		template<class eType> alwaysInline eType& rtGet(const uint32 index) {
 			return (eType&)*(eType*)(__pvt::seq<seqIndex, types...>::rtGet(index));
 		}
+		/**
+		 * @brief Returns the element address a a void*
+		 * @param index The index of the element
+		 */
 		alwaysInline void* rtGet(const uint32 index){
 			return __pvt::seq<seqIndex, types...>::rtGet(index);
 		}
