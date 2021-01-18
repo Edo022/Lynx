@@ -45,7 +45,7 @@ namespace lux{
 		//CHCK specialization: Checks if the required index is the same as the current one. If true, returns the element. If false, runs another iteration
 		template <uint32 index, class type, class... types> struct get_t<CHCK, index, type, types...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
-				return getArr()->lux::__pvt::get_t<(__action)(getIndex == index), index, type, types...>::template getFunc<getIndex>();
+				return getArr()->get_t<(__action)(getIndex == index), index, type, types...>::template getFunc<getIndex>();
 			}
 			genGetVFunc;
 		};
@@ -53,7 +53,7 @@ namespace lux{
 		//DESC specialization: Executes another iteration and calls its CHCK
 		template <uint32 index, class type, class... types> struct get_t<DESC, index, type, types...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
-				return getArr()->lux::__pvt::seq<index - 1, types...>::template get_t<CHCK, index - 1, types...>::template getFunc<getIndex>();
+				return getArr()->seq<index - 1, types...>::template get_t<CHCK, index - 1, types...>::template getFunc<getIndex>();
 			}
 			genGetVFunc;
 		};
@@ -133,30 +133,30 @@ namespace lux{
 		public get_t<GETV, index, type, types...>,
 		public seq<index - 1, types...>{
 			type val;
-			alwaysInline virtual constexpr uint64 getOriginalSize() = 0;											//Returns the array size. Overridden by HdCtArray
-			alwaysInline virtual seq<index, type, types...>* getArr() override { return this; }	//USed by get_t structures
+			alwaysInline virtual constexpr uint64 getOriginalSize() = 0;							//Returns the array size. Overridden by HdCtArray
+			alwaysInline virtual seq<index, type, types...>* getArr() override { return this; }		//USed by get_t structures
 
 			//List initialization
 			alwaysInline void init(const type& _val, const types&... vals){
-				val = _val; this->lux::__pvt::seq<index - 1, types...>::init(vals...);
+				val = _val; seq<index - 1, types...>::init(vals...);
 			}
 
 			//Runtime get
 			inline void* rtGet(const uint32 _index){
 				return (getOriginalSize() - 1 - index == _index) ?
 					(void*)&val :
-					this->lux::__pvt::seq<index - 1, types...>::rtGet(_index)
+					seq<index - 1, types...>::rtGet(_index)
 				;
 			}
 
 			//Executes a standard function
 			template<class fType, class rType, class ...aTypes> alwaysInline void exec(fType _func, rType* _ret, aTypes&... _args){
-				this->lux::__pvt::seq<index - 1, types...>::template exec<fType, rType, aTypes..., type>(_func, _ret, _args..., val);
+				seq<index - 1, types...>::template exec<fType, rType, aTypes..., type>(_func, _ret, _args..., val);
 			}
 
 			//Executes a member function
 			template<class oType, class fType, class rType, class ...aTypes> alwaysInline void execObj(oType& _obj, fType _func, rType* _ret, aTypes&... _args){
-				this->lux::__pvt::seq<index - 1, types...>::template execObj<oType, fType, rType, aTypes...>(_obj, _func, _ret, _args...);
+				seq<index - 1, types...>::template execObj<oType, fType, rType, aTypes...>(_obj, _func, _ret, _args...);
 			}
 
 			//fType:  Function type
@@ -182,10 +182,10 @@ namespace lux{
 			alwaysInline void init(const type& _val){ val = _val; }
 			alwaysInline void* rtGet(const uint32 _index){ return (void*)&val; }
 			template<class fType, class rType, class ...aTypes> alwaysInline void exec(fType _func, rType* _ret, aTypes&... _args){
-				lux::__pvt::exec_t<fType, rType, aTypes..., type>::exec(_func, _ret, _args..., val);
+				exec_t<fType, rType, aTypes..., type>::exec(_func, _ret, _args..., val);
 			}
 			template<class oType, class fType, class rType, class ...aTypes> alwaysInline void execObj(oType& _obj, fType _func, rType* _ret, aTypes&... _args){
-				lux::__pvt::execObj_t<oType, fType, rType, aTypes..., type>::execObj(_obj, _func, _ret, _args..., val);
+				execObj_t<oType, fType, rType, aTypes..., type>::execObj(_obj, _func, _ret, _args..., val);
 			}
 		};
 	}
@@ -216,7 +216,7 @@ namespace lux{
 	template<class ...types> struct HdCtArray : __pvt::seq<seqIndex, types...>{
 		alwaysInline HdCtArray(){}
 		alwaysInline HdCtArray(types... vals){
-			this->lux::__pvt::seq<seqIndex, types...>::init(vals...);
+			__pvt::seq<seqIndex, types...>::init(vals...);
 		}
 		alwaysInline virtual uint64 getOriginalSize(){ return count(); } //FIXME move to template
 
@@ -224,18 +224,22 @@ namespace lux{
 		/**
 		 * @brief Returns a reference to an element.
 		 *		This can only be used with compile time known indices.
-		 *		Use operator[] to retrieve values in runtime
+		 *		Use rtGet<type>(index) to retrieve values in runtime
 		 * @tparam vIndex The index of the element
 		 */
 		template<uint32 vIndex> alwaysInline auto& get(){
-			return this->lux::__pvt::seq<seqIndex, types...>::template get_t<lux::__pvt::CHCK, seqIndex, types...>::template getFunc<seqIndex - vIndex>();
+			return __pvt::seq<seqIndex, types...>::template get_t<__pvt::CHCK, seqIndex, types...>::template getFunc<seqIndex - vIndex>();
 		}
 
 		/**
-		 * @brief Runtime version of get. Returns the address of an element as a void* pointer
+		 * @brief Runtime version of get. Returns a reference to an element.
+		 *		Requires the element type to be explicitly specified.   e.g. arr.get<int>(4); //Returns the 4th element as an int&
 		 * @param vIndex The index of the element
+		 * @tparam eType The type of the element
 		 */
-		alwaysInline void* operator[](const uint32 index) { return this->lux::__pvt::seq<seqIndex, types...>::rtGet(index); }
+		template<class eType> alwaysInline eType& rtGet(const uint32 index) {
+			return (eType&)*(eType*)(__pvt::seq<seqIndex, types...>::rtGet(index));
+		}
 
 		/**
 		 * @brief Returns the number of elements in the array
@@ -252,10 +256,10 @@ namespace lux{
 		 * @param pReturn: A variable where to store the return value
 		 */
 		template<class fType, class rType> alwaysInline void exec(fType pFunc, rType& pReturn){
-			this->lux::__pvt::seq<seqIndex, types...>::template exec<fType, rType>(pFunc, &pReturn);
+			__pvt::seq<seqIndex, types...>::template exec<fType, rType>(pFunc, &pReturn);
 		}
 		template<class fType> alwaysInline void exec(fType pFunc){
-			this->lux::__pvt::seq<seqIndex, types...>::template exec<fType, lux::__pvt::NoRet_t>(pFunc, nullptr );
+			__pvt::seq<seqIndex, types...>::template exec<fType, __pvt::NoRet_t>(pFunc, nullptr );
 		}
 
 
@@ -270,10 +274,10 @@ namespace lux{
 		 * @param pReturn A variable where to store the return value
 		 */
 		template<class oType, class fType, class rType> alwaysInline void exec(oType& pObject, fType pFunc, rType& pReturn){
-			this->lux::__pvt::seq<seqIndex, types...>::template execObj<oType, fType, rType>(pObject, pFunc, &pReturn);
+			__pvt::seq<seqIndex, types...>::template execObj<oType, fType, rType>(pObject, pFunc, &pReturn);
 		}
 		template<class oType, class fType> alwaysInline void exec(oType& pObject, fType pFunc){
-			this->lux::__pvt::seq<seqIndex, types...>::template execObj<oType, fType, lux::__pvt::NoRet_t>(pObject, pFunc, nullptr );
+			__pvt::seq<seqIndex, types...>::template execObj<oType, fType, __pvt::NoRet_t>(pObject, pFunc, nullptr );
 		}
 	};
 	#undef seqIndex
