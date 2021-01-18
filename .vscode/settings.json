@@ -79,37 +79,6 @@
         "parentbad": "cpp",
         "source_location": "cpp"
     },
-    "todo-tree.general.tagGroups": {
-        "FIXME": [
-            "FIXME",
-            "FIX",
-        ]
-    },
-    "todo-tree.highlights.customHighlight": {
-        "BUG": {
-            "icon": "flame",
-            "iconColour":"darkred",
-            "gutterIcon": true,
-            "foreground":"black",
-            "background":"darkred",
-            "type":"text-and-comment"
-        },
-        "FIXME": {
-            "icon": "gear",
-            "iconColour":"orange",
-            "gutterIcon": true,
-            "foreground":"black",
-            "background":"orange",
-            "type":"text-and-comment"
-        },
-        "TODO": {
-            "icon":"check",
-            "iconColour":"green",
-            "gutterIcon": true,
-            "foreground":"black",
-            "background":"green",
-            "type":"text-and-comment"
-        }
-    },
-    "editor.fontFamily": "'monospace', 'monospace', monospace, 'monospace'"
+
+    // "editor.fontFamily": "'monospace', 'monospace', monospace, 'monospace'"
 }

@@ -105,9 +105,12 @@ namespace lux::dbg{
 	 *		It should only be used as additional security check
 	 */
 	template<class pType, class... aTypes> static neverInline void checkRawPtr(pType* vPtr, const char* vMessage, aTypes... vArgs){
+		#pragma GCC diagnostic push
+		#pragma GCC diagnostic ignored "-Wunused-variable"
 		if(vPtr){
 			try{ char tmp = *(char*)vPtr; }
-			catch(std::exception e) { dbg::printError(vMessage, vArgs...); }
+			catch(std::exception& e) { dbg::printError(vMessage, vArgs...); }
 		}
+		#pragma GCC diagnostic pop
 	}
 }
