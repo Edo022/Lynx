@@ -100,18 +100,18 @@ namespace lux {
 
 		inline ContainerBase(const ContainerBase<type, iter>& pCont) = delete;
 		inline ContainerBase(ContainerBase<type, iter>&& pCont) = delete;
-		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) : //{
+		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont/*, const bool vConstruct = true*/, Dummy vDummy) : //{
 			checkInitList(
 				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
 			)
 			data{ pCont.size() } {		//Allocate new elements
-			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type();						//Initialize new elements
-				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
-			}
-			else for(iter i = 0; i < pCont.count(); ++i) {
+			// if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
+				// new(&data[i]) type();						//Initialize new elements
+				// new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
+			// }
+			/*else */for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
 			}
 		}

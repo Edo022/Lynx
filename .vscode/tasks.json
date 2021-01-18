@@ -50,7 +50,7 @@
 					"Test.cpp",
 				//No debug infos, optimizations for fast code
 					"-g0", "-Ofast", "-frename-registers", "-funroll-loops",
-					"-std=c++2a", "-mavx", "-pipe",
+					"-std=c++2a", "-mavx", "-pipe", "-Wall",
 				//CWD include, threads
 					"-I./", "-pthread",
 				//Vulkan

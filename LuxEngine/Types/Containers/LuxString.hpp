@@ -56,7 +56,7 @@ namespace lux {
 		//Move and copy constructors
 		inline String(String&& pString){ Super::move(pString); updateView(); }
 		// inline String(const String& pString) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
-		inline String(const String& pString) : Super(pString, false) { updateView(); }
+		inline String(const String& pString) : Super(pString/*, false*/, {}) { updateView(); }
 
 		//TODO remove
 		// inline String(const wchar8* vString) : Super(strlenl(vString) + 1)	{ ram::cpy(vString, Super::data, Super::data.size( )); }
