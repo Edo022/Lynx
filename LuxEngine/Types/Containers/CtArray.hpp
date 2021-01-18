@@ -95,7 +95,7 @@ namespace lux {
 		inline type&	operator[](const uint64 vIndex) const {
 			checkInit();
 			dbg::checkCond(count() == 0, "This function cannot be called on containers with size 0");
-			dbg::checkIndex(vIndex, 0, count_, "vIndex");
+			dbg::checkIndex(vIndex, 0, count_ - 1, "vIndex");
 			return data_[vIndex];
 		}
 	};

@@ -56,14 +56,14 @@ namespace lux{
 		}
 
 		inline void remove(const iter vIndex){
-			checkInit(); dbg::checkIndex(vIndex, 0, count(), "vIndex");
+			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			// lnkd[head] = head = vIndex;
 			lnkd[head] = vIndex;
 			head = vIndex;
 		}
 
 		inline type& operator[](const iter vIndex) const {
-			checkInit(); dbg::checkIndex(vIndex, 0, count(), "vIndex");
+			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[vIndex];
 		}
 

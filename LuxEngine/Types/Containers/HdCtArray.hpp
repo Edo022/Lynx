@@ -158,11 +158,6 @@ namespace lux{
 			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){
 				seq<index - 1, types...>::template execObj<obj_t, func_t, ret_t, args_ts...>(_obj, _func, _ret, _args...);
 			}
-
-			//func_t:  func_tion type
-			//ret_t:  Return type
-			//args_ts: func_tion arguments types
-			//obj_t:  Object type
 		};
 
 
@@ -239,15 +234,17 @@ namespace lux{
 		 * @param vIndex The index of the element
 		 * @tparam eType The type of the element
 		 */
-		template<class eType> alwaysInline eType& rtGet(const uint32 index) {
-			return (eType&)*(eType*)(__pvt::seq<seqIndex, types...>::rtGet(index));
+		template<class eType> alwaysInline eType& rtGet(const uint32 vIndex) {
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			return (eType&)*(eType*)(__pvt::seq<seqIndex, types...>::rtGet(vIndex));
 		}
 		/**
 		 * @brief Returns the element address a a void*
 		 * @param index The index of the element
 		 */
-		alwaysInline void* rtGet(const uint32 index){
-			return __pvt::seq<seqIndex, types...>::rtGet(index);
+		alwaysInline void* rtGet(const uint32 vIndex){
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			return __pvt::seq<seqIndex, types...>::rtGet(vIndex);
 		}
 
 		/**

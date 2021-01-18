@@ -78,7 +78,7 @@ namespace lux {
 
 		inline char8& operator[](const uint32 vIndex) const {
 			checkInit();
-			dbg::checkIndex(vIndex, 0, count(), "vIndex");
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return Super::operator[](vIndex);
 		}
 

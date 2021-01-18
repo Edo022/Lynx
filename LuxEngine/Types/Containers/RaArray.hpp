@@ -213,7 +213,7 @@ namespace lux {
 		 */
 		void remove(const iter vIndex) {
 			checkInit();
-			dbg::checkIndex(vIndex, 0, count(), "vIndex");
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
 			data[vIndex].~type();							//Destroy the element
@@ -273,7 +273,7 @@ namespace lux {
 		 */
 		inline bool isValid(const iter vIndex) const noexcept {
 			checkInit();
-			dbg::checkIndex(vIndex, 0, count(), "vIndex");
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return (lnkd[vIndex] == (iter)-1);
 		}
 
@@ -286,7 +286,7 @@ namespace lux {
 //FIXME add all constructors and assignment operators
 
 		inline type& operator[](const iter vIndex) const noexcept {
-			dbg::checkIndex(vIndex, 0, count(), "vIndex");
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[vIndex];
 		}
 
