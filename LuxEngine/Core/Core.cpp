@@ -83,7 +83,7 @@ namespace lux::core{
 				win10(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!compileShader(luxStrPath.begin( ))) dbg::printError("compilation error");
-					else{ Normal printf("%s", luxStrPath.begin( )); }
+					else{ Normal printf("%s", (char*)luxStrPath.begin( )); }
 				}
 			}
 		}

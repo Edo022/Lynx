@@ -40,11 +40,11 @@ namespace lux::obj{
 		if(render.updated){
 			render.updated = false;
 			core::render::objUpdates2D.add(this);
-			//TODO remove debug junk
-			if(core::render::objUpdates2D[0]->common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_LINE){
-				// sleep(500);
-				int hfrewfvgrefre = 0;
-			}
+			// //TODO remove debug junk
+			// if(core::render::objUpdates2D[0]->common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_LINE){
+			// 	// sleep(500);
+			// 	int hfrewfvgrefre = 0;
+			// }
 		}
 		// sleep(500);
 		core::render::pendingObjectUpdatesFence.endSecond( );

@@ -60,10 +60,10 @@ namespace lux::dbg{
 	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true){
 		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
-		auto size = backtrace(calls, vIndex + 1);	//Get calls addresses
+		backtrace(calls, vIndex + 1);				//Get calls addresses
 
 		char* str = (char*)malloc(128);				//Create addr2line command (-1 is to get the actual instruction address)
-		sprintf(str, "addr2line%s -e %s --demangle %x", (vGetFunc) ? " -f" : "", getExecName(), (char*)calls[vIndex] - 1);
+		sprintf(str, "addr2line%s -e %s --demangle %p", (vGetFunc) ? " -f" : "", getExecName(), (void*)((char*)calls[vIndex] - 1));
 		return cmdOutput(str);						//Get file infos from address and return
 	}
 

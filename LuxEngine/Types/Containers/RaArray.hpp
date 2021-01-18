@@ -52,8 +52,8 @@ namespace lux {
 		/**
 		 * @brief Creates an array with size 0 and no preallocated chunks
 		 */
-		inline RaArray( ) : head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 },
-			data(nullptr), lnkd(nullptr) {
+		inline RaArray( ) : data(nullptr), lnkd(nullptr),
+			head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 } {
 		}
 
 
@@ -103,7 +103,7 @@ namespace lux {
 			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
 			//data(pCont.data.deepCopy()), lnkd(pCont.lnkd.deepCopy()){
 			RaArray(){
-			for(int i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
 
 
@@ -313,5 +313,5 @@ namespace lux {
 		inline iter freeCount( ) const noexcept { checkInit(); return free_;         } //Returns the number of free elements
 	};
 }
-#undef chunks
-#undef tracker
+// #undef chunks
+// #undef tracker

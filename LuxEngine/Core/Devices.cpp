@@ -165,7 +165,7 @@ namespace lux::core::dvc{
 		if(discardedPhysicalDevices.count( ) > 0) {
 			Failure printf("    Discarded devices:");
 			for(uint32 i = 0; i < discardedPhysicalDevices.count( ); i += 2) {
-				Failure printf("        %s\t|  %s", discardedPhysicalDevices[i].begin( ), discardedPhysicalDevices[(int64)i + 1].begin( ));
+				Failure printf("        %s\t|  %s", (char*)discardedPhysicalDevices[i].begin( ), (char*)discardedPhysicalDevices[(int64)i + 1].begin( ));
 			}
 		}
 
@@ -176,7 +176,7 @@ namespace lux::core::dvc{
 			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device
 				physDev.indices = getQueueFamilies(physDev.device);				//Get its queue families
 				physDev.score = rate(&physDev);									//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
-				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != -1)        graphics.PD = physDev;
+				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != (uint32)-1)        graphics.PD = physDev;
 				if(physDev.score > compute .PD.score || physDev.indices.computeFamilies.count( ) > 0) compute.PD = physDev;
 			}
 			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {				//For every physical device that isn't the main graphics or compute device
@@ -187,7 +187,7 @@ namespace lux::core::dvc{
 			}
 
 			//Print the devices names, IDs, scores and tasks
-			Success printf("    Found %ld suitable device%s:", (uint32)physicalDevices.count( ), (physicalDevices.count( ) == 1) ? "" : "s");
+			Success printf("    Found %d suitable device%s:", physicalDevices.count( ), (physicalDevices.count( ) == 1) ? "" : "s");
 			for(uint32 i = 0; i < physicalDevices.count( ); ++i) {
 				if(sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
 				printf("        %s  |  ID: %d  |  %d", physDev.properties.deviceName, physDev.properties.deviceID, physDev.score);
@@ -210,10 +210,10 @@ namespace lux::core::dvc{
 		}
 
 		//Output created logical devices and queues
-		Success printf("    Created %ld logical devices:", 2 + (int32)secondary.count( ));
+		Success printf("    Created %d logical devices:", 2 + secondary.count( ));
 		Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
-		Main	printf("        Main compute   |  compute queues:  %ld", (int32)compute.computeQueues.count( ));
-		Normal	printf("        %ld secondary devices",/*  |  secondary compute queues: %lld", secondary.count, */(int32)secondary.count( ));
+		Main	printf("        Main compute   |  compute queues:  %d", compute.computeQueues.count( ));
+		Normal	printf("        %d secondary devices",/*  |  secondary compute queues: %lld", secondary.count, */secondary.count( ));
 	}
 
 

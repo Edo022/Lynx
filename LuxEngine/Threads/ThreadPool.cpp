@@ -54,7 +54,7 @@ namespace lux::thr {
 		pthread_kill(pthread_self(), SIGSTOP);		//Suspend the thread
 		// while(true) sleep(10);
 		while(true) {
-			0;													//#LLID THR0000 The thread will continue from here when it's resumed
+			noop;															//#LLID THR0000 The thread will continue from here when it's resumed
 			if(thrStates[*((uint32*)vThrIndex)] == ThrState::RUNNING){		//If a function was assigned to the thread
 				//TODO save return
 				threads[*((uint32*)vThrIndex)].exec->exec( );					//Execute it and save the retun value in the return address
@@ -77,7 +77,7 @@ namespace lux::thr {
 		pthread_kill(pthread_self(), SIGSTOP);
 
 		while(true){
-			0;															//#LLID THR0001 The thread will continue from here when it's resumed
+			noop;														//#LLID THR0001 The thread will continue from here when it's resumed
 			if(!stg.empty( )){											//Check if new functions were added to the queues
 				stgAddFence.startFirst( );
 				while(stg.size( ) > 0){										//For each element of the queue
