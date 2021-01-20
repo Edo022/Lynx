@@ -40,30 +40,28 @@ namespace lux{
 		enum __action : uint32{ CHCK = (uint32)-1, DESC = 0, GETV = 1 };								//Enum defining actions for get_t element iterations
 		template <uint32 size, __action act, uint32 index, class type, class... types> struct get_t{ };	//Unspecialized get_t class. This is used to iterate through the elemenets of the array
 		template<uint32 size, uint32 index, class type, class ...types> struct seq;						//seq forward declaration for getArr func_tion
-		#define genGetVFunc alwaysInline virtual seq<size, index, type, types...>* getArr() = 0;		//getArr func_tion shared by all the get_t specializations. Returns the HdCtArray object address
 
 		//CHCK specialization: Checks if the required index is the same as the current one. If true, returns the element. If false, runs another iteration
 		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, CHCK, index, type, types...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
-				return getArr()->get_t<size, (__action)(getIndex == index), index, type, types...>::template getFunc<getIndex>();
+				return ((seq<size, index, type, types...>*)this)->
+				get_t<size, (__action)(getIndex == index), index, type, types...>::template getFunc<getIndex>();
 			}
-			genGetVFunc;
 		};
 
 		//DESC specialization: Executes another iteration and calls its CHCK
 		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, DESC, index, type, types...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
-				return getArr()->seq<size, index - 1, types...>::template get_t<size, CHCK, index - 1, types...>::template getFunc<getIndex>();
+				return ((seq<size, index, type, types...>*)this)->
+				seq<size, index - 1, types...>::template get_t<size, CHCK, index - 1, types...>::template getFunc<getIndex>();
 			}
-			genGetVFunc;
 		};
 
 		//GETV specialization: Stops iteration and returns the element value
 		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, GETV, index, type, types...>{
 			template <uint32 getIndex> alwaysInline type &getFunc() {
-				return getArr()->val;
+				return ((seq<size, index, type, types...>*)this)->val;
 			}
-			genGetVFunc;
 		};
 
 		#undef genGetVFunc
@@ -133,7 +131,6 @@ namespace lux{
 		public get_t<size, GETV, index, type, types...>,
 		public seq<size, index - 1, types...>{
 			type val;
-			alwaysInline virtual seq<size, index, type, types...>* getArr() override { return this; }		//USed by get_t structures
 
 			//List initialization
 			alwaysInline void init(const type& _val, const types&... vals){
@@ -142,7 +139,6 @@ namespace lux{
 
 			//Runtime get
 			inline void* rtGet(const uint32 _index){
-				// return (getOriginalSize() - 1 - index == _index) ?
 				return (size - 1 - index == _index) ?
 					(void*)&val :
 					seq<size, index - 1, types...>::rtGet(_index)
@@ -173,7 +169,6 @@ namespace lux{
 		public get_t<size, DESC, 0, type>,
 		public get_t<size, GETV, 0, type>{
 			type val;
-			alwaysInline virtual seq<size, 0, type>* getArr() override { return this; }
 			alwaysInline void init(const type& _val){ val = _val; }
 			alwaysInline void* rtGet(const uint32 _index){ return (void*)&val; }
 			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){
