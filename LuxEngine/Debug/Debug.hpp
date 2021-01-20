@@ -94,9 +94,8 @@ namespace lux::dbg{
 	/**
 	 * @brief Prints pMessage as error if vIndex is not between vMin and vMax
 	 */
-	template<class nType, class xType, class iType, class... types>
-	static neverInline void checkIndex(const iType vIndex, const nType vMin, const xType vMax, const char* vParamName) {
-		checkParam(vIndex < vMin || vIndex > vMax, vParamName, "Index %lld is out of range. Min: %lld, Max: %lld", (int64)vIndex, (int64)vMin, (int64)vMax);
+	static neverInline void checkIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* vParamName) {
+		checkParam(vIndex < vMin || vIndex > vMax, vParamName, "Index %llu is out of range. Min: %llu, Max: %llu", vIndex, vMin, vMax);
 	}
 
 	/**
