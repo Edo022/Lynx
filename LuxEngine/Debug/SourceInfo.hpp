@@ -14,7 +14,7 @@ namespace lux::dbg{
     /**
 	 * @brief Returns the name of the executable file
 	 */
-	static const char* getExecName(){
+	static const char* getExecName() {
 		#if defined(PLATFORM_POSIX) || defined(__linux__)
 			FILE* f = fopen("/proc/self/comm", "r");
 			char* name = (char*)malloc(256);			//Create name buffer
@@ -57,7 +57,7 @@ namespace lux::dbg{
 	 * @brief Returns the call file, function and line of the vIndex backtraced function
 	 *		(0 is the function you are calling this from, 1 is its caller)
 	 */
-	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true){
+	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true) {
 		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
 		backtrace(calls, vIndex + 1);				//Get calls addresses
@@ -92,7 +92,7 @@ namespace lux::dbg{
 		 * @brief Returns the line of a function call
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
 		 */
-		static neverInline auto line(const uint32 vIndex = 1){
+		static neverInline auto line(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1, false);
 			for(uint32 i = strlen(str); ; --i) if(str[i] == ':') {
 				auto ret = atoi(str + i + 1);
@@ -105,7 +105,7 @@ namespace lux::dbg{
 		 * @brief Returns the name of a caller function
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
 		 */
-		static neverInline auto func(const uint32 vIndex = 1){
+		static neverInline auto func(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1);
 			for(uint32 i = 0; ; ++i) if(str[i] == '\n') { str[i] = '\0'; return str; };
 			return str;
@@ -115,7 +115,7 @@ namespace lux::dbg{
 		 * @brief Returns the name of the file where a caller function is located
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
 		 */
-		static neverInline auto file(const uint32 vIndex = 1){
+		static neverInline auto file(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1, false);
 			for(uint32 i = 0; ; ++i) if(str[i] == ':') { str[i] = '\0'; return str; };
 			return str;
@@ -133,21 +133,21 @@ namespace lux::dbg{
 		/**
 		 * @brief Alias for __LINE__ or dbg::caller::file(0);
 		 */
-		static neverInline auto line(){
+		static neverInline auto line() {
 			return dbg::caller::line();
 		}
 
 		/**
 		 * @brief Alias for __FUNCTION__, __func__ or dbg::caller::func(0);
 		 */
-		static neverInline auto func(){
+		static neverInline auto func() {
             return dbg::caller::func();
         }
 
 		/**
 		 * @brief Alias for __FILE__ or dbg::caller::file(0)
 		 */
-		static neverInline auto file(){
+		static neverInline auto file() {
             return dbg::caller::file();
 		}
     };

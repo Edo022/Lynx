@@ -18,7 +18,7 @@ namespace lux::core::c{
 
 	//Initializes the compute objects
 	//> Engine internal use
-	void init(){
+	void init() {
 		{ //Initialize window buffers and count
 			render::wnd::gpuCellWindowOutput_i	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A8-R8-G8-B8 UI
 			render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A32-R32-G32-B32 UF
@@ -56,8 +56,8 @@ namespace lux::core::c{
 	//> Engine internal use
 	void computeCleanup( ) {
 		// for(uint32 i = 0; i < /*rem::buffers.count( )*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
-		// 	for(uint32 j = 0; j < rem::buffers[i].buffers.count( ); ++j){
-		// 		if(rem::buffers[i].buffers.isValid(j)){
+		// 	for(uint32 j = 0; j < rem::buffers[i].buffers.count( ); ++j) {
+		// 		if(rem::buffers[i].buffers.isValid(j)) {
 		// 			vkDestroyBuffer(dvc::compute.LD, rem::buffers[i].buffers[j].buffer, nullptr);
 		// 			vkFreeMemory(dvc::compute.LD, rem::buffers[i].buffers[j].memory, nullptr);
 		// 		}

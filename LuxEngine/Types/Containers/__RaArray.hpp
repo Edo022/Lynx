@@ -86,8 +86,8 @@
 // 			)def(	//Allocate
 // 				chunks_ { (type**)malloc(sizeof(type*) * (uint64)CellClass::CLASS_B) },
 // 				tracker_{ (iter**)malloc(sizeof(iter*) * (uint64)CellClass::CLASS_B) }
-// 			){
-// 			def(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i){ chunks_[i] = nullptr; tracker_[i] = nullptr; })
+// 			) {
+// 			def(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i) { chunks_[i] = nullptr; tracker_[i] = nullptr; })
 // 		}
 
 
@@ -118,7 +118,7 @@
 // 			if(size_ + 1 > _chunkNum * chunkSize) {									//If the chunk is full
 // 				chunks_ [_chunkNum] gmp(.reallocArr(elmPerChunk, type())) def(= (type*)std::realloc(chunks_ [_chunkNum], elmPerChunk * sizeof(type)));
 // 				tracker_[_chunkNum] gmp(.reallocArr(elmPerChunk, iter())) def(= (iter*)std::realloc(tracker_[_chunkNum], elmPerChunk * sizeof(iter)));
-// 				def(for(int i = 0; i < elmPerChunk; ++i){
+// 				def(for(int i = 0; i < elmPerChunk; ++i) {
 // 					type __type_ = type();  iter __iter_ = iter();
 // 					memcpy(&chunks_ [_chunkNum][i], &__type_, sizeof(type));
 // 					memcpy(&tracker_[_chunkNum][i], &__iter_, sizeof(iter));
@@ -137,7 +137,7 @@
 // 			if(size_ + 1 > _chunkNum * chunkSize) {									//If the chunk is full
 // 				chunks_ [_chunkNum] gmp(.reallocArr(elmPerChunk, type())) def(= (type*)std::realloc(chunks_ [_chunkNum], elmPerChunk * sizeof(type)));
 // 				tracker_[_chunkNum] gmp(.reallocArr(elmPerChunk, iter())) def(= (iter*)std::realloc(tracker_[_chunkNum], elmPerChunk * sizeof(iter)));
-// 				def(for(int i = 0; i < elmPerChunk; ++i){
+// 				def(for(int i = 0; i < elmPerChunk; ++i) {
 // 					type __type_ = type();  iter __iter_ = iter();
 // 					memcpy(&chunks_ [_chunkNum][i], &__type_, sizeof(type));
 // 					memcpy(&tracker_[_chunkNum][i], &__iter_, sizeof(iter));
@@ -172,7 +172,7 @@
 // 					__lp_Tracker(head2) = -1;						//Update the state of the first
 // 				}
 // 				freeSize_--;										//Update the number of free elements
-// 				if(head_ == 23){ //BUG 23 gets removed even if it shouldn't
+// 				if(head_ == 23) { //BUG 23 gets removed even if it shouldn't
 // 					int h32424 = 434;
 // 				}
 // 				return head2;
@@ -232,7 +232,7 @@
 // 			_chunkNum = size_ = freeSize_ = 0;
 // 			chunks_  gmp(.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<type, alloc>())) def(= (type**)std::realloc(chunks_,  (uint64)CellClass::CLASS_B * sizeof(type*)));
 // 			tracker_ gmp(.reallocArr((uint64)CellClass::CLASS_B, ram::ptr<iter, alloc>())) def(= (iter**)std::realloc(tracker_, (uint64)CellClass::CLASS_B * sizeof(iter*)));
-// 			def(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i){ chunks_[i] = nullptr; tracker_[i] = nullptr; })
+// 			def(for(int i = 0; i < (uint64)CellClass::CLASS_B; ++i) { chunks_[i] = nullptr; tracker_[i] = nullptr; })
 // 		}
 
 

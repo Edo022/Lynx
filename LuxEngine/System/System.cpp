@@ -22,7 +22,7 @@ namespace lux::sys{
 	uint32		threadNum;						//Number of threads in the main CPU
 
 
-	luxAutoInit(LUX_H_SYSTEM){
+	luxAutoInit(LUX_H_SYSTEM) {
 		static bool once = true;
 		if(once) {									//Execute only once
 			once = false;

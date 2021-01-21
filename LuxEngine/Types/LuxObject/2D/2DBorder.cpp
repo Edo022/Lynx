@@ -4,7 +4,7 @@
 
 
 namespace lux::obj{
-	void Border2D::init( ){
+	void Border2D::init( ) {
 		cellSize = 40;
 		luxInitObject(2, BORDER);							// count   | range         | chunk
 		fp = (vec2f32*)(render.data + 0);					//    8    |    0  - 7     |    0 +

@@ -25,7 +25,7 @@ namespace lux::thr {
 	Queue<ExecFuncDataBase*> stg;			//Staging queue
 
 
-	luxAutoInit(LUX_H_THREAD_POOL){
+	luxAutoInit(LUX_H_THREAD_POOL) {
 		//TODO remove useless debug junk
 		// int h = LUX_CNF_GLOBAL_THREAD_POOL_SIZE;
 		threads = RtArray<ThrPoolElm>(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
@@ -55,7 +55,7 @@ namespace lux::thr {
 		// while(true) sleep(10);
 		while(true) {
 			noop;															//#LLID THR0000 The thread will continue from here when it's resumed
-			if(thrStates[*((uint32*)vThrIndex)] == ThrState::RUNNING){		//If a function was assigned to the thread
+			if(thrStates[*((uint32*)vThrIndex)] == ThrState::RUNNING) {		//If a function was assigned to the thread
 				//TODO save return
 				threads[*((uint32*)vThrIndex)].exec->exec( );					//Execute it and save the retun value in the return address
 				delete(threads[*((uint32*)vThrIndex)].exec);					//Free the pointer to the function data
@@ -76,13 +76,13 @@ namespace lux::thr {
 
 		pthread_kill(pthread_self(), SIGSTOP);
 
-		while(true){
+		while(true) {
 			noop;														//#LLID THR0001 The thread will continue from here when it's resumed
-			if(!stg.empty( )){											//Check if new functions were added to the queues
+			if(!stg.empty( )) {											//Check if new functions were added to the queues
 				stgAddFence.startFirst( );
-				while(stg.size( ) > 0){										//For each element of the queue
+				while(stg.size( ) > 0) {										//For each element of the queue
 					//TODO do something if there are no enought threads
-					if(thrStates.usedCount( ) < sys::threadNum){					//If there is a free thread
+					if(thrStates.usedCount( ) < sys::threadNum) {					//If there is a free thread
 						uint32 thrIndex = thrStates.add(ThrState::RUNNING);			//Set its state to RUNNING and save its index (automatically calculated by the add() function)
 						threads[thrIndex].exec = stg.front( );						//Set its exec data
 						stg.popFront( );											//Remove the exec data from the queue

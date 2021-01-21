@@ -90,21 +90,21 @@ namespace lux{
 
 		//Executes a non-void non-member func_tion
 		template<class func_t, class ret_t, class ...args_ts> struct exec_t{
-			static alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){ *_ret = _func(_args...); }
+			static alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args) { *_ret = _func(_args...); }
 		};
 		//exec_t specialization. Executes a void non-member func_tion //FIXME REMOVE. merge with automatic return value
 		template<class func_t, class ...args_ts> struct exec_t<func_t, NoRet_t, args_ts...> {
-			static alwaysInline void exec(func_t _func, NoRet_t* _ret, args_ts&... _args){ _func(_args...); }
+			static alwaysInline void exec(func_t _func, NoRet_t* _ret, args_ts&... _args) { _func(_args...); }
 		};
 
 
 		//Executes a non-void member func_tion
 		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct execObj_t{
-			static alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){ *_ret = (_obj.*_func)(_args...); }
+			static alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args) { *_ret = (_obj.*_func)(_args...); }
 		};
 		//execObj_t specialization. Executes a void member func_tion //FIXME REMOVE. merge with automatic return value
 		template<class obj_t, class func_t, class ...args_ts> struct execObj_t<obj_t, func_t, NoRet_t, args_ts...> {
-			static alwaysInline void execObj(obj_t& _obj, func_t _func, NoRet_t* _ret, args_ts&... _args){ (_obj.*_func)(_args...); }
+			static alwaysInline void execObj(obj_t& _obj, func_t _func, NoRet_t* _ret, args_ts&... _args) { (_obj.*_func)(_args...); }
 		};
 
 
@@ -131,12 +131,12 @@ namespace lux{
 			type val;
 
 			//List initialization
-			alwaysInline void init(const type& _val, const types&... vals){
+			alwaysInline void init(const type& _val, const types&... vals) {
 				val = _val; seq<size, index - 1, types...>::init(vals...);
 			}
 
 			//Runtime get
-			inline void* rtGet(const uint32 _index){
+			inline void* rtGet(const uint32 _index) {
 				return (size - 1 - index == _index) ?
 					(void*)&val :
 					seq<size, index - 1, types...>::rtGet(_index)
@@ -144,12 +144,12 @@ namespace lux{
 			}
 
 			//Executes a standard func_tion
-			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){
+			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args) {
 				seq<size, index - 1, types...>::template exec<func_t, ret_t, args_ts..., type>(_func, _ret, _args..., val);
 			}
 
 			//Executes a member func_tion
-			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){
+			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args) {
 				seq<size, index - 1, types...>::template execObj<obj_t, func_t, ret_t, args_ts...>(_obj, _func, _ret, _args...);
 			}
 		};
@@ -167,12 +167,12 @@ namespace lux{
 		public get_t<size, DESC, 0, type>,
 		public get_t<size, GETV, 0, type>{
 			type val;
-			alwaysInline void init(const type& _val){ val = _val; }
-			alwaysInline void* rtGet(const uint32 _index){ return (void*)&val; }
-			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args){
+			alwaysInline void init(const type& _val) { val = _val; }
+			alwaysInline void* rtGet(const uint32 _index) { return (void*)&val; }
+			template<class func_t, class ret_t, class ...args_ts> alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args) {
 				exec_t<func_t, ret_t, args_ts..., type>::exec(_func, _ret, _args..., val);
 			}
-			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args){
+			template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void execObj(obj_t& _obj, func_t _func, ret_t* _ret, args_ts&... _args) {
 				execObj_t<obj_t, func_t, ret_t, args_ts..., type>::execObj(_obj, _func, _ret, _args..., val);
 			}
 		};
@@ -202,8 +202,8 @@ namespace lux{
 	 *		e.g.  lux::HdCtArray arr = { 1, false, "mogu mogu" };
 	 */
 	template<class ...types> struct HdCtArray : __pvt::seq<sizeof...(types), seqIndex, types...>{
-		alwaysInline HdCtArray(){}
-		alwaysInline HdCtArray(types... vals){
+		alwaysInline HdCtArray() {}
+		alwaysInline HdCtArray(types... vals) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::init(vals...);
 		}
 
@@ -234,7 +234,7 @@ namespace lux{
 		 * @brief Returns the element address a a void*
 		 * @param index The index of the element
 		 */
-		alwaysInline void* rtGet(const uint32 vIndex){
+		alwaysInline void* rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return __pvt::seq<sizeof...(types), seqIndex, types...>::rtGet(vIndex);
 		}
@@ -253,10 +253,10 @@ namespace lux{
 		 * @param pFunc: The func_tion to call
 		 * @param pReturn: A variable where to store the return value
 		 */
-		template<class func_t, class ret_t> alwaysInline void exec(func_t pFunc, ret_t& pReturn){
+		template<class func_t, class ret_t> alwaysInline void exec(func_t pFunc, ret_t& pReturn) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template exec<func_t, ret_t>(pFunc, &pReturn);
 		}
-		template<class func_t> alwaysInline void exec(func_t pFunc){
+		template<class func_t> alwaysInline void exec(func_t pFunc) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template exec<func_t, __pvt::NoRet_t>(pFunc, nullptr );
 		}
 
@@ -271,10 +271,10 @@ namespace lux{
 		 * @param pFunc The member func_tion to call
 		 * @param pReturn A variable where to store the return value
 		 */
-		template<class obj_t, class func_t, class ret_t> alwaysInline void exec(obj_t& pObject, func_t pFunc, ret_t& pReturn){
+		template<class obj_t, class func_t, class ret_t> alwaysInline void exec(obj_t& pObject, func_t pFunc, ret_t& pReturn) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template execObj<obj_t, func_t, ret_t>(pObject, pFunc, &pReturn);
 		}
-		template<class obj_t, class func_t> alwaysInline void exec(obj_t& pObject, func_t pFunc){
+		template<class obj_t, class func_t> alwaysInline void exec(obj_t& pObject, func_t pFunc) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template execObj<obj_t, func_t, __pvt::NoRet_t>(pObject, pFunc, nullptr );
 		}
 	};
@@ -291,7 +291,7 @@ namespace lux{
 	 * @brief Handy HdCtArray alias
 	 */
 	template<class... types> struct L : HdCtArray<types...>{
-		alwaysInline L() : HdCtArray<types...>(){}
-		alwaysInline L(const types&... vals) : HdCtArray<types...>(vals...){}
+		alwaysInline L() : HdCtArray<types...>() {}
+		alwaysInline L(const types&... vals) : HdCtArray<types...>(vals...) {}
 	};
 }

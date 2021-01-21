@@ -32,7 +32,7 @@ namespace lux {
 		iter size_;		//Number of allocated elements
 		iter free_;		//Number of free elements in the map
 
-		inline void destroy(){
+		inline void destroy() {
 			for(iter i = 0; i < count(); ++i) if(isValid(i)) data[i].~type();
 		}
 
@@ -84,10 +84,10 @@ namespace lux {
 			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ } {
 			RaArray() {
 			// data(pCont.data.deepCopy()),
-			// lnkd(pCont.lnkd.deepCopy()){
+			// lnkd(pCont.lnkd.deepCopy()) {
 			for(int i = 0; i < pCont.count(); ++i) add(pCont[i]);
 			//TODO check sizes in checkInitList
-			// for(int i = 0; i < pCont.chunks_.count(); ++i){
+			// for(int i = 0; i < pCont.chunks_.count(); ++i) {
 			// 	chunks_[i] = pCont.chunks_[i].deepCopy();   //Deeper copy
 			// 	tracker_[i] = pCont.tracker_[i].deepCopy(); //UwU
 			// }
@@ -101,8 +101,8 @@ namespace lux {
 		 */
 		inline RaArray(const RaArray<type, iter>& pCont) : //checkInitList(isInit(pCont))
 			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
-			//data(pCont.data.deepCopy()), lnkd(pCont.lnkd.deepCopy()){
-			RaArray(){
+			//data(pCont.data.deepCopy()), lnkd(pCont.lnkd.deepCopy()) {
+			RaArray() {
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
 

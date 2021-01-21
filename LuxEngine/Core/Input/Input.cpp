@@ -33,7 +33,7 @@ namespace lux::input{
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
-		if(core::c::shaders::CRenderSpaces.count( ) > 0){
+		if(core::c::shaders::CRenderSpaces.count( ) > 0) {
 			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
 			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->update( );
 		}

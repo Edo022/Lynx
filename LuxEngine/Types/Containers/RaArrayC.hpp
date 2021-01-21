@@ -12,7 +12,7 @@ namespace lux{
 		iter head, tail, count_;
 
 
-		inline RaArrayC(){}
+		inline RaArrayC() {}
 		// inline RaArrayC() : data{ nullptr }, lnkd{ nullptr } {}
 
 
@@ -24,7 +24,7 @@ namespace lux{
 		}
 
 
-		void init(const iter vCount){
+		void init(const iter vCount) {
 			dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
 			data = (type*)malloc(sizeof(type) * vCount);
 			lnkd = (iter*)malloc(sizeof(iter) * vCount);
@@ -38,7 +38,7 @@ namespace lux{
 
 
 		//Move assignment
-		inline void operator=(RaArrayC&& rArray){
+		inline void operator=(RaArrayC&& rArray) {
 			data = rArray.data; lnkd = rArray.lnkd;
 			head = rArray.head; tail = rArray.tail; count_ = rArray.count_;
 			rArray.data = nullptr; rArray.lnkd = nullptr;
@@ -47,7 +47,7 @@ namespace lux{
 
 
 
-		inline iter add(const type& pElm){
+		inline iter add(const type& pElm) {
 			checkInit();
 			iter tail_ = tail;		//Cache tail
 			data[tail_] = pElm;		//Set element
@@ -55,7 +55,7 @@ namespace lux{
 			return tail_;			//Return old tail
 		}
 
-		inline void remove(const iter vIndex){
+		inline void remove(const iter vIndex) {
 			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			// lnkd[head] = head = vIndex;
 			lnkd[head] = vIndex;
@@ -69,7 +69,7 @@ namespace lux{
 
 		inline iter count() const noexcept { checkInit(); return count_; }
 
-		inline ~RaArrayC(){
+		inline ~RaArrayC() {
 			if(data) free(data);
 			if(lnkd) free(lnkd);
 		}

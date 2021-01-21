@@ -33,38 +33,38 @@ namespace __tmp_output_color{
 
 
 
-    inline auto& red(std::ostream& stream){
+    inline auto& red(std::ostream& stream) {
         linux(stream << "\033[31m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_RED));
         return stream;
     }
 
-    inline auto& green(std::ostream& stream){
+    inline auto& green(std::ostream& stream) {
         linux(stream << "\033[32m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_GREEN));
         return stream;
     }
 
-    inline auto& yellow(std::ostream& stream){
+    inline auto& yellow(std::ostream& stream) {
         linux(stream << "\033[33m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_GREEN | FOREGROUND_RED));
         return stream;
     }
 
-    inline auto& blue(std::ostream& stream){
+    inline auto& blue(std::ostream& stream) {
         linux(stream << "\033[34m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_BLUE));
         return stream;
     }
 
-    inline auto& magenta(std::ostream& stream){
+    inline auto& magenta(std::ostream& stream) {
         linux(stream << "\033[35m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_BLUE | FOREGROUND_RED));
         return stream;
     }
 
 
-    inline auto& white(std::ostream& stream){
+    inline auto& white(std::ostream& stream) {
         linux(stream << "\033[37m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED));
         return stream;
@@ -75,14 +75,14 @@ namespace __tmp_output_color{
 
 
     namespace __pvt{
-        inline FILE* get_standard_stream(const std::ostream& stream){
+        inline FILE* get_standard_stream(const std::ostream& stream) {
             if (&stream == &std::cout) return stdout;
             else if ((&stream == &std::cerr) || (&stream == &std::clog)) return stderr;
             else return 0;
         }
 
         //checks if ostream is a terminal
-        inline bool is_atty(const std::ostream& stream){
+        inline bool is_atty(const std::ostream& stream) {
             FILE* std_stream = get_standard_stream(stream);
 
             if (!std_stream) return false;
@@ -92,7 +92,7 @@ namespace __tmp_output_color{
         }
 
         #ifdef _WIN64
-        inline void win_change_attributes(std::ostream& stream, int foreground, int background){
+        inline void win_change_attributes(std::ostream& stream, int foreground, int background) {
             static WORD defaultAttributes = 0;
 
             if (!__pvt::is_atty(stream)) return;
@@ -103,14 +103,14 @@ namespace __tmp_output_color{
             else if (&stream == &std::cerr) hTerminal = GetStdHandle(STD_ERROR_HANDLE);
 
             //Save default terminal attributes
-            if (!defaultAttributes){
+            if (!defaultAttributes) {
                 CONSOLE_SCREEN_BUFFER_INFO info;
                 if (!GetConsoleScreenBufferInfo(hTerminal, &info))
                     return;
                 defaultAttributes = info.wAttributes;
             }
 
-            if (foreground == -1 && background == -1){
+            if (foreground == -1 && background == -1) {
                 SetConsoleTextAttribute(hTerminal, defaultAttributes);
                 return;
             }
@@ -118,12 +118,12 @@ namespace __tmp_output_color{
             CONSOLE_SCREEN_BUFFER_INFO info;
             if (!GetConsoleScreenBufferInfo(hTerminal, &info)) return;
 
-            if (foreground != -1){
+            if (foreground != -1) {
                 info.wAttributes &= ~(info.wAttributes & 0x0F);
                 info.wAttributes |= static_cast<WORD>(foreground);
             }
 
-            if (background != -1){
+            if (background != -1) {
                 info.wAttributes &= ~(info.wAttributes & 0xF0);
                 info.wAttributes |= static_cast<WORD>(background);
             }

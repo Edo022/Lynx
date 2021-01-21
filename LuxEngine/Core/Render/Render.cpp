@@ -43,7 +43,7 @@ namespace lux::core::render{
 
 
 
-	void init(const bool vUseVSync){
+	void init(const bool vUseVSync) {
 		useVSync = vUseVSync;
 
 		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
@@ -234,10 +234,10 @@ namespace lux::core::render{
 
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
-		if(objUpdates2D.count( ) > 0){
+		if(objUpdates2D.count( ) > 0) {
 			pendingObjectUpdatesFence.startFirst( );
 			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands( );
-			for(uint32 i = 0; i < objUpdates2D.count( ); i++){
+			for(uint32 i = 0; i < objUpdates2D.count( ); i++) {
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
 					cb, objUpdates2D[i]->render.localData->buffer->buffer,

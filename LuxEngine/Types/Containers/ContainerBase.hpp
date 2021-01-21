@@ -69,11 +69,11 @@ namespace lux {
 
 
 	protected:
-		inline void initRange(iter vFrom, iter vTo){ for(iter i = vFrom; i < vTo + 1; ++i) new(&data[i]) type(); }
-		inline void destroy(                      ){ for(iter i = 0;     i < count(); ++i) data[i].~type();      }
+		inline void initRange(iter vFrom, iter vTo) { for(iter i = vFrom; i < vTo + 1; ++i) new(&data[i]) type(); }
+		inline void destroy(                      ) { for(iter i = 0;     i < count(); ++i) data[i].~type();      }
 
 		//Resizes the array and calls the default constructor on each of the new elements
-		inline void resize(const iter vSize){
+		inline void resize(const iter vSize) {
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
@@ -81,13 +81,13 @@ namespace lux {
 		}
 
 		//Concatenates a container and initializes the new elements by calling their copy constructor
-		template<class cType, class cIter> inline void cat(const ContainerBase<cType, cIter>& pCont){
+		template<class cType, class cIter> inline void cat(const ContainerBase<cType, cIter>& pCont) {
 			auto oldCount = count();
 			data.reallocArr(oldCount + pCont.count());
 			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
 		}
 		//Concatenates a single element and initializes it by calling its copy constructor
-		inline void cat1(const type& vElm){
+		inline void cat1(const type& vElm) {
 			data.reallocArr(count() + 1);
 			new(&data[count() - 1]) type(vElm);
 		}
@@ -106,8 +106,8 @@ namespace lux {
 		}
 
 
-		inline ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;
-		inline ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;
+		ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;
+		ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;
 		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, Dummy vDummy) :
 			checkInitList(
 				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
@@ -121,15 +121,15 @@ namespace lux {
 		}
 
 
-		inline ContainerBase(const std::initializer_list<type>& vElms) :
+		alwaysInline ContainerBase(const std::initializer_list<type>& vElms) :
 			ContainerBase(vElms.size()) {
 			iter i = 0;
-			for(auto elm : vElms) data[i++] = elm;
+			for(auto elm : vElms) new(&data[i++]) type(elm);
 		}
 
 
 	public:
-		alwaysInline ~ContainerBase(){
+		alwaysInline ~ContainerBase() {
 			if(data) {		//Free data if the array was not moved
 				destroy();
 				data.free();
@@ -145,12 +145,12 @@ namespace lux {
 
 
 	protected:
-		alwaysInline void move(ContainerBase<type, iter>& pCont){
+		alwaysInline void move(ContainerBase<type, iter>& pCont) {
 			data = pCont.data; pCont.data = nullptr;
 		}
 
 
-		alwaysInline void moveAssignment(ContainerBase<type, iter>& pCont){
+		alwaysInline void moveAssignment(ContainerBase<type, iter>& pCont) {
 			data = pCont.data; pCont.data = nullptr;
 		}
 

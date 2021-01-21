@@ -9,7 +9,7 @@
 
 namespace lux::input {
 	extern InputState* inStates;		//The current input state
-	inline void setInputState(InputState* inputState){ inStates = inputState; inStates->sort( ); }
+	inline void setInputState(InputState* inputState) { inStates = inputState; inStates->sort( ); }
 
 	//Converts a glfw action to a lux key state
 	static inline constexpr uint16 __lp_to_lux_act(int32 glfwAction) { return (uint16)1 << (16 - (glfwAction)-1); }

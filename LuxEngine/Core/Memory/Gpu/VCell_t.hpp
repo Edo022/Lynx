@@ -34,7 +34,7 @@ namespace lux{
             uint32 cellIndex;					//Index of the cell in the buffer
 
             void* map();
-            inline void unmap(){ vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
+            inline void unmap() { vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
         };
     }
 }

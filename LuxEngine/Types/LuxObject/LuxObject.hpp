@@ -89,7 +89,7 @@ namespace lux{
 			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -
 			void allocate( );									//Allocates a memory cell for the object data				| object type				| -
 			void updateBase( );
-			virtual void recalculateCoords( ){}
+			virtual void recalculateCoords( ) {}
 		};
 
 
@@ -155,7 +155,7 @@ namespace lux{
 
 		//Base class for 2D objects in 2D space
 		struct Base2D : public Base {
-			Base2D( ){ common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
+			Base2D( ) { common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
 
 			//TODO add absolute pixel position and scale
 			vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object

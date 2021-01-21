@@ -4,7 +4,7 @@
 
 
 
-luxAutoInit(LUX_NH_ENV){
+luxAutoInit(LUX_NH_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 

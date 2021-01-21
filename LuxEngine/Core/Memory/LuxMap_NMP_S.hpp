@@ -166,7 +166,7 @@ namespace lux {
 		//Array<iter> add(const Map<type, iter>* vContainer) {
 		//	Array<iter> IDs;
 		//	IDs.resize(vContainer->count( ));								//Set the number of IDs
-		//	for(iter i = 0; i < vContainer->count( ); i++){					//For every element of the input map
+		//	for(iter i = 0; i < vContainer->count( ); i++) {					//For every element of the input map
 		//		if(vContainer->isValid(i)) IDs[i] = add((*vContainer)[i]);		//If it's valid, add it to the map and save its ID
 		//		else IDs[i] = -1;												//If not, save -1 as ID
 		//	}

@@ -15,16 +15,16 @@ namespace lux::rem{
 	MemBufferType* buffers;
 
 
-	luxAutoInit(LUX_H_VMEMORY){
+	luxAutoInit(LUX_H_VMEMORY) {
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
 		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM);
 
 		//Init buffer types
 		uint32 index;
-		// for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i){
-		for(uint32 i = 0; i < 7 /*normal number + 1(class 0)*/; ++i){
-			for(uint32 j = 0; j < (uint32)lux::AllocType::NUM; ++j){
+		// for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i) {
+		for(uint32 i = 0; i < 7 /*normal number + 1(class 0)*/; ++i) {
+			for(uint32 j = 0; j < (uint32)lux::AllocType::NUM; ++j) {
 				index = (i << 2) | j;
 				buffers[index].cellClass = (CellClass)classEnumFromIndex__old((lux::__pvt::CellClassIndex)i);
 				buffers[index].allocType = (lux::AllocType)j;
@@ -46,7 +46,7 @@ namespace lux::rem{
 	//*    ---Storage buffers are larger and the GPU can write in it, bet they have worse performance
 	//*   Returns: the allocated Cell object
 	//e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
-	Cell allocBck(const uint64 vSize, CellClass vCellClass, const lux::AllocType vAllocType){
+	Cell allocBck(const uint64 vSize, CellClass vCellClass, const lux::AllocType vAllocType) {
 		dbg::checkParam(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize, 	"vCellClass", "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
 		dbg::checkParam(vSize > 0xFFFFffff, 											"vSize",		"The cell size cannot exceed 0xFFFFFFFF bytes");
 		dbg::checkParam(vAllocType >= lux::AllocType::NUM || (int32)vAllocType < 0,		"vAllocType", "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'");
@@ -69,9 +69,9 @@ namespace lux::rem{
 		uint32 typeIndex = (lux::__pvt::classIndexFromEnum__old(vCellClass) << 2) | (uint32)vAllocType;		//Get buffer index from type and class
 		Map_NMP_S<MemBuffer, uint32>& subBuffers = (buffers[typeIndex].buffers);			//Get list of buffers where to search for a free cell
 		uint32 cellIndex;
-		if((uint32)vCellClass){																//If the cell is a fixed count cell
+		if((uint32)vCellClass) {																//If the cell is a fixed count cell
 			uint64 cellNum = lux::__pvt::bufferSize / (uint32)vCellClass;									//Get the maximum number of cells in each buffer
-			for(uint32 i = 0; i < subBuffers.size( ); i++){										//Search for a suitable buffer
+			for(uint32 i = 0; i < subBuffers.size( ); i++) {										//Search for a suitable buffer
 				if(subBuffers.isValid(i) && (subBuffers[i].cells.usedSize( ) < cellNum)) {			//If a buffer is valid and it has a free cell
 					Cell cell = &subBuffers[i].cells[(cellIndex = subBuffers[i].cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] }))];
 					cell->buffer = &subBuffers[i];														//Set it as the cell's buffer
@@ -113,7 +113,7 @@ namespace lux::rem{
 	//Returns the address of the cell as a void pointer
 	//Only cells allocated in shared memory can be mapped
 	//Always unmap() cells when you don't need to access their data
-	void* Cell_t::map(){
+	void* Cell_t::map() {
 		void* data;
 		vkMapMemory(core::dvc::compute.LD, buffer->memory, getCellOffset(this), (uint32)bufferType->cellClass, 0, &data);
 		return data;
@@ -122,7 +122,7 @@ namespace lux::rem{
 
 
 	//Frees a video memory cell
-	void free(Cell pCell){
+	void free(Cell pCell) {
 		//TODO destroy buffers from asyncrhonous garbage collector
 		pCell->buffer->cells.remove(pCell->cellIndex);
 		//if(pCell.buffer->cells.usedCount() == 0) pCell.bufferType->buffers.remove(pCell)

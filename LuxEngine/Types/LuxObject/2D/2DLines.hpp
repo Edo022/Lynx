@@ -57,8 +57,8 @@ namespace lux::obj {
 		// inline int32 getCellSize( ) const final override { return 60; }
 
 		//TODO add loca-global-other coordinate system and convertions
-		inline void setFp(const vec2f32& vFp){ _fp = vFp; }
-		inline void setSp(const vec2f32& vSp){ _sp = vSp; }
+		inline void setFp(const vec2f32& vFp) { _fp = vFp; }
+		inline void setSp(const vec2f32& vSp) { _sp = vSp; }
 
 
 		void recalculateCoords( ) final override {

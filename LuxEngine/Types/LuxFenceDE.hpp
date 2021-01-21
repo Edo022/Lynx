@@ -2,7 +2,7 @@
 #include "LuxEngine/Threads/Thread.hpp"
 
 
-//calls      |                    A----.                   |    void A(){                 |   void B(){
+//calls      |                    A----.                   |    void A() {                 |   void B() {
 //           |      A  B---.  B  B  B  | B----.            |        fence.startFirst();   |       fence.startSecond();
 //           |      |      |  |  |  |  |      |            |        ...                   |       ...
 //unordered  |      AAAAAA-BB-BB-BB-BB-AAAAAA-BB           |        fence.endFirst();     |       fence.endSecond();
@@ -22,13 +22,13 @@ namespace lux{
 		FenceDE( ) : thr1{ false }, thr2{ true } { }
 
 
-		inline void startFirst( ){ while(thr2) lux::thr::self::yield(); thr1 = true; }
-		inline void endFirst( ){ thr1 = false; }
+		inline void startFirst( ) { while(thr2) lux::thr::self::yield(); thr1 = true; }
+		inline void endFirst( ) { thr1 = false; }
 
-		inline void startSecond( ){ r: while(thr1) lux::thr::self::yield(); thr2 = true; if(thr1 && thr2) goto r; }
-		inline void endSecond( ){ thr2 = false; }
+		inline void startSecond( ) { r: while(thr1) lux::thr::self::yield(); thr2 = true; if(thr1 && thr2) goto r; }
+		inline void endSecond( ) { thr2 = false; }
 
-		inline void quit( ){ thr2 = thr1 = false; }
+		inline void quit( ) { thr2 = thr1 = false; }
 	};
 
 
@@ -43,8 +43,8 @@ namespace lux{
 	//This structure don't have a thread limit
 	struct mutex{
 		char k = 1;
-		void lock(){ while(!k){ lux::thr::self::yield(); } k = 0; }
-		void unlock(){ k = 1; }
+		void lock() { while(!k) { lux::thr::self::yield(); } k = 0; }
+		void unlock() { k = 1; }
 	};
 
 
@@ -53,15 +53,15 @@ namespace lux{
 	//This structure doesn't have a thread limit
 	struct pollFence{
 		char s = 1;
-		void wait(){ while(!s){ lux::thr::self::yield(); } }
-		void signal(){ s = 0; }
-		void reset(){ s = 1; }
+		void wait() { while(!s) { lux::thr::self::yield(); } }
+		void signal() { s = 0; }
+		void reset() { s = 1; }
 	};
 
 
 	// struct eventFence{
 	// 	char s = 1;
-	// 	void signal(){ }
+	// 	void signal() { }
 	// };
 
 }

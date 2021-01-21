@@ -9,7 +9,7 @@
 #	include <windows.h>
 	namespace lux::ram{
 		//System RAM in bytes
-		const uint64 systemMemory = [](){
+		const uint64 systemMemory = []() {
 			MEMORYSTATUSEX status;
 			status.dwLength = sizeof(status);
 			GlobalMemoryStatusEx(&status);
@@ -94,7 +94,7 @@ namespace lux::ram{
 
 
 	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/);
-	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/){
+	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/) {
 		cpy(src, dst, num/*, thr*/);
 	}
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);

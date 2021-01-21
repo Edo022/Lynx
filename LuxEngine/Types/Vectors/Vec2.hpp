@@ -80,7 +80,7 @@ template<class t> struct vec2_t {
 
 
 	//Returns the length of the vector
-	inline auto len( ){ return sqrt(x * x + y * y); }
+	inline auto len( ) { return sqrt(x * x + y * y); }
 
 
 private:

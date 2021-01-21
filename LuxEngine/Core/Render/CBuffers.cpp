@@ -11,11 +11,11 @@
 
 namespace lux::core::c::buffers{
 	//TODO use user defined callbacks
-	// inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){}
-	// inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope){}
-	// inline void freeCallback(void* pUserData, void* pMemory){}
-	// inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
-	// inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope){}
+	// inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope) {}
+	// inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope) {}
+	// inline void freeCallback(void* pUserData, void* pMemory) {}
+	// inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope) {}
+	// inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope) {}
 
 
 

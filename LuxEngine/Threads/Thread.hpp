@@ -14,14 +14,14 @@ namespace lux{
 	#pragma GCC diagnostic ignored "-Wpointer-arith"
 	namespace __pvt{
 		template<int n, class funcType, class ...argsTypes> struct thread_ctor_t{
-			static void* mt_func(void* _args){
+			static void* mt_func(void* _args) {
 				lux::__pvt::exec_thr<funcType, argsTypes...>* cArgs = (lux::__pvt::exec_thr<funcType, argsTypes...>*)_args;
 				cArgs->_args.template exec<funcType>(cArgs->_func);
 				return nullptr;
 			}
 		};
 		template<class funcType> struct thread_ctor_t<0, funcType> {
-			static void* mt_func(void* _args){
+			static void* mt_func(void* _args) {
 				(*((funcType*)_args))();
 				return nullptr;
 			}
@@ -37,7 +37,7 @@ namespace lux{
 			operator()(pFunc, pArgs);
 		}
 		template<class funcType> inline thread(const funcType pFunc) { operator()(pFunc); }
-		thread(){ thr = 0; }
+		thread() { thr = 0; }
 
 
 
@@ -58,35 +58,35 @@ namespace lux{
 
 
 		//Blocks the execution of a thread. It can be resumed with the resume() function
-		inline void suspend(){ pthread_kill(thr, SIGSTOP); }
+		inline void suspend() { pthread_kill(thr, SIGSTOP); }
 		//Resumes the execution of a suspended thread. Does nothing if the thread is not suspended
 		inline void resume() { pthread_kill(thr, SIGCONT); }
 
 
 		//Sets the thread name.    this function should only be used for debuggin purposes
-		inline void setName(const char* pName){ pthread_setname_np(thr, pName); }
+		inline void setName(const char* pName) { pthread_setname_np(thr, pName); }
 		//Returns the thread name. this function should only be used for debuggin purposes
-		inline const char* getName(const char* pName){ char* name; pthread_getname_np(thr, name, 16); return name; }
+		inline const char* getName(const char* pName) { char* name; pthread_getname_np(thr, name, 16); return name; }
 
 
-		inline void join(){ pthread_join(thr, nullptr); }
-		inline void detach(){ pthread_detach(thr); }
-		inline void yield(){ pthread_yield(); }
+		inline void join() { pthread_join(thr, nullptr); }
+		inline void detach() { pthread_detach(thr); }
+		inline void yield() { pthread_yield(); }
 	};
 
 	namespace thr{
 		struct self{
-			static inline void suspend(){ pthread_kill(pthread_self(), SIGSTOP); }
+			static inline void suspend() { pthread_kill(pthread_self(), SIGSTOP); }
 			static inline void resume() { pthread_kill(pthread_self(), SIGCONT); }
 
-			static inline void setName(const char* pName){ pthread_setname_np(pthread_self(), pName); }
-			static inline const char* getName(const char* pName){ char* name; pthread_getname_np(pthread_self(), name, 16); return name; }
+			static inline void setName(const char* pName) { pthread_setname_np(pthread_self(), pName); }
+			static inline const char* getName(const char* pName) { char* name; pthread_getname_np(pthread_self(), name, 16); return name; }
 
-			static inline void detach(){ pthread_detach(pthread_self()); }
-			static inline void yield(){ pthread_yield(); }
+			static inline void detach() { pthread_detach(pthread_self()); }
+			static inline void yield() { pthread_yield(); }
 
 			//Returns the calling thread as a lux::thread structure
-			inline thread operator()(){ thread thr; thr.thr = pthread_self(); return thr; }
+			inline thread operator()() { thread thr; thr.thr = pthread_self(); return thr; }
 		};
 	}
 };

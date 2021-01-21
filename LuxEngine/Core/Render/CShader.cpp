@@ -212,7 +212,7 @@ namespace lux::core::c::shaders{
 	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
-		for(uint32 i = 0; i < pCells.count( ); i++){								//For every cell
+		for(uint32 i = 0; i < pCells.count( ); i++) {								//For every cell
 			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;			//#LLID STRT 0003 Count uniform and
 			else storageCount++;														//storage cells requested
 		}

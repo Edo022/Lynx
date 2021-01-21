@@ -61,10 +61,10 @@ namespace lux {
 		}
 
 
-		alwaysInline RtArray(const RtArray<type, iter>&  pCont) :       Super(pCont, {}){   }	//copy constructor
+		alwaysInline RtArray(const RtArray<type, iter>&  pCont) :        Super(pCont, {}) {  }	//copy constructor
 		alwaysInline RtArray(      RtArray<type, iter>&& pCont) {        Super::move(pCont); }	//Move constructor
 		alwaysInline void operator=(const RtArray<type, iter>&  pCont) { Super::copy(pCont); }	//copy assignment //FIXME return reference chain
-		alwaysInline void operator=(      RtArray<type, iter>&& pCont) {  Super::move(pCont); }	//Move assignment
+		alwaysInline void operator=(      RtArray<type, iter>&& pCont) { Super::move(pCont); }	//Move assignment
 
 
 
@@ -86,9 +86,10 @@ namespace lux {
 
 
 		/**
-		 * @brief Resets the array to its initial state, freeing the memory and resizing it to 0
+		 * @brief Resets the array to its initial state, freeing the memory and resizing it to 0.
+		 *		Calls the destructor on each element
 		 */
-		alwaysInline void clear( ){
+		alwaysInline void clear( ) {
 			checkInit();
 			Super::destroy();
 			Super::data.realloc(0);
@@ -102,10 +103,6 @@ namespace lux {
 		 */
 		alwaysInline iter add(const type& vElm) {
 			checkInit();
-			// auto oldCount = Super::count();
-			// resize(Super::count() + 1);
-			// new(&operator[](oldCount)) type(vElement);
-			// return oldCount;
 			Super::cat1(vElm);
 			return size() - 1;
 		}

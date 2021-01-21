@@ -12,7 +12,7 @@
 //TODO check for alllocation number limit
 namespace lux::rem{
 	typedef Cell_t* Cell;
-	static inline uint32 getCellOffset(const Cell pCell){ return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
+	static inline uint32 getCellOffset(const Cell pCell) { return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 
 	Cell allocBck(const uint64 vSize, const CellClass vCellClass, const lux::AllocType vAllocType);
 	void free(Cell pCell);

@@ -10,12 +10,12 @@ namespace lux::obj{
 		vec2f32* sp{ nullptr };
 
 
-		Border2D( ){
+		Border2D( ) {
 			init( );
 			*fp = { .0f, .0f };
 			*sp = { .0f, .0f };
 		}
-		Border2D(const vec2f32& vFp, const vec2f32& vSp){
+		Border2D(const vec2f32& vFp, const vec2f32& vSp) {
 			init( );
 			*fp = vFp;
 			*sp = vSp;

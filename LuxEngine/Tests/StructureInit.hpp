@@ -28,17 +28,17 @@ namespace lux{
 		//checkInitList(func, ...) -- Executes a function in a costructor. Debug mode only. Requires genInitCheck;
 		#define checkInit() lux::dbg::checkCond(this->__pvt_init_val != lux::__pvt::init_val,      "This function cannot be called on uninitialized structures")
 		#define isInit(var)	dbg::checkParam( var.__pvt_init_val != lux::__pvt::init_val, #var, "Uninitialized structure used")
-		#define checkInitList(...) luxDebug(__pvt_dummy{ [&](){__VA_ARGS__; return char(0x293); }()},)
+		#define checkInitList(...) luxDebug(__pvt_dummy{ [&]() {__VA_ARGS__; return char(0x293); }()},)
 
 
 		extern bool __errors[];
 
-		template<class... types> inline void disable(error vError, types... vErrors){
+		template<class... types> inline void disable(error vError, types... vErrors) {
 			// __errors[(uint32)vError] = false;
 			disable(vError);
 			disable(vError, vErrors...);
 		}
-		inline void disable(error vError){
+		inline void disable(error vError) {
 			__errors[(uint32)vError] = false;
 		}
 	}

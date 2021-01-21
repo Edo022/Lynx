@@ -19,7 +19,7 @@ namespace lux::dbg{
 		warning,
 		error
 	};
-	template<class... types> static neverInline void print(Severity vSeverity, const uint32 vIndex, const char* vMessage, const types&... pParams){
+	template<class... types> static neverInline void print(Severity vSeverity, const uint32 vIndex, const char* vMessage, const types&... pParams) {
 		//Create output string
 
 		const char* bgn =
@@ -52,8 +52,8 @@ namespace lux::dbg{
 		if(vSeverity == Severity::error) throw std::runtime_error("U.U");
 	}
 
-	template<class... types> static neverInline void printError  (const char* vMessage, const types&... pParams){ print(Severity::error  , 1, vMessage, pParams...); }
-	template<class... types> static neverInline void printWarning(const char* vMessage, const types&... pParams){ print(Severity::warning, 1, vMessage, pParams...); }
+	template<class... types> static neverInline void printError  (const char* vMessage, const types&... pParams) { print(Severity::error  , 1, vMessage, pParams...); }
+	template<class... types> static neverInline void printWarning(const char* vMessage, const types&... pParams) { print(Severity::warning, 1, vMessage, pParams...); }
 
 
 
@@ -103,10 +103,10 @@ namespace lux::dbg{
 	 *		This function is unreliable and very likely to not detect all the invalid pointers.
 	 *		It should only be used as additional security check
 	 */
-	template<class pType, class... aTypes> static neverInline void checkRawPtr(pType* vPtr, const char* vMessage, aTypes... vArgs){
+	template<class pType, class... aTypes> static neverInline void checkRawPtr(pType* vPtr, const char* vMessage, aTypes... vArgs) {
 		#pragma GCC diagnostic push
 		#pragma GCC diagnostic ignored "-Wunused-variable"
-		if(vPtr){
+		if(vPtr) {
 			try{ char tmp = *(char*)vPtr; }
 			catch(std::exception& e) { dbg::printError(vMessage, vArgs...); }
 		}

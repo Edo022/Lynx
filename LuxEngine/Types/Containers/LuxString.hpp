@@ -54,7 +54,7 @@ namespace lux {
 		inline String(const char8* vString, uint64 vSize) : Super(vSize)	            { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
 
 		//Move and copy constructors
-		inline String(String&& pString){ Super::move(pString); updateView(); }
+		inline String(String&& pString) { Super::move(pString); updateView(); }
 		// inline String(const String& pString) : Super(pString.count( ))	    { ram::cpy(pString.data, Super::data, pString.count( )); }
 		inline String(const String& pString) : Super(pString/*, false*/, {}) { updateView(); }
 
