@@ -63,11 +63,10 @@ namespace lux {
 		}
 
 
-		inline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, /*true*/{}) { }										//copy constructor
-		inline RtArray(RtArray<type, iter>&& pCont){ Super::move(pCont); }			//Move constructor
-		inline void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); /*return*/ }		//copy assignment //FIXME return reference chain
-		inline void operator=(RtArray<type, iter>&& pCont){ Super::move(pCont); }	//Move assignment
-//BUG move rvalues instead of casting them
+		inline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, {}) { }			//copy constructor
+		inline RtArray(RtArray<type, iter>&& pCont){ Super::move(pCont); }				//Move constructor
+		inline void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); }	//copy assignment //FIXME return reference chain
+		inline void operator=(RtArray<type, iter>&& pCont){ Super::move(pCont); }		//Move assignment
 
 
 
@@ -77,39 +76,36 @@ namespace lux {
 
 
 
-		//Resizes the array without initializing the new elements
-		//*   vNewSize | new count of the array
-		// //*   Returns  | the new count
-		// //TODO totally useless. Just don't return
-		// inline iter resize(const iter vNewSize) {
-		inline void resize(const iter vNewSize) {
-			Super::resize(vNewSize);
-			// Super::data.reallocArr(vNewSize, type( ));
-			// return Super::data.count( );
+		/**
+		 * @brief Resizes the array and calls the default constructor on each of the new elements
+		 * @param vCount New number of elements
+		 * @return Number of elements in the array after being resized
+		 */
+		alwaysInline void resize(const iter vCount) {
+			Super::resize(vCount);
 		}
 
 
-		//Resets the array to its initial state, freeing the memory and resizing it to 0
+		/**
+		 * @brief Resets the array to its initial state, freeing the memory and resizing it to 0
+		 */
 		inline void clear( ){
 			checkInit();
-			Super::destroy();	//Free old elements
-			// Super::data.free();
-
-			//TODO dont call this directly. add construct function
-			// this->DynArray::DynArray( );
-			//TODO constructor
-			Super::data.realloc(0, type(), CellClass::AT_LEAST_CLASS_B);
+			Super::destroy();
+			Super::data.realloc(0);
 		}
 
 
-		//Adds an element to the end of the array
-		//*   vElement | the element to add
-		//*   Returns  | the index of the element in the array
-		inline iter add(const type& vElement) { //BUG NULLPTR NOT CHECKED
+		/**
+		 * @brief Adds an element to the end of the array and initializes it with the vElement value by calling its copy constructor
+		 * @param vElement The element to add
+		 * @return The index of the new element
+		 */
+		inline iter add(const type& vElement) {
 			checkInit();
 			auto oldCount = Super::count();
 			resize(Super::count() + 1);
-			operator[](oldCount) = vElement;
+			new(&operator[](oldCount)) type(vElement);
 			return oldCount;
 		}
 
@@ -120,13 +116,13 @@ namespace lux {
 
 
 
-		//TODO add specific functions for count
-		inline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
+
+		alwaysInline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
 
 
-		inline type&  operator[](const iter vIndex) const {
+		alwaysInline type&  operator[](const iter vIndex) const {
 			checkInit();
-			lux::dbg::checkCond(Super::count() == 0, "This function cannot be called on containers with size 0");
+			dbg::checkCond(Super::count() == 0, "This function cannot be called on containers with size 0");
 			dbg::checkIndex(vIndex, 0, Super::count() - 1, "vIndex");
 			return Super::operator[](vIndex);
 		}
@@ -134,4 +130,5 @@ namespace lux {
 }
 
 
+//TODO add specific functions for count
 //TODO check if non secure C pointers were used. Like const char* strings

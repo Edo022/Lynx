@@ -153,7 +153,12 @@ namespace lux {
 
 
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
-		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) {
+		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
+			destroy();									//Destroy old elements
+			data.reallocArr(pCont.count(), false);
+			new(&data[i]) type();						//Initialize new elements
+		}
+		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont, const Dummy vConstruct) {
 			destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
