@@ -14,7 +14,7 @@ template<class t> struct vec3_t {
 
 
 	//Constructors
-	inline vec3_t( ) {}
+	inline vec3_t() {}
 	inline vec3_t(const t& _x, const t& _y, const t& _z) { x = _x; y = _y; z = _z; }
 	template<class ta, class tb, class tc> inline vec3_t(const ta& _x, const tb& _y, const tc& _z) { x = (t)_x; y = (t)_y; z = (t)_z; }
 

@@ -16,7 +16,7 @@ namespace lux::core::render::swapchain{
 	RtArray<VkImage>		swapchainImages;
 	RtArray<VkImageView>	swapchainImageViews;
 	VkFormat				swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
-	VkExtent2D				swapchainExtent = { };
+	VkExtent2D				swapchainExtent = {};
 	RtArray<VkFramebuffer>	swapchainFramebuffers;
 
 

@@ -48,7 +48,7 @@ namespace lux::thr {
 
 	//Base function of ExecFuncData to allow differently templated ExecFuncData structs to be saved in the same array
 	struct ExecFuncDataBase {
-		virtual void exec( ) {};
+		virtual void exec() {};
 	};
 	//Executable Function Data
 	//This struct stores a function call with its parameters

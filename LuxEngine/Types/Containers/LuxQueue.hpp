@@ -17,7 +17,7 @@ namespace lux {
 	public:
 		lux::RtArray<type, iter> _front, _back;
 
-		inline Queue( ) : _front( ), _back( ) { }
+		inline Queue( ) : _front( ), _back() {}
 
 		inline void clear( ) {
 			_front.clear();

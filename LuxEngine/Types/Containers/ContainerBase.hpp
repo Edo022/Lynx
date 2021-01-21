@@ -13,7 +13,7 @@
 #include <initializer_list>
 #include <cmath>
 
-
+//FIXME USE DIFFERENT MEMORY FOR CONST VALUES
 
 /*                                                        Lux Containers
 .
@@ -54,6 +54,10 @@
 
 
 
+
+
+
+
 namespace lux {
 	template <class type, class iter> class ContainerBase {
 	public:
@@ -64,6 +68,10 @@ namespace lux {
 
 
 		// Inititalize and destroy elements ---------------------------------------------------------------------------------------------------------//
+
+
+
+
 
 
 
@@ -93,12 +101,26 @@ namespace lux {
 		}
 
 
+
+
+
+
+
+
 		// Constructors -----------------------------------------------------------------------------------------------------------------------------//
 
 
 
 
+
+
+
+
+		//Unallocated
 		alwaysInline ContainerBase() : data{ nullptr } {}
+
+
+		//Count constructor
 		inline ContainerBase(const iter vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
@@ -106,8 +128,9 @@ namespace lux {
 		}
 
 
-		ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;
-		ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;
+		inline ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;	//Delete default copy constructor
+		inline ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;	//Delete default move constructor
+		//Copy constructor
 		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, Dummy vDummy) :
 			checkInitList(
 				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
@@ -139,7 +162,15 @@ namespace lux {
 
 
 
+
+
+
+
 		// Move and assignment ----------------------------------------------------------------------------------------------------------------------//
+
+
+
+
 
 
 
@@ -167,16 +198,25 @@ namespace lux {
 
 
 
+
+
+
+
 		// Get size and elements --------------------------------------------------------------------------------------------------------------------//
 
 
 
+
+
+
+
+
 	public:
-		alwaysInline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
-		alwaysInline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
-		alwaysInline iter count( ) const { return (iter)data.count(); 			  };	//Returns the number of elements in the container
-		alwaysInline uint64 size() const { return data.size();					  };	//Returns the size in bytes of the contianer
-		alwaysInline bool empty( ) const { return !count(); 					  };	//Returns true if the container has size 0, false otherwise
+		alwaysInline auto  begin() const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
+		alwaysInline auto    end() const { return ram::ptr<type>{ data.end(  ) }; };	//Returns a pointer to the element after the last element of the container
+		alwaysInline iter  count() const { return (iter)data.count(); 			  };	//Returns the number of elements in the container
+		alwaysInline uint64 size() const { return data.size();		              };	//Returns the size in bytes of the contianer
+		alwaysInline bool  empty() const { return !count(); 					  };	//Returns true if the container has size 0, false otherwise
 
 		alwaysInline auto& operator[](iter vIndex) const { return data[vIndex]; }
 	};

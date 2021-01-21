@@ -36,7 +36,7 @@ namespace lux{
 
 	namespace __pvt{
 		enum __action : uint32{ CHCK = (uint32)-1, DESC = 0, GETV = 1 };								//Enum defining actions for get_t element iterations
-		template <uint32 size, __action act, uint32 index, class type, class... types> struct get_t{ };	//Unspecialized get_t class. This is used to iterate through the elemenets of the array
+		template <uint32 size, __action act, uint32 index, class type, class... types> struct get_t{};	//Unspecialized get_t class. This is used to iterate through the elemenets of the array
 		template<uint32 size, uint32 index, class type, class ...types> struct seq;						//seq forward declaration for getArr func_tion
 
 		//CHCK specialization: Checks if the required index is the same as the current one. If true, returns the element. If false, runs another iteration

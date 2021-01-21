@@ -167,7 +167,7 @@ namespace lux::ram{
 			// setState(lux::__pvt::CellState::NULLPTR);
 			// state = lux::__pvt::CellState::NULLPTR;
 		}
-		inline Alloc(const std::nullptr_t null) : Alloc( ) { }
+		inline Alloc(const std::nullptr_t null) : Alloc() {}
 		//FIXME null name is probably useless
 
 

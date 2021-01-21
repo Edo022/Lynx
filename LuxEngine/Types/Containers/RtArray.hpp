@@ -42,10 +42,10 @@ namespace lux {
 
 
 
-		alwaysInline RtArray(           ) : Super(      ) { }
-		alwaysInline RtArray(iter vCount) : Super(vCount) { }
+		alwaysInline RtArray(           ) : Super(      ) {}
+		alwaysInline RtArray(iter vCount) : Super(vCount) {}
 
-		alwaysInline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } { }
+		alwaysInline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } {}
 
 
 		/**
@@ -61,8 +61,8 @@ namespace lux {
 		}
 
 
-		alwaysInline RtArray(const RtArray<type, iter>&  pCont) :        Super(pCont, {}) {  }	//copy constructor
-		alwaysInline RtArray(      RtArray<type, iter>&& pCont) {        Super::move(pCont); }	//Move constructor
+		alwaysInline        RtArray(const RtArray<type, iter>&  pCont) : Super(pCont, {}) {  }	//copy constructor
+		alwaysInline        RtArray(      RtArray<type, iter>&& pCont) { Super::move(pCont); }	//Move constructor
 		alwaysInline void operator=(const RtArray<type, iter>&  pCont) { Super::copy(pCont); }	//copy assignment //FIXME return reference chain
 		alwaysInline void operator=(      RtArray<type, iter>&& pCont) { Super::move(pCont); }	//Move assignment
 
