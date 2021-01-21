@@ -24,10 +24,8 @@
 
 
 namespace lux{
-	template<class ...types> struct HdCtArray;
-
-
-		// Runtime get (operator[]) helper structures -------------------------------------------------------------------------------------------------//
+		template<class ...types> struct HdCtArray;
+		// Runtime get (rtGet function) helper structures ---------------------------------------------------------------------------------------------//
 
 
 
@@ -73,7 +71,7 @@ namespace lux{
 
 
 
-		// Execute (exec func_tion) helper structures --------------------------------------------------------------------------------------------------//
+		// Execute (exec function) helper structures --------------------------------------------------------------------------------------------------//
 
 
 

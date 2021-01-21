@@ -68,6 +68,7 @@ namespace lux {
 
 
 
+	protected:
 		inline void initRange(iter vFrom, iter vTo){ for(iter i = vFrom; i < vTo + 1; ++i) new(&data[i]) type(); }
 		inline void destroy(                      ){ for(iter i = 0;     i < count(); ++i) data[i].~type();      }
 
@@ -123,6 +124,8 @@ namespace lux {
 			for(auto elm : vElms) data[i++] = elm;
 		}
 
+
+	public:
 		inline ~ContainerBase(){
 			if(data) {		//Free data if the array was not moved
 				destroy();
@@ -138,6 +141,7 @@ namespace lux {
 
 
 
+	protected:
 		inline void move(ContainerBase<type, iter>& pCont){
 			data = pCont.data; pCont.data = nullptr;
 		}
@@ -168,7 +172,7 @@ namespace lux {
 
 
 
-
+	public:
 		inline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
 		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
 		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container
