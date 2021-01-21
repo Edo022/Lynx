@@ -33,8 +33,6 @@ namespace lux {
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 		using Super = ContainerBase<type, iter>;
 		genInitCheck;
-	private:
-	public:
 
 
 
@@ -44,10 +42,10 @@ namespace lux {
 
 
 
-		inline RtArray(           ) : Super(      ) { }
-		inline RtArray(iter vCount) : Super(vCount) { }
+		alwaysInline RtArray(           ) : Super(      ) { }
+		alwaysInline RtArray(iter vCount) : Super(vCount) { }
 
-		inline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } { }
+		alwaysInline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } { }
 
 
 		/**
@@ -58,15 +56,15 @@ namespace lux {
 		 *		such as lux::ContainerBase, lux::ram::Alloc or any object that has this type of member.
 		 *		This is always false with built-in types
 		 */
-		template<class cType, class cIter> inline RtArray(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) :
+		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) :
 			Super(pCont, vConstruct) {
 		}
 
 
-		inline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, {}) { }			//copy constructor
-		inline RtArray(RtArray<type, iter>&& pCont){ Super::move(pCont); }				//Move constructor
-		inline void operator=(const RtArray<type, iter>& pCont){ Super::copy(pCont); }	//copy assignment //FIXME return reference chain
-		inline void operator=(RtArray<type, iter>&& pCont){ Super::move(pCont); }		//Move assignment
+		alwaysInline RtArray(const RtArray<type, iter>&  pCont) :       Super(pCont, {}){   }	//copy constructor
+		alwaysInline RtArray(      RtArray<type, iter>&& pCont) {        Super::move(pCont); }	//Move constructor
+		alwaysInline void operator=(const RtArray<type, iter>&  pCont) { Super::copy(pCont); }	//copy assignment //FIXME return reference chain
+		alwaysInline void operator=(      RtArray<type, iter>&& pCont) {  Super::move(pCont); }	//Move assignment
 
 
 
@@ -82,6 +80,7 @@ namespace lux {
 		 * @return Number of elements in the array after being resized
 		 */
 		alwaysInline void resize(const iter vCount) {
+			checkInit();
 			Super::resize(vCount);
 		}
 
@@ -89,7 +88,7 @@ namespace lux {
 		/**
 		 * @brief Resets the array to its initial state, freeing the memory and resizing it to 0
 		 */
-		inline void clear( ){
+		alwaysInline void clear( ){
 			checkInit();
 			Super::destroy();
 			Super::data.realloc(0);
@@ -98,15 +97,17 @@ namespace lux {
 
 		/**
 		 * @brief Adds an element to the end of the array and initializes it with the vElement value by calling its copy constructor
-		 * @param vElement The element to add
+		 * @param vElm The element to add
 		 * @return The index of the new element
 		 */
-		inline iter add(const type& vElement) {
+		alwaysInline iter add(const type& vElm) {
 			checkInit();
-			auto oldCount = Super::count();
-			resize(Super::count() + 1);
-			new(&operator[](oldCount)) type(vElement);
-			return oldCount;
+			// auto oldCount = Super::count();
+			// resize(Super::count() + 1);
+			// new(&operator[](oldCount)) type(vElement);
+			// return oldCount;
+			Super::cat1(vElm);
+			return size() - 1;
 		}
 
 

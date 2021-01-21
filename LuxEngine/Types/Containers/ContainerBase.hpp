@@ -72,17 +72,24 @@ namespace lux {
 		inline void initRange(iter vFrom, iter vTo){ for(iter i = vFrom; i < vTo + 1; ++i) new(&data[i]) type(); }
 		inline void destroy(                      ){ for(iter i = 0;     i < count(); ++i) data[i].~type();      }
 
-		void resize(const iter vSize){
+		//Resizes the array and calls the default constructor on each of the new elements
+		inline void resize(const iter vSize){
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
 			initRange(oldCount, count() - 1);
 		}
 
-		template<class cType, class cIter> void cat(const ContainerBase<cType, cIter>& pCont){
+		//Concatenates a container and initializes the new elements by calling their copy constructor
+		template<class cType, class cIter> inline void cat(const ContainerBase<cType, cIter>& pCont){
 			auto oldCount = count();
 			data.reallocArr(oldCount + pCont.count());
 			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
+		}
+		//Concatenates a single element and initializes it by calling its copy constructor
+		inline void cat1(const type& vElm){
+			data.reallocArr(count() + 1);
+			new(&data[count() - 1]) type(vElm);
 		}
 
 
@@ -91,7 +98,7 @@ namespace lux {
 
 
 
-		inline ContainerBase() : data{ nullptr } {}
+		alwaysInline ContainerBase() : data{ nullptr } {}
 		inline ContainerBase(const iter vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
@@ -99,20 +106,16 @@ namespace lux {
 		}
 
 
-		inline ContainerBase(const ContainerBase<type, iter>& pCont) = delete;
-		inline ContainerBase(ContainerBase<type, iter>&& pCont) = delete;
-		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont/*, const bool vConstruct = true*/, Dummy vDummy) : //{
+		inline ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;
+		inline ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;
+		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, Dummy vDummy) :
 			checkInitList(
 				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
 			)
-			data{ pCont.size() } {		//Allocate new elements
-			// if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
-				// new(&data[i]) type();						//Initialize new elements
-				// new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
-			// }
-			/*else */for(iter i = 0; i < pCont.count(); ++i) {
+			data{ pCont.size() } {						//Allocate new elements
+			for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
 			}
 		}
@@ -126,7 +129,7 @@ namespace lux {
 
 
 	public:
-		inline ~ContainerBase(){
+		alwaysInline ~ContainerBase(){
 			if(data) {		//Free data if the array was not moved
 				destroy();
 				data.free();
@@ -142,12 +145,12 @@ namespace lux {
 
 
 	protected:
-		inline void move(ContainerBase<type, iter>& pCont){
+		alwaysInline void move(ContainerBase<type, iter>& pCont){
 			data = pCont.data; pCont.data = nullptr;
 		}
 
 
-		inline void moveAssignment(ContainerBase<type, iter>& pCont){
+		alwaysInline void moveAssignment(ContainerBase<type, iter>& pCont){
 			data = pCont.data; pCont.data = nullptr;
 		}
 
@@ -156,17 +159,8 @@ namespace lux {
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
 			destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
-			new(&data[i]) type();						//Initialize new elements
-		}
-		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont, const Dummy vConstruct) {
-			destroy();									//Destroy old elements
-			data.reallocArr(pCont.count(), false);
-			if(vConstruct) for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type();						//Initialize new elements
+			for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
-			}
-			else for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type();						//Initialize new elements
 			}
 		}
 
@@ -178,12 +172,12 @@ namespace lux {
 
 
 	public:
-		inline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
-		inline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
-		inline iter	count( ) const { return (iter)data.count(); 			};	//Returns the number of elements in the container
-		inline uint64 size() const { return data.size();					};	//Returns the size in bytes of the contianer
-		inline bool	empty( ) const { return !count(); 						};	//Returns true if the container has size 0, false otherwise
+		alwaysInline auto begin( ) const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
+		alwaysInline auto end(   ) const { return ram::ptr<type>{ data.end()   }; };	//Returns a pointer to the element after the last element of the container
+		alwaysInline iter count( ) const { return (iter)data.count(); 			  };	//Returns the number of elements in the container
+		alwaysInline uint64 size() const { return data.size();					  };	//Returns the size in bytes of the contianer
+		alwaysInline bool empty( ) const { return !count(); 					  };	//Returns true if the container has size 0, false otherwise
 
-		inline auto& operator[](iter vIndex) const { return data[vIndex]; }
+		alwaysInline auto& operator[](iter vIndex) const { return data[vIndex]; }
 	};
 }
