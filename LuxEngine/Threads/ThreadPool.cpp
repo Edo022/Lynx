@@ -71,7 +71,7 @@ namespace lux::thr {
 
 
 
-	void __lp_thr_mng( ) {
+	void __lp_thr_mng() {
 		luxDebug(pthread_setname_np(pthread_self(), "Lux | GTP Mng"));
 
 		pthread_kill(pthread_self(), SIGSTOP);

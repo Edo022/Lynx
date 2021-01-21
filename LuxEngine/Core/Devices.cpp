@@ -132,7 +132,7 @@ namespace lux::core::dvc{
 	/**
 	 * @brief Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
 	 */
-	void getPhysical( ) {
+	void getPhysical() {
 		uint32 deviceCount = 0;
 		RtArray<String> discardedPhysicalDevices;
 		RtArray<_VkPhysicalDevice*> physicalDevices;

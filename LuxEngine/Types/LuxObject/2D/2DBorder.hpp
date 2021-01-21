@@ -10,7 +10,7 @@ namespace lux::obj{
 		vec2f32* sp{ nullptr };
 
 
-		Border2D( ) {
+		Border2D() {
 			init( );
 			*fp = { .0f, .0f };
 			*sp = { .0f, .0f };

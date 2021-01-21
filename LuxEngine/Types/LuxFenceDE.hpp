@@ -22,13 +22,13 @@ namespace lux{
 		FenceDE( ) : thr1{ false }, thr2{ true } {}
 
 
-		inline void startFirst( ) { while(thr2) lux::thr::self::yield(); thr1 = true; }
-		inline void endFirst( ) { thr1 = false; }
+		inline void startFirst() { while(thr2) lux::thr::self::yield(); thr1 = true; }
+		inline void endFirst() { thr1 = false; }
 
-		inline void startSecond( ) { r: while(thr1) lux::thr::self::yield(); thr2 = true; if(thr1 && thr2) goto r; }
-		inline void endSecond( ) { thr2 = false; }
+		inline void startSecond() { r: while(thr1) lux::thr::self::yield(); thr2 = true; if(thr1 && thr2) goto r; }
+		inline void endSecond() { thr2 = false; }
 
-		inline void quit( ) { thr2 = thr1 = false; }
+		inline void quit() { thr2 = thr1 = false; }
 	};
 
 

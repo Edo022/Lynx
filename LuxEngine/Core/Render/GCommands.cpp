@@ -17,7 +17,7 @@ namespace lux::core::render::cmd{
 
 
 
-	void createGraphicsCommandPool( ) {
+	void createGraphicsCommandPool() {
 		VkCommandPoolCreateInfo poolInfo{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },
 			.queueFamilyIndex{ dvc::graphics.PD.indices.graphicsFamily }
@@ -32,7 +32,7 @@ namespace lux::core::render::cmd{
 	 * @brief Creates, allocates and begins a command buffer for a single time submit
 	 * @return Returns the command buffer
 	 */
-	VkCommandBuffer beginSingleTimeCommands( ) {
+	VkCommandBuffer beginSingleTimeCommands() {
 		VkCommandBuffer commandBuffer;
 		VkCommandBufferAllocateInfo allocInfo{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },

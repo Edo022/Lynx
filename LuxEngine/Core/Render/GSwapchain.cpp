@@ -101,7 +101,7 @@ namespace lux::core::render::swapchain{
 
 
 
-	void swapchainCreate( ) {
+	void swapchainCreate() {
 		//Get swapchain details
 		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(dvc::graphics.PD.device);
 
@@ -169,7 +169,7 @@ namespace lux::core::render::swapchain{
 
 
 
-	void cleanup( ) {
+	void cleanup() {
 		vkDestroyRenderPass(dvc::graphics.LD, out::renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		for(auto imageView   : swapchainImageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView  , nullptr);		//Destroy image views

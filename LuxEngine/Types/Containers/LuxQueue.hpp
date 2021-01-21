@@ -19,7 +19,7 @@ namespace lux {
 
 		inline Queue( ) : _front( ), _back() {}
 
-		inline void clear( ) {
+		inline void clear() {
 			_front.clear();
 			_back.clear();
 		}

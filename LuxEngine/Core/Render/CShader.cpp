@@ -284,7 +284,7 @@ namespace lux::core::c::shaders{
 
 	//This function creates the default command buffers used for the render
 	//> Engine internal use
-	void createDefaultCommandBuffers( ) {
+	void createDefaultCommandBuffers() {
 		{ //Render command pool
 			VkCommandPoolCreateInfo commandPoolCreateInfo = { 					//Create command pool create infos
 				.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },				//Set structure type

@@ -26,7 +26,7 @@ namespace lux::core::render::wnd{
 
 
 	//Create the Vulkan instance, using validation layers when in debug mode
-	void createInstance( ) {
+	void createInstance() {
 		VkApplicationInfo appInfo{
 			.sType              { VK_STRUCTURE_TYPE_APPLICATION_INFO },
 			.pApplicationName   { "LuxEngine"                        },
@@ -84,7 +84,7 @@ namespace lux::core::render::wnd{
 
 
 
-	void initWindow( ) {
+	void initWindow() {
 		glfwInit( );
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);

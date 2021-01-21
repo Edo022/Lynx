@@ -89,7 +89,7 @@ namespace lux {
 		 * @brief Resets the array to its initial state, freeing the memory and resizing it to 0.
 		 *		Calls the destructor on each element
 		 */
-		alwaysInline void clear( ) {
+		alwaysInline void clear() {
 			checkInit();
 			Super::destroy();
 			Super::data.realloc(0);

@@ -96,7 +96,7 @@
 // 		 * @param pContainer The container object to copy elements from
 // 		 *		The pContainer iterator must be of equal or smaller type than the one of the array you are initializing
 // 		 */
-// 		gmp(template<class elmType> inline __RaArrayName(const ContainerBase<elmType, iter>& pContainer) : __RaArrayName( ) {
+// 		gmp(template<class elmType> inline __RaArrayName(const ContainerBase<elmType, iter>& pContainer) : __RaArrayName() {
 // 			isInit(pContainer);
 // 			for(iter i = 0; i < pContainer.end( ) - pContainer.begin( ); ++i) add((elmType) * (pContainer.begin( ) + i));
 // 		})
@@ -219,7 +219,7 @@
 
 
 // 		//Resets the array to its initial state, freeing all the chunks and resizing it to 0
-// 		inline void clear( ) {
+// 		inline void clear() {
 // 			checkInit();
 // 			for(iter i = 0; i < _chunkNum; ++i) {
 // 				gmp(chunks_ [i].free()) def(free(chunks_ ));

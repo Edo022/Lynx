@@ -31,7 +31,7 @@ namespace lux::core::render::out{
 
 
 
-	void createRenderPass( ) {
+	void createRenderPass() {
 		//Color
 		VkAttachmentDescription colorAttachment{
 			.format{ swapchain::swapchainImageFormat },				//Swapchain image format
@@ -100,7 +100,7 @@ namespace lux::core::render::out{
 
 
 
-	void createFramebuffers( ) {
+	void createFramebuffers() {
 		swapchain::swapchainFramebuffers.resize(swapchain::swapchainImageViews.count( ));
 
 		for(uint32 i = 0; i < swapchain::swapchainImageViews.count( ); ++i) {

@@ -196,7 +196,7 @@ namespace lux {
 
 
 		//Sets the count of the map to 0, deleting all the elements and resetting it to the initial state
-		inline void clear( ) {
+		inline void clear() {
 			for(iter i = 0; i < _chunkNum; ++i) free(data_[i]);		free(data_);		//Free data
 			for(iter i = 0; i < _chunkNum; ++i) free(tracker_[i]);	free(tracker_);		//Free tracker
 			data_    = (type**)malloc(sizeof(type*) * (_maxSize / _chunkSize));			//Reallocate data

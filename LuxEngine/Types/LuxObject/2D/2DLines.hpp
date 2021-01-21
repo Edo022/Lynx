@@ -20,7 +20,7 @@ namespace lux::obj {
 
 		//Creates a Line2D object
 		//Automatically initializes the object type and the GPU memory
-		Line2D( ) {
+		Line2D() {
 			init( );
 
 			*fp = { 0, 0 };

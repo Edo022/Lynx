@@ -64,7 +64,7 @@ namespace lux::core::render{
 
 
 	#ifdef LUX_DEBUG
-	void createDebugMessenger( ) {
+	void createDebugMessenger() {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
 		dbg::checkVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "Failed to set up debug messenger");
@@ -74,7 +74,7 @@ namespace lux::core::render{
 
 
 
-	void createSyncObjs( ) {
+	void createSyncObjs() {
 		VkSemaphoreCreateInfo semaphoreInfo{
 			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
 		};
@@ -111,7 +111,7 @@ namespace lux::core::render{
 
 
 	//TODO multithreaded submit and command creation
-	void drawFrame( ) {
+	void drawFrame() {
 		if(c::shaders::CShaders.usedCount( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 
@@ -268,7 +268,7 @@ namespace lux::core::render{
 
 
 
-	void cleanup( ) {
+	void cleanup() {
 		swapchain::cleanup( );																	//Clear swapchain components
 		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);			//Destroy graphics command pool
 

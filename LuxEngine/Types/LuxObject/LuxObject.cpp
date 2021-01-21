@@ -21,7 +21,7 @@ namespace lux::obj{
 
 	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
 	//An object needs to be allocated before being read or written
-	void Base::allocate( ) {
+	void Base::allocate() {
 		if(common.objectType >= 3000 || common.objectType < 2000) return;
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
 		//core::init(false);																	//Initialize the engine
@@ -34,7 +34,7 @@ namespace lux::obj{
 
 	//Update function common to all the objects that adds them to the update queue
 	//Only render threads can directly access object memory and command buffers
-	void Base::updateBase( ) {
+	void Base::updateBase() {
 		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
 		core::render::pendingObjectUpdatesFence.startSecond( );
 		if(render.updated) {

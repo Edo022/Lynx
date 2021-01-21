@@ -65,7 +65,7 @@ namespace lux {
 		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
 		 *		less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*checkInitList(isInit(pCont))*/ RaArray( ) {
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*checkInitList(isInit(pCont))*/ RaArray() {
 			//TODO check sizes in checkInitList
 			//FIXME preallocate all the elements before looping them
 			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*i));
@@ -232,7 +232,7 @@ namespace lux {
 		/**
 		 * @brief Resets the array to its initial state, freeing all the chunks and resizing it to 0
 		 */
-		inline void clear( ) {
+		inline void clear() {
 			checkInit();
 			// for(iter i = 0; i < data.count(); ++i) {
 			// 	chunks_ [i].free();
