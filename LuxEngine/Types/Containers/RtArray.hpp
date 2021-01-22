@@ -56,8 +56,8 @@ namespace lux {
 		 *		such as lux::ContainerBase, lux::ram::Alloc or any object that has this type of member.
 		 *		This is always false with built-in types
 		 */
-		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont, const bool vConstruct = true) :
-			Super(pCont, vConstruct) {
+		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont) :
+			Super(pCont, {}) {
 		}
 
 
@@ -115,6 +115,8 @@ namespace lux {
 
 
 
+		//Returns the number of BYTES occupied by the array elements
+		//Use count() to get the number of elements
 		alwaysInline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
 
 
