@@ -56,7 +56,7 @@ namespace lux::ram{
 		"Cannot dereference an unallocated memory block")
 
 
-	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::AUTO) {											\
+	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::CLASS_0) {											\
 		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
 		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
 	});
@@ -666,7 +666,7 @@ namespace lux::ram{
 		const uint32 cellIndex = cells.add(Cell_t{});
 		cell = &cells[cellIndex];
 		*cell = Cell_t{
-			.typeIndex = (uint16)classIndexFromEnum(vClass),	//Set cell type index
+			.typeIndex = classIndexFromEnum(vClass),	//Set cell type index
 			.owners = 1,								//Set 1 owner: this pointer //BUG DONT. ASSIGN OWNERS FROM POINTER CONSTRUCTORS
 			//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
 			//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
