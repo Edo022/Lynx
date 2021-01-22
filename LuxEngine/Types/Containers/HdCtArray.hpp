@@ -81,7 +81,7 @@ namespace lux{
 
 
 
-		struct NoRet_t{};											//Dummy return type for void func_tions
+		struct NoRet_t{};												//Dummy return type for void func_tions
 		template<class func_t, class ...args_ts> struct exec_thr{		//Structure containing the func_tion call informations
 			func_t _func;												//func_tion pointer
 			lux::HdCtArray<args_ts...> _args;							//func_tion arguments

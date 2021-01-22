@@ -72,10 +72,10 @@ namespace lux {
 	namespace __pvt{
 		template<class type, class iter, bool construct> struct cbCtor_t{};
 		template<class type, class iter> struct cbCtor_t<type, iter, false>{
-			alwaysInline void initRange(iter vFrom, iter vTo) {}
+			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
 		};
 		template<class type, class iter> struct cbCtor_t<type, iter, true>{
-			inline void initRange(iter vFrom, iter vTo) {
+			inline void initRange(const iter vFrom, const iter vTo) const {
 				for(iter i = vFrom; i < vTo + 1; ++i) {
 					new(&((lux::ContainerBase<type, iter>*)this)->data[i]) type();
 				}
@@ -85,10 +85,10 @@ namespace lux {
 
 		template<class type, class iter, bool destroy> struct cbDtor_t{};
 		template<class type, class iter> struct cbDtor_t<type, iter, false>{
-			alwaysInline void destroy() {}
+			alwaysInline void destroy() const noexcept {}
 		};
 		template<class type, class iter> struct cbDtor_t<type, iter, true>{
-			inline void destroy() {
+			inline void destroy() const {
 				for(iter i = 0; i < (((lux::ContainerBase<type, iter>*)this)->count()); ++i) {
 					(((lux::ContainerBase<type, iter>*)this)->data[i]).~type();
 				}
@@ -110,10 +110,6 @@ namespace lux {
 
 
 		// Inititalize and destroy elements ---------------------------------------------------------------------------------------------------------//
-
-
-
-
 
 
 
@@ -142,15 +138,7 @@ namespace lux {
 
 
 
-
-
-
-
 		// Constructors -----------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
 
 
 
@@ -170,7 +158,7 @@ namespace lux {
 		inline ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;	//Delete default copy constructor
 		inline ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;	//Delete default move constructor
 		//Copy constructor
-		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, Dummy vDummy) :
+		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const Dummy vDummy) :
 			checkInitList(
 				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
 				"The iterator of a container must be large enough to contain all the elements.\
@@ -200,26 +188,13 @@ namespace lux {
 
 
 
-
-
-
-
 		// Move and assignment ----------------------------------------------------------------------------------------------------------------------//
-
-
-
-
 
 
 
 
 	protected:
 		alwaysInline void move(ContainerBase<type, iter>& pCont) {
-			data = pCont.data; pCont.data = nullptr;
-		}
-
-
-		alwaysInline void moveAssignment(ContainerBase<type, iter>& pCont) {
 			data = pCont.data; pCont.data = nullptr;
 		}
 
@@ -236,15 +211,7 @@ namespace lux {
 
 
 
-
-
-
-
 		// Get size and elements --------------------------------------------------------------------------------------------------------------------//
-
-
-
-
 
 
 
@@ -256,6 +223,6 @@ namespace lux {
 		alwaysInline uint64 size() const { return data.size();		              };	//Returns the size in bytes of the contianer
 		alwaysInline bool  empty() const { return !count(); 					  };	//Returns true if the container has size 0, false otherwise
 
-		alwaysInline auto& operator[](iter vIndex) const { return data[vIndex]; }
+		alwaysInline auto& operator[](const iter vIndex) const { return data[vIndex]; }
 	};
 }

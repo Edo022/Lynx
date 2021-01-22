@@ -190,7 +190,7 @@ namespace lux::ram{
 		 * @brief Create a pointer by copying another pointer's address.This function only copies the pointer structure. The 2 pointers will share the same memory block
 		 * @param pPtr The pointer to copy. It must be a valid alloc lux::ram::ptr instance of a compatible type
 		 */
-		template<class aType> explicit inline Alloc(const Alloc<aType>& vAlloc, const Dummy dummy = Dummy{}) :
+		template<class aType> explicit inline Alloc(const Alloc<aType>& vAlloc, const Dummy vDummy = Dummy{}) :
 			checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } {
 			cell->owners++; //BUG DONT SHARE DATA BUT COPY IT
