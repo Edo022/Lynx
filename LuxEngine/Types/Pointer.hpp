@@ -512,7 +512,7 @@ namespace lux::ram{
 				}
 				else{															//If it's larger than the maximum cell size //TODO check realloc and free returns
 					// if(cell->typeIndex) {
-					if((uint32)cell->typeIndex != (uint32)-1) {						//If the cell is a fixed size cell
+					if(cell->typeIndex != (uint16)-1) {						//If the cell is a fixed size cell
 						type* oldAddr = (type*)cell->address;							//Save the old address
 						types[cell->typeIndex].cells.remove(cell->localIndex);			//Remove old allocation
 						//! ^ this doesn't remove or invalidate the cell object but only the buffer's cell tracker. This is to allow other objects to use the same cell even after a reallocation
@@ -614,7 +614,7 @@ namespace lux::ram{
 		inline void free() {
 			// checkNullptr();
 			if(cell->address) {
-				if((uint32)cell->typeIndex != (uint32)-1)											//For fixed  size cells,
+				if(cell->typeIndex != (uint16)-1)											//For fixed  size cells,
 					types[cell->typeIndex].cells.remove(cell->localIndex);								//free the allocation object
 				else std::free(cell->address);														//For custom size cells, free the entire buffer
 				cells.remove(cell->cellIndex);														//And then free the cell object
