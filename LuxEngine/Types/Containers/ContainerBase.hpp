@@ -153,10 +153,9 @@ namespace lux {
 
 	public:
 		alwaysInline ~ContainerBase() {
-			if(data) {		//Free data if the array was not moved
-				destroy();
-				data.free();
-			}
+			if(data) destroy(); //Destroy elemens if the array was not moved
+			// data.free();
+			//! ^ Not an error. data will be freed when calling its destructor
 		}
 
 

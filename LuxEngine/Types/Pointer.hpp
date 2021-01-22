@@ -45,7 +45,7 @@ namespace lux::ram{
 
 
 	#define checkAlloc()  lux::dbg::checkCond(state == lux::__pvt::CellState::FREED,   \
-		"Unable to call this function on an invalid allocation: The memory block have been manually freed")
+		"Unable to call this function on invalid allocations: The memory block have been manually freed")
 	#define isAlloc(a) dbg::checkParam(a.state == lux::__pvt::CellState::FREED, #a,\
 		"Use of invalid allocation: The memory block have been manually freed")
 
@@ -56,7 +56,7 @@ namespace lux::ram{
 		"Cannot dereference an unallocated memory block")
 
 
-	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::CLASS_0) {											\
+	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::CLASS_0 && _class != lux::CellClass::AUTO) {											\
 		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
 		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
 	});
@@ -532,12 +532,12 @@ namespace lux::ram{
 						if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory
 						//! ^ The cell still has the same size as before, so it's fine to use it to copy the old data
 						cell->typeIndex = classIndexFromEnum(vClass);		//Set the new type index
-						cell->cellSize = vSize;											//Set the new cell size
 					}
 					//FIXME use normal malloc if the data doesnt need to be copied
 					else{																//Custom size --> custom
 						cell->address = std::realloc(cell->address, vSize);					//Just reallocate the pointer
 					}
+					cell->cellSize = vSize;											//Set the new cell size
 					//! Custom size --> fixed is managed in smaller size case
 				}
 			}
@@ -613,6 +613,7 @@ namespace lux::ram{
 		//TODO add free function to erase memory contents
 		inline void free() {
 			// checkNullptr();
+			checkAlloc();
 			if(cell->address) {
 				if(cell->typeIndex != (uint16)-1)											//For fixed  size cells,
 					types[cell->typeIndex].cells.remove(cell->localIndex);								//free the allocation object

@@ -104,7 +104,7 @@ namespace lux {
 		alwaysInline iter add(const type& vElm) {
 			checkInit();
 			Super::cat1(vElm);
-			return size() - 1;
+			return Super::count() - 1;
 		}
 
 
