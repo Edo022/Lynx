@@ -4,13 +4,12 @@
 #include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 
-//#ifndef __lux_no_gmp //RaArray specific
-#	include "LuxEngine/Types/Pointer.hpp"
-#	include "LuxEngine/Core/Memory/Ram/Ram.hpp"
-//#endif
+#include "LuxEngine/Types/Pointer.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 
 #include <new>
 #include <initializer_list>
+#include <type_traits>
 #include <cmath>
 
 //FIXME USE DIFFERENT MEMORY FOR CONST VALUES
@@ -59,7 +58,50 @@
 
 
 namespace lux {
-	template <class type, class iter> class ContainerBase {
+	template <class type, class iter> struct ContainerBase;
+	//Any type that inherits from this struct will not be constructed by lux containers
+	struct ignoreCtor{};
+	//Any type that inherits from this struct will not be destroyed by lux containers
+	struct ignoreDtor{};
+	//Any type that inherits from this struct will neither be constructed nor destroyed by lux containers
+	struct ignoreCDtor : ignoreCtor, ignoreDtor {};
+
+
+
+
+	namespace __pvt{
+		template<class type, class iter, bool construct> struct cbCtor_t{};
+		template<class type, class iter> struct cbCtor_t<type, iter, false>{
+			alwaysInline void initRange(iter vFrom, iter vTo) {}
+		};
+		template<class type, class iter> struct cbCtor_t<type, iter, true>{
+			inline void initRange(iter vFrom, iter vTo) {
+				for(iter i = vFrom; i < vTo + 1; ++i) {
+					new(&((lux::ContainerBase<type, iter>*)this)->data[i]) type();
+				}
+			}
+		};
+
+
+		template<class type, class iter, bool destroy> struct cbDtor_t{};
+		template<class type, class iter> struct cbDtor_t<type, iter, false>{
+			alwaysInline void destroy() {}
+		};
+		template<class type, class iter> struct cbDtor_t<type, iter, true>{
+			inline void destroy() {
+				for(iter i = 0; i < (((lux::ContainerBase<type, iter>*)this)->count()); ++i) {
+					(((lux::ContainerBase<type, iter>*)this)->data[i]).~type();
+				}
+			}
+		};
+	}
+
+
+
+
+	template <class type, class iter> struct ContainerBase :
+	public __pvt::cbCtor_t<type, iter, !std::is_base_of_v<ignoreCtor, type> && !std::is_trivial_v<type>>,
+	public __pvt::cbDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
 	public:
 		genInitCheck;
 		ram::Alloc<type> data;	//Elements of the array
@@ -77,15 +119,12 @@ namespace lux {
 
 
 	protected:
-		inline void initRange(iter vFrom, iter vTo) { for(iter i = vFrom; i < vTo + 1; ++i) new(&data[i]) type(); }
-		inline void destroy(                      ) { for(iter i = 0;     i < count(); ++i) data[i].~type();      }
-
 		//Resizes the array and calls the default constructor on each of the new elements
 		inline void resize(const iter vSize) {
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
-			initRange(oldCount, count() - 1);
+			this->initRange(oldCount, count() - 1);
 		}
 
 		//Concatenates a container and initializes the new elements by calling their copy constructor
@@ -124,7 +163,7 @@ namespace lux {
 		inline ContainerBase(const iter vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
-			initRange(0, count() - 1);
+			this->initRange(0, count() - 1);
 		}
 
 
@@ -153,9 +192,9 @@ namespace lux {
 
 	public:
 		alwaysInline ~ContainerBase() {
-			if(data) destroy(); //Destroy elemens if the array was not moved
+			if(data) this->destroy(); //Destroy elemens if the array was not moved
 			// data.free();
-			//! ^ Not an error. data will be freed when calling its destructor
+			//! ^ Not an error. data will be freed in its destructor
 		}
 
 
@@ -187,7 +226,7 @@ namespace lux {
 
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
-			destroy();									//Destroy old elements
+			this->destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
