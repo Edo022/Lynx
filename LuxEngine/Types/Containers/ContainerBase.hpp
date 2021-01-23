@@ -76,8 +76,9 @@ namespace lux {
 		};
 		template<class type, class iter> struct cbCtor_t<type, iter, true>{
 			inline void initRange(const iter vFrom, const iter vTo) const {
-				for(iter i = vFrom; i < vTo + 1; ++i) {
-					new(&((lux::ContainerBase<type, iter>*)this)->data[i]) type();
+				type* elm = ((lux::ContainerBase<type, iter>*)this)->data;
+				for(iter i = vFrom; i <= vTo; ++i) {
+					new(elm + i) type();
 				}
 			}
 		};
@@ -86,11 +87,19 @@ namespace lux {
 		template<class type, class iter, bool destroy> struct cbDtor_t{};
 		template<class type, class iter> struct cbDtor_t<type, iter, false>{
 			alwaysInline void destroy() const noexcept {}
+			inline void destroyRange(const iter vFrom, const iter vTo) const noexcept {}
 		};
 		template<class type, class iter> struct cbDtor_t<type, iter, true>{
 			inline void destroy() const {
-				for(iter i = 0; i < (((lux::ContainerBase<type, iter>*)this)->count()); ++i) {
-					(((lux::ContainerBase<type, iter>*)this)->data[i]).~type();
+				type* end = ((lux::ContainerBase<type, iter>*)this)->end();
+				for(type* elm = ((lux::ContainerBase<type, iter>*)this)->data; elm != end; ++elm) {
+					elm->~type();
+				}
+			}
+			inline void destroyRange(const iter vFrom, const iter vTo) const {
+				type* elm = ((lux::ContainerBase<type, iter>*)this)->data;
+				for(iter i = vFrom; i <= vTo; ++i) {
+					elm[i].~type();
 				}
 			}
 		};
@@ -120,7 +129,8 @@ namespace lux {
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
-			this->initRange(oldCount, count() - 1);
+			if(oldCount < count()) this->initRange(oldCount, count() - 1);
+			else if(oldCount > count()) this->destroyRange(count(), oldCount - 1);
 		}
 
 		//Concatenates a container and initializes the new elements by calling their copy constructor
@@ -172,7 +182,7 @@ namespace lux {
 
 
 		alwaysInline ContainerBase(const std::initializer_list<type>& vElms) :
-			ContainerBase(vElms.size()) {
+			data{ sizeof(type) * vElms.size() } {
 			iter i = 0;
 			for(const type& elm : vElms) new(&data[i++]) type(elm);
 		}
