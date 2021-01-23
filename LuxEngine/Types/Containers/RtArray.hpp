@@ -45,7 +45,7 @@ namespace lux {
 		alwaysInline RtArray(           ) : Super(      ) {}
 		alwaysInline RtArray(iter vCount) : Super(vCount) {}
 
-		alwaysInline RtArray(const std::initializer_list<type>& vElms) : Super{ vElms } {}
+		alwaysInline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } {}
 
 
 		/**

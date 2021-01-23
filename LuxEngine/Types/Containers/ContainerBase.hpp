@@ -181,7 +181,7 @@ namespace lux {
 		}
 
 
-		alwaysInline ContainerBase(const std::initializer_list<type>& vElms) :
+		alwaysInline ContainerBase(const std::initializer_list<type> vElms) :
 			data{ sizeof(type) * vElms.size() } {
 			iter i = 0;
 			for(const type& elm : vElms) new(&data[i++]) type(elm);

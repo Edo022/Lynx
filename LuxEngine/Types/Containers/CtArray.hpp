@@ -41,14 +41,14 @@ namespace lux {
 		//TODO remove
 		#define __lp_lux_static_array_init data_ = (type*)malloc(sizeof(type) * count_)
 		//Initializes the array using a list of elements, automatically converting it to the right type
-		template<class inType> inline CtArray(const std::initializer_list<inType>& pElements) {
+		template<class inType> inline CtArray(const std::initializer_list<inType> pElements) {
 			__lp_lux_static_array_init;
 			for(uint64 i = 0; i < pElements.end( ) - pElements.begin( ); ++i) data_[i] = (inType) * (pElements.begin( ) + i);
 		}
 
 		//TODO remove
 		//Initializes the array using a list of elements of the same type
-		inline CtArray(const std::initializer_list<type>& pElements) {
+		inline CtArray(const std::initializer_list<type> pElements) {
 			dbg::checkParam(pElements.size( ) > count_, "pElements", "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
 			__lp_lux_static_array_init;
 			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
