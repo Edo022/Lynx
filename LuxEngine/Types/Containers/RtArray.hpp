@@ -45,7 +45,7 @@ namespace lux {
 		alwaysInline RtArray(           ) : Super(      ) {}
 		alwaysInline RtArray(iter vCount) : Super(vCount) {}
 
-	alwaysInline RtArray(const std::initializer_list<type>& vElms) : Super{ vElms } {}
+		alwaysInline RtArray(const std::initializer_list<type>& vElms) : Super{ vElms } {}
 
 
 		/**
@@ -85,13 +85,11 @@ namespace lux {
 				Super::resize(vCount);
 			}
 		#else //Check for negative count
-			#define chck(t) void resize(t vCount) {									\
-				dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");	\
-				checkInit();														\
-				Super::resize(vCount);												\
+			void resize(uint64 vCount) {
+				dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
+				checkInit();
+				Super::resize(vCount);
 			}
-			chck(int8) chck(uint8) chck(int16) chck(uint16) chck(int32) chck(uint32) chck(int64) chck(uint64)
-			#undef chck
 		#endif
 
 
