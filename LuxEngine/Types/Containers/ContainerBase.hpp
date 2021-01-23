@@ -166,7 +166,7 @@ namespace lux {
 			)
 			data{ pCont.size() } {						//Allocate new elements
 			for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
+				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
 			}
 		}
 
@@ -174,7 +174,7 @@ namespace lux {
 		alwaysInline ContainerBase(const std::initializer_list<type>& vElms) :
 			ContainerBase(vElms.size()) {
 			iter i = 0;
-			for(auto elm : vElms) new(&data[i++]) type(elm);
+			for(const type& elm : vElms) new(&data[i++]) type(elm);
 		}
 
 
@@ -204,7 +204,7 @@ namespace lux {
 			this->destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type((type)pCont[(cIter)i]);	//Assign new elements
+				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
 			}
 		}
 
