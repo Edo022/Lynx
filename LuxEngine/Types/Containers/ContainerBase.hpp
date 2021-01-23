@@ -76,7 +76,7 @@ namespace lux {
 		};
 		template<class type, class iter> struct cbCtor_t<type, iter, true>{
 			inline void initRange(const iter vFrom, const iter vTo) const {
-				type* elm = ((lux::ContainerBase<type, iter>*)this)->data;
+				type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
 				for(iter i = vFrom; i <= vTo; ++i) {
 					new(elm + i) type();
 				}
@@ -92,12 +92,12 @@ namespace lux {
 		template<class type, class iter> struct cbDtor_t<type, iter, true>{
 			inline void destroy() const {
 				type* end = ((lux::ContainerBase<type, iter>*)this)->end();
-				for(type* elm = ((lux::ContainerBase<type, iter>*)this)->data; elm != end; ++elm) {
+				for(type* elm = ((lux::ContainerBase<type, iter>*)this)->begin(); elm != end; ++elm) {
 					elm->~type();
 				}
 			}
 			inline void destroyRange(const iter vFrom, const iter vTo) const {
-				type* elm = ((lux::ContainerBase<type, iter>*)this)->data;
+				type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
 				for(iter i = vFrom; i <= vTo; ++i) {
 					elm[i].~type();
 				}
