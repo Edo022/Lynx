@@ -71,7 +71,7 @@ namespace lux{
 
 
 
-
+//FIXME REMOVE
 
 		//DEPRECATED VERSION OF classIndexFromEnum
 		static constexpr inline uint32 classIndexFromEnum__old(const CellClass vClass) {
