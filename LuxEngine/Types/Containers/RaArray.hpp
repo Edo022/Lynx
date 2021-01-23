@@ -334,8 +334,8 @@ namespace lux {
 		template<class eType, class iType> inline auto operator=(const ContainerBase<eType, iType>& pCont) {
 			isInit(pCont);
 			clear();
-			data.reallocArr(pCont.count());
-			lnkd.reallocArr(pCont.count());
+			data.reallocArr(pCont.count(), false);
+			lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
 
@@ -346,8 +346,8 @@ namespace lux {
 			isInit(pCont);
 			// this->destroy();
 			clear();
-			data.reallocArr(pCont.count());
-			lnkd.reallocArr(pCont.count());
+			data.reallocArr(pCont.count(), false);
+			lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
 
