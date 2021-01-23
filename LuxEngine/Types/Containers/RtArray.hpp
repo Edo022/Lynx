@@ -85,7 +85,7 @@ namespace lux {
 				Super::resize(vCount);
 			}
 		#else //Check for negative count
-			void resize(uint64 vCount) {
+			void resize(int64 vCount) {
 				dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
 				checkInit();
 				Super::resize(vCount);
