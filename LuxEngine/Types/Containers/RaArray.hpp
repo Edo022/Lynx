@@ -455,6 +455,7 @@ namespace lux {
 
 		//TODO a dd size
 		alwaysInline iter     count() const noexcept { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
+		alwaysInline bool     empty() const noexcept { checkInit(); return !count();       } //Returns true if the array has 0 elements
 		alwaysInline iter usedCount() const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
 		alwaysInline iter freeCount() const noexcept { checkInit(); return free_;          } //Returns the number of free elements
 		alwaysInline auto     begin() const noexcept { checkInit(); return data.begin();   }
