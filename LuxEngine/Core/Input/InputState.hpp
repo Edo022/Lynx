@@ -45,7 +45,7 @@ namespace lux::input{
 
 		//TODO use ExecFuncData
 		//Initializes the input state with a list of key sequences and sorts them
-		InputState(std::initializer_list<KeySequence> c) {
+		InputState(std::initializer_list<KeySequence>& c) {
 			sequences = c;
 			sort();
 		}
