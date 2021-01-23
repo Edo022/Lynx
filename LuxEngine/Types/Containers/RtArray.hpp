@@ -1,35 +1,26 @@
-﻿
-#pragma once
+﻿#pragma once
 #define LUX_H_RTARRAY
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
-#include "LuxEngine/Math/Algebra/Algebra.hpp"
-#include <initializer_list>
-#include <cstring>
 
 
-//FIXME use always_inline
+
+
+
+
+
 
 //TODO a low priority thread reorders the points in the meshes
-//TODO If the mesh gets modified, it's sended back to the queue
+//TODO If the mesh gets modified, it's sent back to the queue
 //TODO if not, the new points are saved and used for rendering in the next frames
-
 //TODO "runtime 3D turbolent flow"
 
-
-//TODO add .reassign function for containers
-//TODO the function simply initializes the container with a pointer without copying the data
-//TODO foo.reassign(ptr);
-//TODO Array<int> reassign(foo, ptr);
-//TODO or maybe it's a bad idea. multiple threads or objects modifying the same data... idk
-
-//TODO add .move function in containers instead of .reassign
-//TODO .moved arrays becomes invalid
-
 //TODO add contructor of string from lux containers of chars
-//TODO add additional data in errors
 namespace lux {
-	//"RunTime Array"
-	//A dynamic array that uses the global memory pool
+	/**
+	 * @brief A dynamic array that uses the global memory pool
+	 * @tparam type Type of the elements
+	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
+	 */
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 		using Super = ContainerBase<type, iter>;
 		genInitCheck;
@@ -42,29 +33,55 @@ namespace lux {
 
 
 
-		alwaysInline RtArray(           ) : Super(      ) {}
+		/**
+		 * @brief Creates an array without allocating memory to it.
+		 *		The memory will be allocated when calling the add or resize funcytions
+		 */
+		alwaysInline RtArray() : Super() {}
+
+
+		/**
+		 * @brief Creates an array of vCount elements and calls the default constructor on each of them
+		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 */
 		alwaysInline RtArray(iter vCount) : Super(vCount) {}
 
+
+		/**
+		 * @brief Creates an array by copying the vElm elements. Each element is copy constructed
+		 */
 		alwaysInline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } {}
 
 
 		/**
-		 * @brief Initializes the array with a lux::ContainerBase subclass instance by calling the copy constructor on each element
+		 * @brief Initializes the array with a lux::ContainerBase subclass instance by copy constructing on each element
+		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
 		 * @param pCont The container to copy elements from
-		 * @param vConstruct If true, the elements are initialized before calling the copy constructor.
-		 *		This is required for arrays containing elements that need to be initialized before calling the copy constructor,
-		 *		such as lux::ContainerBase, lux::ram::Alloc or any object that has this type of member.
-		 *		This is always false with built-in types
 		 */
 		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont) :
 			Super(pCont, {}) {
 		}
 
 
-		alwaysInline        RtArray(const RtArray<type, iter>&  pCont) : Super(pCont, {}) {  }	//copy constructor
-		alwaysInline        RtArray(      RtArray<type, iter>&& pCont) { Super::move(pCont); }	//Move constructor
-		alwaysInline void operator=(const RtArray<type, iter>&  pCont) { Super::copy(pCont); }	//copy assignment //FIXME return reference chain
-		alwaysInline void operator=(      RtArray<type, iter>&& pCont) { Super::move(pCont); }	//Move assignment
+
+
+		/**
+		 * @brief Copy constructor. Each element is copy constructed.
+		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 */
+		alwaysInline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, {}) {  }
+		/**
+		 * @brief Copy assignment. All the elements in the array are destroyed. New elements are copy constructed.
+		 *		The destructor  is not called on trivial types or lux::ignoreDtor subclasses.
+		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 */
+		alwaysInline auto& operator=(const RtArray<type, iter>& pCont) { Super::copy(pCont); return pCont; }
+
+
+		//Move constructor
+		alwaysInline RtArray(RtArray<type, iter>&& pCont) { Super::move(pCont); }
+		//Move assignment
+		alwaysInline auto& operator=(RtArray<type, iter>&& pCont) { Super::move(pCont); return pCont; }
 
 
 
@@ -75,9 +92,8 @@ namespace lux {
 
 
 		/**
-		 * @brief Resizes the array and calls the default constructor on each of the new elements
+		 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCtor subclass, calls the constructor on each of the new elements
 		 * @param vCount New number of elements
-		 * @return Number of elements in the array after being resized
 		 */
 		#if !defined(LUX_DEBUG) || defined(__INTELLISENSE__)
 			alwaysInline void resize(const iter vCount) {
@@ -94,8 +110,8 @@ namespace lux {
 
 
 		/**
-		 * @brief Resets the array to its initial state, freeing the memory and resizing it to 0.
-		 *		Calls the destructor on each element
+		 * @brief Resets the array to its initial state by freeing the memory and resizing it to 0.
+		 *		If the type is not a trivial type or a lux::ignoreDtor subclass, calls the destructor on each element
 		 */
 		alwaysInline void clear() {
 			checkInit();
@@ -123,12 +139,14 @@ namespace lux {
 
 
 
-		//Returns the number of BYTES occupied by the array elements
-		//Use count() to get the number of elements
+		/**
+		 * @brief Returns the number of BYTES occupied by the array elements.
+		 *		Use count() to get the number of elements
+		 */
 		alwaysInline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
 
 
-		alwaysInline type&  operator[](const iter vIndex) const {
+		alwaysInline type& operator[](const iter vIndex) const {
 			checkInit();
 			dbg::checkCond(Super::count() == 0, "This function cannot be called on containers with size 0");
 			dbg::checkIndex(vIndex, 0, Super::count() - 1, "vIndex");
@@ -136,7 +154,3 @@ namespace lux {
 		}
 	};
 }
-
-
-//TODO add specific functions for count
-//TODO check if non secure C pointers were used. Like const char* strings

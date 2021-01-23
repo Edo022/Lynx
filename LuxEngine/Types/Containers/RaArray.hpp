@@ -12,16 +12,59 @@
 
 
 namespace lux {
+		namespace __pvt{
+		template<class type, class iter, bool construct> struct raCtor_t{};
+		template<class type, class iter> struct raCtor_t<type, iter, false>{
+			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+		};
+		template<class type, class iter> struct raCtor_t<type, iter, true>{
+			inline void initRange(const iter vFrom, const iter vTo) const {
+				type* elm = ((lux::RaArray<type, iter>*)this)->data;
+				for(iter i = vFrom; i <= vTo; ++i) {
+					new(elm + i) type();
+				}
+			}
+		};
+
+
+		template<class type, class iter, bool destroy> struct raDtor_t{};
+		template<class type, class iter> struct raDtor_t<type, iter, false>{
+			alwaysInline void destroy() const noexcept {}
+			inline void destroyRange(const iter vFrom, const iter vTo) const noexcept {}
+		};
+		template<class type, class iter> struct raDtor_t<type, iter, true>{
+			inline void destroy() const {
+				type* end = ((lux::RaArray<type, iter>*)this)->end();
+				for(type* elm = ((lux::RaArray<type, iter>*)this)->data; elm != end; ++elm) {
+					elm->~type();
+				}
+			}
+			inline void destroyRange(const iter vFrom, const iter vTo) const {
+				type* elm = ((lux::RaArray<type, iter>*)this)->data;
+				for(iter i = vFrom; i <= vTo; ++i) {
+					elm[i].~type();
+				}
+			}
+		};
+	}
+
+
+
+
+
+
+
+
 	/**
-	 * @brief "Random Access Array".
-	 * 		Basically non-contiguous array of arrays.
+	 * @brief A dynamic array with non contiguous elements.
 	 *		New elements are written over previously removed ones, or concatenated if there are none.
 	 *		The .isValid() function can be used to check if an element is valid or has been removed
-	 * @tparam type Type of the array elements
-	 * @tparam iter Type of the elements indices. Must be an integer type. Default: uint32
-	 * @tparam chunkClass Class of each chunk in the array. Default: CellClass::CLASS_D (2KB)
+	 * @tparam type Type of the elements
+	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
 	 */
-	template<class type, class iter = uint32> class RaArray{
+	template<class type, class iter = uint32> class RaArray :
+	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCtor, type> && !std::is_trivial_v<type>>,
+	public __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
 		genInitCheck;
 	private:
 		ram::Alloc<type> data;	//Elements
@@ -29,8 +72,8 @@ namespace lux {
 
 		iter head;		//First free element
 		iter tail;		//Last free element
-		iter size_;		//Number of allocated elements
-		iter free_;		//Number of free elements in the map
+		iter count_;		//Number of allocated elements
+		iter free_;		//Number of free elements in the array
 
 		inline void destroy() {
 			for(iter i = 0; i < count(); ++i) if(isValid(i)) data[i].~type();
@@ -43,31 +86,36 @@ namespace lux {
 
 
 		// Constructors -------------------------------------------------------------------------------------------------------- //
-		//FIXME ADD SIZE CONSTRUCTOR
-		//FIXME USE SIZE CONSTRUCTOR IN CONTAINER CONSTRUCTOR TO PREVENT REALLOCATIONS
 
 
 
 
 		/**
-		 * @brief Creates an array with size 0 and no preallocated chunks
+		 * @brief Creates an array without allocating memory to it.
+		 *		The memory will be allocated when calling the add function
 		 */
 		inline RaArray( ) : data(nullptr), lnkd(nullptr),
-			head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 } {
+			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+		}
+
+
+		/**
+		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
+		 */
+		inline RaArray(const iter vCount) :
+			data(sizeof(type) * pCont.count()),
+			lnkd(sizeof(iter) * pCont.count()),
+			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
 
 
-
 		/**
-		 * @brief Initializes the array by copying each element from a lux::ContainerBase subclass
+		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
 		 * @param pCont The container object to copy elements from.
-		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
-		 *		less elements than the maximum number of elements of the array you are initializing
+		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : /*checkInitList(isInit(pCont))*/ RaArray() {
-			//TODO check sizes in checkInitList
-			//FIXME preallocate all the elements before looping them
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : checkInitList(isInit(pCont)) RaArray() {
 			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*i));
 		}
 
@@ -75,22 +123,13 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array by copying each element from a RaArray. Removed elements are preserved.
+		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
 		 * @param pCont The RaArray to copy elements from.
-		 *		It must be a valid RaArray instance with a compatible type and
-		 *		less elements than the maximum number of elements of the array you are initializing
+		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : //checkInitList(isInit(pCont))
-			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ } {
-			RaArray() {
-			// data(pCont.data.deepCopy()),
-			// lnkd(pCont.lnkd.deepCopy()) {
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : checkInitList(isInit(pCont)),
+			RaArray(pCont.count()){
 			for(int i = 0; i < pCont.count(); ++i) add(pCont[i]);
-			//TODO check sizes in checkInitList
-			// for(int i = 0; i < pCont.chunks_.count(); ++i) {
-			// 	chunks_[i] = pCont.chunks_[i].deepCopy();   //Deeper copy
-			// 	tracker_[i] = pCont.tracker_[i].deepCopy(); //UwU
-			// }
 		}
 
 
@@ -99,10 +138,8 @@ namespace lux {
 		/**
 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) : //checkInitList(isInit(pCont))
-			//head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
-			//data(pCont.data.deepCopy()), lnkd(pCont.lnkd.deepCopy()) {
-			RaArray() {
+		inline RaArray(const RaArray<type, iter>& pCont) : checkInitList(isInit(pCont))
+			RaArray(pCont.count()) {
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
 
@@ -113,9 +150,10 @@ namespace lux {
 		 * @brief Move constructor
 		 */
 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
-			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
+			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ },
 			data{ pCont.data }, lnkd{ pCont.lnkd } {
-			pCont.data = pCont.lnkd = nullptr; //FIXME
+			// pCont.data = pCont.lnkd = nullptr; //FIXME
+			//!^ pCont data and lnkd are freed in its destructor
 		}
 
 
@@ -128,37 +166,37 @@ namespace lux {
 
 
 		/**
-		 * @brief Adds a new element at the end of the array, without intializing it
+		 * @brief Adds a new element to the end of the array and initializes it with the vElement value by calling its copy constructor
 		 * @return Index of the new element
 		 */
-		iter append() {
+		iter append(const type& pData) {
 			checkInit();
-			// if(size_ + 1 > data.count()/* * (uint64)chunkClass*/) {					//If the chunk is full
+			// if(count_ + 1 > data.count()/* * (uint64)chunkClass*/) {					//If the chunk is full
 				// chunks_ [chunks_.count()].reallocArr((uint64)chunkClass, type());		//Create a new one
 				// tracker_[chunks_.count()].reallocArr((uint64)chunkClass, iter());
 				data.reallocArr(count() + 1);		//Create a new one
 				lnkd.reallocArr(count() + 1);
 
 			// }
-			new(&data[size_]) type();//Initialize new element
+			new(&data[count_]) type(pData);//Initialize new element
 
-			lnkd[size_] = -1;	//Set the tracker as valid
-			return size_++;			//Update the number of elements and return the ID
+			lnkd[count_] = -1;	//Set the tracker as valid
+			return count_++;			//Update the number of elements and return the ID
 		}
 		//BUG RAARRAY DOES NOT INITIALIZE NEW ELEMENTS
 
 
-		/**
-		 * @brief Adds an element at the end of the array.
-		 * @param pData Value the new element will be initialized with
-		 * @return Index of the new element
-		 */
-		inline iter append(const type& pData) {
-			checkInit();
-			append();
-			data[size_ - 1] = pData;
-			return size_;
-		}
+		// /**
+		//  * @brief Adds an element at the end of the array.
+		//  * @param pData Value the new element will be initialized with
+		//  * @return Index of the new element
+		//  */
+		// inline iter append(const type& pData) {
+		// 	checkInit();
+		// 	append();
+		// 	data[count_ - 1] = pData;
+		// 	return count_;
+		// }
 
 
 
@@ -167,44 +205,44 @@ namespace lux {
 		 * @brief Adds an element at the first free index of the array without initializing it
  		 * @return Index of the new element
 		 */
-		iter add() {
+		iter add(const type& pData) {
 			checkInit();
 			if(head == (iter)-1) {				//If it has no free elements, append it
 				// int ret = append();					//Append the new element
 				// // new(&data[ret]) type();				//Initialize it
 				// return ret;							//Return its index (initialization in append function)
-				return append();
+				return append(pData);
 			}
 			iter prevHead = head;
 			if(head == tail) {					//If it has only one free element
-				lnkd[head] = -1;
-				head = tail = -1;		//Reset head, tail and tracker
+				lnkd[prevHead] = -1;//Reset head and tail
+				head = tail = -1;		//Reset tracker
 			}
 			else {								//If it has more than one
-				head = lnkd[head];					//Update head
+				head = lnkd[prevHead];					//Update head
 				lnkd[prevHead] = -1;					//Update tracker of the old head element
 			}
 			free_--;							//Update number of free elements
-			new(&data[prevHead]) type();		//Initialize the new element
+			new(&data[prevHead]) type(pData);		//Initialize the new element
 			return prevHead;						//Return the index of the new element
 		}
 
 
-		/**
-		 * @brief Adds an element at the first free index of the array
-		 * @param vData Value the new element will be initialized with
-		 * @return Index of the new element
-		 */
-		inline iter add(const type& vData) {
-			checkInit();
-			iter i = add(); //BUG add specific function for allocations that needs to be initialized
-			// data[i] = vData;
-			new(&data[i]) type(vData);
-			// data[i] = type(vData);
-			return i;
-		}//BUG not initializing the element leaves it in an uninitialized state that is illegal for some operator= functions
+// 		/**
+// 		 * @brief Adds an element at the first free index of the array
+// 		 * @param vData Value the new element will be initialized with
+// 		 * @return Index of the new element
+// 		 */
+// 		inline iter add(const type& vData) {
+// 			checkInit();
+// 			iter i = add(); //BUG add specific function for allocations that needs to be initialized
+// 			// data[i] = vData;
+// 			new(&data[i]) type(vData);
+// 			// data[i] = type(vData);
+// 			return i;
+// 		}//BUG not initializing the element leaves it in an uninitialized state that is illegal for some operator= functions
 
-//BUG CHECK IF AGGREGATE INITIALIZATION CALLS COPY CONSTRUCTOR OF NON UNINIT COPYABLE STRUCTS
+// //BUG CHECK IF AGGREGATE INITIALIZATION CALLS COPY CONSTRUCTOR OF NON UNINIT COPYABLE STRUCTS
 
 
 		/**
@@ -243,7 +281,7 @@ namespace lux {
 
 			destroy();
 			head = tail = (iter)-1;
-			size_ = free_ = 0;
+			count_ = free_ = 0;
 			data.reallocArr(0);
 			lnkd.reallocArr(0);
 		}
@@ -260,7 +298,7 @@ namespace lux {
 		// inline signed char state(const iter vIndex) const {
 		// 	checkInit();
 		// 	if(vIndex < 0) return -1;								//Invalid index
-		// 	else if(vIndex >= size_) return -2;						//Index out of range
+		// 	else if(vIndex >= count_) return -2;						//Index out of range
 		// 	else if(tracker(vIndex) == (iter)-1) return 0;		//Used element //OK
 		// 	else return 1;											//Free element
 		// }
@@ -274,7 +312,7 @@ namespace lux {
 		inline bool isValid(const iter vIndex) const noexcept {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return (lnkd[vIndex] == (iter)-1);
+			return lnkd[vIndex] == (iter)-1;
 		}
 
 
@@ -308,8 +346,8 @@ namespace lux {
 
 
 		//TODO add size
-		inline iter count(     ) const noexcept { checkInit(); return size_;         } //Returns the number of elements in the map, including the free ones
-		inline iter usedCount( ) const noexcept { checkInit(); return size_ - free_; } //Returns the number of used elements
+		inline iter count(     ) const noexcept { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
+		inline iter usedCount( ) const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
 		inline iter freeCount( ) const noexcept { checkInit(); return free_;         } //Returns the number of free elements
 	};
 }
