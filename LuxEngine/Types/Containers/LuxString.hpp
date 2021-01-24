@@ -130,10 +130,10 @@ namespace lux {
 
 
 		//move assignment
-		inline auto&& operator= (String&& pString) {
+		inline auto& operator= (String&& pString) {
 			Super::move(pString); //BUG THIS
 			updateView();
-			return pString;
+			return *this;
 		}
 
 		//copy assignment
@@ -144,7 +144,7 @@ namespace lux {
 			// str.address = (char8*)str.cell->address;
 			// ram::cpy(pString.data, Super::data, Super::data.count( ));
 			updateView();
-			return pString;
+			return *this;
 		}
 		//Copy from C-style string
 		inline auto& operator= (const char8* vString) { return operator=(String(vString)); }

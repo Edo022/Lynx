@@ -217,7 +217,7 @@ namespace lux {
 		}
 
 
-	protected:
+	protected: //TODO move to type specialization
 		alwaysInline ~ContainerBase() {
 			if(data) lux::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
 			// data.free();

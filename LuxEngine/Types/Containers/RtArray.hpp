@@ -75,13 +75,13 @@ namespace lux {
 		 *		The destructor  is not called on trivial types or lux::ignoreDtor subclasses.
 		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
 		 */
-		alwaysInline auto& operator=(const RtArray<type, iter>& pCont) { Super::copy(pCont); return pCont; }
+		alwaysInline auto& operator=(const RtArray<type, iter>& pCont) { Super::copy(pCont); return *this; }
 
 
 		//Move constructor
 		alwaysInline RtArray(RtArray<type, iter>&& pCont) { Super::move(pCont); }
 		//Move assignment
-		alwaysInline auto& operator=(RtArray<type, iter>&& pCont) { Super::move(pCont); return pCont; }
+		alwaysInline auto& operator=(RtArray<type, iter>&& pCont) { Super::move(pCont); return *this; }
 
 
 

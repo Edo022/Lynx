@@ -298,7 +298,7 @@ namespace lux {
 			data.reallocArr(pCont.count(), false);
 			lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
-			return pCont;
+			return *this;
 		}
 
 
@@ -310,7 +310,7 @@ namespace lux {
 			data.reallocArr(pCont.count(), false);
 			lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
-			return pCont;
+			return *this;
 		}
 
 
@@ -338,14 +338,14 @@ namespace lux {
 		/**
 		 * @brief Move constructor //FIXME probably useless
 		 */
-		inline auto&& operator=(RaArray<type, iter>&& pCont) {
+		inline auto& operator=(RaArray<type, iter>&& pCont) {
 			isInit(pCont);
 			this->destroy();
 			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
 			data = pCont.data; lnkd = pCont.lnkd;
 			// pCont.data = pCont.lnkd = nullptr;
 			//!^ pCont data and lnkd are freed in its destructor
-			return pCont;
+			return *this;
 		}
 
 
