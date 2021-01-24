@@ -74,9 +74,11 @@ namespace lux {
 	namespace __pvt{
 		template<class type, class iter, bool construct> struct cbCtor_t{};
 		template<class type, class iter> struct cbCtor_t<type, iter, false>{
+			protected:
 			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
 		};
 		template<class type, class iter> struct cbCtor_t<type, iter, true>{
+			protected:
 			inline void initRange(const iter vFrom, const iter vTo) const {
 				type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
 				for(iter i = vFrom; i <= vTo; ++i) {
@@ -102,10 +104,12 @@ namespace lux {
 
 		template<class type, class iter, bool destroy> struct cbDtor_t{};
 		template<class type, class iter> struct cbDtor_t<type, iter, false>{
+			protected:
 			alwaysInline void destroy() const noexcept {}
 			inline void destroyRange(const iter vFrom, const iter vTo) const noexcept {}
 		};
 		template<class type, class iter> struct cbDtor_t<type, iter, true>{
+			protected:
 			inline void destroy() const {
 				type* end = ((lux::ContainerBase<type, iter>*)this)->end();
 				for(type* elm = ((lux::ContainerBase<type, iter>*)this)->begin(); elm != end; ++elm) {
@@ -213,7 +217,7 @@ namespace lux {
 		}
 
 
-	public:
+	protected:
 		alwaysInline ~ContainerBase() {
 			if(data) lux::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
 			// data.free();
@@ -228,7 +232,6 @@ namespace lux {
 
 
 
-	protected:
 		alwaysInline void move(ContainerBase<type, iter>& pCont) {
 			data = pCont.data; pCont.data = nullptr;
 		}

@@ -19,9 +19,11 @@ namespace lux {
 	namespace __pvt{
 		template<class type, class iter, bool construct> struct raCtor_t{};
 		template<class type, class iter> struct raCtor_t<type, iter, false>{
+			protected:
 			// alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
 		};
 		template<class type, class iter> struct raCtor_t<type, iter, true>{
+			protected:
 			// inline void initRange(const iter vFrom, const iter vTo) const {
 			// 	type* elm = ((lux::RaArray<type, iter>*)this)->begin();
 			// 	for(iter i = vFrom; i <= vTo; ++i) {
@@ -34,9 +36,11 @@ namespace lux {
 
 		template<class type, class iter, bool destroy> struct raDtor_t{};
 		template<class type, class iter> struct raDtor_t<type, iter, false>{
+			protected:
 			alwaysInline void destroy() const noexcept {}
 		};
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
+			protected:
 			inline void destroy() const {
 				auto this_ = (lux::RaArray<type, iter>*)this;
 				int i = 0;
