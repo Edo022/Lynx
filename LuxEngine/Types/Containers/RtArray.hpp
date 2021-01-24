@@ -91,11 +91,11 @@ namespace lux {
 
 
 
-		/**
-		 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCopy subclass, calls the constructor on each of the new elements
-		 * @param vCount New number of elements
-		 */
 		#if !defined(LUX_DEBUG) || defined(__INTELLISENSE__)
+			/**
+			 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCopy subclass, calls the constructor on each of the new elements
+			 * @param vCount New number of elements
+			 */
 			alwaysInline void resize(const iter vCount) {
 				checkInit();
 				Super::resize(vCount);

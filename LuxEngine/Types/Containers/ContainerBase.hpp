@@ -59,10 +59,12 @@
 
 namespace lux {
 	template <class type, class iter> struct ContainerBase;
+	//Any type that inherits from this struct will not be default constructed by lux containers
+	struct ignoreCtor{};
 	//Any type that inherits from this struct will not be copy constructed by lux containers
 	struct ignoreCopy{};
-	//Any type that inherits from this struct will not be move constructed by lux containers
-	struct ignoreMove{};
+	// //Any type that inherits from this struct will not be move constructed by lux containers
+	// struct ignoreMove{};
 	//Any type that inherits from this struct will not be destroyed by lux containers
 	struct ignoreDtor{};
 
@@ -82,6 +84,20 @@ namespace lux {
 				}
 			}
 		};
+
+
+		// template<class type, class iter, bool construct> struct cbCtor_t{};
+		// template<class type, class iter> struct cbCtor_t<type, iter, false>{
+		// 	alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+		// };
+		// template<class type, class iter> struct cbCtor_t<type, iter, true>{
+		// 	inline void initRange(const iter vFrom, const iter vTo) const {
+		// 		type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
+		// 		for(iter i = vFrom; i <= vTo; ++i) {
+		// 			new(elm + i) type();
+		// 		}
+		// 	}
+		// };
 
 
 		template<class type, class iter, bool destroy> struct cbDtor_t{};

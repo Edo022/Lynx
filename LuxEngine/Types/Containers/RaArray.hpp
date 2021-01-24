@@ -39,7 +39,7 @@ namespace lux {
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
 			inline void destroy() const {
 				auto this_ = (lux::RaArray<type, iter>*)this;
-				iter i = 0;
+				int i = 0;
 				for(type* elm = this_->begin(); elm != this_->end(); ++elm) {
 					if(this_->isValid(i++)) elm->~type();
 				}
@@ -207,7 +207,7 @@ namespace lux {
 
 
 		/**
-		 * @brief Adds an element at the first free index of the array without initializing it
+		 * @brief Copy constructs pData in the first free element of the array
  		 * @return Index of the new element
 		 */
 		iter add(const type& pData) {
@@ -233,7 +233,8 @@ namespace lux {
 
 
 		/**
-		 * @brief Removed an element without freeing it
+		 * @brief Removes an element and calls its destructor
+		 *		The destructor is not called on trivial types or lux::ignoreDtor subclasses
 		 * @param vIndex Index of the element to remove
 		 */
 		void remove(const iter vIndex) {
@@ -287,23 +288,25 @@ namespace lux {
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline auto operator=(const ContainerBase<eType, iType>& pCont) {
+		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont) {
 			isInit(pCont);
 			clear();
 			data.reallocArr(pCont.count(), false);
 			lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			return pCont;
 		}
 
 
 
 	private:
-		template<class eType, class iType> inline auto copy(const RaArray<eType, iType>& pCont) {
+		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
 			isInit(pCont);
 			clear();
 			data.reallocArr(pCont.count(), false);
 			lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			return pCont;
 		}
 
 
@@ -313,16 +316,16 @@ namespace lux {
 		 * @param pCont The RaArray to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> alwaysInline auto operator=(const RaArray<eType, iType>& pCont) {
-			copy(pCont);
+		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
+			return copy(pCont);
 		}
 
 
 		/**
 		 * @brief Copy assignment. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
-		alwaysInline auto operator=(const RaArray<type, iter>& pCont) {
-			copy(pCont);
+		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
+			return copy(pCont);
 		}
 
 
@@ -331,13 +334,14 @@ namespace lux {
 		/**
 		 * @brief Move constructor //FIXME probably useless
 		 */
-		inline auto operator=(RaArray<type, iter>&& pCont) {
+		inline auto&& operator=(RaArray<type, iter>&& pCont) {
 			isInit(pCont);
 			this->destroy();
 			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
 			data = pCont.data; lnkd = pCont.lnkd;
 			// pCont.data = pCont.lnkd = nullptr;
 			//!^ pCont data and lnkd are freed in its destructor
+			return pCont;
 		}
 
 
