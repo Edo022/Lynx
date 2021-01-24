@@ -20,18 +20,18 @@ template<class t> struct vec4_t {
 	//Assignment operators and constructors
 	inline vec4_t(const vec4_t<t>& v) { *this = v; }
 	inline vec4_t(const t& n        ) { *this = n; }
-	inline void operator= (const vec4_t<t>& v) { x = v.x; y = v.y; z = v.z; w = v.w; }
-	inline void operator= (const t& n        ) { x =      y =      z =      w = n;   }
+	inline void operator=(const vec4_t<t>& v) { x = v.x; y = v.y; z = v.z; w = v.w; }
+	inline void operator=(const t& n        ) { x =      y =      z =      w = n;   }
 
 	//Add, subtract, multiply and divide operators
-	inline vec4_t<t> operator + (const vec4_t<t>& v) const { return vec4_t<t>(x + v.x, y + v.y, z + v.z, w + v.w); }
-	inline vec4_t<t> operator * (const vec4_t<t>& v) const { return vec4_t<t>(x * v.x, y * v.y, z * v.z, w * v.w); }
-	inline vec4_t<t> operator - (const vec4_t<t>& v) const { return vec4_t<t>(x - v.x, y - v.y, z - v.z, w - v.w); }
-	inline vec4_t<t> operator / (const vec4_t<t>& v) const { return vec4_t<t>(x / v.x, y / v.y, z / v.z, w / v.w); }
-	inline void operator += (const vec4_t<t>& v) { init(x + v.x, y + v.y, z + v.z, w + v.w); }
-	inline void operator *= (const vec4_t<t>& v) { init(x * v.x, y * v.y, z * v.z, w * v.w); }
-	inline void operator -= (const vec4_t<t>& v) { init(x - v.x, y - v.y, z - v.z, w - v.w); }
-	inline void operator /= (const vec4_t<t>& v) { init(x / v.x, y / v.y, z / v.z, w / v.w); }
+	inline vec4_t<t> operator+(const vec4_t<t>& v) const { return vec4_t<t>(x + v.x, y + v.y, z + v.z, w + v.w); }
+	inline vec4_t<t> operator*(const vec4_t<t>& v) const { return vec4_t<t>(x * v.x, y * v.y, z * v.z, w * v.w); }
+	inline vec4_t<t> operator-(const vec4_t<t>& v) const { return vec4_t<t>(x - v.x, y - v.y, z - v.z, w - v.w); }
+	inline vec4_t<t> operator/(const vec4_t<t>& v) const { return vec4_t<t>(x / v.x, y / v.y, z / v.z, w / v.w); }
+	inline void operator+=(const vec4_t<t>& v) { init(x + v.x, y + v.y, z + v.z, w + v.w); }
+	inline void operator*=(const vec4_t<t>& v) { init(x * v.x, y * v.y, z * v.z, w * v.w); }
+	inline void operator-=(const vec4_t<t>& v) { init(x - v.x, y - v.y, z - v.z, w - v.w); }
+	inline void operator/=(const vec4_t<t>& v) { init(x / v.x, y / v.y, z / v.z, w / v.w); }
 
 private:
 	inline void init(const t _x, const t _y, const t _z, const t _w) { x = _x; y = _y; z = _z;  w = _w; }

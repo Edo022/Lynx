@@ -77,19 +77,19 @@ namespace lux {
 
 
 
-		inline void operator += (const String& pString) { checkInit(); cat(pString.Super::data); }
-		inline void operator += (const char8* vString ) { checkInit(); cat(vString); }
+		inline void operator+=(const String& pString) { checkInit(); cat(pString.Super::data); }
+		inline void operator+=(const char8* vString ) { checkInit(); cat(vString); }
 
 
-		//TODO use sum chain struct instead of copying the string data
-		inline String operator + (const String& pString) const {
+		//FIXME use sum chain struct instead of copying the string data
+		inline String operator+(const String& pString) const {
 			checkInit();
 			String vLuxString(Super::data);
 			vLuxString += pString;
 			return vLuxString;
 		}
-
-		inline String operator + (const char8* vString ) const {
+		//FIXME same here
+		inline String operator+(const char8* vString ) const {
 			checkInit();
 			String vLuxString(Super::data);
 			vLuxString += vString;
@@ -105,14 +105,14 @@ namespace lux {
 
 
 		//move assignment
-		inline auto& operator= (String&& pString) {
+		inline auto& operator=(String&& pString) {
 			Super::move(pString);
 			updateView();
 			return *this;
 		}
 
 		//copy assignment
-		inline auto& operator= (const String& pString) {
+		inline auto& operator=(const String& pString) {
 			checkInit(); isInit(pString);
 			Super::copy(pString);
 			updateView();
@@ -120,14 +120,14 @@ namespace lux {
 		}
 
 		//Copy from C-style string
-		inline auto& operator= (const char8* vString) { return operator=(String(vString)); }
+		inline auto& operator=(const char8* vString) { return operator=(String(vString)); }
 
 
 
 
 
 		//The cooler strcmp
-		inline bool operator== (const String& pString) const {
+		inline bool operator==(const String& pString) const {
 			checkInit(); isInit(pString);
 			return (Super::count( ) == pString.count( )) && 0 == memcmp(pString.data, Super::data, Super::count( ));
 		}
@@ -137,7 +137,7 @@ namespace lux {
 		 *		If the string lenght is known, the cmp() function can be used to avoid unnecessary strlen calls
 		 * @param vString The string to compare
 		 */
-		inline bool operator== (const char* vString) const {
+		inline bool operator==(const char* vString) const {
 			checkInit();
 			return (Super::count( ) == strlenl(vString) + 1) && 0 == memcmp(vString, Super::data, Super::count( ));
 		}
@@ -147,7 +147,7 @@ namespace lux {
 		 * @param vString The tring to compare
 		 * @param vStrLen The length of the string, including the null terminator '\\0'
 		 */
-		inline bool cmp (const char* vString, const uint32 vStrLen) const {
+		inline bool cmp(const char* vString, const uint32 vStrLen) const {
 			checkInit();
 			return (Super::count( ) == vStrLen) && 0 == memcmp(vString, Super::data, Super::count( ));
 		}

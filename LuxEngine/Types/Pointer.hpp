@@ -549,7 +549,7 @@ namespace lux::ram{
 		#undef checkNullptrD
 		#define checkNullptrD() lux::dbg::checkCond(address == nullptr, "Cannot dereference a nullptr pointer")
 		inline type& operator[](const uint64 vIndex) const { checkInit(); checkNullptrD(); return address[vIndex]; }
-		inline type& operator* (                   ) const { checkInit(); checkNullptrD(); dbg::checkRawPtr(address, "Invalid pointer"); return *address; }
+		inline type& operator*(                   ) const { checkInit(); checkNullptrD(); dbg::checkRawPtr(address, "Invalid pointer"); return *address; }
 		inline type* operator->(                   ) const { checkInit(); checkNullptrD(); dbg::checkRawPtr(address, "Invalid pointer"); return  address; }
 		inline operator type*( ) const { checkInit(); return (type*)address; }	//ram::ptr<type> to type* implicit conversion
 		inline operator bool(  ) const { checkInit(); return !!address;      }	//ram::ptr<type> to bool  implicit conversion (e.g. if(ptr) is the same as if(ptr != nullptr), like normal pointers)
