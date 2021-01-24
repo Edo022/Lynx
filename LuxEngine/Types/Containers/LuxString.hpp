@@ -130,33 +130,35 @@ namespace lux {
 
 
 		//move assignment
-		inline void operator = (String&& pString) {
+		inline auto&& operator= (String&& pString) {
 			Super::move(pString); //BUG THIS
 			updateView();
+			return pString;
 		}
 
 		//copy assignment
-		inline void operator = (const String& pString) {
+		inline auto& operator= (const String& pString) {
 			checkInit(); isInit(pString);
 			Super::copy(pString);
 			// Super::data.realloc(pString.count( ));
 			// str.address = (char8*)str.cell->address;
 			// ram::cpy(pString.data, Super::data, Super::data.count( ));
 			updateView();
+			return pString;
 		}
 		//Copy from C-style string
-		inline void operator = (const char8* vString) { operator=(String(vString)); updateView(); }
+		inline auto& operator= (const char8* vString) { return operator=(String(vString)); }
 
 
 
 
-		inline bool operator == (const String& pString) const {
+		inline bool operator== (const String& pString) const {
 			checkInit(); isInit(pString);
 			return ((Super::data.count( ) == pString.count( )) && (memcmp(pString.data, Super::data, Super::data.count( )) == 0));
 		}
 
 
-		inline bool operator == (const char* vString) const {
+		inline bool operator== (const char* vString) const {
 			checkInit();
 			return ((Super::data.count( ) == strlenl(vString) + 1) && (memcmp(vString, Super::data, Super::data.count( )) == 0));
 		}
