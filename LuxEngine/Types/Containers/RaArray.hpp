@@ -60,7 +60,7 @@ namespace lux {
 	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
 	 */
 	template<class type, class iter = uint32> struct RaArray :
-	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCtor, type> && !std::is_trivial_v<type>>,
+	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
 	public __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
 		genInitCheck;
 	private:

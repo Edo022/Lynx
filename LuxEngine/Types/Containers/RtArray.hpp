@@ -42,7 +42,7 @@ namespace lux {
 
 		/**
 		 * @brief Creates an array of vCount elements and calls the default constructor on each of them
-		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
 		 */
 		alwaysInline RtArray(iter vCount) : Super(vCount) {}
 
@@ -55,7 +55,7 @@ namespace lux {
 
 		/**
 		 * @brief Initializes the array with a lux::ContainerBase subclass instance by copy constructing on each element
-		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
 		 * @param pCont The container to copy elements from
 		 */
 		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont) :
@@ -67,13 +67,13 @@ namespace lux {
 
 		/**
 		 * @brief Copy constructor. Each element is copy constructed.
-		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
 		 */
 		alwaysInline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, {}) {  }
 		/**
 		 * @brief Copy assignment. All the elements in the array are destroyed. New elements are copy constructed.
 		 *		The destructor  is not called on trivial types or lux::ignoreDtor subclasses.
-		 *		The constructor is not called on trivial types or lux::ignoreCtor subclasses
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
 		 */
 		alwaysInline auto& operator=(const RtArray<type, iter>& pCont) { Super::copy(pCont); return pCont; }
 
@@ -92,7 +92,7 @@ namespace lux {
 
 
 		/**
-		 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCtor subclass, calls the constructor on each of the new elements
+		 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCopy subclass, calls the constructor on each of the new elements
 		 * @param vCount New number of elements
 		 */
 		#if !defined(LUX_DEBUG) || defined(__INTELLISENSE__)

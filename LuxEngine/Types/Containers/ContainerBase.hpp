@@ -59,12 +59,12 @@
 
 namespace lux {
 	template <class type, class iter> struct ContainerBase;
-	//Any type that inherits from this struct will not be constructed by lux containers
-	struct ignoreCtor{};
+	//Any type that inherits from this struct will not be copy constructed by lux containers
+	struct ignoreCopy{};
+	//Any type that inherits from this struct will not be move constructed by lux containers
+	struct ignoreMove{};
 	//Any type that inherits from this struct will not be destroyed by lux containers
 	struct ignoreDtor{};
-	//Any type that inherits from this struct will neither be constructed nor destroyed by lux containers
-	struct ignoreCDtor : ignoreCtor, ignoreDtor {};
 
 
 
@@ -103,14 +103,23 @@ namespace lux {
 				}
 			}
 		};
+
+
+
+		template<class type, class iter> struct cbFwd_t:
+		public __pvt::cbCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
+		public __pvt::cbDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {};
 	}
 
 
 
 
+
+
+
+
 	template <class type, class iter> struct ContainerBase :
-	public __pvt::cbCtor_t<type, iter, !std::is_base_of_v<ignoreCtor, type> && !std::is_trivial_v<type>>,
-	public __pvt::cbDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
+	public __pvt::cbFwd_t<type, iter>{
 	public:
 		genInitCheck;
 		ram::Alloc<type> data;	//Elements of the array
@@ -129,8 +138,8 @@ namespace lux {
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
-			if(oldCount < count()) this->initRange(oldCount, count() - 1);
-			else if(oldCount > count()) this->destroyRange(count(), oldCount - 1);
+			     if(oldCount < count()) lux::__pvt::cbFwd_t<type, iter>::initRange(oldCount, count() - 1);
+			else if(oldCount > count()) lux::__pvt::cbFwd_t<type, iter>::destroyRange(count(), oldCount - 1);
 		}
 
 		//Concatenates a container and initializes the new elements by calling their copy constructor
@@ -161,7 +170,7 @@ namespace lux {
 		inline ContainerBase(const iter vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
-			this->initRange(0, count() - 1);
+			lux::__pvt::cbFwd_t<type, iter>::initRange(0, count() - 1);
 		}
 
 
@@ -190,7 +199,7 @@ namespace lux {
 
 	public:
 		alwaysInline ~ContainerBase() {
-			if(data) this->destroy(); //Destroy elemens if the array was not moved
+			if(data) lux::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
 			// data.free();
 			//! ^ Not an error. data will be freed in its destructor
 		}
@@ -211,7 +220,7 @@ namespace lux {
 
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
-			this->destroy();									//Destroy old elements
+			lux::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
