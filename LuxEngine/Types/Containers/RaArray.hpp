@@ -3,6 +3,8 @@
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #include "LuxEngine/Types/Pointer.hpp"
+//TODO add shrink function to reorder the elements and use less memory possible
+//TODO add self check on unusable elements
 
 
 
@@ -69,7 +71,7 @@ namespace lux {
 
 		iter head;		//First free element
 		iter tail;		//Last free element
-		iter count_;		//Number of allocated elements
+		iter count_;	//Number of allocated elements
 		iter free_;		//Number of free elements in the array
 
 
@@ -111,6 +113,7 @@ namespace lux {
 
 
 
+
 		/**
 		 * @brief Initializes the array by copy constructing each element from an std::initializer_list
 		 */
@@ -135,8 +138,6 @@ namespace lux {
 		}
 
 
-
-
 		/**
 		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
 		 * @param pCont The RaArray to copy elements from.
@@ -149,8 +150,6 @@ namespace lux {
 		}
 
 
-
-
 		/**
 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
@@ -159,8 +158,6 @@ namespace lux {
 			isInit(pCont); //! Same here
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
-
-
 
 
 		/**
@@ -181,9 +178,9 @@ namespace lux {
 
 
 
+
+
 		// Add, remove --------------------------------------------------------------------------------------------------------- //
-//TODO add shrink function to reorder the elements and use less memory possible
-//TODO add self check on unusable elements
 
 
 
@@ -198,56 +195,34 @@ namespace lux {
 		 */
 		iter append(const type& pData) {
 			checkInit();
-			// if(count_ + 1 > data.count()/* * (uint64)chunkClass*/) {					//If the chunk is full
-				// chunks_ [chunks_.count()].reallocArr((uint64)chunkClass, type());		//Create a new one
-				// tracker_[chunks_.count()].reallocArr((uint64)chunkClass, iter());
-				data.reallocArr(count() + 1);		//Create a new one
-				lnkd.reallocArr(count() + 1);
+			data.reallocArr(count() + 1);
+			lnkd.reallocArr(count() + 1);
 
-			// }
-			new(&data[count_]) type(pData);//Initialize new element
-
-			lnkd[count_] = -1;	//Set the tracker as valid
-			return count_++;			//Update the number of elements and return the ID
+			new(&data[count_]) type(pData);	//Initialize new element
+			lnkd[count_] = -1;				//Set the tracker as valid
+			return count_++;				//Update the number of elements and return the element index
 		}
-		//BUG RAARRAY DOES NOT INITIALIZE NEW ELEMENTS
-
-
-		// /**
-		//  * @brief Adds an element at the end of the array.
-		//  * @param pData Value the new element will be initialized with
-		//  * @return Index of the new element
-		//  */
-		// inline iter append(const type& pData) {
-		// 	checkInit();
-		// 	append();
-		// 	data[count_ - 1] = pData;
-		// 	return count_;
-		// }
 
 
 
-//TODO
+
 		/**
 		 * @brief Adds an element at the first free index of the array without initializing it
  		 * @return Index of the new element
 		 */
 		iter add(const type& pData) {
 			checkInit();
-			if(head == (iter)-1) {				//If it has no free elements, append it
-				// int ret = append();					//Append the new element
-				// // new(&data[ret]) type();				//Initialize it
-				// return ret;							//Return its index (initialization in append function)
-				return append(pData);
+			if(head == (iter)-1) {				//If it has no free elements
+				return append(pData);				//Append the new element
 			}
-			iter prevHead = head;
+			iter prevHead = head;				//Save head
 			if(head == tail) {					//If it has only one free element
-				lnkd[prevHead] = -1;//Reset head and tail
-				head = tail = -1;		//Reset tracker
+				lnkd[prevHead] = -1;				//Reset head and tail
+				head = tail = -1;					//Reset tracker
 			}
 			else {								//If it has more than one
-				head = lnkd[prevHead];					//Update head
-				lnkd[prevHead] = -1;					//Update tracker of the old head element
+				head = lnkd[prevHead];				//Update head
+				lnkd[prevHead] = -1;				//Update tracker of the old head element
 			}
 			free_--;							//Update number of free elements
 			new(&data[prevHead]) type(pData);		//Initialize the new element
@@ -255,21 +230,6 @@ namespace lux {
 		}
 
 
-// 		/**
-// 		 * @brief Adds an element at the first free index of the array
-// 		 * @param vData Value the new element will be initialized with
-// 		 * @return Index of the new element
-// 		 */
-// 		inline iter add(const type& vData) {
-// 			checkInit();
-// 			iter i = add(); //BUG add specific function for allocations that needs to be initialized
-// 			// data[i] = vData;
-// 			new(&data[i]) type(vData);
-// 			// data[i] = type(vData);
-// 			return i;
-// 		}//BUG not initializing the element leaves it in an uninitialized state that is illegal for some operator= functions
-
-// //BUG CHECK IF AGGREGATE INITIALIZATION CALLS COPY CONSTRUCTOR OF NON UNINIT COPYABLE STRUCTS
 
 
 		/**
@@ -281,14 +241,14 @@ namespace lux {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
-			data[vIndex].~type();							//Destroy the element
-			lnkd[vIndex] = -1;								//Set the index as free
-			if(head == (iter)-1) head = tail = vIndex;			//If it has no free elements, initialize head and tail.
-			else {
-				lnkd[tail] = vIndex;
-				tail = vIndex;					//If it has free elements, set the new tail and update the last free index
+			data[vIndex].~type();						//Destroy the element
+			lnkd[vIndex] = -1;							//Set the index as free
+			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
+			else {										//If it has free elements
+				lnkd[tail] = vIndex;						//Set the new tail
+				tail = vIndex;								//update the last free index
 			}
-			free_++;											//Update the number of free elements
+			free_++;									//Update the number of free elements
 		}
 
 
@@ -299,13 +259,6 @@ namespace lux {
 		 */
 		inline void clear() {
 			checkInit();
-			// for(iter i = 0; i < data.count(); ++i) {
-			// 	chunks_ [i].free();
-			// 	tracker_[i].free();
-			// }
-			// chunks_ .free(); //BUG dont free
-			// tracker_.free();
-
 			this->destroy();
 			head = tail = (iter)-1;
 			count_ = free_ = 0;
@@ -321,6 +274,8 @@ namespace lux {
 
 
 		// Assignment ---------------------------------------------------------------------------------------------------------- //
+
+
 
 
 
@@ -345,7 +300,6 @@ namespace lux {
 	private:
 		template<class eType, class iType> inline auto copy(const RaArray<eType, iType>& pCont) {
 			isInit(pCont);
-			// this->destroy();
 			clear();
 			data.reallocArr(pCont.count(), false);
 			lnkd.reallocArr(pCont.count(), false);
@@ -386,14 +340,7 @@ namespace lux {
 			//!^ pCont data and lnkd are freed in its destructor
 		}
 
-		// //Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid, -2 if the index is out of range
-		// inline signed char state(const iter vIndex) const {
-		// 	checkInit();
-		// 	if(vIndex < 0) return -1;								//Invalid index
-		// 	else if(vIndex >= count_) return -2;						//Index out of range
-		// 	else if(tracker(vIndex) == (iter)-1) return 0;		//Used element //OK
-		// 	else return 1;											//Free element
-		// }
+
 
 
 
@@ -407,7 +354,7 @@ namespace lux {
 
 
 
-//FIXME add all constructors and assignment operators
+
 
 		/**
 		 * @brief Returns the state of an element
@@ -428,15 +375,6 @@ namespace lux {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[vIndex];
 		}
-
-		// //Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-		// /**
-		//  * @param vChunkIndex
-		//  * @return type*
-		//  */
-		// inline type* begin(const iter vChunkIndex) const {
-		// 	checkInit(); dbg::checkParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
-		// }
 
 
 
@@ -463,5 +401,3 @@ namespace lux {
 		alwaysInline auto       end() const noexcept { checkInit(); return data.end();     }
 	};
 }
-// #undef chunks
-// #undef tracker
