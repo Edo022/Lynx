@@ -26,9 +26,8 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-
-//Debug. Expand debug macros but gray out "#ifdef LUX_DEBUG"s
-#if defined(LUX_DEBUG) || defined(__INTELLISENSE__)
+#define LUX_DEBUG
+#ifdef LUX_DEBUG
 #	define luxDebug(...) __VA_ARGS__                                //Executes a line of code only if in debug   mode
 #	define luxRelease(...)                                          //Executes a line of code only if in release mode
 #   define alwaysInline inline                                      //Indicates that a function must be inlined. Functions are never inlined, in debug mode
