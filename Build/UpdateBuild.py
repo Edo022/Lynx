@@ -1,9 +1,13 @@
 import os
 import EngineDeps
 import ProjectPath
-import Platform as pf
-import Type as tp
+from Platform import Platform as pf
+from Type import Type as tp
 
+def getPf():
+    return "Linux" if pf == "l" else "Windows"
+def getTp():
+    return "Debug" if tp == "d" else "Release"
 
 
 
@@ -15,11 +19,18 @@ f.write(
     "tasks": [
         {
             "type": "shell",
-            "label": "Build LuxEngine  |  """ +  ("Linux" if pf.Platform == "l" else "Windows") + "  |  " + ("Debug" if tp.Type == "d" else "Release") + """\",
+            "label": "Build LuxEngine  |  """ + getPf() + "  |  " + getTp() + """\",
             "command": "",
             "args": [
-                "/usr/bin/g++",\n""" + \
-                EngineDeps.getEngineDeps() + """
+                "/usr/bin/g++",
+                //Source files
+		            "-xc++", "LuxEngine/LuxEngineBuild.cpp.build",
+		            "Test.cpp",\n""" +\
+                    (EngineDeps.getDebugOptions() if tp == "d" else EngineDeps.getReleaseOptions()) + ",\n" + """
+                    "-std=c++2a", "-mavx", "-pipe", "-Wall",""" +\
+                    EngineDeps.getEngineDeps() + ',\n' + """
+                //Output
+					"-o", "./Build/""" + getPf() + '/LuxEngine' + getTp() + """\"
             ],
             "options": { "cwd": "${workspaceFolder}" },
             "problemMatcher": [ "$gcc" ],
@@ -27,22 +38,22 @@ f.write(
         },
         {
             "type": "shell",
-            "label": " > Switch to """ + ("Windows" if pf.Platform == "l" else "Linux") + """\",
+            "label": " > Switch to """ + ("Windows" if pf == "l" else "Linux") + """\",
             "command": "python3",
             "args": [
                 "./Build/SetPlatform.py",
-                \"""" + ("w" if pf.Platform == "l" else "l") + """\",
+                \"""" + ("w" if pf == "l" else "l") + """\",
             ],
             "problemMatcher": [ ],
             "group": { "kind": "build", "isDefault": true }
         },
         {
             "type": "shell",
-            "label": " > Switch to """ + ("Release" if tp.Type == "d" else "Debug") + """\",
+            "label": " > Switch to """ + ("Release" if tp == "d" else "Debug") + """\",
             "command": "python3",
             "args": [
                 "./Build/SetType.py",
-                \"""" + ("r" if tp.Type == "d" else "d") + """\"
+                \"""" + ("r" if tp == "d" else "d") + """\"
             ],
             "problemMatcher": [ ],
             "group": { "kind": "build", "isDefault": true }
