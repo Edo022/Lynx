@@ -2,7 +2,7 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "Build LuxEngine  |  Linux  |  Debug",
+            "label": "Build LuxEngine  |  Windows  |  Debug,
             "command": "",
             "args": [
                 "/usr/bin/g++",
@@ -22,24 +22,9 @@
         },
         {
             "type": "shell",
-            "label": " > Switch to Windows",
+            "label": " > Switch to Windows"
             "command": "python3",
-            "args": [
-                "./Build/SetPlatform.py",
-                "w",
-            ],
-            "problemMatcher": [ ],
-            "group": { "kind": "build", "isDefault": true }
-        },
-        {
-            "type": "shell",
-            "label": " > Switch to Release",
-            "command": "python3",
-            "args": [
-                "./Build/SetType.py",
-                "r"
-            ],
-            "problemMatcher": [ ],
+            "args": ["./LuxEngine/Build/SetPlatform.py", "w"],
             "group": { "kind": "build", "isDefault": true }
         }
     ]

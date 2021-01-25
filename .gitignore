@@ -1,3 +1,4 @@
 deps/
 Junk/
-Build/
+Build/Linux
+Build/Windows
