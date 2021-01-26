@@ -9,11 +9,14 @@
                 //Source files
 		            "-xc++", "LuxEngine/LuxEngineBuild.cpp.build",
 		            "Test.cpp",
-                //Max debug infos, Additional gprof informations, no optimizations, no inline, Lux Engine security checks
+                //Max debug infos, additional gprof informations, no optimizations, no inline, Lux Engine security checks
                     "-g3", "-ggdb3", "-pg", "-rdynamic", "-fverbose-asm", "-DLUX_DEBUG",
                     "-O0", "-fno-elide-constructors", "-fno-inline-small-functions", "-fno-inline",
-
-                    "-std=c++2a", "-mavx", "-pipe", "-Wall",                //Vulkan
+                //Engine
+                    "-std=c++2a", "-mavx", "-pipe", "-pthread",
+                    "-I./", "-ILuxEngine",
+                    "-Wall",
+                //Vulkan
                     "-I/home/Edo/Desktop/LuxEngine/deps/Linux/Vulkan-1.2.162.0/x86_64/include",
                     "-L/home/Edo/Desktop/LuxEngine/deps/Linux/Vulkan-1.2.162.0/x86_64/lib",
                     "-ldl", "-lvulkan",
@@ -22,7 +25,6 @@
                     "-I/home/Edo/Desktop/LuxEngine/deps/Shared/glfw-3.3.2/deps",
                     "-L/home/Edo/Desktop/LuxEngine/deps/Shared/glfw-3.3.2/build/debug/src",
                     "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
-
                 //Output
 					"-o", "./Build/Linux/LuxEngineDebug"
             ],

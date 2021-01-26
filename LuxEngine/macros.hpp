@@ -15,12 +15,12 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 //Console output
 #include "LuxEngine/Core/__tmp__OutputColor.hpp"
-#define Normal				std::cout << __tmp_output_color::white		<< '\n';
+#define Normal				std::cout << __tmp_output_color::white << '\n';
 #define NormalNoNl			std::cout << __tmp_output_color::white;
-#define Success				std::cout << __tmp_output_color::green		<< '\n';
+#define Success				std::cout << __tmp_output_color::green << '\n';
 #define SuccessNoNl			std::cout << __tmp_output_color::green;
-#define Main				std::cout << __tmp_output_color::magenta	<< '\n';
-#define Failure				std::cout << __tmp_output_color::red		<< '\n';
+#define Main				std::cout << __tmp_output_color::magenta << '\n';
+#define Failure				std::cout << __tmp_output_color::red << '\n';
 #define Warning				std::cout << __tmp_output_color::yellow	<< '\n';
 #define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 

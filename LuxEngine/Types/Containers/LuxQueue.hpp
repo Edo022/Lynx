@@ -12,7 +12,7 @@
 //A queue with dynamic count
 //DEPRECATED
 namespace lux {
-	__attribute__((deprecated)) template<class type, class iter = uint32> struct Queue {
+	template<class type, class iter = uint32> struct Queue {
 		genInitCheck;
 	private:
 	public:

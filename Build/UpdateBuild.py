@@ -26,9 +26,12 @@ f.write(
                 //Source files
 		            "-xc++", "LuxEngine/LuxEngineBuild.cpp.build",
 		            "Test.cpp",\n""" +\
-                    (EngineDeps.getDebugOptions() if tp == "d" else EngineDeps.getReleaseOptions()) + ",\n" + """
-                    "-std=c++2a", "-mavx", "-pipe", "-Wall",""" +\
-                    EngineDeps.getEngineDeps() + ',\n' + """
+                    (EngineDeps.getDebugOptions() if tp == "d" else EngineDeps.getReleaseOptions()) + """,
+                //Engine
+                    "-std=c++2a", "-mavx", "-pipe", "-pthread",
+                    "-I./", "-ILuxEngine",
+                    "-Wall",\n""" +\
+                    EngineDeps.getEngineDeps() + """,
                 //Output
 					"-o", "./Build/""" + getPf() + '/LuxEngine' + getTp() + """\"
             ],
