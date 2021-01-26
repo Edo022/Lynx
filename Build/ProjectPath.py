@@ -1,1 +1,2 @@
-ProjectPath = "."
+ProjectPath = ".."
+EnginePath = "LuxEngine"

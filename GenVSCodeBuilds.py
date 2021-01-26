@@ -17,7 +17,8 @@ if not os.path.exists(pdir + "/.vscode"):
 
 
 pf = open(thisdir + "/Build/ProjectPath.py", "w")
-pf.write("ProjectPath = \"" + os.path.relpath(thisdir, pdir) + "\"")
+pf.write("ProjectPath = \"" + os.path.relpath(pdir, thisdir) + "\"\n")
+pf.write( "EnginePath = \"" + os.path.relpath(thisdir, pdir) + "\"")
 pf.close()
 
 os.system("python3 " + thisdir + "/Build/SetPlatform.py l")
