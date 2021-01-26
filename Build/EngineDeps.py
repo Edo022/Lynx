@@ -1,13 +1,14 @@
-import os
 import Platform
 import ProjectPath
 import textwrap
+import os.path
+thisdir = os.path.dirname(os.path.abspath(__file__))
 
 
 
 
 def getEngineDeps():
-    depp = os.path.abspath(".") + "/deps/"
+    depp = os.path.abspath(__file__) + "/deps/"
     spdepp = depp + ("Linux/" if Platform.Platform == "l" else "Windows/")
 
     return textwrap.indent(\

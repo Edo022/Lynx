@@ -1,8 +1,12 @@
-import os
 import EngineDeps
 import ProjectPath
 from Platform import Platform as pf
 from Type import Type as tp
+import os.path
+thisdir = os.path.dirname(os.path.abspath(__file__))
+
+
+
 
 def getPf():
     return "Linux" if pf == "l" else "Windows"
@@ -66,4 +70,4 @@ f.write(
 f.close()
 
 
-os.system("rm Build/__pycache__ -r")
+os.system("rm " + thisdir + "/__pycache__ -r")
