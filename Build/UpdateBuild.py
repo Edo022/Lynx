@@ -1,8 +1,7 @@
-import BuildOptions
-from ProjectPath import ProjectPath, EnginePath
-from Platform import Platform as pf
-from Type import Type as tp
-import json
+from .BuildOptions.BuildOptions import *
+from .BuildOptions.Data.ProjectPath import *
+from .BuildOptions.Data.Platform import Platform as pf
+from .BuildOptions.Data.Type import Type as tp
 import os.path
 thisdir = os.path.dirname(os.path.abspath(__file__))
 
@@ -48,7 +47,7 @@ f.write("""
         {
             "type": "shell",
             "label": \"""" + getPf() + "  |  " + getTp() + """  |  Build Application",
-            "command": "python3",
+            "command": "",
             "args": [""" + userBuild + """,
             "problemMatcher": [ "$gcc" ],
             "options": { "cwd": "${workspaceFolder}" },
@@ -61,12 +60,12 @@ f.write("""
             "args": [
                 //Source files
 		            "-xc++", \"""" + EnginePath + """/LuxEngine/LuxEngineBuild.cpp.build",\n""" +\
-                    (BuildOptions.getDebugOptions() if tp == "d" else BuildOptions.getReleaseOptions()) + """,
+                    (getDebugOptions() if tp == "d" else getReleaseOptions()) + """,
                 //Engine
                     "-std=c++2a", "-mavx", "-pipe", "-pthread",
                     "-I./", "-ILuxEngine",
                     "-Wall",\n""" +\
-                    BuildOptions.getEngineDeps() + """,
+                    getEngineDeps() + """,
                 //Output
 					"-o", "./Build/""" + getPf() + '/LuxEngine' + getTp() + """\"
             ],

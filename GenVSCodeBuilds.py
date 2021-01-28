@@ -1,3 +1,4 @@
+import os
 import sys
 import os.path
 thisdir = os.path.dirname(os.path.abspath(__file__))
@@ -25,15 +26,16 @@ if sys.stdin.read(1) == 'y':
     if not os.path.exists(pdir + "/.vscode"):
         os.mkdir(pdir + "/.vscode")
 
-    pf = open(thisdir + "/Build/ProjectPath.py", "w")
+    EnginePath_ = os.path.relpath(thisdir, pdir)
+    pf = open(thisdir + "/Build/BuildOptions/Data/ProjectPath.py", "w")
     pf.write("ProjectPath = \"" + os.path.relpath(pdir, thisdir) + "\"\n")
-    pf.write( "EnginePath = \"" + os.path.relpath(thisdir, pdir) + "\"")
+    pf.write( "EnginePath = \"" + EnginePath_ + "\"")
     pf.close()
 
     uf = open(pdir + "/.vscode/tasks.json", "w")
     uf.write(\
             """[[
-                "LuxEngine/Build/lux_g++.py",
+                "cd", \"""" + EnginePath_ + '", "\\n", "python3", "-m", "' + ('Build/lux_g++').replace('/', '.') + """\",
                 //Your build
                 //-l[<option>], -w[<option>], -d[<option>] and -r[<option>] can be used to specify different g++ options based on the configuration
                 //e.g. -d[g3] -r[g0]        //use g3 in debug mode and g0 in release
@@ -42,5 +44,6 @@ if sys.stdin.read(1) == 'y':
             ]]""")
     uf.close()
 
-    os.system("python3 " + thisdir + "/Build/SetPlatform.py l")
-    os.system("python3 " + thisdir + "/Build/SetType.py d")
+    os.chdir(EnginePath_)
+    os.system('python3 -m Build.SetPlatform l')
+    os.system('python3 -m Build.SetType d')

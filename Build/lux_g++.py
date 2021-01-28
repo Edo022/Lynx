@@ -1,10 +1,8 @@
-import os
-import sys
-import re
-import BuildOptions
-from Platform import Platform as pf
-from Type import Type as tp
-
+import os, sys, re
+from .BuildOptions.BuildOptions import *
+from .BuildOptions.Data.Platform import Platform as pf
+from .BuildOptions.Data.Type import Type as tp
+os.chdir(os.path.abspath(ProjectPath))
 
 
 
@@ -23,7 +21,7 @@ s = 'g++' + (' -DLUX_DEBUG' if tp == 'd' else '')
 for p in sys.argv[1:]:
     s += parse(p)
 
-s += ' -pthread ' + BuildOptions.getAppDeps()
+s += ' -pthread ' + getAppDeps()
 print(s + '\n')
 os.system(s)
 
