@@ -26,7 +26,9 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-#define LUX_DEBUG
+#ifdef __INTELLISENSE__
+    #define LUX_DEBUG
+#endif
 #ifdef LUX_DEBUG
 #	define luxDebug(...) __VA_ARGS__                                //Executes a line of code only if in debug   mode
 #	define luxRelease(...)                                          //Executes a line of code only if in release mode
