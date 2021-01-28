@@ -4,14 +4,17 @@ import ProjectPath
 import textwrap
 import os.path
 thisdir = os.path.dirname(os.path.abspath(__file__))
+vkdep = ProjectPath.EnginePath + "/deps/" + ("Linux/" if pf == "l" else "Windows/") + "Vulkan-1.2.162.0/x86_64/"
+glfwdep = ProjectPath.EnginePath + "/deps/Shared/glfw-3.3.2/"
+
+
+
+
 
 
 
 
 def getEngineDeps():
-    vkdep = ProjectPath.EnginePath + "/deps/" + ("Linux/" if pf == "l" else "Windows/") + "Vulkan-1.2.162.0/x86_64/"
-    glfwdep = ProjectPath.EnginePath + "/deps/Shared/glfw-3.3.2/"
-
     return textwrap.indent(\
         '//Vulkan\n'                                +\
         '    "-I' + vkdep + 'include",\n'           +\
@@ -23,6 +26,22 @@ def getEngineDeps():
         '    "-L' + glfwdep + 'build/' + ('debug' if tp == 'd' else 'release') + '/src",\n' +\
         '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
     , ' '*4*4)
+
+
+
+
+def getAppDeps():
+    return \
+        '-I' + vkdep + 'include'        +\
+        ' -I' + glfwdep + 'include'     +\
+        ' -I' + glfwdep + 'deps'        +\
+        ' -I' + ProjectPath.EnginePath  +\
+        ' -I.'
+
+
+
+
+
 
 
 

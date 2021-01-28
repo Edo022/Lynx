@@ -16,7 +16,11 @@ if not os.path.exists(pdir):
 
 
 
-print('The files "tasks.json" and "c_cpp_properties.json"\nin "' + os.path.abspath(pdir) + '/.vscode/" will be overwritten\nContinue?')
+print('Those files will be created or overwritten:\n' +\
+    os.path.abspath(pdir) + '/.vscode/tasks.json\n' +\
+    os.path.abspath(pdir) + '/.vscode/c_cpp_properties.json\n' +\
+    'Continue?'
+)
 if sys.stdin.read(1) == 'y':
     if not os.path.exists(pdir + "/.vscode"):
         os.mkdir(pdir + "/.vscode")
@@ -31,9 +35,9 @@ if sys.stdin.read(1) == 'y':
             """[[
                 "LuxEngine/Build/lux_g++.py",
                 //Your build
-                //-l(<option>), -w(<option>), -d(<option>) and -r(<option>) can be used to specify different g++ options based on the configuration
-                //e.g. -d(-g3) -r(-g0)      //use g3 in debug mode and g0 in release
-                //e.g. -wr(-g0)             //use g0 only when building in release mode for windows
+                //-l[<option>], -w[<option>], -d[<option>] and -r[<option>] can be used to specify different g++ options based on the configuration
+                //e.g. -d[g3] -r[g0]        //use g3 in debug mode and g0 in release
+                //e.g. -wr[g0]              //use g0 only when building in release mode for windows
                 //The engine library is automatically linked
             ]]""")
     uf.close()
