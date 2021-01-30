@@ -5,7 +5,7 @@ from .BuildOptions.Data.Type import Type as tp
 os.chdir(os.path.abspath(ProjectPath))
 
 
-
+#FIXME USE C EXECUTABLE
 def parse(p) :
     if(re.match('^\\-(d|r|l|w)\\[.*\\]$', p) != None):
         if(p[1] in [pf, tp]): return ' -' + p[3:-1]

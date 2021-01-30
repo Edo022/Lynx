@@ -1,2 +1,1 @@
-ProjectPath = ".."
-EnginePath = "LuxEngine"
+LuxEngine

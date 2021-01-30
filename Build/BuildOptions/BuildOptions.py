@@ -1,11 +1,8 @@
-from .Data.Platform import Platform as pf
-from .Data.Type import Type as tp
-from .Data.ProjectPath import *
-import textwrap
-import os.path
-thisdir = os.path.dirname(os.path.abspath(__file__))
-vkdep = EnginePath + "/deps/" + ("Linux/" if pf == "l" else "Windows/") + "Vulkan-1.2.162.0/x86_64/"
-glfwdep = EnginePath + "/deps/Shared/glfw-3.3.2/"
+import textwrap#, sys
+# from .Data.Platform import Platform as pf
+# from .Data.Type import Type as tp
+# from .Data.ProjectPath import *
+# thisdir = os.path.dirname(os.path.abspath(__file__))
 
 
 
@@ -13,6 +10,26 @@ glfwdep = EnginePath + "/deps/Shared/glfw-3.3.2/"
 
 
 
+def pf():
+    f = open('./.engine/platform', 'r')
+    c = f.read(1)
+    f.close()
+    return c
+def tp():
+    f = open('./.engine/type', 'r')
+    c = f.read(1)
+    f.close()
+    return c
+def enginePath():
+    f = open('./.engine/enginePath', 'r')
+    c = f.read()
+    f.close()
+    return c
+
+
+
+vkdep = enginePath() + "/deps/" + ("Linux/" if pf() == "l" else "Windows/") + "Vulkan-1.2.162.0/x86_64/"
+glfwdep = enginePath() + "/deps/Shared/glfw-3.3.2/"
 
 def getEngineDeps():
     return textwrap.indent(\
@@ -23,22 +40,26 @@ def getEngineDeps():
         '//GLFW\n'                          +\
         '    "-I' + glfwdep + 'include",\n' +\
         '    "-I' + glfwdep + 'deps",\n'    +\
-        '    "-L' + glfwdep + 'build/' + ('debug' if tp == 'd' else 'release') + '/src",\n' +\
+        '    "-L' + glfwdep + 'build/' + ('debug' if tp() == 'd' else 'release') + '/src",\n' +\
         '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
     , ' '*4*4)
 
 
 
 
-def getAppDeps():
-    return \
-        '-I' + vkdep + 'include'            +\
-        ' -I' + glfwdep + 'include'         +\
-        ' -I' + glfwdep + 'deps'            +\
-        ' -I' + EnginePath                  +\
-        ' -I.'
+# def getAppDeps():
+#     return \
+#         '-I' + vkdep + 'include'            +\
+#         ' -I' + glfwdep + 'include'         +\
+#         ' -I' + glfwdep + 'deps'            +\
+#         ' -I' + enginePath()                +\
+#         ' -I.'
 
 
+# if(len(sys.argv) > 1 and sys.argv[1] == 'p'):
+#     f = open('./.engine/appDeps', 'w+')
+#     f.write(getAppDeps())
+#     f.close()
 
 
 

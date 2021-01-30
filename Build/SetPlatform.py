@@ -1,11 +1,12 @@
-import sys
-import os
-thisdir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(thisdir + '/..')
+import sys, os
+# thisdir = os.path.dirname(os.path.abspath(__file__))
+# os.chdir(thisdir + '/..')
 
 
-bpf = open(thisdir + "/BuildOptions/Data/Platform.py", "w")
-bpf.write("Platform = \"" + sys.argv[1] + "\"")
+bpf = open('./.engine/platform', 'w+')
+bpf.write(sys.argv[1])
 bpf.close()
 
-os.system("python3 -m Build.UpdateBuild")
+thisDir = os.path.abspath('.')
+os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/..')
+os.system('python3 -m Build.UpdateBuild ' + thisDir)

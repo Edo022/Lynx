@@ -1,11 +1,12 @@
-import sys
-import os
-thisdir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(thisdir + '/..')
+import sys, os
+# thisdir = os.path.dirname(os.path.abspath(__file__))
+# os.chdir(thisdir + '/..')
 
 
-btf = open(thisdir + "/BuildOptions/Data/Type.py", "w")
-btf.write("Type = \"" + sys.argv[1] + "\"")
+btf = open('./.engine/type', 'w+')
+btf.write(sys.argv[1])
 btf.close()
 
-os.system("python3 -m Build.UpdateBuild")
+thisDir = os.path.abspath('.')
+os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/..')
+os.system('python3 -m Build.UpdateBuild ' + thisDir)
