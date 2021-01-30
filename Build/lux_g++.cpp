@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
         " -I" + "."                 +
         " -L" + vkdep + "lib"       +
         " -L" + glfwdep + "build/" + (tp == 'd' ? "debug" : "release") + "/src" +
-        " -lvulkan -ldl, -lrt, -lXrandr, -lXi, -lXcursor, -lXinerama, -lX11, -lglfw3"
+        " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
     s += appDeps + " -pthread" + (tp == 'd' ? " -DLUX_DEBUG" : "");
 
