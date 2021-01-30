@@ -72,11 +72,11 @@ f.write("""
                     (foo.getDebugOptions() if foo.tp() == "d" else foo.getReleaseOptions()) + """,
                 //Engine
                     "-std=c++2a", "-mavx", "-pipe", "-pthread",
-                    "-I./", "-ILuxEngine",
+                    "-I""" + foo.enginePath() + """\",
                     "-Wall",\n""" +\
                     foo.getEngineDeps() + """,
                 //Output
-					"-o", "./Build/""" + getPf() + '/LuxEngine' + getTp() + """\"
+					"-c", "-o", \"""" + foo.enginePath() + '/Build/' + getPf() + '/LuxEngine' + getTp() + """\"
             ],
             "problemMatcher": [ "$gcc" ],
             "options": { "cwd": "${workspaceFolder}" },
