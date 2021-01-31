@@ -23,7 +23,7 @@ namespace lux::sys{
 
 
 	luxAutoInit(LUX_H_SYSTEM) {
-		static bool once = true;
+		static bool once = true; //TODO REMOVE. print error instead of checking in runtime
 		if(once) {									//Execute only once
 			once = false;
 			char buff[FILENAME_MAX];					//Create char array to store the path

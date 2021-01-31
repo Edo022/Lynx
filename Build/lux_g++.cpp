@@ -60,10 +60,14 @@ int main(int argc, char* argv[]){
         " -I" + enginePath          +
         " -I" + "."                 +
         " -L" + vkdep + "lib"       +
-        " -L" + glfwdep + "build/" + (tp == 'd' ? "debug" : "release") + "/src" +
+        " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src" +
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
-    s += appDeps + " -pthread" + (tp == 'd' ? " -DLUX_DEBUG" : "");
+    s += appDeps                                        +
+        " -pthread" + (tp == 'd' ? " -DLUX_DEBUG" : "") +
+        " -DenginePath=\"\\\"" + enginePath + "\\\"\""  +
+        " " + enginePath + "/LuxEngine/getEnginePath.cpp"
+    ;
 
 
     //Output and run command

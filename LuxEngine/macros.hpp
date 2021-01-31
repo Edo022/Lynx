@@ -2,6 +2,7 @@
 #include "LuxEngine_config.hpp"
 
 
+
 //TODO remove this header
 #undef max
 #undef min
@@ -60,7 +61,8 @@ typedef std::chrono::system_clock::time_point LuxTime;
 
 
 
-
+//Returns the relative path to the engine files
+neverInline const char* getEnginePath();
 
 
 
