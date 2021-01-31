@@ -45,7 +45,13 @@ int main(int argc, char* argv[]){
 
 
     //Create g++ command and parse user arguments
-    auto s = string("g++ ") + enginePath + "/Build/" + gettp() + "/LuxEngine" + getpf();
+    auto s = string("g++")                                  +
+        " -pthread" + (tp == 'd' ? " -DLUX_DEBUG" : "")     +
+        " -DenginePath=\"\\\"" + enginePath + "\\\"\""      +
+        " " + enginePath + "/LuxEngine/getEnginePath.cpp"   +
+        " " + enginePath + "/LuxEngine/Core/Env.cpp"        +
+        " " + enginePath + "/Build/" + gettp() + "/LuxEngine" + getpf()
+    ;
     for(auto i = 1; i < argc; ++i) s += parse(argv[i]);
 
 
@@ -63,11 +69,7 @@ int main(int argc, char* argv[]){
         " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src" +
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
-    s += appDeps                                        +
-        " -pthread" + (tp == 'd' ? " -DLUX_DEBUG" : "") +
-        " -DenginePath=\"\\\"" + enginePath + "\\\"\""  +
-        " " + enginePath + "/LuxEngine/getEnginePath.cpp"
-    ;
+    s += appDeps;
 
 
     //Output and run command

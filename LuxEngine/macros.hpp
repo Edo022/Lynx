@@ -64,7 +64,13 @@ typedef std::chrono::system_clock::time_point LuxTime;
 //Returns the relative path to the engine files
 neverInline const char* getEnginePath();
 
-
+#ifdef __INTELLISENSE__
+    //Path to the engine files. Generated during user app compilation
+    //This macro may only be used by the user application
+    //DO NOT use this macro in the engine code. Call getEnginePath() instead.
+	#define enginePath "<generated>"
+#endif
+//FIXME USE EXTERN CONST CHAR INSTEAD OF MACRO AND FUNCTION
 
 
 
