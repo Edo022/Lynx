@@ -3,3 +3,4 @@ Junk/
 Build/Linux
 Build/Windows
 .vscode
+__pycache__/
