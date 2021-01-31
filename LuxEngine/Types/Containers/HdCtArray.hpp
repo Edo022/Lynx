@@ -1,3 +1,4 @@
+#pragma once
 #define LUX_H_HDCTARRAY
 #include "LuxEngine/Types/Integers/Integers.hpp"
 
