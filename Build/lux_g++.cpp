@@ -56,10 +56,10 @@ int main(int argc, char* argv[]){
 
 
     //Add app dependencies
-    auto vkdep = string(enginePath) + "/deps/" + (pf == 'l' ? "Linux/" : "Windows/") + "Vulkan-1.2.162.0/x86_64/";
+    auto vkdep   = string(enginePath) + "/deps/" + gettp() + "/Vulkan-1.2.162.0/x86_64/";
     auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.2/";
 
-    auto appDeps = string("")  +
+    s +=
         " -I" + vkdep + "include"   +
         " -I" + glfwdep + "include" +
         " -I" + glfwdep + "deps"    +
@@ -69,7 +69,6 @@ int main(int argc, char* argv[]){
         " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src" +
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
-    s += appDeps;
 
 
     //Output and run command
