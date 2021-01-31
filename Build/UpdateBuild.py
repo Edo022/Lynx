@@ -1,10 +1,4 @@
-# from LuxEngine.Build.BuildOptions.BuildOptions import enginePath
 import sys, os
-# from .BuildOptions.BuildOptions import *
-# from .BuildOptions.Data.ProjectPath import *
-# from .BuildOptions.Data.Platform import Platform as pf
-# from .BuildOptions.Data.Type import Type as tp
-# thisdir = os.path.dirname(os.path.abspath(__file__))
 
 enginePath_ = os.path.abspath('.')
 os.chdir(sys.argv[1])
@@ -109,6 +103,3 @@ f.write("""
     ]
 }\n""")
 f.close()
-
-
-# os.system("rm " + thisdir + "/__pycache__ -r")

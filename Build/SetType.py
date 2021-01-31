@@ -1,6 +1,4 @@
 import sys, os
-# thisdir = os.path.dirname(os.path.abspath(__file__))
-# os.chdir(thisdir + '/..')
 
 
 btf = open('./.engine/type', 'w+')

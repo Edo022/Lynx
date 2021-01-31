@@ -1,6 +1,4 @@
 import sys, os
-# thisdir = os.path.dirname(os.path.abspath(__file__))
-# os.chdir(thisdir + '/..')
 
 
 bpf = open('./.engine/platform', 'w+')
