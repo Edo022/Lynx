@@ -13,7 +13,7 @@
 namespace lux::thr {
 	FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
 	//TODO use lux threads
-	win10(HANDLE)linux(pthread_t) mngThr;								//The handle of the thread that controls the pool
+	win10(HANDLE)_linux(pthread_t) mngThr;								//The handle of the thread that controls the pool
 	RtArray<ThrPoolElm>		threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);	//The threads of the thread pool with their states and functions
 	RaArray<ThrState, uint32>	thrStates;								//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 

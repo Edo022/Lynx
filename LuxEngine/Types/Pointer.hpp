@@ -360,7 +360,7 @@ namespace lux::ram{
 						}
 						else{															//Fixed size --> custom
 							uint64 size_ = vSize / LuxIncSize * (LuxIncSize + 1);			//Calculate the new size and allocate the new memory
-							cell->address = win10(_aligned_malloc(size_, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, size_));
+							cell->address = win10(_aligned_malloc(size_, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size_));
 						}
 						if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory
 						//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data
@@ -458,13 +458,13 @@ namespace lux::ram{
 			cell->localIndex = localIndex;									//Save local index in cell object
 
 			const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
-			if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, bufferSize));
+			if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
 			//															 	 Save allocation address in cell object
 			cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
 		}
 		else{															//For custom size cells
 			uint64 size = vSize / LuxIncSize * (LuxIncSize + 1);			//Calculate the new size and allocate a new buffer
-			cell->address = win10(_aligned_malloc(size, LuxMemOffset)) linux(aligned_alloc(LuxMemOffset, size));
+			cell->address = win10(_aligned_malloc(size, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size));
 			luxDebug(cell->localIndex = 0;)
 		}
 		luxDebug(cell->firstOwner = cell->lastOwner = nullptr);

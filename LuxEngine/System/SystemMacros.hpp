@@ -1,5 +1,4 @@
-
-
+#pragma once
 #if !defined __GNUC__ || !defined __cplusplus		//Use only gcc
 #	error gcc compiler required
 #endif
@@ -7,7 +6,7 @@
 
 #ifdef _WIN64														//Windows
 #	define win10(...) __VA_ARGS__										//Executes a line of code only when compiling for windows 10
-#	define linux(...)													//Executes a line of code only when compiling for linux
+#	define _linux(...)													//Executes a line of code only when compiling for linux
 #	include <direct.h>													//  DIR | For _getcwd()
 #	define __lp_get_cwd _getcwd											//  DIR | Get current working directory
 #	define __lp_get_nopt(n)	n = std::thread::hardware_concurrency();	//  THR | Get number of physical threads
@@ -18,7 +17,7 @@
 
 #elif defined __linux__												//Linux
 #	define win10(...)													//Executes a line of code only when compiling for windows 10
-#	define linux(...) __VA_ARGS__										//Executes a line of code only when compiling for linux
+#	define _linux(...) __VA_ARGS__										//Executes a line of code only when compiling for linux
 #	include <unistd.h>													//  DIR | For getcwd()
 #	define __lp_get_cwd getcwd											//  DIR | Get current working directory
 #	define __lp_get_nopt(n) n = std::thread::hardware_concurrency();	//  THR | Get nuber of physical threads

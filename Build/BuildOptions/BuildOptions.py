@@ -1,8 +1,4 @@
-import textwrap#, sys
-# from .Data.Platform import Platform as pf
-# from .Data.Type import Type as tp
-# from .Data.ProjectPath import *
-# thisdir = os.path.dirname(os.path.abspath(__file__))
+import textwrap
 
 
 
@@ -43,23 +39,6 @@ def getEngineDeps():
         '    "-L' + glfwdep + 'build/' + ('debug' if tp() == 'd' else 'release') + '/src",\n' +\
         '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
     , ' '*4*4)
-
-
-
-
-# def getAppDeps():
-#     return \
-#         '-I' + vkdep + 'include'            +\
-#         ' -I' + glfwdep + 'include'         +\
-#         ' -I' + glfwdep + 'deps'            +\
-#         ' -I' + enginePath()                +\
-#         ' -I.'
-
-
-# if(len(sys.argv) > 1 and sys.argv[1] == 'p'):
-#     f = open('./.engine/appDeps', 'w+')
-#     f.write(getAppDeps())
-#     f.close()
 
 
 

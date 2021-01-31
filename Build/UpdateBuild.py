@@ -18,14 +18,14 @@ def getTp():
 
 
 
-
+#Open tasks file
 f = open("./.vscode/tasks.json", "r")
 
-while(f.read(1) != '['):
-    None
-while(f.read(1) != '['):
-    None
+#Find user build
+while(f.read(1) != '['): pass
+while(f.read(1) != '['): pass
 
+#read user build
 userBuild = ''
 n = 1
 while(n > 0):

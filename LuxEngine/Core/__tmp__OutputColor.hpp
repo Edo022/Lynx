@@ -34,38 +34,38 @@ namespace __tmp_output_color{
 
 
     inline auto& red(std::ostream& stream) {
-        linux(stream << "\033[31m");
+        _linux(stream << "\033[31m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_RED));
         return stream;
     }
 
     inline auto& green(std::ostream& stream) {
-        linux(stream << "\033[32m");
+        _linux(stream << "\033[32m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_GREEN));
         return stream;
     }
 
     inline auto& yellow(std::ostream& stream) {
-        linux(stream << "\033[33m");
+        _linux(stream << "\033[33m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_GREEN | FOREGROUND_RED));
         return stream;
     }
 
     inline auto& blue(std::ostream& stream) {
-        linux(stream << "\033[34m");
+        _linux(stream << "\033[34m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_BLUE));
         return stream;
     }
 
     inline auto& magenta(std::ostream& stream) {
-        linux(stream << "\033[35m");
+        _linux(stream << "\033[35m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_BLUE | FOREGROUND_RED));
         return stream;
     }
 
 
     inline auto& white(std::ostream& stream) {
-        linux(stream << "\033[37m");
+        _linux(stream << "\033[37m");
         win10(__pvt::win_change_attributes(stream, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED));
         return stream;
     }
@@ -87,7 +87,7 @@ namespace __tmp_output_color{
 
             if (!std_stream) return false;
 
-            linux(return ::isatty(fileno(std_stream)));
+            _linux(return ::isatty(fileno(std_stream)));
             win10(return ::_isatty(_fileno(std_stream)));
         }
 
