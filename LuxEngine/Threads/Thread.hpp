@@ -3,7 +3,7 @@
 #include <pthread.h>
 #include <csignal>
 #include <cstdlib>
-#include "LuxEngine/Types/Containers/HdCtArray.hpp"
+#include "LuxEngine/Types/Containers/HcArray.hpp"
 
 //TODO minimize copies
 //TODO fix memory leaks
@@ -33,7 +33,7 @@ namespace lux{
 		//pFunc | The function to initialize the thread with
 		//pArgs | List of function arguments
 		//e.g. lux::thread t(&sum, {2, 2});
-		template<class funcType, class argType, class ...argsTypes> inline thread(const funcType pFunc, const lux::HdCtArray<argType, argsTypes...>& pArgs) {
+		template<class funcType, class argType, class ...argsTypes> inline thread(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 			operator()(pFunc, pArgs);
 		}
 		template<class funcType> inline thread(const funcType pFunc) { operator()(pFunc); }
@@ -42,7 +42,7 @@ namespace lux{
 
 
 
-		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HdCtArray<argType, argsTypes...>& pArgs) {
+		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 			lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argType, argsTypes...>));
 			func_args->_func = pFunc;
 			func_args->_args = pArgs;

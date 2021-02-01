@@ -26,7 +26,7 @@
 .    subclasses          | RaArray        | any        | 1         | random       | rt    | rt       | gmp          | heap/stack  |  Random access array
 .                        | Stirng         | char8      | 1         | contiguous   | rt    | rt       | gmp          | heap/stack  |  just String
 .    --------------------|----------------|------------|-----------|--------------|-------|----------|--------------|-------------|
-.    special containers  | HdCtArray      | any        | no limit  | imp specific | ct    | ct/rt    | default      | stack       |  Heterogeneous data compile time array
+.    special containers  | HcArray      | any        | no limit  | imp specific | ct    | ct/rt    | default      | stack       |  Heterogeneous data compile time array
 .                        | LuxMap_NMP_S   | any        | 1         | random       | cy    | rt       | default      | heap        |  deprecated version of RaArray used by the memory pool
 .    --------------------'----------------'------------'-----------'--------------'-------'----------'--------------'-------------'
 .    ct  = Compile time
@@ -44,7 +44,7 @@
 .    |                |                     | freeSize()         | usedCount(), freeCount()|                       |       |          |              |
 .    | Stirng         | operator[]          | size()             | count()                 | operator+, operator+= | rt    | rt       | gmp          |
 .    |----------------|---------------------|--------------------|-------------------------|-----------------------|-------|----------|--------------|
-.    | HdCtArray      | get<>(), operator[] | -                  | count()                 | -                     | ct    | ct/rt    | default      |
+.    | HcArray      | get<>(), operator[] | -                  | count()                 | -                     | ct    | ct/rt    | default      |
 .    | LuxMap_NMP_S   | operator[]          | -                  | count()                 | add()                 | rt    | rt       | default      |
 .    '----------------'---------------------'--------------------'-------------------------'-----------------------'-------'----------'--------------'
 .

@@ -25,7 +25,7 @@
 
 
 namespace lux{
-		template<class ...types> struct HdCtArray;
+		template<class ...types> struct HcArray;
 		// Runtime get (rtGet function) helper structures ---------------------------------------------------------------------------------------------//
 
 
@@ -85,7 +85,7 @@ namespace lux{
 		struct NoRet_t{};												//Dummy return type for void func_tions
 		template<class func_t, class ...args_ts> struct exec_thr{		//Structure containing the func_tion call informations
 			func_t _func;												//func_tion pointer
-			lux::HdCtArray<args_ts...> _args;							//func_tion arguments
+			lux::HcArray<args_ts...> _args;							//func_tion arguments
 		};
 
 
@@ -200,11 +200,11 @@ namespace lux{
 	 * @brief "Heterogeneous Data Compile Time Array".
 	 *		An array that constains elements of different types.
 	 *		Size and types must be known at compile time.
-	 *		e.g.  lux::HdCtArray arr = { 1, false, "mogu mogu" };
+	 *		e.g.  lux::HcArray arr = { 1, false, "mogu mogu" };
 	 */
-	template<class ...types> struct HdCtArray : __pvt::seq<sizeof...(types), seqIndex, types...>{
-		alwaysInline HdCtArray() {}
-		alwaysInline HdCtArray(types... vals) {
+	template<class ...types> struct HcArray : __pvt::seq<sizeof...(types), seqIndex, types...>{
+		alwaysInline HcArray() {}
+		alwaysInline HcArray(types... vals) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::init(vals...);
 		}
 
@@ -289,10 +289,10 @@ namespace lux{
 
 
 	/**
-	 * @brief Handy HdCtArray alias
+	 * @brief Handy HcArray alias
 	 */
-	template<class... types> struct L : HdCtArray<types...>{
-		alwaysInline L() : HdCtArray<types...>() {}
-		alwaysInline L(const types&... vals) : HdCtArray<types...>(vals...) {}
+	template<class... types> struct L : HcArray<types...>{
+		alwaysInline L() : HcArray<types...>() {}
+		alwaysInline L(const types&... vals) : HcArray<types...>(vals...) {}
 	};
 }
