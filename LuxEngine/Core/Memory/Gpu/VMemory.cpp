@@ -18,7 +18,8 @@ namespace lux::rem{
 	luxAutoInit(LUX_H_VMEMORY) {
 		//Set max allocation count and resize buffer types array
 		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * (uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM);
+		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * ((uint32)lux::__pvt::CellClassIndex::NUM + 1) * (uint32)lux::AllocType::NUM);
+		//FIXME NUM + 1 cause the new memory pool doesnt have CLASS 0 index. UPDATE VMEMORY POOL
 
 		//Init buffer types
 		uint32 index;
