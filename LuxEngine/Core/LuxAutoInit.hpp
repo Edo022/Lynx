@@ -3,10 +3,10 @@
 //This macro can only be used in the global scope of .cpp files
 #define luxAutoInit(tu)                            		\
 	namespace __pvt{									\
-		void tu##_AutoInit_f();							\
-		struct tu##_AutoInit_t{                   		\
-			tu##_AutoInit_t() { tu##_AutoInit_f(); }	\
+		void __lainit##tu##_f();						\
+		struct __lainit##tu##_t{                   		\
+			__lainit##tu##_t() { __lainit##tu##_f(); }	\
 		};												\
-		tu##_AutoInit_t tu##_Initializer;				\
+		__lainit##tu##_t __lainit##tu##_v;				\
 	}													\
-	void __pvt::tu##_AutoInit_f() //{ ... } 			//Implementation
+	void __pvt::__lainit##tu##_f() //{ ... } 			//Implementation
