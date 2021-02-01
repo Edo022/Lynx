@@ -1,5 +1,5 @@
 #include "LuxEngine/Core/Memory/Shared.hpp"
-#include "LuxEngine/Core/Memory/LuxMap_NMP_S.hpp"
+#include "LuxEngine/Types/Containers/RaArray.hpp"
 
 
 
@@ -16,17 +16,8 @@ namespace lux{
 		NUM							//Number of LUX_ALLOC_TYPE values
 	};
     namespace rem{
-        struct Cell_t;
-        struct MemBuffer {
-            VkBuffer buffer;					//Vulkan buffer object
-            VkDeviceMemory memory;				//Vulkan buffer memory
-            Map_NMP_S<Cell_t, uint32> cells;	//Cells in the buffer
-        };
-        struct MemBufferType {
-            CellClass cellClass;				//Class of the cells
-            lux::AllocType allocType;	        //Buffer allocation type
-            Map_NMP_S<MemBuffer, uint32> buffers;//Buffers containing the cells
-        };
+        struct MemBuffer;
+        struct MemBufferType;
         struct Cell_t {
             uint64 cellSize;					//Size of the cell in bytes
             MemBufferType* bufferType;			//Type of buffer allocation
@@ -34,7 +25,20 @@ namespace lux{
             uint32 cellIndex;					//Index of the cell in the buffer
 
             void* map();
-            inline void unmap() { vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
+            inline void unmap();
         };
+
+        struct MemBuffer {
+            VkBuffer buffer;					//Vulkan buffer object
+            VkDeviceMemory memory;				//Vulkan buffer memory
+            RaArray<Cell_t> cells;	//Cells in the buffer
+        };
+        struct MemBufferType {
+            CellClass cellClass;				//Class of the cells
+            lux::AllocType allocType;	        //Buffer allocation type
+            RaArray<MemBuffer> buffers;//Buffers containing the cells
+        };
+
+        inline void Cell_t::unmap() { vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
     }
 }

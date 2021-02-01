@@ -344,7 +344,7 @@ namespace lux::ram{
 			}
 			else { 																//If it's allocated
 				if(																	//And the new size is smaller than the maximum cell size
-					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= vSize / LuxIncSize * (LuxIncSize + 1)) ) {
+					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / LuxIncSize + 1) * LuxIncSize) ) {
 					[[likely]] cell->cellSize = vSize;									//change the cellSize variable and return //FIXME move to fixed size cell
 				}
 				else{															//If it's larger than the maximum cell size //TODO check realloc and free returns
@@ -359,7 +359,7 @@ namespace lux::ram{
 							cell->address = (char*)type_.memory[cell->localIndex / type_.cellsPerBuff] + (uint64)type_.cellClass * cell->localIndex;
 						}
 						else{															//Fixed size --> custom
-							uint64 size_ = vSize / LuxIncSize * (LuxIncSize + 1);			//Calculate the new size and allocate the new memory
+							uint64 size_ = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate the new memory
 							cell->address = win10(_aligned_malloc(size_, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size_));
 						}
 						if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory
@@ -463,7 +463,7 @@ namespace lux::ram{
 			cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
 		}
 		else{															//For custom size cells
-			uint64 size = vSize / LuxIncSize * (LuxIncSize + 1);			//Calculate the new size and allocate a new buffer
+			uint64 size = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate a new buffer
 			cell->address = win10(_aligned_malloc(size, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size));
 			luxDebug(cell->localIndex = 0;)
 		}
