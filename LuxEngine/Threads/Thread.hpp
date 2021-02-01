@@ -66,7 +66,7 @@ namespace lux{
 		//Sets the thread name.    this function should only be used for debuggin purposes
 		inline void setName(const char* pName) { pthread_setname_np(thr, pName); }
 		//Returns the thread name. this function should only be used for debuggin purposes
-		inline const char* getName(const char* pName) { char* name; pthread_getname_np(thr, name, 16); return name; }
+		inline const char* getName() { char* name = (char*)malloc(16); pthread_getname_np(thr, name, 16); return name; }
 
 
 		inline void join() { pthread_join(thr, nullptr); }
@@ -80,7 +80,11 @@ namespace lux{
 			static inline void resume() { pthread_kill(pthread_self(), SIGCONT); }
 
 			static inline void setName(const char* pName) { pthread_setname_np(pthread_self(), pName); }
-			static inline const char* getName(const char* pName) { char* name; pthread_getname_np(pthread_self(), name, 16); return name; }
+			static inline const char* getName() {
+				char* name = (char*)malloc(16);
+				pthread_getname_np(pthread_self(), name, 16);
+				return name;
+			}
 
 			static inline void detach() { pthread_detach(pthread_self()); }
 			static inline void yield() { pthread_yield(); }
