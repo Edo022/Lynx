@@ -4,31 +4,44 @@
 #include <csignal>
 #include <cstdlib>
 #include "LuxEngine/Types/Containers/HcArray.hpp"
-
 //TODO minimize copies
 //TODO fix memory leaks
+
+
+
+
+
+
 
 
 namespace lux{
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wpointer-arith"
 	namespace __pvt{
-		template<int n, class funcType, class ...argsTypes> struct thread_ctor_t{
-			static void* mt_func(void* _args) {
-				lux::__pvt::exec_thr<funcType, argsTypes...>* cArgs = (lux::__pvt::exec_thr<funcType, argsTypes...>*)_args;
-				cArgs->_args.template exec<funcType>(cArgs->_func);
-				return nullptr;
-			}
-		};
-		template<class funcType> struct thread_ctor_t<0, funcType> {
-			static void* mt_func(void* _args) {
-				(*((funcType*)_args))();
-				return nullptr;
-			}
-		};
+		//Executes a non member void function
+		template<int n, class funcType, class ...argsTypes> static void* threadRunVoid(void* _args) {
+			auto cArgs = (lux::__pvt::exec_thr<funcType, argsTypes...>*)_args;	//
+			cArgs->_args.template exec<funcType>(cArgs->_func);					//
+			return nullptr;														//Return nothing
+		}
+
+
+		//Executes a non member void function that takes no arguments
+		template<class funcType> alwaysInline static void* threadRunVoidNoParams(void* _args) {
+			((funcType)_args)();											//Cast the function to the right type and call it
+			return nullptr;														//Return nothing
+		}
 	}
 	#pragma GCC diagnostic pop
-	struct Thread /*: __pvt::thread_ctor_t<1, int>, __pvt::thread_ctor_t<0, int>*/ {
+
+
+
+
+
+
+
+
+	struct Thread {
 		pthread_t thr;
 
 
@@ -59,19 +72,18 @@ namespace lux{
 		 * @param pArgs The function arguments
 		 */
 		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
-			lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argType, argsTypes...>));
+			auto func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(*func_args));
 			func_args->_func = pFunc;
 			func_args->_args = pArgs;
-			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<1, funcType, argType, argsTypes...>::mt_func, func_args);
+			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoid<1, funcType, argType, argsTypes...>, func_args);
 		}
 		/**
 		 * @brief Initializes a thread with a non member void function that takes no arguments
 		 * @param pFunc The function to execute
 		 */
+		//FIXME storing a function pointer in a void* is probably not a good idea
 		template<class funcType> void operator()(const funcType pFunc) {
-			funcType* func_args = (funcType*)malloc(sizeof(funcType));
-			*func_args = pFunc;
-			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<0, funcType>::mt_func, func_args);
+			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoidNoParams<funcType>, (void*)pFunc);
 		}
 		// template<class objType, class funcType, class argType, class ...argsTypes> void operator()(objType& pObj, const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 		// 	lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argType, argsTypes...>));
