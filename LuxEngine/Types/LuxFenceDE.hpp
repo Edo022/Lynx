@@ -48,14 +48,15 @@ namespace lux{
 	};
 
 
-	//Forces any thread to stop in the wait() function call until the fence gets signaled
-	//In the case it's already signaled, nothing will happen
-	//This structure doesn't have a thread limit
+	//Forces any thread to stop in the wait() function until the fence gets set
+	//By default, the fence is unset
 	struct pollFence{
-		char s = 1;
+		char s = 0;
 		void wait() { while(!s) { lux::thr::self::yield(); } }
-		void signal() { s = 0; }
-		void reset() { s = 1; }
+		//Sets the fence, allowing other threads to resume execution
+		void set() { s = 1; }
+		//Unsets the fence
+		void unset() { s = 0; }
 	};
 
 
