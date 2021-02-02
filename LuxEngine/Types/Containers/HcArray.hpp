@@ -83,12 +83,6 @@ namespace lux{
 
 
 		struct NoRet_t{};												//Dummy return type for void functions
-		template<class func_t, class ...args_ts> struct exec_thr{		//Structure containing the function call informations
-			func_t _func;												//function pointer
-			lux::HcArray<args_ts...> _args;							//function arguments
-		};
-
-
 		//Executes a non-void non-member function
 		template<class func_t, class ret_t, class ...args_ts> struct exec_t{
 			static alwaysInline void exec(func_t _func, ret_t* _ret, args_ts&... _args) { *_ret = _func(_args...); }
@@ -97,6 +91,8 @@ namespace lux{
 		template<class func_t, class ...args_ts> struct exec_t<func_t, NoRet_t, args_ts...> {
 			static alwaysInline void exec(func_t _func, NoRet_t* _ret, args_ts&... _args) { _func(_args...); }
 		};
+
+
 
 
 		//Executes a non-void member function

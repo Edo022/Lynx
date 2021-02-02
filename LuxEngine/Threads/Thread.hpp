@@ -16,6 +16,20 @@
 
 namespace lux{
 	namespace __pvt{
+		template<class func_t, class ...args_ts> struct exec_thr{				//Structure containing the function call informations
+			func_t _func;															//function pointer
+			lux::HcArray<args_ts...> _args;											//function arguments
+		};
+
+		template<class obj_t, class func_t, class ...args_ts> struct exec_obj{	//Structure containing the function call informations for member functions
+			obj_t& _obj;															//function pointer
+			func_t _func;															//function pointer
+			lux::HcArray<args_ts...> _args;											//function arguments
+		};
+
+
+
+
 		//Executes a non member void function
 		template<class funcType, class ...argsTypes> static void* threadRunVoid(void* _args) {
 			using funcp = exec_thr<funcType, argsTypes...>*;
@@ -92,9 +106,9 @@ namespace lux{
 		 */
 		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 			using funct = lux::__pvt::exec_thr<funcType, argType, argsTypes...>;
-			auto funcd = (funct*)malloc(sizeof(funct));
-			funcd->_func = pFunc;
-			funcd->_args = pArgs;
+			auto funcd = (funct*)malloc(sizeof(funct));		//Allocate function data in the heap so that it doesnt get destroyed when the parent returns
+			funcd->_func = pFunc;							//Copy function address
+			funcd->_args = pArgs;							//Copy (((parameters references) array) by value)
 			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoid<funcType, argType, argsTypes...>, funcd);
 		}
 		/**
@@ -112,18 +126,20 @@ namespace lux{
 		//  * @param pFunc The function to execute
 		//  * @param pArgs The function arguments
 		//  */
-		// template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
-		// 	using namespace lux::__pvt;
-		// 	auto func_args = (exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(exec_thr<funcType, argType, argsTypes...>));
-		// 	func_args->_func = pFunc;
-		// 	func_args->_args = pArgs;
-		// 	pthread_create(&thr, nullptr, threadRunVoid<1, funcType, argType, argsTypes...>, func_args);
+		// template<class objType, class funcType, class argType, class ...argsTypes> void operator()(objType& obj, const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		// 	//FIXME
+		// 	using funct = lux::__pvt::exec_thr<funcType, argType, argsTypes...>;
+		// 	auto funcd = (funct*)malloc(sizeof(funct));
+		// 	funcd->_func = pFunc;
+		// 	funcd->_args = pArgs;
+		// 	pthread_create(&thr, nullptr, lux::__pvt::threadRunVoid<funcType, argType, argsTypes...>, funcd);
 		// }
 		// /**
 		//  * @brief Initializes a thread with a non member void function that takes no arguments
 		//  * @param pFunc The function to execute
 		//  */
-		// template<class funcType> void operator()(const funcType pFunc) {
+		// template<class objType, class funcType> void operator()(objType& obj, const funcType pFunc) {
+		// 	//FIXME
 		// 	pthread_create(&thr, nullptr, lux::__pvt::threadRunVoidNoParams<funcType>, (void*)pFunc);
 		// }
 
