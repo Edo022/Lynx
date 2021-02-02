@@ -37,8 +37,8 @@ namespace lux::core{
 	uint32 						requiredDeviceExtensionsNum	= 1;
 	const  char** 				requiredDeviceExtensions 	= { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
 
-	lux::thread FPSCounterThr;
-	lux::thread renderThr;
+	lux::Thread FPSCounterThr;
+	lux::Thread renderThr;
 
 
 

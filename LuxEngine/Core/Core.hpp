@@ -90,8 +90,8 @@ namespace lux::core{
 	extern uint32					validationLayersNum;
 	extern uint32					requiredDeviceExtensionsNum;
 
-	extern lux::thread FPSCounterThr;
-	extern lux::thread renderThr;
+	extern lux::Thread FPSCounterThr;
+	extern lux::Thread renderThr;
 
 
 

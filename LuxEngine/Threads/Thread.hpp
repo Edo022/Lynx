@@ -28,16 +28,16 @@ namespace lux{
 		};
 	}
 	#pragma GCC diagnostic pop
-	struct thread /*: __pvt::thread_ctor_t<1, int>, __pvt::thread_ctor_t<0, int>*/ {
+	struct Thread /*: __pvt::thread_ctor_t<1, int>, __pvt::thread_ctor_t<0, int>*/ {
 		pthread_t thr;
 		//pFunc | The function to initialize the thread with
 		//pArgs | List of function arguments
 		//e.g. lux::thread t(&sum, {2, 2});
-		template<class funcType, class argType, class ...argsTypes> inline thread(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		template<class funcType, class argType, class ...argsTypes> inline Thread(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 			operator()(pFunc, pArgs);
 		}
-		template<class funcType> inline thread(const funcType pFunc) { operator()(pFunc); }
-		thread() { thr = 0; }
+		template<class funcType> inline Thread(const funcType pFunc) { operator()(pFunc); }
+		Thread() { thr = 0; }
 
 
 
@@ -66,7 +66,11 @@ namespace lux{
 		//Sets the thread name.    this function should only be used for debuggin purposes
 		inline void setName(const char* pName) { pthread_setname_np(thr, pName); }
 		//Returns the thread name. this function should only be used for debuggin purposes
-		inline const char* getName() { char* name = (char*)malloc(16); pthread_getname_np(thr, name, 16); return name; }
+		inline const char* getName() {
+			char* name = (char*)malloc(16);
+			pthread_getname_np(thr, name, 16);
+			return name;
+		}
 
 
 		inline void join() { pthread_join(thr, nullptr); }
@@ -79,7 +83,9 @@ namespace lux{
 			static inline void suspend() { pthread_kill(pthread_self(), SIGSTOP); }
 			static inline void resume() { pthread_kill(pthread_self(), SIGCONT); }
 
-			static inline void setName(const char* pName) { pthread_setname_np(pthread_self(), pName); }
+			static inline void setName(const char* pName) {
+				pthread_setname_np(pthread_self(), pName);
+			}
 			static inline const char* getName() {
 				char* name = (char*)malloc(16);
 				pthread_getname_np(pthread_self(), name, 16);
@@ -90,7 +96,7 @@ namespace lux{
 			static inline void yield() { pthread_yield(); }
 
 			//Returns the calling thread as a lux::thread structure
-			inline thread operator()() { thread thr; thr.thr = pthread_self(); return thr; }
+			inline Thread operator()() { Thread thr; thr.thr = pthread_self(); return thr; }
 		};
 	}
 };
