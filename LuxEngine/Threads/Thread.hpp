@@ -72,16 +72,16 @@ namespace lux{
 		 * @param pArgs The function arguments
 		 */
 		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
-			auto func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(*func_args));
+			using namespace lux::__pvt;
+			auto func_args = (exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(exec_thr<funcType, argType, argsTypes...>));
 			func_args->_func = pFunc;
 			func_args->_args = pArgs;
-			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoid<1, funcType, argType, argsTypes...>, func_args);
+			pthread_create(&thr, nullptr, threadRunVoid<1, funcType, argType, argsTypes...>, func_args);
 		}
 		/**
 		 * @brief Initializes a thread with a non member void function that takes no arguments
 		 * @param pFunc The function to execute
 		 */
-		//FIXME storing a function pointer in a void* is probably not a good idea
 		template<class funcType> void operator()(const funcType pFunc) {
 			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoidNoParams<funcType>, (void*)pFunc);
 		}
