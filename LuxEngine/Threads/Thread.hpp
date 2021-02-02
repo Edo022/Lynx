@@ -30,29 +30,60 @@ namespace lux{
 	#pragma GCC diagnostic pop
 	struct Thread /*: __pvt::thread_ctor_t<1, int>, __pvt::thread_ctor_t<0, int>*/ {
 		pthread_t thr;
-		//pFunc | The function to initialize the thread with
-		//pArgs | List of function arguments
-		//e.g. lux::thread t(&sum, {2, 2});
-		template<class funcType, class argType, class ...argsTypes> inline Thread(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+
+
+		//Doesn't initialize the thread. Call operator() on the object to initialize it later
+		alwaysInline Thread() { thr = 0; }
+
+		/**
+		 * @brief Initializes a thread with a non member void function
+		 * @param pFunc The function to execute
+		 * @param pArgs The function arguments
+		 */
+		template<class funcType, class argType, class ...argsTypes> alwaysInline Thread(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 			operator()(pFunc, pArgs);
 		}
-		template<class funcType> inline Thread(const funcType pFunc) { operator()(pFunc); }
-		Thread() { thr = 0; }
+
+		/**
+		 * @brief Initializes a thread with a non member void function that takes no arguments
+		 * @param pFunc The function to execute
+		 */
+		template<class funcType> alwaysInline Thread(const funcType pFunc) { operator()(pFunc); }
 
 
 
 
+		/**
+		 * @brief Initializes a thread with a non member void function
+		 * @param pFunc The function to execute
+		 * @param pArgs The function arguments
+		 */
 		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
 			lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argType, argsTypes...>));
 			func_args->_func = pFunc;
 			func_args->_args = pArgs;
 			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<1, funcType, argType, argsTypes...>::mt_func, func_args);
 		}
+		/**
+		 * @brief Initializes a thread with a non member void function that takes no arguments
+		 * @param pFunc The function to execute
+		 */
 		template<class funcType> void operator()(const funcType pFunc) {
 			funcType* func_args = (funcType*)malloc(sizeof(funcType));
 			*func_args = pFunc;
 			pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<0, funcType>::mt_func, func_args);
 		}
+		// template<class objType, class funcType, class argType, class ...argsTypes> void operator()(objType& pObj, const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		// 	lux::__pvt::exec_thr<funcType, argType, argsTypes...>* func_args = (lux::__pvt::exec_thr<funcType, argType, argsTypes...>*)malloc(sizeof(lux::__pvt::exec_thr<funcType, argType, argsTypes...>));
+		// 	func_args->_func = pFunc;
+		// 	func_args->_args = pArgs;
+		// 	pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<1, funcType, argType, argsTypes...>::mt_func, func_args);
+		// }
+		// template<class objType, class funcType> void operator()(objType& pObj, const funcType pFunc) {
+		// 	funcType* func_args = (funcType*)malloc(sizeof(funcType));
+		// 	*func_args = pFunc;
+		// 	pthread_create(&thr, nullptr, lux::__pvt::thread_ctor_t<0, funcType>::mt_func, func_args);
+		// }
 
 
 
