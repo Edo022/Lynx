@@ -270,7 +270,7 @@ namespace lux::ram{
 			return ((type*)(cell->address))[vIndex];
 		}
 		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }
-		inline type* operator->( ) const { checkInit(); checkNullptrD(); return cell->address; }
+		inline type* operator->( ) const { checkInit(); checkNullptrD(); return (type)(cell->address); }
 
 
 		/**
