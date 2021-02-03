@@ -250,10 +250,12 @@ namespace lux{
 		 * @param pFunc: The func_tion to call
 		 * @param pReturn: A variable where to store the return value
 		 */
-		template<class func_t, class ret_t> alwaysInline void exec(func_t pFunc, ret_t& pReturn) {
+		template<class func_t, class ret_t> alwaysInline void exec(func_t pFunc, ret_t& pReturn)
+		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template exec<func_t, ret_t>(pFunc, &pReturn);
 		}
-		template<class func_t> alwaysInline void exec(func_t pFunc) {
+		template<class func_t> alwaysInline void exec(func_t pFunc)
+		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template exec<func_t, __pvt::NoRet_t>(pFunc, nullptr );
 		}
 
@@ -268,10 +270,12 @@ namespace lux{
 		 * @param pFunc The member func_tion to call
 		 * @param pReturn A variable where to store the return value
 		 */
-		template<class obj_t, class func_t, class ret_t> alwaysInline void exec(obj_t& pObject, func_t pFunc, ret_t& pReturn) {
+		template<class obj_t, class func_t, class ret_t> alwaysInline void exec(obj_t& pObject, func_t pFunc, ret_t& pReturn)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template execObj<obj_t, func_t, ret_t>(pObject, pFunc, &pReturn);
 		}
-		template<class obj_t, class func_t> alwaysInline void exec(obj_t& pObject, func_t pFunc) {
+		template<class obj_t, class func_t> alwaysInline void exec(obj_t& pObject, func_t pFunc)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			__pvt::seq<sizeof...(types), seqIndex, types...>::template execObj<obj_t, func_t, __pvt::NoRet_t>(pObject, pFunc, nullptr );
 		}
 	};

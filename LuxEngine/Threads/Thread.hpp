@@ -21,11 +21,11 @@ namespace lux{
 			lux::HcArray<args_ts...> _args;											//function arguments
 		};
 
-		// template<class obj_t, class func_t, class ...args_ts> struct exec_obj{	//Structure containing the function call informations for member functions
-		// 	obj_t& _obj;															//function pointer
-		// 	func_t _func;															//function pointer
-		// 	lux::HcArray<args_ts...> _args;											//function arguments
-		// };
+		template<class obj_t, class func_t, class ...args_ts> struct exec_obj{	//Structure containing the function call informations for member functions
+			obj_t& _obj;															//function pointer
+			func_t _func;															//function pointer
+			lux::HcArray<args_ts...> _args;											//function arguments
+		};
 
 		template<class obj_t, class func_t> struct exec_void_obj{	//Structure containing the function call informations for member functions
 			obj_t& _obj;															//function pointer
@@ -36,33 +36,33 @@ namespace lux{
 
 
 		//Executes a non member void function
-		template<class funcType, class ...argsTypes> static void* threadRunVoid(void* _args) {
-			using funcp = exec_void<funcType, argsTypes...>*;
-			((funcp)_args)->_args.template exec<funcType>(((funcp)_args)->_func);
+		template<class func_t, class ...args_ts> static void* threadRunVoid(void* _args) {
+			using funcp = exec_void<func_t, args_ts...>*;
+			((funcp)_args)->_args.template exec<func_t>(((funcp)_args)->_func);
 			delete((funcp)_args);		//Free the function data
 			return nullptr;			//Return nothing    //^ Cast to thr struct and call the function with its parameters
 		}
 
 		//Executes a non member void function that takes no arguments
-		template<class funcType> alwaysInline static void* threadRunVoidNoParams(void* _args) {
-			((funcType)_args)();	//Cast the function to the right type and call it
+		template<class func_t> alwaysInline static void* threadRunVoidNoParams(void* _args) {
+			((func_t)_args)();	//Cast the function to the right type and call it
 			return nullptr;			//Return nothing
 		}
 
 
 
 
-		// //Executes a member void function
-		// template<class objType, class funcType, class ...argsTypes> static void* threadRunObjVoid(void* _args) {
-		// 	using funcp = exec_obj<objType, funcType, argsTypes...>*;
-		// 	((funcp)_args)->_args.template exec<funcType>(((funcp)_args)->obj, ((funcp)_args)->_func);
-		// 	delete((funcp)_args);		//Free the function data
-		// 	return nullptr;			//Return nothing    //^ Cast to thr struct and call the function with its parameters
-		// }
+		//Executes a member void function
+		template<class obj_t, class func_t, class ...args_ts> static void* threadRunObjVoid(void* _args) {
+			using funcp = exec_obj<obj_t, func_t, args_ts...>*;
+			((funcp)_args)->_args.template exec<obj_t, func_t>(((funcp)_args)->_obj, ((funcp)_args)->_func);
+			delete((funcp)_args);	//Free the function data
+			return nullptr;			//Return nothing    //^ Cast to thr struct and call the function with its parameters
+		}
 
 		//Executes a member void function that takes no arguments
-		template<class objType, class funcType> alwaysInline static void* threadRunObjVoidNoParams(void* _args) {
-			using funcp = exec_void_obj<objType, funcType>*;
+		template<class obj_t, class func_t> alwaysInline static void* threadRunObjVoidNoParams(void* _args) {
+			using funcp = exec_void_obj<obj_t, func_t>*;
 			((((funcp)_args)->_obj).*(((funcp)_args)->_func))();	//Cast the function to the right type and call it
 			delete((funcp)_args);	//Free the function data
 			return nullptr;			//Return nothing
@@ -104,7 +104,8 @@ namespace lux{
 		 * @param pFunc The function to execute
 		 * @param pArgs The function arguments
 		 */
-		template<class funcType, class argType, class ...argsTypes> alwaysInline Thread(const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
+		template<class func_t, class arg_t, class ...args_ts> alwaysInline Thread(const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			operator()(pFunc, pArgs);
 		}
 
@@ -112,13 +113,25 @@ namespace lux{
 		 * @brief Initializes a thread with a non member void function that takes no arguments
 		 * @param pFunc The function to execute
 		 */
-		template<class funcType> alwaysInline Thread(const funcType pFunc) { operator()(pFunc); }
+		template<class func_t> alwaysInline Thread(const func_t pFunc)
+		requires(std::is_function_v<std::remove_pointer_t<func_t>>) { operator()(pFunc); }
 
-		template<class objType, class funcType, class argType, class ...argsTypes> alwaysInline Thread(objType& obj, const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
+		/**
+		 * @brief Initializes a thread with a void member function
+		 * @param pFunc The function to execute
+		 * @param pArgs The function arguments
+		 */
+		template<class obj_t, class func_t, class arg_t, class ...args_ts> alwaysInline Thread(obj_t& obj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			operator()(obj, pFunc, pArgs);
 		}
 
-		template<class objType, class funcType> alwaysInline Thread(objType& obj, const funcType pFunc) requires(std::is_member_function_pointer_v<funcType>) {
+		/**
+		 * @brief Initializes a thread with a void member function that takes no arguments
+		 * @param pFunc The function to execute
+		 */
+		template<class obj_t, class func_t> alwaysInline Thread(obj_t& obj, const func_t pFunc)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			operator()(obj, pFunc);
 		}
 
@@ -133,48 +146,54 @@ namespace lux{
 		 * @param pFunc The function to execute
 		 * @param pArgs The function arguments
 		 */
-		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
-			using funct = lux::__pvt::exec_void<funcType, argType, argsTypes...>;
+		template<class func_t, class arg_t, class ...args_ts> void operator()(const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
+			using funct = lux::__pvt::exec_void<func_t, arg_t, args_ts...>;
 			auto funcd = (funct*)malloc(sizeof(funct));		//Allocate function data in the heap so that it doesnt get destroyed when the parent returns
 			funcd->_func = pFunc;							//Copy function address
 			funcd->_args = pArgs;							//Copy (((parameters references) array) by value)
-			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoid<funcType, argType, argsTypes...>, funcd);
+			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoid<func_t, arg_t, args_ts...>, funcd);
 		}
+
 		/**
 		 * @brief Initializes a thread with a non member void function that takes no arguments
 		 * @param pFunc The function to execute
 		 */
-		template<class funcType> void operator()(const funcType pFunc) {
-			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoidNoParams<funcType>, (void*)pFunc);
+		template<class func_t> void operator()(const func_t pFunc)
+		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
+			pthread_create(&thr, nullptr, lux::__pvt::threadRunVoidNoParams<func_t>, (void*)pFunc);
 		}
 
 
 
-		// /**
-		//  * @brief Initializes a thread with a member void function
-		//  * @param pFunc The function to execute
-		//  * @param pArgs The function arguments
-		//  */
-		// template<class objType, class funcType, class argType, class ...argsTypes> void operator()(objType& obj, const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
-		// 	using funct = lux::__pvt::exec_obj<objType, funcType, argType, argsTypes...>;
-		// 	auto funcd = new funct{
-		// 		._obj = obj,
-		// 		._func = pFunc,
-		// 		._args = pArgs
-		// 	};
-		// 	pthread_create(&thr, nullptr, lux::__pvt::threadRunObjVoid<objType, funcType, argType, argsTypes...>, funcd);
-		// }
 		/**
-		 * @brief Initializes a thread with a member void function that takes no arguments
+		 * @brief Initializes a thread with a void member function
+		 * @param pFunc The function to execute
+		 * @param pArgs The function arguments
+		 */
+		template<class obj_t, class func_t, class arg_t, class ...args_ts> void operator()(obj_t& obj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+			using funct = lux::__pvt::exec_obj<obj_t, func_t, arg_t, args_ts...>;
+			auto funcd = new funct{
+				._obj = obj,
+				._func = pFunc,
+				._args = pArgs
+			};
+			pthread_create(&thr, nullptr, lux::__pvt::threadRunObjVoid<obj_t, func_t, arg_t, args_ts...>, funcd);
+		}
+
+		/**
+		 * @brief Initializes a thread with a void member function that takes no arguments
 		 * @param pFunc The function to execute
 		 */
-		template<class objType, class funcType> void operator()(objType& obj, const funcType pFunc) requires(std::is_member_function_pointer_v<funcType>) {
-			using funct = lux::__pvt::exec_void_obj<objType, funcType>;
+		template<class obj_t, class func_t> void operator()(obj_t& obj, const func_t pFunc)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+			using funct = lux::__pvt::exec_void_obj<obj_t, func_t>;
 			auto funcd = new funct{
 				._obj = obj,
 				._func = pFunc
 			};
-			pthread_create(&thr, nullptr, lux::__pvt::threadRunObjVoidNoParams<objType, funcType>, funcd);
+			pthread_create(&thr, nullptr, lux::__pvt::threadRunObjVoidNoParams<obj_t, func_t>, funcd);
 		}
 
 
