@@ -92,9 +92,6 @@ namespace lux{
 	struct Thread {
 		pthread_t thr;
 
-
-
-
 		// Constructors -------------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -103,43 +100,57 @@ namespace lux{
 		//Doesn't initialize the thread. Call operator() on the object to initialize it later
 		alwaysInline Thread() { thr = 0; }
 
+
+
+
 		/**
 		 * @brief Initializes a thread with a non member void function
-		 * @param pFunc The function to execute
-		 * @param pArgs The function arguments
+		 *		e.g. Thread t(func, L{ 0.5f });
+		 * @param vFunc The function to call
+		 * @param pArgs An HcArray containing the function arguments
 		 */
-		template<class func_t, class arg_t, class ...args_ts> alwaysInline Thread(const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		template<class func_t, class arg_t, class ...args_ts> alwaysInline Thread(const func_t vFunc, const L<arg_t, args_ts...>& pArgs)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-			operator()(pFunc, pArgs);
+			operator()(vFunc, pArgs);
 		}
 
 		/**
-		 * @brief Initializes a thread with a non member void function that takes no arguments
-		 * @param pFunc The function to execute
+		 * @brief Initializes a thread with a non member void function that takes no arguments.
+		 *		e.g. Thread t(func);
+		 * @param vFunc The function to call
 		 */
-		template<class func_t> alwaysInline Thread(const func_t pFunc)
+		template<class func_t> alwaysInline Thread(const func_t vFunc)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-			operator()(pFunc);
+			operator()(vFunc);
+		}
+
+
+
+
+		/**
+		 * @brief Initializes a thread with a void member function.
+		 *		e.g. Thread t(obj, &obj::func, L{ 0.5f });
+		 * @param pObj The object to call the function on
+		 * @param pFunc The address of the member function to call
+		 * @param pArgs An HcArray containing the function arguments
+		 */
+		template<class obj_t, class func_t, class arg_t, class ...args_ts> alwaysInline Thread(obj_t& pObj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+			operator()(pObj, pFunc, pArgs);
 		}
 
 		/**
-		 * @brief Initializes a thread with a void member function
-		 * @param pFunc The function to execute
-		 * @param pArgs The function arguments
+		 * @brief Initializes a thread with a void member function that takes no arguments.
+		 *		e.g. Thread t(obj, &obj::func);
+		 * @param pObj The object to call the function on
+		 * @param pFunc The address of the member function to call
 		 */
-		template<class obj_t, class func_t, class arg_t, class ...args_ts> alwaysInline Thread(obj_t& obj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		template<class obj_t, class func_t> alwaysInline Thread(obj_t& pObj, const func_t pFunc)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-			operator()(obj, pFunc, pArgs);
+			operator()(pObj, pFunc);
 		}
 
-		/**
-		 * @brief Initializes a thread with a void member function that takes no arguments
-		 * @param pFunc The function to execute
-		 */
-		template<class obj_t, class func_t> alwaysInline Thread(obj_t& obj, const func_t pFunc)
-		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-			operator()(obj, pFunc);
-		}
+
 
 
 		// Operator() ---------------------------------------------------------------------------------------------------------------------------------//
@@ -149,45 +160,52 @@ namespace lux{
 
 		/**
 		 * @brief Initializes a thread with a non member void function
-		 * @param pFunc The function to execute
-		 * @param pArgs The function arguments
+		 *		e.g. Thread t(func, L{ 0.5f });
+		 * @param vFunc The function to call
+		 * @param pArgs An HcArray containing the function arguments
 		 */
-		template<class func_t, class arg_t, class ...args_ts> alwaysInline void operator()(const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		template<class func_t, class arg_t, class ...args_ts> alwaysInline void operator()(const func_t vFunc, const L<arg_t, args_ts...>& pArgs)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			using funct = thr::__pvt::void_std_args_t<func_t, arg_t, args_ts...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<func_t, arg_t, args_ts...>, new funct{ pFunc, pArgs });
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<func_t, arg_t, args_ts...>, new funct{ vFunc, pArgs });
 		}
 
 		/**
-		 * @brief Initializes a thread with a non member void function that takes no arguments
-		 * @param pFunc The function to execute
+		 * @brief Initializes a thread with a non member void function that takes no arguments.
+		 *		e.g. Thread t(func);
+		 * @param vFunc The function to call
 		 */
-		template<class func_t> alwaysInline void operator()(const func_t pFunc)
+		template<class func_t> alwaysInline void operator()(const func_t vFunc)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_noargs<func_t>, (void*)pFunc);
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_noargs<func_t>, (void*)vFunc);
 		}
 
 
 
+
 		/**
-		 * @brief Initializes a thread with a void member function
-		 * @param pFunc The function to execute
-		 * @param pArgs The function arguments
+		 * @brief Initializes a thread with a void member function.
+		 *		e.g. Thread t(obj, &obj::func, L{ 0.5f });
+		 * @param pObj The object to call the function on
+		 * @param pFunc The address of the member function to call
+		 * @param pArgs An HcArray containing the function arguments
 		 */
-		template<class obj_t, class func_t, class arg_t, class ...args_ts> alwaysInline void operator()(obj_t& obj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
+		template<class obj_t, class func_t, class arg_t, class ...args_ts> alwaysInline void operator()(obj_t& pObj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			using funct = thr::__pvt::void_obj_args_t<obj_t, func_t, arg_t, args_ts...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<obj_t, func_t, arg_t, args_ts...>, new funct{ obj, pFunc, pArgs });
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<obj_t, func_t, arg_t, args_ts...>, new funct{ pObj, pFunc, pArgs });
 		}
 
 		/**
-		 * @brief Initializes a thread with a void member function that takes no arguments
-		 * @param pFunc The function to execute
+		 * @brief Initializes a thread with a void member function that takes no arguments.
+		 *		e.g. Thread t(obj, &obj::func);
+		 * @param pObj The object to call the function on
+		 * @param pFunc The address of the member function to call
 		 */
-		template<class obj_t, class func_t> alwaysInline void operator()(obj_t& obj, const func_t pFunc)
+		template<class obj_t, class func_t> alwaysInline void operator()(obj_t& pObj, const func_t pFunc)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			using funct = thr::__pvt::void_obj_noargs_t<obj_t, func_t>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_noargs<obj_t, func_t>, new funct{ obj, pFunc });
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_noargs<obj_t, func_t>, new funct{ pObj, pFunc });
 		}
 
 
@@ -199,9 +217,9 @@ namespace lux{
 
 
 		//Blocks the execution of a thread. It can be resumed with the resume() function
-		inline void suspend() { pthread_kill(thr, SIGSTOP); }
+		inline void suspend() { pthread_kill(thr, SIGSTOP); } 
 		//Resumes the execution of a suspended thread. Does nothing if the thread is not suspended
-		inline void resume() { pthread_kill(thr, SIGCONT); }
+		inline void  resume() { pthread_kill(thr, SIGCONT); }
 
 
 		//Sets the thread name.    this function should only be used for debuggin purposes
@@ -214,9 +232,9 @@ namespace lux{
 		}
 
 
-		inline void join() { pthread_join(thr, nullptr); }
+		inline void   join() { pthread_join(thr, nullptr); }
 		inline void detach() { pthread_detach(thr); }
-		inline void yield() { pthread_yield(); }
+		inline void  yield() { pthread_yield(); }
 	};
 
 
@@ -238,7 +256,7 @@ namespace lux{
 	namespace thr{
 		struct self{
 			static inline void suspend() { pthread_kill(pthread_self(), SIGSTOP); }
-			static inline void resume() { pthread_kill(pthread_self(), SIGCONT); }
+			static inline void  resume() { pthread_kill(pthread_self(), SIGCONT); }
 
 			static inline void setName(const char* pName) {
 				pthread_setname_np(pthread_self(), pName);
@@ -250,7 +268,7 @@ namespace lux{
 			}
 
 			static inline void detach() { pthread_detach(pthread_self()); }
-			static inline void yield() { pthread_yield(); }
+			static inline void  yield() { pthread_yield(); }
 
 			//Returns the calling thread as a lux::thread structure
 			inline Thread operator()() { Thread thr; thr.thr = pthread_self(); return thr; }
