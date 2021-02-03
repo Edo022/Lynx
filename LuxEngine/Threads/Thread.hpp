@@ -104,7 +104,7 @@ namespace lux{
 		 * @param pFunc The function to execute
 		 * @param pArgs The function arguments
 		 */
-		template<class funcType, class argType, class ...argsTypes> alwaysInline Thread(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		template<class funcType, class argType, class ...argsTypes> alwaysInline Thread(const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
 			operator()(pFunc, pArgs);
 		}
 
@@ -114,11 +114,11 @@ namespace lux{
 		 */
 		template<class funcType> alwaysInline Thread(const funcType pFunc) { operator()(pFunc); }
 
-		template<class objType, class funcType, class argType, class ...argsTypes> alwaysInline Thread(objType& obj, const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		template<class objType, class funcType, class argType, class ...argsTypes> alwaysInline Thread(objType& obj, const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
 			operator()(obj, pFunc, pArgs);
 		}
 
-		template<class objType, class funcType> alwaysInline Thread(objType& obj, const funcType pFunc) {
+		template<class objType, class funcType> alwaysInline Thread(objType& obj, const funcType pFunc) requires(std::is_member_function_pointer_v<funcType>) {
 			operator()(obj, pFunc);
 		}
 
@@ -133,7 +133,7 @@ namespace lux{
 		 * @param pFunc The function to execute
 		 * @param pArgs The function arguments
 		 */
-		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		template<class funcType, class argType, class ...argsTypes> void operator()(const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
 			using funct = lux::__pvt::exec_void<funcType, argType, argsTypes...>;
 			auto funcd = (funct*)malloc(sizeof(funct));		//Allocate function data in the heap so that it doesnt get destroyed when the parent returns
 			funcd->_func = pFunc;							//Copy function address
@@ -155,7 +155,7 @@ namespace lux{
 		//  * @param pFunc The function to execute
 		//  * @param pArgs The function arguments
 		//  */
-		// template<class objType, class funcType, class argType, class ...argsTypes> void operator()(objType& obj, const funcType pFunc, const lux::HcArray<argType, argsTypes...>& pArgs) {
+		// template<class objType, class funcType, class argType, class ...argsTypes> void operator()(objType& obj, const funcType pFunc, const L<argType, argsTypes...>& pArgs) {
 		// 	using funct = lux::__pvt::exec_obj<objType, funcType, argType, argsTypes...>;
 		// 	auto funcd = new funct{
 		// 		._obj = obj,
@@ -168,7 +168,7 @@ namespace lux{
 		 * @brief Initializes a thread with a member void function that takes no arguments
 		 * @param pFunc The function to execute
 		 */
-		template<class objType, class funcType> void operator()(objType& obj, const funcType pFunc) {
+		template<class objType, class funcType> void operator()(objType& obj, const funcType pFunc) requires(std::is_member_function_pointer_v<funcType>) {
 			using funct = lux::__pvt::exec_void_obj<objType, funcType>;
 			auto funcd = new funct{
 				._obj = obj,
