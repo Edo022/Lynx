@@ -405,7 +405,7 @@ namespace lux{
 		 */
 		template<class obj_t, class func_t, class ret_t> alwaysInline void operator()(obj_t& pObj, const func_t pFunc, ret_t* const pRet)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-			using funct = thr::__pvt::type_obj_noargs_t<obj_t, ret_t, func_t>;
+			using funct = thr::__pvt::type_obj_noargs_t<obj_t, func_t, ret_t>;
 			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_noargs<obj_t, func_t, ret_t>, new funct{ pObj, pFunc, pRet });
 		}
 
