@@ -4,8 +4,6 @@
 #include <csignal>
 #include <cstdlib>
 #include "LuxEngine/Types/Containers/HcArray.hpp"
-//TODO minimize copies
-//TODO fix memory leaks
 
 
 

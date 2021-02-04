@@ -9,23 +9,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace lux{
 		template<class ...types> struct HcArray;
+
 		// Runtime get (rtGet function) helper structures ---------------------------------------------------------------------------------------------//
 
 
@@ -62,47 +48,6 @@ namespace lux{
 				return ((seq<size, index, type, types...>*)this)->val;
 			}
 		};
-
-		#undef genGetVFunc
-
-
-
-
-
-
-
-
-		// Execute (exec function) helper structures --------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-
-		struct NoRet_t{};												//Dummy return type for void functions
-		//Executes a non-void non-member function
-		template<class func_t, class ...args_ts> struct exec_t{
-			static alwaysInline auto exec(func_t _func, args_ts&... _args) { return _func(_args...); }
-		};
-		// //exec_t specialization. Executes a void non-member function //FIXME REMOVE. merge with automatic return value
-		// template<class func_t, class ...args_ts> struct exec_t<func_t, NoRet_t, args_ts...> {
-		// 	static alwaysInline void exec(func_t _func, NoRet_t* _ret, args_ts&... _args) { _func(_args...); }
-		// };
-
-
-
-
-		//Executes a non-void member function
-		template<class obj_t, class func_t, class ...args_ts> struct execObj_t{
-			static alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) { return (_obj.*_func)(_args...); }
-		};
-		// //execObj_t specialization. Executes a void member function //FIXME REMOVE. merge with automatic return value
-		// template<class obj_t, class func_t, class ...args_ts> struct execObj_t<obj_t, func_t, NoRet_t, args_ts...> {
-		// 	static alwaysInline void execObj(obj_t& _obj, func_t _func, NoRet_t* _ret, args_ts&... _args) { (_obj.*_func)(_args...); }
-		// };
 
 
 
@@ -167,10 +112,12 @@ namespace lux{
 			alwaysInline void init(const type& _val) { val = _val; }
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&val; }
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
-				return exec_t<func_t, args_ts..., type>::exec(_func, _args..., val);
+				// return exec_t<func_t, args_ts..., type>::exec(_func, _args..., val);
+				return _func(_args..., val);
 			}
 			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
-				return execObj_t<obj_t, func_t, args_ts..., type>::execObj(_obj, _func, _args..., val);
+				// return execObj_t<obj_t, func_t, args_ts..., type>::execObj(_obj, _func, _args..., val);
+				return (_obj.*_func)(_args..., val);
 			}
 		};
 	}
@@ -196,7 +143,7 @@ namespace lux{
 	 * @brief "Heterogeneous Data Compile Time Array".
 	 *		An array that constains elements of different types.
 	 *		Size and types must be known at compile time.
-	 *		e.g.  lux::HcArray arr = { 1, false, "mogu mogu" };
+	 *		e.g. --- lux::HcArray arr = { 1, false, "mogu mogu" }; ---
 	 */
 	template<class ...types> struct HcArray : __pvt::seq<sizeof...(types), seqIndex, types...>{
 		alwaysInline HcArray() {}
@@ -244,7 +191,6 @@ namespace lux{
 
 
 
-		//FIXME return the value directly
 		/**
 		 * @brief Calls a func_tion using the array elements as arguments
 		 * @param pFunc: The func_tion to call
@@ -254,16 +200,10 @@ namespace lux{
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			return __pvt::seq<sizeof...(types), seqIndex, types...>::template exec<func_t>(pFunc);
 		}
-		// template<class func_t> alwaysInline void exec(func_t pFunc)
-		// requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-		// 	__pvt::seq<sizeof...(types), seqIndex, types...>::template exec<func_t, __pvt::NoRet_t>(pFunc, nullptr );
-		// }
 
 
 
 
-		//pReturn can be omitted to ignore the return value or call void functions
-		//FIXME return the value directly
 		/**
 		 * @brief Calls a member func_tion using the array elements as arguments
 		 * @param pObject The object to call the func_tion on
@@ -274,10 +214,6 @@ namespace lux{
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			return __pvt::seq<sizeof...(types), seqIndex, types...>::template execObj<obj_t, func_t>(pObject, pFunc);
 		}
-		// template<class obj_t, class func_t> alwaysInline void exec(obj_t& pObject, func_t pFunc)
-		// requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-		// 	__pvt::seq<sizeof...(types), seqIndex, types...>::template execObj<obj_t, func_t, __pvt::NoRet_t>(pObject, pFunc, nullptr );
-		// }
 	};
 	#undef seqIndex
 
