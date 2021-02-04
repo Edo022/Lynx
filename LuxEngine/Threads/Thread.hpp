@@ -24,7 +24,7 @@ namespace lux{
 		//Structure containing the function call informations for void functions with not arguments
 		template<class func_t, class ret_t, class ...args_ts> struct void_std_args_ret_t :
 		public void_std_args_t<func_t, args_ts...>{
-			ret_t _ret;
+			ret_t* _ret;
 		};
 
 
@@ -35,7 +35,7 @@ namespace lux{
 		//Function is directly passed as void*
 		template<class func_t, class ret_t> struct void_std_noargs_ret_t {
 			func_t _func;
-			ret_t _ret;
+			ret_t* _ret;
 		};
 
 
@@ -48,7 +48,7 @@ namespace lux{
 		//Structure containing the function call informations for void member functions
 		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct void_obj_args_ret_t :
 		public void_obj_args_t<obj_t, func_t, args_ts...>{
-			ret_t _ret;
+			ret_t* _ret;
 		};
 
 
@@ -60,7 +60,7 @@ namespace lux{
 		//Structure containing the function call informations for void member functions with no arguments
 		template<class obj_t, class func_t, class ret_t> struct void_obj_noargs_ret_t :
 		public void_obj_noargs_t<obj_t, func_t>{
-			ret_t _ret;
+			ret_t* _ret;
 		};
 
 
@@ -187,7 +187,7 @@ namespace lux{
 		 * @param pArgs An HcArray containing the function arguments
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline Thread(const func_t vFunc, const L<arg_t, args_ts...>& pArgs, ret_t pRet)
+		template<class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline Thread(const func_t vFunc, const L<arg_t, args_ts...>& pArgs, ret_t* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			operator()(vFunc, pArgs, pRet);
 		}
@@ -207,10 +207,10 @@ namespace lux{
 		/**
 		 * @brief Initializes a thread with a non member void function that takes no arguments.
 		 *		e.g. Thread t(func);
-		 * @param vFunc The function to call
+		 * @param vFunc T he function to call
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class func_t, class ret_t> alwaysInline Thread(const func_t vFunc, ret_t pRet)
+		template<class func_t, class ret_t> alwaysInline Thread(const func_t vFunc, ret_t* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			operator()(vFunc, pRet);
 		}
@@ -237,7 +237,7 @@ namespace lux{
 		 * @param pArgs An HcArray containing the function arguments
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class obj_t, class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline Thread(obj_t& pObj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs, ret_t* pRet)
+		template<class obj_t, class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline Thread(obj_t& pObj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs, ret_t* const pRet)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			operator()(pObj, pFunc, pArgs, pRet);
 		}
@@ -262,7 +262,7 @@ namespace lux{
 		 * @param pFunc The address of the member function to call
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class obj_t, class func_t, class ret_t> alwaysInline Thread(obj_t& pObj, const func_t pFunc, ret_t* pRet)
+		template<class obj_t, class func_t, class ret_t> alwaysInline Thread(obj_t& pObj, const func_t pFunc, ret_t* const pRet)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			operator()(pObj, pFunc, pRet);
 		}
@@ -292,7 +292,7 @@ namespace lux{
 		 * @param pArgs An HcArray containing the function arguments
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline void operator()(const func_t vFunc, const L<arg_t, args_ts...>& pArgs, ret_t* pRet)
+		template<class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline void operator()(const func_t vFunc, const L<arg_t, args_ts...>& pArgs, ret_t* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			using funct = thr::__pvt::void_std_args_ret_t<func_t, arg_t, ret_t, args_ts...>;
 			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args_ret<func_t, arg_t, args_ts..., ret_t>, new funct{ vFunc, pArgs, pRet });
@@ -316,7 +316,7 @@ namespace lux{
 		 * @param vFunc The function to call
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class func_t, class ret_t> alwaysInline void operator()(const func_t vFunc, ret_t* pRet)
+		template<class func_t, class ret_t> alwaysInline void operator()(const func_t vFunc, ret_t* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 			using funct = thr::__pvt::void_std_noargs_ret_t<func_t, ret_t>;
 			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_noargs_ret<func_t, ret_t>, new funct{ vFunc, pRet });
@@ -345,7 +345,7 @@ namespace lux{
 		 * @param pArgs An HcArray containing the function arguments
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class obj_t, class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline void operator()(obj_t& pObj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs, ret_t* pRet)
+		template<class obj_t, class func_t, class arg_t, class ...args_ts, class ret_t> alwaysInline void operator()(obj_t& pObj, const func_t pFunc, const L<arg_t, args_ts...>& pArgs, ret_t* const pRet)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			using funct = thr::__pvt::void_obj_args_ret_t<obj_t, func_t, arg_t, ret_t, args_ts...>;
 			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args_ret<obj_t, func_t, arg_t, args_ts..., ret_t>, new funct{ pObj, pFunc, pArgs, pRet });
@@ -372,7 +372,7 @@ namespace lux{
 		 * @param pFunc The address of the member function to call
 		 * @param pRet A variable where to store the return value
 		 */
-		template<class obj_t, class func_t, class ret_t> alwaysInline void operator()(obj_t& pObj, const func_t pFunc, ret_t* pRet)
+		template<class obj_t, class func_t, class ret_t> alwaysInline void operator()(obj_t& pObj, const func_t pFunc, ret_t* const pRet)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 			using funct = thr::__pvt::void_obj_noargs_ret_t<obj_t, ret_t, func_t>;
 			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_noargs_ret<obj_t, func_t, ret_t>, new funct{ pObj, pFunc, pRet });

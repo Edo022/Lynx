@@ -8,7 +8,7 @@
 
 namespace lux::core{
     luxAutoInit(LUX_NH_START_CORE) {
-        Thread coreThr(lux::core::run, lux::HcArray{ false });
+        Thread coreThr(lux::core::run, L{ false });
         Thread thrPool(lux::thr::__lp_thr_mng);
         coreThr.detach();
         thrPool.detach();
