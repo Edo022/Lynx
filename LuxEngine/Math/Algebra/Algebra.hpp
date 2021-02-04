@@ -15,7 +15,7 @@ template<class T> static inline constexpr T __lp_abs(const T n) { return (n < 0)
 
 
 
-
+//TODO REMOVE
 //Returns the first multiple of m larger than or equal to n
 //   e.g. multipleOf(21, 6) returns 24
 //   e.g. multipleOf(15, 3) returns 15
