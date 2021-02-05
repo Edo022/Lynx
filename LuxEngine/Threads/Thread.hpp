@@ -36,14 +36,14 @@ namespace lux{
 
 		//Void standard with arguments
 		template<class func_t, class ...args_ts> struct void_std_args_xt : public Func_b {
-			func_t _func;									//function pointer
-			lux::HcArray<args_ts...> _args;					//function arguments
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
 			void exec() final override { _args.exec(_func); }
 		};
 		//Type standard with arguments
 		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_xt : public Func_b {
-			func_t _func;									//function pointer
-			lux::HcArray<args_ts...> _args;					//function arguments
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
 			ret_t* _ret;
 			void exec() final override { *_ret = _args.exec(_func); }
 		};
@@ -68,16 +68,16 @@ namespace lux{
 
 		//Void member with arguments
 		template<class obj_t, class func_t, class ...args_ts> struct void_obj_args_xt : public Func_b {
-			obj_t& _obj;						//function pointer
-			func_t _func;						//function pointer
-			lux::HcArray<args_ts...> _args;		//function arguments
+			obj_t& _obj;
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
 			void exec() final override { _args.execObj(_obj, _func); }
 		};
 		//Type member with arguments
 		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_xt : public Func_b {
-			obj_t& _obj;						//function pointer
-			func_t _func;						//function pointer
-			lux::HcArray<args_ts...> _args;		//function arguments
+			obj_t& _obj;
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
 			ret_t* _ret;
 			void exec() final override { *_ret = _args.execObj(_obj, _func); }
 		};
@@ -88,14 +88,14 @@ namespace lux{
 
 		//Void member with no arguments
 		template<class obj_t, class func_t> struct void_obj_noargs_xt : public Func_b {
-			obj_t& _obj;						//function pointer
-			func_t _func;						//function pointer
+			obj_t& _obj;
+			func_t _func;
 			void exec() final override { _obj._func(); }
 		};
 		//Type member with no arguments
 		template<class obj_t, class func_t, class ret_t> struct type_obj_noargs_xt : public Func_b {
-			obj_t& _obj;						//function pointer
-			func_t _func;						//function pointer
+			obj_t& _obj;
+			func_t _func;
 			ret_t* _ret;
 			void exec() final override { *_ret = _obj._func(); }
 		};
@@ -132,12 +132,15 @@ namespace lux{
 
 		//Void standard with arguments
 		template<class func_t, class ...args_ts> struct void_std_args_t{
-			func_t _func;									//function pointer
-			lux::HcArray<args_ts...> _args;					//function arguments
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
 		};
 		//Type standard with arguments
-		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_t :
-		public void_std_args_t<func_t, args_ts...>{ ret_t* _ret; };
+		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_t {
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
+			ret_t* _ret;
+		};
 
 
 
@@ -159,25 +162,32 @@ namespace lux{
 
 		//Void member with arguments
 		template<class obj_t, class func_t, class ...args_ts> struct void_obj_args_t{
-			obj_t& _obj;						//function pointer
-			func_t _func;						//function pointer
-			lux::HcArray<args_ts...> _args;		//function arguments
+			obj_t& _obj;
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
 		};
 		//Type member with arguments
-		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_t :
-		public void_obj_args_t<obj_t, func_t, args_ts...>{ ret_t* _ret; };
+		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_t {
+			obj_t& _obj;
+			func_t _func;
+			lux::HcArray<args_ts...> _args;
+			ret_t* _ret;
+		};
 
 
 
 
 		//Void member with no arguments
 		template<class obj_t, class func_t> struct void_obj_noargs_t{
-			obj_t& _obj;						//function pointer
-			func_t _func;						//function pointer
+			obj_t& _obj;
+			func_t _func;
 		};
 		//Type member with no arguments
-		template<class obj_t, class func_t, class ret_t> struct type_obj_noargs_t :
-		public void_obj_noargs_t<obj_t, func_t>{ ret_t* _ret; };
+		template<class obj_t, class func_t, class ret_t> struct type_obj_noargs_t {
+			obj_t& _obj;
+			func_t _func;
+			ret_t* _ret;
+		};
 
 
 
