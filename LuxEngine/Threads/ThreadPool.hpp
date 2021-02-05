@@ -131,6 +131,7 @@ namespace lux::thr {
 		using funct = __pvt::void_std_args_xt<func_t, args_ts...>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
+		f->_fence = &vFence;
 		f->_func = vFunc;
 		f->_args = pArgs;
 		queue.push_back((ram::Alloc<__pvt::Func_b>)f);

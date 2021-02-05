@@ -67,6 +67,7 @@ namespace lux::thr {
 				// e->exec();
 
 				queue.front()->exec();
+				queue.front()->_fence->set();
 				queue.pop_front();
 				queue_m.unlock();
 

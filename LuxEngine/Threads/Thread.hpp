@@ -4,7 +4,7 @@
 #include <csignal>
 #include <cstdlib>
 #include "LuxEngine/Types/Containers/HcArray.hpp"
-
+// #include "LuxEngine/Types/LuxFenceDE.hpp"
 
 
 
@@ -13,6 +13,8 @@
 
 
 namespace lux{
+	struct pollFence;
+
 	namespace thr::__pvt{
 
 		// Functions helper structures ----------------------------------------------------------------------------------------------------------------//
@@ -24,7 +26,10 @@ namespace lux{
 
 
 
-		struct Func_b{ virtual void exec() = 0; };
+		struct Func_b{
+			lux::pollFence* _fence;
+			virtual void exec() = 0;
+		};
 
 
 
