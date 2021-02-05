@@ -193,9 +193,9 @@ namespace lux{
 
 
 		/**
-		 * @brief Calls a func_tion using the array elements as arguments
-		 * @param pFunc: The func_tion to call
-		 * @param pReturn: A variable where to store the return value
+		 * @brief Calls a function using the array elements as arguments
+		 * @param pFunc: The function to call
+		 * @return The return value of the function call
 		 */
 		template<class func_t> alwaysInline auto exec(func_t pFunc)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
@@ -206,10 +206,10 @@ namespace lux{
 
 
 		/**
-		 * @brief Calls a member func_tion using the array elements as arguments
-		 * @param pObject The object to call the func_tion on
-		 * @param pFunc The member func_tion to call
-		 * @param pReturn A variable where to store the return value
+		 * @brief Calls a member function using the array elements as arguments
+		 * @param pObject The object to call the function on
+		 * @param pFunc The member function to call
+		 * @return The return value of the function call
 		 */
 		template<class obj_t, class func_t> alwaysInline auto exec(obj_t& pObject, func_t pFunc)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {

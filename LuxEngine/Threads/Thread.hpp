@@ -24,6 +24,107 @@ namespace lux{
 
 
 
+		struct Func_b{ virtual void exec() = 0; };
+
+
+
+
+		//Void standard with arguments
+		template<class func_t, class ...args_ts> struct void_std_args_xt : public Func_b {
+			func_t _func;									//function pointer
+			lux::HcArray<args_ts...> _args;					//function arguments
+			void exec() final override { _args.exec(_func); }
+		};
+		//Type standard with arguments
+		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_xt : public Func_b {
+			func_t _func;									//function pointer
+			lux::HcArray<args_ts...> _args;					//function arguments
+			ret_t* _ret;
+			void exec() final override { *_ret = _args.exec(_func); }
+		};
+
+
+
+
+		//Void standard with no arguments
+		template<class func_t> struct void_std_noargs_t : public Func_b {
+			func_t _func;
+			void exec() final override { _func(); }
+		};
+		//Type standard with no arguments
+		template<class func_t, class ret_t> struct type_std_noargs_xt : public Func_b {
+			func_t _func;
+			ret_t* _ret;
+			void exec() final override { *_ret = _func(); }
+		};
+
+
+
+
+		//Void member with arguments
+		template<class obj_t, class func_t, class ...args_ts> struct void_obj_args_xt : public Func_b {
+			obj_t& _obj;						//function pointer
+			func_t _func;						//function pointer
+			lux::HcArray<args_ts...> _args;		//function arguments
+			void exec() final override { _args.execObj(_obj, _func); }
+		};
+		//Type member with arguments
+		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_xt : public Func_b {
+			obj_t& _obj;						//function pointer
+			func_t _func;						//function pointer
+			lux::HcArray<args_ts...> _args;		//function arguments
+			ret_t* _ret;
+			void exec() final override { *_ret = _args.execObj(_obj, _func); }
+		};
+
+
+
+
+
+		//Void member with no arguments
+		template<class obj_t, class func_t> struct void_obj_noargs_xt : public Func_b {
+			obj_t& _obj;						//function pointer
+			func_t _func;						//function pointer
+			void exec() final override { _obj._func(); }
+		};
+		//Type member with no arguments
+		template<class obj_t, class func_t, class ret_t> struct type_obj_noargs_xt : public Func_b {
+			obj_t& _obj;						//function pointer
+			func_t _func;						//function pointer
+			ret_t* _ret;
+			void exec() final override { *_ret = _obj._func(); }
+		};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		//Void standard with arguments
 		template<class func_t, class ...args_ts> struct void_std_args_t{
 			func_t _func;									//function pointer

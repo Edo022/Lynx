@@ -269,8 +269,8 @@ namespace lux::ram{
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((type*)(cell->address))[vIndex];
 		}
-		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *this->address; }
-		inline type* operator->( ) const { checkInit(); checkNullptrD(); return (type)(cell->address); }
+		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
+		inline type* operator->( ) const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
 
 
 		/**
