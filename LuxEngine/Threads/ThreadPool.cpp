@@ -53,7 +53,11 @@ namespace lux::thr {
 
 	//FIXME add thread number in thread name
 	void thrLoop(uint32 vThrIndex) {
-		luxDebug(thr::self::setName("Lux | GTP "));
+		#ifdef LUX_DEBUG
+			char thrName[16];
+			sprintf(thrName, "Lux | GTP %d", vThrIndex);
+			thr::self::setName(thrName);
+		#endif
 
 		while(true){
 			// thr::self::suspend();
