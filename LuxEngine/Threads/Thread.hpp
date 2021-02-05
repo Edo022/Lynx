@@ -52,7 +52,7 @@ namespace lux{
 
 
 		//Void standard with no arguments
-		template<class func_t> struct void_std_noargs_t : public Func_b {
+		template<class func_t> struct void_std_noargs_xt : public Func_b {
 			func_t _func;
 			void exec() final override { _func(); }
 		};

@@ -138,4 +138,154 @@ namespace lux::thr {
 		queue_m.unlock();
 	}
 
+	/**
+	 * @brief Initializes a thread with a non void non member function.
+	 *		e.g. --- int ret; Thread t(func, L{ 0.5f }, &ret); ---
+	 * @param vFunc The function to call
+	 * @param pArgs An HcArray containing the function arguments
+	 * @param pRet The address where to store the return value
+	 */
+	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const L<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
+	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
+		queue_m.lock();
+		using funct = __pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_func = vFunc;
+		f->_args  = pArgs;
+		f->_ret = pRet;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
+
+
+
+	/**
+	 * @brief Initializes a thread with a void non member function that takes no arguments.
+	 *		e.g. --- Thread t(func); ---
+	 * @param vFunc The function to call
+	 */
+	template<class func_t> alwaysInline void runAsync(const func_t vFunc, pollFence& pFence)
+	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
+		queue_m.lock();
+		using funct = __pvt::void_std_noargs_xt<func_t>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_func = vFunc;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
+	/**
+	 * @brief Initializes a thread with a non void non member function that takes no arguments.
+	 *		e.g. --- int ret; Thread t(func, &ret); ---
+	 * @param vFunc The function to call
+	 * @param pRet The address where to store the return value
+	 */
+	template<class func_t, class ret_t> alwaysInline void runAsync(const func_t vFunc, ret_t* const pRet, pollFence& pFence)
+	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
+		queue_m.lock();
+		using funct = __pvt::type_std_noargs_xt<func_t, ret_t>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_func = vFunc;
+		f->_ret = pRet;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
+
+
+
+	/**
+	 * @brief Initializes a thread with a void member function
+	 *		e.g. --- Obj obj; Thread t(obj, &obj::func, L{ 0.5f }); ---
+	 * @param pObj The object to call the function on
+	 * @param pFunc The address of the member function to call
+	 * @param pArgs An HcArray containing the function arguments
+	 */
+	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const L<args_ts...>& pArgs, pollFence& pFence)
+	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+		queue_m.lock();
+		using funct = __pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_obj = pObj;
+		f->_func = pFunc;
+		f->_args = pArgs;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
+	/**
+	 * @brief Initializes a thread with a non void member function.
+	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, L{ 0.5f }, &ret); ---
+	 * @param pObj The object to call the function on
+	 * @param pFunc The address of the member function to call
+	 * @param pArgs An HcArray containing the function arguments
+	 * @param pRet The address where to store the return value
+	 */
+	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const L<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
+	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+		queue_m.lock();
+		using funct = __pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_obj = pObj;
+		f->_func = pFunc;
+		f->_args = pArgs;
+		f->_ret = pRet;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
+
+
+
+	/**
+	 * @brief Initializes a thread with a void member function that takes no arguments.
+	 *		e.g. --- Obj obj; Thread t(obj, &obj::func); ---
+	 * @param pObj The object to call the function on
+	 * @param pFunc The address of the member function to call
+	 */
+	template<class obj_t, class func_t> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, pollFence& pFence)
+	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+		queue_m.lock();
+		using funct = __pvt::void_obj_noargs_xt<obj_t, func_t>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_obj = pObj;
+		f->_func = pFunc;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
+	/**
+	 * @brief Initializes a thread with a non void member function that takes no arguments.
+	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, &ret); ---
+	 * @param pObj The object to call the function on
+	 * @param pFunc The address of the member function to call
+	 * @param pRet The address where to store the return value
+	 */
+	template<class obj_t, class func_t, class ret_t> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, ret_t* const pRet, pollFence& pFence)
+	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
+		queue_m.lock();
+		using funct = __pvt::type_obj_noargs_xt<obj_t, func_t, ret_t>;
+		ram::Alloc<funct> f(sizeof(funct));
+		new(f) funct();
+		f->fence = &pFence;
+		f->_obj = pObj;
+		f->_func = pFunc;
+		f->_ret = pRet;
+		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue_m.unlock();
+	}
+
 }
