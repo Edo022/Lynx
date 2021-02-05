@@ -74,6 +74,7 @@ namespace lux::thr {
 				e.free();
 			}
 			else queue_m.unlock();
+			usleep(0);
 			thr::self::yield();
 		}
 
