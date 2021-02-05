@@ -61,17 +61,13 @@ namespace lux::thr {
 
 			if(!queue.empty()){
 				queue_m.lock();
-				// ram::Alloc<__pvt::Func_b> e = (ram::Alloc<__pvt::Func_b>&&)(queue.front());
-				// queue.pop_front();
-				// queue_m.unlock();
-				// e->exec();
-
-				queue.front()->exec();
-				queue.front()->_fence->set();
+				ram::Alloc<__pvt::Func_b> e = (ram::Alloc<__pvt::Func_b>&&)(queue.front());
 				queue.pop_front();
 				queue_m.unlock();
 
-				// e.free();
+				e->exec();
+				e->_fence->set();
+				e.free();
 			}
 			thr::self::yield();
 		}
