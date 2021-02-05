@@ -151,7 +151,7 @@ namespace lux::thr {
 		using funct = __pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
+		f->_fence = &pFence;
 		f->_func = vFunc;
 		f->_args  = pArgs;
 		f->_ret = pRet;
@@ -173,7 +173,7 @@ namespace lux::thr {
 		using funct = __pvt::void_std_noargs_xt<func_t>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
+		f->_fence = &pFence;
 		f->_func = vFunc;
 		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
 		queue_m.unlock();
@@ -191,7 +191,7 @@ namespace lux::thr {
 		using funct = __pvt::type_std_noargs_xt<func_t, ret_t>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
+		f->_fence = &pFence;
 		f->_func = vFunc;
 		f->_ret = pRet;
 		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
@@ -214,8 +214,8 @@ namespace lux::thr {
 		using funct = __pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
-		f->_obj = pObj;
+		f->_fence = &pFence;
+		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_args = pArgs;
 		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
@@ -236,8 +236,8 @@ namespace lux::thr {
 		using funct = __pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
-		f->_obj = pObj;
+		f->_fence = &pFence;
+		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_args = pArgs;
 		f->_ret = pRet;
@@ -260,8 +260,8 @@ namespace lux::thr {
 		using funct = __pvt::void_obj_noargs_xt<obj_t, func_t>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
-		f->_obj = pObj;
+		f->_fence = &pFence;
+		f->_obj = &pObj;
 		f->_func = pFunc;
 		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
 		queue_m.unlock();
@@ -280,8 +280,8 @@ namespace lux::thr {
 		using funct = __pvt::type_obj_noargs_xt<obj_t, func_t, ret_t>;
 		ram::Alloc<funct> f(sizeof(funct));
 		new(f) funct();
-		f->fence = &pFence;
-		f->_obj = pObj;
+		f->_fence = &pFence;
+		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_ret = pRet;
 		queue.push_back((ram::Alloc<__pvt::Func_b>)f);

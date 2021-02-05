@@ -63,8 +63,8 @@ namespace lux::thr {
 			// thr::self::suspend();
 			// noop;
 
+			queue_m.lock();
 			if(!queue.empty()){
-				queue_m.lock();
 				ram::Alloc<__pvt::Func_b> e = (ram::Alloc<__pvt::Func_b>&&)(queue.front());
 				queue.pop_front();
 				queue_m.unlock();
@@ -73,6 +73,7 @@ namespace lux::thr {
 				e->_fence->set();
 				e.free();
 			}
+			else queue_m.unlock();
 			thr::self::yield();
 		}
 
