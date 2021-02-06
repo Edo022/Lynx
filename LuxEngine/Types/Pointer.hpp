@@ -52,7 +52,7 @@ namespace lux::ram{
 
 
 	#define checkNullptr() luxDebug(lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
-		"Unable to call this function on an unallocated memory block"))
+		"Unable to call this function on unallocated memory blocks"))
 	#define checkNullptrD() luxDebug(lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
 		"Cannot dereference an unallocated memory block"))
 
@@ -313,7 +313,13 @@ namespace lux::ram{
 
 		inline ~Alloc( ) noexcept {
 			if(cell->address) {
-				if(!--cell->owners) free();
+				if(!--cell->owners) {
+					if(cell->typeIndex != (uint16)-1)											//For fixed  size cells,
+						types[cell->typeIndex].cells.remove(cell->localIndex);						//free the allocation object
+					else std::free(cell->address);												//For custom size cells, free the entire buffer
+
+					cells.remove(cell->cellIndex);												//Free the cell object
+				}
 				popOwner();
 			}
 		}
@@ -407,16 +413,19 @@ namespace lux::ram{
 		inline void free() {
 			checkAlloc();
 			if(cell->address) {
-				if(cell->typeIndex != (uint16)-1)											//For fixed  size cells,
-					types[cell->typeIndex].cells.remove(cell->localIndex);						//free the allocation object
-				else std::free(cell->address);												//For custom size cells, free the entire buffer
-				cells.remove(cell->cellIndex);												//Free the cell object
+				// if(cell->typeIndex != (uint16)-1)											//For fixed  size cells,
+					// types[cell->typeIndex].cells.remove(cell->localIndex);						//free the allocation object
+				// else std::free(cell->address);												//For custom size cells, free the entire buffer
+				// cells.remove(cell->cellIndex);												//Free the cell object
+				this->realloc(0);
 				//! owners is not updated. Freeing an allocation does't destroy the pointer
 				#ifdef LUX_DEBUG
 					//! [Call from destructor] No need to set the correct state of the owners, as there are none (they're all out of scope)
-					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) i->state = lux::__pvt::CellState::FREED;
+					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) {
+						i->state = lux::__pvt::CellState::FREED;
+						// i->cell = dummyCell;
+					}
 				#endif
-
 			}
 		}
 
