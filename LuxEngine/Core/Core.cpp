@@ -150,7 +150,7 @@ namespace lux::core{
 		while(running) {
 			static int delay = 1000;
 			sleep(delay);
-			printf("FPS: %lf\n", 1/FPS);
+			// printf("FPS: %lf\n", 1/FPS);
 		}
 	}
 }

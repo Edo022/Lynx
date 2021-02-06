@@ -88,7 +88,7 @@ namespace lux::dbg{
 		/**
 		 * @brief Prints pMessage as error if vResult is not VK_SUCCESS
 		 */
-		template<class... types> static neverInline void checkVk(const int/*VkResult*/ vResult, const char* vMessage, types... vArgs) {
+		template<class... types> static neverInline void checkVk(const int/*VkResult*/ vResult, const char* vMessage, types&... vArgs) {
 			checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
 		}
 
@@ -104,7 +104,7 @@ namespace lux::dbg{
 		 *		This function is unreliable and very likely to not detect all the invalid pointers.
 		*		It should only be used as additional security check
 		*/
-		template<class pType, class... aTypes> static neverInline void checkRawPtr(pType* vPtr, const char* vMessage, aTypes... vArgs) {
+		template<class pType, class... aTypes> static neverInline void checkRawPtr(pType* vPtr, const char* vMessage, aTypes&... vArgs) {
 			#pragma GCC diagnostic push
 			#pragma GCC diagnostic ignored "-Wunused-variable"
 			if(vPtr) {
@@ -114,13 +114,15 @@ namespace lux::dbg{
 			#pragma GCC diagnostic pop
 		}
 	#else
-		template<class... t> static alwaysInline void print(Severity, const uint32, const char*, const t&...) {}
-		template<class... t> static alwaysInline void printError  (const char*, const t&...) {}
-		template<class... t> static alwaysInline void printWarning(const char*, const t&...) {}
-		template<class... t> static alwaysInline void checkCond(const bool, const char*, const t&...) {}
-		template<class... t> static alwaysInline void checkParam(const bool, const char*, const char*, const t&...) {}
-		template<class... t> static alwaysInline void checkVk(const int, const char*, t...) {}
-							 static alwaysInline void checkIndex(const uint64, const uint64, const uint64, const char*) {}
-		template<class pType, class... aTypes> static alwaysInline void checkRawPtr(pType*, const char*, aTypes...) {}
+		#define no_optimize_err "Debug function call was not optimized out. You may wrap it in luxDebug() to prevent unnecessary calls"
+		template<class... t> static alwaysInline void __attribute__((warning(no_optimize_err))) print(Severity, const uint32, const char*, const t&...) {}
+		template<class... t> static alwaysInline void __attribute__((warning(no_optimize_err))) printError  (const char*, const t&...) {}
+		template<class... t> static alwaysInline void __attribute__((warning(no_optimize_err))) printWarning(const char*, const t&...) {}
+		template<class... t> static alwaysInline void __attribute__((warning(no_optimize_err))) checkCond(const bool, const char*, const t&...) {}
+		template<class... t> static alwaysInline void __attribute__((warning(no_optimize_err))) checkParam(const bool, const char*, const char*, const t&...) {}
+		template<class... t> static alwaysInline void __attribute__((warning(no_optimize_err))) checkVk(const int, const char*, t&...) {}
+							 static alwaysInline void __attribute__((warning(no_optimize_err))) checkIndex(const uint64, const uint64, const uint64, const char*) {}
+		template<class pType, class... aTypes> static alwaysInline void checkRawPtr(pType*, const char*, aTypes&...) {}
+		#undef no_optimize_err
 	#endif
 }
