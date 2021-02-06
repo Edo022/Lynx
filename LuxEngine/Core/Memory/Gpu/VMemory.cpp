@@ -24,12 +24,12 @@ namespace lux::rem{
 		//Init buffer types
 		uint32 index;
 		// for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i) {
-		for(uint32 i = 0; i < 7 /*normal number + 1(class 0)*/; ++i) {
+		for(uint32 i = 0; i < ((uint32)lux::__pvt::CellClassIndex::NUM + 1); ++i) { //FIXME SAME HERE
 			for(uint32 j = 0; j < (uint32)lux::AllocType::NUM; ++j) {
 				index = (i << 2) | j;
-				buffers[index].cellClass = (CellClass)classEnumFromIndex__old((lux::__pvt::CellClassIndex)i);
+				buffers[index].cellClass = classEnumFromIndex__old((lux::__pvt::CellClassIndex)i);
 				buffers[index].allocType = (lux::AllocType)j;
-				new(&(buffers[index].buffers)) RaArray<MemBuffer>(32 * 4096); //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+				new(&(buffers[index].buffers)) RaArray<MemBuffer>(32 * 4096);									 //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
 			}
 		}
 	}

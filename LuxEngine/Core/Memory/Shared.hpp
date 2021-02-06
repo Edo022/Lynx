@@ -84,10 +84,10 @@ namespace lux{
 			}
 		}
 		//DEPRECATED VERSION OF classEnumFromIndex
-		static constexpr CellClass classes__old[] = { CellClass::CLASS_A, CellClass::CLASS_B, CellClass::CLASS_C, CellClass::CLASS_D, CellClass::CLASS_Q, CellClass::CLASS_L };
+		static constexpr CellClass classes__old[] = { CellClass::CLASS_A, CellClass::CLASS_B, CellClass::CLASS_C, CellClass::CLASS_D, CellClass::CLASS_Q, CellClass::CLASS_L, CellClass::CLASS_0 };
 		//DEPRECATED VERSION OF classEnumFromIndex
-		static constexpr inline CellClass classEnumFromIndex__old(const CellClassIndex vIndex) { return classes[(uint64)vIndex]; }
+		static constexpr inline CellClass classEnumFromIndex__old(const CellClassIndex vIndex) { return classes__old[(uint64)vIndex]; }
 		//DEPRECATED VERSION OF classEnumFromIndex
-		static constexpr inline CellClass classEnumFromIndex__old(const uint64         vIndex) { return classes[        vIndex]; }
+		static constexpr inline CellClass classEnumFromIndex__old(const uint64         vIndex) { return classes__old[        vIndex]; }
 	}
 }

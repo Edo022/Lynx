@@ -7,7 +7,7 @@
 namespace lux{
 	namespace __pvt{
 		//Use checkInit(); or isInit(param); to
-		constexpr uint64 init_val = 0x94FFD489B48994FF;
+		luxDebug(constexpr uint64 init_val = 0x94FFD489B48994FF;)
 		//Private variables used in initialization checks. Those members cannot be inherited
 		#define genInitCheck luxDebug(uint64 __pvt_init_val = lux::__pvt::init_val; char __pvt_dummy = 'L')
 	}
