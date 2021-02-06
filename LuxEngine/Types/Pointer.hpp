@@ -151,7 +151,7 @@ namespace lux::ram{
 			luxDebug(prevOwner = nextOwner = nullptr;)
 			luxDebug(state = lux::__pvt::CellState::NULLPTR);
 		}
-		alwaysInline Alloc(const std::nullptr_t null) : Alloc() {}
+		alwaysInline Alloc(const std::nullptr_t) : Alloc() {}
 
 
 
@@ -237,7 +237,7 @@ namespace lux::ram{
 		//different types of pointers are converted with the explicit conversion operator
 
 
-		inline void operator=(const std::nullptr_t null) {
+		inline void operator=(const std::nullptr_t) {
 			if(!--cell->owners) free();
 			popOwner();
 

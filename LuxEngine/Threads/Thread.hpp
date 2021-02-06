@@ -600,4 +600,4 @@ namespace lux{
 			inline Thread operator()() { Thread thr; thr.thr = pthread_self(); return thr; }
 		};
 	}
-};
+}

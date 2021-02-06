@@ -115,12 +115,12 @@ namespace lux::dbg{
 		}
 	#else
 		#define debugOnly __attribute__((warning("Debug function call not optimized out. You may wrap it in luxDebug() to prevent unnecessary calls")))
-		template<class... t> static debugOnly alwaysInline void print(Severity, const uint32, const char*, const t&...) {}
-		template<class... t> static debugOnly alwaysInline void printError  (                       const char*, const t&...) {}
+		template<class... t> static debugOnly alwaysInline void print(Severity, const uint32,       const char*, const t&...) {}
+		template<class... t> static debugOnly alwaysInline void printError(                         const char*, const t&...) {}
 		template<class... t> static debugOnly alwaysInline void printWarning(                       const char*, const t&...) {}
 		template<class... t> static debugOnly alwaysInline void checkCond( const bool,              const char*, const t&...) {}
 		template<class... t> static debugOnly alwaysInline void checkParam(const bool, const char*, const char*, const t&...) {}
-		template<class... t> static debugOnly alwaysInline void checkVk(const int,                  const char*, const t&...) {}
+		template<class... t> static debugOnly alwaysInline void checkVk(   const int,               const char*, const t&...) {}
 							 static debugOnly alwaysInline void checkIndex(const uint64, const uint64, const uint64, const char*) {}
 		template<class pType, class... aTypes> static debugOnly alwaysInline void checkRawPtr(pType*, const char*, const aTypes&...) {}
 		#undef no_optimize_err
