@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
 
     //Create g++ command and parse user arguments
     auto s = string("g++")                                  +
-        " -pthread" + (tp == 'd' ? " -DLUX_DEBUG" : "")     +
+        " -pthread" + (tp == 'd' ? " -DLUX_DEBUG -rdynamic" : "")     +
         " -DenginePath=\"\\\"" + enginePath + "\\\"\""      +
         " " + enginePath + "/LuxEngine/getEnginePath.cpp"   +
         " " + enginePath + "/LuxEngine/Core/Env.cpp"        +
