@@ -45,16 +45,16 @@ namespace lux::ram{
 	#define checkSizeD()    lux::dbg::checkCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 
-	#define checkAlloc()  lux::dbg::checkCond(state == lux::__pvt::CellState::FREED,   \
-		"Unable to call this function on invalid allocations: The memory block have been manually freed")
+	#define checkAlloc() luxDebug(lux::dbg::checkCond(state == lux::__pvt::CellState::FREED,   \
+		"Unable to call this function on invalid allocations: The memory block have been manually freed"))
 	#define isAlloc(a) dbg::checkParam(a.state == lux::__pvt::CellState::FREED, #a,\
 		"Use of invalid allocation: The memory block have been manually freed")
 
 
-	#define checkNullptr()  lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
-		"Unable to call this function on an unallocated memory block")
-	#define checkNullptrD() lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
-		"Cannot dereference an unallocated memory block")
+	#define checkNullptr() luxDebug(lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
+		"Unable to call this function on an unallocated memory block"))
+	#define checkNullptrD() luxDebug(lux::dbg::checkCond(state == lux::__pvt::CellState::NULLPTR,\
+		"Cannot dereference an unallocated memory block"))
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::CellClass::CLASS_0 && _class != lux::CellClass::AUTO) {											\
@@ -98,8 +98,7 @@ namespace lux::ram{
 		void realloc_(const uint64 vSize, const CellClass vClass);
 
 		#ifdef LUX_DEBUG
-			#define pushOwner(vAlloc) luxDebug(__pushOwner(vAlloc))
-			void __pushOwner() {
+			void pushOwner() {
 				if(!cell->address) return;									//Return if the cell is nullptr
 				if(!cell->firstOwner) {										//If this is the first owner of the cell
 					cell->firstOwner = cell->lastOwner = (Alloc<Dummy>*)this;	//Set this as both the first and last owners
@@ -111,8 +110,7 @@ namespace lux::ram{
 					cell->lastOwner = (Alloc<Dummy>*)this;						//Update the cell's last owner to this
 				}
 			}
-			#define popOwner() luxDebug(__popOwner())
-			void __popOwner() {
+			void popOwner() {
 				if(!cell->address) return;									//Return if the cell is nullptr
 				if(!prevOwner && !nextOwner) {								//If this was the only owner
 					cell->firstOwner = cell->lastOwner = nullptr;				//Set both the first and last owner of the cell to nullptr
@@ -124,6 +122,9 @@ namespace lux::ram{
 					prevOwner = nextOwner = nullptr;							//Set both this next and prev owners to nullptr. This is not necessary but helps debugging
 				}
 			}
+		#else
+			constexpr alwaysInline void pushOwner(){}
+			constexpr alwaysInline void popOwner(){}
 		#endif
 
 

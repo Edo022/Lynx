@@ -9,7 +9,7 @@ namespace lux{
 		//Use checkInit(); or isInit(param); to
 		constexpr uint64 init_val = 0x94FFD489B48994FF;
 		//Private variables used in initialization checks. Those members cannot be inherited
-		#define genInitCheck	luxDebug(uint64 __pvt_init_val = lux::__pvt::init_val; char __pvt_dummy = 'L')
+		#define genInitCheck luxDebug(uint64 __pvt_init_val = lux::__pvt::init_val; char __pvt_dummy = 'L')
 	}
 
 	//TODO
@@ -24,7 +24,7 @@ namespace lux{
 
 	namespace test{
 		#ifdef LUX_DEBUG
-		#	define checkInit() lux::dbg::checkCond(this->__pvt_init_val != lux::__pvt::init_val,      "This function cannot be called on uninitialized structures")
+		#	define checkInit() lux::dbg::checkCond(this->__pvt_init_val != lux::__pvt::init_val,   "This function cannot be called on uninitialized structures")
 		#	define isInit(var)	dbg::checkParam( var.__pvt_init_val != lux::__pvt::init_val, #var, "Uninitialized structure used")
 		#	define checkInitList(...) __pvt_dummy{ [&]() {__VA_ARGS__; return char(0x293); }()},
 		#else
