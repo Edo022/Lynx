@@ -179,6 +179,7 @@ namespace lux::thr {
 		queue_m.unlock();
 	}
 
+//FIXME ADD MUTEX IN RAM ALLOCATIONS
 	/**
 	 * @brief Initializes a thread with a non void non member function that takes no arguments.
 	 *		e.g. --- int ret; Thread t(func, &ret); ---

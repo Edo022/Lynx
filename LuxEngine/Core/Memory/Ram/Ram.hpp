@@ -3,6 +3,10 @@
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include <cstring>
+#include <mutex>
+
+
+
 
 #ifdef _WIN64
 #	include <intrin.h>
@@ -77,7 +81,7 @@
 
 
 //TODO draw graph of the allocation/reallocation process
-
+//TODO UPDATE GRAPH
 
 
 
@@ -89,6 +93,7 @@ namespace lux::ram{
 	struct Type_t;
 	extern Type_t types[];			//Allocated buffers
 	extern RaArrayC<Cell_t> cells;
+	extern std::mutex cells_m;
 	extern uint32  allocated;		//TODO remove
 
 

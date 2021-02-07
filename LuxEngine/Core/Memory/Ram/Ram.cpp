@@ -18,6 +18,7 @@ namespace lux::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
 	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
 	RaArrayC<Cell_t> cells;
+	std::mutex cells_m;
 	uint32 allocated;
 
 
@@ -29,7 +30,7 @@ namespace lux::ram{
 		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) {
 			uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
 			uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
-			types[i] = {
+			new(&types[i]) Type_t{
 				.cellClass = classEnumFromIndex(i),									//Set class index
 				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
 				.cellsPerBuff = cellsPerBuff

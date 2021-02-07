@@ -3,6 +3,7 @@
 #include "LuxEngine/Core/Memory/Shared.hpp"
 #include "LuxEngine/Types/Containers/RaArrayC.hpp"
 #include "LuxEngine/Types/Dummy.hpp"
+#include <mutex>
 
 
 
@@ -19,6 +20,7 @@ namespace lux{
 		//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 		struct Type_t;
 		extern Type_t types[];		//Allocated buffers
+		extern std::mutex cells_m;
 		extern uint32 allocated;	//TODO remove
 
 
@@ -38,6 +40,7 @@ namespace lux{
 			void** memory;			//Addresses of the buffers
 			RaArrayC<bool> cells;	//TODO use optimized uint64 array
 			uint32 cellsPerBuff;	//Number of cells in each buffer
+			std::mutex m;
 		};
 
 		extern RaArrayC<Cell_t> cells;
