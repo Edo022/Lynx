@@ -123,8 +123,8 @@ namespace lux::ram{
 				}
 			}
 		#else
-			constexpr alwaysInline void pushOwner(){}
-			constexpr alwaysInline void popOwner(){}
+			constexpr debugOnly alwaysInline void pushOwner(){}
+			constexpr debugOnly alwaysInline void popOwner(){}
 		#endif
 
 
@@ -252,10 +252,10 @@ namespace lux::ram{
 
 
 
-		template<class pType> inline uint64 operator+(const pType* vPtr) const noexcept { checkInit(); return (uint64)cell->address + vPtr ; }
-		template<class vType> inline type*  operator+(const vType  vVal) const noexcept { checkInit(); return (type* )cell->address + vVal ; }
-		template<class pType> inline uint64 operator-(const pType* vPtr) const noexcept { checkInit(); return (uint64)cell->address - vPtr ; }
-		template<class vType> inline type*  operator-(const vType  vVal) const noexcept { checkInit(); return (type* )cell->address - vVal ; }
+		template<class pType> alwaysInline uint64 operator+(const pType* vPtr) const noexcept { checkInit(); return (uint64)cell->address + vPtr ; }
+		template<class vType> alwaysInline type*  operator+(const vType  vVal) const noexcept { checkInit(); return (type* )cell->address + vVal ; }
+		template<class pType> alwaysInline uint64 operator-(const pType* vPtr) const noexcept { checkInit(); return (uint64)cell->address - vPtr ; }
+		template<class vType> alwaysInline type*  operator-(const vType  vVal) const noexcept { checkInit(); return (type* )cell->address - vVal ; }
 
 
 
@@ -265,19 +265,19 @@ namespace lux::ram{
 
 
 
-		inline type& operator[](const uint64 vIndex) const {
+		alwaysInline type& operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((type*)(cell->address))[vIndex];
 		}
-		inline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
-		inline type* operator->( ) const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
+		alwaysInline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
+		alwaysInline type* operator->( ) const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
 
 
 		/**
 		 * @brief Returns the first address of the allocated memory block as a lux::ram::ptr //FIXME
 		 */
-		inline type* begin() const {
+		alwaysInline type* begin() const {
 			checkInit(); checkNullptr();  checkSize();  return (type*)cell->address;
 		}
 
@@ -285,7 +285,7 @@ namespace lux::ram{
 		 * @brief Returns the address of the object past the last object in the memory block as a lux::ram::ptr. //FIXME
 		 *		Dereferencing the pointer is undefined behaviour
 		 */
-		inline type* end() const {
+		alwaysInline type* end() const {
 			checkInit(); checkNullptr();  checkSize();
 			return (type*)((int8*)cell->address + count() * sizeof(type));
 		}
@@ -299,9 +299,9 @@ namespace lux::ram{
 
 
 		//Returns the size in BYTES of the allocate memory. use count to get the number of elements
-		inline uint64 size()  const noexcept { return cell->cellSize; }
+		alwaysInline uint64 size()  const noexcept { return cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
-		inline uint64 count() const noexcept { return cell->cellSize / sizeof(type); }
+		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(type); }
 
 
 
@@ -354,12 +354,13 @@ namespace lux::ram{
 				//!^ Ok. Owners count is set back to 1 if the address was nullptr. nullptr allocations are not shared
 				pushOwner();
 			}
-			else { 																//If it's allocated
-				if(																	//And the new size is smaller than the maximum cell size
-					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / LuxIncSize + 1) * LuxIncSize) ) {
-					[[likely]] cell->cellSize = vSize;									//change the cellSize variable and return //FIXME move to fixed size cell
+			else { [[likely]]														//If it's allocated
+				if(																	//And the new size is smaller or equal to the maximum cell size
+					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / LuxIncSize) * LuxIncSize) ) {
+					//! ^ Not (vSize / LuxIncSize + 1)
+					[[unlikely]] cell->cellSize = vSize;								//change the cellSize variable and return //FIXME move to fixed size cell
 				}
-				else {															//If it's larger than the maximum cell size //TODO check realloc and free returns
+				else { [[likely]]												//If it's larger than the maximum cell size //TODO check realloc and free returns
 					if(cell->typeIndex != (uint16)-1) {								//If the cell is a fixed size cell
 						type* oldAddr = (type*)cell->address;							//Save the old address
 						types[cell->typeIndex].m.lock();
@@ -400,7 +401,7 @@ namespace lux::ram{
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
-		inline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::AUTO) {
+		alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::AUTO) {
 			checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);
 			realloc(sizeof(type) * vCount, vCopyOldData, vClass);
 		}
@@ -438,11 +439,11 @@ namespace lux::ram{
 		}
 
 
-		inline operator type*( ) const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
-		inline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion ("if(ptr)" is the same as "if(ptr != nullptr)")
+		alwaysInline operator type*( ) const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
+		alwaysInline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion ("if(ptr)" is the same as "if(ptr != nullptr)")
 
-		inline bool operator==(ram::Alloc<type> vPtr) { return vPtr.cell == cell; }
-		inline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != cell; }
+		alwaysInline bool operator==(ram::Alloc<type> vPtr) { return vPtr.cell == cell; }
+		alwaysInline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
 	};
 

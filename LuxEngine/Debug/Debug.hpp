@@ -123,6 +123,5 @@ namespace lux::dbg{
 		template<class... t> static debugOnly alwaysInline void checkVk(   const int,               const char*, const t&...) {}
 							 static debugOnly alwaysInline void checkIndex(const uint64, const uint64, const uint64, const char*) {}
 		template<class pType, class... aTypes> static debugOnly alwaysInline void checkRawPtr(pType*, const char*, const aTypes&...) {}
-		#undef no_optimize_err
 	#endif
 }
