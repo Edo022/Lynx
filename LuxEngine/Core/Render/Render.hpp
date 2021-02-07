@@ -52,7 +52,7 @@ namespace lux::core::render{
 		else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
 			Warning printf("Validation layer warning: ");
 		}
-		else{ Normal printf("Validation layer info: "); }
+		else { Normal printf("Validation layer info: "); }
 		printf("%s", pCallbackData->pMessage); NormalNoNl;
 		return VK_FALSE;
 	})

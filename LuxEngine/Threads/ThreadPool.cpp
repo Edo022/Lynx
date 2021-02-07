@@ -59,12 +59,12 @@ namespace lux::thr {
 			thr::self::setName(thrName);
 		#endif
 
-		while(true){
+		while(true) {
 			// thr::self::suspend();
 			// noop;
 
 			queue_m.lock();
-			if(!queue.empty()){
+			if(!queue.empty()) {
 				ram::Alloc<__pvt::Func_b> e = (ram::Alloc<__pvt::Func_b>&&)(queue.front());
 				queue.pop_front();
 				queue_m.unlock();

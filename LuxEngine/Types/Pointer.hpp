@@ -103,7 +103,7 @@ namespace lux::ram{
 				if(!cell->firstOwner) {										//If this is the first owner of the cell
 					cell->firstOwner = cell->lastOwner = (Alloc<Dummy>*)this;	//Set this as both the first and last owners
 					prevOwner = nextOwner = nullptr;							//Set this prev and next owners to nullptr
-				} else{														//If this is not the first owner
+				} else {														//If this is not the first owner
 					prevOwner = cell->lastOwner;								//Set the cell's last owner as this prev
 					nextOwner = nullptr;										//Set this next to nullptr
 					cell->lastOwner->nextOwner = (Alloc<Dummy>*)this;			//Update the cell's last owner's next to this
@@ -114,7 +114,7 @@ namespace lux::ram{
 				if(!cell->address) return;									//Return if the cell is nullptr
 				if(!prevOwner && !nextOwner) {								//If this was the only owner
 					cell->firstOwner = cell->lastOwner = nullptr;				//Set both the first and last owner of the cell to nullptr
-				} else{														//If the cell had other owners
+				} else {														//If the cell had other owners
 					if(prevOwner) prevOwner->nextOwner = nextOwner;				//If this was NOT the first owner, update the previus owner's next
 					else cell->firstOwner = (Alloc<Dummy>*)nextOwner;			//If this was the first owner, update the cell's first owner
 					if(nextOwner) nextOwner->prevOwner = prevOwner;				//If this was NOT the last owner, update the next owner's previous
@@ -123,8 +123,8 @@ namespace lux::ram{
 				}
 			}
 		#else
-			constexpr debugOnly alwaysInline void pushOwner(){}
-			constexpr debugOnly alwaysInline void popOwner(){}
+			constexpr debugOnly alwaysInline void pushOwner() {}
+			constexpr debugOnly alwaysInline void popOwner() {}
 		#endif
 
 
@@ -356,7 +356,7 @@ namespace lux::ram{
 			}
 			else { [[likely]]														//If it's allocated
 				if(																	//And the new size is smaller or equal to the maximum cell size
-					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / LuxIncSize) * LuxIncSize) ) {
+					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / LuxIncSize) * LuxIncSize)) {
 					//! ^ Not (vSize / LuxIncSize + 1)
 					[[unlikely]] cell->cellSize = vSize;								//change the cellSize variable and return //FIXME move to fixed size cell
 				}
@@ -374,7 +374,7 @@ namespace lux::ram{
 							type_.m.unlock();
 							cell->address = (char*)type_.memory[cell->localIndex / type_.cellsPerBuff] + (uint64)type_.cellClass * cell->localIndex;
 						}
-						else{															//Fixed size --> custom
+						else {															//Fixed size --> custom
 							uint64 size_ = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate the new memory
 							cell->address = win10(_aligned_malloc(size_, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size_));
 						}
@@ -382,7 +382,7 @@ namespace lux::ram{
 						//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data
 						cell->typeIndex = classIndexFromEnum(vClass);					//Set the new type index
 					}
-					else{																//Custom size --> custom
+					else {																//Custom size --> custom
 						//FIXME use normal malloc if the data doesnt need to be copied
 						cell->address = std::realloc(cell->address, vSize);					//Just reallocate the pointer
 					}
@@ -484,7 +484,7 @@ namespace lux::ram{
 			//															 	 Save allocation address in cell object
 			cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
 		}
-		else{															//For custom size cells
+		else {															//For custom size cells
 			uint64 size = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate a new buffer
 			cell->address = win10(_aligned_malloc(size, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size));
 			luxDebug(cell->localIndex = 0;)

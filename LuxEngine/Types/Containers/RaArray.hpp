@@ -175,7 +175,7 @@ namespace lux {
 		}
 
 
-		~RaArray(){ this->destroy(); }
+		~RaArray() { this->destroy(); }
 
 
 

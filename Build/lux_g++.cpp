@@ -11,12 +11,12 @@
 char pf, tp;
 using string = std::string;
 
-string parse(char* p){
-    if(std::regex_match(string(p), std::regex("^\\-(d|r|l|w)\\[.*\\]$"))){
+string parse(char* p) {
+    if(std::regex_match(string(p), std::regex("^\\-(d|r|l|w)\\[.*\\]$"))) {
         if(p[1] == pf || p[1] == tp) return string(" -") + string(p).substr(3, strlen(p) - 4);
         else return "";
     }
-    else if(std::regex_match(string(p), std::regex("^\\-(((d|r)|(l|w))|((l|w)|(d|r)))\\[.*\\]~"))){
+    else if(std::regex_match(string(p), std::regex("^\\-(((d|r)|(l|w))|((l|w)|(d|r)))\\[.*\\]~"))) {
         if((p[1] == pf || p[1] == tp) && (p[2] == pf || p[2] == tp)) return string(" -") + string(p).substr(4, strlen(p) - 5);
         else return "";
     }
@@ -26,7 +26,7 @@ string parse(char* p){
 
 
 
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
     //Read engine path
     FILE* epf = fopen("./.engine/enginePath", "r");
     fseek(epf, 0, SEEK_END); int epfn = ftell(epf);
