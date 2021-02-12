@@ -24,13 +24,16 @@ namespace lux{
 		extern uint32 allocated;	//TODO remove
 
 
-		struct alignas(64) Cell_t {
-			uint16 typeIndex;		//INDEX of the buffer type. -1 for custom size cells
-			uint16 owners;			//Number of lux::ram::ptr instances that owns the cell
-			uint32 cellIndex;		//Index of the cell in the cells array
-			uint32 localIndex;		//Index of the cell in the type allocations
-			uint32 cellSize;		//Size of the cell in bytes
-			void*  address;			//Address of the cell
+		struct Cell_t {
+			uint16 typeIndex;		//INDEX of the buffer type. -1 for custom size cells		//2
+			uint16 owners;			//Number of lux::ram::ptr instances that owns the cell		//4
+			uint32 cellIndex;		//Index of the cell in the cells array						//8
+			uint32 localIndex;		//Index of the cell in the type allocations					//12
+			uint32 cellSize;		//Size of the cell in bytes									//16
+			void*  address;			//Address of the cell										//24
+			//char padding[8]																	//32
+			char padding[28 luxDebug(-16)];														//60
+			//uint32 next;																		//64
 			luxDebug(Alloc<Dummy>* lastOwner;)
 			luxDebug(Alloc<Dummy>* firstOwner;)
 		};
