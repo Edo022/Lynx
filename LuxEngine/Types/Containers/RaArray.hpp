@@ -69,6 +69,44 @@ namespace lux {
 	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
 	public __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
 		genInitCheck;
+
+
+		struct Elm{
+			type value;
+			iter next;
+		};
+
+
+		struct Iterator{
+			Elm* addr;
+
+			alwaysInline Iterator operator++(int) noexcept { return { (type*)  addr++ }; }
+			alwaysInline Iterator operator++(   ) noexcept { return { (type*)++addr   }; }
+			alwaysInline Iterator operator--(int) noexcept { return { (type*)  addr-- }; }
+			alwaysInline Iterator operator--(   ) noexcept { return { (type*)--addr   }; }
+
+			alwaysInline void operator+=(const uint64 vVal) noexcept { addr += vVal; }
+			alwaysInline void operator-=(const uint64 vVal) noexcept { addr += vVal; }
+			alwaysInline void operator+=(const int64  vVal) noexcept { addr += vVal; }
+			alwaysInline void operator-=(const int64  vVal) noexcept { addr += vVal; }
+
+			alwaysInline Iterator operator+(const uint64 vVal) const noexcept { return { addr + vVal }; }
+			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
+
+
+			alwaysInline type& operator[](const uint64 vIndex) const { return static_cast<type>(addr[vIndex]); }
+			alwaysInline type& operator*(                    ) const { return static_cast<type>(*addr); }
+			alwaysInline type* operator->(                   ) const noexcept { return addr; }
+			alwaysInline operator type*( ) const { return (type*)addr; }
+			alwaysInline operator bool(  ) const { return !!addr;      }
+
+			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
+			alwaysInline bool operator!=(type* vPtr)    const noexcept { return vPtr != (type*)addr; }
+			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
+			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
+		};
+
+
 	private:
 		ram::Alloc<type> data;	//Elements
 		ram::Alloc<iter> lnkd;	//State of each element
@@ -405,7 +443,7 @@ namespace lux {
 		alwaysInline bool     empty() const noexcept { checkInit(); return !count();       } //Returns true if the array has 0 elements
 		alwaysInline iter usedCount() const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
 		alwaysInline iter freeCount() const noexcept { checkInit(); return free_;          } //Returns the number of free elements
-		alwaysInline auto     begin() const noexcept { checkInit(); return data.begin();   }
-		alwaysInline auto       end() const noexcept { checkInit(); return data.end();     }
+		alwaysInline auto     begin() const noexcept { checkInit(); return Iterator{ (Elm*)(data.begin()) }; }
+		alwaysInline auto       end() const noexcept { checkInit(); return Iterator{ (Elm*)(data.end())   }; }
 	};
 }
