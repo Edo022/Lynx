@@ -94,8 +94,8 @@ namespace lux {
 			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
 
 
-			alwaysInline type& operator[](const uint64 vIndex) const { return static_cast<type>(addr[vIndex]); }
-			alwaysInline type& operator*(                    ) const { return static_cast<type>(*addr); }
+			alwaysInline type& operator[](const uint64 vIndex) const { return reinterpret_cast<type>(addr[vIndex]); }
+			alwaysInline type& operator*(                    ) const { return reinterpret_cast<type>(*addr); }
 			alwaysInline type* operator->(                   ) const noexcept { return addr; }
 			alwaysInline operator type*( ) const { return (type*)addr; }
 			alwaysInline operator bool(  ) const { return !!addr;      }
@@ -108,8 +108,9 @@ namespace lux {
 
 
 	private:
-		ram::Alloc<type> data;	//Elements
-		ram::Alloc<iter> lnkd;	//State of each element
+		ram::Alloc<Elm> data;
+		// ram::Alloc<type> data;	//Elements
+		// ram::Alloc<iter> lnkd;	//State of each element
 
 		iter head;		//First free element
 		iter tail;		//Last free element
@@ -139,7 +140,7 @@ namespace lux {
 		 * @brief Creates an array without allocating memory to it.
 		 *		The memory will be allocated when calling the add function
 		 */
-		inline RaArray( ) : data(nullptr), lnkd(nullptr),
+		inline RaArray( ) : data(nullptr),// lnkd(nullptr),
 			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
@@ -148,8 +149,8 @@ namespace lux {
 		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
 		 */
 		inline RaArray(const iter vCount) :
-			data(sizeof(type) * vCount),
-			lnkd(sizeof(iter) * vCount),
+			data(sizeof(Elm) * vCount),
+			//lnkd(sizeof(iter) * vCount),
 			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
@@ -207,7 +208,7 @@ namespace lux {
 		 */
 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
 			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ },
-			data{ pCont.data }, lnkd{ pCont.lnkd } {
+			data{ pCont.data }{//, lnkd{ pCont.lnkd } {
 			// pCont.data = pCont.lnkd = nullptr;
 			//!^ pCont data and lnkd are freed in its destructor
 		}
@@ -238,10 +239,10 @@ namespace lux {
 		iter append(const type& pData) {
 			checkInit();
 			data.reallocArr(count() + 1);
-			lnkd.reallocArr(count() + 1);
+			//lnkd.reallocArr(count() + 1);
 
-			new(&data[count_]) type(pData);	//Initialize new element
-			lnkd[count_] = -1;				//Set the tracker as valid
+			new(&data[count_].value) type(pData);	//Initialize new element
+			data[count_].next = -1;				//Set the tracker as valid
 			return count_++;				//Update the number of elements and return the element index
 		}
 
@@ -259,15 +260,15 @@ namespace lux {
 			}
 			iter prevHead = head;				//Save head
 			if(head == tail) {					//If it has only one free element
-				lnkd[prevHead] = -1;				//Reset head and tail
+				data[prevHead].next = -1;				//Reset head and tail
 				head = tail = -1;					//Reset tracker
 			}
 			else {								//If it has more than one
-				head = lnkd[prevHead];				//Update head
-				lnkd[prevHead] = -1;				//Update tracker of the old head element
+				head = data[prevHead].next;				//Update head
+				data[prevHead].next = -1;				//Update tracker of the old head element
 			}
 			free_--;							//Update number of free elements
-			new(&data[prevHead]) type(pData);		//Initialize the new element
+			new(&data[prevHead].value) type(pData);		//Initialize the new element
 			return prevHead;						//Return the index of the new element
 		}
 
@@ -284,11 +285,11 @@ namespace lux {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
-			data[vIndex].~type();						//Destroy the element
-			lnkd[vIndex] = -1;							//Set the index as free
+			data[vIndex].value.~type();						//Destroy the element
+			data[vIndex].next = -1;							//Set the index as free
 			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
 			else {										//If it has free elements
-				lnkd[tail] = vIndex;						//Set the new tail
+				data[tail].next = vIndex;						//Set the new tail
 				tail = vIndex;								//update the last free index
 			}
 			free_++;									//Update the number of free elements
@@ -306,7 +307,7 @@ namespace lux {
 			head = tail = (iter)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0); //FIXME FREE
-			lnkd.reallocArr(0); //FIXME FREE
+			// lnkd.reallocArr(0); //FIXME FREE
 		}
 
 
@@ -334,7 +335,7 @@ namespace lux {
 			isInit(pCont);
 			clear();
 			data.reallocArr(pCont.count(), false);
-			lnkd.reallocArr(pCont.count(), false);
+			// lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 			return *this;
 		}
@@ -346,7 +347,7 @@ namespace lux {
 			isInit(pCont);
 			clear();
 			data.reallocArr(pCont.count(), false);
-			lnkd.reallocArr(pCont.count(), false);
+			// lnkd.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 			return *this;
 		}
@@ -380,7 +381,7 @@ namespace lux {
 			isInit(pCont);
 			this->destroy();
 			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
-			data = pCont.data; lnkd = pCont.lnkd;
+			data = pCont.data;// lnkd = pCont.lnkd;
 			// pCont.data = pCont.lnkd = nullptr;
 			//!^ pCont data and lnkd are freed in its destructor
 			return *this;
@@ -410,7 +411,7 @@ namespace lux {
 		alwaysInline bool isValid(const iter vIndex) const noexcept {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return lnkd[vIndex] == (iter)-1;
+			return data[vIndex].next == (iter)-1;
 		}
 
 
@@ -419,7 +420,7 @@ namespace lux {
 		alwaysInline type& operator[](const iter vIndex) const noexcept {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return data[vIndex];
+			return data[vIndex].value;
 		}
 
 
@@ -443,7 +444,7 @@ namespace lux {
 		alwaysInline bool     empty() const noexcept { checkInit(); return !count();       } //Returns true if the array has 0 elements
 		alwaysInline iter usedCount() const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
 		alwaysInline iter freeCount() const noexcept { checkInit(); return free_;          } //Returns the number of free elements
-		alwaysInline auto     begin() const noexcept { checkInit(); return Iterator{ (Elm*)(data.begin()) }; }
-		alwaysInline auto       end() const noexcept { checkInit(); return Iterator{ (Elm*)(data.end())   }; }
+		alwaysInline auto     begin() const noexcept { checkInit(); return Iterator{ data.begin() }; }
+		alwaysInline auto       end() const noexcept { checkInit(); return Iterator{ data.end()   }; }
 	};
 }
