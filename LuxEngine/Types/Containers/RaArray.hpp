@@ -44,7 +44,7 @@ namespace lux {
 			inline void destroy() const {
 				auto this_ = (lux::RaArray<type, iter>*)this;
 				int i = 0;
-				for(type* elm = this_->begin(); elm != this_->end(); ++elm) {
+				for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
 					if(this_->isValid(i++)) elm->~type();
 				}
 			}
@@ -80,10 +80,10 @@ namespace lux {
 		struct Iterator{
 			Elm* addr;
 
-			alwaysInline Iterator operator++(int) noexcept { return { (type*)  addr++ }; }
-			alwaysInline Iterator operator++(   ) noexcept { return { (type*)++addr   }; }
-			alwaysInline Iterator operator--(int) noexcept { return { (type*)  addr-- }; }
-			alwaysInline Iterator operator--(   ) noexcept { return { (type*)--addr   }; }
+			alwaysInline Iterator operator++(int) noexcept { return Iterator{ (Elm*)(  addr++) }; }
+			alwaysInline Iterator operator++(   ) noexcept { return Iterator{ (Elm*)(++addr  ) }; }
+			alwaysInline Iterator operator--(int) noexcept { return Iterator{ (Elm*)(  addr--) }; }
+			alwaysInline Iterator operator--(   ) noexcept { return Iterator{ (Elm*)(--addr  ) }; }
 
 			alwaysInline void operator+=(const uint64 vVal) noexcept { addr += vVal; }
 			alwaysInline void operator-=(const uint64 vVal) noexcept { addr += vVal; }
@@ -96,9 +96,9 @@ namespace lux {
 
 			alwaysInline type& operator[](const uint64 vIndex) const { return reinterpret_cast<type>(addr[vIndex]); }
 			alwaysInline type& operator*(                    ) const { return reinterpret_cast<type>(*addr); }
-			alwaysInline type* operator->(                   ) const noexcept { return addr; }
-			alwaysInline operator type*( ) const { return (type*)addr; }
-			alwaysInline operator bool(  ) const { return !!addr;      }
+			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
+			// alwaysInline operator type*( ) const { return (type*)addr; }
+			// alwaysInline operator bool(  ) const { return !!addr;      }
 
 			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
 			alwaysInline bool operator!=(type* vPtr)    const noexcept { return vPtr != (type*)addr; }

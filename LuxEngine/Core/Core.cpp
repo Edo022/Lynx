@@ -60,7 +60,7 @@ namespace lux::core{
 	//Deprecated function
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		win10(return system((c::shaders::shaderPath + "/glslc.exe "                                    + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
+		win10(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
 		//FIXME USE EXE IN DEPS OR COMPILE DIRECTLY
 		_linux(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
 		//TODO add string operator+(char)
