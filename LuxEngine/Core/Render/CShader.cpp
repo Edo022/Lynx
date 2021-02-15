@@ -24,7 +24,8 @@ namespace lux::core::c::shaders{
 	RtArray<LuxShaderLayout_t>					CShadersLayouts;
 
 	VkCommandPool								commandPool = nullptr;
-	RaArray<LuxShader_t, uint32>				CShaders;
+	// RaArray<LuxShader_t, uint32>				CShaders;
+	RtArray<LuxShader_t, uint32>				CShaders;
 	RtArray<VkCommandBuffer>					CShadersCBs;
 
 	FenceDE										addShaderFence;
@@ -510,7 +511,6 @@ namespace lux::core::c::shaders{
 		};
 		dbg::checkVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
 
-
 		//Bind pipeline and descriptors and run the compute shader
 		vkCmdBindPipeline      (CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
 		vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, nullptr);
@@ -548,7 +548,11 @@ namespace lux::core::c::shaders{
 		vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Remove the shader from the shader array
-		CShaders.remove(vCShader);
+		//FIXME __
+		// CShaders.remove(vCShader);
+		for(uint32 i = vCShader; i < CShaders.count() - 1; ++i) CShaders[i] = CShaders[i+1];
+		CShaders.resize(CShaders.count() - 1);
+
 		return true;
 	}
 }

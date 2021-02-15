@@ -112,7 +112,9 @@ namespace lux::core::render{
 
 	//TODO multithreaded submit and command creation
 	void drawFrame() {
-		if(c::shaders::CShaders.usedCount( ) <= 1) return;
+		//FIXME __
+		// if(c::shaders::CShaders.usedCount( ) <= 1) return;
+		if(c::shaders::CShaders.count( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 
 
@@ -144,9 +146,13 @@ namespace lux::core::render{
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
 			c::shaders::addShaderFence.startFirst( );
-			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
+			//FIXME __
+			// c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
+			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
 			for(uint32 i = 0; i < c::shaders::CShaders.count( ); ++i) {
-				if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
+				//FIXME __
+				// if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
+				c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
 			c::shaders::addShaderFence.endFirst( );
 
