@@ -443,8 +443,8 @@
 // 		alwaysInline bool     empty() const noexcept { checkInit(); return !count();       } //Returns true if the array has 0 elements
 // 		alwaysInline iter usedCount() const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
 // 		alwaysInline iter freeCount() const noexcept { checkInit(); return free_;          } //Returns the number of free elements
-// 		alwaysInline auto     begin() const noexcept { checkInit(); return Iterator{ (Elm*)(data.begin()) }; }
-// 		alwaysInline auto       end() const noexcept { checkInit(); return Iterator{ (Elm*)(data.end())   }; }
+// 		alwaysInline auto     begin() const noexcept { checkInit(); return data.begin();   }
+// 		alwaysInline auto       end() const noexcept { checkInit(); return data.end();     }
 // 	};
 // }
 
@@ -514,11 +514,12 @@ namespace lux {
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
 			protected:
 			inline void destroy() const {
-				auto this_ = (lux::RaArray<type, iter>*)this;
-				int i = 0;
-				for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
-					if(this_->isValid(i++)) elm->~type();
-				}
+				//BUG UNCOMMENT
+				// auto this_ = (lux::RaArray<type, iter>*)this;
+				// int i = 0;
+				// for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
+				// 	if(this_->isValid(i++)) elm->~type();
+				// }
 			}
 		};
 	}
@@ -566,8 +567,8 @@ namespace lux {
 			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
 
 
-			alwaysInline type& operator[](const uint64 vIndex) const { return reinterpret_cast<type>(addr[vIndex]); }
-			alwaysInline type& operator*(                    ) const { return reinterpret_cast<type>(*addr); }
+			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
+			alwaysInline type& operator*(                    ) const { return addr->value; }
 			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
 			// alwaysInline operator type*( ) const { return (type*)addr; }
 			// alwaysInline operator bool(  ) const { return !!addr;      }

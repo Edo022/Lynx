@@ -113,8 +113,8 @@ namespace lux::core::render{
 	//TODO multithreaded submit and command creation
 	void drawFrame() {
 		//FIXME __
-		// if(c::shaders::CShaders.usedCount( ) <= 1) return;
-		if(c::shaders::CShaders.count( ) <= 1) return;
+		if(c::shaders::CShaders.usedCount( ) <= 1) return;
+		// if(c::shaders::CShaders.count( ) <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame], false, INT_MAX);
 
 
@@ -147,12 +147,12 @@ namespace lux::core::render{
 		{
 			c::shaders::addShaderFence.startFirst( );
 			//FIXME __
-			// c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
-			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
+			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
+			// c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
 			for(uint32 i = 0; i < c::shaders::CShaders.count( ); ++i) {
 				//FIXME __
-				// if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
-				c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
+				if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
+				// c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
 			c::shaders::addShaderFence.endFirst( );
 
