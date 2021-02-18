@@ -577,6 +577,8 @@ namespace lux {
 			alwaysInline bool operator!=(type* vPtr)    const noexcept { return vPtr != (type*)addr; }
 			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
 			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
+
+			alwaysInline iter index() const noexcept { return (data - addr) / sizeof(Elm); }
 		};
 
 
@@ -662,7 +664,16 @@ namespace lux {
 		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) :
 			RaArray(pCont.count()) {
 			isInit(pCont); //! Same here
-			for(int i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
+			}
 		}
 
 
@@ -672,7 +683,16 @@ namespace lux {
 		inline RaArray(const RaArray<type, iter>& pCont) :
 			RaArray(pCont.count()) {
 			isInit(pCont); //! Same here
-			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
+			}
 		}
 
 
@@ -808,10 +828,19 @@ namespace lux {
 		 */
 		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont) {
 			isInit(pCont);
-			clear();
+			clear(); //FIXME
 			data.reallocArr(pCont.count(), false);
 			// lnkd.reallocArr(pCont.count(), false);
-			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
+			}
 			return *this;
 		}
 
@@ -820,10 +849,20 @@ namespace lux {
 	private:
 		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
 			isInit(pCont);
-			clear();
+			clear(); //FIXME
 			data.reallocArr(pCont.count(), false);
 			// lnkd.reallocArr(pCont.count(), false);
-			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
+			}
 			return *this;
 		}
 

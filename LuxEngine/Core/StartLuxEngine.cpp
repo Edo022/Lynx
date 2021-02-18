@@ -9,9 +9,9 @@
 namespace lux::core{
     luxAutoInit(LUX_NH_START_CORE) {
         // Thread coreThr(lux::core::run, L{ false });  //BUG uncomment
-        // Thread thrPool(lux::thr::__lp_thr_mng);
+        // // Thread thrPool(lux::thr::__lp_thr_mng);
         // coreThr.detach();                            //BUG uncommentZz
-        // thrPool.detach();
+        // // thrPool.detach();
         // while(!initialized) lux::thr::self::yield(); //BUG uncomment
     }
 }
