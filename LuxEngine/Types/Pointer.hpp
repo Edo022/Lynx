@@ -252,10 +252,10 @@ namespace lux::ram{
 
 
 
-		template<class pType> alwaysInline uint64 operator+(const pType* vPtr) const noexcept { checkInit(); return (uint64)cell->address + vPtr ; }
-		template<class vType> alwaysInline type*  operator+(const vType  vVal) const noexcept { checkInit(); return (type* )cell->address + vVal ; }
-		template<class pType> alwaysInline uint64 operator-(const pType* vPtr) const noexcept { checkInit(); return (uint64)cell->address - vPtr ; }
-		template<class vType> alwaysInline type*  operator-(const vType  vVal) const noexcept { checkInit(); return (type* )cell->address - vVal ; }
+		template<class pType> alwaysInline uint64 operator+(const pType* vPtr) const { checkInit(); return (uint64)cell->address + vPtr ; }
+		template<class vType> alwaysInline type*  operator+(const vType  vVal) const { checkInit(); return (type* )cell->address + vVal ; }
+		template<class pType> alwaysInline uint64 operator-(const pType* vPtr) const { checkInit(); return (uint64)cell->address - vPtr ; }
+		template<class vType> alwaysInline type*  operator-(const vType  vVal) const { checkInit(); return (type* )cell->address - vVal ; }
 
 
 
@@ -553,18 +553,18 @@ namespace lux::ram{
 
 
 
-		constexpr inline type* operator++(int) noexcept { checkInit(); return   address++; }
-		constexpr inline type* operator++(   ) noexcept { checkInit(); return ++address;   }
-		constexpr inline type* operator--(int) noexcept { checkInit(); return   address--; }
-		constexpr inline type* operator--(   ) noexcept { checkInit(); return --address;   }
+		constexpr inline type* operator++(int) { checkInit(); return   address++; }
+		constexpr inline type* operator++(   ) { checkInit(); return ++address;   }
+		constexpr inline type* operator--(int) { checkInit(); return   address--; }
+		constexpr inline type* operator--(   ) { checkInit(); return --address;   }
 
-		template<class vType> constexpr inline void operator+=(const vType  vVal) noexcept { checkInit(); address += vVal; }
-		template<class vType> constexpr inline void operator-=(const vType  vVal) noexcept { checkInit(); address += vVal; }
+		template<class vType> constexpr inline void operator+=(const vType  vVal) { checkInit(); address += vVal; }
+		template<class vType> constexpr inline void operator-=(const vType  vVal) { checkInit(); address += vVal; }
 
-		template<class pType> constexpr inline uint64 operator+(const pType* vPtr) const noexcept { checkInit(); return address + vPtr; }
-		template<class vType> constexpr inline type*  operator+(const vType  vVal) const noexcept { checkInit(); return address + vVal; }
-		template<class pType> constexpr inline uint64 operator-(const pType* vPtr) const noexcept { checkInit(); return address - vPtr; }
-		template<class vType> constexpr inline type*  operator-(const vType  vVal) const noexcept { checkInit(); return address - vVal; }
+		template<class pType> constexpr inline uint64 operator+(const pType* vPtr) const { checkInit(); return address + vPtr; }
+		template<class vType> constexpr inline type*  operator+(const vType  vVal) const { checkInit(); return address + vVal; }
+		template<class pType> constexpr inline uint64 operator-(const pType* vPtr) const { checkInit(); return address - vPtr; }
+		template<class vType> constexpr inline type*  operator-(const vType  vVal) const { checkInit(); return address - vVal; }
 
 
 

@@ -73,7 +73,7 @@ namespace lux{
 			return data[vIndex].value;
 		}
 
-		inline iter count() const noexcept { checkInit(); return count_; }
+		inline iter count() const { checkInit(); return count_; }
 
 		inline ~RaArrayC() {
 			if(data) free(data);

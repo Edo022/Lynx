@@ -44,8 +44,9 @@
 // 			inline void destroy() const {
 // 				auto this_ = (lux::RaArray<type, iter>*)this;
 // 				int i = 0;
-// 				for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
-// 					if(this_->isValid(i++)) elm->~type();
+// 				// for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
+// 				for(auto& elm : *this_) {
+// 					if(this_->isValid(i++)) elm.~type();
 // 				}
 // 			}
 // 		};
@@ -94,8 +95,8 @@
 // 			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
 
 
-// 			alwaysInline type& operator[](const uint64 vIndex) const { return reinterpret_cast<type>(addr[vIndex]); }
-// 			alwaysInline type& operator*(                    ) const { return reinterpret_cast<type>(*addr); }
+// 			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
+// 			alwaysInline type& operator*(                    ) const { return addr->value; }
 // 			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
 // 			// alwaysInline operator type*( ) const { return (type*)addr; }
 // 			// alwaysInline operator bool(  ) const { return !!addr;      }
@@ -439,12 +440,12 @@
 
 
 // 		//TODO a dd size
-// 		alwaysInline iter     count() const noexcept { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
-// 		alwaysInline bool     empty() const noexcept { checkInit(); return !count();       } //Returns true if the array has 0 elements
-// 		alwaysInline iter usedCount() const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
-// 		alwaysInline iter freeCount() const noexcept { checkInit(); return free_;          } //Returns the number of free elements
-// 		alwaysInline auto     begin() const noexcept { checkInit(); return data.begin();   }
-// 		alwaysInline auto       end() const noexcept { checkInit(); return data.end();     }
+// 		alwaysInline iter     count() const { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
+// 		alwaysInline bool     empty() const { checkInit(); return !count();       } //Returns true if the array has 0 elements
+// 		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; } //Returns the number of used elements
+// 		alwaysInline iter freeCount() const { checkInit(); return free_;          } //Returns the number of free elements
+// 		alwaysInline auto     begin() const { checkInit(); return data.begin();   }
+// 		alwaysInline auto       end() const { checkInit(); return data.end();     }
 // 	};
 // }
 
@@ -514,12 +515,11 @@ namespace lux {
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
 			protected:
 			inline void destroy() const {
-				//BUG UNCOMMENT
-				// auto this_ = (lux::RaArray<type, iter>*)this;
-				// int i = 0;
-				// for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
-				// 	if(this_->isValid(i++)) elm->~type();
-				// }
+				using arrt = lux::RaArray<type, iter>;
+				int i = 0;
+				for(auto elm : *(arrt*)this) {
+					if(((arrt*)this)->isValid(i++)) elm.~type();
+				}
 			}
 		};
 	}
@@ -759,7 +759,9 @@ namespace lux {
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
 			data[vIndex].value.~type();						//Destroy the element
-			data[vIndex].next = -1;							//Set the index as free
+			// data[vIndex].next = (iter)-1;							//Set the index as free
+			data[vIndex].next = 0;						//Set the index as free
+			//!                 ^ 0 is used as a "not -1" value. -1 are valid elements
 			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
 			else {										//If it has free elements
 				data[tail].next = vIndex;						//Set the new tail
@@ -881,7 +883,7 @@ namespace lux {
 		 * @param vIndex Index of the element
 		 * @return True if the element is valid (non deleted), false if not
 		 */
-		alwaysInline bool isValid(const iter vIndex) const noexcept {
+		/*alwaysInline*/neverInline bool isValid(const iter vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[vIndex].next == (iter)-1;
@@ -890,9 +892,10 @@ namespace lux {
 
 
 
-		alwaysInline type& operator[](const iter vIndex) const noexcept {
+		/*alwaysInline*/neverInline type& operator[](const iter vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::checkParam(!isValid(vIndex), "vIndex", "Accessing deleted array element");
 			return data[vIndex].value;
 		}
 
@@ -913,11 +916,11 @@ namespace lux {
 
 
 		//TODO a dd size
-		alwaysInline iter     count() const noexcept { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
-		alwaysInline bool     empty() const noexcept { checkInit(); return !count();       } //Returns true if the array has 0 elements
-		alwaysInline iter usedCount() const noexcept { checkInit(); return count_ - free_; } //Returns the number of used elements
-		alwaysInline iter freeCount() const noexcept { checkInit(); return free_;          } //Returns the number of free elements
-		alwaysInline auto     begin() const noexcept { checkInit(); return Iterator{ data.begin() }; }
-		alwaysInline auto       end() const noexcept { checkInit(); return Iterator{ data.end()   }; }
+		alwaysInline iter     count() const { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
+		alwaysInline bool     empty() const { checkInit(); return !count();       } //Returns true if the array has 0 elements
+		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; } //Returns the number of used elements
+		alwaysInline iter freeCount() const { checkInit(); return free_;          } //Returns the number of free elements
+		alwaysInline auto     begin() const { checkInit(); return Iterator{ data.begin() }; }
+		alwaysInline auto       end() const { checkInit(); return Iterator{ data.end()   }; }
 	};
 }
