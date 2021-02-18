@@ -823,7 +823,7 @@ namespace lux {
 
 		/**
 		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
-		 * @param pCont The container object to copy elements from.
+		 * @param pCont The container object to copy elements from._
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
 		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont) {
