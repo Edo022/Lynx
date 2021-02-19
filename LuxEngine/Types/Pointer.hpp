@@ -160,7 +160,7 @@ namespace lux::ram{
 		 * @param pPtr The pointer to copy
 		 */
 		alwaysInline Alloc(const Alloc<type>& vAlloc) :
-			Alloc(vAlloc, {}) {
+			Alloc(vAlloc, Dummy{}) {
 		}
 
 		/**

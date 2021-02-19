@@ -700,8 +700,9 @@ namespace lux {
 		 * @brief Move constructor //FIXME probably useless
 		 */
 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
-			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ },
-			data{ pCont.data }{//, lnkd{ pCont.lnkd } {
+			data{ pCont.data }, //lnkd{ pCont.lnkd } {
+			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ } {
+			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
 			// pCont.data = pCont.lnkd = nullptr;
 			//!^ pCont data and lnkd are freed in its destructor
 		}
@@ -894,8 +895,9 @@ namespace lux {
 		inline auto& operator=(RaArray<type, iter>&& pCont) {
 			isInit(pCont);
 			this->destroy();
-			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
 			data = pCont.data;// lnkd = pCont.lnkd;
+			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
+			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
 			// pCont.data = pCont.lnkd = nullptr;
 			//!^ pCont data and lnkd are freed in its destructor
 			return *this;
