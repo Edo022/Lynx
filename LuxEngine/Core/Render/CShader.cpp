@@ -24,7 +24,7 @@ namespace lux::core::c::shaders{
 	RtArray<LuxShaderLayout_t>					CShadersLayouts;
 
 	VkCommandPool								commandPool = nullptr;
-	RaArray<LuxShader_t, uint32>				CShaders;
+	RtArray<LuxShader_t, uint32>				CShaders;
 	// RtArray<LuxShader_t, uint32>				CShaders;
 	RtArray<VkCommandBuffer>					CShadersCBs;
 
@@ -559,9 +559,9 @@ namespace lux::core::c::shaders{
 
 		//Remove the shader from the shader array
 		//FIXME __
-		CShaders.remove(vCShader);
-		// for(uint32 i = vCShader; i < CShaders.count() - 1; ++i) CShaders[i] = CShaders[i+1];
-		// CShaders.resize(CShaders.count() - 1);
+		// CShaders.remove(vCShader);
+		for(uint32 i = vCShader; i < CShaders.count() - 1; ++i) CShaders[i] = CShaders[i+1];
+		CShaders.resize(CShaders.count() - 1);
 
 		return true;
 	}

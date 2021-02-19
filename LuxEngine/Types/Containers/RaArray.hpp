@@ -961,7 +961,7 @@ namespace lux {
 		alwaysInline bool     empty() const { checkInit(); return !count();       } //Returns true if the array has 0 elements
 		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; } //Returns the number of used elements
 		alwaysInline iter freeCount() const { checkInit(); return free_;          } //Returns the number of free elements
-		alwaysInline Iterator begin() const { checkInit(); return Iterator{ data }; }
-		alwaysInline Iterator   end() const { checkInit(); return Iterator{ data + count_ }; }
+		alwaysInline Iterator begin() const { checkInit(); if(empty()) return { nullptr }; else return { data }; }
+		alwaysInline Iterator   end() const { checkInit(); if(empty()) return { nullptr }; else return { data + count_ }; }
 	};
 }

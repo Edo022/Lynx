@@ -24,7 +24,7 @@ namespace lux::core::c::shaders{
 	extern RtArray<LuxShaderLayout_t>			CShadersLayouts;	//Layout of the render shaders
 
 	extern VkCommandPool						commandPool;		//The command pool where render spaces commands are submitted
-	extern RaArray<LuxShader_t, uint32>			CShaders;			//Per-object shaders
+	extern RtArray<LuxShader_t, uint32>			CShaders;			//Per-object shaders
 	// extern RtArray<LuxShader_t, uint32>			CShaders;			//Per-object shaders
 	extern RtArray<VkCommandBuffer>				CShadersCBs;		//Per-object command buffers
 
