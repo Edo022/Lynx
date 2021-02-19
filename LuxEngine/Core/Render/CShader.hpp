@@ -28,7 +28,8 @@ namespace lux::core::c::shaders{
 	// extern RtArray<LuxShader_t, uint32>			CShaders;			//Per-object shaders
 	extern RtArray<VkCommandBuffer>				CShadersCBs;		//Per-object command buffers
 
-	extern FenceDE								addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
+	// extern FenceDE								addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
+	extern pollFence								addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 	extern LuxShader							clearShader;
 
 

@@ -33,7 +33,7 @@ namespace lux::input{
 		lux::RtArray<uint16> sequence;
 		//This is the function that will be called when the sequence is performed. It must be of type void and take a KeySequence as a parameter
 		//TODO use ExecFuncData
-		LuxKeyBindingCallback bindedFunction;
+		LuxKeyBindingCallback bindedFunction = nullptr;
 	};
 
 

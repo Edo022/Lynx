@@ -145,7 +145,8 @@ namespace lux::core::render{
 		//Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
-			c::shaders::addShaderFence.startFirst( );
+			// c::shaders::addShaderFence.startFirst( );
+			c::shaders::addShaderFence.set( );
 			//FIXME __
 			c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
 			// c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
@@ -154,7 +155,8 @@ namespace lux::core::render{
 				if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 				// c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
-			c::shaders::addShaderFence.endFirst( );
+			// c::shaders::addShaderFence.endFirst( );
+			c::shaders::addShaderFence.unset( );
 
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
