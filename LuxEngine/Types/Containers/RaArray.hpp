@@ -707,7 +707,7 @@ namespace lux {
 		}
 
 
-		~RaArray() { if(head != (iter)-1) this->destroy(); }
+		~RaArray() { if(!empty()) this->destroy(); }
 
 
 
