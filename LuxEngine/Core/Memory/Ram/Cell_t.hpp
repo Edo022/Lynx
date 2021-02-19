@@ -47,6 +47,6 @@ namespace lux{
 		};
 
 		extern RaArrayC<Cell_t> cells;
-		extern Cell_t dummyCell;
+		extern thread_local Cell_t dummyCell;
 	}
 }
