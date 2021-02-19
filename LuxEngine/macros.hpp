@@ -46,6 +46,11 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define alwaysInline __attribute__ ((__always_inline__)) inline debugOnly
 #define neverInline  __attribute__ ((__noinline__))
 
+#ifdef LUX_DEBUG
+    #undef alwaysInline
+    #define alwaysInline
+#endif
+
 
 //Time
 #include <chrono>
