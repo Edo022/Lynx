@@ -45,4 +45,5 @@ namespace lux::core::c::shaders{
 	LuxShader		newShader(const RtArray<rem::Cell>& pCells,  const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 	void			updateShaderCall(  const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 	bool			destroyShader(     const LuxShader vCShader);
+
 }

@@ -2,6 +2,7 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
+#include "LuxEngine/Core/Render/Shaders/Data.hpp"
 
 
 
@@ -349,66 +350,22 @@ namespace lux::core::c::shaders{
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-				static VkImageMemoryBarrier readToWrite{ 								//Create memory barrier object
-					.sType{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER },				//Set structure type
-					.srcAccessMask{ VK_ACCESS_MEMORY_READ_BIT },					//Set source access mask
-					.dstAccessMask{ VK_ACCESS_TRANSFER_WRITE_BIT },					//Set destination access mask. It must be writable in order to copy the buffer in it
-					.oldLayout{ VK_IMAGE_LAYOUT_UNDEFINED },						//Set old layout. Swapchain images are in undefined layout after being acquired
-					.newLayout{ VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL },				//Set new layout. Destination optimal allows the image to be used as a transfer destination
-					.srcQueueFamilyIndex{ VK_QUEUE_FAMILY_IGNORED },				//Queue families unset
-					.dstQueueFamilyIndex{ VK_QUEUE_FAMILY_IGNORED },				//Queue families unset
-					.subresourceRange{												//Create subresource object
-						.aspectMask{ VK_IMAGE_ASPECT_COLOR_BIT },						//Set the aspect mask
-						.baseMipLevel{ 0 },												//No mipmap
-						.levelCount{ 1 },												//No multi leve images
-						.baseArrayLayer{ 0 },											//Set base layer
-						.layerCount{ 1 },												//No multi layer
-					},
-				};
-				readToWrite.image = render::swapchain::swapchainImages[imgIndex];	//Set swapchain image
+				readToWriteBarrier.image = render::swapchain::swapchainImages[imgIndex];	//Set swapchain image
 				VkPipelineStageFlags 												//Create stage flags
 					srcStage{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },		//The swapchain image is in color output stage
 					dstStage{ VK_PIPELINE_STAGE_TRANSFER_BIT };						//Change it to transfer stage to copy the buffer in it
-				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
+				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
-				static VkBufferImageCopy region{ 										//Create bufferImageCopy region to copy the buffer into the image
-					.bufferOffset{ 0 },												//No buffer offset
-					.bufferRowLength{ 0 },											//dark magic
-					.bufferImageHeight{ 0 },										//dark magic
-					.imageSubresource{												//Create subresource object
-						.aspectMask{ VK_IMAGE_ASPECT_COLOR_BIT },							//Set aspect mask
-						.mipLevel{ 0 },														//No mipmap
-						.baseArrayLayer{ 0 },												//Set base
-						.layerCount{ 1 },													//No multi layer
-					},
-				.imageOffset{ 0, 0, 0 },										//No image offset
-				};
-				region.imageExtent = { render::swapchain::swapchainExtent.width, render::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				copyRegion.imageExtent = { render::swapchain::swapchainExtent.width, render::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
+				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 
 
 				//Create a barrier to use the swapchain image as a present source image
-				static VkImageMemoryBarrier writeToRead{								//Create memory barrier object
-					.sType{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER },				//Set structure type
-					.srcAccessMask{ VK_ACCESS_TRANSFER_WRITE_BIT },					//Set source access mask
-					.dstAccessMask{ VK_ACCESS_MEMORY_READ_BIT },					//Set destination access mask. It must be readable to be displayed
-					.oldLayout{ VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL },				//Set old layout. Swapchain images is in dst optimal layout after being written
-					.newLayout{ VK_IMAGE_LAYOUT_PRESENT_SRC_KHR },					//Set new layout. Swapchain images must be in this format to be displayed on screen
-					.srcQueueFamilyIndex{ VK_QUEUE_FAMILY_IGNORED },				//Queue families unset
-					.dstQueueFamilyIndex{ VK_QUEUE_FAMILY_IGNORED },				//Queue families unset
-					.subresourceRange{												//Create subresource object
-						.aspectMask{ VK_IMAGE_ASPECT_COLOR_BIT },						//Set the aspect mask
-						.baseMipLevel{ 0 },												//No mipmap
-						.levelCount{ 1 },												//No multi leve images
-						.baseArrayLayer{ 0 },											//Set base layer
-						.layerCount{ 1 },												//No multi layer
-					},
-				};
-				writeToRead.image = render::swapchain::swapchainImages[imgIndex];	//Set swapchain image
+				writeToReadBarrier.image = render::swapchain::swapchainImages[imgIndex];	//Set swapchain image
 				VkPipelineStageFlags 											//Create stage flags
 					srcStage1{ VK_PIPELINE_STAGE_TRANSFER_BIT },					//The image is in transfer stage from the buffer copy
 					dstStage1{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };		//Change it to color output to present them
-				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
+				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
 
 				//End command buffer recording
 				dbg::checkVk(vkEndCommandBuffer(buffers::copyCommandBuffers[imgIndex]), "Failed to record command buffer");

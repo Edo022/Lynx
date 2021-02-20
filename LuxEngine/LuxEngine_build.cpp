@@ -28,7 +28,10 @@
 
     #include "LuxEngine/Core/Render/Buffers.cpp"
     //#include "LuxEngine/Core/Render/Compute.cpp"
+
+    #include "LuxEngine/Core/Render/Shaders/Data.cpp"
     #include "LuxEngine/Core/Render/Shaders/Shader.cpp"
+
     #include "LuxEngine/Core/Render/GCommands.cpp"
     #include "LuxEngine/Core/Render/GOutput.cpp"
     #include "LuxEngine/Core/Render/GSwapchain.cpp"
