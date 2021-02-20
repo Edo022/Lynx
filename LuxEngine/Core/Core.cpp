@@ -100,7 +100,8 @@ namespace lux::core{
 		SuccessNoNl printf("ok");
 
 		render::init(vUseVSync);
-		c::init( );
+		buffers::init( );
+		c::shaders::init( );
 
 		//Loop
 		Success printf("Initialization completed in %f seconds", luxStopChrono(start));
@@ -109,7 +110,7 @@ namespace lux::core{
 
 		//Exit
 		Normal  printf("Cleaning memory\n");
-		render::cleanup( ); c::computeCleanup( );
+		render::cleanup( ); buffers::cleanup( );
 		vkDestroyInstance(instance, nullptr);
 		glfwDestroyWindow(render::wnd::window);
 		glfwTerminate( );

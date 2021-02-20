@@ -88,7 +88,7 @@ namespace lux::rem{
 			Cell cell = &buffer.cells[cellIndex = buffer.cells.add(Cell_t{ .cellSize = vSize, .bufferType = &buffers[typeIndex] })];
 			cell->buffer = &buffer;																//Create a new buffer and set it as the cell's buffer
 			cell->cellIndex = (uint32)vCellClass ? cellIndex : 0;								//Add a new cell and set the cell index
-			core::c::buffers::createBuffer(														//Create a new vk buffer
+			core::buffers::createBuffer(														//Create a new vk buffer
 				&buffer.buffer,
 				((((uint32)vAllocType & 0b1) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 				(uint32)vCellClass ? lux::__pvt::bufferSize : vSize,					//#LLID STRT 0000 isUniform()

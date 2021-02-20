@@ -2,7 +2,7 @@
 #define LUX_H_VMEMORY
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
-#include "LuxEngine/Core/Render/CBuffers.hpp"
+#include "LuxEngine/Core/Render/Buffers.hpp"
 
 #include "LuxEngine/Core/Memory/Gpu/VCell_t.hpp" //FIXME replace with VPointer
 

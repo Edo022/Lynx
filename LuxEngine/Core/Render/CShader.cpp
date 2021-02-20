@@ -25,12 +25,30 @@ namespace lux::core::c::shaders{
 
 	VkCommandPool								commandPool = nullptr;
 	RtArray<LuxShader_t, uint32>				CShaders;
-	// RtArray<LuxShader_t, uint32>				CShaders;
 	RtArray<VkCommandBuffer>					CShadersCBs;
 
-	// FenceDE										addShaderFence;
-	std::mutex										addShaderFence;
+	std::mutex									addShaderFence;
 	LuxShader									clearShader = 0;
+
+
+
+
+
+
+
+	void init() {
+		//Create default shaders //FIXME fix that 01010001 thing
+		shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
+		shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE, 4, { 0, 0, 0, 1 });
+		shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
+		shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { 0, 0, 0, 0 });
+
+		shaders::clearShader = shaders::newShader(
+			{ render::wnd::gpuCellWindowOutput, render::wnd::gpuCellWindowOutput_i, core::render::wnd::gpuCellWindowZBuffer, render::wnd::gpuCellWindowSize },
+			LUX_DEF_SHADER_CLEAR, (render::wnd::width * render::wnd::height) / (32 * 32) + 1, 1, 1
+		);
+	}
+
 
 
 
@@ -306,16 +324,16 @@ namespace lux::core::c::shaders{
 				.flags{ 0 },														//Default falgs
 				.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },	//Set the compute family where to bind the command pool
 			};
-			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &c::copyCommandPool), "Unable to create command pool");
+			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &buffers::copyCommandPool), "Unable to create command pool");
 
 			//Allocate one command buffer for each swapchain image
 			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
 				.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },			//Set structure type
 				.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },							//Set the command buffer as a primary level command buffer
 			};
-			commandBufferAllocateInfo.commandPool = c::copyCommandPool;			//Set command pool where to allocate the command buffer
+			commandBufferAllocateInfo.commandPool = buffers::copyCommandPool;			//Set command pool where to allocate the command buffer
 			commandBufferAllocateInfo.commandBufferCount = render::swapchain::swapchainImages.count( );
-			dbg::checkVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, c::copyCommandBuffers.begin( )), "Unable to allocate command buffers");
+			dbg::checkVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, buffers::copyCommandBuffers.begin( )), "Unable to allocate command buffers");
 
 
 
@@ -327,7 +345,7 @@ namespace lux::core::c::shaders{
 					.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 					.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 				};
-				dbg::checkVk(vkBeginCommandBuffer(c::copyCommandBuffers[imgIndex], &beginInfo), "Unable to begin command buffer recording");
+				dbg::checkVk(vkBeginCommandBuffer(buffers::copyCommandBuffers[imgIndex], &beginInfo), "Unable to begin command buffer recording");
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
@@ -351,7 +369,7 @@ namespace lux::core::c::shaders{
 				VkPipelineStageFlags 												//Create stage flags
 					srcStage{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },		//The swapchain image is in color output stage
 					dstStage{ VK_PIPELINE_STAGE_TRANSFER_BIT };						//Change it to transfer stage to copy the buffer in it
-				vkCmdPipelineBarrier(c::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
+				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
 				VkBufferImageCopy region{ 										//Create bufferImageCopy region to copy the buffer into the image
 					.bufferOffset{ 0 },												//No buffer offset
@@ -366,7 +384,7 @@ namespace lux::core::c::shaders{
 				.imageOffset{ 0, 0, 0 },										//No image offset
 				};
 				region.imageExtent = { render::swapchain::swapchainExtent.width, render::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(c::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 
 				//Create a barrier to use the swapchain image as a present source image
@@ -390,10 +408,10 @@ namespace lux::core::c::shaders{
 				VkPipelineStageFlags 											//Create stage flags
 					srcStage1{ VK_PIPELINE_STAGE_TRANSFER_BIT },					//The image is in transfer stage from the buffer copy
 					dstStage1{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };		//Change it to color output to present them
-				vkCmdPipelineBarrier(c::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
+				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToRead);
 
 				//End command buffer recording
-				dbg::checkVk(vkEndCommandBuffer(c::copyCommandBuffers[imgIndex]), "Failed to record command buffer");
+				dbg::checkVk(vkEndCommandBuffer(buffers::copyCommandBuffers[imgIndex]), "Failed to record command buffer");
 			}
 		}
 	}

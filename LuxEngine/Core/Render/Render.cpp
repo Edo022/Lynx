@@ -201,7 +201,7 @@ namespace lux::core::render{
 			};
 			submitInfo.pWaitSemaphores   = &drawFrameClearSemaphore[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &drawFrameCopySemaphore [renderCurrentFrame];
-			submitInfo.pCommandBuffers   = &c::copyCommandBuffers  [imageIndex];
+			submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers  [imageIndex];
 
 			vkResetFences(dvc::graphics.LD, 1, &drawFrameImageRenderedFence[renderCurrentFrame]);
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, drawFrameImageRenderedFence[renderCurrentFrame]), "Failed to submit graphics command buffer");

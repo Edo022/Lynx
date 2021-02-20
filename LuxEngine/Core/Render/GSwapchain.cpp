@@ -201,11 +201,11 @@ namespace lux::core::render::swapchain{
 			render::wnd::gpuCellWindowSize->unmap( );
 
 			{	//Destroy copy command buffers
-				vkFreeCommandBuffers(dvc::compute.LD, c::copyCommandPool, c::copyCommandBuffers.count( ), c::copyCommandBuffers.begin( ));
-				vkDestroyCommandPool(dvc::compute.LD, c::copyCommandPool, nullptr);
+				vkFreeCommandBuffers(dvc::compute.LD, buffers::copyCommandPool, buffers::copyCommandBuffers.count( ), buffers::copyCommandBuffers.begin( ));
+				vkDestroyCommandPool(dvc::compute.LD, buffers::copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				c::copyCommandBuffers.resize(swapchainImages.count( ));	//Resize the command buffer array in the shader
+				buffers::copyCommandBuffers.resize(swapchainImages.count( ));	//Resize the command buffer array in the shader
 				c::shaders::createDefaultCommandBuffers( );				//Create command buffers and command pool
 			}
 
