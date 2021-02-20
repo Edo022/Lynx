@@ -119,7 +119,8 @@ namespace lux::core{
 
 
 	void mainLoop() {
-		luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
+		// luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
+		luxDebug(thr::self::setName("Lux | Input"));
 		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach( );
 		renderThr(runRenderThr);				//renderThr.detach( );
 		initialized = true;
@@ -132,7 +133,8 @@ namespace lux::core{
 
 
 	void runRenderThr() {
-		luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
+		// luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
+		luxDebug(thr::self::setName("Lux | Render"));
 		while(running) {
 			LuxTime renderTime = luxStartChrono();
 			render::drawFrame( );
@@ -146,7 +148,8 @@ namespace lux::core{
 
 	//TODO add FPS limit
 	void runFPSCounterThr() {
-		luxDebug(pthread_setname_np(pthread_self(), "Lux | FPS"));
+		// luxDebug(pthread_setname_np(pthread_self(), "Lux | FPS"));
+		luxDebug(thr::self::setName("Lux | FPS"));
 		while(running) {
 			static int delay = 1000;
 			sleep(delay);
