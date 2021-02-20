@@ -62,7 +62,7 @@ f.write("""
             "command": "/usr/bin/g++",
             "args": [
                 //Source files
-		            "-xc++", \"""" + foo.enginePath() + """/LuxEngine/LuxEngineBuild.cpp.build",\n""" +\
+		            "-xc++", \"""" + foo.enginePath() + """/LuxEngine/LuxEngineBuild.cpp",\n""" +\
                     (foo.getDebugOptions() if foo.tp() == "d" else foo.getReleaseOptions()) + """,
                 //Engine
                     "-std=c++2a", "-mavx", "-pipe", "-pthread",
