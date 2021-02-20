@@ -7,16 +7,16 @@
 
 
 
-namespace lux::core{
-// namespace lux{
-    luxAutoInit(LUX_NH_START_CORE) {
-        Thread coreThr(lux::core::run, L{ false });
-        coreThr.detach();
-        while(!initialized) lux::thr::self::yield();
-    }
-    // void init() {
+// namespace lux::core{
+namespace lux{
+    // luxAutoInit(LUX_NH_START_CORE) {
     //     Thread coreThr(lux::core::run, L{ false });
     //     coreThr.detach();
-    //     while(!core::initialized) lux::thr::self::yield();
+    //     while(!initialized) lux::thr::self::yield();
     // }
+    void start() {
+        Thread coreThr(lux::core::run, L{ false });
+        coreThr.detach();
+        while(!core::initialized) lux::thr::self::yield();
+    }
 }
