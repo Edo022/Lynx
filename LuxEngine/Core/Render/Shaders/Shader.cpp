@@ -321,9 +321,9 @@ namespace lux::core::c::shaders{
 			//Create command pool
 			static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
 				.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },				//Set structure type
-				.flags{ 0 },														//Default falgs
-				.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },	//Set the compute family where to bind the command pool
+				.flags{ 0 }														//Default falgs
 			};
+			commandPoolCreateInfo.queueFamilyIndex = dvc::compute.PD.indices.computeFamilies[0];	//Set the compute family where to bind the command pool
 			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &buffers::copyCommandPool), "Unable to create command pool");
 
 			//Allocate one command buffer for each swapchain image
@@ -341,7 +341,7 @@ namespace lux::core::c::shaders{
 			//Record a present command buffers for each swapchain images
 			for(uint32 imgIndex = 0; imgIndex < render::swapchain::swapchainImages.count( ); imgIndex++) {
 				//Start recording commands
-				VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos to start recording the command buffer
+				static VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos to start recording the command buffer
 					.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 					.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 				};
@@ -349,7 +349,7 @@ namespace lux::core::c::shaders{
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-				VkImageMemoryBarrier readToWrite{ 								//Create memory barrier object
+				static VkImageMemoryBarrier readToWrite{ 								//Create memory barrier object
 					.sType{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER },				//Set structure type
 					.srcAccessMask{ VK_ACCESS_MEMORY_READ_BIT },					//Set source access mask
 					.dstAccessMask{ VK_ACCESS_TRANSFER_WRITE_BIT },					//Set destination access mask. It must be writable in order to copy the buffer in it
@@ -371,7 +371,7 @@ namespace lux::core::c::shaders{
 					dstStage{ VK_PIPELINE_STAGE_TRANSFER_BIT };						//Change it to transfer stage to copy the buffer in it
 				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWrite);
 
-				VkBufferImageCopy region{ 										//Create bufferImageCopy region to copy the buffer into the image
+				static VkBufferImageCopy region{ 										//Create bufferImageCopy region to copy the buffer into the image
 					.bufferOffset{ 0 },												//No buffer offset
 					.bufferRowLength{ 0 },											//dark magic
 					.bufferImageHeight{ 0 },										//dark magic
@@ -388,7 +388,7 @@ namespace lux::core::c::shaders{
 
 
 				//Create a barrier to use the swapchain image as a present source image
-				VkImageMemoryBarrier writeToRead{								//Create memory barrier object
+				static VkImageMemoryBarrier writeToRead{								//Create memory barrier object
 					.sType{ VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER },				//Set structure type
 					.srcAccessMask{ VK_ACCESS_TRANSFER_WRITE_BIT },					//Set source access mask
 					.dstAccessMask{ VK_ACCESS_MEMORY_READ_BIT },					//Set destination access mask. It must be readable to be displayed
@@ -505,11 +505,8 @@ namespace lux::core::c::shaders{
 		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ);	//Create command buffers and command pool
 
-		// addShaderFence.startSecond( );
 		addShaderFence.lock( );
-		// shader.
 		LuxShader i = CShaders.add(shader);
-		// addShaderFence.endSecond( );
 		addShaderFence.unlock( );
 		return i;
 	}
@@ -535,8 +532,6 @@ namespace lux::core::c::shaders{
 		auto test3 = CShaders[vCShader];
 		auto test2 = CShaders[vCShader].commandBuffers;
 		auto test = CShaders[vCShader].commandBuffers[0];
-		// dbg::checkVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
-		// dbg::checkVk(vkBeginCommandBuffer(test, &beginInfo), "Unable to begin command buffer recording");
 		vkBeginCommandBuffer(test, &beginInfo);
 		addShaderFence.unlock();
 		//Bind pipeline and descriptors and run the compute shader
@@ -576,8 +571,6 @@ namespace lux::core::c::shaders{
 		vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Remove the shader from the shader array
-		//FIXME __
-		// CShaders.remove(vCShader);
 		for(uint32 i = vCShader; i < CShaders.count() - 1; ++i) CShaders[i] = CShaders[i+1];
 		CShaders.resize(CShaders.count() - 1);
 
