@@ -485,11 +485,7 @@ namespace lux::core::c::shaders{
 			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
 		addShaderFence.lock();
-		auto test4 = CShaders;
-		auto test3 = CShaders[vCShader];
-		auto test2 = CShaders[vCShader].commandBuffers;
-		auto test = CShaders[vCShader].commandBuffers[0];
-		vkBeginCommandBuffer(test, &beginInfo);
+		vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo);
 		addShaderFence.unlock();
 		//Bind pipeline and descriptors and run the compute shader
 		vkCmdBindPipeline      (CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
