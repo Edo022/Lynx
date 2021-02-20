@@ -7,7 +7,7 @@
 #include "LuxEngine/Types/EngineTypes.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Core/Render/CShader_t.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 // #include "LuxEngine/Core/Memory/Gpu/VMemory.hpp""
 #include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp" //FIXME USE PTRS INSTEAD OF RAW CELLS

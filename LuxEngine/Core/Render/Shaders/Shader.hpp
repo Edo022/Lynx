@@ -1,8 +1,7 @@
 #pragma once
 #define LUX_H_CSHADER
-#include "LuxEngine/Core/Render/CShader_t.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
-// #include "LuxEngine/Core/Render/Compute.hpp"
 #include "LuxEngine/Core/Render/GSwapchain.hpp"
 #include "LuxEngine/Core/Render/Window.hpp"
 #include "LuxEngine/Core/Devices.hpp"

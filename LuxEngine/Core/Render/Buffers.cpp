@@ -1,9 +1,8 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
-#include "LuxEngine/Core/Render/CShader_t.hpp"
 #include "LuxEngine/Core/Render/GSwapchain.hpp"
-#include "LuxEngine/Core/Render/CShader.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 
 
 

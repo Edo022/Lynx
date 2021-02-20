@@ -1,6 +1,6 @@
 
 #include "LuxEngine/Core/Core.hpp"
-#include "LuxEngine/Core/Render/CShader.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
 
