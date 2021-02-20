@@ -29,7 +29,7 @@ namespace lux::core::c::shaders{
 	RtArray<VkCommandBuffer>					CShadersCBs;
 
 	// FenceDE										addShaderFence;
-	pollFence										addShaderFence;
+	std::mutex										addShaderFence;
 	LuxShader									clearShader = 0;
 
 
@@ -488,11 +488,11 @@ namespace lux::core::c::shaders{
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ);	//Create command buffers and command pool
 
 		// addShaderFence.startSecond( );
-		addShaderFence.set( );
+		addShaderFence.lock( );
 		// shader.
 		LuxShader i = CShaders.add(shader);
 		// addShaderFence.endSecond( );
-		addShaderFence.unset( );
+		addShaderFence.unlock( );
 		return i;
 	}
 
@@ -512,7 +512,7 @@ namespace lux::core::c::shaders{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
 			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
-		addShaderFence.set();
+		addShaderFence.lock();
 		auto test4 = CShaders;
 		auto test3 = CShaders[vCShader];
 		auto test2 = CShaders[vCShader].commandBuffers;
@@ -520,7 +520,7 @@ namespace lux::core::c::shaders{
 		// dbg::checkVk(vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
 		// dbg::checkVk(vkBeginCommandBuffer(test, &beginInfo), "Unable to begin command buffer recording");
 		vkBeginCommandBuffer(test, &beginInfo);
-		addShaderFence.unset();
+		addShaderFence.unlock();
 		//Bind pipeline and descriptors and run the compute shader
 		vkCmdBindPipeline      (CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
 		vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, nullptr);

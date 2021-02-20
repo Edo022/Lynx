@@ -146,7 +146,7 @@ namespace lux::core::render{
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
 			// c::shaders::addShaderFence.startFirst( );
-			c::shaders::addShaderFence.set( );
+			c::shaders::addShaderFence.lock( );
 			//FIXME __
 			// c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
 			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
@@ -156,7 +156,7 @@ namespace lux::core::render{
 				c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
 			// c::shaders::addShaderFence.endFirst( );
-			c::shaders::addShaderFence.unset( );
+			c::shaders::addShaderFence.unlock( );
 
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
