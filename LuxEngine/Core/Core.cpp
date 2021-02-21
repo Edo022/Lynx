@@ -76,7 +76,6 @@ namespace lux::core{
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation
 		LuxTime start = luxStartChrono( );
-		// c::shaders::shaderPath = sys::dir::thisDir + "/../LuxEngine_VsProject/LuxEngine/Contents/shaders/";     //.lib
 		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";    //No .lib
 		//FIXME DONT USE STD
 		try {
@@ -120,7 +119,6 @@ namespace lux::core{
 
 
 	void mainLoop() {
-		// luxDebug(pthread_setname_np(pthread_self(), "Lux | Input"));
 		luxDebug(thr::self::setName("Lux | Input"));
 		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach( );
 		renderThr(runRenderThr);				//renderThr.detach( );
@@ -134,7 +132,6 @@ namespace lux::core{
 
 
 	void runRenderThr() {
-		// luxDebug(pthread_setname_np(pthread_self(), "Lux | Render"));
 		luxDebug(thr::self::setName("Lux | Render"));
 		while(running) {
 			LuxTime renderTime = luxStartChrono();
@@ -149,12 +146,11 @@ namespace lux::core{
 
 	//TODO add FPS limit
 	void runFPSCounterThr() {
-		// luxDebug(pthread_setname_np(pthread_self(), "Lux | FPS"));
 		luxDebug(thr::self::setName("Lux | FPS"));
 		while(running) {
 			static int delay = 1000;
 			sleep(delay);
-			// printf("FPS: %lf\n", 1/FPS);
+			printf("FPS: %lf\n", 1/FPS);
 		}
 	}
 }

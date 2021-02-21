@@ -25,14 +25,14 @@
 
 
 namespace lux::core::render{
-	RtArray<VkSemaphore>	s_imageAquired   (out::renderMaxFramesInFlight);			varPadding(s_imageAquired)
-	RtArray<VkSemaphore>	s_objectsRendered(out::renderMaxFramesInFlight);			varPadding(s_objectsRendered)
-	RtArray<VkSemaphore>	s_copy           (out::renderMaxFramesInFlight);			varPadding(s_copy)
-	RtArray<VkSemaphore>	s_clear          (out::renderMaxFramesInFlight);			varPadding(s_clear)
-	RtArray<VkFence>		imageRenderedFence     	 (out::renderMaxFramesInFlight); 	varPadding(imageRenderedFence)
-	int32					renderCurrentFrame = 0; 									varPadding(renderCurrentFrame)
-	RtArray<obj::Base*>		objUpdates2D; 												varPadding(objUpdates2D)
-	FenceDE					pendingObjectUpdatesFence; 									varPadding(pendingObjectUpdatesFence)
+	RtArray<VkSemaphore> s_imageAquired   (out::renderMaxFramesInFlight); padVar(s_imageAquired)
+	RtArray<VkSemaphore> s_objectsRendered(out::renderMaxFramesInFlight); padVar(s_objectsRendered)
+	RtArray<VkSemaphore> s_copy           (out::renderMaxFramesInFlight); padVar(s_copy)
+	RtArray<VkSemaphore> s_clear          (out::renderMaxFramesInFlight); padVar(s_clear)
+	RtArray<VkFence>	 imageRendered_f  (out::renderMaxFramesInFlight); padVar(imageRendered_f)
+	int32				 renderCurrentFrame = 0; 						  padVar(renderCurrentFrame)
+	RtArray<obj::Base*>	 objUpdates2D; 									  padVar(objUpdates2D)
+	FenceDE				 objUpdates2D_f; 								  padVar(objUpdates2D_f)
 
 
 
@@ -71,7 +71,7 @@ namespace lux::core::render{
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_objectsRendered[i])	!= VK_SUCCESS ||
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_copy[i])			!= VK_SUCCESS ||
 				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_clear[i])			!= VK_SUCCESS ||
-				vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &imageRenderedFence[i])		!= VK_SUCCESS,
+				vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &imageRendered_f[i])		!= VK_SUCCESS,
 				"Failed to create vulkan sync objects"
 			);
 		}
@@ -109,7 +109,7 @@ namespace lux::core::render{
 		//FIXME __
 		// if(c::shaders::CShaders.usedCount( ) <= 1) return;
 		if(c::shaders::CShaders.count( ) <= 1) return;
-		vkWaitForFences(dvc::graphics.LD, 1, &imageRenderedFence[renderCurrentFrame], false, INT_MAX);
+		vkWaitForFences(dvc::graphics.LD, 1, &imageRendered_f[renderCurrentFrame], false, INT_MAX);
 
 
 		//Redraw frame if necessary
@@ -139,17 +139,13 @@ namespace lux::core::render{
 		//Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
-			// c::shaders::addShaderFence.startFirst( );
 			c::shaders::addShaderFence.lock( );
 			//FIXME __
-			// c::shaders::CShadersCBs.resize(c::shaders::CShaders.usedCount( ));
 			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
 			for(uint32 i = 0; i < c::shaders::CShaders.count( ); ++i) {
 				//FIXME __
-				// if(c::shaders::CShaders.isValid(i)) c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 				c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
-			// c::shaders::addShaderFence.endFirst( );
 			c::shaders::addShaderFence.unlock( );
 
 			static VkSubmitInfo submitInfo{
@@ -197,8 +193,8 @@ namespace lux::core::render{
 			submitInfo.pSignalSemaphores = &s_copy [renderCurrentFrame];
 			submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers  [imageIndex];
 
-			vkResetFences(dvc::graphics.LD, 1, &imageRenderedFence[renderCurrentFrame]);
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, imageRenderedFence[renderCurrentFrame]), "Failed to submit graphics command buffer");
+			vkResetFences(dvc::graphics.LD, 1, &imageRendered_f[renderCurrentFrame]);
+			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, imageRendered_f[renderCurrentFrame]), "Failed to submit graphics command buffer");
 		}
 
 
@@ -237,7 +233,7 @@ namespace lux::core::render{
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
 		if(objUpdates2D.count( ) > 0) {
-			pendingObjectUpdatesFence.startFirst( );
+			objUpdates2D_f.startFirst( );
 			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands( );
 			for(uint32 i = 0; i < objUpdates2D.count( ); i++) {
 				objUpdates2D[i]->render.updated = true;
@@ -250,7 +246,7 @@ namespace lux::core::render{
 			}
 			core::render::cmd::endSingleTimeCommands(cb);
 			objUpdates2D.clear( );
-			pendingObjectUpdatesFence.endFirst( );
+			objUpdates2D_f.endFirst( );
 		}
 	}
 
@@ -279,7 +275,7 @@ namespace lux::core::render{
 			vkDestroySemaphore(dvc::graphics.LD, s_objectsRendered[i], nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_copy[i],            nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_clear[i],           nullptr);
-			vkDestroyFence    (dvc::graphics.LD, imageRenderedFence[i],       nullptr);
+			vkDestroyFence    (dvc::graphics.LD, imageRendered_f[i],       nullptr);
 		}
 
 		//If the compute and the graphics devices are not the same, destroy the graphics device

@@ -17,14 +17,14 @@
 
 
 namespace lux::core::render{
-	extern RtArray<VkSemaphore>	s_imageAquired; 			extPadding(s_imageAquired)
-	extern RtArray<VkSemaphore>	s_objectsRendered; 			extPadding(s_objectsRendered)
-	extern RtArray<VkSemaphore>	s_copy; 					extPadding(s_copy)
-	extern RtArray<VkSemaphore>	s_clear; 					extPadding(s_clear)
-	extern RtArray<VkFence>		imageRenderedFence; 		extPadding(imageRenderedFence)
-	extern int32				renderCurrentFrame;		 	extPadding(renderCurrentFrame)
-	extern RtArray<obj::Base*>	objUpdates2D; 				extPadding(objUpdates2D)
-	extern FenceDE				pendingObjectUpdatesFence; 	extPadding(pendingObjectUpdatesFence)
+	extern RtArray<VkSemaphore>	s_imageAquired; 		padExt(s_imageAquired)
+	extern RtArray<VkSemaphore>	s_objectsRendered; 		padExt(s_objectsRendered)
+	extern RtArray<VkSemaphore>	s_copy; 				padExt(s_copy)
+	extern RtArray<VkSemaphore>	s_clear; 				padExt(s_clear)
+	extern RtArray<VkFence>		imageRendered_f; 		padExt(imageRendered_f)
+	extern int32				renderCurrentFrame;	 	padExt(renderCurrentFrame)
+	extern RtArray<obj::Base*>	objUpdates2D; 			padExt(objUpdates2D)
+	extern FenceDE				objUpdates2D_f; 		padExt(objUpdates2D_f)
 
 
 

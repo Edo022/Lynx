@@ -11,8 +11,8 @@
 #	define __lp_get_cwd _getcwd											//  DIR | Get current working directory
 #	define __lp_get_nopt(n)	n = std::thread::hardware_concurrency();	//  THR | Get number of physical threads
 #	include <windows.h>													//  THR | For SuspendThread() and ResumeThread()
-#	define __lp_suspend_thr(th) SuspendThread(th)						//  THR | Function to suspend a thread
-#	define __lp_resume_thr(th)  ResumeThread(th)						//  THR | Function to resume a thread
+// #	define __lp_suspend_thr(th) SuspendThread(th)						//  THR | Function to suspend a thread
+// #	define __lp_resume_thr(th)  ResumeThread(th)						//  THR | Function to resume a thread
 #	define __lp_get_thr()  GetCurrentThread()							//  THR | Function to get the current thread ID
 
 #elif defined __linux__												//Linux
@@ -23,8 +23,8 @@
 #	define __lp_get_nopt(n) n = std::thread::hardware_concurrency();	//  THR | Get nuber of physical threads
 #	include <pthread.h>													//  THR | For SuspendThread() and ResumeThread()
 #	include <signal.h>													//  THR | For SuspendThread() and ResumeThread()
-#	define __lp_suspend_thr(th) pthread_kill(th, SIGSTOP)				//  THR | Function to suspend a thread
-#	define __lp_resume_thr(th)  pthread_kill(th, SIGCONT)				//  THR | Function to resume a thread
+// #	define __lp_suspend_thr(th) pthread_kill(th, SIGSTOP)				//  THR | Function to suspend a thread
+// #	define __lp_resume_thr(th)  pthread_kill(th, SIGCONT)				//  THR | Function to resume a thread
 #	define __lp_get_thr()  gettid()										//  THR | Function to get the current thread ID
 
 #else																//Other operating systems
