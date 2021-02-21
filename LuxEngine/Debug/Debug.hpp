@@ -20,7 +20,7 @@ namespace lux::dbg{
 		error
 	};
 	#ifdef LUX_DEBUG
-		template<class... types> static neverInline void print(Severity vSeverity, const uint32 vIndex, const char* vMessage, const types&... pParams) {
+		static neverInline void print(Severity vSeverity, const uint32 vIndex, const char* vMessage, const auto&... pParams) {
 			//Create output string
 
 			const char* bgn =
@@ -53,8 +53,8 @@ namespace lux::dbg{
 			if(vSeverity == Severity::error) throw std::runtime_error("U.U");
 		}
 
-		template<class... types> static neverInline void printError  (const char* vMessage, const types&... pParams) { print(Severity::error  , 1, vMessage, pParams...); }
-		template<class... types> static neverInline void printWarning(const char* vMessage, const types&... pParams) { print(Severity::warning, 1, vMessage, pParams...); }
+		static neverInline void printError  (const char* vMessage, const auto&... pParams) { print(Severity::error  , 1, vMessage, pParams...); }
+		static neverInline void printWarning(const char* vMessage, const auto&... pParams) { print(Severity::warning, 1, vMessage, pParams...); }
 
 
 
@@ -67,14 +67,14 @@ namespace lux::dbg{
 		/**
 		 * @brief Prints pMessage as error if vCond is true
 		 */
-		template<class... types> static neverInline void checkCond(const bool vCond, const char* pMessage, const types&... pArgs) {
+		static neverInline void checkCond(const bool vCond, const char* pMessage, const auto&... pArgs) {
 			if(vCond) lux::dbg::printError(pMessage, pArgs...);
 		}
 
 		/**
 		 * @brief Prints pMessage as error if vCond is true, specifying that a function parameter value is not valid
 		 */
-		template<class... types> static neverInline void checkParam(const bool vCond, const char* vParamName, const char* vMessage, const types&... pParams) {
+		static neverInline void checkParam(const bool vCond, const char* vParamName, const char* vMessage, const auto&... pParams) {
 			if(vCond) {
 				auto callerFunc = caller::func();
 				const char* fstr = "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s";
@@ -88,7 +88,7 @@ namespace lux::dbg{
 		/**
 		 * @brief Prints pMessage as error if vResult is not VK_SUCCESS
 		 */
-		template<class... types> static neverInline void checkVk(const int/*VkResult*/ vResult, const char* vMessage, const types&... vArgs) {
+		static neverInline void checkVk(const int/*VkResult*/ vResult, const char* vMessage, const auto&... vArgs) {
 			checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
 		}
 
@@ -104,7 +104,7 @@ namespace lux::dbg{
 		 *		This function is unreliable and very likely to not detect all the invalid pointers.
 		*		It should only be used as additional security check
 		*/
-		template<class pType, class... aTypes> static neverInline void checkRawPtr(pType* vPtr, const char* vMessage, const aTypes&... vArgs) {
+		static neverInline void checkRawPtr(auto* vPtr, const char* vMessage, const auto&... vArgs) {
 			#pragma GCC diagnostic push
 			#pragma GCC diagnostic ignored "-Wunused-variable"
 			if(vPtr) {
@@ -114,13 +114,13 @@ namespace lux::dbg{
 			#pragma GCC diagnostic pop
 		}
 	#else
-		template<class... t> static alwaysInline void print(Severity, const uint32,       const char*, const t&...) {}
-		template<class... t> static alwaysInline void printError(                         const char*, const t&...) {}
-		template<class... t> static alwaysInline void printWarning(                       const char*, const t&...) {}
-		template<class... t> static alwaysInline void checkCond( const bool,              const char*, const t&...) {}
-		template<class... t> static alwaysInline void checkParam(const bool, const char*, const char*, const t&...) {}
-		template<class... t> static alwaysInline void checkVk(   const int,               const char*, const t&...) {}
-							 static alwaysInline void checkIndex(const uint64, const uint64, const uint64, const char*) {}
-		template<class pType, class... aTypes> static alwaysInline void checkRawPtr(pType*, const char*, const aTypes&...) {}
+		static alwaysInline void print(Severity, const uint32,       const char*, const auto&...) {}
+		static alwaysInline void printError(                         const char*, const auto&...) {}
+		static alwaysInline void printWarning(                       const char*, const auto&...) {}
+		static alwaysInline void checkCond( const bool,              const char*, const auto&...) {}
+		static alwaysInline void checkParam(const bool, const char*, const char*, const auto&...) {}
+		static alwaysInline void checkVk(   const int,               const char*, const auto&...) {}
+		static alwaysInline void checkIndex(const uint64, const uint64, const uint64, const char*) {}
+		static alwaysInline void checkRawPtr(auto*, const char*, const auto&...) {}
 	#endif
 }
