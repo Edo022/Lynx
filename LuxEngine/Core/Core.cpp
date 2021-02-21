@@ -14,7 +14,7 @@
 #include "LuxEngine/Debug/Debug.hpp"
 
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-
+#include <vulkan/vulkan.h>
 
 
 
@@ -28,8 +28,8 @@ namespace lux::core{
 	bool	useVSync;
 	bool	initialized = false;
 
-	VkInstance   				instance 					= (VkInstance)  malloc(sizeof(VkInstance  ));
-	VkSurfaceKHR 				surface  					= (VkSurfaceKHR)malloc(sizeof(VkSurfaceKHR));
+	VkInstance   				instance;
+	VkSurfaceKHR 				surface;
 	VkDebugUtilsMessengerEXT	debugMessenger;
 
 	uint32 						validationLayersNum        	= 1;
