@@ -56,24 +56,9 @@ namespace lux::core::render{
 		swapchain::swapchainCreate( );
 
 		luxDebug(createDebugMessenger( ));
-		createSyncObjs( );
-	}
 
 
-
-
-	#ifdef LUX_DEBUG
-	void createDebugMessenger() {
-		VkDebugUtilsMessengerCreateInfoEXT createInfo;
-		debug::populateDebugMessengerCreateInfo(createInfo);
-		dbg::checkVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "Failed to set up debug messenger");
-	}
-	#endif
-
-
-
-
-	void createSyncObjs() {
+		//Create sync objects
 		VkSemaphoreCreateInfo semaphoreInfo{
 			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
 		};
@@ -92,6 +77,17 @@ namespace lux::core::render{
 			);
 		}
 	}
+
+
+
+
+	#ifdef LUX_DEBUG
+	void createDebugMessenger() {
+		VkDebugUtilsMessengerCreateInfoEXT createInfo;
+		debug::populateDebugMessengerCreateInfo(createInfo);
+		dbg::checkVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "Failed to set up debug messenger");
+	}
+	#endif
 
 
 

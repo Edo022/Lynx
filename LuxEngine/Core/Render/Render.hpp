@@ -29,9 +29,9 @@ namespace lux::core::render{
 
 
 
-	void preInit( );
+	// void preInit( );
 	void init(const bool vUseVSync);
-	void createSyncObjs( );
+	// void createSyncObjs( );
 	luxDebug(void createDebugMessenger( ));
 	void drawFrame( );
 	void cleanup( );
