@@ -47,10 +47,10 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define neverInline  __attribute__ ((__noinline__))
 
 //Creates extern padding based on the size of a variable, in order to place the next extern variable in a different cache line
-#define padExt(var) namespace __pvt{ extern volatile int __##var##_padding[min(32, 64 - alignof(decltype(var)))]; }
+#define padExt(var) namespace __pvt{ extern volatile int __##var##_padding[alignof(var) <= 32 ? 32 : 64]; }
 
 //Creates padding based on the size of a variable, in order to place the next variable in a different cache line
-#define padVar(var) namespace __pvt{ volatile int __##var##_padding[min(32, 64 - alignof(decltype(var)))]; }
+#define padVar(var) namespace __pvt{ volatile int __##var##_padding[alignof(var) <= 32 ? 32 : 64]; }
 
 
 #ifdef LUX_DEBUG

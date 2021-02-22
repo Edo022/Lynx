@@ -11,8 +11,8 @@ namespace lux{
 	enum class AllocType : uint32 {
 		DEDICATED_STORAGE = 0b00,	//Storage buffer in dedicated GPU memory
 		DEDICATED_UNIFORM = 0b01,	//Uniform buffer in dedicated GPU memory
-		SHARED_STORAGE =/**/0b10,	//Storage buffer in shared RAM memory
-		SHARED_UNIFORM =/**/0b11,	//Uniform buffer in shared RAM memory
+		SHARED_STORAGE    = 0b10,	//Storage buffer in shared RAM memory
+		SHARED_UNIFORM    = 0b11,	//Uniform buffer in shared RAM memory
 		NUM							//Number of LUX_ALLOC_TYPE values
 	};
     namespace rem{
