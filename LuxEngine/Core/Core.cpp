@@ -23,22 +23,22 @@
 
 
 namespace lux::core{
-	double	FPS;
-	bool	running;
-	bool	useVSync;
-	bool	initialized = false;
+	double			FPS;						padVar(FPS)
+	bool			running;					padVar(running)
+	bool			useVSync;					padVar(useVSync)
+	bool			initialized = false;		padVar(initialized)
 
-	VkInstance   				instance;
-	VkSurfaceKHR 				surface;
-	VkDebugUtilsMessengerEXT	debugMessenger;
+	VkInstance   	instance;					padVar(instance)
+	VkSurfaceKHR 	surface;					padVar(surface)
+	VkDebugUtilsMessengerEXT debugMessenger;	padVar(debugMessenger)
 
-	uint32 						validationLayersNum        	= 1;
-	const  char** 				validationLayers         	= { new const char*{ "VK_LAYER_KHRONOS_validation"   }};
-	uint32 						requiredDeviceExtensionsNum	= 1;
-	const  char** 				requiredDeviceExtensions 	= { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
+	uint32 			validationLayersNum        	= 1;														padVar(validationLayersNum)
+	const  char** 	validationLayers         	= { new const char*{ "VK_LAYER_KHRONOS_validation"   }};	padVar(validationLayers)
+	uint32 			requiredDeviceExtensionsNum	= 1;														padVar(requiredDeviceExtensionsNum)
+	const  char** 	requiredDeviceExtensions 	= { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};	padVar(requiredDeviceExtensions)
 
-	lux::Thread FPSCounterThr;
-	lux::Thread renderThr;
+	lux::Thread 	FPSCounterThr;				padVar(FPSCounterThr)
+	lux::Thread 	renderThr;					padVar(renderThr)
 
 
 

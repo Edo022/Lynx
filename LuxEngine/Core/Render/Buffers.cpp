@@ -11,7 +11,7 @@
 
 
 namespace lux::core::buffers{
-	VkCommandPool				copyCommandPool = nullptr;		padVar(copyCommandPool)
+	VkCommandPool				copyCommandPool    = nullptr;	padVar(copyCommandPool)
 	RtArray<VkCommandBuffer>	copyCommandBuffers;				padVar(copyCommandBuffers)
 	VkCommandBuffer				clearCommandBuffer = nullptr;	padVar(clearCommandBuffer)
 
@@ -27,15 +27,15 @@ namespace lux::core::buffers{
 			render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
 
 			render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::SHARED_STORAGE);	//Create cell for window size //TODO use dedicated storage and update every time
-			uint32* pwindowSize = (uint32*)(render::wnd::gpuCellWindowSize->map());								//Map window size cell //TODO use gpu pointer instead of raw cell
-			pwindowSize[0] = core::render::swapchain::swapchainExtent.width;											//Set width
-			pwindowSize[1] = core::render::swapchain::swapchainExtent.height;											//Set height
-			render::wnd::gpuCellWindowSize->unmap();																//Unmap
+			uint32* pwindowSize = (uint32*)(render::wnd::gpuCellWindowSize->map());			//Map window size cell //TODO use gpu pointer instead of raw cell
+			pwindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
+			pwindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
+			render::wnd::gpuCellWindowSize->unmap();										//Unmap
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(render::swapchain::swapchainImages.count( ));			//Resize the command buffer array in the shader
-			core::c::shaders::createDefaultCommandBuffers( );									//Create command buffers and command pool
+			core::c::shaders::createDefaultCommandBuffers( );								//Create command buffers and command pool
 		}
 	}
 
