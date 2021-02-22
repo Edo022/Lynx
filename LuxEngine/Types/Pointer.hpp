@@ -116,9 +116,9 @@ namespace lux::ram{
 					cell->firstOwner = cell->lastOwner = nullptr;				//Set both the first and last owner of the cell to nullptr
 				} else {														//If the cell had other owners
 					if(prevOwner) prevOwner->nextOwner = nextOwner;				//If this was NOT the first owner, update the previus owner's next
-					else cell->firstOwner = (Alloc<Dummy>*)nextOwner;			//If this was the first owner, update the cell's first owner
-					if(nextOwner) nextOwner->prevOwner = prevOwner;				//If this was NOT the last owner, update the next owner's previous
-					else cell->lastOwner = (Alloc<Dummy>*)prevOwner;			//If this was the last owner, update the cell's last owner
+					else cell->firstOwner = (Alloc<Dummy>*)nextOwner;			//If this was the first owner,     update the cell's first owner
+					if(nextOwner) nextOwner->prevOwner = prevOwner;				//If this was NOT the last owner,  update the next owner's previous
+					else cell->lastOwner = (Alloc<Dummy>*)prevOwner;			//If this was the last owner,      update the cell's last owner
 					prevOwner = nextOwner = nullptr;							//Set both this next and prev owners to nullptr. This is not necessary but helps debugging
 				}
 			}

@@ -42,8 +42,8 @@ namespace lux::obj {
 		FlowType yFlow;				//Children vertical direction
 
 
-		RenderSpace2D(AlignmentType alignment, uint32 xNum = 2, uint32 yNum = 2, FlowType xFlow = FlowType::LeftToRight, FlowType yFlow = FlowType::TopToBottom)
-			: alignment(alignment), xNum(xNum), yNum(yNum), xFlow(xFlow), yFlow(yFlow) {
+		RenderSpace2D(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
+			: alignment(vAlignment), xNum(vXNum), yNum(vYNum), xFlow(vXFlow), yFlow(vYFlow) {
 			luxInitObject(2, RENDER_SPACE);
 		}
 
