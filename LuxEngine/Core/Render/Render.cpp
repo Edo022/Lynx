@@ -115,7 +115,9 @@ namespace lux::core::render{
 		//Redraw frame if necessary
 		redraw:
 		if(out::renderFramebufferResized) {
+			wnd::windowResizeFence.lock();
 			out::renderFramebufferResized = false;
+			wnd::windowResizeFence.unlock();
 			swapchain::swapchainRecreate(true);
 			goto redraw;
 		}

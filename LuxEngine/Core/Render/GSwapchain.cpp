@@ -184,7 +184,7 @@ namespace lux::core::render::swapchain{
 
 
 	void swapchainRecreate(const bool vWindowResized) {
-		if(vWindowResized) wnd::windowResizeFence.startFirst( );	//Sync with framebufferResizeCallback
+		if(vWindowResized) wnd::windowResizeFence.lock( );	//Sync with framebufferResizeCallback
 
 		//TODO dont destroy it every time
 		static int32 width, height;	glfwGetFramebufferSize(wnd::window, &width, &height);
@@ -212,6 +212,6 @@ namespace lux::core::render::swapchain{
 			//Recreate clear shader
 			c::shaders::updateShaderCall(c::shaders::clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1);
 		}
-		if(vWindowResized) wnd::windowResizeFence.endFirst( );		//Sync with framebufferResizeCallback
+		if(vWindowResized) wnd::windowResizeFence.unlock( );		//Sync with framebufferResizeCallback
 	}
 }

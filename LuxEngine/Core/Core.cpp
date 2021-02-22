@@ -76,11 +76,12 @@ namespace lux::core{
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation
 		LuxTime start = luxStartChrono( );
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";    //No .lib
-		//FIXME DONT USE STD
+		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";
+
+
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin( ))) {
-				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXMEz
+				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXME
 				win10(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!compileShader(luxStrPath.begin( ))) dbg::printError("compilation error");

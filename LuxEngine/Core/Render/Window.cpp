@@ -16,7 +16,7 @@
 namespace lux::core::render::wnd{
 	GLFWwindow* window = nullptr;
 	int32		width = 1920 * 2, height = 1080; //TODO
-	FenceDE		windowResizeFence;
+	std::mutex		windowResizeFence;
 	rem::Cell	gpuCellWindowSize 	  = nullptr;
 	rem::Cell	gpuCellWindowOutput   = nullptr;
 	rem::Cell	gpuCellWindowOutput_i = nullptr;
