@@ -14,14 +14,14 @@
 
 
 namespace lux::core::render::wnd{
-	GLFWwindow* window                = nullptr;	padVar(window)
-	int32		width                 = 1920 * 2;	padVar(width)
-	int32 		height                = 1080;		padVar(height)
+	alignCache GLFWwindow* window                = nullptr;
+	alignCache int32       width                 = 1920 * 2;
+	alignCache int32       height                = 1080;
 	std::mutex	windowResizeFence;
-	rem::Cell	gpuCellWindowSize     = nullptr;	padVar(gpuCellWindowSize);
-	rem::Cell	gpuCellWindowOutput   = nullptr;	padVar(gpuCellWindowOutput);
-	rem::Cell	gpuCellWindowOutput_i = nullptr;	padVar(gpuCellWindowOutput_i);
-	rem::Cell	gpuCellWindowZBuffer  = nullptr;	padVar(gpuCellWindowZBuffer);
+	alignCache rem::Cell   gpuCellWindowSize     = nullptr;
+	alignCache rem::Cell   gpuCellWindowOutput   = nullptr;
+	alignCache rem::Cell   gpuCellWindowOutput_i = nullptr;
+	alignCache rem::Cell   gpuCellWindowZBuffer  = nullptr;
 
 
 

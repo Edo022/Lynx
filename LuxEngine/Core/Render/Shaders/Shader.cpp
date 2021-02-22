@@ -20,16 +20,16 @@
 
 
 namespace lux::core::c::shaders{
-	String										shaderPath;				padVar(shaderPath);
-	RaArray<lux::obj::RenderSpace2D*, uint32>	CRenderSpaces;			padVar(CRenderSpaces);
-	RtArray<LuxShaderLayout_t>					CShadersLayouts;		padVar(CShadersLayouts);
+	alignCache String						shaderPath;
+	alignCache RaArray<lux::obj::RenderSpace2D*, uint32> CRenderSpaces;
+	alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
 
-	VkCommandPool								commandPool = nullptr;	padVar(commandPool);
-	RtArray<LuxShader_t, uint32>				CShaders;				padVar(CShaders);
-	RtArray<VkCommandBuffer>					CShadersCBs;			padVar(CShadersCBs);
+	alignCache VkCommandPool				commandPool = nullptr;
+	alignCache RtArray<LuxShader_t, uint32>	CShaders;
+	alignCache RtArray<VkCommandBuffer>		CShadersCBs;
 
-	std::mutex									addShaderFence;			padVar(addShaderFence);
-	LuxShader									clearShader = 0;		padVar(clearShader);
+	alignCache std::mutex					addShaderFence;
+	alignCache LuxShader					clearShader = 0;
 
 
 

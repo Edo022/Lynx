@@ -11,9 +11,9 @@
 
 
 namespace lux::core::buffers{
-	VkCommandPool				copyCommandPool    = nullptr;	padVar(copyCommandPool)
-	RtArray<VkCommandBuffer>	copyCommandBuffers;				padVar(copyCommandBuffers)
-	VkCommandBuffer				clearCommandBuffer = nullptr;	padVar(clearCommandBuffer)
+	alignCache VkCommandPool			copyCommandPool    = nullptr;
+	alignCache RtArray<VkCommandBuffer>	copyCommandBuffers;
+	alignCache VkCommandBuffer			clearCommandBuffer = nullptr;
 
 
 

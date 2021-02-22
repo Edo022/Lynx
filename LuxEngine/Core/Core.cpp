@@ -23,22 +23,22 @@
 
 
 namespace lux::core{
-	double			FPS;						padVar(FPS)
-	bool			running;					padVar(running)
-	bool			useVSync;					padVar(useVSync)
-	bool			initialized = false;		padVar(initialized)
+	alignCache double        FPS;
+	alignCache bool          running;
+	alignCache bool          useVSync;
+	alignCache bool          initialized = false;
 
-	VkInstance   	instance;					padVar(instance)
-	VkSurfaceKHR 	surface;					padVar(surface)
-	VkDebugUtilsMessengerEXT debugMessenger;	padVar(debugMessenger)
+	alignCache VkInstance    instance;
+	alignCache VkSurfaceKHR  surface;
+	alignCache VkDebugUtilsMessengerEXT debugMessenger;
 
-	uint32 			validationLayersNum        	= 1;														padVar(validationLayersNum)
-	const  char** 	validationLayers         	= { new const char*{ "VK_LAYER_KHRONOS_validation"   }};	padVar(validationLayers)
-	uint32 			requiredDeviceExtensionsNum	= 1;														padVar(requiredDeviceExtensionsNum)
-	const  char** 	requiredDeviceExtensions 	= { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};	padVar(requiredDeviceExtensions)
+	alignCache uint32        validationLayersNum         = 1;
+	alignCache const  char** validationLayers            = { new const char*{ "VK_LAYER_KHRONOS_validation"   }};
+	alignCache uint32        requiredDeviceExtensionsNum = 1;
+	alignCache const  char** requiredDeviceExtensions    = { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
 
-	lux::Thread 	FPSCounterThr;				padVar(FPSCounterThr)
-	lux::Thread 	renderThr;					padVar(renderThr)
+	alignCache lux::Thread   FPSCounterThr;
+	alignCache lux::Thread   renderThr;
 
 
 

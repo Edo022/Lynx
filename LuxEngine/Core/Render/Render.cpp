@@ -25,14 +25,14 @@
 
 
 namespace lux::core::render{
-	RtArray<VkSemaphore> s_imageAquired   (out::renderMaxFramesInFlight); padVar(s_imageAquired)
-	RtArray<VkSemaphore> s_objectsRendered(out::renderMaxFramesInFlight); padVar(s_objectsRendered)
-	RtArray<VkSemaphore> s_copy           (out::renderMaxFramesInFlight); padVar(s_copy)
-	RtArray<VkSemaphore> s_clear          (out::renderMaxFramesInFlight); padVar(s_clear)
-	RtArray<VkFence>	 imageRendered_f  (out::renderMaxFramesInFlight); padVar(imageRendered_f)
-	int32				 renderCurrentFrame = 0; 						  padVar(renderCurrentFrame)
-	RtArray<obj::Base*>	 objUpdates2D; 									  padVar(objUpdates2D)
-	FenceDE				 objUpdates2D_f; 								  padVar(objUpdates2D_f)
+	alignCache RtArray<VkSemaphore> s_imageAquired   (out::renderMaxFramesInFlight) ;
+	alignCache RtArray<VkSemaphore> s_objectsRendered(out::renderMaxFramesInFlight) ;
+	alignCache RtArray<VkSemaphore> s_copy           (out::renderMaxFramesInFlight) ;
+	alignCache RtArray<VkSemaphore> s_clear          (out::renderMaxFramesInFlight) ;
+	alignCache RtArray<VkFence>     imageRendered_f  (out::renderMaxFramesInFlight) ;
+	alignCache int32                renderCurrentFrame = 0;
+	alignCache RtArray<obj::Base*>  objUpdates2D;
+	alignCache FenceDE              objUpdates2D_f;
 
 
 

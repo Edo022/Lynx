@@ -11,8 +11,8 @@
 
 
 namespace lux::core::render::cmd{
-	VkCommandPool				singleTimeCommandPool = nullptr;	padVar(singleTimeCommandPool)
-	RtArray<VkCommandBuffer>	singleTimeCommandBuffers;			padVar(singleTimeCommandBuffers)
+	alignCache VkCommandPool            singleTimeCommandPool = nullptr;
+	alignCache RtArray<VkCommandBuffer> singleTimeCommandBuffers;
 
 
 

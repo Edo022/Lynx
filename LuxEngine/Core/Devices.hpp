@@ -10,9 +10,9 @@
 
 
 namespace lux::core::dvc{
-	extern graphicsDevice			graphics;	padExt(graphics)	//Main graphics device
-	extern computeDevice			compute;	padExt(compute)		//Main compute device
-	extern RtArray<computeDevice>	secondary;	padExt(secondary)	//Secondary compute devices
+	extern graphicsDevice			graphics;	//Main graphics device
+	extern computeDevice			compute;	//Main compute device
+	extern RtArray<computeDevice>	secondary;	//Secondary compute devices
 
 
 	void preInit( );

@@ -76,22 +76,22 @@ Object rendering
 
 
 namespace lux::core{
-	extern double		FPS;							padExt(FPS)
-	extern bool			running;						padExt(running)
-	extern bool			useVSync;						padExt(useVSync)
-	extern bool			initialized;					padExt(initialized)
+	extern double		FPS;
+	extern bool			running;
+	extern bool			useVSync;
+	extern bool			initialized;
 
-	extern VkInstance	instance;						padExt(instance)
-	extern VkDebugUtilsMessengerEXT	debugMessenger;		padExt(debugMessenger)
-	extern VkSurfaceKHR	surface;						padExt(surface)
+	extern VkInstance	instance;
+	extern VkDebugUtilsMessengerEXT	debugMessenger;
+	extern VkSurfaceKHR	surface;
 
-	extern const char**	validationLayers;				padExt(validationLayers)
-	extern const char**	requiredDeviceExtensions;		padExt(requiredDeviceExtensions)
-	extern uint32		validationLayersNum;			padExt(validationLayersNum)
-	extern uint32		requiredDeviceExtensionsNum;	padExt(requiredDeviceExtensionsNum)
+	extern const char**	validationLayers;
+	extern const char**	requiredDeviceExtensions;
+	extern uint32		validationLayersNum;
+	extern uint32		requiredDeviceExtensionsNum;
 
-	extern lux::Thread	FPSCounterThr;					padExt(FPSCounterThr)
-	extern lux::Thread	renderThr;						padExt(renderThr)
+	extern lux::Thread	FPSCounterThr;
+	extern lux::Thread	renderThr;
 
 
 

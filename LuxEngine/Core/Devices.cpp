@@ -18,9 +18,9 @@
 
 
 namespace lux::core::dvc{
-	graphicsDevice			graphics;	padVar(graphics)	//Main graphics device
-	computeDevice			compute;	padVar(compute)		//Main compute device
-	RtArray<computeDevice>	secondary;	padVar(secondary)	//Secondary compute devices
+	alignCache graphicsDevice         graphics;		//Main graphics device
+	alignCache computeDevice          compute;		//Main compute device
+	alignCache RtArray<computeDevice> secondary;	//Secondary compute devices
 
 
 

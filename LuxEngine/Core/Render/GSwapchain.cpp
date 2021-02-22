@@ -12,12 +12,12 @@
 
 
 namespace lux::core::render::swapchain{
-	VkSwapchainKHR			swapchain = nullptr;									padVar(swapchain)
-	RtArray<VkImage>		swapchainImages;										padVar(swapchainImages)
-	RtArray<VkImageView>	swapchainImageViews;									padVar(swapchainImageViews)
-	VkFormat				swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;	padVar(swapchainImageFormat)
-	VkExtent2D				swapchainExtent = {};									padVar(swapchainExtent)
-	RtArray<VkFramebuffer>	swapchainFramebuffers;									padVar(swapchainFramebuffers)
+	alignCache VkSwapchainKHR         swapchain = nullptr;
+	alignCache RtArray<VkImage>       swapchainImages;
+	alignCache RtArray<VkImageView>   swapchainImageViews;
+	alignCache VkFormat               swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
+	alignCache VkExtent2D             swapchainExtent = {};
+	alignCache RtArray<VkFramebuffer> swapchainFramebuffers;
 
 
 
