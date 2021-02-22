@@ -123,8 +123,8 @@ namespace lux::ram{
 				}
 			}
 		#else
-			constexpr debugOnly alwaysInline void pushOwner() {}
-			constexpr debugOnly alwaysInline void popOwner() {}
+			constexpr alwaysInline void pushOwner() {}
+			constexpr alwaysInline void popOwner() {}
 		#endif
 
 

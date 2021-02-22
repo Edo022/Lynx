@@ -28,8 +28,6 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-#define debugOnly __attribute__((warning("Debug function call not optimized out. You may wrap it in luxDebug() to prevent unnecessary calls")))
-
 #ifdef LUX_DEBUG
 #	define luxDebug(...) __VA_ARGS__                                //Executes a line of code only if in debug   mode
 #	define luxRelease(...)                                          //Executes a line of code only if in release mode
@@ -43,7 +41,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define scast   static_cast
 #define rcast   reinterpret_cast
 #define noop    ((void)0)
-#define alwaysInline __attribute__ ((__always_inline__)) inline debugOnly
+#define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline
 #define neverInline  __attribute__ ((__noinline__))
 
 #define alignVar(n) __attribute__((aligned(n )))
