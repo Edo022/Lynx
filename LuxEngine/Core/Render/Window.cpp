@@ -14,13 +14,14 @@
 
 
 namespace lux::core::render::wnd{
-	GLFWwindow* window = nullptr;
-	int32		width = 1920 * 2, height = 1080; //TODO
-	std::mutex		windowResizeFence;
-	rem::Cell	gpuCellWindowSize 	  = nullptr;
-	rem::Cell	gpuCellWindowOutput   = nullptr;
-	rem::Cell	gpuCellWindowOutput_i = nullptr;
-	rem::Cell	gpuCellWindowZBuffer  = nullptr;
+	GLFWwindow* window                = nullptr;	padVar(window)
+	int32		width                 = 1920 * 2;	padVar(width)
+	int32 		height                = 1080;		padVar(height)
+	std::mutex	windowResizeFence;
+	rem::Cell	gpuCellWindowSize     = nullptr;	padVar(gpuCellWindowSize);
+	rem::Cell	gpuCellWindowOutput   = nullptr;	padVar(gpuCellWindowOutput);
+	rem::Cell	gpuCellWindowOutput_i = nullptr;	padVar(gpuCellWindowOutput_i);
+	rem::Cell	gpuCellWindowZBuffer  = nullptr;	padVar(gpuCellWindowZBuffer);
 
 
 
@@ -35,6 +36,7 @@ namespace lux::core::render::wnd{
 			.engineVersion      { VK_MAKE_VERSION(1, 0, 0)           },
 			.apiVersion         { VK_API_VERSION_1_2                 },
 		};
+
 
 
 		//Extensions

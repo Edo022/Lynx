@@ -21,8 +21,8 @@
 
 
 namespace lux::core::render::out{
-	VkRenderPass	renderPass = nullptr;
-	bool			renderFramebufferResized = false;
+	VkRenderPass	renderPass = nullptr;				padVar(renderPass)
+	bool			renderFramebufferResized = false;	padVar(renderFramebufferResized)
 
 
 

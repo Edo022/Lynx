@@ -7,8 +7,8 @@
 
 
 namespace lux::core::render::cmd{
-	extern VkCommandPool			singleTimeCommandPool;
-	extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
+	extern VkCommandPool			singleTimeCommandPool;		padExt(singleTimeCommandPool)
+	extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;	padExt(singleTimeCommandBuffers)
 
 
 	void preInit( );

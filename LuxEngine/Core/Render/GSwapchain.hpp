@@ -19,17 +19,17 @@ namespace lux::core::render::swapchain{
 	};
 
 
-	extern VkSwapchainKHR			swapchain;
-	extern RtArray<VkImage>			swapchainImages;
-	extern RtArray<VkImageView>		swapchainImageViews;
-	extern VkFormat					swapchainImageFormat;
-	extern VkExtent2D				swapchainExtent;
-	extern RtArray<VkFramebuffer>	swapchainFramebuffers;
+	extern VkSwapchainKHR			swapchain;				padExt(swapchain)
+	extern RtArray<VkImage>			swapchainImages;		padExt(swapchainImages)
+	extern RtArray<VkImageView>		swapchainImageViews;	padExt(swapchainImageViews)
+	extern VkFormat					swapchainImageFormat;	padExt(swapchainImageFormat)
+	extern VkExtent2D				swapchainExtent;		padExt(swapchainExtent)
+	extern RtArray<VkFramebuffer>	swapchainFramebuffers;	padExt(swapchainFramebuffers)
 
 
 
 
-	void preInit( );
+	// void preInit( );
 	void					swapchainCreate( );
 	void					swapchainRecreate(const bool vWindowResized);
 	void					cleanup( );
