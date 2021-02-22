@@ -46,11 +46,11 @@ namespace lux::rem{
 	//*    ---Uniform buffers are read only for the GPU. Useful when you need to pass small data to a shader
 	//*    ---Storage buffers are larger and the GPU can write in it, bet they have worse performance
 	//*   Returns: the allocated Cell object
-	//e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
+	//e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::VRamStorage);
 	Cell allocBck(const uint64 vSize, CellClass vCellClass, const lux::AllocType vAllocType) {
 		dbg::checkParam(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize, 	"vCellClass", "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
 		dbg::checkParam(vSize > 0xFFFFffff, 											"vSize",		"The cell size cannot exceed 0xFFFFFFFF bytes");
-		dbg::checkParam(vAllocType >= lux::AllocType::NUM || (int32)vAllocType < 0,		"vAllocType", "The allocation type can only be 'DEDICATED_STORAGE', 'DEDICATED_UNIFORM', 'SHARED_STORAGE' or 'SHARED_UNIFORM'");
+		dbg::checkParam(vAllocType >= lux::AllocType::NUM || (int32)vAllocType < 0,		"vAllocType", "The allocation type can only be 'VRamStorage', 'VRamUniform', 'RamStorage' or 'RamUniform'");
 
 
 		//Set cell class if CellClass::AUTO was used

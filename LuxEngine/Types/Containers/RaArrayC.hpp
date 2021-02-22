@@ -8,7 +8,7 @@ namespace lux{
 	template<class type, class iter = uint32> struct RaArrayC{
 		genInitCheck;
 
-		struct Elm{
+		struct /*alignas(1)*/ Elm{
 			type value;
 			iter next;
 		};

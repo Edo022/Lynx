@@ -22,11 +22,11 @@ namespace lux::core::buffers{
 	//> Engine internal use
 	void init() {
 		{ //Initialize window buffers and count
-			render::wnd::gpuCellWindowOutput_i	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A8-R8-G8-B8 UI
-			render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE); //A32-R32-G32-B32 UF
-			render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::DEDICATED_STORAGE);
+			render::wnd::gpuCellWindowOutput_i	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage); //A8-R8-G8-B8 UI
+			render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::VRamStorage); //A32-R32-G32-B32 UF
+			render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage);
 
-			render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::SHARED_STORAGE);	//Create cell for window size //TODO use dedicated storage and update every time
+			render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::RamStorage);	//Create cell for window size //TODO use dedicated storage and update every time
 			uint32* pwindowSize = (uint32*)(render::wnd::gpuCellWindowSize->map());			//Map window size cell //TODO use gpu pointer instead of raw cell
 			pwindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
 			pwindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height

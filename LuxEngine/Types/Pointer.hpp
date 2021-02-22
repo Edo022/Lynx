@@ -94,8 +94,8 @@ namespace lux::ram{
 			} //TODO use direct access array
 		}
 
-		void alloc_(const uint64 vSize, const CellClass vClass);
-		void realloc_(const uint64 vSize, const CellClass vClass);
+		// void alloc_(const uint64 vSize, const CellClass vClass);
+		// void realloc_(const uint64 vSize, const CellClass vClass);
 
 		#ifdef LUX_DEBUG
 			void pushOwner() {
@@ -337,6 +337,54 @@ namespace lux::ram{
 
 
 
+
+
+
+
+		void alloc_(const uint64 vSize, const CellClass vClass) {
+			using namespace lux::__pvt;
+			cells_m.lock();
+			const auto cellIndex = cells.add(Cell_t{});						//Save cell index
+			cells_m.unlock();
+			cell = &cells[cellIndex];										//Update cell pointer
+			*cell = Cell_t{													//Update cell data
+				.typeIndex = classIndexFromEnum(vClass),						//Set cell type index
+				.owners = 1,													//Set 1 owner: this pointer
+				//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
+				//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
+				.cellIndex  = cellIndex,										//Set cell index
+				.cellSize = (uint32)vSize,										//Set size specified in function call
+			};
+			luxDebug(state = CellState::ALLOC);								//Add cell state info if in debug mode
+
+
+			if((uint32)vClass) {											//For fixed class cells
+				auto& type_ = types[classIndexFromEnum(vClass)];				//Cache buffer type
+				type_.m.lock();
+				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
+				type_.m.unlock();
+				cell->localIndex = localIndex;									//Save local index in cell object
+
+				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
+				if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
+				//															 	 Save allocation address in cell object
+				cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
+			}
+			else {															//For custom size cells
+				uint64 size = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate a new buffer
+				cell->address = win10(_aligned_malloc(size, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size));
+				luxDebug(cell->localIndex = 0;)
+			}
+			luxDebug(cell->firstOwner = cell->lastOwner = nullptr);
+		}
+
+
+
+
+
+
+
+
 		/**
 		 * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
@@ -395,6 +443,10 @@ namespace lux::ram{
 
 
 
+
+
+
+
 		/**
 		 * @brief Reallocates the pointer to a block of memory containing vCount elements without initializing them
 		 * @param vCount Number of elements
@@ -405,6 +457,10 @@ namespace lux::ram{
 			checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);
 			realloc(sizeof(type) * vCount, vCopyOldData, vClass);
 		}
+
+
+
+
 
 
 
@@ -446,51 +502,6 @@ namespace lux::ram{
 		alwaysInline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
 	};
-
-
-
-
-
-
-
-
-	//TODO CHECK MEMORY FULL
-	template<class type> void lux::ram::Alloc<type>::alloc_(const uint64 vSize, const CellClass vClass) {
-		using namespace lux::__pvt;
-		cells_m.lock();
-		const auto cellIndex = cells.add(Cell_t{});						//Save cell index
-		cells_m.unlock();
-		cell = &cells[cellIndex];										//Update cell pointer
-		*cell = Cell_t{													//Update cell data
-			.typeIndex = classIndexFromEnum(vClass),						//Set cell type index
-			.owners = 1,													//Set 1 owner: this pointer
-			//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
-			//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
-			.cellIndex  = cellIndex,										//Set cell index
-			.cellSize = (uint32)vSize,										//Set size specified in function call
-		};
-		luxDebug(state = CellState::ALLOC);								//Add cell state info if in debug mode
-
-
-		if((uint32)vClass) {											//For fixed class cells
-			auto& type_ = types[classIndexFromEnum(vClass)];				//Cache buffer type
-			type_.m.lock();
-			const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
-			type_.m.unlock();
-			cell->localIndex = localIndex;									//Save local index in cell object
-
-			const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
-			if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
-			//															 	 Save allocation address in cell object
-			cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
-		}
-		else {															//For custom size cells
-			uint64 size = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate a new buffer
-			cell->address = win10(_aligned_malloc(size, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size));
-			luxDebug(cell->localIndex = 0;)
-		}
-		luxDebug(cell->firstOwner = cell->lastOwner = nullptr);
-	}
 
 
 

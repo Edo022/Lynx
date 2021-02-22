@@ -27,8 +27,8 @@ namespace lux::obj{
 		//core::init(false);																	//Initialize the engine
 		// render.data = (int8*)malloc(getCellSize( ));										//Create the cell taht contains the object data
 		render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
-		// render.localData = rem::allocBck(getCellSize( ), CellClass::AUTO, AllocType::SHARED_UNIFORM);	//Create the cell taht contains the object data
-		render.localData = rem::allocBck(cellSize, CellClass::AUTO, lux::AllocType::SHARED_UNIFORM);	//Create the cell taht contains the object data
+		// render.localData = rem::allocBck(getCellSize( ), CellClass::AUTO, AllocType::RamUniform);	//Create the cell taht contains the object data
+		render.localData = rem::allocBck(cellSize, CellClass::AUTO, lux::AllocType::RamUniform);	//Create the cell taht contains the object data
 	}
 
 

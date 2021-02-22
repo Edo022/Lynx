@@ -32,7 +32,7 @@ namespace lux{
 			uint32 cellSize;		//Size of the cell in bytes									//16
 			void*  address;			//Address of the cell										//24
 			//char padding[8]																	//32
-			char padding[28 luxDebug(-16)];														//60
+			// char padding[28 luxDebug(-16)];														//60
 			//uint32 next;																		//64
 			luxDebug(Alloc<Dummy>* lastOwner;)
 			luxDebug(Alloc<Dummy>* firstOwner;)
@@ -43,7 +43,7 @@ namespace lux{
 			void** memory;			//Addresses of the buffers
 			RaArrayC<bool> cells;	//TODO use optimized uint64 array
 			uint32 cellsPerBuff;	//Number of cells in each buffer
-			std::mutex m;
+			std::mutex m; //FIXME REMOVE
 		};
 
 		extern RaArrayC<Cell_t> cells;

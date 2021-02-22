@@ -18,13 +18,22 @@ namespace lux{
 		CLASS_0 = 0,					//Dedicated buffer for cells larger than CellClass::CLASS_L
 		AUTO = (uint32)-1,				//Chooses a class large enough to contain the memory block
 
-		AT_LEAST_CLASS_B = 1 + CLASS_B,	//Like AUTO, but the class is guaranteed to be at least CLASS_B
-		AT_LEAST_CLASS_C = 1 + CLASS_C,	//Like AUTO, but the class is guaranteed to be at least CLASS_C
-		AT_LEAST_CLASS_D = 1 + CLASS_D,	//Like AUTO, but the class is guaranteed to be at least CLASS_D
-		AT_LEAST_CLASS_Q = 1 + CLASS_Q,	//Like AUTO, but the class is guaranteed to be at least CLASS_Q
-		AT_LEAST_CLASS_L = 1 + CLASS_L,	//Like AUTO, but the class is guaranteed to be at least CLASS_L
+		// AT_LEAST_CLASS_B = 1 + CLASS_B,	//Like AUTO, but the class is guaranteed to be at least CLASS_B
+		// AT_LEAST_CLASS_C = 1 + CLASS_C,	//Like AUTO, but the class is guaranteed to be at least CLASS_C
+		// AT_LEAST_CLASS_D = 1 + CLASS_D,	//Like AUTO, but the class is guaranteed to be at least CLASS_D
+		// AT_LEAST_CLASS_Q = 1 + CLASS_Q,	//Like AUTO, but the class is guaranteed to be at least CLASS_Q
+		// AT_LEAST_CLASS_L = 1 + CLASS_L,	//Like AUTO, but the class is guaranteed to be at least CLASS_L
 	}; //TODO add options to change this from the GUI
-
+	enum class VCellClass : uint32 {
+		CLASS_A = 512,					//512B per cell (~0.5KB). The minimum size of a cell
+		CLASS_B = CLASS_A * 2,			//2x  CLASS_A. 1024 B per cell (~1KB)
+		CLASS_C = CLASS_B * 16,			//16x CLASS_B. 16384 B per cell (~16KB)
+		CLASS_D = CLASS_C * 8,			//8x  CLASS_C. 131072 B per cell (~131KB)
+		CLASS_Q = CLASS_D * 16,			//16x CLASS_D. 2097152 B per cell (~2.1MB)
+		CLASS_L = CLASS_Q * 8,			//8x  CLASS_Q. 16777216 B per cell (~16.8MB)
+		CLASS_0 = 0,					//Dedicated buffer for cells larger than CellClass::CLASS_L
+		AUTO = (uint32)-1,				//Chooses a class large enough to contain the memory block
+	};
 
 	namespace __pvt{
 		#ifdef LUX_DEBUG
