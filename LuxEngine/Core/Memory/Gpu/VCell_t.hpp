@@ -1,3 +1,4 @@
+#pragma once
 #include "LuxEngine/Core/Memory/Shared.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 

@@ -94,12 +94,12 @@ namespace lux::core{
 		}
 
 		//Init
-		render::wnd::initWindow( );
-		Normal	printf("Creating Instance...                     ");
-		render::wnd::createInstance( );
-		SuccessNoNl printf("ok");
+		// render::wnd::initWindow( ); //FIXME
+		// Normal	printf("Creating Instance...                     "); //FIXME
+		// render::wnd::createInstance( ); //FIXME
+		// SuccessNoNl printf("ok"); //FIXME
 
-		render::init(vUseVSync);
+		render::init(vUseVSync); //
 		buffers::init( );
 		c::shaders::init( );
 

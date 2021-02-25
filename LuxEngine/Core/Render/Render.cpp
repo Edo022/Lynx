@@ -47,9 +47,9 @@ namespace lux::core::render{
 		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
 
 		//Initialize vulkan
-		dbg::checkVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
+		// dbg::checkVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
 		Normal printf("    Searching for physical devices...    \n");
-		dvc::getPhysical( );
+		// dvc::getPhysical( ); //FIXME
 		cmd::createGraphicsCommandPool( );
 		Normal printf("    Creating VK swapchain...             ");
 		swapchain::swapchainCreate( );

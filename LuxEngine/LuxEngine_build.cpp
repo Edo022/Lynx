@@ -9,8 +9,10 @@
     #include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
     #include "LuxEngine/Core/Devices.cpp"
         //#include "LuxEngine/Core/Memory/VRam/VRam.cpp"
-        //#include "LuxEngine/Core/Memory/VRam/VCell_t.cpp"
+    #include "LuxEngine/Core/Core.cpp"
+
     #include "LuxEngine/Core/Memory/Gpu/VMemory.cpp"
+    #include "LuxEngine/Core/Memory/Gpu/VCell.cpp"
         //#include "LuxEngine/Core/Memory/Gpu/VCell_t.cpp"
 
     #include "LuxEngine/System/System.cpp"
@@ -22,7 +24,6 @@
     #include "LuxEngine/Types/LuxObject/2D/2DLines.cpp"
     #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp"
 
-    #include "LuxEngine/Core/Core.cpp"
 
 
 
