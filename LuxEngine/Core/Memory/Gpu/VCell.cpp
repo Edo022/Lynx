@@ -7,7 +7,7 @@
 
 
 namespace lux::rem{
-    Type_t2 types[];		//Allocated buffers
+    Type_t2 types[((uint32)lux::__pvt::CellClassIndex::NUM << 2) | 0b11];		//Allocated buffers //TODO DIVIDE GRAPHICS
     RaArrayC<Cell_t2> cells;
     std::mutex cells_m;
 }

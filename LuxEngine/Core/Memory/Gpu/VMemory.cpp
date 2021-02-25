@@ -40,23 +40,34 @@ namespace lux::rem{
 
 		using namespace lux::__pvt;
 
+		VkPhysicalDeviceMemoryProperties memoryProperties;
+		vkGetPhysicalDeviceMemoryProperties(core::dvc::compute.PD.device, &memoryProperties); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
+		uint32 systemMemory = memoryProperties.memoryHeaps->size * memoryProperties.memoryHeapCount;
+
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
-		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) {
-			uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
-			uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
-			new(&types[i]) Type_t{
-				.cellClass = classEnumFromIndex(i),									//Set class index
-				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
-				.cellsPerBuff = cellsPerBuff
-			};
-			types[i].cells.init(cellsPerBuff * buffsNum);
+		for(uint32 k = 0; k < 2; ++k) { //location
+			for(uint32 j = 0; j < 2; ++j) { //buffer type
+				for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) { //TODO DIVIDE GRAPHICS
+					uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
+					uint32 typeIndex = (i << 2) | (j << 1) | k;
+					uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
+					new(&types[typeIndex]) Type_t2{
+						.cellClass = classEnumFromIndex(i),									//Set class index
+						.memory =  (Cell_t2_csc* )calloc(sizeof(Cell_t2_csc),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
+						.cellsPerBuff = cellsPerBuff
+					};
+					// types[i].allocType
+					types[typeIndex].cells.init(cellsPerBuff * buffsNum);
+				}
+			}
 		}
-		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);
+		cells.init(systemMemory / (uint64)lux::VCellClass::CLASS_A);
 	}
 
 
 
-
+	//TODO REMOVE (??) IDK
+	//FIXME USE VCellClass instead of CellClass
 	//This function allocates a video memory cell into a buffer
 	//*   vSize: count of the cell
 	//*   vCellClass: class of the cell. This is the maximum count the cell can reach before it needs to be reallocated
@@ -129,7 +140,7 @@ namespace lux::rem{
 
 
 
-
+	//TODO REMOVE
 	//Maps a lux::rem::Cell to a memory address in order to use it from the CPU
 	//Returns the address of the cell as a void pointer
 	//Only cells allocated in shared memory can be mapped
@@ -141,7 +152,7 @@ namespace lux::rem{
 	}
 
 
-
+	//TODO REMOVE
 	//Frees a video memory cell
 	void free(Cell pCell) {
 		//TODO destroy buffers from asyncrhonous garbage collector

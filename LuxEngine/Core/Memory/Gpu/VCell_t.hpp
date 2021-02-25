@@ -55,7 +55,7 @@ namespace lux{
         };
         struct Cell_t2{
             // lux::AllocType typeIndex;	        //Buffer allocation type
-            uint16 typeIndex;	        //Buffer allocation type
+            uint16 typeIndex;	        //Buffer allocation type //16 << 1| << 1| //TODO probably useless
 			uint32 cellIndex;		//Index of the cell in the cells array						//8
 			uint32 localIndex;		//Index of the cell in the type allocations					//12
 			uint32 cellSize;		//Size of the cell in bytes									//16
@@ -65,10 +65,12 @@ namespace lux{
 
         struct Type_t2{
             CellClass cellClass;				//Class of the cells
-            lux::AllocType allocType;	        //Buffer allocation type
+            // lux::AllocType allocType;	        //Buffer allocation type
+            // uint16 typeIndex;	        //Buffer allocation type //16 << 1| << 1| //TODO ??
 
-            VkBuffer buffer;					//Vulkan buffer object
-            VkDeviceMemory memory;				//Vulkan buffer memory
+            // VkBuffer buffer;					//Vulkan buffer object
+            // VkDeviceMemory memory;				//Vulkan buffer memory
+            Cell_t2_csc* memory;
 
 			RaArrayC<bool> cells;	//TODO use optimized uint64 array
 			uint32 cellsPerBuff;	//Number of cells in each buffer

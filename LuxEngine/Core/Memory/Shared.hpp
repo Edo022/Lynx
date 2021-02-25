@@ -45,7 +45,7 @@ namespace lux{
 		#endif
 
 		//Indices corresponding to lux::CellClass values
-		enum class CellClassIndex : uint32 {
+		enum class CellClassIndex : uint32 { //TODO DIVIDE GRAPHICS
 			INDEX_A = 0b000,
 			INDEX_B = 0b001,
 			INDEX_C = 0b010,

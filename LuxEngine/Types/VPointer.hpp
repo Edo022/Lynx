@@ -395,7 +395,7 @@ enum allocLocation{
 		const auto cellIndex = cells.add(Cell_t{});						//Save cell index
 		cells_m.unlock();
 		cell = &cells[cellIndex];										//Update cell pointer
-        uint16 typeIndex = (classIndexFromEnum(vClass) << 2) | (location << 1) | buffType;
+        uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((classIndexFromEnum(vClass) << 2) | (location << 1) | buffType);
 		*cell = Cell_t{													//Update cell data
 			.typeIndex = typeIndex,						//Set cell type index
 			// .owners = 1,													//Set 1 owner: this pointer
@@ -415,22 +415,22 @@ enum allocLocation{
 
 			const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
 			// if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
-			if(!type_.memory[buffIndex]) {
+			if(!type_.memory[buffIndex].memory) { //Vulkan structures, but they are set to nullptr and treated as pointers when not used
                 // type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
                 //FIXME DONT DUPLICATE BUFFER CHECKS A
                 lux::core::buffers::createBuffer(
-                    type_.buffer,
+                    type_.memory[buffIndex].buffer,
                     ((buffType == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     bufferSize,
-                    type_.memory,
+                    type_.memory[buffIndex].memory,
                     (location == allocLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
                     core::dvc::compute.LD
                 )
             }
 			//															 	 Save allocation address in cell object
 			// cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.VCellClass * localIndex;
-            cell->csc.buffer = type_.buffer; //FIXME one of those is probably useless
-            cell->csc.memory = type_.memory; //FIXME one of those is probably useless
+            cell->csc.buffer = type_.memory[buffIndex].buffer; //FIXME one of those is probably useless
+            cell->csc.memory = type_.memory[buffIndex].memory; //FIXME one of those is probably useless
             //FIXME cell offset? It could be calculated from the cell index tho
 		}
 		else {															//For custom size cells
