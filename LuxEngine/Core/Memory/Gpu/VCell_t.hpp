@@ -49,12 +49,17 @@ namespace lux{
 
 
 
-
+        struct Cell_t2_csc{
+            VkBuffer buffer;					//Vulkan buffer object
+            VkDeviceMemory memory;				//Vulkan buffer memory
+        };
         struct Cell_t2{
-            lux::AllocType typeIndex;	        //Buffer allocation type
+            // lux::AllocType typeIndex;	        //Buffer allocation type
+            uint16 typeIndex;	        //Buffer allocation type
 			uint32 cellIndex;		//Index of the cell in the cells array						//8
 			uint32 localIndex;		//Index of the cell in the type allocations					//12
 			uint32 cellSize;		//Size of the cell in bytes									//16
+            Cell_t2_csc csc;
         };
 
 
@@ -70,6 +75,8 @@ namespace lux{
             std::mutex m; //FIXME REMOVE
         };
 
+		extern Type_t2 types[];		//Allocated buffers
         extern RaArrayC<Cell_t2> cells;
+        extern std::mutex cells_m;
     }
 }

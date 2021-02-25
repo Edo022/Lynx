@@ -16,22 +16,42 @@ namespace lux::rem{
 
 
 	luxAutoInit(LUX_H_VMEMORY) {
-		//Set max allocation count and resize buffer types array
-		maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
-		buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * ((uint32)lux::__pvt::CellClassIndex::NUM + 1) * (uint32)lux::AllocType::NUM);
-		//FIXME NUM + 1 cause the new memory pool doesnt have CLASS 0 index. UPDATE VMEMORY POOL
+		//FIXME REMOVE
+		{
+			//Set max allocation count and resize buffer types array
+			maxAlloc = lux::core::dvc::compute.PD.properties.limits.maxMemoryAllocationCount;
+			buffers = (MemBufferType*)malloc(sizeof(MemBufferType) * ((uint32)lux::__pvt::CellClassIndex::NUM + 1) * (uint32)lux::AllocType::NUM);
+			//FIXME NUM + 1 cause the new memory pool doesnt have CLASS 0 index. UPDATE VMEMORY POOL
 
-		//Init buffer types
-		uint32 index;
-		// for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i) {
-		for(uint32 i = 0; i < ((uint32)lux::__pvt::CellClassIndex::NUM + 1); ++i) { //FIXME SAME HERE
-			for(uint32 j = 0; j < (uint32)lux::AllocType::NUM; ++j) {
-				index = (i << 2) | j;
-				buffers[index].cellClass = classEnumFromIndex__old((lux::__pvt::CellClassIndex)i);
-				buffers[index].allocType = (lux::AllocType)j;
-				new(&(buffers[index].buffers)) RaArray<MemBuffer>(32 * 4096);									 //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+			//Init buffer types
+			uint32 index;
+			// for(uint32 i = 0; i < (uint32)lux::__pvt::CellClassIndex::NUM; ++i) {
+			for(uint32 i = 0; i < ((uint32)lux::__pvt::CellClassIndex::NUM + 1); ++i) { //FIXME SAME HERE
+				for(uint32 j = 0; j < (uint32)lux::AllocType::NUM; ++j) {
+					index = (i << 2) | j;
+					buffers[index].cellClass = classEnumFromIndex__old((lux::__pvt::CellClassIndex)i);
+					buffers[index].allocType = (lux::AllocType)j;
+					new(&(buffers[index].buffers)) RaArray<MemBuffer>(32 * 4096);									 //32 buffers per chunk, max 4096 buffers (max allocation limit in GPUs)
+				}
 			}
 		}
+
+
+
+		using namespace lux::__pvt;
+
+		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
+		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) {
+			uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
+			uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
+			new(&types[i]) Type_t{
+				.cellClass = classEnumFromIndex(i),									//Set class index
+				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
+				.cellsPerBuff = cellsPerBuff
+			};
+			types[i].cells.init(cellsPerBuff * buffsNum);
+		}
+		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);
 	}
 
 

@@ -18,10 +18,6 @@ namespace lux{
 	namespace ram{
 		template<class type> struct Alloc;
 		//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
-		struct Type_t;
-		extern Type_t types[];		//Allocated buffers
-		extern std::mutex cells_m;
-		extern uint32 allocated;	//TODO remove
 
 
 		struct Cell_t {
@@ -46,7 +42,11 @@ namespace lux{
 			std::mutex m; //FIXME REMOVE
 		};
 
+		extern Type_t types[];		//Allocated buffers
 		extern RaArrayC<Cell_t> cells;
 		extern thread_local Cell_t dummyCell;
+
+		extern std::mutex cells_m;
+		extern uint32 allocated;	//TODO remove
 	}
 }
