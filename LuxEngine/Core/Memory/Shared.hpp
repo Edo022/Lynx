@@ -54,6 +54,15 @@ namespace lux{
 			INDEX_L = 0b101,
 			NUM 						//Number of LUX_CELL_CLASS values
 		};
+		enum class VCellClassIndex : uint32 { //TODO DIVIDE GRAPHICS
+			INDEX_A = 0b000,
+			INDEX_B = 0b001,
+			INDEX_C = 0b010,
+			INDEX_D = 0b011,
+			INDEX_Q = 0b100,
+			INDEX_L = 0b101,
+			NUM 						//Number of LUX_CELL_CLASS values
+		};
 		//Size of each buffer. 100663296 B (~100MB)
 		static const uint32 bufferSize = (uint32)CellClass::CLASS_L * 6;
 
@@ -61,10 +70,21 @@ namespace lux{
 		//Returns the CellClassIndex value of a CellClass
 		static constexpr inline uint16 classIndexFromEnum(const CellClass vClass) {
 			switch(vClass) {
-				#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n;
+				#define _case(n) case CellClass::CLASS_##n: return (uint32)CellClassIndex::INDEX_##n; //FIXME RETURN CORRECT TYPE
 				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)	//Fixed size classes
 				case CellClass::CLASS_0: return (uint16)-1;				//Custom size class
 				default: return -2; //This is just to suppress the warning
+				#undef _case
+			}
+		}
+		//FIXME MOVE
+		static constexpr inline uint16 classIndexFromEnum2(const VCellClass vClass) {
+			switch(vClass) {
+				#define _case(n) case VCellClass::CLASS_##n: return (uint32)VCellClassIndex::INDEX_##n; //FIXME RETURN CORRECT TYPE
+				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)	//Fixed size classes
+				case VCellClass::CLASS_0: return (uint16)-1;				//Custom size class
+				default: return -2; //This is just to suppress the warning
+				#undef _case
 			}
 		}
 		//Returns the CellClass value of a CellClassIndex

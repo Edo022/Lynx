@@ -26,11 +26,17 @@ namespace lux::core::buffers{
 			render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::VRamStorage); //A32-R32-G32-B32 UF
 			render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage);
 
-			render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::RamStorage);	//Create cell for window size //TODO use dedicated storage and update every time
-			uint32* pwindowSize = (uint32*)(render::wnd::gpuCellWindowSize->map());			//Map window size cell //TODO use gpu pointer instead of raw cell
-			pwindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
-			pwindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
-			render::wnd::gpuCellWindowSize->unmap();										//Unmap
+			// render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::RamStorage);	//Create cell for window size //TODO use dedicated storage and update every time
+			render::wnd::gpuCellWindowSize.alloc_(4 * 2, VCellClass::CLASS_A);	//Create cell for window size //TODO use dedicated storage and update every time
+			//FIXME ADD MAP AND UNMAP METHODS
+			// uint32* pwindowSize = (uint32*)(render::wnd::gpuCellWindowSize->map());			//Map window size cell //TODO use gpu pointer instead of raw cell
+			// pwindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
+			// pwindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
+			// render::wnd::gpuCellWindowSize->unmap();										//Unmap
+			render::wnd::gpuCellWindowSize.map();			//Map window size cell //TODO use gpu pointer instead of raw cell
+			render::wnd::gpuCellWindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
+			render::wnd::gpuCellWindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
+			render::wnd::gpuCellWindowSize.unmap();										//Unmap
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers

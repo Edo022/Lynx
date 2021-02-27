@@ -2,6 +2,7 @@
 #define LUX_H_VPOINTER
 #include "LuxEngine/Core/Memory/Gpu/VCell_t.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
+#include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/System/SystemMacros.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 #include "LuxEngine/Tests/CondChecks.hpp"
@@ -33,7 +34,16 @@
 
 
 
-
+namespace lux{
+	enum bufferType{
+		Storage,
+		Uniform
+	};
+	enum allocLocation{
+		Ram,
+		VRam
+	};
+}
 namespace lux::rem{
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::VCellClass::CLASS_0 && _class != lux::VCellClass::AUTO) {											\
 		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
@@ -41,14 +51,6 @@ namespace lux::rem{
 	});
 
 
-enum bufferType{
-    Storage,
-    Uniform
-};
-enum allocLocation{
-    Ram,
-    VRam
-};
 
 	template<class type, allocLocation location, bufferType buffType> struct Alloc {
 		genInitCheck;
@@ -71,8 +73,9 @@ enum allocLocation{
 			} //TODO use direct access array
 		}
 
+	public:
 		void alloc_(const uint64 vSize, const VCellClass vClass);
-		void realloc_(const uint64 vSize, const VCellClass vClass);
+		// void realloc_(const uint64 vSize, const VCellClass vClass);
 
 
 
@@ -82,9 +85,8 @@ enum allocLocation{
 
 
 
-	public:
 		Cell_t2* cell; //A pointer to a lux::rem::Cell_t object that contains the cell informations
-
+		type* mapped;
 
 
 		/**
@@ -101,7 +103,7 @@ enum allocLocation{
 		 * @brief Copy constructor. This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		alwaysInline Alloc(const Alloc<type>& vAlloc) :
+		alwaysInline Alloc(const Alloc<type, location, buffType>& vAlloc) :
 			Alloc(vAlloc, Dummy{}) {
 		}
 
@@ -109,7 +111,7 @@ enum allocLocation{
 		 * @brief Create a pointer by copying another pointer's address.This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		template<class aType> explicit inline Alloc(const Alloc<aType>& vAlloc, const Dummy vDummy = Dummy{}) :
+		template<class aType> explicit inline Alloc(const Alloc<aType, location, buffType>& vAlloc, const Dummy vDummy = Dummy{}) :
 			checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } {
 			// cell->owners++;
@@ -121,7 +123,7 @@ enum allocLocation{
 		/**
 		 * @brief Move constructor
 		 */
-		inline Alloc(Alloc<type>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
+		inline Alloc(Alloc<type, location, buffType>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } { //vAlloc.cell = &dummyCell;
 			//! ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
 			// ++cell->owners;
@@ -152,13 +154,13 @@ enum allocLocation{
 
 
 		//Move assignment
-		alwaysInline void operator=(Alloc<type>&& vAlloc) {
-			operator=((Alloc<type>&)vAlloc);
+		alwaysInline void operator=(Alloc<type, location, buffType>&& vAlloc) {
+			operator=((Alloc<type, location, buffType>&)vAlloc);
 		}
 
 
 		//Copy assignment
-		inline void operator=(const Alloc<type>& vAlloc) {
+		inline void operator=(const Alloc<type, location, buffType>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			// if(!--cell->owners) free();
 
@@ -197,11 +199,12 @@ enum allocLocation{
 
 
 
-		// alwaysInline type& operator[](const uint64 vIndex) const {
-		// 	checkInit(); //checkNullptrD(); checkSize();
-		// 	dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-		// 	return ((type*)(cell->address))[vIndex]; //FIXME use mapped pointer
-		// }
+		alwaysInline type& operator[](const uint64 vIndex) const {
+			//TODO ADD SECURITY CHECKS
+			checkInit(); //checkNullptrD(); checkSize();
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			return ((type*)(mapped))[vIndex]; //FIXME use mapped pointer
+		}
 		// alwaysInline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
 		// alwaysInline type* operator->( ) const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
 
@@ -380,6 +383,19 @@ enum allocLocation{
 		alwaysInline bool operator==(ram::Alloc<type> vPtr) { return vPtr.cell == cell; }
 		alwaysInline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
+
+
+		//FIXME SPECIALIZE RAM ALLOCATIONS
+		//TODO manually flush data
+		void map(){
+			//FIXME USE FUNCTION TO GET OFFSET
+			uint32 offset = cell->cellIndex * sizeof(type);
+			vkMapMemory(core::dvc::compute.LD, cell->csc.memory, offset, cell->cellSize, 0, &mapped);
+		}
+		//TODO manually flush data
+		void unmap(){
+			vkUnmapMemory(core::dvc::compute.LD, cell->csc.memory);
+		}
 	};
 
 
@@ -392,17 +408,17 @@ enum allocLocation{
 	template<class type, allocLocation location, bufferType buffType> void lux::rem::Alloc<type, location, buffType>::alloc_(const uint64 vSize, const VCellClass vClass) {
 		using namespace lux::__pvt;
 		cells_m.lock();
-		const auto cellIndex = cells.add(Cell_t{});						//Save cell index
+		const auto cellIndex = cells.add(Cell_t2{});						//Save cell index
 		cells_m.unlock();
 		cell = &cells[cellIndex];										//Update cell pointer
-        uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((classIndexFromEnum(vClass) << 2) | (location << 1) | buffType);
-		*cell = Cell_t{													//Update cell data
+        uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((classIndexFromEnum2(vClass) << 2) | (location << 1) | buffType);
+		*cell = Cell_t2{													//Update cell data
 			.typeIndex = typeIndex,						//Set cell type index
 			// .owners = 1,													//Set 1 owner: this pointer
 			//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
 			//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
 			.cellIndex  = cellIndex,										//Set cell index
-			.cellSize = (uint32)vSize,										//Set size specified in function call
+			.cellSize = (uint32)vSize										//Set size specified in function call
 		};
 
 
@@ -419,13 +435,13 @@ enum allocLocation{
                 // type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
                 //FIXME DONT DUPLICATE BUFFER CHECKS A
                 lux::core::buffers::createBuffer(
-                    type_.memory[buffIndex].buffer,
+                    &type_.memory[buffIndex].buffer,
                     ((buffType == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                     bufferSize,
-                    type_.memory[buffIndex].memory,
+                    &type_.memory[buffIndex].memory,
                     (location == allocLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
                     core::dvc::compute.LD
-                )
+                );
             }
 			//															 	 Save allocation address in cell object
 			// cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.VCellClass * localIndex;
@@ -439,17 +455,17 @@ enum allocLocation{
             //FIXME CHOOSE STORAGE TYPE
             //FIXME CHOOSE READ/WRITE FLAHS
             //FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
-            checkParam(buffType == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
+            dbg::checkParam(buffType == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
             //FIXME DONT DUPLICATE BUFFER CHECKS B
             lux::core::buffers::createBuffer(
-                cell->csc.buffer,
+                &cell->csc.buffer,
                 // ((((uint32)vAllocType & 0b1) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                 ((buffType == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                vSize,
-                cell->csc.memory,
+                size,
+                &cell->csc.memory,
                 (location == allocLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
 				core::dvc::compute.LD
-            )
+            );
 			luxDebug(cell->localIndex = 0;)
 		}
 		// luxDebug(cell->firstOwner = cell->lastOwner = nullptr);

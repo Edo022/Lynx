@@ -44,8 +44,16 @@ namespace lux::core::c::shaders{
 		shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
 		shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { 0, 0, 0, 0 });
 
+		// rem::Cell_t tmp_gpuCellWindowSize;
+		// tmp_gpuCellWindowSize.buffer = render::wnd::gpuCellWindowSize.cell->csc.buffer;
+		// tmp_gpuCellWindowSize.bufferType = rem::
 		shaders::clearShader = shaders::newShader(
-			{ render::wnd::gpuCellWindowOutput, render::wnd::gpuCellWindowOutput_i, core::render::wnd::gpuCellWindowZBuffer, render::wnd::gpuCellWindowSize },
+			{
+				render::wnd::gpuCellWindowOutput,
+				render::wnd::gpuCellWindowOutput_i,
+				render::wnd::gpuCellWindowZBuffer,
+				render::wnd::gpuCellWindowSize
+			},
 			LUX_DEF_SHADER_CLEAR, (render::wnd::width * render::wnd::height) / (32 * 32) + 1, 1, 1
 		);
 	}
