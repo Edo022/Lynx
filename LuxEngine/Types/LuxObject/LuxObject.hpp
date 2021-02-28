@@ -8,8 +8,6 @@
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
-// #include "LuxEngine/Core/Memory/Gpu/VMemory.hpp""
-#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp" //FIXME USE PTRS INSTEAD OF RAW CELLS
 #include "LuxEngine/macros.hpp"
 
@@ -80,9 +78,11 @@ namespace lux{
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
 				int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
-				rem::Cell localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
+				// vram::Cell localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
+				vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
-				rem::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
+				// vram::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
+				vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
 			} render;
 			// inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
 			int32 cellSize = 0;

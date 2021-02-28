@@ -44,8 +44,16 @@ namespace lux::core::c::shaders{
 		shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
 		shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { 0, 0, 0, 0 });
 
+		// vram::Cell_t tmp_gpuCellWindowSize;
+		// tmp_gpuCellWindowSize.buffer = render::wnd::gpuCellWindowSize.cell->csc.buffer;
+		// tmp_gpuCellWindowSize.bufferType = vram::
 		shaders::clearShader = shaders::newShader(
-			{ render::wnd::gpuCellWindowOutput, render::wnd::gpuCellWindowOutput_i, core::render::wnd::gpuCellWindowZBuffer, render::wnd::gpuCellWindowSize },
+			RtArray<vram::Alloc_b<int32>>{
+				render::wnd::gpuCellWindowOutput,
+				render::wnd::gpuCellWindowOutput_i,
+				render::wnd::gpuCellWindowZBuffer,
+				render::wnd::gpuCellWindowSize
+			},
 			LUX_DEF_SHADER_CLEAR, (render::wnd::width * render::wnd::height) / (32 * 32) + 1, 1, 1
 		);
 	}
@@ -230,11 +238,13 @@ namespace lux::core::c::shaders{
 	 * @param pCells An array of memory cells to bind to the shader
 	 * @param vShaderLayout The shader layout
 	 */
-	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
+	// void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Cell>& pCells, const ShaderLayout vShaderLayout) {
+	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Alloc_b<int32>>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count( ); i++) {								//For every cell
-			if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;			//#LLID STRT 0003 Count uniform and
+			// if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;			//#LLID STRT 0003 Count uniform and
+			if(pCells[i].buffType == Uniform) uniformCount++;			//#LLID STRT 0003 Count uniform and
 			else storageCount++;														//storage cells requested
 		}
 		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + !!uniformCount);		//Create an array of descriptor sizes with one element for each descriptor type
@@ -277,10 +287,15 @@ namespace lux::core::c::shaders{
 		for(uint32 i = 0; i < pCells.count( ); ++i) {
 			//Connect the storage buffer to the descrptor									//Create descriptor buffer infos
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));
-			descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
-			if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
-			else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);					//Set buffer offset
-			descriptorBufferInfo->range = pCells[i]->cellSize;									//Set buffer count
+			// descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
+			descriptorBufferInfo->buffer = pCells[i].cell->csc.buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
+			// if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);
+			// if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);
+			if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = pCells[i].cell->localOffset;
+			// else descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);					//Set buffer offset
+			else descriptorBufferInfo->offset = pCells[i].cell->localOffset;					//Set buffer offset
+			// descriptorBufferInfo->range = pCells[i]->cellSize;									//Set buffer count
+			descriptorBufferInfo->range = pCells[i].cell->cellSize;									//Set buffer count
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 									//Create write descriptor set
 				.sType{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET },								//Set structure type
@@ -288,7 +303,8 @@ namespace lux::core::c::shaders{
 				.dstBinding{ i },																//Set binding
 				.descriptorCount{ 1 },															//Set number of descriptors
 				.descriptorType{																//#LLID STRT 0001 Set descriptor type
-					((uint32)pCells[i]->bufferType->allocType & 0b1) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+					// ((uint32)pCells[i]->bufferType->allocType & 0b1) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
+					(pCells[i].buffType == Uniform) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 				.pBufferInfo{ descriptorBufferInfo },											//Set descriptor buffer info
 			};
 		}
@@ -357,7 +373,8 @@ namespace lux::core::c::shaders{
 				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
 				copyRegion.imageExtent = { render::swapchain::swapchainExtent.width, render::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
+				// vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
+				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i.cell->csc.buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 
 
 				//Create a barrier to use the swapchain image as a present source image
@@ -451,7 +468,8 @@ namespace lux::core::c::shaders{
 	 *		-1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
 	 *	//FIXME
 	 */
-	LuxShader newShader(const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	// LuxShader newShader(const RtArray<vram::Cell>& pCells, const ShaderLayou tvShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	LuxShader newShader(const RtArray<vram::Alloc_b<uint32>>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
 		dbg::checkParam(pCells.count() == 0, "pCells", "A shader must use at least one cell. The provided cell array has size 0");
 		dbg::checkParam(vGroupCountX < 1, "vGroupCountX", "The group count must be at least 1");
