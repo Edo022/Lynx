@@ -14,11 +14,11 @@ namespace lux::obj{
 
 		//TODO add static objects with specific workgroup count
 		core::c::shaders::newShader(
-			{
+			RtArray<rem::Alloc_b<int32>>{
 				core::render::wnd::gpuCellWindowOutput,
 				core::render::wnd::gpuCellWindowSize,
 				core::render::wnd::gpuCellWindowZBuffer,
-				render.localData
+				(rem::Alloc_b<int32>)(render.localData)
 			},
 			render.shaderLayout,
 			core::render::wnd::width / 32 + 1, 1, 1

@@ -51,10 +51,24 @@ namespace lux::rem{
 	});
 
 
-
-	template<class type, allocLocation location, bufferType buffType> struct Alloc {
+	//Alloc base class
+	template<class type> struct Alloc_b {
 		genInitCheck;
+
+		uint8 location;
+		uint8 buffType;
+		Cell_t2* cell; //A pointer to a lux::rem::Cell_t object that contains the cell informations
+		type* mapped; //...
+
+//TODO optimize return
+		template<class type_> explicit alwaysInline operator Alloc_b<type_>() const { return *(Alloc_b<type_>*)(this); }
+	};
+
+
+	template<class type, allocLocation location, bufferType buffType> struct Alloc : public Alloc_b<type> {
+		genInitCheck; //TODO probably useless
 	private:
+		using Super = Alloc_b<type>;
 
 		//Memory allocation
 		constexpr static void evaluateCellClass(const uint64 vSize, VCellClass& pClass) noexcept {
@@ -85,17 +99,14 @@ namespace lux::rem{
 
 
 
-		Cell_t2* cell; //A pointer to a lux::rem::Cell_t object that contains the cell informations
-		type* mapped;
 
 
 		/**
 		 * @brief Creates a nullptr ptr.
 		 *		Initialize it with the .realloc function before accessing its memory
 		 */
-		alwaysInline Alloc( ) : cell{ /*&dummyCell*/ } {
-		}
-		alwaysInline Alloc(const std::nullptr_t) : Alloc() {}
+		alwaysInline Alloc( ) { Super::location = location; Super::buffType = buffType; }
+		alwaysInline Alloc(const std::nullptr_t) : Alloc() { }
 
 
 
@@ -111,9 +122,10 @@ namespace lux::rem{
 		 * @brief Create a pointer by copying another pointer's address.This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		template<class aType> explicit inline Alloc(const Alloc<aType, location, buffType>& vAlloc, const Dummy vDummy = Dummy{}) :
-			checkInitList(isInit(vAlloc); isAlloc(vAlloc))
-			cell{ vAlloc.cell } {
+		template<class aType> explicit inline Alloc(const Alloc<aType, location, buffType>& vAlloc, const Dummy vDummy = Dummy{}){
+			isInit(vAlloc);
+			Super::location = location; Super::buffType = buffType;
+			Alloc_b<type>::cell = vAlloc.cell;
 			// cell->owners++;
 		}
 
@@ -123,8 +135,10 @@ namespace lux::rem{
 		/**
 		 * @brief Move constructor
 		 */
-		inline Alloc(Alloc<type, location, buffType>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
-			cell{ vAlloc.cell } { //vAlloc.cell = &dummyCell;
+		inline Alloc(Alloc<type, location, buffType>&& vAlloc) {
+			isInit(vAlloc);
+			Super::location = location; Super::buffType = buffType;
+			Super::cell = vAlloc.cell;//vAlloc.cell = &dummyCell;
 			//! ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
 			// ++cell->owners;
 			//! ^ This is not an error. The cell's owners will get decremented when vAlloc is destroyed,
@@ -140,6 +154,7 @@ namespace lux::rem{
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
 		inline Alloc(const uint64 vSize, VCellClass vClass = VCellClass::AUTO) {
+			Super::location = location; Super::buffType = buffType;
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass);
 			// ++cell->owners; //! no. owners already set in alloc_
@@ -164,7 +179,7 @@ namespace lux::rem{
 			checkInit(); isInit(vAlloc);
 			// if(!--cell->owners) free();
 
-			cell = vAlloc.cell; //vAlloc.cell = nullptr;
+			Super::cell = vAlloc.cell; //vAlloc.cell = nullptr;
 			//! ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
 			// ++cell->owners;
 			//! ^ Same as move constructor. This is not an error. The cell's owners will get decremented when vAlloc is destroyed
@@ -203,7 +218,7 @@ namespace lux::rem{
 			//TODO ADD SECURITY CHECKS
 			checkInit(); //checkNullptrD(); checkSize();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return ((type*)(mapped))[vIndex]; //FIXME use mapped pointer
+			return ((type*)(Super::mapped))[vIndex]; //FIXME use mapped pointer
 		}
 		// alwaysInline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
 		// alwaysInline type* operator->( ) const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
@@ -235,9 +250,9 @@ namespace lux::rem{
 
 
 		//Returns the size in BYTES of the allocate memory. use count to get the number of elements
-		alwaysInline uint64 size()  const noexcept { return cell->cellSize; }
+		alwaysInline uint64 size()  const noexcept { return Super::cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
-		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(type); }
+		alwaysInline uint64 count() const noexcept { return Super::cell->cellSize / sizeof(type); }
 
 
 
@@ -363,16 +378,16 @@ namespace lux::rem{
 			// 	this->realloc(0);
 			// 	//! owners is not updated. Freeing an allocation does't destroy the pointer
 			// // }
-            if(cell->typeIndex != (uint16)-1) {											//For fixed  size cells,
-                types[cell->typeIndex].m.lock();
-                types[cell->typeIndex].cells.remove(cell->localIndex);						//free the allocation object
-                types[cell->typeIndex].m.unlock();
+            if(Super::cell->typeIndex != (uint16)-1) {											//For fixed  size cells,
+                types[Super::cell->typeIndex].m.lock();
+                types[Super::cell->typeIndex].cells.remove(Super::cell->localIndex);						//free the allocation object
+                types[Super::cell->typeIndex].m.unlock();
             }
             // else std::free(cell->address);												//For custom size cells, free the entire buffer
             //FIXME FREE BUFFERS
 
             cells_m.lock();
-            cells.remove(cell->cellIndex);												//Free the cell object
+            cells.remove(Super::cell->cellIndex);												//Free the cell object
             cells_m.unlock();
 		}
 
@@ -380,8 +395,8 @@ namespace lux::rem{
 		// alwaysInline operator type*( ) const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
 		// alwaysInline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion ("if(ptr)" is the same as "if(ptr != nullptr)")
 
-		alwaysInline bool operator==(ram::Alloc<type> vPtr) { return vPtr.cell == cell; }
-		alwaysInline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != cell; }
+		alwaysInline bool operator==(ram::Alloc<type> vPtr) { return vPtr.cell == Super::cell; }
+		alwaysInline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != Super::cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
 
 
@@ -389,12 +404,12 @@ namespace lux::rem{
 		//TODO manually flush data
 		void map(){
 			//FIXME USE FUNCTION TO GET OFFSET
-			uint32 offset = cell->cellIndex * sizeof(type);
-			vkMapMemory(core::dvc::compute.LD, cell->csc.memory, offset, cell->cellSize, 0, &mapped);
+			uint32 offset = Super::cell->cellIndex * sizeof(type);
+			vkMapMemory(core::dvc::compute.LD, Super::cell->csc.memory, offset, Super::cell->cellSize, 0, (void**)&(Super::mapped));
 		}
 		//TODO manually flush data
 		void unmap(){
-			vkUnmapMemory(core::dvc::compute.LD, cell->csc.memory);
+			vkUnmapMemory(core::dvc::compute.LD, Super::cell->csc.memory);
 		}
 	};
 
@@ -410,9 +425,9 @@ namespace lux::rem{
 		cells_m.lock();
 		const auto cellIndex = cells.add(Cell_t2{});						//Save cell index
 		cells_m.unlock();
-		cell = &cells[cellIndex];										//Update cell pointer
+		Super::cell = &cells[cellIndex];										//Update cell pointer
         uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((classIndexFromEnum2(vClass) << 2) | (location << 1) | buffType);
-		*cell = Cell_t2{													//Update cell data
+		*Super::cell = Cell_t2{													//Update cell data
 			.typeIndex = typeIndex,						//Set cell type index
 			// .owners = 1,													//Set 1 owner: this pointer
 			//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
@@ -427,7 +442,7 @@ namespace lux::rem{
 			type_.m.lock();
 			const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 			type_.m.unlock();
-			cell->localIndex = localIndex;									//Save local index in cell object
+			Super::cell->localIndex = localIndex;									//Save local index in cell object
 
 			const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
 			// if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
@@ -445,8 +460,8 @@ namespace lux::rem{
             }
 			//															 	 Save allocation address in cell object
 			// cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.VCellClass * localIndex;
-            cell->csc.buffer = type_.memory[buffIndex].buffer; //FIXME one of those is probably useless
-            cell->csc.memory = type_.memory[buffIndex].memory; //FIXME one of those is probably useless
+            Super::cell->csc.buffer = type_.memory[buffIndex].buffer; //FIXME one of those is probably useless
+            Super::cell->csc.memory = type_.memory[buffIndex].memory; //FIXME one of those is probably useless
             //FIXME cell offset? It could be calculated from the cell index tho
 		}
 		else {															//For custom size cells
@@ -458,15 +473,15 @@ namespace lux::rem{
             dbg::checkParam(buffType == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
             //FIXME DONT DUPLICATE BUFFER CHECKS B
             lux::core::buffers::createBuffer(
-                &cell->csc.buffer,
+                &Super::cell->csc.buffer,
                 // ((((uint32)vAllocType & 0b1) && (core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize)) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                 ((buffType == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                 size,
-                &cell->csc.memory,
+                &Super::cell->csc.memory,
                 (location == allocLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
 				core::dvc::compute.LD
             );
-			luxDebug(cell->localIndex = 0;)
+			luxDebug(Super::cell->localIndex = 0;)
 		}
 		// luxDebug(cell->firstOwner = cell->lastOwner = nullptr);
 	}

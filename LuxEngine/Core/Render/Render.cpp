@@ -240,7 +240,9 @@ namespace lux::core::render{
 			for(uint32 i = 0; i < objUpdates2D.count( ); i++) {
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
-					cb, objUpdates2D[i]->render.localData->buffer->buffer,
+					// cb, objUpdates2D[i]->render.localData->buffer->buffer,
+					// rem::getCellOffset(objUpdates2D[i]->render.localData),
+					cb, objUpdates2D[i]->render.localData.cell->csc.buffer,
 					rem::getCellOffset(objUpdates2D[i]->render.localData),
 					objUpdates2D[i]->cellSize,
 					(void*)objUpdates2D[i]->render.data
