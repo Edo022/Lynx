@@ -29,7 +29,7 @@ namespace lux::obj{
 		render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
 		// render.localData = vram::allocBck(getCellSize( ), CellClass::AUTO, AllocType::RamUniform);	//Create the cell taht contains the object data
 		// render.localData = vram::allocBck(cellSize, CellClass::AUTO, lux::AllocType::RamUniform);	//Create the cell taht contains the object data
-		render.localData.alloc_(cellSize, VCellClass::CLASS_A);	//Create the cell taht contains the object data
+		render.localData.alloc_(cellSize, vram::VCellClass::CLASS_A);	//Create the cell taht contains the object data
 	}
 
 

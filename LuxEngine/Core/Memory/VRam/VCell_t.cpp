@@ -6,7 +6,7 @@
 
 
 namespace lux::vram{
-    Type_t2 types[((uint32)lux::__pvt::CellClassIndex::NUM << 2) | 0b11];		//Allocated buffers //TODO DIVIDE GRAPHICS
+    Type_t2 types[((uint32)__pvt::VCellClassIndex::NUM << 2) | 0b11];
     RaArrayC<Cell_t2> cells;
     std::mutex cells_m;
 }

@@ -1,7 +1,7 @@
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-#include "LuxEngine/Core/Memory/Shared.hpp"
+#include "LuxEngine/Core/Memory/Ram/Classes.hpp"
 #include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
@@ -16,7 +16,7 @@
 
 namespace lux::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
-	Type_t types[(uint32)lux::__pvt::CellClassIndex::NUM];
+	Type_t types[(uint32)__pvt::CellClassIndex::NUM];
 	RaArrayC<Cell_t> cells;
 	std::mutex cells_m;
 	uint32 allocated;
@@ -24,12 +24,12 @@ namespace lux::ram{
 
 
 	luxAutoInit(LUX_H_MEMORY) {
-		using namespace lux::__pvt;
+		using namespace __pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) {
-			uint32 buffsNum = systemMemory / bufferSize;						//Get max number of cells that can fit in the system memory
-			uint32 cellsPerBuff = bufferSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
+			uint32 buffsNum = systemMemory / buffSize;						//Get max number of cells that can fit in the system memory
+			uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
 			new(&types[i]) Type_t{
 				.cellClass = classEnumFromIndex(i),									//Set class index
 				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),				//Allocate the max number of buffers. Initialize them with nullptr
@@ -37,7 +37,7 @@ namespace lux::ram{
 			};
 			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
-		cells.init(systemMemory / (uint64)lux::CellClass::CLASS_A);
+		cells.init(systemMemory / (uint64)CellClass::CLASS_A);
 	}
 
 
@@ -65,7 +65,7 @@ namespace lux::ram{
 			// case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
 			// case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
 			// case LUX_TRUE: { __2thrCase:
-			// 	uint64 numShift = multipleOf(num / 2, LuxMemOffset); bool thrf = false;
+			// 	uint64 numShift = multipleOf(num / 2, memOffset); bool thrf = false;
 			// 	lux::thr::sendToExecQueue(cpy_thr, thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
 			// 	cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
 			// 	while(!thrf) sleep(5); break;

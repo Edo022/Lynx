@@ -45,7 +45,7 @@ namespace lux{
 	};
 }
 namespace lux::vram{
-	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::VCellClass::CLASS_0 && _class != lux::VCellClass::AUTO) {											\
+	#define checkAllocSize(var, _class) luxDebug(if(_class != VCellClass::CLASS_0 && _class != VCellClass::AUTO) {											\
 		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
 		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::VCellClass::AUTO to automatically choose it");\
 	});
@@ -72,7 +72,7 @@ namespace lux::vram{
 
 		//Memory allocation
 		constexpr static void evaluateCellClass(const uint64 vSize, VCellClass& pClass) noexcept {
-			if(pClass != VCellClass::AUTO && (uint32)pClass % LuxMemOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
+			if(pClass != VCellClass::AUTO && (uint32)pClass % __pvt::memOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
 				if(vSize > ((uint32)pClass)) pClass = VCellClass::AUTO;					//If the class is too small, set it to AUTO
 				else pClass = (VCellClass)((uint64)pClass - 1);							//If it's large enough, assign the normal class value
 			}
@@ -305,8 +305,8 @@ namespace lux::vram{
 		// 	// }
 		// 	// else { [[likely]]														//If it's allocated
 		// 		if(																	//And the new size is smaller or equal to the maximum cell size
-		// 			((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / LuxIncSize) * LuxIncSize)) { //FIXME USE DIFFERENT INCREMENT FOR GPU CELLS
-		// 			//! ^ Not (vSize / LuxIncSize + 1)
+		// 			((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / incSize) * incSize)) { //FIXME USE DIFFERENT INCREMENT FOR GPU CELLS
+		// 			//! ^ Not (vSize / incSize + 1)
 		// 			[[unlikely]] cell->cellSize = vSize;								//change the cellSize variable and return //FIXME move to fixed size cell
 		// 		}
 		// 		else { [[likely]]												//If it's larger than the maximum cell size //TODO check realloc and free returns
@@ -324,8 +324,8 @@ namespace lux::vram{
 		// 					cell->address = (char*)type_.memory[cell->localIndex / type_.cellsPerBuff] + (uint64)type_.VCellClass * cell->localIndex;
 		// 				}
 		// 				else {															//Fixed size --> custom
-		// 					uint64 size_ = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate the new memory
-		// 					cell->address = win10(_aligned_malloc(size_, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size_));
+		// 					uint64 size_ = (vSize / incSize + 1) * incSize;			//Calculate the new size and allocate the new memory
+		// 					cell->address = win10(_aligned_malloc(size_, memOffset)) _linux(aligned_alloc(memOffset, size_));
 		// 				}
 		// 				// if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory //FIXME COPY
 		// 				//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data
@@ -432,7 +432,7 @@ namespace lux::vram{
 		cells_m.unlock();
 		Super::cell = &cells[cellIndex];										//Update cell pointer
 		// Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * Super::cell->localIndex * (uint32)vClass;
-        uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((classIndexFromEnum2(vClass) << 2) | (location << 1) | buffType);
+        uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (location << 1) | buffType);
 		*Super::cell = Cell_t2{													//Update cell data
 			.typeIndex = typeIndex,						//Set cell type index
 			// .owners = 1,													//Set 1 owner: this pointer
@@ -452,14 +452,14 @@ namespace lux::vram{
 			Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * localIndex * (uint32)vClass;
 
 			const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
-			// if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
+			// if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, memOffset)) _linux(aligned_alloc(memOffset, bufferSize));
 			if(!type_.memory[buffIndex].memory) { //Vulkan structures, but they are set to nullptr and treated as pointers when not used
-                // type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));
+                // type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, memOffset)) _linux(aligned_alloc(memOffset, bufferSize));
                 //FIXME DONT DUPLICATE BUFFER CHECKS A
                 lux::core::buffers::createBuffer(
                     &type_.memory[buffIndex].buffer,
                     ((buffType == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                    bufferSize,
+                    __pvt::buffSize,
                     &type_.memory[buffIndex].memory,
                     (location == allocLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
                     core::dvc::compute.LD
@@ -472,8 +472,8 @@ namespace lux::vram{
             //FIXME cell offset? It could be calculated from the cell index tho
 		}
 		else {															//For custom size cells
-			uint64 size = (vSize / LuxIncSize + 1) * LuxIncSize;			//Calculate the new size and allocate a new buffer
-			// cell->address = win10(_aligned_malloc(size, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, size));
+			uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;			//Calculate the new size and allocate a new buffer
+			// cell->address = win10(_aligned_malloc(size, memOffset)) _linux(aligned_alloc(memOffset, size));
             //FIXME CHOOSE STORAGE TYPE
             //FIXME CHOOSE READ/WRITE FLAHS
             //FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
@@ -491,5 +491,10 @@ namespace lux::vram{
 			luxDebug(Super::cell->localIndex = 0;)
 		}
 		// luxDebug(cell->firstOwner = cell->lastOwner = nullptr);
+
+
+
+
+		#undef checkAllocSize
 	}
 }
