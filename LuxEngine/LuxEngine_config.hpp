@@ -46,7 +46,8 @@
 	//Too much threads slow down the engine, but too few cannot handle much functions
 	//The actual running threads will never be more than the physical threads, but since a thread can be suspended, the pool must be large enough to contain all the active and suspended threads
 	//Default: twice the number of physical threads
-#	define LUX_CNF_GLOBAL_THREAD_POOL_SIZE (lux::sys::threadNum * 2)
+// #	define LUX_CNF_GLOBAL_THREAD_POOL_SIZE (lux::sys::threadNum * 2)
+#	define LUX_CNF_GLOBAL_THREAD_POOL_SIZE (lux::sys::threadNum)
 
 
 

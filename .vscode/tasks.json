@@ -1,168 +1,58 @@
 {
-	"tasks": [
-		{ //FIXME UPDATE ALL CONFIGURATIONS
-			"type": "shell",
-			"label": "Build LuxEngine   | Linux   | Debug  ",
-			"command": "",
-			"args": [
-				"/usr/bin/g++",
-
-				//Source files
-					"-xc++",
-					"LuxEngine/LuxEngineBuild.cpp.build",
-					"Test.cpp",
-					// "TestPointer.cpp",
-				//Max debug infos, Additional gprof informations, no optimizations, no inline, Lux Engine security checks
-					"-g3", "-ggdb3", "-pg", "-O0",
-					"-std=c++2a", "-mavx", "-pipe",
-					"-fno-inline-small-functions",
-					"-fverbose-asm",
-					"-DLUX_DEBUG",
-				//CWD include, threads
-					"-I./", /*"-static", */"-pthread",
-				//Vulkan
-					"-Ideps/Linux/Vulkan-1.2.154.0/x86_64/include",
-					"-Ldeps/Linux/Vulkan-1.2.154.0/x86_64/lib",
-					"-ldl", "-lvulkan",
-				//GLFW
-					"-Ideps/Shared/glfw-3.3.2/include",
-					"-Ideps/Shared/glfw-3.3.2/deps",
-					"-Ldeps/Shared/glfw-3.3.2/build/debug/src",
-					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
-				//Output
-					"-o", "./Build/Linux/LuxEngineDebug",
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-		{
-//			GCC has Profile-Guided Optimisations features. There isn't a lot of precise GCC documentation about it, but nevertheless getting it to run is quite straightforward.
-//    			first compile your program with -fprofile-generate.
-//    			let the program run (the execution time will be significantly slower as the code is also generating profile information into .gcda files).
-//    			recompile the program with -fprofile-use. If your application is multi-threaded also add the -fprofile-correction flag.
-
-			"type": "shell",
-			"label": "Build LuxEngine   | Linux   | Release",
-			"command": "/usr/bin/g++",
-			"args": [
-				//Source files
-					"-xc++",
-					"LuxEngine/LuxEngineBuild.cpp",
-					"Test.cpp",
-				//No debug infos, optimizations for fast code
-					"-g0", "-Ofast", "-frename-registers", "-funroll-loops",
-					"-std=c++2a", "-mavx", "-pipe",
-				//CWD include, threads
-					"-I./", "-pthread",
-				//Vulkan
-					"-Ideps/Linux/Vulkan-1.2.154.0/x86_64/include",
-					"-Ldeps/Linux/Vulkan-1.2.154.0/x86_64/lib",
-					"-ldl", "-lvulkan",
-				//GLFW
-					"-Ideps/Shared/glfw-3.3.2/include",
-					"-Ideps/Shared/glfw-3.3.2/deps",
-					"-Ldeps/Shared/glfw-3.3.2/build/debug/src",
-					"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
-				//Output
-					"-o", "./Build/Linux/LuxEngineRelease"
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-		{
-			"type": "shell",
-			"label": "Build application | Linux   | Debug  ",
-			"command": "/usr/bin/g++",
-			"args": [
-				"testglfw.cpp",
-				"-g",                                           //Default debug infos
-				"-std=c++2a",
-				"-I./",                                         //CWD include
-				"-pthread",                                     //Thre
-				"-Ideps/Shared/glfw-3.3.2/include",                    //GLFW include
-				"-Ideps/Shared/glfw-3.3.2/deps",                       //GLFW include
-				"-Ldeps/Shared/glfw-3.3.2/build/debug/src",            //GLFW include
-				"-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
-				"-o", "Test.out"                                //Output
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$gcc"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
-		},
-		{
-			"type": "shell",
-			"label": "Build application | Linux   | Release",
-			//"command": "/usr/bin/g++",
-			"command": "python3 /home/Edo/Desktop/h.py \n python3 /home/Edo/Desktop/h.py",
-			"args": [
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-
-
-
-
-
-
-
-
-
-		{
-			"type": "shell",
-			"label": "Build application | Windows | Debug  ",
-			//"command": "/usr/bin/g++",
-			"command": "python3 /home/Edo/Desktop/h.py \n python3 /home/Edo/Desktop/h.py",
-			"args": [
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-		{
-			"type": "shell",
-			"label": "Build LuxEngine   | Windows | Debug  ",
-			"command": "/usr/bin/g++",
-			"args": [
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-		{
-			"type": "shell",
-			"label": "Build application | Windows | Release",
-			//"command": "/usr/bin/g++",
-			"command": "python3 /home/Edo/Desktop/h.py \n python3 /home/Edo/Desktop/h.py",
-			"args": [
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-		{
-			"type": "shell",
-			"label": "Build LuxEngine   | Windows | Release",
-			"command": "/usr/bin/g++",
-			"args": [
-			],
-			"options": { "cwd": "${workspaceFolder}" },
-			"problemMatcher": [ "$gcc" ],
-			"group": { "kind": "build", "isDefault": true }
-		},
-	],
-	"version": "2.0.0"
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build LuxEngine  |  Linux  |  Debug",
+            "command": "",
+            "args": [
+                "/usr/bin/g++",
+                //Source files
+		            "-xc++", "LuxEngine/LuxEngineBuild.cpp.build",
+		            "Test.cpp",
+                //Max debug infos, additional gprof informations, no optimizations, no inline, Lux Engine security checks
+                    "-g3", "-ggdb3", "-pg", "-rdynamic", "-fverbose-asm", "-DLUX_DEBUG",
+                    "-O0", "-fno-elide-constructors", "-fno-inline-small-functions", "-fno-inline",
+                //Engine
+                    "-std=c++2a", "-mavx", "-pipe", "-pthread",
+                    "-I./", "-ILuxEngine",
+                    "-Wall",
+                //Vulkan
+                    "-I/home/Edo/Desktop/LuxEngine/Build/EngineDeps.py/deps/Linux/Vulkan-1.2.162.0/x86_64/include",
+                    "-L/home/Edo/Desktop/LuxEngine/Build/EngineDeps.py/deps/Linux/Vulkan-1.2.162.0/x86_64/lib",
+                    "-ldl", "-lvulkan",
+                //GLFW
+                    "-I/home/Edo/Desktop/LuxEngine/Build/EngineDeps.py/deps/Shared/glfw-3.3.2/include",
+                    "-I/home/Edo/Desktop/LuxEngine/Build/EngineDeps.py/deps/Shared/glfw-3.3.2/deps",
+                    "-L/home/Edo/Desktop/LuxEngine/Build/EngineDeps.py/deps/Shared/glfw-3.3.2/build/debug/src",
+                    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3",
+                //Output
+					"-o", "./Build/Linux/LuxEngineDebug"
+            ],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": [ "$gcc" ],
+            "group": { "kind": "build", "isDefault": true }
+        },
+        {
+            "type": "shell",
+            "label": " > Switch to Windows",
+            "command": "python3",
+            "args": [
+                "./Build/SetPlatform.py",
+                "w",
+            ],
+            "problemMatcher": [ ],
+            "group": { "kind": "build", "isDefault": true }
+        },
+        {
+            "type": "shell",
+            "label": " > Switch to Release",
+            "command": "python3",
+            "args": [
+                "./Build/SetType.py",
+                "r"
+            ],
+            "problemMatcher": [ ],
+            "group": { "kind": "build", "isDefault": true }
+        }
+    ]
 }
-
-
-//TODO cross compile for windows: x86_64-w64-mingw32-g++

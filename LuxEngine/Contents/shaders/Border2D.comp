@@ -40,7 +40,7 @@ layout(std140, binding = 3) uniform objData_{
 
 
 //TODO use ordered render and component cache
-void setPixelColor(vec2 pos, vec4 col){
+void setPixelColor(vec2 pos, vec4 col) {
 	uint i = uint(pos.y) * window.x + uint(pos.x);
 
 	zBuffer[i] = -1;
@@ -51,7 +51,7 @@ void setPixelColor(vec2 pos, vec4 col){
 
 
 
-void rh( ){
+void rh() {
 	vec2 fp = ffp * window;
 
 	vec2 dist = abs(fp - (fsp * window));
@@ -61,7 +61,7 @@ void rh( ){
 }
 
 
-void rv( ){
+void rv() {
 	vec2 fp = ffp * window;
 
 	vec2 dist = abs(fp - (fsp * window));

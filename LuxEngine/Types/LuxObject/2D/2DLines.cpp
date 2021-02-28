@@ -1,13 +1,13 @@
 
 #include "LuxEngine/Core/Core.hpp"
-#include "LuxEngine/Core/Render/CShader.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
 
 
 
 namespace lux::obj{
 	//TODO calculate offset and cell count at runtime with an everything array
-	void Line2D::init( ){
+	void Line2D::init() {
 		cellSize = 60;
 		luxInitObject(2, LINE);								// count   | range         | chunk
 		fp = (vec2f32*)(render.data + 0);					//    8    |    0  - 7     |    0 +
@@ -20,6 +20,14 @@ namespace lux::obj{
 		//4x trailing padding								//    4    |    60 - 63
 
 		//TODO add static objects with specific workgroup count
-		core::c::shaders::newShader({ core::render::wnd::gpuCellWindowOutput, core::render::wnd::gpuCellWindowSize, core::render::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, 4, 1, 1);
+		core::c::shaders::newShader(
+			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK
+				core::render::wnd::gpuCellWindowOutput,
+				core::render::wnd::gpuCellWindowSize,
+				core::render::wnd::gpuCellWindowZBuffer,
+				(vram::Alloc_b<int32>)(render.localData)
+			},
+			render.shaderLayout, 4, 1, 1
+		);
 	}
 }

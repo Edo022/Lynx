@@ -8,7 +8,7 @@ namespace lux::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
-	bool RenderSpace2D::addChild(Base2D* pObject){
+	bool RenderSpace2D::addChild(Base2D* pObject) {
 		pObject->parent = this;
 		setChildLimits(pObject->common.childIndex = children.add(pObject));
 		pObject->update( );
@@ -22,7 +22,7 @@ namespace lux::obj {
 	//Returns false if the index is invalid
 	bool RenderSpace2D::setChildLimits(const uint32 vChildIndex) const {
 		if(vChildIndex >= children.count( )) return false;
-		switch(alignment){
+		switch(alignment) {
 			case AlignmentType::FixedHorizontal:
 			{
 				auto xElmLen = abs(minLim.x - maxLim.x) / xNum;
@@ -45,7 +45,7 @@ namespace lux::obj {
 				children[vChildIndex]->setMaxLim(maxLim);
 				break;
 			}
-			default: luxPrintError("Unknown children alignment type. If you see this error, it's probably a bug in the engine");
+			default: dbg::printError("Unknown children alignment type. If you see this error, it's probably a bug in the engine");
 		}
 		return true;
 	}

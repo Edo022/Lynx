@@ -16,7 +16,6 @@
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 #include "LuxEngine/Threads/ThreadPool.hpp"
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
-#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
 
 
 int h(const char* b, int hh) {
@@ -24,7 +23,7 @@ int h(const char* b, int hh) {
 	return 0;
 }
 
-void hg(lux::RtArray<uint16>){
+void hg(lux::RtArray<uint16>) {
 	printf("\nKEYYYY");
 }
 
@@ -49,7 +48,7 @@ void hg(lux::RtArray<uint16>){
 
 void runArrayTest();
 
-int main( ) {
+int main() { //BUG vulkan finds 32 compute queues wtf
 	// int h[5] = {1, 2 ,3 ,4 ,5};
 	// while(true) int h = 0;
 
@@ -61,7 +60,7 @@ int main( ) {
 			vec4f32{ 1.0f, 0.1f, 0.0f, 1.0f }, vec4f32{ 0.0f, 0.2f, 1.0f, 1.0f },
 			100, 200
 		};
-		// usleep(1000*1000);
+
 		renderSpace.addChild(new lux::obj::Line2D(lineTest));
 		lux::obj::Line2D lineTest2{
 			vec2f32{ .4, .5 }, vec2f32{ .8, .8 },
@@ -72,13 +71,13 @@ int main( ) {
 		//FIXME FIX OR ADD WARNING WHEN THE VARIABLE GETS DESTROYED
 		lux::obj::addRenderSpace(new lux::obj::RenderSpace2D(renderSpace));
 	}
-
+//TODO add pool groups
 	// sleep(5000);
 
 	lux::input::InputState inputStateTest({
 		lux::input::KeySequence{ LUX_KEY_W | lux::input::LuxKeyState::LUX_PRESS, hg },
 		lux::input::KeySequence{ LUX_KEY_A | lux::input::LuxKeyState::LUX_PRESS, hg }
-		});
+	});
 	lux::input::setInputState(&inputStateTest);
 
 
@@ -103,13 +102,13 @@ int main( ) {
 //#undef max
 //#undef min
  //
-//static inline auto distToPoint(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//static inline auto distToPoint(const vec2f32& a, const vec2f32& b, const vec2f32& p) {
 //	float32 l2 = (pow(b.x - a.x, 2) + pow(b.y - a.y, 2));
 //	if(l2 == 0) return dist(p, a);
 //	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / l2)))));
 //}
 //
-	//static inline auto distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+	//static inline auto distToPoint2(const vec2f32& a, const vec2f32& b, const vec2f32& p) {
 //	if(pow(dist(a, b), 2) == 0) return dist(p, a);
 //	return dist(p, (a + ((b - a) * max(0, min(1, dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))));
 //}
@@ -117,11 +116,11 @@ int main( ) {
 //
 //
 //
-//static inline auto distToPoint2D(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//static inline auto distToPoint2D(const vec2f32& a, const vec2f32& b, const vec2f32& p) {
 //	return dist(p, ((a == b) ? a : (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2)))))))));
 //}
 ////Distnce to point for lines with non zero length
-//static inline auto distToPoint2D_nz(const vec2f32& a, const vec2f32& b, const vec2f32& p){
+//static inline auto distToPoint2D_nz(const vec2f32& a, const vec2f32& b, const vec2f32& p) {
 //	return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / (pow(b.x - a.x, 2) + pow(b.y - a.y, 2))))))));
 //	//return dist(p, (a + ((b - a) * max(0, min(1, (dot(p - a, b - a) / pow(dist(a, b), 2)))))));
 //}

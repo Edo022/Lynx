@@ -1,16 +1,18 @@
 #pragma once
 #define LUX_H_CONTAINER_BASE
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
 
-//#ifndef __lux_no_gmp //RaArray specific
-#	include "LuxEngine/Types/Pointer.hpp"
-#	include "LuxEngine/Core/Memory/Ram/Ram.hpp"
-//#endif
+#include "LuxEngine/Types/Pointer.hpp"
+#include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 
+#include <new>
+#include <initializer_list>
+#include <type_traits>
+#include <cmath>
 
-
+//FIXME USE DIFFERENT MEMORY FOR CONST VALUES
 
 /*                                                        Lux Containers
 .
@@ -24,7 +26,7 @@
 .    subclasses          | RaArray        | any        | 1         | random       | rt    | rt       | gmp          | heap/stack  |  Random access array
 .                        | Stirng         | char8      | 1         | contiguous   | rt    | rt       | gmp          | heap/stack  |  just String
 .    --------------------|----------------|------------|-----------|--------------|-------|----------|--------------|-------------|
-.    special containers  | HdCtArray      | any        | no limit  | imp specific | ct    | ct/rt    | default      | stack       |  Heterogeneous data compile time array
+.    special containers  | HcArray      | any        | no limit  | imp specific | ct    | ct/rt    | default      | stack       |  Heterogeneous data compile time array
 .                        | LuxMap_NMP_S   | any        | 1         | random       | cy    | rt       | default      | heap        |  deprecated version of RaArray used by the memory pool
 .    --------------------'----------------'------------'-----------'--------------'-------'----------'--------------'-------------'
 .    ct  = Compile time
@@ -42,7 +44,7 @@
 .    |                |                     | freeSize()         | usedCount(), freeCount()|                       |       |          |              |
 .    | Stirng         | operator[]          | size()             | count()                 | operator+, operator+= | rt    | rt       | gmp          |
 .    |----------------|---------------------|--------------------|-------------------------|-----------------------|-------|----------|--------------|
-.    | HdCtArray      | get<>(), operator[] | -                  | count()                 | -                     | ct    | ct/rt    | default      |
+.    | HcArray      | get<>(), operator[] | -                  | count()                 | -                     | ct    | ct/rt    | default      |
 .    | LuxMap_NMP_S   | operator[]          | -                  | count()                 | add()                 | rt    | rt       | default      |
 .    '----------------'---------------------'--------------------'-------------------------'-----------------------'-------'----------'--------------'
 .
@@ -51,16 +53,214 @@
 
 
 
+
+
+
+
 namespace lux {
-	template <class type, class iter> class ContainerBase {
+	template <class type, class iter> struct ContainerBase;
+	//Any type that inherits from this struct will not be default constructed by lux containers
+	struct ignoreCtor{};
+	//Any type that inherits from this struct will not be copy constructed by lux containers
+	struct ignoreCopy{};
+	// //Any type that inherits from this struct will not be move constructed by lux containers
+	// struct ignoreMove{};
+	//Any type that inherits from this struct will not be destroyed by lux containers
+	struct ignoreDtor{};
+
+
+
+
+	namespace __pvt{
+		template<class type, class iter, bool construct> struct cbCtor_t{};
+		template<class type, class iter> struct cbCtor_t<type, iter, false>{
+			protected:
+			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+		};
+		template<class type, class iter> struct cbCtor_t<type, iter, true>{
+			protected:
+			inline void initRange(const iter vFrom, const iter vTo) const {
+				type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
+				for(iter i = vFrom; i <= vTo; ++i) {
+					new(elm + i) type();
+				}
+			}
+		};
+
+
+		// template<class type, class iter, bool construct> struct cbCtor_t{};
+		// template<class type, class iter> struct cbCtor_t<type, iter, false>{
+		// 	alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+		// };
+		// template<class type, class iter> struct cbCtor_t<type, iter, true>{
+		// 	inline void initRange(const iter vFrom, const iter vTo) const {
+		// 		type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
+		// 		for(iter i = vFrom; i <= vTo; ++i) {
+		// 			new(elm + i) type();
+		// 		}
+		// 	}
+		// };
+
+
+		template<class type, class iter, bool destroy> struct cbDtor_t{};
+		template<class type, class iter> struct cbDtor_t<type, iter, false>{
+			protected:
+			alwaysInline void destroy() const noexcept {}
+			inline void destroyRange(const iter vFrom, const iter vTo) const noexcept {}
+		};
+		template<class type, class iter> struct cbDtor_t<type, iter, true>{
+			protected:
+			inline void destroy() const {
+				type* end = ((lux::ContainerBase<type, iter>*)this)->end();
+				for(type* elm = ((lux::ContainerBase<type, iter>*)this)->begin(); elm != end; ++elm) {
+					elm->~type();
+				}
+			}
+			inline void destroyRange(const iter vFrom, const iter vTo) const {
+				type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
+				for(iter i = vFrom; i <= vTo; ++i) {
+					elm[i].~type();
+				}
+			}
+		};
+
+
+
+		template<class type, class iter> struct cbFwd_t:
+		public __pvt::cbCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
+		public __pvt::cbDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {};
+	}
+
+
+
+
+
+
+
+
+	template <class type, class iter> struct ContainerBase :
+	public __pvt::cbFwd_t<type, iter>{
 	public:
 		genInitCheck;
-		//FIXME move data array to base class to avoid the use of virtual functions. theyre slow af
+		ram::ptr<type> data;	//Elements of the array
 
-		virtual inline type*	begin( ) const = 0;		//Returns a pointer to the first element of the container
-		virtual inline type*	end(   ) const = 0;		//Returns a pointer to the element after the last element of the container
-		virtual inline iter		count( ) const = 0;		//Returns the number of elements in the container
-		virtual inline uint64	size(  ) const = 0;		//Returns the size in bytes of the data contained in the container
-		virtual inline bool		empty( ) const = 0;		//Returns true if the container has size 0, false otherwise
+
+
+
+		// Inititalize and destroy elements ---------------------------------------------------------------------------------------------------------//
+
+
+
+
+	protected:
+		//Resizes the array and calls the default constructor on each of the new elements
+		inline void resize(const iter vSize) {
+			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
+			auto oldCount = count();
+			data.reallocArr(vSize);
+			     if(oldCount < count()) lux::__pvt::cbFwd_t<type, iter>::initRange(oldCount, count() - 1);
+			else if(oldCount > count()) lux::__pvt::cbFwd_t<type, iter>::destroyRange(count(), oldCount - 1);
+		}
+
+		//Concatenates a container and initializes the new elements by calling their copy constructor
+		template<class cType, class cIter> inline void cat(const ContainerBase<cType, cIter>& pCont) {
+			auto oldCount = count();
+			data.reallocArr(oldCount + pCont.count());
+			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
+		}
+		//Concatenates a single element and initializes it by calling its copy constructor
+		inline void cat1(const type& vElm) {
+			data.reallocArr(count() + 1);
+			new(&data[count() - 1]) type(vElm);
+		}
+
+
+
+
+		// Constructors -----------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+		//Unallocated
+		alwaysInline ContainerBase() : data{ nullptr } {}
+
+
+		//Count constructor
+		inline ContainerBase(const iter vCount) :
+			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
+			data{ sizeof(type) * vCount } {
+			lux::__pvt::cbFwd_t<type, iter>::initRange(0, count() - 1);
+		}
+
+
+		inline ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;	//Delete default copy constructor
+		inline ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;	//Delete default move constructor
+		//Copy constructor
+		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const Dummy vDummy) :
+			checkInitList(
+				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
+				"The iterator of a container must be large enough to contain all the elements.\
+				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
+			)
+			data{ pCont.size() } {						//Allocate new elements
+			for(iter i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
+			}
+		}
+
+
+		alwaysInline ContainerBase(const std::initializer_list<type> vElms) :
+			data{ sizeof(type) * vElms.size() } {
+			iter i = 0;
+			for(const type& elm : vElms) new(&data[i++]) type(elm);
+		}
+
+
+	protected: //TODO move to type specialization
+		alwaysInline ~ContainerBase() {
+			if(data) lux::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
+			// data.free();
+			//! ^ Not an error. data will be freed in its destructor
+		}
+
+
+
+
+		// Move and assignment ----------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+		alwaysInline void move(ContainerBase<type, iter>& pCont) {
+			data = pCont.data; pCont.data = nullptr;
+		}
+
+
+		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
+		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
+			lux::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
+			data.reallocArr(pCont.count(), false);
+			for(iter i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
+			}
+		}
+
+
+
+
+		// Get size and elements --------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+	public:
+		alwaysInline auto  begin() const { return data.begin();       };	//Returns a pointer to the first element of the container
+		alwaysInline auto    end() const { return data.end();         };	//Returns a pointer to the element after the last element of the container
+		alwaysInline iter  count() const { return (iter)data.count(); };	//Returns the number of elements in the container
+		alwaysInline uint64 size() const { return data.size();        };	//Returns the size in bytes of the contianer
+		alwaysInline bool  empty() const { return !count();           };	//Returns true if the container has size 0, false otherwise
+
+		alwaysInline auto& operator[](const iter vIndex) const { return data[vIndex]; }
 	};
 }

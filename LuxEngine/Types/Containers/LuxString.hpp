@@ -7,26 +7,30 @@
 
 
 
-
+//FIXME FIX LUXSTR. CHECK CONSTRUCTORS AND DESTRUCTORS
 
 namespace lux {
+	//FIXME REMOVE. USE NORMAL STRLEN
 	static inline constexpr uint32 strlenl(const char8* str ) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 	static inline constexpr uint32 strlenl(const wchar8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
-
+	#define updateView() luxDebug(viewer = (char*)Super::data)
 
 
 
 	//TODO add constructor that takes the count in input. IF it's already known, there is no reason to recalculate it
 	//TODO improve concatenation performance
 	class String : public ContainerBase<char8, uint32>{
-	private:
+		using Super = ContainerBase<char8, uint32>;
 		genInitCheck;
-		ram::Alloc<char8> str;
+	private:
+		luxDebug(const char* viewer;)
 
-		inline void concatenate(const char8* vString, const uint32 size) {
-			uint64 oldSize = str.size();
-			str.realloc(str.size() + size - 1);
-			ram::cpy(vString, str + oldSize - 1, size);
+
+		//FIXME FIX
+		inline void cat(const char8* vString) {
+			Super::resize(Super::count() - 1); //Remove \0
+			Super::cat(String(vString));
+			updateView();
 		}
 
 	public:
@@ -39,15 +43,14 @@ namespace lux {
 
 
 
-		//String count cannot be 0. the '\0' is always present and occupies one byte
-		//TODO the elements are probably uninitialized
-		inline String(                                  ) : str(1, char8(), CellClass::AT_LEAST_CLASS_B)	{ str[0] = '\0'; }
-		inline String(const String& pString             ) : str(pString.count( ))	  { ram::cpy(pString.str, str, pString.count( )); }
-		inline String(const char8* vString              ) : str(strlenl(vString) + 1) { ram::cpy(vString,     str, str.size( ));      }
-		inline String(const char8* vString, uint64 vSize) : str(vSize)	              { ram::cpy(vString,     str, str.size( ));      }
+		inline String(                                 ) : Super(1) { Super::data[0] = '\0'; updateView(); }
+		inline String(const char8* vString             ) : Super(strlenl(vString) + 1) { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
+		inline String(const char8* vString, uint64 vLen) : Super(vLen)	            { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
 
-		//TODO remove
-		inline String(const wchar8* vString) : str(strlenl(vString) + 1)	{ ram::cpy(vString, str, str.size( )); }
+		//Move constructor
+		inline String(String&& pString) { Super::move(pString); updateView(); }
+		//Copy constructor
+		inline String(const String& pString) : Super(pString, {}) { updateView(); }
 
 
 
@@ -57,45 +60,41 @@ namespace lux {
 
 
 
-		inline uint32 count( ) const override { checkInit(); return (uint32)str.count( ); }
-		inline uint64 size(  ) const override { checkInit(); return str.count( );         }
-		inline bool	  empty( ) const override { checkInit(); return !str.count( );        }
-		inline char8* begin( ) const override { checkInit(); return str.begin( );	        }
-		inline char8* end(   ) const override { checkInit(); return str.end( );           }
+		inline uint64 size(  ) const { checkInit(); return Super::data.size( ); }
 
-		inline char8&	operator[](const uint32 vIndex) const {
-			checkInit(); luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex > count(), vIndex, "Index is out of range");
-			return str[vIndex];
+
+		inline char8& operator[](const uint32 vIndex) const {
+			checkInit();
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			return Super::operator[](vIndex);
 		}
 
 
 
 
-		// String concatenation ------------------------------------------------------------------------------------------------ //
+		// String concatenation - nya ------------------------------------------------------------------------------------------ //
 
 
 
 
-		#pragma warning ( disable : 4996  )
-		inline void operator += (const String& pString)	{ checkInit(); concatenate(pString.str, pString.count( ));			}
-		inline void operator += (const char8* vString)		{ checkInit(); concatenate(vString, strlenl(vString) + 1);					}
-		//TODO write itoa functions
-		// inline void operator += (const uint64 vValue)		{ checkInit(); char b[20 + 1]; _ui64toa(vValue, b, 10);	operator += (b);	}
-		// inline void operator += (const int64 vValue)		{ checkInit(); char b[20 + 1]; _i64toa(vValue, b, 10);	operator += (b);	}
-		// inline void operator += (const uint32 vValue)		{ checkInit(); char b[10 + 1]; ultoa(vValue, b, 10);		operator += (b);	}
-		// inline void operator += (const int32 vValue)		{ checkInit(); char b[10 + 1]; ltoa(vValue, b, 10);		operator += (b);	}
-		//inline void operator += (const char8 vChar)		{ checkInit(); ram::reallocBck(str, str.size( ) + 1); *str.end( ) = vChar;		}
-		inline void operator += (const char8 vChar)		{ checkInit(); str.realloc(str.count( ) + 1); *str.end( ) = vChar;		}
-		#pragma warning ( default : 4996  )
+		inline void operator+=(const String& pString) { checkInit(); cat(pString.Super::data); }
+		inline void operator+=(const char8* vString ) { checkInit(); cat(vString); }
 
-		#define __lp_strcat_body(var) String vLuxString(str); vLuxString += var; return vLuxString;
-		inline String operator + (const String& pString) const { checkInit(); __lp_strcat_body(pString); }
-		inline String operator + (const char8* vString ) const { checkInit(); __lp_strcat_body(vString); }
-		// inline String operator + (const uint64 vValue  ) const { checkInit(); __lp_strcat_body(vValue ); }
-		// inline String operator + (const int64 vValue   ) const { checkInit(); __lp_strcat_body(vValue ); }
-		// inline String operator + (const uint32 vValue  ) const { checkInit(); __lp_strcat_body(vValue ); }
-		// inline String operator + (const int32 vValue   ) const { checkInit(); __lp_strcat_body(vValue ); }
-		// inline String operator + (const char8 vChar    ) const { checkInit(); __lp_strcat_body(vChar  ); }
+
+		//FIXME use sum chain struct instead of copying the string data
+		inline String operator+(const String& pString) const {
+			checkInit();
+			String vLuxString(Super::data);
+			vLuxString += pString;
+			return vLuxString;
+		}
+		//FIXME same here
+		inline String operator+(const char8* vString ) const {
+			checkInit();
+			String vLuxString(Super::data);
+			vLuxString += vString;
+			return vLuxString;
+		}
 
 
 
@@ -105,33 +104,52 @@ namespace lux {
 
 
 
-		inline void operator = (const String& pString) {
+		//move assignment
+		inline auto& operator=(String&& pString) {
+			Super::move(pString);
+			updateView();
+			return *this;
+		}
+
+		//copy assignment
+		inline auto& operator=(const String& pString) {
 			checkInit(); isInit(pString);
-			str.realloc(pString.count( ));
-			// str.address = (char8*)str.cell->address;
-			ram::cpy(pString.str, str, str.count( ));
+			Super::copy(pString);
+			updateView();
+			return *this;
 		}
 
-
-		inline void operator = (const char8* vString) {
-			checkInit();
-			str.realloc(strlenl(vString) + 1);
-			// str.address = (char8*)str.cell->address;
-			ram::cpy(vString, str, str.count( ));
-		}
+		//Copy from C-style string
+		inline auto& operator=(const char8* vString) { return operator=(String(vString)); }
 
 
 
 
-		inline bool operator == (const String& pString) const {
+
+		//The cooler strcmp
+		inline bool operator==(const String& pString) const {
 			checkInit(); isInit(pString);
-			return ((str.count( ) == pString.count( )) && (memcmp(pString.str, str, str.count( )) == 0));
+			return (Super::count( ) == pString.count( )) && 0 == memcmp(pString.data, Super::data, Super::count( ));
 		}
 
-
-		inline bool operator == (const char* vString) const {
+		/**
+		 * @brief Compares the string to a C string.
+		 *		If the string lenght is known, the cmp() function can be used to avoid unnecessary strlen calls
+		 * @param vString The string to compare
+		 */
+		inline bool operator==(const char* vString) const {
 			checkInit();
-			return ((str.count( ) == strlenl(vString) + 1) && (memcmp(vString, str, str.count( )) == 0));
+			return (Super::count( ) == strlenl(vString) + 1) && 0 == memcmp(vString, Super::data, Super::count( ));
+		}
+
+		/**
+		 * @brief operator==, but the string length can be specified
+		 * @param vString The tring to compare
+		 * @param vStrLen The length of the string, including the null terminator '\\0'
+		 */
+		inline bool cmp(const char* vString, const uint32 vStrLen) const {
+			checkInit();
+			return (Super::count( ) == vStrLen) && 0 == memcmp(vString, Super::data, Super::count( ));
 		}
 	};
 }

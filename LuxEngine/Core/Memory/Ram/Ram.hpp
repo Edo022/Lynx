@@ -1,15 +1,19 @@
 ﻿#pragma once
 #define LUX_H_MEMORY
 #include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Core/ConsoleOutput.hpp"
+#include "LuxEngine/Debug/Debug.hpp"
 #include <cstring>
+#include <mutex>
+
+
+
 
 #ifdef _WIN64
 #	include <intrin.h>
 #	include <windows.h>
 	namespace lux::ram{
 		//System RAM in bytes
-		const uint64 systemMemory = [](){
+		const uint64 systemMemory = []() {
 			MEMORYSTATUSEX status;
 			status.dwLength = sizeof(status);
 			GlobalMemoryStatusEx(&status);
@@ -26,17 +30,16 @@
 #endif
 
 #include "LuxEngine/Types/Pointer.hpp"
-// #include "LuxEngine/Types/LuxBool.hpp"
 
 /*
 .
 .			   CELL 0 ------------------.-.
 .			  .──────────────────────.  ¦ ¦                      CPU/GPU access       allocation types                                                CELL 0 ------------------.             50,331,648 bytes per buffer (Fixed count buffers only)
 .	   .-------> buffer   cellIndex  <--' ¦                                                                                                          .──────────────────────.  ¦             worst case:
-.	 .-¦ ------> type     address    <----'<-----.               R : read             SU : SHARED_UNIFORM                                      .----->  buffer   cellIndex  <--'                 RAM     | 905,969,664 (~906MB)   allocated    | 404,082 (~405KB) used
-.	 ¦ ¦      │  owners   cellSize   <-----------¦               W : write            SS : SHARED_STORAGE                                    .-¦ ---->  type     cellSize   <--.                 VRAM    | 603,979,776 (~604MB)   allocated    | 269,388 (~269KB) used
-.	 ¦ ¦      '────.   .─────────────'           ¦               - : none             DU : DEDICATED_UNIFORM                                 ¦ ¦     '──────────.   .───────'  ¦                           50,331,648 * (7-1) * n                (1 + 33 + 513 + 1025 + 2049 + 131071) * n
-.	 ¦ ¦   RAM     |  /                          ¦                                    DS : DEDICATED_STORAGE                                 ¦ ¦  VRAM / SHARED  \  |          ¦
+.	 .-¦ ------> type     address    <----'<-----.               R : read             SU : RamUniform                                      .----->  buffer   cellIndex  <--'                 RAM     | 905,969,664 (~906MB)   allocated    | 404,082 (~405KB) used
+.	 ¦ ¦      │  owners   cellSize   <-----------¦               W : write            SS : RamStorage                                    .-¦ ---->  type     cellSize   <--.                 VRAM    | 603,979,776 (~604MB)   allocated    | 269,388 (~269KB) used
+.	 ¦ ¦      '────.   .─────────────'           ¦               - : none             DU : VRamUniform                                 ¦ ¦     '──────────.   .───────'  ¦                           50,331,648 * (7-1) * n                (1 + 33 + 513 + 1025 + 2049 + 131071) * n
+.	 ¦ ¦   RAM     |  /                          ¦                                    DS : VRamStorage                                 ¦ ¦  VRAM / SHARED  \  |          ¦
 .	 ¦ '-- BUFFER 0| / TP0                       ¦                                                                                           ¦ '- BUFFER 0 TP7    \ |          ¦             Worst case + data structures count:
 .	 ¦    .────────|/ ─────────────.             ¦                                                                                           ¦   .─────────────────\|────.     ¦                 RAM     | 1,057,563,648 (~1.06GB) allocated   | 151,998,786 (~152MB) used
 .	 ¦    │  cell 0    cell class  <------.------¦ ------------------------------------------------------------------------------------------¦ -->  cell class   cell 0  │     ¦                 VRAM    | [no changes]                        | [no changes]
@@ -62,7 +65,7 @@
 .										  ¦      ¦                                                                                      ¦--------------------------------------'
 .────────────────────────────────────────────────¦ ─────────────────────────────────────────────────────────────────────────────────────¦ ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 .					 │                           ^                                                                                      ^                                                                                                                                                                                  │
-.  allocate          │                    lux::ram::alloc--                                                                        lux::rem::alloc                                                                                                          lux::rem::alloc                                                │  allocate
+.  allocate          │                    lux::ram::alloc--                                                                        lux::vram::alloc                                                                                                          lux::vram::alloc                                                │  allocate
 .  CPU access        │   R/W   ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W        R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W               -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   │  CPU access
 .  GPU access        │    -    ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -         R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R               R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   │  GPU access
 .  allocation        │    -    ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -         SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU               DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   │  allocation
@@ -78,7 +81,7 @@
 
 
 //TODO draw graph of the allocation/reallocation process
-
+//TODO UPDATE GRAPH
 
 
 
@@ -86,20 +89,17 @@
 
 
 namespace lux::ram{
-	//! If you modify those variables change the declarations in Cell_t.hpp too
+	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
 	struct Type_t;
-	extern Type_t types[];		//Allocated buffers
-	extern uint32  allocated;	//TODO remove
-
-	// extern uint32 head, tail;
-	// extern Cell_t* cells;				//Cells
-	// extern uint32* tracker;
+	extern Type_t types[];			//Allocated buffers
 	extern RaArrayC<Cell_t> cells;
+	extern std::mutex cells_m;
+	extern uint32  allocated;		//TODO remove
 
 
 
 	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/);
-	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/){
+	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/) {
 		cpy(src, dst, num/*, thr*/);
 	}
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);

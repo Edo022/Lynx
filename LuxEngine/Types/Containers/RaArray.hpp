@@ -1,8 +1,483 @@
+// #pragma once
+// #define LUX_H_RAARRAY
+// #include "LuxEngine/Math/Algebra/Algebra.hpp"
+// #include "LuxEngine/Types/Containers/ContainerBase.hpp"
+// #include "LuxEngine/Types/Pointer.hpp"
+// //TODO add shrink function to reorder the elements and use less memory possible
+// //TODO add self check on unusable elements
+
+
+
+
+
+
+
+
+// namespace lux {
+// 	template<class type, class iter> class RaArray;
+
+// 	namespace __pvt{
+// 		template<class type, class iter, bool construct> struct raCtor_t{};
+// 		template<class type, class iter> struct raCtor_t<type, iter, false>{
+// 			protected:
+// 			// alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+// 		};
+// 		template<class type, class iter> struct raCtor_t<type, iter, true>{
+// 			protected:
+// 			// inline void initRange(const iter vFrom, const iter vTo) const {
+// 			// 	type* elm = ((lux::RaArray<type, iter>*)this)->begin();
+// 			// 	for(iter i = vFrom; i <= vTo; ++i) {
+// 			// 		new(elm + i) type();
+// 			// 	}
+// 			// }
+// 			//FIXME ADD ADD FUNCTION
+// 		};
+
+
+// 		template<class type, class iter, bool destroy> struct raDtor_t{};
+// 		template<class type, class iter> struct raDtor_t<type, iter, false>{
+// 			protected:
+// 			alwaysInline void destroy() const noexcept {}
+// 		};
+// 		template<class type, class iter> struct raDtor_t<type, iter, true>{
+// 			protected:
+// 			inline void destroy() const {
+// 				auto this_ = (lux::RaArray<type, iter>*)this;
+// 				int i = 0;
+// 				// for(auto elm = this_->begin(); elm != this_->end(); ++elm) {
+// 				for(auto& elm : *this_) {
+// 					if(this_->isValid(i++)) elm.~type();
+// 				}
+// 			}
+// 		};
+// 	}
+
+
+
+
+
+
+
+
+// 	/**
+// 	 * @brief A dynamic array with non contiguous elements.
+// 	 *		New elements are written over previously removed ones, or concatenated if there are none.
+// 	 *		The .isValid() function can be used to check if an element is valid or has been removed
+// 	 * @tparam type Type of the elements
+// 	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
+// 	 */
+// 	template<class type, class iter = uint32> struct RaArray :
+// 	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
+// 	public __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
+// 		genInitCheck;
+
+
+// 		struct Elm{
+// 			type value;
+// 			iter next;
+// 		};
+
+
+// 		struct Iterator{
+// 			Elm* addr;
+
+// 			alwaysInline Iterator operator++(int) noexcept { return Iterator{ (Elm*)(  addr++) }; }
+// 			alwaysInline Iterator operator++(   ) noexcept { return Iterator{ (Elm*)(++addr  ) }; }
+// 			alwaysInline Iterator operator--(int) noexcept { return Iterator{ (Elm*)(  addr--) }; }
+// 			alwaysInline Iterator operator--(   ) noexcept { return Iterator{ (Elm*)(--addr  ) }; }
+
+// 			alwaysInline void operator+=(const uint64 vVal) noexcept { addr += vVal; }
+// 			alwaysInline void operator-=(const uint64 vVal) noexcept { addr += vVal; }
+// 			alwaysInline void operator+=(const int64  vVal) noexcept { addr += vVal; }
+// 			alwaysInline void operator-=(const int64  vVal) noexcept { addr += vVal; }
+
+// 			alwaysInline Iterator operator+(const uint64 vVal) const noexcept { return { addr + vVal }; }
+// 			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
+
+
+// 			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
+// 			alwaysInline type& operator*(                    ) const { return addr->value; }
+// 			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
+// 			// alwaysInline operator type*( ) const { return (type*)addr; }
+// 			// alwaysInline operator bool(  ) const { return !!addr;      }
+
+// 			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
+// 			alwaysInline bool operator!=(type* vPtr)    const noexcept { return vPtr != (type*)addr; }
+// 			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
+// 			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
+// 		};
+
+
+// 	private:
+// 		ram::ptr<type> data;	//Elements
+// 		ram::ptr<iter> lnkd;	//State of each element
+
+// 		iter head;		//First free element
+// 		iter tail;		//Last free element
+// 		iter count_;	//Number of allocated elements
+// 		iter free_;		//Number of free elements in the array
+
+
+// 	public:
+
+
+
+
+
+
+
+
+// 		// Constructors -------------------------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+// 		/**
+// 		 * @brief Creates an array without allocating memory to it.
+// 		 *		The memory will be allocated when calling the add function
+// 		 */
+// 		inline RaArray( ) : data(nullptr), lnkd(nullptr),
+// 			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+// 		}
+
+
+// 		/**
+// 		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
+// 		 */
+// 		inline RaArray(const iter vCount) :
+// 			data(sizeof(type) * vCount),
+// 			lnkd(sizeof(iter) * vCount),
+// 			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+// 		}
+
+
+
+
+// 		/**
+// 		 * @brief Initializes the array by copy constructing each element from an std::initializer_list
+// 		 */
+// 		inline RaArray(const std::initializer_list<type> vElms) :
+// 			RaArray(vElms.size()) {
+// 			for(const type& elm : vElms) add(elm);
+// 		}
+
+
+
+
+// 		/**
+// 		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
+// 		 * @param pCont The container object to copy elements from.
+// 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+// 		 */
+// 		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) :
+// 			RaArray(pCont.count()) {
+// 			isInit(pCont);
+// 			//!^ Just in case the engine didn't get segfault'd by the count() call
+// 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+// 		}
+
+
+// 		/**
+// 		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+// 		 * @param pCont The RaArray to copy elements from.
+// 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+// 		 */
+// 		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) :
+// 			RaArray(pCont.count()) {
+// 			isInit(pCont); //! Same here
+// 			for(int i = 0; i < pCont.count(); ++i) add(pCont[i]);
+// 		}
+
+
+// 		/**
+// 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
+// 		 */
+// 		inline RaArray(const RaArray<type, iter>& pCont) :
+// 			RaArray(pCont.count()) {
+// 			isInit(pCont); //! Same here
+// 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+// 		}
+
+
+// 		/**
+// 		 * @brief Move constructor //FIXME probably useless
+// 		 */
+// 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
+// 			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ },
+// 			data{ pCont.data }, lnkd{ pCont.lnkd } {
+// 			// pCont.data = pCont.lnkd = nullptr;
+// 			//!^ pCont data and lnkd are freed in its destructor
+// 		}
+
+
+// 		~RaArray() { this->destroy(); }
+
+
+
+
+
+
+
+
+// 		// Add, remove --------------------------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+// 		/**
+// 		 * @brief Adds a new element to the end of the array and initializes it with the vElement value by calling its copy constructor
+// 		 * @return Index of the new element
+// 		 */
+// 		iter append(const type& pData) {
+// 			checkInit();
+// 			data.reallocArr(count() + 1);
+// 			lnkd.reallocArr(count() + 1);
+
+// 			new(&data[count_]) type(pData);	//Initialize new element
+// 			lnkd[count_] = -1;				//Set the tracker as valid
+// 			return count_++;				//Update the number of elements and return the element index
+// 		}
+
+
+
+
+// 		/**
+// 		 * @brief Copy constructs pData in the first free element of the array
+//  		 * @return Index of the new element
+// 		 */
+// 		iter add(const type& pData) {
+// 			checkInit();
+// 			if(head == (iter)-1) {				//If it has no free elements
+// 				return append(pData);				//Append the new element
+// 			}
+// 			iter prevHead = head;				//Save head
+// 			if(head == tail) {					//If it has only one free element
+// 				lnkd[prevHead] = -1;				//Reset head and tail
+// 				head = tail = -1;					//Reset tracker
+// 			}
+// 			else {								//If it has more than one
+// 				head = lnkd[prevHead];				//Update head
+// 				lnkd[prevHead] = -1;				//Update tracker of the old head element
+// 			}
+// 			free_--;							//Update number of free elements
+// 			new(&data[prevHead]) type(pData);		//Initialize the new element
+// 			return prevHead;						//Return the index of the new element
+// 		}
+
+
+
+
+// 		/**
+// 		 * @brief Removes an element and calls its destructor
+// 		 *		The destructor is not called on trivial types or lux::ignoreDtor subclasses
+// 		 * @param vIndex Index of the element to remove
+// 		 */
+// 		void remove(const iter vIndex) {
+// 			checkInit();
+// 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+// 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
+
+// 			data[vIndex].~type();						//Destroy the element
+// 			lnkd[vIndex] = -1;							//Set the index as free
+// 			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
+// 			else {										//If it has free elements
+// 				lnkd[tail] = vIndex;						//Set the new tail
+// 				tail = vIndex;								//update the last free index
+// 			}
+// 			free_++;									//Update the number of free elements
+// 		}
+
+
+
+
+// 		/**
+// 		 * @brief Resets the array to its initial state, freeing all the chunks and resizing it to 0
+// 		 */
+// 		inline void clear() {
+// 			checkInit();
+// 			this->destroy();
+// 			head = tail = (iter)-1;
+// 			count_ = free_ = 0;
+// 			data.reallocArr(0); //FIXME FREE
+// 			lnkd.reallocArr(0); //FIXME FREE
+// 		}
+
+
+
+
+
+
+
+
+// 		// Assignment ---------------------------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+// 		/**
+// 		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
+// 		 * @param pCont The container object to copy elements from.
+// 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+// 		 */
+// 		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont) {
+// 			isInit(pCont);
+// 			clear();
+// 			data.reallocArr(pCont.count(), false);
+// 			lnkd.reallocArr(pCont.count(), false);
+// 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+// 			return *this;
+// 		}
+
+
+
+// 	private:
+// 		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
+// 			isInit(pCont);
+// 			clear();
+// 			data.reallocArr(pCont.count(), false);
+// 			lnkd.reallocArr(pCont.count(), false);
+// 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+// 			return *this;
+// 		}
+
+
+// 	public:
+// 		/**
+// 		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+// 		 * @param pCont The RaArray to copy elements from.
+// 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+// 		 */
+// 		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
+// 			return copy(pCont);
+// 		}
+
+
+// 		/**
+// 		 * @brief Copy assignment. Elements are copied in a new memory allocation. Removed elements are preserved.
+// 		 */
+// 		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
+// 			return copy(pCont);
+// 		}
+
+
+
+
+// 		/**
+// 		 * @brief Move constructor //FIXME probably useless
+// 		 */
+// 		inline auto& operator=(RaArray<type, iter>&& pCont) {
+// 			isInit(pCont);
+// 			this->destroy();
+// 			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
+// 			data = pCont.data; lnkd = pCont.lnkd;
+// 			// pCont.data = pCont.lnkd = nullptr;
+// 			//!^ pCont data and lnkd are freed in its destructor
+// 			return *this;
+// 		}
+
+
+
+
+
+
+
+
+// 		// Elements state, get element ----------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+// 		/**
+// 		 * @brief Returns the state of an element
+// 		 * @param vIndex Index of the element
+// 		 * @return True if the element is valid (non deleted), false if not
+// 		 */
+// 		alwaysInline bool isValid(const iter vIndex) const noexcept {
+// 			checkInit();
+// 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+// 			return lnkd[vIndex] == (iter)-1;
+// 		}
+
+
+
+
+// 		alwaysInline type& operator[](const iter vIndex) const noexcept {
+// 			checkInit();
+// 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+// 			return data[vIndex];
+// 		}
+
+
+
+
+
+
+
+
+// 		// Size ---------------------------------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+// 		//TODO a dd size
+// 		alwaysInline iter     count() const { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
+// 		alwaysInline bool     empty() const { checkInit(); return !count();       } //Returns true if the array has 0 elements
+// 		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; } //Returns the number of used elements
+// 		alwaysInline iter freeCount() const { checkInit(); return free_;          } //Returns the number of free elements
+// 		alwaysInline auto     begin() const { checkInit(); return data.begin();   }
+// 		alwaysInline auto       end() const { checkInit(); return data.end();     }
+// 	};
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma once
-#define LUX_H_CellMng_t
+#define LUX_H_RAARRAY
 #include "LuxEngine/Math/Algebra/Algebra.hpp"
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
 #include "LuxEngine/Types/Pointer.hpp"
+//TODO add shrink function to reorder the elements and use less memory possible
+//TODO add self check on unusable elements
 
 
 
@@ -12,28 +487,110 @@
 
 
 namespace lux {
+	template<class type, class iter> class RaArray;
+
+	namespace __pvt{
+		template<class type, class iter, bool construct> struct raCtor_t{};
+		template<class type, class iter> struct raCtor_t<type, iter, false>{
+			protected:
+			// alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+		};
+		template<class type, class iter> struct raCtor_t<type, iter, true>{
+			protected:
+			// inline void initRange(const iter vFrom, const iter vTo) const {
+			// 	type* elm = ((lux::RaArray<type, iter>*)this)->begin();
+			// 	for(iter i = vFrom; i <= vTo; ++i) {
+			// 		new(elm + i) type();
+			// 	}
+			// }
+			//FIXME ADD ADD FUNCTION
+		};
+
+
+		template<class type, class iter, bool destroy> struct raDtor_t{};
+		template<class type, class iter> struct raDtor_t<type, iter, false>{
+			protected:
+			alwaysInline void destroy() const noexcept {}
+		};
+		template<class type, class iter> struct raDtor_t<type, iter, true>{
+			protected:
+			inline void destroy() const {
+				using arrt = lux::RaArray<type, iter>;
+				int i = 0;
+				for(auto elm : *(arrt*)this) {
+					if(((arrt*)this)->isValid(i++)) elm.~type();
+				}
+			}
+		};
+	}
+
+
+
+
+
+
+
+
 	/**
-	 * @brief "Random Access Array".
-	 * 		Basically non-contiguous array of arrays.
+	 * @brief A dynamic array with non contiguous elements.
 	 *		New elements are written over previously removed ones, or concatenated if there are none.
 	 *		The .isValid() function can be used to check if an element is valid or has been removed
-	 * @tparam type Type of the array elements
-	 * @tparam iter Type of the elements indices. Must be an integer type. Default: uint32
-	 * @tparam chunkClass Class of each chunk in the array. Default: CellClass::CLASS_D (2KB)
+	 * @tparam type Type of the elements
+	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
 	 */
-	template<class type, class iter = uint32, CellClass chunkClass = CellClass::CLASS_D> class CellMng_t{
-	private:
+	template<class type, class iter = uint32> struct RaArray :
+	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
+	public __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
 		genInitCheck;
-		ram::Alloc<ram::Alloc<type>> chunks_;		//Elements
-		ram::Alloc<ram::Alloc<iter>> tracker_;	//State of each element
+
+
+		struct Elm{
+			type value;
+			iter next;
+		};
+
+
+		struct Iterator{
+			Elm* addr;
+
+			alwaysInline Iterator operator++(int) noexcept { return Iterator{ (Elm*)(  addr++) }; }
+			alwaysInline Iterator operator++(   ) noexcept { return Iterator{ (Elm*)(++addr  ) }; }
+			alwaysInline Iterator operator--(int) noexcept { return Iterator{ (Elm*)(  addr--) }; }
+			alwaysInline Iterator operator--(   ) noexcept { return Iterator{ (Elm*)(--addr  ) }; }
+
+			alwaysInline void operator+=(const uint64 vVal) noexcept { addr += vVal; }
+			alwaysInline void operator-=(const uint64 vVal) noexcept { addr += vVal; }
+			alwaysInline void operator+=(const int64  vVal) noexcept { addr += vVal; }
+			alwaysInline void operator-=(const int64  vVal) noexcept { addr += vVal; }
+
+			alwaysInline Iterator operator+(const uint64 vVal) const noexcept { return { addr + vVal }; }
+			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
+
+
+			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
+			alwaysInline type& operator*(                    ) const { return addr->value; }
+			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
+			// alwaysInline operator type*( ) const { return (type*)addr; }
+			// alwaysInline operator bool(  ) const { return !!addr;      }
+
+			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
+			alwaysInline bool operator!=(type* vPtr)    const noexcept { return vPtr != (type*)addr; }
+			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
+			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
+
+			alwaysInline iter index() const noexcept { return (data - addr) / sizeof(Elm); }
+		};
+
+
+	private:
+		ram::ptr<Elm> data;
+		// ram::ptr<type> data;	//Elements
+		// ram::ptr<iter> lnkd;	//State of each element
 
 		iter head;		//First free element
 		iter tail;		//Last free element
-		iter size_;		//Number of allocated elements
-		iter free_;		//Number of free elements in the map
-
-		constexpr inline type& chunks (iter index) const { return  chunks_[(index) / (uint64)chunkClass][(index) % (uint64)chunkClass]; }	//Get a chunk   element using only one index instead of index in the chunk and chunk index
-		constexpr inline iter& tracker(iter index) const { return tracker_[(index) / (uint64)chunkClass][(index) % (uint64)chunkClass]; }	//Get a tracker element using only one index instead of index in the chunk and chunk index
+		iter count_;	//Number of allocated elements
+		iter free_;		//Number of free elements in the array
 
 
 	public:
@@ -41,169 +598,197 @@ namespace lux {
 
 
 
+
+
+
+
 		// Constructors -------------------------------------------------------------------------------------------------------- //
-		//FIXME ADD SIZE CONSTRUCTOR
-		//FIXME USE SIZE CONSTRUCTOR IN CONTAINER CONSTRUCTOR TO PREVENT REALLOCATIONS
+
+
+
+
 
 
 
 
 		/**
-		 * @brief Creates an array with size 0 and no preallocated chunks
+		 * @brief Creates an array without allocating memory to it.
+		 *		The memory will be allocated when calling the add function
 		 */
-		inline CellMng_t( ) : head{ (iter)-1 }, tail{ (iter)-1 }, size_{ 0 }, free_{ 0 },
-			chunks_ (0, CellClass::AT_LEAST_CLASS_B),
-			tracker_(0, CellClass::AT_LEAST_CLASS_B) {
+		inline RaArray( ) : data(nullptr),// lnkd(nullptr),
+			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+		}
+
+
+		/**
+		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
+		 */
+		inline RaArray(const iter vCount) :
+			data(sizeof(Elm) * vCount),
+			//lnkd(sizeof(iter) * vCount),
+			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
 
 
 
 		/**
-		 * @brief Initializes the array by copying each element from a lux::ContainerBase subclass
+		 * @brief Initializes the array by copy constructing each element from an std::initializer_list
+		 */
+		inline RaArray(const std::initializer_list<type> vElms) :
+			RaArray(vElms.size()) {
+			for(const type& elm : vElms) add(elm);
+		}
+
+
+
+
+		/**
+		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
 		 * @param pCont The container object to copy elements from.
-		 *		It must be a valid lux::ContainerBase subclass instance with a compatible type and
-		 *		less elements than the maximum number of elements of the array you are initializing
+		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline CellMng_t(const ContainerBase<eType, iType>& pCont) : /*constructExec(isInit(pCont))*/ CellMng_t( ) {
-			//TODO check sizes in constructexec
-			for(auto i = pCont.begin(); i < pCont.end( ); ++i) add((type)(*pCont.begin( )));
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) :
+			RaArray(pCont.count()) {
+			isInit(pCont);
+			//!^ Just in case the engine didn't get segfault'd by the count() call
+			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
 		}
 
 
-
-
 		/**
-		 * @brief Initializes the array by copying each element from a CellMng_t. Removed elements are preserved.
-		 * @param pCont The CellMng_t to copy elements from.
-		 *		It must be a valid CellMng_t instance with a compatible type and
-		 *		less elements than the maximum number of elements of the array you are initializing
+		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+		 * @param pCont The RaArray to copy elements from.
+		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline CellMng_t(const CellMng_t<eType, iType>& pCont) : constructExec(isInit(pCont))
-			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
-			chunks_  (pCont.chunks_ .deepCopy()),
-			tracker_ (pCont.tracker_.deepCopy()){
-			//TODO check sizes in constructexec
-			for(int i = 0; i < pCont.chunks_.count(); ++i){
-				chunks_[i] = pCont.chunks_[i].deepCopy();   //Deeper copy
-				tracker_[i] = pCont.tracker_[i].deepCopy(); //UwU
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) :
+			RaArray(pCont.count()) {
+			isInit(pCont); //! Same here
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
 			}
 		}
-
-
 
 
 		/**
 		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
 		 */
-		inline CellMng_t(const CellMng_t<type, iter>& pCont) : constructExec(isInit(pCont))
-			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
-			chunks_ (pCont.chunks_ .deepCopy()), tracker_ (pCont.tracker_.deepCopy()){
-			// chunks_ (pCont.chunks_ .size(), ram::ptr<type, alloc>(), CellClass::AT_LEAST_CLASS_B),
-			// tracker_(pCont.tracker_.size(), ram::ptr<iter, alloc>(), CellClass::AT_LEAST_CLASS_B) {
-			// for(iter i = 0; i < pCont.end( ) - pCont.begin( ); ++i) add((elmType) * (pCont.begin( ) + i));
-			for(int i = 0; i < pCont.chunks_.count(); ++i){
-				chunks_[i] = pCont.chunks_[i].deepCopy();
-				tracker_[i] = pCont.tracker_[i].deepCopy();
+		inline RaArray(const RaArray<type, iter>& pCont) :
+			RaArray(pCont.count()) {
+			isInit(pCont); //! Same here
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
 			}
 		}
 
 
-
-
 		/**
-		 * @brief Move constructor
+		 * @brief Move constructor //FIXME probably useless
 		 */
-		inline CellMng_t(CellMng_t<type, iter>&& pCont) : constructExec(isInit(pCont))
-			head{ pCont.head }, tail{ pCont.tail }, size_{ pCont.size_ }, free_{ pCont.free_ },
-			chunks_{pCont.chunks_}, tracker_{pCont.tracker_} {
-			pCont.chunks_ = pCont.tracker_ = nullptr; //FIXME
+		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
+			data{ pCont.data }, //lnkd{ pCont.lnkd } {
+			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ } {
+			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
+			// pCont.data = pCont.lnkd = nullptr;
+			//!^ pCont data and lnkd are freed in its destructor
 		}
+
+
+		~RaArray() { if(!empty()) this->destroy(); }
+
+
+
+
 
 
 
 
 		// Add, remove --------------------------------------------------------------------------------------------------------- //
-//TODO add shrink function to reorder the elements and use less memory possible
+
+
+
+
 
 
 
 
 		/**
-		 * @brief Adds a new element at the end of the array, without intializing it
+		 * @brief Adds a new element to the end of the array and initializes it with the vElement value by calling its copy constructor
 		 * @return Index of the new element
 		 */
-		iter append() {
+		iter append(const type& pData) {
 			checkInit();
-			if(size_ + 1 > chunks_.count() * (uint64)chunkClass) {					//If the chunk is full
-				chunks_ [chunks_.count()].reallocArr((uint64)chunkClass, type());		//Create a new one
-				tracker_[chunks_.count()].reallocArr((uint64)chunkClass, iter());
-			}
-			tracker(size_) = -1;	//Set the tracker as valid
-			return size_++;			//Update the number of elements and return the ID
-		}
+			data.reallocArr(count() + 1);
+			//lnkd.reallocArr(count() + 1);
 
-
-		/**
-		 * @brief Adds an element at the end of the array.
-		 * @param pData Value the new element will be initialized with
-		 * @return Index of the new element
-		 */
-		inline iter append(const type& pData) {
-			checkInit();
-			append();
-			chunks(size_ - 1) = pData;
-			return size_;
+			new(&(data[count_].value)) type(pData);	//Initialize new element
+			data[count_].next = -1;				//Set the tracker as valid
+			return count_++;				//Update the number of elements and return the element index
 		}
 
 
 
 
 		/**
-		 * @brief Adds an element at the first free index of the array without initializing it
+		 * @brief Copy constructs pData in the first free element of the array
  		 * @return Index of the new element
 		 */
-		auto add() {
+		iter add(const type& pData) {
 			checkInit();
-			if(head == (iter)-1) return append();		//If it has no free elements, append it
-			iter head2 = head;
-			if(head == tail) {							//If it has only one free element
-				head = tail = tracker(head) = -1;			//Reset head, tail and tracker
+			if(head == (iter)-1) {				//If it has no free elements
+				return append(pData);				//Append the new element
 			}
-			else {										//If it has more than one
-				head = tracker(head);						//Update head
-				tracker(head2) = -1;						//Update tracker of the old head element
+			iter prevHead = head;				//Save head
+			if(head == tail) {					//If it has only one free element
+				data[prevHead].next = -1;				//Reset head and tail
+				head = tail = -1;					//Reset tracker
 			}
-			free_--;									//Update number of free elements
-			return head2;
-		}
-
-
-		/**
-		 * @brief Adds an element at the first free index of the array
-		 * @param vData Value the new element will be initialized with
-		 * @return Index of the new element
-		 */
-		inline iter add(const type& vData) {
-			checkInit();
-			auto i = add();
-			chunks(i) = vData;
-			return i;
+			else {								//If it has more than one
+				head = data[prevHead].next;				//Update head
+				data[prevHead].next = -1;				//Update tracker of the old head element
+			}
+			free_--;							//Update number of free elements
+			new(&(data[prevHead].value)) type(pData);		//Initialize the new element
+			return prevHead;						//Return the index of the new element
 		}
 
 
 
 
 		/**
-		 * @brief Removed an element without freeing it
+		 * @brief Removes an element and calls its destructor
+		 *		The destructor is not called on trivial types or lux::ignoreDtor subclasses
 		 * @param vIndex Index of the element to remove
 		 */
 		void remove(const iter vIndex) {
-			checkInit(); luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex > count( ), vIndex, "Index is out of range");
-			tracker(vIndex) = -1;								//Set the index as free
-			if(head == (iter)-1) head = tail = vIndex;			//If it has no free elements, initialize head and tail.
-			else tail = tracker(tail) = vIndex;					//If it has free elements, set the new tail and update the last free index
-			free_++;											//Update the number of free elements
+			checkInit();
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
+
+			data[vIndex].value.~type();						//Destroy the element
+			// data[vIndex].next = (iter)-1;							//Set the index as free
+			data[vIndex].next = 0;						//Set the index as free
+			//!                 ^ 0 is used as a "not -1" value. -1 are valid elements
+			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
+			else {										//If it has free elements
+				data[tail].next = vIndex;						//Set the new tail
+				tail = vIndex;								//update the last free index
+			}
+			free_++;									//Update the number of free elements
 		}
 
 
@@ -212,37 +797,126 @@ namespace lux {
 		/**
 		 * @brief Resets the array to its initial state, freeing all the chunks and resizing it to 0
 		 */
-		inline void clear( ) {
+		inline void clear() {
 			checkInit();
-			for(iter i = 0; i < chunks_.count(); ++i) {
-				chunks_ [i].free();
-				tracker_[i].free();
-			}
-			chunks_ .free();
-			tracker_.free();
-
+			this->destroy();
 			head = tail = (iter)-1;
-			size_ = free_ = 0;
-			chunks_ .reallocArr(0, CellClass::AT_LEAST_CLASS_B);
-			tracker_.reallocArr(0, CellClass::AT_LEAST_CLASS_B);
+			count_ = free_ = 0;
+			data.reallocArr(0); //FIXME FREE
+			// lnkd.reallocArr(0); //FIXME FREE
 		}
 
 
 
 
-		// Elements state ------------------------------------------------------------------------------------------------------ //
 
 
 
 
-		// //Returns 0 if the index is used, 1 if the index is free, -1 if the index is invalid, -2 if the index is out of range
-		// inline signed char state(const iter vIndex) const {
-		// 	checkInit();
-		// 	if(vIndex < 0) return -1;								//Invalid index
-		// 	else if(vIndex >= size_) return -2;						//Index out of range
-		// 	else if(tracker(vIndex) == (iter)-1) return 0;		//Used element //OK
-		// 	else return 1;											//Free element
-		// }
+		// Assignment ---------------------------------------------------------------------------------------------------------- //
+
+
+
+
+
+
+
+
+		/**
+		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
+		 * @param pCont The container object to copy elements from.
+		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+		 */
+		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont) {
+			isInit(pCont);
+			clear(); //FIXME
+			data.reallocArr(pCont.count(), false);
+			// lnkd.reallocArr(pCont.count(), false);
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
+			}
+			return *this;
+		}
+
+
+
+	private:
+		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
+			isInit(pCont);
+			clear(); //FIXME
+			data.reallocArr(pCont.count(), false);
+			// lnkd.reallocArr(pCont.count(), false);
+			// for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// for(iter i = 0; i < pCont.count(); ++i) {
+			iter i = 0;
+			for(auto e : pCont) {
+				add(e);
+				//FIXME improve performance. dont copy removed elements
+				// add(pCont[i]);
+				// if(!pCont.isValid(i)) remove(i);
+				if(!pCont.isValid(i)) remove(i);
+				i++;
+			}
+			return *this;
+		}
+
+
+	public:
+		/**
+		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+		 * @param pCont The RaArray to copy elements from.
+		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+		 */
+		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
+			return copy(pCont);
+		}
+
+
+		/**
+		 * @brief Copy assignment. Elements are copied in a new memory allocation. Removed elements are preserved.
+		 */
+		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
+			return copy(pCont);
+		}
+
+
+
+
+		/**
+		 * @brief Move constructor //FIXME probably useless
+		 */
+		inline auto& operator=(RaArray<type, iter>&& pCont) {
+			isInit(pCont);
+			this->destroy();
+			data = pCont.data;// lnkd = pCont.lnkd;
+			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
+			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
+			// pCont.data = pCont.lnkd = nullptr;
+			//!^ pCont data and lnkd are freed in its destructor
+			return *this;
+		}
+
+
+
+
+
+
+
+
+		// Elements state, get element ----------------------------------------------------------------------------------------- //
+
+
+
+
+
+
 
 
 		/**
@@ -250,33 +924,25 @@ namespace lux {
 		 * @param vIndex Index of the element
 		 * @return True if the element is valid (non deleted), false if not
 		 */
-		inline bool isValid(const iter vIndex) const noexcept {
+		/*alwaysInline*/neverInline bool isValid(const iter vIndex) const {
 			checkInit();
-			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
-			return (tracker(vIndex) == (iter)-1);
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			return data[vIndex].next == (iter)-1;
 		}
 
 
 
 
-		// Get ----------------------------------------------------------------------------------------------------------------- //
-
-
-
-
-		inline type& operator[](const iter vIndex) const noexcept {
-			luxCheckParam(vIndex < 0, vIndex, "Index cannot be negative"); luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
-			return chunks(vIndex);
+		/*alwaysInline*/neverInline type& operator[](const iter vIndex) const {
+			checkInit();
+			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::checkParam(!isValid(vIndex), "vIndex", "Accessing deleted array element");
+			return data[vIndex].value;
 		}
 
-		// //Returns a pointer to the first element of a chunk. The elements are guaranteed to be in contiguous order
-		// /**
-		//  * @param vChunkIndex
-		//  * @return type*
-		//  */
-		// inline type* begin(const iter vChunkIndex) const {
-		// 	checkInit(); luxCheckParam(vChunkIndex < 0 || vChunkIndex >= _chunkNum, vChunkIndex, "Index is invalid or negative"); return &chunks_[vChunkIndex][0];
-		// }
+
+
+
 
 
 
@@ -286,11 +952,16 @@ namespace lux {
 
 
 
-		//TODO add size
-		inline iter count(     ) const noexcept { checkInit(); return size_;         } //Returns the number of elements in the map, including the free ones
-		inline iter usedCount( ) const noexcept { checkInit(); return size_ - free_; } //Returns the number of used elements
-		inline iter freeCount( ) const noexcept { checkInit(); return free_;         } //Returns the number of free elements
+
+
+
+
+		//TODO a dd size
+		alwaysInline iter     count() const { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
+		alwaysInline bool     empty() const { checkInit(); return !count();       } //Returns true if the array has 0 elements
+		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; } //Returns the number of used elements
+		alwaysInline iter freeCount() const { checkInit(); return free_;          } //Returns the number of free elements
+		alwaysInline Iterator begin() const { checkInit(); if(empty()) return { nullptr }; else return { data }; }
+		alwaysInline Iterator   end() const { checkInit(); if(empty()) return { nullptr }; else return { data + count_ }; }
 	};
 }
-#undef chunks
-#undef tracker

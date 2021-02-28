@@ -10,16 +10,17 @@
 //TODO FIX QUEUES
 
 //A queue with dynamic count
+//DEPRECATED
 namespace lux {
 	template<class type, class iter = uint32> struct Queue {
-	private:
 		genInitCheck;
+	private:
 	public:
 		lux::RtArray<type, iter> _front, _back;
 
-		inline Queue( ) : _front( ), _back( ) { }
+		inline Queue( ) : _front( ), _back() {}
 
-		inline void clear( ){
+		inline void clear() {
 			_front.clear();
 			_back.clear();
 		}
@@ -35,7 +36,7 @@ namespace lux {
 		inline void popFront( )						{ checkInit(); _front.resize(_front.count( ) - 1); }
 
 
-		inline type& operator [](const iter vIndex) { checkInit(); return (vIndex < _back.count( )) ? _back[_back.count( ) - 1 - vIndex] : _front[vIndex - (_back.count( ) - 1)]; }
+		inline type& operator[](const iter vIndex) { checkInit(); return (vIndex < _back.count( )) ? _back[_back.count( ) - 1 - vIndex] : _front[vIndex - (_back.count( ) - 1)]; }
 		inline type& front( )	{ checkInit(); return *_front.end( ); }
 		inline type& back( )	{ checkInit(); return *_back.end( ); }
 		inline iter size( )		{ checkInit(); return _front.count( ) + _back.count( ); }

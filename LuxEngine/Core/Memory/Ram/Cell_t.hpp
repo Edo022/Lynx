@@ -1,8 +1,9 @@
 #pragma once
 #define LUX_H_CELL_T
-#include "LuxEngine/Core/Memory/Shared.hpp"
+#include "LuxEngine/Core/Memory/Ram/Classes.hpp"
 #include "LuxEngine/Types/Containers/RaArrayC.hpp"
 #include "LuxEngine/Types/Dummy.hpp"
+#include <mutex>
 
 
 
@@ -11,36 +12,34 @@
 
 
 
-#define LuxMemOffset 512
-#define LuxIncSize ((uint32)CellClass::CLASS_L / 2)
-namespace lux{
-	namespace ram{
-		template<class type> struct Alloc;
-		//! If you modify those variables change the declarations in Ram.hpp too
-		struct Type_t;
-		extern Type_t types[];		//Allocated buffers
-		extern uint32 allocated;	//TODO remove
+namespace lux::ram{
+	template<class type> struct ptr;
+	//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 
 
-		struct Cell_t {
-			uint16 typeIndex;		//INDEX of the buffer type
-			uint16 owners;			//Number of lux::ram::ptr instances that owns the cell
-			uint32 cellIndex;		//Index of the cell in the cells array
-			uint32 localIndex;		//Index of the cell in the type allocations
-			uint32 cellSize;		//Size of the cell in bytes
-			void*  address;			//Address of the cell
-			luxDebug(ram::Alloc<Dummy>* lastOwner;)
-			luxDebug(ram::Alloc<Dummy>* firstOwner;)
-		};
+	struct Cell_t {
+		uint16 typeIndex;		//INDEX of the buffer type. -1 for custom size cells		//2
+		uint16 owners;			//Number of lux::ram::ptr instances that owns the cell		//2
+		uint32 cellIndex;		//Index of the cell in the cells array						//4
+		uint32 localIndex;		//Index of the cell in the type allocations					//4
+		uint32 cellSize;		//Size of the cell in bytes									//4
+		void*  address;			//Address of the cell										//8
+		luxDebug(ptr<Dummy>* lastOwner;)													//[8]
+		luxDebug(ptr<Dummy>* firstOwner;)													//[8]
+	};
 
-		struct Type_t {
-			CellClass cellClass;	//Class of the cells
-			void** memory;			//Addresses of the buffers
-			RaArrayC<bool> cells;	//TODO use optimized uint64 array
-			uint32 cellsPerBuff;	//Number of cells in each buffer
-		};
+	struct alignas(64) Type_t {
+		CellClass cellClass;	//Class of the cells
+		void** memory;			//Addresses of the buffers
+		RaArrayC<bool> cells;	//TODO use optimized uint64 array
+		uint32 cellsPerBuff;	//Number of cells in each buffer
+		std::mutex m; //FIXME REMOVE
+	};
 
-		extern RaArrayC<Cell_t> cells;
-		extern Cell_t dummyCell;
-	}
+	extern Type_t types[];		//Allocated buffers
+	extern RaArrayC<Cell_t> cells;
+	extern thread_local Cell_t dummyCell;
+
+	extern std::mutex cells_m;
+	extern uint32 allocated;	//TODO remove
 }

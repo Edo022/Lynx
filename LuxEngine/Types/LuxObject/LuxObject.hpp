@@ -7,8 +7,7 @@
 #include "LuxEngine/Types/EngineTypes.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Core/Render/CShader_t.hpp"
-#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp" //FIXME USE PTRS INSTEAD OF RAW CELLS
 #include "LuxEngine/macros.hpp"
 
@@ -64,7 +63,7 @@ namespace lux{
 
 		//Base class for render objects							Description													Structure differences		Value differences
 		struct Base { //			   							----------------------------------------------------------------------------------------------------------
-			Base( ) { common.objectType = LUX_OBJECT_TYPE__BASE; }	//														|							|
+			Base() { common.objectType = LUX_OBJECT_TYPE__BASE; }	//														|							|
 			struct Common{
 				ObjectType objectType;							//Thte type of the object									| object type				| object type
 				lux::String name{ "" };							//The name of the object.									| none						| object instance
@@ -79,16 +78,18 @@ namespace lux{
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
 				int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
-				rem::Cell localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
+				// vram::Cell localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
+				vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
-				rem::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
+				// vram::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
+				vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
 			} render;
 			// inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
 			int32 cellSize = 0;
 			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -
 			void allocate( );									//Allocates a memory cell for the object data				| object type				| -
 			void updateBase( );
-			virtual void recalculateCoords( ){}
+			virtual void recalculateCoords() {}
 		};
 
 
@@ -108,7 +109,7 @@ namespace lux{
 
 		//3D object in 3D space
 		struct Base3D : public Base {
-			Base3D( ) { common.objectType = LUX_OBJECT_TYPE_3D__BASE; }
+			Base3D() { common.objectType = LUX_OBJECT_TYPE_3D__BASE; }
 
 			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
@@ -136,7 +137,7 @@ namespace lux{
 		//Base class for 2D objects with 3D properties (they can be used in both 2D and 3D spaces)
 		struct Base2DI3D : public Base {
 			//TODO
-			Base2DI3D( ) { common.objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
+			Base2DI3D() { common.objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
 
 			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object for 3D space
@@ -154,7 +155,7 @@ namespace lux{
 
 		//Base class for 2D objects in 2D space
 		struct Base2D : public Base {
-			Base2D( ){ common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
+			Base2D() { common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
 
 			//TODO add absolute pixel position and scale
 			vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
@@ -198,7 +199,7 @@ namespace lux{
 		//Base class for 1D objects in 1D space
 		struct Base1D : public Base {
 			//TODO
-			Base1D( ) { common.objectType = LUX_OBJECT_TYPE_1D__BASE; }
+			Base1D() { common.objectType = LUX_OBJECT_TYPE_1D__BASE; }
 
 			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
 			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others

@@ -21,8 +21,8 @@
 
 
 namespace lux::core::render::out{
-	VkRenderPass	renderPass = nullptr;
-	bool			renderFramebufferResized = false;
+	alignCache VkRenderPass	renderPass               = nullptr;
+	alignCache bool			renderFramebufferResized = false;
 
 
 
@@ -31,7 +31,7 @@ namespace lux::core::render::out{
 
 
 
-	void createRenderPass( ) {
+	void createRenderPass() {
 		//Color
 		VkAttachmentDescription colorAttachment{
 			.format{ swapchain::swapchainImageFormat },				//Swapchain image format
@@ -90,7 +90,7 @@ namespace lux::core::render::out{
 		};
 
 		//Create render pass. Exit if an error occurs
-		luxCheckVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
+		dbg::checkVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
 	}
 
 
@@ -100,7 +100,7 @@ namespace lux::core::render::out{
 
 
 
-	void createFramebuffers( ) {
+	void createFramebuffers() {
 		swapchain::swapchainFramebuffers.resize(swapchain::swapchainImageViews.count( ));
 
 		for(uint32 i = 0; i < swapchain::swapchainImageViews.count( ); ++i) {
@@ -113,7 +113,7 @@ namespace lux::core::render::out{
 				.height{ swapchain::swapchainExtent.height },
 				.layers{ 1 },
 			};
-			luxCheckVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i]), "Failed to create framebuffer");
+			dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i]), "Failed to create framebuffer");
 		}
 	}
 
@@ -146,15 +146,15 @@ namespace lux::core::render::out{
 				.a{ VK_COMPONENT_SWIZZLE_IDENTITY },
 			},
 			.subresourceRange{
-					.aspectMask{ vAspectFlags },
-					.baseMipLevel{ 0 },
-					.levelCount{ 1 },
-					.baseArrayLayer{ 0 },
-					.layerCount{ 1 },
+				.aspectMask{ vAspectFlags },
+				.baseMipLevel{ 0 },
+				.levelCount{ 1 },
+				.baseArrayLayer{ 0 },
+				.layerCount{ 1 },
 			},
 		};
 		VkImageView imageView = VK_NULL_HANDLE;
-		luxCheckVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
+		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
 		return imageView;
 	}
 }

@@ -2,7 +2,7 @@
 #define LUX_H_GSWAPCHAIN
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/CtArray.hpp"
-#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
+
 
 
 
@@ -27,7 +27,7 @@ namespace lux::core::render::swapchain{
 
 
 
-	void preInit( );
+	// void preInit( );
 	void					swapchainCreate( );
 	void					swapchainRecreate(const bool vWindowResized);
 	void					cleanup( );

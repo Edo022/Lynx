@@ -1,40 +1,29 @@
-﻿
-#pragma once
+﻿#pragma once
 #define LUX_H_RTARRAY
 #include "LuxEngine/Types/Containers/ContainerBase.hpp"
-#include "LuxEngine/Math/Algebra/Algebra.hpp"
-#include <initializer_list>
-#include <cstring>
+
+
+
+
 
 
 
 
 //TODO a low priority thread reorders the points in the meshes
-//TODO If the mesh gets modified, it's sended back to the queue
+//TODO If the mesh gets modified, it's sent back to the queue
 //TODO if not, the new points are saved and used for rendering in the next frames
-
 //TODO "runtime 3D turbolent flow"
 
-
-//TODO add .reassign function for containers
-//TODO the function simply initializes the container with a pointer without copying the data
-//TODO foo.reassign(ptr);
-//TODO Array<int> reassign(foo, ptr);
-//TODO or maybe it's a bad idea. multiple threads or objects modifying the same data... idk
-
-//TODO add .move function in containers instead of .reassign
-//TODO .moved arrays becomes invalid
-
 //TODO add contructor of string from lux containers of chars
-//TODO add additional data in errors
 namespace lux {
-	//"RunTime Array"
-	//A dynamic array that uses the global memory pool
+	/**
+	 * @brief A dynamic array that uses the global memory pool
+	 * @tparam type Type of the elements
+	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
+	 */
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
-	private:
+		using Super = ContainerBase<type, iter>;
 		genInitCheck;
-		ram::Alloc<type> data_;	//Elements of the array
-	public:
 
 
 
@@ -44,33 +33,55 @@ namespace lux {
 
 
 
-		luxDebug(bool checkNeg(iter n) { luxCheckParam(n < 0, n, "Size cannot be negative"); return true; })
-		inline RtArray( ) : data_(0, type(), CellClass::AT_LEAST_CLASS_B) { }
-		inline RtArray(iter vCount) : constructExec(luxCheckParam(vCount < 0, vCount, "Count cannot be negative")) data_(sizeof(type) * vCount, type(), CellClass::AT_LEAST_CLASS_B) { }
+		/**
+		 * @brief Creates an array without allocating memory to it.
+		 *		The memory will be allocated when calling the add or resize funcytions
+		 */
+		alwaysInline RtArray() : Super() {}
 
-		//Initializes the array using a container object of a compatible type
-		//*   pContainer | The container object to copy elements from
-		//*       The pContainer iterator must be of equal or smaller type than the one of the object you are initializing
-		template<class cIter> inline RtArray(const ContainerBase<type, cIter>& pContainer) : data_(sizeof(type) * pContainer.count( ), CellClass::AT_LEAST_CLASS_B) {
-			luxCheckParam(sizeof(cIter) > sizeof(iter), pContainer, "The iterator of a container must be larger than the one of the container used to initialize it");
-			isInit(pContainer);
-			ram::cpy(pContainer.begin( ), data_, pContainer.size( ));
+
+		/**
+		 * @brief Creates an array of vCount elements and calls the default constructor on each of them
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 */
+		alwaysInline RtArray(iter vCount) : Super(vCount) {}
+
+
+		/**
+		 * @brief Creates an array by copying the vElm elements. Each element is copy constructed
+		 */
+		alwaysInline RtArray(const std::initializer_list<type> vElms) : Super{ vElms } {}
+
+
+		/**
+		 * @brief Initializes the array with a lux::ContainerBase subclass instance by copy constructing on each element
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 * @param pCont The container to copy elements from
+		 */
+		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont) :
+			Super(pCont, {}) {
 		}
 
-		//TODO remove
-		//Initializes the array using a list of elements of the same type
-		inline RtArray(const std::initializer_list<type>& pElements) : data_(sizeof(type) * pElements.size( ), CellClass::AT_LEAST_CLASS_B) {
-			//TODO ^ C strings get destroyed when the function returns
-			//luxCheckParam(pElements.size( ) > count_, pElements, "%d-elements CtArray initialized with %d-elements container.\nA compile time array cannot be initialized with larger containers", count_, pElements.size( ));
-
-			memcpy(begin( ), pElements.begin( ), ((pElements.size( ) * sizeof(type))));
-		}
 
 
-		inline ~RtArray(){
-			// data_.~ptr();
-		}
 
+		/**
+		 * @brief Copy constructor. Each element is copy constructed.
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 */
+		alwaysInline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, {}) {  }
+		/**
+		 * @brief Copy assignment. All the elements in the array are destroyed. New elements are copy constructed.
+		 *		The destructor  is not called on trivial types or lux::ignoreDtor subclasses.
+		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 */
+		alwaysInline auto& operator=(const RtArray<type, iter>& pCont) { Super::copy(pCont); return *this; }
+
+
+		//Move constructor
+		alwaysInline RtArray(RtArray<type, iter>&& pCont) { Super::move(pCont); }
+		//Move assignment
+		alwaysInline auto& operator=(RtArray<type, iter>&& pCont) { Super::move(pCont); return *this; }
 
 
 
@@ -80,37 +91,44 @@ namespace lux {
 
 
 
-		//Resizes the array without initializing the new elements
-		//*   vNewSize | new count of the array
-		//*   Returns  | the new count
-		//TODO totally useless. Just don't return
-		inline iter resize(const iter vNewSize) {
-			checkInit(); luxCheckParam(vNewSize < 0, vNewSize, "The size of a container cannot be negative");
-			data_.reallocArr(vNewSize, type( ));
-			return data_.count( );
+		#if !defined(LUX_DEBUG) || defined(__INTELLISENSE__)
+			/**
+			 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCopy subclass, calls the constructor on each of the new elements
+			 * @param vCount New number of elements
+			 */
+			alwaysInline void resize(const iter vCount) {
+				checkInit();
+				Super::resize(vCount);
+			}
+		#else //Check for negative count
+			void resize(int64 vCount) {
+				dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
+				checkInit();
+				Super::resize(vCount);
+			}
+		#endif
+
+
+		/**
+		 * @brief Resets the array to its initial state by freeing the memory and resizing it to 0.
+		 *		If the type is not a trivial type or a lux::ignoreDtor subclass, calls the destructor on each element
+		 */
+		alwaysInline void clear() {
+			checkInit();
+			Super::destroy();
+			Super::data.realloc(0);
 		}
 
 
-		//Resets the array to its initial state, freeing the memory and resizing it to 0
-		inline void clear( ){
+		/**
+		 * @brief Adds an element to the end of the array and initializes it with the vElement value by calling its copy constructor
+		 * @param vElm The element to add
+		 * @return The index of the new element
+		 */
+		alwaysInline iter add(const type& vElm) {
 			checkInit();
-			data_.free();
-
-			//TODO dont call this directly. add construct function
-			// this->DynArray::DynArray( );
-			//TODO constructor
-			data_.realloc(0, type(), CellClass::AT_LEAST_CLASS_B);
-		}
-
-
-		//Adds an element to the end of the array
-		//*   vElement | the element to add
-		//*   Returns  | the index of the element in the array
-		inline iter add(const type& vElement) {
-			checkInit();
-			resize(data_.count() + 1);
-			*(data_.end( ) - 1) = vElement;
-			return data_.count( ) - 1;
+			Super::cat1(vElm);
+			return Super::count() - 1;
 		}
 
 
@@ -121,21 +139,18 @@ namespace lux {
 
 
 
-		inline iter	  count( )	const override { checkInit(); return data_.count( );		  }
-		inline uint64 size( )	const override { checkInit(); return count( ) * sizeof(type); }
-		inline bool	  empty( )	const override { checkInit(); return !count( );				  }
-		inline type*  begin( )	const override { checkInit(); return data_.begin( );		  }
-		inline type*  end( )	const override { checkInit(); return data_.end( );			  }
+		/**
+		 * @brief Returns the number of BYTES occupied by the array elements.
+		 *		Use count() to get the number of elements
+		 */
+		alwaysInline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
 
-		inline type&  operator[](const iter vIndex) const {
+
+		alwaysInline type& operator[](const iter vIndex) const {
 			checkInit();
-			luxCheckCond(count() == 0,                "This function cannot be called on containers with size 0");
-			luxCheckParam(vIndex < 0, vIndex,         "Index cannot be negative");
-			luxCheckParam(vIndex >= count( ), vIndex, "Index is out of range");
-			return data_[vIndex];
+			dbg::checkCond(Super::count() == 0, "This function cannot be called on containers with size 0");
+			dbg::checkIndex(vIndex, 0, Super::count() - 1, "vIndex");
+			return Super::operator[](vIndex);
 		}
 	};
 }
-
-
-//TODO check if non secure C pointers were used. Like const char* strings

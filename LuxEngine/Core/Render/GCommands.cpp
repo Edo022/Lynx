@@ -11,26 +11,28 @@
 
 
 namespace lux::core::render::cmd{
-	VkCommandPool				singleTimeCommandPool = nullptr;
-	RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
+	alignCache VkCommandPool            singleTimeCommandPool = nullptr;
+	alignCache RtArray<VkCommandBuffer> singleTimeCommandBuffers;
 
 
 
 
-	void createGraphicsCommandPool( ) {
+	void createGraphicsCommandPool() {
 		VkCommandPoolCreateInfo poolInfo{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },
 			.queueFamilyIndex{ dvc::graphics.PD.indices.graphicsFamily }
 		};
-		luxCheckVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool), "Failed to create graphics command pool");
+		dbg::checkVk(vkCreateCommandPool(dvc::graphics.LD, &poolInfo, nullptr, &singleTimeCommandPool), "Failed to create graphics command pool");
 	}
 
 
 
 
-	//Creates, allocates and begins a command buffer for a single time submit
-	//Returns the command buffer
-	VkCommandBuffer beginSingleTimeCommands( ) {
+	/**
+	 * @brief Creates, allocates and begins a command buffer for a single time submit
+	 * @return Returns the command buffer
+	 */
+	VkCommandBuffer beginSingleTimeCommands() {
 		VkCommandBuffer commandBuffer;
 		VkCommandBufferAllocateInfo allocInfo{
 			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },
@@ -50,7 +52,9 @@ namespace lux::core::render::cmd{
 
 
 
-	//Ends and submits a single time submit command. Then waits until it's executed and frees its memory
+	/** //TODO probably useless
+	 * @brief Ends and submits a single time submit command. Then waits until it's executed and frees its memory
+	 */
 	void endSingleTimeCommands(const VkCommandBuffer vCommandBuffer) {
 		vkEndCommandBuffer(vCommandBuffer);
 		VkSubmitInfo submitInfo{

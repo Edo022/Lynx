@@ -76,22 +76,22 @@ Object rendering
 
 
 namespace lux::core{
-	extern double	FPS;
-	extern bool		running;
-	extern bool		useVSync;
-	extern bool		initialized;
+	extern double		FPS;
+	extern bool			running;
+	extern bool			useVSync;
+	extern bool			initialized;
 
-	extern VkInstance				instance;
+	extern VkInstance	instance;
 	extern VkDebugUtilsMessengerEXT	debugMessenger;
-	extern VkSurfaceKHR				surface;
+	extern VkSurfaceKHR	surface;
 
-	extern const char**				validationLayers;
-	extern const char**				requiredDeviceExtensions;
-	extern uint32					validationLayersNum;
-	extern uint32					requiredDeviceExtensionsNum;
+	extern const char**	validationLayers;
+	extern const char**	requiredDeviceExtensions;
+	extern uint32		validationLayersNum;
+	extern uint32		requiredDeviceExtensionsNum;
 
-	extern lux::thread FPSCounterThr;
-	extern lux::thread renderThr;
+	extern lux::Thread	FPSCounterThr;
+	extern lux::Thread	renderThr;
 
 
 
@@ -125,7 +125,7 @@ namespace lux::core{
 				.messageSeverity { VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT },
 				.messageType     { VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT     | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT  | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT }
 			};
-			luxDebug(createInfo.pfnUserCallback = core::render::debugCallback);
+			luxDebug(createInfo.pfnUserCallback = core::render::vulkanOutputCallback);
 		}
 	}
 }

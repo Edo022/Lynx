@@ -4,7 +4,7 @@
 
 
 namespace lux::obj{
-	void Border2D::init( ){
+	void Border2D::init() {
 		cellSize = 40;
 		luxInitObject(2, BORDER);							// count   | range         | chunk
 		fp = (vec2f32*)(render.data + 0);					//    8    |    0  - 7     |    0 +
@@ -13,6 +13,15 @@ namespace lux::obj{
 		//4x trailing padding								//    4    |    20 - 23
 
 		//TODO add static objects with specific workgroup count
-		core::c::shaders::newShader({ core::render::wnd::gpuCellWindowOutput, core::render::wnd::gpuCellWindowSize, core::render::wnd::gpuCellWindowZBuffer, render.localData }, render.shaderLayout, core::render::wnd::width / 32 + 1, 1, 1);
+		core::c::shaders::newShader(
+			RtArray<vram::Alloc_b<int32>>{
+				core::render::wnd::gpuCellWindowOutput,
+				core::render::wnd::gpuCellWindowSize,
+				core::render::wnd::gpuCellWindowZBuffer,
+				(vram::Alloc_b<int32>)(render.localData)
+			},
+			render.shaderLayout,
+			core::render::wnd::width / 32 + 1, 1, 1
+		);
 	}
 }

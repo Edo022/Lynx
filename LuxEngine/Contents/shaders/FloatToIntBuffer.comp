@@ -25,7 +25,7 @@
 //
 //
 //
-//void main(){
+//void main() {
 //	if(gx >= width || gy >= height) return;
 //
 //
@@ -93,7 +93,7 @@ layout(std430, binding = 3) buffer windowSize_{
 
 
 
-void main(){
+void main() {
 	//TODO use pre calculated workgroup count
 	if(gx >= width * height) return;
 
