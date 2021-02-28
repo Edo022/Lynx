@@ -290,8 +290,10 @@ namespace lux::core::c::shaders{
 			// descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
 			descriptorBufferInfo->buffer = pCells[i].cell->csc.buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
 			// if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
-			if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
-			else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);					//Set buffer offset
+			// if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
+			if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = pCells[i].cell->localOffset;
+			// else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);					//Set buffer offset
+			else descriptorBufferInfo->offset = pCells[i].cell->localOffset;					//Set buffer offset
 			// descriptorBufferInfo->range = pCells[i]->cellSize;									//Set buffer count
 			descriptorBufferInfo->range = pCells[i].cell->cellSize;									//Set buffer count
 

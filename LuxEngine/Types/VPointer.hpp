@@ -58,7 +58,7 @@ namespace lux::rem{
 		uint8 location;
 		uint8 buffType;
 		Cell_t2* cell; //A pointer to a lux::rem::Cell_t object that contains the cell informations
-		type* mapped; //...
+		type* mapped; //... //TODO I feel this should be copied in operator= and constructors. dunno
 
 //TODO optimize return
 		template<class type_> explicit alwaysInline operator Alloc_b<type_>() const { return *(Alloc_b<type_>*)(this); }
@@ -403,9 +403,7 @@ namespace lux::rem{
 		//FIXME SPECIALIZE RAM ALLOCATIONS
 		//TODO manually flush data
 		void map(){
-			//FIXME USE FUNCTION TO GET OFFSET
-			uint32 offset = Super::cell->cellIndex * sizeof(type);
-			vkMapMemory(core::dvc::compute.LD, Super::cell->csc.memory, offset, Super::cell->cellSize, 0, (void**)&(Super::mapped));
+			vkMapMemory(core::dvc::compute.LD, Super::cell->csc.memory, Super::cell->localOffset, Super::cell->cellSize, 0, (void**)&(Super::mapped));
 		}
 		//TODO manually flush data
 		void unmap(){
@@ -422,10 +420,14 @@ namespace lux::rem{
 	//TODO CHECK MEMORY FULL
 	template<class type, allocLocation location, bufferType buffType> void lux::rem::Alloc<type, location, buffType>::alloc_(const uint64 vSize, const VCellClass vClass) {
 		using namespace lux::__pvt;
+		// VCellClass vClass2;
+		//FIXME WRITE USER INTERFACE
+
 		cells_m.lock();
 		const auto cellIndex = cells.add(Cell_t2{});						//Save cell index
 		cells_m.unlock();
 		Super::cell = &cells[cellIndex];										//Update cell pointer
+		// Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * Super::cell->localIndex * (uint32)vClass;
         uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((classIndexFromEnum2(vClass) << 2) | (location << 1) | buffType);
 		*Super::cell = Cell_t2{													//Update cell data
 			.typeIndex = typeIndex,						//Set cell type index
@@ -443,6 +445,7 @@ namespace lux::rem{
 			const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 			type_.m.unlock();
 			Super::cell->localIndex = localIndex;									//Save local index in cell object
+			Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * localIndex * (uint32)vClass;
 
 			const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
 			// if(!type_.memory[buffIndex]) type_.memory[buffIndex] = win10(_aligned_malloc(bufferSize, LuxMemOffset)) _linux(aligned_alloc(LuxMemOffset, bufferSize));

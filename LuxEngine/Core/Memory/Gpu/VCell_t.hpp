@@ -11,38 +11,38 @@
 
 
 namespace lux{
-	enum class AllocType : uint32 {
-		VRamStorage = 0b00,	//Storage buffer in dedicated GPU memory
-		VRamUniform = 0b01,	//Uniform buffer in dedicated GPU memory
-		RamStorage  = 0b10,	//Storage buffer in shared RAM memory
-		RamUniform  = 0b11,	//Uniform buffer in shared RAM memory
-		NUM					//Number of LUX_ALLOC_TYPE values
-	};
+	// enum class AllocType : uint32 {
+	// 	VRamStorage = 0b00,	//Storage buffer in dedicated GPU memory
+	// 	VRamUniform = 0b01,	//Uniform buffer in dedicated GPU memory
+	// 	RamStorage  = 0b10,	//Storage buffer in shared RAM memory
+	// 	RamUniform  = 0b11,	//Uniform buffer in shared RAM memory
+	// 	NUM					//Number of LUX_ALLOC_TYPE values
+	// };
     namespace rem{
-        struct MemBuffer;
-        struct MemBufferType;
-        struct Cell_t {
-            uint64 cellSize;					//Size of the cell in bytes
-            MemBufferType* bufferType;			//Type of buffer allocation
-            MemBuffer* buffer;					//Index of the buffer where the cell is allocated
-            uint32 cellIndex;					//Index of the cell in the buffer
+        // struct MemBuffer;
+        // struct MemBufferType;
+        // struct Cell_t {
+        //     uint64 cellSize;					//Size of the cell in bytes
+        //     MemBufferType* bufferType;			//Type of buffer allocation
+        //     MemBuffer* buffer;					//Index of the buffer where the cell is allocated
+        //     uint32 cellIndex;					//Index of the cell in the buffer
 
-            void* map();
-            inline void unmap();
-        };
+        //     void* map();
+        //     inline void unmap();
+        // };
 
-        struct MemBuffer {
-            VkBuffer buffer;					//Vulkan buffer object
-            VkDeviceMemory memory;				//Vulkan buffer memory
-            RaArray<Cell_t> cells;	//Cells in the buffer
-        };
-        struct MemBufferType {
-            CellClass cellClass;				//Class of the cells
-            lux::AllocType allocType;	        //Buffer allocation type
-            RaArray<MemBuffer> buffers;//Buffers containing the cells
-        };
+        // struct MemBuffer {
+        //     VkBuffer buffer;					//Vulkan buffer object
+        //     VkDeviceMemory memory;				//Vulkan buffer memory
+        //     RaArray<Cell_t> cells;	//Cells in the buffer
+        // };
+        // struct MemBufferType {
+        //     CellClass cellClass;				//Class of the cells
+        //     lux::AllocType allocType;	        //Buffer allocation type
+        //     RaArray<MemBuffer> buffers;//Buffers containing the cells
+        // };
 
-        inline void Cell_t::unmap() { vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
+        // inline void Cell_t::unmap() { vkUnmapMemory(core::dvc::compute.LD, buffer->memory); }
 
 
 
@@ -61,6 +61,7 @@ namespace lux{
             uint16 typeIndex;	        //Buffer allocation type //16 << 1| << 1| //TODO probably useless
 			uint32 cellIndex;		//Index of the cell in the cells array						//8
 			uint32 localIndex;		//Index of the cell in the type allocations					//12
+            uint32 localOffset;
 			uint32 cellSize;		//Size of the cell in bytes									//16
             Cell_t2_csc csc;
         };
