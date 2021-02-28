@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_VPOINTER
-#include "LuxEngine/Core/Memory/Gpu/VCell_t.hpp"
+#include "LuxEngine/Core/Memory/VRam/VCell_t.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/System/SystemMacros.hpp"

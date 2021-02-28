@@ -2,7 +2,6 @@
 #include "LuxEngine/Core/Render/Window.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-// #include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"

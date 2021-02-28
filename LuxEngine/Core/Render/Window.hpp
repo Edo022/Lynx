@@ -2,7 +2,6 @@
 #define LUX_H_WINDOW
 #include "GLFW/glfw3.h"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 
 #include "LuxEngine/Types/Dummy.hpp"

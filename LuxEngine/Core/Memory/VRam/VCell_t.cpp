@@ -1,5 +1,4 @@
-#include "LuxEngine/Core/Memory/Gpu/VCell_t.hpp"
-// #include "LuxEngine/Core/Memory/Gpu/Ram.hpp"
+#include "LuxEngine/Core/Memory/VRam/VCell_t.hpp"
 
 
 //Cell used in null allocations to skip some nullptr checks

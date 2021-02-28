@@ -1,4 +1,4 @@
-#include "LuxEngine/Core/Memory/Gpu/VMemory.hpp"
+#include "LuxEngine/Core/Memory/VRam/VRam.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 //TODO use constant for offset
