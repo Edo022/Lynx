@@ -6,31 +6,6 @@
 #include "LuxEngine/Types/Dummy.hpp"
 #include "cstring"
 //FIXME add callble and automatically called __rearrange__ function to pack sparse cells in few buffers and free space
-//FIXME or create specific array type that puts new cells in the first free element with the smallest index
-//FIXME add __behaviour__ template parameter to specify those things
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// alloc pointer -------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
 
 
 
@@ -64,18 +39,11 @@ namespace lux::ram{
 
 
 	/**
-	 * @brief alloc specialization of lux::ram::ptr.
-	 *		This pointer can only be initialized with an allocation or another alloc pointer.
-	 *		The owned memory block can only be changed by calling the .realloc function or with an assignment.
-	 *		Adding or subtracting values do not change the memory block.
-	 *		The memory becomes invalid when all the alloc pointers pointing to it go out of scope, or .free() is called.
-	 * @tparam type The type of data pointed by the pointer (int, float, etc... )
+	 * @brief A pointer that keeps track of how many objects are using it and automatically frees the memory block once it becomes unreachable
+	 * @tparam type The type of data pointed by the pointer (int, float, etc...)
 	 */
 	template<class type> struct ptr {
-		genInitCheck;
 	private:
-
-		//Memory allocation
 		constexpr static void evaluateCellClass(const uint64 vSize, CellClass& pClass) noexcept {
 			if(pClass == CellClass::AUTO) { [[likely]]
 				     if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]	  pClass = CellClass::CLASS_A;
@@ -88,8 +56,6 @@ namespace lux::ram{
 			} //TODO use direct access array
 		}
 
-		// void alloc_(const uint64 vSize, const CellClass vClass);
-		// void realloc_(const uint64 vSize, const CellClass vClass);
 
 		#ifdef LUX_DEBUG
 			void pushOwner() {
@@ -124,12 +90,8 @@ namespace lux::ram{
 
 
 
-		// Constructors ------------------------------------------------------------------------------------------------------------------//
-
-
-
-
 	public:
+		genInitCheck;
 		Cell_t* cell; //A pointer to a lux::ram::Cell_t object that contains the cell informations //TODO add option to cache address
 		luxDebug(mutable __pvt::CellState state;)
 		luxDebug(mutable ptr<Dummy>* prevOwner;)
@@ -137,9 +99,17 @@ namespace lux::ram{
 
 
 
+
+		// Constructors ------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
 		/**
 		 * @brief Creates a nullptr ptr.
-		 *		Initialize it with the .realloc function before accessing its memory
+		 *		The pointer will need to be initialized with the .realloc function before accessing its data
 		 */
 		alwaysInline ptr() : cell{ &dummyCell } {
 			luxDebug(prevOwner = nextOwner = nullptr;)
@@ -158,7 +128,8 @@ namespace lux::ram{
 		}
 
 		/**
-		 * @brief Create a pointer by copying another pointer's address.This function only copies the pointer structure. The 2 pointers will share the same memory
+		 * @brief Creates a pointer by copying another pointer's address.
+		 *		This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
 		template<class aType> explicit inline ptr(const ptr<aType>& vAlloc, const Dummy vDummy = Dummy{}) :
@@ -190,7 +161,7 @@ namespace lux::ram{
 
 		/**
 		 * @brief Allocates a block of memory without initializing it
-		 * @param vSize  Size of the block in bytes. It must be a positive integer and less than 0xFFFFFFFF
+		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
 		inline ptr(const uint64 vSize, CellClass vClass = CellClass::AUTO) {
@@ -246,10 +217,10 @@ namespace lux::ram{
 
 
 
-		template<class pType> alwaysInline uint64 operator+(const pType* vPtr) const { checkInit(); return (uint64)cell->address + vPtr ; }
-		template<class vType> alwaysInline type*  operator+(const vType  vVal) const { checkInit(); return (type* )cell->address + vVal ; }
-		template<class pType> alwaysInline uint64 operator-(const pType* vPtr) const { checkInit(); return (uint64)cell->address - vPtr ; }
-		template<class vType> alwaysInline type*  operator-(const vType  vVal) const { checkInit(); return (type* )cell->address - vVal ; }
+		alwaysInline uint64 operator+(const auto* vPtr) const { checkInit(); return (uint64)cell->address + vPtr ; }
+		alwaysInline type*  operator+(const auto  vVal) const { checkInit(); return (type* )cell->address + vVal ; }
+		alwaysInline uint64 operator-(const auto* vPtr) const { checkInit(); return (uint64)cell->address - vPtr ; }
+		alwaysInline type*  operator-(const auto  vVal) const { checkInit(); return (type* )cell->address - vVal ; }
 
 
 
@@ -334,7 +305,7 @@ namespace lux::ram{
 
 
 
-
+	private:
 		void alloc_(const uint64 vSize, const CellClass vClass) {
 			using namespace lux::__pvt;
 			cells_m.lock();
@@ -371,6 +342,7 @@ namespace lux::ram{
 			}
 			luxDebug(cell->firstOwner = cell->lastOwner = nullptr);
 		}
+	public:
 
 
 
@@ -456,10 +428,6 @@ namespace lux::ram{
 
 
 
-
-
-
-
 		// Free memory -------------------------------------------------------------------------------------------------------------------//
 
 
@@ -473,31 +441,31 @@ namespace lux::ram{
 		inline void free() {
 			checkAlloc();
 			if(cell->address) {
-				// if(cell->typeIndex != (uint16)-1)											//For fixed  size cells,
-					// types[cell->typeIndex].cells.remove(cell->localIndex);						//free the allocation object
-				// else std::free(cell->address);												//For custom size cells, free the entire buffer
-				// cells.remove(cell->cellIndex);												//Free the cell object
 				this->realloc(0);
 				//! owners is not updated. Freeing an allocation does't destroy the pointer
 				#ifdef LUX_DEBUG
 					//! [Call from destructor] No need to set the correct state of the owners, as there are none (they're all out of scope)
 					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) {
 						i->state = __pvt::CellState::FREED;
-						// i->cell = dummyCell;
 					}
 				#endif
 			}
 		}
 
 
-		alwaysInline operator type*() const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
-		alwaysInline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion ("if(ptr)" is the same as "if(ptr != nullptr)")
+
+
+		// Comparison and convertion operators -------------------------------------------------------------------------------------------//
+
+
+
+
+		alwaysInline operator type*() const { checkInit(); return (type*)cell->address; }
+		alwaysInline operator bool()  const { checkInit(); return !!cell->address;      }
 
 		alwaysInline bool operator==(ram::ptr<type> vPtr) { return vPtr.cell == cell; }
 		alwaysInline bool operator!=(ram::ptr<type> vPtr) { return vPtr.cell != cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
-
-
 
 
 		#undef checkSize

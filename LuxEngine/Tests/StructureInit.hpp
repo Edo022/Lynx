@@ -6,13 +6,17 @@
 
 namespace lux{
 	namespace __pvt{
-		//Use checkInit(); or isInit(param); to
+		//Magic number used by checkInit() or isInit(var) to check if an object is initialized
 		luxDebug(constexpr uint64 init_val = 0x94FFD489B48994FF;)
-		//Private variables used in initialization checks. Those members cannot be inherited
-		#define genInitCheck luxDebug(uint64 __pvt_init_val = lux::__pvt::init_val; char __pvt_dummy = 'L')
+
+		//Private variables used in initialization checks. Those members are inherited and should only be declared once
+		#define genInitCheck luxDebug(								\
+			mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
+			mutable char __pvt_dummy = 'L'							\
+		)
 	}
 
-	//TODO
+	//TODO fix error options
 	enum class error : uint32 {
 		STRUCT_INIT,			//Checks if a structure is initialized
 		DEREFERENCE_NULLPTR,	//Checks if an element of a nullptr allocation has been used

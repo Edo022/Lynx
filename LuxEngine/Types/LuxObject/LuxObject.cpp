@@ -25,7 +25,7 @@ namespace lux::obj{
 		if(common.objectType >= 3000 || common.objectType < 2000) return;
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
 		render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
-		render.localData.alloc_(cellSize, vram::VCellClass::CLASS_A);	//Create the cell taht contains the object data
+		render.localData.realloc(cellSize);	//Create the cell taht contains the object data
 	}
 
 
