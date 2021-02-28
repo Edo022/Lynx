@@ -42,7 +42,6 @@ namespace lux::core::c::shaders{
 	void			createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Alloc_b<int32>>& pCells, ShaderLayout vShaderLayout);
 	void			createCommandBuffers( LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 
-	// LuxShader		newShader(const RtArray<vram::Cell>& pCells,  const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 	LuxShader		newShader(const RtArray<vram::Alloc_b<uint32>>& pCells,  const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 	void			updateShaderCall(  const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);
 	bool			destroyShader(     const LuxShader vCShader);

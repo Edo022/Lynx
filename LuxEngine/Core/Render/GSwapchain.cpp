@@ -195,10 +195,6 @@ namespace lux::core::render::swapchain{
 
 
 			//Update the window count buffer
-			// uint32* pwindowSize = scast<uint32*>(wnd::gpuCellWindowSize->map());
-			// pwindowSize[0] = swapchainExtent.width;
-			// pwindowSize[1] = swapchainExtent.height;
-			// render::wnd::gpuCellWindowSize->unmap();
 			wnd::gpuCellWindowSize.map();
 			wnd::gpuCellWindowSize[0] = swapchainExtent.width;
 			wnd::gpuCellWindowSize[1] = swapchainExtent.height;

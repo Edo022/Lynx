@@ -33,7 +33,7 @@ namespace lux::ram{
 		void** memory;			//Addresses of the buffers
 		RaArrayC<bool> cells;	//TODO use optimized uint64 array
 		uint32 cellsPerBuff;	//Number of cells in each buffer
-		std::mutex m; //FIXME REMOVE
+		std::mutex m; 			//FIXME REMOVE
 	};
 
 	extern Type_t types[];		//Allocated buffers

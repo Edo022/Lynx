@@ -24,11 +24,7 @@ namespace lux::obj{
 	void Base::allocate() {
 		if(common.objectType >= 3000 || common.objectType < 2000) return;
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
-		//core::init(false);																	//Initialize the engine
-		// render.data = (int8*)malloc(getCellSize());										//Create the cell taht contains the object data
 		render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
-		// render.localData = vram::allocBck(getCellSize(), CellClass::AUTO, AllocType::RamUniform);	//Create the cell taht contains the object data
-		// render.localData = vram::allocBck(cellSize, CellClass::AUTO, lux::AllocType::RamUniform);	//Create the cell taht contains the object data
 		render.localData.alloc_(cellSize, vram::VCellClass::CLASS_A);	//Create the cell taht contains the object data
 	}
 
@@ -41,20 +37,8 @@ namespace lux::obj{
 		if(render.updated) {
 			render.updated = false;
 			core::render::objUpdates2D.add(this);
-			// //TODO remove debug junk
-			// if(core::render::objUpdates2D[0]->common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_LINE) {
-			// 	// sleep(500);
-			// 	int hfrewfvgrefre = 0;
-			// }
 		}
-		// sleep(500);
 		core::render::objUpdates2D_f.endSecond();
-		// sleep(500);
-		// sleep(500);
-		// sleep(500);
-		// sleep(500);
-		// sleep(500);
-		// sleep(500);
 	}
 
 

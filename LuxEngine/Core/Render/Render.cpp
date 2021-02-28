@@ -107,7 +107,6 @@ namespace lux::core::render{
 	//TODO multithreaded submit and command creation
 	void drawFrame() {
 		//FIXME __
-		// if(c::shaders::CShaders.usedCount() <= 1) return;
 		if(c::shaders::CShaders.count() <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &imageRendered_f[renderCurrentFrame], false, INT_MAX);
 
@@ -240,10 +239,8 @@ namespace lux::core::render{
 			for(uint32 i = 0; i < objUpdates2D.count(); i++) {
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
-					// cb, objUpdates2D[i]->render.localData->buffer->buffer,
-					// vram::getCellOffset(objUpdates2D[i]->render.localData),
-					cb, objUpdates2D[i]->render.localData.cell->csc.buffer,
-					// vram::getCellOffset(objUpdates2D[i]->render.localData),
+					cb,
+					objUpdates2D[i]->render.localData.cell->csc.buffer,
 					objUpdates2D[i]->render.localData.cell->localOffset,
 					objUpdates2D[i]->cellSize,
 					(void*)objUpdates2D[i]->render.data

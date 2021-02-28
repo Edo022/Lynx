@@ -42,7 +42,7 @@ namespace lux::vram{
 		dbg::checkCond((var) > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", (var));	\
 		dbg::checkCond((uint32)(_class) < (var), "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)(_class), (var), "Use lux::VCellClass::AUTO to automatically choose it");\
 	});
-
+	#define checkMapped() dbg::checkCond(!Super::mapped, "Unable to call this function on unmapped memory blocks")
 
 	//ptr base class
 	template<class type> struct Alloc_b {
@@ -50,8 +50,8 @@ namespace lux::vram{
 
 		uint8 location;
 		uint8 buffType;
-		Cell_t2* cell;		//A pointer to a lux::vram::Cell_t object that contains the cell informations
-		type* mapped;		//A pointer used to map the memory
+		Cell_t2* cell;						//A pointer to a lux::vram::Cell_t object that contains the cell informations
+		type* mapped luxDebug(= nullptr);	//A pointer used to map the memory
 
 		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }
 	};
@@ -175,19 +175,19 @@ namespace lux::vram{
 
 
 		alwaysInline type& operator[](const uint64 vIndex) const {
-			checkInit();
+			checkInit(); checkMapped();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((type*)(Super::mapped))[vIndex];
 		}
-		alwaysInline type& operator*(  ) const { checkInit(); return *((type*)(Super::mapped)); }
-		alwaysInline type* operator->() const { checkInit(); return   (type*)(Super::mapped);  }
+		alwaysInline type& operator*()  const { checkMapped(); checkInit(); return *((type*)(Super::mapped)); }
+		alwaysInline type* operator->() const { checkMapped(); checkInit(); return   (type*)(Super::mapped);  }
 
 
 		/**
 		 * @brief Returns the first address of the allocated memory block
 		 */
 		alwaysInline type* begin() const {
-			checkInit();
+			checkInit(); checkMapped();
             return (type*)Super::mapped;
 		}
 
@@ -196,7 +196,7 @@ namespace lux::vram{
 		 *		Dereferencing the pointer is undefined behaviour
 		 */
 		alwaysInline type* end() const {
-			checkInit();
+			checkInit(); checkMapped();
 			return (type*)((int8*)Super::mapped + count() * sizeof(type));
 		}
 
@@ -327,14 +327,25 @@ namespace lux::vram{
 
 		//FIXME SPECIALIZE RAM ALLOCATIONS
 		//TODO manually flush data
-		//FIXME ADD SECURITY CHECKS
+		/**
+		 * @brief Maps the memory block to a RAM pointer, allowing the CPU to access its data through operator[], operator->, operator*, begin() and end() functions.
+		 *		The pointer MUST be unmapped by the same thread before the memory is freed.
+		 *		This function will automatically invalidate the host cache and flush the data from the GPU
+		 */
 		void map(){
+			dbg::checkCond(Super::mapped, "Memory block mapped twice");
 			vkMapMemory(core::dvc::compute.LD, Super::cell->csc.memory, Super::cell->localOffset, Super::cell->cellSize, 0, (void**)&(Super::mapped));
 		}
+
 		//TODO manually flush data
-		//FIXME ADD SECURITY CHECKS
+		/**
+		 * @brief Unmaps the memory block and flushes the data to the GPU.
+		 *		This function can only be called on mapped blocks
+		 */
 		void unmap(){
+			dbg::checkCond(!Super::mapped, "unmap() called on unmapped memory");
 			vkUnmapMemory(core::dvc::compute.LD, Super::cell->csc.memory);
+			luxDebug(Super::mapped = nullptr);
 		}
 	};
 
@@ -353,7 +364,6 @@ namespace lux::vram{
 		const auto cellIndex = cells.add(Cell_t2{});						//Save cell index
 		cells_m.unlock();
 		Super::cell = &cells[cellIndex];										//Update cell pointer
-		// Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * Super::cell->localIndex * (uint32)vClass;
         uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (location << 1) | buffType);
 		*Super::cell = Cell_t2{													//Update cell data
 			.typeIndex = typeIndex,						//Set cell type index

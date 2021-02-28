@@ -18,10 +18,6 @@ namespace lux::core::render::wnd{
 	alignCache int32       width                 = 1920 * 2;
 	alignCache int32       height                = 1080;
 	std::mutex	windowResizeFence;
-	// alignCache vram::Cell   gpuCellWindowSize     = nullptr;
-	// alignCache vram::Cell   gpuCellWindowOutput   = nullptr;
-	// alignCache vram::Cell   gpuCellWindowOutput_i = nullptr;
-	// alignCache vram::Cell   gpuCellWindowZBuffer  = nullptr;
 	alignCache vram::ptr<int32, Ram,  Storage>   gpuCellWindowSize     = nullptr;
 	alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput   = nullptr;
 	alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput_i = nullptr;

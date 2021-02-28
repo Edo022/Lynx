@@ -28,7 +28,7 @@ namespace lux::vram{
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 k = 0; k < 2; ++k) { 		//location
 			for(uint32 j = 0; j < 2; ++j) { 	//buffer type
-				for(uint32 i = 0; i < (uint32)VCellClassIndex::NUM; ++i) { //TODO DIVIDE GRAPHICS
+				for(uint32 i = 0; i < (uint32)VCellClassIndex::NUM; ++i) {
 					uint32 buffsNum = systemMemory / buffSize;						//Get max number of cells that can fit in the system memory
 					uint32 typeIndex = (i << 2) | (j << 1) | k;
 					uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer

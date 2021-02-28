@@ -11,5 +11,3 @@ thread_local lux::ram::Cell_t lux::ram::dummyCell = { .owners = 0, .cellSize = 0
 
 //TODO destroy buffers from asyncrhonous garbage collector
 //TODO or destroy them only when there is not enough memory
-//TODO this does not free the cell. it just makes the element invalid
-//TODO check if the cell is accidentally being re-allocated or not

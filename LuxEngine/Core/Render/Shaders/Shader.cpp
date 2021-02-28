@@ -44,9 +44,6 @@ namespace lux::core::c::shaders{
 		shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
 		shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { 0, 0, 0, 0 });
 
-		// vram::Cell_t tmp_gpuCellWindowSize;
-		// tmp_gpuCellWindowSize.buffer = render::wnd::gpuCellWindowSize.cell->csc.buffer;
-		// tmp_gpuCellWindowSize.bufferType = vram::
 		shaders::clearShader = shaders::newShader(
 			RtArray<vram::Alloc_b<int32>>{
 				render::wnd::gpuCellWindowOutput,
@@ -243,7 +240,6 @@ namespace lux::core::c::shaders{
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count(); i++) {								//For every cell
-			// if((uint32)pCells[i]->bufferType->allocType & 0b1) uniformCount++;			//#LLID STRT 0003 Count uniform and
 			if(pCells[i].buffType == Uniform) uniformCount++;			//#LLID STRT 0003 Count uniform and
 			else storageCount++;														//storage cells requested
 		}
@@ -287,14 +283,9 @@ namespace lux::core::c::shaders{
 		for(uint32 i = 0; i < pCells.count(); ++i) {
 			//Connect the storage buffer to the descrptor									//Create descriptor buffer infos
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));
-			// descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
 			descriptorBufferInfo->buffer = pCells[i].cell->csc.buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
-			// if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);
-			// if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);
 			if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = pCells[i].cell->localOffset;
-			// else descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);					//Set buffer offset
 			else descriptorBufferInfo->offset = pCells[i].cell->localOffset;					//Set buffer offset
-			// descriptorBufferInfo->range = pCells[i]->cellSize;									//Set buffer count
 			descriptorBufferInfo->range = pCells[i].cell->cellSize;									//Set buffer count
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 									//Create write descriptor set
@@ -303,7 +294,6 @@ namespace lux::core::c::shaders{
 				.dstBinding{ i },																//Set binding
 				.descriptorCount{ 1 },															//Set number of descriptors
 				.descriptorType{																//#LLID STRT 0001 Set descriptor type
-					// ((uint32)pCells[i]->bufferType->allocType & 0b1) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 					(pCells[i].buffType == Uniform) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
 				.pBufferInfo{ descriptorBufferInfo },											//Set descriptor buffer info
 			};
@@ -373,7 +363,6 @@ namespace lux::core::c::shaders{
 				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
 				copyRegion.imageExtent = { render::swapchain::swapchainExtent.width, render::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				// vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i->buffer->buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], render::wnd::gpuCellWindowOutput_i.cell->csc.buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 
 

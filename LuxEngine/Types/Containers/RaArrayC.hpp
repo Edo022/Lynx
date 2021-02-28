@@ -16,7 +16,6 @@ namespace lux{
 		iter head, tail, count_;
 
 
-		// inline RaArrayC() = default;
 		inline RaArrayC() {};
 
 

@@ -1,8 +1,6 @@
 #include "LuxEngine/Core/Memory/VRam/VCell_t.hpp"
 
 
-//Cell used in null allocations to skip some nullptr checks
-// thread_local lux::ram::Cell_t lux::ram::dummyCell = { .owners = 0, .cellSize = 0, .address = nullptr };
 
 
 namespace lux::vram{
