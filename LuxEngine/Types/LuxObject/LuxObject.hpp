@@ -84,11 +84,11 @@ namespace lux{
 				// vram::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
 				vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
 			} render;
-			// inline virtual int32 getCellSize( ) const = 0;		//Size of the object data									| none						| object type
+			// inline virtual int32 getCellSize() const = 0;		//Size of the object data									| none						| object type
 			int32 cellSize = 0;
-			virtual void update( ) = 0;							//Updates the object data in the shared memory				| object type				| -
-			void allocate( );									//Allocates a memory cell for the object data				| object type				| -
-			void updateBase( );
+			virtual void update() = 0;							//Updates the object data in the shared memory				| object type				| -
+			void allocate();									//Allocates a memory cell for the object data				| object type				| -
+			void updateBase();
 			virtual void recalculateCoords() {}
 		};
 
@@ -98,7 +98,7 @@ namespace lux{
 		#define luxInitObject(dimensions_, objectType_)								\
 			common.objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;		\
 			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
-			this->allocate( );
+			this->allocate();
 
 
 
@@ -167,18 +167,18 @@ namespace lux{
 			Base2D* parent{ nullptr };						//Parent of the object
 			lux::RaArray<Base2D*, uint32> children;				//Children of the object
 			virtual bool setChildLimits(const uint32 vChildIndex) const override {
-				if(vChildIndex >= children.count( )) return false;
+				if(vChildIndex >= children.count()) return false;
 				children[vChildIndex]->setMinLim(minLim);
 				children[vChildIndex]->setMaxLim(maxLim);
 				return true;
 			}
-			void update( ) final override{
-				updateBase( );
-				for(uint32 i = 0; i < children.count( ); i++) if(children.isValid(i)) {
+			void update() final{
+				updateBase();
+				for(uint32 i = 0; i < children.count(); i++) if(children.isValid(i)) {
 					setChildLimits(i);
-					//TODO add  recalculateCoords( ) in all objects
-					children[i]->recalculateCoords( );
-					children[i]->update( );
+					//TODO add  recalculateCoords() in all objects
+					children[i]->recalculateCoords();
+					children[i]->update();
 				}
 			}
 			limitAlignment limitAlignment_{ limitAlignment::Center }; 	//The alignment of the object within its limits
@@ -208,7 +208,7 @@ namespace lux{
 			////TODO add absolute pixel position and scale
 			//Base2D* parent{ nullptr };						//Parent of the object
 			//lux::Map<Base2D*, uint32> children;				//Children of the object
-			//void setChildLimits(const uint32 vChildIndex) final override {
+			//void setChildLimits(const uint32 vChildIndex) final {
 			//	children[vChildIndex]->minLim = minLim;
 			//	children[vChildIndex]->maxLim = maxLim;
 			//}

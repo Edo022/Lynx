@@ -1,5 +1,5 @@
 #define LUX_NH_ENV
-#include <stdlib.h>
+#include <cstdlib>
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/macros.hpp"
 

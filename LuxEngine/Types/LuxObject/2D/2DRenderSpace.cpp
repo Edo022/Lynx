@@ -11,7 +11,7 @@ namespace lux::obj {
 	bool RenderSpace2D::addChild(Base2D* pObject) {
 		pObject->parent = this;
 		setChildLimits(pObject->common.childIndex = children.add(pObject));
-		pObject->update( );
+		pObject->update();
 		return pObject->common.childIndex;
 	}
 
@@ -21,7 +21,7 @@ namespace lux::obj {
 	//It depends on the render space properties and children alignment
 	//Returns false if the index is invalid
 	bool RenderSpace2D::setChildLimits(const uint32 vChildIndex) const {
-		if(vChildIndex >= children.count( )) return false;
+		if(vChildIndex >= children.count()) return false;
 		switch(alignment) {
 			case AlignmentType::FixedHorizontal:
 			{

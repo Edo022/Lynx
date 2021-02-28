@@ -14,16 +14,15 @@ template<class t> struct vec3_t {
 
 
 	//Constructors
-	inline vec3_t() {}
-	inline vec3_t(const t& _x, const t& _y, const t& _z) { x = _x; y = _y; z = _z; }
-	template<class ta, class tb, class tc> inline vec3_t(const ta& _x, const tb& _y, const tc& _z) { x = (t)_x; y = (t)_y; z = (t)_z; }
+	alwaysInline vec3_t() {}
+	alwaysInline vec3_t(const auto& _x, const auto& _y, const auto& _z) { x = (t)_x; y = (t)_y; z = (t)_z; }
 
 
 	//Assignment operators, constructors and comparison operators
-	/**/			            inline vec3_t(const vec3_t<t>& v ) { *this = v; }
-	/**/			            inline vec3_t(const t& v         ) { *this = v; }
-	template<class vt> explicit inline vec3_t(const vec3_t<vt>& v) { *this = v; }
-	template<class vt>          inline vec3_t(const vt& v        ) { *this = v; }
+	/**/			   alwaysInline vec3_t(const vec3_t<t>& v ) { *this = v; }
+	/**/			   alwaysInline vec3_t(const t& v         ) { *this = v; }
+	template<class vt> explicit alwaysInline vec3_t(const vec3_t<vt>& v) { *this = v; }
+	template<class vt> alwaysInline vec3_t(const vt& v        ) { *this = v; }
 	/**/			   inline void operator=(const vec3_t<t>& v ) { x = v.x; y = v.y; z = v.z;                }
 	/**/			   inline void operator=(const t& n         ) { x =      y =      z = n;                  }
 	template<class vt> inline void operator=(const vec3_t<vt>& v) { x = (t)(v.x); y = (t)(v.y); z = (t)(v.z); }

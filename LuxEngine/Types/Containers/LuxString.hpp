@@ -44,8 +44,8 @@ namespace lux {
 
 
 		inline String(                                 ) : Super(1) { Super::data[0] = '\0'; updateView(); }
-		inline String(const char8* vString             ) : Super(strlenl(vString) + 1) { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
-		inline String(const char8* vString, uint64 vLen) : Super(vLen)	            { ram::cpy(vString, Super::data, Super::data.size( )); updateView(); }
+		inline String(const char8* vString             ) : Super(strlenl(vString) + 1) { ram::cpy(vString, Super::data, Super::data.size()); updateView(); }
+		inline String(const char8* vString, uint64 vLen) : Super(vLen)	            { ram::cpy(vString, Super::data, Super::data.size()); updateView(); }
 
 		//Move constructor
 		inline String(String&& pString) { Super::move(pString); updateView(); }
@@ -60,7 +60,7 @@ namespace lux {
 
 
 
-		inline uint64 size(  ) const { checkInit(); return Super::data.size( ); }
+		inline uint64 size(  ) const { checkInit(); return Super::data.size(); }
 
 
 		inline char8& operator[](const uint32 vIndex) const {
@@ -129,7 +129,7 @@ namespace lux {
 		//The cooler strcmp
 		inline bool operator==(const String& pString) const {
 			checkInit(); isInit(pString);
-			return (Super::count( ) == pString.count( )) && 0 == memcmp(pString.data, Super::data, Super::count( ));
+			return (Super::count() == pString.count()) && 0 == memcmp(pString.data, Super::data, Super::count());
 		}
 
 		/**
@@ -139,7 +139,7 @@ namespace lux {
 		 */
 		inline bool operator==(const char* vString) const {
 			checkInit();
-			return (Super::count( ) == strlenl(vString) + 1) && 0 == memcmp(vString, Super::data, Super::count( ));
+			return (Super::count() == strlenl(vString) + 1) && 0 == memcmp(vString, Super::data, Super::count());
 		}
 
 		/**
@@ -149,7 +149,7 @@ namespace lux {
 		 */
 		inline bool cmp(const char* vString, const uint32 vStrLen) const {
 			checkInit();
-			return (Super::count( ) == vStrLen) && 0 == memcmp(vString, Super::data, Super::count( ));
+			return (Super::count() == vStrLen) && 0 == memcmp(vString, Super::data, Super::count());
 		}
 	};
 }

@@ -31,7 +31,7 @@
 	//The precision of the fast goniometric functions: 1/LUX_CNF_FFUNCTIONS_PRECISION
 	//More precise values require more memory
 	//Default: 100 000 (~7.2MB)
-#	define LUX_CNF_FFUNCTIONS_PRECISION 100000
+	constexpr int LUX_CNF_FFUNCTIONS_PRECISION = 100000;
 
 
 
@@ -63,7 +63,7 @@
 	//Every allocation larger than the largest cell count willl be allocated as a single chunk
 	//Default: 100 000 000 (100MB)
 	//TODO add memory pool
-#	define LUX_CNF_GLOBAL_MEMORY_POOL_CHUNK_SIZE 100000000
+	constexpr int LUX_CNF_GLOBAL_MEMORY_POOL_CHUNK_SIZE = 100000000;
 
 
 //TODO add memory profiling
@@ -92,7 +92,7 @@
 	//Buffers smaller than (<memBytes> / 1024) are not supported by some devices, therefore the engine will be unable to use part of the memory with that buffer count
 	//                        ^
 	//                        this is the sum of the shared RAM and the VRAM of the GPU, in bytes
-#	define LUX_CNF_GPU_STATIC_BUFFER_SIZE 50000000
+	constexpr int LUX_CNF_GPU_STATIC_BUFFER_SIZE = 50000000;
 
 
 	////The maximum supported GPU memory (VRAM + shared RAM)

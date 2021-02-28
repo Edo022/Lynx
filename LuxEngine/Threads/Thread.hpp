@@ -38,14 +38,14 @@ namespace lux{
 		template<class func_t, class ...args_ts> struct void_std_args_xt : public Func_b {
 			func_t _func;
 			lux::HcArray<args_ts...> _args;
-			void exec() final override { _args.exec(_func); }
+			void exec() final { _args.exec(_func); }
 		};
 		//Type standard with arguments
 		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_xt : public Func_b {
 			func_t _func;
 			lux::HcArray<args_ts...> _args;
 			ret_t* _ret;
-			void exec() final override { *_ret = _args.exec(_func); }
+			void exec() final { *_ret = _args.exec(_func); }
 		};
 
 
@@ -54,13 +54,13 @@ namespace lux{
 		//Void standard with no arguments
 		template<class func_t> struct void_std_noargs_xt : public Func_b {
 			func_t _func;
-			void exec() final override { _func(); }
+			void exec() final { _func(); }
 		};
 		//Type standard with no arguments
 		template<class func_t, class ret_t> struct type_std_noargs_xt : public Func_b {
 			func_t _func;
 			ret_t* _ret;
-			void exec() final override { *_ret = _func(); }
+			void exec() final { *_ret = _func(); }
 		};
 
 
@@ -71,7 +71,7 @@ namespace lux{
 			obj_t* _obj;
 			func_t _func;
 			lux::HcArray<args_ts...> _args;
-			void exec() final override { _args.execObj(*_obj, _func); }
+			void exec() final { _args.execObj(*_obj, _func); }
 		};
 		//Type member with arguments
 		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_xt : public Func_b {
@@ -79,7 +79,7 @@ namespace lux{
 			func_t _func;
 			lux::HcArray<args_ts...> _args;
 			ret_t* _ret;
-			void exec() final override { *_ret = _args.execObj(*_obj, _func); }
+			void exec() final { *_ret = _args.execObj(*_obj, _func); }
 		};
 
 
@@ -90,14 +90,14 @@ namespace lux{
 		template<class obj_t, class func_t> struct void_obj_noargs_xt : public Func_b {
 			obj_t* _obj;
 			func_t _func;
-			void exec() final override { (_obj->*_func)(); }
+			void exec() final { (_obj->*_func)(); }
 		};
 		//Type member with no arguments
 		template<class obj_t, class func_t, class ret_t> struct type_obj_noargs_xt : public Func_b {
 			obj_t* _obj;
 			func_t _func;
 			ret_t* _ret;
-			void exec() final override { *_ret = (_obj->*_func)(); }
+			void exec() final { *_ret = (_obj->*_func)(); }
 		};
 
 

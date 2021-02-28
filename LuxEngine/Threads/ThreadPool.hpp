@@ -58,7 +58,7 @@ namespace lux::thr {
 	// //The exec() function executes the function with the saved parameters
 	// //The return value is copied in the return pointer
 	// template<class FType, class ...PTypes> struct ExecFuncData : public ExecFuncDataBase {
-	// 	void exec( ) final override {
+	// 	void exec() final {
 	// 		//if(_return) *_return = std::apply(func, params);
 	// 		/*else*/ std::apply(func, params);
 	// 		if(fence) *fence = true;
@@ -95,7 +95,7 @@ namespace lux::thr {
 
 	// void* __lp_thr_loop(const uint32 vThrIndex);
 	void thrLoop(uint32 vThrIndex);
-	// void __lp_thr_mng( );
+	// void __lp_thr_mng();
 
 	// //Sends a function to an exec queue of the global thread pool
 	// //When the function will be executed and which queue it will be assigned to depends on its priority
@@ -116,9 +116,9 @@ namespace lux::thr {
 	// 	execData->fence = pFence;						//Set the fence
 	// 	execData->params = std::make_tuple(vParams...);	//Set the parameters
 
-	// 	stgAddFence.startSecond( );
+	// 	stgAddFence.startSecond();
 	// 	stg.pushFront(execData);						//Assign the data to the staging queue
-	// 	stgAddFence.endSecond( );
+	// 	stgAddFence.endSecond();
 	// 	pthread_kill(mngThr, SIGCONT);
 	// }
 

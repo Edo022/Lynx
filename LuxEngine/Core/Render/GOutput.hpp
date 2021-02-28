@@ -12,8 +12,8 @@ namespace lux::core::render::out{
 	extern bool				renderFramebufferResized;		//Updates the swapchain when the window is resized
 
 
-	void 			preInit( );
-	void			createRenderPass( );
-	void			createFramebuffers( );
+	void 			preInit();
+	void			createRenderPass();
+	void			createFramebuffers();
 	VkImageView		swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
 }

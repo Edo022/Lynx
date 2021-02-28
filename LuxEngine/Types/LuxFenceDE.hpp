@@ -19,7 +19,7 @@ namespace lux{
 	//TODO USE NORMAL MUTEX OR POLL FENCE
 	struct FenceDE{
 		bool thr1, thr2;
-		FenceDE( ) : thr1{ false }, thr2{ true } {}
+		FenceDE() : thr1{ false }, thr2{ true } {}
 
 
 		inline void startFirst() { while(thr2) lux::thr::self::yield(); thr1 = true; }

@@ -74,11 +74,11 @@ namespace lux::core::render::wnd{
 			uint32 layerCount = 0;
 			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
 			RtArray<VkLayerProperties> availableLayers(layerCount);
-			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin( ));		//Get layers
+			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
 			for(uint32 i = 0; i < validationLayersNum; i++) {									//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
 					if(validationLayers[i] == layerProperties.layerName) break;					//If not, exit
-					else if(validationLayers[i] == availableLayers.end( )->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
+					else if(validationLayers[i] == availableLayers.end()->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
 				}
 			}
 		#endif
@@ -91,7 +91,7 @@ namespace lux::core::render::wnd{
 
 
 	void initWindow() {
-		glfwInit( );
+		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 

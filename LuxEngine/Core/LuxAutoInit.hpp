@@ -1,3 +1,5 @@
+#pragma once
+
 
 //Creates a function that will be called during the global variable initialization
 //This macro can only be used in the global scope of .cpp files

@@ -30,13 +30,13 @@ namespace lux::core::render{
 
 
 	void init(const bool vUseVSync);
-	luxDebug(void createDebugMessenger( ));
-	void drawFrame( );
-	void cleanup( );
+	luxDebug(void createDebugMessenger());
+	void drawFrame();
+	void cleanup();
 	static void __attribute__((used)) framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-		wnd::windowResizeFence.lock( );  //from the last call of this function
+		wnd::windowResizeFence.lock();  //from the last call of this function
 		out::renderFramebufferResized = true;
-		wnd::windowResizeFence.unlock( );
+		wnd::windowResizeFence.unlock();
 	}
 
 

@@ -59,9 +59,9 @@ namespace lux::core{
 	//Deprecated function
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		win10(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
+		win10(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
 		//FIXME USE EXE IN DEPS OR COMPILE DIRECTLY
-		_linux(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin( )) == 0;)
+		_linux(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
 		//TODO add string operator+(char)
 	}
 
@@ -74,45 +74,45 @@ namespace lux::core{
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation
-		LuxTime start = luxStartChrono( );
+		LuxTime start = luxStartChrono();
 		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";
 
 
 		try {
-			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin( ))) {
-				String luxStrPath = String((char8*)name.path( ).u8string( ).c_str( )); //FIXME
+			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
+				String luxStrPath = String((char8*)name.path().u8string().c_str()); //FIXME
 				win10(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin( ))) dbg::printError("compilation error");
-					else { Normal printf("%s", (char*)luxStrPath.begin( )); }
+					if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
+					else { Normal printf("%s", (char*)luxStrPath.begin()); }
 				}
 			}
 		}
 		catch(const std::system_error& e) {
-			std::cout << "system_error. code: " << e.code( ) << "\nmessage: " << e.what( ) << '\n';
+			std::cout << "system_error. code: " << e.code() << "\nmessage: " << e.what() << '\n';
 		}
 
 		//Init
-		// render::wnd::initWindow( ); //FIXME
+		// render::wnd::initWindow(); //FIXME
 		// Normal	printf("Creating Instance...                     "); //FIXME
-		// render::wnd::createInstance( ); //FIXME
+		// render::wnd::createInstance(); //FIXME
 		// SuccessNoNl printf("ok"); //FIXME
 
 		render::init(vUseVSync); //
-		buffers::init( );
-		c::shaders::init( );
+		buffers::init();
+		c::shaders::init();
 
 		//Loop
 		Success printf("Initialization completed in %f seconds", luxStopChrono(start));
 		Success printf("Starting Lux Engine\n");
-		mainLoop( );								MainSeparator;
+		mainLoop();								MainSeparator;
 
 		//Exit
 		Normal  printf("Cleaning memory\n");
-		render::cleanup( ); buffers::cleanup( );
+		render::cleanup(); buffers::cleanup();
 		vkDestroyInstance(instance, nullptr);
 		glfwDestroyWindow(render::wnd::window);
-		glfwTerminate( );
+		glfwTerminate();
 	}
 
 
@@ -120,11 +120,11 @@ namespace lux::core{
 
 	void mainLoop() {
 		luxDebug(thr::self::setName("Lux | Input"));
-		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach( );
-		renderThr(runRenderThr);				//renderThr.detach( );
+		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach();
+		renderThr(runRenderThr);				//renderThr.detach();
 		initialized = true;
 
-		while(!glfwWindowShouldClose(render::wnd::window)) glfwWaitEvents( );
+		while(!glfwWindowShouldClose(render::wnd::window)) glfwWaitEvents();
 		vkDeviceWaitIdle(dvc::graphics.LD);
 	}
 
@@ -135,7 +135,7 @@ namespace lux::core{
 		luxDebug(thr::self::setName("Lux | Render"));
 		while(running) {
 			LuxTime renderTime = luxStartChrono();
-			render::drawFrame( );
+			render::drawFrame();
 			//TODO it does nothing but it's probably important, somehow. dunno
 			//vkDeviceWaitIdle(compute.LD);
 			FPS = luxStopChrono(renderTime);

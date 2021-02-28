@@ -143,7 +143,7 @@ namespace lux {
 		 * @brief Returns the number of BYTES occupied by the array elements.
 		 *		Use count() to get the number of elements
 		 */
-		alwaysInline uint64 size( ) const { checkInit(); return Super::count( ) * sizeof(type); }
+		alwaysInline uint64 size() const { checkInit(); return Super::count() * sizeof(type); }
 
 
 		alwaysInline type& operator[](const iter vIndex) const {

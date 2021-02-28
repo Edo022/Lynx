@@ -43,8 +43,8 @@ namespace lux::core::buffers{
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(render::swapchain::swapchainImages.count( ));			//Resize the command buffer array in the shader
-			core::c::shaders::createDefaultCommandBuffers( );								//Create command buffers and command pool
+			copyCommandBuffers.resize(render::swapchain::swapchainImages.count());			//Resize the command buffer array in the shader
+			core::c::shaders::createDefaultCommandBuffers();								//Create command buffers and command pool
 		}
 	}
 
@@ -140,8 +140,8 @@ namespace lux::core::buffers{
 	//Frees and destroys the compute objects //TODO fix
 	//> Engine internal use
 	void cleanup() {
-		// for(uint32 i = 0; i < /*vram::buffers.count( )*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
-		// 	for(uint32 j = 0; j < vram::buffers[i].buffers.count( ); ++j) {
+		// for(uint32 i = 0; i < /*vram::buffers.count()*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
+		// 	for(uint32 j = 0; j < vram::buffers[i].buffers.count(); ++j) {
 		// 		if(vram::buffers[i].buffers.isValid(j)) {
 		// 			vkDestroyBuffer(dvc::compute.LD, vram::buffers[i].buffers[j].buffer, nullptr);
 		// 			vkFreeMemory(dvc::compute.LD, vram::buffers[i].buffers[j].memory, nullptr);

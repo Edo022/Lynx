@@ -98,9 +98,9 @@ namespace lux::core{
 
 	//Main
 	void run(bool vUseVSync);
-	void mainLoop( );
-	void runFPSCounterThr( );
-	void runRenderThr( );
+	void mainLoop();
+	void runFPSCounterThr();
+	void runRenderThr();
 
 
 

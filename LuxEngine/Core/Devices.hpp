@@ -15,8 +15,8 @@ namespace lux::core::dvc{
 	extern RtArray<computeDevice>	secondary;	//Secondary compute devices
 
 
-	void preInit( );
-	void				getPhysical( );
+	void preInit();
+	void				getPhysical();
 	void				createLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues);
 	int32		        rate(         const _VkPhysicalDevice* pDevice);
 	bool				isSuitable(      const VkPhysicalDevice vDevice, String* pErrorText);

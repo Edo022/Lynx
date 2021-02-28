@@ -3,7 +3,6 @@
 #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp"
 #include "LuxEngine/System/SystemMacros.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
-#include "LuxEngine/Tests/CondChecks.hpp"
 #include "LuxEngine/Types/Dummy.hpp"
 #include "cstring"
 //FIXME add callble and automatically called __rearrange__ function to pack sparse cells in few buffers and free space
@@ -41,13 +40,13 @@
 
 
 namespace lux::ram{
-	#define checkSize()     lux::dbg::checkCond(size( ) == 0, "This function cannot be called on 0-byte memory allocations")
-	#define checkSizeD()    lux::dbg::checkCond(size( ) == 0, "Cannot dereference a 0-byte memory allocation"              )
+	#define checkSize()     lux::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations")
+	#define checkSizeD()    lux::dbg::checkCond(size() == 0, "Cannot dereference a 0-byte memory allocation"              )
 
 
 	#define checkAlloc() luxDebug(lux::dbg::checkCond(state == __pvt::CellState::FREED,   \
 		"Unable to call this function on invalid allocations: The memory block have been manually freed"))
-	#define isAlloc(a) dbg::checkParam(a.state == __pvt::CellState::FREED, #a,\
+	#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::FREED, #a,\
 		"Use of invalid allocation: The memory block have been manually freed")
 
 
@@ -57,9 +56,9 @@ namespace lux::ram{
 		"Cannot dereference an unallocated memory block"))
 
 
-	#define checkAllocSize(var, _class) luxDebug(if(_class != CellClass::CLASS_0 && _class != CellClass::AUTO) {											\
-		dbg::checkCond(var > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
-		dbg::checkCond((uint32)_class < var, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
+	#define checkAllocSize(var, _class) luxDebug(if((_class) != CellClass::CLASS_0 && (_class) != CellClass::AUTO) {											\
+		dbg::checkCond((var) > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", (var));	\
+		dbg::checkCond((uint32)(_class) < (var), "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)(_class), (var), "Use lux::CellClass::AUTO to automatically choose it");\
 	});
 
 
@@ -142,7 +141,7 @@ namespace lux::ram{
 		 * @brief Creates a nullptr ptr.
 		 *		Initialize it with the .realloc function before accessing its memory
 		 */
-		alwaysInline ptr( ) : cell{ &dummyCell } {
+		alwaysInline ptr() : cell{ &dummyCell } {
 			luxDebug(prevOwner = nextOwner = nullptr;)
 			luxDebug(state = __pvt::CellState::NULLPTR);
 		}
@@ -266,7 +265,7 @@ namespace lux::ram{
 			return ((type*)(cell->address))[vIndex];
 		}
 		alwaysInline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
-		alwaysInline type* operator->( ) const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
+		alwaysInline type* operator->() const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
 
 
 		/**
@@ -306,7 +305,7 @@ namespace lux::ram{
 
 
 
-		inline ~ptr( ) noexcept {
+		inline ~ptr() noexcept {
 			if(cell->address) {
 				if(!--cell->owners) {
 					if(cell->typeIndex != (uint16)-1) {											//For fixed  size cells,
@@ -491,7 +490,7 @@ namespace lux::ram{
 		}
 
 
-		alwaysInline operator type*( ) const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
+		alwaysInline operator type*() const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
 		alwaysInline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion ("if(ptr)" is the same as "if(ptr != nullptr)")
 
 		alwaysInline bool operator==(ram::ptr<type> vPtr) { return vPtr.cell == cell; }

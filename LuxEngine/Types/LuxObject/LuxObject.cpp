@@ -25,9 +25,9 @@ namespace lux::obj{
 		if(common.objectType >= 3000 || common.objectType < 2000) return;
 		//TODO add initialization for 1d, 2.5d and 3d non base objects
 		//core::init(false);																	//Initialize the engine
-		// render.data = (int8*)malloc(getCellSize( ));										//Create the cell taht contains the object data
+		// render.data = (int8*)malloc(getCellSize());										//Create the cell taht contains the object data
 		render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
-		// render.localData = vram::allocBck(getCellSize( ), CellClass::AUTO, AllocType::RamUniform);	//Create the cell taht contains the object data
+		// render.localData = vram::allocBck(getCellSize(), CellClass::AUTO, AllocType::RamUniform);	//Create the cell taht contains the object data
 		// render.localData = vram::allocBck(cellSize, CellClass::AUTO, lux::AllocType::RamUniform);	//Create the cell taht contains the object data
 		render.localData.alloc_(cellSize, vram::VCellClass::CLASS_A);	//Create the cell taht contains the object data
 	}
@@ -37,7 +37,7 @@ namespace lux::obj{
 	//Only render threads can directly access object memory and command buffers
 	void Base::updateBase() {
 		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
-		core::render::objUpdates2D_f.startSecond( );
+		core::render::objUpdates2D_f.startSecond();
 		if(render.updated) {
 			render.updated = false;
 			core::render::objUpdates2D.add(this);
@@ -48,7 +48,7 @@ namespace lux::obj{
 			// }
 		}
 		// sleep(500);
-		core::render::objUpdates2D_f.endSecond( );
+		core::render::objUpdates2D_f.endSecond();
 		// sleep(500);
 		// sleep(500);
 		// sleep(500);
@@ -67,22 +67,22 @@ namespace lux::obj{
 		minLim = vMinLim;
 		if(!debug) {
 			if(!debugBorder) {
-				debugBorder = new Border2D( );
+				debugBorder = new Border2D();
 				debugBorder->debug = true;
 			}
 			*debugBorder->fp = vMinLim;
-			debugBorder->update( );
+			debugBorder->update();
 		}
 	}
 	void Base2D::setMaxLim(vec2f32 vMaxLim) {
 		maxLim = vMaxLim;
 		if(!debug) {
 			if(!debugBorder) {
-				debugBorder = new Border2D( );
+				debugBorder = new Border2D();
 				debugBorder->debug = true;
 			}
 			*debugBorder->sp = vMaxLim;
-			debugBorder->update( );
+			debugBorder->update();
 		}
 	}
 	#endif

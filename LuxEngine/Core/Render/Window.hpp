@@ -27,7 +27,7 @@ namespace lux::core::render::wnd{
 
 
 
-	void preInit( );
-	void initWindow( );
-	void createInstance( );
+	void preInit();
+	void initWindow();
+	void createInstance();
 }

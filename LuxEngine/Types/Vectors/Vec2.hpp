@@ -17,17 +17,16 @@ template<class t> struct vec2_t {
 
 
 	//Constructors
-	inline vec2_t() {}
-	inline vec2_t(const t& _x, const t& _y) { x = _x; y = _y; }
-	template<class ta, class tb> inline vec2_t(const ta& _x, const tb& _y) { x = (t)_x; y = (t)_y; }
+	alwaysInline vec2_t() {}
+	alwaysInline vec2_t(const auto& _x, const auto& _y) { x = (t)_x; y = (t)_y; }
 
 
 
 
 	//Assignment operators, constructors and comparison operators
-	/**/			   inline          vec2_t(const vec2_t<t>& v ) { *this = v; }
-	/**/			   inline          vec2_t(const t& v         ) { *this = v; }
-	template<class vt> inline          vec2_t(const vt& v        ) { *this = v; }
+	/**/			   alwaysInline vec2_t(const vec2_t<t>& v ) { *this = v; }
+	/**/			   alwaysInline vec2_t(const t& v         ) { *this = v; }
+	template<class vt> alwaysInline vec2_t(const vt& v        ) { *this = v; }
 	template<class vt> explicit inline vec2_t(const vec2_t<vt>& v) { *this = v; }
 	/**/			   inline void operator=(const vec2_t<t>& v ) { x = v.x; y = v.y;           }
 	/**/			   inline void operator=(const t& n         ) { x =      y = n;             }

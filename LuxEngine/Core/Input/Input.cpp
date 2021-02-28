@@ -21,21 +21,21 @@ namespace lux::input{
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(vec2f32{ gtollx(x), gtolly(y) });
-		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
+		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
 		*rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
 		*rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
-		 rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update( );
+		 rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
-		if(core::c::shaders::CRenderSpaces.count( ) > 0) {
+		if(core::c::shaders::CRenderSpaces.count() > 0) {
 			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = vec2f32{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
-			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->update( );
+			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->update();
 		}
 	}
 
@@ -57,11 +57,11 @@ namespace lux::input{
 		static int32 wmx, wmy, wmw, wmh;
 		if(key == LUX_KEY_F11 && action == GLFW_PRESS) {
 			int32 mx, my, mw, mh;
-			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor( ), &mx, &my, &mw, &mh);
+			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &mx, &my, &mw, &mh);
 			if(fsstate == 0) {
 				glfwGetWindowSize(window, &wmw, &wmh);
 				glfwGetWindowPos(window, &wmx, &wmy);
-				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor( ), mx, my, mw, mh, GLFW_DONT_CARE);
+				glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), mx, my, mw, mh, GLFW_DONT_CARE);
 				fsstate = 1;
 			}
 			else if(fsstate == 1) {
@@ -80,7 +80,7 @@ namespace lux::input{
 		//}
 
 
-		static uint16 yMin = 0, yMax = lux::input::inStates->sequences.count( ) - 1, x = 0;
+		static uint16 yMin = 0, yMax = lux::input::inStates->sequences.count() - 1, x = 0;
 
 		if(action != GLFW_REPEAT) {												//If the action is not repeat
 			uint16 keyCode = (key | __lp_to_lux_act(action));						//Calculate the key code
@@ -97,8 +97,8 @@ namespace lux::input{
 			while(true) {															//Now find the maximum y
 				if(keyCode == lux::input::inStates->sequences[i].sequence[x]) {			//if the input key is NOT equal to the key of the input state sequence
 					++i;																	//Increase the counter
-					if(i >= lux::input::inStates->sequences.count( )) {						//If there are no more different keys
-						yMax = lux::input::inStates->sequences.count( ) - 1;					//Set the maximum y as the maximum index of the sequences
+					if(i >= lux::input::inStates->sequences.count()) {						//If there are no more different keys
+						yMax = lux::input::inStates->sequences.count() - 1;					//Set the maximum y as the maximum index of the sequences
 						break;																	//Exit the loop
 					}
 				}
@@ -108,10 +108,10 @@ namespace lux::input{
 				}
 			}
 			// UwU
-			if(yMin == yMax && x == lux::input::inStates->sequences[yMax].sequence.count( ) - 1) {							//If the maximum and minimum y are the same
+			if(yMin == yMax && x == lux::input::inStates->sequences[yMax].sequence.count() - 1) {							//If the maximum and minimum y are the same
 				lux::input::inStates->sequences[yMax].bindedFunction(lux::input::inStates->sequences[yMax].sequence);			//Call the binded function
 				yMin = 0;																										//Reset the minimum y
-				yMax = lux::input::inStates->sequences.count( ) - 1;																//Reset the maximum y
+				yMax = lux::input::inStates->sequences.count() - 1;																//Reset the maximum y
 				x = 0;																											//Reset the x
 				return;																											//Exit the function
 			}

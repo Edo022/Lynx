@@ -12,13 +12,13 @@
 
 namespace lux::vram{
 	luxAutoInit(LUX_H_VMEMORY) {
-		core::render::wnd::initWindow( );
+		core::render::wnd::initWindow();
 		Normal	printf("Creating Instance...                     ");
-		core::render::wnd::createInstance( );
+		core::render::wnd::createInstance();
 		SuccessNoNl printf("ok");
 
 		dbg::checkVk(glfwCreateWindowSurface(core::instance, core::render::wnd::window, nullptr, &core::surface), "Failed to create window surface");
-		core::dvc::getPhysical( );
+		core::dvc::getPhysical();
 		using namespace __pvt;
 
 		VkPhysicalDeviceMemoryProperties memoryProperties;

@@ -1,3 +1,4 @@
+#include <thread>
 #pragma once
 #if !defined __GNUC__ || !defined __cplusplus		//Use only gcc
 #	error gcc compiler required
@@ -19,13 +20,13 @@
 #	define win10(...)													//Executes a line of code only when compiling for windows 10
 #	define _linux(...) __VA_ARGS__										//Executes a line of code only when compiling for linux
 #	include <unistd.h>													//  DIR | For getcwd()
-#	define __lp_get_cwd getcwd											//  DIR | Get current working directory
-#	define __lp_get_nopt(n) n = std::thread::hardware_concurrency();	//  THR | Get nuber of physical threads
+#   define __lp_get_cwd getcwd											//  DIR | Get current working directory
+    static inline auto __lp_get_nopt(auto &n) { n = std::thread::hardware_concurrency(); }	//  THR | Get nuber of physical threads
 #	include <pthread.h>													//  THR | For SuspendThread() and ResumeThread()
-#	include <signal.h>													//  THR | For SuspendThread() and ResumeThread()
+#	include <csignal>													//  THR | For SuspendThread() and ResumeThread()
 // #	define __lp_suspend_thr(th) pthread_kill(th, SIGSTOP)				//  THR | Function to suspend a thread
 // #	define __lp_resume_thr(th)  pthread_kill(th, SIGCONT)				//  THR | Function to resume a thread
-#	define __lp_get_thr()  gettid()										//  THR | Function to get the current thread ID
+    static inline auto __lp_get_thr(){ return gettid(); }										//  THR | Function to get the current thread ID
 
 #else																//Other operating systems
 #	error Unsupported operating system. Lux Engine can only run on windows 10 and linux

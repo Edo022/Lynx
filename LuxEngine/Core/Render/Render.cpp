@@ -49,12 +49,12 @@ namespace lux::core::render{
 		//Initialize vulkan
 		// dbg::checkVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
 		Normal printf("    Searching for physical devices...    \n");
-		// dvc::getPhysical( ); //FIXME
-		cmd::createGraphicsCommandPool( );
+		// dvc::getPhysical(); //FIXME
+		cmd::createGraphicsCommandPool();
 		Normal printf("    Creating VK swapchain...             ");
-		swapchain::swapchainCreate( );
+		swapchain::swapchainCreate();
 
-		luxDebug(createDebugMessenger( ));
+		luxDebug(createDebugMessenger());
 
 
 		//Create sync objects
@@ -107,8 +107,8 @@ namespace lux::core::render{
 	//TODO multithreaded submit and command creation
 	void drawFrame() {
 		//FIXME __
-		// if(c::shaders::CShaders.usedCount( ) <= 1) return;
-		if(c::shaders::CShaders.count( ) <= 1) return;
+		// if(c::shaders::CShaders.usedCount() <= 1) return;
+		if(c::shaders::CShaders.count() <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &imageRendered_f[renderCurrentFrame], false, INT_MAX);
 
 
@@ -141,14 +141,14 @@ namespace lux::core::render{
 		//Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
-			c::shaders::addShaderFence.lock( );
+			c::shaders::addShaderFence.lock();
 			//FIXME __
-			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count( ));
-			for(uint32 i = 0; i < c::shaders::CShaders.count( ); ++i) {
+			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count());
+			for(uint32 i = 0; i < c::shaders::CShaders.count(); ++i) {
 				//FIXME __
 				c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
 			}
-			c::shaders::addShaderFence.unlock( );
+			c::shaders::addShaderFence.unlock();
 
 			static VkSubmitInfo submitInfo{
 				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
@@ -159,8 +159,8 @@ namespace lux::core::render{
 			};
 			submitInfo.pWaitSemaphores   = &s_imageAquired   [renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &s_objectsRendered[renderCurrentFrame];
-			submitInfo.commandBufferCount = c::shaders::CShadersCBs.count( );
-			submitInfo.pCommandBuffers    = c::shaders::CShadersCBs.begin( );
+			submitInfo.commandBufferCount = c::shaders::CShadersCBs.count();
+			submitInfo.pCommandBuffers    = c::shaders::CShadersCBs.begin();
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 		}
 
@@ -234,10 +234,10 @@ namespace lux::core::render{
 
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
-		if(objUpdates2D.count( ) > 0) {
-			objUpdates2D_f.startFirst( );
-			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands( );
-			for(uint32 i = 0; i < objUpdates2D.count( ); i++) {
+		if(objUpdates2D.count() > 0) {
+			objUpdates2D_f.startFirst();
+			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			for(uint32 i = 0; i < objUpdates2D.count(); i++) {
 				objUpdates2D[i]->render.updated = true;
 				vkCmdUpdateBuffer(
 					// cb, objUpdates2D[i]->render.localData->buffer->buffer,
@@ -250,8 +250,8 @@ namespace lux::core::render{
 				);
 			}
 			core::render::cmd::endSingleTimeCommands(cb);
-			objUpdates2D.clear( );
-			objUpdates2D_f.endFirst( );
+			objUpdates2D.clear();
+			objUpdates2D_f.endFirst();
 		}
 	}
 
@@ -272,7 +272,7 @@ namespace lux::core::render{
 
 
 	void cleanup() {
-		swapchain::cleanup( );																	//Clear swapchain components
+		swapchain::cleanup();																	//Clear swapchain components
 		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);			//Destroy graphics command pool
 
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {								//Destroy sync objects

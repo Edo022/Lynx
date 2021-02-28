@@ -5,7 +5,6 @@
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/System/SystemMacros.hpp"
 #include "LuxEngine/Tests/StructureInit.hpp"
-#include "LuxEngine/Tests/CondChecks.hpp"
 #include "LuxEngine/Types/Dummy.hpp"
 #include "cstring"
 
@@ -39,9 +38,9 @@ namespace lux{
 
 
 namespace lux::vram{
-	#define checkAllocSize(var, _class) luxDebug(if(_class != VCellClass::CLASS_0 && _class != VCellClass::AUTO) {											\
-		dbg::checkCond(var > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
-		dbg::checkCond((uint32)_class < var, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::VCellClass::AUTO to automatically choose it");\
+	#define checkAllocSize(var, _class) luxDebug(if((_class) != VCellClass::CLASS_0 && (_class) != VCellClass::AUTO) {											\
+		dbg::checkCond((var) > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", (var));	\
+		dbg::checkCond((uint32)(_class) < (var), "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)(_class), (var), "Use lux::VCellClass::AUTO to automatically choose it");\
 	});
 
 
@@ -92,7 +91,7 @@ namespace lux::vram{
 		 * @brief Creates a nullptr ptr.
 		 *		Initialize it with the .realloc function before accessing its memory
 		 */
-		alwaysInline ptr( ) { Super::location = location; Super::buffType = buffType; }
+		alwaysInline ptr() { Super::location = location; Super::buffType = buffType; }
 		alwaysInline ptr(const std::nullptr_t) : ptr() { }
 
 
@@ -181,7 +180,7 @@ namespace lux::vram{
 			return ((type*)(Super::mapped))[vIndex];
 		}
 		alwaysInline type& operator*(  ) const { checkInit(); return *((type*)(Super::mapped)); }
-		alwaysInline type* operator->( ) const { checkInit(); return   (type*)(Super::mapped);  }
+		alwaysInline type* operator->() const { checkInit(); return   (type*)(Super::mapped);  }
 
 
 		/**

@@ -105,5 +105,5 @@ namespace lux::ram{
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);
 
 
-	void breakMemoryPool( );
+	void breakMemoryPool();
 }

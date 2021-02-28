@@ -27,10 +27,10 @@ namespace lux::core::render::swapchain{
 
 
 
-	// void preInit( );
-	void					swapchainCreate( );
+	// void preInit();
+	void					swapchainCreate();
 	void					swapchainRecreate(const bool vWindowResized);
-	void					cleanup( );
+	void					cleanup();
 	VkSurfaceFormatKHR		swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats);
 	VkPresentModeKHR		swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes);
 	VkExtent2D				swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);

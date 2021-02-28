@@ -239,6 +239,7 @@ namespace lux {
 
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
+			if(this == &pCont) return;
 			lux::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			for(iter i = 0; i < pCont.count(); ++i) {

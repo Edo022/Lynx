@@ -15,13 +15,13 @@ namespace lux::obj {
 	//A bidimensional line with interpolated color and width
 	//Lines with 0 width or 0 alpha are not rendered
 	struct Line2D : public Base2D {
-		void init( );
+		void init();
 
 
 		//Creates a Line2D object
 		//Automatically initializes the object type and the GPU memory
 		Line2D() {
-			init( );
+			init();
 
 			*fp = { 0, 0 };
 			*sp = { 0, 0, };
@@ -41,7 +41,7 @@ namespace lux::obj {
 		//*   vFw | width of the first point
 		//*   vSw | width of the second point
 		Line2D(const vec2f32& pFp, const vec2f32& pSp, const vec4f32& pFc, const vec4f32& pSc, const float32 vFw, const float32 vSw) {
-			init( );
+			init();
 			//TODO use full 64bit int or just 32 for all objects
 
 			setFp(pFp);
@@ -54,14 +54,14 @@ namespace lux::obj {
 
 
 		//TODO calculate offset and cell count at runtime
-		// inline int32 getCellSize( ) const final override { return 60; }
+		// inline int32 getCellSize() const final { return 60; }
 
 		//TODO add loca-global-other coordinate system and convertions
 		inline void setFp(const vec2f32& vFp) { _fp = vFp; }
 		inline void setSp(const vec2f32& vSp) { _sp = vSp; }
 
 
-		void recalculateCoords( ) final override {
+		void recalculateCoords() final {
 			*fp = _fp * dist2D(minLim, maxLim) + minLim;
 			*sp = _sp * dist2D(minLim, maxLim) + minLim;
 		}

@@ -11,19 +11,19 @@ namespace lux::obj{
 
 
 		Border2D() {
-			init( );
+			init();
 			*fp = { .0f, .0f };
 			*sp = { .0f, .0f };
 		}
 		Border2D(const vec2f32& vFp, const vec2f32& vSp) {
-			init( );
+			init();
 			*fp = vFp;
 			*sp = vSp;
 		}
-		void init( );
+		void init();
 
 
 		//TODO calculate offset and cell count at runtime with an everything array
-		// inline int32 getCellSize( ) const final override { return 40; }
+		// inline int32 getCellSize() const final { return 40; }
 	};
 }

@@ -98,7 +98,7 @@
 // 			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
 // 			alwaysInline type& operator*(                    ) const { return addr->value; }
 // 			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
-// 			// alwaysInline operator type*( ) const { return (type*)addr; }
+// 			// alwaysInline operator type*() const { return (type*)addr; }
 // 			// alwaysInline operator bool(  ) const { return !!addr;      }
 
 // 			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
@@ -140,7 +140,7 @@
 // 		 * @brief Creates an array without allocating memory to it.
 // 		 *		The memory will be allocated when calling the add function
 // 		 */
-// 		inline RaArray( ) : data(nullptr), lnkd(nullptr),
+// 		inline RaArray() : data(nullptr), lnkd(nullptr),
 // 			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 // 		}
 
@@ -570,7 +570,7 @@ namespace lux {
 			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
 			alwaysInline type& operator*(                    ) const { return addr->value; }
 			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
-			// alwaysInline operator type*( ) const { return (type*)addr; }
+			// alwaysInline operator type*() const { return (type*)addr; }
 			// alwaysInline operator bool(  ) const { return !!addr;      }
 
 			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
@@ -615,7 +615,7 @@ namespace lux {
 		 * @brief Creates an array without allocating memory to it.
 		 *		The memory will be allocated when calling the add function
 		 */
-		inline RaArray( ) : data(nullptr),// lnkd(nullptr),
+		inline RaArray() : data(nullptr),// lnkd(nullptr),
 			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
@@ -849,7 +849,7 @@ namespace lux {
 
 	private:
 		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
-			isInit(pCont);
+			isInit(pCont); if(this == &pCont) return *this;
 			clear(); //FIXME
 			data.reallocArr(pCont.count(), false);
 			// lnkd.reallocArr(pCont.count(), false);
