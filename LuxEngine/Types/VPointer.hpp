@@ -384,6 +384,10 @@ namespace lux::rem{
                 types[Super::cell->typeIndex].m.unlock();
             }
             // else std::free(cell->address);												//For custom size cells, free the entire buffer
+			else {
+				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory);
+				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer);
+			}
             //FIXME FREE BUFFERS
 
             cells_m.lock();
