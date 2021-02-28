@@ -58,8 +58,8 @@ namespace lux::ram{
 
 
 	#define checkAllocSize(var, _class) luxDebug(if(_class != CellClass::CLASS_0 && _class != CellClass::AUTO) {											\
-		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
-		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
+		dbg::checkCond(var > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
+		dbg::checkCond((uint32)_class < var, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::CellClass::AUTO to automatically choose it");\
 	});
 
 
@@ -78,11 +78,7 @@ namespace lux::ram{
 
 		//Memory allocation
 		constexpr static void evaluateCellClass(const uint64 vSize, CellClass& pClass) noexcept {
-			if(pClass != CellClass::AUTO && (uint32)pClass % __pvt::memOffset == 1) {	//Check AT_LEAST values (normal class values + 1)
-				if(vSize > ((uint32)pClass)) pClass = CellClass::AUTO;					//If the class is too small, set it to AUTO
-				else pClass = (CellClass)((uint64)pClass - 1);							//If it's large enough, assign the normal class value
-			}
-			if(pClass == CellClass::AUTO) { [[likely]]								//Choose cell class if it's AUTO
+			if(pClass == CellClass::AUTO) { [[likely]]
 				     if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]	  pClass = CellClass::CLASS_A;
 				else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]]	  pClass = CellClass::CLASS_B;
 				else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]]	  pClass = CellClass::CLASS_C;
@@ -182,7 +178,7 @@ namespace lux::ram{
 		 */
 		inline ptr(ptr<type>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } { //vAlloc.cell = &dummyCell;
-			//! ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
+			//!                     ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
 			++cell->owners;
 			//! ^ This is not an error. The cell's owners will get decremented when vAlloc is destroyed,
 			//! so the move constructor has to increment it to make it stay the same without useless checks
@@ -274,14 +270,14 @@ namespace lux::ram{
 
 
 		/**
-		 * @brief Returns the first address of the allocated memory block as a lux::ram::ptr //FIXME
+		 * @brief Returns the first address of the allocated memory block
 		 */
 		alwaysInline type* begin() const {
 			checkInit(); checkNullptr();  checkSize();  return (type*)cell->address;
 		}
 
 		/**
-		 * @brief Returns the address of the object past the last object in the memory block as a lux::ram::ptr. //FIXME
+		 * @brief Returns the address of the object past the last object in the memory block
 		 *		Dereferencing the pointer is undefined behaviour
 		 */
 		alwaysInline type* end() const {
@@ -391,6 +387,7 @@ namespace lux::ram{
 		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
 		 */
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::AUTO) {
+			//FIXME FREE CUSTOM SIZE BUFFERS
 			using namespace lux::__pvt;
 			checkInit(); checkAllocSize(vSize, vClass);
 			evaluateCellClass(vSize, vClass);
@@ -404,7 +401,7 @@ namespace lux::ram{
 			else { [[likely]]														//If it's allocated
 				if(																	//And the new size is smaller or equal to the maximum cell size
 					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / __pvt::incSize) * __pvt::incSize)) {
-					//! ^ Not (vSize / incSize + 1)
+					//!                                                                        ^ Not (vSize / incSize + 1)
 					[[unlikely]] cell->cellSize = vSize;								//change the cellSize variable and return //FIXME move to fixed size cell
 				}
 				else { [[likely]]												//If it's larger than the maximum cell size //TODO check realloc and free returns
