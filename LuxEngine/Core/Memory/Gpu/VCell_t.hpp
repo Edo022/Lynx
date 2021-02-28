@@ -18,7 +18,7 @@ namespace lux{
 	// 	RamUniform  = 0b11,	//Uniform buffer in shared RAM memory
 	// 	NUM					//Number of LUX_ALLOC_TYPE values
 	// };
-    namespace rem{
+    namespace vram{
         // struct MemBuffer;
         // struct MemBufferType;
         // struct Cell_t {

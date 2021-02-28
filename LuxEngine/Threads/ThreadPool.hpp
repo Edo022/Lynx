@@ -82,7 +82,7 @@ namespace lux::thr {
 	// //TODO move to system header
 	// extern win10(HANDLE)_linux(pthread_t) mngThr;
 	extern RtArray<ThrPoolElm> threads;
-	extern std::deque<ram::Alloc<__pvt::Func_b>> queue;
+	extern std::deque<ram::ptr<__pvt::Func_b>> queue;
 	extern std::mutex queue_m;
 	// extern RaArray<ThrState, uint32> thrStates;
 	// extern Queue<ExecFuncDataBase*> maxpq;
@@ -129,12 +129,12 @@ namespace lux::thr {
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::void_std_args_xt<func_t, args_ts...>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &vFence;
 		f->_func = vFunc;
 		f->_args = pArgs;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -149,13 +149,13 @@ namespace lux::thr {
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_func = vFunc;
 		f->_args  = pArgs;
 		f->_ret = pRet;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -171,11 +171,11 @@ namespace lux::thr {
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::void_std_noargs_xt<func_t>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_func = vFunc;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -190,12 +190,12 @@ namespace lux::thr {
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::type_std_noargs_xt<func_t, ret_t>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_func = vFunc;
 		f->_ret = pRet;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -213,13 +213,13 @@ namespace lux::thr {
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_args = pArgs;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -235,14 +235,14 @@ namespace lux::thr {
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_args = pArgs;
 		f->_ret = pRet;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -259,12 +259,12 @@ namespace lux::thr {
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::void_obj_noargs_xt<obj_t, func_t>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 
@@ -279,13 +279,13 @@ namespace lux::thr {
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::type_obj_noargs_xt<obj_t, func_t, ret_t>;
-		ram::Alloc<funct> f(sizeof(funct));
+		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_ret = pRet;
-		queue.push_back((ram::Alloc<__pvt::Func_b>)f);
+		queue.push_back((ram::ptr<__pvt::Func_b>)f);
 		queue_m.unlock();
 	}
 

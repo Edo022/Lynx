@@ -18,7 +18,7 @@ namespace lux::thr {
 	// RtArray<ThrPoolElm>		threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);	//The threads of the thread pool with their states and functions
 	// RaArray<ThrState, uint32>	thrStates;								//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 	RtArray<ThrPoolElm> threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
-	std::deque<ram::Alloc<__pvt::Func_b>> queue;
+	std::deque<ram::ptr<__pvt::Func_b>> queue;
 	std::mutex queue_m;
 
 
@@ -65,7 +65,7 @@ namespace lux::thr {
 
 			queue_m.lock();
 			if(!queue.empty()) {
-				ram::Alloc<__pvt::Func_b> e = (ram::Alloc<__pvt::Func_b>&&)(queue.front());
+				ram::ptr<__pvt::Func_b> e = (ram::ptr<__pvt::Func_b>&&)(queue.front());
 				queue.pop_front();
 				queue_m.unlock();
 

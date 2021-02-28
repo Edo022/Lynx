@@ -16,7 +16,7 @@
 #define LuxIncSize ((uint32)CellClass::CLASS_L / 2)
 namespace lux{
 	namespace ram{
-		template<class type> struct Alloc;
+		template<class type> struct ptr;
 		//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 
 
@@ -30,8 +30,8 @@ namespace lux{
 			//char padding[8]																	//32
 			// char padding[28 luxDebug(-16)];														//60
 			//uint32 next;																		//64
-			luxDebug(Alloc<Dummy>* lastOwner;)
-			luxDebug(Alloc<Dummy>* firstOwner;)
+			luxDebug(ptr<Dummy>* lastOwner;)
+			luxDebug(ptr<Dummy>* firstOwner;)
 		};
 
 		struct alignas(64) Type_t {

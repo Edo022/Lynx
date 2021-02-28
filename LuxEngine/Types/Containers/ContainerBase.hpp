@@ -142,7 +142,7 @@ namespace lux {
 	public __pvt::cbFwd_t<type, iter>{
 	public:
 		genInitCheck;
-		ram::Alloc<type> data;	//Elements of the array
+		ram::ptr<type> data;	//Elements of the array
 
 
 
@@ -255,11 +255,11 @@ namespace lux {
 
 
 	public:
-		alwaysInline auto  begin() const { return ram::ptr<type>{ data.begin() }; };	//Returns a pointer to the first element of the container
-		alwaysInline auto    end() const { return ram::ptr<type>{ data.end(  ) }; };	//Returns a pointer to the element after the last element of the container
-		alwaysInline iter  count() const { return (iter)data.count(); 			  };	//Returns the number of elements in the container
-		alwaysInline uint64 size() const { return data.size();		              };	//Returns the size in bytes of the contianer
-		alwaysInline bool  empty() const { return !count(); 					  };	//Returns true if the container has size 0, false otherwise
+		alwaysInline auto  begin() const { return data.begin();       };	//Returns a pointer to the first element of the container
+		alwaysInline auto    end() const { return data.end();         };	//Returns a pointer to the element after the last element of the container
+		alwaysInline iter  count() const { return (iter)data.count(); };	//Returns the number of elements in the container
+		alwaysInline uint64 size() const { return data.size();        };	//Returns the size in bytes of the contianer
+		alwaysInline bool  empty() const { return !count();           };	//Returns true if the container has size 0, false otherwise
 
 		alwaysInline auto& operator[](const iter vIndex) const { return data[vIndex]; }
 	};

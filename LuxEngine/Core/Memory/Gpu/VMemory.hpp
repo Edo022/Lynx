@@ -11,7 +11,7 @@
 
 
 //TODO check for alllocation number limit
-namespace lux::rem{
+namespace lux::vram{
 	// typedef Cell_t* Cell;
 	// // static inline uint32 getCellOffset(const Cell pCell) { return (uint32)pCell->bufferType->cellClass * pCell->cellIndex; }
 	//BUG USE CELL OFFSET NOT TYPE OFFSET WTF

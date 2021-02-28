@@ -109,8 +109,8 @@
 
 
 // 	private:
-// 		ram::Alloc<type> data;	//Elements
-// 		ram::Alloc<iter> lnkd;	//State of each element
+// 		ram::ptr<type> data;	//Elements
+// 		ram::ptr<iter> lnkd;	//State of each element
 
 // 		iter head;		//First free element
 // 		iter tail;		//Last free element
@@ -583,9 +583,9 @@ namespace lux {
 
 
 	private:
-		ram::Alloc<Elm> data;
-		// ram::Alloc<type> data;	//Elements
-		// ram::Alloc<iter> lnkd;	//State of each element
+		ram::ptr<Elm> data;
+		// ram::ptr<type> data;	//Elements
+		// ram::ptr<iter> lnkd;	//State of each element
 
 		iter head;		//First free element
 		iter tail;		//Last free element

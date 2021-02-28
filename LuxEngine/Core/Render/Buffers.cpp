@@ -22,10 +22,10 @@ namespace lux::core::buffers{
 	//> Engine internal use
 	void init() {
 		{ //Initialize window buffers and count
-			// render::wnd::gpuCellWindowOutput_i	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage); //A8-R8-G8-B8 UI
-			// render::wnd::gpuCellWindowOutput	= rem::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::VRamStorage); //A32-R32-G32-B32 UF
-			// render::wnd::gpuCellWindowZBuffer 	= rem::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage);
-			// render::wnd::gpuCellWindowSize = rem::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::RamStorage);	//Create cell for window size //TODO use dedicated storage and update every time
+			// render::wnd::gpuCellWindowOutput_i	= vram::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage); //A8-R8-G8-B8 UI
+			// render::wnd::gpuCellWindowOutput	= vram::allocBck(render::wnd::width * render::wnd::height * 4 * 4, CellClass::AUTO, lux::AllocType::VRamStorage); //A32-R32-G32-B32 UF
+			// render::wnd::gpuCellWindowZBuffer 	= vram::allocBck(render::wnd::width * render::wnd::height * 4, 	  CellClass::AUTO, lux::AllocType::VRamStorage);
+			// render::wnd::gpuCellWindowSize = vram::allocBck(4 * 2,  CellClass::AUTO, lux::AllocType::RamStorage);	//Create cell for window size //TODO use dedicated storage and update every time
 			render::wnd::gpuCellWindowOutput_i.alloc_(render::wnd::width * render::wnd::height * 4,     VCellClass::CLASS_A); //A8-R8-G8-B8 UI
 			render::wnd::gpuCellWindowOutput.  alloc_(render::wnd::width * render::wnd::height * 4 * 4, VCellClass::CLASS_A); //A32-R32-G32-B32 UF
 			render::wnd::gpuCellWindowZBuffer. alloc_(render::wnd::width * render::wnd::height * 4,     VCellClass::CLASS_A);
@@ -93,7 +93,7 @@ namespace lux::core::buffers{
 		};
 		//TODO USE CUSTOM ALLOCATOR
 		// const VkAllocationCallbacks allocator{
-		// 	.pUserData = new ram::Alloc<char>(),
+		// 	.pUserData = new ram::ptr<char>(),
 		// 	.pfnAllocation = allocateCallback,
 		// 	.pfnReallocation = reallocateCallback,
 		// 	.pfnFree = freeCallback,
@@ -140,11 +140,11 @@ namespace lux::core::buffers{
 	//Frees and destroys the compute objects //TODO fix
 	//> Engine internal use
 	void cleanup() {
-		// for(uint32 i = 0; i < /*rem::buffers.count( )*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
-		// 	for(uint32 j = 0; j < rem::buffers[i].buffers.count( ); ++j) {
-		// 		if(rem::buffers[i].buffers.isValid(j)) {
-		// 			vkDestroyBuffer(dvc::compute.LD, rem::buffers[i].buffers[j].buffer, nullptr);
-		// 			vkFreeMemory(dvc::compute.LD, rem::buffers[i].buffers[j].memory, nullptr);
+		// for(uint32 i = 0; i < /*vram::buffers.count( )*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
+		// 	for(uint32 j = 0; j < vram::buffers[i].buffers.count( ); ++j) {
+		// 		if(vram::buffers[i].buffers.isValid(j)) {
+		// 			vkDestroyBuffer(dvc::compute.LD, vram::buffers[i].buffers[j].buffer, nullptr);
+		// 			vkFreeMemory(dvc::compute.LD, vram::buffers[i].buffers[j].memory, nullptr);
 		// 		}
 		// 	}
 		// }

@@ -44,20 +44,20 @@ namespace lux{
 		VRam
 	};
 }
-namespace lux::rem{
+namespace lux::vram{
 	#define checkAllocSize(var, _class) luxDebug(if(_class != lux::VCellClass::CLASS_0 && _class != lux::VCellClass::AUTO) {											\
 		dbg::checkParam(var > 0xFFFFffff, "var", "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", var);	\
 		dbg::checkParam((uint32)_class < var, "_class", "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, var, "Use lux::VCellClass::AUTO to automatically choose it");\
 	});
 
 
-	//Alloc base class
+	//ptr base class
 	template<class type> struct Alloc_b {
 		genInitCheck;
 
 		uint8 location;
 		uint8 buffType;
-		Cell_t2* cell; //A pointer to a lux::rem::Cell_t object that contains the cell informations
+		Cell_t2* cell; //A pointer to a lux::vram::Cell_t object that contains the cell informations
 		type* mapped; //... //TODO I feel this should be copied in operator= and constructors. dunno
 
 //TODO optimize return
@@ -65,7 +65,7 @@ namespace lux::rem{
 	};
 
 
-	template<class type, allocLocation location, bufferType buffType> struct Alloc : public Alloc_b<type> {
+	template<class type, allocLocation location, bufferType buffType> struct ptr : public Alloc_b<type> {
 		genInitCheck; //TODO probably useless
 	private:
 		using Super = Alloc_b<type>;
@@ -105,8 +105,8 @@ namespace lux::rem{
 		 * @brief Creates a nullptr ptr.
 		 *		Initialize it with the .realloc function before accessing its memory
 		 */
-		alwaysInline Alloc( ) { Super::location = location; Super::buffType = buffType; }
-		alwaysInline Alloc(const std::nullptr_t) : Alloc() { }
+		alwaysInline ptr( ) { Super::location = location; Super::buffType = buffType; }
+		alwaysInline ptr(const std::nullptr_t) : ptr() { }
 
 
 
@@ -114,15 +114,15 @@ namespace lux::rem{
 		 * @brief Copy constructor. This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		alwaysInline Alloc(const Alloc<type, location, buffType>& vAlloc) :
-			Alloc(vAlloc, Dummy{}) {
+		alwaysInline ptr(const ptr<type, location, buffType>& vAlloc) :
+			ptr(vAlloc, Dummy{}) {
 		}
 
 		/**
 		 * @brief Create a pointer by copying another pointer's address.This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		template<class aType> explicit inline Alloc(const Alloc<aType, location, buffType>& vAlloc, const Dummy vDummy = Dummy{}){
+		template<class aType> explicit inline ptr(const ptr<aType, location, buffType>& vAlloc, const Dummy vDummy = Dummy{}){
 			isInit(vAlloc);
 			Super::location = location; Super::buffType = buffType;
 			Alloc_b<type>::cell = vAlloc.cell;
@@ -135,7 +135,7 @@ namespace lux::rem{
 		/**
 		 * @brief Move constructor
 		 */
-		inline Alloc(Alloc<type, location, buffType>&& vAlloc) {
+		inline ptr(ptr<type, location, buffType>&& vAlloc) {
 			isInit(vAlloc);
 			Super::location = location; Super::buffType = buffType;
 			Super::cell = vAlloc.cell;//vAlloc.cell = &dummyCell;
@@ -153,7 +153,7 @@ namespace lux::rem{
 		 * @param vSize  Size of the block in bytes. It must be a positive integer and less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
-		inline Alloc(const uint64 vSize, VCellClass vClass = VCellClass::AUTO) {
+		inline ptr(const uint64 vSize, VCellClass vClass = VCellClass::AUTO) {
 			Super::location = location; Super::buffType = buffType;
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass);
@@ -169,13 +169,13 @@ namespace lux::rem{
 
 
 		//Move assignment
-		alwaysInline void operator=(Alloc<type, location, buffType>&& vAlloc) {
-			operator=((Alloc<type, location, buffType>&)vAlloc);
+		alwaysInline void operator=(ptr<type, location, buffType>&& vAlloc) {
+			operator=((ptr<type, location, buffType>&)vAlloc);
 		}
 
 
 		//Copy assignment
-		inline void operator=(const Alloc<type, location, buffType>& vAlloc) {
+		inline void operator=(const ptr<type, location, buffType>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			// if(!--cell->owners) free();
 
@@ -262,7 +262,7 @@ namespace lux::rem{
 
 
         //FIXME idk
-		// inline ~Alloc( ) noexcept {
+		// inline ~ptr( ) noexcept {
 		// 	// if(cell->address) {
 		// 		// if(!--cell->owners) {
 		// 			if(cell->typeIndex != (uint16)-1) {											//For fixed  size cells,
@@ -399,8 +399,8 @@ namespace lux::rem{
 		// alwaysInline operator type*( ) const { checkInit(); return (type*)cell->address; }	//ram::ptr<type> to type* implicit conversion
 		// alwaysInline operator bool(  ) const { checkInit(); return !!cell->address;      }	//ram::ptr<type> to bool  implicit conversion ("if(ptr)" is the same as "if(ptr != nullptr)")
 
-		alwaysInline bool operator==(ram::Alloc<type> vPtr) { return vPtr.cell == Super::cell; }
-		alwaysInline bool operator!=(ram::Alloc<type> vPtr) { return vPtr.cell != Super::cell; }
+		alwaysInline bool operator==(ram::ptr<type> vPtr) { return vPtr.cell == Super::cell; }
+		alwaysInline bool operator!=(ram::ptr<type> vPtr) { return vPtr.cell != Super::cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
 
 
@@ -422,7 +422,7 @@ namespace lux::rem{
 
 
 	//TODO CHECK MEMORY FULL
-	template<class type, allocLocation location, bufferType buffType> void lux::rem::Alloc<type, location, buffType>::alloc_(const uint64 vSize, const VCellClass vClass) {
+	template<class type, allocLocation location, bufferType buffType> void lux::vram::ptr<type, location, buffType>::alloc_(const uint64 vSize, const VCellClass vClass) {
 		using namespace lux::__pvt;
 		// VCellClass vClass2;
 		//FIXME WRITE USER INTERFACE

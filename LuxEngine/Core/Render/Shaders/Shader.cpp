@@ -44,11 +44,11 @@ namespace lux::core::c::shaders{
 		shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
 		shaders::createDefLayout(LUX_DEF_SHADER_CLEAR, 4, { 0, 0, 0, 0 });
 
-		// rem::Cell_t tmp_gpuCellWindowSize;
+		// vram::Cell_t tmp_gpuCellWindowSize;
 		// tmp_gpuCellWindowSize.buffer = render::wnd::gpuCellWindowSize.cell->csc.buffer;
-		// tmp_gpuCellWindowSize.bufferType = rem::
+		// tmp_gpuCellWindowSize.bufferType = vram::
 		shaders::clearShader = shaders::newShader(
-			RtArray<rem::Alloc_b<int32>>{
+			RtArray<vram::Alloc_b<int32>>{
 				render::wnd::gpuCellWindowOutput,
 				render::wnd::gpuCellWindowOutput_i,
 				render::wnd::gpuCellWindowZBuffer,
@@ -238,8 +238,8 @@ namespace lux::core::c::shaders{
 	 * @param pCells An array of memory cells to bind to the shader
 	 * @param vShaderLayout The shader layout
 	 */
-	// void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Cell>& pCells, const ShaderLayout vShaderLayout) {
-	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<rem::Alloc_b<int32>>& pCells, const ShaderLayout vShaderLayout) {
+	// void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Cell>& pCells, const ShaderLayout vShaderLayout) {
+	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Alloc_b<int32>>& pCells, const ShaderLayout vShaderLayout) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count( ); i++) {								//For every cell
@@ -289,10 +289,10 @@ namespace lux::core::c::shaders{
 			VkDescriptorBufferInfo* descriptorBufferInfo = (VkDescriptorBufferInfo*)malloc(sizeof(VkDescriptorBufferInfo));
 			// descriptorBufferInfo->buffer = pCells[i]->buffer->buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
 			descriptorBufferInfo->buffer = pCells[i].cell->csc.buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
-			// if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
-			// if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);
+			// if((uint32)pCells[i]->bufferType->allocType & 0b1) descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);
+			// if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);
 			if(pCells[i].buffType == Uniform) descriptorBufferInfo->offset = pCells[i].cell->localOffset;
-			// else descriptorBufferInfo->offset = rem::getCellOffset(pCells[i]);					//Set buffer offset
+			// else descriptorBufferInfo->offset = vram::getCellOffset(pCells[i]);					//Set buffer offset
 			else descriptorBufferInfo->offset = pCells[i].cell->localOffset;					//Set buffer offset
 			// descriptorBufferInfo->range = pCells[i]->cellSize;									//Set buffer count
 			descriptorBufferInfo->range = pCells[i].cell->cellSize;									//Set buffer count
@@ -468,8 +468,8 @@ namespace lux::core::c::shaders{
 	 *		-1 if one or more buffers cannot be used, -2 if the file does not exist, -3 if an unknown error occurs
 	 *	//FIXME
 	 */
-	// LuxShader newShader(const RtArray<rem::Cell>& pCells, const ShaderLayou tvShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
-	LuxShader newShader(const RtArray<rem::Alloc_b<uint32>>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	// LuxShader newShader(const RtArray<vram::Cell>& pCells, const ShaderLayou tvShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	LuxShader newShader(const RtArray<vram::Alloc_b<uint32>>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
 		dbg::checkParam(pCells.count() == 0, "pCells", "A shader must use at least one cell. The provided cell array has size 0");
 		dbg::checkParam(vGroupCountX < 1, "vGroupCountX", "The group count must be at least 1");

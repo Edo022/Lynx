@@ -10,7 +10,7 @@
 
 
 
-namespace lux::rem{
+namespace lux::vram{
 	// uint32 maxAlloc;
 	// MemBufferType* buffers;
 
@@ -82,7 +82,7 @@ namespace lux::rem{
 	// //*    ---Uniform buffers are read only for the GPU. Useful when you need to pass small data to a shader
 	// //*    ---Storage buffers are larger and the GPU can write in it, bet they have worse performance
 	// //*   Returns: the allocated Cell object
-	// //e.g.   lux::rem::Cell foo = lux::rem::allocBck(100, lux::CellClass::AUTO, lux::AllocType::VRamStorage);
+	// //e.g.   lux::vram::Cell foo = lux::vram::allocBck(100, lux::CellClass::AUTO, lux::AllocType::VRamStorage);
 	// Cell allocBck(const uint64 vSize, CellClass vCellClass, const lux::AllocType vAllocType) {
 	// 	dbg::checkParam(vCellClass != CellClass::AUTO && (uint32)vCellClass < vSize, 	"vCellClass", "The cell class must be large enought to contain the cell. Use lux::CellClass::AUTO to automatically choose it");
 	// 	dbg::checkParam(vSize > 0xFFFFffff, 											"vSize",		"The cell size cannot exceed 0xFFFFFFFF bytes");
@@ -146,7 +146,7 @@ namespace lux::rem{
 
 
 	// //TODO REMOVE
-	// //Maps a lux::rem::Cell to a memory address in order to use it from the CPU
+	// //Maps a lux::vram::Cell to a memory address in order to use it from the CPU
 	// //Returns the address of the cell as a void pointer
 	// //Only cells allocated in shared memory can be mapped
 	// //Always unmap() cells when you don't need to access their data
