@@ -38,13 +38,6 @@ namespace lux{
 
 
 namespace lux::vram{
-	#define checkAllocSize(var, _class) luxDebug(if((_class) != VCellClass::CLASS_0 && (_class) != VCellClass::AUTO) {											\
-		dbg::checkCond((var) > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", (var));	\
-		dbg::checkCond((uint32)(_class) < (var), "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)(_class), (var), "Use lux::VCellClass::AUTO to automatically choose it");\
-	});
-	#define checkMapped() dbg::checkCond(!Super::mapped, "Unable to call this function on unmapped memory blocks")
-
-
 	//ptr base class
 	template<class type> struct Alloc_b {
 		genInitCheck;
@@ -69,6 +62,18 @@ namespace lux::vram{
 	template<class type, bufferLocation loc, bufferType btype> struct ptr : public Alloc_b<type> {
 	private:
 		using Super = Alloc_b<type>;
+
+
+		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { luxDebug(
+			if((_class) != VCellClass::CLASS_0 && _class != VCellClass::AUTO) {
+				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
+				dbg::checkCond((uint64)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lux::VCellClass::AUTO to automatically choose it");
+			}
+		)}
+		alwaysInline void checkMapped() const { luxDebug(
+			dbg::checkCond(!Super::mapped, "Unable to call this function on unmapped memory blocks");
+		)}
+
 
 		constexpr static void evaluateCellClass(const uint64 vSize, VCellClass& pClass) noexcept {
 			if(pClass == VCellClass::AUTO) { [[likely]]
@@ -230,6 +235,14 @@ namespace lux::vram{
 
 
 	private:
+		static consteval VkBufferUsageFlags btype_() {
+			return ((btype == Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+		}
+		static consteval VkMemoryPropertyFlags loc_() {
+			return (loc == Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT; //FIXME IDK
+		}
+
+
 		void alloc_(const uint64 vSize, const VCellClass vClass) {
 			using namespace lux::__pvt;
 			//FIXME WRITE USER INTERFACE
@@ -256,13 +269,10 @@ namespace lux::vram{
 
 				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
 				if(!type_.memory[buffIndex].memory) { //Vulkan structures, but they are set to nullptr and treated as pointers when not used
-					//FIXME DONT DUPLICATE BUFFER CHECKS A
 					lux::core::buffers::createBuffer(
-						&type_.memory[buffIndex].buffer,
-						((btype == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+						&type_.memory[buffIndex].buffer, btype_(),
 						__pvt::buffSize,
-						&type_.memory[buffIndex].memory,
-						(loc == bufferLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
+						&type_.memory[buffIndex].memory, loc_(),
 						core::dvc::compute.LD
 					);
 				}
@@ -273,13 +283,10 @@ namespace lux::vram{
 				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;			//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
 				dbg::checkParam(btype == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
-				//FIXME DONT DUPLICATE BUFFER CHECKS B
 				lux::core::buffers::createBuffer(
-					&Super::cell->csc.buffer,
-					((btype == bufferType::Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+					&Super::cell->csc.buffer, btype_(),
 					size,
-					&Super::cell->csc.memory,
-					(loc == bufferLocation::Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, //FIXME IDK
+					&Super::cell->csc.memory, loc_(),
 					core::dvc::compute.LD
 				);
 				luxDebug(Super::cell->localIndex = 0;)
