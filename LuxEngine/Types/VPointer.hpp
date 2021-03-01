@@ -42,7 +42,7 @@ namespace lux::vram{
 	template<class type> struct Alloc_b {
 		genInitCheck;
 
-		uint8 loc;						//Runtime template data
+		uint8 loc;							//Runtime template data
 		uint8 btype;						//Runtime template data
 		Cell_t2* cell;						//A pointer to a lux::vram::Cell_t object that contains the cell informations
 		type* mapped luxDebug(= nullptr);	//A pointer used to map the memory
@@ -183,17 +183,21 @@ namespace lux::vram{
 
 
 
+		//Returns a reference to the element at index vIndex. This function can only be called on mapped pointers
 		alwaysInline type& operator[](const uint64 vIndex) const {
 			checkInit(); checkMapped();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((type*)(Super::mapped))[vIndex];
 		}
+
+		//Returns a reference to the first element. This function can only be called on mapped pointers
 		alwaysInline type& operator*()  const { checkMapped(); checkInit(); return *((type*)(Super::mapped)); }
 		alwaysInline type* operator->() const { checkMapped(); checkInit(); return   (type*)(Super::mapped);  }
 
 
 		/**
-		 * @brief Returns the first address of the allocated memory block
+		 * @brief Returns the first address of the allocated memory block.
+		 *		This function can only be called on mapped pointers
 		 */
 		alwaysInline type* begin() const {
 			checkInit(); checkMapped();
@@ -201,8 +205,9 @@ namespace lux::vram{
 		}
 
 		/**
-		 * @brief Returns the address of the object past the last object in the memory block
-		 *		Dereferencing the pointer is undefined behaviour
+		 * @brief Returns the address of the object past the last object in the memory block.
+		 *		Dereferencing the pointer is undefined behaviour.
+		 *		This function can only be called on mapped pointers
 		 */
 		alwaysInline type* end() const {
 			checkInit(); checkMapped();
@@ -217,7 +222,7 @@ namespace lux::vram{
 
 
 
-		//Returns the size in BYTES of the allocate memory. use count to get the number of elements
+		//Returns the size in BYTES of the allocate memory. use count() to get the number of elements
 		alwaysInline uint64 size()  const noexcept { return Super::cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
 		alwaysInline uint64 count() const noexcept { return Super::cell->cellSize / sizeof(type); }
@@ -235,11 +240,14 @@ namespace lux::vram{
 
 
 	private:
-		static consteval VkBufferUsageFlags btype_() {
-			return ((btype == Uniform) ? VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT : VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT) | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+		static consteval VkBufferUsageFlags _usage() {
+			if(btype == Uniform) return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+			else                 return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		}
-		static consteval VkMemoryPropertyFlags loc_() {
-			return (loc == Ram) ? (VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT; //FIXME IDK
+		static consteval VkMemoryPropertyFlags _prop() {
+			// if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+			if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+			else           return VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT; //FIXME IDK
 		}
 
 
@@ -248,31 +256,32 @@ namespace lux::vram{
 			//FIXME WRITE USER INTERFACE
 
 			cells_m.lock();
-			const auto cellIndex = cells.add(Cell_t2{});						//Save cell index
+			const auto cellIndex = cells.add(Cell_t2{});					//Save cell index
 			cells_m.unlock();
-			Super::cell = &cells[cellIndex];										//Update cell pointer
+			Super::cell = &cells[cellIndex];								//Update cell pointer
 			uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
-			*Super::cell = Cell_t2{													//Update cell data
-				.typeIndex = typeIndex,						//Set cell type index
+			*Super::cell = Cell_t2{											//Update cell data
+				.typeIndex = typeIndex,											//Set cell type index
 				.cellIndex  = cellIndex,										//Set cell index
 				.cellSize = (uint32)vSize										//Set size specified in function call
 			};
 
 
 			if((uint32)vClass) {											//For fixed class cells
-				auto& type_ = types[typeIndex];				//Cache buffer type
+				auto& type_ = types[typeIndex];									//Cache buffer type
 				type_.m.lock();
 				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 				type_.m.unlock();
-				Super::cell->localIndex = localIndex;									//Save local index in cell object
+				Super::cell->localIndex = localIndex;							//Save local index in cell object
 				Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * localIndex * (uint32)vClass;
 
 				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
-				if(!type_.memory[buffIndex].memory) { //Vulkan structures, but they are set to nullptr and treated as pointers when not used
+				if(!type_.memory[buffIndex].memory) {
+					//!                     ^ Vulkan structures, but they are set to nullptr and treated as pointers, when not used
 					lux::core::buffers::createBuffer(
-						&type_.memory[buffIndex].buffer, btype_(),
+						&type_.memory[buffIndex].buffer, _usage(),
 						__pvt::buffSize,
-						&type_.memory[buffIndex].memory, loc_(),
+						&type_.memory[buffIndex].memory, _prop(),
 						core::dvc::compute.LD
 					);
 				}
@@ -280,13 +289,13 @@ namespace lux::vram{
 				Super::cell->csc.memory = type_.memory[buffIndex].memory;
 			}
 			else {															//For custom size cells
-				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;			//Calculate the new size and allocate a new buffer
+				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
 				dbg::checkParam(btype == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
 				lux::core::buffers::createBuffer(
-					&Super::cell->csc.buffer, btype_(),
+					&Super::cell->csc.buffer, _usage(),
 					size,
-					&Super::cell->csc.memory, loc_(),
+					&Super::cell->csc.memory, _prop(),
 					core::dvc::compute.LD
 				);
 				luxDebug(Super::cell->localIndex = 0;)
@@ -390,19 +399,20 @@ namespace lux::vram{
 		 *		The memory will become invalid and unaccessible for any other pointer currently using it
 		 */
 		inline void free() {
-            if(Super::cell->typeIndex != (uint16)-1) {											//For fixed  size cells,
+			dbg::checkCond(Super::mapped, "free() can only be called on unmapped memory");
+            if(Super::cell->typeIndex != (uint16)-1) {										//For fixed  size cells
                 types[Super::cell->typeIndex].m.lock();
-                types[Super::cell->typeIndex].cells.remove(Super::cell->localIndex);						//free the allocation object
+                types[Super::cell->typeIndex].cells.remove(Super::cell->localIndex);			//free the allocation object
                 types[Super::cell->typeIndex].m.unlock();
 				//FIXME FREE BUFFERS
             }
-			else {
-				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory);
-				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer);
+			else {																			//For custom size cells
+				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory);					//Free the memory
+				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer);				//Destroy the vulkan buffer object
 			}
 
             cells_m.lock();
-            cells.remove(Super::cell->cellIndex);												//Free the cell object
+            cells.remove(Super::cell->cellIndex);											//Free the cell object
             cells_m.unlock();
 		}
 
@@ -410,7 +420,6 @@ namespace lux::vram{
 
 
 		//FIXME SPECIALIZE RAM ALLOCATIONS
-		//TODO manually flush data
 		/**
 		 * @brief Maps the memory block to a RAM pointer, allowing the CPU to access its data through operator[], operator->, operator*, begin() and end() functions.
 		 *		The pointer MUST be unmapped by the same thread before the memory is freed.
@@ -418,17 +427,42 @@ namespace lux::vram{
 		 */
 		void map(){
 			dbg::checkCond(Super::mapped, "Memory block mapped twice");
-			vkMapMemory(core::dvc::compute.LD, Super::cell->csc.memory, Super::cell->localOffset, Super::cell->cellSize, 0, (void**)&(Super::mapped));
+			dbg::checkCond(!size(), "Cannot map memory blocks with size 0");
+			auto memory = Super::cell->csc.memory;
+			auto offset = Super::cell->localOffset;
+			auto size   = Super::cell->cellSize;
+			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
+
+			vkMapMemory(core::dvc::compute.LD, memory, offset, size, 0, (void**)&(Super::mapped));
+			const VkMappedMemoryRange range {
+				.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+				.memory = memory,
+				.offset = offset,
+				.size = size
+			};
+			vkInvalidateMappedMemoryRanges(core::dvc::compute.LD, 1, &range);
 		}
 
-		//TODO manually flush data
+
 		/**
 		 * @brief Unmaps the memory block and flushes the data to the GPU.
 		 *		This function can only be called on mapped blocks
 		 */
 		void unmap(){
 			dbg::checkCond(!Super::mapped, "unmap() called on unmapped memory");
-			vkUnmapMemory(core::dvc::compute.LD, Super::cell->csc.memory);
+			auto memory = Super::cell->csc.memory;
+			auto offset = Super::cell->localOffset;
+			auto size   = Super::cell->cellSize;
+			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
+
+			const VkMappedMemoryRange range {
+				.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
+				.memory = memory,
+				.offset = offset,
+				.size = size
+			};
+			vkFlushMappedMemoryRanges(core::dvc::compute.LD, 1, &range);
+			vkUnmapMemory(core::dvc::compute.LD, memory);
 			luxDebug(Super::mapped = nullptr);
 		}
 
@@ -446,8 +480,5 @@ namespace lux::vram{
 		alwaysInline bool operator==(ram::ptr<type> vPtr) { return vPtr.cell == Super::cell; }
 		alwaysInline bool operator!=(ram::ptr<type> vPtr) { return vPtr.cell != Super::cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
-
-
-		#undef checkAllocSize
 	};
 }

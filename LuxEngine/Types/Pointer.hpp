@@ -69,12 +69,12 @@ namespace lux::ram{
 		void pushOwner() { luxDebug(
 			if(!cell->address) return;									//Return if the cell is nullptr
 			if(!cell->firstOwner) {										//If this is the first owner of the cell
-				cell->firstOwner = cell->lastOwner = (ptr<Dummy>*)this;	//Set this as both the first and last owners
+				cell->firstOwner = cell->lastOwner = (ptr<Dummy>*)this;		//Set this as both the first and last owners
 				prevOwner = nextOwner = nullptr;							//Set this prev and next owners to nullptr
-			} else {														//If this is not the first owner
+			} else {													//If this is not the first owner
 				prevOwner = cell->lastOwner;								//Set the cell's last owner as this prev
 				nextOwner = nullptr;										//Set this next to nullptr
-				cell->lastOwner->nextOwner = (ptr<Dummy>*)this;			//Update the cell's last owner's next to this
+				cell->lastOwner->nextOwner = (ptr<Dummy>*)this;				//Update the cell's last owner's next to this
 				cell->lastOwner = (ptr<Dummy>*)this;						//Update the cell's last owner to this
 			}
 		)}
@@ -82,11 +82,11 @@ namespace lux::ram{
 			if(!cell->address) return;									//Return if the cell is nullptr
 			if(!prevOwner && !nextOwner) {								//If this was the only owner
 				cell->firstOwner = cell->lastOwner = nullptr;				//Set both the first and last owner of the cell to nullptr
-			} else {														//If the cell had other owners
+			} else {													//If the cell had other owners
 				if(prevOwner) prevOwner->nextOwner = nextOwner;				//If this was NOT the first owner, update the previus owner's next
-				else cell->firstOwner = (ptr<Dummy>*)nextOwner;			//If this was the first owner,     update the cell's first owner
+				else cell->firstOwner = (ptr<Dummy>*)nextOwner;				//If this was the first owner,     update the cell's first owner
 				if(nextOwner) nextOwner->prevOwner = prevOwner;				//If this was NOT the last owner,  update the next owner's previous
-				else cell->lastOwner = (ptr<Dummy>*)prevOwner;			//If this was the last owner,      update the cell's last owner
+				else cell->lastOwner = (ptr<Dummy>*)prevOwner;				//If this was the last owner,      update the cell's last owner
 				prevOwner = nextOwner = nullptr;							//Set both this next and prev owners to nullptr. This is not necessary but helps debugging
 			}
 		)}
@@ -96,10 +96,10 @@ namespace lux::ram{
 
 	public:
 		genInitCheck;
-		Cell_t* cell; //A pointer to a lux::ram::Cell_t object that contains the cell informations //TODO add option to cache address
-		luxDebug(mutable __pvt::CellState state;)
-		luxDebug(mutable ptr<Dummy>* prevOwner;)
-		luxDebug(mutable ptr<Dummy>* nextOwner;)
+		Cell_t* cell; 								//A pointer to a lux::ram::Cell_t object that contains the cell informations
+		luxDebug(mutable __pvt::CellState state;)	//[State of the pointer]
+		luxDebug(mutable ptr<Dummy>* prevOwner;)	//The pointer that aquired the memory before this object
+		luxDebug(mutable ptr<Dummy>* nextOwner;)	//The pointer that aquired the memory after this object
 
 
 
@@ -267,7 +267,7 @@ namespace lux::ram{
 
 
 
-		//Returns the size in BYTES of the allocate memory. use count to get the number of elements
+		//Returns the size in BYTES of the allocate memory. use count() to get the number of elements
 		alwaysInline uint64 size()  const noexcept { return cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
 		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(type); }
@@ -317,18 +317,18 @@ namespace lux::ram{
 			cells_m.unlock();
 			cell = &cells[cellIndex];										//Update cell pointer
 			*cell = Cell_t{													//Update cell data
-				.typeIndex = __pvt::classIndexFromEnum(vClass),						//Set cell type index
+				.typeIndex = __pvt::classIndexFromEnum(vClass),					//Set cell type index
 				.owners = 1,													//Set 1 owner: this pointer
 				//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
 				//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
 				.cellIndex  = cellIndex,										//Set cell index
 				.cellSize = (uint32)vSize,										//Set size specified in function call
 			};
-			luxDebug(state = __pvt::CellState::ALLOC);								//Add cell state info if in debug mode
+			luxDebug(state = __pvt::CellState::ALLOC);						//Add cell state info if in debug mode
 
 
 			if((uint32)vClass) {											//For fixed class cells
-				auto& type_ = types[__pvt::classIndexFromEnum(vClass)];				//Cache buffer type
+				auto& type_ = types[__pvt::classIndexFromEnum(vClass)];			//Cache buffer type
 				type_.m.lock();
 				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 				type_.m.unlock();
@@ -340,7 +340,7 @@ namespace lux::ram{
 				cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
 			}
 			else {															//For custom size cells
-				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;			//Calculate the new size and allocate a new buffer
+				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
 				cell->address = win10(_aligned_malloc(size, __pvt::memOffset)) _linux(aligned_alloc(__pvt::memOffset, size));
 				luxDebug(cell->localIndex = 0;)
 			}
@@ -373,7 +373,7 @@ namespace lux::ram{
 				//!^ Ok. Owners count is set back to 1 if the address was nullptr. nullptr allocations are not shared
 				pushOwner();
 			}
-			else { [[likely]]														//If it's allocated
+			else { [[likely]]													//If it's allocated
 				if(																	//And the new size is smaller or equal to the maximum cell size
 					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / __pvt::incSize) * __pvt::incSize)) {
 					//!                                                                        ^ Not (vSize / incSize + 1)
@@ -394,16 +394,16 @@ namespace lux::ram{
 							cell->address = (char*)type_.memory[cell->localIndex / type_.cellsPerBuff] + (uint64)type_.cellClass * cell->localIndex;
 						}
 						else {															//Fixed size --> custom
-							uint64 size_ = (vSize / __pvt::incSize + 1) * __pvt::incSize;			//Calculate the new size and allocate the new memory
+							uint64 size_ = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate the new memory
 							cell->address = win10(_aligned_malloc(size_, __pvt::memOffset)) _linux(aligned_alloc(__pvt::memOffset, size_));
 						}
 						if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory
 						//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data
-						cell->typeIndex = __pvt::classIndexFromEnum(vClass);					//Set the new type index
+						cell->typeIndex = __pvt::classIndexFromEnum(vClass);			//Set the new type index
 					}
-					else {																//Custom size --> custom
+					else {															//Custom size --> custom
 						//FIXME use normal malloc if the data doesnt need to be copied
-						cell->address = std::realloc(cell->address, vSize);					//Just reallocate the pointer
+						cell->address = std::realloc(cell->address, vSize);				//Just reallocate the pointer
 					}
 					cell->cellSize = vSize;											//Set the new cell size
 					//! Custom size --> fixed is managed in smaller size case
@@ -472,11 +472,6 @@ namespace lux::ram{
 		//! If they have the same cell, they also have he same address. No need to access it
 
 
-		#undef checkSize
-		#undef checkSizeD
-		#undef checkAlloc
 		#undef isAlloc
-		#undef checkNullptr
-		#undef checkAllocSize
 	};
 }

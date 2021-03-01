@@ -21,9 +21,5 @@ namespace lux::obj{
 			*sp = vSp;
 		}
 		void init();
-
-
-		//TODO calculate offset and cell count at runtime with an everything array
-		// inline int32 getCellSize() const final { return 40; }
 	};
 }
