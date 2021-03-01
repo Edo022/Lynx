@@ -4,7 +4,9 @@
 
 
 #ifndef __INTELLISENSE__
+    #include "LuxEngine/System/SystemInfo.cpp"
     #include "LuxEngine/Tests/StructureInit.cpp"
+
     #include "LuxEngine/Core/Memory/Ram/Ram.cpp"
     #include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
     #include "LuxEngine/Core/Devices.cpp"

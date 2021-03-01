@@ -4,7 +4,6 @@
 #include "LuxEngine/Types/Vectors/Vec2.hpp"
 #include "LuxEngine/Types/Vectors/Vec3.hpp"
 #include "LuxEngine/Types/Vectors/Vec4.hpp"
-#include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 
 

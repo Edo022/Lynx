@@ -440,7 +440,7 @@ namespace lux::vram{
 				.offset = offset,
 				.size = size
 			};
-			vkInvalidateMappedMemoryRanges(core::dvc::compute.LD, 1, &range);
+			vkInvalidateMappedMemoryRanges(core::dvc::compute.LD, 1, &range); //TODO this seems useless
 		}
 
 
@@ -461,7 +461,7 @@ namespace lux::vram{
 				.offset = offset,
 				.size = size
 			};
-			vkFlushMappedMemoryRanges(core::dvc::compute.LD, 1, &range);
+			vkFlushMappedMemoryRanges(core::dvc::compute.LD, 1, &range); //TODO this seems useless
 			vkUnmapMemory(core::dvc::compute.LD, memory);
 			luxDebug(Super::mapped = nullptr);
 		}

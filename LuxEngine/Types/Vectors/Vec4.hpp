@@ -1,4 +1,8 @@
 #pragma once
+#include "LuxEngine/macros.hpp"
+
+
+
 
 template<class t> struct vec4_t {
 	t x = 0;

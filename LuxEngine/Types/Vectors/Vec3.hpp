@@ -1,4 +1,7 @@
 #pragma once
+#include "LuxEngine/macros.hpp"
+
+
 
 
 //A tridimensional vector
