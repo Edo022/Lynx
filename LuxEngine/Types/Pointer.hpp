@@ -15,35 +15,44 @@
 
 
 namespace lux::ram{
-	#define checkSize()     lux::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations")
-	#define checkSizeD()    lux::dbg::checkCond(size() == 0, "Cannot dereference a 0-byte memory allocation"              )
-
-
-	#define checkAlloc() luxDebug(lux::dbg::checkCond(state == __pvt::CellState::FREED,   \
-		"Unable to call this function on invalid allocations: The memory block have been manually freed"))
-	#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::FREED, #a,\
-		"Use of invalid allocation: The memory block have been manually freed")
-
-
-	#define checkNullptr() luxDebug(lux::dbg::checkCond(state == __pvt::CellState::NULLPTR,\
-		"Unable to call this function on unallocated memory blocks"))
-	#define checkNullptrD() luxDebug(lux::dbg::checkCond(state == __pvt::CellState::NULLPTR,\
-		"Cannot dereference an unallocated memory block"))
-
-
-	#define checkAllocSize(var, _class) luxDebug(if((_class) != CellClass::CLASS_0 && (_class) != CellClass::AUTO) {											\
-		dbg::checkCond((var) > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", (var));	\
-		dbg::checkCond((uint32)(_class) < (var), "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)(_class), (var), "Use lux::CellClass::AUTO to automatically choose it");\
-	});
-
-
-
 	/**
 	 * @brief A pointer that keeps track of how many objects are using it and automatically frees the memory block once it becomes unreachable
 	 * @tparam type The type of data pointed by the pointer (int, float, etc...)
 	 */
 	template<class type> struct ptr {
 	private:
+		alwaysInline void checkSize()  const { luxDebug(
+			lux::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations");
+		)}
+		alwaysInline void checkSizeD() const { luxDebug(
+			lux::dbg::checkCond(size() == 0, "Cannot dereference a 0-byte memory allocation");
+		)}
+
+
+		alwaysInline void checkAlloc() const { luxDebug(
+			lux::dbg::checkCond(state == __pvt::CellState::FREED, "Unable to call this function on invalid allocations: The memory block have been manually freed");
+		)}
+		#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::FREED, #a,\
+			"Use of invalid allocation: The memory block have been manually freed")
+		;
+
+
+		alwaysInline void checkNullptr()  const { luxDebug(
+			lux::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Unable to call this function on unallocated memory blocks");
+		)}
+		alwaysInline void checkNullptrD() const { luxDebug(
+			lux::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Cannot dereference an unallocated memory block");
+		)}
+
+
+		static alwaysInline void checkAllocSize(uint64 size_, CellClass _class) { luxDebug(
+			if(_class != CellClass::CLASS_0 && _class != CellClass::AUTO) {
+				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
+				dbg::checkCond((uint32)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, size_, "Use lux::CellClass::AUTO to automatically choose it");
+			}
+		)};
+
+
 		constexpr static void evaluateCellClass(const uint64 vSize, CellClass& pClass) noexcept {
 			if(pClass == CellClass::AUTO) { [[likely]]
 				     if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]	  pClass = CellClass::CLASS_A;
@@ -57,35 +66,30 @@ namespace lux::ram{
 		}
 
 
-		#ifdef LUX_DEBUG
-			void pushOwner() {
-				if(!cell->address) return;									//Return if the cell is nullptr
-				if(!cell->firstOwner) {										//If this is the first owner of the cell
-					cell->firstOwner = cell->lastOwner = (ptr<Dummy>*)this;	//Set this as both the first and last owners
-					prevOwner = nextOwner = nullptr;							//Set this prev and next owners to nullptr
-				} else {														//If this is not the first owner
-					prevOwner = cell->lastOwner;								//Set the cell's last owner as this prev
-					nextOwner = nullptr;										//Set this next to nullptr
-					cell->lastOwner->nextOwner = (ptr<Dummy>*)this;			//Update the cell's last owner's next to this
-					cell->lastOwner = (ptr<Dummy>*)this;						//Update the cell's last owner to this
-				}
+		void pushOwner() { luxDebug(
+			if(!cell->address) return;									//Return if the cell is nullptr
+			if(!cell->firstOwner) {										//If this is the first owner of the cell
+				cell->firstOwner = cell->lastOwner = (ptr<Dummy>*)this;	//Set this as both the first and last owners
+				prevOwner = nextOwner = nullptr;							//Set this prev and next owners to nullptr
+			} else {														//If this is not the first owner
+				prevOwner = cell->lastOwner;								//Set the cell's last owner as this prev
+				nextOwner = nullptr;										//Set this next to nullptr
+				cell->lastOwner->nextOwner = (ptr<Dummy>*)this;			//Update the cell's last owner's next to this
+				cell->lastOwner = (ptr<Dummy>*)this;						//Update the cell's last owner to this
 			}
-			void popOwner() {
-				if(!cell->address) return;									//Return if the cell is nullptr
-				if(!prevOwner && !nextOwner) {								//If this was the only owner
-					cell->firstOwner = cell->lastOwner = nullptr;				//Set both the first and last owner of the cell to nullptr
-				} else {														//If the cell had other owners
-					if(prevOwner) prevOwner->nextOwner = nextOwner;				//If this was NOT the first owner, update the previus owner's next
-					else cell->firstOwner = (ptr<Dummy>*)nextOwner;			//If this was the first owner,     update the cell's first owner
-					if(nextOwner) nextOwner->prevOwner = prevOwner;				//If this was NOT the last owner,  update the next owner's previous
-					else cell->lastOwner = (ptr<Dummy>*)prevOwner;			//If this was the last owner,      update the cell's last owner
-					prevOwner = nextOwner = nullptr;							//Set both this next and prev owners to nullptr. This is not necessary but helps debugging
-				}
+		)}
+		void popOwner() { luxDebug(
+			if(!cell->address) return;									//Return if the cell is nullptr
+			if(!prevOwner && !nextOwner) {								//If this was the only owner
+				cell->firstOwner = cell->lastOwner = nullptr;				//Set both the first and last owner of the cell to nullptr
+			} else {														//If the cell had other owners
+				if(prevOwner) prevOwner->nextOwner = nextOwner;				//If this was NOT the first owner, update the previus owner's next
+				else cell->firstOwner = (ptr<Dummy>*)nextOwner;			//If this was the first owner,     update the cell's first owner
+				if(nextOwner) nextOwner->prevOwner = prevOwner;				//If this was NOT the last owner,  update the next owner's previous
+				else cell->lastOwner = (ptr<Dummy>*)prevOwner;			//If this was the last owner,      update the cell's last owner
+				prevOwner = nextOwner = nullptr;							//Set both this next and prev owners to nullptr. This is not necessary but helps debugging
 			}
-		#else
-			constexpr alwaysInline void pushOwner() {}
-			constexpr alwaysInline void popOwner() {}
-		#endif
+		)}
 
 
 
