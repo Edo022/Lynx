@@ -5,6 +5,7 @@
 #include "LuxEngine/Core/Render/GSwapchain.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
+#include "LuxEngine/System/SystemInfo.hpp"
 
 #include <set>
 #include <vector>
@@ -214,6 +215,19 @@ namespace lux::core::dvc{
 		Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
 		Main	printf("        Main compute   |  compute queues:  %d", compute.computeQueues.count());
 		Normal	printf("        %d secondary devices",/*  |  secondary compute queues: %lld", secondary.count, */secondary.count());
+
+
+
+		//FIXME
+		#define limits compute.PD.properties.limits
+		sys::gpu = sys::GpuInfo{
+			.name = compute.PD.properties.deviceName,
+			.type = (compute.PD.properties.deviceType == VkPhysicalDeviceType::VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) ? sys::Discrete : sys::Integrated,
+			.maxWgSize = { limits.maxComputeWorkGroupSize[0], limits.maxComputeWorkGroupSize[1], limits.maxComputeWorkGroupSize[2]},
+			.maxWgInvoc = limits.maxComputeWorkGroupInvocations,
+			.maxWgs = {limits.maxComputeWorkGroupCount[0], limits.maxComputeWorkGroupCount[1], limits.maxComputeWorkGroupCount[2]}
+		};
+		#undef limits
 	}
 
 

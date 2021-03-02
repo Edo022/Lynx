@@ -1,7 +1,5 @@
-// #include <sys/sysinfo.h>
 #include "LuxEngine/System/SystemInfo.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
-#include <regex>
 
 #ifdef _WIN64
 #	include <windows.h>
@@ -11,11 +9,16 @@
 
 
 
+
+
+
+
+
 namespace lux::sys{
     const CpuInfo cpu = {
-        .name    =              dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'model.*name' | grep -o ':.*' | grep -o '[^: ].*'"),
-        .cores   = (uint32)atoi(dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'cores' | grep -o '[0-9].*'")),
-        .threads = (uint32)atoi(dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'threads' | grep -o '[0-9].*'")),
+        .name    =              dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'model.*name' | grep     -o ':.*' | grep -o '[^: ].*'"),
+        .cores   = (uint32)atoi(dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'cores'       | grep     -o '[0-9].*'")),
+        .threads = (uint32)atoi(dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'threads'     | grep     -o '[0-9].*'")),
         .minFreq = (uint32)atoi(dbg::cmdOutput("lscpu | grep -m1 'min[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'")),
         .maxFreq = (uint32)atoi(dbg::cmdOutput("lscpu | grep -m1 'max[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'")),
         .L1D = {
@@ -49,19 +52,6 @@ namespace lux::sys{
 
 
     const RamInfo ram = {
-        // .config = [](){
-        //     char* out = dbg::cmdOutput("dmidecode -t memory | grep 'Size'");
-        //     uint32 tot = 0, size = strlen(out);
-        //     for(uint32 i = 0; i < size; ++i){
-        //         if((out[i] < '0' || out[i] > '9') && out[i] != '.' && out[i] != ',') {
-        //             uint32 b = i;
-        //             while((out[i] >= '0' && out[i] <= '9') || out[i] == '.' || out[i] == ',' ) i++;
-        //             out[i] = '\0';
-        //             tot += atoi(out + b);
-        //         }
-        //     };
-        //     free(out); return tot;
-        // }(),
         #ifdef _WIN64
             .pageNum = []() {
 		    	MEMORYSTATUSEX status;
@@ -88,6 +78,9 @@ namespace lux::sys{
         #endif
     };
 
-    const GpuInfo gpu = {};
-    const VRamInfo vram = {};
+
+
+
+    GpuInfo gpu = {};      //Set in LuxEngine/core/Devices
+    VRamInfo vram = {};    //Set in LuxEngine/core/Devices
 }

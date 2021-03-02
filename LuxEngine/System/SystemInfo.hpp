@@ -30,13 +30,22 @@ namespace lux::sys{
     extern const RamInfo ram;
 
 
+    enum DeviceType{
+        Discrete,
+        Integrated
+    };
     struct GpuInfo{
         //TODO use array of gpus
         const char* name;   //Name of the GPU
+        DeviceType type;    //Type of device (Discrete or Integrated gpu)
         uint32 freq;        //Core frequence in Mhz
         uint32 cores;       //Number of cores //TODO specify core type
+        uint32 maxWgSize[3];//Maximum size of each workgroup //FIXME
+        uint32 maxWgInvoc;  //Maximum thread count in a workgroup //FIXME
+        uint32 maxWgs[3];   //Maximum number of workgroups per dispatch //FIXME
     };
-    extern const GpuInfo gpu;
+    // extern const GpuInfo gpu;
+    extern GpuInfo gpu;
 
 
     struct VRamInfo{
@@ -45,5 +54,8 @@ namespace lux::sys{
         uint64 pageSize;    //Size of each memory page in bytes
         uint64 size;        //Total size of the memory in bytes (pageNum * pageSize)
     };
-    extern const VRamInfo vram;
+    // #ifdef __INTELLISENSE__
+        // extern const VRamInfo vram;
+    // #else
+        extern VRamInfo vram;
 }
