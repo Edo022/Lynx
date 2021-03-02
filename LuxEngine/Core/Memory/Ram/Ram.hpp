@@ -1,35 +1,18 @@
 ﻿#pragma once
 #define LUX_H_MEMORY
-#include "LuxEngine/Types/Integers/Integers.hpp"
+#include "LuxEngine/Types/Pointer.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include <cstring>
 #include <mutex>
 
-
-
-
 #ifdef _WIN64
 #	include <intrin.h>
 #	include <windows.h>
-	namespace lux::ram{
-		//System RAM in bytes
-		const uint64 systemMemory = []() {
-			MEMORYSTATUSEX status;
-			status.dwLength = sizeof(status);
-			GlobalMemoryStatusEx(&status);
-			return status.ullTotalPhys;
-		}();
-	}
 #elif defined __linux__
 #	include <x86intrin.h>
 #	include <unistd.h>
-	namespace lux::ram{
-		//System RAM in bytes
-		const uint64 systemMemory = sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE);
-	}
 #endif
 
-#include "LuxEngine/Types/Pointer.hpp"
 
 /*
 .

@@ -1,3 +1,4 @@
+#include "LuxEngine/System/SystemInfo.hpp"
 #include "LuxEngine/Core/Memory/Ram/Ram.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
@@ -28,7 +29,8 @@ namespace lux::ram{
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) {
-			uint32 buffsNum = systemMemory / buffSize;						//Get max number of cells that can fit in the system memory
+			// uint32 buffsNum = systemMemory / buffSize;						//Get max number of cells that can fit in the system memory
+			uint32 buffsNum = sys::ram.size / buffSize;						//Get max number of cells that can fit in the system memory
 			uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
 			new(&types[i]) Type_t{
 				.cellClass = classEnumFromIndex(i),									//Set class index
@@ -37,7 +39,8 @@ namespace lux::ram{
 			};
 			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
-		cells.init(systemMemory / (uint64)CellClass::CLASS_A);
+		// cells.init(systemMemory / (uint64)CellClass::CLASS_A);
+		cells.init(sys::ram.size / (uint64)CellClass::CLASS_A);
 	}
 
 

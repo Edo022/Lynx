@@ -1,33 +1,36 @@
+// #include <sys/sysinfo.h>
 #include "LuxEngine/System/SystemInfo.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include <regex>
-#ifdef __linux__
-    #include <unistd.h>
+
+#ifdef _WIN64
+#	include <windows.h>
+#elif defined __linux__
+#	include <unistd.h>
 #endif
 
 
 
-
 namespace lux::sys{
-    CpuInfo cpu = {
+    const CpuInfo cpu = {
         .cores = []()->uint32{
-            char* out = dbg::cmdOutput("dmidecode -t processor | grep 'Core Count'");
-            char* i = out; while(*i < '0' && *i > '9' && *i != '.' && *i != ',') ++i;
+            char* out = dbg::cmdOutput("cat /proc/cpuinfo | grep 'cores'");
+            char* i = out; while((*i < '0' || *i > '9') && *i != '.' && *i != ',') ++i;
             uint32 ret = atoi(i); free(out); return ret;
         }(),
         .threads = []()->uint32{
-            char* out = dbg::cmdOutput("dmidecode -t processor | grep 'Thread Count'");
-            char* i = out; while(*i < '0' && *i > '9' && *i != '.' && *i != ',') ++i;
+            char* out = dbg::cmdOutput("cat /proc/cpuinfo | grep 'siblings'");
+            char* i = out; while((*i < '0' || *i > '9') && *i != '.' && *i != ',') ++i;
             uint32 ret = atoi(i); free(out); return ret;
         }(),
         .minFreq = []()->uint32{
             char* out = dbg::cmdOutput("lscpu | grep 'min[ \\-_]*[Mm][Hh][Zz]'");
-            char* i = out; while(*i < '0' && *i > '9' && *i != '.' && *i != ',') ++i;
+            char* i = out; while((*i < '0' || *i > '9') && *i != '.' && *i != ',') ++i;
             uint32 ret = atoi(i); free(out); return ret;
         }(),
         .maxFreq = []()->uint32{
             char* out = dbg::cmdOutput("lscpu | grep 'max[ \\-_]*[Mm][Hh][Zz]'");
-            char* i = out; while(*i < '0' && *i > '9' && *i != '.' && *i != ',') ++i;
+            char* i = out; while((*i < '0' || *i > '9') && *i != '.' && *i != ',') ++i;
             uint32 ret = atoi(i); free(out); return ret;
         }(),
         .L1D = {
@@ -56,8 +59,50 @@ namespace lux::sys{
             .assoc    = (uint32)sysconf(_SC_LEVEL4_CACHE_ASSOC)
         },
     };
-    RamInfo ram;
 
-    GpuInfo gpu;
-    VRamInfo vram;
+
+
+
+    const RamInfo ram = {
+        .freq     = []()->uint32{
+            char* out = dbg::cmdOutput("dmidecode -t memory | grep 'Size'");
+            uint32 tot = 0, size = strlen(out);
+            for(uint32 i = 0; i < size; ++i){
+                if((out[i] < '0' || out[i] > '9') && out[i] != '.' && out[i] != ',') {
+                    uint32 b = i;
+                    while((out[i] >= '0' && out[i] <= '9') || out[i] == '.' || out[i] == ',' ) i++;
+                    out[i] = '\0';
+                    tot += atoi(out + b);
+                }
+            };
+            free(out); return tot;
+        }(),
+        #ifdef _WIN64
+            .pageNum = []() {
+		    	MEMORYSTATUSEX status;
+		    	status.dwLength = sizeof(status);
+		    	GlobalMemoryStatusEx(&status);
+		    	return status.ullTotalPageFile;
+		    }();
+            .pageSize = []() {
+		    	MEMORYSTATUSEX status;
+		    	status.dwLength = sizeof(status);
+		    	GlobalMemoryStatusEx(&status);
+		    	return status.ullAvailPageFile;
+		    }();
+            .size = []() {
+		    	MEMORYSTATUSEX status;
+		    	status.dwLength = sizeof(status);
+		    	GlobalMemoryStatusEx(&status);
+		    	return status.ullTotalPhys;
+		    }();
+        #else
+            .pageNum  = (uint32)sysconf(_SC_PHYS_PAGES),
+            .pageSize = (uint64)sysconf(_SC_PAGE_SIZE),
+            .size     = (uint64)(sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE))
+        #endif
+    };
+
+    const GpuInfo gpu = {};
+    const VRamInfo vram = {};
 }

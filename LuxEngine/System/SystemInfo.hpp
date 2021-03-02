@@ -17,7 +17,7 @@ namespace lux::sys{
             uint64 assoc;   //Cache associativity
         } L1D, L1I, L2, L3, L4;
     };
-    extern CpuInfo cpu;
+    extern const CpuInfo cpu;
 
 
     struct RamInfo{
@@ -27,7 +27,7 @@ namespace lux::sys{
         uint32 pageSize;    //Size of each memory page in bytes
         uint64 size;        //Total size of the memory in bytes (pageNum * pageSize)
     };
-    extern RamInfo ram;
+    extern const RamInfo ram;
 
 
     struct GpuInfo{
@@ -36,14 +36,14 @@ namespace lux::sys{
         uint32 freq;        //Core frequence in Mhz
         uint32 cores;       //Number of cores //TODO specify core type
     };
-    extern GpuInfo gpu;
+    extern const GpuInfo gpu;
 
 
     struct VRamInfo{
         uint32 freq;        //Frequence of the memory in Mhz
         uint32 pageNum;     //Number of memory pages
-        uint32 pageSize;    //Size of each memory page in bytes
+        uint64 pageSize;    //Size of each memory page in bytes
         uint64 size;        //Total size of the memory in bytes (pageNum * pageSize)
     };
-    extern VRamInfo vram;
+    extern const VRamInfo vram;
 }
