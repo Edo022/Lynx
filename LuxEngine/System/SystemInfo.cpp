@@ -81,6 +81,5 @@ namespace lux::sys{
 
 
 
-    GpuInfo gpu = {};       //Set in LuxEngine/core/Devices
-    // VRamInfo vram = {};     //Set in LuxEngine/core/Devices
+    // GpuInfo gpu = {};       //Set in LuxEngine/Core/Memory/VRam/VRam.cpp
 }

@@ -35,31 +35,23 @@ namespace lux::sys{
         Integrated
     };
     struct GpuInfo{
-        //TODO use array of gpus
         const char* name;       //Name of the GPU
         DeviceType type;        //Type of device (Discrete or Integrated gpu)
-        uint32 freq;            //Core frequence in Mhz
-        uint32 cores;           //Number of cores //TODO specify core type
         uint32 maxWgSize[3];    //Maximum size of each workgroup //FIXME
         uint32 maxWgInvoc;      //Maximum thread count in a workgroup //FIXME
         uint32 maxWgs[3];       //Maximum number of workgroups per dispatch //FIXME
-    };
-    // extern const GpuInfo gpu;
-    extern GpuInfo gpu;
 
-
-    struct VRamInfo{
-        uint32 freq = 0;        //Frequence of the memory in Mhz
-        struct HeapsInfo{       //Structure containing informations about the available memory heaps
+        uint32 freq = 0;        //Frequence of the memory in Mhz //FIXME
+        uint64 size = 0;        //Total size of the VRAM memory in bytes
+        struct HeapsInfo{       //Informations about the available memory heaps
             uint32 num = 0;         //Number of heaps
             alwaysInline auto& operator[](uint32 i) { return heaps_[i]; }
         private:
-            struct HeapInfo{        //Structure containing information about a specific heap
+            struct HeapInfo{        //Informations about a specific heap
                 uint64 size = 0;        //Size of the heap in bytes
                 uint32 flags = 0;       //Vulkan heap flags
             } heaps_[16];
         } heaps;
-        uint64 size = 0;        //Total size of the memory in bytes
     };
-    extern const VRamInfo vram;
+    extern const GpuInfo vram;
 }
