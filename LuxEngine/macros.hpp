@@ -36,6 +36,17 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #	define luxRelease(...) __VA_ARGS__
 #endif
 
+// //
+// #ifdef LUX_NO_EDITOR
+// #	define noeditor(...) __VA_ARGS__
+// #	define   editor(...)
+// #else
+// #	define noeditor(...)
+// #	define   editor(...) __VA_ARGS__
+// #endif
+
+
+
 
 //Im lazy UwU
 #define scast   static_cast
