@@ -10,6 +10,7 @@
     #include "LuxEngine/Core/Memory/Ram/Ram.cpp"
     #include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
 
+    #include "LuxEngine/Core/Render/Window.cpp" //FIXME
     #include "LuxEngine/Core/Devices.cpp"
     #include "LuxEngine/Core/Core.cpp"
 
@@ -38,7 +39,6 @@
     #include "LuxEngine/Core/Render/GOutput.cpp"
     #include "LuxEngine/Core/Render/GSwapchain.cpp"
     #include "LuxEngine/Core/Render/Render.cpp"
-    #include "LuxEngine/Core/Render/Window.cpp"
 
     #include "LuxEngine/Core/Input/Input.cpp"
     #include "LuxEngine/Core/Input/InputState.cpp"

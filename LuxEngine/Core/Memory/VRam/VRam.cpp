@@ -18,12 +18,12 @@ namespace lux::sys{
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
 	const GpuInfo vram = [](){
-		core::render::wnd::initWindow();
+		lux::window.initWindow();
 		Normal	printf("Creating Instance...                     ");
-		core::render::wnd::createInstance();
+		lux::window.createInstance();
 		SuccessNoNl printf("ok");
 
-		dbg::checkVk(glfwCreateWindowSurface(core::instance, core::render::wnd::window, nullptr, &core::surface), "Failed to create window surface");
+		dbg::checkVk(glfwCreateWindowSurface(core::instance, lux::window.window, nullptr, &core::surface), "Failed to create window surface");
 		core::dvc::getPhysical();
 
 		{

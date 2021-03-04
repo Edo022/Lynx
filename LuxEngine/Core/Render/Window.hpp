@@ -11,19 +11,21 @@
 
 
 //TODO use ptrs instead of cells
-namespace lux::core::render::wnd{
-	extern GLFWwindow*	window;					//Main engine window
-	extern int32		width;					//Size of the window //TODO
-	extern int32 		height;					//Size of the window //TODO
-	extern std::mutex	windowResizeFence;
-	extern vram::ptr<int32, Ram,  Storage> gpuCellWindowSize;		//Size of the widow
-	extern vram::ptr<int32, VRam, Storage> gpuCellWindowOutput;	//Color output of the window
-	extern vram::ptr<int32, VRam, Storage> gpuCellWindowOutput_i;	//Packed color output of the window
-	extern vram::ptr<int32, VRam, Storage> gpuCellWindowZBuffer;	//TODO remove. use render space assembler
+namespace lux{
+	struct Window{
+		GLFWwindow*	window = nullptr;		//Main engine window
+		int32		width  = 1920 * 2;		//Size of the window //TODO
+		int32 		height = 1080;			//Size of the window //TODO
+		std::mutex	windowResizeFence;
+		vram::ptr<int32, Ram,  Storage> gpuCellWindowSize     = nullptr;	//Size of the widow
+		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput   = nullptr;	//Color output of the window
+		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput_i = nullptr;	//Packed color output of the window
+		vram::ptr<int32, VRam, Storage> gpuCellWindowZBuffer  = nullptr;	//TODO remove. use render space assembler
 
 
 
-	void preInit();
-	void initWindow();
-	void createInstance();
+		void initWindow();
+		void createInstance();
+	};
+	extern Window window; //TODO REMOVE
 }

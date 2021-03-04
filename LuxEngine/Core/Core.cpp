@@ -111,7 +111,7 @@ namespace lux::core{
 		Normal  printf("Cleaning memory\n");
 		render::cleanup(); buffers::cleanup();
 		vkDestroyInstance(instance, nullptr);
-		glfwDestroyWindow(render::wnd::window);
+		glfwDestroyWindow(lux::window.window);
 		glfwTerminate();
 	}
 
@@ -124,7 +124,7 @@ namespace lux::core{
 		renderThr(runRenderThr);				//renderThr.detach();
 		initialized = true;
 
-		while(!glfwWindowShouldClose(render::wnd::window)) glfwWaitEvents();
+		while(!glfwWindowShouldClose(lux::window.window)) glfwWaitEvents();
 		vkDeviceWaitIdle(dvc::graphics.LD);
 	}
 

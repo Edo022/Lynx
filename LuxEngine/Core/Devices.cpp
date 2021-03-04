@@ -244,7 +244,6 @@ namespace lux::core::dvc{
 
 
 		//Queue infos
-		//FIXME for some reason, some times queueFamilyIndex is 3435973836 instead of 0, 1 or 2
 		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct

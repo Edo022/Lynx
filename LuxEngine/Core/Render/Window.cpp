@@ -13,21 +13,23 @@
 
 
 
-namespace lux::core::render::wnd{
-	alignCache GLFWwindow* window                = nullptr;
-	alignCache int32       width                 = 1920 * 2;
-	alignCache int32       height                = 1080;
-	std::mutex	windowResizeFence;
-	alignCache vram::ptr<int32, Ram,  Storage>   gpuCellWindowSize     = nullptr;
-	alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput   = nullptr;
-	alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput_i = nullptr;
-	alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowZBuffer  = nullptr;
+namespace lux{
+		Window window; //TODO REMOVE
+
+	// alignCache GLFWwindow* window                = nullptr;
+	// alignCache int32       width                 = 1920 * 2;
+	// alignCache int32       height                = 1080;
+	// std::mutex	windowResizeFence;
+	// alignCache vram::ptr<int32, Ram,  Storage>   gpuCellWindowSize     = nullptr;
+	// alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput   = nullptr;
+	// alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput_i = nullptr;
+	// alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowZBuffer  = nullptr;
 
 
 
 
 	//Create the Vulkan instance, using validation layers when in debug mode
-	void createInstance() {
+	void Window::createInstance() {
 		VkApplicationInfo appInfo{
 			.sType              { VK_STRUCTURE_TYPE_APPLICATION_INFO },
 			.pApplicationName   { "LuxEngine"                        },
@@ -53,15 +55,15 @@ namespace lux::core::render::wnd{
 
 		//Create debugCreateInfo structure
 		luxDebug(VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo);
-		luxDebug(debug::populateDebugMessengerCreateInfo(debugCreateInfo));
+		luxDebug(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
 
 		//Create instance
 		VkInstanceCreateInfo createInfo{
 			.sType							{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO      },
 			.pNext							{ luxDebug((VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo) luxRelease(nullptr) },
 			.pApplicationInfo				{ &appInfo 									  },
-			.enabledLayerCount				{ luxDebug(validationLayersNum) luxRelease(0) },
-			luxDebug(.ppEnabledLayerNames	{ validationLayers 							  },)
+			.enabledLayerCount				{ luxDebug(core::validationLayersNum) luxRelease(0) },
+			luxDebug(.ppEnabledLayerNames	{ core::validationLayers 							  },)
 			.enabledExtensionCount			{ glfwExtensionCount luxDebug(+ 1) 			  },
 			.ppEnabledExtensionNames		{ extensions 								  }
 		};
@@ -71,10 +73,10 @@ namespace lux::core::render::wnd{
 			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
 			RtArray<VkLayerProperties> availableLayers(layerCount);
 			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
-			for(uint32 i = 0; i < validationLayersNum; i++) {									//For every layer,
+			for(uint32 i = 0; i < core::validationLayersNum; i++) {									//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
-					if(validationLayers[i] == layerProperties.layerName) break;					//If not, exit
-					else if(validationLayers[i] == availableLayers.end()->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
+					if(core::validationLayers[i] == layerProperties.layerName) break;					//If not, exit
+					else if(core::validationLayers[i] == availableLayers.end()->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
 				}
 			}
 		#endif
@@ -86,7 +88,7 @@ namespace lux::core::render::wnd{
 
 
 
-	void initWindow() {
+	void Window::initWindow() {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
@@ -109,7 +111,7 @@ namespace lux::core::render::wnd{
 
 		{ //Set callbacks
 			glfwSetWindowUserPointer      (window, nullptr);
-			glfwSetFramebufferSizeCallback(window, render::framebufferResizeCallback);
+			glfwSetFramebufferSizeCallback(window, core::render::framebufferResizeCallback);
 
 			glfwSetCursorPosCallback      (window, input::mouseCursorPosCallback);
 			glfwSetMouseButtonCallback    (window, input::mouseButtonCallback);

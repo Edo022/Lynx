@@ -22,15 +22,15 @@ namespace lux::core::buffers{
 	//> Engine internal use
 	void init() {
 		{ //Initialize window buffers and count
-			render::wnd::gpuCellWindowOutput_i.realloc(render::wnd::width * render::wnd::height * 4); //A8-R8-G8-B8 UI
-			render::wnd::gpuCellWindowOutput.  realloc(render::wnd::width * render::wnd::height * 4 * 4); //A32-R32-G32-B32 UF
-			render::wnd::gpuCellWindowZBuffer. realloc(render::wnd::width * render::wnd::height * 4);
-			render::wnd::gpuCellWindowSize.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
+			lux::window.gpuCellWindowOutput_i.realloc(lux::window.width * lux::window.height * 4); //A8-R8-G8-B8 UI
+			lux::window.gpuCellWindowOutput.  realloc(lux::window.width * lux::window.height * 4 * 4); //A32-R32-G32-B32 UF
+			lux::window.gpuCellWindowZBuffer. realloc(lux::window.width * lux::window.height * 4);
+			lux::window.gpuCellWindowSize.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
 
-			render::wnd::gpuCellWindowSize.map();			//Map window size cell //TODO use gpu pointer instead of raw cell
-			render::wnd::gpuCellWindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
-			render::wnd::gpuCellWindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
-			render::wnd::gpuCellWindowSize.unmap();										//Unmap
+			lux::window.gpuCellWindowSize.map();			//Map window size cell //TODO use gpu pointer instead of raw cell
+			lux::window.gpuCellWindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
+			lux::window.gpuCellWindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
+			lux::window.gpuCellWindowSize.unmap();										//Unmap
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers

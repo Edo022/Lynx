@@ -54,7 +54,7 @@ namespace lux::core::render::swapchain{
 
 	VkExtent2D swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
-		glfwGetFramebufferSize(wnd::window, &width, &height);
+		glfwGetFramebufferSize(lux::window.window, &width, &height);
 		return VkExtent2D{
 			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
@@ -184,10 +184,10 @@ namespace lux::core::render::swapchain{
 
 
 	void swapchainRecreate(const bool vWindowResized) {
-		if(vWindowResized) wnd::windowResizeFence.lock();	//Sync with framebufferResizeCallback
+		if(vWindowResized) lux::window.windowResizeFence.lock();	//Sync with framebufferResizeCallback
 
 		//TODO dont destroy it every time
-		static int32 width, height;	glfwGetFramebufferSize(wnd::window, &width, &height);
+		static int32 width, height;	glfwGetFramebufferSize(lux::window.window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
 			swapchain::cleanup();					//Clean the old swapchain
@@ -195,10 +195,10 @@ namespace lux::core::render::swapchain{
 
 
 			//Update the window count buffer
-			wnd::gpuCellWindowSize.map();
-			wnd::gpuCellWindowSize[0] = swapchainExtent.width;
-			wnd::gpuCellWindowSize[1] = swapchainExtent.height;
-			wnd::gpuCellWindowSize.unmap();
+			lux::window.gpuCellWindowSize.map();
+			lux::window.gpuCellWindowSize[0] = swapchainExtent.width;
+			lux::window.gpuCellWindowSize[1] = swapchainExtent.height;
+			lux::window.gpuCellWindowSize.unmap();
 
 			{	//Destroy copy command buffers
 				vkFreeCommandBuffers(dvc::compute.LD, buffers::copyCommandPool, buffers::copyCommandBuffers.count(), buffers::copyCommandBuffers.begin());
@@ -212,6 +212,6 @@ namespace lux::core::render::swapchain{
 			//Recreate clear shader
 			c::shaders::updateShaderCall(c::shaders::clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1);
 		}
-		if(vWindowResized) wnd::windowResizeFence.unlock();		//Sync with framebufferResizeCallback
+		if(vWindowResized) lux::window.windowResizeFence.unlock();		//Sync with framebufferResizeCallback
 	}
 }

@@ -114,9 +114,9 @@ namespace lux::core::render{
 		//Redraw frame if necessary
 		redraw:
 		if(out::renderFramebufferResized) {
-			wnd::windowResizeFence.lock();
+			lux::window.windowResizeFence.lock();
 			out::renderFramebufferResized = false;
-			wnd::windowResizeFence.unlock();
+			lux::window.windowResizeFence.unlock();
 			swapchain::swapchainRecreate(true);
 			goto redraw;
 		}
@@ -226,7 +226,7 @@ namespace lux::core::render{
 
 		//Update frame number and flush the window data
 		renderCurrentFrame = (renderCurrentFrame + 1) % out::renderMaxFramesInFlight;
-		glfwSwapBuffers(wnd::window);
+		glfwSwapBuffers(lux::window.window);
 
 
 
