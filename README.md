@@ -12,7 +12,7 @@ Support for other C++ compilers and editors will be added in future versions.
 | Python  | 3.8   |
 | Any Linux distribution||
 
-Older versions could also work, but we didn't test them and we don't know if they can be used safely
+Older versions may work as well, but we haven't tested them and don't know if they can be used safely
 
 //TODO
 
