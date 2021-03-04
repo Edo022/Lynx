@@ -24,6 +24,9 @@ if sys.stdin.read(1) == 'y':
     if not os.path.exists(pdir + "/.vscode"):
         os.mkdir(pdir + "/.vscode")
 
+    if not os.path.exists(pdir + "/.engine"):
+        os.mkdir(pdir + "/.engine")
+
     EnginePath_ = os.path.relpath(thisdir, pdir)
     pf = open('./.engine/enginePath', 'w')
     # pf.write("ProjectPath = \"" + os.path.relpath(pdir, thisdir) + "\"\n")
