@@ -125,7 +125,7 @@ namespace lux::core{
 				.messageSeverity { VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT },
 				.messageType     { VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT     | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT  | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT }
 			};
-			luxDebug(createInfo.pfnUserCallback = core::render::vulkanOutputCallback);
+			_dbg(createInfo.pfnUserCallback = core::render::vulkanOutputCallback);
 		}
 	}
 }

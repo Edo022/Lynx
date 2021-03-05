@@ -50,25 +50,25 @@ namespace lux{
 		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
 		//! ^ Freed by GLFW
 
-		const char** extensions = (const char**)malloc(sizeof(const char*) * (glfwExtensionCount luxDebug(+ 1)));
+		const char** extensions = (const char**)malloc(sizeof(const char*) * (glfwExtensionCount _dbg(+ 1)));
 		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions[i] = glfwExtensions[i];		//Save them into an array
-		luxDebug(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));			//Add debug extension if in debug mode
+		_dbg(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));				//Add debug extension if in debug mode
 
 
 
 		//Create debugCreateInfo structure
-		luxDebug(VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo);
-		luxDebug(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
+		_dbg(VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo);
+		_dbg(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
 
 		//Create instance
 		VkInstanceCreateInfo createInfo{
-			.sType							{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO      },
-			.pNext							{ luxDebug((VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo) luxRelease(nullptr) },
-			.pApplicationInfo				{ &appInfo 									  },
-			.enabledLayerCount				{ luxDebug(core::validationLayersNum) luxRelease(0) },
-			luxDebug(.ppEnabledLayerNames	{ core::validationLayers 							  },)
-			.enabledExtensionCount			{ glfwExtensionCount luxDebug(+ 1) 			  },
-			.ppEnabledExtensionNames		{ extensions 								  }
+			.sType							{ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO  },
+			.pNext							{ _dbg((VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo) _rls(nullptr) },
+			.pApplicationInfo				{ &appInfo                                },
+			.enabledLayerCount				{ _dbg(core::validationLayersNum) _rls(0) },
+			_dbg(.ppEnabledLayerNames	{ core::validationLayers                      },)
+			.enabledExtensionCount			{ glfwExtensionCount _dbg(+ 1)            },
+			.ppEnabledExtensionNames		{ extensions                              }
 		};
 		//Add validation layers if in debug mode
 		#ifdef LUX_DEBUG																		//Search for validation layers

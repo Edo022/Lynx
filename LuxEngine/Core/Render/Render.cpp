@@ -44,7 +44,7 @@ namespace lux::core::render{
 	void init(const bool vUseVSync) {
 		useVSync = vUseVSync;
 
-		luxDebug(Failure printf("D E B U G    M O D E"));		MainSeparator;
+		_dbg(Failure printf("D E B U G    M O D E"));		MainSeparator;
 
 		//Initialize vulkan
 		// dbg::checkVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
@@ -54,7 +54,7 @@ namespace lux::core::render{
 		Normal printf("    Creating VK swapchain...             ");
 		swapchain::swapchainCreate();
 
-		luxDebug(createDebugMessenger());
+		_dbg(createDebugMessenger());
 
 
 		//Create sync objects
@@ -285,7 +285,7 @@ namespace lux::core::render{
 		vkDestroyDevice(dvc::compute.LD, nullptr);												//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);					//Destroy all the secondary devices
 
-		luxDebug(debug::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));		//Destroy the debug messenger if present
+		_dbg(debug::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));		//Destroy the debug messenger if present
 		vkDestroySurfaceKHR(instance, surface, nullptr);										//Destroy the vulkan surface
 	}
 

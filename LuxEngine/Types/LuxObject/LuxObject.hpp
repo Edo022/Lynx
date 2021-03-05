@@ -71,7 +71,7 @@ namespace lux{
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
 			} common;
-			luxDebug(bool debug = false;)						//Defines if the object is used for graphical debugging		| none						| object instance
+			_dbg(bool debug = false;)						//Defines if the object is used for graphical debugging		| none						| object instance
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
 
 
@@ -184,9 +184,9 @@ namespace lux{
 			limitAlignment limitAlignment_{ limitAlignment::Center }; 	//The alignment of the object within its limits
 			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
 			vec2f32 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
-			luxRelease(inline) void setMinLim(vec2f32 vMinLim)luxRelease({ minLim = vMinLim; });
-			luxRelease(inline) void setMaxLim(vec2f32 vMaxLim)luxRelease({ maxLim = vMaxLim; });
-			luxDebug(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
+			_rls(inline) void setMinLim(vec2f32 vMinLim)_rls({ minLim = vMinLim; });
+			_rls(inline) void setMaxLim(vec2f32 vMaxLim)_rls({ maxLim = vMaxLim; });
+			_dbg(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
 		};
 
 

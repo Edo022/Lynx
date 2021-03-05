@@ -24,8 +24,8 @@ namespace lux::ram{
 		uint32 localIndex;		//Index of the cell in the type allocations					//4
 		uint32 cellSize;		//Size of the cell in bytes									//4
 		void*  address;			//Address of the cell										//8
-		luxDebug(ptr<Dummy>* lastOwner;)													//[8]
-		luxDebug(ptr<Dummy>* firstOwner;)													//[8]
+		_dbg(ptr<Dummy>* lastOwner;)													    //[8]
+		_dbg(ptr<Dummy>* firstOwner;)													    //[8]
 	};
 
 	struct alignas(64) Type_t {

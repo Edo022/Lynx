@@ -14,7 +14,7 @@
 namespace lux::thr {
 	// FenceDE					stgAddFence;		//This fence controls the add and read/remove operations of the staging queue
 	// //TODO use lux threads
-	// win10(HANDLE)_linux(pthread_t) mngThr;								//The handle of the thread that controls the pool
+	// _wds(HANDLE)_lnx(pthread_t) mngThr;								//The handle of the thread that controls the pool
 	// RtArray<ThrPoolElm>		threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);	//The threads of the thread pool with their states and functions
 	// RaArray<ThrState, uint32>	thrStates;								//This map contains the states of the threads. It's also used as a linked list to automatically find the next free thread. Max 2048 threads supported
 	RtArray<ThrPoolElm> threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
@@ -79,7 +79,7 @@ namespace lux::thr {
 		}
 
 		// //TODO add + operators with integers and float values for lux strings
-		// luxDebug(pthread_setname_np(pthread_self(), "Lux | GTP "));
+		// _dbg(pthread_setname_np(pthread_self(), "Lux | GTP "));
 
 		// // __lp_suspend_thr(__lp_get_thr());
 		// pthread_kill(pthread_self(), SIGSTOP);		//Suspend the thread
@@ -103,7 +103,7 @@ namespace lux::thr {
 
 
 	// void __lp_thr_mng() {
-	// 	luxDebug(pthread_setname_np(pthread_self(), "Lux | GTP Mng"));
+	// 	_dbg(pthread_setname_np(pthread_self(), "Lux | GTP Mng"));
 
 	// 	pthread_kill(pthread_self(), SIGSTOP);
 

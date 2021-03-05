@@ -55,7 +55,7 @@
 // 		}
 
 
-// 		luxDebug(template<class elmType, class elmIter> bool __isInit(const ContainerBase<elmType, elmIter>& pArray) { isInit(pArray); return false; })
+// 		_dbg(template<class elmType, class elmIter> bool __isInit(const ContainerBase<elmType, elmIter>& pArray) { isInit(pArray); return false; })
 // 		//Initializes the array using a container object and converts each element to the array type. The input container must have a begin() and an end() function
 // 		//*   pArray: a pointer to the container object
 // 		template<class elmType, class elmIter> inline CtArray(const ContainerBase<elmType, elmIter>& pArray) : checkInitList(__isInit, pArray) /*size_{ pArray.size() }, */data_{ (type*)malloc(sizeof(type) * pArray.size()) } {

@@ -7,10 +7,10 @@
 namespace lux{
 	namespace __pvt{
 		//Magic number used by checkInit() or isInit(var) to check if an object is initialized
-		luxDebug(constexpr uint64 init_val = 0x94FFD489B48994FF;)
+		_dbg(constexpr uint64 init_val = 0x94FFD489B48994FF;)
 
 		//Private variables used in initialization checks. Those members are inherited and should only be declared once
-		#define genInitCheck luxDebug(								\
+		#define genInitCheck _dbg(								\
 			mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
 			mutable char __pvt_dummy = 'L'							\
 		)

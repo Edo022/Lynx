@@ -80,7 +80,7 @@ namespace lux::thr {
 
 	// extern FenceDE stgAddFence;
 	// //TODO move to system header
-	// extern win10(HANDLE)_linux(pthread_t) mngThr;
+	// extern _wds(HANDLE)_lnx(pthread_t) mngThr;
 	extern RtArray<ThrPoolElm> threads;
 	extern std::deque<ram::ptr<__pvt::Func_b>> queue;
 	extern std::mutex queue_m;

@@ -71,18 +71,18 @@ namespace lux::core::c::shaders{
 	 */
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 		FILE* fp;
-		win10(fopen_s(&fp, pFilePath, "rb"));							//Open the file
-		_linux(fp = fopen(pFilePath, "rb"));
+		_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
+		_lnx(fp = fopen(  pFilePath, "rb"));
 		if(!fp) {
 			printf("Could not find or open file: %s\n", pFilePath);
 			return 0;
 		}
-		win10(
+		_wds(
 			_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
 			int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file count
 			_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
 		)
-		_linux(
+		_lnx(
 			fseek(fp, 0, SEEK_END);
 			int32 filesize = scast<int32>(ftell(fp));
 			fseek(fp, 0, SEEK_SET);
