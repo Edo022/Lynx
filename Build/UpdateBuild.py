@@ -1,17 +1,17 @@
 import sys, os
-
+#TODO code cleanup
 
 def run(dir):
 
 	def getPf():
-		return "Linux" if foo.pf() == "l" else "Windows"
+		return "Linux" if opts.pf() == "l" else "Windows"
 	def getTp():
-		return "Debug" if foo.tp() == "d" else "Release"
+		return "Debug" if opts.tp() == "d" else "Release"
 
 
 	enginePath_ = os.path.abspath('.')
 	os.chdir(dir)
-	import Build.BuildOptions.BuildOptions as foo
+	import Build.BuildOptions.BuildOptions as opts
 	#import importlib.util
 	# spec = importlib.util.spec_from_file_location("BuildOptions.BuildOptions", enginePath_ + '/Build/BuildOptions/BuildOptions.py')
 	# foo = importlib.util.module_from_spec(spec)
@@ -55,7 +55,7 @@ def run(dir):
 		        {
 		            "type": "shell",
 		            "label": \"""" + plf + "  |  " + typ + """  |  Build Application",
-		            "command": \"""" + foo.enginePath() + """/Build/lux_g++",
+		            "command": \"""" + opts.enginePath() + """/Build/lux_g++",
 		            "args": [""" + userBuild + """,
 		            "problemMatcher": [ "$gcc" ],
 		            "options": { "cwd": "${workspaceFolder}" },
@@ -67,15 +67,15 @@ def run(dir):
 		            "command": "/usr/bin/g++",
 		            "args": [
 		                //Source files
-				            "-xc++", \"""" + foo.enginePath() + """/LuxEngine/LuxEngine_build.cpp",\n""" +\
-		                    (foo.getDebugOptions() if foo.tp() == "d" else foo.getReleaseOptions()) + """,
+				            "-xc++", \"""" + opts.enginePath() + """/LuxEngine/LuxEngine_build.cpp",\n""" +\
+		                    (opts.getDebugOptions() if opts.tp() == "d" else opts.getReleaseOptions()) + """,
 		                //Engine
 		                    "-std=c++2a", "-mavx", "-pipe", "-pthread",
-		                    "-I""" + foo.enginePath() + """\",
+		                    "-I""" + opts.enginePath() + """\",
 		                    "-Wall",\n""" +\
-		                    foo.getEngineDeps() + """,
+		                    opts.getEngineDeps() + """,
 		                //Output
-							"-c", "-o", \"""" + foo.enginePath() + '/Build/' + plf + '/LuxEngine' + typ + """\"
+							"-c", "-o", \"""" + opts.enginePath() + '/Build/' + plf + '/LuxEngine' + typ + """\"
 		            ],
 		            "problemMatcher": [ "$gcc" ],
 		            "options": { "cwd": "${workspaceFolder}" },
@@ -83,11 +83,11 @@ def run(dir):
 		        },
 		        {
 		            "type": "shell",
-		            "label": " > Switch to """ + ("Windows" if foo.pf() == "l" else "Linux") + """\",
+		            "label": " > Switch to """ + ("Windows" if opts.pf() == "l" else "Linux") + """\",
 		            "command": "python3",
 		            "args": [
-		                \"""" + foo.enginePath() + """/Build/SetPlatform.py",
-		                \"""" + ("w" if foo.pf() == "l" else "l") + """\",
+		                \"""" + opts.enginePath() + """/Build/SetPlatform.py",
+		                \"""" + ("w" if opts.pf() == "l" else "l") + """\",
 		            ],
 		            "problemMatcher": [ ],
 		            "options": { "cwd": "${workspaceFolder}" },
@@ -95,11 +95,11 @@ def run(dir):
 		        },
 		        {
 		            "type": "shell",
-		            "label": " > Switch to """ + ("Release" if foo.tp() == "d" else "Debug") + """\",
+		            "label": " > Switch to """ + ("Release" if opts.tp() == "d" else "Debug") + """\",
 		            "command": "python3",
 		            "args": [
-		                \"""" + foo.enginePath() + """/Build/SetType.py",
-		                \"""" + ("r" if foo.tp() == "d" else "d") + """\"
+		                \"""" + opts.enginePath() + """/Build/SetType.py",
+		                \"""" + ("r" if opts.tp() == "d" else "d") + """\"
 		            ],
 		            "problemMatcher": [ ],
 		            "options": { "cwd": "${workspaceFolder}" },
