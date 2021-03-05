@@ -115,14 +115,14 @@ namespace lux::core::render::swapchain{
 		//swapchain creation infos
 		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(&swapChainSupport.formats) };
 		VkSwapchainCreateInfoKHR createInfo{
-			.sType{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR },
-			.surface{ surface },
-			.minImageCount{ imageCount },
-			.imageFormat{ surfaceFormat.format },
-			.imageColorSpace{ surfaceFormat.colorSpace },
-			.imageExtent{ swapchainChooseExtent(&swapChainSupport.capabilities) },
-			.imageArrayLayers{ 1 },
-			.imageUsage{ VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT },
+			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+			.surface          = surface,
+			.minImageCount    = imageCount,
+			.imageFormat      = surfaceFormat.format,
+			.imageColorSpace  = surfaceFormat.colorSpace,
+			.imageExtent      = swapchainChooseExtent(&swapChainSupport.capabilities),
+			.imageArrayLayers = 1,
+			.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
 		};
 
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };

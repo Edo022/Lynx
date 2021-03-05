@@ -150,11 +150,11 @@ namespace lux::core::render{
 			c::shaders::addShaderFence.unlock();
 
 			static VkSubmitInfo submitInfo{
-				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
-				.pNext{ nullptr },
-				.waitSemaphoreCount{ 1 },
-				.pWaitDstStageMask{ waitStages },
-				.signalSemaphoreCount{ 1 },
+				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.pNext                = nullptr,
+				.waitSemaphoreCount   = 1,
+				.pWaitDstStageMask    = waitStages,
+				.signalSemaphoreCount = 1
 			};
 			submitInfo.pWaitSemaphores   = &s_imageAquired   [renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &s_objectsRendered[renderCurrentFrame];
@@ -167,11 +167,11 @@ namespace lux::core::render{
 
 		{ //Convert and clear shader
 			static VkSubmitInfo submitInfo{
-				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
-				.waitSemaphoreCount{ 1 },
-				.pWaitDstStageMask{ waitStages },
-				.commandBufferCount{ 1 },
-				.signalSemaphoreCount{ 1 },
+				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.waitSemaphoreCount   = 1,
+				.pWaitDstStageMask    = waitStages,
+				.commandBufferCount   = 1,
+				.signalSemaphoreCount = 1
 			};
 			submitInfo.pCommandBuffers = &c::shaders::CShaders[0].commandBuffers[0];
 			submitInfo.pWaitSemaphores = &s_objectsRendered[renderCurrentFrame];
@@ -184,11 +184,11 @@ namespace lux::core::render{
 
 		{ //Copy shader
 			static VkSubmitInfo submitInfo{
-				.sType{ VK_STRUCTURE_TYPE_SUBMIT_INFO },
-				.waitSemaphoreCount{ 1 },
-				.pWaitDstStageMask{ waitStages },
-				.commandBufferCount{ 1 },
-				.signalSemaphoreCount{ 1 },
+				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+				.waitSemaphoreCount   = 1,
+				.pWaitDstStageMask    = waitStages,
+				.commandBufferCount   = 1,
+				.signalSemaphoreCount = 1
 			};
 			submitInfo.pWaitSemaphores   = &s_clear[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &s_copy [renderCurrentFrame];
@@ -203,10 +203,10 @@ namespace lux::core::render{
 
 		{ //Present frame
 			static VkPresentInfoKHR presentInfo{
-				.sType{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR },
-				.waitSemaphoreCount{ 1 },
-				.swapchainCount{ 1 },
-				.pSwapchains{ &swapchain::swapchain },
+				.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+				.waitSemaphoreCount = 1,
+				.swapchainCount     = 1,
+				.pSwapchains        = &swapchain::swapchain
 			};
 			presentInfo.pWaitSemaphores = &s_copy[renderCurrentFrame];
 			presentInfo.pImageIndices   = &imageIndex;

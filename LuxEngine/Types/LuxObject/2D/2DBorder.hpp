@@ -6,8 +6,8 @@
 
 namespace lux::obj{
 	struct Border2D : public Base2D{
-		vec2f32* fp{ nullptr };
-		vec2f32* sp{ nullptr };
+		vec2f32* fp = nullptr;
+		vec2f32* sp = nullptr;
 
 
 		Border2D() {

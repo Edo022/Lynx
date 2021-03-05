@@ -84,7 +84,7 @@ f.write("""
                 \"""" + foo.enginePath() + """/Build/SetPlatform.py",
                 \"""" + ("w" if foo.pf() == "l" else "l") + """\",
             ],
-            "problemMatcher": [ ],
+            "problemMatcher": [],
             "options": { "cwd": "${workspaceFolder}" },
             "group": { "kind": "build", "isDefault": true }
         },
@@ -96,7 +96,7 @@ f.write("""
                 \"""" + foo.enginePath() + """/Build/SetType.py",
                 \"""" + ("r" if foo.tp() == "d" else "d") + """\"
             ],
-            "problemMatcher": [ ],
+            "problemMatcher": [],
             "options": { "cwd": "${workspaceFolder}" },
             "group": { "kind": "build", "isDefault": true }
         }

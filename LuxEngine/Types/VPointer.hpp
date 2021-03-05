@@ -101,7 +101,7 @@ namespace lux::vram{
 		 *		The pointer will need to be initialized with the .realloc function before accessing its data
 		 */
 		alwaysInline ptr() { Super::loc = loc; Super::btype = btype; Super::cell = nullptr; }
-		alwaysInline ptr(const std::nullptr_t) : ptr() { }
+		alwaysInline ptr(const std::nullptr_t) : ptr() {}
 
 
 

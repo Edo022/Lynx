@@ -29,7 +29,7 @@ namespace lux::input{
 	//   |---|Action   |---------------|Key
 	struct KeySequence {
 		//The actual sequence of keys. Each element represents a key and its action
-		//e.g. "ctrl + k" = {LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS}
+		//e.g. "ctrl + k" = { LUX_KEY_LEFT_CTRL | LUX_PRESS, LUX_KEY_K | LUX_PRESS }
 		lux::RtArray<uint16> sequence;
 		//This is the function that will be called when the sequence is performed. It must be of type void and take a KeySequence as a parameter
 		//TODO use ExecFuncData
