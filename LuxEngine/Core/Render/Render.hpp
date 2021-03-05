@@ -34,6 +34,7 @@ namespace lux::core::render{
 	void drawFrame();
 	void cleanup();
 	static void __attribute__((used)) framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
+		//glfwGetWindowUserPointer(pWindow) //TODO
 		window.windowResizeFence.lock();  //from the last call of this function
 		out::renderFramebufferResized = true;
 		window.windowResizeFence.unlock();

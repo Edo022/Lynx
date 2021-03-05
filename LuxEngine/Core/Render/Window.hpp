@@ -23,6 +23,7 @@ namespace lux{
 		vram::ptr<int32, VRam, Storage> gpuCellWindowZBuffer  = nullptr;	//TODO remove. use render space assembler
 
 
+		Window(){ initWindow(); }
 
 		void initWindow();
 		void createInstance();

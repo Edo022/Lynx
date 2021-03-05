@@ -18,7 +18,7 @@ namespace lux::sys{
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
 	const GpuInfo vram = [](){
-		lux::window.initWindow();
+		// lux::window.initWindow();
 		Normal	printf("Creating Instance...                     ");
 		lux::window.createInstance();
 		SuccessNoNl printf("ok");

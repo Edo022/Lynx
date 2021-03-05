@@ -14,8 +14,11 @@
 
 
 namespace lux{
-		Window window; //TODO REMOVE
+		luxAutoInit(LUX_H_WINDOW){
+			glfwInit();
+		}
 
+		Window window; //TODO REMOVE
 	// alignCache GLFWwindow* window                = nullptr;
 	// alignCache int32       width                 = 1920 * 2;
 	// alignCache int32       height                = 1080;
@@ -89,7 +92,6 @@ namespace lux{
 
 
 	void Window::initWindow() {
-		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 
@@ -110,7 +112,7 @@ namespace lux{
 
 
 		{ //Set callbacks
-			glfwSetWindowUserPointer      (window, nullptr);
+			glfwSetWindowUserPointer      (window, this);
 			glfwSetFramebufferSizeCallback(window, core::render::framebufferResizeCallback);
 
 			glfwSetCursorPosCallback      (window, input::mouseCursorPosCallback);
