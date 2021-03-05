@@ -1,10 +1,9 @@
-import sys, os
+import os
+import Build.UpdateBuild as UpdateBuild
 
+def run(x):
+	with open('./.engine/type', 'w') as btf:
+		btf.write(x)
 
-btf = open('./.engine/type', 'w+')
-btf.write(sys.argv[1])
-btf.close()
-
-thisDir = os.path.abspath('.')
-os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/..')
-os.system('python3 -m Build.UpdateBuild ' + thisDir)
+	thisDir = os.path.abspath('.')
+	UpdateBuild.run(thisDir)

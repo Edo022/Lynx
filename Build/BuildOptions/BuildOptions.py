@@ -1,26 +1,22 @@
 import textwrap
 
 
-
-
-
-
-
 def pf():
-    f = open('./.engine/platform', 'r')
-    c = f.read(1)
-    f.close()
-    return c
+    try :
+        with open('./.engine/platform', 'r') as f:
+        	return f.read(1)
+    except FileNotFoundError:
+        return ''
+
 def tp():
-    f = open('./.engine/type', 'r')
-    c = f.read(1)
-    f.close()
-    return c
+    try:
+        with open('./.engine/type', 'r') as f:
+        	return f.read(1)
+    except FileNotFoundError:
+        return ''
 def enginePath():
-    f = open('./.engine/enginePath', 'r')
-    c = f.read()
-    f.close()
-    return c
+    with open('./.engine/enginePath', 'r') as f:
+   		return f.read()
 
 
 
@@ -39,11 +35,6 @@ def getEngineDeps():
         '    "-L' + glfwdep + 'build/' + ('debug' if tp() == 'd' else 'release') + '/src",\n' +\
         '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
     , ' '*4*4)
-
-
-
-
-
 
 
 def getDebugOptions():
