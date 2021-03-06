@@ -52,20 +52,18 @@ namespace lux::core::dvc{
 	 * @param pErrorText A pointer to a lux::String where to store the error in case the device is not suitable
 	 * @return return True if the device is suitable, false if not
 	 */
-	bool isSuitable(const VkPhysicalDevice vDevice, String* pErrorText) {
+	bool isSuitable(const VkPhysicalDevice vDevice, String& pErrorText) {
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
-			*pErrorText = "Missing required extensions";
+			pErrorText = "Missing required extensions";
 			return false;
 		}
 
 		//Check swapchain support
 		else {
-			wnd::Swapchain::SwapChainSupportDetails swapChainSupport = wnd::Swapchain::swapchainQuerySupport(vDevice);
-			//FIXME ^^ MOVE TO DIFFERENT LOCATION
-			//FIXME THIS SHOULD BE STATIC AND MUST NOT DEPEND ON A WINDOW
+			wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, core::surface); //FIXME DONT USE GLOBAL SURFACE OR CREATE DUMMY WINDOW
 			if(!swapChainSupport.formats.count() || !swapChainSupport.presentModes.count()) {
-				*pErrorText = "Unsupported swapchain";
+				pErrorText = "Unsupported swapchain";
 				return false;
 			}
 		}

@@ -50,30 +50,6 @@ namespace lux::core::wnd{
 
 
 
-	Swapchain::SwapChainSupportDetails Swapchain::swapchainQuerySupport(const VkPhysicalDevice vDevice) {
-		SwapChainSupportDetails details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
-
-		uint32 formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
-		if(formatCount != 0) {
-			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.begin());
-		}
-
-		uint32 presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, nullptr);
-		if(presentModeCount != 0) {
-			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, details.presentModes.begin());
-		}
-
-		return details;
-	}
-
-
-
-
 
 
 
@@ -89,7 +65,8 @@ namespace lux::core::wnd{
 
 	void Swapchain::swapchainCreate() {
 		//Get swapchain details
-		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(dvc::graphics.PD.device);
+		SwapChainSupportDetails swapChainSupport = getSwapchainSupportDetails(dvc::graphics.PD.device, core::surface); //FIXME DONT USE GLOBAL SURFACE
+		//FIXME ^ USE BINDED WINDOW
 
 		//Choose max image count. Minimum or minimum +1 if supported
 		uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
