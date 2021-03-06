@@ -46,7 +46,7 @@ namespace lux::core::wnd{
 		RtArray<VkSurfaceFormatKHR>	formats;
 		RtArray<VkPresentModeKHR>	presentModes;
 	};
-	SwapChainSupportDetails getSwapchainSupportDetails(const VkPhysicalDevice vDevice, const VkSurfaceKHR vSurface) {
+	static SwapChainSupportDetails getSwapchainSupportDetails(const VkPhysicalDevice vDevice, const VkSurfaceKHR vSurface) {
 		SwapChainSupportDetails details;
 
 		//Get surface capabilities

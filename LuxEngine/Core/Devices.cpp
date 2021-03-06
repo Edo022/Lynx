@@ -152,7 +152,7 @@ namespace lux::core::dvc{
 			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
 			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 			String errorText;
-			if(isSuitable(physDevices[i], &errorText)) {																//If it's suitable
+			if(isSuitable(physDevices[i], errorText)) {																//If it's suitable
 				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices));	//Add it to the physical devices vector
 			}
 			else {																												//If not
