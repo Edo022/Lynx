@@ -26,13 +26,10 @@ if sys.stdin.read(1).lower() == 'y':
 	if not os.path.exists(pdir + "/.vscode"):
 		os.mkdir(pdir + "/.vscode")
 
-	EnginePath_ = os.path.relpath(thisdir, pdir)
 	with open('./.engine/enginePath', 'w') as pf:
-		# pf.write("ProjectPath = \"" + os.path.relpath(pdir, thisdir) + "\"\n")
-		pf.write(EnginePath_)
+		pf.write(os.path.relpath(thisdir + '/..', pdir))
 
 	with open(pdir + '/.vscode/tasks.json', 'w') as uf:
-		#"cd", \"""" + EnginePath_ + '", "\\n", "python3", "-m", "' + ('Build/lux_g++').replace('/', '.') + """\",
 		uf.write(\
             """[[
                 //Your build
@@ -42,7 +39,5 @@ if sys.stdin.read(1).lower() == 'y':
                 //The engine library is automatically linked
             ]]""")
 
-    # os.system('python3 ' + EnginePath_ + '/Build/SetPlatform.py l')
 	SetPlatform.run('l')
-    # os.system('python3 ' + EnginePath_ + '/Build/SetType.py d')
 	SetType.run('d')
