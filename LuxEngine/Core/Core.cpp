@@ -5,7 +5,7 @@
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/GOutput.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 
 #include "LuxEngine/System/System.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
@@ -31,8 +31,6 @@ namespace lux::core{
 	alignCache VkSurfaceKHR  surface;
 	alignCache VkDebugUtilsMessengerEXT debugMessenger;
 
-	alignCache uint32        validationLayersNum         = 1;
-	alignCache const  char** validationLayers            = new const char*{ "VK_LAYER_KHRONOS_validation"   };
 	alignCache uint32        requiredDeviceExtensionsNum = 1;
 	alignCache const  char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 

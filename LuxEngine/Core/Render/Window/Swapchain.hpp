@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_GSWAPCHAIN
+#define LUX_H_SWAPCHAIN
 #include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/CtArray.hpp"
 

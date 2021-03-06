@@ -1,7 +1,7 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 
 

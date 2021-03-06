@@ -47,7 +47,7 @@ namespace lux::core::c::shaders{
         .bufferRowLength = 0,						//dark magic
         .bufferImageHeight = 0,					    //dark magic
         .imageSubresource{							//Create subresource object
-            .aspectMask = VK_IMAGE_ASPECT_COLOR_B   	//Set aspect mask
+            .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,   	//Set aspect mask
             .mipLevel = 0,								//No mipmap
             .baseArrayLayer = 0,						//Set base
             .layerCount = 1						    	//No multi layer

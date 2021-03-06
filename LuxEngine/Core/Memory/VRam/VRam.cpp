@@ -20,7 +20,7 @@ namespace lux::sys{
 	const GpuInfo vram = [](){
 		// lux::window.initWindow();
 		Normal	printf("Creating Instance...                     ");
-		lux::window.createInstance();
+		// lux::window.createInstance();
 		SuccessNoNl printf("ok");
 
 		dbg::checkVk(glfwCreateWindowSurface(core::instance, lux::window.window, nullptr, &core::surface), "Failed to create window surface");

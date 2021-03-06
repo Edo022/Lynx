@@ -2,7 +2,7 @@
 //TODO USE MOVE SEMANTICS
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Devices.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/System/SystemInfo.hpp"
@@ -267,8 +267,8 @@ namespace lux::core::dvc{
 			.sType                    = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//Set structure type
 			.queueCreateInfoCount     = queueCreateInfos.count(),				//Set queue infos count
 			.pQueueCreateInfos        =    queueCreateInfos.begin(),			//Set queue infos
-			.enabledLayerCount        = _dbg(  validationLayersNum) _rls(0),	//Set validation layer count if in debug mode
-			_dbg(.ppEnabledLayerNames = validationLayers,)						//Set validation layers      if in debug mode
+			.enabledLayerCount        = _dbg(wnd::validationLayersNum) _rls(0),	//Set validation layer count if in debug mode
+			_dbg(.ppEnabledLayerNames = wnd::validationLayers,)					//Set validation layers      if in debug mode
 			.enabledExtensionCount    =   requiredDeviceExtensionsNum,			//Set required extentions count
 			.ppEnabledExtensionNames  = requiredDeviceExtensions,				//Set required extensions
 			.pEnabledFeatures         = &enabledDeviceFeatures					//Set physical device enabled features

@@ -85,10 +85,8 @@ namespace lux::core{
 	extern VkDebugUtilsMessengerEXT	debugMessenger;
 	extern VkSurfaceKHR	surface;
 
-	extern const char**	validationLayers;
-	extern const char**	requiredDeviceExtensions;
-	extern uint32		validationLayersNum;
 	extern uint32		requiredDeviceExtensionsNum;
+	extern const char**	requiredDeviceExtensions;
 
 	extern lux::Thread	FPSCounterThr;
 	extern lux::Thread	renderThr;

@@ -2,8 +2,8 @@
 #define LUX_H_CSHADER
 #include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
-#include "LuxEngine/Core/Render/Window.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"

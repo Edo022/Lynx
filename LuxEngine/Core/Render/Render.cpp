@@ -1,7 +1,7 @@
 #include <vulkan/vulkan.h>
 #include "LuxEngine/Core/Render/Render.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"

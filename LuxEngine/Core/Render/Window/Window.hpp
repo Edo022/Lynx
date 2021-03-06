@@ -12,6 +12,15 @@
 
 //TODO use ptrs instead of cells
 namespace lux{
+	#ifdef LUX_DEBUG
+		namespace wnd{
+			extern uint32       validationLayersNum;
+			extern const char**	validationLayers;
+		}
+	#endif
+
+
+
 	struct Window{
 		GLFWwindow*	window = nullptr;		//Main engine window
 		int32		width  = 1920 * 2;		//Size of the window //TODO
@@ -21,6 +30,7 @@ namespace lux{
 		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput   = nullptr;	//Color output of the window
 		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput_i = nullptr;	//Packed color output of the window
 		vram::ptr<int32, VRam, Storage> gpuCellWindowZBuffer  = nullptr;	//TODO remove. use render space assembler
+
 
 
 		Window(){ initWindow(); }
