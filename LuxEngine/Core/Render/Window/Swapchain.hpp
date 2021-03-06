@@ -19,6 +19,8 @@ namespace lux::core::wnd{
 		RtArray<VkFramebuffer>	swapchainFramebuffers;
 
 
+		// Swapchain(){ swapchainCreate(); }
+
 
 
 		// void preInit();
@@ -46,7 +48,7 @@ namespace lux::core::wnd{
 		RtArray<VkSurfaceFormatKHR>	formats;
 		RtArray<VkPresentModeKHR>	presentModes;
 	};
-	static SwapChainSupportDetails getSwapchainSupportDetails(const VkPhysicalDevice vDevice, const VkSurfaceKHR vSurface) {
+	__attribute__((used)) static SwapChainSupportDetails getSwapchainSupportDetails(const VkPhysicalDevice vDevice, const VkSurfaceKHR vSurface) {
 		SwapChainSupportDetails details;
 
 		//Get surface capabilities

@@ -52,7 +52,8 @@ namespace lux::core::render{
 		// dvc::getPhysical(); //FIXME
 		cmd::createGraphicsCommandPool();
 		Normal printf("    Creating VK swapchain...             ");
-		lux::window.swapchain.swapchainCreate(); //FIXME DONT DEPEND ON A WINDOW
+
+		lux::window.swapchain.swapchainCreate(); //FIXME AUTOMATIZE
 
 		_dbg(createDebugMessenger());
 
