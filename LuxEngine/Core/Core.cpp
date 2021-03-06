@@ -5,7 +5,7 @@
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/GOutput.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 
 #include "LuxEngine/System/System.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
@@ -31,10 +31,8 @@ namespace lux::core{
 	alignCache VkSurfaceKHR  surface;
 	alignCache VkDebugUtilsMessengerEXT debugMessenger;
 
-	alignCache uint32        validationLayersNum         = 1;
-	alignCache const  char** validationLayers            = { new const char*{ "VK_LAYER_KHRONOS_validation"   }};
 	alignCache uint32        requiredDeviceExtensionsNum = 1;
-	alignCache const  char** requiredDeviceExtensions    = { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
+	alignCache const  char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	alignCache lux::Thread   FPSCounterThr;
 	alignCache lux::Thread   renderThr;
@@ -59,9 +57,9 @@ namespace lux::core{
 	//Deprecated function
 	//Compiles a shader from a file. Shader files must have the .comp extension
 	static bool compileShader(const char* pShaderPath) {
-		win10(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
+		_wds(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
 		//FIXME USE EXE IN DEPS OR COMPILE DIRECTLY
-		_linux(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
+		_lnx(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
 		//TODO add string operator+(char)
 	}
 
@@ -81,7 +79,7 @@ namespace lux::core{
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
 				String luxStrPath = String((char8*)name.path().u8string().c_str()); //FIXME
-				win10(sys::dir::fixWindowsPath(luxStrPath));
+				_wds(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
 					else { Normal printf("%s", (char*)luxStrPath.begin()); }
@@ -119,7 +117,7 @@ namespace lux::core{
 
 
 	void mainLoop() {
-		luxDebug(thr::self::setName("Lux | Input"));
+		_dbg(thr::self::setName("Lux | Input"));
 		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach();
 		renderThr(runRenderThr);				//renderThr.detach();
 		initialized = true;
@@ -132,7 +130,7 @@ namespace lux::core{
 
 
 	void runRenderThr() {
-		luxDebug(thr::self::setName("Lux | Render"));
+		_dbg(thr::self::setName("Lux | Render"));
 		while(running) {
 			LuxTime renderTime = luxStartChrono();
 			render::drawFrame();
@@ -146,7 +144,7 @@ namespace lux::core{
 
 	//TODO add FPS limit
 	void runFPSCounterThr() {
-		luxDebug(thr::self::setName("Lux | FPS"));
+		_dbg(thr::self::setName("Lux | FPS"));
 		while(running) {
 			static int delay = 1000;
 			sleep(delay);

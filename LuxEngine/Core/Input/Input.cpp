@@ -1,6 +1,7 @@
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Core.hpp"
+#include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
 
 
@@ -16,8 +17,8 @@ namespace lux::input{
 
 
 
-	#define gtollx(n) ((n) / core::render::swapchain::swapchainExtent.width)
-	#define gtolly(n) ((n) / core::render::swapchain::swapchainExtent.height)
+	#define gtollx(n) ((n) / lux::window.swapchain.swapchainExtent.width) //FIXME DONT DEPEND ON A WINDOW
+	#define gtolly(n) ((n) / lux::window.swapchain.swapchainExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(vec2f32{ gtollx(x), gtolly(y) });

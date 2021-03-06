@@ -7,10 +7,10 @@
 namespace lux{
 	namespace __pvt{
 		//Magic number used by checkInit() or isInit(var) to check if an object is initialized
-		luxDebug(constexpr uint64 init_val = 0x94FFD489B48994FF;)
+		_dbg(constexpr uint64 init_val = 0x94FFD489B48994FF;)
 
 		//Private variables used in initialization checks. Those members are inherited and should only be declared once
-		#define genInitCheck luxDebug(								\
+		#define genInitCheck _dbg(								\
 			mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
 			mutable char __pvt_dummy = 'L'							\
 		)
@@ -30,7 +30,7 @@ namespace lux{
 		#ifdef LUX_DEBUG
 		#	define checkInit() lux::dbg::checkCond(this->__pvt_init_val != lux::__pvt::init_val,   "This function cannot be called on uninitialized structures")
 		#	define isInit(var)	dbg::checkParam( var.__pvt_init_val != lux::__pvt::init_val, #var, "Uninitialized structure used")
-		#	define checkInitList(...) __pvt_dummy{ [&]() {__VA_ARGS__; return char(0x293); }()},
+		#	define checkInitList(...) __pvt_dummy{ [&]() { __VA_ARGS__; return char(0x293); }() },
 		#else
 		#	define checkInit()			//Checks if a function parameter is initialized
 		#	define isInit(var)			//Checks if a variable is initialized

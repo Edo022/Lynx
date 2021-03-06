@@ -13,7 +13,7 @@ namespace lux {
 	//FIXME REMOVE. USE NORMAL STRLEN
 	static inline constexpr uint32 strlenl(const char8* str ) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 	static inline constexpr uint32 strlenl(const wchar8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
-	#define updateView() luxDebug(viewer = (char*)Super::data)
+	#define updateView() _dbg(viewer = (char*)Super::data)
 
 
 
@@ -23,7 +23,7 @@ namespace lux {
 		using Super = ContainerBase<char8, uint32>;
 		genInitCheck;
 	private:
-		luxDebug(const char* viewer;)
+		_dbg(const char* viewer;)
 
 
 		//FIXME FIX

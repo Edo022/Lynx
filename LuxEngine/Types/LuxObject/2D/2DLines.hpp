@@ -27,8 +27,8 @@ namespace lux::obj {
 			*sp = { 0, 0, };
 			*fc = { 0, 0, 0, 0 };
 			*sc = { 0, 0, 0, 0 };
-			*fw = { 0 };
-			*sw = { 0 };
+			*fw = 0;
+			*sw = 0;
 		}
 
 		//Creates a Line2D object with the specified points, colors and widths

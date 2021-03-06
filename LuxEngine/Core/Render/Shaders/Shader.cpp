@@ -71,18 +71,18 @@ namespace lux::core::c::shaders{
 	 */
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
 		FILE* fp;
-		win10(fopen_s(&fp, pFilePath, "rb"));							//Open the file
-		_linux(fp = fopen(pFilePath, "rb"));
+		_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
+		_lnx(fp = fopen(  pFilePath, "rb"));
 		if(!fp) {
 			printf("Could not find or open file: %s\n", pFilePath);
 			return 0;
 		}
-		win10(
+		_wds(
 			_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
 			int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file count
 			_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
 		)
-		_linux(
+		_lnx(
 			fseek(fp, 0, SEEK_END);
 			int32 filesize = scast<int32>(ftell(fp));
 			fseek(fp, 0, SEEK_SET);
@@ -149,12 +149,12 @@ namespace lux::core::c::shaders{
 		{ //Create descriptor set layout
 			RtArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
-				bindingLayouts[i] = VkDescriptorSetLayoutBinding{ 						//The binding layout describes what to bind in a shader binding point and how to use it
-					.binding{ i },														//Binding point in the shader
-					.descriptorType{ (pIsReadOnly[i]) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },//Type of the descriptor. It depends on the type of data that needs to be bound
-					.descriptorCount{ 1 },												//Number of descriptors
-					.stageFlags{ VK_SHADER_STAGE_COMPUTE_BIT },							//Stage where to use the layout
-					.pImmutableSamplers{ nullptr },										//Default
+				bindingLayouts[i] = VkDescriptorSetLayoutBinding{ 							//The binding layout describes what to bind in a shader binding point and how to use it
+					.binding            = i,													//Binding point in the shader
+					.descriptorType     = (pIsReadOnly[i]) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,//Type of the descriptor. It depends on the type of data that needs to be bound
+					.descriptorCount    = 1,													//Number of descriptors
+					.stageFlags         = VK_SHADER_STAGE_COMPUTE_BIT,							//Stage where to use the layout
+					.pImmutableSamplers = nullptr												//Default
 				};
 			}
 
@@ -177,9 +177,9 @@ namespace lux::core::c::shaders{
 			//Create shader module
 			String shaderFileName; uint32 fileLength;
 			switch(vRenderShader) {																	//Set shader file name
-				case LUX_DEF_SHADER_2D_LINE: shaderFileName = "Line2D"; break;
-				case LUX_DEF_SHADER_2D_BORDER: shaderFileName = "Border2D"; break;
-				case LUX_DEF_SHADER_CLEAR: shaderFileName = "FloatToIntBuffer"; break;
+				case LUX_DEF_SHADER_2D_LINE:   shaderFileName = "Line2D";           break;
+				case LUX_DEF_SHADER_2D_BORDER: shaderFileName = "Border2D";         break;
+				case LUX_DEF_SHADER_CLEAR:     shaderFileName = "FloatToIntBuffer"; break;
 				default: dbg::printError("Unknown shader: %d", vRenderShader);
 			}
 			CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin()), &fileLength);
@@ -187,20 +187,20 @@ namespace lux::core::c::shaders{
 
 			//Create stage info
 			CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
-				.sType{ VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO },		//Set structure type
-				.stage{ VK_SHADER_STAGE_COMPUTE_BIT },								//Use it in the compute stage
+				.sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,		//Set structure type
+				.stage  = VK_SHADER_STAGE_COMPUTE_BIT,								//Use it in the compute stage
 				#ifndef __INTELLISENSE__ 	//! Intellisense sees "module" as the C++ module keyword. This code is enabled during compilation
-				.module{ CShadersLayouts[vRenderShader].shaderModule },				//Set shader module
-				.pName{ "main" },													//Set the main function as entry point
+				.module = CShadersLayouts[vRenderShader].shaderModule,				//Set shader module
+				.pName  = "main"													//Set the main function as entry point
 				#endif
 			};
 
 
 			//Create pipeline layout
 			VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
-				.sType{ VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO },			//Structure type
-				.setLayoutCount{ 1 },												//Number of set layouts
-				.pSetLayouts{ &CShadersLayouts[vRenderShader].descriptorSetLayout },//Set set layout
+				.sType          = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,		//Structure type
+				.setLayoutCount = 1,													//Number of set layouts
+				.pSetLayouts    = &CShadersLayouts[vRenderShader].descriptorSetLayout	//Set set layout
 			};
 			dbg::checkVk(vkCreatePipelineLayout(dvc::compute.LD, &pipelineLayoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipelineLayout), "Unable to create pipeline layout");
 		}
@@ -210,9 +210,9 @@ namespace lux::core::c::shaders{
 
 		{ //Create the pipeline
 			VkComputePipelineCreateInfo pipelineCreateInfo = { 						//Create pipeline creation infos
-				.sType{ VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO },			//Structure type
-				.stage{ CShadersLayouts[vRenderShader].shaderStageCreateInfo },		//Use the previously created shader stage creation infos
-				.layout{ CShadersLayouts[vRenderShader].pipelineLayout },			//Use the previously created pipeline layout
+				.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,			//Structure type
+				.stage  = CShadersLayouts[vRenderShader].shaderStageCreateInfo,		//Use the previously created shader stage creation infos
+				.layout = CShadersLayouts[vRenderShader].pipelineLayout				//Use the previously created pipeline layout
 			};
 			dbg::checkVk(vkCreateComputePipelines(dvc::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipeline), "Unable to create comput pipeline");
 			vkDestroyShaderModule(dvc::compute.LD, CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
@@ -226,7 +226,6 @@ namespace lux::core::c::shaders{
 
 
 
-	//FIXME USE RAM POINTERS
 	/**
 	 * @brief Creates the descriptor pool and allocates in it the descriptor sets
 	 * @param pCShader A pointer to the shader where to create the descriptor pool and allocate the descriptor buffers
@@ -240,26 +239,26 @@ namespace lux::core::c::shaders{
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count(); i++) {								//For every cell
-			if(pCells[i].btype == Uniform) uniformCount++;			//#LLID STRT 0003 Count uniform and
+			if(pCells[i].btype == Uniform) uniformCount++;								//#LLID STRT 0003 Count uniform and
 			else storageCount++;														//storage cells requested
 		}
 		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + !!uniformCount);		//Create an array of descriptor sizes with one element for each descriptor type
 		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{							//If there is at least one storage descriptor
-			.type{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },									//Set the element type as storage
-			.descriptorCount{ storageCount },											//And set the number of descriptors
+			.type            = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,						//Set the element type as storage
+			.descriptorCount = storageCount												//And set the number of descriptors
 		};
 		if(uniformCount != 0) sizes[(storageCount != 0)] = VkDescriptorPoolSize{	//If there is at least one uniform descriptor
-			.type{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER },									//Set the element type as uniform
-			.descriptorCount{ uniformCount },											//And set the number of descriptors
+			.type            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,						//Set the element type as uniform
+			.descriptorCount = uniformCount												//And set the number of descriptors
 		};
 
 		//Create the descriptor pool that will contain the descriptor sets
 		VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {						//This struct contains the informations about the descriptor pool
-			.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO },					//Set structure type
-			.flags{ VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT },				//Allow the descriptor sets to be freed
-			.maxSets{ 1 },																//Allocate only one descriptor set
-			.poolSizeCount{ sizes.count() },											//Use one pool size
-			.pPoolSizes{ sizes.begin() },												//Set the pool size
+			.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,				//Set structure type
+			.flags         = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,			//Allow the descriptor sets to be freed
+			.maxSets       = 1,															//Allocate only one descriptor set
+			.poolSizeCount = sizes.count(),												//Use one pool size
+			.pPoolSizes    = sizes.begin()												//Set the pool size
 		};
 		dbg::checkVk(vkCreateDescriptorPool(dvc::compute.LD, &descriptorPoolCreateInfo, nullptr, &pCShader->descriptorPool), "Unable to create descriptor pool");
 
@@ -268,10 +267,10 @@ namespace lux::core::c::shaders{
 
 		//Allocate descriptor sets
 		VkDescriptorSetAllocateInfo descriptorSetAllocateInfo = {							//This structure contains the informations about the descriptor set
-			.sType{ VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO },							//Set structure type
-			.descriptorPool{ pCShader->descriptorPool },										//Set descriptor pool where to allocate the descriptor
-			.descriptorSetCount{ 1 },															//Allocate a single descriptor
-			.pSetLayouts{ &CShadersLayouts[vShaderLayout].descriptorSetLayout },				//Set set layouts
+			.sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,				//Set structure type
+			.descriptorPool     = pCShader->descriptorPool,										//Set descriptor pool where to allocate the descriptor
+			.descriptorSetCount = 1,															//Allocate a single descriptor
+			.pSetLayouts        = &CShadersLayouts[vShaderLayout].descriptorSetLayout			//Set set layouts
 		};
 		dbg::checkVk(vkAllocateDescriptorSets(dvc::compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet), "Unable to allocate descriptor sets");
 
@@ -286,16 +285,16 @@ namespace lux::core::c::shaders{
 			descriptorBufferInfo->buffer = pCells[i].cell->csc.buffer;							//Set buffer    //#LLID STRT 0002 Set buffer offset
 			if(pCells[i].btype == Uniform) descriptorBufferInfo->offset = pCells[i].cell->localOffset;
 			else descriptorBufferInfo->offset = pCells[i].cell->localOffset;					//Set buffer offset
-			descriptorBufferInfo->range = pCells[i].cell->cellSize;									//Set buffer count
+			descriptorBufferInfo->range = pCells[i].cell->cellSize;								//Set buffer count
 
 			writeDescriptorSets[i] = VkWriteDescriptorSet{ 									//Create write descriptor set
-				.sType{ VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET },								//Set structure type
-				.dstSet{ pCShader->descriptorSet },												//Set descriptor set
-				.dstBinding{ i },																//Set binding
-				.descriptorCount{ 1 },															//Set number of descriptors
-				.descriptorType{																//#LLID STRT 0001 Set descriptor type
-					(pCells[i].btype == Uniform) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER },
-				.pBufferInfo{ descriptorBufferInfo },											//Set descriptor buffer info
+				.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,						//Set structure type
+				.dstSet          = pCShader->descriptorSet,										//Set descriptor set
+				.dstBinding      = i,															//Set binding
+				.descriptorCount = 1,															//Set number of descriptors
+				.descriptorType  =																//#LLID STRT 0001 Set descriptor type
+					(pCells[i].btype == Uniform) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+				.pBufferInfo     = descriptorBufferInfo											//Set descriptor buffer info
 			};
 		}
 		//Update descriptor sets
@@ -313,10 +312,10 @@ namespace lux::core::c::shaders{
 	//> Engine internal use
 	void createDefaultCommandBuffers() {
 		{ //Render command pool
-			VkCommandPoolCreateInfo commandPoolCreateInfo = { 					//Create command pool create infos
-				.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },				//Set structure type
-				.flags{ VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT },			//Command buffers and pool can be reset
-				.queueFamilyIndex{ dvc::compute.PD.indices.computeFamilies[0] },	//Set the compute family where to bind the command pool
+			VkCommandPoolCreateInfo commandPoolCreateInfo = { 						//Create command pool create infos
+				.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,			//Set structure type
+				.flags            = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,	//Command buffers and pool can be reset
+				.queueFamilyIndex = dvc::compute.PD.indices.computeFamilies[0]			//Set the compute family where to bind the command pool
 			};
 			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &commandPool), "Unable to create command pool");
 		}
@@ -327,50 +326,50 @@ namespace lux::core::c::shaders{
 		{ //Copy
 			//Create command pool
 			static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
-				.sType{ VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO },				//Set structure type
-				.flags{ 0 }														//Default falgs
+				.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,				//Set structure type
+				.flags = 0															//Default falgs
 			};
 			commandPoolCreateInfo.queueFamilyIndex = dvc::compute.PD.indices.computeFamilies[0];	//Set the compute family where to bind the command pool
 			dbg::checkVk(vkCreateCommandPool(dvc::compute.LD, &commandPoolCreateInfo, nullptr, &buffers::copyCommandPool), "Unable to create command pool");
 
 			//Allocate one command buffer for each swapchain image
 			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
-				.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },			//Set structure type
-				.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },							//Set the command buffer as a primary level command buffer
+				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,			//Set structure type
+				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY							//Set the command buffer as a primary level command buffer
 			};
-			commandBufferAllocateInfo.commandPool = buffers::copyCommandPool;			//Set command pool where to allocate the command buffer
-			commandBufferAllocateInfo.commandBufferCount = render::swapchain::swapchainImages.count();
+			commandBufferAllocateInfo.commandPool = buffers::copyCommandPool;	//Set command pool where to allocate the command buffer
+			commandBufferAllocateInfo.commandBufferCount = lux::window.swapchain.swapchainImages.count(); //FIXME DONT DEPEND ON A WINDOW
 			dbg::checkVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, buffers::copyCommandBuffers.begin()), "Unable to allocate command buffers");
 
 
 
 
 			//Record a present command buffers for each swapchain images
-			for(uint32 imgIndex = 0; imgIndex < render::swapchain::swapchainImages.count(); imgIndex++) {
+			for(uint32 imgIndex = 0; imgIndex < lux::window.swapchain.swapchainImages.count(); imgIndex++) { //FIXME DONT DEPEND ON A WINDOW
 				//Start recording commands
-				static VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos to start recording the command buffer
-					.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
-					.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
+				static VkCommandBufferBeginInfo beginInfo = { 						//Create begin infos to start recording the command buffer
+					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,				//Set structure type
+					.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT				//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 				};
 				dbg::checkVk(vkBeginCommandBuffer(buffers::copyCommandBuffers[imgIndex], &beginInfo), "Unable to begin command buffer recording");
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-				readToWriteBarrier.image = render::swapchain::swapchainImages[imgIndex];	//Set swapchain image
+				readToWriteBarrier.image = lux::window.swapchain.swapchainImages[imgIndex];	//Set swapchain image //FIXME DONT DEPEND ON A WINDOW
 				VkPipelineStageFlags 												//Create stage flags
-					srcStage{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT },		//The swapchain image is in color output stage
-					dstStage{ VK_PIPELINE_STAGE_TRANSFER_BIT };						//Change it to transfer stage to copy the buffer in it
+					srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,			//The swapchain image is in color output stage
+					dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;							//Change it to transfer stage to copy the buffer in it
 				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
-				copyRegion.imageExtent = { render::swapchain::swapchainExtent.width, render::swapchain::swapchainExtent.height, 1 };	//Copy the whole buffer
-				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], lux::window.gpuCellWindowOutput_i.cell->csc.buffer, render::swapchain::swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
+				copyRegion.imageExtent = { lux::window.swapchain.swapchainExtent.width, lux::window.swapchain.swapchainExtent.height, 1 };	//Copy the whole buffer //FIXME DONT DEPEND ON A WINDOW
+				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], lux::window.gpuCellWindowOutput_i.cell->csc.buffer, lux::window.swapchain.swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion); //FIXME DONT DEPEND ON A WINDOW
 
 
 				//Create a barrier to use the swapchain image as a present source image
-				writeToReadBarrier.image = render::swapchain::swapchainImages[imgIndex];	//Set swapchain image
+				writeToReadBarrier.image = lux::window.swapchain.swapchainImages[imgIndex];	//Set swapchain image //FIXME DONT DEPEND ON A WINDOW
 				VkPipelineStageFlags 											//Create stage flags
-					srcStage1{ VK_PIPELINE_STAGE_TRANSFER_BIT },					//The image is in transfer stage from the buffer copy
-					dstStage1{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };		//Change it to color output to present them
+					srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT,						//The image is in transfer stage from the buffer copy
+					dstStage1 = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;		//Change it to color output to present them
 				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
 
 				//End command buffer recording
@@ -397,11 +396,11 @@ namespace lux::core::c::shaders{
 	 */
 	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		//Allocate command buffers
-		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 		//Create command buffer allocate infos
-			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO },		//Set structure type
-			.commandPool{ commandPool },									//Set command pool where to allocate the command buffer
-			.level{ VK_COMMAND_BUFFER_LEVEL_PRIMARY },						//Set the command buffer as a primary level command buffer
-			.commandBufferCount{ 1 },										//Allocate one command buffer
+		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 				//Create command buffer allocate infos
+			.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,	//Set structure type
+			.commandPool        = commandPool,										//Set command pool where to allocate the command buffer
+			.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,					//Set the command buffer as a primary level command buffer
+			.commandBufferCount = 1													//Allocate one command buffer
 		};
 		pCShader->commandBuffers.resize(1);
 		dbg::checkVk(vkAllocateCommandBuffers(dvc::compute.LD, &commandBufferAllocateInfo, pCShader->commandBuffers.begin()), "Unable to allocate command buffers");
@@ -412,8 +411,8 @@ namespace lux::core::c::shaders{
 		//TODO change only those lines when updating a shader
 		//Create compute command buffer and start recording commands
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
-			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
-			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,			//Set structure type
+			.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
 		dbg::checkVk(vkBeginCommandBuffer(pCShader->commandBuffers[0], &beginInfo), "Unable to begin command buffer recording");
 
@@ -488,8 +487,8 @@ namespace lux::core::c::shaders{
 	 */
 	void updateShaderCall(const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
-			.sType{ VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO },			//Set structure type
-			.flags{ VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT },			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
+			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,			//Set structure type
+			.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
 		addShaderFence.lock();
 		vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo);

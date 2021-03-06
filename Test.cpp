@@ -49,7 +49,7 @@ void hg(lux::RtArray<uint16>) {
 void runArrayTest();
 
 int main() { //BUG vulkan finds 32 compute queues wtf
-	// int h[5] = {1, 2 ,3 ,4 ,5};
+	// int h[5] = { 1, 2 ,3 ,4 ,5 };
 	// while(true) int h = 0;
 
 	{

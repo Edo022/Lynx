@@ -37,9 +37,9 @@ namespace lux {
 
 
 		inline type& operator[](const iter vIndex) { checkInit(); return (vIndex < _back.count()) ? _back[_back.count() - 1 - vIndex] : _front[vIndex - (_back.count() - 1)]; }
-		inline type& front()	{ checkInit(); return *_front.end(); }
+		inline type& front(){ checkInit(); return *_front.end(); }
 		inline type& back()	{ checkInit(); return *_back.end(); }
-		inline iter size()		{ checkInit(); return _front.count() + _back.count(); }
+		inline iter size()  { checkInit(); return _front.count() + _back.count(); }
 		inline bool empty()	{ checkInit(); return size() == 0; }
 	};
 }

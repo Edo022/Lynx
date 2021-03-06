@@ -3,15 +3,15 @@
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 #define g gl_GlobalInvocationID
-const ivec2 ipm = {1, -1};
-const ivec2 imp = {-1, 1};
-const ivec2 ipz = {1, 0};
-const ivec2 izp = {0, 1};
-const vec2 pm = {1, -1};
-const vec2 mp = {-1, 1};
-const vec2 pz = {1, 0};
-const vec2 zp = {0, 1};
-const vec4 col = {0, 1, 0, 1};
+const ivec2 ipm = {  1, -1 };
+const ivec2 imp = { -1,  1 };
+const ivec2 ipz = {  1,  0 };
+const ivec2 izp = {  0,  1 };
+const vec2  pm  = {  1, -1 };
+const vec2  mp  = { -1,  1 };
+const vec2  pz  = {  1,  0 };
+const vec2  zp  = {  0,  1 };
+const vec4  col = {  0,  1, 0, 1 };
 
 
 layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;

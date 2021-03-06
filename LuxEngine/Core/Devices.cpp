@@ -2,7 +2,7 @@
 //TODO USE MOVE SEMANTICS
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Devices.hpp"
-#include "LuxEngine/Core/Render/GSwapchain.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/System/SystemInfo.hpp"
@@ -52,18 +52,18 @@ namespace lux::core::dvc{
 	 * @param pErrorText A pointer to a lux::String where to store the error in case the device is not suitable
 	 * @return return True if the device is suitable, false if not
 	 */
-	bool isSuitable(const VkPhysicalDevice vDevice, String* pErrorText) {
+	bool isSuitable(const VkPhysicalDevice vDevice, String& pErrorText) {
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
-			*pErrorText = "Missing required extensions";
+			pErrorText = "Missing required extensions";
 			return false;
 		}
 
 		//Check swapchain support
 		else {
-			render::swapchain::SwapChainSupportDetails swapChainSupport = render::swapchain::swapchainQuerySupport(vDevice);
+			wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, core::surface); //FIXME DONT USE GLOBAL SURFACE OR CREATE DUMMY WINDOW
 			if(!swapChainSupport.formats.count() || !swapChainSupport.presentModes.count()) {
-				*pErrorText = "Unsupported swapchain";
+				pErrorText = "Unsupported swapchain";
 				return false;
 			}
 		}
@@ -247,31 +247,31 @@ namespace lux::core::dvc{
 		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
 			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
-				.sType{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO },				//Set structure type
-				.queueFamilyIndex{ (uint32)queueFamilyIndex },						//Set index
-				.queueCount{ 1 },													//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-				.pQueuePriorities{ new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f) },
+				.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,				//Set structure type
+				.queueFamilyIndex = (uint32)queueFamilyIndex,						//Set index
+				.queueCount = 1,													//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
+				.pQueuePriorities = new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f)
 			});
 		}
 
 
 		//Required extensions
 		VkPhysicalDeviceFeatures enabledDeviceFeatures{ 					//Set enabled features
-			.fillModeNonSolid{	VK_FALSE },										//No point32 and line render, since we don't use meshes
-			.multiViewport{ 	VK_FALSE },										//No multiple viewports
-			.samplerAnisotropy{	VK_FALSE },										//No anistropy filter
+			.fillModeNonSolid  = VK_FALSE,										//No point32 and line render, since we don't use meshes
+			.multiViewport     = VK_FALSE,										//No multiple viewports
+			.samplerAnisotropy = VK_FALSE										//No anistropy filter
 		};
 
 		//Fill deviceCreateInfo
 		VkDeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
-			.sType{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO },						//Set structure type
-			.queueCreateInfoCount{ queueCreateInfos.count() },					//Set queue infos count
-			.pQueueCreateInfos{    queueCreateInfos.begin() },					//Set queue infos
-			.enabledLayerCount{ luxDebug(  validationLayersNum) luxRelease(0) },//Set validation layer count if in debug mode
-			luxDebug(.ppEnabledLayerNames{ validationLayers },)					//Set validation layers      if in debug mode
-			.enabledExtensionCount{   requiredDeviceExtensionsNum },			//Set required extentions count
-			.ppEnabledExtensionNames{ requiredDeviceExtensions },				//Set required extensions
-			.pEnabledFeatures{ &enabledDeviceFeatures },						//Set physical device enabled features
+			.sType                    = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//Set structure type
+			.queueCreateInfoCount     = queueCreateInfos.count(),				//Set queue infos count
+			.pQueueCreateInfos        =    queueCreateInfos.begin(),			//Set queue infos
+			.enabledLayerCount        = _dbg(wnd::validationLayersNum) _rls(0),	//Set validation layer count if in debug mode
+			_dbg(.ppEnabledLayerNames = wnd::validationLayers,)					//Set validation layers      if in debug mode
+			.enabledExtensionCount    =   requiredDeviceExtensionsNum,			//Set required extentions count
+			.ppEnabledExtensionNames  = requiredDeviceExtensions,				//Set required extensions
+			.pEnabledFeatures         = &enabledDeviceFeatures					//Set physical device enabled features
 		};
 
 

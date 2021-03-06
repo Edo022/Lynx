@@ -45,7 +45,7 @@ namespace lux::vram{
 		uint8 loc;							//Runtime template data
 		uint8 btype;						//Runtime template data
 		Cell_t2* cell;						//A pointer to a lux::vram::Cell_t object that contains the cell informations
-		type* mapped luxDebug(= nullptr);	//A pointer used to map the memory
+		type* mapped _dbg(= nullptr);	//A pointer used to map the memory
 
 		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }
 	};
@@ -64,13 +64,13 @@ namespace lux::vram{
 		using Super = Alloc_b<type>;
 
 
-		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { luxDebug(
+		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { _dbg(
 			if((_class) != VCellClass::CLASS_0 && _class != VCellClass::AUTO) {
 				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
 				dbg::checkCond((uint64)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lux::VCellClass::AUTO to automatically choose it");
 			}
 		)}
-		alwaysInline void checkMapped() const { luxDebug(
+		alwaysInline void checkMapped() const { _dbg(
 			dbg::checkCond(!Super::mapped, "Unable to call this function on unmapped memory blocks");
 		)}
 
@@ -101,7 +101,7 @@ namespace lux::vram{
 		 *		The pointer will need to be initialized with the .realloc function before accessing its data
 		 */
 		alwaysInline ptr() { Super::loc = loc; Super::btype = btype; Super::cell = nullptr; }
-		alwaysInline ptr(const std::nullptr_t) : ptr() { }
+		alwaysInline ptr(const std::nullptr_t) : ptr() {}
 
 
 
@@ -298,7 +298,7 @@ namespace lux::vram{
 					&Super::cell->csc.memory, _prop(),
 					core::dvc::compute.LD
 				);
-				luxDebug(Super::cell->localIndex = 0;)
+				_dbg(Super::cell->localIndex = 0;)
 			}
 		}
 		//TODO CHECK MEMORY FULL
@@ -355,7 +355,7 @@ namespace lux::vram{
 		// 				}
 		// 				else {															//Fixed size --> custom
 		// 					uint64 size_ = (vSize / incSize + 1) * incSize;			//Calculate the new size and allocate the new memory
-		// 					cell->address = win10(_aligned_malloc(size_, memOffset)) _linux(aligned_alloc(memOffset, size_));
+		// 					cell->address = _wds(_aligned_malloc(size_, memOffset)) _lnx(aligned_alloc(memOffset, size_));
 		// 				}
 		// 				// if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory //FIXME COPY
 		// 				//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data
@@ -407,8 +407,8 @@ namespace lux::vram{
 				//FIXME FREE BUFFERS
             }
 			else {																			//For custom size cells
-				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory);					//Free the memory
-				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer);				//Destroy the vulkan buffer object
+				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory, nullptr);					//Free the memory
+				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer, nullptr);				//Destroy the vulkan buffer object
 			}
 
             cells_m.lock();
@@ -463,7 +463,7 @@ namespace lux::vram{
 			};
 			vkFlushMappedMemoryRanges(core::dvc::compute.LD, 1, &range); //TODO this seems useless
 			vkUnmapMemory(core::dvc::compute.LD, memory);
-			luxDebug(Super::mapped = nullptr);
+			_dbg(Super::mapped = nullptr);
 		}
 
 

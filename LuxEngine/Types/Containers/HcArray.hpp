@@ -159,7 +159,7 @@ namespace lux{
 		 * @tparam vIndex The index of the element
 		 */
 		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(types)) {
-			// luxDebug(static_assert(vIndex >= 2, "Index is out of range"));
+			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
 			return __pvt::seq<sizeof...(types), seqIndex, types...>::template get_t<sizeof...(types), __pvt::CHCK, seqIndex, types...>::template getFunc<seqIndex - vIndex>();
 		}
 

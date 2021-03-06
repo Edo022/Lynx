@@ -5,8 +5,8 @@
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 #define g gl_GlobalInvocationID
-const vec2 pm = {1, -1};	//Plus-minus vector for fast vec2 operations
-const vec2 mp = {-1, 1};	//Minus-plus vector for fast vec2 operations
+const vec2 pm = { 1, -1 };	//Plus-minus vector for fast vec2 operations
+const vec2 mp = { -1, 1 };	//Minus-plus vector for fast vec2 operations
 float rand(vec2 co) { return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453); }
 
 
@@ -68,7 +68,7 @@ void drawLine() {
 
 
 	//Find perpendicular sub segment points
-	vec2 dir = {(p1.x - p0.x < 0) ? -1 : 1, (p1.y - p0.y < 0) ? -1 : 1};//Direction of the line				(+1 when going from -y to y or from -x to x, false otherwise)
+	vec2 dir = { (p1.x - p0.x < 0) ? -1 : 1, (p1.y - p0.y < 0) ? -1 : 1 };//Direction of the line				(+1 when going from -y to y or from -x to x, false otherwise)
 	vec2 sbOffset = dir * (wd / 2) * normalize(lDist);	//Base segment point offset							(direction * half width * normalized 2D line distance)
 
 	vec2 lRpos = p0 + dir * lDist * lFac;				//Position relative to the first point of the line	(line base point + (direction *  normalized 2D line distance * line factor))

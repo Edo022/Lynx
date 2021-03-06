@@ -1,4 +1,4 @@
-﻿#include "LuxEngine/Core/Render/GSwapchain.hpp"
+﻿#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
@@ -11,22 +11,8 @@
 
 
 
-namespace lux::core::render::swapchain{
-	alignCache VkSwapchainKHR         swapchain = nullptr;
-	alignCache RtArray<VkImage>       swapchainImages;
-	alignCache RtArray<VkImageView>   swapchainImageViews;
-	alignCache VkFormat               swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
-	alignCache VkExtent2D             swapchainExtent = {};
-	alignCache RtArray<VkFramebuffer> swapchainFramebuffers;
-
-
-
-
-
-
-
-
-	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats) {
+namespace lux::core::wnd{
+	VkSurfaceFormatKHR Swapchain::swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats) {
 		for(auto& availableFormat : *pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
@@ -41,7 +27,7 @@ namespace lux::core::render::swapchain{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes) {
+	VkPresentModeKHR Swapchain::swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes) {
 		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
@@ -52,37 +38,13 @@ namespace lux::core::render::swapchain{
 
 
 
-	VkExtent2D swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
+	VkExtent2D Swapchain::swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
 		glfwGetFramebufferSize(lux::window.window, &width, &height);
 		return VkExtent2D{
 			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
 		};
-	}
-
-
-
-
-	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
-		SwapChainSupportDetails details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
-
-		uint32 formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, nullptr);
-		if(formatCount != 0) {
-			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, surface, &formatCount, details.formats.begin());
-		}
-
-		uint32 presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, nullptr);
-		if(presentModeCount != 0) {
-			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, surface, &presentModeCount, details.presentModes.begin());
-		}
-
-		return details;
 	}
 
 
@@ -101,9 +63,10 @@ namespace lux::core::render::swapchain{
 
 
 
-	void swapchainCreate() {
+	void Swapchain::swapchainCreate() {
 		//Get swapchain details
-		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(dvc::graphics.PD.device);
+		SwapChainSupportDetails swapChainSupport = getSwapchainSupportDetails(dvc::graphics.PD.device, core::surface); //FIXME DONT USE GLOBAL SURFACE
+		//FIXME ^ USE BINDED WINDOW
 
 		//Choose max image count. Minimum or minimum +1 if supported
 		uint32 imageCount = swapChainSupport.capabilities.minImageCount + 1;
@@ -115,14 +78,14 @@ namespace lux::core::render::swapchain{
 		//swapchain creation infos
 		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(&swapChainSupport.formats) };
 		VkSwapchainCreateInfoKHR createInfo{
-			.sType{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR },
-			.surface{ surface },
-			.minImageCount{ imageCount },
-			.imageFormat{ surfaceFormat.format },
-			.imageColorSpace{ surfaceFormat.colorSpace },
-			.imageExtent{ swapchainChooseExtent(&swapChainSupport.capabilities) },
-			.imageArrayLayers{ 1 },
-			.imageUsage{ VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT },
+			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+			.surface          = surface,
+			.minImageCount    = imageCount,
+			.imageFormat      = surfaceFormat.format,
+			.imageColorSpace  = surfaceFormat.colorSpace,
+			.imageExtent      = swapchainChooseExtent(&swapChainSupport.capabilities),
+			.imageArrayLayers = 1,
+			.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT
 		};
 
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
@@ -155,11 +118,11 @@ namespace lux::core::render::swapchain{
 
 		//Create image views
 		swapchainImageViews.resize(swapchainImages.count());
-		for(uint32 i = 0; i < swapchainImages.count(); ++i) swapchainImageViews[i] = out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		for(uint32 i = 0; i < swapchainImages.count(); ++i) swapchainImageViews[i] = render::out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
-		out::createRenderPass();
-		out::createFramebuffers();
+		render::out::createRenderPass(); //FIXME MOVE TO SWAPCHAIN
+		render::out::createFramebuffers();
 	}
 
 
@@ -169,8 +132,8 @@ namespace lux::core::render::swapchain{
 
 
 
-	void cleanup() {
-		vkDestroyRenderPass(dvc::graphics.LD, out::renderPass, nullptr);												//Destroy render pass
+	void Swapchain::cleanup() {
+		vkDestroyRenderPass(dvc::graphics.LD, render::out::renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		for(auto imageView   : swapchainImageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView  , nullptr);		//Destroy image views
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);													//destroy swapchain
@@ -183,15 +146,15 @@ namespace lux::core::render::swapchain{
 
 
 
-	void swapchainRecreate(const bool vWindowResized) {
+	void Swapchain::swapchainRecreate(const bool vWindowResized) {
 		if(vWindowResized) lux::window.windowResizeFence.lock();	//Sync with framebufferResizeCallback
 
 		//TODO dont destroy it every time
 		static int32 width, height;	glfwGetFramebufferSize(lux::window.window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
-			swapchain::cleanup();					//Clean the old swapchain
-			swapchain::swapchainCreate();			//Create a new swapchain
+			cleanup();					//Clean the old swapchain
+			swapchainCreate();			//Create a new swapchain
 
 
 			//Update the window count buffer
