@@ -11,7 +11,7 @@ def run(dir):
 
 	enginePath_ = os.path.abspath('.')
 	os.chdir(dir)
-	import Build.BuildOptions.BuildOptions as opts
+	import BuildOptions as opts
 	#import importlib.util
 	# spec = importlib.util.spec_from_file_location("BuildOptions.BuildOptions", enginePath_ + '/Build/BuildOptions/BuildOptions.py')
 	# foo = importlib.util.module_from_spec(spec)

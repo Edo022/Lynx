@@ -1,5 +1,5 @@
 import os
-import Build.UpdateBuild as UpdateBuild #FIXME fix import when calling the script from vscode
+import UpdateBuild 
 
 def run(x):
 	with open('./.engine/platform', 'w') as bpf:

@@ -23,7 +23,7 @@ It contains everything required to modify, build and use the engine.
 
 cd into your project directory and configure it to use the engine.  
 `cd MyProject`  
-`python3.8 <path_to_cloned_repo>/Setup.py`
+`python3.8 <path_to_cloned_repo>/Setup/Setup.py`
 
 You can set the g++ command to compile your application in the .vscode/tasks.json file as you wold normally do with any VSCode project.  
 The command is set to run lux_g++, which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.  

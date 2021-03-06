@@ -1,5 +1,5 @@
 import sys, os
-from Build import SetPlatform, SetType
+import SetPlatform, SetType
 thisdir = os.path.dirname(os.path.abspath(__file__))
 
 
