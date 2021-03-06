@@ -52,7 +52,7 @@ namespace lux::core::render{
 		// dvc::getPhysical(); //FIXME
 		cmd::createGraphicsCommandPool();
 		Normal printf("    Creating VK swapchain...             ");
-		swapchain::swapchainCreate();
+		lux::window.swapchain.swapchainCreate(); //FIXME DONT DEPEND ON A WINDOW
 
 		_dbg(createDebugMessenger());
 
@@ -117,7 +117,7 @@ namespace lux::core::render{
 			lux::window.windowResizeFence.lock();
 			out::renderFramebufferResized = false;
 			lux::window.windowResizeFence.unlock();
-			swapchain::swapchainRecreate(true);
+			lux::window.swapchain.swapchainRecreate(true); //FIXME DONT DEPEND ON A WINDOW
 			goto redraw;
 		}
 
@@ -125,9 +125,9 @@ namespace lux::core::render{
 		//Acquire swapchain image
 		uint32 imageIndex;
 		{
-			switch(vkAcquireNextImageKHR(dvc::graphics.LD, swapchain::swapchain, INT_MAX, s_imageAquired[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+			switch(vkAcquireNextImageKHR(dvc::graphics.LD, lux::window.swapchain.swapchain, INT_MAX, s_imageAquired[renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-				case VK_ERROR_OUT_OF_DATE_KHR: swapchain::swapchainRecreate(false);  return;
+				case VK_ERROR_OUT_OF_DATE_KHR: lux::window.swapchain.swapchainRecreate(false);  return; //FIXME DONT DEPEND ON A WINDOW
 				default: Failure printf("Failed to aquire swapchain image");
 			}
 		}
@@ -206,7 +206,7 @@ namespace lux::core::render{
 				.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 				.waitSemaphoreCount = 1,
 				.swapchainCount     = 1,
-				.pSwapchains        = &swapchain::swapchain
+				.pSwapchains        = &lux::window.swapchain.swapchain //FIXME DONT DEPEND ON A WINDOW
 			};
 			presentInfo.pWaitSemaphores = &s_copy[renderCurrentFrame];
 			presentInfo.pImageIndices   = &imageIndex;
@@ -215,7 +215,7 @@ namespace lux::core::render{
 				case VK_SUCCESS:  break;
 				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-					swapchain::swapchainRecreate(false);
+					lux::window.swapchain.swapchainRecreate(false); //FIXME DONT DEPEND ON A WINDOW
 					vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
@@ -269,7 +269,7 @@ namespace lux::core::render{
 
 
 	void cleanup() {
-		swapchain::cleanup();																	//Clear swapchain components
+		lux::window.swapchain.cleanup();																	//Clear swapchain components //FIXME DONT DEPEND ON A WINDOW
 		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);			//Destroy graphics command pool
 
 		for(int32 i = 0; i < out::renderMaxFramesInFlight; ++i) {								//Destroy sync objects

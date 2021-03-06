@@ -11,22 +11,8 @@
 
 
 
-namespace lux::core::render::swapchain{
-	alignCache VkSwapchainKHR         swapchain = nullptr;
-	alignCache RtArray<VkImage>       swapchainImages;
-	alignCache RtArray<VkImageView>   swapchainImageViews;
-	alignCache VkFormat               swapchainImageFormat = VkFormat::VK_FORMAT_MAX_ENUM;
-	alignCache VkExtent2D             swapchainExtent = {};
-	alignCache RtArray<VkFramebuffer> swapchainFramebuffers;
-
-
-
-
-
-
-
-
-	VkSurfaceFormatKHR swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats) {
+namespace lux::core::wnd{
+	VkSurfaceFormatKHR Swapchain::swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats) {
 		for(auto& availableFormat : *pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
@@ -41,7 +27,7 @@ namespace lux::core::render::swapchain{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes) {
+	VkPresentModeKHR Swapchain::swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes) {
 		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
 		for(const auto& availablePresentMode : *pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
@@ -52,7 +38,7 @@ namespace lux::core::render::swapchain{
 
 
 
-	VkExtent2D swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
+	VkExtent2D Swapchain::swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
 		glfwGetFramebufferSize(lux::window.window, &width, &height);
 		return VkExtent2D{
@@ -64,7 +50,7 @@ namespace lux::core::render::swapchain{
 
 
 
-	SwapChainSupportDetails swapchainQuerySupport(const VkPhysicalDevice vDevice) {
+	Swapchain::SwapChainSupportDetails Swapchain::swapchainQuerySupport(const VkPhysicalDevice vDevice) {
 		SwapChainSupportDetails details;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, surface, &details.capabilities);
 
@@ -101,7 +87,7 @@ namespace lux::core::render::swapchain{
 
 
 
-	void swapchainCreate() {
+	void Swapchain::swapchainCreate() {
 		//Get swapchain details
 		SwapChainSupportDetails swapChainSupport = swapchainQuerySupport(dvc::graphics.PD.device);
 
@@ -155,11 +141,11 @@ namespace lux::core::render::swapchain{
 
 		//Create image views
 		swapchainImageViews.resize(swapchainImages.count());
-		for(uint32 i = 0; i < swapchainImages.count(); ++i) swapchainImageViews[i] = out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		for(uint32 i = 0; i < swapchainImages.count(); ++i) swapchainImageViews[i] = render::out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
-		out::createRenderPass();
-		out::createFramebuffers();
+		render::out::createRenderPass(); //FIXME MOVE TO SWAPCHAIN
+		render::out::createFramebuffers();
 	}
 
 
@@ -169,8 +155,8 @@ namespace lux::core::render::swapchain{
 
 
 
-	void cleanup() {
-		vkDestroyRenderPass(dvc::graphics.LD, out::renderPass, nullptr);												//Destroy render pass
+	void Swapchain::cleanup() {
+		vkDestroyRenderPass(dvc::graphics.LD, render::out::renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		for(auto imageView   : swapchainImageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView  , nullptr);		//Destroy image views
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);													//destroy swapchain
@@ -183,15 +169,15 @@ namespace lux::core::render::swapchain{
 
 
 
-	void swapchainRecreate(const bool vWindowResized) {
+	void Swapchain::swapchainRecreate(const bool vWindowResized) {
 		if(vWindowResized) lux::window.windowResizeFence.lock();	//Sync with framebufferResizeCallback
 
 		//TODO dont destroy it every time
 		static int32 width, height;	glfwGetFramebufferSize(lux::window.window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
-			swapchain::cleanup();					//Clean the old swapchain
-			swapchain::swapchainCreate();			//Create a new swapchain
+			cleanup();					//Clean the old swapchain
+			swapchainCreate();			//Create a new swapchain
 
 
 			//Update the window count buffer

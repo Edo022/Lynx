@@ -28,13 +28,13 @@ namespace lux::core::buffers{
 			lux::window.gpuCellWindowSize.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
 
 			lux::window.gpuCellWindowSize.map();			//Map window size cell
-			lux::window.gpuCellWindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
-			lux::window.gpuCellWindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
+			lux::window.gpuCellWindowSize[0] = lux::window.swapchain.swapchainExtent.width;				//Set width //FIXME DONT DEPEND ON A WINDOW
+			lux::window.gpuCellWindowSize[1] = lux::window.swapchain.swapchainExtent.height;				//Set height //FIXME DONT DEPEND ON A WINDOW
 			lux::window.gpuCellWindowSize.unmap();										//Unmap
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(render::swapchain::swapchainImages.count());			//Resize the command buffer array in the shader
+			copyCommandBuffers.resize(lux::window.swapchain.swapchainImages.count());			//Resize the command buffer array in the shader //FIXME DONT DEPEND ON A WINDOW
 			core::c::shaders::createDefaultCommandBuffers();								//Create command buffers and command pool
 		}
 	}

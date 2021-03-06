@@ -34,7 +34,7 @@ namespace lux::core::render::out{
 	void createRenderPass() {
 		//Color
 		VkAttachmentDescription colorAttachment{
-			.format         = swapchain::swapchainImageFormat,		//Swapchain image format
+			.format         = lux::window.swapchain.swapchainImageFormat,		//Swapchain image format //FIXME DONT DEPEND ON A WINDOW
 			.samples        = VK_SAMPLE_COUNT_1_BIT,				//Multisampling samples
 			.loadOp         = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Don't clear for better performance
 			.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE,		//Don't save rendered image
@@ -101,19 +101,19 @@ namespace lux::core::render::out{
 
 
 	void createFramebuffers() {
-		swapchain::swapchainFramebuffers.resize(swapchain::swapchainImageViews.count());
+		lux::window.swapchain.swapchainFramebuffers.resize(lux::window.swapchain.swapchainImageViews.count()); //FIXME DONT DEPEND ON A WINDOW
 
-		for(uint32 i = 0; i < swapchain::swapchainImageViews.count(); ++i) {
+		for(uint32 i = 0; i < lux::window.swapchain.swapchainImageViews.count(); ++i) { //FIXME DONT DEPEND ON A WINDOW
 			VkFramebufferCreateInfo framebufferInfo{
 				.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 				.renderPass      = renderPass,
 				.attachmentCount = 1,
-				.pAttachments    = &swapchain::swapchainImageViews[i],
-				.width           = swapchain::swapchainExtent.width,
-				.height          = swapchain::swapchainExtent.height,
+				.pAttachments    = &lux::window.swapchain.swapchainImageViews[i], //FIXME DONT DEPEND ON A WINDOW
+				.width           = lux::window.swapchain.swapchainExtent.width, //FIXME DONT DEPEND ON A WINDOW
+				.height          = lux::window.swapchain.swapchainExtent.height, //FIXME DONT DEPEND ON A WINDOW
 				.layers          = 1
 			};
-			dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchain::swapchainFramebuffers[i]), "Failed to create framebuffer");
+			dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &lux::window.swapchain.swapchainFramebuffers[i]), "Failed to create framebuffer"); //FIXME DONT DEPEND ON A WINDOW
 		}
 	}
 

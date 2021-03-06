@@ -61,7 +61,9 @@ namespace lux::core::dvc{
 
 		//Check swapchain support
 		else {
-			render::swapchain::SwapChainSupportDetails swapChainSupport = render::swapchain::swapchainQuerySupport(vDevice);
+			wnd::Swapchain::SwapChainSupportDetails swapChainSupport = wnd::Swapchain::swapchainQuerySupport(vDevice);
+			//FIXME ^^ MOVE TO DIFFERENT LOCATION
+			//FIXME THIS SHOULD BE STATIC AND MUST NOT DEPEND ON A WINDOW
 			if(!swapChainSupport.formats.count() || !swapChainSupport.presentModes.count()) {
 				*pErrorText = "Unsupported swapchain";
 				return false;

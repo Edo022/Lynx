@@ -15,7 +15,7 @@
 
 namespace lux{
 	#ifdef LUX_DEBUG
-		namespace core::wnd{
+		namespace core::wnd{ //TODO MOVE
 			alignCache uint32       validationLayersNum = 1;
 			alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
 		}

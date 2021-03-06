@@ -7,6 +7,7 @@
 #include "LuxEngine/Types/Dummy.hpp"
 #include "LuxEngine/Types/LuxBool.hpp"
 
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 
 
 
@@ -30,6 +31,8 @@ namespace lux{
 		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput   = nullptr;	//Color output of the window
 		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput_i = nullptr;	//Packed color output of the window
 		vram::ptr<int32, VRam, Storage> gpuCellWindowZBuffer  = nullptr;	//TODO remove. use render space assembler
+
+		core::wnd::Swapchain swapchain;
 
 
 
