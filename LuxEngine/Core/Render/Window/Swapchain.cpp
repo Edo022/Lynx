@@ -65,7 +65,7 @@ namespace lux::core::wnd{
 
 	void Swapchain::swapchainCreate() {
 		//Get swapchain details
-		SwapChainSupportDetails swapChainSupport = getSwapchainSupportDetails(dvc::graphics.PD.device, core::surface); //FIXME DONT USE GLOBAL SURFACE
+		SwapChainSupportDetails swapChainSupport = getSwapchainSupportDetails(dvc::graphics.PD.device, bindedWindow->surface); //FIXME DONT USE GLOBAL SURFACE
 		//FIXME ^ USE BINDED WINDOW
 
 		//Choose max image count. Minimum or minimum +1 if supported
@@ -79,7 +79,7 @@ namespace lux::core::wnd{
 		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(swapChainSupport.formats) };
 		VkSwapchainCreateInfoKHR createInfo{
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-			.surface          = surface,
+			.surface          = bindedWindow->surface,
 			.minImageCount    = imageCount,
 			.imageFormat      = surfaceFormat.format,
 			.imageColorSpace  = surfaceFormat.colorSpace,
@@ -104,6 +104,8 @@ namespace lux::core::wnd{
 
 
 		//Create swapchain
+		VkBool32 hasPresentSupport = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(dvc::graphics.PD.device, dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //SUPPRESS ERROR //FIXME
 		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
 
 

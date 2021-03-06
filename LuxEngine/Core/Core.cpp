@@ -27,13 +27,6 @@ namespace lux::core{
 	alignCache bool          useVSync;
 	alignCache bool          initialized = false;
 
-	alignCache VkInstance    instance;
-	alignCache VkSurfaceKHR  surface;
-	alignCache VkDebugUtilsMessengerEXT debugMessenger;
-
-	alignCache uint32        requiredDeviceExtensionsNum = 1;
-	alignCache const  char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-
 	alignCache lux::Thread   FPSCounterThr;
 	alignCache lux::Thread   renderThr;
 
@@ -108,7 +101,7 @@ namespace lux::core{
 		//Exit
 		Normal  printf("Cleaning memory\n");
 		render::cleanup(); buffers::cleanup();
-		vkDestroyInstance(instance, nullptr);
+		vkDestroyInstance(dvc::instance, nullptr);
 		glfwDestroyWindow(lux::window.window);
 		glfwTerminate();
 	}

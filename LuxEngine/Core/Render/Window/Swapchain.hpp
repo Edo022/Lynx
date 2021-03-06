@@ -8,7 +8,9 @@
 
 
 
-
+namespace lux{
+	struct Window;
+}
 namespace lux::core::wnd{
 	struct Swapchain{
 		VkSwapchainKHR			swapchain = nullptr;
@@ -18,6 +20,7 @@ namespace lux::core::wnd{
 		VkExtent2D				swapchainExtent = {};
 		RtArray<VkFramebuffer>	swapchainFramebuffers;
 
+		Window* bindedWindow;
 
 		// Swapchain(){ swapchainCreate(); }
 

@@ -13,14 +13,10 @@
 
 //TODO use ptrs instead of cells
 namespace lux{
-	#ifdef LUX_DEBUG
-		namespace wnd{
-			extern uint32       validationLayersNum;
-			extern const char**	validationLayers;
-		}
-	#endif
 
-
+// namespace core::dvc{
+// 	extern VkInstance	instance; //FIXME REMOVE
+// }
 
 	struct Window{
 		GLFWwindow*	window = nullptr;		//Main engine window
@@ -32,11 +28,16 @@ namespace lux{
 		vram::ptr<int32, VRam, Storage> gpuCellWindowOutput_i = nullptr;	//Packed color output of the window
 		vram::ptr<int32, VRam, Storage> gpuCellWindowZBuffer  = nullptr;	//TODO remove. use render space assembler
 
+		VkSurfaceKHR surface;
 		core::wnd::Swapchain swapchain;
 
 
 
-		Window(){ initWindow(); }
+		Window(){
+			initWindow();
+			swapchain.bindedWindow = this;
+			swapchain.swapchainCreate();
+		}
 
 		void initWindow();
 		void createInstance();
@@ -47,6 +48,7 @@ namespace lux{
 			gpuCellWindowOutput_i.free();
 			gpuCellWindowZBuffer.free();
 			glfwDestroyWindow(window);
+			vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
 		}
 	};
 	extern Window window; //TODO REMOVE

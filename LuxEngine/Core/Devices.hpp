@@ -10,9 +10,24 @@
 
 
 namespace lux::core::dvc{
-	extern graphicsDevice			graphics;	//Main graphics device
-	extern computeDevice			compute;	//Main compute device
-	extern RtArray<computeDevice>	secondary;	//Secondary compute devices
+	extern graphicsDevice			graphics;			//Main graphics device
+	extern computeDevice			compute;			//Main compute device
+	extern RtArray<computeDevice>	secondary;			//Secondary compute devices
+
+	extern VkInstance	instance;						//The only Vulkan instance. This is required in order to use Vulkan
+	// extern VkSurfaceKHR	surface;						//FIXME MOVE TO WINDOW
+
+	extern uint32		requiredDeviceExtensionsNum;	//A GLFW window used to create dummySurface
+	extern const char**	requiredDeviceExtensions;		//A window surface used to initialize the Vulkan devices before the application creates the real windows
+
+	#ifdef LUX_DEBUG
+		extern VkDebugUtilsMessengerEXT	debugMessenger;
+		extern uint32       validationLayersNum;
+		extern const char**	validationLayers;
+	#endif
+
+
+
 
 
 	void preInit();

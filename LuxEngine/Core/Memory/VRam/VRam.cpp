@@ -23,8 +23,8 @@ namespace lux::sys{
 		// lux::window.createInstance();
 		SuccessNoNl printf("ok");
 
-		dbg::checkVk(glfwCreateWindowSurface(core::instance, lux::window.window, nullptr, &core::surface), "Failed to create window surface");
-		core::dvc::getPhysical();
+		// dbg::checkVk(glfwCreateWindowSurface(core::instance, lux::window.window, nullptr, &core::surface), "Failed to create window surface");
+		// core::dvc::getPhysical();
 
 		{
 			//Get GPU informations

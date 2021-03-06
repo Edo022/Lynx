@@ -53,7 +53,7 @@ namespace lux::core::render{
 		cmd::createGraphicsCommandPool();
 		Normal printf("    Creating VK swapchain...             ");
 
-		lux::window.swapchain.swapchainCreate(); //FIXME AUTOMATIZE
+		// lux::window.swapchain.swapchainCreate(); //FIXME AUTOMATIZE
 
 		_dbg(createDebugMessenger());
 
@@ -85,7 +85,7 @@ namespace lux::core::render{
 	void createDebugMessenger() {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
-		dbg::checkVk(debug::CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger), "Failed to set up debug messenger");
+		dbg::checkVk(debug::CreateDebugUtilsMessengerEXT(dvc::instance, &createInfo, nullptr, &dvc::debugMessenger), "Failed to set up debug messenger");
 	}
 	#endif
 
@@ -286,8 +286,8 @@ namespace lux::core::render{
 		vkDestroyDevice(dvc::compute.LD, nullptr);												//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);					//Destroy all the secondary devices
 
-		_dbg(debug::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr));		//Destroy the debug messenger if present
-		vkDestroySurfaceKHR(instance, surface, nullptr);										//Destroy the vulkan surface
+		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));		//Destroy the debug messenger if present
+		// vkDestroySurfaceKHR(dvc::instance, dvc::surface, nullptr);										//Destroy the vulkan surface
 	}
 
 

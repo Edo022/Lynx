@@ -81,13 +81,6 @@ namespace lux::core{
 	extern bool			useVSync;
 	extern bool			initialized;
 
-	extern VkInstance	instance;
-	extern VkDebugUtilsMessengerEXT	debugMessenger;
-	extern VkSurfaceKHR	surface;
-
-	extern uint32		requiredDeviceExtensionsNum;
-	extern const char**	requiredDeviceExtensions;
-
 	extern lux::Thread	FPSCounterThr;
 	extern lux::Thread	renderThr;
 

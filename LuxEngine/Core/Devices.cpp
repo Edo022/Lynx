@@ -19,12 +19,94 @@
 
 
 namespace lux::core::dvc{
-	alignCache graphicsDevice         graphics;		//Main graphics device
-	alignCache computeDevice          compute;		//Main compute device
-	alignCache RtArray<computeDevice> secondary;	//Secondary compute devices
+	alignCache graphicsDevice         graphics;
+	alignCache computeDevice          compute;
+	alignCache RtArray<computeDevice> secondary;
+
+
+	alignCache VkInstance   instance;
+	alignCache GLFWwindow*  dummyWindow;
+	alignCache VkSurfaceKHR dummySurface;
+
+	alignCache uint32       requiredDeviceExtensionsNum = 1;
+	alignCache const char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+
+	#ifdef LUX_DEBUG
+		alignCache VkDebugUtilsMessengerEXT debugMessenger;
+		alignCache uint32       validationLayersNum = 1;
+		alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
+	#endif
 
 
 
+
+	luxAutoInit(LUX_H_DEVICES){
+		if(!glfwInit()) exit(-1);																//Initialize GLFW
+		//TODO ADD ERROR MESSAGE
+
+		//Extensions
+		uint32 glfwExtensionCount;
+		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);	//Get extensions list and count
+		//! ^ Freed by GLFW
+		const char** extensions = (const char**)malloc(sizeof(const char*) * (glfwExtensionCount _dbg(+ 1)));
+		for(uint32 i = 0; i < glfwExtensionCount; ++i) extensions[i] = glfwExtensions[i];		//Save them into an array
+		_dbg(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));				//Add debug extension if in debug mode
+
+
+		//Create debugCreateInfo structure
+		_dbg(VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo);
+		_dbg(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
+
+		VkApplicationInfo appInfo{
+			.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+			.pApplicationName   = "LuxEngine",
+			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+			.pEngineName        = "LuxEngine",
+			.engineVersion      = VK_MAKE_VERSION(1, 0, 0),
+			.apiVersion         = VK_API_VERSION_1_2
+		};
+
+		//Create instance
+		VkInstanceCreateInfo createInfo{
+			.sType                    = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+			.pNext                    = _dbg((VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo)_rls(nullptr),
+			.pApplicationInfo         = &appInfo,
+			.enabledLayerCount        = _dbg(validationLayersNum) _rls(0),
+			_dbg(.ppEnabledLayerNames = validationLayers,)
+			.enabledExtensionCount    = glfwExtensionCount _dbg(+ 1),
+			.ppEnabledExtensionNames  = extensions
+		};
+		//Add validation layers if in debug mode
+		#ifdef LUX_DEBUG																	//Search for validation layers
+			uint32 layerCount = 0;
+			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
+			RtArray<VkLayerProperties> availableLayers(layerCount);
+			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
+			for(uint32 i = 0; i < validationLayersNum; i++) {							//For every layer,
+				for(const auto& layerProperties : availableLayers) {							//Check if it's available
+					if(validationLayers[i] == layerProperties.layerName) break;				//If not, exit
+					else if(validationLayers[i] == availableLayers.end()->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
+				}
+			}
+		#endif
+
+		vkCreateInstance(&createInfo, nullptr, &core::dvc::instance);
+		free(extensions);
+
+
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		dummyWindow = glfwCreateWindow(1, 1, "DummyWindow", nullptr, nullptr);	//Initialize dummy window
+		glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface); //Initialize dummy surface
+
+
+		// GLFWwindow* dummyWindow = glfwCreateWindow(0, 0, "DummyWindow", nullptr, nullptr);
+		// VkSurfaceKHR dummySurface; glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface);
+		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface), "Failed to create window surface");
+		getPhysical();
+	}
 
 
 
@@ -61,7 +143,8 @@ namespace lux::core::dvc{
 
 		//Check swapchain support
 		else {
-			wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, core::surface); //FIXME DONT USE GLOBAL SURFACE OR CREATE DUMMY WINDOW
+			// wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, surface); //FIXME DONT USE GLOBAL SURFACE OR CREATE DUMMY WINDOW
+			wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, dummySurface);
 			if(!swapChainSupport.formats.count() || !swapChainSupport.presentModes.count()) {
 				pErrorText = "Unsupported swapchain";
 				return false;
@@ -107,7 +190,8 @@ namespace lux::core::dvc{
 			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;					//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT)  indices.computeFamilies.add(i);				//Add compute families
 			VkBool32 hasPresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, surface, &hasPresentSupport);						//Set present family
+			// vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, surface, &hasPresentSupport);						//Set present family
+			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, dummySurface, &hasPresentSupport);						//Set present family
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
 		return indices;
@@ -267,8 +351,8 @@ namespace lux::core::dvc{
 			.sType                    = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//Set structure type
 			.queueCreateInfoCount     = queueCreateInfos.count(),				//Set queue infos count
 			.pQueueCreateInfos        =    queueCreateInfos.begin(),			//Set queue infos
-			.enabledLayerCount        = _dbg(wnd::validationLayersNum) _rls(0),	//Set validation layer count if in debug mode
-			_dbg(.ppEnabledLayerNames = wnd::validationLayers,)					//Set validation layers      if in debug mode
+			.enabledLayerCount        = _dbg(validationLayersNum) _rls(0),	//Set validation layer count if in debug mode
+			_dbg(.ppEnabledLayerNames = validationLayers,)					//Set validation layers      if in debug mode
 			.enabledExtensionCount    =   requiredDeviceExtensionsNum,			//Set required extentions count
 			.ppEnabledExtensionNames  = requiredDeviceExtensions,				//Set required extensions
 			.pEnabledFeatures         = &enabledDeviceFeatures					//Set physical device enabled features
