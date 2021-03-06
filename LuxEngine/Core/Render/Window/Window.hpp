@@ -40,6 +40,14 @@ namespace lux{
 
 		void initWindow();
 		void createInstance();
+
+		~Window(){
+			gpuCellWindowSize.free();
+			gpuCellWindowOutput.free();
+			gpuCellWindowOutput_i.free();
+			gpuCellWindowZBuffer.free();
+			glfwDestroyWindow(window);
+		}
 	};
 	extern Window window; //TODO REMOVE
 }

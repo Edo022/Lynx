@@ -407,8 +407,8 @@ namespace lux::vram{
 				//FIXME FREE BUFFERS
             }
 			else {																			//For custom size cells
-				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory);					//Free the memory
-				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer);				//Destroy the vulkan buffer object
+				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory, nullptr);					//Free the memory
+				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer, nullptr);				//Destroy the vulkan buffer object
 			}
 
             cells_m.lock();

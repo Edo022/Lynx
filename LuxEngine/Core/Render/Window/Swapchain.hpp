@@ -36,5 +36,9 @@ namespace lux::core::wnd{
 		VkPresentModeKHR		swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes);
 		VkExtent2D				swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 		static SwapChainSupportDetails	swapchainQuerySupport(const VkPhysicalDevice vDevice);
+
+		~Swapchain(){
+			vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);
+		}
 	};
 }
