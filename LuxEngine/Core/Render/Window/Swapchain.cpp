@@ -12,24 +12,24 @@
 
 
 namespace lux::core::wnd{
-	VkSurfaceFormatKHR Swapchain::swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>* pAvailableFormats) {
-		for(auto& availableFormat : *pAvailableFormats) {
+	VkSurfaceFormatKHR Swapchain::swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats) {
+		for(auto& availableFormat : pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
 			if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
 				return availableFormat;
 			}
 		}
-		return (*pAvailableFormats)[0];
+		return pAvailableFormats[0];
 	}
 
 
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR Swapchain::swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>* pAvailablePresentModes) {
-		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR;
-		for(const auto& availablePresentMode : *pAvailablePresentModes) {
+	VkPresentModeKHR Swapchain::swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes) {
+		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR; //FIXME MOVE VSYNC TO WINDOW STRUCT
+		for(const auto& availablePresentMode : pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
 		}
 		return VK_PRESENT_MODE_IMMEDIATE_KHR;
@@ -76,7 +76,7 @@ namespace lux::core::wnd{
 
 
 		//swapchain creation infos
-		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(&swapChainSupport.formats) };
+		VkSurfaceFormatKHR surfaceFormat{ swapchainChooseSurfaceFormat(swapChainSupport.formats) };
 		VkSwapchainCreateInfoKHR createInfo{
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 			.surface          = surface,
@@ -98,7 +98,7 @@ namespace lux::core::wnd{
 
 		createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-		createInfo.presentMode = swapchainChoosePresentMode(&swapChainSupport.presentModes);
+		createInfo.presentMode = swapchainChoosePresentMode(swapChainSupport.presentModes);
 		createInfo.clipped = VK_TRUE;
 		createInfo.oldSwapchain = VK_NULL_HANDLE;
 
