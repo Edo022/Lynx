@@ -63,11 +63,6 @@
 
 
 
-//TODO draw graph of the allocation/reallocation process
-//TODO UPDATE GRAPH
-
-
-
 
 
 

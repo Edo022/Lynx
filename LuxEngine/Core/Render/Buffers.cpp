@@ -27,7 +27,7 @@ namespace lux::core::buffers{
 			lux::window.gpuCellWindowZBuffer. realloc(lux::window.width * lux::window.height * 4);
 			lux::window.gpuCellWindowSize.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
 
-			lux::window.gpuCellWindowSize.map();			//Map window size cell //TODO use gpu pointer instead of raw cell
+			lux::window.gpuCellWindowSize.map();			//Map window size cell
 			lux::window.gpuCellWindowSize[0] = core::render::swapchain::swapchainExtent.width;				//Set width
 			lux::window.gpuCellWindowSize[1] = core::render::swapchain::swapchainExtent.height;				//Set height
 			lux::window.gpuCellWindowSize.unmap();										//Unmap

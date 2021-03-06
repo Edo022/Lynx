@@ -6,7 +6,7 @@
 #include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
-//TODO add AVX512 when supported //or don't. it's probably useless
+//TODO add AVX512 when supported
 
 
 

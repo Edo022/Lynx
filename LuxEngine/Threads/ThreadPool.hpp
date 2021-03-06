@@ -14,10 +14,6 @@
 
 
 
-//TODO create a fence that uses suspend and resume instead of while checks
-//TODO create LuxThread with platform specific suspend and resume functions
-
-
 //TODO ci sono diversi tipi di superfici
 //TODO questi tipi vengono calcolati automaticamente e salvati nei dati dell'oggetto
 //TODO così in runtime non serve calcolarli. devono essere ricalcolati in background se l'oggetto viene modificato

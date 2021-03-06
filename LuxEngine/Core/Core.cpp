@@ -32,9 +32,9 @@ namespace lux::core{
 	alignCache VkDebugUtilsMessengerEXT debugMessenger;
 
 	alignCache uint32        validationLayersNum         = 1;
-	alignCache const  char** validationLayers            = { new const char*{ "VK_LAYER_KHRONOS_validation"   }};
+	alignCache const  char** validationLayers            = new const char*{ "VK_LAYER_KHRONOS_validation"   };
 	alignCache uint32        requiredDeviceExtensionsNum = 1;
-	alignCache const  char** requiredDeviceExtensions    = { new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME }};
+	alignCache const  char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	alignCache lux::Thread   FPSCounterThr;
 	alignCache lux::Thread   renderThr;

@@ -226,7 +226,6 @@ namespace lux::core::c::shaders{
 
 
 
-	//FIXME USE RAM POINTERS
 	/**
 	 * @brief Creates the descriptor pool and allocates in it the descriptor sets
 	 * @param pCShader A pointer to the shader where to create the descriptor pool and allocate the descriptor buffers
