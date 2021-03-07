@@ -1,9 +1,7 @@
 #pragma once
-#define GLM_FORCE_RADIANS					//Use radiants intead of degrees
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
-
-
-
+#define LUX_H_LUXENGINE
+// #define GLM_FORCE_RADIANS					//Use radiants intead of degrees
+// #define GLM_FORCE_DEPTH_ZERO_TO_ONE			//0 to 1 depth instead of OpenGL -1 to 1
 
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Threads/Thread.hpp"

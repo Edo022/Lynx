@@ -5,36 +5,36 @@
 
 
 
-typedef signed char			int8;		//Signed 8-bit integer
-typedef signed short		int16;		//Signed 16-bit integer
-typedef signed int			int32;		//Signed 32-bit integer
-typedef signed long long	int64;		//Signed 64-bit integer
-//typedef int128_t		int128;
-//typedef int256_t		int256;
-//typedef int512_t		int512;
+using int8  = char;		            //Signed 8-bit integer
+using int16 = short;		        //Signed 16-bit integer
+using int32 = int;		            //Signed 32-bit integer
+using int64 = long long;		    //Signed 64-bit integer
+//using int128_t int128;            //
+//using int256_t int256;            //
+//using int512_t int512;            //
 
-typedef unsigned char		uint8;		//Unsigned 8-bit integer. Same as char8, but specific to integer types
-typedef unsigned short		uint16;		//Unsigned 16-bit integer
-typedef unsigned int		uint32;		//Unsigned 32-bit integer
-typedef unsigned long long	uint64;		//Unsigned 64-bit integer
-//typedef uint128_t		uint128;
-//typedef uint256_t		uint256;
-//typedef uint512_t		int512;
-
-
-
-
-typedef char			char8;			//Normal 8 bit character
-typedef char8_t			wchar8;			//UTF8 character (normal unsigned char)
-typedef char16_t		wchar16;		//UTF16 character
-typedef char32_t		wchar32;		//UTF32 character
+using uint8  = unsigned char;		//Unsigned 8-bit integer. Same as char8, but specific to integer types
+using uint16 = unsigned short;		//Unsigned 16-bit integer
+using uint32 = unsigned int;		//Unsigned 32-bit integer
+using uint64 = unsigned long ;		//Unsigned 64-bit integer
+//using uint128 = uint128_t;        //
+//using uint256 = uint256_t;        //
+//using int512  = uint512_t;        //
 
 
 
 
-typedef float			float32;	//Single precision floating point
-typedef double			float64;	//Double precision floating point
-//typedef				float128;
-//typedef				float256;
-//typedef				float512;
+using char8   = char;			    //Normal 8 bit character
+using wchar8  = char8_t;			//UTF8 character (normal unsigned char)
+using wchar16 = char16_t;		    //UTF16 character
+using wchar32 = char32_t;		    //UTF32 character
+
+
+
+
+using float32 = float;	            //Single precision floating point
+using float64 = double;	            //Double precision floating point
+//using float128;                   //
+//using float256;                   //
+//using float512;                   //
 

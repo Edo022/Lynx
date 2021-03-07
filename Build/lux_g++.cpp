@@ -47,9 +47,9 @@ int main(int argc, char* argv[]) {
     //Create g++ command and parse user arguments
     auto s = string("g++")                                  +
         " -pthread" + (tp == 'd' ? " -DLUX_DEBUG -rdynamic" : "")     +
-        " -DenginePath=\"\\\"" + enginePath + "\\\"\""      +
-        " " + enginePath + "/LuxEngine/getEnginePath.cpp"   +
-        " " + enginePath + "/LuxEngine/Core/Env.cpp"        +
+        " -DenginePath=\"\\\"" + enginePath + "\\\"\""
+        " " + enginePath + "/LuxEngine/getEnginePath.cpp"
+        " " + enginePath + "/LuxEngine/Core/Env.cpp"
         " " + enginePath + "/Build/" + gettp() + "/LuxEngine" + getpf()
     ;
     for(auto i = 1; i < argc; ++i) s += parse(argv[i]);
@@ -60,13 +60,14 @@ int main(int argc, char* argv[]) {
     auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.2/";
 
     s +=
-        " -I" + vkdep + "include"   +
-        " -I" + glfwdep + "include" +
-        " -I" + glfwdep + "deps"    +
+        " -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE"
+        " -I" + vkdep + "include"
+        " -I" + glfwdep + "include"
+        " -I" + glfwdep + "deps"
         " -I" + enginePath          +
-        " -I" + "."                 +
-        " -L" + vkdep + "lib"       +
-        " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src" +
+        " -I" + "."
+        " -L" + vkdep + "lib"
+        " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src"
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
 
@@ -76,3 +77,5 @@ int main(int argc, char* argv[]) {
     system(s.c_str());
     return 0;
 }
+
+//g++ lux_g++.cpp -std=c++2a -g0 -Ofast -xavx -o lux_g++

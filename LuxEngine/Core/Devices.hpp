@@ -1,7 +1,6 @@
-
 #pragma once
 #include "vulkan/vulkan.h"
-#include "LuxEngine/Types/Integers/Integers.hpp"
+#include "GLFW/glfw3.h"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Core/Devices_t.hpp"
 #define LUX_H_DEVICES

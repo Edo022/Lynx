@@ -26,6 +26,7 @@ glfwdep = enginePath() + "/deps/Shared/glfw-3.3.2/"
 def getEngineDeps():
     return textwrap.indent(\
         '//Vulkan\n'                        +\
+        '   "-DGLM_FORCE_RADIANS", "-DGLM_FORCE_DEPTH_ZERO_TO_ONE",'+\
         '    "-I' + vkdep + 'include",\n'   +\
         '    "-L' + vkdep + 'lib",\n'       +\
         '    "-ldl", "-lvulkan",\n'         +\

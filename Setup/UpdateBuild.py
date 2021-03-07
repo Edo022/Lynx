@@ -74,7 +74,7 @@ def run(dir):
 		'                    "-std=c++2a", "-mavx", "-pipe", "-pthread",' 											+'\n'+\
 		'                    "-I' + opts.enginePath() + '",' 														+'\n'+\
 		'                    "-Wall",'																				+'\n'+\
-		                    opts.getEngineDeps() + ',' 																+'\n'+\
+		                	opts.getEngineDeps() + ',' 																+'\n'+\
 		'                //Output'																					+'\n'+\
 		'					"-c", "-o", "' + opts.enginePath() + '/Build/' + plf + '/LuxEngine' + typ + '"' 		+'\n'+\
 		'            ],' 																							+'\n'+\

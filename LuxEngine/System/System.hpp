@@ -14,7 +14,7 @@
 namespace lux::sys {
 	namespace dir {
 		extern String thisDir;
-		void fixWindowsPath(lux::String& pStr);
+		void fixWindowsPath(const lux::String& pStr);
 		lux::String getExtensionFromPath(const lux::String& pStr);
 		lux::String getFileNameFromPath (const lux::String& pStr);
 	}

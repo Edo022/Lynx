@@ -43,7 +43,7 @@ namespace lux::sys{
 
 	namespace dir{
 		//Replaces backslashes with normal slashes
-		void fixWindowsPath(String& pStr) {
+		void fixWindowsPath(const String& pStr) {
 			for (char8& i : pStr) {
 				if (i == '\\') i = '/';
 				//else if(i == ' ') i = '' //TODO spaces
