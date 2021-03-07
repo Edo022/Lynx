@@ -11,33 +11,50 @@ template<class t> struct vec4_t {
 	t w = 0;
 
 
-	//TODO
 	//Constructors
-	inline vec4_t() {}
-	inline vec4_t(const auto& _x, const auto& _y, const auto _z, const auto _w) { x = _x;   y = _y;   z = _z;   w = _w; }
+	alwaysInline vec4_t() {}
+	alwaysInline vec4_t(const auto& _x, const auto& _y, const auto& _z, const auto& _w) { x = _x;     y = _y;     z = _z;     w = _w;     }
+	alwaysInline vec4_t(const vec2_t<auto>& _xy, const auto& _z, const auto& _w)        { x = _xy.x;  y = _xy.y;  z = z;      w =_w;      }
+	alwaysInline vec4_t(const auto& _x, const vec2_t<auto>& _yz, const auto& _w)        { x = _x;     y = _yz.x;  z = _yz.y;  w = _w;     }
+	alwaysInline vec4_t(const auto& _x, const auto& _y, const vec2_t<auto>& _zw)        { x = _x;     y = _y;     z = _zw.x;  w = _zw.y;  }
+	alwaysInline vec4_t(const vec2_t<auto>& _xy, const vec2_t<auto>& _zw)               { x = _xy.x;  y = _xy.y;  z = _zw.x;  w = _zw.y;  }
+	alwaysInline vec4_t(const vec3_t<auto>& _xyz, const auto& _w)                       { x = _xyz.x; y = _xyz.y; z = _xyz.z; w = _w;     }
+	alwaysInline vec4_t(const auto& _x, const vec3_t<auto>& _yzw)                       { x = _x;     y = _yzw.y; z = _yzw.z; w = _yzw.w; }
+	explicit alwaysInline vec4_t(const vec4_t<auto>& v) { *this = v; }
+	         alwaysInline vec4_t(const vec4_t<t>&    v) { *this = v; }
+	explicit alwaysInline vec4_t(const auto& v        ) { *this = v; }
+	         alwaysInline vec4_t(const t&    v        ) { *this = v; }
 
-	inline vec4_t(const vec2_t<t>& xy, const vec2_t<t>& zw    ) { x = xy.x; y = xy.y; z = zw.z; w = zw.w; }
-	inline vec4_t(const vec3_t<t>& v, const t& _w             ) { x = v.x;  y = v.y;  z = v.z;  w = _w;   }
-	inline vec4_t(const t& _x, const vec3_t<t>& v             ) { x = _x;   y = v.y;  z = v.z;  w = v.w;  }
-	inline vec4_t(const vec2_t<t>& v, const t& _z, const t& _w) { x = v.x;  y = v.y;  z = _z;   w = _w;   }
-	inline vec4_t(const t& _x, const t& _y, const vec2_t<t>& v) { x = _x;   y = _y;   z = v.z;  w = v.w;  }
 
-	//Assignment operators and constructors
-	explicit inline vec4_t(const vec4_t<t>& v) { *this = v; }
-	inline vec4_t(const t& n        ) { *this = n; }
-	inline void operator=(const vec4_t<t>& v) { x = v.x; y = v.y; z = v.z; w = v.w; }
-	inline void operator=(const t& n        ) { x =      y =      z =      w = n;   }
+	//Assignment operators, constructors and comparison operators
+	inline void operator= (const vec4_t<auto>& v) { x = v.x; y = v.y; z = v.z; w = v.w; }
+	inline void operator= (const auto& n        ) { x =      y =      z =   n; w =   n; }
+	inline void operator==(const vec4_t<auto>& v) { return x == v.x && y == v.y && z == v.z && w == v.w ; }
+	inline void operator==(const auto& n        ) { return x == n   && y == n   && z == n   && w == n   ; }
 
-	//Add, subtract, multiply and divide operators
-	inline vec4_t<t> operator+(const vec4_t<t>& v) const { return vec4_t<t>(x + v.x, y + v.y, z + v.z, w + v.w); }
-	inline vec4_t<t> operator*(const vec4_t<t>& v) const { return vec4_t<t>(x * v.x, y * v.y, z * v.z, w * v.w); }
-	inline vec4_t<t> operator-(const vec4_t<t>& v) const { return vec4_t<t>(x - v.x, y - v.y, z - v.z, w - v.w); }
-	inline vec4_t<t> operator/(const vec4_t<t>& v) const { return vec4_t<t>(x / v.x, y / v.y, z / v.z, w / v.w); }
-	inline void operator+=(const vec4_t<t>& v) { init(x + v.x, y + v.y, z + v.z, w + v.w); }
-	inline void operator*=(const vec4_t<t>& v) { init(x * v.x, y * v.y, z * v.z, w * v.w); }
-	inline void operator-=(const vec4_t<t>& v) { init(x - v.x, y - v.y, z - v.z, w - v.w); }
-	inline void operator/=(const vec4_t<t>& v) { init(x / v.x, y / v.y, z / v.z, w / v.w); }
 
-private:
-	inline void init(const t _x, const t _y, const t _z, const t _w) { x = _x; y = _y; z = _z;  w = _w; }
+	//Add, subtract, multiply and divide operators with vectors
+	inline vec4_t<t> operator+(const vec4_t<auto>& v) const { return { x + v.x, y + v.y, z + v.z, w + v.w }; }
+	inline vec4_t<t> operator*(const vec4_t<auto>& v) const { return { x * v.x, y * v.y, z * v.z, w * v.w }; }
+	inline vec4_t<t> operator-(const vec4_t<auto>& v) const { return { x - v.x, y - v.y, z - v.z, w - v.w }; }
+	inline vec4_t<t> operator/(const vec4_t<auto>& v) const { return { x / v.x, y / v.y, z / v.z, w / v.w }; }
+	inline vec4_t<t> operator%(const vec4_t<auto>& v) const { return { x % v.x, y % v.y, z % v.z, w % v.w }; }
+	inline void operator+=(const vec4_t<auto>& v) { x += v.x; y += v.y; z += v.z; w += v.w; }
+	inline void operator*=(const vec4_t<auto>& v) { x *= v.x; y *= v.y; z *= v.z; w *= v.w; }
+	inline void operator-=(const vec4_t<auto>& v) { x -= v.x; y -= v.y; z -= v.z; w -= v.w; }
+	inline void operator/=(const vec4_t<auto>& v) { x /= v.x; y /= v.y; z /= v.z; w /= v.w; }
+	inline void operator%=(const vec4_t<auto>& v) { x %= v.x; y %= v.y; z %= v.z; w %= v.w; }
+
+
+	//Add, subtract, multiply and divide operators with values
+	inline vec4_t<t> operator+(const auto& n) const { return { x + n, y + n, z + n, w + n }; }
+	inline vec4_t<t> operator*(const auto& n) const { return { x * n, y * n, z * n, w * n }; }
+	inline vec4_t<t> operator-(const auto& n) const { return { x - n, y - n, z - n, w - n }; }
+	inline vec4_t<t> operator/(const auto& n) const { return { x / n, y / n, z / n, w / n }; }
+	inline vec4_t<t> operator%(const auto& n) const { return { x % n, y % n, z % n, w % n }; }
+	inline void operator+=(const auto& n) { x += n; y += n; z += n; w += n; }
+	inline void operator*=(const auto& n) { x *= n; y *= n; z *= n; w *= n; }
+	inline void operator-=(const auto& n) { x -= n; y -= n; z -= n; w -= n; }
+	inline void operator/=(const auto& n) { x /= n; y /= n; z /= n; w /= n; }
+	inline void operator%=(const auto& n) { x %= n; y %= n; z %= n; w %= n; }
 };

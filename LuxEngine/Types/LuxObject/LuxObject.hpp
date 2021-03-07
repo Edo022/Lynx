@@ -1,28 +1,21 @@
 #pragma once
 #define LUX_H_LUX_OBJECT
-// #ifndef __LUX_OBJ
-// #define __LUX_OBJ
 
 #include "LuxEngine/Types/Vectors/Vectors.hpp"
-// #include "LuxEngine/Types/Integers/Integers.hpp"
-// #include "LuxEngine/Types/EngineTypes.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
-// #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
-// #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp" //FIXME USE PTRS INSTEAD OF RAW CELLS
 #include "LuxEngine/Types/VPointer.hpp"
-// #include "LuxEngine/macros.hpp"
 
 
 
 
 
-//TODO reuse objects dont destroy them
-//TODO restore() function to restore an object and reuse it instead of destroying it
-//TODO restore function tipo in destroy function description
-//TODO recycle()
+
+
+
 namespace lux{
-	namespace obj { //This namespace contains all the structures and functions of render objects
+	//This namespace contains all the structures and functions of render objects
+	namespace obj {
 		struct Border2D;
 
 
@@ -80,10 +73,8 @@ namespace lux{
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
 				int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
-				// vram::Cell localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
-				// vram::Cell cache{ nullptr };						//Object cache that avoids draws when not needed			| object type				| object instance
 				vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
 			} render;
 			// inline virtual int32 getCellSize() const = 0;		//Size of the object data									| none						| object type
@@ -224,4 +215,3 @@ namespace lux{
 		void addRenderSpace(RenderSpace2D* pRenderSpace);
 	}
 }
-// #endif // !__LUX_OBJ
