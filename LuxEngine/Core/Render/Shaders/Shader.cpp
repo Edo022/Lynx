@@ -24,9 +24,9 @@ namespace lux::core::c::shaders{
 	alignCache RaArray<lux::obj::RenderSpace2D*, uint32> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
 	alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
 
-	alignCache VkCommandPool				commandPool = nullptr;
-	alignCache RtArray<LuxShader_t, uint32>	CShaders;
-	alignCache RtArray<VkCommandBuffer>		CShadersCBs;
+	// alignCache VkCommandPool				commandPool = nullptr;
+	// alignCache RtArray<LuxShader_t, uint32>	CShaders;
+	// alignCache RtArray<VkCommandBuffer>		CShadersCBs;
 
 	alignCache std::mutex					addShaderFence;
 	// alignCache LuxShader					clearShader = 0;
@@ -422,11 +422,11 @@ namespace lux::core::c::shaders{
 	 * @param vGroupCountY The number of workgroups in the y axis
 	 * @param vGroupCountZ The number of workgroups in the z axis
 	 */
-	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow) {
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 				//Create command buffer allocate infos
 			.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,	//Set structure type
-			.commandPool        = commandPool,										//Set command pool where to allocate the command buffer
+			.commandPool        = pWindow.commandPool,										//Set command pool where to allocate the command buffer
 			.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,					//Set the command buffer as a primary level command buffer
 			.commandBufferCount = 1													//Allocate one command buffer
 		};
@@ -485,7 +485,7 @@ namespace lux::core::c::shaders{
 	 *	//FIXME
 	 */
 	// LuxShader newShader(const RtArray<vram::Cell>& pCells, const ShaderLayou tvShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
-	LuxShader newShader(const RtArray<vram::Alloc_b<uint32>>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	LuxShader newShader(const RtArray<vram::Alloc_b<uint32>>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
 		dbg::checkParam(pCells.count() == 0, "pCells", "A shader must use at least one cell. The provided cell array has size 0");
 		dbg::checkParam(vGroupCountX < 1, "vGroupCountX", "The group count must be at least 1");
@@ -494,11 +494,11 @@ namespace lux::core::c::shaders{
 		LuxShader_t shader;
 
 		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
-		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ);	//Create command buffers and command pool
+		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ, pWindow);	//Create command buffers and command pool
 
-		addShaderFence.lock();
-		LuxShader i = CShaders.add(shader);
-		addShaderFence.unlock();
+		addShaderFence.lock(); //TODO REMOVE OR MAKE LOCAL
+		LuxShader i = pWindow.swapchain.CShaders.add(shader); //BUG MAKE CSHADERS WINDOW-LOCAL
+		addShaderFence.unlock(); //TODO REMOVE OR MAKE LOCAL
 		return i;
 	}
 
@@ -513,22 +513,22 @@ namespace lux::core::c::shaders{
 	 * @brief Updates the cells, layout or group conunts of a shader
 	 *		Way faster than destroying and creating it again
 	 */
-	void updateShaderCall(const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	void updateShaderCall(const LuxShader vCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow) {
 		VkCommandBufferBeginInfo beginInfo = { 							//Create begin infos
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,			//Set structure type
 			.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
 		addShaderFence.lock();
-		vkBeginCommandBuffer(CShaders[vCShader].commandBuffers[0], &beginInfo);
+		vkBeginCommandBuffer(pWindow.swapchain.CShaders[vCShader].commandBuffers[0], &beginInfo);
 		addShaderFence.unlock();
 		//Bind pipeline and descriptors and run the compute shader
-		vkCmdBindPipeline      (CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
-		vkCmdBindDescriptorSets(CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &CShaders[vCShader].descriptorSet, 0, nullptr);
-		vkCmdDispatch          (CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
+		vkCmdBindPipeline      (pWindow.swapchain.CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindDescriptorSets(pWindow.swapchain.CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pWindow.swapchain.CShaders[vCShader].descriptorSet, 0, nullptr);
+		vkCmdDispatch          (pWindow.swapchain.CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 
 		//End command buffer recording
-		dbg::checkVk(vkEndCommandBuffer(CShaders[vCShader].commandBuffers[0]), "Failed to record command buffer");
+		dbg::checkVk(vkEndCommandBuffer(pWindow.swapchain.CShaders[vCShader].commandBuffers[0]), "Failed to record command buffer");
 	}
 
 
@@ -546,20 +546,20 @@ namespace lux::core::c::shaders{
 	 * @param vCShader The shader to destroy
 	 * @return True if the operation succeeded, false if the index is invalid
 	 */
-	bool destroyShader(const LuxShader vCShader) {
-		if(vCShader >= CShaders.count()) return false;
+	bool destroyShader(const LuxShader vCShader, Window& pWindow) {
+		if(vCShader >= pWindow.swapchain.CShaders.count()) return false;
 
 		//Clear descriptors sets, descriptor pool and descriptor layout
-		vkFreeDescriptorSets   (dvc::compute.LD, CShaders[vCShader].descriptorPool, 1, &CShaders[vCShader].descriptorSet);
-		vkDestroyDescriptorPool(dvc::compute.LD, CShaders[vCShader].descriptorPool, nullptr);
+		vkFreeDescriptorSets   (dvc::compute.LD, pWindow.swapchain.CShaders[vCShader].descriptorPool, 1, &pWindow.swapchain.CShaders[vCShader].descriptorSet);
+		vkDestroyDescriptorPool(dvc::compute.LD, pWindow.swapchain.CShaders[vCShader].descriptorPool, nullptr);
 
-		//Clear command buffers and command pool
-		vkFreeCommandBuffers(dvc::compute.LD, commandPool, 1, CShaders[vCShader].commandBuffers.begin());
-		vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
+		// //Clear command buffers and command pool
+		// vkFreeCommandBuffers(dvc::compute.LD, commandPool, 1, CShaders[vCShader].commandBuffers.begin());
+		// vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Remove the shader from the shader array
-		for(uint32 i = vCShader; i < CShaders.count() - 1; ++i) CShaders[i] = CShaders[i+1];
-		CShaders.resize(CShaders.count() - 1);
+		for(uint32 i = vCShader; i < pWindow.swapchain.CShaders.count() - 1; ++i) pWindow.swapchain.CShaders[i] = pWindow.swapchain.CShaders[i+1]; //FIXME
+		pWindow.swapchain.CShaders.resize(pWindow.swapchain.CShaders.count() - 1);
 
 		return true;
 	}

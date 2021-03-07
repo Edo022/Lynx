@@ -17,6 +17,13 @@ namespace lux::core::render::cmd{
 
 
 
+	luxAutoInit(LUX_H_GCOMMANDS){
+		createGraphicsCommandPool();
+		_dbg(createDebugMessenger());
+	}
+
+
+
 	void createGraphicsCommandPool() {
 		VkCommandPoolCreateInfo poolInfo{
 			.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,

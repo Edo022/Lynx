@@ -27,7 +27,8 @@ namespace lux::obj{
 				lux::window.zBuff_g,
 				(vram::Alloc_b<int32>)(render.localData)
 			},
-			render.shaderLayout, 4, 1, 1
+			render.shaderLayout, 4, 1, 1,
+			lux::window
 		);
 	}
 }

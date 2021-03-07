@@ -21,7 +21,8 @@ namespace lux::obj{
 				(vram::Alloc_b<int32>)(render.localData)
 			},
 			render.shaderLayout,
-			lux::window.width / 32 + 1, 1, 1
+			lux::window.width / 32 + 1, 1, 1,
+			lux::window
 		);
 	}
 }

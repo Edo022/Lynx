@@ -77,19 +77,20 @@ namespace lux{
     };
 
 
+	 VkCommandPool				commandPool = nullptr;
 		VkCommandPool            copyCommandPool    = nullptr;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
 		VkCommandBuffer          clearCommandBuffer = nullptr;
 		LuxShader					clearShader = 0;
 
 
-		Window(){
-			initWindow();
+		Window(bool __test__set_callbacks__){
+			initWindow(__test__set_callbacks__);
 			// swapchain.bindedWindow = this;
 			// swapchain.swapchainCreate();
 		}
 
-		void initWindow();
+		void initWindow(bool);
 		void createInstance();
 		void createDefaultCommandBuffers__();
 

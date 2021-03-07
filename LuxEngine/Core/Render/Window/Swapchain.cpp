@@ -97,10 +97,12 @@ namespace lux::core::wnd{
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 		if(dvc::graphics.PD.indices.graphicsFamily != dvc::graphics.PD.indices.presentFamily) {
 			createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-			createInfo.queueFamilyIndexCount = 2;
-			createInfo.pQueueFamilyIndices = queueFamilyIndices;
+			// createInfo.queueFamilyIndexCount = 2;
+			// createInfo.pQueueFamilyIndices = queueFamilyIndices;
 		}
 		else createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.queueFamilyIndexCount = 2;
+		createInfo.pQueueFamilyIndices = queueFamilyIndices;
 
 		createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
 		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
@@ -181,7 +183,7 @@ namespace lux::core::wnd{
 			}
 
 			//Recreate clear shader
-			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1);
+			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
 		if(vWindowResized) bindedWindow->windowResizeFence.unlock();		//Sync with framebufferResizeCallback
 	}
@@ -331,12 +333,12 @@ imageRendered_f  .resize(__renderMaxFramesInFlight);
 		// dbg::checkVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
 		Normal printf("    Searching for physical devices...    \n");
 		// dvc::getPhysical(); //FIXME
-		core::render::cmd::createGraphicsCommandPool();
+		// core::render::cmd::createGraphicsCommandPool();
 		Normal printf("    Creating VK swapchain...             ");
 
 		// lux::window.swapchain.swapchainCreate(); //FIXME AUTOMATIZE
 
-		_dbg(lux::core::render::createDebugMessenger());
+		// _dbg(lux::core::render::createDebugMessenger());
 
 
 		//Create sync objects

@@ -108,7 +108,7 @@ namespace lux::core::render{
 	//TODO multithreaded submit and command creation
 	void drawFrame() {
 		//FIXME __
-		if(c::shaders::CShaders.count() <= 1) return;
+		if(lux::window.swapchain.CShaders.count() <= 1) return;
 		vkWaitForFences(dvc::graphics.LD, 1, &lux::window.swapchain.imageRendered_f[lux::window.swapchain.renderCurrentFrame], false, INT_MAX);
 
 
@@ -143,10 +143,10 @@ namespace lux::core::render{
 		{
 			c::shaders::addShaderFence.lock();
 			//FIXME __
-			c::shaders::CShadersCBs.resize(c::shaders::CShaders.count());
-			for(uint32 i = 0; i < c::shaders::CShaders.count(); ++i) {
+			lux::window.swapchain.CShadersCBs.resize(lux::window.swapchain.CShaders.count());
+			for(uint32 i = 0; i < lux::window.swapchain.CShaders.count(); ++i) {
 				//FIXME __
-				c::shaders::CShadersCBs[i] = c::shaders::CShaders[i].commandBuffers[0];
+				lux::window.swapchain.CShadersCBs[i] = lux::window.swapchain.CShaders[i].commandBuffers[0];
 			}
 			c::shaders::addShaderFence.unlock();
 
@@ -158,8 +158,8 @@ namespace lux::core::render{
 				.pWaitSemaphores   = &lux::window.swapchain.s_imageAquired   [lux::window.swapchain.renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
 
-				.commandBufferCount = c::shaders::CShadersCBs.count(),
-				.pCommandBuffers    = c::shaders::CShadersCBs.begin(),
+				.commandBufferCount = lux::window.swapchain.CShadersCBs.count(),
+				.pCommandBuffers    = lux::window.swapchain.CShadersCBs.begin(),
 
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores = &lux::window.swapchain.s_objectsRendered[lux::window.swapchain.renderCurrentFrame],
@@ -181,7 +181,7 @@ namespace lux::core::render{
 				.commandBufferCount   = 1,
 				.signalSemaphoreCount = 1
 			};
-			submitInfo.pCommandBuffers = &c::shaders::CShaders[0].commandBuffers[0];
+			submitInfo.pCommandBuffers = &lux::window.swapchain.CShaders[0].commandBuffers[0];
 			submitInfo.pWaitSemaphores = &lux::window.swapchain.s_objectsRendered[lux::window.swapchain.renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &lux::window.swapchain.s_clear[lux::window.swapchain.renderCurrentFrame];
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
