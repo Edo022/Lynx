@@ -34,6 +34,8 @@ namespace lux{
 		void initWindow();
 		void createInstance();
 
+		//FIXME MOVE DESTRUCTOR TO .JOIN()
+		//FIXME or don't. if the data gets destroyed, the window can't be used
 		~Window(){
 			wSize_g.free();
 			fOut_G.free();
@@ -42,6 +44,7 @@ namespace lux{
 			vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
 			glfwDestroyWindow(window);
 		}
+		//TODO ADD JOIN FUNCTION TO WAIT FOR THE WINDOW TO GET CLOSED
 	};
 	extern Window window; //TODO REMOVE
 }

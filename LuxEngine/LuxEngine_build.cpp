@@ -11,12 +11,13 @@
     #include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
 
     #include "LuxEngine/Core/Devices.cpp"
+    #include "LuxEngine/Core/Memory/VRam/VRam.cpp"
+    #include "LuxEngine/Core/Memory/VRam/VCell_t.cpp"
+
     #include "LuxEngine/Core/Render/Window/Window.cpp" //FIXME
     #include "LuxEngine/Core/Render/Window/Swapchain.cpp"
     #include "LuxEngine/Core/Core.cpp"
 
-    #include "LuxEngine/Core/Memory/VRam/VRam.cpp"
-    #include "LuxEngine/Core/Memory/VRam/VCell_t.cpp"
 
     #include "LuxEngine/System/System.cpp"
     #include "LuxEngine/Threads/ThreadPool.cpp"
