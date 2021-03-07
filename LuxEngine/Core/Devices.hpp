@@ -15,6 +15,8 @@ namespace lux::core::dvc{
 	extern RtArray<computeDevice>	secondary;			//Secondary compute devices
 
 	extern VkInstance	instance;						//The only Vulkan instance. This is required in order to use Vulkan
+	extern GLFWwindow*  dummyWindow;
+	extern VkSurfaceKHR dummySurface;
 	// extern VkSurfaceKHR	surface;						//FIXME MOVE TO WINDOW
 
 	extern uint32		requiredDeviceExtensionsNum;	//A GLFW window used to create dummySurface

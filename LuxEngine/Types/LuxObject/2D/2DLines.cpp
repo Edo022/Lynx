@@ -22,9 +22,9 @@ namespace lux::obj{
 		//TODO add static objects with specific workgroup count
 		core::c::shaders::newShader(
 			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK
-				lux::window.gpuCellWindowOutput,
-				lux::window.gpuCellWindowSize,
-				lux::window.gpuCellWindowZBuffer,
+				lux::window.fOut_G,
+				lux::window.wSize_g,
+				lux::window.zBuff_g,
 				(vram::Alloc_b<int32>)(render.localData)
 			},
 			render.shaderLayout, 4, 1, 1

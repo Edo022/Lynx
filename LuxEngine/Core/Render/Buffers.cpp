@@ -22,15 +22,15 @@ namespace lux::core::buffers{
 	//> Engine internal use
 	void init() {
 		{ //Initialize window buffers and count
-			lux::window.gpuCellWindowOutput_i.realloc(lux::window.width * lux::window.height * 4); //A8-R8-G8-B8 UI
-			lux::window.gpuCellWindowOutput.  realloc(lux::window.width * lux::window.height * 4 * 4); //A32-R32-G32-B32 UF
-			lux::window.gpuCellWindowZBuffer. realloc(lux::window.width * lux::window.height * 4);
-			lux::window.gpuCellWindowSize.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
+			lux::window.iOut_g.realloc(lux::window.width * lux::window.height * 4); //A8-R8-G8-B8 UI
+			lux::window.fOut_G.  realloc(lux::window.width * lux::window.height * 4 * 4); //A32-R32-G32-B32 UF
+			lux::window.zBuff_g. realloc(lux::window.width * lux::window.height * 4);
+			lux::window.wSize_g.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
 
-			lux::window.gpuCellWindowSize.map();			//Map window size cell
-			lux::window.gpuCellWindowSize[0] = lux::window.swapchain.swapchainExtent.width;				//Set width //FIXME DONT DEPEND ON A WINDOW
-			lux::window.gpuCellWindowSize[1] = lux::window.swapchain.swapchainExtent.height;				//Set height //FIXME DONT DEPEND ON A WINDOW
-			lux::window.gpuCellWindowSize.unmap();										//Unmap
+			lux::window.wSize_g.map();			//Map window size cell
+			lux::window.wSize_g[0] = lux::window.swapchain.swapchainExtent.width;				//Set width //FIXME DONT DEPEND ON A WINDOW
+			lux::window.wSize_g[1] = lux::window.swapchain.swapchainExtent.height;				//Set height //FIXME DONT DEPEND ON A WINDOW
+			lux::window.wSize_g.unmap();										//Unmap
 		}
 
 		{ //#LLID CCB0000 Create copy command buffers

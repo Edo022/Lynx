@@ -160,10 +160,10 @@ namespace lux::core::wnd{
 
 
 			//Update the window count buffer
-			lux::window.gpuCellWindowSize.map();
-			lux::window.gpuCellWindowSize[0] = swapchainExtent.width;
-			lux::window.gpuCellWindowSize[1] = swapchainExtent.height;
-			lux::window.gpuCellWindowSize.unmap();
+			lux::window.wSize_g.map();
+			lux::window.wSize_g[0] = swapchainExtent.width;
+			lux::window.wSize_g[1] = swapchainExtent.height;
+			lux::window.wSize_g.unmap();
 
 			{	//Destroy copy command buffers
 				vkFreeCommandBuffers(dvc::compute.LD, buffers::copyCommandPool, buffers::copyCommandBuffers.count(), buffers::copyCommandBuffers.begin());

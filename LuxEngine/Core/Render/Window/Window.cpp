@@ -77,10 +77,10 @@ namespace lux{
 	// alignCache int32       width                 = 1920 * 2;
 	// alignCache int32       height                = 1080;
 	// std::mutex	windowResizeFence;
-	// alignCache vram::ptr<int32, Ram,  Storage>   gpuCellWindowSize     = nullptr;
-	// alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput   = nullptr;
-	// alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowOutput_i = nullptr;
-	// alignCache vram::ptr<int32, VRam, Storage>   gpuCellWindowZBuffer  = nullptr;
+	// alignCache vram::ptr<int32, Ram,  Storage>   wSize_g     = nullptr;
+	// alignCache vram::ptr<int32, VRam, Storage>   fOut_G   = nullptr;
+	// alignCache vram::ptr<int32, VRam, Storage>   iOut_g = nullptr;
+	// alignCache vram::ptr<int32, VRam, Storage>   zBuff_g  = nullptr;
 
 
 

@@ -46,10 +46,10 @@ namespace lux::core::c::shaders{
 
 		shaders::clearShader = shaders::newShader(
 			RtArray<vram::Alloc_b<int32>>{
-				lux::window.gpuCellWindowOutput,
-				lux::window.gpuCellWindowOutput_i,
-				lux::window.gpuCellWindowZBuffer,
-				lux::window.gpuCellWindowSize
+				lux::window.fOut_G,
+				lux::window.iOut_g,
+				lux::window.zBuff_g,
+				lux::window.wSize_g
 			},
 			LUX_DEF_SHADER_CLEAR, (lux::window.width * lux::window.height) / (32 * 32) + 1, 1, 1
 		);
@@ -362,7 +362,7 @@ namespace lux::core::c::shaders{
 				vkCmdPipelineBarrier(buffers::copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
 				copyRegion.imageExtent = { lux::window.swapchain.swapchainExtent.width, lux::window.swapchain.swapchainExtent.height, 1 };	//Copy the whole buffer //FIXME DONT DEPEND ON A WINDOW
-				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], lux::window.gpuCellWindowOutput_i.cell->csc.buffer, lux::window.swapchain.swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion); //FIXME DONT DEPEND ON A WINDOW
+				vkCmdCopyBufferToImage(buffers::copyCommandBuffers[imgIndex], lux::window.iOut_g.cell->csc.buffer, lux::window.swapchain.swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion); //FIXME DONT DEPEND ON A WINDOW
 
 
 				//Create a barrier to use the swapchain image as a present source image

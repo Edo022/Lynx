@@ -65,7 +65,7 @@ namespace lux::core{
 		//Start init time counter and compile shaders
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation
-		LuxTime start = luxStartChrono();
+		LuxTime start = luxStartChrono(); //TODO TRACK STATIC INITIALIZATION
 		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";
 
 
@@ -96,14 +96,19 @@ namespace lux::core{
 		//Loop
 		Success printf("Initialization completed in %f seconds", luxStopChrono(start));
 		Success printf("Starting Lux Engine\n");
-		mainLoop();								MainSeparator;
+		vkDestroySurfaceKHR(core::dvc::instance, core::dvc::dummySurface, nullptr);
+		glfwDestroyWindow(core::dvc::dummyWindow);
+		// mainLoop();								MainSeparator;
+		FPSCounterThr(runFPSCounterThr);		//FPSCounterThr.detach();
+		renderThr(runRenderThr);				//renderThr.detach();
+		initialized = true;
+
 
 		//Exit
-		Normal  printf("Cleaning memory\n");
-		render::cleanup(); buffers::cleanup();
-		vkDestroyInstance(dvc::instance, nullptr);
-		glfwDestroyWindow(lux::window.window);
-		glfwTerminate();
+		// render::cleanup(); buffers::cleanup();
+		// vkDestroyInstance(dvc::instance, nullptr);
+		// // glfwDestroyWindow(lux::window.window);
+		// glfwTerminate();
 	}
 
 
@@ -115,8 +120,9 @@ namespace lux::core{
 		renderThr(runRenderThr);				//renderThr.detach();
 		initialized = true;
 
-		while(!glfwWindowShouldClose(lux::window.window)) glfwWaitEvents();
-		vkDeviceWaitIdle(dvc::graphics.LD);
+		// while(!glfwWindowShouldClose(lux::window.window)) glfwWaitEvents();
+		// while(running) glfwWaitEvents(); //TODO
+		// vkDeviceWaitIdle(dvc::graphics.LD);
 	}
 
 
@@ -126,16 +132,22 @@ namespace lux::core{
 		_dbg(thr::self::setName("Lux | Render"));
 		while(running) {
 			LuxTime renderTime = luxStartChrono();
+			// glfwWaitEvents();
+			glfwPollEvents();
+			/*" //TODO
+				On some platforms, a window move, resize or menu operation will cause event processing to block. T
+				his is due to how event processing is designed on those platforms.
+				You can use the window refresh callback to redraw the contents of your window when necessary during such operations.
+			"*/
 			render::drawFrame();
-			//TODO it does nothing but it's probably important, somehow. dunno
-			//vkDeviceWaitIdle(compute.LD);
-			FPS = luxStopChrono(renderTime);
+			// vkDeviceWaitIdle(dvc::compute.LD);
+			FPS = luxStopChrono(renderTime); //TODO ADD FPS LIMIT
 		}
 	}
 
 
 
-	//TODO add FPS limit
+	//FIXME REMOVE THREAD
 	void runFPSCounterThr() {
 		_dbg(thr::self::setName("Lux | FPS"));
 		while(running) {

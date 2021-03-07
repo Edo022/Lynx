@@ -95,8 +95,8 @@ namespace lux::core::dvc{
 
 
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //FIXME
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	//FIXME
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		dummyWindow = glfwCreateWindow(1, 1, "DummyWindow", nullptr, nullptr);	//Initialize dummy window
 		glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface); //Initialize dummy surface

@@ -18,5 +18,15 @@ namespace lux{
     }
 
 	//TODO
-	void kill();
+	void kill(){
+        core::running = false;
+
+        core::renderThr.join();
+        core::FPSCounterThr.join(); //FIXME REMOVE THREAD
+        vkDeviceWaitIdle(core::dvc::compute.LD);
+
+        core::render::cleanup(); core::buffers::cleanup();
+		vkDestroyInstance(core::dvc::instance, nullptr);
+		glfwTerminate();
+    }
 }

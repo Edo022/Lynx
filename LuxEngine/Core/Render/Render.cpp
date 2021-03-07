@@ -193,7 +193,7 @@ namespace lux::core::render{
 			};
 			submitInfo.pWaitSemaphores   = &s_clear[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &s_copy [renderCurrentFrame];
-			submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers  [imageIndex];
+			submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers[imageIndex];
 
 			vkResetFences(dvc::graphics.LD, 1, &imageRendered_f[renderCurrentFrame]);
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, imageRendered_f[renderCurrentFrame]), "Failed to submit graphics command buffer");
@@ -217,7 +217,7 @@ namespace lux::core::render{
 				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
 					lux::window.swapchain.swapchainRecreate(false); //FIXME DONT DEPEND ON A WINDOW
-					vkDeviceWaitIdle(dvc::graphics.LD);
+					// vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
 				default:  dbg::printError("Failed to present swapchain image");
