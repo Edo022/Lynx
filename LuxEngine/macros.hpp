@@ -1,9 +1,10 @@
 #pragma once
+#define LUX_H_MACROS
 #include "LuxEngine_config.hpp"
 
 
 
-//TODO remove this header
+
 #undef max
 #undef min
 //Functions
@@ -12,6 +13,8 @@ template<class ta, class tb>						static inline constexpr auto max(const ta a, c
 template<class ta, class tb>						static inline constexpr auto min(const ta a, const tb b) { return (a < b) ? a : b; } //Returns the maximum value
 template<class ta, class tb, class tc, class ...tn> static inline constexpr auto max(const ta a, const tb b, const tc c, const tn... n) { return max(a, b, c, n...); }
 template<class ta, class tb, class tc, class ...tn> static inline constexpr auto min(const ta a, const tb b, const tc c, const tn... n) { return min(a, b, c, n...); }
+
+
 
 
 //Console output
@@ -35,15 +38,6 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #	define _dbg(...)
 #	define _rls(...) __VA_ARGS__
 #endif
-
-// //
-// #ifdef LUX_NO_EDITOR
-// #	define noeditor(...) __VA_ARGS__
-// #	define   editor(...)
-// #else
-// #	define noeditor(...)
-// #	define   editor(...) __VA_ARGS__
-// #endif
 
 
 
@@ -99,7 +93,6 @@ neverInline const char* getEnginePath();
 
 
 
-// //TODO
 // //Calculates the square root of a float number
 // static float __s(float n) {
 // 	static int32_t i = 0x5F3759DF - (*(int32_t*)&n >> 1);
@@ -117,8 +110,3 @@ neverInline const char* getEnginePath();
 // 	}
 // 	return r;
 // }
-
-
-
-// #define pure __attribute__ ((pure))
-// #define hot  __attribute__ ((hot))

@@ -2,14 +2,8 @@
 #include "LuxEngine/Threads/Thread.hpp"
 
 
-//calls      |                    A----.                   |    void A() {                 |   void B() {
-//           |      A  B---.  B  B  B  | B----.            |        fence.startFirst();   |       fence.startSecond();
-//           |      |      |  |  |  |  |      |            |        ...                   |       ...
-//unordered  |      AAAAAA-BB-BB-BB-BB-AAAAAA-BB           |        fence.endFirst();     |       fence.endSecond();
-//ordered    |      AAAAAA-BB----------AAAAAA-BB           |    }                         |   }
-//once		 |      AAAAAA-BB-------------------           |                              |
-//           |                                             |                              |
-//           -----------------------------------> t        |                              |
+
+
 
 
 
