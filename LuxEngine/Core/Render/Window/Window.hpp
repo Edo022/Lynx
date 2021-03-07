@@ -82,6 +82,7 @@ namespace lux{
 		RtArray<VkCommandBuffer> copyCommandBuffers;
 		VkCommandBuffer          clearCommandBuffer = nullptr;
 		LuxShader					clearShader = 0;
+	 std::mutex							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 
 
 		Window(bool __test__set_callbacks__){

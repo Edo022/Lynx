@@ -141,14 +141,14 @@ namespace lux::core::render{
 		//Update render result submitting the command buffers to the compute queues
 		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
-			c::shaders::addShaderFence.lock();
+			lux::window.addShaderFence.lock();
 			//FIXME __
 			lux::window.swapchain.CShadersCBs.resize(lux::window.swapchain.CShaders.count());
 			for(uint32 i = 0; i < lux::window.swapchain.CShaders.count(); ++i) {
 				//FIXME __
 				lux::window.swapchain.CShadersCBs[i] = lux::window.swapchain.CShaders[i].commandBuffers[0];
 			}
-			c::shaders::addShaderFence.unlock();
+			lux::window.addShaderFence.unlock();
 
 			VkSubmitInfo submitInfo{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
