@@ -1,48 +1,39 @@
 #pragma once
-
-
+#define LUX_H_2DLINES
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-// #include "LuxEngine/Types/Vectors/Vectors.h"
 #include <vulkan/vulkan.h>
+
+
 
 
 //TODO per-children-group shader command buffers. static shaders are recreated when the objects changes
 namespace lux::obj {
-	//A bidimensional line with interpolated color and width
-	//Lines with 0 width or 0 alpha are not rendered
+	/**
+	 * @brief A bidimensional line with interpolated color and width.
+	 *		Lines with 0 width or 0 alpha are not rendered
+	 */
 	struct Line2D : public Base2D {
 		void init();
 
 
-		//Creates a Line2D object
-		//Automatically initializes the object type and the GPU memory
-		Line2D() {
-			init();
 
-			*fp = { 0, 0 };
-			*sp = { 0, 0, };
-			*fc = { 0, 0, 0, 0 };
-			*sc = { 0, 0, 0, 0 };
-			*fw = 0;
-			*sw = 0;
-		}
 
-		//Creates a Line2D object with the specified points, colors and widths
-		//Automatically initializes the object type and the GPU memory
-		//Colors and widths are interpolated
-		//*   pFp | first point of the line
-		//*   pSp | second point of the line
-		//*   pFc | color of the first point
-		//*   pSc | color of the second point
-		//*   vFw | width of the first point
-		//*   vSw | width of the second point
+		/**
+		 * @brief Creates a Line2D object with the specified points, colors and widths.
+		 *		Colors and widths are interpolated
+		 * @param pFp First point of the line
+		 * @param pSp Second point of the line
+		 * @param pFc Color of the first point
+		 * @param pSc Color of the second point
+		 * @param vFw Width of the first point
+		 * @param vSw Width of the second point
+		 */
 		Line2D(const vec2f32& pFp, const vec2f32& pSp, const vec4f32& pFc, const vec4f32& pSc, const float32 vFw, const float32 vSw) {
 			init();
-			//TODO use full 64bit int or just 32 for all objects
 
 			setFp(pFp);
 			setSp(pSp);
@@ -57,8 +48,8 @@ namespace lux::obj {
 		// inline int32 getCellSize() const final { return 60; }
 
 		//TODO add loca-global-other coordinate system and convertions
-		inline void setFp(const vec2f32& vFp) { _fp = vFp; }
-		inline void setSp(const vec2f32& vSp) { _sp = vSp; }
+		inline void setFp(const vec2f32& vFp) { _fp = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setSp(const vec2f32& vSp) { _sp = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
 
 		void recalculateCoords() final {

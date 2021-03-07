@@ -100,12 +100,14 @@ namespace lux {
 				checkInit();
 				Super::resize(vCount);
 			}
-		#else //Check for negative count
+		#else //Check for negative count //FIXME
 			void resize(int64 vCount) {
 				dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
 				checkInit();
 				Super::resize(vCount);
 			}
+			//! If in debug mode, the count takes an int64 and checks for negative values.
+			//! an int64 is enough, as the count can't be more than 2^32 anyway
 		#endif
 
 

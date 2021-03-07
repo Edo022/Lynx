@@ -6,7 +6,7 @@
 
 
 namespace lux::obj{
-	//TODO calculate offset and cell count at runtime with an everything array
+	//TODO calculate offset and cell count at runtime
 	void Line2D::init() {
 		cellSize = 60;
 		luxInitObject(2, LINE);								// count   | range         | chunk

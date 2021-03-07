@@ -1,7 +1,8 @@
 #pragma once
 #define LUX_H_RENDER_SPACE_2D
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
-// #include "LuxEngine/Types/Integers/Integers.hpp"
+
+
 
 
 namespace lux::obj {
@@ -22,17 +23,13 @@ namespace lux::obj {
 	};
 
 
-	//TODO add click events
 	//TODO add object boundary debug draw
 
 
-	//A 2D space that allows objects to be rendered
-	//The position of the object is relative to the count and position of the render space
-	//    It goes from 0, 0 (beginning of the render space) to +1, +1 (end of the render space)
-	//    Out of view objects will be cropped if the renderSpaces does not allowOutOfViewRender
-	//    Use setChildLimits() to get the region of screen assigned to a child of the render space
-	//This render space can only be a child of other 2D render spaces
-	//Render spaces with no parent will be rendered directly in the window
+	/**
+	 * @brief A 2D space that allows objects to be rendered.
+	 *		This render space can only be a child of a window or another RenderSpace2D
+	 */
 	struct RenderSpace2D : public Base2D {
 		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
 
@@ -56,6 +53,3 @@ namespace lux::obj {
 		// inline int32 getCellSize() const final { return 0; }
 	};
 }
-//TODO add 3d render space
-//TODO add 2d render space for 3d space
-//TODO add 3d render space for 3d space
