@@ -40,7 +40,7 @@ namespace lux::core::wnd{
 
 	VkExtent2D Swapchain::swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
-		glfwGetFramebufferSize(lux::window.window, &width, &height);
+		glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		return VkExtent2D{
 			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
@@ -120,11 +120,11 @@ namespace lux::core::wnd{
 
 		//Create image views
 		swapchainImageViews.resize(swapchainImages.count());
-		for(uint32 i = 0; i < swapchainImages.count(); ++i) swapchainImageViews[i] = render::out::swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		for(uint32 i = 0; i < swapchainImages.count(); ++i) swapchainImageViews[i] = swapchainCreateImageView(swapchainImages[i], swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
-		render::out::createRenderPass(); //FIXME MOVE TO SWAPCHAIN
-		render::out::createFramebuffers();
+		createRenderPass(); //FIXME MOVE TO SWAPCHAIN
+		createFramebuffers();
 	}
 
 
@@ -135,7 +135,7 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::cleanup() {
-		vkDestroyRenderPass(dvc::graphics.LD, render::out::renderPass, nullptr);												//Destroy render pass
+		vkDestroyRenderPass(dvc::graphics.LD, renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : swapchainFramebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		for(auto imageView   : swapchainImageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView  , nullptr);		//Destroy image views
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);													//destroy swapchain
@@ -149,10 +149,10 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::swapchainRecreate(const bool vWindowResized) {
-		if(vWindowResized) lux::window.windowResizeFence.lock();	//Sync with framebufferResizeCallback
+		if(vWindowResized) bindedWindow->windowResizeFence.lock();	//Sync with framebufferResizeCallback
 
 		//TODO dont destroy it every time
-		static int32 width, height;	glfwGetFramebufferSize(lux::window.window, &width, &height);
+		static int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
 			cleanup();					//Clean the old swapchain
@@ -160,23 +160,153 @@ namespace lux::core::wnd{
 
 
 			//Update the window count buffer
-			lux::window.wSize_g.map();
-			lux::window.wSize_g[0] = swapchainExtent.width;
-			lux::window.wSize_g[1] = swapchainExtent.height;
-			lux::window.wSize_g.unmap();
+			bindedWindow->wSize_g.map();
+			bindedWindow->wSize_g[0] = swapchainExtent.width;
+			bindedWindow->wSize_g[1] = swapchainExtent.height;
+			bindedWindow->wSize_g.unmap();
 
 			{	//Destroy copy command buffers
-				vkFreeCommandBuffers(dvc::compute.LD, buffers::copyCommandPool, buffers::copyCommandBuffers.count(), buffers::copyCommandBuffers.begin());
-				vkDestroyCommandPool(dvc::compute.LD, buffers::copyCommandPool, nullptr);
+				vkFreeCommandBuffers(dvc::compute.LD, bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
+				vkDestroyCommandPool(dvc::compute.LD, bindedWindow->copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				buffers::copyCommandBuffers.resize(swapchainImages.count());	//Resize the command buffer array in the shader
-				c::shaders::createDefaultCommandBuffers();				//Create command buffers and command pool
+				bindedWindow->copyCommandBuffers.resize(swapchainImages.count());	//Resize the command buffer array in the shader
+				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
 			//Recreate clear shader
-			c::shaders::updateShaderCall(c::shaders::clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1);
+			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1);
 		}
-		if(vWindowResized) lux::window.windowResizeFence.unlock();		//Sync with framebufferResizeCallback
+		if(vWindowResized) bindedWindow->windowResizeFence.unlock();		//Sync with framebufferResizeCallback
 	}
+
+
+
+
+
+
+
+	void Swapchain::createFramebuffers() {
+		swapchainFramebuffers.resize(swapchainImageViews.count()); //FIXME DONT DEPEND ON A WINDOW
+
+		for(uint32 i = 0; i < swapchainImageViews.count(); ++i) { //FIXME DONT DEPEND ON A WINDOW
+			VkFramebufferCreateInfo framebufferInfo{
+				.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+				.renderPass      = renderPass,
+				.attachmentCount = 1,
+				.pAttachments    = &swapchainImageViews[i], //FIXME DONT DEPEND ON A WINDOW
+				.width           = swapchainExtent.width, //FIXME DONT DEPEND ON A WINDOW
+				.height          = swapchainExtent.height, //FIXME DONT DEPEND ON A WINDOW
+				.layers          = 1
+			};
+			dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &swapchainFramebuffers[i]), "Failed to create framebuffer"); //FIXME DONT DEPEND ON A WINDOW
+		}
+	}
+
+
+
+
+
+
+	void Swapchain::createRenderPass() {
+		//Color
+		VkAttachmentDescription colorAttachment{
+			.format         = swapchainImageFormat,		//Swapchain image format //FIXME DONT DEPEND ON A WINDOW
+			.samples        = VK_SAMPLE_COUNT_1_BIT,				//Multisampling samples
+			.loadOp         = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Don't clear for better performance
+			.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE,		//Don't save rendered image
+			.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Discard stencil
+			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,		//Discard stencil
+			.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED,			//Default layout
+			.finalLayout    = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR		//Present layout
+		};
+
+
+		//create attachment reference
+		VkAttachmentReference colorAttachmentRef{ 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+		//Create subpass description
+		VkSubpassDescription subpass{
+			.pipelineBindPoint       = VK_PIPELINE_BIND_POINT_GRAPHICS,	//Set structure type
+			.colorAttachmentCount    = 1,								//Set number of attachments
+			.pColorAttachments       = &colorAttachmentRef,				//Previously created color attachment
+			.pDepthStencilAttachment = VK_NULL_HANDLE					//Previously created depth attachment
+		};
+
+
+		//Dependencies for implicit convertion
+		VkSubpassDependency dependencies[2]{
+			{	//From undefined to color
+				.srcSubpass      = VK_SUBPASS_EXTERNAL,
+				.dstSubpass      = 0,
+				.srcStageMask    = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+				.dstStageMask    = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+				.srcAccessMask   = VK_ACCESS_MEMORY_READ_BIT,
+				.dstAccessMask   = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+				.dependencyFlags = 0
+			}, { //From color to undefined
+				.srcSubpass      = 0,
+				.dstSubpass      = VK_SUBPASS_EXTERNAL,
+				.srcStageMask    = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+				.dstStageMask    = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+				.srcAccessMask   = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+				.dstAccessMask   = VK_ACCESS_MEMORY_READ_BIT,
+				.dependencyFlags = 0
+			}
+		};
+
+
+		//Render pass
+		VkRenderPassCreateInfo renderPassInfo{ 								//Create render pass infos
+			.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,	//Set structure type
+			.attachmentCount = 1,											//Set number of attachments
+			.pAttachments    = &colorAttachment,							//Set attachments
+			.subpassCount    = 1,											//Set number of subpasses
+			.pSubpasses      = &subpass,									//Set subpass
+			.dependencyCount = 2,											//Set number of dependencies
+			.pDependencies   = dependencies									//Set dependencies
+		};
+
+		//Create render pass. Exit if an error occurs
+		dbg::checkVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		VkImageView Swapchain::swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
+		VkImageViewCreateInfo viewInfo{
+			.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+			.image    = vImage,
+			.viewType = VK_IMAGE_VIEW_TYPE_2D,
+			.format   = vFormat,
+			.components{
+				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.a = VK_COMPONENT_SWIZZLE_IDENTITY
+			},
+			.subresourceRange{
+				.aspectMask     = vAspectFlags,
+				.baseMipLevel   = 0,
+				.levelCount     = 1,
+				.baseArrayLayer = 0,
+				.layerCount     = 1
+			}
+		};
+		VkImageView imageView = VK_NULL_HANDLE;
+		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
+		return imageView;
+	}
+
+
 }

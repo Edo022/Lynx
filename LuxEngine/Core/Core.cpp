@@ -46,15 +46,15 @@ namespace lux::core{
 
 
 
-	//TODO remove
-	//Deprecated function
-	//Compiles a shader from a file. Shader files must have the .comp extension
-	static bool compileShader(const char* pShaderPath) {
-		_wds(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
-		//FIXME USE EXE IN DEPS OR COMPILE DIRECTLY
-		_lnx(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
-		//TODO add string operator+(char)
-	}
+	// //TODO remove
+	// //Deprecated function
+	// //Compiles a shader from a file. Shader files must have the .comp extension
+	// static bool compileShader(const char* pShaderPath) {
+	// 	_wds(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
+	// 	//FIXME USE EXE IN DEPS OR COMPILE DIRECTLY
+	// 	_lnx(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
+	// 	//TODO add string operator+(char)
+	// }
 
 
 
@@ -66,22 +66,22 @@ namespace lux::core{
 		//TODO create specific function to get some extensions or all the files
 		//TODO internal shader compilation
 		LuxTime start = luxStartChrono(); //TODO TRACK STATIC INITIALIZATION
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";
+		// c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";
 
 
-		try {
-			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
-				String luxStrPath = String((char8*)name.path().u8string().c_str()); //FIXME
-				_wds(sys::dir::fixWindowsPath(luxStrPath));
-				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
-					else { Normal printf("%s", (char*)luxStrPath.begin()); }
-				}
-			}
-		}
-		catch(const std::system_error& e) {
-			std::cout << "system_error. code: " << e.code() << "\nmessage: " << e.what() << '\n';
-		}
+		// try {
+		// 	for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
+		// 		String luxStrPath = String((char8*)name.path().u8string().c_str()); //FIXME
+		// 		_wds(sys::dir::fixWindowsPath(luxStrPath));
+		// 		if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
+		// 			if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
+		// 			else { Normal printf("%s", (char*)luxStrPath.begin()); }
+		// 		}
+		// 	}
+		// }
+		// catch(const std::system_error& e) {
+		// 	std::cout << "system_error. code: " << e.code() << "\nmessage: " << e.what() << '\n';
+		// }
 
 		//Init
 		// render::wnd::initWindow(); //FIXME
@@ -90,8 +90,8 @@ namespace lux::core{
 		// SuccessNoNl printf("ok"); //FIXME
 
 		render::init(vUseVSync); //
-		buffers::init();
-		c::shaders::init();
+		// buffers::init();
+		// c::shaders::init();
 
 		//Loop
 		Success printf("Initialization completed in %f seconds", luxStopChrono(start));

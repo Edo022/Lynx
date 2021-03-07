@@ -10,16 +10,18 @@
     #include "LuxEngine/Core/Memory/Ram/Ram.cpp"
     #include "LuxEngine/Core/Memory/Ram/Cell_t.cpp"
 
+    #include "LuxEngine/System/System.cpp"
+
     #include "LuxEngine/Core/Devices.cpp"
     #include "LuxEngine/Core/Memory/VRam/VRam.cpp"
     #include "LuxEngine/Core/Memory/VRam/VCell_t.cpp"
 
+    #include "LuxEngine/Core/Render/Shaders/Shader.cpp"
     #include "LuxEngine/Core/Render/Window/Window.cpp" //FIXME
     #include "LuxEngine/Core/Render/Window/Swapchain.cpp"
     #include "LuxEngine/Core/Core.cpp"
 
 
-    #include "LuxEngine/System/System.cpp"
     #include "LuxEngine/Threads/ThreadPool.cpp"
         //#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp"
 
@@ -34,8 +36,7 @@
     #include "LuxEngine/Core/Render/Buffers.cpp"
     //#include "LuxEngine/Core/Render/Compute.cpp"
 
-    #include "LuxEngine/Core/Render/Shaders/Data.cpp"
-    #include "LuxEngine/Core/Render/Shaders/Shader.cpp"
+    // #include "LuxEngine/Core/Render/Shaders/Data.cpp"
 
     #include "LuxEngine/Core/Render/GCommands.cpp"
     #include "LuxEngine/Core/Render/GOutput.cpp"

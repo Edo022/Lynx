@@ -33,12 +33,12 @@ namespace lux::core::render{
 	_dbg(void createDebugMessenger());
 	void drawFrame();
 	void cleanup();
-	static void __attribute__((used)) framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-		//glfwGetWindowUserPointer(pWindow) //TODO
-		window.windowResizeFence.lock();  //from the last call of this function
-		out::renderFramebufferResized = true;
-		window.windowResizeFence.unlock();
-	}
+	// static void __attribute__((used)) framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
+	// 	//glfwGetWindowUserPointer(pWindow) //TODO
+	// 	window.windowResizeFence.lock();  //from the last call of this function
+	// 	out::renderFramebufferResized = true;
+	// 	window.windowResizeFence.unlock();
+	// }
 
 
 

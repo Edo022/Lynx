@@ -114,9 +114,9 @@ namespace lux::core::render{
 
 		//Redraw frame if necessary
 		redraw:
-		if(out::renderFramebufferResized) {
+		if(lux::window.swapchain.renderFramebufferResized) {
 			lux::window.windowResizeFence.lock();
-			out::renderFramebufferResized = false;
+			lux::window.swapchain.renderFramebufferResized = false;
 			lux::window.windowResizeFence.unlock();
 			lux::window.swapchain.swapchainRecreate(true); //FIXME DONT DEPEND ON A WINDOW
 			goto redraw;
@@ -150,17 +150,24 @@ namespace lux::core::render{
 			}
 			c::shaders::addShaderFence.unlock();
 
-			static VkSubmitInfo submitInfo{
+			VkSubmitInfo submitInfo{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.pNext                = nullptr,
+
 				.waitSemaphoreCount   = 1,
+				.pWaitSemaphores   = &s_imageAquired   [renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
-				.signalSemaphoreCount = 1
+
+				.commandBufferCount = c::shaders::CShadersCBs.count(),
+				.pCommandBuffers    = c::shaders::CShadersCBs.begin(),
+
+				.signalSemaphoreCount = 1,
+				.pSignalSemaphores = &s_objectsRendered[renderCurrentFrame],
 			};
-			submitInfo.pWaitSemaphores   = &s_imageAquired   [renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &s_objectsRendered[renderCurrentFrame];
-			submitInfo.commandBufferCount = c::shaders::CShadersCBs.count();
-			submitInfo.pCommandBuffers    = c::shaders::CShadersCBs.begin();
+			// submitInfo.pWaitSemaphores   = &s_imageAquired   [renderCurrentFrame];
+			// submitInfo.pSignalSemaphores = &s_objectsRendered[renderCurrentFrame];
+			// submitInfo.commandBufferCount = c::shaders::CShadersCBs.count();
+			// submitInfo.pCommandBuffers    = c::shaders::CShadersCBs.begin();
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 		}
 
@@ -193,7 +200,8 @@ namespace lux::core::render{
 			};
 			submitInfo.pWaitSemaphores   = &s_clear[renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &s_copy [renderCurrentFrame];
-			submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers[imageIndex];
+			// submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers[imageIndex];
+			submitInfo.pCommandBuffers   = &lux::window.copyCommandBuffers[imageIndex]; //FIXME USE WINDOW ARRAY OR DIVIE WINDOWS IN DIFFERENT THREADS
 
 			vkResetFences(dvc::graphics.LD, 1, &imageRendered_f[renderCurrentFrame]);
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, imageRendered_f[renderCurrentFrame]), "Failed to submit graphics command buffer");

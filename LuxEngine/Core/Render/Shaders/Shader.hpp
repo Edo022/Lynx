@@ -27,7 +27,7 @@ namespace lux::core::c::shaders{
 	extern RtArray<VkCommandBuffer>				CShadersCBs;		//Per-object command buffers
 
 	extern std::mutex							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
-	extern LuxShader							clearShader;
+	// extern LuxShader							clearShader;
 
 
 
@@ -37,7 +37,7 @@ namespace lux::core::c::shaders{
 	uint32*			cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	VkShaderModule	cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength);
 
-	void			createDefaultCommandBuffers();
+	// void			createDefaultCommandBuffers();
 	void			createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly);
 	void			createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Alloc_b<int32>>& pCells, ShaderLayout vShaderLayout);
 	void			createCommandBuffers( LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ);

@@ -20,6 +20,10 @@ namespace lux::core::wnd{
 		VkExtent2D				swapchainExtent = {};
 		RtArray<VkFramebuffer>	swapchainFramebuffers;
 
+		VkRenderPass	renderPass               = nullptr;
+	bool			renderFramebufferResized = false;
+
+
 		Window* bindedWindow;
 
 		// Swapchain(){ swapchainCreate(); }
@@ -33,6 +37,10 @@ namespace lux::core::wnd{
 		VkSurfaceFormatKHR		swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
 		VkPresentModeKHR		swapchainChoosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
 		VkExtent2D				swapchainChooseExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
+
+			void			createFramebuffers();
+	void			createRenderPass();
+VkImageView swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
 
 		~Swapchain(){
 			vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);
