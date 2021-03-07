@@ -1,8 +1,8 @@
 #pragma once
 #define LUX_H_DEVICES_T
+#include <vulkan/vulkan.h>
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Containers/RtArray.hpp"
-#include "vulkan/vulkan_core.h"
 
 
 

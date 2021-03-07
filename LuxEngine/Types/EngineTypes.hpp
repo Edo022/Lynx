@@ -1,8 +1,8 @@
 #pragma once
-#include "LuxEngine/Core/Devices_t.hpp"
-#include "LuxEngine/macros.hpp"
+// #include "LuxEngine/Core/Devices_t.hpp"
+// #include "LuxEngine/macros.hpp"
 #include "Integers/Integers.hpp"  // for uint32, uint64
-#include "vulkan/vulkan_core.h" // for VkPhysicalDeviceLimits, VkPhysicalDeviceProperties
+// #include <vulkan/vulkan.h> // for VkPhysicalDeviceLimits, VkPhysicalDeviceProperties
 
 
 

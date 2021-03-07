@@ -3,9 +3,9 @@
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-#include "LuxEngine/Types/LuxBool.hpp"
+// #include "LuxEngine/Types/LuxBool.hpp"
 #include "LuxEngine/Threads/Thread.hpp"
-#include "vulkan/vulkan.h"
+// #include <vulkan/vulkan.h>
 
 
 

@@ -1,7 +1,7 @@
-#pragma once
-#define LUX_H_GOUTPUT
-#include "vulkan/vulkan.h"
-#include "LuxEngine/Types/Integers/Integers.hpp"
+// #pragma once
+// #define LUX_H_GOUTPUT
+// #include <vulkan/vulkan.h>
+// #include "LuxEngine/Types/Integers/Integers.hpp"
 
 
 

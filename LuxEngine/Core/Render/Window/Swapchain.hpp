@@ -1,6 +1,5 @@
 #pragma once
 #define LUX_H_SWAPCHAIN
-#include "vulkan/vulkan.h"
 #include "LuxEngine/Types/Containers/CtArray.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 

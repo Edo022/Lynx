@@ -1,3 +1,6 @@
+//TODO REMOVE STANDALONE ENGINE BUILD
+//TODO REMOVE ENGINE MAIN CPP
+
 {
     "tasks": [
         {

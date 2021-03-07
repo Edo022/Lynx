@@ -3,7 +3,7 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
-#include "LuxEngine/Types/Containers/RaArray.hpp"
+// #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/System/SystemInfo.hpp"
 

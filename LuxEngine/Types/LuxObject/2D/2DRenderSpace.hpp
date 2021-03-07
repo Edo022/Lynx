@@ -1,6 +1,7 @@
 #pragma once
+#define LUX_H_RENDER_SPACE_2D
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
-#include "LuxEngine/Types/Integers/Integers.hpp"
+// #include "LuxEngine/Types/Integers/Integers.hpp"
 
 
 namespace lux::obj {

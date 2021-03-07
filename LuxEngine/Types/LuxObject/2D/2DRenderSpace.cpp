@@ -1,4 +1,3 @@
-
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 #include "LuxEngine/Core/Core.hpp"
 

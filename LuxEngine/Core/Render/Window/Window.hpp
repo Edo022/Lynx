@@ -1,9 +1,9 @@
 #pragma once
 #define LUX_H_WINDOW
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
-#include "LuxEngine/Types/LuxFenceDE.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
+#include "LuxEngine/Types/LuxFenceDE.hpp"
 // #include "LuxEngine/Types/Dummy.hpp"
 
 typedef uint32 LuxShader;

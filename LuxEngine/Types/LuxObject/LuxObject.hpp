@@ -1,15 +1,17 @@
 #pragma once
-#ifndef __LUX_OBJ
-#define __LUX_OBJ
+#define LUX_H_LUX_OBJECT
+// #ifndef __LUX_OBJ
+// #define __LUX_OBJ
 
 #include "LuxEngine/Types/Vectors/Vectors.hpp"
-#include "LuxEngine/Types/Integers/Integers.hpp"
-#include "LuxEngine/Types/EngineTypes.hpp"
+// #include "LuxEngine/Types/Integers/Integers.hpp"
+// #include "LuxEngine/Types/EngineTypes.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
-#include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
-#include "LuxEngine/Core/Memory/Ram/Cell_t.hpp" //FIXME USE PTRS INSTEAD OF RAW CELLS
-#include "LuxEngine/macros.hpp"
+// #include "LuxEngine/Types/Containers/RaArray.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader.hpp"
+// #include "LuxEngine/Core/Memory/Ram/Cell_t.hpp" //FIXME USE PTRS INSTEAD OF RAW CELLS
+#include "LuxEngine/Types/VPointer.hpp"
+// #include "LuxEngine/macros.hpp"
 
 
 
@@ -222,4 +224,4 @@ namespace lux{
 		void addRenderSpace(RenderSpace2D* pRenderSpace);
 	}
 }
-#endif // !__LUX_OBJ
+// #endif // !__LUX_OBJ

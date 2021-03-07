@@ -2,18 +2,18 @@
 #include "LuxEngine/Core/Core.hpp"
 
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
-#include "LuxEngine/Core/Render/GCommands.hpp"
-#include "LuxEngine/Core/Render/GOutput.hpp"
-#include "LuxEngine/Core/Render/Render.hpp"
+// #include "LuxEngine/Core/Render/GCommands.hpp"
+// #include "LuxEngine/Core/Render/GOutput.hpp"
+// #include "LuxEngine/Core/Render/Render.hpp"
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 
 #include "LuxEngine/System/System.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
-#include "LuxEngine/Types/Integers/Integers.hpp"
+// #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 
 #include "LuxEngine/Core/LuxAutoInit.hpp"
-#include <vulkan/vulkan.h>
+// #include <vulkan/vulkan.h>
 
 
 

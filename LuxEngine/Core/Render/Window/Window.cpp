@@ -1,11 +1,12 @@
-#include "LuxEngine/Core/Core.hpp"
+#include <vulkan/vulkan.h>
 #include "LuxEngine/Core/Render/Window/Window.hpp"
+// #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Types/VPointer.hpp"
-#include "LuxEngine/Debug/Debug.hpp"
-#include "LuxEngine/Core/LuxAutoInit.hpp"
-#include "LuxEngine/Core/Render/Buffers.hpp"
+// #include "LuxEngine/Types/VPointer.hpp"
+// #include "LuxEngine/Debug/Debug.hpp"
+// #include "LuxEngine/Core/LuxAutoInit.hpp"
+// #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 
 

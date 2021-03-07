@@ -1,14 +1,14 @@
 #pragma once
 #define LUX_H_CSHADER
 #include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
-#include "LuxEngine/Core/Render/Buffers.hpp"
-#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
+// #include "LuxEngine/Core/Render/Buffers.hpp"
+// #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
-#include "LuxEngine/Core/Devices.hpp"
+// #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Types/LuxFenceDE.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
+// #include "LuxEngine/Types/LuxFenceDE.hpp"
+// #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 
 
 
@@ -16,7 +16,9 @@
 
 
 
-
+namespace lux::obj{
+	struct RenderSpace2D;
+}
 namespace lux::core::c::shaders{
 	extern String								shaderPath;			//Path to the shaders folder
 	extern RaArray<obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces

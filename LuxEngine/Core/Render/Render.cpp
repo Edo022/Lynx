@@ -1,12 +1,12 @@
-#include <vulkan/vulkan.h>
-#include "LuxEngine/Core/Render/Render.hpp"
+// #include <vulkan/vulkan.h>
+// #include "LuxEngine/Core/Render/Render.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
-#include "LuxEngine/Core/Core.hpp"
-#include "LuxEngine/Core/LuxAutoInit.hpp"
+// #include "LuxEngine/Core/Core.hpp"
+// #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include <climits>
 
 

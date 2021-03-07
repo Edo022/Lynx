@@ -1,6 +1,6 @@
 ﻿#pragma once
 #define LUX_H_INPUT_STATE
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 #include <initializer_list>
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Types/Containers/RtArray.hpp"
