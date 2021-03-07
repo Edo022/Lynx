@@ -17,12 +17,12 @@
 
 
 namespace lux::core::render{
-	extern RtArray<VkSemaphore>	s_imageAquired;
-	extern RtArray<VkSemaphore>	s_objectsRendered;
-	extern RtArray<VkSemaphore>	s_copy;
-	extern RtArray<VkSemaphore>	s_clear;
-	extern RtArray<VkFence>		imageRendered_f;
-	extern int32				renderCurrentFrame;
+	// extern RtArray<VkSemaphore>	s_imageAquired;
+	// extern RtArray<VkSemaphore>	s_objectsRendered;
+	// extern RtArray<VkSemaphore>	s_copy;
+	// extern RtArray<VkSemaphore>	s_clear;
+	// extern RtArray<VkFence>		imageRendered_f;
+	// extern int32				renderCurrentFrame;
 	extern RtArray<obj::Base*>	objUpdates2D;
 	extern FenceDE				objUpdates2D_f;
 

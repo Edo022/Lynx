@@ -89,7 +89,7 @@ namespace lux::core{
 		// render::wnd::createInstance(); //FIXME
 		// SuccessNoNl printf("ok"); //FIXME
 
-		render::init(vUseVSync); //
+		// render::init(vUseVSync); //
 		// buffers::init();
 		// c::shaders::init();
 

@@ -12,6 +12,9 @@ namespace lux{
 	struct Window;
 }
 namespace lux::core::wnd{
+		constexpr int32			__renderMaxFramesInFlight = 2;	//Default:2
+
+
 	struct Swapchain{
 		VkSwapchainKHR			swapchain = nullptr;
 		RtArray<VkImage>		swapchainImages;
@@ -26,12 +29,21 @@ namespace lux::core::wnd{
 
 		Window* bindedWindow;
 
+
+	RtArray<VkSemaphore> s_imageAquired   ;//(__renderMaxFramesInFlight);
+	RtArray<VkSemaphore> s_objectsRendered;//(__renderMaxFramesInFlight);
+	RtArray<VkSemaphore> s_copy           ;//(__renderMaxFramesInFlight);
+	RtArray<VkSemaphore> s_clear          ;//(__renderMaxFramesInFlight);
+	RtArray<VkFence>     imageRendered_f  ;//(__renderMaxFramesInFlight);
+	int32                renderCurrentFrame = 0;
+
 		// Swapchain(){ swapchainCreate(); }
 
 
 
 		// void preInit();
 		void					swapchainCreate();
+				void ___init(const bool vUseVSync);
 		void					swapchainRecreate(const bool vWindowResized);
 		void					cleanup();
 		VkSurfaceFormatKHR		swapchainChooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
@@ -43,7 +55,8 @@ namespace lux::core::wnd{
 VkImageView swapchainCreateImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
 
 		~Swapchain(){
-			vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);
+			// vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);
+			cleanup();
 		}
 	};
 

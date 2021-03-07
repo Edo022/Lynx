@@ -1,5 +1,6 @@
 ﻿#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
+#include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
@@ -64,6 +65,11 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::swapchainCreate() {
+		___init(false);
+
+
+
+
 		//Get swapchain details
 		SwapChainSupportDetails swapChainSupport = getSwapchainSupportDetails(dvc::graphics.PD.device, bindedWindow->surface); //FIXME DONT USE GLOBAL SURFACE
 		//FIXME ^ USE BINDED WINDOW
@@ -309,4 +315,47 @@ namespace lux::core::wnd{
 	}
 
 
+
+		void Swapchain::___init(const bool vUseVSync) {
+		useVSync = vUseVSync;
+
+		s_imageAquired   .resize(__renderMaxFramesInFlight);
+s_objectsRendered.resize(__renderMaxFramesInFlight);
+s_copy           .resize(__renderMaxFramesInFlight);
+s_clear          .resize(__renderMaxFramesInFlight);
+imageRendered_f  .resize(__renderMaxFramesInFlight);
+
+		_dbg(Failure printf("D E B U G    M O D E"));		MainSeparator;
+
+		//Initialize vulkan
+		// dbg::checkVk(glfwCreateWindowSurface(instance, wnd::window, nullptr, &surface), "Failed to create window surface");
+		Normal printf("    Searching for physical devices...    \n");
+		// dvc::getPhysical(); //FIXME
+		core::render::cmd::createGraphicsCommandPool();
+		Normal printf("    Creating VK swapchain...             ");
+
+		// lux::window.swapchain.swapchainCreate(); //FIXME AUTOMATIZE
+
+		_dbg(lux::core::render::createDebugMessenger());
+
+
+		//Create sync objects
+		VkSemaphoreCreateInfo semaphoreInfo{
+			.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
+		};
+		VkFenceCreateInfo fenceInfo{
+			.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+			.flags = VK_FENCE_CREATE_SIGNALED_BIT
+		};
+		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
+			lux::dbg::checkCond(
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_imageAquired[i])	!= VK_SUCCESS ||
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_objectsRendered[i])	!= VK_SUCCESS ||
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_copy[i])			!= VK_SUCCESS ||
+				vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_clear[i])			!= VK_SUCCESS ||
+				vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &imageRendered_f[i])		!= VK_SUCCESS,
+				"Failed to create vulkan sync objects"
+			);
+		}
+}
 }
