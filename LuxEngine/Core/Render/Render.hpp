@@ -18,7 +18,7 @@ namespace lux::core::render{
 
 
 
-	void drawFrame();
+	void drawFrame(Window& window);
 	void cleanup();
 	#ifdef LUX_DEBUG
 		_dbg(void createDebugMessenger());

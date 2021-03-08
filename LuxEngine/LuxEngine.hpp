@@ -11,9 +11,7 @@ namespace lux{
 	 * @brief Starts the Lux Engine
 	 */
     void start() {
-        Thread coreThr(lux::core::run, L{ false });
-        coreThr.detach();
-        while(!core::initialized) lux::thr::self::yield();
+        lux::core::run(false);
     }
 
 

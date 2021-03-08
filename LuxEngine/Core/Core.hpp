@@ -3,9 +3,7 @@
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-// #include "LuxEngine/Types/LuxBool.hpp"
 #include "LuxEngine/Threads/Thread.hpp"
-// #include <vulkan/vulkan.h>
 
 
 
@@ -76,20 +74,18 @@ Object rendering
 
 
 namespace lux::core{
-	extern double		FPS;
-	extern bool			running;
-	extern bool			useVSync;
-	extern bool			initialized;
+	extern double FPS;
+	extern bool   running;
+	extern bool   useVSync;
 
-	extern lux::Thread	FPSCounterThr;
-	extern lux::Thread	renderThr;
+	extern lux::Thread FPSCounterThr;
+	extern lux::Thread renderThr;
 
 
 
 
 	//Main
 	void run(bool vUseVSync);
-	void mainLoop();
 	void runFPSCounterThr();
 	void runRenderThr();
 
