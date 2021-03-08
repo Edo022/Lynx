@@ -1,10 +1,9 @@
 #pragma once
 #define LUX_H_THREAD
+#include "LuxEngine/Types/Containers/HcArray.hpp"
 #include <pthread.h>
 #include <csignal>
 #include <cstdlib>
-#include "LuxEngine/Types/Containers/HcArray.hpp"
-// #include "LuxEngine/Types/LuxFenceDE.hpp"
 
 
 
