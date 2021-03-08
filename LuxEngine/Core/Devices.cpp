@@ -1,9 +1,6 @@
-﻿
-//TODO USE MOVE SEMANTICS
-#include "LuxEngine/Core/Core.hpp"
+﻿#include "LuxEngine/Core/Core.hpp" //FIXME if this is places after Devices.cpp, G++ is unable to find glfwCreateWindowSurface
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
-// #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/System/SystemInfo.hpp"
 
@@ -11,7 +8,7 @@
 #include <vector>
 
 //Compares 2 _VkPhysicalDevice objects
-#define sameDevice(a,b) ((a).properties.deviceID == (b).properties.deviceID)
+alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& a, const _VkPhysicalDevice& b){ return a.properties.deviceID == b.properties.deviceID; }
 
 
 
@@ -82,9 +79,9 @@ namespace lux::core::dvc{
 			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
 			RtArray<VkLayerProperties> availableLayers(layerCount);
 			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
-			for(uint32 i = 0; i < validationLayersNum; i++) {							//For every layer,
+			for(uint32 i = 0; i < validationLayersNum; i++) {								//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
-					if(validationLayers[i] == layerProperties.layerName) break;				//If not, exit
+					if(validationLayers[i] == layerProperties.layerName) break;					//If not, print an error
 					else if(validationLayers[i] == availableLayers.end()->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
 				}
 			}
@@ -95,15 +92,14 @@ namespace lux::core::dvc{
 
 
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //FIXME
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	//FIXME
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //TODO automatically get GLFW version
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	//TODO automatically get GLFW version
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		dummyWindow = glfwCreateWindow(1, 1, "DummyWindow", nullptr, nullptr);	//Initialize dummy window
+		dummyWindow = glfwCreateWindow(1, 1, "", nullptr, nullptr);	//Initialize dummy window
+		glfwHideWindow(dummyWindow);
 		glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface); //Initialize dummy surface
 
 
-		// GLFWwindow* dummyWindow = glfwCreateWindow(0, 0, "DummyWindow", nullptr, nullptr);
-		// VkSurfaceKHR dummySurface; glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface);
 		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface), "Failed to create window surface");
 		getPhysical();
 	}
@@ -143,7 +139,6 @@ namespace lux::core::dvc{
 
 		//Check swapchain support
 		else {
-			// wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, surface); //FIXME DONT USE GLOBAL SURFACE OR CREATE DUMMY WINDOW
 			wnd::Swapchain::Details swapchainDetails = wnd::Swapchain::getDetails(vDevice, dummySurface);
 			if(!swapchainDetails.formats.count() || !swapchainDetails.presentModes.count()) {
 				pErrorText = "Unsupported swapchain";
@@ -190,7 +185,6 @@ namespace lux::core::dvc{
 			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;					//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT)  indices.computeFamilies.add(i);				//Add compute families
 			VkBool32 hasPresentSupport = false;
-			// vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, surface, &hasPresentSupport);						//Set present family
 			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, dummySurface, &hasPresentSupport);						//Set present family
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
@@ -351,8 +345,8 @@ namespace lux::core::dvc{
 			.sType                    = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//Set structure type
 			.queueCreateInfoCount     = queueCreateInfos.count(),				//Set queue infos count
 			.pQueueCreateInfos        =    queueCreateInfos.begin(),			//Set queue infos
-			.enabledLayerCount        = _dbg(validationLayersNum) _rls(0),	//Set validation layer count if in debug mode
-			_dbg(.ppEnabledLayerNames = validationLayers,)					//Set validation layers      if in debug mode
+			.enabledLayerCount        = _dbg(validationLayersNum) _rls(0),		//Set validation layer count if in debug mode
+			_dbg(.ppEnabledLayerNames = validationLayers,)						//Set validation layers      if in debug mode
 			.enabledExtensionCount    =   requiredDeviceExtensionsNum,			//Set required extentions count
 			.ppEnabledExtensionNames  = requiredDeviceExtensions,				//Set required extensions
 			.pEnabledFeatures         = &enabledDeviceFeatures					//Set physical device enabled features
