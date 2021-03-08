@@ -404,7 +404,7 @@ namespace lux::core::c::shaders{
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ, pWindow);	//Create command buffers and command pool
 
 		pWindow.addShaderFence.lock(); //TODO REMOVE OR MAKE LOCAL
-		LuxShader i = pWindow.swapchain.CShaders.add(shader); //BUG MAKE CSHADERS WINDOW-LOCAL
+		LuxShader i = pWindow.swapchain.shaders.add(shader); //BUG MAKE shaders WINDOW-LOCAL
 		pWindow.addShaderFence.unlock(); //TODO REMOVE OR MAKE LOCAL
 		return i;
 	}
@@ -426,16 +426,16 @@ namespace lux::core::c::shaders{
 			.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT			//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 		};
 		pWindow.addShaderFence.lock();
-		vkBeginCommandBuffer(pWindow.swapchain.CShaders[vCShader].commandBuffers[0], &beginInfo);
+		vkBeginCommandBuffer(pWindow.swapchain.shaders[vCShader].commandBuffers[0], &beginInfo);
 		pWindow.addShaderFence.unlock();
 		//Bind pipeline and descriptors and run the compute shader
-		vkCmdBindPipeline      (pWindow.swapchain.CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
-		vkCmdBindDescriptorSets(pWindow.swapchain.CShaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pWindow.swapchain.CShaders[vCShader].descriptorSet, 0, nullptr);
-		vkCmdDispatch          (pWindow.swapchain.CShaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
+		vkCmdBindPipeline      (pWindow.swapchain.shaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindDescriptorSets(pWindow.swapchain.shaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pWindow.swapchain.shaders[vCShader].descriptorSet, 0, nullptr);
+		vkCmdDispatch          (pWindow.swapchain.shaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 
 		//End command buffer recording
-		dbg::checkVk(vkEndCommandBuffer(pWindow.swapchain.CShaders[vCShader].commandBuffers[0]), "Failed to record command buffer");
+		dbg::checkVk(vkEndCommandBuffer(pWindow.swapchain.shaders[vCShader].commandBuffers[0]), "Failed to record command buffer");
 	}
 
 
@@ -454,19 +454,19 @@ namespace lux::core::c::shaders{
 	 * @return True if the operation succeeded, false if the index is invalid
 	 */
 	bool destroyShader(const LuxShader vCShader, Window& pWindow) {
-		if(vCShader >= pWindow.swapchain.CShaders.count()) return false;
+		if(vCShader >= pWindow.swapchain.shaders.count()) return false;
 
 		//Clear descriptors sets, descriptor pool and descriptor layout
-		vkFreeDescriptorSets   (dvc::compute.LD, pWindow.swapchain.CShaders[vCShader].descriptorPool, 1, &pWindow.swapchain.CShaders[vCShader].descriptorSet);
-		vkDestroyDescriptorPool(dvc::compute.LD, pWindow.swapchain.CShaders[vCShader].descriptorPool, nullptr);
+		vkFreeDescriptorSets   (dvc::compute.LD, pWindow.swapchain.shaders[vCShader].descriptorPool, 1, &pWindow.swapchain.shaders[vCShader].descriptorSet);
+		vkDestroyDescriptorPool(dvc::compute.LD, pWindow.swapchain.shaders[vCShader].descriptorPool, nullptr);
 
 		// //Clear command buffers and command pool
-		// vkFreeCommandBuffers(dvc::compute.LD, commandPool, 1, CShaders[vCShader].commandBuffers.begin());
+		// vkFreeCommandBuffers(dvc::compute.LD, commandPool, 1, shaders[vCShader].commandBuffers.begin());
 		// vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Remove the shader from the shader array
-		for(uint32 i = vCShader; i < pWindow.swapchain.CShaders.count() - 1; ++i) pWindow.swapchain.CShaders[i] = pWindow.swapchain.CShaders[i+1]; //FIXME
-		pWindow.swapchain.CShaders.resize(pWindow.swapchain.CShaders.count() - 1);
+		for(uint32 i = vCShader; i < pWindow.swapchain.shaders.count() - 1; ++i) pWindow.swapchain.shaders[i] = pWindow.swapchain.shaders[i+1]; //FIXME
+		pWindow.swapchain.shaders.resize(pWindow.swapchain.shaders.count() - 1);
 
 		return true;
 	}

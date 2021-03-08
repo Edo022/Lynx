@@ -144,8 +144,8 @@ namespace lux::core::dvc{
 		//Check swapchain support
 		else {
 			// wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, surface); //FIXME DONT USE GLOBAL SURFACE OR CREATE DUMMY WINDOW
-			wnd::SwapChainSupportDetails swapChainSupport = wnd::getSwapchainSupportDetails(vDevice, dummySurface);
-			if(!swapChainSupport.formats.count() || !swapChainSupport.presentModes.count()) {
+			wnd::Swapchain::Details swapchainDetails = wnd::Swapchain::getDetails(vDevice, dummySurface);
+			if(!swapchainDetails.formats.count() || !swapchainDetails.presentModes.count()) {
 				pErrorText = "Unsupported swapchain";
 				return false;
 			}

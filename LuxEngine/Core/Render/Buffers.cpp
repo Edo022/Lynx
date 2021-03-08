@@ -35,7 +35,7 @@ namespace lux::core::buffers{
 	// 	}
 
 	// 	{ //#LLID CCB0000 Create copy command buffers
-	// 		copyCommandBuffers.resize(lux::window.swapchain.swapchainImages.count());			//Resize the command buffer array in the shader //FIXME DONT DEPEND ON A WINDOW
+	// 		copyCommandBuffers.resize(lux::window.swapchain.images.count());			//Resize the command buffer array in the shader //FIXME DONT DEPEND ON A WINDOW
 	// 		core::c::shaders::createDefaultCommandBuffers();								//Create command buffers and command pool
 	// 	}
 	// }

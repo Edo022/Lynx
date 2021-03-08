@@ -197,7 +197,7 @@ namespace lux{
 
 
 			swapchain.bindedWindow = this;
-			swapchain.swapchainCreate();
+			swapchain.create(false);
 
 
 
@@ -215,7 +215,7 @@ namespace lux{
 				wSize_g.unmap();										//Unmap
 			}
 			{ //#LLID CCB0000 Create copy command buffers
-				copyCommandBuffers.resize(swapchain.swapchainImages.count());			//Resize the command buffer array in the shader //FIXME DONT DEPEND ON A WINDOW
+				copyCommandBuffers.resize(swapchain.images.count());			//Resize the command buffer array in the shader //FIXME DONT DEPEND ON A WINDOW
 				// core::c::shaders::createDefaultCommandBuffers();								//Create command buffers and command pool
 				createDefaultCommandBuffers__();
 			}
@@ -273,14 +273,14 @@ namespace lux{
 				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY							//Set the command buffer as a primary level command buffer
 			};
 			commandBufferAllocateInfo.commandPool = copyCommandPool;	//Set command pool where to allocate the command buffer
-			commandBufferAllocateInfo.commandBufferCount = swapchain.swapchainImages.count(); //FIXME DONT DEPEND ON A WINDOW
+			commandBufferAllocateInfo.commandBufferCount = swapchain.images.count(); //FIXME DONT DEPEND ON A WINDOW
 			dbg::checkVk(vkAllocateCommandBuffers(core::dvc::compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.begin()), "Unable to allocate command buffers");
 
 
 
 
 			//Record a present command buffers for each swapchain images
-			for(uint32 imgIndex = 0; imgIndex < swapchain.swapchainImages.count(); imgIndex++) { //FIXME DONT DEPEND ON A WINDOW
+			for(uint32 imgIndex = 0; imgIndex < swapchain.images.count(); imgIndex++) { //FIXME DONT DEPEND ON A WINDOW
 				//Start recording commands
 				static VkCommandBufferBeginInfo beginInfo = { 						//Create begin infos to start recording the command buffer
 					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,				//Set structure type
@@ -290,18 +290,18 @@ namespace lux{
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-				readToWriteBarrier.image = swapchain.swapchainImages[imgIndex];	//Set swapchain image //FIXME DONT DEPEND ON A WINDOW
+				readToWriteBarrier.image = swapchain.images[imgIndex];	//Set swapchain image //FIXME DONT DEPEND ON A WINDOW
 				VkPipelineStageFlags 												//Create stage flags
 					srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,			//The swapchain image is in color output stage
 					dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;							//Change it to transfer stage to copy the buffer in it
 				vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
 				copyRegion.imageExtent = { swapchain.swapchainExtent.width, swapchain.swapchainExtent.height, 1 };	//Copy the whole buffer //FIXME DONT DEPEND ON A WINDOW
-				vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], iOut_g.cell->csc.buffer, swapchain.swapchainImages[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion); //FIXME DONT DEPEND ON A WINDOW
+				vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], iOut_g.cell->csc.buffer, swapchain.images[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion); //FIXME DONT DEPEND ON A WINDOW
 
 
 				//Create a barrier to use the swapchain image as a present source image
-				writeToReadBarrier.image = swapchain.swapchainImages[imgIndex];	//Set swapchain image //FIXME DONT DEPEND ON A WINDOW
+				writeToReadBarrier.image = swapchain.images[imgIndex];	//Set swapchain image //FIXME DONT DEPEND ON A WINDOW
 				VkPipelineStageFlags 											//Create stage flags
 					srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT,						//The image is in transfer stage from the buffer copy
 					dstStage1 = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;		//Change it to color output to present them

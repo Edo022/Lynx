@@ -29,7 +29,7 @@ namespace lux::core::render{
 	// alignCache RtArray<VkSemaphore> s_objectsRendered(out::renderMaxFramesInFlight) ;
 	// alignCache RtArray<VkSemaphore> s_copy           (out::renderMaxFramesInFlight) ;
 	// alignCache RtArray<VkSemaphore> s_clear          (out::renderMaxFramesInFlight) ;
-	// alignCache RtArray<VkFence>     imageRendered_f  (out::renderMaxFramesInFlight) ;
+	// alignCache RtArray<VkFence>     f_imageRendered  (out::renderMaxFramesInFlight) ;
 	// alignCache int32                renderCurrentFrame = 0;
 	alignCache RtArray<obj::Base*>  objUpdates2D;
 	alignCache FenceDE              objUpdates2D_f;
@@ -72,7 +72,7 @@ namespace lux::core::render{
 	// 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_objectsRendered[i])	!= VK_SUCCESS ||
 	// 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_copy[i])			!= VK_SUCCESS ||
 	// 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_clear[i])			!= VK_SUCCESS ||
-	// 			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &imageRendered_f[i])		!= VK_SUCCESS,
+	// 			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &f_imageRendered[i])		!= VK_SUCCESS,
 	// 			"Failed to create vulkan sync objects"
 	// 		);
 	// 	}
@@ -108,8 +108,8 @@ namespace lux::core::render{
 	//TODO multithreaded submit and command creation
 	void drawFrame() {
 		//FIXME __
-		if(lux::window.swapchain.CShaders.count() <= 1) return;
-		vkWaitForFences(dvc::graphics.LD, 1, &lux::window.swapchain.imageRendered_f[lux::window.swapchain.renderCurrentFrame], false, INT_MAX);
+		if(lux::window.swapchain.shaders.count() <= 1) return;
+		vkWaitForFences(dvc::graphics.LD, 1, &lux::window.swapchain.f_imageRendered[lux::window.swapchain.renderCurrentFrame], false, INT_MAX);
 
 
 		//Redraw frame if necessary
@@ -118,7 +118,7 @@ namespace lux::core::render{
 			lux::window.windowResizeFence.lock();
 			lux::window.swapchain.renderFramebufferResized = false;
 			lux::window.windowResizeFence.unlock();
-			lux::window.swapchain.swapchainRecreate(true); //FIXME DONT DEPEND ON A WINDOW
+			lux::window.swapchain.recreate(true); //FIXME DONT DEPEND ON A WINDOW
 			goto redraw;
 		}
 
@@ -128,7 +128,7 @@ namespace lux::core::render{
 		{
 			switch(vkAcquireNextImageKHR(dvc::graphics.LD, lux::window.swapchain.swapchain, INT_MAX, lux::window.swapchain.s_imageAquired[lux::window.swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-				case VK_ERROR_OUT_OF_DATE_KHR: lux::window.swapchain.swapchainRecreate(false);  return; //FIXME DONT DEPEND ON A WINDOW
+				case VK_ERROR_OUT_OF_DATE_KHR: lux::window.swapchain.recreate(false);  return; //FIXME DONT DEPEND ON A WINDOW
 				default: Failure printf("Failed to aquire swapchain image");
 			}
 		}
@@ -143,10 +143,10 @@ namespace lux::core::render{
 		{
 			lux::window.addShaderFence.lock();
 			//FIXME __
-			lux::window.swapchain.CShadersCBs.resize(lux::window.swapchain.CShaders.count());
-			for(uint32 i = 0; i < lux::window.swapchain.CShaders.count(); ++i) {
+			lux::window.swapchain.shadersCBs.resize(lux::window.swapchain.shaders.count());
+			for(uint32 i = 0; i < lux::window.swapchain.shaders.count(); ++i) {
 				//FIXME __
-				lux::window.swapchain.CShadersCBs[i] = lux::window.swapchain.CShaders[i].commandBuffers[0];
+				lux::window.swapchain.shadersCBs[i] = lux::window.swapchain.shaders[i].commandBuffers[0];
 			}
 			lux::window.addShaderFence.unlock();
 
@@ -158,16 +158,16 @@ namespace lux::core::render{
 				.pWaitSemaphores   = &lux::window.swapchain.s_imageAquired   [lux::window.swapchain.renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
 
-				.commandBufferCount = lux::window.swapchain.CShadersCBs.count(),
-				.pCommandBuffers    = lux::window.swapchain.CShadersCBs.begin(),
+				.commandBufferCount = lux::window.swapchain.shadersCBs.count(),
+				.pCommandBuffers    = lux::window.swapchain.shadersCBs.begin(),
 
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores = &lux::window.swapchain.s_objectsRendered[lux::window.swapchain.renderCurrentFrame],
 			};
 			// submitInfo.pWaitSemaphores   = &s_imageAquired   [renderCurrentFrame];
 			// submitInfo.pSignalSemaphores = &s_objectsRendered[renderCurrentFrame];
-			// submitInfo.commandBufferCount = c::shaders::CShadersCBs.count();
-			// submitInfo.pCommandBuffers    = c::shaders::CShadersCBs.begin();
+			// submitInfo.commandBufferCount = c::shaders::shadersCBs.count();
+			// submitInfo.pCommandBuffers    = c::shaders::shadersCBs.begin();
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 		}
 
@@ -181,7 +181,7 @@ namespace lux::core::render{
 				.commandBufferCount   = 1,
 				.signalSemaphoreCount = 1
 			};
-			submitInfo.pCommandBuffers = &lux::window.swapchain.CShaders[0].commandBuffers[0];
+			submitInfo.pCommandBuffers = &lux::window.swapchain.shaders[0].commandBuffers[0];
 			submitInfo.pWaitSemaphores = &lux::window.swapchain.s_objectsRendered[lux::window.swapchain.renderCurrentFrame];
 			submitInfo.pSignalSemaphores = &lux::window.swapchain.s_clear[lux::window.swapchain.renderCurrentFrame];
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
@@ -203,8 +203,8 @@ namespace lux::core::render{
 			// submitInfo.pCommandBuffers   = &buffers::copyCommandBuffers[imageIndex];
 			submitInfo.pCommandBuffers   = &lux::window.copyCommandBuffers[imageIndex]; //FIXME USE WINDOW ARRAY OR DIVIE WINDOWS IN DIFFERENT THREADS
 
-			vkResetFences(dvc::graphics.LD, 1, &lux::window.swapchain.imageRendered_f[lux::window.swapchain.renderCurrentFrame]);
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, lux::window.swapchain.imageRendered_f[lux::window.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			vkResetFences(dvc::graphics.LD, 1, &lux::window.swapchain.f_imageRendered[lux::window.swapchain.renderCurrentFrame]);
+			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, lux::window.swapchain.f_imageRendered[lux::window.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
 		}
 
 
@@ -224,7 +224,7 @@ namespace lux::core::render{
 				case VK_SUCCESS:  break;
 				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-					lux::window.swapchain.swapchainRecreate(false); //FIXME DONT DEPEND ON A WINDOW
+					lux::window.swapchain.recreate(false); //FIXME DONT DEPEND ON A WINDOW
 					// vkDeviceWaitIdle(dvc::graphics.LD);
 					goto redraw;
 				}
@@ -287,7 +287,7 @@ namespace lux::core::render{
 		// 	vkDestroySemaphore(dvc::graphics.LD, s_objectsRendered[i], nullptr);
 		// 	vkDestroySemaphore(dvc::graphics.LD, s_copy[i],            nullptr);
 		// 	vkDestroySemaphore(dvc::graphics.LD, s_clear[i],           nullptr);
-		// 	vkDestroyFence    (dvc::graphics.LD, imageRendered_f[i],       nullptr);
+		// 	vkDestroyFence    (dvc::graphics.LD, f_imageRendered[i],       nullptr);
 		// }
 
 		//If the compute and the graphics devices are not the same, destroy the graphics device
