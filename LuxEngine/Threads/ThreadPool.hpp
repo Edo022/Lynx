@@ -2,6 +2,7 @@
 #define LUX_H_THREAD_POOL
 #include "LuxEngine/LuxEngine_config.hpp"
 #include "LuxEngine/System/System.hpp"
+#include "LuxEngine/System/SystemInfo.hpp"
 
 #include "LuxEngine/Types/LuxFenceDE.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"

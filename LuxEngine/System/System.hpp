@@ -18,6 +18,4 @@ namespace lux::sys {
 		lux::String getExtensionFromPath(const lux::String& pStr);
 		lux::String getFileNameFromPath (const lux::String& pStr);
 	}
-
-	extern uint32 threadNum;
 }

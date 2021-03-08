@@ -5,7 +5,7 @@
 
 
 
-//TODO check for alllocation number limit
+//TODO check for allocation number limit
 namespace lux::vram{
-
+    //TODO
 }

@@ -1,6 +1,7 @@
 #include "LuxEngine/System/SystemInfo.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 
+//TODO ADD WINDOWS INFOS
 #ifdef _WIN64
 #	include <windows.h>
 #elif defined __linux__
@@ -77,9 +78,4 @@ namespace lux::sys{
             .size     = (uint64)(sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE))
         #endif
     };
-
-
-
-
-    // GpuInfo gpu = {};       //Set in LuxEngine/Core/Memory/VRam/VRam.cpp
 }

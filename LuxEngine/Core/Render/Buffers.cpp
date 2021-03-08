@@ -1,9 +1,5 @@
-// #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-// #include "LuxEngine/Core/Render/GCommands.hpp"
-// #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
-// #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 
 
 
@@ -12,51 +8,6 @@
 
 
 namespace lux::core::buffers{
-	// alignCache VkCommandPool			copyCommandPool    = nullptr;
-	// alignCache RtArray<VkCommandBuffer>	copyCommandBuffers;
-	// alignCache VkCommandBuffer			clearCommandBuffer = nullptr;
-
-
-
-
-	//Initializes the compute objects
-	//> Engine internal use
-	// void init() {
-	// 	{ //Initialize window buffers and count
-	// 		lux::window.iOut_g.realloc(lux::window.width * lux::window.height * 4); //A8-R8-G8-B8 UI
-	// 		lux::window.fOut_G.  realloc(lux::window.width * lux::window.height * 4 * 4); //A32-R32-G32-B32 UF
-	// 		lux::window.zBuff_g. realloc(lux::window.width * lux::window.height * 4);
-	// 		lux::window.wSize_g.    realloc(4 * 2);	//Create cell for window size //TODO use dedicated storage and update every time
-
-	// 		lux::window.wSize_g.map();			//Map window size cell
-	// 		lux::window.wSize_g[0] = lux::window.swapchain.swapchainExtent.width;				//Set width //FIXME DONT DEPEND ON A WINDOW
-	// 		lux::window.wSize_g[1] = lux::window.swapchain.swapchainExtent.height;				//Set height //FIXME DONT DEPEND ON A WINDOW
-	// 		lux::window.wSize_g.unmap();										//Unmap
-	// 	}
-
-	// 	{ //#LLID CCB0000 Create copy command buffers
-	// 		copyCommandBuffers.resize(lux::window.swapchain.images.count());			//Resize the command buffer array in the shader //FIXME DONT DEPEND ON A WINDOW
-	// 		core::c::shaders::createDefaultCommandBuffers();								//Create command buffers and command pool
-	// 	}
-	// }
-
-
-
-
-
-
-
-
-	//TODO use user defined callbacks
-	// inline void* allocateCallback(void* pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope) {}
-	// inline void* reallocateCallback(void* pUserData, void* pOriginal, size_t size, size_t alignment, VkSystemAllocationScope allocationScope) {}
-	// inline void freeCallback(void* pUserData, void* pMemory) {}
-	// inline void internalAllocCallback(void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope) {}
-	// inline void internalFreeCallback (void* pUserData, size_t size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope) {}
-
-
-
-
 	/**
 	 * @brief Allocates a buffer in the VRAM of a device
 	 * @param pBuffer The buffer object to allocate
@@ -120,25 +71,5 @@ namespace lux::core::buffers{
 		}
 
 		dbg::checkVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0), "Failed to bind buffer");
-	}
-
-
-
-
-
-
-
-
-	//Frees and destroys the compute objects //TODO fix
-	//> Engine internal use
-	void cleanup() {
-		// for(uint32 i = 0; i < /*vram::buffers.count()*/(uint32)lux::__pvt::CellClassIndex::NUM * (uint32)lux::AllocType::NUM; ++i) {
-		// 	for(uint32 j = 0; j < vram::buffers[i].buffers.count(); ++j) {
-		// 		if(vram::buffers[i].buffers.isValid(j)) {
-		// 			vkDestroyBuffer(dvc::compute.LD, vram::buffers[i].buffers[j].buffer, nullptr);
-		// 			vkFreeMemory(dvc::compute.LD, vram::buffers[i].buffers[j].memory, nullptr);
-		// 		}
-		// 	}
-		// }
 	}
 }

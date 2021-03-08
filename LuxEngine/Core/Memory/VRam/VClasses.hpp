@@ -1,4 +1,5 @@
 #pragma once
+#define LUX_H_VCLASSES
 #include "LuxEngine/Types/Integers/Integers.hpp"
 
 

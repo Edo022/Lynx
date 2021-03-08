@@ -39,16 +39,16 @@ namespace lux::dbg{
 	 */
 	static char* cmdOutput(const char* vCmd, const uint32 vMaxLineLen = 8192) {
 		FILE* f = popen(vCmd, "r");				//Open console and run the command
-		if (!f) printf("Traceback error\n");		//Check for file validity
+		if (!f) printf("Traceback error\n");	//Check for file validity
 
 		uint32 outputSize = 0;
-		char* output = (char*)malloc(8192);			//Create outpupt buffer and read the output
+		char* output = (char*)malloc(8192);		//Create outpupt buffer and read the output
 		while(fgets(output + outputSize, vMaxLineLen, f) != nullptr) {
 			outputSize = strlen(output);
 			output = (char*)realloc(output, vMaxLineLen + outputSize);
 		}
 		pclose(f);								//Close file
-		return output;								//Return
+		return output;							//Return
 	}
 
 

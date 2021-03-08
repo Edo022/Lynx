@@ -11,7 +11,6 @@ namespace lux::core::render::cmd{
 	extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
 
 
-	void preInit();
 	void				createGraphicsCommandPool();
 	VkCommandBuffer		beginSingleTimeCommands();
 	void				endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);

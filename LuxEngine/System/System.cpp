@@ -2,10 +2,6 @@
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
-#include <new>
-//TODO remove nothing constructors
-//TODO remove LuxNoInit and VarNoInit macros
-
 
 
 
@@ -15,23 +11,13 @@
 
 namespace lux::sys{
 	String dir::thisDir;	//Path to the current directory //Initialized in init function
-	//TODO move to lux::thr
-	//FIXME idk what happened here.
-	//FIXME threadNum should be initialized
-	// uint32		threadNum = lux::sys::threadNum;						//Number of threads in the main CPU
-	uint32		threadNum;						//Number of threads in the main CPU
 
 
 	luxAutoInit(LUX_H_SYSTEM) {
-		static bool once = true; //TODO REMOVE. print error instead of checking in runtime
-		if(once) {									//Execute only once
-			once = false;
-			char buff[FILENAME_MAX];					//Create char array to store the path
-			__lp_get_cwd(buff, FILENAME_MAX);			//Get path
-			dir::thisDir = buff;						//Save path
-			_wds(dir::fixWindowsPath(dir::thisDir);)	//Replace silly windows backslashes with normal slashes
-			__lp_get_nopt(threadNum);					//Get number of physical threads
-		}
+		char buff[FILENAME_MAX];					//Create char array to store the path
+		__lp_get_cwd(buff, FILENAME_MAX);			//Get path
+		dir::thisDir = buff;						//Save path
+		_wds(dir::fixWindowsPath(dir::thisDir);)	//Replace silly windows backslashes with normal slashes
 	}
 
 

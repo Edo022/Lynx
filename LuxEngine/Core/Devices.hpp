@@ -29,7 +29,6 @@ namespace lux::core::dvc{
 
 
 
-	void preInit();
 	void				getPhysical();
 	void				createLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues);
 	int32		        rate(const _VkPhysicalDevice* pDevice);

@@ -1,5 +1,5 @@
 #pragma once
-#include <vulkan/vulkan.h>
+#define LUX_H_VCELL_T
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Memory/VRam/VClasses.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"

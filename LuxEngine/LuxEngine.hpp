@@ -27,7 +27,7 @@ namespace lux{
         core::FPSCounterThr.join(); //FIXME REMOVE THREAD
         vkDeviceWaitIdle(core::dvc::compute.LD);
 
-        core::render::cleanup(); core::buffers::cleanup();
+        core::render::cleanup();
 		vkDestroyInstance(core::dvc::instance, nullptr);
 		glfwTerminate();
     }

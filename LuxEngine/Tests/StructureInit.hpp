@@ -1,7 +1,10 @@
 #pragma once
+#define LUX_H_STRUCTURE_INIT
 #include "LuxEngine/macros.hpp"
 #include "LuxEngine/Debug/Debug.hpp"
 #include "LuxEngine/Types/Integers/Integers.hpp"
+
+
 
 
 namespace lux{
@@ -10,11 +13,13 @@ namespace lux{
 		_dbg(constexpr uint64 init_val = 0x94FFD489B48994FF;)
 
 		//Private variables used in initialization checks. Those members are inherited and should only be declared once
-		#define genInitCheck _dbg(								\
-			mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
-			mutable char __pvt_dummy = 'L'							\
-		)
+		#ifdef LUX_DEBUG
+			#define genInitCheck 									\
+				mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
+				mutable char __pvt_dummy = 'L'
+		#endif
 	}
+
 
 	//TODO fix error options
 	enum class error : uint32 {
@@ -25,6 +30,9 @@ namespace lux{
 		INDEX_NEGATIVE,			//Checks if the index used to call a container member function is out of range
 		NUM						//Number of lux::error values
 	};
+
+
+
 
 	namespace test{
 		#ifdef LUX_DEBUG

@@ -403,9 +403,9 @@ namespace lux::core::c::shaders{
 		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ, pWindow);	//Create command buffers and command pool
 
-		pWindow.addShaderFence.lock(); //TODO REMOVE OR MAKE LOCAL
-		LuxShader i = pWindow.swapchain.shaders.add(shader); //BUG MAKE shaders WINDOW-LOCAL
-		pWindow.addShaderFence.unlock(); //TODO REMOVE OR MAKE LOCAL
+		pWindow.addShaderFence.lock();
+		LuxShader i = pWindow.swapchain.shaders.add(shader);
+		pWindow.addShaderFence.unlock();
 		return i;
 	}
 
@@ -459,10 +459,6 @@ namespace lux::core::c::shaders{
 		//Clear descriptors sets, descriptor pool and descriptor layout
 		vkFreeDescriptorSets   (dvc::compute.LD, pWindow.swapchain.shaders[vCShader].descriptorPool, 1, &pWindow.swapchain.shaders[vCShader].descriptorSet);
 		vkDestroyDescriptorPool(dvc::compute.LD, pWindow.swapchain.shaders[vCShader].descriptorPool, nullptr);
-
-		// //Clear command buffers and command pool
-		// vkFreeCommandBuffers(dvc::compute.LD, commandPool, 1, shaders[vCShader].commandBuffers.begin());
-		// vkDestroyCommandPool(dvc::compute.LD, commandPool, nullptr);
 
 		//Remove the shader from the shader array
 		for(uint32 i = vCShader; i < pWindow.swapchain.shaders.count() - 1; ++i) pWindow.swapchain.shaders[i] = pWindow.swapchain.shaders[i+1]; //FIXME
