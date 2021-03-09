@@ -4,7 +4,7 @@
 #include "LuxEngine/Types/Vectors/Vec2.hpp"
 #include "LuxEngine/Types/Vectors/Vec3.hpp"
 #include "LuxEngine/Types/Vectors/Vec4.hpp"
-
+#include <cmath>
 
 
 
@@ -88,17 +88,13 @@ using float64v4 = vec4_t<f64>;  // Four-dimentional float64 vector
 
 //TODO use intrinsic functions whenever possible
 //TODO explicit custom type conversion
-template<class t> static inline constexpr auto dist(const vec2_t<t>& a, const vec2_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }										  //Returns the Euclidean distance between 2 vectors
-template<class t> static inline constexpr auto dist(const vec3_t<t>& a, const vec3_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }					  //Returns the Euclidean distance between 2 vectors
-template<class t> static inline constexpr auto dist(const vec4_t<t>& a, const vec4_t<t>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2)); } //Returns the Euclidean distance between 2 vectors
+static inline constexpr auto dist(const vec2_t<auto>& a, const vec2_t<auto>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }										  //Returns the Euclidean distance between 2 vectors
+static inline constexpr auto dist(const vec3_t<auto>& a, const vec3_t<auto>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }					  //Returns the Euclidean distance between 2 vectors
+static inline constexpr auto dist(const vec4_t<auto>& a, const vec4_t<auto>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2)); } //Returns the Euclidean distance between 2 vectors
 
-template<class t> static inline constexpr vec2_t<t>  signvNz(const vec2_t<t>& v) { return { signNz(v.x), signNz(v.y) }; }							//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
-template<class t> static inline constexpr vec3_t<t>  signvNz(const vec3_t<t>& v) { return { signNz(v.x), signNz(v.y), signNz(v.z) }; }				//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
-template<class t> static inline constexpr vec4_t<t>  signvNz(const vec4_t<t>& v) { return { signNz(v.x), signNz(v.y), signNz(v.z), signNz(v.w) }; }	//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
-
-template<class t> static inline constexpr vec2_t<t>  signv(const vec2_t<t>& v) { return { sign(v.x), sign(v.y) }; }									//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive, 0 if it's 0)
-template<class t> static inline constexpr vec3_t<t>  signv(const vec3_t<t>& v) { return { sign(v.x), sign(v.y), sign(v.z) }; }						//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive, 0 if it's 0)
-template<class t> static inline constexpr vec4_t<t>  signv(const vec4_t<t>& v) { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }			//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive, 0 if it's 0)
+static inline constexpr vec2_t<int32> sign(const vec2_t<auto>& v) { return { sign(v.x), sign(v.y) }; }							//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
+static inline constexpr vec3_t<int32> sign(const vec3_t<auto>& v) { return { sign(v.x), sign(v.y), sign(v.z) }; }				//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
+static inline constexpr vec4_t<int32> sign(const vec4_t<auto>& v) { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }	//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
 
 template<class t> static inline constexpr vec2_t<t>  absv(const vec2_t<t>& v) { return { abs(v.x), abs(v.y) }; }									//Returns a vector containing the absolute value of the elements of v
 template<class t> static inline constexpr vec3_t<t>  absv(const vec3_t<t>& v) { return { abs(v.x), abs(v.y), abs(v.z) }; }							//Returns a vector containing the absolute value of the elements of v
@@ -108,6 +104,6 @@ template<class t> static inline constexpr vec2_t<t>  dist2D(const vec2_t<t>& a, 
 template<class t> static inline constexpr vec3_t<t>  dist3D(const vec3_t<t>& a, const vec3_t<t>& b) { return absv(a - b); }							//Returns a vector containing the distances between the values of v
 template<class t> static inline constexpr vec4_t<t>  dist4D(const vec4_t<t>& a, const vec4_t<t>& b) { return absv(a - b); }							//Returns a vector containing the distances between the values of v
 
-template<class ta, class tb> static inline constexpr auto dot(const vec2_t<ta>& a, const vec2_t<tb>& b) { return (a.x * b.x) + (a.y * b.y); }									//Returns the dot product of 2 vectors
-template<class ta, class tb> static inline constexpr auto dot(const vec3_t<ta>& a, const vec3_t<tb>& b) { return (a.x * b.x) + (a.y * b.y) + (a.z * b.z); }						//Returns the dot product of 2 vectors
-template<class ta, class tb> static inline constexpr auto dot(const vec4_t<ta>& a, const vec4_t<tb>& b) { return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w); }		//Returns the dot product of 2 vectors
+static inline constexpr auto dot(const vec2_t<auto>& a, const vec2_t<auto>& b) { return (a.x * b.x) + (a.y * b.y); }									//Returns the dot product of 2 vectors
+static inline constexpr auto dot(const vec3_t<auto>& a, const vec3_t<auto>& b) { return (a.x * b.x) + (a.y * b.y) + (a.z * b.z); }						//Returns the dot product of 2 vectors
+static inline constexpr auto dot(const vec4_t<auto>& a, const vec4_t<auto>& b) { return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w); }		//Returns the dot product of 2 vectors
