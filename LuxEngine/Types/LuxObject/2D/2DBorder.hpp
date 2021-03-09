@@ -6,8 +6,8 @@
 
 namespace lux::obj{
 	struct Border2D : public Base2D{
-		vec2f32* fp = nullptr;
-		vec2f32* sp = nullptr;
+		f32v2* fp = nullptr;
+		f32v2* sp = nullptr;
 
 
 		Border2D() {
@@ -15,7 +15,7 @@ namespace lux::obj{
 			*fp = { .0f, .0f };
 			*sp = { .0f, .0f };
 		}
-		Border2D(const vec2f32& vFp, const vec2f32& vSp) {
+		Border2D(const f32v2& vFp, const f32v2& vSp) {
 			init();
 			*fp = vFp;
 			*sp = vSp;

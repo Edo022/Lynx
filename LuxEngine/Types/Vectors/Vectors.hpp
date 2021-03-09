@@ -1,25 +1,88 @@
 #pragma once
-
-
+#define LUX_H_VECTORS
+#include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Vectors/Vec2.hpp"
 #include "LuxEngine/Types/Vectors/Vec3.hpp"
 #include "LuxEngine/Types/Vectors/Vec4.hpp"
-#include "LuxEngine/Types/Integers/Integers.hpp"
 
 
 
 
-#define __lp_vec_def(type, typen)				\
-typedef vec2_t<type> typen##vec2, vec2##typen;	\
-typedef vec3_t<type> typen##vec3, vec3##typen;	\
-typedef vec4_t<type> typen##vec4, vec4##typen;	\
+using i8v2   = vec2_t<i8>;      //  Two-dimentional int8 vector
+using i8v3   = vec3_t<i8>;      //Three-dimentional int8 vector
+using i8v4   = vec4_t<i8>;      // Four-dimentional int8 vector
+using int8v2 = vec2_t<i8>;      //  Two-dimentional int8 vector
+using int8v3 = vec3_t<i8>;      //Three-dimentional int8 vector
+using int8v4 = vec4_t<i8>;      // Four-dimentional int8 vector
 
-__lp_vec_def(int8, i8)			__lp_vec_def(uint8, u8)		__lp_vec_def(bool, b)			__lp_vec_def(wchar8, w8)	__lp_vec_def(char8, c8)
-__lp_vec_def(int16, i16)		__lp_vec_def(uint16, u16)									__lp_vec_def(wchar16, w16)
-__lp_vec_def(int32, i32)		__lp_vec_def(uint32, u32)	__lp_vec_def(float32, f32)		__lp_vec_def(wchar32, w32)
-__lp_vec_def(int64, i64)		__lp_vec_def(uint64, u64)	__lp_vec_def(float64, f64)
-#undef __lp_vec_def
+using i16v2   = vec2_t<i16>;    //  Two-dimentional int16 vector
+using i16v3   = vec3_t<i16>;    //Three-dimentional int16 vector
+using i16v4   = vec4_t<i16>;    // Four-dimentional int16 vector
+using int16v2 = vec2_t<i16>;    //  Two-dimentional int16 vector
+using int16v3 = vec3_t<i16>;    //Three-dimentional int16 vector
+using int16v4 = vec4_t<i16>;    // Four-dimentional int16 vector
 
+using i32v2   = vec2_t<i32>;    //  Two-dimentional int32 vector
+using i32v3   = vec3_t<i32>;    //Three-dimentional int32 vector
+using i32v4   = vec4_t<i32>;    // Four-dimentional int32 vector
+using int32v2 = vec2_t<i32>;    //  Two-dimentional int32 vector
+using int32v3 = vec3_t<i32>;    //Three-dimentional int32 vector
+using int32v4 = vec4_t<i32>;    // Four-dimentional int32 vector
+
+using i64v2   = vec2_t<i64>;    //  Two-dimentional int64 vector
+using i64v3   = vec3_t<i64>;    //Three-dimentional int64 vector
+using i64v4   = vec4_t<i64>;    // Four-dimentional int64 vector
+using int64v2 = vec2_t<i64>;    //  Two-dimentional int64 vector
+using int64v3 = vec3_t<i64>;    //Three-dimentional int64 vector
+using int64v4 = vec4_t<i64>;    // Four-dimentional int64 vector
+
+
+
+
+using u8v2    = vec2_t<u8>;      //  Two-dimentional uint8 vector
+using u8v3    = vec3_t<u8>;      //Three-dimentional uint8 vector
+using u8v4    = vec4_t<u8>;      // Four-dimentional uint8 vector
+using uint8v2 = vec2_t<u8>;      //  Two-dimentional uint8 vector
+using uint8v3 = vec3_t<u8>;      //Three-dimentional uint8 vector
+using uint8v4 = vec4_t<u8>;      // Four-dimentional uint8 vector
+
+using u16v2    = vec2_t<u16>;    //  Two-dimentional uint16 vector
+using u16v3    = vec3_t<u16>;    //Three-dimentional uint16 vector
+using u16v4    = vec4_t<u16>;    // Four-dimentional uint16 vector
+using uint16v2 = vec2_t<u16>;    //  Two-dimentional uint16 vector
+using uint16v3 = vec3_t<u16>;    //Three-dimentional uint16 vector
+using uint16v4 = vec4_t<u16>;    // Four-dimentional uint16 vector
+
+using u32v2    = vec2_t<u32>;    //  Two-dimentional uint32 vector
+using u32v3    = vec3_t<u32>;    //Three-dimentional uint32 vector
+using u32v4    = vec4_t<u32>;    // Four-dimentional uint32 vector
+using uint32v2 = vec2_t<u32>;    //  Two-dimentional uint32 vector
+using uint32v3 = vec3_t<u32>;    //Three-dimentional uint32 vector
+using uint32v4 = vec4_t<u32>;    // Four-dimentional uint32 vector
+
+using u64v2    = vec2_t<u64>;    //  Two-dimentional uint64 vector
+using u64v3    = vec3_t<u64>;    //Three-dimentional uint64 vector
+using u64v4    = vec4_t<u64>;    // Four-dimentional uint64 vector
+using uint64v2 = vec2_t<u64>;    //  Two-dimentional uint64 vector
+using uint64v3 = vec3_t<u64>;    //Three-dimentional uint64 vector
+using uint64v4 = vec4_t<u64>;    // Four-dimentional uint64 vector
+
+
+
+
+using f32v2     = vec2_t<f32>;  //  Two-dimentional float32 vector
+using f32v3     = vec3_t<f32>;  //Three-dimentional float32 vector
+using f32v4     = vec4_t<f32>;  // Four-dimentional float32 vector
+using float32v2 = vec2_t<f32>;  //  Two-dimentional float32 vector
+using float32v3 = vec3_t<f32>;  //Three-dimentional float32 vector
+using float32v4 = vec4_t<f32>;  // Four-dimentional float32 vector
+
+using f64v2     = vec2_t<f64>;  //  Two-dimentional float64 vector
+using f64v3     = vec3_t<f64>;  //Three-dimentional float64 vector
+using f64v4     = vec4_t<f64>;  // Four-dimentional float64 vector
+using float64v2 = vec2_t<f64>;  //  Two-dimentional float64 vector
+using float64v3 = vec3_t<f64>;  //Three-dimentional float64 vector
+using float64v4 = vec4_t<f64>;  // Four-dimentional float64 vector
 
 
 

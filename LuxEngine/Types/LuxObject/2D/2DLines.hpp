@@ -32,7 +32,7 @@ namespace lux::obj {
 		 * @param vFw Width of the first point
 		 * @param vSw Width of the second point
 		 */
-		Line2D(const vec2f32& pFp, const vec2f32& pSp, const vec4f32& pFc, const vec4f32& pSc, const float32 vFw, const float32 vSw) {
+		Line2D(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			init();
 
 			setFp(pFp);
@@ -48,8 +48,8 @@ namespace lux::obj {
 		// inline int32 getCellSize() const final { return 60; }
 
 		//TODO add loca-global-other coordinate system and convertions
-		inline void setFp(const vec2f32& vFp) { _fp = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
-		inline void setSp(const vec2f32& vSp) { _sp = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setFp(const f32v2& vFp) { _fp = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setSp(const f32v2& vSp) { _sp = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
 
 		void recalculateCoords() final {
@@ -60,13 +60,13 @@ namespace lux::obj {
 
 
 	private:
-		vec2f32* fp;		//First point of the line
-		vec2f32* sp;		//Second point of the line
-		vec2f32 _fp;		//First point of the line
-		vec2f32 _sp;		//Second point of the line
+		f32v2* fp;		//First point of the line
+		f32v2* sp;		//Second point of the line
+		f32v2 _fp;		//First point of the line
+		f32v2 _sp;		//Second point of the line
 	public:
-		vec4f32* fc;		//Color of the first point
-		vec4f32* sc;		//Color of the second point
+		f32v4* fc;		//Color of the first point
+		f32v4* sc;		//Color of the second point
 		float32* fw;		//Width of the first point
 		float32* sw;		//Width of the second point
 	};

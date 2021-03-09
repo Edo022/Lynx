@@ -104,10 +104,10 @@ namespace lux{
 		struct Base3D : public Base {
 			Base3D() { common.objectType = LUX_OBJECT_TYPE_3D__BASE; }
 
-			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
+			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
-			vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
-			vec3f32 scl{ 0, 0, 0 };			//Scale of the object
+			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
+			f32v3 scl{ 0, 0, 0 };			//Scale of the object
 
 			////TODO add absolute pixel position and scale
 			//Base3D* parent{ nullptr };						//Parent of the object
@@ -132,11 +132,11 @@ namespace lux{
 			//TODO
 			Base2DI3D() { common.objectType = LUX_OBJECT_TYPE_2i3D__BASE; }
 
-			vec3f32 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
+			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object for 3D space
 			float32 zIndex{ 0 };			//Index of the object for 2D space
-			vec3f32 rot{ 0, 0, 0 };			//Rotation of the object
-			vec2f32 scl{ 0, 0 };			//Scale of the object
+			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
+			f32v2 scl{ 0, 0 };			//Scale of the object
 		};
 
 
@@ -151,10 +151,10 @@ namespace lux{
 			Base2D() { common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
 
 			//TODO add absolute pixel position and scale
-			vec2f32 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
+			f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 zIndex{ 0 };			//Index of the object. Objects with higher zIndex will be rendered on top of others
 			float32 rot{ 0 };				//Rotation of the object
-			vec2f32 scl{ 0, 0 };			//Scale of the object
+			f32v2 scl{ 0, 0 };			//Scale of the object
 
 			//TODO add absolute pixel position and scale
 			Base2D* parent{ nullptr };						//Parent of the object
@@ -175,10 +175,10 @@ namespace lux{
 				}
 			}
 			limitAlignment limitAlignment_{ limitAlignment::Center }; 	//The alignment of the object within its limits
-			vec2f32 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
-			vec2f32 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
-			_rls(inline) void setMinLim(vec2f32 vMinLim)_rls({ minLim = vMinLim; });
-			_rls(inline) void setMaxLim(vec2f32 vMaxLim)_rls({ maxLim = vMaxLim; });
+			f32v2 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
+			f32v2 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
+			_rls(inline) void setMinLim(f32v2 vMinLim)_rls({ minLim = vMinLim; });
+			_rls(inline) void setMaxLim(f32v2 vMaxLim)_rls({ maxLim = vMaxLim; });
 			_dbg(Border2D* debugBorder = nullptr;)					//Debug. Used to draw the object limits
 		};
 
