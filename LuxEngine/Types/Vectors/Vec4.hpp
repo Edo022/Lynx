@@ -1,10 +1,11 @@
 #pragma once
+#define LUX_H_VEC4
 #include "LuxEngine/macros.hpp"
+#include "LuxEngine/Types/Vectors/Vec_b.hpp"
 
 
 
-
-template<class t> struct vec4_t {
+template<class t> struct vec4_t : vec_b {
 	t x = 0;
 	t y = 0;
 	t z = 0;

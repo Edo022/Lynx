@@ -1,6 +1,7 @@
 #pragma once
+#define LUX_H_VEC3
 #include "LuxEngine/macros.hpp"
-
+#include "LuxEngine/Types/Vectors/Vec_b.hpp"
 
 
 
@@ -10,7 +11,7 @@
 //   dist, dist3D, absv, signv, length functions with vectors of the same type
 //== operator does not perform any type cast
 
-template<class t> struct vec3_t {
+template<class t> struct vec3_t : vec_b {
 	t x = 0;
 	t y = 0;
 	t z = 0;
