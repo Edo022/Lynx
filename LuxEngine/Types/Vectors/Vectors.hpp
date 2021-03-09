@@ -4,9 +4,8 @@
 #include "LuxEngine/Types/Vectors/Vec2.hpp"
 #include "LuxEngine/Types/Vectors/Vec3.hpp"
 #include "LuxEngine/Types/Vectors/Vec4.hpp"
+#include <avx2intrin.h>
 #include <cmath>
-
-
 
 
 using i8v2   = vec2_t<i8>;      //  Two-dimentional int8 vector
