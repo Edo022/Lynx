@@ -96,13 +96,13 @@ static inline constexpr vec2_t<int32> sign(const vec2_t<auto>& v) { return { sig
 static inline constexpr vec3_t<int32> sign(const vec3_t<auto>& v) { return { sign(v.x), sign(v.y), sign(v.z) }; }				//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
 static inline constexpr vec4_t<int32> sign(const vec4_t<auto>& v) { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }	//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
 
-template<class t> static inline constexpr vec2_t<t>  absv(const vec2_t<t>& v) { return { abs(v.x), abs(v.y) }; }									//Returns a vector containing the absolute value of the elements of v
-template<class t> static inline constexpr vec3_t<t>  absv(const vec3_t<t>& v) { return { abs(v.x), abs(v.y), abs(v.z) }; }							//Returns a vector containing the absolute value of the elements of v
-template<class t> static inline constexpr vec4_t<t>  absv(const vec4_t<t>& v) { return { abs(v.x), abs(v.y), abs(v.z), abs(v.w) }; }				//Returns a vector containing the absolute value of the elements of v
+static inline constexpr vec2_t<auto> abs(const vec2_t<auto>& v) { return { abs(v.x), abs(v.y) }; }									//Returns a vector containing the absolute value of the elements of v
+static inline constexpr vec3_t<auto> abs(const vec3_t<auto>& v) { return { abs(v.x), abs(v.y), abs(v.z) }; }							//Returns a vector containing the absolute value of the elements of v
+static inline constexpr vec4_t<auto> abs(const vec4_t<auto>& v) { return { abs(v.x), abs(v.y), abs(v.z), abs(v.w) }; }				//Returns a vector containing the absolute value of the elements of v
 
-template<class t> static inline constexpr vec2_t<t>  dist2D(const vec2_t<t>& a, const vec2_t<t>& b) { return absv(a - b); }							//Returns a vector containing the distances between the values of v
-template<class t> static inline constexpr vec3_t<t>  dist3D(const vec3_t<t>& a, const vec3_t<t>& b) { return absv(a - b); }							//Returns a vector containing the distances between the values of v
-template<class t> static inline constexpr vec4_t<t>  dist4D(const vec4_t<t>& a, const vec4_t<t>& b) { return absv(a - b); }							//Returns a vector containing the distances between the values of v
+static inline constexpr vec2_t<auto> dist2D(const vec2_t<auto>& a, const vec2_t<auto>& b) { return abs(a - b); }							//Returns a vector containing the distances between the values of v
+static inline constexpr vec3_t<auto> dist3D(const vec3_t<auto>& a, const vec3_t<auto>& b) { return abs(a - b); }							//Returns a vector containing the distances between the values of v
+static inline constexpr vec4_t<auto> dist4D(const vec4_t<auto>& a, const vec4_t<auto>& b) { return abs(a - b); }							//Returns a vector containing the distances between the values of v
 
 static inline constexpr auto dot(const vec2_t<auto>& a, const vec2_t<auto>& b) { return (a.x * b.x) + (a.y * b.y); }									//Returns the dot product of 2 vectors
 static inline constexpr auto dot(const vec3_t<auto>& a, const vec3_t<auto>& b) { return (a.x * b.x) + (a.y * b.y) + (a.z * b.z); }						//Returns the dot product of 2 vectors
