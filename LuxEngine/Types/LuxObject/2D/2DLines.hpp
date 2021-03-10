@@ -17,7 +17,10 @@ namespace lux::obj {
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
 	struct Line2D : public Base2D {
-		void init();
+		/**
+		 * @brief Initializes the GPU data that allows the window to render the object
+		 */
+		void init(Window& pWindow) override;
 
 
 
@@ -33,7 +36,18 @@ namespace lux::obj {
 		 * @param vSw Width of the second point
 		 */
 		Line2D(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
-			init();
+			// init();
+			cellSize = 60;
+			luxInitObject(2, LINE);								// count   | range         | chunk
+			fp = (f32v2*)(render.data + 0);					//    8    |    0  - 7     |    0 +
+			sp = (f32v2*)(render.data + 8);					//    8    |    8  - 15    |    0
+			fc = (f32v4*)(render.data + 16);					//    16   |    16 - 31    |    1 +
+			sc = (f32v4*)(render.data + 32);					//    16   |    32 - 47    |    2 +
+			fw = (float32*)(render.data + 48);					//    4    |    48 - 51    |    3 +
+			sw = (float32*)(render.data + 52);					//    4    |    52 - 55    |    3
+			*(uint32*)(render.data + 56) = (uint32)common.ID;	//    4    |    56 - 59    |    3
+			//4x trailing padding								//    4    |    60 - 63
+
 
 			setFp(pFp);
 			setSp(pSp);

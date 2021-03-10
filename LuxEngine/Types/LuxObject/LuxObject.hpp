@@ -76,6 +76,7 @@ namespace lux{
 				vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
 				vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
+				Window* parentWindow = nullptr;
 			} render;
 			// inline virtual int32 getCellSize() const = 0;		//Size of the object data									| none						| object type
 			int32 cellSize = 0;
@@ -83,6 +84,7 @@ namespace lux{
 			void allocate();									//Allocates a memory cell for the object data				| object type				| -
 			void updateBase();
 			virtual void recalculateCoords() {}
+			virtual void init(Window& pWindow){}
 		};
 
 
@@ -167,13 +169,20 @@ namespace lux{
 			}
 			void update() final{
 				updateBase();
-				for(uint32 i = 0; i < children.count(); i++) if(children.isValid(i)) {
+				for(u32 i = 0; i < children.count(); i++) if(children.isValid(i)) {
 					setChildLimits(i);
 					//TODO add  recalculateCoords() in all objects
 					children[i]->recalculateCoords();
 					children[i]->update();
 				}
 			}
+
+			virtual void init(Window& pWindow) override {
+				for(u32 i = 0; i < children.count(); ++i){
+					if(children.isValid(i)) children[i]->init(pWindow);
+				}
+			}
+
 			limitAlignment limitAlignment_{ limitAlignment::Center }; 	//The alignment of the object within its limits
 			f32v2 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
 			f32v2 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
@@ -211,7 +220,7 @@ namespace lux{
 
 
 
-		struct RenderSpace2D;
-		void addRenderSpace(RenderSpace2D* pRenderSpace);
+		// struct RenderSpace2D;
+		// void addRenderSpace(RenderSpace2D* pRenderSpace);
 	}
 }

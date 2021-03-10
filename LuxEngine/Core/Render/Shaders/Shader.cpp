@@ -21,7 +21,7 @@
 
 namespace lux::core::c::shaders{
 	alignCache String						shaderPath; //FIXME MAKE WINDOW-LOCAL
-	alignCache RaArray<lux::obj::RenderSpace2D*, uint32> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
+	// alignCache RaArray<lux::obj::RenderSpace2D*, uint32> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
 	alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
 
 

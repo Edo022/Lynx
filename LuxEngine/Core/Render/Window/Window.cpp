@@ -3,6 +3,7 @@
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
+#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 
 
 
@@ -223,5 +224,19 @@ namespace lux{
 			}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+		void Window::addRenderSpace(obj::RenderSpace2D* pRenderSpace) {
+			CRenderSpaces.add(pRenderSpace);
+			pRenderSpace->init(*this);
+		}
 
 }

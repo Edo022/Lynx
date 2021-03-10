@@ -13,7 +13,7 @@
 
 namespace lux::core::render{
 	extern RtArray<obj::Base*>	objUpdates2D;
-	extern FenceDE				objUpdates2D_f;
+	extern std::mutex				objUpdates2D_f;
 
 
 

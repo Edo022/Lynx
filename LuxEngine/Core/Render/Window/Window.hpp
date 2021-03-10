@@ -4,11 +4,15 @@
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
+// #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 // #include "LuxEngine/Types/Dummy.hpp"
 
 typedef uint32 LuxShader;
 
 
+namespace lux::obj{
+	struct RenderSpace2D;
+}
 namespace lux{
 	struct Window{
 		GLFWwindow*	window = nullptr;		//Main engine window
@@ -19,6 +23,10 @@ namespace lux{
 		vram::ptr<int32, VRam, Storage> fOut_G  = nullptr;	//Color output of the window
 		vram::ptr<int32, VRam, Storage> iOut_g  = nullptr;	//Packed color output of the window
 		vram::ptr<int32, VRam, Storage> zBuff_g = nullptr;	//TODO remove. use render space assembler
+
+		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
+		void addRenderSpace(obj::RenderSpace2D* pRenderSpace);
+
 
 		VkSurfaceKHR surface;
 		core::wnd::Swapchain swapchain;

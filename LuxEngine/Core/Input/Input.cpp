@@ -18,26 +18,27 @@ namespace lux::input{
 
 
 
-	#define gtollx(n) ((n) / lux::window.swapchain.swapchainExtent.width) //FIXME DONT DEPEND ON A WINDOW
-	#define gtolly(n) ((n) / lux::window.swapchain.swapchainExtent.height)
+	#define wnd_ ((Window*)glfwGetWindowUserPointer(window))
+	#define gtollx(n) ((n) / wnd_->swapchain.swapchainExtent.width) //FIXME DONT DEPEND ON A WINDOW
+	#define gtolly(n) ((n) / wnd_->swapchain.swapchainExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
-		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
-		rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update();
+		rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
+		rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
-		*rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
-		*rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
-		 rcast<lux::obj::Line2D*>(core::c::shaders::CRenderSpaces[0]->children[0])->update();
+		*rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
+		*rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
+		 rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
-		if(core::c::shaders::CRenderSpaces.count() > 0) {
-			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->maxLim = f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
-			rcast<lux::obj::RenderSpace2D*>(core::c::shaders::CRenderSpaces[0])->update();
+		if(wnd_->CRenderSpaces.count() > 0) {
+			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->maxLim = f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) };
+			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->update();
 		}
 	}
 

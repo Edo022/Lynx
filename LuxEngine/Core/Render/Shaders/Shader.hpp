@@ -16,7 +16,7 @@ namespace lux::obj{
 }
 namespace lux::core::c::shaders{
 	extern String								shaderPath;			//Path to the shaders folder
-	extern RaArray<obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
+	// extern RaArray<obj::RenderSpace2D*, uint32>	CRenderSpaces;		//List of renderSpaces
 	extern RtArray<LuxShaderLayout_t>			CShadersLayouts;	//Layout of the render shaders
 
 

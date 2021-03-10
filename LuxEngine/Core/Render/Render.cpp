@@ -23,7 +23,7 @@
 
 namespace lux::core::render{
 	alignCache RtArray<obj::Base*>  objUpdates2D;
-	alignCache FenceDE              objUpdates2D_f;
+	alignCache std::mutex              objUpdates2D_f;
 
 
 
@@ -181,7 +181,7 @@ namespace lux::core::render{
 		//TODO parallelize work from a secondary render thread
 		//Fix objects update requests
 		if(objUpdates2D.count() > 0) {
-			objUpdates2D_f.startFirst();
+			objUpdates2D_f.lock();
 			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			for(uint32 i = 0; i < objUpdates2D.count(); i++) {
 				objUpdates2D[i]->render.updated = true;
@@ -195,7 +195,7 @@ namespace lux::core::render{
 			}
 			core::render::cmd::endSingleTimeCommands(cb);
 			objUpdates2D.clear();
-			objUpdates2D_f.endFirst();
+			objUpdates2D_f.unlock();
 		}
 	}
 

@@ -12,10 +12,10 @@ namespace lux::obj{
 	uint64 Base::Common::lastID = 0;	//#LLID LOS000 initialize the last object ID
 
 
-	//Adds a render space with no parent to the screen
-	void addRenderSpace(RenderSpace2D* pRenderSpace) {
-		core::c::shaders::CRenderSpaces.add(pRenderSpace);
-	}
+	//Adds a render space with no parent to the screen //FIXME MOVED TO WINDOW.G
+	// void addRenderSpace(RenderSpace2D* pRenderSpace) {
+	// 	core::c::shaders::CRenderSpaces.add(pRenderSpace);
+	// }
 
 
 	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
@@ -32,12 +32,12 @@ namespace lux::obj{
 	//Only render threads can directly access object memory and command buffers
 	void Base::updateBase() {
 		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
-		core::render::objUpdates2D_f.startSecond();
+		core::render::objUpdates2D_f.lock();
 		if(render.updated) {
 			render.updated = false;
 			core::render::objUpdates2D.add(this);
 		}
-		core::render::objUpdates2D_f.endSecond();
+		core::render::objUpdates2D_f.unlock();
 	}
 
 
@@ -45,7 +45,6 @@ namespace lux::obj{
 
 	//In debug mode, setMinLim and setMaxLim functions of non debug objects and update the debug border
 	#ifdef LUX_DEBUG
-	//TODO set debug border only in debug mode
 	void Base2D::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
 		if(!debug) {
