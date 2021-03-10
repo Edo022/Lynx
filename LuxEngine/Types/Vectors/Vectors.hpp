@@ -11,81 +11,51 @@
 
 
 
-using i8v2   = vec2_t<i8>;      //  Two-dimentional int8 vector
-using i8v3   = vec3_t<i8>;      //Three-dimentional int8 vector
-using i8v4   = vec4_t<i8>;      // Four-dimentional int8 vector
-using int8v2 = vec2_t<i8>;      //  Two-dimentional int8 vector
-using int8v3 = vec3_t<i8>;      //Three-dimentional int8 vector
-using int8v4 = vec4_t<i8>;      // Four-dimentional int8 vector
+typedef vec2_t<i8> i8v2, int8v2;        //  Two-dimentional int8 vector
+typedef vec3_t<i8> i8v3, int8v3;        //Three-dimentional int8 vector
+typedef vec4_t<i8> i8v4, int8v4;        // Four-dimentional int8 vector
 
-using i16v2   = vec2_t<i16>;    //  Two-dimentional int16 vector
-using i16v3   = vec3_t<i16>;    //Three-dimentional int16 vector
-using i16v4   = vec4_t<i16>;    // Four-dimentional int16 vector
-using int16v2 = vec2_t<i16>;    //  Two-dimentional int16 vector
-using int16v3 = vec3_t<i16>;    //Three-dimentional int16 vector
-using int16v4 = vec4_t<i16>;    // Four-dimentional int16 vector
+typedef vec2_t<i16> i16v2, int16v2;     //  Two-dimentional int16 vector
+typedef vec3_t<i16> i16v3, int16v3;     //Three-dimentional int16 vector
+typedef vec4_t<i16> i16v4, int16v4;     // Four-dimentional int16 vector
 
-using i32v2   = vec2_t<i32>;    //  Two-dimentional int32 vector
-using i32v3   = vec3_t<i32>;    //Three-dimentional int32 vector
-using i32v4   = vec4_t<i32>;    // Four-dimentional int32 vector
-using int32v2 = vec2_t<i32>;    //  Two-dimentional int32 vector
-using int32v3 = vec3_t<i32>;    //Three-dimentional int32 vector
-using int32v4 = vec4_t<i32>;    // Four-dimentional int32 vector
+typedef vec2_t<i32> i32v2, int32v2;     //  Two-dimentional int32 vector
+typedef vec3_t<i32> i32v3, int32v3;     //Three-dimentional int32 vector
+typedef vec4_t<i32> i32v4, int32v4;     // Four-dimentional int32 vector
 
-using i64v2   = vec2_t<i64>;    //  Two-dimentional int64 vector
-using i64v3   = vec3_t<i64>;    //Three-dimentional int64 vector
-using i64v4   = vec4_t<i64>;    // Four-dimentional int64 vector
-using int64v2 = vec2_t<i64>;    //  Two-dimentional int64 vector
-using int64v3 = vec3_t<i64>;    //Three-dimentional int64 vector
-using int64v4 = vec4_t<i64>;    // Four-dimentional int64 vector
+typedef vec2_t<i64> i64v2, int64v2;     //  Two-dimentional int64 vector
+typedef vec3_t<i64> i64v3, int64v3;     //Three-dimentional int64 vector
+typedef vec4_t<i64> i64v4, int64v4;     // Four-dimentional int64 vector
 
 
 
 
-using u8v2    = vec2_t<u8>;      //  Two-dimentional uint8 vector
-using u8v3    = vec3_t<u8>;      //Three-dimentional uint8 vector
-using u8v4    = vec4_t<u8>;      // Four-dimentional uint8 vector
-using uint8v2 = vec2_t<u8>;      //  Two-dimentional uint8 vector
-using uint8v3 = vec3_t<u8>;      //Three-dimentional uint8 vector
-using uint8v4 = vec4_t<u8>;      // Four-dimentional uint8 vector
+typedef vec2_t<u8> u8v2, uint8v2;       //  Two-dimentional uint8 vector
+typedef vec3_t<u8> u8v3, uint8v3;       //Three-dimentional uint8 vector
+typedef vec4_t<u8> u8v4, uint8v4;       // Four-dimentional uint8 vector
 
-using u16v2    = vec2_t<u16>;    //  Two-dimentional uint16 vector
-using u16v3    = vec3_t<u16>;    //Three-dimentional uint16 vector
-using u16v4    = vec4_t<u16>;    // Four-dimentional uint16 vector
-using uint16v2 = vec2_t<u16>;    //  Two-dimentional uint16 vector
-using uint16v3 = vec3_t<u16>;    //Three-dimentional uint16 vector
-using uint16v4 = vec4_t<u16>;    // Four-dimentional uint16 vector
+typedef vec2_t<u16> u16v2, uint16v2;    //  Two-dimentional uint16 vector
+typedef vec3_t<u16> u16v3, uint16v3;    //Three-dimentional uint16 vector
+typedef vec4_t<u16> u16v4, uint16v4;    // Four-dimentional uint16 vector
 
-using u32v2    = vec2_t<u32>;    //  Two-dimentional uint32 vector
-using u32v3    = vec3_t<u32>;    //Three-dimentional uint32 vector
-using u32v4    = vec4_t<u32>;    // Four-dimentional uint32 vector
-using uint32v2 = vec2_t<u32>;    //  Two-dimentional uint32 vector
-using uint32v3 = vec3_t<u32>;    //Three-dimentional uint32 vector
-using uint32v4 = vec4_t<u32>;    // Four-dimentional uint32 vector
+typedef vec2_t<u32> u32v2, uint32v2;    //  Two-dimentional uint32 vector
+typedef vec3_t<u32> u32v3, uint32v3;    //Three-dimentional uint32 vector
+typedef vec4_t<u32> u32v4, uint32v4;    // Four-dimentional uint32 vector
 
-using u64v2    = vec2_t<u64>;    //  Two-dimentional uint64 vector
-using u64v3    = vec3_t<u64>;    //Three-dimentional uint64 vector
-using u64v4    = vec4_t<u64>;    // Four-dimentional uint64 vector
-using uint64v2 = vec2_t<u64>;    //  Two-dimentional uint64 vector
-using uint64v3 = vec3_t<u64>;    //Three-dimentional uint64 vector
-using uint64v4 = vec4_t<u64>;    // Four-dimentional uint64 vector
+typedef vec2_t<u64> u64v2, uint64v2;    //  Two-dimentional uint64 vector
+typedef vec3_t<u64> u64v3, uint64v3;    //Three-dimentional uint64 vector
+typedef vec4_t<u64> u64v4, uint64v4;    // Four-dimentional uint64 vector
 
 
 
 
-using f32v2     = vec2_t<f32>;  //  Two-dimentional float32 vector
-using f32v3     = vec3_t<f32>;  //Three-dimentional float32 vector
-using f32v4     = vec4_t<f32>;  // Four-dimentional float32 vector
-using float32v2 = vec2_t<f32>;  //  Two-dimentional float32 vector
-using float32v3 = vec3_t<f32>;  //Three-dimentional float32 vector
-using float32v4 = vec4_t<f32>;  // Four-dimentional float32 vector
+typedef vec2_t<f32> f32v2, float32v2;   //  Two-dimentional float32 vector
+typedef vec3_t<f32> f32v3, float32v3;   //Three-dimentional float32 vector
+typedef vec4_t<f32> f32v4, float32v4;   // Four-dimentional float32 vector
 
-using f64v2     = vec2_t<f64>;  //  Two-dimentional float64 vector
-using f64v3     = vec3_t<f64>;  //Three-dimentional float64 vector
-using f64v4     = vec4_t<f64>;  // Four-dimentional float64 vector
-using float64v2 = vec2_t<f64>;  //  Two-dimentional float64 vector
-using float64v3 = vec3_t<f64>;  //Three-dimentional float64 vector
-using float64v4 = vec4_t<f64>;  // Four-dimentional float64 vector
+typedef vec2_t<f64> f64v2, float64v2;   //  Two-dimentional float64 vector
+typedef vec3_t<f64> f64v3, float64v3;   //Three-dimentional float64 vector
+typedef vec4_t<f64> f64v4, float64v4;   // Four-dimentional float64 vector
 
 
 
@@ -98,23 +68,25 @@ static inline constexpr auto sub(const vec2_t<auto>& v) noexcept { return v.x - 
 static inline constexpr auto sub(const vec3_t<auto>& v) noexcept { return v.x - v.y - v.z; }         //Returns the difference between the elements of the vector (x - y - z)
 static inline constexpr auto sub(const vec4_t<auto>& v) noexcept { return v.x - v.y - v.z - v.w; }   //Returns the difference between the elements of the vector (x - y - z - w)
 
-static inline constexpr vec2_t<auto> abs(const vec2_t<auto>& v) noexcept { return { abs(v.x), abs(v.y) }; }						    //Returns a vector containing the absolute values of the elements of v
-static inline constexpr vec3_t<auto> abs(const vec3_t<auto>& v) noexcept { return { abs(v.x), abs(v.y), abs(v.z) }; }			    //Returns a vector containing the absolute values of the elements of v
-static inline constexpr vec4_t<auto> abs(const vec4_t<auto>& v) noexcept { return { abs(v.x), abs(v.y), abs(v.z), abs(v.w) }; }	    //Returns a vector containing the absolute values of the elements of v
 
-static inline constexpr vec2_t<auto> sqrt(const vec2_t<auto>& v) noexcept { return { sqrt(v.x), sqrt(v.y) }; }                       //Returns a vector containing the square roots of the elements of v
-static inline constexpr vec3_t<auto> sqrt(const vec3_t<auto>& v) noexcept { return { sqrt(v.x), sqrt(v.y), sqrt(v.z) }; }            //Returns a vector containing the square roots of the elements of v
-static inline constexpr vec4_t<auto> sqrt(const vec4_t<auto>& v) noexcept { return { sqrt(v.x), sqrt(v.y), sqrt(v.z), sqrt(v.w) }; } //Returns a vector containing the square roots of the elements of v
 
-static inline constexpr i32v2 sign(const vec2_t<auto>& v) noexcept { return { sign(v.x), sign(v.y) }; }							//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
-static inline constexpr i32v3 sign(const vec3_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z) }; }				//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
-static inline constexpr i32v4 sign(const vec4_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }	//Returns a vector containing the sign of the elements of v (-1 if the element is negative, +1 if it's positive or 0)
 
-// static inline constexpr auto dist(const vec2_t<auto>& a, const vec2_t<auto>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)); }										  //Returns the Euclidean distance between 2 vectors
-// static inline constexpr auto dist(const vec3_t<auto>& a, const vec3_t<auto>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2)); }					  //Returns the Euclidean distance between 2 vectors
-// static inline constexpr auto dist(const vec4_t<auto>& a, const vec4_t<auto>& b) { return sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2) + pow(b.w - a.w, 2)); } //Returns the Euclidean distance between 2 vectors
+#define vec_fun(fun)                                                                                                                \
+    static inline constexpr vec2_t<auto> fun(const vec2_t<auto>& v) noexcept { return { fun(v.x), fun(v.y) }; }                     \
+    static inline constexpr vec3_t<auto> fun(const vec3_t<auto>& v) noexcept { return { fun(v.x), fun(v.y), fun(v.z) }; }           \
+    static inline constexpr vec4_t<auto> fun(const vec4_t<auto>& v) noexcept { return { fun(v.x), fun(v.y), fun(v.z), fun(v.w) }; }
 
-template<class ta, class tb> static inline constexpr auto dist  (const ta& a, const tb& b) noexcept requires(std::is_base_of_v<vec_b, ta> && std::is_base_of_v<vec_b, tb>) { return sqrt(sum(pow(a - b, 2))); }  // Returns the Euclidean distance between a and b
-template<class ta, class tb> static inline constexpr auto adist  (const ta& a, const tb& b) noexcept requires(std::is_base_of_v<vec_b, ta> && std::is_base_of_v<vec_b, tb>) { return abs(a - b); }	             // Returns a vector containing the distances between the values of a and b
-template<class ta, class tb> static inline constexpr auto dot   (const ta& a, const tb& b) noexcept requires(std::is_base_of_v<vec_b, ta> && std::is_base_of_v<vec_b, tb>) { return sum(a * b); }                //Returns the dot product between a and b
-template<class ta, class tb> static inline constexpr auto sdist (const ta& a, const tb& b) noexcept requires(std::is_base_of_v<vec_b, ta> && std::is_base_of_v<vec_b, tb>) { return sum(pow(a - b, 2)); }        // Returns the square of the Euclidean distance between a and b
+    vec_fun(abs)    vec_fun(sqrt)   vec_fun(sign)
+    vec_fun(sin)    vec_fun(cos)    vec_fun(tan)    vec_fun(sec)    vec_fun(cosec)
+    vec_fun(asin)   vec_fun(acos)   vec_fun(atan)   vec_fun(asec)   vec_fun(acosec)
+    vec_fun(sinh)   vec_fun(cosh)   vec_fun(tanh)   vec_fun(sech)   vec_fun(cosech)
+    vec_fun(asinh)  vec_fun(acosh)  vec_fun(atanh)  vec_fun(asech)  vec_fun(acosech)
+#undef vec_fun
+
+
+
+
+static inline constexpr auto dist (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sqrt(sum(pow(a - b, 2))); }    //Returns the Euclidean distance between a and b
+static inline constexpr auto sdist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return      sum(pow(a - b, 2));  }    //Returns the squared Euclidean distance between a and b
+static inline constexpr auto adist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return abs(a - b); }	                //Returns a vector containing the distances between the values of a and b
+static inline constexpr auto dot  (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sum(a * b); }                  //Returns the dot product between a and b

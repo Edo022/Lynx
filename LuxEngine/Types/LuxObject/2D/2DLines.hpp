@@ -53,8 +53,8 @@ namespace lux::obj {
 
 
 		void recalculateCoords() final {
-			*fp = _fp * dist2D(minLim, maxLim) + minLim;
-			*sp = _sp * dist2D(minLim, maxLim) + minLim;
+			*fp = _fp * adist(minLim, maxLim) + minLim;
+			*sp = _sp * adist(minLim, maxLim) + minLim;
 		}
 
 
@@ -67,8 +67,8 @@ namespace lux::obj {
 	public:
 		f32v4* fc;		//Color of the first point
 		f32v4* sc;		//Color of the second point
-		float32* fw;		//Width of the first point
-		float32* sw;		//Width of the second point
+		float32* fw;	//Width of the first point
+		float32* sw;	//Width of the second point
 	};
 }
 
