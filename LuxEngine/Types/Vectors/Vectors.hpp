@@ -81,6 +81,11 @@ static inline constexpr auto sub(const vec4_t<auto>& v) noexcept { return v.x - 
     vec_fun(asin)   vec_fun(acos)   vec_fun(atan)   vec_fun(asec)   vec_fun(acosec)
     vec_fun(sinh)   vec_fun(cosh)   vec_fun(tanh)   vec_fun(sech)   vec_fun(cosech)
     vec_fun(asinh)  vec_fun(acosh)  vec_fun(atanh)  vec_fun(asech)  vec_fun(acosech)
+
+    alwaysInline auto csc  (const auto& v) noexcept { return   cosec(v); };     //cosec   alias
+    alwaysInline auto acsc (const auto& v) noexcept { return  acosec(v); };     //acosec  alias
+    alwaysInline auto csch (const auto& v) noexcept { return  cosech(v); };     //cosech  alias
+    alwaysInline auto acsch(const auto& v) noexcept { return acosech(v); };     //acosech alias
 #undef vec_fun
 
 
