@@ -53,7 +53,7 @@ namespace lux::input{
 
 	//This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 	//TODO
-	//BROKEN FUNCTION
+	//FIXME BROKEN FUNCTION
 	void keyCallback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
 		//FULL SCREEN
 		static int32 fsstate = 0;

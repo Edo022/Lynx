@@ -24,7 +24,8 @@
 namespace lux::core::render{
 	alignCache RtArray<obj::Base*>  objUpdates2D;
 	alignCache std::mutex              objUpdates2D_f;
-
+	alignCache std::mutex graphicsQueueSubmit_m;
+	alignCache std::mutex presentQueueSubmit_m;
 
 
 
@@ -53,18 +54,18 @@ namespace lux::core::render{
 
 
 	//TODO multithreaded submit and command creation
-	void drawFrame(Window& window) {
-		if(window.swapchain.shaders.count() <= 1) return;
-		vkWaitForFences(dvc::graphics.LD, 1, &window.swapchain.f_imageRendered[window.swapchain.renderCurrentFrame], false, INT_MAX);
+	void drawFrame(Window& pWindow) {
+		if(pWindow.swapchain.shaders.count() <= 1) return;
+		vkWaitForFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame], false, INT_MAX);
 
 
 		//Redraw frame if necessary
 		redraw:
-		if(window.swapchain.renderFramebufferResized) {
-			window.windowResizeFence.lock();
-			window.swapchain.renderFramebufferResized = false;
-			window.windowResizeFence.unlock();
-			window.swapchain.recreate(true);
+		if(pWindow.swapchain.renderFramebufferResized) {
+			// pWindow.windowResizeFence.lock();	//FIXME probably useless
+			pWindow.swapchain.renderFramebufferResized = false;
+			// pWindow.windowResizeFence.unlock();	//FIXME probably useless
+			pWindow.swapchain.recreate(true);
 			goto redraw;
 		}
 
@@ -72,10 +73,10 @@ namespace lux::core::render{
 		//Acquire swapchain image
 		uint32 imageIndex;
 		{
-			switch(vkAcquireNextImageKHR(dvc::graphics.LD, window.swapchain.swapchain, INT_MAX, window.swapchain.s_imageAquired[window.swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
+			switch(vkAcquireNextImageKHR(dvc::graphics.LD, pWindow.swapchain.swapchain, INT_MAX, pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-				case VK_ERROR_OUT_OF_DATE_KHR: window.swapchain.recreate(false);  return;
-				default: Failure printf("Failed to aquire swapchain image");
+				case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate(false);  return;
+				default: Failure printf("Failed to acquire swapchain image");
 			}
 		}
 
@@ -85,95 +86,107 @@ namespace lux::core::render{
 		//TODO don't recreate the command buffer array every time
 		//TODO use a staging buffer
 		//Update render result submitting the command buffers to the compute queues
-		static VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
+		static const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 		{
-			window.addShaderFence.lock();
-			window.swapchain.shadersCBs.resize(window.swapchain.shaders.count());
-			for(uint32 i = 0; i < window.swapchain.shaders.count(); ++i) {
-				window.swapchain.shadersCBs[i] = window.swapchain.shaders[i].commandBuffers[0];
+			pWindow.addShaderFence.lock();
+			pWindow.swapchain.shadersCBs.resize(pWindow.swapchain.shaders.count());
+			for(uint32 i = 0; i < pWindow.swapchain.shaders.count(); ++i) {
+				pWindow.swapchain.shadersCBs[i] = pWindow.swapchain.shaders[i].commandBuffers[0];
 			}
-			window.addShaderFence.unlock();
+			pWindow.addShaderFence.unlock();
 
 			VkSubmitInfo submitInfo{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.pNext                = nullptr,
 
 				.waitSemaphoreCount   = 1,
-				.pWaitSemaphores      = &window.swapchain.s_imageAquired[window.swapchain.renderCurrentFrame],
+				.pWaitSemaphores      = &pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
 
-				.commandBufferCount = window.swapchain.shadersCBs.count(),
-				.pCommandBuffers    = window.swapchain.shadersCBs.begin(),
+				.commandBufferCount = pWindow.swapchain.shadersCBs.count(),
+				.pCommandBuffers    = pWindow.swapchain.shadersCBs.begin(),
 
 				.signalSemaphoreCount = 1,
-				.pSignalSemaphores = &window.swapchain.s_objectsRendered[window.swapchain.renderCurrentFrame],
+				.pSignalSemaphores = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
 			};
+			graphicsQueueSubmit_m.lock();
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
+			graphicsQueueSubmit_m.unlock();
 		}
 
 
 
 		{ //Convert and clear shader
-			static VkSubmitInfo submitInfo{
+			VkSubmitInfo submitInfo{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
+				.pWaitSemaphores      = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
 				.commandBufferCount   = 1,
-				.signalSemaphoreCount = 1
+				.pCommandBuffers      = &pWindow.swapchain.shaders[0].commandBuffers[0],
+				.signalSemaphoreCount = 1,
+				.pSignalSemaphores    = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame]
 			};
-			submitInfo.pCommandBuffers = &window.swapchain.shaders[0].commandBuffers[0];
-			submitInfo.pWaitSemaphores = &window.swapchain.s_objectsRendered[window.swapchain.renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &window.swapchain.s_clear[window.swapchain.renderCurrentFrame];
+
+
+
+			graphicsQueueSubmit_m.lock();
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
+			graphicsQueueSubmit_m.unlock();
 		}
 
 
 
 
 		{ //Copy shader
-			static VkSubmitInfo submitInfo{
+			VkSubmitInfo submitInfo{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
+				.pWaitSemaphores      = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
 				.commandBufferCount   = 1,
-				.signalSemaphoreCount = 1
+				.pCommandBuffers      = &pWindow.copyCommandBuffers[imageIndex],
+				.signalSemaphoreCount = 1,
+				.pSignalSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame]
 			};
-			submitInfo.pWaitSemaphores   = &window.swapchain.s_clear[window.swapchain.renderCurrentFrame];
-			submitInfo.pSignalSemaphores = &window.swapchain.s_copy [window.swapchain.renderCurrentFrame];
-			submitInfo.pCommandBuffers   = &window.copyCommandBuffers[imageIndex];
 
-			vkResetFences(dvc::graphics.LD, 1, &window.swapchain.f_imageRendered[window.swapchain.renderCurrentFrame]);
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, window.swapchain.f_imageRendered[window.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
+			graphicsQueueSubmit_m.lock();
+			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			graphicsQueueSubmit_m.unlock();
 		}
 
 
 
 
 		{ //Present frame
-			static VkPresentInfoKHR presentInfo{
+			VkPresentInfoKHR presentInfo{
 				.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 				.waitSemaphoreCount = 1,
+				.pWaitSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame],
 				.swapchainCount     = 1,
-				.pSwapchains        = &window.swapchain.swapchain
+				.pSwapchains        = &pWindow.swapchain.swapchain,
+				.pImageIndices      = &imageIndex
 			};
-			presentInfo.pWaitSemaphores = &window.swapchain.s_copy[window.swapchain.renderCurrentFrame];
-			presentInfo.pImageIndices   = &imageIndex;
 
+			presentQueueSubmit_m.lock();
 			switch(vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo)) {
 				case VK_SUCCESS:  break;
 				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-					window.swapchain.recreate(false);
+					pWindow.swapchain.recreate(false);
+					presentQueueSubmit_m.unlock();
 					goto redraw;
 				}
 				default: dbg::printError("Failed to present swapchain image");
 			}
+			presentQueueSubmit_m.unlock();
 
 		}
 
 		//Update frame number and flush the window data
-		window.swapchain.renderCurrentFrame = (window.swapchain.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
-		glfwSwapBuffers(window.window);
+		pWindow.swapchain.renderCurrentFrame = (pWindow.swapchain.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
+		glfwSwapBuffers(pWindow.window);
 
 
 

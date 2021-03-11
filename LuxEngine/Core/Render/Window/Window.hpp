@@ -16,9 +16,9 @@ namespace lux::obj{
 namespace lux{
 	struct Window{
 		GLFWwindow*	window = nullptr;		//Main engine window
-		int32		width  = 1920 * 2;		//Size of the window //TODO
+		int32		width  = 1920;		//Size of the window //TODO
 		int32 		height = 1080;			//Size of the window //TODO
-		std::mutex	windowResizeFence;
+		// std::mutex	windowResizeFence;
 		vram::ptr<int32, Ram,  Storage> wSize_g = nullptr;	//Size of the widow
 		vram::ptr<int32, VRam, Storage> fOut_G  = nullptr;	//Color output of the window
 		vram::ptr<int32, VRam, Storage> iOut_g  = nullptr;	//Packed color output of the window
@@ -93,19 +93,27 @@ namespace lux{
 	 std::mutex							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 
 
-		Window(bool __test__set_callbacks__){
-			initWindow(__test__set_callbacks__);
+		void loop();
+		bool running = true;
+		bool initialized = false;
+Thread t;
+		Window(){
+
+			t(*this, &Window::loop);
+	while(!initialized){}
 			// swapchain.bindedWindow = this;
 			// swapchain.swapchainCreate();
 		}
 
-		void initWindow(bool);
+		void initWindow();
 		void createInstance();
 		void createDefaultCommandBuffers__();
 
 		//FIXME MOVE DESTRUCTOR TO .JOIN()
 		//FIXME or don't. if the data gets destroyed, the window can't be used
 		~Window(){
+			running = false;
+			t.join();
 			wSize_g.free();
 			fOut_G.free();
 			iOut_g.free();
@@ -123,11 +131,11 @@ namespace lux{
 
 		static void __attribute__((used)) framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
 		//glfwGetWindowUserPointer(pWindow) //TODO
-		((Window*)glfwGetWindowUserPointer(pWindow))->windowResizeFence.lock();  //from the last call of this function
+		// ((Window*)glfwGetWindowUserPointer(pWindow))->windowResizeFence.lock();  //from the last call of this function
 		((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
-		((Window*)glfwGetWindowUserPointer(pWindow))->windowResizeFence.unlock();
+		// ((Window*)glfwGetWindowUserPointer(pWindow))->windowResizeFence.unlock();
 	}
 
 	};
-	extern Window window; //TODO REMOVE
+	// extern Window window; //TODO REMOVE
 }

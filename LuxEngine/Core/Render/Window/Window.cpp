@@ -1,4 +1,5 @@
 #include <vulkan/vulkan.h>
+#include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
@@ -13,12 +14,26 @@
 
 
 namespace lux{
-	Window window(true); //TODO REMOVE
+	// Window window; //TODO REMOVE
 
 
+		void Window::loop(){
+						initWindow();
+initialized = true;
+		while(running) {
+			// LuxTime renderTime = luxStartChrono();
+			glfwPollEvents();
+			/*" //TODO
+				On some platforms, a window move, resize or menu operation will cause event processing to block. T
+				his is due to how event processing is designed on those platforms.
+				You can use the window refresh callback to redraw the contents of your window when necessary during such operations.
+			"*/ //FIXME LOOP INSIDE FUNCTION
+			core::render::drawFrame(*this);
+			// FPS = luxStopChrono(renderTime); //TODO ADD FPS LIMIT
+		}}
 
 
-	void Window::initWindow(bool __test__set_callbacks__) {
+	void Window::initWindow() {
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, &surface);
 
@@ -107,7 +122,7 @@ namespace lux{
 		}
 
 
-		if(__test__set_callbacks__){ //Set callbacks //FIXME WRITE WINDOW-LOCAL CALLBACKS
+		// if(__test__set_callbacks__){ //Set callbacks //FIXME WRITE WINDOW-LOCAL CALLBACKS
 			glfwSetWindowUserPointer      (window, this);
 			glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 
@@ -116,7 +131,7 @@ namespace lux{
 			glfwSetScrollCallback         (window, input::mouseAxisCallback);
 
 			glfwSetKeyCallback            (window, input::keyCallback);
-		}
+		// }
 
 
 
@@ -175,7 +190,7 @@ namespace lux{
 			static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
 				.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,				//Set structure type
 				.flags = 0															//Default falgs
-			};
+			}; //FIXME
 			commandPoolCreateInfo.queueFamilyIndex = core::dvc::compute.PD.indices.computeFamilies[0];	//Set the compute family where to bind the command pool
 			dbg::checkVk(vkCreateCommandPool(core::dvc::compute.LD, &commandPoolCreateInfo, nullptr, &copyCommandPool), "Unable to create command pool");
 

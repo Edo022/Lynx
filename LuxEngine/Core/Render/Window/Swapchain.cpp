@@ -90,7 +90,7 @@ namespace lux::core::wnd{
 
 
 	Swapchain::Swapchain(){
-		s_imageAquired   .resize(__renderMaxFramesInFlight);
+		s_imageAcquired   .resize(__renderMaxFramesInFlight);
 		s_objectsRendered.resize(__renderMaxFramesInFlight);
 		s_copy           .resize(__renderMaxFramesInFlight);
 		s_clear          .resize(__renderMaxFramesInFlight);
@@ -100,7 +100,7 @@ namespace lux::core::wnd{
 		VkSemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
 		VkFenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
 		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_imageAquired[i]);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_imageAcquired[i]);
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_objectsRendered[i]);
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_copy[i]);
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_clear[i]);
@@ -186,7 +186,7 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::recreate(const bool vWindowResized) {
-		if(vWindowResized) bindedWindow->windowResizeFence.lock();	//Sync with framebufferResizeCallback //TODO probably useless, as the variable is not shared
+		// if(vWindowResized) bindedWindow->windowResizeFence.lock();	//Sync with framebufferResizeCallback //TODO probably useless, as the variable is not shared
 
 		//TODO dont destroy it every time
 		static int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
@@ -214,7 +214,7 @@ namespace lux::core::wnd{
 			//Recreate clear shader
 			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
-		if(vWindowResized) bindedWindow->windowResizeFence.unlock();		//Sync with framebufferResizeCallback
+		// if(vWindowResized) bindedWindow->windowResizeFence.unlock();		//Sync with framebufferResizeCallback
 	}
 
 
@@ -237,7 +237,7 @@ namespace lux::core::wnd{
 	Swapchain::~Swapchain(){
 		destroy();
 		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkDestroySemaphore(dvc::graphics.LD, s_imageAquired[i],    nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, s_imageAcquired[i],    nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_objectsRendered[i], nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_copy[i],            nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_clear[i],           nullptr);

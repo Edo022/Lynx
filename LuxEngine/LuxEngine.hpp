@@ -23,7 +23,7 @@ namespace lux{
 	void kill(){
         core::running = false;
 
-        core::renderThr.join();
+        // core::renderThr.join();
         core::FPSCounterThr.join(); //FIXME REMOVE THREAD
         vkDeviceWaitIdle(core::dvc::compute.LD);
 

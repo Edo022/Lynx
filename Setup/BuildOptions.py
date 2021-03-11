@@ -21,9 +21,11 @@ def enginePath():
 
 
 vkdep = enginePath() + "/deps/" + ("Linux/" if pf() == "l" else "Windows/") + "Vulkan-1.2.162.0/x86_64/"
-glfwdep = enginePath() + "/deps/Shared/glfw-3.3.2/"
+# glfwdep = enginePath() + "/deps/Shared/glfw-3.3.2/"
+glfwdep = enginePath() + "/deps/Shared/glfw-3.3.3/"
 
 def getEngineDeps():
+    #TODO REMOVE LIB DEPENDENCIES. theyre useless when not linking
     return textwrap.indent(\
         '//Vulkan\n'                        +\
         '   "-DGLM_FORCE_RADIANS", "-DGLM_FORCE_DEPTH_ZERO_TO_ONE",'+\
@@ -33,9 +35,11 @@ def getEngineDeps():
         '//GLFW\n'                          +\
         '    "-I' + glfwdep + 'include",\n' +\
         '    "-I' + glfwdep + 'deps",\n'    +\
-        '    "-L' + glfwdep + 'build/' + ('debug' if tp() == 'd' else 'release') + '/src",\n' +\
+        '    "-L' + glfwdep + 'build/src",\n' +\
         '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
     , ' '*4*4)
+        # '    "-L' + glfwdep + 'build/' + ('debug' if tp() == 'd' else 'release') + '/src",\n' +\
+        # '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw"'
 
 
 def getDebugOptions():

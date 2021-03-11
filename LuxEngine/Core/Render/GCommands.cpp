@@ -23,7 +23,7 @@ namespace lux::core::render::cmd{
 
 
 
-	void createGraphicsCommandPool() {
+	void createGraphicsCommandPool() { //FIXME probably useless
 		VkCommandPoolCreateInfo poolInfo{
 			.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 			.queueFamilyIndex = dvc::graphics.PD.indices.graphicsFamily

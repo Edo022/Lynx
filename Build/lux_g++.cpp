@@ -57,7 +57,8 @@ int main(int argc, char* argv[]) {
 
     //Add app dependencies
     auto vkdep   = string(enginePath) + "/deps/" + gettp() + "/Vulkan-1.2.162.0/x86_64/";
-    auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.2/";
+    // auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.2/";
+    auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.3/";
 
     s +=
         " -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE"
@@ -67,7 +68,9 @@ int main(int argc, char* argv[]) {
         " -I" + enginePath          +
         " -I" + "."
         " -L" + vkdep + "lib"
-        " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src"
+        // " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src"
+        " -L" + glfwdep + "build/src" //FIXME
+        // " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw"
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
 

@@ -24,9 +24,9 @@ namespace lux::core::wnd{
 		Window* bindedWindow;
 		VkRenderPass renderPass;
 		bool renderFramebufferResized = false;
+		bool useVSync = true;
 
-
-		RtArray<VkSemaphore> s_imageAquired;
+		RtArray<VkSemaphore> s_imageAcquired;
 		RtArray<VkSemaphore> s_objectsRendered;
 		RtArray<VkSemaphore> s_copy;
 		RtArray<VkSemaphore> s_clear;

@@ -14,8 +14,8 @@
 namespace lux::core::render{
 	extern RtArray<obj::Base*>	objUpdates2D;
 	extern std::mutex				objUpdates2D_f;
-
-
+	extern std::mutex graphicsQueueSubmit_m;
+	extern std::mutex presentQueueSubmit_m;
 
 
 	void drawFrame(Window& window);

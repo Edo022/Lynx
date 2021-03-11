@@ -98,8 +98,8 @@ namespace lux::ram{
 		genInitCheck;
 		Cell_t* cell; 							//A pointer to a lux::ram::Cell_t object that contains the cell informations
 		_dbg(mutable __pvt::CellState state;)	//[State of the pointer]
-		_dbg(mutable ptr<Dummy>* prevOwner;)	//The pointer that aquired the memory before this object
-		_dbg(mutable ptr<Dummy>* nextOwner;)	//The pointer that aquired the memory after this object
+		_dbg(mutable ptr<Dummy>* prevOwner;)	//The pointer that acquired the memory before this object
+		_dbg(mutable ptr<Dummy>* nextOwner;)	//The pointer that acquired the memory after this object
 
 
 
