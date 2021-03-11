@@ -68,8 +68,10 @@ namespace lux::core::render::cmd{
 			.commandBufferCount = 1,
 			.pCommandBuffers    = &vCommandBuffer
 		};
+		core::render::graphicsQueueSubmit_m.lock();
 		vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 		vkQueueWaitIdle(dvc::graphics.graphicsQueue);
+		core::render::graphicsQueueSubmit_m.unlock();
 		vkFreeCommandBuffers(dvc::graphics.LD, singleTimeCommandPool, 1, &vCommandBuffer);
 	}
 }

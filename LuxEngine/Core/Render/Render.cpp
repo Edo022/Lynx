@@ -170,7 +170,7 @@ namespace lux::core::render{
 			};
 
 			presentQueueSubmit_m.lock();
-			switch(vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo)) {
+			switch(vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo)) { //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
 				case VK_SUCCESS:  break;
 				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
@@ -206,7 +206,7 @@ namespace lux::core::render{
 					(void*)objUpdates2D[i]->render.data
 				);
 			}
-			core::render::cmd::endSingleTimeCommands(cb);
+			core::render::cmd::endSingleTimeCommands(cb); //FIXME USE LOCAL COMMAND BUFFER INSTEAD OF THE GLOBAL ONE
 			objUpdates2D.clear();
 			objUpdates2D_f.unlock();
 		}
