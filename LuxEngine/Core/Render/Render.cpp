@@ -65,7 +65,8 @@ namespace lux::core::render{
 			// pWindow.windowResizeFence.lock();	//FIXME probably useless
 			pWindow.swapchain.renderFramebufferResized = false;
 			// pWindow.windowResizeFence.unlock();	//FIXME probably useless
-			pWindow.swapchain.recreate(true);
+			// pWindow.swapchain.recreate(true);
+			pWindow.swapchain.recreate();
 			goto redraw;
 		}
 
@@ -75,7 +76,8 @@ namespace lux::core::render{
 		{
 			switch(vkAcquireNextImageKHR(dvc::graphics.LD, pWindow.swapchain.swapchain, INT_MAX, pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
 				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-				case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate(false);  return;
+				// case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate(false);  return;
+				case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate();  return;
 				default: Failure printf("Failed to acquire swapchain image");
 			}
 		}
@@ -174,7 +176,8 @@ namespace lux::core::render{
 				case VK_SUCCESS:  break;
 				//TODO maybe suboptimal can still be used
 				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: {
-					pWindow.swapchain.recreate(false);
+					// pWindow.swapchain.recreate(false);
+					pWindow.swapchain.recreate();
 					presentQueueSubmit_m.unlock();
 					goto redraw;
 				}

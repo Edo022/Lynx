@@ -28,16 +28,18 @@ def getEngineDeps():
     #TODO REMOVE LIB DEPENDENCIES. theyre useless when not linking
     return textwrap.indent(\
         '//Vulkan\n'                        +\
-        '   "-DGLM_FORCE_RADIANS", "-DGLM_FORCE_DEPTH_ZERO_TO_ONE",'+\
+        '   "-DGLM_FORCE_RADIANS", "-DGLM_FORCE_DEPTH_ZERO_TO_ONE",\n'+\
         '    "-I' + vkdep + 'include",\n'   +\
-        '    "-L' + vkdep + 'lib",\n'       +\
-        '    "-ldl", "-lvulkan",\n'         +\
+        # '    "-L' + vkdep + 'lib",\n'       +\
+        # '    "-ldl", "-lvulkan",\n'         +\
         '//GLFW\n'                          +\
         '    "-I' + glfwdep + 'include",\n' +\
-        '    "-I' + glfwdep + 'deps",\n'    +\
-        '    "-L' + glfwdep + 'build/src",\n' +\
-        '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
+        '    "-I' + glfwdep + 'deps"'\
+        # '    "-L' + glfwdep + 'build/src",\n' +\
+        # '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw3"'
     , ' '*4*4)
+
+
         # '    "-L' + glfwdep + 'build/' + ('debug' if tp() == 'd' else 'release') + '/src",\n' +\
         # '    "-ldl", "-lrt", "-lXrandr", "-lXi", "-lXcursor", "-lXinerama", "-lX11", "-lglfw"'
 

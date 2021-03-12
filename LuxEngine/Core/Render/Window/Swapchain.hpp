@@ -48,7 +48,8 @@ namespace lux::core::wnd{
 		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
 		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
-		void recreate(const bool vWindowResized);
+		// void recreate(const bool vWindowResized);
+		void recreate();
 		void destroy();
 		~Swapchain();
 

@@ -185,7 +185,8 @@ namespace lux::core::wnd{
 
 
 
-	void Swapchain::recreate(const bool vWindowResized) {
+	// void Swapchain::recreate(const bool vWindowResized) {
+	void Swapchain::recreate() {
 		// if(vWindowResized) bindedWindow->windowResizeFence.lock();	//Sync with framebufferResizeCallback //TODO probably useless, as the variable is not shared
 
 		//TODO dont destroy it every time
