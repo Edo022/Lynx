@@ -73,7 +73,8 @@ namespace lux::obj {
 
 
 
-	private:
+	// private:
+	public:
 		f32v2* fp;		//First point of the line
 		f32v2* sp;		//Second point of the line
 		f32v2 _fp;		//First point of the line

@@ -96,7 +96,8 @@ namespace lux::core::render{
 			}
 			pWindow.addShaderFence.unlock();
 
-			VkSubmitInfo submitInfo1{
+		const VkSubmitInfo submitInfos[]{
+			{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
 				.pWaitSemaphores      = &pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame],
@@ -105,7 +106,7 @@ namespace lux::core::render{
 				.pCommandBuffers    = pWindow.swapchain.shadersCBs.begin(),
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
-			};
+			},
 			// graphicsQueueSubmit_m.lock();
 			// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
 			// graphicsQueueSubmit_m.unlock();
@@ -113,7 +114,7 @@ namespace lux::core::render{
 
 
 		//Convert and clear shader
-			VkSubmitInfo submitInfo2{
+			{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
 				.pWaitSemaphores      = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
@@ -122,7 +123,7 @@ namespace lux::core::render{
 				.pCommandBuffers      = &pWindow.swapchain.shaders[0].commandBuffers[0],
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores    = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame]
-			};
+			},
 
 
 
@@ -134,7 +135,7 @@ namespace lux::core::render{
 
 
 		//Copy shader
-			VkSubmitInfo submitInfo3{
+			{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
 				.pWaitSemaphores      = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame],
@@ -143,8 +144,8 @@ namespace lux::core::render{
 				.pCommandBuffers      = &pWindow.copyCommandBuffers[imageIndex],
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame]
-			};
-
+			}
+		};
 			// vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
 			// graphicsQueueSubmit_m.lock();
 			// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
@@ -152,18 +153,19 @@ namespace lux::core::render{
 
 
 
-			graphicsQueueSubmit_m.lock();
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo1, nullptr), "Failed to submit graphics command buffer");
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo2, nullptr), "Failed to submit graphics command buffer");
-			// graphicsQueueSubmit_m.unlock();
+			// const VkSubmitInfo submitInfos[] = { submitInfo1, submitInfo2, submitInfo3 };
 			vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
-			// graphicsQueueSubmit_m.lock();
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo3, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			graphicsQueueSubmit_m.lock();
+				// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo1, nullptr), "Failed to submit graphics command buffer");
+				// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo2, nullptr), "Failed to submit graphics command buffer");
+				// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo3, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+				dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 3, submitInfos, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
 			graphicsQueueSubmit_m.unlock();
 
 
+
 		{ //Present frame
-			VkPresentInfoKHR presentInfo{
+			const VkPresentInfoKHR presentInfo{
 				.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 				.waitSemaphoreCount = 1,
 				.pWaitSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame],

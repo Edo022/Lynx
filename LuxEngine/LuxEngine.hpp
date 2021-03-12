@@ -11,7 +11,8 @@ namespace lux{
 	 * @brief Starts the Lux Engine
 	 */
     void start() {
-        lux::core::run(false);
+        // lux::core::run(false);
+        core::running = true;
     }
 
 
@@ -24,7 +25,7 @@ namespace lux{
         core::running = false;
 
         // core::renderThr.join();
-        core::FPSCounterThr.join(); //FIXME REMOVE THREAD
+        // core::FPSCounterThr.join(); //FIXME REMOVE THREAD
         vkDeviceWaitIdle(core::dvc::compute.LD);
 
         core::render::cleanup();

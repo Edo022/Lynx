@@ -18,6 +18,8 @@ namespace lux{
 
 
 		void Window::loop(){
+					_dbg(thr::self::setName("App | Window"));
+
 						initWindow();
 initialized = true;
 		while(running) {
