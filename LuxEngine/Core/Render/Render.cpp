@@ -89,7 +89,6 @@ namespace lux::core::render{
 		//TODO use a staging buffer
 		//Update render result submitting the command buffers to the compute queues
 		static const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
-		{
 			pWindow.addShaderFence.lock();
 			pWindow.swapchain.shadersCBs.resize(pWindow.swapchain.shaders.count());
 			for(uint32 i = 0; i < pWindow.swapchain.shaders.count(); ++i) {
@@ -97,29 +96,24 @@ namespace lux::core::render{
 			}
 			pWindow.addShaderFence.unlock();
 
-			VkSubmitInfo submitInfo{
+			VkSubmitInfo submitInfo1{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.pNext                = nullptr,
-
 				.waitSemaphoreCount   = 1,
 				.pWaitSemaphores      = &pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame],
 				.pWaitDstStageMask    = waitStages,
-
 				.commandBufferCount = pWindow.swapchain.shadersCBs.count(),
 				.pCommandBuffers    = pWindow.swapchain.shadersCBs.begin(),
-
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
 			};
-			graphicsQueueSubmit_m.lock();
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
-			graphicsQueueSubmit_m.unlock();
-		}
+			// graphicsQueueSubmit_m.lock();
+			// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
+			// graphicsQueueSubmit_m.unlock();
 
 
 
-		{ //Convert and clear shader
-			VkSubmitInfo submitInfo{
+		//Convert and clear shader
+			VkSubmitInfo submitInfo2{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
 				.pWaitSemaphores      = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
@@ -132,16 +126,15 @@ namespace lux::core::render{
 
 
 
-			graphicsQueueSubmit_m.lock();
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
-			graphicsQueueSubmit_m.unlock();
-		}
+			// graphicsQueueSubmit_m.lock();
+			// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, nullptr), "Failed to submit graphics command buffer");
+			// graphicsQueueSubmit_m.unlock();
 
 
 
 
-		{ //Copy shader
-			VkSubmitInfo submitInfo{
+		//Copy shader
+			VkSubmitInfo submitInfo3{
 				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 				.waitSemaphoreCount   = 1,
 				.pWaitSemaphores      = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame],
@@ -152,13 +145,21 @@ namespace lux::core::render{
 				.pSignalSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame]
 			};
 
-			vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
+			// vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
+			// graphicsQueueSubmit_m.lock();
+			// dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			// graphicsQueueSubmit_m.unlock();
+
+
+
 			graphicsQueueSubmit_m.lock();
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo1, nullptr), "Failed to submit graphics command buffer");
+			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo2, nullptr), "Failed to submit graphics command buffer");
+			// graphicsQueueSubmit_m.unlock();
+			vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
+			// graphicsQueueSubmit_m.lock();
+			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 1, &submitInfo3, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
 			graphicsQueueSubmit_m.unlock();
-		}
-
-
 
 
 		{ //Present frame
