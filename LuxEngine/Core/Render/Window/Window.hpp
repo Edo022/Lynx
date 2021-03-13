@@ -4,137 +4,143 @@
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-// #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
-// #include "LuxEngine/Types/Dummy.hpp"
+
+
+
+
+
+
+
 
 typedef uint32 LuxShader;
-
-
 namespace lux::obj{
 	struct RenderSpace2D;
 }
 namespace lux{
 	struct Window{
-		GLFWwindow*	window = nullptr;		//Main engine window
-		// int32		width  = 1920;		//Size of the window //TODO
-		int32		width  = 400;		//Size of the window //TODO
-		// int32 		height = 1080;			//Size of the window //TODO
-		int32 		height = 200;			//Size of the window //TODO
-		// std::mutex	windowResizeFence;
-		vram::ptr<int32, Ram,  Storage> wSize_g = nullptr;	//Size of the widow
-		vram::ptr<int32, VRam, Storage> fOut_G  = nullptr;	//Color output of the window
-		vram::ptr<int32, VRam, Storage> iOut_g  = nullptr;	//Packed color output of the window
-		vram::ptr<int32, VRam, Storage> zBuff_g = nullptr;	//TODO remove. use render space assembler
+	// private:
+		GLFWwindow*	window;		//GLFW window object
+		int32		width;		//Width of the window
+		int32 		height;		//Heght of the window
 
-		// VkPipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
+		vram::ptr<int32, Ram,  Storage> wSize_g;	//Size of the widow
+		vram::ptr<int32, VRam, Storage> fOut_G ;	//Color output of the window
+		vram::ptr<int32, VRam, Storage> iOut_g ;	//Packed color output of the window
+		vram::ptr<int32, VRam, Storage> zBuff_g;	//TODO remove. use render space assembler
+
+
+
 		RtArray<LuxShaderLayout_t>	CShadersLayouts;
-
-		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
-		void addRenderSpace(obj::RenderSpace2D* pRenderSpace);
-
-
-		VkSurfaceKHR surface;
-		core::wnd::Swapchain swapchain;
-
-        VkImageMemoryBarrier readToWriteBarrier{ 			        //Create memory barrier object
-		.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
-		.srcAccessMask       = VK_ACCESS_MEMORY_READ_BIT,				//Set source access mask
-		.dstAccessMask       = VK_ACCESS_TRANSFER_WRITE_BIT,			//Set destination access mask. It must be writable in order to copy the buffer in it
-		.oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,				//Set old layout. Swapchain images are in undefined layout after being acquired
-		.newLayout           = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,	//Set new layout. Destination optimal allows the image to be used as a transfer destination
-		.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,			    	//Queue families unset
-		.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,				    //Queue families unset
-		.subresourceRange{												//Create subresource object
-			.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,					//Set the aspect mask
-			.baseMipLevel   = 0,											//No mipmap
-			.levelCount     = 1,											//No multi leve images
-			.baseArrayLayer = 0,											//Set base layer
-			.layerCount     = 1												//No multi layer
-		}
-	};
-
-
-
-
-    VkImageMemoryBarrier writeToReadBarrier{				       	//Create memory barrier object
-        .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
-        .srcAccessMask       = VK_ACCESS_TRANSFER_WRITE_BIT,			//Set source access mask
-        .dstAccessMask       = VK_ACCESS_MEMORY_READ_BIT,				//Set destination access mask. It must be readable to be displayed
-        .oldLayout           = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,	//Set old layout. Swapchain images is in dst optimal layout after being written
-        .newLayout           = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,			//Set new layout. Swapchain images must be in this format to be displayed on screen
-        .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,			    	//Queue families unset
-        .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,			    	//Queue families unset
-        .subresourceRange{												//Create subresource object
-            .aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,					//Set the aspect mask
-            .baseMipLevel   = 0,											//No mipmap
-            .levelCount     = 1,											//No multi leve images
-            .baseArrayLayer = 0,											//Set base layer
-            .layerCount     = 1												//No multi layer
-        }
-    };
-
-
-
-
-    VkBufferImageCopy copyRegion{ 				//Create bufferImageCopy region to copy the buffer into the image
-        .bufferOffset = 0,							//No buffer offset
-        .bufferRowLength = 0,						//dark magic
-        .bufferImageHeight = 0,					    //dark magic
-        .imageSubresource{							//Create subresource object
-            .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,   	//Set aspect mask
-            .mipLevel = 0,								//No mipmap
-            .baseArrayLayer = 0,						//Set base
-            .layerCount = 1						    	//No multi layer
-        },
-        .imageOffset{ 0, 0, 0 }										//No image offset
-    };
-
-
 		VkCommandPool commandPool;
 		VkCommandPool copyCommandPool;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
 		VkCommandBuffer clearCommandBuffer;
 		LuxShader clearShader;
-		std::mutex addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
+		std::mutex addShaderFence;
 
 
-		void loop();
-		bool running = false;
+
+		VkSurfaceKHR surface;
+		core::wnd::Swapchain swapchain;
+
+        VkImageMemoryBarrier readToWriteBarrier{ 			        	//Create memory barrier object
+			.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
+			.srcAccessMask       = VK_ACCESS_MEMORY_READ_BIT,				//Set source access mask
+			.dstAccessMask       = VK_ACCESS_TRANSFER_WRITE_BIT,			//Set destination access mask. It must be writable in order to copy the buffer in it
+			.oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,				//Set old layout. Swapchain images are in undefined layout after being acquired
+			.newLayout           = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,	//Set new layout. Destination optimal allows the image to be used as a transfer destination
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,			    	//Queue families unset
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,				    //Queue families unset
+			.subresourceRange{												//Create subresource object
+				.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,					//Set the aspect mask
+				.baseMipLevel   = 0,											//No mipmap
+				.levelCount     = 1,											//No multi leve images
+				.baseArrayLayer = 0,											//Set base layer
+				.layerCount     = 1												//No multi layer
+			}
+		};
+		VkImageMemoryBarrier writeToReadBarrier{				       	//Create memory barrier object
+			.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
+			.srcAccessMask       = VK_ACCESS_TRANSFER_WRITE_BIT,			//Set source access mask
+			.dstAccessMask       = VK_ACCESS_MEMORY_READ_BIT,				//Set destination access mask. It must be readable to be displayed
+			.oldLayout           = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,	//Set old layout. Swapchain images is in dst optimal layout after being written
+			.newLayout           = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,			//Set new layout. Swapchain images must be in this format to be displayed on screen
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,			    	//Queue families unset
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,			    	//Queue families unset
+			.subresourceRange{												//Create subresource object
+				.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,					//Set the aspect mask
+				.baseMipLevel   = 0,											//No mipmap
+				.levelCount     = 1,											//No multi leve images
+				.baseArrayLayer = 0,											//Set base layer
+				.layerCount     = 1												//No multi layer
+			}
+		};
+		VkBufferImageCopy copyRegion{ 				//Create bufferImageCopy region to copy the buffer into the image
+			.bufferOffset = 0,							//No buffer offset
+			.bufferRowLength = 0,						//dark magic
+			.bufferImageHeight = 0,					    //dark magic
+			.imageSubresource{							//Create subresource object
+				.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,   	//Set aspect mask
+				.mipLevel = 0,								//No mipmap
+				.baseArrayLayer = 0,						//Set base
+				.layerCount = 1						    	//No multi layer
+			},
+			.imageOffset{ 0, 0, 0 }						//No image offset
+		};
+
+
+
+
+
+
+
+		bool running     = false;
 		bool initialized = false;
 		Thread t;
 
 
 
-
-		Window(){
-			t(*this, &Window::loop);
-			while(!initialized){ thr::self::yield(); }
-		}
-
-		void initWindow();
-		void createInstance();
+		void run();
+		void draw();
 		void createDefaultCommandBuffers__();
-
-
-		~Window(){
-			running = false;
-			t.join();
-			wSize_g.free();
-			fOut_G.free();
-			iOut_g.free();
-			zBuff_g.free();
-			vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
-			glfwDestroyWindow(window);
-		}
-		//TODO ADD JOIN FUNCTION TO WAIT FOR THE WINDOW TO GET CLOSED
 
 
 
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
-			// ((Window*)glfwGetWindowUserPointer(pWindow))->resize(vWidth, vHeight);
 			((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
 		}
-		// void resize(int32 vWidth, int32 vHeight);
+
+
+
+
+	public:
+		Window(uint32 vWidth = 800, uint32 vHeight = 600) : width{ (int32)vWidth }, height{ (int32)vHeight } {
+			t(*this, &Window::run);
+			while(!initialized){ thr::self::yield(); }
+		}
+
+		void init();
+		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
+		void add(obj::RenderSpace2D* pRenderSpace);
+
+
+		~Window(){
+			running = false;
+			t.join();
+			wSize_g.free(); fOut_G.free(); iOut_g.free(); zBuff_g.free();
+			vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
+			glfwDestroyWindow(window);
+			//TODO ADD JOIN FUNCTION TO WAIT FOR THE WINDOW TO GET CLOSED
+		}
 	};
 }
+
+
+
+
+/*" //TODO
+	On some platforms, a window move, resize or menu operation will cause event processing to block. T
+	his is due to how event processing is designed on those platforms.
+	You can use the window refresh callback to redraw the contents of your window when necessary during such operations.
+"*/

@@ -18,7 +18,6 @@ namespace lux::core::render{
 	extern std::mutex presentQueueSubmit_m;
 
 
-	void drawFrame(Window& window);
 	void cleanup();
 	#ifdef LUX_DEBUG
 		_dbg(void createDebugMessenger());

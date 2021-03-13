@@ -15,28 +15,16 @@
 
 
 namespace lux{
-	void Window::loop(){
+	void Window::run(){
 		_dbg(thr::self::setName("App | Window"));
-		initWindow();
-		/*" //TODO
-			On some platforms, a window move, resize or menu operation will cause event processing to block. T
-			his is due to how event processing is designed on those platforms.
-			You can use the window refresh callback to redraw the contents of your window when necessary during such operations.
-		"*/
-				// while(running) {
-
-		core::render::drawFrame(*this);
-				// }
+		init();
+		draw();
 	}
 
 
 
 
-
-
-
-
-	void Window::initWindow() {
+	void Window::init() {
 		//Create default shaders
 		CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
 		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 }, this);
@@ -113,7 +101,7 @@ namespace lux{
 
 
 	//Creates the default command buffers used for the render
-	void Window::createDefaultCommandBuffers__() {
+	void Window::createDefaultCommandBuffers__() { //TODO
 		{ //Render command pool
 			VkCommandPoolCreateInfo commandPoolCreateInfo = { 						//Create command pool create infos
 				.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,			//Set structure type
@@ -188,7 +176,7 @@ namespace lux{
 
 
 
-	void Window::addRenderSpace(obj::RenderSpace2D* pRenderSpace) {
+	void Window::add(obj::RenderSpace2D* pRenderSpace) {
 		CRenderSpaces.add(pRenderSpace);
 		pRenderSpace->init(*this);
 	}
