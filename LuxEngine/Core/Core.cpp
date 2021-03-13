@@ -17,6 +17,7 @@
 namespace lux::core{
 	// alignCache double FPS = 9999;
 	alignCache bool   running;
+	alignCache Thread inputThr;
 	// alignCache bool   useVSync;
 
 	// alignCache lux::Thread FPSCounterThr;
@@ -34,7 +35,12 @@ namespace lux::core{
 
 
 
-
+	void inputLoop(){
+		while(running){
+			glfwPollEvents();
+			sleep(0);
+		}
+	}
 
 
 

@@ -61,12 +61,14 @@ namespace lux::core::render{
 
 		//Redraw frame if necessary
 		redraw:
-		glfwPollEvents();
-		// if(pWindow.swapchain.renderFramebufferResized) {
-		// 	pWindow.swapchain.renderFramebufferResized = false;
-		// 	pWindow.swapchain.recreate();
-		// 	// goto redraw;
-		// }
+		// glfwPollEvents(); //FIXME MOVE TO DEDICATED THREAD
+		if(pWindow.swapchain.renderFramebufferResized) {
+			pWindow.swapchain.renderFramebufferResized = false;
+			// graphicsQueueSubmit_m.lock();
+			pWindow.swapchain.recreate();
+			goto redraw;
+			// graphicsQueueSubmit_m.unlock();
+		}
 
 
 		//Acquire swapchain image

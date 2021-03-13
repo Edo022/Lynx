@@ -274,7 +274,7 @@ initialized = true;
 
 
 
-		 void Window::resize(int32 vWidth, int32 vHeight) {
+		//  void Window::resize(int32 vWidth, int32 vHeight) {
 			// ((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
 
 			// Window* w = (Window*)glfwGetWindowUserPointer(pWindow);
@@ -282,15 +282,15 @@ initialized = true;
 			// 	if(swapchain.shaders.count() <= 1) return;
 			// 	vkWaitForFences(core::dvc::graphics.LD, 1, &swapchain.f_imageRendered[swapchain.renderCurrentFrame], false, INT_MAX);
 				// swapchain.recreate();
-				swapchain.renderFramebufferResized = true;
+				// swapchain.renderFramebufferResized = true;
 			// }
-			if(swapchain.renderFramebufferResized) {
-				swapchain.renderFramebufferResized = false;
-				swapchain.recreate();
-				// goto redraw;
-			}
+			// if(swapchain.renderFramebufferResized) {
+			// 	swapchain.renderFramebufferResized = false;
+			// 	swapchain.recreate();
+			// 	// goto redraw;
+			// }
 
-		}
+		// }
 
 
 }

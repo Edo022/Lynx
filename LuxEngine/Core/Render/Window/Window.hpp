@@ -16,8 +16,10 @@ namespace lux::obj{
 namespace lux{
 	struct Window{
 		GLFWwindow*	window = nullptr;		//Main engine window
-		int32		width  = 1920;		//Size of the window //TODO
-		int32 		height = 1080;			//Size of the window //TODO
+		// int32		width  = 1920;		//Size of the window //TODO
+		int32		width  = 400;		//Size of the window //TODO
+		// int32 		height = 1080;			//Size of the window //TODO
+		int32 		height = 200;			//Size of the window //TODO
 		// std::mutex	windowResizeFence;
 		vram::ptr<int32, Ram,  Storage> wSize_g = nullptr;	//Size of the widow
 		vram::ptr<int32, VRam, Storage> fOut_G  = nullptr;	//Color output of the window
@@ -130,8 +132,9 @@ Thread t;
 
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
-			((Window*)glfwGetWindowUserPointer(pWindow))->resize(vWidth, vHeight);
+			// ((Window*)glfwGetWindowUserPointer(pWindow))->resize(vWidth, vHeight);
+			((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
 		}
-		void resize(int32 vWidth, int32 vHeight);
+		// void resize(int32 vWidth, int32 vHeight);
 	};
 }

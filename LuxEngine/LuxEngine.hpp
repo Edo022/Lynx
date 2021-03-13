@@ -13,6 +13,7 @@ namespace lux{
     void start() {
         // lux::core::run(false);
         core::running = true;
+        core::inputThr(core::inputLoop);
     }
 
 
@@ -26,6 +27,7 @@ namespace lux{
 
         // core::renderThr.join();
         // core::FPSCounterThr.join(); //FIXME REMOVE THREAD
+        core::inputThr.join();
         vkDeviceWaitIdle(core::dvc::compute.LD);
 
         core::render::cleanup();
