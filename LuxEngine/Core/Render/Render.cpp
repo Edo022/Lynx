@@ -75,7 +75,7 @@ namespace lux{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swapchain.swapchain, INT_MAX, swapchain.s_imageAcquired[swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
+				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swapchain.swapchain, INT_MAX, swapchain.s_imageAcquired[swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
 					case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
 					case VK_ERROR_OUT_OF_DATE_KHR: swapchain.recreate();  continue;
 					default: Failure printf("Failed to acquire swapchain image");

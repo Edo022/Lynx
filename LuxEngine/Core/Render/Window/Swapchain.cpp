@@ -187,8 +187,6 @@ namespace lux::core::wnd{
 
 	// void Swapchain::recreate(const bool vWindowResized) {
 	void Swapchain::recreate() {
-		// if(vWindowResized) bindedWindow->windowResizeFence.lock();	//Sync with framebufferResizeCallback //TODO probably useless, as the variable is not shared
-
 		//TODO dont destroy it every time
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
@@ -215,7 +213,6 @@ namespace lux::core::wnd{
 			//Recreate clear shader
 			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
-		// if(vWindowResized) bindedWindow->windowResizeFence.unlock();		//Sync with framebufferResizeCallback
 	}
 
 
@@ -284,7 +281,7 @@ namespace lux::core::wnd{
 
 
 
-	void Swapchain::createRenderPass() { //TODO use render pass instead of fences, if possible
+	void Swapchain::createRenderPass() {
 		VkAttachmentDescription colorAttachment{
 			.format         = imageFormat,							//Swapchain image format
 			.samples        = VK_SAMPLE_COUNT_1_BIT,				//Multisampling samples

@@ -10,7 +10,8 @@
 
 
 
-
+//BUG THE SIZE AND POSITION OF THE OUTPUT DOESNT CHANGE WHEN THE WINDOW IS RESIZED
+//BUG CHECK THE HUGE CONST STRUCTURES
 
 
 
@@ -27,9 +28,9 @@ namespace lux{
 	void Window::init() {
 		//Create default shaders
 		CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
-		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 }, this);
-		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 }, this);
-		core::c::shaders::createDefLayout(LUX_DEF_SHADER_CLEAR,     4, { 0, 0, 0, 0 }, this);
+		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 }, *this);
+		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 }, *this);
+		core::c::shaders::createDefLayout(LUX_DEF_SHADER_CLEAR,     4, { 0, 0, 0, 0 }, *this);
 		//FIXME fix that 01010001 thing
 
 
