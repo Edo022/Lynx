@@ -22,7 +22,7 @@
 namespace lux::core::c::shaders{
 	alignCache String						shaderPath; //FIXME MAKE WINDOW-LOCAL
 	// alignCache RaArray<lux::obj::RenderSpace2D*, uint32> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
-	alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
+	// alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
 
 
 
@@ -37,7 +37,7 @@ namespace lux::core::c::shaders{
 	static bool compileShader(const char* pShaderPath) {
 		_wds(return system((c::shaders::shaderPath + "/glslc.exe " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
 		//FIXME USE EXE IN DEPS OR COMPILE DIRECTLY
-		_lnx(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.162.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
+		_lnx(return system((lux::sys::dir::thisDir + "/" + getEnginePath() + "/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc " + pShaderPath + " -o " + pShaderPath + ".spv").begin()) == 0;)
 	}
 
 
@@ -60,12 +60,12 @@ namespace lux::core::c::shaders{
 		}
 
 
-		//Create default shaders
-		shaders::CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
-		shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 });
-		shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
-		shaders::createDefLayout(LUX_DEF_SHADER_CLEAR,     4, { 0, 0, 0, 0 });
-		//FIXME fix that 01010001 thing
+		// //Create default shaders
+		// CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
+		// shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 });
+		// shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 });
+		// shaders::createDefLayout(LUX_DEF_SHADER_CLEAR,     4, { 0, 0, 0, 0 });
+		// //FIXME fix that 01010001 thing
 	}
 
 
@@ -157,7 +157,7 @@ namespace lux::core::c::shaders{
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
 	 */
-	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly) {
+	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly, Window* pWindow) {
 		{ //Create descriptor set layout
 			RtArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
@@ -179,7 +179,7 @@ namespace lux::core::c::shaders{
 				.pBindings = (bindingLayouts.begin())	 						//The binding layouts
 			};
 			//Create the descriptor set layout
-			dbg::checkVk(vkCreateDescriptorSetLayout(dvc::compute.LD, &layoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
+			dbg::checkVk(vkCreateDescriptorSetLayout(dvc::compute.LD, &layoutCreateInfo, nullptr, &pWindow->CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
 		}
 
 
@@ -194,15 +194,15 @@ namespace lux::core::c::shaders{
 				case LUX_DEF_SHADER_CLEAR:     shaderFileName = "FloatToIntBuffer"; break;
 				default: dbg::printError("Unknown shader: %d", vRenderShader);
 			}
-			CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin()), &fileLength);
+			pWindow->CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin()), &fileLength);
 
 
 			//Create stage info
-			CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
+			pWindow->CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
 				.sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,		//Set structure type
 				.stage  = VK_SHADER_STAGE_COMPUTE_BIT,								//Use it in the compute stage
 				#ifndef __INTELLISENSE__ 	//! Intellisense sees "module" as the C++ module keyword. This code is enabled during compilation
-				.module = CShadersLayouts[vRenderShader].shaderModule,				//Set shader module
+				.module = pWindow->CShadersLayouts[vRenderShader].shaderModule,				//Set shader module
 				.pName  = "main"													//Set the main function as entry point
 				#endif
 			};
@@ -212,9 +212,9 @@ namespace lux::core::c::shaders{
 			VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
 				.sType          = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,		//Structure type
 				.setLayoutCount = 1,													//Number of set layouts
-				.pSetLayouts    = &CShadersLayouts[vRenderShader].descriptorSetLayout	//Set set layout
+				.pSetLayouts    = &pWindow->CShadersLayouts[vRenderShader].descriptorSetLayout	//Set set layout
 			};
-			dbg::checkVk(vkCreatePipelineLayout(dvc::compute.LD, &pipelineLayoutCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipelineLayout), "Unable to create pipeline layout");
+			dbg::checkVk(vkCreatePipelineLayout(dvc::compute.LD, &pipelineLayoutCreateInfo, nullptr, &pWindow->CShadersLayouts[vRenderShader].pipelineLayout), "Unable to create pipeline layout");
 		}
 
 
@@ -223,11 +223,11 @@ namespace lux::core::c::shaders{
 		{ //Create the pipeline
 			VkComputePipelineCreateInfo pipelineCreateInfo = { 						//Create pipeline creation infos
 				.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,			//Structure type
-				.stage  = CShadersLayouts[vRenderShader].shaderStageCreateInfo,		//Use the previously created shader stage creation infos
-				.layout = CShadersLayouts[vRenderShader].pipelineLayout				//Use the previously created pipeline layout
+				.stage  = pWindow->CShadersLayouts[vRenderShader].shaderStageCreateInfo,		//Use the previously created shader stage creation infos
+				.layout = pWindow->CShadersLayouts[vRenderShader].pipelineLayout				//Use the previously created pipeline layout
 			};
-			dbg::checkVk(vkCreateComputePipelines(dvc::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &CShadersLayouts[vRenderShader].pipeline), "Unable to create comput pipeline");
-			vkDestroyShaderModule(dvc::compute.LD, CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
+			dbg::checkVk(vkCreateComputePipelines(dvc::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pWindow->CShadersLayouts[vRenderShader].pipeline), "Unable to create comput pipeline");
+			vkDestroyShaderModule(dvc::compute.LD, pWindow->CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
 		}
 	}
 
@@ -247,7 +247,7 @@ namespace lux::core::c::shaders{
 	 * @param vShaderLayout The shader layout
 	 */
 	// void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Cell>& pCells, const ShaderLayout vShaderLayout) {
-	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Alloc_b<int32>>& pCells, const ShaderLayout vShaderLayout) {
+	void createDescriptorSets(LuxShader_t* pCShader, const RtArray<vram::Alloc_b<int32>>& pCells, const ShaderLayout vShaderLayout, Window* pWindow) {
 		//This struct defines the count of a descriptor pool (how many descriptor sets it can contain)
 		uint32 storageCount = 0, uniformCount = 0;
 		for(uint32 i = 0; i < pCells.count(); i++) {								//For every cell
@@ -282,7 +282,7 @@ namespace lux::core::c::shaders{
 			.sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,				//Set structure type
 			.descriptorPool     = pCShader->descriptorPool,										//Set descriptor pool where to allocate the descriptor
 			.descriptorSetCount = 1,															//Allocate a single descriptor
-			.pSetLayouts        = &CShadersLayouts[vShaderLayout].descriptorSetLayout			//Set set layouts
+			.pSetLayouts        = &pWindow->CShadersLayouts[vShaderLayout].descriptorSetLayout			//Set set layouts
 		};
 		dbg::checkVk(vkAllocateDescriptorSets(dvc::compute.LD, &descriptorSetAllocateInfo, &pCShader->descriptorSet), "Unable to allocate descriptor sets");
 
@@ -329,11 +329,11 @@ namespace lux::core::c::shaders{
 	 * @param vGroupCountY The number of workgroups in the y axis
 	 * @param vGroupCountZ The number of workgroups in the z axis
 	 */
-	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow) {
+	void createCommandBuffers(LuxShader_t* pCShader, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window* pWindow) {
 		//Allocate command buffers
 		VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 				//Create command buffer allocate infos
 			.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,	//Set structure type
-			.commandPool        = pWindow.commandPool,										//Set command pool where to allocate the command buffer
+			.commandPool        = pWindow->commandPool,										//Set command pool where to allocate the command buffer
 			.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,					//Set the command buffer as a primary level command buffer
 			.commandBufferCount = 1													//Allocate one command buffer
 		};
@@ -353,8 +353,8 @@ namespace lux::core::c::shaders{
 
 
 		//Bind pipeline and descriptors and run the compute shader
-		vkCmdBindPipeline      (pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
-		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
+		vkCmdBindPipeline      (pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow->CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindDescriptorSets(pCShader->commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow->CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pCShader->descriptorSet, 0, nullptr);
 		vkCmdDispatch          (pCShader->commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 		//End command buffer recording
@@ -400,8 +400,8 @@ namespace lux::core::c::shaders{
 		dbg::checkParam(vGroupCountZ < 1, "vGroupCountZ", "The group count must be at least 1");
 		LuxShader_t shader;
 
-		createDescriptorSets(&shader, pCells, vShaderLayout);									//Descriptor pool, descriptor sets and descriptor buffers
-		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ, pWindow);	//Create command buffers and command pool
+		createDescriptorSets(&shader, pCells, vShaderLayout, &pWindow);									//Descriptor pool, descriptor sets and descriptor buffers
+		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ, &pWindow);	//Create command buffers and command pool
 
 		pWindow.addShaderFence.lock();
 		LuxShader i = pWindow.swapchain.shaders.add(shader);
@@ -429,8 +429,8 @@ namespace lux::core::c::shaders{
 		vkBeginCommandBuffer(pWindow.swapchain.shaders[vCShader].commandBuffers[0], &beginInfo);
 		pWindow.addShaderFence.unlock();
 		//Bind pipeline and descriptors and run the compute shader
-		vkCmdBindPipeline      (pWindow.swapchain.shaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipeline);
-		vkCmdBindDescriptorSets(pWindow.swapchain.shaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pWindow.swapchain.shaders[vCShader].descriptorSet, 0, nullptr);
+		vkCmdBindPipeline      (pWindow.swapchain.shaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipeline);
+		vkCmdBindDescriptorSets(pWindow.swapchain.shaders[vCShader].commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &pWindow.swapchain.shaders[vCShader].descriptorSet, 0, nullptr);
 		vkCmdDispatch          (pWindow.swapchain.shaders[vCShader].commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
 
 

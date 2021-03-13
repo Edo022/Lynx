@@ -37,6 +37,15 @@ initialized = true;
 
 
 	void Window::initWindow() {
+		//Create default shaders
+		CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
+		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 }, this);
+		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 }, this);
+		core::c::shaders::createDefLayout(LUX_DEF_SHADER_CLEAR,     4, { 0, 0, 0, 0 }, this);
+		//FIXME fix that 01010001 thing
+
+
+
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
 		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, &surface);
 
@@ -275,6 +284,12 @@ initialized = true;
 				// swapchain.recreate();
 				swapchain.renderFramebufferResized = true;
 			// }
+			if(swapchain.renderFramebufferResized) {
+				swapchain.renderFramebufferResized = false;
+				swapchain.recreate();
+				// goto redraw;
+			}
+
 		}
 
 

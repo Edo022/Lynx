@@ -20,7 +20,7 @@ def enginePath():
 
 
 
-vkdep = enginePath() + "/deps/" + ("Linux/" if pf() == "l" else "Windows/") + "Vulkan-1.2.162.0/x86_64/"
+vkdep = enginePath() + "/deps/" + ("Linux/" if pf() == "l" else "Windows/") + "Vulkan-1.2.170.0/x86_64/"
 # glfwdep = enginePath() + "/deps/Shared/glfw-3.3.2/"
 glfwdep = enginePath() + "/deps/Shared/glfw-3.3.3/"
 

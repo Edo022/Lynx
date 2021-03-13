@@ -62,11 +62,11 @@ namespace lux::core::render{
 		//Redraw frame if necessary
 		redraw:
 		glfwPollEvents();
-		if(pWindow.swapchain.renderFramebufferResized) {
-			pWindow.swapchain.renderFramebufferResized = false;
-			pWindow.swapchain.recreate();
-			// goto redraw;
-		}
+		// if(pWindow.swapchain.renderFramebufferResized) {
+		// 	pWindow.swapchain.renderFramebufferResized = false;
+		// 	pWindow.swapchain.recreate();
+		// 	// goto redraw;
+		// }
 
 
 		//Acquire swapchain image
@@ -133,6 +133,7 @@ namespace lux::core::render{
 		graphicsQueueSubmit_m.lock();
 			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 3, submitInfos, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
 		graphicsQueueSubmit_m.unlock();
+
 
 
 

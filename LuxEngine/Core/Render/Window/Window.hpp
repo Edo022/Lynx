@@ -24,6 +24,9 @@ namespace lux{
 		vram::ptr<int32, VRam, Storage> iOut_g  = nullptr;	//Packed color output of the window
 		vram::ptr<int32, VRam, Storage> zBuff_g = nullptr;	//TODO remove. use render space assembler
 
+		// VkPipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
+		RtArray<LuxShaderLayout_t>	CShadersLayouts;
+
 		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces; //FIXME MAKE WINDOW-LOCAL
 		void addRenderSpace(obj::RenderSpace2D* pRenderSpace);
 

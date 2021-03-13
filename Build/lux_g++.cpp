@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 
 
     //Add app dependencies
-    auto vkdep   = string(enginePath) + "/deps/" + gettp() + "/Vulkan-1.2.162.0/x86_64/";
+    auto vkdep   = string(enginePath) + "/deps/" + gettp() + "/Vulkan-1.2.170.0/x86_64/";
     // auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.2/";
     auto glfwdep = string(enginePath) + "/deps/Shared/glfw-3.3.3/";
 
