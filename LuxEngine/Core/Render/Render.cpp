@@ -22,8 +22,8 @@
 
 
 namespace lux::core::render{
-	alignCache RtArray<obj::Base*>  objUpdates2D;
-	alignCache std::mutex              objUpdates2D_f;
+	alignCache RtArray<obj::Base*> objUpdates2D;
+	alignCache std::mutex          objUpdates2D_f;
 	alignCache std::mutex graphicsQueueSubmit_m;
 	alignCache std::mutex presentQueueSubmit_m;
 
@@ -53,141 +53,142 @@ namespace lux::core::render{
 
 
 
-	//TODO multithreaded submit and command creation
 	void drawFrame(Window& pWindow) {
-		if(pWindow.swapchain.shaders.count() <= 1) return;
-		vkWaitForFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame], false, INT_MAX);
+		pWindow.running = true;
+		while(pWindow.running) {
+			sleep(0); //Prevent extra overhead when no object has to be rendered
+			// if(pWindow.swapchain.shaders.count() <= 1) return;
+			if(pWindow.swapchain.shaders.count() <= 1) continue;
+			vkWaitForFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame], false, INT_MAX);
 
 
-		//Redraw frame if necessary
-		redraw:
-		// glfwPollEvents(); //FIXME MOVE TO DEDICATED THREAD
-		if(pWindow.swapchain.renderFramebufferResized) {
-			pWindow.swapchain.renderFramebufferResized = false;
-			// graphicsQueueSubmit_m.lock();
-			pWindow.swapchain.recreate();
-			goto redraw;
-			// graphicsQueueSubmit_m.unlock();
-		}
-
-
-		//Acquire swapchain image
-		uint32 imageIndex;
-		{
-			switch(vkAcquireNextImageKHR(dvc::graphics.LD, pWindow.swapchain.swapchain, INT_MAX, pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
-				case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-				// case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate(false);  return;
-				case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate();  return;
-				default: Failure printf("Failed to acquire swapchain image");
+			//Redraw frame if necessary
+			redraw:
+			if(pWindow.swapchain.renderFramebufferResized) {
+				pWindow.swapchain.renderFramebufferResized = false;
+				pWindow.swapchain.recreate();
+				goto redraw;
 			}
-		}
 
 
-
-
-		//TODO don't recreate the command buffer array every time
-		//TODO use a staging buffer
-		//Update render result submitting the command buffers to the compute queues
-		const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
-		pWindow.addShaderFence.lock();
-			pWindow.swapchain.shadersCBs.resize(pWindow.swapchain.shaders.count());
-			for(uint32 i = 0; i < pWindow.swapchain.shaders.count(); ++i) {
-				pWindow.swapchain.shadersCBs[i] = pWindow.swapchain.shaders[i].commandBuffers[0];
-			}
-		pWindow.addShaderFence.unlock();
-
-
-
-
-		const VkSubmitInfo submitInfos[]{
-			{ //Draw objects
-				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.waitSemaphoreCount   = 1,
-				.pWaitSemaphores      = &pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame],
-				.pWaitDstStageMask    = waitStages,
-				.commandBufferCount   = pWindow.swapchain.shadersCBs.count(),
-				.pCommandBuffers      = pWindow.swapchain.shadersCBs.begin(),
-				.signalSemaphoreCount = 1,
-				.pSignalSemaphores    = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
-			},
-			{ //Convert and clear shader
-				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.waitSemaphoreCount   = 1,
-				.pWaitSemaphores      = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
-				.pWaitDstStageMask    = waitStages,
-				.commandBufferCount   = 1,
-				.pCommandBuffers      = &pWindow.swapchain.shaders[0].commandBuffers[0],
-				.signalSemaphoreCount = 1,
-				.pSignalSemaphores    = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame]
-			},
-			{ //Copy shader
-				.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-				.waitSemaphoreCount   = 1,
-				.pWaitSemaphores      = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame],
-				.pWaitDstStageMask    = waitStages,
-				.commandBufferCount   = 1,
-				.pCommandBuffers      = &pWindow.copyCommandBuffers[imageIndex],
-				.signalSemaphoreCount = 1,
-				.pSignalSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame]
-			}
-		};
-		vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
-		graphicsQueueSubmit_m.lock();
-			dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 3, submitInfos, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
-		graphicsQueueSubmit_m.unlock();
-
-
-
-
-		{ //Present frame
-			const VkPresentInfoKHR presentInfo{
-				.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-				.waitSemaphoreCount = 1,
-				.pWaitSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame],
-				.swapchainCount     = 1,
-				.pSwapchains        = &pWindow.swapchain.swapchain,
-				.pImageIndices      = &imageIndex
-			};
-
-			presentQueueSubmit_m.lock();
-				auto presentResult = vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
-			presentQueueSubmit_m.unlock();
-			switch(presentResult){
-				case VK_SUCCESS:  break;
-				case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: { //TODO maybe suboptimal can still be used
-					pWindow.swapchain.recreate();
-					goto redraw;
+			//Acquire swapchain image
+			uint32 imageIndex;
+			{
+				switch(vkAcquireNextImageKHR(dvc::graphics.LD, pWindow.swapchain.swapchain, INT_MAX, pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) { //FIXME DONT DEPEND ON A WINDOW
+					case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
+					// case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate();  return;
+					case VK_ERROR_OUT_OF_DATE_KHR: pWindow.swapchain.recreate();  continue;
+					default: Failure printf("Failed to acquire swapchain image");
 				}
-				default: dbg::printError("Failed to present swapchain image");
 			}
 
-		}
-
-		//Update frame number and flush the window data
-		pWindow.swapchain.renderCurrentFrame = (pWindow.swapchain.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
-		glfwSwapBuffers(pWindow.window);
 
 
 
+			//TODO don't recreate the command buffer array every time
+			//TODO use a staging buffer
+			//Update render result submitting the command buffers to the compute queues
+			const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
+			pWindow.addShaderFence.lock();
+				pWindow.swapchain.shadersCBs.resize(pWindow.swapchain.shaders.count());
+				for(uint32 i = 0; i < pWindow.swapchain.shaders.count(); ++i) {
+					pWindow.swapchain.shadersCBs[i] = pWindow.swapchain.shaders[i].commandBuffers[0];
+				}
+			pWindow.addShaderFence.unlock();
 
-		//TODO parallelize work from a secondary render thread
-		//Fix objects update requests
-		if(objUpdates2D.count() > 0) {
-			objUpdates2D_f.lock();
-			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			for(uint32 i = 0; i < objUpdates2D.count(); i++) {
-				objUpdates2D[i]->render.updated = true;
-				vkCmdUpdateBuffer(
-					cb,
-					objUpdates2D[i]->render.localData.cell->csc.buffer,
-					objUpdates2D[i]->render.localData.cell->localOffset,
-					objUpdates2D[i]->cellSize,
-					(void*)objUpdates2D[i]->render.data
-				);
+
+
+
+			const VkSubmitInfo submitInfos[]{
+				{ //Draw objects
+					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+					.waitSemaphoreCount   = 1,
+					.pWaitSemaphores      = &pWindow.swapchain.s_imageAcquired[pWindow.swapchain.renderCurrentFrame],
+					.pWaitDstStageMask    = waitStages,
+					.commandBufferCount   = pWindow.swapchain.shadersCBs.count(),
+					.pCommandBuffers      = pWindow.swapchain.shadersCBs.begin(),
+					.signalSemaphoreCount = 1,
+					.pSignalSemaphores    = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
+				},
+				{ //Convert and clear shader
+					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+					.waitSemaphoreCount   = 1,
+					.pWaitSemaphores      = &pWindow.swapchain.s_objectsRendered[pWindow.swapchain.renderCurrentFrame],
+					.pWaitDstStageMask    = waitStages,
+					.commandBufferCount   = 1,
+					.pCommandBuffers      = &pWindow.swapchain.shaders[0].commandBuffers[0],
+					.signalSemaphoreCount = 1,
+					.pSignalSemaphores    = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame]
+				},
+				{ //Copy shader
+					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+					.waitSemaphoreCount   = 1,
+					.pWaitSemaphores      = &pWindow.swapchain.s_clear[pWindow.swapchain.renderCurrentFrame],
+					.pWaitDstStageMask    = waitStages,
+					.commandBufferCount   = 1,
+					.pCommandBuffers      = &pWindow.copyCommandBuffers[imageIndex],
+					.signalSemaphoreCount = 1,
+					.pSignalSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame]
+				}
+			};
+			vkResetFences(dvc::graphics.LD, 1, &pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]);
+			graphicsQueueSubmit_m.lock();
+				dbg::checkVk(vkQueueSubmit(dvc::graphics.graphicsQueue, 3, submitInfos, pWindow.swapchain.f_imageRendered[pWindow.swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+			graphicsQueueSubmit_m.unlock();
+
+
+
+
+			{ //Present frame
+				const VkPresentInfoKHR presentInfo{
+					.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+					.waitSemaphoreCount = 1,
+					.pWaitSemaphores    = &pWindow.swapchain.s_copy[pWindow.swapchain.renderCurrentFrame],
+					.swapchainCount     = 1,
+					.pSwapchains        = &pWindow.swapchain.swapchain,
+					.pImageIndices      = &imageIndex
+				};
+
+				presentQueueSubmit_m.lock();
+					auto presentResult = vkQueuePresentKHR(dvc::graphics.presentQueue, &presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+				presentQueueSubmit_m.unlock();
+				switch(presentResult){
+					case VK_SUCCESS:  break;
+					case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: { //TODO maybe suboptimal can still be used
+						pWindow.swapchain.recreate();
+						goto redraw;
+					}
+					default: dbg::printError("Failed to present swapchain image");
+				}
+
 			}
-			core::render::cmd::endSingleTimeCommands(cb); //FIXME USE LOCAL COMMAND BUFFER INSTEAD OF THE GLOBAL ONE
-			objUpdates2D.clear();
-			objUpdates2D_f.unlock();
+
+			//Update frame number and flush the window data
+			pWindow.swapchain.renderCurrentFrame = (pWindow.swapchain.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
+			glfwSwapBuffers(pWindow.window);
+
+
+
+
+			//TODO parallelize work from a secondary render thread
+			//Fix objects update requests
+			if(objUpdates2D.count() > 0) {
+				objUpdates2D_f.lock();
+				VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+				for(uint32 i = 0; i < objUpdates2D.count(); i++) {
+					objUpdates2D[i]->render.updated = true;
+					vkCmdUpdateBuffer(
+						cb,
+						objUpdates2D[i]->render.localData.cell->csc.buffer,
+						objUpdates2D[i]->render.localData.cell->localOffset,
+						objUpdates2D[i]->cellSize,
+						(void*)objUpdates2D[i]->render.data
+					);
+				}
+				core::render::cmd::endSingleTimeCommands(cb); //FIXME USE LOCAL COMMAND BUFFER INSTEAD OF THE GLOBAL ONE
+				objUpdates2D.clear();
+				objUpdates2D_f.unlock();
+			}
 		}
 	}
 

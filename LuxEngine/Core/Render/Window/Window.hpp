@@ -90,32 +90,32 @@ namespace lux{
     };
 
 
-	 VkCommandPool				commandPool = nullptr;
-		VkCommandPool            copyCommandPool    = nullptr;
+		VkCommandPool commandPool;
+		VkCommandPool copyCommandPool;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
-		VkCommandBuffer          clearCommandBuffer = nullptr;
-		LuxShader					clearShader = 0;
-	 std::mutex							addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
+		VkCommandBuffer clearCommandBuffer;
+		LuxShader clearShader;
+		std::mutex addShaderFence;		//A fence that synchronizes the creation of a new object's shader and the frame render
 
 
 		void loop();
-		bool running = true;
+		bool running = false;
 		bool initialized = false;
-Thread t;
-		Window(){
+		Thread t;
 
+
+
+
+		Window(){
 			t(*this, &Window::loop);
-	while(!initialized){}
-			// swapchain.bindedWindow = this;
-			// swapchain.swapchainCreate();
+			while(!initialized){ thr::self::yield(); }
 		}
 
 		void initWindow();
 		void createInstance();
 		void createDefaultCommandBuffers__();
 
-		//FIXME MOVE DESTRUCTOR TO .JOIN()
-		//FIXME or don't. if the data gets destroyed, the window can't be used
+
 		~Window(){
 			running = false;
 			t.join();

@@ -74,22 +74,11 @@ Object rendering
 
 
 namespace lux::core{
-	// extern double FPS;
 	extern bool   running;
-		extern Thread inputThr;
-
-	// extern bool   useVSync;
-
-	// extern lux::Thread FPSCounterThr;
-	// extern lux::Thread renderThr;
-void inputLoop();
+	extern Thread inputThr;
 
 
-
-	//Main
-	// void run(bool vUseVSync);
-	// void runFPSCounterThr();
-	// void runRenderThr();
+	void inputLoop();
 
 
 
