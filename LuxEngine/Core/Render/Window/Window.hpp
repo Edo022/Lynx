@@ -126,16 +126,9 @@ Thread t;
 
 
 
-
-
-
-		static void __attribute__((used)) framebufferResizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight) {
-		//glfwGetWindowUserPointer(pWindow) //TODO
-		// ((Window*)glfwGetWindowUserPointer(pWindow))->windowResizeFence.lock();  //from the last call of this function
-		((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
-		// ((Window*)glfwGetWindowUserPointer(pWindow))->windowResizeFence.unlock();
-	}
-
+		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
+			((Window*)glfwGetWindowUserPointer(pWindow))->resize(vWidth, vHeight);
+		}
+		void resize(int32 vWidth, int32 vHeight);
 	};
-	// extern Window window; //TODO REMOVE
 }

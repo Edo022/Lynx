@@ -1,4 +1,5 @@
 #include <vulkan/vulkan.h>
+#include <climits>
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
@@ -24,7 +25,7 @@ namespace lux{
 initialized = true;
 		while(running) {
 			// LuxTime renderTime = luxStartChrono();
-			glfwPollEvents();
+			// glfwPollEvents(); //FIXME REMOVE. MOVED TO DRAW FRAME
 			/*" //TODO
 				On some platforms, a window move, resize or menu operation will cause event processing to block. T
 				his is due to how event processing is designed on those platforms.
@@ -126,7 +127,7 @@ initialized = true;
 
 		// if(__test__set_callbacks__){ //Set callbacks //FIXME WRITE WINDOW-LOCAL CALLBACKS
 			glfwSetWindowUserPointer      (window, this);
-			glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
+			glfwSetFramebufferSizeCallback(window, resizeCallback);
 
 			glfwSetCursorPosCallback      (window, input::mouseCursorPosCallback);
 			glfwSetMouseButtonCallback    (window, input::mouseButtonCallback);
@@ -189,20 +190,25 @@ initialized = true;
 
 		{ //Copy
 			//Create command pool
-			static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
+			// static VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
+			VkCommandPoolCreateInfo commandPoolCreateInfo = { 			//Create command pool create infos to create the command pool
 				.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,				//Set structure type
-				.flags = 0															//Default falgs
+				.flags = 0,															//Default falgs
+				.queueFamilyIndex = core::dvc::compute.PD.indices.computeFamilies[0]	//Set the compute family where to bind the command pool
 			}; //FIXME
-			commandPoolCreateInfo.queueFamilyIndex = core::dvc::compute.PD.indices.computeFamilies[0];	//Set the compute family where to bind the command pool
+			// commandPoolCreateInfo.queueFamilyIndex = core::dvc::compute.PD.indices.computeFamilies[0];	//Set the compute family where to bind the command pool
 			dbg::checkVk(vkCreateCommandPool(core::dvc::compute.LD, &commandPoolCreateInfo, nullptr, &copyCommandPool), "Unable to create command pool");
 
 			//Allocate one command buffer for each swapchain image
-			static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
+			// static VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
+			VkCommandBufferAllocateInfo commandBufferAllocateInfo = { 	//Create command buffer allocate infos to allocate the command buffer in the command pool
 				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,			//Set structure type
-				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY							//Set the command buffer as a primary level command buffer
+				.commandPool = copyCommandPool,			//Set command pool where to allocate the command buffer
+				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,							//Set the command buffer as a primary level command buffer
+				.commandBufferCount = swapchain.images.count()
 			};
-			commandBufferAllocateInfo.commandPool = copyCommandPool;			//Set command pool where to allocate the command buffer
-			commandBufferAllocateInfo.commandBufferCount = swapchain.images.count();
+			// commandBufferAllocateInfo.commandPool = copyCommandPool;			//Set command pool where to allocate the command buffer
+			// commandBufferAllocateInfo.commandBufferCount = swapchain.images.count();
 			dbg::checkVk(vkAllocateCommandBuffers(core::dvc::compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.begin()), "Unable to allocate command buffers");
 
 
@@ -211,7 +217,8 @@ initialized = true;
 			//Record a present command buffers for each swapchain images
 			for(uint32 imgIndex = 0; imgIndex < swapchain.images.count(); imgIndex++) {
 				//Start recording commands
-				static VkCommandBufferBeginInfo beginInfo = { 						//Create begin infos to start recording the command buffer
+				// static VkCommandBufferBeginInfo beginInfo = { 						//Create begin infos to start recording the command buffer
+				VkCommandBufferBeginInfo beginInfo = { 						//Create begin infos to start recording the command buffer
 					.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,				//Set structure type
 					.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT				//Set command buffer type. Simultaneous use allows the command buffer to be executed multiple times
 				};
@@ -255,5 +262,20 @@ initialized = true;
 			CRenderSpaces.add(pRenderSpace);
 			pRenderSpace->init(*this);
 		}
+
+
+
+		 void Window::resize(int32 vWidth, int32 vHeight) {
+			// ((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
+
+			// Window* w = (Window*)glfwGetWindowUserPointer(pWindow);
+			// if(initialized){
+			// 	if(swapchain.shaders.count() <= 1) return;
+			// 	vkWaitForFences(core::dvc::graphics.LD, 1, &swapchain.f_imageRendered[swapchain.renderCurrentFrame], false, INT_MAX);
+				// swapchain.recreate();
+				swapchain.renderFramebufferResized = true;
+			// }
+		}
+
 
 }

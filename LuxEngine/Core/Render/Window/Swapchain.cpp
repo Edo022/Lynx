@@ -190,7 +190,7 @@ namespace lux::core::wnd{
 		// if(vWindowResized) bindedWindow->windowResizeFence.lock();	//Sync with framebufferResizeCallback //TODO probably useless, as the variable is not shared
 
 		//TODO dont destroy it every time
-		static int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
+		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
 			destroy();								//Clean the old swapchain

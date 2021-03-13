@@ -56,8 +56,8 @@ namespace lux::input{
 	//FIXME BROKEN FUNCTION
 	void keyCallback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
 		//FULL SCREEN
-		static int32 fsstate = 0;
-		static int32 wmx, wmy, wmw, wmh;
+		int32 fsstate = 0;
+		int32 wmx, wmy, wmw, wmh;
 		if(key == LUX_KEY_F11 && action == GLFW_PRESS) {
 			int32 mx, my, mw, mh;
 			glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &mx, &my, &mw, &mh);
@@ -83,7 +83,7 @@ namespace lux::input{
 		//}
 
 
-		static uint16 yMin = 0, yMax = lux::input::inStates->sequences.count() - 1, x = 0;
+		uint16 yMin = 0, yMax = lux::input::inStates->sequences.count() - 1, x = 0;
 
 		if(action != GLFW_REPEAT) {												//If the action is not repeat
 			uint16 keyCode = (key | __lp_to_lux_act(action));						//Calculate the key code
