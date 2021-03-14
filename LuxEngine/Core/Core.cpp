@@ -15,7 +15,7 @@
 
 
 namespace lux::core{
-	alignCache bool   running;
+	alignCache std::atomic<bool>   running;
 	alignCache Thread inputThr;
 
 

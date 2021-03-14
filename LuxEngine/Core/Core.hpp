@@ -74,7 +74,7 @@ Object rendering
 
 
 namespace lux::core{
-	extern bool   running;
+	extern std::atomic<bool> running;
 	extern Thread inputThr;
 
 

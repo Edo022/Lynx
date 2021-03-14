@@ -1,6 +1,7 @@
 #pragma once
 #define LUX_H_WINDOW
 #include <GLFW/glfw3.h>
+#include <atomic>
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
@@ -94,8 +95,8 @@ namespace lux{
 
 
 
-		bool running     = false;
-		bool initialized = false;
+		std::atomic<bool> running     = false;
+		std::atomic<bool> initialized = false;
 		Thread t;
 
 
