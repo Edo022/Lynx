@@ -303,11 +303,19 @@ namespace lux::vram{
 
 
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::AUTO){
+			static std::mutex test_m;
+			test_m.lock();
 			checkInit(); checkAllocSize(vSize, vClass);
 			evaluateCellClass(vSize, vClass);
 
 			if(!Super::cell) alloc_(vSize, vClass);
-			else dbg::printError("VRAM realloc have not beed implemented yet");
+			else{
+				dbg::checkCond(Super::mapped, "realloc() can only be called on unmapped memory");
+				free();
+				alloc_(vSize, vClass);
+				//FIXME write a proper realloc function
+			}
+			test_m.unlock();
 		}
 		// /**
 		//  * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it

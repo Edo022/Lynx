@@ -134,7 +134,7 @@ namespace lux::core::wnd{
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 		VkSwapchainCreateInfoKHR createInfo{
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-			.surface          = bindedWindow->surface,
+			.surface          = bindedWindow->surface, //BUG DONT USE POINTER
 			.minImageCount    = minImageCount,
 			.imageFormat      = surfaceFormat.format,
 			.imageColorSpace  = surfaceFormat.colorSpace,
@@ -190,9 +190,21 @@ namespace lux::core::wnd{
 		//TODO dont destroy it every time
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
-			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
 			destroy();								//Clean the old swapchain
+			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
+			// bindedWindow->iOut_g. realloc(width * height * 4);			//A8  R8  G8  B8  UI
+			// bindedWindow->fOut_G. realloc(width * height * 4 * 4);		//A32 R32 G32 B32 UF
+			// bindedWindow->zBuff_g.realloc(width * height * 4);			//A8  R8  G8  B8  UI
+			// // bindedWindow->wSize_g.realloc(4 * 2);							//Create cell for window size //TODO use dedicated storage and update every time
+
+			// bindedWindow->clearShader = core::c::shaders::newShader(
+			// 	RtArray<vram::Alloc_b<int32>>{ bindedWindow->fOut_G, bindedWindow->iOut_g, bindedWindow->zBuff_g, bindedWindow->wSize_g },
+			// 	LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1,
+			// 	*bindedWindow
+			// );
+
 			create(false);							//Create a new swapchain
+
 
 
 			//Update the window size buffer
