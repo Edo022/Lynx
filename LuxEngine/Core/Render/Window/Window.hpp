@@ -5,7 +5,7 @@
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-
+// #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
 
 
 
@@ -16,6 +16,7 @@
 typedef uint32 LuxShader;
 namespace lux::obj{
 	struct RenderSpace2D;
+	struct Base;
 }
 namespace lux{
 	struct Window{
@@ -124,7 +125,8 @@ namespace lux{
 		void init();
 		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
 		void add(obj::RenderSpace2D* pRenderSpace);
-
+		RtArray<obj::Base*>	objUpdates2D;
+		std::mutex          objUpdates2D_f;
 
 		~Window(){
 			running = false;

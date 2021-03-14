@@ -32,12 +32,14 @@ namespace lux::obj{
 	//Only render threads can directly access object memory and command buffers
 	void Base::updateBase() {
 		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
-		core::render::objUpdates2D_f.lock();
+		if(!render.parentWindow) return;
+		render.parentWindow->objUpdates2D_f.lock();
 		if(render.updated) {
 			render.updated = false;
-			core::render::objUpdates2D.add(this);
+			// core::render::objUpdates2D.add(this);
+			render.parentWindow->objUpdates2D.add(this);
 		}
-		core::render::objUpdates2D_f.unlock();
+		render.parentWindow->objUpdates2D_f.unlock();
 	}
 
 

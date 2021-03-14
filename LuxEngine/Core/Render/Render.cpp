@@ -22,8 +22,8 @@
 
 
 namespace lux::core::render{
-	alignCache RtArray<obj::Base*> objUpdates2D;
-	alignCache std::mutex          objUpdates2D_f;
+	// alignCache RtArray<obj::Base*> objUpdates2D;
+	// alignCache std::mutex          objUpdates2D_f;
 	alignCache std::mutex graphicsQueueSubmit_m;
 	alignCache std::mutex presentQueueSubmit_m;
 
@@ -172,23 +172,25 @@ namespace lux{
 
 			//TODO parallelize work from a secondary render thread
 			//Fix objects update requests
-			if(core::render::objUpdates2D.count() > 0) {
-				core::render::objUpdates2D_f.lock();
-				VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-				for(uint32 i = 0; i < core::render::objUpdates2D.count(); i++) {
-					core::render::objUpdates2D[i]->render.updated = true;
+			if(objUpdates2D.count() > 0) {
+				objUpdates2D_f.lock();
+				VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE LOCAL BUFFER INSTEAD OF ONE TIME BUFFER
+				for(uint32 i = 0; i < objUpdates2D.count(); i++) {
+					objUpdates2D[i]->render.updated = true;
 					vkCmdUpdateBuffer(
 						cb,
-						core::render::objUpdates2D[i]->render.localData.cell->csc.buffer,
-						core::render::objUpdates2D[i]->render.localData.cell->localOffset,
-						core::render::objUpdates2D[i]->cellSize,
-						(void*)core::render::objUpdates2D[i]->render.data
+						objUpdates2D[i]->render.localData.cell->csc.buffer,
+						objUpdates2D[i]->render.localData.cell->localOffset,
+						objUpdates2D[i]->cellSize,
+						(void*)objUpdates2D[i]->render.data
 					);
 				}
 				core::render::cmd::endSingleTimeCommands(cb); //FIXME USE LOCAL COMMAND BUFFER INSTEAD OF THE GLOBAL ONE
-				core::render::objUpdates2D.clear();
-				core::render::objUpdates2D_f.unlock();
+				objUpdates2D.clear();
+				objUpdates2D_f.unlock();
 			}
+			//BUG ^^^ MAKE UPDATES WINDOW-LOCAL
+			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 		}
 	}
 }

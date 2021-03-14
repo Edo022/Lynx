@@ -178,6 +178,7 @@ namespace lux{
 			}
 
 			virtual void init(Window& pWindow) override {
+				render.parentWindow = &pWindow;
 				for(u32 i = 0; i < children.count(); ++i){
 					if(children.isValid(i)) children[i]->init(pWindow);
 				}

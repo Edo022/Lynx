@@ -8,7 +8,7 @@
 
 namespace lux::core::render::cmd{
 	extern VkCommandPool			singleTimeCommandPool;
-	extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
+	// extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
 
 
 	void				createGraphicsCommandPool();

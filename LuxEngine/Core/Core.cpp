@@ -22,6 +22,7 @@ namespace lux::core{
 
 
 	void inputLoop(){
+		_dbg(thr::self::setName("Lux | Main"));
 		while(running){
 			glfwWaitEvents();
 			sleep(0);
