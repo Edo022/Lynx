@@ -36,7 +36,6 @@ namespace lux{
 		VkCommandPool commandPool;
 		VkCommandPool copyCommandPool;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
-		// VkCommandBuffer clearCommandBuffer;
 		LuxShader clearShader;
 		std::mutex addShaderFence;
 
