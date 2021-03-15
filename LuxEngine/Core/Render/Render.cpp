@@ -59,15 +59,15 @@ namespace lux{
 		running = true;
 		while(running) {
 			sleep(0); //Prevent extra overhead when no object has to be rendered
-			if(swapchain.shaders.count() <= 1) continue;
-			vkWaitForFences(core::dvc::graphics.LD, 1, &swapchain.f_imageRendered[swapchain.renderCurrentFrame], false, INT_MAX);
+			if(swp.shaders.count() <= 1) continue;
+			vkWaitForFences(core::dvc::graphics.LD, 1, &swp.f_imageRendered[swp.renderCurrentFrame], false, INT_MAX);
 
 
 			//Redraw frame if necessary
 			redraw:
-			if(swapchain.renderFramebufferResized) {
-				swapchain.renderFramebufferResized = false;
-				swapchain.recreate();
+			if(swp.renderFramebufferResized) {
+				swp.renderFramebufferResized = false;
+				swp.recreate();
 				goto redraw;
 			}
 
@@ -75,9 +75,9 @@ namespace lux{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swapchain.swapchain, INT_MAX, swapchain.s_imageAcquired[swapchain.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swp.swapchain, INT_MAX, swp.s_imageAcquired[swp.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
 					case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-					case VK_ERROR_OUT_OF_DATE_KHR: swapchain.recreate();  continue;
+					case VK_ERROR_OUT_OF_DATE_KHR: swp.recreate();  continue;
 					default: Failure printf("Failed to acquire swapchain image");
 				}
 			}
@@ -90,9 +90,9 @@ namespace lux{
 			//Update render result submitting the command buffers to the compute queues
 			const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 			addShaderFence.lock();
-				swapchain.shadersCBs.resize(swapchain.shaders.count());
-				for(uint32 i = 0; i < swapchain.shaders.count(); ++i) {
-					swapchain.shadersCBs[i] = swapchain.shaders[i].commandBuffers[0];
+				swp.shadersCBs.resize(swp.shaders.count());
+				for(uint32 i = 0; i < swp.shaders.count(); ++i) {
+					swp.shadersCBs[i] = swp.shaders[i].commandBuffers[0];
 				}
 			addShaderFence.unlock();
 
@@ -103,37 +103,37 @@ namespace lux{
 				{ //Draw objects
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swapchain.s_imageAcquired[swapchain.renderCurrentFrame],
+					.pWaitSemaphores      = &swp.s_imageAcquired[swp.renderCurrentFrame],
 					.pWaitDstStageMask    = waitStages,
-					.commandBufferCount   = swapchain.shadersCBs.count(),
-					.pCommandBuffers      = swapchain.shadersCBs.begin(),
+					.commandBufferCount   = swp.shadersCBs.count(),
+					.pCommandBuffers      = swp.shadersCBs.begin(),
 					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swapchain.s_objectsRendered[swapchain.renderCurrentFrame],
+					.pSignalSemaphores    = &swp.s_objectsRendered[swp.renderCurrentFrame],
 				},
 				{ //Convert and clear shader
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swapchain.s_objectsRendered[swapchain.renderCurrentFrame],
+					.pWaitSemaphores      = &swp.s_objectsRendered[swp.renderCurrentFrame],
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
-					.pCommandBuffers      = &swapchain.shaders[0].commandBuffers[0],
+					.pCommandBuffers      = &swp.shaders[0].commandBuffers[0],
 					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swapchain.s_clear[swapchain.renderCurrentFrame]
+					.pSignalSemaphores    = &swp.s_clear[swp.renderCurrentFrame]
 				},
 				{ //Copy shader
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swapchain.s_clear[swapchain.renderCurrentFrame],
+					.pWaitSemaphores      = &swp.s_clear[swp.renderCurrentFrame],
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
 					.pCommandBuffers      = &copyCommandBuffers[imageIndex],
 					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swapchain.s_copy[swapchain.renderCurrentFrame]
+					.pSignalSemaphores    = &swp.s_copy[swp.renderCurrentFrame]
 				}
 			};
-			vkResetFences(core::dvc::graphics.LD, 1, &swapchain.f_imageRendered[swapchain.renderCurrentFrame]);
+			vkResetFences(core::dvc::graphics.LD, 1, &swp.f_imageRendered[swp.renderCurrentFrame]);
 			core::render::graphicsQueueSubmit_m.lock();
-				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swapchain.f_imageRendered[swapchain.renderCurrentFrame]), "Failed to submit graphics command buffer");
+				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swp.f_imageRendered[swp.renderCurrentFrame]), "Failed to submit graphics command buffer");
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -143,9 +143,9 @@ namespace lux{
 				const VkPresentInfoKHR presentInfo{
 					.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 					.waitSemaphoreCount = 1,
-					.pWaitSemaphores    = &swapchain.s_copy[swapchain.renderCurrentFrame],
+					.pWaitSemaphores    = &swp.s_copy[swp.renderCurrentFrame],
 					.swapchainCount     = 1,
-					.pSwapchains        = &swapchain.swapchain,
+					.pSwapchains        = &swp.swapchain,
 					.pImageIndices      = &imageIndex
 				};
 
@@ -155,7 +155,7 @@ namespace lux{
 				switch(presentResult){
 					case VK_SUCCESS:  break;
 					case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: { //TODO maybe suboptimal can still be used
-						swapchain.recreate();
+						swp.recreate();
 						goto redraw;
 					}
 					default: dbg::printError("Failed to present swapchain image");
@@ -164,7 +164,7 @@ namespace lux{
 			}
 
 			//Update frame number and flush the window data
-			swapchain.renderCurrentFrame = (swapchain.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
+			swp.renderCurrentFrame = (swp.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
 			glfwSwapBuffers(window);
 
 
@@ -174,7 +174,7 @@ namespace lux{
 			//Fix objects update requests
 			if(objUpdates2D.count() > 0) {
 				objUpdates2D_f.lock();
-				VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE LOCAL BUFFER INSTEAD OF ONE TIME BUFFER
+				VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 				for(uint32 i = 0; i < objUpdates2D.count(); i++) {
 					objUpdates2D[i]->render.updated = true;
 					vkCmdUpdateBuffer(
@@ -185,7 +185,7 @@ namespace lux{
 						(void*)objUpdates2D[i]->render.data
 					);
 				}
-				core::render::cmd::endSingleTimeCommands(cb); //FIXME USE LOCAL COMMAND BUFFER INSTEAD OF THE GLOBAL ONE
+				core::render::cmd::endSingleTimeCommands(cb);
 				objUpdates2D.clear();
 				objUpdates2D_f.unlock();
 			}

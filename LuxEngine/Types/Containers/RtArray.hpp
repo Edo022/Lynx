@@ -24,7 +24,7 @@ namespace lux {
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
 		using Super = ContainerBase<type, iter>;
 		genInitCheck;
-
+		// _dbg(type* viewer;)
 
 
 

@@ -36,14 +36,14 @@ namespace lux{
 		VkCommandPool commandPool;
 		VkCommandPool copyCommandPool;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
-		VkCommandBuffer clearCommandBuffer;
+		// VkCommandBuffer clearCommandBuffer;
 		LuxShader clearShader;
 		std::mutex addShaderFence;
 
 
 
 		VkSurfaceKHR surface;
-		core::wnd::Swapchain swapchain;
+		core::wnd::Swapchain swp;
 
         VkImageMemoryBarrier readToWriteBarrier{ 			        	//Create memory barrier object
 			.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
@@ -110,7 +110,7 @@ namespace lux{
 
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
-			((Window*)glfwGetWindowUserPointer(pWindow))->swapchain.renderFramebufferResized = true;
+			((Window*)glfwGetWindowUserPointer(pWindow))->swp.renderFramebufferResized = true;
 		}
 
 

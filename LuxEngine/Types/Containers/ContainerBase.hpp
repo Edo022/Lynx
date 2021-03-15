@@ -143,8 +143,8 @@ namespace lux {
 	public:
 		genInitCheck;
 		ram::ptr<type> data;	//Elements of the array
-
-
+		_dbg(type* viewer;)
+		#define updateView() _dbg(if(data && data.size()) viewer = data.begin(); else viewer = nullptr)
 
 
 		// Inititalize and destroy elements ---------------------------------------------------------------------------------------------------------//
@@ -158,6 +158,7 @@ namespace lux {
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
+			updateView();
 			     if(oldCount < count()) lux::__pvt::cbFwd_t<type, iter>::initRange(oldCount, count() - 1);
 			else if(oldCount > count()) lux::__pvt::cbFwd_t<type, iter>::destroyRange(count(), oldCount - 1);
 		}
@@ -166,6 +167,7 @@ namespace lux {
 		template<class cType, class cIter> inline void cat(const ContainerBase<cType, cIter>& pCont) {
 			auto oldCount = count();
 			data.reallocArr(oldCount + pCont.count());
+			updateView();
 			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
 		}
 		//Concatenates a single element and initializes it by calling its copy constructor
@@ -183,13 +185,14 @@ namespace lux {
 
 
 		//Unallocated
-		alwaysInline ContainerBase() : data{ nullptr } {}
+		alwaysInline ContainerBase() : data{ nullptr } { updateView(); }
 
 
 		//Count constructor
 		inline ContainerBase(const iter vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
+			updateView();
 			lux::__pvt::cbFwd_t<type, iter>::initRange(0, count() - 1);
 		}
 
@@ -204,6 +207,7 @@ namespace lux {
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
 			)
 			data{ pCont.size() } {						//Allocate new elements
+			updateView();
 			for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
 			}
@@ -212,6 +216,7 @@ namespace lux {
 
 		alwaysInline ContainerBase(const std::initializer_list<type> vElms) :
 			data{ sizeof(type) * vElms.size() } {
+			updateView();
 			iter i = 0;
 			for(const type& elm : vElms) new(&data[i++]) type(elm);
 		}
@@ -234,6 +239,7 @@ namespace lux {
 
 		alwaysInline void move(ContainerBase<type, iter>& pCont) {
 			data = pCont.data; pCont.data = nullptr;
+			updateView();
 		}
 
 
@@ -242,6 +248,7 @@ namespace lux {
 			if(this == &pCont) return;
 			lux::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
+			updateView();
 			for(iter i = 0; i < pCont.count(); ++i) {
 				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
 			}

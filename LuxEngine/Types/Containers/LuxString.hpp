@@ -12,7 +12,7 @@ namespace lux {
 	//FIXME REMOVE. USE NORMAL STRLEN
 	static inline constexpr uint32 strlenl(const char8* str ) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 	static inline constexpr uint32 strlenl(const wchar8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
-	#define updateView() _dbg(viewer = (char*)Super::data)
+	#define updateViewc() _dbg(viewer = (char*)Super::data)
 
 
 
@@ -29,7 +29,7 @@ namespace lux {
 		inline void cat(const char8* vString) {
 			Super::resize(Super::count() - 1); //Remove \0
 			Super::cat(String(vString));
-			updateView();
+			updateViewc();
 		}
 
 	public:
@@ -42,14 +42,14 @@ namespace lux {
 
 
 
-		inline String(                                 ) : Super(1) { Super::data[0] = '\0'; updateView(); }
-		inline String(const char8* vString             ) : Super(strlenl(vString) + 1) { ram::cpy(vString, Super::data, Super::data.size()); updateView(); }
-		inline String(const char8* vString, uint64 vLen) : Super(vLen)	            { ram::cpy(vString, Super::data, Super::data.size()); updateView(); }
+		inline String(                                 ) : Super(1) { Super::data[0] = '\0'; updateViewc(); }
+		inline String(const char8* vString             ) : Super(strlenl(vString) + 1) { ram::cpy(vString, Super::data, Super::data.size()); updateViewc(); }
+		inline String(const char8* vString, uint64 vLen) : Super(vLen)	            { ram::cpy(vString, Super::data, Super::data.size()); updateViewc(); }
 
 		//Move constructor
-		inline String(String&& pString) { Super::move(pString); updateView(); }
+		inline String(String&& pString) { Super::move(pString); updateViewc(); }
 		//Copy constructor
-		inline String(const String& pString) : Super(pString, {}) { updateView(); }
+		inline String(const String& pString) : Super(pString, {}) { updateViewc(); }
 
 
 
@@ -106,7 +106,7 @@ namespace lux {
 		//move assignment
 		inline auto& operator=(String&& pString) {
 			Super::move(pString);
-			updateView();
+			updateViewc();
 			return *this;
 		}
 
@@ -114,7 +114,7 @@ namespace lux {
 		inline auto& operator=(const String& pString) {
 			checkInit(); isInit(pString);
 			Super::copy(pString);
-			updateView();
+			updateViewc();
 			return *this;
 		}
 
