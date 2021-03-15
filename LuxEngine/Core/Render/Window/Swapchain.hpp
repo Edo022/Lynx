@@ -13,17 +13,14 @@ namespace lux::core::wnd{
 	constexpr int32 __renderMaxFramesInFlight = 2;	//Default:2
 
 
-	struct Swapchain{
-		VkSwapchainKHR			swapchain;
-		RtArray<VkImage>		images;
-		RtArray<VkImageView>	imageViews;
-		VkFormat				imageFormat;
-		VkExtent2D				swapchainExtent;
-		RtArray<VkFramebuffer>	framebuffers;
 
-		Window* bindedWindow;
+
+	struct Swapchain{
+	private:
+		friend class lux::Window;
+
+		VkSwapchainCreateInfoKHR createInfo;
 		VkRenderPass renderPass;
-		bool renderFramebufferResized = false;
 		bool useVSync = true;
 
 		RtArray<VkSemaphore> s_imageAcquired;
@@ -33,9 +30,34 @@ namespace lux::core::wnd{
 		RtArray<VkFence>     f_imageRendered;
 		int32                renderCurrentFrame = 0;
 
+
+		VkSurfaceCapabilitiesKHR getCapabilities();
+		RtArray<VkSurfaceFormatKHR> getSurfaceFormats();
+		RtArray<VkPresentModeKHR> getPresentModes();
+
+		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
+		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
+		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
+
+		VkSwapchainKHR			swapchain;
+		RtArray<VkImage>		images;
+		RtArray<VkImageView>	imageViews;
+		VkFormat				imageFormat;
+		public: //FIXME
+		VkExtent2D				swapchainExtent;
+		private:
+		RtArray<VkFramebuffer>	framebuffers;
+
+
+
+
+	public:
+		Window* bindedWindow;
+		bool renderFramebufferResized = false;
+
 		RtArray<LuxShader_t, uint32> shaders;
 		RtArray<VkCommandBuffer>     shadersCBs;
-
 
 
 
@@ -43,49 +65,9 @@ namespace lux::core::wnd{
 		void create(bool vUseVSync);
 		void createRenderPass();
 		void createFramebuffers();
-		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
-		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
-		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
-		// void recreate(const bool vWindowResized);
 		void recreate();
 		void destroy();
 		~Swapchain();
-
-
-
-
-		struct Details {
-			VkSurfaceCapabilitiesKHR	capabilities;
-			RtArray<VkSurfaceFormatKHR>	formats;
-			RtArray<VkPresentModeKHR>	presentModes;
-		} details;
-		VkSwapchainCreateInfoKHR createInfo;
-
-		static Details __attribute__((used)) getDetails(const VkPhysicalDevice vDevice, const VkSurfaceKHR vSurface) {
-			Details details;
-
-			//Get surface capabilities
-			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vDevice, vSurface, &details.capabilities);
-
-			//Get surface formats
-			uint32 formatCount;
-			vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, vSurface, &formatCount, nullptr);
-			if(formatCount != 0) {
-				details.formats.resize(formatCount);
-				vkGetPhysicalDeviceSurfaceFormatsKHR(vDevice, vSurface, &formatCount, details.formats.begin());
-			}
-
-			//Get surface present modes
-			uint32 presentModeCount;
-			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, vSurface, &presentModeCount, nullptr);
-			if(presentModeCount != 0) {
-				details.presentModes.resize(presentModeCount);
-				vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, vSurface, &presentModeCount, details.presentModes.begin());
-			}
-
-			return details;
-		}
 	};
 }

@@ -125,31 +125,30 @@ namespace lux::core::wnd{
 
 		//Choose max image count. Minimum or minimum +1 if supported
 		// uint32 minImageCount = details.capabilities.minImageCount + 1;
-		VkSurfaceCapabilitiesKHR capabilities;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
+		auto capabilities = getCapabilities();
 		uint32 minImageCount = capabilities.minImageCount + 1;
 		if(capabilities.maxImageCount > 0 && minImageCount > capabilities.maxImageCount) {
 			minImageCount = capabilities.maxImageCount;
 		}
 
 
-		uint32 formatCount;
-		RtArray<VkSurfaceFormatKHR>	formats;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, nullptr);
-		if(formatCount != 0) {
-			formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, formats.begin());
-		}
-		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(formats) };
+		// uint32 formatCount;
+		// RtArray<VkSurfaceFormatKHR>	formats;
+		// vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, nullptr);
+		// if(formatCount != 0) {
+		// 	formats.resize(formatCount);
+		// 	vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, formats.begin());
+		// }
+		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
 
 
-		uint32 presentModeCount;
-		RtArray<VkPresentModeKHR>	presentModes;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, nullptr);
-		if(presentModeCount != 0) {
-			presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, presentModes.begin());
-		}
+		// uint32 presentModeCount;
+		// RtArray<VkPresentModeKHR>	presentModes;
+		// vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, nullptr);
+		// if(presentModeCount != 0) {
+		// 	presentModes.resize(presentModeCount);
+		// 	vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, presentModes.begin());
+		// }
 
 
 		//swapchain creation infos
@@ -175,7 +174,8 @@ namespace lux::core::wnd{
 			.preTransform   = capabilities.currentTransform,
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			// .presentMode    = choosePresentMode(details.presentModes),
-			.presentMode    = choosePresentMode(presentModes),
+			// .presentMode    = choosePresentMode(presentModes),
+			.presentMode    = choosePresentMode(getPresentModes()),
 			.clipped        = VK_TRUE,
 			.oldSwapchain   = VK_NULL_HANDLE,
 		};
@@ -246,7 +246,6 @@ namespace lux::core::wnd{
 			imageViews.resize(images.count());
 			for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
-			createRenderPass();
 			createFramebuffers();
 
 
@@ -279,16 +278,16 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::destroy() {
-		vkDestroyRenderPass(dvc::graphics.LD, renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : framebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		for(auto imageView   : imageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView,   nullptr);		//Destroy image views
-		// vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
 	}
 
 
 
 
 	Swapchain::~Swapchain(){
+		vkDeviceWaitIdle(core::dvc::graphics.LD);
+		vkDestroyRenderPass(dvc::graphics.LD, renderPass, nullptr);												//Destroy render pass
 		destroy();
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
 		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
@@ -397,5 +396,37 @@ namespace lux::core::wnd{
 
 		//Create render pass. Exit if an error occurs
 		dbg::checkVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
+	}
+
+
+
+
+	VkSurfaceCapabilitiesKHR Swapchain::getCapabilities(){
+		VkSurfaceCapabilitiesKHR capabilities;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
+		return capabilities;
+	}
+
+
+	RtArray<VkSurfaceFormatKHR> Swapchain::getSurfaceFormats(){
+		uint32 count;
+		RtArray<VkSurfaceFormatKHR>	formats;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &count, nullptr);
+		if(count != 0) {
+			formats.resize(count);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &count, formats.begin());
+		}
+		return formats;
+	}
+
+
+	RtArray<VkPresentModeKHR> Swapchain::getPresentModes(){
+		uint32 count; RtArray<VkPresentModeKHR> presentModes;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &count, nullptr);
+		if(count != 0) {
+			presentModes.resize(count);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &count, presentModes.begin());
+		}
+		return presentModes;
 	}
 }

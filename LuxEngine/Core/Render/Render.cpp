@@ -190,6 +190,7 @@ namespace lux{
 				objUpdates2D_f.unlock();
 			}
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
+			if(glfwWindowShouldClose(window)) return;
 		}
 	}
 }

@@ -19,6 +19,7 @@ namespace lux{
 		_dbg(thr::self::setName("App | Window"));
 		init();
 		draw();
+		close();
 	}
 
 
@@ -68,17 +69,15 @@ namespace lux{
 
 
 		{ //Initialize window buffers and count
-			// iOut_g. realloc(width * height * 4);			//A8  R8  G8  B8  UI
-			// fOut_g. realloc(width * height * 4 * 4);		//A32 R32 G32 B32 UF
-			// zBuff_g.realloc(width * height * 4);			//A8  R8  G8  B8  UI
 			iOut_g. realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
 			fOut_g. realloc(1920*2 * 1080 * 4 * 4);		//A32 R32 G32 B32 UF
 			zBuff_g.realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
 			//FIXME ^ those allocations use the default maximum window size to prevent the buffer from getting resized too often
-			wSize_g.realloc(4 * 2);							//Create cell for window size //TODO use dedicated storage and update every time
+			//FIXME detect size at runtime
 
+			wSize_g.realloc(4 * 2);						//Create cell for window size //TODO use dedicated storage and update every time
 			wSize_g.map();
-			wSize_g[0] = swp.swapchainExtent.width;	//Set width
+			wSize_g[0] = swp.swapchainExtent.width;		//Set width
 			wSize_g[1] = swp.swapchainExtent.height;	//Set height
 			wSize_g.unmap();
 		}
@@ -177,6 +176,14 @@ namespace lux{
 
 
 
+	void Window::close(){
+		running = false;
+		t.join();
+		wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
+		swp.~Swapchain();
+		vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
+		glfwDestroyWindow(window);
+	}
 
 
 

@@ -139,8 +139,10 @@ namespace lux::core::dvc{
 
 		//Check swapchain support
 		else {
-			wnd::Swapchain::Details swapchainDetails = wnd::Swapchain::getDetails(vDevice, dummySurface);
-			if(!swapchainDetails.formats.count() || !swapchainDetails.presentModes.count()) {
+			uint32 surfaceFormatsCount = 0, presentModesCount = 0;
+			vkGetPhysicalDeviceSurfaceFormatsKHR(     vDevice, dummySurface, &surfaceFormatsCount, nullptr);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, dummySurface, &presentModesCount,   nullptr);
+			if(!surfaceFormatsCount || !presentModesCount) {
 				pErrorText = "Unsupported swapchain";
 				return false;
 			}

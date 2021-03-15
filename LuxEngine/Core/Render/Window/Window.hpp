@@ -127,14 +127,8 @@ namespace lux{
 		RtArray<obj::Base*>	objUpdates2D;
 		std::mutex          objUpdates2D_f;
 
-		~Window(){
-			running = false;
-			t.join();
-			wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
-			vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
-			glfwDestroyWindow(window);
-			//TODO ADD JOIN FUNCTION TO WAIT FOR THE WINDOW TO GET CLOSED
-		}
+		void close();
+		~Window(){ close(); }
 	};
 }
 
