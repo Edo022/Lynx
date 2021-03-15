@@ -143,7 +143,7 @@ namespace lux {
 	public:
 		genInitCheck;
 		ram::ptr<type> data;	//Elements of the array
-		_dbg(type* viewer;)
+		_dbg(type* viewer;) //FIXME make this actually usable
 		#define updateView() _dbg(if(data && data.size()) viewer = data.begin(); else viewer = nullptr)
 
 

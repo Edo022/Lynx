@@ -15,8 +15,8 @@ namespace lux::obj{
 			//FIXME ...
 			cellSize = 40;
 			luxInitObject(2, BORDER);							// count   | range         | chunk
-			fp = (f32v2*)(render.data + 0);					//    8    |    0  - 7     |    0 +
-			sp = (f32v2*)(render.data + 8);					//    8    |    8  - 15    |    0
+			fp = (f32v2*)(render.data + 0);						//    8    |    0  - 7     |    0 +
+			sp = (f32v2*)(render.data + 8);						//    8    |    8  - 15    |    0
 			*(uint32*)(render.data + 16) = (uint32)common.ID;	//    4    |    16 - 19    |    1 +
 			//4x trailing padding								//    4    |    20 - 23
 
@@ -28,8 +28,8 @@ namespace lux::obj{
 			//FIXME ...
 			cellSize = 40;
 			luxInitObject(2, BORDER);							// count   | range         | chunk
-			fp = (f32v2*)(render.data + 0);					//    8    |    0  - 7     |    0 +
-			sp = (f32v2*)(render.data + 8);					//    8    |    8  - 15    |    0
+			fp = (f32v2*)(render.data + 0);						//    8    |    0  - 7     |    0 +
+			sp = (f32v2*)(render.data + 8);						//    8    |    8  - 15    |    0
 			*(uint32*)(render.data + 16) = (uint32)common.ID;	//    4    |    16 - 19    |    1 +
 			//4x trailing padding								//    4    |    20 - 23
 

@@ -39,8 +39,8 @@ namespace lux::obj {
 			// init();
 			cellSize = 60;
 			luxInitObject(2, LINE);								// count   | range         | chunk
-			fp = (f32v2*)(render.data + 0);					//    8    |    0  - 7     |    0 +
-			sp = (f32v2*)(render.data + 8);					//    8    |    8  - 15    |    0
+			fp = (f32v2*)(render.data + 0);						//    8    |    0  - 7     |    0 +
+			sp = (f32v2*)(render.data + 8);						//    8    |    8  - 15    |    0
 			fc = (f32v4*)(render.data + 16);					//    16   |    16 - 31    |    1 +
 			sc = (f32v4*)(render.data + 32);					//    16   |    32 - 47    |    2 +
 			fw = (float32*)(render.data + 48);					//    4    |    48 - 51    |    3 +
