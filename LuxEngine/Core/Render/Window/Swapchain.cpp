@@ -120,25 +120,50 @@ namespace lux::core::wnd{
 
 
 		//Get swapchain details
-		Details details = getDetails(dvc::graphics.PD.device, bindedWindow->surface);
+		// Details details = getDetails(dvc::graphics.PD.device, bindedWindow->surface);
+		// details = getDetails(dvc::graphics.PD.device, bindedWindow->surface);
 
 		//Choose max image count. Minimum or minimum +1 if supported
-		uint32 minImageCount = details.capabilities.minImageCount + 1;
-		if(details.capabilities.maxImageCount > 0 && minImageCount > details.capabilities.maxImageCount) {
-			minImageCount = details.capabilities.maxImageCount;
+		// uint32 minImageCount = details.capabilities.minImageCount + 1;
+		VkSurfaceCapabilitiesKHR capabilities;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
+		uint32 minImageCount = capabilities.minImageCount + 1;
+		if(capabilities.maxImageCount > 0 && minImageCount > capabilities.maxImageCount) {
+			minImageCount = capabilities.maxImageCount;
+		}
+
+
+		uint32 formatCount;
+		RtArray<VkSurfaceFormatKHR>	formats;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, nullptr);
+		if(formatCount != 0) {
+			formats.resize(formatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, formats.begin());
+		}
+		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(formats) };
+
+
+		uint32 presentModeCount;
+		RtArray<VkPresentModeKHR>	presentModes;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, nullptr);
+		if(presentModeCount != 0) {
+			presentModes.resize(presentModeCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, presentModes.begin());
 		}
 
 
 		//swapchain creation infos
-		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(details.formats) };
+		// VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(details.formats) };
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
-		VkSwapchainCreateInfoKHR createInfo{
+		// VkSwapchainCreateInfoKHR createInfo{
+		createInfo = {
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 			.surface          = bindedWindow->surface, //BUG DONT USE POINTER
 			.minImageCount    = minImageCount,
 			.imageFormat      = surfaceFormat.format,
 			.imageColorSpace  = surfaceFormat.colorSpace,
-			.imageExtent      = chooseSwapchainExtent(&details.capabilities),
+			// .imageExtent      = chooseSwapchainExtent(&details.capabilities),
+			.imageExtent      = chooseSwapchainExtent(&capabilities),
 			.imageArrayLayers = 1,
 			.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
 
@@ -146,16 +171,18 @@ namespace lux::core::wnd{
 			.queueFamilyIndexCount = 2,
 			.pQueueFamilyIndices   = queueFamilyIndices,
 
-			.preTransform   = details.capabilities.currentTransform,
+			// .preTransform   = details.capabilities.currentTransform,
+			.preTransform   = capabilities.currentTransform,
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-			.presentMode    = choosePresentMode(details.presentModes),
+			// .presentMode    = choosePresentMode(details.presentModes),
+			.presentMode    = choosePresentMode(presentModes),
 			.clipped        = VK_TRUE,
 			.oldSwapchain   = VK_NULL_HANDLE,
 		};
 
 
 		//Create swapchain
-		VkBool32 hasPresentSupport = false;
+		VkBool32 hasPresentSupport = false; //FIXME
 		vkGetPhysicalDeviceSurfaceSupportKHR(dvc::graphics.PD.device, dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //SUPPRESS ERROR //FIXME
 		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
 
@@ -187,23 +214,40 @@ namespace lux::core::wnd{
 
 	// void Swapchain::recreate(const bool vWindowResized) {
 	void Swapchain::recreate() {
-		//TODO dont destroy it every time
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
-			// bindedWindow->iOut_g. realloc(width * height * 4);			//A8  R8  G8  B8  UI
-			// bindedWindow->fOut_G. realloc(width * height * 4 * 4);		//A32 R32 G32 B32 UF
-			// bindedWindow->zBuff_g.realloc(width * height * 4);			//A8  R8  G8  B8  UI
-			// // bindedWindow->wSize_g.realloc(4 * 2);							//Create cell for window size //TODO use dedicated storage and update every time
 
-			// bindedWindow->clearShader = core::c::shaders::newShader(
-			// 	RtArray<vram::Alloc_b<int32>>{ bindedWindow->fOut_G, bindedWindow->iOut_g, bindedWindow->zBuff_g, bindedWindow->wSize_g },
-			// 	LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1,
-			// 	*bindedWindow
-			// );
+			{ //swapchain creation infos
+				VkSurfaceCapabilitiesKHR capabilities;
+				vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
+				createInfo.imageExtent = chooseSwapchainExtent(&capabilities);
 
-			create(false);							//Create a new swapchain
+				uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
+				createInfo.pQueueFamilyIndices = queueFamilyIndices;
+
+				VkSwapchainKHR oldSwapchain = swapchain;
+				createInfo.oldSwapchain  = oldSwapchain;
+
+				//Create swapchain
+				dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
+			}
+
+			//Save data
+			uint32 imageCount;
+			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
+			images.resize(imageCount);
+			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, images.begin());	//Save images
+			swapchainExtent = createInfo.imageExtent;											//Save extent
+
+
+			//Create image views
+			imageViews.resize(images.count());
+			for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+
+			createRenderPass();
+			createFramebuffers();
 
 
 
@@ -238,7 +282,7 @@ namespace lux::core::wnd{
 		vkDestroyRenderPass(dvc::graphics.LD, renderPass, nullptr);												//Destroy render pass
 		for(auto framebuffer : framebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		for(auto imageView   : imageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView,   nullptr);		//Destroy image views
-		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
+		// vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
 	}
 
 
@@ -246,8 +290,9 @@ namespace lux::core::wnd{
 
 	Swapchain::~Swapchain(){
 		destroy();
+		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
 		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkDestroySemaphore(dvc::graphics.LD, s_imageAcquired[i],    nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, s_imageAcquired[i],   nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_objectsRendered[i], nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_copy[i],            nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_clear[i],           nullptr);

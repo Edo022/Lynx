@@ -26,7 +26,7 @@ namespace lux{
 		int32 		height;		//Heght of the window
 
 		vram::ptr<int32, Ram,  Storage> wSize_g;	//Size of the widow
-		vram::ptr<int32, VRam, Storage> fOut_G ;	//Color output of the window
+		vram::ptr<int32, VRam, Storage> fOut_g ;	//Color output of the window
 		vram::ptr<int32, VRam, Storage> iOut_g ;	//Packed color output of the window
 		vram::ptr<int32, VRam, Storage> zBuff_g;	//TODO remove. use render space assembler
 
@@ -130,7 +130,7 @@ namespace lux{
 		~Window(){
 			running = false;
 			t.join();
-			wSize_g.free(); fOut_G.free(); iOut_g.free(); zBuff_g.free();
+			wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
 			vkDestroySurfaceKHR(core::dvc::instance, surface, nullptr);
 			glfwDestroyWindow(window);
 			//TODO ADD JOIN FUNCTION TO WAIT FOR THE WINDOW TO GET CLOSED

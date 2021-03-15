@@ -60,7 +60,9 @@ namespace lux::core::wnd{
 			VkSurfaceCapabilitiesKHR	capabilities;
 			RtArray<VkSurfaceFormatKHR>	formats;
 			RtArray<VkPresentModeKHR>	presentModes;
-		};
+		} details;
+		VkSwapchainCreateInfoKHR createInfo;
+
 		static Details __attribute__((used)) getDetails(const VkPhysicalDevice vDevice, const VkSurfaceKHR vSurface) {
 			Details details;
 

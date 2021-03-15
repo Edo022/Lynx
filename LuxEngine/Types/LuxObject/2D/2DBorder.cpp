@@ -10,7 +10,7 @@ namespace lux::obj{
 
 		core::c::shaders::newShader(
 			RtArray<vram::Alloc_b<int32>>{
-				pWindow.fOut_G,
+				pWindow.fOut_g,
 				pWindow.wSize_g,
 				pWindow.zBuff_g,
 				(vram::Alloc_b<int32>)(render.localData)

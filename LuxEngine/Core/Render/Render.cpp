@@ -189,7 +189,6 @@ namespace lux{
 				objUpdates2D.clear();
 				objUpdates2D_f.unlock();
 			}
-			//BUG ^^^ MAKE UPDATES WINDOW-LOCAL
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 		}
 	}

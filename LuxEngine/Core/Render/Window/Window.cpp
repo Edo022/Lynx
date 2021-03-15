@@ -10,8 +10,7 @@
 
 
 
-//BUG THE SIZE AND POSITION OF THE OUTPUT DOESNT CHANGE WHEN THE WINDOW IS RESIZED
-//BUG CHECK THE HUGE CONST STRUCTURES
+
 
 
 
@@ -70,10 +69,10 @@ namespace lux{
 
 		{ //Initialize window buffers and count
 			// iOut_g. realloc(width * height * 4);			//A8  R8  G8  B8  UI
-			// fOut_G. realloc(width * height * 4 * 4);		//A32 R32 G32 B32 UF
+			// fOut_g. realloc(width * height * 4 * 4);		//A32 R32 G32 B32 UF
 			// zBuff_g.realloc(width * height * 4);			//A8  R8  G8  B8  UI
 			iOut_g. realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
-			fOut_G. realloc(1920*2 * 1080 * 4 * 4);		//A32 R32 G32 B32 UF
+			fOut_g. realloc(1920*2 * 1080 * 4 * 4);		//A32 R32 G32 B32 UF
 			zBuff_g.realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
 			//FIXME ^ those allocations use the default maximum window size to prevent the buffer from getting resized too often
 			wSize_g.realloc(4 * 2);							//Create cell for window size //TODO use dedicated storage and update every time
@@ -90,7 +89,7 @@ namespace lux{
 
 //TODO
 		clearShader = core::c::shaders::newShader(
-			RtArray<vram::Alloc_b<int32>>{ fOut_G, iOut_g, zBuff_g, wSize_g },
+			RtArray<vram::Alloc_b<int32>>{ fOut_g, iOut_g, zBuff_g, wSize_g },
 			LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1,
 			// LUX_DEF_SHADER_CLEAR, (1920*2 * 1080) / (32 * 32) + 1, 1, 1,
 			*this
