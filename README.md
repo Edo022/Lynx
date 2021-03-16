@@ -10,7 +10,7 @@ Support for other C++ compilers and editors will be added in future versions.
 | g++     | 10.7  |
 | VSCode  | 1.53  |
 | Python  | 3.8   |
-| Any Linux distribution||
+| Linux   | 4.4   |
 
 Older versions may work as well, but we haven't tested them and don't know if they can be used safely
 
