@@ -19,8 +19,8 @@ namespace lux::input{
 
 
 	#define wnd_ ((Window*)glfwGetWindowUserPointer(window))
-	#define gtollx(n) ((n) / wnd_->swp.swapchainExtent.width) //FIXME DONT DEPEND ON A WINDOW
-	#define gtolly(n) ((n) / wnd_->swp.swapchainExtent.height)
+	#define gtollx(n) ((n) / wnd_->swp.createInfo.imageExtent.width) //FIXME DONT DEPEND ON A WINDOW
+	#define gtolly(n) ((n) / wnd_->swp.createInfo.imageExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });

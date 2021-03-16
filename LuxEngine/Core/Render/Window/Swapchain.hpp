@@ -19,7 +19,9 @@ namespace lux::core::wnd{
 	private:
 		friend class lux::Window;
 
+		public: //FIXME
 		VkSwapchainCreateInfoKHR createInfo;
+		private:
 		VkRenderPass renderPass;
 		bool useVSync = true;
 
@@ -43,10 +45,6 @@ namespace lux::core::wnd{
 		VkSwapchainKHR			swapchain;
 		RtArray<VkImage>		images;
 		RtArray<VkImageView>	imageViews;
-		VkFormat				imageFormat;
-		public: //FIXME
-		VkExtent2D				swapchainExtent;
-		private:
 		RtArray<VkFramebuffer>	framebuffers;
 
 
@@ -58,7 +56,6 @@ namespace lux::core::wnd{
 
 		RtArray<LuxShader_t, uint32> shaders;
 		RtArray<VkCommandBuffer>     shadersCBs;
-
 
 
 		Swapchain();

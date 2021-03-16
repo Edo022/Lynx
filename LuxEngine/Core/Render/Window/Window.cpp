@@ -77,8 +77,8 @@ namespace lux{
 
 			wSize_g.realloc(4 * 2);						//Create cell for window size //TODO use dedicated storage and update every time
 			wSize_g.map();
-			wSize_g[0] = swp.swapchainExtent.width;		//Set width
-			wSize_g[1] = swp.swapchainExtent.height;	//Set height
+			wSize_g[0] = swp.createInfo.imageExtent.width;		//Set width
+			wSize_g[1] = swp.createInfo.imageExtent.height;	//Set height
 			wSize_g.unmap();
 		}
 		{ //#LLID CCB0000 Create copy command buffers
@@ -156,7 +156,7 @@ namespace lux{
 					dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;							//Change it to transfer stage to copy the buffer in it
 				vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
-				copyRegion.imageExtent = { swp.swapchainExtent.width, swp.swapchainExtent.height, 1 };	//Copy the whole buffer
+				copyRegion.imageExtent = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
 				vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], iOut_g.cell->csc.buffer, swp.images[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 
 

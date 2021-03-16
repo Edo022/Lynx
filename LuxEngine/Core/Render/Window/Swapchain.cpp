@@ -118,50 +118,22 @@ namespace lux::core::wnd{
 	void Swapchain::create(bool vUseVSync) {
 		useVSync = vUseVSync;
 
-
-		//Get swapchain details
-		// Details details = getDetails(dvc::graphics.PD.device, bindedWindow->surface);
-		// details = getDetails(dvc::graphics.PD.device, bindedWindow->surface);
-
 		//Choose max image count. Minimum or minimum +1 if supported
-		// uint32 minImageCount = details.capabilities.minImageCount + 1;
 		auto capabilities = getCapabilities();
 		uint32 minImageCount = capabilities.minImageCount + 1;
 		if(capabilities.maxImageCount > 0 && minImageCount > capabilities.maxImageCount) {
 			minImageCount = capabilities.maxImageCount;
 		}
 
-
-		// uint32 formatCount;
-		// RtArray<VkSurfaceFormatKHR>	formats;
-		// vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, nullptr);
-		// if(formatCount != 0) {
-		// 	formats.resize(formatCount);
-		// 	vkGetPhysicalDeviceSurfaceFormatsKHR(dvc::graphics.PD.device, bindedWindow->surface, &formatCount, formats.begin());
-		// }
-		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
-
-
-		// uint32 presentModeCount;
-		// RtArray<VkPresentModeKHR>	presentModes;
-		// vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, nullptr);
-		// if(presentModeCount != 0) {
-		// 	presentModes.resize(presentModeCount);
-		// 	vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &presentModeCount, presentModes.begin());
-		// }
-
-
 		//swapchain creation infos
-		// VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(details.formats) };
+		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
-		// VkSwapchainCreateInfoKHR createInfo{
 		createInfo = {
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
 			.surface          = bindedWindow->surface, //BUG DONT USE POINTER
 			.minImageCount    = minImageCount,
 			.imageFormat      = surfaceFormat.format,
 			.imageColorSpace  = surfaceFormat.colorSpace,
-			// .imageExtent      = chooseSwapchainExtent(&details.capabilities),
 			.imageExtent      = chooseSwapchainExtent(&capabilities),
 			.imageArrayLayers = 1,
 			.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
@@ -170,11 +142,8 @@ namespace lux::core::wnd{
 			.queueFamilyIndexCount = 2,
 			.pQueueFamilyIndices   = queueFamilyIndices,
 
-			// .preTransform   = details.capabilities.currentTransform,
 			.preTransform   = capabilities.currentTransform,
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-			// .presentMode    = choosePresentMode(details.presentModes),
-			// .presentMode    = choosePresentMode(presentModes),
 			.presentMode    = choosePresentMode(getPresentModes()),
 			.clipped        = VK_TRUE,
 			.oldSwapchain   = VK_NULL_HANDLE,
@@ -192,13 +161,11 @@ namespace lux::core::wnd{
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
 		images.resize(imageCount);
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, images.begin());	//Save images
-		imageFormat = surfaceFormat.format;													//Save format
-		swapchainExtent = createInfo.imageExtent;											//Save extent
 
 
 		//Create image views
 		imageViews.resize(images.count());
-		for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
 		createRenderPass();
@@ -232,6 +199,7 @@ namespace lux::core::wnd{
 
 				//Create swapchain
 				dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
+				vkDestroySwapchainKHR(dvc::graphics.LD, oldSwapchain, nullptr);
 			}
 
 			//Save data
@@ -239,12 +207,11 @@ namespace lux::core::wnd{
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
 			images.resize(imageCount);
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, images.begin());	//Save images
-			swapchainExtent = createInfo.imageExtent;											//Save extent
 
 
 			//Create image views
 			imageViews.resize(images.count());
-			for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 			createFramebuffers();
 
@@ -252,8 +219,8 @@ namespace lux::core::wnd{
 
 			//Update the window size buffer
 			bindedWindow->wSize_g.map();
-			bindedWindow->wSize_g[0] = swapchainExtent.width;
-			bindedWindow->wSize_g[1] = swapchainExtent.height;
+			bindedWindow->wSize_g[0] = createInfo.imageExtent.width;
+			bindedWindow->wSize_g[1] = createInfo.imageExtent.height;
 			bindedWindow->wSize_g.unmap();
 
 			{	//Destroy copy command buffers
@@ -266,7 +233,7 @@ namespace lux::core::wnd{
 			}
 
 			//Recreate clear shader
-			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (swapchainExtent.width * swapchainExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
+			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
 	}
 
@@ -324,8 +291,8 @@ namespace lux::core::wnd{
 				.renderPass      = renderPass,
 				.attachmentCount = 1,
 				.pAttachments    = &imageViews[i],
-				.width           = swapchainExtent.width,
-				.height          = swapchainExtent.height,
+				.width           = createInfo.imageExtent.width,
+				.height          = createInfo.imageExtent.height,
 				.layers          = 1
 			};
 			dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &framebuffers[i]), "Failed to create framebuffer");
@@ -339,7 +306,7 @@ namespace lux::core::wnd{
 
 	void Swapchain::createRenderPass() {
 		VkAttachmentDescription colorAttachment{
-			.format         = imageFormat,							//Swapchain image format
+			.format         = createInfo.imageFormat,				//Swapchain image format
 			.samples        = VK_SAMPLE_COUNT_1_BIT,				//Multisampling samples
 			.loadOp         = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Don't clear for better performance
 			.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE,		//Don't save rendered image
