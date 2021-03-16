@@ -251,7 +251,7 @@ namespace lux {
 			data.reallocArr(count() + 1);
 
 			new(&(data[count_].value)) type(pData);	//Initialize new element
-			data[count_].next = -1;				//Set the tracker as valid
+			data[count_].next = (iter)-1;				//Set the tracker as valid
 			return count_++;				//Update the number of elements and return the element index
 		}
 
@@ -269,12 +269,12 @@ namespace lux {
 			}
 			iter prevHead = head;				//Save head
 			if(head == tail) {					//If it has only one free element
-				data[prevHead].next = -1;				//Reset head and tail
-				head = tail = -1;					//Reset tracker
+				data[prevHead].next = (iter)-1;				//Reset head and tail
+				head = tail = (iter)-1;					//Reset tracker
 			}
 			else {								//If it has more than one
 				head = data[prevHead].next;				//Update head
-				data[prevHead].next = -1;				//Update tracker of the old head element
+				data[prevHead].next = (iter)-1;				//Update tracker of the old head element
 			}
 			free_--;							//Update number of free elements
 			new(&(data[prevHead].value)) type(pData);		//Initialize the new element

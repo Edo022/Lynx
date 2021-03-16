@@ -28,8 +28,8 @@ template<class t> struct vec4_t : vec_b {
 
 
 	//Assignment operators, constructors and comparison operators
-	inline constexpr void operator= (const vec4_t<auto>& v) noexcept { x = v.x; y = v.y; z = v.z; w = v.w; }
-	inline constexpr void operator= (const auto& n        ) noexcept { x =      y =      z =   n; w =   n; }
+	inline constexpr auto& operator=(const vec4_t<auto>& v) noexcept { x = v.x; y = v.y; z = v.z; w = v.w; return *this; }
+	inline constexpr auto& operator=(const auto& n        ) noexcept { x =      y =      z =   n; w =   n; return *this; }
 	inline constexpr void operator==(const vec4_t<auto>& v) noexcept { return x == v.x && y == v.y && z == v.z && w == v.w ; }
 	inline constexpr void operator==(const auto& n        ) noexcept { return x == n   && y == n   && z == n   && w == n   ; }
 

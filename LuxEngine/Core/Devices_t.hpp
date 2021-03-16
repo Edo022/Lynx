@@ -21,6 +21,16 @@ struct QueueFamilyIndices {
 	QueueFamilyIndices(const QueueFamilyIndices& e) : graphicsFamily{ e.graphicsFamily }, presentFamily{ e.presentFamily }, computeFamilies(e.computeFamilies) {}
 
 	inline bool isGraphicsComplete() { return (graphicsFamily != (uint32)-1 && presentFamily != (uint32)-1); }
+	void operator=(const QueueFamilyIndices& i){
+		graphicsFamily = i.graphicsFamily;
+		presentFamily = i.presentFamily;
+		computeFamilies = i.computeFamilies;
+	}
+	void operator=(const QueueFamilyIndices&& i){
+		graphicsFamily = std::move(i.graphicsFamily);
+		presentFamily = std::move(i.presentFamily);
+		computeFamilies = std::move(i.computeFamilies);
+	}
 };
 
 
@@ -37,6 +47,16 @@ struct _VkPhysicalDevice {
 	VkPhysicalDeviceFeatures	features;	//Physical device features
 	QueueFamilyIndices			indices;	//Indices of the queue families
 	uint32						score;		//Device performances evalutation
+
+	//TODO REMOVE
+	auto& operator=(const _VkPhysicalDevice& d){
+		device = d.device;
+		properties = d.properties;
+		features = d.features;
+		indices = d.indices;
+		score = d.score;
+		return *this;
+	}
 };
 
 

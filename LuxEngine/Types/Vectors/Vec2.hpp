@@ -26,8 +26,8 @@ template<class t> struct vec2_t : vec_b {
 
 
 	//Assignment operators, constructors and comparison operators
-	inline constexpr void operator= (const vec2_t<auto>& v) noexcept { x = v.x; y = v.y;}
-	inline constexpr void operator= (const auto& n        ) noexcept { x = n;   y = n;  }
+	inline constexpr auto& operator=(const vec2_t<auto>& v) noexcept { x = v.x; y = v.y; return *this; }
+	inline constexpr auto& operator=(const auto& n        ) noexcept { x = n;   y = n;   return *this; }
 	inline constexpr void operator==(const vec2_t<auto>& v) noexcept { return x == v.x && y == v.y; }
 	inline constexpr void operator==(const auto& n        ) noexcept { return x == n   && y == n;   }
 

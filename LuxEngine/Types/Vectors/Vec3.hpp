@@ -29,8 +29,8 @@ template<class t> struct vec3_t : vec_b {
 
 
 	//Assignment operators, constructors and comparison operators
-	inline constexpr void operator= (const vec3_t<auto>& v) noexcept { x = v.x; y = v.y; z = v.z; }
-	inline constexpr void operator= (const auto& n        ) noexcept { x =      y =      z =   n; }
+	inline constexpr auto& operator=(const vec3_t<auto>& v) noexcept { x = v.x; y = v.y; z = v.z; return *this; }
+	inline constexpr auto& operator=(const auto& n        ) noexcept { x =      y =      z =   n; return *this; }
 	inline constexpr void operator==(const vec3_t<auto>& v) noexcept { return x == v.x && y == v.y && z == v.z; }
 	inline constexpr void operator==(const auto& n        ) noexcept { return x == n   && y == n   && z == n;   }
 

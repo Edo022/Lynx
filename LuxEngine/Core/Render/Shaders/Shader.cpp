@@ -47,7 +47,7 @@ namespace lux::core::c::shaders{
 		try {
 			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
 
-				String luxStrPath = String((char8*)name.path().u8string().c_str()); //FIXME add string operator+(char)
+				String luxStrPath = String((const char8*)name.path().u8string().c_str()); //FIXME add string operator+(char)
 				_wds(sys::dir::fixWindowsPath(luxStrPath));
 				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
 					if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
@@ -91,21 +91,21 @@ namespace lux::core::c::shaders{
 		}
 		_wds(
 			_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
-			int32 filesize = scast<int32>(_ftelli64(fp));					//And get the file count
+			uint32 filesize = _ftelli64(fp);					//And get the file count
 			_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
 		)
 		_lnx(
 			fseek(fp, 0, SEEK_END);
-			int32 filesize = scast<int32>(ftell(fp));
+			uint32 filesize = ftell(fp);
 			fseek(fp, 0, SEEK_SET);
 		)
 
-		int32 paddedFileSize = int32(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
+		uint32 paddedFileSize = (uint32)(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
 
-		char* str = (char*)malloc(sizeof(char) * paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
-		fread(str, filesize, sizeof(char), fp);							//Read the file
+		char* str = (char*)malloc(sizeof(char) * (uint64)paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
+		fread(str, (uint64)filesize, sizeof(char), fp);							//Read the file
 		fclose(fp);														//Close the file
-		for(int32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
+		for(uint32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
 
 		*pLength = paddedFileSize;										//Set length
 		return (uint32*)str;											//Return the buffer
@@ -254,7 +254,7 @@ namespace lux::core::c::shaders{
 			if(pCells[i].btype == Uniform) uniformCount++;								//#LLID STRT 0003 Count uniform and
 			else storageCount++;														//storage cells requested
 		}
-		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + !!uniformCount);		//Create an array of descriptor sizes with one element for each descriptor type
+		RtArray<VkDescriptorPoolSize> sizes(!!storageCount + (u32)!!uniformCount);	//Create an array of descriptor sizes with one element for each descriptor type
 		if(storageCount != 0) sizes[0] = VkDescriptorPoolSize{							//If there is at least one storage descriptor
 			.type            = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,						//Set the element type as storage
 			.descriptorCount = storageCount												//And set the number of descriptors
