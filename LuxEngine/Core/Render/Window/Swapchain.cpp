@@ -11,84 +11,6 @@
 
 
 namespace lux::core::wnd{
-	VkSurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats) {
-		for(auto& availableFormat : pAvailableFormats) {
-			//TODO use best format available when not specified
-			//TODO use RGBA8 format in shaders when better formats are not available
-			if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-				return availableFormat;
-			}
-		}
-		return pAvailableFormats[0];
-	}
-
-
-
-
-	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR Swapchain::choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes) {
-		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR; //FIXME MOVE VSYNC TO WINDOW STRUCT
-		for(const auto& availablePresentMode : pAvailablePresentModes) {
-			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
-		}
-		return VK_PRESENT_MODE_IMMEDIATE_KHR;
-	}
-
-
-
-
-	VkExtent2D Swapchain::chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
-		int32 width = 0, height = 0;
-		glfwGetFramebufferSize(bindedWindow->window, &width, &height);
-		return VkExtent2D{
-			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
-			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
-		};
-	}
-
-
-
-	VkImageView Swapchain::createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
-		VkImageViewCreateInfo viewInfo{
-			.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-			.image    = vImage,
-			.viewType = VK_IMAGE_VIEW_TYPE_2D,
-			.format   = vFormat,
-			.components{
-				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
-				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
-				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
-				.a = VK_COMPONENT_SWIZZLE_IDENTITY
-			},
-			.subresourceRange{
-				.aspectMask     = vAspectFlags,
-				.baseMipLevel   = 0,
-				.levelCount     = 1,
-				.baseArrayLayer = 0,
-				.layerCount     = 1
-			}
-		};
-		VkImageView imageView;
-		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
-		return imageView;
-	}
-
-
-
-
-
-
-
-
-	//-------------------------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
 	Swapchain::Swapchain(){
 		s_imageAcquired   .resize(__renderMaxFramesInFlight);
 		s_objectsRendered.resize(__renderMaxFramesInFlight);
@@ -156,7 +78,7 @@ namespace lux::core::wnd{
 		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
 
 
-		//Save data
+		//Create images
 		uint32 imageCount;
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
 		images.resize(imageCount);
@@ -202,7 +124,7 @@ namespace lux::core::wnd{
 				vkDestroySwapchainKHR(dvc::graphics.LD, oldSwapchain, nullptr);
 			}
 
-			//Save data
+			//Create images
 			uint32 imageCount;
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
 			images.resize(imageCount);
@@ -264,6 +186,89 @@ namespace lux::core::wnd{
 			vkDestroySemaphore(dvc::graphics.LD, s_clear[i],           nullptr);
 			vkDestroyFence(    dvc::graphics.LD, f_imageRendered[i],   nullptr);
 		}
+	}
+
+
+
+
+
+
+
+
+	VkImageView Swapchain::createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
+		VkImageViewCreateInfo viewInfo{
+			.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+			.image    = vImage,
+			.viewType = VK_IMAGE_VIEW_TYPE_2D,
+			.format   = vFormat,
+			.components{
+				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
+				.a = VK_COMPONENT_SWIZZLE_IDENTITY
+			},
+			.subresourceRange{
+				.aspectMask     = vAspectFlags,
+				.baseMipLevel   = 0,
+				.levelCount     = 1,
+				.baseArrayLayer = 0,
+				.layerCount     = 1
+			}
+		};
+		VkImageView imageView;
+		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
+		return imageView;
+	}
+
+
+
+
+
+
+
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+	VkSurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats) {
+		for(auto& availableFormat : pAvailableFormats) {
+			//TODO use best format available when not specified
+			//TODO use RGBA8 format in shaders when better formats are not available
+			if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+				return availableFormat;
+			}
+		}
+		return pAvailableFormats[0];
+	}
+
+
+
+
+	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
+	VkPresentModeKHR Swapchain::choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes) {
+		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR; //FIXME MOVE VSYNC TO WINDOW STRUCT
+		for(const auto& availablePresentMode : pAvailablePresentModes) {
+			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
+		}
+		return VK_PRESENT_MODE_IMMEDIATE_KHR;
+	}
+
+
+
+
+	VkExtent2D Swapchain::chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
+		int32 width = 0, height = 0;
+		glfwGetFramebufferSize(bindedWindow->window, &width, &height);
+		return VkExtent2D{
+			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
+			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
+		};
 	}
 
 

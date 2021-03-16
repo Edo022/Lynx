@@ -30,17 +30,18 @@ namespace lux::core::wnd{
 		RtArray<VkSemaphore> s_copy;
 		RtArray<VkSemaphore> s_clear;
 		RtArray<VkFence>     f_imageRendered;
-		int32                renderCurrentFrame = 0;
+		int32                curFrame = 0;		//The index of the frame that is currently being rendered
 
+
+		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
+		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
+		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
 		VkSurfaceCapabilitiesKHR getCapabilities();
 		RtArray<VkSurfaceFormatKHR> getSurfaceFormats();
 		RtArray<VkPresentModeKHR> getPresentModes();
 
 		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
-		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
-		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
 		VkSwapchainKHR			swapchain;
 		RtArray<VkImage>		images;

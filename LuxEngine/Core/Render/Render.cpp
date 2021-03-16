@@ -60,7 +60,7 @@ namespace lux{
 		while(running) {
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			if(swp.shaders.count() <= 1) continue;
-			vkWaitForFences(core::dvc::graphics.LD, 1, &swp.f_imageRendered[swp.renderCurrentFrame], false, INT_MAX);
+			vkWaitForFences(core::dvc::graphics.LD, 1, &swp.f_imageRendered[swp.curFrame], false, INT_MAX);
 
 
 			//Redraw frame if necessary
@@ -75,7 +75,7 @@ namespace lux{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swp.swapchain, INT_MAX, swp.s_imageAcquired[swp.renderCurrentFrame], VK_NULL_HANDLE, &imageIndex)) {
+				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swp.swapchain, INT_MAX, swp.s_imageAcquired[swp.curFrame], VK_NULL_HANDLE, &imageIndex)) {
 					case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
 					case VK_ERROR_OUT_OF_DATE_KHR: swp.recreate();  continue;
 					default: Failure printf("Failed to acquire swapchain image");
@@ -103,37 +103,37 @@ namespace lux{
 				{ //Draw objects
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swp.s_imageAcquired[swp.renderCurrentFrame],
+					.pWaitSemaphores      = &swp.s_imageAcquired[swp.curFrame],
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = swp.shadersCBs.count(),
 					.pCommandBuffers      = swp.shadersCBs.begin(),
 					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swp.s_objectsRendered[swp.renderCurrentFrame],
+					.pSignalSemaphores    = &swp.s_objectsRendered[swp.curFrame],
 				},
 				{ //Convert and clear shader
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swp.s_objectsRendered[swp.renderCurrentFrame],
+					.pWaitSemaphores      = &swp.s_objectsRendered[swp.curFrame],
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
 					.pCommandBuffers      = &swp.shaders[0].commandBuffers[0],
 					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swp.s_clear[swp.renderCurrentFrame]
+					.pSignalSemaphores    = &swp.s_clear[swp.curFrame]
 				},
 				{ //Copy shader
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swp.s_clear[swp.renderCurrentFrame],
+					.pWaitSemaphores      = &swp.s_clear[swp.curFrame],
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
 					.pCommandBuffers      = &copyCommandBuffers[imageIndex],
 					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swp.s_copy[swp.renderCurrentFrame]
+					.pSignalSemaphores    = &swp.s_copy[swp.curFrame]
 				}
 			};
-			vkResetFences(core::dvc::graphics.LD, 1, &swp.f_imageRendered[swp.renderCurrentFrame]);
+			vkResetFences(core::dvc::graphics.LD, 1, &swp.f_imageRendered[swp.curFrame]);
 			core::render::graphicsQueueSubmit_m.lock();
-				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swp.f_imageRendered[swp.renderCurrentFrame]), "Failed to submit graphics command buffer");
+				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swp.f_imageRendered[swp.curFrame]), "Failed to submit graphics command buffer");
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -143,7 +143,7 @@ namespace lux{
 				const VkPresentInfoKHR presentInfo{
 					.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 					.waitSemaphoreCount = 1,
-					.pWaitSemaphores    = &swp.s_copy[swp.renderCurrentFrame],
+					.pWaitSemaphores    = &swp.s_copy[swp.curFrame],
 					.swapchainCount     = 1,
 					.pSwapchains        = &swp.swapchain,
 					.pImageIndices      = &imageIndex
@@ -164,7 +164,7 @@ namespace lux{
 			}
 
 			//Update frame number and flush the window data
-			swp.renderCurrentFrame = (swp.renderCurrentFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
+			swp.curFrame = (swp.curFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
 			glfwSwapBuffers(window);
 
 
