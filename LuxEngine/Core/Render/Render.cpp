@@ -265,6 +265,6 @@ namespace lux::core::render{
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;
 		}
 		dbg::printError("Failed to find suitable memory type");
-		return -1;
+		return (uint32)-1;
 	}
 }

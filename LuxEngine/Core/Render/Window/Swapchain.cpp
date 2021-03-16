@@ -1,8 +1,9 @@
-﻿#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
+﻿#include "LuxEngine/Core/Render/Window/Window.hpp"
+#include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
-
+#define w (*(Window*)(((char*)this) - offsetof(lux::Window, lux::Window::swp)))
 
 
 
@@ -21,7 +22,7 @@ namespace lux::core::wnd{
 		//Create sync objects
 		VkSemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
 		VkFenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
-		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
+		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_imageAcquired[i]);
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_objectsRendered[i]);
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_copy[i]);
@@ -52,7 +53,7 @@ namespace lux::core::wnd{
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 		createInfo = {
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-			.surface          = bindedWindow->surface, //BUG DONT USE POINTER
+			.surface          = w.surface,
 			.minImageCount    = minImageCount,
 			.imageFormat      = surfaceFormat.format,
 			.imageColorSpace  = surfaceFormat.colorSpace,
@@ -179,7 +180,7 @@ namespace lux::core::wnd{
 		vkDestroyRenderPass(dvc::graphics.LD, renderPass, nullptr);												//Destroy render pass
 		destroy();
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
-		for(int32 i = 0; i < __renderMaxFramesInFlight; ++i) {
+		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
 			vkDestroySemaphore(dvc::graphics.LD, s_imageAcquired[i],   nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_objectsRendered[i], nullptr);
 			vkDestroySemaphore(dvc::graphics.LD, s_copy[i],            nullptr);

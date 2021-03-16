@@ -48,7 +48,7 @@ namespace lux::ram{
 				#define _case(n) case CellClass::CLASS_##n: return (uint16)CellClassIndex::INDEX_##n;
 				case CellClass::CLASS_0: return (uint16)-1;				//Custom size class
 				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)	//Fixed size classes
-				default: return -2; 									//This is just to suppress the warning
+				default: return (uint16)-2; 							//This is just to suppress the warning
 				#undef _case
 			}
 		}

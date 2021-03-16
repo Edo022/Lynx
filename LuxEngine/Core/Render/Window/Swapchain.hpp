@@ -30,7 +30,7 @@ namespace lux::core::wnd{
 		RtArray<VkSemaphore> s_copy;
 		RtArray<VkSemaphore> s_clear;
 		RtArray<VkFence>     f_imageRendered;
-		int32                curFrame = 0;		//The index of the frame that is currently being rendered
+		uint32               curFrame = 0;		//The index of the frame that is currently being rendered
 
 
 		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);

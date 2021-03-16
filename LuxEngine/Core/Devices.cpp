@@ -111,7 +111,7 @@ namespace lux::core::dvc{
 	//Rates a physical device based on its properties and features
 	//*   pDevice: a pointer to the device structure where its infos are stored
 	//*   Returns the rating of the physical device
-	int32 rate(const _VkPhysicalDevice* pDevice) {
+	uint32 rate(const _VkPhysicalDevice* pDevice) {
 		uint32 score = 0;																				//Device performance evalutation
 		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
 		//TODO dont create shaders larger than the device limit
@@ -315,11 +315,11 @@ namespace lux::core::dvc{
 		//List the queues of the device as unique int32s
 		std::set<int32> uniqueQueueFamilyIndices;
 		if(sameDevice(*pPD, graphics.PD)) {									//If it's the main device for graphics,
-			uniqueQueueFamilyIndices.insert(pPD->indices.graphicsFamily);		//Add his graphics family
-			uniqueQueueFamilyIndices.insert(pPD->indices.presentFamily);		//And his present family
+			uniqueQueueFamilyIndices.insert((i32)pPD->indices.graphicsFamily);		//Add his graphics family
+			uniqueQueueFamilyIndices.insert((i32)pPD->indices.presentFamily);		//And his present family
 		}
 		for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {		//And then add every compute family, graphics ones included
-			uniqueQueueFamilyIndices.insert(pPD->indices.computeFamilies[i]);
+			uniqueQueueFamilyIndices.insert((i32)pPD->indices.computeFamilies[i]);
 		}
 
 

@@ -31,7 +31,7 @@ namespace lux::core::dvc{
 
 	void				getPhysical();
 	void				createLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues);
-	int32		        rate(const _VkPhysicalDevice* pDevice);
+	uint32		        rate(const _VkPhysicalDevice* pDevice);
 	bool				isSuitable(      const VkPhysicalDevice vDevice, String* pErrorText);
 	bool				checkExtensions( const VkPhysicalDevice vDevice);
 	QueueFamilyIndices	getQueueFamilies(const VkPhysicalDevice vDevice);

@@ -73,7 +73,45 @@ def run(dir):
 		'                //Engine' 																					+'\n'+\
 		'                    "-std=c++2a", "-mavx", "-pipe", "-pthread",' 											+'\n'+\
 		'                    "-I' + opts.enginePath() + '",' 														+'\n'+\
-		'                    "-Wall",'																				+'\n'+\
+		# '                    "-Wall",'																				+'\n'+\
+		'"-Wall", ' +\
+
+		'"-Wclobbered", ' +\
+		'"-Wcast-function-type", ' +\
+		'"-Wdeprecated-copy", ' +\
+		'"-Wempty-body", ' +\
+		'"-Wignored-qualifiers", ' +\
+		'"-Wimplicit-fallthrough=3", ' +\
+		'"-Woverride-init", ' +\
+		'"-Wstring-compare", ' +\
+		'"-Wredundant-move", ' +\
+		'"-Wtype-limits", ' +\
+		'"-Wuninitialized", ' +\
+		'"-Wshift-negative-value", ' +\
+		'"-Wunused-parameter", ' +\
+		'"-Wunused-but-set-parameter", ' +\
+
+
+
+		'"-Wcast-align", ' +\
+		'"-Wcast-qual", ' +\
+		'"-Wctor-dtor-privacy", ' +\
+		'"-Wdisabled-optimization", ' +\
+		'"-Wformat=2", ' +\
+		'"-Winit-self", ' +\
+		'"-Wlogical-op", ' +\
+		'"-Wmissing-declarations", ' +\
+		'"-Wmissing-include-dirs", ' +\
+		'"-Wnoexcept", ' +\
+		'"-Woverloaded-virtual", ' +\
+		'"-Wredundant-decls", ' +\
+		'"-Wshadow", ' +\
+		'"-Wsign-conversion", ' +\
+		'"-Wsign-promo", ' +\
+		'"-Wstrict-null-sentinel", ' +\
+		'"-Wstrict-overflow=5", ' +\
+		'"-Wswitch-default", ' +\
+		'"-Wundef", ' +'\n'+\
 		                	opts.getEngineDeps() + ',' 																+'\n'+\
 		'                //Output'																					+'\n'+\
 		'					"-c", "-o", "' + opts.enginePath() + '/Build/' + plf + '/LuxEngine' + typ + '"' 		+'\n'+\

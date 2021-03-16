@@ -86,11 +86,9 @@ namespace lux{
 			createDefaultCommandBuffers__();
 		}
 
-//TODO
 		clearShader = core::c::shaders::newShader(
 			RtArray<vram::Alloc_b<int32>>{ fOut_g, iOut_g, zBuff_g, wSize_g },
 			LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1,
-			// LUX_DEF_SHADER_CLEAR, (1920*2 * 1080) / (32 * 32) + 1, 1, 1,
 			*this
 		);
 

@@ -39,7 +39,8 @@ namespace lux::vram{
 		Cell_t2* cell;						//A pointer to a lux::vram::Cell_t object that contains the cell informations
 		type* mapped _dbg(= nullptr);	//A pointer used to map the memory
 
-		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }
+		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }				//Cast to different type
+		template<class type_> explicit alwaysInline operator const Alloc_b<type_>&() const noexcept { return *(const Alloc_b<type_>*)(this); }	//Cast to different type
 	};
 
 
