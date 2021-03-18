@@ -3,7 +3,7 @@
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
-#define w (*(Window*)(((char*)this) - offsetof(lux::Window, lux::Window::swp)))
+#define w (*(Window*)(((char*)this) - offsetof(lux::Window, lux::Window::swp))) //TODO
 
 
 
@@ -202,7 +202,7 @@ namespace lux::core::wnd{
 
 
 
-	VkImageView Swapchain::createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
+	inline VkImageView Swapchain::createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
 		VkImageViewCreateInfo viewInfo{
 			.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 			.image    = vImage,

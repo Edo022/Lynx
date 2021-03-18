@@ -21,7 +21,7 @@ namespace lux::core::wnd{
 
 		VkSwapchainKHR			 swapchain;
 		public: //FIXME
-		VkSwapchainCreateInfoKHR createInfo;
+		VkSwapchainCreateInfoKHR createInfo;	//Informations used to create the swapchain. They are saved in order to be reused when the swapchain has to be recreated
 		private:
 		VkRenderPass             renderPass;
 		bool                     useVSync = true;
@@ -34,8 +34,8 @@ namespace lux::core::wnd{
 			VkSemaphore s_clear;
 			VkFence     f_rendered;
 		};
-		RtArray<SwpFrame> frames;
-		uint32            curFrame = 0;		//The index of the frame that is currently being rendered
+		RtArray<SwpFrame> frames;		//Synchronization objects used to render the frames
+		uint32            curFrame = 0;	//The index of the frame that is currently being rendered
 
 
 		struct SwpImage{
@@ -43,16 +43,15 @@ namespace lux::core::wnd{
 			VkImageView   view;
 			VkFramebuffer fbuffer;
 		};
-		RtArray<SwpImage> images;
-		// RtArray<VkFramebuffer>	framebuffers;
-		VkImageView   createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+		RtArray<SwpImage> images;		//Images where the frames are outputted
+		inline VkImageView   createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
 		inline VkFramebuffer createFramebuffer(VkRenderPass vRenderPass, VkImageView& vAttachment, uint32 vWith, uint32 vHeight);
 
 
 
 
 		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
-		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
+		VkPresentModeKHR   choosePresentMode  (const RtArray<VkPresentModeKHR>&   pAvailablePresentModes);
 		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
 		VkSurfaceCapabilitiesKHR    getCapabilities();
@@ -63,19 +62,19 @@ namespace lux::core::wnd{
 
 
 	public:
-		Window* bindedWindow;
-		bool renderFramebufferResized = false;
+		Window* bindedWindow;				//Window owning the swapchain
+		std::atomic<bool> resized = false;	//Synchronization variable. Set to true by the main engine thread when the window needs to be resized
 
 		RtArray<LuxShader_t, uint32> shaders;
 		RtArray<VkCommandBuffer>     shadersCBs;
 
 
-		Swapchain();
-		void create(bool vUseVSync);
-		void createRenderPass();
+		Swapchain();					//Object constructor. Allocates memory and initializes some resources
+		void create(bool vUseVSync);	//Creates the swapchain
+		void createRenderPass();		//"create" helper function
 
-		void recreate();
-		void destroy();
-		~Swapchain();
+		void destroy();					//Only destroys a part of the swapchain so that it can be recreated easily
+		void recreate();				//Recreates the swapchain after it has been destroyed
+		~Swapchain();					//Object destructor. Deallocates memory and destroys all of the resources
 	};
 }
