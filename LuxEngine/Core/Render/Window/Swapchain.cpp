@@ -75,37 +75,22 @@ namespace lux::core::wnd{
 		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
 
 
+		//Create render pass
 		createRenderPass();
 
-
-		//Create images
+		//Get images
 		uint32 imageCount;
-		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
-		// images.resize(imageCount);
-		images.resize(imageCount);
-		VkImage __[imageCount];
-		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, __);	//Save images
+		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);
+		images.resize(imageCount); VkImage _[imageCount];
+		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, _);
+
+		//Initialize images, image views and framebuffers
 		for(uint32 i = 0; i < imageCount; ++i) {
-			images[i].image = __[i];
+			images[i].image = _[i];
 			images[i].view  = createImageView(images[i].image, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-			VkFramebufferCreateInfo framebufferInfo{
-					.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-					.renderPass      = renderPass,
-					.attachmentCount = 1,
-					.pAttachments    = &images[i].view,
-					.width           = createInfo.imageExtent.width,
-					.height          = createInfo.imageExtent.height,
-					.layers          = 1
-				};
-				dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &images[i].fbuffer), "Failed to create framebuffer");
+			images[i].fbuffer = createFramebuffer(renderPass, images[i].view, createInfo.imageExtent.width, createInfo.imageExtent.height);
+			//FIXME check if framebuffers are really necessary
 		}
-
-		//Create image views
-		// imageViews.resize(images.count());
-		// for(uint32 i = 0; i < images.count(); ++i) images[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-
-
-		// createFramebuffers();
 	}
 
 
@@ -115,7 +100,6 @@ namespace lux::core::wnd{
 
 
 
-	// void Swapchain::recreate(const bool vWindowResized) {
 	void Swapchain::recreate() {
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
@@ -123,13 +107,16 @@ namespace lux::core::wnd{
 			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
 
 			{ //swapchain creation infos
+				//Recalculate swapchain extent
 				VkSurfaceCapabilitiesKHR capabilities;
 				vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
 				createInfo.imageExtent = chooseSwapchainExtent(&capabilities);
 
+				//Recalculate queue family indices
 				uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 				createInfo.pQueueFamilyIndices = queueFamilyIndices;
 
+				//Set oldSwapchain member to allow the driver to reuse resources
 				VkSwapchainKHR oldSwapchain = swapchain;
 				createInfo.oldSwapchain  = oldSwapchain;
 
@@ -140,34 +127,23 @@ namespace lux::core::wnd{
 
 			//Create images
 			uint32 imageCount;
-			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
-			// images.resize(imageCount);
-			images.resize(imageCount);
-			VkImage __[imageCount];
-			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, __);	//Save images
+			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);
+			//TODO ^ Vulkan validation layers complain about not calling this function with nullptr before getting the images,
+			//TODO   but the number of images remains the same, so there is not need to call it twice.
+			//TODO   If it's the case, remove those lines from release mode.
+
+			//Get images
+			VkImage _[imageCount];
+			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, _);
+
+			//Re initialize images, image views and framebuffer
 			for(uint32 i = 0; i < imageCount; ++i) {
-				images[i].image = __[i];
+				images[i].image = _[i];
 				images[i].view  = createImageView(images[i].image, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
-				VkFramebufferCreateInfo framebufferInfo{
-					.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-					.renderPass      = renderPass,
-					.attachmentCount = 1,
-					.pAttachments    = &images[i].view,
-					.width           = createInfo.imageExtent.width,
-					.height          = createInfo.imageExtent.height,
-					.layers          = 1
-				};
-				dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &images[i].fbuffer), "Failed to create framebuffer");
+				images[i].fbuffer = createFramebuffer(renderPass, images[i].view, createInfo.imageExtent.width, createInfo.imageExtent.height);
 			}
 
-			//Create image views
-			// imageViews.resize(images.count());
-			// for(uint32 i = 0; i < images.count(); ++i) images[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
-			// createFramebuffers();
-
-
-//FIXME check if framebuffer is necessary
 			//Update the window size buffer
 			bindedWindow->wSize_g.map();
 			bindedWindow->wSize_g[0] = createInfo.imageExtent.width;
@@ -179,7 +155,6 @@ namespace lux::core::wnd{
 				vkDestroyCommandPool(dvc::compute.LD, bindedWindow->copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				// bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
 				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
 				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
@@ -197,11 +172,9 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::destroy() {
-		// for(auto framebuffer : framebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
-		// for(auto imageView   : imageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView,   nullptr);		//Destroy image views
-		for(auto img   : images  ) {
-			vkDestroyFramebuffer(dvc::graphics.LD, img.fbuffer, nullptr);		//Destroy framebuffers
-			vkDestroyImageView(  dvc::graphics.LD, img.view,    nullptr);		//Destroy image views
+		for(auto img : images) {
+			vkDestroyFramebuffer(dvc::graphics.LD, img.fbuffer, nullptr);
+			vkDestroyImageView  (dvc::graphics.LD, img.view,    nullptr);
 		}
 	}
 
@@ -210,15 +183,15 @@ namespace lux::core::wnd{
 
 	Swapchain::~Swapchain(){
 		vkDeviceWaitIdle(core::dvc::graphics.LD);
-		vkDestroyRenderPass(dvc::graphics.LD, renderPass, nullptr);												//Destroy render pass
 		destroy();
-		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
+		vkDestroyRenderPass  (dvc::graphics.LD, renderPass, nullptr);
+		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain,  nullptr);
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_aquired,   nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_objects, nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_copy,            nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_clear,           nullptr);
-			vkDestroyFence(    dvc::graphics.LD, frames[i].f_rendered,   nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_aquired,  nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_objects,  nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_copy,     nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_clear,    nullptr);
+			vkDestroyFence(    dvc::graphics.LD, frames[i].f_rendered, nullptr);
 		}
 	}
 
@@ -252,6 +225,28 @@ namespace lux::core::wnd{
 		VkImageView imageView;
 		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
 		return imageView;
+	}
+
+
+
+
+
+
+
+
+	inline VkFramebuffer Swapchain::createFramebuffer(VkRenderPass vRenderPass, VkImageView& vAttachment, uint32 vWith, uint32 vHeight) {
+		VkFramebufferCreateInfo framebufferInfo{
+			.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+			.renderPass      = vRenderPass,
+			.attachmentCount = 1,
+			.pAttachments    = &vAttachment,
+			.width           = vWith,
+			.height          = vHeight,
+			.layers          = 1
+		};
+		VkFramebuffer framebuffer;
+		dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &framebuffer), "Failed to create framebuffer");
+		return framebuffer;
 	}
 
 
@@ -314,32 +309,6 @@ namespace lux::core::wnd{
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------//
 
-
-
-
-
-
-
-
-	// void Swapchain::createFramebuffers() {
-	// 	// // framebuffers.resize(imageViews.count());
-	// 	// framebuffers.resize(images.count());
-
-	// 	// // for(uint32 i = 0; i < imageViews.count(); ++i) {
-	// 	// for(uint32 i = 0; i < images.count(); ++i) {
-	// 	// 	VkFramebufferCreateInfo framebufferInfo{
-	// 	// 		.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-	// 	// 		.renderPass      = renderPass,
-	// 	// 		.attachmentCount = 1,
-	// 	// 		// .pAttachments    = &imageViews[i],
-	// 	// 		.pAttachments    = &images[i].view,
-	// 	// 		.width           = createInfo.imageExtent.width,
-	// 	// 		.height          = createInfo.imageExtent.height,
-	// 	// 		.layers          = 1
-	// 	// 	};
-	// 	// 	dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &framebuffers[i]), "Failed to create framebuffer");
-	// 	// }
-	// }
 
 
 

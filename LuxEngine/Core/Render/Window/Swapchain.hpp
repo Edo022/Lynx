@@ -45,7 +45,8 @@ namespace lux::core::wnd{
 		};
 		RtArray<SwpImage> images;
 		// RtArray<VkFramebuffer>	framebuffers;
-		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+		VkImageView   createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+		inline VkFramebuffer createFramebuffer(VkRenderPass vRenderPass, VkImageView& vAttachment, uint32 vWith, uint32 vHeight);
 
 
 
@@ -72,7 +73,6 @@ namespace lux::core::wnd{
 		Swapchain();
 		void create(bool vUseVSync);
 		void createRenderPass();
-		// void createFramebuffers();
 
 		void recreate();
 		void destroy();
