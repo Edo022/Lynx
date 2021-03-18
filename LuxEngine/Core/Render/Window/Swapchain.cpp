@@ -13,17 +13,17 @@
 
 namespace lux::core::wnd{
 	Swapchain::Swapchain(){
-		imgs.resize(__renderMaxFramesInFlight);
+		frames.resize(__renderMaxFramesInFlight);
 
 		//Create sync objects
 		VkSemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
 		VkFenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_imageAcquired);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_objectsRendered);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_copy);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_clear);
-			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &imgs[i].f_imageRendered);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_imageAcquired);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_objectsRendered);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_copy);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_clear);
+			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &frames[i].f_imageRendered);
 		}
 	}
 
@@ -78,13 +78,18 @@ namespace lux::core::wnd{
 		//Create images
 		uint32 imageCount;
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
-		images.resize(imageCount);
-		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, images.begin());	//Save images
-
+		// images.resize(imageCount);
+		imgs.resize(imageCount);
+		VkImage __[imageCount];
+		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, __);	//Save images
+		for(uint32 i = 0; i < imageCount; ++i) {
+			imgs[i].images = __[i];
+			imgs[i].imageViews = createImageView(imgs[i].images, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		}
 
 		//Create image views
-		imageViews.resize(images.count());
-		for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		// imageViews.resize(images.count());
+		// for(uint32 i = 0; i < images.count(); ++i) imgs[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
 		createRenderPass();
@@ -124,13 +129,18 @@ namespace lux::core::wnd{
 			//Create images
 			uint32 imageCount;
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
-			images.resize(imageCount);
-			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, images.begin());	//Save images
-
+			// images.resize(imageCount);
+			imgs.resize(imageCount);
+			VkImage __[imageCount];
+			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, __);	//Save images
+			for(uint32 i = 0; i < imageCount; ++i) {
+				imgs[i].images = __[i];
+				imgs[i].imageViews = createImageView(imgs[i].images, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			}
 
 			//Create image views
-			imageViews.resize(images.count());
-			for(uint32 i = 0; i < images.count(); ++i) imageViews[i] = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			// imageViews.resize(images.count());
+			// for(uint32 i = 0; i < images.count(); ++i) imgs[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 			createFramebuffers();
 
@@ -147,7 +157,8 @@ namespace lux::core::wnd{
 				vkDestroyCommandPool(dvc::compute.LD, bindedWindow->copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
+				// bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
+				bindedWindow->copyCommandBuffers.resize(imgs.count());	//Resize the command buffer array in the shader
 				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
@@ -165,7 +176,8 @@ namespace lux::core::wnd{
 
 	void Swapchain::destroy() {
 		for(auto framebuffer : framebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
-		for(auto imageView   : imageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView,   nullptr);		//Destroy image views
+		// for(auto imageView   : imageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView,   nullptr);		//Destroy image views
+		for(auto imageView   : imgs  ) vkDestroyImageView(  dvc::graphics.LD, imageView.imageViews,   nullptr);		//Destroy image views
 	}
 
 
@@ -177,11 +189,11 @@ namespace lux::core::wnd{
 		destroy();
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_imageAcquired,   nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_objectsRendered, nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_copy,            nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_clear,           nullptr);
-			vkDestroyFence(    dvc::graphics.LD, imgs[i].f_imageRendered,   nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_imageAcquired,   nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_objectsRendered, nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_copy,            nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_clear,           nullptr);
+			vkDestroyFence(    dvc::graphics.LD, frames[i].f_imageRendered,   nullptr);
 		}
 	}
 
@@ -285,14 +297,17 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::createFramebuffers() {
-		framebuffers.resize(imageViews.count());
+		// framebuffers.resize(imageViews.count());
+		framebuffers.resize(imgs.count());
 
-		for(uint32 i = 0; i < imageViews.count(); ++i) {
+		// for(uint32 i = 0; i < imageViews.count(); ++i) {
+		for(uint32 i = 0; i < imgs.count(); ++i) {
 			VkFramebufferCreateInfo framebufferInfo{
 				.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 				.renderPass      = renderPass,
 				.attachmentCount = 1,
-				.pAttachments    = &imageViews[i],
+				// .pAttachments    = &imageViews[i],
+				.pAttachments    = &imgs[i].imageViews,
 				.width           = createInfo.imageExtent.width,
 				.height          = createInfo.imageExtent.height,
 				.layers          = 1

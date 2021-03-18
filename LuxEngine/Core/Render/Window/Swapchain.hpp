@@ -19,38 +19,43 @@ namespace lux::core::wnd{
 	private:
 		friend class lux::Window;
 
+		VkSwapchainKHR			 swapchain;
 		public: //FIXME
 		VkSwapchainCreateInfoKHR createInfo;
 		private:
-		VkRenderPass renderPass;
-		bool useVSync = true;
+		VkRenderPass             renderPass;
+		bool                     useVSync = true;
 
 
-		struct SwpImage{
+		struct SwpFrame{
 			VkSemaphore s_imageAcquired;
 			VkSemaphore s_objectsRendered;
 			VkSemaphore s_copy;
 			VkSemaphore s_clear;
 			VkFence     f_imageRendered;
 		};
-		RtArray<SwpImage> imgs;
+		RtArray<SwpFrame> frames;
 		uint32            curFrame = 0;		//The index of the frame that is currently being rendered
+
+
+		struct SwpImages{
+			VkImage		images;
+			VkImageView	imageViews;
+		};
+		RtArray<SwpImages> imgs;
+		RtArray<VkFramebuffer>	framebuffers;
+		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
+
+
 
 
 		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
 		VkPresentModeKHR   choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes);
 		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
-		VkSurfaceCapabilitiesKHR getCapabilities();
+		VkSurfaceCapabilitiesKHR    getCapabilities();
 		RtArray<VkSurfaceFormatKHR> getSurfaceFormats();
-		RtArray<VkPresentModeKHR> getPresentModes();
-
-		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-
-		VkSwapchainKHR			swapchain;
-		RtArray<VkImage>		images;
-		RtArray<VkImageView>	imageViews;
-		RtArray<VkFramebuffer>	framebuffers;
+		RtArray<VkPresentModeKHR>   getPresentModes();
 
 
 
