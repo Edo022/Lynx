@@ -25,12 +25,16 @@ namespace lux::core::wnd{
 		VkRenderPass renderPass;
 		bool useVSync = true;
 
-		RtArray<VkSemaphore> s_imageAcquired;
-		RtArray<VkSemaphore> s_objectsRendered;
-		RtArray<VkSemaphore> s_copy;
-		RtArray<VkSemaphore> s_clear;
-		RtArray<VkFence>     f_imageRendered;
-		uint32               curFrame = 0;		//The index of the frame that is currently being rendered
+
+		struct SwpImage{
+			VkSemaphore s_imageAcquired;
+			VkSemaphore s_objectsRendered;
+			VkSemaphore s_copy;
+			VkSemaphore s_clear;
+			VkFence     f_imageRendered;
+		};
+		RtArray<SwpImage> imgs;
+		uint32            curFrame = 0;		//The index of the frame that is currently being rendered
 
 
 		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);

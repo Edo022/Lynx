@@ -13,21 +13,17 @@
 
 namespace lux::core::wnd{
 	Swapchain::Swapchain(){
-		s_imageAcquired   .resize(__renderMaxFramesInFlight);
-		s_objectsRendered.resize(__renderMaxFramesInFlight);
-		s_copy           .resize(__renderMaxFramesInFlight);
-		s_clear          .resize(__renderMaxFramesInFlight);
-		f_imageRendered  .resize(__renderMaxFramesInFlight);
+		imgs.resize(__renderMaxFramesInFlight);
 
 		//Create sync objects
 		VkSemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
 		VkFenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_imageAcquired[i]);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_objectsRendered[i]);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_copy[i]);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &s_clear[i]);
-			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &f_imageRendered[i]);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_imageAcquired);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_objectsRendered);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_copy);
+			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &imgs[i].s_clear);
+			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &imgs[i].f_imageRendered);
 		}
 	}
 
@@ -181,11 +177,11 @@ namespace lux::core::wnd{
 		destroy();
 		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain, nullptr);											//destroy swapchain
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkDestroySemaphore(dvc::graphics.LD, s_imageAcquired[i],   nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, s_objectsRendered[i], nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, s_copy[i],            nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, s_clear[i],           nullptr);
-			vkDestroyFence(    dvc::graphics.LD, f_imageRendered[i],   nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_imageAcquired,   nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_objectsRendered, nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_copy,            nullptr);
+			vkDestroySemaphore(dvc::graphics.LD, imgs[i].s_clear,           nullptr);
+			vkDestroyFence(    dvc::graphics.LD, imgs[i].f_imageRendered,   nullptr);
 		}
 	}
 
