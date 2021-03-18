@@ -65,8 +65,8 @@ namespace lux{
 
 			//Redraw frame if necessary
 			redraw:
-			if(swp.renderFramebufferResized) {
-				swp.renderFramebufferResized = false;
+			if(swp.resized) {
+				swp.resized = false;
 				swp.recreate();
 				goto redraw;
 			}

@@ -109,7 +109,7 @@ namespace lux{
 
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
-			((Window*)glfwGetWindowUserPointer(pWindow))->swp.renderFramebufferResized = true;
+			((Window*)glfwGetWindowUserPointer(pWindow))->swp.resized = true;
 		}
 
 
