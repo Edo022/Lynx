@@ -79,17 +79,17 @@ namespace lux::core::wnd{
 		uint32 imageCount;
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
 		// images.resize(imageCount);
-		imgs.resize(imageCount);
+		images.resize(imageCount);
 		VkImage __[imageCount];
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, __);	//Save images
 		for(uint32 i = 0; i < imageCount; ++i) {
-			imgs[i].images = __[i];
-			imgs[i].imageViews = createImageView(imgs[i].images, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			images[i].image = __[i];
+			images[i].view  = createImageView(images[i].image, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 
 		//Create image views
 		// imageViews.resize(images.count());
-		// for(uint32 i = 0; i < images.count(); ++i) imgs[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		// for(uint32 i = 0; i < images.count(); ++i) images[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 
 		createRenderPass();
@@ -130,17 +130,17 @@ namespace lux::core::wnd{
 			uint32 imageCount;
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);			//Get image count
 			// images.resize(imageCount);
-			imgs.resize(imageCount);
+			images.resize(imageCount);
 			VkImage __[imageCount];
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, __);	//Save images
 			for(uint32 i = 0; i < imageCount; ++i) {
-				imgs[i].images = __[i];
-				imgs[i].imageViews = createImageView(imgs[i].images, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+				images[i].image = __[i];
+				images[i].view  = createImageView(images[i].image, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 			}
 
 			//Create image views
 			// imageViews.resize(images.count());
-			// for(uint32 i = 0; i < images.count(); ++i) imgs[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			// for(uint32 i = 0; i < images.count(); ++i) images[i].imageViews = createImageView(images[i], createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 
 			createFramebuffers();
 
@@ -158,7 +158,7 @@ namespace lux::core::wnd{
 
 				//#LLID CCB0000 Recreate copy command buffers
 				// bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
-				bindedWindow->copyCommandBuffers.resize(imgs.count());	//Resize the command buffer array in the shader
+				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
 				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
@@ -177,7 +177,7 @@ namespace lux::core::wnd{
 	void Swapchain::destroy() {
 		for(auto framebuffer : framebuffers) vkDestroyFramebuffer(dvc::graphics.LD, framebuffer, nullptr);		//Destroy framebuffers
 		// for(auto imageView   : imageViews  ) vkDestroyImageView(  dvc::graphics.LD, imageView,   nullptr);		//Destroy image views
-		for(auto imageView   : imgs  ) vkDestroyImageView(  dvc::graphics.LD, imageView.imageViews,   nullptr);		//Destroy image views
+		for(auto imageView   : images  ) vkDestroyImageView(  dvc::graphics.LD, imageView.view,   nullptr);		//Destroy image views
 	}
 
 
@@ -298,16 +298,16 @@ namespace lux::core::wnd{
 
 	void Swapchain::createFramebuffers() {
 		// framebuffers.resize(imageViews.count());
-		framebuffers.resize(imgs.count());
+		framebuffers.resize(images.count());
 
 		// for(uint32 i = 0; i < imageViews.count(); ++i) {
-		for(uint32 i = 0; i < imgs.count(); ++i) {
+		for(uint32 i = 0; i < images.count(); ++i) {
 			VkFramebufferCreateInfo framebufferInfo{
 				.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 				.renderPass      = renderPass,
 				.attachmentCount = 1,
 				// .pAttachments    = &imageViews[i],
-				.pAttachments    = &imgs[i].imageViews,
+				.pAttachments    = &images[i].view,
 				.width           = createInfo.imageExtent.width,
 				.height          = createInfo.imageExtent.height,
 				.layers          = 1

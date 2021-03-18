@@ -28,21 +28,21 @@ namespace lux::core::wnd{
 
 
 		struct SwpFrame{
-			VkSemaphore s_imageAcquired;
-			VkSemaphore s_objectsRendered;
-			VkSemaphore s_copy;
-			VkSemaphore s_clear;
-			VkFence     f_imageRendered;
+			VkSemaphore s_imageAcquired; //FIXME RENAME
+			VkSemaphore s_objectsRendered; //FIXME RENAME
+			VkSemaphore s_copy; //FIXME RENAME
+			VkSemaphore s_clear; //FIXME RENAME
+			VkFence     f_imageRendered; //FIXME RENAME
 		};
 		RtArray<SwpFrame> frames;
 		uint32            curFrame = 0;		//The index of the frame that is currently being rendered
 
 
 		struct SwpImages{
-			VkImage		images;
-			VkImageView	imageViews;
+			VkImage		image;
+			VkImageView	view;
 		};
-		RtArray<SwpImages> imgs;
+		RtArray<SwpImages> images;
 		RtArray<VkFramebuffer>	framebuffers;
 		VkImageView        createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
 
