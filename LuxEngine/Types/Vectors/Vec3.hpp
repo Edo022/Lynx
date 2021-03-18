@@ -29,10 +29,11 @@ template<class t> struct vec3_t : vec_b {
 
 
 	//Assignment operators, constructors and comparison operators
-	inline constexpr auto& operator=(const vec3_t<auto>& v) noexcept { x = v.x; y = v.y; z = v.z; return *this; }
-	inline constexpr auto& operator=(const auto& n        ) noexcept { x =      y =      z =   n; return *this; }
+	template<class t_> inline constexpr auto& operator=(const vec3_t<t_>& v) noexcept requires(!std::is_same_v<t_, t>) { x = v.x; y = v.y; z = v.z; return *this; }
+	inline constexpr auto& operator=(const vec3_t<t>& v)    noexcept { x = v.x; y = v.y; z = v.z; return *this; }
+	inline constexpr auto& operator=(const auto& n)         noexcept { x =      y =      z =   n; return *this; }
 	inline constexpr void operator==(const vec3_t<auto>& v) noexcept { return x == v.x && y == v.y && z == v.z; }
-	inline constexpr void operator==(const auto& n        ) noexcept { return x == n   && y == n   && z == n;   }
+	inline constexpr void operator==(const auto& n)         noexcept { return x == n   && y == n   && z == n;   }
 
 
 	//Add, subtract, multiply and divide operators with vectors

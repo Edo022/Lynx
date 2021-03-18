@@ -20,16 +20,17 @@ template<class t> struct vec2_t : vec_b {
 	alwaysInline constexpr vec2_t() noexcept {}
 	alwaysInline constexpr vec2_t(const auto& _x, const auto& _y) noexcept { x = _x; y = _y; }
 	explicit alwaysInline constexpr vec2_t(const vec2_t<auto>& v) noexcept { *this = v; }
-	         alwaysInline constexpr vec2_t(const vec2_t<t>&    v) noexcept { *this = v; }
-	explicit alwaysInline constexpr vec2_t(const auto& v        ) noexcept { *this = v; }
-	         alwaysInline constexpr vec2_t(const t&    v        ) noexcept { *this = v; }
+	         alwaysInline constexpr vec2_t(const vec2_t<t>& v)    noexcept { *this = v; }
+	explicit alwaysInline constexpr vec2_t(const auto& v)         noexcept { *this = v; }
+	         alwaysInline constexpr vec2_t(const t& v)            noexcept { *this = v; }
 
 
 	//Assignment operators, constructors and comparison operators
-	inline constexpr auto& operator=(const vec2_t<auto>& v) noexcept { x = v.x; y = v.y; return *this; }
-	inline constexpr auto& operator=(const auto& n        ) noexcept { x = n;   y = n;   return *this; }
+	template<class t_> inline constexpr auto& operator=(const vec2_t<t_>& v) noexcept requires(!std::is_same_v<t_, t>) { x = v.x; y = v.y; return *this; }
+	inline constexpr auto& operator=(const vec2_t<t>& v)    noexcept { x = v.x; y = v.y; return *this; }
+	inline constexpr auto& operator=(const auto& n)         noexcept { x = n;   y = n;   return *this; }
 	inline constexpr void operator==(const vec2_t<auto>& v) noexcept { return x == v.x && y == v.y; }
-	inline constexpr void operator==(const auto& n        ) noexcept { return x == n   && y == n;   }
+	inline constexpr void operator==(const auto& n)         noexcept { return x == n   && y == n;   }
 
 
 	//Add, subtract, multiply and divide operators with vectors

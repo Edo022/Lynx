@@ -74,8 +74,8 @@ def run(dir):
 		'                   "-std=c++2a", "-mavx", "-pipe", "-pthread",' 										+'\n'+\
 		'                  	"-I' + opts.enginePath() + '",' 													+'\n'+\
 		'					"-Wall", ' 																			+'\n'+\
-		'					"-Wclobbered", "-Wcast-function-type", "-Wdeprecated-copy", "-Wempty-body", "-Wignored-qualifiers", "-Wimplicit-fallthrough=3", "-Woverride-init", ' 		+'\n'+\
-		'					"-Wstring-compare", "-Wredundant-move", "-Wtype-limits", "-Wuninitialized", "-Wshift-negative-value", "-Wunused-parameter", "-Wunused-but-set-parameter", ' +'\n'+\
+		'					"-Wclobbered", "-Wcast-function-type", "-Wdeprecated-copy", "-Wempty-body", "-Wignored-qualifiers", "-Wimplicit-fallthrough=3", '					 		+'\n'+\
+		'					"-Wstring-compare", "-Wredundant-move", "-Wtype-limits", "-Wuninitialized", "-Wshift-negative-value", "-Wunused-but-set-parameter", ' +'\n'+\
 		'					"-Wcast-align", "-Wcast-qual", "-Wctor-dtor-privacy", "-Wdisabled-optimization", "-Wformat=2", "-Winit-self", "-Wlogical-op", "-Wmissing-include-dirs", ' 	+'\n'+\
 		'					"-Wnoexcept", "-Woverloaded-virtual", "-Wredundant-decls", "-Wshadow", "-Wsign-conversion", "-Wsign-promo", ' 												+'\n'+\
 		'					"-Wstrict-null-sentinel", "-Wstrict-overflow=5", "-Wswitch-default", "-Wundef", ' 	+'\n'+\
