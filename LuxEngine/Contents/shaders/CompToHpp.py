@@ -39,11 +39,11 @@ with open(pathr, 'r') as fr, open(pathw, 'w') as fw:
                 m = m.expandtabs(4).strip()
                 comment = re.search(r'//.*$', m)                            #Remove
                 if not comment is None: m = re.sub(r'//.*$', '', m)         #And save single line comments
-                oldLen = re.search(                                  \
-                            r'(([biud]?vec([234]( *$)|( *.*;)))|'   +\
-                    r'((u?int)|(float)|(double)(( *$)|( *.*;))))'   ,\
+                oldLen = re.search(                      \
+                            r'(([biud]?vec([234].*$))|' +\
+                    r'(((u?int)|float|double).*$))'     ,\
                 m)
-                fw.write('\t\t'                                     +\
+                fw.write(('\t\t'                                    +\
                     re.sub( r'vec([234]( *$)|( *.*;))', r'f32v\g<1>',\
                     re.sub(r'bvec([234]( *$)|( *.*;))',   r'bv\g<1>',\
                     re.sub(r'ivec([234]( *$)|( *.*;))', r'i32v\g<1>',\
@@ -53,27 +53,8 @@ with open(pathr, 'r') as fr, open(pathw, 'w') as fw:
                     re.sub(     r'uint(( *$)|( *.*;))',  r'u32\g<1>',\
                     re.sub(    r'float(( *$)|( *.*;))',  r'f32\g<1>',\
                     re.sub(   r'double(( *$)|( *.*;))',  r'f64\g<1>',\
-                    m))))))))).ljust(len(oldLen.group(0)) if not oldLen is None else 0) +\
-                    (comment.group(0) if not comment is None else '') +'\n'\
+                    m))))))))).strip().ljust(len(oldLen.group(0)) if not oldLen is None else 0, ' ') +\
+                    (comment.group(0) if not comment is None else '')).rstrip() +'\n'\
                 )
             fw.write('\t};\n')                                          #Write struct closing bracket
         fw.write('}')                                               #Write namespace closing bracket
-
-
-
-# data = re.sub(r'\/\*(.|\n)*\*\/', '', r[i][2].split('\n'))  #Get layout members and remove multiline comments
-
-
-
-    # if r:
-    #     for i in range(0, len(r)):                                  #For each layout
-    #         fw.write('\n\tstruct ' + r[i][1] + '{\n')                   #Write struct name
-    #         data = r[i][2].split('\n')                                  #Get layout members and remove multiline comments
-    #         for j in range(0, len(data)):                               #For each layout member
-    #             if re.match(r'(^[\t ]*\/\/.*$)', data[j]) is None:          #If it's not a single line comment
-    #                 line = re.search(r'([^\t ].*$)', data[j])                   #Remove whitespaces at beginning of line
-    #                 if not line is None:                                        #If there is something left
-    #                     fw.write('\t\t' + line.group(0) + '\n')                     #Write it in the struct
-    #         fw.write('\t};\n')                                          #Write struct closing bracket
-    #     fw.write('}')                                               #Write namespace closing bracket
-

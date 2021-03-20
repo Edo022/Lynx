@@ -18,15 +18,15 @@ namespace lux::shd::Line2D{
 
 	struct lineData_{
 		//16 a;
-		f32v2 fp0;       //0
-		f32v2 fp1;       //8
+		f32v2 fp0;      //0
+		f32v2 fp1;      //8
 		//16
-		f32v4 col0 ;     //16
+		f32v4 col0 ;    //16
 		//16
-		f32v4 col1;      //32
+		f32v4 col1;     //32
 		//12
-		f32 wd0;      //48
-		f32 wd1;      //52
-		u32 ID;        //56
+		f32 wd0;        //48
+		f32 wd1;        //52
+		u32 ID;         //56
 	};
 }
