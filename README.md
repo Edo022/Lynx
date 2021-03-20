@@ -32,11 +32,11 @@ You can configure the g++ command to compile your application in the .vscode/tas
 The tasks are set to run lux_g++, which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.  
 C++20 is required.
 
-The task.json file has 2 build configurations: debug, and release.   
+The tasks.json file has 2 build configurations: debug, and release.   
 - Debug mode  
     Turns off all the optimizations and adds any available debug, gdb and gprof information.
     It also activates Vulkan validation layers and Lux Engine runtime validation tests.
-    Any error reported by those systems must be resolved, as they indicate a bug in the application.
+    Any error reported by those systems must be fixed, as they indicate a bug in the application.
     In release mode, they are not checked and have undefined behaviour.  
 - Release mode  
     Turns on -Ofast and other compiler specific optimizations, and removes all the unnecessary informations.
