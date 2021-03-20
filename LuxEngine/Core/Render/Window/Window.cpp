@@ -77,12 +77,11 @@ namespace lux{
 
 			wSize_g.realloc(4 * 2);						//Create cell for window size //TODO use dedicated storage and update every time
 			wSize_g.map();
-			wSize_g[0] = swp.createInfo.imageExtent.width;		//Set width
+			wSize_g[0] = swp.createInfo.imageExtent.width;	//Set width
 			wSize_g[1] = swp.createInfo.imageExtent.height;	//Set height
 			wSize_g.unmap();
 		}
 		{ //#LLID CCB0000 Create copy command buffers
-			// copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
 			createDefaultCommandBuffers__();
 		}
@@ -131,7 +130,6 @@ namespace lux{
 				.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,			//Set structure type
 				.commandPool = copyCommandPool,										//Set command pool where to allocate the command buffer
 				.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,							//Set the command buffer as a primary level command buffer
-				// .commandBufferCount = swp.images.count()
 				.commandBufferCount = swp.images.count()
 			};
 			dbg::checkVk(vkAllocateCommandBuffers(core::dvc::compute.LD, &commandBufferAllocateInfo, copyCommandBuffers.begin()), "Unable to allocate command buffers");
@@ -151,7 +149,6 @@ namespace lux{
 
 
 				//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-				// readToWriteBarrier.image = swp.images[imgIndex];				//Set swapchain image
 				readToWriteBarrier.image = swp.images[imgIndex].image;				//Set swapchain image
 				VkPipelineStageFlags 												//Create stage flags
 					srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,			//The swapchain image is in color output stage
@@ -159,12 +156,10 @@ namespace lux{
 				vkCmdPipelineBarrier(copyCommandBuffers[imgIndex], srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 
 				copyRegion.imageExtent = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
-				// vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], iOut_g.cell->csc.buffer, swp.images[imgIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 				vkCmdCopyBufferToImage(copyCommandBuffers[imgIndex], iOut_g.cell->csc.buffer, swp.images[imgIndex].image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion);
 
 
 				//Create a barrier to use the swapchain image as a present source image
-				// writeToReadBarrier.image = swp.images[imgIndex];			//Set swapchain image
 				writeToReadBarrier.image = swp.images[imgIndex].image;			//Set swapchain image
 				VkPipelineStageFlags 											//Create stage flags
 					srcStage1 = VK_PIPELINE_STAGE_TRANSFER_BIT,						//The image is in transfer stage from the buffer copy

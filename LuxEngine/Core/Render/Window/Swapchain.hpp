@@ -50,8 +50,8 @@ namespace lux::core::wnd{
 
 
 
-		VkSurfaceFormatKHR chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
-		VkPresentModeKHR   choosePresentMode  (const RtArray<VkPresentModeKHR>&   pAvailablePresentModes);
+		VkSurfaceFormatKHR chooseSurfaceFormat  (const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
+		VkPresentModeKHR   choosePresentMode    (const RtArray<VkPresentModeKHR>&   pAvailablePresentModes);
 		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
 
 		VkSurfaceCapabilitiesKHR    getCapabilities();
