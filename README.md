@@ -31,10 +31,12 @@ C++20 is required.
 
 The Vulkan validation layers library "libVkLayer_khronos_validation.so" must be placed in the default library directory, or bad things could happen
 
-#Build modes
-The build commands have 2 configurations: Debug, and Release.  
-Debug mode turns off all the optimizations and adds any debug and profiling information available.
-It also activates Vulkan validation layers and Lux Engine runtime validation tests.  
+# Build modes
+The task.json file has 2 build configurations: Debug, and Release.   
+Debug mode turns off all the optimizations and adds any available debug, gdb and gprof information.
+It also activates Vulkan validation layers and Lux Engine runtime validation tests.
+Any error reported by those systems must be resolved, as they indicate a bug in the application.
+In release mode they are not checked and have undefined behaviour.  
 
 
 Release mode turns on -Ofast and other comliler specific optimizations, and removes all the unnecessary informations.
@@ -43,4 +45,3 @@ Release mode turns on -Ofast and other comliler specific optimizations, and remo
 # Support the developers
 chu  
 //TODO
-see
