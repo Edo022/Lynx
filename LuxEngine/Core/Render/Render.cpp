@@ -22,8 +22,6 @@
 
 
 namespace lux::core::render{
-	// alignCache RtArray<obj::Base*> objUpdates2D;
-	// alignCache std::mutex          objUpdates2D_f;
 	alignCache std::mutex graphicsQueueSubmit_m;
 	alignCache std::mutex presentQueueSubmit_m;
 

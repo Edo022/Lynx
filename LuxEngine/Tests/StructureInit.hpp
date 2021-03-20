@@ -17,6 +17,8 @@ namespace lux{
 			#define genInitCheck 									\
 				mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
 				mutable char __pvt_dummy = 'L'
+		#else
+			#define genInitCheck
 		#endif
 	}
 
