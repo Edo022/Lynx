@@ -14,7 +14,7 @@ namespace lux{
 
 		//Private variables used in initialization checks. Those members are inherited and should only be declared once
 		#ifdef LUX_DEBUG
-			#define genInitCheck 									\
+			#define genInitCheck 										\
 				mutable uint64 __pvt_init_val = lux::__pvt::init_val;	\
 				mutable char __pvt_dummy = 'L'
 		#else

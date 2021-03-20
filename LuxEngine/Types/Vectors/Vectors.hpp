@@ -49,6 +49,10 @@ typedef vec4_t<u64> u64v4, uint64v4;    // Four-dimentional uint64 vector
 
 
 
+typedef vec2_t<bool> bv2, boolv2;        //  Two-dimentional bool vector
+typedef vec3_t<bool> bv3, boolv3;        //Three-dimentional bool vector
+typedef vec4_t<bool> bv4, boolv4;        // Four-dimentional bool vector
+
 typedef vec2_t<f32> f32v2, float32v2;   //  Two-dimentional float32 vector
 typedef vec3_t<f32> f32v3, float32v3;   //Three-dimentional float32 vector
 typedef vec4_t<f32> f32v4, float32v4;   // Four-dimentional float32 vector

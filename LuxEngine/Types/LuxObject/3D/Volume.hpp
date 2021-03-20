@@ -15,9 +15,22 @@ namespace lux{
     };
 
     struct Volume : public obj::Base3D{
+    private:
+        RaArray<Octree> hbx_nodes;
+
+    public:
         Octree hbx;                             //Hitbox
         vram::ptr<Point, VRam, Storage> data;   //GPU data
-        RaArray<Point> ldata;                   //Local copy of the GPU data //TODO REMOVE
         //TODO Generation data
+
+        Volume(f32v3 vPos, f32v2 vRot, RtArray<Point>& vData) {
+            Base3D::pos = vPos;
+            Base3D::rot = vRot;
+            Base3D::scl = { 1, 1, 1 };
+
+            for(auto i : vData) hbx_nodes.add({
+                i.pos, i.r, 0, { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }, nullptr, {}
+            });
+        }
     };
 }
