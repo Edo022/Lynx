@@ -43,8 +43,8 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
             fh.write('\t\tstatic bufferType type;\n')                               #Write type
             fh.write('\t\tstatic uint32     bind;\n')                               #Write binding
 
-            fc.write('\n\tbufferType ' + r[i][4] + '::type = ' + r[i][3] + ';\n')   #Define type
-            fc.write(  '\tuint32     ' + r[i][4] + '::bind = ' + r[i][2] + ';\n')   #Define binding
+            fc.write('\n\tbufferType ' + r[i][4] + '::type = ' + ('Storage' if r[i][3] == 'buffer' else 'Uniform') + ';\n')
+            fc.write(  '\tuint32     ' + r[i][4] + '::bind = ' + r[i][2] + ';\n')   # <^ Define type and binding
 
             members = r[i][5].strip().split('\n')                                   #Get layout members
             for m in members:                                                       #For each member
