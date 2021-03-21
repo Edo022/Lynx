@@ -1,5 +1,4 @@
 import sys, os, re, textwrap
-from math import ceil
 
 
 
@@ -35,20 +34,24 @@ def translateLine(line : str):
     )
 
 
+
+
 def translateDataType(glslType : str):
     return(
-        re.sub( r'^vec([234])', r' f32v\g<1>',
-        re.sub(r'^bvec([234])',   r' bv\g<1>',
-        re.sub(r'^ivec([234])', r' i32v\g<1>',
-        re.sub(r'^uvec([234])', r' u32v\g<1>',
-        re.sub(r'^dvec([234])', r' f64v\g<1>',
-        re.sub(   r'^int',  r' i32',
-        re.sub(  r'^uint',  r' u32',
-        re.sub(  r'^bool', r' bool',
-        re.sub( r'^float',  r' f32',
-        re.sub(r'^double',  r' f64',
+        re.sub( r'^vec([234])', r'f32v\g<1>',
+        re.sub(r'^bvec([234])',   r'bv\g<1>',
+        re.sub(r'^ivec([234])', r'i32v\g<1>',
+        re.sub(r'^uvec([234])', r'u32v\g<1>',
+        re.sub(r'^dvec([234])', r'f64v\g<1>',
+        re.sub(   r'^int',  r'i32',
+        re.sub(  r'^uint',  r'u32',
+        re.sub(  r'^bool', r'bool',
+        re.sub( r'^float',  r'f32',
+        re.sub(r'^double',  r'f64',
         glslType))))))))))
     )
+
+
 
 
 def getTypeSize(type_ : str):
@@ -69,29 +72,18 @@ def getTypeSize(type_ : str):
 
 
 
-
-def getType(line : str):
-    return re.findall(r'([biuv]?vec[234])|(double|float|bool|(u?int))(2( *$)|( *.*?;))', line)
-
-
-
-
-
 def translateMembers(members:str):
     members = members.expandtabs(4).strip()
     ret:str = ''
 
 
-    # for member in members.split(';'):
-    #     ret += member
     offset = 0
     while len(members) > 0:
-        print(len(members) )
         #Skip comments
         r = re.search(r'(^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)', members)
         if not r is None:
-            ret += r.group(0)
-            members = members[len(r.group(0)):]
+            ret += r.group(0)                                       #Concatenate to return value
+            members = members[len(r.group(0)):]                     #Pop from source string
             continue
 
         #GLSL data types
@@ -103,15 +95,15 @@ def translateMembers(members:str):
             members
         )
         if not r is None:
-            ret += translateDataType(r.group(2)) + ' ' #FIXME justify instead of adding a random space
-            ret += r.group(7)
+            type_:str = translateDataType(r.group(2))
+            ret += type_ + '& '             #Write translated type
 
-            align:int = getTypeSize(r.group(2))
-            if offset % align != 0: offset = offset % align + align
-            ret += '/*' + str(offset) + '*/'
-            offset += align
+            align:int = getTypeSize(r.group(2))                     #Get alignment
+            if offset % align != 0: offset = offset % align + align #Fix element offset and #Create getter from variable name
+            ret += 'get' + r.group(7)[0].upper() + r.group(7)[1:] + '() { return *(' + type_ + '*)' + ('(Shader_b::data +' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
+            offset += align                                         #Calculate raw offset of the next element
 
-            members = members[len(r.group(0)):]
+            members = members[len(r.group(0)):]                     #Pop from source string
             continue
 
         if members[0] in ('\t', '\n',):
@@ -124,51 +116,27 @@ def translateMembers(members:str):
     return ret
 
 
-    # for m in members:                                                           #For each member
-    #     m = m.expandtabs(4).strip()                                                 #Remove whitespace and convert tabs to spaces
-    #     comment = re.search(r'//.*$', m)                                            #Remove
-    #     if not comment is None: m = re.sub(r'//.*$', '', m)                         #and save single line comments
-    #     oldLen = re.search(r'([biud]?vec[234].*$)|(((u?int)|float|double).*$)', m)  #Calculate old length to preserve names and comments alignment
-
-    #     ret += (
-    #         (translateLine(m).ljust((len(oldLen.group(0)) + len('alignas(n * n) ')) if not oldLen is None else 0) +
-    #         (comment.group(0) if not comment is None else '')).rstrip() + '\n'
-    #     )
-    # return ret
 
 
 
 
-def translateStructDecl(name : str, members : str):
-    # return (''
-    #     + ('\n\tstruct ' + layout[4] + ' : public Shader_b {\n')                        #Write struct name
-    #     + ('\t\tstatic uint32 bind;\n')                                                 #Write binding
-    #     + ('\t\t' + layout[4] + '();\n')                                                #Write constructor
-    #     + (textwrap.indent(translateMembers(layout[5].strip().split('\n')), '\t\t'))    #Write struct members
-    #     + ('\t};\n')                                                                    #Write struct closing bracket
-    # )
-    return (
-        ('\n\nstruct ' + name + ' : public Shader_b {')                        #Write struct name
+
+
+def translateStructDecl(name : str, members : str, space:bool):
+    return (('\n' if space else '') +
+        ('\nstruct ' + name + ' : public Shader_b {')                        #Write struct name
         + '\n' + textwrap.indent(translateMembers(members), '\t')
         + '\n};'                                                                    #Write struct closing bracket
     )
 
-    # for member in members.split(';'):
-    #     ret += member
-    # return ret
-    # return (''
-        # + ('\n\tstruct ' + layoutName + ' : public Shader_b {\n')                        #Write struct name
-        # + '\n'.join(re.split(r'\/\/.*\n', members))
-        # + ('\n};')                                                                    #Write struct closing bracket
-    # )
 
 
 
 def translateStructDef(layout):
     return(''
-        + ('\n\tuint32 ' + layout[4] + '::bind = ' + layout[2] + ';')         #Define binding
-        + ('\n\t' + layout[4] + '::' + layout[4] + '(){')                     #Set type
-        + ('\n\t\tShader_b::type = ' + ('Storage' if layout[3] == 'buffer' else 'Uniform') + ';')
+        + ('\n\tuint32 ' + layout[9] + '::bind = ' + layout[7] + ';')         #Define binding
+        + ('\n\t' + layout[9] + '::' + layout[9] + '(){')                     #Set type
+        + ('\n\t\tShader_b::type = ' + ('Storage' if layout[8] == 'buffer' else 'Uniform') + ';')
         + ('\n\t}\n')
     )
 
@@ -207,15 +175,21 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
         'namespace lux::shd::' + shname.replace('.', '_') + '{'
     )
 
-    shader = re.findall(r'([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})', fr.read())
+    shader = re.findall(
+        r'((^|\n)((\/\*(.|\n)*?\*\/)|[\t ])*'   # 1 2 3 4    #Skip comments and whitespace //FIXME FIX GROUPS INDICES COMMENTS
+        r'layout.*(\(.*binding[\t ]*=[\t ]'     # 5 6        #Find layout declaration
+        r'([0-9][0-9]?)\))'                     # 7          #Get layout binding
+        r'[\t ]*(buffer|uniform) (.*)'          # 8 9        #Get layout type and name
+        r'\{(([^\}]|\n)*)\})',                  # 10 11      #Get layout members
+        fr.read())
     if shader:
-        for layout in range(0, len(shader)):                  #For each layout
-            fc.write(translateStructDef(shader[layout]))          #Write .hpp
-            # fh.write(translateStructDecl(shader[layout]))         #Write .cpp
-            fh.write(textwrap.indent(translateStructDecl(shader[layout][4], shader[layout][5].strip()), '\t'))          #Write .hpp
+        for layout in range(0, len(shader)):                    #For each layout
+            # fc.write(translateStructDef(shader[layout]))            #Write .hpp and #Write .hpp
+            fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][9].strip(), layout != 0), '\t'))
+    else:
+        print('No layout found. A shader must define at least one layout')
 
-    fh.write('}')                               #Write namespace closing bracket
-    fc.write('}')                               #Write namespace closing bracket
+    fh.write('\n}'); fc.write('}')                          #Write namespace closing bracket
 
 
 

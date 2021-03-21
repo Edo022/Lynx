@@ -9,51 +9,28 @@
 
 
 namespace lux::shd::Line2D{
-
 	struct colorOutput_ : public Shader_b {
-		 f32v4 colorOutput/*0*/
+		f32v4& getColorOutput() { return *(f32v4*)Shader_b::data; }
 	};
 
 	struct windowSize_ : public Shader_b {
-		 u32 width/*0*/ u32 height/*4*/
+		u32& getWidth() { return *(u32*)Shader_b::data; }u32& getHeight() { return *(u32*)(Shader_b::data +4); }
 	};
 
 	struct zBuffer_ : public Shader_b {
-		 u32 zBuffer/*0*/
+		u32& getZBuffer() { return *(u32*)Shader_b::data; }
 	};
 
 	struct lineData_ : public Shader_b {
-		 f32v2 _vec2/*0*///0
-		 f32v2 fp1/*8*///8
+		f32v2& get_vec2() { return *(f32v2*)Shader_b::data; }//0
+		f32v2& getFp1() { return *(f32v2*)(Shader_b::data +8); }//8
 		//TEST
 		//16
 		/*TEST*///32
-		 f32 wd0/*16*///48
+		f32& getWd0() { return *(f32*)(Shader_b::data +16); }//48
 		/*
 		TEST
-		    */ f32 floatname/*20*///52
+		    */f32& getFloatname() { return *(f32*)(Shader_b::data +20); }//52
 		/*TEST  */
 	};
-
-	struct colorOutput_ : public Shader_b {
-		 f32v4 colorOutput/*0*/
-	};
-
-	struct windowSize_ : public Shader_b {
-		 u32 width/*0*/ u32 height/*4*/
-	};
-
-	struct zBuffer_ : public Shader_b {
-		 u32 zBuffer/*0*/
-	};
-
-	struct lineData_ : public Shader_b {
-		//  vec2 fp0;       //0
-		//  vec2 fp1;       //8
-		//  vec4 col0;      //16
-		//  vec4 col1;      //32
-		//  float wd0;      //48
-		//  float wd1;      //52
-		//  uint ID;        //56
-
-	};}
+}

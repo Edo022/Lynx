@@ -10,7 +10,7 @@ float rand(vec2 co) { return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758
 
 
 //TODO squared distance aa*bb
-
+//FIXME USE 32BIT FLOATS IN SHADER STRUCTURES
 
 
 
@@ -20,7 +20,7 @@ layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
 layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 //TODO automatic binding type generation
-layout(binding = 3) uniform lineData_{
+/**/  	/*  fewf */layout(binding = 3) uniform lineData_{
 	vec2 _vec2;   	//0
 	vec2 fp1;		//8
 	//TEST
