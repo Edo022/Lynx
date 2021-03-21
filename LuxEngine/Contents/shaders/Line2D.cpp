@@ -1,17 +1,27 @@
+
+//This file was generated automatically. Changes can be overwritten without notice
 #include <Line2D.hpp>
 
 
 
 namespace lux::shd::Line2D{
-	bufferType colorOutput_::type = Storage;
-	uint32     colorOutput_::bind = 0;
+	uint32 colorOutput_::bind = 0;
+	colorOutput_::colorOutput_(){
+		Shader_b::type = Storage;
+	}
 
-	bufferType windowSize_::type = Storage;
-	uint32     windowSize_::bind = 1;
+	uint32 windowSize_::bind = 1;
+	windowSize_::windowSize_(){
+		Shader_b::type = Storage;
+	}
 
-	bufferType zBuffer_::type = Storage;
-	uint32     zBuffer_::bind = 2;
+	uint32 zBuffer_::bind = 2;
+	zBuffer_::zBuffer_(){
+		Shader_b::type = Storage;
+	}
 
-	bufferType lineData_::type = Uniform;
-	uint32     lineData_::bind = 3;
+	uint32 lineData_::bind = 3;
+	lineData_::lineData_(){
+		Shader_b::type = Uniform;
+	}
 }

@@ -17,12 +17,15 @@ else:
 
 with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.cpp', 'w') as fc:
     fh.write(
+        '\n//This file was generated automatically. Changes could be overwritten without notice\n'+\
         '#pragma once'                                   +'\n'+\
         '#include <LuxEngine/Types/Vectors/Vectors.hpp>' +'\n'+\
-        '#include <LuxEngine/Types/VPointer.hpp>'        +'\n\n\n\n'\
+        '#include <LuxEngine/Types/VPointer.hpp>'        +'\n'+\
+        '#include <LuxEngine/Types/Shader_t.hpp>'        +'\n\n\n\n'\
         'namespace lux::shd::' + shname.replace('.', '_') + '{'
     )
     fc.write(
+        '\n//This file was generated automatically. Changes could be overwritten without notice\n'\
         '#include <' + shname + '.hpp>'        +'\n\n\n\n'\
         'namespace lux::shd::' + shname.replace('.', '_') + '{'
     )
@@ -38,13 +41,15 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
     # 6 -                                                                                                 ([^\}]|\n)
 
     if r:
-        for i in range(0, len(r)):                                              #For each layout
-            fh.write('\n\tstruct ' + r[i][4] + '{\n')                               #Write struct name
-            fh.write('\t\tstatic bufferType type;\n')                               #Write type
+        for i in range(0, len(r)):                                                  #For each layout
+            fh.write('\n\tstruct ' + r[i][4] + ' : public Shader_b {\n')            #Write struct name
             fh.write('\t\tstatic uint32     bind;\n')                               #Write binding
+            fh.write('\t\t' + r[i][4] + '();\n')                                    #Write constructor
 
-            fc.write('\n\tbufferType ' + r[i][4] + '::type = ' + ('Storage' if r[i][3] == 'buffer' else 'Uniform') + ';\n')
-            fc.write(  '\tuint32     ' + r[i][4] + '::bind = ' + r[i][2] + ';\n')   # <^ Define type and binding
+            fc.write('\n\tuint32 ' + r[i][4] + '::bind = ' + r[i][2] + ';')         #Define binding
+            fc.write('\n\t' + r[i][4] + '::' + r[i][4] + '(){')                     #Set type
+            fc.write('\n\t\tShader_b::type = ' + ('Storage' if r[i][3] == 'buffer' else 'Uniform') + ';')
+            fc.write('\n\t}\n')
 
             members = r[i][5].strip().split('\n')                                   #Get layout members
             for m in members:                                                       #For each member
