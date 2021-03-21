@@ -29,13 +29,13 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
 
     sh = fr.read()
     r = re.findall(r'([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})', sh)
-    #                ([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})
-    #                               (\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))
-    #                                                       ([0-9][0-9]?)
-    #                                                                             (buffer|uniform)
-    #                                                                                              (.*)
-    #                                                                                                    (([^\}]|\n)*)
-    #                                                                                                     ([^\}]|\n)
+    # 0 -            ([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})
+    # 1 -                           (\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))
+    # 2 Binding                                             ([0-9][0-9]?)
+    # 3 Type                                                                      (buffer|uniform)
+    # 4 Layout name                                                                                (.*)
+    # 5 Layout members                                                                                   (([^\}]|\n)*)
+    # 6 -                                                                                                 ([^\}]|\n)
 
     if r:
         for i in range(0, len(r)):                                              #For each layout
@@ -53,18 +53,28 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
                 if not comment is None: m = re.sub(r'//.*$', '', m)                     #And save single line comments
                 oldLen = re.search(r'([biud]?vec[234].*$)|(((u?int)|float|double).*$)', m)
                 fh.write(('\t\t'                                     +\
-                    re.sub( r'vec([234]( *$)|( *.*?;))', r'f32v\g<1>',\
-                    re.sub(r'bvec([234]( *$)|( *.*?;))',   r'bv\g<1>',\
-                    re.sub(r'ivec([234]( *$)|( *.*?;))', r'i32v\g<1>',\
-                    re.sub(r'uvec([234]( *$)|( *.*?;))', r'u32v\g<1>',\
-                    re.sub(r'dvec([234]( *$)|( *.*?;))', r'f64v\g<1>',\
-                    re.sub(      r'int(( *$)|( *.*?;))',  r'i32\g<1>',\
-                    re.sub(     r'uint(( *$)|( *.*?;))',  r'u32\g<1>',\
-                    re.sub(    r'float(( *$)|( *.*?;))',  r'f32\g<1>',\
-                    re.sub(   r'double(( *$)|( *.*?;))',  r'f64\g<1>',\
-                    m))))))))).strip().ljust(len(oldLen.group(0)) if not oldLen is None else 0, ' ') +\
+                    re.sub(    r'vec(2( *$)|( *.*?;))', r'alignas(2 * 4)' + r' f32v\g<1>',\
+                    re.sub(   r'bvec(2( *$)|( *.*?;))', r'alignas(2 * 4)' +   r' bv\g<1>',\
+                    re.sub(   r'ivec(2( *$)|( *.*?;))', r'alignas(2 * 4)' + r' i32v\g<1>',\
+                    re.sub(   r'uvec(2( *$)|( *.*?;))', r'alignas(2 * 4)' + r' u32v\g<1>',\
+                    re.sub(   r'dvec(2( *$)|( *.*?;))', r'alignas(2 * 8)' + r' f64v\g<1>',\
+                    re.sub( r'vec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' + r' f32v\g<1>',\
+                    re.sub(r'bvec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' +   r' bv\g<1>',\
+                    re.sub(r'ivec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' + r' i32v\g<1>',\
+                    re.sub(r'uvec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' + r' u32v\g<1>',\
+                    re.sub(r'dvec([34]( *$)|( *.*?;))', r'alignas(4 * 8)' + r' f64v\g<1>',\
+                    re.sub(     r'int(( *$)|( *.*?;))', r'alignas(1 * 4)' +  r' i32\g<1>',\
+                    re.sub(    r'uint(( *$)|( *.*?;))', r'alignas(1 * 4)' +  r' u32\g<1>',\
+                    re.sub(    r'bool(( *$)|( *.*?;))', r'alignas(1 * 4)' + r' bool\g<1>',\
+                    re.sub(   r'float(( *$)|( *.*?;))', r'alignas(1 * 4)' +  r' f32\g<1>',\
+                    re.sub(  r'double(( *$)|( *.*?;))', r'alignas(1 * 8)' +  r' f64\g<1>',\
+                    m))))))))))))))).strip().ljust((len(oldLen.group(0)) + len('alignas(n * n) ')) if not oldLen is None else 0) +\
                     (comment.group(0) if not comment is None else '')).rstrip() +'\n'\
                 )
             fh.write('\t};\n')                                              #Write struct closing bracket
         fh.write('}')                                                   #Write namespace closing bracket
         fc.write('}')                                                   #Write namespace closing bracket
+
+
+
+#TODO ADD STRUCTURE PARSING AND TRANSLATION
