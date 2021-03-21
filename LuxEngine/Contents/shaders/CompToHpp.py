@@ -1,4 +1,4 @@
-import sys, os, re, textwrap
+import sys, os, re
 
 
 
@@ -25,16 +25,20 @@ with open(pathr, 'r') as fr, open(pathw, 'w') as fw:
     )
 
     sh = fr.read()
-    r = re.findall(r'([\t ]*layout.*\(.*binding.*\).* (.*)\{(([^\}]|\n)*)\})', sh)
-    #                (layout.*\(.*binding.*\).* (.*)\{(([^\}]|\n)*)\})
-    #                                           (.*)
-    #                                                 (([^\}]|\n)*)
-    #                                                  ([^\}]|\n)
+    r = re.findall(r'([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})', sh)
+    #                ([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})
+    #                               (\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))
+    #                                                       ([0-9][0-9]?)
+    #                                                                             (buffer|uniform)
+    #                                                                                              (.*)
+    #                                                                                                    (([^\}]|\n)*)
+    #                                                                                                     ([^\}]|\n)
 
     if r:
         for i in range(0, len(r)):                                  #For each layout
-            fw.write('\n\tstruct ' + r[i][1] + '{\n')                   #Write struct name
-            members = r[i][2].strip().split('\n')                       #Get layout members
+            fw.write('\n\t//Type: ' + r[i][3] + ', Binding: ' + r[i][2])#Write type and binding
+            fw.write('\n\tstruct ' + r[i][4] + '{\n')                   #Write struct name
+            members = r[i][5].strip().split('\n')                       #Get layout members
             for m in members:                                           #For each member
                 m = m.expandtabs(4).strip()
                 comment = re.search(r'//.*$', m)                            #Remove
@@ -56,5 +60,5 @@ with open(pathr, 'r') as fr, open(pathw, 'w') as fw:
                     m))))))))).strip().ljust(len(oldLen.group(0)) if not oldLen is None else 0, ' ') +\
                     (comment.group(0) if not comment is None else '')).rstrip() +'\n'\
                 )
-            fw.write('\t};\n')                                          #Write struct closing bracket
+            fw.write('\t};\n\n')                                        #Write struct closing bracket
         fw.write('}')                                               #Write namespace closing bracket
