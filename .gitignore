@@ -2,5 +2,5 @@ deps/
 Junk/
 Build/Linux
 Build/Windows
-.vscode
+.vscode/
 __pycache__/
