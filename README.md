@@ -16,6 +16,7 @@ Support for other C++ compilers and editors will be added in future versions.
 
 
 Later versions may work as well, but we haven't tested them.  
+Mingw is only required when building applications for Windows.  
 Visual Studio Code is not required, but it might be much easier to setup than other editors, as the engine can automatically generate configuration files for it.  
 If you use a different editor, you will have to manually write include paths and commands.
 
