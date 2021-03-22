@@ -2,36 +2,7 @@ import sys, os, re, textwrap
 
 
 
-# 0 -            ([\t ]*layout.*(\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))[\t ]*(buffer|uniform) (.*)\{(([^\}]|\n)*)\})
-# 1 -                           (\(.*binding[\t ]*=[\t ]([0-9][0-9]?)\))
-# 2 Binding                                             ([0-9][0-9]?)
-# 3 Type                                                                      (buffer|uniform)
-# 4 Layout name                                                                                (.*)
-# 5 Layout members                                                                                   (([^\}]|\n)*)
-# 6 -                                                                                                 ([^\}]|\n)
 
-
-
-
-def translateLine(line : str):
-    return(
-        re.sub(    r'vec(2( *$)|( *.*?;))', r'alignas(2 * 4)' + r' f32v\g<1>',
-        re.sub(   r'bvec(2( *$)|( *.*?;))', r'alignas(2 * 4)' +   r' bv\g<1>',
-        re.sub(   r'ivec(2( *$)|( *.*?;))', r'alignas(2 * 4)' + r' i32v\g<1>',
-        re.sub(   r'uvec(2( *$)|( *.*?;))', r'alignas(2 * 4)' + r' u32v\g<1>',
-        re.sub(   r'dvec(2( *$)|( *.*?;))', r'alignas(2 * 8)' + r' f64v\g<1>',
-        re.sub( r'vec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' + r' f32v\g<1>',
-        re.sub(r'bvec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' +   r' bv\g<1>',
-        re.sub(r'ivec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' + r' i32v\g<1>',
-        re.sub(r'uvec([34]( *$)|( *.*?;))', r'alignas(4 * 4)' + r' u32v\g<1>',
-        re.sub(r'dvec([34]( *$)|( *.*?;))', r'alignas(4 * 8)' + r' f64v\g<1>',
-        re.sub(     r'int(( *$)|( *.*?;))', r'alignas(1 * 4)' +  r' i32\g<1>',
-        re.sub(    r'uint(( *$)|( *.*?;))', r'alignas(1 * 4)' +  r' u32\g<1>',
-        re.sub(    r'bool(( *$)|( *.*?;))', r'alignas(1 * 4)' + r' bool\g<1>',
-        re.sub(   r'float(( *$)|( *.*?;))', r'alignas(1 * 4)' +  r' f32\g<1>',
-        re.sub(  r'double(( *$)|( *.*?;))', r'alignas(1 * 8)' +  r' f64\g<1>',
-        line))))))))))))))).strip()
-    )
 
 
 
@@ -86,33 +57,34 @@ def translateMembers(members:str):
             members = members[len(r.group(0)):]                     #Pop from source string
             continue
 
-        #GLSL data types
+
+        #Translate member
         r = re.search(
-            r'^((([biuv]?vec[234])|(double|float|bool|(u?int)))( *)'#Get type name
-            r'((( |\n)*((^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)))*'        #Skip any comment or whitespace
-            r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*))'                        #Get variable name
-            r'(.|\n)*?;)',                                          #Jump to instruction end
+            r'^((([biuv]?vec[234])|(double|float|bool|(u?int)))'    # 1 2 3 4 5              # 2     #Get type name
+            r'(((( |\n)*|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'       # 6 7 8 9 10 11 12 13    # 7     #Skip any comment or whitespace
+            r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*))'                        # 14                     # 14    #Get variable name
+            r'((.|\n)*?);)',                                        # 15 16                  # 15    #Jump to instruction end
             members
         )
         if not r is None:
             type_:str = translateDataType(r.group(2))
+
+            ret += r.group(7).strip()
             ret += type_ + '& '             #Write translated type
+            ret += r.group(15).strip()
 
             align:int = getTypeSize(r.group(2))                     #Get alignment
             if offset % align != 0: offset = offset % align + align #Fix element offset and #Create getter from variable name
-            ret += 'get' + r.group(7)[0].upper() + r.group(7)[1:] + '() { return *(' + type_ + '*)' + ('(Shader_b::data +' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
+            ret += r.group(14) + '() { return *(' + type_ + '*)' + ('(Shader_b::data +' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
             offset += align                                         #Calculate raw offset of the next element
 
             members = members[len(r.group(0)):]                     #Pop from source string
             continue
 
-        if members[0] in ('\t', '\n',):
-            members = members[1:]
 
         else:
+            ret += members[0]
             members = members[1:]
-
-
     return ret
 
 
@@ -124,9 +96,9 @@ def translateMembers(members:str):
 
 def translateStructDecl(name : str, members : str, space:bool):
     return (('\n' if space else '') +
-        ('\nstruct ' + name + ' : public Shader_b {')                        #Write struct name
-        + '\n' + textwrap.indent(translateMembers(members), '\t')
-        + '\n};'                                                                    #Write struct closing bracket
+        ('\nstruct ' + name + ' : public Shader_b {')               #Write struct name
+        + '\n' + textwrap.indent(translateMembers(members), '\t')       #Write struct members
+        + '\n};'                                                        #Write struct closing bracket
     )
 
 
@@ -176,11 +148,11 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
     )
 
     shader = re.findall(
-        r'((^|\n)((\/\*(.|\n)*?\*\/)|[\t ])*'   # 1 2 3 4    #Skip comments and whitespace //FIXME FIX GROUPS INDICES COMMENTS
-        r'layout.*(\(.*binding[\t ]*=[\t ]'     # 5 6        #Find layout declaration
-        r'([0-9][0-9]?)\))'                     # 7          #Get layout binding
-        r'[\t ]*(buffer|uniform) (.*)'          # 8 9        #Get layout type and name
-        r'\{(([^\}]|\n)*)\})',                  # 10 11      #Get layout members
+        r'((^|\n)((\/\*(.|\n)*?\*\/)|[\t ])*'   # 0 1 2 3    # -      #Skip comments and whitespace
+        r'layout.*(\(.*binding[\t ]*=[\t ]'     # 4 5        # -      #Find layout declaration
+        r'([0-9][0-9]?)\))'                     # 6          # 6      #Get layout binding
+        r'[\t ]*(buffer|uniform) (.*)'          # 7 8        # 7 8    #Get layout type and name
+        r'\{(([^\}]|\n)*)\})',                  # 9 10       # 9      #Get layout members
         fr.read())
     if shader:
         for layout in range(0, len(shader)):                    #For each layout

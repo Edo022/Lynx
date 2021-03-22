@@ -22,10 +22,10 @@ layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 //TODO automatic binding type generation
 /**/  	/*  fewf */layout(binding = 3) uniform lineData_{
 	vec2 _vec2;   	//0
-	vec2 fp1;		//8
+vec2 fp1;		//8
 	//TEST
-	vec4
-	col0;		//16
+vec4
+    col0;		//16
 	vec4
 /*TEST*/col1;		//32
 	float wd0;		//48
