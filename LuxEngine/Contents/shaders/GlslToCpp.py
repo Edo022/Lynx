@@ -55,27 +55,35 @@ def translateMembers(members:str):
         if not r is None:
             ret += r.group(0)                                       #Concatenate to return value
             members = members[len(r.group(0)):]                     #Pop from source string
-            continue
 
 
         #Translate member
         r = re.search(
-            r'^((([biuv]?vec[234])|(double|float|bool|(u?int)))'    # 1 2 3 4 5              # 2     #Get type name
-            r'(((( |\n)*|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'       # 6 7 8 9 10 11 12 13    # 7     #Skip any comment or whitespace
-            r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*))'                        # 14                     # 14    #Get variable name
-            r'((.|\n)*?);)',                                        # 15 16                  # 15    #Jump to instruction end
+            r'(([biuv]?vec[234])|(double|float|bool|(u?int)))'      # 1 2 3 4                 # 1     #Get type name
+              r'((( |\n)*|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'        # 5  6  7  8  9  10 11    # 5     #Skip any comment or whitespace
+               r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                         # 12                      # 12    #Get variable name
+               r'((( |\n)*|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'        # 13 14 15 16 17 18 19    # 13    #Skip any comment or whitespace
+               r'\[?'                                                  # -                       # -     #Skip opening array bracket
+               r'((( |\n)*|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'        # 20 21 22 23 24 25 26    # 20    #Skip any comment or whitespace
+              r'(\])?'                                                # 27                      # 27    #Skip closing array bracket
+            r'((.|\n)*?);',                                         # 28 29                   # 28    #Jump to instruction end
             members
         )
         if not r is None:
-            type_:str = translateDataType(r.group(2))
+            type_:str = translateDataType(r.group(1))
 
-            ret += r.group(7).strip()
-            ret += type_ + '& '             #Write translated type
-            ret += r.group(15).strip()
+            if r.group(5)  is not None: ret += r.group(5).strip()               #Write comments
+            if r.group(13) is not None: ret += r.group(13).strip()              #Write comments
+            if r.group(20) is not None: ret += r.group(20).strip()              #Write comments
+            ret += '\n' + type_ + '& '              #Write translated type
 
-            align:int = getTypeSize(r.group(2))                     #Get alignment
+            #Find arrays
+            if r.group(27) is not None: ret += '[]'
+
+
+            align:int = getTypeSize(r.group(1))                     #Get alignment
             if offset % align != 0: offset = offset % align + align #Fix element offset and #Create getter from variable name
-            ret += r.group(14) + '() { return *(' + type_ + '*)' + ('(Shader_b::data +' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
+            ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(Shader_b::data +' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
             offset += align                                         #Calculate raw offset of the next element
 
             members = members[len(r.group(0)):]                     #Pop from source string
