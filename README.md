@@ -29,30 +29,12 @@ It contains everything required to modify, build and use the engine.
 You can then link your projects to the repository and build applications with it.
 Each version can be used by multiple projects at the same time.  
 `cd MyProject`  
-`python3.8 <path_to_engine_repo>/Setup/Setup.py`
+`python3.8 <path_to_repo>/Setup/Setup.py`
 
 
 # Build applications
-Applications are built using the LuxEngine/Build/lux_g++ executable, 
+Applications are built using the` <path_to_repo>/Build/lux_g++` executable, 
 which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.   
-
-
-### Build from command line
-Platform and configuration can be specified with the -mode=<platform><configuration> option.  
-- ld Build in debug mode for Linux
-- lr Build in release mode for Linux
- - wd Build in debug mode for Windows
-- wr Build in release mode for Windows
-
-e.g. lux_g++ -mode=lr main.cpp  
-Builds a Linux executable in debug mode from main.cpp.  
-
-
-### Build from VSCode
-Write the lux_g++ options from vscode/tasks.json.    
-Select a task (default: ctrl+shift+b) and run it to build or switch configuration.  
-
-
 
 You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] to use different options based on the platform or configuration.  
  
@@ -62,8 +44,26 @@ You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] t
     Any error reported by those systems must be fixed, as they indicate a bug in the application.
     In release mode, they are not checked and have undefined behaviour.  
 - Release mode  
-    Turns on -Ofast and other compiler specific optimizations, and removes all the unnecessary informations.
+    Turns on -Ofast and other compiler specific optimizations, and removes all the unnecessary informations.  
+ 
+Examples are located in `<path_to_repo>/Examples/` and contain the source code and the build commands for both VSCode and command line.  
+ 
+## Build from command line
+Platform and configuration can be specified with the -mode=\<mode\> option.  
+| Mode |                                   |
+|------|-----------------------------------|
+| ld   | Build in debug mode for Linux     |
+| lr   | Build in release mode for Linux   |
+| wd   | Build in debug mode for Windows   |
+| wr   | Build in release mode for Windows |
 
+e.g. `<path_to_project>/Build/lux_g++ -mode=lr main.cpp`  
+Builds a Linux executable in debug mode from main.cpp.  
+
+
+## Build from VSCode
+You can switch platform and configuration by selecting specific tasks (default: ctrl+shift+b).  
+Write the lux_g++ command in the `<path_to_project>/.vscode/tasks.json` file, as you would normally do with any VSCode project.
 
 
 
