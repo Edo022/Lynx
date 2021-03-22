@@ -34,7 +34,7 @@ Each version can be used by multiple projects at the same time.
 
 
 # Build applications
-Applications are built using the` <path_to_repo>/Build/lux_g++` executable, 
+Applications are built using the `<path_to_repo>/Build/lux_g++` executable, 
 which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.   
 
 You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] to use different options based on the platform or configuration.  
@@ -58,10 +58,17 @@ Platform and configuration can be specified with the -mode=\<mode\> option.
 | wd   | Build in debug mode for Windows   |
 | wr   | Build in release mode for Windows |
 
+e.g. `<path_to_repo>/Build/lux_g++ -mode=ld, -r[O3], main.cppp`  
 
 ## Build from VSCode
-You can switch platform and configuration by selecting specific tasks (default: ctrl+shift+b).  
-Write the lux_g++ command in the `<path_to_project>/.vscode/tasks.json` file, as you would normally do with any VSCode project.
+Write the lux_g++ command options in the arguments of the first task in `<path_to_project>/.vscode/tasks.json`.  
+The second task is used by the engine builds, the others are used to switch between platform and configuratios.  
+e.g.  
+`"args": [`  
+&emsp;`"-mode=ld", //Automatically set. Don't change it`  
+&emsp;`"-r[O3]", "main.cpp"`  
+`],`  
+
 
 
 
