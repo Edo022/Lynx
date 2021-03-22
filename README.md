@@ -57,9 +57,6 @@ Platform and configuration can be specified with the -mode=\<mode\> option.
 | wd   | Build in debug mode for Windows   |
 | wr   | Build in release mode for Windows |
 
-e.g. `<path_to_project>/Build/lux_g++ -mode=lr main.cpp`  
-Builds a Linux executable in debug mode from main.cpp.  
-
 
 ## Build from VSCode
 You can switch platform and configuration by selecting specific tasks (default: ctrl+shift+b).  
