@@ -74,13 +74,13 @@ def translateMembers(members:str):
             r'(\])?'                                                   # 27                      # 27    #Check closing array bracket
             r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 28 29 30 31 32 33 34    # 28    #Skip any comment or whitespace
             r';'                                                      # -                       # -     #Anchor to instruction end
-            r'((( )|(\/\/.*?\n))*)',                                # 35 36 37 38             # 35    #Skip eventual comments after member declaration
+            r'((( )|(\/\/.*?(\n|$)))*)',                            # 35 36 37 38 39          # 35    #Skip eventual comments after member declaration
             m
         )
         if r != None:
             type_:str = translateDataType(r.group(1))
 
-            if r.group(5)  != None and len(r.group(5 ).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(5)).strip()  #Write comments
+            if r.group( 5) != None and len(r.group( 5).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(5)).strip()  #Write comments
             if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(13)).strip() #Write comments
             if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(20)).strip() #Write comments
             if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(28)).strip() #Write comments

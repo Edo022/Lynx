@@ -45,6 +45,7 @@ namespace lux::shd::Line2D{
 		f32& wd0() { return *(f32*)(Shader_b::data + 48); }
 		//52
 		f32& wd1() { return *(f32*)(Shader_b::data + 52); }
+		//56
 		u32& ID() { return *(u32*)(Shader_b::data + 56); }
 	};
 }
