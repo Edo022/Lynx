@@ -10,38 +10,38 @@
 
 namespace lux::shd::Line2D{
 	struct colorOutput_ : public Shader_b {
-		colorOutput_(){ Shader_b::data = (char*)malloc(16); }
+		colorOutput_() { Shader_b::data.realloc(16); }
 		f32v4& []colorOutput() { return *(f32v4*)Shader_b::data; }
 	};
 
 	struct windowSize_ : public Shader_b {
-		windowSize_(){ Shader_b::data = (char*)malloc(8); }
+		windowSize_() { Shader_b::data.realloc(8); }
 		u32& width() { return *(u32*)Shader_b::data; }
-		u32& height() { return *(u32*)(Shader_b::data + 4); };
+		u32& height() { return *(u32*)(Shader_b::data + 4); }
 	};
 
 	struct zBuffer_ : public Shader_b {
-		zBuffer_(){ Shader_b::data = (char*)malloc(4); }
+		zBuffer_() { Shader_b::data.realloc(4); }
 		u32& []zBuffer() { return *(u32*)Shader_b::data; }
 	};
 
 	struct lineData_ : public Shader_b {
-		lineData_(){ Shader_b::data = (char*)malloc(72); }
+		lineData_() { Shader_b::data.realloc(60); }
+		//comment
+		//0
+		    /*test
+		    */
 		f32v2& fp0() { return *(f32v2*)Shader_b::data; }
+		//8
 		f32v2& fp1() { return *(f32v2*)(Shader_b::data + 8); }
-		f32v2& fp1() { return *(f32v2*)(Shader_b::data + 16); }
-		f32v4& col0() { return *(f32v4*)(Shader_b::data + 24); }
-		f32v4& col0() { return *(f32v4*)(Shader_b::data + 24); }
-		f32v4& col0() { return *(f32v4*)(Shader_b::data + 24); }
-		f32v4& col1() { return *(f32v4*)(Shader_b::data + 24); }
-		f32v4& col1() { return *(f32v4*)(Shader_b::data + 24); }
-		f32& wd0() { return *(f32*)(Shader_b::data + 40); }
-		f32& wd0() { return *(f32*)(Shader_b::data + 44); }
+		//16
+		f32v4& col0() { return *(f32v4*)(Shader_b::data + 16); }
+		//32
+		f32v4& col1() { return *(f32v4*)(Shader_b::data + 32); }
+		//48
 		f32& wd0() { return *(f32*)(Shader_b::data + 48); }
+		//52
 		f32& wd1() { return *(f32*)(Shader_b::data + 52); }
-		f32& wd1() { return *(f32*)(Shader_b::data + 56); }
-		u32& ID() { return *(u32*)(Shader_b::data + 60); }
-		u32& ID() { return *(u32*)(Shader_b::data + 64); }
-		u32& ID() { return *(u32*)(Shader_b::data + 68); }t ID;        //56
+		u32& ID() { return *(u32*)(Shader_b::data + 56); }
 	};
 }

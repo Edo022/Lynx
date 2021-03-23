@@ -21,7 +21,10 @@ layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 //TODO automatic binding type generation
 layout(binding = 3) uniform lineData_{
+	//comment
 	vec2 fp0;   	//0
+	/*test
+	*/
 	vec2 fp1;		//8
 	vec4 col0;		//16
 	vec4 col1;		//32

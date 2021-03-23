@@ -4,7 +4,7 @@
 
 namespace lux{
     struct Shader_b{
-        char* data;
+        ram::ptr<char> data;
         bufferType type;
     };
 }

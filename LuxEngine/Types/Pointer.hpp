@@ -464,6 +464,7 @@ namespace lux::ram{
 
 
 
+		template<class type_> explicit alwaysInline operator type_*() const { checkInit(); return (type_*)cell->address; }
 		alwaysInline operator type*() const { checkInit(); return (type*)cell->address; }
 		alwaysInline operator bool()  const { checkInit(); return !!cell->address;      }
 
