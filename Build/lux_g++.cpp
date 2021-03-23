@@ -9,7 +9,15 @@
 
 
 char pf, tp;
-using string = std::string;
+char* enginePath;
+using std::string;
+
+
+
+
+
+
+
 
 string parse(char* p) {
     if(std::regex_match(string(p), std::regex("^\\-(d|r|l|w)\\[.*\\]$"))) {
@@ -26,12 +34,27 @@ string parse(char* p) {
 
 
 
+void compileShader(string name){
+	system((
+        string(enginePath) + "/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc " +
+        enginePath + "/LuxEngine/Contents/shaders/" + name + ".comp -o " +
+        enginePath + "/LuxEngine/Contents/shaders/" + name + ".spv"
+    ).c_str());
+}
+
+
+
+
+
+
+
+
 int main(int argc, char* argv[]) {
     //Read engine path
     FILE* epf = fopen("./.engine/enginePath", "r");
     fseek(epf, 0, SEEK_END); int epfn = ftell(epf);
     fseek(epf, 0, SEEK_SET);
-    char* enginePath = (char*)malloc(epfn + 1);
+    enginePath = (char*)malloc(epfn + 1);
     fread(enginePath, 1, epfn, epf);
 
 
@@ -70,9 +93,22 @@ int main(int argc, char* argv[]) {
         " -L" + vkdep + "lib"
         // " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src"
         " -L" + glfwdep + "build/src" //FIXME
-        // " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw"
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
+
+
+
+
+
+
+    compileShader("Border2D");
+    compileShader("Line2D");
+    compileShader("FloatToIntBuffer");
+
+
+
+
+
 
 
     //Output and run command

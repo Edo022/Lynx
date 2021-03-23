@@ -44,20 +44,20 @@ namespace lux::core::c::shaders{
 	luxAutoInit(LUX_H_CSHADER){
 		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/";
 
-		try {
-			for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
+		// try {
+		// 	for(const auto& name : std::filesystem::recursive_directory_iterator((char*)c::shaders::shaderPath.begin())) {
 
-				String luxStrPath = String((const char8*)name.path().u8string().c_str()); //FIXME add string operator+(char)
-				_wds(sys::dir::fixWindowsPath(luxStrPath));
-				if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
-					if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
-					else { Normal printf("%s", (char*)luxStrPath.begin()); }
-				}
-			}
-		}
-		catch(const std::system_error& e) {
-			std::cout << "system_error. code: " << e.code() << "\nmessage: " << e.what() << '\n';
-		}
+		// 		String luxStrPath = String((const char8*)name.path().u8string().c_str()); //FIXME add string operator+(char)
+		// 		_wds(sys::dir::fixWindowsPath(luxStrPath));
+		// 		if(sys::dir::getExtensionFromPath(luxStrPath) == "comp") {
+		// 			if(!compileShader(luxStrPath.begin())) dbg::printError("compilation error");
+		// 			else { Normal printf("%s", (char*)luxStrPath.begin()); }
+		// 		}
+		// 	}
+		// }
+		// catch(const std::system_error& e) {
+		// 	std::cout << "system_error. code: " << e.code() << "\nmessage: " << e.what() << '\n';
+		// }
 
 
 		// //Create default shaders
@@ -194,7 +194,7 @@ namespace lux::core::c::shaders{
 				case LUX_DEF_SHADER_CLEAR:     shaderFileName = "FloatToIntBuffer"; break;
 				default: dbg::printError("Unknown shader: %d", vRenderShader);
 			}
-			pWindow.CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".comp.spv").begin()), &fileLength);
+			pWindow.CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".spv").begin()), &fileLength);
 
 
 			//Create stage info

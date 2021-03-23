@@ -27,12 +27,12 @@ def translateDataType(glslType : str):
 
 def getTypeSize(type_ : str):
     return(
-        2 * 4 if not re.search(r'^[biu]?vec2',           type_) is None else
-        2 * 8 if not re.search(r'^dvec2',                type_) is None else
-        4 * 4 if not re.search(r'^[biu]?vec[34]',        type_) is None else
-        4 * 8 if not re.search(r'^dvec[34]',             type_) is None else
-        4     if not re.search(r'^((u?int)|float|bool)', type_) is None else
-        8     if not re.search(r'^double',               type_) is None else
+        2 * 4 if re.search(r'^[biu]?vec2',           type_) != None else
+        2 * 8 if re.search(r'^dvec2',                type_) != None else
+        4 * 4 if re.search(r'^[biu]?vec[34]',        type_) != None else
+        4 * 8 if re.search(r'^dvec[34]',             type_) != None else
+        4     if re.search(r'^((u?int)|float|bool)', type_) != None else
+        8     if re.search(r'^double',               type_) != None else
         99999999 #If something bad happens, make it obvious
     )
 
@@ -44,17 +44,17 @@ def getTypeSize(type_ : str):
 
 
 def translateMembers(members:str):
-    members = members.expandtabs(4).strip()
+    m = members.expandtabs(4).strip()
     ret:str = ''
 
 
     offset = 0
-    while len(members) > 0:
+    while len(m) > 0:
         #Skip comments
-        r = re.search(r'(^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)', members)
-        if not r is None:
+        r = re.search(r'(^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)', m)
+        if r != None:
             ret += r.group(0)                                       #Concatenate to return value
-            members = members[len(r.group(0)):]                     #Pop from source string
+            m = m[len(r.group(0)):]                     #Pop from source string
 
 
         #Translate member
@@ -67,14 +67,14 @@ def translateMembers(members:str):
                r'((( |\n)*|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'        # 20 21 22 23 24 25 26    # 20    #Skip any comment or whitespace
               r'(\])?'                                                # 27                      # 27    #Skip closing array bracket
             r'((.|\n)*?);',                                         # 28 29                   # 28    #Jump to instruction end
-            members
+            m
         )
-        if not r is None:
+        if r != None:
             type_:str = translateDataType(r.group(1))
 
-            if r.group(5)  is not None: ret += r.group(5).strip()               #Write comments
-            if r.group(13) is not None: ret += r.group(13).strip()              #Write comments
-            if r.group(20) is not None: ret += r.group(20).strip()              #Write comments
+            if r.group(5)  != None: ret += r.group(5).strip()               #Write comments
+            if r.group(13) != None: ret += r.group(13).strip()              #Write comments
+            if r.group(20) != None: ret += r.group(20).strip()              #Write comments
             ret += '\n' + type_ + '& '              #Write translated type
 
             #Find arrays
@@ -83,17 +83,18 @@ def translateMembers(members:str):
 
             align:int = getTypeSize(r.group(1))                     #Get alignment
             if offset % align != 0: offset = offset % align + align #Fix element offset and #Create getter from variable name
-            ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(Shader_b::data +' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
+            ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(Shader_b::data + ' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
             offset += align                                         #Calculate raw offset of the next element
 
-            members = members[len(r.group(0)):]                     #Pop from source string
+            m = m[len(r.group(0)):]                     #Pop from source string
             continue
 
 
+        #umu umu
         else:
-            ret += members[0]
-            members = members[1:]
-    return ret
+            ret += m[0]
+            m = m[1:]
+    return ret, offset
 
 
 
@@ -103,9 +104,10 @@ def translateMembers(members:str):
 
 
 def translateStructDecl(name : str, members : str, space:bool):
+    translated = translateMembers(members)
     return (('\n' if space else '') +
         ('\nstruct ' + name + ' : public Shader_b {')               #Write struct name
-        + '\n' + textwrap.indent(translateMembers(members), '\t')       #Write struct members
+        + '\n' + textwrap.indent(name + '() { Shader_b::data = (char*)malloc(' + str(translated[1]) + '); }' + translated[0], '\t')       #Write struct members
         + '\n};'                                                        #Write struct closing bracket
     )
 
@@ -162,7 +164,7 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
         r'[\t ]*(buffer|uniform) (.*)'          # 7 8        # 7 8    #Get layout type and name
         r'\{(([^\}]|\n)*)\})',                  # 9 10       # 9      #Get layout members
         fr.read())
-    if shader:
+    if shader != None:
         for layout in range(0, len(shader)):                    #For each layout
             # fc.write(translateStructDef(shader[layout]))            #Write .hpp and #Write .hpp
             fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][9].strip(), layout != 0), '\t'))
