@@ -11,25 +11,37 @@
 namespace lux::shd{
 	struct FloatToIntBuffer{
 		struct src_ : public Shader_b {
-			src_() { Shader_b::data.realloc(16); }
+			src_() {
+				Shader_b::data.realloc(16);
+				Shader_b::bind = 0;
+			}
 			alwaysInline f32v4& []src() { return *(f32v4*)Shader_b::data; }
 		};
 
 
 		struct dst_ : public Shader_b {
-			dst_() { Shader_b::data.realloc(4); }
+			dst_() {
+				Shader_b::data.realloc(4);
+				Shader_b::bind = 1;
+			}
 			alwaysInline u32& []dst() { return *(u32*)Shader_b::data; }
 		};
 
 
 		struct zBuffer_ : public Shader_b {
-			zBuffer_() { Shader_b::data.realloc(4); }
+			zBuffer_() {
+				Shader_b::data.realloc(4);
+				Shader_b::bind = 2;
+			}
 			alwaysInline u32& []zBuffer() { return *(u32*)Shader_b::data; }
 		};
 
 
 		struct windowSize_ : public Shader_b {
-			windowSize_() { Shader_b::data.realloc(8); }
+			windowSize_() {
+				Shader_b::data.realloc(8);
+				Shader_b::bind = 3;
+			}
 			alwaysInline u32& width() { return *(u32*)Shader_b::data; }
 			alwaysInline u32& height() { return *(u32*)(Shader_b::data + 4); }
 		};

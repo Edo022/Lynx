@@ -19,18 +19,15 @@ layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_
 layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
 layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
 layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
-//TODO automatic binding type generation
+
 layout(binding = 3) uniform lineData_{
-	//comment
-	vec2 fp0;   	//0
-	/*test
-	*/
-	vec2 fp1;		//8
-	vec4 col0;		//16
-	vec4 col1;		//32
-	float wd0;		//48
-	float wd1;		//52
-	uint ID;		//56
+	vec2 fp0;   	//Position of the first point
+	vec2 fp1;		//Position of the second point
+	vec4 col0;		//Color of the first point
+	vec4 col1;		//Color of the second point
+	float wd0;		//Width of the first point
+	float wd1;		//Width of the second point
+	uint ID;		//TODO
 };
 
 

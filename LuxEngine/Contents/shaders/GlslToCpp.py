@@ -105,7 +105,7 @@ def translateMembers(members:str):
             m = m[1:]
 
 
-    return ret, offset
+    return dict({ 'members' : ret, 'size' : offset })
 
 
 
@@ -114,24 +114,23 @@ def translateMembers(members:str):
 
 
 
-def translateStructDecl(name : str, members : str, space:bool):
+def translateStructDecl(name:str, binding:int, members:str, space:bool):
     translated = translateMembers(members)
     return (('\n\n' if space else '') +
-        ('\nstruct ' + name + ' : public Shader_b {')               #Write struct name
-        + '\n' + textwrap.indent(name + '() { Shader_b::data.realloc(' + str(translated[1]) + '); }' + translated[0], '\t')       #Write struct members
-        + '\n};'                                                    #Write struct closing bracket
+        '\nstruct ' + name + ' : public Shader_b {'                             #Struct declaration
+        + textwrap.indent(                                                          #
+            '\n' + name + '() {'                                                    #Constructor
+                '\n\tShader_b::data.realloc(' + str(translated['size']) + ');'          #Allocate local data copy
+                '\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
+            '\n}' +                                                                 #Close constructor
+            translated['members']                                                   #Member access functions
+        , '\t')                                                                     #
+        + '\n};'                                                                #Close struct
     )
 
 
 
 
-def translateStructDef(layout):
-    return(''
-        + ('\n\tuint32 ' + layout[9] + '::bind = ' + layout[7] + ';')         #Define binding
-        + ('\n\t' + layout[9] + '::' + layout[9] + '(){')                     #Set type
-        + ('\n\t\tShader_b::type = ' + ('Storage' if layout[8] == 'buffer' else 'Uniform') + ';')
-        + ('\n\t}\n')
-    )
 
 
 
@@ -177,7 +176,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fr.read())
     if shader != None:
         for layout in range(0, len(shader)):                    #For each layout
-            fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][9].strip(), layout != 0), '\t\t'))
+            fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][6], shader[layout][9].strip(), layout != 0), '\t\t'))
     else:
         print('No layout found. A shader must define at least one layout')
 
