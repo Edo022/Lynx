@@ -14,24 +14,27 @@ namespace lux::shd::Line2D{
 		f32v4& []colorOutput() { return *(f32v4*)Shader_b::data; }
 	};
 
+
 	struct windowSize_ : public Shader_b {
 		windowSize_() { Shader_b::data.realloc(8); }
 		u32& width() { return *(u32*)Shader_b::data; }
 		u32& height() { return *(u32*)(Shader_b::data + 4); }
 	};
 
+
 	struct zBuffer_ : public Shader_b {
 		zBuffer_() { Shader_b::data.realloc(4); }
 		u32& []zBuffer() { return *(u32*)Shader_b::data; }
 	};
 
+
 	struct lineData_ : public Shader_b {
 		lineData_() { Shader_b::data.realloc(60); }
 		//comment
 		//0
-		    /*test
-		    */
 		f32v2& fp0() { return *(f32v2*)Shader_b::data; }
+		/*test
+		    */
 		//8
 		f32v2& fp1() { return *(f32v2*)(Shader_b::data + 8); }
 		//16

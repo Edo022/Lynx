@@ -66,24 +66,25 @@ def translateMembers(members:str):
         #Translate member
         r = re.search(
             r'^(([biuv]?vec[234])|(double|float|bool|(u?int)))'     # 1 2 3 4                 # 1     #Get type name
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'          # 5  6  7  8  9  10 11    # 5     #Skip any comment or whitespace
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'           # 5  6  7  8  9  10 11    # 5     #Skip any comment or whitespace
             r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                            # 12                      # 12    #Get variable name
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'           # 13 14 15 16 17 18 19    # 13    #Skip any comment or whitespace
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 13 14 15 16 17 18 19    # 13    #Skip any comment or whitespace
             r'\[?'                                                     # -                       # -     #Check opening array bracket
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'           # 20 21 22 23 24 25 26    # 20    #Skip any comment or whitespace
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 20 21 22 23 24 25 26    # 20    #Skip any comment or whitespace
             r'(\])?'                                                   # 27                      # 27    #Check closing array bracket
-            r'((.|\n)*?);'                                            # 28 29                   # 28    #Jump to instruction end
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)',       # 30 31 32 33 34 35 36    # 30    #Skip eventual comments after member declaration
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 28 29 30 31 32 33 34    # 28    #Skip any comment or whitespace
+            r';'                                                      # -                       # -     #Anchor to instruction end
+            r'((( )|(\/\/.*?\n))*)',                                # 35 36 37 38             # 35    #Skip eventual comments after member declaration
             m
         )
         if r != None:
             type_:str = translateDataType(r.group(1))
 
-            if r.group(5)  != None and len(r.group(5).strip()) > 0: ret += '\n' + r.group(5).strip()               #Write comments
-            if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + r.group(13).strip()              #Write comments
-            if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + r.group(20).strip()              #Write comments
-            if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + r.group(28).strip()              #Write comments
-            if r.group(30) != None and len(r.group(30).strip()) > 0: ret += '\n' + r.group(30).strip()              #Write comments
+            if r.group(5)  != None and len(r.group(5 ).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(5)).strip()  #Write comments
+            if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(13)).strip() #Write comments
+            if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(20)).strip() #Write comments
+            if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(28)).strip() #Write comments
+            if r.group(35) != None and len(r.group(35).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(35)).strip() #Write comments
             ret += '\n' + type_ + '& '              #Write translated type
 
             #Find arrays
@@ -115,7 +116,7 @@ def translateMembers(members:str):
 
 def translateStructDecl(name : str, members : str, space:bool):
     translated = translateMembers(members)
-    return (('\n' if space else '') +
+    return (('\n\n' if space else '') +
         ('\nstruct ' + name + ' : public Shader_b {')               #Write struct name
         + '\n' + textwrap.indent(name + '() { Shader_b::data.realloc(' + str(translated[1]) + '); }' + translated[0], '\t')       #Write struct members
         + '\n};'                                                        #Write struct closing bracket
