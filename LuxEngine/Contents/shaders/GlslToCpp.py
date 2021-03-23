@@ -156,7 +156,7 @@ else:
 
 
 
-with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh, open(spath + shname + '.cpp', 'w') as fc:
+with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh:
     fh.write(
         '\n//This file was generated automatically. Changes could be overwritten without notice'
         '\n#pragma once'
@@ -166,11 +166,6 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n#include <LuxEngine/Types/Shader_t.hpp>\n\n\n'
         '\nnamespace lux::shd{'
         '\n\tstruct ' + re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname)) + '{'
-    )
-    fc.write(
-        '\n//This file was generated automatically. Changes could be overwritten without notice\n'
-        '#include <' + shname + '.hpp>\n\n\n\n'
-        'namespace lux::shd::' + shname.replace('.', '_') + '{'
     )
 
     shader = re.findall(
@@ -182,12 +177,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fr.read())
     if shader != None:
         for layout in range(0, len(shader)):                    #For each layout
-            # fc.write(translateStructDef(shader[layout]))            #Write .hpp and #Write .hpp
             fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][9].strip(), layout != 0), '\t\t'))
     else:
         print('No layout found. A shader must define at least one layout')
 
-    fh.write('\n\t};\n}'); fc.write('}')                          #Write namespace closing bracket
+    fh.write('\n\t};\n}');                      #Write namespace closing bracket
 
 
 
