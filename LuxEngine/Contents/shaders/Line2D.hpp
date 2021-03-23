@@ -49,5 +49,5 @@ namespace lux::shd{
 			//56
 			u32& ID() { return *(u32*)(Shader_b::data + 56); }
 		};
-	}
+	};
 }

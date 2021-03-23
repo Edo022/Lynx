@@ -183,7 +183,7 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
     else:
         print('No layout found. A shader must define at least one layout')
 
-    fh.write('\n\t}\n}'); fc.write('}')                          #Write namespace closing bracket
+    fh.write('\n\t};\n}'); fc.write('}')                          #Write namespace closing bracket
 
 
 
