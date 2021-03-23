@@ -37,8 +37,14 @@ string parse(char* p) {
 void compileShader(string name){
 	system((
         string(enginePath) + "/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc " +
-        enginePath + "/LuxEngine/Contents/shaders/" + name + ".comp -o " +
-        enginePath + "/LuxEngine/Contents/shaders/" + name + ".spv"
+               enginePath  + "/LuxEngine/Contents/shaders/" + name + ".comp -o " +
+               enginePath  + "/LuxEngine/Contents/shaders/" + name + ".spv"
+    ).c_str());
+
+	system((
+        string("python3 ") +
+        enginePath + "/LuxEngine/Contents/shaders/GlslToCpp.py " +
+        enginePath + "/LuxEngine/Contents/shaders/" + name + ".comp"
     ).c_str());
 }
 
@@ -65,6 +71,19 @@ int main(int argc, char* argv[]) {
     tp = fgetc(tpf); fclose(tpf);
     #define gettp() (pf == 'l' ? "Linux" : "Windows")
     #define getpf() (tp == 'd' ? "Debug" : "Release")
+
+
+
+
+
+    //Compile shaders
+    compileShader("Border2D");
+    compileShader("Line2D");
+    compileShader("FloatToIntBuffer");
+
+
+
+
 
 
     //Create g++ command and parse user arguments
@@ -95,20 +114,6 @@ int main(int argc, char* argv[]) {
         " -L" + glfwdep + "build/src" //FIXME
         " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
     ;
-
-
-
-
-
-
-    compileShader("Border2D");
-    compileShader("Line2D");
-    compileShader("FloatToIntBuffer");
-
-
-
-
-
 
 
     //Output and run command

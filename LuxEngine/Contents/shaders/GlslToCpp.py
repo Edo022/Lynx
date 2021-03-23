@@ -80,12 +80,12 @@ def translateMembers(members:str):
         if r != None:
             type_:str = translateDataType(r.group(1))
 
-            if r.group( 5) != None and len(r.group( 5).strip()) > 0: ret += '\n' + textwrap.dedent(r.group( 5)).rstrip()  #Write comments
+            if r.group( 5) != None and len(r.group( 5).strip()) > 0: ret += '\n' + textwrap.dedent(r.group( 5)).rstrip() #Write comments
             if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(13)).rstrip() #Write comments
             if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(20)).rstrip() #Write comments
             if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(28)).rstrip() #Write comments
             if r.group(35) != None and len(r.group(35).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(35)).rstrip() #Write comments
-            ret += '\n' + type_ + '& '                              #Write translated type
+            ret += '\nalwaysInline ' + type_ + '& '                              #Write translated type
 
             #Find arrays
             if r.group(27) is not None: ret += '[]'
@@ -140,19 +140,23 @@ def translateStructDef(layout):
 
 
 
-pathr = sys.argv[1]
-shname = ''
+pathr  = sys.argv[1]
 
 if not os.path.exists(pathr): print("File does not exist")
 elif not pathr.split('.')[-1] == 'comp': print('File is not a vulkan shader')
 else:
-    shname = '.'.join(pathr.split('.')[0 : -1])
-    print('Writing ' + shname)
+    spath  = re.search(r'^(.*/).*$', pathr)
+    spath = spath.group(1) if spath != None else './'
+
+    shname = re.search(r'^(.*/)?(.*)\..*$', pathr)
+    if shname != None: shname = shname.group(2)
+
+    print('Writing ' + spath + shname)
 
 
 
 
-with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.cpp', 'w') as fc:
+with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh, open(spath + shname + '.cpp', 'w') as fc:
     fh.write(
         '\n//This file was generated automatically. Changes could be overwritten without notice'
         '\n#pragma once'
@@ -161,7 +165,7 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
         '\n#include <LuxEngine/Types/VPointer.hpp>'
         '\n#include <LuxEngine/Types/Shader_t.hpp>\n\n\n'
         '\nnamespace lux::shd{'
-        '\n\tstruct ' + shname.replace('.', '_') + '{'
+        '\n\tstruct ' + re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname)) + '{'
     )
     fc.write(
         '\n//This file was generated automatically. Changes could be overwritten without notice\n'
