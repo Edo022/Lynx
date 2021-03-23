@@ -80,12 +80,12 @@ def translateMembers(members:str):
         if r != None:
             type_:str = translateDataType(r.group(1))
 
-            if r.group( 5) != None and len(r.group( 5).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(5)).strip()  #Write comments
-            if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(13)).strip() #Write comments
-            if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(20)).strip() #Write comments
-            if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(28)).strip() #Write comments
-            if r.group(35) != None and len(r.group(35).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(35)).strip() #Write comments
-            ret += '\n' + type_ + '& '              #Write translated type
+            if r.group( 5) != None and len(r.group( 5).strip()) > 0: ret += '\n' + textwrap.dedent(r.group( 5)).rstrip()  #Write comments
+            if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(13)).rstrip() #Write comments
+            if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(20)).rstrip() #Write comments
+            if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(28)).rstrip() #Write comments
+            if r.group(35) != None and len(r.group(35).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(35)).rstrip() #Write comments
+            ret += '\n' + type_ + '& '                              #Write translated type
 
             #Find arrays
             if r.group(27) is not None: ret += '[]'
@@ -96,7 +96,7 @@ def translateMembers(members:str):
             ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(Shader_b::data + ' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
             offset += align                                         #Calculate raw offset of the next element
 
-            m = m[len(r.group(0)):]                     #Pop from source string
+            m = m[len(r.group(0)):]                                 #Pop from source string
             continue
 
 
@@ -119,7 +119,7 @@ def translateStructDecl(name : str, members : str, space:bool):
     return (('\n\n' if space else '') +
         ('\nstruct ' + name + ' : public Shader_b {')               #Write struct name
         + '\n' + textwrap.indent(name + '() { Shader_b::data.realloc(' + str(translated[1]) + '); }' + translated[0], '\t')       #Write struct members
-        + '\n};'                                                        #Write struct closing bracket
+        + '\n};'                                                    #Write struct closing bracket
     )
 
 
@@ -154,13 +154,14 @@ else:
 
 with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.cpp', 'w') as fc:
     fh.write(
-        '\n//This file was generated automatically. Changes could be overwritten without notice\n'
-        '#pragma once\n'
-        '#include <LuxEngine/Types/Vectors/Vectors.hpp>\n'
-        '#include <LuxEngine/Types/Pointer.hpp>\n'
-        '#include <LuxEngine/Types/VPointer.hpp>\n'
-        '#include <LuxEngine/Types/Shader_t.hpp>\n\n\n\n'
-        'namespace lux::shd::' + shname.replace('.', '_') + '{'
+        '\n//This file was generated automatically. Changes could be overwritten without notice'
+        '\n#pragma once'
+        '\n#include <LuxEngine/Types/Vectors/Vectors.hpp>'
+        '\n#include <LuxEngine/Types/Pointer.hpp>'
+        '\n#include <LuxEngine/Types/VPointer.hpp>'
+        '\n#include <LuxEngine/Types/Shader_t.hpp>\n\n\n'
+        '\nnamespace lux::shd{'
+        '\n\tstruct ' + shname.replace('.', '_') + '{'
     )
     fc.write(
         '\n//This file was generated automatically. Changes could be overwritten without notice\n'
@@ -178,11 +179,11 @@ with open(pathr, 'r') as fr, open(shname + '.hpp', 'w') as fh, open(shname + '.c
     if shader != None:
         for layout in range(0, len(shader)):                    #For each layout
             # fc.write(translateStructDef(shader[layout]))            #Write .hpp and #Write .hpp
-            fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][9].strip(), layout != 0), '\t'))
+            fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][9].strip(), layout != 0), '\t\t'))
     else:
         print('No layout found. A shader must define at least one layout')
 
-    fh.write('\n}'); fc.write('}')                          #Write namespace closing bracket
+    fh.write('\n\t}\n}'); fc.write('}')                          #Write namespace closing bracket
 
 
 
