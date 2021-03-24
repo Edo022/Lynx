@@ -137,7 +137,8 @@ def translateStructDecl(name:str, binding:int, members:str, space:bool):
 
 
 
-
+#TODO FIX ARRAYS
+#TODO ADD GPU LOCAL DATA
 
 pathr  = sys.argv[1]
 
