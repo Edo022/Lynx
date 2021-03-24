@@ -181,7 +181,7 @@ namespace lux{
 						// objUpdates2D[i]->render.localData.cell->localOffset,
 						objUpdates2D[i]->getShVData().cell->csc.buffer,
 						objUpdates2D[i]->getShVData().cell->localOffset,
-						objUpdates2D[i]->cellSize,
+						objUpdates2D[i]->getShVData().cell->cellSize,
 						// (void*)objUpdates2D[i]->render.data
 						(void*)objUpdates2D[i]->getShData()
 					);

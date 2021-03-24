@@ -73,15 +73,10 @@ namespace lux{
 
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
-				// int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
-				// vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
-				// vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
 				Window* parentWindow = nullptr;
 
 			} render;
-			// inline virtual int32 getCellSize() const = 0;		//Size of the object data									| none						| object type
-			uint32 cellSize = 0;
 			virtual void update() = 0;							//Updates the object data in the shared memory				| object type				| -
 			void allocate();									//Allocates a memory cell for the object data				| object type				| -
 			void updateBase();
@@ -95,7 +90,6 @@ namespace lux{
 		//TODO automatic enum creation
 		#define luxInitObject(dimensions_, objectType_)								\
 			common.objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;		\
-			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
-			// this->allocate();
+			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;
 	}
 }

@@ -40,25 +40,8 @@ namespace lux::obj {
 		 * @param vSw Width of the second point
 		 */
 		Line2D(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
-			// init();
-			cellSize = 60;
-			luxInitObject(2, LINE);								// count   | range         | chunk
-			// fp = (f32v2*)(render.data + 0);						//    8    |    0  - 7     |    0 +
-			// sp = (f32v2*)(render.data + 8);						//    8    |    8  - 15    |    0
-			// fc = (f32v4*)(render.data + 16);					//    16   |    16 - 31    |    1 +
-			// sc = (f32v4*)(render.data + 32);					//    16   |    32 - 47    |    2 +
-			// fw = (float32*)(render.data + 48);					//    4    |    48 - 51    |    3 +
-			// sw = (float32*)(render.data + 52);					//    4    |    52 - 55    |    3
-			// *(uint32*)(render.data + 56) = (uint32)common.ID;	//    4    |    56 - 59    |    3
-			// //4x trailing padding								//    4    |    60 - 63
+			luxInitObject(2, LINE);
 
-
-			// setFp(pFp);
-			// setSp(pSp);
-			// *fc = pFc;
-			// *sc = pSc;
-			// *fw = vFw;
-			// *sw = vSw;
 			setFp(pFp);
 			setSp(pSp);
 			data.lineData_.col0() = pFc;
@@ -70,10 +53,7 @@ namespace lux::obj {
 		}
 
 
-		//TODO calculate offset and cell count at runtime
-		// inline int32 getCellSize() const final { return 60; }
-
-		//TODO add loca-global-other coordinate system and convertions
+		//TODO add local-global-other coordinate system and convertions
 		inline void setFp(const f32v2& vFp) { data.lineData_.fp0() = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 		inline void setSp(const f32v2& vSp) { data.lineData_.fp1() = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
@@ -85,17 +65,6 @@ namespace lux::obj {
 
 
 
-	// // private:
-	// public:
-	// 	f32v2* fp;		//First point of the line
-	// 	f32v2* sp;		//Second point of the line
-	// 	f32v2 _fp;		//First point of the line
-	// 	f32v2 _sp;		//Second point of the line
-	// public:
-	// 	f32v4* fc;		//Color of the first point
-	// 	f32v4* sc;		//Color of the second point
-	// 	float32* fw;	//Width of the first point
-	// 	float32* sw;	//Width of the second point
 		shd::Line2D data;
 	};
 }
