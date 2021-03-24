@@ -1,6 +1,7 @@
 #pragma once
 #define LUX_H_2DLINES
 #include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
@@ -16,7 +17,7 @@ namespace lux::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2D : public Base2D {
+	struct Line2D : public Obj2_b {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */

@@ -10,8 +10,9 @@
 
 namespace lux::shd{
 	struct FloatToIntBuffer{
-		struct src_ : public Shader_b {
+		struct src_ : public Shader_b<Storage> {
 			src_() {
+				Shader_b::vdata.realloc(16);
 				Shader_b::data.realloc(16);
 				Shader_b::bind = 0;
 			}
@@ -19,8 +20,9 @@ namespace lux::shd{
 		};
 
 
-		struct dst_ : public Shader_b {
+		struct dst_ : public Shader_b<Storage> {
 			dst_() {
+				Shader_b::vdata.realloc(4);
 				Shader_b::data.realloc(4);
 				Shader_b::bind = 1;
 			}
@@ -28,8 +30,9 @@ namespace lux::shd{
 		};
 
 
-		struct zBuffer_ : public Shader_b {
+		struct zBuffer_ : public Shader_b<Storage> {
 			zBuffer_() {
+				Shader_b::vdata.realloc(4);
 				Shader_b::data.realloc(4);
 				Shader_b::bind = 2;
 			}
@@ -37,8 +40,9 @@ namespace lux::shd{
 		};
 
 
-		struct windowSize_ : public Shader_b {
+		struct windowSize_ : public Shader_b<Storage> {
 			windowSize_() {
+				Shader_b::vdata.realloc(8);
 				Shader_b::data.realloc(8);
 				Shader_b::bind = 3;
 			}

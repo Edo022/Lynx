@@ -9,7 +9,7 @@
 namespace lux::obj{
 	//TODO calculate offset and cell count at runtime
 	void Line2D::init(Window& pWindow) {
-		Base2D::init(pWindow); //Initialize all the children
+		Obj2_b::init(pWindow); //Initialize all the children
 
 
 		core::c::shaders::newShader(

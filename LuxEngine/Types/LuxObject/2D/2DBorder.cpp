@@ -5,7 +5,7 @@
 
 namespace lux::obj{
 	void Border2D::init(Window& pWindow) {
-		Base2D::init(pWindow); //Initialize all the children
+		Obj2_b::init(pWindow); //Initialize all the children
 
 
 		core::c::shaders::newShader(

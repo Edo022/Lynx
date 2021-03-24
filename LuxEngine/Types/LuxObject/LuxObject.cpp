@@ -41,33 +41,4 @@ namespace lux::obj{
 		}
 		render.parentWindow->objUpdates2D_f.unlock();
 	}
-
-
-
-
-	//In debug mode, setMinLim and setMaxLim functions of non debug objects and update the debug border
-	#ifdef LUX_DEBUG
-	void Base2D::setMinLim(f32v2 vMinLim) {
-		minLim = vMinLim;
-		if(!debug) {
-			if(!debugBorder) {
-				debugBorder = new Border2D();
-				debugBorder->debug = true;
-			}
-			*debugBorder->fp = vMinLim;
-			debugBorder->update();
-		}
-	}
-	void Base2D::setMaxLim(f32v2 vMaxLim) {
-		maxLim = vMaxLim;
-		if(!debug) {
-			if(!debugBorder) {
-				debugBorder = new Border2D();
-				debugBorder->debug = true;
-			}
-			*debugBorder->sp = vMaxLim;
-			debugBorder->update();
-		}
-	}
-	#endif
 }

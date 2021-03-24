@@ -10,8 +10,9 @@
 
 namespace lux::shd{
 	struct Border2D{
-		struct colorOutput_ : public Shader_b {
+		struct colorOutput_ : public Shader_b<Storage> {
 			colorOutput_() {
+				Shader_b::vdata.realloc(16);
 				Shader_b::data.realloc(16);
 				Shader_b::bind = 0;
 			}
@@ -19,8 +20,9 @@ namespace lux::shd{
 		};
 
 
-		struct windowSize_ : public Shader_b {
+		struct windowSize_ : public Shader_b<Storage> {
 			windowSize_() {
+				Shader_b::vdata.realloc(8);
 				Shader_b::data.realloc(8);
 				Shader_b::bind = 1;
 			}
@@ -28,8 +30,9 @@ namespace lux::shd{
 		};
 
 
-		struct zBuffer_ : public Shader_b {
+		struct zBuffer_ : public Shader_b<Storage> {
 			zBuffer_() {
+				Shader_b::vdata.realloc(4);
 				Shader_b::data.realloc(4);
 				Shader_b::bind = 2;
 			}
@@ -37,8 +40,9 @@ namespace lux::shd{
 		};
 
 
-		struct objData_ : public Shader_b {
+		struct objData_ : public Shader_b<Uniform> {
 			objData_() {
+				Shader_b::vdata.realloc(20);
 				Shader_b::data.realloc(20);
 				Shader_b::bind = 3;
 			}

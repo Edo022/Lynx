@@ -114,10 +114,10 @@ def translateMembers(members:str):
 
 
 
-def translateStructDecl(name:str, binding:int, members:str, space:bool):
+def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool):
     translated = translateMembers(members)
     return (('\n\n' if space else '') +
-        '\nstruct ' + name + ' : public Shader_b {'                             #Struct declaration
+        '\nstruct ' + name + ' : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'                             #Struct declaration
         + textwrap.indent(                                                          #
             '\n' + name + '() {'                                                    #Constructor
                 '\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');'         #Allocate gpu data
@@ -178,7 +178,13 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fr.read())
     if shader != None:
         for layout in range(0, len(shader)):                    #For each layout
-            fh.write(textwrap.indent(translateStructDecl(shader[layout][8], shader[layout][6], shader[layout][9].strip(), layout != 0), '\t\t'))
+            fh.write(textwrap.indent(translateStructDecl(
+                shader[layout][8],
+                shader[layout][7],
+                shader[layout][6],
+                shader[layout][9].strip(),
+                layout != 0
+            ), '\t\t'))
     else:
         print('No layout found. A shader must define at least one layout')
 

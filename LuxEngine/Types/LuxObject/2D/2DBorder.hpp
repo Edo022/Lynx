@@ -1,11 +1,11 @@
 #pragma once
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
 
 
 
 namespace lux::obj{
-	struct Border2D : public Base2D{
+	struct Border2D : public Obj2_b{
 		f32v2* fp = nullptr;
 		f32v2* sp = nullptr;
 

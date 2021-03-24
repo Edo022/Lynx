@@ -10,7 +10,7 @@
 
 namespace lux::shd{
 	struct Line2D{
-		struct colorOutput_ : public Shader_b {
+		struct colorOutput_ : public Shader_b<Storage> {
 			colorOutput_() {
 				Shader_b::vdata.realloc(16);
 				Shader_b::data.realloc(16);
@@ -20,7 +20,7 @@ namespace lux::shd{
 		};
 
 
-		struct windowSize_ : public Shader_b {
+		struct windowSize_ : public Shader_b<Storage> {
 			windowSize_() {
 				Shader_b::vdata.realloc(8);
 				Shader_b::data.realloc(8);
@@ -31,7 +31,7 @@ namespace lux::shd{
 		};
 
 
-		struct zBuffer_ : public Shader_b {
+		struct zBuffer_ : public Shader_b<Storage> {
 			zBuffer_() {
 				Shader_b::vdata.realloc(4);
 				Shader_b::data.realloc(4);
@@ -41,7 +41,7 @@ namespace lux::shd{
 		};
 
 
-		struct lineData_ : public Shader_b {
+		struct lineData_ : public Shader_b<Uniform> {
 			lineData_() {
 				Shader_b::vdata.realloc(60);
 				Shader_b::data.realloc(60);

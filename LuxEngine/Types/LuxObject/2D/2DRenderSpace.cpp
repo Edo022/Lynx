@@ -7,7 +7,7 @@ namespace lux::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
-	bool RenderSpace2D::addChild(Base2D* pObj) { //TODO RENAME AS ADD
+	bool RenderSpace2D::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));
 		pObj->update();
