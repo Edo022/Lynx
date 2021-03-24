@@ -2,7 +2,7 @@
 #define LUX_H_GRAPHICS
 #include <vulkan/vulkan.hpp>
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 
 
 

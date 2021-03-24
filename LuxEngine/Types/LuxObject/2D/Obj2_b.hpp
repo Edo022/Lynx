@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_OBJECT2
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 
 
 

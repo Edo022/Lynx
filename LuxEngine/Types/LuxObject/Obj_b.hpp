@@ -5,6 +5,7 @@
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
+#include "LuxEngine/Types/Shader_t.hpp"
 
 
 
@@ -61,7 +62,6 @@ namespace lux{
 			Base() { common.objectType = LUX_OBJECT_TYPE__BASE; }	//														|							|
 			struct Common{
 				ObjectType objectType;							//Thte type of the object									| object type				| object type
-				lux::String name{ "" };							//The name of the object.									| none						| object instance
 				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lux object			| none						| none
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
@@ -72,11 +72,12 @@ namespace lux{
 
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
-				int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
-				vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
+				// int8* data{ nullptr };							//Object data stored in RAM									| none						| object instance
+				// vram::ptr<char, Ram, Uniform> localData{ nullptr };					//Local GPU copy of data									| object type				| object instance
 				bool updated{ true };
-				vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
+				// vram::ptr<char, VRam, Storage> cache{ nullptr };//FIXME dunno if ram storage is correct						//Object cache that avoids draws when not needed			| object type				| object instance
 				Window* parentWindow = nullptr;
+
 			} render;
 			// inline virtual int32 getCellSize() const = 0;		//Size of the object data									| none						| object type
 			uint32 cellSize = 0;
@@ -89,70 +90,11 @@ namespace lux{
 
 
 
+
 		//TODO automatic enum creation
 		#define luxInitObject(dimensions_, objectType_)								\
 			common.objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;		\
 			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
 			this->allocate();
-
-
-
-
-
-
-
-
-		//3D object in 3D space
-		struct Base3D : public Base {
-			Base3D() { common.objectType = LUX_OBJECT_TYPE_3D__BASE; }
-
-			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
-			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
-			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
-			f32v3 scl{ 0, 0, 0 };			//Scale of the object
-
-			////TODO add absolute pixel position and scale
-			//Base3D* parent{ nullptr };						//Parent of the object
-			//lux::Map<Base3D*, uint32> children;				//Children of the object
-			//void setChildLimits(const uint32 vChildIndex) const override {
-			//	children[vChildIndex]->minLim = minLim;
-			//	children[vChildIndex]->maxLim = maxLim;
-			//}
-			//vec3f32 minLim{ 0, 0, 0 };						//The limit of the object render. It depends on the parent of the object and its properties
-			//vec3f32 maxLim{ 1, 1, 1 };						//The limit of the object render. It depends on the parent of the object and its properties
-		};
-
-
-
-
-
-
-
-
-
-		//Base class for 1D objects in 1D space
-		struct Base1D : public Base {
-			//TODO
-			Base1D() { common.objectType = LUX_OBJECT_TYPE_1D__BASE; }
-
-			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
-			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
-			float32 scl{ 0 };				//Scale of the object
-
-			////TODO add absolute pixel position and scale
-			//Obj2_b* parent{ nullptr };						//Parent of the object
-			//lux::Map<Obj2_b*, uint32> children;				//Children of the object
-			//void setChildLimits(const uint32 vChildIndex) final {
-			//	children[vChildIndex]->minLim = minLim;
-			//	children[vChildIndex]->maxLim = maxLim;
-			//}
-			//vec2f32 minLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
-			//vec2f32 maxLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
-		};
-
-
-
-		// struct RenderSpace2D;
-		// void addRenderSpace(RenderSpace2D* pRenderSpace);
 	}
 }

@@ -12,11 +12,9 @@ namespace lux::shd{
 	struct Line2D{
 		struct colorOutput_ : public Shader_b<Storage> {
 			colorOutput_() {
-				Shader_b::vdata.realloc(16);
-				Shader_b::data.realloc(16);
 				Shader_b::bind = 0;
 			}
-			alwaysInline f32v4& []colorOutput() { return *(f32v4*)Shader_b::data; }
+			alwaysInline f32v4& colorOutput() { return *(f32v4*)Shader_b::data; }
 		};
 
 
@@ -33,11 +31,9 @@ namespace lux::shd{
 
 		struct zBuffer_ : public Shader_b<Storage> {
 			zBuffer_() {
-				Shader_b::vdata.realloc(4);
-				Shader_b::data.realloc(4);
 				Shader_b::bind = 2;
 			}
-			alwaysInline u32& []zBuffer() { return *(u32*)Shader_b::data; }
+			alwaysInline u32& zBuffer() { return *(u32*)Shader_b::data; }
 		};
 
 

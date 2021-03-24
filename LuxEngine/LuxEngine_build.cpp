@@ -26,8 +26,10 @@
     #include "LuxEngine/Threads/ThreadPool.cpp"
         //#include "LuxEngine/Math/Trigonometry/GoniometricFunctions.cpp"
 
-    #include "LuxEngine/Types/LuxObject/LuxObject.cpp"
+    #include "LuxEngine/Types/LuxObject/Obj_b.cpp"
+    #include "LuxEngine/Types/LuxObject/1D/Obj1_b.cpp"
     #include "LuxEngine/Types/LuxObject/2D/Obj2_b.cpp"
+    #include "LuxEngine/Types/LuxObject/3D/Obj3_b.cpp"
 
     #include "LuxEngine/Types/LuxObject/2D/2DBorder.cpp"
     #include "LuxEngine/Types/LuxObject/2D/2DLines.cpp"

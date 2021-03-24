@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_2DLINES
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 #include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
 #include "LuxEngine/Core/Render/Buffers.hpp"
 #include "LuxEngine/Core/Devices.hpp"

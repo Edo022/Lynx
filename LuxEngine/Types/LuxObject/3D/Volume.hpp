@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_VOLUME
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 #include "LuxEngine/Types/LuxObject/3D/Octree.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 
@@ -14,7 +14,7 @@ namespace lux{
         f32v4 col;  //color
     };
 
-    struct Volume : public obj::Base3D{
+    struct Volume : public obj::Obj3_b{
     private:
         RaArray<Octree> hbx_nodes;
 
@@ -24,9 +24,9 @@ namespace lux{
         //TODO Generation data
 
         Volume(f32v3 vPos, f32v2 vRot, RtArray<Point>& vData) {
-            Base3D::pos = vPos;
-            Base3D::rot = vRot;
-            Base3D::scl = { 1, 1, 1 };
+            Obj3_b::pos = vPos;
+            Obj3_b::rot = vRot;
+            Obj3_b::scl = { 1, 1, 1 };
 
             for(auto i : vData) hbx_nodes.add({
                 i.pos, i.r, 0, { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }, nullptr, {}

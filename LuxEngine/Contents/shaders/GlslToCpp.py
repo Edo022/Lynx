@@ -88,7 +88,7 @@ def translateMembers(members:str):
             ret += '\nalwaysInline ' + type_ + '& '                              #Write translated type
 
             #Find arrays
-            if r.group(27) is not None: ret += '[]'
+            # if r.group(27) is not None: ret += '[]'
 
 
             align:int = getTypeSize(r.group(1))                     #Get alignment
@@ -105,7 +105,7 @@ def translateMembers(members:str):
             m = m[1:]
 
 
-    return dict({ 'members' : ret, 'size' : offset })
+    return dict({ 'members' : ret, 'size' : (offset if r.group(27) == None else 0) })
 
 
 
@@ -120,9 +120,9 @@ def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool
         '\nstruct ' + name + ' : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'                             #Struct declaration
         + textwrap.indent(                                                          #
             '\n' + name + '() {'                                                    #Constructor
-                '\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');'         #Allocate gpu data
-                '\n\tShader_b::data.realloc(' + str(translated['size']) + ');'          #Allocate local data copy
-                '\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
+                +(('\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '')         #Allocate gpu data
+                +(('\n\tShader_b::data.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '')          #Allocate local data copy
+                +'\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
             '\n}' +                                                                 #Close constructor
             translated['members']                                                   #Member access functions
         , '\t')                                                                     #

@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_RENDER_SPACE_2D
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 #include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
 
 

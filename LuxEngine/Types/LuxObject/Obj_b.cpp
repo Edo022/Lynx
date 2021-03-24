@@ -1,6 +1,6 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
 
 
@@ -10,12 +10,6 @@
 
 namespace lux::obj{
 	uint64 Base::Common::lastID = 0;	//#LLID LOS000 initialize the last object ID
-
-
-	//Adds a render space with no parent to the screen //FIXME MOVED TO WINDOW.G
-	// void addRenderSpace(RenderSpace2D* pRenderSpace) {
-	// 	core::c::shaders::CRenderSpaces.add(pRenderSpace);
-	// }
 
 
 	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
