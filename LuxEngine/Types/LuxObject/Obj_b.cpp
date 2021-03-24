@@ -12,14 +12,14 @@ namespace lux::obj{
 	uint64 Base::Common::lastID = 0;	//#LLID LOS000 initialize the last object ID
 
 
-	//This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
-	//An object needs to be allocated before being read or written
-	void Base::allocate() {
-		if(common.objectType >= 3000 || common.objectType < 2000) return;
-		//TODO add initialization for 1d, 2.5d and 3d non base objects
-		render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
-		render.localData.realloc(cellSize);	//Create the cell taht contains the object data
-	}
+	// //This function allocates the object data in the shared memory of the GPU, eventually initializing the engine
+	// //An object needs to be allocated before being read or written
+	// void Base::allocate() {
+	// 	if(common.objectType >= 3000 || common.objectType < 2000) return;
+	// 	//TODO add initialization for 1d, 2.5d and 3d non base objects
+	// 	render.data = (int8*)malloc(cellSize);										//Create the cell taht contains the object data
+	// 	render.localData.realloc(cellSize);	//Create the cell taht contains the object data
+	// }
 
 
 	//Update function common to all the objects that adds them to the update queue

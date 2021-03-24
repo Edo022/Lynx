@@ -20,8 +20,8 @@ namespace lux::shd{
 
 		struct windowSize__t : public Shader_b<Storage> {
 			windowSize__t() {
-				Shader_b::vdata.realloc(8);
-				Shader_b::data.realloc(8);
+				Shader_b::vdata.realloc(40);
+				Shader_b::data.realloc(40);
 				Shader_b::bind = 1;
 			}
 			alwaysInline u32& width() { return *(u32*)Shader_b::data; }
@@ -39,8 +39,8 @@ namespace lux::shd{
 
 		struct lineData__t : public Shader_b<Uniform> {
 			lineData__t() {
-				Shader_b::vdata.realloc(60);
-				Shader_b::data.realloc(60);
+				Shader_b::vdata.realloc(92);
+				Shader_b::data.realloc(92);
 				Shader_b::bind = 3;
 			}
 			//Position of the first point

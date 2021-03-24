@@ -177,10 +177,13 @@ namespace lux{
 					objUpdates2D[i]->render.updated = true;
 					vkCmdUpdateBuffer(
 						cb,
-						objUpdates2D[i]->render.localData.cell->csc.buffer,
-						objUpdates2D[i]->render.localData.cell->localOffset,
+						// objUpdates2D[i]->render.localData.cell->csc.buffer,
+						// objUpdates2D[i]->render.localData.cell->localOffset,
+						objUpdates2D[i]->getShVData().cell->csc.buffer,
+						objUpdates2D[i]->getShVData().cell->localOffset,
 						objUpdates2D[i]->cellSize,
-						(void*)objUpdates2D[i]->render.data
+						// (void*)objUpdates2D[i]->render.data
+						(void*)objUpdates2D[i]->getShData()
 					);
 				}
 				core::render::cmd::endSingleTimeCommands(cb);

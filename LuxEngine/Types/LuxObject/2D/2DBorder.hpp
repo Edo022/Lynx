@@ -12,6 +12,10 @@ namespace lux::obj{
 		shd::Border2D data;
 
 
+		virtual ram::ptr<char> getShData(){ return data.objData_.data; }
+		virtual vram::Alloc_b<char> getShVData(){ return data.objData_.vdata; }
+
+
 		Border2D() {
 			// init();
 			//FIXME ...

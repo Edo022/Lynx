@@ -20,8 +20,8 @@ namespace lux::shd{
 
 		struct windowSize__t : public Shader_b<Storage> {
 			windowSize__t() {
-				Shader_b::vdata.realloc(8);
-				Shader_b::data.realloc(8);
+				Shader_b::vdata.realloc(40);
+				Shader_b::data.realloc(40);
 				Shader_b::bind = 1;
 			}
 			alwaysInline u32v2& window() { return *(u32v2*)Shader_b::data; }
@@ -38,8 +38,8 @@ namespace lux::shd{
 
 		struct objData__t : public Shader_b<Uniform> {
 			objData__t() {
-				Shader_b::vdata.realloc(20);
-				Shader_b::data.realloc(20);
+				Shader_b::vdata.realloc(52);
+				Shader_b::data.realloc(52);
 				Shader_b::bind = 3;
 			}
 			//Position of the top-left corner

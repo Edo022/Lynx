@@ -1,3 +1,5 @@
+#pragma once
+#define LUX_H_SHADER_T
 #include "LuxEngine/Types/VPointer.hpp"
 
 

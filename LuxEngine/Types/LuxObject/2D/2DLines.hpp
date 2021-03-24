@@ -25,6 +25,8 @@ namespace lux::obj {
 		virtual void init(Window& pWindow) override;
 
 
+		virtual ram::ptr<char> getShData(){ return data.lineData_.data; }
+		virtual vram::Alloc_b<char> getShVData(){ return data.lineData_.vdata; }
 
 
 		/**

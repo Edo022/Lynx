@@ -105,7 +105,8 @@ def translateMembers(members:str):
             m = m[1:]
 
 
-    return dict({ 'members' : ret, 'size' : (offset if r.group(27) == None else 0) })
+    return dict({ 'members' : ret, 'size' : (offset + 32 if r.group(27) == None else 0) })
+    #                                                 ^ #FIXME REMOVE SAFETY SPACING AND CALCULATE REAL STRUCT SIZE
 
 
 
