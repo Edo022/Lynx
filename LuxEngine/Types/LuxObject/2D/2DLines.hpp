@@ -24,6 +24,8 @@ namespace lux::obj {
 		 */
 		virtual void init(Window& pWindow) override;
 
+		f32v2 _fp0;		//First point of the line
+		f32v2 _fp1;		//Second point of the line
 
 		virtual ram::ptr<char> getShData(){ return data.lineData_.data; }
 		virtual vram::Alloc_b<char> getShVData(){ return data.lineData_.vdata; }
@@ -54,13 +56,13 @@ namespace lux::obj {
 
 
 		//TODO add local-global-other coordinate system and convertions
-		inline void setFp(const f32v2& vFp) { data.lineData_.fp0() = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
-		inline void setSp(const f32v2& vSp) { data.lineData_.fp1() = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setFp(const f32v2& vFp) { _fp0 = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setSp(const f32v2& vSp) { _fp1 = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
 
 		void recalculateCoords() final {
-			data.lineData_.fp0() = data.lineData_.fp0() * adist(minLim, maxLim) + minLim;
-			data.lineData_.fp1() = data.lineData_.fp1() * adist(minLim, maxLim) + minLim;
+			data.lineData_.fp0() = _fp0 * adist(minLim, maxLim) + minLim;
+			data.lineData_.fp1() = _fp1 * adist(minLim, maxLim) + minLim;
 		}
 
 
