@@ -120,6 +120,7 @@ def translateStructDecl(name:str, binding:int, members:str, space:bool):
         '\nstruct ' + name + ' : public Shader_b {'                             #Struct declaration
         + textwrap.indent(                                                          #
             '\n' + name + '() {'                                                    #Constructor
+                '\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');'         #Allocate gpu data
                 '\n\tShader_b::data.realloc(' + str(translated['size']) + ');'          #Allocate local data copy
                 '\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
             '\n}' +                                                                 #Close constructor

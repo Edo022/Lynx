@@ -4,7 +4,8 @@
 
 namespace lux{
     struct Shader_b{
-        ram::ptr<char> data;    //Local data copy
+        vram::ptr<char> vdata;  //Gpu data
+         ram::ptr<char>  data;  //Local data copy
         uint32         bind;    //GLSL binding point
     };
 }
