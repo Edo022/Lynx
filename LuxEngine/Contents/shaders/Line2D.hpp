@@ -10,35 +10,35 @@
 
 namespace lux::shd{
 	struct Line2D{
-		struct colorOutput_ : public Shader_b<Storage> {
-			colorOutput_() {
+		struct colorOutput__t : public Shader_b<Storage> {
+			colorOutput__t() {
 				Shader_b::bind = 0;
 			}
 			alwaysInline f32v4& colorOutput() { return *(f32v4*)Shader_b::data; }
-		};
+		} colorOutput_;
 
 
-		struct windowSize_ : public Shader_b<Storage> {
-			windowSize_() {
+		struct windowSize__t : public Shader_b<Storage> {
+			windowSize__t() {
 				Shader_b::vdata.realloc(8);
 				Shader_b::data.realloc(8);
 				Shader_b::bind = 1;
 			}
 			alwaysInline u32& width() { return *(u32*)Shader_b::data; }
 			alwaysInline u32& height() { return *(u32*)(Shader_b::data + 4); }
-		};
+		} windowSize_;
 
 
-		struct zBuffer_ : public Shader_b<Storage> {
-			zBuffer_() {
+		struct zBuffer__t : public Shader_b<Storage> {
+			zBuffer__t() {
 				Shader_b::bind = 2;
 			}
 			alwaysInline u32& zBuffer() { return *(u32*)Shader_b::data; }
-		};
+		} zBuffer_;
 
 
-		struct lineData_ : public Shader_b<Uniform> {
-			lineData_() {
+		struct lineData__t : public Shader_b<Uniform> {
+			lineData__t() {
 				Shader_b::vdata.realloc(60);
 				Shader_b::data.realloc(60);
 				Shader_b::bind = 3;
@@ -57,6 +57,6 @@ namespace lux::shd{
 			alwaysInline f32& wd1() { return *(f32*)(Shader_b::data + 52); }
 			//TODO
 			alwaysInline u32& ID() { return *(u32*)(Shader_b::data + 56); }
-		};
+		} lineData_;
 	};
 }

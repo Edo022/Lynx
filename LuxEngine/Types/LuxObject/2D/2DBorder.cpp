@@ -13,10 +13,11 @@ namespace lux::obj{
 				pWindow.fOut_g,
 				pWindow.wSize_g,
 				pWindow.zBuff_g,
-				(vram::Alloc_b<int32>)(render.localData)
+				// (vram::Alloc_b<int32>)(render.localData)
+				(vram::Alloc_b<int32>)(data.objData_.vdata)
 			},
 			render.shaderLayout,
-			pWindow.width / 32 + 1, 1, 1,
+			(u32)pWindow.width / 32 + 1, 1, 1,
 			pWindow
 		);
 	}

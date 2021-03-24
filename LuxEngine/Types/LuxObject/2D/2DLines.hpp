@@ -6,6 +6,7 @@
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
+#include "LuxEngine/Contents/shaders/Line2D.hpp"
 #include <vulkan/vulkan.h>
 
 
@@ -40,22 +41,30 @@ namespace lux::obj {
 			// init();
 			cellSize = 60;
 			luxInitObject(2, LINE);								// count   | range         | chunk
-			fp = (f32v2*)(render.data + 0);						//    8    |    0  - 7     |    0 +
-			sp = (f32v2*)(render.data + 8);						//    8    |    8  - 15    |    0
-			fc = (f32v4*)(render.data + 16);					//    16   |    16 - 31    |    1 +
-			sc = (f32v4*)(render.data + 32);					//    16   |    32 - 47    |    2 +
-			fw = (float32*)(render.data + 48);					//    4    |    48 - 51    |    3 +
-			sw = (float32*)(render.data + 52);					//    4    |    52 - 55    |    3
-			*(uint32*)(render.data + 56) = (uint32)common.ID;	//    4    |    56 - 59    |    3
-			//4x trailing padding								//    4    |    60 - 63
+			// fp = (f32v2*)(render.data + 0);						//    8    |    0  - 7     |    0 +
+			// sp = (f32v2*)(render.data + 8);						//    8    |    8  - 15    |    0
+			// fc = (f32v4*)(render.data + 16);					//    16   |    16 - 31    |    1 +
+			// sc = (f32v4*)(render.data + 32);					//    16   |    32 - 47    |    2 +
+			// fw = (float32*)(render.data + 48);					//    4    |    48 - 51    |    3 +
+			// sw = (float32*)(render.data + 52);					//    4    |    52 - 55    |    3
+			// *(uint32*)(render.data + 56) = (uint32)common.ID;	//    4    |    56 - 59    |    3
+			// //4x trailing padding								//    4    |    60 - 63
 
 
+			// setFp(pFp);
+			// setSp(pSp);
+			// *fc = pFc;
+			// *sc = pSc;
+			// *fw = vFw;
+			// *sw = vSw;
 			setFp(pFp);
 			setSp(pSp);
-			*fc = pFc;
-			*sc = pSc;
-			*fw = vFw;
-			*sw = vSw;
+			data.lineData_.col0() = pFc;
+			data.lineData_.col1() = pSc;
+			data.lineData_.wd0() = vFw;
+			data.lineData_.wd1() = vSw;
+			data.lineData_.ID() = (uint32)common.ID;
+
 		}
 
 
@@ -63,28 +72,29 @@ namespace lux::obj {
 		// inline int32 getCellSize() const final { return 60; }
 
 		//TODO add loca-global-other coordinate system and convertions
-		inline void setFp(const f32v2& vFp) { _fp = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
-		inline void setSp(const f32v2& vSp) { _sp = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setFp(const f32v2& vFp) { data.lineData_.fp0() = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
+		inline void setSp(const f32v2& vSp) { data.lineData_.fp1() = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
 
 		void recalculateCoords() final {
-			*fp = _fp * adist(minLim, maxLim) + minLim;
-			*sp = _sp * adist(minLim, maxLim) + minLim;
+			data.lineData_.fp0() = data.lineData_.fp0() * adist(minLim, maxLim) + minLim;
+			data.lineData_.fp1() = data.lineData_.fp1() * adist(minLim, maxLim) + minLim;
 		}
 
 
 
-	// private:
-	public:
-		f32v2* fp;		//First point of the line
-		f32v2* sp;		//Second point of the line
-		f32v2 _fp;		//First point of the line
-		f32v2 _sp;		//Second point of the line
-	public:
-		f32v4* fc;		//Color of the first point
-		f32v4* sc;		//Color of the second point
-		float32* fw;	//Width of the first point
-		float32* sw;	//Width of the second point
+	// // private:
+	// public:
+	// 	f32v2* fp;		//First point of the line
+	// 	f32v2* sp;		//Second point of the line
+	// 	f32v2 _fp;		//First point of the line
+	// 	f32v2 _sp;		//Second point of the line
+	// public:
+	// 	f32v4* fc;		//Color of the first point
+	// 	f32v4* sc;		//Color of the second point
+	// 	float32* fw;	//Width of the first point
+	// 	float32* sw;	//Width of the second point
+		shd::Line2D data;
 	};
 }
 

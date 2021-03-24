@@ -17,10 +17,13 @@ namespace lux::obj{
 				pWindow.fOut_g,
 				pWindow.wSize_g,
 				pWindow.zBuff_g,
-				(vram::Alloc_b<int32>)(render.localData)
+				(vram::Alloc_b<int32>)(data.lineData_.vdata)
 			},
 			render.shaderLayout, 4, 1, 1,
 			pWindow
 		);
 	}
 }
+
+//FIXME USE POLYMORPHISM. USE SHADER_B IN BASE OBJECT
+//FIXME PROBABLY. idk

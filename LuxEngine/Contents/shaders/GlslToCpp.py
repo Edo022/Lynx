@@ -117,16 +117,16 @@ def translateMembers(members:str):
 def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool):
     translated = translateMembers(members)
     return (('\n\n' if space else '') +
-        '\nstruct ' + name + ' : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'                             #Struct declaration
+        '\nstruct ' + name + '_t : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'                   #Struct declaration
         + textwrap.indent(                                                          #
-            '\n' + name + '() {'                                                    #Constructor
+            '\n' + name + '_t() {'                                                  #Constructor
                 +(('\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '')         #Allocate gpu data
                 +(('\n\tShader_b::data.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '')          #Allocate local data copy
                 +'\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
             '\n}' +                                                                 #Close constructor
             translated['members']                                                   #Member access functions
         , '\t')                                                                     #
-        + '\n};'                                                                #Close struct
+        + '\n} ' + name + ';'                                                       #Close struct and declare member
     )
 
 

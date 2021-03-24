@@ -95,6 +95,6 @@ namespace lux{
 		#define luxInitObject(dimensions_, objectType_)								\
 			common.objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;		\
 			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;	\
-			this->allocate();
+			// this->allocate();
 	}
 }
