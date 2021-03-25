@@ -392,6 +392,7 @@ namespace lux::core::c::shaders{
 	 *	//FIXME
 	 */
 	// LuxShader newShader(const RtArray<vram::Cell>& pCells, const ShaderLayou tvShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ) {
+	//DEPRECATED FUNCTION //FIXME REMOVE
 	LuxShader newShader(const RtArray<vram::Alloc_b<uint32>>& pCells, const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow) {
 		//TODO check if the layout matches the glsl layout in the shader file. Or just make it automatic idk
 		dbg::checkParam(pCells.count() == 0, "pCells", "A shader must use at least one cell. The provided cell array has size 0");
@@ -453,6 +454,7 @@ namespace lux::core::c::shaders{
 	 * @param vCShader The shader to destroy
 	 * @return True if the operation succeeded, false if the index is invalid
 	 */
+	//DEPRECATED FUNCTION //FIXME REMOVE
 	bool destroyShader(const LuxShader vCShader, Window& pWindow) {
 		if(vCShader >= pWindow.swp.shaders.count()) return false;
 
@@ -466,4 +468,19 @@ namespace lux::core::c::shaders{
 
 		return true;
 	}
+
+
+	// bool destroyShader__TEMP(const ShaderElm_b vShader, Window& pWindow) {
+	// 	if(vCShader >= pWindow.swp.shaders.count()) return false;
+
+	// 	//Clear descriptors sets, descriptor pool and descriptor layout
+	// 	vkFreeDescriptorSets   (dvc::compute.LD, pWindow.swp.shaders[vCShader].descriptorPool, 1, &pWindow.swp.shaders[vCShader].descriptorSet);
+	// 	vkDestroyDescriptorPool(dvc::compute.LD, pWindow.swp.shaders[vCShader].descriptorPool, nullptr);
+
+	// 	//Remove the shader from the shader array
+	// 	for(uint32 i = vCShader; i < pWindow.swp.shaders.count() - 1; ++i) pWindow.swp.shaders[i] = pWindow.swp.shaders[i+1]; //FIXME
+	// 	pWindow.swp.shaders.resize(pWindow.swp.shaders.count() - 1);
+
+	// 	return true;
+	// }
 }

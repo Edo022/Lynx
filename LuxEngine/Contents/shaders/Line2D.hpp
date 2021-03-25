@@ -9,54 +9,58 @@
 
 
 namespace lux::shd{
-	struct Line2D{
-		struct colorOutput__t : public Shader_b<Storage> {
+	struct Line2D : public Shader_b {
+		struct colorOutput__t : public ShaderElm_b<Storage> {
 			colorOutput__t() {
-				Shader_b::bind = 0;
+				ShaderElm_b::bind = 0;
 			}
-			alwaysInline f32v4& colorOutput() { return *(f32v4*)Shader_b::data; }
+			alwaysInline f32v4& colorOutput() { return *(f32v4*)ShaderElm_b::data; }
 		} colorOutput_;
 
 
-		struct windowSize__t : public Shader_b<Storage> {
+		struct windowSize__t : public ShaderElm_b<Storage> {
 			windowSize__t() {
-				Shader_b::vdata.realloc(40);
-				Shader_b::data.realloc(40);
-				Shader_b::bind = 1;
+				ShaderElm_b::vdata.realloc(40);
+				ShaderElm_b::data.realloc(40);
+				ShaderElm_b::bind = 1;
 			}
-			alwaysInline u32& width() { return *(u32*)Shader_b::data; }
-			alwaysInline u32& height() { return *(u32*)(Shader_b::data + 4); }
+			alwaysInline u32& width() { return *(u32*)ShaderElm_b::data; }
+			alwaysInline u32& height() { return *(u32*)(ShaderElm_b::data + 4); }
 		} windowSize_;
 
 
-		struct zBuffer__t : public Shader_b<Storage> {
+		struct zBuffer__t : public ShaderElm_b<Storage> {
 			zBuffer__t() {
-				Shader_b::bind = 2;
+				ShaderElm_b::bind = 2;
 			}
-			alwaysInline u32& zBuffer() { return *(u32*)Shader_b::data; }
+			alwaysInline u32& zBuffer() { return *(u32*)ShaderElm_b::data; }
 		} zBuffer_;
 
 
-		struct lineData__t : public Shader_b<Uniform> {
+		struct lineData__t : public ShaderElm_b<Uniform> {
 			lineData__t() {
-				Shader_b::vdata.realloc(92);
-				Shader_b::data.realloc(92);
-				Shader_b::bind = 3;
+				ShaderElm_b::vdata.realloc(92);
+				ShaderElm_b::data.realloc(92);
+				ShaderElm_b::bind = 3;
 			}
 			//Position of the first point
-			alwaysInline f32v2& fp0() { return *(f32v2*)Shader_b::data; }
+			alwaysInline f32v2& fp0() { return *(f32v2*)ShaderElm_b::data; }
 			//Position of the second point
-			alwaysInline f32v2& fp1() { return *(f32v2*)(Shader_b::data + 8); }
+			alwaysInline f32v2& fp1() { return *(f32v2*)(ShaderElm_b::data + 8); }
 			//Color of the first point
-			alwaysInline f32v4& col0() { return *(f32v4*)(Shader_b::data + 16); }
+			alwaysInline f32v4& col0() { return *(f32v4*)(ShaderElm_b::data + 16); }
 			//Color of the second point
-			alwaysInline f32v4& col1() { return *(f32v4*)(Shader_b::data + 32); }
+			alwaysInline f32v4& col1() { return *(f32v4*)(ShaderElm_b::data + 32); }
 			//Width of the first point
-			alwaysInline f32& wd0() { return *(f32*)(Shader_b::data + 48); }
+			alwaysInline f32& wd0() { return *(f32*)(ShaderElm_b::data + 48); }
 			//Width of the second point
-			alwaysInline f32& wd1() { return *(f32*)(Shader_b::data + 52); }
+			alwaysInline f32& wd1() { return *(f32*)(ShaderElm_b::data + 52); }
 			//TODO
-			alwaysInline u32& ID() { return *(u32*)(Shader_b::data + 56); }
+			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 56); }
 		} lineData_;
+
+
+		void create(f32v4 colorOutput, u32 zBuffer){
+		}
 	};
 }

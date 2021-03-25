@@ -46,6 +46,8 @@ def getTypeSize(type_ : str):
 def translateMembers(members:str):
     m = members.expandtabs(4).strip()
     ret:str = ''
+    fixed = None
+    arr = False
 
 
     offset = 0
@@ -93,10 +95,14 @@ def translateMembers(members:str):
 
             align:int = getTypeSize(r.group(1))                     #Get alignment
             if offset % align != 0: offset = offset % align + align #Fix element offset and #Create getter from variable name
-            ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(Shader_b::data + ' + str(offset) + ')' if offset != 0 else 'Shader_b::data') + '; }'
+            ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
             offset += align                                         #Calculate raw offset of the next element
 
             m = m[len(r.group(0)):]                                 #Pop from source string
+            if arr: break
+            if r.group(27) != None:
+                arr = True
+                fixed = (type_, r.group(12))
             continue
 
 
@@ -105,8 +111,8 @@ def translateMembers(members:str):
             m = m[1:]
 
 
-    return dict({ 'members' : ret, 'size' : (offset + 32 if r.group(27) == None else 0) })
-    #                                                 ^ #FIXME REMOVE SAFETY SPACING AND CALCULATE REAL STRUCT SIZE
+    return dict({ 'members' : ret, 'fixed' : fixed, 'size' : (0 if arr else offset + 32) })
+    #                                                                                          ^ #FIXME REMOVE SAFETY SPACING AND CALCULATE REAL STRUCT SIZE
 
 
 
@@ -116,18 +122,24 @@ def translateMembers(members:str):
 
 
 def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool):
-    translated = translateMembers(members)
-    return (('\n\n' if space else '') +
-        '\nstruct ' + name + '_t : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'           #Struct declaration
-        + textwrap.indent(                                                          #
-            '\n' + name + '_t() {'                                                  #Constructor
-                +(('\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '') #Allocate gpu data
-                +(('\n\tShader_b::data.realloc('  + str(translated['size']) + ');') if translated['size'] != 0 else '') #Allocate local data copy
-                +'\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
-            '\n}' +                                                                 #Close constructor
-            translated['members']                                                   #Member access functions
-        , '\t')                                                                     #
-        + '\n} ' + name + ';'                                                       #Close struct and declare member
+    t = translateMembers(members)
+    return (
+        (('\n\n' if space else '') +
+            '\nstruct ' + name + '_t : public ShaderElm_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'           #Struct declaration
+            + textwrap.indent(                                                          #
+                '\n' + name + '_t() {' + (                                              #Constructor
+                        ('\n\tShaderElm_b::vdata.realloc(' + str(t['size']) + ');')         #Allocate gpu data
+                    +('\n\tShaderElm_b::data.realloc('  + str(t['size']) + ');')         #Allocate local data copy
+                        if t['size'] != 0 else ''                                           #
+                    )                                                                       #
+                    +'\n\tShaderElm_b::bind = ' + str(binding) + ';'                        #Set binding
+                '\n}' +                                                                 #Close constructor
+                t['members']                                                            #Member access functions
+            , '\t')                                                                     #
+            + '\n} ' + name + ';'                                                       #Close struct and declare member
+        ),
+
+        t['fixed']
     )
 
 
@@ -162,7 +174,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n#include <LuxEngine/Types/VPointer.hpp>'
         '\n#include <LuxEngine/Types/Shader_t.hpp>\n\n\n'
         '\nnamespace lux::shd{'
-        '\n\tstruct ' + re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname)) + '{'
+        '\n\tstruct ' + re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname)) + ' : public Shader_b {'
     )
 
     shader = re.findall(
@@ -173,14 +185,23 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         r'\{(([^\}]|\n)*)\})',                  # 9 10       # 9      #Get layout members
         fr.read())
     if shader != None:
+        createParams:list = []
         for layout in range(0, len(shader)):                    #For each layout
-            fh.write(textwrap.indent(translateStructDecl(
+            decl = translateStructDecl(
                 shader[layout][8],
                 shader[layout][7],
                 shader[layout][6],
                 shader[layout][9].strip(),
                 layout != 0
-            ), '\t\t'))
+            )
+            fh.write(textwrap.indent(decl[0], '\t\t'))
+            if(decl[1] != None): createParams.insert(len(createParams), decl[1])
+
+        fh.write(textwrap.indent(
+            '\n\n\nvoid create(' + ', '.join((elm[0] + ' ' + elm[1]) for elm in createParams) + '){'
+            '\n}'
+        , '\t\t'))
+
     else:
         print('No layout found. A shader must define at least one layout')
 
