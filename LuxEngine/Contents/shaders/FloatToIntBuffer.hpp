@@ -36,8 +36,8 @@ namespace lux::shd{
 
 		struct windowSize__t : public ShaderElm_b<Storage> {
 			windowSize__t() {
-				ShaderElm_b::vdata.realloc(40);
-				ShaderElm_b::data.realloc(40);
+				ShaderElm_b::vdata.realloc(8);
+				ShaderElm_b::data.realloc(8);
 				ShaderElm_b::bind = 3;
 			}
 			alwaysInline u32& width() { return *(u32*)ShaderElm_b::data; }
@@ -46,6 +46,7 @@ namespace lux::shd{
 
 
 		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer){
+
 		}
 	};
 }

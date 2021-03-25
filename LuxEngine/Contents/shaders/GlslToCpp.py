@@ -43,76 +43,69 @@ def getTypeSize(type_ : str):
 
 
 
-def translateMembers(members:str):
+def createFuncs(members:str):
     m = members.expandtabs(4).strip()
     ret:str = ''
-    fixed = None
+    ext = None
     arr = False
+    maxAlign = 0
 
 
     offset = 0
     while len(m) > 0:
-        #Ignore whitespace
-        r = re.search(r'^( |\n)*', m)
-        if r != None:
-            m = m[len(r.group(0)):]                     #Pop from source string
+        r = re.search(r'^( |\n)*', m)                               #Ignore whitespace
+        if r != None:                                                   #
+            m = m[len(r.group(0)):]                                     #Pop parsed string from source string
 
 
-        #Skip comments
-        r = re.search(r'(^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)', m)
-        if r != None:
-            ret += '\n' + r.group(0).strip()            #Concatenate to return value
-            m = m[len(r.group(0)):]                     #Pop from source string
+        r = re.search(r'(^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)', m)       #Skip comments
+        if r != None:                                                   #
+            ret += '\n' + r.group(0).strip()                            #Concatenate to return value
+            m = m[len(r.group(0)):]                                     #Pop parsed string from source string
 
 
-        #Translate member
-        r = re.search(
-            r'^(([biuv]?vec[234])|(double|float|bool|(u?int)))'     # 1 2 3 4                 # 1     #Get type name
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'           # 5  6  7  8  9  10 11    # 5     #Skip any comment or whitespace
-            r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                            # 12                      # 12    #Get variable name
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 13 14 15 16 17 18 19    # 13    #Skip any comment or whitespace
-            r'\[?'                                                     # -                       # -     #Check opening array bracket
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 20 21 22 23 24 25 26    # 20    #Skip any comment or whitespace
-            r'(\])?'                                                   # 27                      # 27    #Check closing array bracket
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'            # 28 29 30 31 32 33 34    # 28    #Skip any comment or whitespace
-            r';'                                                      # -                       # -     #Anchor to instruction end
-            r'((( )|(\/\/.*?(\n|$)))*)',                            # 35 36 37 38 39          # 35    #Skip eventual comments after member declaration
+        r = re.search(                                              #Translate member
+            r'^(([biuv]?vec[234])|(double|float|bool|(u?int)))'         # 1 2 3 4                 # 1     #Get type name
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'               # 5  6  7  8  9  10 11    # 5     #Skip any comment or whitespace
+            r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                                # 12                      # 12    #Get variable name
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'                # 13 14 15 16 17 18 19    # 13    #Skip any comment or whitespace
+            r'\[?'                                                         # -                       # -     #Check opening array bracket
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'                # 20 21 22 23 24 25 26    # 20    #Skip any comment or whitespace
+            r'(\])?'                                                       # 27                      # 27    #Check closing array bracket
+            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'                # 28 29 30 31 32 33 34    # 28    #Skip any comment or whitespace
+            r';'                                                          # -                       # -     #Anchor to instruction end
+            r'((( )|(\/\/.*?(\n|$)))*)',                                # 35 36 37 38 39          # 35    #Skip eventual comments after member declaration
             m
         )
         if r != None:
-            type_:str = translateDataType(r.group(1))
-
-            if r.group( 5) != None and len(r.group( 5).strip()) > 0: ret += '\n' + textwrap.dedent(r.group( 5)).rstrip() #Write comments
-            if r.group(13) != None and len(r.group(13).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(13)).rstrip() #Write comments
-            if r.group(20) != None and len(r.group(20).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(20)).rstrip() #Write comments
-            if r.group(28) != None and len(r.group(28).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(28)).rstrip() #Write comments
-            if r.group(35) != None and len(r.group(35).strip()) > 0: ret += '\n' + textwrap.dedent(r.group(35)).rstrip() #Write comments
-            ret += '\nalwaysInline ' + type_ + '& '                              #Write translated type
-
-            #Find arrays
-            # if r.group(27) is not None: ret += '[]'
+            _type = r.group(1); _name = r.group(12); _iext = r.group(27) #Programmer friendly names
+            _coms = { r.group(5), r.group(13), r.group(20), r.group(28), r.group(35) }
+            ttype:str = translateDataType(_type)                        #Translate type
+            align:int = getTypeSize(_type)                              #Get member alignment
+            maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment
 
 
-            align:int = getTypeSize(r.group(1))                     #Get alignment
-            if offset % align != 0: offset = offset % align + align #Fix element offset and #Create getter from variable name
-            ret += r.group(12) + '() { return *(' + type_ + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
-            offset += align                                         #Calculate raw offset of the next element
+            for _comm in _coms:                                         #Write comments
+                if _comm != None and len(_comm.strip()) > 0: ret += '\n' + textwrap.dedent(_comm.rstrip())
+            ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
 
-            m = m[len(r.group(0)):]                                 #Pop from source string
-            if arr: break
-            if r.group(27) != None:
-                arr = True
-                fixed = (type_, r.group(12))
-            continue
+            if offset % align != 0: offset = offset - offset % align + align     #Fix element offset and    #Create getter from variable name
+            ret += _name + '() { return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
+            offset += align                                             #Calculate raw offset of the next element
+
+            m = m[len(r.group(0)):]                                     #Pop parsed string from source string
+            if arr: break                                               #Break if the binding is external and the trailing comment has been written
+            if _iext != None:                                           #If the binding is external
+                arr = True                                                  #Set external binding variable
+                ext = (ttype, _name)                                        #Save binding type and name. They will be used when writing create()
+            continue                                                    #Keep parsing
 
 
         #umu umu
-        else:
-            m = m[1:]
+        else:                                                           #Copy anything else
+            m = m[1:]                                                       #
 
-
-    return dict({ 'members' : ret, 'fixed' : fixed, 'size' : (0 if arr else offset + 32) })
-    #                                                                                          ^ #FIXME REMOVE SAFETY SPACING AND CALCULATE REAL STRUCT SIZE
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : offset if (offset % maxAlign == 0) else offset + offset % maxAlign + maxAlign })
 
 
 
@@ -122,25 +115,25 @@ def translateMembers(members:str):
 
 
 def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool):
-    t = translateMembers(members)
-    return (
-        (('\n\n' if space else '') +
-            '\nstruct ' + name + '_t : public ShaderElm_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'           #Struct declaration
-            + textwrap.indent(                                                          #
-                '\n' + name + '_t() {' + (                                              #Constructor
-                        ('\n\tShaderElm_b::vdata.realloc(' + str(t['size']) + ');')         #Allocate gpu data
-                    +('\n\tShaderElm_b::data.realloc('  + str(t['size']) + ');')         #Allocate local data copy
-                        if t['size'] != 0 else ''                                           #
-                    )                                                                       #
-                    +'\n\tShaderElm_b::bind = ' + str(binding) + ';'                        #Set binding
-                '\n}' +                                                                 #Close constructor
-                t['members']                                                            #Member access functions
-            , '\t')                                                                     #
-            + '\n} ' + name + ';'                                                       #Close struct and declare member
+    t = createFuncs(members)
+    return dict({
+        'decl' : (('\n\n' if space else '') +                                   #Fix spacing
+            '\nstruct ' + name + '_t : public ShaderElm_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {' +
+            textwrap.indent(                                                    # ^ Struct declaration {
+                '\n' + name + '_t() {' + (                                          #Constructor {
+                    ('\n\tShaderElm_b::vdata.realloc(' + str(t['size']) + ');') +       #Allocate gpu data
+                    ('\n\tShaderElm_b::data.realloc('  + str(t['size']) + ');')         #Allocate local data copy
+                    if t['ext'] is None else ''                                         #But only if the binding is not ext
+                    ) +                                                                 #
+                    '\n\tShaderElm_b::bind = ' + str(binding) + ';'                     #Set binding index
+                '\n}' +                                                             # }
+                t['func'],                                                      #Member access functions(){ ... }
+            '\t') +                                                             #
+            '\n} ' + name + ';'                                                 # } MemberDeclaration;
         ),
 
-        t['fixed']
-    )
+        'ext': t['ext']                                                         #Forward ext
+    })
 
 
 
@@ -185,20 +178,20 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         r'\{(([^\}]|\n)*)\})',                  # 9 10       # 9      #Get layout members
         fr.read())
     if shader != None:
-        createParams:list = []
+        exts:list = []
         for layout in range(0, len(shader)):                    #For each layout
             decl = translateStructDecl(
-                shader[layout][8],
-                shader[layout][7],
-                shader[layout][6],
-                shader[layout][9].strip(),
-                layout != 0
+                name    = shader[layout][8],
+                type    = shader[layout][7],
+                binding = shader[layout][6],
+                members = shader[layout][9].strip(),
+                space   = layout != 0
             )
-            fh.write(textwrap.indent(decl[0], '\t\t'))
-            if(decl[1] != None): createParams.insert(len(createParams), decl[1])
+            fh.write(textwrap.indent(decl['decl'], '\t\t'))
+            if(decl['ext'] != None): exts.insert(len(exts), decl['ext'])
 
         fh.write(textwrap.indent(
-            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + elm[0] + ', VRam, Storage> p' + elm[1][0].upper() + elm[1][1:]) for elm in createParams) + '){'
+            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + elm[0] + ', VRam, Storage> p' + elm[1][0].upper() + elm[1][1:]) for elm in exts) + '){'
             '\n'
             '\n}'
         , '\t\t'))

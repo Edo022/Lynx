@@ -20,8 +20,8 @@ namespace lux::shd{
 
 		struct windowSize__t : public ShaderElm_b<Storage> {
 			windowSize__t() {
-				ShaderElm_b::vdata.realloc(40);
-				ShaderElm_b::data.realloc(40);
+				ShaderElm_b::vdata.realloc(8);
+				ShaderElm_b::data.realloc(8);
 				ShaderElm_b::bind = 1;
 			}
 			alwaysInline u32& width() { return *(u32*)ShaderElm_b::data; }
@@ -39,8 +39,8 @@ namespace lux::shd{
 
 		struct lineData__t : public ShaderElm_b<Uniform> {
 			lineData__t() {
-				ShaderElm_b::vdata.realloc(92);
-				ShaderElm_b::data.realloc(92);
+				ShaderElm_b::vdata.realloc(96);
+				ShaderElm_b::data.realloc(96);
 				ShaderElm_b::bind = 3;
 			}
 			//Position of the first point
@@ -49,18 +49,19 @@ namespace lux::shd{
 			alwaysInline f32v2& fp1() { return *(f32v2*)(ShaderElm_b::data + 8); }
 			//Color of the first point
 			alwaysInline f32v4& col0() { return *(f32v4*)(ShaderElm_b::data + 16); }
-			//Color of the second point
-			alwaysInline f32v4& col1() { return *(f32v4*)(ShaderElm_b::data + 32); }
 			//Width of the first point
-			alwaysInline f32& wd0() { return *(f32*)(ShaderElm_b::data + 48); }
+			alwaysInline f32& wd0() { return *(f32*)(ShaderElm_b::data + 32); }
+			//Color of the second point
+			alwaysInline f32v4& col1() { return *(f32v4*)(ShaderElm_b::data + 48); }
 			//Width of the second point
-			alwaysInline f32& wd1() { return *(f32*)(ShaderElm_b::data + 52); }
+			alwaysInline f32& wd1() { return *(f32*)(ShaderElm_b::data + 64); }
 			//TODO
-			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 56); }
+			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 68); }
 		} lineData_;
 
 
 		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pZBuffer){
+
 		}
 	};
 }

@@ -23,8 +23,8 @@ namespace lux{
 
 		~Shader_b(){
 			//Clear descriptors sets, descriptor pool and descriptor layout
-			vkFreeDescriptorSets   (dvc::compute.LD, descriptorPool, 1, &descriptorSet);
-			vkDestroyDescriptorPool(dvc::compute.LD, descriptorPool, nullptr);
+			vkFreeDescriptorSets   (core::dvc::compute.LD, descriptorPool, 1, &descriptorSet);
+			vkDestroyDescriptorPool(core::dvc::compute.LD, descriptorPool, nullptr);
 		}
 	};
 }
