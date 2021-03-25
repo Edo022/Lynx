@@ -118,11 +118,11 @@ def translateMembers(members:str):
 def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool):
     translated = translateMembers(members)
     return (('\n\n' if space else '') +
-        '\nstruct ' + name + '_t : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'                   #Struct declaration
+        '\nstruct ' + name + '_t : public Shader_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {'           #Struct declaration
         + textwrap.indent(                                                          #
             '\n' + name + '_t() {'                                                  #Constructor
-                +(('\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '')         #Allocate gpu data
-                +(('\n\tShader_b::data.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '')          #Allocate local data copy
+                +(('\n\tShader_b::vdata.realloc(' + str(translated['size']) + ');') if translated['size'] != 0 else '') #Allocate gpu data
+                +(('\n\tShader_b::data.realloc('  + str(translated['size']) + ');') if translated['size'] != 0 else '') #Allocate local data copy
                 +'\n\tShader_b::bind = ' + str(binding) + ';'                            #Set binding
             '\n}' +                                                                 #Close constructor
             translated['members']                                                   #Member access functions
@@ -137,11 +137,6 @@ def translateStructDecl(name:str, type:str, binding:int, members:str, space:bool
 
 
 
-
-
-#TODO FIX ARRAYS
-#TODO ADD GPU LOCAL DATA
-
 pathr  = sys.argv[1]
 
 if not os.path.exists(pathr): print("File does not exist")
@@ -153,7 +148,7 @@ else:
     shname = re.search(r'^(.*/)?(.*)\..*$', pathr)
     if shname != None: shname = shname.group(2)
 
-    print('Writing ' + spath + shname)
+    print('Compiling ' + spath + shname)
 
 
 

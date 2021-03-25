@@ -11,8 +11,8 @@
 
 
 
-
-//TODO per-children-group shader command buffers. static shaders are recreated when the objects changes
+//FIXME USE GENERATED BINDING INSTEAD OF BUFFER POSITION
+//TODO per-children-group shader command buffers. static shaders are recreated when the objects change
 namespace lux::obj {
 	/**
 	 * @brief A bidimensional line with interpolated color and width.
