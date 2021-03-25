@@ -198,7 +198,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             if(decl[1] != None): createParams.insert(len(createParams), decl[1])
 
         fh.write(textwrap.indent(
-            '\n\n\nvoid create(' + ', '.join((elm[0] + ' ' + elm[1]) for elm in createParams) + '){'
+            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + elm[0] + ', VRam, Storage> p' + elm[1][0].upper() + elm[1][1:]) for elm in createParams) + '){'
             '\n}'
         , '\t\t'))
 

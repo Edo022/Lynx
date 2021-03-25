@@ -60,7 +60,7 @@ namespace lux::shd{
 		} lineData_;
 
 
-		void create(f32v4 colorOutput, u32 zBuffer){
+		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pZBuffer){
 		}
 	};
 }
