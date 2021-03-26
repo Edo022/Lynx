@@ -14,7 +14,6 @@ namespace lux::shd{
 			src__t() {
 				ShaderElm_b::bind = 0;
 			}
-			alwaysInline f32v4& src() { return *(f32v4*)ShaderElm_b::data; }
 		} src_;
 
 
@@ -22,7 +21,6 @@ namespace lux::shd{
 			dst__t() {
 				ShaderElm_b::bind = 1;
 			}
-			alwaysInline u32& dst() { return *(u32*)ShaderElm_b::data; }
 		} dst_;
 
 
@@ -30,7 +28,6 @@ namespace lux::shd{
 			zBuffer__t() {
 				ShaderElm_b::bind = 2;
 			}
-			alwaysInline u32& zBuffer() { return *(u32*)ShaderElm_b::data; }
 		} zBuffer_;
 
 
@@ -46,7 +43,9 @@ namespace lux::shd{
 
 
 		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer){
-
+			src_.vdata = (vram::ptr<char, VRam, Storage>)pSrc;
+			dst_.vdata = (vram::ptr<char, VRam, Storage>)pDst;
+			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
 		}
 	};
-}
+}//TODO remove local data in external bindings

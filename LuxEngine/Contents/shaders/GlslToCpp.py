@@ -47,7 +47,7 @@ def createFuncs(members:str):
     m = members.expandtabs(4).strip()
     ret:str = ''
     ext = None
-    arr = False
+    iext = False
     maxAlign = 0
 
 
@@ -87,16 +87,17 @@ def createFuncs(members:str):
 
             for _comm in _coms:                                         #Write comments
                 if _comm != None and len(_comm.strip()) > 0: ret += '\n' + textwrap.dedent(_comm.rstrip())
-            ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
 
-            if offset % align != 0: offset = offset - offset % align + align     #Fix element offset and    #Create getter from variable name
-            ret += _name + '() { return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
-            offset += align                                             #Calculate raw offset of the next element
+            if _iext == None:                                           #If the binding is external
+                ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
+                if offset % align != 0: offset = offset - offset % align + align     #Fix element offset and    #Create getter from variable name
+                ret += _name + '() { return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
+                offset += align                                             #Calculate raw offset of the next element
 
             m = m[len(r.group(0)):]                                     #Pop parsed string from source string
-            if arr: break                                               #Break if the binding is external and the trailing comment has been written
+            if iext: break                                              #Break if the binding is external and the trailing comment has been written
             if _iext != None:                                           #If the binding is external
-                arr = True                                                  #Set external binding variable
+                iext = True                                                 #Set external binding variable
                 ext = (ttype, _name)                                        #Save binding type and name. They will be used when writing create()
             continue                                                    #Keep parsing
 
@@ -105,7 +106,7 @@ def createFuncs(members:str):
         else:                                                           #Copy anything else
             m = m[1:]                                                       #
 
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : offset if (offset % maxAlign == 0) else offset + offset % maxAlign + maxAlign })
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : offset if (offset % maxAlign == 0) else offset - offset % maxAlign + maxAlign })
 
 
 
@@ -188,11 +189,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 space   = layout != 0
             )
             fh.write(textwrap.indent(decl['decl'], '\t\t'))
-            if(decl['ext'] != None): exts.insert(len(exts), decl['ext'])
+            if(decl['ext'] != None): exts.insert(len(exts), (decl['ext'][0], decl['ext'][1], shader[layout][8]))
 
         fh.write(textwrap.indent(
-            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + elm[0] + ', VRam, Storage> p' + elm[1][0].upper() + elm[1][1:]) for elm in exts) + '){'
-            '\n'
+            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + elm[0] + ', VRam, Storage> p' + elm[1][0].upper() + elm[1][1:]) for elm in exts) + '){' +
+            ''.join(('\n\t' + elm[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + elm[1][0].upper() + elm[1][1:] + ';') for elm in exts) +
             '\n}'
         , '\t\t'))
 
@@ -200,7 +201,6 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         print('No layout found. A shader must define at least one layout')
 
     fh.write('\n\t};\n}');                      #Write namespace closing bracket
-
-
+    fh.write('//TODO remove local data in external bindings') #TODO
 
 #TODO ADD STRUCTURE PARSING AND TRANSLATION
