@@ -13,7 +13,7 @@ namespace lux::obj{
 
 
 		core::c::shaders::newShader(
-			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK
+			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK //BUG >OVER >OVER >OVER >IN
 				pWindow.fOut_g,
 				pWindow.wSize_g,
 				pWindow.zBuff_g,

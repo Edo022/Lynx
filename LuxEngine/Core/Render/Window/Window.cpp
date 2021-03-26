@@ -75,7 +75,8 @@ namespace lux{
 			//FIXME ^ those allocations use the default maximum window size to prevent the buffer from getting resized too often
 			//FIXME detect size at runtime
 
-			wSize_g.realloc(4 * 2);						//Create cell for window size //TODO use dedicated storage and update every time
+			wSize_g.realloc(/*4 * 2*/16);						//Create cell for window size //TODO use dedicated storage and update every time
+			//FIXME rounded up to a multiple of 16, make it automatic
 			wSize_g.map();
 			wSize_g[0] = swp.createInfo.imageExtent.width;	//Set width
 			wSize_g[1] = swp.createInfo.imageExtent.height;	//Set height
@@ -188,7 +189,7 @@ namespace lux{
 
 
 	void Window::add(obj::RenderSpace2D* pRenderSpace) {
-		CRenderSpaces.add(pRenderSpace);
-		pRenderSpace->init(*this);
+		CRenderSpaces.add(pRenderSpace);	//BUG OVER
+		pRenderSpace->init(*this);			//BUG >IN
 	}
 }

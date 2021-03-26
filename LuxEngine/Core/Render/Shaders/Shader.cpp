@@ -404,9 +404,9 @@ namespace lux::core::c::shaders{
 		createDescriptorSets(&shader, pCells, vShaderLayout, pWindow);									//Descriptor pool, descriptor sets and descriptor buffers
 		createCommandBuffers(&shader, vShaderLayout, vGroupCountX, vGroupCountY, vGroupCountZ, pWindow);	//Create command buffers and command pool
 
-		pWindow.addShaderFence.lock();
-		LuxShader i = pWindow.swp.shaders.add(shader);
-		pWindow.addShaderFence.unlock();
+		// pWindow.addShaderFence.lock();
+		LuxShader i = pWindow.swp.shaders.add(shader);	//BUG >IN
+		// pWindow.addShaderFence.unlock();
 		return i;
 	}
 

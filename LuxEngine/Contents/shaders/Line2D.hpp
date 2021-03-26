@@ -19,8 +19,8 @@ namespace lux::shd{
 
 		struct windowSize__t : public ShaderElm_b<Storage> {
 			windowSize__t() {
-				ShaderElm_b::vdata.realloc(8);
-				ShaderElm_b::data.realloc(8);
+				ShaderElm_b::vdata.realloc(16);
+				ShaderElm_b::data.realloc(16);
 				ShaderElm_b::bind = 1;
 			}
 			alwaysInline u32& width() { return *(u32*)ShaderElm_b::data; }

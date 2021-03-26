@@ -172,8 +172,8 @@ namespace lux {
 		}
 		//Concatenates a single element and initializes it by calling its copy constructor
 		inline void cat1(const type& vElm) {
-			data.reallocArr(count() + 1);
-			new(&data[count() - 1]) type(vElm);
+			data.reallocArr(count() + 1);		//BUG this
+			new(&data[count() - 1]) type(vElm);	//BUG or this idk
 		}
 
 
