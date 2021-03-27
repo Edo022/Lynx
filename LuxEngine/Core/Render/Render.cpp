@@ -92,7 +92,7 @@ namespace lux{
 				for(uint32 i = 0; i < swp.shaders.count(); ++i) {
 					swp.shadersCBs[i] = swp.shaders[i].commandBuffers[0];
 				}
-			addShaderFence.unlock();
+			// addShaderFence.unlock();
 
 
 
@@ -114,7 +114,7 @@ namespace lux{
 					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_objects,
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
-					.pCommandBuffers      = &swp.shaders[0].commandBuffers[0],
+					.pCommandBuffers      = new VkCommandBuffer(swp.shaders[0].commandBuffers[0]),
 					.signalSemaphoreCount = 1,
 					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_clear
 				},
@@ -129,6 +129,7 @@ namespace lux{
 					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_copy
 				}
 			};
+			addShaderFence.unlock(); //FIXME
 			vkResetFences(core::dvc::graphics.LD, 1, &swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.lock();
 				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swp.frames[swp.curFrame].f_rendered), "Failed to submit graphics command buffer");

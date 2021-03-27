@@ -12,8 +12,8 @@ namespace lux::obj{
 		Obj2_b::init(pWindow); //Initialize all the children
 
 
-		core::c::shaders::newShader(
-			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK //BUG >OVER >OVER >OVER >IN
+		core::c::shaders::newShader( //BUG >OVER >OVER >OVER >IN
+			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK
 				pWindow.fOut_g,
 				pWindow.wSize_g,
 				pWindow.zBuff_g,
