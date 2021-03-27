@@ -2,7 +2,6 @@
 //This file was generated automatically. Changes could be overwritten without notice
 #pragma once
 #include <LuxEngine/Types/Vectors/Vectors.hpp>
-#include <LuxEngine/Types/Pointer.hpp>
 #include <LuxEngine/Types/VPointer.hpp>
 #include <LuxEngine/Types/Shader_t.hpp>
 
@@ -10,6 +9,8 @@
 
 namespace lux::shd{
 	struct Line2D : public Shader_b {
+
+
 		struct colorOutput__t : public ShaderElm_b<Storage> {
 			colorOutput__t() {
 				ShaderElm_b::bind = 0;
@@ -19,12 +20,8 @@ namespace lux::shd{
 
 		struct windowSize__t : public ShaderElm_b<Storage> {
 			windowSize__t() {
-				ShaderElm_b::vdata.realloc(16);
-				ShaderElm_b::data.realloc(16);
 				ShaderElm_b::bind = 1;
 			}
-			alwaysInline u32& width() { return *(u32*)ShaderElm_b::data; }
-			alwaysInline u32& height() { return *(u32*)(ShaderElm_b::data + 4); }
 		} windowSize_;
 
 
@@ -58,8 +55,9 @@ namespace lux::shd{
 		} lineData_;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pZBuffer){
+		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pWidth, vram::ptr<u32, VRam, Storage> pZBuffer){
 			colorOutput_.vdata = (vram::ptr<char, VRam, Storage>)pColorOutput;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWidth;
 			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
 		}
 	};
