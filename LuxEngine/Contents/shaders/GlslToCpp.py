@@ -254,6 +254,28 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t};'
                 ) for i, b in enumerate(elms)) +
                 '\n\tvkUpdateDescriptorSets(core::dvc::compute.LD, ' + str(uniformNum + storageNum) + ', writeSets, 0, nullptr);'
+            '\n}'
+            '\n\n\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
+                '\n\t''VkCommandBufferAllocateInfo allocateCbInfo = {'
+                '\n\t''    .sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,'
+                '\n\t''    .commandPool        = pWindow.commandPool,'
+                '\n\t''    .level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,'
+                '\n\t''    .commandBufferCount = 1'
+                '\n\t''};'
+                '\n\t''commandBuffers.resize(1);'
+                '\n\t''vkAllocateCommandBuffers(core::dvc::compute.LD, &allocateCbInfo, commandBuffers.begin());'
+                '\n'
+                '\n\t''VkCommandBufferBeginInfo beginInfo = {'
+                '\n\t''    .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,'
+                '\n\t''    .flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT'
+                '\n\t''};'
+                '\n\t''vkBeginCommandBuffer(commandBuffers[0], &beginInfo);'
+                '\n'
+                '\n\t''vkCmdBindPipeline      (commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipeline);'
+                '\n\t''vkCmdBindDescriptorSets(commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
+                '\n\t''vkCmdDispatch          (commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);'
+                '\n'
+                '\n\tvkEndCommandBuffer(commandBuffers[0]);'
             '\n}',
         '\t\t'))
 
