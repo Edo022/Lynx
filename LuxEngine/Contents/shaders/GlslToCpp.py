@@ -5,12 +5,12 @@ from math import ceil
 
 
 
-def roundUp(x, b):
+def roundUp(x : int, b : int) -> int :
     return b * ceil(x / b)
 
 
 
-def translateDataType(glslType : str):
+def translateDataType(glslType : str) -> str :
     return(
         re.sub( r'^vec([234])', r'f32v\g<1>',
         re.sub(r'^bvec([234])',   r'bv\g<1>',
@@ -28,7 +28,7 @@ def translateDataType(glslType : str):
 
 
 
-def getTypeSize(type_ : str):
+def getTypeSize(type_ : str) -> int :
     return(
         2 * 4 if re.search(r'^[biu]?vec2',           type_) != None else
         2 * 8 if re.search(r'^dvec2',                type_) != None else
@@ -46,15 +46,15 @@ def getTypeSize(type_ : str):
 
 
 
-def createFuncs(members:str, iext:bool):
-    m = members.expandtabs(4).strip()
+def createFuncs(members:str, iext:bool) :
+    m : str = members.expandtabs(4).strip()
     ret      : str             = ''
     ext      : tuple(str, str) = None
     iext_    : bool            = False
     maxAlign : int             = 0
 
 
-    offset = 0
+    offset : int = 0
     while len(m) > 0:
         r = re.search(r'^( |\n){1,}', m)                            #Ignore whitespace
         if r != None:                                                   #
@@ -123,7 +123,7 @@ def createFuncs(members:str, iext:bool):
 
 
 
-def translateStructDecl(name:str, iext:bool, type:str, binding:int, members:str, space:bool):
+def translateStructDecl(name:str, iext:bool, type:str, binding:int, members:str, space:bool) :
     t = createFuncs(members, iext)
     return dict({
         'decl' : (('\n\n' if space else '') +                                   #Fix spacing
