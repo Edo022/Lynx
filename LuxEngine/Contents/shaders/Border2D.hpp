@@ -52,5 +52,91 @@ namespace lux::shd{
 			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWindow;
 			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
 		}
+
+
+		void createDescriptorSets(const ShaderLayout vShaderLayout , Window& pWindow){ //FIXME REMOVE LAYOUT
+			VkDescriptorPoolSize sizes[2] = {
+				{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = 3 },
+				{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = 1 }
+			};
+			VkDescriptorPoolCreateInfo poolInfo = {
+				.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+				.flags         = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+				.maxSets       = 1,
+				.poolSizeCount = 2,
+				.pPoolSizes    = sizes
+			};
+			vkCreateDescriptorPool(core::dvc::compute.LD, &poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN
+
+
+
+			VkDescriptorSetAllocateInfo allocateSetInfo = {
+				.sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+				.descriptorPool     = descriptorPool,
+				.descriptorSetCount = 1,
+				.pSetLayouts        = &pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout
+			};
+			vkAllocateDescriptorSets(core::dvc::compute.LD, &allocateSetInfo, &descriptorSet);
+
+
+
+			VkWriteDescriptorSet writeSets[4];
+			VkDescriptorBufferInfo bufferInfo0 = {
+				.buffer = colorOutput_.vdata.cell->csc.buffer,
+				.offset = colorOutput_.vdata.cell->localOffset,
+				.range  = colorOutput_.vdata.cell->cellSize
+			};
+			writeSets[0] = VkWriteDescriptorSet{
+				.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.dstSet          = descriptorSet,
+				.dstBinding      = 0,
+				.descriptorCount = 1,
+				.descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+				.pBufferInfo     = &bufferInfo0
+			};
+
+			VkDescriptorBufferInfo bufferInfo1 = {
+				.buffer = windowSize_.vdata.cell->csc.buffer,
+				.offset = windowSize_.vdata.cell->localOffset,
+				.range  = windowSize_.vdata.cell->cellSize
+			};
+			writeSets[1] = VkWriteDescriptorSet{
+				.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.dstSet          = descriptorSet,
+				.dstBinding      = 1,
+				.descriptorCount = 1,
+				.descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+				.pBufferInfo     = &bufferInfo1
+			};
+
+			VkDescriptorBufferInfo bufferInfo2 = {
+				.buffer = zBuffer_.vdata.cell->csc.buffer,
+				.offset = zBuffer_.vdata.cell->localOffset,
+				.range  = zBuffer_.vdata.cell->cellSize
+			};
+			writeSets[2] = VkWriteDescriptorSet{
+				.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.dstSet          = descriptorSet,
+				.dstBinding      = 2,
+				.descriptorCount = 1,
+				.descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+				.pBufferInfo     = &bufferInfo2
+			};
+
+			VkDescriptorBufferInfo bufferInfo3 = {
+				.buffer = objData_.vdata.cell->csc.buffer,
+				.offset = objData_.vdata.cell->localOffset,
+				.range  = objData_.vdata.cell->cellSize
+			};
+			writeSets[3] = VkWriteDescriptorSet{
+				.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.dstSet          = descriptorSet,
+				.dstBinding      = 3,
+				.descriptorCount = 1,
+				.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+				.pBufferInfo     = &bufferInfo3
+			};
+			vkUpdateDescriptorSets(core::dvc::compute.LD, 4, writeSets, 0, nullptr);
+		}
 	};
 }//TODO remove local data in external bindings

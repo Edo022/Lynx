@@ -112,6 +112,7 @@ def createFuncs(members:str, iext:bool) :
         else:                                                       #Blindly copy anything else
             m = m[1:]                                                   #
 
+
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : offset + 64})
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16
     return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16
@@ -189,23 +190,68 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fr.read())                                          #
     if shader != None:                                  #If there is at leat one binding
         exts:list = []                                      #External bindings data
+        elms:list = []
+        storageNum = 0; uniformNum = 0
         for layout in shader:                               #For each layout
             _iext = layout[6] != None and len(layout[6]) > 0    #Check if it's external        #BUG CHECK LENGTH IN MEMBER PERSING TOO
-            decl = translateStructDecl(                         #Translate its members
-                name    = layout[16],                               #Layout name
-                iext    = _iext,                                    #True if the binding is external. used to improve parsing performance
-                type    = layout[15],                               #Uniform or Storage
-                binding = layout[14],                               #Binding index
+            _name : str = layout[16]; _type = layout[15]; _bind = layout[14]
+            decl = translateStructDecl(                         #Translate declaration
+                _name, _iext, _type, _bind,                         #
                 members = layout[17].strip(),                       #Raw members data
                 space   = layout != 0                               #Code spacing
             )                                                       #
             fh.write(indent(decl['decl'], '\t\t'))              #Write members to file
             if _iext:                                           #If it's external, save its data
-                exts.insert(len(exts), (decl['ext'][0], decl['ext'][1], layout[16]))
+                exts.insert(len(exts), (decl['ext'][0], decl['ext'][1], _name))
+            elms.insert(len(elms), { 'type' : _type, 'name' : _name, 'bind' : _bind})
 
-        fh.write(indent(                                    #Write shader's create function
-            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + elm[0] + ', VRam, Storage> p' + elm[1][0].upper() + elm[1][1:]) for elm in exts) + '){' +
-            ''.join(('\n\t' + elm[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + elm[1][0].upper() + elm[1][1:] + ';') for elm in exts) +
+            if _type == 'uniform': uniformNum += 1
+            else: storageNum += 1
+
+        fh.write(indent(                                    #Write shader's create functions
+            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
+            ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
+            '\n}'
+            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout , Window& pWindow){ //FIXME REMOVE LAYOUT'
+                '\n\t''VkDescriptorPoolSize sizes[2] = {'
+                    '\n\t\t{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = ' + str(storageNum) + ' },' + (
+                    '\n\t\t{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = ' + str(uniformNum) + ' }'
+                    if uniformNum > 0 else '\n\t\t{}') +
+                '\n\t};'
+                '\n\t''VkDescriptorPoolCreateInfo poolInfo = {'
+                    '\n\t\t''.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,'
+                    '\n\t\t''.flags         = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,'
+                    '\n\t\t''.maxSets       = 1,'
+                    '\n\t\t''.poolSizeCount = ' + str(2 if uniformNum > 0 else 1) + ','
+                    '\n\t\t''.pPoolSizes    = sizes'
+                '\n\t};'
+                '\n\t''vkCreateDescriptorPool(core::dvc::compute.LD, &poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN'
+                '\n\n\n'
+                '\n\t''VkDescriptorSetAllocateInfo allocateSetInfo = {'
+				    '\n\t\t''.sType              = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,'
+				    '\n\t\t''.descriptorPool     = descriptorPool,'
+				    '\n\t\t''.descriptorSetCount = 1,'
+				    '\n\t\t''.pSetLayouts        = &pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout'
+                '\n\t''};'
+                '\n\t''vkAllocateDescriptorSets(core::dvc::compute.LD, &allocateSetInfo, &descriptorSet);'
+                '\n\n\n' +
+                '\n\t''VkWriteDescriptorSet writeSets[' + str(uniformNum + storageNum) + '];' +
+                '\n'.join((
+                    '\n\t''VkDescriptorBufferInfo bufferInfo' + str(i) + ' = {'
+                        '\n\t\t''.buffer = ' + b['name'] + '.vdata.cell->csc.buffer,'
+                        '\n\t\t''.offset = ' + b['name'] + '.vdata.cell->localOffset,'
+                        '\n\t\t''.range  = ' + b['name'] + '.vdata.cell->cellSize'
+                    '\n\t};'
+                    '\n\t''writeSets[' + str(i) + '] = VkWriteDescriptorSet{'
+                        '\n\t\t''.sType           = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,'
+                        '\n\t\t''.dstSet          = descriptorSet,'
+                        '\n\t\t''.dstBinding      = '+ str(b['bind']) + ','
+                        '\n\t\t''.descriptorCount = 1,'
+                        '\n\t\t''.descriptorType  = ' + ('VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER' if b['type'] == 'uniform' else 'VK_DESCRIPTOR_TYPE_STORAGE_BUFFER') + ','
+                        '\n\t\t''.pBufferInfo     = &bufferInfo' + str(i) +
+                    '\n\t};'
+                ) for i, b in enumerate(elms)) +
+                '\n\tvkUpdateDescriptorSets(core::dvc::compute.LD, ' + str(uniformNum + storageNum) + ', writeSets, 0, nullptr);'
             '\n}',
         '\t\t'))
 
