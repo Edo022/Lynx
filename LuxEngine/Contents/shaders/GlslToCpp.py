@@ -170,7 +170,9 @@ else:
 
 with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh:
     fh.write(                                           #Write to file
-        '\n//This file was generated automatically. Changes could be overwritten without notice'
+        '\n//####################################################################################'
+        '\n// This file was generated automatically. Changes could be overwritten without notice'
+        '\n//####################################################################################\n'
         '\n#pragma once'                                    #Include guard
         '\n#include <LuxEngine/Types/Vectors/Vectors.hpp>'  #Base types
         '\n#include <LuxEngine/Types/VPointer.hpp>'         #GPU pointers

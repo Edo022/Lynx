@@ -1,5 +1,8 @@
 
-//This file was generated automatically. Changes could be overwritten without notice
+//####################################################################################
+// This file was generated automatically. Changes could be overwritten without notice
+//####################################################################################
+
 #pragma once
 #include <LuxEngine/Types/Vectors/Vectors.hpp>
 #include <LuxEngine/Types/VPointer.hpp>
