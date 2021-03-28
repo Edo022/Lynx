@@ -214,7 +214,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
             ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
             '\n}'
-            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout , Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT'
                 '\n\t''VkDescriptorPoolSize sizes[2] = {'
                     '\n\t\t{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = ' + str(storageNum) + ' },' + (
                     '\n\t\t{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = ' + str(uniformNum) + ' }'
@@ -257,17 +257,17 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n}'
             '\n\n\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
                 '\n\t''VkCommandBufferAllocateInfo allocateCbInfo = {'
-                '\n\t''    .sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,'
-                '\n\t''    .commandPool        = pWindow.commandPool,'
-                '\n\t''    .level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,'
-                '\n\t''    .commandBufferCount = 1'
+                    '\n\t''.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,'
+                    '\n\t''.commandPool        = pWindow.commandPool,'
+                    '\n\t''.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,'
+                    '\n\t''.commandBufferCount = 1'
                 '\n\t''};'
                 '\n\t''commandBuffers.resize(1);'
                 '\n\t''vkAllocateCommandBuffers(core::dvc::compute.LD, &allocateCbInfo, commandBuffers.begin());'
                 '\n'
                 '\n\t''VkCommandBufferBeginInfo beginInfo = {'
-                '\n\t''    .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,'
-                '\n\t''    .flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT'
+                    '\n\t''.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,'
+                    '\n\t''.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT'
                 '\n\t''};'
                 '\n\t''vkBeginCommandBuffer(commandBuffers[0], &beginInfo);'
                 '\n'
@@ -286,3 +286,4 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
     fh.write('//TODO remove local data in external bindings') #TODO
 
 #TODO ADD STRUCTURE PARSING AND TRANSLATION
+#TODO ADD #define PARSING

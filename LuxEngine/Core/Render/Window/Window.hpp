@@ -119,6 +119,10 @@ namespace lux{
 			t(*this, &Window::run);
 			while(!initialized){ thr::self::yield(); }
 		}
+		Window(const Window&) = delete;
+		Window(const Window&&) = delete;
+		void operator=(const Window&) = delete;
+		void operator=(const Window&&) = delete;
 
 		void init();
 		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;

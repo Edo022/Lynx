@@ -57,7 +57,7 @@ namespace lux::shd{
 		}
 
 
-		void createDescriptorSets(const ShaderLayout vShaderLayout , Window& pWindow){ //FIXME REMOVE LAYOUT
+		void createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT
 			VkDescriptorPoolSize sizes[2] = {
 				{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = 3 },
 				{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = 1 }
