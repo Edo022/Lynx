@@ -1,11 +1,15 @@
 #pragma once
 #define LUX_H_SHADER_T
 #include "LuxEngine/Types/VPointer.hpp"
-
+#include "LuxEngine/Types/Vectors/Vectors.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 
 
 
 namespace lux{
+	class Window;
+
+
 	template<bufferType buft> struct ShaderElm_b {
 		vram::ptr<char, VRam, buft> vdata;	//Gpu data
 		ram::ptr<char>              data;	//Local data copy

@@ -4,9 +4,7 @@
 //####################################################################################
 
 #pragma once
-#include <LuxEngine/Types/Vectors/Vectors.hpp>
-#include <LuxEngine/Types/VPointer.hpp>
-#include <LuxEngine/Types/Shader_t.hpp>
+#include "LuxEngine/Types/Shader_t.hpp"
 
 
 
@@ -60,13 +58,13 @@ namespace lux::shd{
 		void createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT
 			VkDescriptorPoolSize sizes[2] = {
 				{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = 3 },
-				{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = 1 }
+				{}
 			};
 			VkDescriptorPoolCreateInfo poolInfo = {
 				.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 				.flags         = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
 				.maxSets       = 1,
-				.poolSizeCount = 2,
+				.poolSizeCount = 1,
 				.pPoolSizes    = sizes
 			};
 			vkCreateDescriptorPool(core::dvc::compute.LD, &poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN
@@ -83,7 +81,7 @@ namespace lux::shd{
 
 
 
-			VkWriteDescriptorSet writeSets[4];
+			VkWriteDescriptorSet writeSets[3];
 			VkDescriptorBufferInfo bufferInfo0 = {
 				.buffer = colorOutput_.vdata.cell->csc.buffer,
 				.offset = colorOutput_.vdata.cell->localOffset,
@@ -139,31 +137,10 @@ namespace lux::shd{
 				.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 				.pBufferInfo     = &bufferInfo3
 			};
-			vkUpdateDescriptorSets(core::dvc::compute.LD, 4, writeSets, 0, nullptr);
+			vkUpdateDescriptorSets(core::dvc::compute.LD, 3, writeSets, 0, nullptr);
 		}
 
 
-		void createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
-			VkCommandBufferAllocateInfo allocateCbInfo = {
-			    .sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-			    .commandPool        = pWindow.commandPool,
-			    .level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-			    .commandBufferCount = 1
-			};
-			commandBuffers.resize(1);
-			vkAllocateCommandBuffers(core::dvc::compute.LD, &allocateCbInfo, commandBuffers.begin());
-
-			VkCommandBufferBeginInfo beginInfo = {
-			    .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			    .flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
-			};
-			vkBeginCommandBuffer(commandBuffers[0], &beginInfo);
-
-			vkCmdBindPipeline      (commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipeline);
-			vkCmdBindDescriptorSets(commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-			vkCmdDispatch          (commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);
-
-			vkEndCommandBuffer(commandBuffers[0]);
-		}
+		void createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
 	};
 }//TODO remove local data in external bindings

@@ -168,17 +168,24 @@ else:
 
 
 
-with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh:
+with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh, open(spath + shname + '.cpp', 'w') as fc:
+    fname = re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname))
     fh.write(                                           #Write to file
         '\n//####################################################################################'
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
         '\n#pragma once'                                    #Include guard
-        '\n#include <LuxEngine/Types/Vectors/Vectors.hpp>'  #Base types
-        '\n#include <LuxEngine/Types/VPointer.hpp>'         #GPU pointers
-        '\n#include <LuxEngine/Types/Shader_t.hpp>\n\n\n'   #Base Shader struct
+        '\n#include "LuxEngine/Types/Shader_t.hpp"\n\n\n'   #Base Shader struct
         '\nnamespace lux::shd{'                             #Write namespace and struct declaration
-        '\n\tstruct ' + re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname)) + ' : public Shader_b {'
+        '\n\tstruct ' + fname + ' : public Shader_b {'
+    )
+    fc.write(                                           #Write to file
+        '\n//####################################################################################'
+        '\n// This file was generated automatically. Changes could be overwritten without notice'
+        '\n//####################################################################################\n'
+        '\n#include "' + spath + shname + '.hpp"'
+        '\n#include "LuxEngine/Core/Render/Window/Window.hpp"\n\n\n'
+        '\nnamespace lux::shd{'                             #Write namespace declaration
     )
 
     shader = re.findall(                                #Search for binding declarations
@@ -194,7 +201,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         exts:list = []                                      #External bindings data
         elms:list = []
         storageNum = 0; uniformNum = 0
-        for layout in shader:                               #For each layout
+        for i, layout in enumerate(shader):                      #For each layout
             _iext = layout[6] != None and len(layout[6]) > 0    #Check if it's external        #BUG CHECK LENGTH IN MEMBER PERSING TOO
             _name : str = layout[16]; _type = layout[15]; _bind = layout[14]
             decl = translateStructDecl(                         #Translate declaration
@@ -207,7 +214,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 exts.insert(len(exts), (decl['ext'][0], decl['ext'][1], _name))
             elms.insert(len(elms), { 'type' : _type, 'name' : _name, 'bind' : _bind})
 
-            if _type == 'uniform': uniformNum += 1
+            if _type == 'uniform': i += 1
             else: storageNum += 1
 
         fh.write(indent(                                    #Write shader's create functions
@@ -255,19 +262,24 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 ) for i, b in enumerate(elms)) +
                 '\n\tvkUpdateDescriptorSets(core::dvc::compute.LD, ' + str(uniformNum + storageNum) + ', writeSets, 0, nullptr);'
             '\n}'
-            '\n\n\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
+        '\t\t'))
+#FIXME AUTOMATIZE CPP INCLUDES
+
+        fc.write(indent(
+            '\nvoid ' + fname + '::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
                 '\n\t''VkCommandBufferAllocateInfo allocateCbInfo = {'
-                    '\n\t''.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,'
-                    '\n\t''.commandPool        = pWindow.commandPool,'
-                    '\n\t''.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,'
-                    '\n\t''.commandBufferCount = 1'
+                    '\n\t\t''.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,'
+                    '\n\t\t''.commandPool        = pWindow.commandPool,'
+                    '\n\t\t''.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,'
+                    '\n\t\t''.commandBufferCount = 1'
                 '\n\t''};'
                 '\n\t''commandBuffers.resize(1);'
                 '\n\t''vkAllocateCommandBuffers(core::dvc::compute.LD, &allocateCbInfo, commandBuffers.begin());'
                 '\n'
                 '\n\t''VkCommandBufferBeginInfo beginInfo = {'
-                    '\n\t''.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,'
-                    '\n\t''.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT'
+                    '\n\t\t''.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,'
+                    '\n\t\t''.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT'
                 '\n\t''};'
                 '\n\t''vkBeginCommandBuffer(commandBuffers[0], &beginInfo);'
                 '\n'
@@ -277,13 +289,15 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\tvkEndCommandBuffer(commandBuffers[0]);'
             '\n}',
-        '\t\t'))
+
+        '\t'))
 
     else:
         print('No layout found. A shader must define at least one layout')
 
     fh.write('\n\t};\n}');                              # } //Namespace
     fh.write('//TODO remove local data in external bindings') #TODO
+    fc.write('\n}');                              # } //Namespace
 
 #TODO ADD STRUCTURE PARSING AND TRANSLATION
 #TODO ADD #define PARSING
