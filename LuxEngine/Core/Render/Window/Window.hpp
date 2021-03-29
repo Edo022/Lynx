@@ -5,7 +5,7 @@
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-
+#include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
 
 
 
@@ -35,8 +35,16 @@ namespace lux{
 		VkCommandPool commandPool;
 		VkCommandPool copyCommandPool;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
-		LuxShader clearShader;
+		LuxShader clearShader; //FIXME REMOVE. probably unused
+		shd::FloatToIntBuffer sh_clear;
 		std::mutex addShaderFence;
+
+		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
+		void add(obj::RenderSpace2D* pRenderSpace);
+		RtArray<obj::Base*>	objUpdates2D;
+		std::mutex          objUpdates2D_f;
+
+
 
 
 
@@ -125,10 +133,6 @@ namespace lux{
 		void operator=(const Window&&) = delete;
 
 		void init();
-		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
-		void add(obj::RenderSpace2D* pRenderSpace);
-		RtArray<obj::Base*>	objUpdates2D;
-		std::mutex          objUpdates2D_f;
 
 		void close();
 		~Window(){ close(); }

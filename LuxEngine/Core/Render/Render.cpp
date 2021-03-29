@@ -88,7 +88,7 @@ namespace lux{
 			//Update render result submitting the command buffers to the compute queues
 			const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 			addShaderFence.lock();
-				swp.shadersCBs.resize(swp.shaders.count()); //BU G HERE. ON MUTEX UNLOCK FROM APPLICATION THREAD, THIS EXECUTES SHIT AND DIES
+				swp.shadersCBs.resize(swp.shaders.count()); //BUG HERE. ON MUTEX UNLOCK FROM APPLICATION THREAD, THIS EXECUTES SHIT AND DIES
 				for(uint32 i = 0; i < swp.shaders.count(); ++i) {
 					swp.shadersCBs[i] = swp.shaders[i].commandBuffers[0];
 				}
