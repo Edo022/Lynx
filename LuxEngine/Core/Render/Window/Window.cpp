@@ -2,6 +2,7 @@
 #include <climits>
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
+#include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
@@ -77,23 +78,34 @@ namespace lux{
 
 			wSize_g.realloc(/*4 * 2*/16);						//Create cell for window size //TODO use dedicated storage and update every time
 			//FIXME rounded up to a multiple of 16, make it automatic
-			wSize_g.map();
-			wSize_g[0] = swp.createInfo.imageExtent.width;	//Set width
-			wSize_g[1] = swp.createInfo.imageExtent.height;	//Set height
-			wSize_g.unmap();
+			// wSize_g.map();
+			// wSize_g[0] = swp.createInfo.imageExtent.width;	//Set width
+			// wSize_g[1] = swp.createInfo.imageExtent.height;	//Set height
+			// wSize_g.unmap();
+
+			u32 wSize[2] = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
+			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			vkCmdUpdateBuffer(cb, wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, wSize);
+			core::render::cmd::endSingleTimeCommands(cb);
+
 		}
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
 			createDefaultCommandBuffers__();
 		}
 
-		clearShader = core::c::shaders::newShader(
-			RtArray<vram::Alloc_b<int32>>{ fOut_g, iOut_g, zBuff_g, wSize_g },
-			LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1,
-			*this
-		);
+		// clearShader = core::c::shaders::newShader(
+		// 	RtArray<vram::Alloc_b<int32>>{ fOut_g, iOut_g, zBuff_g, wSize_g },
+		// 	LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1,
+		// 	*this
+		// );
+		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
+		sh_clear.createDescriptorSets(LUX_DEF_SHADER_CLEAR, *this);
+		sh_clear.createCommandBuffers(LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
 
+//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 
+//FIXME COMPLETE SHADER REPLACEMENT
 		initialized = true;
 	}
 

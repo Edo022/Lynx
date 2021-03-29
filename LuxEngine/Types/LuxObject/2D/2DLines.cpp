@@ -14,9 +14,9 @@ namespace lux::obj{
 
 		core::c::shaders::newShader( //BUG >OVER >OVER >OVER >IN
 			RtArray<vram::Alloc_b<int32>>{ //FIXME REMOVE TYPE INFORMATION FROM BASE IF POSSIBLE IDK
-				pWindow.fOut_g,
-				pWindow.wSize_g,
-				pWindow.zBuff_g,
+				(vram::Alloc_b<int32>)pWindow.fOut_g,
+				(vram::Alloc_b<int32>)pWindow.wSize_g,
+				(vram::Alloc_b<int32>)pWindow.zBuff_g,
 				(vram::Alloc_b<int32>)(data.lineData_.vdata)
 			},
 			render.shaderLayout, 4, 1, 1,

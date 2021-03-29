@@ -222,7 +222,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
             '\n}'
             '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow);'
-            '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
+            '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
         '\t\t'))
 
 
@@ -292,9 +293,27 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''vkCmdBindDescriptorSets(commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''vkCmdDispatch          (commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);'
                 '\n'
-                '\n\tvkEndCommandBuffer(commandBuffers[0]);'
+                '\n\t''vkEndCommandBuffer(commandBuffers[0]);'
             '\n}',
         '\t'))
+
+
+        fc.write(indent('\n\n\n\n\n\n\n\n'
+            '\nvoid ' + fname + '::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){'
+                '\n\t''VkCommandBufferBeginInfo beginInfo = {'
+                    '\n\t\t''.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,'
+                    '\n\t\t''.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT'
+                '\n\t''};'
+                '\n\t''vkBeginCommandBuffer(commandBuffers[0], &beginInfo);'
+                '\n'
+                '\n\t''vkCmdBindPipeline      (commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipeline);'
+                '\n\t''vkCmdBindDescriptorSets(commandBuffers[0], VK_PIPELINE_BIND_POINT_COMPUTE, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
+                '\n\t''vkCmdDispatch          (commandBuffers[0], vGroupCountX, vGroupCountY, vGroupCountZ);'
+                '\n'
+                '\n\t''vkEndCommandBuffer(commandBuffers[0]);'
+            '\n}',
+        '\t'))
+
 
         #FIXME AUTOMATIZE CPP INCLUDES
 
