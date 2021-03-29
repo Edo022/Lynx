@@ -183,7 +183,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n//####################################################################################'
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
-        '\n#include "' + spath + shname + '.hpp"'
+        '\n#include "' + re.sub(r'^.*?\/?LuxEngine\/(LuxEngine\/.*$)', r'\g<1>', spath + shname) + '.hpp"'
         '\n#include "LuxEngine/Core/Render/Window/Window.hpp"\n\n\n'
         '\nnamespace lux::shd{'                             #Write namespace declaration
     )
@@ -221,7 +221,13 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
             ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
             '\n}'
-            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow);'
+            '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
+        '\t\t'))
+
+
+        fc.write(indent(
+            '\n\n\nvoid ' + fname + '::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT'
                 '\n\t''VkDescriptorPoolSize sizes[2] = {'
                     '\n\t\t{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = ' + str(storageNum) + ' },' + (
                     '\n\t\t{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = ' + str(uniformNum) + ' }'
@@ -261,12 +267,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t};'
                 ) for i, b in enumerate(elms)) +
                 '\n\tvkUpdateDescriptorSets(core::dvc::compute.LD, ' + str(uniformNum + storageNum) + ', writeSets, 0, nullptr);'
-            '\n}'
-            '\n\n\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
-        '\t\t'))
-#FIXME AUTOMATIZE CPP INCLUDES
+            '\n}',
+        '\t'))
 
-        fc.write(indent(
+
+        fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nvoid ' + fname + '::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
                 '\n\t''VkCommandBufferAllocateInfo allocateCbInfo = {'
                     '\n\t\t''.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,'
@@ -289,8 +294,9 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\tvkEndCommandBuffer(commandBuffers[0]);'
             '\n}',
-
         '\t'))
+
+        #FIXME AUTOMATIZE CPP INCLUDES
 
     else:
         print('No layout found. A shader must define at least one layout')

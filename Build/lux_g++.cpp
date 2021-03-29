@@ -6,7 +6,7 @@
 #include <cerrno>
 
 
-
+//TODO USE lux_g++ IN ENGINE BUILD
 
 char pf, tp;
 char* enginePath;
