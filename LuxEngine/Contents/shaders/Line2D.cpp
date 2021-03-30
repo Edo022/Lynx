@@ -14,13 +14,13 @@ namespace lux::shd{
 	void Line2D::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT
 		VkDescriptorPoolSize sizes[2] = {
 			{ .type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, .descriptorCount = 3 },
-			{}
+			{ .type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, .descriptorCount = 1 }
 		};
 		VkDescriptorPoolCreateInfo poolInfo = {
 			.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 			.flags         = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
 			.maxSets       = 1,
-			.poolSizeCount = 1,
+			.poolSizeCount = 2,
 			.pPoolSizes    = sizes
 		};
 		vkCreateDescriptorPool(core::dvc::compute.LD, &poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN
@@ -37,7 +37,7 @@ namespace lux::shd{
 
 
 
-		VkWriteDescriptorSet writeSets[3];
+		VkWriteDescriptorSet writeSets[4];
 		VkDescriptorBufferInfo bufferInfo0 = {
 			.buffer = colorOutput_.vdata.cell->csc.buffer,
 			.offset = colorOutput_.vdata.cell->localOffset,
@@ -93,7 +93,7 @@ namespace lux::shd{
 			.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
 			.pBufferInfo     = &bufferInfo3
 		};
-		vkUpdateDescriptorSets(core::dvc::compute.LD, 3, writeSets, 0, nullptr);
+		vkUpdateDescriptorSets(core::dvc::compute.LD, 4, writeSets, 0, nullptr);
 	}
 
 

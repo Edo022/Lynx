@@ -35,8 +35,8 @@ namespace lux::shd{
 
 		struct objData__t : public ShaderElm_b<Uniform> {
 			objData__t() {
-				ShaderElm_b::vdata.realloc(32);
-				ShaderElm_b::data.realloc(32);
+				ShaderElm_b::vdata.realloc(96);
+				ShaderElm_b::data.realloc(96);
 				ShaderElm_b::bind = 3;
 			}
 			//Position of the top-left corner

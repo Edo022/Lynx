@@ -114,8 +114,8 @@ def createFuncs(members:str, iext:bool) :
 
 
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : offset + 64})
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16
 
 
 
@@ -201,7 +201,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         exts:list = []                                      #External bindings data
         elms:list = []
         storageNum = 0; uniformNum = 0
-        for i, layout in enumerate(shader):                      #For each layout
+        for layout in shader:                               #For each layout
             _iext = layout[6] != None and len(layout[6]) > 0    #Check if it's external        #BUG CHECK LENGTH IN MEMBER PERSING TOO
             _name : str = layout[16]; _type = layout[15]; _bind = layout[14]
             decl = translateStructDecl(                         #Translate declaration
@@ -214,7 +214,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 exts.insert(len(exts), (decl['ext'][0], decl['ext'][1], _name))
             elms.insert(len(elms), { 'type' : _type, 'name' : _name, 'bind' : _bind})
 
-            if _type == 'uniform': i += 1
+            if _type == 'uniform': uniformNum += 1
             else: storageNum += 1
 
         fh.write(indent(                                    #Write shader's create functions
@@ -314,7 +314,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n}',
         '\t'))
 
-
+        #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
         #FIXME AUTOMATIZE CPP INCLUDES
 
     else:

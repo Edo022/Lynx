@@ -35,8 +35,8 @@ namespace lux::shd{
 
 		struct lineData__t : public ShaderElm_b<Uniform> {
 			lineData__t() {
-				ShaderElm_b::vdata.realloc(64);
-				ShaderElm_b::data.realloc(64);
+				ShaderElm_b::vdata.realloc(128);
+				ShaderElm_b::data.realloc(128);
 				ShaderElm_b::bind = 3;
 			}
 			//Position of the first point

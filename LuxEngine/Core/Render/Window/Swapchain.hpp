@@ -65,7 +65,7 @@ namespace lux::core::wnd{
 		Window* bindedWindow;				//Window owning the swapchain
 		std::atomic<bool> resized = false;	//Synchronization variable. Set to true by the main engine thread when the window needs to be resized
 
-		RtArray<LuxShader_t, uint32> shaders;
+		// RtArray<LuxShader_t, uint32> shaders;
 		RtArray<VkCommandBuffer>     shadersCBs;
 
 
