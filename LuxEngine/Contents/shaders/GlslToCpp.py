@@ -174,9 +174,9 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n//####################################################################################'
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
-        '\n#pragma once'                                    #Include guard
-        '\n#include "LuxEngine/Types/Shader_t.hpp"\n\n\n'   #Base Shader struct
-        '\nnamespace lux::shd{'                             #Write namespace and struct declaration
+        '\n#pragma once'                                                    #Include guard
+        '\n#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"\n\n\n'     #Base Shader struct
+        '\nnamespace lux::shd{'                                             #Write namespace and struct declaration
         '\n\tstruct ' + fname + ' : public Shader_b {'
     )
     fc.write(                                           #Write to file

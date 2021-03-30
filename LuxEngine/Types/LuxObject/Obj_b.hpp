@@ -5,7 +5,6 @@
 #include "LuxEngine/Types/Containers/LuxString.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
-#include "LuxEngine/Types/Shader_t.hpp"
 
 
 

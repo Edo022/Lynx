@@ -4,7 +4,7 @@
 //####################################################################################
 
 #pragma once
-#include "LuxEngine/Types/Shader_t.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 
 
 
