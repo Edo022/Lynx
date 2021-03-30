@@ -114,7 +114,8 @@ namespace lux{
 					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_objects,
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
-					.pCommandBuffers      = new VkCommandBuffer(swp.shaders[0].commandBuffers[0]),
+					// .pCommandBuffers      = new VkCommandBuffer(swp.shaders[0].commandBuffers[0]),
+					.pCommandBuffers      = &sh_clear.commandBuffers[0],
 					.signalSemaphoreCount = 1,
 					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_clear
 				},
