@@ -147,11 +147,6 @@ namespace lux::core::wnd{
 
 
 			//Update the window size buffer
-			// bindedWindow->wSize_g.map();
-			// bindedWindow->wSize_g[0] = createInfo.imageExtent.width;
-			// bindedWindow->wSize_g[1] = createInfo.imageExtent.height;
-			// bindedWindow->wSize_g.unmap();
-
 			u32 wSize[2] = { createInfo.imageExtent.width, createInfo.imageExtent.height };
 			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			vkCmdUpdateBuffer(cb, bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
@@ -169,7 +164,6 @@ namespace lux::core::wnd{
 			}
 
 			//Recreate clear shader
-			// c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 			bindedWindow->sh_clear.updateCommandBuffers(LUX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
 	}

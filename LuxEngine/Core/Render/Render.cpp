@@ -4,6 +4,7 @@
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 #include <climits>
+#include <chrono>
 
 
 
@@ -54,8 +55,11 @@ namespace lux::core::render{
 
 namespace lux{
 	void Window::draw() {
+		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
 		while(running) {
+			auto start = std::chrono::high_resolution_clock::now();
+
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			// if(swp.shaders.count() <= 1) continue;
 			if(swp.shadersCBs.count() <= 1) continue;
@@ -89,11 +93,6 @@ namespace lux{
 			//Update render result submitting the command buffers to the compute queues
 			const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 			addShaderFence.lock();
-				// swp.shadersCBs.resize(swp.shaders.count()); //BUG HERE. ON MUTEX UNLOCK FROM APPLICATION THREAD, THIS EXECUTES SHIT AND DIES
-				// for(uint32 i = 0; i < swp.shaders.count(); ++i) {
-				// 	swp.shadersCBs[i] = swp.shaders[i].commandBuffers[0];
-				// }
-			// addShaderFence.unlock();
 
 
 
@@ -195,6 +194,14 @@ namespace lux{
 			}
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 			if(glfwWindowShouldClose(window)) return;
+
+
+			auto end = std::chrono::high_resolution_clock::now();
+			auto duration = duration_cast<std::chrono::milliseconds>(end - start);
+			if(duration_cast<std::chrono::seconds>(end - last).count() >= 1){
+				std::cout << "\nFPS: " << 1/(((float)duration.count())/1000);
+				last = end;
+			}
 		}
 	}
 }
