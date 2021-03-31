@@ -53,6 +53,7 @@ namespace lux::thr {
 			}
 			else queue_m.unlock();	//Unlock to allow other threads to execute the remaining functions
 			usleep(0);				//Sleep in order to not consume too much CPU while waiting for other functions
+			// usleep(10001);				//Sleep in order to not consume too much CPU while waiting for other functions
 			// thr::self::yield();
 		}
 	}
