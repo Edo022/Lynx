@@ -58,7 +58,7 @@ namespace lux{
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
 		while(running) {
-		continue; //BUG REMOVE
+		// continue; //BUG REMOVE
 			auto start = std::chrono::high_resolution_clock::now();
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
