@@ -65,13 +65,13 @@ namespace lux::core::dvc{
 
 		//Create instance
 		VkInstanceCreateInfo createInfo{
-			.sType                    = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-			.pNext                    = _dbg((VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo)_rls(nullptr),
-			.pApplicationInfo         = &appInfo,
-			.enabledLayerCount        = _dbg(validationLayersNum) _rls(0),
-			_dbg(.ppEnabledLayerNames = validationLayers,)
-			.enabledExtensionCount    = glfwExtensionCount _dbg(+ 1),
-			.ppEnabledExtensionNames  = extensions
+			.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+			.pNext                   = _dbg(&debugCreateInfo)_rls(nullptr),
+			.pApplicationInfo        = &appInfo,
+			.enabledLayerCount       = _dbg(validationLayersNum) _rls(0),
+			.ppEnabledLayerNames     = _dbg(validationLayers)    _rls(nullptr),
+			.enabledExtensionCount   = glfwExtensionCount _dbg(+ 1),
+			.ppEnabledExtensionNames = extensions
 		};
 		//Add validation layers if in debug mode
 		#ifdef LUX_DEBUG																	//Search for validation layers

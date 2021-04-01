@@ -1,49 +1,55 @@
 
-//This file was generated automatically. Changes could be overwritten without notice
+//####################################################################################
+// This file was generated automatically. Changes could be overwritten without notice
+//####################################################################################
+
 #pragma once
-#include <LuxEngine/Types/Vectors/Vectors.hpp>
-#include <LuxEngine/Types/Pointer.hpp>
-#include <LuxEngine/Types/VPointer.hpp>
-#include <LuxEngine/Types/Shader_t.hpp>
+#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"
 
 
 
 namespace lux::shd{
-	struct FloatToIntBuffer{
-		struct src_ : public Shader_b {
-			src_() {
-				Shader_b::data.realloc(16);
-				Shader_b::bind = 0;
+	struct FloatToIntBuffer : public Shader_b {
+
+
+		struct src__t : public ShaderElm_b<Storage> {
+			src__t() {
+				ShaderElm_b::bind = 0;
 			}
-			alwaysInline f32v4& []src() { return *(f32v4*)Shader_b::data; }
-		};
+		} src_;
 
 
-		struct dst_ : public Shader_b {
-			dst_() {
-				Shader_b::data.realloc(4);
-				Shader_b::bind = 1;
+		struct dst__t : public ShaderElm_b<Storage> {
+			dst__t() {
+				ShaderElm_b::bind = 1;
 			}
-			alwaysInline u32& []dst() { return *(u32*)Shader_b::data; }
-		};
+		} dst_;
 
 
-		struct zBuffer_ : public Shader_b {
-			zBuffer_() {
-				Shader_b::data.realloc(4);
-				Shader_b::bind = 2;
+		struct zBuffer__t : public ShaderElm_b<Storage> {
+			zBuffer__t() {
+				ShaderElm_b::bind = 2;
 			}
-			alwaysInline u32& []zBuffer() { return *(u32*)Shader_b::data; }
-		};
+		} zBuffer_;
 
 
-		struct windowSize_ : public Shader_b {
-			windowSize_() {
-				Shader_b::data.realloc(8);
-				Shader_b::bind = 3;
+		struct windowSize__t : public ShaderElm_b<Storage> {
+			windowSize__t() {
+				ShaderElm_b::bind = 3;
 			}
-			alwaysInline u32& width() { return *(u32*)Shader_b::data; }
-			alwaysInline u32& height() { return *(u32*)(Shader_b::data + 4); }
-		};
+		} windowSize_;
+
+
+		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer, vram::ptr<u32, VRam, Storage> pWidth){
+			src_.vdata = (vram::ptr<char, VRam, Storage>)pSrc;
+			dst_.vdata = (vram::ptr<char, VRam, Storage>)pDst;
+			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWidth;
+		}
+
+
+		void createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow);
+		void createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
+		void updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
 	};
-}
+}//TODO remove local data in external bindings

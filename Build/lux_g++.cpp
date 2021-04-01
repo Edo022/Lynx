@@ -6,7 +6,7 @@
 #include <cerrno>
 
 
-
+//TODO USE lux_g++ IN ENGINE BUILD
 
 char pf, tp;
 char* enginePath;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 
     //Create g++ command and parse user arguments
     auto s = string("g++")                                  +
-        " -pthread" + (tp == 'd' ? " -DLUX_DEBUG -rdynamic" : "")     +
+        " -p -pthread" + (tp == 'd' ? " -DLUX_DEBUG -rdynamic" : "")     + //FIXME DONT USE -P IN RELEASE
         " -DenginePath=\"\\\"" + enginePath + "\\\"\""
         " " + enginePath + "/LuxEngine/getEnginePath.cpp"
         " " + enginePath + "/LuxEngine/Core/Env.cpp"
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
         " -L" + vkdep + "lib"
         // " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src"
         " -L" + glfwdep + "build/src" //FIXME
-        " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
+        " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -Bstatic -lglfw3"
     ;
 
 

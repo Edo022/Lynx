@@ -129,7 +129,7 @@ namespace lux {
 		 */
 		alwaysInline iter add(const type& vElm) {
 			checkInit();
-			Super::cat1(vElm);
+			Super::cat1(vElm);		//BUG >IN
 			return Super::count() - 1;
 		}
 

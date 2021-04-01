@@ -2,8 +2,9 @@
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Devices.hpp"
-#include "LuxEngine/Types/LuxObject/LuxObject.hpp"
+#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
 #include <climits>
+#include <chrono>
 
 
 
@@ -54,10 +55,20 @@ namespace lux::core::render{
 
 namespace lux{
 	void Window::draw() {
+		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
 		while(running) {
+		continue; //BUG REMOVE
+			auto start = std::chrono::high_resolution_clock::now();
+
 			sleep(0); //Prevent extra overhead when no object has to be rendered
-			if(swp.shaders.count() <= 1) continue;
+			// if(swp.shaders.count() <= 1) continue;
+			addShaderFence.lock();
+			if(swp.shadersCBs.count() <= 1) {
+				addShaderFence.unlock();
+				continue;
+			}
+			addShaderFence.unlock();
 			vkWaitForFences(core::dvc::graphics.LD, 1, &swp.frames[swp.curFrame].f_rendered, false, INT_MAX);
 
 
@@ -88,11 +99,6 @@ namespace lux{
 			//Update render result submitting the command buffers to the compute queues
 			const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 			addShaderFence.lock();
-				swp.shadersCBs.resize(swp.shaders.count());
-				for(uint32 i = 0; i < swp.shaders.count(); ++i) {
-					swp.shadersCBs[i] = swp.shaders[i].commandBuffers[0];
-				}
-			addShaderFence.unlock();
 
 
 
@@ -114,7 +120,8 @@ namespace lux{
 					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_objects,
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
-					.pCommandBuffers      = &swp.shaders[0].commandBuffers[0],
+					// .pCommandBuffers      = new VkCommandBuffer(swp.shaders[0].commandBuffers[0]),
+					.pCommandBuffers      = &sh_clear.commandBuffers[0],
 					.signalSemaphoreCount = 1,
 					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_clear
 				},
@@ -129,6 +136,7 @@ namespace lux{
 					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_copy
 				}
 			};
+			addShaderFence.unlock(); //FIXME
 			vkResetFences(core::dvc::graphics.LD, 1, &swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.lock();
 				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swp.frames[swp.curFrame].f_rendered), "Failed to submit graphics command buffer");
@@ -177,10 +185,13 @@ namespace lux{
 					objUpdates2D[i]->render.updated = true;
 					vkCmdUpdateBuffer(
 						cb,
-						objUpdates2D[i]->render.localData.cell->csc.buffer,
-						objUpdates2D[i]->render.localData.cell->localOffset,
-						objUpdates2D[i]->cellSize,
-						(void*)objUpdates2D[i]->render.data
+						// objUpdates2D[i]->render.localData.cell->csc.buffer,
+						// objUpdates2D[i]->render.localData.cell->localOffset,
+						objUpdates2D[i]->getShVData().cell->csc.buffer,
+						objUpdates2D[i]->getShVData().cell->localOffset,
+						objUpdates2D[i]->getShVData().cell->cellSize,
+						// (void*)objUpdates2D[i]->render.data
+						(void*)objUpdates2D[i]->getShData()
 					);
 				}
 				core::render::cmd::endSingleTimeCommands(cb);
@@ -189,6 +200,15 @@ namespace lux{
 			}
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 			if(glfwWindowShouldClose(window)) return;
+
+
+			auto end = std::chrono::high_resolution_clock::now();
+			auto duration = duration_cast<std::chrono::microseconds>(end - start);
+			if(duration_cast<std::chrono::seconds>(end - last).count() >= 1){
+				std::cout << "\nFPS: " << 1.0f/(((float)duration.count())/(1000*1000));
+				std::cout << "\n" << duration.count();
+				last = end;
+			}
 		}
 	}
 }

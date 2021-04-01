@@ -1,6 +1,7 @@
 ﻿#include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
+#include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Core.hpp"
 #define w (*(Window*)(((char*)this) - offsetof(lux::Window, lux::Window::swp))) //TODO
@@ -49,7 +50,8 @@ namespace lux::core::wnd{
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 		createInfo = {
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-			.surface          = w.surface,
+			// .surface          = w.surface, //TODO USE OFFSETOF
+			.surface          = bindedWindow->surface,
 			.minImageCount    = minImageCount,
 			.imageFormat      = surfaceFormat.format,
 			.imageColorSpace  = surfaceFormat.colorSpace,
@@ -145,10 +147,12 @@ namespace lux::core::wnd{
 
 
 			//Update the window size buffer
-			bindedWindow->wSize_g.map();
-			bindedWindow->wSize_g[0] = createInfo.imageExtent.width;
-			bindedWindow->wSize_g[1] = createInfo.imageExtent.height;
-			bindedWindow->wSize_g.unmap();
+			u32 wSize[2] = { createInfo.imageExtent.width, createInfo.imageExtent.height };
+			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			vkCmdUpdateBuffer(cb, bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
+			core::render::cmd::endSingleTimeCommands(cb);
+
+
 
 			{	//Destroy copy command buffers
 				vkFreeCommandBuffers(dvc::compute.LD, bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
@@ -160,7 +164,7 @@ namespace lux::core::wnd{
 			}
 
 			//Recreate clear shader
-			c::shaders::updateShaderCall(bindedWindow->clearShader, LUX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
+			bindedWindow->sh_clear.updateCommandBuffers(LUX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
 	}
 

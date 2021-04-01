@@ -5,7 +5,7 @@
 #include "LuxEngine/Core/Render/Window/Swapchain.hpp"
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/LuxFenceDE.hpp"
-
+#include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
 
 
 
@@ -24,10 +24,11 @@ namespace lux{
 		int32		width;		//Width of the window
 		int32 		height;		//Heght of the window
 
-		vram::ptr<int32, Ram,  Storage> wSize_g;	//Size of the widow
-		vram::ptr<int32, VRam, Storage> fOut_g ;	//Color output of the window
-		vram::ptr<int32, VRam, Storage> iOut_g ;	//Packed color output of the window
-		vram::ptr<int32, VRam, Storage> zBuff_g;	//TODO remove. use render space assembler
+		// vram::ptr<u32,   Ram,  Storage> wSize_g;	//Size of the widow
+		vram::ptr<u32,   VRam,  Storage> wSize_g;	//Size of the widow
+		vram::ptr<f32v4, VRam, Storage> fOut_g ;	//Color output of the window
+		vram::ptr<u32,   VRam, Storage> iOut_g ;	//Packed color output of the window
+		vram::ptr<u32,   VRam, Storage> zBuff_g;	//TODO remove. use render space assembler
 
 
 
@@ -35,8 +36,16 @@ namespace lux{
 		VkCommandPool commandPool;
 		VkCommandPool copyCommandPool;
 		RtArray<VkCommandBuffer> copyCommandBuffers;
-		LuxShader clearShader;
+		// LuxShader clearShader; //FIXME REMOVE. probably unused
+		shd::FloatToIntBuffer sh_clear;
 		std::mutex addShaderFence;
+
+		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
+		void add(obj::RenderSpace2D* pRenderSpace);
+		RtArray<obj::Base*>	objUpdates2D;
+		std::mutex          objUpdates2D_f;
+
+
 
 
 
@@ -119,12 +128,12 @@ namespace lux{
 			t(*this, &Window::run);
 			while(!initialized){ thr::self::yield(); }
 		}
+		Window(const Window&) = delete;
+		Window(const Window&&) = delete;
+		void operator=(const Window&) = delete;
+		void operator=(const Window&&) = delete;
 
 		void init();
-		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
-		void add(obj::RenderSpace2D* pRenderSpace);
-		RtArray<obj::Base*>	objUpdates2D;
-		std::mutex          objUpdates2D_f;
 
 		void close();
 		~Window(){ close(); }

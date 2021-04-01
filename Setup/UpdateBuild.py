@@ -64,7 +64,7 @@ def run(dir):
 		'        	"command": "/usr/bin/g++",'																	'\n'
 		'        	"args": ['																				 	'\n'
 		'            	//Source files' 																		'\n'
-		'		        	"-xc++", "' + opts.enginePath() + '/LuxEngine/LuxEngine_build.cpp",' 				'\n' +
+		'		        	"-p", "-xc++", "' + opts.enginePath() + '/LuxEngine/LuxEngine_build.cpp",' 			'\n' + #FIXME DONT USE -p IN RELEASE
 		                    (opts.getDebugOptions() if opts.tp() == "d" else opts.getReleaseOptions()) + ',' 	'\n'
 		'               //Engine' 																				'\n'
 		'                   "-std=c++2a", "-mavx", "-pipe", "-pthread",' 										'\n'

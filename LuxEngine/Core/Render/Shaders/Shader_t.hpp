@@ -1,7 +1,10 @@
 #pragma once
-#define LUX_H_CSHADER_T
+#define LUX_H_SHADER_T
 #include <vulkan/vulkan.h>
+#include "LuxEngine/Types/VPointer.hpp"
+#include "LuxEngine/Types/Vectors/Vectors.hpp"
 #include "LuxEngine/Types/Containers/RtArray.hpp"
+
 
 
 
@@ -20,23 +23,42 @@ enum ShaderLayout : uint32 {
 
 
 
-//This struct contains the elements of a shader layout
-struct LuxShaderLayout_t{
-	VkDescriptorSetLayout			descriptorSetLayout;	//Layout of the descriptor sets
-	VkShaderModule					shaderModule;			//Shader module created from the sahader compile file
-	VkPipelineShaderStageCreateInfo shaderStageCreateInfo;	//Shader stage
-
-	VkPipelineLayout				pipelineLayout;			//Layout of the pipeline
-	VkPipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
-};
+namespace lux{
+	class Window;
 
 
+	//This struct contains the elements of a shader layout
+	struct LuxShaderLayout_t{
+		VkDescriptorSetLayout			descriptorSetLayout;	//Layout of the descriptor sets
+		VkShaderModule					shaderModule;			//Shader module created from the sahader compile file
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;	//Shader stage
+
+		VkPipelineLayout				pipelineLayout;			//Layout of the pipeline
+		VkPipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
+	};
 
 
-//This struct contains the elements of a shader instance
-struct LuxShader_t {
-	VkDescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
-	VkDescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
-	lux::RtArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
-};
 
+
+	template<bufferType buft> struct ShaderElm_b {
+		vram::ptr<char, VRam, buft> vdata;	//Gpu data
+		ram::ptr<char>              data;	//Local data copy
+		uint32                      bind;	//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
+	};
+
+
+
+
+	struct Shader_b {
+		VkDescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
+		VkDescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
+		lux::RtArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
+
+
+		~Shader_b(){
+			//Clear descriptors sets, descriptor pool and descriptor layout
+			vkFreeDescriptorSets   (core::dvc::compute.LD, descriptorPool, 1, &descriptorSet);
+			vkDestroyDescriptorPool(core::dvc::compute.LD, descriptorPool, nullptr);
+		}
+	};
+}
