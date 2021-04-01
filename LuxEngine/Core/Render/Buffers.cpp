@@ -18,22 +18,20 @@ namespace lux::core::buffers{
 	 * @param vDevice The logical device where to allocate the buffer
 	 */
 	void createBuffer(vk::Buffer* pBuffer, const vk::BufferUsageFlags vUsage, const vk::DeviceSize vSize, vk::DeviceMemory* pMemory, const vk::MemoryPropertyFlags vProperties, const vk::Device vDevice) {
-		vk::BufferCreateInfo bufferInfo{
-			.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-			.size        = vSize,
-			.usage       = vUsage,
-			.sharingMode = VK_SHARING_MODE_EXCLUSIVE
-		};
-		dbg::checkVk(vkCreateBuffer(vDevice, &bufferInfo, nullptr, pBuffer), "Failed to create buffer");
+		auto bufferInfo = vk::BufferCreateInfo()
+			.setSize        (vSize)
+			.setUsage       (vUsage)
+			.setSharingMode (vk::SharingMode::eExclusive)
+		;
+		vDevice.createBuffer(&bufferInfo, nullptr, pBuffer);
 
 		vk::MemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(vDevice, *pBuffer, &memRequirements);
+		vDevice.getBufferMemoryRequirements(*pBuffer, &memRequirements);
 
-		vk::MemoryAllocateInfo allocInfo{
-			.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-			.allocationSize = memRequirements.size,
-			.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, vProperties)
-		};
+		auto allocInfo = vk::MemoryAllocateInfo()
+			.setAllocationSize  (memRequirements.size)
+			.setMemoryTypeIndex (render::findMemoryType(memRequirements.memoryTypeBits, vProperties))
+		;
 		//TODO USE CUSTOM ALLOCATOR
 		// const vk::AllocationCallbacks allocator{
 		// 	.pUserData = new ram::ptr<char>(),
@@ -43,33 +41,32 @@ namespace lux::core::buffers{
 		// 	.pfnInternalAllocation = internalAllocCallback,
 		// 	.pfnInternalFree = internalFreeCallback,
 		// };
-		switch(vkAllocateMemory(vDevice, &allocInfo, nullptr/*, new vk::AllocationCallbacks(allocator)*/, pMemory)) { //TODO
-			case VK_SUCCESS: break;
-			case VK_ERROR_OUT_OF_DEVICE_MEMORY: {			//If out of dedicated memory, use the shared memory
-				vk::MemoryAllocateInfo allocInfo2{
-					.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-					.allocationSize = memRequirements.size,
-					.memoryTypeIndex = render::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-				};
-				switch(vkAllocateMemory(vDevice, &allocInfo2, nullptr/*, new vk::AllocationCallbacks(allocator)*/, pMemory)) { //TODO
-					case VK_SUCCESS: break;
-					case VK_ERROR_OUT_OF_HOST_MEMORY: goto CaseOutOfHostMemory;
+		switch(vDevice.allocateMemory(&allocInfo, nullptr/*, new vk::AllocationCallbacks(allocator)*/, pMemory)) { //TODO
+			case vk::Result::eSuccess : break;
+			case vk::Result::eErrorOutOfDeviceMemory: {			//If out of dedicated memory, use the shared memory
+				vk::MemoryAllocateInfo allocInfo2 = vk::MemoryAllocateInfo()
+					.setAllocationSize  (memRequirements.size)
+					.setMemoryTypeIndex (render::findMemoryType(memRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostCached | vk::MemoryPropertyFlagBits::eHostVisible))
+				;
+				switch(vDevice.allocateMemory(&allocInfo2, nullptr/*, new vk::AllocationCallbacks(allocator)*/, pMemory)) { //TODO
+					case vk::Result::eSuccess: break;
+					case vk::Result::eErrorOutOfHostMemory: goto CaseOutOfHostMemory;
 					default: goto CaseAllocFailure;
 				}
 				break;
 			}
-			case VK_ERROR_OUT_OF_HOST_MEMORY: {
+			case vk::Result::eErrorOutOfHostMemory: {
 				CaseOutOfHostMemory:
 				dbg::printError("Vulkan error: Out of host memory");
 				break;
 			}
-			case VK_ERROR_TOO_MANY_OBJECTS: {
+			case vk::Result::eErrorTooManyObjects: {
 				dbg::printError("Vulkan error: Too many objects. This error is caused by the engine. Contact the developer");
 				break;
 			}
 			default: CaseAllocFailure: dbg::printError("Failed to allocate buffer memory");
 		}
 
-		dbg::checkVk(vkBindBufferMemory(vDevice, *pBuffer, *pMemory, 0), "Failed to bind buffer");
+		vDevice.bindBufferMemory(*pBuffer, *pMemory, 0);
 	}
 }

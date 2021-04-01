@@ -1,4 +1,5 @@
 #pragma once
+#include <vulkan/vulkan.hpp>
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/macros.hpp"
 
@@ -49,7 +50,7 @@ namespace lux::sys{
         private:
             struct HeapInfo{        //Informations about a specific heap
                 uint64 size = 0;        //Size of the heap in bytes
-                uint32 flags = 0;       //Vulkan heap flags
+                vk::MemoryHeapFlags flags = (vk::MemoryHeapFlags)0;       //Vulkan heap flags
             } heaps_[16];
         } heaps;
     };

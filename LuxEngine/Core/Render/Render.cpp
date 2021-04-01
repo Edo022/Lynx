@@ -69,7 +69,7 @@ namespace lux{
 				continue;
 			}
 			addShaderFence.unlock();
-			vkWaitForFences(core::dvc::graphics.LD, 1, &swp.frames[swp.curFrame].f_rendered, false, INT_MAX);
+			core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, INT_MAX);
 
 
 			//Redraw frame if necessary
@@ -84,9 +84,9 @@ namespace lux{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(vkAcquireNextImageKHR(core::dvc::graphics.LD, swp.swapchain, INT_MAX, swp.frames[swp.curFrame].s_aquired, VK_NULL_HANDLE, &imageIndex)) {
-					case VK_SUCCESS: case VK_SUBOPTIMAL_KHR: break;
-					case VK_ERROR_OUT_OF_DATE_KHR: swp.recreate();  continue;
+				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, INT_MAX, swp.frames[swp.curFrame].s_aquired, VK_NULL_HANDLE, &imageIndex)) {
+					case vk::Result::eSuccess: case vk::Result::eSuboptimalKHR: break;
+					case vk::Result::eErrorOutOfDateKHR: swp.recreate();  continue;
 					default: Failure printf("Failed to acquire swapchain image");
 				}
 			}
@@ -97,70 +97,66 @@ namespace lux{
 			//TODO don't recreate the command buffer array every time
 			//TODO use a staging buffer
 			//Update render result submitting the command buffers to the compute queues
-			const vk::PipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
+			const vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eComputeShader };
 			addShaderFence.lock();
 
 
 
 
 			const vk::SubmitInfo submitInfos[]{
-				{ //Draw objects
-					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_aquired,
-					.pWaitDstStageMask    = waitStages,
-					.commandBufferCount   = swp.shadersCBs.count(),
-					.pCommandBuffers      = swp.shadersCBs.begin(),
-					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_objects,
-				},
-				{ //Convert and clear shader
-					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_objects,
-					.pWaitDstStageMask    = waitStages,
-					.commandBufferCount   = 1,
-					// .pCommandBuffers      = new vk::CommandBuffer(swp.shaders[0].commandBuffers[0]),
-					.pCommandBuffers      = &sh_clear.commandBuffers[0],
-					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_clear
-				},
-				{ //Copy shader
-					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-					.waitSemaphoreCount   = 1,
-					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_clear,
-					.pWaitDstStageMask    = waitStages,
-					.commandBufferCount   = 1,
-					.pCommandBuffers      = &copyCommandBuffers[imageIndex],
-					.signalSemaphoreCount = 1,
-					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_copy
-				}
+				vk::SubmitInfo() //Draw objects
+					.setWaitSemaphoreCount   (1)
+					.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_aquired)
+					.setPWaitDstStageMask    (waitStages)
+					.setCommandBufferCount   (swp.shadersCBs.count())
+					.setPCommandBuffers      (swp.shadersCBs.begin())
+					.setSignalSemaphoreCount (1)
+					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_objects)
+				,
+				vk::SubmitInfo() //Convert and clear shader
+					.setWaitSemaphoreCount   (1)
+					.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
+					.setPWaitDstStageMask    (waitStages)
+					.setCommandBufferCount   (1)
+					// .setPCommandBuffers   (new vk::CommandBuffer(swp.shaders[0].commandBuffers[0]))
+					.setPCommandBuffers      (&sh_clear.commandBuffers[0])
+					.setSignalSemaphoreCount (1)
+					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
+				,
+				vk::SubmitInfo() //Copy shader
+					.setWaitSemaphoreCount   (1)
+					.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_clear)
+					.setPWaitDstStageMask    (waitStages)
+					.setCommandBufferCount   (1)
+					.setPCommandBuffers      (&copyCommandBuffers[imageIndex])
+					.setSignalSemaphoreCount (1)
+					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
+				,
 			};
 			addShaderFence.unlock(); //FIXME
-			vkResetFences(core::dvc::graphics.LD, 1, &swp.frames[swp.curFrame].f_rendered);
+			core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.lock();
-				dbg::checkVk(vkQueueSubmit(core::dvc::graphics.graphicsQueue, 3, submitInfos, swp.frames[swp.curFrame].f_rendered), "Failed to submit graphics command buffer");
+				core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered), "Failed to submit graphics command buffer");
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
 
 
 			{ //Present frame
-				const vk::PresentInfoKHR presentInfo{
-					.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-					.waitSemaphoreCount = 1,
-					.pWaitSemaphores    = &swp.frames[swp.curFrame].s_copy,
-					.swapchainCount     = 1,
-					.pSwapchains        = &swp.swapchain,
-					.pImageIndices      = &imageIndex
-				};
+				auto presentInfo = const vk::PresentInfoKHR()
+					.setWaitSemaphoreCount (1)
+					.setPWaitSemaphores    (&swp.frames[swp.curFrame].s_copy)
+					.setSwapchainCount     (1)
+					.setPSwapchains        (&swp.swapchain)
+					.setPImageIndices      (&imageIndex)
+				;
 
 				core::render::presentQueueSubmit_m.lock();
-					auto presentResult = vkQueuePresentKHR(core::dvc::graphics.presentQueue, &presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+					auto presentResult = core::dvc::graphics.presentQueue.presentKHR(&presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
 				core::render::presentQueueSubmit_m.unlock();
 				switch(presentResult){
-					case VK_SUCCESS:  break;
-					case VK_ERROR_OUT_OF_DATE_KHR: case VK_SUBOPTIMAL_KHR: { //TODO maybe suboptimal can still be used
+					case vk::Result::eSuccess:  break;
+					case vk::Result::eErrorOutOfDateKHR: case vk::Result::eSuboptimalKHR: { //TODO maybe suboptimal can still be used
 						swp.recreate();
 						goto redraw;
 					}
@@ -183,14 +179,10 @@ namespace lux{
 				vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 				for(uint32 i = 0; i < objUpdates2D.count(); i++) {
 					objUpdates2D[i]->render.updated = true;
-					vkCmdUpdateBuffer(
-						cb,
-						// objUpdates2D[i]->render.localData.cell->csc.buffer,
-						// objUpdates2D[i]->render.localData.cell->localOffset,
+					cb.updateBuffer(
 						objUpdates2D[i]->getShVData().cell->csc.buffer,
 						objUpdates2D[i]->getShVData().cell->localOffset,
 						objUpdates2D[i]->getShVData().cell->cellSize,
-						// (void*)objUpdates2D[i]->render.data
 						(void*)objUpdates2D[i]->getShData()
 					);
 				}
@@ -231,11 +223,11 @@ namespace lux{
 
 namespace lux::core::render{
 	void cleanup() {
-		vkDestroyCommandPool(dvc::graphics.LD, cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
+		dvc::graphics.LD.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
 
 		//If the compute and the graphics devices are not the same, destroy the graphics device
-		if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) vkDestroyDevice(dvc::graphics.LD, nullptr);
-		vkDestroyDevice(dvc::compute.LD, nullptr);													//Destroy the compute device
+		if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) dvc::graphics.LD.destroy(nullptr);
+		dvc::compute.LD.destroy(nullptr);													//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);						//Destroy all the secondary devices
 
 		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));	//Destroy the debug messenger if present
@@ -259,16 +251,15 @@ namespace lux::core::render{
 
 	vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures) {
 		for(vk::Format format : *pCandidates) {
-			vk::FormatProperties props;
-			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);
+			auto props = dvc::graphics.PD.device.getFormatProperties(format); //Get format properties
 
-			if(( vTiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
-				(vTiling == VK_IMAGE_TILING_LINEAR  && (props.linearTilingFeatures  & vFeatures) == vFeatures)) {
+			if(( vTiling == vk::ImageTiling::eOptimal && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
+				(vTiling == vk::ImageTiling::eLinear  && (props.linearTilingFeatures  & vFeatures) == vFeatures)) {
 				return format;
 			}
 		}
 		dbg::printError("Failed to find a supported format");
-		return VK_FORMAT_UNDEFINED;
+		return vk::Format::eUndefined;
 	}
 
 
@@ -276,8 +267,7 @@ namespace lux::core::render{
 
 	//Returns the index of the memory with the specified type and properties
 	uint32 findMemoryType(const uint32 vTypeFilter, const vk::MemoryPropertyFlags vProperties) {
-		vk::PhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
-		vkGetPhysicalDeviceMemoryProperties(dvc::graphics.PD.device, &memProperties);
+		auto memProperties = dvc::graphics.PD.device.getMemoryProperties();//Get memory vProperties
 
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;

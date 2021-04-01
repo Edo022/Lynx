@@ -21,7 +21,7 @@ namespace lux::sys{
 		//Get GPU informations
 		GpuInfo _vram;
 		_vram.name = core::dvc::compute.PD.properties.deviceName;
-		_vram.type = (core::dvc::compute.PD.properties.deviceType == vk::PhysicalDeviceType::VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) ? sys::Discrete : sys::Integrated;
+		_vram.type = (core::dvc::compute.PD.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::Discrete : sys::Integrated;
 		_vram.maxWgSize[0] = core::dvc::compute.PD.properties.limits.maxComputeWorkGroupSize[0];
 		_vram.maxWgSize[1] = core::dvc::compute.PD.properties.limits.maxComputeWorkGroupSize[1];
 		_vram.maxWgSize[2] = core::dvc::compute.PD.properties.limits.maxComputeWorkGroupSize[2];
@@ -31,11 +31,10 @@ namespace lux::sys{
 		_vram.maxWgs[2]    = core::dvc::compute.PD.properties.limits.maxComputeWorkGroupCount[2];
 
 		//Get VRAM informations
-		vk::PhysicalDeviceMemoryProperties memoryProperties;
-		vkGetPhysicalDeviceMemoryProperties(core::dvc::compute.PD.device, &memoryProperties); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
+		auto memoryProperties = core::dvc::compute.PD.device.getMemoryProperties(); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
 		_vram.heaps.num =  memoryProperties.memoryHeapCount;
 		for(uint32 i = 0; i < memoryProperties.memoryHeapCount; ++i){
-			if(memoryProperties.memoryHeaps[i].flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT){
+			if(memoryProperties.memoryHeaps[i].flags & vk::MemoryHeapFlagBits::eDeviceLocal){
 				_vram.size += memoryProperties.memoryHeaps[i].size;
 			}
 			_vram.heaps[i] = { .size = memoryProperties.memoryHeaps[i].size, .flags = memoryProperties.memoryHeaps[i].flags };
