@@ -10,8 +10,8 @@
 
 
 namespace lux::core::render::cmd{
-	alignCache VkCommandPool            singleTimeCommandPool = nullptr;
-	// alignCache RtArray<VkCommandBuffer> singleTimeCommandBuffers;
+	alignCache vk::CommandPool            singleTimeCommandPool = nullptr;
+	// alignCache RtArray<vk::CommandBuffer> singleTimeCommandBuffers;
 
 
 
@@ -24,7 +24,7 @@ namespace lux::core::render::cmd{
 
 
 	void createGraphicsCommandPool() { //FIXME probably useless
-		VkCommandPoolCreateInfo poolInfo{
+		vk::CommandPoolCreateInfo poolInfo{
 			.sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
 			.queueFamilyIndex = dvc::graphics.PD.indices.graphicsFamily
 		};
@@ -38,16 +38,16 @@ namespace lux::core::render::cmd{
 	 * @brief Creates, allocates and begins a command buffer for a single time submit
 	 * @return Returns the command buffer
 	 */
-	VkCommandBuffer beginSingleTimeCommands() {
-		VkCommandBuffer commandBuffer;
-		VkCommandBufferAllocateInfo allocInfo{
+	vk::CommandBuffer beginSingleTimeCommands() {
+		vk::CommandBuffer commandBuffer;
+		vk::CommandBufferAllocateInfo allocInfo{
 			.sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
 			.commandPool        = singleTimeCommandPool,
 			.level              = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 			.commandBufferCount = 1
 		};
 		vkAllocateCommandBuffers(dvc::graphics.LD, &allocInfo, &commandBuffer);
-		VkCommandBufferBeginInfo beginInfo{
+		vk::CommandBufferBeginInfo beginInfo{
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
 			.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
 		};
@@ -61,9 +61,9 @@ namespace lux::core::render::cmd{
 	/** //TODO probably useless
 	 * @brief Ends and submits a single time submit command. Then waits until it's executed and frees its memory
 	 */
-	void endSingleTimeCommands(const VkCommandBuffer vCommandBuffer) {
+	void endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer) {
 		vkEndCommandBuffer(vCommandBuffer);
-		VkSubmitInfo submitInfo{
+		vk::SubmitInfo submitInfo{
 			.sType              = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 			.commandBufferCount = 1,
 			.pCommandBuffers    = &vCommandBuffer

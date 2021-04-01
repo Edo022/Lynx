@@ -1,17 +1,17 @@
 #pragma once
 #define LUX_H_GCOMMANDS
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 #include "LuxEngine/Types/Containers/RtArray.hpp"
 
 
 
 
 namespace lux::core::render::cmd{
-	extern VkCommandPool			singleTimeCommandPool;
-	// extern RtArray<VkCommandBuffer>	singleTimeCommandBuffers;
+	extern vk::CommandPool			singleTimeCommandPool;
+	// extern RtArray<vk::CommandBuffer>	singleTimeCommandBuffers;
 
 
 	void				createGraphicsCommandPool();
-	VkCommandBuffer		beginSingleTimeCommands();
-	void				endSingleTimeCommands(const VkCommandBuffer vCommandBuffer);
+	vk::CommandBuffer		beginSingleTimeCommands();
+	void				endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer);
 }

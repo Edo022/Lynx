@@ -19,44 +19,44 @@ namespace lux::core::wnd{
 	private:
 		friend class lux::Window;
 
-		VkSwapchainKHR			 swapchain;
+		vk::SwapchainKHR			 swapchain;
 		public: //FIXME
-		VkSwapchainCreateInfoKHR createInfo;	//Informations used to create the swapchain. They are saved in order to be reused when the swapchain has to be recreated
+		vk::SwapchainCreateInfoKHR createInfo;	//Informations used to create the swapchain. They are saved in order to be reused when the swapchain has to be recreated
 		private:
-		VkRenderPass             renderPass;
+		vk::RenderPass             renderPass;
 		bool                     useVSync = true;
 
 
 		struct SwpFrame{
-			VkSemaphore s_aquired;
-			VkSemaphore s_objects;
-			VkSemaphore s_copy;
-			VkSemaphore s_clear;
-			VkFence     f_rendered;
+			vk::Semaphore s_aquired;
+			vk::Semaphore s_objects;
+			vk::Semaphore s_copy;
+			vk::Semaphore s_clear;
+			vk::Fence     f_rendered;
 		};
 		RtArray<SwpFrame> frames;		//Synchronization objects used to render the frames
 		uint32            curFrame = 0;	//The index of the frame that is currently being rendered
 
 
 		struct SwpImage{
-			VkImage       image;
-			VkImageView   view;
-			VkFramebuffer fbuffer;
+			vk::Image       image;
+			vk::ImageView   view;
+			vk::Framebuffer fbuffer;
 		};
 		RtArray<SwpImage> images;		//Images where the frames are outputted
-		inline VkImageView   createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags);
-		inline VkFramebuffer createFramebuffer(VkRenderPass vRenderPass, VkImageView& vAttachment, uint32 vWith, uint32 vHeight);
+		inline vk::ImageView   createImageView(const vk::Image vImage, const vk::Format vFormat, const vk::ImageAspectFlags vAspectFlags);
+		inline vk::Framebuffer createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWith, uint32 vHeight);
 
 
 
 
-		VkSurfaceFormatKHR chooseSurfaceFormat  (const RtArray<VkSurfaceFormatKHR>& pAvailableFormats);
-		VkPresentModeKHR   choosePresentMode    (const RtArray<VkPresentModeKHR>&   pAvailablePresentModes);
-		VkExtent2D         chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities);
+		vk::SurfaceFormatKHR chooseSurfaceFormat  (const RtArray<vk::SurfaceFormatKHR>& pAvailableFormats);
+		vk::PresentModeKHR   choosePresentMode    (const RtArray<vk::PresentModeKHR>&   pAvailablePresentModes);
+		vk::Extent2D         chooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR* pCapabilities);
 
-		VkSurfaceCapabilitiesKHR    getCapabilities();
-		RtArray<VkSurfaceFormatKHR> getSurfaceFormats();
-		RtArray<VkPresentModeKHR>   getPresentModes();
+		vk::SurfaceCapabilitiesKHR    getCapabilities();
+		RtArray<vk::SurfaceFormatKHR> getSurfaceFormats();
+		RtArray<vk::PresentModeKHR>   getPresentModes();
 
 
 
@@ -65,7 +65,7 @@ namespace lux::core::wnd{
 		Window* bindedWindow;				//Window owning the swapchain
 		std::atomic<bool> resized = false;	//Synchronization variable. Set to true by the main engine thread when the window needs to be resized
 
-		RtArray<VkCommandBuffer>     shadersCBs;
+		RtArray<vk::CommandBuffer>     shadersCBs;
 
 
 		Swapchain();					//Object constructor. Allocates memory and initializes some resources

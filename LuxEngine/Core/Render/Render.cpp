@@ -30,7 +30,7 @@ namespace lux::core::render{
 
 	#ifdef LUX_DEBUG
 	void createDebugMessenger() {
-		VkDebugUtilsMessengerCreateInfoEXT createInfo;
+		vk::DebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
 		dbg::checkVk(debug::CreateDebugUtilsMessengerEXT(dvc::instance, &createInfo, nullptr, &dvc::debugMessenger), "Failed to set up debug messenger");
 	}
@@ -97,13 +97,13 @@ namespace lux{
 			//TODO don't recreate the command buffer array every time
 			//TODO use a staging buffer
 			//Update render result submitting the command buffers to the compute queues
-			const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
+			const vk::PipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT };
 			addShaderFence.lock();
 
 
 
 
-			const VkSubmitInfo submitInfos[]{
+			const vk::SubmitInfo submitInfos[]{
 				{ //Draw objects
 					.sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 					.waitSemaphoreCount   = 1,
@@ -120,7 +120,7 @@ namespace lux{
 					.pWaitSemaphores      = &swp.frames[swp.curFrame].s_objects,
 					.pWaitDstStageMask    = waitStages,
 					.commandBufferCount   = 1,
-					// .pCommandBuffers      = new VkCommandBuffer(swp.shaders[0].commandBuffers[0]),
+					// .pCommandBuffers      = new vk::CommandBuffer(swp.shaders[0].commandBuffers[0]),
 					.pCommandBuffers      = &sh_clear.commandBuffers[0],
 					.signalSemaphoreCount = 1,
 					.pSignalSemaphores    = &swp.frames[swp.curFrame].s_clear
@@ -146,7 +146,7 @@ namespace lux{
 
 
 			{ //Present frame
-				const VkPresentInfoKHR presentInfo{
+				const vk::PresentInfoKHR presentInfo{
 					.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
 					.waitSemaphoreCount = 1,
 					.pWaitSemaphores    = &swp.frames[swp.curFrame].s_copy,
@@ -180,7 +180,7 @@ namespace lux{
 			//Fix objects update requests
 			if(objUpdates2D.count() > 0) {
 				objUpdates2D_f.lock();
-				VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+				vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 				for(uint32 i = 0; i < objUpdates2D.count(); i++) {
 					objUpdates2D[i]->render.updated = true;
 					vkCmdUpdateBuffer(
@@ -257,9 +257,9 @@ namespace lux::core::render{
 
 
 
-	VkFormat findSupportedFormat(const RtArray<VkFormat>* pCandidates, const VkImageTiling vTiling, const VkFormatFeatureFlags vFeatures) {
-		for(VkFormat format : *pCandidates) {
-			VkFormatProperties props;
+	vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures) {
+		for(vk::Format format : *pCandidates) {
+			vk::FormatProperties props;
 			vkGetPhysicalDeviceFormatProperties(dvc::graphics.PD.device, format, &props);
 
 			if(( vTiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
@@ -275,8 +275,8 @@ namespace lux::core::render{
 
 
 	//Returns the index of the memory with the specified type and properties
-	uint32 findMemoryType(const uint32 vTypeFilter, const VkMemoryPropertyFlags vProperties) {
-		VkPhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
+	uint32 findMemoryType(const uint32 vTypeFilter, const vk::MemoryPropertyFlags vProperties) {
+		vk::PhysicalDeviceMemoryProperties memProperties;							//Get memory vProperties
 		vkGetPhysicalDeviceMemoryProperties(dvc::graphics.PD.device, &memProperties);
 
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index

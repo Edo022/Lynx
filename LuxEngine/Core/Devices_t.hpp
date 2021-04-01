@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_DEVICES_T
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 #include "LuxEngine/Types/Integers/Integers.hpp"
 #include "LuxEngine/Types/Containers/RtArray.hpp"
 
@@ -38,15 +38,15 @@ struct QueueFamilyIndices {
 
 //Structure containing all the useful data of a physical device
 struct _VkPhysicalDevice {
-	_VkPhysicalDevice(const VkPhysicalDevice vDevice, const VkPhysicalDeviceProperties& vProperties, const VkPhysicalDeviceFeatures& vFeatures, const QueueFamilyIndices& vIndices) :
+	_VkPhysicalDevice(const vk::PhysicalDevice vDevice, const vk::PhysicalDeviceProperties& vProperties, const vk::PhysicalDeviceFeatures& vFeatures, const QueueFamilyIndices& vIndices) :
 						  device{ vDevice }, properties{ vProperties }, features{ vFeatures }, indices{ vIndices }, score{ 0 } {}
 	_VkPhysicalDevice() : device{ nullptr }, properties{             }, features{           }, indices{          }, score{ 0 } {}
 
-	VkPhysicalDevice			device;		//Actual VkPhysicalDevice structure
-	VkPhysicalDeviceProperties	properties;	//Physical device properties
-	VkPhysicalDeviceFeatures	features;	//Physical device features
-	QueueFamilyIndices			indices;	//Indices of the queue families
-	uint32						score;		//Device performances evalutation
+	vk::PhysicalDevice				device;		//Actual vk::PhysicalDevice structure
+	vk::PhysicalDeviceProperties	properties;	//Physical device properties
+	vk::PhysicalDeviceFeatures		features;	//Physical device features
+	QueueFamilyIndices				indices;	//Indices of the queue families
+	uint32							score;		//Device performances evalutation
 
 	//TODO REMOVE
 	auto& operator=(const _VkPhysicalDevice& d){
@@ -66,10 +66,10 @@ struct _VkPhysicalDevice {
 struct graphicsDevice {
 	graphicsDevice() : PD(), LD{ nullptr }, graphicsQueue{ nullptr }, presentQueue{ nullptr } {}
 
-	_VkPhysicalDevice PD;	//Main physical device for graphics
-	VkDevice		  LD;	//Main logical device for graphics
-	VkQueue graphicsQueue;	//Main graphics queue. Runs on graphicsLD
-	VkQueue presentQueue;	//Main graphics queue. Runs on graphicsLD
+	_VkPhysicalDevice PD;		//Main physical device for graphics
+	vk::Device		  LD;		//Main logical device for graphics
+	vk::Queue graphicsQueue;	//Main graphics queue. Runs on graphicsLD
+	vk::Queue presentQueue;		//Main graphics queue. Runs on graphicsLD
 };
 
 
@@ -79,6 +79,6 @@ struct computeDevice {
 	computeDevice() : PD(), LD{ nullptr }, computeQueues() {}
 
 	_VkPhysicalDevice PD;					//Main physical device for computing
-	VkDevice          LD;					//Main logical device for computing
-	lux::RtArray<VkQueue> computeQueues;	//Main compute queues. Run on computeLD
+	vk::Device        LD;					//Main logical device for computing
+	lux::RtArray<vk::Queue> computeQueues;	//Main compute queues. Run on computeLD
 };

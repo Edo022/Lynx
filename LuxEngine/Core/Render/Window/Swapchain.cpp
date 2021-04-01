@@ -17,8 +17,8 @@ namespace lux::core::wnd{
 		frames.resize(__renderMaxFramesInFlight);
 
 		//Create sync objects
-		VkSemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
-		VkFenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
+		vk::SemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
+		vk::FenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_aquired);
 			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_objects);
@@ -46,7 +46,7 @@ namespace lux::core::wnd{
 		}
 
 		//swapchain creation infos
-		VkSurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
+		vk::SurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 		createInfo = {
 			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
@@ -72,7 +72,7 @@ namespace lux::core::wnd{
 
 
 		//Create swapchain
-		VkBool32 hasPresentSupport = false; //FIXME
+		vk::Bool32 hasPresentSupport = false; //FIXME
 		vkGetPhysicalDeviceSurfaceSupportKHR(dvc::graphics.PD.device, dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //SUPPRESS ERROR //FIXME
 		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
 
@@ -83,7 +83,7 @@ namespace lux::core::wnd{
 		//Get images
 		uint32 imageCount;
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);
-		images.resize(imageCount); VkImage _[imageCount];
+		images.resize(imageCount); vk::Image _[imageCount];
 		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, _);
 
 		//Initialize images, image views and framebuffers
@@ -110,7 +110,7 @@ namespace lux::core::wnd{
 
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
-				VkSurfaceCapabilitiesKHR capabilities;
+				vk::SurfaceCapabilitiesKHR capabilities;
 				vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
 				createInfo.imageExtent = chooseSwapchainExtent(&capabilities);
 
@@ -119,7 +119,7 @@ namespace lux::core::wnd{
 				createInfo.pQueueFamilyIndices = queueFamilyIndices;
 
 				//Set oldSwapchain member to allow the driver to reuse resources
-				VkSwapchainKHR oldSwapchain = swapchain;
+				vk::SwapchainKHR oldSwapchain = swapchain;
 				createInfo.oldSwapchain  = oldSwapchain;
 
 				//Create swapchain
@@ -135,7 +135,7 @@ namespace lux::core::wnd{
 			//TODO   If it's the case, remove those lines from release mode.
 
 			//Get images
-			VkImage _[imageCount];
+			vk::Image _[imageCount];
 			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, _);
 
 			//Re initialize images, image views and framebuffer
@@ -148,7 +148,7 @@ namespace lux::core::wnd{
 
 			//Update the window size buffer
 			u32 wSize[2] = { createInfo.imageExtent.width, createInfo.imageExtent.height };
-			VkCommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			vkCmdUpdateBuffer(cb, bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 
@@ -206,8 +206,8 @@ namespace lux::core::wnd{
 
 
 
-	inline VkImageView Swapchain::createImageView(const VkImage vImage, const VkFormat vFormat, const VkImageAspectFlags vAspectFlags) {
-		VkImageViewCreateInfo viewInfo{
+	inline vk::ImageView Swapchain::createImageView(const vk::Image vImage, const vk::Format vFormat, const vk::ImageAspectFlags vAspectFlags) {
+		vk::ImageViewCreateInfo viewInfo{
 			.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
 			.image    = vImage,
 			.viewType = VK_IMAGE_VIEW_TYPE_2D,
@@ -226,7 +226,7 @@ namespace lux::core::wnd{
 				.layerCount     = 1
 			}
 		};
-		VkImageView imageView;
+		vk::ImageView imageView;
 		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
 		return imageView;
 	}
@@ -238,8 +238,8 @@ namespace lux::core::wnd{
 
 
 
-	inline VkFramebuffer Swapchain::createFramebuffer(VkRenderPass vRenderPass, VkImageView& vAttachment, uint32 vWith, uint32 vHeight) {
-		VkFramebufferCreateInfo framebufferInfo{
+	inline vk::Framebuffer Swapchain::createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWith, uint32 vHeight) {
+		vk::FramebufferCreateInfo framebufferInfo{
 			.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
 			.renderPass      = vRenderPass,
 			.attachmentCount = 1,
@@ -248,7 +248,7 @@ namespace lux::core::wnd{
 			.height          = vHeight,
 			.layers          = 1
 		};
-		VkFramebuffer framebuffer;
+		vk::Framebuffer framebuffer;
 		dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &framebuffer), "Failed to create framebuffer");
 		return framebuffer;
 	}
@@ -269,7 +269,7 @@ namespace lux::core::wnd{
 
 
 
-	VkSurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<VkSurfaceFormatKHR>& pAvailableFormats) {
+	vk::SurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<vk::SurfaceFormatKHR>& pAvailableFormats) {
 		for(auto& availableFormat : pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
@@ -284,7 +284,7 @@ namespace lux::core::wnd{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
-	VkPresentModeKHR Swapchain::choosePresentMode(const RtArray<VkPresentModeKHR>& pAvailablePresentModes) {
+	vk::PresentModeKHR Swapchain::choosePresentMode(const RtArray<vk::PresentModeKHR>& pAvailablePresentModes) {
 		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR; //FIXME MOVE VSYNC TO WINDOW STRUCT
 		for(const auto& availablePresentMode : pAvailablePresentModes) {
 			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
@@ -295,10 +295,10 @@ namespace lux::core::wnd{
 
 
 
-	VkExtent2D Swapchain::chooseSwapchainExtent(const VkSurfaceCapabilitiesKHR* pCapabilities) {
+	vk::Extent2D Swapchain::chooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
 		glfwGetFramebufferSize(bindedWindow->window, &width, &height);
-		return VkExtent2D{
+		return vk::Extent2D{
 			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
 		};
@@ -320,7 +320,7 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::createRenderPass() {
-		VkAttachmentDescription colorAttachment{
+		vk::AttachmentDescription colorAttachment{
 			.format         = createInfo.imageFormat,				//Swapchain image format
 			.samples        = VK_SAMPLE_COUNT_1_BIT,				//Multisampling samples
 			.loadOp         = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Don't clear for better performance
@@ -333,9 +333,9 @@ namespace lux::core::wnd{
 
 
 		//create attachment reference
-		VkAttachmentReference colorAttachmentRef{ 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+		vk::AttachmentReference colorAttachmentRef{ 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
 		//Create subpass description
-		VkSubpassDescription subpass{
+		vk::SubpassDescription subpass{
 			.pipelineBindPoint       = VK_PIPELINE_BIND_POINT_GRAPHICS,	//Set structure type
 			.colorAttachmentCount    = 1,								//Set number of attachments
 			.pColorAttachments       = &colorAttachmentRef,				//Previously created color attachment
@@ -344,7 +344,7 @@ namespace lux::core::wnd{
 
 
 		//Dependencies for implicit convertion
-		VkSubpassDependency dependencies[2]{
+		vk::SubpassDependency dependencies[2]{
 			{	//From undefined to color
 				.srcSubpass      = VK_SUBPASS_EXTERNAL,
 				.dstSubpass      = 0,
@@ -366,7 +366,7 @@ namespace lux::core::wnd{
 
 
 		//Render pass
-		VkRenderPassCreateInfo renderPassInfo{ 								//Create render pass infos
+		vk::RenderPassCreateInfo renderPassInfo{ 								//Create render pass infos
 			.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,	//Set structure type
 			.attachmentCount = 1,											//Set number of attachments
 			.pAttachments    = &colorAttachment,							//Set attachments
@@ -383,16 +383,16 @@ namespace lux::core::wnd{
 
 
 
-	VkSurfaceCapabilitiesKHR Swapchain::getCapabilities(){
-		VkSurfaceCapabilitiesKHR capabilities;
+	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
+		vk::SurfaceCapabilitiesKHR capabilities;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
 		return capabilities;
 	}
 
 
-	RtArray<VkSurfaceFormatKHR> Swapchain::getSurfaceFormats(){
+	RtArray<vk::SurfaceFormatKHR> Swapchain::getSurfaceFormats(){
 		uint32 count;
-		RtArray<VkSurfaceFormatKHR>	formats;
+		RtArray<vk::SurfaceFormatKHR>	formats;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &count, nullptr);
 		if(count != 0) {
 			formats.resize(count);
@@ -402,8 +402,8 @@ namespace lux::core::wnd{
 	}
 
 
-	RtArray<VkPresentModeKHR> Swapchain::getPresentModes(){
-		uint32 count; RtArray<VkPresentModeKHR> presentModes;
+	RtArray<vk::PresentModeKHR> Swapchain::getPresentModes(){
+		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &count, nullptr);
 		if(count != 0) {
 			presentModes.resize(count);

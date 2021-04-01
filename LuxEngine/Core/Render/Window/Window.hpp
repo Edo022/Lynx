@@ -33,9 +33,9 @@ namespace lux{
 
 
 		RtArray<LuxShaderLayout_t>	CShadersLayouts;
-		VkCommandPool commandPool;
-		VkCommandPool copyCommandPool;
-		RtArray<VkCommandBuffer> copyCommandBuffers;
+		vk::CommandPool commandPool;
+		vk::CommandPool copyCommandPool;
+		RtArray<vk::CommandBuffer> copyCommandBuffers;
 		// LuxShader clearShader; //FIXME REMOVE. probably unused
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addShaderFence;
@@ -49,10 +49,10 @@ namespace lux{
 
 
 
-		VkSurfaceKHR surface;
+		vk::SurfaceKHR surface;
 		core::wnd::Swapchain swp;
 
-        VkImageMemoryBarrier readToWriteBarrier{ 			        	//Create memory barrier object
+        vk::ImageMemoryBarrier readToWriteBarrier{ 			        	//Create memory barrier object
 			.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
 			.srcAccessMask       = VK_ACCESS_MEMORY_READ_BIT,				//Set source access mask
 			.dstAccessMask       = VK_ACCESS_TRANSFER_WRITE_BIT,			//Set destination access mask. It must be writable in order to copy the buffer in it
@@ -68,7 +68,7 @@ namespace lux{
 				.layerCount     = 1												//No multi layer
 			}
 		};
-		VkImageMemoryBarrier writeToReadBarrier{				       	//Create memory barrier object
+		vk::ImageMemoryBarrier writeToReadBarrier{				       	//Create memory barrier object
 			.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,	//Set structure type
 			.srcAccessMask       = VK_ACCESS_TRANSFER_WRITE_BIT,			//Set source access mask
 			.dstAccessMask       = VK_ACCESS_MEMORY_READ_BIT,				//Set destination access mask. It must be readable to be displayed
@@ -84,7 +84,7 @@ namespace lux{
 				.layerCount     = 1												//No multi layer
 			}
 		};
-		VkBufferImageCopy copyRegion{ 				//Create bufferImageCopy region to copy the buffer into the image
+		vk::BufferImageCopy copyRegion{ 				//Create bufferImageCopy region to copy the buffer into the image
 			.bufferOffset = 0,							//No buffer offset
 			.bufferRowLength = 0,						//dark magic
 			.bufferImageHeight = 0,					    //dark magic

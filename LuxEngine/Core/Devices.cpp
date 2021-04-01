@@ -21,15 +21,15 @@ namespace lux::core::dvc{
 	alignCache RtArray<computeDevice> secondary;
 
 
-	alignCache VkInstance   instance;
+	alignCache vk::Instance   instance;
 	alignCache GLFWwindow*  dummyWindow;
-	alignCache VkSurfaceKHR dummySurface;
+	alignCache vk::SurfaceKHR dummySurface;
 
 	alignCache uint32       requiredDeviceExtensionsNum = 1;
 	alignCache const char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	#ifdef LUX_DEBUG
-		alignCache VkDebugUtilsMessengerEXT debugMessenger;
+		alignCache vk::DebugUtilsMessengerEXT debugMessenger;
 		alignCache uint32       validationLayersNum = 1;
 		alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
 	#endif
@@ -51,43 +51,42 @@ namespace lux::core::dvc{
 
 
 		//Create debugCreateInfo structure
-		_dbg(VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo);
+		_dbg(vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo);
 		_dbg(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
 
-		VkApplicationInfo appInfo{
-			.sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-			.pApplicationName   = "LuxEngine",
-			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
-			.pEngineName        = "LuxEngine",
-			.engineVersion      = VK_MAKE_VERSION(1, 0, 0),
-			.apiVersion         = VK_API_VERSION_1_2
-		};
+		auto appInfo = vk::ApplicationInfo()
+			.setPApplicationName   ("LuxEngine")
+			.setApplicationVersion (VK_MAKE_VERSION(1, 0, 0))
+			.setPEngineName        ("LuxEngine")
+			.setEngineVersion      (VK_MAKE_VERSION(1, 0, 0))
+			.setApiVersion         (VK_API_VERSION_1_2)
+		;
 
 		//Create instance
-		VkInstanceCreateInfo createInfo{
-			.sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-			.pNext                   = _dbg(&debugCreateInfo)_rls(nullptr),
-			.pApplicationInfo        = &appInfo,
-			.enabledLayerCount       = _dbg(validationLayersNum) _rls(0),
-			.ppEnabledLayerNames     = _dbg(validationLayers)    _rls(nullptr),
-			.enabledExtensionCount   = glfwExtensionCount _dbg(+ 1),
-			.ppEnabledExtensionNames = extensions
-		};
+		auto createInfo = vk::InstanceCreateInfo()
+			.setPNext                   (_dbg(&debugCreateInfo)    _rls(nullptr))
+			.setPApplicationInfo        (&appInfo)
+			.setEnabledLayerCount       (_dbg(validationLayersNum) _rls(0))
+			.setPpEnabledLayerNames     (_dbg(validationLayers)    _rls(nullptr))
+			.setEnabledExtensionCount   (glfwExtensionCount _dbg(+ 1))
+			.setPpEnabledExtensionNames (extensions)
+		;
+
 		//Add validation layers if in debug mode
 		#ifdef LUX_DEBUG																	//Search for validation layers
 			uint32 layerCount = 0;
-			vkEnumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
-			RtArray<VkLayerProperties> availableLayers(layerCount);
-			vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
+			vk::enumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
+			RtArray<vk::LayerProperties> availableLayers(layerCount);
+			vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
 			for(uint32 i = 0; i < validationLayersNum; i++) {								//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
-					if(validationLayers[i] == layerProperties.layerName) break;					//If not, print an error
-					else if(validationLayers[i] == availableLayers.end()->layerName) dbg::printError("Validation layers not available. Cannot run in debug mode");
+					/**/ if(0 == strcmp(validationLayers[i], layerProperties.layerName)) break;					//If not, print an error
+					else if(0 == strcmp(validationLayers[i], availableLayers.end()->layerName)) dbg::printError("Validation layers not available. Cannot run in debug mode");
 				}
 			}
 		#endif
 
-		vkCreateInstance(&createInfo, nullptr, &core::dvc::instance);
+		core::dvc::instance = vk::createInstance(createInfo, nullptr);
 		free(extensions);
 
 
@@ -97,10 +96,10 @@ namespace lux::core::dvc{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		dummyWindow = glfwCreateWindow(1, 1, "", nullptr, nullptr);	//Initialize dummy window
 		glfwHideWindow(dummyWindow);
-		glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface); //Initialize dummy surface
+		glfwCreateWindowSurface(instance, dummyWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&dummySurface)); //Initialize dummy surface
 
 
-		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, &dummySurface), "Failed to create window surface");
+		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&dummySurface)), "Failed to create window surface");
 		getPhysical();
 	}
 
@@ -113,7 +112,7 @@ namespace lux::core::dvc{
 	//*   Returns the rating of the physical device
 	uint32 rate(const _VkPhysicalDevice* pDevice) {
 		uint32 score = 0;																				//Device performance evalutation
-		if(pDevice->properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) score += 1000000;	//Discrete GPUs have performance advantage
+		if(pDevice->properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) score += 1000000;	//Discrete GPUs have performance advantage
 		//TODO dont create shaders larger than the device limit
 		//pDevice->properties.limits.maxComputeSharedMemorySize;
 		score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible count of textures affects graphics quality
@@ -130,7 +129,7 @@ namespace lux::core::dvc{
 	 * @param pErrorText A pointer to a lux::String where to store the error in case the device is not suitable
 	 * @return return True if the device is suitable, false if not
 	 */
-	bool isSuitable(const VkPhysicalDevice vDevice, String& pErrorText) {
+	bool isSuitable(const vk::PhysicalDevice vDevice, String& pErrorText) {
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
 			pErrorText = "Missing required extensions";
@@ -156,10 +155,10 @@ namespace lux::core::dvc{
 	/**
 	 * @brief Returns true if the device supports the extensions, false if not
 	 */
-	bool checkExtensions(const VkPhysicalDevice vDevice) {
+	bool checkExtensions(const vk::PhysicalDevice vDevice) {
 		uint32 extensionCount;
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, nullptr);						//Get extension count
-		RtArray<VkExtensionProperties> availableExtensions(extensionCount);
+		RtArray<vk::ExtensionProperties> availableExtensions(extensionCount);
 		vkEnumerateDeviceExtensionProperties(vDevice, nullptr, &extensionCount, availableExtensions.begin());	//Get extensions
 
 		//TODO dont use std
@@ -174,10 +173,10 @@ namespace lux::core::dvc{
 	/**
 	 * @brief Finds and returns the queue families of a physical device
 	 */
-	QueueFamilyIndices getQueueFamilies(const VkPhysicalDevice vDevice) {
+	QueueFamilyIndices getQueueFamilies(const vk::PhysicalDevice vDevice) {
 		uint32 queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, nullptr);						//Enumerate queue families
-		RtArray<VkQueueFamilyProperties> queueFamilies;
+		RtArray<vk::QueueFamilyProperties> queueFamilies;
 		queueFamilies.resize(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(vDevice, &queueFamilyCount, queueFamilies.begin());		//Save queue families
 
@@ -186,7 +185,7 @@ namespace lux::core::dvc{
 		for(uint32 i = 0; i < queueFamilies.count(); ++i) {												//For every queue family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) indices.graphicsFamily = i;					//Set graphics family
 			if(queueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT)  indices.computeFamilies.add(i);				//Add compute families
-			VkBool32 hasPresentSupport = false;
+			vk::Bool32 hasPresentSupport = false;
 			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, dummySurface, &hasPresentSupport);						//Set present family
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
@@ -224,13 +223,13 @@ namespace lux::core::dvc{
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");		//Check if there is at least one deice that supports vulkan
 
 		//Get physical devices
-		RtArray<VkPhysicalDevice> physDevices(deviceCount);									//Create physical device array
+		RtArray<vk::PhysicalDevice> physDevices(deviceCount);									//Create physical device array
 		//FIXME add runtime support
 		vkEnumeratePhysicalDevices(instance, &deviceCount, physDevices.begin());				//Get physical devices
 
 		for(uint32 i = 0; i < physDevices.count(); ++i) {																//For every physical device, create and save a _VkPhysicalDevice stucture
-			VkPhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
-			VkPhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
+			vk::PhysicalDeviceProperties properties;	vkGetPhysicalDeviceProperties(physDevices[i], &properties);
+			vk::PhysicalDeviceFeatures features;		vkGetPhysicalDeviceFeatures(physDevices[i], &features);
 			String errorText;
 			if(isSuitable(physDevices[i], errorText)) {																//If it's suitable
 				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices));	//Add it to the physical devices vector
@@ -311,7 +310,7 @@ namespace lux::core::dvc{
 	 * @param pComputeQueues A pointer to an array of compute queues
 	 *		This is only used to know if the physical device is for graphics, computation or is secondary
 	 */
-	void createLogical(const _VkPhysicalDevice* pPD, VkDevice* pLD, RtArray<VkQueue>* pComputeQueues) {
+	void createLogical(const _VkPhysicalDevice* pPD, vk::Device* pLD, RtArray<vk::Queue>* pComputeQueues) {
 		//List the queues of the device as unique int32s
 		std::set<int32> uniqueQueueFamilyIndices;
 		if(sameDevice(*pPD, graphics.PD)) {									//If it's the main device for graphics,
@@ -324,9 +323,9 @@ namespace lux::core::dvc{
 
 
 		//Queue infos
-		RtArray<VkDeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
+		RtArray<vk::DeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
 		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {				//For every device queue family index found
-			queueCreateInfos.add(VkDeviceQueueCreateInfo{						//Create a queue create info struct
+			queueCreateInfos.add(vk::DeviceQueueCreateInfo{						//Create a queue create info struct
 				.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,				//Set structure type
 				.queueFamilyIndex = (uint32)queueFamilyIndex,						//Set index
 				.queueCount = 1,													//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
@@ -336,14 +335,14 @@ namespace lux::core::dvc{
 
 
 		//Required extensions
-		VkPhysicalDeviceFeatures enabledDeviceFeatures{ 					//Set enabled features
+		vk::PhysicalDeviceFeatures enabledDeviceFeatures{ 					//Set enabled features
 			.fillModeNonSolid  = VK_FALSE,										//No point32 and line render, since we don't use meshes
 			.multiViewport     = VK_FALSE,										//No multiple viewports
 			.samplerAnisotropy = VK_FALSE										//No anistropy filter
 		};
 
 		//Fill deviceCreateInfo
-		VkDeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
+		vk::DeviceCreateInfo deviceCreateInfo{ 								//Create deviceCreateInfo structure for logical device creation
 			.sType                    = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,	//Set structure type
 			.queueCreateInfoCount     = queueCreateInfos.count(),				//Set queue infos count
 			.pQueueCreateInfos        = queueCreateInfos.begin(),				//Set queue infos
@@ -356,7 +355,7 @@ namespace lux::core::dvc{
 
 
 		//Create the logical device and save its queues, exit if an error occurs
-		VkDevice _logicalDevice;
+		vk::Device _logicalDevice;
 		if(vkCreateDevice(pPD->device, &deviceCreateInfo, nullptr, &_logicalDevice) == VK_SUCCESS) {
 			if(sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) {
 				if(sameDevice(*pPD, graphics.PD)) {															//If it's the main graphics device
@@ -367,7 +366,7 @@ namespace lux::core::dvc{
 				if(pComputeQueues != nullptr) {																//If it's the main compute device and the function was called to create his logical device
 					compute.LD = _logicalDevice;																//Set it as the main compute logical device
 					for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {							//Add every compute queue to the main compute queue list
-						VkQueue computeQueue;
+						vk::Queue computeQueue;
 						vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 						compute.computeQueues.add(computeQueue);
 					}
@@ -376,7 +375,7 @@ namespace lux::core::dvc{
 			else {																							//If it's none of them
 				*pLD = _logicalDevice;																			//Add it to the list of secondary logical devices
 				for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {								//Add every compute queue to the secondary compute queues
-					VkQueue computeQueue;
+					vk::Queue computeQueue;
 					vkGetDeviceQueue(_logicalDevice, pPD->indices.computeFamilies[i], 0, &computeQueue);
 					pComputeQueues->add(computeQueue);
 				}

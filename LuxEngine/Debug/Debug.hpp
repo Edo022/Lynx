@@ -88,7 +88,7 @@ namespace lux::dbg{
 		/**
 		 * @brief Prints pMessage as error if vResult is not VK_SUCCESS
 		 */
-		static neverInline void checkVk(const int/*VkResult*/ vResult, const char* vMessage, const auto&... vArgs) {
+		static neverInline void checkVk(const int/*vk::Result*/ vResult, const char* vMessage, const auto&... vArgs) {
 			checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
 		}
 

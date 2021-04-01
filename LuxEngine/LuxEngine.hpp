@@ -25,10 +25,10 @@ namespace lux{
         core::running = false;
 
         core::inputThr.join();
-        vkDeviceWaitIdle(core::dvc::compute.LD);
+        core::dvc::compute.LD.waitIdle();
 
         core::render::cleanup();
-		vkDestroyInstance(core::dvc::instance, nullptr);
+        core::dvc::instance.destroy(nullptr);
 		glfwTerminate();
     }
 }

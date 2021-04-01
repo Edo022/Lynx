@@ -12,8 +12,8 @@ luxAutoInit(LUX_NH_ENV) {
 	// putenv(     "VULKAN_SDK=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64"                            );
 	// putenv(           "PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/bin"                        );
 	// putenv("LD_LIBRARY_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/lib"                        );
-	putenv(  "VK_LAYER_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/etc/vulkan/explicit_layer.d");
-	putenv(  "VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"); //FIXME check if this works with nvidia gpus
+	putenv("VK_LAYER_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/etc/vulkan/explicit_layer.d");
+	putenv("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"); //FIXME check if this works with nvidia gpus
 	//FIXME ^ write variant for Windows
 	//!^ Specify the driver to use to prevent Fedora 33 from using the lvp one
 	//!^ The lvp_icd driver creates a lot of threads that usually crash the system or slow down everything

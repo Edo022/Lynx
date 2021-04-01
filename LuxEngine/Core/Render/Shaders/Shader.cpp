@@ -80,14 +80,14 @@ namespace lux::core::c::shaders{
 	 * @param pLength A pointer to the code length
 	 * @return The created shader module
 	 */
-	VkShaderModule cshaderCreateModule(const VkDevice vDevice, uint32* pCode, const uint32* pLength) {
-		VkShaderModuleCreateInfo createInfo{ 							//Create shader module infos
+	vk::ShaderModule cshaderCreateModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength) {
+		vk::ShaderModuleCreateInfo createInfo{ 							//Create shader module infos
 			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,			//Set structure type
 			.codeSize = *pLength,											//Set the count of the compiled shader code
 			.pCode = pCode													//Set the shader code
 		};
 
-		VkShaderModule shaderModule;										//Create the shader module
+		vk::ShaderModule shaderModule;										//Create the shader module
 		dbg::checkVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule), "Failed to create shader module");
 		free(pCode);														//#LLID CSF0000 Free memory
 		return shaderModule;												//Return the created shader module
@@ -117,9 +117,9 @@ namespace lux::core::c::shaders{
 	 */
 	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly, Window& pWindow) {
 		{ //Create descriptor set layout
-			RtArray<VkDescriptorSetLayoutBinding> bindingLayouts(pCellNum);
+			RtArray<vk::DescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
-				bindingLayouts[i] = VkDescriptorSetLayoutBinding{ 							//The binding layout describes what to bind in a shader binding point and how to use it
+				bindingLayouts[i] = vk::DescriptorSetLayoutBinding{ 							//The binding layout describes what to bind in a shader binding point and how to use it
 					.binding            = i,													//Binding point in the shader
 					.descriptorType     = (pIsReadOnly[i]) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,//Type of the descriptor. It depends on the type of data that needs to be bound
 					.descriptorCount    = 1,													//Number of descriptors
@@ -128,8 +128,8 @@ namespace lux::core::c::shaders{
 				};
 			}
 
-			//Create a VkDescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the VkDescriptorSetLayout
-			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{
+			//Create a vk::DescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the vk::DescriptorSetLayout
+			vk::DescriptorSetLayoutCreateInfo layoutCreateInfo{
 				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,	//Structure type
 				.pNext = nullptr,	 											//default
 				.flags = 0,	 													//default
@@ -156,7 +156,7 @@ namespace lux::core::c::shaders{
 
 
 			//Create stage info
-			pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo = VkPipelineShaderStageCreateInfo{
+			pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo{
 				.sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,		//Set structure type
 				.stage  = VK_SHADER_STAGE_COMPUTE_BIT,								//Use it in the compute stage
 				#ifndef __INTELLISENSE__ 	//! Intellisense sees "module" as the C++ module keyword. This code is enabled during compilation
@@ -167,7 +167,7 @@ namespace lux::core::c::shaders{
 
 
 			//Create pipeline layout
-			VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
+			vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
 				.sType          = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,		//Structure type
 				.setLayoutCount = 1,													//Number of set layouts
 				.pSetLayouts    = &pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout	//Set set layout
@@ -179,7 +179,7 @@ namespace lux::core::c::shaders{
 
 
 		{ //Create the pipeline
-			VkComputePipelineCreateInfo pipelineCreateInfo = { 						//Create pipeline creation infos
+			vk::ComputePipelineCreateInfo pipelineCreateInfo = { 						//Create pipeline creation infos
 				.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,			//Structure type
 				.stage  = pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo,		//Use the previously created shader stage creation infos
 				.layout = pWindow.CShadersLayouts[vRenderShader].pipelineLayout				//Use the previously created pipeline layout

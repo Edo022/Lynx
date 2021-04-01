@@ -233,11 +233,11 @@ namespace lux::vram{
 
 
 	private:
-		static consteval VkBufferUsageFlags _usage() {
+		static consteval vk::BufferUsageFlags _usage() {
 			if(btype == Uniform) return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 			else                 return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		}
-		static consteval VkMemoryPropertyFlags _prop() {
+		static consteval vk::MemoryPropertyFlags _prop() {
 			// if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 			if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 			else           return VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT; //FIXME IDK
@@ -435,7 +435,7 @@ namespace lux::vram{
 			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
 
 			vkMapMemory(core::dvc::compute.LD, memory, offset, size, 0, (void**)&(Super::mapped));
-			const VkMappedMemoryRange range {
+			const vk::MappedMemoryRange range {
 				.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
 				.memory = memory,
 				.offset = offset,
@@ -456,7 +456,7 @@ namespace lux::vram{
 			auto size   = Super::cell->cellSize;
 			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
 
-			const VkMappedMemoryRange range {
+			const vk::MappedMemoryRange range {
 				.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
 				.memory = memory,
 				.offset = offset,

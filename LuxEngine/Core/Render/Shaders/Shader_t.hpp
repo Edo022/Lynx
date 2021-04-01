@@ -1,6 +1,6 @@
 #pragma once
 #define LUX_H_SHADER_T
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 #include "LuxEngine/Types/VPointer.hpp"
 #include "LuxEngine/Types/Vectors/Vectors.hpp"
 #include "LuxEngine/Types/Containers/RtArray.hpp"
@@ -29,12 +29,12 @@ namespace lux{
 
 	//This struct contains the elements of a shader layout
 	struct LuxShaderLayout_t{
-		VkDescriptorSetLayout			descriptorSetLayout;	//Layout of the descriptor sets
-		VkShaderModule					shaderModule;			//Shader module created from the sahader compile file
-		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;	//Shader stage
+		vk::DescriptorSetLayout			descriptorSetLayout;	//Layout of the descriptor sets
+		vk::ShaderModule					shaderModule;			//Shader module created from the sahader compile file
+		vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;	//Shader stage
 
-		VkPipelineLayout				pipelineLayout;			//Layout of the pipeline
-		VkPipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
+		vk::PipelineLayout				pipelineLayout;			//Layout of the pipeline
+		vk::Pipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
 	};
 
 
@@ -50,9 +50,9 @@ namespace lux{
 
 
 	struct Shader_b {
-		VkDescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
-		VkDescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
-		lux::RtArray<VkCommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
+		vk::DescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
+		vk::DescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
+		lux::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 
 
 		~Shader_b(){

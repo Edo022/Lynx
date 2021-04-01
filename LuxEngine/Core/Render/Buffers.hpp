@@ -1,10 +1,10 @@
 #pragma once
 #define LUX_H_CBUFFERS
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 
 
 
 namespace lux::core::buffers{
-	void createBuffer(VkBuffer* pBuffer, const VkBufferUsageFlags vUsage, const VkDeviceSize vSize, VkDeviceMemory* pMemory, const VkMemoryPropertyFlags vProperties, const VkDevice vDevice);
+	void createBuffer(vk::Buffer* pBuffer, const vk::BufferUsageFlags vUsage, const vk::DeviceSize vSize, vk::DeviceMemory* pMemory, const vk::MemoryPropertyFlags vProperties, const vk::Device vDevice);
 }
