@@ -36,8 +36,11 @@ namespace lux::obj{
 
         virtual void init(Window& pWindow) override {
             render.parentWindow = &pWindow;                         //BUG OVER
+            // sleep(2000);
             for(u32 i = 0; i < children.count(); ++i){              //BUG OVER
+                // sleep(2000);
                 if(children.isValid(i)) children[i]->init(pWindow); //BUG >IN >OUT >IN >OUT >IN
+                // sleep(2000);
             }
         }
 

@@ -203,6 +203,8 @@ namespace lux{
 
 	void Window::add(obj::RenderSpace2D* pRenderSpace) {
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
+		// sleep(2000);
 		pRenderSpace->init(*this);			//BUG >IN
+		// sleep(2000);
 	}
 }

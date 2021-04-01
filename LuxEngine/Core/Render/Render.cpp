@@ -58,11 +58,17 @@ namespace lux{
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
 		while(running) {
+		continue; //BUG REMOVE
 			auto start = std::chrono::high_resolution_clock::now();
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			// if(swp.shaders.count() <= 1) continue;
-			if(swp.shadersCBs.count() <= 1) continue;
+			addShaderFence.lock();
+			if(swp.shadersCBs.count() <= 1) {
+				addShaderFence.unlock();
+				continue;
+			}
+			addShaderFence.unlock();
 			vkWaitForFences(core::dvc::graphics.LD, 1, &swp.frames[swp.curFrame].f_rendered, false, INT_MAX);
 
 

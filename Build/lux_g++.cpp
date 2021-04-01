@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
         " -L" + vkdep + "lib"
         // " -L" + glfwdep + "build/"  + (tp == 'd' ? "debug" : "release") + "/src"
         " -L" + glfwdep + "build/src" //FIXME
-        " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -lglfw3"
+        " -lvulkan -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11 -Bstatic -lglfw3"
     ;
 
 
