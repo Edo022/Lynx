@@ -234,13 +234,13 @@ namespace lux::vram{
 
 	private:
 		static consteval vk::BufferUsageFlags _usage() {
-			if(btype == Uniform) return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-			else                 return VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+			if(btype == Uniform) return vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eUniformBuffer;
+			else                 return vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eTransferSrc;
 		}
 		static consteval vk::MemoryPropertyFlags _prop() {
-			// if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-			if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-			else           return VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT; //FIXME IDK
+			// if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_ACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+			if(loc == Ram) return vk::MemoryPropertyFlagBits::eHostVisible;
+			else           return vk::MemoryPropertyFlagBits::eDeviceLocal; //FIXME IDK
 		}
 
 
@@ -408,8 +408,8 @@ namespace lux::vram{
 				//FIXME FREE BUFFERS
             }
 			else {																			//For custom size cells
-				vkFreeMemory(core::dvc::compute.LD, Super::cell->csc.memory, nullptr);					//Free the memory
-				vkDestroyBuffer(core::dvc::compute.LD, Super::cell->csc.buffer, nullptr);				//Destroy the vulkan buffer object
+				core::dvc::compute.LD.freeMemory   (Super::cell->csc.memory, nullptr);					//Free the memory
+				core::dvc::compute.LD.destroyBuffer(Super::cell->csc.buffer, nullptr);				//Destroy the vulkan buffer object
 			}
 
             cells_m.lock();
@@ -434,14 +434,13 @@ namespace lux::vram{
 			auto size   = Super::cell->cellSize;
 			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
 
-			vkMapMemory(core::dvc::compute.LD, memory, offset, size, 0, (void**)&(Super::mapped));
-			const vk::MappedMemoryRange range {
-				.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-				.memory = memory,
-				.offset = offset,
-				.size = size
-			};
-			vkInvalidateMappedMemoryRanges(core::dvc::compute.LD, 1, &range); //TODO this seems useless
+			core::dvc::compute.LD.mapMemory(memory, offset, size, 0, (void**)&(Super::mapped));
+			const auto range = vk::MappedMemoryRange()
+				.setMemory (memory)
+				.setOffset (offset)
+				.setSize   (size)
+			;
+			core::dvc::compute.LD.invalidateMappedMemoryRanges(1, &range); //TODO this seems useless
 		}
 
 
@@ -456,14 +455,13 @@ namespace lux::vram{
 			auto size   = Super::cell->cellSize;
 			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
 
-			const vk::MappedMemoryRange range {
-				.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE,
-				.memory = memory,
-				.offset = offset,
-				.size = size
-			};
-			vkFlushMappedMemoryRanges(core::dvc::compute.LD, 1, &range); //TODO this seems useless
-			vkUnmapMemory(core::dvc::compute.LD, memory);
+			const auto range = vk::MappedMemoryRange()
+				.setMemory (memory)
+				.setOffset (offset)
+				.setSize   (size)
+			;
+			core::dvc::compute.LD.flushMappedMemoryRanges(1, &range); //TODO this seems useless
+			core::dvc::compute.LD.unmapMemory(memory);
 			_dbg(Super::mapped = nullptr);
 		}
 

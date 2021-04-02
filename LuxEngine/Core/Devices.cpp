@@ -139,8 +139,8 @@ namespace lux::core::dvc{
 		//Check swapchain support
 		else {
 			uint32 surfaceFormatsCount = 0, presentModesCount = 0;
-			vkGetPhysicalDeviceSurfaceFormatsKHR(     vDevice, dummySurface, &surfaceFormatsCount, nullptr);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(vDevice, dummySurface, &presentModesCount,   nullptr);
+			vDevice.getSurfaceFormatsKHR     (dummySurface, &surfaceFormatsCount, nullptr);
+			vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr);
 			if(!surfaceFormatsCount || !presentModesCount) {
 				pErrorText = "Unsupported swapchain";
 				return false;
@@ -186,7 +186,7 @@ namespace lux::core::dvc{
 			if(queueFamilies[i].queueFlags & vk::QueueFlagBits::eGraphics) indices.graphicsFamily = i;					//Set graphics family
 			if(queueFamilies[i].queueFlags & vk::QueueFlagBits::eCompute ) indices.computeFamilies.add(i);				//Add compute families
 			vk::Bool32 hasPresentSupport = false;
-			vkGetPhysicalDeviceSurfaceSupportKHR(vDevice, i, dummySurface, &hasPresentSupport);						//Set present family
+			vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport);						//Set present family
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
 		return indices;
@@ -218,7 +218,7 @@ namespace lux::core::dvc{
 		RtArray<_VkPhysicalDevice*> physicalDevices;
 
 
-		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);							//Get physical device count
+		instance.enumeratePhysicalDevices(&deviceCount, nullptr);							//Get physical device count
 		//FIXME add runtime support
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");		//Check if there is at least one deice that supports vulkan
 
