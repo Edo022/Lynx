@@ -22,7 +22,7 @@ namespace lux::shd{
 			.setPoolSizeCount (2)
 			.setPPoolSizes    (sizes)
 		;
-		core::dvc::compute.LD.createDescriptorPool(poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN
+		core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN
 
 
 
@@ -31,7 +31,7 @@ namespace lux::shd{
 			.setDescriptorSetCount (1)
 			.setPSetLayouts        (&pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout)
 		;
-		core::dvc::compute.LD.allocateDescriptorSets(allocateSetInfo, &descriptorSet);
+		core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);
 
 
 
@@ -104,7 +104,7 @@ namespace lux::shd{
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		core::dvc::compute.LD.allocateCommandBuffers(allocateCbInfo, commandBuffers.begin());
+		core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin());
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);

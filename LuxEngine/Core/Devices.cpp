@@ -96,10 +96,10 @@ namespace lux::core::dvc{
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		dummyWindow = glfwCreateWindow(1, 1, "", nullptr, nullptr);	//Initialize dummy window
 		glfwHideWindow(dummyWindow);
-		glfwCreateWindowSurface(instance, dummyWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&dummySurface)); //Initialize dummy surface
+		glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface)); //Initialize dummy surface
 
 
-		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&dummySurface)), "Failed to create window surface");
+		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface)), "Failed to create window surface");
 		getPhysical();
 	}
 

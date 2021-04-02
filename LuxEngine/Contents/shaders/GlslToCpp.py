@@ -240,14 +240,14 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setPoolSizeCount (' + str(2 if uniformNum > 0 else 1) + ')'
                     '\n\t\t''.setPPoolSizes    (sizes)'
                 '\n\t;'
-                '\n\t''core::dvc::compute.LD.createDescriptorPool(poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN'
+                '\n\t''core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN'
                 '\n\n\n'
                 '\n\t''auto allocateSetInfo = vk::DescriptorSetAllocateInfo()'
 				    '\n\t\t''.setDescriptorPool     (descriptorPool)'
 				    '\n\t\t''.setDescriptorSetCount (1)'
 				    '\n\t\t''.setPSetLayouts        (&pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout)'
                 '\n\t'';'
-                '\n\t''core::dvc::compute.LD.allocateDescriptorSets(allocateSetInfo, &descriptorSet);'
+                '\n\t''core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);'
                 '\n\n\n' +
                 '\n\t''vk::WriteDescriptorSet writeSets[' + str(uniformNum + storageNum) + '];' +
                 '\n'.join((
@@ -277,7 +277,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
                 '\n\t''commandBuffers.resize(1);'
-                '\n\t''core::dvc::compute.LD.allocateCommandBuffers(allocateCbInfo, commandBuffers.begin());'
+                '\n\t''core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin());'
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'

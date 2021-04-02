@@ -1,4 +1,5 @@
 #include "LuxEngine/Core/Render/GCommands.hpp"
+#include "LuxEngine/Core/Render/Render.hpp"
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 
@@ -61,7 +62,7 @@ namespace lux::core::render::cmd{
 			.setPCommandBuffers    (&vCommandBuffer)
 		;
 		core::render::graphicsQueueSubmit_m.lock();
-			dvc::graphics.graphicsQueue.submit(1, &submitInfo, VK_NULL_HANDLE);
+			dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr);
 			dvc::graphics.graphicsQueue.waitIdle();
 		core::render::graphicsQueueSubmit_m.unlock();
 		dvc::graphics.LD.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);

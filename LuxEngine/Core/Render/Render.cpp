@@ -84,7 +84,7 @@ namespace lux{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, INT_MAX, swp.frames[swp.curFrame].s_aquired, VK_NULL_HANDLE, &imageIndex)) {
+				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, INT_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
 					case vk::Result::eSuccess: case vk::Result::eSuboptimalKHR: break;
 					case vk::Result::eErrorOutOfDateKHR: swp.recreate();  continue;
 					default: Failure printf("Failed to acquire swapchain image");
@@ -136,14 +136,14 @@ namespace lux{
 			addShaderFence.unlock(); //FIXME
 			core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.lock();
-				core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered), "Failed to submit graphics command buffer");
+				core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
 
 
 			{ //Present frame
-				auto presentInfo = const vk::PresentInfoKHR()
+				const auto presentInfo = vk::PresentInfoKHR()
 					.setWaitSemaphoreCount (1)
 					.setPWaitSemaphores    (&swp.frames[swp.curFrame].s_copy)
 					.setSwapchainCount     (1)

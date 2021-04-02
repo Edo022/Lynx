@@ -65,7 +65,7 @@ namespace lux::core::wnd{
 			.setCompositeAlpha (vk::CompositeAlphaFlagBitsKHR::eOpaque)
 			.setPresentMode    (choosePresentMode(getPresentModes()))
 			.setClipped        (VK_TRUE)
-			.setOldSwapchain   (VK_NULL_HANDLE)
+			.setOldSwapchain   (nullptr)
 		;
 
 
@@ -338,7 +338,7 @@ namespace lux::core::wnd{
 			.setPipelineBindPoint       (vk::PipelineBindPoint::eGraphics)	//Set structure type
 			.setColorAttachmentCount    (1)								//Set number of attachments
 			.setPColorAttachments       (&colorAttachmentRef)				//Previously created color attachment
-			.setPDepthStencilAttachment (VK_NULL_HANDLE)					//Previously created depth attachment
+			.setPDepthStencilAttachment (nullptr)					//Previously created depth attachment
 		;
 
 

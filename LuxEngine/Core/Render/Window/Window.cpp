@@ -37,7 +37,7 @@ namespace lux{
 
 
 		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
-		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, &surface);
+		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface));
 
 		{ //Set icon
 			#include "__tmp__IconData.hpp"
@@ -162,9 +162,10 @@ namespace lux{
 				vk::PipelineStageFlags 												//Create stage flags
 					srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput,			//The swapchain image is in color output stage
 					dstStage = vk::PipelineStageFlagBits::eTransfer;							//Change it to transfer stage to copy the buffer in it
-				copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
+				copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
+				//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
 
-				copyRegion.imageExtent = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
+				copyRegion.imageExtent = vk::Extent3D{ swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
 				copyCommandBuffers[imgIndex].copyBufferToImage(iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
 
 
@@ -173,7 +174,8 @@ namespace lux{
 				vk::PipelineStageFlags 											//Create stage flags
 					srcStage1 = vk::PipelineStageFlagBits::eTransfer,						//The image is in transfer stage from the buffer copy
 					dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;		//Change it to color output to present them
-				copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, 0, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
+				copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
+				//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
 
 				//End command buffer recording
 				copyCommandBuffers[imgIndex].end();

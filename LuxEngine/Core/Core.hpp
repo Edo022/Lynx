@@ -89,15 +89,15 @@ namespace lux::core{
 			auto func = (PFN_vkCreateDebugUtilsMessengerEXT)instance.getProcAddr("vkCreateDebugUtilsMessengerEXT");
 			if(func != nullptr) return func(
 				instance, //FIXME CHECK IF THOSE TYPES ARE BINARY COMPATIBLE
-				reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT*>(pCreateInfo),
-				reinterpret_cast<const VkAllocationCallbacks*>(pAllocator),
-				reinterpret_cast<VkDebugUtilsMessengerEXT*>(pDebugMessenger)
+				rcast<const VkDebugUtilsMessengerCreateInfoEXT*>(pCreateInfo),
+				rcast<const VkAllocationCallbacks*>             (pAllocator),
+				rcast<vk::DebugUtilsMessengerEXT::CType*>       (pDebugMessenger)
 			);
 			else return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
 		inline void DestroyDebugUtilsMessengerEXT(vk::Instance vInstance, vk::DebugUtilsMessengerEXT debugMessenger, const vk::AllocationCallbacks* pAllocator) {
 			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(vInstance, "vkDestroyDebugUtilsMessengerEXT");
-			if(func != nullptr) func(vInstance, debugMessenger, reinterpret_cast<const VkAllocationCallbacks*>(pAllocator));
+			if(func != nullptr) func(vInstance, debugMessenger, rcast<const VkAllocationCallbacks*>(pAllocator));
 		}
 
 
