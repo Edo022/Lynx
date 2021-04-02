@@ -19,12 +19,12 @@ namespace lux::core::wnd{
 	private:
 		friend class lux::Window;
 
-		vk::SwapchainKHR			 swapchain;
+		vk::SwapchainKHR           swapchain;
 		public: //FIXME
 		vk::SwapchainCreateInfoKHR createInfo;	//Informations used to create the swapchain. They are saved in order to be reused when the swapchain has to be recreated
 		private:
 		vk::RenderPass             renderPass;
-		bool                     useVSync = true;
+		bool                       useVSync = true;
 
 
 		struct SwpFrame{
@@ -65,7 +65,7 @@ namespace lux::core::wnd{
 		Window* bindedWindow;				//Window owning the swapchain
 		std::atomic<bool> resized = false;	//Synchronization variable. Set to true by the main engine thread when the window needs to be resized
 
-		RtArray<vk::CommandBuffer>     shadersCBs;
+		RtArray<vk::CommandBuffer> shadersCBs;
 
 
 		Swapchain();					//Object constructor. Allocates memory and initializes some resources

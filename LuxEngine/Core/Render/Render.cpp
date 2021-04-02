@@ -62,7 +62,6 @@ namespace lux{
 			auto start = std::chrono::high_resolution_clock::now();
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
-			// if(swp.shaders.count() <= 1) continue;
 			addShaderFence.lock();
 			if(swp.shadersCBs.count() <= 1) {
 				addShaderFence.unlock();
@@ -118,7 +117,6 @@ namespace lux{
 					.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
 					.setPWaitDstStageMask    (waitStages)
 					.setCommandBufferCount   (1)
-					// .setPCommandBuffers   (new vk::CommandBuffer(swp.shaders[0].commandBuffers[0]))
 					.setPCommandBuffers      (&sh_clear.commandBuffers[0])
 					.setSignalSemaphoreCount (1)
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)

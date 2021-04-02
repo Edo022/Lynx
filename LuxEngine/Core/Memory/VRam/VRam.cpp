@@ -55,7 +55,7 @@ namespace lux::sys{
 					uint32 buffsNum = sys::vram.size / buffSize;						//Get max number of cells that can fit in the system memory
 					uint32 typeIndex = (i << 2) | (j << 1) | k;							//Calculate buffer type index
 					uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);		//Get number of cells in each buffer
-					new(&vram::types[typeIndex]) vram::Type_t2{								//Create new type struct
+					new(&vram::types[typeIndex]) vram::Type_t2{							//Create new type struct
 						.cellClass = classEnumFromIndex(i),									//Set class index
 						.memory =  (vram::Cell_t2_csc* )calloc(sizeof(vram::Cell_t2_csc),  buffsNum),//Allocate the max number of buffers. Initialize them with nullptr
 						.cellsPerBuff = cellsPerBuff										//Set the maximum number of cells per buffer

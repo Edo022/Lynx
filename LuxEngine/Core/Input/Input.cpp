@@ -29,8 +29,6 @@ namespace lux::input{
 
 
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
-		// *rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->fw -= (float32)y * 10;
-		// *rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->sw -= (float32)y * 10;
 		rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd0() -= ((float32)y * 10);
 		rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd1() -= ((float32)y * 10);
 		rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->update();

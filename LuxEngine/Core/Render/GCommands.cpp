@@ -12,7 +12,6 @@
 
 namespace lux::core::render::cmd{
 	alignCache vk::CommandPool            singleTimeCommandPool = nullptr;
-	// alignCache RtArray<vk::CommandBuffer> singleTimeCommandBuffers;
 
 
 

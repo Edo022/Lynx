@@ -48,9 +48,9 @@ namespace lux::core::c::shaders{
 			return 0;
 		}
 		_wds(
-			_fseeki64(fp, 0, SEEK_END);										//Go to the end of the file
-			uint32 filesize = _ftelli64(fp);					//And get the file count
-			_fseeki64(fp, 0, SEEK_SET);										//Go to the beginning of the file
+			_fseeki64(fp, 0, SEEK_END);				//Go to the end of the file
+			uint32 filesize = _ftelli64(fp);		//And get the file count
+			_fseeki64(fp, 0, SEEK_SET);				//Go to the beginning of the file
 		)
 		_lnx(
 			fseek(fp, 0, SEEK_END);
@@ -60,13 +60,13 @@ namespace lux::core::c::shaders{
 
 		uint32 paddedFileSize = (uint32)(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
 
-		char* str = (char*)malloc(sizeof(char) * (uint64)paddedFileSize);		//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
-		fread(str, (uint64)filesize, sizeof(char), fp);							//Read the file
-		fclose(fp);														//Close the file
-		for(uint32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;	//Add padding
+		char* str = (char*)malloc(sizeof(char) * (uint64)paddedFileSize);	//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
+		fread(str, (uint64)filesize, sizeof(char), fp);						//Read the file
+		fclose(fp);															//Close the file
+		for(uint32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;		//Add padding
 
-		*pLength = paddedFileSize;										//Set length
-		return (uint32*)str;											//Return the buffer
+		*pLength = paddedFileSize;											//Set length
+		return (uint32*)str;												//Return the buffer
 	}
 
 
@@ -80,16 +80,17 @@ namespace lux::core::c::shaders{
 	 * @param pLength A pointer to the code length
 	 * @return The created shader module
 	 */
+	//FIXME FIX
 	vk::ShaderModule cshaderCreateModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength) {
-		auto createInfo = vk::ShaderModuleCreateInfo() 							//Create shader module infos
+		auto createInfo = vk::ShaderModuleCreateInfo() 					//Create shader module infos
 			.setCodeSize (*pLength)											//Set the count of the compiled shader code
-			.setPCode    (pCode)													//Set the shader code
+			.setPCode    (pCode)											//Set the shader code
 		;
 
-		vk::ShaderModule shaderModule;										//Create the shader module
+		vk::ShaderModule shaderModule;									//Create the shader module
 		vDevice.createShaderModule(&createInfo, nullptr, &shaderModule);
-		free(pCode);														//#LLID CSF0000 Free memory
-		return shaderModule;												//Return the created shader module
+		free(pCode);													//#LLID CSF0000 Free memory
+		return shaderModule;											//Return the created shader module
 	}
 
 
@@ -113,7 +114,7 @@ namespace lux::core::c::shaders{
 	 * @param vRenderShader the type of the shader
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
-	 */
+	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
 	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly, Window& pWindow) {
 		{ //Create descriptor set layout
 			RtArray<vk::DescriptorSetLayoutBinding> bindingLayouts(pCellNum);
@@ -154,14 +155,14 @@ namespace lux::core::c::shaders{
 			//Create stage info
 			pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)								//Use it in the compute stage
-				.setModule (pWindow.CShadersLayouts[vRenderShader].shaderModule)				//Set shader module
-				.setPName  ("main")													//Set the main function as entry point
+				.setModule (pWindow.CShadersLayouts[vRenderShader].shaderModule)			//Set shader module
+				.setPName  ("main")															//Set the main function as entry point
 			;
 
 
 			//Create pipeline layout
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
-				.setSetLayoutCount (1)													//Number of set layouts
+				.setSetLayoutCount (1)																//Number of set layouts
 				.setPSetLayouts    (&pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout)	//Set set layout
 			;
 			dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipelineLayout);

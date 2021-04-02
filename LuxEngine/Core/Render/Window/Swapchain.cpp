@@ -49,29 +49,31 @@ namespace lux::core::wnd{
 		vk::SurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
 		createInfo = vk::SwapchainCreateInfoKHR()
-			.setSurface          (bindedWindow->surface)
-			.setMinImageCount    (minImageCount)
-			.setImageFormat      (surfaceFormat.format)
-			.setImageColorSpace  (surfaceFormat.colorSpace)
-			.setImageExtent      (chooseSwapchainExtent(&capabilities))
-			.setImageArrayLayers (1)
-			.setImageUsage       (vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst)
+			.setSurface               (bindedWindow->surface)
+			.setMinImageCount         (minImageCount)
+			.setImageFormat           (surfaceFormat.format)
+			.setImageColorSpace       (surfaceFormat.colorSpace)
+			.setImageExtent           (chooseSwapchainExtent(&capabilities))
+			.setImageArrayLayers      (1)
+			.setImageUsage            (vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst)
 
 			.setImageSharingMode      ((dvc::graphics.PD.indices.graphicsFamily != dvc::graphics.PD.indices.presentFamily) ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
 			.setQueueFamilyIndexCount (2)
 			.setPQueueFamilyIndices   (queueFamilyIndices)
 
-			.setPreTransform   (capabilities.currentTransform)
-			.setCompositeAlpha (vk::CompositeAlphaFlagBitsKHR::eOpaque)
-			.setPresentMode    (choosePresentMode(getPresentModes()))
-			.setClipped        (VK_TRUE)
-			.setOldSwapchain   (nullptr)
+			.setPreTransform          (capabilities.currentTransform)
+			.setCompositeAlpha        (vk::CompositeAlphaFlagBitsKHR::eOpaque)
+			.setPresentMode           (choosePresentMode(getPresentModes()))
+			.setClipped               (VK_TRUE)
+			.setOldSwapchain          (nullptr)
 		;
 
 
 		//Create swapchain
-		vk::Bool32 hasPresentSupport = false; //FIXME
-		dvc::graphics.PD.device.getSurfaceSupportKHR(dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //SUPPRESS ERROR //FIXME
+		vk::Bool32 hasPresentSupport = false;
+		dvc::graphics.PD.device.getSurfaceSupportKHR(dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //! SUPPRESS ERROR
+		//FIXME hasPresentSupport is unused
+		//FIXME ^ SKIP THIS IN RELEASE MODE (It's probably already checked by another function)
 		dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain);
 
 
@@ -104,7 +106,7 @@ namespace lux::core::wnd{
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
-			dvc::graphics.LD.waitIdle();		//Wait for the logical device
+			dvc::graphics.LD.waitIdle();			//Wait for the logical device
 
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
@@ -149,7 +151,8 @@ namespace lux::core::wnd{
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			cb.updateBuffer(bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
-
+			//FIXME AUTOMATIZE BUFFER UPDATE
+			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
 
 
 			{	//Destroy copy command buffers
@@ -316,35 +319,32 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::createRenderPass() {
-		auto colorAttachment = vk::AttachmentDescription()
-			.setFormat         (createInfo.imageFormat)				//Swapchain image format
-			.setSamples        (vk::SampleCountFlagBits::e1)			//Multisampling samples
-			.setLoadOp         (vk::AttachmentLoadOp::eDontCare)		//Don't clear for better performance
-			.setStoreOp        (vk::AttachmentStoreOp::eDontCare)		//Don't save rendered image
-			.setStencilLoadOp  (vk::AttachmentLoadOp::eDontCare)		//Discard stencil
-			.setStencilStoreOp (vk::AttachmentStoreOp::eDontCare)		//Discard stencil
-			.setInitialLayout  (vk::ImageLayout::eUndefined)			//Default layout
-			.setFinalLayout    (vk::ImageLayout::ePresentSrcKHR)		//Present layout
+		auto colorAttachment = vk::AttachmentDescription()				//Create attachment
+			.setFormat         (createInfo.imageFormat)						//Swapchain image format
+			.setSamples        (vk::SampleCountFlagBits::e1)				//Multisampling samples
+			.setLoadOp         (vk::AttachmentLoadOp::eDontCare)			//Don't clear for better performance
+			.setStoreOp        (vk::AttachmentStoreOp::eDontCare)			//Don't save rendered image
+			.setStencilLoadOp  (vk::AttachmentLoadOp::eDontCare)			//Discard stencil
+			.setStencilStoreOp (vk::AttachmentStoreOp::eDontCare)			//Discard stencil
+			.setInitialLayout  (vk::ImageLayout::eUndefined)				//Default layout
+			.setFinalLayout    (vk::ImageLayout::ePresentSrcKHR)			//Present layout
 		;
 
 
-		//create attachment reference
-		auto colorAttachmentRef = vk::AttachmentReference()
-			.setAttachment(0)
-			.setLayout(vk::ImageLayout::eColorAttachmentOptimal)
+		auto colorAttachmentRef = vk::AttachmentReference()				//create attachment reference
+			.setAttachment(0)												//Use first attachment
+			.setLayout(vk::ImageLayout::eColorAttachmentOptimal)			//Optimized layout
 		;
-		//Create subpass description
-		auto subpass = vk::SubpassDescription()
+		auto subpass = vk::SubpassDescription()							//Create subpass description
 			.setPipelineBindPoint       (vk::PipelineBindPoint::eGraphics)	//Set structure type
-			.setColorAttachmentCount    (1)								//Set number of attachments
+			.setColorAttachmentCount    (1)									//Set number of attachments
 			.setPColorAttachments       (&colorAttachmentRef)				//Previously created color attachment
-			.setPDepthStencilAttachment (nullptr)					//Previously created depth attachment
+			.setPDepthStencilAttachment (nullptr)							//Previously created depth attachment
 		;
 
 
-		//Dependencies for implicit convertion
-		vk::SubpassDependency dependencies[2]{
-			vk::SubpassDependency()	//From undefined to color
+		vk::SubpassDependency dependencies[2]{							//Dependencies for implicit convertion
+			vk::SubpassDependency()											//From undefined to color
 				.setSrcSubpass      (VK_SUBPASS_EXTERNAL)
 				.setDstSubpass      (0)
 				.setSrcStageMask    (vk::PipelineStageFlagBits::eBottomOfPipe)
@@ -352,7 +352,7 @@ namespace lux::core::wnd{
 				.setSrcAccessMask   (vk::AccessFlagBits::eMemoryRead)
 				.setDstAccessMask   (vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite)
 			,
-			vk::SubpassDependency() //From color to undefined
+			vk::SubpassDependency() 										//From color to undefined
 				.setSrcSubpass      (0)
 				.setDstSubpass      (VK_SUBPASS_EXTERNAL)
 				.setSrcStageMask    (vk::PipelineStageFlagBits::eColorAttachmentOutput)
@@ -363,14 +363,14 @@ namespace lux::core::wnd{
 		};
 
 
-		//Render pass
-		auto renderPassInfo = vk::RenderPassCreateInfo() 								//Create render pass infos
+
+		auto renderPassInfo = vk::RenderPassCreateInfo() 				//Create render pass infos
 			.setAttachmentCount (1)											//Set number of attachments
 			.setPAttachments    (&colorAttachment)							//Set attachments
 			.setSubpassCount    (1)											//Set number of subpasses
 			.setPSubpasses      (&subpass)									//Set subpass
 			.setDependencyCount (2)											//Set number of dependencies
-			.setPDependencies   (dependencies)									//Set dependencies
+			.setPDependencies   (dependencies)								//Set dependencies
 		;
 
 		//Create render pass. Exit if an error occurs

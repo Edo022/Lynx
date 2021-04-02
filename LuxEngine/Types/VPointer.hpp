@@ -37,7 +37,7 @@ namespace lux::vram{
 		uint8 loc;							//Runtime template data
 		uint8 btype;						//Runtime template data
 		Cell_t2* cell;						//A pointer to a lux::vram::Cell_t object that contains the cell informations
-		type* mapped _dbg(= nullptr);	//A pointer used to map the memory
+		type* mapped _dbg(= nullptr);		//A pointer used to map the memory
 
 		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }				//Cast to different type
 		template<class type_> explicit alwaysInline operator const Alloc_b<type_>&() const noexcept { return *(const Alloc_b<type_>*)(this); }	//Cast to different type
@@ -408,8 +408,8 @@ namespace lux::vram{
 				//FIXME FREE BUFFERS
             }
 			else {																			//For custom size cells
-				core::dvc::compute.LD.freeMemory   (Super::cell->csc.memory, nullptr);					//Free the memory
-				core::dvc::compute.LD.destroyBuffer(Super::cell->csc.buffer, nullptr);				//Destroy the vulkan buffer object
+				core::dvc::compute.LD.freeMemory   (Super::cell->csc.memory, nullptr);			//Free the memory
+				core::dvc::compute.LD.destroyBuffer(Super::cell->csc.buffer, nullptr);			//Destroy the vulkan buffer object
 			}
 
             cells_m.lock();

@@ -14,7 +14,7 @@ namespace lux{
     namespace vram{
         struct Cell_t2_csc{
             vk::Buffer buffer;		    //Vulkan buffer object                          //8
-            vk::DeviceMemory memory;	    //Vulkan buffer memory                          //8
+            vk::DeviceMemory memory;	    //Vulkan buffer memory                      //8
         };
         struct Cell_t2{
             uint16 typeIndex;	        //Buffer allocation type                        //2

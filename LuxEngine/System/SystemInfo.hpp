@@ -13,9 +13,9 @@ namespace lux::sys{
         uint32 minFreq;     //Minimum frequence in Mhz
         uint32 maxFreq;     //Maximum frequence in Mhz
         struct CacheInfo{
-            uint64 size;    //Size of the cache in bytes
-            uint64 lineSize;//Size of the cache line in bytes
-            uint64 assoc;   //Cache associativity
+            uint64 size;        //Size of the cache in bytes
+            uint64 lineSize;    //Size of the cache line in bytes
+            uint64 assoc;       //Cache associativity
         } L1D, L1I, L2, L3, L4;
     };
     extern const CpuInfo cpu;

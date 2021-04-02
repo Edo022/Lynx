@@ -251,8 +251,8 @@ namespace lux {
 			data.reallocArr(count() + 1);
 
 			new(&(data[count_].value)) type(pData);	//Initialize new element
-			data[count_].next = (iter)-1;				//Set the tracker as valid
-			return count_++;				//Update the number of elements and return the element index
+			data[count_].next = (iter)-1;			//Set the tracker as valid
+			return count_++;						//Update the number of elements and return the element index
 		}
 
 
@@ -269,15 +269,15 @@ namespace lux {
 			}
 			iter prevHead = head;				//Save head
 			if(head == tail) {					//If it has only one free element
-				data[prevHead].next = (iter)-1;				//Reset head and tail
-				head = tail = (iter)-1;					//Reset tracker
+				data[prevHead].next = (iter)-1;		//Reset head and tail
+				head = tail = (iter)-1;				//Reset tracker
 			}
 			else {								//If it has more than one
-				head = data[prevHead].next;				//Update head
-				data[prevHead].next = (iter)-1;				//Update tracker of the old head element
+				head = data[prevHead].next;			//Update head
+				data[prevHead].next = (iter)-1;		//Update tracker of the old head element
 			}
 			free_--;							//Update number of free elements
-			new(&(data[prevHead].value)) type(pData);		//Initialize the new element
+			new(&(data[prevHead].value)) type(pData);//Initialize the new element
 			return prevHead;						//Return the index of the new element
 		}
 
@@ -294,12 +294,12 @@ namespace lux {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
-			data[vIndex].value.~type();						//Destroy the element
+			data[vIndex].value.~type();					//Destroy the element
 			data[vIndex].next = 0;						//Set the index as free
 			//!                 ^ 0 is used as a "not -1" value. -1 are valid elements
 			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
 			else {										//If it has free elements
-				data[tail].next = vIndex;						//Set the new tail
+				data[tail].next = vIndex;					//Set the new tail
 				tail = vIndex;								//update the last free index
 			}
 			free_++;									//Update the number of free elements

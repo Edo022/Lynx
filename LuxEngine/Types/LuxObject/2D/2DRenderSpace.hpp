@@ -49,8 +49,5 @@ namespace lux::obj {
 
 		bool addChild(Obj2_b* pObject);
 		bool setChildLimits(const uint32 vChildIndex) const final;
-
-		//! 0 BY DEFAULT
-		// inline int32 getCellSize() const final { return 0; }
 	};
 }

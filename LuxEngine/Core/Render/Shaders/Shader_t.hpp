@@ -29,21 +29,21 @@ namespace lux{
 
 	//This struct contains the elements of a shader layout
 	struct LuxShaderLayout_t{
-		vk::DescriptorSetLayout			descriptorSetLayout;	//Layout of the descriptor sets
-		vk::ShaderModule					shaderModule;			//Shader module created from the sahader compile file
-		vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;	//Shader stage
+		vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
+		vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
+		vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
 
-		vk::PipelineLayout				pipelineLayout;			//Layout of the pipeline
-		vk::Pipeline						pipeline;				//The pipeline that will be boud to the command buffer of the instance
+		vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
+		vk::Pipeline                      pipeline;				//The pipeline that will be boud to the command buffer of the instance
 	};
 
 
 
 
 	template<bufferType buft> struct ShaderElm_b {
-		vram::ptr<char, VRam, buft> vdata;	//Gpu data
-		ram::ptr<char>              data;	//Local data copy
-		uint32                      bind;	//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
+		vram::ptr<char, VRam, buft> vdata;						//Gpu data
+		ram::ptr<char>              data;						//Local data copy
+		uint32                      bind;						//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
 	};
 
 
@@ -51,7 +51,7 @@ namespace lux{
 
 	struct Shader_b {
 		vk::DescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
-		vk::DescriptorSet					descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
+		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 		lux::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 
 
