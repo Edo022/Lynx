@@ -43,8 +43,8 @@ namespace lux{
 
 		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
 		void add(obj::RenderSpace2D* pRenderSpace);
-		RtArray<obj::Base*>	objUpdates2D;
-		std::mutex          objUpdates2D_f;
+		RtArray<obj::Base*>	objUpdates;
+		std::mutex          objUpdates_m;
 
 
 

@@ -67,14 +67,13 @@ namespace lux{
 			} common;
 			_dbg(bool debug = false;)						//Defines if the object is used for graphical debugging		| none						| object instance
 			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
-			virtual ram::ptr<char> getShData(){ return nullptr; }
+			virtual ram::ptr<char>       getShData(){ return nullptr; }
 			virtual vram::Alloc_b<char> getShVData(){ return vram::Alloc_b<char>(); }
 
 			struct Render{
 				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
 				bool updated{ true };
 				Window* parentWindow = nullptr;
-
 			} render;
 			virtual void update() = 0;							//Updates the object data in the shared memory				| object type				| -
 			void allocate();									//Allocates a memory cell for the object data				| object type				| -

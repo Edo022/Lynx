@@ -175,21 +175,21 @@ namespace lux{
 
 			//TODO parallelize work from a secondary render thread
 			//Fix objects update requests
-			if(objUpdates2D.count() > 0) {
-				objUpdates2D_f.lock();
+			if(objUpdates.count() > 0) {
+				objUpdates_m.lock();
 				vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-				for(uint32 i = 0; i < objUpdates2D.count(); i++) {
-					objUpdates2D[i]->render.updated = true;
+				for(uint32 i = 0; i < objUpdates.count(); i++) {
+					objUpdates[i]->render.updated = true;
 					cb.updateBuffer(
-						objUpdates2D[i]->getShVData().cell->csc.buffer,
-						objUpdates2D[i]->getShVData().cell->localOffset,
-						objUpdates2D[i]->getShVData().cell->cellSize,
-						(void*)objUpdates2D[i]->getShData()
+						objUpdates[i]->getShVData().cell->csc.buffer,
+						objUpdates[i]->getShVData().cell->localOffset,
+						objUpdates[i]->getShVData().cell->cellSize,
+						(void*)objUpdates[i]->getShData()
 					);
 				}
 				core::render::cmd::endSingleTimeCommands(cb);
-				objUpdates2D.clear();
-				objUpdates2D_f.unlock();
+				objUpdates.clear();
+				objUpdates_m.unlock();
 			}
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 			if(glfwWindowShouldClose(window)) return;

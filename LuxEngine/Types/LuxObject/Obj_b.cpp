@@ -27,12 +27,11 @@ namespace lux::obj{
 	void Base::updateBase() {
 		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
 		if(!render.parentWindow) return;
-		render.parentWindow->objUpdates2D_f.lock();
+		render.parentWindow->objUpdates_m.lock();
 		if(render.updated) {
 			render.updated = false;
-			// core::render::objUpdates2D.add(this);
-			render.parentWindow->objUpdates2D.add(this);
+			render.parentWindow->objUpdates.add(this);
 		}
-		render.parentWindow->objUpdates2D_f.unlock();
+		render.parentWindow->objUpdates_m.unlock();
 	}
 }
