@@ -68,7 +68,10 @@ namespace lux{
 				continue;
 			}
 			addShaderFence.unlock();
-			core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, INT_MAX);
+			core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX);
+			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
+			//BUG [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* Waiting for fences timed out!
+
 
 
 			//Redraw frame if necessary
