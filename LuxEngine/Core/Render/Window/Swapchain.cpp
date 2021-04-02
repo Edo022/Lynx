@@ -17,14 +17,14 @@ namespace lux::core::wnd{
 		frames.resize(__renderMaxFramesInFlight);
 
 		//Create sync objects
-		vk::SemaphoreCreateInfo semaphoreInfo{ .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, /*.flags = VK_SEMAPHORE_*/ };
-		vk::FenceCreateInfo fenceInfo{ .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, .flags = VK_FENCE_CREATE_SIGNALED_BIT };
+		auto semaphoreInfo = vk::SemaphoreCreateInfo();
+		auto fenceInfo = vk::FenceCreateInfo().setFlags(vk::FenceCreateFlagBits::eSignaled);
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_aquired);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_objects);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_copy);
-			vkCreateSemaphore(dvc::graphics.LD, &semaphoreInfo, nullptr, &frames[i].s_clear);
-			vkCreateFence(    dvc::graphics.LD, &fenceInfo, 	nullptr, &frames[i].f_rendered);
+			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_aquired );
+			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_objects );
+			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_copy    );
+			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_clear   );
+			dvc::graphics.LD.createFence    (&fenceInfo,     nullptr, &frames[i].f_rendered);
 		}
 	}
 
@@ -48,33 +48,31 @@ namespace lux::core::wnd{
 		//swapchain creation infos
 		vk::SurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
 		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
-		createInfo = {
-			.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
-			// .surface          = w.surface, //TODO USE OFFSETOF
-			.surface          = bindedWindow->surface,
-			.minImageCount    = minImageCount,
-			.imageFormat      = surfaceFormat.format,
-			.imageColorSpace  = surfaceFormat.colorSpace,
-			.imageExtent      = chooseSwapchainExtent(&capabilities),
-			.imageArrayLayers = 1,
-			.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+		createInfo = vk::SwapchainCreateInfoKHR()
+			.setSurface          (bindedWindow->surface)
+			.setMinImageCount    (minImageCount)
+			.setImageFormat      (surfaceFormat.format)
+			.setImageColorSpace  (surfaceFormat.colorSpace)
+			.setImageExtent      (chooseSwapchainExtent(&capabilities))
+			.setImageArrayLayers (1)
+			.setImageUsage       (vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst)
 
-			.imageSharingMode      = (dvc::graphics.PD.indices.graphicsFamily != dvc::graphics.PD.indices.presentFamily) ? VK_SHARING_MODE_CONCURRENT : VK_SHARING_MODE_EXCLUSIVE,
-			.queueFamilyIndexCount = 2,
-			.pQueueFamilyIndices   = queueFamilyIndices,
+			.setImageSharingMode      ((dvc::graphics.PD.indices.graphicsFamily != dvc::graphics.PD.indices.presentFamily) ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
+			.setQueueFamilyIndexCount (2)
+			.setPQueueFamilyIndices   (queueFamilyIndices)
 
-			.preTransform   = capabilities.currentTransform,
-			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
-			.presentMode    = choosePresentMode(getPresentModes()),
-			.clipped        = VK_TRUE,
-			.oldSwapchain   = VK_NULL_HANDLE,
-		};
+			.setPreTransform   (capabilities.currentTransform)
+			.setCompositeAlpha (vk::CompositeAlphaFlagBitsKHR::eOpaque)
+			.setPresentMode    (choosePresentMode(getPresentModes()))
+			.setClipped        (VK_TRUE)
+			.setOldSwapchain   (VK_NULL_HANDLE)
+		;
 
 
 		//Create swapchain
 		vk::Bool32 hasPresentSupport = false; //FIXME
-		vkGetPhysicalDeviceSurfaceSupportKHR(dvc::graphics.PD.device, dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //SUPPRESS ERROR //FIXME
-		dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
+		dvc::graphics.PD.device.getSurfaceSupportKHR(dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //SUPPRESS ERROR //FIXME
+		dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain);
 
 
 		//Create render pass
@@ -82,14 +80,14 @@ namespace lux::core::wnd{
 
 		//Get images
 		uint32 imageCount;
-		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);
+		dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr);
 		images.resize(imageCount); vk::Image _[imageCount];
-		vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, _);
+		dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _);
 
 		//Initialize images, image views and framebuffers
 		for(uint32 i = 0; i < imageCount; ++i) {
 			images[i].image = _[i];
-			images[i].view  = createImageView(images[i].image, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			images[i].view  = createImageView(images[i].image, createInfo.imageFormat, vk::ImageAspectFlagBits::eColor);
 			images[i].fbuffer = createFramebuffer(renderPass, images[i].view, createInfo.imageExtent.width, createInfo.imageExtent.height);
 			//FIXME check if framebuffers are really necessary
 		}
@@ -106,12 +104,12 @@ namespace lux::core::wnd{
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
-			vkDeviceWaitIdle(dvc::graphics.LD);		//Wait for the logical device
+			dvc::graphics.LD.waitIdle();		//Wait for the logical device
 
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
 				vk::SurfaceCapabilitiesKHR capabilities;
-				vkGetPhysicalDeviceSurfaceCapabilitiesKHR(dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
+				dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities);
 				createInfo.imageExtent = chooseSwapchainExtent(&capabilities);
 
 				//Recalculate queue family indices
@@ -123,25 +121,25 @@ namespace lux::core::wnd{
 				createInfo.oldSwapchain  = oldSwapchain;
 
 				//Create swapchain
-				dbg::checkVk(vkCreateSwapchainKHR(dvc::graphics.LD, &createInfo, nullptr, &swapchain), "Failed to create swapchain");
-				vkDestroySwapchainKHR(dvc::graphics.LD, oldSwapchain, nullptr);
+				dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain);
+				dvc::graphics.LD.destroySwapchainKHR(oldSwapchain, nullptr);
 			}
 
 			//Create images
 			uint32 imageCount;
-			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, nullptr);
+			dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr);
 			//TODO ^ Vulkan validation layers complain about not calling this function with nullptr before getting the images,
 			//TODO   but the number of images remains the same, so there is not need to call it twice.
 			//TODO   If it's the case, remove those lines from release mode.
 
 			//Get images
 			vk::Image _[imageCount];
-			vkGetSwapchainImagesKHR(dvc::graphics.LD, swapchain, &imageCount, _);
+			dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _);
 
 			//Re initialize images, image views and framebuffer
 			for(uint32 i = 0; i < imageCount; ++i) {
 				images[i].image = _[i];
-				images[i].view  = createImageView(images[i].image, createInfo.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+				images[i].view  = createImageView(images[i].image, createInfo.imageFormat, vk::ImageAspectFlagBits::eColor);
 				images[i].fbuffer = createFramebuffer(renderPass, images[i].view, createInfo.imageExtent.width, createInfo.imageExtent.height);
 			}
 
@@ -149,14 +147,14 @@ namespace lux::core::wnd{
 			//Update the window size buffer
 			u32 wSize[2] = { createInfo.imageExtent.width, createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			vkCmdUpdateBuffer(cb, bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
+			cb.updateBuffer(bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 
 
 
 			{	//Destroy copy command buffers
-				vkFreeCommandBuffers(dvc::compute.LD, bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
-				vkDestroyCommandPool(dvc::compute.LD, bindedWindow->copyCommandPool, nullptr);
+				dvc::compute.LD.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
+				dvc::compute.LD.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
 				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
@@ -177,8 +175,8 @@ namespace lux::core::wnd{
 
 	void Swapchain::destroy() {
 		for(auto img : images) {
-			vkDestroyFramebuffer(dvc::graphics.LD, img.fbuffer, nullptr);
-			vkDestroyImageView  (dvc::graphics.LD, img.view,    nullptr);
+			dvc::graphics.LD.destroyFramebuffer(img.fbuffer, nullptr);
+			dvc::graphics.LD.destroyImageView  (img.view,    nullptr);
 		}
 	}
 
@@ -186,16 +184,16 @@ namespace lux::core::wnd{
 
 
 	Swapchain::~Swapchain(){
-		vkDeviceWaitIdle(core::dvc::graphics.LD);
+		core::dvc::graphics.LD.waitIdle();
 		destroy();
-		vkDestroyRenderPass  (dvc::graphics.LD, renderPass, nullptr);
-		vkDestroySwapchainKHR(dvc::graphics.LD, swapchain,  nullptr);
+		dvc::graphics.LD.destroyRenderPass  (renderPass, nullptr);
+		dvc::graphics.LD.destroySwapchainKHR(swapchain,  nullptr);
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_aquired,  nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_objects,  nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_copy,     nullptr);
-			vkDestroySemaphore(dvc::graphics.LD, frames[i].s_clear,    nullptr);
-			vkDestroyFence(    dvc::graphics.LD, frames[i].f_rendered, nullptr);
+			dvc::graphics.LD.destroySemaphore(frames[i].s_aquired,  nullptr);
+			dvc::graphics.LD.destroySemaphore(frames[i].s_objects,  nullptr);
+			dvc::graphics.LD.destroySemaphore(frames[i].s_copy,     nullptr);
+			dvc::graphics.LD.destroySemaphore(frames[i].s_clear,    nullptr);
+			dvc::graphics.LD.destroyFence    (frames[i].f_rendered, nullptr);
 		}
 	}
 
@@ -207,27 +205,26 @@ namespace lux::core::wnd{
 
 
 	inline vk::ImageView Swapchain::createImageView(const vk::Image vImage, const vk::Format vFormat, const vk::ImageAspectFlags vAspectFlags) {
-		vk::ImageViewCreateInfo viewInfo{
-			.sType    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-			.image    = vImage,
-			.viewType = VK_IMAGE_VIEW_TYPE_2D,
-			.format   = vFormat,
-			.components{
-				.r = VK_COMPONENT_SWIZZLE_IDENTITY,
-				.g = VK_COMPONENT_SWIZZLE_IDENTITY,
-				.b = VK_COMPONENT_SWIZZLE_IDENTITY,
-				.a = VK_COMPONENT_SWIZZLE_IDENTITY
-			},
-			.subresourceRange{
-				.aspectMask     = vAspectFlags,
-				.baseMipLevel   = 0,
-				.levelCount     = 1,
-				.baseArrayLayer = 0,
-				.layerCount     = 1
-			}
-		};
+		auto viewInfo = vk::ImageViewCreateInfo()
+			.setImage    (vImage)
+			.setViewType (vk::ImageViewType::e2D)
+			.setFormat   (vFormat)
+			.setComponents(vk::ComponentMapping()
+				.setR (vk::ComponentSwizzle::eIdentity)
+				.setG (vk::ComponentSwizzle::eIdentity)
+				.setB (vk::ComponentSwizzle::eIdentity)
+				.setA (vk::ComponentSwizzle::eIdentity)
+			)
+			.setSubresourceRange(vk::ImageSubresourceRange()
+				.setAspectMask     (vAspectFlags)
+				.setBaseMipLevel   (0)
+				.setLevelCount     (1)
+				.setBaseArrayLayer (0)
+				.setLayerCount     (1)
+			)
+		;
 		vk::ImageView imageView;
-		dbg::checkVk(vkCreateImageView(dvc::graphics.LD, &viewInfo, nullptr, &imageView), "Failed to create texture image view");
+		dvc::graphics.LD.createImageView(&viewInfo, nullptr, &imageView);
 		return imageView;
 	}
 
@@ -239,17 +236,16 @@ namespace lux::core::wnd{
 
 
 	inline vk::Framebuffer Swapchain::createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWith, uint32 vHeight) {
-		vk::FramebufferCreateInfo framebufferInfo{
-			.sType           = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-			.renderPass      = vRenderPass,
-			.attachmentCount = 1,
-			.pAttachments    = &vAttachment,
-			.width           = vWith,
-			.height          = vHeight,
-			.layers          = 1
-		};
+		auto framebufferInfo = vk::FramebufferCreateInfo()
+			.setRenderPass      (vRenderPass)
+			.setAttachmentCount (1)
+			.setPAttachments    (&vAttachment)
+			.setWidth           (vWith)
+			.setHeight          (vHeight)
+			.setLayers          (1)
+		;
 		vk::Framebuffer framebuffer;
-		dbg::checkVk(vkCreateFramebuffer(dvc::graphics.LD, &framebufferInfo, nullptr, &framebuffer), "Failed to create framebuffer");
+		dvc::graphics.LD.createFramebuffer(&framebufferInfo, nullptr, &framebuffer);
 		return framebuffer;
 	}
 
@@ -273,7 +269,7 @@ namespace lux::core::wnd{
 		for(auto& availableFormat : pAvailableFormats) {
 			//TODO use best format available when not specified
 			//TODO use RGBA8 format in shaders when better formats are not available
-			if(availableFormat.format == VK_FORMAT_R8G8B8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+			if(availableFormat.format == vk::Format::eR8G8B8A8Srgb && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
 				return availableFormat;
 			}
 		}
@@ -285,11 +281,11 @@ namespace lux::core::wnd{
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
 	vk::PresentModeKHR Swapchain::choosePresentMode(const RtArray<vk::PresentModeKHR>& pAvailablePresentModes) {
-		if(useVSync) return VK_PRESENT_MODE_FIFO_KHR; //FIXME MOVE VSYNC TO WINDOW STRUCT
+		if(useVSync) return vk::PresentModeKHR::eFifo; //FIXME MOVE VSYNC TO WINDOW STRUCT
 		for(const auto& availablePresentMode : pAvailablePresentModes) {
-			if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) return availablePresentMode;
+			if(availablePresentMode == vk::PresentModeKHR::eMailbox) return availablePresentMode;
 		}
-		return VK_PRESENT_MODE_IMMEDIATE_KHR;
+		return vk::PresentModeKHR::eImmediate;
 	}
 
 
@@ -320,64 +316,65 @@ namespace lux::core::wnd{
 
 
 	void Swapchain::createRenderPass() {
-		vk::AttachmentDescription colorAttachment{
-			.format         = createInfo.imageFormat,				//Swapchain image format
-			.samples        = VK_SAMPLE_COUNT_1_BIT,				//Multisampling samples
-			.loadOp         = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Don't clear for better performance
-			.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE,		//Don't save rendered image
-			.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE,		//Discard stencil
-			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,		//Discard stencil
-			.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED,			//Default layout
-			.finalLayout    = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR		//Present layout
-		};
+		auto colorAttachment = vk::AttachmentDescription()
+			.setFormat         (createInfo.imageFormat)				//Swapchain image format
+			.setSamples        (vk::SampleCountFlagBits::e1)			//Multisampling samples
+			.setLoadOp         (vk::AttachmentLoadOp::eDontCare)		//Don't clear for better performance
+			.setStoreOp        (vk::AttachmentStoreOp::eDontCare)		//Don't save rendered image
+			.setStencilLoadOp  (vk::AttachmentLoadOp::eDontCare)		//Discard stencil
+			.setStencilStoreOp (vk::AttachmentStoreOp::eDontCare)		//Discard stencil
+			.setInitialLayout  (vk::ImageLayout::eUndefined)			//Default layout
+			.setFinalLayout    (vk::ImageLayout::ePresentSrcKHR)		//Present layout
+		;
 
 
 		//create attachment reference
-		vk::AttachmentReference colorAttachmentRef{ 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+		auto colorAttachmentRef = vk::AttachmentReference()
+			.setAttachment(0)
+			.setLayout(vk::ImageLayout::eColorAttachmentOptimal)
+		;
 		//Create subpass description
-		vk::SubpassDescription subpass{
-			.pipelineBindPoint       = VK_PIPELINE_BIND_POINT_GRAPHICS,	//Set structure type
-			.colorAttachmentCount    = 1,								//Set number of attachments
-			.pColorAttachments       = &colorAttachmentRef,				//Previously created color attachment
-			.pDepthStencilAttachment = VK_NULL_HANDLE					//Previously created depth attachment
-		};
+		auto subpass = vk::SubpassDescription()
+			.setPipelineBindPoint       (vk::PipelineBindPoint::eGraphics)	//Set structure type
+			.setColorAttachmentCount    (1)								//Set number of attachments
+			.setPColorAttachments       (&colorAttachmentRef)				//Previously created color attachment
+			.setPDepthStencilAttachment (VK_NULL_HANDLE)					//Previously created depth attachment
+		;
 
 
 		//Dependencies for implicit convertion
 		vk::SubpassDependency dependencies[2]{
-			{	//From undefined to color
-				.srcSubpass      = VK_SUBPASS_EXTERNAL,
-				.dstSubpass      = 0,
-				.srcStageMask    = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-				.dstStageMask    = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-				.srcAccessMask   = VK_ACCESS_MEMORY_READ_BIT,
-				.dstAccessMask   = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-				.dependencyFlags = 0
-			}, { //From color to undefined
-				.srcSubpass      = 0,
-				.dstSubpass      = VK_SUBPASS_EXTERNAL,
-				.srcStageMask    = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-				.dstStageMask    = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-				.srcAccessMask   = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-				.dstAccessMask   = VK_ACCESS_MEMORY_READ_BIT,
-				.dependencyFlags = 0
-			}
+			vk::SubpassDependency()	//From undefined to color
+				.setSrcSubpass      (VK_SUBPASS_EXTERNAL)
+				.setDstSubpass      (0)
+				.setSrcStageMask    (vk::PipelineStageFlagBits::eBottomOfPipe)
+				.setDstStageMask    (vk::PipelineStageFlagBits::eColorAttachmentOutput)
+				.setSrcAccessMask   (vk::AccessFlagBits::eMemoryRead)
+				.setDstAccessMask   (vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite)
+			,
+			vk::SubpassDependency() //From color to undefined
+				.setSrcSubpass      (0)
+				.setDstSubpass      (VK_SUBPASS_EXTERNAL)
+				.setSrcStageMask    (vk::PipelineStageFlagBits::eColorAttachmentOutput)
+				.setDstStageMask    (vk::PipelineStageFlagBits::eBottomOfPipe)
+				.setSrcAccessMask   (vk::AccessFlagBits::eColorAttachmentRead | vk::AccessFlagBits::eColorAttachmentWrite)
+				.setDstAccessMask   (vk::AccessFlagBits::eMemoryRead)
+			,
 		};
 
 
 		//Render pass
-		vk::RenderPassCreateInfo renderPassInfo{ 								//Create render pass infos
-			.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,	//Set structure type
-			.attachmentCount = 1,											//Set number of attachments
-			.pAttachments    = &colorAttachment,							//Set attachments
-			.subpassCount    = 1,											//Set number of subpasses
-			.pSubpasses      = &subpass,									//Set subpass
-			.dependencyCount = 2,											//Set number of dependencies
-			.pDependencies   = dependencies									//Set dependencies
-		};
+		auto renderPassInfo = vk::RenderPassCreateInfo() 								//Create render pass infos
+			.setAttachmentCount (1)											//Set number of attachments
+			.setPAttachments    (&colorAttachment)							//Set attachments
+			.setSubpassCount    (1)											//Set number of subpasses
+			.setPSubpasses      (&subpass)									//Set subpass
+			.setDependencyCount (2)											//Set number of dependencies
+			.setPDependencies   (dependencies)									//Set dependencies
+		;
 
 		//Create render pass. Exit if an error occurs
-		dbg::checkVk(vkCreateRenderPass(dvc::graphics.LD, &renderPassInfo, nullptr, &renderPass), "Failed to create render pass");
+		dvc::graphics.LD.createRenderPass(&renderPassInfo, nullptr, &renderPass);
 	}
 
 
@@ -385,7 +382,7 @@ namespace lux::core::wnd{
 
 	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
 		vk::SurfaceCapabilitiesKHR capabilities;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &capabilities);
+		core::dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities);
 		return capabilities;
 	}
 
@@ -393,10 +390,10 @@ namespace lux::core::wnd{
 	RtArray<vk::SurfaceFormatKHR> Swapchain::getSurfaceFormats(){
 		uint32 count;
 		RtArray<vk::SurfaceFormatKHR>	formats;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &count, nullptr);
+		core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, nullptr);
 		if(count != 0) {
 			formats.resize(count);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(core::dvc::graphics.PD.device, bindedWindow->surface, &count, formats.begin());
+			core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, formats.begin());
 		}
 		return formats;
 	}
@@ -404,10 +401,10 @@ namespace lux::core::wnd{
 
 	RtArray<vk::PresentModeKHR> Swapchain::getPresentModes(){
 		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &count, nullptr);
+		dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, nullptr);
 		if(count != 0) {
 			presentModes.resize(count);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(dvc::graphics.PD.device, bindedWindow->surface, &count, presentModes.begin());
+			dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, presentModes.begin());
 		}
 		return presentModes;
 	}

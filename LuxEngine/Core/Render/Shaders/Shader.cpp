@@ -81,14 +81,13 @@ namespace lux::core::c::shaders{
 	 * @return The created shader module
 	 */
 	vk::ShaderModule cshaderCreateModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength) {
-		vk::ShaderModuleCreateInfo createInfo{ 							//Create shader module infos
-			.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,			//Set structure type
-			.codeSize = *pLength,											//Set the count of the compiled shader code
-			.pCode = pCode													//Set the shader code
-		};
+		auto createInfo = vk::ShaderModuleCreateInfo() 							//Create shader module infos
+			.setCodeSize (*pLength)											//Set the count of the compiled shader code
+			.setPCode    (pCode)													//Set the shader code
+		;
 
 		vk::ShaderModule shaderModule;										//Create the shader module
-		dbg::checkVk(vkCreateShaderModule(vDevice, &createInfo, nullptr, &shaderModule), "Failed to create shader module");
+		vDevice.createShaderModule(&createInfo, nullptr, &shaderModule);
 		free(pCode);														//#LLID CSF0000 Free memory
 		return shaderModule;												//Return the created shader module
 	}
@@ -119,25 +118,22 @@ namespace lux::core::c::shaders{
 		{ //Create descriptor set layout
 			RtArray<vk::DescriptorSetLayoutBinding> bindingLayouts(pCellNum);
 			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
-				bindingLayouts[i] = vk::DescriptorSetLayoutBinding{ 							//The binding layout describes what to bind in a shader binding point and how to use it
-					.binding            = i,													//Binding point in the shader
-					.descriptorType     = (pIsReadOnly[i]) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER : VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,//Type of the descriptor. It depends on the type of data that needs to be bound
-					.descriptorCount    = 1,													//Number of descriptors
-					.stageFlags         = VK_SHADER_STAGE_COMPUTE_BIT,							//Stage where to use the layout
-					.pImmutableSamplers = nullptr												//Default
-				};
+				bindingLayouts[i] = vk::DescriptorSetLayoutBinding() 							//The binding layout describes what to bind in a shader binding point and how to use it
+					.setBinding            (i)													//Binding point in the shader
+					.setDescriptorType     ((pIsReadOnly[i]) ? vk::DescriptorType::eUniformBuffer : vk::DescriptorType::eStorageBuffer)//Type of the descriptor. It depends on the type of data that needs to be bound
+					.setDescriptorCount    (1)													//Number of descriptors
+					.setStageFlags         (vk::ShaderStageFlagBits::eCompute)					//Stage where to use the layout
+					.setPImmutableSamplers (nullptr)												//Default
+				;
 			}
 
 			//Create a vk::DescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the vk::DescriptorSetLayout
-			vk::DescriptorSetLayoutCreateInfo layoutCreateInfo{
-				.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,	//Structure type
-				.pNext = nullptr,	 											//default
-				.flags = 0,	 													//default
-				.bindingCount = bindingLayouts.count(),	 					//Number of binding layouts
-				.pBindings = (bindingLayouts.begin())	 						//The binding layouts
-			};
+			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
+				.setBindingCount (bindingLayouts.count())	 					//Number of binding layouts
+				.setPBindings    (bindingLayouts.begin())	 						//The binding layouts
+			;
 			//Create the descriptor set layout
-			dbg::checkVk(vkCreateDescriptorSetLayout(dvc::compute.LD, &layoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout), "Unable to create descriptor set layout");
+			dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout);
 		}
 
 
@@ -156,36 +152,31 @@ namespace lux::core::c::shaders{
 
 
 			//Create stage info
-			pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo{
-				.sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,		//Set structure type
-				.stage  = VK_SHADER_STAGE_COMPUTE_BIT,								//Use it in the compute stage
-				#ifndef __INTELLISENSE__ 	//! Intellisense sees "module" as the C++ module keyword. This code is enabled during compilation
-				.module = pWindow.CShadersLayouts[vRenderShader].shaderModule,				//Set shader module
-				.pName  = "main"													//Set the main function as entry point
-				#endif
-			};
+			pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+				.setStage  (vk::ShaderStageFlagBits::eCompute)								//Use it in the compute stage
+				.setModule (pWindow.CShadersLayouts[vRenderShader].shaderModule)				//Set shader module
+				.setPName  ("main")													//Set the main function as entry point
+			;
 
 
 			//Create pipeline layout
-			vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
-				.sType          = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,		//Structure type
-				.setLayoutCount = 1,													//Number of set layouts
-				.pSetLayouts    = &pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout	//Set set layout
-			};
-			dbg::checkVk(vkCreatePipelineLayout(dvc::compute.LD, &pipelineLayoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipelineLayout), "Unable to create pipeline layout");
+			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
+				.setSetLayoutCount (1)													//Number of set layouts
+				.setPSetLayouts    (&pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout)	//Set set layout
+			;
+			dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipelineLayout);
 		}
 
 
 
 
 		{ //Create the pipeline
-			vk::ComputePipelineCreateInfo pipelineCreateInfo = { 						//Create pipeline creation infos
-				.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,			//Structure type
-				.stage  = pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo,		//Use the previously created shader stage creation infos
-				.layout = pWindow.CShadersLayouts[vRenderShader].pipelineLayout				//Use the previously created pipeline layout
-			};
-			dbg::checkVk(vkCreateComputePipelines(dvc::compute.LD, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipeline), "Unable to create comput pipeline");
-			vkDestroyShaderModule(dvc::compute.LD, pWindow.CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
+			auto pipelineCreateInfo = vk::ComputePipelineCreateInfo() 						//Create pipeline creation infos
+				.setStage  (pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo)		//Use the previously created shader stage creation infos
+				.setLayout (pWindow.CShadersLayouts[vRenderShader].pipelineLayout)				//Use the previously created pipeline layout
+			;
+			dvc::compute.LD.createComputePipelines(VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipeline); //FIXME USE FUNCTION FOR SINGLE PIPELINE
+			dvc::compute.LD.destroyShaderModule(pWindow.CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
 		}
 	}
 
