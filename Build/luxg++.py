@@ -38,7 +38,7 @@ with open('./.engine/enginePath', 'r') as f:
 
 
 def compileShader(name:str):
-    if os.system(
+    if os.system( #FIXME USE DIFFERENT OPTIMIZATION LEVELS FOR DEBUG AND RELEASE #https://man.linuxreviews.org/man1/glslc.1.html
         enginePath + '/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc '    +
         enginePath + '/LuxEngine/Contents/shaders/' + name + '.comp -o ' +
         enginePath + '/LuxEngine/Contents/shaders/' + name + '.spv'
@@ -114,7 +114,7 @@ cmdg = (
         ' -DenginePath="\\"' + enginePath + '\\""'                          #Define engine path function #FIXME
         ' ' + enginePath + '/LuxEngine/getEnginePath.cpp'                   #Add engine path definition  #FIXME
         ' ' + enginePath + '/LuxEngine/Core/Env.cpp'                        #Add runtime environment variables
-        ' ' + enginePath + '/Build/' + gettp() + '/LuxEngine' + getpf()     #Add engine binaries
+        ' ' + enginePath + '/Build/' + gettp() + '/LuxEngine/' + getpf()     #Add engine binaries
     ) if cd == 'u' else '') +                                               #
     ' ' + ' '.join(cmdp) +                                              #Copy parsed G++ options
     ' -I' + vkdep + 'include'                                           #Add Vulkan include path
@@ -124,7 +124,7 @@ cmdg = (
     ((                                                                  #When building user application
         ' -I' + '.'                                                         #Add workspace include path
         ' -L' + vkdep + 'lib'                                               #Add Vulkan library path
-        ' -L' + gwdep + 'build/src'                                         #Add GLFW library path
+        ' -L' + gwdep + 'build/src'                                         #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
         '-ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'                #Link dependencies
         ' -lvulkan -Bstatic -lglfw3'                                        #Link Vulkan dynamically and GLFW statically
     ) if cd == 'u' else '')                                                 #
@@ -132,11 +132,12 @@ cmdg = (
 
 
 #Compile shaders
-if cd == 'e':
-    #FIXME USE PARAMETERS, NOT HARD CODED PATHS
-    compileShader('Border2D')
-    compileShader('Line2D')
-    compileShader('FloatToIntBuffer')
+# if cd == 'e':
+#     #FIXME USE PARAMETERS, NOT HARD CODED PATHS
+#     compileShader('Border2D')
+#     compileShader('Line2D')
+#     compileShader('FloatToIntBuffer')
 
 #Run G++ command
+print('Running:\n' + cmdg)
 os.system(cmdg)
