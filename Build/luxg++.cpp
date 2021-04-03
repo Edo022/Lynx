@@ -17,7 +17,11 @@ string escape(const char* s){
         case '\\': r += "\\\\"; break;
         case '\'': r += "\\\'"; break;
         case '\"': r += "\\\""; break;
-        case '\n': r += "\\n"; break;
+        case '\n': break; //TODO move to python? (?? maybe. idk)
+        //!^ Skip eventual newlines between -<l|w|d|r>['<option>'] options quotes
+        //!^     the quotes are parsed out by the linux shell.
+        //!^     The C++ wrapper wraps all the arguments in single quotes,
+        //!^     but they also get parsed out when calling the Python script
         case '\r': r += "\\r"; break;
         case '\t': r += "\\t"; break;
         case '\v': r += "\\v"; break;
@@ -49,7 +53,6 @@ int main(int argc, char* argv[]) {
     opt += "'";
 
     //Run command
-    std::cout <<  (string("python3.9 ") + enginePath + "/Build/luxg++.py " + opt) + '\n';
     return system((string("python3.9 ") + enginePath + "/Build/luxg++.py " + opt).c_str());
 }
 

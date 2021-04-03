@@ -104,12 +104,12 @@ for o in cmd:
 
 
 #Construct g++ command
-vkdep:str = enginePath + '/deps/' + gettp() + '/Vulkan-1.2.170.0/x86_64/'
+vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64/'
 gwdep:str = enginePath + '/deps/Shared/glfw-3.3.3/'
 cmdg = (
     'g++' +
     (' -DLUX_DEBUG -rdynamic' if tp == 'd' else '') +       #Activate Lux debug checks when in debug mode
-    ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +  #Define glm macros
+    ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +  #Define vulkan macros
     ((                                                      #When building user application
         ' -DenginePath="\\"' + enginePath + '\\""'              #Define engine path function #FIXME
         ' ' + enginePath + '/LuxEngine/getEnginePath.cpp'       #Add engine path definition  #FIXME
