@@ -108,36 +108,39 @@ vkdep:str = enginePath + '/deps/' + gettp() + '/Vulkan-1.2.170.0/x86_64/'
 gwdep:str = enginePath + '/deps/Shared/glfw-3.3.3/'
 cmdg = (
     'g++' +
-    (' -DLUX_DEBUG -rdynamic' if tp == 'd' else '') +                   #Activate Lux debug checks when in debug mode
-    ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +              #Define glm macros
-    ((                                                                  #When building user application
-        ' -DenginePath="\\"' + enginePath + '\\""'                          #Define engine path function #FIXME
-        ' ' + enginePath + '/LuxEngine/getEnginePath.cpp'                   #Add engine path definition  #FIXME
-        ' ' + enginePath + '/LuxEngine/Core/Env.cpp'                        #Add runtime environment variables
-        ' ' + enginePath + '/Build/' + gettp() + '/LuxEngine/' + getpf()     #Add engine binaries
-    ) if cd == 'u' else '') +                                               #
-    ' ' + ' '.join(cmdp) +                                              #Copy parsed G++ options
-    ' -I' + vkdep + 'include'                                           #Add Vulkan include path
-    ' -I' + gwdep + 'include'                                           #Add GLFW include path
-    ' -I' + gwdep + 'deps'                                              #Add GLFW dependencies include path
-    ' -I' + enginePath +                                                #Add LuxEngine include path
-    ((                                                                  #When building user application
-        ' -I' + '.'                                                         #Add workspace include path
-        ' -L' + vkdep + 'lib'                                               #Add Vulkan library path
-        ' -L' + gwdep + 'build/src'                                         #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
-        '-ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'                #Link dependencies
-        ' -lvulkan -Bstatic -lglfw3'                                        #Link Vulkan dynamically and GLFW statically
-    ) if cd == 'u' else '')                                                 #
+    (' -DLUX_DEBUG -rdynamic' if tp == 'd' else '') +       #Activate Lux debug checks when in debug mode
+    ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +  #Define glm macros
+    ((                                                      #When building user application
+        ' -DenginePath="\\"' + enginePath + '\\""'              #Define engine path function #FIXME
+        ' ' + enginePath + '/LuxEngine/getEnginePath.cpp'       #Add engine path definition  #FIXME
+        ' ' + enginePath + '/LuxEngine/Core/Env.cpp'            #Add runtime environment variables
+        ' ' + enginePath + '/Build/' + getpf() + '/LuxEngine' + gettp()
+    ) if cd == 'u' else '') +                                   # ^ Add engine binaries
+    ' ' + ' '.join(cmdp) +                                  #Copy parsed G++ options
+    ' -I' + vkdep + 'include'                               #Add Vulkan include path
+    ' -I' + gwdep + 'include'                               #Add GLFW include path
+    ' -I' + gwdep + 'deps'                                  #Add GLFW dependencies include path
+    ' -I' + enginePath +                                    #Add LuxEngine include path
+    ((                                                      #When building user application
+        ' -I' + '.'                                             #Add workspace include path
+        ' -L' + vkdep + 'lib'                                   #Add Vulkan library path
+        ' -L' + gwdep + 'build/src'                             #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
+        '-ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'    #Link dependencies
+        ' -lvulkan -Bstatic -lglfw3'                            #Link Vulkan dynamically and GLFW statically
+    ) if cd == 'u' else '')                                     #
 )
 
 
 #Compile shaders
-# if cd == 'e':
-#     #FIXME USE PARAMETERS, NOT HARD CODED PATHS
-#     compileShader('Border2D')
-#     compileShader('Line2D')
-#     compileShader('FloatToIntBuffer')
+if cd == 'e':
+    #FIXME USE PARAMETERS, NOT HARD CODED PATHS
+    print('\n\n' '\033[1m' 'COMPILING SHADERS')
+    compileShader('Border2D')
+    compileShader('Line2D')
+    compileShader('FloatToIntBuffer')
+    print('\033[0m')
+
 
 #Run G++ command
-print('Running:\n' + cmdg)
-os.system(cmdg)
+print('\n\n' '\033[1m' 'COMPILING CPPs')
+print(cmdg + '\n' '\033[0m'); os.system(cmdg)

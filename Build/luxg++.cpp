@@ -53,4 +53,4 @@ int main(int argc, char* argv[]) {
     return system((string("python3.9 ") + enginePath + "/Build/luxg++.py " + opt).c_str());
 }
 
-//g++ lux_g++.cpp -std=c++2a -g0 -Ofast -xavx -o lux_g++
+//g++ luxg++.cpp -std=c++2a -g0 -Ofast -xavx -o luxg++
