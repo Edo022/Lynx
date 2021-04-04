@@ -92,13 +92,23 @@ else:
 
 #Pick options based on platform and type
 cmdp = []    #Parsed command
-for o in cmd:
-    r = re.match(r'^\-([lwrd])\[(.*)\]$', o)
+
+i = 0
+while i < len(cmd):
+    r = re.match(r'^\-([lwrd])\[(.*)\]$', cmd[i])
     if r != None:
         if r.group(1) in [tp, pf]:
             cmdp.append(r.group(2))
     else:
-        cmdp.append(o)
+        r = re.match(r'^\-([lwrd])\[$', cmd[i])
+        if r != None:
+            i += 1
+            while(re.match(r'^\]$', cmd[i])) == None:
+                cmdp.append(cmd[i])
+                i += 1
+        else:
+            cmdp.append(cmd[i])
+    i += 1
 
 
 
