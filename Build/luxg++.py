@@ -1,5 +1,6 @@
 import re, sys, os
 
+#FIXME fis shipping build
 # This script is a G++ wrapper that is called via luxg++ C++ executable wrapper
 # Argv[1] contains all the g++ and luxg++ parameters, divided by a '\x02' character
 # Any character with an escape sequence or '\x02' from the user input is escaped exacly once,
@@ -84,31 +85,32 @@ if r != None:
     pf = r.group(0)[-2]
     tp = r.group(0)[-1]
 else:
-    print('Error:\n"-mode=[l|w][r|d|s]" options is required\n')
+    print('Error:\n"-mode=(l|w)(r|d|s)" options is required\n')
     exit()
 
 
 
 
 #Pick options based on platform and type
-cmdp = []    #Parsed command
-
-i = 0
-while i < len(cmd):
-    r = re.match(r'^\-([lwrd])\[(.*)\]$', cmd[i])
-    if r != None:
-        if r.group(1) in [tp, pf]:
-            cmdp.append(r.group(2))
-    else:
-        r = re.match(r'^\-([lwrd])\[$', cmd[i])
-        if r != None:
-            i += 1
-            while(re.match(r'^\]$', cmd[i])) == None:
-                cmdp.append(cmd[i])
-                i += 1
-        else:
-            cmdp.append(cmd[i])
-    i += 1
+cmdp = []       #Parsed command
+i = 0           #Option index
+while i < len(cmd):                             #For each command option
+    r = re.match(r'^\-([lwrd])\[(.*)\]$', cmd[i])   #
+    if r != None:                                   #If -<c>[<option>]
+        if r.group(1) in [tp, pf]:                      #If c matches -mode
+            cmdp.append(r.group(2))                         #Append <option>
+    else:                                           #Else
+        r = re.match(r'^\-([lwrd])\[$', cmd[i])         #
+        if r != None:                                   #If -<c>[ <options...> ]
+            c = r.group(1)                                  #Save c
+            i += 1                                          #Skip -<c>[
+            while cmd[i] != ']':                            #For each <options...>
+                if c in [tp, pf]:                               #If c matches -mode
+                    cmdp.append(cmd[i])                             #Append <options...>[i]
+                i += 1                                          #Update index
+        else:                                           #Else
+            cmdp.append(cmd[i])                             #Forward option to g++
+    i += 1                                          #Update index
 
 
 
@@ -117,7 +119,7 @@ while i < len(cmd):
 vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64/'
 gwdep:str = enginePath + '/deps/Shared/glfw-3.3.3/'
 cmdg = (
-    'g++' +
+    'g++ -std=c++2a -pthread' +
     (' -DLUX_DEBUG -rdynamic' if tp == 'd' else '') +       #Activate Lux debug checks when in debug mode
     ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +  #Define vulkan macros
     ((                                                      #When building user application
@@ -135,7 +137,7 @@ cmdg = (
         ' -I' + '.'                                             #Add workspace include path
         ' -L' + vkdep + 'lib'                                   #Add Vulkan library path
         ' -L' + gwdep + 'build/src'                             #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
-        '-ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'    #Link dependencies
+        ' -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'    #Link dependencies
         ' -lvulkan -Bstatic -lglfw3'                            #Link Vulkan dynamically and GLFW statically
     ) if cd == 'u' else '')                                     #
 )
