@@ -6,28 +6,10 @@ import re, sys, os
 # Any character with an escape sequence or '\x02' from the user input is escaped exacly once,
 # in order to pass the user input to Python using the $'<string>' format
 #
-# Options:
-#     -l[<option(s)>]               Activate option(s) only when building for Linux              e.g. -l[-pthread]       e.g. -l['-pthread -Dlinux']
-#     -w[<option(s)>]               Activate option(s) only when building for Windows            e.g. -w[-mthread]       e.g. -w['-mthread -Dwin10']
-#     -d[<option(s)>]               Activate option(s) only when building in Debug   mode        e.g. -d[-Og]            e.g. -d['-Og -g3']
-#     -r[<option(s)>]               Activate option(s) only when building in Release mode        e.g. -r[-O3]            e.g. -r['-O3 -g0']
-#     --build-engine                Used to compile the engine and prevent the script from linking its binaries
-#     -mode=<platform><type>        Specify target platform and type
-#         -mode=ld                      Debug    mode for Linux
-#         -mode=lr                      Release  mode for Linux
-#         -mode=ls                      Shipping mode for Linux
-#         -mode=wd                      Debug    mode for Windows
-#         -mode=wr                      Release  mode for Windows
-#         -mode=ws                      Shipping mode for Windows
-#    <path>.comp                    Compile a glsl shader into an .spv and generate a C++ interface     e.g. shaders/cube.comp
-#
-#    Anything else is forwarded to G++
-#
-#
 # e.g.
-#     ./LuxEngine/Build/luxg++ -mode=ld -d['-O0 -a'] -r[-O3] -pthread
-# or
-#     python3.9 ./LuxEngine/Build/luxg++.py $'-mode=ld\x02-d[\'-O0 -a\']\x02-r[-O3]\x02-pthread'
+#     luxg++ -mode=ld -d[ -O0 -a ] -r[-O3] -pthread
+# >>
+#     python3.9 /luxg++.py $'-mode=ld\x02-d[\x02-O0 -a\x02]\x02-r[-O3]\x02-pthread'
 
 
 
