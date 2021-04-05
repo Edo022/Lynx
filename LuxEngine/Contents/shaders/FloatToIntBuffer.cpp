@@ -4,7 +4,9 @@
 //####################################################################################
 
 #include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
+#define LUX_H_FLOATTOINTBUFFER
 
 
 
@@ -128,5 +130,77 @@ namespace lux::shd{
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
+	}
+
+
+
+
+
+
+
+
+	Shader_b::Layout FloatToIntBuffer::layout;
+	luxAutoInit(LUX_H_FLOATTOINTBUFFER){
+		{ //Create descriptor set layout
+			vk::DescriptorSetLayoutBinding bindingLayouts(4)
+			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (0)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[1] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (1)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (2)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (3)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
+				.setBindingCount (4)
+				.setPBindings    (bindingLayouts)
+			;
+			//Create the descriptor set layout
+			dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &FloatToIntBuffer::layout.descriptorSetLayout);
+		}
+
+
+
+
+		{ //Create pipeline layout
+			uint32 fileLength;
+			FloatToIntBuffer::layout.shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + "FloatToIntBuffer.spv").begin()), &fileLength);
+
+			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+				.setStage  (vk::ShaderStageFlagBits::eCompute)
+				.setModule (FloatToIntBuffer::layout.shaderModule)
+				.setPName  ("main")
+			;
+
+			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
+				.setSetLayoutCount (1)
+				.setPSetLayouts    (&FloatToIntBuffer::layout.descriptorSetLayout)
+			;
+			dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &FloatToIntBuffer::layout.pipelineLayout);
+		}
 	}
 }

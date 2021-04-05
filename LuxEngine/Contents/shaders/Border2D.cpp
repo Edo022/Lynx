@@ -4,7 +4,9 @@
 //####################################################################################
 
 #include "LuxEngine/Contents/shaders/Border2D.hpp"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
+#define LUX_H_BORDER2D
 
 
 
@@ -128,5 +130,77 @@ namespace lux::shd{
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
+	}
+
+
+
+
+
+
+
+
+	Shader_b::Layout Border2D::layout;
+	luxAutoInit(LUX_H_BORDER2D){
+		{ //Create descriptor set layout
+			vk::DescriptorSetLayoutBinding bindingLayouts(4)
+			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (0)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[1] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (1)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (2)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (3)
+				.setDescriptorType     (vk::DescriptorType::eUniformBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
+				.setBindingCount (4)
+				.setPBindings    (bindingLayouts)
+			;
+			//Create the descriptor set layout
+			dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2D::layout.descriptorSetLayout);
+		}
+
+
+
+
+		{ //Create pipeline layout
+			uint32 fileLength;
+			Border2D::layout.shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + "Border2D.spv").begin()), &fileLength);
+
+			Border2D::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+				.setStage  (vk::ShaderStageFlagBits::eCompute)
+				.setModule (Border2D::layout.shaderModule)
+				.setPName  ("main")
+			;
+
+			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
+				.setSetLayoutCount (1)
+				.setPSetLayouts    (&Border2D::layout.descriptorSetLayout)
+			;
+			dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2D::layout.pipelineLayout);
+		}
 	}
 }

@@ -183,8 +183,10 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
         '\n#include "' + re.sub(r'^.*?\/?LuxEngine\/(LuxEngine\/.*$)', r'\g<1>', spath + shname) + '.hpp"'
-        '\n#include "LuxEngine/Core/Render/Window/Window.hpp"\n\n\n'
-        '\nnamespace lux::shd{'                             #Write namespace declaration
+        '\n#include "LuxEngine/Core/LuxAutoInit.hpp"'                       #Auto init
+        '\n#include "LuxEngine/Core/Render/Window/Window.hpp"'              #Window struct
+        '\n#define LUX_H_' + shname.upper() + '\n\n\n'                      #Auto init define
+        '\nnamespace lux::shd{'                                             #Write namespace declaration
     )
 
     shader = re.findall(                                #Search for binding declarations
@@ -248,7 +250,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t'';'
                 '\n\t''core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);'
                 '\n\n\n' +
-                '\n\t''vk::WriteDescriptorSet writeSets[' + str(uniformNum + storageNum) + '];' +
+                '\n\t''vk::WriteDescriptorSet writeSets[' + str(len(elms)) + '];' +
                 '\n'.join((
                     '\n\t''auto bufferInfo' + str(i) + ' = vk::DescriptorBufferInfo()'
                         '\n\t\t''.setBuffer (' + b['name'] + '.vdata.cell->csc.buffer)'
@@ -259,11 +261,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t''.setDstSet          (descriptorSet)'
                         '\n\t\t''.setDstBinding      ('+ str(b['bind']) + ')'
                         '\n\t\t''.setDescriptorCount (1)'
-                        '\n\t\t''.setDescriptorType  (' + ('vk::DescriptorType::eUniformBuffer' if b['type'] == 'uniform' else 'vk::DescriptorType::eStorageBuffer') + ')'
+                        '\n\t\t''.setDescriptorType  (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
                         '\n\t\t''.setPBufferInfo     (&bufferInfo' + str(i) + ')'
                     '\n\t;'
                 ) for i, b in enumerate(elms)) +
-                '\n\tcore::dvc::compute.LD.updateDescriptorSets(' + str(uniformNum + storageNum) + ', writeSets, 0, nullptr);'
+                '\n\tcore::dvc::compute.LD.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
             '\n}',
         '\t'))
 
@@ -296,6 +298,52 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
                 '\n\t''commandBuffers[0].end();'
+            '\n}',
+        '\t'))
+
+
+        fc.write(indent('\n\n\n\n\n\n\n\n'
+            '\nShader_b::Layout ' + shname + '::layout;'
+            '\nluxAutoInit(LUX_H_' + shname.upper() + '){'
+                '\n\t{ //Create descriptor set layout'
+                    '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts(' + str(len(elms)) + ')' +
+                    '\n'.join((
+                        '\n\t\tbindingLayouts[' + str(i) + '] = vk::DescriptorSetLayoutBinding()'
+                            '\n\t\t\t.setBinding            (' + str(b['bind']) + ')'
+                            '\n\t\t\t.setDescriptorType     (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
+                            '\n\t\t\t.setDescriptorCount    (1)'
+                            '\n\t\t\t.setStageFlags         (vk::ShaderStageFlagBits::eCompute)'
+                            '\n\t\t\t.setPImmutableSamplers (nullptr)'
+                        '\n\t\t;'
+                    ) for i, b in enumerate(elms)) +
+                    '\n'
+                    '\n\t\tauto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()'
+                        '\n\t\t\t.setBindingCount (' + str(len(elms)) + ')'
+                        '\n\t\t\t.setPBindings    (bindingLayouts)'
+                    '\n\t\t;'
+                    '\n\t\t//Create the descriptor set layout'
+                    '\n\t\tdvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout);'
+                '\n\t}'
+                '\n'
+                '\n'
+                '\n'
+                '\n'
+                '\n\t{ //Create pipeline layout'
+                    '\n\t\tuint32 fileLength;'
+                    '\n\t\t' + shname + '::layout.shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + "' + shname + '.spv").begin()), &fileLength);'
+                    '\n'
+                    '\n\t\t' + shname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
+                        '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'
+                        '\n\t\t\t.setModule (' + shname + '::layout.shaderModule)'
+                        '\n\t\t\t.setPName  ("main")'
+                    '\n\t\t;'
+                    '\n'
+                    '\n\t\tauto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()'
+                        '\n\t\t\t.setSetLayoutCount (1)'
+                        '\n\t\t\t.setPSetLayouts    (&' + shname + '::layout.descriptorSetLayout)'
+                    '\n\t\t;'
+                    '\n\t\tdvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout);'
+                '\n\t}'
             '\n}',
         '\t'))
 
