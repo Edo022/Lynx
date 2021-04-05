@@ -76,7 +76,6 @@ namespace lux{
 				Window* parentWindow = nullptr;
 			} render;
 			virtual void update();							//Updates the object data in the shared memory				| object type				| -
-			void allocate();									//Allocates a memory cell for the object data				| object type				| -
 			virtual void recalculateCoords() {}
 			virtual void init(Window& pWindow){}
 		};
