@@ -17,11 +17,11 @@ def translateDataType(glslType : str) -> str :
         re.sub(r'^ivec([234])', r'i32v\g<1>',
         re.sub(r'^uvec([234])', r'u32v\g<1>',
         re.sub(r'^dvec([234])', r'f64v\g<1>',
-        re.sub(   r'^int',  r'i32',
-        re.sub(  r'^uint',  r'u32',
-        re.sub(  r'^bool', r'bool',
-        re.sub( r'^float',  r'f32',
-        re.sub(r'^double',  r'f64',
+        re.sub(   r'^int',  r'i32', #TODO improve performance
+        re.sub(  r'^uint',  r'u32', #TODO improve performance
+        re.sub(  r'^bool', r'bool', #TODO improve performance
+        re.sub( r'^float',  r'f32', #TODO improve performance
+        re.sub(r'^double',  r'f64', #TODO improve performance
         glslType))))))))))
     )
 
@@ -113,9 +113,8 @@ def createFuncs(members:str, iext:bool) :
             m = m[1:]                                                   #
 
 
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : offset + 64})
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
 
 
 

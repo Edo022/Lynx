@@ -54,6 +54,14 @@ namespace lux{
 		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 		lux::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 
+		static struct Layout{
+			vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
+			vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
+			vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
+
+			vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
+		} layout;
+
 
 		~Shader_b(){
 			//Clear descriptors sets, descriptor pool and descriptor layout

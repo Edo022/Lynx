@@ -1,8 +1,12 @@
 #pragma once
 #define LUX_H_MACROS
 #include "LuxEngine_config.hpp"
-#include ".engine/conf.hpp"
-//! ^ This file is generated in the .engine directory of the user application when they change the build configuration
+
+#ifdef __intellisense__
+    #include ".engine/conf.hpp"
+    //!This file is generated in the .engine directory of the user application when they change the build configuration
+    //!It's only used to allow Intellisense to correctly parse the code
+#endif
 
 
 
