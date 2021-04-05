@@ -181,8 +181,8 @@ namespace lux{
 
 
 
-	void Window::add(obj::RenderSpace2D* pRenderSpace) {
+	void Window::spawn(obj::RenderSpace2D* pRenderSpace) {
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
-		pRenderSpace->init(*this);			//BUG >IN
+		pRenderSpace->onSpawn(*this);			//BUG >IN
 	}
 }

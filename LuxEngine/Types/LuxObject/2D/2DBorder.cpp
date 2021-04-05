@@ -4,8 +4,8 @@
 
 
 namespace lux::obj{
-	void Border2D::init(Window& pWindow) {
-		Obj2_b::init(pWindow); //Initialize all the children
+	void Border2D::onSpawn(Window& pWindow) {
+		Obj2_b::onSpawn(pWindow); //Initialize all the children
 
 
 		pWindow.addShaderFence.lock();

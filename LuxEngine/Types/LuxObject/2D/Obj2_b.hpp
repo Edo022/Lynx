@@ -7,7 +7,7 @@
 namespace lux::obj{
     //Base class for 2D objects in 2D space
     struct Obj2_b : public Base {
-        Obj2_b() { common.objectType = LUX_OBJECT_TYPE_2D__BASE; }
+        Obj2_b();
 
         //TODO add absolute pixel position and scale
         f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
@@ -34,12 +34,7 @@ namespace lux::obj{
             }
         }
 
-        virtual void init(Window& pWindow) override {
-            render.parentWindow = &pWindow;                         //BUG OVER
-            for(u32 i = 0; i < children.count(); ++i){              //BUG OVER
-                if(children.isValid(i)) children[i]->init(pWindow); //BUG >IN >OUT >IN >OUT >IN
-            }
-        }
+        virtual void onSpawn(Window& pWindow) override;
 
         limitAlignment limitAlignment_{ limitAlignment::Center }; 	//The alignment of the object within its limits
         f32v2 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties

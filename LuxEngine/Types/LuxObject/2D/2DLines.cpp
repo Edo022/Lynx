@@ -7,8 +7,8 @@
 
 
 namespace lux::obj{
-	void Line2D::init(Window& pWindow) {
-		Obj2_b::init(pWindow); //Initialize all the children
+	void Line2D::onSpawn(Window& pWindow) {
+		Obj2_b::onSpawn(pWindow); //Initialize all the children
 
 
 		pWindow.addShaderFence.lock();

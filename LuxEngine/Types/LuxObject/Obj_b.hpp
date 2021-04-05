@@ -71,13 +71,13 @@ namespace lux{
 			virtual vram::Alloc_b<char> getShVData(){ return vram::Alloc_b<char>(); }
 
 			struct Render{
-				ShaderLayout shaderLayout;						//Thte shader layout of the object's render shader			| object type				| object type
+				ShaderLayout shaderLayout;						//The shader layout of the object's render shader			| object type				| object type
 				bool updated{ true };
 				Window* parentWindow = nullptr;
 			} render;
 			virtual void update();							//Updates the object data in the shared memory				| object type				| -
 			virtual void recalculateCoords() {}
-			virtual void init(Window& pWindow){}
+			virtual void onSpawn(Window& pWindow){}
 		};
 
 

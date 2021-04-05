@@ -11,6 +11,7 @@ namespace lux::obj {
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));
 		pObj->update();
+		if(render.parentWindow) pObj->onSpawn(*render.parentWindow);
 		return pObj->common.childIndex;
 	}
 

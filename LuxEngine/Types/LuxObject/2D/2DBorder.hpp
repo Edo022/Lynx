@@ -32,6 +32,6 @@ namespace lux::obj{
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
-		virtual void init(Window& pWindow) override;
+		virtual void onSpawn(Window& pWindow) override;
 	};
 }

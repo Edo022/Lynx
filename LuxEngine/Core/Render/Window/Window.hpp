@@ -42,7 +42,7 @@ namespace lux{
 		std::mutex addShaderFence;
 
 		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
-		void add(obj::RenderSpace2D* pRenderSpace);
+		void spawn(obj::RenderSpace2D* pRenderSpace);
 		RtArray<obj::Base*>	objUpdates;
 		std::mutex          objUpdates_m;
 

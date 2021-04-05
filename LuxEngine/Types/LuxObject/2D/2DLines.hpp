@@ -22,7 +22,7 @@ namespace lux::obj {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
-		virtual void init(Window& pWindow) override;
+		virtual void onSpawn(Window& pWindow) override;
 
 		f32v2 _fp0;		//First point of the line
 		f32v2 _fp1;		//Second point of the line
