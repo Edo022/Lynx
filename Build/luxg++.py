@@ -119,7 +119,7 @@ cmdg = (
         ' -I' + '.'                                             #Add workspace include path
         ' -L' + vkdep + 'lib'                                   #Add Vulkan library path
         ' -L' + gwdep + 'build/src'                             #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
-        ' -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'    #Link dependencies
+        ' -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'   #Link dependencies
         ' -lvulkan -Bstatic -lglfw3'                            #Link Vulkan dynamically and GLFW statically
     ) if cd == 'u' else '')                                     #
 )
