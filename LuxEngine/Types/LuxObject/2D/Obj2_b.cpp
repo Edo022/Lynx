@@ -35,10 +35,12 @@ namespace lux::obj{
         for(u32 i = 0; i < children.count(); ++i){              //BUG OVER
             if(children.isValid(i)) children[i]->onSpawn(pWindow); //BUG >IN >OUT >IN >OUT >IN
         }
-        if(!debug) {
-			debugBorder = new Border2D();
-			debugBorder->debug = true;
-			debugBorder->onSpawn(pWindow);
-		}
+		#ifdef LUX_DEBUG
+        	if(!debug) {
+				debugBorder = new Border2D();
+				debugBorder->debug = true;
+				debugBorder->onSpawn(pWindow);
+			}
+		#endif
     }
 }

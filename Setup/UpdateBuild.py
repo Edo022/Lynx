@@ -11,10 +11,13 @@ def run(dir):
 		return "Debug" if opts.tp() == "d" else "Release"
 
 
-	os.chdir(dir)
+	os.chdir(dir) #FIXME REMOVE
 	import BuildOptions as opts
 
-	#Open tasks file
+
+
+
+	#Update tasks.json
 	with open('./.vscode/tasks.json', 'r') as f:
 		s = re.sub(r'("args"\s*:\s*\[\s*"-mode=)[l|w][d|r|s]"', r'\g<1>' + opts.pf() + opts.tp() + '"',
 			re.sub(r'("label"\s*:\s*")\w+  \|  \w+(  \|  Build \w+")', r'\g<1>' + getPf() + '  |  ' + getTp() + r'\g<2>',
@@ -24,3 +27,8 @@ def run(dir):
 
 	with open('./.vscode/tasks.json', 'w') as f:
 		f.write(s)
+
+
+	#Update debug macro
+	with open('./.engine/conf.hpp', 'w') as f:
+		f.write('#define ' + ('LUX_DEBUG' if opts.tp() == 'd' else ''))
