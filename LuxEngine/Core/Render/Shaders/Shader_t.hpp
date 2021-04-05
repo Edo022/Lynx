@@ -28,12 +28,12 @@ namespace lux{
 
 
 	//This struct contains the elements of a shader layout
-	struct LuxShaderLayout_t{
-		vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
-		vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
-		vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
+	struct LuxShaderLayout_t{ //FIXME REMOVE
+		// vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
+		// vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
+		// vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
 
-		vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
+		// vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
 		vk::Pipeline                      pipeline;				//The pipeline that will be boud to the command buffer of the instance
 	};
 
@@ -54,13 +54,19 @@ namespace lux{
 		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 		lux::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 
-		static struct Layout{
+		struct Layout{
+			Layout(){};
+			Layout(const Layout&) = delete;
+			Layout(const Layout&&) = delete;
+			void operator==(const Layout&) = delete;
+			void operator==(const Layout&&) = delete;
+
 			vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
 			vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
 			vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
 
 			vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
-		} layout;
+		};
 
 
 		~Shader_b(){

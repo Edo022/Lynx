@@ -10,6 +10,7 @@
 
 namespace lux::shd{
 	struct Border2D : public Shader_b {
+		static Shader_b::Layout layout;
 
 
 		struct colorOutput__t : public ShaderElm_b<Storage> {

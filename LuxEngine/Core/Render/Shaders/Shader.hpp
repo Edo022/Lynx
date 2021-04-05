@@ -16,5 +16,5 @@ namespace lux::core::c::shaders{
 	uint32*			cshaderReadFromFile(uint32* pLength, const char* pFilePath);
 	vk::ShaderModule	cshaderCreateModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength);
 
-	void			createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly, Window& pWindow);
+	void			createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly, Shader_b::Layout& layout_, Window& pWindow);
 }

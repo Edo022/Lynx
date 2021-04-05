@@ -10,6 +10,7 @@
 
 namespace lux::shd{
 	struct FloatToIntBuffer : public Shader_b {
+		static Shader_b::Layout layout;
 
 
 		struct src__t : public ShaderElm_b<Storage> {

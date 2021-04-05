@@ -6,6 +6,7 @@
 #include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #define LUX_H_FLOATTOINTBUFFER
 
 
@@ -31,7 +32,7 @@ namespace lux::shd{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout)
+			.setPSetLayouts        (&FloatToIntBuffer::layout.descriptorSetLayout)
 		;
 		core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);
 
@@ -111,7 +112,7 @@ namespace lux::shd{
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
 	}
@@ -127,7 +128,7 @@ namespace lux::shd{
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
 	}
@@ -142,7 +143,7 @@ namespace lux::shd{
 	Shader_b::Layout FloatToIntBuffer::layout;
 	luxAutoInit(LUX_H_FLOATTOINTBUFFER){
 		{ //Create descriptor set layout
-			vk::DescriptorSetLayoutBinding bindingLayouts(4)
+			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (0)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
@@ -180,7 +181,7 @@ namespace lux::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &FloatToIntBuffer::layout.descriptorSetLayout);
+			core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &FloatToIntBuffer::layout.descriptorSetLayout);
 		}
 
 
@@ -188,19 +189,20 @@ namespace lux::shd{
 
 		{ //Create pipeline layout
 			uint32 fileLength;
-			FloatToIntBuffer::layout.shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + "FloatToIntBuffer.spv").begin()), &fileLength);
+			FloatToIntBuffer::layout.shaderModule = core::c::shaders::cshaderCreateModule(core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(&fileLength, (core::c::shaders::shaderPath + "FloatToIntBuffer.spv").begin()), &fileLength);
 
 			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
 				.setModule (FloatToIntBuffer::layout.shaderModule)
 				.setPName  ("main")
 			;
+			core::dvc::compute.LD.destroyShaderModule(FloatToIntBuffer::layout.shaderModule, nullptr);
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&FloatToIntBuffer::layout.descriptorSetLayout)
 			;
-			dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &FloatToIntBuffer::layout.pipelineLayout);
+			core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &FloatToIntBuffer::layout.pipelineLayout);
 		}
 	}
 }
