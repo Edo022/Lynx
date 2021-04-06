@@ -140,6 +140,17 @@ namespace lux::shd{
 
 
 
+	void FloatToIntBuffer::destroy(){
+		//TODO
+	}
+
+
+
+
+
+
+
+
 	Shader_b::Layout FloatToIntBuffer::layout;
 	luxAutoInit(LUX_H_FLOATTOINTBUFFER){
 		{ //Create descriptor set layout

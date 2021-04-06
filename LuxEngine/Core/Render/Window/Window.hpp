@@ -12,7 +12,6 @@
 
 
 
-typedef uint32 LuxShader;
 namespace lux::obj{
 	struct RenderSpace2D;
 	struct Base;

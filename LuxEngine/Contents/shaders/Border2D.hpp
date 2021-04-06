@@ -59,5 +59,6 @@ namespace lux::shd{
 		void createDescriptorSets();
 		void createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
 		void updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
+		void destroy();
 	};
 }//TODO remove local data in external bindings

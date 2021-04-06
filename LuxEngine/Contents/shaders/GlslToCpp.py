@@ -226,7 +226,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n}'
             '\n\n\nvoid createDescriptorSets();'
             '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
-            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
+            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            '\nvoid destroy();',
         '\t\t'))
 
 
@@ -302,6 +303,15 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''commandBuffers[0].end();'
             '\n}',
         '\t'))
+
+
+        fc.write(indent('\n\n\n\n\n\n\n\n'
+            '\nvoid ' + fname + '::destroy(){'
+                '\n\t''//TODO'
+            '\n}',
+        '\t'))
+
+
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'

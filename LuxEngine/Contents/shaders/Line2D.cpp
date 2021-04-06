@@ -140,6 +140,17 @@ namespace lux::shd{
 
 
 
+	void Line2D::destroy(){
+		//TODO
+	}
+
+
+
+
+
+
+
+
 	Shader_b::Layout Line2D::layout;
 	luxAutoInit(LUX_H_LINE2D){
 		{ //Create descriptor set layout

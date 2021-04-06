@@ -140,6 +140,17 @@ namespace lux::shd{
 
 
 
+	void Border2D::destroy(){
+		//TODO
+	}
+
+
+
+
+
+
+
+
 	Shader_b::Layout Border2D::layout;
 	luxAutoInit(LUX_H_BORDER2D){
 		{ //Create descriptor set layout
