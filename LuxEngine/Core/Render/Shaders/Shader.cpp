@@ -10,24 +10,14 @@
 
 
 
-// Shader components create functions -------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
 namespace lux::core::c::shaders{
-	alignCache String						shaderPath; //FIXME MAKE WINDOW-LOCAL
-	// alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
+	alignCache String shaderPath;
 
 
 
 
 	luxAutoInit(LUX_H_CSHADER){
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/"; //BUG FIX SHADER PATH
+		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
@@ -40,33 +30,31 @@ namespace lux::core::c::shaders{
 	 * @return A pointer to the array where the code was saved
 	 */
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
-		FILE* fp;
-		_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
-		_lnx(fp = fopen(  pFilePath, "rb"));
-		if(!fp) {
-			printf("Could not find or open file: %s\n", pFilePath);
-			return 0;
-		}
-		_wds(
-			_fseeki64(fp, 0, SEEK_END);				//Go to the end of the file
-			uint32 filesize = _ftelli64(fp);		//And get the file count
-			_fseeki64(fp, 0, SEEK_SET);				//Go to the beginning of the file
-		)
-		_lnx(
-			fseek(fp, 0, SEEK_END);
-			uint32 filesize = ftell(fp); //FIXME use uint64
-			fseek(fp, 0, SEEK_SET);
-		)
+		//Open file
+			FILE* fp;
+			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
+			_lnx(fp = fopen(  pFilePath, "rb"));
+			if(!fp) {
+				printf("Could not find or open file: %s\n", pFilePath);
+				return 0;
+			}
 
-		uint32 paddedFileSize = (uint32)(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
+		//Get file size
+			_wds(_fseeki64(fp, 0, SEEK_END); uint32 fs = (u32)_ftelli64(fp); _fseeki64(fp, 0, SEEK_SET);)
+			_lnx(    fseek(fp, 0, SEEK_END); uint32 fs =          ftell(fp);     fseek(fp, 0, SEEK_SET);)
 
-		char* str = (char*)malloc(sizeof(char) * (uint64)paddedFileSize);	//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
-		fread(str, (uint64)filesize, sizeof(char), fp);						//Read the file
-		fclose(fp);															//Close the file
-		for(uint32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;		//Add padding
+		//Calculate padded size and allocate a memory block
+			uint32 pfs = ceil(fs / 4.0) * 4;
+			char* str = (char*)malloc(sizeof(char) * pfs);	//! Freed in createShaderModule function
 
-		*pLength = paddedFileSize;											//Set length
-		return (uint32*)str;												//Return the buffer
+		//Read the file and add padding
+			fread(str, fs, sizeof(char), fp);
+			fclose(fp);
+			for(uint32 i = fs; i < pfs; ++i) str[i] = 0;
+
+		//Set length and return the block
+			*pLength = pfs;
+			return (uint32*)str;
 	}
 
 
