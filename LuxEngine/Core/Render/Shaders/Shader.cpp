@@ -178,6 +178,7 @@ namespace lux::core::c::shaders{
 			;
 			dvc::compute.LD.createComputePipelines(nullptr, 1, &pipelineCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipeline); //FIXME USE FUNCTION FOR SINGLE PIPELINE
 			// dvc::compute.LD.destroyShaderModule(pWindow.CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
+			core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr);
 		}
 	}
 

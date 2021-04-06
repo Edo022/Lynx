@@ -31,8 +31,8 @@
     #include "LuxEngine/Types/LuxObject/2D/Obj2_b.cpp"
     #include "LuxEngine/Types/LuxObject/3D/Obj3_b.cpp"
 
-    #include "LuxEngine/Types/LuxObject/2D/2DBorder.cpp"
     #include "LuxEngine/Types/LuxObject/2D/2DLines.cpp"
+    #include "LuxEngine/Types/LuxObject/2D/2DBorder.cpp"
     #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp"
 
     //TODO AUTOMATIZE
