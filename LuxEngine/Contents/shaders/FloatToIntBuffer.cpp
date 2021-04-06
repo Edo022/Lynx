@@ -14,7 +14,7 @@
 namespace lux::shd{
 
 
-	void FloatToIntBuffer::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void FloatToIntBuffer::createDescriptorSets(){ //FIXME REMOVE LAYOUT
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(4),
 			{}

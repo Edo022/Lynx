@@ -94,7 +94,7 @@ namespace lux{
 
 
 		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
-		sh_clear.createDescriptorSets(LUX_DEF_SHADER_CLEAR, *this);
+		sh_clear.createDescriptorSets();
 		sh_clear.createCommandBuffers(LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES

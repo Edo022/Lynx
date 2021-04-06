@@ -38,7 +38,7 @@ namespace lux::input{
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
 		if(wnd_->CRenderSpaces.count() > 0) {
 			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
-			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->update();
+			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->qHierarchy();
 		}
 	}
 

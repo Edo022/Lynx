@@ -7,7 +7,6 @@
 namespace lux::obj{
     //Base class for 2D objects in 2D space
     struct Obj2_b : public Base {
-        Obj2_b();
 
         //TODO add absolute pixel position and scale
         f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
@@ -29,7 +28,7 @@ namespace lux::obj{
                 setChildLimits(i);
                 //TODO add  recalculateCoords() in all objects
                 children[i]->recalculateCoords();
-                children[i]->queueUpdate();
+                children[i]->qHierarchy();
             }
             qSelf();
         }

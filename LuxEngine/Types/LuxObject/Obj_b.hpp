@@ -28,39 +28,11 @@ namespace lux{
 		};
 
 
-		//The type of the object (simulates reflection)
-		//    Negative values    = base struct
-		//    +-1000 to +-1999   = 1D object
-		//    +-2000 to +-2999   = 2D object
-		//    +-3000 to +-3999   = 3D object
-		//    +-4000 to +-4999   = 2DI3D object
-		enum ObjectType : int32 {
-			LUX_OBJECT_TYPE__BASE           = -1,
-
-			LUX_OBJECT_TYPE_3D__BASE        = -3000,
-			LUX_OBJECT_TYPE_2i3D__BASE      = -4000,
-			LUX_OBJECT_TYPE_2D__BASE        = -2000,
-			LUX_OBJECT_TYPE_1D__BASE        = -1000,
-
-			LUX_OBJECT_TYPE_2D_RENDER_SPACE = +2000,
-			LUX_OBJECT_TYPE_3D_RENDER_SPACE = +3000,
-
-			LUX_OBJECT_TYPE_2D_LINE         = +2001,
-			LUX_OBJECT_TYPE_2D_BORDER       = +2002,
-		};
-		#define BASE
-		#define RENDER_SPACE
-		#define RENDER_SPACE
-		#define LINE
-		#define BORDER
-
 
 
 		//Base class for render objects							Description													Structure differences		Value differences
 		struct Base { //			   							----------------------------------------------------------------------------------------------------------
-			Base() { common.objectType = LUX_OBJECT_TYPE__BASE; }	//														|							|
 			struct Common{
-				ObjectType objectType;							//Thte type of the object									| object type				| object type
 				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lux object			| none						| none
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance

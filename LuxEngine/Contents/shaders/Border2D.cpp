@@ -14,7 +14,7 @@
 namespace lux::shd{
 
 
-	void Border2D::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void Border2D::createDescriptorSets(){ //FIXME REMOVE LAYOUT
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)

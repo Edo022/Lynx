@@ -43,8 +43,8 @@ namespace lux::obj {
 
 		RenderSpace2D(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
 			: alignment(vAlignment), xNum(vXNum), yNum(vYNum), xFlow(vXFlow), yFlow(vYFlow) {
-			luxInitObject(2, RENDER_SPACE);
 		}
+		void qSelf() final override {}
 
 
 		bool addChild(Obj2_b* pObject);

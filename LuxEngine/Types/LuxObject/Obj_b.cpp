@@ -25,7 +25,6 @@ namespace lux::obj{
 	//Update function common to all the objects that adds them to the update queue
 	//Only render threads can directly access object memory and command buffers<
 	void Base::qSelf() {
-		if(common.objectType == ObjectType::LUX_OBJECT_TYPE_2D_RENDER_SPACE || common.objectType == ObjectType::LUX_OBJECT_TYPE_3D_RENDER_SPACE) return;
 		if(!render.parentWindow) return;
 		render.parentWindow->objUpdates_m.lock();
 		if(render.updated) {

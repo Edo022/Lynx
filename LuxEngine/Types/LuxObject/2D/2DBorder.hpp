@@ -15,15 +15,11 @@ namespace lux::obj{
 
 
 		Border2D() {
-			common.objectType = LUX_OBJECT_TYPE_2D_BORDER;
-
 			data.objData_.ffp() = { .0f, .0f };
 			data.objData_.fsp() = { .0f, .0f };
 			data.objData_.ID() = (uint32)common.ID;
 		}
 		Border2D(const f32v2& vFp, const f32v2& vSp) {
-			common.objectType = LUX_OBJECT_TYPE_2D_BORDER;
-
 			data.objData_.ffp() = vFp;
 			data.objData_.fsp() = vSp;
 			data.objData_.ID() = (uint32)common.ID;

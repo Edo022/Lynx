@@ -42,7 +42,6 @@ namespace lux::obj {
 		 * @param vSw Width of the second point
 		 */
 		Line2D(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
-			common.objectType = LUX_OBJECT_TYPE_2D_LINE;
 			setFp(pFp);
 			setSp(pSp);
 			data.lineData_.col0() = pFc;
