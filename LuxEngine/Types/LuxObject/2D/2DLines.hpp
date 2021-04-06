@@ -55,7 +55,7 @@ namespace lux::obj {
 		}
 
 
-		//TODO add local-global-other coordinate system and convertions
+		//TODO add local-global-other coordinate system and conversions
 		inline void setFp(const f32v2& vFp) { _fp0 = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 		inline void setSp(const f32v2& vSp) { _fp1 = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
