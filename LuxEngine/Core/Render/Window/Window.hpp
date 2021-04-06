@@ -34,7 +34,8 @@ namespace lux{
 
 
 
-		RtArray<LuxShaderLayout_t>	CShadersLayouts;
+		// RtArray<LuxShaderLayout_t>	CShadersLayouts;
+		LuxShaderLayout_t	CShadersLayouts[ShaderLayout::LUX_DEF_SHADER_NUM];
 		vk::CommandPool commandPool;
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;

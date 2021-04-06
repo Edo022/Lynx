@@ -189,14 +189,19 @@ namespace lux::shd{
 
 		{ //Create pipeline layout
 			uint32 fileLength;
-			Line2D::layout.shaderModule = core::c::shaders::cshaderCreateModule(core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(&fileLength, (core::c::shaders::shaderPath + "Line2D.spv").begin()), &fileLength);
+			Line2D::layout.shaderModule = core::c::shaders::cshaderCreateModule(
+				core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(
+					&fileLength,
+					(core::c::shaders::shaderPath + "Line2D.spv").begin()
+				),
+				&fileLength
+			);
 
 			Line2D::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
 				.setModule (Line2D::layout.shaderModule)
 				.setPName  ("main")
 			;
-			core::dvc::compute.LD.destroyShaderModule(Line2D::layout.shaderModule, nullptr);
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)

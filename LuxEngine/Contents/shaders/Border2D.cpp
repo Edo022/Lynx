@@ -189,14 +189,19 @@ namespace lux::shd{
 
 		{ //Create pipeline layout
 			uint32 fileLength;
-			Border2D::layout.shaderModule = core::c::shaders::cshaderCreateModule(core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(&fileLength, (core::c::shaders::shaderPath + "Border2D.spv").begin()), &fileLength);
+			Border2D::layout.shaderModule = core::c::shaders::cshaderCreateModule(
+				core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(
+					&fileLength,
+					(core::c::shaders::shaderPath + "Border2D.spv").begin()
+				),
+				&fileLength
+			);
 
 			Border2D::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
 				.setModule (Border2D::layout.shaderModule)
 				.setPName  ("main")
 			;
-			core::dvc::compute.LD.destroyShaderModule(Border2D::layout.shaderModule, nullptr);
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)

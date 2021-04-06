@@ -54,7 +54,7 @@ namespace lux::core::c::shaders{
 		)
 		_lnx(
 			fseek(fp, 0, SEEK_END);
-			uint32 filesize = ftell(fp);
+			uint32 filesize = ftell(fp); //FIXME use uint64
 			fseek(fp, 0, SEEK_SET);
 		)
 
@@ -88,7 +88,7 @@ namespace lux::core::c::shaders{
 		;
 
 		vk::ShaderModule shaderModule;									//Create the shader module
-		vDevice.createShaderModule(&createInfo, nullptr, &shaderModule);
+		auto r = vDevice.createShaderModule(&createInfo, nullptr, &shaderModule); //FIXME remove r or check it at runtime
 		free(pCode);													//#LLID CSF0000 Free memory
 		return shaderModule;											//Return the created shader module
 	}

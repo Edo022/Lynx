@@ -189,14 +189,19 @@ namespace lux::shd{
 
 		{ //Create pipeline layout
 			uint32 fileLength;
-			FloatToIntBuffer::layout.shaderModule = core::c::shaders::cshaderCreateModule(core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(&fileLength, (core::c::shaders::shaderPath + "FloatToIntBuffer.spv").begin()), &fileLength);
+			FloatToIntBuffer::layout.shaderModule = core::c::shaders::cshaderCreateModule(
+				core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(
+					&fileLength,
+					(core::c::shaders::shaderPath + "FloatToIntBuffer.spv").begin()
+				),
+				&fileLength
+			);
 
 			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
 				.setModule (FloatToIntBuffer::layout.shaderModule)
 				.setPName  ("main")
 			;
-			core::dvc::compute.LD.destroyShaderModule(FloatToIntBuffer::layout.shaderModule, nullptr);
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
