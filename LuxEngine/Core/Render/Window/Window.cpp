@@ -8,6 +8,9 @@
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
 
+#include "LuxEngine/Contents/shaders/Border2D.hpp"
+#include "LuxEngine/Contents/shaders/Line2D.hpp"
+#include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
 
 
 
@@ -28,11 +31,10 @@ namespace lux{
 
 	void Window::init() {
 		//Create default shaders
-		CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
-		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_LINE,   4, { 0, 0, 0, 1 }, *this);
-		core::c::shaders::createDefLayout(LUX_DEF_SHADER_2D_BORDER, 4, { 0, 0, 0, 1 }, *this);
-		core::c::shaders::createDefLayout(LUX_DEF_SHADER_CLEAR,     4, { 0, 0, 0, 0 }, *this);
-		//FIXME fix that 01010001 thing
+		// CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
+		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_LINE,   shd::Line2D::layout, *this);
+		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_BORDER, shd::Border2D::layout, *this);
+		core::c::shaders::createPipeline(LUX_DEF_SHADER_CLEAR,     shd::FloatToIntBuffer::layout, *this);
 
 
 
@@ -92,7 +94,7 @@ namespace lux{
 
 
 		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
-		sh_clear.createDescriptorSets(LUX_DEF_SHADER_CLEAR, *this);
+		sh_clear.createDescriptorSets();
 		sh_clear.createCommandBuffers(LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES

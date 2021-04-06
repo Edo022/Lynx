@@ -85,29 +85,30 @@ namespace lux::core{
 
 	namespace debug {
 		//It's dark magic, idk why or how it works, but it does
-		inline VkResult CreateDebugUtilsMessengerEXT(vk::Instance instance, const vk::DebugUtilsMessengerCreateInfoEXT* pCreateInfo, const vk::AllocationCallbacks* pAllocator, vk::DebugUtilsMessengerEXT* pDebugMessenger) {
+		inline VkResult CreateDebugUtilsMessengerEXT(vk::Instance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
 			auto func = (PFN_vkCreateDebugUtilsMessengerEXT)instance.getProcAddr("vkCreateDebugUtilsMessengerEXT");
 			if(func != nullptr) return func(
-				instance, //FIXME CHECK IF THOSE TYPES ARE BINARY COMPATIBLE
-				rcast<const VkDebugUtilsMessengerCreateInfoEXT*>(pCreateInfo),
-				rcast<const VkAllocationCallbacks*>             (pAllocator),
-				rcast<vk::DebugUtilsMessengerEXT::CType*>       (pDebugMessenger)
+				instance, //! Ok. vk::Instance has implicit conversion to VkInstance
+				pCreateInfo,
+				pAllocator,
+				pDebugMessenger
 			);
 			else return VK_ERROR_EXTENSION_NOT_PRESENT;
 		}
-		inline void DestroyDebugUtilsMessengerEXT(vk::Instance vInstance, vk::DebugUtilsMessengerEXT debugMessenger, const vk::AllocationCallbacks* pAllocator) {
+		inline void DestroyDebugUtilsMessengerEXT(vk::Instance vInstance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
 			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(vInstance, "vkDestroyDebugUtilsMessengerEXT");
-			if(func != nullptr) func(vInstance, debugMessenger, rcast<const VkAllocationCallbacks*>(pAllocator));
+			if(func != nullptr) func(vInstance, debugMessenger, pAllocator);
 		}
 
 
 		//More dark magic
-		static inline void populateDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& createInfo) {
-			createInfo = vk::DebugUtilsMessengerCreateInfoEXT()
-				.setMessageSeverity (vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError  )
-				.setMessageType     (vk::DebugUtilsMessageTypeFlagBitsEXT    ::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT:: eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance)
-			;
-			_dbg(createInfo.setPfnUserCallback(core::render::vulkanOutputCallback));
+		static inline void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+			createInfo = VkDebugUtilsMessengerCreateInfoEXT{
+				.sType           = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
+				.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
+				.messageType     = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT     | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT  | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
+				.pfnUserCallback = core::render::vulkanOutputCallback
+			};
 		}
 	}
 }

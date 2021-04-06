@@ -10,24 +10,14 @@
 
 
 
-// Shader components create functions -------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
 namespace lux::core::c::shaders{
-	alignCache String						shaderPath; //FIXME MAKE WINDOW-LOCAL
-	// alignCache RtArray<LuxShaderLayout_t>	CShadersLayouts;
+	alignCache String shaderPath;
 
 
 
 
 	luxAutoInit(LUX_H_CSHADER){
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/"; //BUG FIX SHADER PATH
+		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
@@ -40,33 +30,31 @@ namespace lux::core::c::shaders{
 	 * @return A pointer to the array where the code was saved
 	 */
 	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
-		FILE* fp;
-		_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
-		_lnx(fp = fopen(  pFilePath, "rb"));
-		if(!fp) {
-			printf("Could not find or open file: %s\n", pFilePath);
-			return 0;
-		}
-		_wds(
-			_fseeki64(fp, 0, SEEK_END);				//Go to the end of the file
-			uint32 filesize = _ftelli64(fp);		//And get the file count
-			_fseeki64(fp, 0, SEEK_SET);				//Go to the beginning of the file
-		)
-		_lnx(
-			fseek(fp, 0, SEEK_END);
-			uint32 filesize = ftell(fp);
-			fseek(fp, 0, SEEK_SET);
-		)
+		//Open file
+			FILE* fp;
+			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
+			_lnx(fp = fopen(  pFilePath, "rb"));
+			if(!fp) {
+				printf("Could not find or open file: %s\n", pFilePath);
+				return 0;
+			}
 
-		uint32 paddedFileSize = (uint32)(ceil(filesize / 4.0)) * 4;			//Calculate the padded count
+		//Get file size
+			_wds(_fseeki64(fp, 0, SEEK_END); uint32 fs = (u32)_ftelli64(fp); _fseeki64(fp, 0, SEEK_SET);)
+			_lnx(    fseek(fp, 0, SEEK_END); uint32 fs =          ftell(fp);     fseek(fp, 0, SEEK_SET);)
 
-		char* str = (char*)malloc(sizeof(char) * (uint64)paddedFileSize);	//Allocate a buffer to save the file (Freed in createShaderModule function #LLID CSF0000)
-		fread(str, (uint64)filesize, sizeof(char), fp);						//Read the file
-		fclose(fp);															//Close the file
-		for(uint32 i = filesize; i < paddedFileSize; ++i) str[i] = 0;		//Add padding
+		//Calculate padded size and allocate a memory block
+			uint32 pfs = ceil(fs / 4.0) * 4;
+			char* str = (char*)malloc(sizeof(char) * pfs);	//! Freed in createShaderModule function
 
-		*pLength = paddedFileSize;											//Set length
-		return (uint32*)str;												//Return the buffer
+		//Read the file and add padding
+			fread(str, fs, sizeof(char), fp);
+			fclose(fp);
+			for(uint32 i = fs; i < pfs; ++i) str[i] = 0;
+
+		//Set length and return the block
+			*pLength = pfs;
+			return (uint32*)str;
 	}
 
 
@@ -88,7 +76,7 @@ namespace lux::core::c::shaders{
 		;
 
 		vk::ShaderModule shaderModule;									//Create the shader module
-		vDevice.createShaderModule(&createInfo, nullptr, &shaderModule);
+		auto r = vDevice.createShaderModule(&createInfo, nullptr, &shaderModule); //FIXME remove r or check it at runtime
 		free(pCode);													//#LLID CSF0000 Free memory
 		return shaderModule;											//Return the created shader module
 	}
@@ -115,70 +103,16 @@ namespace lux::core::c::shaders{
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
 	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	void createDefLayout(const ShaderLayout vRenderShader, const uint32 pCellNum, const RtArray<bool>& pIsReadOnly, Window& pWindow) {
-		{ //Create descriptor set layout
-			RtArray<vk::DescriptorSetLayoutBinding> bindingLayouts(pCellNum);
-			for(uint32 i = 0; i < pCellNum; ++i) {										//Create a binding layout for each cell
-				bindingLayouts[i] = vk::DescriptorSetLayoutBinding() 							//The binding layout describes what to bind in a shader binding point and how to use it
-					.setBinding            (i)													//Binding point in the shader
-					.setDescriptorType     ((pIsReadOnly[i]) ? vk::DescriptorType::eUniformBuffer : vk::DescriptorType::eStorageBuffer)//Type of the descriptor. It depends on the type of data that needs to be bound
-					.setDescriptorCount    (1)													//Number of descriptors
-					.setStageFlags         (vk::ShaderStageFlagBits::eCompute)					//Stage where to use the layout
-					.setPImmutableSamplers (nullptr)												//Default
-				;
-			}
-
-			//Create a vk::DescriptorSetLayoutCreateInfo structure. It contains all the bindings layouts and it's used to create the the vk::DescriptorSetLayout
-			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
-				.setBindingCount (bindingLayouts.count())	 					//Number of binding layouts
-				.setPBindings    (bindingLayouts.begin())	 						//The binding layouts
-			;
-			//Create the descriptor set layout
-			dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout);
-		}
-
-
-
-
-		{ //Create pipeline layout
-			//Create shader module
-			String shaderFileName; uint32 fileLength;
-			switch(vRenderShader) {																	//Set shader file name
-				case LUX_DEF_SHADER_2D_LINE:   shaderFileName = "Line2D";           break;
-				case LUX_DEF_SHADER_2D_BORDER: shaderFileName = "Border2D";         break;
-				case LUX_DEF_SHADER_CLEAR:     shaderFileName = "FloatToIntBuffer"; break;
-				default: dbg::printError("Unknown shader: %d", vRenderShader);
-			}
-			pWindow.CShadersLayouts[vRenderShader].shaderModule = cshaderCreateModule(dvc::compute.LD, cshaderReadFromFile(&fileLength, (shaderPath + shaderFileName + ".spv").begin()), &fileLength);
-
-
-			//Create stage info
-			pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
-				.setStage  (vk::ShaderStageFlagBits::eCompute)								//Use it in the compute stage
-				.setModule (pWindow.CShadersLayouts[vRenderShader].shaderModule)			//Set shader module
-				.setPName  ("main")															//Set the main function as entry point
-			;
-
-
-			//Create pipeline layout
-			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
-				.setSetLayoutCount (1)																//Number of set layouts
-				.setPSetLayouts    (&pWindow.CShadersLayouts[vRenderShader].descriptorSetLayout)	//Set set layout
-			;
-			dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipelineLayout);
-		}
-
-
-
-
-		{ //Create the pipeline
-			auto pipelineCreateInfo = vk::ComputePipelineCreateInfo() 						//Create pipeline creation infos
-				.setStage  (pWindow.CShadersLayouts[vRenderShader].shaderStageCreateInfo)		//Use the previously created shader stage creation infos
-				.setLayout (pWindow.CShadersLayouts[vRenderShader].pipelineLayout)				//Use the previously created pipeline layout
-			;
-			dvc::compute.LD.createComputePipelines(nullptr, 1, &pipelineCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipeline); //FIXME USE FUNCTION FOR SINGLE PIPELINE
-			dvc::compute.LD.destroyShaderModule(pWindow.CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
-		}
+	void createPipeline(const ShaderLayout vLayout, shd::Shader_b::Layout& layout_, Window& pWindow) {
+		pWindow.pipelines[vLayout] = dvc::compute.LD.createComputePipeline(
+			nullptr,
+			vk::ComputePipelineCreateInfo()
+				.setStage  (layout_.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
+				.setLayout (layout_.pipelineLayout)				//Use the previously created pipeline layout
+			,
+			nullptr
+		).value;
+		core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
 	}
 
 

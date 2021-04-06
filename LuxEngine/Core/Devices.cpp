@@ -29,7 +29,7 @@ namespace lux::core::dvc{
 	alignCache const char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	#ifdef LUX_DEBUG
-		alignCache vk::DebugUtilsMessengerEXT debugMessenger;
+		alignCache VkDebugUtilsMessengerEXT debugMessenger;
 		alignCache uint32       validationLayersNum = 1;
 		alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
 	#endif
@@ -53,6 +53,7 @@ namespace lux::core::dvc{
 		//Create debugCreateInfo structure
 		_dbg(vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo);
 		_dbg(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
+		//!^ Ok. vk::DebugUtilsMessengerCreateInfoEXT has implicit conversion to VkDebugUtilsMessengerCreateInfoEXT
 
 		auto appInfo = vk::ApplicationInfo()
 			.setPApplicationName   ("LuxEngine")

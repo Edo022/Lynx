@@ -4,14 +4,17 @@
 //####################################################################################
 
 #include "LuxEngine/Contents/shaders/Line2D.hpp"
+#include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
+#include "LuxEngine/Core/Render/Shaders/Shader.hpp"
+#define LUX_H_LINE2D
 
 
 
 namespace lux::shd{
 
 
-	void Line2D::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void Line2D::createDescriptorSets(){ //FIXME REMOVE LAYOUT
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
@@ -29,7 +32,7 @@ namespace lux::shd{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout)
+			.setPSetLayouts        (&Line2D::layout.descriptorSetLayout)
 		;
 		core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);
 
@@ -108,8 +111,8 @@ namespace lux::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2D::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
 	}
@@ -124,9 +127,98 @@ namespace lux::shd{
 	void Line2D::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2D::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
+	}
+
+
+
+
+
+
+
+
+	void Line2D::destroy(){
+		//TODO
+	}
+
+
+
+
+
+
+
+
+	Shader_b::Layout Line2D::layout;
+	luxAutoInit(LUX_H_LINE2D){
+		{ //Create descriptor set layout
+			vk::DescriptorSetLayoutBinding bindingLayouts[4];
+			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (0)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[1] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (1)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (2)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (3)
+				.setDescriptorType     (vk::DescriptorType::eUniformBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
+				.setBindingCount (4)
+				.setPBindings    (bindingLayouts)
+			;
+			//Create the descriptor set layout
+			core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2D::layout.descriptorSetLayout);
+		}
+
+
+
+
+		{ //Create pipeline layout
+			uint32 fileLength;
+			Line2D::layout.shaderModule = core::c::shaders::cshaderCreateModule(
+				core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(
+					&fileLength,
+					(core::c::shaders::shaderPath + "Line2D.spv").begin()
+				),
+				&fileLength
+			);
+
+			Line2D::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+				.setStage  (vk::ShaderStageFlagBits::eCompute)
+				.setModule (Line2D::layout.shaderModule)
+				.setPName  ("main")
+			;
+
+			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
+				.setSetLayoutCount (1)
+				.setPSetLayouts    (&Line2D::layout.descriptorSetLayout)
+			;
+			core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2D::layout.pipelineLayout);
+		}
 	}
 }

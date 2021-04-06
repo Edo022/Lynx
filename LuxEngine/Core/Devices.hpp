@@ -20,7 +20,7 @@ namespace lux::core::dvc{
 	extern const char**	requiredDeviceExtensions;
 
 	#ifdef LUX_DEBUG
-		extern vk::DebugUtilsMessengerEXT	debugMessenger;
+		extern VkDebugUtilsMessengerEXT	debugMessenger;
 		extern uint32       validationLayersNum;
 		extern const char**	validationLayers;
 	#endif

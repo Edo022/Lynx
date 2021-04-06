@@ -1,7 +1,6 @@
 #pragma once
 #define LUX_H_RENDER_SPACE_2D
-#include "LuxEngine/Types/LuxObject/Obj_b.hpp"
-#include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
+#include "LuxEngine/Types/LuxObject/RenderSpace_b.hpp"
 
 
 
@@ -31,7 +30,7 @@ namespace lux::obj {
 	 * @brief A 2D space that allows objects to be rendered.
 	 *		This render space can only be a child of a window or another RenderSpace2D
 	 */
-	struct RenderSpace2D : public Obj2_b {
+	struct RenderSpace2D : public RenderSpace_b {
 		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
 
 		AlignmentType alignment;	//Type of children alignmen
@@ -43,7 +42,6 @@ namespace lux::obj {
 
 		RenderSpace2D(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
 			: alignment(vAlignment), xNum(vXNum), yNum(vYNum), xFlow(vXFlow), yFlow(vYFlow) {
-			luxInitObject(2, RENDER_SPACE);
 		}
 
 

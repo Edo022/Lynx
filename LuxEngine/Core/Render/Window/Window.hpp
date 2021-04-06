@@ -12,7 +12,6 @@
 
 
 
-typedef uint32 LuxShader;
 namespace lux::obj{
 	struct RenderSpace2D;
 	struct Base;
@@ -34,7 +33,8 @@ namespace lux{
 
 
 
-		RtArray<LuxShaderLayout_t>	CShadersLayouts;
+		// RtArray<LuxShaderLayout_t>	CShadersLayouts;
+		vk::Pipeline pipelines[ShaderLayout::LUX_DEF_SHADER_NUM];
 		vk::CommandPool commandPool;
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;

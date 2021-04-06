@@ -17,11 +17,11 @@ def translateDataType(glslType : str) -> str :
         re.sub(r'^ivec([234])', r'i32v\g<1>',
         re.sub(r'^uvec([234])', r'u32v\g<1>',
         re.sub(r'^dvec([234])', r'f64v\g<1>',
-        re.sub(   r'^int',  r'i32',
-        re.sub(  r'^uint',  r'u32',
-        re.sub(  r'^bool', r'bool',
-        re.sub( r'^float',  r'f32',
-        re.sub(r'^double',  r'f64',
+        re.sub(   r'^int',  r'i32', #TODO improve performance
+        re.sub(  r'^uint',  r'u32', #TODO improve performance
+        re.sub(  r'^bool', r'bool', #TODO improve performance
+        re.sub( r'^float',  r'f32', #TODO improve performance
+        re.sub(r'^double',  r'f64', #TODO improve performance
         glslType))))))))))
     )
 
@@ -113,9 +113,8 @@ def createFuncs(members:str, iext:bool) :
             m = m[1:]                                                   #
 
 
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : offset + 64})
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
 
 
 
@@ -178,14 +177,18 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n#include "LuxEngine/Core/Render/Shaders/Shader_t.hpp"\n\n\n'     #Base Shader struct
         '\nnamespace lux::shd{'                                             #Write namespace and struct declaration
         '\n\tstruct ' + fname + ' : public Shader_b {'
+        '\n\t\tstatic Shader_b::Layout layout;'
     )
     fc.write(                                           #Write to file
         '\n//####################################################################################'
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
         '\n#include "' + re.sub(r'^.*?\/?LuxEngine\/(LuxEngine\/.*$)', r'\g<1>', spath + shname) + '.hpp"'
-        '\n#include "LuxEngine/Core/Render/Window/Window.hpp"\n\n\n'
-        '\nnamespace lux::shd{'                             #Write namespace declaration
+        '\n#include "LuxEngine/Core/LuxAutoInit.hpp"'                       #Auto init
+        '\n#include "LuxEngine/Core/Render/Window/Window.hpp"'              #Window struct
+        '\n#include "LuxEngine/Core/Render/Shaders/Shader.hpp"'
+        '\n#define LUX_H_' + shname.upper() + '\n\n\n'                      #Auto init define
+        '\nnamespace lux::shd{'                                             #Write namespace declaration
     )
 
     shader = re.findall(                                #Search for binding declarations
@@ -221,14 +224,15 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
             ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
             '\n}'
-            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow);'
+            '\n\n\nvoid createDescriptorSets();'
             '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
-            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
+            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            '\nvoid destroy();',
         '\t\t'))
 
 
         fc.write(indent(
-            '\n\n\nvoid ' + fname + '::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid ' + fname + '::createDescriptorSets(){ //FIXME REMOVE LAYOUT'
                 '\n\t''vk::DescriptorPoolSize sizes[2] = {'
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(' + str(storageNum) + '),' + (
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(' + str(uniformNum) + ')'
@@ -245,11 +249,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''auto allocateSetInfo = vk::DescriptorSetAllocateInfo()'
 				    '\n\t\t''.setDescriptorPool     (descriptorPool)'
 				    '\n\t\t''.setDescriptorSetCount (1)'
-				    '\n\t\t''.setPSetLayouts        (&pWindow.CShadersLayouts[vShaderLayout].descriptorSetLayout)'
+				    '\n\t\t''.setPSetLayouts        (&' + shname + '::layout.descriptorSetLayout)'
                 '\n\t'';'
                 '\n\t''core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);'
                 '\n\n\n' +
-                '\n\t''vk::WriteDescriptorSet writeSets[' + str(uniformNum + storageNum) + '];' +
+                '\n\t''vk::WriteDescriptorSet writeSets[' + str(len(elms)) + '];' +
                 '\n'.join((
                     '\n\t''auto bufferInfo' + str(i) + ' = vk::DescriptorBufferInfo()'
                         '\n\t\t''.setBuffer (' + b['name'] + '.vdata.cell->csc.buffer)'
@@ -260,11 +264,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t''.setDstSet          (descriptorSet)'
                         '\n\t\t''.setDstBinding      ('+ str(b['bind']) + ')'
                         '\n\t\t''.setDescriptorCount (1)'
-                        '\n\t\t''.setDescriptorType  (' + ('vk::DescriptorType::eUniformBuffer' if b['type'] == 'uniform' else 'vk::DescriptorType::eStorageBuffer') + ')'
+                        '\n\t\t''.setDescriptorType  (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
                         '\n\t\t''.setPBufferInfo     (&bufferInfo' + str(i) + ')'
                     '\n\t;'
                 ) for i, b in enumerate(elms)) +
-                '\n\tcore::dvc::compute.LD.updateDescriptorSets(' + str(uniformNum + storageNum) + ', writeSets, 0, nullptr);'
+                '\n\tcore::dvc::compute.LD.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
             '\n}',
         '\t'))
 
@@ -281,8 +285,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);'
-                '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);'
+                '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
                 '\n\t''commandBuffers[0].end();'
             '\n}',
@@ -293,10 +297,71 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\nvoid ' + fname + '::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);'
-                '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);'
+                '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
                 '\n\t''commandBuffers[0].end();'
+            '\n}',
+        '\t'))
+
+
+        fc.write(indent('\n\n\n\n\n\n\n\n'
+            '\nvoid ' + fname + '::destroy(){'
+                '\n\t''//TODO'
+            '\n}',
+        '\t'))
+
+
+
+
+        fc.write(indent('\n\n\n\n\n\n\n\n'
+            '\nShader_b::Layout ' + shname + '::layout;'
+            '\nluxAutoInit(LUX_H_' + shname.upper() + '){'
+                '\n\t{ //Create descriptor set layout'
+                    '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
+                    '\n'.join((
+                        '\n\t\tbindingLayouts[' + str(i) + '] = vk::DescriptorSetLayoutBinding()'
+                            '\n\t\t\t.setBinding            (' + str(b['bind']) + ')'
+                            '\n\t\t\t.setDescriptorType     (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
+                            '\n\t\t\t.setDescriptorCount    (1)'
+                            '\n\t\t\t.setStageFlags         (vk::ShaderStageFlagBits::eCompute)'
+                            '\n\t\t\t.setPImmutableSamplers (nullptr)'
+                        '\n\t\t;'
+                    ) for i, b in enumerate(elms)) +
+                    '\n'
+                    '\n\t\tauto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()'
+                        '\n\t\t\t.setBindingCount (' + str(len(elms)) + ')'
+                        '\n\t\t\t.setPBindings    (bindingLayouts)'
+                    '\n\t\t;'
+                    '\n\t\t//Create the descriptor set layout'
+                    '\n\t\tcore::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout);'
+                '\n\t}'
+                '\n'
+                '\n'
+                '\n'
+                '\n'
+                '\n\t{ //Create pipeline layout'
+                    '\n\t\tuint32 fileLength;'
+                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::cshaderCreateModule('
+                        '\n\t\t\tcore::dvc::compute.LD, core::c::shaders::cshaderReadFromFile('
+                            '\n\t\t\t\t&fileLength,'
+                            '\n\t\t\t\t(core::c::shaders::shaderPath + "' + shname + '.spv").begin()' #TODO EVALUATE SHADER PATH AT RUNTIME
+                        '\n\t\t\t),'
+                        '\n\t\t\t&fileLength'
+                    '\n\t\t);'
+                    '\n'
+                    '\n\t\t' + shname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
+                        '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'
+                        '\n\t\t\t.setModule (' + shname + '::layout.shaderModule)'
+                        '\n\t\t\t.setPName  ("main")'
+                    '\n\t\t;'
+                    '\n'
+                    '\n\t\tauto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()'
+                        '\n\t\t\t.setSetLayoutCount (1)'
+                        '\n\t\t\t.setPSetLayouts    (&' + shname + '::layout.descriptorSetLayout)'
+                    '\n\t\t;'
+                    '\n\t\tcore::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout);'
+                '\n\t}'
             '\n}',
         '\t'))
 

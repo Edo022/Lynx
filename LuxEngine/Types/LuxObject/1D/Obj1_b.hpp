@@ -8,9 +8,6 @@
 namespace lux::obj{
     //Base class for 1D objects in 1D space
     struct Obj1_b : public Base {
-        //TODO
-        Obj1_b() { common.objectType = LUX_OBJECT_TYPE_1D__BASE; }
-
         float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
         float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
         float32 scl{ 0 };				//Scale of the object

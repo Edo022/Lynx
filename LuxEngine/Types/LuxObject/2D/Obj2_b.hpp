@@ -7,7 +7,6 @@
 namespace lux::obj{
     //Base class for 2D objects in 2D space
     struct Obj2_b : public Base {
-        Obj2_b();
 
         //TODO add absolute pixel position and scale
         f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
@@ -24,14 +23,14 @@ namespace lux::obj{
             children[vChildIndex]->setMaxLim(maxLim);
             return true;
         }
-        void update() final override {
-            Base::update();
+        void qHierarchy() {
             for(u32 i = 0; i < children.count(); i++) if(children.isValid(i)) {
                 setChildLimits(i);
                 //TODO add  recalculateCoords() in all objects
                 children[i]->recalculateCoords();
-                children[i]->update();
+                children[i]->qHierarchy();
             }
+            qSelf();
         }
 
         virtual void onSpawn(Window& pWindow) override;

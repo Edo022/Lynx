@@ -343,7 +343,7 @@ namespace lux::core::wnd{
 		;
 
 
-		vk::SubpassDependency dependencies[2]{							//Dependencies for implicit convertion
+		vk::SubpassDependency dependencies[2]{							//Dependencies for implicit conversion
 			vk::SubpassDependency()											//From undefined to color
 				.setSrcSubpass      (VK_SUBPASS_EXTERNAL)
 				.setDstSubpass      (0)

@@ -9,24 +9,18 @@ namespace lux::obj{
 		minLim = vMinLim;
 		if(!debug && debugBorder) {
 			debugBorder->data.objData_.ffp() = vMinLim;
-			debugBorder->update();
+			debugBorder->qHierarchy();
 		}
 	}
 	void Obj2_b::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
 		if(!debug && debugBorder) {
 			debugBorder->data.objData_.fsp() = vMaxLim;
-			debugBorder->update();
+			debugBorder->qHierarchy();
 		}
 	}
 	#endif
 
-
-
-
-	Obj2_b::Obj2_b() {
-        common.objectType = LUX_OBJECT_TYPE_2D__BASE;
-    }
 
 
 

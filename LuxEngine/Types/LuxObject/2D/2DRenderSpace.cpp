@@ -10,7 +10,7 @@ namespace lux::obj {
 	bool RenderSpace2D::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));
-		pObj->update();
+		pObj->qHierarchy();
 		if(render.parentWindow) pObj->onSpawn(*render.parentWindow);
 		return pObj->common.childIndex;
 	}
