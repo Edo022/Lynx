@@ -111,7 +111,7 @@ namespace lux::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
@@ -127,7 +127,7 @@ namespace lux::shd{
 	void FloatToIntBuffer::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.CShadersLayouts[vShaderLayout].pipeline);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();

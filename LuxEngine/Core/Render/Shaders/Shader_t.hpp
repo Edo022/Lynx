@@ -25,17 +25,8 @@ enum ShaderLayout : uint32 {
 
 namespace lux{
 	class Window;
-
-
-	//This struct contains the elements of a shader layout
-	struct LuxShaderLayout_t{ //FIXME REMOVE
-		// vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
-		// vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
-		// vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
-
-		// vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
-		vk::Pipeline                      pipeline;				//The pipeline that will be boud to the command buffer of the instance
-	};
+}
+namespace lux::shd{
 
 
 

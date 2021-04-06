@@ -115,16 +115,16 @@ namespace lux::core::c::shaders{
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
 	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	void createDefLayout(const ShaderLayout vRenderShader, Shader_b::Layout& layout_, Window& pWindow) {
-		{ //Create the pipeline
-			auto pipelineCreateInfo = vk::ComputePipelineCreateInfo() 						//Create pipeline creation infos
+	void createPipeline(const ShaderLayout vLayout, shd::Shader_b::Layout& layout_, Window& pWindow) {
+		pWindow.pipelines[vLayout] = dvc::compute.LD.createComputePipeline(
+			nullptr,
+			vk::ComputePipelineCreateInfo()
 				.setStage  (layout_.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
 				.setLayout (layout_.pipelineLayout)				//Use the previously created pipeline layout
-			;
-			dvc::compute.LD.createComputePipelines(nullptr, 1, &pipelineCreateInfo, nullptr, &pWindow.CShadersLayouts[vRenderShader].pipeline); //FIXME USE FUNCTION FOR SINGLE PIPELINE
-			// dvc::compute.LD.destroyShaderModule(pWindow.CShadersLayouts[vRenderShader].shaderModule, nullptr);	//Destroy the shader module
-			core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
-		}
+			,
+			nullptr
+		).value;
+		core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
 	}
 
 
