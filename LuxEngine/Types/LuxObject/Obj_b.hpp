@@ -71,21 +71,12 @@ namespace lux{
 			virtual vram::Alloc_b<char> getShVData(){ return vram::Alloc_b<char>(); }
 
 			struct Render{
-				ShaderLayout shaderLayout;						//The shader layout of the object's render shader			| object type				| object type
 				bool updated{ true };
 				Window* parentWindow = nullptr;
 			} render;
-			virtual void update();							//Updates the object data in the shared memory				| object type				| -
+			virtual void qSelf();							//Updates the object data in the shared memory				| object type				| -
 			virtual void recalculateCoords() {}
 			virtual void onSpawn(Window& pWindow){}
 		};
-
-
-
-
-		//TODO automatic enum creation
-		#define luxInitObject(dimensions_, objectType_)								\
-			common.objectType = LUX_OBJECT_TYPE_##dimensions_##D_##objectType_;		\
-			render.shaderLayout = LUX_DEF_SHADER_##dimensions_##D_##objectType_;
 	}
 }

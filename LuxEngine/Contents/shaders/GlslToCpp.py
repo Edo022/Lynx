@@ -224,14 +224,14 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
             ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
             '\n}'
-            '\n\n\nvoid createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow);'
+            '\n\n\nvoid createDescriptorSets();'
             '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
             '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);',
         '\t\t'))
 
 
         fc.write(indent(
-            '\n\n\nvoid ' + fname + '::createDescriptorSets(const ShaderLayout vShaderLayout, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid ' + fname + '::createDescriptorSets(){ //FIXME REMOVE LAYOUT'
                 '\n\t''vk::DescriptorPoolSize sizes[2] = {'
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(' + str(storageNum) + '),' + (
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(' + str(uniformNum) + ')'

@@ -24,14 +24,14 @@ namespace lux::obj{
             children[vChildIndex]->setMaxLim(maxLim);
             return true;
         }
-        void update() final override {
-            Base::update();
+        void qHierarchy() {
             for(u32 i = 0; i < children.count(); i++) if(children.isValid(i)) {
                 setChildLimits(i);
                 //TODO add  recalculateCoords() in all objects
                 children[i]->recalculateCoords();
-                children[i]->update();
+                children[i]->queueUpdate();
             }
+            qSelf();
         }
 
         virtual void onSpawn(Window& pWindow) override;

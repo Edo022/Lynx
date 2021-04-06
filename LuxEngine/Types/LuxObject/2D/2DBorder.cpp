@@ -10,8 +10,8 @@ namespace lux::obj{
 
 		pWindow.addShaderFence.lock();
 			data.create(pWindow.fOut_g, (vram::ptr<u32v2, VRam, Storage>)pWindow.wSize_g, pWindow.zBuff_g);		//FIXME unify window size type
-			data.createDescriptorSets(render.shaderLayout, pWindow);
-			data.createCommandBuffers(render.shaderLayout, (u32)pWindow.width / 32 + 1, 1, 1, pWindow);
+			data.createDescriptorSets();
+			data.createCommandBuffers(LUX_DEF_SHADER_2D_BORDER, (u32)pWindow.width / 32 + 1, 1, 1, pWindow);
 
 			pWindow.swp.shadersCBs.add(data.commandBuffers[0]);
 		pWindow.addShaderFence.unlock();
