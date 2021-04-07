@@ -36,9 +36,9 @@
     #include "LuxEngine/Types/LuxObject/2D/RenderSpace2.cpp"
 
     //TODO AUTOMATIZE
-    #include "LuxEngine/Contents/shaders/Line2.cpp"
-    #include "LuxEngine/Contents/shaders/Border2.cpp"
-    #include "LuxEngine/Contents/shaders/FloatToIntBuffer.cpp"
+    #include "LuxEngine/shaders/Line2.cpp"
+    #include "LuxEngine/shaders/Border2.cpp"
+    #include "LuxEngine/shaders/FloatToIntBuffer.cpp"
 
 
     #include "LuxEngine/Core/Render/Buffers.cpp"

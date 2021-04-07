@@ -3,7 +3,7 @@
 // This file was generated automatically. Changes could be overwritten without notice
 //####################################################################################
 
-#include "LuxEngine/Contents/shaders/Border2.hpp"
+#include "LuxEngine/shaders/Border2.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"

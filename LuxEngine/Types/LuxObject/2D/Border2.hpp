@@ -1,7 +1,7 @@
 #pragma once
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
-#include "LuxEngine/Contents/shaders/Border2.hpp"
+#include "LuxEngine/shaders/Border2.hpp"
 
 
 

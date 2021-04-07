@@ -6,7 +6,7 @@
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-#include "LuxEngine/Contents/shaders/Line2.hpp"
+#include "LuxEngine/shaders/Line2.hpp"
 #include <vulkan/vulkan.hpp>
 
 

@@ -23,13 +23,13 @@ with open('./.engine/enginePath', 'r') as f:
 def compileShader(name:str):
     if os.system( #FIXME USE DIFFERENT OPTIMIZATION LEVELS FOR DEBUG AND RELEASE #https://man.linuxreviews.org/man1/glslc.1.html
         enginePath + '/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc '    +
-        enginePath + '/LuxEngine/Contents/shaders/' + name + '.comp -o ' +
-        enginePath + '/LuxEngine/Contents/shaders/' + name + '.spv'
+        enginePath + '/LuxEngine/shaders/' + name + '.comp -o ' +
+        enginePath + '/LuxEngine/shaders/' + name + '.spv'
     ) != 0: exit()
     if os.system(
         'python3 ' +
-        enginePath + '/LuxEngine/Contents/shaders/GlslToCpp.py ' +
-        enginePath + '/LuxEngine/Contents/shaders/' + name + '.comp'
+        enginePath + '/LuxEngine/shaders/GlslToCpp.py ' +
+        enginePath + '/LuxEngine/shaders/' + name + '.comp'
     ) != 0: exit()
 
 

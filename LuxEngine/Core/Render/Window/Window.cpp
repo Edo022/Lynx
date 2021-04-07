@@ -8,9 +8,9 @@
 #include "LuxEngine/Types/Containers/RaArray.hpp"
 #include "LuxEngine/Types/LuxObject/2D/RenderSpace2.hpp"
 
-#include "LuxEngine/Contents/shaders/Border2.hpp"
-#include "LuxEngine/Contents/shaders/Line2.hpp"
-#include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
+#include "LuxEngine/shaders/Border2.hpp"
+#include "LuxEngine/shaders/Line2.hpp"
+#include "LuxEngine/shaders/FloatToIntBuffer.hpp"
 
 
 

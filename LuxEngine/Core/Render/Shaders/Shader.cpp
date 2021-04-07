@@ -17,7 +17,7 @@ namespace lux::core::c::shaders{
 
 
 	luxAutoInit(LUX_H_CSHADER){
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/Contents/shaders/"; //TODO EVALUATE AT RUNTIME
+		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/LuxEngine/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
