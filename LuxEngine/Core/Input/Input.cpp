@@ -2,8 +2,8 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
+#include "LuxEngine/Types/LuxObject/2D/RenderSpace2.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Line2.hpp"
 
 
 
@@ -23,22 +23,22 @@ namespace lux::input{
 	#define gtolly(n) ((n) / wnd_->swp.createInfo.imageExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
-		// rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
-		// rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->update();
+		// rcast<lux::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
+		// rcast<lux::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
-		// rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd0() -= ((float32)y * 10);
-		// rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd1() -= ((float32)y * 10);
-		// rcast<lux::obj::Line2D*>(wnd_->CRenderSpaces[0]->children[0])->update();
+		// rcast<lux::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd0() -= ((float32)y * 10);
+		// rcast<lux::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd1() -= ((float32)y * 10);
+		// rcast<lux::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
 		if(wnd_->CRenderSpaces.count() > 0) {
-			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
-			rcast<lux::obj::RenderSpace2D*>(wnd_->CRenderSpaces[0])->qHierarchy();
+			rcast<lux::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
+			rcast<lux::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->qHierarchy();
 		}
 	}
 

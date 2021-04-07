@@ -1,10 +1,10 @@
-#include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Border2.hpp"
 
 
 
 
 namespace lux::obj{
-	void Border2D::onSpawn(Window& pWindow) {
+	void Border2::onSpawn(Window& pWindow) {
 		Obj2_b::onSpawn(pWindow); //Initialize all the children
 
 

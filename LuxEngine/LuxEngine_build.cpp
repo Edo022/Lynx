@@ -31,13 +31,13 @@
     #include "LuxEngine/Types/LuxObject/2D/Obj2_b.cpp"
     #include "LuxEngine/Types/LuxObject/3D/Obj3_b.cpp"
 
-    #include "LuxEngine/Types/LuxObject/2D/2DLines.cpp"
-    #include "LuxEngine/Types/LuxObject/2D/2DBorder.cpp"
-    #include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.cpp"
+    #include "LuxEngine/Types/LuxObject/2D/Line2.cpp"
+    #include "LuxEngine/Types/LuxObject/2D/Border2.cpp"
+    #include "LuxEngine/Types/LuxObject/2D/RenderSpace2.cpp"
 
     //TODO AUTOMATIZE
-    #include "LuxEngine/Contents/shaders/Line2D.cpp"
-    #include "LuxEngine/Contents/shaders/Border2D.cpp"
+    #include "LuxEngine/Contents/shaders/Line2.cpp"
+    #include "LuxEngine/Contents/shaders/Border2.cpp"
     #include "LuxEngine/Contents/shaders/FloatToIntBuffer.cpp"
 
 

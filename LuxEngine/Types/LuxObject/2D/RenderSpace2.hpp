@@ -28,9 +28,9 @@ namespace lux::obj {
 
 	/**
 	 * @brief A 2D space that allows objects to be rendered.
-	 *		This render space can only be a child of a window or another RenderSpace2D
+	 *		This render space can only be a child of a window or another RenderSpace2
 	 */
-	struct RenderSpace2D : public RenderSpace_b {
+	struct RenderSpace2 : public RenderSpace_b {
 		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
 
 		AlignmentType alignment;	//Type of children alignmen
@@ -40,7 +40,7 @@ namespace lux::obj {
 		FlowType yFlow;				//Children vertical direction
 
 
-		RenderSpace2D(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
+		RenderSpace2(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
 			: alignment(vAlignment), xNum(vXNum), yNum(vYNum), xFlow(vXFlow), yFlow(vYFlow) {
 		}
 

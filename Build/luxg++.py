@@ -129,8 +129,8 @@ cmdg = (
 if cd == 'e':
     #FIXME USE PARAMETERS, NOT HARD CODED PATHS
     print('\n\n' '\033[1m' 'COMPILING SHADERS')
-    compileShader('Border2D')
-    compileShader('Line2D')
+    compileShader('Border2')
+    compileShader('Line2')
     compileShader('FloatToIntBuffer')
     print('\033[0m')
 

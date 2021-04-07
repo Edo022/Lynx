@@ -16,7 +16,7 @@
 namespace lux{
 	//This namespace contains all the structures and functions of render objects
 	namespace obj {
-		struct Border2D;
+		struct Border2;
 
 
 		enum class limitAlignment : int16{

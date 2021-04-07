@@ -6,10 +6,10 @@
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Core/Input/Input.hpp"
 #include "LuxEngine/Types/Containers/RaArray.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
+#include "LuxEngine/Types/LuxObject/2D/RenderSpace2.hpp"
 
-#include "LuxEngine/Contents/shaders/Border2D.hpp"
-#include "LuxEngine/Contents/shaders/Line2D.hpp"
+#include "LuxEngine/Contents/shaders/Border2.hpp"
+#include "LuxEngine/Contents/shaders/Line2.hpp"
 #include "LuxEngine/Contents/shaders/FloatToIntBuffer.hpp"
 
 
@@ -32,8 +32,8 @@ namespace lux{
 	void Window::init() {
 		//Create default shaders
 		// CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
-		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_LINE,   shd::Line2D::layout, *this);
-		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_BORDER, shd::Border2D::layout, *this);
+		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_LINE,   shd::Line2::layout, *this);
+		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_BORDER, shd::Border2::layout, *this);
 		core::c::shaders::createPipeline(LUX_DEF_SHADER_CLEAR,     shd::FloatToIntBuffer::layout, *this);
 
 
@@ -183,7 +183,7 @@ namespace lux{
 
 
 
-	void Window::spawn(obj::RenderSpace2D* pRenderSpace) {
+	void Window::spawn(obj::RenderSpace2* pRenderSpace) {
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
 		pRenderSpace->onSpawn(*this);			//BUG >IN
 	}

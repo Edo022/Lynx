@@ -6,7 +6,7 @@
 #include "LuxEngine/Core/Devices.hpp"
 #include "LuxEngine/Core/Render/GCommands.hpp"
 #include "LuxEngine/Core/Render/Render.hpp"
-#include "LuxEngine/Contents/shaders/Line2D.hpp"
+#include "LuxEngine/Contents/shaders/Line2.hpp"
 #include <vulkan/vulkan.hpp>
 
 
@@ -18,7 +18,7 @@ namespace lux::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2D : public Obj2_b {
+	struct Line2 : public Obj2_b {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
@@ -32,7 +32,7 @@ namespace lux::obj {
 
 
 		/**
-		 * @brief Creates a Line2D object with the specified points, colors and widths.
+		 * @brief Creates a Line2 object with the specified points, colors and widths.
 		 *		Colors and widths are interpolated
 		 * @param pFp First point of the line
 		 * @param pSp Second point of the line
@@ -41,7 +41,7 @@ namespace lux::obj {
 		 * @param vFw Width of the first point
 		 * @param vSw Width of the second point
 		 */
-		Line2D(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
+		Line2(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			setFp(pFp);
 			setSp(pSp);
 			data.lineData_.col0() = pFc;
@@ -65,7 +65,7 @@ namespace lux::obj {
 
 
 
-		shd::Line2D data;
+		shd::Line2 data;
 	};
 }
 

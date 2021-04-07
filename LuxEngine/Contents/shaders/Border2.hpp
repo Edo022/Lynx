@@ -9,7 +9,7 @@
 
 
 namespace lux::shd{
-	struct Line2D : public Shader_b {
+	struct Border2 : public Shader_b {
 		static Shader_b::Layout layout;
 
 
@@ -34,32 +34,24 @@ namespace lux::shd{
 		} zBuffer_;
 
 
-		struct lineData__t : public ShaderElm_b<Uniform> {
-			lineData__t() {
-				ShaderElm_b::vdata.realloc(128);
-				ShaderElm_b::data.realloc(128);
+		struct objData__t : public ShaderElm_b<Uniform> {
+			objData__t() {
+				ShaderElm_b::vdata.realloc(96);
+				ShaderElm_b::data.realloc(96);
 				ShaderElm_b::bind = 3;
 			}
-			//Position of the first point
-			alwaysInline f32v2& fp0() { return *(f32v2*)ShaderElm_b::data; }
-			//Position of the second point
-			alwaysInline f32v2& fp1() { return *(f32v2*)(ShaderElm_b::data + 8); }
-			//Color of the first point
-			alwaysInline f32v4& col0() { return *(f32v4*)(ShaderElm_b::data + 16); }
-			//Color of the second point
-			alwaysInline f32v4& col1() { return *(f32v4*)(ShaderElm_b::data + 32); }
-			//Width of the first point
-			alwaysInline f32& wd0() { return *(f32*)(ShaderElm_b::data + 48); }
-			//Width of the second point
-			alwaysInline f32& wd1() { return *(f32*)(ShaderElm_b::data + 52); }
+			//Position of the top-left corner
+			alwaysInline f32v2& ffp() { return *(f32v2*)ShaderElm_b::data; }
+			//Position of the bottom-right corner
+			alwaysInline f32v2& fsp() { return *(f32v2*)(ShaderElm_b::data + 8); }
 			//TODO
-			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 56); }
-		} lineData_;
+			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 16); }
+		} objData_;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pWidth, vram::ptr<u32, VRam, Storage> pZBuffer){
+		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32v2, VRam, Storage> pWindow, vram::ptr<u32, VRam, Storage> pZBuffer){
 			colorOutput_.vdata = (vram::ptr<char, VRam, Storage>)pColorOutput;
-			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWidth;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWindow;
 			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
 		}
 

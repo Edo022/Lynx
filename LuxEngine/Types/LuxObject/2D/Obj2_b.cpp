@@ -1,5 +1,5 @@
 #include "LuxEngine/Types/LuxObject/2D/Obj2_b.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Border2.hpp"
 
 
 namespace lux::obj{
@@ -31,7 +31,7 @@ namespace lux::obj{
         }
 		#ifdef LUX_DEBUG
         	if(!debug) {
-				debugBorder = new Border2D();
+				debugBorder = new Border2();
 				debugBorder->debug = true;
 				debugBorder->onSpawn(pWindow);
 			}

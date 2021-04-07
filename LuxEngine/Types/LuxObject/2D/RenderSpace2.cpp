@@ -1,4 +1,4 @@
-#include "LuxEngine/Types/LuxObject/2D/2DRenderSpace.hpp"
+#include "LuxEngine/Types/LuxObject/2D/RenderSpace2.hpp"
 #include "LuxEngine/Core/Core.hpp"
 
 
@@ -7,7 +7,7 @@ namespace lux::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
-	bool RenderSpace2D::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD
+	bool RenderSpace2::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));
 		pObj->qHierarchy();
@@ -21,7 +21,7 @@ namespace lux::obj {
 	//Updates the render limit of the child at a specific index
 	//It depends on the render space properties and children alignment
 	//Returns false if the index is invalid
-	bool RenderSpace2D::setChildLimits(const uint32 vChildIndex) const {
+	bool RenderSpace2::setChildLimits(const uint32 vChildIndex) const {
 		if(vChildIndex >= children.count()) return false;
 		switch(alignment) {
 			case AlignmentType::FixedHorizontal:

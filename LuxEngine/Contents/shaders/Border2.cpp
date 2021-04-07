@@ -3,18 +3,18 @@
 // This file was generated automatically. Changes could be overwritten without notice
 //####################################################################################
 
-#include "LuxEngine/Contents/shaders/Line2D.hpp"
+#include "LuxEngine/Contents/shaders/Border2.hpp"
 #include "LuxEngine/Core/LuxAutoInit.hpp"
 #include "LuxEngine/Core/Render/Window/Window.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
-#define LUX_H_LINE2D
+#define LUX_H_BORDER2
 
 
 
 namespace lux::shd{
 
 
-	void Line2D::createDescriptorSets(){ //FIXME REMOVE LAYOUT
+	void Border2::createDescriptorSets(){ //FIXME REMOVE LAYOUT
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
@@ -32,7 +32,7 @@ namespace lux::shd{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&Line2D::layout.descriptorSetLayout)
+			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
 		;
 		core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);
 
@@ -79,9 +79,9 @@ namespace lux::shd{
 		;
 
 		auto bufferInfo3 = vk::DescriptorBufferInfo()
-			.setBuffer (lineData_.vdata.cell->csc.buffer)
-			.setOffset (lineData_.vdata.cell->localOffset)
-			.setRange  (lineData_.vdata.cell->cellSize)
+			.setBuffer (objData_.vdata.cell->csc.buffer)
+			.setOffset (objData_.vdata.cell->localOffset)
+			.setRange  (objData_.vdata.cell->cellSize)
 		;
 		writeSets[3] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -100,7 +100,7 @@ namespace lux::shd{
 
 
 
-	void Line2D::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void Border2::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pWindow.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -112,7 +112,7 @@ namespace lux::shd{
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2D::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
 	}
@@ -124,11 +124,11 @@ namespace lux::shd{
 
 
 
-	void Line2D::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
+	void Border2::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2D::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
 	}
@@ -140,7 +140,7 @@ namespace lux::shd{
 
 
 
-	void Line2D::destroy(){
+	void Border2::destroy(){
 		//TODO
 	}
 
@@ -151,8 +151,8 @@ namespace lux::shd{
 
 
 
-	Shader_b::Layout Line2D::layout;
-	luxAutoInit(LUX_H_LINE2D){
+	Shader_b::Layout Border2::layout;
+	luxAutoInit(LUX_H_BORDER2){
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
@@ -192,7 +192,7 @@ namespace lux::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2D::layout.descriptorSetLayout);
+			core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout);
 		}
 
 
@@ -200,25 +200,25 @@ namespace lux::shd{
 
 		{ //Create pipeline layout
 			uint32 fileLength;
-			Line2D::layout.shaderModule = core::c::shaders::cshaderCreateModule(
+			Border2::layout.shaderModule = core::c::shaders::cshaderCreateModule(
 				core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(
 					&fileLength,
-					(core::c::shaders::shaderPath + "Line2D.spv").begin()
+					(core::c::shaders::shaderPath + "Border2.spv").begin()
 				),
 				&fileLength
 			);
 
-			Line2D::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+			Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
-				.setModule (Line2D::layout.shaderModule)
+				.setModule (Border2::layout.shaderModule)
 				.setPName  ("main")
 			;
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
-				.setPSetLayouts    (&Line2D::layout.descriptorSetLayout)
+				.setPSetLayouts    (&Border2::layout.descriptorSetLayout)
 			;
-			core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2D::layout.pipelineLayout);
+			core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout);
 		}
 	}
 }

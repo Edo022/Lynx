@@ -1,7 +1,7 @@
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
 #include "LuxEngine/Types/LuxObject/Obj_b.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DBorder.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Border2.hpp"
 
 
 

@@ -13,7 +13,7 @@
 
 
 namespace lux::obj{
-	struct RenderSpace2D;
+	struct RenderSpace2;
 	struct Base;
 }
 namespace lux{
@@ -41,8 +41,8 @@ namespace lux{
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addShaderFence;
 
-		RaArray<lux::obj::RenderSpace2D*> CRenderSpaces;
-		void spawn(obj::RenderSpace2D* pRenderSpace);
+		RaArray<lux::obj::RenderSpace2*> CRenderSpaces;
+		void spawn(obj::RenderSpace2* pRenderSpace);
 		RtArray<obj::Base*>	objUpdates;
 		std::mutex          objUpdates_m;
 

@@ -1,13 +1,13 @@
 
 #include "LuxEngine/Core/Core.hpp"
 #include "LuxEngine/Core/Render/Shaders/Shader.hpp"
-#include "LuxEngine/Types/LuxObject/2D/2DLines.hpp"
+#include "LuxEngine/Types/LuxObject/2D/Line2.hpp"
 
 
 
 
 namespace lux::obj{
-	void Line2D::onSpawn(Window& pWindow) {
+	void Line2::onSpawn(Window& pWindow) {
 		Obj2_b::onSpawn(pWindow); //Initialize all the children
 
 
