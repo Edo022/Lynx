@@ -1,4 +1,4 @@
-# from LuxEngine.Setup.BuildOptions import enginePath
+# from Lynx.Setup.BuildOptions import enginePath
 import sys, os
 import SetPlatform, SetType
 thisdir = os.path.dirname(os.path.abspath(__file__))
@@ -45,10 +45,10 @@ if sys.stdin.read(1).lower() == 'y':
            '    "tasks": ['                                                                                                 '\n'
            '        {'                                                                                                      '\n'
            '            "type": "shell",'                                                                                   '\n'
-           '            "label": "Linux  |  Debug  |  Build LuxEngine",'                                                    '\n'
-           '            "command": "' + enginePath + '/Build/luxg++",'                                                      '\n'
+           '            "label": "Linux  |  Debug  |  Build Lynx",'                                                    '\n'
+           '            "command": "' + enginePath + '/Build/lynxg++",'                                                      '\n'
            '            "args": [ "-mode=ld",'                                                                              '\n'
-           '                "LuxEngine/LuxEngine/LuxEngine_build.cpp",'                                                     '\n'
+           '                "Lynx/Lynx/Lynx_build.cpp",'                                                     '\n'
            '                "-pipe", "-mavx", "--build-engine",'                                                            '\n'
            ''                                                                                                               '\n'
            '                "-d[",'                                                                                         '\n'
@@ -65,8 +65,8 @@ if sys.stdin.read(1).lower() == 'y':
            '                "-Wstrict-null-sentinel", "-Wstrict-overflow=5", "-Wswitch-default", "-Wundef",'                '\n'
            ''                                                                                                               '\n'
            '                "-c", "-o",'                                                                                    '\n'
-           '                "-d[LuxEngine/Build/Linux/LuxEngineDebug]",'                                                    '\n'
-           '                "-r[LuxEngine/Build/Linux/LuxEngineRelease]",'                                                  '\n'
+           '                "-d[Lynx/Build/Linux/LynxDebug]",'                                                    '\n'
+           '                "-r[Lynx/Build/Linux/LynxRelease]",'                                                  '\n'
            '            ],'                                                                                                 '\n'
            '            "problemMatcher": [ "$gcc" ],'                                                                      '\n'
            '            "options": { "cwd": "${workspaceFolder}" },'                                                        '\n'
@@ -75,7 +75,7 @@ if sys.stdin.read(1).lower() == 'y':
            '        {'                                                                                                      '\n'
            '            "type": "shell",'                                                                                   '\n'
            '            "label": "Linux  |  Debug  |  Build Application\",'                                                 '\n'
-           '            "command": "' + enginePath + '/Build/luxg++",'                                                      '\n'
+           '            "command": "' + enginePath + '/Build/lynxg++",'                                                      '\n'
            '            "args": [ "-mode=ld",'                                                                              '\n'
            '                //Your build'                                                                                   '\n'
            '            ],'                                                                                                 '\n'

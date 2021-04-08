@@ -1,6 +1,9 @@
-deps/
+deps/Linux/
+deps/Shared/GLFWBuild
+
+Build/Linux/
+Build/Windows/
+
 Junk/
-Build/Linux
-Build/Windows
 .vscode/
 __pycache__/
