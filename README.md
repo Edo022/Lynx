@@ -1,5 +1,6 @@
 # Lynx
-A volume rendering and physics engine with runtime procedural generation and advanced particle physics.  
+A volume rendering and physics engine with runtime procedural generation and advanced physics.  
+
 
 &nbsp;
 
@@ -12,14 +13,15 @@ The engine only supports developement on Linux systems using g++ and Python,
 but can deploy applications for both Windows10 and Linux.  
 Support for other C++ compilers and editors will be added in future versions.
 
-| Software     | Version   | Required |
-|--------------|-----------|----------|
-| g++          | 10.7      | Yes      |
-| Mingw        | 8.0.0     | No       |
-| VSCode       | 1.53      | No       |
-| Python       | 3.8       | Yes      |
-| Linux kernel | 4.4       | Yes      |
-| Vulkan SDK   | 1.2.170.0 | Yes      |
+| Software   | Version   | Path           | Required |
+|------------|-----------|----------------|----------|
+| Linux      | 4.4       | -              | Yes      |
+| Python     | 3.8       | /bin/python3.8 | Yes      |
+| g++        | 10.7      | /bin/g++       | Yes      |
+| Vulkan SDK | 1.2.170.0 | any            | Yes      |
+| Mingw      | 8.0.0     | /bin/mingw     | No       |
+| VSCode     | 1.53      | -              | No       |
+
 
 
 Later versions may work as well, but we haven't tested them.  
