@@ -65,31 +65,21 @@ You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] t
 - Release mode  
     Turns on -Ofast and other compiler specific optimizations, and removes all the unnecessary informations.  
  
-Examples are located in `<path_to_repo>/Examples/` and contain the source code and the build commands for both VSCode and command line.  
-
-&nbsp;
-
-## Build from command line
+ 
 Platform and configuration can be specified with the -mode=\<mode\> option.  
+
 | Mode |                                   |
 |------|-----------------------------------|
 | ld   | Build in debug mode for Linux     |
 | lr   | Build in release mode for Linux   |
 | wd   | Build in debug mode for Windows   |
 | wr   | Build in release mode for Windows |
+  
 
 e.g. `<path_to_repo>/Build/lynxg++ -mode=ld, -r[-O3], main.cpp`  
 
-&nbsp;
 
-## Build from VSCode
-Write the luxg++ command options in the arguments of the first task in `<path_to_project>/.vscode/tasks.json`.  
-The second task is used by the engine builds, the others are used to switch between platform and configuratios.  
-e.g.  
-`"args": [`  
-&emsp;`"-mode=ld", //Automatically set. Don't change it`  
-&emsp;`"-r[O3]", "main.cpp"`  
-`],`  
+Examples are located in `<path_to_repo>/Examples/` and contain the source code and the build commands for both VSCode and command line.  
 
 &nbsp;
 
