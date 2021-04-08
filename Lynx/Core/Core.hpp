@@ -1,6 +1,6 @@
 ﻿#pragma once
-#define LUX_H_CORE
-#include "Lynx/Types/Containers/LuxString.hpp"
+#define LNX_H_CORE
+#include "Lynx/Types/Containers/String.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Core/Render/Render.hpp"
 #include "Lynx/Threads/Thread.hpp"
@@ -73,7 +73,7 @@ Object rendering
 
 
 
-namespace lux::core{
+namespace lnx::core{
 	extern std::atomic<bool> running;
 	extern Thread inputThr;
 

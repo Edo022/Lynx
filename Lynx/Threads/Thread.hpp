@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_THREAD
+#define LNX_H_THREAD
 #include "Lynx/Types/Containers/HcArray.hpp"
 #include <pthread.h>
 #include <csignal>
@@ -11,7 +11,7 @@
 
 
 
-namespace lux{
+namespace lnx{
 	struct pollFence;
 
 	namespace thr::__pvt{
@@ -26,7 +26,7 @@ namespace lux{
 
 
 		struct Func_b{
-			lux::pollFence* _fence;
+			lnx::pollFence* _fence;
 			virtual void exec() = 0;
 		};
 
@@ -36,13 +36,13 @@ namespace lux{
 		//Void standard with arguments
 		template<class func_t, class ...args_ts> struct void_std_args_xt : public Func_b {
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 			void exec() final { _args.exec(_func); }
 		};
 		//Type standard with arguments
 		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_xt : public Func_b {
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 			ret_t* _ret;
 			void exec() final { *_ret = _args.exec(_func); }
 		};
@@ -69,14 +69,14 @@ namespace lux{
 		template<class obj_t, class func_t, class ...args_ts> struct void_obj_args_xt : public Func_b {
 			obj_t* _obj;
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 			void exec() final { _args.execObj(*_obj, _func); }
 		};
 		//Type member with arguments
 		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_xt : public Func_b {
 			obj_t* _obj;
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 			ret_t* _ret;
 			void exec() final { *_ret = _args.execObj(*_obj, _func); }
 		};
@@ -132,12 +132,12 @@ namespace lux{
 		//Void standard with arguments
 		template<class func_t, class ...args_ts> struct void_std_args_t{
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 		};
 		//Type standard with arguments
 		template<class func_t, class ret_t, class ...args_ts> struct type_std_args_t {
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 			ret_t* _ret;
 		};
 
@@ -163,13 +163,13 @@ namespace lux{
 		template<class obj_t, class func_t, class ...args_ts> struct void_obj_args_t{
 			obj_t& _obj;
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 		};
 		//Type member with arguments
 		template<class obj_t, class func_t, class ret_t, class ...args_ts> struct type_obj_args_t {
 			obj_t& _obj;
 			func_t _func;
-			lux::HcArray<args_ts...> _args;
+			lnx::HcArray<args_ts...> _args;
 			ret_t* _ret;
 		};
 
@@ -595,7 +595,7 @@ namespace lux{
 			//pthread_yield wrapper
 			static inline void yield() { pthread_yield(); }
 
-			//Returns the calling thread as a lux::thread structure
+			//Returns the calling thread as a lnx::thread structure
 			inline Thread operator()() { Thread thr; thr.thr = pthread_self(); return thr; }
 		};
 	}

@@ -1,9 +1,9 @@
-#include "Lynx/Types/LuxObject/2D/RenderSpace2.hpp"
+#include "Lynx/Types/Object/2D/RenderSpace2.hpp"
 #include "Lynx/Core/Core.hpp"
 
 
 
-namespace lux::obj {
+namespace lnx::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index

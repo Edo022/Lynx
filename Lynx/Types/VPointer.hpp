@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_VPOINTER
+#define LNX_H_VPOINTER
 #include "Lynx/Core/Memory/VRam/VCell_t.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Devices.hpp"
@@ -15,7 +15,7 @@
 
 
 
-namespace lux{
+namespace lnx{
 	enum bufferType{
 		Storage,
 		Uniform
@@ -29,14 +29,14 @@ namespace lux{
 
 
 
-namespace lux::vram{
+namespace lnx::vram{
 	//ptr base class
 	template<class type> struct Alloc_b {
 		genInitCheck;
 
 		uint8 loc;							//Runtime template data
 		uint8 btype;						//Runtime template data
-		Cell_t2* cell;						//A pointer to a lux::vram::Cell_t object that contains the cell informations
+		Cell_t2* cell;						//A pointer to a lnx::vram::Cell_t object that contains the cell informations
 		type* mapped _dbg(= nullptr);		//A pointer used to map the memory
 
 		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }				//Cast to different type
@@ -60,7 +60,7 @@ namespace lux::vram{
 		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { _dbg(
 			if((_class) != VCellClass::CLASS_0 && _class != VCellClass::AUTO) {
 				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
-				dbg::checkCond((uint64)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lux::VCellClass::AUTO to automatically choose it");
+				dbg::checkCond((uint64)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lnx::VCellClass::AUTO to automatically choose it");
 			}
 		)}
 		alwaysInline void checkMapped() const { _dbg(
@@ -245,7 +245,7 @@ namespace lux::vram{
 
 
 		void alloc_(const uint64 vSize, const VCellClass vClass) {
-			using namespace lux::__pvt;
+			using namespace lnx::__pvt;
 			//FIXME WRITE USER INTERFACE
 
 			cells_m.lock();
@@ -271,7 +271,7 @@ namespace lux::vram{
 				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
 				if(!type_.memory[buffIndex].memory) {
 					//!                     ^ Vulkan structures, but they are set to nullptr and treated as pointers, when not used
-					lux::core::buffers::createBuffer(
+					lnx::core::buffers::createBuffer(
 						&type_.memory[buffIndex].buffer, _usage(),
 						__pvt::buffSize,
 						&type_.memory[buffIndex].memory, _prop(),
@@ -285,7 +285,7 @@ namespace lux::vram{
 				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
 				dbg::checkParam(btype == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
-				lux::core::buffers::createBuffer(
+				lnx::core::buffers::createBuffer(
 					&Super::cell->csc.buffer, _usage(),
 					size,
 					&Super::cell->csc.memory, _prop(),
@@ -322,10 +322,10 @@ namespace lux::vram{
 		//  * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it
 		//  * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		//  * @param vCopyOldData If true, copies the old data when the memory block is changed
-		//  * @param vClass Class of the allocation. It must be a valid lux::VCellClass value. Default: AUTO
+		//  * @param vClass Class of the allocation. It must be a valid lnx::VCellClass value. Default: AUTO
 		//  */
 		// void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::AUTO) {
-		// 	using namespace lux::__pvt;
+		// 	using namespace lnx::__pvt;
 		// 	checkInit(); checkAllocSize(vSize, vClass);
 		// 	evaluateCellClass(vSize, vClass);
 
@@ -379,7 +379,7 @@ namespace lux::vram{
 		//  * @brief Reallocates the pointer to a block of memory containing vCount elements without initializing them
 		//  * @param vCount Number of elements
 		//  * @param vCopyOldData If true, copies the old data when the memory block is changed
-		//  * @param vClass Class of the allocation. It must be a valid lux::VCellClass value. Default: AUTO
+		//  * @param vClass Class of the allocation. It must be a valid lnx::VCellClass value. Default: AUTO
 		//  */
 		// alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const VCellClass vClass = VCellClass::AUTO) {
 		// 	checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);

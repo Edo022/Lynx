@@ -1,7 +1,7 @@
 ﻿#include "Lynx/Core/Core.hpp" //FIXME if this is places after Devices.cpp, G++ is unable to find glfwCreateWindowSurface
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 
 #include <set>
@@ -15,7 +15,7 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& a, const _VkPhys
 
 
 
-namespace lux::core::dvc{
+namespace lnx::core::dvc{
 	alignCache graphicsDevice         graphics;
 	alignCache computeDevice          compute;
 	alignCache RtArray<computeDevice> secondary;
@@ -28,7 +28,7 @@ namespace lux::core::dvc{
 	alignCache uint32       requiredDeviceExtensionsNum = 1;
 	alignCache const char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
-	#ifdef LUX_DEBUG
+	#ifdef LNX_DEBUG
 		alignCache VkDebugUtilsMessengerEXT debugMessenger;
 		alignCache uint32       validationLayersNum = 1;
 		alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
@@ -37,7 +37,7 @@ namespace lux::core::dvc{
 
 
 
-	luxAutoInit(LUX_H_DEVICES){
+	LnxAutoInit(LNX_H_DEVICES){
 		if(!glfwInit()) exit(-1);																//Initialize GLFW
 		//TODO ADD ERROR MESSAGE
 
@@ -74,7 +74,7 @@ namespace lux::core::dvc{
 		;
 
 		//Add validation layers if in debug mode
-		#ifdef LUX_DEBUG																	//Search for validation layers
+		#ifdef LNX_DEBUG																	//Search for validation layers
 			uint32 layerCount = 0;
 			vk::enumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
 			RtArray<vk::LayerProperties> availableLayers(layerCount);
@@ -126,7 +126,7 @@ namespace lux::core::dvc{
 	/**
 	 * @brief Checks if a device has the required extensions and properties to run vulkan
 	 * @param vDevice The physical device to check
-	 * @param pErrorText A pointer to a lux::String where to store the error in case the device is not suitable
+	 * @param pErrorText A pointer to a lnx::String where to store the error in case the device is not suitable
 	 * @return return True if the device is suitable, false if not
 	 */
 	bool isSuitable(const vk::PhysicalDevice vDevice, String& pErrorText) {

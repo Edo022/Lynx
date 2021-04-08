@@ -6,7 +6,7 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Input/Input.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
-#include "Lynx/Types/LuxObject/2D/RenderSpace2.hpp"
+#include "Lynx/Types/Object/2D/RenderSpace2.hpp"
 
 #include "Lynx/shaders/Border2.hpp"
 #include "Lynx/shaders/Line2.hpp"
@@ -18,7 +18,7 @@
 
 
 
-namespace lux{
+namespace lnx{
 	void Window::run(){
 		_dbg(thr::self::setName("App | Window"));
 		init();
@@ -31,14 +31,14 @@ namespace lux{
 
 	void Window::init() {
 		//Create default shaders
-		// CShadersLayouts.resize(ShaderLayout::LUX_DEF_SHADER_NUM);
-		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_LINE,   shd::Line2::layout, *this);
-		core::c::shaders::createPipeline(LUX_DEF_SHADER_2D_BORDER, shd::Border2::layout, *this);
-		core::c::shaders::createPipeline(LUX_DEF_SHADER_CLEAR,     shd::FloatToIntBuffer::layout, *this);
+		// CShadersLayouts.resize(ShaderLayout::LNX_DEF_SHADER_NUM);
+		core::c::shaders::createPipeline(LNX_DEF_SHADER_2D_LINE,   shd::Line2::layout, *this);
+		core::c::shaders::createPipeline(LNX_DEF_SHADER_2D_BORDER, shd::Border2::layout, *this);
+		core::c::shaders::createPipeline(LNX_DEF_SHADER_CLEAR,     shd::FloatToIntBuffer::layout, *this);
 
 
 
-		window = glfwCreateWindow(width, height, "Lux Engine", nullptr, nullptr);
+		window = glfwCreateWindow(width, height, "Lynx Engine", nullptr, nullptr);
 		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface));
 
 		{ //Set icon
@@ -95,7 +95,7 @@ namespace lux{
 
 		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
 		sh_clear.createDescriptorSets();
-		sh_clear.createCommandBuffers(LUX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
+		sh_clear.createCommandBuffers(LNX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;

@@ -1,8 +1,8 @@
 #pragma once
-#define LUX_H_GRAPHICS
+#define LNX_H_GRAPHICS
 #include <vulkan/vulkan.hpp>
-#include "Lynx/Types/LuxFenceDE.hpp"
-#include "Lynx/Types/LuxObject/Obj_b.hpp"
+#include "Lynx/Types/FenceDE.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 
 
 
@@ -11,13 +11,13 @@
 
 
 
-namespace lux::core::render{
+namespace lnx::core::render{
 	extern std::mutex graphicsQueueSubmit_m;
 	extern std::mutex presentQueueSubmit_m;
 
 
 	void cleanup();
-	#ifdef LUX_DEBUG
+	#ifdef LNX_DEBUG
 		_dbg(void createDebugMessenger());
 	#endif
 

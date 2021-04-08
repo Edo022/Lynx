@@ -1,6 +1,6 @@
 #include "Lynx/Threads/ThreadPool.hpp"
 #include "Lynx/Core/Core.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include <cstdlib>
 
 
@@ -10,8 +10,8 @@
 
 
 
-namespace lux::thr {
-	RtArray<Thread> threads(LUX_CNF_GLOBAL_THREAD_POOL_SIZE);
+namespace lnx::thr {
+	RtArray<Thread> threads(LNX_CNF_GLOBAL_THREAD_POOL_SIZE);
 	std::deque<ram::ptr<__pvt::Func_b>> queue;
 	std::mutex queue_m;
 
@@ -22,8 +22,8 @@ namespace lux::thr {
 
 
 
-	luxAutoInit(LUX_H_THREAD_POOL) {
-		for(uint32 i = 0; i < LUX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, L{ i });
+	LnxAutoInit(LNX_H_THREAD_POOL) {
+		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, L{ i });
 	}
 
 
@@ -34,9 +34,9 @@ namespace lux::thr {
 
 
 	void thrLoop(uint32 vThrIndex) {
-		#ifdef LUX_DEBUG			//Set the thread name if in debug mode.
+		#ifdef LNX_DEBUG			//Set the thread name if in debug mode.
 			char thrName[16];
-			sprintf(thrName, "Lux | GTP %d", vThrIndex);
+			sprintf(thrName, "Lynx | GTP %d", vThrIndex);
 			thr::self::setName(thrName);
 		#endif
 

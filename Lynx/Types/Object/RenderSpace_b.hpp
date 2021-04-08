@@ -1,10 +1,10 @@
 #pragma once
-#define LUX_H_RENDER_SPACE
-#include "Lynx/Types/LuxObject/2D/Obj2_b.hpp"
+#define LNX_H_RENDER_SPACE
+#include "Lynx/Types/Object/2D/Obj2_b.hpp"
 
 
 
-namespace lux::obj{
+namespace lnx::obj{
     struct RenderSpace_b : public Obj2_b{
         void qSelf() final override {}
 

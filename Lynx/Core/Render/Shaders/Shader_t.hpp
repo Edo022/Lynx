@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_SHADER_T
+#define LNX_H_SHADER_T
 #include <vulkan/vulkan.hpp>
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
@@ -12,21 +12,21 @@
 //Default render shaders layouts
 //The identifier value corresponds to the index of the shader layout in the engine's default shader layouts array
 enum ShaderLayout : uint32 {
-	LUX_DEF_SHADER_2D_LINE,
-	LUX_DEF_SHADER_2D_BORDER,
-	LUX_DEF_SHADER_2D_RENDER_SPACE,		//Useless. It's just to allow the use of luxInitObject in render spaces
-	LUX_DEF_SHADER_3D_RENDER_SPACE,		//Useless. It's just to allow the use of luxInitObject in render spaces
-	LUX_DEF_SHADER_CLEAR,				//Default shader used to copy and clear the output buffer
-	LUX_DEF_SHADER_NUM					//The number of shader layouts
+	LNX_DEF_SHADER_2D_LINE,
+	LNX_DEF_SHADER_2D_BORDER,
+	LNX_DEF_SHADER_2D_RENDER_SPACE,		//FIXME
+	LNX_DEF_SHADER_3D_RENDER_SPACE,		//FIXME
+	LNX_DEF_SHADER_CLEAR,				//Default shader used to copy and clear the output buffer
+	LNX_DEF_SHADER_NUM					//The number of shader layouts
 };
 
 
 
 
-namespace lux{
+namespace lnx{
 	class Window;
 }
-namespace lux::shd{
+namespace lnx::shd{
 
 
 
@@ -43,7 +43,7 @@ namespace lux::shd{
 	struct Shader_b {
 		vk::DescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
 		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
-		lux::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
+		lnx::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 
 		struct Layout{
 			Layout(){};

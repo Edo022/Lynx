@@ -8,7 +8,7 @@
 
 
 
-namespace lux::shd{
+namespace lnx::shd{
 	struct FloatToIntBuffer : public Shader_b {
 		static Shader_b::Layout layout;
 

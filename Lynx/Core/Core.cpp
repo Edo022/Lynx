@@ -14,7 +14,7 @@
 
 
 
-namespace lux::core{
+namespace lnx::core{
 	alignCache std::atomic<bool>   running;
 	alignCache Thread inputThr;
 
@@ -22,7 +22,7 @@ namespace lux::core{
 
 
 	void inputLoop(){
-		_dbg(thr::self::setName("Lux | Main"));
+		_dbg(thr::self::setName("Lynx | Main"));
 		while(running){
 			glfwWaitEvents();
 			sleep(0);

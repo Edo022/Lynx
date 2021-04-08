@@ -1,10 +1,10 @@
 #pragma once
-#define LUX_H_OBJECT2
-#include "Lynx/Types/LuxObject/Obj_b.hpp"
+#define LNX_H_OBJECT2
+#include "Lynx/Types/Object/Obj_b.hpp"
 
 
 
-namespace lux::obj{
+namespace lnx::obj{
     //Base class for 2D objects in 2D space
     struct Obj2_b : public Base {
 
@@ -16,7 +16,7 @@ namespace lux::obj{
 
         //TODO add absolute pixel position and scale
         Obj2_b* parent{ nullptr };						//Parent of the object
-        lux::RaArray<Obj2_b*, uint32> children;			//Children of the object
+        lnx::RaArray<Obj2_b*, uint32> children;			//Children of the object
         virtual bool setChildLimits(const uint32 vChildIndex) const override {
             if(vChildIndex >= children.count()) return false;
             children[vChildIndex]->setMinLim(minLim);

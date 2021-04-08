@@ -1,10 +1,10 @@
 #pragma once
-#define LUX_H_THREAD_POOL
+#define LNX_H_THREAD_POOL
 #include "Lynx/Lynx_config.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 
-#include "Lynx/Types/LuxFenceDE.hpp"
+#include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
 #include "Lynx/Threads/Thread.hpp"
 
@@ -29,13 +29,13 @@
 
 
 
-namespace lux::thr {
+namespace lnx::thr {
 	//TODO
 	enum Priority : uint16 {
-		LUX_PRIORITY_MAX = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
-		LUX_PRIORITY_HIGH = 3,	//execute only after all the max priority functions have been executed
-		LUX_PRIORITY_LOW = 2,	//execute only after all the higher priority functions have been executed
-		LUX_PRIORITY_MIN = 1	//execute when there are no higher priority functions left
+		LNX_PRIORITY_MAX = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
+		LNX_PRIORITY_HIGH = 3,	//execute only after all the max priority functions have been executed
+		LNX_PRIORITY_LOW = 2,	//execute only after all the higher priority functions have been executed
+		LNX_PRIORITY_MIN = 1	//execute when there are no higher priority functions left
 	};
 
 

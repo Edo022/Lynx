@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define LUX_H_RTARRAY
+#define LNX_H_RTARRAY
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 
 
@@ -14,8 +14,8 @@
 //TODO if not, the new points are saved and used for rendering in the next frames
 //TODO "runtime 3D turbolent flow"
 
-//TODO add contructor of string from lux containers of chars
-namespace lux {
+//TODO add contructor of string from lnx containers of chars
+namespace lnx {
 	/**
 	 * @brief A dynamic array that uses the global memory pool
 	 * @tparam type Type of the elements
@@ -42,7 +42,7 @@ namespace lux {
 
 		/**
 		 * @brief Creates an array of vCount elements and calls the default constructor on each of them
-		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
 		alwaysInline RtArray(iter vCount) : Super(vCount) {}
 
@@ -54,8 +54,8 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array with a lux::ContainerBase subclass instance by copy constructing on each element
-		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 * @brief Initializes the array with a lnx::ContainerBase subclass instance by copy constructing on each element
+		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 * @param pCont The container to copy elements from
 		 */
 		template<class cType, class cIter> alwaysInline RtArray(const ContainerBase<cType, cIter>& pCont) :
@@ -67,13 +67,13 @@ namespace lux {
 
 		/**
 		 * @brief Copy constructor. Each element is copy constructed.
-		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
 		alwaysInline RtArray(const RtArray<type, iter>& pCont) : Super(pCont, {}) {  }
 		/**
 		 * @brief Copy assignment. All the elements in the array are destroyed. New elements are copy constructed.
-		 *		The destructor  is not called on trivial types or lux::ignoreDtor subclasses.
-		 *		The constructor is not called on trivial types or lux::ignoreCopy subclasses
+		 *		The destructor  is not called on trivial types or lnx::ignoreDtor subclasses.
+		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
 		alwaysInline auto& operator=(const RtArray<type, iter>& pCont) { Super::copy(pCont); return *this; }
 
@@ -91,9 +91,9 @@ namespace lux {
 
 
 
-		#if !defined(LUX_DEBUG) || defined(__INTELLISENSE__)
+		#if !defined(LNX_DEBUG) || defined(__INTELLISENSE__)
 			/**
-			 * @brief Resizes the array. If the type is not a trivial type or a lux::ignoreCopy subclass, calls the constructor on each of the new elements
+			 * @brief Resizes the array. If the type is not a trivial type or a lnx::ignoreCopy subclass, calls the constructor on each of the new elements
 			 * @param vCount New number of elements
 			 */
 			alwaysInline void resize(const iter vCount) {
@@ -113,7 +113,7 @@ namespace lux {
 
 		/**
 		 * @brief Resets the array to its initial state by freeing the memory and resizing it to 0.
-		 *		If the type is not a trivial type or a lux::ignoreDtor subclass, calls the destructor on each element
+		 *		If the type is not a trivial type or a lnx::ignoreDtor subclass, calls the destructor on each element
 		 */
 		alwaysInline void clear() {
 			checkInit();

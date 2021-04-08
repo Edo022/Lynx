@@ -4,7 +4,7 @@
 
 
 
-namespace lux::ram{
+namespace lnx::ram{
     	enum class CellClass : uint32 {
 		CLASS_A = 512,					//512B per cell (~0.5KB). The minimum size of a cell
 		CLASS_B = CLASS_A * 2,			//2x  CLASS_A. 1024 B per cell (~1KB)
@@ -18,7 +18,7 @@ namespace lux::ram{
 
 
     namespace __pvt{
-		#ifdef LUX_DEBUG
+		#ifdef LNX_DEBUG
 		enum class CellState : uint32{
 			ALLOC      = 1,
 			FREED      = 2,
@@ -26,7 +26,7 @@ namespace lux::ram{
 		};
 		#endif
 
-		//Indices corresponding to lux::CellClass values
+		//Indices corresponding to lnx::CellClass values
 		enum class CellClassIndex : uint16 {
 			INDEX_A = 0b000,
 			INDEX_B = 0b001,

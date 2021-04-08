@@ -1,11 +1,11 @@
 #pragma once
-#define LUX_H_OBJECT2
-#include "Lynx/Types/LuxObject/Obj_b.hpp"
+#define LNX_H_OBJECT2
+#include "Lynx/Types/Object/Obj_b.hpp"
 
 
 
 
-namespace lux::obj{
+namespace lnx::obj{
     //3D object in 3D space
     struct Obj3_b : public Base {
         f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
@@ -15,7 +15,7 @@ namespace lux::obj{
 
         ////TODO add absolute pixel position and scale
         //Obj3_b* parent{ nullptr };						//Parent of the object
-        //lux::Map<Obj3_b*, uint32> children;				//Children of the object
+        //lnx::Map<Obj3_b*, uint32> children;				//Children of the object
         //void setChildLimits(const uint32 vChildIndex) const override {
         //	children[vChildIndex]->minLim = minLim;
         //	children[vChildIndex]->maxLim = maxLim;

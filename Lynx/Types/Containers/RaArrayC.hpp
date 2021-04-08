@@ -1,10 +1,10 @@
 #pragma once
-#define LUX_H_RAARRAYC
+#define LNX_H_RAARRAYC
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
 
 
-namespace lux{
+namespace lnx{
 	template<class type, class iter = uint32> struct RaArrayC{
 		genInitCheck;
 

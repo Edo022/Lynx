@@ -1,14 +1,14 @@
 #pragma once
-#define LUX_H_LUX_ENGINE
+#define LNX_H_LNX_ENGINE
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Threads/Thread.hpp"
 
 
 
 
-namespace lux{
+namespace lnx{
 	/**
-	 * @brief Starts the Lux Engine
+	 * @brief Starts the Lynx Engine
 	 */
     void start() {
         core::running = true;
@@ -17,7 +17,7 @@ namespace lux{
 
 
     /**
-     * @brief Kills the Lux Engine and frees all of its resources.
+     * @brief Kills the Lynx Engine and frees all of its resources.
      *      Any object that uses the memory pool, the thread pool or other structures created by the engine will stop working.
      *      Make sure to destroy them or don't use them after calling this function
      */

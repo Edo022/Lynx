@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_MACROS
+#define LNX_H_MACROS
 #include "Lynx_config.hpp"
 
 #ifdef __INTELLISENSE__
@@ -35,7 +35,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-#ifdef LUX_DEBUG
+#ifdef LNX_DEBUG
 #	define _dbg(...) __VA_ARGS__   //Executes a line of code only if in debug   mode
 #	define _rls(...)               //Executes a line of code only if in release mode
 #else
@@ -57,7 +57,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define alignCache  __attribute__((aligned(64)))
 
 
-#ifdef LUX_DEBUG
+#ifdef LNX_DEBUG
     #undef alwaysInline
     #define alwaysInline
 #endif
@@ -66,9 +66,6 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 //Time
 #include <chrono>
 #include <thread>
-typedef std::chrono::system_clock::time_point LuxTime;
-#define luxStartChrono()			std::chrono::system_clock::now()
-#define luxStopChrono(start)		((scast<std::chrono::duration<double>>(luxStartChrono() - (start))).count())
 #define sleep(ms)					std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 
 

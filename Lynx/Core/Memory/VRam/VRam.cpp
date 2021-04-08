@@ -1,6 +1,6 @@
 #include "Lynx/Core/Memory/VRam/VRam.hpp"
 #include "Lynx/Core/Core.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 //TODO use constant for offset
 
@@ -11,7 +11,7 @@
 
 
 
-namespace lux::sys{
+namespace lnx::sys{
 	//! This function should be the initialization function for the VRam variables,
 	//! but it also has to initialize the VRAM informations in the sys namespace, which happens to be a const.
 	//! And it has to do it after getting the device infos, but before allocating the cells.
@@ -45,7 +45,7 @@ namespace lux::sys{
 
 
 
-	luxAutoInit(LUX_H_VMEMORY) {
+	LnxAutoInit(LNX_H_VMEMORY) {
 		using namespace vram::__pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM

@@ -1,11 +1,11 @@
 #pragma once
-#define LUX_H_RENDER_SPACE_2D
-#include "Lynx/Types/LuxObject/RenderSpace_b.hpp"
+#define LNX_H_RENDER_SPACE_2D
+#include "Lynx/Types/Object/RenderSpace_b.hpp"
 
 
 
 
-namespace lux::obj {
+namespace lnx::obj {
 	enum class AlignmentType : int16{
 		Horizontal,
 		Vertical,

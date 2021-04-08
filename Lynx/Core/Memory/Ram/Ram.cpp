@@ -2,7 +2,7 @@
 #include "Lynx/Core/Memory/Ram/Classes.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 #include "Lynx/Debug/Debug.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
@@ -15,7 +15,7 @@
 
 
 
-namespace lux::ram{
+namespace lnx::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
 	Type_t types[(uint32)__pvt::CellClassIndex::NUM];
 	RaArrayC<Cell_t> cells;
@@ -24,7 +24,7 @@ namespace lux::ram{
 
 
 
-	luxAutoInit(LUX_H_MEMORY) {
+	LnxAutoInit(LNX_H_MEMORY) {
 		using namespace __pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
@@ -50,28 +50,28 @@ namespace lux::ram{
 //FIXME
 	//memcpy, but faster. The performance difference is much more noticeable in dual / quad channel systems, or systems with high frequency RAM / low frequency CPU
 	//The function will not return until all threads have completed the operation
-	//Use lux::mem::acpy to asynchronously copy data in a buffer
+	//Use lnx::mem::acpy to asynchronously copy data in a buffer
 	//Source and destination buffers should not overlap. If they do, it's undefined behaviour
 	//*  src | address of the source buffer
 	//*  dst | address of the destination buffer
 	//*  num | number of bytes to copy
-	//*  thr | LUX_TRUE to use multithreading, LUX_FALSE to use 1 thread. Default: LUX_AUTO
+	//*  thr | LNX_TRUE to use multithreading, LNX_FALSE to use 1 thread. Default: LNX_AUTO
 	//*   Multithreading cannot be used in operations with small buffers, as it would negatively affect performance
-	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr*/) {
+	void cpy(const void* const src, void* const dst, uint64 num/*, const LnxBool thr*/) {
 		//_dbg(if((uint64)src % 32 != 0)	param_error(src, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 		//_dbg(if((uint64)dst % 32 != 0)	param_error(dst, "Misaligned address. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 		//_dbg(if(num % 32 != 0)			param_error(num, "Misaligned count. This function should only be used with aligned addresses and count. Use ucpy to copy unaligned data (this will negatively affect performance)"));
 
 		// switch(thr) {
-			// case LUX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
-			// case LUX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
-			// case LUX_TRUE: { __2thrCase:
+			// case LNX_AUTO: if(num > 32 * 64 * 128) goto __2thrCase; [[fallthrough]];
+			// case LNX_FALSE: cpy_thr((__m256i*)src, (__m256i*)dst, num); break;
+			// case LNX_TRUE: { __2thrCase:
 			// 	uint64 numShift = multipleOf(num / 2, memOffset); bool thrf = false;
-			// 	lux::thr::sendToExecQueue(cpy_thr, thr::Priority::LUX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
+			// 	lnx::thr::sendToExecQueue(cpy_thr, thr::Priority::LNX_PRIORITY_MAX, &thrf, (__m256i*)src, (__m256i*)dst, numShift);
 			// 	cpy_thr((const __m256i*)((const uint64)src + numShift), (__m256i*)((uint64)dst + numShift), num - numShift);
 			// 	while(!thrf) sleep(5); break;
 			// }
-			// default: param_error(thr, "Valid values: LUX_TRUE, LUX_FALSE, LUX_AUTO");
+			// default: param_error(thr, "Valid values: LNX_TRUE, LNX_FALSE, LNX_AUTO");
 		// }
 
 		// // cpy_thr((__m256i*)src, (__m256i*)dst, num);

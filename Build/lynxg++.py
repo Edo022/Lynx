@@ -102,7 +102,7 @@ vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64/'
 gwdep:str = enginePath + '/deps/Shared/GLFW/'
 cmdg = (
     'g++ -std=c++2a -pthread' +
-    (' -DLUX_DEBUG -rdynamic' if tp == 'd' else '') +       #Activate Lux debug checks when in debug mode
+    (' -DLNX_DEBUG -rdynamic' if tp == 'd' else '') +       #Activate Lnx debug checks when in debug mode
     ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +  #Define vulkan macros
     ((                                                      #When building user application
         ' -DenginePath="\\"' + enginePath + '\\""'              #Define engine path function #FIXME

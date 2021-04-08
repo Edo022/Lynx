@@ -175,7 +175,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n//####################################################################################\n'
         '\n#pragma once'                                                    #Include guard
         '\n#include "Lynx/Core/Render/Shaders/Shader_t.hpp"\n\n\n'     #Base Shader struct
-        '\nnamespace lux::shd{'                                             #Write namespace and struct declaration
+        '\nnamespace lnx::shd{'                                             #Write namespace and struct declaration
         '\n\tstruct ' + fname + ' : public Shader_b {'
         '\n\t\tstatic Shader_b::Layout layout;'
     )
@@ -184,11 +184,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
         '\n#include "' + re.sub(r'^.*?\/?Lynx\/(Lynx\/.*$)', r'\g<1>', spath + shname) + '.hpp"'
-        '\n#include "Lynx/Core/LuxAutoInit.hpp"'                       #Auto init
+        '\n#include "Lynx/Core/AutoInit.hpp"'                       #Auto init
         '\n#include "Lynx/Core/Render/Window/Window.hpp"'              #Window struct
         '\n#include "Lynx/Core/Render/Shaders/Shader.hpp"'
-        '\n#define LUX_H_' + shname.upper() + '\n\n\n'                      #Auto init define
-        '\nnamespace lux::shd{'                                             #Write namespace declaration
+        '\n#define LNX_H_' + shname.upper() + '\n\n\n'                      #Auto init define
+        '\nnamespace lnx::shd{'                                             #Write namespace declaration
     )
 
     shader = re.findall(                                #Search for binding declarations
@@ -316,7 +316,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nShader_b::Layout ' + shname + '::layout;'
-            '\nluxAutoInit(LUX_H_' + shname.upper() + '){'
+            '\nLnxAutoInit(LNX_H_' + shname.upper() + '){'
                 '\n\t{ //Create descriptor set layout'
                     '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
                     '\n'.join((

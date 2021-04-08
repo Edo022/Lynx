@@ -1,10 +1,10 @@
-#define LUX_NH_ENV
+#define LNX_NH_ENV
 #include <cstdlib>
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/macros.hpp"
 
 
-luxAutoInit(LUX_NH_ENV) {
+LnxAutoInit(LNX_NH_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 

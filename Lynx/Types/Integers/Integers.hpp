@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_INTEGERS
+#define LNX_H_INTEGERS
 
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_RAARRAY
+#define LNX_H_RAARRAY
 #include "Lynx/Math/Algebra/Algebra.hpp"
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 #include "Lynx/Types/Pointer.hpp"
@@ -13,7 +13,7 @@
 
 
 
-namespace lux {
+namespace lnx {
 	template<class type, class iter> class RaArray;
 
 	namespace __pvt{
@@ -25,7 +25,7 @@ namespace lux {
 		template<class type, class iter> struct raCtor_t<type, iter, true>{
 			protected:
 			// inline void initRange(const iter vFrom, const iter vTo) const {
-			// 	type* elm = ((lux::RaArray<type, iter>*)this)->begin();
+			// 	type* elm = ((lnx::RaArray<type, iter>*)this)->begin();
 			// 	for(iter i = vFrom; i <= vTo; ++i) {
 			// 		new(elm + i) type();
 			// 	}
@@ -42,7 +42,7 @@ namespace lux {
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
 			protected:
 			inline void destroy() const {
-				using arrt = lux::RaArray<type, iter>;
+				using arrt = lnx::RaArray<type, iter>;
 				int i = 0;
 				for(auto elm : *(arrt*)this) {
 					if(((arrt*)this)->isValid(i++)) elm.~type();
@@ -166,7 +166,7 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
+		 * @brief Initializes the array by copy constructing each element from a lnx::ContainerBase subclass
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
@@ -286,7 +286,7 @@ namespace lux {
 
 		/**
 		 * @brief Removes an element and calls its destructor
-		 *		The destructor is not called on trivial types or lux::ignoreDtor subclasses
+		 *		The destructor is not called on trivial types or lnx::ignoreDtor subclasses
 		 * @param vIndex Index of the element to remove
 		 */
 		void remove(const iter vIndex) {
@@ -336,7 +336,7 @@ namespace lux {
 
 
 		/**
-		 * @brief Initializes the array by copy constructing each element from a lux::ContainerBase subclass
+		 * @brief Initializes the array by copy constructing each element from a lnx::ContainerBase subclass
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */

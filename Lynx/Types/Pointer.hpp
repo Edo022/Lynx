@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_POINTER
+#define LNX_H_POINTER
 #include "Lynx/Core/Memory/Ram/Cell_t.hpp"
 #include "Lynx/System/SystemMacros.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
@@ -14,7 +14,7 @@
 
 
 
-namespace lux::ram{
+namespace lnx::ram{
 	/**
 	 * @brief A pointer that keeps track of how many objects are using it and automatically frees the memory block once it becomes unreachable
 	 * @tparam type The type of data pointed by the pointer (int, float, etc...)
@@ -22,15 +22,15 @@ namespace lux::ram{
 	template<class type> struct ptr {
 	private:
 		alwaysInline void checkSize()  const { _dbg(
-			lux::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations");
+			lnx::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations");
 		)}
 		alwaysInline void checkSizeD() const { _dbg(
-			lux::dbg::checkCond(size() == 0, "Cannot dereference a 0-byte memory allocation");
+			lnx::dbg::checkCond(size() == 0, "Cannot dereference a 0-byte memory allocation");
 		)}
 
 
 		alwaysInline void checkAlloc() const { _dbg(
-			lux::dbg::checkCond(state == __pvt::CellState::FREED, "Unable to call this function on invalid allocations: The memory block have been manually freed");
+			lnx::dbg::checkCond(state == __pvt::CellState::FREED, "Unable to call this function on invalid allocations: The memory block have been manually freed");
 		)}
 		#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::FREED, #a,\
 			"Use of invalid allocation: The memory block have been manually freed")
@@ -38,17 +38,17 @@ namespace lux::ram{
 
 
 		alwaysInline void checkNullptr()  const { _dbg(
-			lux::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Unable to call this function on unallocated memory blocks");
+			lnx::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Unable to call this function on unallocated memory blocks");
 		)}
 		alwaysInline void checkNullptrD() const { _dbg(
-			lux::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Cannot dereference an unallocated memory block");
+			lnx::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Cannot dereference an unallocated memory block");
 		)}
 
 
 		static alwaysInline void checkAllocSize(uint64 size_, CellClass _class) { _dbg(
 			if(_class != CellClass::CLASS_0 && _class != CellClass::AUTO) {
 				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
-				dbg::checkCond((uint32)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, size_, "Use lux::CellClass::AUTO to automatically choose it");
+				dbg::checkCond((uint32)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, size_, "Use lnx::CellClass::AUTO to automatically choose it");
 			}
 		)};
 
@@ -96,7 +96,7 @@ namespace lux::ram{
 
 	public:
 		genInitCheck;
-		Cell_t* cell; 							//A pointer to a lux::ram::Cell_t object that contains the cell informations
+		Cell_t* cell; 							//A pointer to a lnx::ram::Cell_t object that contains the cell informations
 		_dbg(mutable __pvt::CellState state;)	//[State of the pointer]
 		_dbg(mutable ptr<Dummy>* prevOwner;)	//The pointer that acquired the memory before this object
 		_dbg(mutable ptr<Dummy>* nextOwner;)	//The pointer that acquired the memory after this object
@@ -311,7 +311,7 @@ namespace lux::ram{
 
 	private:
 		void alloc_(const uint64 vSize, const CellClass vClass) {
-			using namespace lux::__pvt;
+			using namespace lnx::__pvt;
 			cells_m.lock();
 			const auto cellIndex = cells.add(Cell_t{});						//Save cell index
 			cells_m.unlock();
@@ -359,11 +359,11 @@ namespace lux::ram{
 		 * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
-		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
+		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
 		 */
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::AUTO) {
 			//FIXME FREE CUSTOM SIZE BUFFERS
-			using namespace lux::__pvt;
+			using namespace lnx::__pvt;
 			checkInit(); checkAllocSize(vSize, vClass);
 			evaluateCellClass(vSize, vClass);
 
@@ -422,7 +422,7 @@ namespace lux::ram{
 		 * @brief Reallocates the pointer to a block of memory containing vCount elements without initializing them
 		 * @param vCount Number of elements
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
-		 * @param vClass Class of the allocation. It must be a valid lux::CellClass value. Default: AUTO
+		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
 		 */
 		alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::AUTO) {
 			checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);
@@ -447,7 +447,7 @@ namespace lux::ram{
 			if(cell->address) {
 				this->realloc(0);
 				//! owners is not updated. Freeing an allocation does't destroy the pointer
-				#ifdef LUX_DEBUG
+				#ifdef LNX_DEBUG
 					//! [Call from destructor] No need to set the correct state of the owners, as there are none (they're all out of scope)
 					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) {
 						i->state = __pvt::CellState::FREED;

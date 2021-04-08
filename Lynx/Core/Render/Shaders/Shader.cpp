@@ -1,5 +1,5 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/System/System.hpp"
 
@@ -10,13 +10,13 @@
 
 
 
-namespace lux::core::c::shaders{
+namespace lnx::core::c::shaders{
 	alignCache String shaderPath;
 
 
 
 
-	luxAutoInit(LUX_H_CSHADER){
+	LnxAutoInit(LNX_H_CSHADER){
 		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
@@ -131,7 +131,7 @@ namespace lux::core::c::shaders{
 	//  * @return True if the operation succeeded, false if the index is invalid
 	//  */
 	// //DEPRECATED FUNCTION //FIXME REMOVE
-	// bool destroyShader(const LuxShader vCShader, Window& pWindow) {
+	// bool destroyShader(const LnxShader vCShader, Window& pWindow) {
 	// 	pWindow.addShaderFence.lock();
 	// 		if(vCShader >= pWindow.swp.shaders.count()) return false;
 

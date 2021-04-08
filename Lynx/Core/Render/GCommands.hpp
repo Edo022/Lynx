@@ -1,12 +1,12 @@
 #pragma once
-#define LUX_H_GCOMMANDS
+#define LNX_H_GCOMMANDS
 #include <vulkan/vulkan.hpp>
 #include "Lynx/Types/Containers/RtArray.hpp"
 
 
 
 
-namespace lux::core::render::cmd{
+namespace lnx::core::render::cmd{
 	extern vk::CommandPool			singleTimeCommandPool;
 
 

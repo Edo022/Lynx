@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_VCELL_T
+#define LNX_H_VCELL_T
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Memory/VRam/VClasses.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
@@ -10,7 +10,7 @@
 
 
 
-namespace lux{
+namespace lnx{
     namespace vram{
         struct Cell_t2_csc{
             vk::Buffer buffer;		    //Vulkan buffer object                          //8

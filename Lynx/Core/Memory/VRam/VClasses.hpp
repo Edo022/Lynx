@@ -1,11 +1,11 @@
 #pragma once
-#define LUX_H_VCLASSES
+#define LNX_H_VCLASSES
 #include "Lynx/Types/Integers/Integers.hpp"
 
 
 
 
-namespace lux::vram{
+namespace lnx::vram{
 	enum class VCellClass : uint32 {
 		CLASS_A = 512,					//512B per cell (~0.5KB). The minimum size of a cell
 		CLASS_B = CLASS_A * 2,			//2x  CLASS_A. 1024 B per cell (~1KB)

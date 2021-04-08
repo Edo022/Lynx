@@ -1,8 +1,8 @@
 #pragma once
-#define LUX_H_SYSTEM
+#define LNX_H_SYSTEM
 #include <filesystem>
 #include <cstdio>
-#include "Lynx/Types/Containers/LuxString.hpp"
+#include "Lynx/Types/Containers/String.hpp"
 #include "Lynx/System/SystemMacros.hpp"
 
 
@@ -11,11 +11,11 @@
 
 
 
-namespace lux::sys {
+namespace lnx::sys {
 	namespace dir {
 		extern String thisDir;
-		void fixWindowsPath(const lux::String& pStr);
-		lux::String getExtensionFromPath(const lux::String& pStr);
-		lux::String getFileNameFromPath (const lux::String& pStr);
+		void fixWindowsPath(const lnx::String& pStr);
+		lnx::String getExtensionFromPath(const lnx::String& pStr);
+		lnx::String getFileNameFromPath (const lnx::String& pStr);
 	}
 }

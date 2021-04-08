@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_CONTAINER_BASE
+#define LNX_H_CONTAINER_BASE
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
@@ -14,7 +14,7 @@
 
 //FIXME USE DIFFERENT MEMORY FOR CONST VALUES
 
-/*                                                        Lux Containers
+/*                                                        Lynx Containers
 .
 .
 .
@@ -22,12 +22,12 @@
 .                        | Name           | data types | types num | data order   | count | get, set | memory alloc | data location
 .    --------------------.----------------.------------.-----------.--------------.-------.----------.--------------.-------------.
 .                        | CtArray        | any        | 1         | contiguous   | ct    | rt       | default      | heap/stack  |  Compile time array
-.    lux::ContainerBase  | RtArray        | any        | 1         | contiguous   | rt    | rt       | gmp          | heap/stack  |  Runtime array
+.    lnx::ContainerBase  | RtArray        | any        | 1         | contiguous   | rt    | rt       | gmp          | heap/stack  |  Runtime array
 .    subclasses          | RaArray        | any        | 1         | random       | rt    | rt       | gmp          | heap/stack  |  Random access array
 .                        | Stirng         | char8      | 1         | contiguous   | rt    | rt       | gmp          | heap/stack  |  just String
 .    --------------------|----------------|------------|-----------|--------------|-------|----------|--------------|-------------|
 .    special containers  | HcArray      | any        | no limit  | imp specific | ct    | ct/rt    | default      | stack       |  Heterogeneous data compile time array
-.                        | LuxMap_NMP_S   | any        | 1         | random       | cy    | rt       | default      | heap        |  deprecated version of RaArray used by the memory pool
+.                        | LynxMap_NMP_S   | any        | 1         | random       | cy    | rt       | default      | heap        |  deprecated version of RaArray used by the memory pool
 .    --------------------'----------------'------------'-----------'--------------'-------'----------'--------------'-------------'
 .    ct  = Compile time
 .    rt  = Runtime
@@ -45,7 +45,7 @@
 .    | Stirng         | operator[]          | size()             | count()                 | operator+, operator+= | rt    | rt       | gmp          |
 .    |----------------|---------------------|--------------------|-------------------------|-----------------------|-------|----------|--------------|
 .    | HcArray      | get<>(), operator[] | -                  | count()                 | -                     | ct    | ct/rt    | default      |
-.    | LuxMap_NMP_S   | operator[]          | -                  | count()                 | add()                 | rt    | rt       | default      |
+.    | LynxMap_NMP_S   | operator[]          | -                  | count()                 | add()                 | rt    | rt       | default      |
 .    '----------------'---------------------'--------------------'-------------------------'-----------------------'-------'----------'--------------'
 .
 */
@@ -57,15 +57,15 @@
 
 
 
-namespace lux {
+namespace lnx {
 	template <class type, class iter> struct ContainerBase;
-	//Any type that inherits from this struct will not be default constructed by lux containers
+	//Any type that inherits from this struct will not be default constructed by lnx containers
 	struct ignoreCtor{};
-	//Any type that inherits from this struct will not be copy constructed by lux containers
+	//Any type that inherits from this struct will not be copy constructed by lnx containers
 	struct ignoreCopy{};
-	// //Any type that inherits from this struct will not be move constructed by lux containers
+	// //Any type that inherits from this struct will not be move constructed by lnx containers
 	// struct ignoreMove{};
-	//Any type that inherits from this struct will not be destroyed by lux containers
+	//Any type that inherits from this struct will not be destroyed by lnx containers
 	struct ignoreDtor{};
 
 
@@ -80,7 +80,7 @@ namespace lux {
 		template<class type, class iter> struct cbCtor_t<type, iter, true>{
 			protected:
 			inline void initRange(const iter vFrom, const iter vTo) const {
-				type* elm = ((const lux::ContainerBase<type, iter>*)this)->begin();
+				type* elm = ((const lnx::ContainerBase<type, iter>*)this)->begin();
 				for(iter i = vFrom; i <= vTo; ++i) {
 					new(elm + i) type();
 				}
@@ -94,7 +94,7 @@ namespace lux {
 		// };
 		// template<class type, class iter> struct cbCtor_t<type, iter, true>{
 		// 	inline void initRange(const iter vFrom, const iter vTo) const {
-		// 		type* elm = ((lux::ContainerBase<type, iter>*)this)->begin();
+		// 		type* elm = ((lnx::ContainerBase<type, iter>*)this)->begin();
 		// 		for(iter i = vFrom; i <= vTo; ++i) {
 		// 			new(elm + i) type();
 		// 		}
@@ -111,13 +111,13 @@ namespace lux {
 		template<class type, class iter> struct cbDtor_t<type, iter, true>{
 			protected:
 			inline void destroy() const {
-				type* end = ((const lux::ContainerBase<type, iter>*)this)->end();
-				for(type* elm = ((const lux::ContainerBase<type, iter>*)this)->begin(); elm != end; ++elm) {
+				type* end = ((const lnx::ContainerBase<type, iter>*)this)->end();
+				for(type* elm = ((const lnx::ContainerBase<type, iter>*)this)->begin(); elm != end; ++elm) {
 					elm->~type();
 				}
 			}
 			inline void destroyRange(const iter vFrom, const iter vTo) const {
-				type* elm = ((const lux::ContainerBase<type, iter>*)this)->begin();
+				type* elm = ((const lnx::ContainerBase<type, iter>*)this)->begin();
 				for(iter i = vFrom; i <= vTo; ++i) {
 					elm[i].~type();
 				}
@@ -159,8 +159,8 @@ namespace lux {
 			auto oldCount = count();
 			data.reallocArr(vSize);
 			updateView();
-			     if(oldCount < count()) lux::__pvt::cbFwd_t<type, iter>::initRange(oldCount, count() - 1);
-			else if(oldCount > count()) lux::__pvt::cbFwd_t<type, iter>::destroyRange(count(), oldCount - 1);
+			     if(oldCount < count()) lnx::__pvt::cbFwd_t<type, iter>::initRange(oldCount, count() - 1);
+			else if(oldCount > count()) lnx::__pvt::cbFwd_t<type, iter>::destroyRange(count(), oldCount - 1);
 		}
 
 		//Concatenates a container and initializes the new elements by calling their copy constructor
@@ -193,7 +193,7 @@ namespace lux {
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(type) * vCount } {
 			updateView();
-			lux::__pvt::cbFwd_t<type, iter>::initRange(0, count() - 1);
+			lnx::__pvt::cbFwd_t<type, iter>::initRange(0, count() - 1);
 		}
 
 
@@ -224,7 +224,7 @@ namespace lux {
 
 	protected: //TODO move to type specialization
 		alwaysInline ~ContainerBase() {
-			if(data) lux::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
+			if(data) lnx::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
 			// data.free();
 			//! ^ Not an error. data will be freed in its destructor
 		}
@@ -246,7 +246,7 @@ namespace lux {
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
 			if(this == &pCont) return;
-			lux::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
+			lnx::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			updateView();
 			for(iter i = 0; i < pCont.count(); ++i) {

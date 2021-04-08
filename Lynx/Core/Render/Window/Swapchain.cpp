@@ -4,7 +4,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Core.hpp"
-#define w (*(Window*)(((char*)this) - offsetof(lux::Window, lux::Window::swp))) //TODO
+#define w (*(Window*)(((char*)this) - offsetof(lnx::Window, lnx::Window::swp))) //TODO
 
 
 
@@ -12,7 +12,7 @@
 
 
 
-namespace lux::core::wnd{
+namespace lnx::core::wnd{
 	Swapchain::Swapchain(){
 		frames.resize(__renderMaxFramesInFlight);
 
@@ -165,7 +165,7 @@ namespace lux::core::wnd{
 			}
 
 			//Recreate clear shader
-			bindedWindow->sh_clear.updateCommandBuffers(LUX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
+			bindedWindow->sh_clear.updateCommandBuffers(LNX_DEF_SHADER_CLEAR, (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
 		}
 	}
 

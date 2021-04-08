@@ -1,7 +1,7 @@
 #pragma once
-#define LUX_H_2DLINES
-#include "Lynx/Types/LuxObject/Obj_b.hpp"
-#include "Lynx/Types/LuxObject/2D/Obj2_b.hpp"
+#define LNX_H_2DLINES
+#include "Lynx/Types/Object/Obj_b.hpp"
+#include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/GCommands.hpp"
@@ -13,7 +13,7 @@
 
 //FIXME USE GENERATED BINDING INSTEAD OF BUFFER POSITION
 //TODO per-children-group shader command buffers. static shaders are recreated when the objects change
-namespace lux::obj {
+namespace lnx::obj {
 	/**
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered

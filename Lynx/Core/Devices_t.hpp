@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_DEVICES_T
+#define LNX_H_DEVICES_T
 #include <vulkan/vulkan.hpp>
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
@@ -15,7 +15,7 @@
 struct QueueFamilyIndices {
 	uint32 graphicsFamily = (uint32)-1;
 	uint32 presentFamily  = (uint32)-1;
-	lux::RtArray<uint32> computeFamilies;
+	lnx::RtArray<uint32> computeFamilies;
 
 	QueueFamilyIndices()							: graphicsFamily{ (uint32)-1 },       presentFamily{ (uint32)-1 },      computeFamilies() {}
 	QueueFamilyIndices(const QueueFamilyIndices& e) : graphicsFamily{ e.graphicsFamily }, presentFamily{ e.presentFamily }, computeFamilies(e.computeFamilies) {}
@@ -80,5 +80,5 @@ struct computeDevice {
 
 	_VkPhysicalDevice PD;					//Main physical device for computing
 	vk::Device        LD;					//Main logical device for computing
-	lux::RtArray<vk::Queue> computeQueues;	//Main compute queues. Run on computeLD
+	lnx::RtArray<vk::Queue> computeQueues;	//Main compute queues. Run on computeLD
 };

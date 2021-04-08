@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_HDCTARRAY
+#define LNX_H_HDCTARRAY
 #include "Lynx/Types/Integers/Integers.hpp"
 
 
@@ -9,7 +9,7 @@
 
 
 
-namespace lux{
+namespace lnx{
 		template<class ...types> struct HcArray;
 
 		// Runtime get (rtGet function) helper structures ---------------------------------------------------------------------------------------------//
@@ -143,7 +143,7 @@ namespace lux{
 	 * @brief "Heterogeneous Data Compile Time Array".
 	 *		An array that constains elements of different types.
 	 *		Size and types must be known at compile time.
-	 *		e.g. --- lux::HcArray arr = { 1, false, "mogu mogu" }; ---
+	 *		e.g. --- lnx::HcArray arr = { 1, false, "mogu mogu" }; ---
 	 */
 	template<class ...types> struct HcArray : __pvt::seq<sizeof...(types), seqIndex, types...>{
 		alwaysInline HcArray() {}

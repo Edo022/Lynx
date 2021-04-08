@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_DEBUG
+#define LNX_H_DEBUG
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/macros.hpp"
 #include "Lynx/Debug/SourceInfo.hpp"
@@ -13,13 +13,13 @@
 
 
 //TODO output to console window
-namespace lux::dbg{
+namespace lnx::dbg{
 	enum class Severity{
 		info,
 		warning,
 		error
 	};
-	#ifdef LUX_DEBUG
+	#ifdef LNX_DEBUG
 		static neverInline void print(Severity vSeverity, const uint32 vIndex, const char* vMessage, const auto&... pParams) {
 			//Create output string
 
@@ -68,7 +68,7 @@ namespace lux::dbg{
 		 * @brief Prints pMessage as error if vCond is true
 		 */
 		static neverInline void checkCond(const bool vCond, const char* pMessage, const auto&... pArgs) {
-			if(vCond) lux::dbg::printError(pMessage, pArgs...);
+			if(vCond) lnx::dbg::printError(pMessage, pArgs...);
 		}
 
 		/**
@@ -80,7 +80,7 @@ namespace lux::dbg{
 				const char* fstr = "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s";
 				char* str = (char*)malloc(strlen(fstr) + strlen(vParamName) + strlen(callerFunc) + strlen(vMessage) + 1);
 				sprintf(str, fstr, vParamName, callerFunc, vMessage);
-				lux::dbg::printError(str, pParams...);
+				lnx::dbg::printError(str, pParams...);
 				free(str);
 			}
 		}

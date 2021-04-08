@@ -1,7 +1,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Render/Render.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 
 
 
@@ -10,13 +10,13 @@
 
 
 
-namespace lux::core::render::cmd{
+namespace lnx::core::render::cmd{
 	alignCache vk::CommandPool            singleTimeCommandPool = nullptr;
 
 
 
 
-	luxAutoInit(LUX_H_GCOMMANDS){
+	LnxAutoInit(LNX_H_GCOMMANDS){
 		createGraphicsCommandPool();
 		_dbg(createDebugMessenger());
 	}

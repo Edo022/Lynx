@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_STRING
+#define LNX_H_STRING
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 
 
@@ -8,7 +8,7 @@
 
 
 
-namespace lux {
+namespace lnx {
 	//FIXME REMOVE. USE NORMAL STRLEN
 	static inline constexpr uint32 strlenl(const char8* str ) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
 	static inline constexpr uint32 strlenl(const wchar8* str) { for(uint32 len = 0; ; ++len) if(str[len] == '\0') return len; }
@@ -83,16 +83,16 @@ namespace lux {
 		//FIXME use sum chain struct instead of copying the string data
 		inline String operator+(const String& pString) const {
 			checkInit();
-			String vLuxString(Super::data);
-			vLuxString += pString;
-			return vLuxString;
+			String _string(Super::data);
+			_string += pString;
+			return _string;
 		}
 		//FIXME same here
 		inline String operator+(const char8* vString ) const {
 			checkInit();
-			String vLuxString(Super::data);
-			vLuxString += vString;
-			return vLuxString;
+			String _string(Super::data);
+			_string += vString;
+			return _string;
 		}
 
 

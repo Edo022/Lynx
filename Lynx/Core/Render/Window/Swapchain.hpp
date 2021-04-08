@@ -1,15 +1,15 @@
 #pragma once
-#define LUX_H_SWAPCHAIN
+#define LNX_H_SWAPCHAIN
 #include "Lynx/Core/Render/Shaders/Shader_t.hpp"
 
 
 
 
 
-namespace lux{
+namespace lnx{
 	struct Window;
 }
-namespace lux::core::wnd{
+namespace lnx::core::wnd{
 	constexpr int32 __renderMaxFramesInFlight = 2;	//Default:2
 
 
@@ -17,7 +17,7 @@ namespace lux::core::wnd{
 
 	struct Swapchain{
 	private:
-		friend class lux::Window;
+		friend class lnx::Window;
 
 		vk::SwapchainKHR           swapchain;
 		public: //FIXME

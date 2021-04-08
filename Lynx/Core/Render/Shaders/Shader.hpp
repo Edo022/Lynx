@@ -1,12 +1,12 @@
 #pragma once
-#define LUX_H_CSHADER
+#define LNX_H_CSHADER
 #include "Lynx/Core/Render/Window/Window.hpp"
-#include "Lynx/Types/Containers/LuxString.hpp"
+#include "Lynx/Types/Containers/String.hpp"
 
 
 
 
-namespace lux::core::c::shaders{
+namespace lnx::core::c::shaders{
 	extern String shaderPath; //Path to the shaders folder //TODO EVALUATE AT RUNTIME
 
 

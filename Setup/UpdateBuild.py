@@ -31,4 +31,4 @@ def run(dir):
 
 	#Update debug macro
 	with open('./.engine/conf.hpp', 'w') as f:
-		f.write('#define ' + ('LUX_DEBUG' if opts.tp() == 'd' else ''))
+		f.write('#define ' + ('LNX_DEBUG' if opts.tp() == 'd' else ''))

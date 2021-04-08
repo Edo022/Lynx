@@ -3,7 +3,7 @@
 
 
 
-namespace lux::input{
+namespace lnx::input{
 	//This function sorts the sequences. You don't have to call it, they'll be sorted when needed.
 	//Additional calls to this function does not affect performances
 	//TODO use specific string sorting function

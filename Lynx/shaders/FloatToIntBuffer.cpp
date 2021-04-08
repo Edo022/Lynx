@@ -4,14 +4,14 @@
 //####################################################################################
 
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#define LUX_H_FLOATTOINTBUFFER
+#define LNX_H_FLOATTOINTBUFFER
 
 
 
-namespace lux::shd{
+namespace lnx::shd{
 
 
 	void FloatToIntBuffer::createDescriptorSets(){ //FIXME REMOVE LAYOUT
@@ -152,7 +152,7 @@ namespace lux::shd{
 
 
 	Shader_b::Layout FloatToIntBuffer::layout;
-	luxAutoInit(LUX_H_FLOATTOINTBUFFER){
+	LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()

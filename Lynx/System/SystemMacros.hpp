@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_SYSTEM_MACROS
+#define LNX_H_SYSTEM_MACROS
 #include <thread>
 
 
@@ -30,5 +30,5 @@
 // #	define __lp_resume_thr(th)  pthread_kill(th, SIGCONT)				//  THR | Function to resume a thread
 
 #else																//Other operating systems
-#	error Unsupported operating system. Lux Engine can only run on windows 10 and linux
+#	error Unsupported operating system. The Lynx Engine can only run on windows 10 and linux
 #endif

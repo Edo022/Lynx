@@ -1,10 +1,10 @@
-#include "Lynx/Types/LuxObject/2D/Obj2_b.hpp"
-#include "Lynx/Types/LuxObject/2D/Border2.hpp"
+#include "Lynx/Types/Object/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/2D/Border2.hpp"
 
 
-namespace lux::obj{
+namespace lnx::obj{
 	//In debug mode, setMinLim and setMaxLim functions of non debug objects and update the debug border
-	#ifdef LUX_DEBUG
+	#ifdef LNX_DEBUG
 	void Obj2_b::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
 		if(!debug && debugBorder) {
@@ -29,7 +29,7 @@ namespace lux::obj{
         for(u32 i = 0; i < children.count(); ++i){              //BUG OVER
             if(children.isValid(i)) children[i]->onSpawn(pWindow); //BUG >IN >OUT >IN >OUT >IN
         }
-		#ifdef LUX_DEBUG
+		#ifdef LNX_DEBUG
         	if(!debug) {
 				debugBorder = new Border2();
 				debugBorder->debug = true;

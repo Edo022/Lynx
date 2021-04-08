@@ -1,6 +1,6 @@
 #include "Lynx/Tests/StructureInit.hpp"
 
 
-namespace lux::test{
+namespace lnx::test{
     bool __errors[(uint32)error::NUM];
 }

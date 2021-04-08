@@ -7,7 +7,7 @@
 
 
 
-namespace lux::core::buffers{
+namespace lnx::core::buffers{
 	/**
 	 * @brief Allocates a buffer in the VRAM of a device
 	 * @param pBuffer The buffer object to allocate

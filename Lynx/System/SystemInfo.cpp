@@ -15,7 +15,7 @@
 
 
 
-namespace lux::sys{
+namespace lnx::sys{
     const CpuInfo cpu = {
         .name    =              dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'model.*name' | grep     -o ':.*' | grep -o '[^: ].*'"),
         .cores   = (uint32)atoi(dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'cores'       | grep     -o '[0-9].*'")),

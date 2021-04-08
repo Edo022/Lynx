@@ -11,12 +11,12 @@
 
 //A queue with dynamic count
 //DEPRECATED
-namespace lux {
+namespace lnx {
 	template<class type, class iter = uint32> struct Queue {
 		genInitCheck;
 	private:
 	public:
-		lux::RtArray<type, iter> _front, _back;
+		lnx::RtArray<type, iter> _front, _back;
 
 		inline Queue() : _front(), _back() {}
 

@@ -1,13 +1,13 @@
 #pragma once
-#define LUX_H_DEVICES
+#define LNX_H_DEVICES
 #include <GLFW/glfw3.h>
 #include "Lynx/Core/Devices_t.hpp"
-#include "Lynx/Types/Containers/LuxString.hpp"
+#include "Lynx/Types/Containers/String.hpp"
 
 
 
 
-namespace lux::core::dvc{
+namespace lnx::core::dvc{
 	extern graphicsDevice			graphics;	//Main graphics device
 	extern computeDevice			compute;	//Main compute device
 	extern RtArray<computeDevice>	secondary;	//Secondary compute devices
@@ -19,7 +19,7 @@ namespace lux::core::dvc{
 	extern uint32		requiredDeviceExtensionsNum;
 	extern const char**	requiredDeviceExtensions;
 
-	#ifdef LUX_DEBUG
+	#ifdef LNX_DEBUG
 		extern VkDebugUtilsMessengerEXT	debugMessenger;
 		extern uint32       validationLayersNum;
 		extern const char**	validationLayers;

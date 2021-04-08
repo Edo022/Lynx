@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_SOURCE_INFO
+#define LNX_H_SOURCE_INFO
 #include "Lynx/Types/Integers/Integers.hpp"
 #include <cstring>
 #include <execinfo.h>
@@ -11,7 +11,7 @@
 
 
 
-namespace lux::dbg{
+namespace lnx::dbg{
     /**
 	 * @brief Returns the name of the executable file
 	 */

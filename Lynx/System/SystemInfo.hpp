@@ -5,7 +5,7 @@
 
 
 
-namespace lux::sys{
+namespace lnx::sys{
     struct CpuInfo{
         const char* name;   //Name of the CPU
         uint32 cores;       //Number of physical cores

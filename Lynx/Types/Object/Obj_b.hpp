@@ -1,8 +1,8 @@
 #pragma once
-#define LUX_H_LUX_OBJECT
+#define LNX_H_LNX_OBJECT
 
 #include "Lynx/Types/Vectors/Vectors.hpp"
-#include "Lynx/Types/Containers/LuxString.hpp"
+#include "Lynx/Types/Containers/String.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/VPointer.hpp"
 
@@ -13,7 +13,7 @@
 
 
 
-namespace lux{
+namespace lnx{
 	//This namespace contains all the structures and functions of render objects
 	namespace obj {
 		struct Border2;
@@ -33,7 +33,7 @@ namespace lux{
 		//Base class for render objects							Description													Structure differences		Value differences
 		struct Base { //			   							----------------------------------------------------------------------------------------------------------
 			struct Common{
-				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lux object			| none						| none
+				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lynx object			| none						| none
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
 			} common;

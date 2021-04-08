@@ -4,14 +4,14 @@
 //####################################################################################
 
 #include "Lynx/shaders/Line2.hpp"
-#include "Lynx/Core/LuxAutoInit.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#define LUX_H_LINE2
+#define LNX_H_LINE2
 
 
 
-namespace lux::shd{
+namespace lnx::shd{
 
 
 	void Line2::createDescriptorSets(){ //FIXME REMOVE LAYOUT
@@ -152,7 +152,7 @@ namespace lux::shd{
 
 
 	Shader_b::Layout Line2::layout;
-	luxAutoInit(LUX_H_LINE2){
+	LnxAutoInit(LNX_H_LINE2){
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()

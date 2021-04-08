@@ -3,7 +3,7 @@
 
 
 
-namespace lux{
+namespace lnx{
     struct Octree{
         f32v3 pos;          //Sphere position
         f32   r;            //Sphere radius

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define LUX_H_MEMORY
+#define LNX_H_MEMORY
 #include "Lynx/Types/Pointer.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include <cstring>
@@ -26,7 +26,7 @@
 .	 ¦ '-- BUFFER 0| / TP0                       ¦                                                                                           ¦ '- BUFFER 0 TP7    \ |          ¦             Worst case + data structures count:
 .	 ¦    .────────|/ ─────────────.             ¦                                                                                           ¦   .─────────────────\|────.     ¦                 RAM     | 1,057,563,648 (~1.06GB) allocated   | 151,998,786 (~152MB) used
 .	 ¦    │  cell 0    cell class  <------.------¦ ------------------------------------------------------------------------------------------¦ -->  cell class   cell 0  │     ¦                 VRAM    | [no changes]                        | [no changes]
-.	 ¦    │  cell 1                │	  ¦      ¦                                                                                      .----¦ -->  allocBck type   cell 1  │     ¦                           a = (64 + sizeof(lux::ram::Cell_t)) = 384, b = (64 + sizeof(lux::vram::Cell_t)) = 288
+.	 ¦    │  cell 1                │	  ¦      ¦                                                                                      .----¦ -->  allocBck type   cell 1  │     ¦                           a = (64 + sizeof(lnx::ram::Cell_t)) = 384, b = (64 + sizeof(lnx::vram::Cell_t)) = 288
 .	 ¦    │  cell 2                │	  ¦      ¦                                                                                      ¦    ¦   │               cell 2  │     ¦                           e = (6 + 384 + 24576 + 24576 + 24576 + 24576) = 98,694
 .	 ¦    │  ...                   │	  ¦      ¦                                                                                      ¦    ¦   │                ...    │     ¦                           905,969,664 + (a * e) + (b * e * 4) = 905,969,664 + 151,593,984 = 1,057,563,648 (~1.06GB)
 .	 ¦    '──────.      .──────────'	  ¦      ¦                                                                                      ¦    ¦   '──────.      .─────────'     ¦
@@ -48,7 +48,7 @@
 .										  ¦      ¦                                                                                      ¦--------------------------------------'
 .────────────────────────────────────────────────¦ ─────────────────────────────────────────────────────────────────────────────────────¦ ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 .					 │                           ^                                                                                      ^                                                                                                                                                                                  │
-.  allocate          │                    lux::ram::alloc--                                                                        lux::vram::alloc                                                                                                          lux::vram::alloc                                                │  allocate
+.  allocate          │                    lnx::ram::alloc--                                                                        lnx::vram::alloc                                                                                                          lnx::vram::alloc                                                │  allocate
 .  CPU access        │   R/W   ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W        R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W               -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   │  CPU access
 .  GPU access        │    -    ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -         R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R               R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦  R/W  ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   ¦   R   │  GPU access
 .  allocation        │    -    ¦   -   ¦   -   ¦   -   ¦   -   ¦   -   ¦   -         SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SS   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU   ¦  SU               DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DS   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   ¦  DU   │  allocation
@@ -66,7 +66,7 @@
 
 
 
-namespace lux::ram{
+namespace lnx::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
 	struct Type_t;
 	extern Type_t types[];			//Allocated buffers
@@ -76,8 +76,8 @@ namespace lux::ram{
 
 
 
-	void cpy(const void* const src, void* const dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/);
-	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LuxBool thr = LUX_AUTO*/) {
+	void cpy(const void* const src, void* const dst, uint64 num/*, const LnxBool thr = LNX_AUTO*/);
+	template<class t> static inline void cpy(const ram::ptr<const t>& src, const ram::ptr<t>& dst, uint64 num/*, const LnxBool thr = LNX_AUTO*/) {
 		cpy(src, dst, num/*, thr*/);
 	}
 	void cpy_thr(const __m256i* src, __m256i* dst, uint64 num);

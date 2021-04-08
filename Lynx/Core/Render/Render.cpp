@@ -3,7 +3,7 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Types/LuxObject/Obj_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 #include <climits>
 #include <chrono>
 
@@ -23,13 +23,13 @@
 
 
 
-namespace lux::core::render{
+namespace lnx::core::render{
 	alignCache std::mutex graphicsQueueSubmit_m;
 	alignCache std::mutex presentQueueSubmit_m;
 
 
 
-	#ifdef LUX_DEBUG
+	#ifdef LNX_DEBUG
 	void createDebugMessenger() {
 		VkDebugUtilsMessengerCreateInfoEXT createInfo;
 		debug::populateDebugMessengerCreateInfo(createInfo);
@@ -54,7 +54,7 @@ namespace lux::core::render{
 
 
 
-namespace lux{
+namespace lnx{
 	void Window::draw() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
@@ -168,7 +168,7 @@ namespace lux{
 			}
 
 			//Update frame number and flush the window data
-			swp.curFrame = (swp.curFrame + 1) % lux::core::wnd::__renderMaxFramesInFlight;
+			swp.curFrame = (swp.curFrame + 1) % lnx::core::wnd::__renderMaxFramesInFlight;
 			glfwSwapBuffers(window);
 
 
@@ -223,7 +223,7 @@ namespace lux{
 
 
 
-namespace lux::core::render{
+namespace lnx::core::render{
 	void cleanup() {
 		dvc::graphics.LD.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
 

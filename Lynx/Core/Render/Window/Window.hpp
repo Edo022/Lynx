@@ -1,10 +1,10 @@
 #pragma once
-#define LUX_H_WINDOW
+#define LNX_H_WINDOW
 #include <GLFW/glfw3.h>
 #include <atomic>
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Types/VPointer.hpp"
-#include "Lynx/Types/LuxFenceDE.hpp"
+#include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
 
 
@@ -12,11 +12,11 @@
 
 
 
-namespace lux::obj{
+namespace lnx::obj{
 	struct RenderSpace2;
 	struct Base;
 }
-namespace lux{
+namespace lnx{
 	struct Window{
 	// private:
 		GLFWwindow*	window;							//GLFW window object
@@ -33,15 +33,15 @@ namespace lux{
 
 
 
-		// RtArray<LuxShaderLayout_t>	CShadersLayouts;
-		vk::Pipeline pipelines[ShaderLayout::LUX_DEF_SHADER_NUM];
+		// RtArray<LnxShaderLayout_t>	CShadersLayouts;
+		vk::Pipeline pipelines[ShaderLayout::LNX_DEF_SHADER_NUM];
 		vk::CommandPool commandPool;
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addShaderFence;
 
-		RaArray<lux::obj::RenderSpace2*> CRenderSpaces;
+		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
 		void spawn(obj::RenderSpace2* pRenderSpace);
 		RtArray<obj::Base*>	objUpdates;
 		std::mutex          objUpdates_m;

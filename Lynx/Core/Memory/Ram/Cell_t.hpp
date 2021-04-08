@@ -1,5 +1,5 @@
 #pragma once
-#define LUX_H_CELL_T
+#define LNX_H_CELL_T
 #include "Lynx/Core/Memory/Ram/Classes.hpp"
 #include "Lynx/Types/Containers/RaArrayC.hpp"
 #include "Lynx/Types/Dummy.hpp"
@@ -12,14 +12,14 @@
 
 
 
-namespace lux::ram{
+namespace lnx::ram{
 	template<class type> struct ptr;
 	//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 
 
 	struct Cell_t {
 		uint16 typeIndex;		//INDEX of the buffer type. -1 for custom size cells		//2
-		uint16 owners;			//Number of lux::ram::ptr instances that owns the cell		//2
+		uint16 owners;			//Number of lnx::ram::ptr instances that owns the cell		//2
 		uint32 cellIndex;		//Index of the cell in the cells array						//4
 		uint32 localIndex;		//Index of the cell in the type allocations					//4
 		uint32 cellSize;		//Size of the cell in bytes									//4

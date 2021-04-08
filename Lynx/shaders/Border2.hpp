@@ -8,7 +8,7 @@
 
 
 
-namespace lux::shd{
+namespace lnx::shd{
 	struct Border2 : public Shader_b {
 		static Shader_b::Layout layout;
 

@@ -1,11 +1,11 @@
 #pragma once
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#include "Lynx/Types/LuxObject/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include "Lynx/shaders/Border2.hpp"
 
 
 
-namespace lux::obj{
+namespace lnx::obj{
 	struct Border2 : public Obj2_b{
 		shd::Border2 data;
 
