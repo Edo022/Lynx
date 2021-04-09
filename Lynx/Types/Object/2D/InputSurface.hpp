@@ -5,8 +5,8 @@
 
 
 namespace lnx::obj{
-    virtual struct InputSurface : public Obj2_b{
-        virtual void onClick(const f32v2 vPos, /*FIXME*/ vButton) = 0;
+    struct InputSurface : public Obj2_b{
+        virtual void onClick(const f32v2 vPos, int vButton) = 0;
         virtual void onHover(const f32v2 vPos) = 0;
         virtual void onEnter(const f32v2 vPos) = 0;
         virtual void onExit(const f32v2 vPos) = 0;
