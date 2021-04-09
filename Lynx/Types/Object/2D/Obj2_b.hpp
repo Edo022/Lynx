@@ -1,12 +1,25 @@
 #pragma once
 #define LNX_H_OBJECT2
 #include "Lynx/Types/Object/Obj_b.hpp"
+#include "Lynx/Core/Input/MouseInput.hpp"
+
 
 
 
 namespace lnx::obj{
+    struct MouseCallbacks_b{
+        virtual void onClick(const f32v2 vPos, MouseButton vButton){};
+        virtual void onHover(const f32v2 vPos){};
+        virtual void onEnter(const f32v2 vPos){};
+        virtual void  onExit(const f32v2 vPos){};
+        virtual void  onAxis(const i32  vAxis){};
+    };
+
+
+
+
     //Base class for 2D objects in 2D space
-    struct Obj2_b : public Base {
+    struct Obj2_b : public Base, public MouseCallbacks_b {
 
         //TODO add absolute pixel position and scale
         f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object

@@ -36,5 +36,31 @@ namespace lnx::obj{
 				debugBorder->onSpawn(pWindow);
 			}
 		#endif
+
+		if(doesRedefine(*this, &MouseCallbacks_b::onClick)){
+			pWindow.onClick_m.lock();
+			pWindow.onClickList.add(this);
+			pWindow.onClick_m.unlock();
+		}
+		if(doesRedefine(*this, &MouseCallbacks_b::onHover)){
+			pWindow.onHover_m.lock();
+			pWindow.onHoverList.add(this);
+			pWindow.onHover_m.unlock();
+		}
+		if(doesRedefine(*this, &MouseCallbacks_b::onEnter)){
+			pWindow.onEnter_m.lock();
+			pWindow.onEnterList.add(this);
+			pWindow.onEnter_m.unlock();
+		}
+		if(doesRedefine(*this, &MouseCallbacks_b::onExit)){
+			pWindow.onExit_m.lock();
+			pWindow.onExitList.add(this);
+			pWindow.onExit_m.unlock();
+		}
+		if(doesRedefine(*this, &MouseCallbacks_b::onAxis)){
+			pWindow.onAxis_m.lock();
+			pWindow.onAxisList.add(this);
+			pWindow.onAxis_m.unlock();
+		}
     }
 }

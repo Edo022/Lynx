@@ -71,7 +71,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-#ifdef __GNUC_
+#ifdef __GNUC__
 	#pragma GCC diagnostic ignored "-Wpmf-conversions"
     /**
      * @brief Returns true if the object's class redefines a virtual member function of a base class.

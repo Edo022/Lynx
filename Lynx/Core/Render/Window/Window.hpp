@@ -39,12 +39,21 @@ namespace lnx{
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;
 		shd::FloatToIntBuffer sh_clear;
-		std::mutex addShaderFence;
+		std::mutex addObject_m;
 
 		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
 		void spawn(obj::RenderSpace2* pRenderSpace);
 		RtArray<obj::Base*>	objUpdates;
 		std::mutex          objUpdates_m;
+
+
+		RaArray<obj::Base*> onClickList; std::mutex onClick_m;
+		RaArray<obj::Base*> onHoverList; std::mutex onHover_m;
+		RaArray<obj::Base*> onEnterList; std::mutex onEnter_m;
+		RaArray<obj::Base*> onExitList;  std::mutex onExit_m;
+		RaArray<obj::Base*> onAxisList;  std::mutex onAxis_m;
+
+
 
 
 

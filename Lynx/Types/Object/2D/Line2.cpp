@@ -11,13 +11,13 @@ namespace lnx::obj{
 		Obj2_b::onSpawn(pWindow); //Initialize all the children
 
 
-		pWindow.addShaderFence.lock();
+		pWindow.addObject_m.lock();
 			data.create(pWindow.fOut_g, pWindow.wSize_g, pWindow.zBuff_g);
 			data.createDescriptorSets();
 			data.createCommandBuffers(LNX_DEF_SHADER_2D_LINE, 512, 1, 1, pWindow);		//FIXME 4 group size? wtf?
 			//FIXME                                        ^ CALCULATE GROUP SIZE AT RUNTIME
 
 			pWindow.swp.shadersCBs.add(data.commandBuffers[0]);
-		pWindow.addShaderFence.unlock();
+		pWindow.addObject_m.unlock();
 	}
 }

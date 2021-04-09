@@ -132,7 +132,7 @@ namespace lnx::core::c::shaders{
 	//  */
 	// //DEPRECATED FUNCTION //FIXME REMOVE
 	// bool destroyShader(const LnxShader vCShader, Window& pWindow) {
-	// 	pWindow.addShaderFence.lock();
+	// 	pWindow.addObject_m.lock();
 	// 		if(vCShader >= pWindow.swp.shaders.count()) return false;
 
 	// 		//Clear descriptors sets, descriptor pool and descriptor layout
@@ -142,7 +142,7 @@ namespace lnx::core::c::shaders{
 	// 		//Remove the shader from the shader array
 	// 		for(uint32 i = vCShader; i < pWindow.swp.shaders.count() - 1; ++i) pWindow.swp.shaders[i] = pWindow.swp.shaders[i+1]; //FIXME
 	// 		pWindow.swp.shaders.resize(pWindow.swp.shaders.count() - 1);
-	// 	pWindow.addShaderFence.unlock();
+	// 	pWindow.addObject_m.unlock();
 
 	// 	return true;
 	// }

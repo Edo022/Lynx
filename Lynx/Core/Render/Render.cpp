@@ -63,12 +63,12 @@ namespace lnx{
 			auto start = std::chrono::high_resolution_clock::now();
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
-			addShaderFence.lock();
+			addObject_m.lock();
 			if(swp.shadersCBs.count() <= 1) {
-				addShaderFence.unlock();
+				addObject_m.unlock();
 				continue;
 			}
-			addShaderFence.unlock();
+			addObject_m.unlock();
 			core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX);
 			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
 			//BUG [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* Waiting for fences timed out!
@@ -101,7 +101,7 @@ namespace lnx{
 			//TODO use a staging buffer
 			//Update render result submitting the command buffers to the compute queues
 			const vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eComputeShader };
-			addShaderFence.lock();
+			addObject_m.lock();
 
 
 
@@ -135,7 +135,7 @@ namespace lnx{
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
 				,
 			};
-			addShaderFence.unlock(); //FIXME
+			addObject_m.unlock(); //FIXME
 			core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.lock();
 				core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered);
