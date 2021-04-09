@@ -11,6 +11,7 @@ namespace lnx{
         u32 elmsNum;        //Number of childre //TODO use static array
         Octree* elms[8];    //Cell children
         Octree* parent;     //Parent cell
+        u32 depth;          //Depth of the node in the tree
 
         struct Opt{         //Optimization structures
             Octree *xp;         //Adjacent cell on the positive x axis
