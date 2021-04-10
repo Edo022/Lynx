@@ -19,8 +19,6 @@ namespace lnx::input{
 
 
 	#define wnd_ ((Window*)glfwGetWindowUserPointer(window))
-	#define gtollx(n) ((n) / wnd_->swp.createInfo.imageExtent.width) //FIXME DONT DEPEND ON A WINDOW
-	#define gtolly(n) ((n) / wnd_->swp.createInfo.imageExtent.height)
 	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
@@ -45,7 +43,7 @@ namespace lnx::input{
 		// 	rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
 		// 	rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->qHierarchy();
 		// }
-		// wnd_->icQueues.onMove.invalidate(); //FIXME ADD ONMOVE
+		wnd_->icQueues.onMove.invalidate({x, y});
 	}
 
 

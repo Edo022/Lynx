@@ -12,6 +12,7 @@ namespace lnx::obj{
         virtual void onHover(const f32v2 vPos){};
         virtual void onEnter(const f32v2 vPos){};
         virtual void  onExit(const f32v2 vPos){};
+        virtual void  onMove(const f32v2 vPos){};
         virtual void  onAxis(const i32  vAxis){};
     };
 

@@ -67,7 +67,7 @@ namespace lnx{
 					m.unlock();
 				}
 			};
-			InputCallbackQueue onClick, onHover, onEnter, onExit, onAxis;
+			InputCallbackQueue onClick, onHover, onEnter, onExit, onMove, onAxis;
 			MouseButton lastMouseButton = MouseButton::n1;
 		} icQueues;
 

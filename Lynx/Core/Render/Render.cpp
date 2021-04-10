@@ -214,6 +214,15 @@ namespace lnx{
 				icQueues.onExit.queued = false;
 			}
 
+			if(icQueues.onMove.queued){
+				icQueues.onMove.m.lock();
+				for(uint32 i = 0; i < icQueues.onMove.list.count(); ++i){
+					if(icQueues.onMove.list.isValid(i)) icQueues.onMove.list[i]->onMove(icQueues.onMove.pos); //FIXME
+				}
+				icQueues.onMove.m.unlock();
+				icQueues.onMove.queued = false;
+			}
+
 			if(icQueues.onAxis.queued){
 				icQueues.onAxis.m.lock();
 				for(uint32 i = 0; i < icQueues.onAxis.list.count(); ++i){

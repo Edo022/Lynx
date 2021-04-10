@@ -41,6 +41,7 @@ namespace lnx::obj{
 		if(doesRedefine(*this, &MouseCallbacks_b::onHover))pWindow.icQueues.onHover.add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onEnter))pWindow.icQueues.onEnter.add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onExit ))pWindow.icQueues.onExit .add(this);
+		if(doesRedefine(*this, &MouseCallbacks_b::onMove ))pWindow.icQueues.onMove .add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onAxis ))pWindow.icQueues.onAxis .add(this);
     }
 }
