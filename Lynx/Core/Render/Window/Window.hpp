@@ -17,7 +17,7 @@ namespace lnx::obj{
 	struct Base;
 }
 namespace lnx{
-	struct Window{
+	class Window{
 	// private:
 		GLFWwindow*	window;							//GLFW window object
 		int32		width;							//Width of the window
@@ -47,11 +47,21 @@ namespace lnx{
 		std::mutex          objUpdates_m;
 
 
-		RaArray<obj::Base*> onClickList; std::mutex onClick_m;
-		RaArray<obj::Base*> onHoverList; std::mutex onHover_m;
-		RaArray<obj::Base*> onEnterList; std::mutex onEnter_m;
-		RaArray<obj::Base*> onExitList;  std::mutex onExit_m;
-		RaArray<obj::Base*> onAxisList;  std::mutex onAxis_m;
+		struct InputCallbackQueues{
+			struct InputCallbackQueue{
+				inline auto add(obj::Base* pElm){
+					m.lock();
+					auto r = list.add(pElm);
+					m.unlock();
+					return r;
+				}
+			private:
+				RaArray<obj::Base*> list;
+				std::mutex m;
+			};
+			InputCallbackQueue onClick, onHover, onEnter, onExit, onAxis;
+		} icQueues;
+
 
 
 
