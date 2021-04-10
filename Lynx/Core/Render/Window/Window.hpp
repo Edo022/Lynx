@@ -6,8 +6,7 @@
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
-
-
+#include "Lynx/Core/Input/MouseInput.hpp"
 
 
 
@@ -15,9 +14,11 @@
 namespace lnx::obj{
 	struct RenderSpace2;
 	struct Base;
+	struct Obj2_b;
 }
 namespace lnx{
 	class Window{
+	public:
 	// private:
 		GLFWwindow*	window;							//GLFW window object
 		int32		width;							//Width of the window
@@ -49,17 +50,25 @@ namespace lnx{
 
 		struct InputCallbackQueues{
 			struct InputCallbackQueue{
-				inline auto add(obj::Base* pElm){
+				std::atomic<bool> queued = false;
+				RaArray<obj::Obj2_b*> list;
+				std::mutex m;
+				f32v2 pos;
+				inline auto add(obj::Obj2_b* pElm){
 					m.lock();
 					auto r = list.add(pElm);
 					m.unlock();
 					return r;
 				}
-			private:
-				RaArray<obj::Base*> list;
-				std::mutex m;
+				inline auto invalidate(f32v2 vPos){
+					m.lock();
+					queued = true;
+					pos = vPos;
+					m.unlock();
+				}
 			};
 			InputCallbackQueue onClick, onHover, onEnter, onExit, onAxis;
+			MouseButton lastMouseButton = MouseButton::n1;
 		} icQueues;
 
 

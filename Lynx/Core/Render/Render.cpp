@@ -3,7 +3,7 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Types/Object/Obj_b.hpp"
+#include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include <climits>
 #include <chrono>
 
@@ -175,6 +175,58 @@ namespace lnx{
 
 
 			//TODO parallelize work from a secondary render thread
+
+
+			//Input callbacks
+			if(icQueues.onClick.queued){
+				icQueues.onClick.m.lock();
+				for(uint32 i = 0; i < icQueues.onClick.list.count(); ++i){
+					if(icQueues.onClick.list.isValid(i)) icQueues.onClick.list[i]->onClick(icQueues.onClick.pos, icQueues.lastMouseButton);
+				}
+				icQueues.onClick.m.unlock();
+				icQueues.onClick.queued = false;
+			}
+
+			if(icQueues.onHover.queued){
+				icQueues.onHover.m.lock();
+				for(uint32 i = 0; i < icQueues.onHover.list.count(); ++i){
+					if(icQueues.onHover.list.isValid(i)) icQueues.onHover.list[i]->onHover(icQueues.onHover.pos);
+				}
+				icQueues.onHover.m.unlock();
+				icQueues.onHover.queued = false;
+			}
+
+			if(icQueues.onEnter.queued){
+				icQueues.onEnter.m.lock();
+				for(uint32 i = 0; i < icQueues.onEnter.list.count(); ++i){
+					if(icQueues.onEnter.list.isValid(i)) icQueues.onEnter.list[i]->onEnter(icQueues.onEnter.pos);
+				}
+				icQueues.onEnter.m.unlock();
+				icQueues.onEnter.queued = false;
+			}
+
+			if(icQueues.onExit.queued){
+				icQueues.onExit.m.lock();
+				for(uint32 i = 0; i < icQueues.onExit.list.count(); ++i){
+					if(icQueues.onExit.list.isValid(i)) icQueues.onExit.list[i]->onExit(icQueues.onExit.pos);
+				}
+				icQueues.onExit.m.unlock();
+				icQueues.onExit.queued = false;
+			}
+
+			if(icQueues.onAxis.queued){
+				icQueues.onAxis.m.lock();
+				for(uint32 i = 0; i < icQueues.onAxis.list.count(); ++i){
+					// icQueues.onAxis.list.isValid(i)elmicQueues.onAxis.list[i]->Axis(icQueues.onAxis.pos);
+					if(icQueues.onAxis.list.isValid(i)) icQueues.onAxis.list[i]->onAxis(1); //FIXME
+				}
+				icQueues.onAxis.m.unlock();
+				icQueues.onAxis.queued = false;
+			}
+
+
+
+
 			//Fix objects update requests
 			if(objUpdates.count() > 0) {
 				objUpdates_m.lock();

@@ -25,21 +25,27 @@ namespace lnx::input{
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
 		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->update();
+		wnd_->icQueues.onClick.invalidate({x, y});
+		wnd_->icQueues.onClick.m.lock();
+		wnd_->icQueues.lastMouseButton = (MouseButton)button;
+		wnd_->icQueues.onClick.m.unlock();
 	}
 
 
 	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
 		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd0() -= ((float32)y * 10);
 		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd1() -= ((float32)y * 10);
+		wnd_->icQueues.onAxis.invalidate({x, y});
 		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->update();
 	}
 
 
 	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
-		if(wnd_->CRenderSpaces.count() > 0) {
-			rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
-			rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->qHierarchy();
-		}
+		// if(wnd_->CRenderSpaces.count() > 0) {
+		// 	rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
+		// 	rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->qHierarchy();
+		// }
+		// wnd_->icQueues.onMove.invalidate(); //FIXME ADD ONMOVE
 	}
 
 
