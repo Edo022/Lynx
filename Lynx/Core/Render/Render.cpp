@@ -187,15 +187,6 @@ namespace lnx{
 				icQueues.onClick.queued = false;
 			}
 
-			if(icQueues.onHover.queued){
-				icQueues.onHover.m.lock();
-				for(uint32 i = 0; i < icQueues.onHover.list.count(); ++i){
-					if(icQueues.onHover.list.isValid(i)) icQueues.onHover.list[i]->onHover(icQueues.onHover.pos);
-				}
-				icQueues.onHover.m.unlock();
-				icQueues.onHover.queued = false;
-			}
-
 			if(icQueues.onEnter.queued){
 				icQueues.onEnter.m.lock();
 				for(uint32 i = 0; i < icQueues.onEnter.list.count(); ++i){

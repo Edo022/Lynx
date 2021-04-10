@@ -9,7 +9,6 @@
 namespace lnx::obj{
     struct MouseCallbacks_b{
         virtual void onClick(const f32v2 vPos, MouseButton vButton){};
-        virtual void onHover(const f32v2 vPos){};
         virtual void onEnter(const f32v2 vPos){};
         virtual void  onExit(const f32v2 vPos){};
         virtual void  onMove(const f32v2 vPos){};

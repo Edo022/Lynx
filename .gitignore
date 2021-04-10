@@ -1,4 +1,5 @@
 deps/Linux/
+deps/Shared/GLFW
 deps/Shared/GLFWBuild
 
 Build/Linux/
