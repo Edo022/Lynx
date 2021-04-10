@@ -54,7 +54,7 @@ namespace lnx::input{
 	//This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 	//TODO
 	//FIXME BROKEN FUNCTION
-	void keyCallback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
+	void onKey(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
 		//FULL SCREEN
 		int32 fsstate = 0;
 		int32 wmx, wmy, wmw, wmh;
