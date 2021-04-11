@@ -162,8 +162,6 @@ else:
     shname = re.search(r'^(.*/)?(.*)\..*$', pathr)
     if shname != None: shname = shname.group(2)
 
-    print('Compiling ' + spath + shname)
-
 
 
 

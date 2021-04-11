@@ -49,6 +49,7 @@ if sys.stdin.read(1).lower() == 'y':
            '            "command": "' + enginePath + '/Build/lynxg++",'                                                     '\n'
            '            "args": [ "-mode=ld",'                                                                              '\n'
            '                "Lynx/Lynx/Lynx_build.cpp",'                                                                    '\n'
+           '                "Lynx/Lynx/shaders/Line2.comp",'                                                                '\n'
            '                "-pipe", "-mavx", "--build-engine",'                                                            '\n'
            ''                                                                                                               '\n'
            '                "-d[",'                                                                                         '\n'

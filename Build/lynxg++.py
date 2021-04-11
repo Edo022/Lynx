@@ -20,21 +20,6 @@ with open('./.engine/enginePath', 'r') as f:
 
 
 
-def compileShader(name:str):
-    if os.system( #FIXME USE DIFFERENT OPTIMIZATION LEVELS FOR DEBUG AND RELEASE #https://man.linuxreviews.org/man1/glslc.1.html
-        enginePath + '/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc '    +
-        enginePath + '/Lynx/shaders/' + name + '.comp -o ' +
-        enginePath + '/Lynx/shaders/' + name + '.spv'
-    ) != 0: exit()
-    if os.system(
-        'python3 ' +
-        enginePath + '/Lynx/shaders/GlslToCpp.py ' +
-        enginePath + '/Lynx/shaders/' + name + '.comp'
-    ) != 0: exit()
-
-
-
-
 cmd = []            #Raw lynxg++ command
 pf:str              #Target platform. 'l'(Linux) or 'w'(Windows)
 tp:str              #Target type.     'd'(Debug),   'r'(Release) or 's'(Shipping)
@@ -51,19 +36,20 @@ def getpf() -> str:
 
 
 #Find mode
-r:re.Match = None; ir:int
-for i, o in enumerate(cmd):
-    _r = re.match(r'^\-mode=[lw][rds]$', o)
+r:re.Match = None
+i:int = 0
+while i < len(cmd):
+    _r = re.match(r'^\-mode=[lw][rds]$', cmd[i])
     if _r != None:
         r = _r
-        ir = i
-    elif o == '--build-engine':
+        del cmd[i]
+    elif cmd[i] == '--build-engine':
         cd = 'e'
         del cmd[i]
-
+    else:
+        i += 1
 
 if r != None:
-    del cmd[ir]
     pf = r.group(0)[-2]
     tp = r.group(0)[-1]
 else:
@@ -97,7 +83,36 @@ while i < len(cmd):                             #For each command option
 
 
 
-#Construct g++ command
+#Construct GLSLC command
+cmdsh = []
+i = 0
+while i < len(cmdp):
+    r = re.match(r'^([^\-](.*))\.comp$', cmdp[i])
+    if r != None:
+        cmdp[i] = r.group(1) + '.comp;' + r.group(1) + '.spv'
+
+    r = re.match(r'^([^\-](.*))\.comp;(.*)\.spv$', cmdp[i])
+    if r != None:
+        iname = r.group(1)
+        oname = r.group(3)
+        cmdsh += [
+            [
+                enginePath + '/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc',
+                iname + '.comp', '-o', oname + '.spv'
+            ],[
+                'python3',
+                enginePath + '/Lynx/shaders/GlslToCpp.py',
+                iname + '.comp',
+            ]
+        ]
+        del(cmdp[i])
+    else:
+        i += 1
+
+
+
+
+#Construct G++ command
 vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
 gwdep:str = enginePath + '/deps/Shared/GLFW'
 
@@ -130,17 +145,23 @@ if cd == 'u': cmdg += [                                         #When building u
 
 
 
-#Compile shaders
-if cd == 'e':
-    #FIXME USE PARAMETERS, NOT HARD CODED PATHS
+
+
+
+#Run GLSLC commands
+if len(cmdsh) > 0:
+    print('\n' + ('-' * os.get_terminal_size().columns))
     print('\n\n' '\033[1m' 'COMPILING SHADERS')
-    compileShader('Border2')
-    compileShader('Line2')
-    compileShader('FloatToIntBuffer')
-    print('\033[0m')
+    for sh in cmdsh:
+        print('\033[1m' + (' '.join(sh)) + '\033[0m')
+    for sh in cmdsh:
+        subprocess.run(sh)
+    print('\n')
 
 
 #Run G++ command
-print('\n\n' '\033[1m' 'COMPILING CPPs')
-print(' '.join(cmdg) + '\n' '\033[0m')
-subprocess.run(cmdg)
+if len(cmdg) > 1:
+    print('\n' + ('-' * os.get_terminal_size().columns))
+    print('\n\n' '\033[1m' 'COMPILING CPPs')
+    print(' '.join(cmdg) + '\n' '\033[0m')
+    subprocess.run(cmdg)
