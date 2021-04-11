@@ -1,4 +1,4 @@
-import re, sys, os
+import re, sys, os, subprocess
 
 #FIXME fis shipping build
 # This script is a G++ wrapper that is called via lynxg++ C++ executable wrapper
@@ -74,8 +74,8 @@ else:
 
 
 #Pick options based on platform and type
-cmdp = []       #Parsed command
-i = 0           #Option index
+cmdp = []                                       #Parsed command
+i = 0                                           #Option index
 while i < len(cmd):                             #For each command option
     r = re.match(r'^\-([lwrd])\[(.*)\]$', cmd[i])   #
     if r != None:                                   #If -<c>[<option>]
@@ -98,31 +98,36 @@ while i < len(cmd):                             #For each command option
 
 
 #Construct g++ command
-vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64/'
-gwdep:str = enginePath + '/deps/Shared/GLFW/'
-cmdg = (
-    'g++ -std=c++2a -pthread' +
-    (' -DLNX_DEBUG -rdynamic' if tp == 'd' else '') +       #Activate Lnx debug checks when in debug mode
-    ' -DGLM_FORCE_RADIANS -DGLM_FORCE_DEPTH_ZERO_TO_ONE' +  #Define vulkan macros
-    ((                                                      #When building user application
-        ' -DenginePath="\\"' + enginePath + '\\""'              #Define engine path function #FIXME
-        ' ' + enginePath + '/Lynx/getEnginePath.cpp'       #Add engine path definition  #FIXME
-        ' ' + enginePath + '/Lynx/Core/Env.cpp'            #Add runtime environment variables
-        ' ' + enginePath + '/Build/' + getpf() + '/Lynx' + gettp()
-    ) if cd == 'u' else '') +                                   # ^ Add engine binaries
-    ' ' + ' '.join(cmdp) +                                  #Copy parsed G++ options
-    ' -I' + vkdep + 'include'                               #Add Vulkan include path
-    ' -I' + gwdep + 'include'                               #Add GLFW include path
-    ' -I' + gwdep + 'deps'                                  #Add GLFW dependencies include path
-    ' -I' + enginePath +                                    #Add Lynx include path
-    ((                                                      #When building user application
-        ' -I' + '.'                                             #Add workspace include path
-        ' -L' + vkdep + 'lib'                                   #Add Vulkan library path
-        ' -L' + enginePath + '/deps/Shared/GLFWBuild/src'                             #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
-        ' -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11'   #Link dependencies
-        ' -lvulkan -Bstatic -lglfw3'                            #Link Vulkan dynamically and GLFW statically
-    ) if cd == 'u' else '')                                     #
-)
+vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
+gwdep:str = enginePath + '/deps/Shared/GLFW'
+
+cmdg = ['g++', '-std=c++2a', '-pthread']                        #Base options
+cmdg += ['-DGLM_FORCE_RADIANS', '-DGLM_FORCE_DEPTH_ZERO_TO_ONE']#Define vulkan macros
+if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lnx debug checks when in debug mode
+
+if cd == 'u': cmdg += [                                         #When building user application
+    '-DenginePath="' + enginePath + '"',                        #Define engine path function #FIXME
+    enginePath + '/Lynx/getEnginePath.cpp',                         #Add engine path definition  #FIXME
+    enginePath + '/Lynx/Core/Env.cpp',                              #Add runtime environment variables
+    enginePath + '/Build/' + getpf() + '/Lynx' + gettp()            #Add engine binaries
+]
+
+cmdg += cmdp + [                                                #Copy parsed G++ options
+    '-I' + vkdep + '/include',                                      #Add Vulkan include path
+    '-I' + gwdep + '/include',                                      #Add GLFW include path
+    '-I' + gwdep + '/deps',                                         #Add GLFW dependencies include path
+    '-I' + enginePath                                               #Add Lynx include path
+]
+
+if cd == 'u': cmdg += [                                         #When building user application
+    '-I' + '.',                                                     #Add workspace include path
+    '-L' + vkdep + '/lib',                                          #Add Vulkan library path
+    '-L' + enginePath + '/deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
+    '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
+    '-lvulkan', '-Bstatic', '-lglfw3'                               #Link Vulkan dynamically and GLFW statically
+]
+
+
 
 
 #Compile shaders
@@ -137,4 +142,5 @@ if cd == 'e':
 
 #Run G++ command
 print('\n\n' '\033[1m' 'COMPILING CPPs')
-print(cmdg + '\n' '\033[0m'); os.system(cmdg)
+print(' '.join(cmdg) + '\n' '\033[0m')
+subprocess.run(cmdg)
