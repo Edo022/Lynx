@@ -16,7 +16,7 @@ namespace lnx::core::c::shaders{
 
 
 
-	LnxAutoInit(LNX_H_CSHADER){
+	LnxAutoInit(LNX_H_SHADER){
 		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
@@ -29,7 +29,7 @@ namespace lnx::core::c::shaders{
 	 * @param pFilePath A pointer to a char array containing the path to the compiled shader file
 	 * @return A pointer to the array where the code was saved
 	 */
-	uint32* cshaderReadFromFile(uint32* pLength, const char* pFilePath) {
+	uint32* loadSpv(uint32* pLength, const char* pFilePath) {
 		//Open file
 			FILE* fp;
 			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
@@ -69,7 +69,7 @@ namespace lnx::core::c::shaders{
 	 * @return The created shader module
 	 */
 	//FIXME FIX
-	vk::ShaderModule cshaderCreateModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength) {
+	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength) {
 		auto createInfo = vk::ShaderModuleCreateInfo() 					//Create shader module infos
 			.setCodeSize (*pLength)											//Set the count of the compiled shader code
 			.setPCode    (pCode)											//Set the shader code
@@ -132,7 +132,7 @@ namespace lnx::core::c::shaders{
 	//  */
 	// //DEPRECATED FUNCTION //FIXME REMOVE
 	// bool destroyShader(const LnxShader vCShader, Window& pWindow) {
-	// 	pWindow.addShaderFence.lock();
+	// 	pWindow.addObject_m.lock();
 	// 		if(vCShader >= pWindow.swp.shaders.count()) return false;
 
 	// 		//Clear descriptors sets, descriptor pool and descriptor layout
@@ -142,7 +142,7 @@ namespace lnx::core::c::shaders{
 	// 		//Remove the shader from the shader array
 	// 		for(uint32 i = vCShader; i < pWindow.swp.shaders.count() - 1; ++i) pWindow.swp.shaders[i] = pWindow.swp.shaders[i+1]; //FIXME
 	// 		pWindow.swp.shaders.resize(pWindow.swp.shaders.count() - 1);
-	// 	pWindow.addShaderFence.unlock();
+	// 	pWindow.addObject_m.unlock();
 
 	// 	return true;
 	// }

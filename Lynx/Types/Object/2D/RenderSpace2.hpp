@@ -40,6 +40,9 @@ namespace lnx::obj {
 		FlowType yFlow;				//Children vertical direction
 
 
+		//TODO fix default constructor
+		RenderSpace2() : alignment(AlignmentType::Free), xNum(1), yNum(1), xFlow(FlowType::LeftToRight), yFlow(FlowType::TopToBottom) {}
+
 		RenderSpace2(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
 			: alignment(vAlignment), xNum(vXNum), yNum(vYNum), xFlow(vXFlow), yFlow(vYFlow) {
 		}

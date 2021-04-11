@@ -61,10 +61,11 @@ namespace lnx{
 
 		glfwSetWindowUserPointer      (window, this);
 		glfwSetFramebufferSizeCallback(window, resizeCallback);
-		glfwSetCursorPosCallback      (window, input::mouseCursorPosCallback);
-		glfwSetMouseButtonCallback    (window, input::mouseButtonCallback);
-		glfwSetScrollCallback         (window, input::mouseAxisCallback);
-		glfwSetKeyCallback            (window, input::keyCallback);
+		glfwSetCursorPosCallback      (window, input::onMove);
+		glfwSetMouseButtonCallback    (window, input::onClick);
+		glfwSetScrollCallback         (window, input::onAxis);
+		glfwSetCursorEnterCallback    (window, input::onEnter);
+		glfwSetKeyCallback            (window, input::onKey);
 
 
 		swp.bindedWindow = this;

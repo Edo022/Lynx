@@ -11,7 +11,6 @@
 
 
 
-//FIXME USE GENERATED BINDING INSTEAD OF BUFFER POSITION
 //TODO per-children-group shader command buffers. static shaders are recreated when the objects change
 namespace lnx::obj {
 	/**

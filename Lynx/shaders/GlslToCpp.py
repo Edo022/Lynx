@@ -342,8 +342,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t{ //Create pipeline layout'
                     '\n\t\tuint32 fileLength;'
-                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::cshaderCreateModule('
-                        '\n\t\t\tcore::dvc::compute.LD, core::c::shaders::cshaderReadFromFile('
+                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule('
+                        '\n\t\t\tcore::dvc::compute.LD, core::c::shaders::loadSpv('
                             '\n\t\t\t\t&fileLength,'
                             '\n\t\t\t\t(core::c::shaders::shaderPath + "' + shname + '.spv").begin()' #TODO EVALUATE SHADER PATH AT RUNTIME
                         '\n\t\t\t),'

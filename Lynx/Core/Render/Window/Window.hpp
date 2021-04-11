@@ -6,8 +6,7 @@
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
-
-
+#include "Lynx/Core/Input/MouseInput.hpp"
 
 
 
@@ -15,9 +14,11 @@
 namespace lnx::obj{
 	struct RenderSpace2;
 	struct Base;
+	struct Obj2_b;
 }
 namespace lnx{
-	struct Window{
+	class Window{
+	public:
 	// private:
 		GLFWwindow*	window;							//GLFW window object
 		int32		width;							//Width of the window
@@ -39,12 +40,39 @@ namespace lnx{
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;
 		shd::FloatToIntBuffer sh_clear;
-		std::mutex addShaderFence;
+		std::mutex addObject_m;
 
 		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
 		void spawn(obj::RenderSpace2* pRenderSpace);
 		RtArray<obj::Base*>	objUpdates;
 		std::mutex          objUpdates_m;
+
+
+		struct InputCallbackQueues{
+			struct InputCallbackQueue{
+				std::atomic<bool> queued = false;
+				RaArray<obj::Obj2_b*> list;
+				std::mutex m;
+				f32v2 pos;
+				inline auto add(obj::Obj2_b* pElm){
+					m.lock();
+					auto r = list.add(pElm);
+					m.unlock();
+					return r;
+				}
+				inline auto invalidate(f32v2 vPos){
+					m.lock();
+					queued = true;
+					pos = vPos;
+					m.unlock();
+				}
+			};
+			InputCallbackQueue onClick, onEnter, onExit, onMove, onAxis;
+			MouseButton lastMouseButton = MouseButton::n1;
+		} icQueues;
+
+
+
 
 
 

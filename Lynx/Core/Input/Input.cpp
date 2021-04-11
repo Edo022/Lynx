@@ -19,30 +19,30 @@ namespace lnx::input{
 
 
 	#define wnd_ ((Window*)glfwGetWindowUserPointer(window))
-	#define gtollx(n) ((n) / wnd_->swp.createInfo.imageExtent.width) //FIXME DONT DEPEND ON A WINDOW
-	#define gtolly(n) ((n) / wnd_->swp.createInfo.imageExtent.height)
-	void mouseButtonCallback(GLFWwindow* window, int32 button, int32 action, int32 mods) {
+	void onClick(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
-		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->setFp(f32v2{ gtollx(x), gtolly(y) });
-		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->update();
+		wnd_->icQueues.onClick.invalidate({x, y});
+		wnd_->icQueues.onClick.m.lock();
+		wnd_->icQueues.lastMouseButton = (MouseButton)button;
+		wnd_->icQueues.onClick.m.unlock();
 	}
 
 
-	void mouseAxisCallback(GLFWwindow* window, float64 x, float64 y) {
-		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd0() -= ((float32)y * 10);
-		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->data.lineData_.wd1() -= ((float32)y * 10);
-		// rcast<lnx::obj::Line2*>(wnd_->CRenderSpaces[0]->children[0])->update();
+	void onAxis(GLFWwindow* window, float64 x, float64 y) {
+		wnd_->icQueues.onAxis.invalidate({x, y});
 	}
 
 
-	void mouseCursorPosCallback(GLFWwindow* window, float64 x, float64 y) {
-		if(wnd_->CRenderSpaces.count() > 0) {
-			rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->setMaxLim(f32v2{ ((float32)gtollx(x)), ((float32)gtolly(y)) });
-			rcast<lnx::obj::RenderSpace2*>(wnd_->CRenderSpaces[0])->qHierarchy();
-		}
+	void onMove(GLFWwindow* window, float64 x, float64 y) {
+		wnd_->icQueues.onMove.invalidate({x, y});
 	}
 
-
+	void onEnter(GLFWwindow* window, int32 entered){
+		float64 x, y; glfwGetCursorPos(window, &x, &y);
+		if(entered == GL_TRUE)
+		     wnd_->icQueues.onEnter.invalidate({x, y});
+		else wnd_->icQueues.onExit .invalidate({x, y});
+	}
 
 
 
@@ -54,7 +54,7 @@ namespace lnx::input{
 	//This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 	//TODO
 	//FIXME BROKEN FUNCTION
-	void keyCallback(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
+	void onKey(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
 		//FULL SCREEN
 		int32 fsstate = 0;
 		int32 wmx, wmy, wmw, wmh;

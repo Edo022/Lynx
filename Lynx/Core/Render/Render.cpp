@@ -3,7 +3,7 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Types/Object/Obj_b.hpp"
+#include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include <climits>
 #include <chrono>
 
@@ -63,12 +63,12 @@ namespace lnx{
 			auto start = std::chrono::high_resolution_clock::now();
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
-			addShaderFence.lock();
+			addObject_m.lock();
 			if(swp.shadersCBs.count() <= 1) {
-				addShaderFence.unlock();
+				addObject_m.unlock();
 				continue;
 			}
-			addShaderFence.unlock();
+			addObject_m.unlock();
 			core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX);
 			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
 			//BUG [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* Waiting for fences timed out!
@@ -101,7 +101,7 @@ namespace lnx{
 			//TODO use a staging buffer
 			//Update render result submitting the command buffers to the compute queues
 			const vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eComputeShader };
-			addShaderFence.lock();
+			addObject_m.lock();
 
 
 
@@ -135,7 +135,7 @@ namespace lnx{
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
 				,
 			};
-			addShaderFence.unlock(); //FIXME
+			addObject_m.unlock(); //FIXME
 			core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered);
 			core::render::graphicsQueueSubmit_m.lock();
 				core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered);
@@ -175,6 +175,58 @@ namespace lnx{
 
 
 			//TODO parallelize work from a secondary render thread
+
+
+			//Input callbacks
+			if(icQueues.onClick.queued){
+				icQueues.onClick.m.lock();
+				for(uint32 i = 0; i < icQueues.onClick.list.count(); ++i){
+					if(icQueues.onClick.list.isValid(i)) icQueues.onClick.list[i]->onClick(icQueues.onClick.pos, icQueues.lastMouseButton);
+				}
+				icQueues.onClick.m.unlock();
+				icQueues.onClick.queued = false;
+			}
+
+			if(icQueues.onEnter.queued){
+				icQueues.onEnter.m.lock();
+				for(uint32 i = 0; i < icQueues.onEnter.list.count(); ++i){
+					if(icQueues.onEnter.list.isValid(i)) icQueues.onEnter.list[i]->onEnter(icQueues.onEnter.pos);
+				}
+				icQueues.onEnter.m.unlock();
+				icQueues.onEnter.queued = false;
+			}
+
+			if(icQueues.onExit.queued){
+				icQueues.onExit.m.lock();
+				for(uint32 i = 0; i < icQueues.onExit.list.count(); ++i){
+					if(icQueues.onExit.list.isValid(i)) icQueues.onExit.list[i]->onExit(icQueues.onExit.pos);
+				}
+				icQueues.onExit.m.unlock();
+				icQueues.onExit.queued = false;
+			}
+
+			if(icQueues.onMove.queued){
+				icQueues.onMove.m.lock();
+				for(uint32 i = 0; i < icQueues.onMove.list.count(); ++i){
+					if(icQueues.onMove.list.isValid(i)) icQueues.onMove.list[i]->onMove(icQueues.onMove.pos); //FIXME
+				}
+				icQueues.onMove.m.unlock();
+				icQueues.onMove.queued = false;
+			}
+
+			if(icQueues.onAxis.queued){
+				icQueues.onAxis.m.lock();
+				for(uint32 i = 0; i < icQueues.onAxis.list.count(); ++i){
+					// icQueues.onAxis.list.isValid(i)elmicQueues.onAxis.list[i]->Axis(icQueues.onAxis.pos);
+					if(icQueues.onAxis.list.isValid(i)) icQueues.onAxis.list[i]->onAxis(1); //FIXME
+				}
+				icQueues.onAxis.m.unlock();
+				icQueues.onAxis.queued = false;
+			}
+
+
+
+
 			//Fix objects update requests
 			if(objUpdates.count() > 0) {
 				objUpdates_m.lock();

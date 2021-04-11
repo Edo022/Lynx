@@ -14,8 +14,9 @@ namespace lnx::input {
 	//Converts a glfw action to a lnx key state
 	static inline constexpr uint16 __lp_to_lnx_act(int32 glfwAction) { return (uint16)1 << (16 - (glfwAction)-1); }
 
-	void mouseAxisCallback(			GLFWwindow* window, float64 x, float64 y);
-	void mouseCursorPosCallback(	GLFWwindow* window, float64 x, float64 y);
-	void mouseButtonCallback(		GLFWwindow* window, int32 button,				int32 action, int32 mods);
-	void keyCallback(				GLFWwindow* window, int32 key, int32 scancode,	int32 action, int32 mods);
+	void onClick(GLFWwindow* window, int32 button,				int32 action, int32 mods);
+	void onEnter(GLFWwindow* window, int32 entered);
+	void onMove (GLFWwindow* window, float64 x, float64 y);
+	void onAxis (GLFWwindow* window, float64 x, float64 y);
+	void onKey  (GLFWwindow* window, int32 key, int32 scancode,	int32 action, int32 mods);
 }

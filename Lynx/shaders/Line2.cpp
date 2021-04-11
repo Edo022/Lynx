@@ -200,8 +200,8 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint32 fileLength;
-			Line2::layout.shaderModule = core::c::shaders::cshaderCreateModule(
-				core::dvc::compute.LD, core::c::shaders::cshaderReadFromFile(
+			Line2::layout.shaderModule = core::c::shaders::createModule(
+				core::dvc::compute.LD, core::c::shaders::loadSpv(
 					&fileLength,
 					(core::c::shaders::shaderPath + "Line2.spv").begin()
 				),

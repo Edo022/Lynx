@@ -36,11 +36,11 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 #ifdef LNX_DEBUG
-#	define _dbg(...) __VA_ARGS__   //Executes a line of code only if in debug   mode
-#	define _rls(...)               //Executes a line of code only if in release mode
+#	define _dbg(...) __VA_ARGS__    //Executes a line of code only if in debug   mode
+#	define _rls(...)                //Executes a line of code only if in release mode
 #else
-#	define _dbg(...)
-#	define _rls(...) __VA_ARGS__
+#	define _dbg(...)                //Executes a line of code only if in debug   mode
+#	define _rls(...) __VA_ARGS__    //Executes a line of code only if in release mode
 #endif
 
 
@@ -51,7 +51,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define rcast   reinterpret_cast
 #define noop    ((void)0)
 #define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline
-#define neverInline  __attribute__ ((__noinline__))
+#define neverInline  __attribute__((__noinline__))
 
 #define alignVar(n) __attribute__((aligned(n )))
 #define alignCache  __attribute__((aligned(64)))
@@ -67,6 +67,22 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #include <chrono>
 #include <thread>
 #define sleep(ms)					std::this_thread::sleep_for(std::chrono::milliseconds(ms))
+
+
+
+
+#ifdef __GNUC__
+	#pragma GCC diagnostic ignored "-Wpmf-conversions"
+    /**
+     * @brief Returns true if the object's class redefines a virtual member function of a base class.
+     * e.g. if(doesRedefine(derivedInstance, &Base::func)) //...do something
+     * @param object An instance of the derived class
+     * @param vVMFP The virtual member function pointer of the base class
+     */
+	#define doesRedefine(vObj, vVMFP) ((void*)((vObj).*(vVMFP)) != (void*)(vVMFP))
+#else
+	static neverInline __attribute__((optimize("O0"), error("\"doesRedefine\" macro is only available in g++"))) bool doesRedefine(auto vObj, auto vVMFP){ return true; }
+#endif
 
 
 

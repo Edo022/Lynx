@@ -3,17 +3,18 @@
 
 
 
-
-enum LnxMouseButtons {
-	LNX_MOUSE_BUTTON_1      = 0,		//Same as LNX_MOUSE_BUTTON_RIGHT
-	LNX_MOUSE_BUTTON_2      = 1,		//Same as LNX_MOUSE_BUTTON_LEFT
-	LNX_MOUSE_BUTTON_3      = 2,		//Same as LNX_MOUSE_BUTTON_MIDDLE
-	LNX_MOUSE_BUTTON_4      = 3,
-	LNX_MOUSE_BUTTON_5      = 4,
-	LNX_MOUSE_BUTTON_6      = 5,
-	LNX_MOUSE_BUTTON_7      = 6,
-	LNX_MOUSE_BUTTON_8      = 7,
-	LNX_MOUSE_BUTTON_RIGHT  = LNX_MOUSE_BUTTON_1,
-	LNX_MOUSE_BUTTON_LEFT   = LNX_MOUSE_BUTTON_2,
-	LNX_MOUSE_BUTTON_MIDDLE = LNX_MOUSE_BUTTON_3
-};
+namespace lnx{
+	enum MouseButton {
+		n1     = 0,		//Same as MouseButton::right
+		n2     = 1,		//Same as MouseButton::left
+		n3     = 2,		//Same as MouseButton::middle
+		n4     = 3,
+		n5     = 4,
+		n6     = 5,
+		n7     = 6,
+		n8     = 7,
+		right  = n1,	//Right click
+		left   = n2,	//Left click
+		middle = n3		//Middle click
+	};
+}
