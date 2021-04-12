@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_GRAPHICS
-#include <vulkan/vulkan.hpp>
+#include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
 

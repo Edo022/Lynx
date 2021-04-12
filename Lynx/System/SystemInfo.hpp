@@ -1,5 +1,5 @@
 #pragma once
-#include <vulkan/vulkan.hpp>
+#include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/macros.hpp"
 

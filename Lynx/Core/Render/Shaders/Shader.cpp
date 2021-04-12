@@ -76,7 +76,14 @@ namespace lnx::core::c::shaders{
 		;
 
 		vk::ShaderModule shaderModule;									//Create the shader module
-		auto r = vDevice.createShaderModule(&createInfo, nullptr, &shaderModule); //FIXME remove r or check it at runtime
+		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
+			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		free(pCode);													//#LLID CSF0000 Free memory
 		return shaderModule;											//Return the created shader module
 	}

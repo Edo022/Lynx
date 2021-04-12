@@ -1,4 +1,4 @@
-#include <vulkan/vulkan.hpp>
+#include "Lynx/Core/IncludeVulkan.hpp"
 #include <climits>
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
