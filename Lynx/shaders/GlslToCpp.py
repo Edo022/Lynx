@@ -114,7 +114,10 @@ def createFuncs(members:str, iext:bool) :
 
 
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 256)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+    #!                                                                              ^ NVIDIA has a huge alignment of 256 bytes.
+    #FIXME                                                                          ^ USE DIFFERENT ALIGNMENT FOR STORAGE BUFFERS
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
 
 
 
@@ -242,14 +245,27 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setPoolSizeCount (' + str(2 if uniformNum > 0 else 1) + ')'
                     '\n\t\t''.setPPoolSizes    (sizes)'
                 '\n\t;'
-                '\n\t''core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN'
+                '\n\t''switch(core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
+        	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;'
+        	        '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
+			        '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
+			        '\n\t\t''case vk::Result::eSuccess: break;'
+			        '\n\t\t''default: dbg::printError("Unknown result");'
+                '\n\t''}'
                 '\n\n\n'
                 '\n\t''auto allocateSetInfo = vk::DescriptorSetAllocateInfo()'
 				    '\n\t\t''.setDescriptorPool     (descriptorPool)'
 				    '\n\t\t''.setDescriptorSetCount (1)'
 				    '\n\t\t''.setPSetLayouts        (&' + shname + '::layout.descriptorSetLayout)'
                 '\n\t'';'
-                '\n\t''core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);'
+                '\n\t''switch(core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
+        	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;'
+        	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;'
+        	        '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
+			        '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
+			        '\n\t\t''case vk::Result::eSuccess: break;'
+			        '\n\t\t''default: dbg::printError("Unknown result");'
+                '\n\t''}'
                 '\n\n\n' +
                 '\n\t''vk::WriteDescriptorSet writeSets[' + str(len(elms)) + '];' +
                 '\n'.join((
@@ -279,7 +295,12 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
                 '\n\t''commandBuffers.resize(1);'
-                '\n\t''core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin());'
+                '\n\t''switch(core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){'
+                    '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
+                    '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
+                    '\n\t\t''case vk::Result::eSuccess: break;'
+                    '\n\t\t''default: dbg::printError("Unknown result");'
+                '\n\t''}'
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'
@@ -332,7 +353,12 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setPBindings    (bindingLayouts)'
                     '\n\t\t;'
                     '\n\t\t//Create the descriptor set layout'
-                    '\n\t\tcore::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout);'
+                    '\n\t\tswitch(core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout)){'
+        		        '\n\t\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
+			            '\n\t\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
+			            '\n\t\t\t''case vk::Result::eSuccess: break;'
+			            '\n\t\t\t''default: dbg::printError("Unknown result");'
+                    '\n\t\t''}'
                 '\n\t}'
                 '\n'
                 '\n'
@@ -353,7 +379,12 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setSetLayoutCount (1)'
                         '\n\t\t\t.setPSetLayouts    (&' + shname + '::layout.descriptorSetLayout)'
                     '\n\t\t;'
-                    '\n\t\tcore::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout);'
+                    '\n\t\tswitch(core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout)){'
+        		        '\n\t\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
+			            '\n\t\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
+			            '\n\t\t\t''case vk::Result::eSuccess: break;'
+			            '\n\t\t\t''default: dbg::printError("Unknown result");'
+                    '\n\t\t''}'
                 '\n\t}'
             '\n}',
         '\t'))
@@ -369,4 +400,6 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
     fc.write('\n}');                              # } //Namespace
 
 #TODO ADD STRUCTURE PARSING AND TRANSLATION
+#TODO STRUCTURES HAVE A MINIMUM ALIGNMENT OF 16
+
 #TODO ADD #define PARSING

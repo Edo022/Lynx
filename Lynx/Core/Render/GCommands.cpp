@@ -25,7 +25,12 @@ namespace lnx::core::render::cmd{
 
 	void createGraphicsCommandPool() { //FIXME probably useless
 		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.PD.indices.graphicsFamily);
-		dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool);
+		switch(dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
 	}
 
 
@@ -42,9 +47,22 @@ namespace lnx::core::render::cmd{
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
-		dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer);
+		switch(dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer)){
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-		commandBuffer.begin(&beginInfo);
+
+		switch(commandBuffer.begin(&beginInfo)){
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		return commandBuffer;
 	}
 
@@ -61,7 +79,14 @@ namespace lnx::core::render::cmd{
 			.setPCommandBuffers    (&vCommandBuffer)
 		;
 		core::render::graphicsQueueSubmit_m.lock();
-			dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr);
+			switch(dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr)){
+				case vk::Result::eErrorDeviceLost:        dbg::printError("Device lost");          break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
 			dvc::graphics.graphicsQueue.waitIdle();
 		core::render::graphicsQueueSubmit_m.unlock();
 		dvc::graphics.LD.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);
