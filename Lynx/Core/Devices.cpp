@@ -76,9 +76,24 @@ namespace lnx::core::dvc{
 		//Add validation layers if in debug mode
 		#ifdef LNX_DEBUG																	//Search for validation layers
 			uint32 layerCount = 0;
-			vk::enumerateInstanceLayerProperties(&layerCount, nullptr);						//Get layer count
+
+			//Get layer count
+			switch(vk::enumerateInstanceLayerProperties(&layerCount, nullptr)){
+				case vk::Result::eIncomplete:             dbg::printError("Incomplete properties"); break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+				default: break;
+			};
+
+			//Get layers
 			RtArray<vk::LayerProperties> availableLayers(layerCount);
-			vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.begin());		//Get layers
+			switch(vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.begin())){
+				case vk::Result::eIncomplete:             dbg::printError("Incomplete properties"); break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+				default: break;
+			};
+
 			for(uint32 i = 0; i < validationLayersNum; i++) {								//For every layer,
 				for(const auto& layerProperties : availableLayers) {							//Check if it's available
 					/**/ if(0 == strcmp(validationLayers[i], layerProperties.layerName)) break;		//If not, print an error
@@ -139,8 +154,24 @@ namespace lnx::core::dvc{
 		//Check swapchain support
 		else {
 			uint32 surfaceFormatsCount = 0, presentModesCount = 0;
-			vDevice.getSurfaceFormatsKHR     (dummySurface, &surfaceFormatsCount, nullptr);
-			vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr);
+			switch(vDevice.getSurfaceFormatsKHR(dummySurface, &surfaceFormatsCount, nullptr)){
+				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
+				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");       break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");         break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			};
+
+			switch(vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr)){
+				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
+				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");       break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");         break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			};
+
 			if(!surfaceFormatsCount || !presentModesCount) {
 				pErrorText = "Unsupported swapchain";
 				return false;
@@ -157,9 +188,26 @@ namespace lnx::core::dvc{
 	 */
 	bool checkExtensions(const vk::PhysicalDevice vDevice) {
 		uint32 extensionCount;
-		vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, nullptr);						//Get extension count
+
+		//Get extension count
+		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, nullptr)){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete extensions"); break;
+			case vk::Result::eErrorLayerNotPresent:   dbg::printError("Layer not present");     break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		};
+		
+		//Get extensions
 		RtArray<vk::ExtensionProperties> availableExtensions(extensionCount);
-		vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, availableExtensions.begin());	//Get extensions
+		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, availableExtensions.begin())){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete extensions"); break;
+			case vk::Result::eErrorLayerNotPresent:   dbg::printError("Layer not present");     break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+			default: break;
+		};
 
 		//TODO dont use std
 		std::set<const char*> requiredExtensions(requiredDeviceExtensions, requiredDeviceExtensions);
@@ -185,8 +233,17 @@ namespace lnx::core::dvc{
 		for(uint32 i = 0; i < queueFamilies.count(); ++i) {												//For every queue family
 			if(queueFamilies[i].queueFlags & vk::QueueFlagBits::eGraphics) indices.graphicsFamily = i;		//Set graphics family
 			if(queueFamilies[i].queueFlags & vk::QueueFlagBits::eCompute ) indices.computeFamilies.add(i);	//Add compute families
+
 			vk::Bool32 hasPresentSupport = false;
-			vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport);								//Set present family
+			switch(vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){								//Set present family
+				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			};
+
+
 			if(hasPresentSupport) indices.presentFamily = i;
 		}
 		return indices;
@@ -217,13 +274,29 @@ namespace lnx::core::dvc{
 		RtArray<String> discardedPhysicalDevices;
 		RtArray<_VkPhysicalDevice*> physicalDevices;
 
+		//Get physical device count
+		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){							
+			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
+			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		};
 
-		instance.enumeratePhysicalDevices(&deviceCount, nullptr);							//Get physical device count
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");	//Check if there is at least one deice that supports vulkan //FIXME add runtime support
 
 		//Get physical devices
-		RtArray<vk::PhysicalDevice> physDevices(deviceCount);								//Create physical device array
-		instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin());				//Get physical devices
+		RtArray<vk::PhysicalDevice> physDevices(deviceCount);							
+		switch(instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin())){				
+			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
+			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		};
+
 
 		for(uint32 i = 0; i < physDevices.count(); ++i) {									//For every physical device, create and save a _VkPhysicalDevice stucture
 			auto properties = physDevices[i].getProperties();

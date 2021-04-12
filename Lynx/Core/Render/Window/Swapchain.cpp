@@ -20,11 +20,40 @@ namespace lnx::core::wnd{
 		auto semaphoreInfo = vk::SemaphoreCreateInfo();
 		auto fenceInfo = vk::FenceCreateInfo().setFlags(vk::FenceCreateFlagBits::eSignaled);
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_aquired );
-			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_objects );
-			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_copy    );
-			dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_clear   );
-			dvc::graphics.LD.createFence    (&fenceInfo,     nullptr, &frames[i].f_rendered);
+			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_aquired)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
+			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_objects)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
+			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_copy)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
+			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_clear)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
+			switch(dvc::graphics.LD.createFence(&fenceInfo, nullptr, &frames[i].f_rendered)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
 		}
 	}
 
@@ -71,10 +100,27 @@ namespace lnx::core::wnd{
 
 		//Create swapchain
 		vk::Bool32 hasPresentSupport = false;
-		dvc::graphics.PD.device.getSurfaceSupportKHR(dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport); //! SUPPRESS ERROR
+		switch(dvc::graphics.PD.device.getSurfaceSupportKHR(dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport)){ //! SUPPRESS ERROR
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		//FIXME hasPresentSupport is unused
 		//FIXME ^ SKIP THIS IN RELEASE MODE (It's probably already checked by another function)
-		dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain);
+		switch(dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
+			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eErrorNativeWindowInUseKHR: dbg::printError("Native window in use");  break;
+			case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
+			case vk::Result::eErrorDeviceLost:           dbg::printError("Device lost");           break;
+			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 
 
 		//Create render pass
@@ -82,9 +128,23 @@ namespace lnx::core::wnd{
 
 		//Get images
 		uint32 imageCount;
-		dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr);
+		switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete swapchains"); break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		images.resize(imageCount); vk::Image _[imageCount];
-		dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _);
+		switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _)){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete swapchains"); break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 
 		//Initialize images, image views and framebuffers
 		for(uint32 i = 0; i < imageCount; ++i) {
@@ -111,7 +171,14 @@ namespace lnx::core::wnd{
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
 				vk::SurfaceCapabilitiesKHR capabilities;
-				dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities);
+				switch(dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
+					case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
+					case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+					case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+					case vk::Result::eSuccess: break;
+					default: dbg::printError("Unknown result");
+				}
+
 				createInfo.imageExtent = chooseSwapchainExtent(&capabilities);
 
 				//Recalculate queue family indices
@@ -123,20 +190,44 @@ namespace lnx::core::wnd{
 				createInfo.oldSwapchain  = oldSwapchain;
 
 				//Create swapchain
-				dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain);
+				switch(dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
+					case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+					case vk::Result::eErrorNativeWindowInUseKHR: dbg::printError("Native window in use");  break;
+					case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
+					case vk::Result::eErrorDeviceLost:           dbg::printError("Device lost");           break;
+					case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+					case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+					case vk::Result::eSuccess: break;
+					default: dbg::printError("Unknown result");
+				}
+
 				dvc::graphics.LD.destroySwapchainKHR(oldSwapchain, nullptr);
 			}
 
 			//Create images
 			uint32 imageCount;
-			dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr);
+				switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
+				case vk::Result::eIncomplete:             dbg::printError("Incomplete devices");   break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
 			//TODO ^ Vulkan validation layers complain about not calling this function with nullptr before getting the images,
 			//TODO   but the number of images remains the same, so there is not need to call it twice.
 			//TODO   If it's the case, remove those lines from release mode.
 
 			//Get images
 			vk::Image _[imageCount];
-			dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _);
+				switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _)){
+				case vk::Result::eIncomplete:             dbg::printError("Incomplete devices");   break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
 
 			//Re initialize images, image views and framebuffer
 			for(uint32 i = 0; i < imageCount; ++i) {
@@ -227,7 +318,13 @@ namespace lnx::core::wnd{
 			)
 		;
 		vk::ImageView imageView;
-		dvc::graphics.LD.createImageView(&viewInfo, nullptr, &imageView);
+		switch(dvc::graphics.LD.createImageView(&viewInfo, nullptr, &imageView)){
+			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		return imageView;
 	}
 
@@ -248,7 +345,13 @@ namespace lnx::core::wnd{
 			.setLayers          (1)
 		;
 		vk::Framebuffer framebuffer;
-		dvc::graphics.LD.createFramebuffer(&framebufferInfo, nullptr, &framebuffer);
+		switch(dvc::graphics.LD.createFramebuffer(&framebufferInfo, nullptr, &framebuffer)){
+			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		return framebuffer;
 	}
 
@@ -374,7 +477,12 @@ namespace lnx::core::wnd{
 		;
 
 		//Create render pass. Exit if an error occurs
-		dvc::graphics.LD.createRenderPass(&renderPassInfo, nullptr, &renderPass);
+		switch(dvc::graphics.LD.createRenderPass(&renderPassInfo, nullptr, &renderPass)){
+			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
+			case vk::Result::eErrorOutOfHostMemory:      dbg::printError("Out of host memory");    break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
 	}
 
 
@@ -382,7 +490,14 @@ namespace lnx::core::wnd{
 
 	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
 		vk::SurfaceCapabilitiesKHR capabilities;
-		core::dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities);
+		switch(core::dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		return capabilities;
 	}
 
@@ -390,22 +505,54 @@ namespace lnx::core::wnd{
 	RtArray<vk::SurfaceFormatKHR> Swapchain::getSurfaceFormats(){
 		uint32 count;
 		RtArray<vk::SurfaceFormatKHR>	formats;
-		core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, nullptr);
-		if(count != 0) {
-			formats.resize(count);
-			core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, formats.begin());
+
+		switch(core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, nullptr)){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
 		}
+
+
+		formats.resize(count);
+		switch(core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, formats.begin())){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
+
 		return formats;
 	}
 
 
 	RtArray<vk::PresentModeKHR> Swapchain::getPresentModes(){
 		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
-		dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, nullptr);
-		if(count != 0) {
-			presentModes.resize(count);
-			dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, presentModes.begin());
+
+		switch(dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, nullptr)){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
 		}
+
+		presentModes.resize(count);
+		switch(dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, presentModes.begin())){
+			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		return presentModes;
 	}
 }

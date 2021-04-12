@@ -52,6 +52,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define noop    ((void)0)
 #define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline
 #define neverInline  __attribute__((__noinline__))
+// #define deprecated   __attribute__((deprecated)) //! Conflicts with [[deprecated]]
 
 #define alignVar(n) __attribute__((aligned(n )))
 #define alignCache  __attribute__((aligned(64)))

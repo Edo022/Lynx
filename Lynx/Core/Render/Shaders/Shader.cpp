@@ -29,7 +29,7 @@ namespace lnx::core::c::shaders{
 	 * @param pFilePath A pointer to a char array containing the path to the compiled shader file
 	 * @return A pointer to the array where the code was saved
 	 */
-	uint32* loadSpv(uint32* pLength, const char* pFilePath) {
+	uint32* loadSpv(uint64* pLength, const char* pFilePath) {
 		//Open file
 			FILE* fp;
 			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
@@ -40,17 +40,17 @@ namespace lnx::core::c::shaders{
 			}
 
 		//Get file size
-			_wds(_fseeki64(fp, 0, SEEK_END); uint32 fs = (u32)_ftelli64(fp); _fseeki64(fp, 0, SEEK_SET);)
-			_lnx(    fseek(fp, 0, SEEK_END); uint32 fs =          ftell(fp);     fseek(fp, 0, SEEK_SET);)
+			_wds(_fseeki64(fp, 0, SEEK_END); uint64 fs =  _ftelli64(fp); _fseeki64(fp, 0, SEEK_SET);)
+			_lnx(    fseek(fp, 0, SEEK_END); uint64 fs = (u64)ftell(fp);     fseek(fp, 0, SEEK_SET);)
 
 		//Calculate padded size and allocate a memory block
-			uint32 pfs = ceil(fs / 4.0) * 4;
+			uint64 pfs = ceil(fs / 4.0) * 4;
 			char* str = (char*)malloc(sizeof(char) * pfs);	//! Freed in createShaderModule function
 
 		//Read the file and add padding
 			fread(str, fs, sizeof(char), fp);
 			fclose(fp);
-			for(uint32 i = fs; i < pfs; ++i) str[i] = 0;
+			for(uint64 i = fs; i < pfs; ++i) str[i] = 0;
 
 		//Set length and return the block
 			*pLength = pfs;
@@ -69,14 +69,21 @@ namespace lnx::core::c::shaders{
 	 * @return The created shader module
 	 */
 	//FIXME FIX
-	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint32* pLength) {
+	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint64 pLength) {
 		auto createInfo = vk::ShaderModuleCreateInfo() 					//Create shader module infos
-			.setCodeSize (*pLength)											//Set the count of the compiled shader code
+			.setCodeSize (pLength)											//Set the count of the compiled shader code
 			.setPCode    (pCode)											//Set the shader code
 		;
 
 		vk::ShaderModule shaderModule;									//Create the shader module
-		auto r = vDevice.createShaderModule(&createInfo, nullptr, &shaderModule); //FIXME remove r or check it at runtime
+		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
+			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
+
 		free(pCode);													//#LLID CSF0000 Free memory
 		return shaderModule;											//Return the created shader module
 	}

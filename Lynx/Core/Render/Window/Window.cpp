@@ -1,4 +1,4 @@
-#include <vulkan/vulkan.hpp>
+#include "Lynx/Core/IncludeVulkan.hpp"
 #include <climits>
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
@@ -38,7 +38,7 @@ namespace lnx{
 
 
 
-		window = glfwCreateWindow(width, height, "Lynx Engine", nullptr, nullptr);
+		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
 		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface));
 
 		{ //Set icon
@@ -65,7 +65,7 @@ namespace lnx{
 		glfwSetMouseButtonCallback    (window, input::onClick);
 		glfwSetScrollCallback         (window, input::onAxis);
 		glfwSetCursorEnterCallback    (window, input::onEnter);
-		glfwSetKeyCallback            (window, input::onKey);
+		// glfwSetKeyCallback            (window, input::onKey); //FIXME
 
 
 		swp.bindedWindow = this;
@@ -116,7 +116,12 @@ namespace lnx{
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
 				.setQueueFamilyIndex (core::dvc::compute.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			core::dvc::compute.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool);
+			switch(core::dvc::compute.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
 		}
 
 
@@ -126,14 +131,24 @@ namespace lnx{
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
 				.setQueueFamilyIndex (core::dvc::compute.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			; //FIXME
-			core::dvc::compute.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool);
+			switch(core::dvc::compute.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
 				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			core::dvc::compute.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin());
+			switch(core::dvc::compute.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
 
 
 
@@ -144,7 +159,13 @@ namespace lnx{
 				auto beginInfo = vk::CommandBufferBeginInfo() 							//Simultaneous use allows the command buffer to be executed multiple times
 					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
 				;
-				copyCommandBuffers[imgIndex].begin(&beginInfo);							//Start recording commands
+				//Start recording commands
+				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){
+					case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+					case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+					case vk::Result::eSuccess: break;
+					default: dbg::printError("Unknown result");
+				}
 					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
 					readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
 					vk::PipelineStageFlags 													//Create stage flags

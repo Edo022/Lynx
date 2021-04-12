@@ -69,7 +69,15 @@ namespace lnx{
 				continue;
 			}
 			addObject_m.unlock();
-			core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX);
+			switch(core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
+				case vk::Result::eTimeout:                dbg::printError("Fence timed out"); break;
+				case vk::Result::eErrorDeviceLost:        dbg::printError("Device lost"); break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
 			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
 			//BUG [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* Waiting for fences timed out!
 
@@ -136,9 +144,21 @@ namespace lnx{
 				,
 			};
 			addObject_m.unlock(); //FIXME
-			core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered);
+
+			switch(core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				// case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break; //!Not an error
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
+
 			core::render::graphicsQueueSubmit_m.lock();
-				core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered);
+				switch(core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){
+					case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+					case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+					case vk::Result::eSuccess: break;
+					default: dbg::printError("Unknown result");
+				}
 			core::render::graphicsQueueSubmit_m.unlock();
 
 

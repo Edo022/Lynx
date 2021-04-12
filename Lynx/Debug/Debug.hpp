@@ -7,6 +7,9 @@
 #include <cstring>
 #include <exception>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#pragma GCC diagnostic ignored "-Wformat-security"
 
 
 
@@ -121,3 +124,7 @@ namespace lnx::dbg{
 		static alwaysInline void checkRawPtr(auto*, const char*, const auto&...) {}
 	#endif
 }
+
+
+
+#pragma GCC diagnostic pop

@@ -21,8 +21,8 @@ namespace lnx{
 	public:
 	// private:
 		GLFWwindow*	window;							//GLFW window object
-		int32		width;							//Width of the window
-		int32 		height;							//Heght of the window
+		uint32		width;							//Width of the window
+		uint32 		height;							//Heght of the window
 		std::atomic<bool> running     = false;
 		std::atomic<bool> initialized = false;
 		Thread t;									//Main render thread of the window
@@ -138,7 +138,7 @@ namespace lnx{
 
 
 	public:
-		Window(uint32 vWidth = 800, uint32 vHeight = 600) : width{ (int32)vWidth }, height{ (int32)vHeight } {
+		Window(uint32 vWidth = 800, uint32 vHeight = 600) : width{ vWidth }, height{ vHeight } {
 			t(*this, &Window::run);
 			while(!initialized){ thr::self::yield(); }
 		}

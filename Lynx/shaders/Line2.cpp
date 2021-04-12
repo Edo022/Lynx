@@ -25,7 +25,13 @@ namespace lnx::shd{
 			.setPoolSizeCount (2)
 			.setPPoolSizes    (sizes)
 		;
-		core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool); //FIXME CHECK RETURN
+		switch(core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
+			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
 
 
 
@@ -34,7 +40,14 @@ namespace lnx::shd{
 			.setDescriptorSetCount (1)
 			.setPSetLayouts        (&Line2::layout.descriptorSetLayout)
 		;
-		core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet);
+		switch(core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
+			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
+			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
 
 
 
@@ -107,7 +120,12 @@ namespace lnx::shd{
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin());
+		switch(core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+			case vk::Result::eSuccess: break;
+			default: dbg::printError("Unknown result");
+		}
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
@@ -192,21 +210,21 @@ namespace lnx::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2::layout.descriptorSetLayout);
+			switch(core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2::layout.descriptorSetLayout)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
 		}
 
 
 
 
 		{ //Create pipeline layout
-			uint32 fileLength;
-			Line2::layout.shaderModule = core::c::shaders::createModule(
-				core::dvc::compute.LD, core::c::shaders::loadSpv(
-					&fileLength,
-					(core::c::shaders::shaderPath + "Line2.spv").begin()
-				),
-				&fileLength
-			);
+			uint64 fileLength = 0;
+			uint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "Line2.spv").begin());
+			Line2::layout.shaderModule = core::c::shaders::createModule(core::dvc::compute.LD, code, fileLength);
 
 			Line2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
@@ -218,7 +236,12 @@ namespace lnx::shd{
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&Line2::layout.descriptorSetLayout)
 			;
-			core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2::layout.pipelineLayout);
+			switch(core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2::layout.pipelineLayout)){
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
+				case vk::Result::eSuccess: break;
+				default: dbg::printError("Unknown result");
+			}
 		}
 	}
 }

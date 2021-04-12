@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_SHADER_T
-#include <vulkan/vulkan.hpp>
+#include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
@@ -53,7 +53,7 @@ namespace lnx::shd{
 			void operator==(const Layout&&) = delete;
 
 			vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
-			vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
+			vk::ShaderModule                  shaderModule;			//Shader module created from the compiled shader file
 			vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
 
 			vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
