@@ -12,5 +12,5 @@ namespace lnx::core::c::shaders{
 
 	uint32*          loadSpv(uint64* pLength, const char* pFilePath);
 	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint64 pLength);
-	void             createPipeline(const ShaderLayout vLayout, shd::Shader_b::Layout& layout_, Window& pWindow);
+	void             createPipeline(const ShaderLayout vLayoutIndex, shd::Shader_b::Layout& vLayout, Window& pWindow);
 }

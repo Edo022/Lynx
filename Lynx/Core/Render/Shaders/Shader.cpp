@@ -84,7 +84,7 @@ namespace lnx::core::c::shaders{
 			default: dbg::printError("Unknown result");
 		}
 
-		free(pCode);													//#LLID CSF0000 Free memory
+		// free(pCode);													//#LLID CSF0000 Free memory //BUG
 		return shaderModule;											//Return the created shader module
 	}
 
@@ -110,16 +110,16 @@ namespace lnx::core::c::shaders{
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
 	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	void createPipeline(const ShaderLayout vLayout, shd::Shader_b::Layout& layout_, Window& pWindow) {
-		pWindow.pipelines[vLayout] = dvc::compute.LD.createComputePipeline(
+	void createPipeline(const ShaderLayout vLayoutIndex, shd::Shader_b::Layout& vLayout, Window& pWindow) {
+		pWindow.pipelines[vLayoutIndex] = dvc::compute.LD.createComputePipeline(
 			nullptr,
 			vk::ComputePipelineCreateInfo()
-				.setStage  (layout_.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
-				.setLayout (layout_.pipelineLayout)				//Use the previously created pipeline layout
+				.setStage  (vLayout.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
+				.setLayout (vLayout.pipelineLayout)				//Use the previously created pipeline layout
 			,
 			nullptr
 		).value;
-		core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
+		core::dvc::compute.LD.destroyShaderModule(vLayout.shaderModule, nullptr);
 	}
 
 
