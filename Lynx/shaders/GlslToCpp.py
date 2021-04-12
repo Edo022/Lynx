@@ -113,8 +113,8 @@ def createFuncs(members:str, iext:bool) :
             m = m[1:]                                                   #
 
 
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
 
 
 
@@ -339,14 +339,9 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n'
                 '\n\t{ //Create pipeline layout'
-                    '\n\t\tuint32 fileLength;'
-                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule('
-                        '\n\t\t\tcore::dvc::compute.LD, core::c::shaders::loadSpv('
-                            '\n\t\t\t\t&fileLength,'
-                            '\n\t\t\t\t(core::c::shaders::shaderPath + "' + shname + '.spv").begin()' #TODO EVALUATE SHADER PATH AT RUNTIME
-                        '\n\t\t\t),'
-                        '\n\t\t\t&fileLength'
-                    '\n\t\t);'
+                    '\n\t\tuint64 fileLength = 0;'
+                    '\n\t\tuint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
+                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule(core::dvc::compute.LD, code, fileLength);'
                     '\n'
                     '\n\t\t' + shname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
                         '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'

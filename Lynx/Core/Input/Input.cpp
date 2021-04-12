@@ -54,7 +54,7 @@ namespace lnx::input{
 	//This function manages the input from the keyboard and calls the functions binded to the input state key bindings
 	//TODO
 	//FIXME BROKEN FUNCTION
-	void onKey(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
+	__attribute__((deprecated)) void onKey(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods) {
 		//FULL SCREEN
 		int32 fsstate = 0;
 		int32 wmx, wmy, wmw, wmh;
@@ -86,7 +86,8 @@ namespace lnx::input{
 		uint16 yMin = 0, yMax = lnx::input::inStates->sequences.count() - 1, x = 0;
 
 		if(action != GLFW_REPEAT) {												//If the action is not repeat
-			uint16 keyCode = (key | __lp_to_lnx_act(action));						//Calculate the key code
+			// uint16 keyCode = (key | __lp_to_lnx_act(action));						//Calculate the key code //FIXME
+			uint16 keyCode = (key | 0);						//Calculate the key code //FIXME
 			int16 i = yMin;															//Set the loop index as the minimum y
 			while(keyCode != lnx::input::inStates->sequences[i].sequence[x]) {		//Find the new minimum y
 				++i;																	//Increase the counter until the input key is equal to the key of the input state sequence

@@ -199,14 +199,9 @@ namespace lnx::shd{
 
 
 		{ //Create pipeline layout
-			uint32 fileLength;
-			FloatToIntBuffer::layout.shaderModule = core::c::shaders::createModule(
-				core::dvc::compute.LD, core::c::shaders::loadSpv(
-					&fileLength,
-					(core::c::shaders::shaderPath + "FloatToIntBuffer.spv").begin()
-				),
-				&fileLength
-			);
+			uint64 fileLength = 0;
+			uint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "FloatToIntBuffer.spv").begin());
+			FloatToIntBuffer::layout.shaderModule = core::c::shaders::createModule(core::dvc::compute.LD, code, fileLength);
 
 			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)

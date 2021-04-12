@@ -53,7 +53,7 @@ namespace lnx::shd{
 			void operator==(const Layout&&) = delete;
 
 			vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
-			vk::ShaderModule                  shaderModule;			//Shader module created from the sahader compile file
+			vk::ShaderModule                  shaderModule;			//Shader module created from the compiled shader file
 			vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
 
 			vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline

@@ -65,7 +65,7 @@ namespace lnx{
 		glfwSetMouseButtonCallback    (window, input::onClick);
 		glfwSetScrollCallback         (window, input::onAxis);
 		glfwSetCursorEnterCallback    (window, input::onEnter);
-		glfwSetKeyCallback            (window, input::onKey);
+		// glfwSetKeyCallback            (window, input::onKey); //FIXME
 
 
 		swp.bindedWindow = this;
