@@ -16,7 +16,7 @@ Mac is not supported yet, but will be in future versions.
 
 ## Developement
 The engine is meant to be used on Linux systems only.  
-We will not add any support for developement on Windows or Mac.  
+We do not provide any support for developement on Windows or Mac.  
 
 | Software   | Version   | Path                                     | Required |
 |------------|-----------|------------------------------------------|----------|
