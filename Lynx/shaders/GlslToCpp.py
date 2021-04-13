@@ -245,7 +245,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setPoolSizeCount (' + str(2 if uniformNum > 0 else 1) + ')'
                     '\n\t\t''.setPPoolSizes    (sizes)'
                 '\n\t;'
-                '\n\t''switch(core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
+                '\n\t''switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
         	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;'
         	        '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
 			        '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
@@ -258,7 +258,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 				    '\n\t\t''.setDescriptorSetCount (1)'
 				    '\n\t\t''.setPSetLayouts        (&' + shname + '::layout.descriptorSetLayout)'
                 '\n\t'';'
-                '\n\t''switch(core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
+                '\n\t''switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
         	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;'
         	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;'
         	        '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
@@ -282,7 +282,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t''.setPBufferInfo     (&bufferInfo' + str(i) + ')'
                     '\n\t;'
                 ) for i, b in enumerate(elms)) +
-                '\n\tcore::dvc::compute.LD.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
+                '\n\tcore::dvc::graphics.LD.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
             '\n}',
         '\t'))
 
@@ -295,7 +295,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
                 '\n\t''commandBuffers.resize(1);'
-                '\n\t''switch(core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){'
+                '\n\t''switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){'
                     '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
                     '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
                     '\n\t\t''case vk::Result::eSuccess: break;'
@@ -353,7 +353,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setPBindings    (bindingLayouts)'
                     '\n\t\t;'
                     '\n\t\t//Create the descriptor set layout'
-                    '\n\t\tswitch(core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout)){'
+                    '\n\t\tswitch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout)){'
         		        '\n\t\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
 			            '\n\t\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
 			            '\n\t\t\t''case vk::Result::eSuccess: break;'
@@ -367,7 +367,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t{ //Create pipeline layout'
                     '\n\t\tuint64 fileLength = 0;'
                     '\n\t\tuint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
-                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule(core::dvc::compute.LD, code, fileLength);'
+                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule(core::dvc::graphics.LD, code, fileLength);'
                     '\n'
                     '\n\t\t' + shname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
                         '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'
@@ -379,7 +379,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setSetLayoutCount (1)'
                         '\n\t\t\t.setPSetLayouts    (&' + shname + '::layout.descriptorSetLayout)'
                     '\n\t\t;'
-                    '\n\t\tswitch(core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout)){'
+                    '\n\t\tswitch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout)){'
         		        '\n\t\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
 			            '\n\t\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
 			            '\n\t\t\t''case vk::Result::eSuccess: break;'

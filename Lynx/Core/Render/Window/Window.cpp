@@ -114,9 +114,9 @@ namespace lnx{
 		{ //Render command pool
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
-				.setQueueFamilyIndex (core::dvc::compute.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::compute.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){
+			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 				case vk::Result::eSuccess: break;
@@ -129,9 +129,9 @@ namespace lnx{
 
 		{ //Copy
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
-				.setQueueFamilyIndex (core::dvc::compute.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::compute.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){
+			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 				case vk::Result::eSuccess: break;
@@ -143,7 +143,7 @@ namespace lnx{
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::compute.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){
+			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 				case vk::Result::eSuccess: break;

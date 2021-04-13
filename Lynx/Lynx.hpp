@@ -25,7 +25,7 @@ namespace lnx{
         core::running = false;
 
         core::inputThr.join();
-        core::dvc::compute.LD.waitIdle();
+        core::dvc::graphics.LD.waitIdle();
 
         core::render::cleanup();
         core::dvc::instance.destroy(nullptr);

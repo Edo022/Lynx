@@ -300,8 +300,8 @@ namespace lnx::core::render{
 		dvc::graphics.LD.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
 
 		//If the compute and the graphics devices are not the same, destroy the graphics device
-		if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) dvc::graphics.LD.destroy(nullptr);
-		dvc::compute.LD.destroy(nullptr);													//Destroy the compute device
+		// if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) dvc::graphics.LD.destroy(nullptr);
+		dvc::graphics.LD.destroy(nullptr);													//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);						//Destroy all the secondary devices
 
 		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));	//Destroy the debug messenger if present

@@ -17,7 +17,7 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& a, const _VkPhys
 
 namespace lnx::core::dvc{
 	alignCache graphicsDevice         graphics;
-	alignCache computeDevice          compute;
+	// alignCache computeDevice          compute;
 	alignCache RtArray<computeDevice> secondary;
 
 
@@ -200,7 +200,7 @@ namespace lnx::core::dvc{
 			case vk::Result::eSuccess: break;
 			default: dbg::printError("Unknown result");
 		};
-		
+
 		//Get extensions
 		RtArray<vk::ExtensionProperties> availableExtensions(extensionCount);
 		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, availableExtensions.begin())){
@@ -277,7 +277,7 @@ namespace lnx::core::dvc{
 		RtArray<_VkPhysicalDevice*> physicalDevices;
 
 		//Get physical device count
-		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){							
+		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
 			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
@@ -289,8 +289,8 @@ namespace lnx::core::dvc{
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");	//Check if there is at least one deice that supports vulkan //FIXME add runtime support
 
 		//Get physical devices
-		RtArray<vk::PhysicalDevice> physDevices(deviceCount);							
-		switch(instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin())){				
+		RtArray<vk::PhysicalDevice> physDevices(deviceCount);
+		switch(instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin())){
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
 			case vk::Result::eErrorOutOfDeviceMemory:    dbg::printError("Out of devide memory");  break;
@@ -325,15 +325,17 @@ namespace lnx::core::dvc{
 		//TODO different score for graphics and compute
 		#define physDev (*physicalDevices[i])
 		if(physicalDevices.count() > 0) {									//If there are suitable devices
-			graphics.PD = compute.PD = *physicalDevices[0];						//set graphics device at default value
+			// graphics.PD = compute.PD = *physicalDevices[0];						//set graphics device at default value
+			graphics.PD = *physicalDevices[0];						//set graphics device at default value
 			for(uint32 i = 0; i < physicalDevices.count(); ++i) {				//For every physical device
 				physDev.indices = getQueueFamilies(physDev.device);					//Get its queue families
 				physDev.score = rate(&physDev);										//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
 				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != (uint32)-1)        graphics.PD = physDev;
-				if(physDev.score > compute .PD.score || physDev.indices.computeFamilies.count() > 0) compute.PD = physDev;
+				// if(physDev.score > compute .PD.score || physDev.indices.computeFamilies.count() > 0) compute.PD = physDev;
 			}
 			for(uint32 i = 0; i < physicalDevices.count(); ++i) {				//For every physical device that isn't the main graphics or compute device
-				if(!sameDevice(physDev, graphics.PD) && !sameDevice(physDev, compute.PD)) {
+				// if(!sameDevice(physDev, graphics.PD) && !sameDevice(physDev, compute.PD)) {
+				if(!sameDevice(physDev, graphics.PD)) {
 					secondary.resize(secondary.count() + 1);
 					secondary[secondary.count() - 1].PD = physDev;					//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
 				}
@@ -342,10 +344,11 @@ namespace lnx::core::dvc{
 			//Print the devices names, IDs, scores and tasks
 			Success printf("    Found %d suitable device%s:", physicalDevices.count(), (physicalDevices.count() == 1) ? "" : "s");
 			for(uint32 i = 0; i < physicalDevices.count(); ++i) {
-				if(sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
+				// if(sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
+				if(sameDevice(physDev, graphics.PD)) Main else Normal;
 				printf("        %s  |  ID: %d  |  %d", physDev.properties.deviceName.cbegin(), physDev.properties.deviceID, physDev.score);
 				if(sameDevice(physDev, graphics.PD)) printf("  |  Main graphics");
-				if(sameDevice(physDev, compute.PD))  printf("  |  Main compute");
+				// if(sameDevice(physDev, compute.PD))  printf("  |  Main compute");
 			}
 		}
 		//FIXME add runtime support
@@ -355,9 +358,13 @@ namespace lnx::core::dvc{
 
 
 
+		//FIXME
 		//Create a logical device for graphics, one for computation and one for every secondary device
-		createLogical(&graphics.PD, &graphics.LD, nullptr);
-		createLogical(&compute.PD,  &compute.LD, &compute.computeQueues);
+		// createLogical(&graphics.PD, &graphics.LD, nullptr);
+		// createLogical(&compute.PD,  &compute.LD, &compute.computeQueues);
+		createLogical(&graphics.PD, &graphics.LD, &graphics.computeQueues);
+		//FIXME
+
 		for(uint32 i = 0; i < secondary.count(); ++i) {
 			createLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
 		}
@@ -365,7 +372,7 @@ namespace lnx::core::dvc{
 		//Output created logical devices and queues
 		Success printf("    Created %d logical devices:", 2 + secondary.count());
 		Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
-		Main	printf("        Main compute   |  compute queues:  %d", compute.computeQueues.count());
+		// Main	printf("        Main compute   |  compute queues:  %d", compute.computeQueues.count());
 		Normal	printf("        %d secondary devices",/*  |  secondary compute queues: %lld", secondary.count, */secondary.count());
 	}
 
@@ -401,7 +408,8 @@ namespace lnx::core::dvc{
 			queueCreateInfos.add(vk::DeviceQueueCreateInfo()						//Create a queue create info struct
 				.setQueueFamilyIndex ((uint32)queueFamilyIndex)						//Set index
 				.setQueueCount       (1)											//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-				.setPQueuePriorities (new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f))
+				// .setPQueuePriorities (new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f))
+				.setPQueuePriorities (new float((sameDevice(*pPD, graphics.PD)) ? 1.0f : 0.5f))
 			);
 		}
 
@@ -428,20 +436,29 @@ namespace lnx::core::dvc{
 		//Create the logical device and save its queues, exit if an error occurs
 		vk::Device _logicalDevice;
 		if(pPD->device.createDevice(&deviceCreateInfo, nullptr, &_logicalDevice) == vk::Result::eSuccess) {
-			if(sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) {
+			// if(sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) {
+			if(sameDevice(*pPD, graphics.PD)) {
 				if(sameDevice(*pPD, graphics.PD)) {													//If it's the main graphics device
 					graphics.LD = _logicalDevice;														//Set it as the main graphics logical device
 					_logicalDevice.getQueue(pPD->indices.graphicsFamily, 0, &graphics.graphicsQueue);	//Set graphics queue
 					_logicalDevice.getQueue(pPD->indices.presentFamily , 0, &graphics.presentQueue );	//Set present queue
-				}
-				if(pComputeQueues != nullptr) {														//If it's the main compute device and the function was called to create his logical device
-					compute.LD = _logicalDevice;														//Set it as the main compute logical device
+
+					//FIXME //FIXME
 					for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {					//Add every compute queue to the main compute queue list
 						vk::Queue computeQueue;
 						_logicalDevice.getQueue(pPD->indices.computeFamilies[i], 0, &computeQueue);
-						compute.computeQueues.add(computeQueue);
+						graphics.computeQueues.add(computeQueue);
 					}
+					//FIXME //FIXME
 				}
+				// if(pComputeQueues != nullptr) {														//If it's the main compute device and the function was called to create his logical device
+				// 	compute.LD = _logicalDevice;														//Set it as the main compute logical device
+				// 	for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {					//Add every compute queue to the main compute queue list
+				// 		vk::Queue computeQueue;
+				// 		_logicalDevice.getQueue(pPD->indices.computeFamilies[i], 0, &computeQueue);
+				// 		compute.computeQueues.add(computeQueue);
+				// 	}
+				// }
 			}
 			else {																				//If it's none of them
 				*pLD = _logicalDevice;																//Add it to the list of secondary logical devices

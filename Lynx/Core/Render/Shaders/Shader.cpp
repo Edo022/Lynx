@@ -111,7 +111,7 @@ namespace lnx::core::c::shaders{
 	 * @param pIsReadOnly //FIXME REMOVE
 	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
 	void createPipeline(const ShaderLayout vLayout, shd::Shader_b::Layout& layout_, Window& pWindow) {
-		pWindow.pipelines[vLayout] = dvc::compute.LD.createComputePipeline(
+		pWindow.pipelines[vLayout] = dvc::graphics.LD.createComputePipeline(
 			nullptr,
 			vk::ComputePipelineCreateInfo()
 				.setStage  (layout_.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
@@ -119,7 +119,7 @@ namespace lnx::core::c::shaders{
 			,
 			nullptr
 		).value;
-		core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
+		core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
 	}
 
 

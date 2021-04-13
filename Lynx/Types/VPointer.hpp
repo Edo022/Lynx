@@ -275,7 +275,7 @@ namespace lnx::vram{
 						&type_.memory[buffIndex].buffer, _usage(),
 						__pvt::buffSize,
 						&type_.memory[buffIndex].memory, _prop(),
-						core::dvc::compute.LD
+						core::dvc::graphics.LD
 					);
 				}
 				Super::cell->csc.buffer = type_.memory[buffIndex].buffer;
@@ -284,12 +284,12 @@ namespace lnx::vram{
 			else {															//For custom size cells
 				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
-				dbg::checkParam(btype == bufferType::Uniform && core::dvc::compute.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
+				dbg::checkParam(btype == bufferType::Uniform && core::dvc::graphics.PD.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
 				lnx::core::buffers::createBuffer(
 					&Super::cell->csc.buffer, _usage(),
 					size,
 					&Super::cell->csc.memory, _prop(),
-					core::dvc::compute.LD
+					core::dvc::graphics.LD
 				);
 				_dbg(Super::cell->localIndex = 0;)
 			}
@@ -408,8 +408,8 @@ namespace lnx::vram{
 				//FIXME FREE BUFFERS
             }
 			else {																			//For custom size cells
-				core::dvc::compute.LD.freeMemory   (Super::cell->csc.memory, nullptr);			//Free the memory
-				core::dvc::compute.LD.destroyBuffer(Super::cell->csc.buffer, nullptr);			//Destroy the vulkan buffer object
+				core::dvc::graphics.LD.freeMemory   (Super::cell->csc.memory, nullptr);			//Free the memory
+				core::dvc::graphics.LD.destroyBuffer(Super::cell->csc.buffer, nullptr);			//Destroy the vulkan buffer object
 			}
 
             cells_m.lock();
@@ -434,13 +434,13 @@ namespace lnx::vram{
 			auto size   = Super::cell->cellSize;
 			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
 
-			core::dvc::compute.LD.mapMemory(memory, offset, size, 0, (void**)&(Super::mapped));
+			core::dvc::graphics.LD.mapMemory(memory, offset, size, 0, (void**)&(Super::mapped));
 			const auto range = vk::MappedMemoryRange()
 				.setMemory (memory)
 				.setOffset (offset)
 				.setSize   (size)
 			;
-			core::dvc::compute.LD.invalidateMappedMemoryRanges(1, &range); //TODO this seems useless
+			core::dvc::graphics.LD.invalidateMappedMemoryRanges(1, &range); //TODO this seems useless
 		}
 
 
@@ -460,8 +460,8 @@ namespace lnx::vram{
 				.setOffset (offset)
 				.setSize   (size)
 			;
-			core::dvc::compute.LD.flushMappedMemoryRanges(1, &range); //TODO this seems useless
-			core::dvc::compute.LD.unmapMemory(memory);
+			core::dvc::graphics.LD.flushMappedMemoryRanges(1, &range); //TODO this seems useless
+			core::dvc::graphics.LD.unmapMemory(memory);
 			_dbg(Super::mapped = nullptr);
 		}
 
