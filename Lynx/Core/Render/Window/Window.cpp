@@ -32,9 +32,11 @@ namespace lnx{
 	void Window::init() {
 		//Create default shaders
 		// CShadersLayouts.resize(ShaderLayout::LNX_DEF_SHADER_NUM);
-		core::c::shaders::createPipeline(LNX_DEF_SHADER_2D_LINE,   shd::Line2::layout, *this);
-		core::c::shaders::createPipeline(LNX_DEF_SHADER_2D_BORDER, shd::Border2::layout, *this);
-		core::c::shaders::createPipeline(LNX_DEF_SHADER_CLEAR,     shd::FloatToIntBuffer::layout, *this);
+		pipelines.resize(core::shaders::pipelineNum);
+
+		core::shaders::createPipeline(shd::Line2::pipelineIndex,            shd::Line2::layout,            *this);
+		core::shaders::createPipeline(shd::Border2::pipelineIndex,          shd::Border2::layout,          *this);
+		core::shaders::createPipeline(shd::FloatToIntBuffer::pipelineIndex, shd::FloatToIntBuffer::layout, *this);
 
 
 
@@ -96,7 +98,7 @@ namespace lnx{
 
 		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
 		sh_clear.createDescriptorSets();
-		sh_clear.createCommandBuffers(LNX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
+		sh_clear.createCommandBuffers(shd::FloatToIntBuffer::pipelineIndex, (width * height) / (32 * 32) + 1, 1, 1, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;

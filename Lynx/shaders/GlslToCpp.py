@@ -179,6 +179,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\nnamespace lnx::shd{'                                             #Write namespace and struct declaration
         '\n\tstruct ' + fname + ' : public Shader_b {'
         '\n\t\tstatic Shader_b::Layout layout;'
+        '\n\t\tstatic uint32 pipelineIndex;'
     )
     fc.write(                                           #Write to file
         '\n//####################################################################################'
@@ -226,8 +227,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
             '\n}'
             '\n\n\nvoid createDescriptorSets();'
-            '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
-            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            '\nvoid createCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            '\nvoid updateCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
             '\nvoid destroy();',
         '\t\t'))
 
@@ -288,7 +289,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\nvoid ' + fname + '::createCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
                 '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
                     '\n\t\t''.setCommandPool        (pWindow.commandPool)'
                     '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
@@ -304,7 +305,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vPipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
                 '\n\t''commandBuffers[0].end();'
@@ -313,10 +314,10 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){'
+            '\nvoid ' + fname + '::updateCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vPipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
                 '\n\t''commandBuffers[0].end();'
@@ -335,6 +336,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nShader_b::Layout ' + shname + '::layout;'
+            '\nuint32 ' + shname + '::pipelineIndex = core::shaders::pipelineNum++;'
             '\nLnxAutoInit(LNX_H_' + shname.upper() + '){'
                 '\n\t{ //Create descriptor set layout'
                     '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
@@ -366,8 +368,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t{ //Create pipeline layout'
                     '\n\t\tuint64 fileLength = 0;'
-                    '\n\t\tuint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
-                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule(core::dvc::graphics.LD, code, fileLength);'
+                    '\n\t\tuint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
+                    '\n\t\t' + shname + '::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.LD, code, fileLength);'
                     '\n'
                     '\n\t\t' + shname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
                         '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'

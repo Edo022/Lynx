@@ -10,14 +10,15 @@
 
 
 
-namespace lnx::core::c::shaders{
+namespace lnx::core::shaders{
 	alignCache String shaderPath;
+	alignCache uint32 pipelineNum = 0;
 
 
 
 
 	LnxAutoInit(LNX_H_SHADER){
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
+		shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
@@ -110,8 +111,8 @@ namespace lnx::core::c::shaders{
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
 	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	void createPipeline(const ShaderLayout vLayoutIndex, shd::Shader_b::Layout& vLayout, Window& pWindow) {
-		pWindow.pipelines[vLayoutIndex] = dvc::graphics.LD.createComputePipeline(
+	void createPipeline(const uint32 vPipelineIndex, shd::Shader_b::Layout& vLayout, Window& pWindow) {
+		pWindow.pipelines[vPipelineIndex] = dvc::graphics.LD.createComputePipeline(
 			nullptr,
 			vk::ComputePipelineCreateInfo()
 				.setStage  (vLayout.shaderStageCreateInfo)		//Use the previously created shader stage creation infos

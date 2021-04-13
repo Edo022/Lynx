@@ -113,7 +113,7 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void FloatToIntBuffer::createCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pWindow.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -129,7 +129,7 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vPipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
@@ -142,10 +142,10 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
+	void FloatToIntBuffer::updateCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vPipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
 		commandBuffers[0].end();
@@ -170,6 +170,7 @@ namespace lnx::shd{
 
 
 	Shader_b::Layout FloatToIntBuffer::layout;
+	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::pipelineNum++;
 	LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
@@ -223,8 +224,8 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "FloatToIntBuffer.spv").begin());
-			FloatToIntBuffer::layout.shaderModule = core::c::shaders::createModule(core::dvc::graphics.LD, code, fileLength);
+			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "FloatToIntBuffer.spv").begin());
+			FloatToIntBuffer::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.LD, code, fileLength);
 
 			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)

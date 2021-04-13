@@ -11,14 +11,14 @@
 
 //Default render shaders layouts
 //The identifier value corresponds to the index of the shader layout in the engine's default shader layouts array
-enum ShaderLayout : uint32 {
-	LNX_DEF_SHADER_2D_LINE,
-	LNX_DEF_SHADER_2D_BORDER,
-	LNX_DEF_SHADER_2D_RENDER_SPACE,		//FIXME
-	LNX_DEF_SHADER_3D_RENDER_SPACE,		//FIXME
-	LNX_DEF_SHADER_CLEAR,				//Default shader used to copy and clear the output buffer
-	LNX_DEF_SHADER_NUM					//The number of shader layouts
-};
+// enum ShaderLayout : uint32 {
+// 	LNX_DEF_SHADER_2D_LINE,
+// 	LNX_DEF_SHADER_2D_BORDER,
+// 	LNX_DEF_SHADER_2D_RENDER_SPACE,		//FIXME
+// 	LNX_DEF_SHADER_3D_RENDER_SPACE,		//FIXME
+// 	LNX_DEF_SHADER_CLEAR,				//Default shader used to copy and clear the output buffer
+// 	LNX_DEF_SHADER_NUM					//The number of shader layouts
+// };
 
 
 
@@ -27,8 +27,6 @@ namespace lnx{
 	class Window;
 }
 namespace lnx::shd{
-
-
 
 
 	template<bufferType buft> struct ShaderElm_b {

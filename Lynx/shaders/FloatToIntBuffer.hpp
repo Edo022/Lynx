@@ -11,6 +11,7 @@
 namespace lnx::shd{
 	struct FloatToIntBuffer : public Shader_b {
 		static Shader_b::Layout layout;
+		static uint32 pipelineIndex;
 
 
 		struct src__t : public ShaderElm_b<Storage> {
@@ -50,8 +51,8 @@ namespace lnx::shd{
 
 
 		void createDescriptorSets();
-		void createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
-		void updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
+		void createCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
+		void updateCommandBuffers(const uint32 vPipelineIndex, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
 		void destroy();
 	};
 }//TODO remove local data in external bindings
