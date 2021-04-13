@@ -25,7 +25,7 @@ namespace lnx::shd{
 			.setPoolSizeCount (2)
 			.setPPoolSizes    (sizes)
 		;
-		switch(core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
+		switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
 			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
 			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
@@ -40,7 +40,7 @@ namespace lnx::shd{
 			.setDescriptorSetCount (1)
 			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
 		;
-		switch(core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
+		switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
 			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
 			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
@@ -103,7 +103,7 @@ namespace lnx::shd{
 			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
 			.setPBufferInfo     (&bufferInfo3)
 		;
-		core::dvc::compute.LD.updateDescriptorSets(4, writeSets, 0, nullptr);
+		core::dvc::graphics.LD.updateDescriptorSets(4, writeSets, 0, nullptr);
 	}
 
 
@@ -120,7 +120,7 @@ namespace lnx::shd{
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		switch(core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){
+		switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){
 			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 			case vk::Result::eSuccess: break;
@@ -210,7 +210,7 @@ namespace lnx::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){
+			switch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 				case vk::Result::eSuccess: break;
@@ -224,7 +224,7 @@ namespace lnx::shd{
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
 			uint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "Border2.spv").begin());
-			Border2::layout.shaderModule = core::c::shaders::createModule(core::dvc::compute.LD, code, fileLength);
+			Border2::layout.shaderModule = core::c::shaders::createModule(core::dvc::graphics.LD, code, fileLength);
 
 			Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
@@ -236,7 +236,7 @@ namespace lnx::shd{
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&Border2::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){
+			switch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 				case vk::Result::eSuccess: break;

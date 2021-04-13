@@ -247,8 +247,8 @@ namespace lnx::core::wnd{
 
 
 			{	//Destroy copy command buffers
-				dvc::compute.LD.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
-				dvc::compute.LD.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
+				dvc::graphics.LD.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
+				dvc::graphics.LD.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
 				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader

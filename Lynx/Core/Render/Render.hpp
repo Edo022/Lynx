@@ -26,12 +26,12 @@ namespace lnx::core::render{
 	uint32   findMemoryType(const uint32 vTypeFilter, const vk::MemoryPropertyFlags vProperties);
 	_dbg(static VKAPI_ATTR VkBool32 VKAPI_CALL vulkanOutputCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 		if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-			Failure printf("\nValidation layer error: ");
+			Failure printf("\nVulkan error: ");
 		}
 		else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-			Warning printf("\nValidation layer warning: ");
+			Warning printf("\nVulkan warning: ");
 		}
-		else { Normal printf("Validation layer info: "); }
+		else { Normal printf("Vulkan info: "); }
 		printf("%s", pCallbackData->pMessage); NormalNoNl;
 		return VK_FALSE;
 	})

@@ -9,7 +9,7 @@
 
 namespace lnx::core::dvc{
 	extern graphicsDevice			graphics;	//Main graphics device
-	extern computeDevice			compute;	//Main compute device
+	// extern computeDevice			compute;	//Main compute device
 	extern RtArray<computeDevice>	secondary;	//Secondary compute devices
 
 	extern vk::Instance	instance;				//The only Vulkan instance. This is required in order to use Vulkan

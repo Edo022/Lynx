@@ -62,8 +62,8 @@ namespace lnx::shd{
 
 		~Shader_b(){
 			//Clear descriptors sets, descriptor pool and descriptor layout
-			core::dvc::compute.LD.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
-			core::dvc::compute.LD.destroyDescriptorPool(descriptorPool, nullptr);
+			core::dvc::graphics.LD.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
+			core::dvc::graphics.LD.destroyDescriptorPool(descriptorPool, nullptr);
 		}
 	};
 }

@@ -70,11 +70,15 @@ struct graphicsDevice {
 	vk::Device		  LD;		//Main logical device for graphics
 	vk::Queue graphicsQueue;	//Main graphics queue. Runs on graphicsLD
 	vk::Queue presentQueue;		//Main graphics queue. Runs on graphicsLD
+
+	//FIXME
+		lnx::RtArray<vk::Queue> computeQueues;	//Main compute queues. Run on computeLD
+	//FIXME
 };
 
 
 
-
+//FIXME REMOVE
 struct computeDevice {
 	computeDevice() : PD(), LD{ nullptr }, computeQueues() {}
 
