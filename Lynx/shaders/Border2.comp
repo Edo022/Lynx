@@ -75,6 +75,6 @@ void rv() {
 
 //TODO use pre calculated workgroup count
 void main() {
-	// rh();
-	// rv();
+	rh();
+	rv();
 }
