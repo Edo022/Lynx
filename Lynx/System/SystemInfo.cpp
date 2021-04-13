@@ -52,8 +52,8 @@ namespace lnx::sys{
         auto minFreq = dbg::cmdOutput("lscpu | grep -m1 'min[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'");
         auto maxFreq = dbg::cmdOutput("lscpu | grep -m1 'max[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'");
 
-        _cpu.name = name;
-        _cpu.cores = (uint32)atoi(cores);
+        _cpu.name    = name;
+        _cpu.cores   = (uint32)atoi(cores);
         _cpu.threads = (uint32)atoi(threads);
         _cpu.minFreq = (uint32)atoi(minFreq);
         _cpu.maxFreq = (uint32)atoi(maxFreq);

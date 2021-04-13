@@ -16,17 +16,17 @@ namespace lnx::dbg{
 	 * @brief Returns the name of the executable file
 	 */
 	static const char* getExecName() {
-		#if defined(PLATFORM_POSIX) || defined(__linux__)
+		#ifdef _WIN64 //FIXME
+			char name[MAX_PATH];						//Create name buffer
+			GetModuleFileNameA(nullptr, name, MAX_PATH);//Get name
+			return name;
+		#else
 			FILE* f = fopen("/proc/self/comm", "r");
 			char* name = (char*)malloc(256);			//Create name buffer
 			fgets(name, 256, f);						//Read name
 			auto nameSize = strlen(name);				//Remove trailing \n
 			if(name[nameSize - 1] == '\n') name[nameSize - 1] = '\0';
 			fclose(f);
-			return name;
-		#elif defined(_WIN64)
-			char name[MAX_PATH];						//Create name buffer
-			GetModuleFileNameA(nullptr, name, MAX_PATH);//Get name
 			return name;
 		#endif
 	}
@@ -44,11 +44,12 @@ namespace lnx::dbg{
 		if (!f) printf("Traceback error\n");	//Check for file validity
 
 		uint32 outputSize = 0;
-		char* output = (char*)malloc(8192);		//Create outpupt buffer and read the output
+		char* output = (char*)calloc(8192, 1);		//Create outpupt buffer and read the output
 		while(fgets(output + outputSize, (i32)vMaxLineLen, f) != nullptr) {
 			outputSize = strlen(output);
 			output = (char*)realloc(output, vMaxLineLen + outputSize);
 		}
+		// output = (char*)realloc(output, strlen(output) + 1);
 		pclose(f);								//Close file
 		return output;							//Return
 	}
