@@ -93,14 +93,14 @@ void drawLine() {
 
 
 void main() {
-	ivec2 p0 = ivec2(fp0 * vec2(width, height));
-	ivec2 p1 = ivec2(fp1 * vec2(width, height));
+	// ivec2 p0 = ivec2(fp0 * vec2(width, height));
+	// ivec2 p1 = ivec2(fp1 * vec2(width, height));
 
-	if(gx >= distance(vec2(p0.x, p0.y), vec2(p1.x, p1.y))) return;			//Yeet unnecessary calls
-	//TODO implement and add to render optimization exceptions (vertical, horizontal, width 1, non rendered)
-	if((wd0 == 0 && wd1 == 0) || (col0.a == 0 && col1.a == 0)) return;		//Null line
+	// if(gx >= distance(vec2(p0.x, p0.y), vec2(p1.x, p1.y))) return;			//Yeet unnecessary calls
+	// //TODO implement and add to render optimization exceptions (vertical, horizontal, width 1, non rendered)
+	// if((wd0 == 0 && wd1 == 0) || (col0.a == 0 && col1.a == 0)) return;		//Null line
 
-	drawLine();
-	// colorOutput[width*height/2+width/2] = vec4(0, fp1.y, 0, 1);
-	// colorOutput[width*height/2+width/2] = vec4(0, fp1.y, 0, 1);
+	// drawLine();
+	// // colorOutput[width*height/2+width/2] = vec4(0, fp1.y, 0, 1);
+	// // colorOutput[width*height/2+width/2] = vec4(0, fp1.y, 0, 1);
 }

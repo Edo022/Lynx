@@ -94,10 +94,12 @@ namespace lnx::core::dvc{
 				default: break;
 			};
 
-			for(uint32 i = 0; i < validationLayersNum; i++) {								//For every layer,
-				for(const auto& layerProperties : availableLayers) {							//Check if it's available
-					/**/ if(0 == strcmp(validationLayers[i], layerProperties.layerName)) break;		//If not, print an error
-					else if(0 == strcmp(validationLayers[i], availableLayers.end()->layerName)) dbg::printError("Validation layers not available. Cannot run in debug mode");
+			for(uint32 i = 0; i < validationLayersNum; ++i) {								//For every layer,
+				for(uint32 j = 0; j < availableLayers.count(); ++j) {							//For every available layer
+					if(0 == strcmp(validationLayers[i], availableLayers[j].layerName)) break;		//Check if the layer is available
+					else if(i == availableLayers.count() - 1) {										//If not
+						dbg::printError("Validation layers not available. Cannot run in debug mode");	//Print an error
+					}
 				}
 			}
 		#endif
