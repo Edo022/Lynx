@@ -119,7 +119,7 @@ namespace lnx::core::c::shaders{
 			,
 			nullptr
 		).value;
-		core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
+		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
 	}
 
 
