@@ -37,11 +37,14 @@ namespace lnx::core::buffers{
 			.setMemoryTypeIndex (render::findMemoryType(memRequirements.memoryTypeBits, vProperties))
 		;
 		switch(vDevice.allocateMemory(&allocInfo, nullptr, pMemory)) {
-			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
-			case vk::Result::eErrorInvalidExternalHandle:       dbg::printError("Invalid external handle");        break;
+			case vk::Result::eErrorInvalidOpaqueCaptureAddressKHR: dbg::printError("Invalid opaque capture address"); break;
+			case vk::Result::eErrorInvalidExternalHandle:          dbg::printError("Invalid external handle");        break;
 			vkDefaultCases;
 		}
 
-		vDevice.bindBufferMemory(*pBuffer, *pMemory, 0);
+		switch(vDevice.bindBufferMemory(*pBuffer, *pMemory, 0)){
+			case vk::Result::eErrorInvalidOpaqueCaptureAddressKHR: dbg::printError("Invalid opaque capture address"); break;
+			vkDefaultCases;
+		}
 	}
 }

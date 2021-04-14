@@ -167,7 +167,7 @@ namespace lnx{
 						dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;			//Change it to color output to present them
 					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
-				copyCommandBuffers[imgIndex].end();										//End command buffer recording
+				switch(copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
 			}
 		}
 	}

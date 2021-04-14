@@ -304,11 +304,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }'
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-                '\n\t''commandBuffers[0].begin(beginInfo);'
+                '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
                 '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + shname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
-                '\n\t''commandBuffers[0].end();'
+                '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
             '\n}',
         '\t'))
 
@@ -316,11 +316,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-                '\n\t''commandBuffers[0].begin(beginInfo);'
+                '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
                 '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + shname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
-                '\n\t''commandBuffers[0].end();'
+                '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
             '\n}',
         '\t'))
 

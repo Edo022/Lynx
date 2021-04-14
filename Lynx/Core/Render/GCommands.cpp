@@ -57,7 +57,7 @@ namespace lnx::core::render::cmd{
 	 * @brief Ends and submits a single time submit command. Then waits until it's executed and frees its memory
 	 */
 	void endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer) {
-		vCommandBuffer.end();
+		switch(vCommandBuffer.end()){ vkDefaultCases; }
 		auto submitInfo = vk::SubmitInfo()
 			.setCommandBufferCount (1)
 			.setPCommandBuffers    (&vCommandBuffer)
@@ -67,7 +67,10 @@ namespace lnx::core::render::cmd{
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}
-			dvc::graphics.graphicsQueue.waitIdle();
+			switch(dvc::graphics.graphicsQueue.waitIdle()){
+				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				vkDefaultCases;
+			}
 		core::render::graphicsQueueSubmit_m.unlock();
 		dvc::graphics.LD.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);
 	}

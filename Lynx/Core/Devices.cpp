@@ -103,7 +103,13 @@ namespace lnx::core::dvc{
 			}
 		#endif
 
-		vk::createInstance(&createInfo, nullptr, &core::dvc::instance);
+		switch(vk::createInstance(&createInfo, nullptr, &core::dvc::instance)){
+			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eErrorLayerNotPresent:      dbg::printError("Layer not present");     break;
+			case vk::Result::eErrorExtensionNotPresent:  dbg::printError("Extension not present"); break;
+			case vk::Result::eErrorIncompatibleDriver:   dbg::printError("Incompatible driver");   break;
+			vkDefaultCases;
+		}
 		free(extensions);
 
 

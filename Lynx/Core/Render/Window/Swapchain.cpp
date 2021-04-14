@@ -125,7 +125,11 @@ namespace lnx::core::wnd{
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
-			dvc::graphics.LD.waitIdle();			//Wait for the logical device
+			switch(dvc::graphics.LD.waitIdle()){		//Wait for the logical device
+				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				vkDefaultCases;
+			}
+
 
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
@@ -225,7 +229,10 @@ namespace lnx::core::wnd{
 
 
 	Swapchain::~Swapchain(){
-		core::dvc::graphics.LD.waitIdle();
+		switch(core::dvc::graphics.LD.waitIdle()){
+			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+			vkDefaultCases;
+		}
 		destroy();
 		dvc::graphics.LD.destroyRenderPass  (renderPass, nullptr);
 		dvc::graphics.LD.destroySwapchainKHR(swapchain,  nullptr);

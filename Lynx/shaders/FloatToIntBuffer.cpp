@@ -131,11 +131,11 @@ namespace lnx::shd{
 		switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-		commandBuffers[0].begin(beginInfo);
+		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[FloatToIntBuffer::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
-		commandBuffers[0].end();
+		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
 
 
@@ -147,11 +147,11 @@ namespace lnx::shd{
 
 	void FloatToIntBuffer::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-		commandBuffers[0].begin(beginInfo);
+		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[FloatToIntBuffer::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
-		commandBuffers[0].end();
+		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
 
 

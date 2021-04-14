@@ -31,4 +31,15 @@ def run(dir):
 
 	#Update debug macro
 	with open('./.engine/conf.hpp', 'w') as f:
-		f.write('#define ' + ('LNX_DEBUG' if opts.tp() == 'd' else 'LNX_RELEASE'))
+		f.write(
+	        '\n//####################################################################################'
+        	'\n// This file was generated automatically. Changes could be overwritten without notice'
+        	'\n//####################################################################################\n'
+			'\n\n'
+			'\n#pragma once'
+			'\n#ifndef __INTELLISENSE__'
+				'\n\t#error "Something went wrong. This header cannot be used during compilation"'
+			'\n#endif'
+			'\n'
+		)
+		f.write('\n#define ' + ('LNX_DEBUG' if opts.tp() == 'd' else 'LNX_RELEASE'))

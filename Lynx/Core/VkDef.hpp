@@ -1,3 +1,5 @@
+//This is the first file to be included during compilation
+//It contains Vulkan macros that are redefined by the engine
 #pragma once
 
 #define GLM_FORCE_RADIANS                   //Define vulkan macros
