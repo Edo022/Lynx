@@ -6,11 +6,11 @@
 #pragma GCC diagnostic pop
 
 
-#define vkDefaultCases                                                                        \
+#define vkDefaultFaulures                                                                     \
 	case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break; \
 	case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of device memory"); break; \
 	default: _dbg(dbg::printError("Unknown result")) _rls(noop)
 
-#define vkDefaultCases2               \
+#define vkDefaultCases                \
 	case vk::Result::eSuccess: break; \
-	vkDefaultCases
+	vkDefaultFaulures

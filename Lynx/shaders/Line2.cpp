@@ -27,7 +27,7 @@ namespace lnx::shd{
 		;
 		switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
 			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
-			vkDefaultCases2;
+			vkDefaultCases;
 		}
 
 
@@ -40,7 +40,7 @@ namespace lnx::shd{
 		switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
 			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
-			vkDefaultCases2;
+			vkDefaultCases;
 		}
 
 
@@ -114,7 +114,7 @@ namespace lnx::shd{
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases2; }
+		switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
@@ -202,7 +202,7 @@ namespace lnx::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2::layout.descriptorSetLayout)){ vkDefaultCases2; }
+			switch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -223,7 +223,7 @@ namespace lnx::shd{
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&Line2::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2::layout.pipelineLayout)){ vkDefaultCases2; }
+			switch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

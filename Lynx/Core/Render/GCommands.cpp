@@ -27,7 +27,7 @@ namespace lnx::core::render::cmd{
 		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.PD.indices.graphicsFamily);
 		switch(dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){
 			case vk::Result::eSuccess: break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		}
 	}
 
@@ -47,14 +47,14 @@ namespace lnx::core::render::cmd{
 		;
 		switch(dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer)){
 			case vk::Result::eSuccess: break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		}
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
 		switch(commandBuffer.begin(&beginInfo)){
 			case vk::Result::eSuccess: break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		}
 
 		return commandBuffer;
@@ -76,7 +76,7 @@ namespace lnx::core::render::cmd{
 			switch(dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr)){
 				case vk::Result::eSuccess: break;
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			}
 
 			dvc::graphics.graphicsQueue.waitIdle();

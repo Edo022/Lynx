@@ -26,7 +26,7 @@ namespace lnx::core::buffers{
 		switch(vDevice.createBuffer(&bufferInfo, nullptr, pBuffer)){
 			case vk::Result::eSuccess: break;
 			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		}
 
 

@@ -84,7 +84,7 @@ namespace lnx::core::dvc{
 			switch(vk::enumerateInstanceLayerProperties(&layerCount, nullptr)){
 				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete: dbg::printError("Incomplete properties"); break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			};
 
 			//Get layers
@@ -92,7 +92,7 @@ namespace lnx::core::dvc{
 			switch(vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.begin())){
 				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete: dbg::printError("Incomplete properties"); break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			};
 
 			for(uint32 i = 0; i < validationLayersNum; ++i) {								//For every layer,
@@ -161,14 +161,14 @@ namespace lnx::core::dvc{
 				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
 				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			};
 
 			switch(vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr)){
 				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
 				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			};
 
 			if(!surfaceFormatsCount || !presentModesCount) {
@@ -193,7 +193,7 @@ namespace lnx::core::dvc{
 			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:           dbg::printError("Incomplete extensions"); break;
 			case vk::Result::eErrorLayerNotPresent: dbg::printError("Layer not present");     break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		};
 
 		//Get extensions
@@ -202,7 +202,7 @@ namespace lnx::core::dvc{
 			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:           dbg::printError("Incomplete extensions"); break;
 			case vk::Result::eErrorLayerNotPresent: dbg::printError("Layer not present");     break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		};
 
 		//TODO dont use std
@@ -234,7 +234,7 @@ namespace lnx::core::dvc{
 			switch(vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){								//Set present family
 				case vk::Result::eSuccess: break;
 				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			};
 
 
@@ -273,7 +273,7 @@ namespace lnx::core::dvc{
 			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		};
 
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");	//Check if there is at least one deice that supports vulkan //FIXME add runtime support
@@ -284,7 +284,7 @@ namespace lnx::core::dvc{
 			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		};
 
 

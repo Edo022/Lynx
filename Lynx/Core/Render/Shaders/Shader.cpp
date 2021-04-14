@@ -80,7 +80,7 @@ namespace lnx::core::shaders{
 		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
 			case vk::Result::eSuccess: break;
 			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		}
 
 		// free(pCode);													//#LLID CSF0000 Free memory //BUG
@@ -120,7 +120,7 @@ namespace lnx::core::shaders{
 			case vk::Result::ePipelineCompileRequiredEXT: dbg::printWarning("Pipeline compile required"); [[fallthrough]];
 			case vk::Result::eSuccess: pWindow.pipelines[vPipelineIndex] = r.value; break;
 			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
-			vkDefaultCases;
+			vkDefaultFaulures;
 		}
 		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr);
 		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)

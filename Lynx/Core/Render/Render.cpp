@@ -74,7 +74,7 @@ namespace lnx{
 				case vk::Result::eSuccess: break;
 				case vk::Result::eTimeout:                dbg::printError("Fence timed out"); break;
 				case vk::Result::eErrorDeviceLost:        dbg::printError("Device lost"); break;
-				vkDefaultCases;
+				vkDefaultFaulures;
 			}
 
 			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
@@ -154,7 +154,7 @@ namespace lnx{
 			core::render::graphicsQueueSubmit_m.lock();
 				switch(core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){
 					case vk::Result::eSuccess: break;
-					vkDefaultCases;
+					vkDefaultFaulures;
 				}
 			core::render::graphicsQueueSubmit_m.unlock();
 
