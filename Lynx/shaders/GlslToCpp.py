@@ -223,18 +223,29 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             else: storageNum += 1
 
         fh.write(indent(                                    #Write shader's create functions
-            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
-            ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
-            '\n}'
-            '\n\n\nvoid createDescriptorSets();'
-            '\nvoid createCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
-            '\nvoid updateCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
+            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow);'
+            '\nvoid createDescriptorSets();'
+            '\nvoid createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
+            '\nvoid updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
             '\nvoid destroy();',
         '\t\t'))
 
 
         fc.write(indent(
-            '\n\n\nvoid ' + fname + '::createDescriptorSets(){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid ' + fname + '::create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
+                '\n\t''pWindow.addObject_m.lock();' +
+                    (''.join(('\n\t\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts)) +
+                    '\n'
+                    '\n\t\t''createDescriptorSets();'
+                    '\n\t\t''createCommandBuffers(vGroupCount, pWindow);'
+                    '\n\t\t''pWindow.swp.shadersCBs.add(commandBuffers[0]);'
+                '\n\t''pWindow.addObject_m.unlock();'
+            '\n}',
+        '\t'))
+
+        fc.write(indent(
+            '\n\n\nvoid ' + fname + '::createDescriptorSets(){'
                 '\n\t''vk::DescriptorPoolSize sizes[2] = {'
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(' + str(storageNum) + '),' + (
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(' + str(uniformNum) + ')'
@@ -283,7 +294,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::createCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
                     '\n\t\t''.setCommandPool        (pWindow.commandPool)'
                     '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
@@ -296,19 +307,19 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''commandBuffers[0].begin(beginInfo);'
                 '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + shname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
-                '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
+                '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''commandBuffers[0].end();'
             '\n}',
         '\t'))
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::updateCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){'
+            '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''commandBuffers[0].begin(beginInfo);'
                 '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + shname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
-                '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
+                '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''commandBuffers[0].end();'
             '\n}',
         '\t'))

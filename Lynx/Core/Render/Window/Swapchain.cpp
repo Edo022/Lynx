@@ -203,7 +203,7 @@ namespace lnx::core::wnd{
 			}
 
 			//Recreate clear shader
-			bindedWindow->sh_clear.updateCommandBuffers((createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1, 1, *bindedWindow);
+			bindedWindow->sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *bindedWindow);
 		}
 	}
 

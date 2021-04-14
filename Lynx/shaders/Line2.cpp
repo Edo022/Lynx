@@ -14,7 +14,20 @@
 namespace lnx::shd{
 
 
-	void Line2::createDescriptorSets(){ //FIXME REMOVE LAYOUT
+	void Line2::create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pWidth, vram::ptr<u32, VRam, Storage> pZBuffer, const u32v3 vGroupCount, Window& pWindow){
+		pWindow.addObject_m.lock();
+			colorOutput_.vdata = (vram::ptr<char, VRam, Storage>)pColorOutput;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWidth;
+			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
+
+			createDescriptorSets();
+			createCommandBuffers(vGroupCount, pWindow);
+			pWindow.swp.shadersCBs.add(commandBuffers[0]);
+		pWindow.addObject_m.unlock();
+	}
+
+
+	void Line2::createDescriptorSets(){
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
@@ -107,7 +120,7 @@ namespace lnx::shd{
 
 
 
-	void Line2::createCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void Line2::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pWindow.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -120,7 +133,7 @@ namespace lnx::shd{
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[Line2::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
+		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		commandBuffers[0].end();
 	}
 
@@ -131,12 +144,12 @@ namespace lnx::shd{
 
 
 
-	void Line2::updateCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
+	void Line2::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[Line2::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
+		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		commandBuffers[0].end();
 	}
 

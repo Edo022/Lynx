@@ -14,7 +14,21 @@
 namespace lnx::shd{
 
 
-	void FloatToIntBuffer::createDescriptorSets(){ //FIXME REMOVE LAYOUT
+	void FloatToIntBuffer::create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer, vram::ptr<u32, VRam, Storage> pWidth, const u32v3 vGroupCount, Window& pWindow){
+		pWindow.addObject_m.lock();
+			src_.vdata = (vram::ptr<char, VRam, Storage>)pSrc;
+			dst_.vdata = (vram::ptr<char, VRam, Storage>)pDst;
+			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWidth;
+
+			createDescriptorSets();
+			createCommandBuffers(vGroupCount, pWindow);
+			pWindow.swp.shadersCBs.add(commandBuffers[0]);
+		pWindow.addObject_m.unlock();
+	}
+
+
+	void FloatToIntBuffer::createDescriptorSets(){
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(4),
 			{}
@@ -107,7 +121,7 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::createCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void FloatToIntBuffer::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pWindow.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -120,7 +134,7 @@ namespace lnx::shd{
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[FloatToIntBuffer::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
+		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		commandBuffers[0].end();
 	}
 
@@ -131,12 +145,12 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::updateCommandBuffers(const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
+	void FloatToIntBuffer::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		commandBuffers[0].begin(beginInfo);
 		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[FloatToIntBuffer::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
+		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		commandBuffers[0].end();
 	}
 
