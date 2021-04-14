@@ -98,7 +98,7 @@ namespace lnx{
 
 		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
 		sh_clear.createDescriptorSets();
-		sh_clear.createCommandBuffers(shd::FloatToIntBuffer::pipelineIndex, (width * height) / (32 * 32) + 1, 1, 1, *this);
+		sh_clear.createCommandBuffers((width * height) / (32 * 32) + 1, 1, 1, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;
