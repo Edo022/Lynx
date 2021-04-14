@@ -1,8 +1,6 @@
 #pragma once
 
 
-//Creates a function that will be called during the global variable initialization
-//This macro can only be used in the global scope of .cpp files
 
 #define __catm(a, b, c) a ## b ## c
 #define __cat(a, b, c) __catm(a, b, c)
@@ -20,5 +18,6 @@
 		//...
 	//}
 
-
+//Creates a function that will be called during the static initialization
+//This macro can only be used in the global scope of .cpp files
 #define LnxAutoInit(tui) LnxAutoInit2(__LYNX_AUTO_INIT_##tui##_, __COUNTER__)
