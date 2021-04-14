@@ -26,10 +26,8 @@ namespace lnx::core::render::cmd{
 	void createGraphicsCommandPool() { //FIXME probably useless
 		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.PD.indices.graphicsFamily);
 		switch(dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
 			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			vkDefaultCases;
 		}
 	}
 
@@ -48,19 +46,15 @@ namespace lnx::core::render::cmd{
 			.setCommandBufferCount (1)
 		;
 		switch(dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer)){
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory");  break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");    break;
 			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			vkDefaultCases;
 		}
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
 		switch(commandBuffer.begin(&beginInfo)){
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			vkDefaultCases;
 		}
 
 		return commandBuffer;
@@ -80,11 +74,9 @@ namespace lnx::core::render::cmd{
 		;
 		core::render::graphicsQueueSubmit_m.lock();
 			switch(dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr)){
-				case vk::Result::eErrorDeviceLost:        dbg::printError("Device lost");          break;
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
+				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				vkDefaultCases;
 			}
 
 			dvc::graphics.graphicsQueue.waitIdle();

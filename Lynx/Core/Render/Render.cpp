@@ -71,12 +71,10 @@ namespace lnx{
 			}
 			addObject_m.unlock();
 			switch(core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
+				case vk::Result::eSuccess: break;
 				case vk::Result::eTimeout:                dbg::printError("Fence timed out"); break;
 				case vk::Result::eErrorDeviceLost:        dbg::printError("Device lost"); break;
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
+				vkDefaultCases;
 			}
 
 			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
@@ -147,18 +145,16 @@ namespace lnx{
 			addObject_m.unlock(); //FIXME
 
 			switch(core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				// case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break; //!Not an error
 				case vk::Result::eSuccess: break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break; //!Not an error. This return value is not returned
 				default: dbg::printError("Unknown result");
 			}
 
 			core::render::graphicsQueueSubmit_m.lock();
 				switch(core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){
-					case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-					case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 					case vk::Result::eSuccess: break;
-					default: dbg::printError("Unknown result");
+					vkDefaultCases;
 				}
 			core::render::graphicsQueueSubmit_m.unlock();
 

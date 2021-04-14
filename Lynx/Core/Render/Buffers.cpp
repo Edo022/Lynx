@@ -24,11 +24,9 @@ namespace lnx::core::buffers{
 			.setSharingMode (vk::SharingMode::eExclusive)
 		;
 		switch(vDevice.createBuffer(&bufferInfo, nullptr, pBuffer)){
-			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
+			vkDefaultCases;
 		}
 
 

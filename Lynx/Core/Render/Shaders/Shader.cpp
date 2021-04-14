@@ -78,11 +78,9 @@ namespace lnx::core::shaders{
 
 		vk::ShaderModule shaderModule;									//Create the shader module
 		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
-			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
 			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
+			vkDefaultCases;
 		}
 
 		// free(pCode);													//#LLID CSF0000 Free memory //BUG
@@ -106,33 +104,25 @@ namespace lnx::core::shaders{
 
 
 	/**
-	 * @brief reates the descriptor sets layout, the pipeline and the pipeline layout of a shader
-	 * @param vRenderShader the type of the shader
-	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
-	 * @param pIsReadOnly //FIXME REMOVE
-	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	// void createPipeline(const uint32 vPipelineIndex, shd::Shader_b::Layout& vLayout, Window& pWindow) {
-	// 	pWindow.pipelines[vPipelineIndex] = dvc::graphics.LD.createComputePipeline(
-	// 		nullptr,
-	// 		vk::ComputePipelineCreateInfo()
-	// 			.setStage  (vLayout.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
-	// 			.setLayout (vLayout.pipelineLayout)				//Use the previously created pipeline layout
-	// 		,
-	// 		nullptr
-	// 	).value;
-	// 	// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
-	// 	//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
-	// }
+	 * @brief Creates a compute pipeline in the pipeline array of the window
+	 * @param vPipelineIndex The index of the pipeline
+	 * @param pWindow The window in which to create the pipeline
+	 */
 	void createPipeline(const uint32 vPipelineIndex, Window& pWindow) {
-		pWindow.pipelines[vPipelineIndex] = dvc::graphics.LD.createComputePipeline(
-			nullptr,
-			vk::ComputePipelineCreateInfo()
-				.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)		//Use the previously created shader stage creation infos
-				.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)				//Use the previously created pipeline layout
-			,
-			nullptr
-		).value;
-		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
+		auto pipelineInfo = vk::ComputePipelineCreateInfo()
+			.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)
+			.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)
+		;
+		auto r = dvc::graphics.LD.createComputePipeline(nullptr, pipelineInfo, nullptr);
+
+
+		switch(r.result){
+			case vk::Result::ePipelineCompileRequiredEXT: dbg::printWarning("Pipeline compile required"); [[fallthrough]];
+			case vk::Result::eSuccess: pWindow.pipelines[vPipelineIndex] = r.value; break;
+			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
+			vkDefaultCases;
+		}
+		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr);
 		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
 	}
 

@@ -120,12 +120,7 @@ namespace lnx{
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
 				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases2; }
 		}
 
 
@@ -135,24 +130,14 @@ namespace lnx{
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
 				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases2; }
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
 				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases2; }
 
 
 
@@ -164,12 +149,7 @@ namespace lnx{
 					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
 				;
 				//Start recording commands
-				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){
-					case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-					case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-					case vk::Result::eSuccess: break;
-					default: dbg::printError("Unknown result");
-				}
+				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases2; }
 					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
 					readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
 					vk::PipelineStageFlags 													//Create stage flags
