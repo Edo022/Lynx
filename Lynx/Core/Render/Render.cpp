@@ -71,10 +71,9 @@ namespace lnx{
 			}
 			addObject_m.unlock();
 			switch(core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
-				case vk::Result::eSuccess: break;
-				case vk::Result::eTimeout:                dbg::printError("Fence timed out"); break;
-				case vk::Result::eErrorDeviceLost:        dbg::printError("Device lost"); break;
-				vkDefaultFaulures;
+				case vk::Result::eTimeout:         dbg::printError("Fence timed out"); break;
+				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost");     break;
+				vkDefaultCases;
 			}
 
 			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
@@ -95,9 +94,16 @@ namespace lnx{
 			uint32 imageIndex;
 			{
 				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, INT_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
-					case vk::Result::eSuccess: case vk::Result::eSuboptimalKHR: break;
+					case vk::Result::eTimeout:       dbg::printWarning("Timeout");    break;
+					case vk::Result::eNotReady:      dbg::printWarning("Not ready");  break;
+					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
 					case vk::Result::eErrorOutOfDateKHR: swp.recreate();  continue;
-					default: Failure printf("Failed to acquire swapchain image");
+					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
+					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+					#ifdef _WIN64 //This error is unique to windows
+						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
+					#endif
+					vkDefaultCases;
 				}
 			}
 
@@ -147,15 +153,13 @@ namespace lnx{
 			switch(core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 				case vk::Result::eSuccess: break;
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break; //!Not an error. This return value is not returned
+				// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
+				//!^ Not an error. This value is not returned
 				default: dbg::printError("Unknown result");
 			}
 
 			core::render::graphicsQueueSubmit_m.lock();
-				switch(core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){
-					case vk::Result::eSuccess: break;
-					vkDefaultFaulures;
-				}
+			switch(core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -169,17 +173,22 @@ namespace lnx{
 					.setPSwapchains        (&swp.swapchain)
 					.setPImageIndices      (&imageIndex)
 				;
-
 				core::render::presentQueueSubmit_m.lock();
-					auto presentResult = core::dvc::graphics.presentQueue.presentKHR(&presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+				auto r = core::dvc::graphics.presentQueue.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
 				core::render::presentQueueSubmit_m.unlock();
-				switch(presentResult){
-					case vk::Result::eSuccess:  break;
-					case vk::Result::eErrorOutOfDateKHR: case vk::Result::eSuboptimalKHR: { //TODO maybe suboptimal can still be used
+
+				switch(r){
+					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
+					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+					#ifdef _WIN64 //This error is unique to windows
+						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
+					#endif
+					case vk::Result::eErrorOutOfDateKHR: [[fallthrough]];
+					case vk::Result::eSuboptimalKHR: { 						//TODO maybe suboptimal can still be used
 						swp.recreate();
 						goto redraw;
 					}
-					default: dbg::printError("Failed to present swapchain image");
+					vkDefaultCases;
 				}
 
 			}

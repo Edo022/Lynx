@@ -11,7 +11,7 @@
 
 
 namespace lnx::core::render::cmd{
-	alignCache vk::CommandPool            singleTimeCommandPool = nullptr;
+	alignCache vk::CommandPool singleTimeCommandPool = nullptr;
 
 
 
@@ -25,10 +25,7 @@ namespace lnx::core::render::cmd{
 
 	void createGraphicsCommandPool() { //FIXME probably useless
 		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.PD.indices.graphicsFamily);
-		switch(dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){
-			case vk::Result::eSuccess: break;
-			vkDefaultFaulures;
-		}
+		switch(dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){ vkDefaultCases; }
 	}
 
 
@@ -45,17 +42,10 @@ namespace lnx::core::render::cmd{
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
-		switch(dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer)){
-			case vk::Result::eSuccess: break;
-			vkDefaultFaulures;
-		}
+		switch(dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer)){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
-
-		switch(commandBuffer.begin(&beginInfo)){
-			case vk::Result::eSuccess: break;
-			vkDefaultFaulures;
-		}
+		switch(commandBuffer.begin(&beginInfo)){ vkDefaultCases; }
 
 		return commandBuffer;
 	}
@@ -74,11 +64,9 @@ namespace lnx::core::render::cmd{
 		;
 		core::render::graphicsQueueSubmit_m.lock();
 			switch(dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr)){
-				case vk::Result::eSuccess: break;
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
-				vkDefaultFaulures;
+				vkDefaultCases;
 			}
-
 			dvc::graphics.graphicsQueue.waitIdle();
 		core::render::graphicsQueueSubmit_m.unlock();
 		dvc::graphics.LD.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);

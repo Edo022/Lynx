@@ -82,17 +82,15 @@ namespace lnx::core::dvc{
 
 			//Get layer count
 			switch(vk::enumerateInstanceLayerProperties(&layerCount, nullptr)){
-				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete: dbg::printError("Incomplete properties"); break;
-				vkDefaultFaulures;
+				vkDefaultCases;
 			};
 
 			//Get layers
 			RtArray<vk::LayerProperties> availableLayers(layerCount);
 			switch(vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.begin())){
-				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete: dbg::printError("Incomplete properties"); break;
-				vkDefaultFaulures;
+				vkDefaultCases;
 			};
 
 			for(uint32 i = 0; i < validationLayersNum; ++i) {								//For every layer,
@@ -158,17 +156,15 @@ namespace lnx::core::dvc{
 		else {
 			uint32 surfaceFormatsCount = 0, presentModesCount = 0;
 			switch(vDevice.getSurfaceFormatsKHR(dummySurface, &surfaceFormatsCount, nullptr)){
-				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
 				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
-				vkDefaultFaulures;
+				vkDefaultCases;
 			};
 
 			switch(vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr)){
-				case vk::Result::eSuccess: break;
 				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
 				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
-				vkDefaultFaulures;
+				vkDefaultCases;
 			};
 
 			if(!surfaceFormatsCount || !presentModesCount) {
@@ -190,19 +186,17 @@ namespace lnx::core::dvc{
 
 		//Get extension count
 		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, nullptr)){
-			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:           dbg::printError("Incomplete extensions"); break;
 			case vk::Result::eErrorLayerNotPresent: dbg::printError("Layer not present");     break;
-			vkDefaultFaulures;
+			vkDefaultCases;
 		};
 
 		//Get extensions
 		RtArray<vk::ExtensionProperties> availableExtensions(extensionCount);
 		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, availableExtensions.begin())){
-			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:           dbg::printError("Incomplete extensions"); break;
 			case vk::Result::eErrorLayerNotPresent: dbg::printError("Layer not present");     break;
-			vkDefaultFaulures;
+			vkDefaultCases;
 		};
 
 		//TODO dont use std
@@ -232,9 +226,8 @@ namespace lnx::core::dvc{
 
 			vk::Bool32 hasPresentSupport = false;
 			switch(vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){								//Set present family
-				case vk::Result::eSuccess: break;
 				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
-				vkDefaultFaulures;
+				vkDefaultCases;
 			};
 
 
@@ -270,10 +263,9 @@ namespace lnx::core::dvc{
 
 		//Get physical device count
 		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){
-			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			vkDefaultFaulures;
+			vkDefaultCases;
 		};
 
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");	//Check if there is at least one deice that supports vulkan //FIXME add runtime support
@@ -281,10 +273,9 @@ namespace lnx::core::dvc{
 		//Get physical devices
 		RtArray<vk::PhysicalDevice> physDevices(deviceCount);
 		switch(instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin())){
-			case vk::Result::eSuccess: break;
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			vkDefaultFaulures;
+			vkDefaultCases;
 		};
 
 

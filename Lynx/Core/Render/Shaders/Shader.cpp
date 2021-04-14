@@ -78,9 +78,8 @@ namespace lnx::core::shaders{
 
 		vk::ShaderModule shaderModule;									//Create the shader module
 		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
-			case vk::Result::eSuccess: break;
 			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
-			vkDefaultFaulures;
+			vkDefaultCases;
 		}
 
 		// free(pCode);													//#LLID CSF0000 Free memory //BUG

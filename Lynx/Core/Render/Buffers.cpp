@@ -24,9 +24,8 @@ namespace lnx::core::buffers{
 			.setSharingMode (vk::SharingMode::eExclusive)
 		;
 		switch(vDevice.createBuffer(&bufferInfo, nullptr, pBuffer)){
-			case vk::Result::eSuccess: break;
 			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
-			vkDefaultFaulures;
+			vkDefaultCases;
 		}
 
 
@@ -37,39 +36,10 @@ namespace lnx::core::buffers{
 			.setAllocationSize  (memRequirements.size)
 			.setMemoryTypeIndex (render::findMemoryType(memRequirements.memoryTypeBits, vProperties))
 		;
-		//TODO USE CUSTOM ALLOCATOR
-		// const vk::AllocationCallbacks allocator{
-		// 	.pUserData = new ram::ptr<char>(),
-		// 	.pfnAllocation = allocateCallback,
-		// 	.pfnReallocation = reallocateCallback,
-		// 	.pfnFree = freeCallback,
-		// 	.pfnInternalAllocation = internalAllocCallback,
-		// 	.pfnInternalFree = internalFreeCallback,
-		// };
-		switch(vDevice.allocateMemory(&allocInfo, nullptr/*, new vk::AllocationCallbacks(allocator)*/, pMemory)) { //TODO
-			case vk::Result::eSuccess : break;
-			case vk::Result::eErrorOutOfDeviceMemory: {			//If out of dedicated memory, use the shared memory
-				vk::MemoryAllocateInfo allocInfo2 = vk::MemoryAllocateInfo()
-					.setAllocationSize  (memRequirements.size)
-					.setMemoryTypeIndex (render::findMemoryType(memRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostCached | vk::MemoryPropertyFlagBits::eHostVisible))
-				;
-				switch(vDevice.allocateMemory(&allocInfo2, nullptr/*, new vk::AllocationCallbacks(allocator)*/, pMemory)) { //TODO
-					case vk::Result::eSuccess: break;
-					case vk::Result::eErrorOutOfHostMemory: goto CaseOutOfHostMemory;
-					default: goto CaseAllocFailure;
-				}
-				break;
-			}
-			case vk::Result::eErrorOutOfHostMemory: {
-				CaseOutOfHostMemory:
-				dbg::printError("Vulkan error: Out of host memory");
-				break;
-			}
-			case vk::Result::eErrorTooManyObjects: {
-				dbg::printError("Vulkan error: Too many objects. This error is caused by the engine. Contact the developer");
-				break;
-			}
-			default: CaseAllocFailure: dbg::printError("Failed to allocate buffer memory");
+		switch(vDevice.allocateMemory(&allocInfo, nullptr, pMemory)) {
+			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
+			case vk::Result::eErrorInvalidExternalHandle:       dbg::printError("Invalid external handle");        break;
+			vkDefaultCases;
 		}
 
 		vDevice.bindBufferMemory(*pBuffer, *pMemory, 0);
