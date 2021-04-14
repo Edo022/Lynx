@@ -338,6 +338,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\nShader_b::Layout ' + shname + '::layout;'
             '\nuint32 ' + shname + '::pipelineIndex = core::shaders::pipelineNum++;'
             '\nLnxAutoInit(LNX_H_' + shname.upper() + '){'
+                '\n\t''core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);'
+                '\n\t''core::shaders::pipelineLayouts[' + shname + '::pipelineIndex] = &' + shname + '::layout;'
                 '\n\t{ //Create descriptor set layout'
                     '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
                     '\n'.join((

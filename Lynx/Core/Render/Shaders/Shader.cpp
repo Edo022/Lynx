@@ -13,7 +13,7 @@
 namespace lnx::core::shaders{
 	alignCache String shaderPath;
 	alignCache uint32 pipelineNum = 0;
-
+	alignCache RtArray<shd::Shader_b::Layout*> pipelineLayouts;
 
 
 
@@ -111,19 +111,30 @@ namespace lnx::core::shaders{
 	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
 	 * @param pIsReadOnly //FIXME REMOVE
 	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	void createPipeline(const uint32 vPipelineIndex, shd::Shader_b::Layout& vLayout, Window& pWindow) {
+	// void createPipeline(const uint32 vPipelineIndex, shd::Shader_b::Layout& vLayout, Window& pWindow) {
+	// 	pWindow.pipelines[vPipelineIndex] = dvc::graphics.LD.createComputePipeline(
+	// 		nullptr,
+	// 		vk::ComputePipelineCreateInfo()
+	// 			.setStage  (vLayout.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
+	// 			.setLayout (vLayout.pipelineLayout)				//Use the previously created pipeline layout
+	// 		,
+	// 		nullptr
+	// 	).value;
+	// 	// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
+	// 	//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
+	// }
+	void createPipeline(const uint32 vPipelineIndex, Window& pWindow) {
 		pWindow.pipelines[vPipelineIndex] = dvc::graphics.LD.createComputePipeline(
 			nullptr,
 			vk::ComputePipelineCreateInfo()
-				.setStage  (vLayout.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
-				.setLayout (vLayout.pipelineLayout)				//Use the previously created pipeline layout
+				.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)		//Use the previously created shader stage creation infos
+				.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)				//Use the previously created pipeline layout
 			,
 			nullptr
 		).value;
 		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
 		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
 	}
-
 
 
 

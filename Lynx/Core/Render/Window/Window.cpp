@@ -34,10 +34,12 @@ namespace lnx{
 		// CShadersLayouts.resize(ShaderLayout::LNX_DEF_SHADER_NUM);
 		pipelines.resize(core::shaders::pipelineNum);
 
-		core::shaders::createPipeline(shd::Line2::pipelineIndex,            shd::Line2::layout,            *this);
-		core::shaders::createPipeline(shd::Border2::pipelineIndex,          shd::Border2::layout,          *this);
-		core::shaders::createPipeline(shd::FloatToIntBuffer::pipelineIndex, shd::FloatToIntBuffer::layout, *this);
-
+		// core::shaders::createPipeline(shd::Line2::pipelineIndex,            shd::Line2::layout,            *this);
+		// core::shaders::createPipeline(shd::Border2::pipelineIndex,          shd::Border2::layout,          *this);
+		// core::shaders::createPipeline(shd::FloatToIntBuffer::pipelineIndex, shd::FloatToIntBuffer::layout, *this);
+		for(uint32 i = 0; i < pipelines.count(); ++i){
+			core::shaders::createPipeline(i, *this);
+		}
 
 
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);

@@ -172,6 +172,8 @@ namespace lnx::shd{
 	Shader_b::Layout FloatToIntBuffer::layout;
 	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::pipelineNum++;
 	LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
+		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
+		core::shaders::pipelineLayouts[FloatToIntBuffer::pipelineIndex] = &FloatToIntBuffer::layout;
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
