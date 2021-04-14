@@ -64,7 +64,8 @@ namespace lnx{
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			addObject_m.lock();
-			if(swp.shadersCBs.count() <= 1) {
+			// if(swp.shadersCBs.count() <= 1) {
+			if(swp.shadersCBs.count() <= 0) {
 				addObject_m.unlock();
 				continue;
 			}

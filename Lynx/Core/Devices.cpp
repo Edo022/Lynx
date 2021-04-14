@@ -50,10 +50,13 @@ namespace lnx::core::dvc{
 		_dbg(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));				//Add debug extension if in debug mode
 
 
-		//Create debugCreateInfo structure
-		_dbg(vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo);
-		_dbg(core::debug::populateDebugMessengerCreateInfo(debugCreateInfo));
-		//!^ Ok. vk::DebugUtilsMessengerCreateInfoEXT has implicit conversion to VkDebugUtilsMessengerCreateInfoEXT
+		#ifdef LNX_DEBUG
+			//Create debugCreateInfo structure
+			vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo;
+			core::debug::populateDebugMessengerCreateInfo(debugCreateInfo);
+			//!^ Ok. vk::DebugUtilsMessengerCreateInfoEXT has implicit conversion to VkDebugUtilsMessengerCreateInfoEXT
+		#endif
+
 
 		auto appInfo = vk::ApplicationInfo()
 			.setPApplicationName   ("Lynx")
