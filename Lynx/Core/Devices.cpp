@@ -103,7 +103,7 @@ namespace lnx::core::dvc{
 			}
 		#endif
 
-		core::dvc::instance = vk::createInstance(createInfo, nullptr);
+		vk::createInstance(&createInfo, nullptr, &core::dvc::instance);
 		free(extensions);
 
 

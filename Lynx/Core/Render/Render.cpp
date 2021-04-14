@@ -97,7 +97,7 @@ namespace lnx{
 					case vk::Result::eTimeout:       dbg::printWarning("Timeout");    break;
 					case vk::Result::eNotReady:      dbg::printWarning("Not ready");  break;
 					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
-					case vk::Result::eErrorOutOfDateKHR: swp.recreate();  continue;
+					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
 					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 					#ifdef _WIN64 //This error is unique to windows
@@ -178,16 +178,13 @@ namespace lnx{
 				core::render::presentQueueSubmit_m.unlock();
 
 				switch(r){
+					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
+					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
 					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 					#ifdef _WIN64 //This error is unique to windows
 						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
 					#endif
-					case vk::Result::eErrorOutOfDateKHR: [[fallthrough]];
-					case vk::Result::eSuboptimalKHR: { 						//TODO maybe suboptimal can still be used
-						swp.recreate();
-						goto redraw;
-					}
 					vkDefaultCases;
 				}
 

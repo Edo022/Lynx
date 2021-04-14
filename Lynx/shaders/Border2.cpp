@@ -14,10 +14,10 @@
 namespace lnx::shd{
 
 
-	void Border2::create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32v2, VRam, Storage> pWindowSize, vram::ptr<u32, VRam, Storage> pZBuffer, const u32v3 vGroupCount, Window& pWindow){
+	void Border2::create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32v2, VRam, Storage> pWs, vram::ptr<u32, VRam, Storage> pZBuffer, const u32v3 vGroupCount, Window& pWindow){
 		pWindow.addObject_m.lock();
 			colorOutput_.vdata = (vram::ptr<char, VRam, Storage>)pColorOutput;
-			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWindowSize;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWs;
 			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
 
 			createDescriptorSets();

@@ -18,7 +18,7 @@ const vec4  col = {  0,  1, 0, 1 };
 layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
 ext layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
-ext layout(std430, binding = 1) buffer windowSize_{ uvec2 windowSize; }; //FIXME ?? this should be 2 different values, not a vector
+ext layout(std430, binding = 1) buffer windowSize_{ uvec2 ws; }; //FIXME ?? this should be 2 different values, not a vector
 ext layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
 layout(std140, binding = 3) uniform objData_{
 	vec2 ffp;	 //Position of the top-left corner
@@ -41,7 +41,7 @@ layout(std140, binding = 3) uniform objData_{
 
 //TODO use ordered render and component cache
 void setPixelColor(vec2 pos, vec4 col) {
-	uint i = uint(pos.y) * windowSize.x + uint(pos.x);
+	uint i = uint(pos.y) * ws.x + uint(pos.x);
 
 	zBuffer[i] = -1;
 	colorOutput[i] = col;
@@ -52,9 +52,9 @@ void setPixelColor(vec2 pos, vec4 col) {
 
 
 void rh() {
-	vec2 fp = ffp * windowSize;
+	vec2 fp = ffp * ws;
 
-	vec2 dist = abs(fp - (fsp * windowSize));
+	vec2 dist = abs(fp - (fsp * ws));
 	if(gx > dist.x) return;
 	setPixelColor(pz * gx + fp, col);
 	setPixelColor(fp + vec2(gx, dist.y), col);
@@ -62,9 +62,9 @@ void rh() {
 
 
 void rv() {
-	vec2 fp = ffp * windowSize;
+	vec2 fp = ffp * ws;
 
-	vec2 dist = abs(fp - (fsp * windowSize));
+	vec2 dist = abs(fp - (fsp * ws));
 	if(gx > dist.y) return;
 	setPixelColor(zp * gx + fp, col);
 	setPixelColor(fp + vec2(dist.x, gx), col);
