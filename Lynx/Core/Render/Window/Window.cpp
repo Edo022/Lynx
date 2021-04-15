@@ -98,7 +98,7 @@ namespace lnx{
 		}
 
 
-		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
+		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;

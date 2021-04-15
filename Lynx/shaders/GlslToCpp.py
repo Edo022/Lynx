@@ -321,6 +321,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
+                #TODO WRITE ALL COMMAND BUFFERS AT ONCE
+                #TODO or use multiple descriptor sets for multiple objects, but in the same command buffer
             '\n}',
         '\t'))
 

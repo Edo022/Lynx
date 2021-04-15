@@ -14,35 +14,35 @@ namespace lnx::shd{
 		static uint32 pipelineIndex;
 
 
-		struct src__t : public ShaderElm_b<Storage> {
-			src__t() {
+		struct _src_t : public ShaderElm_b<Storage> {
+			_src_t() {
 				ShaderElm_b::bind = 0;
 			}
-		} src_;
+		} _src;
 
 
-		struct dst__t : public ShaderElm_b<Storage> {
-			dst__t() {
+		struct _dst_t : public ShaderElm_b<Storage> {
+			_dst_t() {
 				ShaderElm_b::bind = 1;
 			}
-		} dst_;
+		} _dst;
 
 
-		struct zBuffer__t : public ShaderElm_b<Storage> {
-			zBuffer__t() {
+		struct _wsize_t : public ShaderElm_b<Storage> {
+			_wsize_t() {
 				ShaderElm_b::bind = 2;
 			}
-		} zBuffer_;
+		} _wsize;
 
 
-		struct windowSize__t : public ShaderElm_b<Storage> {
-			windowSize__t() {
+		struct _zbuff_t : public ShaderElm_b<Storage> {
+			_zbuff_t() {
 				ShaderElm_b::bind = 3;
 			}
-		} windowSize_;
+		} _zbuff;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer, vram::ptr<u32, VRam, Storage> pWidth, const u32v3 vGroupCount, Window& pWindow);
+		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<u32, VRam, Storage> pZbuff, const u32v3 vGroupCount, Window& pWindow);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
 		void updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
