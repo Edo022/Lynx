@@ -76,9 +76,9 @@ static inline constexpr auto sub(const vec4_t<auto>& v) noexcept { return v.x - 
 
 
 #define vec_fun(fun)                                                                                                                \
-    static inline constexpr vec2_t<auto> fun(const vec2_t<auto>& v) noexcept { return { fun(v.x), fun(v.y) }; }                     \
-    static inline constexpr vec3_t<auto> fun(const vec3_t<auto>& v) noexcept { return { fun(v.x), fun(v.y), fun(v.z) }; }           \
-    static inline constexpr vec4_t<auto> fun(const vec4_t<auto>& v) noexcept { return { fun(v.x), fun(v.y), fun(v.z), fun(v.w) }; }
+    static inline constexpr vec2_t<auto> fun(const vec2_t<auto>& v) noexcept { return { ::fun(v.x), ::fun(v.y) }; }                     \
+    static inline constexpr vec3_t<auto> fun(const vec3_t<auto>& v) noexcept { return { ::fun(v.x), ::fun(v.y), ::fun(v.z) }; }           \
+    static inline constexpr vec4_t<auto> fun(const vec4_t<auto>& v) noexcept { return { ::fun(v.x), ::fun(v.y), ::fun(v.z), ::fun(v.w) }; }
 
     vec_fun(abs)    vec_fun(sqrt)   vec_fun(sign)
     vec_fun(sin)    vec_fun(cos)    vec_fun(tan)    vec_fun(sec)    vec_fun(cosec)
