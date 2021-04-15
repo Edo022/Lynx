@@ -49,7 +49,7 @@ def getTypeSize(type_ : str) -> int :
 def createFuncs(members:str, iext:bool) :
     m : str = members.expandtabs(4).strip()
     ret      : str             = ''
-    ext      : tuple(str, str) = None
+    ext      : dict            = None
     iext_    : bool            = False
     maxAlign : int             = 0
 
@@ -102,7 +102,7 @@ def createFuncs(members:str, iext:bool) :
                 offset += align                                             #Calculate raw offset of the next element
             else:                                                       #If the binding is external
                 iext_ = True                                                #Set external binding variable
-                ext = (ttype, _name)                                        #Save binding type and name. They will be used when writing create()
+                ext = dict({'type' : ttype, 'varname': _name})                 #Save binding type and name. They will be used when writing create()
 
             m = m[len(r.group(0)):]                                     #Pop parsed string from source string
             continue                                                    #Keep parsing
@@ -186,7 +186,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n//####################################################################################'
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
-        '\n#include "' + re.sub(r'^.*?\/?Lynx\/(Lynx\/.*$)', r'\g<1>', spath + shname) + '.hpp"'
+        '\n#include "' + re.sub(r'^.*?\/?Lynx\/(Lynx\/.*$)', r'\g<1>', spath + shname) + '.hpp"' #FIXME
         '\n#include "Lynx/Core/AutoInit.hpp"'                       #Auto init
         '\n#include "Lynx/Core/Render/Window/Window.hpp"'              #Window struct
         '\n#include "Lynx/Core/Render/Shaders/Shader.hpp"'
@@ -217,7 +217,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             )                                                       #
             fh.write(indent(decl['decl'], '\t\t'))              #Write members to file
             if _iext:                                           #If it's external, save its data
-                exts.insert(len(exts), (decl['ext'][0], decl['ext'][1], _name))
+                exts.insert(len(exts), { 'vartype': decl['ext']['type'], 'varname' : decl['ext']['varname'], 'bndtype' : ('Storage' if _type == 'buffer' else 'Uniform'), 'bndname' : _name })
             elms.insert(len(elms), { 'type' : _type, 'name' : _name, 'bind' : _bind})
 
             if _type == 'uniform': uniformNum += 1
@@ -225,7 +225,11 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
         fh.write(indent(                                    #Write shader's create functions
             #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
-            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow);'
+            '\n\n\nvoid create(' +
+            ', '.join((
+                'vram::ptr<' + ext['vartype'] + ', VRam, ' + ext['bndtype'] + '> p' +
+                ext['varname'][0].upper() + ext['varname'][1:]
+            ) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow);'
             '\nvoid createDescriptorSets();'
             '\nvoid createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
             '\nvoid updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
@@ -234,9 +238,16 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent(
-            '\n\n\nvoid ' + fname + '::create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
+            '\n\n\nvoid ' + fname + '::create(' +
+            ', '.join((
+                    'vram::ptr<' + ext['vartype'] + ', VRam, ' + ext['bndtype'] + '> p' +
+                    ext['varname'][0].upper() + ext['varname'][1:]
+                )for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
                 '\n\t''pWindow.addObject_m.lock();' +
-                    (''.join(('\n\t\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts)) +
+                    (
+                        ''.join(('\n\t\t' + ext['bndname'] + '.vdata = (vram::ptr<char, VRam, ' + ext['bndtype'] + '>)p' +
+                        ext['varname'][0].upper() + ext['varname'][1:] + ';'
+                    ) for ext in exts)) +
                     '\n'
                     '\n\t\t''createDescriptorSets();'
                     '\n\t\t''createCommandBuffers(vGroupCount, pWindow);'

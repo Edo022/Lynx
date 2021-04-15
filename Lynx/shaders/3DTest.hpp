@@ -35,7 +35,7 @@ namespace lnx::shd{
 		} _data;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pOutcol, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<f32v4, VRam, Storage> pData, const u32v3 vGroupCount, Window& pWindow);
+		void create(vram::ptr<f32v4, VRam, Storage> pOutcol, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<f32v4, VRam, Uniform> pData, const u32v3 vGroupCount, Window& pWindow);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
 		void updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
