@@ -5,7 +5,6 @@
 
 
 
-
 namespace lnxc{
 	//A tridimensional vector
 	//Supports
