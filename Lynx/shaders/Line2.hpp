@@ -23,14 +23,14 @@ namespace lnx::shd{
 
 		struct _wsize_t : public ShaderElm_b<Storage> {
 			_wsize_t() {
-				ShaderElm_b::bind = 2;
+				ShaderElm_b::bind = 1;
 			}
 		} _wsize;
 
 
 		struct _zbuff_t : public ShaderElm_b<Storage> {
 			_zbuff_t() {
-				ShaderElm_b::bind = 3;
+				ShaderElm_b::bind = 2;
 			}
 		} _zbuff;
 

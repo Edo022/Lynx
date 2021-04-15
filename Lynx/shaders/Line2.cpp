@@ -79,7 +79,7 @@ namespace lnx::shd{
 		;
 		writeSets[1] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
-			.setDstBinding      (2)
+			.setDstBinding      (1)
 			.setDescriptorCount (1)
 			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
 			.setPBufferInfo     (&bufferInfo1)
@@ -92,7 +92,7 @@ namespace lnx::shd{
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
-			.setDstBinding      (3)
+			.setDstBinding      (2)
 			.setDescriptorCount (1)
 			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
 			.setPBufferInfo     (&bufferInfo2)
@@ -187,7 +187,7 @@ namespace lnx::shd{
 			;
 
 			bindingLayouts[1] = vk::DescriptorSetLayoutBinding()
-				.setBinding            (2)
+				.setBinding            (1)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
 				.setDescriptorCount    (1)
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
@@ -195,7 +195,7 @@ namespace lnx::shd{
 			;
 
 			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
-				.setBinding            (3)
+				.setBinding            (2)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
 				.setDescriptorCount    (1)
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
