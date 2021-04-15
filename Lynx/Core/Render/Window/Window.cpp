@@ -32,10 +32,14 @@ namespace lnx{
 	void Window::init() {
 		//Create default shaders
 		// CShadersLayouts.resize(ShaderLayout::LNX_DEF_SHADER_NUM);
-		core::c::shaders::createPipeline(LNX_DEF_SHADER_2D_LINE,   shd::Line2::layout, *this);
-		core::c::shaders::createPipeline(LNX_DEF_SHADER_2D_BORDER, shd::Border2::layout, *this);
-		core::c::shaders::createPipeline(LNX_DEF_SHADER_CLEAR,     shd::FloatToIntBuffer::layout, *this);
+		pipelines.resize(core::shaders::pipelineNum);
 
+		// core::shaders::createPipeline(shd::Line2::pipelineIndex,            shd::Line2::layout,            *this);
+		// core::shaders::createPipeline(shd::Border2::pipelineIndex,          shd::Border2::layout,          *this);
+		// core::shaders::createPipeline(shd::FloatToIntBuffer::pipelineIndex, shd::FloatToIntBuffer::layout, *this);
+		for(uint32 i = 0; i < pipelines.count(); ++i){
+			core::shaders::createPipeline(i, *this);
+		}
 
 
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
@@ -94,9 +98,7 @@ namespace lnx{
 		}
 
 
-		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g);
-		sh_clear.createDescriptorSets();
-		sh_clear.createCommandBuffers(LNX_DEF_SHADER_CLEAR, (width * height) / (32 * 32) + 1, 1, 1, *this);
+		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;
@@ -116,12 +118,7 @@ namespace lnx{
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
 				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
 		}
 
 
@@ -131,24 +128,14 @@ namespace lnx{
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
 				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
 				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
 
 
 
@@ -160,12 +147,7 @@ namespace lnx{
 					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
 				;
 				//Start recording commands
-				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){
-					case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-					case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-					case vk::Result::eSuccess: break;
-					default: dbg::printError("Unknown result");
-				}
+				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases; }
 					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
 					readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
 					vk::PipelineStageFlags 													//Create stage flags
@@ -185,7 +167,7 @@ namespace lnx{
 						dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;			//Change it to color output to present them
 					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
-				copyCommandBuffers[imgIndex].end();										//End command buffer recording
+				switch(copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
 			}
 		}
 	}

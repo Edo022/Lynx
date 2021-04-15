@@ -20,7 +20,7 @@ def run(dir):
 	#Update tasks.json
 	with open('./.vscode/tasks.json', 'r') as f:
 		s = re.sub(r'("args"\s*:\s*\[\s*"-mode=)[l|w][d|r|s]"', r'\g<1>' + opts.pf() + opts.tp() + '"',
-			re.sub(r'("label"\s*:\s*")\w+  \|  \w+(  \|  Build \w+")', r'\g<1>' + getPf() + '  |  ' + getTp() + r'\g<2>',
+			re.sub(r'("label"\s*:\s*")\w+  \|  \w+(  \|  Build (\w| )+")', r'\g<1>' + getPf() + '  |  ' + getTp() + r'\g<2>',
 			re.sub(r'("label"\s*:\s*" > Switch to )(Linux|Windows)("(.|\n)*?"Lynx\/Setup\/SetPlatform\.py"\s*,\s*")(l|w)"', r'\g<1>' + ("Windows" if opts.pf() == "l" else "Linux") + r'\g<3>' + ('w' if opts.pf() == 'l' else 'l') + '"',
 			re.sub(r'("label"\s*:\s*" > Switch to )(Debug|Release)("(.|\n)*?"Lynx\/Setup\/SetType' r'\.py"\s*,\s*")(d|r)"', r'\g<1>' + ("Release" if opts.tp() == "d" else "Debug") + r'\g<3>' + ('r' if opts.tp() == 'd' else 'd') + '"',
 		f.read()))))
@@ -31,4 +31,15 @@ def run(dir):
 
 	#Update debug macro
 	with open('./.engine/conf.hpp', 'w') as f:
-		f.write('#define ' + ('LNX_DEBUG' if opts.tp() == 'd' else ''))
+		f.write(
+	        '\n//####################################################################################'
+        	'\n// This file was generated automatically. Changes could be overwritten without notice'
+        	'\n//####################################################################################\n'
+			'\n\n'
+			'\n#pragma once'
+			'\n#ifndef __INTELLISENSE__'
+				'\n\t#error "Something went wrong. This header cannot be used during compilation"'
+			'\n#endif'
+			'\n'
+		)
+		f.write('\n#define ' + ('LNX_DEBUG' if opts.tp() == 'd' else 'LNX_RELEASE'))

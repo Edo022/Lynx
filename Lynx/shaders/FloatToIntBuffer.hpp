@@ -11,6 +11,7 @@
 namespace lnx::shd{
 	struct FloatToIntBuffer : public Shader_b {
 		static Shader_b::Layout layout;
+		static uint32 pipelineIndex;
 
 
 		struct src__t : public ShaderElm_b<Storage> {
@@ -41,17 +42,10 @@ namespace lnx::shd{
 		} windowSize_;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer, vram::ptr<u32, VRam, Storage> pWidth){
-			src_.vdata = (vram::ptr<char, VRam, Storage>)pSrc;
-			dst_.vdata = (vram::ptr<char, VRam, Storage>)pDst;
-			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
-			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWidth;
-		}
-
-
+		void create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32, VRam, Storage> pZBuffer, vram::ptr<u32, VRam, Storage> pWidth, const u32v3 vGroupCount, Window& pWindow);
 		void createDescriptorSets();
-		void createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
-		void updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);
+		void createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
+		void updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
 		void destroy();
 	};
 }//TODO remove local data in external bindings

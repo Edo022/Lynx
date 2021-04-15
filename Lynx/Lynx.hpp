@@ -25,7 +25,10 @@ namespace lnx{
         core::running = false;
 
         core::inputThr.join();
-        core::dvc::graphics.LD.waitIdle();
+        switch(core::dvc::graphics.LD.waitIdle()){
+			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+			vkDefaultCases;
+        }
 
         core::render::cleanup();
         core::dvc::instance.destroy(nullptr);

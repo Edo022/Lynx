@@ -35,7 +35,7 @@ namespace lnx{
 
 
 		// RtArray<LnxShaderLayout_t>	CShadersLayouts;
-		vk::Pipeline pipelines[ShaderLayout::LNX_DEF_SHADER_NUM];
+		RtArray<vk::Pipeline> pipelines;
 		vk::CommandPool commandPool;
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;

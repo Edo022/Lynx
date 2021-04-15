@@ -179,6 +179,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\nnamespace lnx::shd{'                                             #Write namespace and struct declaration
         '\n\tstruct ' + fname + ' : public Shader_b {'
         '\n\t\tstatic Shader_b::Layout layout;'
+        '\n\t\tstatic uint32 pipelineIndex;'
     )
     fc.write(                                           #Write to file
         '\n//####################################################################################'
@@ -222,18 +223,29 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             else: storageNum += 1
 
         fh.write(indent(                                    #Write shader's create functions
-            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + '){' +
-            ''.join(('\n\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts) +
-            '\n}'
-            '\n\n\nvoid createDescriptorSets();'
-            '\nvoid createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
-            '\nvoid updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow);'
+            #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
+            '\n\n\nvoid create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow);'
+            '\nvoid createDescriptorSets();'
+            '\nvoid createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
+            '\nvoid updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
             '\nvoid destroy();',
         '\t\t'))
 
 
         fc.write(indent(
-            '\n\n\nvoid ' + fname + '::createDescriptorSets(){ //FIXME REMOVE LAYOUT'
+            '\n\n\nvoid ' + fname + '::create(' + ', '.join(('vram::ptr<' + ext[0] + ', VRam, Storage> p' + ext[1][0].upper() + ext[1][1:]) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
+                '\n\t''pWindow.addObject_m.lock();' +
+                    (''.join(('\n\t\t' + ext[2] + '.vdata = (vram::ptr<char, VRam, Storage>)p' + ext[1][0].upper() + ext[1][1:] + ';') for ext in exts)) +
+                    '\n'
+                    '\n\t\t''createDescriptorSets();'
+                    '\n\t\t''createCommandBuffers(vGroupCount, pWindow);'
+                    '\n\t\t''pWindow.swp.shadersCBs.add(commandBuffers[0]);'
+                '\n\t''pWindow.addObject_m.unlock();'
+            '\n}',
+        '\t'))
+
+        fc.write(indent(
+            '\n\n\nvoid ' + fname + '::createDescriptorSets(){'
                 '\n\t''vk::DescriptorPoolSize sizes[2] = {'
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(' + str(storageNum) + '),' + (
                     '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(' + str(uniformNum) + ')'
@@ -247,10 +259,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t;'
                 '\n\t''switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
         	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;'
-        	        '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
-			        '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
-			        '\n\t\t''case vk::Result::eSuccess: break;'
-			        '\n\t\t''default: dbg::printError("Unknown result");'
+        	        '\n\t\t''vkDefaultCases;'
                 '\n\t''}'
                 '\n\n\n'
                 '\n\t''auto allocateSetInfo = vk::DescriptorSetAllocateInfo()'
@@ -261,10 +270,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t''switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
         	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;'
         	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;'
-        	        '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
-			        '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
-			        '\n\t\t''case vk::Result::eSuccess: break;'
-			        '\n\t\t''default: dbg::printError("Unknown result");'
+        	        '\n\t\t''vkDefaultCases;'
                 '\n\t''}'
                 '\n\n\n' +
                 '\n\t''vk::WriteDescriptorSet writeSets[' + str(len(elms)) + '];' +
@@ -288,38 +294,33 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT'
+            '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
                     '\n\t\t''.setCommandPool        (pWindow.commandPool)'
                     '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
                 '\n\t''commandBuffers.resize(1);'
-                '\n\t''switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){'
-                    '\n\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
-                    '\n\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
-                    '\n\t\t''case vk::Result::eSuccess: break;'
-                    '\n\t\t''default: dbg::printError("Unknown result");'
-                '\n\t''}'
+                '\n\t''switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }'
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-                '\n\t''commandBuffers[0].begin(beginInfo);'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);'
+                '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + shname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
-                '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
-                '\n\t''commandBuffers[0].end();'
+                '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
+                '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
             '\n}',
         '\t'))
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){'
+            '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-                '\n\t''commandBuffers[0].begin(beginInfo);'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);'
+                '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + shname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + shname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
-                '\n\t''commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);'
-                '\n\t''commandBuffers[0].end();'
+                '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
+                '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
             '\n}',
         '\t'))
 
@@ -335,7 +336,10 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nShader_b::Layout ' + shname + '::layout;'
+            '\nuint32 ' + shname + '::pipelineIndex = core::shaders::pipelineNum++;'
             '\nLnxAutoInit(LNX_H_' + shname.upper() + '){'
+                '\n\t''core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);'
+                '\n\t''core::shaders::pipelineLayouts[' + shname + '::pipelineIndex] = &' + shname + '::layout;'
                 '\n\t{ //Create descriptor set layout'
                     '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
                     '\n'.join((
@@ -353,12 +357,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setPBindings    (bindingLayouts)'
                     '\n\t\t;'
                     '\n\t\t//Create the descriptor set layout'
-                    '\n\t\tswitch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout)){'
-        		        '\n\t\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
-			            '\n\t\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
-			            '\n\t\t\t''case vk::Result::eSuccess: break;'
-			            '\n\t\t\t''default: dbg::printError("Unknown result");'
-                    '\n\t\t''}'
+                    '\n\t\tswitch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + shname + '::layout.descriptorSetLayout)){ vkDefaultCases; }'
                 '\n\t}'
                 '\n'
                 '\n'
@@ -366,8 +365,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t{ //Create pipeline layout'
                     '\n\t\tuint64 fileLength = 0;'
-                    '\n\t\tuint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
-                    '\n\t\t' + shname + '::layout.shaderModule = core::c::shaders::createModule(core::dvc::graphics.LD, code, fileLength);'
+                    '\n\t\tuint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
+                    '\n\t\t' + shname + '::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.LD, code, fileLength);'
                     '\n'
                     '\n\t\t' + shname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
                         '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'
@@ -379,12 +378,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setSetLayoutCount (1)'
                         '\n\t\t\t.setPSetLayouts    (&' + shname + '::layout.descriptorSetLayout)'
                     '\n\t\t;'
-                    '\n\t\tswitch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout)){'
-        		        '\n\t\t\t''case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;'
-			            '\n\t\t\t''case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;'
-			            '\n\t\t\t''case vk::Result::eSuccess: break;'
-			            '\n\t\t\t''default: dbg::printError("Unknown result");'
-                    '\n\t\t''}'
+                    '\n\t\tswitch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + shname + '::layout.pipelineLayout)){ vkDefaultCases; }'
                 '\n\t}'
             '\n}',
         '\t'))
