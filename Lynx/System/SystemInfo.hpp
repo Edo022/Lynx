@@ -1,4 +1,5 @@
 #pragma once
+#define LUX_H_SYSTEM_INFO
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/macros.hpp"
@@ -24,7 +25,7 @@ namespace lnx::sys{
     struct RamInfo{
         // uint32 freq;        //Frequence of the memory in Mhz
         // uint32 config;      //Configuration: 1 = single channel, 2 = dual channel, 4 = quad channel
-        uint32 pageNum;         //Number of memory pages
+        uint64 pageNum;         //Number of memory pages
         uint64 pageSize;        //Size of each memory page in bytes
         uint64 size;            //Total size of the memory in bytes (pageNum * pageSize)
     };

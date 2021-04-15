@@ -10,14 +10,15 @@
 
 
 
-namespace lnx::core::c::shaders{
+namespace lnx::core::shaders{
 	alignCache String shaderPath;
-
+	alignCache uint32 pipelineNum = 0;
+	alignCache RtArray<shd::Shader_b::Layout*> pipelineLayouts;
 
 
 
 	LnxAutoInit(LNX_H_SHADER){
-		c::shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
+		shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
@@ -78,13 +79,10 @@ namespace lnx::core::c::shaders{
 		vk::ShaderModule shaderModule;									//Create the shader module
 		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
 			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			vkDefaultCases;
 		}
 
-		free(pCode);													//#LLID CSF0000 Free memory
+		// free(pCode);													//#LLID CSF0000 Free memory //BUG
 		return shaderModule;											//Return the created shader module
 	}
 
@@ -105,23 +103,27 @@ namespace lnx::core::c::shaders{
 
 
 	/**
-	 * @brief reates the descriptor sets layout, the pipeline and the pipeline layout of a shader
-	 * @param vRenderShader the type of the shader
-	 * @param pCellNum The number of cells to bind to the shader. The shader inputs must match those cells
-	 * @param pIsReadOnly //FIXME REMOVE
-	 *///FIXME CREATE LAYOUTS IN GENERATED SHADERS .CPPs
-	void createPipeline(const ShaderLayout vLayout, shd::Shader_b::Layout& layout_, Window& pWindow) {
-		pWindow.pipelines[vLayout] = dvc::compute.LD.createComputePipeline(
-			nullptr,
-			vk::ComputePipelineCreateInfo()
-				.setStage  (layout_.shaderStageCreateInfo)		//Use the previously created shader stage creation infos
-				.setLayout (layout_.pipelineLayout)				//Use the previously created pipeline layout
-			,
-			nullptr
-		).value;
-		core::dvc::compute.LD.destroyShaderModule(layout_.shaderModule, nullptr); //TODO move to shader implementation
-	}
+	 * @brief Creates a compute pipeline in the pipeline array of the window
+	 * @param vPipelineIndex The index of the pipeline
+	 * @param pWindow The window in which to create the pipeline
+	 */
+	void createPipeline(const uint32 vPipelineIndex, Window& pWindow) {
+		auto pipelineInfo = vk::ComputePipelineCreateInfo()
+			.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)
+			.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)
+		;
+		auto r = dvc::graphics.LD.createComputePipeline(nullptr, pipelineInfo, nullptr);
 
+
+		switch(r.result){
+			case vk::Result::ePipelineCompileRequiredEXT: dbg::printWarning("Pipeline compile required"); [[fallthrough]];
+			case vk::Result::eSuccess: pWindow.pipelines[vPipelineIndex] = r.value; break;
+			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
+			vkDefaultFaulures;
+		}
+		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr);
+		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
+	}
 
 
 

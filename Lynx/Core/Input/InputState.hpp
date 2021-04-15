@@ -39,17 +39,17 @@ namespace lnx::input{
 
 
 
-	struct InputState {
-		lnx::RtArray<KeySequence, uint16> sequences;		//The sequences of keys
-		bool sorted = false;					//Whether the sequence is sorted or not
+	// struct InputState {
+	// 	lnx::RtArray<KeySequence, uint16> sequences;		//The sequences of keys
+	// 	bool sorted = false;					//Whether the sequence is sorted or not
 
-		//TODO use ExecFuncData
-		//Initializes the input state with a list of key sequences and sorts them
-		InputState(std::initializer_list<KeySequence> c) {
-			sequences = c;
-			sort();
-		}
+	// 	//TODO use ExecFuncData
+	// 	//Initializes the input state with a list of key sequences and sorts them
+	// 	InputState(std::initializer_list<KeySequence> c) {
+	// 		sequences = c;
+	// 		sort();
+	// 	}
 
-		void sort();
-	};
+	// 	void sort();
+	// };
 }

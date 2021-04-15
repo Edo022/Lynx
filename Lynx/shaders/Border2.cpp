@@ -14,7 +14,20 @@
 namespace lnx::shd{
 
 
-	void Border2::createDescriptorSets(){ //FIXME REMOVE LAYOUT
+	void Border2::create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32v2, VRam, Storage> pWs, vram::ptr<u32, VRam, Storage> pZBuffer, const u32v3 vGroupCount, Window& pWindow){
+		pWindow.addObject_m.lock();
+			colorOutput_.vdata = (vram::ptr<char, VRam, Storage>)pColorOutput;
+			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWs;
+			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
+
+			createDescriptorSets();
+			createCommandBuffers(vGroupCount, pWindow);
+			pWindow.swp.shadersCBs.add(commandBuffers[0]);
+		pWindow.addObject_m.unlock();
+	}
+
+
+	void Border2::createDescriptorSets(){
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
@@ -25,12 +38,9 @@ namespace lnx::shd{
 			.setPoolSizeCount (2)
 			.setPPoolSizes    (sizes)
 		;
-		switch(core::dvc::compute.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
+		switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
 			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			vkDefaultCases;
 		}
 
 
@@ -40,13 +50,10 @@ namespace lnx::shd{
 			.setDescriptorSetCount (1)
 			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
 		;
-		switch(core::dvc::compute.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
+		switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
 			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
+			vkDefaultCases;
 		}
 
 
@@ -103,7 +110,7 @@ namespace lnx::shd{
 			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
 			.setPBufferInfo     (&bufferInfo3)
 		;
-		core::dvc::compute.LD.updateDescriptorSets(4, writeSets, 0, nullptr);
+		core::dvc::graphics.LD.updateDescriptorSets(4, writeSets, 0, nullptr);
 	}
 
 
@@ -113,26 +120,21 @@ namespace lnx::shd{
 
 
 
-	void Border2::createCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){ //FIXME REMOVE LAYOUT
+	void Border2::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pWindow.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		switch(core::dvc::compute.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-			case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-			case vk::Result::eSuccess: break;
-			default: dbg::printError("Unknown result");
-		}
+		switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
+		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[Border2::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
-		commandBuffers[0].end();
+		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
+		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
 
 
@@ -142,13 +144,13 @@ namespace lnx::shd{
 
 
 
-	void Border2::updateCommandBuffers(const ShaderLayout vShaderLayout, const uint32 vGroupCountX, const uint32 vGroupCountY, const uint32 vGroupCountZ, Window& pWindow){
+	void Border2::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-		commandBuffers[0].begin(beginInfo);
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[vShaderLayout]);
+		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[Border2::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch           (vGroupCountX, vGroupCountY, vGroupCountZ);
-		commandBuffers[0].end();
+		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
+		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
 
 
@@ -170,7 +172,10 @@ namespace lnx::shd{
 
 
 	Shader_b::Layout Border2::layout;
+	uint32 Border2::pipelineIndex = core::shaders::pipelineNum++;
 	LnxAutoInit(LNX_H_BORDER2){
+		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
+		core::shaders::pipelineLayouts[Border2::pipelineIndex] = &Border2::layout;
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
@@ -210,12 +215,7 @@ namespace lnx::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::compute.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -223,8 +223,8 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::c::shaders::loadSpv(&fileLength, (core::c::shaders::shaderPath + "Border2.spv").begin());
-			Border2::layout.shaderModule = core::c::shaders::createModule(core::dvc::compute.LD, code, fileLength);
+			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Border2.spv").begin());
+			Border2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.LD, code, fileLength);
 
 			Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
@@ -236,12 +236,7 @@ namespace lnx::shd{
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&Border2::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::compute.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
-				case vk::Result::eErrorOutOfHostMemory:   dbg::printError("Out of host memory");   break;
-				case vk::Result::eSuccess: break;
-				default: dbg::printError("Unknown result");
-			}
+			switch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

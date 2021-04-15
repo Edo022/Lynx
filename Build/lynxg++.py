@@ -117,7 +117,7 @@ vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
 gwdep:str = enginePath + '/deps/Shared/GLFW'
 
 cmdg = ['g++', '-std=c++2a', '-pthread']                        #Base options
-cmdg += ['-DGLM_FORCE_RADIANS', '-DGLM_FORCE_DEPTH_ZERO_TO_ONE']#Define vulkan macros
+cmdg += ['-include', 'Lynx/Core/VkDef.hpp']
 if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lnx debug checks when in debug mode
 
 if cd == 'u': cmdg += [                                         #When building user application

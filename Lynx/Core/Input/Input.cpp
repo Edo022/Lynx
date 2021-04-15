@@ -13,7 +13,7 @@
 
 
 namespace lnx::input{
-	InputState* inStates;
+	// InputState* inStates;
 
 
 
