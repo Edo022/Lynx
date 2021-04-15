@@ -38,13 +38,13 @@ namespace lnxc{
     typedef vec3_t<u16> u16v3, uint16v3;    //Three-dimentional uint16 vector
     typedef vec4_t<u16> u16v4, uint16v4;    // Four-dimentional uint16 vector
 
-    typedef vec2_t<u32> u32v2, unt32v2;     //  Two-dimentional int32 vector
-    typedef vec3_t<u32> u32v3, unt32v3;     //Three-dimentional int32 vector
-    typedef vec4_t<u32> u32v4, unt32v4;     // Four-dimentional int32 vector
+    typedef vec2_t<u32> u32v2, uint32v2;     //  Two-dimentional int32 vector
+    typedef vec3_t<u32> u32v3, uint32v3;     //Three-dimentional int32 vector
+    typedef vec4_t<u32> u32v4, uint32v4;     // Four-dimentional int32 vector
 
-    typedef vec2_t<u64> u64v2, unt64v2;     //  Two-dimentional int64 vector
-    typedef vec3_t<u64> u64v3, unt64v3;     //Three-dimentional int64 vector
-    typedef vec4_t<u64> u64v4, unt64v4;     // Four-dimentional int64 vector
+    typedef vec2_t<u64> u64v2, uint64v2;     //  Two-dimentional int64 vector
+    typedef vec3_t<u64> u64v3, uint64v3;     //Three-dimentional int64 vector
+    typedef vec4_t<u64> u64v4, uint64v4;     // Four-dimentional int64 vector
 
 
 
