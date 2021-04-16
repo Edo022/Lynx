@@ -10,7 +10,8 @@ namespace lnx::obj{
 			pWindow.fOut_g,
 			pWindow.wSize_g,
 			pWindow.zBuff_g,
-			{ pWindow.swp.createInfo.imageExtent.width / 32 + 1, 1u, 1u }, //FIXME UPDATE WITH WINDOW OR USE WINDOW SIZE BUFFER PROPERLY. or just run once for any border and use the maximum size
+			// { pWindow.swp.createInfo.imageExtent.width / 32 + 1, 1u, 1u }, //FIXME UPDATE WITH WINDOW OR USE WINDOW SIZE BUFFER PROPERLY. or just run once for any border and use the maximum size
+			{ 1u, 1u, 1u }, //FIXME UPDATE WITH WINDOW OR USE WINDOW SIZE BUFFER PROPERLY. or just run once for any border and use the maximum size
 			pWindow
 		);
 	}

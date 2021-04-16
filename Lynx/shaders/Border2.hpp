@@ -35,8 +35,8 @@ namespace lnx::shd{
 		} _zbuff;
 
 
-		struct objData__t : public ShaderElm_b<Uniform> {
-			objData__t() {
+		struct _data_t : public ShaderElm_b<Uniform> {
+			_data_t() {
 				ShaderElm_b::vdata.realloc(256);
 				ShaderElm_b::data.realloc(256);
 				ShaderElm_b::bind = 3;
@@ -47,7 +47,7 @@ namespace lnx::shd{
 			alwaysInline f32v2& fsp() { return *(f32v2*)(ShaderElm_b::data + 8); }
 			//TODO
 			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 16); }
-		} objData_;
+		} _data;
 
 
 		void create(vram::ptr<f32v4, VRam, Storage> pOutcol, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<u32, VRam, Storage> pZbuff, const u32v3 vGroupCount, Window& pWindow);

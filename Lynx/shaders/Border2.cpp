@@ -99,9 +99,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo3 = vk::DescriptorBufferInfo()
-			.setBuffer (objData_.vdata.cell->csc.buffer)
-			.setOffset (objData_.vdata.cell->localOffset)
-			.setRange  (objData_.vdata.cell->cellSize)
+			.setBuffer (_data.vdata.cell->csc.buffer)
+			.setOffset (_data.vdata.cell->localOffset)
+			.setRange  (_data.vdata.cell->cellSize)
 		;
 		writeSets[3] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)

@@ -14,7 +14,7 @@ ext layout(std430, binding = 0) buffer _outcol{ vec4 outcol[]; };
 ext layout(std430, binding = 1) buffer _wsize{ uvec2 wsize; };
 ext layout(std430, binding = 2) buffer _zbuff{ uint zbuff[]; };
 
-layout(std140, binding = 3) uniform objData_{
+layout(std140, binding = 3) uniform _data{
 	vec2 ffp;	 //Position of the top-left corner
 	vec2 fsp;	 //Position of the bottom-right corner
 	uint ID;	 //TODO
@@ -35,32 +35,14 @@ void setPixel(vec2 pos, vec4 col) {
 
 
 
-
-
-void rh() {
-	vec2 fp = ffp * wsize;
-
-	vec2 dist = abs(fp - (fsp * wsize));
-	if(gx > dist.x) return;
-	setPixel(( 1, 0 ) * gx + fp, col);
-	setPixel(fp + vec2(gx, dist.y), col);
-}
-
-
-void rv() {
-	vec2 fp = ffp * wsize;
-
-	vec2 dist = abs(fp - (fsp * wsize));
-	if(gx > dist.y) return;
-	setPixel(( 0, 1 ) * gx + fp, col);
-	setPixel(fp + vec2(dist.x, gx), col);
-}
-
-
-
-
 //TODO use pre calculated workgroup count
 void main() {
-	rh();
-	rv();
+	for(int x = int(ffp.x * wsize.x); x < fsp.x * wsize.x; ++x){
+		setPixel(vec2(x, 0), col);
+		setPixel(vec2(x, fsp.y * wsize.y), col);
+	}
+	for(int y = int(ffp.y * wsize.y); y < fsp.y * wsize.y; ++y){
+		setPixel(vec2(0, y), col);
+		setPixel(vec2(fsp.x * wsize.x, y), col);
+	}
 }
