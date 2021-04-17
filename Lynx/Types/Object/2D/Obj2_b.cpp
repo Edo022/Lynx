@@ -25,7 +25,6 @@ namespace lnx::obj{
 
 
 	void Obj2_b::onSpawn(Window& pWindow) {
-		sleep(1000); //BUG REMOVE
         render.parentWindow = &pWindow;                         //BUG OVER
         for(u32 i = 0; i < children.count(); ++i){              //BUG OVER
             if(children.isValid(i)) children[i]->onSpawn(pWindow); //BUG >IN >OUT >IN >OUT >IN

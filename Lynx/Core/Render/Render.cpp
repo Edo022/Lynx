@@ -203,7 +203,8 @@ namespace lnx{
 			spawn_m.lock();
 			if(spawn_q.count()){
 				for(uint32 i = 0; i < spawn_q.count(); ++i){
-					if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this);
+					if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this); //BUG
+					// if(spawn_q.isValid(i)) spawn_q[i];
 				}
 				spawn_q.clear();
 			}
