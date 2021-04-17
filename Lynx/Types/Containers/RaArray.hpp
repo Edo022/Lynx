@@ -437,7 +437,7 @@ namespace lnx {
 
 
 
-		/*alwaysInline*/neverInline type& operator[](const iter vIndex) const {
+		alwaysInline type& operator[](const iter vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Accessing deleted array element");
@@ -459,12 +459,20 @@ namespace lnx {
 
 
 
+		//TODO ADD SIZE
 
-		//TODO a dd size
-		alwaysInline iter     count() const { checkInit(); return count_;         } //Returns the number of elements in the map, including the free ones
-		alwaysInline bool     empty() const { checkInit(); return !count();       } //Returns true if the array has 0 elements
-		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; } //Returns the number of used elements
-		alwaysInline iter freeCount() const { checkInit(); return free_;          } //Returns the number of free elements
+		//Returns the number of elements in the map, including the free ones
+		alwaysInline iter count() const { checkInit(); return count_; }
+
+		//Returns true if the array has no used elements. Equivalent to .usedCount() == 0
+		alwaysInline bool empty() const { checkInit(); return !usedCount(); }
+
+		//Returns the number of used elements
+		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; }
+
+		//Returns the number of free elements
+		alwaysInline iter freeCount() const { checkInit(); return free_; }
+
 		alwaysInline Iterator begin() const { checkInit(); if(empty()) return { nullptr }; else return { data }; }
 		alwaysInline Iterator   end() const { checkInit(); if(empty()) return { nullptr }; else return { data + count_ }; }
 	};

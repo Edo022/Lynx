@@ -186,9 +186,17 @@ namespace lnx{
 
 
 
+	void Window::qSpawn(obj::Obj2_b* pObject){
+		spawn_m.lock();
+		spawn_q.add(pObject);
+		spawn_m.unlock();
+	}
+
 
 	void Window::spawn(obj::RenderSpace2* pRenderSpace) {
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
+		// sleep(500); //BUG REMOVE
 		pRenderSpace->onSpawn(*this);			//BUG >IN
+		//! Hours spent on this bug: 142
 	}
 }

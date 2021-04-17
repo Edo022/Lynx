@@ -11,7 +11,8 @@ namespace lnx::obj {
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));
 		pObj->qHierarchy();
-		if(render.parentWindow) pObj->onSpawn(*render.parentWindow);
+		// if(render.parentWindow) pObj->onSpawn(*render.parentWindow); //BUG UNQUEUED SPAWN CAUSED RACE CONDITION
+		if(render.parentWindow) render.parentWindow->qSpawn(pObj);
 		return pObj->common.childIndex;
 	}
 
