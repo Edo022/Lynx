@@ -43,6 +43,9 @@ namespace lnx{
 		std::mutex addObject_m;
 
 		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
+		RaArray<obj::Obj2_b*> spawn_q;
+		std::mutex spawn_m;
+		void qSpawn(obj::Obj2_b* pObject);
 		void spawn(obj::RenderSpace2* pRenderSpace);
 		RtArray<obj::Base*>	objUpdates;
 		std::mutex          objUpdates_m;

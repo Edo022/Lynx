@@ -199,6 +199,17 @@ namespace lnx{
 
 			//TODO parallelize work from a secondary render thread
 
+			//Fix object spawn requests
+			spawn_m.lock();
+			if(spawn_q.count()){
+				for(uint32 i = 0; i < spawn_q.count(); ++i){
+					if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this);
+				}
+			}
+			spawn_m.unlock();
+
+
+
 
 			//Input callbacks
 			if(icQueues.onClick.queued){
