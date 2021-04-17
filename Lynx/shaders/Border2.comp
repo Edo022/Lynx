@@ -37,11 +37,15 @@ void setPixel(vec2 pos, vec4 col) {
 
 //TODO use pre calculated workgroup count
 void main() {
-	for(int x = int(ffp.x * wsize.x); x < fsp.x * wsize.x; ++x){
+	ivec2 fp = ivec2(ffp * wsize);
+	ivec2 sp = ivec2(fsp * wsize);
+	ivec2 len = ivec2(wsize / gl_WorkGroupSize.x);
+
+	for(int x = fp.x; x < sp.x; ++x){
 		setPixel(vec2(x, 0), col);
 		setPixel(vec2(x, fsp.y * wsize.y), col);
 	}
-	for(int y = int(ffp.y * wsize.y); y < fsp.y * wsize.y; ++y){
+	for(int y = fp.y; y < sp.y; ++y){
 		setPixel(vec2(0, y), col);
 		setPixel(vec2(fsp.x * wsize.x, y), col);
 	}

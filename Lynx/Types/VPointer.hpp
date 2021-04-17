@@ -162,7 +162,7 @@ namespace lnx::vram{
 		alwaysInline void operator=(const ptr<type, loc, btype>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			Super::cell = vAlloc.cell; //vAlloc.cell = nullptr;
-			//!                          ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
+			//!                          ^ //TODO
 		}
 
 
