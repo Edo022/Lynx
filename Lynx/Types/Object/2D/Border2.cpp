@@ -13,5 +13,6 @@ namespace lnx::obj{
 			{ 4u, 1u, 1u }, //FIXME UPDATE WITH WINDOW OR USE WINDOW SIZE BUFFER PROPERLY. or just run once for any border and use the maximum size
 			pWindow
 		);
+		//BUG^ UNCOMMENT
 	}
 }

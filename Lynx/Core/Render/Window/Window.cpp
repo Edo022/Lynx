@@ -197,6 +197,6 @@ namespace lnx{
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
 		// sleep(500); //BUG REMOVE
 		pRenderSpace->onSpawn(*this);			//BUG >IN
-		//! Hours spent on this bug: 142
+		//! Hours spent on this bug: 143
 	}
 }

@@ -10,5 +10,6 @@ namespace lnx::obj{
 	void Line2::onSpawn(Window& pWindow) {
 		Obj2_b::onSpawn(pWindow); //Initialize all the children
 		data.create(pWindow.fOut_g, pWindow.wSize_g, pWindow.zBuff_g, { 512u, 1u, 1u }, pWindow); //FIXME CALCULATE GROUP SIZE AT RUNTIME
+		//BUG^ UNCOMMENT
 	}
 }
