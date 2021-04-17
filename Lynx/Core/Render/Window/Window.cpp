@@ -85,9 +85,9 @@ namespace lnx{
 			wSize_g.realloc(/*4 * 2*/16);				//Create cell for window size
 			//FIXME rounded up to a multiple of 16, make it automatic
 
-			u32 wSize[2] = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
+			u32v2 wSize = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, wSize);
+			cb.updateBuffer(wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, &wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 			//FIXME AUTOMATIZE BUFFER UPDATE
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
@@ -98,7 +98,7 @@ namespace lnx{
 		}
 
 
-		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
+		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;

@@ -8,14 +8,14 @@ namespace lnx::obj{
 	void Obj2_b::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
 		if(!debug && debugBorder) {
-			debugBorder->data.objData_.ffp() = vMinLim;
+			debugBorder->data._data.ffp() = vMinLim;
 			debugBorder->qHierarchy();
 		}
 	}
 	void Obj2_b::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
 		if(!debug && debugBorder) {
-			debugBorder->data.objData_.fsp() = vMaxLim;
+			debugBorder->data._data.fsp() = vMaxLim;
 			debugBorder->qHierarchy();
 		}
 	}

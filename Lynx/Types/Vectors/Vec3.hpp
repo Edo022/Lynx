@@ -11,7 +11,6 @@ namespace lnxc{
 	//   +, *, -, /, =, ==, *=, +=, -=, /=, %, %= operations with all types of vectors or values
 	//   dist, dist3D, absv, signv, length functions with vectors of the same type
 	//== operator does not perform any type cast
-
 	template<class t> struct vec3_t : vec_b {
 		t x = 0;
 		t y = 0;

@@ -38,20 +38,16 @@ namespace lnxc{
     typedef vec3_t<u16> u16v3, uint16v3;    //Three-dimentional uint16 vector
     typedef vec4_t<u16> u16v4, uint16v4;    // Four-dimentional uint16 vector
 
-    typedef vec2_t<u32> u32v2, uint32v2;    //  Two-dimentional uint32 vector
-    typedef vec3_t<u32> u32v3, uint32v3;    //Three-dimentional uint32 vector
-    typedef vec4_t<u32> u32v4, uint32v4;    // Four-dimentional uint32 vector
+    typedef vec2_t<u32> u32v2, uint32v2;     //  Two-dimentional int32 vector
+    typedef vec3_t<u32> u32v3, uint32v3;     //Three-dimentional int32 vector
+    typedef vec4_t<u32> u32v4, uint32v4;     // Four-dimentional int32 vector
 
-    typedef vec2_t<u64> u64v2, uint64v2;    //  Two-dimentional uint64 vector
-    typedef vec3_t<u64> u64v3, uint64v3;    //Three-dimentional uint64 vector
-    typedef vec4_t<u64> u64v4, uint64v4;    // Four-dimentional uint64 vector
-
-
+    typedef vec2_t<u64> u64v2, uint64v2;     //  Two-dimentional int64 vector
+    typedef vec3_t<u64> u64v3, uint64v3;     //Three-dimentional int64 vector
+    typedef vec4_t<u64> u64v4, uint64v4;     // Four-dimentional int64 vector
 
 
-    typedef vec2_t<bool> bv2, boolv2;        //  Two-dimentional bool vector
-    typedef vec3_t<bool> bv3, boolv3;        //Three-dimentional bool vector
-    typedef vec4_t<bool> bv4, boolv4;        // Four-dimentional bool vector
+
 
     typedef vec2_t<f32> f32v2, float32v2;   //  Two-dimentional float32 vector
     typedef vec3_t<f32> f32v3, float32v3;   //Three-dimentional float32 vector
@@ -60,6 +56,10 @@ namespace lnxc{
     typedef vec2_t<f64> f64v2, float64v2;   //  Two-dimentional float64 vector
     typedef vec3_t<f64> f64v3, float64v3;   //Three-dimentional float64 vector
     typedef vec4_t<f64> f64v4, float64v4;   // Four-dimentional float64 vector
+
+    typedef vec2_t<bool> bv2, boolv2;        //  Two-dimentional bool vector
+    typedef vec3_t<bool> bv3, boolv3;        //Three-dimentional bool vector
+    typedef vec4_t<bool> bv4, boolv4;        // Four-dimentional bool vector
 
 
 
@@ -73,9 +73,15 @@ namespace lnxc{
     static inline constexpr auto sub(const vec4_t<auto>& v) noexcept { return v.x - v.y - v.z - v.w; }   //Returns the difference between the elements of the vector (x - y - z - w)
 
     static inline constexpr auto sign(auto a) { return (a > 0) - (a < 0); }
-    static inline constexpr vec2_t<auto> sign(const vec2_t<auto>& v) noexcept { return { sign(v.x), sign(v.y) }; }                     \
-    static inline constexpr vec3_t<auto> sign(const vec3_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z) }; }           \
+    static inline constexpr vec2_t<auto> sign(const vec2_t<auto>& v) noexcept { return { sign(v.x), sign(v.y) }; }
+    static inline constexpr vec3_t<auto> sign(const vec3_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z) }; }
     static inline constexpr vec4_t<auto> sign(const vec4_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }
+
+    static inline constexpr auto dist (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sqrt(sum(pow(a - b, 2))); }    //Returns the Euclidean distance between a and b
+    static inline constexpr auto sdist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return      sum(pow(a - b, 2));  }    //Returns the squared Euclidean distance between a and b
+    static inline constexpr auto adist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return abs(a - b); }	                //Returns a vector containing the distances between the values of a and b
+    static inline constexpr auto dot  (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sum(a * b); }                  //Returns the dot product between a and b
+
 
 
 
@@ -94,14 +100,6 @@ namespace lnxc{
         static alwaysInline constexpr auto csch (const auto& v) noexcept { return  cosech(v); };     //cosech  alias
         static alwaysInline constexpr auto acsch(const auto& v) noexcept { return acosech(v); };     //acosech alias
     #undef vec_fun
-
-
-
-
-    static inline constexpr auto dist (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sqrt(sum(pow(a - b, 2))); }    //Returns the Euclidean distance between a and b
-    static inline constexpr auto sdist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return      sum(pow(a - b, 2));  }    //Returns the squared Euclidean distance between a and b
-    static inline constexpr auto adist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return abs(a - b); }	                //Returns a vector containing the distances between the values of a and b
-    static inline constexpr auto dot  (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sum(a * b); }                  //Returns the dot product between a and b
 }
 #ifndef LNX_NO_GLOBAL_NAMESPACE
 	using namespace lnxc;

@@ -1,27 +1,25 @@
 #version 450
 #define ext
-
 #define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
 #define g gl_GlobalInvocationID
 const vec2 pm = { 1, -1 };	//Plus-minus vector for fast vec2 operations
 const vec2 mp = { -1, 1 };	//Minus-plus vector for fast vec2 operations
-float rand(vec2 co) { return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453); }
 
 
 //TODO squared distance aa*bb
-
+//TODO implement and add to render optimization exceptions (vertical, horizontal, width 1, non rendered)
 
 
 
 layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
 
-ext layout(std430, binding = 0) buffer colorOutput_{ vec4 colorOutput[]; };
-ext layout(std430, binding = 1) buffer windowSize_{ uint width; uint height; };
-ext layout(std430, binding = 2) buffer zBuffer_{ uint zBuffer[]; };
+ext layout(std430, binding = 0) buffer _outcol{ vec4 outcol[]; };
+ext layout(std430, binding = 1) buffer _wsize{ uvec2 wsize; };
+ext layout(std430, binding = 2) buffer _zbuff{ uint zbuff[]; };
 
-layout(binding = 3) uniform lineData_{
+layout(binding = 3) uniform _data{
 	vec2 fp0;   	//Position of the first point
 	vec2 fp1;		//Position of the second point
 	vec4 col0;		//Color of the first point
@@ -32,19 +30,21 @@ layout(binding = 3) uniform lineData_{
 };
 
 
-
+//TODO
+// float rand(vec2 co) {
+// 	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+// }
 
 
 
 
 void setPixelColor(vec2 pos, vec4 col) {
-	uint i = uint(pos.y) * width + uint(pos.x);
+	uint i = uint(pos.y) * wsize.x + uint(pos.x);
 
 	//TODO use ordered render and component cache
-	if(zBuffer[i] <= ID) {
-	zBuffer[i] = ID;
-		colorOutput[i] = col;
-//		colorOutput[i] = vec4(float(ID)/2);
+	if(zbuff[i] <= ID) {
+		zbuff[i] = ID;
+		outcol[i] = col;
 	}
 }
 
@@ -52,8 +52,8 @@ void setPixelColor(vec2 pos, vec4 col) {
 
 
 void drawLine() {
-	ivec2 p0 = ivec2(fp0 * vec2(width, height));
-	ivec2 p1 = ivec2(fp1 * vec2(width, height));
+	ivec2 p0 = ivec2(fp0 * wsize);
+	ivec2 p1 = ivec2(fp1 * wsize);
 	//Calculate length and interpolated values
 	vec2 lDist = abs(p0 - p1);							//2D distance between the line points
 	float lFac = 1 / (distance(p0, p1) / gx);			//Factor of the position of gx in the line length	(inverse of (line length / shader call x))
@@ -93,14 +93,11 @@ void drawLine() {
 
 
 void main() {
-	ivec2 p0 = ivec2(fp0 * vec2(width, height));
-	ivec2 p1 = ivec2(fp1 * vec2(width, height));
+	ivec2 p0 = ivec2(fp0 * wsize);
+	ivec2 p1 = ivec2(fp1 * wsize);
 
 	if(gx >= distance(vec2(p0.x, p0.y), vec2(p1.x, p1.y))) return;			//Yeet unnecessary calls
-	//TODO implement and add to render optimization exceptions (vertical, horizontal, width 1, non rendered)
 	if((wd0 == 0 && wd1 == 0) || (col0.a == 0 && col1.a == 0)) return;		//Null line
 
 	drawLine();
-	// colorOutput[width*height/2+width/2] = vec4(0, fp1.y, 0, 1);
-	// colorOutput[width*height/2+width/2] = vec4(0, fp1.y, 0, 1);
 }

@@ -14,11 +14,11 @@
 namespace lnx::shd{
 
 
-	void Border2::create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32v2, VRam, Storage> pWs, vram::ptr<u32, VRam, Storage> pZBuffer, const u32v3 vGroupCount, Window& pWindow){
+	void Border2::create(vram::ptr<f32v4, VRam, Storage> pOutcol, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<u32, VRam, Storage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
 		pWindow.addObject_m.lock();
-			colorOutput_.vdata = (vram::ptr<char, VRam, Storage>)pColorOutput;
-			windowSize_.vdata = (vram::ptr<char, VRam, Storage>)pWs;
-			zBuffer_.vdata = (vram::ptr<char, VRam, Storage>)pZBuffer;
+			_outcol.vdata = (vram::ptr<char, VRam, Storage>)pOutcol;
+			_wsize.vdata = (vram::ptr<char, VRam, Storage>)pWsize;
+			_zbuff.vdata = (vram::ptr<char, VRam, Storage>)pZbuff;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);
@@ -60,9 +60,9 @@ namespace lnx::shd{
 
 		vk::WriteDescriptorSet writeSets[4];
 		auto bufferInfo0 = vk::DescriptorBufferInfo()
-			.setBuffer (colorOutput_.vdata.cell->csc.buffer)
-			.setOffset (colorOutput_.vdata.cell->localOffset)
-			.setRange  (colorOutput_.vdata.cell->cellSize)
+			.setBuffer (_outcol.vdata.cell->csc.buffer)
+			.setOffset (_outcol.vdata.cell->localOffset)
+			.setRange  (_outcol.vdata.cell->cellSize)
 		;
 		writeSets[0] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -73,9 +73,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo1 = vk::DescriptorBufferInfo()
-			.setBuffer (windowSize_.vdata.cell->csc.buffer)
-			.setOffset (windowSize_.vdata.cell->localOffset)
-			.setRange  (windowSize_.vdata.cell->cellSize)
+			.setBuffer (_wsize.vdata.cell->csc.buffer)
+			.setOffset (_wsize.vdata.cell->localOffset)
+			.setRange  (_wsize.vdata.cell->cellSize)
 		;
 		writeSets[1] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -86,9 +86,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo2 = vk::DescriptorBufferInfo()
-			.setBuffer (zBuffer_.vdata.cell->csc.buffer)
-			.setOffset (zBuffer_.vdata.cell->localOffset)
-			.setRange  (zBuffer_.vdata.cell->cellSize)
+			.setBuffer (_zbuff.vdata.cell->csc.buffer)
+			.setOffset (_zbuff.vdata.cell->localOffset)
+			.setRange  (_zbuff.vdata.cell->cellSize)
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -99,9 +99,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo3 = vk::DescriptorBufferInfo()
-			.setBuffer (objData_.vdata.cell->csc.buffer)
-			.setOffset (objData_.vdata.cell->localOffset)
-			.setRange  (objData_.vdata.cell->cellSize)
+			.setBuffer (_data.vdata.cell->csc.buffer)
+			.setOffset (_data.vdata.cell->localOffset)
+			.setRange  (_data.vdata.cell->cellSize)
 		;
 		writeSets[3] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)

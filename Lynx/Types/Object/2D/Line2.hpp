@@ -26,8 +26,8 @@ namespace lnx::obj {
 		f32v2 _fp0;		//First point of the line
 		f32v2 _fp1;		//Second point of the line
 
-		virtual ram::ptr<char> getShData(){ return data.lineData_.data; }
-		virtual vram::Alloc_b<char> getShVData(){ return data.lineData_.vdata; }
+		virtual ram::ptr<char> getShData(){ return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData(){ return data._data.vdata; }
 
 
 		/**
@@ -43,11 +43,11 @@ namespace lnx::obj {
 		Line2(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			setFp(pFp);
 			setSp(pSp);
-			data.lineData_.col0() = pFc;
-			data.lineData_.col1() = pSc;
-			data.lineData_.wd0() = vFw;
-			data.lineData_.wd1() = vSw;
-			data.lineData_.ID() = (uint32)common.ID;
+			data._data.col0() = pFc;
+			data._data.col1() = pSc;
+			data._data.wd0() = vFw;
+			data._data.wd1() = vSw;
+			data._data.ID() = (uint32)common.ID;
 
 		}
 
@@ -58,8 +58,8 @@ namespace lnx::obj {
 
 
 		void recalculateCoords() final {
-			data.lineData_.fp0() = _fp0 * adist(minLim, maxLim) + minLim;
-			data.lineData_.fp1() = _fp1 * adist(minLim, maxLim) + minLim;
+			data._data.fp0() = _fp0 * adist(minLim, maxLim) + minLim;
+			data._data.fp1() = _fp1 * adist(minLim, maxLim) + minLim;
 		}
 
 

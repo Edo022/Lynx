@@ -27,7 +27,7 @@ namespace lnx{
 		std::atomic<bool> initialized = false;
 		Thread t;									//Main render thread of the window
 
-		vram::ptr<u32,   VRam,  Storage> wSize_g;	//Size of the widow
+		vram::ptr<u32v2, VRam, Storage> wSize_g;	//Size of the widow
 		vram::ptr<f32v4, VRam, Storage> fOut_g ;	//Color output of the window
 		vram::ptr<u32,   VRam, Storage> iOut_g ;	//Packed color output of the window
 		vram::ptr<u32,   VRam, Storage> zBuff_g;	//TODO remove. use render space assembler

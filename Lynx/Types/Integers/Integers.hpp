@@ -4,7 +4,6 @@
 
 
 
-
 namespace lnxc{
     typedef char      int8,  i8;        //Signed 8-bit integer
     typedef short     int16, i16;	    //Signed 16-bit integer
