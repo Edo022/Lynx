@@ -1,8 +1,8 @@
 #version 450
 #define ext
 
-#define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
-#define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
+#define gx gl_GlobalInvocationID.x
+#define gy gl_GlobalInvocationID.y
 #define g gl_GlobalInvocationID
 
 
