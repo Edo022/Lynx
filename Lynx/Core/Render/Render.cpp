@@ -205,6 +205,7 @@ namespace lnx{
 				for(uint32 i = 0; i < spawn_q.count(); ++i){
 					if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this);
 				}
+				spawn_q.clear();
 			}
 			spawn_m.unlock();
 
