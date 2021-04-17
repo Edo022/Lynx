@@ -93,7 +93,7 @@ namespace lnx{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, INT_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
+				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
 					case vk::Result::eTimeout:       dbg::printWarning("Timeout");    break;
 					case vk::Result::eNotReady:      dbg::printWarning("Not ready");  break;
 					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;

@@ -189,6 +189,7 @@ namespace lnx{
 
 	void Window::spawn(obj::RenderSpace2* pRenderSpace) {
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
+		// sleep(500); //BUG REMOVE
 		pRenderSpace->onSpawn(*this);			//BUG >IN
 	}
 }
