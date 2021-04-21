@@ -49,7 +49,6 @@ namespace lnx::dbg{
 		char* line = (char*)calloc(vMaxLineLen, 1);
 		std::string out;
 		while(fgets(line, (i32)vMaxLineLen, f) != nullptr) {
-			printf("%s", line);fflush(stdout);
 			out += line;
 		}
 		pclose(f);

@@ -51,23 +51,31 @@ namespace lnx::sys{
         fflush(stdout);
 
         auto name    = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'model.*name' | grep     -o ':.*' | grep -o '[^: ].*'");
-
         auto cores   = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'cores'       | grep     -o '[0-9].*'");
-        auto threads = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'threads'     | grep     -o '[0-9].*'");
+        auto threads = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'siblings'    | grep     -o '[0-9].*'");
         auto minFreq = dbg::cmdOutput("lscpu | grep -m1 'min[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'");
         auto maxFreq = dbg::cmdOutput("lscpu | grep -m1 'max[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'");
 
-        printf("DEBUG_10\n");
+        printf("DEBUG_7\n");
         fflush(stdout);
         _cpu.name    = name;
+        printf("DEBUG_8\n");
+        fflush(stdout);
         _cpu.cores   = (uint32)atoi(cores);
+        printf("DEBUG_9\n");
+        fflush(stdout);
+        printf("%s", threads);
         _cpu.threads = (uint32)atoi(threads);
+        printf("DEBUG_10\n");
+        fflush(stdout);
         _cpu.minFreq = (uint32)atoi(minFreq);
-        _cpu.maxFreq = (uint32)atoi(maxFreq);
-
-
         printf("DEBUG_11\n");
         fflush(stdout);
+        _cpu.maxFreq = (uint32)atoi(maxFreq);
+        printf("DEBUG_12\n");
+        fflush(stdout);
+
+
 
         free(name);
         free(cores);
@@ -75,7 +83,7 @@ namespace lnx::sys{
         free(minFreq);
         free(maxFreq);
 
-        printf("DEBUG_12\n");
+        printf("DEBUG_9\n");
         fflush(stdout);
 
         return _cpu;
@@ -85,7 +93,7 @@ namespace lnx::sys{
 
 
     const RamInfo ram = [](){
-        printf("DEBUG_13\n");
+        printf("DEBUG_10\n");
         fflush(stdout);
         RamInfo _ram;
 
