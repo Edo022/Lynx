@@ -83,7 +83,7 @@ namespace lnx::sys{
         free(minFreq);
         free(maxFreq);
 
-        printf("DEBUG_9\n");
+        printf("DEBUG_13\n");
         fflush(stdout);
 
         return _cpu;
@@ -93,7 +93,7 @@ namespace lnx::sys{
 
 
     const RamInfo ram = [](){
-        printf("DEBUG_10\n");
+        printf("DEBUG_14\n");
         fflush(stdout);
         RamInfo _ram;
 

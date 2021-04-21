@@ -53,9 +53,9 @@ namespace lnx::dbg{
 		}
 		pclose(f);
 
-		//Return
-		line = (char*)realloc(line, out.length());
-		memcpy(line, out.c_str(), out.length());
+		//Return (+1 is for \0)
+		line = (char*)realloc(line, out.length() + 1);
+		memcpy(line, out.c_str(), out.length() + 1);
 		return line;
 	}
 
