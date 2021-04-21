@@ -8,6 +8,9 @@ LnxAutoInit(LNX_NH_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 
+	printf("DEBUG_3\n");
+	fflush(stdout);
+
     //! Can't use $VULKAN_SDK in putenv function
 	// putenv(           "PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/bin"); //TODO CHECK IF /usr/bin and /usr/bin64 ARE PRESENT IN PATH. ADD THEM IF NOT
 	// putenv("LD_LIBRARY_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/lib");	//TODO USE LOCAL SHARED LIBRARY INSTEAD OF THE ONE ON THE USER'S SYSTEM //FIXME LD PATH NOT WORKING
@@ -16,6 +19,9 @@ LnxAutoInit(LNX_NH_ENV) {
 	//!^ Specify the driver to use to prevent Fedora 33 from using the lvp one
 	//!^ The lvp_icd driver creates a lot of threads that usually crash the system or slow down everything
 	//TODO LOAD IMPLICIT LAYER
+
+	printf("DEBUG_4\n");
+    fflush(stdout);
 
 	#pragma GCC diagnostic pop
 }

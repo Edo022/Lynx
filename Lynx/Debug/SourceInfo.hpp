@@ -2,6 +2,7 @@
 #define LNX_H_SOURCE_INFO
 #include "Lynx/Types/Integers/Integers.hpp"
 #include <cstring>
+#include <string>
 #include <execinfo.h>
 #include <cxxabi.h>
 #include <fstream>
@@ -38,20 +39,26 @@ namespace lnx::dbg{
 	 * @param vCmd Command to execute
 	 * @param vMaxLineLen Maximum length of each line of the output
 	 */
-	static char* cmdOutput(const char* vCmd, const uint32 vMaxLineLen = 8192) {
+	static char* cmdOutput(std::string vCmd, const uint32 vMaxLineLen = 8192) {
+		//Open console and run the command
 		assert(vMaxLineLen < INT32_MAX);
-		FILE* f = popen(vCmd, "r");				//Open console and run the command
-		if (!f) printf("Traceback error\n");	//Check for file validity
+		FILE* f = popen((vCmd + "\n").c_str(), "r");
+		assert(f);
 
-		uint32 outputSize = 0;
-		char* output = (char*)calloc(8192, 1);		//Create outpupt buffer and read the output
-		while(fgets(output + outputSize, (i32)vMaxLineLen, f) != nullptr) {
-			outputSize = strlen(output);
-			output = (char*)realloc(output, vMaxLineLen + outputSize);
+		//Create outpupt buffer and read the output
+		char* output = (char*)calloc(vMaxLineLen, 1);
+		fflush(f);
+		std::string ret;
+		while(fgets(output, (i32)vMaxLineLen, f) != nullptr) {
+			printf("%s", output);fflush(stdout);
+			ret += output;
 		}
-		// output = (char*)realloc(output, strlen(output) + 1);
-		pclose(f);								//Close file
-		return output;							//Return
+		pclose(f);
+
+		//Return
+		output = (char*)realloc(output, ret.length());
+		memcpy(output, ret.c_str(), ret.length());
+		return output;
 	}
 
 
@@ -63,7 +70,7 @@ namespace lnx::dbg{
 	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true) {
 		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
-		backtrace(calls, (i32)vIndex + 1);				//Get calls addresses
+		backtrace(calls, (i32)vIndex + 1);			//Get calls addresses
 
 		char* str = (char*)malloc(128);				//Create addr2line command (-1 is to get the actual instruction address)
 		sprintf(str, "addr2line%s -e %s --demangle %p", (vGetFunc) ? " -f" : "", getExecName(), (void*)((char*)calls[vIndex] - 1));
