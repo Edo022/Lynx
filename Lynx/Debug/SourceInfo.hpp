@@ -43,22 +43,21 @@ namespace lnx::dbg{
 		//Open console and run the command
 		assert(vMaxLineLen < INT32_MAX);
 		FILE* f = popen((vCmd + "\n").c_str(), "r");
-		assert(f);
+		assert(f); fflush(f);
 
 		//Create outpupt buffer and read the output
-		char* output = (char*)calloc(vMaxLineLen, 1);
-		fflush(f);
-		std::string ret;
-		while(fgets(output, (i32)vMaxLineLen, f) != nullptr) {
-			printf("%s", output);fflush(stdout);
-			ret += output;
+		char* line = (char*)calloc(vMaxLineLen, 1);
+		std::string out;
+		while(fgets(line, (i32)vMaxLineLen, f) != nullptr) {
+			printf("%s", line);fflush(stdout);
+			out += line;
 		}
 		pclose(f);
 
 		//Return
-		output = (char*)realloc(output, ret.length());
-		memcpy(output, ret.c_str(), ret.length());
-		return output;
+		line = (char*)realloc(line, out.length());
+		memcpy(line, out.c_str(), out.length());
+		return line;
 	}
 
 
