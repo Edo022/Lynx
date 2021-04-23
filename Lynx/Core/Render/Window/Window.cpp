@@ -43,7 +43,13 @@ namespace lnx{
 
 
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
-		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface));
+		switch(glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
+			case VkResult::VK_SUCCESS: break;
+			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::printError("Initialization failed"); break;
+			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
+			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
+		}
+
 
 		{ //Set icon
 			#include "__tmp__IconData.hpp"

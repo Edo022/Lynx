@@ -115,14 +115,17 @@ namespace lnx::core::dvc{
 
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //TODO automatically get GLFW version
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);	//TODO automatically get GLFW version
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); //TODO automatically get GLFW version
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		dummyWindow = glfwCreateWindow(1, 1, "", nullptr, nullptr);	//Initialize dummy window
 		glfwHideWindow(dummyWindow);
-		glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface)); //Initialize dummy surface
 
-
-		dbg::checkVk(glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface)), "Failed to create window surface");
+		switch(glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface))){
+			case VkResult::VK_SUCCESS: break;
+			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::printError("Initialization failed"); break;
+			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
+			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
+		}
 		getPhysical();
 	}
 
