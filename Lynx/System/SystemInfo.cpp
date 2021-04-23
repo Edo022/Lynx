@@ -51,8 +51,8 @@ namespace lnx::sys{
         fflush(stdout);
 
         auto name    = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'model.*name' | grep     -o ':.*' | grep -o '[^: ].*'");
+        auto threads = dbg::cmdOutput("cat /proc/cpuinfo | grep -c 'processor.*[0-9]*'");
         auto cores   = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'cores'       | grep     -o '[0-9].*'");
-        auto threads = dbg::cmdOutput("cat /proc/cpuinfo | grep -m1 'siblings'    | grep     -o '[0-9].*'");
         auto minFreq = dbg::cmdOutput("lscpu | grep -m1 'min[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'");
         auto maxFreq = dbg::cmdOutput("lscpu | grep -m1 'max[ \\-_]*[Mm][Hh][Zz]' | grep -m1 -o '[0-9]*'");
 
