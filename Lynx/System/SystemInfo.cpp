@@ -111,7 +111,7 @@ namespace lnx::sys{
             _ram.size     = (uint64)(sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE));
         #endif
 
-        exit(0);
+        // exit(0);
         return _ram;
     }();
 }
