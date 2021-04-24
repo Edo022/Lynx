@@ -49,14 +49,13 @@ namespace lnx::dbg{
 		char* line = (char*)calloc(vMaxLineLen, 1);
 		std::string out;
 		while(fgets(line, (i32)vMaxLineLen, f) != nullptr) {
-			printf("%s", line);fflush(stdout);
 			out += line;
 		}
 		pclose(f);
 
-		//Return
-		line = (char*)realloc(line, out.length());
-		memcpy(line, out.c_str(), out.length());
+		//Return (+1 is for \0)
+		line = (char*)realloc(line, out.length() + 1);
+		memcpy(line, out.c_str(), out.length() + 1);
 		return line;
 	}
 

@@ -89,13 +89,6 @@ namespace lnx::dbg{
 		}
 
 		/**
-		 * @brief Prints pMessage as error if vResult is not VK_SUCCESS
-		 */
-		static neverInline void checkVk(const int/*vk::Result*/ vResult, const char* vMessage, const auto&... vArgs) {
-			checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
-		}
-
-		/**
 		 * @brief Prints pMessage as error if vIndex is not between vMin and vMax
 		 */
 		static neverInline void checkIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* vParamName) {
