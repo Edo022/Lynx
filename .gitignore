@@ -5,6 +5,6 @@ deps/Shared/GLFWBuild
 Build/Linux/
 Build/Windows/
 
-Junk/
-.vscode/
+/.junk
+/.vscode
 __pycache__/

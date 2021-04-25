@@ -132,6 +132,8 @@ namespace lnx{
 
 		void run();
 		void draw();
+		void somethingUpdates();
+		void somethingInput();
 		void createDefaultCommandBuffers__();
 
 
