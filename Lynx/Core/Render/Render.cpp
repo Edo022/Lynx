@@ -70,7 +70,7 @@ namespace lnx{
 				continue;
 			}
 			addObject_m.unlock();
-			switch(core::dvc::graphics.LD.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
+			switch(core::dvc::graphics.ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
 				case vk::Result::eTimeout:         dbg::printError("Fence timed out"); break;
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost");     break;
 				vkDefaultCases;
@@ -93,7 +93,7 @@ namespace lnx{
 			//Acquire swapchain image
 			uint32 imageIndex;
 			{
-				switch(core::dvc::graphics.LD.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
+				switch(core::dvc::graphics.ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
 					case vk::Result::eTimeout:       dbg::printWarning("Timeout");    break;
 					case vk::Result::eNotReady:      dbg::printWarning("Not ready");  break;
 					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
@@ -150,7 +150,7 @@ namespace lnx{
 			};
 			addObject_m.unlock(); //FIXME
 
-			switch(core::dvc::graphics.LD.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
+			switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 				case vk::Result::eSuccess: break;
 				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
 				// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
@@ -159,7 +159,7 @@ namespace lnx{
 			}
 
 			core::render::graphicsQueueSubmit_m.lock();
-			switch(core::dvc::graphics.graphicsQueue.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+			switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -174,7 +174,7 @@ namespace lnx{
 					.setPImageIndices      (&imageIndex)
 				;
 				core::render::presentQueueSubmit_m.lock();
-				auto r = core::dvc::graphics.presentQueue.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
 				core::render::presentQueueSubmit_m.unlock();
 
 				switch(r){
@@ -313,12 +313,12 @@ namespace lnx{
 
 namespace lnx::core::render{
 	void cleanup() {
-		dvc::graphics.LD.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
+		dvc::graphics.ld.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
 
 		//If the compute and the graphics devices are not the same, destroy the graphics device
-		// if(dvc::graphics.PD.properties.deviceID != dvc::compute.PD.properties.deviceID) dvc::graphics.LD.destroy(nullptr);
-		dvc::graphics.LD.destroy(nullptr);													//Destroy the compute device
-		//for (auto& device : secondary) vkDestroyDevice(device.LD, nullptr);						//Destroy all the secondary devices
+		// if(dvc::graphics.pd.properties.deviceID != dvc::compute.pd.properties.deviceID) dvc::graphics.ld.destroy(nullptr);
+		dvc::graphics.ld.destroy(nullptr);													//Destroy the compute device
+		//for (auto& device : secondary) vkDestroyDevice(device.ld, nullptr);						//Destroy all the secondary devices
 
 		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));	//Destroy the debug messenger if present
 	}
@@ -341,7 +341,7 @@ namespace lnx::core::render{
 
 	vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures) {
 		for(vk::Format format : *pCandidates) {
-			auto props = dvc::graphics.PD.device.getFormatProperties(format); //Get format properties
+			auto props = dvc::graphics.pd.device.getFormatProperties(format); //Get format properties
 
 			if(( vTiling == vk::ImageTiling::eOptimal && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
 				(vTiling == vk::ImageTiling::eLinear  && (props.linearTilingFeatures  & vFeatures) == vFeatures)) {
@@ -357,7 +357,7 @@ namespace lnx::core::render{
 
 	//Returns the index of the memory with the specified type and properties
 	uint32 findMemoryType(const uint32 vTypeFilter, const vk::MemoryPropertyFlags vProperties) {
-		auto memProperties = dvc::graphics.PD.device.getMemoryProperties();//Get memory vProperties
+		auto memProperties = dvc::graphics.pd.device.getMemoryProperties();//Get memory vProperties
 
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vTypeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProperties) == vProperties) return i;

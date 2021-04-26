@@ -20,18 +20,18 @@ namespace lnx::sys{
 	const GpuInfo vram = [](){
 		//Get GPU informations
 		GpuInfo _vram;
-		_vram.name = core::dvc::graphics.PD.properties.deviceName;
-		_vram.type = (core::dvc::graphics.PD.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::Discrete : sys::Integrated;
-		_vram.maxWgSize[0] = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupSize[0];
-		_vram.maxWgSize[1] = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupSize[1];
-		_vram.maxWgSize[2] = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupSize[2];
-		_vram.maxWgInvoc   = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupInvocations;
-		_vram.maxWgs[0]    = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupCount[0];
-		_vram.maxWgs[1]    = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupCount[1];
-		_vram.maxWgs[2]    = core::dvc::graphics.PD.properties.limits.maxComputeWorkGroupCount[2];
+		_vram.name = core::dvc::graphics.pd.properties.deviceName;
+		_vram.type = (core::dvc::graphics.pd.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::Discrete : sys::Integrated;
+		_vram.maxWgSize[0] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[0];
+		_vram.maxWgSize[1] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[1];
+		_vram.maxWgSize[2] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[2];
+		_vram.maxWgInvoc   = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupInvocations;
+		_vram.maxWgs[0]    = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupCount[0];
+		_vram.maxWgs[1]    = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupCount[1];
+		_vram.maxWgs[2]    = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupCount[2];
 
 		//Get VRAM informations
-		auto memoryProperties = core::dvc::graphics.PD.device.getMemoryProperties(); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
+		auto memoryProperties = core::dvc::graphics.pd.device.getMemoryProperties(); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
 		_vram.heaps.num =  memoryProperties.memoryHeapCount;
 		for(uint32 i = 0; i < memoryProperties.memoryHeapCount; ++i){
 			if(memoryProperties.memoryHeaps[i].flags & vk::MemoryHeapFlagBits::eDeviceLocal){

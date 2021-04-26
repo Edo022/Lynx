@@ -269,7 +269,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setPoolSizeCount (' + str(2 if uniformNum > 0 else 1) + ')'
                     '\n\t\t''.setPPoolSizes    (sizes)'
                 '\n\t;'
-                '\n\t''switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
+                '\n\t''switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
         	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;'
         	        '\n\t\t''vkDefaultCases;'
                 '\n\t''}'
@@ -279,7 +279,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 				    '\n\t\t''.setDescriptorSetCount (1)'
 				    '\n\t\t''.setPSetLayouts        (&' + fname + '::layout.descriptorSetLayout)'
                 '\n\t'';'
-                '\n\t''switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
+                '\n\t''switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
         	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;'
         	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;'
         	        '\n\t\t''vkDefaultCases;'
@@ -300,7 +300,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t''.setPBufferInfo     (&bufferInfo' + str(i) + ')'
                     '\n\t;'
                 ) for i, b in enumerate(elms)) +
-                '\n\tcore::dvc::graphics.LD.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
+                '\n\tcore::dvc::graphics.ld.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
             '\n}',
         '\t'))
 
@@ -313,7 +313,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
                 '\n\t''commandBuffers.resize(1);'
-                '\n\t''switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }'
+                '\n\t''switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }'
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
@@ -371,7 +371,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setPBindings    (bindingLayouts)'
                     '\n\t\t;'
                     '\n\t\t//Create the descriptor set layout'
-                    '\n\t\tswitch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + fname + '::layout.descriptorSetLayout)){ vkDefaultCases; }'
+                    '\n\t\tswitch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + fname + '::layout.descriptorSetLayout)){ vkDefaultCases; }'
                 '\n\t}'
                 '\n'
                 '\n'
@@ -380,7 +380,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n\t{ //Create pipeline layout'
                     '\n\t\tuint64 fileLength = 0;'
                     '\n\t\tuint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "' + fname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
-                    '\n\t\t' + fname + '::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.LD, code, fileLength);'
+                    '\n\t\t' + fname + '::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);'
                     '\n'
                     '\n\t\t' + fname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
                         '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'
@@ -392,7 +392,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                         '\n\t\t\t.setSetLayoutCount (1)'
                         '\n\t\t\t.setPSetLayouts    (&' + fname + '::layout.descriptorSetLayout)'
                     '\n\t\t;'
-                    '\n\t\tswitch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + fname + '::layout.pipelineLayout)){ vkDefaultCases; }'
+                    '\n\t\tswitch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + fname + '::layout.pipelineLayout)){ vkDefaultCases; }'
                 '\n\t}'
             '\n}',
         '\t'))

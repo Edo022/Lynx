@@ -38,7 +38,7 @@ namespace lnx::shd{
 			.setPoolSizeCount (2)
 			.setPPoolSizes    (sizes)
 		;
-		switch(core::dvc::graphics.LD.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
+		switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
 			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
 			vkDefaultCases;
 		}
@@ -50,7 +50,7 @@ namespace lnx::shd{
 			.setDescriptorSetCount (1)
 			.setPSetLayouts        (&_3DTest::layout.descriptorSetLayout)
 		;
-		switch(core::dvc::graphics.LD.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
+		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
 			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
 			vkDefaultCases;
@@ -97,7 +97,7 @@ namespace lnx::shd{
 			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
 			.setPBufferInfo     (&bufferInfo2)
 		;
-		core::dvc::graphics.LD.updateDescriptorSets(3, writeSets, 0, nullptr);
+		core::dvc::graphics.ld.updateDescriptorSets(3, writeSets, 0, nullptr);
 	}
 
 
@@ -114,7 +114,7 @@ namespace lnx::shd{
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		switch(core::dvc::graphics.LD.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
+		switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
@@ -194,7 +194,7 @@ namespace lnx::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::graphics.LD.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &_3DTest::layout.descriptorSetLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &_3DTest::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -203,7 +203,7 @@ namespace lnx::shd{
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
 			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "_3DTest.spv").begin());
-			_3DTest::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.LD, code, fileLength);
+			_3DTest::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 			_3DTest::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
@@ -215,7 +215,7 @@ namespace lnx::shd{
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&_3DTest::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::graphics.LD.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &_3DTest::layout.pipelineLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &_3DTest::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

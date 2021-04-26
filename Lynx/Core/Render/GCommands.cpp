@@ -24,8 +24,8 @@ namespace lnx::core::render::cmd{
 
 
 	void createGraphicsCommandPool() { //FIXME probably useless
-		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.PD.indices.graphicsFamily);
-		switch(dvc::graphics.LD.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){ vkDefaultCases; }
+		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.pd.indices.graphicsFamily);
+		switch(dvc::graphics.ld.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){ vkDefaultCases; }
 	}
 
 
@@ -42,7 +42,7 @@ namespace lnx::core::render::cmd{
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
-		switch(dvc::graphics.LD.allocateCommandBuffers(&allocInfo, &commandBuffer)){ vkDefaultCases; }
+		switch(dvc::graphics.ld.allocateCommandBuffers(&allocInfo, &commandBuffer)){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 		switch(commandBuffer.begin(&beginInfo)){ vkDefaultCases; }
@@ -63,15 +63,15 @@ namespace lnx::core::render::cmd{
 			.setPCommandBuffers    (&vCommandBuffer)
 		;
 		core::render::graphicsQueueSubmit_m.lock();
-			switch(dvc::graphics.graphicsQueue.submit(1, &submitInfo, nullptr)){
+			switch(dvc::graphics.gq.submit(1, &submitInfo, nullptr)){
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}
-			switch(dvc::graphics.graphicsQueue.waitIdle()){
+			switch(dvc::graphics.gq.waitIdle()){
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}
 		core::render::graphicsQueueSubmit_m.unlock();
-		dvc::graphics.LD.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);
+		dvc::graphics.ld.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);
 	}
 }
