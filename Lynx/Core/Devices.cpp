@@ -327,8 +327,8 @@ namespace lnx::core::dvc{
 				discardedPhysicalDevices.add(errorText);											//And save the reason of its unsuitability
 			}
 		}
-		printf("\nDEVICE 1: %s", physDevices[0].getProperties().deviceName.cbegin());
-		printf("\nDEVICE 2: %s", physDevices[1].getProperties().deviceName.cbegin());
+		// printf("\nDEVICE 1: %s", physDevices[0].getProperties().deviceName.cbegin());
+		// printf("\nDEVICE 2: %s", physDevices[1].getProperties().deviceName.cbegin());
 
 
 		//If there are discarded devices, print their names
