@@ -126,6 +126,7 @@ namespace lnx::core::dvc{
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
 			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
 		}
+		chooseDriver();
 		getPhysical();
 	}
 
@@ -155,6 +156,14 @@ namespace lnx::core::dvc{
 	 * @return return True if the device is suitable, false if not
 	 */
 	bool isSuitable(const vk::PhysicalDevice vDevice, String& pErrorText) {
+		//Discars llvmpipe devices
+		String name = vDevice.getProperties().deviceName.cbegin();
+		for (char* c = name.begin(); *c; ++c) *c = tolower(*c); //TODO ADD TOLOWER FUNCTIONS TO LUX STRING
+		if(strstr(name.begin(), "llvm")){
+			pErrorText = "Device is not stable";
+			return false;
+		}
+
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
 			pErrorText = "Missing required extensions";
@@ -256,9 +265,25 @@ namespace lnx::core::dvc{
 
 
 
+	bool checkDriver(const char* vDriverName){
+		uint32 c;
+		putenv((String("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/") + vDriverName).begin());
+		switch(instance.enumeratePhysicalDevices(&c, nullptr)){
+			case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
+			case vk::Result::eErrorInitializationFailed: return false;
+			vkDefaultCases;
+		};
+		return true;
+	}
 
 
-
+	void chooseDriver(){
+		uint32 c;
+		if     (checkDriver("radeon_icd.x86_64.json")) return;
+		else if(checkDriver("nvidia_icd.x86_64.json")) return;
+		else if(checkDriver( "intel_icd.x86_64.json")) return;
+		else unsetenv("VK_ICD_FILENAMES");
+	}
 
 
 	//TODO add multiple gpu support
@@ -270,13 +295,15 @@ namespace lnx::core::dvc{
 		RtArray<String> discardedPhysicalDevices;
 		RtArray<_VkPhysicalDevice*> physicalDevices;
 
+		// chooseDriver();
+
 		//Get physical device count
 		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){
 			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
 			vkDefaultCases;
 		};
-
+		printf("\nDEVICES: %d", deviceCount);
 		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");	//Check if there is at least one deice that supports vulkan //FIXME add runtime support
 
 		//Get physical devices
@@ -300,6 +327,8 @@ namespace lnx::core::dvc{
 				discardedPhysicalDevices.add(errorText);											//And save the reason of its unsuitability
 			}
 		}
+		printf("\nDEVICE 1: %s", physDevices[0].getProperties().deviceName.cbegin());
+		printf("\nDEVICE 2: %s", physDevices[1].getProperties().deviceName.cbegin());
 
 
 		//If there are discarded devices, print their names
@@ -309,6 +338,7 @@ namespace lnx::core::dvc{
 				Failure printf("        %s\t|  %s", (char*)discardedPhysicalDevices[i].begin(), (char*)discardedPhysicalDevices[(int64)i + 1].begin());
 			}
 		}
+// exit(0);
 
 		//TODO different score for graphics and compute
 		#define physDev (*physicalDevices[i])

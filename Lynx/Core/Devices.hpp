@@ -28,7 +28,8 @@ namespace lnx::core::dvc{
 
 
 
-
+	bool checkDriver(const char* vDriverName);
+	void chooseDriver();
 	void				getPhysical();
 	void				createLogical(const _VkPhysicalDevice* pPD, vk::Device* pLD, RtArray<vk::Queue>* pComputeQueues);
 	uint32		        rate(const _VkPhysicalDevice* pDevice);
