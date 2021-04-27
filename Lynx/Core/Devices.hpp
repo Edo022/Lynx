@@ -29,10 +29,10 @@ namespace lnx::core::dvc{
 
 	bool checkDriver(const char* vDriverName);
 	void chooseDriver();
-	void getPhysical();
-	void createLogical(const _VkPhysicalDevice& pPDevice, Device& pDevice);
+	void getPhysicalDevices();
+	void createLogicalDevices(const _VkPhysicalDevice& pPDevice, Device& pDevice);
 	u32  rate         (const _VkPhysicalDevice& pPDevice);
-	bool isSuitable     (const vk::PhysicalDevice vDevice, String* pErrorText);
+	bool isSuitable     (const vk::PhysicalDevice vDevice, const bool vAllowLLVM, String* pErrorText);
 	bool checkExtensions(const vk::PhysicalDevice vDevice);
 	QueueFamilyIndices	getQueueFamilies(const vk::PhysicalDevice vDevice);
 }
