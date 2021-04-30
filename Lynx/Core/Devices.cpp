@@ -128,7 +128,7 @@ namespace lnx::core::dvc{
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
 			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
 		}
-		chooseDriver();
+		// chooseDriver();
 		getPhysicalDevices();
 	}
 
@@ -291,27 +291,28 @@ namespace lnx::core::dvc{
 
 
 
-	bool checkDriver(const char* vDriverName){
-		uint32 c;
-		putenv((String("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/") + vDriverName).begin());
-		switch(instance.enumeratePhysicalDevices(&c, nullptr)){
-			case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
-			case vk::Result::eErrorInitializationFailed: return false;
-			vkDefaultCases;
-		};
-		return true;
-	}
+	// bool checkDriver(const char* vDriverName){
+	// 	uint32 c;
+	// 	putenv((String("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/") + vDriverName).begin());
+	// 	switch(instance.enumeratePhysicalDevices(&c, nullptr)){
+	// 		case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
+	// 		case vk::Result::eErrorInitializationFailed: return false;
+	// 		vkDefaultCases;
+	// 	};
+	// 	return true;
+	// }
 
 
 
-
-	void chooseDriver(){
-		uint32 c;
-		if     (checkDriver("radeon_icd.x86_64.json")) return;
-		else if(checkDriver("nvidia_icd.x86_64.json")) return;
-		else if(checkDriver( "intel_icd.x86_64.json")) return;
-		else unsetenv("VK_ICD_FILENAMES");
-	}
+//FIXME THIS MUST BE CHOSEN BEFORE THE INSTANCE CREATION
+//FIXME probably undoable
+	// void chooseDriver(){
+	// 	uint32 c;
+	// 	if     (checkDriver("radeon_icd.x86_64.json")) return;
+	// 	else if(checkDriver("nvidia_icd.x86_64.json")) return;
+	// 	else if(checkDriver( "intel_icd.x86_64.json")) return;
+	// 	else unsetenv("VK_ICD_FILENAMES");
+	// }
 
 
 

@@ -45,7 +45,7 @@ LnxAutoInit(LNX_NH_ENV) {
 
 	putenv("VK_LAYER_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/etc/vulkan/explicit_layer.d");
 	printf("%s\n", getenv("VK_LAYER_PATH"));
-	// putenv("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/radeon_icd.x86_64.json"); 		//FIXME check if this works with nvidia gpus //FIXME write variant for Windows
+	// putenv("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/intel_icd.x86_64.json"); 		//FIXME check if this works with nvidia gpus //FIXME write variant for Windows
 	//!^ Specify the driver to use to prevent Fedora 33 from using the lvp one
 	//!^ The lvp_icd driver creates a lot of threads that usually crash the system or slow down everything
 	//TODO LOAD IMPLICIT LAYER
