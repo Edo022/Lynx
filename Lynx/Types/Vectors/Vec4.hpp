@@ -15,16 +15,16 @@ namespace lnxc{
 
 		//Constructors
 		alwaysInline constexpr vec4_t() noexcept {}
-		alwaysInline constexpr vec4_t(const auto& _x, const auto& _y, const auto& _z, const auto& _w) noexcept { x = _x;     y = _y;     z = _z;     w = _w;     }
-		alwaysInline constexpr vec4_t(const vec2_t<auto>& _xy, const auto& _z, const auto& _w)        noexcept { x = _xy.x;  y = _xy.y;  z = z;      w =_w;      }
-		alwaysInline constexpr vec4_t(const auto& _x, const vec2_t<auto>& _yz, const auto& _w)        noexcept { x = _x;     y = _yz.x;  z = _yz.y;  w = _w;     }
-		alwaysInline constexpr vec4_t(const auto& _x, const auto& _y, const vec2_t<auto>& _zw)        noexcept { x = _x;     y = _y;     z = _zw.x;  w = _zw.y;  }
-		alwaysInline constexpr vec4_t(const vec2_t<auto>& _xy, const vec2_t<auto>& _zw)               noexcept { x = _xy.x;  y = _xy.y;  z = _zw.x;  w = _zw.y;  }
-		alwaysInline constexpr vec4_t(const vec3_t<auto>& _xyz, const auto& _w)                       noexcept { x = _xyz.x; y = _xyz.y; z = _xyz.z; w = _w;     }
-		alwaysInline constexpr vec4_t(const auto& _x, const vec3_t<auto>& _yzw)                       noexcept { x = _x;     y = _yzw.y; z = _yzw.z; w = _yzw.w; }
-		explicit alwaysInline constexpr vec4_t(const vec4_t<auto>& v) noexcept { *this = v; }
+		alwaysInline constexpr vec4_t(const t& _x, const t& _y, const t& _z, const t& _w) noexcept { x = _x;     y = _y;     z = _z;     w = _w;     }
+		alwaysInline constexpr vec4_t(const vec2_t<t>& _xy, const t& _z, const t& _w)        noexcept { x = _xy.x;  y = _xy.y;  z = z;      w =_w;      }
+		alwaysInline constexpr vec4_t(const t& _x, const vec2_t<t>& _yz, const t& _w)        noexcept { x = _x;     y = _yz.x;  z = _yz.y;  w = _w;     }
+		alwaysInline constexpr vec4_t(const t& _x, const t& _y, const vec2_t<t>& _zw)        noexcept { x = _x;     y = _y;     z = _zw.x;  w = _zw.y;  }
+		alwaysInline constexpr vec4_t(const vec2_t<t>& _xy, const vec2_t<t>& _zw)               noexcept { x = _xy.x;  y = _xy.y;  z = _zw.x;  w = _zw.y;  }
+		alwaysInline constexpr vec4_t(const vec3_t<t>& _xyz, const t& _w)                       noexcept { x = _xyz.x; y = _xyz.y; z = _xyz.z; w = _w;     }
+		alwaysInline constexpr vec4_t(const t& _x, const vec3_t<t>& _yzw)                       noexcept { x = _x;     y = _yzw.y; z = _yzw.z; w = _yzw.w; }
+		// explicit alwaysInline constexpr vec4_t(const vec4_t<t>& v) noexcept { *this = v; }
 				alwaysInline constexpr vec4_t(const vec4_t<t>&    v) noexcept { *this = v; }
-		explicit alwaysInline constexpr vec4_t(const auto& v        ) noexcept { *this = v; }
+		// explicit alwaysInline constexpr vec4_t(const t& v        ) noexcept { *this = v; }
 				alwaysInline constexpr vec4_t(const t&    v        ) noexcept { *this = v; }
 
 
