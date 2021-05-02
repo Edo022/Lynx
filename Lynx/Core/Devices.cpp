@@ -414,7 +414,7 @@ namespace lnx::core::dvc{
 			}
 
 			//Print created logical devices and queues
-			Success printf("    Created %d logical devices:", 2 + secondary.count());
+			Success printf("    Created %d logical device%s:", 1 + secondary.count(), (secondary.count() ? "s" : ""));
 			Main	printf("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", graphics.pd.indices.computeFamilies.count());
 			Normal	printf("        %d secondary devices", secondary.count());
 			if(secondary.count()) {
