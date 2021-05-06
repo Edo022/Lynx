@@ -122,9 +122,9 @@ namespace lnx{
 		{ //Render command pool
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
-				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
 		}
 
 
@@ -132,16 +132,16 @@ namespace lnx{
 
 		{ //Copy
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
-				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
 				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
 
 
 

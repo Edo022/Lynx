@@ -112,7 +112,7 @@ namespace lnx::core::shaders{
 			.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)
 			.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)
 		;
-		auto r = dvc::graphics.LD.createComputePipeline(nullptr, pipelineInfo, nullptr);
+		auto r = dvc::graphics.ld.createComputePipeline(nullptr, pipelineInfo, nullptr);
 
 
 		switch(r.result){
@@ -121,7 +121,7 @@ namespace lnx::core::shaders{
 			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
 			vkDefaultFaulures;
 		}
-		// core::dvc::graphics.LD.destroyShaderModule(layout_.shaderModule, nullptr);
+		// core::dvc::graphics.ld.destroyShaderModule(layout_.shaderModule, nullptr);
 		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
 	}
 
@@ -145,8 +145,8 @@ namespace lnx::core::shaders{
 	// 		if(vCShader >= pWindow.swp.shaders.count()) return false;
 
 	// 		//Clear descriptors sets, descriptor pool and descriptor layout
-	// 		vkFreeDescriptorSets   (dvc::compute.LD, pWindow.swp.shaders[vCShader].descriptorPool, 1, &pWindow.swp.shaders[vCShader].descriptorSet);
-	// 		vkDestroyDescriptorPool(dvc::compute.LD, pWindow.swp.shaders[vCShader].descriptorPool, nullptr);
+	// 		vkFreeDescriptorSets   (dvc::compute.ld, pWindow.swp.shaders[vCShader].descriptorPool, 1, &pWindow.swp.shaders[vCShader].descriptorSet);
+	// 		vkDestroyDescriptorPool(dvc::compute.ld, pWindow.swp.shaders[vCShader].descriptorPool, nullptr);
 
 	// 		//Remove the shader from the shader array
 	// 		for(uint32 i = vCShader; i < pWindow.swp.shaders.count() - 1; ++i) pWindow.swp.shaders[i] = pWindow.swp.shaders[i+1]; //FIXME

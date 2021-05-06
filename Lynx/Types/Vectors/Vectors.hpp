@@ -73,9 +73,9 @@ namespace lnxc{
     static inline constexpr auto sub(const vec4_t<auto>& v) noexcept { return v.x - v.y - v.z - v.w; }   //Returns the difference between the elements of the vector (x - y - z - w)
 
     static inline constexpr auto sign(auto a) { return (a > 0) - (a < 0); }
-    static inline constexpr vec2_t<auto> sign(const vec2_t<auto>& v) noexcept { return { sign(v.x), sign(v.y) }; }
-    static inline constexpr vec3_t<auto> sign(const vec3_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z) }; }
-    static inline constexpr vec4_t<auto> sign(const vec4_t<auto>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }
+    template<class t> static inline constexpr vec2_t<t> sign(const vec2_t<t>& v) noexcept { return { sign(v.x), sign(v.y) }; }
+    template<class t> static inline constexpr vec3_t<t> sign(const vec3_t<t>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z) }; }
+    template<class t> static inline constexpr vec4_t<t> sign(const vec4_t<t>& v) noexcept { return { sign(v.x), sign(v.y), sign(v.z), sign(v.w) }; }
 
     static inline constexpr auto dist (const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return sqrt(sum(pow(a - b, 2))); }    //Returns the Euclidean distance between a and b
     static inline constexpr auto sdist(const std::derived_from<vec_b> auto& a, const std::derived_from<vec_b> auto& b) noexcept { return      sum(pow(a - b, 2));  }    //Returns the squared Euclidean distance between a and b
@@ -86,9 +86,9 @@ namespace lnxc{
 
 
     #define vec_fun(fun)                                                                                                                \
-        static inline constexpr vec2_t<auto> fun(const vec2_t<auto>& v) noexcept { return { std::fun(v.x), std::fun(v.y) }; }                     \
-        static inline constexpr vec3_t<auto> fun(const vec3_t<auto>& v) noexcept { return { std::fun(v.x), std::fun(v.y), std::fun(v.z) }; }           \
-        static inline constexpr vec4_t<auto> fun(const vec4_t<auto>& v) noexcept { return { std::fun(v.x), std::fun(v.y), std::fun(v.z), std::fun(v.w) }; }
+        template<class t> static inline constexpr vec2_t<t> fun(const vec2_t<t>& v) noexcept { return { std::fun(v.x), std::fun(v.y) }; }                     \
+        template<class t> static inline constexpr vec3_t<t> fun(const vec3_t<t>& v) noexcept { return { std::fun(v.x), std::fun(v.y), std::fun(v.z) }; }           \
+        template<class t> static inline constexpr vec4_t<t> fun(const vec4_t<t>& v) noexcept { return { std::fun(v.x), std::fun(v.y), std::fun(v.z), std::fun(v.w) }; }
 
         vec_fun(sin)    vec_fun(cos)    vec_fun(tan)    vec_fun(log)    vec_fun(abs)
         vec_fun(asin)   vec_fun(acos)   vec_fun(atan)   vec_fun(log10)  //vec_fun(sign)

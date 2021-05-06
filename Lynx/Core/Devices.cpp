@@ -16,13 +16,12 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& a, const _VkPhys
 
 
 namespace lnx::core::dvc{
-	alignCache graphicsDevice         graphics;
-	// alignCache computeDevice          compute;
-	alignCache RtArray<computeDevice> secondary;
+	alignCache Device graphics;
+	alignCache RtArray<Device> secondary;
 
 
 	alignCache vk::Instance   instance;
-	alignCache GLFWwindow*  dummyWindow;
+	alignCache GLFWwindow*    dummyWindow;
 	alignCache vk::SurfaceKHR dummySurface;
 
 	alignCache uint32       requiredDeviceExtensionsNum = 1;
@@ -37,9 +36,12 @@ namespace lnx::core::dvc{
 
 
 
+
+
+
+
 	LnxAutoInit(LNX_H_DEVICES){
-		if(!glfwInit()) exit(-1);																//Initialize GLFW
-		//TODO ADD ERROR MESSAGE
+		dbg::checkCond(!glfwInit(), "GLFW not initialized");
 
 		//Extensions
 		uint32 glfwExtensionCount;
@@ -77,7 +79,7 @@ namespace lnx::core::dvc{
 		;
 
 		//Add validation layers if in debug mode
-		#ifdef LNX_DEBUG																	//Search for validation layers
+		#ifdef LNX_DEBUG
 			uint32 layerCount = 0;
 
 			//Get layer count
@@ -126,24 +128,43 @@ namespace lnx::core::dvc{
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
 			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
 		}
-		getPhysical();
+		// chooseDriver();
+		getPhysicalDevices();
 	}
 
 
 
 
 
-	//Rates a physical device based on its properties and features
-	//*   pDevice: a pointer to the device structure where its infos are stored
-	//*   Returns the rating of the physical device
-	uint32 rate(const _VkPhysicalDevice* pDevice) {
+
+
+
+	//-----------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+	/**
+	 * @brief Rates a physical device based on its properties and features
+	 * @param pPDevice: The device structure where its infos are stored
+	 * @return The rating of the physical device
+	 */
+	uint32 rate(const _VkPhysicalDevice& pPDevice) {
 		uint32 score = 0;																				//Device performance evalutation
-		if(pDevice->properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) score += 1000000;	//Discrete GPUs have performance advantage
-		//pDevice->properties.limits.maxComputeSharedMemorySize; //TODO dont create shaders larger than the device limit
-		score += pDevice->properties.limits.maxImageDimension2D;										//Maximum possible count of textures affects graphics quality
-		if(pDevice->features.geometryShader) score += 1;												//Geometry shaders needed
+		if(pPDevice.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) score += 1000000;	//Discrete GPUs have performance advantage
+		//pPDevice.properties.limits.maxComputeSharedMemorySize;										//TODO dont create shaders larger than the device limit
+		score += pPDevice.properties.limits.maxImageDimension2D;										//Maximum possible count of textures affects graphics quality
+		if(pPDevice.features.geometryShader) score += 1;												//Geometry shaders needed
 		return score;
 	}
+
+
+
+
 
 
 
@@ -154,7 +175,17 @@ namespace lnx::core::dvc{
 	 * @param pErrorText A pointer to a lnx::String where to store the error in case the device is not suitable
 	 * @return return True if the device is suitable, false if not
 	 */
-	bool isSuitable(const vk::PhysicalDevice vDevice, String& pErrorText) {
+	bool isSuitable(const vk::PhysicalDevice vDevice, const bool vAllowLLVM, String& pErrorText) {
+		//Discard llvmpipe devices if required
+		if(!vAllowLLVM){
+			String name = vDevice.getProperties().deviceName.cbegin();
+			for (char* c = name.begin(); *c; ++c) *c = tolower(*c); //TODO ADD TOLOWER FUNCTIONS TO LUX STRING
+			if(strstr(name.begin(), "llvm")){
+				pErrorText = "Device is not stable";
+				return false;
+			}
+		}
+
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
 			pErrorText = "Missing required extensions";
@@ -183,6 +214,10 @@ namespace lnx::core::dvc{
 		}
 		return true;
 	}
+
+
+
+
 
 
 
@@ -217,6 +252,10 @@ namespace lnx::core::dvc{
 
 
 
+
+
+
+
 	/**
 	 * @brief Finds and returns the queue families of a physical device
 	 */
@@ -234,7 +273,7 @@ namespace lnx::core::dvc{
 			if(queueFamilies[i].queueFlags & vk::QueueFlagBits::eCompute ) indices.computeFamilies.add(i);	//Add compute families
 
 			vk::Bool32 hasPresentSupport = false;
-			switch(vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){								//Set present family
+			switch(vDevice.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){						//Set present family
 				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 				vkDefaultCases;
 			};
@@ -244,6 +283,36 @@ namespace lnx::core::dvc{
 		}
 		return indices;
 	}
+
+
+
+
+
+
+
+
+	// bool checkDriver(const char* vDriverName){
+	// 	uint32 c;
+	// 	putenv((String("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/") + vDriverName).begin());
+	// 	switch(instance.enumeratePhysicalDevices(&c, nullptr)){
+	// 		case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
+	// 		case vk::Result::eErrorInitializationFailed: return false;
+	// 		vkDefaultCases;
+	// 	};
+	// 	return true;
+	// }
+
+
+
+//FIXME THIS MUST BE CHOSEN BEFORE THE INSTANCE CREATION
+//FIXME probably undoable
+	// void chooseDriver(){
+	// 	uint32 c;
+	// 	if     (checkDriver("radeon_icd.x86_64.json")) return;
+	// 	else if(checkDriver("nvidia_icd.x86_64.json")) return;
+	// 	else if(checkDriver( "intel_icd.x86_64.json")) return;
+	// 	else unsetenv("VK_ICD_FILENAMES");
+	// }
 
 
 
@@ -262,13 +331,16 @@ namespace lnx::core::dvc{
 
 
 	//TODO add multiple gpu support
+	//TODO use different score for graphics and compute devices
+	//FIXME print errors in release mode too idk
 	/**
 	 * @brief Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
 	 */
-	void getPhysical() {
-		uint32 deviceCount = 0;
-		RtArray<String> discardedPhysicalDevices;
-		RtArray<_VkPhysicalDevice*> physicalDevices;
+	void getPhysicalDevices() {
+		uint32 deviceCount = 0;					//Number of physical devices. Used to call vkEnumeratePhysicalDevices
+		RtArray<String> dpdevices;				//Array of physical devices
+		RtArray<_VkPhysicalDevice*> pdevices;	//Array of strings containing the discarded physical devices names
+
 
 		//Get physical device count
 		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){
@@ -276,8 +348,8 @@ namespace lnx::core::dvc{
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
 			vkDefaultCases;
 		};
+		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");
 
-		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");	//Check if there is at least one deice that supports vulkan //FIXME add runtime support
 
 		//Get physical devices
 		RtArray<vk::PhysicalDevice> physDevices(deviceCount);
@@ -288,80 +360,70 @@ namespace lnx::core::dvc{
 		};
 
 
-		for(uint32 i = 0; i < physDevices.count(); ++i) {									//For every physical device, create and save a _VkPhysicalDevice stucture
-			auto properties = physDevices[i].getProperties();
-			auto features   = physDevices[i].getFeatures();
+
+
+		for(auto& vkpdevice : physDevices) {							//For every physical device
+			auto properties = vkpdevice.getProperties();					//Get properties
+			auto features   = vkpdevice.getFeatures();						//Get features
 			String errorText;
-			if(isSuitable(physDevices[i], errorText)) {											//If it's suitable
-				physicalDevices.add(new _VkPhysicalDevice(physDevices[i], properties, features, *new QueueFamilyIndices));	//Add it to the physical devices vector
+			if(isSuitable(vkpdevice, physDevices.count() == 1, errorText)) {//If it's suitable, add it to the physical devices array
+				pdevices.add(new _VkPhysicalDevice(vkpdevice, properties, features, *new QueueFamilyIndices));
 			}
-			else {																				//If not
-				discardedPhysicalDevices.add(properties.deviceName.cbegin());						//Add it to the discarded devices vector
-				discardedPhysicalDevices.add(errorText);											//And save the reason of its unsuitability
-			}
-		}
-
-
-		//If there are discarded devices, print their names
-		if(discardedPhysicalDevices.count() > 0) {
-			Failure printf("    Discarded devices:");
-			for(uint32 i = 0; i < discardedPhysicalDevices.count(); i += 2) {
-				Failure printf("        %s\t|  %s", (char*)discardedPhysicalDevices[i].begin(), (char*)discardedPhysicalDevices[(int64)i + 1].begin());
+			else {															//If not
+				dpdevices.add(properties.deviceName.cbegin());					//Add its name to the discarded devices array
+				dpdevices.add(errorText);										//Save the reason of its unsuitability
 			}
 		}
 
-		//TODO different score for graphics and compute
-		#define physDev (*physicalDevices[i])
-		if(physicalDevices.count() > 0) {									//If there are suitable devices
-			// graphics.PD = compute.PD = *physicalDevices[0];						//set graphics device at default value
-			graphics.PD = *physicalDevices[0];						//set graphics device at default value
-			for(uint32 i = 0; i < physicalDevices.count(); ++i) {				//For every physical device
-				physDev.indices = getQueueFamilies(physDev.device);					//Get its queue families
-				physDev.score = rate(&physDev);										//And its score. Then check if it has the necessary queues and set it as the main graphics and or compute physical device
-				if(physDev.score > graphics.PD.score || physDev.indices.graphicsFamily != (uint32)-1)        graphics.PD = physDev;
-				// if(physDev.score > compute .PD.score || physDev.indices.computeFamilies.count() > 0) compute.PD = physDev;
+
+		if(pdevices.count() > 0) {										//If there are suitable devices
+			graphics.pd = *pdevices[0];										//Set graphics device at default value
+			for(auto& pdevice : pdevices) {									//For every physical device
+				pdevice->indices = getQueueFamilies(pdevice->device);			//Get its queue families
+				pdevice->score = rate(*pdevice);								//Get its score
+				if((pdevice->score > graphics.pd.score && pdevice->indices.graphicsFamily != (uint32)-1) || graphics.pd.indices.graphicsFamily == (uint32)-1) {
+					graphics.pd = *pdevice;											//Set the device with the highest score and an available graphics queue as the main graphics device
+					createLogicalDevices(graphics.pd, graphics);					//Create the graphics logical device
+				}
 			}
-			for(uint32 i = 0; i < physicalDevices.count(); ++i) {				//For every physical device that isn't the main graphics or compute device
-				// if(!sameDevice(physDev, graphics.PD) && !sameDevice(physDev, compute.PD)) {
-				if(!sameDevice(physDev, graphics.PD)) {
-					secondary.resize(secondary.count() + 1);
-					secondary[secondary.count() - 1].PD = physDev;					//Add it to the secondary devices vector (it'll be used as a compute device with less priority. T.T poor gpu)
+			for(auto& pdevice : pdevices) {									//For every physical device that isn't the main graphics device
+				if(!sameDevice(*pdevice, graphics.pd)) {						//
+					secondary.resize(secondary.count() + 1);					//Add it to the secondary compute devices array
+					secondary[secondary.count() - 1].pd = *pdevice;				//Create its logical device
+					createLogicalDevices(secondary[secondary.count() - 1].pd, secondary[secondary.count() - 1]);
+				}
+			}
+
+
+
+
+			//If there are discarded devices, print their names
+			if(dpdevices.count() > 0) {
+				Failure printf("    Discarded devices:");
+				for(uint32 i = 0; i < dpdevices.count(); i += 2) {
+					Failure printf("        %s\t|  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
 				}
 			}
 
 			//Print the devices names, IDs, scores and tasks
-			Success printf("    Found %d suitable device%s:", physicalDevices.count(), (physicalDevices.count() == 1) ? "" : "s");
-			for(uint32 i = 0; i < physicalDevices.count(); ++i) {
-				// if(sameDevice(physDev, graphics.PD) || sameDevice(physDev, compute.PD)) Main else Normal;
-				if(sameDevice(physDev, graphics.PD)) Main else Normal;
-				printf("        %s  |  ID: %d  |  %d", physDev.properties.deviceName.cbegin(), physDev.properties.deviceID, physDev.score);
-				if(sameDevice(physDev, graphics.PD)) printf("  |  Main graphics");
-				// if(sameDevice(physDev, compute.PD))  printf("  |  Main compute");
+			Success printf("    Found %d suitable device%s:", pdevices.count(), (pdevices.count() == 1) ? "" : "s");
+			for(auto& pdevice : pdevices) {
+				if(sameDevice(*pdevice, graphics.pd)) Main else Normal;
+				printf("        %s  |  ID: %d  |  %d", pdevice->properties.deviceName.cbegin(), pdevice->properties.deviceID, pdevice->score);
+				if(sameDevice(*pdevice, graphics.pd)) printf("  |  Main graphics");
+			}
+
+			//Print created logical devices and queues
+			Success printf("    Created %d logical device%s:", 1 + secondary.count(), (secondary.count() ? "s" : ""));
+			Main	printf("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", graphics.pd.indices.computeFamilies.count());
+			Normal	printf("        %d secondary devices", secondary.count());
+			if(secondary.count()) {
+				for(auto& sdevice : secondary){
+					Normal printf("            Compute  |  compute queues: %d", sdevice.pd.indices.computeFamilies.count());
+				}
 			}
 		}
-		//FIXME add runtime support
 		else dbg::printError("Failed to find a suitable GPU");
-		#undef physDev
-
-
-
-
-		//FIXME
-		//Create a logical device for graphics, one for computation and one for every secondary device
-		// createLogical(&graphics.PD, &graphics.LD, nullptr);
-		// createLogical(&compute.PD,  &compute.LD, &compute.computeQueues);
-		createLogical(&graphics.PD, &graphics.LD, &graphics.computeQueues);
-		//FIXME
-
-		for(uint32 i = 0; i < secondary.count(); ++i) {
-			createLogical(&secondary[i].PD, &secondary[i].LD, &secondary[i].computeQueues);
-		}
-
-		//Output created logical devices and queues
-		Success printf("    Created %d logical devices:", 2 + secondary.count());
-		Main	printf("        Main graphics  |  graphics queues: 1  |  present queues:  1");
-		// Main	printf("        Main compute   |  compute queues:  %d", compute.computeQueues.count());
-		Normal	printf("        %d secondary devices",/*  |  secondary compute queues: %lld", secondary.count, */secondary.count());
 	}
 
 
@@ -372,91 +434,69 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Creates a logical device from a physical one
-	 * @param pPD A pointer to the physical device structure containing its infos
-	 * @param pLD A pointer to the logical device where to store the created device
-	 * @param pComputeQueues A pointer to an array of compute queues
-	 *		This is only used to know if the physical device is for graphics, computation or is secondary
+	 * @brief Creates a logical device
+	 * @param pPD
+	 * @param pDevice
 	 */
-	void createLogical(const _VkPhysicalDevice* pPD, vk::Device* pLD, RtArray<vk::Queue>* pComputeQueues) {
-		//List the queues of the device as unique int32s
-		std::set<int32> uniqueQueueFamilyIndices;
-		if(sameDevice(*pPD, graphics.PD)) {										//If it's the main device for graphics,
-			uniqueQueueFamilyIndices.insert((i32)pPD->indices.graphicsFamily);		//Add his graphics family
-			uniqueQueueFamilyIndices.insert((i32)pPD->indices.presentFamily);		//And his present family
+	void createLogicalDevices(const _VkPhysicalDevice& pPDevice, Device& pDevice) {
+		std::set<uint32> queues;
+		if(sameDevice(pPDevice, graphics.pd)) {									//If it's the main device for graphics
+			queues.insert(pPDevice.indices.graphicsFamily);							//Add its graphics queue index
+			queues.insert(pPDevice.indices.presentFamily);							//Add its present  queue index
 		}
-		for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {		//And then add every compute family, graphics ones included
-			uniqueQueueFamilyIndices.insert((i32)pPD->indices.computeFamilies[i]);
+		for(uint32 i = 0; i < pPDevice.indices.computeFamilies.count(); ++i) {	//Add every compute index
+			queues.insert(pPDevice.indices.computeFamilies[i]);
 		}
 
 
-		//Queue infos
-		RtArray<vk::DeviceQueueCreateInfo, uint32> queueCreateInfos;			//Create a queue create info array
-		for(auto queueFamilyIndex : uniqueQueueFamilyIndices) {					//For every device queue family index found
-			queueCreateInfos.add(vk::DeviceQueueCreateInfo()						//Create a queue create info struct
-				.setQueueFamilyIndex ((uint32)queueFamilyIndex)						//Set index
+		RtArray<vk::DeviceQueueCreateInfo, uint32> queueInfos;				//Create queues
+		for(auto queue : queues) {											//For every queue index found
+			queueInfos.add(vk::DeviceQueueCreateInfo()							//Create a queue create info struct
+				.setQueueFamilyIndex (queue)										//Set index
 				.setQueueCount       (1)											//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-				// .setPQueuePriorities (new float((sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) ? 1.0f : 0.5f))
-				.setPQueuePriorities (new float((sameDevice(*pPD, graphics.PD)) ? 1.0f : 0.5f))
+				.setPQueuePriorities (new float((sameDevice(pPDevice, graphics.pd)) ? 1.0f : 0.5f)) //FIXME
 			);
 		}
 
 
-		//Required extensions
-		auto enabledDeviceFeatures = vk::PhysicalDeviceFeatures() 				//Set enabled features
+		auto enabledFeatures = vk::PhysicalDeviceFeatures() 				//Set enabled features
 			.setFillModeNonSolid  (VK_FALSE)									//No point32 and line render, since we don't use meshes
 			.setMultiViewport     (VK_FALSE)									//No multiple viewports
 			.setSamplerAnisotropy (VK_FALSE)									//No anistropy filter
 		;
 
-		//Fill deviceCreateInfo
-		auto deviceCreateInfo = vk::DeviceCreateInfo() 							//Create deviceCreateInfo structure for logical device creation
-			.setQueueCreateInfoCount     (queueCreateInfos.count())					//Set queue infos count
-			.setPQueueCreateInfos        (queueCreateInfos.begin())					//Set queue infos
-			.setEnabledLayerCount        (_dbg(validationLayersNum) _rls(0))		//Set validation layer count if in debug mode
-			.setPpEnabledLayerNames      (_dbg(validationLayers)    _rls(nullptr))	//Set validation layers      if in debug mode
-			.setEnabledExtensionCount    (requiredDeviceExtensionsNum)				//Set required extentions count
-			.setPpEnabledExtensionNames  (requiredDeviceExtensions)					//Set required extensions
-			.setPEnabledFeatures         (&enabledDeviceFeatures)					//Set physical device enabled features
+		auto deviceCreateInfo = vk::DeviceCreateInfo() 						//Create logical device
+			.setQueueCreateInfoCount     (queueInfos.count())					//Set queue infos count
+			.setPQueueCreateInfos        (queueInfos.begin())					//Set queue infos
+			.setEnabledLayerCount        (_dbg(validationLayersNum) _rls(0))	//  Set validation layer count if in debug mode
+			.setPpEnabledLayerNames      (_dbg(validationLayers)    _rls(nullptr))//Set validation layers      if in debug mode
+			.setEnabledExtensionCount    (requiredDeviceExtensionsNum)			//Set required extentions count
+			.setPpEnabledExtensionNames  (requiredDeviceExtensions)				//Set required extensions
+			.setPEnabledFeatures         (&enabledFeatures)						//Set physical device enabled features
 		;
 
 
-		//Create the logical device and save its queues, exit if an error occurs
+		//Create the logical device and save its queues
 		vk::Device _logicalDevice;
-		if(pPD->device.createDevice(&deviceCreateInfo, nullptr, &_logicalDevice) == vk::Result::eSuccess) {
-			// if(sameDevice(*pPD, graphics.PD) || sameDevice(*pPD, compute.PD)) {
-			if(sameDevice(*pPD, graphics.PD)) {
-				if(sameDevice(*pPD, graphics.PD)) {													//If it's the main graphics device
-					graphics.LD = _logicalDevice;														//Set it as the main graphics logical device
-					_logicalDevice.getQueue(pPD->indices.graphicsFamily, 0, &graphics.graphicsQueue);	//Set graphics queue
-					_logicalDevice.getQueue(pPD->indices.presentFamily , 0, &graphics.presentQueue );	//Set present queue
-
-					//FIXME //FIXME
-					for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {					//Add every compute queue to the main compute queue list
-						vk::Queue computeQueue;
-						_logicalDevice.getQueue(pPD->indices.computeFamilies[i], 0, &computeQueue);
-						graphics.computeQueues.add(computeQueue);
-					}
-					//FIXME //FIXME
-				}
-				// if(pComputeQueues != nullptr) {														//If it's the main compute device and the function was called to create his logical device
-				// 	compute.LD = _logicalDevice;														//Set it as the main compute logical device
-				// 	for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {					//Add every compute queue to the main compute queue list
-				// 		vk::Queue computeQueue;
-				// 		_logicalDevice.getQueue(pPD->indices.computeFamilies[i], 0, &computeQueue);
-				// 		compute.computeQueues.add(computeQueue);
-				// 	}
-				// }
-			}
-			else {																				//If it's none of them
-				*pLD = _logicalDevice;																//Add it to the list of secondary logical devices
-				for(uint32 i = 0; i < pPD->indices.computeFamilies.count(); ++i) {					//Add every compute queue to the secondary compute queues
-					vk::Queue computeQueue;
-					_logicalDevice.getQueue(pPD->indices.computeFamilies[i], 0, &computeQueue);
-					pComputeQueues->add(computeQueue);
-				}
-			}
+		switch(pPDevice.device.createDevice(&deviceCreateInfo, nullptr, &_logicalDevice)){
+			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eErrorExtensionNotPresent:  dbg::printError("Extension not present"); break;
+			case vk::Result::eErrorFeatureNotPresent:    dbg::printError("Feature not present");   break;
+			case vk::Result::eErrorTooManyObjects:       dbg::printError("Too many objects");      break;
+			case vk::Result::eErrorDeviceLost:           dbg::printError("Device lost");           break;
+			vkDefaultCases;
 		}
-		else dbg::printError("Failed to create logical device");
+
+
+		pDevice.ld = _logicalDevice;												//Set logical device
+		if(sameDevice(pPDevice, graphics.pd)) {										//If the device is the main graphics device
+			_logicalDevice.getQueue(pPDevice.indices.graphicsFamily, 0, &pDevice.gq);	//Set graphics queue index
+			_logicalDevice.getQueue(pPDevice.indices.presentFamily , 0, &pDevice.pq);	//Set present  queue index
+		}
+		for(uint32 i = 0; i < pPDevice.indices.computeFamilies.count(); ++i) {		//Add every compute queue index
+			vk::Queue cq;
+			_logicalDevice.getQueue(pPDevice.indices.computeFamilies[i], 0, &cq);
+			pDevice.cqs.add(cq);
+		}
 	}
 }
