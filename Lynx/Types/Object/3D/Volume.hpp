@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_VOLUME
-#include "Lynx/Types/Object/Obj_b.hpp"
+#include "Lynx/Types/Object/3D/Obj3_b.hpp"
 #include "Lynx/Types/Object/3D/Octree.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
 

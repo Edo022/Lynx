@@ -31,7 +31,7 @@ namespace lnx::obj{
         Obj2_b* parent{ nullptr };						//Parent of the object
         lnx::RaArray<Obj2_b*, uint32> children;			//Children of the object
         virtual void setChildLimits(const uint32 vChildIndex) const override {
-            dbg::checkParam(vChildIndex > children.count() - 1, "vChildIndex", "Index is not valid");
+            dbg::checkParam(vChildIndex > children.count() - 1, "vChildIndex", "Invalid index");
             children[vChildIndex]->setMinLim(minLim);
             children[vChildIndex]->setMaxLim(maxLim);
         }
