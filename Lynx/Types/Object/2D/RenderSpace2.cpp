@@ -7,11 +7,10 @@ namespace lnx::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
-	bool RenderSpace2::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD
+	uint32 RenderSpace2::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD or move to children object
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));
 		pObj->qHierarchy();
-		// if(render.parentWindow) pObj->onSpawn(*render.parentWindow); //BUG UNQUEUED SPAWN CAUSED RACE CONDITION
 		if(render.parentWindow) render.parentWindow->qSpawn(pObj);
 		return pObj->common.childIndex;
 	}
@@ -22,8 +21,8 @@ namespace lnx::obj {
 	//Updates the render limit of the child at a specific index
 	//It depends on the render space properties and children alignment
 	//Returns false if the index is invalid
-	bool RenderSpace2::setChildLimits(const uint32 vChildIndex) const {
-		if(vChildIndex >= children.count()) return false;
+	void RenderSpace2::setChildLimits(const uint32 vChildIndex) const {
+		dbg::checkParam(vChildIndex > children.count() - 1, "vChildIndex", "Index is not valid");
 		switch(alignment) {
 			case AlignmentType::FixedHorizontal:
 			{
@@ -49,6 +48,5 @@ namespace lnx::obj {
 			}
 			default: dbg::printError("Unknown children alignment type");
 		}
-		return true;
 	}
 }

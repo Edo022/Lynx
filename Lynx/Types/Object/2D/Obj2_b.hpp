@@ -30,11 +30,10 @@ namespace lnx::obj{
         //TODO add absolute pixel position and scale
         Obj2_b* parent{ nullptr };						//Parent of the object
         lnx::RaArray<Obj2_b*, uint32> children;			//Children of the object
-        virtual bool setChildLimits(const uint32 vChildIndex) const override {
-            if(vChildIndex >= children.count()) return false;
+        virtual void setChildLimits(const uint32 vChildIndex) const override {
+            dbg::checkParam(vChildIndex > children.count() - 1, "vChildIndex", "Index is not valid");
             children[vChildIndex]->setMinLim(minLim);
             children[vChildIndex]->setMaxLim(maxLim);
-            return true;
         }
         void qHierarchy() {
             for(u32 i = 0; i < children.count(); i++) if(children.isValid(i)) {

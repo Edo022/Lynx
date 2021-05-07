@@ -38,7 +38,7 @@ namespace lnx{
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list		| none						| object instance
 			} common;
 			_dbg(bool debug = false;)						//Defines if the object is used for graphical debugging		| none						| object instance
-			virtual bool setChildLimits(const uint32 vChildIndex) const = 0;
+			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
 			virtual ram::ptr<char>       getShData(){ return nullptr; }
 			virtual vram::Alloc_b<char> getShVData(){ return vram::Alloc_b<char>(); }
 
