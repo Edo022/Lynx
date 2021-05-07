@@ -128,7 +128,6 @@ namespace lnx::core::dvc{
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
 			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
 		}
-		// chooseDriver();
 		getPhysicalDevices();
 	}
 
@@ -185,6 +184,7 @@ namespace lnx::core::dvc{
 				return false;
 			}
 		}
+		else { Warning printf("No device available. Using llvmpipe"); }
 
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
@@ -291,36 +291,6 @@ namespace lnx::core::dvc{
 
 
 
-	// bool checkDriver(const char* vDriverName){
-	// 	uint32 c;
-	// 	putenv((String("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/") + vDriverName).begin());
-	// 	switch(instance.enumeratePhysicalDevices(&c, nullptr)){
-	// 		case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
-	// 		case vk::Result::eErrorInitializationFailed: return false;
-	// 		vkDefaultCases;
-	// 	};
-	// 	return true;
-	// }
-
-
-
-//FIXME THIS MUST BE CHOSEN BEFORE THE INSTANCE CREATION
-//FIXME probably undoable
-	// void chooseDriver(){
-	// 	uint32 c;
-	// 	if     (checkDriver("radeon_icd.x86_64.json")) return;
-	// 	else if(checkDriver("nvidia_icd.x86_64.json")) return;
-	// 	else if(checkDriver( "intel_icd.x86_64.json")) return;
-	// 	else unsetenv("VK_ICD_FILENAMES");
-	// }
-
-
-
-
-
-
-
-
 	//-----------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -399,9 +369,9 @@ namespace lnx::core::dvc{
 
 			//If there are discarded devices, print their names
 			if(dpdevices.count() > 0) {
-				Failure printf("    Discarded devices:");
+				Warning printf("    Discarded devices:");
 				for(uint32 i = 0; i < dpdevices.count(); i += 2) {
-					Failure printf("        %s\t|  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
+					Warning printf("        %s\t|  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
 				}
 			}
 
@@ -423,7 +393,7 @@ namespace lnx::core::dvc{
 				}
 			}
 		}
-		else dbg::printError("Failed to find a suitable GPU");
+		else { Failure printf("Failed to find a suitable GPU"); }
 	}
 
 
