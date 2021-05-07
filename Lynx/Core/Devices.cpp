@@ -350,16 +350,16 @@ namespace lnx::core::dvc{
 			graphics.pd = *pdevices[0];										//Set graphics device at default value
 			for(auto& pdevice : pdevices) {									//For every physical device
 				pdevice->indices = getQueueFamilies(pdevice->device);			//Get its queue families
-				pdevice->score = rate(*pdevice);								//Get its score
+				pdevice->score = rate(*pdevice);								//Get its score. If it has the highest score and an available graphics queue
 				if((pdevice->score > graphics.pd.score && pdevice->indices.graphicsFamily != (uint32)-1) || graphics.pd.indices.graphicsFamily == (uint32)-1) {
-					graphics.pd = *pdevice;											//Set the device with the highest score and an available graphics queue as the main graphics device
+					graphics.pd = *pdevice;											//Set it as the main graphics device
 					createLogicalDevices(graphics.pd, graphics);					//Create the graphics logical device
 				}
 			}
-			for(auto& pdevice : pdevices) {									//For every physical device that isn't the main graphics device
-				if(!sameDevice(*pdevice, graphics.pd)) {						//
-					secondary.resize(secondary.count() + 1);					//Add it to the secondary compute devices array
-					secondary[secondary.count() - 1].pd = *pdevice;				//Create its logical device
+			for(auto& pdevice : pdevices) {									//For every physical device
+				if(!sameDevice(*pdevice, graphics.pd)) {						//If it's not the main graphics device
+					secondary.resize(secondary.count() + 1);						//Add it to the secondary compute devices array
+					secondary[secondary.count() - 1].pd = *pdevice;					//Create its logical device
 					createLogicalDevices(secondary[secondary.count() - 1].pd, secondary[secondary.count() - 1]);
 				}
 			}
@@ -371,7 +371,7 @@ namespace lnx::core::dvc{
 			if(dpdevices.count() > 0) {
 				Warning printf("    Discarded devices:");
 				for(uint32 i = 0; i < dpdevices.count(); i += 2) {
-					Warning printf("        %s\t|  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
+					Warning printf("        %s  |  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
 				}
 			}
 
@@ -403,9 +403,7 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Creates a logical device
-	 * @param pPD
-	 * @param pDevice
+	 * @brief Creates a logical device from a physical device wrapper
 	 */
 	void createLogicalDevices(const _VkPhysicalDevice& pPDevice, Device& pDevice) {
 		std::set<uint32> queues;
