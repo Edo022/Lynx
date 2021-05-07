@@ -31,7 +31,7 @@ namespace lnx{
 
 
 		//Base class for render objects							Description													Structure differences		Value differences
-		struct Base { //			   							----------------------------------------------------------------------------------------------------------
+		struct Obj_b { //			   							----------------------------------------------------------------------------------------------------------
 			struct Common{
 				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lynx object			| none						| none
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object					| none						| object instance
@@ -49,6 +49,14 @@ namespace lnx{
 			virtual void qSelf();							//Updates the object data in the shared memory				| object type				| -
 			virtual void recalculateCoords() {}
 			virtual void onSpawn(Window& pWindow){}
+		};
+
+
+		/**
+		 * @tparam chType Type of the children objects. Can be any subclass of Obj_bt
+		 */
+		template<class chType> struct Obj_bt : public Obj_b {
+			lnx::RaArray<chType*, uint32> children;
 		};
 	}
 }

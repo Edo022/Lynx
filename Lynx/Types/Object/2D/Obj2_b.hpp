@@ -19,7 +19,7 @@ namespace lnx::obj{
 
 
     //Base class for 2D objects in 2D space
-    struct Obj2_b : public Base, public MouseCallbacks_b {
+    struct Obj2_b : public Obj_b, public MouseCallbacks_b {
 
         //TODO add absolute pixel position and scale
         f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
