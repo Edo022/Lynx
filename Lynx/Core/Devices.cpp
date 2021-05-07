@@ -423,7 +423,8 @@ namespace lnx::core::dvc{
 			queueInfos.add(vk::DeviceQueueCreateInfo()							//Create a queue create info struct
 				.setQueueFamilyIndex (queue)										//Set index
 				.setQueueCount       (1)											//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-				.setPQueuePriorities (new float((sameDevice(pPDevice, graphics.pd)) ? 1.0f : 0.5f)) //FIXME
+				// .setPQueuePriorities (new float((sameDevice(pPDevice, graphics.pd)) ? 1.0f : 0.5f)) //FIXME
+				.setPQueuePriorities (new float(1.0f)) //FIXME
 			);
 		}
 
