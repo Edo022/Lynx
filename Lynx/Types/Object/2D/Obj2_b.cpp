@@ -2,17 +2,23 @@
 #include "Lynx/Types/Object/2D/Border2.hpp"
 
 
+
+
+
+
+
+
 namespace lnx::obj{
-	//In debug mode, setMinLim and setMaxLim functions of non debug objects and update the debug border
+	//Only define in debug mode for non debug objects
 	#ifdef LNX_DEBUG
-	template<class chType> void Obj2_b<chType>::setMinLim(f32v2 vMinLim) {
+	void Obj2_bb::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
 		if(!Obj_b::debug && debugBorder) {
 			debugBorder->data._data.ffp() = vMinLim;
 			debugBorder->qHierarchy();
 		}
 	}
-	template<class chType> void Obj2_b<chType>::setMaxLim(f32v2 vMaxLim) {
+	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
 		if(!Obj_b::debug && debugBorder) {
 			debugBorder->data._data.fsp() = vMaxLim;
