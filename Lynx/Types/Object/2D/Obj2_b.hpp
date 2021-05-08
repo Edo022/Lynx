@@ -5,7 +5,8 @@
 
 
 
-
+//TODO Opaque and Structural objects
+//TODO add absolute pixel position and scale
 namespace lnx::obj{
     struct MouseCallbacks_b{
         virtual void onClick(const f32v2 vPos, MouseButton vButton){};
@@ -19,39 +20,30 @@ namespace lnx::obj{
 
 
     //Base class for 2D objects in 2D space
-    struct Obj2_b : public Obj_b, public MouseCallbacks_b {
+    struct Obj2_bb : public MouseCallbacks_b, virtual public Obj_b {
+        f32v2 pos = { 0, 0 };	                //Position of the object. The position is relative to the origin of the object
+        float32 zIndex = 0;		                //Index of the object. Objects with higher zIndex will be rendered on top of others
+        float32 rot = 0;	                    //Rotation of the object
+        f32v2 scl = { 0, 0 };	                //Scale of the object
 
-        //TODO add absolute pixel position and scale
-        f32v2 pos{ 0, 0 };			//Position of the object. The position is relative to the origin of the object
-        float32 zIndex{ 0 };		//Index of the object. Objects with higher zIndex will be rendered on top of others
-        float32 rot{ 0 };			//Rotation of the object
-        f32v2 scl{ 0, 0 };			//Scale of the object
-
-        //TODO add absolute pixel position and scale
-        Obj2_b* parent{ nullptr };						//Parent of the object
-        lnx::RaArray<Obj2_b*, uint32> children;			//Children of the object
-        virtual void setChildLimits(const uint32 vChildIndex) const override {
-            dbg::checkParam(vChildIndex > children.count() - 1, "vChildIndex", "Invalid index");
-            children[vChildIndex]->setMinLim(minLim);
-            children[vChildIndex]->setMaxLim(maxLim);
-        }
-        void qHierarchy() {
-            for(u32 i = 0; i < children.count(); i++) if(children.isValid(i)) {
-                setChildLimits(i);
-                //TODO add  recalculateCoords() in all objects
-                children[i]->recalculateCoords();
-                children[i]->qHierarchy();
-            }
-            qSelf();
-        }
-
-        virtual void onSpawn(Window& pWindow) override;
-
-        limitAlignment limitAlignment_{ limitAlignment::Center }; 	//The alignment of the object within its limits
-        f32v2 minLim{ 0, 0 };										//The limit of the object render. It depends on the parent of the object and its properties
-        f32v2 maxLim{ 1, 1 };										//The limit of the object render. It depends on the parent of the object and its properties
+        f32v2 minLim{ 0, 0 };				    //The limit of the object render. It depends on the parent of the object and its properties
+        f32v2 maxLim{ 1, 1 };			        //The limit of the object render. It depends on the parent of the object and its properties
         _rls(inline) void setMinLim(f32v2 vMinLim)_rls({ minLim = vMinLim; });
         _rls(inline) void setMaxLim(f32v2 vMaxLim)_rls({ maxLim = vMaxLim; });
-        _dbg(Border2* debugBorder = nullptr;)					    //Debug. Used to draw the object limits
+        _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
+
+        Obj2_bb* parent{ nullptr };				//Parent of the object
+        virtual void qHierarchy(){};
+    };
+
+
+
+
+    template<class chType> struct Obj2_b : public Obj2_bb, public Obj_bt<chType> {
+        limitAlignment limitAlignment_ = limitAlignment::Center; 	//The alignment of the object within its limits
+
+        virtual void setChildLimits(const uint32 vChildIndex) const override;
+        virtual void qHierarchy() override;
+        virtual void onSpawn(Window& pWindow) override;
     };
 }

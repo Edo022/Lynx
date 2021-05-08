@@ -5,7 +5,7 @@
 
 
 namespace lnx::obj{
-    struct RenderSpace_b : public Obj2_b{
+    struct RenderSpace_b : public Obj2_b<Obj2_bb>{
         void qSelf() final override {}
 
     };

@@ -192,7 +192,7 @@ namespace lnx{
 
 
 
-	void Window::qSpawn(obj::Obj2_b* pObject){
+	void Window::qSpawn(obj::Obj2_bb* pObject){
 		spawn_m.lock();
 		spawn_q.add(pObject);
 		spawn_m.unlock();

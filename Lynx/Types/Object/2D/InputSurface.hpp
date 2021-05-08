@@ -5,7 +5,7 @@
 
 
 namespace lnx::obj{
-    struct InputSurface : public Obj2_b {
+    struct InputSurface : public Obj2_b<Obj2_bb> {
 
     };
 }

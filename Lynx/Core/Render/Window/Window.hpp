@@ -14,7 +14,7 @@
 namespace lnx::obj{
 	struct RenderSpace2;
 	struct Obj_b;
-	struct Obj2_b;
+	struct Obj2_bb;
 }
 namespace lnx{
 	class Window{
@@ -43,9 +43,9 @@ namespace lnx{
 		std::mutex addObject_m;
 
 		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
-		RaArray<obj::Obj2_b*> spawn_q;
+		RaArray<obj::Obj2_bb*> spawn_q;
 		std::mutex spawn_m;
-		void qSpawn(obj::Obj2_b* pObject);
+		void qSpawn(obj::Obj2_bb* pObject);
 		void spawn(obj::RenderSpace2* pRenderSpace);
 		RtArray<obj::Obj_b*>	objUpdates;
 		std::mutex          objUpdates_m;
@@ -54,10 +54,10 @@ namespace lnx{
 		struct InputCallbackQueues{
 			struct InputCallbackQueue{
 				std::atomic<bool> queued = false;
-				RaArray<obj::Obj2_b*> list;
+				RaArray<obj::Obj2_bb*> list;
 				std::mutex m;
 				f32v2 pos;
-				inline auto add(obj::Obj2_b* pElm){
+				inline auto add(obj::Obj2_bb* pElm){
 					m.lock();
 					auto r = list.add(pElm);
 					m.unlock();
