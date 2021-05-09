@@ -31,9 +31,9 @@ namespace lnx{
 
 
 		/**
-		 * @brief Base class of Obj_bt
+		 * @brief Base class of Obj_b
 		 */
-		struct Obj_b { //
+		struct Obj_bb { //
 			struct Common{
 				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object
@@ -58,9 +58,9 @@ namespace lnx{
 
 		/**
 		 * @brief Base class of any render object
-		 * @tparam chType Type of the children objects. Can be any subclass of Obj_bt
+		 * @tparam chType Type of the children objects. Can be any subclass of Obj_b
 		 */
-		template<class chType> struct Obj_bt : virtual public Obj_b {
+		template<class chType> struct Obj_bt : virtual public Obj_bb {
 			lnx::RaArray<chType*, uint32> children;
 		};
 	}

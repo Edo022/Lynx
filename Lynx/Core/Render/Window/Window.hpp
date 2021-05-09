@@ -13,7 +13,7 @@
 
 namespace lnx::obj{
 	struct RenderSpace2;
-	struct Obj_b;
+	struct Obj_bb;
 	struct Obj2_bb;
 }
 namespace lnx{
@@ -47,7 +47,7 @@ namespace lnx{
 		std::mutex spawn_m;
 		void qSpawn(obj::Obj2_bb* pObject);
 		void spawn(obj::RenderSpace2* pRenderSpace);
-		RtArray<obj::Obj_b*>	objUpdates;
+		RtArray<obj::Obj_bb*>	objUpdates;
 		std::mutex          objUpdates_m;
 
 

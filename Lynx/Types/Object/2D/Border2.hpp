@@ -6,7 +6,7 @@
 
 
 namespace lnx::obj{
-	struct Border2 : public Obj2_b<Obj2_bb>{
+	struct Border2 : public Obj2_b<2>{
 		shd::Border2 data;
 
 

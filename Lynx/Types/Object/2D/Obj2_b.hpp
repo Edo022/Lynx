@@ -20,7 +20,7 @@ namespace lnx::obj{
 
 
     //Base class for 2D objects in 2D space
-    struct Obj2_bb : public MouseCallbacks_b, virtual public Obj_b {
+    struct Obj2_bb : public MouseCallbacks_b, virtual public Obj_bb {
         f32v2 pos = { 0, 0 };	                //Position of the object. The position is relative to the origin of the object
         float32 zIndex = 0;		                //Index of the object. Objects with higher zIndex will be rendered on top of others
         float32 rot = 0;	                    //Rotation of the object
@@ -38,12 +38,25 @@ namespace lnx::obj{
 
 
 
-
-    template<class chType> struct Obj2_b : public Obj2_bb, public Obj_bt<chType> {
+    /**
+     * @brief Obj2_b trampoline
+     */
+    template<class chType> struct Obj2_bt : public Obj2_bb, public Obj_bt<chType> {
         limitAlignment limitAlignment_ = limitAlignment::Center; 	//The alignment of the object within its limits
 
         virtual void setChildLimits(const uint32 vChildIndex) const override;
         virtual void qHierarchy() override;
         virtual void onSpawn(Window& pWindow) override;
     };
+
+
+    /**
+     * @brief Base class of 2D objects
+     * @tparam chType Dimensions of the child objects. Can be 1, 2 or 3
+     */
+    template<uint32 chType> struct Obj2_b {};
+
+    // template<> struct Obj2_b<1> : public Obj_bt<Obj1_bb> {};
+    template<> struct Obj2_b<2> : public Obj2_bt<Obj2_bb> {};
+    // template<> struct Obj2_b<3> : public Obj_bt<Obj3_bb> {};
 }

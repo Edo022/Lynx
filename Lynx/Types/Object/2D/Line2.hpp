@@ -17,7 +17,7 @@ namespace lnx::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2 : public Obj2_b<Obj2_bb> {
+	struct Line2 : public Obj2_b<2> {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
@@ -58,8 +58,8 @@ namespace lnx::obj {
 
 
 		void recalculateCoords() final {
-			data._data.fp0() = _fp0 * adist(minLim, maxLim) + minLim;
-			data._data.fp1() = _fp1 * adist(minLim, maxLim) + minLim;
+			data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
+			data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
 		}
 
 
