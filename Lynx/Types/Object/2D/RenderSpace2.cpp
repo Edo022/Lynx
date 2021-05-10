@@ -7,6 +7,7 @@ namespace lnx::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
+	//FIXME USE QUEUES
 	uint32 RenderSpace2::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD or move to children object
 		pObj->parent = this;
 		setChildLimits(pObj->common.childIndex = children.add(pObj));

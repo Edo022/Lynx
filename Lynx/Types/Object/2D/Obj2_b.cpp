@@ -60,13 +60,13 @@ namespace lnx::obj{
 	}
 
 
-
+//FIXME UNIFY UPDATE QUEUES
 
 	template<class chType> void Obj2_bt<chType>::qHierarchy() {
 		for(u32 i = 0; i < Obj2_bt<chType>::children.count(); i++) if(Obj2_bt<chType>::children.isValid(i)) {
-			setChildLimits(i);
+			setChildLimits(i); //FIXME USE QUEUES
 			//TODO add  recalculateCoords() in all objects
-			Obj2_bt<chType>::children[i]->recalculateCoords();
+			Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
 			Obj2_bt<chType>::children[i]->qHierarchy();
 		}
 		qSelf();
