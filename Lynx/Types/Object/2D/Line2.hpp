@@ -26,8 +26,8 @@ namespace lnx::obj {
 		f32v2 _fp0;		//First point of the line
 		f32v2 _fp1;		//Second point of the line
 
-		virtual ram::ptr<char> getShData(){ return data._data.data; }
-		virtual vram::Alloc_b<char> getShVData(){ return data._data.vdata; }
+		virtual ram::ptr<char> getShData() override { return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
 
 
 		/**

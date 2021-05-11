@@ -54,8 +54,8 @@ namespace lnx{
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list
 			} common;
 			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
-			virtual ram::ptr<char>       getShData(){ return nullptr; }
-			virtual vram::Alloc_b<char> getShVData(){ return vram::Alloc_b<char>(); }
+			virtual ram::ptr<char>       getShData(){ dbg::printError("Unable to call this base function"); return nullptr; }
+			virtual vram::Alloc_b<char> getShVData(){ dbg::printError("Unable to call this base function"); return vram::Alloc_b<char>(); }
 
 			struct Render{									//Structure containing rendering helper members
 				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
@@ -74,7 +74,7 @@ namespace lnx{
 				render.updates = render.updates | vUpdates;		//Update updates bits
 				if(render.parentWindow) { 						//If the object has a binded window //FIXME UPDATE ALL IN WINDOW SPAWN
 					render.parentWindow->requests_m.lock();			//Lock requests mutex
-					if(old) render.parentWindow->requests.add(this);//If it isn't already in it, add the object to the update queue
+					if(!old) render.parentWindow->requests.add(this);//If it isn't already in it, add the object to the update queue
 					render.parentWindow->requests_m.unlock();		//Unlock requests mutex
 				}
 			}

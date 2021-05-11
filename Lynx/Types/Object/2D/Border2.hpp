@@ -10,8 +10,8 @@ namespace lnx::obj{
 		shd::Border2 data;
 
 
-		virtual ram::ptr<char> getShData(){ return data._data.data; }
-		virtual vram::Alloc_b<char> getShVData(){ return data._data.vdata; }
+		virtual ram::ptr<char> getShData() override { return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
 
 
 		Border2() {

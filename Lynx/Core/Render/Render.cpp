@@ -253,11 +253,11 @@ namespace lnx{
 
 
 			//TODO SEPARATE FUNCTIONS
-			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME
+			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			requests_m.lock();
 			if(!requests.empty()) for(auto r : requests){
 				if(r->render.updates & obj::UpdateBits::spawn){
-					r->onSpawn(*this); //BUG, probably
+					r->onSpawn(*this); //BU, probably
 				}
 				if(r->render.updates & obj::UpdateBits::limit){
 					r->onLimit();

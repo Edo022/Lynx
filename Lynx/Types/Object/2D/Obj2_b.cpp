@@ -64,13 +64,15 @@ namespace lnx::obj{
 
 	template<class chType> void Obj2_bt<chType>::qHierarchy() {
 		for(u32 i = 0; i < Obj2_bt<chType>::children.count(); i++) if(Obj2_bt<chType>::children.isValid(i)) {
-			// setChildLimits(i); //FIXME USE QUEUES
+			setChildLimits(i); //FIXME USE QUEUES
 			//TODO add  recalculateCoords() in all objects
 			// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
 			Obj2_bt<chType>::children[i]->queue(UpdateBits::limit);
 			Obj2_bt<chType>::children[i]->qHierarchy();
 		}
 		// qSelf();
-		queue(UpdateBits::updateg);
+		queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
+		//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
+		//BUG^ ADD TEMPORARY FIX
 	}
 }
