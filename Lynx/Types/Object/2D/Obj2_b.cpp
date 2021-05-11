@@ -70,8 +70,8 @@ namespace lnx::obj{
 			Obj2_bt<chType>::children[i]->queue(UpdateBits::limit);
 			Obj2_bt<chType>::children[i]->qHierarchy();
 		}
-		// qSelf();
-		queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
+		qSelf(); //FIXME REMOVE
+		// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
 		//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
 		//BUG^ ADD TEMPORARY FIX
 	}
