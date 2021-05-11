@@ -50,5 +50,10 @@ namespace lnx::obj {
 
 		uint32 addChild(Obj2_b* pObject);
 		void setChildLimits(const uint32 vChildIndex) const final;
+
+		// virtual void onSpawn(Window& pWindow) final override{
+		// 	Obj2_b::onSpawn(pWindow); //Initialize all the children
+        //     pWindow.CRenderSpaces.add(this);	//BUG OVER
+        // }
 	};
 }

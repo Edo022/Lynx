@@ -258,6 +258,7 @@ namespace lnx{
 			if(!requests.empty()) for(auto r : requests){
 				if(r->render.updates & obj::UpdateBits::spawn){
 					r->onSpawn(*this); //BU, probably
+					// CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
 				}
 				if(r->render.updates & obj::UpdateBits::limit){
 					r->onLimit();

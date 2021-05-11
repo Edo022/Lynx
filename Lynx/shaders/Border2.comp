@@ -40,7 +40,7 @@ void main() {
 	// vec2 sp = vec2(fsp * wsize);
 	vec2 len = (fsp - ffp) * wsize / (gl_WorkGroupSize.x * gl_NumWorkGroups.x);
 	uvec2 fp = uvec2(ffp * wsize + (len * gl_GlobalInvocationID.x));
-	uvec2 sp = uvec2(fp + len);
+	uvec2 sp = uvec2(fp + len) + 1;
 
 	for(uint x = fp.x; x < sp.x; ++x){
 		setPixel(vec2(x,     0), col);

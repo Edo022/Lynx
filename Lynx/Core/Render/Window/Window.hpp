@@ -42,11 +42,11 @@ namespace lnx{
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addObject_m;
 
-		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
+		// RaArray<lnx::obj::RenderSpace2*> CRenderSpaces; //FIXME REMOVE probably useless
 		// RaArray<obj::Obj2_bb*> spawn_q;
 		// std::mutex spawn_m;
-		void qSpawn(obj::Obj2_bb* pObject);
-		void spawn(obj::RenderSpace2* pRenderSpace);
+		void qSpawn(obj::Obj_bb* pObject);
+		// void spawn(obj::RenderSpace2* pRenderSpace);
 		// RtArray<obj::Obj_bb*>	objUpdates;
 		// std::mutex          objUpdates_m;
 
