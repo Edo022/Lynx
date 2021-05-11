@@ -272,6 +272,7 @@ namespace lnx{
 				}
 				r->render.updates = obj::UpdateBits::none;
 			}
+			requests.clear();
 			requests_m.unlock();
 			core::render::cmd::endSingleTimeCommands(cb);
 

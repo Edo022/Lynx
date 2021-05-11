@@ -52,7 +52,7 @@ namespace lnx{
 
 
 
-		RtArray<obj::Obj_bb*> requests;
+		RtArray<obj::Obj_bb*> requests; //TODO USE RAARRAY
 		std::mutex            requests_m;
 
 
