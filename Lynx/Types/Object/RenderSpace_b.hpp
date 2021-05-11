@@ -6,7 +6,8 @@
 
 namespace lnx::obj{
     struct RenderSpace_b : public Obj2_b<2>{
-        void qSelf() final override {}
+        // void qSelf() final override {}
+        void onUpdateg() final override {}
 
     };
 }

@@ -13,14 +13,14 @@ namespace lnx::obj{
 	#ifdef LNX_DEBUG
 	void Obj2_bb::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
-		if(!Obj_bb::debug && debugBorder) {
+		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.ffp() = vMinLim;
 			debugBorder->qHierarchy();
 		}
 	}
 	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
-		if(!Obj_bb::debug && debugBorder) {
+		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.fsp() = vMaxLim;
 			debugBorder->qHierarchy();
 		}
@@ -36,9 +36,9 @@ namespace lnx::obj{
             if(Obj2_bt<chType>::children.isValid(i)) Obj2_bt<chType>::children[i]->onSpawn(pWindow);
         }
 		#ifdef LNX_DEBUG
-        	if(!Obj_bb::debug) {
+        	if(!Obj_bb::render.isDbgObj) {
 				debugBorder = new Border2();
-				debugBorder->debug = true;
+				debugBorder->render.isDbgObj = true;
 				debugBorder->onSpawn(pWindow);
 			}
 		#endif
@@ -64,11 +64,13 @@ namespace lnx::obj{
 
 	template<class chType> void Obj2_bt<chType>::qHierarchy() {
 		for(u32 i = 0; i < Obj2_bt<chType>::children.count(); i++) if(Obj2_bt<chType>::children.isValid(i)) {
-			setChildLimits(i); //FIXME USE QUEUES
+			// setChildLimits(i); //FIXME USE QUEUES
 			//TODO add  recalculateCoords() in all objects
-			Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
+			// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
+			Obj2_bt<chType>::children[i]->queue(UpdateBits::limit);
 			Obj2_bt<chType>::children[i]->qHierarchy();
 		}
-		qSelf();
+		// qSelf();
+		queue(UpdateBits::updateg);
 	}
 }

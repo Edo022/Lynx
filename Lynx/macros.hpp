@@ -60,7 +60,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 #ifdef LNX_DEBUG
     #undef alwaysInline
-    #define alwaysInline
+    #define alwaysInline inline
 #endif
 
 

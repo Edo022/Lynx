@@ -193,9 +193,13 @@ namespace lnx{
 
 
 	void Window::qSpawn(obj::Obj2_bb* pObject){
-		spawn_m.lock();
-		spawn_q.add(pObject);
-		spawn_m.unlock();
+		// spawn_m.lock();
+		// spawn_q.add(pObject);
+		// spawn_m.unlock();
+		requests_m.lock();
+		if(pObject->render.updates != obj::UpdateBits::none) requests.add(pObject);
+		pObject->render.updates = pObject->render.updates | obj::UpdateBits::spawn;
+		requests_m.unlock();
 	}
 
 
@@ -203,6 +207,6 @@ namespace lnx{
 		CRenderSpaces.add(pRenderSpace);	//BUG OVER
 		// sleep(500); //BUG REMOVE
 		pRenderSpace->onSpawn(*this);			//BUG >IN
-		//! Hours spent on this bug: 143
+		//! Hours spent on this bug: 231
 	}
 }

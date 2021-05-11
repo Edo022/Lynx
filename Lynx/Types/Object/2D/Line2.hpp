@@ -57,7 +57,8 @@ namespace lnx::obj {
 		inline void setSp(const f32v2& vSp) { _fp1 = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
 
-		void recalculateCoords() final {
+		// void recalculateCoords() final {
+		void onLimit() final {
 			data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
 			data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
 		}

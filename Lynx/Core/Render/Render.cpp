@@ -199,17 +199,6 @@ namespace lnx{
 
 			//TODO parallelize work from a secondary render thread
 
-			//Fix object spawn requests
-			spawn_m.lock();
-			if(spawn_q.count()){
-				for(uint32 i = 0; i < spawn_q.count(); ++i){
-					if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this); //BUG
-					// if(spawn_q.isValid(i)) spawn_q[i];
-				}
-				spawn_q.clear();
-			}
-			spawn_m.unlock();
-
 
 
 
@@ -263,23 +252,60 @@ namespace lnx{
 
 
 
-			//Fix objects update requests
-			if(objUpdates.count() > 0) {
-				objUpdates_m.lock();
-				vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-				for(uint32 i = 0; i < objUpdates.count(); i++) {
-					objUpdates[i]->render.updated = true;
+			//TODO SEPARATE FUNCTIONS
+			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME
+			requests_m.lock();
+			if(!requests.empty()) for(auto r : requests){
+				if(r->render.updates & obj::UpdateBits::spawn){
+					r->onSpawn(*this); //BUG, probably
+				}
+				if(r->render.updates & obj::UpdateBits::limit){
+					r->onLimit();
+				}
+				if(r->render.updates & obj::UpdateBits::updateg){
 					cb.updateBuffer(
-						objUpdates[i]->getShVData().cell->csc.buffer,
-						objUpdates[i]->getShVData().cell->localOffset,
-						objUpdates[i]->getShVData().cell->cellSize,
-						(void*)objUpdates[i]->getShData()
+						r->getShVData().cell->csc.buffer,
+						r->getShVData().cell->localOffset,
+						r->getShVData().cell->cellSize,
+						(void*)r->getShData()
 					);
 				}
-				core::render::cmd::endSingleTimeCommands(cb);
-				objUpdates.clear();
-				objUpdates_m.unlock();
+				r->render.updates = obj::UpdateBits::none;
 			}
+			requests_m.unlock();
+			core::render::cmd::endSingleTimeCommands(cb);
+
+			// //Fix object spawn requests
+			// spawn_m.lock();
+			// if(spawn_q.count()){
+			// 	for(uint32 i = 0; i < spawn_q.count(); ++i){
+			// 		if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this); //BUG
+			// 		// if(spawn_q.isValid(i)) spawn_q[i];
+			// 	}
+			// 	spawn_q.clear();
+			// }
+			// spawn_m.unlock();
+
+
+
+
+			// //Fix objects update requests
+			// if(objUpdates.count() > 0) {
+			// 	objUpdates_m.lock();
+			// 	vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			// 	for(uint32 i = 0; i < objUpdates.count(); i++) {
+			// 		objUpdates[i]->render.updated = true;
+			// 		cb.updateBuffer(
+			// 			objUpdates[i]->getShVData().cell->csc.buffer,
+			// 			objUpdates[i]->getShVData().cell->localOffset,
+			// 			objUpdates[i]->getShVData().cell->cellSize,
+			// 			(void*)objUpdates[i]->getShData()
+			// 		);
+			// 	}
+			// 	core::render::cmd::endSingleTimeCommands(cb);
+			// 	objUpdates.clear();
+			// 	objUpdates_m.unlock();
+			// }
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 			if(glfwWindowShouldClose(window)) return;
 
