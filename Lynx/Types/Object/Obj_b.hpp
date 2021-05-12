@@ -65,8 +65,12 @@ namespace lnx{
 			virtual void qSelf(){queue(UpdateBits::updateg);}; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
 			// virtual void recalculateCoords() {}
 			virtual void onSpawn(Window& pWindow){}
-			virtual void onLimit(){}
-			virtual void onUpdateg(){}
+			virtual void onLimit(){
+				dbg::checkCond(thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+			}
+			virtual void onUpdateg(){
+				dbg::checkCond(thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+			}
 
 			//TODO comment
 			void queue(UpdateBits vUpdates){

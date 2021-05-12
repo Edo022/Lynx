@@ -596,7 +596,8 @@ namespace lnx{
 			static inline void yield() { pthread_yield(); }
 
 			//Returns the calling thread as a lnx::thread structure
-			inline Thread operator()() { Thread thr; thr.thr = pthread_self(); return thr; }
+			// inline Thread operator()() { Thread thr; thr.thr = pthread_self(); return thr; }
+			static inline auto thr() noexcept { return pthread_self(); }
 		};
 	}
 }
