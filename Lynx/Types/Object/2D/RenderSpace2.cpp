@@ -11,7 +11,8 @@ namespace lnx::obj {
 	uint32 RenderSpace2::addChild(Obj2_b* pObj) { //TODO RENAME AS ADD or move to children object
 		pObj->parent = this;
 		//setChildLimits(pObj->common.childIndex = children.add(pObj)); //BUG UNCOMMENT
-		pObj->qHierarchy();
+		// pObj->qHierarchy();
+		pObj->queue(obj::limit | obj::updateg);
 		if(render.parentWindow) render.parentWindow->qSpawn(pObj);
 		return pObj->common.childIndex;
 	}

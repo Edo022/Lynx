@@ -55,6 +55,44 @@ namespace lnx::core::render{
 
 
 namespace lnx{
+	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+		pObj->onSpawn(pWindow);
+		auto ch = pObj->getChildren();
+		for(uint32 i = 0; i < ch->count(); ++i){
+			if((*ch)[i]->render.updates & obj::UpdateBits::spawn){
+				recSpawn((*ch)[i], pWindow);
+			}
+		}
+	}
+
+	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){
+		pCB.updateBuffer(
+			pObj->getShVData().cell->csc.buffer,
+			pObj->getShVData().cell->localOffset,
+			pObj->getShVData().cell->cellSize,
+			(void*)pObj->getShData()
+		);
+		pObj->onUpdateg();
+		auto ch = pObj->getChildren();
+		for(uint32 i = 0; i < ch->count(); ++i){
+			if((*ch)[i]->render.updates & obj::UpdateBits::limit){
+				recUpdateg((*ch)[i], pCB);
+			}
+		}
+	}
+
+	void recLimit(obj::Obj_bb* pObj){
+		pObj->onLimit();
+		auto ch = pObj->getChildren();
+		for(uint32 i = 0; i < ch->count(); ++i){
+			if((*ch)[i]->render.updates & obj::UpdateBits::updateg){
+				recLimit((*ch)[i]);
+			}
+		}
+	}
+
+
+
 	void Window::draw() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
@@ -205,19 +243,22 @@ namespace lnx{
 			requests_m.lock();
 			if(!requests.empty()) for(auto r : requests){
 				if(r->render.updates & obj::UpdateBits::spawn){
-					r->onSpawn(*this); //BU, probably
+					// r->onSpawn(*this); //BUG, probably
+					recSpawn(r, *this);
 					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
 				}
 				if(r->render.updates & obj::UpdateBits::limit){
-					r->onLimit();                       //UG UNCOMMENT
+					// r->onLimit();                       //UG UNCOMMENT
+					recLimit(r);
 				}
 				if(r->render.updates & obj::UpdateBits::updateg){
-					cb.updateBuffer(                    //BU UNCOMMENT
-						r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
-						r->getShVData().cell->localOffset, //BUG UNCOMMENT
-						r->getShVData().cell->cellSize,    //BUG UNCOMMENT
-						(void*)r->getShData()              //BUG UNCOMMENT
-					);                                  //BUG UNCOMMENT
+					// cb.updateBuffer(                    //BU UNCOMMENT
+					// 	r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
+					// 	r->getShVData().cell->localOffset, //BUG UNCOMMENT
+					// 	r->getShVData().cell->cellSize,    //BUG UNCOMMENT
+					// 	(void*)r->getShData()              //BUG UNCOMMENT
+					// );                                  //BUG UNCOMMENT
+					recUpdateg(r, cb);
 				}
 				r->render.updates = obj::UpdateBits::none;
 			}

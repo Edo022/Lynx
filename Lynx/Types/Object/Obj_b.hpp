@@ -56,6 +56,7 @@ namespace lnx{
 			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
 			virtual ram::ptr<char>       getShData(){ dbg::printError("Unable to call this base function"); return nullptr; }
 			virtual vram::Alloc_b<char> getShVData(){ dbg::printError("Unable to call this base function"); return vram::Alloc_b<char>(); }
+			virtual RaArray<Obj_bb*, uint32>* getChildren(){ dbg::printError("Unable to call this base function"); return nullptr; }
 
 			struct Render{									//Structure containing rendering helper members
 				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
@@ -91,8 +92,9 @@ namespace lnx{
 		 * @brief Base class of any render object of any dimension
 		 * @tparam chType Type of the children objects. Can be any subclass of Obj_b
 		 */
-		template<class chType> struct Obj_bt : virtual public Obj_bb {
-			lnx::RaArray<chType*, uint32> children;
+		template<class chType> struct Obj_bt : virtual public Obj_bb { //FIXME RETURN REFERENCE INSTEAD OF POINTER
+			RaArray<chType*, uint32> children;
+			virtual RaArray<Obj_bb*, uint32>* getChildren() override { return (RaArray<Obj_bb*, uint32>*)&children; }
 		};
 	}
 }
