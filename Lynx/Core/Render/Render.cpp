@@ -258,18 +258,18 @@ namespace lnx{
 			if(!requests.empty()) for(auto r : requests){
 				if(r->render.updates & obj::UpdateBits::spawn){
 					r->onSpawn(*this); //BU, probably
-					// CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
+					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
 				}
 				if(r->render.updates & obj::UpdateBits::limit){
-					r->onLimit();
+					r->onLimit();                       //BUG UNCOMMENT
 				}
 				if(r->render.updates & obj::UpdateBits::updateg){
-					cb.updateBuffer(
-						r->getShVData().cell->csc.buffer,
-						r->getShVData().cell->localOffset,
-						r->getShVData().cell->cellSize,
-						(void*)r->getShData()
-					);
+					cb.updateBuffer(                    //BUG UNCOMMENT
+						r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
+						r->getShVData().cell->localOffset, //BUG UNCOMMENT
+						r->getShVData().cell->cellSize,    //BUG UNCOMMENT
+						(void*)r->getShData()              //BUG UNCOMMENT
+					);                                  //BUG UNCOMMENT
 				}
 				r->render.updates = obj::UpdateBits::none;
 			}
