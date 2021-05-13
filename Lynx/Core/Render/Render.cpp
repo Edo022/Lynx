@@ -200,8 +200,43 @@ namespace lnx{
 			//TODO parallelize work from a secondary render thread
 
 
+			//TODO SEPARATE FUNCTIONS
+			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			requests_m.lock();
+			if(!requests.empty()) for(auto r : requests){
+				if(r->render.updates & obj::UpdateBits::spawn){
+					r->onSpawn(*this); //BU, probably
+					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
+				}
+				if(r->render.updates & obj::UpdateBits::limit){
+					r->onLimit();                       //UG UNCOMMENT
+				}
+				if(r->render.updates & obj::UpdateBits::updateg){
+					cb.updateBuffer(                    //BU UNCOMMENT
+						r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
+						r->getShVData().cell->localOffset, //BUG UNCOMMENT
+						r->getShVData().cell->cellSize,    //BUG UNCOMMENT
+						(void*)r->getShData()              //BUG UNCOMMENT
+					);                                  //BUG UNCOMMENT
+				}
+				r->render.updates = obj::UpdateBits::none;
+			}
+			requests.clear();
+			requests_m.unlock();
+			core::render::cmd::endSingleTimeCommands(cb);
 
 
+
+
+
+
+
+
+
+
+
+
+			//FIXME REQUESTS SENT TO NON SPAWNED OBJECTS FROM INPUT CALLBACKS ARE EXECUTED DURING SPAWN
 			//Input callbacks
 			if(icQueues.onClick.queued){
 				icQueues.onClick.m.lock();
@@ -252,30 +287,14 @@ namespace lnx{
 
 
 
-			//TODO SEPARATE FUNCTIONS
-			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			requests_m.lock();
-			if(!requests.empty()) for(auto r : requests){
-				if(r->render.updates & obj::UpdateBits::spawn){
-					r->onSpawn(*this); //BU, probably
-					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
-				}
-				if(r->render.updates & obj::UpdateBits::limit){
-					r->onLimit();                       //BUG UNCOMMENT
-				}
-				if(r->render.updates & obj::UpdateBits::updateg){
-					cb.updateBuffer(                    //BUG UNCOMMENT
-						r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
-						r->getShVData().cell->localOffset, //BUG UNCOMMENT
-						r->getShVData().cell->cellSize,    //BUG UNCOMMENT
-						(void*)r->getShData()              //BUG UNCOMMENT
-					);                                  //BUG UNCOMMENT
-				}
-				r->render.updates = obj::UpdateBits::none;
-			}
-			requests.clear();
-			requests_m.unlock();
-			core::render::cmd::endSingleTimeCommands(cb);
+
+
+
+
+
+
+
+
 
 			// //Fix object spawn requests
 			// spawn_m.lock();
