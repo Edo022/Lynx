@@ -57,12 +57,13 @@ namespace lnx::core::render{
 namespace lnx{
 	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
 		pObj->render.updates = pObj->render.updates & ~obj::spawn;			//Clear update bit (prevents redundant updates)
+		pObj->render.parentWindow = &pWindow;								//Set owner window
 		pObj->onSpawn(pWindow);												//Run user callback
 		auto ch = pObj->getChildren();										//Get object children
 		for(uint32 i = 0; i < ch->count(); ++i){							//For each child
 			// if((*ch)[i]->render.updates & obj::spawn){					//If it has the same update
 			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::spawn;	//Clear update bit (prevents redundant updates)
-			recSpawn((*ch)[i], pWindow);										//Run recursive update on it
+			if(ch->isValid(i)) recSpawn((*ch)[i], pWindow);										//Run recursive update on it
 			// }
 		}
 	}
@@ -80,7 +81,7 @@ namespace lnx{
 		for(uint32 i = 0; i < ch->count(); ++i){
 			// if((*ch)[i]->render.updates & obj::limit){
 			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::limit;
-			recUpdateg((*ch)[i], pCB);
+			if(ch->isValid(i)) recUpdateg((*ch)[i], pCB);
 			// }
 		}
 	}
@@ -92,7 +93,7 @@ namespace lnx{
 		for(uint32 i = 0; i < ch->count(); ++i){
 			// if((*ch)[i]->render.updates & obj::updateg){
 			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::updateg;
-			recLimit((*ch)[i]);
+			if(ch->isValid(i)) recLimit((*ch)[i]);
 			// }
 		}
 	}

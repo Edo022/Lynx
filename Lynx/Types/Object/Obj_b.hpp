@@ -67,10 +67,10 @@ namespace lnx{
 			// virtual void recalculateCoords() {}
 			virtual void onSpawn(Window& pWindow){}
 			virtual void onLimit(){
-				dbg::checkCond(thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
 			virtual void onUpdateg(){
-				dbg::checkCond(thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
 
 			//TODO comment
