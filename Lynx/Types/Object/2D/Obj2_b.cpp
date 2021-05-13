@@ -68,17 +68,17 @@ namespace lnx::obj{
 
 //FIXME UNIFY UPDATE QUEUES
 
-	template<class chType> void Obj2_bt<chType>::qHierarchy() {
-		for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) { //BUG UNCOMMENT
-			setChildLimits(i); //FIXME USE QUEUES                                                                //BUG UNCOMMENT
-			//TODO add  recalculateCoords() in all objects                                                       //BUG UNCOMMENT
-			// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
-			Obj2_bt::children[i]->queue(UpdateBits::limit);                                              //BUG UNCOMMENT
-			// Obj2_bt::children[i]->qHierarchy();                                                          //BUG UNCOMMENT
-		}                                                                                                     //BUG UNCOMMENT
-		qSelf(); //FIXME REMOVE
-		// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
-		//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
-		//BUG^ ADD TEMPORARY FIX
-	}
+	// template<class chType> void Obj2_bt<chType>::qHierarchy() {
+	// 	for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) { //BUG UNCOMMENT
+	// 		setChildLimits(i); //FIXME USE QUEUES                                                                //BUG UNCOMMENT
+	// 		//TODO add  recalculateCoords() in all objects                                                       //BUG UNCOMMENT
+	// 		// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
+	// 		Obj2_bt::children[i]->queue(UpdateBits::limit);                                              //BUG UNCOMMENT
+	// 		// Obj2_bt::children[i]->qHierarchy();                                                          //BUG UNCOMMENT
+	// 	}                                                                                                     //BUG UNCOMMENT
+	// 	qSelf(); //FIXME REMOVE
+	// 	// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
+	// 	//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
+	// 	//BUG^ ADD TEMPORARY FIX
+	// }
 }

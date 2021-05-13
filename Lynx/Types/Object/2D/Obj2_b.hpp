@@ -33,7 +33,7 @@ namespace lnx::obj{
         _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
 
         Obj2_bb* parent{ nullptr };				//Parent of the object
-        virtual void qHierarchy(){};
+        // virtual void qHierarchy(){};
         virtual void onLimit() override { parent->setChildLimits(common.childIndex); } //FIXME idk. This doesnt seem right
     };
 
@@ -46,7 +46,7 @@ namespace lnx::obj{
         limitAlignment limitAlignment_ = limitAlignment::Center; 	//The alignment of the object within its limits
 
         virtual void setChildLimits(const uint32 vChildIndex) const override;
-        virtual void qHierarchy() override;
+        // virtual void qHierarchy() override;
         virtual void onSpawn(Window& pWindow) override;
     };
 
