@@ -56,16 +56,19 @@ namespace lnx::core::render{
 
 namespace lnx{
 	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
-		pObj->onSpawn(pWindow);
-		auto ch = pObj->getChildren();
-		for(uint32 i = 0; i < ch->count(); ++i){
-			if((*ch)[i]->render.updates & obj::UpdateBits::spawn){
-				recSpawn((*ch)[i], pWindow);
-			}
+		pObj->render.updates = pObj->render.updates & ~obj::spawn;			//Clear update bit (prevents redundant updates)
+		pObj->onSpawn(pWindow);												//Run user callback
+		auto ch = pObj->getChildren();										//Get object children
+		for(uint32 i = 0; i < ch->count(); ++i){							//For each child
+			// if((*ch)[i]->render.updates & obj::spawn){					//If it has the same update
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::spawn;	//Clear update bit (prevents redundant updates)
+			recSpawn((*ch)[i], pWindow);										//Run recursive update on it
+			// }
 		}
 	}
 
 	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){
+		pObj->render.updates = pObj->render.updates & ~obj::limit;
 		pCB.updateBuffer(
 			pObj->getShVData().cell->csc.buffer,
 			pObj->getShVData().cell->localOffset,
@@ -75,19 +78,22 @@ namespace lnx{
 		pObj->onUpdateg();
 		auto ch = pObj->getChildren();
 		for(uint32 i = 0; i < ch->count(); ++i){
-			if((*ch)[i]->render.updates & obj::UpdateBits::limit){
-				recUpdateg((*ch)[i], pCB);
-			}
+			// if((*ch)[i]->render.updates & obj::limit){
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::limit;
+			recUpdateg((*ch)[i], pCB);
+			// }
 		}
 	}
 
 	void recLimit(obj::Obj_bb* pObj){
+		pObj->render.updates = pObj->render.updates & ~obj::updateg;
 		pObj->onLimit();
 		auto ch = pObj->getChildren();
 		for(uint32 i = 0; i < ch->count(); ++i){
-			if((*ch)[i]->render.updates & obj::UpdateBits::updateg){
-				recLimit((*ch)[i]);
-			}
+			// if((*ch)[i]->render.updates & obj::updateg){
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::updateg;
+			recLimit((*ch)[i]);
+			// }
 		}
 	}
 
@@ -260,7 +266,8 @@ namespace lnx{
 					// );                                  //BUG UNCOMMENT
 					recUpdateg(r, cb);
 				}
-				r->render.updates = obj::UpdateBits::none;
+				// r->render.updates = obj::UpdateBits::none;
+				dbg::checkCond(r->render.updates != obj::none, "Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine");
 			}
 			requests.clear();
 			requests_m.unlock();
