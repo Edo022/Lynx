@@ -198,7 +198,7 @@ namespace lnx{
 		// spawn_m.unlock();
 		requests_m.lock();
 		requests.add(pObject);
-		pObject->render.updates = pObject->render.updates | obj::UpdateBits::spawn;
+		pObject->render.updates = pObject->render.updates | obj::UpdateBits::eSpawn;
 		requests_m.unlock();
 	}
 

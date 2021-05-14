@@ -12,9 +12,9 @@
 
 namespace lnx::input{
 	enum LnxKeyState : uint16 {
-		LNX_RELEASE = 1 << 15,
-		LNX_PRESS = 1 << 14,
-		LNX_REPEAT = 1 << 13
+		eRelease = 1 << 15,
+		ePress = 1 << 14,
+		eRepeat = 1 << 13
 	};
 
 

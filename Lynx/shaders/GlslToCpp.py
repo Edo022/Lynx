@@ -130,7 +130,7 @@ def translateStructDecl(name:str, iext:bool, type:str, binding:int, members:str,
     t = createFuncs(members, iext)
     return dict({
         'decl' : (('\n\n' if space else '') +                                   #Fix spacing
-            '\nstruct ' + name + '_t : public ShaderElm_b<' + ('Storage' if type == 'buffer' else 'Uniform') + '> {' +
+            '\nstruct ' + name + '_t : public ShaderElm_b<' + ('eStorage' if type == 'buffer' else 'eUniform') + '> {' +
             indent(                                                             # ^ Struct declaration {
                 '\n' + name + '_t() {' + (                                          #Constructor {
                     ('\n\tShaderElm_b::vdata.realloc(' + str(t['size']) + ');') +       #Allocate gpu data
@@ -217,7 +217,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             )                                                       #
             fh.write(indent(decl['decl'], '\t\t'))              #Write members to file
             if _iext:                                           #If it's external, save its data
-                exts.insert(len(exts), { 'vartype': decl['ext']['type'], 'varname' : decl['ext']['varname'], 'bndtype' : ('Storage' if _type == 'buffer' else 'Uniform'), 'bndname' : _name })
+                exts.insert(len(exts), { 'vartype': decl['ext']['type'], 'varname' : decl['ext']['varname'], 'bndtype' : ('eStorage' if _type == 'buffer' else 'eUniform'), 'bndname' : _name })
             elms.insert(len(elms), { 'type' : _type, 'name' : _name, 'bind' : _bind})
 
             if _type == 'uniform': uniformNum += 1
@@ -227,7 +227,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
             '\n\n\nvoid create(' +
             ', '.join((
-                'vram::ptr<' + ext['vartype'] + ', VRam, ' + ext['bndtype'] + '> p' +
+                'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
                 ext['varname'][0].upper() + ext['varname'][1:]
             ) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow);'
             '\nvoid createDescriptorSets();'
@@ -240,12 +240,12 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fc.write(indent(
             '\n\n\nvoid ' + fname + '::create(' +
             ', '.join((
-                    'vram::ptr<' + ext['vartype'] + ', VRam, ' + ext['bndtype'] + '> p' +
+                    'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
                     ext['varname'][0].upper() + ext['varname'][1:]
                 )for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
                 '\n\t''pWindow.addObject_m.lock();' +
                     (
-                        ''.join(('\n\t\t' + ext['bndname'] + '.vdata = (vram::ptr<char, VRam, ' + ext['bndtype'] + '>)p' +
+                        ''.join(('\n\t\t' + ext['bndname'] + '.vdata = (vram::ptr<char, eVRam, ' + ext['bndtype'] + '>)p' +
                         ext['varname'][0].upper() + ext['varname'][1:] + ';'
                     ) for ext in exts)) +
                     '\n'

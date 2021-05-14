@@ -56,7 +56,7 @@ namespace lnx::core::render{
 
 namespace lnx{
 	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
-		pObj->render.updates = pObj->render.updates & ~obj::spawn;			//Clear update bit (prevents redundant updates)
+		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
 		pObj->render.parentWindow = &pWindow;								//Set owner window
 		pObj->onSpawn(pWindow);												//Run user callback
 		auto ch = pObj->getChildren();										//Get object children
@@ -69,7 +69,7 @@ namespace lnx{
 	}
 
 	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){
-		pObj->render.updates = pObj->render.updates & ~obj::limit;
+		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
 		pCB.updateBuffer(
 			pObj->getShVData().cell->csc.buffer,
 			pObj->getShVData().cell->localOffset,
@@ -87,7 +87,7 @@ namespace lnx{
 	}
 
 	void recLimit(obj::Obj_bb* pObj){
-		pObj->render.updates = pObj->render.updates & ~obj::updateg;
+		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
 		pObj->onLimit();
 		auto ch = pObj->getChildren();
 		for(uint32 i = 0; i < ch->count(); ++i){
@@ -249,16 +249,16 @@ namespace lnx{
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			requests_m.lock();
 			if(!requests.empty()) for(auto r : requests){
-				if(r->render.updates & obj::UpdateBits::spawn){
+				if(r->render.updates & obj::UpdateBits::eSpawn){
 					// r->onSpawn(*this); //BUG, probably
 					recSpawn(r, *this);
 					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
 				}
-				if(r->render.updates & obj::UpdateBits::limit){
+				if(r->render.updates & obj::UpdateBits::eLimit){
 					// r->onLimit();                       //UG UNCOMMENT
 					recLimit(r);
 				}
-				if(r->render.updates & obj::UpdateBits::updateg){
+				if(r->render.updates & obj::UpdateBits::eUpdateg){
 					// cb.updateBuffer(                    //BU UNCOMMENT
 					// 	r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
 					// 	r->getShVData().cell->localOffset, //BUG UNCOMMENT
@@ -268,7 +268,7 @@ namespace lnx{
 					recUpdateg(r, cb);
 				}
 				// r->render.updates = obj::UpdateBits::none;
-				_dbg(if(r->render.updates != obj::none) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
+				_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 			}
 			requests.clear();
 			requests_m.unlock();

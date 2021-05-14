@@ -2,5 +2,5 @@
 
 
 namespace lnx::test{
-    bool __errors[(uint32)error::NUM];
+    bool __errors[(uint32)error::eNum];
 }

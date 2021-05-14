@@ -43,7 +43,7 @@ namespace lnx::obj{
      * @brief Obj2_b trampoline
      */
     template<class chType> struct Obj2_bt : public Obj2_bb, public Obj_bt<chType> {
-        limitAlignment limitAlignment_ = limitAlignment::Center; 	//The alignment of the object within its limits
+        limitAlignment limitAlignment_ = limitAlignment::eCenter; 	//The alignment of the object within its limits
 
         virtual void setChildLimits(const uint32 vChildIndex) const override;
         // virtual void qHierarchy() override;

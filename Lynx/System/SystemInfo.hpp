@@ -32,9 +32,9 @@ namespace lnx::sys{
     extern const RamInfo ram;
 
 
-    enum DeviceType{
-        Discrete,
-        Integrated
+    enum class DeviceType{
+        eDiscrete,
+        eIntegrated
     };
     struct GpuInfo{
         const char* name;       //Name of the GPU

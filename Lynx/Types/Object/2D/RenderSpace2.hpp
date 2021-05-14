@@ -7,19 +7,19 @@
 
 namespace lnx::obj {
 	enum class AlignmentType : int16{
-		Horizontal,
-		Vertical,
-		FixedHorizontal,
-		FixedVertical,
-		FixedGrid,
-		Free
+		eHorizontal,
+		eVertical,
+		eFixedHorizontal,
+		eFixedVertical,
+		eFixedGrid,
+		eFree
 	};
 
 	enum class FlowType : int16{
-		LeftToRight,
-		RightToLeft,
-		TopToBottom,
-		BottomToTop
+		eLeftToRight,
+		eRightToLeft,
+		eTopToBottom,
+		eBottomToTop
 	};
 
 
@@ -41,9 +41,9 @@ namespace lnx::obj {
 
 
 		//TODO fix default constructor
-		RenderSpace2() : alignment(AlignmentType::Free), xNum(1), yNum(1), xFlow(FlowType::LeftToRight), yFlow(FlowType::TopToBottom) {}
+		RenderSpace2() : alignment(AlignmentType::eFree), xNum(1), yNum(1), xFlow(FlowType::eLeftToRight), yFlow(FlowType::eTopToBottom) {}
 
-		RenderSpace2(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::LeftToRight, FlowType vYFlow = FlowType::TopToBottom)
+		RenderSpace2(AlignmentType vAlignment, uint32 vXNum = 2, uint32 vYNum = 2, FlowType vXFlow = FlowType::eLeftToRight, FlowType vYFlow = FlowType::eTopToBottom)
 			: alignment(vAlignment), xNum(vXNum), yNum(vYNum), xFlow(vXFlow), yFlow(vYFlow) {
 		}
 

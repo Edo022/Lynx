@@ -14,12 +14,12 @@
 namespace lnx::shd{
 
 
-	void FloatToIntBuffer::create(vram::ptr<f32v4, VRam, Storage> pSrc, vram::ptr<u32, VRam, Storage> pDst, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<u32, VRam, Storage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
+	void FloatToIntBuffer::create(vram::ptr<f32v4, eVRam, eStorage> pSrc, vram::ptr<u32, eVRam, eStorage> pDst, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
 		pWindow.addObject_m.lock();
-			_src.vdata = (vram::ptr<char, VRam, Storage>)pSrc;
-			_dst.vdata = (vram::ptr<char, VRam, Storage>)pDst;
-			_wsize.vdata = (vram::ptr<char, VRam, Storage>)pWsize;
-			_zbuff.vdata = (vram::ptr<char, VRam, Storage>)pZbuff;
+			_src.vdata = (vram::ptr<char, eVRam, eStorage>)pSrc;
+			_dst.vdata = (vram::ptr<char, eVRam, eStorage>)pDst;
+			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
+			_zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);

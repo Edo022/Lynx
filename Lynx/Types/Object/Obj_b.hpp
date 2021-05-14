@@ -20,20 +20,20 @@ namespace lnx{
 
 
 		enum class limitAlignment : int16{
-			Top,
-			Bottom,
-			Right,
-			Left,
-			Center
+			eTop,
+			eBottom,
+			eRight,
+			eLeft,
+			eCenter
 		};
 
 
 
 		enum UpdateBits : uint32 {
-			none    = 0,
-			spawn   = 0b0001,
-			limit   = 0b0100,
-			updateg = 0b0010
+			eNone    = 0,
+			eSpawn   = 0b0001,
+			eLimit   = 0b0100,
+			eUpdateg = 0b0010
 		};
 		alwaysInline UpdateBits operator~ (UpdateBits  a){ return (UpdateBits)((u32)~ (u32)a); }
 		alwaysInline UpdateBits operator| (UpdateBits  a, UpdateBits b){ return (UpdateBits )((u32 )a |  (u32)b); }
@@ -63,7 +63,7 @@ namespace lnx{
 				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread
 				Window* parentWindow = nullptr;					//Parent window object that contains the render thread and the window data
 			} render;
-			virtual void qSelf(){queue(UpdateBits::updateg);}; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
+			virtual void qSelf(){queue(UpdateBits::eUpdateg);}; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
 			// virtual void recalculateCoords() {}
 			virtual void onSpawn(Window& pWindow){}
 			virtual void onLimit(){

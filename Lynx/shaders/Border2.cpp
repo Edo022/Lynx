@@ -14,11 +14,11 @@
 namespace lnx::shd{
 
 
-	void Border2::create(vram::ptr<f32v4, VRam, Storage> pOutcol, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<u32, VRam, Storage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
+	void Border2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
 		pWindow.addObject_m.lock();
-			_outcol.vdata = (vram::ptr<char, VRam, Storage>)pOutcol;
-			_wsize.vdata = (vram::ptr<char, VRam, Storage>)pWsize;
-			_zbuff.vdata = (vram::ptr<char, VRam, Storage>)pZbuff;
+			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
+			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
+			_zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);

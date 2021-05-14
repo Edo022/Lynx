@@ -20,9 +20,9 @@
 //TODO output to console window
 namespace lnx::dbg{
 	enum class Severity{
-		info,
-		warning,
-		error
+		eInfo,
+		eWarning,
+		eError
 	};
 	static std::string string_format(const std::string &fmt, ...) {
 		int32 size = 4192;
@@ -39,10 +39,8 @@ namespace lnx::dbg{
 				str.resize(n); // Make sure there are no trailing zero char
 				return str;
 			}
-			if (n > -1)
-				size = n + 1;
-			else
-				size *= 2;
+			if (n > -1) size = n + 1;
+			else size *= 2;
 		}
 	}
 	#ifdef LNX_DEBUG
@@ -79,7 +77,7 @@ namespace lnx::dbg{
 
 			std::string out__ = string_format(out,
 				"\n\n--------------------------------------------------------------------------\n",
-				(vSeverity == Severity::info) ? "" : (vSeverity == Severity::warning) ? "Warning" : "Error:",
+				(vSeverity == Severity::eInfo) ? "" : (vSeverity == Severity::eWarning) ? "Warning" : "Error:",
 
 				"Thread   ", thrName,
 				"Traceback: ", traceback.c_str(),
@@ -87,13 +85,13 @@ namespace lnx::dbg{
 				pParams...,
 				"\n--------------------------------------------------------------------------\n\n"
 			);
-			if(vSeverity == Severity::info) Normal else if(vSeverity == Severity::warning) Warning else Failure printf(out__.c_str());
+			if(vSeverity == Severity::eInfo) Normal else if(vSeverity == Severity::eWarning) Warning else Failure printf(out__.c_str());
 			Normal; fflush(stdout); //free(out);
-			if(vSeverity == Severity::error) throw std::runtime_error("U.U");
+			if(vSeverity == Severity::eError) throw std::runtime_error("U.U");
 		}
 
-		static neverInline void printError  (const char* vMessage, const auto&... pParams) { print(Severity::error  , 1, vMessage, pParams...); }
-		static neverInline void printWarning(const char* vMessage, const auto&... pParams) { print(Severity::warning, 1, vMessage, pParams...); }
+		static neverInline void printError  (const char* vMessage, const auto&... pParams) { print(Severity::eError  , 1, vMessage, pParams...); }
+		static neverInline void printWarning(const char* vMessage, const auto&... pParams) { print(Severity::eWarning, 1, vMessage, pParams...); }
 
 
 

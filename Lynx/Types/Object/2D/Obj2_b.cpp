@@ -16,7 +16,7 @@ namespace lnx::obj{
 		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.ffp() = vMinLim;
 			// debugBorder->qHierarchy();
-			debugBorder->queue(obj::UpdateBits::updateg);
+			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
@@ -24,7 +24,7 @@ namespace lnx::obj{
 		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.fsp() = vMaxLim;
 			// debugBorder->qHierarchy();
-			debugBorder->queue(obj::UpdateBits::updateg);
+			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	#endif
