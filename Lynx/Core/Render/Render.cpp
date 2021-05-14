@@ -50,7 +50,7 @@ namespace lnx::core::render{
 
 
 
-
+//TODO ADD FULL BACKTRACE
 
 
 
@@ -268,7 +268,7 @@ namespace lnx{
 					recUpdateg(r, cb);
 				}
 				// r->render.updates = obj::UpdateBits::none;
-				dbg::checkCond(r->render.updates != obj::none, "Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine");
+				_dbg(if(r->render.updates != obj::none) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 			}
 			requests.clear();
 			requests_m.unlock();
