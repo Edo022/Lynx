@@ -54,15 +54,13 @@ namespace lnx::dbg{
 				"%s%s\n\n"		//Error
 				"%s\"%s\"\n"	//Thread
 				"%s%s\n\n",		//Traceback
-				vMessage,
+				vMessage,		//User message
 				"%s"
 			);
 
-			//Output
+
+			//Build traceback
 			char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-			// char* out__ = (char*)malloc(16384);
-
-
 			std::string traceback = "\n    Address |   Line | Function";
 			for(uint32 i = 0; ; ++i){
 				auto func = caller::func(vIndex + i);
@@ -73,7 +71,7 @@ namespace lnx::dbg{
 					func;
 				}
 				else break;
-				if(i == 2047) {
+				if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
 					traceback += "\n    Too many nested calls. Backtrace stopped";
 					break;
 				}

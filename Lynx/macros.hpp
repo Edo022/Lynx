@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_MACROS
-#include "Lynx_config.hpp"
+// #include "Lynx_config.hpp"
 
 #ifdef __INTELLISENSE__
     #include ".engine/conf.hpp"

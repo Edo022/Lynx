@@ -83,7 +83,7 @@ while i < len(cmd):                             #For each command option
 
 
 
-#Construct GLSLC command
+#Build GLSLC command
 cmdsh = []
 i = 0
 while i < len(cmdp):
@@ -112,13 +112,14 @@ while i < len(cmdp):
 
 
 
-#Construct G++ command
+#Build G++ command
 vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
 gwdep:str = enginePath + '/deps/Shared/GLFW'
 
 cmdg = ['g++', '-std=c++2a', '-pthread']                        #Base options
-cmdg += ['-include', 'Lynx/Core/VkDef.hpp']
-if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lnx debug checks when in debug mode
+cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced vulkan macros
+cmdg += ['-include', 'Lynx/Lynx_config.hpp']                    #Include engine configuration macros
+if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lynx debug checks when in debug mode
 
 if cd == 'u': cmdg += [                                         #When building user application
     '-DenginePath="' + enginePath + '"',                        #Define engine path function #FIXME
