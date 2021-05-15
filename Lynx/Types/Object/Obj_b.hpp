@@ -54,18 +54,20 @@ namespace lnx{
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list
 			} common;
 			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
-			virtual ram::ptr<char>       getShData(){ dbg::printError("Unable to call this base function"); return nullptr; }
-			virtual vram::Alloc_b<char> getShVData(){ dbg::printError("Unable to call this base function"); return vram::Alloc_b<char>(); }
-			virtual RaArray<Obj_bb*, uint32>* getChildren(){ dbg::printError("Unable to call this base function"); return nullptr; }
+			virtual ram::ptr<char>       getShData() = 0;
+			virtual vram::Alloc_b<char> getShVData() = 0;
+			virtual RaArray<Obj_bb*, uint32>* getChildren() = 0;
 
 			struct Render{									//Structure containing rendering helper members
 				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
 				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread
 				Window* parentWindow = nullptr;					//Parent window object that contains the render thread and the window data
 			} render;
-			virtual void qSelf(){queue(UpdateBits::eUpdateg);}; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
+			virtual void qSelf(){ queue(UpdateBits::eUpdateg); }; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
 			// virtual void recalculateCoords() {}
-			virtual void onSpawn(Window& pWindow){}
+			virtual void onSpawn(Window& pWindow){
+				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+			}
 			virtual void onLimit(){
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
