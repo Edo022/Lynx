@@ -33,7 +33,7 @@ namespace lnx::obj{
 
 
 	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
-		dbg::checkCond(thr::self::thr() != pWindow.t.thr, "This function can only be called by the render thread.");
+		Obj_bt<chType>::onSpawn(pWindow);
 		//BUG BEGIN >>
         // Obj_bb::render.parentWindow = &pWindow;                                   //BUG UNCOMMENT
         // for(u32 i = 0; i < this->children.count(); ++i){                          //BUG UNCOMMENT

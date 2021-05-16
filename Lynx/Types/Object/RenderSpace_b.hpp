@@ -8,7 +8,7 @@ namespace lnx::obj{
     struct RenderSpace_b : public Obj2_b<2>{
         void qSelf() final override {} //FIXME REMOVE
         void onUpdateg() final override {
-            dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+            Obj2_b::onUpdateg();
         }
         //FIXME
         virtual      ram::ptr<char> getShData() override { dbg::printError("Unable to call this base function"); return nullptr; }

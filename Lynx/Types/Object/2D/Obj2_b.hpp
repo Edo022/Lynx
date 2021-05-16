@@ -34,7 +34,10 @@ namespace lnx::obj{
 
         Obj2_bb* parent{ nullptr };				//Parent of the object
         // virtual void qHierarchy(){};
-        virtual void onLimit() override { parent->setChildLimits(common.childIndex); } //FIXME idk. This doesnt seem right
+        virtual void onLimit() override {
+            Obj_bb::onLimit();
+            parent->setChildLimits(common.childIndex);
+        } //FIXME idk. This doesnt seem right
     };
 
 

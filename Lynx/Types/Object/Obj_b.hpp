@@ -48,6 +48,7 @@ namespace lnx{
 		 * @brief Members common to any Obj_bt instantiation
 		 */
 		struct Obj_bb { //
+			_dbg(const char* dbgName;)
 			struct Common{
 				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object
