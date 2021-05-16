@@ -36,7 +36,7 @@ namespace lnx::obj{
         // virtual void qHierarchy(){};
         virtual void onLimit() override {
             Obj_bb::onLimit();
-            parent->setChildLimits(common.childIndex);
+            if(parent) parent->setChildLimits(common.childIndex);
         } //FIXME idk. This doesnt seem right
     };
 
