@@ -17,12 +17,12 @@
 
 namespace lnx{
 	enum bufferType{
-		Storage,
-		Uniform
+		eStorage,
+		eUniform
 	};
 	enum bufferLocation{
-		Ram,
-		VRam
+		eRam,
+		eVRam
 	};
 }
 
@@ -58,7 +58,7 @@ namespace lnx::vram{
 
 
 		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { _dbg(
-			if((_class) != VCellClass::CLASS_0 && _class != VCellClass::AUTO) {
+			if((_class) != VCellClass::e0 && _class != VCellClass::eAuto) {
 				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
 				dbg::checkCond((uint64)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lnx::VCellClass::AUTO to automatically choose it");
 			}
@@ -69,14 +69,14 @@ namespace lnx::vram{
 
 
 		constexpr static void evaluateCellClass(const uint64 vSize, VCellClass& pClass) noexcept {
-			if(pClass == VCellClass::AUTO) { [[likely]]
-				     if(vSize <= (uint32)VCellClass::CLASS_A) [[likely]]   pClass = VCellClass::CLASS_A;
-				else if(vSize <= (uint32)VCellClass::CLASS_B) [[likely]]   pClass = VCellClass::CLASS_B;
-				else if(vSize <= (uint32)VCellClass::CLASS_C) [[likely]]   pClass = VCellClass::CLASS_C;
-				else if(vSize <= (uint32)VCellClass::CLASS_D) [[likely]]   pClass = VCellClass::CLASS_D;
-				else if(vSize <= (uint32)VCellClass::CLASS_Q) [[unlikely]] pClass = VCellClass::CLASS_Q;
-				else if(vSize <= (uint32)VCellClass::CLASS_L) [[unlikely]] pClass = VCellClass::CLASS_L;
-				else										 			   pClass = VCellClass::CLASS_0;
+			if(pClass == VCellClass::eAuto) { [[likely]]
+				     if(vSize <= (uint32)VCellClass::eA) [[likely]]   pClass = VCellClass::eA;
+				else if(vSize <= (uint32)VCellClass::eB) [[likely]]   pClass = VCellClass::eB;
+				else if(vSize <= (uint32)VCellClass::eC) [[likely]]   pClass = VCellClass::eC;
+				else if(vSize <= (uint32)VCellClass::eD) [[likely]]   pClass = VCellClass::eD;
+				else if(vSize <= (uint32)VCellClass::eQ) [[unlikely]] pClass = VCellClass::eQ;
+				else if(vSize <= (uint32)VCellClass::eL) [[unlikely]] pClass = VCellClass::eL;
+				else										 			   pClass = VCellClass::e0;
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace lnx::vram{
 		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
-		inline ptr(const uint64 vSize, VCellClass vClass = VCellClass::AUTO) {
+		inline ptr(const uint64 vSize, VCellClass vClass = VCellClass::eAuto) {
 			Super::loc = loc; Super::btype = btype;
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass);
@@ -162,7 +162,7 @@ namespace lnx::vram{
 		alwaysInline void operator=(const ptr<type, loc, btype>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			Super::cell = vAlloc.cell; //vAlloc.cell = nullptr;
-			//!                          ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
+			//!                          ^ //TODO
 		}
 
 
@@ -234,12 +234,12 @@ namespace lnx::vram{
 
 	private:
 		static consteval vk::BufferUsageFlags _usage() {
-			if(btype == Uniform) return vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eUniformBuffer;
+			if(btype == eUniform) return vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eUniformBuffer;
 			else                 return vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eTransferSrc;
 		}
 		static consteval vk::MemoryPropertyFlags _prop() {
 			// if(loc == Ram) return VK_MEMORY_PROPERTY_HOST_ACHED_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
-			if(loc == Ram) return vk::MemoryPropertyFlagBits::eHostVisible;
+			if(loc == eRam) return vk::MemoryPropertyFlagBits::eHostVisible;
 			else           return vk::MemoryPropertyFlagBits::eDeviceLocal; //FIXME IDK
 		}
 
@@ -252,7 +252,7 @@ namespace lnx::vram{
 			const auto cellIndex = cells.add(Cell_t2{});					//Save cell index
 			cells_m.unlock();
 			Super::cell = &cells[cellIndex];								//Update cell pointer
-			uint16 typeIndex = (vClass == VCellClass::CLASS_0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
+			uint16 typeIndex = (vClass == VCellClass::e0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
 			*Super::cell = Cell_t2{											//Update cell data
 				.typeIndex = typeIndex,											//Set cell type index
 				.cellIndex  = cellIndex,										//Set cell index
@@ -266,7 +266,7 @@ namespace lnx::vram{
 				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 				type_.m.unlock();
 				Super::cell->localIndex = localIndex;							//Save local index in cell object
-				Super::cell->localOffset = (vClass != VCellClass::CLASS_0) * localIndex * (uint32)vClass;
+				Super::cell->localOffset = (vClass != VCellClass::e0) * localIndex * (uint32)vClass;
 
 				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
 				if(!type_.memory[buffIndex].memory) {
@@ -284,7 +284,7 @@ namespace lnx::vram{
 			else {															//For custom size cells
 				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
-				dbg::checkParam(btype == bufferType::Uniform && core::dvc::graphics.pd.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
+				dbg::checkParam(btype == bufferType::eUniform && core::dvc::graphics.pd.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
 				lnx::core::buffers::createBuffer(
 					&Super::cell->csc.buffer, _usage(),
 					size,
@@ -303,7 +303,7 @@ namespace lnx::vram{
 
 
 
-		void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::AUTO){
+		void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::eAuto){
 			static std::mutex test_m;
 			test_m.lock();
 			checkInit(); checkAllocSize(vSize, vClass);

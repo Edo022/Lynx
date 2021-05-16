@@ -6,12 +6,12 @@
 
 
 namespace lnx::obj{
-	struct Border2 : public Obj2_b{
+	struct Border2 : public Obj2_b<2>{
 		shd::Border2 data;
 
 
-		virtual ram::ptr<char> getShData(){ return data._data.data; }
-		virtual vram::Alloc_b<char> getShVData(){ return data._data.vdata; }
+		virtual ram::ptr<char> getShData() override { return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
 
 
 		Border2() {

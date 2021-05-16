@@ -17,7 +17,7 @@ namespace lnx::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2 : public Obj2_b {
+	struct Line2 : public Obj2_b<2> {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
@@ -26,8 +26,8 @@ namespace lnx::obj {
 		f32v2 _fp0;		//First point of the line
 		f32v2 _fp1;		//Second point of the line
 
-		virtual ram::ptr<char> getShData(){ return data._data.data; }
-		virtual vram::Alloc_b<char> getShVData(){ return data._data.vdata; }
+		virtual ram::ptr<char> getShData() override { return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
 
 
 		/**
@@ -57,9 +57,12 @@ namespace lnx::obj {
 		inline void setSp(const f32v2& vSp) { _fp1 = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
 
-		void recalculateCoords() final {
-			data._data.fp0() = _fp0 * adist(minLim, maxLim) + minLim;
-			data._data.fp1() = _fp1 * adist(minLim, maxLim) + minLim;
+		// void recalculateCoords() final {
+		void onLimit() final override {
+			Obj_bb::onLimit();
+			dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+			data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
+			data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
 		}
 
 

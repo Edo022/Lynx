@@ -13,8 +13,8 @@
 
 namespace lnx::obj{
 	struct RenderSpace2;
-	struct Base;
-	struct Obj2_b;
+	struct Obj_bb;
+	struct Obj2_bb;
 }
 namespace lnx{
 	class Window{
@@ -27,10 +27,10 @@ namespace lnx{
 		std::atomic<bool> initialized = false;
 		Thread t;									//Main render thread of the window
 
-		vram::ptr<u32v2, VRam, Storage> wSize_g;	//Size of the widow
-		vram::ptr<f32v4, VRam, Storage> fOut_g ;	//Color output of the window
-		vram::ptr<u32,   VRam, Storage> iOut_g ;	//Packed color output of the window
-		vram::ptr<u32,   VRam, Storage> zBuff_g;	//TODO remove. use render space assembler
+		vram::ptr<u32v2, eVRam, eStorage> wSize_g;	//Size of the widow
+		vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output of the window
+		vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output of the window
+		vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
 
 
 
@@ -42,22 +42,29 @@ namespace lnx{
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addObject_m;
 
-		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
-		RaArray<obj::Obj2_b*> spawn_q;
-		std::mutex spawn_m;
-		void qSpawn(obj::Obj2_b* pObject);
-		void spawn(obj::RenderSpace2* pRenderSpace);
-		RtArray<obj::Base*>	objUpdates;
-		std::mutex          objUpdates_m;
+		// RaArray<lnx::obj::RenderSpace2*> CRenderSpaces; //FIXME REMOVE probably useless
+		// RaArray<obj::Obj2_bb*> spawn_q;
+		// std::mutex spawn_m;
+		void qSpawn(obj::Obj_bb* pObject);
+		// void spawn(obj::RenderSpace2* pRenderSpace);
+		// RtArray<obj::Obj_bb*>	objUpdates;
+		// std::mutex          objUpdates_m;
+
+
+
+		RtArray<obj::Obj_bb*> requests; //TODO USE RAARRAY
+		std::mutex            requests_m;
+
+
 
 
 		struct InputCallbackQueues{
 			struct InputCallbackQueue{
 				std::atomic<bool> queued = false;
-				RaArray<obj::Obj2_b*> list;
+				RaArray<obj::Obj2_bb*> list;
 				std::mutex m;
 				f32v2 pos;
-				inline auto add(obj::Obj2_b* pElm){
+				inline auto add(obj::Obj2_bb* pElm){
 					m.lock();
 					auto r = list.add(pElm);
 					m.unlock();
@@ -71,7 +78,7 @@ namespace lnx{
 				}
 			};
 			InputCallbackQueue onClick, onEnter, onExit, onMove, onAxis;
-			MouseButton lastMouseButton = MouseButton::n1;
+			MouseButton lastMouseButton = MouseButton::eN1;
 		} icQueues;
 
 
@@ -132,6 +139,8 @@ namespace lnx{
 
 		void run();
 		void draw();
+		void somethingUpdates();
+		void somethingInput();
 		void createDefaultCommandBuffers__();
 
 

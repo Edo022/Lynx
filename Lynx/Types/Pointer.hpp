@@ -30,23 +30,23 @@ namespace lnx::ram{
 
 
 		alwaysInline void checkAlloc() const { _dbg(
-			lnx::dbg::checkCond(state == __pvt::CellState::FREED, "Unable to call this function on invalid allocations: The memory block have been manually freed");
+			lnx::dbg::checkCond(state == __pvt::CellState::eFreed, "Unable to call this function on invalid allocations: The memory block have been manually freed");
 		)}
-		#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::FREED, #a,\
+		#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::eFreed, #a,\
 			"Use of invalid allocation: The memory block have been manually freed")
 		;
 
 
 		alwaysInline void checkNullptr()  const { _dbg(
-			lnx::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Unable to call this function on unallocated memory blocks");
+			lnx::dbg::checkCond(state == __pvt::CellState::eNullptr, "Unable to call this function on unallocated memory blocks");
 		)}
 		alwaysInline void checkNullptrD() const { _dbg(
-			lnx::dbg::checkCond(state == __pvt::CellState::NULLPTR, "Cannot dereference an unallocated memory block");
+			lnx::dbg::checkCond(state == __pvt::CellState::eNullptr, "Cannot dereference an unallocated memory block");
 		)}
 
 
 		static alwaysInline void checkAllocSize(uint64 size_, CellClass _class) { _dbg(
-			if(_class != CellClass::CLASS_0 && _class != CellClass::AUTO) {
+			if(_class != CellClass::e0 && _class != CellClass::eAuto) {
 				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
 				dbg::checkCond((uint32)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, size_, "Use lnx::CellClass::AUTO to automatically choose it");
 			}
@@ -54,14 +54,14 @@ namespace lnx::ram{
 
 
 		constexpr static void evaluateCellClass(const uint64 vSize, CellClass& pClass) noexcept {
-			if(pClass == CellClass::AUTO) { [[likely]]
-				     if(vSize <= (uint32)CellClass::CLASS_A) [[likely]]	  pClass = CellClass::CLASS_A;
-				else if(vSize <= (uint32)CellClass::CLASS_B) [[likely]]	  pClass = CellClass::CLASS_B;
-				else if(vSize <= (uint32)CellClass::CLASS_C) [[likely]]	  pClass = CellClass::CLASS_C;
-				else if(vSize <= (uint32)CellClass::CLASS_D) [[likely]]   pClass = CellClass::CLASS_D;
-				else if(vSize <= (uint32)CellClass::CLASS_Q) [[unlikely]] pClass = CellClass::CLASS_Q;
-				else if(vSize <= (uint32)CellClass::CLASS_L) [[unlikely]] pClass = CellClass::CLASS_L;
-				else										 			  pClass = CellClass::CLASS_0;
+			if(pClass == CellClass::eAuto) { [[likely]]
+				     if(vSize <= (uint32)CellClass::eA) [[likely]]	  pClass = CellClass::eA;
+				else if(vSize <= (uint32)CellClass::eB) [[likely]]	  pClass = CellClass::eB;
+				else if(vSize <= (uint32)CellClass::eC) [[likely]]	  pClass = CellClass::eC;
+				else if(vSize <= (uint32)CellClass::eD) [[likely]]   pClass = CellClass::eD;
+				else if(vSize <= (uint32)CellClass::eQ) [[unlikely]] pClass = CellClass::eQ;
+				else if(vSize <= (uint32)CellClass::eL) [[unlikely]] pClass = CellClass::eL;
+				else										 			  pClass = CellClass::e0;
 			} //TODO use direct access array
 		}
 
@@ -117,7 +117,7 @@ namespace lnx::ram{
 		 */
 		alwaysInline ptr() : cell{ &dummyCell } {
 			_dbg(prevOwner = nextOwner = nullptr;)
-			_dbg(state = __pvt::CellState::NULLPTR);
+			_dbg(state = __pvt::CellState::eNullptr);
 		}
 		alwaysInline ptr(const std::nullptr_t) : ptr() {}
 
@@ -168,12 +168,12 @@ namespace lnx::ram{
 		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
-		inline ptr(const uint64 vSize, CellClass vClass = CellClass::AUTO) {
+		inline ptr(const uint64 vSize, CellClass vClass = CellClass::eAuto) {
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass);
 			// ++cell->owners; //! no. owners already set in alloc_
 			pushOwner();
-			_dbg(state = __pvt::CellState::ALLOC);
+			_dbg(state = __pvt::CellState::eAlloc);
 		}
 
 
@@ -324,7 +324,7 @@ namespace lnx::ram{
 				.cellIndex  = cellIndex,										//Set cell index
 				.cellSize = (uint32)vSize,										//Set size specified in function call
 			};
-			_dbg(state = __pvt::CellState::ALLOC);						//Add cell state info if in debug mode
+			_dbg(state = __pvt::CellState::eAlloc);						//Add cell state info if in debug mode
 
 
 			if((uint32)vClass) {											//For fixed class cells
@@ -361,7 +361,7 @@ namespace lnx::ram{
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
 		 */
-		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::AUTO) {
+		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::eAuto) {
 			//FIXME FREE CUSTOM SIZE BUFFERS
 			using namespace lnx::__pvt;
 			checkInit(); checkAllocSize(vSize, vClass);
@@ -424,7 +424,7 @@ namespace lnx::ram{
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
 		 */
-		alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::AUTO) {
+		alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::eAuto) {
 			checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);
 			realloc(sizeof(type) * vCount, vCopyOldData, vClass);
 		}
@@ -450,7 +450,7 @@ namespace lnx::ram{
 				#ifdef LNX_DEBUG
 					//! [Call from destructor] No need to set the correct state of the owners, as there are none (they're all out of scope)
 					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) {
-						i->state = __pvt::CellState::FREED;
+						i->state = __pvt::CellState::eFreed;
 					}
 				#endif
 			}

@@ -21,7 +21,7 @@ namespace lnx::sys{
 		//Get GPU informations
 		GpuInfo _vram;
 		_vram.name = core::dvc::graphics.pd.properties.deviceName;
-		_vram.type = (core::dvc::graphics.pd.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::Discrete : sys::Integrated;
+		_vram.type = (core::dvc::graphics.pd.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::DeviceType::eDiscrete : sys::DeviceType::eIntegrated;
 		_vram.maxWgSize[0] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[0];
 		_vram.maxWgSize[1] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[1];
 		_vram.maxWgSize[2] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[2];
@@ -51,7 +51,7 @@ namespace lnx::sys{
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 k = 0; k < 2; ++k) { 									//Loop location
 			for(uint32 j = 0; j < 2; ++j) { 									//Loop buffer type
-				for(uint32 i = 0; i < (uint32)VCellClassIndex::NUM; ++i) {			//Loop cell size
+				for(uint32 i = 0; i < (uint32)VCellClassIndex::eNum; ++i) {			//Loop cell size
 					uint32 buffsNum = sys::vram.size / buffSize;						//Get max number of cells that can fit in the system memory
 					uint32 typeIndex = (i << 2) | (j << 1) | k;							//Calculate buffer type index
 					uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);		//Get number of cells in each buffer
@@ -64,6 +64,6 @@ namespace lnx::sys{
 				}
 			}
 		}
-		vram::cells.init(sys::vram.size / (uint64)vram::VCellClass::CLASS_A);
+		vram::cells.init(sys::vram.size / (uint64)vram::VCellClass::eA);
 	}
 }

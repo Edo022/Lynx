@@ -50,11 +50,53 @@ namespace lnx::core::render{
 
 
 
-
+//TODO ADD FULL BACKTRACE
 
 
 
 namespace lnx{
+	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
+		pObj->render.parentWindow = &pWindow;								//Set owner window
+		pObj->onSpawn(pWindow);												//Run user callback
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){							//For each child
+			// if((*ch)[i]->render.updates & obj::spawn){					//If it has the same update
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::spawn;	//Clear update bit (prevents redundant updates)
+			if(pObj->getChildrenIsValid(i)) recSpawn(pObj->getChildren(i), pWindow);										//Run recursive update on it
+			// }
+		}
+	}
+
+	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){
+		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
+		pCB.updateBuffer(
+			pObj->getShVData().cell->csc.buffer,
+			pObj->getShVData().cell->localOffset,
+			pObj->getShVData().cell->cellSize,
+			(void*)pObj->getShData()
+		);
+		pObj->onUpdateg();
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
+			// if((*ch)[i]->render.updates & obj::limit){
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::limit;
+			if(pObj->getChildrenIsValid(i)) recUpdateg(pObj->getChildren(i), pCB);
+			// }
+		}
+	}
+
+	void recLimit(obj::Obj_bb* pObj){
+		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
+		pObj->onLimit();
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
+			// if((*ch)[i]->render.updates & obj::updateg){
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::updateg;
+			if(pObj->getChildrenIsValid(i)) recLimit(pObj->getChildren(i));
+			// }
+		}
+	}
+
+
+
 	void Window::draw() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
@@ -199,20 +241,48 @@ namespace lnx{
 
 			//TODO parallelize work from a secondary render thread
 
-			//Fix object spawn requests
-			spawn_m.lock();
-			if(spawn_q.count()){
-				for(uint32 i = 0; i < spawn_q.count(); ++i){
-					if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this); //BUG
-					// if(spawn_q.isValid(i)) spawn_q[i];
+
+			//TODO SEPARATE FUNCTIONS
+			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			requests_m.lock();
+			if(!requests.empty()) for(auto r : requests){
+				if(r->render.updates & obj::UpdateBits::eSpawn){
+					// r->onSpawn(*this); //BUG, probably
+					recSpawn(r, *this);
+					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
 				}
-				spawn_q.clear();
+				if(r->render.updates & obj::UpdateBits::eLimit){
+					// r->onLimit();                       //UG UNCOMMENT
+					recLimit(r);
+				}
+				if(r->render.updates & obj::UpdateBits::eUpdateg){
+					// cb.updateBuffer(                    //BU UNCOMMENT
+					// 	r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
+					// 	r->getShVData().cell->localOffset, //BUG UNCOMMENT
+					// 	r->getShVData().cell->cellSize,    //BUG UNCOMMENT
+					// 	(void*)r->getShData()              //BUG UNCOMMENT
+					// );                                  //BUG UNCOMMENT
+					recUpdateg(r, cb);
+				}
+				// r->render.updates = obj::UpdateBits::none;
+				_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 			}
-			spawn_m.unlock();
+			requests.clear();
+			requests_m.unlock();
+			core::render::cmd::endSingleTimeCommands(cb);
 
 
 
 
+
+
+
+
+
+
+
+
+			//FIXME REQUESTS SENT TO NON SPAWNED OBJECTS FROM INPUT CALLBACKS ARE EXECUTED DURING SPAWN
 			//Input callbacks
 			if(icQueues.onClick.queued){
 				icQueues.onClick.m.lock();
@@ -263,23 +333,46 @@ namespace lnx{
 
 
 
-			//Fix objects update requests
-			if(objUpdates.count() > 0) {
-				objUpdates_m.lock();
-				vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-				for(uint32 i = 0; i < objUpdates.count(); i++) {
-					objUpdates[i]->render.updated = true;
-					cb.updateBuffer(
-						objUpdates[i]->getShVData().cell->csc.buffer,
-						objUpdates[i]->getShVData().cell->localOffset,
-						objUpdates[i]->getShVData().cell->cellSize,
-						(void*)objUpdates[i]->getShData()
-					);
-				}
-				core::render::cmd::endSingleTimeCommands(cb);
-				objUpdates.clear();
-				objUpdates_m.unlock();
-			}
+
+
+
+
+
+
+
+
+
+			// //Fix object spawn requests
+			// spawn_m.lock();
+			// if(spawn_q.count()){
+			// 	for(uint32 i = 0; i < spawn_q.count(); ++i){
+			// 		if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this); //BUG
+			// 		// if(spawn_q.isValid(i)) spawn_q[i];
+			// 	}
+			// 	spawn_q.clear();
+			// }
+			// spawn_m.unlock();
+
+
+
+
+			// //Fix objects update requests
+			// if(objUpdates.count() > 0) {
+			// 	objUpdates_m.lock();
+			// 	vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			// 	for(uint32 i = 0; i < objUpdates.count(); i++) {
+			// 		objUpdates[i]->render.updated = true;
+			// 		cb.updateBuffer(
+			// 			objUpdates[i]->getShVData().cell->csc.buffer,
+			// 			objUpdates[i]->getShVData().cell->localOffset,
+			// 			objUpdates[i]->getShVData().cell->cellSize,
+			// 			(void*)objUpdates[i]->getShData()
+			// 		);
+			// 	}
+			// 	core::render::cmd::endSingleTimeCommands(cb);
+			// 	objUpdates.clear();
+			// 	objUpdates_m.unlock();
+			// }
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 			if(glfwWindowShouldClose(window)) return;
 

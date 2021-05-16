@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_HDCTARRAY
+#define LNX_H_HCARRAY
 #include "Lynx/Types/Integers/Integers.hpp"
 
 
@@ -22,12 +22,12 @@ namespace lnx{
 
 
 	namespace __pvt{
-		enum __action : uint32{ CHCK = (uint32)-1, DESC = 0, GETV = 1 };								//Enum defining actions for get_t element iterations
+		enum __action : uint32{ eChck = (uint32)-1, eDesc = 0, eGetv = 1 };								//Enum defining actions for get_t element iterations
 		template <uint32 size, __action act, uint32 index, class type, class... types> struct get_t{};	//Unspecialized get_t class. This is used to iterate through the elemenets of the array
 		template<uint32 size, uint32 index, class type, class ...types> struct seq;						//seq forward declaration for getArr function
 
 		//CHCK specialization: Checks if the required index is the same as the current one. If true, returns the element. If false, runs another iteration
-		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, CHCK, index, type, types...>{
+		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, eChck, index, type, types...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
 				return ((seq<size, index, type, types...>*)this)->
 				get_t<size, (__action)(getIndex == index), index, type, types...>::template getFunc<getIndex>();
@@ -35,15 +35,15 @@ namespace lnx{
 		};
 
 		//DESC specialization: Executes another iteration and calls its CHCK
-		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, DESC, index, type, types...>{
+		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, eDesc, index, type, types...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
 				return ((seq<size, index, type, types...>*)this)->
-				seq<size, index - 1, types...>::template get_t<size, CHCK, index - 1, types...>::template getFunc<getIndex>();
+				seq<size, index - 1, types...>::template get_t<size, eChck, index - 1, types...>::template getFunc<getIndex>();
 			}
 		};
 
 		//GETV specialization: Stops iteration and returns the element value
-		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, GETV, index, type, types...>{
+		template <uint32 size, uint32 index, class type, class... types> struct get_t<size, eGetv, index, type, types...>{
 			template <uint32 getIndex> alwaysInline type &getFunc() {
 				return ((seq<size, index, type, types...>*)this)->val;
 			}
@@ -66,9 +66,9 @@ namespace lnx{
 
 
 		template<uint32 size, uint32 index, class type, class ...types> struct seq :
-		public get_t<size, CHCK, index, type, types...>,
-		public get_t<size, DESC, index, type, types...>,
-		public get_t<size, GETV, index, type, types...>,
+		public get_t<size, eChck, index, type, types...>,
+		public get_t<size, eDesc, index, type, types...>,
+		public get_t<size, eGetv, index, type, types...>,
 		public seq<size, index - 1, types...>{
 			type val;
 
@@ -105,9 +105,9 @@ namespace lnx{
 
 		//Stop at index 0 (seq specialization)
 		template<uint32 size, class type> struct seq<size, 0, type> :
-		public get_t<size, CHCK, 0, type>,
-		public get_t<size, DESC, 0, type>,
-		public get_t<size, GETV, 0, type>{
+		public get_t<size, eChck, 0, type>,
+		public get_t<size, eDesc, 0, type>,
+		public get_t<size, eGetv, 0, type>{
 			type val;
 			alwaysInline void init(const type& _val) { val = _val; }
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&val; }
@@ -160,7 +160,7 @@ namespace lnx{
 		 */
 		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(types)) {
 			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
-			return __pvt::seq<sizeof...(types), seqIndex, types...>::template get_t<sizeof...(types), __pvt::CHCK, seqIndex, types...>::template getFunc<seqIndex - vIndex>();
+			return __pvt::seq<sizeof...(types), seqIndex, types...>::template get_t<sizeof...(types), __pvt::eChck, seqIndex, types...>::template getFunc<seqIndex - vIndex>();
 		}
 
 		/**

@@ -128,7 +128,6 @@ namespace lnx::core::dvc{
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
 			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
 		}
-		// chooseDriver();
 		getPhysicalDevices();
 	}
 
@@ -185,6 +184,7 @@ namespace lnx::core::dvc{
 				return false;
 			}
 		}
+		else { Warning printf("No device available. Using llvmpipe"); }
 
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
@@ -291,36 +291,6 @@ namespace lnx::core::dvc{
 
 
 
-	// bool checkDriver(const char* vDriverName){
-	// 	uint32 c;
-	// 	putenv((String("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/") + vDriverName).begin());
-	// 	switch(instance.enumeratePhysicalDevices(&c, nullptr)){
-	// 		case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
-	// 		case vk::Result::eErrorInitializationFailed: return false;
-	// 		vkDefaultCases;
-	// 	};
-	// 	return true;
-	// }
-
-
-
-//FIXME THIS MUST BE CHOSEN BEFORE THE INSTANCE CREATION
-//FIXME probably undoable
-	// void chooseDriver(){
-	// 	uint32 c;
-	// 	if     (checkDriver("radeon_icd.x86_64.json")) return;
-	// 	else if(checkDriver("nvidia_icd.x86_64.json")) return;
-	// 	else if(checkDriver( "intel_icd.x86_64.json")) return;
-	// 	else unsetenv("VK_ICD_FILENAMES");
-	// }
-
-
-
-
-
-
-
-
 	//-----------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -380,16 +350,16 @@ namespace lnx::core::dvc{
 			graphics.pd = *pdevices[0];										//Set graphics device at default value
 			for(auto& pdevice : pdevices) {									//For every physical device
 				pdevice->indices = getQueueFamilies(pdevice->device);			//Get its queue families
-				pdevice->score = rate(*pdevice);								//Get its score
+				pdevice->score = rate(*pdevice);								//Get its score. If it has the highest score and an available graphics queue
 				if((pdevice->score > graphics.pd.score && pdevice->indices.graphicsFamily != (uint32)-1) || graphics.pd.indices.graphicsFamily == (uint32)-1) {
-					graphics.pd = *pdevice;											//Set the device with the highest score and an available graphics queue as the main graphics device
+					graphics.pd = *pdevice;											//Set it as the main graphics device
 					createLogicalDevices(graphics.pd, graphics);					//Create the graphics logical device
 				}
 			}
-			for(auto& pdevice : pdevices) {									//For every physical device that isn't the main graphics device
-				if(!sameDevice(*pdevice, graphics.pd)) {						//
-					secondary.resize(secondary.count() + 1);					//Add it to the secondary compute devices array
-					secondary[secondary.count() - 1].pd = *pdevice;				//Create its logical device
+			for(auto& pdevice : pdevices) {									//For every physical device
+				if(!sameDevice(*pdevice, graphics.pd)) {						//If it's not the main graphics device
+					secondary.resize(secondary.count() + 1);						//Add it to the secondary compute devices array
+					secondary[secondary.count() - 1].pd = *pdevice;					//Create its logical device
 					createLogicalDevices(secondary[secondary.count() - 1].pd, secondary[secondary.count() - 1]);
 				}
 			}
@@ -399,9 +369,9 @@ namespace lnx::core::dvc{
 
 			//If there are discarded devices, print their names
 			if(dpdevices.count() > 0) {
-				Failure printf("    Discarded devices:");
+				Warning printf("    Discarded devices:");
 				for(uint32 i = 0; i < dpdevices.count(); i += 2) {
-					Failure printf("        %s\t|  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
+					Warning printf("        %s  |  %s", (char*)dpdevices[i].begin(), (char*)dpdevices[(uint64)i + 1].begin());
 				}
 			}
 
@@ -416,14 +386,13 @@ namespace lnx::core::dvc{
 			//Print created logical devices and queues
 			Success printf("    Created %d logical device%s:", 1 + secondary.count(), (secondary.count() ? "s" : ""));
 			Main	printf("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", graphics.pd.indices.computeFamilies.count());
-			Normal	printf("        %d secondary devices", secondary.count());
 			if(secondary.count()) {
 				for(auto& sdevice : secondary){
-					Normal printf("            Compute  |  compute queues: %d", sdevice.pd.indices.computeFamilies.count());
+					Normal printf("        Compute        |  compute queues: %d", sdevice.pd.indices.computeFamilies.count());
 				}
 			}
 		}
-		else dbg::printError("Failed to find a suitable GPU");
+		else { Failure printf("Failed to find a suitable GPU"); }
 	}
 
 
@@ -434,9 +403,7 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Creates a logical device
-	 * @param pPD
-	 * @param pDevice
+	 * @brief Creates a logical device from a physical device wrapper
 	 */
 	void createLogicalDevices(const _VkPhysicalDevice& pPDevice, Device& pDevice) {
 		std::set<uint32> queues;
@@ -454,7 +421,8 @@ namespace lnx::core::dvc{
 			queueInfos.add(vk::DeviceQueueCreateInfo()							//Create a queue create info struct
 				.setQueueFamilyIndex (queue)										//Set index
 				.setQueueCount       (1)											//Set count		// ↓ Set priority. 1 for main devices, 0.5 for secondary ones
-				.setPQueuePriorities (new float((sameDevice(pPDevice, graphics.pd)) ? 1.0f : 0.5f)) //FIXME
+				// .setPQueuePriorities (new float((sameDevice(pPDevice, graphics.pd)) ? 1.0f : 0.5f)) //FIXME
+				.setPQueuePriorities (new float(1.0f)) //FIXME
 			);
 		}
 

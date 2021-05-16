@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_THREAD_POOL
-#include "Lynx/Lynx_config.hpp"
+// #include "Lynx/Lynx_config.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 
@@ -31,11 +31,11 @@
 
 namespace lnx::thr {
 	//TODO
-	enum Priority : uint16 {
-		LNX_PRIORITY_MAX = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
-		LNX_PRIORITY_HIGH = 3,	//execute only after all the max priority functions have been executed
-		LNX_PRIORITY_LOW = 2,	//execute only after all the higher priority functions have been executed
-		LNX_PRIORITY_MIN = 1	//execute when there are no higher priority functions left
+	enum class Priority : uint16 {
+		eMax  = 4,	//execute as soon as possible, eventually suspending the execution of lower priority functions
+		eHigh = 3,	//execute only after all the max priority functions have been executed
+		eLow  = 2,	//execute only after all the higher priority functions have been executed
+		eMin  = 1	//execute when there are no higher priority functions left
 	};
 
 

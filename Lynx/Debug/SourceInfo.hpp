@@ -74,6 +74,12 @@ namespace lnx::dbg{
 		sprintf(str, "addr2line%s -e %s --demangle %p", (vGetFunc) ? " -f" : "", getExecName(), (void*)((char*)calls[vIndex] - 1));
 		return cmdOutput(str);						//Get file infos from address and return
 	}
+	static neverInline auto getBacktraceAddr(uint32 vIndex) {
+		++vIndex;									//Skip this call
+		void* calls[vIndex + 1];					//Create address buffer
+		backtrace(calls, (i32)vIndex + 1);			//Get calls addresses
+		return (void*)((char*)calls[vIndex] - 1);
+	}
 
 
 
@@ -102,6 +108,7 @@ namespace lnx::dbg{
 		 */
 		static neverInline auto line(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1, false);
+			if(str[0] == '\0') return 0;
 			for(uint32 i = strlen(str); ; --i) if(str[i] == ':') {
 				auto ret = atoi(str + i + 1);
 				free(str);
@@ -115,6 +122,7 @@ namespace lnx::dbg{
 		 */
 		static neverInline auto func(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1);
+			if(str[0] == '\0') return str;
 			for(uint32 i = 0; ; ++i) if(str[i] == '\n') { str[i] = '\0'; return str; };
 			return str;
 		}
@@ -125,8 +133,17 @@ namespace lnx::dbg{
 		 */
 		static neverInline auto file(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1, false);
+			if(str[0] == '\0') return str;
 			for(uint32 i = 0; ; ++i) if(str[i] == ':') { str[i] = '\0'; return str; };
 			return str;
+		}
+
+		/**
+		 * @brief Returns the address of the caller function
+		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
+		 */
+		static neverInline auto addr(const uint32 vIndex = 1) {
+			return getBacktraceAddr(vIndex + 1);
 		}
 	};
 
@@ -157,6 +174,13 @@ namespace lnx::dbg{
 		 */
 		static neverInline auto file() {
             return dbg::caller::file();
+		}
+
+		/**
+		 * @brief Returns the address of the current function
+		 */
+		static neverInline auto addr() {
+            return dbg::caller::addr();
 		}
     };
 }

@@ -14,28 +14,28 @@ namespace lnx::shd{
 		static uint32 pipelineIndex;
 
 
-		struct _outcol_t : public ShaderElm_b<Storage> {
+		struct _outcol_t : public ShaderElm_b<eStorage> {
 			_outcol_t() {
 				ShaderElm_b::bind = 0;
 			}
 		} _outcol;
 
 
-		struct _wsize_t : public ShaderElm_b<Storage> {
+		struct _wsize_t : public ShaderElm_b<eStorage> {
 			_wsize_t() {
 				ShaderElm_b::bind = 1;
 			}
 		} _wsize;
 
 
-		struct _zbuff_t : public ShaderElm_b<Storage> {
+		struct _zbuff_t : public ShaderElm_b<eStorage> {
 			_zbuff_t() {
 				ShaderElm_b::bind = 2;
 			}
 		} _zbuff;
 
 
-		struct _data_t : public ShaderElm_b<Uniform> {
+		struct _data_t : public ShaderElm_b<eUniform> {
 			_data_t() {
 				ShaderElm_b::vdata.realloc(256);
 				ShaderElm_b::data.realloc(256);
@@ -58,7 +58,7 @@ namespace lnx::shd{
 		} _data;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pOutcol, vram::ptr<u32v2, VRam, Storage> pWsize, vram::ptr<u32, VRam, Storage> pZbuff, const u32v3 vGroupCount, Window& pWindow);
+		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
 		void updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);

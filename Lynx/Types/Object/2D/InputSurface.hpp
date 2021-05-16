@@ -5,7 +5,7 @@
 
 
 namespace lnx::obj{
-    struct InputSurface : public Obj2_b, public MouseCallbacks_b {
+    struct InputSurface : public Obj2_b<2> {
 
     };
 }
