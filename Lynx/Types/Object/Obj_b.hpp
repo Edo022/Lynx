@@ -56,7 +56,10 @@ namespace lnx{
 			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
 			virtual ram::ptr<char>       getShData() = 0;
 			virtual vram::Alloc_b<char> getShVData() = 0;
-			virtual RaArray<Obj_bb*, uint32>* getChildren() = 0;
+			// virtual RaArray<Obj_bb*, uint32>* getChildren() = 0;
+			virtual Obj_bb* getChildren(uint32 vIndex) = 0;			//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			virtual uint32 getChildrenCount() = 0;					//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			virtual bool getChildrenIsValid(uint32 vIndex) = 0; 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 
 			struct Render{									//Structure containing rendering helper members
 				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
@@ -96,7 +99,15 @@ namespace lnx{
 		 */
 		template<class chType> struct Obj_bt : virtual public Obj_bb { //FIXME RETURN REFERENCE INSTEAD OF POINTER
 			RaArray<chType*, uint32> children;
-			virtual RaArray<Obj_bb*, uint32>* getChildren() override { return (RaArray<Obj_bb*, uint32>*)&children; }
+			// virtual RaArray<Obj_bb*, uint32>* getChildren() override { return static_cast<RaArray<Obj_bb*, uint32>*>(&children); } //BUG
+			virtual Obj_bb* getChildren(uint32 vIndex) override { return static_cast<Obj_bb*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			virtual uint32 getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			virtual bool getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 			//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			//BUG^ C style cast uses wrong vtable for multiple inheritance
+			//BUG^ cannot static cast the whole array
+
+			//BUG^ ADD CLASS OR VIRTUAL FUNCTION OVERRIDDEN IN DERIVED CLASSES THAT RETURNS
+			//BUG^ ONE SINGLE ELEMENT AND USES THE STATIC CAST TO CORRECTLY UPCAST THE POINTER
 		};
 	}
 }
