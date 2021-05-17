@@ -169,17 +169,16 @@ namespace lnx{
 					.setCommandBufferCount   (swp.shadersCBs.count())
 					.setPCommandBuffers      (swp.shadersCBs.begin())
 					.setSignalSemaphoreCount (1)
-					// .setPSignalSemaphores    (&swp.frames[swp.curFrame].s_objects)
+					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_objects)
+				,
+				vk::SubmitInfo() //Convert and clear shader
+					.setWaitSemaphoreCount   (1)
+					.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
+					.setPWaitDstStageMask    (waitStages)
+					.setCommandBufferCount   (1)
+					.setPCommandBuffers      (&sh_clear.commandBuffers[0])
+					.setSignalSemaphoreCount (1)
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
-				// ,
-				// vk::SubmitInfo() //Convert and clear shader
-				// 	.setWaitSemaphoreCount   (1)
-				// 	.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
-				// 	.setPWaitDstStageMask    (waitStages)
-				// 	.setCommandBufferCount   (1)
-				// 	.setPCommandBuffers      (&sh_clear.commandBuffers[0])
-				// 	.setSignalSemaphoreCount (1)
-				// 	.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
 				,
 				vk::SubmitInfo() //Copy shader
 					.setWaitSemaphoreCount   (1)
@@ -189,7 +188,7 @@ namespace lnx{
 					.setPCommandBuffers      (&copyCommandBuffers[imageIndex])
 					.setSignalSemaphoreCount (1)
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
-				// ,
+				,
 			};
 			addObject_m.unlock(); //FIXME
 

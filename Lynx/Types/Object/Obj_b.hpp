@@ -64,7 +64,7 @@ namespace lnx{
 
 			struct Render{									//Structure containing rendering helper members
 				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
-				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread
+				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 				Window* parentWindow = nullptr;					//Parent window object that contains the render thread and the window data
 			} render;
 			virtual void qSelf(){ queue(UpdateBits::eUpdateg); }; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
