@@ -81,13 +81,15 @@ namespace lnx{
 
 			//TODO comment
 			void queue(UpdateBits vUpdates){
-				UpdateBits old = render.updates;				//Save old updates bits
-				render.updates = render.updates | vUpdates;		//Update updates bits
-				if(render.parentWindow) { 						//If the object has a binded window //FIXME UPDATE ALL IN WINDOW SPAWN
-					render.parentWindow->requests_m.lock();			//Lock requests mutex
-					if(!old) render.parentWindow->requests.add(this);//If it isn't already in it, add the object to the update queue
-					render.parentWindow->requests_m.unlock();		//Unlock requests mutex
-				}
+				dbg::checkCond(render.parentWindow && thr::self::thr() == render.parentWindow->t.thr, "This function cannot be called by the render thread.");
+				UpdateBits old = render.updates;						//Save old updates bits
+				if(render.parentWindow) { 								//If the object has a binded window //FIXME UPDATE ALL IN WINDOW SPAWN
+					render.parentWindow->requests_m.lock();					//Lock requests mutex
+						render.updates = render.updates | vUpdates;			//Update updates bits
+						if(!old) render.parentWindow->requests.add(this);	//If it isn't already in it, add the object to the update queue
+					render.parentWindow->requests_m.unlock();				//Unlock requests mutex
+				}														//If not
+				else render.updates = render.updates | vUpdates;			//Update updates bits
 			}
 		};
 
