@@ -169,16 +169,17 @@ namespace lnx{
 					.setCommandBufferCount   (swp.shadersCBs.count())
 					.setPCommandBuffers      (swp.shadersCBs.begin())
 					.setSignalSemaphoreCount (1)
-					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_objects)
-				,
-				vk::SubmitInfo() //Convert and clear shader
-					.setWaitSemaphoreCount   (1)
-					.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
-					.setPWaitDstStageMask    (waitStages)
-					.setCommandBufferCount   (1)
-					.setPCommandBuffers      (&sh_clear.commandBuffers[0])
-					.setSignalSemaphoreCount (1)
+					// .setPSignalSemaphores    (&swp.frames[swp.curFrame].s_objects)
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
+				// ,
+				// vk::SubmitInfo() //Convert and clear shader
+				// 	.setWaitSemaphoreCount   (1)
+				// 	.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
+				// 	.setPWaitDstStageMask    (waitStages)
+				// 	.setCommandBufferCount   (1)
+				// 	.setPCommandBuffers      (&sh_clear.commandBuffers[0])
+				// 	.setSignalSemaphoreCount (1)
+				// 	.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
 				,
 				vk::SubmitInfo() //Copy shader
 					.setWaitSemaphoreCount   (1)
@@ -188,7 +189,7 @@ namespace lnx{
 					.setPCommandBuffers      (&copyCommandBuffers[imageIndex])
 					.setSignalSemaphoreCount (1)
 					.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
-				,
+				// ,
 			};
 			addObject_m.unlock(); //FIXME
 
@@ -201,7 +202,9 @@ namespace lnx{
 			}
 
 			core::render::graphicsQueueSubmit_m.lock();
-			switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+			// switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; } //BUG UNCOMMENT
+			// switch(core::dvc::graphics.gq.submit(1, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+			switch(core::dvc::graphics.gq.submit(2, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -216,19 +219,19 @@ namespace lnx{
 					.setPImageIndices      (&imageIndex)
 				;
 				core::render::presentQueueSubmit_m.lock();
-				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex //BUG UNCOMMENT
 				core::render::presentQueueSubmit_m.unlock();
 
-				switch(r){
-					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
-					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
-					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
-					#ifdef _WIN64 //This error is unique to windows
-						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
-					#endif
-					vkDefaultCases;
-				}
+				switch(r){ //BUG UNCOMMENT
+					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break; //BUG UNCOMMENT
+					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw; //BUG UNCOMMENT
+					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break; //BUG UNCOMMENT
+					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break; //BUG UNCOMMENT
+					#ifdef _WIN64 //This error is unique to windows //BUG UNCOMMENT
+						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME //BUG UNCOMMENT
+					#endif //BUG UNCOMMENT
+					vkDefaultCases; //BUG UNCOMMENT
+				} //BUG UNCOMMENT
 
 			}
 
@@ -256,12 +259,12 @@ namespace lnx{
 					recLimit(r);
 				}
 				if(r->render.updates & obj::UpdateBits::eUpdateg){
-					// cb.updateBuffer(                    //BU UNCOMMENT
-					// 	r->getShVData().cell->csc.buffer,  //BUG UNCOMMENT
-					// 	r->getShVData().cell->localOffset, //BUG UNCOMMENT
-					// 	r->getShVData().cell->cellSize,    //BUG UNCOMMENT
-					// 	(void*)r->getShData()              //BUG UNCOMMENT
-					// );                                  //BUG UNCOMMENT
+					// cb.updateBuffer(
+					// 	r->getShVData().cell->csc.buffer,
+					// 	r->getShVData().cell->localOffset,
+					// 	r->getShVData().cell->cellSize,
+					// 	(void*)r->getShData()
+					// );
 					recUpdateg(r, cb);
 				}
 				// r->render.updates = obj::UpdateBits::none;

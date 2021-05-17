@@ -35,10 +35,10 @@ namespace lnx::obj{
 	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
 		Obj_bt<chType>::onSpawn(pWindow);
 		//BUG BEGIN >>
-        // Obj_bb::render.parentWindow = &pWindow;                                   //BUG UNCOMMENT
-        // for(u32 i = 0; i < this->children.count(); ++i){                          //BUG UNCOMMENT
-        //     if(this->children.isValid(i)) this->children[i]->onSpawn(pWindow);    //BUG UNCOMMENT
-        // }                                                                         //BUG UNCOMMENT
+        // Obj_bb::render.parentWindow = &pWindow;
+        // for(u32 i = 0; i < this->children.count(); ++i){
+        //     if(this->children.isValid(i)) this->children[i]->onSpawn(pWindow);
+        // }
 		//BUG END <<
 
 		#ifdef LNX_DEBUG
@@ -69,13 +69,13 @@ namespace lnx::obj{
 //FIXME UNIFY UPDATE QUEUES
 
 	// template<class chType> void Obj2_bt<chType>::qHierarchy() {
-	// 	for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) { //BUG UNCOMMENT
-	// 		setChildLimits(i); //FIXME USE QUEUES                                                                //BUG UNCOMMENT
-	// 		//TODO add  recalculateCoords() in all objects                                                       //BUG UNCOMMENT
+	// 	for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) {
+	// 		setChildLimits(i); //FIXME USE QUEUES
+	// 		//TODO add  recalculateCoords() in all objects
 	// 		// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
-	// 		Obj2_bt::children[i]->queue(UpdateBits::limit);                                              //BUG UNCOMMENT
-	// 		// Obj2_bt::children[i]->qHierarchy();                                                          //BUG UNCOMMENT
-	// 	}                                                                                                     //BUG UNCOMMENT
+	// 		Obj2_bt::children[i]->queue(UpdateBits::limit);
+	// 		// Obj2_bt::children[i]->qHierarchy();
+	// 	}
 	// 	qSelf(); //FIXME REMOVE
 	// 	// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
 	// 	//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
