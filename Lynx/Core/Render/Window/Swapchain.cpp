@@ -315,15 +315,19 @@ namespace lnx::core::wnd{
 
 
 
+	//TODO use best format available when not specified
+	//TODO use RGBA8 format in shaders when better formats are not available
 	vk::SurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<vk::SurfaceFormatKHR>& pAvailableFormats) {
-		for(auto& availableFormat : pAvailableFormats) {
-			//TODO use best format available when not specified
-			//TODO use RGBA8 format in shaders when better formats are not available
-			if(availableFormat.format == vk::Format::eR8G8B8A8Srgb && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
-				return availableFormat;
+		for(auto& fmt : pAvailableFormats) {
+			if(
+				dvc::graphics.pd.device.getFormatProperties(fmt.format).optimalTilingFeatures & vk::FormatFeatureFlagBits::eTransferDst &&
+				/*fmt.format == vk::Format::eR8G8B8A8Srgb && */fmt.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear
+			) {
+				return fmt;
 			}
 		}
-		return pAvailableFormats[0];
+		dbg::printError("No supported surface format found");
+		return pAvailableFormats[0]; //FIXME
 	}
 
 
