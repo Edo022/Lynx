@@ -304,8 +304,8 @@ namespace lnx::vram{
 
 
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::eAuto){
-			static std::mutex test_m;
-			test_m.lock();
+			// static std::mutex test_m;
+			// test_m.lock();
 			checkInit(); checkAllocSize(vSize, vClass);
 			evaluateCellClass(vSize, vClass);
 
@@ -316,7 +316,7 @@ namespace lnx::vram{
 				alloc_(vSize, vClass);
 				//FIXME write a proper realloc function
 			}
-			test_m.unlock();
+			// test_m.unlock();
 		}
 		// /**
 		//  * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it

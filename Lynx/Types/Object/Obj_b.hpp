@@ -48,6 +48,7 @@ namespace lnx{
 		 * @brief Members common to any Obj_bt instantiation
 		 */
 		struct Obj_bb { //
+			_dbg(const char* dbgName;)
 			struct Common{
 				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object
@@ -63,7 +64,7 @@ namespace lnx{
 
 			struct Render{									//Structure containing rendering helper members
 				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
-				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread
+				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 				Window* parentWindow = nullptr;					//Parent window object that contains the render thread and the window data
 			} render;
 			virtual void qSelf(){ queue(UpdateBits::eUpdateg); }; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
@@ -74,19 +75,21 @@ namespace lnx{
 			virtual void onLimit(){
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
-			virtual void onUpdateg(){
+			virtual void onUpdateg(vk::CommandBuffer& pCB){ //FIXME PASS BY VALUE
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
 
 			//TODO comment
 			void queue(UpdateBits vUpdates){
-				UpdateBits old = render.updates;				//Save old updates bits
-				render.updates = render.updates | vUpdates;		//Update updates bits
-				if(render.parentWindow) { 						//If the object has a binded window //FIXME UPDATE ALL IN WINDOW SPAWN
-					render.parentWindow->requests_m.lock();			//Lock requests mutex
-					if(!old) render.parentWindow->requests.add(this);//If it isn't already in it, add the object to the update queue
-					render.parentWindow->requests_m.unlock();		//Unlock requests mutex
-				}
+				// dbg::checkCond(render.parentWindow && thr::self::thr() == render.parentWindow->t.thr, "This function cannot be called by the render thread.");
+				UpdateBits old = render.updates;						//Save old updates bits
+				if(render.parentWindow) { 								//If the object has a binded window //FIXME UPDATE ALL IN WINDOW SPAWN
+					render.parentWindow->requests_m.lock();					//Lock requests mutex
+						render.updates = render.updates | vUpdates;			//Update updates bits
+						if(!old) render.parentWindow->requests.add(this);	//If it isn't already in it, add the object to the update queue
+					render.parentWindow->requests_m.unlock();				//Unlock requests mutex
+				}														//If not
+				else render.updates = render.updates | vUpdates;			//Update updates bits
 			}
 		};
 
