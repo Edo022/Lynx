@@ -2,21 +2,29 @@
 #include "Lynx/Types/Object/2D/Border2.hpp"
 
 
+
+
+
+
+
+
 namespace lnx::obj{
-	//In debug mode, setMinLim and setMaxLim functions of non debug objects and update the debug border
+	//Only define in debug mode for non debug objects
 	#ifdef LNX_DEBUG
-	void Obj2_b::setMinLim(f32v2 vMinLim) {
+	void Obj2_bb::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
-		if(!debug && debugBorder) {
-			debugBorder->data.objData_.ffp() = vMinLim;
-			debugBorder->qHierarchy();
+		if(!Obj_bb::render.isDbgObj && debugBorder) {
+			debugBorder->data._data.ffp() = vMinLim;
+			// debugBorder->qHierarchy();
+			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
-	void Obj2_b::setMaxLim(f32v2 vMaxLim) {
+	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
-		if(!debug && debugBorder) {
-			debugBorder->data.objData_.fsp() = vMaxLim;
-			debugBorder->qHierarchy();
+		if(!Obj_bb::render.isDbgObj && debugBorder) {
+			debugBorder->data._data.fsp() = vMaxLim;
+			// debugBorder->qHierarchy();
+			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	#endif
@@ -24,15 +32,19 @@ namespace lnx::obj{
 
 
 
-	void Obj2_b::onSpawn(Window& pWindow) {
-        render.parentWindow = &pWindow;                         //BUG OVER
-        for(u32 i = 0; i < children.count(); ++i){              //BUG OVER
-            if(children.isValid(i)) children[i]->onSpawn(pWindow); //BUG >IN >OUT >IN >OUT >IN
-        }
+	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
+		Obj_bt<chType>::onSpawn(pWindow);
+		//BUG BEGIN >>
+        // Obj_bb::render.parentWindow = &pWindow;
+        // for(u32 i = 0; i < this->children.count(); ++i){
+        //     if(this->children.isValid(i)) this->children[i]->onSpawn(pWindow);
+        // }
+		//BUG END <<
+
 		#ifdef LNX_DEBUG
-        	if(!debug) {
-				debugBorder = new Border2();
-				debugBorder->debug = true;
+        	if(!Obj_bb::render.isDbgObj) {
+				debugBorder = new Border2(); //FIXME ONLY SPAWN IF NOT PRESENT
+				debugBorder->render.isDbgObj = true;
 				debugBorder->onSpawn(pWindow);
 			}
 		#endif
@@ -43,4 +55,30 @@ namespace lnx::obj{
 		if(doesRedefine(*this, &MouseCallbacks_b::onMove ))pWindow.icQueues.onMove .add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onAxis ))pWindow.icQueues.onAxis .add(this);
     }
+
+
+
+
+	template<class chType> void Obj2_bt<chType>::setChildLimits(const uint32 vChildIndex) const {
+		dbg::checkParam(vChildIndex > Obj2_bt::children.count() - 1, "vChildIndex", "Invalid index");
+		Obj2_bt::children[vChildIndex]->setMinLim(minLim);
+		Obj2_bt::children[vChildIndex]->setMaxLim(maxLim);
+	}
+
+
+//FIXME UNIFY UPDATE QUEUES
+
+	// template<class chType> void Obj2_bt<chType>::qHierarchy() {
+	// 	for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) {
+	// 		setChildLimits(i); //FIXME USE QUEUES
+	// 		//TODO add  recalculateCoords() in all objects
+	// 		// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
+	// 		Obj2_bt::children[i]->queue(UpdateBits::limit);
+	// 		// Obj2_bt::children[i]->qHierarchy();
+	// 	}
+	// 	qSelf(); //FIXME REMOVE
+	// 	// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
+	// 	//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
+	// 	//BUG^ ADD TEMPORARY FIX
+	// }
 }

@@ -20,11 +20,11 @@ namespace lnx::core::wnd{
 		auto semaphoreInfo = vk::SemaphoreCreateInfo();
 		auto fenceInfo = vk::FenceCreateInfo().setFlags(vk::FenceCreateFlagBits::eSignaled);
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_aquired )){ vkDefaultCases; }
-			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_objects )){ vkDefaultCases; }
-			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_copy    )){ vkDefaultCases; }
-			switch(dvc::graphics.LD.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_clear   )){ vkDefaultCases; }
-			switch(dvc::graphics.LD.createFence    (&fenceInfo,     nullptr, &frames[i].f_rendered)){ vkDefaultCases; }
+			switch(dvc::graphics.ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_aquired )){ vkDefaultCases; }
+			switch(dvc::graphics.ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_objects )){ vkDefaultCases; }
+			switch(dvc::graphics.ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_copy    )){ vkDefaultCases; }
+			switch(dvc::graphics.ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_clear   )){ vkDefaultCases; }
+			switch(dvc::graphics.ld.createFence    (&fenceInfo,     nullptr, &frames[i].f_rendered)){ vkDefaultCases; }
 		}
 	}
 
@@ -47,7 +47,7 @@ namespace lnx::core::wnd{
 
 		//swapchain creation infos
 		vk::SurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
-		uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
+		uint32 queueFamilyIndices[] = { dvc::graphics.pd.indices.graphicsFamily, dvc::graphics.pd.indices.presentFamily };
 		createInfo = vk::SwapchainCreateInfoKHR()
 			.setSurface               (bindedWindow->surface)
 			.setMinImageCount         (minImageCount)
@@ -57,7 +57,7 @@ namespace lnx::core::wnd{
 			.setImageArrayLayers      (1)
 			.setImageUsage            (vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst)
 
-			.setImageSharingMode      ((dvc::graphics.PD.indices.graphicsFamily != dvc::graphics.PD.indices.presentFamily) ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
+			.setImageSharingMode      ((dvc::graphics.pd.indices.graphicsFamily != dvc::graphics.pd.indices.presentFamily) ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
 			.setQueueFamilyIndexCount (2)
 			.setPQueueFamilyIndices   (queueFamilyIndices)
 
@@ -71,14 +71,14 @@ namespace lnx::core::wnd{
 
 		//Create swapchain
 		vk::Bool32 hasPresentSupport = false;
-		switch(dvc::graphics.PD.device.getSurfaceSupportKHR(dvc::graphics.PD.indices.presentFamily, bindedWindow->surface, &hasPresentSupport)){ //! SUPPRESS ERROR
+		switch(dvc::graphics.pd.device.getSurfaceSupportKHR(dvc::graphics.pd.indices.presentFamily, bindedWindow->surface, &hasPresentSupport)){ //! SUPPRESS ERROR
 			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
 		//FIXME hasPresentSupport is unused
 		//FIXME ^ SKIP THIS IN RELEASE MODE (It's probably already checked by another function)
-		switch(dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
+		switch(dvc::graphics.ld.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
 			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
 			case vk::Result::eErrorNativeWindowInUseKHR: dbg::printError("Native window in use");  break;
 			case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
@@ -93,13 +93,13 @@ namespace lnx::core::wnd{
 
 		//Get images
 		uint32 imageCount;
-		switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
+		switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
 			case vk::Result::eIncomplete: dbg::printError("Incomplete swapchains"); break;
 			vkDefaultCases;
 		}
 
 		images.resize(imageCount); vk::Image _[imageCount];
-		switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _)){
+		switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, _)){
 			case vk::Result::eIncomplete: dbg::printError("Incomplete swapchains"); break;
 			vkDefaultCases;
 		}
@@ -125,7 +125,7 @@ namespace lnx::core::wnd{
 		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
-			switch(dvc::graphics.LD.waitIdle()){		//Wait for the logical device
+			switch(dvc::graphics.ld.waitIdle()){		//Wait for the logical device
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}
@@ -134,7 +134,7 @@ namespace lnx::core::wnd{
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
 				vk::SurfaceCapabilitiesKHR capabilities;
-				switch(dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
+				switch(dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
 					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 					vkDefaultCases;
 				}
@@ -142,7 +142,7 @@ namespace lnx::core::wnd{
 				createInfo.imageExtent = chooseSwapchainExtent(&capabilities);
 
 				//Recalculate queue family indices
-				uint32 queueFamilyIndices[] = { dvc::graphics.PD.indices.graphicsFamily, dvc::graphics.PD.indices.presentFamily };
+				uint32 queueFamilyIndices[] = { dvc::graphics.pd.indices.graphicsFamily, dvc::graphics.pd.indices.presentFamily };
 				createInfo.pQueueFamilyIndices = queueFamilyIndices;
 
 				//Set oldSwapchain member to allow the driver to reuse resources
@@ -150,7 +150,7 @@ namespace lnx::core::wnd{
 				createInfo.oldSwapchain  = oldSwapchain;
 
 				//Create swapchain
-				switch(dvc::graphics.LD.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
+				switch(dvc::graphics.ld.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
 					case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
 					case vk::Result::eErrorNativeWindowInUseKHR: dbg::printError("Native window in use");  break;
 					case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
@@ -158,12 +158,12 @@ namespace lnx::core::wnd{
 					vkDefaultCases;
 				}
 
-				dvc::graphics.LD.destroySwapchainKHR(oldSwapchain, nullptr);
+				dvc::graphics.ld.destroySwapchainKHR(oldSwapchain, nullptr);
 			}
 
 			//Create images
 			uint32 imageCount;
-				switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
+				switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
 				case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
 				vkDefaultCases;
 			}
@@ -174,7 +174,7 @@ namespace lnx::core::wnd{
 
 			//Get images
 			vk::Image _[imageCount];
-				switch(dvc::graphics.LD.getSwapchainImagesKHR(swapchain, &imageCount, _)){
+				switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, _)){
 				case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
 				vkDefaultCases;
 			}
@@ -189,17 +189,17 @@ namespace lnx::core::wnd{
 
 
 			//Update the window size buffer
-			u32 wSize[2] = { createInfo.imageExtent.width, createInfo.imageExtent.height };
+			u32v2 wSize = { createInfo.imageExtent.width, createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, wSize);
+			cb.updateBuffer(bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, &wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 			//FIXME AUTOMATIZE BUFFER UPDATE
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
 
 
 			{	//Destroy copy command buffers
-				dvc::graphics.LD.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
-				dvc::graphics.LD.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
+				dvc::graphics.ld.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
+				dvc::graphics.ld.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
 				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
@@ -220,8 +220,8 @@ namespace lnx::core::wnd{
 
 	void Swapchain::destroy() {
 		for(auto img : images) {
-			dvc::graphics.LD.destroyFramebuffer(img.fbuffer, nullptr);
-			dvc::graphics.LD.destroyImageView  (img.view,    nullptr);
+			dvc::graphics.ld.destroyFramebuffer(img.fbuffer, nullptr);
+			dvc::graphics.ld.destroyImageView  (img.view,    nullptr);
 		}
 	}
 
@@ -229,19 +229,19 @@ namespace lnx::core::wnd{
 
 
 	Swapchain::~Swapchain(){
-		switch(core::dvc::graphics.LD.waitIdle()){
+		switch(core::dvc::graphics.ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 			vkDefaultCases;
 		}
 		destroy();
-		dvc::graphics.LD.destroyRenderPass  (renderPass, nullptr);
-		dvc::graphics.LD.destroySwapchainKHR(swapchain,  nullptr);
+		dvc::graphics.ld.destroyRenderPass  (renderPass, nullptr);
+		dvc::graphics.ld.destroySwapchainKHR(swapchain,  nullptr);
 		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
-			dvc::graphics.LD.destroySemaphore(frames[i].s_aquired,  nullptr);
-			dvc::graphics.LD.destroySemaphore(frames[i].s_objects,  nullptr);
-			dvc::graphics.LD.destroySemaphore(frames[i].s_copy,     nullptr);
-			dvc::graphics.LD.destroySemaphore(frames[i].s_clear,    nullptr);
-			dvc::graphics.LD.destroyFence    (frames[i].f_rendered, nullptr);
+			dvc::graphics.ld.destroySemaphore(frames[i].s_aquired,  nullptr);
+			dvc::graphics.ld.destroySemaphore(frames[i].s_objects,  nullptr);
+			dvc::graphics.ld.destroySemaphore(frames[i].s_copy,     nullptr);
+			dvc::graphics.ld.destroySemaphore(frames[i].s_clear,    nullptr);
+			dvc::graphics.ld.destroyFence    (frames[i].f_rendered, nullptr);
 		}
 	}
 
@@ -272,7 +272,7 @@ namespace lnx::core::wnd{
 			)
 		;
 		vk::ImageView imageView;
-		switch(dvc::graphics.LD.createImageView(&viewInfo, nullptr, &imageView)){ vkDefaultCases; }
+		switch(dvc::graphics.ld.createImageView(&viewInfo, nullptr, &imageView)){ vkDefaultCases; }
 
 		return imageView;
 	}
@@ -294,7 +294,7 @@ namespace lnx::core::wnd{
 			.setLayers          (1)
 		;
 		vk::Framebuffer framebuffer;
-		switch(dvc::graphics.LD.createFramebuffer(&framebufferInfo, nullptr, &framebuffer)){ vkDefaultCases; }
+		switch(dvc::graphics.ld.createFramebuffer(&framebufferInfo, nullptr, &framebuffer)){ vkDefaultCases; }
 
 		return framebuffer;
 	}
@@ -315,15 +315,19 @@ namespace lnx::core::wnd{
 
 
 
+	//TODO use best format available when not specified
+	//TODO use RGBA8 format in shaders when better formats are not available
 	vk::SurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<vk::SurfaceFormatKHR>& pAvailableFormats) {
-		for(auto& availableFormat : pAvailableFormats) {
-			//TODO use best format available when not specified
-			//TODO use RGBA8 format in shaders when better formats are not available
-			if(availableFormat.format == vk::Format::eR8G8B8A8Srgb && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
-				return availableFormat;
+		for(auto& fmt : pAvailableFormats) {
+			if(
+				dvc::graphics.pd.device.getFormatProperties(fmt.format).optimalTilingFeatures & vk::FormatFeatureFlagBits::eTransferDst &&
+				/*fmt.format == vk::Format::eR8G8B8A8Srgb && */fmt.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear
+			) {
+				return fmt;
 			}
 		}
-		return pAvailableFormats[0];
+		dbg::printError("No supported surface format found");
+		return pAvailableFormats[0]; //FIXME
 	}
 
 
@@ -421,7 +425,7 @@ namespace lnx::core::wnd{
 		;
 
 		//Create render pass. Exit if an error occurs
-		switch(dvc::graphics.LD.createRenderPass(&renderPassInfo, nullptr, &renderPass)){ vkDefaultCases; }
+		switch(dvc::graphics.ld.createRenderPass(&renderPassInfo, nullptr, &renderPass)){ vkDefaultCases; }
 	}
 
 
@@ -429,7 +433,7 @@ namespace lnx::core::wnd{
 
 	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
 		vk::SurfaceCapabilitiesKHR capabilities;
-		switch(core::dvc::graphics.PD.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
+		switch(core::dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
 			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 			vkDefaultCases;
 		}
@@ -442,7 +446,7 @@ namespace lnx::core::wnd{
 		uint32 count;
 		RtArray<vk::SurfaceFormatKHR>	formats;
 
-		switch(core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, nullptr)){
+		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, nullptr)){
 			case vk::Result::eIncomplete:          dbg::printError("Incomplete formats"); break;
 			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost");       break;
 			vkDefaultCases;
@@ -450,7 +454,7 @@ namespace lnx::core::wnd{
 
 
 		formats.resize(count);
-		switch(core::dvc::graphics.PD.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, formats.begin())){
+		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, formats.begin())){
 			case vk::Result::eIncomplete:          dbg::printError("Incomplete formats");   break;
 			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost");         break;
 			vkDefaultCases;
@@ -464,14 +468,14 @@ namespace lnx::core::wnd{
 	RtArray<vk::PresentModeKHR> Swapchain::getPresentModes(){
 		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
 
-		switch(dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, nullptr)){
+		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, nullptr)){
 			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
 			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
 		presentModes.resize(count);
-		switch(dvc::graphics.PD.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, presentModes.begin())){
+		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, presentModes.begin())){
 			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
 			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
 			vkDefaultCases;

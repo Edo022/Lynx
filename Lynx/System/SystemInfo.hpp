@@ -9,7 +9,7 @@
 namespace lnx::sys{
     struct CpuInfo{
         const char* name;   //Name of the CPU
-        uint32 cores;       //Number of physical cores
+        uint32 cores;       //Number of physical cores. This information is implementation dependant and very unreliable.
         uint32 threads;     //Number of threads
         uint32 minFreq;     //Minimum frequence in Mhz
         uint32 maxFreq;     //Maximum frequence in Mhz
@@ -32,9 +32,9 @@ namespace lnx::sys{
     extern const RamInfo ram;
 
 
-    enum DeviceType{
-        Discrete,
-        Integrated
+    enum class DeviceType{
+        eDiscrete,
+        eIntegrated
     };
     struct GpuInfo{
         const char* name;       //Name of the GPU

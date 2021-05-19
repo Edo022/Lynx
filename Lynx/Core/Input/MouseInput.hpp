@@ -5,16 +5,16 @@
 
 namespace lnx{
 	enum MouseButton {
-		n1     = 0,		//Same as MouseButton::right
-		n2     = 1,		//Same as MouseButton::left
-		n3     = 2,		//Same as MouseButton::middle
-		n4     = 3,
-		n5     = 4,
-		n6     = 5,
-		n7     = 6,
-		n8     = 7,
-		right  = n1,	//Right click
-		left   = n2,	//Left click
-		middle = n3		//Middle click
+		eN1     = 0,		//Same as MouseButton::right
+		eN2     = 1,		//Same as MouseButton::left
+		eN3     = 2,		//Same as MouseButton::middle
+		eN4     = 3,
+		eN5     = 4,
+		eN6     = 5,
+		eN7     = 6,
+		eN8     = 7,
+		eRight  = eN1,	//Right click
+		eLeft   = eN2,	//Left click
+		eMiddle = eN3		//Middle click
 	};
 }

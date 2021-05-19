@@ -1,11 +1,11 @@
 #pragma once
 #define LNX_H_MACROS
-#include "Lynx_config.hpp"
+
 
 #ifdef __INTELLISENSE__
     #include ".engine/conf.hpp"
-    //!This file is generated in the .engine directory of the user application when they change the build configuration
-    //!It's only used to allow Intellisense to correctly parse the code
+    //!The file is generated in the .engine directory of the user application when they change the build configuration
+    //!This include is only used to allow Intellisense to correctly parse the code
 #endif
 
 
@@ -60,7 +60,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 #ifdef LNX_DEBUG
     #undef alwaysInline
-    #define alwaysInline
+    #define alwaysInline inline
 #endif
 
 
@@ -76,7 +76,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 	#pragma GCC diagnostic ignored "-Wpmf-conversions"
     /**
      * @brief Returns true if the object's class redefines a virtual member function of a base class.
-     * e.g. if(doesRedefine(derivedInstance, &Base::func)) //...do something
+     * e.g. if(doesRedefine(derivedInstance, &Obj_bb::func)) //...do something
      * @param object An instance of the derived class
      * @param vVMFP The virtual member function pointer of the base class
      */

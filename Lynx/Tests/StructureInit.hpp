@@ -25,12 +25,12 @@ namespace lnx{
 
 	//TODO fix error options
 	enum class error : uint32 {
-		STRUCT_INIT,			//Checks if a structure is initialized
-		DEREFERENCE_NULLPTR,	//Checks if an element of a nullptr allocation has been used
-		DEREFERENCE_EMPTY,		//Checks if an element of an empty container or allocation has been used
-		INDEX_OUT_OF_RANGE,		//Checks if the index used to call a container member function is negative
-		INDEX_NEGATIVE,			//Checks if the index used to call a container member function is out of range
-		NUM						//Number of lnx::error values
+		eStructInit,			//Checks if a structure is initialized
+		eDereferenceNullptr,	//Checks if an element of a nullptr allocation has been used
+		eDereferenceEmpty,		//Checks if an element of an empty container or allocation has been used
+		eIndexOutOfRange,		//Checks if the index used to call a container member function is negative
+		eIndexNegative,			//Checks if the index used to call a container member function is out of range
+		eNum					//Number of lnx::error values
 	};
 
 

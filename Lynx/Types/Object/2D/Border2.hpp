@@ -6,23 +6,23 @@
 
 
 namespace lnx::obj{
-	struct Border2 : public Obj2_b{
+	struct Border2 : public Obj2_b<2>{
 		shd::Border2 data;
 
 
-		virtual ram::ptr<char> getShData(){ return data.objData_.data; }
-		virtual vram::Alloc_b<char> getShVData(){ return data.objData_.vdata; }
+		virtual ram::ptr<char> getShData() override { return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
 
 
 		Border2() {
-			data.objData_.ffp() = { .0f, .0f };
-			data.objData_.fsp() = { .0f, .0f };
-			data.objData_.ID() = (uint32)common.ID;
+			data._data.ffp() = { .0f, .0f };
+			data._data.fsp() = { .0f, .0f };
+			data._data.ID() = (uint32)common.ID;
 		}
 		Border2(const f32v2& vFp, const f32v2& vSp) {
-			data.objData_.ffp() = vFp;
-			data.objData_.fsp() = vSp;
-			data.objData_.ID() = (uint32)common.ID;
+			data._data.ffp() = vFp;
+			data._data.fsp() = vSp;
+			data._data.ID() = (uint32)common.ID;
 		}
 
 		/**

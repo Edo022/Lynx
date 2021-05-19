@@ -30,7 +30,7 @@ namespace lnx::shd{
 
 
 	template<bufferType buft> struct ShaderElm_b {
-		vram::ptr<char, VRam, buft> vdata;						//Gpu data
+		vram::ptr<char, eVRam, buft> vdata;						//Gpu data
 		ram::ptr<char>              data;						//Local data copy
 		uint32                      bind;						//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
 	};
@@ -60,8 +60,8 @@ namespace lnx::shd{
 
 		~Shader_b(){
 			//Clear descriptors sets, descriptor pool and descriptor layout
-			core::dvc::graphics.LD.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
-			core::dvc::graphics.LD.destroyDescriptorPool(descriptorPool, nullptr);
+			core::dvc::graphics.ld.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
+			core::dvc::graphics.ld.destroyDescriptorPool(descriptorPool, nullptr);
 		}
 	};
 }

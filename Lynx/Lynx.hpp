@@ -25,7 +25,7 @@ namespace lnx{
         core::running = false;
 
         core::inputThr.join();
-        switch(core::dvc::graphics.LD.waitIdle()){
+        switch(core::dvc::graphics.ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 			vkDefaultCases;
         }

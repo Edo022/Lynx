@@ -14,29 +14,29 @@ namespace lnx::shd{
 		static uint32 pipelineIndex;
 
 
-		struct colorOutput__t : public ShaderElm_b<Storage> {
-			colorOutput__t() {
+		struct _outcol_t : public ShaderElm_b<eStorage> {
+			_outcol_t() {
 				ShaderElm_b::bind = 0;
 			}
-		} colorOutput_;
+		} _outcol;
 
 
-		struct windowSize__t : public ShaderElm_b<Storage> {
-			windowSize__t() {
+		struct _wsize_t : public ShaderElm_b<eStorage> {
+			_wsize_t() {
 				ShaderElm_b::bind = 1;
 			}
-		} windowSize_;
+		} _wsize;
 
 
-		struct zBuffer__t : public ShaderElm_b<Storage> {
-			zBuffer__t() {
+		struct _zbuff_t : public ShaderElm_b<eStorage> {
+			_zbuff_t() {
 				ShaderElm_b::bind = 2;
 			}
-		} zBuffer_;
+		} _zbuff;
 
 
-		struct lineData__t : public ShaderElm_b<Uniform> {
-			lineData__t() {
+		struct _data_t : public ShaderElm_b<eUniform> {
+			_data_t() {
 				ShaderElm_b::vdata.realloc(256);
 				ShaderElm_b::data.realloc(256);
 				ShaderElm_b::bind = 3;
@@ -55,10 +55,10 @@ namespace lnx::shd{
 			alwaysInline f32& wd1() { return *(f32*)(ShaderElm_b::data + 52); }
 			//TODO
 			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 56); }
-		} lineData_;
+		} _data;
 
 
-		void create(vram::ptr<f32v4, VRam, Storage> pColorOutput, vram::ptr<u32, VRam, Storage> pWidth, vram::ptr<u32, VRam, Storage> pZBuffer, const u32v3 vGroupCount, Window& pWindow);
+		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
 		void updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);

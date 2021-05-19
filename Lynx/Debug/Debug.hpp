@@ -4,7 +4,9 @@
 #include "Lynx/macros.hpp"
 #include "Lynx/Debug/SourceInfo.hpp"
 #include <cstdio>
-#include <cstring>
+// #include <cstring>
+#include <string>
+#include <cstdarg>
 #include <exception>
 
 #pragma GCC diagnostic push
@@ -12,52 +14,84 @@
 #pragma GCC diagnostic ignored "-Wformat-security"
 
 
-
+//TODO ADD FUNCTION TO GET FULL BACKTRACE AS RTARRAY OF HCARRAY
 
 
 //TODO output to console window
 namespace lnx::dbg{
 	enum class Severity{
-		info,
-		warning,
-		error
+		eInfo,
+		eWarning,
+		eError
 	};
+	static std::string string_format(const std::string &fmt, ...) {
+		int32 size = 4192;
+		std::string str;
+		va_list ap;
+
+		while(true) {
+			str.resize((u32)size);
+			va_start(ap, fmt);
+			int32 n = vsnprintf(&str[0], size, fmt.c_str(), ap);
+			va_end(ap);
+
+			if (n > -1 && n < size) {
+				str.resize(n); // Make sure there are no trailing zero char
+				return str;
+			}
+			if (n > -1) size = n + 1;
+			else size *= 2;
+		}
+	}
 	#ifdef LNX_DEBUG
 		static neverInline void print(Severity vSeverity, const uint32 vIndex, const char* vMessage, const auto&... pParams) {
 			//Create output string
 
-			const char* bgn =
-				"%s%s\n\n"		//"Error"
+			std::string out = string_format(
+				"%s%s%s",
+				"%s%s\n\n"		//Error
 				"%s\"%s\"\n"	//Thread
-				"%s\"%s\"\n"	//File
-				"%s\"%s\"\n"	//Function
-				"%s%d\n\n"		//Line
-			;
-			const char* end = "%s";
-			char* out = (char*)malloc(strlen(bgn) + strlen(vMessage) + strlen(end) + 1);
-			sprintf(out, "%s%s%s", bgn, vMessage, end);
+				"%s%s\n\n",		//Traceback
+				vMessage,		//User message
+				"%s"
+			);
 
-			//Output
+
+			//Build traceback
 			char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-			char* out__ = (char*)malloc(8192); snprintf(out__, 8192, out,
+			std::string traceback = "\n    Address |   Line | Function";
+			for(uint32 i = 0; ; ++i){
+				auto func = caller::func(vIndex + i);
+				if(func[0] != '?' && func[0] != '\0') {
+					traceback += "\n    " +
+					string_format("%7x", caller::addr(vIndex + i)) + " | " +
+					string_format("%6d", caller::line(vIndex + i)) + " | " +
+					func;
+				}
+				else break;
+				if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
+					traceback += "\n    Too many nested calls. Backtrace stopped";
+					break;
+				}
+			}
+
+			std::string out__ = string_format(out,
 				"\n\n--------------------------------------------------------------------------\n",
-				(vSeverity == Severity::info) ? "" : (vSeverity == Severity::warning) ? "Warning" : "Error:",
+				(vSeverity == Severity::eInfo) ? "" : (vSeverity == Severity::eWarning) ? "Warning" : "Error:",
 
 				"Thread   ", thrName,
-				"File     ", caller::file(vIndex + 1),
-				"Function ", caller::func(vIndex + 1),
-				"Line     ", caller::line(vIndex + 1),
+				"Traceback: ", traceback.c_str(),
 
 				pParams...,
 				"\n--------------------------------------------------------------------------\n\n"
 			);
-			if(vSeverity == Severity::info) Normal else if(vSeverity == Severity::warning) Warning else Failure printf(out__);
-			Normal; fflush(stdout); free(out);
-			if(vSeverity == Severity::error) throw std::runtime_error("U.U");
+			if(vSeverity == Severity::eInfo) Normal else if(vSeverity == Severity::eWarning) Warning else Failure printf(out__.c_str());
+			Normal; fflush(stdout); //free(out);
+			if(vSeverity == Severity::eError) throw std::runtime_error("U.U");
 		}
 
-		static neverInline void printError  (const char* vMessage, const auto&... pParams) { print(Severity::error  , 1, vMessage, pParams...); }
-		static neverInline void printWarning(const char* vMessage, const auto&... pParams) { print(Severity::warning, 1, vMessage, pParams...); }
+		static neverInline void printError  (const char* vMessage, const auto&... pParams) { print(Severity::eError  , 1, vMessage, pParams...); }
+		static neverInline void printWarning(const char* vMessage, const auto&... pParams) { print(Severity::eWarning, 1, vMessage, pParams...); }
 
 
 
@@ -86,13 +120,6 @@ namespace lnx::dbg{
 				lnx::dbg::printError(str, pParams...);
 				free(str);
 			}
-		}
-
-		/**
-		 * @brief Prints pMessage as error if vResult is not VK_SUCCESS
-		 */
-		static neverInline void checkVk(const int/*vk::Result*/ vResult, const char* vMessage, const auto&... vArgs) {
-			checkCond(vResult != 0/*VK_SUCCESS*/, vMessage, vArgs...);
 		}
 
 		/**

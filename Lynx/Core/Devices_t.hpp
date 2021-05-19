@@ -63,26 +63,12 @@ struct _VkPhysicalDevice {
 
 
 
-struct graphicsDevice {
-	graphicsDevice() : PD(), LD{ nullptr }, graphicsQueue{ nullptr }, presentQueue{ nullptr } {}
+struct Device {
+	Device() : pd(), ld{ nullptr }, gq{ nullptr }, pq{ nullptr } {}
 
-	_VkPhysicalDevice PD;		//Main physical device for graphics
-	vk::Device		  LD;		//Main logical device for graphics
-	vk::Queue graphicsQueue;	//Main graphics queue. Runs on graphicsLD
-	vk::Queue presentQueue;		//Main graphics queue. Runs on graphicsLD
-
-	//FIXME
-		lnx::RtArray<vk::Queue> computeQueues;	//Main compute queues. Run on computeLD
-	//FIXME
-};
-
-
-
-//FIXME REMOVE
-struct computeDevice {
-	computeDevice() : PD(), LD{ nullptr }, computeQueues() {}
-
-	_VkPhysicalDevice PD;					//Main physical device for computing
-	vk::Device        LD;					//Main logical device for computing
-	lnx::RtArray<vk::Queue> computeQueues;	//Main compute queues. Run on computeLD
+	_VkPhysicalDevice pd;		//Physical device
+	vk::Device		  ld;		//Logical  device
+	vk::Queue gq;				//Graphics queue
+	vk::Queue pq;				//Present  queue
+	lnx::RtArray<vk::Queue> cqs;//Compute  queues
 };

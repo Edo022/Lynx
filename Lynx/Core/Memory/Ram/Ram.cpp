@@ -17,7 +17,7 @@
 
 namespace lnx::ram{
 	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
-	Type_t types[(uint32)__pvt::CellClassIndex::NUM];
+	Type_t types[(uint32)__pvt::CellClassIndex::eNum];
 	RaArrayC<Cell_t> cells;
 	std::mutex cells_m;
 	uint32 allocated;
@@ -28,7 +28,7 @@ namespace lnx::ram{
 		using namespace __pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
-		for(uint32 i = 0; i < (uint32)CellClassIndex::NUM; ++i) {
+		for(uint32 i = 0; i < (uint32)CellClassIndex::eNum; ++i) {
 			uint32 buffsNum = sys::ram.size / buffSize;						//Get max number of cells that can fit in the system memory
 			uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
 			new(&types[i]) Type_t{
@@ -38,7 +38,8 @@ namespace lnx::ram{
 			};
 			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
-		cells.init(sys::ram.size / (uint64)CellClass::CLASS_A);
+									//This class is locked [$59.99]
+		cells.init(sys::ram.size / (uint64)CellClass::eA);
 	}
 
 

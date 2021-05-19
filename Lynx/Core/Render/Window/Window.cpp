@@ -43,7 +43,13 @@ namespace lnx{
 
 
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
-		glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface));
+		switch(glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
+			case VkResult::VK_SUCCESS: break;
+			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::printError("Initialization failed"); break;
+			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
+			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
+		}
+
 
 		{ //Set icon
 			#include "__tmp__IconData.hpp"
@@ -85,9 +91,9 @@ namespace lnx{
 			wSize_g.realloc(/*4 * 2*/16);				//Create cell for window size
 			//FIXME rounded up to a multiple of 16, make it automatic
 
-			u32 wSize[2] = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
+			u32v2 wSize = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, wSize);
+			cb.updateBuffer(wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, &wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 			//FIXME AUTOMATIZE BUFFER UPDATE
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
@@ -98,7 +104,7 @@ namespace lnx{
 		}
 
 
-		sh_clear.create(fOut_g, iOut_g, zBuff_g, wSize_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
+		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;
@@ -116,9 +122,9 @@ namespace lnx{
 		{ //Render command pool
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
-				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
 		}
 
 
@@ -126,16 +132,16 @@ namespace lnx{
 
 		{ //Copy
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
-				.setQueueFamilyIndex (core::dvc::graphics.PD.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::graphics.LD.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
 				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::graphics.LD.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
 
 
 
@@ -186,9 +192,22 @@ namespace lnx{
 
 
 
-
-	void Window::spawn(obj::RenderSpace2* pRenderSpace) {
-		CRenderSpaces.add(pRenderSpace);	//BUG OVER
-		pRenderSpace->onSpawn(*this);			//BUG >IN
+	void Window::qSpawn(obj::Obj_bb* pObject){
+		dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
+		// spawn_m.lock();
+		// spawn_q.add(pObject);
+		// spawn_m.unlock();
+		requests_m.lock();
+		requests.add(pObject);
+		pObject->render.updates = pObject->render.updates | obj::UpdateBits::eSpawn;
+		requests_m.unlock();
 	}
+
+
+	// void Window::spawn(obj::RenderSpace2* pRenderSpace) {
+	// 	CRenderSpaces.add(pRenderSpace);	//BUG OVER
+	// 	// sleep(500); //BUG REMOVE
+	// 	pRenderSpace->onSpawn(*this);			//BUG >IN
+	// 	//! Hours spent on this bug: 231
+	// }
 }
