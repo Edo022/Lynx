@@ -3,6 +3,7 @@
 //Do NOT #include this file
 
 
+// #include "Lynx_config.hpp"
 #ifndef __INTELLISENSE__
     #include "Lynx/System/SystemInfo.cpp"
     #include "Lynx/Tests/StructureInit.cpp"

@@ -5,6 +5,7 @@
 
 namespace lnx::obj{
 	void Border2::onSpawn(Window& pWindow) {
+		// Obj2_b<2>::onSpawn(pWindow); //Initialize all the children
 		Obj2_b::onSpawn(pWindow); //Initialize all the children
 		data.create(
 			pWindow.fOut_g,

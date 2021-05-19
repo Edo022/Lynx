@@ -1,4 +1,4 @@
-# Lynx
+# Lynx Engine
 A volume rendering and physics engine with runtime procedural generation and advanced physics.  
 
 
@@ -9,9 +9,14 @@ A volume rendering and physics engine with runtime procedural generation and adv
 &nbsp;
 
 # Software requirements
-The engine only supports developement on Linux systems using g++ and Python,
-but can deploy applications for both Windows10 and Linux.  
-Support for other C++ compilers and editors will be added in future versions.
+## Shipping
+You can build applications for both Linux and Windows.  
+Mac is not supported yet, but will be in future versions.
+
+
+## Developement
+The engine is meant to be used on Linux systems only.  
+We do not provide any support for developement on Windows or Mac.  
 
 | Software   | Version   | Path                                     | Required |
 |------------|-----------|------------------------------------------|----------|
@@ -24,10 +29,14 @@ Support for other C++ compilers and editors will be added in future versions.
 
 
 
-Later versions may work as well, but we haven't tested them.  
-Mingw is only required when building applications for Windows.  
+Later versions may work as well, but we haven't tested them.
+
+Mingw is only required when building applications for Windows.
+
 Visual Studio Code is not required, but it might be much easier to setup than other editors, as the engine can automatically generate configuration files for it.  
-If you use a different editor, you will have to manually write include paths and commands.
+If you use a different editor, you will have to manually run commands and write its include paths.
+
+Support for other C++ compilers and editors will be added in future versions.
 
 &nbsp;
 

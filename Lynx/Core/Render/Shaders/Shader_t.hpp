@@ -30,7 +30,7 @@ namespace lnx::shd{
 
 
 	template<bufferType buft> struct ShaderElm_b {
-		vram::ptr<char, VRam, buft> vdata;						//Gpu data
+		vram::ptr<char, eVRam, buft> vdata;						//Gpu data
 		ram::ptr<char>              data;						//Local data copy
 		uint32                      bind;						//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
 	};

@@ -15,14 +15,16 @@ namespace lnx::obj{
 		minLim = vMinLim;
 		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.ffp() = vMinLim;
-			debugBorder->qHierarchy();
+			// debugBorder->qHierarchy();
+			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
 		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.fsp() = vMaxLim;
-			debugBorder->qHierarchy();
+			// debugBorder->qHierarchy();
+			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	#endif
@@ -31,13 +33,17 @@ namespace lnx::obj{
 
 
 	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
-        Obj_bb::render.parentWindow = &pWindow;
-        for(u32 i = 0; i < Obj2_bt<chType>::children.count(); ++i){
-            if(Obj2_bt<chType>::children.isValid(i)) Obj2_bt<chType>::children[i]->onSpawn(pWindow);
-        }
+		Obj_bt<chType>::onSpawn(pWindow);
+		//BUG BEGIN >>
+        // Obj_bb::render.parentWindow = &pWindow;
+        // for(u32 i = 0; i < this->children.count(); ++i){
+        //     if(this->children.isValid(i)) this->children[i]->onSpawn(pWindow);
+        // }
+		//BUG END <<
+
 		#ifdef LNX_DEBUG
         	if(!Obj_bb::render.isDbgObj) {
-				debugBorder = new Border2();
+				debugBorder = new Border2(); //FIXME ONLY SPAWN IF NOT PRESENT
 				debugBorder->render.isDbgObj = true;
 				debugBorder->onSpawn(pWindow);
 			}
@@ -54,23 +60,25 @@ namespace lnx::obj{
 
 
 	template<class chType> void Obj2_bt<chType>::setChildLimits(const uint32 vChildIndex) const {
-		dbg::checkParam(vChildIndex > Obj2_bt<chType>::children.count() - 1, "vChildIndex", "Invalid index");
-		Obj2_bt<chType>::children[vChildIndex]->setMinLim(minLim);
-		Obj2_bt<chType>::children[vChildIndex]->setMaxLim(maxLim);
+		dbg::checkParam(vChildIndex > Obj2_bt::children.count() - 1, "vChildIndex", "Invalid index");
+		Obj2_bt::children[vChildIndex]->setMinLim(minLim);
+		Obj2_bt::children[vChildIndex]->setMaxLim(maxLim);
 	}
 
 
 //FIXME UNIFY UPDATE QUEUES
 
-	template<class chType> void Obj2_bt<chType>::qHierarchy() {
-		for(u32 i = 0; i < Obj2_bt<chType>::children.count(); i++) if(Obj2_bt<chType>::children.isValid(i)) {
-			// setChildLimits(i); //FIXME USE QUEUES
-			//TODO add  recalculateCoords() in all objects
-			// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
-			Obj2_bt<chType>::children[i]->queue(UpdateBits::limit);
-			Obj2_bt<chType>::children[i]->qHierarchy();
-		}
-		// qSelf();
-		queue(UpdateBits::updateg);
-	}
+	// template<class chType> void Obj2_bt<chType>::qHierarchy() {
+	// 	for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) {
+	// 		setChildLimits(i); //FIXME USE QUEUES
+	// 		//TODO add  recalculateCoords() in all objects
+	// 		// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
+	// 		Obj2_bt::children[i]->queue(UpdateBits::limit);
+	// 		// Obj2_bt::children[i]->qHierarchy();
+	// 	}
+	// 	qSelf(); //FIXME REMOVE
+	// 	// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
+	// 	//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
+	// 	//BUG^ ADD TEMPORARY FIX
+	// }
 }

@@ -50,11 +50,47 @@ namespace lnx::core::render{
 
 
 
-
+//TODO ADD FULL BACKTRACE
 
 
 
 namespace lnx{
+	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
+		pObj->render.parentWindow = &pWindow;								//Set owner window
+		pObj->onSpawn(pWindow);												//Run user callback
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){							//For each child
+			// if((*ch)[i]->render.updates & obj::spawn){					//If it has the same update
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::spawn;	//Clear update bit (prevents redundant updates)
+			if(pObj->getChildrenIsValid(i)) recSpawn(pObj->getChildren(i), pWindow);										//Run recursive update on it
+			// }
+		}
+	}
+
+	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){ //FIXME PASS command buffer BY VALUE
+		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
+		pObj->onUpdateg(pCB);
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
+			// if((*ch)[i]->render.updates & obj::limit){
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::limit;
+			if(pObj->getChildrenIsValid(i)) recUpdateg(pObj->getChildren(i), pCB);
+			// }
+		}
+	}
+
+	void recLimit(obj::Obj_bb* pObj){
+		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
+		pObj->onLimit();
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
+			// if((*ch)[i]->render.updates & obj::updateg){
+			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::updateg;
+			if(pObj->getChildrenIsValid(i)) recLimit(pObj->getChildren(i));
+			// }
+		}
+	}
+
+
+
 	void Window::draw() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
@@ -152,14 +188,16 @@ namespace lnx{
 
 			switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 				case vk::Result::eSuccess: break;
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of device memory"); break;
 				// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
 				//!^ Not an error. This value is not returned
 				default: dbg::printError("Unknown result");
 			}
 
 			core::render::graphicsQueueSubmit_m.lock();
-			switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+			switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; } //BUG UNCOMMENT
+			// switch(core::dvc::graphics.gq.submit(1, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+			// switch(core::dvc::graphics.gq.submit(2, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -174,19 +212,19 @@ namespace lnx{
 					.setPImageIndices      (&imageIndex)
 				;
 				core::render::presentQueueSubmit_m.lock();
-				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex //BUG UNCOMMENT
 				core::render::presentQueueSubmit_m.unlock();
 
-				switch(r){
-					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
-					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
-					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
-					#ifdef _WIN64 //This error is unique to windows
-						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
-					#endif
-					vkDefaultCases;
-				}
+				switch(r){ //BUG UNCOMMENT
+					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break; //BUG UNCOMMENT
+					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw; //BUG UNCOMMENT
+					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break; //BUG UNCOMMENT
+					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break; //BUG UNCOMMENT
+					#ifdef _WIN64 //This error is unique to windows //BUG UNCOMMENT
+						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME //BUG UNCOMMENT
+					#endif //BUG UNCOMMENT
+					vkDefaultCases; //BUG UNCOMMENT
+				} //BUG UNCOMMENT
 
 			}
 
@@ -200,8 +238,47 @@ namespace lnx{
 			//TODO parallelize work from a secondary render thread
 
 
+			//TODO SEPARATE FUNCTIONS
+			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+			requests_m.lock();
+			if(!requests.empty()) for(auto r : requests){
+				if(r->render.updates & obj::UpdateBits::eSpawn){
+					// r->onSpawn(*this); //BUG, probably
+					recSpawn(r, *this);
+					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
+				}
+				if(r->render.updates & obj::UpdateBits::eLimit){
+					// r->onLimit();                       //UG UNCOMMENT
+					recLimit(r);
+				}
+				if(r->render.updates & obj::UpdateBits::eUpdateg){
+					// cb.updateBuffer(
+					// 	r->getShVData().cell->csc.buffer,
+					// 	r->getShVData().cell->localOffset,
+					// 	r->getShVData().cell->cellSize,
+					// 	(void*)r->getShData()
+					// );
+					recUpdateg(r, cb);
+				}
+				// r->render.updates = obj::UpdateBits::none;
+				_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
+			}
+			requests.clear();
+			requests_m.unlock();
+			core::render::cmd::endSingleTimeCommands(cb);
 
 
+
+
+
+
+
+
+
+
+
+
+			//FIXME REQUESTS SENT TO NON SPAWNED OBJECTS FROM INPUT CALLBACKS ARE EXECUTED DURING SPAWN
 			//Input callbacks
 			if(icQueues.onClick.queued){
 				icQueues.onClick.m.lock();
@@ -252,29 +329,14 @@ namespace lnx{
 
 
 
-			//TODO SEPARATE FUNCTIONS
-			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME
-			requests_m.lock();
-			if(!requests.empty()) for(auto r : requests){
-				if(r->render.updates & obj::UpdateBits::spawn){
-					r->onSpawn(*this); //BUG, probably
-				}
-				if(r->render.updates & obj::UpdateBits::limit){
-					r->onLimit();
-				}
-				if(r->render.updates & obj::UpdateBits::updateg){
-					cb.updateBuffer(
-						r->getShVData().cell->csc.buffer,
-						r->getShVData().cell->localOffset,
-						r->getShVData().cell->cellSize,
-						(void*)r->getShData()
-					);
-				}
-				r->render.updates = obj::UpdateBits::none;
-			}
-			requests.clear();
-			requests_m.unlock();
-			core::render::cmd::endSingleTimeCommands(cb);
+
+
+
+
+
+
+
+
 
 			// //Fix object spawn requests
 			// spawn_m.lock();
@@ -365,7 +427,7 @@ namespace lnx::core::render{
 
 
 
-
+//TODO REMOVE FUNCTION. unused.
 	vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures) {
 		for(vk::Format format : *pCandidates) {
 			auto props = dvc::graphics.pd.device.getFormatProperties(format); //Get format properties

@@ -1,11 +1,11 @@
 #pragma once
 #define LNX_H_MACROS
-#include "Lynx_config.hpp"
+
 
 #ifdef __INTELLISENSE__
     #include ".engine/conf.hpp"
-    //!This file is generated in the .engine directory of the user application when they change the build configuration
-    //!It's only used to allow Intellisense to correctly parse the code
+    //!The file is generated in the .engine directory of the user application when they change the build configuration
+    //!This include is only used to allow Intellisense to correctly parse the code
 #endif
 
 

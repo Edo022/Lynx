@@ -27,10 +27,10 @@ namespace lnx{
 		std::atomic<bool> initialized = false;
 		Thread t;									//Main render thread of the window
 
-		vram::ptr<u32v2, VRam, Storage> wSize_g;	//Size of the widow
-		vram::ptr<f32v4, VRam, Storage> fOut_g ;	//Color output of the window
-		vram::ptr<u32,   VRam, Storage> iOut_g ;	//Packed color output of the window
-		vram::ptr<u32,   VRam, Storage> zBuff_g;	//TODO remove. use render space assembler
+		vram::ptr<u32v2, eVRam, eStorage> wSize_g;	//Size of the widow
+		vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output of the window
+		vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output of the window
+		vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
 
 
 
@@ -42,11 +42,11 @@ namespace lnx{
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addObject_m;
 
-		RaArray<lnx::obj::RenderSpace2*> CRenderSpaces;
+		// RaArray<lnx::obj::RenderSpace2*> CRenderSpaces; //FIXME REMOVE probably useless
 		// RaArray<obj::Obj2_bb*> spawn_q;
 		// std::mutex spawn_m;
-		void qSpawn(obj::Obj2_bb* pObject);
-		void spawn(obj::RenderSpace2* pRenderSpace);
+		void qSpawn(obj::Obj_bb* pObject);
+		// void spawn(obj::RenderSpace2* pRenderSpace);
 		// RtArray<obj::Obj_bb*>	objUpdates;
 		// std::mutex          objUpdates_m;
 
@@ -78,7 +78,7 @@ namespace lnx{
 				}
 			};
 			InputCallbackQueue onClick, onEnter, onExit, onMove, onAxis;
-			MouseButton lastMouseButton = MouseButton::n1;
+			MouseButton lastMouseButton = MouseButton::eN1;
 		} icQueues;
 
 
