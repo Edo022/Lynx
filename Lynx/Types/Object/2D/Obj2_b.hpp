@@ -38,6 +38,16 @@ namespace lnx::obj{
             Obj_bb::onLimit();
             if(parent) parent->setChildLimits(common.childIndex);
         } //FIXME idk. This doesnt seem right
+
+
+        virtual void onUpdateg(vk::CommandBuffer& pCB) override { //FIXME PASS BY VALUE
+            pCB.updateBuffer(
+			    getShVData().cell->csc.buffer,
+			    getShVData().cell->localOffset,
+			    getShVData().cell->cellSize,
+			    (void*)getShData()
+		    );
+        }
     };
 
 

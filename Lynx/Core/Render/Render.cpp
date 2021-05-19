@@ -67,15 +67,9 @@ namespace lnx{
 		}
 	}
 
-	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){
-		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
-		pCB.updateBuffer(
-			pObj->getShVData().cell->csc.buffer,
-			pObj->getShVData().cell->localOffset,
-			pObj->getShVData().cell->cellSize,
-			(void*)pObj->getShData()
-		);
-		pObj->onUpdateg();
+	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){ //FIXME PASS command buffer BY VALUE
+		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
+		pObj->onUpdateg(pCB);
 		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
 			// if((*ch)[i]->render.updates & obj::limit){
 			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::limit;
@@ -85,7 +79,7 @@ namespace lnx{
 	}
 
 	void recLimit(obj::Obj_bb* pObj){
-		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
+		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
 		pObj->onLimit();
 		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
 			// if((*ch)[i]->render.updates & obj::updateg){
@@ -194,7 +188,7 @@ namespace lnx{
 
 			switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 				case vk::Result::eSuccess: break;
-				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of devide memory"); break;
+				case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of device memory"); break;
 				// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
 				//!^ Not an error. This value is not returned
 				default: dbg::printError("Unknown result");

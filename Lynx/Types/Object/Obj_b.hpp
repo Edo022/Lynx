@@ -75,7 +75,7 @@ namespace lnx{
 			virtual void onLimit(){
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
-			virtual void onUpdateg(){
+			virtual void onUpdateg(vk::CommandBuffer& pCB){ //FIXME PASS BY VALUE
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
 
