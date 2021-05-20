@@ -30,13 +30,8 @@ namespace lnx{
 
 
 	void Window::init() {
-		//Create default shaders
-		// CShadersLayouts.resize(ShaderLayout::LNX_DEF_SHADER_NUM);
 		pipelines.resize(core::shaders::pipelineNum);
 
-		// core::shaders::createPipeline(shd::Line2::pipelineIndex,            shd::Line2::layout,            *this);
-		// core::shaders::createPipeline(shd::Border2::pipelineIndex,          shd::Border2::layout,          *this);
-		// core::shaders::createPipeline(shd::FloatToIntBuffer::pipelineIndex, shd::FloatToIntBuffer::layout, *this);
 		for(uint32 i = 0; i < pipelines.count(); ++i){
 			core::shaders::createPipeline(i, *this);
 		}
@@ -132,7 +127,7 @@ namespace lnx{
 
 		{ //Copy
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
-				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])	//Set the compute family where to bind the command pool
 			; //FIXME
 			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
 
@@ -147,7 +142,6 @@ namespace lnx{
 
 
 			//Record a present command buffers for each swapchain images
-			// for(uint32 imgIndex = 0; imgIndex < swp.images.count(); imgIndex++) {
 			for(uint32 imgIndex = 0; imgIndex < swp.images.count(); imgIndex++) {
 				auto beginInfo = vk::CommandBufferBeginInfo() 							//Simultaneous use allows the command buffer to be executed multiple times
 					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
@@ -194,20 +188,9 @@ namespace lnx{
 
 	void Window::qSpawn(obj::Obj_bb* pObject){
 		dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
-		// spawn_m.lock();
-		// spawn_q.add(pObject);
-		// spawn_m.unlock();
 		requests_m.lock();
 		requests.add(pObject);
 		pObject->render.updates = pObject->render.updates | obj::UpdateBits::eSpawn;
 		requests_m.unlock();
 	}
-
-
-	// void Window::spawn(obj::RenderSpace2* pRenderSpace) {
-	// 	CRenderSpaces.add(pRenderSpace);	//BUG OVER
-	// 	// sleep(500); //BUG REMOVE
-	// 	pRenderSpace->onSpawn(*this);			//BUG >IN
-	// 	//! Hours spent on this bug: 231
-	// }
 }

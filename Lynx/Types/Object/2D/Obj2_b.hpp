@@ -2,11 +2,12 @@
 #define LNX_H_OBJECT2
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
-
-
-
 //TODO Opaque and Structural objects
 //TODO add absolute pixel position and scale
+
+
+
+
 namespace lnx::obj{
     struct MouseCallbacks_b{
         virtual void onClick(const f32v2 vPos, MouseButton vButton){};
@@ -33,14 +34,13 @@ namespace lnx::obj{
         _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
 
         Obj2_bb* parent{ nullptr };				//Parent of the object
-        // virtual void qHierarchy(){};
+
         virtual void onLimit() override {
             Obj_bb::onLimit();
             if(parent) parent->setChildLimits(common.childIndex);
-        } //FIXME idk. This doesnt seem right
+        }
 
-
-        virtual void onUpdateg(vk::CommandBuffer& pCB) override { //FIXME PASS BY VALUE
+        virtual void onUpdateg(vk::CommandBuffer pCB) override {
             pCB.updateBuffer(
 			    getShVData().cell->csc.buffer,
 			    getShVData().cell->localOffset,
@@ -59,7 +59,6 @@ namespace lnx::obj{
         limitAlignment limitAlignment_ = limitAlignment::eCenter; 	//The alignment of the object within its limits
 
         virtual void setChildLimits(const uint32 vChildIndex) const override;
-        // virtual void qHierarchy() override;
         virtual void onSpawn(Window& pWindow) override;
     };
 
@@ -70,7 +69,7 @@ namespace lnx::obj{
      */
     template<uint32 chType> struct Obj2_b {};
 
-    // template<> struct Obj2_b<1> : public Obj_bt<Obj1_bb> {};
+    // template<> struct Obj2_b<1> : public Obj_bt<Obj1_bb> {}; //TODO
     template<> struct Obj2_b<2> : public Obj2_bt<Obj2_bb> {};
-    // template<> struct Obj2_b<3> : public Obj_bt<Obj3_bb> {};
+    // template<> struct Obj2_b<3> : public Obj_bt<Obj3_bb> {}; //TODO
 }

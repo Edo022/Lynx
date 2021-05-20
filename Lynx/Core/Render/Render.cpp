@@ -6,8 +6,8 @@
 #include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include <climits>
 #include <chrono>
-
-
+//TODO parallelize work from a secondary render thread
+//TODO DIVIDE FUNCTIONS
 
 
 
@@ -50,7 +50,7 @@ namespace lnx::core::render{
 
 
 
-//TODO ADD FULL BACKTRACE
+
 
 
 
@@ -59,22 +59,16 @@ namespace lnx{
 		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
 		pObj->render.parentWindow = &pWindow;								//Set owner window
 		pObj->onSpawn(pWindow);												//Run user callback
-		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){							//For each child
-			// if((*ch)[i]->render.updates & obj::spawn){					//If it has the same update
-			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::spawn;	//Clear update bit (prevents redundant updates)
-			if(pObj->getChildrenIsValid(i)) recSpawn(pObj->getChildren(i), pWindow);										//Run recursive update on it
-			// }
+		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){				//For each child
+			if(pObj->getChildrenIsValid(i)) recSpawn(pObj->getChildren(i), pWindow); //Run recursive update on it
 		}
 	}
 
-	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer& pCB){ //FIXME PASS command buffer BY VALUE
+	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB){
 		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
 		pObj->onUpdateg(pCB);
 		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
-			// if((*ch)[i]->render.updates & obj::limit){
-			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::limit;
 			if(pObj->getChildrenIsValid(i)) recUpdateg(pObj->getChildren(i), pCB);
-			// }
 		}
 	}
 
@@ -82,12 +76,10 @@ namespace lnx{
 		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
 		pObj->onLimit();
 		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
-			// if((*ch)[i]->render.updates & obj::updateg){
-			// (*ch)[i]->render.updates = (*ch)[i]->render.updates & ~obj::updateg;
 			if(pObj->getChildrenIsValid(i)) recLimit(pObj->getChildren(i));
-			// }
 		}
 	}
+
 
 
 
@@ -95,12 +87,10 @@ namespace lnx{
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
 		while(running) {
-		// continue; //BUG REMOVE
 			auto start = std::chrono::high_resolution_clock::now();
 
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			addObject_m.lock();
-			// if(swp.shadersCBs.count() <= 1) {
 			if(swp.shadersCBs.count() <= 0) {
 				addObject_m.unlock();
 				continue;
@@ -111,10 +101,6 @@ namespace lnx{
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost");     break;
 				vkDefaultCases;
 			}
-
-			//BUG ^ THIS. CHECK TIMEOUT. CHECK RETURN VALUES
-			//BUG [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* Waiting for fences timed out!
-
 
 
 			//Redraw frame if necessary
@@ -130,9 +116,9 @@ namespace lnx{
 			uint32 imageIndex;
 			{
 				switch(core::dvc::graphics.ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
-					case vk::Result::eTimeout:       dbg::printWarning("Timeout");    break;
-					case vk::Result::eNotReady:      dbg::printWarning("Not ready");  break;
-					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
+					case vk::Result::eTimeout:             dbg::printWarning("Timeout");    break;
+					case vk::Result::eNotReady:            dbg::printWarning("Not ready");  break;
+					case vk::Result::eSuboptimalKHR:       dbg::printWarning("Suboptimal"); break;
 					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
 					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
@@ -195,9 +181,7 @@ namespace lnx{
 			}
 
 			core::render::graphicsQueueSubmit_m.lock();
-			switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; } //BUG UNCOMMENT
-			// switch(core::dvc::graphics.gq.submit(1, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
-			// switch(core::dvc::graphics.gq.submit(2, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+			switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 			core::render::graphicsQueueSubmit_m.unlock();
 
 
@@ -212,19 +196,19 @@ namespace lnx{
 					.setPImageIndices      (&imageIndex)
 				;
 				core::render::presentQueueSubmit_m.lock();
-				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex //BUG UNCOMMENT
+				auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
 				core::render::presentQueueSubmit_m.unlock();
 
-				switch(r){ //BUG UNCOMMENT
-					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break; //BUG UNCOMMENT
-					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw; //BUG UNCOMMENT
-					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break; //BUG UNCOMMENT
-					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break; //BUG UNCOMMENT
-					#ifdef _WIN64 //This error is unique to windows //BUG UNCOMMENT
-						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME //BUG UNCOMMENT
-					#endif //BUG UNCOMMENT
-					vkDefaultCases; //BUG UNCOMMENT
-				} //BUG UNCOMMENT
+				switch(r){
+					case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
+					case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
+					case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
+					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+					#ifdef _WIN64 //This error is unique to windows
+						case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
+					#endif
+					vkDefaultCases;
+				}
 
 			}
 
@@ -235,43 +219,23 @@ namespace lnx{
 
 
 
-			//TODO parallelize work from a secondary render thread
-
-
-			//TODO SEPARATE FUNCTIONS
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			requests_m.lock();
 			if(!requests.empty()) for(auto r : requests){
 				if(r->render.updates & obj::UpdateBits::eSpawn){
-					// r->onSpawn(*this); //BUG, probably
 					recSpawn(r, *this);
-					// // CRenderSpaces.add((obj::RenderSpace2*)r); //FIXME REMOVE probably useless
 				}
 				if(r->render.updates & obj::UpdateBits::eLimit){
-					// r->onLimit();                       //UG UNCOMMENT
 					recLimit(r);
 				}
 				if(r->render.updates & obj::UpdateBits::eUpdateg){
-					// cb.updateBuffer(
-					// 	r->getShVData().cell->csc.buffer,
-					// 	r->getShVData().cell->localOffset,
-					// 	r->getShVData().cell->cellSize,
-					// 	(void*)r->getShData()
-					// );
 					recUpdateg(r, cb);
 				}
-				// r->render.updates = obj::UpdateBits::none;
 				_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 			}
 			requests.clear();
 			requests_m.unlock();
 			core::render::cmd::endSingleTimeCommands(cb);
-
-
-
-
-
-
 
 
 
@@ -319,7 +283,6 @@ namespace lnx{
 			if(icQueues.onAxis.queued){
 				icQueues.onAxis.m.lock();
 				for(uint32 i = 0; i < icQueues.onAxis.list.count(); ++i){
-					// icQueues.onAxis.list.isValid(i)elmicQueues.onAxis.list[i]->Axis(icQueues.onAxis.pos);
 					if(icQueues.onAxis.list.isValid(i)) icQueues.onAxis.list[i]->onAxis(1); //FIXME
 				}
 				icQueues.onAxis.m.unlock();
@@ -330,45 +293,6 @@ namespace lnx{
 
 
 
-
-
-
-
-
-
-
-
-			// //Fix object spawn requests
-			// spawn_m.lock();
-			// if(spawn_q.count()){
-			// 	for(uint32 i = 0; i < spawn_q.count(); ++i){
-			// 		if(spawn_q.isValid(i)) spawn_q[i]->onSpawn(*this); //BUG
-			// 		// if(spawn_q.isValid(i)) spawn_q[i];
-			// 	}
-			// 	spawn_q.clear();
-			// }
-			// spawn_m.unlock();
-
-
-
-
-			// //Fix objects update requests
-			// if(objUpdates.count() > 0) {
-			// 	objUpdates_m.lock();
-			// 	vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			// 	for(uint32 i = 0; i < objUpdates.count(); i++) {
-			// 		objUpdates[i]->render.updated = true;
-			// 		cb.updateBuffer(
-			// 			objUpdates[i]->getShVData().cell->csc.buffer,
-			// 			objUpdates[i]->getShVData().cell->localOffset,
-			// 			objUpdates[i]->getShVData().cell->cellSize,
-			// 			(void*)objUpdates[i]->getShData()
-			// 		);
-			// 	}
-			// 	core::render::cmd::endSingleTimeCommands(cb);
-			// 	objUpdates.clear();
-			// 	objUpdates_m.unlock();
-			// }
 			//FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 			if(glfwWindowShouldClose(window)) return;
 
@@ -403,9 +327,6 @@ namespace lnx{
 namespace lnx::core::render{
 	void cleanup() {
 		dvc::graphics.ld.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
-
-		//If the compute and the graphics devices are not the same, destroy the graphics device
-		// if(dvc::graphics.pd.properties.deviceID != dvc::compute.pd.properties.deviceID) dvc::graphics.ld.destroy(nullptr);
 		dvc::graphics.ld.destroy(nullptr);													//Destroy the compute device
 		//for (auto& device : secondary) vkDestroyDevice(device.ld, nullptr);						//Destroy all the secondary devices
 

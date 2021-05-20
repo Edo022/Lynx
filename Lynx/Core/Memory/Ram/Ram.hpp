@@ -72,7 +72,6 @@ namespace lnx::ram{
 	extern Type_t types[];			//Allocated buffers
 	extern RaArrayC<Cell_t> cells;
 	extern std::mutex cells_m;
-	extern uint32  allocated;		//TODO remove
 
 
 

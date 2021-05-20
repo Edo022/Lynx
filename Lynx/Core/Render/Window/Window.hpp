@@ -34,22 +34,13 @@ namespace lnx{
 
 
 
-		// RtArray<LnxShaderLayout_t>	CShadersLayouts;
 		RtArray<vk::Pipeline> pipelines;
 		vk::CommandPool commandPool;
 		vk::CommandPool copyCommandPool;
 		RtArray<vk::CommandBuffer> copyCommandBuffers;
 		shd::FloatToIntBuffer sh_clear;
 		std::mutex addObject_m;
-
-		// RaArray<lnx::obj::RenderSpace2*> CRenderSpaces; //FIXME REMOVE probably useless
-		// RaArray<obj::Obj2_bb*> spawn_q;
-		// std::mutex spawn_m;
 		void qSpawn(obj::Obj_bb* pObject);
-		// void spawn(obj::RenderSpace2* pRenderSpace);
-		// RtArray<obj::Obj_bb*>	objUpdates;
-		// std::mutex          objUpdates_m;
-
 
 
 		RtArray<obj::Obj_bb*> requests; //TODO USE RAARRAY
@@ -122,14 +113,14 @@ namespace lnx{
 			)
 		;
 		vk::BufferImageCopy copyRegion = vk::BufferImageCopy() 					//Create bufferImageCopy region to copy the buffer into the image
-			.setBufferOffset      (0)												//No buffer offset
-			.setBufferRowLength   (0)												//dark magic
-			.setBufferImageHeight (0)					    						//dark magic
-			.setImageSubresource     (vk::ImageSubresourceLayers()					//Create subresource object
-				.setAspectMask        (vk::ImageAspectFlagBits::eColor)   				//Set aspect mask
-				.setMipLevel          (0)												//No mipmap
-				.setBaseArrayLayer    (0)												//Set base
-				.setLayerCount        (1)						    					//No multi layer
+			.setBufferOffset      	(0)												//No buffer offset
+			.setBufferRowLength     (0)												//dark magic
+			.setBufferImageHeight   (0)					    						//dark magic
+			.setImageSubresource    (vk::ImageSubresourceLayers()					//Create subresource object
+				.setAspectMask          (vk::ImageAspectFlagBits::eColor)   			//Set aspect mask
+				.setMipLevel            (0)												//No mipmap
+				.setBaseArrayLayer      (0)												//Set base
+				.setLayerCount          (1)						    					//No multi layer
 			)
 			.setImageOffset       (vk::Offset3D(0, 0, 0))							//No image offset
 		;

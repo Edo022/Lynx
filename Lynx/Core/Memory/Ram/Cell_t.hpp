@@ -41,5 +41,4 @@ namespace lnx::ram{
 	extern thread_local Cell_t dummyCell;
 
 	extern std::mutex cells_m;
-	extern uint32 allocated;	//TODO remove
 }

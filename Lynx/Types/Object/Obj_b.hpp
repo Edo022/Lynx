@@ -67,23 +67,21 @@ namespace lnx{
 				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 				Window* parentWindow = nullptr;					//Parent window object that contains the render thread and the window data
 			} render;
-			virtual void qSelf(){ queue(UpdateBits::eUpdateg); }; //FIXME REMOVE	//Queues the object to make the render thread update it between the current and the next frame draw
-			// virtual void recalculateCoords() {}
+
 			virtual void onSpawn(Window& pWindow){
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
 			virtual void onLimit(){
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
-			virtual void onUpdateg(vk::CommandBuffer& pCB){ //FIXME PASS BY VALUE
+			virtual void onUpdateg(vk::CommandBuffer pCB){
 				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
 			}
 
 			//TODO comment
 			void queue(UpdateBits vUpdates){
-				// dbg::checkCond(render.parentWindow && thr::self::thr() == render.parentWindow->t.thr, "This function cannot be called by the render thread.");
 				UpdateBits old = render.updates;						//Save old updates bits
-				if(render.parentWindow) { 								//If the object has a binded window //FIXME UPDATE ALL IN WINDOW SPAWN
+				if(render.parentWindow) { 								//If the object has a binded window
 					render.parentWindow->requests_m.lock();					//Lock requests mutex
 						render.updates = render.updates | vUpdates;			//Update updates bits
 						if(!old) render.parentWindow->requests.add(this);	//If it isn't already in it, add the object to the update queue
