@@ -15,16 +15,12 @@ namespace lnx::obj{
 		minLim = vMinLim;
 		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.ffp() = vMinLim;
-			// debugBorder->qHierarchy();
-			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
 		if(!Obj_bb::render.isDbgObj && debugBorder) {
 			debugBorder->data._data.fsp() = vMaxLim;
-			// debugBorder->qHierarchy();
-			debugBorder->queue(obj::UpdateBits::eUpdateg);
 		}
 	}
 	#endif
@@ -34,18 +30,12 @@ namespace lnx::obj{
 
 	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
 		Obj_bt<chType>::onSpawn(pWindow);
-		//BUG BEGIN >>
-        // Obj_bb::render.parentWindow = &pWindow;
-        // for(u32 i = 0; i < this->children.count(); ++i){
-        //     if(this->children.isValid(i)) this->children[i]->onSpawn(pWindow);
-        // }
-		//BUG END <<
 
 		#ifdef LNX_DEBUG
         	if(!Obj_bb::render.isDbgObj) {
 				debugBorder = new Border2(); //FIXME ONLY SPAWN IF NOT PRESENT
 				debugBorder->render.isDbgObj = true;
-				debugBorder->onSpawn(pWindow);
+				pWindow.qSpawn(debugBorder);
 			}
 		#endif
 

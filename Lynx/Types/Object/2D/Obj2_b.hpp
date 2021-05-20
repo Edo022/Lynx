@@ -38,6 +38,7 @@ namespace lnx::obj{
         virtual void onLimit() override {
             Obj_bb::onLimit();
             if(parent) parent->setChildLimits(common.childIndex);
+            if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
         }
 
         virtual void onUpdateg(vk::CommandBuffer pCB) override {
@@ -47,8 +48,10 @@ namespace lnx::obj{
 			    getShVData().cell->cellSize,
 			    (void*)getShData()
 		    );
+            if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
         }
     };
+
 
 
 
@@ -61,6 +64,8 @@ namespace lnx::obj{
         virtual void setChildLimits(const uint32 vChildIndex) const override;
         virtual void onSpawn(Window& pWindow) override;
     };
+
+
 
 
     /**
