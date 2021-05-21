@@ -129,7 +129,7 @@ namespace lnx {
 		 */
 		alwaysInline iter add(const type& vElm) {
 			checkInit();
-			Super::cat1(vElm);		//BUG >IN
+			Super::cat1(vElm);
 			return Super::count() - 1;
 		}
 

@@ -20,10 +20,8 @@ namespace lnxc{
 		//Constructors
 		alwaysInline constexpr vec2_t() noexcept {}
 		alwaysInline constexpr vec2_t(const t& _x, const t& _y) noexcept { x = _x; y = _y; }
-		// explicit alwaysInline constexpr vec2_t(const vec2_t<t>& v) noexcept { *this = v; }
-				 alwaysInline constexpr vec2_t(const vec2_t<t>& v)    noexcept { *this = v; }
-		// explicit alwaysInline constexpr vec2_t(const t& v)         noexcept { *this = v; }
-				 alwaysInline constexpr vec2_t(const t& v)            noexcept { *this = v; }
+		alwaysInline constexpr vec2_t(const vec2_t<t>& v) noexcept { *this = v; }
+		alwaysInline constexpr vec2_t(const t& v)         noexcept { *this = v; }
 
 
 		//Assignment operators, constructors and comparison operators
