@@ -33,18 +33,18 @@ namespace lnx::obj{
 		Obj_bt<chType>::onSpawn(pWindow);
 
 		//If in debug mode, spawn debug border
-		// #ifdef LNX_DEBUG
-        // 	if(!Obj2_bb::render.isDbgObj && !debugBorder) {
-		// 		debugBorder = new Border2();
-		// 		// pWindow.qSpawn(debugBorder);
-		// 		pWindow.requests_m.lock();
-		// 			debugBorder->render.isDbgObj = true;
-		// 			debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
-		// 			// pWindow.requests.add(debugBorder);
-		// 			core::render::recSpawn(debugBorder, pWindow);
-		// 		pWindow.requests_m.unlock();
-		// 	}
-		// #endif
+		#ifdef LNX_DEBUG
+        	if(!Obj2_bb::render.isDbgObj && !debugBorder) {
+				debugBorder = new Border2();
+				// pWindow.qSpawn(debugBorder);
+				// pWindow.requests_m.lock(); //! already managed in draw function
+					debugBorder->render.isDbgObj = true;
+					debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
+					// pWindow.requests.add(debugBorder);
+					core::render::recSpawn(debugBorder, pWindow);
+				// pWindow.requests_m.unlock(); //! already managed in draw function
+			}
+		#endif
 
 		//Set callbacks of overwritten inputs
 		if(doesRedefine(*this, &MouseCallbacks_b::onClick))pWindow.icQueues.onClick.add(this);
