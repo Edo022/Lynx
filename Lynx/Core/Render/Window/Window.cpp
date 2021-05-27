@@ -187,7 +187,7 @@ namespace lnx{
 
 
 	void Window::qSpawn(obj::Obj_bb* pObject){
-		dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
+		// dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
 
 		requests_m.lock();
 			pObject->render.updates = pObject->render.updates | obj::UpdateBits::eSpawn;

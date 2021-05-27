@@ -36,12 +36,11 @@ namespace lnx::obj{
 		#ifdef LNX_DEBUG
         	if(!Obj2_bb::render.isDbgObj && !debugBorder) {
 				debugBorder = new Border2();
-				// pWindow.qSpawn(debugBorder);
+				pWindow.qSpawn(debugBorder);
 				// pWindow.requests_m.lock(); //! already managed in draw function
-					debugBorder->render.isDbgObj = true;
-					debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
-					// pWindow.requests.add(debugBorder);
-					core::render::recSpawn(debugBorder, pWindow);
+					// debugBorder->render.isDbgObj = true;
+					// debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
+					// core::render::recSpawn(debugBorder, pWindow);
 				// pWindow.requests_m.unlock(); //! already managed in draw function
 			}
 		#endif
