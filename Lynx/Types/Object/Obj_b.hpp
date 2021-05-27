@@ -63,7 +63,7 @@ namespace lnx{
 			virtual bool    getChildrenIsValid(uint32 vIndex) = 0; 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 
 			struct Render{									//Structure containing rendering helper members
-				_dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
+				// _dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
 				std::atomic<UpdateBits> updates;				//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 				Window* parentWindow = nullptr;					//Parent window object that contains the render thread and the window data
 			} render;

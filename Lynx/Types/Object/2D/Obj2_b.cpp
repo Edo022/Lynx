@@ -14,15 +14,15 @@ namespace lnx::obj{
 	#ifdef LNX_DEBUG
 	void Obj2_bb::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
-		if(!Obj_bb::render.isDbgObj && debugBorder) {
-			debugBorder->data._data.ffp() = vMinLim;
-		}
+		// if(!Obj_bb::render.isDbgObj && debugBorder) {
+		// 	debugBorder->data._data.ffp() = vMinLim;
+		// }
 	}
 	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
-		if(!Obj_bb::render.isDbgObj && debugBorder) {
-			debugBorder->data._data.fsp() = vMaxLim;
-		}
+		// if(!Obj_bb::render.isDbgObj && debugBorder) {
+		// 	debugBorder->data._data.fsp() = vMaxLim;
+		// }
 	}
 	#endif
 
@@ -32,18 +32,18 @@ namespace lnx::obj{
 	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
 		Obj_bt<chType>::onSpawn(pWindow);
 
-		//If in debug mode, spawn debug border
-		#ifdef LNX_DEBUG
-        	if(!Obj2_bb::render.isDbgObj && !debugBorder) {
-				debugBorder = new Border2();
-				pWindow.qSpawn(debugBorder);
-				// pWindow.requests_m.lock(); //! already managed in draw function
-					// debugBorder->render.isDbgObj = true;
-					// debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
-					// core::render::recSpawn(debugBorder, pWindow);
-				// pWindow.requests_m.unlock(); //! already managed in draw function
-			}
-		#endif
+		// //If in debug mode, spawn debug border
+		// #ifdef LNX_DEBUG
+        // 	if(!Obj2_bb::render.isDbgObj && !debugBorder) {
+		// 		debugBorder = new Border2();
+		// 		pWindow.qSpawn(debugBorder);
+		// 		// pWindow.requests_m.lock(); //! already managed in draw function
+		// 			// debugBorder->render.isDbgObj = true;
+		// 			// debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
+		// 			// core::render::recSpawn(debugBorder, pWindow);
+		// 		// pWindow.requests_m.unlock(); //! already managed in draw function
+		// 	}
+		// #endif
 
 		//Set callbacks of overwritten inputs
 		if(doesRedefine(*this, &MouseCallbacks_b::onClick))pWindow.icQueues.onClick.add(this);
@@ -66,7 +66,7 @@ namespace lnx::obj{
 	void Obj2_bb::onLimit() {
 		Obj_bb::onLimit();
 		if(parent) parent->setChildLimits(common.childIndex);
-		if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
+		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
 	}
 
 	void Obj2_bb::onUpdateg(vk::CommandBuffer pCB) {
@@ -76,6 +76,6 @@ namespace lnx::obj{
 			getShVData().cell->cellSize,
 			(void*)getShData()
 		);
-		if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
+		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
 	}
 }

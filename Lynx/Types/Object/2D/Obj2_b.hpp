@@ -31,7 +31,7 @@ namespace lnx::obj{
         f32v2 maxLim{ 1, 1 };			        //The limit of the object render. It depends on the parent of the object and its properties
         _rls(inline) void setMinLim(f32v2 vMinLim)_rls({ minLim = vMinLim; });
         _rls(inline) void setMaxLim(f32v2 vMaxLim)_rls({ maxLim = vMaxLim; });
-        _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
+        // _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
 
         Obj2_bb* parent{ nullptr };				//Parent of the object
 
