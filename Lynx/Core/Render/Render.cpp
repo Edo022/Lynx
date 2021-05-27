@@ -55,7 +55,8 @@ namespace lnx::core::render{
 
 
 namespace lnx{
-	void recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+	void core::render::recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
 		pObj->render.parentWindow = &pWindow;								//Set owner window
 		pObj->onSpawn(pWindow);												//Run user callback
@@ -64,7 +65,8 @@ namespace lnx{
 		}
 	}
 
-	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB){
+	void core::render::recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB){
+		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
 		pObj->onUpdateg(pCB);
 		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
@@ -72,7 +74,8 @@ namespace lnx{
 		}
 	}
 
-	void recLimit(obj::Obj_bb* pObj){
+	void core::render::recLimit(obj::Obj_bb* pObj){
+		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
 		pObj->onLimit();
 		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
@@ -223,13 +226,13 @@ namespace lnx{
 			requests_m.lock();
 			if(!requests.empty()) for(auto r : requests){
 				if(r->render.updates & obj::UpdateBits::eSpawn){
-					recSpawn(r, *this);
+					core::render::recSpawn(r, *this);
 				}
 				if(r->render.updates & obj::UpdateBits::eLimit){
-					recLimit(r);
+					core::render::recLimit(r);
 				}
 				if(r->render.updates & obj::UpdateBits::eUpdateg){
-					recUpdateg(r, cb);
+					core::render::recUpdateg(r, cb);
 				}
 				_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 			}

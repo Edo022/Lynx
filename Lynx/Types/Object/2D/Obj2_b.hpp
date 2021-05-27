@@ -35,21 +35,8 @@ namespace lnx::obj{
 
         Obj2_bb* parent{ nullptr };				//Parent of the object
 
-        virtual void onLimit() override {
-            Obj_bb::onLimit();
-            if(parent) parent->setChildLimits(common.childIndex);
-            if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
-        }
-
-        virtual void onUpdateg(vk::CommandBuffer pCB) override {
-            pCB.updateBuffer(
-			    getShVData().cell->csc.buffer,
-			    getShVData().cell->localOffset,
-			    getShVData().cell->cellSize,
-			    (void*)getShData()
-		    );
-            if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
-        }
+        virtual void onLimit() override;
+        virtual void onUpdateg(vk::CommandBuffer pCB) override;
     };
 
 
