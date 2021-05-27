@@ -16,6 +16,11 @@ namespace lnx::core::render{
 	extern std::mutex presentQueueSubmit_m;
 
 
+	void recSpawn(obj::Obj_bb* pObj, Window& pWindow);
+	void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB);
+	void recLimit(obj::Obj_bb* pObj);
+
+
 	void cleanup();
 	#ifdef LNX_DEBUG
 		void createDebugMessenger();
