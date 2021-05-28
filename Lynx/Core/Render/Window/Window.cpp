@@ -22,7 +22,7 @@ namespace lnx{
 	void Window::run(){
 		_dbg(thr::self::setName("App | Window"));
 		init();
-		draw();
+		renderLoop();
 		close();
 	}
 

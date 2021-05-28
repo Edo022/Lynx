@@ -129,9 +129,13 @@ namespace lnx{
 
 
 		void run();
-		void draw();
-		void somethingUpdates();
-		void somethingInput();
+
+		void renderLoop();
+		void draw(uint32& imageIndex);
+		vk::Result present(uint32& imageIndex);
+		void updateObjects();
+		void sendInputCallbacks();
+
 		void createDefaultCommandBuffers__();
 
 
