@@ -7,7 +7,7 @@
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
-
+#include "Lynx/Core/Render/Render.hpp" //TODO rename as RenderCore
 
 
 
@@ -32,6 +32,7 @@ namespace lnx{
 		vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output of the window
 		vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
 
+		core::RenderCore renderCore;
 
 
 		RtArray<vk::Pipeline> pipelines;
@@ -156,7 +157,15 @@ namespace lnx{
 
 		void init();
 
+		void clear();
+
+		/**
+		 * @brief Waits for the current frame to be rendered and closes the window
+		 * Callable by: External threads only
+		 * Complexity: O(1)
+		 */
 		void close();
+
 		~Window(){ close(); }
 	};
 }

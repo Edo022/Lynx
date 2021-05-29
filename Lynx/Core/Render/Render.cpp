@@ -7,7 +7,6 @@
 #include <climits>
 #include <chrono>
 //TODO parallelize work from a secondary render thread
-//TODO DIVIDE FUNCTIONS
 //FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 
 
@@ -55,7 +54,7 @@ namespace lnx::core::render{
 
 
 namespace lnx{
-	void core::render::recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+	void core::RenderCore::recSpawn(obj::Obj_bb* pObj, Window& pWindow){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
 		pObj->render.parentWindow = &pWindow;								//Set owner window
@@ -65,7 +64,7 @@ namespace lnx{
 		}
 	}
 
-	void core::render::recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB){
+	void core::RenderCore::recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
 		pObj->onUpdateg(pCB);
@@ -74,7 +73,7 @@ namespace lnx{
 		}
 	}
 
-	void core::render::recLimit(obj::Obj_bb* pObj){
+	void core::RenderCore::recLimit(obj::Obj_bb* pObj){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
 		pObj->onLimit();
@@ -217,9 +216,9 @@ namespace lnx{
 		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 		requests_m.lock();
 		if(!requests.empty()) for(auto r : requests){
-			if(r->render.updates & obj::UpdateBits::eSpawn) core::render::recSpawn(r, *this);
-			if(r->render.updates & obj::UpdateBits::eLimit) core::render::recLimit(r);
-			if(r->render.updates & obj::UpdateBits::eUpdateg) core::render::recUpdateg(r, cb);
+			if(r->render.updates & obj::UpdateBits::eSpawn) renderCore.recSpawn(r, *this);
+			if(r->render.updates & obj::UpdateBits::eLimit) renderCore.recLimit(r);
+			if(r->render.updates & obj::UpdateBits::eUpdateg) renderCore.recUpdateg(r, cb);
 			_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 		}
 		requests.clear();
@@ -333,9 +332,6 @@ namespace lnx{
 			updateObjects();
 			sendInputCallbacks();
 
-			//Stop render if window was closed
-			if(glfwWindowShouldClose(window)) return;
-
 
 			//Calculate render duration
 			auto end = std::chrono::high_resolution_clock::now();
@@ -345,6 +341,10 @@ namespace lnx{
 				std::cout << "\n" << duration.count();
 				last = end;
 			}
+
+
+			//Stop render if window was closed
+			if(glfwWindowShouldClose(window)) running = false;
 		}
 	}
 }
@@ -366,12 +366,12 @@ namespace lnx{
 
 
 namespace lnx::core::render{
-	void cleanup() {
-		dvc::graphics.ld.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool
-		dvc::graphics.ld.destroy(nullptr);													//Destroy the compute device
+	void cleanup() { //FIXME MOVE  COMMAND POOL TO RENDER CORE
+		dvc::graphics.ld.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool //FIXME MOVE TO RENDER CORE
+		dvc::graphics.ld.destroy(nullptr);													//Destroy the compute device //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
 		//for (auto& device : secondary) vkDestroyDevice(device.ld, nullptr);						//Destroy all the secondary devices
 
-		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));	//Destroy the debug messenger if present
+		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));	//Destroy the debug messenger if present //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
 	}
 
 

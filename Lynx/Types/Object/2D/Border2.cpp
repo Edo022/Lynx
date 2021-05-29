@@ -1,6 +1,6 @@
 #include "Lynx/Types/Object/2D/Border2.hpp"
 
-
+//TODO USE RenderCore STRUCT INSIDE WINDOWS TO RENDER DATA
 
 
 namespace lnx::obj{

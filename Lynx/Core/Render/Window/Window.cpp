@@ -23,7 +23,8 @@ namespace lnx{
 		_dbg(thr::self::setName("App | Window"));
 		init();
 		renderLoop();
-		close();
+		clear();
+		pthread_exit(nullptr);
 	}
 
 
@@ -175,15 +176,22 @@ namespace lnx{
 
 
 
-	void Window::close(){
-		running = false;
-		t.join();
+
+
+	void Window::clear(){
 		wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
 		swp.~Swapchain();
 		core::dvc::instance.destroySurfaceKHR(surface, nullptr);
 		glfwDestroyWindow(window);
+		initialized = false;
 	}
 
+
+	void Window::close(){ //TODO add parameter to not wait for window to close
+		running = false;
+		while(initialized) sleep(0);
+		// t.join();
+	}
 
 
 	void Window::qSpawn(obj::Obj_bb* pObject){
