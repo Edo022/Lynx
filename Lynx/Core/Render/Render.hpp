@@ -56,19 +56,23 @@ namespace lnx{
 
 
 
+		/**
+		 * @brief A class that manages the render of the objects owned by a window
+		 * This class is only used in lnx::Window
+		 */
 		class RenderCore{
 			friend class lnx::Window;
-			void init();
-			void clear();
+			void init();	//Initializes the render core.              This function must be called from lnx::Window::init()  only
+			void clear();	//Stops the render and frees its resources. This function must be called from lnx::Window::clear() only
 
 			void recSpawn  (obj::Obj_bb* pObj, Window& pWindow);
 			void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB);
 			void recLimit  (obj::Obj_bb* pObj);
 
 		public:
-			Window* w;
-			Thread t;									//Main render thread
-			vram::ptr<u32v2, eVRam, eStorage> wSize_g;	//Size of the widow
+			Window* w;									//Address of the window that owns the render core. Initialized in the init function of the window
+			Thread t;									//Main render thread.                              Initialized in the init function of the window
+			vram::ptr<u32v2, eVRam, eStorage> wSize_g;	//Size of the window
 			vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output
 			vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output
 			vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
