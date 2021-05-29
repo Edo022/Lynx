@@ -148,6 +148,7 @@ namespace lnx{
 	public:
 		Window(uint32 vWidth = 800, uint32 vHeight = 600) : width{ vWidth }, height{ vHeight } {
 			t(*this, &Window::run);
+			t.detach();
 			while(!initialized){ thr::self::yield(); }
 		}
 		Window(const Window&) = delete;

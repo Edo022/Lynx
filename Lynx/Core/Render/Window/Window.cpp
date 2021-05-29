@@ -189,7 +189,7 @@ namespace lnx{
 
 	void Window::close(){ //TODO add parameter to not wait for window to close
 		running = false;
-		while(initialized) sleep(0);
+		while(initialized) thr::self::yield();
 		// t.join();
 	}
 
