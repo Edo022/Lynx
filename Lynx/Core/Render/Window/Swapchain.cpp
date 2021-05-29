@@ -4,7 +4,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Core.hpp"
-#define w (*(Window*)(((char*)this) - offsetof(lnx::Window, lnx::Window::swp))) //TODO
+// #define w (*(Window*)(((char*)this) - offsetof(lnx::Window, lnx::Window::swp))) //TODO
 
 
 

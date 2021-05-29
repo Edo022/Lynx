@@ -21,7 +21,7 @@ namespace lnx::input{
 	#define wnd_ ((Window*)glfwGetWindowUserPointer(window))
 	void onClick(GLFWwindow* window, int32 button, int32 action, int32 mods) {
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
-		wnd_->icQueues.onClick.invalidate({x, y});
+		wnd_->icQueues.onClick.invalidate({(f32)x, (f32)y});
 		wnd_->icQueues.onClick.m.lock();
 		wnd_->icQueues.lastMouseButton = (MouseButton)button;
 		wnd_->icQueues.onClick.m.unlock();
@@ -29,19 +29,19 @@ namespace lnx::input{
 
 
 	void onAxis(GLFWwindow* window, float64 x, float64 y) {
-		wnd_->icQueues.onAxis.invalidate({x, y});
+		wnd_->icQueues.onAxis.invalidate({(f32)x, (f32)y});
 	}
 
 
 	void onMove(GLFWwindow* window, float64 x, float64 y) {
-		wnd_->icQueues.onMove.invalidate({x, y});
+		wnd_->icQueues.onMove.invalidate({(f32)x, (f32)y});
 	}
 
 	void onEnter(GLFWwindow* window, int32 entered){
 		float64 x, y; glfwGetCursorPos(window, &x, &y);
 		if(entered == GL_TRUE)
-		     wnd_->icQueues.onEnter.invalidate({x, y});
-		else wnd_->icQueues.onExit .invalidate({x, y});
+		     wnd_->icQueues.onEnter.invalidate({(f32)x, (f32)y});
+		else wnd_->icQueues.onExit .invalidate({(f32)x, (f32)y});
 	}
 
 
