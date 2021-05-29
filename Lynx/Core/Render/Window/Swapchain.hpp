@@ -7,7 +7,10 @@
 
 
 namespace lnx{
-	struct Window;
+	class Window;
+	namespace core{
+		class RenderCore;
+	}
 }
 namespace lnx::core::wnd{
 	constexpr int32 __renderMaxFramesInFlight = 2;	//Default:2
@@ -18,6 +21,7 @@ namespace lnx::core::wnd{
 	struct Swapchain{
 	private:
 		friend class lnx::Window;
+		friend class lnx::core::RenderCore;
 
 		vk::SwapchainKHR           swapchain;
 		public: //FIXME

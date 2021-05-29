@@ -3,6 +3,10 @@
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
+#include "Lynx/Types/VPointer.hpp"
+#include "Lynx/Types/Vectors/Vectors.hpp"
+
+
 
 
 
@@ -54,9 +58,8 @@ namespace lnx{
 
 		class RenderCore{
 			friend class lnx::Window;
-
 			void init();
-			void cleanup();
+			void clear();
 
 			void recSpawn  (obj::Obj_bb* pObj, Window& pWindow);
 			void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB);
@@ -64,6 +67,11 @@ namespace lnx{
 
 		public:
 			Window* w;
+			Thread t;									//Main render thread
+			vram::ptr<u32v2, eVRam, eStorage> wSize_g;	//Size of the widow
+			vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output
+			vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output
+			vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
 		};
 	}
 }

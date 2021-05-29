@@ -25,12 +25,7 @@ namespace lnx{
 		uint32 		height;							//Heght of the window
 		std::atomic<bool> running     = false;
 		std::atomic<bool> initialized = false;
-		Thread t;									//Main render thread of the window
 
-		vram::ptr<u32v2, eVRam, eStorage> wSize_g;	//Size of the widow
-		vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output of the window
-		vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output of the window
-		vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
 
 		core::RenderCore renderCore;
 
@@ -147,8 +142,8 @@ namespace lnx{
 
 	public:
 		Window(uint32 vWidth = 800, uint32 vHeight = 600) : width{ vWidth }, height{ vHeight } {
-			t(*this, &Window::run);
-			t.detach();
+			renderCore.t(*this, &Window::run);
+			renderCore.t.detach();
 			while(!initialized){ thr::self::yield(); }
 		}
 		Window(const Window&) = delete;

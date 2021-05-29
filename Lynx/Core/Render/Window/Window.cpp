@@ -78,29 +78,10 @@ namespace lnx{
 		swp.create(false);
 
 
-		{ //Initialize window buffers and count
-			iOut_g. realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
-			fOut_g. realloc(1920*2 * 1080 * 4 * 4);		//A32 R32 G32 B32 UF
-			zBuff_g.realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
-			//FIXME ^ those allocations use the default maximum window size to prevent the buffer from getting resized too often
-			//FIXME detect size at runtime
-			wSize_g.realloc(/*4 * 2*/16);				//Create cell for window size
-			//FIXME rounded up to a multiple of 16, make it automatic
-
-			u32v2 wSize = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
-			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, &wSize);
-			core::render::cmd::endSingleTimeCommands(cb);
-			//FIXME AUTOMATIZE BUFFER UPDATE
-			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
-		}
-		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
-			createDefaultCommandBuffers__();
-		}
+		renderCore.w = this;
+		renderCore.init();
 
 
-		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (width * height) / (32 * 32) + 1, 1u, 1u }, *this);
 
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;
@@ -158,7 +139,7 @@ namespace lnx{
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
 
 					copyRegion.imageExtent = vk::Extent3D{ swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
-					copyCommandBuffers[imgIndex].copyBufferToImage(iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
+					copyCommandBuffers[imgIndex].copyBufferToImage(renderCore.iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
 
 
 					//Create a barrier to use the swapchain image as a present source image
@@ -179,7 +160,7 @@ namespace lnx{
 
 
 	void Window::clear(){
-		wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
+		renderCore.clear();
 		swp.~Swapchain();
 		core::dvc::instance.destroySurfaceKHR(surface, nullptr);
 		glfwDestroyWindow(window);
