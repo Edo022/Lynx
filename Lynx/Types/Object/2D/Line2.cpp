@@ -3,7 +3,8 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/2D/Line2.hpp"
 
-
+//TODO DRAW OBJECT-RENDERCORE INTERACTION GRAPH
+//TODO object-RenderCore. similar to client-server
 
 
 namespace lnx::obj{

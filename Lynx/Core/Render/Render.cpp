@@ -247,7 +247,7 @@ namespace lnx{
 		}
 
 		core::render::graphicsQueueSubmit_m.lock();
-		switch(core::dvc::graphics.gq.submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+		switch(core::dvc::graphics.cqs[0].submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 		core::render::graphicsQueueSubmit_m.unlock();
 	}
 
@@ -257,7 +257,7 @@ namespace lnx{
 
 
 	void Window::updateObjects(){
-		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
+		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE RENDER QUEUE
 		requests_m.lock();
 		if(!requests.empty()) for(auto r : requests){
 			if(r->render.updates & obj::UpdateBits::eSpawn) renderCore.recSpawn(r, *this);
