@@ -31,10 +31,6 @@ namespace lnx{
 
 
 		RtArray<vk::Pipeline> pipelines;
-		vk::CommandPool commandPool;
-		vk::CommandPool copyCommandPool;
-		RtArray<vk::CommandBuffer> copyCommandBuffers;
-		shd::FloatToIntBuffer sh_clear;
 		std::mutex addObject_m;
 		void qSpawn(obj::Obj_bb* pObject);
 

@@ -109,7 +109,7 @@ namespace lnx::shd{
 
 	void _3DTest::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
-			.setCommandPool        (pWindow.commandPool)
+			.setCommandPool        (pWindow.renderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;

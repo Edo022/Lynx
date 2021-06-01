@@ -308,7 +308,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
-                    '\n\t\t''.setCommandPool        (pWindow.commandPool)'
+                    '\n\t\t''.setCommandPool        (pWindow.renderCore.commandPool)'
                     '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'

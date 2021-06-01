@@ -163,6 +163,6 @@ if len(cmdsh) > 0:
 #Run G++ command
 if len(cmdg) > 1:
     print('\n' + ('-' * os.get_terminal_size().columns))
-    print('\n\n' '\033[1m' 'COMPILING CPPs')
+    print('\n\n' '\033[1m' 'COMPILING TRANSLATION UNITS')
     print(' '.join(cmdg) + '\n' '\033[0m')
     subprocess.run(cmdg)

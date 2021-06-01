@@ -101,7 +101,7 @@ namespace lnx{
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
 				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &renderCore.commandPool)){ vkDefaultCases; }
 		}
 
 
@@ -111,14 +111,14 @@ namespace lnx{
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
 				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])	//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &renderCore.copyCommandPool)){ vkDefaultCases; }
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
-				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
+				.setCommandPool        (renderCore.copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, renderCore.copyCommandBuffers.begin())){ vkDefaultCases; }
 
 
 
@@ -129,17 +129,17 @@ namespace lnx{
 					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
 				;
 				//Start recording commands
-				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases; }
+				switch(renderCore.copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases; }
 					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
 					readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
 					vk::PipelineStageFlags 													//Create stage flags
 						srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput,			//The swapchain image is in color output stage
 						dstStage = vk::PipelineStageFlagBits::eTransfer;						//Change it to transfer stage to copy the buffer in it
-					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
+					renderCore.copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
 
 					copyRegion.imageExtent = vk::Extent3D{ swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
-					copyCommandBuffers[imgIndex].copyBufferToImage(renderCore.iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
+					renderCore.copyCommandBuffers[imgIndex].copyBufferToImage(renderCore.iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
 
 
 					//Create a barrier to use the swapchain image as a present source image
@@ -147,9 +147,9 @@ namespace lnx{
 					vk::PipelineStageFlags 													//Create stage flags
 						srcStage1 = vk::PipelineStageFlagBits::eTransfer,						//The image is in transfer stage from the buffer copy
 						dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;			//Change it to color output to present them
-					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
+					renderCore.copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
-				switch(copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
+				switch(renderCore.copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
 			}
 		}
 	}

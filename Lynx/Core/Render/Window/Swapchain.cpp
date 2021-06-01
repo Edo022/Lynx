@@ -198,16 +198,16 @@ namespace lnx::core::wnd{
 
 
 			{	//Destroy copy command buffers
-				dvc::graphics.ld.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
-				dvc::graphics.ld.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
+				dvc::graphics.ld.freeCommandBuffers(bindedWindow->renderCore.copyCommandPool, bindedWindow->renderCore.copyCommandBuffers.count(), bindedWindow->renderCore.copyCommandBuffers.begin());
+				dvc::graphics.ld.destroyCommandPool(bindedWindow->renderCore.copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
+				bindedWindow->renderCore.copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
 				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
 			//Recreate clear shader
-			bindedWindow->sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *bindedWindow);
+			bindedWindow->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *bindedWindow);
 		}
 	}
 

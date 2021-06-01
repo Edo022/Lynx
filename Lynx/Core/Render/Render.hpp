@@ -5,7 +5,7 @@
 #include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
-
+#include "Lynx/shaders/FloatToIntBuffer.hpp"
 
 
 
@@ -76,6 +76,11 @@ namespace lnx{
 			vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output
 			vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output
 			vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
+
+			vk::CommandPool commandPool;
+			vk::CommandPool copyCommandPool;
+			RtArray<vk::CommandBuffer> copyCommandBuffers;
+			shd::FloatToIntBuffer sh_clear;
 		};
 	}
 }

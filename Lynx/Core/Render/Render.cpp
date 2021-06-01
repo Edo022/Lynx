@@ -115,10 +115,10 @@ namespace lnx{
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
 		}
 		{ //#LLID CCB0000 Create copy command buffers
-			w->copyCommandBuffers.resize(w->swp.images.count());	//Resize the command buffer array in the shader
+			copyCommandBuffers.resize(w->swp.images.count());	//Resize the command buffer array in the shader
 			w->createDefaultCommandBuffers__();
 		}
-		w->sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *w);
+		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *w);
 	}
 
 	void core::RenderCore::clear(){
@@ -222,7 +222,7 @@ namespace lnx{
 				.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
 				.setPWaitDstStageMask    (waitStages)
 				.setCommandBufferCount   (1)
-				.setPCommandBuffers      (&sh_clear.commandBuffers[0])
+				.setPCommandBuffers      (&renderCore.sh_clear.commandBuffers[0])
 				.setSignalSemaphoreCount (1)
 				.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
 			,
@@ -231,7 +231,7 @@ namespace lnx{
 				.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_clear)
 				.setPWaitDstStageMask    (waitStages)
 				.setCommandBufferCount   (1)
-				.setPCommandBuffers      (&copyCommandBuffers[imageIndex])
+				.setPCommandBuffers      (&renderCore.copyCommandBuffers[imageIndex])
 				.setSignalSemaphoreCount (1)
 				.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
 			,
