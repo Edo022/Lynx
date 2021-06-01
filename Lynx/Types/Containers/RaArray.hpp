@@ -9,6 +9,36 @@
 
 
 
+/*
+.                         RAARRAY
+.                   Random Access Array
+.
+-----------------------------------------------------------------------------------------
+.
+.	    count: 8
+.	    free:  6
+.
+.	    data  | [0] [1] [2] [3] [4] [5] [6] [7] [8]
+.      ---------------------------------------------
+.       free  |  y   n   n   y   y   y   y   y   y
+.       value |  ?  -53 957  ?   ?   ?   ?   ?   ?
+.       next  |  3  -1  -1   5   6   4   ?   ?   ?
+.
+.               ^ tail: 0               ^ head: 4
+.                 next: 3                 next: input
+.
+-----------------------------------------------------------------------------------------
+.
+.    Each element has a 'next' index
+.    New elements are saved in tail
+.    Free indices point to the first index that was freed after them,
+.      in order to form a list that is internally linked and bounded by the array
+.    The head is the last index that was freed
+*/
+
+
+
+
 
 
 
@@ -20,9 +50,10 @@ namespace lnx {
 		template<class type, class iter, bool construct> struct raCtor_t{};
 		template<class type, class iter> struct raCtor_t<type, iter, false>{
 			protected:
-			// alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
 		};
 		template<class type, class iter> struct raCtor_t<type, iter, true>{
+			using arrt = lnx::RaArray<type, iter>;
 			protected:
 			// inline void initRange(const iter vFrom, const iter vTo) const {
 			// 	type* elm = ((lnx::RaArray<type, iter>*)this)->begin();
@@ -31,6 +62,14 @@ namespace lnx {
 			// 	}
 			// }
 			//FIXME ADD ADD FUNCTION
+			inline void initRange(const iter& vFrom, const iter& vTo) {
+				for(iter i = vFrom; i < vTo; ++i) {
+					/*if(((arrt*)this)->isValid(i))*/ new(&((arrt*)this)[i]) type();
+				}
+			}
+			inline void init(const iter& vIndex){
+				/*if(((arrt*)this)->isValid(vIndex))*/ new(&((arrt*)this)[vIndex]) type();
+			}
 		};
 
 
@@ -40,12 +79,12 @@ namespace lnx {
 			alwaysInline void destroy() const noexcept {}
 		};
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
+			using arrt = lnx::RaArray<type, iter>;
 			protected:
-			inline void destroy() const {
-				using arrt = lnx::RaArray<type, iter>;
+			inline void destroy() {
 				int i = 0;
 				for(auto elm : *(arrt*)this) {
-					if(((arrt*)this)->isValid(i++)) elm.~type();
+					if(((arrt*)this)->isValid(i++)) elm.~type(); //TODO USE ITERATORS AND NOT INDICES
 				}
 			}
 		};
@@ -66,24 +105,24 @@ namespace lnx {
 	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
 	 */
 	template<class type, class iter = uint32> struct RaArray :
-	public __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
-	public __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {
+	private __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivially_constructible_v<type>>,
+	private __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivially_destructible_v <type>> {
 		genInitCheck;
 
 
 		struct Elm{
-			type value;
-			iter next;
+			type value;	//Value of this element
+			iter next;	//Index of the next free element
 		};
 
 
 		struct Iterator{
-			Elm* addr;
+			Elm* addr;	//Address of the element pointed by the iterator
 
-			alwaysInline Iterator operator++(int) noexcept { return Iterator{ (Elm*)(  addr++) }; }
-			alwaysInline Iterator operator++(   ) noexcept { return Iterator{ (Elm*)(++addr  ) }; }
-			alwaysInline Iterator operator--(int) noexcept { return Iterator{ (Elm*)(  addr--) }; }
-			alwaysInline Iterator operator--(   ) noexcept { return Iterator{ (Elm*)(--addr  ) }; }
+			alwaysInline Iterator operator++(int) noexcept { return {   addr++ }; }
+			alwaysInline Iterator operator++(   ) noexcept { return { ++addr   }; }
+			alwaysInline Iterator operator--(int) noexcept { return {   addr-- }; }
+			alwaysInline Iterator operator--(   ) noexcept { return { --addr   }; }
 
 			alwaysInline void operator+=(const uint64 vVal) noexcept { addr += vVal; }
 			alwaysInline void operator-=(const uint64 vVal) noexcept { addr += vVal; }
@@ -103,7 +142,7 @@ namespace lnx {
 			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
 			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
 
-			alwaysInline iter index() const noexcept { return (data - addr) / sizeof(Elm); }
+			// alwaysInline iter index() const noexcept { return (data - addr) / sizeof(Elm); }
 		};
 
 
@@ -112,8 +151,8 @@ namespace lnx {
 
 		iter head;		//First free element
 		iter tail;		//Last free element
-		iter count_;	//Number of allocated elements
-		iter free_;		//Number of free elements in the array
+		iter count_;	//Total number of elements
+		iter free_;		//Number of free elements
 
 
 	public:
@@ -183,7 +222,8 @@ namespace lnx {
 		 * @param pCont The RaArray to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) :
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont)
+		requires(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>): //FIXME USE DIFFERENT FUNCTION THAT USES 2 INDICES FOR NON CONVERTIBLE INDICES
 			RaArray(pCont.count()) {
 			isInit(pCont); //! Same here
 			iter i = 0;
@@ -219,12 +259,17 @@ namespace lnx {
 			data{ pCont.data },
 			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ } {
 			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
-			// pCont.data = nullptr;
-			//!^ pCont data is freed in its destructor
+			//! Data is not destroyed, as the pointer keeps track of how many owners it has
 		}
 
 
-		~RaArray() { if(!empty()) this->destroy(); }
+		/**
+		 * @brief Destroys each element of the array and frees the memory.
+		 * Trivial types are not destroyed
+		 */
+		~RaArray() {
+			if(!empty()) this->destroy();
+		}
 
 
 
@@ -243,7 +288,11 @@ namespace lnx {
 
 
 		/**
-		 * @brief Adds a new element to the end of the array and initializes it with the vElement value by calling its copy constructor
+		 * @brief Adds a new element to the end of the array and initializes it by copying the pData value.
+		 * Complexity:
+		 *     Best:  O(1)
+		 *     Worst: O(n) [memory reallocation required]
+		 * @param pData Object to copy construct the new element from
 		 * @return Index of the new element
 		 */
 		iter append(const type& pData) {
@@ -259,7 +308,11 @@ namespace lnx {
 
 
 		/**
-		 * @brief Copy constructs pData in the first free element of the array
+		 * @brief Adds a new element in the first free index of the array and initializes it by copying the pData value.
+		 * Complexity:
+		 *     Best:  O(1)
+		 *     Worst: O(n) [no free indices && memory reallocation required]
+		 * @param pData Object to copy construct the new element from
  		 * @return Index of the new element
 		 */
 		iter add(const type& pData) {
@@ -340,7 +393,8 @@ namespace lnx {
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont) {
+		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont)
+		requires(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>) { //FIXME USE DIFFERENT FUNCTION THAT USES 2 INDICES FOR NON CONVERTIBLE INDICES
 			isInit(pCont);
 			clear(); //FIXME
 			data.reallocArr(pCont.count(), false);
@@ -357,8 +411,12 @@ namespace lnx {
 
 
 	private:
+		//FIXME merge in operator= if copy assignment is not differentiated
 		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
 			isInit(pCont); if(this == &pCont) return *this;
+
+
+
 			clear(); //FIXME
 			data.reallocArr(pCont.count(), false);
 			iter i = 0;
@@ -369,41 +427,64 @@ namespace lnx {
 				i++;
 			}
 			return *this;
+
+
+			this->destroy();
+			data = pCont.data;		//Copy array data
+			head   = pCont.head;   tail  = pCont.tail;
+			count_ = pCont.count_; free_ = pCont.free_;
+			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
+			return *this;
 		}
 
 
 	public:
 		/**
-		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+		 * @brief Calls the destructor of the elements and copies any element of pCont. Removed elements are preserved but not constructed.
+		 * Complexity:
+		 *     Best:    O(1) [self assignment]
+		 *     Average: O(n)
+		 *     Worst:   O(n)
 		 * @param pCont The RaArray to copy elements from.
-		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+		 * @return R-value reference to this object
 		 */
 		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
 			return copy(pCont);
 		}
 
 
-		/**
-		 * @brief Copy assignment. Elements are copied in a new memory allocation. Removed elements are preserved.
+		/** //FIXME REMOVE. Probably useless. managed in general operator=
+		 * @brief Copy assignment. Calls the destructor of the elements and copies any element of pCont. Removed elements are preserved but not constructed.
+		 * Complexity:
+		 *     Best:    O(1) [self assignment]
+		 *     Average: O(n)
+		 *     Worst:   O(n)
+		 * @param pCont The RaArray to copy elements from.
+		 * @return R-value reference to this object
 		 */
 		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
 			return copy(pCont);
 		}
 
 
+//TODO ADD MOVE CONSTRUCTOR FOR GENERIC RAARRAYS
+//TODO ADD MOVE CONSTRUCTOR FOR GENERIC CONTAINERS
+
+//TODO ADD MOVE ASSIGNMENT FOR GENERIC RAARRAYS
+//TODO ADD MOVE ASSIGNMENT FOR GENERIC CONTAINERS
 
 
 		/**
-		 * @brief Move constructor //FIXME probably useless
+		 * @brief Move assignment. Calls the destructor of the old elemets.
 		 */
 		inline auto& operator=(RaArray<type, iter>&& pCont) {
 			isInit(pCont);
-			this->destroy();
-			data = pCont.data;
-			head = pCont.head; tail = pCont.tail; count_ = pCont.count_; free_ = pCont.free_;
-			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
-			// pCont.data = nullptr;
-			//!^ pCont data is freed in its destructor
+			this->destroy();		//Destroy old elements. The pointer doesn't do that
+			data = pCont.data;		//Copy array data
+			head   = pCont.head;   tail  = pCont.tail;
+			count_ = pCont.count_; free_ = pCont.free_;
+			pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
+			//! Data is not destroyed, as the pointer keeps track of how many owners it has
 			return *this;
 		}
 
