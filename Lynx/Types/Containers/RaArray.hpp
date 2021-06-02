@@ -183,7 +183,8 @@ namespace lnx {
 
 		/**
 		 * @brief Creates an array without allocating memory to it.
-		 *		The memory will be allocated when calling the add function
+		 *     The memory will be allocated when calling the add function or assigning it an allocated array
+		 * Complexity: O(1)
 		 */
 		inline RaArray() : data(nullptr),
 			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
@@ -192,8 +193,10 @@ namespace lnx {
 
 		/**
 		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
+		 * Complexity: O(1)
 		 */
 		inline RaArray(const iter vCount) :
+			dbg::checkParam(vCount < 0, "vCount", "Count must be a positive value")
 			data(sizeof(Elm) * vCount),
 			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
@@ -203,6 +206,7 @@ namespace lnx {
 
 		/**
 		 * @brief Initializes the array by copy constructing each element from an std::initializer_list
+		 * Complexity: O(n)
 		 */
 		inline RaArray(const std::initializer_list<type> vElms) :
 			RaArray(vElms.size()) {
@@ -214,11 +218,12 @@ namespace lnx {
 
 		/**
 		 * @brief Initializes the array by copy constructing each element from a lnx::ContainerBase subclass
+		 * Complexity: O(n)
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) :
-			RaArray(pCont.count()) {
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : RaArray(pCont.count()) {
+			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
 			isInit(pCont);
 			//!^ Just in case the engine didn't get segfault'd by the count() call
 			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
@@ -227,12 +232,12 @@ namespace lnx {
 
 		/**
 		 * @brief Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+		 * Complexity: O(n)
 		 * @param pCont The RaArray to copy elements from.
-		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+		 *     It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont)
-		requires(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>): //FIXME USE DIFFERENT FUNCTION THAT USES 2 INDICES FOR NON CONVERTIBLE INDICES
-			RaArray(pCont.count()) {
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : RaArray(pCont.count()) {
+			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
 			isInit(pCont); //! Same here
 			iter i = 0;
 			for(auto e : pCont) {
@@ -245,10 +250,11 @@ namespace lnx {
 
 
 		/**
-		 * @brief Copy constructor. Elements are copied in a new memory allocation. Removed elements are preserved.
+		 * @brief Copy constructor. Initializes the array by copy constructing each element from a RaArray. Removed elements are preserved but not constructed.
+		 * Complexity: O(n)
+		 * @param pCont Array to copy elements from
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) :
-			RaArray(pCont.count()) {
+		inline RaArray(const RaArray<type, iter>& pCont) : RaArray(pCont.count()) {
 			isInit(pCont); //! Same here
 			iter i = 0;
 			for(auto e : pCont) {
@@ -262,6 +268,7 @@ namespace lnx {
 
 		/**
 		 * @brief Move constructor //FIXME probably useless
+		 * Complexity: O(1)
 		 */
 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
 			data{ pCont.data },
@@ -272,8 +279,10 @@ namespace lnx {
 
 
 		/**
-		 * @brief Destroys each element of the array and frees the memory.
-		 * Trivial types are not destroyed
+		 * @brief Destroys each element of the array and frees the memory. Trivial types are not destroyed
+		 * Complexity:
+		 *     O(1) [trivial types]
+		 *     O(n) [non trivial types]
 		 */
 		~RaArray() {
 			if(!empty()) this->destroy();
@@ -350,6 +359,7 @@ namespace lnx {
 		/**
 		 * @brief Removes an element and calls its destructor
 		 *		The destructor is not called on trivial types or lnx::ignoreDtor subclasses
+		 * Complexity: O(1)
 		 * @param vIndex Index of the element to remove
 		 */
 		void remove(const iter vIndex) {
@@ -374,8 +384,8 @@ namespace lnx {
 		/**
 		 * @brief Resets the array to its initial state, freeing all the chunks and resizing it to 0
 		 * Complexity:
-		 *     Best:  O(1) [trivial types]
-		 *     Worst: O(n) [non trivial types]
+		 *     O(1) [trivial types]
+		 *     O(n) [non trivial types]
 		 */
 		inline void clear() {
 			checkInit();
@@ -404,6 +414,7 @@ namespace lnx {
 		/**
 		 * @brief Initializes the array by copy constructing each element from a lnx::ContainerBase subclass
 		 *    Elements and indices are static_cast casted
+		 * Complexity: O(n)
 		 * @param pCont The container object to copy elements from.
 		 *    It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
@@ -473,11 +484,12 @@ namespace lnx {
 	public:
 		/**
 		 * @brief Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
-		 *    Elements and indices are static_cast casted
+		 *    Trivial types are not destroyed. Elements and indices are static_cast casted
 		 * Complexity:
-		 *     Best:    O(1) [self assignment]
-		 *     Average: O(n)
-		 *     Worst:   O(n)
+		 *     O(1)     [self assignment]
+		 *     O(n)     [trivial types]
+		 *     O(n + m) [non trivial types]
+		 *     where n = count() and m = pCont.count()
 		 * @param pCont The RaArray to copy construct elements from.
 		 * @return R-value reference to this object
 		 */
@@ -488,11 +500,12 @@ namespace lnx {
 
 		/** //FIXME REMOVE. Probably useless. managed in general operator=
 		 * @brief Copy assignment. Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
-		 *    Elements and indices are static_cast casted
+		 *    Trivial types are not destroyed
 		 * Complexity:
-		 *     Best:    O(1) [self assignment]
-		 *     Average: O(n)
-		 *     Worst:   O(n)
+		 *     O(1)     [self assignment]
+		 *     O(n)     [trivial types]
+		 *     O(n + m) [non trivial types]
+		 *     where n = count() and m = pCont.count()
 		 * @param pCont The RaArray to copy construct elements from.
 		 * @return R-value reference to this object
 		 */
@@ -510,9 +523,14 @@ namespace lnx {
 
 		/**
 		 * @brief Move assignment. Calls the destructor of the old elemets.
+		 * Complexity:
+		 *     O(1) [trivial types || self assignment]
+		 *     O(n) [non trivial types]
 		 */
 		inline auto& operator=(RaArray<type, iter>&& pCont) {
 			isInit(pCont);
+			if(this == &pCont) return *this;
+
 			this->destroy();		//Destroy old elements. The pointer doesn't do that
 			data = pCont.data;		//Copy array data
 			tail   = pCont.tail;    head  = pCont.head;
