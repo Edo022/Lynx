@@ -24,8 +24,8 @@
 .       value |  ?  -53 957  ?   ?   ?   ?   ?   ?
 .       next  |  3  -1  -1   5   6   4   ?   ?   ?
 .
-.               ^ tail: 0               ^ head: 4
-.                 next: 3                 next: input
+.                ^ tail: 0               ^ head: 6
+.                  next: 3                 next: input
 .
 -----------------------------------------------------------------------------------------
 .
@@ -33,7 +33,7 @@
 .    New elements are saved in tail
 .    Free indices point to the first index that was freed after them,
 .      in order to form a list that is internally linked and bounded by the array
-.    The head is the last index that was freed
+.    Head is the last index that was freed
 */
 
 
@@ -44,7 +44,7 @@
 
 
 namespace lnx {
-	template<class type, class iter> class RaArray;
+	template<class type, class iter> struct RaArray;
 
 	namespace __pvt{
 		template<class type, class iter, bool construct> struct raCtor_t{};
@@ -104,9 +104,13 @@ namespace lnx {
 	 * @tparam type Type of the elements
 	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
 	 */
-	template<class type, class iter = uint32> struct RaArray :
+	template<class type, class iter = uint32> struct RaArray:
 	private __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivially_constructible_v<type>>,
 	private __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivially_destructible_v <type>> {
+		static_assert(
+			has_conversion_operator_v<iter, uint64> || std::is_integral_v<iter>,
+			"iter template parameter must have integral or unscoped enum type"
+		);
 		genInitCheck;
 
 
@@ -149,8 +153,8 @@ namespace lnx {
 	private:
 		ram::ptr<Elm> data;
 
-		iter head;		//First free element
-		iter tail;		//Last free element
+		iter tail;		//First free element
+		iter head;		//Last free element
 		iter count_;	//Total number of elements
 		iter free_;		//Number of free elements
 
@@ -178,7 +182,7 @@ namespace lnx {
 		 *		The memory will be allocated when calling the add function
 		 */
 		inline RaArray() : data(nullptr),
-			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
 
@@ -187,7 +191,7 @@ namespace lnx {
 		 */
 		inline RaArray(const iter vCount) :
 			data(sizeof(Elm) * vCount),
-			head{ (iter)-1 }, tail{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
 
@@ -257,7 +261,7 @@ namespace lnx {
 		 */
 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
 			data{ pCont.data },
-			head{ pCont.head }, tail{ pCont.tail }, count_{ pCont.count_ }, free_{ pCont.free_ } {
+			tail{ pCont.tail }, head{ pCont.head }, count_{ pCont.count_ }, free_{ pCont.free_ } {
 			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
 			//! Data is not destroyed, as the pointer keeps track of how many owners it has
 		}
@@ -317,21 +321,21 @@ namespace lnx {
 		 */
 		iter add(const type& pData) {
 			checkInit();
-			if(head == (iter)-1) {				//If it has no free elements
+			if(tail == (iter)-1) {				//If it has no free elements
 				return append(pData);				//Append the new element
 			}
-			iter prevHead = head;				//Save head
-			if(head == tail) {					//If it has only one free element
-				data[prevHead].next = (iter)-1;		//Reset head and tail
-				head = tail = (iter)-1;				//Reset tracker
+			iter prevTail = tail;				//Save tail
+			if(tail == head) {					//If it has only one free element
+				data[prevTail].next = (iter)-1;		//Reset tail and head
+				tail = head = (iter)-1;				//Reset tracker
 			}
 			else {								//If it has more than one
-				head = data[prevHead].next;			//Update head
-				data[prevHead].next = (iter)-1;		//Update tracker of the old head element
+				tail = data[prevTail].next;			//Update tail
+				data[prevTail].next = (iter)-1;		//Update tracker of the old tail element
 			}
 			free_--;							//Update number of free elements
-			new(&(data[prevHead].value)) type(pData);//Initialize the new element
-			return prevHead;						//Return the index of the new element
+			new(&(data[prevTail].value)) type(pData);//Initialize the new element
+			return prevTail;						//Return the index of the new element
 		}
 
 
@@ -350,10 +354,10 @@ namespace lnx {
 			data[vIndex].value.~type();					//Destroy the element
 			data[vIndex].next = 0;						//Set the index as free
 			//!                 ^ 0 is used as a "not -1" value. -1 are valid elements
-			if(head == (iter)-1) head = tail = vIndex;	//If it has no free elements, initialize head and tail.
+			if(tail == (iter)-1) tail = head = vIndex;	//If it has no free elements, initialize tail and head.
 			else {										//If it has free elements
-				data[tail].next = vIndex;					//Set the new tail
-				tail = vIndex;								//update the last free index
+				data[head].next = vIndex;					//Set the new head
+				head = vIndex;								//update the last free index
 			}
 			free_++;									//Update the number of free elements
 		}
@@ -367,7 +371,7 @@ namespace lnx {
 		inline void clear() {
 			checkInit();
 			this->destroy();
-			head = tail = (iter)-1;
+			tail = head = (iter)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0); //FIXME FREE
 		}
@@ -430,9 +434,10 @@ namespace lnx {
 
 
 			this->destroy();
-			data = pCont.data;		//Copy array data
-			head   = pCont.head;   tail  = pCont.tail;
+			data.reallocArr(pCont.count(), false);
+			tail   = pCont.tail;   head  = pCont.head;
 			count_ = pCont.count_; free_ = pCont.free_;
+			for()
 			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
 		}
@@ -481,7 +486,7 @@ namespace lnx {
 			isInit(pCont);
 			this->destroy();		//Destroy old elements. The pointer doesn't do that
 			data = pCont.data;		//Copy array data
-			head   = pCont.head;   tail  = pCont.tail;
+			tail   = pCont.tail;   head  = pCont.head;
 			count_ = pCont.count_; free_ = pCont.free_;
 			pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			//! Data is not destroyed, as the pointer keeps track of how many owners it has
