@@ -27,6 +27,8 @@ namespace lnx {
 			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
 			"iter template parameter must have integral or unscoped enum type"
 		);
+		static_assert(std::is_trivial_v<iter>, "iter template parameter must be a trivial type");
+
 		using Super = ContainerBase<type, iter>;
 		genInitCheck;
 		// _dbg(type* viewer;)

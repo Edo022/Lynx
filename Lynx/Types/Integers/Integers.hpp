@@ -42,7 +42,8 @@ namespace lnxc{
 
     namespace __pvt{
         //has_conversion_operator helper struct
-        template<bool c, class op> struct __has_conversion_operator_t {
+        template<bool c, class op> struct __has_conversion_operator_t {};
+        template<class op> struct __has_conversion_operator_t<true, op> {
             template<class type> static consteval std::true_type get(int32, decltype(type().operator op())* = 0){
                 return std::true_type();
             }

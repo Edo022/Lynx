@@ -145,7 +145,8 @@ namespace lnx {
 			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
 			"iter template parameter must have integral or unscoped enum type"
 		);
-	public:
+		static_assert(std::is_trivial_v<iter>, "iter template parameter must be a trivial type");
+
 		genInitCheck;
 		ram::ptr<type> data;	//Elements of the array
 		_dbg(type* viewer;) //FIXME make this actually usable

@@ -84,7 +84,7 @@ namespace lnx {
 			inline void destroy() {
 				int i = 0;
 				for(auto elm : *(arrt*)this) {
-					if(((arrt*)this)->isValid(i++)) elm.~type(); //TODO USE ITERATORS AND NOT INDICES
+					if(((arrt*)this)->isValid(i++)) elm->~type(); //TODO USE ITERATORS AND NOT INDICES
 				}
 			}
 		};
@@ -112,6 +112,9 @@ namespace lnx {
 			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
 			"iter template parameter must have integral or unscoped enum type"
 		);
+		static_assert(std::is_trivial_v<iter>, "iter template parameter must be a trivial type");
+
+
 		genInitCheck;
 
 
@@ -139,7 +142,7 @@ namespace lnx {
 
 
 			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
-			alwaysInline type& operator*(                    ) const { return addr->value; }
+			alwaysInline type& operator* (                   ) const { return addr->value; }
 			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
 
 			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
@@ -422,23 +425,27 @@ namespace lnx {
 
 
 
-			clear(); //FIXME
-			data.reallocArr(pCont.count(), false);
-			iter i = 0;
-			for(auto e : pCont) {
-				add(e);
-				//FIXME improve performance. dont copy removed elements
-				if(!pCont.isValid(i)) remove(i);
-				i++;
-			}
-			return *this;
+			// clear(); //FIXME
+			// data.reallocArr(pCont.count(), false);
+			// iter i = 0;
+			// for(auto e : pCont) {
+			// 	add(e);
+			// 	//FIXME improve performance. dont copy removed elements
+			// 	if(!pCont.isValid(i)) remove(i);
+			// 	i++;
+			// }
+			// return *this;
 
 
 			this->destroy();
 			data.reallocArr(pCont.count(), false);
 			tail   = pCont.tail;   head  = pCont.head;
 			count_ = pCont.count_; free_ = pCont.free_;
-			for()
+			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
+			for(uint32 i = 0; i < pCont.count(); ++i){
+				if(pCont.isValid(i)) new(&(data[i].value)) type(pCont[i].value);
+				data[i].next = pCont[i].next;
+			}
 			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
 		}
@@ -446,12 +453,12 @@ namespace lnx {
 
 	public:
 		/**
-		 * @brief Calls the destructor of the elements and copies any element of pCont. Removed elements are preserved but not constructed.
+		 * @brief Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
 		 * Complexity:
 		 *     Best:    O(1) [self assignment]
 		 *     Average: O(n)
 		 *     Worst:   O(n)
-		 * @param pCont The RaArray to copy elements from.
+		 * @param pCont The RaArray to copy construct elements from.
 		 * @return R-value reference to this object
 		 */
 		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
@@ -460,12 +467,12 @@ namespace lnx {
 
 
 		/** //FIXME REMOVE. Probably useless. managed in general operator=
-		 * @brief Copy assignment. Calls the destructor of the elements and copies any element of pCont. Removed elements are preserved but not constructed.
+		 * @brief Copy assignment. Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
 		 * Complexity:
 		 *     Best:    O(1) [self assignment]
 		 *     Average: O(n)
 		 *     Worst:   O(n)
-		 * @param pCont The RaArray to copy elements from.
+		 * @param pCont The RaArray to copy construct elements from.
 		 * @return R-value reference to this object
 		 */
 		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
