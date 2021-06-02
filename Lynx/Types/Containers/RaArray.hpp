@@ -328,18 +328,20 @@ namespace lnx {
 			if(tail == (iter)-1) {				//If it has no free elements
 				return append(pData);				//Append the new element
 			}
-			iter prevTail = tail;				//Save tail
-			if(tail == head) {					//If it has only one free element
-				data[prevTail].next = (iter)-1;		//Reset tail and head
-				tail = head = (iter)-1;				//Reset tracker
+			else{
+				iter prevTail = tail;				//Save tail
+				if(tail == head) {					//If it has only one free element
+					data[prevTail].next = (iter)-1;		//Reset tail and head
+					tail = head = (iter)-1;				//Reset tracker
+				}
+				else {								//If it has more than one
+					tail = data[prevTail].next;			//Update tail
+					data[prevTail].next = (iter)-1;		//Update tracker of the old tail element
+				}
+				free_--;							//Update number of free elements
+				new(&(data[prevTail].value)) type(pData);//Initialize the new element
+				return prevTail;						//Return the index of the new element
 			}
-			else {								//If it has more than one
-				tail = data[prevTail].next;			//Update tail
-				data[prevTail].next = (iter)-1;		//Update tracker of the old tail element
-			}
-			free_--;							//Update number of free elements
-			new(&(data[prevTail].value)) type(pData);//Initialize the new element
-			return prevTail;						//Return the index of the new element
 		}
 
 
@@ -371,6 +373,9 @@ namespace lnx {
 
 		/**
 		 * @brief Resets the array to its initial state, freeing all the chunks and resizing it to 0
+		 * Complexity:
+		 *     Best:  O(1) [trivial types]
+		 *     Worst: O(n) [non trivial types]
 		 */
 		inline void clear() {
 			checkInit();
@@ -398,21 +403,35 @@ namespace lnx {
 
 		/**
 		 * @brief Initializes the array by copy constructing each element from a lnx::ContainerBase subclass
+		 *    Elements and indices are static_cast casted
 		 * @param pCont The container object to copy elements from.
-		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
+		 *    It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont)
-		requires(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>) { //FIXME USE DIFFERENT FUNCTION THAT USES 2 INDICES FOR NON CONVERTIBLE INDICES
+		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont){
+			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
 			isInit(pCont);
-			clear(); //FIXME
+			// clear(); //FIXME
+			// data.reallocArr(pCont.count(), false);
+			// iter i = 0;
+			// for(auto e : pCont) {
+			// 	add(e);
+			// 	//FIXME improve performance. dont copy removed elements
+			// 	if(!pCont.isValid(i)) remove(i);
+			// 	i++;
+			// }
+			// return *this;
+
+			this->destroy();
 			data.reallocArr(pCont.count(), false);
-			iter i = 0;
-			for(auto e : pCont) {
-				add(e);
-				//FIXME improve performance. dont copy removed elements
-				if(!pCont.isValid(i)) remove(i);
-				i++;
+			tail = head = (iter)-1;
+			count_ = pCont.count(); free_ = 0;
+			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
+			//FIXME or don't. raarray has a sdifferent structure. it cannot copy from plain arrays
+			for(uint32 i = 0; i < pCont.count(); ++i){
+				new(&(data[i].value)) type(static_cast<type>(pCont[static_cast<iType>(i)]));
+				data[i].next = (iter)-1;
 			}
+			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
 		}
 
@@ -439,12 +458,12 @@ namespace lnx {
 
 			this->destroy();
 			data.reallocArr(pCont.count(), false);
-			tail   = pCont.tail;   head  = pCont.head;
-			count_ = pCont.count_; free_ = pCont.free_;
+			tail   = pCont.tail;    head  = pCont.head;
+			count_ = pCont.count(); free_ = pCont.freeCount();
 			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
 			for(uint32 i = 0; i < pCont.count(); ++i){
-				if(pCont.isValid(i)) new(&(data[i].value)) type(pCont[i].value);
-				data[i].next = pCont[i].next;
+				if(pCont.isValid(i)) new(&(data[i].value)) type(static_cast<type>(pCont[static_cast<iType>(i)].value));
+				data[i].next = static_cast<iter>(pCont[static_cast<iType>(i)].next);
 			}
 			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
@@ -454,6 +473,7 @@ namespace lnx {
 	public:
 		/**
 		 * @brief Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
+		 *    Elements and indices are static_cast casted
 		 * Complexity:
 		 *     Best:    O(1) [self assignment]
 		 *     Average: O(n)
@@ -468,6 +488,7 @@ namespace lnx {
 
 		/** //FIXME REMOVE. Probably useless. managed in general operator=
 		 * @brief Copy assignment. Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
+		 *    Elements and indices are static_cast casted
 		 * Complexity:
 		 *     Best:    O(1) [self assignment]
 		 *     Average: O(n)
@@ -494,8 +515,8 @@ namespace lnx {
 			isInit(pCont);
 			this->destroy();		//Destroy old elements. The pointer doesn't do that
 			data = pCont.data;		//Copy array data
-			tail   = pCont.tail;   head  = pCont.head;
-			count_ = pCont.count_; free_ = pCont.free_;
+			tail   = pCont.tail;    head  = pCont.head;
+			count_ = pCont.count(); free_ = pCont.freeCount();
 			pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			//! Data is not destroyed, as the pointer keeps track of how many owners it has
 			return *this;
