@@ -22,6 +22,11 @@ namespace lnx {
 	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
 	 */
 	template<class type, class iter = uint32> struct RtArray : public ContainerBase<type, iter> {
+		static_assert(!std::is_void_v<type>, "lnx::RtArray declared as array of void");
+		static_assert(
+			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
+			"iter template parameter must have integral or unscoped enum type"
+		);
 		using Super = ContainerBase<type, iter>;
 		genInitCheck;
 		// _dbg(type* viewer;)

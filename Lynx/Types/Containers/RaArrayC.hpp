@@ -2,7 +2,7 @@
 #define LNX_H_RAARRAYC
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
-
+//FIXME
 
 namespace lnx{
 	template<class type, class iter = uint32> struct RaArrayC{

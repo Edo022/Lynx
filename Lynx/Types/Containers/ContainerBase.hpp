@@ -140,6 +140,11 @@ namespace lnx {
 
 	template <class type, class iter> struct ContainerBase :
 	public __pvt::cbFwd_t<type, iter>{
+		static_assert(!std::is_void_v<type>, "lnx::ContainerBase declared as array of void");
+		static_assert(
+			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
+			"iter template parameter must have integral or unscoped enum type"
+		);
 	public:
 		genInitCheck;
 		ram::ptr<type> data;	//Elements of the array

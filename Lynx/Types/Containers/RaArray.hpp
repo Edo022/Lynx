@@ -107,8 +107,9 @@ namespace lnx {
 	template<class type, class iter = uint32> struct RaArray:
 	private __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivially_constructible_v<type>>,
 	private __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivially_destructible_v <type>> {
+		static_assert(!std::is_void_v<type>, "lnx::RaArray declared as array of void");
 		static_assert(
-			has_conversion_operator_v<iter, uint64> || std::is_integral_v<iter>,
+			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
 			"iter template parameter must have integral or unscoped enum type"
 		);
 		genInitCheck;
