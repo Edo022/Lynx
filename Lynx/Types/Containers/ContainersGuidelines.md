@@ -131,3 +131,4 @@ Prefer auto over complete templates, if you don't need the name of the type
 |`tTemplateType`<br>`kTemplateValue`                         | `template<class `**`tType`**`, int kValue> ...`<br>`template<class tType, int `**`kValue`**`> ...`|
 |`type_trait_name`                                           | **`is_integral`**|
 |`LNX_CNF_CONFIGURATION_MACRO`                               | `#define `**`LNX_CNF_GLOBAL_THREAD_POOL`**|
+|`__stuffYouDontWantToPupupInUserAutocomplete`                | `template<class tType> struct `**`__is_integral_t`**`{...};`
