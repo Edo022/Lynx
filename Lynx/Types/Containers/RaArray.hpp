@@ -165,38 +165,38 @@ namespace lnx {
 
 
 
-		//FIXME merge in operator= if copy assignment is not differentiated
 		template<class eType, class iType> inline auto& copyRaArray(const RaArray<eType, iType>& pCont) {
 			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Source array is not compatible");
 			isInit(pCont); if(this == &pCont) return *this;
 
-
-
-			// clear(); //FIXME
-			// data.reallocArr(pCont.count(), false);
-			// iter i = 0;
-			// for(auto e : pCont) {
-			// 	add(e);
-			// 	//FIXME improve performance. dont copy removed elements
-			// 	if(!pCont.isValid(i)) remove(i);
-			// 	i++;
-			// }
-			// return *this;
-
-
-			// this->destroy();
 			data.reallocArr(pCont.count(), false);
 			tail   = static_cast<iter>(pCont.tail);    head  = static_cast<iter>(pCont.head);
 			count_ = static_cast<iter>(pCont.count()); free_ = static_cast<iter>(pCont.freeCount());
-			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
+
 			//TODO BLINDLY COPY FREED ELEMENTS TOGETHER WITH THE INDEX IF THE VALUE IS SMALLER THAN A CERTAIN CONFIGURABLE VALUE
 			for(iType i = 0; i < pCont.count(); ++i){
 				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
 				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
 			}
-			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
 		}
+
+
+
+
+		template<class eType, class iType> inline auto& copyContainerBase(const ContainerBase<eType, iType>& pCont){
+			data.reallocArr(pCont.count(), false);
+			tail = head = (iter)-1;
+			count_ = pCont.count(); free_ = 0;
+
+			for(iType i = 0; i < pCont.count(); ++i){
+				new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont[i]));
+				;     data[static_cast<iter>(i)].next = (iter)-1;
+			}
+			return *this;
+		}
+
+
 
 
 	public:
@@ -266,11 +266,12 @@ namespace lnx {
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) : RaArray(pCont.count()) {
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) {// : RaArray(pCont.count()) {
 			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
 			isInit(pCont);
-			//!^ Just in case the engine didn't get segfault'd by the count() call
-			for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			// //!^ Just in case the engine didn't get segfault'd by the count() call
+			// for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+			copyContainerBase(pCont);
 		}
 
 
@@ -280,24 +281,8 @@ namespace lnx {
 		 * @param pCont The RaArray to copy elements from.
 		 *     It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) {// : checkInitList(isInit(pCont))
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) {
 			copyRaArray(pCont);
-			// data(sizeof(Elm) * pCont.count()),
-			// tail{ static_cast<iter>(pCont.tail) }, head{ static_cast<iter>(pCont.head) },
-			// count_{ static_cast<iter>(pCont.count()) }, free_{ static_cast<iter>(pCont.freeCount()) } {
-
-			// static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
-			// // iter i = 0;
-			// // for(auto e : pCont) {
-			// // 	add(e);
-			// // 	//FIXME improve performance. dont copy removed elements
-			// // 	if(!pCont.isValid(i)) remove(i);
-			// // 	i++;
-			// // }
-			// for(iType i = 0; i < pCont.count(); ++i){
-			// 	if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
-			// 	;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
-			// }
 		}
 
 
@@ -306,28 +291,13 @@ namespace lnx {
 		 * Complexity: O(n)
 		 * @param pCont Array to copy elements from
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) {//: checkInitList(isInit(pCont))
+		inline RaArray(const RaArray<type, iter>& pCont) {
 			copyRaArray(pCont);
-			// data(sizeof(Elm) * pCont.count()),
-			// tail{ pCont.tail }, head{ pCont.head },
-			// count_{ pCont.count() }, free_{ pCont.freeCount() } {
-
-			// // iter i = 0;
-			// // for(auto e : pCont) {
-			// // 	add(e);
-			// // 	//FIXME improve performance. dont copy removed elements
-			// // 	if(!pCont.isValid(i)) remove(i);
-			// // 	i++;
-			// // }
-			// for(iter i = 0; i < pCont.count(); ++i){
-			// 	new(&(data[i].value)) type(pCont[i]);
-			// 	;     data[i].next = (iter)-1;
-			// }
 		}
 
 
 		/**
-		 * @brief Move constructor //FIXME probably useless
+		 * @brief Move constructor
 		 * Complexity: O(1)
 		 */
 		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
@@ -479,31 +449,8 @@ namespace lnx {
 		 *    It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
 		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont){
-			// static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
-			// isInit(pCont);
-			// // clear(); //FIXME
-			// // data.reallocArr(pCont.count(), false);
-			// // iter i = 0;
-			// // for(auto e : pCont) {
-			// // 	add(e);
-			// // 	//FIXME improve performance. dont copy removed elements
-			// // 	if(!pCont.isValid(i)) remove(i);
-			// // 	i++;
-			// // }
-			// // return *this;
-
-			this->destroy();
-			data.reallocArr(pCont.count(), false);
-			tail = head = (iter)-1;
-			count_ = pCont.count(); free_ = 0;
-			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
-			//FIXME or don't. raarray has a sdifferent structure. it cannot copy from plain arrays
-			for(iType i = 0; i < pCont.count(); ++i){
-				new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont[i]));
-				;     data[static_cast<iter>(i)].next = (iter)-1;
-			}
-			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
-			return *this;
+			this->specializedDestroy();
+			return copyContainerBase(pCont);
 		}
 
 
