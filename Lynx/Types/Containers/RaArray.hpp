@@ -76,12 +76,12 @@ namespace lnx {
 		template<class type, class iter, bool destroy> struct raDtor_t{};
 		template<class type, class iter> struct raDtor_t<type, iter, false>{
 			protected:
-			alwaysInline void destroy() const noexcept {}
+			alwaysInline void specializedDestroy() const noexcept {}
 		};
 		template<class type, class iter> struct raDtor_t<type, iter, true>{
 			using arrt = lnx::RaArray<type, iter>;
 			protected:
-			inline void destroy() {
+			inline void specializedDestroy() {
 				int i = 0;
 				for(auto elm : *(arrt*)this) {
 					if(((arrt*)this)->isValid(i++)) elm.~type(); //TODO USE ITERATORS AND NOT INDICES
@@ -161,6 +161,42 @@ namespace lnx {
 		iter head;		//Last free element
 		iter count_;	//Total number of elements
 		iter free_;		//Number of free elements
+
+
+
+
+		//FIXME merge in operator= if copy assignment is not differentiated
+		template<class eType, class iType> inline auto& copyRaArray(const RaArray<eType, iType>& pCont) {
+			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Source array is not compatible");
+			isInit(pCont); if(this == &pCont) return *this;
+
+
+
+			// clear(); //FIXME
+			// data.reallocArr(pCont.count(), false);
+			// iter i = 0;
+			// for(auto e : pCont) {
+			// 	add(e);
+			// 	//FIXME improve performance. dont copy removed elements
+			// 	if(!pCont.isValid(i)) remove(i);
+			// 	i++;
+			// }
+			// return *this;
+
+
+			// this->destroy();
+			data.reallocArr(pCont.count(), false);
+			tail   = static_cast<iter>(pCont.tail);    head  = static_cast<iter>(pCont.head);
+			count_ = static_cast<iter>(pCont.count()); free_ = static_cast<iter>(pCont.freeCount());
+			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
+			//TODO BLINDLY COPY FREED ELEMENTS TOGETHER WITH THE INDEX IF THE VALUE IS SMALLER THAN A CERTAIN CONFIGURABLE VALUE
+			for(iType i = 0; i < pCont.count(); ++i){
+				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
+				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
+			}
+			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
+			return *this;
+		}
 
 
 	public:
@@ -244,23 +280,24 @@ namespace lnx {
 		 * @param pCont The RaArray to copy elements from.
 		 *     It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : checkInitList(isInit(pCont))
-			data(sizeof(Elm) * pCont.count()),
-			tail{ static_cast<iter>(pCont.tail) }, head{ static_cast<iter>(pCont.head) },
-			count_{ static_cast<iter>(pCont.count()) }, free_{ static_cast<iter>(pCont.freeCount()) } {
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) {// : checkInitList(isInit(pCont))
+			copyRaArray(pCont);
+			// data(sizeof(Elm) * pCont.count()),
+			// tail{ static_cast<iter>(pCont.tail) }, head{ static_cast<iter>(pCont.head) },
+			// count_{ static_cast<iter>(pCont.count()) }, free_{ static_cast<iter>(pCont.freeCount()) } {
 
-			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
-			// iter i = 0;
-			// for(auto e : pCont) {
-			// 	add(e);
-			// 	//FIXME improve performance. dont copy removed elements
-			// 	if(!pCont.isValid(i)) remove(i);
-			// 	i++;
+			// static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
+			// // iter i = 0;
+			// // for(auto e : pCont) {
+			// // 	add(e);
+			// // 	//FIXME improve performance. dont copy removed elements
+			// // 	if(!pCont.isValid(i)) remove(i);
+			// // 	i++;
+			// // }
+			// for(iType i = 0; i < pCont.count(); ++i){
+			// 	if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
+			// 	;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
 			// }
-			for(iType i = 0; i < pCont.count(); ++i){
-				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
-				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
-			}
 		}
 
 
@@ -269,22 +306,23 @@ namespace lnx {
 		 * Complexity: O(n)
 		 * @param pCont Array to copy elements from
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) : checkInitList(isInit(pCont))
-			data(sizeof(Elm) * pCont.count()),
-			tail{ pCont.tail }, head{ pCont.head },
-			count_{ pCont.count() }, free_{ pCont.freeCount() } {
+		inline RaArray(const RaArray<type, iter>& pCont) {//: checkInitList(isInit(pCont))
+			copyRaArray(pCont);
+			// data(sizeof(Elm) * pCont.count()),
+			// tail{ pCont.tail }, head{ pCont.head },
+			// count_{ pCont.count() }, free_{ pCont.freeCount() } {
 
-			// iter i = 0;
-			// for(auto e : pCont) {
-			// 	add(e);
-			// 	//FIXME improve performance. dont copy removed elements
-			// 	if(!pCont.isValid(i)) remove(i);
-			// 	i++;
+			// // iter i = 0;
+			// // for(auto e : pCont) {
+			// // 	add(e);
+			// // 	//FIXME improve performance. dont copy removed elements
+			// // 	if(!pCont.isValid(i)) remove(i);
+			// // 	i++;
+			// // }
+			// for(iter i = 0; i < pCont.count(); ++i){
+			// 	new(&(data[i].value)) type(pCont[i]);
+			// 	;     data[i].next = (iter)-1;
 			// }
-			for(iter i = 0; i < pCont.count(); ++i){
-				new(&(data[i].value)) type(pCont[i]);
-				;     data[i].next = (iter)-1;
-			}
 		}
 
 
@@ -307,7 +345,7 @@ namespace lnx {
 		 *     O(n) [non trivial types]
 		 */
 		~RaArray() {
-			if(!empty()) this->destroy();
+			if(!empty()) this->specializedDestroy();
 		}
 
 
@@ -411,7 +449,7 @@ namespace lnx {
 		 */
 		inline void clear() {
 			checkInit();
-			this->destroy();
+			this->specializedDestroy();
 			tail = head = (iter)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0); //FIXME FREE
@@ -441,18 +479,18 @@ namespace lnx {
 		 *    It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
 		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont){
-			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
-			isInit(pCont);
-			// clear(); //FIXME
-			// data.reallocArr(pCont.count(), false);
-			// iter i = 0;
-			// for(auto e : pCont) {
-			// 	add(e);
-			// 	//FIXME improve performance. dont copy removed elements
-			// 	if(!pCont.isValid(i)) remove(i);
-			// 	i++;
-			// }
-			// return *this;
+			// static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
+			// isInit(pCont);
+			// // clear(); //FIXME
+			// // data.reallocArr(pCont.count(), false);
+			// // iter i = 0;
+			// // for(auto e : pCont) {
+			// // 	add(e);
+			// // 	//FIXME improve performance. dont copy removed elements
+			// // 	if(!pCont.isValid(i)) remove(i);
+			// // 	i++;
+			// // }
+			// // return *this;
 
 			this->destroy();
 			data.reallocArr(pCont.count(), false);
@@ -470,40 +508,6 @@ namespace lnx {
 
 
 
-	private:
-		//FIXME merge in operator= if copy assignment is not differentiated
-		template<class eType, class iType> inline auto& copy(const RaArray<eType, iType>& pCont) {
-			isInit(pCont); if(this == &pCont) return *this;
-
-
-
-			// clear(); //FIXME
-			// data.reallocArr(pCont.count(), false);
-			// iter i = 0;
-			// for(auto e : pCont) {
-			// 	add(e);
-			// 	//FIXME improve performance. dont copy removed elements
-			// 	if(!pCont.isValid(i)) remove(i);
-			// 	i++;
-			// }
-			// return *this;
-
-
-			this->destroy();
-			data.reallocArr(pCont.count(), false);
-			tail   = static_cast<iter>(pCont.tail);    head  = static_cast<iter>(pCont.head);
-			count_ = static_cast<iter>(pCont.count()); free_ = static_cast<iter>(pCont.freeCount());
-			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
-			for(iType i = 0; i < pCont.count(); ++i){
-				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
-				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
-			}
-			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
-			return *this;
-		}
-
-
-	public:
 		/**
 		 * @brief Calls the destructor of the elements and copies any element of pCont. Removed indices are preserved but their value is not constructed.
 		 *    Trivial types are not destroyed. Elements and indices are static_cast casted
@@ -516,7 +520,8 @@ namespace lnx {
 		 * @return R-value reference to this object
 		 */
 		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
-			return copy(pCont);
+			this->specializedDestroy();
+			return copyRaArray(pCont);
 		}
 
 
@@ -532,7 +537,8 @@ namespace lnx {
 		 * @return R-value reference to this object
 		 */
 		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
-			return copy(pCont);
+			this->specializedDestroy();
+			return copyRaArray(pCont);
 		}
 
 
