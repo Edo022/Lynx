@@ -12,7 +12,7 @@
  *     where <variable> = <value> and <variable2> = <value2>    //Specify what variables are, if there is more than 1
  * @param <parameterName> Parameter description                 //Always comment parameters. Use one @param for each of them
  *     Details                                                  //Optional
- * @return Return value description                             //Always comment return value
+ * @return Return value description                             //Always comment non void return values
  *     Details                                                  //Optional
  */
 template<targs> ... type functionName(args)) ... {
@@ -22,6 +22,59 @@ template<targs> ... type functionName(args)) ... {
 
     ...
 }
+```
+e.g. (`template<class tType> class Array{...};`)
+```cpp
+/**
+ * @brief Finds the first element with pValue value
+ * Complexity:
+ *     Best:  O(1)
+ *     Worst: O(n)
+ * @param pValue The value to search for
+ * @return The index of the first element that has pValue value
+ *     Returns -1 if the value is not found
+ */
+ int find(const tType* pValue){
+     dbg::checkParam(pValue != nullptr, "pValue", "pValue cannot be null");
+     for(int i = 0; i < this->count(); ++i){
+        if(this->elms[i] == *pValue) return i;
+     }
+     return -1;
+ }
+ 
+/**
+ * @brief Finds the first element of pArray with pValue and concatenates its index to this object
+ * Complexity:
+ *     Best:  O(1)
+ *     Best:  O(n)   [memory reallocation required]
+ *     Worst: O(m)
+ *     Worst: O(n+m) [memory reallocation required]
+ *     where n = this->count() and m = pArray.count();
+ * @param pArray The array where to find pValue
+ * @param pValue The value to search for
+ * @return true if the value is found, false otherwise
+ */
+ template<class tType> bool catFirst(const Array<tType>& pArray, const tType& pValue){
+    int index = pArray.find(pValue);
+    if(index == -1) return false;
+    else{
+        this->cat(index); //Complexity of cat is Best: O(1), Best: O(n) [memory reallocation required]
+        return true;
+    }
+ }
+ 
+ /**
+  * @brief Assignes the pValue value to the element at index vIndex
+  *     Elements are copy assigned
+  * Complexity: O(1)
+  * @param vIndex The index of the element to set
+  * @param pValue The new value of the element
+  */
+  void set(const int vIndex, const tType& pValue){
+      dbg::checkParam(vIndex >= 0, "vIndex", "Index must be positive";
+      dbg::checkParam(vIndex < this->Count(), "vIndex", "Index out of range";
+      this->data[vIndex] = pValue;
+  }
 ```
 
 Do not construct or destroy trivial types  
