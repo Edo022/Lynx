@@ -169,11 +169,11 @@ namespace lnx{
 		 *		e.g. --- arr.get<int>(4); -- returns the 4th element as an int&.
 		 *		If the type is not specified, the element address is returned as a void*
 		 * @param vIndex The index of the element
-		 * @tparam eType The type of the element
+		 * @tparam tCType The type of the element
 		 */
-		template<class eType> alwaysInline eType& rtGet(const uint32 vIndex) {
+		template<class tCType> alwaysInline tCType& rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return (eType&)*(eType*)(__pvt::seq<sizeof...(types), seqIndex, types...>::rtGet(vIndex));
+			return (tCType&)*(tCType*)(__pvt::seq<sizeof...(types), seqIndex, types...>::rtGet(vIndex));
 		}
 		/**
 		 * @brief Returns the element address a a void*

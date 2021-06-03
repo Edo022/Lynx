@@ -149,8 +149,6 @@ namespace lnx {
 			alwaysInline bool operator!=(tType* vPtr)    const noexcept { return vPtr != (tType*)addr; }
 			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
 			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
-
-			// alwaysInline tIndx index() const noexcept { return (data - addr) / sizeof(Elm); }
 		};
 
 
@@ -160,13 +158,13 @@ namespace lnx {
 		tIndx tail;		//First free element
 		tIndx head;		//Last free element
 		tIndx count_;	//Total number of elements
-		tIndx free_;		//Number of free elements
+		tIndx free_;	//Number of free elements
 
 
 
 
-		template<class eType, class iType> inline auto& copyRaArray(const RaArray<eType, iType>& pCont) {
-			static_assert(std::is_convertible_v<eType, tType> && std::is_convertible_v<iType, tIndx>, "Source array is not compatible");
+		template<class tCType, class tCIdx> inline auto& copyRaArray(const RaArray<tCType, tCIdx>& pCont) {
+			static_assert(std::is_convertible_v<tCType, tType> && std::is_convertible_v<tCIdx, tIndx>, "Source array is not compatible");
 			isInit(pCont); if(this == &pCont) return *this;
 
 			data.reallocArr(pCont.count(), false);
@@ -174,7 +172,7 @@ namespace lnx {
 			count_ = static_cast<tIndx>(pCont.count()); free_ = static_cast<tIndx>(pCont.freeCount());
 
 			//TODO BLINDLY COPY FREED ELEMENTS TOGETHER WITH THE INDEX IF THE VALUE IS SMALLER THAN A CERTAIN CONFIGURABLE VALUE
-			for(iType i = 0; i < pCont.count(); ++i){
+			for(tCIdx i = 0; i < pCont.count(); ++i){
 				if(pCont.isValid(i)) new(&(data[static_cast<tIndx>(i)].value)) tType(static_cast<tType>(pCont.data[i].value));
 				;                          data[static_cast<tIndx>(i)].next =       static_cast<tIndx>(pCont.data[i].next);
 			}
@@ -184,15 +182,15 @@ namespace lnx {
 
 
 
-		template<class eType, class iType> inline auto& copyContainerBase(const ContainerBase<eType, iType>& pCont){
-			static_assert(std::is_convertible_v<eType, tType> && std::is_convertible_v<iType, tIndx>, "Source array is not compatible");
+		template<class tCType, class tCIdx> inline auto& copyContainerBase(const ContainerBase<tCType, tCIdx>& pCont){
+			static_assert(std::is_convertible_v<tCType, tType> && std::is_convertible_v<tCIdx, tIndx>, "Source array is not compatible");
 			isInit(pCont);
 
 			data.reallocArr(pCont.count(), false);
 			tail = head = (tIndx)-1;
 			count_ = pCont.count(); free_ = 0;
 
-			for(iType i = 0; i < pCont.count(); ++i){
+			for(tCIdx i = 0; i < pCont.count(); ++i){
 				new(&(data[static_cast<tIndx>(i)].value)) tType(static_cast<tType>(pCont[i]));
 				;     data[static_cast<tIndx>(i)].next = (tIndx)-1;
 			}
@@ -269,7 +267,7 @@ namespace lnx {
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) {
+		template<class tCType, class tCIdx> inline RaArray(const ContainerBase<tCType, tCIdx>& pCont) {
 			copyContainerBase(pCont);
 		}
 
@@ -280,7 +278,7 @@ namespace lnx {
 		 * @param pCont The RaArray to copy elements from.
 		 *     It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) {
+		template<class tCType, class tCIdx> inline RaArray(const RaArray<tCType, tCIdx>& pCont) {
 			copyRaArray(pCont);
 		}
 
@@ -447,7 +445,7 @@ namespace lnx {
 		 * @param pCont The container object to copy elements from.
 		 *    It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline auto& operator=(const ContainerBase<eType, iType>& pCont){
+		template<class tCType, class tCIdx> inline auto& operator=(const ContainerBase<tCType, tCIdx>& pCont){
 			this->specializedDestroy();
 			return copyContainerBase(pCont);
 		}
@@ -465,7 +463,7 @@ namespace lnx {
 		 * @param pCont The RaArray to copy construct elements from.
 		 * @return R-value reference to this object
 		 */
-		template<class eType, class iType> alwaysInline auto& operator=(const RaArray<eType, iType>& pCont) {
+		template<class tCType, class tCIdx> alwaysInline auto& operator=(const RaArray<tCType, tCIdx>& pCont) {
 			this->specializedDestroy();
 			return copyRaArray(pCont);
 		}
