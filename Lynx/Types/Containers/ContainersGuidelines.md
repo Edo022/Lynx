@@ -23,7 +23,9 @@ template<targs> ... type functionName(args)) ... {
     ...
 }
 ```
+
 e.g. (`template<class tType> class Array{...};`)
+
 ```cpp
 /**
  * @brief Finds the first element with pValue value
@@ -119,16 +121,15 @@ Prefer auto over complete templates, if you don't need the name of the type
 
 # Naming conventions
 
-| Structure                                                  | Example                                                                                         |
-|------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-|`FolderName`                                                | **`Lynx`**<br>`Lynx/`**`Core`**                                                                 |
-|`FileName.extension`                                        | `Lynx/`**`Lynx.hpp`**                                                                           |
-|`MacroName`<br>`ClassOrStruct`<br>`TypeAlias`<br>`EnumName` | `#define `**`FunctionLikeMacro`**`(a, b) (a) + (b)`<br>`#define `**`BadMacro`**` 5`<br>`class `**`HcArray`**`{...};`<br>`class `**`String`**`{...};`<br>`typedef HcArray `**`L`**`;`<br>`enum `**`BufferType`**`{ eStorage, eUniform };`<br>`enum `**`CellClass`**`{ eA, eB, eC };`|
-|`eEnumValue`                                                | `enum BufferType{`**`eStorage`**`, `**`eUniform`**`}`;<br>`enum CellClass{`**`eA`**`, `**`eB`**`, `**`eC`**`};`|
-|`commonstruct`<br>`commonalias`<br>`namespacename`          | `struct `**`vec2`**`{...};`<br>`class `**`vec4`**`{...};`<br>`typedef double `**`f64`**`;`<br>`typedef vec2<f64> `**`f64v2`**`;`<br>`namespace `**`std`**`{...}`<br>`namespace `**`lnx`**`{...}`|
-|`variableName`                                              | `int `**`tmp`**` = 1, `**`tmp2`**`;`<br>`float `**`floatVariable`**` = 0.5f;`|
-|`vByValueParameter`<br>`pByAddressParameter`<br>`pByReferenceParameter` | `void func(int `**`vIndex`**`);`<br>`void func2(double* `**`vDoubleAddr`**`);`<br>`void func(RaArray<int>& `**`pHugeLynxArray`**`);`<br>`void func2(double* `**`pHugeArray`**`);`|
-|`tTemplateType`<br>`kTemplateValue`                         | `template<class `**`tType`**`, int kValue> ...`<br>`template<class tType, int `**`kValue`**`> ...`|
-|`type_trait_name`                                           | **`is_integral`**|
-|`LNX_CNF_CONFIGURATION_MACRO`                               | `#define `**`LNX_CNF_GLOBAL_THREAD_POOL`**|
-|`__stuffYouDontWantToPupupInUserAutocomplete`                | `template<class tType> struct `**`__is_integral_t`**`{...};`
+| Structure                                                                             | Example                                                                                                                                                                                                                                                                                                                                        |
+|---------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`FolderName`       <br>`FileName.extension`                                            | **`Lynx`**                                                   <br>`Lynx/`**`Core`**                               <br>`Lynx/`**`Lynx.hpp`**                                                                                                                                                                                                     |
+|`MacroName`        <br>`ClassName`          <br>`TypeAlias`  <br>`EnumName`            | `#define `**`FunctionLikeMacro`**`(a, b) (a) + (b)`          <br>`#define `**`BadMacro`**` 5`                    <br>`class `**`HcArray`**`{...};`                     <br>`class `**`String`**`{...};`       <br>`typedef HcArray `**`L`**`;` <br>`enum `**`BufferType`**`{ eStorage, eUniform };`<br>`enum `**`CellClass`**`{ eA, eB, eC };` |
+|`eEnumValue`                                                                           | `enum BufferType{`**`eStorage`**`, `**`eUniform`**`};`       <br>`enum CellClass{`**`eA`**`, `**`eB`**`, `**`eC`**`};`                                                                                                                                                                                                                         |
+|`commonstruct`     <br>`commonalias`        <br>`namespacename`                        | `struct `**`vec2`**`{...};`                                  <br>`class `**`vec4`**`{...};`                      <br>`typedef double `**`f64`**`;`                     <br>`typedef vec2<f64> `**`f64v2`**`;` <br>`namespace `**`std`**`{...}` <br>`namespace `**`lnx`**`{...}`                                                                |
+|`variableName`     <br>`functionName`       <br>`classMember`<br>`classMemberFunction` | `int `**`tmp`**` = 1, `**`tmp2`**`;`                         <br>`float `**`floatVariable`**` = 0.5f;`           <br>`float `**`addFloats`**`(float vA, float vB);`    <br>`class IntWrapper{ int `**`value`**`; int `**`getValue`**`(); };`                                                                                                   |
+|`vByValueParameter`<br>`pByAddressParameter`<br>`pByReferenceParameter`                | `void func(int `**`vIndex`**`);`                             <br>`void func2(double* `**`vDoubleAddr`**`);`      <br>`void func(RaArray<int>& `**`pHugeLynxArray`**`);`<br>`void func2(double* `**`pHugeArray`**`);`                                                                                                                           |
+|`tTemplateType`    <br>`kTemplateValue`                                                | `template<class `**`tType`**`, int kValue> ...`              <br>`template<class tType, int `**`kValue`**`> ...`                                                                                                                                                                                                                               |
+|`type_trait_name`                                                                      | `template<class tType> constexpr bool `**`is_integral`**`;`                                                                                                                                                                                                                                                                                    |
+|`LNX_CNF_CONFIGURATION_MACRO`                                                          | `#define `**`LNX_CNF_GLOBAL_THREAD_POOL`**                                                                                                                                                                                                                                                                                                     |
+|`__stuffYouDontWantToPupupInUserAutocomplete`                                          | `template<class tType> struct `**`__is_integral_t`**`{...};` <br>`namespace `**`__pvt`**`{...}`                                                                                                                                                                                                                                                |
