@@ -236,15 +236,22 @@ namespace lnx {
 		 * @param pCont The RaArray to copy elements from.
 		 *     It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont) : RaArray(pCont.count()) {
+		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont)  : checkInitList(isInit(pCont))
+			data(sizeof(Elm) * vCount),
+			tail{ (iter)-1 }, head{ (iter)-1 },
+			count_{ pCont.count() }, free_{ pCont.freeCount() } {
+
 			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
-			isInit(pCont); //! Same here
-			iter i = 0;
-			for(auto e : pCont) {
-				add(e);
-				//FIXME improve performance. dont copy removed elements
-				if(!pCont.isValid(i)) remove(i);
-				i++;
+			// iter i = 0;
+			// for(auto e : pCont) {
+			// 	add(e);
+			// 	//FIXME improve performance. dont copy removed elements
+			// 	if(!pCont.isValid(i)) remove(i);
+			// 	i++;
+			// }
+			for(iType i = 0; i < pCont.count(); ++i){
+				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont[i].value));
+				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont[i].next);
 			}
 		}
 
@@ -254,14 +261,21 @@ namespace lnx {
 		 * Complexity: O(n)
 		 * @param pCont Array to copy elements from
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) : RaArray(pCont.count()) {
-			isInit(pCont); //! Same here
-			iter i = 0;
-			for(auto e : pCont) {
-				add(e);
-				//FIXME improve performance. dont copy removed elements
-				if(!pCont.isValid(i)) remove(i);
-				i++;
+		inline RaArray(const RaArray<type, iter>& pCont) : checkInitList(isInit(pCont))
+			data(sizeof(Elm) * vCount),
+			tail{ (iter)-1 }, head{ (iter)-1 },
+			count_{ pCont.count() }, free_{ pCont.freeCount() } {
+
+			// iter i = 0;
+			// for(auto e : pCont) {
+			// 	add(e);
+			// 	//FIXME improve performance. dont copy removed elements
+			// 	if(!pCont.isValid(i)) remove(i);
+			// 	i++;
+			// }
+			for(iter i = 0; i < pCont.count(); ++i){
+				new(&(data[i].value)) type(pCont[i]);
+				;     data[i].next = (iter)-1;
 			}
 		}
 
@@ -438,9 +452,9 @@ namespace lnx {
 			count_ = pCont.count(); free_ = 0;
 			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
 			//FIXME or don't. raarray has a sdifferent structure. it cannot copy from plain arrays
-			for(uint32 i = 0; i < pCont.count(); ++i){
-				new(&(data[i].value)) type(static_cast<type>(pCont[static_cast<iType>(i)]));
-				data[i].next = (iter)-1;
+			for(iType i = 0; i < pCont.count(); ++i){
+				new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont[i]));
+				;     data[static_cast<iter>(i)].next = (iter)-1;
 			}
 			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
@@ -472,9 +486,9 @@ namespace lnx {
 			tail   = pCont.tail;    head  = pCont.head;
 			count_ = pCont.count(); free_ = pCont.freeCount();
 			//FIXME USE PLAIN COPY FOR TRIVIAL TYPES
-			for(uint32 i = 0; i < pCont.count(); ++i){
-				if(pCont.isValid(i)) new(&(data[i].value)) type(static_cast<type>(pCont[static_cast<iType>(i)].value));
-				data[i].next = static_cast<iter>(pCont[static_cast<iType>(i)].next);
+			for(iType i = 0; i < pCont.count(); ++i){
+				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont[i].value));
+				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont[i].next);
 			}
 			// pCont.count_ = 0;		//Prevent the destructor from destroying the new elements
 			return *this;
