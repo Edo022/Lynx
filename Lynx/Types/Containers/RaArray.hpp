@@ -196,7 +196,7 @@ namespace lnx {
 		 * Complexity: O(1)
 		 */
 		inline RaArray(const iter vCount) :
-			dbg::checkParam(vCount < 0, "vCount", "Count must be a positive value")
+			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count must be a positive value"))
 			data(sizeof(Elm) * vCount),
 			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
 		}
@@ -237,7 +237,7 @@ namespace lnx {
 		 *     It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
 		template<class eType, class iType> inline RaArray(const RaArray<eType, iType>& pCont)  : checkInitList(isInit(pCont))
-			data(sizeof(Elm) * vCount),
+			data(sizeof(Elm) * pCont.count()),
 			tail{ (iter)-1 }, head{ (iter)-1 },
 			count_{ pCont.count() }, free_{ pCont.freeCount() } {
 
@@ -262,7 +262,7 @@ namespace lnx {
 		 * @param pCont Array to copy elements from
 		 */
 		inline RaArray(const RaArray<type, iter>& pCont) : checkInitList(isInit(pCont))
-			data(sizeof(Elm) * vCount),
+			data(sizeof(Elm) * pCont.count()),
 			tail{ (iter)-1 }, head{ (iter)-1 },
 			count_{ pCont.count() }, free_{ pCont.freeCount() } {
 
