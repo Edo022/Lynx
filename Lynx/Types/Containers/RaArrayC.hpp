@@ -5,15 +5,15 @@
 //FIXME
 
 namespace lnx{
-	template<class type, class iter = uint32> struct RaArrayC{
+	template<class tType, class tIndx = uint32> struct RaArrayC{
 		genInitCheck;
 
 		struct Elm{
-			type value;
-			iter next;
+			tType value;
+			tIndx next;
 		};
 		Elm* data;
-		iter head, tail, count_;
+		tIndx head, tail, count_;
 
 
 		inline RaArrayC() {};
@@ -28,11 +28,11 @@ namespace lnx{
 		inline RaArrayC(RaArrayC& rArray) = delete;
 
 
-		void init(const iter vCount) {
+		void init(const tIndx vCount) {
 			dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
 			data = (Elm*)malloc(sizeof(Elm) * vCount);
 			tail = 0; head = vCount - 1;
-			for(iter i = 0; i < vCount - 1; ++i) data[i].next = i + 1;
+			for(tIndx i = 0; i < vCount - 1; ++i) data[i].next = i + 1;
 			count_ = vCount;
 		}
 
@@ -50,26 +50,26 @@ namespace lnx{
 
 
 
-		inline iter add(const type& pElm) {
+		inline tIndx add(const tType& pElm) {
 			checkInit();
-			iter tail_ = tail;			//Cache tail
+			tIndx tail_ = tail;			//Cache tail
 			data[tail_].value = pElm;	//Set element
 			tail = data[tail_].next;	//Update tail
 			return tail_;				//Return old tail
 		}
 
-		inline void remove(const iter vIndex) {
+		inline void remove(const tIndx vIndex) {
 			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			data[head].next = vIndex;
 			head = vIndex;
 		}
 
-		inline type& operator[](const iter vIndex) const {
+		inline tType& operator[](const tIndx vIndex) const {
 			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[vIndex].value;
 		}
 
-		inline iter count() const { checkInit(); return count_; }
+		inline tIndx count() const { checkInit(); return count_; }
 
 		inline ~RaArrayC() {
 			if(data) free(data);

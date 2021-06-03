@@ -44,47 +44,47 @@
 
 
 namespace lnx {
-	template<class type, class iter> struct RaArray;
+	template<class tType, class tIndx> struct RaArray;
 
 	namespace __pvt{
-		template<class type, class iter, bool construct> struct raCtor_t{};
-		template<class type, class iter> struct raCtor_t<type, iter, false>{
+		template<class tType, class tIndx, bool construct> struct raCtor_t{};
+		template<class tType, class tIndx> struct raCtor_t<tType, tIndx, false>{
 			protected:
-			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+			alwaysInline void initRange(const tIndx& vFrom, const tIndx& vTo) const noexcept {}
 		};
-		template<class type, class iter> struct raCtor_t<type, iter, true>{
-			using arrt = lnx::RaArray<type, iter>;
+		template<class tType, class tIndx> struct raCtor_t<tType, tIndx, true>{
+			using arrt = lnx::RaArray<tType, tIndx>;
 			protected:
-			// inline void initRange(const iter vFrom, const iter vTo) const {
-			// 	type* elm = ((lnx::RaArray<type, iter>*)this)->begin();
-			// 	for(iter i = vFrom; i <= vTo; ++i) {
+			// inline void initRange(const tIndx vFrom, const tIndx vTo) const {
+			// 	type* elm = ((lnx::RaArray<type, tIndx>*)this)->begin();
+			// 	for(tIndx i = vFrom; i <= vTo; ++i) {
 			// 		new(elm + i) type();
 			// 	}
 			// }
 			//FIXME ADD ADD FUNCTION
-			inline void initRange(const iter& vFrom, const iter& vTo) {
-				for(iter i = vFrom; i < vTo; ++i) {
-					/*if(((arrt*)this)->isValid(i))*/ new(&((arrt*)this)[i]) type();
+			inline void initRange(const tIndx& vFrom, const tIndx& vTo) {
+				for(tIndx i = vFrom; i < vTo; ++i) {
+					/*if(((arrt*)this)->isValid(i))*/ new(&((arrt*)this)[i]) tType();
 				}
 			}
-			inline void init(const iter& vIndex){
-				/*if(((arrt*)this)->isValid(vIndex))*/ new(&((arrt*)this)[vIndex]) type();
+			inline void init(const tIndx& vIndex){
+				/*if(((arrt*)this)->isValid(vIndex))*/ new(&((arrt*)this)[vIndex]) tType();
 			}
 		};
 
 
-		template<class type, class iter, bool destroy> struct raDtor_t{};
-		template<class type, class iter> struct raDtor_t<type, iter, false>{
+		template<class tType, class tIndx, bool destroy> struct raDtor_t{};
+		template<class tType, class tIndx> struct raDtor_t<tType, tIndx, false>{
 			protected:
 			alwaysInline void specializedDestroy() const noexcept {}
 		};
-		template<class type, class iter> struct raDtor_t<type, iter, true>{
-			using arrt = lnx::RaArray<type, iter>;
+		template<class tType, class tIndx> struct raDtor_t<tType, tIndx, true>{
+			using arrt = lnx::RaArray<tType, tIndx>;
 			protected:
 			inline void specializedDestroy() {
 				int i = 0;
 				for(auto elm : *(arrt*)this) {
-					if(((arrt*)this)->isValid(i++)) elm.~type(); //TODO USE ITERATORS AND NOT INDICES
+					if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
 				}
 			}
 		};
@@ -101,26 +101,26 @@ namespace lnx {
 	 * @brief A dynamic array with non contiguous elements.
 	 *		New elements are written over previously removed ones, or concatenated if there are none.
 	 *		The .isValid() function can be used to check if an element is valid or has been removed
-	 * @tparam type Type of the elements
-	 * @tparam iter Type of the index. The type of any index or count relative to this object depend on this
+	 * @tparam tType Type of the elements
+	 * @tparam tIndx Type of the index. The type of any index or count relative to this object depend on this
 	 */
-	template<class type, class iter = uint32> struct RaArray:
-	private __pvt::raCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivially_constructible_v<type>>,
-	private __pvt::raDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivially_destructible_v <type>> {
-		static_assert(!std::is_void_v<type>, "lnx::RaArray declared as array of void");
+	template<class tType, class tIndx = uint32> struct RaArray:
+	private __pvt::raCtor_t<tType, tIndx, !std::is_base_of_v<ignoreCopy, tType> && !std::is_trivially_constructible_v<tType>>,
+	private __pvt::raDtor_t<tType, tIndx, !std::is_base_of_v<ignoreDtor, tType> && !std::is_trivially_destructible_v <tType>> {
+		static_assert(!std::is_void_v<tType>, "lnx::RaArray declared as array of void");
 		static_assert(
-			has_int_conversion_operator_v<iter> || std::is_integral_v<iter>,
-			"iter template parameter must have integral or unscoped enum type"
+			has_int_conversion_operator_v<tIndx> || std::is_integral_v<tIndx>,
+			"tIndx template parameter must have integral or unscoped enum type"
 		);
-		static_assert(std::is_trivial_v<iter>, "iter template parameter must be a trivial type");
+		static_assert(std::is_trivial_v<tIndx>, "tIndx template parameter must be a trivial type");
 
 
 		genInitCheck;
 
 
 		struct Elm{
-			type value;	//Value of this element
-			iter next;	//Index of the next free element
+			tType value;	//Value of this element
+			tIndx next;	//Index of the next free element
 		};
 
 
@@ -141,42 +141,42 @@ namespace lnx {
 			alwaysInline Iterator operator-(const uint64 vVal) const noexcept { return { addr - vVal }; }
 
 
-			alwaysInline type& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
-			alwaysInline type& operator* (                   ) const { return addr->value; }
-			alwaysInline type* operator->(                   ) const noexcept { return (type*)addr; }
+			alwaysInline tType& operator[](const uint64 vIndex) const { return addr[vIndex].value; }
+			alwaysInline tType& operator* (                   ) const { return addr->value; }
+			alwaysInline tType* operator->(                   ) const noexcept { return (tType*)addr; }
 
-			alwaysInline bool operator==(type* vPtr)    const noexcept { return vPtr == (type*)addr; }
-			alwaysInline bool operator!=(type* vPtr)    const noexcept { return vPtr != (type*)addr; }
+			alwaysInline bool operator==(tType* vPtr)    const noexcept { return vPtr == (tType*)addr; }
+			alwaysInline bool operator!=(tType* vPtr)    const noexcept { return vPtr != (tType*)addr; }
 			alwaysInline bool operator==(Iterator vPtr) const { return vPtr.addr == addr; }
 			alwaysInline bool operator!=(Iterator vPtr) const { return vPtr.addr != addr; }
 
-			// alwaysInline iter index() const noexcept { return (data - addr) / sizeof(Elm); }
+			// alwaysInline tIndx index() const noexcept { return (data - addr) / sizeof(Elm); }
 		};
 
 
 	private:
 		ram::ptr<Elm> data;
 
-		iter tail;		//First free element
-		iter head;		//Last free element
-		iter count_;	//Total number of elements
-		iter free_;		//Number of free elements
+		tIndx tail;		//First free element
+		tIndx head;		//Last free element
+		tIndx count_;	//Total number of elements
+		tIndx free_;		//Number of free elements
 
 
 
 
 		template<class eType, class iType> inline auto& copyRaArray(const RaArray<eType, iType>& pCont) {
-			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Source array is not compatible");
+			static_assert(std::is_convertible_v<eType, tType> && std::is_convertible_v<iType, tIndx>, "Source array is not compatible");
 			isInit(pCont); if(this == &pCont) return *this;
 
 			data.reallocArr(pCont.count(), false);
-			tail   = static_cast<iter>(pCont.tail);    head  = static_cast<iter>(pCont.head);
-			count_ = static_cast<iter>(pCont.count()); free_ = static_cast<iter>(pCont.freeCount());
+			tail   = static_cast<tIndx>(pCont.tail);    head  = static_cast<tIndx>(pCont.head);
+			count_ = static_cast<tIndx>(pCont.count()); free_ = static_cast<tIndx>(pCont.freeCount());
 
 			//TODO BLINDLY COPY FREED ELEMENTS TOGETHER WITH THE INDEX IF THE VALUE IS SMALLER THAN A CERTAIN CONFIGURABLE VALUE
 			for(iType i = 0; i < pCont.count(); ++i){
-				if(pCont.isValid(i)) new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont.data[i].value));
-				;                          data[static_cast<iter>(i)].next =       static_cast<iter>(pCont.data[i].next);
+				if(pCont.isValid(i)) new(&(data[static_cast<tIndx>(i)].value)) tType(static_cast<tType>(pCont.data[i].value));
+				;                          data[static_cast<tIndx>(i)].next =       static_cast<tIndx>(pCont.data[i].next);
 			}
 			return *this;
 		}
@@ -185,13 +185,16 @@ namespace lnx {
 
 
 		template<class eType, class iType> inline auto& copyContainerBase(const ContainerBase<eType, iType>& pCont){
+			static_assert(std::is_convertible_v<eType, tType> && std::is_convertible_v<iType, tIndx>, "Source array is not compatible");
+			isInit(pCont);
+
 			data.reallocArr(pCont.count(), false);
-			tail = head = (iter)-1;
+			tail = head = (tIndx)-1;
 			count_ = pCont.count(); free_ = 0;
 
 			for(iType i = 0; i < pCont.count(); ++i){
-				new(&(data[static_cast<iter>(i)].value)) type(static_cast<type>(pCont[i]));
-				;     data[static_cast<iter>(i)].next = (iter)-1;
+				new(&(data[static_cast<tIndx>(i)].value)) tType(static_cast<tType>(pCont[i]));
+				;     data[static_cast<tIndx>(i)].next = (tIndx)-1;
 			}
 			return *this;
 		}
@@ -223,7 +226,7 @@ namespace lnx {
 		 * Complexity: O(1)
 		 */
 		inline RaArray() : data(nullptr),
-			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+			tail{ (tIndx)-1 }, head{ (tIndx)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
 
@@ -231,10 +234,10 @@ namespace lnx {
 		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
 		 * Complexity: O(1)
 		 */
-		inline RaArray(const iter vCount) :
+		inline RaArray(const tIndx vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count must be a positive value"))
 			data(sizeof(Elm) * vCount),
-			tail{ (iter)-1 }, head{ (iter)-1 }, count_{ 0 }, free_{ 0 } {
+			tail{ (tIndx)-1 }, head{ (tIndx)-1 }, count_{ 0 }, free_{ 0 } {
 		}
 
 
@@ -244,16 +247,16 @@ namespace lnx {
 		 * @brief Initializes the array by copy constructing each element from an std::initializer_list
 		 * Complexity: O(n)
 		 */
-		inline RaArray(const std::initializer_list<type> vElms) :
+		inline RaArray(const std::initializer_list<tType> vElms) :
 			// RaArray(vElms.size()) {
 			data(sizeof(Elm) * vElms.size()),
-			tail{ (iter)-1 }, head{ (iter)-1 },
-			count_{ static_cast<iter>(vElms.size()) }, free_{ 0 } {
+			tail{ (tIndx)-1 }, head{ (tIndx)-1 },
+			count_{ static_cast<tIndx>(vElms.size()) }, free_{ 0 } {
 
 			// for(const type& elm : vElms) add(elm);
-			for(iter i = 0; i < vElms.size(); ++i){
-				new(&(data[i].value)) type(*(vElms.begin() + i));
-				;     data[i].next = (iter)-1;
+			for(tIndx i = 0; i < vElms.size(); ++i){
+				new(&(data[i].value)) tType(*(vElms.begin() + i));
+				;     data[i].next = (tIndx)-1;
 			}
 		}
 
@@ -266,11 +269,7 @@ namespace lnx {
 		 * @param pCont The container object to copy elements from.
 		 *		It must have a compatible type and less elements than the maximum number of elements of the array you are initializing
 		 */
-		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) {// : RaArray(pCont.count()) {
-			static_assert(std::is_convertible_v<eType, type> && std::is_convertible_v<iType, iter>, "Assigned array is not compatible");
-			isInit(pCont);
-			// //!^ Just in case the engine didn't get segfault'd by the count() call
-			// for(iter i = 0; i < pCont.count(); ++i) add(pCont[i]);
+		template<class eType, class iType> inline RaArray(const ContainerBase<eType, iType>& pCont) {
 			copyContainerBase(pCont);
 		}
 
@@ -291,7 +290,7 @@ namespace lnx {
 		 * Complexity: O(n)
 		 * @param pCont Array to copy elements from
 		 */
-		inline RaArray(const RaArray<type, iter>& pCont) {
+		inline RaArray(const RaArray<tType, tIndx>& pCont) {
 			copyRaArray(pCont);
 		}
 
@@ -300,7 +299,7 @@ namespace lnx {
 		 * @brief Move constructor
 		 * Complexity: O(1)
 		 */
-		inline RaArray(RaArray<type, iter>&& pCont) : checkInitList(isInit(pCont))
+		inline RaArray(RaArray<tType, tIndx>&& pCont) : checkInitList(isInit(pCont))
 			data{ pCont.data },
 			tail{ pCont.tail }, head{ pCont.head }, count_{ pCont.count_ }, free_{ pCont.free_ } {
 			pCont.count_ = 0;	//Prevent the destructor from destroying the elements
@@ -342,12 +341,12 @@ namespace lnx {
 		 * @param pData Object to copy construct the new element from
 		 * @return Index of the new element
 		 */
-		iter append(const type& pData) {
+		tIndx append(const tType& pData) {
 			checkInit();
 			data.reallocArr(count() + 1);
 
-			new(&(data[count_].value)) type(pData);	//Initialize new element
-			data[count_].next = (iter)-1;			//Set the tracker as valid
+			new(&(data[count_].value)) tType(pData);	//Initialize new element
+			data[count_].next = (tIndx)-1;			//Set the tracker as valid
 			return count_++;						//Update the number of elements and return the element index
 		}
 
@@ -362,23 +361,23 @@ namespace lnx {
 		 * @param pData Object to copy construct the new element from
  		 * @return Index of the new element
 		 */
-		iter add(const type& pData) {
+		tIndx add(const tType& pData) {
 			checkInit();
-			if(tail == (iter)-1) {				//If it has no free elements
+			if(tail == (tIndx)-1) {				//If it has no free elements
 				return append(pData);				//Append the new element
 			}
 			else{
-				iter prevTail = tail;				//Save tail
+				tIndx prevTail = tail;				//Save tail
 				if(tail == head) {					//If it has only one free element
-					data[prevTail].next = (iter)-1;		//Reset tail and head
-					tail = head = (iter)-1;				//Reset tracker
+					data[prevTail].next = (tIndx)-1;		//Reset tail and head
+					tail = head = (tIndx)-1;				//Reset tracker
 				}
 				else {								//If it has more than one
 					tail = data[prevTail].next;			//Update tail
-					data[prevTail].next = (iter)-1;		//Update tracker of the old tail element
+					data[prevTail].next = (tIndx)-1;		//Update tracker of the old tail element
 				}
 				free_--;							//Update number of free elements
-				new(&(data[prevTail].value)) type(pData);//Initialize the new element
+				new(&(data[prevTail].value)) tType(pData);//Initialize the new element
 				return prevTail;						//Return the index of the new element
 			}
 		}
@@ -392,15 +391,15 @@ namespace lnx {
 		 * Complexity: O(1)
 		 * @param vIndex Index of the element to remove
 		 */
-		void remove(const iter vIndex) {
+		void remove(const tIndx vIndex) {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
-			data[vIndex].value.~type();					//Destroy the element
+			data[vIndex].value.~tType();					//Destroy the element
 			data[vIndex].next = 0;						//Set the index as free
 			//!                 ^ 0 is used as a "not -1" value. -1 are valid elements
-			if(tail == (iter)-1) tail = head = vIndex;	//If it has no free elements, initialize tail and head.
+			if(tail == (tIndx)-1) tail = head = vIndex;	//If it has no free elements, initialize tail and head.
 			else {										//If it has free elements
 				data[head].next = vIndex;					//Set the new head
 				head = vIndex;								//update the last free index
@@ -420,7 +419,7 @@ namespace lnx {
 		inline void clear() {
 			checkInit();
 			this->specializedDestroy();
-			tail = head = (iter)-1;
+			tail = head = (tIndx)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0); //FIXME FREE
 		}
@@ -483,7 +482,7 @@ namespace lnx {
 		 * @param pCont The RaArray to copy construct elements from.
 		 * @return R-value reference to this object
 		 */
-		alwaysInline auto& operator=(const RaArray<type, iter>& pCont) {
+		alwaysInline auto& operator=(const RaArray<tType, tIndx>& pCont) {
 			this->specializedDestroy();
 			return copyRaArray(pCont);
 		}
@@ -502,7 +501,7 @@ namespace lnx {
 		 *     O(1) [trivial types || self assignment]
 		 *     O(n) [non trivial types]
 		 */
-		inline auto& operator=(RaArray<type, iter>&& pCont) {
+		inline auto& operator=(RaArray<tType, tIndx>&& pCont) {
 			isInit(pCont);
 			if(this == &pCont) return *this;
 
@@ -536,16 +535,16 @@ namespace lnx {
 		 * @param vIndex Index of the element
 		 * @return True if the element is valid (non deleted), false if not
 		 */
-		alwaysInline bool isValid(const iter vIndex) const {
+		alwaysInline bool isValid(const tIndx vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return data[vIndex].next == (iter)-1;
+			return data[vIndex].next == (tIndx)-1;
 		}
 
 
 
 
-		alwaysInline type& operator[](const iter vIndex) const {
+		alwaysInline tType& operator[](const tIndx vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Accessing deleted array element");
@@ -570,16 +569,16 @@ namespace lnx {
 		//TODO ADD SIZE
 
 		//Returns the number of elements in the map, including the free ones
-		alwaysInline iter count() const { checkInit(); return count_; }
+		alwaysInline tIndx count() const { checkInit(); return count_; }
 
 		//Returns true if the array has no used elements. Equivalent to .usedCount() == 0
 		alwaysInline bool empty() const { checkInit(); return !usedCount(); }
 
 		//Returns the number of used elements
-		alwaysInline iter usedCount() const { checkInit(); return count_ - free_; }
+		alwaysInline tIndx usedCount() const { checkInit(); return count_ - free_; }
 
 		//Returns the number of free elements
-		alwaysInline iter freeCount() const { checkInit(); return free_; }
+		alwaysInline tIndx freeCount() const { checkInit(); return free_; }
 
 		alwaysInline Iterator begin() const { checkInit(); if(empty()) return { nullptr }; else return { data }; }
 		alwaysInline Iterator   end() const { checkInit(); if(empty()) return { nullptr }; else return { data + count_ }; }

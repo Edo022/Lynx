@@ -44,16 +44,16 @@ namespace lnxc{
         //has_conversion_operator helper struct
         template<bool c, class op> struct __has_conversion_operator_t {};
         template<class op> struct __has_conversion_operator_t<true, op> {
-            template<class type> static consteval std::true_type get(int32, decltype(type().operator op())* = 0){
+            template<class tType> static consteval std::true_type get(int32, decltype(tType().operator op())* = 0){
                 return std::true_type();
             }
-            template<class type> static consteval std::false_type get(auto) {
+            template<class tType> static consteval std::false_type get(auto) {
                 return std::false_type();
             }
         };
         //has_conversion_operator helper struct
         template<class op> struct __has_conversion_operator_t<false, op> {
-            template<class type> static consteval std::false_type get(auto) {
+            template<class tType> static consteval std::false_type get(auto) {
                 return std::false_type();
             }
         };
@@ -72,11 +72,11 @@ namespace lnxc{
      *    has_conversion_operator<int, int>;    //false_type
      *    has_conversion_operator<s, int>;      //true_type
      *    has_conversion_operator<s, float>;    //false_type
-     * @tparam type The type to test
+     * @tparam tType The type to test
      * @tparam op The type of the operator
      */
-    template<class type, class op> using has_conversion_operator = decltype(__pvt::__has_conversion_operator_t<std::is_class_v<type>, op>::template get<type>(0));
-    template<class type, class op> static constexpr bool has_conversion_operator_v = has_conversion_operator<type, op>::value;
+    template<class tType, class op> using has_conversion_operator = decltype(__pvt::__has_conversion_operator_t<std::is_class_v<tType>, op>::template get<tType>(0));
+    template<class tType, class op> static constexpr bool has_conversion_operator_v = has_conversion_operator<tType, op>::value;
 
 
 
@@ -84,15 +84,15 @@ namespace lnxc{
     /**
      * @brief Provides std::true_type if the type has or inherits at least one conversion operator to an integral type, std::false_type if not
      *    Trivial types always provide std::false_type
-     * @tparam type The type to test
+     * @tparam tType The type to test
      */
-    template<class type> using has_int_conversion_operator = std::integral_constant<bool,
-        has_conversion_operator_v<type, uint64> || has_conversion_operator_v<type, int64> ||
-        has_conversion_operator_v<type, uint32> || has_conversion_operator_v<type, int32> ||
-        has_conversion_operator_v<type, uint16> || has_conversion_operator_v<type, int16> ||
-        has_conversion_operator_v<type, uint8>  || has_conversion_operator_v<type, int8>
+    template<class tType> using has_int_conversion_operator = std::integral_constant<bool,
+        has_conversion_operator_v<tType, uint64> || has_conversion_operator_v<tType, int64> ||
+        has_conversion_operator_v<tType, uint32> || has_conversion_operator_v<tType, int32> ||
+        has_conversion_operator_v<tType, uint16> || has_conversion_operator_v<tType, int16> ||
+        has_conversion_operator_v<tType, uint8>  || has_conversion_operator_v<tType, int8>
     >;
-    template<class type> static constexpr bool has_int_conversion_operator_v = has_int_conversion_operator<type>::value;
+    template<class tType> static constexpr bool has_int_conversion_operator_v = has_int_conversion_operator<tType>::value;
 }
 #ifndef LNX_NO_GLOBAL_NAMESPACE
 	using namespace lnxc;
