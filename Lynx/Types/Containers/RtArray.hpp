@@ -19,17 +19,17 @@ namespace lnx {
 	/**
 	 * @brief A dynamic array that uses the global memory pool
 	 * @tparam tType Type of the elements
-	 * @tparam tIndx Type of the index. The type of any index or count relative to this object depend on this
+	 * @tparam tIndex Type of the index. The type of any index or count relative to this object depend on this
 	 */
-	template<class tType, class tIndx = uint32> struct RtArray : public ContainerBase<tType, tIndx> {
-		static_assert(!std::is_void_v<tType>, "lnx::RtArray declared as array of void");
+	template<class tType, class tIndex = uint32> struct RtArray : public ContainerBase<tType, tIndex> {
+		static_assert(!std::is_void_v<tType>, "RtArray declared as array of void");
 		static_assert(
-			has_int_conversion_operator_v<tIndx> || std::is_integral_v<tIndx>,
-			"tIndx template parameter must have integral or unscoped enum type"
+			has_int_conversion_operator_v<tIndex> || std::is_integral_v<tIndex> || std::is_enum_v<tIndex>,
+			"tIndex template parameter must be convertible to an integer or have integral or enum type"
 		);
-		static_assert(std::is_trivial_v<tIndx>, "tIndx template parameter must be a trivial type");
+		static_assert(std::is_trivial_v<tIndex>, "tIndex template parameter must be a trivial type");
 
-		using Super = ContainerBase<tType, tIndx>;
+		using Super = ContainerBase<tType, tIndex>;
 		genInitCheck;
 		// _dbg(type* viewer;)
 
@@ -51,7 +51,7 @@ namespace lnx {
 		 * @brief Creates an array of vCount elements and calls the default constructor on each of them
 		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
-		alwaysInline RtArray(tIndx vCount) : Super(vCount) {}
+		alwaysInline RtArray(tIndex vCount) : Super(vCount) {}
 
 
 		/**
@@ -76,19 +76,19 @@ namespace lnx {
 		 * @brief Copy constructor. Each element is copy constructed.
 		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
-		alwaysInline RtArray(const RtArray<tType, tIndx>& pCont) : Super(pCont, {}) {  }
+		alwaysInline RtArray(const RtArray<tType, tIndex>& pCont) : Super(pCont, {}) {  }
 		/**
 		 * @brief Copy assignment. All the elements in the array are destroyed. New elements are copy constructed.
 		 *		The destructor  is not called on trivial types or lnx::ignoreDtor subclasses.
 		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
-		alwaysInline auto& operator=(const RtArray<tType, tIndx>& pCont) { Super::copy(pCont); return *this; }
+		alwaysInline auto& operator=(const RtArray<tType, tIndex>& pCont) { Super::copy(pCont); return *this; }
 
 
 		//Move constructor
-		alwaysInline RtArray(RtArray<tType, tIndx>&& pCont) { Super::move(pCont); }
+		alwaysInline RtArray(RtArray<tType, tIndex>&& pCont) { Super::move(pCont); }
 		//Move assignment
-		alwaysInline auto& operator=(RtArray<tType, tIndx>&& pCont) { Super::move(pCont); return *this; }
+		alwaysInline auto& operator=(RtArray<tType, tIndex>&& pCont) { Super::move(pCont); return *this; }
 
 
 
@@ -103,7 +103,7 @@ namespace lnx {
 			 * @brief Resizes the array. If the type is not a trivial type or a lnx::ignoreCopy subclass, calls the constructor on each of the new elements
 			 * @param vCount New number of elements
 			 */
-			alwaysInline void resize(const tIndx vCount) {
+			alwaysInline void resize(const tIndex vCount) {
 				checkInit();
 				Super::resize(vCount);
 			}
@@ -134,7 +134,7 @@ namespace lnx {
 		 * @param vElm The element to add
 		 * @return The index of the new element
 		 */
-		alwaysInline tIndx add(const tType& vElm) {
+		alwaysInline tIndex add(const tType& vElm) {
 			checkInit();
 			Super::cat1(vElm);
 			return Super::count() - 1;
@@ -155,7 +155,7 @@ namespace lnx {
 		alwaysInline uint64 size() const { checkInit(); return Super::count() * sizeof(tType); }
 
 
-		alwaysInline tType& operator[](const tIndx vIndex) const {
+		alwaysInline tType& operator[](const tIndex vIndex) const {
 			checkInit();
 			dbg::checkCond(Super::count() == 0, "This function cannot be called on containers with size 0");
 			dbg::checkIndex(vIndex, 0, Super::count() - 1, "vIndex");
