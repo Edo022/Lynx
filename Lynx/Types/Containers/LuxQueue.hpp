@@ -12,18 +12,18 @@
 //A queue with dynamic count
 //DEPRECATED
 namespace lnx {
-	template<class tType, class tIndex = uint32> struct Queue {
+	template<class tType, class tIdxt = uint32> struct Queue {
 		static_assert(!std::is_void_v<tType>, "Queue declared as queue of void");
 		static_assert(
-			has_int_conversion_operator_v<tIndex> || std::is_integral_v<tIndex> || std::is_enum_v<tIndex>,
-			"tIndex template parameter must be convertible to an integer or have integral or enum type"
+			has_int_conversion_operator_v<tIdxt> || std::is_integral_v<tIdxt> || std::is_enum_v<tIdxt>,
+			"tIdxt template parameter must be convertible to an integer or have integral or enum type"
 		);
-		static_assert(std::is_trivial_v<tIndex>, "tIndex template parameter must be a trivial type");
+		static_assert(std::is_trivial_v<tIdxt>, "tIdxt template parameter must be a trivial type");
 
 		genInitCheck;
 	private:
 	public:
-		lnx::RtArray<tType, tIndex> _front, _back;
+		lnx::RtArray<tType, tIdxt> _front, _back;
 
 		inline Queue() : _front(), _back() {}
 
@@ -43,10 +43,10 @@ namespace lnx {
 		inline void popFront()						{ checkInit(); _front.resize(_front.count() - 1); }
 
 
-		inline tType& operator[](const tIndex vIndex) { checkInit(); return (vIndex < _back.count()) ? _back[_back.count() - 1 - vIndex] : _front[vIndex - (_back.count() - 1)]; }
+		inline tType& operator[](const tIdxt vIndex) { checkInit(); return (vIndex < _back.count()) ? _back[_back.count() - 1 - vIndex] : _front[vIndex - (_back.count() - 1)]; }
 		inline tType& front(){ checkInit(); return *_front.end(); }
 		inline tType& back()	{ checkInit(); return *_back.end(); }
-		inline tIndex size()  { checkInit(); return _front.count() + _back.count(); }
+		inline tIdxt size()  { checkInit(); return _front.count() + _back.count(); }
 		inline bool empty()	{ checkInit(); return size() == 0; }
 	};
 }
