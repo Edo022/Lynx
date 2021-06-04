@@ -173,7 +173,7 @@ namespace lnx {
 
 
 
-		template<class tCType, class tCIndex> inline auto& copyRaArray(const RaArray<tCType, tCIndex>& pArr) {
+		template<class tCType, class tCIdxt> inline auto& copyRaArray(const RaArray<tCType, tCIdxt>& pArr) {
 			static_assert(std::is_assignable_v<tType, tCType>, "tType of source array must be assignable to tType of this object");
 
 			data.reallocArr(pArr.count(), false);
@@ -182,7 +182,7 @@ namespace lnx {
 
 			//FIXME USE PLAIN COPY FOR TRIVIALLY COPIABLE TYPES
 			//TODO BLINDLY COPY FREED ELEMENTS TOGETHER WITH THE INDEX IF THE VALUE IS SMALLER THAN A CERTAIN CONFIGURABLE VALUE
-			for(tCIndex i = 0; i < pArr.count(); ++i){
+			for(tCIdxt i = 0; i < pArr.count(); ++i){
 				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
 				;                         data[(uint64)i].next =                  (uint64)(pArr.data[i].next);
 			}
@@ -192,14 +192,14 @@ namespace lnx {
 //FIXME  USE CORRECT TYPES FOR REAL INTEGERS AND UINT64 FOR COMPATIBLE CLASSES
 
 
-		template<class tCType, class tCIndex> inline auto& copyContainerBase(const ContainerBase<tCType, tCIndex>& pCont){
+		template<class tCType, class tCIdxt> inline auto& copyContainerBase(const ContainerBase<tCType, tCIdxt>& pCont){
 			static_assert(std::is_assignable_v<tType, tCType>, "tType of source container must be assignable to tType of this object");
 
 			data.reallocArr(pCont.count(), false);
 			tail = head = (uint64)-1;
 			count_ = (uint64)pCont.count(); free_ = 0;
 
-			for(tCIndex i = 0; i < pCont.count(); ++i){
+			for(tCIdxt i = 0; i < pCont.count(); ++i){
 				new(&(data[(uint64)i].value)) tType(static_cast<tType>(pCont[i]));
 				;     data[(uint64)i].next = (uint64)-1;
 			}
@@ -282,7 +282,7 @@ namespace lnx {
 		 * @param pCont The container object to copy elements from
 		 *     Its tType and tIdxt must be convertible to this object's tType and tIdxt, either by conversion operator or constructor
 		 */
-		template<class tCType, class tCIndex> inline RaArray(const ContainerBase<tCType, tCIndex>& pCont) {
+		template<class tCType, class tCIdxt> inline RaArray(const ContainerBase<tCType, tCIdxt>& pCont) {
 			isInit(pCont);
 			copyContainerBase(pCont);
 		}
@@ -296,7 +296,7 @@ namespace lnx {
 		 * @param pArr The RaArray to copy elements from.
 		 *     Its tType and tIdxt must be convertible to this object's tType and tIdxt, either by conversion operator or constructor
 		 */
-		template<class tCType, class tCIndex> inline RaArray(const RaArray<tCType, tCIndex>& pArr) {
+		template<class tCType, class tCIdxt> inline RaArray(const RaArray<tCType, tCIdxt>& pArr) {
 			isInit(pArr);
 			copyRaArray(pArr);
 		}
@@ -483,7 +483,7 @@ namespace lnx {
 		 *     Its tType and tIdxt must be convertible to this object's tType and tIdxt, either by conversion operator or constructor
 		 * @return R-value reference to this object
 		 */
-		template<class tCType, class tCIndex> inline auto& operator=(const ContainerBase<tCType, tCIndex>& pCont){
+		template<class tCType, class tCIdxt> inline auto& operator=(const ContainerBase<tCType, tCIdxt>& pCont){
 			checkInit(); isInit(pCont);
 
 			this->specializedDestroy();
@@ -506,7 +506,7 @@ namespace lnx {
 		 *     Its tType and tIdxt must be convertible to this object's tType and tIdxt, either by conversion operator or constructor
 		 * @return R-value reference to this object
 		 */
-		template<class tCType, class tCIndex> alwaysInline auto& operator=(const RaArray<tCType, tCIndex>& pArr) {
+		template<class tCType, class tCIdxt> alwaysInline auto& operator=(const RaArray<tCType, tCIdxt>& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
