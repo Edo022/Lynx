@@ -63,7 +63,7 @@ Any modification to a version will affect any project linked to it.
 &nbsp;
 
 ## Build applications
-Applications are built using the `<path_to_repo>/Build/lynxg++` executable, 
+Applications are built using the `<path_to_sdk>/Build/lynxg++` executable, 
 which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.   
 
 You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] to use different options based on the platform or configuration.  
