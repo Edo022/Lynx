@@ -57,8 +57,9 @@ You can link your projects to an SDK by running its "Setup.py" script:
 `mkdir MyProject`  
 `cd MyProject`  
 `python3.8 <path_to_sdk>/Setup/Setup.py`  
+
 Each version can be used by multiple projects at the same time.  
-Any modification to a version will affect any project linked to it.
+Any modification to a version will affect all the projects linked to it.
 
 &nbsp;
 
@@ -66,7 +67,7 @@ Any modification to a version will affect any project linked to it.
 Applications are built using the `<path_to_sdk>/Build/lynxg++` executable, 
 which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.   
 
-You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] to use different options based on the platform or configuration.  
+You can use -d[\<option\>], -r[\<option\>], -l[\<option\>] and -w[\<option\>] to use different options based on the platform or configuration.  
  
 - Debug mode  
     Turns off all the optimizations and adds any available debug, gdb and gprof information.
@@ -87,7 +88,7 @@ Platform and configuration can be specified with the -mode=\<mode\> option.
 | wr   | Build in release mode for Windows |
   
 
-e.g. `<path_to_sdk>/Build/lynxg++ -mode=ld, -r[-O3], main.cpp`  
+e.g. `<path_to_sdk>/Build/lynxg++ -mode=ld -r[-O3] main.cpp`  
 
 
 Examples are located in `<path_to_sdk>/Examples/` and contain both the source code and the build commands.  
