@@ -175,8 +175,6 @@ namespace lnx {
 
 
 		template<class tCType, class tCIdxt> inline auto& copyRaArray(const RaArray<tCType, tCIdxt>& pArr) {
-			static_assert(std::is_assignable_v<tType, tCType>, "tType of source array must be assignable to tType of this object");
-
 			data.reallocArr((uint64)pArr.count(), false);
 			tail   = (tIdxt)pArr.tail;    head  = (tIdxt)pArr.head;
 			count_ = (tIdxt)pArr.count(); free_ = (tIdxt)pArr.freeCount();
@@ -194,8 +192,6 @@ namespace lnx {
 
 
 		template<class tCType, class tCIdxt> inline auto& copyContainerBase(const ContainerBase<tCType, tCIdxt>& pCont){
-			static_assert(std::is_assignable_v<tType, tCType>, "tType of source container must be assignable to tType of this object");
-
 			data.reallocArr((uint64)pCont.count(), false);
 			tail = head = (tIdxt)-1;
 			count_ = (tIdxt)pCont.count(); free_ = 0;
@@ -449,7 +445,7 @@ namespace lnx {
 		inline void clear() {
 			checkInit();
 			this->specializedDestroy();
-			tail = head = (uint64)-1;
+			tail = head = (tIdxt)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0);
 		}
