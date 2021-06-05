@@ -574,7 +574,7 @@ namespace lnx {
 		alwaysInline bool isValid(const tIdxt vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return data[vIndex].next == (tIdxt)-1;
+			return data[(uint64)vIndex].next == (tIdxt)-1;
 		}
 
 
@@ -584,7 +584,7 @@ namespace lnx {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			dbg::checkParam(!isValid(vIndex), "vIndex", "Accessing deleted array element");
-			return data[vIndex].value;
+			return data[(uint64)vIndex].value;
 		}
 
 
