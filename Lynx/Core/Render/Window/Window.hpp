@@ -110,12 +110,6 @@ namespace lnx{
 		;
 
 
-
-
-		void run();
-
-
-
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
 			((Window*)glfwGetWindowUserPointer(pWindow))->renderCore.swp.resized = true;
 		}
@@ -123,9 +117,9 @@ namespace lnx{
 
 	public:
 		Window(uint32 vWidth = 800, uint32 vHeight = 600) : width{ vWidth }, height{ vHeight } {
-			renderCore.t(*this, &Window::run);
+			init();
+			renderCore.t(renderCore, &lnx::core::RenderCore::run);
 			renderCore.t.detach();
-			while(!initialized){ thr::self::yield(); }
 		}
 		Window(const Window&) = delete;
 		Window(const Window&&) = delete;

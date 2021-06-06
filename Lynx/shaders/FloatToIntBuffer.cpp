@@ -15,7 +15,7 @@ namespace lnx::shd{
 
 
 	void FloatToIntBuffer::create(vram::ptr<f32v4, eVRam, eStorage> pSrc, vram::ptr<u32, eVRam, eStorage> pDst, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
-		pWindow.addObject_m.lock();
+		pWindow.renderCore.addObject_m.lock();
 			_src.vdata = (vram::ptr<char, eVRam, eStorage>)pSrc;
 			_dst.vdata = (vram::ptr<char, eVRam, eStorage>)pDst;
 			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
@@ -24,7 +24,7 @@ namespace lnx::shd{
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);
 			pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);
-		pWindow.addObject_m.unlock();
+		pWindow.renderCore.addObject_m.unlock();
 	}
 
 

@@ -418,6 +418,15 @@ namespace lnx{
 
 
 
+	void core::RenderCore::run(){
+		_dbg(thr::self::setName("App | Render"));
+		renderLoop();
+		w->clear();
+		pthread_exit(nullptr);
+	}
+
+
+
 	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;

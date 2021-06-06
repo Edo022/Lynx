@@ -19,20 +19,7 @@
 
 
 namespace lnx{
-	void Window::run(){
-		_dbg(thr::self::setName("App | Window"));
-		init();
-		renderLoop();
-		clear();
-		pthread_exit(nullptr);
-	}
-
-
-
-
 	void Window::init() {
-
-
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
 		switch(glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
 			case VkResult::VK_SUCCESS: break;

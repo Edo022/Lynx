@@ -15,7 +15,7 @@ namespace lnx::shd{
 
 
 	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f32v4, eVRam, eUniform> pData, const u32v3 vGroupCount, Window& pWindow){
-		pWindow.addObject_m.lock();
+		pWindow.renderCore.addObject_m.lock();
 			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
 			_data.vdata = (vram::ptr<char, eVRam, eUniform>)pData;
@@ -23,7 +23,7 @@ namespace lnx::shd{
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);
 			pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);
-		pWindow.addObject_m.unlock();
+		pWindow.renderCore.addObject_m.unlock();
 	}
 
 
