@@ -44,60 +44,6 @@
 
 
 namespace lnx {
-	template<class tType, std::integral tIdxt> struct RaArray;
-
-	namespace __pvt{
-		template<class tType, class tIdxt, bool construct> struct raCtor_t{};
-		template<class tType, class tIdxt> struct raCtor_t<tType, tIdxt, false>{
-			protected:
-			alwaysInline void initRange(const tIdxt& vFrom, const tIdxt& vTo) const noexcept {}
-		};
-		template<class tType, class tIdxt> struct raCtor_t<tType, tIdxt, true>{
-			using arrt = lnx::RaArray<tType, tIdxt>;
-			protected:
-			// inline void initRange(const tIdxt vFrom, const tIdxt vTo) const {
-			// 	type* elm = ((lnx::RaArray<type, tIdxt>*)this)->begin();
-			// 	for(tIdxt i = vFrom; i <= vTo; ++i) {
-			// 		new(elm + i) type();
-			// 	}
-			// }
-			//FIXME MOVE TO MAIN STRUCTURE
-			//FIXME ACTUALLY USE THE FUNCTION
-			inline void initRange(const tIdxt& vFrom, const tIdxt& vTo) {
-				for(tIdxt i = vFrom; i < vTo; ++i) {
-					/*if(((arrt*)this)->isValid(i))*/ new(&((arrt*)this)[i]) tType();
-				}
-			}
-			inline void init(const tIdxt& vIndex){
-				/*if(((arrt*)this)->isValid(vIndex))*/ new(&((arrt*)this)[vIndex]) tType();
-			}
-		};
-
-
-		// template<class tType, class tIdxt, bool destroy> struct raDtor_t{};
-		// template<class tType, class tIdxt> struct raDtor_t<tType, tIdxt, false>{
-		// 	protected:
-		// 	alwaysInline void specializedDestroy() const noexcept {}
-		// };
-		// template<class tType, class tIdxt> struct raDtor_t<tType, tIdxt, true>{
-		// 	using arrt = lnx::RaArray<tType, tIdxt>;
-		// 	protected:
-		// 	inline void specializedDestroy() {
-		// 		int i = 0;
-		// 		for(auto elm : *(arrt*)this) {
-		// 			if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
-		// 		}
-		// 	}
-		// };
-	}
-
-
-
-
-
-
-
-
 	/**
 	 * @brief A dynamic array with non contiguous elements.
 	 *		New elements are written over previously removed ones, or concatenated if there are none.
@@ -179,9 +125,9 @@ namespace lnx {
 		}
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
 			requires(!std::is_same_v<tIdxt, tAIdxt> || !std::is_trivially_copy_constructible_v<tAType>){
-			for(tAType i = 0; i < pArr.count(); ++i){
+			for(tAIdxt i = 0; i < pArr.count(); ++i){
 				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
-				specIdxCnv<tIdxt, tAType>(data[(uint64)i].next, pArr.data[i].next);
+				specIdxCnv(data[(uint64)i].next, pArr.data[i].next);
 			}
 		}
 
@@ -207,7 +153,8 @@ namespace lnx {
 
 		template<class tAType, class tAIdxt> inline auto& copyRaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			data.reallocArr((uint64)pArr.count(), false);
-			tail   = (tIdxt)pArr.tail;    head  = (tIdxt)pArr.head; //FIXME use specific assignment
+			// tail   = (tIdxt)pArr.tail;    head  = (tIdxt)pArr.head; //FIXME use specific assignment
+			specIdxCnv(tail, pArr.tail);  specIdxCnv(head, pArr.head);
 			count_ = (tIdxt)pArr.count(); free_ = (tIdxt)pArr.freeCount();
 
 			specCopyArr<tAType>(pArr);
