@@ -61,7 +61,8 @@ namespace lnx {
 			// 		new(elm + i) type();
 			// 	}
 			// }
-			//FIXME ADD ADD FUNCTION
+			//FIXME MOVE TO MAIN STRUCTURE
+			//FIXME ACTUALLY USE THE FUNCTION
 			inline void initRange(const tIdxt& vFrom, const tIdxt& vTo) {
 				for(tIdxt i = vFrom; i < vTo; ++i) {
 					/*if(((arrt*)this)->isValid(i))*/ new(&((arrt*)this)[i]) tType();
@@ -107,9 +108,7 @@ namespace lnx {
 	 *     The type of any index or count provided by and used on this object and the additional space used by elements indices all depend on this parameter
 	 *     tIdxt must be an integral type
 	 */
-	template<class tType, std::integral tIdxt = uint32> struct RaArray:
-	private __pvt::raCtor_t<tType, tIdxt, !std::is_base_of_v<ignoreCopy, tType> && !std::is_trivially_constructible_v<tType>>{
-	// private __pvt::raDtor_t<tType, tIdxt, !std::is_base_of_v<ignoreDtor, tType> && !std::is_trivially_destructible_v <tType>> {
+	template<class tType, std::integral tIdxt = uint32> struct RaArray{
 		genInitCheck;
 		static_assert(!std::is_void_v<tType>, "RaArray declared as array of void");
 
@@ -162,12 +161,27 @@ namespace lnx {
 
 		template<class tType_> alwaysInline void specDestroy() const noexcept requires( std::is_trivially_destructible_v<tType_>) {}
 		template<class tType_>       inline void specDestroy()                requires(!std::is_trivially_destructible_v<tType_>) {
-			// int i = 0;
-			// for(auto elm : *(arrt*)this) {
-			// 	if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
-			// }
 			for(tIdxt i = 0; i < count(); ++i){
 				if(isValid(i)) data[(uint64)i].value.~tType_();
+			}
+		}
+
+
+
+
+		template<class tAType, class tAIdxt> alwaysInline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
+			requires(std::is_same_v<tIdxt, tAIdxt> && std::is_trivially_copy_constructible_v<tAType>){
+			// for(tAType i = 0; i < pArr.count(); ++i){
+			// 	if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
+			// 	specIdxCnv<tIdxt, tAType>(data[(uint64)i].next, pArr.data[i].next);
+			// }
+			memcpy(data, pArr.data, pArr.data.size());
+		}
+		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
+			requires(!std::is_same_v<tIdxt, tAIdxt> || !std::is_trivially_copy_constructible_v<tAType>){
+			for(tAType i = 0; i < pArr.count(); ++i){
+				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
+				specIdxCnv<tIdxt, tAType>(data[(uint64)i].next, pArr.data[i].next);
 			}
 		}
 
@@ -189,17 +203,14 @@ namespace lnx {
 		}
 
 
-		template<class tCType, class tCIdxt> inline auto& copyRaArray(const RaArray<tCType, tCIdxt>& pArr) {
+
+
+		template<class tAType, class tAIdxt> inline auto& copyRaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			data.reallocArr((uint64)pArr.count(), false);
-			tail   = (tIdxt)pArr.tail;    head  = (tIdxt)pArr.head;
+			tail   = (tIdxt)pArr.tail;    head  = (tIdxt)pArr.head; //FIXME use specific assignment
 			count_ = (tIdxt)pArr.count(); free_ = (tIdxt)pArr.freeCount();
 
-			//FIXME USE PLAIN COPY FOR TRIVIALLY COPIABLE TYPES
-			//TODO BLINDLY COPY FREED ELEMENTS TOGETHER WITH THE INDEX IF THE VALUE IS SMALLER THAN A CERTAIN CONFIGURABLE VALUE
-			for(tCIdxt i = 0; i < pArr.count(); ++i){
-				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
-				specIdxCnv<tIdxt, tCIdxt>(data[(uint64)i].next, pArr.data[i].next);
-			}
+			specCopyArr<tAType>(pArr);
 			return *this;
 		}
 
@@ -302,11 +313,12 @@ namespace lnx {
 		/**
 		 * @brief Templated version of copy constructor. Initializes the array by copy constructing each element from a RaArray of compatible type
 		 *     Removed elements are preserved but not constructed
-		 *     Trivially constructible types are not constructed individually but plainly copied as binary data
+		 *     Trivially destructible types are not destroyed
+		 *     Trivially copy constructible types are not constructed individually but plainly copied as binary data
 		 * Complexity: O(n)
 		 * @param pArr The RaArray to copy elements from
 		 */
-		template<class tCType, std::integral tCIdxt> inline RaArray(const RaArray<tCType, tCIdxt>& pArr) {
+		template<class tAType, std::integral tAIdxt> inline RaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			isInit(pArr);
 			copyRaArray(pArr);
 		}
@@ -317,7 +329,8 @@ namespace lnx {
 		/**
 		 * @brief Copy constructor. Initializes the array by copy constructing each element from a RaArray of the same type
 		 *     Removed elements are preserved but not constructed
-		 *     Trivially constructible types are not constructed individually but plainly copied as binary data
+		 *     Trivially destructible types are not destroyed
+		 *     Trivially copy constructible types are not constructed individually but plainly copied as binary data
 		 * Complexity: O(n)
 		 * @param pArr The RaArray to copy elements from
 		 */
@@ -504,6 +517,7 @@ namespace lnx {
 		 * @brief Templated version of copy assignment. Destroys each element and copies the elements of pCont into this array
 		 *     Removed elements are preserved but not constructed
 		 *     Trivially destructible types are not destroyed
+ 		 *     Trivially copy constructible types are not constructed individually but plainly copied as binary data
 		 * Complexity:
 		 *     O(1)     [self assignment]
 		 *     O(n)     [trivially destructible types]
@@ -512,19 +526,20 @@ namespace lnx {
 		 * @param pArr The RaArray to copy construct elements from
 		 * @return L-value reference to this object
 		 */
-		template<class tCType, class tCIdxt> alwaysInline auto& operator=(const RaArray<tCType, tCIdxt>& pArr) {
+		template<class tAType, class tAIdxt> alwaysInline auto& operator=(const RaArray<tAType, tAIdxt>& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
 			specDestroy<tType>();
 			return copyRaArray(pArr);
 		}
-//FIXME DO NOT STATIC CAST IF CONVERTIBLE OBJECTS CAN BE ASSIGNED NORMALLY
+
 
 		/**
 		 * @brief Copy assignment. Destroys each element and copies the elements of pCont into this array
 		 *     Removed elements are preserved but not constructed
 		 *     Trivially destructible types are not destroyed
+ 		 *     Trivially copy constructible types are not constructed individually but plainly copied as binary data
 		 * Complexity:
 		 *     O(1)     [self assignment]
 		 *     O(n)     [trivially destructible types]

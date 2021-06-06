@@ -267,7 +267,7 @@ namespace lnx::ram{
 
 
 
-		//Returns the size in BYTES of the allocate memory. use count() to get the number of elements
+		//Returns the size in BYTES of the allocated memory. use count() to get the number of elements
 		alwaysInline uint64 size()  const noexcept { return cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
 		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(tType); }
