@@ -98,6 +98,17 @@ namespace lnx{
 
 
 	void core::RenderCore::init(){
+		pipelines.resize(core::shaders::pipelineNum);
+		for(uint32 i = 0; i < pipelines.count(); ++i){
+			core::shaders::createPipeline(i, *w);
+		}
+
+		swp.bindedWindow = w;
+		swp.create(false);
+
+
+
+
 		{ //Initialize window buffers and count
 			iOut_g. realloc(1920*2 * 1080 * 4);			//A8  R8  G8  B8  UI
 			fOut_g. realloc(1920*2 * 1080 * 4 * 4);		//A32 R32 G32 B32 UF

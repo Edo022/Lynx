@@ -31,11 +31,6 @@ namespace lnx{
 
 
 	void Window::init() {
-		pipelines.resize(core::shaders::pipelineNum);
-
-		for(uint32 i = 0; i < pipelines.count(); ++i){
-			core::shaders::createPipeline(i, *this);
-		}
 
 
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
@@ -72,10 +67,6 @@ namespace lnx{
 		glfwSetScrollCallback         (window, input::onAxis);
 		glfwSetCursorEnterCallback    (window, input::onEnter);
 		// glfwSetKeyCallback            (window, input::onKey); //FIXME
-
-
-		renderCore.swp.bindedWindow = this;
-		renderCore.swp.create(false);
 
 
 		renderCore.w = this;

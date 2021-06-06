@@ -78,6 +78,7 @@ namespace lnx{
 			vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
 
 			core::wnd::Swapchain swp;
+			RtArray<vk::Pipeline> pipelines;
 
 			vk::CommandPool commandPool;
 			vk::CommandPool copyCommandPool;

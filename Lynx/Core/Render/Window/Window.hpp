@@ -30,7 +30,6 @@ namespace lnx{
 		core::RenderCore renderCore;
 
 
-		RtArray<vk::Pipeline> pipelines;
 		std::mutex addObject_m;
 		void qSpawn(obj::Obj_bb* pObject);
 
