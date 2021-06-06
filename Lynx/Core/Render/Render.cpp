@@ -54,7 +54,7 @@ namespace lnx::core::render{
 
 
 namespace lnx{
-	void core::RenderCore::recSpawn(obj::Obj_bb* pObj, Window& pWindow){
+	void core::RenderCore::recSpawn(obj::Obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
 		pObj->render.parentWindow = &pWindow;								//Set owner window
@@ -118,7 +118,7 @@ namespace lnx{
 			wSize_g.realloc(/*4 * 2*/16);				//Create cell for window size
 			//FIXME rounded up to a multiple of 16, make it automatic
 
-			u32v2 wSize = { w->renderCore.swp.createInfo.imageExtent.width, w->renderCore.swp.createInfo.imageExtent.height };
+			u32v2 wSize = { swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
 			cb.updateBuffer(wSize_g.cell->csc.buffer, wSize_g.cell->localOffset, wSize_g.cell->cellSize, &wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
@@ -126,16 +126,83 @@ namespace lnx{
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
 		}
 		{ //#LLID CCB0000 Create copy command buffers
-			copyCommandBuffers.resize(w->renderCore.swp.images.count());	//Resize the command buffer array in the shader
-			w->createDefaultCommandBuffers__();
+			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
+			createDefaultCommandBuffers__();
 		}
 		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *w);
 	}
 
 	void core::RenderCore::clear(){
+		swp.clear();
 		wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
 	}
 
+
+
+
+
+
+
+
+	//Creates the default command buffers used for the render
+	void core::RenderCore::createDefaultCommandBuffers__() { //TODO
+		{ //Render command pool
+			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
+				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+			;
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
+		}
+
+
+
+
+		{ //Copy
+			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
+				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])	//Set the compute family where to bind the command pool
+			; //FIXME
+			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
+
+			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
+				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
+				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
+				.setCommandBufferCount (swp.images.count())									//Set command buffer count
+			;
+			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
+
+
+
+
+			//Record a present command buffers for each swapchain images
+			for(uint32 imgIndex = 0; imgIndex < swp.images.count(); imgIndex++) {
+				auto beginInfo = vk::CommandBufferBeginInfo() 							//Simultaneous use allows the command buffer to be executed multiple times
+					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
+				;
+				//Start recording commands
+				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases; }
+					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
+					w->readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
+					vk::PipelineStageFlags 													//Create stage flags
+						srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput,			//The swapchain image is in color output stage
+						dstStage = vk::PipelineStageFlagBits::eTransfer;						//Change it to transfer stage to copy the buffer in it
+					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &w->readToWriteBarrier);
+					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
+
+					w->copyRegion.imageExtent = vk::Extent3D{ swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
+					copyCommandBuffers[imgIndex].copyBufferToImage(iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &w->copyRegion);
+
+
+					//Create a barrier to use the swapchain image as a present source image
+					w->writeToReadBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
+					vk::PipelineStageFlags 													//Create stage flags
+						srcStage1 = vk::PipelineStageFlagBits::eTransfer,						//The image is in transfer stage from the buffer copy
+						dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;			//Change it to color output to present them
+					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &w->writeToReadBarrier);
+					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
+				switch(copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
+			}
+		}
+	}
 
 
 
@@ -153,12 +220,12 @@ namespace lnx{
 
 
 
-	vk::Result Window::present(uint32& imageIndex){
+	vk::Result core::RenderCore::present(uint32& imageIndex){
 		const auto presentInfo = vk::PresentInfoKHR()
 			.setWaitSemaphoreCount (1)
-			.setPWaitSemaphores    (&renderCore.swp.frames[renderCore.swp.curFrame].s_copy)
+			.setPWaitSemaphores    (&swp.frames[swp.curFrame].s_copy)
 			.setSwapchainCount     (1)
-			.setPSwapchains        (&renderCore.swp.swapchain)
+			.setPSwapchains        (&swp.swapchain)
 			.setPImageIndices      (&imageIndex)
 		;
 		core::render::presentQueueSubmit_m.lock();
@@ -173,8 +240,8 @@ namespace lnx{
 
 
 
-	void Window::draw(uint32& imageIndex){
-		switch(core::dvc::graphics.ld.waitForFences(1, &renderCore.swp.frames[renderCore.swp.curFrame].f_rendered, false, LONG_MAX)){
+	void core::RenderCore::draw(uint32& imageIndex){
+		switch(core::dvc::graphics.ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
 			case vk::Result::eTimeout:         dbg::printError("Fence timed out"); break;
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost");     break;
 			vkDefaultCases;
@@ -183,20 +250,20 @@ namespace lnx{
 
 		//Redraw frame if necessary
 		redraw:
-		if(renderCore.swp.resized) {
-			renderCore.swp.resized = false;
-			renderCore.swp.recreate();
+		if(swp.resized) {
+			swp.resized = false;
+			swp.recreate();
 			goto redraw;
 		}
 
 
 		//Acquire swapchain image
 		{
-			switch(core::dvc::graphics.ld.acquireNextImageKHR(renderCore.swp.swapchain, UINT64_MAX, renderCore.swp.frames[renderCore.swp.curFrame].s_aquired, nullptr, &imageIndex)) {
+			switch(core::dvc::graphics.ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &imageIndex)) {
 				case vk::Result::eTimeout:             dbg::printWarning("Timeout");    break;
 				case vk::Result::eNotReady:            dbg::printWarning("Not ready");  break;
 				case vk::Result::eSuboptimalKHR:       dbg::printWarning("Suboptimal"); break;
-				case vk::Result::eErrorOutOfDateKHR:   renderCore.swp.recreate(); goto redraw;
+				case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 				case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
 				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 				#ifdef _WIN64 //This error is unique to windows
@@ -221,35 +288,35 @@ namespace lnx{
 		const vk::SubmitInfo submitInfos[]{
 			vk::SubmitInfo() //Draw objects
 				.setWaitSemaphoreCount   (1)
-				.setPWaitSemaphores      (&renderCore.swp.frames[renderCore.swp.curFrame].s_aquired)
+				.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_aquired)
 				.setPWaitDstStageMask    (waitStages)
-				.setCommandBufferCount   (renderCore.swp.shadersCBs.count())
-				.setPCommandBuffers      (renderCore.swp.shadersCBs.begin())
+				.setCommandBufferCount   (swp.shadersCBs.count())
+				.setPCommandBuffers      (swp.shadersCBs.begin())
 				.setSignalSemaphoreCount (1)
-				.setPSignalSemaphores    (&renderCore.swp.frames[renderCore.swp.curFrame].s_objects)
+				.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_objects)
 			,
 			vk::SubmitInfo() //Convert and clear shader
 				.setWaitSemaphoreCount   (1)
-				.setPWaitSemaphores      (&renderCore.swp.frames[renderCore.swp.curFrame].s_objects)
+				.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_objects)
 				.setPWaitDstStageMask    (waitStages)
 				.setCommandBufferCount   (1)
-				.setPCommandBuffers      (&renderCore.sh_clear.commandBuffers[0])
+				.setPCommandBuffers      (&sh_clear.commandBuffers[0])
 				.setSignalSemaphoreCount (1)
-				.setPSignalSemaphores    (&renderCore.swp.frames[renderCore.swp.curFrame].s_clear)
+				.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_clear)
 			,
 			vk::SubmitInfo() //Copy shader
 				.setWaitSemaphoreCount   (1)
-				.setPWaitSemaphores      (&renderCore.swp.frames[renderCore.swp.curFrame].s_clear)
+				.setPWaitSemaphores      (&swp.frames[swp.curFrame].s_clear)
 				.setPWaitDstStageMask    (waitStages)
 				.setCommandBufferCount   (1)
-				.setPCommandBuffers      (&renderCore.copyCommandBuffers[imageIndex])
+				.setPCommandBuffers      (&copyCommandBuffers[imageIndex])
 				.setSignalSemaphoreCount (1)
-				.setPSignalSemaphores    (&renderCore.swp.frames[renderCore.swp.curFrame].s_copy)
+				.setPSignalSemaphores    (&swp.frames[swp.curFrame].s_copy)
 			,
 		};
 		addObject_m.unlock(); //FIXME
 
-		switch(core::dvc::graphics.ld.resetFences(1, &renderCore.swp.frames[renderCore.swp.curFrame].f_rendered)){
+		switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 			case vk::Result::eSuccess: break;
 			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of device memory"); break;
 			// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
@@ -258,7 +325,7 @@ namespace lnx{
 		}
 
 		core::render::graphicsQueueSubmit_m.lock();
-		switch(core::dvc::graphics.cqs[0].submit(3, submitInfos, renderCore.swp.frames[renderCore.swp.curFrame].f_rendered)){ vkDefaultCases; }
+		switch(core::dvc::graphics.cqs[0].submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
 		core::render::graphicsQueueSubmit_m.unlock();
 	}
 
@@ -267,13 +334,13 @@ namespace lnx{
 
 
 
-	void Window::updateObjects(){
+	void core::RenderCore::updateObjects(){
 		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE RENDER QUEUE
 		requests_m.lock();
 		if(!requests.empty()) for(auto r : requests){
-			if(r->render.updates & obj::UpdateBits::eSpawn) renderCore.recSpawn(r, *this);
-			if(r->render.updates & obj::UpdateBits::eLimit) renderCore.recLimit(r);
-			if(r->render.updates & obj::UpdateBits::eUpdateg) renderCore.recUpdateg(r, cb);
+			if(r->render.updates & obj::UpdateBits::eSpawn) recSpawn(r, *w);
+			if(r->render.updates & obj::UpdateBits::eLimit) recLimit(r);
+			if(r->render.updates & obj::UpdateBits::eUpdateg) recUpdateg(r, cb);
 			_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 		}
 		requests.clear();
@@ -286,52 +353,52 @@ namespace lnx{
 
 
 
-	void Window::sendInputCallbacks(){
+	void core::RenderCore::sendInputCallbacks(){
 		//FIXME REQUESTS SENT TO NON SPAWNED OBJECTS FROM INPUT CALLBACKS ARE EXECUTED DURING SPAWN
 		//Input callbacks
-		if(icQueues.onClick.queued){
-			icQueues.onClick.m.lock();
-			for(uint32 i = 0; i < icQueues.onClick.list.count(); ++i){
-				if(icQueues.onClick.list.isValid(i)) icQueues.onClick.list[i]->onClick(icQueues.onClick.pos, icQueues.lastMouseButton);
+		if(w->icQueues.onClick.queued){
+			w->icQueues.onClick.m.lock();
+			for(uint32 i = 0; i < w->icQueues.onClick.list.count(); ++i){
+				if(w->icQueues.onClick.list.isValid(i)) w->icQueues.onClick.list[i]->onClick(w->icQueues.onClick.pos, w->icQueues.lastMouseButton);
 			}
-			icQueues.onClick.m.unlock();
-			icQueues.onClick.queued = false;
+			w->icQueues.onClick.m.unlock();
+			w->icQueues.onClick.queued = false;
 		}
 
-		if(icQueues.onEnter.queued){
-			icQueues.onEnter.m.lock();
-			for(uint32 i = 0; i < icQueues.onEnter.list.count(); ++i){
-				if(icQueues.onEnter.list.isValid(i)) icQueues.onEnter.list[i]->onEnter(icQueues.onEnter.pos);
+		if(w->icQueues.onEnter.queued){
+			w->icQueues.onEnter.m.lock();
+			for(uint32 i = 0; i < w->icQueues.onEnter.list.count(); ++i){
+				if(w->icQueues.onEnter.list.isValid(i)) w->icQueues.onEnter.list[i]->onEnter(w->icQueues.onEnter.pos);
 			}
-			icQueues.onEnter.m.unlock();
-			icQueues.onEnter.queued = false;
+			w->icQueues.onEnter.m.unlock();
+			w->icQueues.onEnter.queued = false;
 		}
 
-		if(icQueues.onExit.queued){
-			icQueues.onExit.m.lock();
-			for(uint32 i = 0; i < icQueues.onExit.list.count(); ++i){
-				if(icQueues.onExit.list.isValid(i)) icQueues.onExit.list[i]->onExit(icQueues.onExit.pos);
+		if(w->icQueues.onExit.queued){
+			w->icQueues.onExit.m.lock();
+			for(uint32 i = 0; i < w->icQueues.onExit.list.count(); ++i){
+				if(w->icQueues.onExit.list.isValid(i)) w->icQueues.onExit.list[i]->onExit(w->icQueues.onExit.pos);
 			}
-			icQueues.onExit.m.unlock();
-			icQueues.onExit.queued = false;
+			w->icQueues.onExit.m.unlock();
+			w->icQueues.onExit.queued = false;
 		}
 
-		if(icQueues.onMove.queued){
-			icQueues.onMove.m.lock();
-			for(uint32 i = 0; i < icQueues.onMove.list.count(); ++i){
-				if(icQueues.onMove.list.isValid(i)) icQueues.onMove.list[i]->onMove(icQueues.onMove.pos); //FIXME
+		if(w->icQueues.onMove.queued){
+			w->icQueues.onMove.m.lock();
+			for(uint32 i = 0; i < w->icQueues.onMove.list.count(); ++i){
+				if(w->icQueues.onMove.list.isValid(i)) w->icQueues.onMove.list[i]->onMove(w->icQueues.onMove.pos); //FIXME
 			}
-			icQueues.onMove.m.unlock();
-			icQueues.onMove.queued = false;
+			w->icQueues.onMove.m.unlock();
+			w->icQueues.onMove.queued = false;
 		}
 
-		if(icQueues.onAxis.queued){
-			icQueues.onAxis.m.lock();
-			for(uint32 i = 0; i < icQueues.onAxis.list.count(); ++i){
-				if(icQueues.onAxis.list.isValid(i)) icQueues.onAxis.list[i]->onAxis(1); //FIXME
+		if(w->icQueues.onAxis.queued){
+			w->icQueues.onAxis.m.lock();
+			for(uint32 i = 0; i < w->icQueues.onAxis.list.count(); ++i){
+				if(w->icQueues.onAxis.list.isValid(i)) w->icQueues.onAxis.list[i]->onAxis(1); //FIXME
 			}
-			icQueues.onAxis.m.unlock();
-			icQueues.onAxis.queued = false;
+			w->icQueues.onAxis.m.unlock();
+			w->icQueues.onAxis.queued = false;
 		}
 	}
 
@@ -351,14 +418,14 @@ namespace lnx{
 
 
 
-	void Window::renderLoop() {
+	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
 		while(running) {
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			auto start = std::chrono::high_resolution_clock::now();
 			addObject_m.lock();
-			if(renderCore.swp.shadersCBs.count() <= 0) {
+			if(swp.shadersCBs.count() <= 0) {
 				addObject_m.unlock();
 				continue;
 			}
@@ -370,7 +437,7 @@ namespace lnx{
 			switch(present(imageIndex)){
 				case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
 				// case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-				case vk::Result::eErrorOutOfDateKHR:   renderCore.swp.recreate(); goto redraw;
+				case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 				case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
 				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 				#ifdef _WIN64 //This error is unique to windows
@@ -381,8 +448,8 @@ namespace lnx{
 
 
 			//Update frame number and flush the window data
-			renderCore.swp.curFrame = (renderCore.swp.curFrame + 1) % lnx::core::wnd::__renderMaxFramesInFlight;
-			glfwSwapBuffers(window);
+			swp.curFrame = (swp.curFrame + 1) % lnx::core::wnd::__renderMaxFramesInFlight;
+			glfwSwapBuffers(w->window);
 
 			updateObjects();
 			sendInputCallbacks();
@@ -399,7 +466,7 @@ namespace lnx{
 
 
 			//Stop render if window was closed
-			if(glfwWindowShouldClose(window)) running = false;
+			if(glfwWindowShouldClose(w->window)) running = false;
 		}
 	}
 }

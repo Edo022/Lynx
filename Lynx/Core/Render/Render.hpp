@@ -62,12 +62,22 @@ namespace lnx{
 		 */
 		class RenderCore{
 			friend class lnx::Window;
+			friend class lnx::core::wnd::Swapchain;
+
 			void init();	//Initializes the render core.              This function must be called from lnx::Window::init()  only
 			void clear();	//Stops the render and frees its resources. This function must be called from lnx::Window::clear() only
 
 			void recSpawn  (obj::Obj_bb* pObj, Window& pWindow);
 			void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB);
 			void recLimit  (obj::Obj_bb* pObj);
+
+			void renderLoop();
+			void draw(uint32& imageIndex);
+			vk::Result present(uint32& imageIndex);
+
+			void updateObjects();
+			void sendInputCallbacks();
+			void createDefaultCommandBuffers__();
 
 		public:
 			Window* w;									//Address of the window that owns the render core. Initialized in the init function of the window
@@ -84,6 +94,10 @@ namespace lnx{
 			vk::CommandPool copyCommandPool;
 			RtArray<vk::CommandBuffer> copyCommandBuffers;
 			shd::FloatToIntBuffer sh_clear;
+
+			std::mutex addObject_m;
+			RtArray<obj::Obj_bb*> requests; //TODO USE RAARRAY
+			std::mutex            requests_m;
 		};
 	}
 }

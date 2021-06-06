@@ -203,7 +203,7 @@ namespace lnx::core::wnd{
 
 				//#LLID CCB0000 Recreate copy command buffers
 				bindedWindow->renderCore.copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
-				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
+				bindedWindow->renderCore.createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
 			//Recreate clear shader
@@ -228,7 +228,7 @@ namespace lnx::core::wnd{
 
 
 
-	Swapchain::~Swapchain(){
+	void Swapchain::clear(){
 		switch(core::dvc::graphics.ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 			vkDefaultCases;

@@ -26,16 +26,10 @@ namespace lnx{
 		std::atomic<bool> running     = false;
 		std::atomic<bool> initialized = false;
 
-
 		core::RenderCore renderCore;
 
-
-		std::mutex addObject_m;
 		void qSpawn(obj::Obj_bb* pObject);
 
-
-		RtArray<obj::Obj_bb*> requests; //TODO USE RAARRAY
-		std::mutex            requests_m;
 
 
 
@@ -120,13 +114,6 @@ namespace lnx{
 
 		void run();
 
-		void renderLoop();
-		void draw(uint32& imageIndex);
-		vk::Result present(uint32& imageIndex);
-		void updateObjects();
-		void sendInputCallbacks();
-
-		void createDefaultCommandBuffers__();
 
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){

@@ -72,8 +72,6 @@ namespace lnx{
 		renderCore.w = this;
 		renderCore.init();
 
-
-
 		//FIXME ADD RECREATE FUNCTION TO GENERATED INTERFACES
 		initialized = true;
 	}
@@ -81,78 +79,8 @@ namespace lnx{
 
 
 
-
-
-
-
-	//Creates the default command buffers used for the render
-	void Window::createDefaultCommandBuffers__() { //TODO
-		{ //Render command pool
-			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
-				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
-				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
-			;
-			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &renderCore.commandPool)){ vkDefaultCases; }
-		}
-
-
-
-
-		{ //Copy
-			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
-				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])	//Set the compute family where to bind the command pool
-			; //FIXME
-			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &renderCore.copyCommandPool)){ vkDefaultCases; }
-
-			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
-				.setCommandPool        (renderCore.copyCommandPool)									//Set command pool where to allocate the command buffer
-				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
-				.setCommandBufferCount (renderCore.swp.images.count())									//Set command buffer count
-			;
-			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, renderCore.copyCommandBuffers.begin())){ vkDefaultCases; }
-
-
-
-
-			//Record a present command buffers for each swapchain images
-			for(uint32 imgIndex = 0; imgIndex < renderCore.swp.images.count(); imgIndex++) {
-				auto beginInfo = vk::CommandBufferBeginInfo() 							//Simultaneous use allows the command buffer to be executed multiple times
-					.setFlags (vk::CommandBufferUsageFlagBits::eSimultaneousUse)
-				;
-				//Start recording commands
-				switch(renderCore.copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases; }
-					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-					readToWriteBarrier.image = renderCore.swp.images[imgIndex].image;					//Set swapchain image
-					vk::PipelineStageFlags 													//Create stage flags
-						srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput,			//The swapchain image is in color output stage
-						dstStage = vk::PipelineStageFlagBits::eTransfer;						//Change it to transfer stage to copy the buffer in it
-					renderCore.copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
-					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
-
-					copyRegion.imageExtent = vk::Extent3D{ renderCore.swp.createInfo.imageExtent.width, renderCore.swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
-					renderCore.copyCommandBuffers[imgIndex].copyBufferToImage(renderCore.iOut_g.cell->csc.buffer, renderCore.swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
-
-
-					//Create a barrier to use the swapchain image as a present source image
-					writeToReadBarrier.image = renderCore.swp.images[imgIndex].image;					//Set swapchain image
-					vk::PipelineStageFlags 													//Create stage flags
-						srcStage1 = vk::PipelineStageFlagBits::eTransfer,						//The image is in transfer stage from the buffer copy
-						dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;			//Change it to color output to present them
-					renderCore.copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
-					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
-				switch(renderCore.copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
-			}
-		}
-	}
-
-
-
-
-
-
 	void Window::clear(){
 		renderCore.clear();
-		renderCore.swp.~Swapchain();
 		core::dvc::instance.destroySurfaceKHR(surface, nullptr);
 		glfwDestroyWindow(window);
 		initialized = false;
@@ -169,9 +97,9 @@ namespace lnx{
 	void Window::qSpawn(obj::Obj_bb* pObject){
 		// dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
 
-		requests_m.lock();
+		renderCore.requests_m.lock();
 			pObject->render.updates = pObject->render.updates | obj::UpdateBits::eSpawn;
-			requests.add(pObject);
-		requests_m.unlock();
+			renderCore.requests.add(pObject);
+		renderCore.requests_m.unlock();
 	}
 }
