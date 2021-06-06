@@ -167,7 +167,7 @@ namespace lnx {
 			// 	if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
 			// }
 			for(tIdxt i = 0; i < count(); ++i){
-				if(isValid(i)) data[(uint64)i].~tType();
+				if(isValid(i)) data[(uint64)i].value.~tType_();
 			}
 		}
 
