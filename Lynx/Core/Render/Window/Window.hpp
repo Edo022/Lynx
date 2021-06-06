@@ -72,7 +72,6 @@ namespace lnx{
 
 
 		vk::SurfaceKHR surface;
-		core::wnd::Swapchain swp;
 
         vk::ImageMemoryBarrier readToWriteBarrier = vk::ImageMemoryBarrier()	//Create memory barrier object
 			.setSrcAccessMask       (vk::AccessFlagBits::eMemoryRead)				//Set source access mask
@@ -132,7 +131,7 @@ namespace lnx{
 
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
-			((Window*)glfwGetWindowUserPointer(pWindow))->swp.resized = true;
+			((Window*)glfwGetWindowUserPointer(pWindow))->renderCore.swp.resized = true;
 		}
 
 

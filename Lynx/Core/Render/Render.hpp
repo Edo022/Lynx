@@ -6,7 +6,7 @@
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
-
+#include "Lynx/Core/Render/Window/Swapchain.hpp"
 
 
 
@@ -76,6 +76,8 @@ namespace lnx{
 			vram::ptr<f32v4, eVRam, eStorage> fOut_g ;	//Color output
 			vram::ptr<u32,   eVRam, eStorage> iOut_g ;	//Packed color output
 			vram::ptr<u32,   eVRam, eStorage> zBuff_g;	//TODO remove. use render space assembler
+
+			core::wnd::Swapchain swp;
 
 			vk::CommandPool commandPool;
 			vk::CommandPool copyCommandPool;

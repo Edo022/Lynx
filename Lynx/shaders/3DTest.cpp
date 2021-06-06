@@ -22,7 +22,7 @@ namespace lnx::shd{
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);
-			pWindow.swp.shadersCBs.add(commandBuffers[0]);
+			pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);
 		pWindow.addObject_m.unlock();
 	}
 

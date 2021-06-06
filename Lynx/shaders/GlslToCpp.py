@@ -251,7 +251,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n'
                     '\n\t\t''createDescriptorSets();'
                     '\n\t\t''createCommandBuffers(vGroupCount, pWindow);'
-                    '\n\t\t''pWindow.swp.shadersCBs.add(commandBuffers[0]);'
+                    '\n\t\t''pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);'
                 '\n\t''pWindow.addObject_m.unlock();'
             '\n}',
         '\t'))
