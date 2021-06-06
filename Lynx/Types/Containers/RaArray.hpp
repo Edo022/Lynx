@@ -4,7 +4,7 @@
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 #include "Lynx/Types/Pointer.hpp"
 //TODO add shrink function to reorder the elements and use less memory possible
-//TODO add self check on unusable elements
+
 
 
 
@@ -52,11 +52,13 @@ namespace lnx {
 	 *     This type cannot be void
 	 * @tparam tIdxt Type of the indices
 	 *     The type of any index or count provided by and used on this object and the additional space used by elements indices all depend on this parameter
-	 *     tIdxt must be an integral type
+	 *     tIdxt must be a non const integral type
 	 */
 	template<class tType, std::integral tIdxt = uint32> struct RaArray{
 		genInitCheck;
 		static_assert(!std::is_void_v<tType>, "RaArray declared as array of void");
+		static_assert(!std::is_const_v<tType>, "RaArray declared as array of const values. The elements of a dynamic array must be assignable");
+		static_assert(!std::is_const_v<tIdxt>, "tIdxt cannot be const");
 
 
 
@@ -105,10 +107,10 @@ namespace lnx {
 
 
 
-		template<class tType_> alwaysInline void specDestroy() const noexcept requires( std::is_trivially_destructible_v<tType_>) {}
-		template<class tType_>       inline void specDestroy()                requires(!std::is_trivially_destructible_v<tType_>) {
+		alwaysInline void specDestroy() const noexcept requires( std::is_trivially_destructible_v<tType>) {}
+		      inline void specDestroy()                requires(!std::is_trivially_destructible_v<tType>) {
 			for(tIdxt i = 0; i < count(); ++i){
-				if(isValid(i)) data[(uint64)i].value.~tType_();
+				if(isValid(i)) data[(uint64)i].value.~tType();
 			}
 		}
 
@@ -149,7 +151,6 @@ namespace lnx {
 
 		template<class tAType, class tAIdxt> inline auto& copyRaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			data.reallocArr((uint64)pArr.count(), false);
-			// tail   = (tIdxt)pArr.tail;    head  = (tIdxt)pArr.head; //FIXME use specific assignment
 			specIdxCnv(tail, pArr.tail);  specIdxCnv(head, pArr.head);
 			count_ = (tIdxt)pArr.count(); free_ = (tIdxt)pArr.freeCount();
 
@@ -310,7 +311,7 @@ namespace lnx {
 		 */
 		~RaArray() {
 			checkInit();
-			if(!empty()) specDestroy<tType>();
+			if(!empty()) specDestroy();
 			data.realloc(0);
 		}
 
@@ -415,7 +416,7 @@ namespace lnx {
 		 */
 		inline void clear() {
 			checkInit();
-			specDestroy<tType>();
+			specDestroy();
 			tail = head = (tIdxt)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0);
@@ -436,7 +437,7 @@ namespace lnx {
 
 
 
-//FIXME CHECK checkInit(); >>>
+
 		/**
 		 * @brief ContainerBase version of copy assignment. Destroys each element and copies the elements of pCont into this array
 		 *     Trivially destructible types are not destroyed
@@ -450,7 +451,7 @@ namespace lnx {
 		template<class tCType, std::integral tCIdxt> inline auto& operator=(const ContainerBase<tCType, tCIdxt>& pCont){
 			checkInit(); isInit(pCont);
 
-			specDestroy<tType>();
+			specDestroy();
 			return copyContainerBase(pCont);
 		}
 
@@ -473,7 +474,7 @@ namespace lnx {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
-			specDestroy<tType>();
+			specDestroy();
 			return copyRaArray(pArr);
 		}
 
@@ -495,7 +496,7 @@ namespace lnx {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
-			specDestroy<tType>();
+			specDestroy();
 			return copyRaArray(pArr);
 		}
 
@@ -514,7 +515,7 @@ namespace lnx {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
-			this->destroy();		//Destroy old elements. The pointer doesn't do that
+			specDestroy();		//Destroy old elements. The pointer doesn't do that
 			data   = pArr.data;		//Copy array data
 			tail   = pArr.tail;    head  = pArr.head;
 			count_ = pArr.count(); free_ = pArr.freeCount();
