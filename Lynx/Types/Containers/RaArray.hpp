@@ -73,21 +73,21 @@ namespace lnx {
 		};
 
 
-		template<class tType, class tIdxt, bool destroy> struct raDtor_t{};
-		template<class tType, class tIdxt> struct raDtor_t<tType, tIdxt, false>{
-			protected:
-			alwaysInline void specializedDestroy() const noexcept {}
-		};
-		template<class tType, class tIdxt> struct raDtor_t<tType, tIdxt, true>{
-			using arrt = lnx::RaArray<tType, tIdxt>;
-			protected:
-			inline void specializedDestroy() {
-				int i = 0;
-				for(auto elm : *(arrt*)this) {
-					if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
-				}
-			}
-		};
+		// template<class tType, class tIdxt, bool destroy> struct raDtor_t{};
+		// template<class tType, class tIdxt> struct raDtor_t<tType, tIdxt, false>{
+		// 	protected:
+		// 	alwaysInline void specializedDestroy() const noexcept {}
+		// };
+		// template<class tType, class tIdxt> struct raDtor_t<tType, tIdxt, true>{
+		// 	using arrt = lnx::RaArray<tType, tIdxt>;
+		// 	protected:
+		// 	inline void specializedDestroy() {
+		// 		int i = 0;
+		// 		for(auto elm : *(arrt*)this) {
+		// 			if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
+		// 		}
+		// 	}
+		// };
 	}
 
 
@@ -108,8 +108,8 @@ namespace lnx {
 	 *     tIdxt must be an integral type
 	 */
 	template<class tType, std::integral tIdxt = uint32> struct RaArray:
-	private __pvt::raCtor_t<tType, tIdxt, !std::is_base_of_v<ignoreCopy, tType> && !std::is_trivially_constructible_v<tType>>,
-	private __pvt::raDtor_t<tType, tIdxt, !std::is_base_of_v<ignoreDtor, tType> && !std::is_trivially_destructible_v <tType>> {
+	private __pvt::raCtor_t<tType, tIdxt, !std::is_base_of_v<ignoreCopy, tType> && !std::is_trivially_constructible_v<tType>>{
+	// private __pvt::raDtor_t<tType, tIdxt, !std::is_base_of_v<ignoreDtor, tType> && !std::is_trivially_destructible_v <tType>> {
 		genInitCheck;
 		static_assert(!std::is_void_v<tType>, "RaArray declared as array of void");
 
@@ -156,6 +156,21 @@ namespace lnx {
 		tIdxt head;		//Last free element
 		tIdxt count_;	//Total number of elements
 		tIdxt free_;	//Number of free elements
+
+
+
+
+		template<class tType_> alwaysInline void specDestroy() const noexcept requires( std::is_trivially_destructible_v<tType_>) {}
+		template<class tType_>       inline void specDestroy()                requires(!std::is_trivially_destructible_v<tType_>) {
+			// int i = 0;
+			// for(auto elm : *(arrt*)this) {
+			// 	if(((arrt*)this)->isValid(i++)) elm.~tType(); //TODO USE ITERATORS AND NOT INDICES
+			// }
+			for(tIdxt i = 0; i < count(); ++i){
+				if(isValid(i)) data[(uint64)i].~tType();
+			}
+		}
+
 
 
 
@@ -339,7 +354,7 @@ namespace lnx {
 		 */
 		~RaArray() {
 			checkInit();
-			if(!empty()) this->specializedDestroy();
+			if(!empty()) specDestroy<tType>();
 			data.realloc(0);
 		}
 
@@ -444,7 +459,7 @@ namespace lnx {
 		 */
 		inline void clear() {
 			checkInit();
-			this->specializedDestroy();
+			specDestroy<tType>();
 			tail = head = (tIdxt)-1;
 			count_ = free_ = 0;
 			data.reallocArr(0);
@@ -474,12 +489,12 @@ namespace lnx {
 		 *     O(n + m) [non trivially destructible types]
 		 *     where n = this->count() and m = pCont.count()
 		 * @param pCont The container to copy construct elements from
-		 * @return R-value reference to this object
+		 * @return L-value reference to this object
 		 */
 		template<class tCType, std::integral tCIdxt> inline auto& operator=(const ContainerBase<tCType, tCIdxt>& pCont){
 			checkInit(); isInit(pCont);
 
-			this->specializedDestroy();
+			specDestroy<tType>();
 			return copyContainerBase(pCont);
 		}
 
@@ -495,13 +510,13 @@ namespace lnx {
 		 *     O(n + m) [non trivially destructible types]
 		 *     where n = this->count() and m = pArr.count()
 		 * @param pArr The RaArray to copy construct elements from
-		 * @return R-value reference to this object
+		 * @return L-value reference to this object
 		 */
 		template<class tCType, class tCIdxt> alwaysInline auto& operator=(const RaArray<tCType, tCIdxt>& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
-			this->specializedDestroy();
+			specDestroy<tType>();
 			return copyRaArray(pArr);
 		}
 //FIXME DO NOT STATIC CAST IF CONVERTIBLE OBJECTS CAN BE ASSIGNED NORMALLY
@@ -516,13 +531,13 @@ namespace lnx {
 		 *     O(n + m) [non trivially destructible types]
 		 *     where n = this->count() and m = pArr.count()
 		 * @param pArr The RaArray to copy construct elements from
-		 * @return R-value reference to this object
+		 * @return L-value reference to this object
 		 */
 		alwaysInline auto& operator=(const RaArray<tType, tIdxt>& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
 
-			this->specializedDestroy();
+			specDestroy<tType>();
 			return copyRaArray(pArr);
 		}
 
@@ -535,7 +550,7 @@ namespace lnx {
 		 *     O(1) [trivially destructible types || self assignment]
 		 *     O(n) [non trivially destructible types]
 		 * @param pArr The array to move
-		 * @return R-value reference to this object
+		 * @return L-value reference to this object
 		 */
 		inline auto& operator=(RaArray<tType, tIdxt>&& pArr) {
 			checkInit(); isInit(pArr);
@@ -568,8 +583,9 @@ namespace lnx {
 
 		/**
 		 * @brief Returns the state of an element
+		 * Complexity: O(1)
 		 * @param vIndex Index of the element
-		 * @return True if the element is valid (non deleted), false if not
+		 * @return True if the element is valid, false if not (deleted or unallocated)
 		 */
 		alwaysInline bool isValid(const tIdxt vIndex) const {
 			checkInit();
@@ -579,6 +595,13 @@ namespace lnx {
 
 
 
+
+		/**
+		 * @brief Returns an element
+		 * Complexity: O(1)
+		 * @param vIndex Index of the element
+		 * @return L-value reference to the element
+		 */
 
 		alwaysInline tType& operator[](const tIdxt vIndex) const {
 			checkInit();
