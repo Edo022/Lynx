@@ -116,15 +116,11 @@ namespace lnx {
 
 
 		template<class tAType, class tAIdxt> alwaysInline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
-			requires(std::is_same_v<tIdxt, tAIdxt> && std::is_trivially_copy_constructible_v<tAType>){
-			// for(tAType i = 0; i < pArr.count(); ++i){
-			// 	if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
-			// 	specIdxCnv<tIdxt, tAType>(data[(uint64)i].next, pArr.data[i].next);
-			// }
+			requires(std::is_same_v<tIdxt, tAIdxt> && sizeof(tType) == sizeof(tAType) && std::is_trivially_copy_constructible_v<tAType>){
 			memcpy(data, pArr.data, pArr.data.size());
 		}
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
-			requires(!std::is_same_v<tIdxt, tAIdxt> || !std::is_trivially_copy_constructible_v<tAType>){
+			requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
 			for(tAIdxt i = 0; i < pArr.count(); ++i){
 				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
 				specIdxCnv(data[(uint64)i].next, pArr.data[i].next);
