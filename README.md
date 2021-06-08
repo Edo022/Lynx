@@ -45,30 +45,31 @@ Support for other C++ compilers and editors will be added in future versions.
 
 &nbsp;
 
-# Setup
-
-Clone the repository from GitHub.  
-It contains everything required to modify, build and use the engine.  
+## Where to put the SDK
+You can put the Lynx SDK wherever you want.  
+Cd into your directory and clone the repository from GitHub:   
 `git clone https://github.com/Edo022/LynxEngine.git`  
+The same system can use multiple versions of the SDK.
 
-You can then link your projects to the repository and build applications with it.
-Each version can be used by multiple projects at the same time.  
+&nbsp;
+
+## How to use the SDK
+You can link your projects to an SDK by running its "Setup.py" script:  
+`mkdir MyProject`  
 `cd MyProject`  
-`python3.8 <path_to_repo>/Setup/Setup.py`
+`python3.8 <path_to_sdk>/Setup/Setup.py`  
+
+Each version can be used by multiple projects at the same time.  
+Any modification to a version will affect all the projects linked to it.
 
 &nbsp;
 
-&nbsp;
-
-&nbsp;
-
-# Build applications
-
-Applications are built using the `<path_to_repo>/Build/lynxg++` executable, 
+## Build applications
+Applications are built using the `<path_to_sdk>/Build/lynxg++` executable, 
 which is a g++ wrapper that automatically adds everything the engine needs to your options and forwards them to g++.   
 
-You can use -d[\<option\>], -r[\<option\>], -l[\<opttion\>] and -w[\<option\>] to use different options based on the platform or configuration.  
-
+You can use -d[\<option\>], -r[\<option\>], -l[\<option\>] and -w[\<option\>] to use different options based on the platform or configuration.  
+ 
 - Debug mode  
     Turns off all the optimizations and adds any available debug, gdb and gprof information.
     It also activates Vulkan validation layers and Lynx runtime validation tests.
@@ -86,9 +87,11 @@ Platform and configuration can be specified with the -mode=\<mode\> option.
 | wd   | Build in debug mode for Windows   |
 | wr   | Build in release mode for Windows |
   
-e.g. `<path_to_repo>/Build/lynxg++ -mode=ld, -r[-O3], main.cpp`  
 
-Examples are located in `<path_to_repo>/Examples/` and contain the source code and the build commands for both VSCode and command line.  
+e.g. `<path_to_sdk>/Build/lynxg++ -mode=ld -r[-O3] main.cpp`  
+
+
+Examples are located in `<path_to_sdk>/Examples/` and contain both the source code and the build commands.  
 
 &nbsp;
 
