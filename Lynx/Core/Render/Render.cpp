@@ -181,23 +181,23 @@ namespace lnx{
 				//Start recording commands
 				switch(copyCommandBuffers[imgIndex].begin(&beginInfo)){ vkDefaultCases; }
 					//Create a barrier to use the swapchain image as an optimal transfer destination to copy the buffer in it
-					w->readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
+					readToWriteBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
 					vk::PipelineStageFlags 													//Create stage flags
 						srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput,			//The swapchain image is in color output stage
 						dstStage = vk::PipelineStageFlagBits::eTransfer;						//Change it to transfer stage to copy the buffer in it
-					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &w->readToWriteBarrier);
+					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage, dstStage, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &readToWriteBarrier);
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
 
-					w->copyRegion.imageExtent = vk::Extent3D{ swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
-					copyCommandBuffers[imgIndex].copyBufferToImage(iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &w->copyRegion);
+					copyRegion.imageExtent = vk::Extent3D{ swp.createInfo.imageExtent.width, swp.createInfo.imageExtent.height, 1 };	//Copy the whole buffer
+					copyCommandBuffers[imgIndex].copyBufferToImage(iOut_g.cell->csc.buffer, swp.images[imgIndex].image, vk::ImageLayout::eTransferDstOptimal, 1, &copyRegion);
 
 
 					//Create a barrier to use the swapchain image as a present source image
-					w->writeToReadBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
+					writeToReadBarrier.image = swp.images[imgIndex].image;					//Set swapchain image
 					vk::PipelineStageFlags 													//Create stage flags
 						srcStage1 = vk::PipelineStageFlagBits::eTransfer,						//The image is in transfer stage from the buffer copy
 						dstStage1 = vk::PipelineStageFlagBits::eColorAttachmentOutput;			//Change it to color output to present them
-					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &w->writeToReadBarrier);
+					copyCommandBuffers[imgIndex].pipelineBarrier(srcStage1, dstStage1, vk::DependencyFlagBits::eDeviceGroup, 0, nullptr, 0, nullptr, 1, &writeToReadBarrier);
 					//! ^ https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/VkDependencyFlagBits.html //FIXME dependency flags was 0 but C++ doesn't allow that
 				switch(copyCommandBuffers[imgIndex].end()){ vkDefaultCases; }										//End command buffer recording
 			}
