@@ -63,11 +63,11 @@ namespace lnx::core::render::cmd{
 			.setPCommandBuffers    (&vCommandBuffer)
 		;
 		core::render::graphicsQueueSubmit_m.lock();
-			switch(dvc::graphics.gq.submit(1, &submitInfo, nullptr)){
+			switch(dvc::graphics.cqs[0].submit(1, &submitInfo, nullptr)){
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}
-			switch(dvc::graphics.gq.waitIdle()){
+			switch(dvc::graphics.cqs[0].waitIdle()){
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}

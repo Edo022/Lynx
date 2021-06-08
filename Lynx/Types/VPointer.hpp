@@ -31,13 +31,13 @@ namespace lnx{
 
 namespace lnx::vram{
 	//ptr base class
-	template<class type> struct Alloc_b {
+	template<class tType> struct Alloc_b {
 		genInitCheck;
 
 		uint8 loc;							//Runtime template data
 		uint8 btype;						//Runtime template data
 		Cell_t2* cell;						//A pointer to a lnx::vram::Cell_t object that contains the cell informations
-		type* mapped _dbg(= nullptr);		//A pointer used to map the memory
+		tType* mapped _dbg(= nullptr);		//A pointer used to map the memory
 
 		template<class type_> explicit alwaysInline operator Alloc_b<type_>&() const noexcept { return *(Alloc_b<type_>*)(this); }				//Cast to different type
 		template<class type_> explicit alwaysInline operator const Alloc_b<type_>&() const noexcept { return *(const Alloc_b<type_>*)(this); }	//Cast to different type
@@ -48,13 +48,13 @@ namespace lnx::vram{
 
 	/**
 	 * @brief A pointer that allocates memory accessible from the GPU
-	 * @tparam type The type of data pointed by the pointer (int, float, etc...)
+	 * @tparam tType The type of data pointed by the pointer (int, float, etc...)
 	 * @tparam loc Where to allocate the memory. Can be Ram or VRam. VRam allocations are not accessible from the CPU
 	 * @tparam btype //TODO
 	 */
-	template<class type, bufferLocation loc, bufferType btype> struct ptr : public Alloc_b<type> {
+	template<class tType, bufferLocation loc, bufferType btype> struct ptr : public Alloc_b<tType> {
 	private:
-		using Super = Alloc_b<type>;
+		using Super = Alloc_b<tType>;
 
 
 		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { _dbg(
@@ -102,7 +102,7 @@ namespace lnx::vram{
 		 * @brief Copy constructor. This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		alwaysInline ptr(const ptr<type, loc, btype>& vAlloc) :
+		alwaysInline ptr(const ptr<tType, loc, btype>& vAlloc) :
 			ptr(vAlloc, Dummy{}) {
 		}
 
@@ -123,7 +123,7 @@ namespace lnx::vram{
 		/**
 		 * @brief Move constructor
 		 */
-		inline ptr(ptr<type, loc, btype>&& vAlloc) {
+		inline ptr(ptr<tType, loc, btype>&& vAlloc) {
 			isInit(vAlloc);
 			Super::loc = loc; Super::btype = btype;
 			Super::cell = vAlloc.cell; //vAlloc.cell = &dummyCell;
@@ -153,13 +153,13 @@ namespace lnx::vram{
 
 
 		//Move assignment
-		alwaysInline void operator=(ptr<type, loc, btype>&& vAlloc) {
-			operator=((ptr<type, loc, btype>&)vAlloc);
+		alwaysInline void operator=(ptr<tType, loc, btype>&& vAlloc) {
+			operator=((ptr<tType, loc, btype>&)vAlloc);
 		}
 
 
 		//Copy assignment
-		alwaysInline void operator=(const ptr<type, loc, btype>& vAlloc) {
+		alwaysInline void operator=(const ptr<tType, loc, btype>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			Super::cell = vAlloc.cell; //vAlloc.cell = nullptr;
 			//!                          ^ //TODO
@@ -177,24 +177,24 @@ namespace lnx::vram{
 
 
 		//Returns a reference to the element at index vIndex. This function can only be called on mapped pointers
-		alwaysInline type& operator[](const uint64 vIndex) const {
+		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkMapped();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return ((type*)(Super::mapped))[vIndex];
+			return ((tType*)(Super::mapped))[vIndex];
 		}
 
 		//Returns a reference to the first element. This function can only be called on mapped pointers
-		alwaysInline type& operator*()  const { checkMapped(); checkInit(); return *((type*)(Super::mapped)); }
-		alwaysInline type* operator->() const { checkMapped(); checkInit(); return   (type*)(Super::mapped);  }
+		alwaysInline tType& operator*()  const { checkMapped(); checkInit(); return *((tType*)(Super::mapped)); }
+		alwaysInline tType* operator->() const { checkMapped(); checkInit(); return   (tType*)(Super::mapped);  }
 
 
 		/**
 		 * @brief Returns the first address of the allocated memory block.
 		 *		This function can only be called on mapped pointers
 		 */
-		alwaysInline type* begin() const {
+		alwaysInline tType* begin() const {
 			checkInit(); checkMapped();
-            return (type*)Super::mapped;
+            return (tType*)Super::mapped;
 		}
 
 		/**
@@ -202,9 +202,9 @@ namespace lnx::vram{
 		 *		Dereferencing the pointer is undefined behaviour.
 		 *		This function can only be called on mapped pointers
 		 */
-		alwaysInline type* end() const {
+		alwaysInline tType* end() const {
 			checkInit(); checkMapped();
-			return (type*)((int8*)Super::mapped + count() * sizeof(type));
+			return (tType*)((int8*)Super::mapped + count() * sizeof(tType));
 		}
 
 
@@ -218,7 +218,7 @@ namespace lnx::vram{
 		//Returns the size in BYTES of the allocate memory. use count() to get the number of elements
 		alwaysInline uint64 size()  const noexcept { return Super::cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
-		alwaysInline uint64 count() const noexcept { return Super::cell->cellSize / sizeof(type); }
+		alwaysInline uint64 count() const noexcept { return Super::cell->cellSize / sizeof(tType); }
 
 
 
@@ -473,11 +473,11 @@ namespace lnx::vram{
 
 
 
-		alwaysInline operator type*() const { checkInit(); return (type*)Super::cell; }
+		alwaysInline operator tType*() const { checkInit(); return (tType*)Super::cell; }
 		alwaysInline operator bool()  const { checkInit(); return !!Super::cell;      }
 
-		alwaysInline bool operator==(ram::ptr<type> vPtr) { return vPtr.cell == Super::cell; }
-		alwaysInline bool operator!=(ram::ptr<type> vPtr) { return vPtr.cell != Super::cell; }
+		alwaysInline bool operator==(ram::ptr<tType> vPtr) { return vPtr.cell == Super::cell; }
+		alwaysInline bool operator!=(ram::ptr<tType> vPtr) { return vPtr.cell != Super::cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
 	};
 }

@@ -9,17 +9,6 @@
 
 
 
-//Default render shaders layouts
-//The identifier value corresponds to the index of the shader layout in the engine's default shader layouts array
-// enum ShaderLayout : uint32 {
-// 	LNX_DEF_SHADER_2D_LINE,
-// 	LNX_DEF_SHADER_2D_BORDER,
-// 	LNX_DEF_SHADER_2D_RENDER_SPACE,		//FIXME
-// 	LNX_DEF_SHADER_3D_RENDER_SPACE,		//FIXME
-// 	LNX_DEF_SHADER_CLEAR,				//Default shader used to copy and clear the output buffer
-// 	LNX_DEF_SHADER_NUM					//The number of shader layouts
-// };
-
 
 
 
@@ -42,6 +31,7 @@ namespace lnx::shd{
 		vk::DescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
 		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 		lnx::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
+		//TODO SAVE COMMAND BUFFERS ARRAY IN RENDER CORE AND USE ONE BUFFER PER OBJECT
 
 		struct Layout{
 			Layout(){};

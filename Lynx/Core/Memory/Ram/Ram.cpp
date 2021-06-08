@@ -20,7 +20,6 @@ namespace lnx::ram{
 	Type_t types[(uint32)__pvt::CellClassIndex::eNum];
 	RaArrayC<Cell_t> cells;
 	std::mutex cells_m;
-	uint32 allocated;
 
 
 

@@ -7,7 +7,10 @@
 
 
 namespace lnx{
-	struct Window;
+	class Window;
+	namespace core{
+		class RenderCore;
+	}
 }
 namespace lnx::core::wnd{
 	constexpr int32 __renderMaxFramesInFlight = 2;	//Default:2
@@ -18,6 +21,7 @@ namespace lnx::core::wnd{
 	struct Swapchain{
 	private:
 		friend class lnx::Window;
+		friend class lnx::core::RenderCore;
 
 		vk::SwapchainKHR           swapchain;
 		public: //FIXME
@@ -74,6 +78,7 @@ namespace lnx::core::wnd{
 
 		void destroy();					//Only destroys a part of the swapchain so that it can be recreated easily
 		void recreate();				//Recreates the swapchain after it has been destroyed
-		~Swapchain();					//Object destructor. Deallocates memory and destroys all of the resources
+		void clear();
+		~Swapchain(){ clear(); } //FIXME					//Object destructor. Deallocates memory and destroys all of the resources
 	};
 }

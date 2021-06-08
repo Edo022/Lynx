@@ -1,8 +1,6 @@
 #pragma once
 
 
-
-
 static constexpr double PI	  = 3.141592653589793239;	//Just PI
 static constexpr double TAU	  = 6.283185307179586478;	//2 * PI
 static constexpr double E	  = 2.718281828459045235;	//Euler's number

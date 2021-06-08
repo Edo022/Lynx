@@ -13,7 +13,7 @@
 
 
 namespace lnx::ram{
-	template<class type> struct ptr;
+	template<class tType> struct ptr;
 	//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 
 
@@ -41,5 +41,4 @@ namespace lnx::ram{
 	extern thread_local Cell_t dummyCell;
 
 	extern std::mutex cells_m;
-	extern uint32 allocated;	//TODO remove
 }

@@ -15,15 +15,15 @@ namespace lnx::shd{
 
 
 	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f32v4, eVRam, eUniform> pData, const u32v3 vGroupCount, Window& pWindow){
-		pWindow.addObject_m.lock();
+		pWindow.renderCore.addObject_m.lock();
 			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
 			_data.vdata = (vram::ptr<char, eVRam, eUniform>)pData;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pWindow);
-			pWindow.swp.shadersCBs.add(commandBuffers[0]);
-		pWindow.addObject_m.unlock();
+			pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);
+		pWindow.renderCore.addObject_m.unlock();
 	}
 
 
@@ -109,7 +109,7 @@ namespace lnx::shd{
 
 	void _3DTest::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
-			.setCommandPool        (pWindow.commandPool)
+			.setCommandPool        (pWindow.renderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
@@ -118,7 +118,7 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[_3DTest::pipelineIndex]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[_3DTest::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, _3DTest::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
@@ -134,7 +134,7 @@ namespace lnx::shd{
 	void _3DTest::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[_3DTest::pipelineIndex]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[_3DTest::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, _3DTest::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }

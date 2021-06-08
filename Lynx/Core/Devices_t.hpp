@@ -20,7 +20,6 @@ struct QueueFamilyIndices {
 	QueueFamilyIndices()							: graphicsFamily{ (uint32)-1 },       presentFamily{ (uint32)-1 },      computeFamilies() {}
 	QueueFamilyIndices(const QueueFamilyIndices& e) : graphicsFamily{ e.graphicsFamily }, presentFamily{ e.presentFamily }, computeFamilies(e.computeFamilies) {}
 
-	inline bool isGraphicsComplete() { return (graphicsFamily != (uint32)-1 && presentFamily != (uint32)-1); }
 	void operator=(const QueueFamilyIndices& i){
 		graphicsFamily = i.graphicsFamily;
 		presentFamily = i.presentFamily;

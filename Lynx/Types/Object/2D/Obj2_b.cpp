@@ -1,5 +1,6 @@
 #include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include "Lynx/Types/Object/2D/Border2.hpp"
+#include "Lynx/Core/Render/Render.hpp"
 
 
 
@@ -13,19 +14,15 @@ namespace lnx::obj{
 	#ifdef LNX_DEBUG
 	void Obj2_bb::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
-		if(!Obj_bb::render.isDbgObj && debugBorder) {
-			debugBorder->data._data.ffp() = vMinLim;
-			// debugBorder->qHierarchy();
-			debugBorder->queue(obj::UpdateBits::eUpdateg);
-		}
+		// if(!Obj_bb::render.isDbgObj && debugBorder) {
+		// 	debugBorder->data._data.ffp() = vMinLim;
+		// }
 	}
 	void Obj2_bb::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
-		if(!Obj_bb::render.isDbgObj && debugBorder) {
-			debugBorder->data._data.fsp() = vMaxLim;
-			// debugBorder->qHierarchy();
-			debugBorder->queue(obj::UpdateBits::eUpdateg);
-		}
+		// if(!Obj_bb::render.isDbgObj && debugBorder) {
+		// 	debugBorder->data._data.fsp() = vMaxLim;
+		// }
 	}
 	#endif
 
@@ -34,21 +31,21 @@ namespace lnx::obj{
 
 	template<class chType> void Obj2_bt<chType>::onSpawn(Window& pWindow) {
 		Obj_bt<chType>::onSpawn(pWindow);
-		//BUG BEGIN >>
-        // Obj_bb::render.parentWindow = &pWindow;
-        // for(u32 i = 0; i < this->children.count(); ++i){
-        //     if(this->children.isValid(i)) this->children[i]->onSpawn(pWindow);
-        // }
-		//BUG END <<
 
-		#ifdef LNX_DEBUG
-        	if(!Obj_bb::render.isDbgObj) {
-				debugBorder = new Border2(); //FIXME ONLY SPAWN IF NOT PRESENT
-				debugBorder->render.isDbgObj = true;
-				debugBorder->onSpawn(pWindow);
-			}
-		#endif
+		// //If in debug mode, spawn debug border
+		// #ifdef LNX_DEBUG
+        // 	if(!Obj2_bb::render.isDbgObj && !debugBorder) {
+		// 		debugBorder = new Border2();
+		// 		pWindow.qSpawn(debugBorder);
+		// 		// pWindow.requests_m.lock(); //! already managed in draw function
+		// 			// debugBorder->render.isDbgObj = true;
+		// 			// debugBorder->render.updates = debugBorder->render.updates | obj::UpdateBits::eSpawn;
+		// 			// core::render::recSpawn(debugBorder, pWindow);
+		// 		// pWindow.requests_m.unlock(); //! already managed in draw function
+		// 	}
+		// #endif
 
+		//Set callbacks of overwritten inputs
 		if(doesRedefine(*this, &MouseCallbacks_b::onClick))pWindow.icQueues.onClick.add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onEnter))pWindow.icQueues.onEnter.add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onExit ))pWindow.icQueues.onExit .add(this);
@@ -66,19 +63,19 @@ namespace lnx::obj{
 	}
 
 
-//FIXME UNIFY UPDATE QUEUES
+	void Obj2_bb::onLimit() {
+		Obj_bb::onLimit();
+		if(parent) parent->setChildLimits(common.childIndex);
+		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
+	}
 
-	// template<class chType> void Obj2_bt<chType>::qHierarchy() {
-	// 	for(u32 i = 0; i < Obj2_bt::children.count(); i++) if(Obj2_bt::children.isValid(i)) {
-	// 		setChildLimits(i); //FIXME USE QUEUES
-	// 		//TODO add  recalculateCoords() in all objects
-	// 		// Obj2_bt<chType>::children[i]->recalculateCoords(); //FIXME USE QUEUES
-	// 		Obj2_bt::children[i]->queue(UpdateBits::limit);
-	// 		// Obj2_bt::children[i]->qHierarchy();
-	// 	}
-	// 	qSelf(); //FIXME REMOVE
-	// 	// queue(UpdateBits::updateg);//FIXME ADD OBJECT TYPE FOR MORE DETAILED DEBUG ERRORS
-	// 	//BUG^ NOT OVERRIDDEN IN RENDER SPACES AS QSELF WAS
-	// 	//BUG^ ADD TEMPORARY FIX
-	// }
+	void Obj2_bb::onUpdateg(vk::CommandBuffer pCB) {
+		pCB.updateBuffer(
+			getShVData().cell->csc.buffer,
+			getShVData().cell->localOffset,
+			getShVData().cell->cellSize,
+			(void*)getShData()
+		);
+		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
+	}
 }

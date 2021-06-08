@@ -20,12 +20,10 @@ namespace lnxc{
 		//Constructors
 		alwaysInline constexpr vec3_t() noexcept {}
 		alwaysInline constexpr vec3_t(const t& _x, const t& _y, const t& _z) noexcept { x = _x;    y = _y;    z = _z;    }
-		alwaysInline constexpr vec3_t(const t& _x, const vec2_t<t>& _yz)        noexcept { x = _x;    y = _yz.x; z = _yz.y; }
-		alwaysInline constexpr vec3_t(const vec2_t<t>& _xy,        const t& _z) noexcept { x = _xy.x; y = _xy.y; z = z;     }
-		// explicit alwaysInline constexpr vec3_t(const vec3_t<t>& v) noexcept { *this = v; }
-				alwaysInline constexpr vec3_t(const vec3_t<t>&    v) noexcept { *this = v; }
-		// explicit alwaysInline constexpr vec3_t(const t& v        ) noexcept { *this = v; }
-				alwaysInline constexpr vec3_t(const t&    v        ) noexcept { *this = v; }
+		alwaysInline constexpr vec3_t(const t& _x, const vec2_t<t>& _yz)     noexcept { x = _x;    y = _yz.x; z = _yz.y; }
+		alwaysInline constexpr vec3_t(const vec2_t<t>& _xy, const t& _z)     noexcept { x = _xy.x; y = _xy.y; z = z;     }
+		alwaysInline constexpr vec3_t(const vec3_t<t>& v) noexcept { *this = v; }
+		alwaysInline constexpr vec3_t(const t&         v) noexcept { *this = v; }
 
 
 		//Assignment operators, constructors and comparison operators
