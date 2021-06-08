@@ -243,7 +243,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
                     ext['varname'][0].upper() + ext['varname'][1:]
                 )for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
-                '\n\t''pWindow.addObject_m.lock();' +
+                '\n\t''pWindow.renderCore.addObject_m.lock();' +
                     (
                         ''.join(('\n\t\t' + ext['bndname'] + '.vdata = (vram::ptr<char, eVRam, ' + ext['bndtype'] + '>)p' +
                         ext['varname'][0].upper() + ext['varname'][1:] + ';'
@@ -251,8 +251,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n'
                     '\n\t\t''createDescriptorSets();'
                     '\n\t\t''createCommandBuffers(vGroupCount, pWindow);'
-                    '\n\t\t''pWindow.swp.shadersCBs.add(commandBuffers[0]);'
-                '\n\t''pWindow.addObject_m.unlock();'
+                    '\n\t\t''pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);'
+                '\n\t''pWindow.renderCore.addObject_m.unlock();'
             '\n}',
         '\t'))
 
@@ -308,7 +308,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         fc.write(indent('\n\n\n\n\n\n\n\n'
             '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
-                    '\n\t\t''.setCommandPool        (pWindow.commandPool)'
+                    '\n\t\t''.setCommandPool        (pWindow.renderCore.commandPool)'
                     '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
@@ -317,7 +317,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + fname + '::pipelineIndex]);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[' + fname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
@@ -331,7 +331,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.pipelines[' + fname + '::pipelineIndex]);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[' + fname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'

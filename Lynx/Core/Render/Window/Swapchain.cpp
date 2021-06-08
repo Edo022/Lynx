@@ -4,7 +4,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Core.hpp"
-#define w (*(Window*)(((char*)this) - offsetof(lnx::Window, lnx::Window::swp))) //TODO
+// #define w (*(Window*)(((char*)this) - offsetof(lnx::Window, lnx::Window::swp))) //TODO
 
 
 
@@ -191,23 +191,23 @@ namespace lnx::core::wnd{
 			//Update the window size buffer
 			u32v2 wSize = { createInfo.imageExtent.width, createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(bindedWindow->wSize_g.cell->csc.buffer, bindedWindow->wSize_g.cell->localOffset, bindedWindow->wSize_g.cell->cellSize, &wSize);
+			cb.updateBuffer(bindedWindow->renderCore.wSize_g.cell->csc.buffer, bindedWindow->renderCore.wSize_g.cell->localOffset, bindedWindow->renderCore.wSize_g.cell->cellSize, &wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 			//FIXME AUTOMATIZE BUFFER UPDATE
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
 
 
 			{	//Destroy copy command buffers
-				dvc::graphics.ld.freeCommandBuffers(bindedWindow->copyCommandPool, bindedWindow->copyCommandBuffers.count(), bindedWindow->copyCommandBuffers.begin());
-				dvc::graphics.ld.destroyCommandPool(bindedWindow->copyCommandPool, nullptr);
+				dvc::graphics.ld.freeCommandBuffers(bindedWindow->renderCore.copyCommandPool, bindedWindow->renderCore.copyCommandBuffers.count(), bindedWindow->renderCore.copyCommandBuffers.begin());
+				dvc::graphics.ld.destroyCommandPool(bindedWindow->renderCore.copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				bindedWindow->copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
-				bindedWindow->createDefaultCommandBuffers__();				//Create command buffers and command pool
+				bindedWindow->renderCore.copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
+				bindedWindow->renderCore.createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
 			//Recreate clear shader
-			bindedWindow->sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *bindedWindow);
+			bindedWindow->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *bindedWindow);
 		}
 	}
 
@@ -228,7 +228,7 @@ namespace lnx::core::wnd{
 
 
 
-	Swapchain::~Swapchain(){
+	void Swapchain::clear(){
 		switch(core::dvc::graphics.ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 			vkDefaultCases;

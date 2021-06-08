@@ -69,23 +69,23 @@ namespace lnx{
 			} render;
 
 			virtual void onSpawn(Window& pWindow){
-				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->renderCore.t.thr, "This function can only be called by the render thread.");
 			}
 			virtual void onLimit(){
-				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->renderCore.t.thr, "This function can only be called by the render thread.");
 			}
 			virtual void onUpdateg(vk::CommandBuffer pCB){
-				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread.");
+				dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->renderCore.t.thr, "This function can only be called by the render thread.");
 			}
 
 			//TODO comment
 			void queue(UpdateBits vUpdates){
 				UpdateBits old = render.updates;						//Save old updates bits
 				if(render.parentWindow) { 								//If the object has a binded window
-					render.parentWindow->requests_m.lock();					//Lock requests mutex
+					render.parentWindow->renderCore.requests_m.lock();					//Lock requests mutex
 						render.updates = render.updates | vUpdates;			//Update updates bits
-						if(!old) render.parentWindow->requests.add(this);	//If it isn't already in it, add the object to the update queue
-					render.parentWindow->requests_m.unlock();				//Unlock requests mutex
+						if(!old) render.parentWindow->renderCore.requests.add(this);	//If it isn't already in it, add the object to the update queue
+					render.parentWindow->renderCore.requests_m.unlock();				//Unlock requests mutex
 				}														//If not
 				else render.updates = render.updates | vUpdates;			//Update updates bits
 			}

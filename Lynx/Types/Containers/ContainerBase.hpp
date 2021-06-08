@@ -58,7 +58,7 @@
 
 
 namespace lnx {
-	template <class type, class iter> struct ContainerBase;
+	template <class tType, class tIdxt> struct ContainerBase;
 	//Any type that inherits from this struct will not be default constructed by lnx containers
 	struct ignoreCtor{};
 	//Any type that inherits from this struct will not be copy constructed by lnx containers
@@ -72,63 +72,63 @@ namespace lnx {
 
 
 	namespace __pvt{
-		template<class type, class iter, bool construct> struct cbCtor_t{};
-		template<class type, class iter> struct cbCtor_t<type, iter, false>{
+		template<class tType, class tIdxt, bool construct> struct cbCtor_t{};
+		template<class tType, class tIdxt> struct cbCtor_t<tType, tIdxt, false>{
 			protected:
-			alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+			alwaysInline void initRange(const tIdxt& vFrom, const tIdxt& vTo) const noexcept {}
 		};
-		template<class type, class iter> struct cbCtor_t<type, iter, true>{
+		template<class tType, class tIdxt> struct cbCtor_t<tType, tIdxt, true>{
 			protected:
-			inline void initRange(const iter vFrom, const iter vTo) const {
-				type* elm = ((const lnx::ContainerBase<type, iter>*)this)->begin();
-				for(iter i = vFrom; i <= vTo; ++i) {
-					new(elm + i) type();
+			inline void initRange(const tIdxt vFrom, const tIdxt vTo) const {
+				tType* elm = ((const lnx::ContainerBase<tType, tIdxt>*)this)->begin();
+				for(tIdxt i = vFrom; i <= vTo; ++i) {
+					new(elm + i) tType();
 				}
 			}
 		};
 
 
-		// template<class type, class iter, bool construct> struct cbCtor_t{};
-		// template<class type, class iter> struct cbCtor_t<type, iter, false>{
-		// 	alwaysInline void initRange(const iter& vFrom, const iter& vTo) const noexcept {}
+		// template<class type, class tIdxt, bool construct> struct cbCtor_t{};
+		// template<class type, class tIdxt> struct cbCtor_t<type, tIdxt, false>{
+		// 	alwaysInline void initRange(const tIdxt& vFrom, const tIdxt& vTo) const noexcept {}
 		// };
-		// template<class type, class iter> struct cbCtor_t<type, iter, true>{
-		// 	inline void initRange(const iter vFrom, const iter vTo) const {
-		// 		type* elm = ((lnx::ContainerBase<type, iter>*)this)->begin();
-		// 		for(iter i = vFrom; i <= vTo; ++i) {
+		// template<class type, class tIdxt> struct cbCtor_t<type, tIdxt, true>{
+		// 	inline void initRange(const tIdxt vFrom, const tIdxt vTo) const {
+		// 		type* elm = ((lnx::ContainerBase<type, tIdxt>*)this)->begin();
+		// 		for(tIdxt i = vFrom; i <= vTo; ++i) {
 		// 			new(elm + i) type();
 		// 		}
 		// 	}
 		// };
 
 
-		template<class type, class iter, bool destroy> struct cbDtor_t{};
-		template<class type, class iter> struct cbDtor_t<type, iter, false>{
+		template<class tType, class tIdxt, bool destroy> struct cbDtor_t{};
+		template<class tType, class tIdxt> struct cbDtor_t<tType, tIdxt, false>{
 			protected:
 			alwaysInline void destroy() const noexcept {}
-			inline void destroyRange(const iter vFrom, const iter vTo) const noexcept {}
+			inline void destroyRange(const tIdxt vFrom, const tIdxt vTo) const noexcept {}
 		};
-		template<class type, class iter> struct cbDtor_t<type, iter, true>{
+		template<class tType, class tIdxt> struct cbDtor_t<tType, tIdxt, true>{
 			protected:
 			inline void destroy() const {
-				type* end = ((const lnx::ContainerBase<type, iter>*)this)->end();
-				for(type* elm = ((const lnx::ContainerBase<type, iter>*)this)->begin(); elm != end; ++elm) {
-					elm->~type();
+				tType* end = ((const lnx::ContainerBase<tType, tIdxt>*)this)->end();
+				for(tType* elm = ((const lnx::ContainerBase<tType, tIdxt>*)this)->begin(); elm != end; ++elm) {
+					elm->~tType();
 				}
 			}
-			inline void destroyRange(const iter vFrom, const iter vTo) const {
-				type* elm = ((const lnx::ContainerBase<type, iter>*)this)->begin();
-				for(iter i = vFrom; i <= vTo; ++i) {
-					elm[i].~type();
+			inline void destroyRange(const tIdxt vFrom, const tIdxt vTo) const {
+				tType* elm = ((const lnx::ContainerBase<tType, tIdxt>*)this)->begin();
+				for(tIdxt i = vFrom; i <= vTo; ++i) {
+					elm[i].~tType();
 				}
 			}
 		};
 
 
 
-		template<class type, class iter> struct cbFwd_t:
-		public __pvt::cbCtor_t<type, iter, !std::is_base_of_v<ignoreCopy, type> && !std::is_trivial_v<type>>,
-		public __pvt::cbDtor_t<type, iter, !std::is_base_of_v<ignoreDtor, type> && !std::is_trivial_v<type>> {};
+		template<class tType, class tIdxt> struct cbFwd_t:
+		public __pvt::cbCtor_t<tType, tIdxt, !std::is_base_of_v<ignoreCopy, tType> && !std::is_trivial_v<tType>>,
+		public __pvt::cbDtor_t<tType, tIdxt, !std::is_base_of_v<ignoreDtor, tType> && !std::is_trivial_v<tType>> {};
 	}
 
 
@@ -138,12 +138,18 @@ namespace lnx {
 
 
 
-	template <class type, class iter> struct ContainerBase :
-	public __pvt::cbFwd_t<type, iter>{
-	public:
+	template <class tType, class tIdxt> struct ContainerBase :
+	public __pvt::cbFwd_t<tType, tIdxt>{
+		static_assert(!std::is_void_v<tType>, "Container declared as array of void");
+		static_assert(
+			has_int_conversion_operator_v<tIdxt> || std::is_integral_v<tIdxt> || std::is_enum_v<tIdxt>,
+			"tIdxt template parameter must be convertible to an integer or have integral or enum type"
+		);
+		static_assert(std::is_trivial_v<tIdxt>, "tIdxt template parameter must be a trivial type");
+
 		genInitCheck;
-		ram::ptr<type> data;	//Elements of the array
-		_dbg(type* viewer;) //FIXME make this actually usable
+		ram::ptr<tType> data;	//Elements of the array
+		_dbg(tType* viewer;) //FIXME make this actually usable
 		#define updateView() _dbg(if(data && data.size()) viewer = data.begin(); else viewer = nullptr)
 
 
@@ -154,13 +160,13 @@ namespace lnx {
 
 	protected:
 		//Resizes the array and calls the default constructor on each of the new elements
-		inline void resize(const iter vSize) {
+		inline void resize(const tIdxt vSize) {
 			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
 			updateView();
-			     if(oldCount < count()) lnx::__pvt::cbFwd_t<type, iter>::initRange(oldCount, count() - 1);
-			else if(oldCount > count()) lnx::__pvt::cbFwd_t<type, iter>::destroyRange(count(), oldCount - 1);
+			     if(oldCount < count()) lnx::__pvt::cbFwd_t<tType, tIdxt>::initRange(oldCount, count() - 1);
+			else if(oldCount > count()) lnx::__pvt::cbFwd_t<tType, tIdxt>::destroyRange(count(), oldCount - 1);
 		}
 
 		//Concatenates a container and initializes the new elements by calling their copy constructor
@@ -168,12 +174,12 @@ namespace lnx {
 			auto oldCount = count();
 			data.reallocArr(oldCount + pCont.count());
 			updateView();
-			for(iter i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) type((cType)pCont[(cIter)i]);
+			for(tIdxt i = 0; i < pCont.count(); ++i) new(&data[oldCount + i]) tType((cType)pCont[(cIter)i]);
 		}
 		//Concatenates a single element and initializes it by calling its copy constructor
-		inline void cat1(const type& vElm) {
+		inline void cat1(const tType& vElm) {
 			data.reallocArr(count() + 1);
-			new(&data[count() - 1]) type(vElm);
+			new(&data[count() - 1]) tType(vElm);
 		}
 
 
@@ -189,42 +195,42 @@ namespace lnx {
 
 
 		//Count constructor
-		inline ContainerBase(const iter vCount) :
+		inline ContainerBase(const tIdxt vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
-			data{ sizeof(type) * vCount } {
+			data{ sizeof(tType) * vCount } {
 			updateView();
-			lnx::__pvt::cbFwd_t<type, iter>::initRange(0, count() - 1);
+			lnx::__pvt::cbFwd_t<tType, tIdxt>::initRange(0, count() - 1);
 		}
 
 
-		inline ContainerBase(const ContainerBase<type, iter>&  pCont) = delete;	//Delete default copy constructor
-		inline ContainerBase(      ContainerBase<type, iter>&& pCont) = delete;	//Delete default move constructor
+		inline ContainerBase(const ContainerBase<tType, tIdxt>&  pCont) = delete;	//Delete default copy constructor
+		inline ContainerBase(      ContainerBase<tType, tIdxt>&& pCont) = delete;	//Delete default move constructor
 		//Copy constructor
 		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const Dummy vDummy) :
 			checkInitList(
-				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(iter), "pCont",
+				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(tIdxt), "pCont",
 				"The iterator of a container must be large enough to contain all the elements.\
-				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(iter) * 8 - 1), pCont.count())
+				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(tIdxt) * 8 - 1), pCont.count())
 			)
 			data{ pCont.size() } {						//Allocate new elements
 			updateView();
-			for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
+			for(tIdxt i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) tType(pCont[(cIter)i]);	//Assign new elements
 			}
 		}
 
 
-		alwaysInline ContainerBase(const std::initializer_list<type> vElms) :
-			data{ sizeof(type) * vElms.size() } {
+		alwaysInline ContainerBase(const std::initializer_list<tType> vElms) :
+			data{ sizeof(tType) * vElms.size() } {
 			updateView();
-			iter i = 0;
-			for(const type& elm : vElms) new(&data[i++]) type(elm);
+			tIdxt i = 0;
+			for(const tType& elm : vElms) new(&data[i++]) tType(elm);
 		}
 
 
 	protected: //TODO move to type specialization
 		alwaysInline ~ContainerBase() {
-			if(data) lnx::__pvt::cbFwd_t<type, iter>::destroy(); //Destroy elemens if the array was not moved
+			if(data) lnx::__pvt::cbFwd_t<tType, tIdxt>::destroy(); //Destroy elemens if the array was not moved
 			// data.free();
 			//! ^ Not an error. data will be freed in its destructor
 		}
@@ -237,7 +243,7 @@ namespace lnx {
 
 
 
-		alwaysInline void move(ContainerBase<type, iter>& pCont) {
+		alwaysInline void move(ContainerBase<tType, tIdxt>& pCont) {
 			data = pCont.data; pCont.data = nullptr;
 			updateView();
 		}
@@ -246,11 +252,11 @@ namespace lnx {
 		//Destroys each element and re-initializes them with the pCont elements by calling their copy constructor
 		template<class cType, class cIter> inline void copy(const ContainerBase<cType, cIter>& pCont) {
 			if(this == &pCont) return;
-			lnx::__pvt::cbFwd_t<type, iter>::destroy();									//Destroy old elements
+			lnx::__pvt::cbFwd_t<tType, tIdxt>::destroy();									//Destroy old elements
 			data.reallocArr(pCont.count(), false);
 			updateView();
-			for(iter i = 0; i < pCont.count(); ++i) {
-				new(&data[i]) type(pCont[(cIter)i]);	//Assign new elements
+			for(tIdxt i = 0; i < pCont.count(); ++i) {
+				new(&data[i]) tType(pCont[(cIter)i]);	//Assign new elements
 			}
 		}
 
@@ -265,10 +271,10 @@ namespace lnx {
 	public:
 		alwaysInline auto  begin() const { return data.begin();       };	//Returns a pointer to the first element of the container
 		alwaysInline auto    end() const { return data.end();         };	//Returns a pointer to the element after the last element of the container
-		alwaysInline iter  count() const { return (iter)data.count(); };	//Returns the number of elements in the container
+		alwaysInline tIdxt  count() const { return (tIdxt)data.count(); };	//Returns the number of elements in the container
 		alwaysInline uint64 size() const { return data.size();        };	//Returns the size in bytes of the contianer
 		alwaysInline bool  empty() const { return !count();           };	//Returns true if the container has size 0, false otherwise
 
-		alwaysInline auto& operator[](const iter vIndex) const { return data[vIndex]; }
+		alwaysInline auto& operator[](const tIdxt vIndex) const { return data[vIndex]; }
 	};
 }

@@ -17,9 +17,9 @@
 namespace lnx::ram{
 	/**
 	 * @brief A pointer that keeps track of how many objects are using it and automatically frees the memory block once it becomes unreachable
-	 * @tparam type The type of data pointed by the pointer (int, float, etc...)
+	 * @tparam tType The type of data pointed by the pointer (int, float, etc...)
 	 */
-	template<class type> struct ptr {
+	template<class tType> struct ptr {
 	private:
 		alwaysInline void checkSize()  const { _dbg(
 			lnx::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations");
@@ -127,7 +127,7 @@ namespace lnx::ram{
 		 * @brief Copy constructor. This function only copies the pointer structure. The 2 pointers will share the same memory
 		 * @param pPtr The pointer to copy
 		 */
-		alwaysInline ptr(const ptr<type>& vAlloc) :
+		alwaysInline ptr(const ptr<tType>& vAlloc) :
 			ptr(vAlloc, Dummy{}) {
 		}
 
@@ -150,7 +150,7 @@ namespace lnx::ram{
 		/**
 		 * @brief Move constructor
 		 */
-		inline ptr(ptr<type>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
+		inline ptr(ptr<tType>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } { //vAlloc.cell = &dummyCell;
 			//!                     ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
 			++cell->owners;
@@ -185,13 +185,13 @@ namespace lnx::ram{
 
 
 		//Move assignment
-		alwaysInline void operator=(ptr<type>&& vAlloc) {
-			operator=((ptr<type>&)vAlloc);
+		alwaysInline void operator=(ptr<tType>&& vAlloc) {
+			operator=((ptr<tType>&)vAlloc);
 		}
 
 
 		//Copy assignment
-		inline void operator=(const ptr<type>& vAlloc) {
+		inline void operator=(const ptr<tType>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			if(!--cell->owners) free();
 			popOwner();
@@ -222,9 +222,9 @@ namespace lnx::ram{
 
 
 		alwaysInline uint64 operator+(const auto* vPtr) const { checkInit(); return (uint64)cell->address + vPtr ; }
-		alwaysInline type*  operator+(const auto  vVal) const { checkInit(); return (type* )cell->address + vVal ; }
+		alwaysInline tType*  operator+(const auto  vVal) const { checkInit(); return (tType* )cell->address + vVal ; }
 		alwaysInline uint64 operator-(const auto* vPtr) const { checkInit(); return (uint64)cell->address - vPtr ; }
-		alwaysInline type*  operator-(const auto  vVal) const { checkInit(); return (type* )cell->address - vVal ; }
+		alwaysInline tType*  operator-(const auto  vVal) const { checkInit(); return (tType* )cell->address - vVal ; }
 
 
 
@@ -234,29 +234,29 @@ namespace lnx::ram{
 
 
 
-		alwaysInline type& operator[](const uint64 vIndex) const {
+		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return ((type*)(cell->address))[vIndex];
+			return ((tType*)(cell->address))[vIndex];
 		}
-		alwaysInline type& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((type*)(cell->address)); }
-		alwaysInline type* operator->() const { checkInit(); checkNullptrD(); return (type*)(cell->address); }
+		alwaysInline tType& operator*(  ) const { checkInit(); checkNullptrD(); checkSizeD(); return *((tType*)(cell->address)); }
+		alwaysInline tType* operator->() const { checkInit(); checkNullptrD(); return (tType*)(cell->address); }
 
 
 		/**
 		 * @brief Returns the first address of the allocated memory block
 		 */
-		alwaysInline type* begin() const {
-			checkInit(); checkNullptr();  checkSize();  return (type*)cell->address;
+		alwaysInline tType* begin() const {
+			checkInit(); checkNullptr();  checkSize();  return (tType*)cell->address;
 		}
 
 		/**
 		 * @brief Returns the address of the object past the last object in the memory block
 		 *		Dereferencing the pointer is undefined behaviour
 		 */
-		alwaysInline type* end() const {
+		alwaysInline tType* end() const {
 			checkInit(); checkNullptr();  checkSize();
-			return (type*)((int8*)cell->address + count() * sizeof(type));
+			return (tType*)((int8*)cell->address + count() * sizeof(tType));
 		}
 
 
@@ -267,10 +267,10 @@ namespace lnx::ram{
 
 
 
-		//Returns the size in BYTES of the allocate memory. use count() to get the number of elements
+		//Returns the size in BYTES of the allocated memory. use count() to get the number of elements
 		alwaysInline uint64 size()  const noexcept { return cell->cellSize; }
 		//Returns the number of complete elements in the allocated memory
-		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(type); }
+		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(tType); }
 
 
 
@@ -381,7 +381,7 @@ namespace lnx::ram{
 				}
 				else { [[likely]]												//If it's larger than the maximum cell size //TODO check realloc and free returns
 					if(cell->typeIndex != (uint16)-1) {								//If the cell is a fixed size cell
-						type* oldAddr = (type*)cell->address;							//Save the old address
+						tType* oldAddr = (tType*)cell->address;							//Save the old address
 						types[cell->typeIndex].m.lock();
 						types[cell->typeIndex].cells.remove(cell->localIndex);			//Remove old allocation
 						types[cell->typeIndex].m.unlock();
@@ -425,8 +425,8 @@ namespace lnx::ram{
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
 		 */
 		alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::eAuto) {
-			checkInit(); checkAllocSize(sizeof(type) * vCount, vClass);
-			realloc(sizeof(type) * vCount, vCopyOldData, vClass);
+			checkInit(); checkAllocSize(sizeof(tType) * vCount, vClass);
+			realloc(sizeof(tType) * vCount, vCopyOldData, vClass);
 		}
 
 
@@ -465,11 +465,11 @@ namespace lnx::ram{
 
 
 		template<class type_> explicit alwaysInline operator type_*() const { checkInit(); return (type_*)cell->address; }
-		alwaysInline operator type*() const { checkInit(); return (type*)cell->address; }
+		alwaysInline operator tType*() const { checkInit(); return (tType*)cell->address; }
 		alwaysInline operator bool()  const { checkInit(); return !!cell->address;      }
 
-		alwaysInline bool operator==(ram::ptr<type> vPtr) { return vPtr.cell == cell; }
-		alwaysInline bool operator!=(ram::ptr<type> vPtr) { return vPtr.cell != cell; }
+		alwaysInline bool operator==(ram::ptr<tType> vPtr) { return vPtr.cell == cell; }
+		alwaysInline bool operator!=(ram::ptr<tType> vPtr) { return vPtr.cell != cell; }
 		//! If they have the same cell, they also have he same address. No need to access it
 
 

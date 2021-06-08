@@ -13,7 +13,7 @@
 
 
 namespace lnx::ram{
-	template<class type> struct ptr;
+	template<class tType> struct ptr;
 	//! If you modify those variables change the declarations in Ram.hpp and Ram.cpp too
 
 

@@ -117,7 +117,7 @@ namespace lnx::core::shaders{
 
 		switch(r.result){
 			case vk::Result::ePipelineCompileRequiredEXT: dbg::printWarning("Pipeline compile required"); [[fallthrough]];
-			case vk::Result::eSuccess: pWindow.pipelines[vPipelineIndex] = r.value; break;
+			case vk::Result::eSuccess: pWindow.renderCore.pipelines[vPipelineIndex] = r.value; break;
 			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
 			vkDefaultFaulures;
 		}
