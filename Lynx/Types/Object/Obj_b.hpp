@@ -44,6 +44,13 @@ namespace lnx{
 		alwaysInline UpdateBits operator^=(UpdateBits& a, UpdateBits b){ return (UpdateBits&)((u32&)a ^= (u32)b); }
 
 
+                struct Structural : virtual public Obj_bb {
+                    virtual ram::ptr<char>       getShData() override { dbg::printError("Unable to call getShData on structural object"; return nullptr; }
+                    virtual vram::Alloc_b<char> getShVData() override { dbg::printError("Unable to call getShVData on structural object"; return vram::Alloc_b<char>(); }
+                };
+                struct Opaque {};
+
+
 		/**
 		 * @brief Members common to any Obj_bt instantiation
 		 */
