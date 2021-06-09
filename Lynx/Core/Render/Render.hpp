@@ -97,7 +97,7 @@ namespace lnx{
 			shd::FloatToIntBuffer sh_clear;
 
 			std::mutex addObject_m;
-			RtArray<obj::Obj_bb*> requests; //TODO USE RAARRAY
+			RtArray<obj::ObjCommon_bb*> requests; //TODO USE RAARRAY
 			std::mutex            requests_m;
 
 		private:

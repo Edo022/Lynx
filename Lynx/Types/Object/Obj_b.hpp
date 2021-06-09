@@ -44,17 +44,45 @@ namespace lnx{
 		alwaysInline UpdateBits operator^=(UpdateBits& a, UpdateBits b){ return (UpdateBits&)((u32&)a ^= (u32)b); }
 
 
-                struct Structural : virtual public Obj_bb {
-                    virtual ram::ptr<char>       getShData() override { dbg::printError("Unable to call getShData on structural object"; return nullptr; }
-                    virtual vram::Alloc_b<char> getShVData() override { dbg::printError("Unable to call getShVData on structural object"; return vram::Alloc_b<char>(); }
-                };
-                struct Opaque {};
+
+
+
+
+
+
+		// template<uint32 tVal> struct GetObjClass{};
+		// template<> struct GetObjClass<1>{ using value = Obj1_bb; };
+		// template<> struct GetObjClass<2>{ using value = Obj2_bb; };
+		// template<> struct GetObjClass<3>{ using value = Obj3_bb; };
+
+		// template<uint32 tDim, uint32 tChDim, class tBase> struct ObjSelector : public GetObjClass<tDim>::value, public tBase {
+		// 	static_assert(tDim < 1 || tDim > 3, "Invalid tDim value");
+		// 	static_assert(tChDim < 1 || tChDim > 3, "Invalid tDim value");
+		// 	static_assert(!std::is_same<tBase, Opaque> || !std::is_same<tBase, Structural>, "Invalid base class");
+		// 	RaArray<GetObjClass<tChDim>::value> children;
+		// };
+
+
+
+
+
+
+
+
+		// struct Structural : virtual public Obj_bb {
+		// 	virtual ram::ptr<char>       getShData() override { dbg::printError("Unable to call getShData on structural object"); return nullptr; }
+		// 	virtual vram::Alloc_b<char> getShVData() override { dbg::printError("Unable to call getShVData on structural object"); return vram::Alloc_b<char>(); }
+		// };
+		// struct Opaque {};
+
+
+
 
 
 		/**
 		 * @brief Members common to any Obj_bt instantiation
 		 */
-		struct Obj_bb { //
+		struct ObjCommon_bb { //
 			_dbg(const char* dbgName;)
 			struct Common{
 				static std::atomic<uint64> lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
@@ -112,5 +140,96 @@ namespace lnx{
 			virtual uint32  getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual bool    getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 		//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 		};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		struct MouseCallbacks_b{
+			virtual void onClick(const f32v2 vPos, MouseButton vButton){};
+			virtual void onEnter(const f32v2 vPos){};
+			virtual void  onExit(const f32v2 vPos){};
+			virtual void  onMove(const f32v2 vPos){};
+			virtual void  onAxis(const i32  vAxis){};
+		};
+
+
+
+		template<uint32 tDim> struct obj_bb{
+			static_assert(false, "Invalid tDim value. tDim can only be 1, 2 or 3");
+		};
+
+
+
+
+		template<> struct obj_bb<1> : public ObjCommon_bb {
+			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
+			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
+			float32 scl{ 0 };				//Scale of the object
+
+			////TODO add absolute pixel position and scale
+			//Obj2_b* parent{ nullptr };						//Parent of the object
+			//lnx::Map<Obj2_b*, uint32> children;				//Children of the object
+			//void setChildLimits(const uint32 vChildIndex) final {
+			//	children[vChildIndex]->minLim = minLim;
+			//	children[vChildIndex]->maxLim = maxLim;
+			//}
+			//vec2f32 minLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
+			//vec2f32 maxLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
+		};
+		using obj1 = obj_bb<1>;
+
+
+
+
+		template<> struct obj_bb<2> : public ObjCommon_bb, public MouseCallbacks_b {
+        	f32v2 pos = { 0, 0 };	                //Position of the object. The position is relative to the origin of the object
+        	float32 zIndex = 0;		                //Index of the object. Objects with higher zIndex will be rendered on top of others
+        	float32 rot = 0;	                    //Rotation of the object
+        	f32v2 scl = { 0, 0 };	                //Scale of the object
+
+        	f32v2 minLim{ 0, 0 };				    //The limit of the object render. It depends on the parent of the object and its properties
+        	f32v2 maxLim{ 1, 1 };			        //The limit of the object render. It depends on the parent of the object and its properties
+        	_rls(inline) void setMinLim(f32v2 vMinLim)_rls({ minLim = vMinLim; });
+        	_rls(inline) void setMaxLim(f32v2 vMaxLim)_rls({ maxLim = vMaxLim; });
+        	// _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
+
+        	Obj2_bb* parent{ nullptr };				//Parent of the object
+
+        	virtual void onLimit() override;
+        	virtual void onUpdateg(vk::CommandBuffer pCB) override;
+    	};
+		using obj2 = obj_bb<2>;
+
+
+
+
+		template<> struct obj_bb<3> : public ObjCommon_bb {
+			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
+			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
+			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
+			f32v3 scl{ 0, 0, 0 };			//Scale of the object
+
+			////TODO add absolute pixel position and scale
+			//Obj3_b* parent{ nullptr };						//Parent of the object
+			//lnx::Map<Obj3_b*, uint32> children;				//Children of the object
+			//void setChildLimits(const uint32 vChildIndex) const override {
+			//	children[vChildIndex]->minLim = minLim;
+			//	children[vChildIndex]->maxLim = maxLim;
+			//}
+			//vec3f32 minLim{ 0, 0, 0 };						//The limit of the object render. It depends on the parent of the object and its properties
+			//vec3f32 maxLim{ 1, 1, 1 };						//The limit of the object render. It depends on the parent of the object and its properties
+    	};
+		using obj3 = obj_bb<3>;
 	}
 }
