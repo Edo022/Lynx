@@ -57,7 +57,7 @@ namespace lnx{
 		struct Obj_bb { //
 			_dbg(const char* dbgName;)
 			struct Common{
-				static uint64 lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
+				static std::atomic<uint64> lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
 				uint64 ID{ ++lastID };							//A unique ID that indentifies the object
 				uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list
 			} common;
@@ -105,7 +105,8 @@ namespace lnx{
 		 * @brief Base class of any render object of any dimension
 		 * @tparam chType Type of the children objects. Can be any subclass of Obj_b
 		 */
-		template<class chType> struct Obj_bt : virtual public Obj_bb {
+		template<class chType, class tType> struct Obj_bt : virtual public Obj_bb, public tType {
+                        static_assert(std::is_same<tType, Opaque> || std::is_same<tType, Structural>, "Object type can only be \"Structural\" or \"Opaque\"");
 			RaArray<chType*, uint32> children;
 			virtual Obj_bb* getChildren(uint32 vIndex) override { return static_cast<Obj_bb*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual uint32  getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
