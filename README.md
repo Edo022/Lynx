@@ -1,6 +1,23 @@
 # Lynx Engine
 
-A volume rendering and physics engine with runtime procedural generation and advanced physics.  
+A 3D software engine with volume rendering and advanced physics.  
+Features:  
+- Volume rendering
+    - No textures
+    - No UVs
+    - Better performance in physics simulations
+    - High quality renders
+- Node-based runtime procedural object generation
+    - Minimal disk usage
+    - Short loading time
+    - Multiple outputs from a single object
+
+- Global memory pool
+- Per-thread memory pool
+- Global VRAM pool
+
+
+
 
 &nbsp;
 
