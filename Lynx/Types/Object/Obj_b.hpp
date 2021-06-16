@@ -79,10 +79,13 @@ namespace lnx{
 
 
 
+
+
+
 		/**
 		 * @brief Members common to any Obj_bt instantiation
 		 */
-		struct ObjCommon_bb { //
+		struct obj_bb { //
 			_dbg(const char* dbgName;)
 			struct Common{
 				static std::atomic<uint64> lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
@@ -129,17 +132,40 @@ namespace lnx{
 
 
 
-		/**
-		 * @brief Base class of any render object of any dimension
-		 * @tparam chType Type of the children objects. Can be any subclass of Obj_b
-		 */
-		template<class chType, class tType> struct Obj_bt : virtual public Obj_bb, public tType {
-                        static_assert(std::is_same<tType, Opaque> || std::is_same<tType, Structural>, "Object type can only be \"Structural\" or \"Opaque\"");
-			RaArray<chType*, uint32> children;
+
+
+		struct NoChType_t{};
+
+		template<class tChType> struct obj_b : public obj_bb{
+			RtArray<tChType*, uint32> children;
 			virtual Obj_bb* getChildren(uint32 vIndex) override { return static_cast<Obj_bb*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual uint32  getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual bool    getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 		//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 		};
+
+		template<> struct obj_b<NoChType_t> : public obj_bb{
+			virtual Obj_bb* getChildren(uint32 vIndex) override {        dbg::printError("Children access function called on object of a type that has no children"); return nullptr; } //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
+			virtual uint32  getChildrenCount() override {                dbg::printError("Children access function called on object of a type that has no children"); return 0; }                       //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
+			virtual bool    getChildrenIsValid(uint32 vIndex) override { dbg::printError("Children access function called on object of a type that has no children"); return false; }               //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
+		};
+
+
+
+
+
+
+// //FIXME
+// 		/**
+// 		 * @brief Base class of any render object of any dimension
+// 		 * @tparam chType Type of the children objects. Can be any subclass of Obj_b
+// 		 */
+// 		template<class chType, class tType> struct Obj_bt : virtual public Obj_bb, public tType {
+//                         static_assert(std::is_same<tType, Opaque> || std::is_same<tType, Structural>, "Object type can only be \"Structural\" or \"Opaque\"");
+// 			RaArray<chType*, uint32> children;
+// 			virtual Obj_bb* getChildren(uint32 vIndex) override { return static_cast<Obj_bb*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+// 			virtual uint32  getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+// 			virtual bool    getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 		//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+// 		};
 
 
 
@@ -165,14 +191,18 @@ namespace lnx{
 
 
 
-		template<uint32 tDim> struct obj_bb{
-			static_assert(false, "Invalid tDim value. tDim can only be 1, 2 or 3");
-		};
+
+		// // static constexpr uint32 AnyDim = (uint32)-1;
+
+		// template<uint32 tDim, class tChType> struct obj_b<tChType>{
+		// 	static_assert(tDim >= 1 && tDim <= 3, "Invalid tDim value. tDim can only be 1, 2 or 3");
+		// };
+		template<class tChType = NoChType_t> using obj = obj_b<tChType>;
 
 
 
 
-		template<> struct obj_bb<1> : public ObjCommon_bb {
+		template<class tChType> struct obj1 : public obj_b<tChType> {
 			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
 			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
 			float32 scl{ 0 };				//Scale of the object
@@ -187,12 +217,12 @@ namespace lnx{
 			//vec2f32 minLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
 			//vec2f32 maxLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
 		};
-		using obj1 = obj_bb<1>;
+		// template<class tChType = NoChType_t> using obj1 = obj_t<1, tChType>;
 
 
 
 
-		template<> struct obj_bb<2> : public ObjCommon_bb, public MouseCallbacks_b {
+		template<class tChType> struct obj2 : public obj_b<tChType>, public MouseCallbacks_b {
         	f32v2 pos = { 0, 0 };	                //Position of the object. The position is relative to the origin of the object
         	float32 zIndex = 0;		                //Index of the object. Objects with higher zIndex will be rendered on top of others
         	float32 rot = 0;	                    //Rotation of the object
@@ -204,17 +234,22 @@ namespace lnx{
         	_rls(inline) void setMaxLim(f32v2 vMaxLim)_rls({ maxLim = vMaxLim; });
         	// _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
 
+        	limitAlignment limitAlignment_ = limitAlignment::eCenter; 	//The alignment of the object within its limits
+
+	        virtual void setChildLimits(const uint32 vChildIndex) const override;
+        	virtual void onSpawn(Window& pWindow) override;
+
         	Obj2_bb* parent{ nullptr };				//Parent of the object
 
         	virtual void onLimit() override;
         	virtual void onUpdateg(vk::CommandBuffer pCB) override;
     	};
-		using obj2 = obj_bb<2>;
+		// template<class tChType = NoChType_t> using obj2 = obj_t<2, tChType>;
+
+//TODO ADD CHILDREN TYPE
 
 
-
-
-		template<> struct obj_bb<3> : public ObjCommon_bb {
+		template<class tChType> struct obj3 : public obj_b<tChType> {
 			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
 			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
@@ -230,6 +265,6 @@ namespace lnx{
 			//vec3f32 minLim{ 0, 0, 0 };						//The limit of the object render. It depends on the parent of the object and its properties
 			//vec3f32 maxLim{ 1, 1, 1 };						//The limit of the object render. It depends on the parent of the object and its properties
     	};
-		using obj3 = obj_bb<3>;
+		// template<class tChType = NoChType_t> using obj3 = obj_t<3, tChType>;
 	}
 }
