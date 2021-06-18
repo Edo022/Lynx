@@ -33,7 +33,7 @@ namespace lnx::obj{
 
 
 	template<class tChType> void obj2<tChType>::onSpawn(Window& pWindow) {
-		Obj_bt<tChType>::onSpawn(pWindow);
+		obj_bb::onSpawn(pWindow);
 
 		// //If in debug mode, spawn debug border
 		// #ifdef LNX_DEBUG
@@ -66,18 +66,18 @@ namespace lnx::obj{
 	}
 
 
-	void Obj2_bb::onLimit() {
-		Obj_bb::onLimit();
-		if(parent) parent->setChildLimits(common.childIndex);
+	template<class tChType> void obj2<tChType>::onLimit() {
+		obj_bb::onLimit();
+		if(parent) parent->setChildLimits(obj_bb::common.childIndex);
 		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
 	}
 
-	void Obj2_bb::onUpdateg(vk::CommandBuffer pCB) {
+	template<class tChType> void obj2<tChType>::onUpdateg(vk::CommandBuffer pCB) {
 		pCB.updateBuffer(
-			getShVData().cell->csc.buffer,
-			getShVData().cell->localOffset,
-			getShVData().cell->cellSize,
-			(void*)getShData()
+			obj_bb::getShVData().cell->csc.buffer,
+			obj_bb::getShVData().cell->localOffset,
+			obj_bb::getShVData().cell->cellSize,
+			(void*)obj_bb::getShData()
 		);
 		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
 	}

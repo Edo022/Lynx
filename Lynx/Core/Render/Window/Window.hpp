@@ -13,18 +13,18 @@
 
 namespace lnx::obj{
 	struct RenderSpace2;
-	struct Obj_bb;
-	struct Obj2_bb;
+	struct obj_bb;
+	template<class tChType> struct obj2;
 }
 namespace lnx{
 	//FIXME
 	struct InputCallbackQueues{
 		struct InputCallbackQueue{
 			std::atomic<bool> queued = false;
-			RaArray<obj::Obj2_bb*> list;
+			RaArray<obj::obj2<obj::obj_bb>*> list;
 			std::mutex m;
 			f32v2 pos;
-			inline auto add(obj::Obj2_bb* pElm){
+			inline auto add(obj::obj2<obj::obj_bb>* pElm){
 				m.lock();
 				auto r = list.add(pElm);
 				m.unlock();
@@ -58,7 +58,7 @@ namespace lnx{
 		core::RenderCore renderCore;
 
 		InputCallbackQueues icQueues;
-		void qSpawn(obj::Obj_bb* pObject);
+		void qSpawn(obj::obj_bb* pObject);
 
 		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
 			((Window*)glfwGetWindowUserPointer(pWindow))->renderCore.swp.resized = true;

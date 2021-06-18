@@ -54,7 +54,7 @@ namespace lnx::core::render{
 
 
 namespace lnx{
-	void core::RenderCore::recSpawn(obj::Obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
+	void core::RenderCore::recSpawn(obj::obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
 		pObj->render.parentWindow = &pWindow;								//Set owner window
@@ -64,7 +64,7 @@ namespace lnx{
 		}
 	}
 
-	void core::RenderCore::recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB){
+	void core::RenderCore::recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
 		pObj->onUpdateg(pCB);
@@ -73,7 +73,7 @@ namespace lnx{
 		}
 	}
 
-	void core::RenderCore::recLimit(obj::Obj_bb* pObj){
+	void core::RenderCore::recLimit(obj::obj_bb* pObj){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
 		pObj->onLimit();

@@ -17,7 +17,7 @@ namespace lnx::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2 : public Obj2_b<2> {
+	struct Line2 : public obj2<obj_bb> {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
@@ -59,7 +59,7 @@ namespace lnx::obj {
 
 		// void recalculateCoords() final {
 		void onLimit() final override {
-			Obj2_b::onLimit();
+			obj2::onLimit();
 			dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->renderCore.t.thr, "This function can only be called by the render thread.");
 			data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
 			data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;

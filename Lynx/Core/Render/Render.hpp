@@ -5,9 +5,9 @@
 #include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
-
 
 
 
@@ -18,8 +18,8 @@ namespace lnx{
 
 	namespace obj{
 		struct RenderSpace2;
-		struct Obj_bb;
-		struct Obj2_bb;
+		struct obj_bb;
+		template<class tChType> struct obj2;
 	}
 
 
@@ -68,9 +68,9 @@ namespace lnx{
 			void run();
 			void clear();	//Stops the render and frees its resources. This function must be called from lnx::Window::clear() only
 
-			void recSpawn  (obj::Obj_bb* pObj, Window& pWindow);
-			void recUpdateg(obj::Obj_bb* pObj, vk::CommandBuffer pCB);
-			void recLimit  (obj::Obj_bb* pObj);
+			void recSpawn  (obj::obj_bb* pObj, Window& pWindow);
+			void recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB);
+			void recLimit  (obj::obj_bb* pObj);
 
 			void renderLoop();
 			void draw(uint32& imageIndex);
@@ -97,7 +97,7 @@ namespace lnx{
 			shd::FloatToIntBuffer sh_clear;
 
 			std::mutex addObject_m;
-			RtArray<obj::ObjCommon_bb*> requests; //TODO USE RAARRAY
+			RtArray<obj::obj_bb*> requests; //TODO USE RAARRAY
 			std::mutex            requests_m;
 
 		private:

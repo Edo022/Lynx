@@ -93,7 +93,7 @@ namespace lnx{
 
 
 
-	void Window::qSpawn(obj::Obj_bb* pObject){
+	void Window::qSpawn(obj::obj_bb* pObject){
 		// dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
 
 		renderCore.requests_m.lock();
