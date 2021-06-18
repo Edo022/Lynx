@@ -17,12 +17,12 @@ namespace lnx::obj{
 		Border2() {
 			data._data.ffp() = { .0f, .0f };
 			data._data.fsp() = { .0f, .0f };
-			data._data.ID() = (uint32)common.ID;
+			data._data.ID() = (uint32)ID;
 		}
 		Border2(const f32v2& vFp, const f32v2& vSp) {
 			data._data.ffp() = vFp;
 			data._data.fsp() = vSp;
-			data._data.ID() = (uint32)common.ID;
+			data._data.ID() = (uint32)ID;
 		}
 
 		/**

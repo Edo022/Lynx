@@ -1,11 +1,16 @@
 #pragma once
 #define LNX_H_SHADER
-#include "Lynx/Core/Render/Window/Window.hpp"
+// #include "Lynx/Core/Render/Window/Window.hpp"
+// #include "vulkan/vulkan.hpp"
+#include "Lynx/Core/Render/Shaders/Shader_t.hpp"
 #include "Lynx/Types/Containers/String.hpp"
 
 
 
 
+namespace lnx{
+	struct Window;
+}
 namespace lnx::core::shaders{
 	extern String shaderPath; //Path to the shaders folder //TODO EVALUATE AT RUNTIME
 	extern uint32 pipelineNum; //The number of shaders. Used in static initialization and in Window class to allocate a lookup table for the pipelines

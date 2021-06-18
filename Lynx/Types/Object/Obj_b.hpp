@@ -5,6 +5,7 @@
 #include "Lynx/Types/Containers/String.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/VPointer.hpp"
+#include "Lynx/Core/Input/MouseInput.hpp"
 //BUG REPLACE C STYLE CASTS WITH C++ CASTS
 
 
@@ -110,27 +111,12 @@ namespace lnx{
 			std::atomic<UpdateBits> updates;				//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 			Window* w = nullptr;					//Parent window object that contains the render thread and the window data
 
-			virtual void onSpawn(Window& pWindow){
-				dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
-			}
-			virtual void onLimit(){
-				dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
-			}
-			virtual void onUpdateg(vk::CommandBuffer pCB){
-				dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
-			}
+			virtual void onSpawn(Window& pWindow);
+			virtual void onLimit();
+			virtual void onUpdateg(vk::CommandBuffer pCB);
 
 			//TODO comment
-			void queue(UpdateBits vUpdates){
-				UpdateBits old = updates;						//Save old updates bits
-				if(w) { 										//If the object has a binded window
-					w->renderCore.requests_m.lock();				//Lock requests mutex
-						updates = updates | vUpdates;				//Update updates bits
-						if(!old) w->renderCore.requests.add(this);	//If it isn't already in it, add the object to the update queue
-					w->renderCore.requests_m.unlock();				//Unlock requests mutex
-				}												//If not
-				else updates = updates | vUpdates;					//Update updates bits
-			}
+			void queue(UpdateBits vUpdates);
 		};
 
 

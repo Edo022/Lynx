@@ -2,14 +2,41 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/2D/Border2.hpp"
-
+#include "Lynx/Core/Render/Window/Window.hpp"
 
 
 
 
 
 namespace lnx::obj{
-	std::atomic<uint64> obj_bb::Common::lastID = 0;	//#LLID LOS000 initialize the last object ID //FIXME REMOVE or do something idk
+	std::atomic<uint64> obj_bb::lastID = 0;	//#LLID LOS000 initialize the last object ID //FIXME REMOVE or do something idk
+
+
+
+
+
+	void obj_bb::onSpawn(Window& pWindow){
+		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+	}
+	void obj_bb::onLimit(){
+		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+	}
+	void obj_bb::onUpdateg(vk::CommandBuffer pCB){
+		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+	}
+
+
+	void obj_bb::queue(UpdateBits vUpdates){
+		UpdateBits old = updates;						//Save old updates bits
+		if(w) { 										//If the object has a binded window
+			w->renderCore.requests_m.lock();				//Lock requests mutex
+				updates = updates | vUpdates;				//Update updates bits
+				if(!old) w->renderCore.requests.add(this);	//If it isn't already in it, add the object to the update queue
+			w->renderCore.requests_m.unlock();				//Unlock requests mutex
+		}												//If not
+		else updates = updates | vUpdates;					//Update updates bits
+	}
+
 
 
 
@@ -60,15 +87,16 @@ namespace lnx::obj{
 
 
 	void obj2::setChildLimits(const uint32 vChildIndex) const {
-		dbg::checkParam(vChildIndex > this->children.count() - 1, "vChildIndex", "Invalid index");
-		this->children[vChildIndex]->setMinLim(minLim);
-		this->children[vChildIndex]->setMaxLim(maxLim);
+		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
+		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
+		static_cast<obj2*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
+		static_cast<obj2*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
 	}
 
 
 	void obj2::onLimit() {
 		obj_bb::onLimit();
-		if(parent) parent->setChildLimits(obj_bb::common.childIndex);
+		if(parent) parent->setChildLimits(obj_bb::childIndex);
 		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
 	}
 

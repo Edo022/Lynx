@@ -2,7 +2,7 @@
 #include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/System/System.hpp"
-
+#include "Lynx/Core/Render/Window/Window.hpp"
 
 
 
