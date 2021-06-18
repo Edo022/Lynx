@@ -2,6 +2,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
+#include "Lynx/Core/Render/Window/Window.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include <climits>
