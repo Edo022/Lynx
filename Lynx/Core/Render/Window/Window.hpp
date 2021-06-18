@@ -8,23 +8,23 @@
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
 #include "Lynx/Core/Render/Render.hpp" //TODO rename as RenderCore
-
+// #include "Lynx/Types/Object/Obj_b.hpp"
 
 
 namespace lnx::obj{
 	struct RenderSpace2;
 	struct obj_bb;
-	template<class tChType> struct obj2;
+	struct obj2;
 }
 namespace lnx{
 	//FIXME
 	struct InputCallbackQueues{
 		struct InputCallbackQueue{
 			std::atomic<bool> queued = false;
-			RaArray<obj::obj2<obj::obj_bb>*> list;
+			RaArray<obj::obj2*> list;
 			std::mutex m;
 			f32v2 pos;
-			inline auto add(obj::obj2<obj::obj_bb>* pElm){
+			inline auto add(obj::obj2* pElm){
 				m.lock();
 				auto r = list.add(pElm);
 				m.unlock();

@@ -5,7 +5,7 @@
 
 
 namespace lnx::obj{
-    struct RenderSpace_b : public obj2<obj2<>>{
+    struct RenderSpace_b : public obj2{
         void onUpdateg(vk::CommandBuffer pCB) final override {
             obj_bb::onUpdateg(pCB);
         }

@@ -19,7 +19,7 @@ namespace lnx{
 	namespace obj{
 		struct RenderSpace2;
 		struct obj_bb;
-		template<class tChType> struct obj2;
+		struct obj2;
 	}
 
 

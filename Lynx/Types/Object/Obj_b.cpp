@@ -15,13 +15,13 @@ namespace lnx::obj{
 
 	//Only define in debug mode for non debug objects
 	#ifdef LNX_DEBUG
-	template<class tChType> void obj2<tChType>::setMinLim(f32v2 vMinLim) {
+	void obj2::setMinLim(f32v2 vMinLim) {
 		minLim = vMinLim;
 		// if(!Obj_bb::render.isDbgObj && debugBorder) {
 		// 	debugBorder->data._data.ffp() = vMinLim;
 		// }
 	}
-	template<class tChType> void obj2<tChType>::setMaxLim(f32v2 vMaxLim) {
+	void obj2::setMaxLim(f32v2 vMaxLim) {
 		maxLim = vMaxLim;
 		// if(!Obj_bb::render.isDbgObj && debugBorder) {
 		// 	debugBorder->data._data.fsp() = vMaxLim;
@@ -32,7 +32,7 @@ namespace lnx::obj{
 
 
 
-	template<class tChType> void obj2<tChType>::onSpawn(Window& pWindow) {
+	void obj2::onSpawn(Window& pWindow) {
 		obj_bb::onSpawn(pWindow);
 
 		// //If in debug mode, spawn debug border
@@ -59,20 +59,20 @@ namespace lnx::obj{
 
 
 
-	template<class tChType> void obj2<tChType>::setChildLimits(const uint32 vChildIndex) const {
+	void obj2::setChildLimits(const uint32 vChildIndex) const {
 		dbg::checkParam(vChildIndex > this->children.count() - 1, "vChildIndex", "Invalid index");
 		this->children[vChildIndex]->setMinLim(minLim);
 		this->children[vChildIndex]->setMaxLim(maxLim);
 	}
 
 
-	template<class tChType> void obj2<tChType>::onLimit() {
+	void obj2::onLimit() {
 		obj_bb::onLimit();
 		if(parent) parent->setChildLimits(obj_bb::common.childIndex);
 		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eLimit);
 	}
 
-	template<class tChType> void obj2<tChType>::onUpdateg(vk::CommandBuffer pCB) {
+	void obj2::onUpdateg(vk::CommandBuffer pCB) {
 		pCB.updateBuffer(
 			obj_bb::getShVData().cell->csc.buffer,
 			obj_bb::getShVData().cell->localOffset,
