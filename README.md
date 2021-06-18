@@ -106,12 +106,11 @@ Target platform and build type can be specified with the `-mode=<mode>` option.
 |------|----------------------------|----------------------------|------------------------|
 | `ld` | Debug build for Linux      | `_dbg(...)`<br>`_lnx(...)` | `-d[ ... ]`<br>`-l[ ... ]` |
 | `lr` | Release build for Linux    | `_rls(...)`<br>`_lnx(...)` | `-r[ ... ]`<br>`-l[ ... ]` |
-| `ls` | Shipping build for Linux   |
-| `wd` | Bebug build for Windows    | `_dbg(...)`<br>`_wds(...)` | `-d[ ... ]`<br>`-w[ ... ]` |
-| `wr` | Release build for Windows  | `_rls(...)`<br>`_wds(...)` | `-r[ ... ]`<br>`-w[ ... ]` |
-| `ws` | Shipping build for Windows |
+| `ls` | Shipping build for Linux   | `//TODO`   <br>`_lnx(...)` | `//TODO`   <br>`-l[ ... ]` |
+| `ws` | Shipping build for Windows | `//TODO`   <br>`_wds(...)` | `//TODO`   <br>`-w[ ... ]` |
 
 //TODO remove debug and release builds for windows or add support for them
+//TODO do the same with gcc wrapper
 
 e.g. `<path_to_sdk>/Build/lynxg++ -mode=ld -r[ -O3 -g0 ] -d[ -O0 -g3 ] main.cpp`  
 
