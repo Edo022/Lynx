@@ -17,7 +17,7 @@ namespace lnx::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2 : public obj2<obj_bb> {
+	struct Line2 : public obj2<obj2<>> {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */

@@ -1,11 +1,11 @@
 #pragma once
 #define LNX_H_INPUT_SURFACE
-#include "Lynx/Types/Object/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 
 
 
 namespace lnx::obj{
-    struct InputSurface : public Obj2_b<2> {
+    struct InputSurface : public obj2<obj2<>> {
 
     };
 }

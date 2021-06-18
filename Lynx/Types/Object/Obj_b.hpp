@@ -81,13 +81,16 @@ namespace lnx{
 
 
 
-		struct NoChType_t{};
+		// struct NoChType_t{};
 		template<class tChType> struct obj_b;
 
 		/**
 		 * @brief Members common to any Obj_bt instantiation
 		 */
 		struct obj_bb { //
+			obj_bb* parent{ nullptr };				//Parent of the object //FIXME move to common
+
+
 			_dbg(const char* dbgName;)
 			struct Common{
 				static std::atomic<uint64> lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
@@ -98,7 +101,7 @@ namespace lnx{
 			virtual ram::ptr<char>       getShData() = 0;
 			virtual vram::Alloc_b<char> getShVData() = 0;
 
-			virtual obj_b<NoChType_t>* getChildren(uint32 vIndex) = 0;			//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			virtual obj_b<obj_bb>* getChildren(uint32 vIndex) = 0;			//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual uint32  getChildrenCount() = 0;					//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual bool    getChildrenIsValid(uint32 vIndex) = 0; 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 
@@ -137,18 +140,19 @@ namespace lnx{
 
 
 
-		template<class tChType = NoChType_t> struct obj_b : public obj_bb{
+		// template<class tChType = NoChType_t> struct obj_b : public obj_bb{
+		template<class tChType = obj_bb> struct obj_b : public obj_bb{
 			RtArray<tChType*, uint32> children;
 			virtual obj_b<>* getChildren(uint32 vIndex) override { return static_cast<obj_b<>*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual uint32   getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 			virtual bool     getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 		//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
 		};
 
-		template<> struct obj_b<NoChType_t> : public obj_bb{
-			virtual obj_b<>* getChildren(uint32 vIndex) override {        dbg::printError("Children access function called on object of a type that has no children"); return nullptr; } //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
-			virtual uint32   getChildrenCount() override {                dbg::printError("Children access function called on object of a type that has no children"); return 0; }                       //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
-			virtual bool     getChildrenIsValid(uint32 vIndex) override { dbg::printError("Children access function called on object of a type that has no children"); return false; }               //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
-		};
+		// template<> struct obj_b<NoChType_t> : public obj_bb{
+		// 	virtual obj_b<>* getChildren(uint32 vIndex) override {        dbg::printError("Children access function called on object of a type that has no children"); return nullptr; } //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
+		// 	virtual uint32   getChildrenCount() override {                dbg::printError("Children access function called on object of a type that has no children"); return 0; }                       //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
+		// 	virtual bool     getChildrenIsValid(uint32 vIndex) override { dbg::printError("Children access function called on object of a type that has no children"); return false; }               //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
+		// };
 
 
 
@@ -198,12 +202,13 @@ namespace lnx{
 		// template<uint32 tDim, class tChType> struct obj_b<tChType>{
 		// 	static_assert(tDim >= 1 && tDim <= 3, "Invalid tDim value. tDim can only be 1, 2 or 3");
 		// };
-		template<class tChType = NoChType_t> using obj = obj_b<tChType>;
+		// template<class tChType = NoChType_t> using obj = obj_b<tChType>;
+		template<class tChType = obj_bb> using obj = obj_b<tChType>;
 		// using obj = obj<>;
 
 
 
-		template<class tChType> struct obj1 : public obj_b<tChType> {
+		template<class tChType = obj_bb> struct obj1 : public obj_b<tChType> {
 			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
 			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
 			float32 scl{ 0 };				//Scale of the object
@@ -223,7 +228,7 @@ namespace lnx{
 
 
 
-		template<class tChType> struct obj2 : public obj_b<tChType>, public MouseCallbacks_b {
+		template<class tChType = obj_bb> struct obj2 : public obj_b<tChType>, public MouseCallbacks_b {
         	f32v2 pos = { 0, 0 };	                //Position of the object. The position is relative to the origin of the object
         	float32 zIndex = 0;		                //Index of the object. Objects with higher zIndex will be rendered on top of others
         	float32 rot = 0;	                    //Rotation of the object
@@ -240,8 +245,6 @@ namespace lnx{
 	        virtual void setChildLimits(const uint32 vChildIndex) const override;
         	virtual void onSpawn(Window& pWindow) override;
 
-        	obj2<obj_bb>* parent{ nullptr };				//Parent of the object
-
         	virtual void onLimit() override;
         	virtual void onUpdateg(vk::CommandBuffer pCB) override;
     	};
@@ -250,7 +253,7 @@ namespace lnx{
 //TODO ADD CHILDREN TYPE
 
 
-		template<class tChType> struct obj3 : public obj_b<tChType> {
+		template<class tChType = obj_bb> struct obj3 : public obj_b<tChType> {
 			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
 			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
