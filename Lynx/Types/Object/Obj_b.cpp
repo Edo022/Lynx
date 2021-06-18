@@ -102,10 +102,10 @@ namespace lnx::obj{
 
 	void obj2::onUpdateg(vk::CommandBuffer pCB) {
 		pCB.updateBuffer(
-			obj_bb::getShVData().cell->csc.buffer,
-			obj_bb::getShVData().cell->localOffset,
-			obj_bb::getShVData().cell->cellSize,
-			(void*)obj_bb::getShData()
+			getShVData().cell->csc.buffer,
+			getShVData().cell->localOffset,
+			getShVData().cell->cellSize,
+			(void*)getShData()
 		);
 		// if(!render.isDbgObj && debugBorder) debugBorder->queue(obj::UpdateBits::eUpdateg);
 	}

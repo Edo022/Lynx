@@ -55,16 +55,8 @@ namespace lnx::obj {
 		inline void setFp(const f32v2& vFp) { _fp0 = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 		inline void setSp(const f32v2& vSp) { _fp1 = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
-
 		// void recalculateCoords() final {
-		void onLimit() final override {
-			obj2::onLimit();
-			dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
-			data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
-			data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
-		}
-
-
+		void onLimit() final override;
 
 		shd::Line2 data;
 	};
