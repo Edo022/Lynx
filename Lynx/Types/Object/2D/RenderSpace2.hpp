@@ -48,7 +48,7 @@ namespace lnx::obj {
 		}
 
 
-		uint32 addChild(Obj2_b* pObject);
+		uint32 addChild(obj2* pObject);
 		void setChildLimits(const uint32 vChildIndex) const final;
 	};
 }
