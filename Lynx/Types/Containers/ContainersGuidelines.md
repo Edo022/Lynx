@@ -1,5 +1,5 @@
 
-# General member function structure
+# Generic function structure
 
 ```cpp
 /**
@@ -17,14 +17,16 @@
  */
 template<targs> ... type functionName(args)) ... {
     static_assert(/*check template validity*/);                 //Static assert templates, if used
-    dbg::/*check self validity*/
+    dbg::/*check self validity*/                                //If this is a member function, check that the object is valid
     dbg::/*check arguments validity*/;
 
     ...
 }
 ```
 
-e.g. (`template<class tType> class Array{...};`)
+<br><br>
+
+e.g. (`template<class tType> class Array;`)
 
 ```cpp
 /**
@@ -36,7 +38,7 @@ e.g. (`template<class tType> class Array{...};`)
  * @return The index of the first element that has pValue value
  *     Returns -1 if the value is not found
  */
- int find(const tType* pValue){
+ template<class tType> int Array<tType>::find(const tType* pValue){
      dbg::checkParam(pValue != nullptr, "pValue", "pValue cannot be null");
      for(int i = 0; i < this->count(); ++i){
         if(this->elms[i] == *pValue) return i;
@@ -56,7 +58,7 @@ e.g. (`template<class tType> class Array{...};`)
  * @param pValue The value to search for
  * @return true if the value is found, false otherwise
  */
- template<class tType> bool catFirst(const Array<tType>& pArray, const tType& pValue){
+ template<class tType> bool Array<tType>::catFirst(const Array<tType>& pArray, const tType& pValue){
     int index = pArray.find(pValue);
     if(index == -1) return false;
     else{
@@ -72,18 +74,24 @@ e.g. (`template<class tType> class Array{...};`)
   * @param vIndex The index of the element to set
   * @param pValue The new value of the element
   */
-  void set(const int vIndex, const tType& pValue){
+  template<class tType> void Array<tType>::set(const int vIndex, const tType& pValue){
       dbg::checkParam(vIndex >= 0, "vIndex", "Index must be positive";
       dbg::checkParam(vIndex < this->Count(), "vIndex", "Index out of range";
       this->data[vIndex] = pValue;
   }
 ```
 
-Do not construct or destroy trivial types  
-Specify which elements are constructed or destroyed  
+<br><br>
 
-If the function needs to cast templated parameters, specify what casts are used on them  
-"Best" and "Worst" are omitted if the complexity doesn't change
+Do not construct or destroy trivial types.  
+Specify which elements are constructed or destroyed.  
+
+If the function needs to cast templated parameters, specify what casts are used on them.  
+"Best" and "Worst" are omitted if the complexity doesn't change.  
+
+If the function should only be used internally by the engine, write it explicitly in its description.
+
+<br><br><br><br>
 
 # Getters and setters
 
@@ -114,10 +122,14 @@ alwaysInline ... type setMember(type& vValue) ... {
 Getters and setters should only get and set variables, without additional operations  
 If they need to do more, write another function that specifically does that and explain how it works
 
-# General
+<br><br><br><br>
+
+# idk
 
 Prefer debug checks over error codes
 Prefer auto over complete templates, if you don't need the name of the type
+
+<br><br><br><br>
 
 # Naming conventions
 

@@ -30,25 +30,49 @@ namespace lnx::vram{
 			eL = 0b101,
 			eNum
 		};
-        //Size of each buffer. 100663296 B (~100MB)
-		static const uint32 buffSize = (uint32)VCellClass::eL * 6;
-        static const uint32 incSize  = (uint32)VCellClass::eL / 2;
-        static const uint32 memOffset = 512;
+		static const uint32 buffSize = (uint32)VCellClass::eL * 6;	//Size of each buffer. 100663296 B (~100MB)
+        static const uint32 incSize  = (uint32)VCellClass::eL / 2;	//Custom size buffers size step in bytes
+        static const uint32 memOffset = 512;						//TODO find out what memOffset actually is and rename it
 
 
+
+
+		/**
+		 * @brief Returns the corresponding VCellClassIndex of a CellClass value
+		 *     This function should only be used by the engine
+		 * Complexity: O(1)
+		 * @param vClass The VCellClass value
+		 * @return The index corresponding to the class
+		 */
 		static constexpr inline uint16 classIndexFromEnum(const VCellClass vClass) {
 			switch(vClass) {
-				#define _case(n) case VCellClass::e##n: return (uint16)VCellClassIndex::e##n;
-				case VCellClass::e0: return (uint16)-1;			//Custom size class
-				_case(A) _case(B) _case(C) _case(D) _case(Q) _case(L)	//Fixed size classes
-				default: return (uint16)-2; 							//This is just to suppress the warning
-				#undef _case
+				//Custom size class
+				case VCellClass::e0: return (uint16)-1;
+
+				//Fixed size classes
+				case VCellClass::eA: return (uint16)VCellClassIndex::eA;
+				case VCellClass::eB: return (uint16)VCellClassIndex::eB;
+				case VCellClass::eC: return (uint16)VCellClassIndex::eC;
+				case VCellClass::eD: return (uint16)VCellClassIndex::eD;
+				case VCellClass::eQ: return (uint16)VCellClassIndex::eQ;
+				case VCellClass::eL: return (uint16)VCellClassIndex::eL;
+
+				//This is just to suppress the warning
+				default: return (uint16)-2;
 			}
 		}
 
 		//Returns the CellClass value of a CellClassIndex
 		static constexpr VCellClass classes[] = { VCellClass::eA, VCellClass::eB, VCellClass::eC, VCellClass::eD, VCellClass::eQ, VCellClass::eL };
-		static constexpr inline VCellClass classEnumFromIndex(const VCellClassIndex vIndex) { return classes[(uint64)vIndex]; }
-		static constexpr inline VCellClass classEnumFromIndex(const uint64          vIndex) { return classes[        vIndex]; }
+		/**
+		 * @brief Returns the corresponding VCellClass value of a VCellClassIndex
+		 *     This function should only be used by the engine
+		 * Complexity: O(1)
+		 * @param vClass The class index
+		 * @return The VCellClass value corresponding to the index
+		 */
+		static constexpr inline VCellClass classEnumFromIndex(const uint64 vIndex) {
+			return classes[ vIndex];
+		}
     }
 }
