@@ -3,7 +3,7 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Types/Object/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 #include <climits>
 #include <chrono>
 //TODO parallelize work from a secondary render thread
@@ -56,29 +56,29 @@ namespace lnx::core::render{
 namespace lnx{
 	void core::RenderCore::recSpawn(obj::obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->render.updates = pObj->render.updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
-		pObj->render.parentWindow = &pWindow;								//Set owner window
+		pObj->updates = pObj->updates & ~obj::eSpawn;			//Clear update bit (prevents redundant updates)
+		pObj->w = &pWindow;								//Set owner window
 		pObj->onSpawn(pWindow);												//Run user callback
-		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){				//For each child
-			if(pObj->getChildrenIsValid(i)) recSpawn(pObj->getChildren(i), pWindow); //Run recursive update on it
+		for(uint32 i = 0; i < pObj->children.count(); ++i){				//For each child
+			if(pObj->children.isValid(i)) recSpawn(pObj->children[i], pWindow); //Run recursive update on it
 		}
 	}
 
 	void core::RenderCore::recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->render.updates = pObj->render.updates & ~obj::eUpdateg;
+		pObj->updates = pObj->updates & ~obj::eUpdateg;
 		pObj->onUpdateg(pCB);
-		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
-			if(pObj->getChildrenIsValid(i)) recUpdateg(pObj->getChildren(i), pCB);
+		for(uint32 i = 0; i < pObj->children.count(); ++i){
+			if(pObj->children.isValid(i)) recUpdateg(pObj->children[i], pCB);
 		}
 	}
 
 	void core::RenderCore::recLimit(obj::obj_bb* pObj){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->render.updates = pObj->render.updates & ~obj::eLimit;
+		pObj->updates = pObj->updates & ~obj::eLimit;
 		pObj->onLimit();
-		for(uint32 i = 0; i < pObj->getChildrenCount(); ++i){
-			if(pObj->getChildrenIsValid(i)) recLimit(pObj->getChildren(i));
+		for(uint32 i = 0; i < pObj->children.count(); ++i){
+			if(pObj->children.isValid(i)) recLimit(pObj->children[i]);
 		}
 	}
 
@@ -338,10 +338,10 @@ namespace lnx{
 		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE RENDER QUEUE
 		requests_m.lock();
 		if(!requests.empty()) for(auto r : requests){
-			if(r->render.updates & obj::UpdateBits::eSpawn) recSpawn(r, *w);
-			if(r->render.updates & obj::UpdateBits::eLimit) recLimit(r);
-			if(r->render.updates & obj::UpdateBits::eUpdateg) recUpdateg(r, cb);
-			_dbg(if(r->render.updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
+			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r, *w);
+			if(r->updates & obj::UpdateBits::eLimit) recLimit(r);
+			if(r->updates & obj::UpdateBits::eUpdateg) recUpdateg(r, cb);
+			_dbg(if(r->updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 		}
 		requests.clear();
 		requests_m.unlock();

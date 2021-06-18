@@ -1,7 +1,6 @@
 #pragma once
 #define LNX_H_2DLINES
 #include "Lynx/Types/Object/Obj_b.hpp"
-#include "Lynx/Types/Object/2D/Obj2_b.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/GCommands.hpp"
@@ -17,7 +16,7 @@ namespace lnx::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2 : public obj2<obj2<>> {
+	struct Line2 : public obj2 {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
@@ -47,7 +46,7 @@ namespace lnx::obj {
 			data._data.col1() = pSc;
 			data._data.wd0() = vFw;
 			data._data.wd1() = vSw;
-			data._data.ID() = (uint32)common.ID;
+			data._data.ID() = (uint32)ID;
 
 		}
 
@@ -56,16 +55,8 @@ namespace lnx::obj {
 		inline void setFp(const f32v2& vFp) { _fp0 = vFp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 		inline void setSp(const f32v2& vSp) { _fp1 = vSp; } //FIXME why tho? add an update function or an option to keep it updated by using a shared memory
 
-
 		// void recalculateCoords() final {
-		void onLimit() final override {
-			obj2::onLimit();
-			dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->renderCore.t.thr, "This function can only be called by the render thread.");
-			data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
-			data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
-		}
-
-
+		void onLimit() final override;
 
 		shd::Line2 data;
 	};
