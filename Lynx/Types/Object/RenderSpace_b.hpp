@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_RENDER_SPACE
-#include "Lynx/Types/Object/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 
 
 

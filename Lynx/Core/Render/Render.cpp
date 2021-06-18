@@ -3,7 +3,7 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Types/Object/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 #include <climits>
 #include <chrono>
 //TODO parallelize work from a secondary render thread

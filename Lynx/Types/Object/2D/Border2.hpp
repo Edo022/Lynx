@@ -1,6 +1,6 @@
 #pragma once
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#include "Lynx/Types/Object/2D/Obj2_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/shaders/Border2.hpp"
 
 
