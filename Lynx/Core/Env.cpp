@@ -13,12 +13,9 @@ LnxAutoInit(LNX_NH_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 
-	// putenv("LIBRARY_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/lib");	//TODO allow user to link the local library instead of the one on their system //FIXME LD PATH NOT WORKING
+	// putenv("LIBRARY_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/lib");
+	//TODO^ allow user to link the local library instead of the one on their system //FIXME^ LD PATH NOT WORKING
 	_dbg(putenv("VK_LAYER_PATH=" enginePath "/deps/Linux/Vulkan-1.2.170.0/x86_64/etc/vulkan/explicit_layer.d"));
-	// putenv("VK_ICD_FILENAMES=" "/usr/share/vulkan/icd.d/intel_icd.x86_64.json");
-	//!^ Specify the driver to use to prevent Fedora 33 from using the lvp one
-	//!^ The lvp_icd driver creates a lot of threads that usually crash the system or slow down everything
-	//TODO^ check if llvmpipe is ok
 
 	#pragma GCC diagnostic pop
 }

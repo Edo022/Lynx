@@ -140,6 +140,19 @@ namespace lnx {
 			return Super::count() - 1;
 		}
 
+		/**
+		 * @brief
+		 *
+		 * @param vElm
+		 * @return The index of the new element, or (tIdxt)-1 if the array already contains at least one element with the same value
+		 */
+		alwaysInline tIdxt addUnique(const tType& vElm){
+			for(const auto& elm : *this){
+				if(elm == vElm) return (tIdxt)-1;
+			}
+			return add(vElm);
+		}
+
 
 
 

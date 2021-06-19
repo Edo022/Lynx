@@ -6,7 +6,7 @@
 //TODO add shrink function to reorder the elements and use less memory possible
 
 
-
+//TODO add addUnique function
 
 
 /*
