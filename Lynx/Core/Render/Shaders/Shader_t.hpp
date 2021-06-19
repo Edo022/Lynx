@@ -15,13 +15,13 @@
 namespace lnx{
 	class Window;
 }
+
+
 namespace lnx::shd{
-
-
-	template<bufferType buft> struct ShaderElm_b {
-		vram::ptr<char, eVRam, buft> vdata;						//Gpu data
-		ram::ptr<char>              data;						//Local data copy
-		uint32                      bind;						//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
+	template<bufferType tBufft> struct ShaderElm_b {
+		vram::ptr<char, eVRam, tBufft> vdata;					//Gpu data
+		ram::ptr<char>                 data;					//Local data copy
+		uint32                         bind;					//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
 	};
 
 

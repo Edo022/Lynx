@@ -101,7 +101,7 @@ namespace lnx{
 	void core::RenderCore::init(){
 		pipelines.resize(core::shaders::pipelineNum);
 		for(uint32 i = 0; i < pipelines.count(); ++i){
-			core::shaders::createPipeline(i, *w);
+			core::shaders::createPipeline(i, w->renderCore);
 		}
 
 		swp.bindedWindow = w;

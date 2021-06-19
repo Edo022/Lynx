@@ -119,15 +119,16 @@ alwaysInline ... type setMember(type& vValue) ... {
 }
 ```
 
-Getters and setters should only get and set variables, without additional operations  
+Getters and setters should only get and set variables, without additional operations.  
 If they need to do more, write another function that specifically does that and explain how it works
-
+.
 <br><br><br><br>
 
 # idk
 
-Prefer debug checks over error codes
-Prefer auto over complete templates, if you don't need the name of the type
+Prefer debug checks over error codes.  
+Use `auto` over complete templates, if you don't need the name of the type.  
+Never `#define` constants. Use constexpr instead.  
 
 <br><br><br><br>
 

@@ -37,7 +37,6 @@ namespace lnx::ram{
 			};
 			types[i].cells.init(cellsPerBuff * buffsNum);
 		}
-									//This class is locked [$59.99]
 		cells.init(sys::ram.size / (uint64)CellClass::eA);
 	}
 
