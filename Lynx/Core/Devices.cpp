@@ -450,9 +450,9 @@ namespace lnx::core::dvc{
 	 */
 	void createLogicalDevices(const _VkPhysicalDevice& pPDev, Device& pDev) {
 		RtArray<uint32> qIndices;
-		if(sameDevice(pPDev, graphics.pd)) {								//If it's the main device for graphics
-			qIndices.addUnique(pPDev.indices.graphicsFamily);						//Add its graphics queue index
-			qIndices.addUnique(pPDev.indices.presentFamily);							//Add its present  queue index
+		if(sameDevice(pPDev, graphics.pd)) {							//If it's the main device for graphics
+			qIndices.addUnique(pPDev.indices.graphicsFamily);				//Add its graphics queue index
+			qIndices.addUnique(pPDev.indices.presentFamily);				//Add its present  queue index
 		}
 		for(const auto cqIndex : pPDev.indices.computeFamilies) {		//Add every compute index
 			qIndices.addUnique(cqIndex);
