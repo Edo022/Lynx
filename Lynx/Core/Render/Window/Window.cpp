@@ -13,6 +13,25 @@
 
 
 namespace lnx{
+	/**
+	 * @brief Resize callback
+	 *     This function should only be called by GLFW
+	 * Complexity: O(1)
+	 */
+	void Window::resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
+		((Window*)glfwGetWindowUserPointer(pWindow))->renderCore.swp.resized = true;
+	}
+
+
+
+
+	/**
+	 * @brief Constructor. Initializes the window and starts its main render core
+	 * Complexity: O(n + m) [from Window::init]
+	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
+	 * @param vWidth Initial width of the window
+	 * @param vHeight Initial height of the window
+	 */
 	Window::Window(uint32 vWidth, uint32 vHeight) : width{ vWidth }, height{ vHeight } {
 		init();
 		renderCore.t(renderCore, &lnx::core::RenderCore::run);
@@ -22,6 +41,13 @@ namespace lnx{
 
 
 
+	/**
+	 * @brief Initializes the window
+	 *     Creates the surface, sets the icon, sets the callbacks and initializes the render core
+	 *     This function should only be used by the engine
+	 * Complexity: O(n + m) [from RenderCore::init] //TODO
+	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
+	 */
 	void Window::init() {
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
 		switch(glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
@@ -69,6 +95,13 @@ namespace lnx{
 
 
 
+	/**
+	 * @brief
+	 * Destroys the render core, the surface and the GLFW window and frees any used resource
+	 *     This function should only be used by the engine
+	 * Complexity: O(n + m) [from RenderCore::clear]
+	 *     where n = this->renderCore.swp.images.count() and m = __renderMaxFramesInFlight
+	 */
 	void Window::clear(){
 		renderCore.clear();
 		core::dvc::instance.destroySurfaceKHR(surface, nullptr);
@@ -81,8 +114,8 @@ namespace lnx{
 
 	/**
 	 * @brief Waits for the current frame to be rendered and closes the window
-	 * Callable by: External threads only
-	 * Complexity: O(1)
+	 *     This function can only be called by threads that are external to the window
+	 * Complexity: ? [depends on what the internal threads have to do to stop the execution]
 	 */
 	void Window::close(){ //TODO add parameter to not wait for window to close
 		running = false;
@@ -93,12 +126,17 @@ namespace lnx{
 
 
 
-	void Window::qSpawn(obj::obj_bb* pObject){
+	/**
+	 * @brief Queues an object in the update queue of the render core and switches on its eSpawn bit
+	 * Complexity: O(1)
+	 * @param pObj The object to spawn
+	 */
+	void Window::qSpawn(obj::obj_bb* pObj){
 		// dbg::checkCond(thr::self::thr() == t.thr, "This function cannot be called by the render thread.");
 
 		renderCore.requests_m.lock();
-			pObject->updates = pObject->updates | obj::UpdateBits::eSpawn;
-			renderCore.requests.add(pObject);
+			pObj->updates = pObj->updates | obj::UpdateBits::eSpawn;
+			renderCore.requests.add(pObj);
 		renderCore.requests_m.unlock();
 	}
 }

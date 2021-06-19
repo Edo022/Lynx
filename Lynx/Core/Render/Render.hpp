@@ -64,9 +64,9 @@ namespace lnx{
 			friend class lnx::Window;
 			friend class lnx::core::wnd::Swapchain;
 
-			void init();	//Initializes the render core.              This function must be called from lnx::Window::init()  only
+			void init();
 			void run();
-			void clear();	//Stops the render and frees its resources. This function must be called from lnx::Window::clear() only
+			void clear();
 
 			void recSpawn  (obj::obj_bb* pObj, Window& pWindow);
 			void recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB);

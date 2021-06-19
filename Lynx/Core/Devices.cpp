@@ -3,9 +3,9 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/System/SystemInfo.hpp"
-
 #include <set>
 #include <vector>
+
 
 //Compares 2 _VkPhysicalDevice objects
 alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& a, const _VkPhysicalDevice& b){ return a.properties.deviceID == b.properties.deviceID; }

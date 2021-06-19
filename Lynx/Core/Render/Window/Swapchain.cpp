@@ -390,6 +390,19 @@ namespace lnx::core::wnd{
 		dbg::printError("No supported surface format found");
 		return pAvailableFormats[0]; //FIXME
 	}
+	//FIXME add tiling to parameters ^^
+	// vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures) {
+	// 	for(vk::Format format : *pCandidates) {
+	// 		auto props = dvc::graphics.pd.device.getFormatProperties(format); //Get format properties
+
+	// 		if(( vTiling == vk::ImageTiling::eOptimal && (props.optimalTilingFeatures & vFeatures) == vFeatures) ||
+	// 			(vTiling == vk::ImageTiling::eLinear  && (props.linearTilingFeatures  & vFeatures) == vFeatures)) {
+	// 			return format;
+	// 		}
+	// 	}
+	// 	dbg::printError("Failed to find a supported format");
+	// 	return vk::Format::eUndefined;
+	// }
 
 
 
