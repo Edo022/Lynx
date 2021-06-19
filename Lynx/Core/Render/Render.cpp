@@ -104,7 +104,7 @@ namespace lnx{
 			core::shaders::createPipeline(i, w->renderCore);
 		}
 
-		swp.bindedWindow = w;
+		swp.w = w;
 		swp.create(false);
 
 

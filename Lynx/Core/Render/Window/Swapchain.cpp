@@ -4,7 +4,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Core.hpp"
-// #define w (*(Window*)(((char*)this) - offsetof(lnx::Window, lnx::Window::swp))) //TODO
+
 
 
 
@@ -13,6 +13,12 @@
 
 
 namespace lnx::core::wnd{
+	/**
+	 * @brief Constructor. Resizes the frames array and creates the synchronization objects
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
+	 *     where n = __renderMaxFramesInFlight
+	 */
 	Swapchain::Swapchain(){
 		frames.resize(__renderMaxFramesInFlight);
 
@@ -35,6 +41,14 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Initializes the swapchain
+	 *     Creates the swapchain and the render pass objects, gets the swapchain images and creates an image views and a framebuffer for each of them
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
+	 *     where n = number of swapchain images
+	 * @param vUseVSync //TODO
+	 */
 	void Swapchain::create(bool vUseVSync) {
 		useVSync = vUseVSync;
 
@@ -49,7 +63,7 @@ namespace lnx::core::wnd{
 		vk::SurfaceFormatKHR surfaceFormat{ chooseSurfaceFormat(getSurfaceFormats()) };
 		uint32 queueFamilyIndices[] = { dvc::graphics.pd.indices.graphicsFamily, dvc::graphics.pd.indices.presentFamily };
 		createInfo = vk::SwapchainCreateInfoKHR()
-			.setSurface               (bindedWindow->surface)
+			.setSurface               (w->surface)
 			.setMinImageCount         (minImageCount)
 			.setImageFormat           (surfaceFormat.format)
 			.setImageColorSpace       (surfaceFormat.colorSpace)
@@ -71,7 +85,7 @@ namespace lnx::core::wnd{
 
 		//Create swapchain
 		vk::Bool32 hasPresentSupport = false;
-		switch(dvc::graphics.pd.device.getSurfaceSupportKHR(dvc::graphics.pd.indices.presentFamily, bindedWindow->surface, &hasPresentSupport)){ //! SUPPRESS ERROR
+		switch(dvc::graphics.pd.device.getSurfaceSupportKHR(dvc::graphics.pd.indices.presentFamily, w->surface, &hasPresentSupport)){ //! SUPPRESS ERROR
 			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
 			vkDefaultCases;
 		}
@@ -121,11 +135,17 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Destroyes and recreates the swapchain
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
+	 *     where n = number of swapchain images
+	 */
 	void Swapchain::recreate() {
-		int32 width, height;	glfwGetFramebufferSize(bindedWindow->window, &width, &height);
+		int32 width, height;	glfwGetFramebufferSize(w->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
-			switch(dvc::graphics.ld.waitIdle()){		//Wait for the logical device
+			switch(dvc::graphics.ld.waitIdle()){	//Wait for the logical device
 				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
 				vkDefaultCases;
 			}
@@ -134,7 +154,7 @@ namespace lnx::core::wnd{
 			{ //swapchain creation infos
 				//Recalculate swapchain extent
 				vk::SurfaceCapabilitiesKHR capabilities;
-				switch(dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
+				switch(dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(w->surface, &capabilities)){
 					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 					vkDefaultCases;
 				}
@@ -191,23 +211,23 @@ namespace lnx::core::wnd{
 			//Update the window size buffer
 			u32v2 wSize = { createInfo.imageExtent.width, createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(bindedWindow->renderCore.wSize_g.cell->csc.buffer, bindedWindow->renderCore.wSize_g.cell->localOffset, bindedWindow->renderCore.wSize_g.cell->cellSize, &wSize);
+			cb.updateBuffer(w->renderCore.wSize_g.cell->csc.buffer, w->renderCore.wSize_g.cell->localOffset, w->renderCore.wSize_g.cell->cellSize, &wSize);
 			core::render::cmd::endSingleTimeCommands(cb);
 			//FIXME AUTOMATIZE BUFFER UPDATE
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
 
 
 			{	//Destroy copy command buffers
-				dvc::graphics.ld.freeCommandBuffers(bindedWindow->renderCore.copyCommandPool, bindedWindow->renderCore.copyCommandBuffers.count(), bindedWindow->renderCore.copyCommandBuffers.begin());
-				dvc::graphics.ld.destroyCommandPool(bindedWindow->renderCore.copyCommandPool, nullptr);
+				dvc::graphics.ld.freeCommandBuffers(w->renderCore.copyCommandPool, w->renderCore.copyCommandBuffers.count(), w->renderCore.copyCommandBuffers.begin());
+				dvc::graphics.ld.destroyCommandPool(w->renderCore.copyCommandPool, nullptr);
 
 				//#LLID CCB0000 Recreate copy command buffers
-				bindedWindow->renderCore.copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
-				bindedWindow->renderCore.createDefaultCommandBuffers__();				//Create command buffers and command pool
+				w->renderCore.copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
+				w->renderCore.createDefaultCommandBuffers__();				//Create command buffers and command pool
 			}
 
 			//Recreate clear shader
-			bindedWindow->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *bindedWindow);
+			w->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *w);
 		}
 	}
 
@@ -218,6 +238,12 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Destroys the swapchain
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
+	 *     where n = this->images.count()
+	 */
 	void Swapchain::destroy() {
 		for(auto img : images) {
 			dvc::graphics.ld.destroyFramebuffer(img.fbuffer, nullptr);
@@ -228,6 +254,12 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Destroys the swapchain object and frees its resources
+	 *     This function should only be used by the engine
+	 * Complexity: O(n + m)
+	 *     where n = this->images.count() and m = __renderMaxFramesInFlight
+	 */
 	void Swapchain::clear(){
 		switch(core::dvc::graphics.ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
@@ -252,6 +284,15 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Creates an image view from a vk::Image object
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @param vImage The image to create the view from
+	 * @param vFormat The format of the image
+	 * @param vAspectFlags //TODO
+	 * @return The created image view
+	 */
 	inline vk::ImageView Swapchain::createImageView(const vk::Image vImage, const vk::Format vFormat, const vk::ImageAspectFlags vAspectFlags) {
 		auto viewInfo = vk::ImageViewCreateInfo()
 			.setImage    (vImage)
@@ -284,12 +325,22 @@ namespace lnx::core::wnd{
 
 
 
-	inline vk::Framebuffer Swapchain::createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWith, uint32 vHeight) {
+	/**
+	 * @brief Creates a framebuffer
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @param vRenderPass The render pass to use in the framebuffer //TODO
+	 * @param vAttachment //TODO
+	 * @param vWidth Width of the framebuffer
+	 * @param vHeight Height of the freamebuffer
+	 * @return The created framebuffer
+	 */
+	inline vk::Framebuffer Swapchain::createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWidth, uint32 vHeight) {
 		auto framebufferInfo = vk::FramebufferCreateInfo()
 			.setRenderPass      (vRenderPass)
 			.setAttachmentCount (1)
 			.setPAttachments    (&vAttachment)
-			.setWidth           (vWith)
+			.setWidth           (vWidth)
 			.setHeight          (vHeight)
 			.setLayers          (1)
 		;
@@ -306,7 +357,7 @@ namespace lnx::core::wnd{
 
 
 
-	//-------------------------------------------------------------------------------------------------------------------------------------------------//
+	// Helper functions -------------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -317,6 +368,16 @@ namespace lnx::core::wnd{
 
 	//TODO use best format available when not specified
 	//TODO use RGBA8 format in shaders when better formats are not available
+	/**
+	 * @brief Chooses the best vk::SurfaceFormatKHR based on the available formats
+	 *     This function should only be used by the engine
+	 * Complexity:
+	 *     Best:  O(1)
+	 *     Worst: O(n)
+	 *     where n = pAvailableFormats.count()
+	 * @param pAvailableFormats An array containing the available formats
+	 * @return The chosen format
+	 */
 	vk::SurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<vk::SurfaceFormatKHR>& pAvailableFormats) {
 		for(auto& fmt : pAvailableFormats) {
 			if(
@@ -334,6 +395,16 @@ namespace lnx::core::wnd{
 
 
 	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
+	/**
+	 * @brief Chooses the best vk::PresentModeKHR based on the available present modes
+	 *     This function should only be used by the engine
+	 * Complexity:
+	 *     Best:  O(1)
+	 *     Worst: O(n)
+	 *     where n = pAvailablePresentModes.count()
+	 * @param pAvailablePresentModes An array containing the available present modes
+	 * @return The cosen present mode
+	 */
 	vk::PresentModeKHR Swapchain::choosePresentMode(const RtArray<vk::PresentModeKHR>& pAvailablePresentModes) {
 		if(useVSync) return vk::PresentModeKHR::eFifo; //FIXME MOVE VSYNC TO WINDOW STRUCT
 		for(const auto& availablePresentMode : pAvailablePresentModes) {
@@ -345,9 +416,16 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Chooses the best swapchain extent based on the surface capabilities
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @param pCapabilities The Vulkan object containing the surface capabilities
+	 * @return The chosen extent
+	 */
 	vk::Extent2D Swapchain::chooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
-		glfwGetFramebufferSize(bindedWindow->window, &width, &height);
+		glfwGetFramebufferSize(w->window, &width, &height);
 		return vk::Extent2D{
 			max(pCapabilities->minImageExtent.width,  min(pCapabilities->maxImageExtent.width , (uint32)width)),
 			max(pCapabilities->minImageExtent.height, min(pCapabilities->maxImageExtent.height, (uint32)height))
@@ -361,7 +439,7 @@ namespace lnx::core::wnd{
 
 
 
-	//-------------------------------------------------------------------------------------------------------------------------------------------------//
+	// Render pass creation ---------------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -369,6 +447,12 @@ namespace lnx::core::wnd{
 
 
 
+
+	/**
+	 * @brief Creates the render pass of the swapchain
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 */
 	void Swapchain::createRenderPass() {
 		auto colorAttachment = vk::AttachmentDescription()				//Create attachment
 			.setFormat         (createInfo.imageFormat)						//Swapchain image format
@@ -431,9 +515,15 @@ namespace lnx::core::wnd{
 
 
 
+	/**
+	 * @brief Returns the surface capabilities of the owner window
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @return The surface capabilities
+	 */
 	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
 		vk::SurfaceCapabilitiesKHR capabilities;
-		switch(core::dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(bindedWindow->surface, &capabilities)){
+		switch(core::dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(w->surface, &capabilities)){
 			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
 			vkDefaultCases;
 		}
@@ -442,40 +532,54 @@ namespace lnx::core::wnd{
 	}
 
 
+
+
+	/**
+	 * @brief Returns the surface formats of the owner window
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @return An array containing the surface formats
+	 */
 	RtArray<vk::SurfaceFormatKHR> Swapchain::getSurfaceFormats(){
 		uint32 count;
 		RtArray<vk::SurfaceFormatKHR>	formats;
 
-		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, nullptr)){
+		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(w->surface, &count, nullptr)){
 			case vk::Result::eIncomplete:          dbg::printError("Incomplete formats"); break;
 			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost");       break;
 			vkDefaultCases;
 		}
 
-
 		formats.resize(count);
-		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(bindedWindow->surface, &count, formats.begin())){
+		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(w->surface, &count, formats.begin())){
 			case vk::Result::eIncomplete:          dbg::printError("Incomplete formats");   break;
 			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
-
 		return formats;
 	}
 
 
+
+
+	/**
+	 * @brief Returns the surface presents modes of the owner window
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @return An array containing the present modes
+	 */
 	RtArray<vk::PresentModeKHR> Swapchain::getPresentModes(){
 		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
 
-		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, nullptr)){
+		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(w->surface, &count, nullptr)){
 			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
 			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
 		presentModes.resize(count);
-		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(bindedWindow->surface, &count, presentModes.begin())){
+		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(w->surface, &count, presentModes.begin())){
 			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
 			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
 			vkDefaultCases;

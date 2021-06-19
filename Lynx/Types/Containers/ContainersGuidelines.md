@@ -9,7 +9,7 @@
  *     Best:  O(<complexity>) [specify when this applies]       //[...]: always applies if not specified
  *     Best:  O(<complexity>) [specify when this applies]       //Repeat if there are special cases. Explain in [...]
  *     Worst: O(<complexity>) [specify when this applies]
- *     where <variable> = <value> and <variable2> = <value2>    //Specify what variables are, if there is more than 1
+ *     where <variable> = <value> and <variable2> = <value2>    //Specify what variables are, if there is more than 1 or they are not obvious
  * @param <parameterName> Parameter description                 //Always comment parameters. Use one @param for each of them
  *     Details                                                  //Optional
  * @return Return value description                             //Always comment non void return values
