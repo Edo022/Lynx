@@ -279,12 +279,68 @@ namespace lnx{
 
 
 
-	// Thread struct ----------------------------------------------------------------------------------------------------------------------------------//
+	// Helper functions -------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
 
 	struct Thread {
 		pthread_t thr;
 
-		// Constructors -------------------------------------------------------------------------------------------------------------------------------//
+
+
+	private:
+		template<class tFun, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const L<tArg...>& pArgs)
+		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
+			using funct = thr::__pvt::void_std_args_t<tFun, tArg...>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, pArgs });
+		}
+		template<class tFun, class tRet, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const L<tArg...>& pArgs, tRet* const pRet)
+		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
+			using funct = thr::__pvt::type_std_args_t<tFun, tRet, tArg...>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_args<tFun, tRet, tArg...>, new funct{ vFunc, pArgs, pRet });
+		}
+
+
+		template<class tFun> alwaysInline void dispatch(const tFun vFunc)
+		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_noargs<tFun>, (void*)vFunc);
+		}
+		template<class tFun, class tRet> alwaysInline void dispatch(const tFun vFunc, tRet* const pRet)
+		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
+			using funct = thr::__pvt::type_std_noargs_t<tFun, tRet>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_noargs<tFun, tRet>, new funct{ vFunc, pRet });
+		}
+
+
+
+
+		template<class tObj, class tFun, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const L<tArg...>& pArgs)
+		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
+			using funct = thr::__pvt::void_obj_args_t<tObj, tFun, tArg...>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<tObj, tFun, tArg...>, new funct{ pObj, pFunc, pArgs });
+		}
+		template<class tObj, class tFun, class tRet, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const L<tArg...>& pArgs, tRet* const pRet)
+		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
+			using funct = thr::__pvt::type_obj_args_t<tObj, tFun, tRet, tArg...>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_args<tObj, tFun, tRet, tArg...>, new funct{ pObj, pFunc, pArgs, pRet });
+		}
+
+
+		template<class tObj, class tFun> alwaysInline void dispatch(tObj& pObj, const tFun pFunc)
+		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
+			using funct = thr::__pvt::void_obj_noargs_t<tObj, tFun>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_noargs<tObj, tFun>, new funct{ pObj, pFunc });
+		}
+		template<class tObj, class tFun, class tRet> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, tRet* const pRet)
+		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
+			using funct = thr::__pvt::type_obj_noargs_t<tObj, tFun, tRet>;
+			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_noargs<tObj, tFun, tRet>, new funct{ pObj, pFunc, pRet });
+		}
 
 
 
@@ -293,6 +349,16 @@ namespace lnx{
 
 
 
+		// Constructors and operator() ----------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+	public:
 		//Doesn't initialize the thread. Call operator() on the object to initialize it later
 		alwaysInline Thread() { thr = 0; }
 
@@ -306,6 +372,7 @@ namespace lnx{
 		 *     Complete signature:
 		 *         template<class... tArg> Thread([auto& pObj], auto pFun, [auto* pRet], [L<tArg...> pArg]);
 		 *     ! The parameters must always be passed in the shown order, even if some of them are omitted
+		 * Cmplexity: O()
 		 *
 		 * @param pObj The object to call the function on
 		 *     This parameter must be omitted if pFun is not a member function
@@ -316,236 +383,19 @@ namespace lnx{
 		 * @param pArg An HcArray (or just L) containing the arguments that will be used to call the function
 		 *     This parameter must be omitted if pFun has no parameters
 		 */
-		alwaysInline Thread(auto... pArgs){
-			operator()(pArgs...);
-		}
-
-
-		// /**
-		//  * @brief Initializes a thread with a void non member function.
-		//  *		e.g. --- Thread t(func, L{ 0.5f }); ---
-		//  * @param vFunc The function to call
-		//  * @param pArgs An HcArray containing the function arguments
-		//  */
-		// template<class tFun, class ...tArg> alwaysInline Thread(const tFun vFunc, const L<tArg...>& pArgs)
-		// requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-		// 	operator()(vFunc, pArgs);
-		// }
-
-		// /**
-		//  * @brief Initializes a thread with a non void non member function.
-		//  *		e.g. --- int ret; Thread t(func, L{ 0.5f }, &ret); ---
-		//  * @param vFunc The function to call
-		//  * @param pArgs An HcArray containing the function arguments
-		//  * @param pRet The address where to store the return value
-		//  */
-		// template<class tFun, class tRet, class ...tArg> alwaysInline Thread(const tFun vFunc, const L<tArg...>& pArgs, tRet* const pRet)
-		// requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-		// 	operator()(vFunc, pArgs, pRet);
-		// }
-
-
-
-
-		// /**
-		//  * @brief Initializes a thread with a void non member function that takes no arguments.
-		//  *		e.g. --- Thread t(func); ---
-		//  * @param vFunc The function to call
-		//  */
-		// template<class tFun> alwaysInline Thread(const tFun vFunc)
-		// requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-		// 	operator()(vFunc);
-		// }
-
-		// /**
-		//  * @brief Initializes a thread with a non void non member function that takes no arguments.
-		//  *		e.g. --- int ret; Thread t(func, &ret); ---
-		//  * @param vFunc The function to call
-		//  * @param pRet The address where to store the return value
-		//  */
-		// template<class tFun, class tRet> alwaysInline Thread(const tFun vFunc, tRet* const pRet)
-		// requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-		// 	operator()(vFunc, pRet);
-		// }
-
-
-
-
-		// /**
-		//  * @brief Initializes a thread with a void member function
-		//  *		e.g. --- Obj obj; Thread t(obj, &obj::func, L{ 0.5f }); ---
-		//  * @param pObj The object to call the function on
-		//  * @param pFunc The address of the member function to call
-		//  * @param pArgs An HcArray containing the function arguments
-		//  */
-		// template<class tObj, class tFun, class ...tArg> alwaysInline Thread(tObj& pObj, const tFun pFunc, const L<tArg...>& pArgs)
-		// requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-		// 	operator()(pObj, pFunc, pArgs);
-		// }
-
-		// /**
-		//  * @brief Initializes a thread with a non void member function.
-		//  *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, L{ 0.5f }, &ret); ---
-		//  * @param pObj The object to call the function on
-		//  * @param pFunc The address of the member function to call
-		//  * @param pArgs An HcArray containing the function arguments
-		//  * @param pRet The address where to store the return value
-		//  */
-		// template<class tObj, class tFun, class tRet, class ...tArg> alwaysInline Thread(tObj& pObj, const tFun pFunc, const L<tArg...>& pArgs, tRet* const pRet)
-		// requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-		// 	operator()(pObj, pFunc, pArgs, pRet);
-		// }
-
-
-
-
-		// /**
-		//  * @brief Initializes a thread with a void member function that takes no arguments.
-		//  *		e.g. --- Obj obj; Thread t(obj, &obj::func); ---
-		//  * @param pObj The object to call the function on
-		//  * @param pFunc The address of the member function to call
-		//  */
-		// template<class tObj, class tFun> alwaysInline Thread(tObj& pObj, const tFun pFunc)
-		// requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-		// 	operator()(pObj, pFunc);
-		// }
-
-		// /**
-		//  * @brief Initializes a thread with a non void member function that takes no arguments.
-		//  *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, &ret); ---
-		//  * @param pObj The object to call the function on
-		//  * @param pFunc The address of the member function to call
-		//  * @param pRet The address where to store the return value
-		//  */
-		// template<class tObj, class tFun, class tRet> alwaysInline Thread(tObj& pObj, const tFun pFunc, tRet* const pRet)
-		// requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-		// 	operator()(pObj, pFunc, pRet);
-		// }
-
-
-
-
-
-
-
-
-		// Operator() ---------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-		/**
-		 * @brief Initializes a thread with a void non member function.
-		 *		e.g. --- Thread t(func, L{ 0.5f }); ---
-		 * @param vFunc The function to call
-		 * @param pArgs An HcArray containing the function arguments
-		 */
-		template<class tFun, class ...tArg> alwaysInline void operator()(const tFun vFunc, const L<tArg...>& pArgs)
-		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			using funct = thr::__pvt::void_std_args_t<tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, pArgs });
-		}
-
-		/**
-		 * @brief Initializes a thread with a non void non member function.
-		 *		e.g. --- int ret; Thread t(func, L{ 0.5f }, &ret); ---
-		 * @param vFunc The function to call
-		 * @param pArgs An HcArray containing the function arguments
-		 * @param pRet The address where to store the return value
-		 */
-		template<class tFun, class tRet, class ...tArg> alwaysInline void operator()(const tFun vFunc, const L<tArg...>& pArgs, tRet* const pRet)
-		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			using funct = thr::__pvt::type_std_args_t<tFun, tRet, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_args<tFun, tRet, tArg...>, new funct{ vFunc, pArgs, pRet });
+		template<class... tType> alwaysInline Thread(tType&&... pArgs){
+			dispatch((std::forward<tType>(pArgs))...);
 		}
 
 
 
 
 		/**
-		 * @brief Initializes a thread with a void non member function that takes no arguments.
-		 *		e.g. --- Thread t(func); ---
-		 * @param vFunc The function to call
+		 * @brief Same as constructor. See Thread::Thread
 		 */
-		template<class tFun> alwaysInline void operator()(const tFun vFunc)
-		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_noargs<tFun>, (void*)vFunc);
+		template<class... tType> alwaysInline void operator()(tType&&... pArgs){
+			dispatch((std::forward<tType>(pArgs))...);
 		}
-
-		/**
-		 * @brief Initializes a thread with a non void non member function that takes no arguments.
-		 *		e.g. --- int ret; Thread t(func, &ret); ---
-		 * @param vFunc The function to call
-		 * @param pRet The address where to store the return value
-		 */
-		template<class tFun, class tRet> alwaysInline void operator()(const tFun vFunc, tRet* const pRet)
-		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			using funct = thr::__pvt::type_std_noargs_t<tFun, tRet>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_noargs<tFun, tRet>, new funct{ vFunc, pRet });
-		}
-
-
-
-
-		/**
-		 * @brief Initializes a thread with a void member function
-		 *		e.g. --- Obj obj; Thread t(obj, &obj::func, L{ 0.5f }); ---
-		 * @param pObj The object to call the function on
-		 * @param pFunc The address of the member function to call
-		 * @param pArgs An HcArray containing the function arguments
-		 */
-		template<class tObj, class tFun, class ...tArg> alwaysInline void operator()(tObj& pObj, const tFun pFunc, const L<tArg...>& pArgs)
-		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::void_obj_args_t<tObj, tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<tObj, tFun, tArg...>, new funct{ pObj, pFunc, pArgs });
-		}
-
-		/**
-		 * @brief Initializes a thread with a non void member function.
-		 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, L{ 0.5f }, &ret); ---
-		 * @param pObj The object to call the function on
-		 * @param pFunc The address of the member function to call
-		 * @param pArgs An HcArray containing the function arguments
-		 * @param pRet The address where to store the return value
-		 */
-		template<class tObj, class tFun, class tRet, class ...tArg> alwaysInline void operator()(tObj& pObj, const tFun pFunc, const L<tArg...>& pArgs, tRet* const pRet)
-		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::type_obj_args_t<tObj, tFun, tRet, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_args<tObj, tFun, tRet, tArg...>, new funct{ pObj, pFunc, pArgs, pRet });
-		}
-
-
-
-
-		/**
-		 * @brief Initializes a thread with a void member function that takes no arguments.
-		 *		e.g. --- Obj obj; Thread t(obj, &obj::func); ---
-		 * @param pObj The object to call the function on
-		 * @param pFunc The address of the member function to call
-		 */
-		template<class tObj, class tFun> alwaysInline void operator()(tObj& pObj, const tFun pFunc)
-		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::void_obj_noargs_t<tObj, tFun>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_noargs<tObj, tFun>, new funct{ pObj, pFunc });
-		}
-
-		/**
-		 * @brief Initializes a thread with a non void member function that takes no arguments.
-		 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, &ret); ---
-		 * @param pObj The object to call the function on
-		 * @param pFunc The address of the member function to call
-		 * @param pRet The address where to store the return value
-		 */
-		template<class tObj, class tFun, class tRet> alwaysInline void operator()(tObj& pObj, const tFun pFunc, tRet* const pRet)
-		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::type_obj_noargs_t<tObj, tFun, tRet>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_noargs<tObj, tFun, tRet>, new funct{ pObj, pFunc, pRet });
-		}
-
 
 
 
