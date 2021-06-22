@@ -159,7 +159,7 @@ namespace lnx{
 		// 	__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::init(vals...);
 		// }
 		template<class... tTypesc> alwaysInline HcArray(tTypesc&&... vals):
-			__pvt::seq<sizeof...(tTypes), seqIcapitandex, tTypes...>((std::forward<tTypes>(vals))...){
+			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>((std::forward<tTypes>(vals))...){
 		}
 
 
