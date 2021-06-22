@@ -65,39 +65,42 @@ namespace lnx{
 
 
 
-		template<uint32 size, uint32 index, class tType, class ...types> struct seq :
-		public get_t<size, eChck, index, tType, types...>,
-		public get_t<size, eDesc, index, tType, types...>,
-		public get_t<size, eGetv, index, tType, types...>,
-		public seq<size, index - 1, types...>{
+		template<uint32 size, uint32 index, class tType, class ...tTypes> struct seq :
+		public get_t<size, eChck, index, tType, tTypes...>,
+		public get_t<size, eDesc, index, tType, tTypes...>,
+		public get_t<size, eGetv, index, tType, tTypes...>,
+		public seq<size, index - 1, tTypes...>{
 			tType val;
 
 			//List initialization
-			// alwaysInline void init(const tType& _val, const types&... vals) {
-			// 	val = _val; seq<size, index - 1, types...>::init(vals...);
+			// alwaysInline void init(const tType& _val, const tTypes&... vals) {
+			// 	val = _val; seq<size, index - 1, tTypes...>::init(vals...);
 			// }
-			alwaysInline seq(const tType& _val, const types&... vals) : seq<size, index - 1, types...>((std::forward<types>(vals))...), val(std::forward<tType>(_val)) { //FIXME
-				val = _val; seq<size, index - 1, types...>::init(vals...);
+			template<class tTypec, class... tTypesc> alwaysInline seq(const tTypec&& _val, const tTypesc&&... vals) :
+				seq<size, index - 1, tTypes...>((std::forward<tTypes>(vals))...), val(std::forward<tType>(_val)) { //FIXME
+				// val = _val; seq<size, index - 1, tTypesc...>::init(vals...);
 			}
 
 			//Runtime get
 			inline void* rtGet(const uint32 _index) {
 				return (size - 1 - index == _index) ?
 					(void*)&val :
-					seq<size, index - 1, types...>::rtGet(_index)
+					seq<size, index - 1, tTypes...>::rtGet(_index)
 				;
 			}
 
 			//Executes a standard function
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
-				return seq<size, index - 1, types...>::template exec<func_t, args_ts..., tType>(_func, _args..., val);
+				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(_func, _args..., val);
 			}
 
 			//Executes a member function
 			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
-				return seq<size, index - 1, types...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, _args...);
+				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, _args...);
 			}
 		};
+		// template<class tTypec, class... tTypesc> seq(const tTypec&& _val, const tTypesc&&... vals) -> seq<tTypec, tTypesc...>;
+		// //TODO add perfect version
 
 
 
@@ -113,7 +116,7 @@ namespace lnx{
 		public get_t<size, eGetv, 0, tType>{
 			tType val;
 			// alwaysInline void init(const tType& _val) { val = _val; }
-			alwaysInline seq(tType& _val) : val(std::forward<tType>(_val)) { }
+			template<class tTypec> alwaysInline seq(tTypec&& _val) : val(std::forward<tType>(_val)) { }
 
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&val; }
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
@@ -143,24 +146,20 @@ namespace lnx{
 
 
 	//Starting index of element iteration. I'm too lazy to write this everywhere
-	#define seqIndex (sizeof...(tType) - 1)
+	#define seqIndex (sizeof...(tTypes) - 1)
 	/**
 	 * @brief "Heterogeneous Data Compile Time Array".
 	 *		An array that constains elements of different types.
 	 *		Size and types must be known at compile time.
 	 *		e.g. --- lnx::HcArray arr = { 1, false, "mogu mogu" }; ---
 	 */
-	template<class... tType> struct HcArray : __pvt::seq<sizeof...(tType), seqIndex, tType...>{
+	template<class... tTypes> struct HcArray : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 		alwaysInline HcArray() {}
-		// alwaysInline HcArray(tType... vals) {
-		// 	__pvt::seq<sizeof...(tType), seqIndex, tType...>::init(vals...);
+		// alwaysInline HcArray(tTypes... vals) {
+		// 	__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::init(vals...);
 		// }
-		alwaysInline HcArray(tType... vals) requires(std::is_reference_v<get_type_at<0, tType...>>) :
-			__pvt::seq<sizeof...(tType), seqIndex, tType...>((std::forward<tType>(vals))...){
-		}
-
-		alwaysInline HcArray(tType&... vals) requires(!std::is_reference_v<get_type_at<0, tType...>>) :
-			__pvt::seq<sizeof...(tType), seqIndex, tType...>((std::forward<tType>(vals))...){
+		template<class... tTypesc> alwaysInline HcArray(tTypesc&&... vals):
+			__pvt::seq<sizeof...(tTypes), seqIcapitandex, tTypes...>((std::forward<tTypes>(vals))...){
 		}
 
 
@@ -170,9 +169,9 @@ namespace lnx{
 		 *		Use rtGet<type>(index) to retrieve values in runtime
 		 * @tparam vIndex The index of the element
 		 */
-		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(tType)) {
+		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(tTypes)) {
 			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
-			return __pvt::seq<sizeof...(tType), seqIndex, tType...>::template get_t<sizeof...(tType), __pvt::eChck, seqIndex, tType...>::template getFunc<seqIndex - vIndex>();
+			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template get_t<sizeof...(tTypes), __pvt::eChck, seqIndex, tTypes...>::template getFunc<seqIndex - vIndex>();
 		}
 
 		/**
@@ -185,7 +184,7 @@ namespace lnx{
 		 */
 		template<class tCType> alwaysInline tCType& rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return (tCType&)*(tCType*)(__pvt::seq<sizeof...(tType), seqIndex, tType...>::rtGet(vIndex));
+			return (tCType&)*(tCType*)(__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex));
 		}
 		/**
 		 * @brief Returns the element address a a void*
@@ -193,13 +192,13 @@ namespace lnx{
 		 */
 		alwaysInline void* rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return __pvt::seq<sizeof...(tType), seqIndex, tType...>::rtGet(vIndex);
+			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex);
 		}
 
 		/**
 		 * @brief Returns the number of elements in the array
 		 */
-		alwaysInline constexpr uint32 count() const { return sizeof...(tType); }
+		alwaysInline constexpr uint32 count() const { return sizeof...(tTypes); }
 
 
 
@@ -211,7 +210,7 @@ namespace lnx{
 		 */
 		template<class func_t> alwaysInline auto exec(func_t pFunc)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-			return __pvt::seq<sizeof...(tType), seqIndex, tType...>::template exec<func_t>(pFunc);
+			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template exec<func_t>(pFunc);
 		}
 
 
@@ -225,9 +224,14 @@ namespace lnx{
 		 */
 		template<class obj_t, class func_t> alwaysInline auto exec(obj_t& pObject, func_t pFunc)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-			return __pvt::seq<sizeof...(tType), seqIndex, tType...>::template execObj<obj_t, func_t>(pObject, pFunc);
+			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template execObj<obj_t, func_t>(pObject, pFunc);
 		}
 	};
+	template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc...>;
+
+	//TODO add perfect version
+	//template<class... tTypesc> HcArray(tTypesc&&... v) -> HcArray<decltype(v)...>;
+	//template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc&&...>;
 	#undef seqIndex
 
 
@@ -240,8 +244,19 @@ namespace lnx{
 	/**
 	 * @brief Handy HcArray alias
 	 */
-	template<class... types> struct L : HcArray<types...>{
-		alwaysInline L() : HcArray<types...>() {}
-		alwaysInline L(types&... vals) : HcArray<types...>((std::forward<types>(vals))...) {}
+	template<class... tTypes> struct L : HcArray<tTypes...>{
+		alwaysInline L() : HcArray<tTypes...>() {}
+		template<class... tTypesc> alwaysInline L(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
 	};
+	template<class... tTypesc> L(tTypesc&&...) -> L<tTypesc...>;
+
+
+	/**
+	 * @brief Handy HcArray alias
+	 */
+	template<class... tTypes> struct P : HcArray<tTypes...>{
+		alwaysInline P() : HcArray<tTypes...>() {}
+		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
+	};
+	template<class... tTypesc> P(tTypesc&&... vElms) -> P<tTypesc&&...>;
 }

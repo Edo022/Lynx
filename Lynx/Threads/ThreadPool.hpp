@@ -53,7 +53,7 @@ namespace lnx::thr {
 
 
 
-	template<class func_t, class ...args_ts> void runAsync(const func_t vFunc, const L<args_ts...>& pArgs, pollFence& vFence)
+	template<class func_t, class ...args_ts> void runAsync(const func_t vFunc, const P<args_ts...>& pArgs, pollFence& vFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::void_std_args_xt<func_t, args_ts...>;
@@ -68,12 +68,12 @@ namespace lnx::thr {
 
 	/**
 	 * @brief Initializes a thread with a non void non member function.
-	 *		e.g. --- int ret; Thread t(func, L{ 0.5f }, &ret); ---
+	 *		e.g. --- int ret; Thread t(func, P{ 0.5f }, &ret); ---
 	 * @param vFunc The function to call
 	 * @param pArgs An HcArray containing the function arguments
 	 * @param pRet The address where to store the return value
 	 */
-	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const L<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
+	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const P<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
@@ -129,15 +129,16 @@ namespace lnx::thr {
 
 
 
-
+//FIXME SPECIFY THAT THE TYPES MUST BE AUTOMATICALLY DEDUCED
+//FIXME INTERNAL DOCUMENTATION
 	/**
 	 * @brief Initializes a thread with a void member function
-	 *		e.g. --- Obj obj; Thread t(obj, &obj::func, L{ 0.5f }); ---
+	 *		e.g. --- Obj obj; Thread t(obj, &obj::func, P{ 0.5f }); ---
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
 	 * @param pArgs An HcArray containing the function arguments
 	 */
-	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const L<args_ts...>& pArgs, pollFence& pFence)
+	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const P<args_ts...>& pArgs, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
@@ -153,13 +154,13 @@ namespace lnx::thr {
 
 	/**
 	 * @brief Initializes a thread with a non void member function.
-	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, L{ 0.5f }, &ret); ---
+	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, P{ 0.5f }, &ret); ---
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
 	 * @param pArgs An HcArray containing the function arguments
 	 * @param pRet The address where to store the return value
 	 */
-	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const L<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
+	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const P<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
