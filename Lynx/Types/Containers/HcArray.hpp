@@ -90,13 +90,17 @@ namespace lnx{
 			}
 
 			//Executes a standard function
-			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
-				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(_func, _args..., val);
+			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&&... _args) {
+				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(
+					_func,
+					(std::forward<args_ts>(_args))...,
+					(std::forward<tType>(val))
+				);
 			}
 
 			//Executes a member function
-			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
-				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, _args...);
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&&... _args) {
+				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, (std::forward<args_ts>(_args))...);
 			}
 		};
 		// template<class tTypec, class... tTypesc> seq(const tTypec&& _val, const tTypesc&&... vals) -> seq<tTypec, tTypesc...>;
@@ -119,13 +123,13 @@ namespace lnx{
 			template<class tTypec> alwaysInline seq(tTypec&& _val) : val(std::forward<tType>(_val)) { }
 
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&val; }
-			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
+			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&&... _args) {
 				// return exec_t<func_t, args_ts..., type>::exec(_func, _args..., val);
-				return _func(_args..., val);
+				return _func((std::forward<args_ts>(_args))..., (std::forward<tType>(val)));
 			}
-			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&&... _args) {
 				// return execObj_t<obj_t, func_t, args_ts..., type>::execObj(_obj, _func, _args..., val);
-				return (_obj.*_func)(_args..., val);
+				return (_obj.*_func)((std::forward<args_ts>(_args))..., (std::forward<tType>(val)));
 			}
 		};
 	}
@@ -252,7 +256,7 @@ namespace lnx{
 
 
 	/**
-	 * @brief Handy HcArray alias
+	 * @brief Handy HcArray alias //TODO
 	 */
 	template<class... tTypes> struct P : HcArray<tTypes...>{
 		alwaysInline P() : HcArray<tTypes...>() {}
