@@ -297,7 +297,7 @@ namespace lnx{
 		template<class tFun, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const P<tArg...>& pArgs)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
 			using funct = thr::__pvt::void_std_args_t<tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, pArgs }); //FIXME
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, pArgs }); //BUG This uses the template constructor instead of the default copy
 		}
 		template<class tFun, class tRet, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const P<tArg...>& pArgs, tRet* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {

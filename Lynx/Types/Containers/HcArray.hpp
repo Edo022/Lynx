@@ -92,9 +92,7 @@ namespace lnx{
 			//Executes a standard function
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&&... _args) {
 				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(
-					_func,
-					(std::forward<args_ts>(_args))...,
-					(std::forward<tType>(val))
+					_func, (std::forward<args_ts>(_args))..., (std::forward<tType>(val))
 				);
 			}
 
