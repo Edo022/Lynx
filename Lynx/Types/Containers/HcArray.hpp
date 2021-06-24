@@ -150,10 +150,14 @@ namespace lnx{
 	//Starting index of element iteration. I'm too lazy to write this everywhere
 	#define seqIndex (sizeof...(tTypes) - 1)
 	/**
-	 * @brief "Heterogeneous Data Compile Time Array".
-	 *		An array that constains elements of different types.
-	 *		Size and types must be known at compile time.
-	 *		e.g. --- lnx::HcArray arr = { 1, false, "mogu mogu" }; ---
+	 * @brief An array that can contain elements of different types
+	 *     Size and types must be known at compile time
+	 *     The structure provides a copy constructor and a list constructor
+	 *     The copy constructor is only called when passing an HdArray of the same type
+	 *     e.g.
+	 *         lnx::HcArray<int, float> arr1{ 1, 0.5f };		//int, float
+	 *         lnx::HcArray arr2{ 1, false, "mogu mogu" };		//int, bool, const char*
+	 *         lnx::HcArray arr3(arr2);							//int, bool, const char*
 	 */
 	template<class... tTypes> struct HcArray : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 		alwaysInline HcArray() {}
@@ -246,15 +250,18 @@ namespace lnx{
 	/**
 	 * @brief Handy HcArray alias
 	 */
-	template<class... tTypes> struct L : HcArray<tTypes...>{
-		alwaysInline L() : HcArray<tTypes...>() {}
-		template<class... tTypesc> alwaysInline L(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
-	};
-	template<class... tTypesc> L(tTypesc&&...) -> L<tTypesc...>;
+	// template<class... tTypes> struct L : HcArray<tTypes...>{
+	// 	alwaysInline L() : HcArray<tTypes...>() {}
+	// 	template<class... tTypesc> alwaysInline L(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
+	// };
+	// template<class... tTypesc> L(tTypesc&&...) -> L<tTypesc...>;
+	template<class... tTypes> using L = HcArray<tTypes...>;
 
 
 	/**
-	 * @brief Handy HcArray alias //TODO
+	 * @brief HcArray, but any type is deduces as either a rvalue reference or a lvalue reference
+	 *     Useful to perfect forward values as a single parameter
+	 *     This type is implicitly convertible to HcArray and L
 	 */
 	template<class... tTypes> struct P : HcArray<tTypes...>{
 		alwaysInline P() : HcArray<tTypes...>() {}
