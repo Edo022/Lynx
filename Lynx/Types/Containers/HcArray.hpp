@@ -164,7 +164,13 @@ namespace lnx{
 		// alwaysInline HcArray(tTypes... vals) {
 		// 	__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::init(vals...);
 		// }
-		template<class... tTypesc> alwaysInline HcArray(tTypesc&&... vals):
+		HcArray(const HcArray<tTypes...>& pArr) = default;
+
+		template<class... tTypesc> alwaysInline HcArray(tTypesc&&... vals)
+		requires(!(
+			sizeof...(tTypesc) == 1 &&
+			std::is_same_v<std::remove_cv_t<get_type_at_t<0, tTypesc...>>, HcArray<tTypes...>>
+		)) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>((std::forward<tTypes>(vals))...){
 		}
 
@@ -259,13 +265,22 @@ namespace lnx{
 
 
 	/**
-	 * @brief HcArray, but any type is deduces as either a rvalue reference or a lvalue reference
+	 * @brief HcArray, but types are only deduces as rvalue references or lvalue references and they maintain cv qualifiers
 	 *     Useful to perfect forward values as a single parameter
-	 *     This type is implicitly convertible to HcArray and L
+	 *     This type is implicitly convertible to HcArray
+	 *     This type should only be used to construct HcArray objects, as it only provides the default and the list constructor and no assignment operators
 	 */
 	template<class... tTypes> struct P : HcArray<tTypes...>{
 		alwaysInline P() : HcArray<tTypes...>() {}
 		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
+		//!Copy and move constructors are shadowed by the list constructor
+
+		template<class tType> void operator=(tType&&) = delete;
+		operator HcArray<tTypes...>(){
+			HcArray<tTypes...> ret;
+			memcpy(&ret, this, sizeof(*this));
+			return (HcArray<tTypes...>&)(ret);
+		}
 	};
 	template<class... tTypesc> P(tTypesc&&... vElms) -> P<tTypesc&&...>;
 }
