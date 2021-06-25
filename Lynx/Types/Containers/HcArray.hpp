@@ -65,7 +65,7 @@ namespace lnx{
 
 
 
-		template<uint32 size, uint32 index, class tType, class ...tTypes> struct seq :
+		template<uint32 size, uint32 index, class tType = void/*Used in empty arrays*/, class ...tTypes> struct seq :
 		public get_t<size, eChck, index, tType, tTypes...>,
 		public get_t<size, eDesc, index, tType, tTypes...>,
 		public get_t<size, eGetv, index, tType, tTypes...>,
@@ -76,7 +76,7 @@ namespace lnx{
 			// alwaysInline void init(const tType& _val, const tTypes&... vals) {
 			// 	val = _val; seq<size, index - 1, tTypes...>::init(vals...);
 			// }
-			template<class tTypec, class... tTypesc> alwaysInline seq(const tTypec&& _val, const tTypesc&&... vals) :
+			alwaysInline seq(const tType& _val, const tTypes&... vals) :
 				seq<size, index - 1, tTypes...>((std::forward<tTypes>(vals))...), val(std::forward<tType>(_val)) { //FIXME
 				// val = _val; seq<size, index - 1, tTypesc...>::init(vals...);
 			}
@@ -90,14 +90,14 @@ namespace lnx{
 			}
 
 			//Executes a standard function
-			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&&... _args) {
+			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
 				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(
 					_func, (std::forward<args_ts>(_args))..., (std::forward<tType>(val))
 				);
 			}
 
 			//Executes a member function
-			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&&... _args) {
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
 				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, (std::forward<args_ts>(_args))...);
 			}
 		};
@@ -121,13 +121,26 @@ namespace lnx{
 			template<class tTypec> alwaysInline seq(tTypec&& _val) : val(std::forward<tType>(_val)) { }
 
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&val; }
-			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&&... _args) {
+			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
 				// return exec_t<func_t, args_ts..., type>::exec(_func, _args..., val);
 				return _func((std::forward<args_ts>(_args))..., (std::forward<tType>(val)));
 			}
-			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&&... _args) {
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
 				// return execObj_t<obj_t, func_t, args_ts..., type>::execObj(_obj, _func, _args..., val);
 				return (_obj.*_func)((std::forward<args_ts>(_args))..., (std::forward<tType>(val)));
+			}
+		};
+
+
+
+
+		//Empty HcArray
+		template<uint32 index> struct seq<0, index, void> {
+			template<class func_t> alwaysInline auto exec(func_t _func) {
+				return _func();
+			}
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func) {
+				return (_obj.*_func)();
 			}
 		};
 	}
@@ -149,29 +162,36 @@ namespace lnx{
 
 	//Starting index of element iteration. I'm too lazy to write this everywhere
 	#define seqIndex (sizeof...(tTypes) - 1)
+	struct PTypeCtor{}; //move to __pvt
 	/**
 	 * @brief An array that can contain elements of different types
 	 *     Size and types must be known at compile time
 	 *     The structure provides a copy constructor and a list constructor
 	 *     The copy constructor is only called when passing an HdArray of the same type
 	 *     e.g.
-	 *         lnx::HcArray<int, float> arr1{ 1, 0.5f };		//int, float
-	 *         lnx::HcArray arr2{ 1, false, "mogu mogu" };		//int, bool, const char*
-	 *         lnx::HcArray arr3(arr2);							//int, bool, const char*
+	 *         lnx::HcArray<int, float> arr1{ 1, 0.5f };					//int, float
+	 *         lnx::HcArray arr2{ 1, false, "mogu mogu" };					//int, bool, char[9]
+	 *         lnx::HcArray arr3{ 1, false, (const char*)"mogu mogu" };		//int, bool, const char*
+	 *         lnx::HcArray arr4(arr3);										//int, bool, const char*
 	 */
 	template<class... tTypes> struct HcArray : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
-		alwaysInline HcArray() {}
-		// alwaysInline HcArray(tTypes... vals) {
-		// 	__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::init(vals...);
-		// }
+	protected:
+		/**
+		 * @brief Constructor used by lnx::P
+		 *     Parameters are taken by value as they all are references
+		 */
+		alwaysInline HcArray(const PTypeCtor, const tTypes... vals) :
+			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(((tTypes)vals)...){
+		}
+
+
+	public:
+		alwaysInline HcArray() : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {}
 		HcArray(const HcArray<tTypes...>& pArr) = default;
 
-		template<class... tTypesc> alwaysInline HcArray(tTypesc&&... vals)
-		requires(!(
-			sizeof...(tTypesc) == 1 &&
-			std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypesc...>>>, HcArray<tTypes...>>
-		)) :
-			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>((std::forward<tTypes>(vals))...){
+		alwaysInline HcArray(const tTypes&... vals) requires(!(sizeof...(tTypes) == 1 &&
+		std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>)) :
+			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 
@@ -239,11 +259,7 @@ namespace lnx{
 			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template execObj<obj_t, func_t>(pObject, pFunc);
 		}
 	};
-	template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc...>;
-
-	//TODO add perfect version
-	//template<class... tTypesc> HcArray(tTypesc&&... v) -> HcArray<decltype(v)...>;
-	//template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc&&...>;
+	// template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc...>;
 	#undef seqIndex
 
 
@@ -272,7 +288,7 @@ namespace lnx{
 	 */
 	template<class... tTypes> struct P : HcArray<tTypes...>{
 		alwaysInline P() : HcArray<tTypes...>() {}
-		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
+		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypesc>(vals))...) {}
 		//!Copy and move constructors are shadowed by the list constructor
 
 		template<class tType> void operator=(tType&&) = delete;
