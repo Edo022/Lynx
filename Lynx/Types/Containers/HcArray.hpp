@@ -169,7 +169,7 @@ namespace lnx{
 		template<class... tTypesc> alwaysInline HcArray(tTypesc&&... vals)
 		requires(!(
 			sizeof...(tTypesc) == 1 &&
-			std::is_same_v<std::remove_cv_t<get_type_at_t<0, tTypesc...>>, HcArray<tTypes...>>
+			std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypesc...>>>, HcArray<tTypes...>>
 		)) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>((std::forward<tTypes>(vals))...){
 		}
