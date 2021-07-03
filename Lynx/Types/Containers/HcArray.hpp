@@ -162,7 +162,7 @@ namespace lnx{
 
 	//Starting index of element iteration. I'm too lazy to write this everywhere
 	#define seqIndex (sizeof...(tTypes) - 1)
-	struct PTypeCtor{}; //move to __pvt
+	struct __fwd_ctor{}; //move to __pvt
 	/**
 	 * @brief An array that can contain elements of different types
 	 *     Size and types must be known at compile time
@@ -177,11 +177,11 @@ namespace lnx{
 	template<class... tTypes> struct HcArray : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 	protected:
 		/**
-		 * @brief Constructor used by lnx::P
+		 * @brief Constructor used by lnx::fwd
 		 *     Parameters are taken by value as they all are references
 		 */
-		alwaysInline HcArray(const PTypeCtor, const tTypes... vals) :
-			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(((tTypes)vals)...){
+		alwaysInline HcArray(const __fwd_ctor, const tTypes... vals) :
+			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 
@@ -281,22 +281,20 @@ namespace lnx{
 
 
 	/**
-	 * @brief HcArray, but types are only deduces as rvalue references or lvalue references and they maintain cv qualifiers
-	 *     Useful to perfect forward values as a single parameter
-	 *     This type is implicitly convertible to HcArray
-	 *     This type should only be used to construct HcArray objects, as it only provides the default and the list constructor and no assignment operators
+	 * @brief Type used to perfect forward a list of arguments as a single parameter
 	 */
 	template<class... tTypes> struct P : HcArray<tTypes...>{
 		alwaysInline P() : HcArray<tTypes...>() {}
-		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypesc>(vals))...) {}
+		inline P(const P& pObj) = default;
+		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>(__fwd_ctor{}, (std::forward<tTypesc>(vals))...) {}
 		//!Copy and move constructors are shadowed by the list constructor
 
-		template<class tType> void operator=(tType&&) = delete;
-		operator HcArray<tTypes...>(){
-			HcArray<tTypes...> ret;
-			memcpy(&ret, this, sizeof(*this));
-			return (HcArray<tTypes...>&)(ret);
-		}
+		// template<class tType> void operator=(tType&&) = default;
+		// operator HcArray<tTypes...>(){
+		// 	HcArray<tTypes...> ret;
+		// 	memcpy(&ret, this, sizeof(*this));
+		// 	return (HcArray<tTypes...>&)(ret);
+		// }
 	};
 	template<class... tTypesc> P(tTypesc&&... vElms) -> P<tTypesc&&...>;
 }
