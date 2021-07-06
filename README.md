@@ -39,7 +39,7 @@ We do not provide any support for developement on Windows or Mac.
 |--------------|-----------|------------------------------------------|----------|
 | Linux        | 4.4       | -                                        | Yes      |
 | Python       | 3.8       | `/bin/python3.8`<br />`/bin64/python3.8` | Yes      |
-| g++          | 10.7      | `/bin/g++`<br />`/bin64/g++`             | Yes      |
+| g++          | 11.1.1    | `/bin/g++`<br />`/bin64/g++`             | Yes      |
 | Vulkan SDK   | 1.2.170.0 | any                                      | Yes      |
 | Mingw        | 8.0.0     | `/bin/mingw`<br />`/bin64/mingw`         | No       |
 | VSCode       | 1.53      | -                                        | No       |
