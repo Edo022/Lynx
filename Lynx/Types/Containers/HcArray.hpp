@@ -9,10 +9,59 @@
 
 
 
-namespace lnx{
-		template<class ...types> struct HcArray;
 
-		// Runtime get (rtGet function) helper structures ---------------------------------------------------------------------------------------------//
+// seq element helper structure -----------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+namespace lnx{
+	template<class ...types> struct HcArray;
+			/**
+	 * @brief seq helper struct that manages the values based on their referenceness
+	 * @tparam tType The type of the element
+	 * @tparam tIndex Index of the seq struct used to differentiate base classes
+	 */
+	template<class tType, uint32 tIndex> struct seq_val{};
+
+
+	/**
+	 * @brief seq_val specialization for non-reference elements
+	 */
+	template<class tType, uint32 tIndex> requires(!std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
+		tType val;
+		seq_val(const tType& pVal) : val(pVal) {};
+
+		void operator=(const tType& pElm){ val = pElm; }
+		inline tType& get(){ return val; }
+	};
+
+
+	/**
+	 * @brief seq_val specialization for reference elements
+	 *     This struct allows reference elements to use operator= by storing them as pointers
+	 */
+	template<class tType, uint32 tIndex> requires(std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
+		std::remove_reference_t<tType>* val;
+		seq_val(const tType& pVal) : val(&pVal) {};
+
+		void operator=(const tType& pElm){ val = &pElm; }
+		inline tType get(){ return *val; }
+		//!    ^ Already reference
+	};
+
+
+
+
+
+
+
+
+	// Runtime get (rtGet function) helper structures -------------------------------------------------------------------------------------------------//
 
 
 
@@ -45,7 +94,7 @@ namespace lnx{
 		//GETV specialization: Stops iteration and returns the element value
 		template <uint32 size, uint32 index, class tType, class... types> struct seq_get_t<size, eGetv, index, tType, types...>{
 			template <uint32 getIndex> alwaysInline tType &getFunc() {
-				return ((seq<size, index, tType, types...>*)this)->val;
+				return ((seq<size, index, tType, types...>*)this)->seq_val<tType, index>::get();
 			}
 		};
 
@@ -64,40 +113,6 @@ namespace lnx{
 
 
 
-		/**
-		 * @brief seq helper struct that manages the values based on their referenceness
-		 * @tparam tType The type of the element
-		 * @tparam tIndex Index of the seq struct used to differentiate base classes
-		 */
-		template<class tType, uint32 tIndex> struct seq_val{};
-
-
-		/**
-		 * @brief seq_val specialization for non-reference elements
-		 */
-		template<class tType, uint32 tIndex> requires(!std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
-			tType val;
-			seq_val(const tType& pVal) : val(pVal) {};
-
-			void operator=(const tType& pElm){ val = pElm; }
-			inline tType& get(){ return val; }
-		};
-
-
-		/**
-		 * @brief seq_val specialization for reference elements
-		 *     This struct allows reference elements to use operator= by storing them as pointers
-		 */
-		template<class tType, uint32 tIndex> requires(std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
-			std::remove_reference_t<tType>* val;
-			seq_val(const tType& pVal) : val(&pVal) {};
-
-			void operator=(const tType& pElm){ val = &pElm; }
-			inline tType get(){ return *val; }
-		};
-
-
-
 
 		template<uint32 size, uint32 index, class tType = void/*Used in empty arrays*/, class ...tTypes> struct seq :
 		public seq_val<tType, index>,
@@ -111,9 +126,9 @@ namespace lnx{
 			// alwaysInline void init(const tType& _val, const tTypes&... vals) {
 			// 	val = _val; seq<size, index - 1, tTypes...>::init(vals...);
 			// }
-			alwaysInline seq(const tType& _val, const tTypes&... vals) :
-				seq<size, index - 1, tTypes...>((std::forward<tTypes>(vals))...),
-				seq_val<tType, index>(std::forward<tType>(_val)) { //FIXME
+			alwaysInline seq(const tType& pVal, const tTypes&... pVals) :
+				seq<size, index - 1, tTypes...>((std::forward<const tTypes>(pVals))...),
+				seq_val<tType, index>(std::forward<const tType>(pVal)) { //FIXME
 				// val = _val; seq<size, index - 1, tTypesc...>::init(vals...);
 			}
 
@@ -157,7 +172,7 @@ namespace lnx{
 		public seq_get_t<size, eGetv, 0, tType> {
 			// tType val;
 			// alwaysInline void init(const tType& _val) { val = _val; }
-			template<class tTypec> alwaysInline seq(tTypec&& _val) : seq_val<tType, 0>(std::forward<tType>(_val)) { }
+			alwaysInline seq(const tType& pVal) : seq_val<tType, 0>(std::forward<const tType>(pVal)) { }
 
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&(seq_val<tType, 0>::get()); }
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
@@ -171,6 +186,10 @@ namespace lnx{
 
 			inline seq& operator=(const seq& pSeq) = default;
 		};
+
+
+
+
 
 
 
@@ -203,6 +222,8 @@ namespace lnx{
 
 
 
+	template<class... tTypes> struct P;
+
 	//Starting index of element iteration. I'm too lazy to write this everywhere
 	#define seqIndex (sizeof...(tTypes) - 1)
 	struct __fwd_ctor{}; //move to __pvt
@@ -218,8 +239,8 @@ namespace lnx{
 	 *         lnx::HcArray arr4(arr3);										//int, bool, const char*
 	 */
 	template<class... tTypes> struct HcArray :
-	protected __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
-	protected:
+	private __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
+	private:
 		/**
 		 * @brief Constructor used by lnx::fwd
 		 *     Parameters are taken by value as they all are references
@@ -230,6 +251,7 @@ namespace lnx{
 
 
 	public:
+		template<class... _tTypes> friend struct P;
 		alwaysInline HcArray() : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {}
 		HcArray(const HcArray<tTypes...>& pArr) = default;
 
