@@ -221,7 +221,7 @@ namespace lnx{
 
 
 
-
+	//Forward declaration for friend class
 	template<class... tTypes> struct P;
 
 	//Starting index of element iteration. I'm too lazy to write this everywhere
@@ -241,6 +241,8 @@ namespace lnx{
 	template<class... tTypes> struct HcArray :
 	private __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 	private:
+		template<class... _tTypes> friend struct P;
+
 		/**
 		 * @brief Constructor used by lnx::fwd
 		 *     Parameters are taken by value as they all are references
@@ -249,11 +251,15 @@ namespace lnx{
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
+		alwaysInline HcArray(const __fwd_ctor) :
+			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
+		}
 
 	public:
-		template<class... _tTypes> friend struct P;
-		alwaysInline HcArray() : __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {}
 		HcArray(const HcArray<tTypes...>& pArr) = default;
+		alwaysInline HcArray() :
+			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
+		}
 
 		alwaysInline HcArray(const tTypes&... vals) requires(!(sizeof...(tTypes) == 1 &&
 		std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>)) :
