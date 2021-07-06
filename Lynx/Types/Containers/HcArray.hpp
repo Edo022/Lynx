@@ -66,14 +66,16 @@ namespace lnx{
 
 		/**
 		 * @brief seq helper struct that manages the values based on their referenceness
+		 * @tparam tType The type of the element
+		 * @tparam tIndex Index of the seq struct used to differentiate base classes
 		 */
-		template<class tType> struct seq_val{};
+		template<class tType, uint32 tIndex> struct seq_val{};
 
 
 		/**
 		 * @brief seq_val specialization for non-reference elements
 		 */
-		template<class tType> requires(!std::is_reference_v<tType>) struct seq_val<tType>{
+		template<class tType, uint32 tIndex> requires(!std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
 			tType val;
 			seq_val(const tType& pVal) : val(pVal) {};
 
@@ -86,7 +88,7 @@ namespace lnx{
 		 * @brief seq_val specialization for reference elements
 		 *     This struct allows reference elements to use operator= by storing them as pointers
 		 */
-		template<class tType> requires(std::is_reference_v<tType>) struct seq_val<tType>{
+		template<class tType, uint32 tIndex> requires(std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
 			std::remove_reference_t<tType>* val;
 			seq_val(const tType& pVal) : val(&pVal) {};
 
@@ -98,7 +100,7 @@ namespace lnx{
 
 
 		template<uint32 size, uint32 index, class tType = void/*Used in empty arrays*/, class ...tTypes> struct seq :
-		public seq_val<tType>,
+		public seq_val<tType, index>,
 		public seq_get_t<size, eChck, index, tType, tTypes...>,
 		public seq_get_t<size, eDesc, index, tType, tTypes...>,
 		public seq_get_t<size, eGetv, index, tType, tTypes...>,
@@ -111,14 +113,14 @@ namespace lnx{
 			// }
 			alwaysInline seq(const tType& _val, const tTypes&... vals) :
 				seq<size, index - 1, tTypes...>((std::forward<tTypes>(vals))...),
-				seq_val<tType>(std::forward<tType>(_val)) { //FIXME
+				seq_val<tType, index>(std::forward<tType>(_val)) { //FIXME
 				// val = _val; seq<size, index - 1, tTypesc...>::init(vals...);
 			}
 
 			//Runtime get
 			inline void* rtGet(const uint32 _index) {
 				return (size - 1 - index == _index) ?
-					(void*)&(seq_val<tType>::get()) :
+					(void*)&(seq_val<tType, index>::get()) :
 					seq<size, index - 1, tTypes...>::rtGet(_index)
 				;
 			}
@@ -126,13 +128,13 @@ namespace lnx{
 			//Executes a standard function
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
 				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(
-					_func, (std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType>::get()))
+					_func, (std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType, index>::get()))
 				);
 			}
 
 			//Executes a member function
 			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
-				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, (std::forward<args_ts>(_args))..., std::forward<tType>(seq_val<tType>::get()));
+				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, (std::forward<args_ts>(_args))..., std::forward<tType>(seq_val<tType, index>::get()));
 			}
 
 			inline seq& operator=(const seq& pSeq) = default;
@@ -149,22 +151,22 @@ namespace lnx{
 
 		//Stop at index 0 (seq specialization)
 		template<uint32 size, class tType> struct seq<size, 0, tType> :
-		public seq_val<tType>,
+		public seq_val<tType, 0>,
 		public seq_get_t<size, eChck, 0, tType>,
 		public seq_get_t<size, eDesc, 0, tType>,
 		public seq_get_t<size, eGetv, 0, tType> {
 			// tType val;
 			// alwaysInline void init(const tType& _val) { val = _val; }
-			template<class tTypec> alwaysInline seq(tTypec&& _val) : seq_val<tType>(std::forward<tType>(_val)) { }
+			template<class tTypec> alwaysInline seq(tTypec&& _val) : seq_val<tType, 0>(std::forward<tType>(_val)) { }
 
-			alwaysInline void* rtGet(const uint32 _index) { return (void*)&(seq_val<tType>::get()); }
+			alwaysInline void* rtGet(const uint32 _index) { return (void*)&(seq_val<tType, 0>::get()); }
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
 				// return exec_t<func_t, args_ts..., type>::exec(_func, _args..., val);
-				return _func((std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType>::get())));
+				return _func((std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType, 0>::get())));
 			}
 			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
 				// return execObj_t<obj_t, func_t, args_ts..., type>::execObj(_obj, _func, _args..., val);
-				return (_obj.*_func)((std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType>::get())));
+				return (_obj.*_func)((std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType, 0>::get())));
 			}
 
 			inline seq& operator=(const seq& pSeq) = default;
