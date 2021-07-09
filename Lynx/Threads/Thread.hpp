@@ -70,7 +70,7 @@ namespace lnx{
 			tObj* _obj;
 			tFun _func;
 			P<tArg...> _args;
-			void exec() final { _args.execObj(*_obj, _func); }
+			void exec() final { _args.exec(*_obj, _func); }
 		};
 		//Type member with arguments
 		template<class tObj, class tFun, class tRet, class ...tArg> struct type_obj_args_xt : public Func_b {
@@ -78,7 +78,8 @@ namespace lnx{
 			tFun _func;
 			P<tArg...> _args;
 			tRet* _ret;
-			void exec() final { *_ret = _args.execObj(*_obj, _func); }
+			// void exec() final { *_ret = _args.execObj(*_obj, _func); } //TODO check if it is ok to call the exec overload
+			void exec() final { *_ret = _args.exec(*_obj, _func); }
 		};
 
 
