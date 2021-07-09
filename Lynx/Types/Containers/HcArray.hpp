@@ -19,9 +19,9 @@
 
 
 
-namespace lnx{
+namespace lnx{ //FIXME SAVE ARRAYS AS POINTERS
 	template<class ...types> struct HcArray;
-			/**
+	/**
 	 * @brief seq helper struct that manages the values based on their referenceness
 	 * @tparam tType The type of the element
 	 * @tparam tIndex Index of the seq struct used to differentiate base classes
@@ -31,9 +31,11 @@ namespace lnx{
 
 	/**
 	 * @brief seq_val specialization for non-reference elements
+	 *     Used by HcArray only
 	 */
-	template<class tType, uint32 tIndex> requires(!std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
+	template<class tType, uint32 tIndex> requires(!std::is_reference_v<tType> && !std::is_array_v<tType>) struct seq_val<tType, tIndex>{
 		tType val;
+		seq_val() = default;
 		seq_val(const tType& pVal) : val(pVal) {};
 
 		void operator=(const tType& pElm){ val = pElm; }
@@ -43,15 +45,41 @@ namespace lnx{
 
 	/**
 	 * @brief seq_val specialization for reference elements
+	 *     Used by HcArray, indirectly used by fwd
 	 *     This struct allows reference elements to use operator= by storing them as pointers
 	 */
 	template<class tType, uint32 tIndex> requires(std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
 		std::remove_reference_t<tType>* val;
+		seq_val() = default;
 		seq_val(const tType& pVal) : val(&pVal) {};
 
-		void operator=(const tType& pElm){ val = &pElm; }
-		inline tType get(){ return *val; }
+		void operator=(const tType& pElm){ val = &pElm; } //TODO ADD DETAILED ERROR WHEN CALLING = ON REFERENCE ELEMENTS OF HcArray (NOT FWD)
+		inline tType get(){ return static_cast<tType>(*val); } //TODO
 		//!    ^ Already reference
+	};
+
+
+	/**
+	 * @brief seq_val specialization for array elements
+	 *     Used by HcArray only
+	 *     This struct allows arrays to be initialized by copying them
+	 *     Trivially copy assignable types are memcpy ed, non trivially copy assignable types are copied one by one
+	 */
+	template<class tType, uint32 tIndex> requires(std::is_array_v<tType>) struct seq_val<tType, tIndex>{
+		tType val;
+		seq_val() = default;
+		seq_val(const tType& pVal) requires(std::is_trivially_copy_assignable_v<decltype(pVal[0])>) {
+			memcpy(val, pVal, sizeof(tType));
+		};
+		seq_val(const tType& pVal) requires(!std::is_trivially_copy_assignable_v<std::remove_reference_t<decltype(pVal[0])>>) {
+			using elmt = std::remove_cv_t<std::remove_reference_t<decltype(pVal[0])>>;
+			for(uint32 i = 0; i < sizeof(tType) / sizeof(elmt); ++i){
+				((elmt*)val)[i] = ((elmt*)pVal)[i];
+			}
+		};
+
+		void operator=(const tType& pElm){} //FIXME ADD DETAILED ERROR WHEN CALLING = ON ARRAY ELEMENTS
+		inline tType& get(){ return val; }
 	};
 
 
@@ -126,9 +154,15 @@ namespace lnx{
 			// alwaysInline void init(const tType& _val, const tTypes&... vals) {
 			// 	val = _val; seq<size, index - 1, tTypes...>::init(vals...);
 			// }
+			alwaysInline seq():
+				seq<size, index - 1, tTypes...>(),
+				seq_val<tType, index>() {
+			}
+
+
 			alwaysInline seq(const tType& pVal, const tTypes&... pVals) :
-				seq<size, index - 1, tTypes...>((std::forward<const tTypes>(pVals))...),
-				seq_val<tType, index>(std::forward<const tType>(pVal)) { //FIXME
+				seq<size, index - 1, tTypes...>(pVals...),
+				seq_val<tType, index>(pVal) { //FIXME
 				// val = _val; seq<size, index - 1, tTypesc...>::init(vals...);
 			}
 
@@ -141,15 +175,17 @@ namespace lnx{
 			}
 
 			//Executes a standard function
-			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
+			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, const args_ts&... _args) {
 				return seq<size, index - 1, tTypes...>::template exec<func_t, args_ts..., tType>(
-					_func, (std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType, index>::get()))
+					_func, _args..., seq_val<tType, index>::get()
 				);
 			}
 
 			//Executes a member function
-			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
-				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(_obj, _func, (std::forward<args_ts>(_args))..., std::forward<tType>(seq_val<tType, index>::get()));
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, const args_ts&... _args) {
+				return seq<size, index - 1, tTypes...>::template execObj<obj_t, func_t, args_ts...>(
+					_obj, _func, _args..., seq_val<tType, index>::get()
+				);
 			}
 
 			inline seq& operator=(const seq& pSeq) = default;
@@ -172,16 +208,17 @@ namespace lnx{
 		public seq_get_t<size, eGetv, 0, tType> {
 			// tType val;
 			// alwaysInline void init(const tType& _val) { val = _val; }
-			alwaysInline seq(const tType& pVal) : seq_val<tType, 0>(std::forward<const tType>(pVal)) { }
+			alwaysInline seq() : seq_val<tType, 0>() { }
+			alwaysInline seq(const tType& pVal) : seq_val<tType, 0>(pVal) { }
 
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&(seq_val<tType, 0>::get()); }
-			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, args_ts&... _args) {
+			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, const args_ts&... _args) {
 				// return exec_t<func_t, args_ts..., type>::exec(_func, _args..., val);
-				return _func((std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType, 0>::get())));
+				return _func(_args..., seq_val<tType, 0>::get());
 			}
-			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, args_ts&... _args) {
+			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, const args_ts&... _args) {
 				// return execObj_t<obj_t, func_t, args_ts..., type>::execObj(_obj, _func, _args..., val);
-				return (_obj.*_func)((std::forward<args_ts>(_args))..., (std::forward<tType>(seq_val<tType, 0>::get())));
+				return (_obj.*_func)(_args..., seq_val<tType, 0>::get());
 			}
 
 			inline seq& operator=(const seq& pSeq) = default;
@@ -275,7 +312,7 @@ namespace lnx{
 		 */
 		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(tTypes)) {
 			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
-			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template seq_get_t<sizeof...(tTypes), __pvt::eChck, seqIndex, tTypes...>::template getFunc<seqIndex - vIndex>();
+			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>:: template seq_get_t<sizeof...(tTypes), __pvt::eChck, seqIndex, tTypes...>::template getFunc<seqIndex - vIndex>();
 		}
 
 		/**
@@ -360,7 +397,10 @@ namespace lnx{
 	template<class... tTypes> struct P : public HcArray<tTypes...>{
 		// alwaysInline P() : HcArray<tTypes...>() {}
 		inline P(const P<tTypes...>& pObj) = default;
-		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) : HcArray<tTypes...>(__fwd_ctor{}, (std::forward<tTypesc>(vals))...) {}
+
+		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) :
+			HcArray<tTypes...>(__fwd_ctor{}, std::forward<tTypesc>(vals)...) {
+		}
 		//!Copy and move constructors are shadowed by the list constructor
 
 		inline P& operator=(const P& pObj) = default;
