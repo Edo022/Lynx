@@ -118,11 +118,11 @@ namespace lnx {
 
 
 		template<class tAType, class tAIdxt> alwaysInline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
-			requires(std::is_same_v<tIdxt, tAIdxt> && sizeof(tType) == sizeof(tAType) && std::is_trivially_copy_constructible_v<tAType>){
+		requires(std::is_same_v<tIdxt, tAIdxt> && sizeof(tType) == sizeof(tAType) && std::is_trivially_copy_constructible_v<tAType>){
 			memcpy(data, pArr.data, pArr.data.size());
 		}
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
-			requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
+		requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
 			for(tAIdxt i = 0; i < pArr.count(); ++i){
 				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
 				specIdxCnv(data[(uint64)i].next, pArr.data[i].next);
@@ -137,11 +137,11 @@ namespace lnx {
 		 *     This function correctly converts the -1 taking into account the type of the indices
 		 */
 		template<class tDst, class tSrc> static alwaysInline void specIdxCnv(tDst& pDst, const tSrc vSrc)
-			requires(std::is_same_v<tSrc, tDst>){
+		requires(std::is_same_v<tSrc, tDst>){
 			pDst = (tDst)vSrc;
 		}
 		template<class tDst, class tSrc> static alwaysInline void specIdxCnv(tDst& pDst, const tSrc vSrc)
-			requires(!std::is_same_v<tSrc, tDst>) {
+		requires(!std::is_same_v<tSrc, tDst>) {
 			if(vSrc == (tSrc)-1) pDst = (tDst)-1;
 			else pDst = (tDst)vSrc;
 		}

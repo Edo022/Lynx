@@ -1,20 +1,20 @@
 ﻿#pragma once
 #define LNX_H_RTARRAY
 #include "Lynx/Types/Containers/ContainerBase.hpp"
-
-
-
-
-
-
-
-
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sent back to the queue
 //TODO if not, the new points are saved and used for rendering in the next frames
 //TODO "runtime 3D turbolent flow"
 
 //TODO add contructor of string from lnx containers of chars
+
+
+
+
+
+
+
+
 namespace lnx {
 	/**
 	 * @brief A dynamic array that uses the global memory pool
@@ -23,15 +23,12 @@ namespace lnx {
 	 */
 	template<class tType, class tIdxt = uint32> struct RtArray : public ContainerBase<tType, tIdxt> {
 		static_assert(!std::is_void_v<tType>, "RtArray declared as array of void");
-		static_assert(
-			has_int_conversion_operator_v<tIdxt> || std::is_integral_v<tIdxt> || std::is_enum_v<tIdxt>,
-			"tIdxt template parameter must be convertible to an integer or have integral or enum type"
-		);
-		static_assert(std::is_trivial_v<tIdxt>, "tIdxt template parameter must be a trivial type");
+		static_assert(!std::is_reference_v<tType>, "RtArray declared as array of references");
+		static_assert(std::is_integral_v<tIdxt> "tIdxt template parameter must an integer type");
 
 		using Super = ContainerBase<tType, tIdxt>;
 		genInitCheck;
-		// _dbg(type* viewer;)
+
 
 
 
@@ -42,14 +39,16 @@ namespace lnx {
 
 		/**
 		 * @brief Creates an array without allocating memory to it.
-		 *		The memory will be allocated when calling the add or resize funcytions
+		 *     The memory will be allocated when calling the add or resize functions
+		 * Complexity: O(1)
 		 */
 		alwaysInline RtArray() : Super() {}
 
 
 		/**
-		 * @brief Creates an array of vCount elements and calls the default constructor on each of them
-		 *		The constructor is not called on trivial types or lnx::ignoreCopy subclasses
+		 * @brief Copy constructor
+		 *     Creates an array of vCount elements and calls the default constructor on each of them
+		 *     The constructor is not called on trivial types or lnx::ignoreCopy subclasses
 		 */
 		alwaysInline RtArray(tIdxt vCount) : Super(vCount) {}
 

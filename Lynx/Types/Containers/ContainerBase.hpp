@@ -141,11 +141,7 @@ namespace lnx {
 	template <class tType, class tIdxt> struct ContainerBase :
 	public __pvt::cbFwd_t<tType, tIdxt>{
 		static_assert(!std::is_void_v<tType>, "Container declared as array of void");
-		static_assert(
-			has_int_conversion_operator_v<tIdxt> || std::is_integral_v<tIdxt> || std::is_enum_v<tIdxt>,
-			"tIdxt template parameter must be convertible to an integer or have integral or enum type"
-		);
-		static_assert(std::is_trivial_v<tIdxt>, "tIdxt template parameter must be a trivial type");
+		static_assert(std::is_integral_v<tIdxt>, "tIdxt template parameter must be convertible to an integer or have integral or enum type");
 
 		genInitCheck;
 		ram::ptr<tType> data;	//Elements of the array
@@ -156,7 +152,7 @@ namespace lnx {
 		// Inititalize and destroy elements ---------------------------------------------------------------------------------------------------------//
 
 
-
+//FIXME ADD SPECIFIC FUNCTION
 
 	protected:
 		//Resizes the array and calls the default constructor on each of the new elements
