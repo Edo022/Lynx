@@ -6,6 +6,9 @@
 
 
 
+
+
+
 namespace lnx{
 	class Window;
 	namespace core{
@@ -49,7 +52,7 @@ namespace lnx::core::wnd{
 		};
 		RtArray<SwpImage> images;		//Images where the frames are outputted
 		inline vk::ImageView   createImageView(const vk::Image vImage, const vk::Format vFormat, const vk::ImageAspectFlags vAspectFlags);
-		inline vk::Framebuffer createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWith, uint32 vHeight);
+		inline vk::Framebuffer createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWidth, uint32 vHeight);
 
 
 
@@ -66,7 +69,7 @@ namespace lnx::core::wnd{
 
 
 	public:
-		Window* bindedWindow;				//Window owning the swapchain
+		Window* w;							//Window owning the swapchain
 		std::atomic<bool> resized = false;	//Synchronization variable. Set to true by the main engine thread when the window needs to be resized
 
 		RtArray<vk::CommandBuffer> shadersCBs;

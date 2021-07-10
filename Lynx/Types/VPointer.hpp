@@ -356,7 +356,7 @@ namespace lnx::vram{
 		// 				}
 		// 				else {															//Fixed size --> custom
 		// 					uint64 size_ = (vSize / incSize + 1) * incSize;			//Calculate the new size and allocate the new memory
-		// 					cell->address = _wds(_aligned_malloc(size_, memOffset)) _lnx(aligned_alloc(memOffset, size_));
+		// 					cell->address = _wds(_aligned_malloc(size_, memAlign)) _lnx(aligned_alloc(memOffset, size_));
 		// 				}
 		// 				// if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory //FIXME COPY
 		// 				//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data

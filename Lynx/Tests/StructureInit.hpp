@@ -38,8 +38,8 @@ namespace lnx{
 
 	namespace test{
 		#ifdef LNX_DEBUG
-		#	define checkInit() lnx::dbg::checkCond(this->__pvt_init_val != lnx::__pvt::init_val,   "This function cannot be called on uninitialized structures")
-		#	define isInit(var)	dbg::checkParam( var.__pvt_init_val != lnx::__pvt::init_val, #var, "Uninitialized structure used")
+		#	define checkInit() lnx::dbg::checkCond(this->__pvt_init_val != lnx::__pvt::init_val, "This function cannot be called on uninitialized structures")
+		#	define isInit(var)      dbg::checkParam( var.__pvt_init_val != lnx::__pvt::init_val, #var, "Uninitialized structure used")
 		#	define checkInitList(...) __pvt_dummy{ [&]() { __VA_ARGS__; return char(0x293); }() },
 		#else
 		#	define checkInit()			//Checks if a function parameter is initialized
@@ -49,11 +49,19 @@ namespace lnx{
 
 		extern bool __errors[];
 
+
+		/**
+		 * @brief //TODO
+		 */
 		template<class... types> inline void disable(error vError, types... vErrors) {
 			// __errors[(uint32)vError] = false;
 			disable(vError);
 			disable(vError, vErrors...);
 		}
+
+		/**
+		 * @brief //TODO
+		 */
 		inline void disable(error vError) {
 			__errors[(uint32)vError] = false;
 		}

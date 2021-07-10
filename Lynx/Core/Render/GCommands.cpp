@@ -23,7 +23,11 @@ namespace lnx::core::render::cmd{
 
 
 
-	void createGraphicsCommandPool() { //FIXME probably useless
+
+	/** //TODO probably useless
+	 * @brief //TODO
+	 */
+	void createGraphicsCommandPool() {
 		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.pd.indices.graphicsFamily);
 		switch(dvc::graphics.ld.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){ vkDefaultCases; }
 	}
@@ -31,9 +35,11 @@ namespace lnx::core::render::cmd{
 
 
 
-	/**
+	/** //TODO probably useless
 	 * @brief Creates, allocates and begins a command buffer for a single time submit
-	 * @return Returns the command buffer
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @return Returns the created command buffer
 	 */
 	vk::CommandBuffer beginSingleTimeCommands() {
 		vk::CommandBuffer commandBuffer;
@@ -54,7 +60,9 @@ namespace lnx::core::render::cmd{
 
 
 	/** //TODO probably useless
-	 * @brief Ends and submits a single time submit command. Then waits until it's executed and frees its memory
+	 * @brief Ends and submits a single time submit command, then waits until it's executed and frees its memory
+	 *     This function should only be used by the engine
+	 * Complexity: ? [depends on when the command buffer gets executed by the GPU]
 	 */
 	void endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer) {
 		switch(vCommandBuffer.end()){ vkDefaultCases; }

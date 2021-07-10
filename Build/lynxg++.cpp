@@ -8,7 +8,7 @@ using std::string;
 string enginePath;
 string helpstr = ""
    "Usage:"                                                         "\n"
-   "    lynxg++ [options] <files...>"                                "\n"
+   "    lynxg++ [options] <files...>"                               "\n"
    ""                                                               "\n"
    "Options:"                                                       "\n"
    "    -mode=<platform><type>      Specify target platform and type. This option is always required    e.g. -mode=ld           e.g. -mode=wr"                  "\n"
