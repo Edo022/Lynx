@@ -213,7 +213,7 @@ namespace lnx{
 
 			/**
 			 * @brief Returns the address of an element in runtime
-			 * Complexity: O(1)
+			 * Complexity: O(tCount - tIndex)
 			 * @param vIndex The index of the element
 			 * @return The address of the element as a void* pointer
 			 */
@@ -404,6 +404,9 @@ namespace lnx{
 		 * @brief List constructor
 		 *     Used by lnx::fwd only
 		 *     Parameters are taken by value as they are all references
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠ 	[From seq::seq]
+		 * Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const __pvt::seq_fwd_ctor, const tTypes... vals) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
@@ -412,29 +415,58 @@ namespace lnx{
 		/**
 		 * @brief Default constructor
 		 *     Used by lnx::fwd only
-		 * Complexity: O()
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	[From seq::seq]
+		 * Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const __pvt::seq_fwd_ctor) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
 		}
 
+
+
+
 	public:
+		/**
+		 * @brief Default copy constructor
+		 */
 		HcArray(const HcArray<tTypes...>& pArr) = default;
+
+
+		/**
+		 * @brief Default constructor
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
+		 * Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
+		 */
 		alwaysInline HcArray() :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
 		}
 
-		alwaysInline HcArray(const tTypes&... vals) requires(!(sizeof...(tTypes) == 1 &&
-		std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>)) :
+
+		/**
+		 * @brief List constructor
+		 *     Initializes each element with the corresponding value in pVals
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
+		 * Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
+		 */
+		alwaysInline HcArray(const tTypes&... vals)
+		requires(!(
+			sizeof...(tTypes) == 1 &&
+			std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>
+		)) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 
 		/**
-		 * @brief Returns a reference to an element.
-		 *		This can only be used with compile time known indices.
+		 * @brief Returns a reference to an element
+		 *		This function can only be used with compile time known indices
 		 *		Use rtGet<type>(index) to retrieve values in runtime
+		 * Complexity: O(1)
 		 * @tparam vIndex The index of the element
+		 * @return A rvalue reference to the element
 		 */
 		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(tTypes)) {
 			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
@@ -442,36 +474,50 @@ namespace lnx{
 		}
 
 		/**
-		 * @brief Runtime version of get. Returns a reference to an element.
-		 *		Requires the element type to be explicitly specified.
-		 *		e.g. --- arr.get<int>(4); -- returns the 4th element as an int&.
-		 *		If the type is not specified, the element address is returned as a void*
+		 * @brief Runtime version of get
+		 *     Requires the element type to be explicitly specified in the function call
+		 *     e.g.
+		 *         arr.get<int>(4); //returns the 4th element as an int&
+		 *     If the type is not specified, the element address is returned as a void*
+		 * Complexity: O(vIndex)
+		 * Notice that
 		 * @param vIndex The index of the element
 		 * @tparam tCType The type of the element
+		 * @return a rvalue reference to the element
 		 */
 		template<class tCType> alwaysInline tCType& rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return (tCType&)*(tCType*)(__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex));
 		}
+
+
 		/**
-		 * @brief Returns the element address a a void*
-		 * @param index The index of the element
+		 * @brief Returns the address of an elemen as a void*
+		 * Complexity: O(vIndex)
+		 * @param vIndex The index of the element
+		 * @return The addresso f the element
 		 */
 		alwaysInline void* rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex);
 		}
 
+
 		/**
-		 * @brief Returns the number of elements in the array
+		 * @brief Returns the number of elements
+		 * Complexity: O(1)
+		 * @return The number of elements in the array
 		 */
-		alwaysInline constexpr uint32 count() const { return sizeof...(tTypes); }
+		alwaysInline constexpr uint32 count() const {
+			return sizeof...(tTypes);
+		}
 
 
 
 
 		/**
-		 * @brief Calls a function using the array elements as arguments
+		 * @brief Calls a standard function using the array elements as arguments
+		 * Complexity: O(O(pFunc))
 		 * @param pFunc: The function to call
 		 * @return The return value of the function call
 		 */
@@ -481,10 +527,9 @@ namespace lnx{
 		}
 
 
-
-
 		/**
 		 * @brief Calls a member function using the array elements as arguments
+		 * Complexity: O(O(pFunc))
 		 * @param pObject The object to call the function on
 		 * @param pFunc The member function to call
 		 * @return The return value of the function call
@@ -494,9 +539,12 @@ namespace lnx{
 			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template execObj<obj_t, func_t>(pObject, pFunc);
 		}
 
+
+		/**
+		 * @brief Default copy assignment
+		 */
 		inline HcArray& operator=(const HcArray& pArr) = default;
 	};
-	// template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc...>;
 	#undef seqIndex
 
 
@@ -509,33 +557,39 @@ namespace lnx{
 	/**
 	 * @brief Handy HcArray alias
 	 */
-	// template<class... tTypes> struct L : HcArray<tTypes...>{
-	// 	alwaysInline L() : HcArray<tTypes...>() {}
-	// 	template<class... tTypesc> alwaysInline L(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
-	// };
-	// template<class... tTypesc> L(tTypesc&&...) -> L<tTypesc...>;
 	template<class... tTypes> using L = HcArray<tTypes...>;
 
 
 	/**
 	 * @brief Type used to perfect forward a list of arguments as a single parameter
+	 *     Each parameter is saved as a reference
 	 */
 	template<class... tTypes> struct P : public HcArray<tTypes...>{
-		// alwaysInline P() : HcArray<tTypes...>() {}
+		/**
+		 * @brief Default constructor
+		 */
+		inline P() :
+			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}) {
+		}
+
+		/**
+		 * @brief Default copy constructor
+		 */
 		inline P(const P<tTypes...>& pObj) = default;
 
-		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) :
-			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}, std::forward<tTypesc>(vals)...) {
+		/**
+		 * @brief List constructor
+		 * @param pVals The values used to initialize each element
+		 */
+		template<class... tTypesc> alwaysInline P(tTypesc&&... pVals) :
+			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}, std::forward<tTypesc>(pVals)...) {
 		}
 		//!Copy and move constructors are shadowed by the list constructor
 
+		/**
+		 * @brief Default copy assignment
+		 */
 		inline P& operator=(const P& pObj) = default;
-		// template<class tType> void operator=(tType&&) = default;
-		// operator HcArray<tTypes...>(){
-		// 	HcArray<tTypes...> ret;
-		// 	memcpy(&ret, this, sizeof(*this));
-		// 	return (HcArray<tTypes...>&)(ret);
-		// }
 	};
 	template<class... tTypesc> P(tTypesc&&... vElms) -> P<tTypesc&&...>;
 }
