@@ -116,7 +116,7 @@ while i < len(cmdp):
 vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
 gwdep:str = enginePath + '/deps/Shared/GLFW'
 
-cmdg = ['g++', '-std=c++2a', '-pthread']                        #Base options
+cmdg = ['g++', '-std=c++20', '-pthread']                        #Base options
 cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced vulkan macros
 cmdg += ['-include', 'Lynx/Lynx_config.hpp']                    #Include engine configuration macros
 if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lynx debug checks when in debug mode
