@@ -135,7 +135,7 @@ namespace lnx {
 		/**
 		 * @brief Specialized function used to copy data from a RaArray
 		 * Complexity: O(n)
-		 * Where n = pArr.count()
+		 *     Where n = pArr.count()
 		 */
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
 		requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
@@ -161,7 +161,7 @@ namespace lnx {
 		/**
 		 * @brief Copies data from another RaArray
 		 * Complexity: O(n)
-		 * Where n = pArr.count()
+		 *     Where n = pArr.count()
 		 * @param pArr Array to copy the elements from
 		 * @return Rvalue reference to this object
 		 */
@@ -180,7 +180,7 @@ namespace lnx {
 		/**
 		 * @brief Copies data from a ContainerBase
 		 * Complexity: O(n)
-		 * Where n = pCont.count()
+		 *     Where n = pCont.count()
 		 * @param pCont Container to copy the elements from
 		 * @return Rvalue reference to this object
 		 */

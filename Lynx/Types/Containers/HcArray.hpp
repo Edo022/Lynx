@@ -190,7 +190,7 @@ namespace lnx{
 			 *     Each element is initialized with its default value
 			 *              ⎛⎲ tCount   ⎛       ⎞⎞
 			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠
-			 * Where e[i] = default constructor of the i-th type in (tType, tTypes)
+			 *     Where e[i] = default constructor of the i-th type in (tType, tTypes)
 			 */
 			alwaysInline seq():
 				seq<tCount, tIndex - 1, tTypes...>(),
@@ -203,7 +203,7 @@ namespace lnx{
 			 *     Each element is copy constructed with the corresponding value in pVals
 			 *              ⎛⎲ tCount   ⎛       ⎞⎞
 			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠
-			 * Where e[i] = copy constructor of the i-th type in (tType, tTypes)
+			 *     Where e[i] = copy constructor of the i-th type in (tType, tTypes)
 			 */
 			alwaysInline seq(const tType& pVal, const tTypes&... pVals) :
 				seq<tCount, tIndex - 1, tTypes...>(pVals...),
@@ -284,7 +284,7 @@ namespace lnx{
 			/**
 			 * @brief Default constructor
 			 * Complexity: O(O(e))
-			 * Where e = default constructor of tType
+			 *     Where e = default constructor of tType
 			 */
 			alwaysInline seq() : seq_val<tType, 0>() { }
 
@@ -292,7 +292,7 @@ namespace lnx{
 			/**
 			 * @brief List constructor
 			 * Complexity: O(O(e))
-			 * Where e = copy constructor of tType
+			 *     Where e = copy constructor of tType
 			 * @param pVal The value used to copy construct this element
 			 */
 			alwaysInline seq(const tType& pVal) :
@@ -406,7 +406,7 @@ namespace lnx{
 		 *     Parameters are taken by value as they are all references
 		 *              ⎛⎲ n   ⎛       ⎞⎞
 		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠ 	[From seq::seq]
-		 * Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
+		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const __pvt::seq_fwd_ctor, const tTypes... vals) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
@@ -417,7 +417,7 @@ namespace lnx{
 		 *     Used by lnx::fwd only
 		 *              ⎛⎲ n   ⎛       ⎞⎞
 		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	[From seq::seq]
-		 * Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
+		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const __pvt::seq_fwd_ctor) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
@@ -437,7 +437,7 @@ namespace lnx{
 		 * @brief Default constructor
 		 *              ⎛⎲ n   ⎛       ⎞⎞
 		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
-		 * Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
+		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray() :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
@@ -449,7 +449,7 @@ namespace lnx{
 		 *     Initializes each element with the corresponding value in pVals
 		 *              ⎛⎲ n   ⎛       ⎞⎞
 		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
-		 * Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
+		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const tTypes&... vals)
 		requires(!(

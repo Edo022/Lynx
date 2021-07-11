@@ -99,7 +99,7 @@ namespace lnx {
 		 *     The destructor  is not called on trivially destructible types
 		 *     Trivially copy constructible types are not constructed but copied as binary data
 		 * Complexity: O(n+m)
-		 * Where n = this->count() and m = pCont.count()
+		 *     Where n = this->count() and m = pCont.count()
 		 */
 		alwaysInline auto& operator=(const RtArray<tType, tIdxt>& pCont) { Super::copy(pCont); return *this; }
 
