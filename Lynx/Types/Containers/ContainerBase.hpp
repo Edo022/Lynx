@@ -12,8 +12,7 @@
 #include <type_traits>
 #include <cmath>
 
-//FIXME USE DIFFERENT MEMORY FOR CONST VALUES
-
+//TODO fix documentation
 /*                                                        Lynx Containers
 .
 .
@@ -61,7 +60,7 @@ namespace lnx {
 	template <class tType, class tIdxt> struct ContainerBase {
 		static_assert(!std::is_void_v     <tType>, "Container declared as array of void");
 		static_assert(!std::is_reference_v<tType>, "Container declares as array of references");
-		static_assert(!std::is_const_v    <tType>, "RaArray declared as array of const values. The elements of a dynamic array must be assignable");
+		static_assert(!std::is_const_v    <tType>, "Container declared as array of const values. The elements of a dynamic array must be assignable");
 		static_assert(std::is_integral_v  <tIdxt>, "tIdxt template parameter must be an integer type");
 		static_assert(!std::is_const_v    <tIdxt>, "tIdxt cannot be const");
 
