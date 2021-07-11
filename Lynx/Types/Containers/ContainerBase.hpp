@@ -207,7 +207,7 @@ namespace lnx {
 		alwaysInline ~ContainerBase() {
 			if(data) destroy(); //Destroy elemens if the array was not moved
 			// data.free();
-			//! ^ Not an error. data will be freed in its destructor
+			//! ^ Not an error. data will be freed by its own destructor
 		}
 
 
