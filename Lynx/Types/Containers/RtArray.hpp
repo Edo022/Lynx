@@ -22,10 +22,7 @@ namespace lnx {
 	 * @tparam tIdxt Type of the index. The type of any index or count relative to this object depend on this
 	 */
 	template<class tType, class tIdxt = uint32> struct RtArray : public ContainerBase<tType, tIdxt> {
-		static_assert(!std::is_void_v<tType>, "RtArray declared as array of void");
-		static_assert(!std::is_reference_v<tType>, "RtArray declared as array of references");
-		static_assert(std::is_integral_v<tIdxt> "tIdxt template parameter must an integer type");
-
+		//!static asserts in ContainerBase
 		using Super = ContainerBase<tType, tIdxt>;
 		genInitCheck;
 
