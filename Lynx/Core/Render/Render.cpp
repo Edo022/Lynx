@@ -59,9 +59,9 @@ namespace lnx::core::render{
 
 namespace lnx{
 	/**
-	 * @brief Recursively calls the onSpawn function on pObj and its valid children and switches off their eSpawn update bit
-	 *     This function should only be used by the engine
-	 * Complexity: O(ΣO(f))
+	 * @brief Recursively calls the onSpawn function on pObj and its valid children and switches off their eSpawn update bit	\n
+	 *     This function should only be used by the engine																		\n
+	 * Complexity: O(ΣO(f))																										\n
 	 *     where f = The pObj onSpawn function and the onSpawn function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
@@ -77,9 +77,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Recursively calls the onUpdateg function on pObj and its valid children and switches off their eUpdateg update bit
-	 *     This function should only be used by the engine
-	 * Complexity: O(ΣO(f))
+	 * @brief Recursively calls the onUpdateg function on pObj and its valid children and switches off their eUpdateg update bit	\n
+	 *     This function should only be used by the engine																			\n
+	 * Complexity: O(ΣO(f))																											\n
 	 *     where f = The pObj onUpdateg function and the onUpdateg function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
@@ -94,9 +94,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Recursively calls the onLimit function on pObj and its valid children and switches off their eLimit update bit
-	 *     This function should only be used by the engine
-	 * Complexity: O(ΣO(f))
+	 * @brief Recursively calls the onLimit function on pObj and its valid children and switches off their eLimit update bit	\n
+	 *     This function should only be used by the engine																		\n
+	 * Complexity: O(ΣO(f))																										\n
 	 *     where f = The pObj onLimit function and the onLimit function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
@@ -127,9 +127,9 @@ namespace lnx{
 
 	/**
 	 * @brief Initializes the render core
-	 *     Creates the pipelines and the swapchain, allocates the default buffers and command buffers and creates the clear shader
-	 *     This function must be called from lnx::Window::init()  only
-	 * Complexity: O(n + m)
+	 *     Creates the pipelines and the swapchain, allocates the default buffers and command buffers and creates the clear shader	\n
+	 *     This function must be called from lnx::Window::init() only																\n
+	 * Complexity: O(n + m)																											\n
 	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
 	 */
 	void core::RenderCore::init(){
@@ -171,9 +171,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Destroyes the swapchain an frees the resources used by the render core
-	 *     This function must be called from lnx::Window::clear() only
-	 * Complexity: O(n + m) [from Swapchain::clear]
+	 * @brief Destroyes the swapchain an frees the resources used by the render core	\n
+	 *     This function must be called from lnx::Window::clear() only					\n
+	 * Complexity: O(n + m) [from Swapchain::clear]										\n
 	 *     where n = this->swp.images.count() and m = __renderMaxFramesInFlight
 	 */
 	void core::RenderCore::clear(){
@@ -189,9 +189,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Creates the default command buffers used for the render
-	 *     This function should only be used by the enigne
-	 * Complexity: O(n)
+	 * @brief Creates the default command buffers used for the render	\n
+	 *     This function should only be used by the enigne				\n
+	 * Complexity: O(n)													\n
 	 *     where n = this->swp.images.count()
 	 */
 	void core::RenderCore::createDefaultCommandBuffers__() { //TODO
@@ -270,8 +270,8 @@ namespace lnx{
 
 
 	/**
-	 * @brief Presents an image
-	 *     This function should only be used by the engine
+	 * @brief Presents an image								\n
+	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
 	 * @param imageIndex The index of the image to present
 	 * @return The return value of the vk::Queue::presentKHR call
@@ -298,8 +298,8 @@ namespace lnx{
 
 
 	/**
-	 * @brief Renders a single frame and replaces the image at index vImgIndex with it
-	 *     This function should only be used by the engine
+	 * @brief Renders a single frame and replaces the image at index vImgIndex with it	\n
+	 *     This function should only be used by the engine								\n
 	 * Complexity: O(1) [GPU complexity depends on the render]
 	 * @param vImgIndex The index of the image to present and replace
 	 */
@@ -400,9 +400,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Updates the objects that got queued during the last frame render
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Updates the objects that got queued during the last frame render	\n
+	 *     This function should only be used by the engine						\n
+	 * Complexity: O(n)															\n
 	 *     where n = this->requests.count()
 	 */
 	void core::RenderCore::updateObjects(){
@@ -427,9 +427,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Sends the respective input callbacks to each of the objects in the input callbacks lists
-	 *     This function should only be used by the engine
-	 * Complexity: O(Σn)
+	 * @brief Sends the respective input callbacks to each of the objects in the input callbacks lists	\n
+	 *     This function should only be used by the engine												\n
+	 * Complexity: O(Σn)																				\n
 	 *     where n = number of elements in each input queue
 	 */
 	void core::RenderCore::sendInputCallbacks(){
@@ -498,9 +498,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Starts the render core
-	 *     This function should only be used by the engine
-	 * Complexity: ? [function may not return during program execution]
+	 * @brief Starts the render core						\n
+	 *     This function should only be used by the engine	\n
+	 * Complexity: Unknown [function may not return during program execution]
 	 */
 	void core::RenderCore::run(){
 		_dbg(thr::self::setName("App | Render"));
@@ -513,10 +513,10 @@ namespace lnx{
 
 
 	/**
-	 * @brief Until the core is terminated, looping between the swapchain images:
-	 *     Presents the image and renders a new one, then updates the objects and sends the input callbacks
-	 *     This function should only be used by the engine
-	 * Complexity: ? [function may not return during program execution]
+	 * @brief Until the core is terminated, looping between the swapchain images:							\n
+	 *     Presents the image and renders a new one, then updates the objects and sends the input callbacks	\n
+	 *     This function should only be used by the engine													\n
+	 * Complexity: Unknown [function may not return during program execution]
 	 */
 	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
@@ -620,11 +620,11 @@ namespace lnx::core::render{
 
 
 	/**
-	 * @brief Returns the index of the memory type with the specified properties
-	 *     This function should only be used by the engine
-	 * Complexity:
-	 *     Best:  O(1)
-	 *     Worst: O(n)
+	 * @brief Returns the index of the memory type with the specified properties	\n
+	 *     This function should only be used by the engine							\n
+	 * Complexity:																	\n
+	 *     Best:  O(1)																\n
+	 *     Worst: O(n)																\n
 	 *     where n = number of available memory types
 	 * @param vType The type of the memory
 	 * @param vProp The required memory properties

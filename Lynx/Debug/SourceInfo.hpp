@@ -26,8 +26,8 @@
 
 namespace lnx::dbg{
     /**
-	 * @brief Returns the name of the executable file
-	 * Complexity: O(n)
+	 * @brief Returns the name of the executable file	\n
+	 * Complexity: O(n)									\n
 	 *     where n = length of the executable name in bytes
 	 * @return The name of the executable file
 	 */
@@ -50,10 +50,10 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Returns a string containing the output of a console command. Lines are separated by a '\n'
-	 *     ! Notice that this function is equivalent to running system(), which is system specific and spawns one or more processes
-	 *     ! Use subpOutput to get the output of a subprocess //TODO write subpOutput //TODO execl
-	 * Complexity: O(n + l + m)
+	 * @brief Returns a string containing the output of a console command. Lines are separated by a '\n'							\n
+	 *     ! Notice that this function is equivalent to running system(), which is system specific and spawns one or more processes	\n
+	 *     ! Use subpOutput to get the output of a subprocess //TODO write subpOutput //TODO execl									\n
+	 * Complexity: O(n + l + m)																										\n
 	 *     with n = vCmd.size(), l = number of lines in the command output and m = length of the command output
 	 * @param vCmd Command to execute
 	 * @param vMaxLineLen Maximum length of each line of the output
@@ -83,9 +83,9 @@ namespace lnx::dbg{
 
 
 	/** //FIXME don't use addr2line but something more reliable instead. Like debug informations
-	 * @brief Returns address, demangled function name, file name and line of the vIndex-th call in the backtrace
-	 *      ! This function only works on Linux systems. On Windows, "" is returned //TODO add default string
-	 *      ! Using this function in a Windows build will cause a warning to be displayed during compilation
+	 * @brief Returns address, demangled function name, file name and line of the vIndex-th call in the backtrace	\n
+	 *      ! This function only works on Linux systems. On Windows, "" is returned //TODO add default string		\n
+	 *      ! Using this function in a Windows build will cause a warning to be displayed during compilation		\n
 	 * Complexity: //TODO
 	 * @param vIndex The index of the call to get informations about
 	 *     0 is the function you are calling this from, 1 is its caller and so on
@@ -105,7 +105,7 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Returns the address of the vIndex-th call in the backtrace
+	 * @brief Returns the address of the vIndex-th call in the backtrace \n
 	 * Complexity: //TODO
 	 * @param vIndex The index of the call to get the address of
 	 * @return The address of the call

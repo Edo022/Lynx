@@ -57,7 +57,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief A class that manages the render of the objects owned by a window
+		 * @brief A class that manages the render of the objects owned by a window \n
 		 * This class is only used in lnx::Window
 		 */
 		class RenderCore{

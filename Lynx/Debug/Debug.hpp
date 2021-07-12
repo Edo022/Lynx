@@ -32,9 +32,9 @@
 
 namespace lnx::dbg{
 	/**
-	 * @brief Formats an std::string using the printf format
-	 *     This is an helper function and should only be called from lnx::dbg::print
-	 * Complexity: ~O(n) [depends on the complexity of vsnprintf, which is unkown]
+	 * @brief Formats an std::string using the printf format							\n
+	 *     This is an helper function and should only be called from lnx::dbg::print	\n
+	 * Complexity: ~O(n) [depends on the complexity of vsnprintf, which is unkown]		\n
 	 *     where n = pFstr.size()
 	 * @param pFstr The format string to print (standard printf syntax)
 	 * @param ... The format arguments
@@ -88,12 +88,12 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Prints a message to the standard output, surrounding it with ---- separators and coloring it based on its severity
-	 *     Errors throw exceptions when in debug mode
-	 *     A maximum of LNX_CNF_DBG_MAX_BACKTRACE_DEPTH lines of backtrace is printed before the message
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::string_format && depends on traceback size]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Prints a message to the standard output, surrounding it with ---- separators and coloring it based on its severity	\n
+	 *     Errors throw exceptions when in debug mode																				\n
+	 *     A maximum of LNX_CNF_DBG_MAX_BACKTRACE_DEPTH lines of backtrace is printed before the message							\n
+	 * Complexity:																													\n
+	 *     ~O(n) [debug mode, from dbg::string_format && depends on traceback size]													\n
+	 *     O(1)  [release mode, function call is ignored]																			\n
 	 *     where n = strlen(pFstr)
 	 * @param vSeverity The severity of the massage. Can be dbg::Severity::eInfo, dbg::Severity::eWarning or dbg::Severity::eError
 	 * @param vIndex The index of the caller. //TODO explain how this works
@@ -157,10 +157,10 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Alias for dbg::print(dbg::Severity::eError, 1, pFstr, pArgs)
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::print]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Alias for dbg::print(dbg::Severity::eError, 1, pFstr, pArgs)	\n
+	 * Complexity:															\n
+	 *     ~O(n) [debug mode, from dbg::print]								\n
+	 *     O(1)  [release mode, function call is ignored]					\n
 	 *     where n = strlen(pFstr)
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
@@ -173,10 +173,10 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Alias for dbg::print(dbg::Severity::eWarning, 1, pFstr, pArgs)
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::print]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Alias for dbg::print(dbg::Severity::eWarning, 1, pFstr, pArgs)	\n
+	 * Complexity:																\n
+	 *     ~O(n) [debug mode, from dbg::print]									\n
+	 *     O(1)  [release mode, function call is ignored]						\n
 	 *     where n = strlen(pFstr)
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
@@ -206,10 +206,10 @@ namespace lnx::dbg{
 //TODO add caller index and wrap args in a single parameter
 //TODO change checks to print if the condition is false, like assert
 	/**
-	 * @brief Prints an error if vCond is true
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::printError]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Prints an error if vCond is true				\n
+	 * Complexity:											\n
+	 *     ~O(n) [debug mode, from dbg::printError]			\n
+	 *     O(1)  [release mode, function call is ignored]	\n
 	 *     where n = strlen(pFstr)
 	 * @param vCond The condition to meet
 	 * @param pFstr The format string to print as error (standard printf syntax)
@@ -225,11 +225,11 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Prints an error if vCond is true
-	 *     Specifies that the value of the function parameter with name vParam is not valid
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::printError && depends on caller function name]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Prints an error if vCond is true												\n
+	 *     Specifies that the value of the function parameter with name vParam is not valid	\n
+	 * Complexity:																			\n
+	 *     ~O(n) [debug mode, from dbg::printError && depends on caller function name]		\n
+	 *     O(1)  [release mode, function call is ignored]									\n
 	 *     where n = strlen(pFstr)
 	 * @param vCond The condition to meet
 	 * @param pParam The name of the parameter
@@ -253,12 +253,12 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Prints an error if vIndex is not between vMin and vMax
-	 *     Specifies the minimum and maximum value the function parameter with name pParam can have
-	 *     Indices are printed as uint64
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::checkParam]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Prints an error if vIndex is not between vMin and vMax								\n
+	 *     Specifies the minimum and maximum value the function parameter with name pParam can have	\n
+	 *     Indices are printed as uint64															\n
+	 * Complexity:																					\n
+	 *     ~O(n) [debug mode, from dbg::checkParam]													\n
+	 *     O(1)  [release mode, function call is ignored]											\n
 	 *     where n = strlen(pFstr)
 	 * @param vIndex The index to check
 	 * @param vMin The minimum allowed value of the index
@@ -275,12 +275,12 @@ namespace lnx::dbg{
 
 
 	/**
-	 * @brief Prints pMessage as error if the pointer is not valid
-	 *		! Notice that this function is unreliable and very likely to not detect all the invalid pointers
-	 *		! It should only be used as additional safety test when writing debug checks to provide additional infos other than "segmentation fault"
-	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::printError]
-	 *     O(1)  [release mode, function call is ignored]
+	 * @brief Prints pMessage as error if the pointer is not valid																						\n
+	 *		! Notice that this function is unreliable and very likely to not detect all the invalid pointers											\n
+	 *		! It should only be used as additional safety test when writing debug checks to provide additional infos other than "segmentation fault"	\n
+	 * Complexity:																																		\n
+	 *     ~O(n) [debug mode, from dbg::printError]																										\n
+	 *     O(1)  [release mode, function call is ignored]																								\n
 	 *     where n = strlen(pFstr)
 	 * @param vPtr The pointer to check
 	 * @param pFstr The format string to print as error (standard printf syntax)

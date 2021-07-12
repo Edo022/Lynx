@@ -14,7 +14,7 @@
 
 
 /**
- * @brief Compares 2 _VkPhysicalDevice objects
+ * @brief Compares 2 _VkPhysicalDevice objects \n
  *     This function should only be used by the engine
  * Complexity: O(1)
  * @param pA The first device
@@ -161,8 +161,8 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Rates a physical device based on its properties and features
-	 *     This function should only be used by the engine
+	 * @brief Rates a physical device based on its properties and features	\n
+	 *     This function should only be used by the engine					\n
 	 * Complexity: O(1)
 	 * @param pPDevice The device structure where its infos are stored
 	 * @return The rating of the physical device
@@ -184,8 +184,8 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Checks if a device has the required extensions and properties to run vulkan
-	 *     This function should only be used by the engine
+	 * @brief Checks if a device has the required extensions and properties to run vulkan	\n
+	 *     This function should only be used by the engine									\n
 	 * Complexity: O(1)
 	 * @param vDevice The physical device to check
 	 * @param pErrorText A pointer to a lnx::String where to store the error in case the device is not suitable
@@ -240,9 +240,9 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Checks if a device supports the extensions required to run the engine
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Checks if a device supports the extensions required to run the engine	\n
+	 *     This function should only be used by the engine							\n
+	 * Complexity: O(n)																\n
 	 *     where n = number of available extensions
 	 * @return True if the device supports the extensions, false if not
 	 */
@@ -285,9 +285,9 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Finds and returns the queue families of a physical device
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Finds and returns the queue families of a physical device	\n
+	 *     This function should only be used by the engine				\n
+	 * Complexity: O(n)													\n
 	 *     where n = number of queue families of the device
 	 * @param vDev The physical device
 	 * @return The queue families of the device as a QueueFamilyIndices object
@@ -339,9 +339,9 @@ namespace lnx::core::dvc{
 	//TODO use different score for graphics and compute devices
 	//FIXME print errors in release mode too idk
 	/**
-	 * @brief Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities	\n
+	 *     This function should only be used by the engine																		\n
+	 * Complexity: O(n)																											\n
 	 *     where n = number of physical devices in the system
 	 */
 	void getPhysicalDevices() {
@@ -441,9 +441,9 @@ namespace lnx::core::dvc{
 
 
 	/**
-	 * @brief Creates a logical device from a physical device wrapper
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Creates a logical device from a physical device wrapper	\n
+	 *     This function should only be used by the engine				\n
+	 * Complexity: O(n)													\n
 	 *     where n = pPdev.indices.computeFamilies.count()
 	 * @param pPDev The physical device to create the logical one from
 	 * @param pDev The logical object device where to store the newly created one

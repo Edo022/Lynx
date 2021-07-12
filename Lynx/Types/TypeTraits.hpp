@@ -19,7 +19,8 @@ namespace lnx{
 
 
     /**
-     * @brief Provides the type of the tIdx-th type in a template parameter pack
+     * @brief Provides the type of the tIdx-th type in a template parameter pack \n
+     * Complexity: O(1)
      * @tparam tIdx The index of the type
      * @tparam tTypes The expanded template parameter pack
      */

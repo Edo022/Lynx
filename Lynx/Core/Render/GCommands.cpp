@@ -36,8 +36,8 @@ namespace lnx::core::render::cmd{
 
 
 	/** //TODO probably useless
-	 * @brief Creates, allocates and begins a command buffer for a single time submit
-	 *     This function should only be used by the engine
+	 * @brief Creates, allocates and begins a command buffer for a single time submit	\n
+	 *     This function should only be used by the engine								\n
 	 * Complexity: O(1)
 	 * @return Returns the created command buffer
 	 */
@@ -60,9 +60,9 @@ namespace lnx::core::render::cmd{
 
 
 	/** //TODO probably useless
-	 * @brief Ends and submits a single time submit command, then waits until it's executed and frees its memory
-	 *     This function should only be used by the engine
-	 * Complexity: ? [depends on when the command buffer gets executed by the GPU]
+	 * @brief Ends and submits a single time submit command, then waits until it's executed and frees its memory	\n
+	 *     This function should only be used by the engine															\n
+	 * Complexity: Unknown [depends on when the command buffer gets executed by the GPU]
 	 */
 	void endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer) {
 		switch(vCommandBuffer.end()){ vkDefaultCases; }

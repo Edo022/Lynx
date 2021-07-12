@@ -14,8 +14,8 @@
 
 namespace lnx{
 	/**
-	 * @brief Resize callback
-	 *     This function should only be called by GLFW
+	 * @brief Resize callback							\n
+	 *     This function should only be called by GLFW	\n
 	 * Complexity: O(1)
 	 */
 	void Window::resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight){
@@ -26,8 +26,8 @@ namespace lnx{
 
 
 	/**
-	 * @brief Constructor. Initializes the window and starts its main render core
-	 * Complexity: O(n + m) [from Window::init]
+	 * @brief Constructor. Initializes the window and starts its main render core	\n
+	 * Complexity: O(n + m) [from Window::init]										\n
 	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
 	 * @param vWidth Initial width of the window
 	 * @param vHeight Initial height of the window
@@ -42,10 +42,10 @@ namespace lnx{
 
 
 	/**
-	 * @brief Initializes the window
-	 *     Creates the surface, sets the icon, sets the callbacks and initializes the render core
-	 *     This function should only be used by the engine
-	 * Complexity: O(n + m) [from RenderCore::init] //TODO
+	 * @brief Initializes the window																\n
+	 *     Creates the surface, sets the icon, sets the callbacks and initializes the render core	\n
+	 *     This function should only be used by the engine											\n
+	 * Complexity: O(n + m) [from RenderCore::init] //TODO											\n
 	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
 	 */
 	void Window::init() {
@@ -97,9 +97,9 @@ namespace lnx{
 
 	/**
 	 * @brief
-	 * Destroys the render core, the surface and the GLFW window and frees any used resource
-	 *     This function should only be used by the engine
-	 * Complexity: O(n + m) [from RenderCore::clear]
+	 * Destroys the render core, the surface and the GLFW window and frees any used resource	\n
+	 *     This function should only be used by the engine										\n
+	 * Complexity: O(n + m) [from RenderCore::clear]											\n
 	 *     where n = this->renderCore.swp.images.count() and m = __renderMaxFramesInFlight
 	 */
 	void Window::clear(){
@@ -113,9 +113,9 @@ namespace lnx{
 
 
 	/**
-	 * @brief Waits for the current frame to be rendered and closes the window
-	 *     This function can only be called by threads that are external to the window
-	 * Complexity: ? [depends on what the internal threads have to do to stop the execution]
+	 * @brief Waits for the current frame to be rendered and closes the window			\n
+	 *     This function can only be called by threads that are external to the window	\n
+	 * Complexity: Unknown [depends on the state of the internal threads]
 	 */
 	void Window::close(){ //TODO add parameter to not wait for window to close
 		running = false;
@@ -127,7 +127,7 @@ namespace lnx{
 
 
 	/**
-	 * @brief Queues an object in the update queue of the render core and switches on its eSpawn bit
+	 * @brief Queues an object in the update queue of the render core and switches on its eSpawn bit \n
 	 * Complexity: O(1)
 	 * @param pObj The object to spawn
 	 */

@@ -44,8 +44,8 @@ namespace lnx::ram{
 
 
 		/**
-		 * @brief Returns the corresponding CellClassIndex of a CellClass value
-		 *     This function should only be used by the engine
+		 * @brief Returns the corresponding CellClassIndex of a CellClass value	\n
+		 *     This function should only be used by the engine					\n
 		 * Complexity: O(1)
 		 * @param vClass The CellClass value
 		 * @return The index corresponding to the class
@@ -71,8 +71,8 @@ namespace lnx::ram{
 
 		static constexpr CellClass classes[] = { CellClass::eA, CellClass::eB, CellClass::eC, CellClass::eD, CellClass::eQ, CellClass::eL };
 		/**
-		 * @brief Returns the corresponding CellClass value of a CellClassIndex
-		 *     This function should only be used by the engine
+		 * @brief Returns the corresponding CellClass value of a CellClassIndex	\n
+		 *     This function should only be used by the engine					\n
 		 * Complexity: O(1)
 		 * @param vClass The class index
 		 * @return The CellClass value corresponding to the index

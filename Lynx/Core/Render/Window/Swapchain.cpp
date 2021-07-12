@@ -14,9 +14,9 @@
 
 namespace lnx::core::wnd{
 	/**
-	 * @brief Constructor. Resizes the frames array and creates the synchronization objects
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Constructor. Resizes the frames array and creates the synchronization objects	\n
+	 *     This function should only be used by the engine									\n
+	 * Complexity: O(n)																		\n
 	 *     where n = __renderMaxFramesInFlight
 	 */
 	Swapchain::Swapchain(){
@@ -42,10 +42,10 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Initializes the swapchain
-	 *     Creates the swapchain and the render pass objects, gets the swapchain images and creates an image views and a framebuffer for each of them
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Initializes the swapchain																													\n
+	 *     Creates the swapchain and the render pass objects, gets the swapchain images and creates an image views and a framebuffer for each of them	\n
+	 *     This function should only be used by the engine																								\n
+	 * Complexity: O(n)																																	\n
 	 *     where n = number of swapchain images
 	 * @param vUseVSync //TODO
 	 */
@@ -136,9 +136,9 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Destroyes and recreates the swapchain
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Destroyes and recreates the swapchain			\n
+	 *     This function should only be used by the engine	\n
+	 * Complexity: O(n)										\n
 	 *     where n = number of swapchain images
 	 */
 	void Swapchain::recreate() {
@@ -239,9 +239,9 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Destroys the swapchain
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Destroys the swapchain						\n
+	 *     This function should only be used by the engine	\n
+	 * Complexity: O(n)										\n
 	 *     where n = this->images.count()
 	 */
 	void Swapchain::destroy() {
@@ -255,9 +255,9 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Destroys the swapchain object and frees its resources
-	 *     This function should only be used by the engine
-	 * Complexity: O(n + m)
+	 * @brief Destroys the swapchain object and frees its resources	\n
+	 *     This function should only be used by the engine			\n
+	 * Complexity: O(n + m)											\n
 	 *     where n = this->images.count() and m = __renderMaxFramesInFlight
 	 */
 	void Swapchain::clear(){
@@ -285,8 +285,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Creates an image view from a vk::Image object
-	 *     This function should only be used by the engine
+	 * @brief Creates an image view from a vk::Image object	\n
+	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
 	 * @param vImage The image to create the view from
 	 * @param vFormat The format of the image
@@ -326,8 +326,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Creates a framebuffer
-	 *     This function should only be used by the engine
+	 * @brief Creates a framebuffer							\n
+	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
 	 * @param vRenderPass The render pass to use in the framebuffer //TODO
 	 * @param vAttachment //TODO
@@ -369,11 +369,11 @@ namespace lnx::core::wnd{
 	//TODO use best format available when not specified
 	//TODO use RGBA8 format in shaders when better formats are not available
 	/**
-	 * @brief Chooses the best vk::SurfaceFormatKHR based on the available formats
-	 *     This function should only be used by the engine
-	 * Complexity:
-	 *     Best:  O(1)
-	 *     Worst: O(n)
+	 * @brief Chooses the best vk::SurfaceFormatKHR based on the available formats	\n
+	 *     This function should only be used by the engine							\n
+	 * Complexity:																	\n
+	 *     Best:  O(1)																\n
+	 *     Worst: O(n)																\n
 	 *     where n = pAvailableFormats.count()
 	 * @param pAvailableFormats An array containing the available formats
 	 * @return The chosen format
@@ -407,13 +407,13 @@ namespace lnx::core::wnd{
 
 
 
-	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
+	//TODO Use immediate or mailbox (causes tearing), FIFO if using VSync
 	/**
-	 * @brief Chooses the best vk::PresentModeKHR based on the available present modes
-	 *     This function should only be used by the engine
-	 * Complexity:
-	 *     Best:  O(1)
-	 *     Worst: O(n)
+	 * @brief Chooses the best vk::PresentModeKHR based on the available present modes	\n
+	 *     This function should only be used by the engine								\n
+	 * Complexity:																		\n
+	 *     Best:  O(1)																	\n
+	 *     Worst: O(n)																	\n
 	 *     where n = pAvailablePresentModes.count()
 	 * @param pAvailablePresentModes An array containing the available present modes
 	 * @return The cosen present mode
@@ -430,8 +430,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Chooses the best swapchain extent based on the surface capabilities
-	 *     This function should only be used by the engine
+	 * @brief Chooses the best swapchain extent based on the surface capabilities	\n
+	 *     This function should only be used by the engine							\n
 	 * Complexity: O(1)
 	 * @param pCapabilities The Vulkan object containing the surface capabilities
 	 * @return The chosen extent
@@ -462,8 +462,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Creates the render pass of the swapchain
-	 *     This function should only be used by the engine
+	 * @brief Creates the render pass of the swapchain		\n
+	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
 	 */
 	void Swapchain::createRenderPass() {
@@ -529,8 +529,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Returns the surface capabilities of the owner window
-	 *     This function should only be used by the engine
+	 * @brief Returns the surface capabilities of the owner window	\n
+	 *     This function should only be used by the engine			\n
 	 * Complexity: O(1)
 	 * @return The surface capabilities
 	 */
@@ -548,8 +548,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Returns the surface formats of the owner window
-	 *     This function should only be used by the engine
+	 * @brief Returns the surface formats of the owner window	\n
+	 *     This function should only be used by the engine		\n
 	 * Complexity: O(1)
 	 * @return An array containing the surface formats
 	 */
@@ -577,8 +577,8 @@ namespace lnx::core::wnd{
 
 
 	/**
-	 * @brief Returns the surface presents modes of the owner window
-	 *     This function should only be used by the engine
+	 * @brief Returns the surface presents modes of the owner window	\n
+	 *     This function should only be used by the engine				\n
 	 * Complexity: O(1)
 	 * @return An array containing the present modes
 	 */

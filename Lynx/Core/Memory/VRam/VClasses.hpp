@@ -38,8 +38,8 @@ namespace lnx::vram{
 
 
 		/**
-		 * @brief Returns the corresponding VCellClassIndex of a CellClass value
-		 *     This function should only be used by the engine
+		 * @brief Returns the corresponding VCellClassIndex of a CellClass value	\n
+		 *     This function should only be used by the engine						\n
 		 * Complexity: O(1)
 		 * @param vClass The VCellClass value
 		 * @return The index corresponding to the class
@@ -65,8 +65,8 @@ namespace lnx::vram{
 		//Returns the CellClass value of a CellClassIndex
 		static constexpr VCellClass classes[] = { VCellClass::eA, VCellClass::eB, VCellClass::eC, VCellClass::eD, VCellClass::eQ, VCellClass::eL };
 		/**
-		 * @brief Returns the corresponding VCellClass value of a VCellClassIndex
-		 *     This function should only be used by the engine
+		 * @brief Returns the corresponding VCellClass value of a VCellClassIndex	\n
+		 *     This function should only be used by the engine						\n
 		 * Complexity: O(1)
 		 * @param vClass The class index
 		 * @return The VCellClass value corresponding to the index

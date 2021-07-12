@@ -346,21 +346,21 @@ namespace lnx{
 
 
 		/**
-		 * @brief Initializes the thread with a function call
-		 *     ! Notice that the @param tags are not actual parameters, as the function takes a variable length template parameter
-		 *     ! @param is used to better explain what to pass to this constructor
-		 *     Complete signature:
-		 *         template<class... tArg> Thread([auto& pObj], auto pFun, [auto* pRet], [P<tArg...> pArg]);
-		 *     ! The parameters must always be passed in the shown order, even if some of them are omitted
+		 * @brief Initializes the thread with a function call																		\n
+		 *     ! Notice that the @param tags are not actual parameters, as the function takes a variable length template parameter	\n
+		 *     ! @param is used to better explain what to pass to this constructor													\n
+		 *     Complete signature:																									\n
+		 *         template<class... tArg> Thread([auto& pObj], auto pFun, [auto* pRet], [P<tArg...> pArg]);						\n
+		 *     ! The parameters must always be passed in the shown order, even if some of them are omitted							\n
 		 * Cmplexity: O() //TODO
 		 *
-		 * @param pObj The object to call the function on
+		 * @param pObj The object to call the function on \n
 		 *     This parameter must be omitted if pFun is not a member function
 		 * @param pFun The function to start the thread with. This parameter is required. //TODO explain better
-		 * @param pRet A pointer that points to a variable where the return value is stored
-		 *     The pointer type must match the return type of pFun
+		 * @param pRet A pointer that points to a variable where the return value is stored	\n
+		 *     The pointer type must match the return type of pFun							\n
 		 *     This parameter must be omitted if pFun is void
-		 * @param pArg An lnx::fwd containing the arguments that will be used to call the function //TODO specify that P is perfect forwarding and not just an htarray
+		 * @param pArg An lnx::fwd containing the arguments that will be used to call the function \n
 		 *     This parameter must be omitted if pFun has no parameters
 		 */
 		template<class... tType> alwaysInline Thread(tType&&... pArgs){

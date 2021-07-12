@@ -53,6 +53,13 @@ namespace lnx::thr {
 
 
 
+	/**
+	 * @brief Initializes a thread with a void non member function	\n
+	 *     e.g. Thread t(func, P{0.5f})								\n
+	 * Complexity: //TODO
+	 * @param vFunc The function to call
+	 * @param pArgs A lnx::fwd containing the function arguments
+	 */
 	template<class func_t, class ...args_ts> void runAsync(const func_t vFunc, const P<args_ts...>& pArgs, pollFence& vFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
@@ -67,10 +74,13 @@ namespace lnx::thr {
 	}
 
 	/**
-	 * @brief Initializes a thread with a non void non member function.
-	 *		e.g. --- int ret; Thread t(func, P{ 0.5f }, &ret); ---
+	 * @brief Initializes a thread with a non void non member function	\n
+	 *     e.g.															\n
+	 *         int ret;													\n
+	 *         Thread t(func, P{ 0.5f }, &ret);							\n
+	 * Complexity: //TODO
 	 * @param vFunc The function to call
-	 * @param pArgs An HcArray containing the function arguments
+	 * @param pArgs A lnx::fwd containing the function arguments
 	 * @param pRet The address where to store the return value
 	 */
 	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const P<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
@@ -91,8 +101,9 @@ namespace lnx::thr {
 
 
 	/**
-	 * @brief Initializes a thread with a void non member function that takes no arguments.
-	 *		e.g. --- Thread t(func); ---
+	 * @brief Initializes a thread with a void non member function that takes no arguments	\n
+	 *     e.g. Thread t(func);																\n
+	 * Complexity: //TODO
 	 * @param vFunc The function to call
 	 */
 	template<class func_t> alwaysInline void runAsync(const func_t vFunc, pollFence& pFence)
@@ -109,8 +120,11 @@ namespace lnx::thr {
 
 
 	/**
-	 * @brief Initializes a thread with a non void non member function that takes no arguments.
-	 *		e.g. --- int ret; Thread t(func, &ret); ---
+	 * @brief Initializes a thread with a non void non member function that takes no arguments	\n
+	 *     e.g.																					\n
+	 *         int ret;																			\n
+	 *         Thread t(func, &ret);															\n
+	 * Complexity: //TODO
 	 * @param vFunc The function to call
 	 * @param pRet The address where to store the return value
 	 */
@@ -132,11 +146,14 @@ namespace lnx::thr {
 //FIXME SPECIFY THAT THE TYPES MUST BE AUTOMATICALLY DEDUCED
 //FIXME INTERNAL DOCUMENTATION
 	/**
-	 * @brief Initializes a thread with a void member function
-	 *		e.g. --- Obj obj; Thread t(obj, &obj::func, P{ 0.5f }); ---
+	 * @brief Initializes a thread with a void member function	\n
+	 *     e.g.													\n
+	 *         Obj obj;											\n
+	 *         Thread t(obj, &obj::func, P{ 0.5f });			\n
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
-	 * @param pArgs An HcArray containing the function arguments
+	 * @param pArgs A lnx::fwd containing the function arguments
 	 */
 	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const P<args_ts...>& pArgs, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
@@ -153,11 +170,15 @@ namespace lnx::thr {
 	}
 
 	/**
-	 * @brief Initializes a thread with a non void member function.
-	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, P{ 0.5f }, &ret); ---
+	 * @brief Initializes a thread with a non void member function	\n
+	 *     e.g.														\n
+	 *         Obj obj;												\n
+	 *         int ret;												\n
+	 *         Thread t(obj, &obj::func, P{ 0.5f }, &ret);			\n
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
-	 * @param pArgs An HcArray containing the function arguments
+	 * @param pArgs A lnx::fwd containing the function arguments
 	 * @param pRet The address where to store the return value
 	 */
 	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const P<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
@@ -179,8 +200,11 @@ namespace lnx::thr {
 
 
 	/**
-	 * @brief Initializes a thread with a void member function that takes no arguments.
-	 *		e.g. --- Obj obj; Thread t(obj, &obj::func); ---
+	 * @brief Initializes a thread with a void member function that takes no arguments	\n
+	 *     e.g.																			\n
+	 *         Obj obj;																	\n
+	 *         Thread t(obj, &obj::func);												\n
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
 	 */
@@ -198,8 +222,12 @@ namespace lnx::thr {
 	}
 
 	/**
-	 * @brief Initializes a thread with a non void member function that takes no arguments.
-	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, &ret); ---
+	 * @brief Initializes a thread with a non void member function that takes no arguments	\n
+	 *     e.g.																				\n
+	 *         Obj obj;																		\n
+	 *         int ret;																		\n
+	 *         Thread t(obj, &obj::func, &ret);												\n
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
 	 * @param pRet The address where to store the return value

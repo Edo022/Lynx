@@ -9,11 +9,11 @@
 
 namespace lnx::core::buffers{
 	/**
-	 * @brief Allocates a buffer in the VRAM of a device
-	 *     This function should only be used by the engine
-	 * Complexity:
-	 *     Best:  O(1) [from core::render::findMemoryType]
-	 *     Worst: O(n) [from core::render::findMemoryType]
+	 * @brief Allocates a buffer in the VRAM of a device	\n
+	 *     This function should only be used by the engine	\n
+	 * Complexity:											\n
+	 *     Best:  O(1) [from core::render::findMemoryType]	\n
+	 *     Worst: O(n) [from core::render::findMemoryType]	\n
 	 *     where n = number of available memory types
 	 * @param pBuffer The buffer object to allocate
 	 * @param vUsage Vulkan buffer usage flags

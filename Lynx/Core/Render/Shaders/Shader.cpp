@@ -25,9 +25,9 @@ namespace lnx::core::shaders{
 
 
 	/**
-	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array	\n
+	 *     This function should only be used by the engine								\n
+	 * Complexity: O(n)																	\n
 	 *     where n = size of the file in bytes
 	 * @param pLength A pointer to an int32 where to store the padded code length
 	 * @param pFilePath A pointer to a char array containing the path to the compiled shader file
@@ -65,10 +65,10 @@ namespace lnx::core::shaders{
 
 
 	/**
-	 * @brief Creates a shader module from a compiled shader code and its length in bytes
-	 *     The shader code is freed when the function returns
-	 *     This function should only be used by the engine
-	 * Complexity: O(n)
+	 * @brief Creates a shader module from a compiled shader code and its length in bytes	\n
+	 *     The shader code is freed when the function returns								\n
+	 *     This function should only be used by the engine									\n
+	 * Complexity: O(n)																		\n
 	 *     where n = pLen
 	 * @param vDevice The logical device to use to create the shader module
 	 * @param pCode A pointer to an int32 array containing the shader code
@@ -109,8 +109,8 @@ namespace lnx::core::shaders{
 
 
 	/**
-	 * @brief Creates a compute pipeline in the pipeline array of the render core
-	 *     This function should only be used by the engine
+	 * @brief Creates a compute pipeline in the pipeline array of the render core	\n
+	 *     This function should only be used by the engine							\n
 	 * Complexity: O(1)
 	 * @param vPipelineIndex The index of the pipeline
 	 * @param pRenderCore The render core in which to create the pipeline
