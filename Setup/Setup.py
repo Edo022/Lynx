@@ -31,6 +31,13 @@ if sys.stdin.read(1).lower() == 'y':
     if not os.path.exists(pdir + "/.vscode"):
         os.mkdir(pdir + "/.vscode")
 
+
+    with open(pdir + "/.engine/platform", 'w') as f:
+        f.write('l')
+    with open(pdir + "/.engine/type", 'w') as f:
+        f.write('d')
+
+
     enginePath = os.path.relpath(thisdir + '/..', pdir)
     with open('./.engine/enginePath', 'w') as pf:
         pf.write(enginePath)

@@ -11,9 +11,9 @@ def run(dir):
 		return "Debug" if opts.tp() == "d" else "Release"
 
 
+
 	os.chdir(dir) #FIXME REMOVE
 	import BuildOptions as opts
-
 
 
 
@@ -21,8 +21,8 @@ def run(dir):
 	with open('./.vscode/tasks.json', 'r') as f:
 		s = re.sub(r'("args"\s*:\s*\[\s*"-mode=)[l|w][d|r|s]"', r'\g<1>' + opts.pf() + opts.tp() + '"',
 			re.sub(r'("label"\s*:\s*")\w+  \|  \w+(  \|  Build (\w| )+")', r'\g<1>' + getPf() + '  |  ' + getTp() + r'\g<2>',
-			re.sub(r'("label"\s*:\s*" > Switch to )(Linux|Windows)("(.|\n)*?"Lynx\/Setup\/SetPlatform\.py"\s*,\s*")(l|w)"', r'\g<1>' + ("Windows" if opts.pf() == "l" else "Linux") + r'\g<3>' + ('w' if opts.pf() == 'l' else 'l') + '"',
-			re.sub(r'("label"\s*:\s*" > Switch to )(Debug|Release)("(.|\n)*?"Lynx\/Setup\/SetType' r'\.py"\s*,\s*")(d|r)"', r'\g<1>' + ("Release" if opts.tp() == "d" else "Debug") + r'\g<3>' + ('r' if opts.tp() == 'd' else 'd') + '"',
+			re.sub(r'("label"\s*:\s*" > Switch to )(Linux|Windows)("(.|\n)*?".*?Lynx\/Setup\/SetPlatform\.py"\s*,\s*")(l|w)"', r'\g<1>' + ("Windows" if opts.pf() == "l" else "Linux") + r'\g<3>' + ('w' if opts.pf() == 'l' else 'l') + '"',
+			re.sub(r'("label"\s*:\s*" > Switch to )(Debug|Release)("(.|\n)*?".*?Lynx\/Setup\/SetType' r'\.py"\s*,\s*")(d|r)"', r'\g<1>' + ("Release" if opts.tp() == "d" else "Debug") + r'\g<3>' + ('r' if opts.tp() == 'd' else 'd') + '"',
 		f.read()))))
 
 	with open('./.vscode/tasks.json', 'w') as f:
