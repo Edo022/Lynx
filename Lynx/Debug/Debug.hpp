@@ -31,14 +31,14 @@
 
 
 namespace lnx::dbg{
-	/**
+	/** <pre>
 	 * @brief Formats an std::string using the printf format							\n
 	 *     This is an helper function and should only be called from lnx::dbg::print	\n
 	 * Complexity: ~O(n) [depends on the complexity of vsnprintf, which is unkown]		\n
 	 *     where n = pFstr.size()
 	 * @param pFstr The format string to print (standard printf syntax)
 	 * @param ... The format arguments
-	 */
+	 </pre> */
 	static std::string string_format(const std::string &pFstr, ...) {
 		int32 size = 4192;
 		std::string str;
@@ -62,9 +62,9 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Enum defining the severity of messages printed by the lnx::dbg::print function
-	 */
+	 </pre> */
 	enum class Severity{
 		eInfo,		//White  text, execution not stopped
 		eWarning,	//Orange text, execution not stopped
@@ -87,7 +87,7 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Prints a message to the standard output, surrounding it with ---- separators and coloring it based on its severity	\n
 	 *     Errors throw exceptions when in debug mode																				\n
 	 *     A maximum of LNX_CNF_DBG_MAX_BACKTRACE_DEPTH lines of backtrace is printed before the message							\n
@@ -99,7 +99,7 @@ namespace lnx::dbg{
 	 * @param vIndex The index of the caller. //TODO explain how this works
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void print(Severity vSeverity, const uint32 vIndex, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
 			//Create output string
@@ -156,7 +156,7 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Alias for dbg::print(dbg::Severity::eError, 1, pFstr, pArgs)	\n
 	 * Complexity:															\n
 	 *     ~O(n) [debug mode, from dbg::print]								\n
@@ -164,7 +164,7 @@ namespace lnx::dbg{
 	 *     where n = strlen(pFstr)
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void printError(const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
 			print(Severity::eError, 1, pFstr, pArgs...);
@@ -172,7 +172,7 @@ namespace lnx::dbg{
 	}
 
 
-	/**
+	/** <pre>
 	 * @brief Alias for dbg::print(dbg::Severity::eWarning, 1, pFstr, pArgs)	\n
 	 * Complexity:																\n
 	 *     ~O(n) [debug mode, from dbg::print]									\n
@@ -180,7 +180,7 @@ namespace lnx::dbg{
 	 *     where n = strlen(pFstr)
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void printWarning(const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
 			print(Severity::eWarning, 1, pFstr, pArgs...);
@@ -205,7 +205,7 @@ namespace lnx::dbg{
 
 //TODO add caller index and wrap args in a single parameter
 //TODO change checks to print if the condition is false, like assert
-	/**
+	/** <pre>
 	 * @brief Prints an error if vCond is true				\n
 	 * Complexity:											\n
 	 *     ~O(n) [debug mode, from dbg::printError]			\n
@@ -214,7 +214,7 @@ namespace lnx::dbg{
 	 * @param vCond The condition to meet
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void checkCond(const bool vCond, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
 			if(vCond) lnx::dbg::printError(pFstr, pArgs...);
@@ -224,7 +224,7 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Prints an error if vCond is true												\n
 	 *     Specifies that the value of the function parameter with name vParam is not valid	\n
 	 * Complexity:																			\n
@@ -235,7 +235,7 @@ namespace lnx::dbg{
 	 * @param pParam The name of the parameter
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void checkParam(const bool vCond, const char* pParam, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
 			if(vCond) {
@@ -252,7 +252,7 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Prints an error if vIndex is not between vMin and vMax								\n
 	 *     Specifies the minimum and maximum value the function parameter with name pParam can have	\n
 	 *     Indices are printed as uint64															\n
@@ -264,7 +264,7 @@ namespace lnx::dbg{
 	 * @param vMin The minimum allowed value of the index
 	 * @param vMax The maximum allowed value of the index
 	 * @param pParam The name of the parameter
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void checkIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* pParam) {
 		#ifdef LNX_DEBUG
 			checkParam(vIndex < vMin || vIndex > vMax, pParam, "Index %llu is out of range. Min: %llu, Max: %llu", vIndex, vMin, vMax);
@@ -274,7 +274,7 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Prints pMessage as error if the pointer is not valid																						\n
 	 *		! Notice that this function is unreliable and very likely to not detect all the invalid pointers											\n
 	 *		! It should only be used as additional safety test when writing debug checks to provide additional infos other than "segmentation fault"	\n
@@ -285,7 +285,7 @@ namespace lnx::dbg{
 	 * @param vPtr The pointer to check
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param vArgs The format arguments
-	 */
+	 </pre> */
 	static _dbg(neverInline)_rls(alwaysInline) void checkRawPtr(auto* vPtr, const char* pFstr, const auto&... vArgs) {
 		#ifdef LNX_DEBUG
 			if(vPtr) {

@@ -8,20 +8,20 @@
 
 
 namespace lnx{
-	/**
+	/** <pre>
 	 * @brief Starts the Lynx Engine
-	 */
+	 </pre> */
     void start() {
         core::running = true;
         core::inputThr(core::inputLoop);
     }
 
 
-    /**
+    /** <pre>
      * @brief Kills the Lynx Engine and frees all of its resources                                                              \n
      *      Any object that uses the memory pool, the thread pool or other structures created by the engine will stop working   \n
      *      Make sure to destroy them or don't use them after calling this function
-     */
+     </pre> */
 	void kill(){
         core::running = false;
 

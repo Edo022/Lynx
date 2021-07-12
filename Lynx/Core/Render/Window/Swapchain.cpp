@@ -13,12 +13,12 @@
 
 
 namespace lnx::core::wnd{
-	/**
+	/** <pre>
 	 * @brief Constructor. Resizes the frames array and creates the synchronization objects	\n
 	 *     This function should only be used by the engine									\n
 	 * Complexity: O(n)																		\n
 	 *     where n = __renderMaxFramesInFlight
-	 */
+	 </pre> */
 	Swapchain::Swapchain(){
 		frames.resize(__renderMaxFramesInFlight);
 
@@ -41,14 +41,14 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Initializes the swapchain																													\n
 	 *     Creates the swapchain and the render pass objects, gets the swapchain images and creates an image views and a framebuffer for each of them	\n
 	 *     This function should only be used by the engine																								\n
 	 * Complexity: O(n)																																	\n
 	 *     where n = number of swapchain images
 	 * @param vUseVSync //TODO
-	 */
+	 </pre> */
 	void Swapchain::create(bool vUseVSync) {
 		useVSync = vUseVSync;
 
@@ -135,12 +135,12 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Destroyes and recreates the swapchain			\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: O(n)										\n
 	 *     where n = number of swapchain images
-	 */
+	 </pre> */
 	void Swapchain::recreate() {
 		int32 width, height;	glfwGetFramebufferSize(w->window, &width, &height);
 		if(width != 0 && height != 0) {			//If the window contains pixels
@@ -238,12 +238,12 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Destroys the swapchain						\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: O(n)										\n
 	 *     where n = this->images.count()
-	 */
+	 </pre> */
 	void Swapchain::destroy() {
 		for(auto img : images) {
 			dvc::graphics.ld.destroyFramebuffer(img.fbuffer, nullptr);
@@ -254,12 +254,12 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Destroys the swapchain object and frees its resources	\n
 	 *     This function should only be used by the engine			\n
 	 * Complexity: O(n + m)											\n
 	 *     where n = this->images.count() and m = __renderMaxFramesInFlight
-	 */
+	 </pre> */
 	void Swapchain::clear(){
 		switch(core::dvc::graphics.ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
@@ -284,7 +284,7 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Creates an image view from a vk::Image object	\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
@@ -292,7 +292,7 @@ namespace lnx::core::wnd{
 	 * @param vFormat The format of the image
 	 * @param vAspectFlags //TODO
 	 * @return The created image view
-	 */
+	 </pre> */
 	inline vk::ImageView Swapchain::createImageView(const vk::Image vImage, const vk::Format vFormat, const vk::ImageAspectFlags vAspectFlags) {
 		auto viewInfo = vk::ImageViewCreateInfo()
 			.setImage    (vImage)
@@ -325,7 +325,7 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Creates a framebuffer							\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
@@ -334,7 +334,7 @@ namespace lnx::core::wnd{
 	 * @param vWidth Width of the framebuffer
 	 * @param vHeight Height of the freamebuffer
 	 * @return The created framebuffer
-	 */
+	 </pre> */
 	inline vk::Framebuffer Swapchain::createFramebuffer(vk::RenderPass vRenderPass, vk::ImageView& vAttachment, uint32 vWidth, uint32 vHeight) {
 		auto framebufferInfo = vk::FramebufferCreateInfo()
 			.setRenderPass      (vRenderPass)
@@ -368,7 +368,7 @@ namespace lnx::core::wnd{
 
 	//TODO use best format available when not specified
 	//TODO use RGBA8 format in shaders when better formats are not available
-	/**
+	/** <pre>
 	 * @brief Chooses the best vk::SurfaceFormatKHR based on the available formats	\n
 	 *     This function should only be used by the engine							\n
 	 * Complexity:																	\n
@@ -377,12 +377,12 @@ namespace lnx::core::wnd{
 	 *     where n = pAvailableFormats.count()
 	 * @param pAvailableFormats An array containing the available formats
 	 * @return The chosen format
-	 */
+	 </pre> */
 	vk::SurfaceFormatKHR Swapchain::chooseSurfaceFormat(const RtArray<vk::SurfaceFormatKHR>& pAvailableFormats) {
 		for(auto& fmt : pAvailableFormats) {
 			if(
 				dvc::graphics.pd.device.getFormatProperties(fmt.format).optimalTilingFeatures & vk::FormatFeatureFlagBits::eTransferDst &&
-				/*fmt.format == vk::Format::eR8G8B8A8Srgb && */fmt.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear
+				/*fmt.format == vk::Format::eR8G8B8A8Srgb && </pre> */fmt.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear
 			) {
 				return fmt;
 			}
@@ -408,7 +408,7 @@ namespace lnx::core::wnd{
 
 
 	//TODO Use immediate or mailbox (causes tearing), FIFO if using VSync
-	/**
+	/** <pre>
 	 * @brief Chooses the best vk::PresentModeKHR based on the available present modes	\n
 	 *     This function should only be used by the engine								\n
 	 * Complexity:																		\n
@@ -417,7 +417,7 @@ namespace lnx::core::wnd{
 	 *     where n = pAvailablePresentModes.count()
 	 * @param pAvailablePresentModes An array containing the available present modes
 	 * @return The cosen present mode
-	 */
+	 </pre> */
 	vk::PresentModeKHR Swapchain::choosePresentMode(const RtArray<vk::PresentModeKHR>& pAvailablePresentModes) {
 		if(useVSync) return vk::PresentModeKHR::eFifo; //FIXME MOVE VSYNC TO WINDOW STRUCT
 		for(const auto& availablePresentMode : pAvailablePresentModes) {
@@ -429,13 +429,13 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Chooses the best swapchain extent based on the surface capabilities	\n
 	 *     This function should only be used by the engine							\n
 	 * Complexity: O(1)
 	 * @param pCapabilities The Vulkan object containing the surface capabilities
 	 * @return The chosen extent
-	 */
+	 </pre> */
 	vk::Extent2D Swapchain::chooseSwapchainExtent(const vk::SurfaceCapabilitiesKHR* pCapabilities) {
 		int32 width = 0, height = 0;
 		glfwGetFramebufferSize(w->window, &width, &height);
@@ -461,11 +461,11 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Creates the render pass of the swapchain		\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
-	 */
+	 </pre> */
 	void Swapchain::createRenderPass() {
 		auto colorAttachment = vk::AttachmentDescription()				//Create attachment
 			.setFormat         (createInfo.imageFormat)						//Swapchain image format
@@ -528,12 +528,12 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Returns the surface capabilities of the owner window	\n
 	 *     This function should only be used by the engine			\n
 	 * Complexity: O(1)
 	 * @return The surface capabilities
-	 */
+	 </pre> */
 	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
 		vk::SurfaceCapabilitiesKHR capabilities;
 		switch(core::dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(w->surface, &capabilities)){
@@ -547,12 +547,12 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Returns the surface formats of the owner window	\n
 	 *     This function should only be used by the engine		\n
 	 * Complexity: O(1)
 	 * @return An array containing the surface formats
-	 */
+	 </pre> */
 	RtArray<vk::SurfaceFormatKHR> Swapchain::getSurfaceFormats(){
 		uint32 count;
 		RtArray<vk::SurfaceFormatKHR>	formats;
@@ -576,12 +576,12 @@ namespace lnx::core::wnd{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Returns the surface presents modes of the owner window	\n
 	 *     This function should only be used by the engine				\n
 	 * Complexity: O(1)
 	 * @return An array containing the present modes
-	 */
+	 </pre> */
 	RtArray<vk::PresentModeKHR> Swapchain::getPresentModes(){
 		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
 

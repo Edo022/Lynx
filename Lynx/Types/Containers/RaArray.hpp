@@ -44,7 +44,7 @@
 
 
 namespace lnx {
-	/**
+	/** <pre>
 	 * @brief A dynamic array with non contiguous elements.
 	 *		New elements are written over previously removed ones, or concatenated if there are none.
 	 *		The .isValid() function can be used to check if an element is valid or has been removed
@@ -53,7 +53,7 @@ namespace lnx {
 	 * @tparam tIdxt Type of the indices
 	 *     The type of any index or count provided by and used on this object and the additional space used by elements indices all depend on this parameter
 	 *     tIdxt must be a non const integral type
-	 */
+	 </pre> */
 	template<class tType, std::integral tIdxt = uint32> struct RaArray{
 		genInitCheck;
 		static_assert(!std::is_void_v     <tType>, "RaArray declared as array of void");
@@ -132,11 +132,11 @@ namespace lnx {
 			}
 		}
 
-		/**
+		/** <pre>
 		 * @brief Specialized function used to copy data from a RaArray
 		 * Complexity: O(n)
 		 *     Where n = pArr.count()
-		 */
+		 </pre> */
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
 		requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
 			for(tAIdxt i = 0; i < pArr.count(); ++i){
@@ -145,10 +145,10 @@ namespace lnx {
 			}
 		}
 
-		/**
+		/** <pre>
 		 * @brief (tIdxt)-1 is used as special value, so the actual value depends on the index type.
 		 *     This function correctly converts the -1 taking into account the type of the indices
-		 */
+		 </pre> */
 		template<class tDst, class tSrc> static alwaysInline void specIdxCnv(tDst& pDst, const tSrc vSrc)
 		requires(!std::is_same_v<tSrc, tDst>) {
 			if(vSrc == (tSrc)-1) pDst = (tDst)-1;
@@ -158,13 +158,13 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Copies data from another RaArray
 		 * Complexity: O(n)
 		 *     Where n = pArr.count()
 		 * @param pArr Array to copy the elements from
 		 * @return Rvalue reference to this object
-		 */
+		 </pre> */
 		template<class tAType, class tAIdxt> inline auto& copyRaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			data.reallocArr((uint64)pArr.count(), false);
 			specIdxCnv(tail, pArr.tail);  specIdxCnv(head, pArr.head);
@@ -177,13 +177,13 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Copies data from a ContainerBase
 		 * Complexity: O(n)
 		 *     Where n = pCont.count()
 		 * @param pCont Container to copy the elements from
 		 * @return Rvalue reference to this object
-		 */
+		 </pre> */
 		template<class tCType, class tCIdxt> inline auto& copyContainerBase(const ContainerBase<tCType, tCIdxt>& pCont){
 			data.reallocArr((uint64)pCont.count(), false);
 			tail = head = (tIdxt)-1;
@@ -217,23 +217,23 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Creates an array without allocating memory to it
 		 *     The memory will be allocated when calling the add function or assigning it an allocated array
 		 * Complexity: O(1)
-		 */
+		 </pre> */
 		inline RaArray() : data(nullptr) {
 			tail = head = (tIdxt)-1;
 			count_ = free_ = 0;
 		}
 
 
-		/**
+		/** <pre>
 		 * @brief Creates an array of size 0 and preallocates the memory for vCount elements
 		 *     Preallocated elements are not constructed
 		 * Complexity: O(n)
 		 * @param vCount The number of elements to preallocate
-		 */
+		 </pre> */
 		inline RaArray(const tIdxt vCount) :
 			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count must be a positive value"))
 			data(sizeof(Elm) * (uint64)vCount) {
@@ -245,12 +245,12 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Initializes the array by copy constructing each element from an std::initializer_list
 		 *     Trivially constructible types are not constructed
 		 * Complexity: O(n)
 		 * @param vElms Initializer list to copy elements from
-		 */
+		 </pre> */
 		inline RaArray(const std::initializer_list<tType> vElms) :
 			data(sizeof(Elm) * (uint64)vElms.size()) {
 			tail = (tIdxt)-1; head = (tIdxt)-1;
@@ -266,25 +266,25 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief ContainerBase version of copy constructor. Initializes the array by copy constructing each element from a lnx::ContainerBase subclass
 		 * Complexity: O(n)
 		 * @param pCont The container object to copy elements from
-		 */
+		 </pre> */
 		template<class tCType, std::integral tCIdxt> inline RaArray(const ContainerBase<tCType, tCIdxt>& pCont) {
 			isInit(pCont);
 			copyContainerBase(pCont);
 		}
 
 
-		/**
+		/** <pre>
 		 * @brief Templated version of copy constructor. Initializes the array by copy constructing each element from a RaArray of compatible type
 		 *     Removed elements are preserved but not constructed
 		 *     Trivially destructible types are not destroyed
 		 *     Trivially copy constructible types are not constructed individually but plainly copied as binary data
 		 * Complexity: O(n)
 		 * @param pArr The RaArray to copy elements from
-		 */
+		 </pre> */
 		template<class tAType, std::integral tAIdxt> inline RaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			isInit(pArr);
 			copyRaArray(pArr);
@@ -293,14 +293,14 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Copy constructor. Initializes the array by copy constructing each element from a RaArray of the same type
 		 *     Removed elements are preserved but not constructed
 		 *     Trivially destructible types are not destroyed
 		 *     Trivially copy constructible types are not constructed individually but plainly copied as binary data
 		 * Complexity: O(n)
 		 * @param pArr The RaArray to copy elements from
-		 */
+		 </pre> */
 		inline RaArray(const RaArray<tType, tIdxt>& pArr) {
 			isInit(pArr);
 			copyRaArray(pArr);
@@ -309,12 +309,12 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Move constructor. Moves pArr to this object. pArr will become invalid
 		 *     No element is constructed nor destroyed
 		 * Complexity: O(1)
 		 * @param pArr The array to move
-		 */
+		 </pre> */
 		inline RaArray(RaArray<tType, tIdxt>&& pArr) : checkInitList(isInit(pArr))
 			data{ pArr.data },
 			tail{ pArr.tail }, head{ pArr.head }, count_{ pArr.count_ }, free_{ pArr.free_ } {
@@ -326,13 +326,13 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Destructor. Destroys each element of the array and frees the used memory
 		 *     Trivially destructible types are not destroyed
 		 * Complexity:
 		 *     O(1) [trivially destructible types]
 		 *     O(n) [non trivially destructible types]
-		 */
+		 </pre> */
 		~RaArray() {
 			checkInit();
 			if(data){
@@ -357,14 +357,14 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Adds a new element to the end of the array and initializes it by copying the pData value.
 		 * Complexity:
 		 *     Best:  O(1)
 		 *     Worst: O(n) [memory reallocation required]
 		 * @param pData Object to copy construct the new element from
 		 * @return Index of the new element
-		 */
+		 </pre> */
 		tIdxt append(const tType& pData) {
 			checkInit();
 			data.reallocArr((uint64)count() + 1);
@@ -377,14 +377,14 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Adds a new element in the first free index of the array and initializes it by copying the pData value.
 		 * Complexity:
 		 *     Best:  O(1)
 		 *     Worst: O(n) [no free indices && memory reallocation required]
 		 * @param pData Object to copy construct the new element from
  		 * @return Index of the new element
-		 */
+		 </pre> */
 		tIdxt add(const tType& pData) {
 			checkInit();
 			if(tail == (tIdxt)-1) {			//If it has no free elements
@@ -409,11 +409,11 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Destroys an element and removes it from the array
 		 * Complexity: O(1)
 		 * @param vIndex Index of the element to remove
-		 */
+		 </pre> */
 		void remove(const tIdxt vIndex) {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, (uint64)count() - 1, "vIndex");
@@ -433,13 +433,13 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Resets the array to its initial state by destroying each element, freeing the memory and resizing it to 0
 		 *     Trivially destructible elements are not destroyed
 		 * Complexity:
 		 *     O(1) [trivially destructible types]
 		 *     O(n) [non trivially destructible types]
-		 */
+		 </pre> */
 		inline void clear() {
 			checkInit();
 			specDestroy();
@@ -464,7 +464,7 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief ContainerBase version of copy assignment. Destroys each element and copies the elements of pCont into this array
 		 *     Trivially destructible types are not destroyed
 		 * Complexity:
@@ -473,7 +473,7 @@ namespace lnx {
 		 *     where n = this->count() and m = pCont.count()
 		 * @param pCont The container to copy construct elements from
 		 * @return L-value reference to this object
-		 */
+		 </pre> */
 		template<class tCType, std::integral tCIdxt> inline auto& operator=(const ContainerBase<tCType, tCIdxt>& pCont){
 			checkInit(); isInit(pCont);
 
@@ -483,7 +483,7 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Templated version of copy assignment. Destroys each element and copies the elements of pCont into this array
 		 *     Removed elements are preserved but not constructed
 		 *     Trivially destructible types are not destroyed
@@ -495,7 +495,7 @@ namespace lnx {
 		 *     where n = this->count() and m = pArr.count()
 		 * @param pArr The RaArray to copy construct elements from
 		 * @return L-value reference to this object
-		 */
+		 </pre> */
 		template<class tAType, class tAIdxt> alwaysInline auto& operator=(const RaArray<tAType, tAIdxt>& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
@@ -505,7 +505,7 @@ namespace lnx {
 		}
 
 
-		/**
+		/** <pre>
 		 * @brief Copy assignment. Destroys each element and copies the elements of pCont into this array
 		 *     Removed elements are preserved but not constructed
 		 *     Trivially destructible types are not destroyed
@@ -517,7 +517,7 @@ namespace lnx {
 		 *     where n = this->count() and m = pArr.count()
 		 * @param pArr The RaArray to copy construct elements from
 		 * @return L-value reference to this object
-		 */
+		 </pre> */
 		alwaysInline auto& operator=(const RaArray<tType, tIdxt>& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
@@ -527,7 +527,7 @@ namespace lnx {
 		}
 
 
-		/**
+		/** <pre>
 		 * @brief Move assignment. Destroys each of the old elements and moved pArr to this array
 		 *     New elements are not constructed
 		 *     Trivially destructible elements are not destroyed
@@ -536,7 +536,7 @@ namespace lnx {
 		 *     O(n) [non trivially destructible types]
 		 * @param pArr The array to move
 		 * @return L-value reference to this object
-		 */
+		 </pre> */
 		inline auto& operator=(RaArray<tType, tIdxt>&& pArr) {
 			checkInit(); isInit(pArr);
 			if(this == &pArr) return *this;
@@ -567,12 +567,12 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Returns the state of an element
 		 * Complexity: O(1)
 		 * @param vIndex Index of the element
 		 * @return True if the element is valid, false if not (deleted or unallocated)
-		 */
+		 </pre> */
 		alwaysInline bool isValid(const tIdxt vIndex) const {
 			checkInit();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
@@ -582,12 +582,12 @@ namespace lnx {
 
 
 
-		/**
+		/** <pre>
 		 * @brief Returns an element
 		 * Complexity: O(1)
 		 * @param vIndex Index of the element
 		 * @return L-value reference to the element
-		 */
+		 </pre> */
 
 		alwaysInline tType& operator[](const tIdxt vIndex) const {
 			checkInit();

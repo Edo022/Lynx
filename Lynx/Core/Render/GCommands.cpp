@@ -24,9 +24,9 @@ namespace lnx::core::render::cmd{
 
 
 
-	/** //TODO probably useless
+	/** <pre> //TODO probably useless
 	 * @brief //TODO
-	 */
+	 </pre> */
 	void createGraphicsCommandPool() {
 		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.pd.indices.graphicsFamily);
 		switch(dvc::graphics.ld.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){ vkDefaultCases; }
@@ -35,12 +35,12 @@ namespace lnx::core::render::cmd{
 
 
 
-	/** //TODO probably useless
+	/** <pre> //TODO probably useless
 	 * @brief Creates, allocates and begins a command buffer for a single time submit	\n
 	 *     This function should only be used by the engine								\n
 	 * Complexity: O(1)
 	 * @return Returns the created command buffer
-	 */
+	 </pre> */
 	vk::CommandBuffer beginSingleTimeCommands() {
 		vk::CommandBuffer commandBuffer;
 		auto allocInfo = vk::CommandBufferAllocateInfo()
@@ -59,11 +59,11 @@ namespace lnx::core::render::cmd{
 
 
 
-	/** //TODO probably useless
+	/** <pre> //TODO probably useless
 	 * @brief Ends and submits a single time submit command, then waits until it's executed and frees its memory	\n
 	 *     This function should only be used by the engine															\n
 	 * Complexity: Unknown [depends on when the command buffer gets executed by the GPU]
-	 */
+	 </pre> */
 	void endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer) {
 		switch(vCommandBuffer.end()){ vkDefaultCases; }
 		auto submitInfo = vk::SubmitInfo()

@@ -73,12 +73,12 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 #ifdef __GNUC__
 	#pragma GCC diagnostic ignored "-Wpmf-conversions"
-    /**
+    /** <pre>
      * @brief Returns true if the object's class redefines a virtual member function of a base class \n
      *     e.g. if(doesRedefine(derivedInstance, &Obj_bb::func)) //...do something
      * @param object An instance of the derived class
      * @param vVMFP The virtual member function pointer of the base class
-     */
+     </pre> */
 	#define doesRedefine(vObj, vVMFP) ((void*)((vObj).*(vVMFP)) != (void*)(vVMFP))
 #else
 	static neverInline __attribute__((optimize("O0"), error("\"doesRedefine\" macro is only available in g++"))) bool doesRedefine(auto vObj, auto vVMFP){ return true; }

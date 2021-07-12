@@ -345,7 +345,7 @@ namespace lnx{
 
 
 
-		/**
+		/** <pre>
 		 * @brief Initializes the thread with a function call																		\n
 		 *     ! Notice that the @param tags are not actual parameters, as the function takes a variable length template parameter	\n
 		 *     ! @param is used to better explain what to pass to this constructor													\n
@@ -362,7 +362,7 @@ namespace lnx{
 		 *     This parameter must be omitted if pFun is void
 		 * @param pArg An lnx::fwd containing the arguments that will be used to call the function \n
 		 *     This parameter must be omitted if pFun has no parameters
-		 */
+		 </pre> */
 		template<class... tType> alwaysInline Thread(tType&&... pArgs){
 			dispatch((std::forward<tType&&>(pArgs))...);
 		}
@@ -370,9 +370,9 @@ namespace lnx{
 
 
 
-		/**
+		/** <pre>
 		 * @brief Same as constructor. See Thread::Thread
-		 */
+		 </pre> */
 		template<class... tType> alwaysInline void operator()(tType&&... pArgs){
 			dispatch((std::forward<tType&&>(pArgs))...);
 		}

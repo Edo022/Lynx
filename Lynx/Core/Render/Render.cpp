@@ -58,13 +58,13 @@ namespace lnx::core::render{
 
 
 namespace lnx{
-	/**
+	/** <pre>
 	 * @brief Recursively calls the onSpawn function on pObj and its valid children and switches off their eSpawn update bit	\n
 	 *     This function should only be used by the engine																		\n
 	 * Complexity: O(ΣO(f))																										\n
 	 *     where f = The pObj onSpawn function and the onSpawn function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
-	 */
+	 </pre> */
 	void core::RenderCore::recSpawn(obj::obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->updates = pObj->updates & ~obj::eSpawn;						//Clear update bit (prevents redundant updates)
@@ -76,13 +76,13 @@ namespace lnx{
 	}
 
 
-	/**
+	/** <pre>
 	 * @brief Recursively calls the onUpdateg function on pObj and its valid children and switches off their eUpdateg update bit	\n
 	 *     This function should only be used by the engine																			\n
 	 * Complexity: O(ΣO(f))																											\n
 	 *     where f = The pObj onUpdateg function and the onUpdateg function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
-	 */
+	 </pre> */
 	void core::RenderCore::recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->updates = pObj->updates & ~obj::eUpdateg;
@@ -93,13 +93,13 @@ namespace lnx{
 	}
 
 
-	/**
+	/** <pre>
 	 * @brief Recursively calls the onLimit function on pObj and its valid children and switches off their eLimit update bit	\n
 	 *     This function should only be used by the engine																		\n
 	 * Complexity: O(ΣO(f))																										\n
 	 *     where f = The pObj onLimit function and the onLimit function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
-	 */
+	 </pre> */
 	void core::RenderCore::recLimit(obj::obj_bb* pObj){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->updates = pObj->updates & ~obj::eLimit;
@@ -125,13 +125,13 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Initializes the render core
 	 *     Creates the pipelines and the swapchain, allocates the default buffers and command buffers and creates the clear shader	\n
 	 *     This function must be called from lnx::Window::init() only																\n
 	 * Complexity: O(n + m)																											\n
 	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
-	 */
+	 </pre> */
 	void core::RenderCore::init(){
 		pipelines.resize(core::shaders::pipelineNum);
 		for(uint32 i = 0; i < pipelines.count(); ++i){ //[n]
@@ -170,12 +170,12 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Destroyes the swapchain an frees the resources used by the render core	\n
 	 *     This function must be called from lnx::Window::clear() only					\n
 	 * Complexity: O(n + m) [from Swapchain::clear]										\n
 	 *     where n = this->swp.images.count() and m = __renderMaxFramesInFlight
-	 */
+	 </pre> */
 	void core::RenderCore::clear(){
 		swp.clear();
 		wSize_g.free(); fOut_g.free(); iOut_g.free(); zBuff_g.free();
@@ -188,12 +188,12 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Creates the default command buffers used for the render	\n
 	 *     This function should only be used by the enigne				\n
 	 * Complexity: O(n)													\n
 	 *     where n = this->swp.images.count()
-	 */
+	 </pre> */
 	void core::RenderCore::createDefaultCommandBuffers__() { //TODO
 		{ //Render command pool
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
@@ -269,13 +269,13 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Presents an image								\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: O(1)
 	 * @param imageIndex The index of the image to present
 	 * @return The return value of the vk::Queue::presentKHR call
-	 */
+	 </pre> */
 	vk::Result core::RenderCore::present(uint32& imageIndex){
 		const auto presentInfo = vk::PresentInfoKHR()
 			.setWaitSemaphoreCount (1)
@@ -297,12 +297,12 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Renders a single frame and replaces the image at index vImgIndex with it	\n
 	 *     This function should only be used by the engine								\n
 	 * Complexity: O(1) [GPU complexity depends on the render]
 	 * @param vImgIndex The index of the image to present and replace
-	 */
+	 </pre> */
 	void core::RenderCore::draw(uint32& vImgIndex){
 		switch(core::dvc::graphics.ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
 			case vk::Result::eTimeout:         dbg::printError("Fence timed out"); break;
@@ -399,12 +399,12 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Updates the objects that got queued during the last frame render	\n
 	 *     This function should only be used by the engine						\n
 	 * Complexity: O(n)															\n
 	 *     where n = this->requests.count()
-	 */
+	 </pre> */
 	void core::RenderCore::updateObjects(){
 		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE RENDER QUEUE
 		requests_m.lock();
@@ -426,12 +426,12 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Sends the respective input callbacks to each of the objects in the input callbacks lists	\n
 	 *     This function should only be used by the engine												\n
 	 * Complexity: O(Σn)																				\n
 	 *     where n = number of elements in each input queue
-	 */
+	 </pre> */
 	void core::RenderCore::sendInputCallbacks(){
 		//FIXME REQUESTS SENT TO NON SPAWNED OBJECTS FROM INPUT CALLBACKS ARE EXECUTED DURING SPAWN
 		//Input callbacks
@@ -497,11 +497,11 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Starts the render core						\n
 	 *     This function should only be used by the engine	\n
 	 * Complexity: Unknown [function may not return during program execution]
-	 */
+	 </pre> */
 	void core::RenderCore::run(){
 		_dbg(thr::self::setName("App | Render"));
 		renderLoop();
@@ -512,12 +512,12 @@ namespace lnx{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Until the core is terminated, looping between the swapchain images:							\n
 	 *     Presents the image and renders a new one, then updates the objects and sends the input callbacks	\n
 	 *     This function should only be used by the engine													\n
 	 * Complexity: Unknown [function may not return during program execution]
-	 */
+	 </pre> */
 	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
 		running = true;
@@ -587,14 +587,14 @@ namespace lnx{
 
 
 
-/**
+/** <pre>
  * @brief
  *
- */
+ </pre> */
 namespace lnx::core::render{
-	/**
+	/** <pre>
 	 * @brief //TODO
-	 */
+	 </pre> */
 	void cleanup() { //FIXME MOVE  COMMAND POOL TO RENDER CORE
 		dvc::graphics.ld.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool //FIXME MOVE TO RENDER CORE
 		dvc::graphics.ld.destroy(nullptr);													//Destroy the compute device //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
@@ -619,7 +619,7 @@ namespace lnx::core::render{
 
 
 
-	/**
+	/** <pre>
 	 * @brief Returns the index of the memory type with the specified properties	\n
 	 *     This function should only be used by the engine							\n
 	 * Complexity:																	\n
@@ -629,7 +629,7 @@ namespace lnx::core::render{
 	 * @param vType The type of the memory
 	 * @param vProp The required memory properties
 	 * @return The index of the memory type if one with the specified properties was found, (uint32)-1 otherwise
-	 */
+	 </pre> */
 	uint32 findMemoryType(const uint32 vType, const vk::MemoryPropertyFlags vProp) {
 		auto memProperties = dvc::graphics.pd.device.getMemoryProperties();		//Get memory vProperties
 

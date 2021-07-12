@@ -26,10 +26,10 @@ namespace lnx::obj {
 	//TODO add object boundary debug draw
 
 
-	/**
+	/** <pre>
 	 * @brief A 2D space that allows objects to be rendered.
 	 *		This render space can only be a child of a window or another RenderSpace2
-	 */
+	 </pre> */
 	struct RenderSpace2 : public RenderSpace_b {
 		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
 

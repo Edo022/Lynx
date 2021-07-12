@@ -56,10 +56,10 @@ namespace lnx{
 
 
 
-		/**
+		/** <pre>
 		 * @brief A class that manages the render of the objects owned by a window \n
 		 * This class is only used in lnx::Window
-		 */
+		 </pre> */
 		class RenderCore{
 			friend class lnx::Window;
 			friend class lnx::core::wnd::Swapchain;
