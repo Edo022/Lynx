@@ -202,7 +202,7 @@ namespace lnx {
 		}
 
 
-	protected: //TODO move to type specialization
+	protected:
 		alwaysInline ~ContainerBase() {
 			if(data) destroy(); //Destroy elemens if the array was not moved
 			// data.free();
@@ -226,7 +226,8 @@ namespace lnx {
 
 
 		alwaysInline void move(ContainerBase<tType, tIdxt>& pCont) {
-			data = pCont.data; pCont.data = nullptr;
+			data = pCont.data;
+			pCont.data = nullptr;
 			updateView();
 		}
 

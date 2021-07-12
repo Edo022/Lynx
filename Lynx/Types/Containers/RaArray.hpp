@@ -319,7 +319,8 @@ namespace lnx {
 			data{ pArr.data },
 			tail{ pArr.tail }, head{ pArr.head }, count_{ pArr.count_ }, free_{ pArr.free_ } {
 			pArr.count_ = 0;	//Prevent the destructor from destroying the elements
-			//! Data is not destroyed, as the pointer keeps track of how many owners it has
+			// //! Data is not destroyed, as the pointer keeps track of how many owners it has
+			pArr.data = nullptr;
 		}
 
 
@@ -334,8 +335,10 @@ namespace lnx {
 		 */
 		~RaArray() {
 			checkInit();
-			if(!empty()) specDestroy();
-			data.realloc(0);
+			if(data){
+				if(!empty()) specDestroy();
+				data.realloc(0);
+			}
 		}
 
 
@@ -543,7 +546,8 @@ namespace lnx {
 			tail   = pArr.tail;    head  = pArr.head;
 			count_ = pArr.count(); free_ = pArr.freeCount();
 			pArr.count_ = 0;		//Prevent the destructor from destroying the new elements
-			//! Data is not destroyed, as the pointer keeps track of how many owners it has
+			// //! Data is not destroyed, as the pointer keeps track of how many owners it has
+			pArr.data = nullptr;
 			return *this;
 		}
 
