@@ -47,12 +47,12 @@ namespace lnx::dbg{
 		while(true) {
 			str.resize((u32)size);
 			va_start(ap, pFstr);
-			int32 n = vsnprintf(&str[0], size, pFstr.c_str(), ap);
+			int32 n = vsnprintf(&str[0], (uint64)size, pFstr.c_str(), ap);
 			va_end(ap);
 
 
 			if(n > -1 && n < size) {
-				str.resize(n); // Make sure there are no trailing '\0's
+				str.resize((uint64)n); // Make sure there are no trailing '\0's
 				return str;
 			}
 			else size *= 2;
