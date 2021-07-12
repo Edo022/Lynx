@@ -35,7 +35,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief seq_val specialization for non-reference elements
+		 * @brief seq_val specialization for non-reference elements \n
 		 *     Used by HcArray only
 		 */
 		template<class tType, uint32 tIndex> requires(!std::is_reference_v<tType> && !std::is_array_v<tType>) struct seq_val<tType, tIndex>{
@@ -51,8 +51,8 @@ namespace lnx{
 
 
 		/**
-		 * @brief seq_val specialization for reference elements
-		 *     Used by HcArray, indirectly used by fwd
+		 * @brief seq_val specialization for reference elements	\n
+		 *     Used by HcArray, indirectly used by fwd			\n
 		 *     This struct allows reference elements to use operator= by storing them as pointers
 		 */
 		template<class tType, uint32 tIndex> requires(std::is_reference_v<tType>) struct seq_val<tType, tIndex>{
@@ -69,9 +69,9 @@ namespace lnx{
 
 
 		/**
-		 * @brief seq_val specialization for array elements
-		 *     Used by HcArray only
-		 *     This struct allows arrays to be initialized by copying them
+		 * @brief seq_val specialization for array elements					\n
+		 *     Used by HcArray only											\n
+		 *     This struct allows arrays to be initialized by copying them	\n
 		 *     Trivially copy assignable types are memcpy ed, non trivially copy assignable types are copied one by one
 		 */
 		template<class tType, uint32 tIndex> requires(std::is_array_v<tType>) struct seq_val<tType, tIndex>{
@@ -172,7 +172,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief The actual array structure
+		 * @brief The actual array structure \n
 		 *     Each element inherits from the next element
 		 * @tparam tCount The number of elements in the array
 		 * @tparam tIndex The index of the element in the array
@@ -186,10 +186,10 @@ namespace lnx{
 		public seq_get_t<tCount, eGetv, tIndex, tType, tTypes...>,
 		public seq<tCount, tIndex - 1, tTypes...> {
 			/**
-			 * @brief Default constructor
-			 *     Each element is initialized with its default value
-			 *              ⎛⎲ tCount   ⎛       ⎞⎞
-			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠
+			 * @brief Default constructor								\n
+			 *     Each element is initialized with its default value	\n
+			 *              ⎛⎲ tCount   ⎛       ⎞⎞						\n
+			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠						\n
 			 *     Where e[i] = default constructor of the i-th type in (tType, tTypes)
 			 */
 			alwaysInline seq():
@@ -199,10 +199,10 @@ namespace lnx{
 
 
 			/**
-			 * @brief List constructor
-			 *     Each element is copy constructed with the corresponding value in pVals
-			 *              ⎛⎲ tCount   ⎛       ⎞⎞
-			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠
+			 * @brief List constructor														\n
+			 *     Each element is copy constructed with the corresponding value in pVals	\n
+			 *              ⎛⎲ tCount   ⎛       ⎞⎞											\n
+			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠											\n
 			 *     Where e[i] = copy constructor of the i-th type in (tType, tTypes)
 			 */
 			alwaysInline seq(const tType& pVal, const tTypes&... pVals) :
@@ -212,7 +212,7 @@ namespace lnx{
 
 
 			/**
-			 * @brief Returns the address of an element in runtime
+			 * @brief Returns the address of an element in runtime \n
 			 * Complexity: O(tCount - tIndex)
 			 * @param vIndex The index of the element
 			 * @return The address of the element as a void* pointer
@@ -226,7 +226,7 @@ namespace lnx{
 
 
 			/**
-			 * @brief Executes a standard function using the elements as arguments
+			 * @brief Executes a standard function using the elements as arguments \n
 			 * Complexity: O(O(tFunc))
 			 * @tparam tFunc The type of the function. Automatically deduced
 			 * @tparam tArgs The types of the arguments. Automatically deduced
@@ -242,16 +242,12 @@ namespace lnx{
 
 
 			/**
-			 * @brief Executes a member function using the elements as arguments
+			 * @brief Executes a member function using the elements as arguments \n
 			 * Complexity: O(O(tFunc))
-			 * @tparam tObj The type of the object. Automatically deduced
-			 * @tparam tFunc The type of the function. Automatically deduced
-			 * @tparam tArgs The types of the arguments. Automatically deduced
 			 * @param pObj The object to call the function on
 			 * @param vFunc The function to execute
 			 * @param pArgs A list of references to the arguments of the preceding elements
 			 * @return The return value of the called function
-		 *               ︵
 			 */
 			template<class tObj, class tFunc, class ...tArgs> alwaysInline auto execObj(tObj& pObj, tFunc vFunc, const tArgs&... pArgs) {
 				return seq<tCount, tIndex - 1, tTypes...>::template execObj<tObj, tFunc, tArgs...>(
@@ -282,16 +278,16 @@ namespace lnx{
 		public seq_get_t<tCount, eDesc, 0, tType>,
 		public seq_get_t<tCount, eGetv, 0, tType> {
 			/**
-			 * @brief Default constructor
-			 * Complexity: O(O(e))
+			 * @brief Default constructor	\n
+			 * Complexity: O(O(e))			\n
 			 *     Where e = default constructor of tType
 			 */
 			alwaysInline seq() : seq_val<tType, 0>() { }
 
 
 			/**
-			 * @brief List constructor
-			 * Complexity: O(O(e))
+			 * @brief List constructor	\n
+			 * Complexity: O(O(e))		\n
 			 *     Where e = copy constructor of tType
 			 * @param pVal The value used to copy construct this element
 			 */
@@ -300,19 +296,22 @@ namespace lnx{
 			}
 
 			/**
-			 * @brief Runtime get. Same as general specialization
+			 * @brief Runtime get \n
+			 *     Same as general specialization
 			 */
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&(seq_val<tType, 0>::get()); }
 
 			/**
-			 * @brief Executes a standard function. Same as general specialization
+			 * @brief Executes a standard function \n
+			 *     Same as general specialization
 			 */
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, const args_ts&... _args) {
 				return _func(_args..., seq_val<tType, 0>::get());
 			}
 
 			/**
-			 * @brief Executes a member function. Same as general specialization
+			 * @brief Executes a member function \n
+			 *     Same as general specialization
 			 */
 			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, const args_ts&... _args) {
 				return (_obj.*_func)(_args..., seq_val<tType, 0>::get());
@@ -332,8 +331,8 @@ namespace lnx{
 
 
 		/**
-		 * @brief seq specialization for empty arrays
-		 * This struct can only run functions with no arguments
+		 * @brief seq specialization for empty arrays \n
+		 *     This struct can only run functions with no arguments
 		 */
 		template<uint32 index> struct seq<0, index, void> {
 			seq() = default;
@@ -381,19 +380,19 @@ namespace lnx{
 
 
 	/**
-	 * @brief An array that can contain elements of different types
-	 *     Size and types must be known at compile time
-	 *     The structure provides a default constructor, a copy constructor and a list constructor
-	 *     The copy constructor is only called when passing an HdArray with the same exact types
-	 *     e.g.
-	 *         HcArray arr1{ 1, false };								//int, bool
-	 *         HcArray arr2(arr1);  									//int, bool
+	 * @brief An array that can contain elements of different types									\n
+	 *     Size and types must be known at compile time												\n
+	 *     The structure provides a default constructor, a copy constructor and a list constructor	\n
+	 *     The copy constructor is only called when passing an HdArray with the same exact types	\n
+	 *     e.g.																						\n
+	 *         HcArray arr1{ 1, false };								//int, bool					\n
+	 *         HcArray arr2(arr1);  									//int, bool					\n
 	 *         HcArray<uint32, bool> arr3(arr1)							//Compilation error
-	 * @tparam tTypes The types of the elements. Those types can be automatically deduced from the constructor arguments
-	 *     e.g.
-	 *         HcArray<int, float> arr1{ 1, 0.5f };						//int, float
-	 *         HcArray arr2{ 1, false, "mogu mogu" };					//int, bool, char[9]
-	 *         HcArray arr3{ 1, false, (const char*)"mogu mogu" };		//int, bool, const char*
+	 * @tparam tTypes The types of the elements. Those types can be automatically deduced from the constructor arguments	\n
+	 *     e.g.																												\n
+	 *         HcArray<int, float> arr1{ 1, 0.5f };						//int, float										\n
+	 *         HcArray arr2{ 1, false, "mogu mogu" };					//int, bool, char[9]								\n
+	 *         HcArray arr3{ 1, false, (const char*)"mogu mogu" };		//int, bool, const char*							\n
 	 */
 	template<class... tTypes> struct HcArray :
 	private __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
@@ -401,11 +400,11 @@ namespace lnx{
 		template<class... _tTypes> friend struct P;
 
 		/**
-		 * @brief List constructor
-		 *     Used by lnx::fwd only
-		 *     Parameters are taken by value as they are all references
-		 *              ⎛⎲ n   ⎛       ⎞⎞
-		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠ 	[From seq::seq]
+		 * @brief List constructor										\n
+		 *     Used by lnx::fwd only									\n
+		 *     Parameters are taken by value as they are all references	\n
+		 *              ⎛⎲ n   ⎛       ⎞⎞								\n
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠ 	[From seq::seq]				\n
 		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const __pvt::seq_fwd_ctor, const tTypes... vals) :
@@ -413,10 +412,10 @@ namespace lnx{
 		}
 
 		/**
-		 * @brief Default constructor
-		 *     Used by lnx::fwd only
-		 *              ⎛⎲ n   ⎛       ⎞⎞
-		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	[From seq::seq]
+		 * @brief Default constructor						\n
+		 *     Used by lnx::fwd only						\n
+		 *              ⎛⎲ n   ⎛       ⎞⎞					\n
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	[From seq::seq]	\n
 		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const __pvt::seq_fwd_ctor) :
@@ -434,9 +433,9 @@ namespace lnx{
 
 
 		/**
-		 * @brief Default constructor
-		 *              ⎛⎲ n   ⎛       ⎞⎞
-		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
+		 * @brief Default constructor		\n
+		 *              ⎛⎲ n   ⎛       ⎞⎞	\n
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	\n
 		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray() :
@@ -445,10 +444,10 @@ namespace lnx{
 
 
 		/**
-		 * @brief List constructor
-		 *     Initializes each element with the corresponding value in pVals
-		 *              ⎛⎲ n   ⎛       ⎞⎞
-		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
+		 * @brief List constructor												\n
+		 *     Initializes each element with the corresponding value in pVals	\n
+		 *              ⎛⎲ n   ⎛       ⎞⎞										\n
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠										\n
 		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray(const tTypes&... vals)
@@ -461,9 +460,9 @@ namespace lnx{
 
 
 		/**
-		 * @brief Returns a reference to an element
-		 *		This function can only be used with compile time known indices
-		 *		Use rtGet<type>(index) to retrieve values in runtime
+		 * @brief Returns a reference to an element								\n
+		 *		This function can only be used with compile time known indices	\n
+		 *		Use rtGet<type>(index) to retrieve values in runtime			\n
 		 * Complexity: O(1)
 		 * @tparam vIndex The index of the element
 		 * @return A rvalue reference to the element
@@ -474,13 +473,13 @@ namespace lnx{
 		}
 
 		/**
-		 * @brief Runtime version of get
-		 *     Requires the element type to be explicitly specified in the function call
-		 *     e.g.
-		 *         arr.get<int>(4); //returns the 4th element as an int&
-		 *     If the type is not specified, the element address is returned as a void*
+		 * @brief Runtime version of get													\n
+		 *     Requires the element type to be explicitly specified in the function call	\n
+		 *     e.g.																			\n
+		 *         arr.get<int>(4); //returns the 4th element as an int&					\n
+		 *     If the type is not specified, the element address is returned as a void*		\n
+		 *     Specifying an incorrect type is undefined behaviour							\n
 		 * Complexity: O(vIndex)
-		 * Notice that
 		 * @param vIndex The index of the element
 		 * @tparam tCType The type of the element
 		 * @return a rvalue reference to the element
@@ -492,7 +491,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief Returns the address of an elemen as a void*
+		 * @brief Returns the address of an elemen as a void* \n
 		 * Complexity: O(vIndex)
 		 * @param vIndex The index of the element
 		 * @return The addresso f the element
@@ -504,7 +503,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief Returns the number of elements
+		 * @brief Returns the number of elements \n
 		 * Complexity: O(1)
 		 * @return The number of elements in the array
 		 */
@@ -516,7 +515,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief Calls a standard function using the array elements as arguments
+		 * @brief Calls a standard function using the array elements as arguments \n
 		 * Complexity: O(O(pFunc))
 		 * @param pFunc: The function to call
 		 * @return The return value of the function call
@@ -528,7 +527,7 @@ namespace lnx{
 
 
 		/**
-		 * @brief Calls a member function using the array elements as arguments
+		 * @brief Calls a member function using the array elements as arguments \n
 		 * Complexity: O(O(pFunc))
 		 * @param pObject The object to call the function on
 		 * @param pFunc The member function to call
@@ -561,7 +560,7 @@ namespace lnx{
 
 
 	/**
-	 * @brief Type used to perfect forward a list of arguments as a single parameter
+	 * @brief Type used to perfect forward a list of arguments as a single parameter \n
 	 *     Each parameter is saved as a reference
 	 */
 	template<class... tTypes> struct P : public HcArray<tTypes...>{

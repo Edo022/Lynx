@@ -249,7 +249,7 @@ namespace lnx::ram{
 
 		/**
 		 * @brief Sets the pointer to nullptr								\n
-		 *     Frees the memory block owned by the pointer, if there is one	\n
+		 *     Frees the memory block owned by the pointer, if one exists	\n
 		 * Complexity: O(1)
 		 */
 		inline void operator=(const std::nullptr_t) {
@@ -296,27 +296,48 @@ namespace lnx::ram{
 
 
 
+		/**
+		 * @brief Returns a reference to an element \n
+		 * Complexity: O(1)
+		 * @param vIndex The index of the element
+		 * @return A rvalue reference to the vIndex-th element
+		 */
 		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((tType*)(cell->address))[vIndex];
 		}
+
+
+		/**
+		 * @brief Returns a reference to the first element \n
+		 * Complexity: O(1)
+		 * @return a rvalue-reference to the first element
+		 */
 		alwaysInline tType& operator* () const { checkInit(); checkNullptrD(); checkSizeD(); return *((tType*)(cell->address)); }
+
+
+		/**
+		 * @brief Allows the pointer to be used as a normal C pointer
+		 */
 		alwaysInline tType* operator->() const { checkInit(); checkNullptrD(); return (tType*)(cell->address); }
 
 
 		/**
 		 * @brief Returns the first address of the allocated memory block \n
 		 * Complexity: O(1)
+		 * @return The first address of the allocated memory block
 		 */
 		alwaysInline tType* begin() const {
 			checkInit(); checkNullptr();  checkSize();  return (tType*)cell->address;
 		}
 
+
 		/**
 		 * @brief Returns the address of the object past the last object in the memory block	\n
 		 *     Dereferencing the pointer is undefined behaviour									\n
 		 * Complexity: O(1)
+		 * @return The address of the object past the last object in the memory block
 		 */
 		alwaysInline tType* end() const {
 			checkInit(); checkNullptr();  checkSize();
@@ -340,16 +361,20 @@ namespace lnx::ram{
 
 
 		/**
-		 * @brief Returns the size in BYTES of the allocated memory. use count() to get the number of elements \n
+		 * @brief Returns the size in bytes of the memory block	\n
+		 *     Use count() to get the number of elements 		\n
 		 * Complexity: O(1)
+		 * @return The size in bytes of the memory block
 		 */
 		alwaysInline uint64 size() const noexcept {
 			return cell->cellSize;
 		}
 
+
 		/**
-		 * @brief Returns the number of complete elements in the allocated memory \n
+		 * @brief Returns the number of complete elements in the memory block \n
 		 * Complexity: O(1)
+		 * @return The number of complete elements in the memory block
 		 */
 		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(tType); }
 
@@ -470,7 +495,7 @@ namespace lnx::ram{
 		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]								\n
 		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]							\n
 		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]	\n
-		 *     Where n = vSize
+		 *     Where n = this->count()
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
@@ -538,7 +563,7 @@ namespace lnx::ram{
 		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]							\n
 		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]								\n
 		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]	\n
-		 *     Where n = vSize
+		 *     Where n = this->count()
 		 * @param vCount Number of elements
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
