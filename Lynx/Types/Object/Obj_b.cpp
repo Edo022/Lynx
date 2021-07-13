@@ -21,7 +21,7 @@ namespace lnx::obj{
 	void obj_bb::onLimit(){
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
 	}
-	void obj_bb::onUpdateg(vk::CommandBuffer pCB){
+	void obj_bb::onFlush(vk::CommandBuffer pCB){
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
 	}
 
@@ -77,7 +77,7 @@ namespace lnx::obj{
 		if(parent) parent->setChildLimits(obj_bb::childIndex);
 	}
 
-	void obj2::onUpdateg(vk::CommandBuffer pCB) {
+	void obj2::onFlush(vk::CommandBuffer pCB) {
 		pCB.updateBuffer(
 			getShVData().cell->csc.buffer,
 			getShVData().cell->localOffset,

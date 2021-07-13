@@ -34,7 +34,7 @@ namespace lnx{
 			eNone    = 0,
 			eSpawn   = 0b0001,
 			eLimit   = 0b0100,
-			eUpdateg = 0b0010
+			eFlush = 0b0010
 		};
 		alwaysInline UpdateBits operator~ (UpdateBits  a){ return (UpdateBits)((u32)~ (u32)a); }
 		alwaysInline UpdateBits operator| (UpdateBits  a, UpdateBits b){ return (UpdateBits )((u32 )a |  (u32)b); }
@@ -66,7 +66,7 @@ namespace lnx{
 			RaArray<obj_bb*> children;
 
 
-			_dbg(const char* dbgName;)
+			_dbg(const char* dbgName);
 			static std::atomic<uint64> lastID;			//#LLID LOS000 the last assigned ID of a Lynx object
 			uint64 ID{ ++lastID };						//A unique ID that indentifies the object
 			uint32 childIndex{ (uint32)-1 };			//The index of the object in the parent's children list
@@ -81,7 +81,7 @@ namespace lnx{
 
 			virtual void onSpawn(Window& pWindow);
 			virtual void onLimit();
-			virtual void onUpdateg(vk::CommandBuffer pCB);
+			virtual void onFlush(vk::CommandBuffer pCB);
 
 			//TODO comment
 			void queue(UpdateBits vUpdates);
@@ -130,7 +130,7 @@ namespace lnx{
         	virtual void onSpawn(Window& pWindow) override;
 
         	virtual void onLimit() override;
-        	virtual void onUpdateg(vk::CommandBuffer pCB) override;
+        	virtual void onFlush(vk::CommandBuffer pCB) override;
     	};
 
 

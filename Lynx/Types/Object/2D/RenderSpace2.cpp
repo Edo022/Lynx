@@ -13,7 +13,7 @@ namespace lnx::obj {
 		//setChildLimits(pObj->common.childIndex = children.add(pObj));
 		// pObj->qHierarchy();
 		pObj->childIndex = children.add(pObj); //FIXME USE QUEUES. ADD CHILDREN BEFORE ANYTHING ELSE
-		pObj->queue(eLimit | eUpdateg);
+		pObj->queue(eLimit | eFlush);
 		if(w) w->qSpawn(pObj);
 		return pObj->childIndex;
 	}

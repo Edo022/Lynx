@@ -147,8 +147,8 @@ namespace lnx::ram{
 		 * Complexity: O(1)
 		 * @param pPtr The pointer to copy
 		 */
-		alwaysInline ptr(const ptr<tType>& vAlloc) :
-			ptr(vAlloc, Dummy{}) {
+		alwaysInline ptr(const ptr<tType>& pPtr) :
+			ptr(pPtr, Dummy{}) {
 		}
 
 
@@ -159,12 +159,12 @@ namespace lnx::ram{
 		 * Complexity: O(1)
 		 * @param pPtr The pointer to copy
 		 */
-		template<class aType> explicit inline ptr(const ptr<aType>& vAlloc, const Dummy vDummy = Dummy{}) :
-			checkInitList(isInit(vAlloc); isAlloc(vAlloc))
-			cell{ vAlloc.cell } {
+		template<class aType> explicit inline ptr(const ptr<aType>& pPtr, const Dummy vDummy = Dummy{}) :
+			checkInitList(isInit(pPtr); isAlloc(pPtr))
+			cell{ pPtr.cell } {
 			cell->owners++;
 			pushOwner();
-			_dbg(state = vAlloc.state);
+			_dbg(state = pPtr.state);
 		}
 
 
@@ -174,14 +174,14 @@ namespace lnx::ram{
 		 * @brief Move constructor
 		 * Complexity: O(1)
 		 */
-		inline ptr(ptr<tType>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
-			cell{ vAlloc.cell } { //vAlloc.cell = &dummyCell;
-			//!                     ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
+		inline ptr(ptr<tType>&& pPtr) : checkInitList(isInit(pPtr); isAlloc(pPtr))
+			cell{ pPtr.cell } { //pPtr.cell = &dummyCell;
+			//!                     ^ Don't reset the pPtr cell. It's required to decrement the owners count in pPtr destructor
 			++cell->owners;
-			//! ^ This is not an error. The cell's owners will get decremented when vAlloc is destroyed,
+			//! ^ This is not an error. The cell's owners will get decremented when pPtr is destroyed,
 			//! so the move constructor has to increment it to make it stay the same without useless checks
 			pushOwner();
-			_dbg(state = vAlloc.state);
+			_dbg(state = pPtr.state);
 		}
 
 

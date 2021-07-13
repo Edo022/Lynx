@@ -69,7 +69,7 @@ namespace lnx{
 			void clear();
 
 			void recSpawn  (obj::obj_bb* pObj, Window& pWindow);
-			void recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB);
+			void recFlush(obj::obj_bb* pObj, vk::CommandBuffer pCB);
 			void recLimit  (obj::obj_bb* pObj);
 
 			void renderLoop();

@@ -6,8 +6,8 @@
 
 namespace lnx::obj{
     struct RenderSpace_b : public obj2{
-        void onUpdateg(vk::CommandBuffer pCB) final override {
-            obj_bb::onUpdateg(pCB);
+        void onFlush(vk::CommandBuffer pCB) final override {
+            obj_bb::onFlush(pCB);
         }
 
         virtual      ram::ptr<char> getShData() override { dbg::printError("Unable to call this base function"); return nullptr; }

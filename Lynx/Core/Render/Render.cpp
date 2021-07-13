@@ -77,18 +77,18 @@ namespace lnx{
 
 
 	/**
-	 * @brief Recursively calls the onUpdateg function on pObj and its valid children and switches off their eUpdateg update bit
+	 * @brief Recursively calls the onFlush function on pObj and its valid children and switches off their eFlush update bit
 	 *     This function should only be used by the engine
 	 * Complexity: O(ΣO(f))
-	 *     where f = The pObj onUpdateg function and the onUpdateg function of each valid children, recursively
+	 *     where f = The pObj onFlush function and the onFlush function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
-	void core::RenderCore::recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB){
+	void core::RenderCore::recFlush(obj::obj_bb* pObj, vk::CommandBuffer pCB){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->updates = pObj->updates & ~obj::eUpdateg;
-		pObj->onUpdateg(pCB);
+		pObj->updates = pObj->updates & ~obj::eFlush;
+		pObj->onFlush(pCB);
 		for(uint32 i = 0; i < pObj->children.count(); ++i){
-			if(pObj->children.isValid(i)) recUpdateg(pObj->children[i], pCB);
+			if(pObj->children.isValid(i)) recFlush(pObj->children[i], pCB);
 		}
 	}
 
@@ -411,7 +411,7 @@ namespace lnx{
 		if(!requests.empty()) for(auto r : requests){
 			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r, *w);
 			if(r->updates & obj::UpdateBits::eLimit) recLimit(r);
-			if(r->updates & obj::UpdateBits::eUpdateg) recUpdateg(r, cb);
+			if(r->updates & obj::UpdateBits::eFlush) recFlush(r, cb);
 			_dbg(if(r->updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 		}
 		requests.clear();
