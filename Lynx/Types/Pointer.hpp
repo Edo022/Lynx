@@ -15,10 +15,10 @@
 
 
 namespace lnx::ram{
-	/** <pre>
+	/**
 	 * @brief A pointer that keeps track of how many objects are using it and automatically frees the memory block once it becomes unreachable
 	 * @tparam tType The type of data pointed by the pointer (int, float, etc...)
-	 </pre> */
+	 */
 	template<class tType> struct ptr {
 	private:
 		alwaysInline void checkSize()  const { _dbg(
@@ -66,10 +66,10 @@ namespace lnx::ram{
 		}
 
 
-		/** <pre>
-		 * @brief Adds this pointer in the owners list of the memory block \n
+		/**
+		 * @brief Adds this pointer in the owners list of the memory block
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		void pushOwner() { _dbg(
 			if(!cell->address) return;									//Return if the cell is nullptr
 			if(!cell->firstOwner) {										//If this is the first owner of the cell
@@ -83,10 +83,10 @@ namespace lnx::ram{
 			}
 		)}
 
-		/** <pre>
-		 * @brief Removes this pointer from the owners list of the memory block \n
+		/**
+		 * @brief Removes this pointer from the owners list of the memory block
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		void popOwner() { _dbg(
 			if(!cell->address) return;									//Return if the cell is nullptr
 			if(!prevOwner && !nextOwner) {								//If this was the only owner
@@ -126,11 +126,11 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Creates a nullptr ptr 																	\n
-		 *     The pointer will need to be initialized with the .realloc function before accessing its data	\n
+		/**
+		 * @brief Creates a nullptr ptr
+		 *     The pointer will need to be initialized with the .realloc function before accessing its data
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		alwaysInline ptr() : cell{ &dummyCell } {
 			_dbg(prevOwner = nextOwner = nullptr;)
 			_dbg(state = __pvt::CellState::eNullptr);
@@ -140,25 +140,25 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Copy constructor								\n
-		 *     This function only copies the pointer structure	\n
-		 *     The 2 pointers will share the same memory block	\n
+		/**
+		 * @brief Copy constructor
+		 *     This function only copies the pointer structure
+		 *     The 2 pointers will share the same memory block
 		 * Complexity: O(1)
 		 * @param pPtr The pointer to copy
-		 </pre> */
+		 */
 		alwaysInline ptr(const ptr<tType>& vAlloc) :
 			ptr(vAlloc, Dummy{}) {
 		}
 
 
-		/** <pre>
-		 * @brief Creates a pointer by copying another pointer's address	\n
-		 *     This function only copies the pointer structure				\n
-		 *     The 2 pointers will share the same memory block				\n
+		/**
+		 * @brief Creates a pointer by copying another pointer's address
+		 *     This function only copies the pointer structure
+		 *     The 2 pointers will share the same memory block
 		 * Complexity: O(1)
 		 * @param pPtr The pointer to copy
-		 </pre> */
+		 */
 		template<class aType> explicit inline ptr(const ptr<aType>& vAlloc, const Dummy vDummy = Dummy{}) :
 			checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } {
@@ -170,10 +170,10 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Move constructor \n
+		/**
+		 * @brief Move constructor
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		inline ptr(ptr<tType>&& vAlloc) : checkInitList(isInit(vAlloc); isAlloc(vAlloc))
 			cell{ vAlloc.cell } { //vAlloc.cell = &dummyCell;
 			//!                     ^ Don't reset the vAlloc cell. It's required to decrement the owners count in vAlloc destructor
@@ -187,14 +187,14 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Allocates a memory block of vSize bytes without initializing it 									\n
-		 * Complexity:																								\n
-		 *     O(1)    [Memory block fits in preallocated cells]													\n
+		/**
+		 * @brief Allocates a memory block of vSize bytes without initializing it
+		 * Complexity:
+		 *     O(1)    [Memory block fits in preallocated cells]
 		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
-		 </pre> */
+		 */
 		inline ptr(const uint64 vSize, CellClass vClass = CellClass::eAuto) {
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
 			alloc_(vSize, vClass);
@@ -219,19 +219,19 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Move assignment \n
+		/**
+		 * @brief Move assignment
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		alwaysInline void operator=(ptr<tType>&& vAlloc) {
 			operator=((ptr<tType>&)vAlloc);
 		}
 
 
-		/** <pre>
-		 * @brief Copy assignment \n
+		/**
+		 * @brief Copy assignment
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		inline void operator=(const ptr<tType>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			if(!--cell->owners) free();
@@ -247,11 +247,11 @@ namespace lnx::ram{
 		//different types of pointers are converted with the explicit conversion operator
 
 
-		/** <pre>
-		 * @brief Sets the pointer to nullptr								\n
-		 *     Frees the memory block owned by the pointer, if one exists	\n
+		/**
+		 * @brief Sets the pointer to nullptr
+		 *     Frees the memory block owned by the pointer, if one exists
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		inline void operator=(const std::nullptr_t) {
 			if(!--cell->owners) free();
 			popOwner();
@@ -296,12 +296,12 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Returns a reference to an element \n
+		/**
+		 * @brief Returns a reference to an element
 		 * Complexity: O(1)
 		 * @param vIndex The index of the element
 		 * @return A rvalue reference to the vIndex-th element
-		 </pre> */
+		 */
 		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
@@ -309,36 +309,36 @@ namespace lnx::ram{
 		}
 
 
-		/** <pre>
-		 * @brief Returns a reference to the first element \n
+		/**
+		 * @brief Returns a reference to the first element
 		 * Complexity: O(1)
 		 * @return a rvalue-reference to the first element
-		 </pre> */
+		 */
 		alwaysInline tType& operator* () const { checkInit(); checkNullptrD(); checkSizeD(); return *((tType*)(cell->address)); }
 
 
-		/** <pre>
+		/**
 		 * @brief Allows the pointer to be used as a normal C pointer
-		 </pre> */
+		 */
 		alwaysInline tType* operator->() const { checkInit(); checkNullptrD(); return (tType*)(cell->address); }
 
 
-		/** <pre>
-		 * @brief Returns the first address of the allocated memory block \n
+		/**
+		 * @brief Returns the first address of the allocated memory block
 		 * Complexity: O(1)
 		 * @return The first address of the allocated memory block
-		 </pre> */
+		 */
 		alwaysInline tType* begin() const {
 			checkInit(); checkNullptr();  checkSize();  return (tType*)cell->address;
 		}
 
 
-		/** <pre>
-		 * @brief Returns the address of the object past the last object in the memory block	\n
-		 *     Dereferencing the pointer is undefined behaviour									\n
+		/**
+		 * @brief Returns the address of the object past the last object in the memory block
+		 *     Dereferencing the pointer is undefined behaviour
 		 * Complexity: O(1)
 		 * @return The address of the object past the last object in the memory block
-		 </pre> */
+		 */
 		alwaysInline tType* end() const {
 			checkInit(); checkNullptr();  checkSize();
 			return (tType*)((int8*)cell->address + count() * sizeof(tType));
@@ -360,22 +360,22 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Returns the size in bytes of the memory block	\n
-		 *     Use count() to get the number of elements 		\n
+		/**
+		 * @brief Returns the size in bytes of the memory block
+		 *     Use count() to get the number of elements
 		 * Complexity: O(1)
 		 * @return The size in bytes of the memory block
-		 </pre> */
+		 */
 		alwaysInline uint64 size() const noexcept {
 			return cell->cellSize;
 		}
 
 
-		/** <pre>
-		 * @brief Returns the number of complete elements in the memory block \n
+		/**
+		 * @brief Returns the number of complete elements in the memory block
 		 * Complexity: O(1)
 		 * @return The number of complete elements in the memory block
-		 </pre> */
+		 */
 		alwaysInline uint64 count() const noexcept { return cell->cellSize / sizeof(tType); }
 
 
@@ -394,11 +394,11 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Destroys the pointer object and frees the memory block owned by it	\n
-		 *     Objects allocated in the memory block are not destroyed					\n
+		/**
+		 * @brief Destroys the pointer object and frees the memory block owned by it
+		 *     Objects allocated in the memory block are not destroyed
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		inline ~ptr() noexcept {
 			if(cell->address) {
 				if(!--cell->owners) {
@@ -434,16 +434,16 @@ namespace lnx::ram{
 
 
 	private:
-		/** <pre>
-		 * @brief Base function for memory allocation																	\n
-		 *     Allocates a memory block of vSize bytes																	\n
-		 *     This function does not initialize memory nor update the owner list or check the parameters correctness	\n
-		 * Complexity:																									\n
-		 *     O(1)    [Memory block fits in preallocated cells]														\n
+		/**
+		 * @brief Base function for memory allocation
+		 *     Allocates a memory block of vSize bytes
+		 *     This function does not initialize memory nor update the owner list or check the parameters correctness
+		 * Complexity:
+		 *     O(1)    [Memory block fits in preallocated cells]
 		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
-		 </pre> */
+		 */
 		void alloc_(const uint64 vSize, const CellClass vClass) {
 			using namespace lnx::__pvt;
 			cells_m.lock();
@@ -489,17 +489,17 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it				\n
-		 * Complexity:																								\n
-		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]								\n
-		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]							\n
-		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]	\n
+		/**
+		 * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it
+		 * Complexity:
+		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]
+		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]
+		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 *     Where n = this->count()
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
-		 </pre> */
+		 */
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::eAuto) {
 			//FIXME FREE CUSTOM SIZE BUFFERS
 			using namespace lnx::__pvt;
@@ -557,17 +557,17 @@ namespace lnx::ram{
 
 
 
-		/** <pre>
-		 * @brief Reallocates the pointer to a block of memory containing vCount elements without initializing them	\n
-		 * Complexity:																								\n
-		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]							\n
-		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]								\n
-		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]	\n
+		/**
+		 * @brief Reallocates the pointer to a block of memory containing vCount elements without initializing them
+		 * Complexity:
+		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]
+		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]
+		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 *     Where n = this->count()
 		 * @param vCount Number of elements
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
-		 </pre> */
+		 */
 		alwaysInline void reallocArr(const uint64 vCount, const bool vCopyOldData = true, const CellClass vClass = CellClass::eAuto) {
 			checkInit(); checkAllocSize(sizeof(tType) * vCount, vClass);
 			realloc(sizeof(tType) * vCount, vCopyOldData, vClass);
@@ -590,14 +590,14 @@ namespace lnx::ram{
 
 
 		//TODO add free function to erase memory contents
-		/** <pre>
-		 * @brief Frees the memory block owned by the pointer												\n
-		 *		The memory will become invalid and unaccessible for any other pointer currently using it	\n
-		 * Complexity:																						\n
-		 *     O(1) [Release mode]																			\n
-		 *     O(n) [  Debug mode]																			\n
+		/**
+		 * @brief Frees the memory block owned by the pointer
+		 *		The memory will become invalid and unaccessible for any other pointer currently using it
+		 * Complexity:
+		 *     O(1) [Release mode]
+		 *     O(n) [  Debug mode]
 		 *     Where n = number of objects using the memory block
-		 </pre> */
+		 */
 		inline void free() {
 			checkAlloc();
 			if(cell->address) {

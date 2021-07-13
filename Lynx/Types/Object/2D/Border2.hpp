@@ -25,9 +25,9 @@ namespace lnx::obj{
 			data._data.ID() = (uint32)ID;
 		}
 
-		/** <pre>
+		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
-		 </pre> */
+		 */
 		virtual void onSpawn(Window& pWindow) override;
 	};
 }

@@ -46,12 +46,12 @@ namespace lnx::vram{
 
 
 
-	/** <pre>
+	/**
 	 * @brief A pointer that allocates memory accessible from the GPU
 	 * @tparam tType The type of data pointed by the pointer (int, float, etc...)
 	 * @tparam loc Where to allocate the memory. Can be Ram or VRam. VRam allocations are not accessible from the CPU
 	 * @tparam btype //TODO
-	 </pre> */
+	 */
 	template<class tType, bufferLocation loc, bufferType btype> struct ptr : public Alloc_b<tType> {
 	private:
 		using Super = Alloc_b<tType>;
@@ -89,33 +89,33 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Creates a nullptr ptr \n
+		/**
+		 * @brief Creates a nullptr ptr
 		 *     The pointer will need to be initialized with the .realloc function before accessing its data
-		 </pre> */
+		 */
 		alwaysInline ptr() { Super::loc = loc; Super::btype = btype; Super::cell = nullptr; }
 		alwaysInline ptr(const std::nullptr_t) : ptr() {}
 
 
 
-		/** <pre>
-		 * @brief Copy constructor								\n
-		 *     This function only copies the pointer structure	\n
-		 *     The 2 pointers will share the same memory		\n
+		/**
+		 * @brief Copy constructor
+		 *     This function only copies the pointer structure
+		 *     The 2 pointers will share the same memory
 		 * Complexity: O(1)
 		 * @param pPtr The pointer to copy
-		 </pre> */
+		 */
 		alwaysInline ptr(const ptr<tType, loc, btype>& vAlloc) :
 			ptr(vAlloc, Dummy{}) {
 		}
 
-		/** <pre>
-		 * @brief Creates a pointer by copying another pointer's address	\n
-		 *     This function only copies the pointer structure				\n
-		 *     The 2 pointers will share the same memory					\n
+		/**
+		 * @brief Creates a pointer by copying another pointer's address
+		 *     This function only copies the pointer structure
+		 *     The 2 pointers will share the same memory
 		 * Complexity: O(1)
 		 * @param pPtr The pointer to copy
-		 </pre> */
+		 */
 		template<class aType> explicit inline ptr(const ptr<aType, loc, btype>& vAlloc, const Dummy vDummy = Dummy{}){
 			isInit(vAlloc);
 			Super::loc = loc; Super::btype = btype;
@@ -125,10 +125,10 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Move constructor \n
+		/**
+		 * @brief Move constructor
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		inline ptr(ptr<tType, loc, btype>&& vAlloc) {
 			isInit(vAlloc);
 			Super::loc = loc; Super::btype = btype;
@@ -139,14 +139,14 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Allocates a memory block of vSize bytes without initializing it 									\n
-		 * Complexity:																								\n
-		 *     O(1)    [Memory block fits in preallocated cells]													\n
+		/**
+		 * @brief Allocates a memory block of vSize bytes without initializing it
+		 * Complexity:
+		 *     O(1)    [Memory block fits in preallocated cells]
 		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
-		 </pre> */
+		 */
 		inline ptr(const uint64 vSize, VCellClass vClass = VCellClass::eAuto) {
 			Super::loc = loc; Super::btype = btype;
 			evaluateCellClass(vSize, vClass); checkAllocSize(vSize, vClass);
@@ -169,19 +169,19 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Move assignment \n
+		/**
+		 * @brief Move assignment
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		alwaysInline void operator=(ptr<tType, loc, btype>&& vAlloc) {
 			operator=((ptr<tType, loc, btype>&)vAlloc);
 		}
 
 
-		/** <pre>
-		 * @brief Copy assignment \n
+		/**
+		 * @brief Copy assignment
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		alwaysInline void operator=(const ptr<tType, loc, btype>& vAlloc) {
 			checkInit(); isInit(vAlloc);
 			Super::cell = vAlloc.cell; //vAlloc.cell = nullptr;
@@ -189,11 +189,11 @@ namespace lnx::vram{
 		}
 
 
-		/** <pre>
-		 * @brief Sets the pointer to nullptr								\n
-		 *     Frees the memory block owned by the pointer, if one exists	\n
+		/**
+		 * @brief Sets the pointer to nullptr
+		 *     Frees the memory block owned by the pointer, if one exists
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		alwaysInline void operator=(const std::nullptr_t) {
 			Super::cell = nullptr;
 			//FIXME
@@ -215,13 +215,13 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Returns a reference to an element					\n
-		 *     This function can only be called on mapped pointers	\n
+		/**
+		 * @brief Returns a reference to an element
+		 *     This function can only be called on mapped pointers
 		 * Complexity: O(1)
 		 * @param vIndex The index of the element
 		 * @return A rvalue reference to the vIndex-th element
-		 </pre> */
+		 */
 		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkMapped();
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
@@ -229,40 +229,40 @@ namespace lnx::vram{
 		}
 
 
-		/** <pre>
-		 * @brief Returns a reference to the first element			\n
-		 *     This function can only be called on mapped pointers	\n
+		/**
+		 * @brief Returns a reference to the first element
+		 *     This function can only be called on mapped pointers
 		 * Complexity: O(1)
 		 * @return a rvalue-reference to the first element
-		 </pre> */
+		 */
 		alwaysInline tType& operator*()  const { checkMapped(); checkInit(); return *((tType*)(Super::mapped)); }
 
 
-		/** <pre>
+		/**
 		 * @brief Allows the pointer to be used as a normal C pointer
-		 </pre> */
+		 */
 		alwaysInline tType* operator->() const { checkMapped(); checkInit(); return   (tType*)(Super::mapped);  }
 
 
-		/** <pre>
-		 * @brief Returns the first address of the allocated memory block	\n
-		 *		This function can only be called on mapped pointers			\n
+		/**
+		 * @brief Returns the first address of the allocated memory block
+		 *		This function can only be called on mapped pointers
 		 * Complexity: O(1)
 		 * @return The first address of the allocated memory block
-		 </pre> */
+		 */
 		alwaysInline tType* begin() const {
 			checkInit(); checkMapped();
             return (tType*)Super::mapped;
 		}
 
 
-		/** <pre>
-		 * @brief Returns the address of the object past the last object in the memory block	\n
-		 *		Dereferencing the pointer is undefined behaviour								\n
-		 *		This function can only be called on mapped pointers								\n
+		/**
+		 * @brief Returns the address of the object past the last object in the memory block
+		 *		Dereferencing the pointer is undefined behaviour
+		 *		This function can only be called on mapped pointers
 		 * Complexity: O(1)
 		 * @return The address of the object past the last object in the memory block
-		 </pre> */
+		 */
 		alwaysInline tType* end() const {
 			checkInit(); checkMapped();
 			return (tType*)((int8*)Super::mapped + count() * sizeof(tType));
@@ -284,22 +284,22 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Returns the size in bytes of the memory block	\n
-		 *     Use count() to get the number of elements 		\n
+		/**
+		 * @brief Returns the size in bytes of the memory block
+		 *     Use count() to get the number of elements
 		 * Complexity: O(1)
 		 * @return The size in bytes of the memory block
-		 </pre> */
+		 */
 		alwaysInline uint64 size()  const noexcept {
 			return Super::cell->cellSize;
 		}
 
 
-		/** <pre>
-		 * @brief Returns the number of complete elements in the memory block \n
+		/**
+		 * @brief Returns the number of complete elements in the memory block
 		 * Complexity: O(1)
 		 * @return The number of complete elements in the memory block
-		 </pre> */
+		 */
 		alwaysInline uint64 count() const noexcept {
 			return Super::cell->cellSize / sizeof(tType);
 		}
@@ -332,16 +332,16 @@ namespace lnx::vram{
 		}
 
 
-		/** <pre>
-		 * @brief Base function for memory allocation																	\n
-		 *     Allocates a memory block of vSize bytes																	\n
-		 *     This function does not initialize memory nor update the owner list or check the parameters correctness	\n
-		 * Complexity:																									\n
-		 *     O(1)    [Memory block fits in preallocated cells]														\n
+		/**
+		 * @brief Base function for memory allocation
+		 *     Allocates a memory block of vSize bytes
+		 *     This function does not initialize memory nor update the owner list or check the parameters correctness
+		 * Complexity:
+		 *     O(1)    [Memory block fits in preallocated cells]
 		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 * @param vSize  Size of the block in bytes. It must be less than 0xFFFFFFFF
 		 * @param vClass Class of the allocation. Default: AUTO
-		 </pre> */
+		 */
 		void alloc_(const uint64 vSize, const VCellClass vClass) {
 			using namespace lnx::__pvt;
 			//FIXME WRITE USER INTERFACE
@@ -402,18 +402,18 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it				\n
-		 * Complexity:																								\n
-		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]								\n
-		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]							\n
-		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]	\n
+		/**
+		 * @brief Reallocates the pointer to a block of memory of vSize bytes without initializing it
+		 * Complexity:
+		 *     O(n)    [Memory block fits in preallocated cells && vCopyOldData = true]
+		 *     O(1)    [Memory block fits in preallocated cells && vCopyOldData = false]
+		 *     Unknown [Memory block is too large || There are no available cells] [Depends on system resources]
 		 *     Where n = this->count()
 		 * //FIXME ALLOW REALLOCATION
 		 * @param vSize  Size of the block in bytes. It must be positive and less than 0xFFFFFFFF
 		 * @param vCopyOldData If true, copies the old data when the memory block is changed
 		 * @param vClass Class of the allocation. It must be a valid lnx::CellClass value. Default: AUTO
-		 </pre> */
+		 */
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::eAuto){
 			// static std::mutex test_m;
 			// test_m.lock();
@@ -514,11 +514,11 @@ namespace lnx::vram{
 
 
 		//TODO add free function to erase memory contents
-		/** <pre>
-		 * @brief Frees the memory block owned by the pointer											\n
-		 *     The memory will become invalid and unaccessible for any other pointer currently using it	\n
+		/**
+		 * @brief Frees the memory block owned by the pointer
+		 *     The memory will become invalid and unaccessible for any other pointer currently using it
 		 * Complexity: O(1)
-		 </pre> */
+		 */
 		inline void free() {
 			dbg::checkCond(Super::mapped, "free() can only be called on unmapped memory");
             if(Super::cell->typeIndex != (uint16)-1) {										//For fixed  size cells
@@ -541,13 +541,13 @@ namespace lnx::vram{
 
 
 		//FIXME SPECIALIZE RAM ALLOCATIONS
-		/** <pre>
+		/**
 		 * @brief Flushed the data from the GPU and maps the memory block to a RAM pointer, allowing the CPU to access its data through
-		 *     operator[], operator->, operator*, begin() and end() functions								\n
-		 *     The pointer MUST be unmapped by the same thread before freeing the memory					\n																			\n
-		 *     This function will automatically invalidate the host cache and flush the data from the GPU	\n
+		 *     operator[], operator->, operator*, begin() and end() functions
+		 *     The pointer MUST be unmapped by the same thread before freeing the memory					\n
+		 *     This function will automatically invalidate the host cache and flush the data from the GPU
 		 * Complexity: Unknown //TODO
-		 </pre> */
+		 */
 		void map(){
 			dbg::checkCond(Super::mapped, "Memory block mapped twice");
 			dbg::checkCond(!size(), "Cannot map memory blocks with size 0");
@@ -568,11 +568,11 @@ namespace lnx::vram{
 
 
 
-		/** <pre>
-		 * @brief Unmaps the memory block and flushes the data to the GPU	\n
-		 *     This function can only be called on mapped blocks			\n
+		/**
+		 * @brief Unmaps the memory block and flushes the data to the GPU
+		 *     This function can only be called on mapped blocks
 		 * Complexity: Unknown //TODO
-		 </pre> */
+		 */
 		void unmap(){
 			dbg::checkCond(!Super::mapped, "unmap() called on unmapped memory");
 			auto memory = Super::cell->csc.memory;

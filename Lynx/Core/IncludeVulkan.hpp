@@ -16,9 +16,9 @@
 
 
 
-/** <pre>
+/**
  * @brief Manages out of memory and unknown results
- </pre> */
+ */
 #define vkDefaultFaulures													\
 	/*No vram available. Use ram*/											\
 	case vk::Result::eErrorOutOfDeviceMemory: { 							\
@@ -44,9 +44,9 @@
 
 
 
-/** <pre>
+/**
  * @brief Manages failure cases and vkSuccess
- </pre> */
+ */
 #define vkDefaultCases							\
 	/*Exit switch if the call succeeded*/		\
 	case vk::Result::eSuccess: break;			\

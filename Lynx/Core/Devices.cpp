@@ -13,14 +13,14 @@
 
 
 
-/** <pre>
- * @brief Compares 2 _VkPhysicalDevice objects \n
+/**
+ * @brief Compares 2 _VkPhysicalDevice objects
  *     This function should only be used by the engine
  * Complexity: O(1)
  * @param pA The first device
  * @param pB The second device
  * @return alwaysInline constexpr
- </pre> */
+ */
 alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhysicalDevice& pB){
 	return pA.properties.deviceID == pB.properties.deviceID;
 }
@@ -160,13 +160,13 @@ namespace lnx::core::dvc{
 
 
 
-	/** <pre>
-	 * @brief Rates a physical device based on its properties and features	\n
-	 *     This function should only be used by the engine					\n
+	/**
+	 * @brief Rates a physical device based on its properties and features
+	 *     This function should only be used by the engine
 	 * Complexity: O(1)
 	 * @param pPDevice The device structure where its infos are stored
 	 * @return The rating of the physical device
-	 </pre> */
+	 */
 	uint32 rate(const _VkPhysicalDevice& pPDevice) {
 		uint32 score = 0;																				//Device performance evalutation
 		if(pPDevice.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) score += 1000000;	//Discrete GPUs have performance advantage
@@ -183,14 +183,14 @@ namespace lnx::core::dvc{
 
 
 
-	/** <pre>
-	 * @brief Checks if a device has the required extensions and properties to run vulkan	\n
-	 *     This function should only be used by the engine									\n
+	/**
+	 * @brief Checks if a device has the required extensions and properties to run vulkan
+	 *     This function should only be used by the engine
 	 * Complexity: O(1)
 	 * @param vDevice The physical device to check
 	 * @param pErrorText A pointer to a lnx::String where to store the error in case the device is not suitable
 	 * @return return True if the device is suitable, false if not
-	 </pre> */
+	 */
 	bool isSuitable(const vk::PhysicalDevice vDevice, const bool vAllowLLVM, String& pErrorText) {
 		//Discard llvmpipe devices if required
 		if(!vAllowLLVM){
@@ -239,13 +239,13 @@ namespace lnx::core::dvc{
 
 
 
-	/** <pre>
-	 * @brief Checks if a device supports the extensions required to run the engine	\n
-	 *     This function should only be used by the engine							\n
-	 * Complexity: O(n)																\n
+	/**
+	 * @brief Checks if a device supports the extensions required to run the engine
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
 	 *     where n = number of available extensions
 	 * @return True if the device supports the extensions, false if not
-	 </pre> */
+	 */
 	bool checkExtensions(const vk::PhysicalDevice vDevice) {
 		uint32 extensionCount;
 
@@ -284,14 +284,14 @@ namespace lnx::core::dvc{
 
 
 
-	/** <pre>
-	 * @brief Finds and returns the queue families of a physical device	\n
-	 *     This function should only be used by the engine				\n
-	 * Complexity: O(n)													\n
+	/**
+	 * @brief Finds and returns the queue families of a physical device
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
 	 *     where n = number of queue families of the device
 	 * @param vDev The physical device
 	 * @return The queue families of the device as a QueueFamilyIndices object
-	 </pre> */
+	 */
 	QueueFamilyIndices getQueueFamilies(const vk::PhysicalDevice vDev) {
 		//Enumerate queue families
 		uint32 queueFamilyCount = 0;
@@ -338,12 +338,12 @@ namespace lnx::core::dvc{
 	//TODO add multiple gpu support
 	//TODO use different score for graphics and compute devices
 	//FIXME print errors in release mode too idk
-	/** <pre>
-	 * @brief Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities	\n
-	 *     This function should only be used by the engine																		\n
-	 * Complexity: O(n)																											\n
+	/**
+	 * @brief Finds all the suitable physical devices, choosing the main and secondary devices according to their capabilities
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
 	 *     where n = number of physical devices in the system
-	 </pre> */
+	 */
 	void getPhysicalDevices() {
 		//Get physical device count
 		uint32 deviceCount = 0;					//Number of physical devices. Used to call vkEnumeratePhysicalDevices
@@ -440,14 +440,14 @@ namespace lnx::core::dvc{
 
 
 
-	/** <pre>
-	 * @brief Creates a logical device from a physical device wrapper	\n
-	 *     This function should only be used by the engine				\n
-	 * Complexity: O(n)													\n
+	/**
+	 * @brief Creates a logical device from a physical device wrapper
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
 	 *     where n = pPdev.indices.computeFamilies.count()
 	 * @param pPDev The physical device to create the logical one from
 	 * @param pDev The logical object device where to store the newly created one
-	 </pre> */
+	 */
 	void createLogicalDevices(const _VkPhysicalDevice& pPDev, Device& pDev) {
 		RtArray<uint32> qIndices;
 		if(sameDevice(pPDev, graphics.pd)) {							//If it's the main device for graphics

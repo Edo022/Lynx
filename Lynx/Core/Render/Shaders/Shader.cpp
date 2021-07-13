@@ -24,15 +24,15 @@ namespace lnx::core::shaders{
 
 
 
-	/** <pre>
-	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array	\n
-	 *     This function should only be used by the engine								\n
-	 * Complexity: O(n)																	\n
+	/**
+	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
 	 *     where n = size of the file in bytes
 	 * @param pLength A pointer to an int32 where to store the padded code length
 	 * @param pFilePath A pointer to a char array containing the path to the compiled shader file
 	 * @return A pointer to the array where the code was saved
-	 </pre> */
+	 */
 	uint32* loadSpv(uint64* pLength, const char* pFilePath) {
 		//Open file
 			FILE* fp;
@@ -64,17 +64,17 @@ namespace lnx::core::shaders{
 
 
 
-	/** <pre>
-	 * @brief Creates a shader module from a compiled shader code and its length in bytes	\n
-	 *     The shader code is freed when the function returns								\n
-	 *     This function should only be used by the engine									\n
-	 * Complexity: O(n)																		\n
+	/**
+	 * @brief Creates a shader module from a compiled shader code and its length in bytes
+	 *     The shader code is freed when the function returns
+	 *     This function should only be used by the engine
+	 * Complexity: O(n)
 	 *     where n = pLen
 	 * @param vDevice The logical device to use to create the shader module
 	 * @param pCode A pointer to an int32 array containing the shader code
 	 * @param pLen A pointer to the code length
 	 * @return The created shader module
-	 </pre> */
+	 */
 	//FIXME FIX
 	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint64 pLen) {
 		auto createInfo = vk::ShaderModuleCreateInfo() 	//Create shader module infos
@@ -108,13 +108,13 @@ namespace lnx::core::shaders{
 
 
 
-	/** <pre>
-	 * @brief Creates a compute pipeline in the pipeline array of the render core	\n
-	 *     This function should only be used by the engine							\n
+	/**
+	 * @brief Creates a compute pipeline in the pipeline array of the render core
+	 *     This function should only be used by the engine
 	 * Complexity: O(1)
 	 * @param vPipelineIndex The index of the pipeline
 	 * @param pRenderCore The render core in which to create the pipeline
-	 </pre> */
+	 */
 	void createPipeline(const uint32 vPipelineIndex, RenderCore& pRenderCore) {
 		auto pipelineInfo = vk::ComputePipelineCreateInfo()
 			.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)

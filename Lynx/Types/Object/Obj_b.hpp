@@ -58,9 +58,9 @@ namespace lnx{
 
 		template<class tChType> struct obj_b;
 
-		/** <pre>
+		/**
 		 * @brief Base class of any render object
-		 </pre> */
+		 */
 		struct obj_bb { //
 			obj_bb* parent{ nullptr };				//Parent of the object //FIXME move to common
 			RaArray<obj_bb*> children;

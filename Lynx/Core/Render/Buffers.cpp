@@ -8,12 +8,12 @@
 
 
 namespace lnx::core::buffers{
-	/** <pre>
-	 * @brief Allocates a buffer in the VRAM of a device	\n
-	 *     This function should only be used by the engine	\n
-	 * Complexity:											\n
-	 *     Best:  O(1) [from core::render::findMemoryType]	\n
-	 *     Worst: O(n) [from core::render::findMemoryType]	\n
+	/**
+	 * @brief Allocates a buffer in the VRAM of a device
+	 *     This function should only be used by the engine
+	 * Complexity:
+	 *     Best:  O(1) [from core::render::findMemoryType]
+	 *     Worst: O(n) [from core::render::findMemoryType]
 	 *     where n = number of available memory types
 	 * @param pBuffer The buffer object to allocate
 	 * @param vUsage Vulkan buffer usage flags
@@ -21,7 +21,7 @@ namespace lnx::core::buffers{
 	 * @param pMemory The memory of the buffer
 	 * @param vProperties Vulkan memory properties flags
 	 * @param vDevice The logical device where to allocate the buffer
-	 </pre> */
+	 */
 	void createBuffer(vk::Buffer* pBuffer, const vk::BufferUsageFlags vUsage, const vk::DeviceSize vSize, vk::DeviceMemory* pMemory, const vk::MemoryPropertyFlags vProperties, const vk::Device vDevice) {
 		auto bufferInfo = vk::BufferCreateInfo()
 			.setSize        (vSize)

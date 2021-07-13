@@ -12,14 +12,14 @@
 
 //TODO per-children-group shader command buffers. static shaders are recreated when the objects change
 namespace lnx::obj {
-	/** <pre>
+	/**
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
-	 </pre> */
+	 */
 	struct Line2 : public obj2 {
-		/** <pre>
+		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
-		 </pre> */
+		 */
 		virtual void onSpawn(Window& pWindow) override;
 
 		f32v2 _fp0;		//First point of the line
@@ -29,7 +29,7 @@ namespace lnx::obj {
 		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
 
 
-		/** <pre>
+		/**
 		 * @brief Creates a Line2 object with the specified points, colors and widths.
 		 *		Colors and widths are interpolated
 		 * @param pFp First point of the line
@@ -38,7 +38,7 @@ namespace lnx::obj {
 		 * @param pSc Color of the second point
 		 * @param vFw Width of the first point
 		 * @param vSw Width of the second point
-		 </pre> */
+		 */
 		Line2(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			setFp(pFp);
 			setSp(pSp);

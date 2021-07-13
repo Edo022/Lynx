@@ -50,18 +50,18 @@ namespace lnx{
 		extern bool __errors[];
 
 
-		/** <pre>
+		/**
 		 * @brief //TODO
-		 </pre> */
+		 */
 		template<class... types> inline void disable(error vError, types... vErrors) {
 			// __errors[(uint32)vError] = false;
 			disable(vError);
 			disable(vError, vErrors...);
 		}
 
-		/** <pre>
+		/**
 		 * @brief //TODO
-		 </pre> */
+		 */
 		inline void disable(error vError) {
 			__errors[(uint32)vError] = false;
 		}

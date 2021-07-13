@@ -1,11 +1,11 @@
 #pragma once
 #define LNX_H_CONFIG
 
-/** <pre>
+/**
  * This file contains all the configuration macros of the Lynx Engine
  * Do not modify them if you don't know what you are doing
  * Changes can cause your program to break or behave uncorrectly
- </pre> */
+ */
 
 
 

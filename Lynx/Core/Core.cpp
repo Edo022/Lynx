@@ -13,9 +13,9 @@ namespace lnx::core{
 	alignCache Thread inputThr;
 
 
-	/** <pre>
+	/**
 	 * @brief //TODO
-	 </pre> */
+	 */
 	void inputLoop(){
 		_dbg(thr::self::setName("Lynx | Main"));
 		while(running){

@@ -59,7 +59,7 @@ namespace lnxc{
         };
     }
 
-    /** <pre>
+    /**
      * @brief Provides std::true_type if the type has or inherits a conversion operator of type op or an alias of it, std::false_type if not
      *    Trivial types always provide std::false_type
      *
@@ -74,18 +74,18 @@ namespace lnxc{
      *    has_conversion_operator<s, float>;    //false_type
      * @tparam tType The type to test
      * @tparam op The type of the operator
-     </pre> */
+     */
     template<class tType, class op> using has_conversion_operator = decltype(__pvt::__has_conversion_operator_t<std::is_class_v<tType>, op>::template get<tType>(0));
     template<class tType, class op> static constexpr bool has_conversion_operator_v = has_conversion_operator<tType, op>::value;
 
 
 
 
-    /** <pre>
+    /**
      * @brief Provides std::true_type if the type has or inherits at least one conversion operator to an integral type, std::false_type if not
      *    Trivial types always provide std::false_type
      * @tparam tType The type to test
-     </pre> */
+     */
     template<class tType> using has_int_conversion_operator = std::integral_constant<bool,
         has_conversion_operator_v<tType, uint64> || has_conversion_operator_v<tType, int64> ||
         has_conversion_operator_v<tType, uint32> || has_conversion_operator_v<tType, int32> ||

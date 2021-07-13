@@ -25,12 +25,12 @@
 
 
 namespace lnx::dbg{
-    /** <pre>
-	 * @brief Returns the name of the executable file	\n
-	 * Complexity: O(n)									\n
+    /**
+	 * @brief Returns the name of the executable file
+	 * Complexity: O(n)
 	 *     where n = length of the executable name in bytes
 	 * @return The name of the executable file
-	 </pre> */
+	 */
 	static const char* getExecName() {
 		#ifdef _WIN64 //FIXME
 			char name[MAX_PATH];						//Create name buffer
@@ -40,7 +40,7 @@ namespace lnx::dbg{
 			FILE* f = fopen("/proc/self/comm", "r");
 			char* name = (char*)malloc(256);			//Create name buffer
 			fgets(name, 256, f);						//Read name
-			auto nameSize = strlen(name);				//Remove trailing \n
+			auto nameSize = strlen(name);				//Remove trailing
 			if(name[nameSize - 1] == '\n') name[nameSize - 1] = '\0';
 			fclose(f);
 			return name;
@@ -49,16 +49,16 @@ namespace lnx::dbg{
 
 
 
-	/** <pre>
-	 * @brief Returns a string containing the output of a console command. Lines are separated by a '\n'							\n
-	 *     ! Notice that this function is equivalent to running system(), which is system specific and spawns one or more processes	\n
-	 *     ! Use subpOutput to get the output of a subprocess //TODO write subpOutput //TODO execl									\n
-	 * Complexity: O(n + l + m)																										\n
+	/**
+	 * @brief Returns a string containing the output of a console command. Lines are separated by a '\n'
+	 *     ! Notice that this function is equivalent to running system(), which is system specific and spawns one or more processes
+	 *     ! Use subpOutput to get the output of a subprocess //TODO write subpOutput //TODO execl
+	 * Complexity: O(n + l + m)
 	 *     with n = vCmd.size(), l = number of lines in the command output and m = length of the command output
 	 * @param vCmd Command to execute
 	 * @param vMaxLineLen Maximum length of each line of the output
 	 * @return The command output
-	 </pre> */
+	 */
 	static char* cmdOutput(std::string vCmd, const uint32 vMaxLineLen = 8192) {
 		//Open console and run the command
 		assert(vMaxLineLen < INT32_MAX);
@@ -82,15 +82,15 @@ namespace lnx::dbg{
 
 
 
-	/** <pre> //FIXME don't use addr2line but something more reliable instead. Like debug informations
-	 * @brief Returns address, demangled function name, file name and line of the vIndex-th call in the backtrace	\n
-	 *      ! This function only works on Linux systems. On Windows, "" is returned //TODO add default string		\n
-	 *      ! Using this function in a Windows build will cause a warning to be displayed during compilation		\n
+	/** //FIXME don't use addr2line but something more reliable instead. Like debug informations
+	 * @brief Returns address, demangled function name, file name and line of the vIndex-th call in the backtrace
+	 *      ! This function only works on Linux systems. On Windows, "" is returned //TODO add default string
+	 *      ! Using this function in a Windows build will cause a warning to be displayed during compilation
 	 * Complexity: //TODO
 	 * @param vIndex The index of the call to get informations about
 	 *     0 is the function you are calling this from, 1 is its caller and so on
 	 * @return //TODO
-	 </pre> */
+	 */
 	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true) {
 		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
@@ -104,12 +104,12 @@ namespace lnx::dbg{
 
 
 
-	/** <pre>
-	 * @brief Returns the address of the vIndex-th call in the backtrace \n
+	/**
+	 * @brief Returns the address of the vIndex-th call in the backtrace
 	 * Complexity: //TODO
 	 * @param vIndex The index of the call to get the address of
 	 * @return The address of the call
-	 </pre> */
+	 */
 	static neverInline auto getBacktraceAddr(uint32 vIndex) {
 		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
@@ -133,15 +133,15 @@ namespace lnx::dbg{
 
 
 
-    /** <pre>
+    /**
      * @brief Retrieves informations about the caller of the function
-     </pre> */
+     */
 	class caller{
 		public:
-		/** <pre>
+		/**
 		 * @brief Returns the line of a function call
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
-		 </pre> */
+		 */
 		static neverInline auto line(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1, false);
 			if(str[0] == '\0') return 0;
@@ -152,10 +152,10 @@ namespace lnx::dbg{
 			}
 		}
 
-		/** <pre>
+		/**
 		 * @brief Returns the name of a caller function
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
-		 </pre> */
+		 */
 		static neverInline auto func(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1);
 			if(str[0] == '\0') return str;
@@ -163,10 +163,10 @@ namespace lnx::dbg{
 			return str;
 		}
 
-		/** <pre>
+		/**
 		 * @brief Returns the name of the file where a caller function is located
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
-		 </pre> */
+		 */
 		static neverInline auto file(const uint32 vIndex = 1) {
 			auto str = getBacktrace(vIndex + 1, false);
 			if(str[0] == '\0') return str;
@@ -174,10 +174,10 @@ namespace lnx::dbg{
 			return str;
 		}
 
-		/** <pre>
+		/**
 		 * @brief Returns the address of the caller function
 		 * @param vIndex The index of the caller. 0 is the function where this is used, 1 is its caller
-		 </pre> */
+		 */
 		static neverInline auto addr(const uint32 vIndex = 1) {
 			return getBacktraceAddr(vIndex + 1);
 		}
@@ -190,35 +190,35 @@ namespace lnx::dbg{
 
 
 
-    /** <pre>
+    /**
      * @brief Retrieves informations about the line of code you are writing in
-     </pre> */
+     */
     class self{
         public:
-		/** <pre>
+		/**
 		 * @brief Alias for __LINE__ or dbg::caller::file(0);
-		 </pre> */
+		 */
 		static neverInline auto line() {
 			return dbg::caller::line();
 		}
 
-		/** <pre>
+		/**
 		 * @brief Alias for __FUNCTION__, __func__ or dbg::caller::func(0);
-		 </pre> */
+		 */
 		static neverInline auto func() {
             return dbg::caller::func();
         }
 
-		/** <pre>
+		/**
 		 * @brief Alias for __FILE__ or dbg::caller::file(0)
-		 </pre> */
+		 */
 		static neverInline auto file() {
             return dbg::caller::file();
 		}
 
-		/** <pre>
+		/**
 		 * @brief Returns the address of the current function
-		 </pre> */
+		 */
 		static neverInline auto addr() {
             return dbg::caller::addr();
 		}
