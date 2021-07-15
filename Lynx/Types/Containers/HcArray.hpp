@@ -366,7 +366,7 @@ namespace lnx{
 
 
 	//Forward declaration for friend class
-	template<class... tTypes> struct P;
+	template<class... tTypes> struct fwd;
 
 	//Starting index of element iteration
 	#define seqIndex (sizeof...(tTypes) - 1)
@@ -397,7 +397,7 @@ namespace lnx{
 	template<class... tTypes> struct HcArray :
 	private __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 	private:
-		template<class... _tTypes> friend struct P;
+		template<class... _tTypes> friend struct fwd;
 
 		/**
 		 * @brief List constructor
@@ -563,24 +563,24 @@ namespace lnx{
 	 * @brief Type used to perfect forward a list of arguments as a single parameter
 	 *     Each parameter is saved as a reference
 	 */
-	template<class... tTypes> struct P : public HcArray<tTypes...>{
+	template<class... tTypes> struct fwd : public HcArray<tTypes...>{
 		/**
 		 * @brief Default constructor
 		 */
-		inline P() :
+		inline fwd() :
 			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}) {
 		}
 
 		/**
 		 * @brief Default copy constructor
 		 */
-		inline P(const P<tTypes...>& pObj) = default;
+		inline fwd(const fwd<tTypes...>& pObj) = default;
 
 		/**
 		 * @brief List constructor
 		 * @param pVals The values used to initialize each element
 		 */
-		template<class... tTypesc> alwaysInline P(tTypesc&&... pVals) :
+		template<class... tTypesc> alwaysInline fwd(tTypesc&&... pVals) :
 			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}, std::forward<tTypesc>(pVals)...) {
 		}
 		//!Copy and move constructors are shadowed by the list constructor
@@ -588,7 +588,7 @@ namespace lnx{
 		/**
 		 * @brief Default copy assignment
 		 */
-		inline P& operator=(const P& pObj) = default;
+		inline fwd& operator=(const fwd& pObj) = default;
 	};
-	template<class... tTypesc> P(tTypesc&&... vElms) -> P<tTypesc&&...>;
+	template<class... tTypesc> fwd(tTypesc&&... vElms) -> fwd<tTypesc&&...>;
 }
