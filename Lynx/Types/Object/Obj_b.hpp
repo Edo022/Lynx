@@ -6,6 +6,8 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
+
+
 //TODO REPLACE C STYLE CASTS WITH C++ CASTS
 
 
@@ -109,7 +111,7 @@ namespace lnx{
 			std::atomic<UpdateBits> updates;			//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 			Window* w = nullptr;						//Parent window object that contains the render thread and the window data
 
-			virtual void onSpawn(Window& pWindow);
+			virtual void onSpawn(core::RenderCore& pRenderCore);
 			virtual void onLimit();
 			virtual void onFlush(vk::CommandBuffer pCB);
 
@@ -220,7 +222,7 @@ namespace lnx{
 
 
 			virtual void setChildLimits(const uint32 vChildIndex) const override;
-			virtual void onSpawn(Window& pWindow) override;
+			virtual void onSpawn(core::RenderCore& pRenderCore) override;
 			virtual void onLimit() override;
     	};
 

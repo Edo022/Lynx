@@ -37,6 +37,7 @@
     #include "Lynx/shaders/Line2.cpp"
     #include "Lynx/shaders/Border2.cpp"
     #include "Lynx/shaders/FloatToIntBuffer.cpp"
+    #include "Lynx/shaders/3DTest.cpp"
 
 
     #include "Lynx/Core/Render/Buffers.cpp"

@@ -65,13 +65,13 @@ namespace lnx{
 	 *     where f = The pObj onSpawn function and the onSpawn function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
-	void core::RenderCore::recSpawn(obj::obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
+	void core::RenderCore::recSpawn(obj::obj_bb* pObj){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->updates = pObj->updates & ~obj::eSpawn;						//Clear update bit (prevents redundant updates)
-		pObj->w = &pWindow;													//Set owner window
-		pObj->onSpawn(pWindow);												//Run user callback
-		for(uint32 i = 0; i < pObj->children.count(); ++i){					//For each child
-			if(pObj->children.isValid(i)) recSpawn(pObj->children[i], pWindow); //Run recursive update on it
+		pObj->updates = pObj->updates & ~obj::eSpawn;					//Clear update bit (prevents redundant updates)
+		pObj->w = w;													//Set owner window
+		pObj->onSpawn(*this);											//Run user callback
+		for(uint32 i = 0; i < pObj->children.count(); ++i){				//For each child
+			if(pObj->children.isValid(i)) recSpawn(pObj->children[i]); 		//Run recursive update on it
 		}
 	}
 
@@ -164,7 +164,7 @@ namespace lnx{
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
 			createDefaultCommandBuffers__(); //[m]
 		}
-		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *w);
+		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *this);
 	}
 
 
@@ -409,7 +409,7 @@ namespace lnx{
 		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE RENDER QUEUE
 		requests_m.lock();
 		if(!requests.empty()) for(auto r : requests){
-			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r, *w);
+			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r);
 			if(r->updates & obj::UpdateBits::eLimit) recLimit(r);
 			if(r->updates & obj::UpdateBits::eFlush) recFlush(r, cb);
 			_dbg(if(r->updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));

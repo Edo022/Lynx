@@ -227,7 +227,7 @@ namespace lnx::core::wnd{
 			}
 
 			//Recreate clear shader
-			w->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *w);
+			w->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, w->renderCore);
 		}
 	}
 

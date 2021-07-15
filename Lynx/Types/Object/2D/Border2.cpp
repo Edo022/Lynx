@@ -4,14 +4,14 @@
 
 
 namespace lnx::obj{
-	void Border2::onSpawn(Window& pWindow) { //FIXME PASS RENDER CORE
-		obj2_b::onSpawn(pWindow); //Initialize all the children
+	void Border2::onSpawn(core::RenderCore& pRenderCore) { //FIXME PASS RENDER CORE
+		obj2_b::onSpawn(pRenderCore); //Initialize all the children
 		data.create(
-			pWindow.renderCore.fOut_g,
-			pWindow.renderCore.wSize_g,
-			pWindow.renderCore.zBuff_g,
+			pRenderCore.fOut_g,
+			pRenderCore.wSize_g,
+			pRenderCore.zBuff_g,
 			{ 4u, 1u, 1u }, //FIXME UPDATE WITH WINDOW OR USE WINDOW SIZE BUFFER PROPERLY. or just run once for any border and use the maximum size
-			pWindow
+			pRenderCore
 		);
 	}
 }

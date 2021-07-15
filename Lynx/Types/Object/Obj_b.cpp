@@ -2,7 +2,6 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/2D/Border2.hpp"
-#include "Lynx/Core/Render/Window/Window.hpp"
 
 
 
@@ -15,7 +14,7 @@ namespace lnx::obj{
 
 
 
-	void obj_bb::onSpawn(Window& pWindow){
+	void obj_bb::onSpawn(core::RenderCore& pRenderCore){
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
 	}
 	void obj_bb::onLimit(){
@@ -62,15 +61,15 @@ namespace lnx::obj{
 	}
 
 
-	void obj2_b::onSpawn(Window& pWindow) {
-		obj_bb::onSpawn(pWindow);
+	void obj2_b::onSpawn(core::RenderCore& pRenderCore) {
+		obj_bb::onSpawn(pRenderCore);
 
 		//Set callbacks of overwritten inputs
-		if(doesRedefine(*this, &MouseCallbacks_b::onClick))pWindow.icQueues.onClick.add(this);
-		if(doesRedefine(*this, &MouseCallbacks_b::onEnter))pWindow.icQueues.onEnter.add(this);
-		if(doesRedefine(*this, &MouseCallbacks_b::onExit ))pWindow.icQueues.onExit .add(this);
-		if(doesRedefine(*this, &MouseCallbacks_b::onMove ))pWindow.icQueues.onMove .add(this);
-		if(doesRedefine(*this, &MouseCallbacks_b::onAxis ))pWindow.icQueues.onAxis .add(this);
+		if(doesRedefine(*this, &MouseCallbacks_b::onClick))pRenderCore.w->icQueues.onClick.add(this);
+		if(doesRedefine(*this, &MouseCallbacks_b::onEnter))pRenderCore.w->icQueues.onEnter.add(this);
+		if(doesRedefine(*this, &MouseCallbacks_b::onExit ))pRenderCore.w->icQueues.onExit .add(this);
+		if(doesRedefine(*this, &MouseCallbacks_b::onMove ))pRenderCore.w->icQueues.onMove .add(this);
+		if(doesRedefine(*this, &MouseCallbacks_b::onAxis ))pRenderCore.w->icQueues.onAxis .add(this);
 	}
 
 

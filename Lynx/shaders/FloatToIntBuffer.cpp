@@ -5,7 +5,6 @@
 
 #include "Lynx/shaders/FloatToIntBuffer.hpp"
 #include "Lynx/Core/AutoInit.hpp"
-#include "Lynx/Core/Render/Window/Window.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #define LNX_H_FLOATTOINTBUFFER
 
@@ -14,17 +13,17 @@
 namespace lnx::shd{
 
 
-	void FloatToIntBuffer::create(vram::ptr<f32v4, eVRam, eStorage> pSrc, vram::ptr<u32, eVRam, eStorage> pDst, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
-		pWindow.renderCore.addObject_m.lock();
+	void FloatToIntBuffer::create(vram::ptr<f32v4, eVRam, eStorage> pSrc, vram::ptr<u32, eVRam, eStorage> pDst, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+		pRenderCore.addObject_m.lock();
 			_src.vdata = (vram::ptr<char, eVRam, eStorage>)pSrc;
 			_dst.vdata = (vram::ptr<char, eVRam, eStorage>)pDst;
 			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
 			_zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
-			createCommandBuffers(vGroupCount, pWindow);
-			pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);
-		pWindow.renderCore.addObject_m.unlock();
+			createCommandBuffers(vGroupCount, pRenderCore);
+			pRenderCore.swp.shadersCBs.add(commandBuffers[0]);
+		pRenderCore.addObject_m.unlock();
 	}
 
 
@@ -121,9 +120,9 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
+	void FloatToIntBuffer::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
-			.setCommandPool        (pWindow.renderCore.commandPool)
+			.setCommandPool        (pRenderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
@@ -132,7 +131,7 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[FloatToIntBuffer::pipelineIndex]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[FloatToIntBuffer::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
@@ -145,10 +144,10 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
+	void FloatToIntBuffer::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[FloatToIntBuffer::pipelineIndex]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[FloatToIntBuffer::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }

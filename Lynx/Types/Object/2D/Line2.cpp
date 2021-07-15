@@ -2,7 +2,6 @@
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/2D/Line2.hpp"
-#include "Lynx/Core/Render/Window/Window.hpp"
 
 //TODO DRAW OBJECT-RENDERCORE INTERACTION GRAPH
 //TODO object-RenderCore. similar to client-server
@@ -12,9 +11,9 @@
 
 
 namespace lnx::obj{
-	void Line2::onSpawn(Window& pWindow) {//FIXME PASS RENDER CORE
-		obj2_b::onSpawn(pWindow); //Initialize all the children
-		data.create(pWindow.renderCore.fOut_g, pWindow.renderCore.wSize_g, pWindow.renderCore.zBuff_g, { 512u, 1u, 1u }, pWindow); //FIXME CALCULATE GROUP SIZE AT RUNTIME
+	void Line2::onSpawn(core::RenderCore& pRenderCore) {//FIXME PASS RENDER CORE
+		obj2_b::onSpawn(pRenderCore); //Initialize all the children
+		data.create(pRenderCore.fOut_g, pRenderCore.wSize_g, pRenderCore.zBuff_g, { 512u, 1u, 1u }, pRenderCore); //FIXME CALCULATE GROUP SIZE AT RUNTIME
 	}
 
 	void Line2::onLimit() {

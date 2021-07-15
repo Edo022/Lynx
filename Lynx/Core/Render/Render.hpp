@@ -68,7 +68,7 @@ namespace lnx{
 			void run();
 			void clear();
 
-			void recSpawn  (obj::obj_bb* pObj, Window& pWindow);
+			void recSpawn  (obj::obj_bb* pObj);
 			void recFlush(obj::obj_bb* pObj, vk::CommandBuffer pCB);
 			void recLimit  (obj::obj_bb* pObj);
 
