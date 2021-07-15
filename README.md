@@ -67,7 +67,7 @@ The same system can use multiple versions of the SDK.
 Projects can be linked to an SDK by running its "Setup.py" script:  
 `mkdir MyProject`  
 `cd MyProject`  
-`python3.8 <path_to_sdk>/Setup/Setup.py`  
+`python3.8 <path_to_sdk>/Tools/Setup/Setup.py`  
 
 Each version can be used by multiple projects at the same time.  
 Any modification to a version will affect all the projects linked to it.
@@ -77,20 +77,20 @@ Any modification to a version will affect all the projects linked to it.
 &nbsp;
 
 ## Build applications
-Applications are built using the `<path_to_sdk>/Build/lynxg++` executable, 
+Applications are built using the `<path_to_sdk>/Tools/Build/lynxg++` executable, 
 which is a g++ wrapper that parses the provided options, adds everything the engine needs to the compiler and linker ones and forwards them to g++.   
 
-`-l[ \<options\> ]` and `-w[ \<options\> ]`, respectively linux and windows, can be used to enable different options based on the target platform.  
+`-l[ <options> ]` and `-w[ <options> ]`, respectively linux and windows, can be used to enable different options based on the target platform.  
  
 lynxg++ allows 3 build types:
 - Debug  
-    - `-d[ \<options\> ]` can be used to activate specific options when building in debug.
+    - `-d[ <options> ]` can be used to activate specific options when building in debug.
     - Turns off all the optimizations and adds any available debug, gdb and gprof information.
     - Activates Vulkan validation layers and Lynx runtime validation tests.  
     Any error reported by those systems must be fixed before shipping, as they indicate a bug in the application.  
 
 - Release  
-    - `-r[ \<options\> ]` can be used to activate specific options when building in release.
+    - `-r[ <options> ]` can be used to activate specific options when building in release.
     - Optimizes the code for speed by using `-Ofast` and other compiler specific optimizations.
     - Removes any unnecessary information from the executable.  
 
@@ -112,7 +112,7 @@ Target platform and build type can be specified with the `-mode=<mode>` option.
 //TODO remove debug and release builds for windows or add support for them
 //TODO do the same with gcc wrapper
 
-e.g. `<path_to_sdk>/Build/lynxg++ -mode=ld -r[ -O3 -g0 ] -d[ -O0 -g3 ] main.cpp`  
+e.g. `<path_to_sdk>/Tools/Build/lynxg++ -mode=ld -r[ -O3 -g0 ] -d[ -O0 -g3 ] main.cpp`  
 
 Examples are located in `<path_to_sdk>/Examples/` and contain the source code, the executable and the commands used to build the executable with any build type.  
 Examples are only available for Linux.
