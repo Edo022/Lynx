@@ -19,7 +19,7 @@ namespace lnx{
 	namespace obj{
 		struct RenderSpace2;
 		struct obj_bb;
-		struct obj2;
+		struct obj2_b;
 	}
 
 

@@ -8,7 +8,7 @@ namespace lnx::obj {
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
-	uint32 RenderSpace2::addChild(obj2* pObj) { //TODO RENAME AS ADD or move to children object
+	uint32 RenderSpace2::addChild(obj2_b* pObj) { //TODO RENAME AS ADD or move to children object
 		pObj->parent = this;
 		//setChildLimits(pObj->common.childIndex = children.add(pObj));
 		// pObj->qHierarchy();
@@ -30,23 +30,23 @@ namespace lnx::obj {
 			case AlignmentType::eFixedHorizontal:
 			{ //FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
 				auto xElmLen = abs(minLim.x - maxLim.x) / xNum;
-				static_cast<obj2*>(children[vChildIndex])->setMinLim({ minLim.x + (xElmLen * vChildIndex), minLim.y });
-				static_cast<obj2*>(children[vChildIndex])->setMaxLim({ minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y });
+				static_cast<obj2_b*>(children[vChildIndex])->setMinLim({ minLim.x + (xElmLen * vChildIndex), minLim.y });
+				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim({ minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y });
 				break;
 			}
 			case AlignmentType::eFixedVertical:
 			{
 				auto yElmLen = abs(minLim.y - maxLim.y) / xNum;
-				static_cast<obj2*>(children[vChildIndex])->setMinLim({ minLim.x, minLim.y + (yElmLen * vChildIndex) });
-				static_cast<obj2*>(children[vChildIndex])->setMaxLim({ maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen });
+				static_cast<obj2_b*>(children[vChildIndex])->setMinLim({ minLim.x, minLim.y + (yElmLen * vChildIndex) });
+				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim({ maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen });
 				break;
 			}
 			//case AlignmentType::Vertical:
 			//case AlignmentType::Horizontal:
 			case AlignmentType::eFree:
 			{
-				static_cast<obj2*>(children[vChildIndex])->setMinLim(minLim);
-				static_cast<obj2*>(children[vChildIndex])->setMaxLim(maxLim);
+				static_cast<obj2_b*>(children[vChildIndex])->setMinLim(minLim);
+				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim(maxLim);
 				break;
 			}
 			default: dbg::printError("Unknown children alignment type");

@@ -5,7 +5,7 @@
 
 namespace lnx::obj{
 	void Border2::onSpawn(Window& pWindow) { //FIXME PASS RENDER CORE
-		obj2::onSpawn(pWindow); //Initialize all the children
+		obj2_b::onSpawn(pWindow); //Initialize all the children
 		data.create(
 			pWindow.renderCore.fOut_g,
 			pWindow.renderCore.wSize_g,

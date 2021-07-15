@@ -6,7 +6,7 @@
 
 
 namespace lnx::obj{
-	struct Border2 : public obj2{
+	struct Border2 : public RenderObj2{
 		shd::Border2 data;
 
 

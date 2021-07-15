@@ -40,16 +40,29 @@ namespace lnx::obj{
 
 
 
-	//Only define in debug mode for non debug objects
-	#ifdef LNX_DEBUG
-		void obj2::setMinLim(f32v2 vMinLim) { minLim = vMinLim; }
-		void obj2::setMaxLim(f32v2 vMaxLim) { maxLim = vMaxLim; }
-	#endif
 
 
 
 
-	void obj2::onSpawn(Window& pWindow) {
+	// 2D objects base class ----------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+	void obj2_b::setChildLimits(const uint32 vChildIndex) const {
+		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
+
+		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
+		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
+		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
+	}
+
+
+	void obj2_b::onSpawn(Window& pWindow) {
 		obj_bb::onSpawn(pWindow);
 
 		//Set callbacks of overwritten inputs
@@ -58,31 +71,11 @@ namespace lnx::obj{
 		if(doesRedefine(*this, &MouseCallbacks_b::onExit ))pWindow.icQueues.onExit .add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onMove ))pWindow.icQueues.onMove .add(this);
 		if(doesRedefine(*this, &MouseCallbacks_b::onAxis ))pWindow.icQueues.onAxis .add(this);
-    }
-
-
-
-
-	void obj2::setChildLimits(const uint32 vChildIndex) const {
-		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
-
-		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
-		static_cast<obj2*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
-		static_cast<obj2*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
 	}
 
 
-	void obj2::onLimit() {
+	void obj2_b::onLimit() {
 		obj_bb::onLimit();
 		if(parent) parent->setChildLimits(obj_bb::childIndex);
-	}
-
-	void obj2::onFlush(vk::CommandBuffer pCB) {
-		pCB.updateBuffer(
-			getShVData().cell->csc.buffer,
-			getShVData().cell->localOffset,
-			getShVData().cell->cellSize,
-			(void*)getShData()
-		);
 	}
 }
