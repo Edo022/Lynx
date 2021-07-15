@@ -38,7 +38,7 @@ if sys.stdin.read(1).lower() == 'y':
         f.write('d')
 
 
-    enginePath = os.path.relpath(thisdir + '/..', pdir)
+    enginePath = os.path.relpath(thisdir + '/../..', pdir)
     with open('./.engine/enginePath', 'w') as pf:
         pf.write(enginePath)
 
@@ -53,7 +53,7 @@ if sys.stdin.read(1).lower() == 'y':
            '        {'                                                                          '\n'
            '            "type": "shell",'                                                       '\n'
            '            "label": "Linux  |  Debug  |  Build Lynx Engine",'                      '\n'
-           '            "command": "' + enginePath + '/Build/lynxg++",'                         '\n'
+           '            "command": "' + enginePath + '/tools/Build/lynxg++",'                   '\n'
            '            "args": [ "-mode=ld",'                                                  '\n'
            '                "' + enginePath + '/Lynx/Lynx_build.cpp",'                          '\n'
            '                "' + enginePath + '/Lynx/shaders/*.comp",'                          '\n'
@@ -133,7 +133,7 @@ if sys.stdin.read(1).lower() == 'y':
            '        {'                                                                          '\n'
            '            "type": "shell",'                                                       '\n'
            '            "label": "Linux  |  Debug  |  Build Application\",'                     '\n'
-           '            "command": "' + enginePath + '/Build/lynxg++",'                         '\n'
+           '            "command": "' + enginePath + '/tools/Build/lynxg++",'                   '\n'
            '            "args": [ "-mode=ld",'                                                  '\n'
            '                //Your build'                                                       '\n'
            '            ],'                                                                     '\n'
