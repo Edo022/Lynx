@@ -97,7 +97,7 @@ while i < len(cmdp):
         oname = r.group(3)
         cmdsh += [
             [
-                enginePath + '/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc',
+                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc',
                 iname + '.comp', '-o', oname + '.spv'
             ],[
                 'python3',
@@ -113,8 +113,8 @@ while i < len(cmdp):
 
 
 #Build G++ command
-vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
-gwdep:str = enginePath + '/deps/Shared/GLFW'
+vkdep:str = enginePath + '/Deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
+gwdep:str = enginePath + '/Deps/Shared/GLFW'
 
 cmdg = ['g++', '-std=c++20', '-pthread']                        #Base options
 cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced vulkan macros
@@ -138,7 +138,7 @@ cmdg += cmdp + [                                                #Copy parsed G++
 if cd == 'u': cmdg += [                                         #When building user application
     '-I' + '.',                                                     #Add workspace include path
     '-L' + vkdep + '/lib',                                          #Add Vulkan library path
-    '-L' + enginePath + '/deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
+    '-L' + enginePath + '/Deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
     '-lvulkan', '-Bstatic', '-lglfw3'                               #Link Vulkan dynamically and GLFW statically
 ]
