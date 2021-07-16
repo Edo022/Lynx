@@ -100,6 +100,9 @@ while i < len(cmdp):
                 enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc',
                 iname + '.comp', '-o', oname + '.spv'
             ],[
+                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val',
+                oname + '.spv'
+            ],[
                 'python3',
                 enginePath + '/Lynx/shaders/GlslToCpp.py',
                 iname + '.comp',
