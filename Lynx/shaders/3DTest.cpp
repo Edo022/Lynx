@@ -201,7 +201,7 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "_3DTest.spv").begin());
+			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "3DTest.spv").begin());
 			_3DTest::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 			_3DTest::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

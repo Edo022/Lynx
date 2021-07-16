@@ -97,8 +97,8 @@ while i < len(cmdp):
         oname = r.group(3)
         cmdsh += [
             [
-                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc',
-                iname + '.comp', '-o', oname + '.spv'
+                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslangValidator',
+                '-V', iname + '.comp', '-o', oname + '.spv'
             ],[
                 enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val',
                 oname + '.spv'
