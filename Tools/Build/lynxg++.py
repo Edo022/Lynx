@@ -156,10 +156,13 @@ if cd == 'u': cmdg += [                                         #When building u
 if len(cmdsh) > 0:
     print('\n' + ('-' * os.get_terminal_size().columns))
     print('\n\n' '\033[1m' 'COMPILING SHADERS')
-    for sh in cmdsh:
-        print('\033[1m' + (' '.join(sh)) + '\033[0m')
-    for sh in cmdsh:
-        subprocess.run(sh)
+    i = 0
+    while i < len(cmdsh):
+        print('\n')
+        print('\033[1m' + (' '.join(cmdsh[i + 0])) + '\033[0m'); subprocess.run(cmdsh[i + 0])
+        print('\033[1m' + (' '.join(cmdsh[i + 1])) + '\033[0m'); subprocess.run(cmdsh[i + 1])
+        print('\033[1m' + (' '.join(cmdsh[i + 2])) + '\033[0m'); subprocess.run(cmdsh[i + 2])
+        i += 3
     print('\n')
 
 
