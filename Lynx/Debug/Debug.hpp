@@ -120,10 +120,14 @@ namespace lnx::dbg{
 			for(uint32 i = 0; ; ++i){
 				auto func = caller::func(vIndex + i);
 				if(func[0] != '?' && func[0] != '\0') {
-					traceback += "\n    " +
-					string_format("%7x", caller::addr(vIndex + i)) + " | " +
-					string_format("%6d", caller::line(vIndex + i)) + " | " +
-					func;
+					traceback +=
+						"\n    " +
+						string_format("%7x", caller::addr(vIndex + i)) + " | " +
+						string_format("%6d", caller::line(vIndex + i)) + " | " +
+						func +
+						" [" + caller::file(vIndex + i) + ":" +
+						string_format("%d", caller::line(vIndex + i)) + "]"
+					;
 				}
 				else break;
 				if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
