@@ -102,8 +102,9 @@ namespace lnx::dbg{
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void print(Severity vSeverity, const uint32 vIndex, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
-			std::chrono::hh_mm_ss<std::chrono::milliseconds> time{ std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()) };
-			std::string out = string_format("[%d:%d:%d.%d] ", time.hours().count(), time.minutes().count(), time.seconds().count(), time.subseconds().count());
+			//TODO rewrite this clusterfuck
+			std::chrono::hh_mm_ss<std::chrono::milliseconds> time{ std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()) % (3600*24) };
+			std::string out = string_format("[%2d:%2d:%2d.%4d] ", time.hours().count(), time.minutes().count(), time.seconds().count(), time.subseconds().count());
 
 			if(vSeverity == Severity::eInfo){
 				string_format(out + pFstr, pArgs...);
@@ -111,7 +112,8 @@ namespace lnx::dbg{
 			else{
 				//Create output string
 				out = string_format(
-					out + "%s%s%s",	//Format
+					std::string("\n\n") + out +
+					"%s%s%s",		//Format
 					"%s"			//Separator
 					"%s\n\n"		//Severity
 					"%s\"%s\"\n"	//Thread
@@ -147,7 +149,7 @@ namespace lnx::dbg{
 				//Merge default text and user data
 				// std::string out__ = string_format(out,
 				out = string_format(out,
-					"\n\n--------------------------------------------------------------------------\n",
+					"------------------------------------------------------------\n",
 					(vSeverity == Severity::eInfo) ? "" : (vSeverity == Severity::eWarn) ? "Warning" : "Error:",
 
 					"Thread   ", thrName,
