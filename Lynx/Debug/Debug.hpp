@@ -103,16 +103,24 @@ namespace lnx::dbg{
 	static _dbg(neverInline)_rls(alwaysInline) void print(Severity vSeverity, const uint32 vIndex, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DEBUG
 			//TODO rewrite this clusterfuck
-			std::chrono::hh_mm_ss<std::chrono::milliseconds> time{ std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()) % (3600*24) };
-			std::string out = string_format("[%02d:%02d:%02d.%03d] ", time.hours().count(), time.minutes().count(), time.seconds().count(), time.subseconds().count());
+			using namespace std::chrono;
+			using std::string;
+			hh_mm_ss<milliseconds> time{ duration_cast<seconds>(system_clock::now().time_since_epoch()) % (3600*24) };
+			string out = string_format(
+				"[%02d:%02d:%02d.%03d] ",
+				time.hours()     .count(),
+				time.minutes()   .count(),
+				time.seconds()   .count(),
+				time.subseconds().count()
+			);
 
 			if(vSeverity == Severity::eInfo){
-				string_format(out + pFstr, pArgs...);
+				out = string_format(out + pFstr, pArgs...);
 			}
 			else{
 				//Create output string
 				out = string_format(
-					std::string("\n\n") + out +
+					string("\n\n") + out +
 					"%s%s%s",		//Format
 					"%s"			//Separator
 					"%s\n\n"		//Severity
@@ -125,7 +133,7 @@ namespace lnx::dbg{
 
 				//Build traceback
 				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-				std::string traceback = "\n    Address |   Line | Function";
+				string traceback = "\n    Address |   Line | Function";
 				for(uint32 i = 0; ; ++i){
 					auto func = caller::func(vIndex + i);
 					if(func[0] != '?' && func[0] != '\0') {
