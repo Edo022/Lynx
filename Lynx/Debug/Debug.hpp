@@ -104,7 +104,7 @@ namespace lnx::dbg{
 		#ifdef LNX_DEBUG
 			//TODO rewrite this clusterfuck
 			std::chrono::hh_mm_ss<std::chrono::milliseconds> time{ std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()) % (3600*24) };
-			std::string out = string_format("[%2d:%2d:%2d.%4d] ", time.hours().count(), time.minutes().count(), time.seconds().count(), time.subseconds().count());
+			std::string out = string_format("[%02d:%02d:%02d.%03d] ", time.hours().count(), time.minutes().count(), time.seconds().count(), time.subseconds().count());
 
 			if(vSeverity == Severity::eInfo){
 				string_format(out + pFstr, pArgs...);
