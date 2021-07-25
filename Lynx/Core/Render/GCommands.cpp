@@ -72,11 +72,11 @@ namespace lnx::core::render::cmd{
 		;
 		core::render::graphicsQueueSubmit_m.lock();
 			switch(dvc::graphics.cqs[0].submit(1, &submitInfo, nullptr)){
-				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
 			switch(dvc::graphics.cqs[0].waitIdle()){
-				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
 		core::render::graphicsQueueSubmit_m.unlock();

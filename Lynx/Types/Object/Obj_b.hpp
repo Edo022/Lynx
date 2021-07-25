@@ -71,8 +71,8 @@ namespace lnx{
 	        }
 
 			//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
-	        inline      ram::ptr<char>  specStructGetShData() { dbg::printError("Unable to call this function on structural objects"); return nullptr; }
-	        inline vram::Alloc_b<char> specStructGetShVData() { dbg::printError("Unable to call this function on structural objects"); return vram::Alloc_b<char>(); }
+	        inline      ram::ptr<char>  specStructGetShData() { dbg::logError("Unable to call this function on structural objects"); return nullptr; }
+	        inline vram::Alloc_b<char> specStructGetShVData() { dbg::logError("Unable to call this function on structural objects"); return vram::Alloc_b<char>(); }
 
 
 
@@ -104,9 +104,9 @@ namespace lnx{
 			uint32 childIndex{ (uint32)-1 };			//The index of the object in the parent's children list
 
 
-			virtual void setChildLimits(const uint32 vChildIndex) const { dbg::printError("Unable to call this function on a base class"); }
-			virtual ram::ptr<char>       getShData() {dbg::printError("Function called on base class or not implemented"); return nullptr; }
-			virtual vram::Alloc_b<char> getShVData() {dbg::printError("Function called on base class or not implemented"); return vram::Alloc_b<char>(); }
+			virtual void setChildLimits(const uint32 vChildIndex) const { dbg::logError("Unable to call this function on a base class"); }
+			virtual ram::ptr<char>       getShData() {dbg::logError("Function called on base class or not implemented"); return nullptr; }
+			virtual vram::Alloc_b<char> getShVData() {dbg::logError("Function called on base class or not implemented"); return vram::Alloc_b<char>(); }
 
 			std::atomic<UpdateBits> updates;			//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 			Window* w = nullptr;						//Parent window object that contains the render thread and the window data

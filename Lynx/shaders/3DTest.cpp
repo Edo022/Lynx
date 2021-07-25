@@ -38,7 +38,7 @@ namespace lnx::shd{
 			.setPPoolSizes    (sizes)
 		;
 		switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
-			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
+			case vk::Result::eErrorFragmentationEXT:  dbg::logError("Fragmentation error");  break;
 			vkDefaultCases;
 		}
 
@@ -50,8 +50,8 @@ namespace lnx::shd{
 			.setPSetLayouts        (&_3DTest::layout.descriptorSetLayout)
 		;
 		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
-			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
-			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
+			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
+			case vk::Result::eErrorOutOfPoolMemory:   dbg::logError("Out of pool memory");   break;
 			vkDefaultCases;
 		}
 

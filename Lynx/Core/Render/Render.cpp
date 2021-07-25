@@ -305,8 +305,8 @@ namespace lnx{
 	 */
 	void core::RenderCore::draw(uint32& vImgIndex){
 		switch(core::dvc::graphics.ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
-			case vk::Result::eTimeout:         dbg::printError("Fence timed out"); break;
-			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost");     break;
+			case vk::Result::eTimeout:         dbg::logError("Fence timed out"); break;
+			case vk::Result::eErrorDeviceLost: dbg::logError("Device lost");     break;
 			vkDefaultCases;
 		}
 
@@ -323,12 +323,12 @@ namespace lnx{
 		//Acquire swapchain image
 		{
 			switch(core::dvc::graphics.ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &vImgIndex)) {
-				case vk::Result::eTimeout:             dbg::printWarning("Timeout");    break;
-				case vk::Result::eNotReady:            dbg::printWarning("Not ready");  break;
-				case vk::Result::eSuboptimalKHR:       dbg::printWarning("Suboptimal"); break;
+				case vk::Result::eTimeout:             dbg::logWarn("Timeout");    break;
+				case vk::Result::eNotReady:            dbg::logWarn("Not ready");  break;
+				case vk::Result::eSuboptimalKHR:       dbg::logWarn("Suboptimal"); break;
 				case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-				case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
-				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+				case vk::Result::eErrorDeviceLost:     dbg::logError("Device lost");  break;
+				case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 				#ifdef _WIN64 //This error is unique to windows
 					case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
 				#endif
@@ -381,10 +381,10 @@ namespace lnx{
 
 		switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 			case vk::Result::eSuccess: break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of device memory"); break;
-			// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::logError("Out of device memory"); break;
+			// case vk::Result::eErrorOutOfHostMemory: dbg::logError("Out of host memory"); break;
 			//!^ Not an error. This value is not returned
-			default: dbg::printError("Unknown result");
+			default: dbg::logError("Unknown result");
 		}
 
 		core::render::graphicsQueueSubmit_m.lock();
@@ -412,7 +412,7 @@ namespace lnx{
 			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r);
 			if(r->updates & obj::UpdateBits::eLimit) recLimit(r);
 			if(r->updates & obj::UpdateBits::eFlush) recFlush(r, cb);
-			_dbg(if(r->updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
+			_dbg(if(r->updates != obj::eNone) dbg::logWarn("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 		}
 		requests.clear();
 		requests_m.unlock();
@@ -535,11 +535,11 @@ namespace lnx{
 			redraw:
 			draw(imageIndex);
 			switch(present(imageIndex)){
-				case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
+				case vk::Result::eSuboptimalKHR: dbg::logWarn("Suboptimal"); break;
 				// case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 				case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-				case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
-				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+				case vk::Result::eErrorDeviceLost:     dbg::logError("Device lost");  break;
+				case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 				#ifdef _WIN64 //This error is unique to windows
 					case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
 				#endif

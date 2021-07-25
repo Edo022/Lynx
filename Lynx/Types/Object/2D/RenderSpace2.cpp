@@ -49,7 +49,7 @@ namespace lnx::obj {
 				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim(maxLim);
 				break;
 			}
-			default: dbg::printError("Unknown children alignment type");
+			default: dbg::logError("Unknown children alignment type");
 		}
 	}
 }

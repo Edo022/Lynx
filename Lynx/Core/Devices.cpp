@@ -97,14 +97,14 @@ namespace lnx::core::dvc{
 
 			//Get layer count
 			switch(vk::enumerateInstanceLayerProperties(&layerCount, nullptr)){
-				case vk::Result::eIncomplete: dbg::printError("Incomplete properties"); break;
+				case vk::Result::eIncomplete: dbg::logError("Incomplete properties"); break;
 				vkDefaultCases;
 			};
 
 			//Get layers
 			RtArray<vk::LayerProperties> availableLayers(layerCount);
 			switch(vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.begin())){
-				case vk::Result::eIncomplete: dbg::printError("Incomplete properties"); break;
+				case vk::Result::eIncomplete: dbg::logError("Incomplete properties"); break;
 				vkDefaultCases;
 			};
 
@@ -112,17 +112,17 @@ namespace lnx::core::dvc{
 				for(uint32 j = 0; j < availableLayers.count(); ++j) {							//For every available layer
 					if(0 == strcmp(validationLayers[i], availableLayers[j].layerName)) break;		//Check if the layer is available
 					else if(i == availableLayers.count() - 1) {										//If not
-						dbg::printError("Validation layers not available. Cannot run in debug mode");	//Print an error
+						dbg::logError("Validation layers not available. Cannot run in debug mode");	//Print an error
 					}
 				}
 			}
 		#endif
 
 		switch(vk::createInstance(&createInfo, nullptr, &core::dvc::instance)){
-			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			case vk::Result::eErrorLayerNotPresent:      dbg::printError("Layer not present");     break;
-			case vk::Result::eErrorExtensionNotPresent:  dbg::printError("Extension not present"); break;
-			case vk::Result::eErrorIncompatibleDriver:   dbg::printError("Incompatible driver");   break;
+			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
+			case vk::Result::eErrorLayerNotPresent:      dbg::logError("Layer not present");     break;
+			case vk::Result::eErrorExtensionNotPresent:  dbg::logError("Extension not present"); break;
+			case vk::Result::eErrorIncompatibleDriver:   dbg::logError("Incompatible driver");   break;
 			vkDefaultCases;
 		}
 		free(extensions);
@@ -137,9 +137,9 @@ namespace lnx::core::dvc{
 
 		switch(glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface))){
 			case VkResult::VK_SUCCESS: break;
-			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::printError("Initialization failed"); break;
-			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
-			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
+			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::logError("Initialization failed"); break;
+			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::logError("Extension not present"); break;
+			default: _dbg(dbg::logError("Unknown result")) _rls(noop);
 		}
 		getPhysicalDevices();
 	}
@@ -213,14 +213,14 @@ namespace lnx::core::dvc{
 		else {
 			uint32 surfaceFormatsCount = 0, presentModesCount = 0;
 			switch(vDevice.getSurfaceFormatsKHR(dummySurface, &surfaceFormatsCount, nullptr)){
-				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
-				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
+				case vk::Result::eIncomplete:             dbg::logError("Incomplete surface formats"); break;
+				case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");               break;
 				vkDefaultCases;
 			};
 
 			switch(vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr)){
-				case vk::Result::eIncomplete:             dbg::printError("Incomplete surface formats"); break;
-				case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");               break;
+				case vk::Result::eIncomplete:             dbg::logError("Incomplete surface formats"); break;
+				case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");               break;
 				vkDefaultCases;
 			};
 
@@ -251,16 +251,16 @@ namespace lnx::core::dvc{
 
 		//Get extension count
 		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, nullptr)){
-			case vk::Result::eIncomplete:           dbg::printError("Incomplete extensions"); break;
-			case vk::Result::eErrorLayerNotPresent: dbg::printError("Layer not present");     break;
+			case vk::Result::eIncomplete:           dbg::logError("Incomplete extensions"); break;
+			case vk::Result::eErrorLayerNotPresent: dbg::logError("Layer not present");     break;
 			vkDefaultCases;
 		};
 
 		//Get extensions
 		RtArray<vk::ExtensionProperties> availableExtensions(extensionCount);
 		switch(vDevice.enumerateDeviceExtensionProperties(nullptr, &extensionCount, availableExtensions.begin())){
-			case vk::Result::eIncomplete:           dbg::printError("Incomplete extensions"); break;
-			case vk::Result::eErrorLayerNotPresent: dbg::printError("Layer not present");     break;
+			case vk::Result::eIncomplete:           dbg::logError("Incomplete extensions"); break;
+			case vk::Result::eErrorLayerNotPresent: dbg::logError("Layer not present");     break;
 			vkDefaultCases;
 		};
 
@@ -310,7 +310,7 @@ namespace lnx::core::dvc{
 
 			vk::Bool32 hasPresentSupport = false;
 			switch(vDev.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){						//Set present family
-				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+				case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 				vkDefaultCases;
 			};
 
@@ -348,18 +348,18 @@ namespace lnx::core::dvc{
 		//Get physical device count
 		uint32 deviceCount = 0;					//Number of physical devices. Used to call vkEnumeratePhysicalDevices
 		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){
-			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
-			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eIncomplete:                dbg::logError("Incomplete devices");    break;
+			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
 			vkDefaultCases;
 		};
-		if(deviceCount == 0) dbg::printError("Failed to find GPUs with Vulkan support");
+		if(deviceCount == 0) dbg::logError("Failed to find GPUs with Vulkan support");
 
 
 		//Get physical devices
 		RtArray<vk::PhysicalDevice> physDevices(deviceCount);
 		switch(instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin())){
-			case vk::Result::eIncomplete:                dbg::printError("Incomplete devices");    break;
-			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
+			case vk::Result::eIncomplete:                dbg::logError("Incomplete devices");    break;
+			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
 			vkDefaultCases;
 		};
 
@@ -490,11 +490,11 @@ namespace lnx::core::dvc{
 		//Create the logical device and save its queues
 		vk::Device _logicalDevice;
 		switch(pPDev.device.createDevice(&deviceCreateInfo, nullptr, &_logicalDevice)){
-			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			case vk::Result::eErrorExtensionNotPresent:  dbg::printError("Extension not present"); break;
-			case vk::Result::eErrorFeatureNotPresent:    dbg::printError("Feature not present");   break;
-			case vk::Result::eErrorTooManyObjects:       dbg::printError("Too many objects");      break;
-			case vk::Result::eErrorDeviceLost:           dbg::printError("Device lost");           break;
+			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
+			case vk::Result::eErrorExtensionNotPresent:  dbg::logError("Extension not present"); break;
+			case vk::Result::eErrorFeatureNotPresent:    dbg::logError("Feature not present");   break;
+			case vk::Result::eErrorTooManyObjects:       dbg::logError("Too many objects");      break;
+			case vk::Result::eErrorDeviceLost:           dbg::logError("Device lost");           break;
 			vkDefaultCases;
 		}
 

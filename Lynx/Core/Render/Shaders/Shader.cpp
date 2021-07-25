@@ -84,7 +84,7 @@ namespace lnx::core::shaders{
 
 		vk::ShaderModule shaderModule;					//Create the shader module
 		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
-			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
+			case vk::Result::eErrorInvalidShaderNV:   dbg::logError("Invalid shader"); break;
 			vkDefaultCases;
 		}
 
@@ -124,9 +124,9 @@ namespace lnx::core::shaders{
 
 
 		switch(r.result){
-			case vk::Result::ePipelineCompileRequiredEXT: dbg::printWarning("Pipeline compile required"); [[fallthrough]];
+			case vk::Result::ePipelineCompileRequiredEXT: dbg::logWarn("Pipeline compile required"); [[fallthrough]];
 			case vk::Result::eSuccess: pRenderCore.pipelines[vPipelineIndex] = r.value; break;
-			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
+			case vk::Result::eErrorInvalidShaderNV:       dbg::logError("Invalid shader NV");    break;
 			vkDefaultFaulures;
 		}
 		// core::dvc::graphics.ld.destroyShaderModule(layout_.shaderModule, nullptr);
