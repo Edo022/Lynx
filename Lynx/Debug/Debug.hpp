@@ -101,17 +101,21 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void print(Severity vSeverity, const uint32 vIndex, const char* pFstr, const auto&... pArgs) {
+		using namespace std::chrono;
+		using std::string;
 		#ifdef LNX_DEBUG
-			//TODO rewrite this clusterfuck
-			using namespace std::chrono;
-			using std::string;
-			hh_mm_ss<milliseconds> time{ duration_cast<seconds>(system_clock::now().time_since_epoch()) % (3600*24) };
+			//Get time
+			time_t cTime; time(&cTime);				//Get current time
+			tm *lTime; lTime = localtime(&cTime);	//Convert to local time
+			auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) % seconds(1);
+
+			//Format time
 			string out = string_format(
 				"[%02d:%02d:%02d.%03d] ",
-				time.hours()     .count(),
-				time.minutes()   .count(),
-				time.seconds()   .count(),
-				time.subseconds().count()
+				lTime->tm_hour,
+				lTime->tm_min,
+				lTime->tm_sec,
+				ms.count()
 			);
 
 			if(vSeverity == Severity::eInfo){
