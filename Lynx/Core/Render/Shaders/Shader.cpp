@@ -39,7 +39,7 @@ namespace lnx::core::shaders{
 			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
 			_lnx(fp = fopen(  pFilePath, "rb"));
 			if(!fp) {
-				dbg::logInfo("Could not find or open file: %s\n", pFilePath);
+				dbg::logInfo("Could not find or open file: %s", pFilePath);
 				return 0;
 			}
 

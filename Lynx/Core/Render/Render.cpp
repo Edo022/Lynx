@@ -560,7 +560,7 @@ namespace lnx{
 			auto end = std::chrono::high_resolution_clock::now();
 			auto duration = duration_cast<std::chrono::microseconds>(end - start);
 			if(duration_cast<std::chrono::seconds>(end - last).count() >= 1){
-				dbg::logInfo("\n%d fps, %d ms", 1.0f/(((float)duration.count())/(1000*1000)), duration.count());
+				dbg::logInfo("%6.1f fps, %.2f ms", 1.0f/(((float)duration.count())/1000/1000), (((float)duration.count())/1000));
 				last = end;
 			}
 

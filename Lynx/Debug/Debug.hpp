@@ -172,7 +172,7 @@ namespace lnx::dbg{
 			//Print
 			if(vSeverity == Severity::eInfo) Normal else if(vSeverity == Severity::eWarn) Warning else Failure;
 			// printf(out__.c_str()); Normal; fflush(stdout);
-			printf(out.c_str()); Normal; fflush(stdout);
+			printf(out.c_str()); NormalNoNl; fflush(stdout);
 			if(vSeverity == Severity::eError) throw std::runtime_error("U.U");
 		#endif
 	}

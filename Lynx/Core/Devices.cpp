@@ -407,15 +407,19 @@ namespace lnx::core::dvc{
 
 			//If there are discarded devices, print their names
 			if(discarded.count() > 0) {
-				dbg::logWarn("    Discarded devices:");
+				String discardedList = "    Discarded devices:";
 				for(uint32 i = 0; i < discarded.count(); i += 2) {
-					dbg::logWarn("        %s  |  %s", (char*)discarded[i].begin(), (char*)discarded[(uint64)i + 1].begin());
+					//FIXME use proper lnx::String format function
+					discardedList += dbg::string_format("        %s  |  %s", (char*)discarded[i].begin(), (char*)discarded[(uint64)i + 1].begin()).c_str();
 				}
+				//FIXME write overload for logs with lnx::String
+				dbg::logWarn(discardedList.begin());
 			}
 
 			//Print the devices names, IDs, scores and tasks
 			dbg::logInfo("    Found %d suitable device%s:", suitable.count(), (suitable.count() == 1) ? "" : "s");
 			for(auto& dev : suitable) {
+				//FIXME unify output string
 				dbg::logInfo("        %s  |  ID: %d  |  %d", dev->properties.deviceName.cbegin(), dev->properties.deviceID, dev->score);
 				if(sameDevice(*dev, graphics.pd)) dbg::logInfo("  |  Main graphics");
 			}
