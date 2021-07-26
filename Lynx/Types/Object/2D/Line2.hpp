@@ -16,11 +16,11 @@ namespace lnx::obj {
 	 * @brief A bidimensional line with interpolated color and width.
 	 *		Lines with 0 width or 0 alpha are not rendered
 	 */
-	struct Line2 : public obj2 {
+	struct Line2 : public RenderObj2 {
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
-		virtual void onSpawn(Window& pWindow) override;
+		virtual void onSpawn(core::RenderCore& pRenderCore) override;
 
 		f32v2 _fp0;		//First point of the line
 		f32v2 _fp1;		//Second point of the line

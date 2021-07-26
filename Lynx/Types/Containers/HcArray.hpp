@@ -144,7 +144,7 @@ namespace lnx{
 		template <uint32 tCount, uint32 tIndex, class tType, class... tTypes> struct seq_get_t<tCount, eDesc, tIndex, tType, tTypes...>{
 			template <uint32 getIndex> alwaysInline auto &getFunc() {
 				return ((seq<tCount, tIndex, tType, tTypes...>*)this)->
-				seq<tSizetCount tIndex - 1, tTypes...>::template seq_get_t<tCount, eChck, tIndex - 1, tTypes...>::template getFunc<getIndex>();
+				seq<tCount, tIndex - 1, tTypes...>::template seq_get_t<tCount, eChck, tIndex - 1, tTypes...>::template getFunc<getIndex>();
 			}
 		};
 
@@ -190,7 +190,7 @@ namespace lnx{
 			 *     Each element is initialized with its default value
 			 *              ⎛⎲ tCount   ⎛       ⎞⎞
 			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠
-			 * Where e[i] = default constructor of the i-th type in (tType, tTypes)
+			 *     Where e[i] = default constructor of the i-th type in (tType, tTypes)
 			 */
 			alwaysInline seq():
 				seq<tCount, tIndex - 1, tTypes...>(),
@@ -203,7 +203,7 @@ namespace lnx{
 			 *     Each element is copy constructed with the corresponding value in pVals
 			 *              ⎛⎲ tCount   ⎛       ⎞⎞
 			 * Complexity: O⎝⎳ i=tIndex ⎝O(e[i])⎠⎠
-			 * Where e[i] = copy constructor of the i-th type in (tType, tTypes)
+			 *     Where e[i] = copy constructor of the i-th type in (tType, tTypes)
 			 */
 			alwaysInline seq(const tType& pVal, const tTypes&... pVals) :
 				seq<tCount, tIndex - 1, tTypes...>(pVals...),
@@ -213,7 +213,7 @@ namespace lnx{
 
 			/**
 			 * @brief Returns the address of an element in runtime
-			 * Complexity: O(1)
+			 * Complexity: O(tCount - tIndex)
 			 * @param vIndex The index of the element
 			 * @return The address of the element as a void* pointer
 			 */
@@ -244,14 +244,10 @@ namespace lnx{
 			/**
 			 * @brief Executes a member function using the elements as arguments
 			 * Complexity: O(O(tFunc))
-			 * @tparam tObj The type of the object. Automatically deduced
-			 * @tparam tFunc The type of the function. Automatically deduced
-			 * @tparam tArgs The types of the arguments. Automatically deduced
 			 * @param pObj The object to call the function on
 			 * @param vFunc The function to execute
 			 * @param pArgs A list of references to the arguments of the preceding elements
 			 * @return The return value of the called function
-		 *               ︵
 			 */
 			template<class tObj, class tFunc, class ...tArgs> alwaysInline auto execObj(tObj& pObj, tFunc vFunc, const tArgs&... pArgs) {
 				return seq<tCount, tIndex - 1, tTypes...>::template execObj<tObj, tFunc, tArgs...>(
@@ -284,7 +280,7 @@ namespace lnx{
 			/**
 			 * @brief Default constructor
 			 * Complexity: O(O(e))
-			 * Where e = default constructor of tType
+			 *     Where e = default constructor of tType
 			 */
 			alwaysInline seq() : seq_val<tType, 0>() { }
 
@@ -292,7 +288,7 @@ namespace lnx{
 			/**
 			 * @brief List constructor
 			 * Complexity: O(O(e))
-			 * Where e = copy constructor of tType
+			 *     Where e = copy constructor of tType
 			 * @param pVal The value used to copy construct this element
 			 */
 			alwaysInline seq(const tType& pVal) :
@@ -300,19 +296,22 @@ namespace lnx{
 			}
 
 			/**
-			 * @brief Runtime get. Same as general specialization
+			 * @brief Runtime get
+			 *     Same as general specialization
 			 */
 			alwaysInline void* rtGet(const uint32 _index) { return (void*)&(seq_val<tType, 0>::get()); }
 
 			/**
-			 * @brief Executes a standard function. Same as general specialization
+			 * @brief Executes a standard function
+			 *     Same as general specialization
 			 */
 			template<class func_t, class ...args_ts> alwaysInline auto exec(func_t _func, const args_ts&... _args) {
 				return _func(_args..., seq_val<tType, 0>::get());
 			}
 
 			/**
-			 * @brief Executes a member function. Same as general specialization
+			 * @brief Executes a member function
+			 *     Same as general specialization
 			 */
 			template<class obj_t, class func_t, class ...args_ts> alwaysInline auto execObj(obj_t& _obj, func_t _func, const args_ts&... _args) {
 				return (_obj.*_func)(_args..., seq_val<tType, 0>::get());
@@ -333,11 +332,11 @@ namespace lnx{
 
 		/**
 		 * @brief seq specialization for empty arrays
-		 * This struct can only run functions with no arguments
+		 *     This struct can only run functions with no arguments
 		 */
 		template<uint32 index> struct seq<0, index, void> {
 			seq() = default;
-			seq(const seq& pSeq) = default
+			seq(const seq& pSeq) = default;
 
 			template<class func_t> alwaysInline auto exec(func_t _func) {
 				return _func();
@@ -367,14 +366,14 @@ namespace lnx{
 
 
 	//Forward declaration for friend class
-	template<class... tTypes> struct P;
+	template<class... tTypes> struct fwd;
 
 	//Starting index of element iteration
 	#define seqIndex (sizeof...(tTypes) - 1)
 
 	namespace __pvt{
 		//Special type used by fwd
-		struct __fwd_ctor{};
+		struct seq_fwd_ctor{};
 	}
 
 
@@ -398,43 +397,75 @@ namespace lnx{
 	template<class... tTypes> struct HcArray :
 	private __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 	private:
-		template<class... _tTypes> friend struct P;
+		template<class... _tTypes> friend struct fwd;
 
 		/**
 		 * @brief List constructor
 		 *     Used by lnx::fwd only
 		 *     Parameters are taken by value as they are all references
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠ 	[From seq::seq]
+		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
-		alwaysInline HcArray(const __fwd_ctor, const tTypes... vals) :
+		alwaysInline HcArray(const __pvt::seq_fwd_ctor, const tTypes... vals) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 		/**
 		 * @brief Default constructor
 		 *     Used by lnx::fwd only
-		 * Complexity: O()
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	[From seq::seq]
+		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
-		alwaysInline HcArray(const __fwd_ctor) :
+		alwaysInline HcArray(const __pvt::seq_fwd_ctor) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
 		}
 
+
+
+
 	public:
+		/**
+		 * @brief Default copy constructor
+		 */
 		HcArray(const HcArray<tTypes...>& pArr) = default;
+
+
+		/**
+		 * @brief Default constructor
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
+		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
+		 */
 		alwaysInline HcArray() :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
 		}
 
-		alwaysInline HcArray(const tTypes&... vals) requires(!(sizeof...(tTypes) == 1 &&
-		std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>)) :
+
+		/**
+		 * @brief List constructor
+		 *     Initializes each element with the corresponding value in pVals
+		 *              ⎛⎲ n   ⎛       ⎞⎞
+		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠
+		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
+		 */
+		alwaysInline HcArray(const tTypes&... vals)
+		requires(!(
+			sizeof...(tTypes) == 1 &&
+			std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>
+		)) :
 			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 
 		/**
-		 * @brief Returns a reference to an element.
-		 *		This can only be used with compile time known indices.
+		 * @brief Returns a reference to an element
+		 *		This function can only be used with compile time known indices
 		 *		Use rtGet<type>(index) to retrieve values in runtime
+		 * Complexity: O(1)
 		 * @tparam vIndex The index of the element
+		 * @return A rvalue reference to the element
 		 */
 		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(tTypes)) {
 			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
@@ -442,36 +473,50 @@ namespace lnx{
 		}
 
 		/**
-		 * @brief Runtime version of get. Returns a reference to an element.
-		 *		Requires the element type to be explicitly specified.
-		 *		e.g. --- arr.get<int>(4); -- returns the 4th element as an int&.
-		 *		If the type is not specified, the element address is returned as a void*
+		 * @brief Runtime version of get
+		 *     Requires the element type to be explicitly specified in the function call
+		 *     e.g.
+		 *         arr.get<int>(4); //returns the 4th element as an int&
+		 *     If the type is not specified, the element address is returned as a void*
+		 *     Specifying an incorrect type is undefined behaviour
+		 * Complexity: O(vIndex)
 		 * @param vIndex The index of the element
 		 * @tparam tCType The type of the element
+		 * @return a rvalue reference to the element
 		 */
 		template<class tCType> alwaysInline tCType& rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return (tCType&)*(tCType*)(__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex));
 		}
+
+
 		/**
-		 * @brief Returns the element address a a void*
-		 * @param index The index of the element
+		 * @brief Returns the address of an elemen as a void*
+		 * Complexity: O(vIndex)
+		 * @param vIndex The index of the element
+		 * @return The addresso f the element
 		 */
 		alwaysInline void* rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
 			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex);
 		}
 
+
 		/**
-		 * @brief Returns the number of elements in the array
+		 * @brief Returns the number of elements
+		 * Complexity: O(1)
+		 * @return The number of elements in the array
 		 */
-		alwaysInline constexpr uint32 count() const { return sizeof...(tTypes); }
+		alwaysInline constexpr uint32 count() const {
+			return sizeof...(tTypes);
+		}
 
 
 
 
 		/**
-		 * @brief Calls a function using the array elements as arguments
+		 * @brief Calls a standard function using the array elements as arguments
+		 * Complexity: O(O(pFunc))
 		 * @param pFunc: The function to call
 		 * @return The return value of the function call
 		 */
@@ -481,10 +526,9 @@ namespace lnx{
 		}
 
 
-
-
 		/**
 		 * @brief Calls a member function using the array elements as arguments
+		 * Complexity: O(O(pFunc))
 		 * @param pObject The object to call the function on
 		 * @param pFunc The member function to call
 		 * @return The return value of the function call
@@ -494,9 +538,12 @@ namespace lnx{
 			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template execObj<obj_t, func_t>(pObject, pFunc);
 		}
 
+
+		/**
+		 * @brief Default copy assignment
+		 */
 		inline HcArray& operator=(const HcArray& pArr) = default;
 	};
-	// template<class... tTypesc> HcArray(tTypesc&&...) -> HcArray<tTypesc...>;
 	#undef seqIndex
 
 
@@ -509,33 +556,39 @@ namespace lnx{
 	/**
 	 * @brief Handy HcArray alias
 	 */
-	// template<class... tTypes> struct L : HcArray<tTypes...>{
-	// 	alwaysInline L() : HcArray<tTypes...>() {}
-	// 	template<class... tTypesc> alwaysInline L(tTypesc&&... vals) : HcArray<tTypes...>((std::forward<tTypes>(vals))...) {}
-	// };
-	// template<class... tTypesc> L(tTypesc&&...) -> L<tTypesc...>;
 	template<class... tTypes> using L = HcArray<tTypes...>;
 
 
 	/**
 	 * @brief Type used to perfect forward a list of arguments as a single parameter
+	 *     Each parameter is saved as a reference
 	 */
-	template<class... tTypes> struct P : public HcArray<tTypes...>{
-		// alwaysInline P() : HcArray<tTypes...>() {}
-		inline P(const P<tTypes...>& pObj) = default;
+	template<class... tTypes> struct fwd : public HcArray<tTypes...>{
+		/**
+		 * @brief Default constructor
+		 */
+		inline fwd() :
+			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}) {
+		}
 
-		template<class... tTypesc> alwaysInline P(tTypesc&&... vals) :
-			HcArray<tTypes...>(__fwd_ctor{}, std::forward<tTypesc>(vals)...) {
+		/**
+		 * @brief Default copy constructor
+		 */
+		inline fwd(const fwd<tTypes...>& pObj) = default;
+
+		/**
+		 * @brief List constructor
+		 * @param pVals The values used to initialize each element
+		 */
+		template<class... tTypesc> alwaysInline fwd(tTypesc&&... pVals) :
+			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}, std::forward<tTypesc>(pVals)...) {
 		}
 		//!Copy and move constructors are shadowed by the list constructor
 
-		inline P& operator=(const P& pObj) = default;
-		// template<class tType> void operator=(tType&&) = default;
-		// operator HcArray<tTypes...>(){
-		// 	HcArray<tTypes...> ret;
-		// 	memcpy(&ret, this, sizeof(*this));
-		// 	return (HcArray<tTypes...>&)(ret);
-		// }
+		/**
+		 * @brief Default copy assignment
+		 */
+		inline fwd& operator=(const fwd& pObj) = default;
 	};
-	template<class... tTypesc> P(tTypesc&&... vElms) -> P<tTypesc&&...>;
+	template<class... tTypesc> fwd(tTypesc&&... vElms) -> fwd<tTypesc&&...>;
 }

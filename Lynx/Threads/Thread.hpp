@@ -36,13 +36,13 @@ namespace lnx{
 		//Void standard with arguments
 		template<class tFun, class ...tArg> struct void_std_args_xt : public Func_b {
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 			void exec() final { _args.exec(_func); }
 		};
 		//Type standard with arguments
 		template<class tFun, class tRet, class ...tArg> struct type_std_args_xt : public Func_b {
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 			tRet* _ret;
 			void exec() final { *_ret = _args.exec(_func); }
 		};
@@ -69,14 +69,14 @@ namespace lnx{
 		template<class tObj, class tFun, class ...tArg> struct void_obj_args_xt : public Func_b {
 			tObj* _obj;
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 			void exec() final { _args.exec(*_obj, _func); }
 		};
 		//Type member with arguments
 		template<class tObj, class tFun, class tRet, class ...tArg> struct type_obj_args_xt : public Func_b {
 			tObj* _obj;
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 			tRet* _ret;
 			// void exec() final { *_ret = _args.execObj(*_obj, _func); } //TODO check if it is ok to call the exec overload
 			void exec() final { *_ret = _args.exec(*_obj, _func); }
@@ -110,12 +110,12 @@ namespace lnx{
 		//Void standard with arguments
 		template<class tFun, class ...tArg> struct void_std_args_t{
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 		};
 		//Type standard with arguments
 		template<class tFun, class tRet, class ...tArg> struct type_std_args_t {
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 			tRet* _ret;
 		};
 
@@ -141,13 +141,13 @@ namespace lnx{
 		template<class tObj, class tFun, class ...tArg> struct void_obj_args_t{
 			tObj& _obj;
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 		};
 		//Type member with arguments
 		template<class tObj, class tFun, class tRet, class ...tArg> struct type_obj_args_t {
 			tObj& _obj;
 			tFun _func;
-			P<tArg...> _args;
+			fwd<tArg...> _args;
 			tRet* _ret;
 		};
 
@@ -274,15 +274,15 @@ namespace lnx{
 	private:
 		//FIXME ADD TYPES CHECKS IN CONSTRUCTORS OR IN DISPATCH FUNCTIONS
 
-		template<class tFun, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const P<tArg...>& pArgs)
+		template<class tFun, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const fwd<tArg...>& pArgs)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
 			using funct = thr::__pvt::void_std_args_t<tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, (const P<tArg...>&)pArgs });
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, (const fwd<tArg...>&)pArgs });
 		}
-		template<class tFun, class tRet, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const P<tArg...>& pArgs, tRet* const pRet)
+		template<class tFun, class tRet, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const fwd<tArg...>& pArgs, tRet* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
 			using funct = thr::__pvt::type_std_args_t<tFun, tRet, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_args<tFun, tRet, tArg...>, new funct{ vFunc, (const P<tArg...>&)pArgs, pRet });
+			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_args<tFun, tRet, tArg...>, new funct{ vFunc, (const fwd<tArg...>&)pArgs, pRet });
 		}
 
 
@@ -299,15 +299,15 @@ namespace lnx{
 
 
 
-		template<class tObj, class tFun, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const P<tArg...>& pArgs)
+		template<class tObj, class tFun, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const fwd<tArg...>& pArgs)
 		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
 			using funct = thr::__pvt::void_obj_args_t<tObj, tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<tObj, tFun, tArg...>, new funct{ pObj, pFunc, (const P<tArg...>&)pArgs });
+			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<tObj, tFun, tArg...>, new funct{ pObj, pFunc, (const fwd<tArg...>&)pArgs });
 		}
-		template<class tObj, class tFun, class tRet, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const P<tArg...>& pArgs, tRet* const pRet)
+		template<class tObj, class tFun, class tRet, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const fwd<tArg...>& pArgs, tRet* const pRet)
 		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
 			using funct = thr::__pvt::type_obj_args_t<tObj, tFun, tRet, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_args<tObj, tFun, tRet, tArg...>, new funct{ pObj, pFunc, (const P<tArg...>&)pArgs, pRet });
+			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_args<tObj, tFun, tRet, tArg...>, new funct{ pObj, pFunc, (const fwd<tArg...>&)pArgs, pRet });
 		}
 
 
@@ -350,7 +350,7 @@ namespace lnx{
 		 *     ! Notice that the @param tags are not actual parameters, as the function takes a variable length template parameter
 		 *     ! @param is used to better explain what to pass to this constructor
 		 *     Complete signature:
-		 *         template<class... tArg> Thread([auto& pObj], auto pFun, [auto* pRet], [P<tArg...> pArg]);
+		 *         template<class... tArg> Thread([auto& pObj], auto pFun, [auto* pRet], [fwd<tArg...> pArg]);
 		 *     ! The parameters must always be passed in the shown order, even if some of them are omitted
 		 * Cmplexity: O() //TODO
 		 *
@@ -360,7 +360,7 @@ namespace lnx{
 		 * @param pRet A pointer that points to a variable where the return value is stored
 		 *     The pointer type must match the return type of pFun
 		 *     This parameter must be omitted if pFun is void
-		 * @param pArg An lnx::fwd containing the arguments that will be used to call the function //TODO specify that P is perfect forwarding and not just an htarray
+		 * @param pArg An lnx::fwd containing the arguments that will be used to call the function
 		 *     This parameter must be omitted if pFun has no parameters
 		 */
 		template<class... tType> alwaysInline Thread(tType&&... pArgs){
@@ -453,3 +453,4 @@ namespace lnx{
 		};
 	}
 }
+//TODO fix documentation

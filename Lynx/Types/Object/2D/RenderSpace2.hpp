@@ -1,6 +1,6 @@
 #pragma once
 #define LNX_H_RENDER_SPACE_2D
-#include "Lynx/Types/Object/RenderSpace_b.hpp"
+#include "Lynx/Types/Object/Obj_b.hpp"
 
 
 
@@ -30,7 +30,7 @@ namespace lnx::obj {
 	 * @brief A 2D space that allows objects to be rendered.
 	 *		This render space can only be a child of a window or another RenderSpace2
 	 */
-	struct RenderSpace2 : public RenderSpace_b {
+	struct RenderSpace2 : public StructObj2 {
 		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
 
 		AlignmentType alignment;	//Type of children alignmen
@@ -48,7 +48,7 @@ namespace lnx::obj {
 		}
 
 
-		uint32 addChild(obj2* pObject);
+		uint32 addChild(obj2_b* pObject);
 		void setChildLimits(const uint32 vChildIndex) const final;
 	};
 }

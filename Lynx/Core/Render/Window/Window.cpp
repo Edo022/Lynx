@@ -52,9 +52,9 @@ namespace lnx{
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
 		switch(glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
 			case VkResult::VK_SUCCESS: break;
-			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::printError("Initialization failed"); break;
-			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::printError("Extension not present"); break;
-			default: _dbg(dbg::printError("Unknown result")) _rls(noop);
+			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::logError("Initialization failed"); break;
+			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::logError("Extension not present"); break;
+			default: _dbg(dbg::logError("Unknown result")) _rls(noop);
 		}
 
 
@@ -115,7 +115,7 @@ namespace lnx{
 	/**
 	 * @brief Waits for the current frame to be rendered and closes the window
 	 *     This function can only be called by threads that are external to the window
-	 * Complexity: ? [depends on what the internal threads have to do to stop the execution]
+	 * Complexity: Unknown [depends on the state of the internal threads]
 	 */
 	void Window::close(){ //TODO add parameter to not wait for window to close
 		running = false;

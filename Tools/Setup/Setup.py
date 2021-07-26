@@ -31,7 +31,14 @@ if sys.stdin.read(1).lower() == 'y':
     if not os.path.exists(pdir + "/.vscode"):
         os.mkdir(pdir + "/.vscode")
 
-    enginePath = os.path.relpath(thisdir + '/..', pdir)
+
+    with open(pdir + "/.engine/platform", 'w') as f:
+        f.write('l')
+    with open(pdir + "/.engine/type", 'w') as f:
+        f.write('d')
+
+
+    enginePath = os.path.relpath(thisdir + '/../..', pdir)
     with open('./.engine/enginePath', 'w') as pf:
         pf.write(enginePath)
 
@@ -46,7 +53,7 @@ if sys.stdin.read(1).lower() == 'y':
            '        {'                                                                          '\n'
            '            "type": "shell",'                                                       '\n'
            '            "label": "Linux  |  Debug  |  Build Lynx Engine",'                      '\n'
-           '            "command": "' + enginePath + '/Build/lynxg++",'                         '\n'
+           '            "command": "' + enginePath + '/Tools/Build/lynxg++",'                   '\n'
            '            "args": [ "-mode=ld",'                                                  '\n'
            '                "' + enginePath + '/Lynx/Lynx_build.cpp",'                          '\n'
            '                "' + enginePath + '/Lynx/shaders/*.comp",'                          '\n'
@@ -126,7 +133,7 @@ if sys.stdin.read(1).lower() == 'y':
            '        {'                                                                          '\n'
            '            "type": "shell",'                                                       '\n'
            '            "label": "Linux  |  Debug  |  Build Application\",'                     '\n'
-           '            "command": "' + enginePath + '/Build/lynxg++",'                         '\n'
+           '            "command": "' + enginePath + '/Tools/Build/lynxg++",'                   '\n'
            '            "args": [ "-mode=ld",'                                                  '\n'
            '                //Your build'                                                       '\n'
            '            ],'                                                                     '\n'

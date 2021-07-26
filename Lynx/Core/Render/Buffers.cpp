@@ -29,7 +29,7 @@ namespace lnx::core::buffers{
 			.setSharingMode (vk::SharingMode::eExclusive)
 		;
 		switch(vDevice.createBuffer(&bufferInfo, nullptr, pBuffer)){
-			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::printError("Invalid opaque capture address"); break;
+			case vk::Result::eErrorInvalidOpaqueCaptureAddress: dbg::logError("Invalid opaque capture address"); break;
 			vkDefaultCases;
 		}
 
@@ -45,13 +45,13 @@ namespace lnx::core::buffers{
 			.setMemoryTypeIndex (memType)
 		;
 		switch(vDevice.allocateMemory(&allocInfo, nullptr, pMemory)) {
-			case vk::Result::eErrorInvalidOpaqueCaptureAddressKHR: dbg::printError("Invalid opaque capture address"); break;
-			case vk::Result::eErrorInvalidExternalHandle:          dbg::printError("Invalid external handle");        break;
+			case vk::Result::eErrorInvalidOpaqueCaptureAddressKHR: dbg::logError("Invalid opaque capture address"); break;
+			case vk::Result::eErrorInvalidExternalHandle:          dbg::logError("Invalid external handle");        break;
 			vkDefaultCases;
 		}
 
 		switch(vDevice.bindBufferMemory(*pBuffer, *pMemory, 0)){
-			case vk::Result::eErrorInvalidOpaqueCaptureAddressKHR: dbg::printError("Invalid opaque capture address"); break;
+			case vk::Result::eErrorInvalidOpaqueCaptureAddressKHR: dbg::logError("Invalid opaque capture address"); break;
 			vkDefaultCases;
 		}
 	}

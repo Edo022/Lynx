@@ -23,7 +23,7 @@ namespace lnx::thr {
 
 
 	LnxAutoInit(LNX_H_THREAD_POOL) {
-		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, P{ i });
+		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, fwd{ i });
 	}
 
 
@@ -35,7 +35,8 @@ namespace lnx::thr {
 
 	void thrLoop(uint32 vThrIndex) {
 		#ifdef LNX_DEBUG			//Set the thread name if in debug mode.
-			char thrName[16];
+			char thrName[64];
+			//!^ Only 16 bytes are usable. The size is 64 to not overflow sprintf
 			sprintf(thrName, "Lynx | GTP %d", vThrIndex);
 			thr::self::setName(thrName);
 		#endif

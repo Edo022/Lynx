@@ -56,9 +56,11 @@ namespace lnx {
 	 */
 	template<class tType, std::integral tIdxt = uint32> struct RaArray{
 		genInitCheck;
-		static_assert(!std::is_void_v<tType>, "RaArray declared as array of void");
-		static_assert(!std::is_const_v<tType>, "RaArray declared as array of const values. The elements of a dynamic array must be assignable");
-		static_assert(!std::is_const_v<tIdxt>, "tIdxt cannot be const");
+		static_assert(!std::is_void_v     <tType>, "RaArray declared as array of void");
+		static_assert(!std::is_reference_v<tType>, "RaArray declared as array of references");
+		static_assert(!std::is_const_v    <tType>, "RaArray declared as array of const values. The elements of a dynamic array must be assignable");
+		static_assert(std::is_integral_v  <tIdxt>, "tIdxt template parameter must be an integer type");
+		static_assert(!std::is_const_v    <tIdxt>, "tIdxt cannot be const");
 
 
 
@@ -107,41 +109,48 @@ namespace lnx {
 
 
 
-		alwaysInline void specDestroy() const noexcept requires( std::is_trivially_destructible_v<tType>) {}
-		      inline void specDestroy()                requires(!std::is_trivially_destructible_v<tType>) {
+		alwaysInline void specDestroy() const noexcept
+		requires( std::is_trivially_destructible_v<tType>) {}
+
+		template<class tAType, class tAIdxt> alwaysInline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
+		requires(std::is_same_v<tIdxt, tAIdxt> && sizeof(tType) == sizeof(tAType) && std::is_trivially_copy_constructible_v<tAType>){
+			memcpy(data, pArr.data, pArr.data.size());
+		}
+
+		template<class tDst, class tSrc> static alwaysInline void specIdxCnv(tDst& pDst, const tSrc vSrc)
+		requires(std::is_same_v<tSrc, tDst>){
+			pDst = (tDst)vSrc;
+		}
+
+
+
+
+		inline void specDestroy()
+		requires(!std::is_trivially_destructible_v<tType>) {
 			for(tIdxt i = 0; i < count(); ++i){
 				if(isValid(i)) data[(uint64)i].value.~tType();
 			}
 		}
 
-
-
-
-		template<class tAType, class tAIdxt> alwaysInline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
-			requires(std::is_same_v<tIdxt, tAIdxt> && sizeof(tType) == sizeof(tAType) && std::is_trivially_copy_constructible_v<tAType>){
-			memcpy(data, pArr.data, pArr.data.size());
-		}
+		/**
+		 * @brief Specialized function used to copy data from a RaArray
+		 * Complexity: O(n)
+		 *     Where n = pArr.count()
+		 */
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
-			requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
+		requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
 			for(tAIdxt i = 0; i < pArr.count(); ++i){
 				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
 				specIdxCnv(data[(uint64)i].next, pArr.data[i].next);
 			}
 		}
 
-
-
-
 		/**
 		 * @brief (tIdxt)-1 is used as special value, so the actual value depends on the index type.
 		 *     This function correctly converts the -1 taking into account the type of the indices
 		 */
 		template<class tDst, class tSrc> static alwaysInline void specIdxCnv(tDst& pDst, const tSrc vSrc)
-			requires(std::is_same_v<tSrc, tDst>){
-			pDst = (tDst)vSrc;
-		}
-		template<class tDst, class tSrc> static alwaysInline void specIdxCnv(tDst& pDst, const tSrc vSrc)
-			requires(!std::is_same_v<tSrc, tDst>) {
+		requires(!std::is_same_v<tSrc, tDst>) {
 			if(vSrc == (tSrc)-1) pDst = (tDst)-1;
 			else pDst = (tDst)vSrc;
 		}
@@ -149,6 +158,13 @@ namespace lnx {
 
 
 
+		/**
+		 * @brief Copies data from another RaArray
+		 * Complexity: O(n)
+		 *     Where n = pArr.count()
+		 * @param pArr Array to copy the elements from
+		 * @return Rvalue reference to this object
+		 */
 		template<class tAType, class tAIdxt> inline auto& copyRaArray(const RaArray<tAType, tAIdxt>& pArr) {
 			data.reallocArr((uint64)pArr.count(), false);
 			specIdxCnv(tail, pArr.tail);  specIdxCnv(head, pArr.head);
@@ -161,6 +177,13 @@ namespace lnx {
 
 
 
+		/**
+		 * @brief Copies data from a ContainerBase
+		 * Complexity: O(n)
+		 *     Where n = pCont.count()
+		 * @param pCont Container to copy the elements from
+		 * @return Rvalue reference to this object
+		 */
 		template<class tCType, class tCIdxt> inline auto& copyContainerBase(const ContainerBase<tCType, tCIdxt>& pCont){
 			data.reallocArr((uint64)pCont.count(), false);
 			tail = head = (tIdxt)-1;
@@ -296,7 +319,8 @@ namespace lnx {
 			data{ pArr.data },
 			tail{ pArr.tail }, head{ pArr.head }, count_{ pArr.count_ }, free_{ pArr.free_ } {
 			pArr.count_ = 0;	//Prevent the destructor from destroying the elements
-			//! Data is not destroyed, as the pointer keeps track of how many owners it has
+			// //! Data is not destroyed, as the pointer keeps track of how many owners it has
+			pArr.data = nullptr;
 		}
 
 
@@ -311,8 +335,10 @@ namespace lnx {
 		 */
 		~RaArray() {
 			checkInit();
-			if(!empty()) specDestroy();
-			data.realloc(0);
+			if(data){
+				if(!empty()) specDestroy();
+				data.realloc(0);
+			}
 		}
 
 
@@ -520,7 +546,8 @@ namespace lnx {
 			tail   = pArr.tail;    head  = pArr.head;
 			count_ = pArr.count(); free_ = pArr.freeCount();
 			pArr.count_ = 0;		//Prevent the destructor from destroying the new elements
-			//! Data is not destroyed, as the pointer keeps track of how many owners it has
+			// //! Data is not destroyed, as the pointer keeps track of how many owners it has
+			pArr.data = nullptr;
 			return *this;
 		}
 

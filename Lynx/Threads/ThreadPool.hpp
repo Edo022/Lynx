@@ -53,7 +53,14 @@ namespace lnx::thr {
 
 
 
-	template<class func_t, class ...args_ts> void runAsync(const func_t vFunc, const P<args_ts...>& pArgs, pollFence& vFence)
+	/**
+	 * @brief Initializes a thread with a void non member function
+	 *     e.g. Thread t(func, fwd{0.5f})
+	 * Complexity: //TODO
+	 * @param vFunc The function to call
+	 * @param pArgs A lnx::fwd containing the function arguments
+	 */
+	template<class func_t, class ...args_ts> void runAsync(const func_t vFunc, const fwd<args_ts...>& pArgs, pollFence& vFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::void_std_args_xt<func_t, args_ts...>;
@@ -67,13 +74,16 @@ namespace lnx::thr {
 	}
 
 	/**
-	 * @brief Initializes a thread with a non void non member function.
-	 *		e.g. --- int ret; Thread t(func, P{ 0.5f }, &ret); ---
+	 * @brief Initializes a thread with a non void non member function
+	 *     e.g.
+	 *         int ret;
+	 *         Thread t(func, fwd{ 0.5f }, &ret);
+	 * Complexity: //TODO
 	 * @param vFunc The function to call
-	 * @param pArgs An HcArray containing the function arguments
+	 * @param pArgs A lnx::fwd containing the function arguments
 	 * @param pRet The address where to store the return value
 	 */
-	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const P<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
+	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const fwd<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
 		queue_m.lock();
 		using funct = __pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
@@ -91,8 +101,9 @@ namespace lnx::thr {
 
 
 	/**
-	 * @brief Initializes a thread with a void non member function that takes no arguments.
-	 *		e.g. --- Thread t(func); ---
+	 * @brief Initializes a thread with a void non member function that takes no arguments
+	 *     e.g. Thread t(func);
+	 * Complexity: //TODO
 	 * @param vFunc The function to call
 	 */
 	template<class func_t> alwaysInline void runAsync(const func_t vFunc, pollFence& pFence)
@@ -109,8 +120,11 @@ namespace lnx::thr {
 
 
 	/**
-	 * @brief Initializes a thread with a non void non member function that takes no arguments.
-	 *		e.g. --- int ret; Thread t(func, &ret); ---
+	 * @brief Initializes a thread with a non void non member function that takes no arguments
+	 *     e.g.
+	 *         int ret;
+	 *         Thread t(func, &ret);
+	 * Complexity: //TODO
 	 * @param vFunc The function to call
 	 * @param pRet The address where to store the return value
 	 */
@@ -133,12 +147,15 @@ namespace lnx::thr {
 //FIXME INTERNAL DOCUMENTATION
 	/**
 	 * @brief Initializes a thread with a void member function
-	 *		e.g. --- Obj obj; Thread t(obj, &obj::func, P{ 0.5f }); ---
+	 *     e.g.
+	 *         Obj obj;
+	 *         Thread t(obj, &obj::func, fwd{ 0.5f });
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
-	 * @param pArgs An HcArray containing the function arguments
+	 * @param pArgs A lnx::fwd containing the function arguments
 	 */
-	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const P<args_ts...>& pArgs, pollFence& pFence)
+	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const fwd<args_ts...>& pArgs, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
@@ -153,14 +170,18 @@ namespace lnx::thr {
 	}
 
 	/**
-	 * @brief Initializes a thread with a non void member function.
-	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, P{ 0.5f }, &ret); ---
+	 * @brief Initializes a thread with a non void member function
+	 *     e.g.
+	 *         Obj obj;
+	 *         int ret;
+	 *         Thread t(obj, &obj::func, fwd{ 0.5f }, &ret);
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
-	 * @param pArgs An HcArray containing the function arguments
+	 * @param pArgs A lnx::fwd containing the function arguments
 	 * @param pRet The address where to store the return value
 	 */
-	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const P<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
+	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const fwd<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
 		queue_m.lock();
 		using funct = __pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
@@ -179,8 +200,11 @@ namespace lnx::thr {
 
 
 	/**
-	 * @brief Initializes a thread with a void member function that takes no arguments.
-	 *		e.g. --- Obj obj; Thread t(obj, &obj::func); ---
+	 * @brief Initializes a thread with a void member function that takes no arguments
+	 *     e.g.
+	 *         Obj obj;
+	 *         Thread t(obj, &obj::func);
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
 	 */
@@ -198,8 +222,12 @@ namespace lnx::thr {
 	}
 
 	/**
-	 * @brief Initializes a thread with a non void member function that takes no arguments.
-	 *		e.g. --- Obj obj; int ret; Thread t(obj, &obj::func, &ret); ---
+	 * @brief Initializes a thread with a non void member function that takes no arguments
+	 *     e.g.
+	 *         Obj obj;
+	 *         int ret;
+	 *         Thread t(obj, &obj::func, &ret);
+	 * Complexity: //TODO
 	 * @param pObj The object to call the function on
 	 * @param pFunc The address of the member function to call
 	 * @param pRet The address where to store the return value

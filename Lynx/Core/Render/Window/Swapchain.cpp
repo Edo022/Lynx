@@ -86,17 +86,17 @@ namespace lnx::core::wnd{
 		//Create swapchain
 		vk::Bool32 hasPresentSupport = false;
 		switch(dvc::graphics.pd.device.getSurfaceSupportKHR(dvc::graphics.pd.indices.presentFamily, w->surface, &hasPresentSupport)){ //! SUPPRESS ERROR
-			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
 		//FIXME hasPresentSupport is unused
 		//FIXME ^ SKIP THIS IN RELEASE MODE (It's probably already checked by another function)
 		switch(dvc::graphics.ld.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
-			case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-			case vk::Result::eErrorNativeWindowInUseKHR: dbg::printError("Native window in use");  break;
-			case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
-			case vk::Result::eErrorDeviceLost:           dbg::printError("Device lost");           break;
+			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
+			case vk::Result::eErrorNativeWindowInUseKHR: dbg::logError("Native window in use");  break;
+			case vk::Result::eErrorSurfaceLostKHR:       dbg::logError("Surface lost");          break;
+			case vk::Result::eErrorDeviceLost:           dbg::logError("Device lost");           break;
 			vkDefaultCases;
 		}
 
@@ -108,13 +108,13 @@ namespace lnx::core::wnd{
 		//Get images
 		uint32 imageCount;
 		switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
-			case vk::Result::eIncomplete: dbg::printError("Incomplete swapchains"); break;
+			case vk::Result::eIncomplete: dbg::logError("Incomplete swapchains"); break;
 			vkDefaultCases;
 		}
 
 		images.resize(imageCount); vk::Image _[imageCount];
 		switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, _)){
-			case vk::Result::eIncomplete: dbg::printError("Incomplete swapchains"); break;
+			case vk::Result::eIncomplete: dbg::logError("Incomplete swapchains"); break;
 			vkDefaultCases;
 		}
 
@@ -146,7 +146,7 @@ namespace lnx::core::wnd{
 		if(width != 0 && height != 0) {			//If the window contains pixels
 			destroy();								//Clean the old swapchain
 			switch(dvc::graphics.ld.waitIdle()){	//Wait for the logical device
-				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
 
@@ -155,7 +155,7 @@ namespace lnx::core::wnd{
 				//Recalculate swapchain extent
 				vk::SurfaceCapabilitiesKHR capabilities;
 				switch(dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(w->surface, &capabilities)){
-					case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+					case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 					vkDefaultCases;
 				}
 
@@ -171,10 +171,10 @@ namespace lnx::core::wnd{
 
 				//Create swapchain
 				switch(dvc::graphics.ld.createSwapchainKHR(&createInfo, nullptr, &swapchain)){
-					case vk::Result::eErrorInitializationFailed: dbg::printError("Initialization failed"); break;
-					case vk::Result::eErrorNativeWindowInUseKHR: dbg::printError("Native window in use");  break;
-					case vk::Result::eErrorSurfaceLostKHR:       dbg::printError("Surface lost");          break;
-					case vk::Result::eErrorDeviceLost:           dbg::printError("Device lost");           break;
+					case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
+					case vk::Result::eErrorNativeWindowInUseKHR: dbg::logError("Native window in use");  break;
+					case vk::Result::eErrorSurfaceLostKHR:       dbg::logError("Surface lost");          break;
+					case vk::Result::eErrorDeviceLost:           dbg::logError("Device lost");           break;
 					vkDefaultCases;
 				}
 
@@ -184,7 +184,7 @@ namespace lnx::core::wnd{
 			//Create images
 			uint32 imageCount;
 				switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, nullptr)){
-				case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
+				case vk::Result::eIncomplete: dbg::logError("Incomplete devices"); break;
 				vkDefaultCases;
 			}
 
@@ -195,7 +195,7 @@ namespace lnx::core::wnd{
 			//Get images
 			vk::Image _[imageCount];
 				switch(dvc::graphics.ld.getSwapchainImagesKHR(swapchain, &imageCount, _)){
-				case vk::Result::eIncomplete: dbg::printError("Incomplete devices"); break;
+				case vk::Result::eIncomplete: dbg::logError("Incomplete devices"); break;
 				vkDefaultCases;
 			}
 
@@ -227,7 +227,7 @@ namespace lnx::core::wnd{
 			}
 
 			//Recreate clear shader
-			w->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, *w);
+			w->renderCore.sh_clear.updateCommandBuffers({ (createInfo.imageExtent.width * createInfo.imageExtent.height) / (32 * 32) + 1, 1u, 1u }, w->renderCore);
 		}
 	}
 
@@ -262,7 +262,7 @@ namespace lnx::core::wnd{
 	 */
 	void Swapchain::clear(){
 		switch(core::dvc::graphics.ld.waitIdle()){
-			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+			case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 			vkDefaultCases;
 		}
 		destroy();
@@ -387,7 +387,7 @@ namespace lnx::core::wnd{
 				return fmt;
 			}
 		}
-		dbg::printError("No supported surface format found");
+		dbg::logError("No supported surface format found");
 		return pAvailableFormats[0]; //FIXME
 	}
 	//FIXME add tiling to parameters ^^
@@ -400,14 +400,14 @@ namespace lnx::core::wnd{
 	// 			return format;
 	// 		}
 	// 	}
-	// 	dbg::printError("Failed to find a supported format");
+	// 	dbg::logError("Failed to find a supported format");
 	// 	return vk::Format::eUndefined;
 	// }
 
 
 
 
-	//Returns the presentation mode that will be used. Use immediate or mailbox (causes tearing), FIFO if using VSync
+	//TODO Use immediate or mailbox (causes tearing), FIFO if using VSync
 	/**
 	 * @brief Chooses the best vk::PresentModeKHR based on the available present modes
 	 *     This function should only be used by the engine
@@ -537,7 +537,7 @@ namespace lnx::core::wnd{
 	vk::SurfaceCapabilitiesKHR Swapchain::getCapabilities(){
 		vk::SurfaceCapabilitiesKHR capabilities;
 		switch(core::dvc::graphics.pd.device.getSurfaceCapabilitiesKHR(w->surface, &capabilities)){
-			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+			case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 			vkDefaultCases;
 		}
 
@@ -558,15 +558,15 @@ namespace lnx::core::wnd{
 		RtArray<vk::SurfaceFormatKHR>	formats;
 
 		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(w->surface, &count, nullptr)){
-			case vk::Result::eIncomplete:          dbg::printError("Incomplete formats"); break;
-			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost");       break;
+			case vk::Result::eIncomplete:          dbg::logError("Incomplete formats"); break;
+			case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost");       break;
 			vkDefaultCases;
 		}
 
 		formats.resize(count);
 		switch(core::dvc::graphics.pd.device.getSurfaceFormatsKHR(w->surface, &count, formats.begin())){
-			case vk::Result::eIncomplete:          dbg::printError("Incomplete formats");   break;
-			case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost");         break;
+			case vk::Result::eIncomplete:          dbg::logError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
@@ -586,15 +586,15 @@ namespace lnx::core::wnd{
 		uint32 count; RtArray<vk::PresentModeKHR> presentModes;
 
 		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(w->surface, &count, nullptr)){
-			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
-			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eIncomplete:             dbg::logError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");         break;
 			vkDefaultCases;
 		}
 
 		presentModes.resize(count);
 		switch(dvc::graphics.pd.device.getSurfacePresentModesKHR(w->surface, &count, presentModes.begin())){
-			case vk::Result::eIncomplete:             dbg::printError("Incomplete formats");   break;
-			case vk::Result::eErrorSurfaceLostKHR:    dbg::printError("Surface lost");         break;
+			case vk::Result::eIncomplete:             dbg::logError("Incomplete formats");   break;
+			case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");         break;
 			vkDefaultCases;
 		}
 

@@ -65,30 +65,30 @@ namespace lnx{
 	 *     where f = The pObj onSpawn function and the onSpawn function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
-	void core::RenderCore::recSpawn(obj::obj_bb* pObj, Window& pWindow){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
+	void core::RenderCore::recSpawn(obj::obj_bb* pObj){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->updates = pObj->updates & ~obj::eSpawn;						//Clear update bit (prevents redundant updates)
-		pObj->w = &pWindow;													//Set owner window
-		pObj->onSpawn(pWindow);												//Run user callback
-		for(uint32 i = 0; i < pObj->children.count(); ++i){					//For each child
-			if(pObj->children.isValid(i)) recSpawn(pObj->children[i], pWindow); //Run recursive update on it
+		pObj->updates = pObj->updates & ~obj::eSpawn;					//Clear update bit (prevents redundant updates)
+		pObj->w = w;													//Set owner window
+		pObj->onSpawn(*this);											//Run user callback
+		for(uint32 i = 0; i < pObj->children.count(); ++i){				//For each child
+			if(pObj->children.isValid(i)) recSpawn(pObj->children[i]); 		//Run recursive update on it
 		}
 	}
 
 
 	/**
-	 * @brief Recursively calls the onUpdateg function on pObj and its valid children and switches off their eUpdateg update bit
+	 * @brief Recursively calls the onFlush function on pObj and its valid children and switches off their eFlush update bit
 	 *     This function should only be used by the engine
 	 * Complexity: O(ΣO(f))
-	 *     where f = The pObj onUpdateg function and the onUpdateg function of each valid children, recursively
+	 *     where f = The pObj onFlush function and the onFlush function of each valid children, recursively
 	 * @param pObj The object from which to start the recursion
 	 */
-	void core::RenderCore::recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB){
+	void core::RenderCore::recFlush(obj::obj_bb* pObj, vk::CommandBuffer pCB){
 		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
-		pObj->updates = pObj->updates & ~obj::eUpdateg;
-		pObj->onUpdateg(pCB);
+		pObj->updates = pObj->updates & ~obj::eFlush;
+		pObj->onFlush(pCB);
 		for(uint32 i = 0; i < pObj->children.count(); ++i){
-			if(pObj->children.isValid(i)) recUpdateg(pObj->children[i], pCB);
+			if(pObj->children.isValid(i)) recFlush(pObj->children[i], pCB);
 		}
 	}
 
@@ -128,7 +128,7 @@ namespace lnx{
 	/**
 	 * @brief Initializes the render core
 	 *     Creates the pipelines and the swapchain, allocates the default buffers and command buffers and creates the clear shader
-	 *     This function must be called from lnx::Window::init()  only
+	 *     This function must be called from lnx::Window::init() only
 	 * Complexity: O(n + m)
 	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
 	 */
@@ -164,7 +164,7 @@ namespace lnx{
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
 			createDefaultCommandBuffers__(); //[m]
 		}
-		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *w);
+		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *this);
 	}
 
 
@@ -305,8 +305,8 @@ namespace lnx{
 	 */
 	void core::RenderCore::draw(uint32& vImgIndex){
 		switch(core::dvc::graphics.ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
-			case vk::Result::eTimeout:         dbg::printError("Fence timed out"); break;
-			case vk::Result::eErrorDeviceLost: dbg::printError("Device lost");     break;
+			case vk::Result::eTimeout:         dbg::logError("Fence timed out"); break;
+			case vk::Result::eErrorDeviceLost: dbg::logError("Device lost");     break;
 			vkDefaultCases;
 		}
 
@@ -323,12 +323,12 @@ namespace lnx{
 		//Acquire swapchain image
 		{
 			switch(core::dvc::graphics.ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &vImgIndex)) {
-				case vk::Result::eTimeout:             dbg::printWarning("Timeout");    break;
-				case vk::Result::eNotReady:            dbg::printWarning("Not ready");  break;
-				case vk::Result::eSuboptimalKHR:       dbg::printWarning("Suboptimal"); break;
+				case vk::Result::eTimeout:             dbg::logWarn("Timeout");    break;
+				case vk::Result::eNotReady:            dbg::logWarn("Not ready");  break;
+				case vk::Result::eSuboptimalKHR:       dbg::logWarn("Suboptimal"); break;
 				case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-				case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
-				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+				case vk::Result::eErrorDeviceLost:     dbg::logError("Device lost");  break;
+				case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 				#ifdef _WIN64 //This error is unique to windows
 					case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
 				#endif
@@ -381,10 +381,10 @@ namespace lnx{
 
 		switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 			case vk::Result::eSuccess: break;
-			case vk::Result::eErrorOutOfDeviceMemory: dbg::printError("Out of device memory"); break;
-			// case vk::Result::eErrorOutOfHostMemory: dbg::printError("Out of host memory"); break;
+			case vk::Result::eErrorOutOfDeviceMemory: dbg::logError("Out of device memory"); break;
+			// case vk::Result::eErrorOutOfHostMemory: dbg::logError("Out of host memory"); break;
 			//!^ Not an error. This value is not returned
-			default: dbg::printError("Unknown result");
+			default: dbg::logError("Unknown result");
 		}
 
 		core::render::graphicsQueueSubmit_m.lock();
@@ -409,10 +409,10 @@ namespace lnx{
 		vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands(); //FIXME USE RENDER QUEUE
 		requests_m.lock();
 		if(!requests.empty()) for(auto r : requests){
-			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r, *w);
+			if(r->updates & obj::UpdateBits::eSpawn) recSpawn(r);
 			if(r->updates & obj::UpdateBits::eLimit) recLimit(r);
-			if(r->updates & obj::UpdateBits::eUpdateg) recUpdateg(r, cb);
-			_dbg(if(r->updates != obj::eNone) dbg::printWarning("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
+			if(r->updates & obj::UpdateBits::eFlush) recFlush(r, cb);
+			_dbg(if(r->updates != obj::eNone) dbg::logWarn("Non-0 value detected for render.updates after update loop. This may indicate a race condition or a bug in the engine"));
 		}
 		requests.clear();
 		requests_m.unlock();
@@ -500,7 +500,7 @@ namespace lnx{
 	/**
 	 * @brief Starts the render core
 	 *     This function should only be used by the engine
-	 * Complexity: ? [function may not return during program execution]
+	 * Complexity: Unknown [function may not return during program execution]
 	 */
 	void core::RenderCore::run(){
 		_dbg(thr::self::setName("App | Render"));
@@ -516,7 +516,7 @@ namespace lnx{
 	 * @brief Until the core is terminated, looping between the swapchain images:
 	 *     Presents the image and renders a new one, then updates the objects and sends the input callbacks
 	 *     This function should only be used by the engine
-	 * Complexity: ? [function may not return during program execution]
+	 * Complexity: Unknown [function may not return during program execution]
 	 */
 	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
@@ -535,11 +535,11 @@ namespace lnx{
 			redraw:
 			draw(imageIndex);
 			switch(present(imageIndex)){
-				case vk::Result::eSuboptimalKHR: dbg::printWarning("Suboptimal"); break;
+				case vk::Result::eSuboptimalKHR: dbg::logWarn("Suboptimal"); break;
 				// case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
 				case vk::Result::eErrorOutOfDateKHR:   swp.recreate(); goto redraw;
-				case vk::Result::eErrorDeviceLost:     dbg::printError("Device lost");  break;
-				case vk::Result::eErrorSurfaceLostKHR: dbg::printError("Surface lost"); break;
+				case vk::Result::eErrorDeviceLost:     dbg::logError("Device lost");  break;
+				case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 				#ifdef _WIN64 //This error is unique to windows
 					case vk::Result::eErrorFullScreenExclusiveModeLostEXT: //FIXME
 				#endif
@@ -556,11 +556,11 @@ namespace lnx{
 
 
 			//Calculate render duration
+			//TODO add detailed timings output
 			auto end = std::chrono::high_resolution_clock::now();
 			auto duration = duration_cast<std::chrono::microseconds>(end - start);
 			if(duration_cast<std::chrono::seconds>(end - last).count() >= 1){
-				std::cout << "\nFPS: " << 1.0f/(((float)duration.count())/(1000*1000));
-				std::cout << "\n" << duration.count();
+				dbg::logInfo("%6.1f fps, %.2f ms", 1.0f/(((float)duration.count())/1000/1000), (((float)duration.count())/1000));
 				last = end;
 			}
 

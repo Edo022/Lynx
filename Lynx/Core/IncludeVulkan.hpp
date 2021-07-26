@@ -22,19 +22,19 @@
 #define vkDefaultFaulures													\
 	/*No vram available. Use ram*/											\
 	case vk::Result::eErrorOutOfDeviceMemory: { 							\
-		dbg::printError("Out of device memory");							\
+		dbg::logError("Out of device memory");							\
 		break;																\
 	}																		\
 \
 	/*No ram or swap available. Pack pool cells and free unused blocks*/	\
 	case vk::Result::eErrorOutOfHostMemory: {								\
-		dbg::printError("Out of host memory");								\
+		dbg::logError("Out of host memory");								\
 		break;																\
 	}																		\
 \
 	/*If in debug mode, catch any result that was not checked*/				\
 	default: {																\
-		_dbg(dbg::printError("Unknown result"))_rls(break);					\
+		_dbg(dbg::logError("Unknown result"))_rls(break);					\
 	}
 
 

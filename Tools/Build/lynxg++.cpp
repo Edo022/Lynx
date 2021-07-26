@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
 
 
         //Run command
-        return system((string("python3.9 ") + enginePath + "/Build/lynxg++.py " + opt).c_str());
+        return system((string("python3.9 ") + enginePath + "/Tools/Build/lynxg++.py " + opt).c_str());
     }
 }
 

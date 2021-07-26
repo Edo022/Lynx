@@ -97,8 +97,11 @@ while i < len(cmdp):
         oname = r.group(3)
         cmdsh += [
             [
-                enginePath + '/deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslc',
-                iname + '.comp', '-o', oname + '.spv'
+                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslangValidator',
+                '-V', iname + '.comp', '-o', oname + '.spv'
+            ],[
+                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val',
+                oname + '.spv'
             ],[
                 'python3',
                 enginePath + '/Lynx/shaders/GlslToCpp.py',
@@ -113,8 +116,8 @@ while i < len(cmdp):
 
 
 #Build G++ command
-vkdep:str = enginePath + '/deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
-gwdep:str = enginePath + '/deps/Shared/GLFW'
+vkdep:str = enginePath + '/Deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
+gwdep:str = enginePath + '/Deps/Shared/GLFW'
 
 cmdg = ['g++', '-std=c++20', '-pthread']                        #Base options
 cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced vulkan macros
@@ -138,7 +141,7 @@ cmdg += cmdp + [                                                #Copy parsed G++
 if cd == 'u': cmdg += [                                         #When building user application
     '-I' + '.',                                                     #Add workspace include path
     '-L' + vkdep + '/lib',                                          #Add Vulkan library path
-    '-L' + enginePath + '/deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
+    '-L' + enginePath + '/Deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
     '-lvulkan', '-Bstatic', '-lglfw3'                               #Link Vulkan dynamically and GLFW statically
 ]
@@ -153,10 +156,13 @@ if cd == 'u': cmdg += [                                         #When building u
 if len(cmdsh) > 0:
     print('\n' + ('-' * os.get_terminal_size().columns))
     print('\n\n' '\033[1m' 'COMPILING SHADERS')
-    for sh in cmdsh:
-        print('\033[1m' + (' '.join(sh)) + '\033[0m')
-    for sh in cmdsh:
-        subprocess.run(sh)
+    i = 0
+    while i < len(cmdsh):
+        print('\n')
+        print('\033[1m' + (' '.join(cmdsh[i + 0])) + '\033[0m'); subprocess.run(cmdsh[i + 0])
+        print('\033[1m' + (' '.join(cmdsh[i + 1])) + '\033[0m'); subprocess.run(cmdsh[i + 1])
+        print('\033[1m' + (' '.join(cmdsh[i + 2])) + '\033[0m'); subprocess.run(cmdsh[i + 2])
+        i += 3
     print('\n')
 
 

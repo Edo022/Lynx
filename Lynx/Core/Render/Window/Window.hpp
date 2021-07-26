@@ -14,17 +14,17 @@
 namespace lnx::obj{
 	struct RenderSpace2;
 	struct obj_bb;
-	struct obj2;
+	struct obj2_b;
 }
 namespace lnx{
 	//FIXME
 	struct InputCallbackQueues{
 		struct InputCallbackQueue{
 			std::atomic<bool> queued = false;
-			RaArray<obj::obj2*> list;
+			RaArray<obj::obj2_b*> list;
 			std::mutex m;
 			f32v2 pos;
-			inline auto add(obj::obj2* pElm){
+			inline auto add(obj::obj2_b* pElm){
 				m.lock();
 				auto r = list.add(pElm);
 				m.unlock();

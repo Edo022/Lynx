@@ -175,9 +175,9 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n//####################################################################################'
         '\n// This file was generated automatically. Changes could be overwritten without notice'
         '\n//####################################################################################\n'
-        '\n#pragma once'                                                    #Include guard
-        '\n#include "Lynx/Core/Render/Shaders/Shader_t.hpp"\n\n\n'     #Base Shader struct
-        '\nnamespace lnx::shd{'                                             #Write namespace and struct declaration
+        '\n#pragma once'                                            #Include guard
+        '\n#include "Lynx/Core/Render/Shaders/Shader_t.hpp"\n\n\n'  #Base Shader struct
+        '\nnamespace lnx::shd{'                                     #Write namespace and struct declaration
         '\n\tstruct ' + fname + ' : public Shader_b {'
         '\n\t\tstatic Shader_b::Layout layout;'
         '\n\t\tstatic uint32 pipelineIndex;'
@@ -188,10 +188,10 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n//####################################################################################\n'
         '\n#include "' + re.sub(r'^.*?\/?Lynx\/(Lynx\/.*$)', r'\g<1>', spath + shname) + '.hpp"' #FIXME
         '\n#include "Lynx/Core/AutoInit.hpp"'                       #Auto init
-        '\n#include "Lynx/Core/Render/Window/Window.hpp"'              #Window struct
+        # '\n#include "Lynx/Core/Render/Render.hpp"'                  #Window struct
         '\n#include "Lynx/Core/Render/Shaders/Shader.hpp"'
-        '\n#define LNX_H_' + fname.upper() + '\n\n\n'                      #Auto init define
-        '\nnamespace lnx::shd{'                                             #Write namespace declaration
+        '\n#define LNX_H_' + fname.upper() + '\n\n\n'               #Auto init define
+        '\nnamespace lnx::shd{'                                     #Write namespace declaration
     )
 
     shader = re.findall(                                #Search for binding declarations
@@ -229,10 +229,10 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             ', '.join((
                 'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
                 ext['varname'][0].upper() + ext['varname'][1:]
-            ) for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow);'
+            ) for ext in exts) + ', const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
             '\nvoid createDescriptorSets();'
-            '\nvoid createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
-            '\nvoid updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);'
+            '\nvoid createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
+            '\nvoid updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
             '\nvoid destroy();',
         '\t\t'))
 
@@ -242,17 +242,17 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             ', '.join((
                     'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
                     ext['varname'][0].upper() + ext['varname'][1:]
-                )for ext in exts) + ', const u32v3 vGroupCount, Window& pWindow){' +
-                '\n\t''pWindow.renderCore.addObject_m.lock();' +
+                )for ext in exts) + ', const u32v3 vGroupCount, core::RenderCore& pRenderCore){' +
+                '\n\t''pRenderCore.addObject_m.lock();' +
                     (
                         ''.join(('\n\t\t' + ext['bndname'] + '.vdata = (vram::ptr<char, eVRam, ' + ext['bndtype'] + '>)p' +
                         ext['varname'][0].upper() + ext['varname'][1:] + ';'
                     ) for ext in exts)) +
                     '\n'
                     '\n\t\t''createDescriptorSets();'
-                    '\n\t\t''createCommandBuffers(vGroupCount, pWindow);'
-                    '\n\t\t''pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);'
-                '\n\t''pWindow.renderCore.addObject_m.unlock();'
+                    '\n\t\t''createCommandBuffers(vGroupCount, pRenderCore);'
+                    '\n\t\t''pRenderCore.swp.shadersCBs.add(commandBuffers[0]);'
+                '\n\t''pRenderCore.addObject_m.unlock();'
             '\n}',
         '\t'))
 
@@ -270,7 +270,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\t''.setPPoolSizes    (sizes)'
                 '\n\t;'
                 '\n\t''switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
-        	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;'
+        	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::logError("Fragmentation error");  break;'
         	        '\n\t\t''vkDefaultCases;'
                 '\n\t''}'
                 '\n\n\n'
@@ -280,8 +280,8 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 				    '\n\t\t''.setPSetLayouts        (&' + fname + '::layout.descriptorSetLayout)'
                 '\n\t'';'
                 '\n\t''switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
-        	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;'
-        	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;'
+        	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;'
+        	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::logError("Out of pool memory");   break;'
         	        '\n\t\t''vkDefaultCases;'
                 '\n\t''}'
                 '\n\n\n' +
@@ -306,9 +306,9 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
+            '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){'
                 '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
-                    '\n\t\t''.setCommandPool        (pWindow.renderCore.commandPool)'
+                    '\n\t\t''.setCommandPool        (pRenderCore.commandPool)'
                     '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
                     '\n\t\t''.setCommandBufferCount (1)'
                 '\n\t'';'
@@ -317,7 +317,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[' + fname + '::pipelineIndex]);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[' + fname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
@@ -328,10 +328,10 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
 
         fc.write(indent('\n\n\n\n\n\n\n\n'
-            '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){'
+            '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){'
                 '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
                 '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
-                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[' + fname + '::pipelineIndex]);'
+                '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[' + fname + '::pipelineIndex]);'
                 '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
                 '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
                 '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
@@ -379,7 +379,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                 '\n'
                 '\n\t{ //Create pipeline layout'
                     '\n\t\tuint64 fileLength = 0;'
-                    '\n\t\tuint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "' + fname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
+                    '\n\t\tuint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
                     '\n\t\t' + fname + '::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);'
                     '\n'
                     '\n\t\t' + fname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'

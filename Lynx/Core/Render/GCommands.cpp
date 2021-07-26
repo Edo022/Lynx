@@ -62,7 +62,7 @@ namespace lnx::core::render::cmd{
 	/** //TODO probably useless
 	 * @brief Ends and submits a single time submit command, then waits until it's executed and frees its memory
 	 *     This function should only be used by the engine
-	 * Complexity: ? [depends on when the command buffer gets executed by the GPU]
+	 * Complexity: Unknown [depends on when the command buffer gets executed by the GPU]
 	 */
 	void endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer) {
 		switch(vCommandBuffer.end()){ vkDefaultCases; }
@@ -72,11 +72,11 @@ namespace lnx::core::render::cmd{
 		;
 		core::render::graphicsQueueSubmit_m.lock();
 			switch(dvc::graphics.cqs[0].submit(1, &submitInfo, nullptr)){
-				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
 			switch(dvc::graphics.cqs[0].waitIdle()){
-				case vk::Result::eErrorDeviceLost: dbg::printError("Device lost"); break;
+				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
 		core::render::graphicsQueueSubmit_m.unlock();

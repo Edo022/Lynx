@@ -1,3 +1,6 @@
 [submodule "deps/Shared/GLFW"]
 	path = deps/Shared/GLFW
 	url = https://github.com/glfw/glfw
+[submodule "Deps/Shared/GLFW"]
+	path = Deps/Shared/GLFW
+	url = https://github.com/glfw/glfw

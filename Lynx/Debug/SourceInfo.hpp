@@ -40,7 +40,7 @@ namespace lnx::dbg{
 			FILE* f = fopen("/proc/self/comm", "r");
 			char* name = (char*)malloc(256);			//Create name buffer
 			fgets(name, 256, f);						//Read name
-			auto nameSize = strlen(name);				//Remove trailing \n
+			auto nameSize = strlen(name);				//Remove trailing
 			if(name[nameSize - 1] == '\n') name[nameSize - 1] = '\0';
 			fclose(f);
 			return name;

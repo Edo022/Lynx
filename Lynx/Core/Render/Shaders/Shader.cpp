@@ -24,7 +24,7 @@ namespace lnx::core::shaders{
 
 
 
-	/**
+	/** //FIXME check if file exists
 	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array
 	 *     This function should only be used by the engine
 	 * Complexity: O(n)
@@ -39,7 +39,7 @@ namespace lnx::core::shaders{
 			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
 			_lnx(fp = fopen(  pFilePath, "rb"));
 			if(!fp) {
-				printf("Could not find or open file: %s\n", pFilePath);
+				dbg::logInfo("Could not find or open file: %s", pFilePath);
 				return 0;
 			}
 
@@ -84,7 +84,7 @@ namespace lnx::core::shaders{
 
 		vk::ShaderModule shaderModule;					//Create the shader module
 		switch(vDevice.createShaderModule(&createInfo, nullptr, &shaderModule)){
-			case vk::Result::eErrorInvalidShaderNV:   dbg::printError("Invalid shader"); break;
+			case vk::Result::eErrorInvalidShaderNV:   dbg::logError("Invalid shader"); break;
 			vkDefaultCases;
 		}
 
@@ -124,9 +124,9 @@ namespace lnx::core::shaders{
 
 
 		switch(r.result){
-			case vk::Result::ePipelineCompileRequiredEXT: dbg::printWarning("Pipeline compile required"); [[fallthrough]];
+			case vk::Result::ePipelineCompileRequiredEXT: dbg::logWarn("Pipeline compile required"); [[fallthrough]];
 			case vk::Result::eSuccess: pRenderCore.pipelines[vPipelineIndex] = r.value; break;
-			case vk::Result::eErrorInvalidShaderNV:       dbg::printError("Invalid shader NV");    break;
+			case vk::Result::eErrorInvalidShaderNV:       dbg::logError("Invalid shader NV");    break;
 			vkDefaultFaulures;
 		}
 		// core::dvc::graphics.ld.destroyShaderModule(layout_.shaderModule, nullptr);
