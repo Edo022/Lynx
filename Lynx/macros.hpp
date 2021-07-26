@@ -30,7 +30,6 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define Main				std::cout << __tmp_output_color::magenta << '\n';
 #define Failure				std::cout << __tmp_output_color::red << '\n';
 #define Warning				std::cout << __tmp_output_color::yellow	<< '\n';
-#define MainSeparator		Normal printf("\n\n#---------------------------------------------#\n\n");
 
 
 

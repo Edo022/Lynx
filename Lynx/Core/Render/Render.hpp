@@ -41,13 +41,13 @@ namespace lnx{
 
 				static VKAPI_ATTR VkBool32 VKAPI_CALL vulkanOutputCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 					if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-						Failure printf("\nVulkan error: ");
+						dbg::logError("\nVulkan error: ");
 					}
 					else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-						Warning printf("\nVulkan warning: ");
+						dbg::logWarn("\nVulkan warning: ");
 					}
-					else { Normal printf("Vulkan info: "); }
-					printf("%s", pCallbackData->pMessage); NormalNoNl;
+					else { dbg::logInfo("Vulkan info: "); }
+					dbg::logInfo("%s", pCallbackData->pMessage); NormalNoNl;
 					return VK_FALSE;
 				}
 			#endif

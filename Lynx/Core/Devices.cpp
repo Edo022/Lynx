@@ -201,7 +201,7 @@ namespace lnx::core::dvc{
 				return false;
 			}
 		}
-		else { Warning printf("No device available. Using llvmpipe"); }
+		else { dbg::logWarn("No device available. Using llvmpipe"); }
 
 		//Check extensions
 		if(!checkExtensions(vDevice)) {
@@ -407,30 +407,29 @@ namespace lnx::core::dvc{
 
 			//If there are discarded devices, print their names
 			if(discarded.count() > 0) {
-				Warning printf("    Discarded devices:");
+				dbg::logWarn("    Discarded devices:");
 				for(uint32 i = 0; i < discarded.count(); i += 2) {
-					Warning printf("        %s  |  %s", (char*)discarded[i].begin(), (char*)discarded[(uint64)i + 1].begin());
+					dbg::logWarn("        %s  |  %s", (char*)discarded[i].begin(), (char*)discarded[(uint64)i + 1].begin());
 				}
 			}
 
 			//Print the devices names, IDs, scores and tasks
-			Success printf("    Found %d suitable device%s:", suitable.count(), (suitable.count() == 1) ? "" : "s");
+			dbg::logInfo("    Found %d suitable device%s:", suitable.count(), (suitable.count() == 1) ? "" : "s");
 			for(auto& dev : suitable) {
-				if(sameDevice(*dev, graphics.pd)) Main else Normal;
-				printf("        %s  |  ID: %d  |  %d", dev->properties.deviceName.cbegin(), dev->properties.deviceID, dev->score);
-				if(sameDevice(*dev, graphics.pd)) printf("  |  Main graphics");
+				dbg::logInfo("        %s  |  ID: %d  |  %d", dev->properties.deviceName.cbegin(), dev->properties.deviceID, dev->score);
+				if(sameDevice(*dev, graphics.pd)) dbg::logInfo("  |  Main graphics");
 			}
 
 			//Print created logical devices and queues
-			Success printf("    Created %d logical device%s:", 1 + secondary.count(), (secondary.count() ? "s" : ""));
-			Main	printf("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", graphics.pd.indices.computeFamilies.count());
+			dbg::logInfo("    Created %d logical device%s:", 1 + secondary.count(), (secondary.count() ? "s" : ""));
+			dbg::logInfo("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", graphics.pd.indices.computeFamilies.count());
 			if(secondary.count()) {
 				for(auto& dev : secondary){
-					Normal printf("        Compute        |  compute queues: %d", dev.pd.indices.computeFamilies.count());
+					dbg::logInfo("        Compute        |  compute queues: %d", dev.pd.indices.computeFamilies.count());
 				}
 			}
 		}
-		else { Failure printf("Failed to find a suitable GPU"); }
+		else { dbg::logError("Failed to find a suitable GPU"); }
 	}
 
 

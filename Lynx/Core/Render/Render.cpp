@@ -556,11 +556,11 @@ namespace lnx{
 
 
 			//Calculate render duration
+			//TODO add detailed timings output
 			auto end = std::chrono::high_resolution_clock::now();
 			auto duration = duration_cast<std::chrono::microseconds>(end - start);
 			if(duration_cast<std::chrono::seconds>(end - last).count() >= 1){
-				std::cout << "\nFPS: " << 1.0f/(((float)duration.count())/(1000*1000));
-				std::cout << "\n" << duration.count();
+				dbg::logInfo("\n%d fps, %d ms", 1.0f/(((float)duration.count())/(1000*1000)), duration.count());
 				last = end;
 			}
 
