@@ -124,6 +124,9 @@ cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced 
 cmdg += ['-include', 'Lynx/Lynx_config.hpp']                    #Include engine configuration macros
 if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lynx debug checks when in debug mode
 
+cmdg += ['-ffile-prefix-map="' + os.getcwd() + '"="./"']
+#FIXME ^ this doesn't work
+
 if cd == 'u': cmdg += [                                         #When building user application
     '-DenginePath="' + enginePath + '"',                        #Define engine path function #FIXME
     enginePath + '/Lynx/getEnginePath.cpp',                         #Add engine path definition  #FIXME
