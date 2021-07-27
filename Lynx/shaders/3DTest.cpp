@@ -13,11 +13,11 @@
 namespace lnx::shd{
 
 
-	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f32v4, eVRam, eUniform> pData, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f32v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
 			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
-			_data.vdata = (vram::ptr<char, eVRam, eUniform>)pData;
+			_data.vdata = (vram::ptr<char, eVRam, eUniform>)pPos;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
@@ -91,7 +91,7 @@ namespace lnx::shd{
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
-			.setDstBinding      (3)
+			.setDstBinding      (2)
 			.setDescriptorCount (1)
 			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
 			.setPBufferInfo     (&bufferInfo2)
@@ -181,7 +181,7 @@ namespace lnx::shd{
 			;
 
 			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
-				.setBinding            (3)
+				.setBinding            (2)
 				.setDescriptorType     (vk::DescriptorType::eUniformBuffer)
 				.setDescriptorCount    (1)
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)

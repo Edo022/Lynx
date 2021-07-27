@@ -10,7 +10,11 @@ layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
 ext layout(std430, binding = 0) buffer _outcol{ vec4 outcol[]; };
 ext layout(std430, binding = 1) buffer _wsize{ uvec2 wsize; };
-ext layout(std140, binding = 3) uniform _data{ vec4 data[]; };
+ext layout(std140, binding = 2) uniform _data{
+	dvec3 pos;  //position
+	float r;   	//radius
+	vec4 col;  	//color
+};
 
 
 
@@ -23,5 +27,6 @@ void setPixel(vec2 pos, vec4 col) {
 
 
 void main() {
-	setPixel(vec2(gx, gy), vec4(1, 0, 0, 1));
+	setPixel(vec2(1,1), vec4(1,0,0,1));
+	// setPixel(pos.xy );
 }

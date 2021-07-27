@@ -23,7 +23,7 @@ namespace lnx::core::shaders{
 
 
 
-
+	/*
 	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array
 	 *     This function should only be used by the engine
 	 * Complexity: O(n)
