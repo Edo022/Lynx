@@ -52,17 +52,25 @@
 
 
 typedef struct _queue {
-    int *top, *base; // top and bottom change, base does not
+    int *top, *base; // top changes, base does not
     size_t size; // size of the queue in bytes
 } queue;
 
+typedef struct _deque {
+	queue *tq, *bq;
+} deque;
+
 
 // initialize a queue struct by setting it's size and allocating the memory
-void init(queue* q) {
+void initq(queue* q) {
     q->size = 0;
     q->base = q->top = (int*)malloc(1);
 }
 
+void initdq(deque* dq, queue* queue1, queue* queue2) {
+	dq->tq = queue1;
+	dq->bq = queue2;
+}
 
 // // expand q by chunk bytes
 // void expand(queue* q, size_t chunk) {
@@ -73,7 +81,7 @@ void init(queue* q) {
 // }
 
 // push top
-void push(queue* q, int data) { // chunk is how much memory to add if reallocating
+void pushq(queue* q, int data) { // chunk is how much memory to add if reallocating
     q->size += sizeof(int);
     q->base = (int*)realloc(q->base, q->size);   //Reallocate base
     q->top = q->base + (q->size / sizeof(int)) - 1;             //Update top pointer
@@ -81,17 +89,37 @@ void push(queue* q, int data) { // chunk is how much memory to add if reallocati
     // q->top++; //! top is updated after base realloc
 }
 
-// pop top
-int pop(queue* q) {
+// pop
+int popq(queue* q) {
     int top = *(q->top);
-    q->top--;
+    q->top -= sizeof(int);
+    q->size -= sizeof(int);
     //TODO add realloc -sizeof(int) when using memory pool
     return top;
 }
 
-
-// get from base
-int getfb(queue* q, int index) {
-    return q->base[index * sizeof(int)];
+void pushtdq(deque* q, int data) { // push top deque
+	pushq(q->tq, data);
 }
 
+void pushbdq(deque* q, int data) { // push bottom deque
+	pushq(q->bq, data);
+}
+
+int poptdq(deque* q) {
+	if(q->tq->size > 0) return popq(q->tq);
+	else {
+		int ret = q->bq->base[0];
+		// TODO remove the element and move the base to the new top element of the bottom queue
+		return ret;
+	}
+}
+
+int popbdq(deque* q) {
+	if(q->bq->size > 0 ) return popq(q->bq);
+	else {
+		int ret = q->tq->base[0];
+		// TODO same thing as with poptdq
+		return ret;
+	}
+}
