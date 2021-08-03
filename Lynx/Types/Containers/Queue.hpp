@@ -67,9 +67,11 @@ void initq(queue* q) {
     q->base = q->top = (int*)malloc(1);
 }
 
-void initdq(deque* dq, queue* queue1, queue* queue2) {
-	dq->tq = queue1;
-	dq->bq = queue2;
+void initdq(deque* dq, queue* top, queue* bottom) {
+	initq(top);
+	initq(bottom);
+	dq->tq = top;
+	dq->bq = bottom;
 }
 
 // // expand q by chunk bytes
