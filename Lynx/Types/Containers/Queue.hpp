@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //typedef struct _queue {
 //    int *top, *base; // top and bottom change, base does not
@@ -83,7 +84,7 @@ void initdq(deque* dq, queue* top, queue* bottom) {
 // }
 
 // push top
-void pushq(queue* q, int data) { // chunk is how much memory to add if reallocating
+void pushq(queue* q, int data) { 
     q->size += sizeof(int);
     q->base = (int*)realloc(q->base, q->size);   //Reallocate base
     q->top = q->base + (q->size / sizeof(int)) - 1;             //Update top pointer
@@ -112,7 +113,10 @@ int poptdq(deque* q) {
 	if(q->tq->size > 0) return popq(q->tq);
 	else {
 		int ret = q->bq->base[0];
-		// TODO remove the element and move the base to the new top element of the bottom queue
+
+		// shifts rest of Queue down, probabily not the best way to do this
+		memmove(q->bq->base, q->bq->base+1, q->bq->size);
+		q->bq->top--;
 		return ret;
 	}
 }
@@ -121,7 +125,8 @@ int popbdq(deque* q) {
 	if(q->bq->size > 0 ) return popq(q->bq);
 	else {
 		int ret = q->tq->base[0];
-		// TODO same thing as with poptdq
+		// same as with poptdq
+		memmove(q->tq->base, q->tq->base+1, q->tq->size);
 		return ret;
 	}
 }
