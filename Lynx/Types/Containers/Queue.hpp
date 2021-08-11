@@ -127,6 +127,7 @@ int popbdq(deque* q) {
 		int ret = q->tq->base[0];
 		// same as with poptdq
 		memmove(q->tq->base, q->tq->base+1, q->tq->size);
+		q->tq->top--;
 		return ret;
 	}
 }
