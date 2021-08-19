@@ -1,23 +1,43 @@
 #pragma once
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
-namespace lynx {
+
+
+namespace lnx {
 	template<class T>
-	struct queue {
+	struct Queue {
 		T *top, *base; // top changes, base does not
 		size_t size; // size of the queue in bytes
 
-		queue() {
+		/**
+		* @brief Initalized the Queue
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(1)
+		*/
+		Queue() {
 			size = 0;
 			base = top = (T*)malloc(1);
 		}
 
-		~queue() {
+		/**
+		* @brief Destroys the Queue
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(1)
+		*/
+		~Queue() {
 			free(base);		
 		}
 
-		// push top
+
+		/**
+		* @brief Pushes data to the top of the Queue
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(1)
+		* @param data The data to be pushed on the Queue
+		*/
 		void push(T data) { 
 			size += sizeof(T);
 			base = (T*)realloc(base, size);   //Reallocate base
@@ -27,7 +47,13 @@ namespace lynx {
 		}
 
 
-		// pop
+		/**
+		* @brief Pops the top of the Queue
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(1)
+		* @return Data that was popped from the top of the Queue
+		*/
 		T pop() {
 			T ret = *top;
 			top -= 1;
@@ -38,19 +64,39 @@ namespace lynx {
 	};
 
 	template<class T>
-	struct deque {
-		queue<T> tq, bq;
+	struct Deque {
+		Queue<T> tq, bq;
 
-		
-		void pusht(T data) { // push top deque
+		/**
+		* @brief Pushes data to the top of the Deque
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(1)
+		* @param data The data to be pushed at the top of the Deque
+		*/		
+		void pushT(T data) { // push top deque
 			tq.push(data);
 		}
 
-		void pushb(T data) { // push bottom deque
+		/**
+		* @brief Pushes data to the bottom of the Deque
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(1)
+		* @param data The data to be pushed at the bottom of the Deque 
+		*/
+		void pushB(T data) { // push bottom deque
 			bq.push(data);
 		}
-		
-		T popt() {
+
+		/**
+		* @brief Pops the top of the Deque
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(n)
+		* @return Data that was popped from the top of the Deque
+		*/		
+		T popT() {
 			if(tq.size > 0) return tq.pop();
 			else {
 				T ret = bq.base[0];
@@ -61,8 +107,15 @@ namespace lynx {
 				return ret;
 			}
 		}
-		
-		T popb() {
+
+		/**
+		* @brief Pops the bottom of the Deque
+		* Complexity:
+		*     Best: O(1)
+		*     Worst: O(n)
+		* @return Data that was popped from the bottom of the Deque
+		*/	
+		T popB() {
 			if(bq.size > 0 ) return bq.pop();
 			else {
 				T ret = tq.base[0];
