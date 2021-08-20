@@ -5,38 +5,38 @@
 
 namespace lnx {
 	template<class T>
-	struct Queue {
+	struct Stack {
 		T *top, *base; // top changes, base does not
 		size_t size; // size of the queue in bytes
 
 		/**
-		* @brief Initalized the Queue
+		* @brief Initalized the Stack
 		* Complexity:
 		*     Best: O(1)
 		*     Worst: O(1)
 		*/
-		Queue() {
+		Stack() {
 			size = 0;
 			base = top = (T*)malloc(1);
 		}
 
 		/**
-		* @brief Destroys the Queue
+		* @brief Destroys the Stack
 		* Complexity:
 		*     Best: O(1)
 		*     Worst: O(1)
 		*/
-		~Queue() {
+		~Stack() {
 			free(base);		
 		}
 
 
 		/**
-		* @brief Pushes data to the top of the Queue
+		* @brief Pushes data to the top of the Stack
 		* Complexity:
 		*     Best: O(1)
 		*     Worst: O(1)
-		* @param data The data to be pushed on the Queue
+		* @param data The data to be pushed on the Stack
 		*/
 		void push(T data) { 
 			size += sizeof(T);
@@ -48,11 +48,11 @@ namespace lnx {
 
 
 		/**
-		* @brief Pops the top of the Queue
+		* @brief Pops the top of the Stack
 		* Complexity:
 		*     Best: O(1)
 		*     Worst: O(1)
-		* @return Data that was popped from the top of the Queue
+		* @return Data that was popped from the top of the Stack
 		*/
 		T pop() {
 			T ret = *top;
@@ -65,7 +65,7 @@ namespace lnx {
 
 	template<class T>
 	struct Deque {
-		Queue<T> tq, bq;
+		Stack<T> tq, bq;
 
 		/**
 		* @brief Pushes data to the top of the Deque
@@ -101,7 +101,7 @@ namespace lnx {
 			else {
 				T ret = bq.base[0];
 		
-				// shifts rest of Queue down, probabily not the best way to do this
+				// shifts rest of Stack down, probabily not the best way to do this
 				memmove(bq.base, bq.base+1, bq.size);
 				bq.top--;
 				return ret;
