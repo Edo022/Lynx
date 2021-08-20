@@ -27,7 +27,7 @@ namespace lnx {
 		*     Worst: O(1)
 		*/
 		~Stack() {
-			free(base);		
+			free(base);
 		}
 
 
@@ -38,7 +38,7 @@ namespace lnx {
 		*     Worst: O(1)
 		* @param data The data to be pushed on the Stack
 		*/
-		void push(T data) { 
+		void push(T data) {
 			size += sizeof(T);
 			base = (T*)realloc(base, size);   //Reallocate base
 			top = base + (size / sizeof(T)) - 1;             //Update top pointer
@@ -73,7 +73,7 @@ namespace lnx {
 		*     Best: O(1)
 		*     Worst: O(1)
 		* @param data The data to be pushed at the top of the Deque
-		*/		
+		*/
 		void pushT(T data) { // push top deque
 			tq.push(data);
 		}
@@ -83,7 +83,7 @@ namespace lnx {
 		* Complexity:
 		*     Best: O(1)
 		*     Worst: O(1)
-		* @param data The data to be pushed at the bottom of the Deque 
+		* @param data The data to be pushed at the bottom of the Deque
 		*/
 		void pushB(T data) { // push bottom deque
 			bq.push(data);
@@ -95,12 +95,12 @@ namespace lnx {
 		*     Best: O(1)
 		*     Worst: O(n)
 		* @return Data that was popped from the top of the Deque
-		*/		
+		*/
 		T popT() {
 			if(tq.size > 0) return tq.pop();
 			else {
 				T ret = bq.base[0];
-		
+
 				// shifts rest of Stack down, probabily not the best way to do this
 				memmove(bq.base, bq.base+1, bq.size);
 				bq.top--;
@@ -114,7 +114,7 @@ namespace lnx {
 		*     Best: O(1)
 		*     Worst: O(n)
 		* @return Data that was popped from the bottom of the Deque
-		*/	
+		*/
 		T popB() {
 			if(bq.size > 0 ) return bq.pop();
 			else {
