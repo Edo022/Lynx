@@ -13,7 +13,7 @@ namespace lnx {
 		* The new element is copy constructed
 		* Complexity:
 		*     Best:  O(1)
-		*     Worst: O(1) [Memory reallocation]
+		*     Worst: O(n) [Memory reallocation]
 		* @param pElm The element to add
 		*/
 		inline void pushT(tType& pElm) { // push top deque
@@ -25,7 +25,7 @@ namespace lnx {
 		* The new element is copy constructed
 		* Complexity:
 		*     Best:  O(1)
-		*     Worst: O(1) [Memory reallocation]
+		*     Worst: O(n) [Memory reallocation]
 		* @param pElm The element to add
 		*/
 		inline void pushB(tType& pElm) { // push bottom deque
