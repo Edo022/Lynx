@@ -7,10 +7,10 @@
 
 
 namespace lnx::core::render::cmd{
-	extern vk::CommandPool			singleTimeCommandPool;
+	extern vk::CommandPool singleTimeCommandPool;
 
 
-	void				createGraphicsCommandPool();
-	vk::CommandBuffer	beginSingleTimeCommands();
-	void				endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer);
+	void              createGraphicsCommandPool();
+	vk::CommandBuffer beginSingleTimeCommands();
+	void              endSingleTimeCommands(const vk::CommandBuffer vCommandBuffer);
 }

@@ -1,11 +1,12 @@
 #pragma once
-#define LNX_H_INPUT_SURFACE
+#define LNX_H_RENDER_SPACE_3D
 #include "Lynx/Types/Object/Obj_b.hpp"
 
 
 
+
 namespace lnx::obj{
-    struct InputSurface : public StructObj2 {
+    struct RenderSpace3 : public StructObj3{
 
     };
 }

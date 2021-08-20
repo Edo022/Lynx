@@ -12,9 +12,24 @@
 
 
 
+
+
+
+// Utilities (executable name, command outputs, backtrace) --------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
 namespace lnx::dbg{
     /**
 	 * @brief Returns the name of the executable file
+	 * Complexity: O(n)
+	 *     where n = length of the executable name in bytes
+	 * @return The name of the executable file
 	 */
 	static const char* getExecName() {
 		#ifdef _WIN64 //FIXME
@@ -25,7 +40,7 @@ namespace lnx::dbg{
 			FILE* f = fopen("/proc/self/comm", "r");
 			char* name = (char*)malloc(256);			//Create name buffer
 			fgets(name, 256, f);						//Read name
-			auto nameSize = strlen(name);				//Remove trailing \n
+			auto nameSize = strlen(name);				//Remove trailing
 			if(name[nameSize - 1] == '\n') name[nameSize - 1] = '\0';
 			fclose(f);
 			return name;
@@ -36,8 +51,13 @@ namespace lnx::dbg{
 
 	/**
 	 * @brief Returns a string containing the output of a console command. Lines are separated by a '\n'
+	 *     ! Notice that this function is equivalent to running system(), which is system specific and spawns one or more processes
+	 *     ! Use subpOutput to get the output of a subprocess //TODO write subpOutput //TODO execl
+	 * Complexity: O(n + l + m)
+	 *     with n = vCmd.size(), l = number of lines in the command output and m = length of the command output
 	 * @param vCmd Command to execute
 	 * @param vMaxLineLen Maximum length of each line of the output
+	 * @return The command output
 	 */
 	static char* cmdOutput(std::string vCmd, const uint32 vMaxLineLen = 8192) {
 		//Open console and run the command
@@ -61,9 +81,15 @@ namespace lnx::dbg{
 
 
 
-	/**
-	 * @brief Returns the call file, function and line of the vIndex backtraced function
-	 *		(0 is the function you are calling this from, 1 is its caller)
+
+	/** //FIXME don't use addr2line but something more reliable instead. Like debug informations
+	 * @brief Returns address, demangled function name, file name and line of the vIndex-th call in the backtrace
+	 *      ! This function only works on Linux systems. On Windows, "" is returned //TODO add default string
+	 *      ! Using this function in a Windows build will cause a warning to be displayed during compilation
+	 * Complexity: //TODO
+	 * @param vIndex The index of the call to get informations about
+	 *     0 is the function you are calling this from, 1 is its caller and so on
+	 * @return //TODO
 	 */
 	static neverInline auto getBacktrace(uint32 vIndex, const bool vGetFunc = true) {
 		++vIndex;									//Skip this call
@@ -74,6 +100,16 @@ namespace lnx::dbg{
 		sprintf(str, "addr2line%s -e %s --demangle %p", (vGetFunc) ? " -f" : "", getExecName(), (void*)((char*)calls[vIndex] - 1));
 		return cmdOutput(str);						//Get file infos from address and return
 	}
+
+
+
+
+	/**
+	 * @brief Returns the address of the vIndex-th call in the backtrace
+	 * Complexity: //TODO
+	 * @param vIndex The index of the call to get the address of
+	 * @return The address of the call
+	 */
 	static neverInline auto getBacktraceAddr(uint32 vIndex) {
 		++vIndex;									//Skip this call
 		void* calls[vIndex + 1];					//Create address buffer
@@ -146,6 +182,10 @@ namespace lnx::dbg{
 			return getBacktraceAddr(vIndex + 1);
 		}
 	};
+
+
+
+
 
 
 

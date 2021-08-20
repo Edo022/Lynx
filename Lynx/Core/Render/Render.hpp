@@ -19,7 +19,7 @@ namespace lnx{
 	namespace obj{
 		struct RenderSpace2;
 		struct obj_bb;
-		struct obj2;
+		struct obj2_b;
 	}
 
 
@@ -41,13 +41,14 @@ namespace lnx{
 
 				static VKAPI_ATTR VkBool32 VKAPI_CALL vulkanOutputCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
 					if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-						Failure printf("\nVulkan error: ");
+						dbg::logError("Vulkan error: %s", pCallbackData->pMessage);
 					}
 					else if((messageSeverity | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-						Warning printf("\nVulkan warning: ");
+						dbg::logWarn("Vulkan warning: %s", pCallbackData->pMessage);
 					}
-					else { Normal printf("Vulkan info: "); }
-					printf("%s", pCallbackData->pMessage); NormalNoNl;
+					else {
+						dbg::logInfo("Vulkan info: %s", pCallbackData->pMessage);
+					}
 					return VK_FALSE;
 				}
 			#endif
@@ -64,12 +65,12 @@ namespace lnx{
 			friend class lnx::Window;
 			friend class lnx::core::wnd::Swapchain;
 
-			void init();	//Initializes the render core.              This function must be called from lnx::Window::init()  only
+			void init();
 			void run();
-			void clear();	//Stops the render and frees its resources. This function must be called from lnx::Window::clear() only
+			void clear();
 
-			void recSpawn  (obj::obj_bb* pObj, Window& pWindow);
-			void recUpdateg(obj::obj_bb* pObj, vk::CommandBuffer pCB);
+			void recSpawn  (obj::obj_bb* pObj);
+			void recFlush(obj::obj_bb* pObj, vk::CommandBuffer pCB);
 			void recLimit  (obj::obj_bb* pObj);
 
 			void renderLoop();

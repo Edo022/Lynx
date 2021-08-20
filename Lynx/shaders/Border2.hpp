@@ -50,10 +50,10 @@ namespace lnx::shd{
 		} _data;
 
 
-		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow);
+		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void createDescriptorSets();
-		void createCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
-		void updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow);
+		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
+		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
 	};
 }//TODO remove local data in external bindings

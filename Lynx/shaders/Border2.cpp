@@ -5,7 +5,6 @@
 
 #include "Lynx/shaders/Border2.hpp"
 #include "Lynx/Core/AutoInit.hpp"
-#include "Lynx/Core/Render/Window/Window.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #define LNX_H_BORDER2
 
@@ -14,16 +13,16 @@
 namespace lnx::shd{
 
 
-	void Border2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, Window& pWindow){
-		pWindow.renderCore.addObject_m.lock();
+	void Border2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+		pRenderCore.addObject_m.lock();
 			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
 			_zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
-			createCommandBuffers(vGroupCount, pWindow);
-			pWindow.renderCore.swp.shadersCBs.add(commandBuffers[0]);
-		pWindow.renderCore.addObject_m.unlock();
+			createCommandBuffers(vGroupCount, pRenderCore);
+			pRenderCore.swp.shadersCBs.add(commandBuffers[0]);
+		pRenderCore.addObject_m.unlock();
 	}
 
 
@@ -39,7 +38,7 @@ namespace lnx::shd{
 			.setPPoolSizes    (sizes)
 		;
 		switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
-			case vk::Result::eErrorFragmentationEXT:  dbg::printError("Fragmentation error");  break;
+			case vk::Result::eErrorFragmentationEXT:  dbg::logError("Fragmentation error");  break;
 			vkDefaultCases;
 		}
 
@@ -51,8 +50,8 @@ namespace lnx::shd{
 			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
 		;
 		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
-			case vk::Result::eErrorFragmentedPool:    dbg::printError("Fragmented pool");      break;
-			case vk::Result::eErrorOutOfPoolMemory:   dbg::printError("Out of pool memory");   break;
+			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
+			case vk::Result::eErrorOutOfPoolMemory:   dbg::logError("Out of pool memory");   break;
 			vkDefaultCases;
 		}
 
@@ -120,9 +119,9 @@ namespace lnx::shd{
 
 
 
-	void Border2::createCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
+	void Border2::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
-			.setCommandPool        (pWindow.renderCore.commandPool)
+			.setCommandPool        (pRenderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
@@ -131,7 +130,7 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[Border2::pipelineIndex]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
@@ -144,10 +143,10 @@ namespace lnx::shd{
 
 
 
-	void Border2::updateCommandBuffers(const u32v3 vGroupCount, Window& pWindow){
+	void Border2::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pWindow.renderCore.pipelines[Border2::pipelineIndex]);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
 		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }

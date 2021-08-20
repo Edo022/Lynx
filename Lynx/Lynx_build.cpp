@@ -28,9 +28,6 @@
         //#include "Lynx/Math/Trigonometry/GoniometricFunctions.cpp"
 
     #include "Lynx/Types/Object/Obj_b.cpp"
-    // #include "Lynx/Types/Object/1D/Obj1_b.cpp"
-    // #include "Lynx/Types/Object/2D/Obj2_b.cpp"
-    // #include "Lynx/Types/Object/3D/Obj3_b.cpp"
 
     #include "Lynx/Types/Object/2D/Line2.cpp"
     #include "Lynx/Types/Object/2D/Border2.cpp"
@@ -40,6 +37,7 @@
     #include "Lynx/shaders/Line2.cpp"
     #include "Lynx/shaders/Border2.cpp"
     #include "Lynx/shaders/FloatToIntBuffer.cpp"
+    #include "Lynx/shaders/3DTest.cpp"
 
 
     #include "Lynx/Core/Render/Buffers.cpp"

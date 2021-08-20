@@ -6,7 +6,7 @@
 
 
 namespace lnx::obj{
-	struct Border2 : public obj2{
+	struct Border2 : public RenderObj2{
 		shd::Border2 data;
 
 
@@ -28,6 +28,6 @@ namespace lnx::obj{
 		/**
 		 * @brief Initializes the GPU data that allows the window to render the object
 		 */
-		virtual void onSpawn(Window& pWindow) override;
+		virtual void onSpawn(core::RenderCore& pRenderCore) override;
 	};
 }

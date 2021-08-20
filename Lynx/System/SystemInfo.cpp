@@ -17,8 +17,6 @@
 
 namespace lnx::sys{
     const CpuInfo cpu = [](){
-        printf("DEBUG_5\n");
-        fflush(stdout);
         CpuInfo _cpu = {
             .L1D = {
                 .size     = (uint32)sysconf(_SC_LEVEL1_DCACHE_SIZE),

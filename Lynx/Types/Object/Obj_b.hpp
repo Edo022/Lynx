@@ -6,7 +6,9 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
-//BUG REPLACE C STYLE CASTS WITH C++ CASTS
+
+
+//TODO REPLACE C STYLE CASTS WITH C++ CASTS
 
 
 
@@ -34,7 +36,7 @@ namespace lnx{
 			eNone    = 0,
 			eSpawn   = 0b0001,
 			eLimit   = 0b0100,
-			eUpdateg = 0b0010
+			eFlush = 0b0010
 		};
 		alwaysInline UpdateBits operator~ (UpdateBits  a){ return (UpdateBits)((u32)~ (u32)a); }
 		alwaysInline UpdateBits operator| (UpdateBits  a, UpdateBits b){ return (UpdateBits )((u32 )a |  (u32)b); }
@@ -51,17 +53,7 @@ namespace lnx{
 
 
 
-		// template<uint32 tVal> struct GetObjClass{};
-		// template<> struct GetObjClass<1>{ using value = Obj1_bb; };
-		// template<> struct GetObjClass<2>{ using value = Obj2_bb; };
-		// template<> struct GetObjClass<3>{ using value = Obj3_bb; };
-
-		// template<uint32 tDim, uint32 tChDim, class tBase> struct ObjSelector : public GetObjClass<tDim>::value, public tBase {
-		// 	static_assert(tDim < 1 || tDim > 3, "Invalid tDim value");
-		// 	static_assert(tChDim < 1 || tChDim > 3, "Invalid tDim value");
-		// 	static_assert(!std::is_same<tBase, Opaque> || !std::is_same<tBase, Structural>, "Invalid base class");
-		// 	RaArray<GetObjClass<tChDim>::value> children;
-		// };
+		// Base object class ----------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -69,51 +61,59 @@ namespace lnx{
 
 
 
-
-		// struct Structural : virtual public Obj_bb {
-		// 	virtual ram::ptr<char>       getShData() override { dbg::printError("Unable to call getShData on structural object"); return nullptr; }
-		// 	virtual vram::Alloc_b<char> getShVData() override { dbg::printError("Unable to call getShVData on structural object"); return vram::Alloc_b<char>(); }
-		// };
-		// struct Opaque {};
-
-
-
-
-
-
-
-		// struct NoChType_t{};
-		template<class tChType> struct obj_b;
 
 		/**
-		 * @brief Members common to any Obj_bt instantiation
+		 * @brief Base class of any render object
 		 */
 		struct obj_bb { //
+		    inline void specStructOnFlush(vk::CommandBuffer pCB) {
+	            obj_bb::onFlush(pCB);
+	        }
+
+			//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
+	        inline      ram::ptr<char>  specStructGetShData() { dbg::logError("Unable to call this function on structural objects"); return nullptr; }
+	        inline vram::Alloc_b<char> specStructGetShVData() { dbg::logError("Unable to call this function on structural objects"); return vram::Alloc_b<char>(); }
+
+
+
+			inline void specRenderOnFlush(vk::CommandBuffer pCB) {
+				pCB.updateBuffer(
+					getShVData().cell->csc.buffer,
+					getShVData().cell->localOffset,
+					getShVData().cell->cellSize,
+					(void*)getShData()
+				);
+			}
+
+			//! Implementation depends on the shader used by the object
+			//TODO write documentation
+			inline      ram::ptr<char>  specRenderGetShData() { return obj_bb::getShData(); }
+			inline vram::Alloc_b<char> specRenderGetShVData() { return obj_bb::getShVData(); }
+
+
+
+
+		public:
 			obj_bb* parent{ nullptr };				//Parent of the object //FIXME move to common
 			RaArray<obj_bb*> children;
 
 
-			_dbg(const char* dbgName;)
-			static std::atomic<uint64> lastID;							//#LLID LOS000 the last assigned ID of a Lynx object
-			uint64 ID{ ++lastID };							//A unique ID that indentifies the object
-			uint32 childIndex{ (uint32)-1 };				//The index of the object in the parent's children list
+			_dbg(const char* dbgName);
+			static std::atomic<uint64> lastID;			//#LLID LOS000 the last assigned ID of a Lynx object
+			uint64 ID{ ++lastID };						//A unique ID that indentifies the object
+			uint32 childIndex{ (uint32)-1 };			//The index of the object in the parent's children list
 
 
-			virtual void setChildLimits(const uint32 vChildIndex) const = 0;
-			virtual ram::ptr<char>       getShData() = 0;
-			virtual vram::Alloc_b<char> getShVData() = 0;
+			virtual void setChildLimits(const uint32 vChildIndex) const { dbg::logError("Unable to call this function on a base class"); }
+			virtual ram::ptr<char>       getShData() {dbg::logError("Function called on base class or not implemented"); return nullptr; }
+			virtual vram::Alloc_b<char> getShVData() {dbg::logError("Function called on base class or not implemented"); return vram::Alloc_b<char>(); }
 
-			// virtual obj_b<obj_bb>* getChildren(uint32 vIndex) = 0;			//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-			// virtual uint32  getChildrenCount() = 0;					//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-			// virtual bool    getChildrenIsValid(uint32 vIndex) = 0; 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
+			std::atomic<UpdateBits> updates;			//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
+			Window* w = nullptr;						//Parent window object that contains the render thread and the window data
 
-			// _dbg(bool isDbgObj = false;)					//True if the object is used for graphical debugging
-			std::atomic<UpdateBits> updates;				//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
-			Window* w = nullptr;					//Parent window object that contains the render thread and the window data
-
-			virtual void onSpawn(Window& pWindow);
+			virtual void onSpawn(core::RenderCore& pRenderCore);
 			virtual void onLimit();
-			virtual void onUpdateg(vk::CommandBuffer pCB);
+			virtual void onFlush(vk::CommandBuffer pCB);
 
 			//TODO comment
 			void queue(UpdateBits vUpdates);
@@ -125,37 +125,8 @@ namespace lnx{
 
 
 
-		// // template<class tChType = NoChType_t> struct obj_b : public obj_bb{
-		// template<class tChType = obj_bb> struct obj_b : public obj_bb{
-		// 	RtArray<tChType*, uint32> children;
-		// 	virtual obj_b<>* getChildren(uint32 vIndex) override { return static_cast<obj_b<>*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-		// 	virtual uint32   getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-		// 	virtual bool     getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 		//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-		// };
 
-		// template<> struct obj_b<NoChType_t> : public obj_bb{
-		// 	virtual obj_b<>* getChildren(uint32 vIndex) override {        dbg::printError("Children access function called on object of a type that has no children"); return nullptr; } //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
-		// 	virtual uint32   getChildrenCount() override {                dbg::printError("Children access function called on object of a type that has no children"); return 0; }                       //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
-		// 	virtual bool     getChildrenIsValid(uint32 vIndex) override { dbg::printError("Children access function called on object of a type that has no children"); return false; }               //FIXME UNIFY CHILDREN ACCESS FUNCTIONS //FIXME or return nullptr instead of printing an error or something, idk
-		// };
-
-
-
-
-
-
-// //FIXME
-// 		/**
-// 		 * @brief Base class of any render object of any dimension
-// 		 * @tparam chType Type of the children objects. Can be any subclass of Obj_b
-// 		 */
-// 		template<class chType, class tType> struct Obj_bt : virtual public Obj_bb, public tType {
-//                         static_assert(std::is_same<tType, Opaque> || std::is_same<tType, Structural>, "Object type can only be \"Structural\" or \"Opaque\"");
-// 			RaArray<chType*, uint32> children;
-// 			virtual Obj_bb* getChildren(uint32 vIndex) override { return static_cast<Obj_bb*>(children[vIndex]); } 	//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-// 			virtual uint32  getChildrenCount() override { return children.count(); } 								//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-// 			virtual bool    getChildrenIsValid(uint32 vIndex) override { return children.isValid(vIndex); } 		//FIXME UNIFY CHILDREN ACCESS FUNCTIONS
-// 		};
+		// Base object types ----------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -163,6 +134,60 @@ namespace lnx{
 
 
 
+
+		enum ObjType{
+			eRender,
+			eStruct
+		};
+
+
+
+
+
+
+
+
+		// 1D objects base class ------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+		struct obj1_b : public obj_bb {
+			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
+			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
+			float32 scl{ 0 };				//Scale of the object
+			//TODO write all the members
+		};
+
+
+		template<ObjType tObjType> struct obj1_spec_b{};
+		template<> struct obj1_spec_b<ObjType::eRender> : public obj1_b{
+			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specRenderOnFlush(pCB); }
+			ram::ptr<char>      getShData()                    override { return obj_bb::specRenderGetShData();  }
+			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specRenderGetShVData(); }
+		};
+		template<> struct obj1_spec_b<ObjType::eStruct> : public obj1_b{
+			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specStructOnFlush(pCB); }
+			ram::ptr<char>      getShData()                    override { return obj_bb::specStructGetShData();  }
+			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specStructGetShVData(); }
+		};
+
+
+		struct RenderObj1 : public obj1_spec_b<ObjType::eRender> {};
+		struct StructObj1 : public obj1_spec_b<ObjType::eStruct> {};
+
+
+
+
+
+
+
+
+		// 2D objects base class ------------------------------------------------------------------------------------------------------------------//
 
 
 
@@ -182,81 +207,85 @@ namespace lnx{
 
 
 
-		// // static constexpr uint32 AnyDim = (uint32)-1;
+		struct obj2_b : public obj_bb, public MouseCallbacks_b {
+        	f32v2 pos = { 0, 0 };			//Position of the object. The position is relative to the origin of the object
+        	float32 zIndex = 0;				//Index of the object. Objects with higher zIndex will be rendered on top of others
+        	float32 rot = 0;				//Rotation of the object
+        	f32v2 scl = { 0, 0 };			//Scale of the object
 
-		// template<uint32 tDim, class tChType> struct obj_b<tChType>{
-		// 	static_assert(tDim >= 1 && tDim <= 3, "Invalid tDim value. tDim can only be 1, 2 or 3");
-		// };
-		// template<class tChType = NoChType_t> using obj = obj_b<tChType>;
-		// template<class tChType = obj_bb> using obj = obj_b<tChType>;
-		// using obj = obj<>;
-
-
-
-		// template<class tChType = obj_bb> struct obj1 : public obj_b<tChType> {
-		struct obj1 : public obj_bb {
-			float32 pos{ 0 };				//Position of the object. The position is relative to the origin of the object
-			float32 yIndex{ 0 };			//Index of the object. Objects with higher yIndex will be rendered on top of others
-			float32 scl{ 0 };				//Scale of the object
-
-			////TODO add absolute pixel position and scale
-			//Obj2_b* parent{ nullptr };						//Parent of the object
-			//lnx::Map<Obj2_b*, uint32> children;				//Children of the object
-			//void setChildLimits(const uint32 vChildIndex) final {
-			//	children[vChildIndex]->minLim = minLim;
-			//	children[vChildIndex]->maxLim = maxLim;
-			//}
-			//vec2f32 minLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
-			//vec2f32 maxLim{ 0, 0 };							//The limit of the object render. It depends on the parent of the object and its properties
-		};
-		// template<class tChType = NoChType_t> using obj1 = obj_t<1, tChType>;
-
-
-
-
-		// template<class tChType = obj_bb> struct obj2 : public obj_b<tChType>, public MouseCallbacks_b {
-		struct obj2 : public obj_bb, public MouseCallbacks_b {
-        	f32v2 pos = { 0, 0 };	                //Position of the object. The position is relative to the origin of the object
-        	float32 zIndex = 0;		                //Index of the object. Objects with higher zIndex will be rendered on top of others
-        	float32 rot = 0;	                    //Rotation of the object
-        	f32v2 scl = { 0, 0 };	                //Scale of the object
-
-        	f32v2 minLim{ 0, 0 };				    //The limit of the object render. It depends on the parent of the object and its properties
-        	f32v2 maxLim{ 1, 1 };			        //The limit of the object render. It depends on the parent of the object and its properties
-        	_rls(inline) void setMinLim(f32v2 vMinLim)_rls({ minLim = vMinLim; });
-        	_rls(inline) void setMaxLim(f32v2 vMaxLim)_rls({ maxLim = vMaxLim; });
-        	// _dbg(Border2* debugBorder = nullptr;)   //Debug. Used to draw the object limits
+        	f32v2 minLim{ 0, 0 };			//The limit of the object render. It depends on the parent of the object and its properties
+        	f32v2 maxLim{ 1, 1 };			//The limit of the object render. It depends on the parent of the object and its properties
+			inline void setMinLim(f32v2 vMinLim) { minLim = vMinLim; };
+			inline void setMaxLim(f32v2 vMaxLim) { maxLim = vMaxLim; };
 
         	limitAlignment limitAlignment_ = limitAlignment::eCenter; 	//The alignment of the object within its limits
 
-	        virtual void setChildLimits(const uint32 vChildIndex) const override;
-        	virtual void onSpawn(Window& pWindow) override;
 
-        	virtual void onLimit() override;
-        	virtual void onUpdateg(vk::CommandBuffer pCB) override;
+			virtual void setChildLimits(const uint32 vChildIndex) const override;
+			virtual void onSpawn(core::RenderCore& pRenderCore) override;
+			virtual void onLimit() override;
     	};
-		// template<class tChType = NoChType_t> using obj2 = obj_t<2, tChType>;
-
-//TODO ADD CHILDREN TYPE
 
 
-		// template<class tChType = obj_bb> struct obj3 : public obj_b<tChType> {
-		struct obj3 : public obj_bb {
+
+
+		template<ObjType tObjType> struct obj2_spec_b{};
+		template<> struct obj2_spec_b<ObjType::eRender> : public obj2_b{
+			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specRenderOnFlush(pCB); }
+			ram::ptr<char>      getShData()                    override { return obj_bb::specRenderGetShData();  }
+			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specRenderGetShVData(); }
+		};
+		template<> struct obj2_spec_b<ObjType::eStruct> : public obj2_b{
+			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specStructOnFlush(pCB); }
+			ram::ptr<char>      getShData()                    override { return obj_bb::specStructGetShData();  }
+			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specStructGetShVData(); }
+		};
+
+
+
+
+		struct RenderObj2 : public obj2_spec_b<ObjType::eRender>{};
+		struct StructObj2 : public obj2_spec_b<ObjType::eStruct>{};
+
+
+
+
+
+
+
+
+		// 3D objects base class ------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+		struct obj3_b : public obj_bb {
 			f32v3 pos{ 0, 0, 0 };			//Position of the object. The position is relative to the origin of the object
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
 			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
 			f32v3 scl{ 0, 0, 0 };			//Scale of the object
-
-			////TODO add absolute pixel position and scale
-			//Obj3_b* parent{ nullptr };						//Parent of the object
-			//lnx::Map<Obj3_b*, uint32> children;				//Children of the object
-			//void setChildLimits(const uint32 vChildIndex) const override {
-			//	children[vChildIndex]->minLim = minLim;
-			//	children[vChildIndex]->maxLim = maxLim;
-			//}
-			//vec3f32 minLim{ 0, 0, 0 };						//The limit of the object render. It depends on the parent of the object and its properties
-			//vec3f32 maxLim{ 1, 1, 1 };						//The limit of the object render. It depends on the parent of the object and its properties
+			//TODO write all the members
     	};
-		// template<class tChType = NoChType_t> using obj3 = obj_t<3, tChType>;
+
+
+		template<ObjType tObjType> struct obj3_spec_b{};
+		template<> struct obj3_spec_b<ObjType::eRender> : public obj3_b{
+			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specRenderOnFlush(pCB); }
+			ram::ptr<char>      getShData()                    override { return obj_bb::specRenderGetShData();  }
+			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specRenderGetShVData(); }
+		};
+		template<> struct obj3_spec_b<ObjType::eStruct> : public obj3_b{
+			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specStructOnFlush(pCB); }
+			ram::ptr<char>      getShData()                    override { return obj_bb::specStructGetShData();  }
+			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specStructGetShVData(); }
+		};
+
+
+		struct RenderObj3 : public obj3_spec_b<eRender> {};
+		struct StructObj3 : public obj3_spec_b<eStruct> {};
 	}
 }
