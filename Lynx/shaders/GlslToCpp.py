@@ -47,7 +47,7 @@ def getTypeSize(type_ : str) -> int :
 
 
 def createFuncs(members:str, iext:bool) :
-    m : str = members.expandtabs(4).strip()
+    m : str = members.expandtabs(4)
     ret      : str             = ''
     ext      : dict            = None
     iext_    : bool            = False
@@ -83,7 +83,7 @@ def createFuncs(members:str, iext:bool) :
             r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'             # 36 37 38 39 40 41 42    # 36    #Skip any comment or whitespace
             r';'                                                        # -                       # -     #Anchor to instruction end
             r'((( )|(\/\/.*?(\n|$)))*)',                                # 43 44 45 46 47          # 43    #Skip eventual comments after member declaration
-        m)                                                              #
+        m)                                                              # #FIXME remove comments before parsing but preserve them when writing the output
         if r != None:                                               #If a member was found
             _type = r.group(9); _name = r.group(20); _iarr = r.group(35)#(Programmer friendly names)
             _coms = { r.group(2), r.group(13), r.group(21), r.group(28), r.group(36), r.group(43) }
@@ -102,7 +102,7 @@ def createFuncs(members:str, iext:bool) :
                 offset += align                                             #Calculate raw offset of the next element
             else:                                                       #If the binding is external
                 iext_ = True                                                #Set external binding variable
-                ext = dict({'type' : ttype, 'varname': _name})                 #Save binding type and name. They will be used when writing create()
+                ext = dict({'type' : ttype, 'varname': _name})              #Save binding type and name. They will be used when writing create()
 
             m = m[len(r.group(0)):]                                     #Pop parsed string from source string
             continue                                                    #Keep parsing
@@ -118,8 +118,6 @@ def createFuncs(members:str, iext:bool) :
     #!                                                                              ^ NVIDIA has a huge alignment of 256 bytes.
     #FIXME                                                                          ^ USE DIFFERENT ALIGNMENT FOR STORAGE BUFFERS
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
-
-
 
 
 
@@ -196,6 +194,23 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\nnamespace lnx::shd{'                                     #Write namespace declaration
     )
 
+
+    # print(
+    #     re.sub(r'([()\[\]{}+*-\/.!<>=&^|?:%]) ', r'\g<1>',              #Remove spaces before opeartors
+    #     re.sub(r' ([()\[\]{}+*-\/.!<>=&^|?:%])', r'\g<1>',              #Remove spaces after  opeartors
+    #     re.sub(r'\+ \+', r'+0+',                                        #FIXME
+    #     re.sub(r'\- \-', r'+0+',                                        #FIXME
+    #     re.sub(r'^\n', r'',              flags=re.MULTILINE, string=    #Remove newlines
+    #     re.sub(r'^([^#]*?)\n', r'\g<1>', flags=re.MULTILINE, string=    #Remove newlines
+    #     re.sub(r'(^ *)|( *$)', r'',      flags=re.MULTILINE, string=    #Strip lines
+    #     re.sub(r' +', r' ',                                             #Remove whitespace
+    #     re.sub(r'(\/\*(.|\n)*\*\/)', r'',                               #Remove comments
+    #     re.sub(r'(\/\/.*)\n', r'\n',                                    #Remove comments
+    #     fr.read().expandtabs(4),                                        #Convert tabs to spaces and remove newlines
+    # )))))))))))
+
+
+
     shader = re.findall(                                #Search for binding declarations
         r'(( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*'       # 0 1 2 3 4 5       # -      #Skip comments and whitespace
         r'(ext)?'                                           # 6                 # 6      #Skip comments and whitespace
@@ -210,7 +225,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         elms:list = []
         storageNum = 0; uniformNum = 0
         for layout in shader:                               #For each layout
-            _iext = layout[6] != None and len(layout[6]) > 0    #Check if it's external        #BUG CHECK LENGTH IN MEMBER PERSING TOO
+            _iext = layout[6] != None and len(layout[6]) > 0    #Check if it's external        #BUG CHECK LENGTH IN MEMBER PARSING TOO
             _name : str = layout[16]; _type = layout[15]; _bind = layout[14]
             decl = translateStructDecl(                         #Translate declaration
                 _name, _iext, _type, _bind,                         #
