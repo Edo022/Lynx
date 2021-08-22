@@ -29,14 +29,19 @@ namespace lnx::shd{
 		} wsize;
 
 
-		struct data_t : public ShaderElm_b<eUniform> {
-			data_t() {
+		struct _data_t : public ShaderElm_b<eUniform> {
+			_data_t() {
+				ShaderElm_b::vdata.realloc(256);
+				ShaderElm_b::data.realloc(256);
 				ShaderElm_b::bind = 2;
 			}
-		} data;
+			alwaysInline f32v3& pos() { return *(f32v3*)ShaderElm_b::data; }
+			alwaysInline f32& r() { return *(f32*)(ShaderElm_b::data + 16); }
+			alwaysInline f32v4& col() { return *(f32v4*)(ShaderElm_b::data + 32); }
+		} _data;
 
 
-		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f64v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore);
+		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);

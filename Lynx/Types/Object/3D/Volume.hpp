@@ -36,7 +36,9 @@ namespace lnx{
             });
 
 
-            // data._data
+            data._data.col() = {1,0,0,1};
+            data._data.pos() = {0,0,0};
+            data._data.r() = 1;
         }
     };
 }

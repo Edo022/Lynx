@@ -14,11 +14,10 @@
 namespace lnx::shd{
 
 
-	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f64v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
 			outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
-			data.vdata = (vram::ptr<char, eVRam, eUniform>)pPos;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
@@ -86,9 +85,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo2 = vk::DescriptorBufferInfo()
-			.setBuffer (data.vdata.cell->csc.buffer)
-			.setOffset (data.vdata.cell->localOffset)
-			.setRange  (data.vdata.cell->cellSize)
+			.setBuffer (_data.vdata.cell->csc.buffer)
+			.setOffset (_data.vdata.cell->localOffset)
+			.setRange  (_data.vdata.cell->cellSize)
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
