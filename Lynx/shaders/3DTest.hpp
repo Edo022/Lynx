@@ -15,29 +15,28 @@ namespace lnx::shd{
 		static uint32 pipelineIndex;
 
 
-		struct _outcol_t : public ShaderElm_b<eStorage> {
-			_outcol_t() {
+		struct outcol_t : public ShaderElm_b<eStorage> {
+			outcol_t() {
 				ShaderElm_b::bind = 0;
 			}
-		} _outcol;
+		} outcol;
 
 
-		struct _wsize_t : public ShaderElm_b<eStorage> {
-			_wsize_t() {
+		struct wsize_t : public ShaderElm_b<eStorage> {
+			wsize_t() {
 				ShaderElm_b::bind = 1;
 			}
-		} _wsize;
+		} wsize;
 
 
-		struct _data_t : public ShaderElm_b<eUniform> {
-			_data_t() {
+		struct data_t : public ShaderElm_b<eUniform> {
+			data_t() {
 				ShaderElm_b::bind = 2;
 			}
-			//position
-		} _data;
+		} data;
 
 
-		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f32v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore);
+		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f64v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);

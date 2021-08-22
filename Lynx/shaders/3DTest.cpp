@@ -14,11 +14,11 @@
 namespace lnx::shd{
 
 
-	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f32v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<f64v3, eVRam, eUniform> pPos, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
-			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
-			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
-			_data.vdata = (vram::ptr<char, eVRam, eUniform>)pPos;
+			outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
+			wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
+			data.vdata = (vram::ptr<char, eVRam, eUniform>)pPos;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
@@ -60,9 +60,9 @@ namespace lnx::shd{
 
 		vk::WriteDescriptorSet writeSets[3];
 		auto bufferInfo0 = vk::DescriptorBufferInfo()
-			.setBuffer (_outcol.vdata.cell->csc.buffer)
-			.setOffset (_outcol.vdata.cell->localOffset)
-			.setRange  (_outcol.vdata.cell->cellSize)
+			.setBuffer (outcol.vdata.cell->csc.buffer)
+			.setOffset (outcol.vdata.cell->localOffset)
+			.setRange  (outcol.vdata.cell->cellSize)
 		;
 		writeSets[0] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -73,9 +73,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo1 = vk::DescriptorBufferInfo()
-			.setBuffer (_wsize.vdata.cell->csc.buffer)
-			.setOffset (_wsize.vdata.cell->localOffset)
-			.setRange  (_wsize.vdata.cell->cellSize)
+			.setBuffer (wsize.vdata.cell->csc.buffer)
+			.setOffset (wsize.vdata.cell->localOffset)
+			.setRange  (wsize.vdata.cell->cellSize)
 		;
 		writeSets[1] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -86,9 +86,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo2 = vk::DescriptorBufferInfo()
-			.setBuffer (_data.vdata.cell->csc.buffer)
-			.setOffset (_data.vdata.cell->localOffset)
-			.setRange  (_data.vdata.cell->cellSize)
+			.setBuffer (data.vdata.cell->csc.buffer)
+			.setOffset (data.vdata.cell->localOffset)
+			.setRange  (data.vdata.cell->cellSize)
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)

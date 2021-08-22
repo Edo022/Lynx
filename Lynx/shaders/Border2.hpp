@@ -15,25 +15,25 @@ namespace lnx::shd{
 		static uint32 pipelineIndex;
 
 
-		struct _outcol_t : public ShaderElm_b<eStorage> {
-			_outcol_t() {
+		struct outcol_t : public ShaderElm_b<eStorage> {
+			outcol_t() {
 				ShaderElm_b::bind = 0;
 			}
-		} _outcol;
+		} outcol;
 
 
-		struct _wsize_t : public ShaderElm_b<eStorage> {
-			_wsize_t() {
+		struct wsize_t : public ShaderElm_b<eStorage> {
+			wsize_t() {
 				ShaderElm_b::bind = 1;
 			}
-		} _wsize;
+		} wsize;
 
 
-		struct _zbuff_t : public ShaderElm_b<eStorage> {
-			_zbuff_t() {
+		struct zbuff_t : public ShaderElm_b<eStorage> {
+			zbuff_t() {
 				ShaderElm_b::bind = 2;
 			}
-		} _zbuff;
+		} zbuff;
 
 
 		struct _data_t : public ShaderElm_b<eUniform> {
@@ -42,11 +42,8 @@ namespace lnx::shd{
 				ShaderElm_b::data.realloc(256);
 				ShaderElm_b::bind = 3;
 			}
-			//Position of the top-left corner
 			alwaysInline f32v2& ffp() { return *(f32v2*)ShaderElm_b::data; }
-			//Position of the bottom-right corner
 			alwaysInline f32v2& fsp() { return *(f32v2*)(ShaderElm_b::data + 8); }
-			//TODO
 			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 16); }
 		} _data;
 

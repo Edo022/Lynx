@@ -16,9 +16,9 @@ namespace lnx::shd{
 
 	void Line2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
-			_outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
-			_wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
-			_zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
+			outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
+			wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
+			zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
@@ -60,9 +60,9 @@ namespace lnx::shd{
 
 		vk::WriteDescriptorSet writeSets[4];
 		auto bufferInfo0 = vk::DescriptorBufferInfo()
-			.setBuffer (_outcol.vdata.cell->csc.buffer)
-			.setOffset (_outcol.vdata.cell->localOffset)
-			.setRange  (_outcol.vdata.cell->cellSize)
+			.setBuffer (outcol.vdata.cell->csc.buffer)
+			.setOffset (outcol.vdata.cell->localOffset)
+			.setRange  (outcol.vdata.cell->cellSize)
 		;
 		writeSets[0] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -73,9 +73,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo1 = vk::DescriptorBufferInfo()
-			.setBuffer (_wsize.vdata.cell->csc.buffer)
-			.setOffset (_wsize.vdata.cell->localOffset)
-			.setRange  (_wsize.vdata.cell->cellSize)
+			.setBuffer (wsize.vdata.cell->csc.buffer)
+			.setOffset (wsize.vdata.cell->localOffset)
+			.setRange  (wsize.vdata.cell->cellSize)
 		;
 		writeSets[1] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -86,9 +86,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo2 = vk::DescriptorBufferInfo()
-			.setBuffer (_zbuff.vdata.cell->csc.buffer)
-			.setOffset (_zbuff.vdata.cell->localOffset)
-			.setRange  (_zbuff.vdata.cell->cellSize)
+			.setBuffer (zbuff.vdata.cell->csc.buffer)
+			.setOffset (zbuff.vdata.cell->localOffset)
+			.setRange  (zbuff.vdata.cell->cellSize)
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
