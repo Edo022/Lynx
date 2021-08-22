@@ -191,18 +191,19 @@ with open(spath + shname + '.hpp', 'w') as fh, open(spath + shname + '.cpp', 'w'
 
     code = subprocess.check_output(
         [enginePath + '/Deps/' + pf + '/Vulkan-1.2.170.0/x86_64/bin/glslc', spath + shname + '.comp', '-E'],
+        universal_newlines=True
     )
 
 
     #Parse out unnecessary whitespace and comments from the shader code
     ncode = (
-        re.sub(r'b\'((.|\n)*)\'', r'\g<1>',                     #Remove preprocessor "b'...'"
         re.sub(r'([()\[\]{}+*-\/.!<>=&^|?:%,;]) ', r'\g<1>',    #Remove spaces after  opeartors
         re.sub(r' ([()\[\]{}+*-\/.!<>=&^|?:%,;])', r'\g<1>',    #Remove spaces before opeartors
         re.sub(r'\+ \+', r'-0-',                                #FIXME
         re.sub(r'\- \-', r'-0-',                                #FIXME
-        re.sub(r'\\n', r'',                                     #Remove newlines
-        re.sub(r'(#.*?)\\n', r'\g<1>\n',                        #Remove newlines
+        re.sub(r'\\n', r'\n',                                   #Remove newlines
+        re.sub(r'\n', r'',                                      #Remove newlines
+        re.sub(r'(#.*?)\n', r'\g<1>\\n',                        #Remove newlines
         re.sub(r' +', r' ',                                     #Remove whitespace
         str(code).expandtabs(4),                                #Convert tabs to spaces
     )))))))))
