@@ -16,7 +16,7 @@ namespace lnx{
         f32v4 col;  //color
     };
 
-    struct Volume : public obj::obj3_b{
+    struct Volume : public obj::RenderObj3{
     private:
         shd::_3DTest data;
         RaArray<Octree> hbx_nodes; //TODO ?? remove?
@@ -40,5 +40,12 @@ namespace lnx{
             data._data.pos() = {0,0,0};
             data._data.r() = 1;
         }
+
+        //TODO specify that this function must be overridden in order to make things work
+		virtual void onSpawn(core::RenderCore& pRenderCore) override;
+
+        //TODO specify that those functions must be overridden in order to make things work
+		virtual ram::ptr<char> getShData() override { return data._data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
     };
 }

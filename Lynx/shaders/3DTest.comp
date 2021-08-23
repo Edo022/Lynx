@@ -3,6 +3,9 @@
 #define gy gl_GlobalInvocationID.y
 #define g gl_GlobalInvocationID
 
+//BUG ##################################################
+//BUG DOUBLES AND DOUBLE VECTORS ARE NOT SUPPORTED     #
+//BUG ##################################################
 
 layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
@@ -26,6 +29,13 @@ void setPixel(vec2 pos, vec4 col) {
 
 
 void main() {
-	setPixel(vec2(1,1), vec4(1,0,0,1));
+	setPixel(vec2(1, 1), vec4(250, 0, 0, 250));
+	setPixel(vec2(1, 1), vec4(1, 0, 0, 1));
+
+	setPixel(vec2(0.5, 0.5), vec4(250, 0, 0, 250));
+	setPixel(vec2(0.5, 0.5), vec4(1, 0, 0, 1));
+
+	setPixel(vec2(0, 0), vec4(250, 0, 0, 250));
+	setPixel(vec2(0, 0), vec4(1, 0, 0, 1));
 	// setPixel(pos.xy );
 }
