@@ -1,5 +1,4 @@
 #version 450
-#define ext
 #define WORKGROUP_SIZE 32			//The x and y size of the workgroup
 #define gx gl_GlobalInvocationID.x	//The x coordinate of the shader call. This does not depend on the workgroup size
 #define gy gl_GlobalInvocationID.y	//The y coordinate of the shader call. This does not depend on the workgroup size
@@ -15,9 +14,9 @@ const vec2 mp = { -1, 1 };	//Minus-plus vector for fast vec2 operations
 
 layout (local_size_x = WORKGROUP_SIZE * WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1 ) in;
 
-ext layout(std430, binding = 0) buffer _outcol{ vec4 outcol[]; };
-ext layout(std430, binding = 1) buffer _wsize{ uvec2 wsize; };
-ext layout(std430, binding = 2) buffer _zbuff{ uint zbuff[]; };
+layout(std430, binding = 0) buffer ext_outcol{ vec4 outcol[]; };
+layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
+layout(std430, binding = 2) buffer ext_zbuff{ uint zbuff[]; };
 
 layout(binding = 3) uniform _data{
 	vec2 fp0;   	//Position of the first point

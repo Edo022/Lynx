@@ -1,6 +1,4 @@
 #version 450
-#define ext
-
 #define WORKGROUP_SIZE 32
 #define gx gl_GlobalInvocationID.x
 #define gy gl_GlobalInvocationID.y
@@ -11,10 +9,10 @@
 
 layout (local_size_x = 32 * 32, local_size_y = 1, local_size_z = 1 ) in;
 
-ext layout(std430, binding = 0) buffer _src{ vec4 src[]; };
-ext layout(std430, binding = 1) buffer _dst{ uint dst[]; };
-ext layout(std430, binding = 2) buffer _wsize{ uvec2 wsize; };
-ext layout(std430, binding = 3) buffer _zbuff{ uint zbuff[]; };
+layout(std430, binding = 0) buffer ext_src{ vec4 src[]; };
+layout(std430, binding = 1) buffer ext_dst{ uint dst[]; };
+layout(std430, binding = 2) buffer ext_wsize{ uvec2 wsize; };
+layout(std430, binding = 3) buffer ext_zbuff{ uint zbuff[]; };
 
 
 

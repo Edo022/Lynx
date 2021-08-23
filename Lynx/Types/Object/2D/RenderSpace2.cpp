@@ -5,6 +5,7 @@
 
 
 namespace lnx::obj {
+	//TODO fix documentation
 	//Adds an object to the render space children
 	//Automatically updates the  parent and child index of the object
 	//Returns the child index
@@ -21,6 +22,7 @@ namespace lnx::obj {
 
 
 
+	//TODO fix documentation
 	//Updates the render limit of the child at a specific index
 	//It depends on the render space properties and children alignment
 	//Returns false if the index is invalid

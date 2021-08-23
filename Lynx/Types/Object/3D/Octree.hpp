@@ -23,6 +23,6 @@ namespace lnx{
         } opt;
 
         // inline bool isHbx() const noexcept { return r != 0; } //Returns true if the cell is an hitbox or can be used as such
-        inline bool isBbx() const noexcept {  } //Returns true if the cell can be used as bounding box
+        inline bool isBbx() const noexcept {  } //Returns true if the cell can be used as bounding box //TODO
     };
 }

@@ -55,7 +55,7 @@ namespace lnx::obj{
 	void obj2_b::setChildLimits(const uint32 vChildIndex) const {
 		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
 
-		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
+		//FIXME ADD CHECK IN ADD FUNCTION TO CHECKS THAT CHILDREN ARE OBJ2 ONLY
 		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
 		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
 	}
@@ -76,5 +76,47 @@ namespace lnx::obj{
 	void obj2_b::onLimit() {
 		obj_bb::onLimit();
 		if(parent) parent->setChildLimits(obj_bb::childIndex);
+	}
+
+
+
+
+
+
+
+
+	// 3D objects base class ----------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+	void obj3_b::setChildLimits(const uint32 vChildIndex) const {
+		// dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
+
+		// //FIXME ADD CHECK IN ADD FUNCTION TO CHECKS THAT CHILDREN ARE OBJ2 ONLY
+		// static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
+		// static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
+	}
+
+
+	void obj3_b::onSpawn(core::RenderCore& pRenderCore) {
+		obj_bb::onSpawn(pRenderCore);
+
+		// //Set callbacks of overwritten inputs
+		// if(doesRedefine(*this, &MouseCallbacks_b::onClick))pRenderCore.w->icQueues.onClick.add(this);
+		// if(doesRedefine(*this, &MouseCallbacks_b::onEnter))pRenderCore.w->icQueues.onEnter.add(this);
+		// if(doesRedefine(*this, &MouseCallbacks_b::onExit ))pRenderCore.w->icQueues.onExit .add(this);
+		// if(doesRedefine(*this, &MouseCallbacks_b::onMove ))pRenderCore.w->icQueues.onMove .add(this);
+		// if(doesRedefine(*this, &MouseCallbacks_b::onAxis ))pRenderCore.w->icQueues.onAxis .add(this);
+	}
+
+
+	void obj3_b::onLimit() {
+		obj_bb::onLimit();
+		// if(parent) parent->setChildLimits(obj_bb::childIndex);
 	}
 }

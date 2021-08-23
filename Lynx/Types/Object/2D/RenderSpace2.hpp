@@ -31,7 +31,7 @@ namespace lnx::obj {
 	 *		This render space can only be a child of a window or another RenderSpace2
 	 */
 	struct RenderSpace2 : public StructObj2 {
-		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered
+		bool allowOutOfViewRender = false;			//Allow out of limit object regions to be rendered //TODO
 
 		AlignmentType alignment;	//Type of children alignmen
 		uint32 xNum;				//Number of horizontally aligned children

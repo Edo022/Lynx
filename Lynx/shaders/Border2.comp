@@ -1,5 +1,4 @@
 #version 450
-#define ext
 #define gx gl_GlobalInvocationID.x
 #define gy gl_GlobalInvocationID.y
 #define g gl_GlobalInvocationID
@@ -10,9 +9,9 @@ const vec4  col = {  0,  1, 0, 1 };
 
 layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
-ext layout(std430, binding = 0) buffer _outcol{ vec4 outcol[]; };
-ext layout(std430, binding = 1) buffer _wsize{ uvec2 wsize; };
-ext layout(std430, binding = 2) buffer _zbuff{ uint zbuff[]; };
+layout(std430, binding = 0) buffer ext_outcol{ vec4 outcol[]; };
+layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
+layout(std430, binding = 2) buffer ext_zbuff{ uint zbuff[]; };
 
 layout(std140, binding = 3) uniform _data{
 	vec2 ffp;	 //Position of the top-left corner

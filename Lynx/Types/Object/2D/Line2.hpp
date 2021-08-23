@@ -2,7 +2,6 @@
 #define LNX_H_2DLINES
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
-#include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Render/Render.hpp"
 #include "Lynx/shaders/Line2.hpp"

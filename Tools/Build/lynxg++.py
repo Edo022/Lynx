@@ -105,7 +105,7 @@ while i < len(cmdp):
             ],[
                 'python3',
                 enginePath + '/Lynx/shaders/GlslToCpp.py',
-                iname + '.comp',
+                iname + '.comp', "pf=" + pf
             ]
         ]
         del(cmdp[i])
@@ -123,6 +123,9 @@ cmdg = ['g++', '-std=c++20', '-pthread']                        #Base options
 cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced vulkan macros
 cmdg += ['-include', 'Lynx/Lynx_config.hpp']                    #Include engine configuration macros
 if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lynx debug checks when in debug mode
+
+# cmdg += ['-ffile-prefix-map="' + os.getcwd() + '"="./"']
+# #FIXME ^ this doesn't work
 
 if cd == 'u': cmdg += [                                         #When building user application
     '-DenginePath="' + enginePath + '"',                        #Define engine path function #FIXME
@@ -152,16 +155,31 @@ if cd == 'u': cmdg += [                                         #When building u
 
 
 
+
+def runCmd(args):
+    try:
+        subprocess.check_output(args, universal_newlines=True)
+        print('\033[1m' + (' '.join(args)) + '\033[0m')
+    except subprocess.CalledProcessError as e:
+        print(
+            'The task \033[1m"' + ' '.join(args) +
+            '"\033[0m exited with return code ' + str(e.returncode) +
+            ':\n\033[31m' + str(e.output) + '\033[0m'
+        )
+        exit(1)
+
+
+
 #Run GLSLC commands
 if len(cmdsh) > 0:
     print('\n' + ('-' * os.get_terminal_size().columns))
-    print('\n\n' '\033[1m' 'COMPILING SHADERS')
+    print('\n\n' '\033[1m' 'COMPILING SHADERS\033[0m')
     i = 0
     while i < len(cmdsh):
         print('\n')
-        print('\033[1m' + (' '.join(cmdsh[i + 0])) + '\033[0m'); subprocess.run(cmdsh[i + 0])
-        print('\033[1m' + (' '.join(cmdsh[i + 1])) + '\033[0m'); subprocess.run(cmdsh[i + 1])
-        print('\033[1m' + (' '.join(cmdsh[i + 2])) + '\033[0m'); subprocess.run(cmdsh[i + 2])
+        runCmd(cmdsh[i + 0])
+        runCmd(cmdsh[i + 1])
+        runCmd(cmdsh[i + 2])
         i += 3
     print('\n')
 
@@ -169,6 +187,6 @@ if len(cmdsh) > 0:
 #Run G++ command
 if len(cmdg) > 1:
     print('\n' + ('-' * os.get_terminal_size().columns))
-    print('\n\n' '\033[1m' 'COMPILING TRANSLATION UNITS')
+    print('\n\n' '\033[1m' 'COMPILING TRANSLATION UNITS\033[0m')
     print(' '.join(cmdg) + '\n' '\033[0m')
     subprocess.run(cmdg)

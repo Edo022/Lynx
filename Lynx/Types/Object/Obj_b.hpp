@@ -67,7 +67,7 @@ namespace lnx{
 		 */
 		struct obj_bb { //
 		    inline void specStructOnFlush(vk::CommandBuffer pCB) {
-	            obj_bb::onFlush(pCB);
+	            obj_bb::onFlush(pCB);	//Does nothing
 	        }
 
 			//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
@@ -268,6 +268,11 @@ namespace lnx{
 			float32 wIndex{ 0 };			//Index of the object. Objects with higher wIndex will be rendered on top of others
 			f32v3 rot{ 0, 0, 0 };			//Rotation of the object
 			f32v3 scl{ 0, 0, 0 };			//Scale of the object
+
+
+			virtual void setChildLimits(const uint32 vChildIndex) const override;
+			virtual void onSpawn(core::RenderCore& pRenderCore) override;
+			virtual void onLimit() override;
 			//TODO write all the members
     	};
 

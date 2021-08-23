@@ -32,6 +32,9 @@
     #include "Lynx/Types/Object/2D/Line2.cpp"
     #include "Lynx/Types/Object/2D/Border2.cpp"
     #include "Lynx/Types/Object/2D/RenderSpace2.cpp"
+    #include "Lynx/Types/Object/2D/RenderSpace3.cpp"
+
+    #include "Lynx/Types/Object/3D/Volume.cpp"
 
     //TODO AUTOMATIZE
     #include "Lynx/shaders/Line2.cpp"

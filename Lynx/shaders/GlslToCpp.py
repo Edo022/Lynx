@@ -1,6 +1,9 @@
-import sys, os, re
+import sys, os, re, subprocess
 from textwrap import indent, dedent
 from math import ceil
+#!Shaders are validated in lynxg++
+
+
 
 
 
@@ -10,33 +13,35 @@ def roundUp(x : int, b : int) -> int :
 
 
 
+# Translates the name of a glsl data type to the corresponding Lynx data type
+# glslType: The name of the glsl type
 def translateDataType(glslType : str) -> str :
     return(
-        re.sub( r'^vec([234])', r'f32v\g<1>',
-        re.sub(r'^bvec([234])',   r'bv\g<1>',
-        re.sub(r'^ivec([234])', r'i32v\g<1>',
-        re.sub(r'^uvec([234])', r'u32v\g<1>',
-        re.sub(r'^dvec([234])', r'f64v\g<1>',
-        re.sub(   r'^int',  r'i32', #TODO improve performance
-        re.sub(  r'^uint',  r'u32', #TODO improve performance
-        re.sub(  r'^bool', r'bool', #TODO improve performance
-        re.sub( r'^float',  r'f32', #TODO improve performance
-        re.sub(r'^double',  r'f64', #TODO improve performance
-        glslType))))))))))
-    )
+        re.sub( r'^vec([234])', r'f32v\g<1>',           #Float vectors
+        re.sub(r'^dvec([234])', r'f64v\g<1>',           #Double vectors
+        re.sub(r'^bvec([234])',   r'bv\g<1>',           #Boolean vectors
+        re.sub(r'^(i|u)vec([234])', r'\g<1>32v\g<2>',   #Integer vectors
+        re.sub(   r'^int',  r'i32',                     #Int
+        re.sub(  r'^uint',  r'u32',                     #Unsigned int
+        re.sub( r'^float',  r'f32',                     #Float
+        re.sub(r'^double',  r'f64',                     #Double
+        #!glsl has no long intengers
+        #!bool doesn't change
+    glslType)))))))))
 
 
 
-
-def getTypeSize(type_ : str) -> int :
+# Returns the size in bytes of a glsl data type
+# glslType: The name of the glsl type
+def getTypeSize(glslType : str) -> int :
     return(
-        2 * 4 if re.search(r'^[biu]?vec2',           type_) != None else
-        2 * 8 if re.search(r'^dvec2',                type_) != None else
-        4 * 4 if re.search(r'^[biu]?vec[34]',        type_) != None else
-        4 * 8 if re.search(r'^dvec[34]',             type_) != None else
-        4     if re.search(r'^((u?int)|float|bool)', type_) != None else
-        8     if re.search(r'^double',               type_) != None else
-        99999999 #If something bad happens, make it obvious
+        2 * 4 if re.search(r'^[biu]?vec2',           glslType) != None else     #Boolean, integer and unsigned 2D vectors have size 8
+        2 * 8 if re.search(r'^dvec2',                glslType) != None else     #Double 2D vectors have size 16
+        4 * 4 if re.search(r'^[biu]?vec[34]',        glslType) != None else     #Boolean, integer and unsigned 3D and 4D vectors have size 12 and 16 but are padded to 16 bytes
+        4 * 8 if re.search(r'^dvec[34]',             glslType) != None else     #Double 3D and 4D vectors have size 24 and 32 but are padded to 32 bytes
+        4     if re.search(r'^((u?int)|float|bool)', glslType) != None else     #Booleans, floats and integers have size 4
+        8     if re.search(r'^double',               glslType) != None else     #Doubles have size 8
+        -1 #!Never actually returned. Input shaders are checked before parsing
     )
 
 
@@ -46,8 +51,8 @@ def getTypeSize(type_ : str) -> int :
 
 
 
-def createFuncs(members:str, iext:bool) :
-    m : str = members.expandtabs(4).strip()
+def createFuncs(elms:str, iext:bool) :
+    m : str = elms.expandtabs(4)
     ret      : str             = ''
     ext      : dict            = None
     iext_    : bool            = False
@@ -56,44 +61,21 @@ def createFuncs(members:str, iext:bool) :
 
     offset : int = 0
     while len(m) > 0:
-        r = re.search(r'^( |\n){1,}', m)                            #Ignore whitespace
-        if r != None:                                                   #
-            m = m[len(r.group(0)):]                                     #Pop parsed string from source string
-            continue                                                    #Keep parsing
-
-
-        r = re.search(r'(^\/\*(.|\n)*?\*\/)|(^\/\/.*?\n)', m)       #Skip comments
-        if r != None:                                                   #
-            ret += '\n' + r.group(0).strip()                            #Concatenate to return value
-            m = m[len(r.group(0)):]                                     #Pop parsed string from source string
-            continue                                                    #Keep parsing
-
-
         if iext_: break                                             #Break if the binding is external and the trailing comment has been written
         r = re.search(                                              #Search for members
-            r'^()*?'                                                    # -                       # -     #Anchor to beginning
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'             # 2  3  4  5  6  7  8     # 2     #Skip any comment or whitespace
-            r'(([biuv]?vec[234])|(double|float|bool|(u?int)))'          # 9  10 11 12             # 9     #Get type name
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'             # 13 14 15 16 17 18 19    # 13    #Skip any comment or whitespace
-            r'([a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                             # 20                      # 20    #Get variable name
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'             # 21 22 23 24 25 26 27    # 21    #Skip any comment or whitespace
-            r'\[?'                                                      # -                       # -     #Check opening array bracket
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'             # 28 29 30 31 32 33 34    # 28    #Skip any comment or whitespace
-            r'(\])?'                                                    # 35                      # 35    #Check closing array bracket
-            r'((( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*)'             # 36 37 38 39 40 41 42    # 36    #Skip any comment or whitespace
-            r';'                                                        # -                       # -     #Anchor to instruction end
-            r'((( )|(\/\/.*?(\n|$)))*)',                                # 43 44 45 46 47          # 43    #Skip eventual comments after member declaration
+            r'^.*?'                                                     #Anchor to beginning
+            r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' #Get type name
+            r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     #Get variable name
+            r'\[?(?P<iarr>\])?'                                         #Check closing array bracket
+            r';',                                                       #Anchor to instruction end
         m)                                                              #
         if r != None:                                               #If a member was found
-            _type = r.group(9); _name = r.group(20); _iarr = r.group(35)#(Programmer friendly names)
-            _coms = { r.group(2), r.group(13), r.group(21), r.group(28), r.group(36), r.group(43) }
+            _type = r.group('type');                                    #
+            _name = r.group('name');                                    #
+            _iarr = r.group('iarr')                                     #
             ttype:str = translateDataType(_type)                        #Translate its type
             align:int = getTypeSize(_type)                              #Get member alignment
             maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment
-
-
-            for _comm in _coms:                                         #Write comments
-                if _comm != None and len(_comm.strip()) > 0: ret += '\n' + dedent(_comm.rstrip())
 
             if not iext:                                                #If the binding is not external
                 ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
@@ -102,15 +84,12 @@ def createFuncs(members:str, iext:bool) :
                 offset += align                                             #Calculate raw offset of the next element
             else:                                                       #If the binding is external
                 iext_ = True                                                #Set external binding variable
-                ext = dict({'type' : ttype, 'varname': _name})                 #Save binding type and name. They will be used when writing create()
-
+                ext = dict({'type' : ttype, 'varname': _name})              #Save binding type and name. They will be used when writing create()
             m = m[len(r.group(0)):]                                     #Pop parsed string from source string
             continue                                                    #Keep parsing
-
-
-        #umu umu
         else:                                                       #Blindly copy anything else
-            m = m[1:]                                                   #
+            m = m[1:]                                                   #umu umu
+
 
 
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
@@ -124,10 +103,8 @@ def createFuncs(members:str, iext:bool) :
 
 
 
-
-
-def translateStructDecl(name:str, iext:bool, type:str, binding:int, members:str, space:bool) :
-    t = createFuncs(members, iext)
+def translateStructDecl(name:str, iext:bool, type:str, indx:int, elms:str, space:bool) :
+    t = createFuncs(elms, iext)
     return dict({
         'decl' : (('\n\n' if space else '') +                                   #Fix spacing
             '\nstruct ' + name + '_t : public ShaderElm_b<' + ('eStorage' if type == 'buffer' else 'eUniform') + '> {' +
@@ -137,7 +114,7 @@ def translateStructDecl(name:str, iext:bool, type:str, binding:int, members:str,
                     ('\n\tShaderElm_b::data.realloc('  + str(t['size']) + ');')         #Allocate local data copy
                     if not iext else ''                                                 #But only if the binding is not ext
                     ) +                                                                 #
-                    '\n\tShaderElm_b::bind = ' + str(binding) + ';'                     #Set binding index
+                    '\n\tShaderElm_b::bind = ' + str(indx) + ';'                     #Set binding index
                 '\n}' +                                                             # }
                 t['func'],                                                          #Member access functions(){ ... }
             '\t') +                                                                 #
@@ -154,10 +131,11 @@ def translateStructDecl(name:str, iext:bool, type:str, binding:int, members:str,
 
 
 
-pathr  = sys.argv[1]
-
+pathr = sys.argv[1]
 if not os.path.exists(pathr): print("File does not exist")
-elif not pathr.split('.')[-1] == 'comp': print('File is not a vulkan shader')
+
+elif not pathr.split('.')[-1] == 'comp':
+    print('File is not a vulkan shader')
 else:
     spath  = re.search(r'^(.*/).*$', pathr)
     spath = spath.group(1) if spath != None else './'
@@ -167,13 +145,15 @@ else:
 
 
 
-
-
-with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w') as fh, open(spath + shname + '.cpp', 'w') as fc:
+# open(spath + shname + '.comp', 'r') as fr,
+with open(spath + shname + '.hpp', 'w') as fh, open(spath + shname + '.cpp', 'w') as fc:
     fname = re.sub(r'^([0-9].*)$', r'_\g<1>', re.sub(r'[^a-zA-Z0-9_]', '_', shname))
-    fh.write(                                           #Write to file
+
+    #Write header
+    fh.write(
         '\n//####################################################################################'
-        '\n// This file was generated automatically. Changes could be overwritten without notice'
+        '\n// This file was generated by Lynx/shaders/GlslToCpp.py'
+        '\n// Changes could be overwritten without notice'
         '\n//####################################################################################\n'
         '\n#pragma once'                                            #Include guard
         '\n#include "Lynx/Core/Render/Shaders/Shader_t.hpp"\n\n\n'  #Base Shader struct
@@ -182,9 +162,12 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\n\t\tstatic Shader_b::Layout layout;'
         '\n\t\tstatic uint32 pipelineIndex;'
     )
-    fc.write(                                           #Write to file
+
+    #Write cpp
+    fc.write(
         '\n//####################################################################################'
-        '\n// This file was generated automatically. Changes could be overwritten without notice'
+        '\n// This file was generated by Lynx/shaders/GlslToCpp.py'
+        '\n// Changes could be overwritten without notice'
         '\n//####################################################################################\n'
         '\n#include "' + re.sub(r'^.*?\/?Lynx\/(Lynx\/.*$)', r'\g<1>', spath + shname) + '.hpp"' #FIXME
         '\n#include "Lynx/Core/AutoInit.hpp"'                       #Auto init
@@ -194,36 +177,71 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
         '\nnamespace lnx::shd{'                                     #Write namespace declaration
     )
 
-    shader = re.findall(                                #Search for binding declarations
-        r'(( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*'       # 0 1 2 3 4 5       # -      #Skip comments and whitespace
-        r'(ext)?'                                           # 6                 # 6      #Skip comments and whitespace
-        r'(( |\n)|((\/\*(.|\n)*?\*\/)|(\/\/.*?\n)))*'       # 7 8 9 10 11 12    # -      #Skip comments and whitespace
-        r'layout.*(\(.*binding[\t ]*=[\t ]'                 # 13                # -      #Find layout declaration
-        r'([0-9][0-9]?)\))'                                 # 14                # 14     #Get layout binding
-        r'[\t ]*(buffer|uniform) (.*)'                      # 15 16             # 15 16  #Get layout type and name
-        r'\{(([^\}]|\n)*)\}',                               # 17 18             # 17     #Get layout members
-        fr.read())                                          #
-    if shader != None:                                  #If there is at leat one binding
-        exts:list = []                                      #External bindings data
-        elms:list = []
-        storageNum = 0; uniformNum = 0
-        for layout in shader:                               #For each layout
-            _iext = layout[6] != None and len(layout[6]) > 0    #Check if it's external        #BUG CHECK LENGTH IN MEMBER PERSING TOO
-            _name : str = layout[16]; _type = layout[15]; _bind = layout[14]
-            decl = translateStructDecl(                         #Translate declaration
-                _name, _iext, _type, _bind,                         #
-                members = layout[17].strip(),                       #Raw members data
-                space   = layout != 0                               #Code spacing
-            )                                                       #
-            fh.write(indent(decl['decl'], '\t\t'))              #Write members to file
-            if _iext:                                           #If it's external, save its data
-                exts.insert(len(exts), { 'vartype': decl['ext']['type'], 'varname' : decl['ext']['varname'], 'bndtype' : ('eStorage' if _type == 'buffer' else 'eUniform'), 'bndname' : _name })
-            elms.insert(len(elms), { 'type' : _type, 'name' : _name, 'bind' : _bind})
 
-            if _type == 'uniform': uniformNum += 1
+
+
+    #Expand macros
+    #FIXME use environment variable
+    #FIXME use environment variable for full name
+    pf = 'Linux' if sys.argv[2][-1] == 'l' else 'Windows'
+
+    enginePath:str
+    with open('./.engine/enginePath', 'r') as f:
+        enginePath = f.read()
+
+    code = subprocess.check_output(
+        [enginePath + '/Deps/' + pf + '/Vulkan-1.2.170.0/x86_64/bin/glslc', spath + shname + '.comp', '-E'],
+        universal_newlines=True
+    )
+
+
+    #Parse out unnecessary whitespace and comments from the shader code
+    ncode = (
+        re.sub(r'([()\[\]{}+*-\/.!<>=&^|?:%,;]) ', r'\g<1>',    #Remove spaces after  opeartors
+        re.sub(r' ([()\[\]{}+*-\/.!<>=&^|?:%,;])', r'\g<1>',    #Remove spaces before opeartors
+        re.sub(r'\+ \+', r'-0-',                                #FIXME
+        re.sub(r'\- \-', r'-0-',                                #FIXME
+        re.sub(r'\\n', r'\n',                                   #Remove newlines
+        re.sub(r'\n', r'',                                      #Remove newlines
+        re.sub(r'(#.*?)\n', r'\g<1>\\n',                        #Remove newlines
+        re.sub(r' +', r' ',                                     #Remove whitespace
+        str(code).expandtabs(4),                                #Convert tabs to spaces
+    )))))))))
+
+
+    #Search for layout declarations
+    layouts = [m.groupdict() for m in re.finditer(
+        r'layout.*?\(.*?binding=(?P<indx>[0-9]+)\)'
+        r'(?P<type>buffer|uniform) (?P<iext>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
+    ncode)]
+
+    if layouts != None:                                      #If there is at least one binding
+        exts:list = []                                          #List of external bindings
+        elms:list = []                                          #List of elements
+        storageNum = 0; uniformNum = 0                          #Number of storage and uniform bindings in the shader
+        for l in layouts:                                       #For each layout
+            _iext = l['iext'] != None and len(l['iext']) > 0        #Check if it's external        #BUG CHECK LENGTH IN MEMBER PARSING TOO
+            decl = translateStructDecl(                             #Translate declaration
+                l['name'], _iext, l['type'], l['indx'],                 #
+                elms = l['elms'].strip(),                               #Raw members data
+                space   = l != 0                                        #Code spacing
+            )                                                           #
+            fh.write(indent(decl['decl'], '\t\t'))                  #Write members to file
+            if _iext:                                               #If it's external, save its data
+                exts.insert(len(exts), {
+                    'vartype' : decl['ext']['type'],
+                    'varname' : decl['ext']['varname'],
+                    'bndtype' : ('eStorage' if l['type'] == 'buffer' else 'eUniform'),
+                    'bndname' : l['name']
+                })
+            elms.insert(len(elms), { 'type' : l['type'], 'name' : l['name'], 'indx' : l['indx']})
+
+            if l['type'] == 'uniform': uniformNum += 1
             else: storageNum += 1
 
-        fh.write(indent(                                    #Write shader's create functions
+
+        #Write the shader create functions
+        fh.write(indent(
             #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
             '\n\n\nvoid create(' +
             ', '.join((
@@ -235,7 +253,6 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
             '\nvoid updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
             '\nvoid destroy();',
         '\t\t'))
-
 
         fc.write(indent(
             '\n\n\nvoid ' + fname + '::create(' +
@@ -294,7 +311,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t;'
                     '\n\t''writeSets[' + str(i) + '] = vk::WriteDescriptorSet()'
                         '\n\t\t''.setDstSet          (descriptorSet)'
-                        '\n\t\t''.setDstBinding      ('+ str(b['bind']) + ')'
+                        '\n\t\t''.setDstBinding      ('+ str(b['indx']) + ')'
                         '\n\t\t''.setDescriptorCount (1)'
                         '\n\t\t''.setDescriptorType  (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
                         '\n\t\t''.setPBufferInfo     (&bufferInfo' + str(i) + ')'
@@ -358,7 +375,7 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
                     '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
                     '\n'.join((
                         '\n\t\tbindingLayouts[' + str(i) + '] = vk::DescriptorSetLayoutBinding()'
-                            '\n\t\t\t.setBinding            (' + str(b['bind']) + ')'
+                            '\n\t\t\t.setBinding            (' + str(b['indx']) + ')'
                             '\n\t\t\t.setDescriptorType     (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
                             '\n\t\t\t.setDescriptorCount    (1)'
                             '\n\t\t\t.setStageFlags         (vk::ShaderStageFlagBits::eCompute)'
@@ -399,14 +416,12 @@ with open(spath + shname + '.comp', 'r') as fr, open(spath + shname + '.hpp', 'w
 
         #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
         #FIXME AUTOMATIZE CPP INCLUDES
-
     else:
         print('No layout found. A shader must define at least one layout')
 
     fh.write('\n\t};\n}');                              # } //Namespace
     fh.write('//TODO remove local data in external bindings') #TODO
     fc.write('\n}');                              # } //Namespace
-
 #TODO ADD STRUCTURE PARSING AND TRANSLATION
 #TODO STRUCTURES HAVE A MINIMUM ALIGNMENT OF 16
 
