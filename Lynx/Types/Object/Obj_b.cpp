@@ -32,7 +32,8 @@ namespace lnx::obj{
 				getShVData().cell->csc.buffer,
 				getShVData().cell->localOffset,
 				getShVData().cell->cellSize,
-				(void*)getShData()
+				(void*)this->getShData()
+				//!^ Call reimplemented function
 			);
 		}
 		//else do nothing
@@ -42,20 +43,28 @@ namespace lnx::obj{
 
 
 	ram::ptr<char> obj_bb::getShData() {
-		switch(objType){
-			case ObjType::eRender: return obj_bb::getShData(); break;
-			case ObjType::eStruct: dbg::logError("Unable to call this function on structural objects"); break;
-			default:               dbg::logError("Function called on base class or not implemented");
-		}
+		#ifdef LNX_DEBUG
+			switch(objType){
+				//case ObjType::eRender: return this->getShData(); break;
+				//!^ Not an error. obj_bb::getShData is only called if the object didn't reimplement it or it is a structural object
+				//!  Both cases are runtime errors
+				case ObjType::eStruct: dbg::logError("Unable to call this function on structural objects"); break;
+				default:               dbg::logError("Function called on base class or not reimplemented");
+			}
+		#endif
 		return nullptr;
 	}
 	//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
 	vram::Alloc_b<char> obj_bb::getShVData() {
-		switch(objType){
-			case ObjType::eRender: return obj_bb::getShVData(); break;
-			case ObjType::eStruct: dbg::logError("Unable to call this function on structural objects"); break;
-			default:               dbg::logError("Function called on base class or not implemented");
-		}
+		#ifdef LNX_DEBUG
+			switch(objType){
+				//case ObjType::eRender: return this->getShVData(); break;
+				//!^ Not an error. obj_bb::getShVData is only called if the object didn't reimplement it or it is a structural object
+				//!  Both cases are runtime errors
+				case ObjType::eStruct: dbg::logError("Unable to call this function on structural objects"); break;
+				default:               dbg::logError("Function called on base class or not reimplemented");
+			}
+		#endif
 		return vram::Alloc_b<char>();
 	}
 
