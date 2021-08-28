@@ -1,4 +1,5 @@
 import re, sys, os, subprocess
+import GlslToCpp
 
 #FIXME fis shipping build
 # This script is a G++ wrapper that is called via lynxg++ C++ executable wrapper
@@ -102,11 +103,8 @@ while i < len(cmdp):
             ],[
                 enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val',
                 oname + '.spv'
-            ],[
-                'python3',
-                enginePath + '/Lynx/shaders/GlslToCpp.py',
-                iname + '.comp', "pf=" + pf
-            ]
+            ],
+            iname + '.comp'
         ]
         del(cmdp[i])
     else:
@@ -179,7 +177,8 @@ if len(cmdsh) > 0:
         print('\n')
         runCmd(cmdsh[i + 0])
         runCmd(cmdsh[i + 1])
-        runCmd(cmdsh[i + 2])
+        r = GlslToCpp.run(cmdsh[i + 2], pf)
+        if r != 0: exit(r)
         i += 3
     print('\n')
 
