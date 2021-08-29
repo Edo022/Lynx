@@ -16,7 +16,7 @@ namespace lnx {
 		*     Worst: O(n) [Memory reallocation]
 		* @param pElm The element to add
 		*/
-		inline void pushT(tType& pElm) { // push top deque
+		inline void pushT(const tType& pElm) { // push top deque
 			tq.push(pElm);
 		}
 
@@ -28,7 +28,7 @@ namespace lnx {
 		*     Worst: O(n) [Memory reallocation]
 		* @param pElm The element to add
 		*/
-		inline void pushB(tType& pElm) { // push bottom deque
+		inline void pushB(const tType& pElm) { // push bottom deque
 			bq.push(pElm);
 		}
 

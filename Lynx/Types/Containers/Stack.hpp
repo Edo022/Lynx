@@ -37,7 +37,7 @@ namespace lnx {
 		*     Worst: O(n) [Memory reallocation]
 		* @param pElm The element to add
 		*/
-		void push(tType& pElm) {
+		void push(const tType& pElm) {
 			size += sizeof(tType);
 			base = (tType*)realloc(base, size);				//Reallocate base
 			top = base + (size / sizeof(tType)) - 1;		//Update top pointer
