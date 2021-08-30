@@ -159,7 +159,7 @@ if sys.stdin.read(1).lower() == 'y':
            '            "command": "python3",'                                                '\n'
            '            "args": ['                                                            '\n'
            '                "' + _epath + '/Tools/Setup/SetType.py",'                         '\n'
-           '                "r"',                                                             '\n'
+           '                "r",'                                                             '\n'
            '                "ignored_argument" //FIXME'                                       '\n'
            '            ],'                                                                   '\n'
            '            "problemMatcher": [ ],'                                               '\n'
