@@ -1,85 +1,104 @@
 import re, sys, os, subprocess
 import GlslToCpp
-
-#FIXME fis shipping build
-# This script is a G++ wrapper that is called via lynxg++ C++ executable wrapper
-# Argv[1] contains all the g++ and lynxg++ parameters, divided by a '\x02' character
-# Any character with an escape sequence or '\x02' from the user input is escaped exacly once,
-# in order to pass the user input to Python using the $'<string>' format
-#
-# e.g.
-#     lynxg++ -mode=ld -d[ -O0 -a ] -r[-O3] -pthread
-# >>
-#     python3.9 /lynxg++.py $'-mode=ld\x02-d[\x02-O0 -a\x02]\x02-r[-O3]\x02-pthread'
+import os, shlex
+import argparse as ap
 
 
 
-enginePath:str
+
+
+
+
+p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -mode=<mode> -<selector>: <g++options...> <GLSLfiles...>')
+
+p.add_argument('-h', '--help',   action = 'store_true', dest = 'h')
+p.add_argument('-m', '--mode',   action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'], )
+p.add_argument('-e', '--engine', action = 'store_true', dest = 'e')
+
+p.add_argument('-a:', '--always:',  action = 'extend', nargs = '+', default = [''], dest = 'a')
+p.add_argument('-d:', '--debug:',   action = 'extend', nargs = '+', default = [''], dest = 'd')
+p.add_argument('-r:', '--release:', action = 'extend', nargs = '+', default = [''], dest = 'r')
+p.add_argument('-w:', '--window:',  action = 'extend', nargs = '+', default = [''], dest = 'w')
+p.add_argument('-l:', '--linux:',   action = 'extend', nargs = '+', default = [''], dest = 'l')
+
+p.add_argument('-wd:',             action = 'extend', nargs = '+', default = [''], dest = 'wd')
+p.add_argument('-wr:',             action = 'extend', nargs = '+', default = [''], dest = 'wr')
+p.add_argument('-ld:',             action = 'extend', nargs = '+', default = [''], dest = 'ld')
+p.add_argument('-lr:',             action = 'extend', nargs = '+', default = [''], dest = 'lr')
+
+for i in range(1, len(sys.argv)):
+    selectors = list(set(p._option_string_actions.keys()) - set(['-m', '--mode']))
+    if not sys.argv[i] in selectors and re.match(r'^((-m)|(--mode))=.*$', sys.argv[i]) == None:
+        sys.argv[i] = str(i).zfill(5) + sys.argv[i]
+
+
+
+
+args = p.parse_args()
+if args.h:
+    print(
+        'Usage:'                                                                                                                                        '\n'
+        '    lynxg++ -h'                                                                                                                                '\n'
+        '    lynxg++ -mode=<mode> -<selector>: <g++options...> <GLSLfiles...>'                                                                          '\n'
+        ''                                                                                                                                              '\n'
+        'Options:'                                                                                                                                      '\n'
+        '    -h  --help         Display this information'                                                                                               '\n'
+        '    -m  --mode         Specify target platform and build type. This option is always required  e.g. -m=ld'                                     '\n'
+        '                            l = linux, w = windows, d = debug, r = release'                                                                    '\n'
+        '    -e  --engine       Build the engine instead of the user application (off by default)'                                                      '\n'
+        ''                                                                                                                                              '\n'
+        'Selectors allow you to use a single command to build applications for different platforms or build types'                                      '\n'
+        '    -a  --always       Always use the options, regardless of platform or type                  e.g. -a"main.cpp"'                              '\n'
+        '    -l  --linux        Only use the options when building for Linux                            e.g. -l"-pthread"    e.g. -l"-pthread -Dlinux"' '\n'
+        '    -w  --windows      Only use the options when building for Windows                          e.g. -w"-mthread"    e.g. -w"-mthread -Dwin10"' '\n'
+        '    -d  --debug        Only use the options when building in Debug mode                        e.g. -d"-Og"         e.g. -d"-Og -g3"'          '\n'
+        '    -r  --release      Only use the options when building in Release mode                      e.g. -r"-O3"         e.g. -r"-O3 -g0"'          '\n'
+        ''                                                                                                                                              '\n'
+        '    Files with extension .comp are treated as GLSL compute shaders'                                                                            '\n'
+        '        By default, the .spv has the same name of the .comp and is placed in the same directory'                                               '\n'
+        '        A different output file can be specified with the syntax:'                                                                             '\n'
+        '        <path/to/inputfile>.comp;<path/to/outputfile>.spv;'                                                                                    '\n'
+        '    Any unrecognized option inside a selector is forwarded to g++'                                                                             '\n'
+    )
+    exit(0)
+
+elif args.m is None:
+    print('lynxg++: error: the following arguments are required: -m/--mode')
+    exit(1)
+
+
+
+
+#Get engine path
+_epath:str
 with open('./.engine/enginePath', 'r') as f:
-    enginePath = f.read()
+    _epath = f.read()
 
 
 
 
-cmd = []            #Raw lynxg++ command
-pf:str              #Target platform. 'l'(Linux) or 'w'(Windows)
-tp:str              #Target type.     'd'(Debug),   'r'(Release) or 's'(Shipping)
-cd:str = 'u'        #'e'(Engine) or 'a'(User application)
-cmd = sys.argv[1].split('\x02')
-
-def gettp() -> str:
-    return 'Debug' if tp == 'd' else ('Release' if tp == 'r' else 'Shipping')
-
-def getpf() -> str:
-    return 'Linux' if pf == 'l' else 'Windows'
-
-
+#Select active arguments
+cmd = []
+cmd += shlex.split(' '.join(args.a))
+cmd += shlex.split(' '.join(args.l if args.m[0] == 'l' else args.w))
+cmd += shlex.split(' '.join(args.d if args.m[1] == 'd' else args.r))
+cmd += shlex.split(' '.join(
+    args.ld if args.m == 'ld' else
+    args.lr if args.m == 'lr' else
+    args.wd if args.m == 'wd' else
+    args.wr
+))
 
 
-#Find mode
-r:re.Match = None
-i:int = 0
-while i < len(cmd):
-    _r = re.match(r'^\-mode=[lw][rds]$', cmd[i])
-    if _r != None:
-        r = _r
-        del cmd[i]
-    elif cmd[i] == '--build-engine':
-        cd = 'e'
-        del cmd[i]
-    else:
-        i += 1
-
-if r != None:
-    pf = r.group(0)[-2]
-    tp = r.group(0)[-1]
-else:
-    print('Error:\n"-mode=(l|w)(r|d|s)" options is required\n')
-    exit()
+#Sort and parse arguments
+cmd.sort()
+for i in range(0, len(cmd)):
+    cmd[i] = cmd[i][5:]
 
 
-
-
-#Pick options based on platform and type
-cmdp = []                                       #Parsed command
-i = 0                                           #Option index
-while i < len(cmd):                             #For each command option
-    r = re.match(r'^\-([lwrd])\[(.*)\]$', cmd[i])   #
-    if r != None:                                   #If -<c>[<option>]
-        if r.group(1) in [tp, pf]:                      #If c matches -mode
-            cmdp.append(r.group(2))                         #Append <option>
-    else:                                           #Else
-        r = re.match(r'^\-([lwrd])\[$', cmd[i])         #
-        if r != None:                                   #If -<c>[ <options...> ]
-            c = r.group(1)                                  #Save c
-            i += 1                                          #Skip -<c>[
-            while cmd[i] != ']':                            #For each <options...>
-                if c in [tp, pf]:                               #If c matches -mode
-                    cmdp.append(cmd[i])                             #Append <options...>[i]
-                i += 1                                          #Update index
-        else:                                           #Else
-            cmdp.append(cmd[i])                             #Forward option to g++
-    i += 1                                          #Update index
+#Set complete names for platform and type
+_ptfm = 'Linux' if args.m[0] == 'l' else 'Windows'
+_type = 'Debug' if args.m[1] == 'd' else 'Release'
 
 
 
@@ -87,62 +106,49 @@ while i < len(cmd):                             #For each command option
 #Build GLSLC command
 cmdsh = []
 i = 0
-while i < len(cmdp):
-    r = re.match(r'^([^\-](.*))\.comp$', cmdp[i])
+for i, arg in enumerate(cmd):
+    r = re.match(r'^(.*)\.comp$', arg)
     if r != None:
-        cmdp[i] = r.group(1) + '.comp;' + r.group(1) + '.spv'
+        arg += ';' + r.group(1) + '.spv'
 
-    r = re.match(r'^([^\-](.*))\.comp;(.*)\.spv$', cmdp[i])
+    r = re.match(r'^(.*)\.comp;(.*)\.spv$', arg)
     if r != None:
-        iname = r.group(1)
-        oname = r.group(3)
-        cmdsh += [
-            [
-                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslangValidator',
-                '-V', iname + '.comp', '-o', oname + '.spv'
-            ],[
-                enginePath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val',
-                oname + '.spv'
-            ],
-            iname + '.comp'
-        ]
-        del(cmdp[i])
-    else:
-        i += 1
+        cmdsh += [[r.group(1), r.group(2)]]
+        del(cmd[i])
 
 
 
 
 #Build G++ command
-vkdep:str = enginePath + '/Deps/' + getpf() + '/Vulkan-1.2.170.0/x86_64'
-gwdep:str = enginePath + '/Deps/Shared/GLFW'
+vkdep:str = _epath + '/Deps/' + _ptfm + '/Vulkan-1.2.170.0/x86_64'
+gwdep:str = _epath + '/Deps/Shared/GLFW'
 
-cmdg = ['g++', '-std=c++20', '-pthread']                        #Base options
-cmdg += ['-include', 'Lynx/Core/VkDef.hpp']                     #Include forced vulkan macros
-cmdg += ['-include', 'Lynx/Lynx_config.hpp']                    #Include engine configuration macros
-if tp == 'd': cmdg += ['-DLNX_DEBUG', '-rdynamic']              #Activate Lynx debug checks when in debug mode
+cmd = ['g++', '-std=c++20', '-pthread'] + cmd                   #Default g++ call, C++20, pthread
+cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
+cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
+if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
 
 # cmdg += ['-ffile-prefix-map="' + os.getcwd() + '"="./"']
 # #FIXME ^ this doesn't work
 
-if cd == 'u': cmdg += [                                         #When building user application
-    '-DenginePath="' + enginePath + '"',                        #Define engine path function #FIXME
-    enginePath + '/Lynx/getEnginePath.cpp',                         #Add engine path definition  #FIXME
-    enginePath + '/Lynx/Core/Env.cpp',                              #Add runtime environment variables
-    enginePath + '/Build/' + getpf() + '/Lynx' + gettp()            #Add engine binaries
+if args.e is False: cmd += [                                    #When building user application
+    '-DenginePath="' + _epath + '"',                            #Define engine path function #FIXME
+    _epath + '/Lynx/getEnginePath.cpp',                         #Add engine path definition  #FIXME
+    _epath + '/Lynx/Core/Env.cpp',                              #Add runtime environment variables
+    _epath + '/Build/' + _ptfm + '/Lynx' + _type                #Add engine binaries
 ]
 
-cmdg += cmdp + [                                                #Copy parsed G++ options
+cmd += [                                                        #Copy parsed G++ options
     '-I' + vkdep + '/include',                                      #Add Vulkan include path
     '-I' + gwdep + '/include',                                      #Add GLFW include path
     '-I' + gwdep + '/deps',                                         #Add GLFW dependencies include path
-    '-I' + enginePath                                               #Add Lynx include path
+    '-I' + _epath                                               #Add Lynx include path
 ]
 
-if cd == 'u': cmdg += [                                         #When building user application
+if not args.e: cmd += [                                    #When building user application
     '-I' + '.',                                                     #Add workspace include path
     '-L' + vkdep + '/lib',                                          #Add Vulkan library path
-    '-L' + enginePath + '/Deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
+    '-L' + _epath + '/Deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
     '-lvulkan', '-Bstatic', '-lglfw3'                               #Link Vulkan dynamically and GLFW statically
 ]
@@ -172,20 +178,21 @@ def runCmd(args):
 if len(cmdsh) > 0:
     print('\n' + ('-' * os.get_terminal_size().columns))
     print('\n\n' '\033[1m' 'COMPILING SHADERS\033[0m')
-    i = 0
-    while i < len(cmdsh):
+
+    print(cmdsh)
+    for files in cmdsh:
+        print(files)
         print('\n')
-        runCmd(cmdsh[i + 0])
-        runCmd(cmdsh[i + 1])
-        r = GlslToCpp.run(cmdsh[i + 2], pf)
+        runCmd([_epath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val', files[0] + '.spv'])
+        runCmd([_epath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
+        r = GlslToCpp.run(files[0] + '.comp', _ptfm)
         if r != 0: exit(r)
-        i += 3
     print('\n')
 
 
 #Run G++ command
-if len(cmdg) > 1:
+if len(cmd) > 1:
     print('\n' + ('-' * os.get_terminal_size().columns))
     print('\n\n' '\033[1m' 'COMPILING TRANSLATION UNITS\033[0m')
-    print(' '.join(cmdg) + '\n' '\033[0m')
-    subprocess.run(cmdg)
+    print(' '.join(cmd) + '\n' '\033[0m')
+    subprocess.run(cmd)

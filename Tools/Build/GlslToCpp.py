@@ -131,7 +131,7 @@ def translateStructDecl(name:str, iext:bool, type:str, indx:int, elms:str, space
 
 
 
-def run(pathr:str, pf:str):
+def run(pathr:str, ptfm:str):
     if not os.path.exists(pathr):
         print("File does not exist")
         return 1
@@ -180,16 +180,13 @@ def run(pathr:str, pf:str):
 
 
         #Expand macros
-        #FIXME use environment variable
-        #FIXME use environment variable for full name
-        pf = 'Linux' if pf == 'l' else 'Windows'
 
         enginePath:str
         with open('./.engine/enginePath', 'r') as f:
             enginePath = f.read()
 
         code = subprocess.check_output(
-            [enginePath + '/Deps/' + pf + '/Vulkan-1.2.170.0/x86_64/bin/glslc', spath + shname + '.comp', '-E'],
+            [enginePath + '/Deps/' + ptfm + '/Vulkan-1.2.170.0/x86_64/bin/glslc', spath + shname + '.comp', '-E'],
             universal_newlines=True
         )
 
