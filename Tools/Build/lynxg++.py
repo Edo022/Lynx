@@ -2,7 +2,7 @@ import re, sys, os, subprocess
 import GlslToCpp
 import os, shlex
 import argparse as ap
-
+#python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec
 
 
 
@@ -104,7 +104,7 @@ _type = 'Debug' if args.m[1] == 'd' else 'Release'
 
 
 #Build GLSLC command
-cmdsh = []
+cmdsh = [] #FIXME some shaders are ignored
 i = 0
 for i, arg in enumerate(cmd):
     r = re.match(r'^(.*)\.comp$', arg)
