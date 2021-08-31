@@ -49,8 +49,7 @@ if args.h:
         ''                                                                                                                                                '\n'
         '    Files with extension .comp are treated as GLSL compute shaders'                                                                              '\n'
         '        By default, the .spv has the same name of the .comp and is placed in the same directory'                                                 '\n'
-        '        A different output file can be specified with the syntax:'                                                                               '\n'
-        '        <path/to/inputfile>.comp;<path/to/outputfile>.spv;'                                                                                      '\n'
+        '        A different output file can be specified with the syntax <path/to/inputfile>.comp;<path/to/outputfile>.spv'                              '\n'
         ''                                                                                                                                                '\n'
         'Selectors allow you to use a single command to build applications for different platforms or build types'                                        '\n'
         '    -a:  --always       Always use the options, regardless of platform or type                 e.g. -a: main.cpp"'                               '\n'
@@ -106,17 +105,19 @@ _type = 'Debug' if args.m[1] == 'd' else 'Release'
 
 
 #Build GLSLC command
-cmdsh = [] #FIXME some shaders are ignored
+cmdsh = []
 i = 0
-for i, arg in enumerate(cmd):
-    r = re.match(r'^(.*)\.comp$', arg)
+while i < len(cmd):
+    r = re.match(r'^(.*)\.comp$', cmd[i])
     if r != None:
-        arg += ';' + r.group(1) + '.spv'
+        cmd[i] += ';' + r.group(1) + '.spv'
 
-    r = re.match(r'^(.*)\.comp;(.*)\.spv$', arg)
+    r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i])
     if r != None:
         cmdsh += [[r.group(1), r.group(2)]]
         del(cmd[i])
+    else:
+        i += 1
 
 
 
@@ -181,9 +182,7 @@ if len(cmdsh) > 0:
     print('\n' + ('-' * os.get_terminal_size().columns))
     print('\n\n' '\033[1m' 'COMPILING SHADERS\033[0m')
 
-    print(cmdsh)
     for files in cmdsh:
-        print(files)
         print('\n')
         runCmd([_epath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val', files[0] + '.spv'])
         runCmd([_epath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
