@@ -1,7 +1,5 @@
-import re, sys, os, subprocess
+import re, sys, os, subprocess, argparse as ap
 import GlslToCpp
-import os, shlex
-import argparse as ap
 #python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec
 
 #TODO create Lynx/Build, Lynx/Build/Linux and Lynx/Build/Windows directories
@@ -9,23 +7,24 @@ import argparse as ap
 
 
 
-p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -mode=<mode> -<selector>: <g++options...> <GLSLfiles...>')
+p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -mode=<mode> -<selector>: <g++ arguments...> <GLSL files...>')
 
 p.add_argument('-h', '--help',   action = 'store_true', dest = 'h')
 p.add_argument('-m', '--mode',   action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'], )
 p.add_argument('-e', '--engine', action = 'store_true', dest = 'e')
 
-p.add_argument('-a:', '--always:',  action = 'extend', nargs = '+', default = [''], dest = 'a')
-p.add_argument('-d:', '--debug:',   action = 'extend', nargs = '+', default = [''], dest = 'd')
-p.add_argument('-r:', '--release:', action = 'extend', nargs = '+', default = [''], dest = 'r')
-p.add_argument('-w:', '--window:',  action = 'extend', nargs = '+', default = [''], dest = 'w')
-p.add_argument('-l:', '--linux:',   action = 'extend', nargs = '+', default = [''], dest = 'l')
+p.add_argument('-a:', '--always:',  action = 'extend', nargs = '+', default = [], dest = 'a')
+p.add_argument('-d:', '--debug:',   action = 'extend', nargs = '+', default = [], dest = 'd')
+p.add_argument('-r:', '--release:', action = 'extend', nargs = '+', default = [], dest = 'r')
+p.add_argument('-w:', '--window:',  action = 'extend', nargs = '+', default = [], dest = 'w')
+p.add_argument('-l:', '--linux:',   action = 'extend', nargs = '+', default = [], dest = 'l')
 
-p.add_argument('-wd:',             action = 'extend', nargs = '+', default = [''], dest = 'wd')
-p.add_argument('-wr:',             action = 'extend', nargs = '+', default = [''], dest = 'wr')
-p.add_argument('-ld:',             action = 'extend', nargs = '+', default = [''], dest = 'ld')
-p.add_argument('-lr:',             action = 'extend', nargs = '+', default = [''], dest = 'lr')
+p.add_argument('-wd:',             action = 'extend', nargs = '+', default = [], dest = 'wd')
+p.add_argument('-wr:',             action = 'extend', nargs = '+', default = [], dest = 'wr')
+p.add_argument('-ld:',             action = 'extend', nargs = '+', default = [], dest = 'ld')
+p.add_argument('-lr:',             action = 'extend', nargs = '+', default = [], dest = 'lr')
 
+#Enumerate g++/glslc arguments
 for i in range(1, len(sys.argv)):
     selectors = list(set(p._option_string_actions.keys()) - set(['-m', '--mode']))
     if not sys.argv[i] in selectors and re.match(r'^((-m)|(--mode))=.*$', sys.argv[i]) == None:
@@ -37,29 +36,30 @@ for i in range(1, len(sys.argv)):
 args = p.parse_args()
 if args.h:
     print(
-        'Usage:'                                                                                                                                          '\n'
-        '    lynxg++ -h'                                                                                                                                  '\n'
-        '    lynxg++ -mode=<mode> -<selector>: <g++options...> <GLSLfiles...>'                                                                            '\n'
-        ''                                                                                                                                                '\n'
-        'Options:'                                                                                                                                        '\n'
-        '    -h  --help         Display this information'                                                                                                 '\n'
-        '    -m  --mode         Specify target platform and build type. This option is always required  e.g. -m=ld'                                       '\n'
-        '                            l = linux, w = windows, d = debug, r = release'                                                                      '\n'
-        '    -e  --engine       Build the engine instead of the user application (off by default)'                                                        '\n'
-        ''                                                                                                                                                '\n'
-        '    Files with extension .comp are treated as GLSL compute shaders'                                                                              '\n'
-        '        By default, the .spv has the same name of the .comp and is placed in the same directory'                                                 '\n'
-        '        A different output file can be specified with the syntax <path/to/inputfile>.comp;<path/to/outputfile>.spv'                              '\n'
-        ''                                                                                                                                                '\n'
-        'Selectors allow you to use a single command to build applications for different platforms or build types'                                        '\n'
-        '    -a:  --always       Always use the options, regardless of platform or type                 e.g. -a: main.cpp"'                               '\n'
-        '    -l:  --linux        Only use the options when building for Linux                           e.g. -l: -pthread"    e.g. -l: -pthread -Dlinux"' '\n'
-        '    -w:  --windows      Only use the options when building for Windows                         e.g. -w: -mthread"    e.g. -w: -mthread -Dwin10"' '\n'
-        '    -d:  --debug        Only use the options when building in Debug mode                       e.g. -d: -Og"         e.g. -d: -Og -g3"'          '\n'
-        '    -r:  --release      Only use the options when building in Release mode                     e.g. -r: -O3"         e.g. -r: -O3 -g0"'          '\n'
-        ''                                                                                                                                                '\n'
-        '    Each selector only affects the options between itself and the next selector'                                                                 '\n'
-        '    Any unrecognized option inside a selector is forwarded to g++'                                                                               '\n'
+        'Usage:'                                                                                                                                            '\n'
+        '    lynxg++ -h'                                                                                                                                    '\n'
+        '    lynxg++ -mode=<mode> -<selector>: <g++ arguments...> <GLSL files...>'                                                                          '\n'
+        ''                                                                                                                                                  '\n'
+        'Options:'                                                                                                                                          '\n'
+        '    -h  --help         Display this information'                                                                                                   '\n'
+        '    -m  --mode         Specify target platform and build configuration. This argument is always required  e.g. -m=ld'                              '\n'
+        '                            l = linux, w = windows, d = debug, r = release'                                                                        '\n'
+        '    -e  --engine       Build the engine instead of the user application (off by default)'                                                          '\n'
+        ''                                                                                                                                                  '\n'
+        '    Files with extension .comp are treated as GLSL compute shaders'                                                                                '\n'
+        '    By default, the output .spv file has the same name of the .comp and is placed in the same directory'                                           '\n'
+        '    A different output file can be specified with the syntax <path/to/inputfile>.comp;<path/to/outputfile>.spv'                                    '\n'
+        ''                                                                                                                                                  '\n'
+        'Selectors allow you to use a single command to build applications for different platforms or configurations'                                       '\n'
+        '    -a:  --always       Always use the arguments, regardless of platform or configuration        e.g. -a: main.cpp"'                               '\n'
+        '    -l:  --linux        Only use the arguments when building for Linux                           e.g. -l: -pthread"    e.g. -l: -pthread -Dlinux"' '\n'
+        '    -w:  --windows      Only use the arguments when building for Windows                         e.g. -w: -mthread"    e.g. -w: -mthread -Dwin10"' '\n'
+        '    -d:  --debug        Only use the arguments when building in Debug mode                       e.g. -d: -Og"         e.g. -d: -Og -g3"'          '\n'
+        '    -r:  --release      Only use the arguments when building in Release mode                     e.g. -r: -O3"         e.g. -r: -O3 -g0"'          '\n'
+        ''                                                                                                                                                  '\n'
+        '    Each selector only affects the arguments between itself and the next selector'                                                                 '\n'
+        '    Additionally, -ld:, -lr:, -wd: and -wr: selectors can be used to activate arguments based on both the active configuration and target platform''\n'
+        '    Any unrecognized argument inside a selector is forwarded to g++'                                                                               '\n'
     )
     sys.exit(0)
 
@@ -80,15 +80,15 @@ with open('./.engine/enginePath', 'r') as f:
 
 #Select active arguments
 cmd = []
-cmd += shlex.split(' '.join(args.a))
-cmd += shlex.split(' '.join(args.l if args.m[0] == 'l' else args.w))
-cmd += shlex.split(' '.join(args.d if args.m[1] == 'd' else args.r))
-cmd += shlex.split(' '.join(
+cmd += args.a
+cmd += args.l if args.m[0] == 'l' else args.w
+cmd += args.d if args.m[1] == 'd' else args.r
+cmd += (
     args.ld if args.m == 'ld' else
     args.lr if args.m == 'lr' else
     args.wd if args.m == 'wd' else
     args.wr
-))
+)
 
 
 #Sort and parse arguments
