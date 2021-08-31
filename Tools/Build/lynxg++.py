@@ -4,7 +4,7 @@ import os, shlex
 import argparse as ap
 #python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec
 
-
+#TODO create Lynx/Build, Lynx/Build/Linux and Lynx/Build/Windows directories
 
 
 
@@ -37,34 +37,36 @@ for i in range(1, len(sys.argv)):
 args = p.parse_args()
 if args.h:
     print(
-        'Usage:'                                                                                                                                        '\n'
-        '    lynxg++ -h'                                                                                                                                '\n'
-        '    lynxg++ -mode=<mode> -<selector>: <g++options...> <GLSLfiles...>'                                                                          '\n'
-        ''                                                                                                                                              '\n'
-        'Options:'                                                                                                                                      '\n'
-        '    -h  --help         Display this information'                                                                                               '\n'
-        '    -m  --mode         Specify target platform and build type. This option is always required  e.g. -m=ld'                                     '\n'
-        '                            l = linux, w = windows, d = debug, r = release'                                                                    '\n'
-        '    -e  --engine       Build the engine instead of the user application (off by default)'                                                      '\n'
-        ''                                                                                                                                              '\n'
-        'Selectors allow you to use a single command to build applications for different platforms or build types'                                      '\n'
-        '    -a  --always       Always use the options, regardless of platform or type                  e.g. -a"main.cpp"'                              '\n'
-        '    -l  --linux        Only use the options when building for Linux                            e.g. -l"-pthread"    e.g. -l"-pthread -Dlinux"' '\n'
-        '    -w  --windows      Only use the options when building for Windows                          e.g. -w"-mthread"    e.g. -w"-mthread -Dwin10"' '\n'
-        '    -d  --debug        Only use the options when building in Debug mode                        e.g. -d"-Og"         e.g. -d"-Og -g3"'          '\n'
-        '    -r  --release      Only use the options when building in Release mode                      e.g. -r"-O3"         e.g. -r"-O3 -g0"'          '\n'
-        ''                                                                                                                                              '\n'
-        '    Files with extension .comp are treated as GLSL compute shaders'                                                                            '\n'
-        '        By default, the .spv has the same name of the .comp and is placed in the same directory'                                               '\n'
-        '        A different output file can be specified with the syntax:'                                                                             '\n'
-        '        <path/to/inputfile>.comp;<path/to/outputfile>.spv;'                                                                                    '\n'
-        '    Any unrecognized option inside a selector is forwarded to g++'                                                                             '\n'
+        'Usage:'                                                                                                                                          '\n'
+        '    lynxg++ -h'                                                                                                                                  '\n'
+        '    lynxg++ -mode=<mode> -<selector>: <g++options...> <GLSLfiles...>'                                                                            '\n'
+        ''                                                                                                                                                '\n'
+        'Options:'                                                                                                                                        '\n'
+        '    -h  --help         Display this information'                                                                                                 '\n'
+        '    -m  --mode         Specify target platform and build type. This option is always required  e.g. -m=ld'                                       '\n'
+        '                            l = linux, w = windows, d = debug, r = release'                                                                      '\n'
+        '    -e  --engine       Build the engine instead of the user application (off by default)'                                                        '\n'
+        ''                                                                                                                                                '\n'
+        '    Files with extension .comp are treated as GLSL compute shaders'                                                                              '\n'
+        '        By default, the .spv has the same name of the .comp and is placed in the same directory'                                                 '\n'
+        '        A different output file can be specified with the syntax:'                                                                               '\n'
+        '        <path/to/inputfile>.comp;<path/to/outputfile>.spv;'                                                                                      '\n'
+        ''                                                                                                                                                '\n'
+        'Selectors allow you to use a single command to build applications for different platforms or build types'                                        '\n'
+        '    -a:  --always       Always use the options, regardless of platform or type                 e.g. -a: main.cpp"'                               '\n'
+        '    -l:  --linux        Only use the options when building for Linux                           e.g. -l: -pthread"    e.g. -l: -pthread -Dlinux"' '\n'
+        '    -w:  --windows      Only use the options when building for Windows                         e.g. -w: -mthread"    e.g. -w: -mthread -Dwin10"' '\n'
+        '    -d:  --debug        Only use the options when building in Debug mode                       e.g. -d: -Og"         e.g. -d: -Og -g3"'          '\n'
+        '    -r:  --release      Only use the options when building in Release mode                     e.g. -r: -O3"         e.g. -r: -O3 -g0"'          '\n'
+        ''                                                                                                                                                '\n'
+        '    Each selector only affects the options between itself and the next selector'                                                                 '\n'
+        '    Any unrecognized option inside a selector is forwarded to g++'                                                                               '\n'
     )
-    exit(0)
+    sys.exit(0)
 
 elif args.m is None:
     print('lynxg++: error: the following arguments are required: -m/--mode')
-    exit(1)
+    sys.exit(1)
 
 
 
