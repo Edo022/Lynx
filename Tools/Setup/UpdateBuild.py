@@ -1,6 +1,6 @@
 import os, re
-
-
+#TODO read paths from config file
+#TODO make this script an executable
 
 
 def run(dir):
