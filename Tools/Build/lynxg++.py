@@ -45,7 +45,7 @@ for i in range(1, len(sys.argv)):
 #TODO       + build outcome
 #TODO -v=2: + "compiling shader ..." for each shader
 #TODO       + [per-stage progress bar]
-#TODO -v=3: + actual spir-val and glslangValidator commands and generated .cpp and .hpp for each shader
+#TODO -v=3: + actual spirv-val and glslangValidator commands and generated .cpp and .hpp for each shader
 #TODO       + [per-shader & per-file progress bar (multiple bars if multithreaded)]
 
 #TODO add command line build progress bar in the last line
@@ -151,10 +151,8 @@ while i < len(cmd):
 
 
 #Build G++ command
-vkdep:str = _epath + '/Deps/' + _ptfm + '/Vulkan-1.2.170.0/x86_64'
-gwdep:str = _epath + '/Deps/Shared/GLFW'
 
-cmd = ['g++', '-std=c++20', '-pthread'] + cmd                   #Default g++ call, C++20, pthread
+cmd = ['g++', '-std=c++20', '-pthread', '-I' + _epath] + cmd    #Default g++ call, C++20, pthread, include project root
 cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
 cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
 if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
@@ -163,25 +161,16 @@ if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx d
 # #FIXME ^ this doesn't work
 
 if args.e is False: cmd += [                                    #When building user application
-    '-DenginePath="' + _epath + '"',                            #Define engine path function #FIXME
-    _epath + '/Lynx/getEnginePath.cpp',                         #Add engine path definition  #FIXME
-    _epath + '/Lynx/Core/Env.cpp',                              #Add runtime environment variables
-    _epath + '/Build/' + _ptfm + '/Lynx' + _type                #Add engine binaries
+    '-DenginePath="' + _epath + '"',                                #Define engine path function #FIXME
+    _epath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
+    _epath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
+    _epath + '/Build/' + _ptfm + '/Lynx' + _type                    #Add engine binaries
 ]
 
-cmd += [                                                        #Copy parsed G++ options
-    '-I' + vkdep + '/include',                                      #Add Vulkan include path
-    '-I' + gwdep + '/include',                                      #Add GLFW include path
-    '-I' + gwdep + '/deps',                                         #Add GLFW dependencies include path
-    '-I' + _epath                                               #Add Lynx include path
-]
-
-if not args.e: cmd += [                                    #When building user application
+if not args.e: cmd += [                                         #When building user application
     '-I' + '.',                                                     #Add workspace include path
-    '-L' + vkdep + '/lib',                                          #Add Vulkan library path
-    '-L' + _epath + '/Deps/Shared/GLFWBuild/src',               #Add GLFW library path #FIXME USE DIFFERENT BINARIES FOR DEBUG AND RELEASE
     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
-    '-lvulkan', '-Bstatic', '-lglfw3'                               #Link Vulkan dynamically and GLFW statically
+    '-lvulkan', '-Bstatic', '-lglfw'                               #Link Vulkan dynamically and GLFW statically
 ]
 
 
@@ -212,8 +201,8 @@ if len(cmdsh) > 0:
 
     for files in cmdsh:
         print('\n')
-        runCmd([_epath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/spirv-val', files[0] + '.spv'])
-        runCmd([_epath + '/Deps/Linux/Vulkan-1.2.170.0/x86_64/bin/glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
+        runCmd(['spirv-val', files[0] + '.spv'])
+        runCmd(['glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
         r = GlslToCpp.run(files[0] + '.comp', _ptfm)
         if r != 0: exit(r)
     print('\n')

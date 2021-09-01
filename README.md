@@ -46,9 +46,11 @@ We do not provide any support for developement on Windows or Mac.
 | Software     | Version   | Required            |
 |--------------|-----------|---------------------|
 | Linux        | 4.4       | Yes                 |
-| Python       | 3.9       | Yes //TODO remove python requirementt. Compile an executable file for every script                 |
+| Python       | 3.9       | Yes //TODO remove python requirement. Compile an executable file for every script                 |
 | g++          | 11.1.1    | Yes                 |
-| Vulkan SDK   | 1.2.170.0 | Yes                 |
+| Vulkan SDK   | 1.2.170.0 | Yes //TODO remove   |
+| glslang      | 10:11.0.0 | Yes                 | 
+| spirv-tools  | 2020.7    | Yes                 | 
 | Mingw        | 8.0.0     | Windows builds only |
 | **Lynx SDK** | 1.0.0     | Yes                 |
 
@@ -63,12 +65,13 @@ Support for other C++ compilers and editors will be added in future versions.
 
 &nbsp;
 
-## Download the required libraries
+## Download the required softwares and libraries
 
 Some developement libraries are required in order to build applications.
 
 Fedora  
-`dnf install vulkan-devel libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel freeglut-devel libasan libubsan`
+`dnf install gcc-c++ glslang spirv-tools`
+`dnf install vulkan-devel glfw-devel libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel freeglut-devel libasan libubsan`
 //TODO
 
 &nbsp;
