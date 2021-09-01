@@ -68,7 +68,7 @@ Support for other C++ compilers and editors will be added in future versions.
 Some developement libraries are required in order to build applications.
 
 Fedora  
-`dnf install libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel libasan libubsan`
+`dnf install libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel freeglut-devel libasan libubsan`
 //TODO
 
 &nbsp;
