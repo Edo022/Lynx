@@ -62,39 +62,23 @@ namespace lnx{
 
 
 
+		enum class ObjType{
+			eRender,
+			eStruct,
+			eBase
+		};
+
+
 		/**
 		 * @brief Base class of any render object
 		 */
-		struct obj_bb { //
-		    inline void specStructOnFlush(vk::CommandBuffer pCB) {
-	            obj_bb::onFlush(pCB);
-	        }
-
-			//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
-	        inline      ram::ptr<char>  specStructGetShData() { dbg::logError("Unable to call this function on structural objects"); return nullptr; }
-	        inline vram::Alloc_b<char> specStructGetShVData() { dbg::logError("Unable to call this function on structural objects"); return vram::Alloc_b<char>(); }
-
-
-
-			inline void specRenderOnFlush(vk::CommandBuffer pCB) {
-				pCB.updateBuffer(
-					getShVData().cell->csc.buffer,
-					getShVData().cell->localOffset,
-					getShVData().cell->cellSize,
-					(void*)getShData()
-				);
-			}
-
-			//! Implementation depends on the shader used by the object
-			//TODO write documentation
-			inline      ram::ptr<char>  specRenderGetShData() { return obj_bb::getShData(); }
-			inline vram::Alloc_b<char> specRenderGetShVData() { return obj_bb::getShVData(); }
-
-
+		struct obj_bb {
+		protected:
+			ObjType objType = ObjType::eBase;
 
 
 		public:
-			obj_bb* parent{ nullptr };				//Parent of the object //FIXME move to common
+			obj_bb* parent = nullptr;				//Parent of the object //FIXME move to common
 			RaArray<obj_bb*> children;
 
 
@@ -104,9 +88,11 @@ namespace lnx{
 			uint32 childIndex{ (uint32)-1 };			//The index of the object in the parent's children list
 
 
-			virtual void setChildLimits(const uint32 vChildIndex) const { dbg::logError("Unable to call this function on a base class"); }
-			virtual ram::ptr<char>       getShData() {dbg::logError("Function called on base class or not implemented"); return nullptr; }
-			virtual vram::Alloc_b<char> getShVData() {dbg::logError("Function called on base class or not implemented"); return vram::Alloc_b<char>(); }
+			virtual void setChildLimits(const uint32 vChildIndex) const {
+				dbg::logError("Unable to call this function on a base class");
+			}
+			virtual ram::ptr     <char> getShData();
+			virtual vram::Alloc_b<char> getShVData();
 
 			std::atomic<UpdateBits> updates;			//Update requests sent to the render thread //FIXME MAKE NON ATOMIC
 			Window* w = nullptr;						//Parent window object that contains the render thread and the window data
@@ -117,27 +103,6 @@ namespace lnx{
 
 			//TODO comment
 			void queue(UpdateBits vUpdates);
-		};
-
-
-
-
-
-
-
-
-		// Base object types ----------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-		enum ObjType{
-			eRender,
-			eStruct
 		};
 
 
@@ -164,21 +129,16 @@ namespace lnx{
 		};
 
 
-		template<ObjType tObjType> struct obj1_spec_b{};
-		template<> struct obj1_spec_b<ObjType::eRender> : public obj1_b{
-			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specRenderOnFlush(pCB); }
-			ram::ptr<char>      getShData()                    override { return obj_bb::specRenderGetShData();  }
-			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specRenderGetShVData(); }
+		struct RenderObj1 : public obj1_b {
+			RenderObj1(){
+				obj_bb::objType = ObjType::eRender;
+			}
 		};
-		template<> struct obj1_spec_b<ObjType::eStruct> : public obj1_b{
-			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specStructOnFlush(pCB); }
-			ram::ptr<char>      getShData()                    override { return obj_bb::specStructGetShData();  }
-			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specStructGetShVData(); }
+		struct StructObj1 : public obj1_b {
+			StructObj1(){
+				obj_bb::objType = ObjType::eStruct;
+			}
 		};
-
-
-		struct RenderObj1 : public obj1_spec_b<ObjType::eRender> {};
-		struct StructObj1 : public obj1_spec_b<ObjType::eStruct> {};
 
 
 
@@ -227,25 +187,16 @@ namespace lnx{
     	};
 
 
-
-
-		template<ObjType tObjType> struct obj2_spec_b{};
-		template<> struct obj2_spec_b<ObjType::eRender> : public obj2_b{
-			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specRenderOnFlush(pCB); }
-			ram::ptr<char>      getShData()                    override { return obj_bb::specRenderGetShData();  }
-			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specRenderGetShVData(); }
+		struct RenderObj2 : public obj2_b {
+			RenderObj2(){
+				obj_bb::objType = ObjType::eRender;
+			}
 		};
-		template<> struct obj2_spec_b<ObjType::eStruct> : public obj2_b{
-			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specStructOnFlush(pCB); }
-			ram::ptr<char>      getShData()                    override { return obj_bb::specStructGetShData();  }
-			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specStructGetShVData(); }
+		struct StructObj2 : public obj2_b {
+			StructObj2(){
+				obj_bb::objType = ObjType::eStruct;
+			}
 		};
-
-
-
-
-		struct RenderObj2 : public obj2_spec_b<ObjType::eRender>{};
-		struct StructObj2 : public obj2_spec_b<ObjType::eStruct>{};
 
 
 
@@ -272,20 +223,15 @@ namespace lnx{
     	};
 
 
-		template<ObjType tObjType> struct obj3_spec_b{};
-		template<> struct obj3_spec_b<ObjType::eRender> : public obj3_b{
-			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specRenderOnFlush(pCB); }
-			ram::ptr<char>      getShData()                    override { return obj_bb::specRenderGetShData();  }
-			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specRenderGetShVData(); }
+		struct RenderObj3 : public obj3_b {
+			RenderObj3(){
+				obj_bb::objType = ObjType::eRender;
+			}
 		};
-		template<> struct obj3_spec_b<ObjType::eStruct> : public obj3_b{
-			void                onFlush(vk::CommandBuffer pCB) override {        obj_bb::specStructOnFlush(pCB); }
-			ram::ptr<char>      getShData()                    override { return obj_bb::specStructGetShData();  }
-			vram::Alloc_b<char> getShVData()                   override { return obj_bb::specStructGetShVData(); }
+		struct StructObj3 : public obj3_b {
+			StructObj3(){
+				obj_bb::objType = ObjType::eStruct;
+			}
 		};
-
-
-		struct RenderObj3 : public obj3_spec_b<eRender> {};
-		struct StructObj3 : public obj3_spec_b<eStruct> {};
 	}
 }

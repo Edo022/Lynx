@@ -410,7 +410,11 @@ namespace lnx::core::dvc{
 				String discardedList = "    Discarded devices:";
 				for(uint32 i = 0; i < discarded.count(); i += 2) {
 					//FIXME use proper lnx::String format function
-					discardedList += dbg::string_format("        %s  |  %s", (char*)discarded[i].begin(), (char*)discarded[(uint64)i + 1].begin()).c_str();
+					discardedList += dbg::string_format(
+						"        %s  |  %s",
+						(char*)discarded[i].begin(),
+						(char*)discarded[(uint64)i + 1].begin()
+					).c_str();
 				}
 				//FIXME write overload for logs with lnx::String
 				dbg::logWarn(discardedList.begin());
@@ -419,9 +423,13 @@ namespace lnx::core::dvc{
 			//Print the devices names, IDs, scores and tasks
 			dbg::logInfo("    Found %d suitable device%s:", suitable.count(), (suitable.count() == 1) ? "" : "s");
 			for(auto& dev : suitable) {
-				//FIXME unify output string
-				dbg::logInfo("        %s  |  ID: %d  |  %d", dev->properties.deviceName.cbegin(), dev->properties.deviceID, dev->score);
-				if(sameDevice(*dev, graphics.pd)) dbg::logInfo("  |  Main graphics");
+				dbg::logInfo(
+					"        %s  |  ID: %d  |  %d%s",
+					dev->properties.deviceName.cbegin(),
+					dev->properties.deviceID,
+					dev->score,
+					sameDevice(*dev, graphics.pd) ? "  |  Main graphics" : ""
+				);
 			}
 
 			//Print created logical devices and queues

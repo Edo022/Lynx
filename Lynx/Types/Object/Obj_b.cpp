@@ -7,9 +7,11 @@
 
 
 
+
+
+
 namespace lnx::obj{
 	std::atomic<uint64> obj_bb::lastID = 0;	//#LLID LOS000 initialize the last object ID //FIXME REMOVE or do something idk
-
 
 
 
@@ -17,12 +19,56 @@ namespace lnx::obj{
 	void obj_bb::onSpawn(core::RenderCore& pRenderCore){
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
 	}
+
 	void obj_bb::onLimit(){
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
 	}
+
 	void obj_bb::onFlush(vk::CommandBuffer pCB){
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+
+		if(objType == ObjType::eRender){
+			pCB.updateBuffer(
+				getShVData().cell->csc.buffer,
+				getShVData().cell->localOffset,
+				getShVData().cell->cellSize,
+				(void*)this->getShData()
+				//!^ Call reimplemented function
+			);
+		}
+		//else do nothing
 	}
+
+
+
+
+	ram::ptr<char> obj_bb::getShData() {
+		#ifdef LNX_DEBUG
+			switch(objType){
+				//case ObjType::eRender: return this->getShData(); break;
+				//!^ Not an error. obj_bb::getShData is only called if the object didn't reimplement it or it is a structural object
+				//!  Both cases are runtime errors
+				case ObjType::eStruct: dbg::logError("Unable to call this function on structural objects"); break;
+				default:               dbg::logError("Function called on base class or not reimplemented");
+			}
+		#endif
+		return nullptr;
+	}
+	//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
+	vram::Alloc_b<char> obj_bb::getShVData() {
+		#ifdef LNX_DEBUG
+			switch(objType){
+				//case ObjType::eRender: return this->getShVData(); break;
+				//!^ Not an error. obj_bb::getShVData is only called if the object didn't reimplement it or it is a structural object
+				//!  Both cases are runtime errors
+				case ObjType::eStruct: dbg::logError("Unable to call this function on structural objects"); break;
+				default:               dbg::logError("Function called on base class or not reimplemented");
+			}
+		#endif
+		return vram::Alloc_b<char>();
+	}
+
+
 
 
 	void obj_bb::queue(UpdateBits vUpdates){

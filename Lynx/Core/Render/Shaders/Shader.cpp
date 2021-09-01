@@ -23,8 +23,7 @@ namespace lnx::core::shaders{
 
 
 
-
-	/** //FIXME check if file exists
+	/*
 	 * @brief Reads a shader from an .spv file and saves it into a padded int32 array
 	 *     This function should only be used by the engine
 	 * Complexity: O(n)
@@ -38,10 +37,7 @@ namespace lnx::core::shaders{
 			FILE* fp;
 			_wds(fopen_s(&fp, pFilePath, "rb"));							//Open the file
 			_lnx(fp = fopen(  pFilePath, "rb"));
-			if(!fp) {
-				dbg::logInfo("Could not find or open file: %s", pFilePath);
-				return 0;
-			}
+			if(!fp) dbg::logError("Unable to open SPIR-V file \"%s\"", pFilePath);
 
 		//Get file size
 			_wds(_fseeki64(fp, 0, SEEK_END); uint64 fs =  _ftelli64(fp); _fseeki64(fp, 0, SEEK_SET);)
@@ -72,13 +68,13 @@ namespace lnx::core::shaders{
 	 *     where n = pLen
 	 * @param vDevice The logical device to use to create the shader module
 	 * @param pCode A pointer to an int32 array containing the shader code
-	 * @param pLen A pointer to the code length
+	 * @param vLen The length of the code in bytes
 	 * @return The created shader module
 	 */
 	//FIXME FIX
-	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint64 pLen) {
+	vk::ShaderModule createModule(const vk::Device vDevice, uint32* pCode, const uint64 vLen) {
 		auto createInfo = vk::ShaderModuleCreateInfo() 	//Create shader module infos
-			.setCodeSize (pLen)							//Set the count of the compiled shader code
+			.setCodeSize (vLen)							//Set the count of the compiled shader code
 			.setPCode    (pCode)						//Set the shader code
 		;
 
