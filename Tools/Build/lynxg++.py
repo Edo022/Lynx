@@ -7,7 +7,7 @@ import GlslToCpp
 
 
 
-p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -mode=<mode> -<selector>: <g++ arguments...> <GLSL files...>')
+p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -m=<mode> [<options...>] -<selector>: <g++ arguments...> <GLSL files...>')
 
 p.add_argument('-h', '--help',   action = 'store_true', dest = 'h')
 p.add_argument('-m', '--mode',   action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'], )
@@ -29,28 +29,52 @@ for i in range(1, len(sys.argv)):
     selectors = list(set(p._option_string_actions.keys()) - set(['-m', '--mode']))
     if not sys.argv[i] in selectors and re.match(r'^((-m)|(--mode))=.*$', sys.argv[i]) == None:
         sys.argv[i] = str(i).zfill(5) + sys.argv[i]
+#FIXME print an error if there are no selectors before the first unknown option
 
+#TODO add automatic cleanup before compilation
+#TODO move build stage name to the center of the divider
 
+#TODO replace hard coded paths and use configuration file
+
+#TODO add verbosity option. default: 1
+#TODO -v=0: only show errors
+#TODO -v=1: + actual gcc command
+#TODO       + build stage dividers,
+#TODO       + number of compiled shaders
+#TODO       + [total progress bar]
+#TODO       + build outcome
+#TODO -v=2: + "compiling shader ..." for each shader
+#TODO       + [per-stage progress bar]
+#TODO -v=3: + actual spir-val and glslangValidator commands and generated .cpp and .hpp for each shader
+#TODO       + [per-shader & per-file progress bar (multiple bars if multithreaded)]
+
+#TODO add command line build progress bar in the last line
+#TODO add argument to disable progress bar output
 
 
 args = p.parse_args()
 if args.h:
     print(
         'Usage:'                                                                                                                                            '\n'
-        '    lynxg++ -h'                                                                                                                                    '\n'
-        '    lynxg++ -mode=<mode> -<selector>: <g++ arguments...> <GLSL files...>'                                                                          '\n'
+        '    lynxg++ --help'                                                                                                                                '\n'
+        '    lynxg++ --version'                                                                                                                             '\n'
+        '    lynxg++ -m=<mode> [<options...>] -<selector>: <g++ arguments...> <GLSL files...>'                                                              '\n'
         ''                                                                                                                                                  '\n'
         'Options:'                                                                                                                                          '\n'
-        '    -h  --help         Display this information'                                                                                                   '\n'
-        '    -m  --mode         Specify target platform and build configuration. This argument is always required  e.g. -m=ld'                              '\n'
-        '                            l = linux, w = windows, d = debug, r = release'                                                                        '\n'
-        '    -e  --engine       Build the engine instead of the user application (off by default)'                                                          '\n'
+        '    -h  --help         Display this information. When this option is used, any other option is ignored'                                            '\n'
+        '        --version      Display the version of the Lynx Engine. When this option is used, any other option but --help is ignored #TODO'             '\n'
+        '    -v  --verbosity    Choose output verbosity. Default: 1. Possible values: 0, 1, 2, 3 #TODO'                                                     '\n'
+        '    -b  --no-progress  Hide build progress bar. Default: off #TODO'                                                                                '\n'
+        ''                                                                                                                                                  '\n'
+        '    -m  --mode         Specify target platform and build configuration. This option is always required. e.g. -m=ld'                                '\n'
+        '    -e  --engine       Build the engine instead of the user application. Default: off'                                                             '\n'
+        '    -p  --pack         Pack all files in a single executable file.       Default: off #TODO'                                                       '\n'
         ''                                                                                                                                                  '\n'
         '    Files with extension .comp are treated as GLSL compute shaders'                                                                                '\n'
         '    By default, the output .spv file has the same name of the .comp and is placed in the same directory'                                           '\n'
         '    A different output file can be specified with the syntax <path/to/inputfile>.comp;<path/to/outputfile>.spv'                                    '\n'
         ''                                                                                                                                                  '\n'
-        'Selectors allow you to use a single command to build applications for different platforms or configurations'                                       '\n'
+        'Selectors allow you to use a single command to build applications for different platforms and configurations'                                      '\n'
         '    -a:  --always       Always use the arguments, regardless of platform or configuration        e.g. -a: main.cpp"'                               '\n'
         '    -l:  --linux        Only use the arguments when building for Linux                           e.g. -l: -pthread"    e.g. -l: -pthread -Dlinux"' '\n'
         '    -w:  --windows      Only use the arguments when building for Windows                         e.g. -w: -mthread"    e.g. -w: -mthread -Dwin10"' '\n'
@@ -60,6 +84,10 @@ if args.h:
         '    Each selector only affects the arguments between itself and the next selector'                                                                 '\n'
         '    Additionally, -ld:, -lr:, -wd: and -wr: selectors can be used to activate arguments based on both the active configuration and target platform''\n'
         '    Any unrecognized argument inside a selector is forwarded to g++'                                                                               '\n'
+        '    Selectors can be repeated multiple times. The arguments will preserve their order'                                                             '\n'
+        ''                                                                                                                                                  '\n'
+        'Verbosity:'                                                                                                                                        '\n'
+        '    #TODO'                                                                                                                                         '\n'
     )
     sys.exit(0)
 
