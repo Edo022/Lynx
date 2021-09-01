@@ -1,7 +1,3 @@
-Deps/Linux/
-Deps/Shared/GLFW
-Deps/Shared/GLFWBuild
-
 Build/Linux/
 Build/Windows/
 
