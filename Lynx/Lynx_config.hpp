@@ -1,5 +1,7 @@
 #pragma once
 #define LNX_H_CONFIG
+//TODO rename Engine_config
+//TODO move to .engine
 
 /**
  * This file contains all the configuration macros of the Lynx Engine

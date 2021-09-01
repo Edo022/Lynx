@@ -186,7 +186,7 @@ def run(pathr:str, ptfm:str):
             enginePath = f.read()
 
         code = subprocess.check_output(
-            [enginePath + '/Deps/' + ptfm + '/Vulkan-1.2.170.0/x86_64/bin/glslc', spath + shname + '.comp', '-E'],
+            ['glslangValidator', spath + shname + '.comp', '-E'],
             universal_newlines=True
         )
 

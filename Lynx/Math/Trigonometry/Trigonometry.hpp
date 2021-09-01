@@ -6,8 +6,8 @@
 
 
 //TODO probably useless
-template<class t> static constexpr alwaysInline t revToRad(const t n) { return n * PI2; }		//Converts a value from revolutions to radiants
-template<class t> static constexpr alwaysInline t radToRev(const t n) { return n / PI2; }		//Converts a value from radiants to revolutions
+template<class t> static constexpr alwaysInline t revToRad(const t n) { return n * TAU; }		//Converts a value from revolutions to radiants
+template<class t> static constexpr alwaysInline t radToRev(const t n) { return n / TAU; }		//Converts a value from radiants to revolutions
 
 template<class t> static constexpr alwaysInline t revToDeg(const t n) { return n * 360; }		//Converts a value from revolutions to degrees
 template<class t> static constexpr alwaysInline t degToRev(const t n) { return n / 360; }		//Converts a value from degrees to revolutions

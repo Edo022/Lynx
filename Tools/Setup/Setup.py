@@ -3,6 +3,10 @@ import sys, os
 import SetPlatform, SetType
 thisdir = os.path.dirname(os.path.abspath(__file__))
 
+#TODO make this script an executable
+#TODO generate .engine/Path_config.hpp file
+#TODO read paths from config file
+
 
 if len(sys.argv) == 1:
     pdir = os.getcwd()
