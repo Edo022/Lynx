@@ -84,7 +84,7 @@ if args.h:
         '    Each selector only affects the arguments between itself and the next selector'                                                                 '\n'
         '    Additionally, -ld:, -lr:, -wd: and -wr: selectors can be used to activate arguments based on both the active configuration and target platform''\n'
         '    Any unrecognized argument inside a selector is forwarded to g++'                                                                               '\n'
-        '    Selectors can be repeated multiple times. The arguments will preserve their order'                                                             '\n'
+        '    Selectors can be repeated multiple times. The active arguments will preserve their order'                                                             '\n'
         ''                                                                                                                                                  '\n'
         'Verbosity:'                                                                                                                                        '\n'
         '    #TODO'                                                                                                                                         '\n'

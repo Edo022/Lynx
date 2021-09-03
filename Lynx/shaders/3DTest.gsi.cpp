@@ -4,22 +4,20 @@
 // Changes could be overwritten without notice
 //####################################################################################
 
-#include "Lynx/shaders/FloatToIntBuffer.hpp"
+#include "Lynx/shaders/3DTest.gsi.hpp"
 #include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#define LNX_H_FLOATTOINTBUFFER
+#define LNX_H__3DTEST
 
 
 
 namespace lnx::shd{
 
 
-	void FloatToIntBuffer::create(vram::ptr<f32v4, eVRam, eStorage> pSrc, vram::ptr<u32, eVRam, eStorage> pDst, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
-			src.vdata = (vram::ptr<char, eVRam, eStorage>)pSrc;
-			dst.vdata = (vram::ptr<char, eVRam, eStorage>)pDst;
+			outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
-			zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
@@ -28,15 +26,15 @@ namespace lnx::shd{
 	}
 
 
-	void FloatToIntBuffer::createDescriptorSets(){
+	void _3DTest::createDescriptorSets(){
 		vk::DescriptorPoolSize sizes[2] = {
-			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(4),
-			{}
+			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(2),
+			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
 		};
 		auto poolInfo = vk::DescriptorPoolCreateInfo()
 			.setFlags         (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)
 			.setMaxSets       (1)
-			.setPoolSizeCount (1)
+			.setPoolSizeCount (2)
 			.setPPoolSizes    (sizes)
 		;
 		switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
@@ -49,7 +47,7 @@ namespace lnx::shd{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&FloatToIntBuffer::layout.descriptorSetLayout)
+			.setPSetLayouts        (&_3DTest::layout.descriptorSetLayout)
 		;
 		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
@@ -59,11 +57,11 @@ namespace lnx::shd{
 
 
 
-		vk::WriteDescriptorSet writeSets[4];
+		vk::WriteDescriptorSet writeSets[3];
 		auto bufferInfo0 = vk::DescriptorBufferInfo()
-			.setBuffer (src.vdata.cell->csc.buffer)
-			.setOffset (src.vdata.cell->localOffset)
-			.setRange  (src.vdata.cell->cellSize)
+			.setBuffer (outcol.vdata.cell->csc.buffer)
+			.setOffset (outcol.vdata.cell->localOffset)
+			.setRange  (outcol.vdata.cell->cellSize)
 		;
 		writeSets[0] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -74,9 +72,9 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo1 = vk::DescriptorBufferInfo()
-			.setBuffer (dst.vdata.cell->csc.buffer)
-			.setOffset (dst.vdata.cell->localOffset)
-			.setRange  (dst.vdata.cell->cellSize)
+			.setBuffer (wsize.vdata.cell->csc.buffer)
+			.setOffset (wsize.vdata.cell->localOffset)
+			.setRange  (wsize.vdata.cell->cellSize)
 		;
 		writeSets[1] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
@@ -87,31 +85,18 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo2 = vk::DescriptorBufferInfo()
-			.setBuffer (wsize.vdata.cell->csc.buffer)
-			.setOffset (wsize.vdata.cell->localOffset)
-			.setRange  (wsize.vdata.cell->cellSize)
+			.setBuffer (_data.vdata.cell->csc.buffer)
+			.setOffset (_data.vdata.cell->localOffset)
+			.setRange  (_data.vdata.cell->cellSize)
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
 			.setDstBinding      (2)
 			.setDescriptorCount (1)
-			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
+			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
 			.setPBufferInfo     (&bufferInfo2)
 		;
-
-		auto bufferInfo3 = vk::DescriptorBufferInfo()
-			.setBuffer (zbuff.vdata.cell->csc.buffer)
-			.setOffset (zbuff.vdata.cell->localOffset)
-			.setRange  (zbuff.vdata.cell->cellSize)
-		;
-		writeSets[3] = vk::WriteDescriptorSet()
-			.setDstSet          (descriptorSet)
-			.setDstBinding      (3)
-			.setDescriptorCount (1)
-			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
-			.setPBufferInfo     (&bufferInfo3)
-		;
-		core::dvc::graphics.ld.updateDescriptorSets(4, writeSets, 0, nullptr);
+		core::dvc::graphics.ld.updateDescriptorSets(3, writeSets, 0, nullptr);
 	}
 
 
@@ -121,7 +106,7 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void _3DTest::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pRenderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -132,8 +117,8 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[FloatToIntBuffer::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[_3DTest::pipelineIndex]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, _3DTest::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -145,11 +130,11 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void _3DTest::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[FloatToIntBuffer::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, FloatToIntBuffer::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[_3DTest::pipelineIndex]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, _3DTest::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -161,7 +146,7 @@ namespace lnx::shd{
 
 
 
-	void FloatToIntBuffer::destroy(){
+	void _3DTest::destroy(){
 		//TODO
 	}
 
@@ -172,13 +157,13 @@ namespace lnx::shd{
 
 
 
-	Shader_b::Layout FloatToIntBuffer::layout;
-	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::pipelineNum++;
-	LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
+	Shader_b::Layout _3DTest::layout;
+	uint32 _3DTest::pipelineIndex = core::shaders::pipelineNum++;
+	LnxAutoInit(LNX_H__3DTEST){
 		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
-		core::shaders::pipelineLayouts[FloatToIntBuffer::pipelineIndex] = &FloatToIntBuffer::layout;
+		core::shaders::pipelineLayouts[_3DTest::pipelineIndex] = &_3DTest::layout;
 		{ //Create descriptor set layout
-			vk::DescriptorSetLayoutBinding bindingLayouts[4];
+			vk::DescriptorSetLayoutBinding bindingLayouts[3];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (0)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
@@ -197,26 +182,18 @@ namespace lnx::shd{
 
 			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (2)
-				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
-				.setDescriptorCount    (1)
-				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
-				.setPImmutableSamplers (nullptr)
-			;
-
-			bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
-				.setBinding            (3)
-				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorType     (vk::DescriptorType::eUniformBuffer)
 				.setDescriptorCount    (1)
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
 				.setPImmutableSamplers (nullptr)
 			;
 
 			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
-				.setBindingCount (4)
+				.setBindingCount (3)
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &FloatToIntBuffer::layout.descriptorSetLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &_3DTest::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -224,20 +201,20 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "FloatToIntBuffer.spv").begin());
-			FloatToIntBuffer::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
+			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "3DTest.spv").begin());
+			_3DTest::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
-			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+			_3DTest::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
-				.setModule (FloatToIntBuffer::layout.shaderModule)
+				.setModule (_3DTest::layout.shaderModule)
 				.setPName  ("main")
 			;
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
-				.setPSetLayouts    (&FloatToIntBuffer::layout.descriptorSetLayout)
+				.setPSetLayouts    (&_3DTest::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &FloatToIntBuffer::layout.pipelineLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &_3DTest::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

@@ -4,17 +4,17 @@
 // Changes could be overwritten without notice
 //####################################################################################
 
-#include "Lynx/shaders/Border2.hpp"
+#include "Lynx/shaders/Line2.gsi.hpp"
 #include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#define LNX_H_BORDER2
+#define LNX_H_LINE2
 
 
 
 namespace lnx::shd{
 
 
-	void Border2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void Line2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
 			outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
@@ -27,7 +27,7 @@ namespace lnx::shd{
 	}
 
 
-	void Border2::createDescriptorSets(){
+	void Line2::createDescriptorSets(){
 		vk::DescriptorPoolSize sizes[2] = {
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
@@ -48,7 +48,7 @@ namespace lnx::shd{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
+			.setPSetLayouts        (&Line2::layout.descriptorSetLayout)
 		;
 		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
@@ -120,7 +120,7 @@ namespace lnx::shd{
 
 
 
-	void Border2::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void Line2::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pRenderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -131,8 +131,8 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Line2::pipelineIndex]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -144,11 +144,11 @@ namespace lnx::shd{
 
 
 
-	void Border2::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void Line2::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Line2::pipelineIndex]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Line2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -160,7 +160,7 @@ namespace lnx::shd{
 
 
 
-	void Border2::destroy(){
+	void Line2::destroy(){
 		//TODO
 	}
 
@@ -171,11 +171,11 @@ namespace lnx::shd{
 
 
 
-	Shader_b::Layout Border2::layout;
-	uint32 Border2::pipelineIndex = core::shaders::pipelineNum++;
-	LnxAutoInit(LNX_H_BORDER2){
+	Shader_b::Layout Line2::layout;
+	uint32 Line2::pipelineIndex = core::shaders::pipelineNum++;
+	LnxAutoInit(LNX_H_LINE2){
 		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
-		core::shaders::pipelineLayouts[Border2::pipelineIndex] = &Border2::layout;
+		core::shaders::pipelineLayouts[Line2::pipelineIndex] = &Line2::layout;
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
@@ -215,7 +215,7 @@ namespace lnx::shd{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Line2::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -223,20 +223,20 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Border2.spv").begin());
-			Border2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
+			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Line2.spv").begin());
+			Line2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
-			Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+			Line2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
-				.setModule (Border2::layout.shaderModule)
+				.setModule (Line2::layout.shaderModule)
 				.setPName  ("main")
 			;
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
-				.setPSetLayouts    (&Border2::layout.descriptorSetLayout)
+				.setPSetLayouts    (&Line2::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Line2::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

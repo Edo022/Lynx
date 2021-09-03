@@ -4,20 +4,21 @@
 // Changes could be overwritten without notice
 //####################################################################################
 
-#include "Lynx/shaders/3DTest.hpp"
+#include "Lynx/shaders/Border2.gsi.hpp"
 #include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#define LNX_H__3DTEST
+#define LNX_H_BORDER2
 
 
 
 namespace lnx::shd{
 
 
-	void _3DTest::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void Border2::create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, vram::ptr<u32, eVRam, eStorage> pZbuff, const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		pRenderCore.addObject_m.lock();
 			outcol.vdata = (vram::ptr<char, eVRam, eStorage>)pOutcol;
 			wsize.vdata = (vram::ptr<char, eVRam, eStorage>)pWsize;
+			zbuff.vdata = (vram::ptr<char, eVRam, eStorage>)pZbuff;
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
@@ -26,9 +27,9 @@ namespace lnx::shd{
 	}
 
 
-	void _3DTest::createDescriptorSets(){
+	void Border2::createDescriptorSets(){
 		vk::DescriptorPoolSize sizes[2] = {
-			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(2),
+			vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(3),
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
 		};
 		auto poolInfo = vk::DescriptorPoolCreateInfo()
@@ -47,7 +48,7 @@ namespace lnx::shd{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&_3DTest::layout.descriptorSetLayout)
+			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
 		;
 		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
@@ -57,7 +58,7 @@ namespace lnx::shd{
 
 
 
-		vk::WriteDescriptorSet writeSets[3];
+		vk::WriteDescriptorSet writeSets[4];
 		auto bufferInfo0 = vk::DescriptorBufferInfo()
 			.setBuffer (outcol.vdata.cell->csc.buffer)
 			.setOffset (outcol.vdata.cell->localOffset)
@@ -85,18 +86,31 @@ namespace lnx::shd{
 		;
 
 		auto bufferInfo2 = vk::DescriptorBufferInfo()
-			.setBuffer (_data.vdata.cell->csc.buffer)
-			.setOffset (_data.vdata.cell->localOffset)
-			.setRange  (_data.vdata.cell->cellSize)
+			.setBuffer (zbuff.vdata.cell->csc.buffer)
+			.setOffset (zbuff.vdata.cell->localOffset)
+			.setRange  (zbuff.vdata.cell->cellSize)
 		;
 		writeSets[2] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)
 			.setDstBinding      (2)
 			.setDescriptorCount (1)
-			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
+			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
 			.setPBufferInfo     (&bufferInfo2)
 		;
-		core::dvc::graphics.ld.updateDescriptorSets(3, writeSets, 0, nullptr);
+
+		auto bufferInfo3 = vk::DescriptorBufferInfo()
+			.setBuffer (_data.vdata.cell->csc.buffer)
+			.setOffset (_data.vdata.cell->localOffset)
+			.setRange  (_data.vdata.cell->cellSize)
+		;
+		writeSets[3] = vk::WriteDescriptorSet()
+			.setDstSet          (descriptorSet)
+			.setDstBinding      (3)
+			.setDescriptorCount (1)
+			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
+			.setPBufferInfo     (&bufferInfo3)
+		;
+		core::dvc::graphics.ld.updateDescriptorSets(4, writeSets, 0, nullptr);
 	}
 
 
@@ -106,7 +120,7 @@ namespace lnx::shd{
 
 
 
-	void _3DTest::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void Border2::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
 			.setCommandPool        (pRenderCore.commandPool)
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
@@ -117,8 +131,8 @@ namespace lnx::shd{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[_3DTest::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, _3DTest::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -130,11 +144,11 @@ namespace lnx::shd{
 
 
 
-	void _3DTest::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	void Border2::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[_3DTest::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, _3DTest::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -146,7 +160,7 @@ namespace lnx::shd{
 
 
 
-	void _3DTest::destroy(){
+	void Border2::destroy(){
 		//TODO
 	}
 
@@ -157,13 +171,13 @@ namespace lnx::shd{
 
 
 
-	Shader_b::Layout _3DTest::layout;
-	uint32 _3DTest::pipelineIndex = core::shaders::pipelineNum++;
-	LnxAutoInit(LNX_H__3DTEST){
+	Shader_b::Layout Border2::layout;
+	uint32 Border2::pipelineIndex = core::shaders::pipelineNum++;
+	LnxAutoInit(LNX_H_BORDER2){
 		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
-		core::shaders::pipelineLayouts[_3DTest::pipelineIndex] = &_3DTest::layout;
+		core::shaders::pipelineLayouts[Border2::pipelineIndex] = &Border2::layout;
 		{ //Create descriptor set layout
-			vk::DescriptorSetLayoutBinding bindingLayouts[3];
+			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (0)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
@@ -182,6 +196,14 @@ namespace lnx::shd{
 
 			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (2)
+				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+				.setDescriptorCount    (1)
+				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+				.setPImmutableSamplers (nullptr)
+			;
+
+			bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
+				.setBinding            (3)
 				.setDescriptorType     (vk::DescriptorType::eUniformBuffer)
 				.setDescriptorCount    (1)
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
@@ -189,11 +211,11 @@ namespace lnx::shd{
 			;
 
 			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
-				.setBindingCount (3)
+				.setBindingCount (4)
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &_3DTest::layout.descriptorSetLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -201,20 +223,20 @@ namespace lnx::shd{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "3DTest.spv").begin());
-			_3DTest::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
+			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Border2.spv").begin());
+			Border2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
-			_3DTest::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+			Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
-				.setModule (_3DTest::layout.shaderModule)
+				.setModule (Border2::layout.shaderModule)
 				.setPName  ("main")
 			;
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
-				.setPSetLayouts    (&_3DTest::layout.descriptorSetLayout)
+				.setPSetLayouts    (&Border2::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &_3DTest::layout.pipelineLayout)){ vkDefaultCases; }
+			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }
