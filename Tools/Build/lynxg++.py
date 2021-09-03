@@ -181,16 +181,17 @@ if not args.e: cmd += [                                         #When building u
 
 
 def runCmd(args):
+    output = ''
     try:
-        subprocess.check_output(args, universal_newlines=True)
+        output = subprocess.check_output(args, universal_newlines=True)
         print('\033[1m' + (' '.join(args)) + '\033[0m')
     except subprocess.CalledProcessError as e:
         print(
             'The task \033[1m"' + ' '.join(args) +
             '"\033[0m exited with return code ' + str(e.returncode) +
-            ':\n\033[31m' + str(e.output) + '\033[0m'
+            ':\n\033[31m' + str(output) + '\033[0m'
         )
-        exit(1)
+        sys.exit(1)
 
 
 
@@ -201,10 +202,10 @@ if len(cmdsh) > 0:
 
     for files in cmdsh:
         print('\n')
-        runCmd(['spirv-val', files[0] + '.spv'])
         runCmd(['glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
+        runCmd(['spirv-val', files[0] + '.spv'])
         r = GlslToCpp.run(files[0] + '.comp', _ptfm)
-        if r != 0: exit(r)
+        if r != 0: sys.exit(r)
     print('\n')
 
 

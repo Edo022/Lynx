@@ -10,7 +10,7 @@
 
 
 namespace lnx::shd{
-	struct _3DTest : public Shader_b {
+	struct Volume : public Shader_b {
 		static Shader_b::Layout layout;
 		static uint32 pipelineIndex;
 

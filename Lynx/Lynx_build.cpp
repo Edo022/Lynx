@@ -40,7 +40,7 @@
     #include "Lynx/shaders/Line2.gsi.cpp"
     #include "Lynx/shaders/Border2.gsi.cpp"
     #include "Lynx/shaders/FloatToIntBuffer.gsi.cpp"
-    #include "Lynx/shaders/3DTest.gsi.cpp"
+    #include "Lynx/shaders/Volume.gsi.cpp"
 
 
     #include "Lynx/Core/Render/Buffers.cpp"
