@@ -1,6 +1,6 @@
 import re, sys, os, subprocess, argparse as ap
 import GlslToCpp
-#python3.9 -m py_compile GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
+#python3.9 -m py_compile lynxg++.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
 
 #TODO create Lynx/Build, Lynx/Build/Linux and Lynx/Build/Windows directories
 #TODO check if the user build actually has arguments
@@ -99,9 +99,14 @@ elif args.m is None:
 
 
 #Get engine path
-rePath:str
+rePath = ''
 with open('./.engine/.rePath', 'r') as f:
     rePath = f.read()
+
+#Get project path
+apPath = ''
+with open('./.engine/.apPath', 'r') as f:
+    apPath = f.read()
 
 
 
@@ -156,9 +161,8 @@ cmd = ['g++', '-std=c++20', '-pthread', '-I' + rePath] + cmd    #Default g++ cal
 cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
 cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
 if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
+cmd += ['-ffile-prefix-map=' + apPath + '=']                    #Fix file prefix
 
-# cmdg += ['-ffile-prefix-map="' + os.getcwd() + '"="./"']
-# #FIXME ^ this doesn't work
 
 if args.e is False: cmd += [                                    #When building user application
     '-DenginePath="' + rePath + '"',                                #Define engine path function #FIXME
