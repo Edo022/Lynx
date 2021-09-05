@@ -1,6 +1,6 @@
 import re, sys, os, subprocess, argparse as ap
 import GlslToCpp
-#python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec
+#/home/Edo/.local/bin/pyflakes GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
 
 #TODO create Lynx/Build, Lynx/Build/Linux and Lynx/Build/Windows directories
 
@@ -204,7 +204,7 @@ if len(cmdsh) > 0:
         print('\n')
         runCmd(['glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
         runCmd(['spirv-val', files[0] + '.spv'])
-        r = GlslToCpp.run(files[0] + '.comp', _ptfm)
+        r = GlslToCpp.parseShader(files[0] + '.comp', _ptfm)
         if r != 0: sys.exit(r)
     print('\n')
 

@@ -1,5 +1,5 @@
-import sys, os, re, subprocess
-from textwrap import indent, dedent
+import os, re, subprocess
+from textwrap import indent
 from math import ceil
 #!Shaders are validated in lynxg++
 
@@ -13,99 +13,101 @@ def roundUp(x : int, b : int) -> int :
 
 
 
-# Translates the name of a glsl data type to the corresponding Lynx data type
-# glslType: The name of the glsl type
-def translateDataType(glslType : str) -> str :
-    return(
-        'i32' if glslType == 'int'    else              #Signed   int
-        'u32' if glslType == 'uint'   else              #Unsigned int
-        'f32' if glslType == 'float'  else              #Float
-        'f64' if glslType == 'double' else              #Double
-        #!glsl has no long intengers
-        #!bool doesn't change
-        re.sub( r'^vec([234])', r'f32v\g<1>',           #Float   vectors
-        re.sub(r'^dvec([234])', r'f64v\g<1>',           #Double  vectors
-        re.sub(r'^bvec([234])',   r'bv\g<1>',           #Boolean vectors
-        re.sub(r'^(i|u)vec([234])', r'\g<1>32v\g<2>',    #Integer vectors
-        glslType
-    )))))
 
 
 
-# Returns the size in bytes of a glsl data type
-# glslType: The name of the glsl type
-def getTypeSize(glslType : str) -> int :
-    return(
-        2 * 4 if re.search(r'^[biu]?vec2',           glslType) != None else     #Boolean, integer and unsigned 2D vectors have size 8
-        2 * 8 if re.search(r'^dvec2',                glslType) != None else     #Double 2D vectors have size 16
-        4 * 4 if re.search(r'^[biu]?vec[34]',        glslType) != None else     #Boolean, integer and unsigned 3D and 4D vectors have size 12 and 16 but are padded to 16 bytes
-        4 * 8 if re.search(r'^dvec[34]',             glslType) != None else     #Double 3D and 4D vectors have size 24 and 32 but are padded to 32 bytes
-        4     if re.search(r'^((u?int)|float|bool)', glslType) != None else     #Booleans, floats and integers have size 4
-        8     if re.search(r'^double',               glslType) != None else     #Doubles have size 8
-        -1 #!Never actually returned. Input shaders are checked before parsing
-    )
-
-
-
-
-
-
-
-
-def createFuncs(elms:str, iext:bool) :
-    m : str = elms.expandtabs(4)
+#Parses a single layout element
+#iExt: True if thhe binding is an external buffer
+def parseElms(elms:str, iExt:bool) :
+    elms = elms.expandtabs(4)
     ret      : str             = ''
     ext      : dict            = None
-    iext_    : bool            = False
     maxAlign : int             = 0
 
 
+    typeName = {
+        'bvec2': 'bv2',    'ivec2': 'i32v2',    'uvec2': 'u32v2',    'vec2': 'f32v2',    'dvec2': 'f64v2',
+        'bvec3': 'bv3',    'ivec3': 'i32v3',    'uvec3': 'u32v3',    'vec3': 'f32v3',    'dvec3': 'f64v3',
+        'bvec4': 'bv4',    'ivec4': 'i32v4',    'uvec4': 'u32v4',    'vec4': 'f32v4',    'dvec4': 'f64v4',
+         'bool': 'bool',     'int': 'i32',       'uint': 'u32',     'float': 'f32',     'double': 'f64'
+    }
+    typeSize = {
+        'bvec2': 4 * 2,    'ivec2': 4 * 2,      'uvec2': 4 * 2,      'vec2': 4 * 2,      'dvec2': 8 * 2,
+        'bvec3': 4 * 4,    'ivec3': 4 * 4,      'uvec3': 4 * 4,      'vec3': 4 * 4,      'dvec3': 8 * 4,
+        'bvec4': 4 * 4,    'ivec4': 4 * 4,      'uvec4': 4 * 4,      'vec4': 4 * 4,      'dvec4': 8 * 4,
+         'bool': 4,          'int': 4,           'uint': 4,         'float': 4,         'double': 8
+    }
+
+
+    elmsr = re.findall(                                                 #Search for members
+        r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) '     #Get type name
+        r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                         #Get variable name
+        r'(?P<iArr>\[(?P<aLen>.+?)\])?'                                 #Check if it's an array and get its length
+        r';',                                                           #Anchor to instruction end
+    elms)
+
+
     offset : int = 0
-    while len(m) > 0:
-        if iext_: break                                             #Break if the binding is external and the trailing comment has been written
-        r = re.search(                                              #Search for members
-            r'^.*?'                                                     #Anchor to beginning
-            r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' #Get type name
-            r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     #Get variable name
-            r'\[?(?P<iarr>\])?'                                         #Check closing array bracket
-            r';',                                                       #Anchor to instruction end
-        m)                                                              #
-        if r != None:                                               #If a member was found
-            _type = r.group('type');                                    #
-            _name = r.group('name');                                    #
-            _iarr = r.group('iarr')                                     #
-            ttype:str = translateDataType(_type)                        #Translate its type
-            align:int = getTypeSize(_type)                              #Get member alignment
-            maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment
+    if elmsr is not None:
+        for elm in elmsr:
+            ttype:str = typeName[elmsr['type']]                       #Translate type
+            align:int = typeSize[elmsr['type']]                       #Get alignment
+            maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment #TODO check if this actually works
 
-            if not iext:                                                #If the binding is not external
+            if not iExt:                                                #If the binding is not external
                 ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
-                offset = roundUp(offset, align)                             #Fix element offset and    #Create getter from variable name
-                ret += _name + '() { return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
-                offset += align                                             #Calculate raw offset of the next element
+                offset = roundUp(offset, align)                             #Fix element offset
+                ret += (elm['name'] + '() {'                            #Create getter from variable name
+                    'return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + ';'
+                '}')                                                        #
+                offset += align                                             #Calculate raw offset of the next element #TODO check if this actually works
             else:                                                       #If the binding is external
-                iext_ = True                                                #Set external binding variable
-                ext = dict({'type' : ttype, 'varname': _name})              #Save binding type and name. They will be used when writing create()
-            m = m[len(r.group(0)):]                                     #Pop parsed string from source string
-            continue                                                    #Keep parsing
-        else:                                                       #Blindly copy anything else
-            m = m[1:]                                                   #umu umu
-
-
-
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64 }) #Structure size must be a multiple of 16   //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 256)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
-    #!                                                                              ^ NVIDIA has a huge alignment of 256 bytes.
-    #FIXME                                                                          ^ USE DIFFERENT ALIGNMENT FOR STORAGE BUFFERS
-    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) }) #Structure size must be a multiple of 16      //BUG THE NORMAL SIZE MAKES THE ENGINE CRASH
+                ext = dict{'type' : ttype, 'varname': elm['name']}    #Save binding type and name. They will be used when writing create()
+                break                                                       #Exit loop #FIXME parse other elements too
 
 
 
 
+    # while len(elms) > 0:
+    #     if iext_: break                                             #Break if the binding is external and the trailing comment has been written
+    #     if r != None:                                               #If a member was found
+    #         ttype:str = typeC[r.group('type')]                          #Translate its type
+    #         align:int = typeSize[r.group('type')]                       #Get member alignment
+    #         maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment
+
+    #         if not iext:                                                #If the binding is not external
+    #             ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
+    #             offset = roundUp(offset, align)                             #Fix element offset and    #Create getter from variable name
+    #             ret += r.group('name') + '() { return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
+    #             offset += align                                             #Calculate raw offset of the next element
+    #         else:                                                       #If the binding is external
+    #             iext_ = True                                                #Set external binding variable
+    #             ext = dict({'type' : ttype, 'varname': r.group('name')})              #Save binding type and name. They will be used when writing create()
+    #         elms = elms[len(r.group(0)):]                                     #Pop parsed string from source string
+    #         continue                                                    #Keep parsing
+    #     else:                                                       #Blindly copy anything else
+    #         elms = elms[1:]                                                   #umu umu
 
 
-def translateStructDecl(name:str, iext:bool, type:str, indx:int, elms:str, space:bool) :
-    t = createFuncs(elms, iext)
+
+    #Return a dictionary containing the translated members, the external bindings and the padded structure size
+    #The size of the structure must be a multiple of 16 #BUG THE NORMAL SIZE MAKES THE ENGINE CRASH (prob buffer overflow?)
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64})    #BUG ok
+    # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16))})         #BUG crash
+    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 256)) })
+    #!NVIDIA has a huge alignment of 256 bytes. #TODO use a different alignment based on the GPU, ig
+    #FIXME use different alignment for storage buffers
+
+
+
+
+
+
+
+
+#Translates a single layout
+def parseLayout(name:str, iext:bool, type:str, indx:int, elms:str, space:bool) :
+    t = parseElms(elms, iext)
     return dict({
         'decl' : (('\n\n' if space else '') +                                   #Fix spacing
             '\nstruct ' + name + '_t : public ShaderElm_b<' + ('eStorage' if type == 'buffer' else 'eUniform') + '> {' +
@@ -132,7 +134,8 @@ def translateStructDecl(name:str, iext:bool, type:str, indx:int, elms:str, space
 
 
 
-def run(pathr:str, ptfm:str):
+#Parses a GLSL compute shader and writes 2 C++ interface files
+def parseShader(pathr:str, ptfm:str):
     if not os.path.exists(pathr):
         print("File does not exist")
         return 1
@@ -181,11 +184,6 @@ def run(pathr:str, ptfm:str):
 
 
         #Expand macros
-
-        enginePath:str
-        with open('./.engine/enginePath', 'r') as f:
-            enginePath = f.read()
-
         code = subprocess.check_output(
             ['glslangValidator', spath + shname + '.comp', '-E'],
             universal_newlines=True
@@ -218,7 +216,7 @@ def run(pathr:str, ptfm:str):
             storageNum = 0; uniformNum = 0                          #Number of storage and uniform bindings in the shader
             for l in layouts:                                       #For each layout
                 _iext = l['iext'] != None and len(l['iext']) > 0        #Check if it's external        #BUG CHECK LENGTH IN MEMBER PARSING TOO
-                decl = translateStructDecl(                             #Translate declaration
+                decl = parseLayout(                             #Translate declaration
                     l['name'], _iext, l['type'], l['indx'],                 #
                     elms = l['elms'].strip(),                               #Raw members data
                     space   = l != 0                                        #Code spacing
