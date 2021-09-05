@@ -1,177 +1,200 @@
-# from Lynx.Setup.BuildOptions import enginePath
-import sys, os
-import SetPlatform, SetType
-thisdir = os.path.dirname(os.path.abspath(__file__))
+import sys, os, re
+import SetPlatform, SetConfiguration
+#python3.9 -m py_compile Setup.py && { python3 -m PyInstaller -F --clean ./Setup.py; cp ./dist/Setup ./; rm -r ./dist; rm ./build -r; rm ./Setup.spec; }
+#! This script must be compiled in an executable file
+
 
 #TODO make this script an executable
 #TODO generate .engine/Path_config.hpp file
 #TODO read paths from config file
 
 
-if len(sys.argv) == 1:
-    pdir = os.getcwd()
-else:
-    pdir = sys.argv[1]
 
-if not os.path.exists(pdir):
-    print("The specified path does not exist")
+
+# Get project dir
+rpPath = '.' if len(sys.argv) == 1 else os.path.relpath(sys.argv[1], '.')
+apPath = os.path.abspath(rpPath)
+
+rePath = ''
+aePath = ''
+
+
+# Check the project dir and ask for confirmation
+if not os.path.exists(apPath):
+    print("The specified project path does not exist")
     exit(-2)
-
-
-
-
-print('Those files will be created or overwritten:\n' +\
-    os.path.abspath(pdir) + '/.vscode/tasks.json\n' +\
-    os.path.abspath(pdir) + '/.vscode/c_cpp_properties.json\n' +\
-    'Continue?'
-)
-
+else:
+    print(
+        'The following files will be created or overwritten:'   '\n' +
+        apPath + '/.vscode/tasks.json'                          '\n' +
+        apPath + '/.vscode/c_cpp_properties.json'               '\n' +
+        apPath + '/.engine/.apf'                                '\n' +
+        apPath + '/.engine/.atp'                                '\n' +
+        apPath + '/.engine/.rePath'                             '\n' +
+        '\n'
+        'Continue?'
+    )
+os.path.dirname(os.getcwd())
 
 
 
 if sys.stdin.read(1).lower() == 'y':
-    if not os.path.exists(pdir + "/.engine"):
-        os.mkdir(pdir + "/.engine")
-    if not os.path.exists(pdir + "/.vscode"):
-        os.mkdir(pdir + "/.vscode")
+    aePath = os.path.dirname(os.readlink('/proc/self/exe'))
+    rePath = os.path.relpath(aePath + '/../..', apPath)
 
 
-    with open(pdir + "/.engine/platform", 'w') as f:
+    # Create missing directories
+    if not os.path.exists(apPath + "/.engine"):
+        os.mkdir(apPath + "/.engine")
+    if not os.path.exists(apPath + "/.vscode"):
+        os.mkdir(apPath + "/.vscode")
+
+
+
+
+    # Write default active platform and configuration
+    with open(apPath + "/.engine/.pf", 'w') as f:
         f.write('l')
-    with open(pdir + "/.engine/type", 'w') as f:
+    with open(apPath + "/.engine/.cf", 'w') as f:
         f.write('d')
 
 
-    _epath = os.path.relpath(thisdir + '/../..', pdir)
-    with open('./.engine/enginePath', 'w') as pf:
-        pf.write(_epath)
+    # Write relative path to engine SDK
+    with open(apPath + '/.engine/.rePath', 'w') as f:
+        f.write(rePath)
+
+
+    # Write absolute project path
+    with open(apPath + '/.engine/.apPath', 'w') as f:
+        f.write(apPath)
 
 
 
 
-    with open(pdir + '/.vscode/tasks.json', 'w') as uf:
-        uf.write(
-           f'{{ '                                                                              '\n'
-           f'    "version": "2.0.0",'                                                          '\n'
-           f'    "tasks": ['                                                                   '\n'
-           f'        {{'                                                                       '\n'
-           f'            "type": "shell",'                                                     '\n'
-           f'            "label": "Linux  |  Debug  |  Build Lynx Engine",'                    '\n' #FIXME build executable from linux script
-           f'            "command": "{ _epath }/Tools/Build/lynxg++",'                         '\n'
-           f'            "args": [ "--mode=ld",'                                               '\n'
-           f'                "--engine",'                                                      '\n'
-           f'                "-a:"'                                                            '\n'
-           f'                    "{ _epath }/Lynx/Lynx_build.cpp",'                            '\n'
-           f'                    "{ _epath }/Lynx/shaders/*.comp",'                            '\n'
-           f'                    "-pipe",'                                                     '\n'
-           f'                    "-mavx",'                                                     '\n'
-           f''                                                                                 '\n'
-           f'                "-d:",'                                                           '\n'
-           f'                    "-p", "-g3", "-ggdb3",'                                       '\n'
-           f'                    "-rdynamic",'                                                 '\n'
-           f'                    "-fverbose-asm",'                                             '\n'
-           f'                    "-DLNX_DEBUG",'                                               '\n'
-           f'                    "-O0",'                                                       '\n'
-           f'                    "-fno-elide-constructors",'                                   '\n'
-           f'                    "-fno-inline-small-functions",'                               '\n'
-           f'                    "-fno-inline",'                                               '\n'
-           f''                                                                                 '\n'
-           f'                "-r:",'                                                           '\n'
-           f'                    "-g0", "-Ofast",'                                             '\n'
-           f'                    "-frename-registers",'                                        '\n'
-           f'                    "-funroll-loops",'                                            '\n'
-           f''                                                                                 '\n'
-           f'                "-d:",'                                                           '\n'
-           f'                    "-fsanitize=undefined",'                                      '\n'
-           f'                    "-fsanitize=alignment",'                                      '\n'
-           f'                    "-fsanitize=bounds",'                                         '\n'
-           f'                    "-fsanitize=null",'                                           '\n'
-           f'                    "-fsanitize=vptr",'                                           '\n'
-           f'                    "-fsanitize=enum",'                                           '\n'
-           f'                    "-fsanitize=leak",      //!Not compatible with thread'        '\n'
-           f'                    "-fsanitize=address",   //!Not compatible with thread'        '\n'
-           f'                    // "-fsanitize=thread",    //!Not compatible leak or address' '\n'
-           f''                                                                                 '\n'
-           f'                "-a:",'                                                           '\n'
-           f'                    "-Wall",'                                                     '\n'
-           f'                    "-Wclobbered",'                                               '\n'
-           f'                    "-Wcast-function-type",'                                      '\n'
-           f'                    "-Wdeprecated-copy",'                                         '\n'
-           f'                    "-Wempty-body",'                                              '\n'
-           f'                    "-Wignored-qualifiers",'                                      '\n'
-           f'                    "-Wimplicit-fallthrough=3",'                                  '\n'
-           f'                    "-Wstring-compare",'                                          '\n'
-           f'                    "-Wredundant-move",'                                          '\n'
-           f'                    "-Wtype-limits",'                                             '\n'
-           f'                    "-Wuninitialized",'                                           '\n'
-           f'                    "-Wshift-negative-value",'                                    '\n'
-           f'                    "-Wunused-but-set-parameter",'                                '\n'
-           f'                    "-Wcast-align",'                                              '\n'
-           f'                    "-Wcast-qual",'                                               '\n'
-           f'                    "-Wctor-dtor-privacy",'                                       '\n'
-           f'                    "-Wdisabled-optimization",'                                   '\n'
-           f'                    "-Wformat=2",'                                                '\n'
-           f'                    "-Winit-self",'                                               '\n'
-           f'                    "-Wlogical-op",'                                              '\n'
-           f'                    "-Wmissing-include-dirs",'                                    '\n'
-           f'                    "-Wnoexcept",'                                                '\n'
-           f'                    "-Woverloaded-virtual",'                                      '\n'
-           f'                    "-Wredundant-decls",'                                         '\n'
-           f'                    "-Wshadow",'                                                  '\n'
-           f'                    "-Wsign-conversion",'                                         '\n'
-           f'                    "-Wsign-promo",'                                              '\n'
-           f'                    "-Wstrict-null-sentinel",'                                    '\n'
-           f'                    "-Wstrict-overflow=5",'                                       '\n'
-           f'                    "-Wswitch-default",'                                          '\n'
-           f'                    "-Wundef",'                                                   '\n'
-           f''                                                                                 '\n'
-           f'                    "-c", "-o",'                                                  '\n'
-           f'                "-d:", "{ _epath }/Build/Linux/LynxDebug",'                       '\n'
-           f'                "-r:", "{ _epath }/Build/Linux/LynxRelease",'                     '\n'
-           f'            ],'                                                                   '\n'
-           f'            "problemMatcher": [ "$gcc" ],'                                        '\n'
-           f'            "options": {{ "cwd": "${{workspaceFolder}}" }},'                      '\n'
-           f'            "group": {{ "kind": "build", "isDefault": true }}'                    '\n'
-           f'        }},'                                                                      '\n'
-           f'        {{'                                                                       '\n'
-           f'            "type": "shell",'                                                     '\n'
-           f'            "label": "Linux  |  Debug  |  Build Application\",'                   '\n'
-           f'            "command": "{ _epath }/Tools/Build/lynxg++",'                         '\n'
-           f'            "args": [ "--mode=ld",'                                               '\n'
-           f'                //Your build'                                                     '\n'
-           f'            ],'                                                                   '\n'
-           f'            "problemMatcher": [ "$gcc" ],'                                        '\n'
-           f'            "options": {{ "cwd": "${{workspaceFolder}}" }},'                      '\n'
-           f'            "group": {{ "kind": "build", "isDefault": true }}'                    '\n'
-           f'        }},'                                                                      '\n'
-           f'        {{'                                                                       '\n'
-           f'            "type": "shell",'                                                     '\n'
-           f'            "label": " > Switch to Windows",'                                     '\n'
-           f'            "command": "python3",'                                                '\n'
-           f'            "args": ['                                                            '\n'
-           f'                "{ _epath }/Tools/Setup/SetPlatform.py",'                         '\n'
-           f'                "w",'                                                             '\n'
-           f'                "ignored_argument" //FIXME'                                       '\n'
-           f'            ],'                                                                   '\n'
-           f'            "problemMatcher": [ ],'                                               '\n'
-           f'            "options": {{ "cwd": "${{workspaceFolder}}" }},'                      '\n'
-           f'            "group": {{ "kind": "build", "isDefault": true }}'                    '\n'
-           f'        }},'                                                                      '\n'
-           f'        {{'                                                                       '\n'
-           f'            "type": "shell",'                                                     '\n'
-           f'            "label": " > Switch to Release",'                                     '\n'
-           f'            "command": "python3",'                                                '\n'
-           f'            "args": ['                                                            '\n'
-           f'                "{ _epath }/Tools/Setup/SetType.py",'                             '\n'
-           f'                "r",'                                                             '\n'
-           f'                "ignored_argument" //FIXME'                                       '\n'
-           f'            ],'                                                                   '\n'
-           f'            "problemMatcher": [ ],'                                               '\n'
-           f'            "options": {{ "cwd": "${{workspaceFolder}}" }},'                      '\n'
-           f'            "group": {{ "kind": "build", "isDefault": true }}'                    '\n'
-           f'        }}'                                                                       '\n'
-           f'    ]'                                                                            '\n'
-           f'}}'                                                                               '\n'
+    # Write vscode tasks
+    with open(apPath + '/.vscode/tasks.json', 'w') as f:
+        f.write(
+           f'{{'
+           f'\n    "version": "2.0.0",'
+           f'\n    "tasks": ['
+           f'\n        {{'
+           f'\n            "type": "shell",'
+           f'\n            "label": "Linux  |  Debug  |  Build Lynx Engine",'
+           f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
+           f'\n            "args": [ "--mode=ld",'
+           f'\n                "--engine",'
+           f'\n                "-a:",'
+           f'\n                    "{ rePath }/Lynx/Lynx_build.cpp",'
+           f'\n                    "{ rePath }/Lynx/shaders/*.comp",'
+           f'\n                    "-pipe",'
+           f'\n                    "-mavx",'
+           f'\n'
+           f'\n                "-d:",'
+           f'\n                    "-p", "-g3", "-ggdb3",'
+           f'\n                    "-rdynamic",'
+           f'\n                    "-fverbose-asm",'
+           f'\n                    "-DLNX_DEBUG",'
+           f'\n                    "-O0",'
+           f'\n                    "-fno-elide-constructors",'
+           f'\n                    "-fno-inline-small-functions",'
+           f'\n                    "-fno-inline",'
+           f'\n'
+           f'\n                "-r:",'
+           f'\n                    "-g0", "-Ofast",'
+           f'\n                    "-frename-registers",'
+           f'\n                    "-funroll-loops",'
+           f'\n'
+           f'\n                "-d:",'
+           f'\n                    "-fsanitize=undefined",'
+           f'\n                    "-fsanitize=alignment",'
+           f'\n                    "-fsanitize=bounds",'
+           f'\n                    "-fsanitize=null",'
+           f'\n                    "-fsanitize=vptr",'
+           f'\n                    "-fsanitize=enum",'
+           f'\n                    "-fsanitize=leak",      //!Not compatible with thread'
+           f'\n                    "-fsanitize=address",   //!Not compatible with thread'
+           f'\n                    // "-fsanitize=thread",    //!Not compatible leak or address'
+           f'\n'
+           f'\n                "-a:",'
+           f'\n                    "-Wall",'
+           f'\n                    "-Wclobbered",'
+           f'\n                    "-Wcast-function-type",'
+           f'\n                    "-Wdeprecated-copy",'
+           f'\n                    "-Wempty-body",'
+           f'\n                    "-Wignored-qualifiers",'
+           f'\n                    "-Wimplicit-fallthrough=3",'
+           f'\n                    "-Wstring-compare",'
+           f'\n                    "-Wredundant-move",'
+           f'\n                    "-Wtype-limits",'
+           f'\n                    "-Wuninitialized",'
+           f'\n                    "-Wshift-negative-value",'
+           f'\n                    "-Wunused-but-set-parameter",'
+           f'\n                    "-Wcast-align",'
+           f'\n                    "-Wcast-qual",'
+           f'\n                    "-Wctor-dtor-privacy",'
+           f'\n                    "-Wdisabled-optimization",'
+           f'\n                    "-Wformat=2",'
+           f'\n                    "-Winit-self",'
+           f'\n                    "-Wlogical-op",'
+           f'\n                    "-Wmissing-include-dirs",'
+           f'\n                    "-Wnoexcept",'
+           f'\n                    "-Woverloaded-virtual",'
+           f'\n                    "-Wredundant-decls",'
+           f'\n                    "-Wshadow",'
+           f'\n                    "-Wsign-conversion",'
+           f'\n                    "-Wsign-promo",'
+           f'\n                    "-Wstrict-null-sentinel",'
+           f'\n                    "-Wstrict-overflow=5",'
+           f'\n                    "-Wswitch-default",'
+           f'\n                    "-Wundef",'
+           f'\n'
+           f'\n                    "-c", "-o",'
+           f'\n                "-d:", "{ rePath }/Build/Linux/LynxDebug",'
+           f'\n                "-r:", "{ rePath }/Build/Linux/LynxRelease",'
+           f'\n            ],'
+           f'\n            "problemMatcher": [ "$gcc" ],'
+           f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
+           f'\n            "group": {{ "kind": "build", "isDefault": true }}'
+           f'\n        }},'
+           f'\n        {{'
+           f'\n            "type": "shell",'
+           f'\n            "label": "Linux  |  Debug  |  Build Application\",'
+           f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
+           f'\n            "args": [ "--mode=ld",'
+           f'\n                //Your build'
+           f'\n            ],'
+           f'\n            "problemMatcher": [ "$gcc" ],'
+           f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
+           f'\n            "group": {{ "kind": "build", "isDefault": true }}'
+           f'\n        }},'
+           f'\n        {{'
+           f'\n            "type": "shell",'
+           f'\n            "label": " > Switch to Windows",'
+           f'\n            "command": "python3",'
+           f'\n            "args": ['
+           f'\n                "{ rePath }/Tools/Setup/SetPlatform.py",'
+           f'\n                "w",'
+           f'\n                "ignored_argument" //FIXME'
+           f'\n            ],'
+           f'\n            "problemMatcher": [ ],'
+           f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
+           f'\n            "group": {{ "kind": "build", "isDefault": true }}'
+           f'\n        }},'
+           f'\n        {{'
+           f'\n            "type": "shell",'
+           f'\n            "label": " > Switch to Release",'
+           f'\n            "command": "python3",'
+           f'\n            "args": ['
+           f'\n                "{ rePath }/Tools/Setup/SetConfiguration.py",'
+           f'\n                "r",'
+           f'\n                "ignored_argument" //FIXME'
+           f'\n            ],'
+           f'\n            "problemMatcher": [ ],'
+           f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
+           f'\n            "group": {{ "kind": "build", "isDefault": true }}'
+           f'\n        }}'
+           f'\n    ]'
+           f'\n}}'
         )
     # SetPlatform.run('l')
-    # SetType.run('d')
+    # SetConfiguration.run('d')

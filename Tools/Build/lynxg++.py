@@ -3,7 +3,7 @@ import GlslToCpp
 #python3.9 -m py_compile GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
 
 #TODO create Lynx/Build, Lynx/Build/Linux and Lynx/Build/Windows directories
-
+#TODO check if the user build actually has arguments
 
 
 
@@ -99,9 +99,9 @@ elif args.m is None:
 
 
 #Get engine path
-_epath:str
-with open('./.engine/enginePath', 'r') as f:
-    _epath = f.read()
+rePath:str
+with open('./.engine/.rePath', 'r') as f:
+    rePath = f.read()
 
 
 
@@ -152,7 +152,7 @@ while i < len(cmd):
 
 #Build G++ command
 
-cmd = ['g++', '-std=c++20', '-pthread', '-I' + _epath] + cmd    #Default g++ call, C++20, pthread, include project root
+cmd = ['g++', '-std=c++20', '-pthread', '-I' + rePath] + cmd    #Default g++ call, C++20, pthread, include project root
 cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
 cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
 if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
@@ -161,10 +161,10 @@ if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx d
 # #FIXME ^ this doesn't work
 
 if args.e is False: cmd += [                                    #When building user application
-    '-DenginePath="' + _epath + '"',                                #Define engine path function #FIXME
-    _epath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
-    _epath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
-    _epath + '/Build/' + _ptfm + '/Lynx' + _type                    #Add engine binaries
+    '-DenginePath="' + rePath + '"',                                #Define engine path function #FIXME
+    rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
+    rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
+    rePath + '/Build/' + _ptfm + '/Lynx' + _type                    #Add engine binaries
 ]
 
 if not args.e: cmd += [                                         #When building user application

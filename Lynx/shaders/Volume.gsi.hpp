@@ -16,28 +16,28 @@ namespace lnx::shd{
 
 
 		struct outcol_t : public ShaderElm_b<eStorage> {
-			outcol_t() {
-			    ShaderElm_b::bind = 0;
-			}
+		    outcol_t() {
+		        ShaderElm_b::bind = 0;
+		    }
 		} outcol;
 
 
 		struct wsize_t : public ShaderElm_b<eStorage> {
-			wsize_t() {
-			    ShaderElm_b::bind = 1;
-			}
+		    wsize_t() {
+		        ShaderElm_b::bind = 1;
+		    }
 		} wsize;
 
 
 		struct _data_t : public ShaderElm_b<eUniform> {
-			_data_t() {
-			    ShaderElm_b::vdata.realloc(256);
-			    ShaderElm_b:: data.realloc(256);
-			    ShaderElm_b::bind = 2;
-			}
-			alwaysInline f32v3& pos() { return *(f32v3*)ShaderElm_b::data; }
-			alwaysInline f32& r() { return *(f32*)(ShaderElm_b::data + 16); }
-			alwaysInline f32v4& col() { return *(f32v4*)(ShaderElm_b::data + 32); }
+		    _data_t() {
+		        ShaderElm_b::vdata.realloc(256);
+		        ShaderElm_b:: data.realloc(256);
+		        ShaderElm_b::bind = 2;
+		    }
+		alwaysInline f32v3& pos() { return *(f32v3*)ShaderElm_b::data; }
+		alwaysInline f32& r() { return *(f32*)(ShaderElm_b::data + 16); }
+		alwaysInline f32v4& col() { return *(f32v4*)(ShaderElm_b::data + 32); }
 		} _data;
 
 
@@ -46,5 +46,5 @@ namespace lnx::shd{
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
-	};
+    };
 }//TODO remove local data in external bindings
