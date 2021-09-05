@@ -211,178 +211,189 @@ def parseShader(pathr:str, ptfm:str):
                 else: storageNum += 1
 
 
+
+
             #Write the shader create functions
             fh.write(indent(
                 #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
-                '\n\n\nvoid create(' +
-                ', '.join((
-                    'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
-                    ext['varname'][0].upper() + ext['varname'][1:]
-                ) for ext in exts) + ', const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
-                '\nvoid createDescriptorSets();'
-                '\nvoid createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
-                '\nvoid updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
-                '\nvoid destroy();',
+                f"\n\n\nvoid create(" + (
+                    f", ".join((f"vram::ptr<{ ext['vartype'] }, eVRam, { ext['bndtype'] }> p{ ext['varname'][0].upper() }{ ext['varname'][1:] }")
+                    for ext in exts) + f", const u32v3 vGroupCount, core::RenderCore& pRenderCore);"
+                ) +
+                f"\nvoid createDescriptorSets();"
+                f"\nvoid createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);"
+                f"\nvoid updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);"
+                f"\nvoid destroy();",
             '\t\t'))
 
-            fc.write(indent(
-                '\n\n\nvoid ' + fname + '::create(' +
-                ', '.join((
-                        'vram::ptr<' + ext['vartype'] + ', eVRam, ' + ext['bndtype'] + '> p' +
-                        ext['varname'][0].upper() + ext['varname'][1:]
-                    )for ext in exts) + ', const u32v3 vGroupCount, core::RenderCore& pRenderCore){' +
-                    '\n\t''pRenderCore.addObject_m.lock();' +
-                        (
-                            ''.join(('\n\t\t' + ext['bndname'] + '.vdata = (vram::ptr<char, eVRam, ' + ext['bndtype'] + '>)p' +
-                            ext['varname'][0].upper() + ext['varname'][1:] + ';'
-                        ) for ext in exts)) +
-                        '\n'
-                        '\n\t\t''createDescriptorSets();'
-                        '\n\t\t''createCommandBuffers(vGroupCount, pRenderCore);'
-                        '\n\t\t''pRenderCore.swp.shadersCBs.add(commandBuffers[0]);'
-                    '\n\t''pRenderCore.addObject_m.unlock();'
-                '\n}',
-            '\t'))
+
+
 
             fc.write(indent(
-                '\n\n\nvoid ' + fname + '::createDescriptorSets(){'
-                    '\n\t''vk::DescriptorPoolSize sizes[2] = {'
-                        '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount(' + str(storageNum) + '),' + (
-                        '\n\t\tvk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(' + str(uniformNum) + ')'
-                        if uniformNum > 0 else '\n\t\t{}') +
-                    '\n\t};'
-                    '\n\t''auto poolInfo = vk::DescriptorPoolCreateInfo()'
-                        '\n\t\t''.setFlags         (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)'
-                        '\n\t\t''.setMaxSets       (1)'
-                        '\n\t\t''.setPoolSizeCount (' + str(2 if uniformNum > 0 else 1) + ')'
-                        '\n\t\t''.setPPoolSizes    (sizes)'
-                    '\n\t;'
-                    '\n\t''switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){'
-            	        '\n\t\t''case vk::Result::eErrorFragmentationEXT:  dbg::logError("Fragmentation error");  break;'
-            	        '\n\t\t''vkDefaultCases;'
-                    '\n\t''}'
-                    '\n\n\n'
-                    '\n\t''auto allocateSetInfo = vk::DescriptorSetAllocateInfo()'
-    				    '\n\t\t''.setDescriptorPool     (descriptorPool)'
-    				    '\n\t\t''.setDescriptorSetCount (1)'
-    				    '\n\t\t''.setPSetLayouts        (&' + fname + '::layout.descriptorSetLayout)'
-                    '\n\t'';'
-                    '\n\t''switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){'
-            	        '\n\t\t''case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;'
-            	        '\n\t\t''case vk::Result::eErrorOutOfPoolMemory:   dbg::logError("Out of pool memory");   break;'
-            	        '\n\t\t''vkDefaultCases;'
-                    '\n\t''}'
-                    '\n\n\n' +
-                    '\n\t''vk::WriteDescriptorSet writeSets[' + str(len(elms)) + '];' +
-                    '\n'.join((
-                        '\n\t''auto bufferInfo' + str(i) + ' = vk::DescriptorBufferInfo()'
-                            '\n\t\t''.setBuffer (' + b['name'] + '.vdata.cell->csc.buffer)'
-                            '\n\t\t''.setOffset (' + b['name'] + '.vdata.cell->localOffset)'
-                            '\n\t\t''.setRange  (' + b['name'] + '.vdata.cell->cellSize)'
-                        '\n\t;'
-                        '\n\t''writeSets[' + str(i) + '] = vk::WriteDescriptorSet()'
-                            '\n\t\t''.setDstSet          (descriptorSet)'
-                            '\n\t\t''.setDstBinding      ('+ str(b['indx']) + ')'
-                            '\n\t\t''.setDescriptorCount (1)'
-                            '\n\t\t''.setDescriptorType  (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
-                            '\n\t\t''.setPBufferInfo     (&bufferInfo' + str(i) + ')'
-                        '\n\t;'
-                    ) for i, b in enumerate(elms)) +
-                    '\n\tcore::dvc::graphics.ld.updateDescriptorSets(' + str(len(elms)) + ', writeSets, 0, nullptr);'
-                '\n}',
-            '\t'))
-
-
-            fc.write(indent('\n\n\n\n\n\n\n\n'
-                '\nvoid ' + fname + '::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){'
-                    '\n\t''auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
-                        '\n\t\t''.setCommandPool        (pRenderCore.commandPool)'
-                        '\n\t\t''.setLevel              (vk::CommandBufferLevel::ePrimary)'
-                        '\n\t\t''.setCommandBufferCount (1)'
-                    '\n\t'';'
-                    '\n\t''commandBuffers.resize(1);'
-                    '\n\t''switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }'
-                    '\n'
-                    '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-                    '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
-                    '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[' + fname + '::pipelineIndex]);'
-                    '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
-                    '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
-                    '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
-                    #TODO WRITE ALL COMMAND BUFFERS AT ONCE
-                    #TODO or use multiple descriptor sets for multiple objects, but in the same command buffer
-                '\n}',
-            '\t'))
-
-
-            fc.write(indent('\n\n\n\n\n\n\n\n'
-                '\nvoid ' + fname + '::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){'
-                    '\n\t''auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-                    '\n\t''switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }'
-                    '\n\t''commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[' + fname + '::pipelineIndex]);'
-                    '\n\t''commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, ' + fname + '::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
-                    '\n\t''commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
-                    '\n\t''switch(commandBuffers[0].end()){ vkDefaultCases; }'
-                '\n}',
-            '\t'))
-
-
-            fc.write(indent('\n\n\n\n\n\n\n\n'
-                '\nvoid ' + fname + '::destroy(){'
-                    '\n\t''//TODO'
-                '\n}',
+                f"\n\n\nvoid { fname }::create(" + (
+                    f", ".join((f"vram::ptr<{ ext['vartype'] }, eVRam, { ext['bndtype'] }> p{ ext['varname'][0].upper() }{ ext['varname'][1:] }")
+                    for ext in exts) + f"const u32v3 vGroupCount, core::RenderCore& pRenderCore){{"
+                ) +
+                f"\n    pRenderCore.addObject_m.lock();" +
+                    (f"".join((
+                        f"\n        { ext['bndname'] }.vdata = (vram::ptr<char, eVRam, { ext['bndtype'] }>)p{ ext['varname'][0].upper() }{ ext['varname'][1:] };")
+                        for ext in exts)
+                    ) +
+                f"\n"
+                f"\n        createDescriptorSets();"
+                f"\n        createCommandBuffers(vGroupCount, pRenderCore);"
+                f"\n        pRenderCore.swp.shadersCBs.add(commandBuffers[0]);"
+                f"\n    pRenderCore.addObject_m.unlock();"
+                f"\n}}",
             '\t'))
 
 
 
 
-            fc.write(indent('\n\n\n\n\n\n\n\n'
-                '\nShader_b::Layout ' + fname + '::layout;'
-                '\nuint32 ' + fname + '::pipelineIndex = core::shaders::pipelineNum++;'
-                '\nLnxAutoInit(LNX_H_' + fname.upper() + '){'
-                    '\n\t''core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);'
-                    '\n\t''core::shaders::pipelineLayouts[' + fname + '::pipelineIndex] = &' + fname + '::layout;'
-                    '\n\t{ //Create descriptor set layout'
-                        '\n\t\tvk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];' +
-                        '\n'.join((
-                            '\n\t\tbindingLayouts[' + str(i) + '] = vk::DescriptorSetLayoutBinding()'
-                                '\n\t\t\t.setBinding            (' + str(b['indx']) + ')'
-                                '\n\t\t\t.setDescriptorType     (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')'
-                                '\n\t\t\t.setDescriptorCount    (1)'
-                                '\n\t\t\t.setStageFlags         (vk::ShaderStageFlagBits::eCompute)'
-                                '\n\t\t\t.setPImmutableSamplers (nullptr)'
-                            '\n\t\t;'
-                        ) for i, b in enumerate(elms)) +
-                        '\n'
-                        '\n\t\tauto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()'
-                            '\n\t\t\t.setBindingCount (' + str(len(elms)) + ')'
-                            '\n\t\t\t.setPBindings    (bindingLayouts)'
-                        '\n\t\t;'
-                        '\n\t\t//Create the descriptor set layout'
-                        '\n\t\tswitch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &' + fname + '::layout.descriptorSetLayout)){ vkDefaultCases; }'
-                    '\n\t}'
-                    '\n'
-                    '\n'
-                    '\n'
-                    '\n'
-                    '\n\t{ //Create pipeline layout'
-                        '\n\t\tuint64 fileLength = 0;'
-                        '\n\t\tuint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "' + shname + '.spv").begin());' #TODO EVALUATE SHADER PATH AT RUNTIME
-                        '\n\t\t' + fname + '::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);'
-                        '\n'
-                        '\n\t\t' + fname + '::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
-                            '\n\t\t\t.setStage  (vk::ShaderStageFlagBits::eCompute)'
-                            '\n\t\t\t.setModule (' + fname + '::layout.shaderModule)'
-                            '\n\t\t\t.setPName  ("main")'
-                        '\n\t\t;'
-                        '\n'
-                        '\n\t\tauto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()'
-                            '\n\t\t\t.setSetLayoutCount (1)'
-                            '\n\t\t\t.setPSetLayouts    (&' + fname + '::layout.descriptorSetLayout)'
-                        '\n\t\t;'
-                        '\n\t\tswitch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &' + fname + '::layout.pipelineLayout)){ vkDefaultCases; }'
-                    '\n\t}'
-                '\n}',
+            fc.write(indent(
+                f"\n\n\nvoid { fname }::createDescriptorSets(){{"
+                f"\n    vk::DescriptorPoolSize sizes[2] = {{"
+                f"\n        "   f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(storageNum) })," +(
+                f"\n        " + f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount({ str(uniformNum) })" if uniformNum > 0 else '{}'
+                f"\n    }};"
+                f"\n    auto poolInfo = vk::DescriptorPoolCreateInfo()"
+                f"\n        .setFlags         (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)"
+                f"\n        .setMaxSets       (1)"
+                f"\n        .setPoolSizeCount ({ str(2 if uniformNum > 0 else 1) })"
+                f"\n        .setPPoolSizes    (sizes)"
+                f"\n    ;"
+                f"\n    switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){{"
+                f"\n        case vk::Result::eErrorFragmentationEXT:  dbg::logError(\"Fragmentation error\");  break;"
+                f"\n        vkDefaultCases;"
+                f"\n    }}"
+                f"\n\n\n"
+                f"\n    auto allocateSetInfo = vk::DescriptorSetAllocateInfo()"
+                f"\n        .setDescriptorPool     (descriptorPool)"
+                f"\n        .setDescriptorSetCount (1)"
+                f"\n        .setPSetLayouts        (&{ fname }::layout.descriptorSetLayout)"
+                f"\n    ;"
+                f"\n    switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){{"
+                f"\n        case vk::Result::eErrorFragmentedPool:    dbg::logError(\"Fragmented pool\");      break;"
+                f"\n        case vk::Result::eErrorOutOfPoolMemory:   dbg::logError(\"Out of pool memory\");   break;"
+                f"\n        vkDefaultCases;"
+                f"\n    }}"
+                f"\n\n\n"
+                f"\n    vk::WriteDescriptorSet writeSets[{ str(len(elms)) }];" +
+                '\n'.join((
+                    f"\n    auto bufferInfo{ str(i) } = vk::DescriptorBufferInfo()"
+                    f"\n        .setBuffer ({ b['name'] }.vdata.cell->csc.buffer)"
+                    f"\n        .setOffset ({ b['name'] }.vdata.cell->localOffset)"
+                    f"\n        .setRange  ({ b['name'] }.vdata.cell->cellSize)"
+                    f"\n    ;"
+                    f"\n    writeSets[{ str(i) }] = vk::WriteDescriptorSet()"
+                    f"\n        .setDstSet          (descriptorSet)"
+                    f"\n        .setDstBinding      ({ str(b['indx']) })"
+                    f"\n        .setDescriptorCount (1)"
+                    f"\n        .setDescriptorType  (vk::DescriptorType::{ 'eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer' })"
+                    f"\n        .setPBufferInfo     (&bufferInfo{ str(i) })"
+                    f"\n    ;"
+                ) for i, b in enumerate(elms)) +
+                f"\n\tcore::dvc::graphics.ld.updateDescriptorSets({ str(len(elms)) }, writeSets, 0, nullptr);"
+                f"\n}}",
+            '\t'))
+
+
+
+
+            fc.write(indent('\n' * 8 +
+                f"\nvoid { fname }::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{"
+                f"\n    auto allocateCbInfo = vk::CommandBufferAllocateInfo()"
+                f"\n        .setCommandPool        (pRenderCore.commandPool)"
+                f"\n        .setLevel              (vk::CommandBufferLevel::ePrimary)"
+                f"\n        .setCommandBufferCount (1)"
+                f"\n    ;"
+                f"\n    commandBuffers.resize(1);"
+                f"\n    switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){{ vkDefaultCases; }}"
+                f"\n"
+                f"\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);"
+                f"\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}"
+                f"\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[{ fname }::pipelineIndex]);"
+                f"\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, { fname }::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);"
+                f"\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);"
+                f"\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}"
+                #TODO WRITE ALL COMMAND BUFFERS AT ONCE
+                #TODO or use multiple descriptor sets for multiple objects, but in the same command buffer
+                f"\n}}",
+            '\t'))
+
+
+
+
+            fc.write(indent('\n' * 8 +
+                f"\nvoid { fname }::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{"
+                f"\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);"
+                f"\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}"
+                f"\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[{ fname }::pipelineIndex]);"
+                f"\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, { fname }::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);"
+                f"\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);"
+                f"\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}"
+                f"\n}}",
+            '\t'))
+
+
+
+
+            fc.write(indent('\n' * 8 +
+                f"\nvoid { fname }::destroy(){{"
+                f"\n    //TODO"
+                f"\n}}",
+            '\t'))
+
+
+
+
+            fc.write(indent('\n' * 8 +
+                f"\nShader_b::Layout ' + fname + '::layout;"
+                f"\nuint32 ' + fname + '::pipelineIndex = core::shaders::pipelineNum++;"
+                f"\nLnxAutoInit(LNX_H_' + fname.upper() + '){{"
+                f"\n    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);"
+                f"\n    core::shaders::pipelineLayouts[' + fname + '::pipelineIndex] = &' + fname + '::layout;"
+                f"\n    {{ //Create descriptor set layout"
+                f"\n        vk::DescriptorSetLayoutBinding bindingLayouts[' + str(len(elms)) + '];" +
+                f"\n".join((
+                    f"\n        bindingLayouts[' + str(i) + '] = vk::DescriptorSetLayoutBinding()"
+                    f"\n            .setBinding            (' + str(b['indx']) + ')"
+                    f"\n            .setDescriptorType     (vk::DescriptorType::' + ('eUniformBuffer' if b['type'] == 'uniform' else 'eStorageBuffer') + ')"
+                    f"\n            .setDescriptorCount    (1)"
+                    f"\n            .setStageFlags         (vk::ShaderStageFlagBits::eCompute)"
+                    f"\n            .setPImmutableSamplers (nullptr)"
+                    f"\n        ;"
+                ) for i, b in enumerate(elms)) +
+                f"\n"
+                f"\n        auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()"
+                f"\n            .setBindingCount (' + str(len(elms)) + ')"
+                f"\n            .setPBindings    (bindingLayouts)"
+                f"\n        ;"
+                f"\n        //Create the descriptor set layout"
+                f"\n        switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &{ fname }::layout.descriptorSetLayout)){{ vkDefaultCases; }}"
+                f"\n    }}"
+                f"\n"
+                f"\n"
+                f"\n"
+                f"\n"
+                f"\n    {{ //Create pipeline layout"
+                f"\n        uint64 fileLength = 0;"
+                f"\n        uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + \"{ shname }.spv\").begin());" #TODO EVALUATE SHADER PATH AT RUNTIME
+                f"\n        { fname }::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);"
+                f"\n"
+                f"\n        { fname }::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()"
+                f"\n            .setStage  (vk::ShaderStageFlagBits::eCompute)"
+                f"\n            .setModule ({ fname }::layout.shaderModule)"
+                f"\n            .setPName  (\"main\")"
+                f"\n        ;"
+                f"\n"
+                f"\n        auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()"
+                f"\n            .setSetLayoutCount (1)"
+                f"\n            .setPSetLayouts    (&{ fname }::layout.descriptorSetLayout)"
+                f"\n        ;"
+                f"\n        switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &{ fname }::layout.pipelineLayout)){{ vkDefaultCases; }}"
+                f"\n    }}"
+                f"\n}}'"
             '\t'))
 
             #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
