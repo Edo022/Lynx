@@ -10,30 +10,30 @@
 
 
 namespace lnx::shd{
-	struct Volume : public Shader_b {
-		static Shader_b::Layout layout;
-		static uint32 pipelineIndex;
+    struct Volume : public Shader_b {
+        static Shader_b::Layout layout;
+        static uint32 pipelineIndex;
 
 
 		struct outcol_t : public ShaderElm_b<eStorage> {
 			outcol_t() {
-				ShaderElm_b::bind = 0;
+			    ShaderElm_b::bind = 0;
 			}
 		} outcol;
 
 
 		struct wsize_t : public ShaderElm_b<eStorage> {
 			wsize_t() {
-				ShaderElm_b::bind = 1;
+			    ShaderElm_b::bind = 1;
 			}
 		} wsize;
 
 
 		struct _data_t : public ShaderElm_b<eUniform> {
 			_data_t() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b::data.realloc(256);
-				ShaderElm_b::bind = 2;
+			    ShaderElm_b::vdata.realloc(256);
+			    ShaderElm_b:: data.realloc(256);
+			    ShaderElm_b::bind = 2;
 			}
 			alwaysInline f32v3& pos() { return *(f32v3*)ShaderElm_b::data; }
 			alwaysInline f32& r() { return *(f32*)(ShaderElm_b::data + 16); }

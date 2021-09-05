@@ -1,6 +1,6 @@
 import re, sys, os, subprocess, argparse as ap
 import GlslToCpp
-#/home/Edo/.local/bin/pyflakes GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
+#python3.9 -m py_compile GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
 
 #TODO create Lynx/Build, Lynx/Build/Linux and Lynx/Build/Windows directories
 
