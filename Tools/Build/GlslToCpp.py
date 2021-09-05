@@ -39,54 +39,29 @@ def parseElms(elms:str, iExt:bool) :
     }
 
 
-    elmsr = re.findall(                                                 #Search for members
-        r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) '     #Get type name
-        r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                         #Get variable name
-        r'(?P<iArr>\[(?P<aLen>.+?)\])?'                                 #Check if it's an array and get its length
-        r';',                                                           #Anchor to instruction end
-    elms)
-
-
     offset : int = 0
-    if elmsr is not None:
-        for elm in elmsr:
-            ttype:str = typeName[elmsr['type']]                       #Translate type
-            align:int = typeSize[elmsr['type']]                       #Get alignment
-            maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment #TODO check if this actually works
+    for elmr in re.finditer(                                    #For each binding member
+        r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' #Get type name
+        r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     #Get member name
+        r'(?P<iArr>\[(?P<aLen>.+?)?\])?'                            #Check if it's an array and get its length
+        r';',                                                       #Anchor to instruction end
+    elms):                                                      #
+        elm = elmr.groupdict()                                      #Get result as dictionary
+        ttype:str = typeName[elmr['type']]                          #Translate type
+        align:int = typeSize[elmr['type']]                          #Get type alignment
+        maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment #TODO check if this actually works
 
-            if not iExt:                                                #If the binding is not external
-                ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
-                offset = roundUp(offset, align)                             #Fix element offset
-                ret += (elm['name'] + '() {'                            #Create getter from variable name
-                    'return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + ';'
-                '}')                                                        #
-                offset += align                                             #Calculate raw offset of the next element #TODO check if this actually works
-            else:                                                       #If the binding is external
-                ext = dict{'type' : ttype, 'varname': elm['name']}    #Save binding type and name. They will be used when writing create()
-                break                                                       #Exit loop #FIXME parse other elements too
+        if not iExt:                                                #If the binding is not external
+            ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
+            offset = roundUp(offset, align)                             #Recalculate element offset
+            ret += (elm['name'] + '() { '                               #Create getter from variable name
+                'return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + ';'
+            ' }')                                                       #
+            offset += align                                             #Calculate raw offset of the next element #TODO check if this actually works
+        else:                                                       #If the binding is external
+            ext = {'type' : ttype, 'varname': elm['name']}              #Save binding type and name. They will be used when writing create() #TODO rename as name
+            break                                                       #Exit loop #FIXME parse other elements too
 
-
-
-
-    # while len(elms) > 0:
-    #     if iext_: break                                             #Break if the binding is external and the trailing comment has been written
-    #     if r != None:                                               #If a member was found
-    #         ttype:str = typeC[r.group('type')]                          #Translate its type
-    #         align:int = typeSize[r.group('type')]                       #Get member alignment
-    #         maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment
-
-    #         if not iext:                                                #If the binding is not external
-    #             ret += '\nalwaysInline ' + ttype + '& '                     #Write translated type
-    #             offset = roundUp(offset, align)                             #Fix element offset and    #Create getter from variable name
-    #             ret += r.group('name') + '() { return *(' + ttype + '*)' + ('(ShaderElm_b::data + ' + str(offset) + ')' if offset != 0 else 'ShaderElm_b::data') + '; }'
-    #             offset += align                                             #Calculate raw offset of the next element
-    #         else:                                                       #If the binding is external
-    #             iext_ = True                                                #Set external binding variable
-    #             ext = dict({'type' : ttype, 'varname': r.group('name')})              #Save binding type and name. They will be used when writing create()
-    #         elms = elms[len(r.group(0)):]                                     #Pop parsed string from source string
-    #         continue                                                    #Keep parsing
-    #     else:                                                       #Blindly copy anything else
-    #         elms = elms[1:]                                                   #umu umu
 
 
 
@@ -104,7 +79,8 @@ def parseElms(elms:str, iExt:bool) :
 
 
 
-
+#FIXME make this readable
+#FIXME move layout parsing to parseLayout
 #Translates a single layout
 def parseLayout(name:str, iext:bool, type:str, indx:int, elms:str, space:bool) :
     t = parseElms(elms, iext)

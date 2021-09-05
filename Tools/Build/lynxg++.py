@@ -140,7 +140,7 @@ while i < len(cmd):
     if r != None:
         cmd[i] += ';' + r.group(1) + '.spv'
 
-    r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i])
+    r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i]) #TODO actually use the output name
     if r != None:
         cmdsh += [[r.group(1), r.group(2)]]
         del(cmd[i])
