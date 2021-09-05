@@ -41,26 +41,26 @@ def parseElms(elms:str, iExt:bool) :
 
     offset : int = 0
     for elmr in re.finditer(                                    #For each binding member
-        r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' #Get type name
-        r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     #Get member name
-        r'(?P<iArr>\[(?P<aLen>.+?)?\])?'                            #Check if it's an array and get its length
-        r';',                                                       #Anchor to instruction end
+        r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' # Get type name
+        r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     # Get member name
+        r'(?P<iArr>\[(?P<aLen>.+?)?\])?'                            # Check if it's an array and get its length
+        r';',                                                       # Anchor to instruction end
     elms):                                                      #
-        elm = elmr.groupdict()                                      #Get result as dictionary
-        ttype:str = typeName[elmr['type']]                          #Translate type
-        align:int = typeSize[elmr['type']]                          #Get type alignment
-        maxAlign = max(maxAlign, align)                             #Recalculate maximum alignment #TODO check if this actually works
+        elm = elmr.groupdict()                                      # Get result as dictionary
+        ttype:str = typeName[elmr['type']]                          # Translate type
+        align:int = typeSize[elmr['type']]                          # Get type alignment
+        maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
-        if not iExt:                                                #If the binding is not external
-            ret += f"\nalwaysInline { ttype }& "                     #Write translated type
-            offset = roundUp(offset, align)                             #Recalculate element offset
-            ret += (elm['name'] + '() { '                               #Create getter from variable name
+        if not iExt:                                                # If the binding is not external
+            ret += f"\nalwaysInline { ttype }& "                        # Write translated type
+            offset = roundUp(offset, align)                             # Recalculate element offset
+            ret += (elm['name'] + '() { '                               # Create getter from variable name
                 f"return *({ ttype }*){ f'(ShaderElm_b::data + { str(offset) })' if offset != 0 else f'ShaderElm_b::data' };"
             ' }')                                                       #
-            offset += align                                             #Calculate raw offset of the next element #TODO check if this actually works
-        else:                                                       #If the binding is external
-            ext = {'type' : ttype, 'varname': elm['name']}              #Save binding type and name. They will be used when writing create() #TODO rename as name
-            break                                                       #Exit loop #FIXME parse other elements too
+            offset += align                                             # Calculate raw offset of the next element #TODO check if this actually works
+        else:                                                       # If the binding is external
+            ext = {'type' : ttype, 'varname': elm['name']}              # Save binding type and name. They will be used when writing create()
+            break                                                       # Exit loop #FIXME parse other elements too
 
 
 
@@ -79,28 +79,22 @@ def parseElms(elms:str, iExt:bool) :
 
 
 
-#FIXME make this readable
-#FIXME move layout parsing to parseLayout
+
 #Translates a single layout
 def parseLayout(name:str, iext:bool, type:str, indx:int, elms:str, space:bool) :
     t = parseElms(elms, iext)
     return dict({
-        'decl' : (('\n\n' if space else '') +                                   #Fix spacing
+        'decl' : (('\n\n' if space else '') +                                   # Fix spacing #Struct declaration {
             f"\nstruct { name }_t : public ShaderElm_b<{ 'eStorage' if type == 'buffer' else 'eUniform' }> {{" +
-            indent(                                                             # ^ Struct declaration {
-                f"\n{ name }_t() {{" + (                                          #Constructor {
-                    f"\n    ShaderElm_b::vdata.realloc({ str(t['size']) });"       #Allocate gpu data
-                    f"\n    ShaderElm_b:: data.realloc({ str(t['size']) });"         #Allocate local data copy
-                    if not iext else ''                                                 #But only if the binding is not ext
-                    ) +                                                                 #
-                    f"\n    ShaderElm_b::bind = { str(indx) };"                     #Set binding index
-                '\n}' +                                                             # }
-                t['func'],                                                          #Member access functions(){ ... }
-            '\t') +                                                                 #
-            f"\n}} { name };"                                                 # } MemberDeclaration;
-        ),
-
-        'ext': t['ext']                                                         #Forward external binding type and name
+            f"\n    { name }_t() {{" + (                                            # Constructor {
+            f"\n        ShaderElm_b::vdata.realloc({ str(t['size']) });"                # Allocate gpu data
+            f"\n        ShaderElm_b:: data.realloc({ str(t['size']) });"                # Allocate local data copy
+            ''          if not iext else '') +                                          # But only if the binding is not ext
+            f"\n        ShaderElm_b::bind = { str(indx) };"                             # Set binding index
+            f"\n    }}" + t['func'] +                                               # } Member access functions
+            f"\n}} { name };"                                                   # } MemberDeclaration;
+        ),                                                                      #
+        'ext': t['ext']                                                         # Forward external binding type and name
     })
 
 
@@ -191,20 +185,23 @@ def parseShader(pathr:str, ptfm:str):
             storageNum = 0; uniformNum = 0                          #Number of storage and uniform bindings in the shader
             for l in layouts:                                       #For each layout
                 _iext = l['iext'] != None and len(l['iext']) > 0        #Check if it's external        #BUG CHECK LENGTH IN MEMBER PARSING TOO
-                decl = parseLayout(                             #Translate declaration
+                decl = parseLayout(                                     #Translate declaration
                     l['name'], _iext, l['type'], l['indx'],                 #
                     elms = l['elms'].strip(),                               #Raw members data
-                    space   = l != 0                                        #Code spacing
+                    space = l != 0                                          #Code spacing
                 )                                                           #
                 fh.write(indent(decl['decl'], '\t\t'))                  #Write members to file
-                if _iext:                                               #If it's external, save its data
-                    exts.insert(len(exts), {
-                        'vartype' : decl['ext']['type'],
-                        'varname' : decl['ext']['varname'],
-                        'bndtype' : ('eStorage' if l['type'] == 'buffer' else 'eUniform'),
-                        'bndname' : l['name']
-                    })
-                elms.insert(len(elms), { 'type' : l['type'], 'name' : l['name'], 'indx' : l['indx']})
+                if _iext: exts += [{                                    #If it's external, save its data
+                    'vartype' : decl['ext']['type'],
+                    'varname' : decl['ext']['varname'],
+                    'bndtype' : 'eStorage' if l['type'] == 'buffer' else 'eUniform',
+                    'bndname' : l['name']
+                }]
+                elms += [{
+                    'type' : l['type'],
+                    'name' : l['name'],
+                    'indx' : l['indx']
+                }]
 
                 if l['type'] == 'uniform': uniformNum += 1
                 else: storageNum += 1
@@ -400,12 +397,10 @@ def parseShader(pathr:str, ptfm:str):
         else:
             print('No layout found. A shader must define at least one layout')
 
-        fh.write('\n\t};\n}');                              # } //Namespace
+        fh.write('\n    };\n}');                              # } //Namespace
         fh.write('//TODO remove local data in external bindings') #TODO
         fc.write('\n}');                              # } //Namespace
     #TODO ADD STRUCTURE PARSING AND TRANSLATION
     #TODO STRUCTURES HAVE A MINIMUM ALIGNMENT OF 16
-
-    #TODO ADD #define PARSING
 
     return 0
