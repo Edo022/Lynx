@@ -4,7 +4,7 @@
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Render/Render.hpp"
-#include "Lynx/shaders/Line2.hpp"
+#include "Lynx/shaders/Line2.gsi.hpp"
 #include "Lynx/Core/IncludeVulkan.hpp"
 
 
