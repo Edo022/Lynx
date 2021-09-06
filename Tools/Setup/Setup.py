@@ -38,16 +38,19 @@ os.path.dirname(os.getcwd())
 
 
 
+
 if sys.stdin.read(1).lower() == 'y':
     aePath = os.path.dirname(os.readlink('/proc/self/exe'))
     rePath = os.path.relpath(aePath + '/../..', apPath)
 
 
     # Create missing directories
-    if not os.path.exists(apPath + "/.engine"):
-        os.mkdir(apPath + "/.engine")
-    if not os.path.exists(apPath + "/.vscode"):
-        os.mkdir(apPath + "/.vscode")
+    if not os.path.exists(apPath + "/.engine"):               os.mkdir(apPath + "/.engine")
+    if not os.path.exists(apPath + "/.engine/Build"):         os.mkdir(apPath + "/.engine/Build")
+    if not os.path.exists(apPath + "/.engine/Build/Linux"):   os.mkdir(apPath + "/.engine/Build/Linux")
+    if not os.path.exists(apPath + "/.engine/Build/Windows"): os.mkdir(apPath + "/.engine/Build/Windows")
+    if not os.path.exists(apPath + "/.vscode"):               os.mkdir(apPath + "/.vscode")
+
 
 
 
@@ -149,8 +152,10 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n                    "-Wundef",'
            f'\n'
            f'\n                    "-c", "-o",'
-           f'\n                "-d:", "{ rePath }/Build/Linux/LynxDebug",'
-           f'\n                "-r:", "{ rePath }/Build/Linux/LynxRelease",'
+           f'\n                "-ld:", "./.engine/Build/Linux/LynxDebug",'
+           f'\n                "-lr:", "./.engine/Build/Linux/LynxRelease",'
+           f'\n                "-wd:", "./.engine/Build/Windows/LynxDebug",'
+           f'\n                "-wr:", "./.engine/Build/Windows/LynxRelease",'
            f'\n            ],'
            f'\n            "problemMatcher": [ "$gcc" ],'
            f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'

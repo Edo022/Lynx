@@ -130,9 +130,9 @@ for i in range(0, len(cmd)):
     cmd[i] = cmd[i][5:]
 
 
-#Set complete names for platform and type
-_ptfm = 'Linux' if args.m[0] == 'l' else 'Windows'
-_type = 'Debug' if args.m[1] == 'd' else 'Release'
+#Set complete names for platform and configuration
+_pf = 'Linux' if args.m[0] == 'l' else 'Windows'
+_cf = 'Debug' if args.m[1] == 'd' else 'Release'
 
 
 
@@ -168,7 +168,7 @@ if args.e is False: cmd += [                                    #When building u
     '-DenginePath="' + rePath + '"',                                #Define engine path function #FIXME
     rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
     rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
-    rePath + '/Build/' + _ptfm + '/Lynx' + _type                    #Add engine binaries
+    './.engine/Build/' + _pf + '/Lynx' + _cf                    #Add engine binaries
 ]
 
 if not args.e: cmd += [                                         #When building user application
@@ -208,7 +208,7 @@ if len(cmdsh) > 0:
         print('\n')
         runCmd(['glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'])
         runCmd(['spirv-val', files[0] + '.spv'])
-        r = GlslToCpp.parseShader(files[0] + '.comp', _ptfm)
+        r = GlslToCpp.parseShader(files[0] + '.comp', _pf)
         if r != 0: sys.exit(r)
     print('\n')
 
