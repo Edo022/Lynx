@@ -1,6 +1,6 @@
 import re, sys, os, subprocess, argparse as ap
 import GlslToCpp
-#python3.9 -m py_compile lynxg++.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
+#python3.9 -m py_compile lynxg++.py && python3.9 -m py_compile GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
 
 #TODO check if the user build actually has arguments
 
@@ -11,7 +11,7 @@ p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -m=<m
 p.add_argument('-h', '--help',      action = 'store_true', dest = 'h')
 p.add_argument('-m', '--mode',      action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'])
 p.add_argument('-e', '--engine',    action = 'store_true', dest = 'e')
-p.add_argument('-v', '--verbosity', action = 'store',      dest = 'v', choices = [0, 1, 2, 3], default = 1, type = int)
+p.add_argument('-v', '--verbosity', action = 'store',      dest = 'v', choices = [0, 1, 2, 3], default = 2, type = int)
 
 p.add_argument('-a:', '--always:',  action = 'extend', nargs = '+', default = [], dest = 'a')
 p.add_argument('-d:', '--debug:',   action = 'extend', nargs = '+', default = [], dest = 'd')
@@ -162,7 +162,8 @@ while i < len(cmd):
 
 #Build G++ command
 
-cmd = ['g++', '-std=c++20', '-pthread', '-I' + rePath] + cmd    #Default g++ call, C++20, pthread, include project root
+cmd = ['g++', '-pthread', '-I' + rePath] + cmd                  #Default g++ call, , pthread, include project root
+cmd += ['-std=c++20', '-m64', '-L/usr/lib64', '-L/lib64']       #Use C++20, build for 64bit environments, prefer 64bit libraries
 cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
 cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
 if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
