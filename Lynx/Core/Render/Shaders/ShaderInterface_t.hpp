@@ -27,7 +27,7 @@ namespace lnx::shd{
 
 
 
-	struct Shader_b {
+	struct ShaderInterface_b {
 		vk::DescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
 		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 		lnx::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
@@ -48,7 +48,7 @@ namespace lnx::shd{
 		};
 
 
-		~Shader_b(){
+		~ShaderInterface_b(){
 			//Clear descriptors sets, descriptor pool and descriptor layout
 			core::dvc::graphics.ld.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
 			core::dvc::graphics.ld.destroyDescriptorPool(descriptorPool, nullptr);

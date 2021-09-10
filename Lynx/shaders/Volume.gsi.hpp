@@ -5,13 +5,13 @@
 //####################################################################################
 
 #pragma once
-#include "Lynx/Core/Render/Shaders/Shader_t.hpp"
+#include "Lynx/Core/Render/Shaders/ShaderInterface_t.hpp"
 
 
 
 namespace lnx::shd{
-    struct Volume : public Shader_b {
-        static Shader_b::Layout layout;
+    struct Volume : public ShaderInterface_b {
+        static ShaderInterface_b::Layout layout;
         static uint32 pipelineIndex;
 
 
