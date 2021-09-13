@@ -1,6 +1,7 @@
 #include "Lynx/Threads/ThreadPool.hpp"
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Types/Containers/RtArray.h"
 #include <cstdlib>
 
 
