@@ -37,10 +37,10 @@
     #include "Lynx/Types/Object/3D/Volume.cpp"
 
     //TODO AUTOMATIZE
-    #include "Lynx/shaders/Line2.cpp"
-    #include "Lynx/shaders/Border2.cpp"
-    #include "Lynx/shaders/FloatToIntBuffer.cpp"
-    #include "Lynx/shaders/3DTest.cpp"
+    #include "Lynx/shaders/Line2.gsi.cpp"
+    #include "Lynx/shaders/Border2.gsi.cpp"
+    #include "Lynx/shaders/FloatToIntBuffer.gsi.cpp"
+    #include "Lynx/shaders/Volume.gsi.cpp"
 
 
     #include "Lynx/Core/Render/Buffers.cpp"
