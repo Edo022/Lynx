@@ -74,6 +74,11 @@ Fedora
 `dnf install vulkan-devel glfw-devel libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel freeglut-devel libasan libubsan`
 //TODO
 
+Arch
+`pacman -S gcc glslang`
+`pacman -S vulkan-devel glfw-x11 libx11 libxcursor libxrandr libxinerama libxi freeglut gcc-libs`
+
+&nbsp;
 &nbsp;
 
 &nbsp;
