@@ -171,7 +171,7 @@ namespace lnx::shd{
 
 
 
-	Shader_b::Layout Line2::layout;
+	ShaderInterface_b::Layout Line2::layout;
 	uint32 Line2::pipelineIndex = core::shaders::pipelineNum++;
 	LnxAutoInit(LNX_H_LINE2){
 	    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);

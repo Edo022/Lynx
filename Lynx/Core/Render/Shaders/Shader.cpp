@@ -14,7 +14,7 @@
 namespace lnx::core::shaders{
 	alignCache String shaderPath;
 	alignCache uint32 pipelineNum = 0;
-	alignCache RtArray<shd::Shader_b::Layout*> pipelineLayouts;
+	alignCache RtArray<shd::ShaderInterface_b::Layout*> pipelineLayouts;
 
 
 	LnxAutoInit(LNX_H_SHADER){
