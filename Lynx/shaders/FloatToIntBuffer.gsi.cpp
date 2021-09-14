@@ -171,7 +171,7 @@ namespace lnx::shd{
 
 
 
-	Shader_b::Layout FloatToIntBuffer::layout;
+	ShaderInterface_b::Layout FloatToIntBuffer::layout;
 	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::pipelineNum++;
 	LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
 	    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);

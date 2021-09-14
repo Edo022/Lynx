@@ -157,7 +157,7 @@ namespace lnx::shd{
 
 
 
-	Shader_b::Layout Volume::layout;
+	ShaderInterface_b::Layout Volume::layout;
 	uint32 Volume::pipelineIndex = core::shaders::pipelineNum++;
 	LnxAutoInit(LNX_H_VOLUME){
 	    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
