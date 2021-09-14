@@ -4,7 +4,9 @@
 #include "Lynx/macros.hpp"
 #include <string>
 #include <cstring>
+#include <unistd.h> //TODO write file test for windows
 //TODO LOAD IMPLICIT LAYER
+//TODO allow user to link the local library instead of the one on their system
 
 
 
@@ -13,9 +15,33 @@ LnxAutoInit(LNX_NH_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 
-	// putenv("LIBRARY_PATH=" enginePath "/Deps/Linux/Vulkan-1.2.170.0/x86_64/lib");
-	//TODO^ allow user to link the local library instead of the one on their system //FIXME^ LD PATH NOT WORKING
-	_dbg(putenv("VK_LAYER_PATH=" enginePath "/Deps/Linux/Vulkan/explicit_layer.d")); //!explicit_layer.d is copy pasted from the SDK
-	//FIXME REMOVE. USE USER LAYERS
+
+	char* layerPath = (char*)malloc(1024);
+	sprintf(layerPath, "VK_LAYER_PATH=" enginePath "/Deps/Linux/Vulkan/explicit_layer.d");
+	_dbg(putenv(layerPath)); //!explicit_layer.d is copy pasted from the SDK
+
+
+	//TODO move to path config file or make it overwrite this env variable
+	const char* paths[4] = { "/usr/local/etc/vulkan/icd.d", "/usr/local/share/vulkan/icd.d", "/etc/vulkan/icd.d", "/usr/share/vulkan/icd.d" };
+	const char* icds [3] = { "intel_icd", "radeon_icd", "lvp_icd" };
+	const char* ptfs [1] = { "x86_64" };
+	char* icdFilenames = (char*)malloc(4096);
+	for(int i = 0; i < 4; ++i){
+		for(int j = 0; j < 3; ++j){
+			for(int k = 0; k < 1; ++k){
+				strcat(icdFilenames, (i | j | k) ? ":" : "VK_ICD_FILENAMES=");
+
+				char icdFilename[1024];
+				sprintf(icdFilename, "%s/%s.%s.json", paths[i], icds[j], ptfs[k]);
+				if(access(icdFilename, F_OK) == 0){
+					strcat(icdFilenames, icdFilename);
+				}
+			}
+		}
+	}
+	putenv(icdFilenames);
+	printf(icdFilenames);
+
+
 	#pragma GCC diagnostic pop
 }
