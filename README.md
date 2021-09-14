@@ -49,8 +49,8 @@ We do not provide any support for developement on Windows or Mac.
 | Python       | 3.9       | Yes //TODO remove python requirement. Compile an executable file for every script                 |
 | g++          | 11.1.1    | Yes                 |
 | Vulkan SDK   | 1.2.170.0 | Yes //TODO remove   |
-| glslang      | 10:11.0.0 | Yes                 | 
-| spirv-tools  | 2020.7    | Yes                 | 
+| glslang      | 10:11.0.0 | Yes                 |
+| spirv-tools  | 2020.7    | Yes                 |
 | Mingw        | 8.0.0     | Windows builds only |
 | **Lynx SDK** | 1.0.0     | Yes                 |
 
@@ -102,7 +102,7 @@ Any modification to a version will affect all the projects linked to it.
 
 # Build applications
 
-Applications are built using the `<path_to_sdk>/Tools/Build/lynxg++` executable, 
+Applications are built using the `<path_to_sdk>/Tools/Build/lynxg++` executable,
 which is a g++ wrapper that parses the provided arguments, adds everything the engine needs and forwards them to g++.
 
 lynxg++ allows 2 build configurations:

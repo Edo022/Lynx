@@ -87,7 +87,7 @@ namespace lnx::dbg{
 
 
 
-	/**
+	/** //FIXME use gray or white color for file links
 	 * @brief Prints a message to the standard output, surrounding it with ---- separators and coloring it based on its severity
 	 *     Errors throw exceptions when in debug mode
 	 *     A maximum of LNX_CNF_DBG_MAX_BACKTRACE_DEPTH lines of backtrace is printed before the message

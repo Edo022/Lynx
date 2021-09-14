@@ -5,46 +5,46 @@
 //####################################################################################
 
 #pragma once
-#include "Lynx/Core/Render/Shaders/Shader_t.hpp"
+#include "Lynx/Core/Render/Shaders/ShaderInterface_t.hpp"
 
 
 
 namespace lnx::shd{
-	struct Border2 : public Shader_b {
-		static Shader_b::Layout layout;
-		static uint32 pipelineIndex;
+    struct Border2 : public ShaderInterface_b {
+        static ShaderInterface_b::Layout layout;
+        static uint32 pipelineIndex;
 
 
 		struct outcol_t : public ShaderElm_b<eStorage> {
-			outcol_t() {
-				ShaderElm_b::bind = 0;
-			}
+		    outcol_t() {
+		        ShaderElm_b::bind = 0;
+		    }
 		} outcol;
 
 
 		struct wsize_t : public ShaderElm_b<eStorage> {
-			wsize_t() {
-				ShaderElm_b::bind = 1;
-			}
+		    wsize_t() {
+		        ShaderElm_b::bind = 1;
+		    }
 		} wsize;
 
 
 		struct zbuff_t : public ShaderElm_b<eStorage> {
-			zbuff_t() {
-				ShaderElm_b::bind = 2;
-			}
+		    zbuff_t() {
+		        ShaderElm_b::bind = 2;
+		    }
 		} zbuff;
 
 
 		struct _data_t : public ShaderElm_b<eUniform> {
-			_data_t() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b::data.realloc(256);
-				ShaderElm_b::bind = 3;
-			}
-			alwaysInline f32v2& ffp() { return *(f32v2*)ShaderElm_b::data; }
-			alwaysInline f32v2& fsp() { return *(f32v2*)(ShaderElm_b::data + 8); }
-			alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 16); }
+		    _data_t() {
+		        ShaderElm_b::vdata.realloc(256);
+		        ShaderElm_b:: data.realloc(256);
+		        ShaderElm_b::bind = 3;
+		    }
+		alwaysInline f32v2& ffp() { return *(f32v2*)ShaderElm_b::data; }
+		alwaysInline f32v2& fsp() { return *(f32v2*)(ShaderElm_b::data + 8); }
+		alwaysInline u32& ID() { return *(u32*)(ShaderElm_b::data + 16); }
 		} _data;
 
 
@@ -53,5 +53,5 @@ namespace lnx::shd{
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
-	};
+    };
 }//TODO remove local data in external bindings

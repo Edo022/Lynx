@@ -2,10 +2,11 @@ import os, sys
 import UpdateBuild
 
 #TODO make this script an executable
+#TODO remove extra argument
 
 def run(x):
-	with open('./.engine/platform', 'w') as bpf:
-		bpf.write(x)
+	with open('./.engine/.pf', 'w') as f:
+		f.write(x)
 
 	thisDir = os.path.abspath('.')
 	UpdateBuild.run(thisDir)

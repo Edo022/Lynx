@@ -5,41 +5,41 @@
 //####################################################################################
 
 #pragma once
-#include "Lynx/Core/Render/Shaders/Shader_t.hpp"
+#include "Lynx/Core/Render/Shaders/ShaderInterface_t.hpp"
 
 
 
 namespace lnx::shd{
-	struct FloatToIntBuffer : public Shader_b {
-		static Shader_b::Layout layout;
-		static uint32 pipelineIndex;
+    struct FloatToIntBuffer : public ShaderInterface_b {
+        static ShaderInterface_b::Layout layout;
+        static uint32 pipelineIndex;
 
 
 		struct src_t : public ShaderElm_b<eStorage> {
-			src_t() {
-				ShaderElm_b::bind = 0;
-			}
+		    src_t() {
+		        ShaderElm_b::bind = 0;
+		    }
 		} src;
 
 
 		struct dst_t : public ShaderElm_b<eStorage> {
-			dst_t() {
-				ShaderElm_b::bind = 1;
-			}
+		    dst_t() {
+		        ShaderElm_b::bind = 1;
+		    }
 		} dst;
 
 
 		struct wsize_t : public ShaderElm_b<eStorage> {
-			wsize_t() {
-				ShaderElm_b::bind = 2;
-			}
+		    wsize_t() {
+		        ShaderElm_b::bind = 2;
+		    }
 		} wsize;
 
 
 		struct zbuff_t : public ShaderElm_b<eStorage> {
-			zbuff_t() {
-				ShaderElm_b::bind = 3;
-			}
+		    zbuff_t() {
+		        ShaderElm_b::bind = 3;
+		    }
 		} zbuff;
 
 
@@ -48,5 +48,5 @@ namespace lnx::shd{
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
-	};
+    };
 }//TODO remove local data in external bindings
