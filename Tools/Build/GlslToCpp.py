@@ -3,15 +3,16 @@ from textwrap import indent
 from math import ceil
 #! Shaders are validated in lynxg++
 #! This script is compiled with lynxg++
-
-
 #TODO write what external bindings are and how to use them
 
 
 
 
 
-# Element parsing ---------------------------------------------------------------------------------------------------------------#
+
+
+
+# Element parsing ################################################################################################################
 
 
 
@@ -30,10 +31,10 @@ def roundUp(x : int, b : int) -> int :
 
 #Parses a single layout element
 #iExt: True if thhe binding is an external buffer
-def parseElms(glsl:str, iExt:bool) :
-    ret      : str             = ''
-    ext      : dict            = None
-    maxAlign : int             = 0
+def parseElms(glsl:str) :
+    # cpp      : str  = ''
+    elms     : list = []
+    maxAlign : int  = 0
 
 
     typeName = {
@@ -51,27 +52,29 @@ def parseElms(glsl:str, iExt:bool) :
 
 
     offset : int = 0
-    for elmr in re.finditer(                                    # For each binding member
+    for rInfo in re.finditer(                                    # For each binding member
         r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' # Get type name
         r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     # Get member name
         r'(?P<iArr>\[(?P<aLen>.+?)?\])?'                            # Check if it's an array and get its length
         r';',                                                       # Anchor to instruction end
     glsl):                                                      #
-        elm = elmr.groupdict()                                      # Get result as dictionary
-        ttype:str = typeName[elmr['type']]                          # Translate type
-        align:int = typeSize[elmr['type']]                          # Get type alignment
+        # elm = elmr.groupdict()                                      # Get result as dictionary
+        # ttype:str = typeName[elmr['type']]                          # Translate type
+        align:int = typeSize[rInfo['type']]                          # Get type alignment
         maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
-        if not iExt:                                                # If the binding is not external
-            ret += f"\nalwaysInline { ttype }& "                        # Write translated type
-            offset = roundUp(offset, align)                             # Recalculate element offset
-            ret += (elm['name'] + '() { '                               # Create getter from variable name
-                f"return *({ ttype }*){ f'(ShaderElm_b::data + { str(offset) })' if offset != 0 else f'ShaderElm_b::data' };"
-            ' }')                                                       #
-            offset += align                                             # Calculate raw offset of the next element #TODO check if this actually works
-        else:                                                       # If the binding is external
-            ext = {'type' : ttype, 'varname': elm['name']}              # Save binding type and name. They will be used when writing create()
-            break                                                       # Exit loop #FIXME parse other elements too
+        # cpp += f"\nalwaysInline { ttype }& "                        # Write translated type
+        offset = roundUp(offset, align)                             # Recalculate element offset
+        # cpp += (elm['name'] + '() { '                               # Create getter from variable name
+        #     f"return *({ ttype }*){ f'(ShaderElm_b::data + { str(offset) })' if offset != 0 else f'ShaderElm_b::data' };"
+        # ' }')                                                       #
+        elms += [{
+            'type': typeName[rInfo['type']],
+            'name': rInfo['name'] ,
+            'aLen': None if rInfo['iArr'] == None else rInfo['aLen'],
+            'ofst': offset
+        }]
+        offset += align                                             # Calculate raw offset of the next element #TODO check if this actually works
 
 
 
@@ -80,7 +83,11 @@ def parseElms(glsl:str, iExt:bool) :
     # The size of the structure must be a multiple of 16 #BUG THE NORMAL SIZE MAKES THE ENGINE CRASH (prob buffer overflow?)
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64})    #BUG ok
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16))})         #BUG crash
-    return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 256)) })
+    return {
+        'elms' : elms,
+        'size' : roundUp(offset, max(maxAlign, 256))
+    }
+    # return dict({ 'cpp' : cpp, 'types' : types, 'size' : roundUp(offset, max(maxAlign, 256)) })
     # !NVIDIA has a huge alignment of 256 bytes. #TODO use a different alignment based on the GPU, ig
     #FIXME use different alignment for storage buffers
 
@@ -99,45 +106,52 @@ def parseElms(glsl:str, iExt:bool) :
 
 
 
+
 # Translates a single layout
-def parseLayout(glsl:str, space:bool, layouts:list, externs:list) :
-    layoutInfo = re.match(
+def parseLayout(glsl:str) :
+    rInfo = re.match(
         r'layout.*?\(.*?binding=(?P<indx>[0-9]+)\)'
         r'(?P<type>buffer|uniform) (?P<iExt>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
         glsl
     )
-    iExt = layoutInfo['iExt'] != None and len(layoutInfo['iExt']) > 0           # Check if it's external
-    elms = parseElms(layoutInfo['elms'], iExt)                                  # Parse elements
+    # iExt = rInfo['iExt'] != None and len(rInfo['iExt']) > 0           # Check if it's external
 
-    cpp = (                                                                     #Generate C++
-        ('\n\n' if space else '') +                                                 # Fix spacing   # Struct declaration {
-       f"\nstruct { layoutInfo['name'] }_t : public ShaderElm_b<{ 'eStorage' if layoutInfo['type'] == 'buffer' else 'eUniform' }> {{" +
-       f"\n    { layoutInfo['name'] }_t() {{" + (                                       # Constructor {
-       f"\n        ShaderElm_b::vdata.realloc({ str(elms['size']) });"                      # Allocate gpu data
-       f"\n        ShaderElm_b:: data.realloc({ str(elms['size']) });"                      # Allocate local data copy
-       f""         if not iExt else '') +                                                   # But only if the binding is not ext
-       f"\n        ShaderElm_b::bind = { str(layoutInfo['indx']) };"                        # Set binding index
-       f"\n    }}" + elms['func'] +                                                     # } Member access functions
-       f"\n}} { layoutInfo['name'] };"                                              # } MemberDeclaration;
-    )
+    # cpp = (                                                                     #Generate C++
+    #     ('\n\n' if space else '') +                                                 # Fix spacing   # Struct declaration {
+    #    f"\nstruct { layoutInfo['name'] }_t : public ShaderElm_b<{ 'eStorage' if layoutInfo['type'] == 'buffer' else 'eUniform' }> {{" +
+    #    f"\n    { layoutInfo['name'] }_t() {{" + (                                       # Constructor {
+    #    f"\n        ShaderElm_b::vdata.realloc({ str(elms['size']) });"                      # Allocate gpu data
+    #    f"\n        ShaderElm_b:: data.realloc({ str(elms['size']) });"                      # Allocate local data copy
+    #    f""         if not iExt else '') +                                                   # But only if the binding is not ext
+    #    f"\n        ShaderElm_b::bind = { str(layoutInfo['indx']) };"                        # Set binding index
+    #    f"\n    }}" + elms['func'] +                                                     # } Member access functions
+    #    f"\n}} { layoutInfo['name'] };"                                              # } MemberDeclaration;
+    # )
 
 
     # If it's external, add its data to the external bidings
-    if iExt: externs += [{
-        'vartype' : elms['ext']['type'],
-        'varname' : elms['ext']['varname'],
-        'bndtype' : 'eStorage' if layoutInfo['type'] == 'buffer' else 'eUniform',
-        'bndname' : layoutInfo['name']
-    }]
-    # Add to parsed layouts
-    layouts += [{
-        'type' : layoutInfo['type'],
-        'name' : layoutInfo['name'],
-        'indx' : layoutInfo['indx']
-    }]
+    # if iExt: externs += [{
+    #     'vartype' : elms['ext']['type'],
+    #     'varname' : elms['ext']['varname'],
+    #     'bndtype' : 'eStorage' if rInfo['type'] == 'buffer' else 'eUniform',
+    #     'bndname' : rInfo['name']
+    # }]
+    # # Add to parsed layouts
+    # layouts += [{
+    #     'type' : rInfo['type'],
+    #     'name' : rInfo['name'],
+    # }]
 
 
-    return { 'cpp': cpp, 'type': layoutInfo['type'] }
+    elmsInfo = parseElms(rInfo['elms'])
+    return {
+        'type': 'storage' if rInfo['type'] == 'buffer' else 'uniform',
+        'name': rInfo['name'],
+        'iExt': rInfo['iExt'] != None and len(rInfo['iExt']) > 0,
+        'indx': rInfo['indx'],
+        'elms': elmsInfo['elms'],
+        'size': elmsInfo['size']
+    }
 
 
 
@@ -153,42 +167,47 @@ def getLayouts(glsl:str):
         @param glsl: The raw GLSL shader code
 
         @rtype: dict|None
-        @return: A dictionary containing the bindings, the external bindings and the generated C++ code, or None if no binding was found
-            'layouts': The elements of the layout as as list of dictionaries
-                'type' The type of the element
-                'name' The name of the element
-                'indx' The binding index of the element
-            'externs': The external bindings as a list of dictionaries
-                'vartype': The type of the variable #FIXME
-                'varname': The name of the variable #FIXME
-                'bndtype': The type of the external binding
-                'bndname': The name of the external binding
-            'cpp': A string containing the generated C++ code
-            'storageNum': The number of storage buffers in the shader
-            'uniformNum': The number of uniform buffers in the shader
+        @return: A dictionary containing informations about the layouts, or None if no binding was found
+        ├─ layouts:list             A list of layouts
+        │   ├─ type:str                 The type of the layout. 'storage' or 'uniform'
+        │   ├─ name:str                 The name of the layout, without the external specifier
+        │   ├─ iExt:bool                True if the binding is external, False otherwise
+        │   ├─ indx:int                 The binding index
+        │   ├─ elms:list                A list of elements
+        │   │   ├─ type:str                 The corresponding C++ type of the element
+        │   │   ├─ name:str                 The name of the element
+        │   │   ├─ aLen:int                 The length of the array, or None if the element is not an array
+        │   │   └─ ofst:int                 The offset of the element in the memory allocation, in bytes
+        │   └─ size:int                 The size of the required allocation in bytes
+        ├─ storageNum:int           The number of storage buffers used in the shader
+        └─ uniformNum:int           The number of uniform buffers used in the shader
     """
 
 
-    glslLayouts = re.findall(r'(layout\(.*?(buffer|uniform) (.*?)\{(.*?)\};)', glsl) # TODO parse out parentheses
+    rInfo = re.findall(r'(layout\(.*?(buffer|uniform) (.*?)\{(.*?)\};)', glsl) # TODO parse out parentheses
 
-    if glslLayouts == None:                                         # If there are no bindings
+    if rInfo == None:                                         # If there are no bindings
         return None                                                     # Return None
 
     else:                                                           # If there is at least one binding
-        layouts = []                                                    # List of elements
-        externs = []                                                    # List of external bindings
-        cpp = ''                                                        # Generated C++ string
-        storageNum = 0; uniformNum = 0                                  # Number of storage and uniform bindings in the shader
+        layouts    : list = []
+        storageNum : int  = 0                                  # Number storage bindings in the shader
+        uniformNum : int  = 0                                  # Number of uniform bindings in the shader
 
-        for i, glslLayout in enumerate(glslLayouts):                    # For each layout
-            layout = parseLayout(glslLayout[0], i != 0, layouts, externs)   # Translate declaration
+        for i, rLayout in enumerate(rInfo):                    # For each layout
+            # layout = parseLayout(rLayout[0], i != 0, layouts, externs)   # Translate declaration
+            layouts += [ parseLayout(rLayout[0]) ]   # Translate declaration
 
             if layout['type'] == 'uniform': uniformNum += 1                 # Count buffer types
             else: storageNum += 1                                           #
 
-            cpp += indent(layout['cpp'], '\t\t')                            # Concatenate to C++ output
+            # cpp += indent(layout['cpp'], '\t\t')                            # Concatenate to C++ output
 
-        return { 'cpp': cpp, 'layouts': layouts, 'externs': externs, 'storageNum': storageNum, 'uniformNum': uniformNum }
+        return {
+            'layouts': layouts,
+            'storageNum': storageNum,
+            'uniformNum': uniformNum
+        }
 
 
 
@@ -196,7 +215,9 @@ def getLayouts(glsl:str):
 
 
 
-# Shader parsing ----------------------------------------------------------------------------------------------------------------#
+
+# File output ####################################################################################################################
+
 
 
 
@@ -261,7 +282,7 @@ def parseShader(pathr:str, ptfm:str):
 
         # Parse out unnecessary whitespace and comments from the shader code
         ncode = (
-            re.sub(r'([-+])''\x07', r'\g<1> \g<1>',                         # Prevent - - and + + from being merged #! GLSL has no pointer. * * is a syntax error
+            re.sub(r'([-+])''\x07', r'\g<1> \g<1>',                         # Prevent - - and + + from being merged #! GLSL has no pointers. * * is a syntax error
             re.sub(r' ?([()\[\]{}+*-\/.!<>=&^|?:%,;])( )?',  r'\g<1>',      # Remove spaces near opeartors
             re.sub(r'([-+]) \1', r'\g<1>''\x07',                            # Prevent - - and + + from being merged
             re.sub(r'\\n',      r'\n',                                      # Remove newlines
@@ -272,10 +293,13 @@ def parseShader(pathr:str, ptfm:str):
         ))))))))
 
 
-
-
+        #Parse layouts
         pLayouts = getLayouts(ncode)
 
+
+
+
+        #Write to file
         if pLayouts != None:
             fh.write('\n\n' + pLayouts['cpp'])
 

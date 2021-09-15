@@ -209,8 +209,8 @@ def runCmd(args, v:int):
 
 tsize = os.get_terminal_size().columns
 def center(stage):
-    h = '-' * (int(tsize / 2) - int(len(stage) / 2) - 3 - 1)
-    return f"\n\n\033[1m|{ h }[ { stage } ]{ h }|\033[0m\n\n"
+    h = '─' * (int(tsize / 2) - int(len(stage) / 2) - 3 - 1)
+    return f"\n\n\033[1m├{ h }[ { stage } ]{ h }┤\033[0m\n\n"
 
 
 
