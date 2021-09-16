@@ -200,7 +200,7 @@ def runCmd(args, v:int):
         print(
             'lynxg++: fatal error: the task \033[1m"' + ' '.join(args) +
             '"\033[0m exited with return code ' + str(e.returncode) +
-            ':\n\033[31m' + str(output) + '\033[0m'
+            ':\n\033[31m' + e.stdout + '\033[0m'
         )
         sys.exit(1)
 

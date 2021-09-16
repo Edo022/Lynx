@@ -1,4 +1,4 @@
-import os, re, subprocess
+import os, re, sys, subprocess
 from textwrap import indent
 from math import ceil
 #! Shaders are validated in lynxg++
@@ -161,7 +161,7 @@ def parseLayout(glsl:str) :
 
 def getLayouts(glsl:str):
     """!
-        getLayouts Finds any layout definition, parses them and translated them to C++ structs through the parseLayout function
+        getLayouts Finds any layout definition, parses them and translates them to C++ structs through the parseLayout function
 
         @type glsl: str
         @param glsl: The raw GLSL shader code
@@ -198,7 +198,7 @@ def getLayouts(glsl:str):
             # layout = parseLayout(rLayout[0], i != 0, layouts, externs)   # Translate declaration
             layouts += [ parseLayout(rLayout[0]) ]   # Translate declaration
 
-            if layout['type'] == 'uniform': uniformNum += 1                 # Count buffer types
+            if rLayout[1] == 'uniform': uniformNum += 1                 # Count buffer types
             else: storageNum += 1                                           #
 
             # cpp += indent(layout['cpp'], '\t\t')                            # Concatenate to C++ output
@@ -294,24 +294,32 @@ def parseShader(pathr:str, ptfm:str):
 
 
         #Parse layouts
-        pLayouts = getLayouts(ncode)
+        pGlsl = getLayouts(ncode)
 
 
 
 
         #Write to file
-        if pLayouts != None:
-            fh.write('\n\n' + pLayouts['cpp'])
+        if pGlsl != None:
 
-            layouts = pLayouts['layouts']
-            externs = pLayouts['externs']
+            # fh.write('\n\n' + pGlsl['cpp'])
 
+            layouts = []
+            externs = []
+            for l in pGlsl['layouts']:
+                if l['iExt']:
+                    externs += [ l ]
+                else:
+                    layouts += [ l ]
+
+            return 0 #TODO REMOVE
             # Write the shader create functions
             fh.write(indent(
                 #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
                 f"\n\n\nvoid create(" + (
-                    f", ".join((f"vram::ptr<{ extern['vartype'] }, eVRam, { extern['bndtype'] }> p{ extern['varname'][0].upper() }{ extern['varname'][1:] }")
-                    for extern in externs) + f", const u32v3 vGroupCount, core::RenderCore& pRenderCore);"
+                    # f", ".join((f"vram::ptr<{ e['vartype'] }, eVRam, { e['bndtype'] }> p{ e['varname'][0].upper() }{ e['varname'][1:] }")
+                    f", ".join((f"{ e['type'] }{ e['bndtype'] }> p{ e['varname'][0].upper() }{ e['varname'][1:] }")
+                    for e in externs) + f", const u32v3 vGroupCount, core::RenderCore& pRenderCore);"
                 ) +
                 f"\nvoid createDescriptorSets();"
                 f"\nvoid createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);"
@@ -346,13 +354,13 @@ def parseShader(pathr:str, ptfm:str):
             fc.write(indent(
                 f"\n\n\nvoid { fname }::createDescriptorSets(){{"
                 f"\n    vk::DescriptorPoolSize sizes[2] = {{"
-                f"\n        "   f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(pLayouts['storageNum']) })," + (
-                f"\n        " + f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount({ str(pLayouts['uniformNum']) })" if pLayouts['uniformNum'] > 0 else '{}' ) +
+                f"\n        "   f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(pGlsl['storageNum']) })," + (
+                f"\n        " + f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount({ str(pGlsl['uniformNum']) })" if pGlsl['uniformNum'] > 0 else '{}' ) +
                 f"\n    }};"
                 f"\n    auto poolInfo = vk::DescriptorPoolCreateInfo()"
                 f"\n        .setFlags         (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)"
                 f"\n        .setMaxSets       (1)"
-                f"\n        .setPoolSizeCount ({ str(2 if pLayouts['uniformNum'] > 0 else 1) })"
+                f"\n        .setPoolSizeCount ({ str(2 if pGlsl['uniformNum'] > 0 else 1) })"
                 f"\n        .setPPoolSizes    (sizes)"
                 f"\n    ;"
                 f"\n    switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){{"
