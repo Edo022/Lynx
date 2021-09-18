@@ -319,7 +319,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
         fh.write('\n\n' + fixTabs(
             '\n\n'.join((
             f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }, " +
-            (', '.join(m.type + ('' if m.aLen == None else f"[{ m.aLen }]") for m in l.elms)) + f"> {{"
+            (', '.join(m.type + ('' if m.aLen == None else f"[{ m.aLen }]") for m in l.elms)) + (f"> {{"
             # External layout constructor
             f"\n    alwaysInline { l.cstr }(const bool vExt) {{}}"
             # Default constructor
@@ -328,7 +328,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n        ShaderElm_b:: data.realloc({ l.size });"
             f"\n    }}"
             # Copy constructor
-            f"\n    inline { l.cstr } (const { l.cstr }& p{ capitalize1(l.name) }) {{"
+            f"\n    inline { l.cstr }(const { l.cstr }& p{ capitalize1(l.name) }) {{"
 			f"\n    	ShaderElm_b:: data = p{ capitalize1(l.name) }. data;"
 			f"\n    	ShaderElm_b::vdata = p{ capitalize1(l.name) }.vdata;"
 			f"\n    }}"
@@ -338,12 +338,21 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 			f"\n    	ShaderElm_b::vdata = p{ capitalize1(l.name) }.vdata;"
 			f"\n    	return *this;"
 			f"\n    	//FIXME automatically update render data after calling this function"
-			f"\n    }}" +
+			f"\n    }}"
+            # Construct with vdata only #FIXME write specific struct
+            f"\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{" #TODO add operator= for different buffer types #FIXME add template to accept buffers of any type, with the correct length
+            f"\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;"
+            f"\n    }}" #TODO add operator= for different buffer types
+            # Copy from vdata only #FIXME write specific struct
+		    f"\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{" #TODO add operator= for different buffer types #FIXME add template to accept buffers of any type, with the correct length
+		    f"\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;"
+		    f"\n        return *this;"
+		    f"\n    }}") + #TODO add operator= for different buffer types
             # Member references
             f""     ''.join((
             f"\n    { m.type }& { m.name } = *({ m.type }*)(ShaderElm_b::data + { m.ofst });" + ('' if m.aLen == None else
-            f"\n    uint64 { m.name }_tmp_size = { m.size };") + #TODO use an actual array #FIXME use an array that automatically reallocates the whole block when resizing the unknown size array
-            f""     ) for m in l.elms) + #! offset includes the length of the arrays ^
+            f"\n    uint64 { m.name }_tmp_size = { m.size };") +  #!^ offset includes the length of the arrays  #TODO use an actual array #FIXME use an array that automatically reallocates the whole block when resizing the unknown size array
+            f""     ) for m in l.elms) +
             f"\n}};"
             f"\n{ l.cstr } { l.name }{{ true }};"
             f"" ) for l in pGlsl.layouts),
@@ -415,7 +424,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n        vkDefaultCases;"
             f"\n    }}"
             f"\n\n\n"
-            f"\n    vk::WriteDescriptorSet writeSets[{ str(len(layouts)) }];" + (
+            f"\n    vk::WriteDescriptorSet writeSets[{ str(len(pGlsl.layouts)) }];" + (
             f""     '\n'.join((
             f"\n    auto bufferInfo{ str(i) } = vk::DescriptorBufferInfo()"
             f"\n        .setBuffer ({ l.name }.vdata.cell->csc.buffer)"
@@ -429,8 +438,8 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n        .setDescriptorType  (vk::DescriptorType::e{ l.type.capitalize() }Buffer)"
             f"\n        .setPBufferInfo     (&bufferInfo{ str(i) })"
             f"\n    ;"
-            f""     ) for i, l in enumerate(layouts))) +
-            f"\n\tcore::dvc::graphics.ld.updateDescriptorSets({ str(len(layouts)) }, writeSets, 0, nullptr);"
+            f""     ) for i, l in enumerate(pGlsl.layouts))) +
+            f"\n\tcore::dvc::graphics.ld.updateDescriptorSets({ str(len(pGlsl.layouts)) }, writeSets, 0, nullptr);"
             f"\n}}",
         1))
 
@@ -491,7 +500,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);"
             f"\n    core::shaders::pipelineLayouts[{ shName }::pipelineIndex] = &{ shName }::layout;"
             f"\n    {{ //Create descriptor set layout"
-            f"\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(layouts)) }];" + (
+            f"\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(pGlsl.layouts)) }];" + (
             f""         '\n'.join((
             f"\n        bindingLayouts[{ str(i) }] = vk::DescriptorSetLayoutBinding()"
             f"\n            .setBinding            ({ str(l.indx) })"
@@ -500,10 +509,10 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n            .setStageFlags         (vk::ShaderStageFlagBits::eCompute)"
             f"\n            .setPImmutableSamplers (nullptr)"
             f"\n        ;"
-            f""         ) for i, l in enumerate(layouts))) +
+            f""         ) for i, l in enumerate(pGlsl.layouts))) +
             f"\n"
             f"\n        auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()"
-            f"\n            .setBindingCount ({ str(len(layouts)) })"
+            f"\n            .setBindingCount ({ str(len(pGlsl.layouts)) })"
             f"\n            .setPBindings    (bindingLayouts)"
             f"\n        ;"
             f"\n        //Create the descriptor set layout"

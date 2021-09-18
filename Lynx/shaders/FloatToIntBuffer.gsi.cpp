@@ -65,8 +65,59 @@ namespace lnx::shd::gsi{
 
 
 
-		vk::WriteDescriptorSet writeSets[0];
-		core::dvc::graphics.ld.updateDescriptorSets(0, writeSets, 0, nullptr);
+		vk::WriteDescriptorSet writeSets[4];
+		auto bufferInfo0 = vk::DescriptorBufferInfo()
+			.setBuffer (src.vdata.cell->csc.buffer)
+			.setOffset (src.vdata.cell->localOffset)
+			.setRange  (src.vdata.cell->cellSize)
+		;
+		writeSets[0] = vk::WriteDescriptorSet()
+			.setDstSet          (descriptorSet)
+			.setDstBinding      (0)
+			.setDescriptorCount (1)
+			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
+			.setPBufferInfo     (&bufferInfo0)
+		;
+
+		auto bufferInfo1 = vk::DescriptorBufferInfo()
+			.setBuffer (dst.vdata.cell->csc.buffer)
+			.setOffset (dst.vdata.cell->localOffset)
+			.setRange  (dst.vdata.cell->cellSize)
+		;
+		writeSets[1] = vk::WriteDescriptorSet()
+			.setDstSet          (descriptorSet)
+			.setDstBinding      (1)
+			.setDescriptorCount (1)
+			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
+			.setPBufferInfo     (&bufferInfo1)
+		;
+
+		auto bufferInfo2 = vk::DescriptorBufferInfo()
+			.setBuffer (wsize.vdata.cell->csc.buffer)
+			.setOffset (wsize.vdata.cell->localOffset)
+			.setRange  (wsize.vdata.cell->cellSize)
+		;
+		writeSets[2] = vk::WriteDescriptorSet()
+			.setDstSet          (descriptorSet)
+			.setDstBinding      (2)
+			.setDescriptorCount (1)
+			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
+			.setPBufferInfo     (&bufferInfo2)
+		;
+
+		auto bufferInfo3 = vk::DescriptorBufferInfo()
+			.setBuffer (zbuff.vdata.cell->csc.buffer)
+			.setOffset (zbuff.vdata.cell->localOffset)
+			.setRange  (zbuff.vdata.cell->cellSize)
+		;
+		writeSets[3] = vk::WriteDescriptorSet()
+			.setDstSet          (descriptorSet)
+			.setDstBinding      (3)
+			.setDescriptorCount (1)
+			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
+			.setPBufferInfo     (&bufferInfo3)
+		;
+		core::dvc::graphics.ld.updateDescriptorSets(4, writeSets, 0, nullptr);
 	}
 
 
@@ -133,10 +184,41 @@ LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
 	core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
 	core::shaders::pipelineLayouts[FloatToIntBuffer::pipelineIndex] = &FloatToIntBuffer::layout;
 	{ //Create descriptor set layout
-		vk::DescriptorSetLayoutBinding bindingLayouts[0];
+		vk::DescriptorSetLayoutBinding bindingLayouts[4];
+		bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
+			.setBinding            (0)
+			.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+			.setDescriptorCount    (1)
+			.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+			.setPImmutableSamplers (nullptr)
+		;
+
+		bindingLayouts[1] = vk::DescriptorSetLayoutBinding()
+			.setBinding            (1)
+			.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+			.setDescriptorCount    (1)
+			.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+			.setPImmutableSamplers (nullptr)
+		;
+
+		bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
+			.setBinding            (2)
+			.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+			.setDescriptorCount    (1)
+			.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+			.setPImmutableSamplers (nullptr)
+		;
+
+		bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
+			.setBinding            (3)
+			.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
+			.setDescriptorCount    (1)
+			.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+			.setPImmutableSamplers (nullptr)
+		;
 
 		auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
-			.setBindingCount (0)
+			.setBindingCount (4)
 			.setPBindings    (bindingLayouts)
 		;
 		//Create the descriptor set layout

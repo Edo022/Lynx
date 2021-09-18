@@ -22,13 +22,6 @@ namespace lnx::shd{
 	template<bufferType tBufft, class... tElmTypes> struct ShaderElm_b {
 		vram::ptr<char, eVRam, tBufft> vdata;	//Gpu data
 		ram::ptr<char>                  data;	//Local data copy
-
-		// template<bufferType tCpBufft> auto& operator=(const ShaderElm_b<tCpBufft, tElmTypes...>& pShaderElm) {
-		//TODO add operator= for different buffer types
-		template<bufferType tCpBufft> auto& operator=(const ShaderElm_b<tCpBufft, tElmTypes...>& pShaderElm) {
-			vdata = pShaderElm.vdata;
-			 data = pShaderElm. data;
-		}
 	};
 
 

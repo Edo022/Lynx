@@ -21,7 +21,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(512);
 				ShaderElm_b:: data.realloc(512);
 			}
-			inline l_outcol (const l_outcol& pOutcol) {
+			inline l_outcol(const l_outcol& pOutcol) {
 				ShaderElm_b:: data = pOutcol. data;
 				ShaderElm_b::vdata = pOutcol.vdata;
 			}
@@ -30,6 +30,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pOutcol.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l_outcol(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+				return *this;
 			}
 			f32v4& arrayh = *(f32v4*)(ShaderElm_b::data + 0);
 			uint64 arrayh_tmp_size = 480;
@@ -46,7 +53,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(256);
 				ShaderElm_b:: data.realloc(256);
 			}
-			inline l_wsize (const l_wsize& pWsize) {
+			inline l_wsize(const l_wsize& pWsize) {
 				ShaderElm_b:: data = pWsize. data;
 				ShaderElm_b::vdata = pWsize.vdata;
 			}
@@ -55,6 +62,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pWsize.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+				return *this;
 			}
 			u32v2& wsize = *(u32v2*)(ShaderElm_b::data + 0);
 		};
@@ -67,7 +81,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(256);
 				ShaderElm_b:: data.realloc(256);
 			}
-			inline l__data (const l__data& p_data) {
+			inline l__data(const l__data& p_data) {
 				ShaderElm_b:: data = p_data. data;
 				ShaderElm_b::vdata = p_data.vdata;
 			}
@@ -76,6 +90,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = p_data.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l__data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
+				return *this;
 			}
 			f32v3& pos = *(f32v3*)(ShaderElm_b::data + 0);
 			f32& r = *(f32*)(ShaderElm_b::data + 16);

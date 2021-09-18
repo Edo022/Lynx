@@ -21,7 +21,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(0);
 				ShaderElm_b:: data.realloc(0);
 			}
-			inline l_src (const l_src& pSrc) {
+			inline l_src(const l_src& pSrc) {
 				ShaderElm_b:: data = pSrc. data;
 				ShaderElm_b::vdata = pSrc.vdata;
 			}
@@ -30,6 +30,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pSrc.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l_src(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+				return *this;
 			}
 			f32v4& src = *(f32v4*)(ShaderElm_b::data + 0);
 			uint64 src_tmp_size = 0;
@@ -43,7 +50,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(0);
 				ShaderElm_b:: data.realloc(0);
 			}
-			inline l_dst (const l_dst& pDst) {
+			inline l_dst(const l_dst& pDst) {
 				ShaderElm_b:: data = pDst. data;
 				ShaderElm_b::vdata = pDst.vdata;
 			}
@@ -52,6 +59,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pDst.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l_dst(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+				return *this;
 			}
 			u32& dst = *(u32*)(ShaderElm_b::data + 0);
 			uint64 dst_tmp_size = 0;
@@ -65,7 +79,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(256);
 				ShaderElm_b:: data.realloc(256);
 			}
-			inline l_wsize (const l_wsize& pWsize) {
+			inline l_wsize(const l_wsize& pWsize) {
 				ShaderElm_b:: data = pWsize. data;
 				ShaderElm_b::vdata = pWsize.vdata;
 			}
@@ -74,6 +88,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pWsize.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+				return *this;
 			}
 			u32v2& wsize = *(u32v2*)(ShaderElm_b::data + 0);
 		};
@@ -86,7 +107,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata.realloc(0);
 				ShaderElm_b:: data.realloc(0);
 			}
-			inline l_zbuff (const l_zbuff& pZbuff) {
+			inline l_zbuff(const l_zbuff& pZbuff) {
 				ShaderElm_b:: data = pZbuff. data;
 				ShaderElm_b::vdata = pZbuff.vdata;
 			}
@@ -95,6 +116,13 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pZbuff.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+			}
+			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
+				return *this;
 			}
 			u32& zbuff = *(u32*)(ShaderElm_b::data + 0);
 			uint64 zbuff_tmp_size = 0;
