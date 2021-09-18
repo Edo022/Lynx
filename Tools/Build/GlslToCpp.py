@@ -1,6 +1,7 @@
 import os, re, sys, subprocess
 from textwrap import indent
 from math import ceil
+from argparse import Namespace as ns
 #! Shaders are validated in lynxg++
 #! This script is compiled with lynxg++
 #TODO write what external bindings are and how to use them
@@ -33,7 +34,7 @@ def roundUp(x : int, b : int) -> int :
 def parseElms(glsl:str) :
     """!
         Parses the elements of a layout
-        Returns a tuple with a list of namespaces containing
+        Returns a namespace with a list of namespaces containing
         the type, name, array length and offset of each element, and the total size of the C++ structure
     """
     elms     : list = []
@@ -66,12 +67,12 @@ def parseElms(glsl:str) :
         maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
         offset = roundUp(offset, align)                             # Recalculate element offset
-        elms += [{                                                  # Save element informations
+        elms += [ns(**{                                                  # Save element informations
             'type': typeName[rInfo['type']],                            # Get the type and translate it to C++
             'name': rInfo['name'] ,                                     # Get the name from regex
             'aLen': None if rInfo['iArr'] == None else rInfo['aLen'],   # Save the array length or None if the element is not an array
             'ofst': offset                                              # Save the calculated offset
-        }]                                                          #
+        })]                                                          #
         offset += align                                             # Calculate raw offset for the next element #TODO check if this actually works
 
 
@@ -81,10 +82,10 @@ def parseElms(glsl:str) :
     # The size of the structure must be a multiple of 16 #BUG THE NORMAL SIZE MAKES THE ENGINE CRASH (prob buffer overflow?)
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16)) + 64})    #BUG ok
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16))})         #BUG crash
-    return {
+    return ns(**{
         'elms' : elms,
         'size' : roundUp(offset, max(maxAlign, 256))
-    }
+    })
     # return dict({ 'cpp' : cpp, 'types' : types, 'size' : roundUp(offset, max(maxAlign, 256)) })
     # !NVIDIA has a huge alignment of 256 bytes. #TODO use a different alignment based on the GPU, ig
     #FIXME use different alignment for storage buffers
@@ -114,15 +115,15 @@ def parseLayout(glsl:str) :
     )
 
     elmsInfo = parseElms(rInfo['elms'])
-    return {
+    return ns(**{
         'type': 'storage' if rInfo['type'] == 'buffer' else 'uniform',
         'name': rInfo['name'],
         'iExt': rInfo['iExt'] != None and len(rInfo['iExt']) > 0,
         'indx': rInfo['indx'],
         'cstr': 'l_' + rInfo['name'],
-        'elms': elmsInfo['elms'],
-        'size': elmsInfo['size']
-    }
+        'elms': elmsInfo.elms,
+        'size': elmsInfo.size
+    })
 
 
 
@@ -167,11 +168,11 @@ def getLayouts(glsl:str):
         if rLayout[1] == 'uniform': uniformNum += 1     # Count buffer types
         else: storageNum += 1
 
-    return {
-        'layouts': layouts,
+    return ns(**{
+        'layouts'   : layouts,
         'storageNum': storageNum,
         'uniformNum': uniformNum
-    }
+    })
 
 
 
@@ -240,8 +241,8 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 
     layouts = []
     externs = []
-    for l in pGlsl['layouts']:
-        if l['iExt']: externs += [ l ]
+    for l in pGlsl.layouts:
+        if l.iExt: externs += [ l ]
         else:         layouts += [ l ]
 
 
@@ -289,33 +290,33 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
         # Write layout structs
         fh.write('\n\n' + indent(
             '\n\n'.join((
-            f"\nstruct { l['cstr'] } : public ShaderElm_b<e{ l['type'].capitalize() }> {{"
+            f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{"
             # External layout constructor
-            f"\n    alwaysInline { l['cstr'] }(const bool vExt) {{}}"
+            f"\n    alwaysInline { l.cstr }(const bool vExt) {{}}"
             # Default constructor
-            f"\n    inline { l['cstr'] }() {{"
-            f"\n        ShaderElm_b::vdata.realloc({ l['size'] });"
-            f"\n        ShaderElm_b:: data.realloc({ l['size'] });"
+            f"\n    inline { l.cstr }() {{"
+            f"\n        ShaderElm_b::vdata.realloc({ l.size });"
+            f"\n        ShaderElm_b:: data.realloc({ l.size });"
             f"\n    }}"
             # Copy constructor
-            f"\n    inline { l['cstr'] } (const { l['cstr'] }& p{ capitalize1(l['name']) }) {{"
-			f"\n    	ShaderElm_b:: data = p{ capitalize1(l['name']) }. data;"
-			f"\n    	ShaderElm_b::vdata = p{ capitalize1(l['name']) }.vdata;"
+            f"\n    inline { l.cstr } (const { l.cstr }& p{ capitalize1(l.name) }) {{"
+			f"\n    	ShaderElm_b:: data = p{ capitalize1(l.name) }. data;"
+			f"\n    	ShaderElm_b::vdata = p{ capitalize1(l.name) }.vdata;"
 			f"\n    }}"
             # Copy assignment
-			f"\n    inline { l['cstr'] }& operator=(const { l['cstr'] }& p{ capitalize1(l['name']) }) {{"
-			f"\n    	ShaderElm_b:: data = p{ capitalize1(l['name']) }. data;"
-			f"\n    	ShaderElm_b::vdata = p{ capitalize1(l['name']) }.vdata;"
+			f"\n    inline { l.cstr }& operator=(const { l.cstr }& p{ capitalize1(l.name) }) {{"
+			f"\n    	ShaderElm_b:: data = p{ capitalize1(l.name) }. data;"
+			f"\n    	ShaderElm_b::vdata = p{ capitalize1(l.name) }.vdata;"
 			f"\n    	return *this;"
 			f"\n    	//FIXME automatically update render data after calling this function"
 			f"\n    }}" +
             # Member references
             f""     ''.join((
-            f"\n    { m['type'] }& { m['name'] } = *({ m['type'] }*)(ShaderElm_b::data + { m['ofst'] });"
-            f""     ) for m in l['elms']) +    #! offset includes the length of the arrays  ^
+            f"\n    { m.type }& { m.name } = *({ m.type }*)(ShaderElm_b::data + { m.ofst });"
+            f""     ) for m in l.elms) +    #! offset includes the length of the arrays  ^
             f"\n}};"
-            f"\n{ l['cstr'] } { l['name'] }{{ true }};"
-            f"" ) for l in pGlsl['layouts']),
+            f"\n{ l.cstr } { l.name }{{ true }};"
+            f"" ) for l in pGlsl.layouts),
         '\t\t').replace('    ', '\t'))
 
 
@@ -326,7 +327,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
             f"\nvoid create(" + (
             f""     ','.join((
-            f"\n    const { e['cstr'] }& p{ capitalize1(e['name']) }")for e in externs) + ','
+            f"\n    const { e.cstr }& p{ capitalize1(e.name) }")for e in externs) + ','
             f"\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore"
             f"\n);") +
             f"\nvoid createDescriptorSets();"
@@ -341,11 +342,11 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
         fc.write('\n\n' + indent(
             f"\nvoid { shName }::create(" + (
             f""     ','.join((
-            f"\n    const { e['cstr'] }& p{ capitalize1(e['name']) }" )for e in externs) + ','
+            f"\n    const { e.cstr }& p{ capitalize1(e.name) }" )for e in externs) + ','
             f"\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore"
             f"\n){{") +
             f"\n    pRenderCore.addObject_m.lock();" + (
-            f""         ''.join((f"\n\t\t{ e['name'] } = p{ capitalize1(e['name']) };") for e in externs)) +
+            f""         ''.join((f"\n\t\t{ e.name } = p{ capitalize1(e.name) };") for e in externs)) +
             f"\n"
             f"\n        createDescriptorSets();"
             f"\n        createCommandBuffers(vGroupCount, pRenderCore);"
@@ -360,13 +361,13 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
         fc.write('\n\n' + indent(
             f"\nvoid { shName }::createDescriptorSets(){{"
             f"\n    vk::DescriptorPoolSize sizes[2] = {{"
-            f"\n        "   f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(pGlsl['storageNum']) })," + (
-            f"\n        " + f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount({ str(pGlsl['uniformNum']) })" if pGlsl['uniformNum'] > 0 else '{}' ) +
+            f"\n        "   f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(pGlsl.storageNum) })," + (
+            f"\n        " + f"vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount({ str(pGlsl.uniformNum) })" if pGlsl.uniformNum > 0 else '{}' ) +
             f"\n    }};"
             f"\n    auto poolInfo = vk::DescriptorPoolCreateInfo()"
             f"\n        .setFlags         (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)"
             f"\n        .setMaxSets       (1)"
-            f"\n        .setPoolSizeCount ({ str(2 if pGlsl['uniformNum'] > 0 else 1) })"
+            f"\n        .setPoolSizeCount ({ str(2 if pGlsl.uniformNum > 0 else 1) })"
             f"\n        .setPPoolSizes    (sizes)"
             f"\n    ;"
             f"\n    switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){{"
@@ -388,15 +389,15 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n    vk::WriteDescriptorSet writeSets[{ str(len(layouts)) }];" + (
             f""     '\n'.join((
             f"\n    auto bufferInfo{ str(i) } = vk::DescriptorBufferInfo()"
-            f"\n        .setBuffer ({ l['name'] }.vdata.cell->csc.buffer)"
-            f"\n        .setOffset ({ l['name'] }.vdata.cell->localOffset)"
-            f"\n        .setRange  ({ l['name'] }.vdata.cell->cellSize)"
+            f"\n        .setBuffer ({ l.name }.vdata.cell->csc.buffer)"
+            f"\n        .setOffset ({ l.name }.vdata.cell->localOffset)"
+            f"\n        .setRange  ({ l.name }.vdata.cell->cellSize)"
             f"\n    ;"
             f"\n    writeSets[{ str(i) }] = vk::WriteDescriptorSet()"
             f"\n        .setDstSet          (descriptorSet)"
-            f"\n        .setDstBinding      ({ str(l['indx']) })"
+            f"\n        .setDstBinding      ({ str(l.indx) })"
             f"\n        .setDescriptorCount (1)"
-            f"\n        .setDescriptorType  (vk::DescriptorType::e{ l['type'].capitalize() }Buffer)"
+            f"\n        .setDescriptorType  (vk::DescriptorType::e{ l.type.capitalize() }Buffer)"
             f"\n        .setPBufferInfo     (&bufferInfo{ str(i) })"
             f"\n    ;"
             f""     ) for i, l in enumerate(layouts))) +
@@ -464,8 +465,8 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(layouts)) }];" + (
             f""         '\n'.join((
             f"\n        bindingLayouts[{ str(i) }] = vk::DescriptorSetLayoutBinding()"
-            f"\n            .setBinding            ({ str(l['indx']) })"
-            f"\n            .setDescriptorType     (vk::DescriptorType::{ 'eUniformBuffer' if l['type'] == 'uniform' else 'eStorageBuffer' })"
+            f"\n            .setBinding            ({ str(l.indx) })"
+            f"\n            .setDescriptorType     (vk::DescriptorType::e{ l.type.capitalize() }Buffer)"
             f"\n            .setDescriptorCount    (1)"
             f"\n            .setStageFlags         (vk::ShaderStageFlagBits::eCompute)"
             f"\n            .setPImmutableSamplers (nullptr)"
