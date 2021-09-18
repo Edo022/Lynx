@@ -15,7 +15,7 @@ namespace lnx::shd::gsi{
         static uint32 pipelineIndex;
 
 
-		struct l_outcol : public ShaderElm_b<eStorage> {
+		struct l_outcol : public ShaderElm_b<eStorage, f32v4[30], i32, f32v4[0]> {
 			alwaysInline l_outcol(const bool vExt) {}
 			inline l_outcol() {
 				ShaderElm_b::vdata.realloc(512);
@@ -40,7 +40,7 @@ namespace lnx::shd::gsi{
 		l_outcol outcol{ true };
 
 
-		struct l_wsize : public ShaderElm_b<eStorage> {
+		struct l_wsize : public ShaderElm_b<eStorage, u32v2> {
 			alwaysInline l_wsize(const bool vExt) {}
 			inline l_wsize() {
 				ShaderElm_b::vdata.realloc(256);
@@ -61,7 +61,7 @@ namespace lnx::shd::gsi{
 		l_wsize wsize{ true };
 
 
-		struct l__data : public ShaderElm_b<eUniform> {
+		struct l__data : public ShaderElm_b<eUniform, f32v3, f32, f32v4> {
 			alwaysInline l__data(const bool vExt) {}
 			inline l__data() {
 				ShaderElm_b::vdata.realloc(256);

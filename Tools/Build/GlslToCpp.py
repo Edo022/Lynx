@@ -318,7 +318,8 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
         # Write layout structs
         fh.write('\n\n' + fixTabs(
             '\n\n'.join((
-            f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{"
+            f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }, " +
+            (', '.join(m.type + ('' if m.aLen == None else f"[{ m.aLen }]") for m in l.elms)) + f"> {{"
             # External layout constructor
             f"\n    alwaysInline { l.cstr }(const bool vExt) {{}}"
             # Default constructor

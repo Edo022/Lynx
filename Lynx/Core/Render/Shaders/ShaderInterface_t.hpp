@@ -4,7 +4,7 @@
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
-
+//FIXME add option to not allow cpu access (no data pointer. just vdata)
 
 
 
@@ -18,23 +18,35 @@ namespace lnx{
 
 
 namespace lnx::shd{
-	//FIXME dont use this struct. Write custom struct on the fly
-	//FIXME add option to not allow cpu access (no data pointer. just vdata)
-	template<bufferType tBufft> struct ShaderElm_b {
-		vram::ptr<char, eVRam, tBufft> vdata;					//Gpu data
-		ram::ptr<char>                 data;					//Local data copy
-		// uint32                         bind;					//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
+	// template<class... tElmTypes> struct ShaderCmp_t{};
+	template<bufferType tBufft, class... tElmTypes> struct ShaderElm_b {
+		vram::ptr<char, eVRam, tBufft> vdata;	//Gpu data
+		ram::ptr<char>                  data;	//Local data copy
+
+		// template<bufferType tCpBufft> auto& operator=(const ShaderElm_b<tCpBufft, tElmTypes...>& pShaderElm) {
+		//TODO add operator= for different buffer types
+		template<bufferType tCpBufft> auto& operator=(const ShaderElm_b<tCpBufft, tElmTypes...>& pShaderElm) {
+			vdata = pShaderElm.vdata;
+			 data = pShaderElm. data;
+		}
 	};
 
 
 
 
+	/**
+	 * @brief Base class for shader interface classes
+	 */
 	struct ShaderInterface_b {
 		vk::DescriptorPool				descriptorPool;			//A descriptor pool containing the descriptor sets
 		vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 		lnx::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 		//TODO SAVE COMMAND BUFFERS ARRAY IN RENDER CORE AND USE ONE BUFFER PER OBJECT
 
+		/**
+		 * @brief //TODO
+		 * ! NOT A GLSL LAYOUT
+		 */
 		struct Layout{
 			Layout(){};
 			Layout(const Layout&) = delete;
