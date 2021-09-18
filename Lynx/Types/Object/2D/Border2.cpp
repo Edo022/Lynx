@@ -1,4 +1,5 @@
 #include "Lynx/Types/Object/2D/Border2.hpp"
+#include "Lynx/Core/Render/Render.hpp"
 
 //TODO USE RenderCore STRUCT INSIDE WINDOWS TO RENDER DATA
 

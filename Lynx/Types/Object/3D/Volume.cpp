@@ -1,5 +1,6 @@
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
+#include "Lynx/Core/Render/Render.hpp"
 #include "Lynx/Types/Object/3D/Volume.hpp"
 
 

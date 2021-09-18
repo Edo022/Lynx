@@ -7,10 +7,14 @@ from argparse import Namespace as ns
 #TODO write what external bindings are and how to use them
 #TODO add matrix support
 #TODO add image support
+#TODO add std140 support
 
+#FIXME fix array reference translation
+#FIXME stop program if std or other stuff cannot be found
 
-
-
+#TODO In WGPU
+#TODO To make uniform buffers portable they have to be std140 and not std430. Uniform structs have to be std140. Storage structs have to be std430
+#TODO Storage buffers for compute shaders can be std140 or std430
 
 
 
@@ -60,22 +64,25 @@ def parseElms(glsl:str) :
     for rInfo in re.finditer(                                    # For each binding member
         r'(?P<type>([biud]?vec[234])|(double|float|bool|(u?int))) ' # Get type name
         r'(?P<name>[a-zA-Z_]{1,}[a-zA-Z0-9_]*)'                     # Get member name
-        r'(?P<iArr>\[(?P<aLen>.+?)?\])?'                            # Check if it's an array and get its length
+        r'(?P<iArr>\[(?P<aLen>.*?)?\])?'                            # Check if it's an array and get its length
         r';',                                                       # Anchor to instruction end
     glsl):                                                      #
         align:int = typeSize[rInfo['type']]                         # Get type alignment
         maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
+
         offset = roundUp(offset, align)                             # Recalculate element offset
-        elms += [ns(**{                                                  # Save element informations
+        aLen:int = 0                                                # Get array length
+        if rInfo['iArr'] == None:    aLen = None                        # None if the element is not an array
+        elif len(rInfo['aLen']) > 0: aLen = eval(rInfo['aLen'])         # Evaulate the expression if it is
+
+        elms += [ns(**{                                             # Save element informations
             'type': typeName[rInfo['type']],                            # Get the type and translate it to C++
             'name': rInfo['name'] ,                                     # Get the name from regex
-            'aLen': None if rInfo['iArr'] == None else rInfo['aLen'],   # Save the array length or None if the element is not an array
+            'aLen': aLen,                                               # Save the array length
             'ofst': offset                                              # Save the calculated offset
-        })]                                                          #
-        offset += align                                             # Calculate raw offset for the next element #TODO check if this actually works
-
-
+        })]                                                         #
+        offset += align * aLen if aLen != None else 1               # Calculate raw offset for the next element #TODO check if this actually works
 
 
     # Return a dictionary containing the translated members, the external bindings and the padded structure size
@@ -109,7 +116,7 @@ def parseElms(glsl:str) :
 # Translates a single layout
 def parseLayout(glsl:str) :
     rInfo = re.match(
-        r'layout.*?\(.*?binding=(?P<indx>[0-9]+)\)'
+        r'layout.*?\(std(?P<stdv>\d{3}).*?binding=(?P<indx>\d+)\)'
         r'(?P<type>buffer|uniform) (?P<iExt>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
         glsl
     )
@@ -117,6 +124,7 @@ def parseLayout(glsl:str) :
     elmsInfo = parseElms(rInfo['elms'])
     return ns(**{
         'type': 'storage' if rInfo['type'] == 'buffer' else 'uniform',
+        'stdv': int(rInfo['stdv']),
         'name': rInfo['name'],
         'iExt': rInfo['iExt'] != None and len(rInfo['iExt']) > 0,
         'indx': rInfo['indx'],
@@ -142,6 +150,7 @@ def getLayouts(glsl:str):
         @return: A dictionary containing informations about the layouts
         ├─ layouts:list             A list of layouts
         │   ├─ type:str                 The type of the layout. 'storage' or 'uniform'
+        │   ├─ stdv:int                 The standard used for the layout. 140 or 430
         │   ├─ name:str                 The name of the layout, without the external specifier
         │   ├─ iExt:bool                True if the binding is external, False otherwise
         │   ├─ indx:int                 The binding index

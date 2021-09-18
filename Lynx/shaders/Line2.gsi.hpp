@@ -18,8 +18,8 @@ namespace lnx::shd::gsi{
 		struct l_outcol : public ShaderElm_b<eStorage> {
 			alwaysInline l_outcol(const bool vExt) {}
 			inline l_outcol() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b:: data.realloc(256);
+				ShaderElm_b::vdata.realloc(0);
+				ShaderElm_b:: data.realloc(0);
 			}
 			inline l_outcol (const l_outcol& pOutcol) {
 				ShaderElm_b:: data = pOutcol. data;
@@ -60,8 +60,8 @@ namespace lnx::shd::gsi{
 		struct l_zbuff : public ShaderElm_b<eStorage> {
 			alwaysInline l_zbuff(const bool vExt) {}
 			inline l_zbuff() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b:: data.realloc(256);
+				ShaderElm_b::vdata.realloc(0);
+				ShaderElm_b:: data.realloc(0);
 			}
 			inline l_zbuff (const l_zbuff& pZbuff) {
 				ShaderElm_b:: data = pZbuff. data;

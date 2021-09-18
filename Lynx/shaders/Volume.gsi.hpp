@@ -18,8 +18,8 @@ namespace lnx::shd::gsi{
 		struct l_outcol : public ShaderElm_b<eStorage> {
 			alwaysInline l_outcol(const bool vExt) {}
 			inline l_outcol() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b:: data.realloc(256);
+				ShaderElm_b::vdata.realloc(512);
+				ShaderElm_b:: data.realloc(512);
 			}
 			inline l_outcol (const l_outcol& pOutcol) {
 				ShaderElm_b:: data = pOutcol. data;
@@ -31,7 +31,9 @@ namespace lnx::shd::gsi{
 				return *this;
 				//FIXME automatically update render data after calling this function
 			}
-			f32v4& outcol = *(f32v4*)(ShaderElm_b::data + 0);
+			f32v4& arrayh = *(f32v4*)(ShaderElm_b::data + 0);
+			i32& valueh = *(i32*)(ShaderElm_b::data + 480);
+			f32v4& outcol = *(f32v4*)(ShaderElm_b::data + 496);
 		};
 		l_outcol outcol{ true };
 

@@ -18,7 +18,7 @@ layout(std430, binding = 0) buffer ext_outcol{ vec4 outcol[]; };
 layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
 layout(std430, binding = 2) buffer ext_zbuff{ uint zbuff[]; };
 
-layout(binding = 3) uniform _data{
+layout(std140, binding = 3) uniform _data{
 	vec2 fp0;   	//Position of the first point
 	vec2 fp1;		//Position of the second point
 	vec4 col0;		//Color of the first point

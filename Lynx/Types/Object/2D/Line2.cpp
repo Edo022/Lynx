@@ -19,7 +19,7 @@ namespace lnx::obj{
 	void Line2::onLimit() {
 		obj2_b::onLimit();
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
-		data._data.fp0() = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
-		data._data.fp1() = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
+		data._data.fp0 = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
+		data._data.fp1 = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
 	}
 }
