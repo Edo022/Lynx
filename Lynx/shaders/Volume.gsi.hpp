@@ -9,42 +9,85 @@
 
 
 
-namespace lnx::shd{
+namespace lnx::shd::gsi{
     struct Volume : public ShaderInterface_b {
         static ShaderInterface_b::Layout layout;
         static uint32 pipelineIndex;
 
 
-		struct outcol_t : public ShaderElm_b<eStorage> {
-		    outcol_t() {
-		        ShaderElm_b::bind = 0;
-		    }
-		} outcol;
+		struct l_outcol : public ShaderElm_b<eStorage> {
+			alwaysInline l_outcol(const bool vExt) {}
+			inline l_outcol() {
+				ShaderElm_b::vdata.realloc(256);
+				ShaderElm_b:: data.realloc(256);
+			}
+			inline l_outcol (const l_outcol& pOutcol) {
+				ShaderElm_b:: data = pOutcol. data;
+				ShaderElm_b::vdata = pOutcol.vdata;
+			}
+			inline l_outcol& operator=(const l_outcol& pOutcol) {
+				ShaderElm_b:: data = pOutcol. data;
+				ShaderElm_b::vdata = pOutcol.vdata;
+				return *this;
+				//FIXME automatically update render data after calling this function
+			}
+			f32v4& outcol = *(f32v4*)(ShaderElm_b::data + 0);
+		};
+		l_outcol outcol{ true };
 
 
-		struct wsize_t : public ShaderElm_b<eStorage> {
-		    wsize_t() {
-		        ShaderElm_b::bind = 1;
-		    }
-		} wsize;
+		struct l_wsize : public ShaderElm_b<eStorage> {
+			alwaysInline l_wsize(const bool vExt) {}
+			inline l_wsize() {
+				ShaderElm_b::vdata.realloc(256);
+				ShaderElm_b:: data.realloc(256);
+			}
+			inline l_wsize (const l_wsize& pWsize) {
+				ShaderElm_b:: data = pWsize. data;
+				ShaderElm_b::vdata = pWsize.vdata;
+			}
+			inline l_wsize& operator=(const l_wsize& pWsize) {
+				ShaderElm_b:: data = pWsize. data;
+				ShaderElm_b::vdata = pWsize.vdata;
+				return *this;
+				//FIXME automatically update render data after calling this function
+			}
+			u32v2& wsize = *(u32v2*)(ShaderElm_b::data + 0);
+		};
+		l_wsize wsize{ true };
 
 
-		struct _data_t : public ShaderElm_b<eUniform> {
-		    _data_t() {
-		        ShaderElm_b::vdata.realloc(256);
-		        ShaderElm_b:: data.realloc(256);
-		        ShaderElm_b::bind = 2;
-		    }
-		alwaysInline f32v3& pos() { return *(f32v3*)ShaderElm_b::data; }
-		alwaysInline f32& r() { return *(f32*)(ShaderElm_b::data + 16); }
-		alwaysInline f32v4& col() { return *(f32v4*)(ShaderElm_b::data + 32); }
-		} _data;
+		struct l__data : public ShaderElm_b<eUniform> {
+			alwaysInline l__data(const bool vExt) {}
+			inline l__data() {
+				ShaderElm_b::vdata.realloc(256);
+				ShaderElm_b:: data.realloc(256);
+			}
+			inline l__data (const l__data& p_data) {
+				ShaderElm_b:: data = p_data. data;
+				ShaderElm_b::vdata = p_data.vdata;
+			}
+			inline l__data& operator=(const l__data& p_data) {
+				ShaderElm_b:: data = p_data. data;
+				ShaderElm_b::vdata = p_data.vdata;
+				return *this;
+				//FIXME automatically update render data after calling this function
+			}
+			f32v3& pos = *(f32v3*)(ShaderElm_b::data + 0);
+			f32& r = *(f32*)(ShaderElm_b::data + 16);
+			f32v4& col = *(f32v4*)(ShaderElm_b::data + 32);
+		};
+		l__data _data{ true };
 
 
-		void create(vram::ptr<f32v4, eVRam, eStorage> pOutcol, vram::ptr<u32v2, eVRam, eStorage> pWsize, const u32v3 vGroupCount, core::RenderCore& pRenderCore);
+		void create(
+			const l_outcol& pOutcol,
+			const l_wsize& pWsize,
+			const u32v3 vGroupCount, core::RenderCore& pRenderCore
+		);
 		void createDescriptorSets();
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
     };
-}//TODO remove local data in external bindings
+}

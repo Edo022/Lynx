@@ -174,13 +174,13 @@ if args.e is False: cmd += [                                    #When building u
     '-DenginePath="' + rePath + '"',                                #Define engine path function #FIXME
     rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
     rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
-    './.engine/Build/' + _pf + '/Lynx' + _cf                    #Add engine binaries
+    './.engine/Build/' + _pf + '/Lynx' + _cf                        #Add engine binaries
 ]
 
 if not args.e: cmd += [                                         #When building user application
     '-I' + '.',                                                     #Add workspace include path
     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
-    '-lvulkan', '-Bstatic', '-lglfw'                               #Link Vulkan dynamically and GLFW statically
+    '-lvulkan', '-Bstatic', '-lglfw'                                #Link Vulkan dynamically and GLFW statically
 ]
 
 
@@ -232,7 +232,7 @@ if len(cmdsh) > 0:
         runCmd(['spirv-val', files[0] + '.spv'], args.v)
         if args.v == 3:
             print('\033[35mGenerating interface files...\033[0m')
-        r = GlslToCpp.parseShader(files[0] + '.comp', _pf)
+        r = GlslToCpp.parseShader(files[0] + '.comp', _pf, rePath, args.e)
         if r != 0: sys.exit(r)
     print('\n')
 

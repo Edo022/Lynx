@@ -18,10 +18,12 @@ namespace lnx{
 
 
 namespace lnx::shd{
+	//FIXME dont use this struct. Write custom struct on the fly
+	//FIXME add option to not allow cpu access (no data pointer. just vdata)
 	template<bufferType tBufft> struct ShaderElm_b {
 		vram::ptr<char, eVRam, tBufft> vdata;					//Gpu data
 		ram::ptr<char>                 data;					//Local data copy
-		uint32                         bind;					//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
+		// uint32                         bind;					//GLSL binding point //FIXME PROBABLY USELESS. REMOVE
 	};
 
 

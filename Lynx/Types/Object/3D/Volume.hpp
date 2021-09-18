@@ -18,7 +18,7 @@ namespace lnx{
 
     struct Volume : public obj::RenderObj3{
     private:
-        shd::Volume data;
+        shd::gsi::Volume data;
         RaArray<Octree> hbx_nodes; //TODO ?? remove?
 
     public:
@@ -37,9 +37,9 @@ namespace lnx{
             });
 
 
-            data._data.col() = {1,0,0,1};
-            data._data.pos() = {0,0,0};
-            data._data.r() = 1;
+            data._data.col = {1,0,0,1};
+            data._data.pos = {0,0,0};
+            data._data.r = 1;
         }
 
         //TODO specify that this function must be overridden in order to make things work

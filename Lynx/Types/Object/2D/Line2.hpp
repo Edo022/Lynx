@@ -41,11 +41,11 @@ namespace lnx::obj {
 		Line2(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			setFp(pFp);
 			setSp(pSp);
-			data._data.col0() = pFc;
-			data._data.col1() = pSc;
-			data._data.wd0() = vFw;
-			data._data.wd1() = vSw;
-			data._data.ID() = (uint32)ID;
+			data._data.col0 = pFc;
+			data._data.col1 = pSc;
+			data._data.wd0 = vFw;
+			data._data.wd1 = vSw;
+			data._data.ID = (uint32)ID;
 
 		}
 
@@ -57,7 +57,7 @@ namespace lnx::obj {
 		// void recalculateCoords() final {
 		void onLimit() final override;
 
-		shd::Line2 data;
+		shd::gsi::Line2 data;
 	};
 }
 
