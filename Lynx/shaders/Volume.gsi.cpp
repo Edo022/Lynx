@@ -37,10 +37,10 @@ namespace lnx::shd::gsi{
 			vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount(1)
 		};
 		auto poolInfo = vk::DescriptorPoolCreateInfo()
-			.setFlags		 (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)
-			.setMaxSets	   (1)
+			.setFlags         (vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet)
+			.setMaxSets       (1)
 			.setPoolSizeCount (2)
-			.setPPoolSizes	(sizes)
+			.setPPoolSizes    (sizes)
 		;
 		switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
 			case vk::Result::eErrorFragmentationEXT:  dbg::logError("Fragmentation error");  break;
@@ -50,12 +50,12 @@ namespace lnx::shd::gsi{
 
 
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
-			.setDescriptorPool	 (descriptorPool)
+			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts		(&Volume::layout.descriptorSetLayout)
+			.setPSetLayouts        (&Volume::layout.descriptorSetLayout)
 		;
 		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
-			case vk::Result::eErrorFragmentedPool:	dbg::logError("Fragmented pool");	  break;
+			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
 			case vk::Result::eErrorOutOfPoolMemory:   dbg::logError("Out of pool memory");   break;
 			vkDefaultCases;
 		}
@@ -69,11 +69,11 @@ namespace lnx::shd::gsi{
 			.setRange  (_data.vdata.cell->cellSize)
 		;
 		writeSets[0] = vk::WriteDescriptorSet()
-			.setDstSet		  (descriptorSet)
-			.setDstBinding	  (2)
+			.setDstSet          (descriptorSet)
+			.setDstBinding      (2)
 			.setDescriptorCount (1)
 			.setDescriptorType  (vk::DescriptorType::eUniformBuffer)
-			.setPBufferInfo	 (&bufferInfo0)
+			.setPBufferInfo     (&bufferInfo0)
 		;
 		core::dvc::graphics.ld.updateDescriptorSets(1, writeSets, 0, nullptr);
 	}
@@ -85,99 +85,99 @@ namespace lnx::shd::gsi{
 
 
 
-	void Volume::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
-		auto allocateCbInfo = vk::CommandBufferAllocateInfo()
-			.setCommandPool		(pRenderCore.commandPool)
-			.setLevel			  (vk::CommandBufferLevel::ePrimary)
-			.setCommandBufferCount (1)
+void Volume::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	auto allocateCbInfo = vk::CommandBufferAllocateInfo()
+		.setCommandPool        (pRenderCore.commandPool)
+		.setLevel              (vk::CommandBufferLevel::ePrimary)
+		.setCommandBufferCount (1)
+	;
+	commandBuffers.resize(1);
+	switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
+
+	auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
+	switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
+	commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Volume::pipelineIndex]);
+	commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Volume::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
+	switch(commandBuffers[0].end()){ vkDefaultCases; }
+}
+
+
+
+
+
+
+
+
+void Volume::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
+	auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
+	switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
+	commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Volume::pipelineIndex]);
+	commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Volume::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+	commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
+	switch(commandBuffers[0].end()){ vkDefaultCases; }
+}
+
+
+
+
+
+
+
+
+void Volume::destroy(){
+	//TODO
+}
+
+
+
+
+
+
+
+
+ShaderInterface_b::Layout Volume::layout;
+uint32 Volume::pipelineIndex = core::shaders::pipelineNum++;
+LnxAutoInit(LNX_H_VOLUME){
+	core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
+	core::shaders::pipelineLayouts[Volume::pipelineIndex] = &Volume::layout;
+	{ //Create descriptor set layout
+		vk::DescriptorSetLayoutBinding bindingLayouts[1];
+		bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
+			.setBinding            (2)
+			.setDescriptorType     (vk::DescriptorType::eUniformBuffer)
+			.setDescriptorCount    (1)
+			.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
+			.setPImmutableSamplers (nullptr)
 		;
-		commandBuffers.resize(1);
-		switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
 
-		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline	   (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Volume::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Volume::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch		   (vGroupCount.x, vGroupCount.y, vGroupCount.z);
-		switch(commandBuffers[0].end()){ vkDefaultCases; }
+		auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
+			.setBindingCount (1)
+			.setPBindings    (bindingLayouts)
+		;
+		//Create the descriptor set layout
+		switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Volume::layout.descriptorSetLayout)){ vkDefaultCases; }
 	}
 
 
 
 
+	{ //Create pipeline layout
+		uint64 fileLength = 0;
+		uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Volume.spv").begin());
+		Volume::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
+		Volume::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+			.setStage  (vk::ShaderStageFlagBits::eCompute)
+			.setModule (Volume::layout.shaderModule)
+			.setPName  ("main")
+		;
 
-
-
-	void Volume::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
-		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
-		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline	   (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Volume::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Volume::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
-		commandBuffers[0].dispatch		   (vGroupCount.x, vGroupCount.y, vGroupCount.z);
-		switch(commandBuffers[0].end()){ vkDefaultCases; }
+		auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
+			.setSetLayoutCount (1)
+			.setPSetLayouts    (&Volume::layout.descriptorSetLayout)
+		;
+		switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Volume::layout.pipelineLayout)){ vkDefaultCases; }
 	}
-
-
-
-
-
-
-
-
-	void Volume::destroy(){
-		//TODO
-	}
-
-
-
-
-
-
-
-
-	ShaderInterface_b::Layout Volume::layout;
-	uint32 Volume::pipelineIndex = core::shaders::pipelineNum++;
-	LnxAutoInit(LNX_H_VOLUME){
-		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
-		core::shaders::pipelineLayouts[Volume::pipelineIndex] = &Volume::layout;
-		{ //Create descriptor set layout
-			vk::DescriptorSetLayoutBinding bindingLayouts[1];
-			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
-				.setBinding			(2)
-				.setDescriptorType	 (vk::DescriptorType::eUniformBuffer)
-				.setDescriptorCount	(1)
-				.setStageFlags		 (vk::ShaderStageFlagBits::eCompute)
-				.setPImmutableSamplers (nullptr)
-			;
-
-			auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()
-				.setBindingCount (1)
-				.setPBindings	(bindingLayouts)
-			;
-			//Create the descriptor set layout
-			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Volume::layout.descriptorSetLayout)){ vkDefaultCases; }
-		}
-
-
-
-
-		{ //Create pipeline layout
-			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Volume.spv").begin());
-			Volume::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
-
-			Volume::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
-				.setStage  (vk::ShaderStageFlagBits::eCompute)
-				.setModule (Volume::layout.shaderModule)
-				.setPName  ("main")
-			;
-
-			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
-				.setSetLayoutCount (1)
-				.setPSetLayouts	(&Volume::layout.descriptorSetLayout)
-			;
-			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Volume::layout.pipelineLayout)){ vkDefaultCases; }
-		}
-	}
+}
 }
