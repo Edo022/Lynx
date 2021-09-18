@@ -76,13 +76,15 @@ def parseElms(glsl:str) :
         if rInfo['iArr'] == None:    aLen = None                        # None if the element is not an array
         elif len(rInfo['aLen']) > 0: aLen = eval(rInfo['aLen'])         # Evaulate the expression if it is
 
+        size:int = align * aLen if aLen != None else align          # Calculate element size #FIXME add std140 support
         elms += [ns(**{                                             # Save element informations
             'type': typeName[rInfo['type']],                            # Get the type and translate it to C++
-            'name': rInfo['name'] ,                                     # Get the name from regex
+            'name': rInfo['name'],                                      # Get the name from regex
+            'size': size,                                               # Save the size of the element
             'aLen': aLen,                                               # Save the array length
             'ofst': offset                                              # Save the calculated offset
-        })]                                                         #
-        offset += align * aLen if aLen != None else 1               # Calculate raw offset for the next element #TODO check if this actually works
+        })]                                                        #
+        offset += size                                             # Calculate raw offset for the next element #TODO check if this actually works
 
 
     # Return a dictionary containing the translated members, the external bindings and the padded structure size
@@ -158,6 +160,7 @@ def getLayouts(glsl:str):
         │   ├─ elms:list                A list of elements
         │   │   ├─ type:str                 The corresponding C++ type of the element
         │   │   ├─ name:str                 The name of the element
+        │   │   ├─ size:int                 The size of the element in bytes
         │   │   ├─ aLen:int                 The length of the array, or None if the element is not an array
         │   │   └─ ofst:int                 The offset of the element in the memory allocation, in bytes
         │   └─ size:int                 The size of the required allocation in bytes
@@ -337,7 +340,8 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 			f"\n    }}" +
             # Member references
             f""     ''.join((
-            f"\n    { m.type }& { m.name } = *({ m.type }*)(ShaderElm_b::data + { m.ofst });"
+            f"\n    { m.type }& { m.name } = *({ m.type }*)(ShaderElm_b::data + { m.ofst });" + ('' if m.aLen == None else
+            f"\n    uint64 { m.name }_tmp_size = { m.size };") + #TODO use an actual array #FIXME use an array that automatically reallocates the whole block when resizing the unknown size array
             f""     ) for m in l.elms) + #! offset includes the length of the arrays ^
             f"\n}};"
             f"\n{ l.cstr } { l.name }{{ true }};"
@@ -349,7 +353,6 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 
         # Write the shader create functions
         fh.write('\n\n' + fixTabs(
-            #FIXME CHECK IF EXTERNS NAMES CONFLICT WITH HARD CODED FUNCTION PARAMETERS NAMES
             f"\nvoid create(" + (
             f""     ','.join((
             f"\n    const { e.cstr }& p{ capitalize1(e.name) }")for e in externs) + ','
@@ -511,7 +514,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n"
             f"\n    {{ //Create pipeline layout"
             f"\n        uint64 fileLength = 0;"
-            f"\n        uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + \"{ shName }.spv\").begin());" #TODO EVALUATE SHADER PATH AT RUNTIME
+            f"\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ incShPath }/{ shName }.spv\");"
             f"\n        { shName }::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);"
             f"\n"
             f"\n        { shName }::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()"

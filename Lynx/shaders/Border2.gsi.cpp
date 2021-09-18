@@ -166,7 +166,7 @@ LnxAutoInit(LNX_H_BORDER2){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Border2.spv").begin());
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/Border2.spv");
 		Border2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

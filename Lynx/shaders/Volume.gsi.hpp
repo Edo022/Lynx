@@ -32,8 +32,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 			}
 			f32v4& arrayh = *(f32v4*)(ShaderElm_b::data + 0);
+			uint64 arrayh_tmp_size = 480;
 			i32& valueh = *(i32*)(ShaderElm_b::data + 480);
 			f32v4& outcol = *(f32v4*)(ShaderElm_b::data + 496);
+			uint64 outcol_tmp_size = 0;
 		};
 		l_outcol outcol{ true };
 

@@ -148,7 +148,7 @@ LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "FloatToIntBuffer.spv").begin());
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/FloatToIntBuffer.spv");
 		FloatToIntBuffer::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

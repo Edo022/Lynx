@@ -32,6 +32,7 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 			}
 			f32v4& src = *(f32v4*)(ShaderElm_b::data + 0);
+			uint64 src_tmp_size = 0;
 		};
 		l_src src{ true };
 
@@ -53,6 +54,7 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 			}
 			u32& dst = *(u32*)(ShaderElm_b::data + 0);
+			uint64 dst_tmp_size = 0;
 		};
 		l_dst dst{ true };
 
@@ -95,6 +97,7 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 			}
 			u32& zbuff = *(u32*)(ShaderElm_b::data + 0);
+			uint64 zbuff_tmp_size = 0;
 		};
 		l_zbuff zbuff{ true };
 

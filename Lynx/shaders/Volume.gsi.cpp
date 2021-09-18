@@ -164,7 +164,7 @@ LnxAutoInit(LNX_H_VOLUME){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, (core::shaders::shaderPath + "Volume.spv").begin());
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/Volume.spv");
 		Volume::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		Volume::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
