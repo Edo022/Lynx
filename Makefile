@@ -2,37 +2,80 @@
 
 .DEFAULT_GOAL := all
 
-CPP=g++ # Compiler, changed by the script when building for windows
-CPPFLAGS=-std=c++20 -I. # Default flags, left unchanged
-CPPFLAGS+=$(flags) # extra flags passed by the script
+CPP=g++ # Engine compiler, may be changed by the script for building on windows
+ECPPFLAGS=-std=c++20 -I. # Default engine flags, left unchanged
+ACPPFLAGS=-std=c++20 # Default application flags, left unchanged
+ECPPFLAGS+=$(EFLAGS) # extra flags passed by the script
+ACPPFLAGS+=$(AFLAGS) # extra flags passed by the script
 ENGINELIB=$(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a # path to the engine static library
 # APP = path/to/application, passed by the script
-# SRC = path/to/engine/file1.cpp path/to/engine/file2.cpp, passed by script
-# OUTPUT = platform/mode, passed by script to determine the correct output for the build mode
+# ESRC = path/to/engine/file1.cpp path/to/engine/file2.cpp, passed by the script
+# ASRC = path/to/application/file1.cpp path/to/application/file2.cpp, passed by the script
+# OUTPUT = platform/mode, passed by the script to determine the correct output for the build mode
+PLATFORM=$(shell printf $(TEST) | sed "s/\(.\+\)\/.\+/\1/g") # Get platform from output
+# ECOMP = path/to/shader1.comp path/to/shader2.comp, passed by the script
+ESHADERS=$(ECOMP:.comp=.spv) # Remove comp extension
+# ACOMP = path/to/shader1.comp path/to/shader2.comp (application shaders), passed by the script
+ASHADERS=$(ACOMP:.comp=.spv) # Remove comp extension
 
 
+# ------------------------------------------ ENGINE ------------------------------------------ 
 
-ifneq ($(SRC),) # Check if there are source files
-EBINS=$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(SRC:.cpp=.o)))
+
+ifneq ($(ESRC),) # Check if there are engine source files
+EBINS=$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(ESRC:.cpp=.o))) # Get the binary path from each cpp file
+
+engine: $(ENGINELIB)
 
 # Build libLynxEngine.a rebuilds if Lynx/Lynx_config.hpp is changed
-$(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS)
-	ar -rcs ./bin/lynxengine.a $(filter-out $<,$^)
+$(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS)
+	ar -rcs $(ENGINELIB) $(filter-out $<,$^)
 
-else # If there aren't, don't try to build
-$(ENGINELIB):
-	@>&2 echo "Missing source files"
+
+# Build engine object files
+$(EBINS): $(ESRC)
+	$(CPP) $(ECPPFLAGS) --include Lynx/Lynx_config.hpp -c $< -o $@
+
+
+# generate .spv, .cpp and .hpp files from the shaders
+$(ESHADERS): $(ECOMP)
+	glslangValidator -V $< -o $@
+	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . e
+
+# remove all engine files
+clean_engine:
+	cd $(APP)/.engine/bin/Engine; \
+	@-find . -type f  ! -name "*.*" -delete; \
+	@-find . -type f -name "*.o" -delete; \
+	@-find . -type f -name "*.exe" -delete
+
+
 endif
 
-engine: $(ENGINELIB) # make engine forces engine to be rebuilt
 
-all: $(ENGINELIB) application # make/make all build the engine if necessary and the application every time
+
+
+# ------------------------------------------ APPLICATION ------------------------------------------ 
 
 
 ifneq ($(APP),) # check if APP is passed
-application: $(ENGINELIB) # The application requires the engine static library, if not available or outdated it's rebuilt
-	cd $(APP); \
-	# TODO Build Commands	
+ifneq ($(ASRC),) # Check if there are application source files
+ABINS=$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT),$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
+
+
+application: $(ENGINELIB) $(ABINS) $(ASHADERS) # The application requires the engine static library, if not available or outdated it's rebuilt
+
+
+# Build application object files
+$(ABINS): $(ASRC)
+	$(CPP) $(ACPPFLAGS) -c $< -o $@
+
+
+
+$(ASHADERS): $(ACOMP)
+	glslangValidator -V $< -o $@
+	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . a
+
 
 clean_application: # delete all object and executable files (including Windows .exe files)
 	cd $(APP)/.engine/bin/Application; \
@@ -42,23 +85,15 @@ clean_application: # delete all object and executable files (including Windows .
 
 
 
-else # if APP is not passed don't build
-application:
-	@>&2 echo "Missing application path"
-clean_application:
-	@>&2 echo "Missing application path"
+
+
+endif
 endif
 
 
-# Build engine object files
-$(EBINS): $(SRC)
-	$(CPP) $(CPPFLAGS) --include Lynx/Lynx_config.hpp -c $< -o $@
+
+all: $(ENGINELIB) application # make/make all builds the engine if necessary and the application every time
 
 clean: clean_engine clean_application # make clean removes every single object and executable file
 
-# remove all engine files
-clean_engine:
-	cd $(APP)/.engine/bin/Engine; \
-	@-find . -type f  ! -name "*.*" -delete; \
-	@-find . -type f -name "*.o" -delete; \
-	@-find . -type f -name "*.exe" -delete
+
