@@ -71,7 +71,7 @@ $(EBINS): $(ESRC)
 # Build engine spir-v files and generate shader interfaces
 $(ESHADERS): $(ECOMP)
 	glslangValidator -V $< -o $@
-	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . e
+	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} e
 
 #Build engine generated shader interfaces .cpp s
 $(ESHADERSO): $(ESHADERS)
@@ -113,7 +113,7 @@ $(ABINS): $(ASRC)
 # Build application spir-v files and generate shader interfaces
 $(ASHADERS): $(ACOMP)
 	glslangValidator -V $< -o $@
-	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . a
+	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} a
 
 
 
