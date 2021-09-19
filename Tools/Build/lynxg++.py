@@ -162,26 +162,26 @@ while i < len(cmd):
 
 #Build G++ command
 
-cmd = ['g++', '-pthread', '-I' + rePath] + cmd                  #Default g++ call, , pthread, include project root
-cmd += ['-std=c++20', '-m64', '-L/usr/lib64', '-L/lib64']       #Use C++20, build for 64bit environments, prefer 64bit libraries
-cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
-cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
+# cmd = ['g++', '-pthread', '-I' + rePath] + cmd                  #Default g++ call, , pthread, include project root
+# cmd += ['-std=c++20', '-m64', '-L/usr/lib64', '-L/lib64']       #Use C++20, build for 64bit environments, prefer 64bit libraries
+# cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
+# cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
 if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
-cmd += ['-ffile-prefix-map=' + apPath + '=']                    #Fix file prefix
+# cmd += ['-ffile-prefix-map=' + apPath + '=']                    #Fix file prefix
 
+if args.e is False:
+    cmd += [ f'-DenginePath="{ rePath }"' ]    #Define engine path function
 
-if args.e is False: cmd += [                                    #When building user application
-    '-DenginePath="' + rePath + '"',                                #Define engine path function #FIXME
-    rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
-    rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
-    './.engine/Build/' + _pf + '/Lynx' + _cf                        #Add engine binaries
-]
+#     rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
+#     rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
+#     './.engine/Build/' + _pf + '/Lynx' + _cf                        #Add engine binaries
+# ]
 
-if not args.e: cmd += [                                         #When building user application
-    '-I' + '.',                                                     #Add workspace include path
-    '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
-    '-lvulkan', '-Bstatic', '-lglfw'                                #Link Vulkan dynamically and GLFW statically
-]
+# if not args.e: cmd += [                                         #When building user application
+#     '-I' + '.',                                                     #Add workspace include path
+#     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
+#     '-lvulkan', '-Bstatic', '-lglfw'                                #Link Vulkan dynamically and GLFW statically
+# ]
 
 
 

@@ -2,30 +2,59 @@
 
 .DEFAULT_GOAL := all
 
-CPP=g++ # Engine compiler, may be changed by the script for building on windows
-ECPPFLAGS=-std=c++20 -I. # Default engine flags, left unchanged
-ACPPFLAGS=-std=c++20 # Default application flags, left unchanged
-ECPPFLAGS+=$(EFLAGS) # extra flags passed by the script
-ACPPFLAGS+=$(AFLAGS) # extra flags passed by the script
-ENGINELIB=$(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a # path to the engine static library
-# APP = path/to/application, passed by the script
-# ESRC = path/to/engine/file1.cpp path/to/engine/file2.cpp, passed by the script
-# ASRC = path/to/application/file1.cpp path/to/application/file2.cpp, passed by the script
-# OUTPUT = platform/mode, passed by the script to determine the correct output for the build mode
-PLATFORM=$(shell printf $(TEST) | sed "s/\(.\+\)\/.\+/\1/g") # Get platform from output
-# ECOMP = path/to/shader1.comp path/to/shader2.comp, passed by the script
-ESHADERS=$(ECOMP:.comp=.spv) # 
-ESHADERSO=$(ECOMP:.comp=.o)
-# ACOMP = path/to/shader1.comp path/to/shader2.comp (application shaders), passed by the script
-ASHADERS=$(ACOMP:.comp=.spv) # 
-ASHADERSO=$(ACOMP:.comp=.o)
 
 
-# ----------------------------------------- ENGINE ------------------------------------------ 
+
+CPP = g++   														# Path to the compiler. Changed by the wrapper when building for Windows
+# OUTPUT  = Platform/Mode											# Output path suffix based on build configuration and target platform	#! Passed by the wrapper
+# APP     = path/to/application										# Path to the user application											#! Passed by the wrapper
+XPLATFORM  = $(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g") 	# Get target platform from output path
+ENGINELIB = $(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a 	# Path to the engine static library
+
+# EFLAGS  =															# User defined engine flags from the wrapper
+ECPPFLAGS = 														# Default engine flags
+    ECPPFLAGS += $(EFLAGS)												# Append user defined flags
+
+# AFLAGS  =															# User defined application flags from the wrapper
+ACPPFLAGS =  														# Default application flags
+    ACPPFLAGS += ./getEnginePath.cpp', ./Core/Env.cpp 					# Add runtime environment variables
+    ACPPFLAGS += -L/usr/lib64 -L/lib64 									# Prefer 64bit libraries						#TODO fix windows build
+    ACPPFLAGS += -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11		# Link dependencies								#TODO fix windows build
+    ACPPFLAGS += -lvulkan -Bstatic -lglfw								# Link Vulkan dynamically and GLFW statically	#TODO fix windows build
+    ACPPFLAGS += $(AFLAGS)												# Append user defined flags
 
 
-ifneq ($(ESRC),) # Check if there are engine source files
-EBINS=$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(ESRC:.cpp=.o))) # Get the binary path from each cpp file
+SCPPFLAGS =															# Shared C++ default flags
+    SCPPFLAGS += -pthread -I.											# Default g++ call, pthread, include project root
+    SCPPFLAGS += -std=c++20 -m64 										# Use C++20, build for 64bit environments
+    SCPPFLAGS += -include Lynx/Core/VkDef.hpp							# Include forced vulkan macros
+    SCPPFLAGS += -include Lynx/Lynx_config.hpp							# Include engine configuration macros
+    SCPPFLAGS += -ffile-prefix-map=$(APP)=								# Fix file prefix in debug infos
+
+
+
+
+# ESRC      = path/to/engine/file1.cpp...	# Engine C++  source files #! Passed by the wrapper
+# ECOMP     = path/to/shader1.comp...		# Engine GLSL source files #! Passed by the wrapper
+ESHADERS    = $(ECOMP:.comp=.spv)			# Get output spir-v files
+ESHADERSO   = $(ECOMP:.comp=.o)				# Get output .o files for generated shader interfaces
+
+# ASRC      = path/to/app/file1.cpp...		# Application C++  source files #! Passed by the wrapper
+# ACOMP     = path/to/shader1.comp...		# Application GLSL source files #! Passed by the wrapper
+ASHADERS    = $(ACOMP:.comp=.spv)			# Get output spir-v files
+ASHADERSO   = $(ACOMP:.comp=.o)				# Get output .o files for generated shader interfaces
+
+
+
+
+# ----------------------------------------- ENGINE ------------------------------------------
+
+
+
+# Check if there are engine source files
+ifneq ($(ESRC),)
+# Get the binary path from each cpp file
+EBINS = $(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(ESRC:.cpp=.o)))
 
 engine: $(ENGINELIB)
 
@@ -36,19 +65,20 @@ $(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
 
 # Build engine object files
 $(EBINS): $(ESRC)
-	$(CPP) $(ECPPFLAGS) --include Lynx/Lynx_config.hpp -c $< -o $@
+	$(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@
 
 
-# generate .spv, .cpp and .hpp files from the shaders
+# Build engine spir-v files and generate shader interfaces
 $(ESHADERS): $(ECOMP)
 	glslangValidator -V $< -o $@
 	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . e
 
+#Build engine generated shader interfaces .cpp s
 $(ESHADERSO): $(ESHADERS)
-	$(CPP) $(ECPPFLAGS) --include Lynx/Lynx_config.hpp -c $(<:.spv=.gsi.cpp) -o $@
+	$(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
 
-# remove all engine files
+# Remove all the engine files
 clean_engine:
 	cd $(APP)/.engine/bin/Engine; \
 	@-find . -type f  ! -name "*.*" -delete; \
@@ -61,36 +91,40 @@ endif
 
 
 
-# ------------------------------------------ APPLICATION ------------------------------------------ 
+# ------------------------------------------ APPLICATION ------------------------------------------
 
 
-ifneq ($(APP),) # check if APP is passed
-ifneq ($(ASRC),) # Check if there are application source files
-ABINS=$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT),$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
 
 
-application: $(ENGINELIB) $(ABINS) $(ASHADERS) # The application requires the engine static library, if not available or outdated it's rebuilt
+ifneq ($(APP),)		# check if APP is passed
+ifneq ($(ASRC),) 	# Check if there are application source files
+ABINS = $(addprefix $(APP)/.engine/bin/Application/$(OUTPUT),$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
+
+
+# The application requires the engine static library, if not available or outdated it's rebuilt
+application: $(ENGINELIB) $(ABINS) $(ASHADERS)
 
 
 # Build application object files
 $(ABINS): $(ASRC)
-	$(CPP) $(ACPPFLAGS) -c $< -o $@
+	$(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $< -o $@
 
 
-
+# Build application spir-v files and generate shader interfaces
 $(ASHADERS): $(ACOMP)
 	glslangValidator -V $< -o $@
 	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . a
 
 
 
+#Build application generated shader interfaces .cpp s
 $(ASHADERSO): $(ASHADERS)
-	$(CPP) $(ACPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
+	$(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
 
 
-
-clean_application: # delete all object and executable files (including Windows .exe files)
+# Delete all the object and executable files (including Windows .exe files)
+clean_application:
 	cd $(APP)/.engine/bin/Application; \
 	@-find . -type f  ! -name "*.*" -delete; \
 	@-find . -type f -name "*.o" -delete; \
@@ -105,8 +139,10 @@ endif
 
 
 
-all: $(ENGINELIB) application # make/make all builds the engine if necessary and the application every time
+# make/make all builds the application and the engine, if necessary
+all: $(ENGINELIB) application
 
-clean: clean_engine clean_application # make clean removes every single object and executable file
+# make clean removes every object and executable file
+clean: clean_engine clean_application
 
 
