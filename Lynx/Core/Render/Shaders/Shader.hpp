@@ -7,7 +7,7 @@
 
 
 namespace lnx::core{
-	struct RenderCore;
+	class RenderCore;
 }
 namespace lnx::core::shaders{
 	extern String shaderPath;	//Path to the shaders folder //TODO EVALUATE AT RUNTIME

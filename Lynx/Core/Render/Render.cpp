@@ -164,7 +164,7 @@ namespace lnx{
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
 			createDefaultCommandBuffers__(); //[m]
 		}
-		sh_clear.create(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *this);
+		sh_clear.spawn(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *this);
 	}
 
 

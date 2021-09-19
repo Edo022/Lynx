@@ -95,7 +95,7 @@ namespace lnx{
 			vk::CommandPool commandPool;
 			vk::CommandPool copyCommandPool;
 			RtArray<vk::CommandBuffer> copyCommandBuffers;
-			shd::FloatToIntBuffer sh_clear;
+			shd::gsi::FloatToIntBuffer sh_clear;
 
 			std::mutex addObject_m;
 			RtArray<obj::obj_bb*> requests; //TODO USE RAARRAY
