@@ -2,38 +2,47 @@
 
 .DEFAULT_GOAL := all
 
-CPP=g++
-CPPFLAGS=-std=c++20 -I. -Ofast -g3
-CPPFLAGS+=$(flags)
-ifneq ($(SRC),)
-# SRC=Lynx/System/SystemInfo.cpp Lynx/Tests/StructureInit.cpp Lynx/Core/Memory/Ram/Ram.cpp Lynx/Core/Memory/Ram/Cell_t.cpp Lynx/System/System.cpp Lynx/Core/Devices.cpp Lynx/Core/Memory/VRam/VRam.cpp Lynx/Core/Memory/VRam/VCell_t.cpp Lynx/Core/Render/GCommands.cpp Lynx/Core/Render/Shaders/Shader.cpp Lynx/Core/Render/Window/Window.cpp Lynx/Core/Render/Window/Swapchain.cpp Lynx/Core/Core.cpp Lynx/Threads/ThreadPool.cpp Lynx/Types/Object/Obj_b.cpp Lynx/Types/Object/2D/Line2.cpp Lynx/Types/Object/2D/Border2.cpp Lynx/Types/Object/2D/RenderSpace2.cpp Lynx/Types/Object/2D/RenderSpace3.cpp Lynx/Types/Object/3D/Volume.cpp Lynx/shaders/Line2.cpp Lynx/shaders/Border2.cpp Lynx/shaders/FloatToIntBuffer.cpp Lynx/shaders/3DTest.cpp Lynx/Core/Render/Buffers.cpp Lynx/Core/Render/Render.cpp Lynx/Core/Input/Input.cpp Lynx/Core/Input/InputState.cpp
-BINS=$(addprefix ./bin/,$(shell basename -a $(SRC:.cpp=.o)))
+CPP=g++ # Compiler, changed by the script when building for windows
+CPPFLAGS=-std=c++20 -I. # Default flags, left unchanged
+CPPFLAGS+=$(flags) # extra flags passed by the script
+ENGINELIB=$(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a # path to the engine static library
+# APP = path/to/application, passed by the script
+# SRC = path/to/engine/file1.cpp path/to/engine/file2.cpp, passed by script
+# OUTPUT = platform/mode, passed by script to determine the correct output for the build mode
 
 
-./bin/lynxengine.a: Lynx/Lynx_config.hpp $(BINS)
+
+ifneq ($(SRC),) # Check if there are source files
+EBINS=$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(SRC:.cpp=.o)))
+
+# Build libLynxEngine.a rebuilds if Lynx/Lynx_config.hpp is changed
+$(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS)
 	ar -rcs ./bin/lynxengine.a $(filter-out $<,$^)
 
-else
-./bin/lynxengine.a:
+else # If there aren't, don't try to build
+$(ENGINELIB):
 	@>&2 echo "Missing source files"
 endif
 
-all: ./bin/lynxengine.a application 
+engine: $(ENGINELIB) # make engine forces engine to be rebuilt
+
+all: $(ENGINELIB) application # make/make all build the engine if necessary and the application every time
 
 
-# APP contains the user application path and is passed by the python wrapper
-ifneq ($(APP),)
-application: ./bin/lynxengine.a
+ifneq ($(APP),) # check if APP is passed
+application: $(ENGINELIB) # The application requires the engine static library, if not available or outdated it's rebuilt
 	cd $(APP); \
 	# TODO Build Commands	
 
-clean_application:
-	cd $(APP)/.engine/Build; \
-	@-find . -type f  ! -name "*.*"  -delete; \
-	@-rm ./bin/*.o
+clean_application: # delete all object and executable files (including Windows .exe files)
+	cd $(APP)/.engine/bin/Application; \
+	@-find . -type f  ! -name "*.*" -delete; \
+	@-find . -type f -name "*.o" -delete; \
+	@-find . -type f -name "*.exe" -delete
 
 
-else
+
+else # if APP is not passed don't build
 application:
 	@>&2 echo "Missing application path"
 clean_application:
@@ -41,11 +50,15 @@ clean_application:
 endif
 
 
-
-$(BINS): $(SRC)
+# Build engine object files
+$(EBINS): $(SRC)
 	$(CPP) $(CPPFLAGS) --include Lynx/Lynx_config.hpp -c $< -o $@
 
-clean: clean_engine clean_application
+clean: clean_engine clean_application # make clean removes every single object and executable file
 
+# remove all engine files
 clean_engine:
-	@-rm ./bin/*
+	cd $(APP)/.engine/bin/Engine; \
+	@-find . -type f  ! -name "*.*" -delete; \
+	@-find . -type f -name "*.o" -delete; \
+	@-find . -type f -name "*.exe" -delete
