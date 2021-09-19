@@ -17,7 +17,6 @@ ECPPFLAGS = 														# Default engine flags
 
 # AFLAGS  =															# User defined application flags from the wrapper
 ACPPFLAGS =  														# Default application flags
-    ACPPFLAGS += ./getEnginePath.cpp', ./Core/Env.cpp 					# Add runtime environment variables
     ACPPFLAGS += -L/usr/lib64 -L/lib64 									# Prefer 64bit libraries						#TODO fix windows build
     ACPPFLAGS += -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11		# Link dependencies								#TODO fix windows build
     ACPPFLAGS += -lvulkan -Bstatic -lglfw								# Link Vulkan dynamically and GLFW statically	#TODO fix windows build
@@ -62,7 +61,7 @@ engine: $(ENGINELIB)
 $(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
 	ar -rcs $(ENGINELIB) $(filter-out $<,$^)
 
-
+./getEnginePath.cpp', ./Core/Env.cpp
 # Build engine object files
 $(EBINS): $(ESRC)
 	$(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@
