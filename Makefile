@@ -14,12 +14,14 @@ ENGINELIB=$(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a # path to the engi
 # OUTPUT = platform/mode, passed by the script to determine the correct output for the build mode
 PLATFORM=$(shell printf $(TEST) | sed "s/\(.\+\)\/.\+/\1/g") # Get platform from output
 # ECOMP = path/to/shader1.comp path/to/shader2.comp, passed by the script
-ESHADERS=$(ECOMP:.comp=.spv) # Remove comp extension
+ESHADERS=$(ECOMP:.comp=.spv) # 
+ESHADERSO=$(ECOMP:.comp=.o)
 # ACOMP = path/to/shader1.comp path/to/shader2.comp (application shaders), passed by the script
-ASHADERS=$(ACOMP:.comp=.spv) # Remove comp extension
+ASHADERS=$(ACOMP:.comp=.spv) # 
+ASHADERSO=$(ACOMP:.comp=.o)
 
 
-# ------------------------------------------ ENGINE ------------------------------------------ 
+# ----------------------------------------- ENGINE ------------------------------------------ 
 
 
 ifneq ($(ESRC),) # Check if there are engine source files
@@ -28,7 +30,7 @@ EBINS=$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(ESRC
 engine: $(ENGINELIB)
 
 # Build libLynxEngine.a rebuilds if Lynx/Lynx_config.hpp is changed
-$(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS)
+$(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
 	ar -rcs $(ENGINELIB) $(filter-out $<,$^)
 
 
@@ -41,6 +43,10 @@ $(EBINS): $(ESRC)
 $(ESHADERS): $(ECOMP)
 	glslangValidator -V $< -o $@
 	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . e
+
+$(ESHADERSO): $(ESHADERS)
+	$(CPP) $(ECPPFLAGS) --include Lynx/Lynx_config.hpp -c $(<:.spv=.gsi.cpp) -o $@
+
 
 # remove all engine files
 clean_engine:
@@ -75,6 +81,13 @@ $(ABINS): $(ASRC)
 $(ASHADERS): $(ACOMP)
 	glslangValidator -V $< -o $@
 	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) . a
+
+
+
+$(ASHADERSO): $(ASHADERS)
+	$(CPP) $(ACPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
+
+
 
 
 clean_application: # delete all object and executable files (including Windows .exe files)
