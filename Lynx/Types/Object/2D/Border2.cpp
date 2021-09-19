@@ -5,9 +5,9 @@
 
 
 namespace lnx::obj{
-	void Border2::onSpawn(core::RenderCore& pRenderCore) { //FIXME PASS RENDER CORE
+	void Border2::onSpawn(core::RenderCore& pRenderCore) {
 		obj2_b::onSpawn(pRenderCore); //Initialize all the children
-		data.create(
+		data.spawn(
 			pRenderCore.fOut_g,
 			pRenderCore.wSize_g,
 			pRenderCore.zBuff_g,

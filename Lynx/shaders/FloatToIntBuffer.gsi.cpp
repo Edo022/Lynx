@@ -15,7 +15,7 @@
 namespace lnx::shd::gsi{
 
 
-	void FloatToIntBuffer::create(
+	void FloatToIntBuffer::spawn(
 		const l_src& pSrc,
 		const l_dst& pDst,
 		const l_wsize& pWsize,
@@ -230,7 +230,7 @@ LnxAutoInit(LNX_H_FLOATTOINTBUFFER){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/FloatToIntBuffer.spv");
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/Lynx/shaders/FloatToIntBuffer.spv");
 		FloatToIntBuffer::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

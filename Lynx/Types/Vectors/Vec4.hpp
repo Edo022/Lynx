@@ -12,6 +12,19 @@ namespace lnxc{
 		t z = 0;
 		t w = 0;
 
+/*
+.
+.
+.	init memory pool
+.	---------------------------.
+.             ^                |
+.	init thread pool           |	   qualcosa      spawn window
+.	---------------------------|-----------------------------------
+.                           ^  |                     |      idk
+.	read shaders               |                     '--------------------
+.	---------------------------'
+*/
+
 
 		//Constructors
 		alwaysInline constexpr vec4_t() noexcept {}

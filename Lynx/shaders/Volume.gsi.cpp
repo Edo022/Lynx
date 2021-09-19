@@ -15,7 +15,7 @@
 namespace lnx::shd::gsi{
 
 
-	void Volume::create(
+	void Volume::spawn(
 		const l_outcol& pOutcol,
 		const l_wsize& pWsize,
 		const u32v3 vGroupCount, core::RenderCore& pRenderCore
@@ -206,7 +206,7 @@ LnxAutoInit(LNX_H_VOLUME){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/Volume.spv");
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/Lynx/shaders/Volume.spv");
 		Volume::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		Volume::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

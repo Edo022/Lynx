@@ -423,6 +423,7 @@ namespace lnx::vram{
 			if(!Super::cell) alloc_(vSize, vClass);
 			else{
 				dbg::checkCond(Super::mapped, "realloc() can only be called on unmapped memory");
+				dbg::logWarn("Using partial VRAM rellocation");
 				free();
 				alloc_(vSize, vClass);
 				//FIXME write a proper realloc function

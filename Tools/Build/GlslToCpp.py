@@ -317,16 +317,10 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 
         # Write layout structs
         fh.write('\n\n' + fixTabs(
-            '\n\n'.join((
-            f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }, " +
-            (', '.join(m.type + ('' if m.aLen == None else f"[{ m.aLen }]") for m in l.elms)) + (f"> {{"
-            # External layout constructor
-            f"\n    alwaysInline { l.cstr }(const bool vExt) {{}}"
-            # Default constructor
-            f"\n    inline { l.cstr }() {{"
-            f"\n        ShaderElm_b::vdata.realloc({ l.size });"
-            f"\n        ShaderElm_b:: data.realloc({ l.size });"
-            f"\n    }}"
+            '\n\n'.join(((
+            f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{"
+            f"\n    alwaysInline { l.cstr }(const bool vExt) : ShaderElm_b() {{}}"    # External layout constructor
+            f"\n    inline { l.cstr }() : ShaderElm_b({ l.size }) {{}}"               # Default constructor (Partial construction)
             # Copy constructor
             f"\n    inline { l.cstr }(const { l.cstr }& p{ capitalize1(l.name) }) {{"
 			f"\n    	ShaderElm_b:: data = p{ capitalize1(l.name) }. data;"
@@ -340,11 +334,11 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 			f"\n    	//FIXME automatically update render data after calling this function"
 			f"\n    }}"
             # Construct with vdata only #FIXME write specific struct
-            f"\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{" #TODO add operator= for different buffer types #FIXME add template to accept buffers of any type, with the correct length
+            f"\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{" #FIXME check the length
             f"\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;"
             f"\n    }}" #TODO add operator= for different buffer types
             # Copy from vdata only #FIXME write specific struct
-		    f"\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{" #TODO add operator= for different buffer types #FIXME add template to accept buffers of any type, with the correct length
+		    f"\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{" #FIXME check the length
 		    f"\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;"
 		    f"\n        return *this;"
 		    f"\n    }}") + #TODO add operator= for different buffer types
@@ -354,16 +348,16 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n    uint64 { m.name }_tmp_size = { m.size };") +  #!^ offset includes the length of the arrays  #TODO use an actual array #FIXME use an array that automatically reallocates the whole block when resizing the unknown size array
             f""     ) for m in l.elms) +
             f"\n}};"
-            f"\n{ l.cstr } { l.name }{{ true }};"
+            f"\n{ l.cstr } { l.name }" + ('{ true }' if l.iExt else '') + ';'
             f"" ) for l in pGlsl.layouts),
         2))
 
 
 
 
-        # Write the shader create functions
+        # Write the shader spawn functions
         fh.write('\n\n' + fixTabs(
-            f"\nvoid create(" + (
+            f"\nvoid spawn(" + (
             f""     ','.join((
             f"\n    const { e.cstr }& p{ capitalize1(e.name) }")for e in externs) + ','
             f"\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore"
@@ -378,7 +372,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
 
 
         fc.write('\n\n' + fixTabs(
-            f"\nvoid { shName }::create(" + (
+            f"\nvoid { shName }::spawn(" + (
             f""     ','.join((
             f"\n    const { e.cstr }& p{ capitalize1(e.name) }" )for e in externs) + ','
             f"\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore"
@@ -524,7 +518,7 @@ def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
             f"\n"
             f"\n    {{ //Create pipeline layout"
             f"\n        uint64 fileLength = 0;"
-            f"\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ incShPath }/{ shName }.spv\");"
+            f"\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shPath }/{ shName }.spv\");"
             f"\n        { shName }::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);"
             f"\n"
             f"\n        { shName }::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()"

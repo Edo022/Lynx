@@ -13,7 +13,7 @@
 namespace lnx::obj{
 	void Line2::onSpawn(core::RenderCore& pRenderCore) {
 		obj2_b::onSpawn(pRenderCore); //Initialize all the children
-		data.create(pRenderCore.fOut_g, pRenderCore.wSize_g, pRenderCore.zBuff_g, { 512u, 1u, 1u }, pRenderCore); //FIXME CALCULATE GROUP SIZE AT RUNTIME
+		data.spawn(pRenderCore.fOut_g, pRenderCore.wSize_g, pRenderCore.zBuff_g, { 512u, 1u, 1u }, pRenderCore); //FIXME CALCULATE GROUP SIZE AT RUNTIME
 	}
 
 	void Line2::onLimit() {

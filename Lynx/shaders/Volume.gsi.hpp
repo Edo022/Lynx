@@ -15,12 +15,9 @@ namespace lnx::shd::gsi{
         static uint32 pipelineIndex;
 
 
-		struct l_outcol : public ShaderElm_b<eStorage, f32v4[30], i32, f32v4[0]> {
-			alwaysInline l_outcol(const bool vExt) {}
-			inline l_outcol() {
-				ShaderElm_b::vdata.realloc(512);
-				ShaderElm_b:: data.realloc(512);
-			}
+		struct l_outcol : public ShaderElm_b<eStorage> {
+			alwaysInline l_outcol(const bool vExt) : ShaderElm_b() {}
+			inline l_outcol() : ShaderElm_b(512) {}
 			inline l_outcol(const l_outcol& pOutcol) {
 				ShaderElm_b:: data = pOutcol. data;
 				ShaderElm_b::vdata = pOutcol.vdata;
@@ -47,12 +44,9 @@ namespace lnx::shd::gsi{
 		l_outcol outcol{ true };
 
 
-		struct l_wsize : public ShaderElm_b<eStorage, u32v2> {
-			alwaysInline l_wsize(const bool vExt) {}
-			inline l_wsize() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b:: data.realloc(256);
-			}
+		struct l_wsize : public ShaderElm_b<eStorage> {
+			alwaysInline l_wsize(const bool vExt) : ShaderElm_b() {}
+			inline l_wsize() : ShaderElm_b(256) {}
 			inline l_wsize(const l_wsize& pWsize) {
 				ShaderElm_b:: data = pWsize. data;
 				ShaderElm_b::vdata = pWsize.vdata;
@@ -75,12 +69,9 @@ namespace lnx::shd::gsi{
 		l_wsize wsize{ true };
 
 
-		struct l__data : public ShaderElm_b<eUniform, f32v3, f32, f32v4> {
-			alwaysInline l__data(const bool vExt) {}
-			inline l__data() {
-				ShaderElm_b::vdata.realloc(256);
-				ShaderElm_b:: data.realloc(256);
-			}
+		struct l__data : public ShaderElm_b<eUniform> {
+			alwaysInline l__data(const bool vExt) : ShaderElm_b() {}
+			inline l__data() : ShaderElm_b(256) {}
 			inline l__data(const l__data& p_data) {
 				ShaderElm_b:: data = p_data. data;
 				ShaderElm_b::vdata = p_data.vdata;
@@ -102,10 +93,10 @@ namespace lnx::shd::gsi{
 			f32& r = *(f32*)(ShaderElm_b::data + 16);
 			f32v4& col = *(f32v4*)(ShaderElm_b::data + 32);
 		};
-		l__data _data{ true };
+		l__data _data;
 
 
-		void create(
+		void spawn(
 			const l_outcol& pOutcol,
 			const l_wsize& pWsize,
 			const u32v3 vGroupCount, core::RenderCore& pRenderCore

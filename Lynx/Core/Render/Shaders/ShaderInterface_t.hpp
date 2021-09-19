@@ -19,9 +19,13 @@ namespace lnx{
 
 namespace lnx::shd{
 	// template<class... tElmTypes> struct ShaderCmp_t{};
-	template<bufferType tBufft, class... tElmTypes> struct ShaderElm_b {
+	template<bufferType tBufft> struct ShaderElm_b {
 		vram::ptr<char, eVRam, tBufft> vdata;	//Gpu data
 		ram::ptr<char>                  data;	//Local data copy
+
+		inline ShaderElm_b(): vdata(nullptr), data(nullptr) {}
+		// inline ShaderElm_b(const uint64 vVDataSize, const uint64 vDataSize): vdata(vVDataSize), data(vDataSize) {}
+		inline ShaderElm_b(const uint64 vSize): vdata(vSize), data(vSize) {}
 	};
 
 

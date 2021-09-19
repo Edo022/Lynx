@@ -15,7 +15,7 @@
 namespace lnx::shd::gsi{
 
 
-	void Border2::create(
+	void Border2::spawn(
 		const l_outcol& pOutcol,
 		const l_wsize& pWsize,
 		const l_zbuff& pZbuff,
@@ -229,7 +229,7 @@ LnxAutoInit(LNX_H_BORDER2){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/Border2.spv");
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/Lynx/shaders/Border2.spv");
 		Border2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

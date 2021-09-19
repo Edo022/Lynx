@@ -15,7 +15,7 @@
 namespace lnx::shd::gsi{
 
 
-	void Line2::create(
+	void Line2::spawn(
 		const l_outcol& pOutcol,
 		const l_wsize& pWsize,
 		const l_zbuff& pZbuff,
@@ -229,7 +229,7 @@ LnxAutoInit(LNX_H_LINE2){
 
 	{ //Create pipeline layout
 		uint64 fileLength = 0;
-		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/shaders/Line2.spv");
+		uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/Lynx/shaders/Line2.spv");
 		Line2::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
 
 		Line2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
