@@ -1,4 +1,5 @@
 import re, sys, os, subprocess, argparse as ap
+from argparse import Namespace as ns
 import shlex, glob
 import GlslToCpp
 #python3.9 -m py_compile lynxg++.py && python3.9 -m py_compile GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
@@ -13,7 +14,6 @@ def run(argv:list):
     p.add_argument('--version',         action = 'store_true', dest = 'version')
     p.add_argument('-m', '--mode',      action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'])
     p.add_argument('-f', '--file',      action = 'store',      dest = 'f')
-    p.add_argument('-e', '--engine',    action = 'store_true', dest = 'e')
     p.add_argument('-v', '--verbosity', action = 'store',      dest = 'v', choices = [0, 1, 2, 3], default = 2, type = int)
 
     p.add_argument('-a:', '--always:',  action = 'extend', nargs = '+', default = [], dest = 'a')
@@ -29,7 +29,7 @@ def run(argv:list):
 
 
 
-    #Enumerate g++/glslc arguments
+    # Enumerate g++/glslc arguments
     selectors = list(set(p._option_string_actions.keys()) - set(['-m', '--mode', '-v', '--verbosity']))
     for i in range(1, len(argv)):
         if(
@@ -78,8 +78,7 @@ def run(argv:list):
             '    -b  --no-progress  Hide build progress bar. Default: off #TODO'                                                                                '\n'
             ''                                                                                                                                                  '\n'
             '    -m  --mode         Specify target platform and build configuration. This option is always required. e.g. -m=ld'                                '\n'
-            '    -e  --engine       Build the engine instead of the user application. Default: off'                                                             '\n'
-            '    -f  --file         Read the lynxg++ command from the specified file. When this option is used, any other option but -h and -v is ignored'      '\n'
+            '    -f  --file         Read the lynxg++ command from a file. Default:"./engine/Build.Application.sh" Any other option but -h and -v is ignored'    '\n'
             '    -p  --pack         Pack all files in a single executable file.       Default: off #TODO'                                                       '\n'
             ''                                                                                                                                                  '\n'
             '    Files with extension .comp are treated as GLSL compute shaders'                                                                                '\n'
@@ -122,22 +121,8 @@ def run(argv:list):
         return 2
 
     else:
-        #Get engine path
-        rePath = ''
-        with open('./.engine/.rePath', 'r') as f:
-            rePath = f.read()
-
-        #Get project path
-        apPath = ''
-        with open('./.engine/.apPath', 'r') as f:
-            apPath = f.read()
-
-
-
-
-        #Select active arguments
-        cmd = []
-        cmd += args.a
+        # Select active arguments
+        cmd:list = args.a
         cmd += args.l if args.m[0] == 'l' else args.w
         cmd += args.d if args.m[1] == 'd' else args.r
         cmd += (
@@ -148,33 +133,63 @@ def run(argv:list):
         )
 
 
-        #Sort and parse arguments
+        # Sort and parse arguments
         cmd.sort()
         for i in range(0, len(cmd)):
             cmd[i] = cmd[i][5:]
 
 
-        #Set complete names for platform and configuration
-        _pf = 'Linux' if args.m[0] == 'l' else 'Windows'
-        _cf = 'Debug' if args.m[1] == 'd' else 'Release'
 
+        # Build GLSLC command
+        FLAGS : str  = ''
+        SRC   : list = []
+        COMP  : list = []
 
+        if args.m[1] == 'd':
+            FLAGS += '-DLNX_DEBUG -rdynamic'
 
+        for e in cmd:
+            if e[-5:] == '.comp':
+                g = glob.glob(e)
+                if len(g) > 0: COMP += g
+                else:          COMP += [ e ]
 
-        #Build GLSLC command
-        cmdsh = []
-        i = 0
-        while i < len(cmd):
-            r = re.match(r'^(.*)\.comp$', cmd[i])
-            if r != None:
-                cmd[i] += ';' + r.group(1) + '.spv'
+            elif e[-4:] == '.cpp' :
+                g = glob.glob(e)
+                if len(g) > 0: SRC += g
+                else:          SRC += [ e ]
 
-            r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i]) #TODO allow the user to modify interface output files
-            if r != None:
-                cmdsh += [[r.group(1), r.group(2)]]
-                del(cmd[i])
-            else:
-                i += 1
+            else: FLAGS += ' ' + e
+
+        # Return
+        return ns(**{
+            'mode'  : args.m,
+            'FLAGS' : FLAGS,
+            'SRC'   : ' '.join(SRC ),
+            'COMP'  : ' '.join(COMP)
+        })
+        # while i < len(cmd):
+        #     r = re.match(r'^(.*)\.comp$', cmd[i])
+        #     if r != None:
+        #         cmd[i] += ';' + r.group(1) + '.spv'
+
+        #     r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i]) #TODO allow the user to modify interface output files
+        #     if r != None:
+        #         cmdsh += [[r.group(1), r.group(2)]]
+        #         del(cmd[i])
+        #     else:
+        #         i += 1
+        # while i < len(cmd):
+        #     r = re.match(r'^(.*)\.comp$', cmd[i])
+        #     if r != None:
+        #         cmd[i] += ';' + r.group(1) + '.spv'
+
+        #     r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i]) #TODO allow the user to modify interface output files
+        #     if r != None:
+        #         cmdsh += [[r.group(1), r.group(2)]]
+        #         del(cmd[i])
+        #     else:
+        #         i += 1
 
 
 
@@ -185,11 +200,11 @@ def run(argv:list):
         # cmd += ['-std=c++20', '-m64', '-L/usr/lib64', '-L/lib64']       #Use C++20, build for 64bit environments, prefer 64bit libraries
         # cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
         # cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
-        if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
+        # if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
         # cmd += ['-ffile-prefix-map=' + apPath + '=']                    #Fix file prefix
 
-        if args.e is False:
-            cmd += [ f'-DenginePath="{ rePath }"' ]    #Define engine path function
+        # if args.e is False:
+            # cmd += [  ]    #Define engine path function
 
 #     rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
 #     rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
@@ -205,9 +220,61 @@ def run(argv:list):
 
 
 
+# # Get engine path
+# rePath:str = ''
+# with open('./.engine/.rePath', 'r') as f:
+#     rePath = f.read()
 
-sys.exit(run(sys.argv[1:]))
 
+
+
+# Get absolute project path
+apPath:str = ''
+with open('./.engine/.apPath', 'r') as f:
+    apPath = f.read()
+
+# Get relative project path
+# Get absolute project path
+rpPath:str = ''
+with open('./.engine/.apPath', 'r') as f:
+    rpPath = os.path.relpath(apPath, f.read())
+
+# Set complete names for platform and configuration
+# _pf:str = 'Linux' if args.m[0] == 'l' else 'Windows'
+# _cf:str = 'Debug' if args.m[1] == 'd' else 'Release'
+
+
+# Parse application arguments
+aRet = run(sys.argv[1:])
+if isinstance(aRet, int):
+    sys.exit(aRet)
+
+
+# Parse engine arguments
+with open('.engine/Build.Engine.sh') as f:
+    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:]) #FIXME add glob parsing. glob module
+    if isinstance(eRet, int):
+        sys.exit(eRet)
+
+
+# Run build
+print(eRet)
+sys.exit(subprocess.run([ #FIXME escape strings or pass a list
+    'make', '-C', rpPath,
+    f"CPP={ 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }"
+    f"OUTPUT={ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
+    f'APP={ rpPath }',
+    f'EFLAGS'f'="{ eRet.FLAGS }"',
+    f'AFLAGS'f'="{ aRet.FLAGS } -DenginePath=\"{ apPath }\""',
+    f'ESRC'  f'="{ eRet.SRC   }"',
+    f'ASRC'  f'="{ aRet.SRC   }"',
+    f'ECOMP' f'="{ eRet.COMP  }"',
+    f'ACOMP' f'="{ aRet.COMP  }"'
+]).returncode)
+
+
+
+#TODO escape ""s
 
 
 

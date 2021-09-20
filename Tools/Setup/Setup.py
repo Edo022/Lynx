@@ -66,7 +66,6 @@ if sys.stdin.read(1).lower() == 'y':
     with open(apPath + '/.engine/.rePath', 'w') as f:
         f.write(rePath)
 
-
     # Write absolute project path
     with open(apPath + '/.engine/.apPath', 'w') as f:
         f.write(apPath)
@@ -84,7 +83,7 @@ if sys.stdin.read(1).lower() == 'y':
             f"\n"
             f"\n{ rePath}/Lynx/Tools/Build/lynxg++"
             f"\n"
-            f"\n--mode=ld # Build mode and target platform #! Changed by vscode"
+            f"\n#--mode=ld #! Build mode and target platform are copied from the application build"
             f"\n-a: # Source files"
             f"\n    Lynx/System/SystemInfo.cpp"
             f"\n    Lynx/Tests/StructureInit.cpp"
@@ -183,6 +182,29 @@ if sys.stdin.read(1).lower() == 'y':
             f"\n    -c"
             f"\n"
             f"\n    #! Hard coded output paths"
+        )
+
+
+    with open(apPath + '/.engine/Build.Application.sh', 'w') as f:
+        f.write(
+            f"\n##################################################################"
+            f"\n#  This file contains the command used to build your application #"
+            f"\n#  Bash syntax. Lines are concatenated and comments are ignored  #"
+            f"\n##################################################################"
+            f"\n"
+            f"\n{ rePath}/Lynx/Tools/Build/lynxg++"
+            f"\n"
+            f"\n"
+            f"--mode=ld #! Changed by vscode"
+            f"\n-d:"
+            f"\n    -ggdb3 -g3"
+            f"\n    -O0"
+            f"\n-r:"
+            f"\n    -g0"
+            f"\n    -O3"
+            f"\n-a:"
+            f"\n    main.cpp" #TODO add example file
+            f"\n    -o LynxEngineTest"
         )
 
 

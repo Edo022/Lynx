@@ -5,7 +5,7 @@
 
 
 
-CPP = g++   														# Path to the compiler. Changed by the wrapper when building for Windows
+# CPP = g++   														# Path to the compiler. Changed by the wrapper when building for Windows #TODO use mingw for windows
 # OUTPUT  = Platform/Mode											# Output path suffix based on build configuration and target platform	#! Passed by the wrapper
 # APP     = path/to/application										# Path to the user application											#! Passed by the wrapper
 XPLATFORM  = $(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g") 	# Get target platform from output path
