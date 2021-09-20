@@ -61,7 +61,7 @@ engine: $(ENGINELIB)
 $(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
 	ar -rcs $(ENGINELIB) $(filter-out $<,$^)
 
-./getEnginePath.cpp', ./Core/Env.cpp
+
 # Build engine object files
 $(EBINS): $(ESRC)
 	$(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@

@@ -62,13 +62,17 @@ if sys.stdin.read(1).lower() == 'y':
         f.write('d')
 
 
-    # Write relative path to engine SDK
     with open(apPath + '/.engine/.rePath', 'w') as f:
-        f.write(rePath)
+        f.write(rePath) # Write relative path to engine SDK
 
-    # Write absolute project path
+    with open(apPath + '/.engine/.aePath', 'w') as f:
+        f.write(aePath) # Write absolute path to engine SDK
+
+    with open(apPath + '/.engine/.rpPath', 'w') as f:
+        f.write(rpPath) # Write relative project path
+
     with open(apPath + '/.engine/.apPath', 'w') as f:
-        f.write(apPath)
+        f.write(apPath) # Write absolute project path
 
 
 
@@ -113,12 +117,15 @@ if sys.stdin.read(1).lower() == 'y':
             f"\n"
             f"\n    Lynx/Types/Object/3D/Volume.cpp"
             f"\n"
-            f"\n"
             f"\n    Lynx/Core/Render/Buffers.cpp"
             f"\n    Lynx/Core/Render/Render.cpp"
             f"\n"
             f"\n    Lynx/Core/Input/Input.cpp"
             f"\n    Lynx/Core/Input/InputState.cpp"
+            f"\n"
+            f"\n-a: # App support source files"
+            f"\n    Lynx/getEnginePath.cpp"
+            f"\n    Lynx/Core/Env.cpp"
             f"\n"
             f"\n-a: # Shader source files"
             f"\n    { rePath }/Lynx/shaders/*.comp"

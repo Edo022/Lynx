@@ -234,10 +234,14 @@ with open('./.engine/.apPath', 'r') as f:
     apPath = f.read()
 
 # Get relative project path
-# Get absolute project path
 rpPath:str = ''
-with open('./.engine/.apPath', 'r') as f:
-    rpPath = os.path.relpath(apPath, f.read())
+with open('./.engine/.rpPath', 'r') as f:
+    rpPath = f.read()
+
+# Get relative engine path
+rePath:str = ''
+with open('./.engine/.rePath', 'r') as f:
+    rePath = f.read()
 
 # Set complete names for platform and configuration
 # _pf:str = 'Linux' if args.m[0] == 'l' else 'Windows'
@@ -258,19 +262,20 @@ with open('.engine/Build.Engine.sh') as f:
 
 
 # Run build
-print(eRet)
-sys.exit(subprocess.run([ #FIXME escape strings or pass a list
-    'make', '-C', rpPath,
-    f"CPP={ 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }"
-    f"OUTPUT={ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    f'APP={ rpPath }',
-    f'EFLAGS'f'="{ eRet.FLAGS }"',
-    f'AFLAGS'f'="{ aRet.FLAGS } -DenginePath=\"{ apPath }\""',
-    f'ESRC'  f'="{ eRet.SRC   }"',
-    f'ASRC'  f'="{ aRet.SRC   }"',
-    f'ECOMP' f'="{ eRet.COMP  }"',
-    f'ACOMP' f'="{ aRet.COMP  }"'
-]).returncode)
+makeCmd = [ #FIXME escape strings or pass a list
+    'make', '-C', rePath, #! Run from user application, cd into engine repo
+    f"CPP    = { 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }",
+    f"OUTPUT = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
+    f'APP    = { rpPath }',
+    f'EFLAGS = { eRet.FLAGS }',
+    f'AFLAGS = { aRet.FLAGS } -DenginePath="{ apPath }',
+    f'ESRC   = { eRet.SRC   }',
+    f'ASRC   = { aRet.SRC   }',
+    f'ECOMP  = { eRet.COMP  }',
+    f'ACOMP  = { aRet.COMP  }'
+]
+print('Running:\n' + (' '.join(makeCmd)) + '\n\n')
+sys.exit(subprocess.run(makeCmd).returncode)
 
 
 
