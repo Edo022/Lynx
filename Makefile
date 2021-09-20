@@ -1,14 +1,14 @@
 # This makefile is intended to be used by the python wrapper, you may not use it manually
 
 .DEFAULT_GOAL := all
+#TODO add option to use provided compilation outputs
 
 
 
-
-# CPP = g++   														# Path to the compiler. Changed by the wrapper when building for Windows #TODO use mingw for windows
+# CPP     = g++														# Path to the compiler. Changed by the wrapper when building for Windows #TODO use mingw for windows
 # OUTPUT  = Platform/Mode											# Output path suffix based on build configuration and target platform	#! Passed by the wrapper
 # APP     = path/to/application										# Path to the user application											#! Passed by the wrapper
-XPLATFORM  = $(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g") 	# Get target platform from output path
+XPLATFORM = $(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g") 	# Get target platform from output path
 ENGINELIB = $(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a 	# Path to the engine static library
 
 # EFLAGS  =															# User defined engine flags from the wrapper
@@ -17,18 +17,18 @@ ECPPFLAGS = 														# Default engine flags
 
 # AFLAGS  =															# User defined application flags from the wrapper
 ACPPFLAGS =  														# Default application flags
-    ACPPFLAGS += -L/usr/lib64 -L/lib64 									# Prefer 64bit libraries						#TODO fix windows build
-    ACPPFLAGS += -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11		# Link dependencies								#TODO fix windows build
-    ACPPFLAGS += -lvulkan -Bstatic -lglfw								# Link Vulkan dynamically and GLFW statically	#TODO fix windows build
+    ACPPFLAGS += -L/usr/lib64 -L/lib64#									# Prefer 64bit libraries						#TODO fix windows build
+    ACPPFLAGS += -ldl -lrt -lXrandr -lXi -lXcursor -lXinerama -lX11#	# Link dependencies								#TODO fix windows build
+    ACPPFLAGS += -lvulkan -Bstatic -lglfw#								# Link Vulkan dynamically and GLFW statically	#TODO fix windows build
     ACPPFLAGS += $(AFLAGS)												# Append user defined flags
 
 
 SCPPFLAGS =															# Shared C++ default flags
-    SCPPFLAGS += -pthread -I.											# Default g++ call, pthread, include project root
-    SCPPFLAGS += -std=c++20 -m64 										# Use C++20, build for 64bit environments
-    SCPPFLAGS += -include Lynx/Core/VkDef.hpp							# Include forced vulkan macros
-    SCPPFLAGS += -include Lynx/Lynx_config.hpp							# Include engine configuration macros
-    SCPPFLAGS += -ffile-prefix-map=$(APP)=								# Fix file prefix in debug infos
+    SCPPFLAGS += -pthread -I.#											# Default g++ call, pthread, include project root
+    SCPPFLAGS += -std=c++20 -m64#										# Use C++20, build for 64bit environments
+    SCPPFLAGS += -include Lynx/Core/VkDef.hpp#							# Include forced vulkan macros
+    SCPPFLAGS += -include Lynx/Lynx_config.hpp#							# Include engine configuration macros
+    SCPPFLAGS += -ffile-prefix-map=$(APP)=#								# Fix file prefix in debug infos
 
 
 
@@ -43,6 +43,15 @@ ESHADERSO   = $(ECOMP:.comp=.o)				# Get output .o files for generated shader in
 ASHADERS    = $(ACOMP:.comp=.spv)			# Get output spir-v files
 ASHADERSO   = $(ACOMP:.comp=.o)				# Get output .o files for generated shader interfaces
 
+
+
+
+
+
+$(shell mkdir -p					 		 \
+	$(APP)/.engine/bin/Engine/$(OUTPUT)		 \
+	$(APP)/.engine/bin/Application/$(OUTPUT) \
+)
 
 
 

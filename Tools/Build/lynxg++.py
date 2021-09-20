@@ -264,22 +264,19 @@ with open('.engine/Build.Engine.sh') as f:
 # Run build
 makeCmd = [ #FIXME escape strings or pass a list
     'make', '-C', rePath, #! Run from user application, cd into engine repo
-    f"CPP    = { 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }",
-    f"OUTPUT = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    f'APP    = { rpPath }',
-    f'EFLAGS = { eRet.FLAGS }',
-    f'AFLAGS = { aRet.FLAGS } -DenginePath="{ apPath }',
-    f'ESRC   = { eRet.SRC   }',
-    f'ASRC   = { aRet.SRC   }',
-    f'ECOMP  = { eRet.COMP  }',
-    f'ACOMP  = { aRet.COMP  }'
+    'CPP'    f" = { 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }",
+    'OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
+    'APP'    f' = { rpPath }',
+    'EFLAGS' f' = { eRet.FLAGS }',
+    'AFLAGS' f' = { aRet.FLAGS } -DenginePath="{ apPath }',
+    'ESRC'   f' = { eRet.SRC   }',
+    'ASRC'   f' = { aRet.SRC   }',
+    'ECOMP'  f' = { eRet.COMP  }',
+    'ACOMP'  f' = { aRet.COMP  }'
 ]
 print('Running:\n' + (' '.join(makeCmd)) + '\n\n')
 sys.exit(subprocess.run(makeCmd).returncode)
 
-
-
-#TODO escape ""s
 
 
 

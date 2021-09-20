@@ -185,9 +185,7 @@ if sys.stdin.read(1).lower() == 'y':
             f"\n    -Wswitch-default"
             f"\n    -Wundef"
             f"\n"
-            f"\n-a: # Compilation only"
-            f"\n    -c"
-            f"\n"
+            f"\n    #! Hard coded -c"
             f"\n    #! Hard coded output paths"
         )
 
