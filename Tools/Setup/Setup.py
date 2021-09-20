@@ -75,104 +75,118 @@ if sys.stdin.read(1).lower() == 'y':
 
 
     # Write vscode tasks
-    with open(apPath + '/.vscode/tasks.json', 'w') as f:
+    with open(apPath + '/.engine/Build.Engine.sh', 'w') as f:
         f.write(
-           f'{{'
-           f'\n    "version": "2.0.0",'
-           f'\n    "tasks": ['
-           f'\n        {{'
-           f'\n            "type": "shell",'
-           f'\n            "label": "Linux  |  Debug  |  Build Lynx Engine",'
-           f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
-           f'\n            "args": [ "--mode=ld",'
-           f'\n                "--engine",'
-           f'\n                "-a:",'
-           f'\n                    "{ rePath }/Lynx/Lynx_build.cpp",'
-           f'\n                    "{ rePath }/Lynx/shaders/*.comp",'
-           f'\n                    "-pipe",'
-           f'\n                    "-mavx",'
-           f'\n'
-           f'\n                "-d:",'
-           f'\n                    "-p", "-g3", "-ggdb3",'
-           f'\n                    "-rdynamic",'
-           f'\n                    "-fverbose-asm",'
-           f'\n                    "-DLNX_DEBUG",'
-           f'\n                    "-O0",'
-           f'\n                    "-fno-elide-constructors",'
-           f'\n                    "-fno-inline-small-functions",'
-           f'\n                    "-fno-inline",'
-           f'\n'
-           f'\n                "-r:",'
-           f'\n                    "-g0", "-Ofast",'
-           f'\n                    "-frename-registers",'
-           f'\n                    "-funroll-loops",'
-           f'\n'
-           f'\n                "-d:",'
-           f'\n                    "-fsanitize=undefined",'
-           f'\n                    "-fsanitize=alignment",'
-           f'\n                    "-fsanitize=bounds",'
-           f'\n                    "-fsanitize=null",'
-           f'\n                    "-fsanitize=vptr",'
-           f'\n                    "-fsanitize=enum",'
-           f'\n                    "-fsanitize=leak",      //!Not compatible with thread'
-           f'\n                    "-fsanitize=address",   //!Not compatible with thread'
-           f'\n                    // "-fsanitize=thread",    //!Not compatible leak or address'
-           f'\n'
-           f'\n                "-a:",'
-           f'\n                    "-Wall",'
-           f'\n                    "-Wclobbered",'
-           f'\n                    "-Wcast-function-type",'
-           f'\n                    "-Wdeprecated-copy",'
-           f'\n                    "-Wempty-body",'
-           f'\n                    "-Wignored-qualifiers",'
-           f'\n                    "-Wimplicit-fallthrough=3",'
-           f'\n                    "-Wstring-compare",'
-           f'\n                    "-Wredundant-move",'
-           f'\n                    "-Wtype-limits",'
-           f'\n                    "-Wuninitialized",'
-           f'\n                    "-Wshift-negative-value",'
-           f'\n                    "-Wunused-but-set-parameter",'
-           f'\n                    "-Wcast-align",'
-           f'\n                    "-Wcast-qual",'
-           f'\n                    "-Wctor-dtor-privacy",'
-           f'\n                    "-Wdisabled-optimization",'
-           f'\n                    "-Wformat=2",'
-           f'\n                    "-Winit-self",'
-           f'\n                    "-Wlogical-op",'
-           f'\n                    "-Wmissing-include-dirs",'
-           f'\n                    "-Wnoexcept",'
-           f'\n                    "-Woverloaded-virtual",'
-           f'\n                    "-Wredundant-decls",'
-           f'\n                    "-Wshadow",'
-           f'\n                    "-Wsign-conversion",'
-           f'\n                    "-Wsign-promo",'
-           f'\n                    "-Wstrict-null-sentinel",'
-           f'\n                    "-Wstrict-overflow=5",'
-           f'\n                    "-Wswitch-default",'
-           f'\n                    "-Wundef",'
-           f'\n'
-           f'\n                    "-c", "-o",'
-           f'\n                "-ld:", "./.engine/Build/Linux/LynxDebug",'
-           f'\n                "-lr:", "./.engine/Build/Linux/LynxRelease",'
-           f'\n                "-wd:", "./.engine/Build/Windows/LynxDebug",'
-           f'\n                "-wr:", "./.engine/Build/Windows/LynxRelease",'
-           f'\n            ],'
-           f'\n            "problemMatcher": [ "$gcc" ],'
-           f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
-           f'\n            "group": {{ "kind": "build", "isDefault": true }}'
-           f'\n        }},'
-           f'\n        {{'
-           f'\n            "type": "shell",'
-           f'\n            "label": "Linux  |  Debug  |  Build Application\",'
-           f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
-           f'\n            "args": [ "--mode=ld",'
-           f'\n                //Your build'
-           f'\n            ],'
-           f'\n            "problemMatcher": [ "$gcc" ],'
-           f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
-           f'\n            "group": {{ "kind": "build", "isDefault": true }}'
-           f'\n        }},'
+            f"\n##################################################################"
+            f"\n#  This file contains the command used to build the Lynx Engine  #"
+            f"\n#  Bash syntax. Lines are concatenated and comments are ignored  #"
+            f"\n##################################################################"
+            f"\n"
+            f"\n{ rePath}/Lynx/Tools/Build/lynxg++"
+            f"\n"
+            f"\n--mode=ld # Build mode and target platform #! Changed by vscode"
+            f"\n-a: # Source files"
+            f"\n    Lynx/System/SystemInfo.cpp"
+            f"\n    Lynx/Tests/StructureInit.cpp"
+            f"\n"
+            f"\n    Lynx/Core/Memory/Ram/Ram.cpp"
+            f"\n    Lynx/Core/Memory/Ram/Cell_t.cpp"
+            f"\n"
+            f"\n    Lynx/System/System.cpp"
+            f"\n"
+            f"\n    Lynx/Core/Devices.cpp"
+            f"\n    Lynx/Core/Memory/VRam/VRam.cpp"
+            f"\n    Lynx/Core/Memory/VRam/VCell_t.cpp"
+            f"\n"
+            f"\n    Lynx/Core/Render/GCommands.cpp"
+            f"\n    Lynx/Core/Render/Shaders/Shader.cpp"
+            f"\n    Lynx/Core/Render/Window/Window.cpp #FIXME"
+            f"\n    Lynx/Core/Render/Window/Swapchain.cpp"
+            f"\n    Lynx/Core/Core.cpp"
+            f"\n"
+            f"\n    Lynx/Threads/ThreadPool.cpp"
+            f"\n"
+            f"\n    Lynx/Types/Object/Obj_b.cpp"
+            f"\n    Lynx/Types/Object/2D/Line2.cpp"
+            f"\n    Lynx/Types/Object/2D/Border2.cpp"
+            f"\n    Lynx/Types/Object/2D/RenderSpace2.cpp"
+            f"\n    Lynx/Types/Object/2D/RenderSpace3.cpp"
+            f"\n"
+            f"\n    Lynx/Types/Object/3D/Volume.cpp"
+            f"\n"
+            f"\n"
+            f"\n    Lynx/Core/Render/Buffers.cpp"
+            f"\n    Lynx/Core/Render/Render.cpp"
+            f"\n"
+            f"\n    Lynx/Core/Input/Input.cpp"
+            f"\n    Lynx/Core/Input/InputState.cpp"
+            f"\n"
+            f"\n-a: # Shader source files"
+            f"\n    { rePath }/Lynx/shaders/*.comp"
+            f"\n"
+            f"\n-a: # Use AVX"
+            f"\n    -mavx"
+            f"\n"
+            f"\n-d: # Debug options"
+            f"\n    -p -g3 -ggdb3 -DLNX_DEBUG -rdynamic -fverbose-asm                       # Debug informations"
+            f"\n    -O0 -fno-elide-constructors -fno-inline-small-functions -fno-inline     # Optimizations"
+            f"\n"
+            f"\n-r: # Release options"
+            f"\n    -Ofast -frename-registers -funroll-loops                                # Optimizations"
+            f"\n    -g0                                                                     # Debug informations"
+            f"\n"
+            f"\n-d: # Sanitizers"
+            f"\n    -fsanitize=undefined"
+            f"\n    -fsanitize=alignment"
+            f"\n    -fsanitize=bounds"
+            f"\n    -fsanitize=null"
+            f"\n    -fsanitize=vptr"
+            f"\n    -fsanitize=enum"
+            f"\n    -fsanitize=leak      #! Not compatible with thread"
+            f"\n    -fsanitize=address   #! Not compatible with thread"
+            f"\n    #-fsanitize=thread   #! Not compatible leak or address"
+            f"\n"
+            f"\n-a: # Warnings"
+            f"\n    -Wall"
+            f"\n    -Wclobbered"
+            f"\n    -Wcast-function-type"
+            f"\n    -Wdeprecated-copy"
+            f"\n    -Wempty-body"
+            f"\n    -Wignored-qualifiers"
+            f"\n    -Wimplicit-fallthrough=3"
+            f"\n    -Wstring-compare"
+            f"\n    -Wredundant-move"
+            f"\n    -Wtype-limits"
+            f"\n    -Wuninitialized"
+            f"\n    -Wshift-negative-value"
+            f"\n    -Wunused-but-set-parameter"
+            f"\n    -Wcast-align"
+            f"\n    -Wcast-qual"
+            f"\n    -Wctor-dtor-privacy"
+            f"\n    -Wdisabled-optimization"
+            f"\n    -Wformat=2"
+            f"\n    -Winit-self"
+            f"\n    -Wlogical-op"
+            f"\n    -Wmissing-include-dirs"
+            f"\n    -Wnoexcept"
+            f"\n    -Woverloaded-virtual"
+            f"\n    -Wredundant-decls"
+            f"\n    -Wshadow"
+            f"\n    -Wsign-conversion"
+            f"\n    -Wsign-promo"
+            f"\n    -Wstrict-null-sentinel"
+            f"\n    -Wstrict-overflow=5"
+            f"\n    -Wswitch-default"
+            f"\n    -Wundef"
+            f"\n"
+            f"\n-a: # Compilation only"
+            f"\n    -c"
+            f"\n"
+            f"\n    #! Hard coded output paths"
         )
+
+
+
 
     with open(apPath + '/.vscode/tasks.json', 'w') as f:
         f.write(
@@ -183,79 +197,7 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n            "type": "shell",'
            f'\n            "label": "Linux  |  Debug  |  Build Lynx Engine",'
            f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
-           f'\n            "args": [ "--mode=ld",'
-           f'\n                "--engine",'
-           f'\n                "-a:",'
-           f'\n                    "{ rePath }/Lynx/Lynx_build.cpp",'
-           f'\n                    "{ rePath }/Lynx/shaders/*.comp",'
-           f'\n                    "-pipe",'
-           f'\n                    "-mavx",'
-           f'\n'
-           f'\n                "-d:",'
-           f'\n                    "-p", "-g3", "-ggdb3",'
-           f'\n                    "-rdynamic",'
-           f'\n                    "-fverbose-asm",'
-           f'\n                    "-DLNX_DEBUG",'
-           f'\n                    "-O0",'
-           f'\n                    "-fno-elide-constructors",'
-           f'\n                    "-fno-inline-small-functions",'
-           f'\n                    "-fno-inline",'
-           f'\n'
-           f'\n                "-r:",'
-           f'\n                    "-g0", "-Ofast",'
-           f'\n                    "-frename-registers",'
-           f'\n                    "-funroll-loops",'
-           f'\n'
-           f'\n                "-d:",'
-           f'\n                    "-fsanitize=undefined",'
-           f'\n                    "-fsanitize=alignment",'
-           f'\n                    "-fsanitize=bounds",'
-           f'\n                    "-fsanitize=null",'
-           f'\n                    "-fsanitize=vptr",'
-           f'\n                    "-fsanitize=enum",'
-           f'\n                    "-fsanitize=leak",      //!Not compatible with thread'
-           f'\n                    "-fsanitize=address",   //!Not compatible with thread'
-           f'\n                    // "-fsanitize=thread",    //!Not compatible leak or address'
-           f'\n'
-           f'\n                "-a:",'
-           f'\n                    "-Wall",'
-           f'\n                    "-Wclobbered",'
-           f'\n                    "-Wcast-function-type",'
-           f'\n                    "-Wdeprecated-copy",'
-           f'\n                    "-Wempty-body",'
-           f'\n                    "-Wignored-qualifiers",'
-           f'\n                    "-Wimplicit-fallthrough=3",'
-           f'\n                    "-Wstring-compare",'
-           f'\n                    "-Wredundant-move",'
-           f'\n                    "-Wtype-limits",'
-           f'\n                    "-Wuninitialized",'
-           f'\n                    "-Wshift-negative-value",'
-           f'\n                    "-Wunused-but-set-parameter",'
-           f'\n                    "-Wcast-align",'
-           f'\n                    "-Wcast-qual",'
-           f'\n                    "-Wctor-dtor-privacy",'
-           f'\n                    "-Wdisabled-optimization",'
-           f'\n                    "-Wformat=2",'
-           f'\n                    "-Winit-self",'
-           f'\n                    "-Wlogical-op",'
-           f'\n                    "-Wmissing-include-dirs",'
-           f'\n                    "-Wnoexcept",'
-           f'\n                    "-Woverloaded-virtual",'
-           f'\n                    "-Wredundant-decls",'
-           f'\n                    "-Wshadow",'
-           f'\n                    "-Wsign-conversion",'
-           f'\n                    "-Wsign-promo",'
-           f'\n                    "-Wstrict-null-sentinel",'
-           f'\n                    "-Wstrict-overflow=5",'
-           f'\n                    "-Wswitch-default",'
-           f'\n                    "-Wundef",'
-           f'\n'
-           f'\n                    "-c", "-o",'
-           f'\n                "-ld:", "./.engine/Build/Linux/LynxDebug",'
-           f'\n                "-lr:", "./.engine/Build/Linux/LynxRelease",'
-           f'\n                "-wd:", "./.engine/Build/Windows/LynxDebug",'
-           f'\n                "-wr:", "./.engine/Build/Windows/LynxRelease",'
-           f'\n            ],'
+           f'\n            "args": [ "-f=.engine/Build.Engine.sh" ],'
            f'\n            "problemMatcher": [ "$gcc" ],'
            f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
            f'\n            "group": {{ "kind": "build", "isDefault": true }}'
@@ -264,9 +206,7 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n            "type": "shell",'
            f'\n            "label": "Linux  |  Debug  |  Build Application\",'
            f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
-           f'\n            "args": [ "--mode=ld",'
-           f'\n                //Your build'
-           f'\n            ],'
+           f'\n            "args": [ "-f=.engine/Build.Application.sh" ],'
            f'\n            "problemMatcher": [ "$gcc" ],'
            f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
            f'\n            "group": {{ "kind": "build", "isDefault": true }}'
