@@ -147,7 +147,7 @@ def run(argv:list):
         LINK  : list = []
 
         if args.m[1] == 'd':
-            FLAGS += [ '-DLNX_DEBUG, -rdynamic' ]
+            FLAGS += [ '-DLNX_DEBUG -rdynamic' ]
 
 
 

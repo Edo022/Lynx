@@ -116,7 +116,7 @@ if sys.stdin.read(1).lower() == 'y':
             f"\n    -mavx"
             f"\n"
             f"\n-d: # Debug options"
-            f"\n    -p -g3 -ggdb3 -DLNX_DEBUG -rdynamic -fverbose-asm                       # Debug informations"
+            f"\n    -p -g3 -ggdb3 -fverbose-asm                                             # Debug informations"
             f"\n    -O0 -fno-elide-constructors -fno-inline-small-functions -fno-inline     # Optimizations"
             f"\n"
             f"\n-r: # Release options"
