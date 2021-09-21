@@ -36,21 +36,21 @@ SCPPFLAGS =															# Shared C++ default flags
 
 # ESRC      = path/to/engine/file1.cpp...							# Engine C++  source files #! Passed by the wrapper
 # ECOMP     = path/to/shader1.comp...								# Engine GLSL source files #! Passed by the wrapper
-ESHADERS    = $(addsuffix .spv,$(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))
-ESHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))))
+ESHADERS    = $(addsuffix .spv,$(basename $(ECOMP)))
+ESHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(basename $(ECOMP)))))
 
 
 # ASRC      = path/to/app/file1.cpp...								# Application C++  source files #! Passed by the wrapper
 # ACOMP     = path/to/shader1.comp...								# Application GLSL source files #! Passed by the wrapper
 ifneq ($(ACOMP),)
-    ASHADERS    = $(addsuffix .spv,$(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))
-    ASHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))))
+    ASHADERS    = $(addsuffix .spv,$(basename $(ACOMP)))
+    ASHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(basename $(ACOMP)))))
 endif
 
 
 # Get the output path for each cpp file
-EBINS = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(shell printf $(ASRC) | sed "s/\(.\+\)\..*./\1/g"))))
-ABINS = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ASRC) | sed "s/\(.\+\)\..*./\1/g"))))
+EBINS = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(basename $(ESRC)))))
+ABINS = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(basename $(ASRC)))))
 
 
 
@@ -101,6 +101,7 @@ clean_engine:
 	-@cd $(APP)/.engine/bin/Engine &&		\
 	find . -type f  ! -name "*.*" -delete;	\
 	find . -type f -name "*.o" -delete;		\
+	find . -type f -name "libLynxEngine.a" -delete;		\
 	find . -type f -name "*.exe" -delete
 
 
