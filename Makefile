@@ -8,6 +8,7 @@
 # CPP     = g++														# Path to the compiler. Changed by the wrapper when building for Windows #TODO use mingw for windows
 # OUTPUT  = Platform/Mode											# Output path suffix based on build configuration and target platform	#! Passed by the wrapper
 # APP     = path/to/application										# Path to the user application											#! Passed by the wrapper
+# LINK    = -lm object.o											# Linker arguments
 XPLATFORM = $(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g") 	# Get target platform from output path
 ENGINELIB = $(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a# 	# Path to the engine static library
 
@@ -33,15 +34,18 @@ SCPPFLAGS =															# Shared C++ default flags
 
 
 
-# ESRC      = path/to/engine/file1.cpp...																			# Engine C++  source files #! Passed by the wrapper
-# ECOMP     = path/to/shader1.comp...																				# Engine GLSL source files #! Passed by the wrapper
-ESHADERS    = $(addsuffix .spv,$(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))																					# Get output spir-v files
-ESHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))))			# Get output .o files for generated shader interfaces
+# ESRC      = path/to/engine/file1.cpp...							# Engine C++  source files #! Passed by the wrapper
+# ECOMP     = path/to/shader1.comp...								# Engine GLSL source files #! Passed by the wrapper
+ESHADERS    = $(addsuffix .spv,$(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))
+ESHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))))
 
-# ASRC      = path/to/app/file1.cpp...																				# Application C++  source files #! Passed by the wrapper
-# ACOMP     = path/to/shader1.comp...																				# Application GLSL source files #! Passed by the wrapper
-ASHADERS    = $(addsuffix .spv,$(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))																					# Get output spir-v files
-ASHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))))			# Get output .o files for generated shader interfaces
+
+# ASRC      = path/to/app/file1.cpp...								# Application C++  source files #! Passed by the wrapper
+# ACOMP     = path/to/shader1.comp...								# Application GLSL source files #! Passed by the wrapper
+ifneq ($(ACOMP),)
+    ASHADERS    = $(addsuffix .spv,$(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))
+    ASHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))))
+endif
 
 
 # Get the output path for each cpp file
@@ -94,10 +98,10 @@ endif
 
 # Remove all the engine files
 clean_engine:
-	cd $(APP)/.engine/bin/Engine;			 \
-	@-find . -type f  ! -name "*.*" -delete; \
-	@-find . -type f -name "*.o" -delete;	 \
-	@-find . -type f -name "*.exe" -delete
+	-@cd $(APP)/.engine/bin/Engine &&		\
+	find . -type f  ! -name "*.*" -delete;	\
+	find . -type f -name "*.o" -delete;		\
+	find . -type f -name "*.exe" -delete
 
 
 
@@ -135,10 +139,10 @@ endif
 
 # Delete all the object and executable files (including Windows .exe files)
 clean_application:
-	cd $(APP)/.engine/bin/Application;		 \
-	@-find . -type f  ! -name "*.*" -delete; \
-	@-find . -type f -name "*.o" -delete;	 \
-	@-find . -type f -name "*.exe" -delete
+	-@cd $(APP)/.engine/bin/Application &&	\
+	find . -type f  ! -name "*.*" -delete;	\
+	find . -type f -name "*.o" -delete;		\
+	find . -type f -name "*.exe" -delete
 
 
 
