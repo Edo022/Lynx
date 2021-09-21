@@ -76,7 +76,7 @@ ifneq ($(ESRC),)
 
         # Build engine object files
         $(EBINS): $(ESRC)
-	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@
+	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
 
         # Build engine spir-v files and generate shader interfaces
         $(ESHADERS): $(ECOMP)
@@ -114,7 +114,7 @@ ifneq ($(ASRC),) 	# Check if there are application source files
 
         # Build application object files
         $(ABINS): $(ASRC)
-	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $< -o $@
+	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
 
         # Build application spir-v files and generate shader interfaces
         $(ASHADERS): $(ACOMP)
