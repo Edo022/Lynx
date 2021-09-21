@@ -278,7 +278,8 @@ print('Running:\n[\n    ' + (',\n    '.join(makeCmd)) + '\n]\n\n')
 sys.exit(subprocess.run(makeCmd).returncode)
 
 #TODO cleanup
-
+#FIXME add engine init functions
+#FIXME add engine init pointers
 
 
 

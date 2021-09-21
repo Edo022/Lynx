@@ -44,6 +44,9 @@ ASHADERS    = $(ACOMP:.comp=.spv)			# Get output spir-v files
 ASHADERSO   = $(ACOMP:.comp=.o)				# Get output .o files for generated shader interfaces
 
 
+# Get the output path for each cpp file
+EBINS = $(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(ESRC:.cpp=.o)))
+ABINS = $(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(ASRC:.cpp=.o)))
 
 
 
@@ -55,45 +58,44 @@ $(shell mkdir -p					 		 \
 
 
 
+
 # ----------------------------------------- ENGINE ------------------------------------------
+
 
 
 
 # Check if there are engine source files
 ifneq ($(ESRC),)
-# Get the binary path from each cpp file
-EBINS = $(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(ESRC:.cpp=.o)))
 
-engine: $(ENGINELIB)
+    # Get the binary path from each cpp file
+    engine: $(ENGINELIB)
 
-# Build libLynxEngine.a rebuilds if Lynx/Lynx_config.hpp is changed
-$(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
-	ar -rcs $(ENGINELIB) $(filter-out $<,$^)
+        # Build libLynxEngine.a rebuilds if Lynx/Lynx_config.hpp is changed
+        $(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
+	        ar -rcs $(ENGINELIB) $(filter-out $<,$^)
 
+        # Build engine object files
+        $(EBINS): $(ESRC)
+	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@
 
-# Build engine object files
-$(EBINS): $(ESRC)
-	$(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@
+        # Build engine spir-v files and generate shader interfaces
+        $(ESHADERS): $(ECOMP)
+	        glslangValidator -V $< -o $@
+	        python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} e
 
-
-# Build engine spir-v files and generate shader interfaces
-$(ESHADERS): $(ECOMP)
-	glslangValidator -V $< -o $@
-	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} e
-
-#Build engine generated shader interfaces .cpp s
-$(ESHADERSO): $(ESHADERS)
-	$(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
+        #Build engine generated shader interfaces .cpp s
+        $(ESHADERSO): $(ESHADERS)
+	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
 
-# Remove all the engine files
-clean_engine:
-	cd $(APP)/.engine/bin/Engine; \
-	@-find . -type f  ! -name "*.*" -delete; \
-	@-find . -type f -name "*.o" -delete; \
-	@-find . -type f -name "*.exe" -delete
 
 
+    # Remove all the engine files
+    clean_engine:
+	    cd $(APP)/.engine/bin/Engine; \
+	    @-find . -type f  ! -name "*.*" -delete; \
+	    @-find . -type f -name "*.o" -delete; \
+	    @-find . -type f -name "*.exe" -delete
 endif
 
 
@@ -107,45 +109,37 @@ endif
 ifneq ($(APP),)		# check if APP is passed
 ifneq ($(ASRC),) 	# Check if there are application source files
 
-ABINS = $(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
-# ABINS = $(addprefix .engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
+    # Rebuild the engine static library if not available or outdated
+    application: $(ENGINELIB) $(ABINS) $(ASHADERS)
+        # Build application object files
+        $(ABINS): $(ASRC)
+	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $< -o $@
 
+        # Build application spir-v files and generate shader interfaces
+        $(ASHADERS): $(ACOMP)
+	        glslangValidator -V $< -o $@
+	        python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} a
 
-# The application requires the engine static library, if not available or outdated it's rebuilt
-application: $(ENGINELIB) $(ABINS) $(ASHADERS)
-
-
-# Build application object files
-$(ABINS): $(ASRC)
-	$(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $< -o $@
-
-
-# Build application spir-v files and generate shader interfaces
-$(ASHADERS): $(ACOMP)
-	glslangValidator -V $< -o $@
-	python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} a
+        #Build application generated shader interfaces .cpp s
+        $(ASHADERSO): $(ASHADERS)
+	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
 
 
-#Build application generated shader interfaces .cpp s
-$(ASHADERSO): $(ASHADERS)
-	$(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
-
-
-
-# Delete all the object and executable files (including Windows .exe files)
-clean_application:
-	cd $(APP)/.engine/bin/Application; \
-	@-find . -type f  ! -name "*.*" -delete; \
-	@-find . -type f -name "*.o" -delete; \
-	@-find . -type f -name "*.exe" -delete
-
-
-
-
-
+    # Delete all the object and executable files (including Windows .exe files)
+    clean_application:
+	    cd $(APP)/.engine/bin/Application;			\
+	    @-find . -type f  ! -name "*.*" -delete;	\
+	    @-find . -type f -name "*.o" -delete;		\
+	    @-find . -type f -name "*.exe" -delete
 endif
 endif
+
+
+
+
+# -------------------------------------------- MAKE ALL -------------------------------------------
+
 
 
 
