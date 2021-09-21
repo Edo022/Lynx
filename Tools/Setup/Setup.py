@@ -11,26 +11,23 @@ import SetPlatform, SetConfiguration
 
 
 
-# Get project dir
-rpPath = '.' if len(sys.argv) == 1 else os.path.relpath(sys.argv[1], '.')
-apPath = os.path.abspath(rpPath)
-
-rePath = ''
-aePath = ''
+# Get relative to cwd and absolute project dir
+cwdToP = '.' if len(sys.argv) == 1 else os.path.relpath(sys.argv[1], '.')
+cwdToE = os.path.relpath(os.path.dirname(os.readlink('/proc/self/exe')) + '/../..')
 
 
 # Check the project dir and ask for confirmation
-if not os.path.exists(apPath):
+if not os.path.exists(cwdToP):
     print("The specified project path does not exist")
     exit(-2)
 else:
     print(
         'The following files will be created or overwritten:'   '\n' +
-        apPath + '/.vscode/tasks.json'                          '\n' +
-        apPath + '/.vscode/c_cpp_properties.json'               '\n' +
-        apPath + '/.engine/.apf'                                '\n' +
-        apPath + '/.engine/.atp'                                '\n' +
-        apPath + '/.engine/.rePath'                             '\n' +
+        cwdToP + '/.vscode/tasks.json'                          '\n' +
+        cwdToP + '/.vscode/c_cpp_properties.json'               '\n' +
+        cwdToP + '/.engine/.apf'                                '\n' +
+        cwdToP + '/.engine/.atp'                                '\n' +
+        cwdToP + '/.engine/.cwdToE'                             '\n' +
         '\n'
         'Continue?'
     )
@@ -40,52 +37,37 @@ os.path.dirname(os.getcwd())
 
 
 if sys.stdin.read(1).lower() == 'y':
-    aePath = os.path.dirname(os.readlink('/proc/self/exe'))
-    rePath = os.path.relpath(aePath + '/../..', apPath)
-
-
     # Create missing directories
-    if not os.path.exists(apPath + "/.engine"):               os.mkdir(apPath + "/.engine")
-    if not os.path.exists(apPath + "/.engine/Build"):         os.mkdir(apPath + "/.engine/Build")
-    if not os.path.exists(apPath + "/.engine/Build/Linux"):   os.mkdir(apPath + "/.engine/Build/Linux")
-    if not os.path.exists(apPath + "/.engine/Build/Windows"): os.mkdir(apPath + "/.engine/Build/Windows")
-    if not os.path.exists(apPath + "/.vscode"):               os.mkdir(apPath + "/.vscode")
-
-
-
+    if not os.path.exists(cwdToP + "/.engine"): os.mkdir(cwdToP + "/.engine")
+    if not os.path.exists(cwdToP + "/.vscode"): os.mkdir(cwdToP + "/.vscode")
 
 
     # Write default active platform and configuration
-    with open(apPath + "/.engine/.pf", 'w') as f:
-        f.write('l')
-    with open(apPath + "/.engine/.cf", 'w') as f:
-        f.write('d')
+    with open(cwdToP + "/.engine/.pf", 'w') as f: f.write('l')
+    with open(cwdToP + "/.engine/.cf", 'w') as f: f.write('d')
 
-
-    with open(apPath + '/.engine/.rePath', 'w') as f:
-        f.write(rePath) # Write relative path to engine SDK
-
-    with open(apPath + '/.engine/.aePath', 'w') as f:
-        f.write(aePath) # Write absolute path to engine SDK
-
-    with open(apPath + '/.engine/.rpPath', 'w') as f:
-        f.write(rpPath) # Write relative project path
-
-    with open(apPath + '/.engine/.apPath', 'w') as f:
-        f.write(apPath) # Write absolute project path
+    # Write paths
+    pabs = os.path.abspath(cwdToP)
+    eabs = os.path.abspath(cwdToE)
+    ptoe = os.path.relpath(eabs, cwdToP)
+    etop = os.path.relpath(cwdToP, eabs)
+    with open(cwdToP + '/.engine/.pabs', 'w') as f: f.write(pabs)   # Absolute path of Project dir
+    with open(cwdToP + '/.engine/.eabs', 'w') as f: f.write(eabs)   # Absolute path of Engine SDK
+    with open(cwdToP + '/.engine/.ptoe', 'w') as f: f.write(ptoe)   # Project to Engine relative path
+    with open(cwdToP + '/.engine/.etop', 'w') as f: f.write(etop)   # Engine to Project relative path
 
 
 
 
     # Write vscode tasks
-    with open(apPath + '/.engine/Build.Engine.sh', 'w') as f:
+    with open(cwdToP + '/.engine/Build.Engine.sh', 'w') as f:
         f.write(
             f"\n##################################################################"
             f"\n#  This file contains the command used to build the Lynx Engine  #"
             f"\n#  Bash syntax. Lines are concatenated and comments are ignored  #"
             f"\n##################################################################"
             f"\n"
-            f"\n{ rePath}/Lynx/Tools/Build/lynxg++"
+            f"\n{ ptoe }/Lynx/Tools/Build/lynxg++"
             f"\n"
             f"\n#--mode=ld #! Build mode and target platform are copied from the application build"
             f"\n-a: # Source files"
@@ -128,7 +110,7 @@ if sys.stdin.read(1).lower() == 'y':
             f"\n    Lynx/Core/Env.cpp"
             f"\n"
             f"\n-a: # Shader source files"
-            f"\n    { rePath }/Lynx/shaders/*.comp"
+            f"\n    Lynx/shaders/*.comp"
             f"\n"
             f"\n-a: # Use AVX"
             f"\n    -mavx"
@@ -190,14 +172,14 @@ if sys.stdin.read(1).lower() == 'y':
         )
 
 
-    with open(apPath + '/.engine/Build.Application.sh', 'w') as f:
+    with open(cwdToP + '/.engine/Build.Application.sh', 'w') as f:
         f.write(
             f"\n##################################################################"
             f"\n#  This file contains the command used to build your application #"
             f"\n#  Bash syntax. Lines are concatenated and comments are ignored  #"
             f"\n##################################################################"
             f"\n"
-            f"\n{ rePath}/Lynx/Tools/Build/lynxg++"
+            f"\n{ ptoe }/Lynx/Tools/Build/lynxg++"
             f"\n"
             f"\n"
             f"--mode=ld #! Changed by vscode"
@@ -215,7 +197,7 @@ if sys.stdin.read(1).lower() == 'y':
 
 
 
-    with open(apPath + '/.vscode/tasks.json', 'w') as f:
+    with open(cwdToP + '/.vscode/tasks.json', 'w') as f:
         f.write(
            f'{{'
            f'\n    "version": "2.0.0",'
@@ -223,7 +205,7 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n        {{'
            f'\n            "type": "shell",'
            f'\n            "label": "Linux  |  Debug  |  Build Lynx Engine",'
-           f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
+           f'\n            "command": "{ ptoe }/Tools/Build/lynxg++",'
            f'\n            "args": [ "-f=.engine/Build.Engine.sh" ],'
            f'\n            "problemMatcher": [ "$gcc" ],'
            f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
@@ -232,7 +214,7 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n        {{'
            f'\n            "type": "shell",'
            f'\n            "label": "Linux  |  Debug  |  Build Application\",'
-           f'\n            "command": "{ rePath }/Tools/Build/lynxg++",'
+           f'\n            "command": "{ ptoe }/Tools/Build/lynxg++",'
            f'\n            "args": [ "-f=.engine/Build.Application.sh" ],'
            f'\n            "problemMatcher": [ "$gcc" ],'
            f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
@@ -243,7 +225,7 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n            "label": " > Switch to Windows",'
            f'\n            "command": "python3",'
            f'\n            "args": ['
-           f'\n                "{ rePath }/Tools/Setup/SetPlatform.py",'
+           f'\n                "{ ptoe }/Tools/Setup/SetPlatform.py",'
            f'\n                "w",'
            f'\n                "ignored_argument" //FIXME'
            f'\n            ],'
@@ -256,7 +238,7 @@ if sys.stdin.read(1).lower() == 'y':
            f'\n            "label": " > Switch to Release",'
            f'\n            "command": "python3",'
            f'\n            "args": ['
-           f'\n                "{ rePath }/Tools/Setup/SetConfiguration.py",'
+           f'\n                "{ ptoe }/Tools/Setup/SetConfiguration.py",'
            f'\n                "r",'
            f'\n                "ignored_argument" //FIXME'
            f'\n            ],'

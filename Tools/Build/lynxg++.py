@@ -141,12 +141,12 @@ def run(argv:list):
 
 
         # Build GLSLC command
-        FLAGS : str  = ''
+        FLAGS : list = []
         SRC   : list = []
         COMP  : list = []
 
         if args.m[1] == 'd':
-            FLAGS += '-DLNX_DEBUG -rdynamic'
+            FLAGS += [ '-DLNX_DEBUG, -rdynamic' ]
 
         for e in cmd:
             if e[-5:] == '.comp':
@@ -159,14 +159,14 @@ def run(argv:list):
                 if len(g) > 0: SRC += g
                 else:          SRC += [ e ]
 
-            else: FLAGS += ' ' + e
+            else: FLAGS += [ e ]
 
         # Return
         return ns(**{
             'mode'  : args.m,
             'FLAGS' : FLAGS,
-            'SRC'   : ' '.join(SRC ),
-            'COMP'  : ' '.join(COMP)
+            'SRC'   : SRC,
+            'COMP'  : COMP
         })
         # while i < len(cmd):
         #     r = re.match(r'^(.*)\.comp$', cmd[i])
@@ -196,18 +196,18 @@ def run(argv:list):
 
         #Build G++ command
 
-        # cmd = ['g++', '-pthread', '-I' + rePath] + cmd                  #Default g++ call, , pthread, include project root
+        # cmd = ['g++', '-pthread', '-I' + ptoe] + cmd                  #Default g++ call, , pthread, include project root
         # cmd += ['-std=c++20', '-m64', '-L/usr/lib64', '-L/lib64']       #Use C++20, build for 64bit environments, prefer 64bit libraries
         # cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
         # cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
         # if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
-        # cmd += ['-ffile-prefix-map=' + apPath + '=']                    #Fix file prefix
+        # cmd += ['-ffile-prefix-map=' + pabs + '=']                    #Fix file prefix
 
         # if args.e is False:
             # cmd += [  ]    #Define engine path function
 
-#     rePath + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
-#     rePath + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
+#     ptoe + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
+#     ptoe + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
 #     './.engine/Build/' + _pf + '/Lynx' + _cf                        #Add engine binaries
 # ]
 
@@ -221,27 +221,27 @@ def run(argv:list):
 
 
 # # Get engine path
-# rePath:str = ''
-# with open('./.engine/.rePath', 'r') as f:
-#     rePath = f.read()
+# ptoe:str = ''
+# with open('./.engine/.ptoe', 'r') as f:
+#     ptoe = f.read()
 
 
 
 
 # Get absolute project path
-apPath:str = ''
-with open('./.engine/.apPath', 'r') as f:
-    apPath = f.read()
+pabs:str = ''
+with open('./.engine/.pabs', 'r') as f:
+    pabs = f.read()
 
 # Get relative project path
-rpPath:str = ''
-with open('./.engine/.rpPath', 'r') as f:
-    rpPath = f.read()
+etop:str = ''
+with open('./.engine/.etop', 'r') as f:
+    etop = f.read()
 
 # Get relative engine path
-rePath:str = ''
-with open('./.engine/.rePath', 'r') as f:
-    rePath = f.read()
+ptoe:str = ''
+with open('./.engine/.ptoe', 'r') as f:
+    ptoe = f.read()
 
 # Set complete names for platform and configuration
 # _pf:str = 'Linux' if args.m[0] == 'l' else 'Windows'
@@ -263,18 +263,18 @@ with open('.engine/Build.Engine.sh') as f:
 
 # Run build
 makeCmd = [ #FIXME escape strings or pass a list
-    'make', '-C', rePath, #! Run from user application, cd into engine repo
+    'make', '-j8', '-C', ptoe, #! Run from user application, cd into engine repo
     'CPP'    f" = { 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }",
     'OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    'APP'    f' = { rpPath }',
-    'EFLAGS' f' = { eRet.FLAGS }',
-    'AFLAGS' f' = { aRet.FLAGS } -DenginePath="{ apPath }',
-    'ESRC'   f' = { eRet.SRC   }',
-    'ASRC'   f' = { aRet.SRC   }',
-    'ECOMP'  f' = { eRet.COMP  }',
-    'ACOMP'  f' = { aRet.COMP  }'
+    'APP'    f' = { etop }',
+    'EFLAGS' f' = { " ".join(eRet.FLAGS) }',
+    'AFLAGS' f' = { " ".join(aRet.FLAGS) } -DenginePath="{ pabs }',
+    'ESRC'   f' = { " ".join(eRet.SRC) }',
+    'ASRC'   f' = { " ".join((etop + "/" + s) for s in aRet.SRC) }',
+    'ECOMP'  f' = { " ".join(eRet.COMP) }',
+    'ACOMP'  f' = { " ".join((etop + "/" + s) for s in aRet.COMP) }'
 ]
-print('Running:\n' + (' '.join(makeCmd)) + '\n\n')
+print('Running:\n[\n    ' + (',\n    '.join(makeCmd)) + '\n]\n\n')
 sys.exit(subprocess.run(makeCmd).returncode)
 
 
@@ -323,7 +323,7 @@ sys.exit(subprocess.run(makeCmd).returncode)
 #         runCmd(['spirv-val', files[0] + '.spv'], args.v)
 #         if args.v == 3:
 #             print('\033[35mGenerating interface files...\033[0m')
-#         r = GlslToCpp.parseShader(files[0] + '.comp', _pf, rePath, args.e)
+#         r = GlslToCpp.parseShader(files[0] + '.comp', _pf, ptoe, args.e)
 #         if r != 0: sys.exit(r)
 #     print('\n')
 

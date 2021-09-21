@@ -9,8 +9,8 @@ def run(dir):
         pf = f.read(1)
     with open('./.engine/.cf', 'r') as f:
         cf = f.read(1)
-    with open('./.engine/.rePath', 'r') as f:
-        rePath = f.read()
+    with open('./.engine/.etop', 'r') as f:
+        etop = f.read()
 
     def getPf():
         return "Linux" if pf == "l" else "Windows"

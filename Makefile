@@ -9,7 +9,7 @@
 # OUTPUT  = Platform/Mode											# Output path suffix based on build configuration and target platform	#! Passed by the wrapper
 # APP     = path/to/application										# Path to the user application											#! Passed by the wrapper
 XPLATFORM = $(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g") 	# Get target platform from output path
-ENGINELIB = $(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a 	# Path to the engine static library
+ENGINELIB = $(APP)/.engine/bin/Engine/$(OUTPUT)/libLynxEngine.a# 	# Path to the engine static library
 
 # EFLAGS  =															# User defined engine flags from the wrapper
 ECPPFLAGS = 														# Default engine flags
@@ -28,7 +28,7 @@ SCPPFLAGS =															# Shared C++ default flags
     SCPPFLAGS += -std=c++20 -m64#										# Use C++20, build for 64bit environments
     SCPPFLAGS += -include Lynx/Core/VkDef.hpp#							# Include forced vulkan macros
     SCPPFLAGS += -include Lynx/Lynx_config.hpp#							# Include engine configuration macros
-    SCPPFLAGS += -ffile-prefix-map=$(APP)=#								# Fix file prefix in debug infos
+    SCPPFLAGS += -ffile-prefix-map=$(realpath $(APP))=#					# Fix file prefix in debug infos
 
 
 
@@ -62,7 +62,7 @@ $(shell mkdir -p					 		 \
 # Check if there are engine source files
 ifneq ($(ESRC),)
 # Get the binary path from each cpp file
-EBINS = $(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT),$(shell basename -a $(ESRC:.cpp=.o)))
+EBINS = $(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(ESRC:.cpp=.o)))
 
 engine: $(ENGINELIB)
 
@@ -106,7 +106,9 @@ endif
 
 ifneq ($(APP),)		# check if APP is passed
 ifneq ($(ASRC),) 	# Check if there are application source files
-ABINS = $(addprefix $(APP)/.engine/bin/Application/$(OUTPUT),$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
+
+ABINS = $(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
+# ABINS = $(addprefix .engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(ASRC:.cpp=.o))) # Get the binary path from each cpp file
 
 
 # The application requires the engine static library, if not available or outdated it's rebuilt

@@ -228,14 +228,14 @@ def fixTabs(s:str, indent:int = 0):
 
 
 # Parses a GLSL compute shader and writes 2 C++ interface files
-def parseShader(pathr:str, ptfm:str, rePath:str, e:bool):
+def parseShader(pathr:str, ptfm:str, ptoe:str, e:bool):
     #Check files
     if not os.path.exists(pathr):
         print("File does not exist")
         return 1
 
     #Get shader path and name
-    incShPath : str = os.path.dirname(os.path.relpath(pathr, rePath if e else '.'))
+    incShPath : str = os.path.dirname(os.path.relpath(pathr, ptoe if e else '.'))
     shPath    : str = os.path.dirname(os.path.relpath(pathr, '.'))
     shName    : str = os.path.basename(pathr).rsplit('.', 1)[0]
     if re.match(r'[a-zA-Z_](\w)*', shName) == None:
