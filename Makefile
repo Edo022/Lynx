@@ -87,14 +87,16 @@ ifneq ($(ESRC),)
         $(ESHADERSO): $(ESHADERS)
 	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
-
 endif
+
+
+
 
 # Remove all the engine files
 clean_engine:
-	cd $(APP)/.engine/bin/Engine; \
+	cd $(APP)/.engine/bin/Engine;			 \
 	@-find . -type f  ! -name "*.*" -delete; \
-	@-find . -type f -name "*.o" -delete; \
+	@-find . -type f -name "*.o" -delete;	 \
 	@-find . -type f -name "*.exe" -delete
 
 
@@ -110,7 +112,7 @@ ifneq ($(ASRC),) 	# Check if there are application source files
 
     # Rebuild the engine static library if not available or outdated
     application: $(ENGINELIB) $(ABINS) $(ASHADERSO)
-	    
+
 
         # Build application object files
         $(ABINS): $(ASRC)
@@ -125,16 +127,17 @@ ifneq ($(ASRC),) 	# Check if there are application source files
         $(ASHADERSO): $(ASHADERS)
 	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
-
-
 endif
 endif
+
+
+
 
 # Delete all the object and executable files (including Windows .exe files)
 clean_application:
-	cd $(APP)/.engine/bin/Application;			\
-	@-find . -type f  ! -name "*.*" -delete;	\
-	@-find . -type f -name "*.o" -delete;		\
+	cd $(APP)/.engine/bin/Application;		 \
+	@-find . -type f  ! -name "*.*" -delete; \
+	@-find . -type f -name "*.o" -delete;	 \
 	@-find . -type f -name "*.exe" -delete
 
 
