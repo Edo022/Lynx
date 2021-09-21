@@ -33,20 +33,20 @@ SCPPFLAGS =															# Shared C++ default flags
 
 
 
-# ESRC      = path/to/engine/file1.cpp...	# Engine C++  source files #! Passed by the wrapper
-# ECOMP     = path/to/shader1.comp...		# Engine GLSL source files #! Passed by the wrapper
-ESHADERS    = $(ECOMP:.comp=.spv)			# Get output spir-v files
-ESHADERSO   = $(ECOMP:.comp=.o)				# Get output .o files for generated shader interfaces
+# ESRC      = path/to/engine/file1.cpp...																			# Engine C++  source files #! Passed by the wrapper
+# ECOMP     = path/to/shader1.comp...																				# Engine GLSL source files #! Passed by the wrapper
+ESHADERS    = $(addsuffix .spv,$(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))																					# Get output spir-v files
+ESHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ECOMP) | sed "s/\(.\+\)\..*./\1/g"))))			# Get output .o files for generated shader interfaces
 
-# ASRC      = path/to/app/file1.cpp...		# Application C++  source files #! Passed by the wrapper
-# ACOMP     = path/to/shader1.comp...		# Application GLSL source files #! Passed by the wrapper
-ASHADERS    = $(ACOMP:.comp=.spv)			# Get output spir-v files
-ASHADERSO   = $(ACOMP:.comp=.o)				# Get output .o files for generated shader interfaces
+# ASRC      = path/to/app/file1.cpp...																				# Application C++  source files #! Passed by the wrapper
+# ACOMP     = path/to/shader1.comp...																				# Application GLSL source files #! Passed by the wrapper
+ASHADERS    = $(addsuffix .spv,$(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))																					# Get output spir-v files
+ASHADERSO   = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ACOMP) | sed "s/\(.\+\)\..*./\1/g"))))			# Get output .o files for generated shader interfaces
 
 
 # Get the output path for each cpp file
-EBINS = $(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(ESRC:.cpp=.o)))
-ABINS = $(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(ASRC:.cpp=.o)))
+EBINS = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Engine/$(OUTPUT)/,$(shell basename -a $(shell printf $(ASRC) | sed "s/\(.\+\)\..*./\1/g"))))
+ABINS = $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Application/$(OUTPUT)/,$(shell basename -a $(shell printf $(ASRC) | sed "s/\(.\+\)\..*./\1/g"))))
 
 
 
@@ -71,12 +71,12 @@ ifneq ($(ESRC),)
     engine: $(ENGINELIB)
 
         # Build libLynxEngine.a rebuilds if Lynx/Lynx_config.hpp is changed
-        $(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERS) $(ESHADERSO)
+        $(ENGINELIB): Lynx/Lynx_config.hpp $(EBINS) $(ESHADERSO)
 	        ar -rcs $(ENGINELIB) $(filter-out $<,$^)
 
         # Build engine object files
         $(EBINS): $(ESRC)
-	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $< -o $@
+	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
 
         # Build engine spir-v files and generate shader interfaces
         $(ESHADERS): $(ECOMP)
@@ -88,15 +88,14 @@ ifneq ($(ESRC),)
 	        $(CPP) $(SCPPFLAGS) $(ECPPFLAGS) -c $(<:.spv=.gsi.cpp) -o $@
 
 
-
-
-    # Remove all the engine files
-    clean_engine:
-	    cd $(APP)/.engine/bin/Engine; \
-	    @-find . -type f  ! -name "*.*" -delete; \
-	    @-find . -type f -name "*.o" -delete; \
-	    @-find . -type f -name "*.exe" -delete
 endif
+
+# Remove all the engine files
+clean_engine:
+	cd $(APP)/.engine/bin/Engine; \
+	@-find . -type f  ! -name "*.*" -delete; \
+	@-find . -type f -name "*.o" -delete; \
+	@-find . -type f -name "*.exe" -delete
 
 
 
@@ -110,10 +109,12 @@ ifneq ($(APP),)		# check if APP is passed
 ifneq ($(ASRC),) 	# Check if there are application source files
 
     # Rebuild the engine static library if not available or outdated
-    application: $(ENGINELIB) $(ABINS) $(ASHADERS)
+    application: $(ENGINELIB) $(ABINS) $(ASHADERSO)
+	    
+
         # Build application object files
         $(ABINS): $(ASRC)
-	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $< -o $@
+	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
 
         # Build application spir-v files and generate shader interfaces
         $(ASHADERS): $(ACOMP)
@@ -126,14 +127,15 @@ ifneq ($(ASRC),) 	# Check if there are application source files
 
 
 
-    # Delete all the object and executable files (including Windows .exe files)
-    clean_application:
-	    cd $(APP)/.engine/bin/Application;			\
-	    @-find . -type f  ! -name "*.*" -delete;	\
-	    @-find . -type f -name "*.o" -delete;		\
-	    @-find . -type f -name "*.exe" -delete
 endif
 endif
+
+# Delete all the object and executable files (including Windows .exe files)
+clean_application:
+	cd $(APP)/.engine/bin/Application;			\
+	@-find . -type f  ! -name "*.*" -delete;	\
+	@-find . -type f -name "*.o" -delete;		\
+	@-find . -type f -name "*.exe" -delete
 
 
 
