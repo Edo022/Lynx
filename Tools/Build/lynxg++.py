@@ -144,29 +144,98 @@ def run(argv:list):
         FLAGS : list = []
         SRC   : list = []
         COMP  : list = []
+        LINK  : list = []
 
         if args.m[1] == 'd':
             FLAGS += [ '-DLNX_DEBUG, -rdynamic' ]
 
-        for e in cmd:
-            if e[-5:] == '.comp':
-                g = glob.glob(e)
-                if len(g) > 0: COMP += g
-                else:          COMP += [ e ]
 
-            elif e[-4:] == '.cpp' :
-                g = glob.glob(e)
-                if len(g) > 0: SRC += g
-                else:          SRC += [ e ]
 
-            else: FLAGS += [ e ]
+        # Parse -x flags and expand glob paths
+        #TODO add -x glsl
+
+        def expGlob(s:str):     # Expand glob paths
+            os.chdir(ptoe)
+            g = glob.glob(s)        # Get glob result #FIXME use engine or app path
+            os.chdir(etop)
+            if len(g) > 0:          # If it was a glob
+                return g                # Return the list of paths
+            else:                   # If it was not
+                return [s]              # Return a list containing the original path only
+
+
+        def expGlobSub(s:str):  # Expand glob paths, return the first path and assign the others to s. Set s to None if there was only one path
+            g = expglob(s)          # Expand glob
+            if len(g > 1):          # If there is more than 1 path
+                s = g[1:]               # Overwrite the old file name element with the remaining paths
+            else:                   # Else
+                s = None                # Remove the file name argument
+            return g[0]             # Return first path
+
+
+
+        i = 0
+        # for i, e in enumerate(cmd):                 # For each element
+        while i < len(cmd):                             # For each element
+            if isinstance(cmd[i], list):                    # If the element is a list of file names
+                for e in cmd[i]:                                # For each file name
+                    if   e[-4:] == '.cpp':  SRC += [e]              # Add to SRC if it's a cpp
+                    elif e[-5:] == '.comp': COMP += [e]             # Add to COMP if it's a comp
+                    else: LINK += [e]                               # Add to LINK if it's a library or an object file
+            else:                                           # If its a flag or has still to be parsed
+                if cmd[i] == None:                              # If the element was removed
+                    i += 1                                          # Increment counter
+                    continue                                        # Skip element
+                if cmd[i][0] == '-':                            # If it's a flag
+                    if cmd[i] == '-xcpp':                           # If it specifies a language in one argument
+                        if cmd[i + 1][0] != '-':                        # If the file name is actually a file name
+                            SRC += [expGlobSub(cmd[i + 1])]                 # Expand glob, use first path and reparse the others
+                        else:                                           # If it's not
+                            FLAGS += [cmd[i]]                               # Add -xcpp to FLAGS and let gcc throw an error
+                    elif cmd[i] == '-x' and cmd[i + 1] == 'c++':    # If it specifies a language in two arguments
+                        cmd[i + 1] = None                               # Remove the next argument
+                        if cmd[i + 2][0] != '-':                        # If the file name is actually a file name
+                            SRC += [expGlobSub(cmd[i + 2])]                 # Expand glob, use first path and reparse the others
+                        else:                                           # If it's not
+                            FLAGS += [cmd[i], cmd[i + 1]]                   # Add -x cpp to FLAGS and let gcc throw an error
+                    elif cmd[i] == '-l':                            # If it's a library name in 2 arguments
+                        if cmd[i + 1][0] != '-':                        # If the library name is actually a library name
+                            LINK += [expGlobSub(cmd[i + 1])]                # Expand glob, use first path and reparse the others
+                        else:                                           # If it's not
+                            FLAGS += [cmd[i]]                               # Add -l to LINK and let gcc throw an error
+                    elif cmd[i][:1] == '-l':                        # If it's a library name in 1 argument
+                        LINK += [cmd[i]]                                # Add the argument to LINK
+                    else:                                           # If it's something else
+                        FLAGS += [cmd[i]]                               # Add to FLAGS
+                else:                                           # If it's a file path
+                    cmd[i] = expGlob(cmd[i])                        # Expand glob
+                    i -= 1                                          # Parse element again
+            i += 1                                          # Increment counter
+        #sorry
+
+
+
+        # # Sort options
+        # for e in cmd:
+        #     if e[-5:] == '.comp':
+        #         g = glob.glob(e)
+        #         if len(g) > 0: COMP += g
+        #         else:          COMP += [ e ]
+
+        #     elif e[-4:] == '.cpp' :
+        #         g = glob.glob(e)
+        #         if len(g) > 0: SRC += g
+        #         else:          SRC += [ e ]
+
+        #     else: FLAGS += [ e ]
 
         # Return
-        return ns(**{
+        return ns(**{ #TODO rename
             'mode'  : args.m,
             'FLAGS' : FLAGS,
             'SRC'   : SRC,
-            'COMP'  : COMP
+            'COMP'  : COMP,
+            'LINK'  : LINK
         })
         # while i < len(cmd):
         #     r = re.match(r'^(.*)\.comp$', cmd[i])
@@ -253,7 +322,6 @@ aRet = run(sys.argv[1:])
 if isinstance(aRet, int):
     sys.exit(aRet)
 
-
 # Parse engine arguments
 with open('.engine/Build.Engine.sh') as f:
     eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:])
@@ -264,7 +332,7 @@ with open('.engine/Build.Engine.sh') as f:
 # Run build
 makeCmd = [
     'make', '-j8', '-C', ptoe, #! Run from user application, cd into engine repo
-    'CPP'    f" = { 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }",
+    'CPP'    f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
     'OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
     'APP'    f' = { etop }',
     'EFLAGS' f' = { " ".join(eRet.FLAGS) }',
@@ -272,9 +340,20 @@ makeCmd = [
     'ESRC'   f' = { " ".join(eRet.SRC) }',
     'ASRC'   f' = { " ".join((etop + "/" + s) for s in aRet.SRC) }',
     'ECOMP'  f' = { " ".join(eRet.COMP) }',
-    'ACOMP'  f' = { " ".join((etop + "/" + s) for s in aRet.COMP) }'
+    'ACOMP'  f' = { " ".join((etop + "/" + s) for s in aRet.COMP) }',
+    'LINK'   f' = { " ".join((etop + "/" + s) for s in aRet.COMP) }'
 ]
-print('Running:\n[\n    ' + (',\n    '.join(makeCmd)) + '\n]\n\n')
+
+print(f"""Using: [
+    { makeCmd[-7] },\n
+    { makeCmd[-6] },\n
+    { makeCmd[-5] },\n
+    { makeCmd[-4] },\n
+    { makeCmd[-3] },\n
+    { makeCmd[-2] },\n
+    { makeCmd[-1] }
+]""")
+
 sys.exit(subprocess.run(makeCmd).returncode)
 
 #TODO cleanup
