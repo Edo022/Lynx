@@ -315,7 +315,7 @@ def parseShader(pathr:str, ptfm:str, ptoe:str, e:bool):
 
 
 
-        # Write layout structs
+        # Write layout structs #FIXME move definition to .cpp
         fh.write('\n\n' + fixTabs(
             '\n\n'.join(((
             f"\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{"

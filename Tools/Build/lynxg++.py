@@ -256,19 +256,19 @@ if isinstance(aRet, int):
 
 # Parse engine arguments
 with open('.engine/Build.Engine.sh') as f:
-    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:]) #FIXME add glob parsing. glob module
+    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:])
     if isinstance(eRet, int):
         sys.exit(eRet)
 
 
 # Run build
-makeCmd = [ #FIXME escape strings or pass a list
+makeCmd = [
     'make', '-j8', '-C', ptoe, #! Run from user application, cd into engine repo
     'CPP'    f" = { 'g++' if aRet.mode[0] == 'l' else '//TODO add windows compiler' }",
     'OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
     'APP'    f' = { etop }',
     'EFLAGS' f' = { " ".join(eRet.FLAGS) }',
-    'AFLAGS' f' = { " ".join(aRet.FLAGS) } -DenginePath="{ pabs }',
+    'AFLAGS' f' = { " ".join(aRet.FLAGS) } -DenginePath="{ ptoe }"', #TODO fix engine path in shipping builds and standalone executables
     'ESRC'   f' = { " ".join(eRet.SRC) }',
     'ASRC'   f' = { " ".join((etop + "/" + s) for s in aRet.SRC) }',
     'ECOMP'  f' = { " ".join(eRet.COMP) }',
@@ -277,6 +277,7 @@ makeCmd = [ #FIXME escape strings or pass a list
 print('Running:\n[\n    ' + (',\n    '.join(makeCmd)) + '\n]\n\n')
 sys.exit(subprocess.run(makeCmd).returncode)
 
+#TODO cleanup
 
 
 
