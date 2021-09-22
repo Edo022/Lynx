@@ -117,7 +117,7 @@ ifneq ($(ASRC),) 	# Check if there are application source files
 
     # Rebuild the engine static library if not available or outdated
     application: $(ENGINELIB) $(ABINS) $(ASHADERSO)
-
+	        $(CPP) $(SCPPFLAGS) $(ACPPFLAGS) $^ -o $(APP)/out
 
         # Build application object files
         $(ABINS): $(ASRC)
