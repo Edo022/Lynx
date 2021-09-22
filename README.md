@@ -46,14 +46,14 @@ We do not provide any support for developement on Windows or Mac.
 | Software     | Version   | Required            |
 |--------------|-----------|---------------------|
 | Linux        | 4.4       | Yes                 |
-| Python       | 3.9       | Yes //TODO remove python requirement. Compile an executable file for every script                 |
 | g++          | 11.1.1    | Yes                 |
-| Vulkan SDK   | 1.2.170.0 | Yes //TODO remove   |
+| GNU Make     | 4.3       | Yes                 |
 | glslang      | 10:11.0.0 | Yes                 |
 | spirv-tools  | 2020.7    | Yes                 |
 | Mingw        | 8.0.0     | Windows builds only |
 | **Lynx SDK** | 1.0.0     | Yes                 |
 
+//TODO remove python requirement. Compile an executable file for every script
 The location of those softwares can be changed in the `.engine/Build_config.hpp` file. //TODO
 
 &nbsp;
@@ -65,7 +65,7 @@ Support for other C++ compilers and editors will be added in future versions.
 
 &nbsp;
 
-## Download the required softwares and libraries
+## Install the required softwares and libraries
 
 Some developement libraries are required in order to build applications.
 
@@ -77,6 +77,8 @@ Fedora
 Arch
 `pacman -S gcc make glslang`  
 `pacman -S vulkan-devel glfw-x11 libx11 libxcursor libxrandr libxinerama libxi freeglut gcc-libs`
+
+//TODO add software for wayland
 
 &nbsp;
 &nbsp;
