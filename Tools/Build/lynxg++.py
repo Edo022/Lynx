@@ -43,7 +43,6 @@ def run(argv:list):
 
     #FIXME print an error if there are no selectors before the first unknown option
 
-    #TODO add automatic cleanup before compilation
     #TODO replace hard coded paths and use configuration file
 
     #TODO add verbosity option. default: 1
@@ -63,6 +62,8 @@ def run(argv:list):
 
 
     args = p.parse_args(argv)
+
+    # Help
     if args.h:
         print(
             'Usage:'                                                                                                                                            '\n'
@@ -102,24 +103,31 @@ def run(argv:list):
         )
         return 0
 
+
+    # Version
     elif args.version:
         print('//TODO implement version option')
         return 0
 
+
+    # Read from file
     elif args.f != None:
         with open(args.f, 'r') as f:
             try:
-                fArgs = shlex.split(f.read(), comments = True) #FIXME add glob parsing. glob module
+                fArgs = shlex.split(f.read(), comments = True)
                 return run(fArgs[1:])
             except FileNotFoundError:
                 print(f'Cannot open file "{ args.f }"')
                 return 1
 
 
+    # Check mode
     elif args.m is None:
         print('lynxg++: error: the following arguments are required: -m/--mode')
         return 2
 
+
+    # Ok, start parsing
     else:
         # Select active arguments
         cmd:list = args.a
@@ -140,6 +148,7 @@ def run(argv:list):
 
 
 
+
         # Build GLSLC command
         FLAGS : list = []
         CPP   : list = []
@@ -150,10 +159,8 @@ def run(argv:list):
             FLAGS += [ '-DLNX_DEBUG -rdynamic' ]
 
 
-
         # Parse -x flags and expand glob paths
-        #TODO add -x glsl
-
+        #TODO add -xgls and -x gls for GLSL files with no .comp extension
         def expGlob(s:str):     # Expand glob paths
             os.chdir(ptoe)
             g = glob.glob(s)        # Get glob result #FIXME use engine or app path
@@ -174,8 +181,8 @@ def run(argv:list):
 
 
 
+
         i = 0
-        # for i, e in enumerate(cmd):                 # For each element
         while i < len(cmd):                             # For each element
             if isinstance(cmd[i], list):                    # If the element is a list of file names
                 for e in cmd[i]:                                # For each file name
@@ -215,21 +222,6 @@ def run(argv:list):
 
 
 
-        # # Sort options
-        # for e in cmd:
-        #     if e[-5:] == '.comp':
-        #         g = glob.glob(e)
-        #         if len(g) > 0: COMP += g
-        #         else:          COMP += [ e ]
-
-        #     elif e[-4:] == '.cpp' :
-        #         g = glob.glob(e)
-        #         if len(g) > 0: SRC += g
-        #         else:          SRC += [ e ]
-
-        #     else: FLAGS += [ e ]
-
-        # Return
         return ns(**{ #TODO rename
             'mode'  : args.m,
             'FLAGS' : FLAGS,
@@ -237,95 +229,25 @@ def run(argv:list):
             'GLS'   : GLS,
             'LINK'  : LINK
         })
-        # while i < len(cmd):
-        #     r = re.match(r'^(.*)\.comp$', cmd[i])
-        #     if r != None:
-        #         cmd[i] += ';' + r.group(1) + '.spv'
-
-        #     r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i]) #TODO allow the user to modify interface output files
-        #     if r != None:
-        #         cmdsh += [[r.group(1), r.group(2)]]
-        #         del(cmd[i])
-        #     else:
-        #         i += 1
-        # while i < len(cmd):
-        #     r = re.match(r'^(.*)\.comp$', cmd[i])
-        #     if r != None:
-        #         cmd[i] += ';' + r.group(1) + '.spv'
-
-        #     r = re.match(r'^(.*)\.comp;(.*)\.spv$', cmd[i]) #TODO allow the user to modify interface output files
-        #     if r != None:
-        #         cmdsh += [[r.group(1), r.group(2)]]
-        #         del(cmd[i])
-        #     else:
-        #         i += 1
 
 
 
 
-        #Build G++ command
-
-        # cmd = ['g++', '-pthread', '-I' + ptoe] + cmd                  #Default g++ call, , pthread, include project root
-        # cmd += ['-std=c++20', '-m64', '-L/usr/lib64', '-L/lib64']       #Use C++20, build for 64bit environments, prefer 64bit libraries
-        # cmd += ['-include', 'Lynx/Core/VkDef.hpp']                      #Include forced vulkan macros
-        # cmd += ['-include', 'Lynx/Lynx_config.hpp']                     #Include engine configuration macros
-        # if args.m[1] == 'd': cmd += ['-DLNX_DEBUG', '-rdynamic']        #Activate Lynx debug checks when in debug mode
-        # cmd += ['-ffile-prefix-map=' + pabs + '=']                    #Fix file prefix
-
-        # if args.e is False:
-            # cmd += [  ]    #Define engine path function
-
-#     ptoe + '/Lynx/getEnginePath.cpp',                             #Add engine path definition  #FIXME
-#     ptoe + '/Lynx/Core/Env.cpp',                                  #Add runtime environment variables
-#     './.engine/Build/' + _pf + '/Lynx' + _cf                        #Add engine binaries
-# ]
-
-# if not args.e: cmd += [                                         #When building user application
-#     '-I' + '.',                                                     #Add workspace include path
-#     '-ldl', '-lrt', '-lXrandr', '-lXi', '-lXcursor', '-lXinerama', '-lX11', #Link dependencies
-#     '-lvulkan', '-Bstatic', '-lglfw'                                #Link Vulkan dynamically and GLFW statically
-# ]
 
 
 
-
-# # Get engine path
-# ptoe:str = ''
-# with open('./.engine/.ptoe', 'r') as f:
-#     ptoe = f.read()
-
-
-
-
-# Get absolute project path
-pabs:str = ''
-with open('./.engine/.pabs', 'r') as f:
-    pabs = f.read()
-
-# Get absolute engine path
-eabs:str = ''
-with open('./.engine/.eabs', 'r') as f:
-    eabs = f.read()
-
-# Get relative project path
-etop:str = ''
-with open('./.engine/.etop', 'r') as f:
-    etop = f.read()
-
-# Get relative engine path
-ptoe:str = ''
-with open('./.engine/.ptoe', 'r') as f:
-    ptoe = f.read()
-
-# Set complete names for platform and configuration
-# _pf:str = 'Linux' if args.m[0] == 'l' else 'Windows'
-# _cf:str = 'Debug' if args.m[1] == 'd' else 'Release'
+# Get paths
+with open('./.engine/.pabs', 'r') as f: pabs = f.read()
+with open('./.engine/.eabs', 'r') as f: eabs = f.read()
+with open('./.engine/.etop', 'r') as f: etop = f.read()
+with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 
 
 # Parse application arguments
 aRet = run(sys.argv[1:])
 if isinstance(aRet, int):
     sys.exit(aRet)
+
 
 # Parse engine arguments
 with open('.engine/Build.Engine.sh') as f:
@@ -346,82 +268,6 @@ makeCmd = [
     '_ACPP'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
     '_EGLS'   f' = { " ".join(                                  eRet.GLS  ) }',
     '_AGLS'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
-    # '_LINK'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.LINK) }' #FIXME only replace actual paths
     '_LINK'   f' = { " ".join(                                  aRet.LINK) }' #FIXME only replace actual paths
 ]
-
-print(f"""Using: [
-    { makeCmd[-6] },\n
-    { makeCmd[-7] },\n
-    { makeCmd[-6] },\n
-    { makeCmd[-5] },\n
-    { makeCmd[-4] },\n
-    { makeCmd[-3] },\n
-    { makeCmd[-2] },\n
-    { makeCmd[-1] }
-]""")
-
 sys.exit(subprocess.run(makeCmd).returncode)
-
-#TODO cleanup
-#FIXME add engine init functions
-#FIXME add engine init pointers
-
-
-
-# def runCmd(args, v:int):
-#     output = ''
-#     try:
-#         output = subprocess.check_output(args, universal_newlines=True)
-#         if v == 3:
-#             print('\033[35m' + (' '.join(args)) + '\033[0m')
-#     except subprocess.CalledProcessError as e:
-#         print(
-#             'lynxg++: fatal error: the task \033[1m"' + ' '.join(args) +
-#             '"\033[0m exited with return code ' + str(e.returncode) +
-#             ':\n\033[31m' + e.stdout + '\033[0m'
-#         )
-#         sys.exit(1)
-
-
-
-
-# tsize = os.get_terminal_size().columns
-# def center(stage):
-#     h = '─' * (int(tsize / 2) - int(len(stage) / 2) - 3 - 1)
-#     return f"\n\n\033[1m├{ h }[ { stage } ]{ h }┤\033[0m\n\n"
-
-
-
-
-#Run GLSLC commands
-# if len(cmdsh) > 0:
-#     if args.v >= 1:
-#         print(center('Compiling shaders'))
-
-#     for i, files in enumerate(cmdsh):
-#         if args.v >= 2:
-#             if args.v == 3: print('')
-#             s = 'Compiling shader "' + files[0] + '"...'
-#             print(s + (' ' * (tsize - len(s) - 4 - 1 - 4)) + str(i + 1).rjust(4) + '/' + str(len(cmdsh)).ljust(4))
-#         # if args.v >= 1:
-#             # print(str(i + 1) + '/' + str(len(cmdsh)), end = '\r')
-
-#         runCmd(['glslangValidator', '-V', files[0] + '.comp', '-o', files[1] + '.spv'], args.v)
-#         runCmd(['spirv-val', files[0] + '.spv'], args.v)
-#         if args.v == 3:
-#             print('\033[35mGenerating interface files...\033[0m')
-#         r = GlslToCpp.parseShader(files[0] + '.comp', _pf, ptoe, args.e)
-#         if r != 0: sys.exit(r)
-#     print('\n')
-
-
-
-
-# #Run G++ command
-# if len(cmd) > 1:
-#     if args.v >= 1:
-#         print(center('Compiling translation units'))
-#         print('\n')
-#         print('\033[35m' + (' '.join(cmd)) + '\n\033[0m')
-#     subprocess.run(cmd)
