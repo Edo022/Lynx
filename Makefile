@@ -5,6 +5,9 @@
 ##########################################################################################################
 #FIXME only build modified files
 
+#FIXME automatically track headers
+#FIXME g++ -M file.cpp
+#FIXME g++ -MM file.cpp //no system headers
 
 
 .DEFAULT_GOAL := abuild
@@ -12,8 +15,6 @@
 .PHONY: ebuild abuild eclean aclean clean ABIN
 
 #TODO add option to use provided compilation outputs
-#FIXME automatically track headers
-#FIXME pass tracked headers from script
 
 
 
@@ -47,13 +48,12 @@ EFLG += $(strip $(_EFLG))#		_EFLG =							# Append user defined flags		#! Passed
 EGLS   =$(strip $(_EGLS))#		_EGLS =							# Engine GLSL source files		#! Passed by the wrapper
 ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed by the wrapper
 ECPP += $(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Append shaders C++ source files to ECPP
+EOUT =$(APP)/.engine/bin/Lnx/$(OUTPUT)
 
 ESPV   =$(strip $(addsuffix .spv,$(basename $(EGLS))))#			# Get output .spv files paths
-EOBJ   =$(addsuffix .o,$(addprefix $(APP)/.engine/bin/Lnx/$(OUTPUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Get output .o files of the non-generated C++ source files
-EOBJ += $(addsuffix .o,$(addprefix $(APP)/.engine/bin/Lnx/$(OUTPUT)/Shaders/,$(notdir $(basename $(EGLS)))))#		# Append modified paths of shaders C++ source files
+EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Get output .o files of the non-generated C++ source files
+EOBJ += $(addsuffix .o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#		# Append modified paths of shaders C++ source files
 #!^ $(ECPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
-
-
 
 
 AFLG  =#														# Default application flags
@@ -61,19 +61,19 @@ AFLG += $(strip $(_AFLG))#		_AFLG =							# Append user defined flags		#! Passed
 AGLS   =$(strip $(_AGLS))#		_AGLS =							# Application GLSL source files	#! Passed by the wrapper	#! Can be empty
 ACPP   =$(strip $(_ACPP))#		_ACPP =							# Application C++  source files	#! Passed by the wrapper
 ACPP += $(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Append shaders C++ source files to ACPP
+AOUT =$(APP)/.engine/bin/App/$(OUTPUT)
 
 ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv files paths
-AOBJ   =$(addsuffix .o,$(addprefix $(APP)/.engine/bin/App/$(OUTPUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Get output .o files of the non-generated C++ source files
-AOBJ += $(addsuffix .o,$(addprefix $(APP)/.engine/bin/App/$(OUTPUT)/Shaders/,$(notdir $(basename $(AGLS)))))#		# Append modified paths of shaders C++ source files
+AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Get output .o files of the non-generated C++ source files
+AOBJ += $(addsuffix .o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#		# Append modified paths of shaders C++ source files
 #!^ $(ACPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
 
 
-
 # Create output directories
-$(shell mkdir -p $(APP)/.engine/bin/Lnx/$(OUTPUT))
-$(shell mkdir -p $(APP)/.engine/bin/App/$(OUTPUT))
-$(shell mkdir -p $(APP)/.engine/bin/Lnx/$(OUTPUT)/Shaders)
-$(shell mkdir -p $(APP)/.engine/bin/App/$(OUTPUT)/Shaders)
+$(shell mkdir -p $(EOUT))
+$(shell mkdir -p $(AOUT))
+$(shell mkdir -p $(EOUT)/Shaders)
+$(shell mkdir -p $(AOUT)/Shaders)
 
 
 
@@ -128,8 +128,8 @@ endif
 
 # Remove all the engine files
 eclean:
-	-@(cd $(APP)/.engine/bin/Lnx && find . -type f -wholename "./*/*/*.o" -delete) || true
-	-@(cd $(APP)/.engine/bin/Lnx && find . -type f -wholename "./*/*/libLynxEngine.a" -delete) || true
+	-@(cd $(EOUT)/../.. && find . -type f -wholename "./*/*/*.o" -delete) || true
+	-@(cd $(EOUT)/../.. && find . -type f -wholename "./*/*/libLynxEngine.a" -delete) || true
 
 
 
@@ -144,19 +144,20 @@ ifneq ($(ACPP),)
 
     # Build application spir-v files and generate shader interfaces
     $(ASPV):$(AGLS)
-	    glslangValidator -V $< -o $@
+        # glslangValidator -V $< -o $@
+	    glslangValidator -V $(basename $@).spv -o $@
         # python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} a #FIXME
 
 
     # Build application object files
     $(AOBJ):$(ACPP)
-	    $(EXEC) $(SFLG) $(AFLG) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
+        # $(EXEC) $(SFLG) $(AFLG) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
+	    $(EXEC) $(SFLG) $(AFLG) -c -xc++ $< -o $@
 
 
     # Buld executable #FIXME follow input options
     # ABIN: $(ELIB) $(AOBJ)
     ABIN:$(AOBJ) $(ELIB)
-        # $(EXEC) $(SFLG) $(AFLG) $(LINK) $(filter-out $<,$^) -L$(APP)/.engine/bin/$(OUTPUT) -l:libLynxEngine.a -o $(APP)/tmp.out
 	    $(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
     abuild: ebuild ABIN $(ASPV)
 
@@ -170,7 +171,7 @@ endif
 #TODO delete generated shaders
 # Delete all the object and executable files (including Windows .exe files)
 aclean:
-	-@(cd $(APP)/.engine/bin/App && find . -type f -wholename "./*/*/*.o" -delete) || true
+	-@(cd $(AOUT)/../.. && find . -type f -wholename "./*/*/*.o" -delete) || true
 
 
 
