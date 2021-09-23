@@ -1,8 +1,7 @@
 import re, sys, os, subprocess, argparse as ap
 from argparse import Namespace as ns
 import shlex, glob
-import GlslToCpp
-#python3.9 -m py_compile lynxg++.py && python3.9 -m py_compile GlslToCpp.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
+#python3.9 -m py_compile lynxg++.py && { python3 -m PyInstaller -F --clean ./lynxg++.py; cp ./dist/lynxg++ ./; rm -r ./dist; rm ./build -r; rm ./lynxg++.spec; }
 
 #TODO check if the user build actually has arguments
 
