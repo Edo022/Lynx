@@ -22,8 +22,7 @@
 EXEC     =$(strip $(_EXEC))#		_EXEC =						# Path to the compiler. Changed by the wrapper when building for Windows	#! Passed by the wrapper	#TODO use mingw for windows
 OUTPUT   =$(strip $(_OUTPUT))#		_OUTPUT =					# Output path suffix based on build configuration and target platform		#! Passed by the wrapper
 APP      =$(strip $(_APP))#			_APP =						# Path to the user application												#! Passed by the wrapper
-PLATFORM =$(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g")## Get target platform from output path
-ELIB     =$(APP)/.engine/bin/Lnx/$(OUTPUT)/libLynxEngine.a#		# Path to the engine static library
+PLATFORM =$(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g")## Get target platform from output path #TODO remove
 
 
 LINK  =#							_LINK =						# Application linker arguments
@@ -48,11 +47,12 @@ EFLG += $(strip $(_EFLG))#		_EFLG =							# Append user defined flags		#! Passed
 EGLS   =$(strip $(_EGLS))#		_EGLS =							# Engine GLSL source files		#! Passed by the wrapper
 ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed by the wrapper
 ECPP += $(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Append shaders C++ source files to ECPP
-EOUT =$(APP)/.engine/bin/Lnx/$(OUTPUT)
+EOUT   =$(APP)/.engine/bin/Lnx/$(OUTPUT)#						# Path to the engine binary output directory
+ELIB   =$(EOUT)/libLynxEngine.a#								# Path to the engine static library
 
 ESPV   =$(strip $(addsuffix .spv,$(basename $(EGLS))))#			# Get output .spv files paths
 EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Get output .o files of the non-generated C++ source files
-EOBJ += $(addsuffix .o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#		# Append modified paths of shaders C++ source files
+EOBJ += $(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Append modified paths of shaders C++ source files
 #!^ $(ECPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
 
 
@@ -61,11 +61,11 @@ AFLG += $(strip $(_AFLG))#		_AFLG =							# Append user defined flags		#! Passed
 AGLS   =$(strip $(_AGLS))#		_AGLS =							# Application GLSL source files	#! Passed by the wrapper	#! Can be empty
 ACPP   =$(strip $(_ACPP))#		_ACPP =							# Application C++  source files	#! Passed by the wrapper
 ACPP += $(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Append shaders C++ source files to ACPP
-AOUT =$(APP)/.engine/bin/App/$(OUTPUT)
+AOUT   =$(APP)/.engine/bin/App/$(OUTPUT)#						# Path to the engine application binary output directory
 
 ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv files paths
 AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Get output .o files of the non-generated C++ source files
-AOBJ += $(addsuffix .o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#		# Append modified paths of shaders C++ source files
+AOBJ += $(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Append modified paths of shaders C++ source files
 #!^ $(ACPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
 
 
@@ -76,21 +76,8 @@ $(shell mkdir -p $(EOUT)/Shaders)
 $(shell mkdir -p $(AOUT)/Shaders)
 
 
-
-dbg:
-	@clear
-	@echo $(ACPP)
-	@echo
-	@echo
-	@echo $(AOBJ)
-	@echo
-	@echo
-	@echo
-	@echo
-	@echo $(ECPP)
-	@echo
-	@echo
-	@echo $(EOBJ)
+# Find the source file of a target
+get-src = $(word 2,$(subst :, ,$(filter $@:%,$(join $1,$(addprefix :,$^)))))
 
 
 
@@ -104,20 +91,19 @@ ifneq ($(ECPP),)
 
     # Build engine spir-v files and generate shader interfaces
     $(ESPV):$(EGLS)
-	    glslangValidator -V $< -o $@
-        # python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} e
+	    @echo Building shader $@
+	    @glslangValidator -V $(call get-src,$(ESPV)) -o $@
+        # python3 Tools/Build/GlslToCpp.py $(call get-src,$(EGLS)) $(PLATFORM) ${shell pwd} e
 
 
     # Build engine object files
     $(EOBJ):$(ECPP)
-        # $(EXEC) $(SFLG) $(EFLG) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
-        # @echo -xc++ $(if $(filter-out .cpp,$(suffix $<)),-xc++) $<
-	    @echo $<
+	    @echo Building $@
+	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $(call get-src,$(EOBJ)) -o $@
 
 
     # Build engine static library
     $(ELIB):$(EOBJ)
-        # ar -rcs $(ELIB) $(filter-out $<,$^)
 	    ar -rcs $(ELIB) $^
     ebuild: $(ELIB) $(ESPV)
 
@@ -144,19 +130,18 @@ ifneq ($(ACPP),)
 
     # Build application spir-v files and generate shader interfaces
     $(ASPV):$(AGLS)
-        # glslangValidator -V $< -o $@
-	    glslangValidator -V $(basename $@).spv -o $@
-        # python3 Tools/Build/GlslToCpp.py $< $(PLATFORM) ${shell pwd} a #FIXME
+	    @echo Building shader $@
+	    @glslangValidator -V $(call get-src,$(ASPV)) -o $@
+        # python3 Tools/Build/GlslToCpp.py $(call get-src,$(AGLS)) $(PLATFORM) ${shell pwd} a #FIXME
 
 
     # Build application object files
     $(AOBJ):$(ACPP)
-        # $(EXEC) $(SFLG) $(AFLG) -c $(if $(filter-out .cpp,$(suffix $<)),-xc++) $< -o $@
-	    $(EXEC) $(SFLG) $(AFLG) -c -xc++ $< -o $@
+	    @echo Building $@
+	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $(call get-src,$(AOBJ)) -o $@
 
 
     # Buld executable #FIXME follow input options
-    # ABIN: $(ELIB) $(AOBJ)
     ABIN:$(AOBJ) $(ELIB)
 	    $(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
     abuild: ebuild ABIN $(ASPV)
