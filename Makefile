@@ -10,9 +10,8 @@
 #FIXME g++ -MM file.cpp //no system headers
 
 
-.DEFAULT_GOAL := abuild
-# .DEFAULT_GOAL := dbg
-.PHONY: ebuild abuild eclean aclean clean ABIN
+.DEFAULT_GOAL :=abuild
+.PHONY:ebuild abuild eclean aclean clean ABIN
 
 #TODO add option to use provided compilation outputs
 
@@ -22,7 +21,6 @@
 EXEC     =$(strip $(_EXEC))#		_EXEC =						# Path to the compiler. Changed by the wrapper when building for Windows	#! Passed by the wrapper	#TODO use mingw for windows
 OUTPUT   =$(strip $(_OUTPUT))#		_OUTPUT =					# Output path suffix based on build configuration and target platform		#! Passed by the wrapper
 APP      =$(strip $(_APP))#			_APP =						# Path to the user application												#! Passed by the wrapper
-PLATFORM =$(shell printf $(OUTPUT) | sed "s/\(.\+\)\/.\+/\1/g")## Get target platform from output path #TODO remove
 
 
 LINK  =#							_LINK =						# Application linker arguments
@@ -46,11 +44,13 @@ EFLG  =#														# Default engine flags
 EFLG += $(strip $(_EFLG))#		_EFLG =							# Append user defined flags		#! Passed by the wrapper
 EGLS   =$(strip $(_EGLS))#		_EGLS =							# Engine GLSL source files		#! Passed by the wrapper
 ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed by the wrapper
-ECPP += $(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Append shaders C++ source files to ECPP
 EOUT   =$(APP)/.engine/bin/Lnx/$(OUTPUT)#						# Path to the engine binary output directory
 ELIB   =$(EOUT)/libLynxEngine.a#								# Path to the engine static library
 
 ESPV   =$(strip $(addsuffix .spv,$(basename $(EGLS))))#			# Get output .spv files paths
+EGSI   =$(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Get generated shader interfaces source files
+# ECPP += $(EGSI)#												# Append shaders C++ source files to ECPP
+
 EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Get output .o files of the non-generated C++ source files
 EOBJ += $(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Append modified paths of shaders C++ source files
 #!^ $(ECPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
@@ -59,11 +59,13 @@ EOBJ += $(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EG
 AFLG  =#														# Default application flags
 AFLG += $(strip $(_AFLG))#		_AFLG =							# Append user defined flags		#! Passed by the wrapper
 AGLS   =$(strip $(_AGLS))#		_AGLS =							# Application GLSL source files	#! Passed by the wrapper	#! Can be empty
-ACPP   =$(strip $(_ACPP))#		_ACPP =							# Application C++  source files	#! Passed by the wrapper
 ACPP += $(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Append shaders C++ source files to ACPP
 AOUT   =$(APP)/.engine/bin/App/$(OUTPUT)#						# Path to the engine application binary output directory
 
 ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv files paths
+AGSI   =$(addsuffix .gsi.cpp,$(basename $(AGLS)))#				# Get generated shader interfaces source files
+# ACPP += $(AGSI)#												# Append shaders C++ source files to ACPP
+
 AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Get output .o files of the non-generated C++ source files
 AOBJ += $(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Append modified paths of shaders C++ source files
 #!^ $(ACPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
@@ -80,7 +82,15 @@ $(shell mkdir -p $(AOUT)/Shaders)
 get-src = $(word 2,$(subst :, ,$(filter $@:%,$(join $1,$(addprefix :,$^)))))
 
 
-
+dbg:
+	@echo
+	@echo
+	@echo $(EGSI)
+	@echo
+	@echo
+	@echo $(ECPP)
+	@echo
+	@echo
 
 # ----------------------------------------- ENGINE ------------------------------------------
 
@@ -88,25 +98,30 @@ get-src = $(word 2,$(subst :, ,$(filter $@:%,$(join $1,$(addprefix :,$^)))))
 
 
 ifneq ($(ECPP),)
-
-    # Build engine spir-v files and generate shader interfaces
+    # Build engine spir-v files
     $(ESPV):$(EGLS)
-	    @echo Building shader $@
+	    @echo Compiling shader $@
 	    @glslangValidator -V $(call get-src,$(ESPV)) -o $@
-        # python3 Tools/Build/GlslToCpp.py $(call get-src,$(EGLS)) $(PLATFORM) ${shell pwd} e
+
+
+    # generate shader interfaces
+    $(EGSI):$(EGLS)
+	    @echo Generating interface files for shader $@
+	    @python3 Tools/Build/GlslToCpp.py $(call get-src,$(EGSI)) $(APP) e
 
 
     # Build engine object files
-    $(EOBJ):$(ECPP)
-	    @echo Building $@
+    $(EOBJ):$(ECPP) $(EGSI)
+	    @echo Compiling $@
 	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $(call get-src,$(EOBJ)) -o $@
 
 
     # Build engine static library
     $(ELIB):$(EOBJ)
 	    ar -rcs $(ELIB) $^
-    ebuild: $(ELIB) $(ESPV)
 
+
+    ebuild:$(ELIB) $(ESPV)
 endif
 
 
@@ -127,25 +142,30 @@ eclean:
 
 ifneq ($(APP),)
 ifneq ($(ACPP),)
-
     # Build application spir-v files and generate shader interfaces
-    $(ASPV):$(AGLS)
-	    @echo Building shader $@
+    $(ASPV):$(AGLS) #TODO use list:target:req syntax   #TODO join(a,addprefix(:,b)):word(1,sub( ,:,%)):word(2,sub( ,:,%))
+	    @echo Compiling shader $@
 	    @glslangValidator -V $(call get-src,$(ASPV)) -o $@
-        # python3 Tools/Build/GlslToCpp.py $(call get-src,$(AGLS)) $(PLATFORM) ${shell pwd} a #FIXME
+
+
+    # generate shader interfaces
+    $(AGSI):$(AGLS)
+	    @echo Generating interface files for shader $@
+	    @python3 Tools/Build/GlslToCpp.py $(call get-src,$(AGSI)) $(APP) a
 
 
     # Build application object files
-    $(AOBJ):$(ACPP)
-	    @echo Building $@
+    $(AOBJ):$(ACPP) $(AGSI)
+	    @echo Compiling $@
 	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $(call get-src,$(AOBJ)) -o $@
 
 
-    # Buld executable #FIXME follow input options
+    # Buld executable #FIXME use input options
     ABIN:$(AOBJ) $(ELIB)
 	    $(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
-    abuild: ebuild ABIN $(ASPV)
 
+
+    abuild:ebuild ABIN $(ASPV)
 endif
 endif
 
@@ -167,6 +187,6 @@ aclean:
 
 
 # make clean removes every object and executable file
-clean: eclean aclean
+clean:eclean aclean
 
 

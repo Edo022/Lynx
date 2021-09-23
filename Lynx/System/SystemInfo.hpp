@@ -32,7 +32,7 @@ namespace lnx::sys{
     extern const RamInfo ram;
 
 
-    enum class DeviceType{
+    enum class DeviceType{ //FIXME
         eDiscrete,
         eIntegrated
     };
