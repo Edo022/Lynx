@@ -11,6 +11,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #pragma GCC diagnostic ignored "-Wformat-security"
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 //TODO ADD FUNCTION TO GET FULL BACKTRACE AS RTARRAY OF HCARRAY
 //TODO output to console window
 

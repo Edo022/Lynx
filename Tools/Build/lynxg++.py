@@ -340,8 +340,8 @@ makeCmd = [
     '_EXEC'   f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
     '_OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
     '_APP'    f' = { etop }',
-    '_EFLG'   f' = { " ".join(                                  eRet.FLAGS) }',
-    '_AFLG'   f' = { " ".join(                                  aRet.FLAGS) } -DenginePath="{ ptoe }"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
+    '_EFLG'   f' = { " ".join(                                  eRet.FLAGS) } -DenginePath="\\"{ ptoe }\\""',
+    '_AFLG'   f' = { " ".join(                                  aRet.FLAGS) } -DenginePath="\\"{ ptoe }\\""', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
     '_ECPP'   f' = { " ".join(                                  eRet.CPP  ) }',
     '_ACPP'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
     '_EGLS'   f' = { " ".join(                                  eRet.GLS  ) }',

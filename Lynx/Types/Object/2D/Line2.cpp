@@ -2,6 +2,7 @@
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/2D/Line2.hpp"
+#include "Lynx/Core/Render/Window/Window.hpp"
 
 //TODO DRAW OBJECT-RENDERCORE INTERACTION GRAPH
 //TODO object-RenderCore. similar to client-server

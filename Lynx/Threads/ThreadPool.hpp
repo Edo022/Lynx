@@ -6,6 +6,7 @@
 
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
+#include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Threads/Thread.hpp"
 
 #include <deque>
@@ -28,6 +29,9 @@
 
 
 
+// namespace lnx{
+// 	template<class tType, class tIdxt> struct RtArray;
+// }
 
 namespace lnx::thr {
 	//TODO

@@ -2,6 +2,7 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/2D/Border2.hpp"
+#include "Lynx/Core/Render/Window/Window.hpp"
 
 
 
