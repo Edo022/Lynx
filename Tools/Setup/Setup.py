@@ -63,9 +63,12 @@ if sys.stdin.read(1).lower() == 'y':
     with open(cwdToP + '/.engine/Build.Engine.sh', 'w') as f:
         f.write(
             f"\n##################################################################"
-            f"\n#  This file contains the command used to build the Lynx Engine  #"
-            f"\n#  Bash syntax. Lines are concatenated and comments are ignored  #"
+            f"\n"
+            f"\n# This file contains the command used to build the Lynx Engine"
+            f"\n# Bash syntax. Lines are concatenated and comments are ignored"
+            f"\n"
             f"\n##################################################################"
+            f"\n"
             f"\n"
             f"\n{ ptoe }/Lynx/Tools/Build/lynxg++"
             f"\n"
@@ -175,9 +178,12 @@ if sys.stdin.read(1).lower() == 'y':
     with open(cwdToP + '/.engine/Build.Application.sh', 'w') as f:
         f.write(
             f"\n##################################################################"
-            f"\n#  This file contains the command used to build your application #"
-            f"\n#  Bash syntax. Lines are concatenated and comments are ignored  #"
+            f"\n"
+            f"\n# This file contains the command used to build your application   "
+            f"\n# Bash syntax. Lines are concatenated and comments are ignored    "
+            f"\n"
             f"\n##################################################################"
+            f"\n"
             f"\n"
             f"\n{ ptoe }/Lynx/Tools/Build/lynxg++"
             f"\n"

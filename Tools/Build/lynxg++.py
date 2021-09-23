@@ -142,8 +142,8 @@ def run(argv:list):
 
         # Build GLSLC command
         FLAGS : list = []
-        SRC   : list = []
-        COMP  : list = []
+        CPP   : list = []
+        GLS   : list = []
         LINK  : list = []
 
         if args.m[1] == 'd':
@@ -179,8 +179,8 @@ def run(argv:list):
         while i < len(cmd):                             # For each element
             if isinstance(cmd[i], list):                    # If the element is a list of file names
                 for e in cmd[i]:                                # For each file name
-                    if   e[-4:] == '.cpp':  SRC += [e]              # Add to SRC if it's a cpp
-                    elif e[-5:] == '.comp': COMP += [e]             # Add to COMP if it's a comp
+                    if   e[-4:] == '.cpp':  CPP += [e]              # Add to CPP if it's a cpp
+                    elif e[-5:] == '.comp': GLS += [e]              # Add to GLS if it's a comp
                     else: LINK += [e]                               # Add to LINK if it's a library or an object file
             else:                                           # If its a flag or has still to be parsed
                 if cmd[i] == None:                              # If the element was removed
@@ -189,13 +189,13 @@ def run(argv:list):
                 if cmd[i][0] == '-':                            # If it's a flag
                     if cmd[i] == '-xcpp':                           # If it specifies a language in one argument
                         if cmd[i + 1][0] != '-':                        # If the file name is actually a file name
-                            SRC += [expGlobSub(cmd[i + 1])]                 # Expand glob, use first path and reparse the others
+                            CPP += [expGlobSub(cmd[i + 1])]                 # Expand glob, use first path and reparse the others
                         else:                                           # If it's not
                             FLAGS += [cmd[i]]                               # Add -xcpp to FLAGS and let gcc throw an error
                     elif cmd[i] == '-x' and cmd[i + 1] == 'c++':    # If it specifies a language in two arguments
                         cmd[i + 1] = None                               # Remove the next argument
                         if cmd[i + 2][0] != '-':                        # If the file name is actually a file name
-                            SRC += [expGlobSub(cmd[i + 2])]                 # Expand glob, use first path and reparse the others
+                            CPP += [expGlobSub(cmd[i + 2])]                 # Expand glob, use first path and reparse the others
                         else:                                           # If it's not
                             FLAGS += [cmd[i], cmd[i + 1]]                   # Add -x cpp to FLAGS and let gcc throw an error
                     elif cmd[i] == '-l':                            # If it's a library name in 2 arguments
@@ -233,8 +233,8 @@ def run(argv:list):
         return ns(**{ #TODO rename
             'mode'  : args.m,
             'FLAGS' : FLAGS,
-            'SRC'   : SRC,
-            'COMP'  : COMP,
+            'CPP'   : CPP,
+            'GLS'   : GLS,
             'LINK'  : LINK
         })
         # while i < len(cmd):
@@ -302,6 +302,11 @@ pabs:str = ''
 with open('./.engine/.pabs', 'r') as f:
     pabs = f.read()
 
+# Get absolute engine path
+eabs:str = ''
+with open('./.engine/.eabs', 'r') as f:
+    eabs = f.read()
+
 # Get relative project path
 etop:str = ''
 with open('./.engine/.etop', 'r') as f:
@@ -332,19 +337,21 @@ with open('.engine/Build.Engine.sh') as f:
 # Run build
 makeCmd = [
     'make', '-j8', '-C', ptoe, #! Run from user application, cd into engine repo
-    'CPP'    f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
-    'OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    'APP'    f' = { etop }',
-    'EFLAGS' f' = { " ".join(eRet.FLAGS) }',
-    'AFLAGS' f' = { " ".join(aRet.FLAGS) } -DenginePath="{ ptoe }"', #TODO fix engine path in shipping builds and standalone executables
-    'ESRC'   f' = { " ".join(eRet.SRC) }',
-    'ASRC'   f' = { " ".join((etop + "/" + s) for s in aRet.SRC) }',
-    'ECOMP'  f' = { " ".join(eRet.COMP) }',
-    'ACOMP'  f' = { " ".join((etop + "/" + s) for s in aRet.COMP) }',
-    'LINK'   f' = { " ".join((etop + "/" + s) for s in aRet.COMP) }'
+    '_EXEC'   f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
+    '_OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
+    '_APP'    f' = { etop }',
+    '_EFLG'   f' = { " ".join(                                  eRet.FLAGS) }',
+    '_AFLG'   f' = { " ".join(                                  aRet.FLAGS) } -DenginePath="{ ptoe }"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
+    '_ECPP'   f' = { " ".join(                                  eRet.CPP  ) }',
+    '_ACPP'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
+    '_EGLS'   f' = { " ".join(                                  eRet.GLS  ) }',
+    '_AGLS'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
+    # '_LINK'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.LINK) }' #FIXME only replace actual paths
+    '_LINK'   f' = { " ".join(                                  aRet.LINK) }' #FIXME only replace actual paths
 ]
 
 print(f"""Using: [
+    { makeCmd[-6] },\n
     { makeCmd[-7] },\n
     { makeCmd[-6] },\n
     { makeCmd[-5] },\n
