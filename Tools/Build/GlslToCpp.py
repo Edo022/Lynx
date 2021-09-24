@@ -238,8 +238,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
 
 
     #Get shader path and name
-    shPath    : str = os.path.dirname(os.path.relpath(pathr, '.'))                          # Path of the shader .comp and .spv files
-    shName    : str = os.path.basename(pathr).rsplit('.', 1)[0]                             # The name of the shader without extension or path
+    shPath    : str = os.path.dirname(os.path.relpath(pathr, '.'))      # Path of the shader .comp and .spv files
+    shName    : str = os.path.basename(pathr).rsplit('.', 1)[0]         # The name of the shader without extension or path
     if re.match(r'[a-zA-Z_](\w)*', shName) == None:
         print(f"Invalid shader name \"{ shName }\". The shader name can only contain alphanumeric characters or underscores and cannot start with a digit")
         return 2

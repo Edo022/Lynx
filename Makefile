@@ -88,18 +88,38 @@ filter-src-file  =$$(word 2,$$(subst ^, ,$$(filter $$@^$$(percent),$(join $1,$(a
 joined-list-rule =$1:%:$(call filter-src-file,$1,$2)
 
 
+gen-cpp-deps =$2:$$(strip $$(wordlist 3,999999,$$(shell g++ -M -MG $1 $$@ | tr -d "\\n\\\\")))
+
+
+
+
+
+
+
+
 
 # ----------------------------------------- ENGINE ------------------------------------------
 
 
 
+
+
+
+
+
 ifneq ($(ECPP),)
+    # Build engine spir-v files and generate shader interfaces
     $(call joined-list-rule,$(ESPV),$(EGLS))
 	    @echo Compiling shader $@
 	    @glslangValidator -V $^ -o $@
 
 
-    # generate shader interfaces
+    #FIXME filter out conflicting options if the wrapper doesnt do that
+    # Check header files
+    $(call gen-cpp-deps,$(SFLG) $(EFLG),$(EGSI) $(ECPP))
+
+
+    # Generate shader interfaces
     $(call joined-list-rule,$(EGSI),$(EGLS))
 	    @echo Generating interface files for shader $@
 	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) e
@@ -131,20 +151,33 @@ eclean:
 
 
 
+
+
+
+
 # ------------------------------------------ APPLICATION ------------------------------------------
+
+
+
+
 
 
 
 
 ifneq ($(APP),)
 ifneq ($(ACPP),)
-    # Build application spir-v files and generate shader interfaces
+    # Build application spir-v files
     $(call joined-list-rule,$(ASPV),$(AGLS))
 	    @echo Compiling shader $@
 	    @glslangValidator -V $^ -o $@
 
 
-    # generate shader interfaces
+    #FIXME filter out conflicting options if the wrapper doesnt do that
+    # Check header files
+    $(call gen-cpp-deps,$(SFLG) $(AFLG),$(AGSI) $(ACPP))
+
+
+    # Generate shader interfaces
     $(call joined-list-rule,$(AGSI),$(AGLS))
 	    @echo Generating interface files for shader $@
 	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) a
@@ -181,7 +214,15 @@ aclean:
 
 
 
+
+
+
+
 # ------------------------------------------------ ALL --------------------------------------------
+
+
+
+
 
 
 
