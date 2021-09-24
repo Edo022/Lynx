@@ -256,8 +256,8 @@ with open('.engine/Build.Engine.sh') as f:
 
 
 # Run build
-makeCmd = [
-    'make', '-j8', '-C', ptoe, #! Run from user application, cd into engine repo
+makeCmd = [ #--debug #-p
+    'make', '-j10', '-C', ptoe, #! Run from user application, cd into engine repo
     '_EXEC'   f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
     '_OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
     '_APP'    f' = { etop }',

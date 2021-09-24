@@ -47,7 +47,7 @@ ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed 
 EOUT   =$(APP)/.engine/bin/Lnx/$(OUTPUT)#						# Path to the engine binary output directory
 ELIB   =$(EOUT)/libLynxEngine.a#								# Path to the engine static library
 
-ESPV   =$(strip $(addsuffix .spv,$(basename $(EGLS))))#			# Get output .spv files paths
+ESPV   =$(addsuffix .spv,$(basename $(EGLS)))#			# Get output .spv files paths
 EGSI   =$(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Get generated shader interfaces source files
 # ECPP += $(EGSI)#												# Append shaders C++ source files to ECPP
 
@@ -59,11 +59,11 @@ EOBJ += $(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EG
 AFLG  =#														# Default application flags
 AFLG += $(strip $(_AFLG))#		_AFLG =							# Append user defined flags		#! Passed by the wrapper
 AGLS   =$(strip $(_AGLS))#		_AGLS =							# Application GLSL source files	#! Passed by the wrapper	#! Can be empty
-ACPP += $(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Append shaders C++ source files to ACPP
+ACPP += $(strip $(_ACPP))#		_ACPP =							# Application C++  source files	#! Passed by the wrapper
 AOUT   =$(APP)/.engine/bin/App/$(OUTPUT)#						# Path to the engine application binary output directory
 
-ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv files paths
-AGSI   =$(addsuffix .gsi.cpp,$(basename $(AGLS)))#				# Get generated shader interfaces source files
+ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv files paths					#! Can be empty
+AGSI   =$(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Get generated shader interfaces source files	#! Can be empty
 # ACPP += $(AGSI)#												# Append shaders C++ source files to ACPP
 
 AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Get output .o files of the non-generated C++ source files
@@ -118,7 +118,8 @@ ifneq ($(ECPP),)
 
     # Build engine static library
     $(ELIB):$(EOBJ)
-	    ar -rcs $(ELIB) $^
+	    @echo Writing Lynx Engine library
+	    @ar -rcs $(ELIB) $^
 
 
     ebuild:$(ELIB) $(ESPV)
@@ -162,10 +163,14 @@ ifneq ($(ACPP),)
 
     # Buld executable #FIXME use input options
     ABIN:$(AOBJ) $(ELIB)
+		@echo Writing executable file
 	    $(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
 
 
     abuild:ebuild ABIN $(ASPV)
+else
+    abuild:
+	    @echo No source files provided
 endif
 endif
 
