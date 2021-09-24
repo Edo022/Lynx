@@ -12,6 +12,7 @@
 
 .DEFAULT_GOAL :=abuild
 .PHONY:ebuild abuild eclean aclean clean ABIN
+.SECONDEXPANSION:
 
 #TODO add option to use provided compilation outputs
 
@@ -47,13 +48,15 @@ ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed 
 EOUT   =$(APP)/.engine/bin/Lnx/$(OUTPUT)#						# Path to the engine binary output directory
 ELIB   =$(EOUT)/libLynxEngine.a#								# Path to the engine static library
 
-ESPV   =$(addsuffix .spv,$(basename $(EGLS)))#			# Get output .spv files paths
+ESPV   =$(addsuffix .spv,$(basename $(EGLS)))#					# Get output .spv files paths
 EGSI   =$(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Get generated shader interfaces source files
 # ECPP += $(EGSI)#												# Append shaders C++ source files to ECPP
 
-EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Get output .o files of the non-generated C++ source files
-EOBJ += $(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Append modified paths of shaders C++ source files
+EOBJ   =$(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Get generated shader interfaces .o files
+EOBJ += $(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Append output .o files of the non-generated C++ source files
 #!^ $(ECPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
+
+
 
 
 AFLG  =#														# Default application flags
@@ -66,9 +69,11 @@ ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv file
 AGSI   =$(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Get generated shader interfaces source files	#! Can be empty
 # ACPP += $(AGSI)#												# Append shaders C++ source files to ACPP
 
-AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Get output .o files of the non-generated C++ source files
-AOBJ += $(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Append modified paths of shaders C++ source files
+AOBJ   =$(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Get generated shader interfaces .o files
+AOBJ += $(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Append output .o files of the non-generated C++ source files
 #!^ $(ACPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
+
+
 
 
 # Create output directories
@@ -78,42 +83,32 @@ $(shell mkdir -p $(EOUT)/Shaders)
 $(shell mkdir -p $(AOUT)/Shaders)
 
 
-# Find the source file of a target
-get-src = $(word 2,$(subst :, ,$(filter $@:%,$(join $1,$(addprefix :,$^)))))
+percent =%
+filter-src-file  =$$(word 2,$$(subst ^, ,$$(filter $$@^$$(percent),$(join $1,$(addprefix ^,$2)))))
+joined-list-rule =$1:%:$(call filter-src-file,$1,$2)
 
 
-dbg:
-	@echo
-	@echo
-	@echo $(EGSI)
-	@echo
-	@echo
-	@echo $(ECPP)
-	@echo
-	@echo
 
 # ----------------------------------------- ENGINE ------------------------------------------
 
 
 
-
 ifneq ($(ECPP),)
-    # Build engine spir-v files
-    $(ESPV):$(EGLS)
+    $(call joined-list-rule,$(ESPV),$(EGLS))
 	    @echo Compiling shader $@
-	    @glslangValidator -V $(call get-src,$(ESPV)) -o $@
+	    @glslangValidator -V $^ -o $@
 
 
     # generate shader interfaces
-    $(EGSI):$(EGLS)
+    $(call joined-list-rule,$(EGSI),$(EGLS))
 	    @echo Generating interface files for shader $@
-	    @python3 Tools/Build/GlslToCpp.py $(call get-src,$(EGSI)) $(APP) e
+	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) e
 
 
     # Build engine object files
-    $(EOBJ):$(ECPP) $(EGSI)
+    $(call joined-list-rule,$(EOBJ),$(EGSI) $(ECPP))
 	    @echo Compiling $@
-	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $(call get-src,$(EOBJ)) -o $@
+	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $^ -o $@
 
 
     # Build engine static library
@@ -144,27 +139,27 @@ eclean:
 ifneq ($(APP),)
 ifneq ($(ACPP),)
     # Build application spir-v files and generate shader interfaces
-    $(ASPV):$(AGLS) #TODO use list:target:req syntax   #TODO join(a,addprefix(:,b)):word(1,sub( ,:,%)):word(2,sub( ,:,%))
+    $(call joined-list-rule,$(ASPV),$(AGLS))
 	    @echo Compiling shader $@
-	    @glslangValidator -V $(call get-src,$(ASPV)) -o $@
+	    @glslangValidator -V $^ -o $@
 
 
     # generate shader interfaces
-    $(AGSI):$(AGLS)
+    $(call joined-list-rule,$(AGSI),$(AGLS))
 	    @echo Generating interface files for shader $@
-	    @python3 Tools/Build/GlslToCpp.py $(call get-src,$(AGSI)) $(APP) a
+	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) a
 
 
     # Build application object files
-    $(AOBJ):$(ACPP) $(AGSI)
+    $(call joined-list-rule,$(AOBJ),$(AGSI) $(ACPP))
 	    @echo Compiling $@
-	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $(call get-src,$(AOBJ)) -o $@
+	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $^ -o $@
 
 
     # Buld executable #FIXME use input options
     ABIN:$(AOBJ) $(ELIB)
 		@echo Writing executable file
-	    $(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
+	    @$(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
 
 
     abuild:ebuild ABIN $(ASPV)
