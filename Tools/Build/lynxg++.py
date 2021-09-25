@@ -180,7 +180,7 @@ def run(argv:list):
 
 
 
-
+        #FIXME merge split flags like -I ./dir before parsing
         i = 0
         while i < len(cmd):                             # For each element
             if isinstance(cmd[i], list):                    # If the element is a list of file names
@@ -257,7 +257,7 @@ with open('.engine/Build.Engine.sh') as f:
 
 # Run build
 makeCmd = [ #--debug #--just-print #-p
-    'make', '-j11', '-r', '-C', ptoe, # 11 threads, no builtin rules, run from engine directory #TODO allow the use to choose the number of thread. default based on system max
+    'make', '-j11', '-p', '-r', '-C', ptoe, # 11 threads, no builtin rules, run from engine directory #TODO allow the use to choose the number of thread. default based on system max
     '--warn-undefined-variables', '--no-print-directory',
     '_EXEC'   f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
     '_OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",

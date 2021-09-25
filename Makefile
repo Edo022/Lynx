@@ -8,7 +8,7 @@
 
 
 .DEFAULT_GOAL :=abuild
-.PHONY:ebuild abuild eclean aclean clean ABIN
+.PHONY:ebuild abuild eclean aclean clean ABIN dbg
 .SECONDEXPANSION:
 
 #TODO add option to use provided compilation outputs
@@ -38,7 +38,7 @@ SFLG =#															# Shared C++ default flags
 
 
 
-EFLG  =#														# Default engine flags
+EFLG  =$(SFLG)#													# Default engine flags
 EFLG += $(strip $(_EFLG))#		_EFLG =							# Append user defined flags		#! Passed by the wrapper
 EGLS   =$(strip $(_EGLS))#		_EGLS =							# Engine GLSL source files		#! Passed by the wrapper
 ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed by the wrapper
@@ -55,7 +55,7 @@ EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(ECPP))
 
 
 
-AFLG  =#														# Default application flags
+AFLG  =$(SFLG)#													# Default application flags
 AFLG += $(strip $(_AFLG))#		_AFLG =							# Append user defined flags		#! Passed by the wrapper
 AGLS   =$(strip $(_AGLS))#		_AGLS =							# Application GLSL source files	#! Passed by the wrapper	#! Can be empty
 ACPP += $(strip $(_ACPP))#		_ACPP =							# Application C++  source files	#! Passed by the wrapper
@@ -99,12 +99,24 @@ dbg:
 	@echo SFLG:$(words $(SFLG));echo $(SFLG);echo
 	@echo LINK:$(words $(LINK));echo $(LINK);echo
 
+
+
+# get-cor(targets,dependencies)
+# Returns the dependency element corresponding to the target of the current rule
+get-cor  =$$(word 2,$$(subst ^, ,$$(filter $$@^$$(percent),$(join $1,$(addprefix ^,$2)))))
 percent =%
-filter-src-file  =$$(word 2,$$(subst ^, ,$$(filter $$@^$$(percent),$(join $1,$(addprefix ^,$2)))))
-joined-list-rule =$1:%:$(call filter-src-file,$1,$2)
 
 
-gen-cpp-deps =$2:$$(strip $$(wordlist 3,999999,$$(shell g++ -M -MG $1 $$@ | tr -d "\\n\\\\")))
+# gen-cpp-deps(flags,objects,sources)
+# Generated a rule for each object file and writes the corresponding source file and the required headers in its dependencies
+gen-cpp-deps =$2:%:$$(wordlist 2,999999,$$(shell g++ -M -MG $1 $(call get-cor,$2,$3) | tr -d "\\n\\\\"))
+
+
+# gen-cpp-deps =$2:%:$$(shell g++ -M -MG $1 $(call get-cor,$2,$3) | tr -d "\\n\\\\")
+
+
+joined-list-rule =$1:%:$(call get-cor,$1,$2)
+
 
 
 
@@ -130,9 +142,9 @@ ifneq ($(ECPP),)
 	    @glslangValidator -V $^ -o $@
 
 
-    #FIXME filter out conflicting options if the wrapper doesnt do that
+    #FIXME filter out conflicting options if the wrapper doesnt do that #TODO merge with .o builds
     # Check header files
-    $(call gen-cpp-deps,$(SFLG) $(EFLG),$(EGSI) $(ECPP))
+    # $(call gen-cpp-deps,$(SFLG) $(EFLG),$(EGSI) $(ECPP),$(EGSO) $(EOBJ))
     $(call joined-list-rule,$(patsubst %.cpp,%.hpp,$(EGSI)),$(EGSI))
 
 
@@ -143,17 +155,17 @@ ifneq ($(ECPP),)
 
 
     # Build engine interface object files
-    $(call joined-list-rule,$(EGSO),$(EGSI))
+    $(call gen-cpp-deps,$(EFLG),$(EGSO),$(EGSI))
 	    @echo Compiling $@
-	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $^ -o $@
+	    $(EXEC) $(EFLG) -c -xc++ $< -o $@
     # Build engine object files
-    $(call joined-list-rule,$(EOBJ),$(ECPP))
+    $(call gen-cpp-deps,$(EFLG),$(EOBJ),$(ECPP))
 	    @echo Compiling $@
-	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $^ -o $@
+	    @$(EXEC) $(EFLG) -c -xc++ $< -o $@
 
 
     # Build engine static library
-    $(ELIB):$(EGSO) $(EOBJ)
+    $(ELIB):$(EGSI) $(EGSO) $(EOBJ)
 	    @echo Writing Lynx Engine library
 	    @ar -rcs $(ELIB) $^
 
@@ -195,7 +207,7 @@ ifneq ($(ACPP),)
 
     #FIXME filter out conflicting options if the wrapper doesnt do that
     # Check header files
-    $(call gen-cpp-deps,$(SFLG) $(AFLG),$(AGSI) $(ACPP))
+    # $(call gen-cpp-deps,$(SFLG) $(AFLG),$(AGSI) $(ACPP),$(AGSO),$(AOBJ))
     $(call joined-list-rule,$(patsubst %.cpp,%.hpp,$(AGSI)),$(AGSI))
 
 
@@ -205,20 +217,20 @@ ifneq ($(ACPP),)
 	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) a
 
 
-    # Build application interface object files
-    $(call joined-list-rule,$(AGSO),$(AGSI))
+    # Build application interface object fil
+    $(call gen-cpp-deps,$(AFLG),$(AGSO),$(AGSI))
 	    @echo Compiling $@
-	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $^ -o $@
+	    @$(EXEC) $(AFLG) -c -xc++ $< -o $@
     # Build application object files
-    $(call joined-list-rule,$(AOBJ), $(ACPP))
+    $(call gen-cpp-deps,$(AFLG),$(AOBJ),$(ACPP))
 	    @echo Compiling $@
-	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $^ -o $@
+	    @$(EXEC) $(AFLG) -c -xc++ $< -o $@
 
 
     # Buld executable #FIXME use input options
-    ABIN:$(AGSO) $(AOBJ) $(ELIB)
+    ABIN:$(AGSI) $(AGSO) $(AOBJ) $(ELIB)
 	    @echo Writing executable file
-	    @$(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
+	    @$(EXEC) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
 
 
     abuild:ebuild ABIN $(ASPV)
