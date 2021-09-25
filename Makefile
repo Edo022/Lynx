@@ -133,6 +133,7 @@ ifneq ($(ECPP),)
     #FIXME filter out conflicting options if the wrapper doesnt do that
     # Check header files
     $(call gen-cpp-deps,$(SFLG) $(EFLG),$(EGSI) $(ECPP))
+    $(call joined-list-rule,$(patsubst %.cpp,%.hpp,$(EGSI)),$(EGSI))
 
 
     # Generate shader interfaces
@@ -195,6 +196,7 @@ ifneq ($(ACPP),)
     #FIXME filter out conflicting options if the wrapper doesnt do that
     # Check header files
     $(call gen-cpp-deps,$(SFLG) $(AFLG),$(AGSI) $(ACPP))
+    $(call joined-list-rule,$(patsubst %.cpp,%.hpp,$(AGSI)),$(AGSI))
 
 
     # Generate shader interfaces
