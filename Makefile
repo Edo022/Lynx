@@ -3,11 +3,8 @@
 ##########################################################################################################
 
 
-#FIXME only build modified files
+#FIXME TRACK --include HEADERS
 
-#FIXME automatically track headers
-#FIXME g++ -M file.cpp
-#FIXME g++ -MM file.cpp //no system headers
 
 
 .DEFAULT_GOAL :=abuild
@@ -52,9 +49,8 @@ ESPV   =$(addsuffix .spv,$(basename $(EGLS)))#					# Get output .spv files paths
 EGSI   =$(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Get generated shader interfaces source files
 # ECPP += $(EGSI)#												# Append shaders C++ source files to ECPP
 
-EOBJ   =$(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Get generated shader interfaces .o files
-EOBJ += $(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(_ECPP))))))#		# Append output .o files of the non-generated C++ source files
-#!^ $(ECPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
+EGSO   =$(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Get generated shader interfaces .o files
+EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(ECPP))))))#		# Get output .o files of the non-generated C++ source files
 
 
 
@@ -69,9 +65,8 @@ ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv file
 AGSI   =$(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Get generated shader interfaces source files	#! Can be empty
 # ACPP += $(AGSI)#												# Append shaders C++ source files to ACPP
 
-AOBJ   =$(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Get generated shader interfaces .o files
-AOBJ += $(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(_ACPP))))))#		# Append output .o files of the non-generated C++ source files
-#!^ $(ACPP) is not used as it also contains the interfaces output C++ files which need to be in a different directory
+AGSO   =$(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Get generated shader interfaces .o files
+AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(ACPP))))))#		# Get output .o files of the non-generated C++ source files
 
 
 
@@ -82,6 +77,27 @@ $(shell mkdir -p $(AOUT))
 $(shell mkdir -p $(EOUT)/Shaders)
 $(shell mkdir -p $(AOUT)/Shaders)
 
+
+
+dbg:
+	@echo EFLG:$(words $(EFLG));echo $(EFLG);echo
+	@echo ECPP:$(words $(ECPP));echo $(ECPP);echo
+	@echo EOBJ:$(words $(EOBJ));echo $(EOBJ);echo
+	@echo EGLS:$(words $(EGLS));echo $(EGLS);echo
+	@echo EGSI:$(words $(EGSI));echo $(EGSI);echo
+	@echo EGSO:$(words $(EGSO));echo $(EGSO);echo
+	@echo ESPV:$(words $(ESPV));echo $(ESPV);echo
+	@echo; echo; echo; echo
+	@echo AFLG:$(words $(AFLG));echo $(AFLG);echo
+	@echo ACPP:$(words $(ACPP));echo $(ACPP);echo
+	@echo AOBJ:$(words $(AOBJ));echo $(AOBJ);echo
+	@echo AGLS:$(words $(AGLS));echo $(AGLS);echo
+	@echo AGSI:$(words $(AGSI));echo $(AGSI);echo
+	@echo AGSO:$(words $(AGSO));echo $(AGSO);echo
+	@echo ASPV:$(words $(ASPV));echo $(ASPV);echo
+	@echo; echo; echo; echo
+	@echo SFLG:$(words $(SFLG));echo $(SFLG);echo
+	@echo LINK:$(words $(LINK));echo $(LINK);echo
 
 percent =%
 filter-src-file  =$$(word 2,$$(subst ^, ,$$(filter $$@^$$(percent),$(join $1,$(addprefix ^,$2)))))
@@ -125,14 +141,18 @@ ifneq ($(ECPP),)
 	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) e
 
 
+    # Build engine interface object files
+    $(call joined-list-rule,$(EGSO),$(EGSI))
+	    @echo Compiling $@
+	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $^ -o $@
     # Build engine object files
-    $(call joined-list-rule,$(EOBJ),$(EGSI) $(ECPP))
+    $(call joined-list-rule,$(EOBJ),$(ECPP))
 	    @echo Compiling $@
 	    @$(EXEC) $(SFLG) $(EFLG) -c -xc++ $^ -o $@
 
 
     # Build engine static library
-    $(ELIB):$(EOBJ)
+    $(ELIB):$(EGSO) $(EOBJ)
 	    @echo Writing Lynx Engine library
 	    @ar -rcs $(ELIB) $^
 
@@ -183,15 +203,19 @@ ifneq ($(ACPP),)
 	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) a
 
 
+    # Build application interface object files
+    $(call joined-list-rule,$(AGSO),$(AGSI))
+	    @echo Compiling $@
+	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $^ -o $@
     # Build application object files
-    $(call joined-list-rule,$(AOBJ),$(AGSI) $(ACPP))
+    $(call joined-list-rule,$(AOBJ), $(ACPP))
 	    @echo Compiling $@
 	    @$(EXEC) $(SFLG) $(AFLG) -c -xc++ $^ -o $@
 
 
     # Buld executable #FIXME use input options
-    ABIN:$(AOBJ) $(ELIB)
-		@echo Writing executable file
+    ABIN:$(AGSO) $(AOBJ) $(ELIB)
+	    @echo Writing executable file
 	    @$(EXEC) $(SFLG) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
 
 
