@@ -8,7 +8,7 @@
 
 
 .DEFAULT_GOAL :=abuild
-.PHONY:ebuild abuild eclean aclean clean ABIN dbg
+.PHONY:ELIB ABIN eclean aclean clean
 .SECONDEXPANSION:
 
 #TODO add option to use provided compilation outputs
@@ -101,77 +101,36 @@ dbg:
 
 
 
-# get-cor(targets,dependencies)
-# Returns the dependency element corresponding to the target of the current rule
-get-cor  =$$(word 2,$$(subst ^, ,$$(filter $$@^$$(percent),$(join $1,$(addprefix ^,$2)))))
-percent =%
-
-
-# gen-cpp-deps(flags,objects,sources)
-# Generated a rule for each object file and writes the corresponding source file and the required headers in its dependencies
-gen-cpp-deps =$2:%:$$(wordlist 2,999999,$$(shell g++ -M -MG $1 $(call get-cor,$2,$3) | tr -d "\\n\\\\"))
-
-
-# gen-cpp-deps =$2:%:$$(shell g++ -M -MG $1 $(call get-cor,$2,$3) | tr -d "\\n\\\\")
-
-
-joined-list-rule =$1:%:$(call get-cor,$1,$2)
 
 
 
 
 
+# ----------------------------------------- BUILD -------------------------------------------
 
 
 
 
-
-# ----------------------------------------- ENGINE ------------------------------------------
-
-
-
-
-
+ELIB:
+	make -f MakeGSI.mak -j11 SPV="$(ESPV)" APP="$(APP)" GSI="$(EGSI)" GLS="$(EGLS)"
+	make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(EFLG)" OBJ="$(EGSO) $(EOBJ)" CPP="$(EGSI) $(ECPP)"
+	@echo Writing Lynx Engine library
+	@ar -rcs $(ELIB) $(EGSO) $(EOBJ)
 
 
-
-ifneq ($(ECPP),)
-    # Build engine spir-v files and generate shader interfaces
-    $(call joined-list-rule,$(ESPV),$(EGLS))
-	    @echo Compiling shader $@
-	    @glslangValidator -V $^ -o $@
-
-
-    #FIXME filter out conflicting options if the wrapper doesnt do that #TODO merge with .o builds
-    # Check header files
-    # $(call gen-cpp-deps,$(SFLG) $(EFLG),$(EGSI) $(ECPP),$(EGSO) $(EOBJ))
-    $(call joined-list-rule,$(patsubst %.cpp,%.hpp,$(EGSI)),$(EGSI))
+# Buld executable #FIXME use input options
+ABIN: ELIB
+	make -f MakeGSI.mak -j11 SPV="$(ASPV)" APP="$(APP)" GSI="$(AGSI)" GLS="$(AGLS)"
+	make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(AFLG)" OBJ="$(AGSO) $(AOBJ)" CPP="$(AGSI) $(ACPP)"
+	@echo Writing executable file
+	@$(EXEC) $(AFLG) $(AGSO) $(AOBJ) $(ELIB) $(LINK) -o $(APP)/tmp.out
 
 
-    # Generate shader interfaces
-    $(call joined-list-rule,$(EGSI),$(EGLS))
-	    @echo Generating interface files for shader $@
-	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) e
 
 
-    # Build engine interface object files
-    $(call gen-cpp-deps,$(EFLG),$(EGSO),$(EGSI))
-	    @echo Compiling $@
-	    $(EXEC) $(EFLG) -c -xc++ $< -o $@
-    # Build engine object files
-    $(call gen-cpp-deps,$(EFLG),$(EOBJ),$(ECPP))
-	    @echo Compiling $@
-	    @$(EXEC) $(EFLG) -c -xc++ $< -o $@
-
-
-    # Build engine static library
-    $(ELIB):$(EGSI) $(EGSO) $(EOBJ)
-	    @echo Writing Lynx Engine library
-	    @ar -rcs $(ELIB) $^
-
-
-    ebuild:$(ELIB) $(ESPV)
-endif
+# ----------------------------------------- CLEAN -------------------------------------------------
+#TODO delete executable output file
+#TODO delete generated shaders
 
 
 
@@ -182,87 +141,9 @@ eclean:
 	-@(cd $(EOUT)/../.. && find . -type f -wholename "./*/*/libLynxEngine.a" -delete) || true
 
 
-
-
-
-
-
-
-# ------------------------------------------ APPLICATION ------------------------------------------
-
-
-
-
-
-
-
-
-ifneq ($(APP),)
-ifneq ($(ACPP),)
-    # Build application spir-v files
-    $(call joined-list-rule,$(ASPV),$(AGLS))
-	    @echo Compiling shader $@
-	    @glslangValidator -V $^ -o $@
-
-
-    #FIXME filter out conflicting options if the wrapper doesnt do that
-    # Check header files
-    # $(call gen-cpp-deps,$(SFLG) $(AFLG),$(AGSI) $(ACPP),$(AGSO),$(AOBJ))
-    $(call joined-list-rule,$(patsubst %.cpp,%.hpp,$(AGSI)),$(AGSI))
-
-
-    # Generate shader interfaces
-    $(call joined-list-rule,$(AGSI),$(AGLS))
-	    @echo Generating interface files for shader $@
-	    @python3 Tools/Build/GlslToCpp.py $^ $(APP) a
-
-
-    # Build application interface object fil
-    $(call gen-cpp-deps,$(AFLG),$(AGSO),$(AGSI))
-	    @echo Compiling $@
-	    @$(EXEC) $(AFLG) -c -xc++ $< -o $@
-    # Build application object files
-    $(call gen-cpp-deps,$(AFLG),$(AOBJ),$(ACPP))
-	    @echo Compiling $@
-	    @$(EXEC) $(AFLG) -c -xc++ $< -o $@
-
-
-    # Buld executable #FIXME use input options
-    ABIN:$(AGSI) $(AGSO) $(AOBJ) $(ELIB)
-	    @echo Writing executable file
-	    @$(EXEC) $(AFLG) $^ $(LINK) -o $(APP)/tmp.out
-
-
-    abuild:ebuild ABIN $(ASPV)
-else
-    abuild:
-	    @echo No source files provided
-endif
-endif
-
-
-
-
-#TODO delete executable output file
-#TODO delete generated shaders
 # Delete all the object and executable files (including Windows .exe files)
 aclean:
 	-@(cd $(AOUT)/../.. && find . -type f -wholename "./*/*/*.o" -delete) || true
-
-
-
-
-
-
-
-
-# ------------------------------------------------ ALL --------------------------------------------
-
-
-
-
-
-
 
 
 # make clean removes every object and executable file
