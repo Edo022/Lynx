@@ -9,9 +9,8 @@ with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 os.chdir(ptoe)
 
 
-EXEC   = sys.argv[1][ len('_EXEC='  ):]
-OUTPUT = sys.argv[2][ len('_OUTPUT='):]
-APP    = sys.argv[3][ len('_APP='   ):]
+EXEC   = sys.argv[1][len('_EXEC='  ):]
+OUTPUT = sys.argv[2][len('_OUTPUT='):]
 
 LINK = shlex.split(sys.argv[10][len('_LINK='):]) + [    #Likner options
     '-L/usr/lib64', '-L/lib64',                             # Prefer 64bit libraries						#TODO fix windows build
@@ -31,9 +30,9 @@ SFLG = [                                                #Shared default C++ flag
 
 
 
-EFLG = SFLG + shlex.split(sys.argv[4][ len('_EFLG='):])             # Default + user defined flags      #! Passed by the wrapper
-EGLS =        shlex.split(sys.argv[8][ len('_EGLS='):])             # Engine GLSL source files          #! Passed by the wrapper
-ECPP =        shlex.split(sys.argv[6][ len('_ECPP='):])             # Engine C++  source files          #! Passed by the wrapper
+EFLG = SFLG + shlex.split(sys.argv[4][len('_EFLG='):])              # Default + user defined flags      #! Passed by the wrapper
+EGLS =        shlex.split(sys.argv[8][len('_EGLS='):])              # Engine GLSL source files          #! Passed by the wrapper
+ECPP =        shlex.split(sys.argv[6][len('_ECPP='):])              # Engine C++  source files          #! Passed by the wrapper
 EOUT = f'{ ptoe }/.engine/bin/Lnx/{ OUTPUT }'                       # Path to the engine binary output directory
 ELIB = f'{ EOUT }/libLynxEngine.a'                                  # Path to the engine static library
 
@@ -67,25 +66,31 @@ AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)         
 
 
 def debug():
-    print(f'EFLG:{ len(EFLG) }\n{ EFLG }')
-    print(f'ECPP:{ len(ECPP) }\n{ ECPP }')
-    print(f'EOBJ:{ len(EOBJ) }\n{ EOBJ }')
-    print(f'EGLS:{ len(EGLS) }\n{ EGLS }')
-    print(f'EGSI:{ len(EGSI) }\n{ EGSI }')
-    print(f'EGSO:{ len(EGSO) }\n{ EGSO }')
-    print(f'ESPV:{ len(ESPV) }\n{ ESPV }')
+    print(f'EFLG:{ len(EFLG) }\n{ EFLG }\n')
+    print(f'ECPP:{ len(ECPP) }\n{ ECPP }\n')
+    print(f'EOBJ:{ len(EOBJ) }\n{ EOBJ }\n')
+    print(f'EGLS:{ len(EGLS) }\n{ EGLS }\n')
+    print(f'EGSI:{ len(EGSI) }\n{ EGSI }\n')
+    print(f'EGSO:{ len(EGSO) }\n{ EGSO }\n')
+    print(f'ESPV:{ len(ESPV) }\n{ ESPV }\n')
     print('\n\n\n')
-    print(f'AFLG:{ len(AFLG) }\n{ AFLG }')
-    print(f'ACPP:{ len(ACPP) }\n{ ACPP }')
-    print(f'AOBJ:{ len(AOBJ) }\n{ AOBJ }')
-    print(f'AGLS:{ len(AGLS) }\n{ AGLS }')
-    print(f'AGSI:{ len(AGSI) }\n{ AGSI }')
-    print(f'AGSO:{ len(AGSO) }\n{ AGSO }')
-    print(f'ASPV:{ len(ASPV) }\n{ ASPV }')
+    print(f'AFLG:{ len(AFLG) }\n{ AFLG }\n')
+    print(f'ACPP:{ len(ACPP) }\n{ ACPP }\n')
+    print(f'AOBJ:{ len(AOBJ) }\n{ AOBJ }\n')
+    print(f'AGLS:{ len(AGLS) }\n{ AGLS }\n')
+    print(f'AGSI:{ len(AGSI) }\n{ AGSI }\n')
+    print(f'AGSO:{ len(AGSO) }\n{ AGSO }\n')
+    print(f'ASPV:{ len(ASPV) }\n{ ASPV }\n')
     print('\n\n\n')
-    print(f'SFLG:{ len(SFLG) }\n{ SFLG }')
-    print(f'LINK:{ len(LINK) }\n{ LINK }')
-
+    print(f'SFLG:{ len(SFLG) }\n{ SFLG }\n')
+    print(f'LINK:{ len(LINK) }\n{ LINK }\n')
+    print('\n\n\n')
+    print(f'OUTPUT: { OUTPUT }')
+    print(f'EXEC:   { EXEC }')
+    print(f'EOUT:   { EOUT }')
+    print(f'AOUT:   { AOUT }')
+    print(f'ELIB:   { ELIB }')
+    print(f'ABIN:   { ABIN }')
 
 
 
@@ -102,48 +107,56 @@ def debug():
 
 
 
+def checkCmd(args):
+    print(f'> { " ".join(args) }\n')
+    r = subprocess.run(args = args, stdout = subprocess.PIPE, universal_newlines = True)
+
+    if r.returncode != 0:
+        print(f'\033[31mCommand "{ " ".join(args) }" failed with output code { str(r.returncode) }:\033[37m\n{ (r.stdout) }')
+        exit(r.returncode)
+
+
 #TODO check dependencies
 def BuildGSI(SPV, GSI, GLS, isEngine):
     for v, i, d in zip(SPV, GSI, GLS):
         print('Compiling shader ' + d)
-        subprocess.run(['glslangValidator', '-V', d, '-o', v ])
+        checkCmd(['glslangValidator', '-V', d, '-o', v ])
         print('Generating shader interface for ' + d)
-        subprocess.run(['python3', 'Tools/Build/GlslToCpp.py', d, APP, isEngine ])
-
+        checkCmd(['python3', 'Tools/Build/GlslToCpp.py', d, etop, str(isEngine)])
 
 
 #TODO check dependencies
 def BuildOBJ(EXEC, FLG, OBJ, CPP):
     for o, d in zip(OBJ, CPP):
         print('Compiling ' + d)
-        subprocess.run([EXEC, FLG, '-c', '-xc++', d, '-o', o ])
+        checkCmd([EXEC, FLG, '-c', '-xc++', d, '-o', o ])
 
 
 
 
-def edirs():
+def dirs():
     # Create directories for generated files
-    os.makedirs(exist_ok = True, name = f'$(APP)/.engine/src/Generated')
+    os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated')
     os.makedirs(exist_ok = True, name = f'./src/Generated')
-    os.makedirs(exist_ok = True, name = f'$(APP)/.engine/src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
     os.makedirs(exist_ok = True, name = f'./src/Generated/Shaders')
 
     # Create output directories
-    os.makedirs(exist_ok = True, name = f'$(EOUT)')
-    os.makedirs(exist_ok = True, name = f'$(AOUT)')
-    os.makedirs(exist_ok = True, name = f'$(EOUT)/Shaders')
-    os.makedirs(exist_ok = True, name = f'$(AOUT)/Shaders')
+    os.makedirs(exist_ok = True, name = f'{ EOUT }')
+    os.makedirs(exist_ok = True, name = f'{ AOUT }')
+    os.makedirs(exist_ok = True, name = f'{ EOUT }/Shaders')
+    os.makedirs(exist_ok = True, name = f'{ AOUT }/Shaders')
 
 
 def elib():
-    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS)
+    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
     BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP)
     print('Writing Lynx Engine library')
     subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
 
 
 def abin():
-    BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS)
+    BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
     BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
     print('Writing executable file')
     subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])

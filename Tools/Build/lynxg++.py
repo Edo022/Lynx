@@ -260,7 +260,7 @@ alloyCmd = [ #--debug #--just-print #-p
     'python3', f'{ ptoe }/Alloy_tmp.py',
     '_EXEC'   f"={ 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
     '_OUTPUT' f"={ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    '_APP'    f'={ etop }', #TODO REMOVE if the build reads from file
+    '_APP'    f'={ etop }', #TODO UNUSED. REMOVE if Alloy reads from file
     '_EFLG'   f'={ " ".join(                                  eRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',
     '_AFLG'   f'={ " ".join(                                  aRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
     '_ECPP'   f'={ " ".join(                                  eRet.CPP  ) }',
@@ -268,6 +268,6 @@ alloyCmd = [ #--debug #--just-print #-p
     '_EGLS'   f'={ " ".join(                                  eRet.GLS  ) }',
     '_AGLS'   f'={ " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
     '_LINK'   f'={ " ".join(                                  aRet.LINK) }', #FIXME only replace actual paths
-    'debug'
+    'build'
 ]
 sys.exit(subprocess.run(alloyCmd).returncode)
