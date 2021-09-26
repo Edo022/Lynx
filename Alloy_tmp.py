@@ -36,8 +36,8 @@ ECPP =        shlex.split(sys.argv[6][len('_ECPP='):])              # Engine C++
 EOUT = f'{ ptoe }/.engine/bin/Lnx/{ OUTPUT }'                       # Path to the engine binary output directory
 ELIB = f'{ EOUT }/libLynxEngine.a'                                  # Path to the engine static library
 
-ESPV = list((f'./src/Generated/Shaders/{ s }.spv')     for s in EGLS)   # Get output .spv files paths
-EGSI = list((f'./src/Generated/Shaders/{ s }.gsi.cpp') for s in EGLS)   # Get generated shader interfaces source files
+ESPV = list((f'./src/Generated/Shaders/{ Path(s).stem }.spv')     for s in EGLS)   # Get output .spv files paths
+EGSI = list((f'./src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in EGLS)   # Get generated shader interfaces source files
 
 EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS) # Get generated shader interfaces .o files
 EOBJ = list((f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP) # Get output .o files of the non-generated C++ source files
@@ -51,8 +51,8 @@ ACPP =        shlex.split(sys.argv[7][ len('_ACPP='):])             # Applicatio
 AOUT = f'{ ptoe }/.engine/bin/App/{ OUTPUT }'                       # Path to the engine application binary output directory
 ABIN = f'{ ptoe }/tmp.out'                                          # Path to the application executable file
 
-ASPV = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ s }.spv')     for s in AGLS)    # Get output .spv files paths                   #! Can be empty
-AGSI = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ s }.gsi.cpp') for s in AGLS)    # Get generated shader interfaces source files  #! Can be empty
+ASPV = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS)    # Get output .spv files paths                   #! Can be empty
+AGSI = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS)    # Get generated shader interfaces source files  #! Can be empty
 
 AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS)                 # Get generated shader interfaces .o files
 AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)                 # Get output .o files of the non-generated C++ source files
@@ -109,10 +109,11 @@ def debug():
 
 def checkCmd(args):
     print(f'> { " ".join(args) }\n')
-    r = subprocess.run(args = args, stdout = subprocess.PIPE, universal_newlines = True)
+    r = subprocess.run(args = args,  text = True, capture_output = True)
 
     if r.returncode != 0:
-        print(f'\033[31mCommand "{ " ".join(args) }" failed with output code { str(r.returncode) }:\033[37m\n{ (r.stdout) }')
+        print(f'\033[31mCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:\033[37m\n')
+        print(f'\033[31mstderr:\033[37m\n{ r.stderr }\n\033[31mstdout:\033[37m\n{ r.stdout }')
         exit(r.returncode)
 
 
@@ -129,7 +130,7 @@ def BuildGSI(SPV, GSI, GLS, isEngine):
 def BuildOBJ(EXEC, FLG, OBJ, CPP):
     for o, d in zip(OBJ, CPP):
         print('Compiling ' + d)
-        checkCmd([EXEC, FLG, '-c', '-xc++', d, '-o', o ])
+        checkCmd([EXEC] + FLG + ['-c', '-xc++', d, '-o', o ])
 
 
 

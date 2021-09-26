@@ -238,7 +238,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
 
 
     #Get output shader path and name
-    shOutPath : str = os.path.dirname(os.path.relpath(f'{ etop }/.engine/src/Generated/Shaders' if isEngine else './src/Generated/Shaders/', '.'))
+    shOutPath : str = os.path.relpath(f'{ etop }/.engine/src/Generated/Shaders' if isEngine else './src/Generated/Shaders', '.')
     shOutName : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
     shName    : str = shOutName.replace('.', '_')
     if re.match(r'[a-zA-Z_](\w|\.)*', shOutName) == None:
@@ -250,7 +250,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
     # Expand macros
     code:str = subprocess.check_output(
         ['glslangValidator', f'{ os.path.relpath(pathr, ".") }', '-E'],
-        universal_newlines=True # Write a newline instead of a literal "\n"
+        text = True
     )
     # Parse out unnecessary whitespace and comments from the shader code
     ncode:str = (
