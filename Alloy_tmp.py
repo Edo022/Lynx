@@ -1,4 +1,5 @@
-import os, sys, subprocess, shlex, pathlib
+import os, sys, subprocess, shlex
+from pathlib import Path
 
 
 
@@ -36,26 +37,26 @@ ECPP =        shlex.split(sys.argv[6][ len('_ECPP='):])             # Engine C++
 EOUT = f'{ ptoe }/.engine/bin/Lnx/{ OUTPUT }'                       # Path to the engine binary output directory
 ELIB = f'{ EOUT }/libLynxEngine.a'                                  # Path to the engine static library
 
-ESPV = (f'./src/Generated/Shaders/{ s }.spv')     for s in EGLS     # Get output .spv files paths
-EGSI = (f'./src/Generated/Shaders/{ s }.gsi.cpp') for s in EGLS     # Get generated shader interfaces source files
+ESPV = list((f'./src/Generated/Shaders/{ s }.spv')     for s in EGLS)   # Get output .spv files paths
+EGSI = list((f'./src/Generated/Shaders/{ s }.gsi.cpp') for s in EGLS)   # Get generated shader interfaces source files
 
-EGSO = (f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS   # Get generated shader interfaces .o files
-EOBJ = (f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP   # Get output .o files of the non-generated C++ source files
-
-
+EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS) # Get generated shader interfaces .o files
+EOBJ = list((f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP) # Get output .o files of the non-generated C++ source files
 
 
-AFLG = SFLG + shlex.split(sys.argv[5][ len('_AFLG='):])                         # Default + user defined flags      #! Passed by the wrapper
-AGLS =        shlex.split(sys.argv[9][ len('_AGLS='):])                         # Application GLSL source files     #! Passed by the wrapper #! Can be empty
-ACPP =        shlex.split(sys.argv[7][ len('_ACPP='):])                         # Application C++  source files     #! Passed by the wrapper
-AOUT = f'{ ptoe }/.engine/bin/App/{ OUTPUT }'                                   # Path to the engine application binary output directory
-ABIN = f'{ ptoe }/tmp.out'                                                      # Path to the application executable file
 
-ASPV = (f'{ ptoe }/.engine/src/Generated/Shaders/{ s }.spv')     for s in AGLS  # Get output .spv files paths                   #! Can be empty
-AGSI = (f'{ ptoe }/.engine/src/Generated/Shaders/{ s }.gsi.cpp') for s in AGLS  # Get generated shader interfaces source files  #! Can be empty
 
-OGSO = (f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS               # Get generated shader interfaces .o files
-OOBJ = (f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP               # Get output .o files of the non-generated C++ source files
+AFLG = SFLG + shlex.split(sys.argv[5][ len('_AFLG='):])             # Default + user defined flags      #! Passed by the wrapper
+AGLS =        shlex.split(sys.argv[9][ len('_AGLS='):])             # Application GLSL source files     #! Passed by the wrapper #! Can be empty
+ACPP =        shlex.split(sys.argv[7][ len('_ACPP='):])             # Application C++  source files     #! Passed by the wrapper
+AOUT = f'{ ptoe }/.engine/bin/App/{ OUTPUT }'                       # Path to the engine application binary output directory
+ABIN = f'{ ptoe }/tmp.out'                                          # Path to the application executable file
+
+ASPV = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ s }.spv')     for s in AGLS)    # Get output .spv files paths                   #! Can be empty
+AGSI = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ s }.gsi.cpp') for s in AGLS)    # Get generated shader interfaces source files  #! Can be empty
+
+AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS)                 # Get generated shader interfaces .o files
+AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)                 # Get output .o files of the non-generated C++ source files
 
 
 
@@ -168,23 +169,23 @@ def build():
 
 
 
-def eclean:
+def eclean():
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.o',   '-delete'], cwd = f'{ etop }/.engine/bin')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.a',   '-delete'], cwd = f'{ etop }/.engine/bin')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv', '-delete'], cwd = './src/Generated')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp', '-delete'], cwd = './src/Generated')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp', '-delete'], cwd = './src/Generated')
 
-def aclean:
+def aclean():
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.o',   '-delete'], cwd = f'{ etop }/.engine/bin')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv', '-delete'], cwd = f'{ etop }/.engine/src/Generated')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp', '-delete'], cwd = f'{ etop }/.engine/src/Generated')
     subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp', '-delete'], cwd = f'{ etop }/.engine/src/Generated')
 
-def clean:
+def clean():
     aclean()
     eclean()
 
 
 
-eval(sys.argv[11])
+eval(sys.argv[11] + '()')

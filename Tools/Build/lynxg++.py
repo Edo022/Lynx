@@ -268,6 +268,6 @@ alloyCmd = [ #--debug #--just-print #-p
     '_EGLS'   f'={ " ".join(                                  eRet.GLS  ) }',
     '_AGLS'   f'={ " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
     '_LINK'   f'={ " ".join(                                  aRet.LINK) }', #FIXME only replace actual paths
-    'abin'
+    'debug'
 ]
 sys.exit(subprocess.run(alloyCmd).returncode)
