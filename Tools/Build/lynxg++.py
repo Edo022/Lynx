@@ -256,18 +256,18 @@ with open('.engine/Build.Engine.sh') as f:
 
 
 # Run build
-makeCmd = [ #--debug #--just-print #-p
-    'make', '-j1', '-r', '-C', ptoe, # 11 threads, no builtin rules, run from engine directory #TODO allow the use to choose the number of thread. default based on system max
-    '--warn-undefined-variables', '--no-print-directory',
-    '_EXEC'   f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
-    '_OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    '_APP'    f' = { etop }',
-    '_EFLG'   f' = { " ".join(                                  eRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',
-    '_AFLG'   f' = { " ".join(                                  aRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
-    '_ECPP'   f' = { " ".join(                                  eRet.CPP  ) }',
-    '_ACPP'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
-    '_EGLS'   f' = { " ".join(                                  eRet.GLS  ) }',
-    '_AGLS'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
-    '_LINK'   f' = { " ".join(                                  aRet.LINK) }' #FIXME only replace actual paths
+alloyCmd = [ #--debug #--just-print #-p
+    'python3', f'{ ptoe }/Alloy_tmp.py',
+    '_EXEC'   f"={ 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
+    '_OUTPUT' f"={ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
+    '_APP'    f'={ etop }', #TODO REMOVE if the build reads from file
+    '_EFLG'   f'={ " ".join(                                  eRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',
+    '_AFLG'   f'={ " ".join(                                  aRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
+    '_ECPP'   f'={ " ".join(                                  eRet.CPP  ) }',
+    '_ACPP'   f'={ " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
+    '_EGLS'   f'={ " ".join(                                  eRet.GLS  ) }',
+    '_AGLS'   f'={ " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
+    '_LINK'   f'={ " ".join(                                  aRet.LINK) }', #FIXME only replace actual paths
+    'abin'
 ]
-sys.exit(subprocess.run(makeCmd).returncode)
+sys.exit(subprocess.run(alloyCmd).returncode)

@@ -45,9 +45,8 @@ ECPP   =$(strip $(_ECPP))#		_ECPP =							# Engine C++  source files		#! Passed 
 EOUT   =$(APP)/.engine/bin/Lnx/$(OUTPUT)#						# Path to the engine binary output directory
 ELIB   =$(EOUT)/libLynxEngine.a#								# Path to the engine static library
 
-ESPV   =$(addsuffix .spv,$(basename $(EGLS)))#					# Get output .spv files paths
-EGSI   =$(addsuffix .gsi.cpp,$(basename $(EGLS)))#				# Get generated shader interfaces source files
-# ECPP += $(EGSI)#												# Append shaders C++ source files to ECPP
+ESPV   =$(addprefix ./src/Generated/Shaders/,$(addsuffix .spv,$(basename $(EGLS))))#		# Get output .spv files paths
+EGSI   =$(addprefix ./src/Generated/Shaders/,$(addsuffix .gsi.cpp,$(basename $(EGLS))))#	# Get generated shader interfaces source files
 
 EGSO   =$(addsuffix .gsi.o,$(addprefix $(EOUT)/Shaders/,$(notdir $(basename $(EGLS)))))#	# Get generated shader interfaces .o files
 EOBJ   =$(addsuffix .o,$(addprefix $(EOUT)/,$(notdir $(basename $(strip $(ECPP))))))#		# Get output .o files of the non-generated C++ source files
@@ -61,23 +60,12 @@ AGLS   =$(strip $(_AGLS))#		_AGLS =							# Application GLSL source files	#! Pas
 ACPP += $(strip $(_ACPP))#		_ACPP =							# Application C++  source files	#! Passed by the wrapper
 AOUT   =$(APP)/.engine/bin/App/$(OUTPUT)#						# Path to the engine application binary output directory
 
-ASPV   =$(strip $(addsuffix .spv,$(basename $(AGLS))))#			# Get output .spv files paths					#! Can be empty
-AGSI   =$(strip $(addsuffix .gsi.cpp,$(basename $(AGLS))))#		# Get generated shader interfaces source files	#! Can be empty
-# ACPP += $(AGSI)#												# Append shaders C++ source files to ACPP
+ASPV   =$(strip $(addprefix $(APP)/.engine/src/Generated/Shaders/,$(addsuffix .spv,$(basename $(AGLS)))))#		# Get output .spv files paths					#! Can be empty
+AGSI   =$(strip $(addprefix $(APP)/.engine/src/Generated/Shaders/,$(addsuffix .gsi.cpp,$(basename $(AGLS)))))#	# Get generated shader interfaces source files	#! Can be empty
 
 AGSO   =$(addsuffix .gsi.o,$(addprefix $(AOUT)/Shaders/,$(notdir $(basename $(AGLS)))))#	# Get generated shader interfaces .o files
 AOBJ   =$(addsuffix .o,$(addprefix $(AOUT)/,$(notdir $(basename $(strip $(ACPP))))))#		# Get output .o files of the non-generated C++ source files
 
-
-
-
-# Create output directories
-$(shell mkdir -p $(EOUT))
-$(shell mkdir -p $(AOUT))
-$(shell mkdir -p $(EOUT)/Shaders)
-$(shell mkdir -p $(AOUT)/Shaders)
-$(shell mkdir -p $(APP)/.engine/src/Generated)
-$(shell mkdir -p ./src/Generated)
 
 
 
@@ -104,24 +92,54 @@ dbg:
 
 
 
+ifeq ($(APP),)
+    $(error Path to application required but not provided)
+endif
 
 
 
 
-# ----------------------------------------- BUILD -------------------------------------------
 
 
 
 
+# ----------------------------------------- BUILD ------------------------------------------- #
+
+
+
+
+
+
+
+
+DIRS:
+    # Create directories for generated files
+	$(shell mkdir -p $(APP)/.engine/src/Generated)
+	$(shell mkdir -p ./src/Generated)
+	$(shell mkdir -p $(APP)/.engine/src/Generated/Shaders)
+	$(shell mkdir -p ./src/Generated/Shaders)
+
+    # Create output directories
+	$(shell mkdir -p $(EOUT))
+	$(shell mkdir -p $(AOUT))
+	$(shell mkdir -p $(EOUT)/Shaders)
+	$(shell mkdir -p $(AOUT)/Shaders)
+
+
+
+
+# Build engine library
 ELIB:
-	@make -f MakeGSI.mak -j11 SPV="$(ESPV)" APP="$(APP)" GSI="$(EGSI)" GLS="$(EGLS)"
+	@make -f MakeGSI.mak -j11 APP="$(APP)" SPV="$(ESPV)" GSI="$(EGSI)" GLS="$(EGLS)"
 	@make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(EFLG)" OBJ="$(EGSO) $(EOBJ)" CPP="$(EGSI) $(ECPP)"
 	@echo Writing Lynx Engine library
 	@ar -rcs $(ELIB) $(EGSO) $(EOBJ)
 
 
+
+
 # Buld executable #FIXME use input options
-ABIN: ELIB
+ABIN: DIRS ELIB
 	@make -f MakeGSI.mak -j11 SPV="$(ASPV)" APP="$(APP)" GSI="$(AGSI)" GLS="$(AGLS)"
 	@make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(AFLG)" OBJ="$(AGSO) $(AOBJ)" CPP="$(AGSI) $(ACPP)"
 	@echo Writing executable file
@@ -130,25 +148,36 @@ ABIN: ELIB
 
 
 
-# ----------------------------------------- CLEAN -------------------------------------------------
-#TODO delete executable output file
-#TODO delete generated shaders
 
 
 
 
-# Remove all the engine files
-eclean:
-	-@(cd $(EOUT)/../.. && find . -type f -wholename "./*/*/*.o" -delete) || true
-	-@(cd $(EOUT)/../.. && find . -type f -wholename "./*/*/libLynxEngine.a" -delete) || true
+# ----------------------------------------- CLEAN ------------------------------------------------- #
 
 
-# Delete all the object and executable files (including Windows .exe files)
-aclean:
-	-@(cd $(AOUT)/../.. && find . -type f -wholename "./*/*/*.o" -delete) || true
 
 
-# make clean removes every object and executable file
+
+
+
+
+ifneq ($(APP),)
+    # Remove all the engine files
+    eclean:
+	    -@(cd $(APP)/.engine/bin && find . -type f -wholename "./*.o" -delete) || true
+	    -@(cd $(APP)/.engine/bin && find . -type f -wholename "./*/libLynxEngine.a" -delete) || true
+	    -@(cd ./src/Generated && find . -type f -wholename "./*.spv" -delete) || true
+	    -@(cd ./src/Generated && find . -type f -wholename "./*.cpp" -delete) || true
+	    -@(cd ./src/Generated && find . -type f -wholename "./*.hpp" -delete) || true
+
+
+    # Delete all the object and executable files (including Windows .exe files)
+    aclean:
+	    -@(cd $(APP)/.engine/bin && find . -type f -wholename "./*.o" -delete) || true
+	    -@(cd $(APP)/.engine/src/Generated && find . -type f -wholename "./*.spv" -delete) || true
+	    -@(cd $(APP)/.engine/src/Generated && find . -type f -wholename "./*.cpp" -delete) || true
+	    -@(cd $(APP)/.engine/src/Generated && find . -type f -wholename "./*.hpp" -delete) || true
+endif
+
+
 clean:eclean aclean
-
-

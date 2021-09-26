@@ -8,16 +8,17 @@ percent=%
 
 # target-tuple(targets,dependencies)
 # Generates a rule for each target and writes the corresponding dependency in its dependencies
-target-tuple=$1:%:$(call get-dep,$1,$2)
+target-tuple=$1:%:$$(filter $$@$$(percent),$(join $1,$(addprefix ^,$2)))#FIXME filter deletes the whole string
+# target-tuple=$1:%:$(call get-dep,$1,$2)
 
 
 
 
 run:$(SPV) $(GSI)
 
-    # Build spir-v files
-    $(call target-tuple,$(SPV),$(GLS))
-	    @echo Compiling shader $@
+   # Build spir-v files
+   $(call target-tuple,$(SPV),$(GLS))
+	    @echo Compiling shader $@ WWWWWW $^
 	    glslangValidator -V $^ -o $@
 
 
