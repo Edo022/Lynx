@@ -13,7 +13,9 @@ gen-cpp-deps=$2:%:$$(wordlist 2,999999,$$(shell g++ -M -MG $1 $(call get-dep,$2,
 
 
 
-# Build object files
-$(call gen-cpp-deps,$(FLG),$(OBJ),$(CPP))
-	@echo Compiling $@
-	@$(EXEC) $(FLG) -c -xc++ $< -o $@
+run:$(OBJ)
+
+    # Build object files
+    $(call gen-cpp-deps,$(FLG),$(OBJ),$(CPP))
+	    @echo Compiling $@
+	    @$(EXEC) $(FLG) -c -xc++ $< -o $@

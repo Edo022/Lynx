@@ -13,13 +13,15 @@ target-tuple=$1:%:$(call get-dep,$1,$2)
 
 
 
-# Build spir-v files
-$(call target-tuple,$(SPV),$(GLS))
-	@echo Compiling shader $@
-	@glslangValidator -V $^ -o $@
+run:$(SPV) $(GSI)
+
+    # Build spir-v files
+    $(call target-tuple,$(SPV),$(GLS))
+	    @echo Compiling shader $@
+	    glslangValidator -V $^ -o $@
 
 
-# Generate shader interfaces
-$(call target-tuple,$(GSI),$(GLS))
-	@echo Generating interface files for shader $@
-	@python3 Tools/Build/GlslToCpp.py $^ $(APP) e
+    # Generate shader interfaces
+    $(call target-tuple,$(GSI),$(GLS))
+	    @echo Generating interface files for shader $@
+	    python3 Tools/Build/GlslToCpp.py $^ $(APP) e

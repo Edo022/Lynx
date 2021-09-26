@@ -257,13 +257,13 @@ with open('.engine/Build.Engine.sh') as f:
 
 # Run build
 makeCmd = [ #--debug #--just-print #-p
-    'make', '-j11', '-p', '-r', '-C', ptoe, # 11 threads, no builtin rules, run from engine directory #TODO allow the use to choose the number of thread. default based on system max
+    'make', '-j1', '-r', '-C', ptoe, # 11 threads, no builtin rules, run from engine directory #TODO allow the use to choose the number of thread. default based on system max
     '--warn-undefined-variables', '--no-print-directory',
     '_EXEC'   f" = { 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
     '_OUTPUT' f" = { 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
     '_APP'    f' = { etop }',
-    '_EFLG'   f' = { " ".join(                                  eRet.FLAGS) } -DenginePath="\\"{ ptoe }\\""',
-    '_AFLG'   f' = { " ".join(                                  aRet.FLAGS) } -DenginePath="\\"{ ptoe }\\""', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
+    '_EFLG'   f' = { " ".join(                                  eRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',
+    '_AFLG'   f' = { " ".join(                                  aRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
     '_ECPP'   f' = { " ".join(                                  eRet.CPP  ) }',
     '_ACPP'   f' = { " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
     '_EGLS'   f' = { " ".join(                                  eRet.GLS  ) }',

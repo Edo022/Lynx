@@ -7,7 +7,7 @@
 
 
 
-.DEFAULT_GOAL :=abuild
+.DEFAULT_GOAL :=ABIN
 .PHONY:ELIB ABIN eclean aclean clean
 .SECONDEXPANSION:
 
@@ -76,6 +76,8 @@ $(shell mkdir -p $(EOUT))
 $(shell mkdir -p $(AOUT))
 $(shell mkdir -p $(EOUT)/Shaders)
 $(shell mkdir -p $(AOUT)/Shaders)
+$(shell mkdir -p $(APP)/.engine/src/Generated)
+$(shell mkdir -p ./src/Generated)
 
 
 
@@ -112,16 +114,16 @@ dbg:
 
 
 ELIB:
-	make -f MakeGSI.mak -j11 SPV="$(ESPV)" APP="$(APP)" GSI="$(EGSI)" GLS="$(EGLS)"
-	make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(EFLG)" OBJ="$(EGSO) $(EOBJ)" CPP="$(EGSI) $(ECPP)"
+	@make -f MakeGSI.mak -j11 SPV="$(ESPV)" APP="$(APP)" GSI="$(EGSI)" GLS="$(EGLS)"
+	@make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(EFLG)" OBJ="$(EGSO) $(EOBJ)" CPP="$(EGSI) $(ECPP)"
 	@echo Writing Lynx Engine library
 	@ar -rcs $(ELIB) $(EGSO) $(EOBJ)
 
 
 # Buld executable #FIXME use input options
 ABIN: ELIB
-	make -f MakeGSI.mak -j11 SPV="$(ASPV)" APP="$(APP)" GSI="$(AGSI)" GLS="$(AGLS)"
-	make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(AFLG)" OBJ="$(AGSO) $(AOBJ)" CPP="$(AGSI) $(ACPP)"
+	@make -f MakeGSI.mak -j11 SPV="$(ASPV)" APP="$(APP)" GSI="$(AGSI)" GLS="$(AGLS)"
+	@make -f MakeOBJ.mak -j11 EXEC="$(EXEC)" FLG="$(AFLG)" OBJ="$(AGSO) $(AOBJ)" CPP="$(AGSI) $(ACPP)"
 	@echo Writing executable file
 	@$(EXEC) $(AFLG) $(AGSO) $(AOBJ) $(ELIB) $(LINK) -o $(APP)/tmp.out
 
