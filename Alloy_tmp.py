@@ -1,5 +1,6 @@
-import os, sys, subprocess, shlex
+import os, sys, subprocess, shlex, threading, multiprocessing, time
 from pathlib import Path
+#TODO check dependencies
 
 
 
@@ -8,8 +9,9 @@ with open('./.engine/.etop', 'r') as f: etop = f.read()
 with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 os.chdir(ptoe)
 
-
-
+poolMutex = threading.Lock()
+avlThrs = multiprocessing.cpu_count() - 1
+totThrs = avlThrs
 
 
 
@@ -77,23 +79,71 @@ def checkCmd(args):
 
 
 
-#TODO check dependencies
+def BuildGSI1(i, ov, oi, s, isEngine, tot):
+    global etop
+    global poolMutex
+    global avlThrs
+    print(f'{ progress(i + 1, tot) } Compiling shader ' + s)
+    checkCmd(['glslangValidator', '-V', s, '-o', ov ])
+    print(f'{ progress(i + 1, tot) } Generating shader interface for ' + s)
+    checkCmd(['python3', 'Tools/Build/GlslToCpp.py', s, etop, str(isEngine)])
+    poolMutex.acquire()
+    avlThrs += 1
+    poolMutex.release()
+
 def BuildGSI(SPV, GSI, GLS, isEngine):
+    global poolMutex
+    global avlThrs
+    global totThrs
     for i, (ov, oi, s) in enumerate(zip(SPV, GSI, GLS)):
-        print(f'{ progress(i + 1, len(GLS)) } Compiling shader ' + s)
-        checkCmd(['glslangValidator', '-V', s, '-o', ov ])
+        t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, s, isEngine, len(GLS)), daemon = True)
+        t.start()
+        poolMutex.acquire()
+        avlThrs -= 1
+        poolMutex.release()
+        while avlThrs == 0: time.sleep(0.01)
+    while avlThrs < totThrs: time.sleep(0.01)
 
-        print(f'{ progress(i + 1, len(GLS)) } Generating shader interface for ' + s)
-        checkCmd(['python3', 'Tools/Build/GlslToCpp.py', s, etop, str(isEngine)])
 
 
 
 
-#TODO check dependencies
+
+def BuildOBJ1(EXEC, FLG, i, o, s, tot):
+    global poolMutex
+    global avlThrs
+    print(f'{ progress(i + 1, tot) } Compiling ' + s)
+    checkCmd([EXEC] + FLG + ['-c', '-xc++', s, '-o', o ])
+    poolMutex.acquire()
+    avlThrs += 1
+    poolMutex.release()
+
 def BuildOBJ(EXEC, FLG, OBJ, CPP):
+    global poolMutex
+    global avlThrs
+    global totThrs
     for i, (o, s) in enumerate(zip(OBJ, CPP)):
-        print(f'{ progress(i + 1, len(CPP)) } Compiling ' + s)
-        checkCmd([EXEC] + FLG + ['-c', '-xc++', s, '-o', o ])
+        t = threading.Thread(target = BuildOBJ1, args = (EXEC, FLG, i, o, s, len(CPP)), daemon = True)
+        t.start()
+        poolMutex.acquire()
+        avlThrs -= 1
+        poolMutex.release()
+        while avlThrs == 0: time.sleep(0.01)
+    while avlThrs < totThrs: time.sleep(0.01)
+
+
+
+
+
+
+
+
+
+# ----------------------------------------- SETUP ------------------------------------------- #
+
+
+
+
 
 
 
