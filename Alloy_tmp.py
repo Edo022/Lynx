@@ -9,54 +9,6 @@ with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 os.chdir(ptoe)
 
 
-EXEC   = sys.argv[1][len('_EXEC='  ):]
-OUTPUT = sys.argv[2][len('_OUTPUT='):]
-
-LINK = shlex.split(sys.argv[10][len('_LINK='):]) + [    #Likner options
-    '-L/usr/lib64', '-L/lib64',                             # Prefer 64bit libraries						#TODO fix windows build
-    '-ldl', '-lrt', '-lXrandr', '-lXi',                     # Link dependencies								#TODO fix windows build
-    '-lXcursor', '-lXinerama', '-lX11',                     # Link dependencies								#TODO fix windows build
-    '-lvulkan', '-Bstatic', '-lglfw',                       # Link Vulkan dynamically and GLFW statically	#TODO fix windows build
-]
-
-SFLG = [                                                #Shared default C++ flags
-    '-pthread', '-I.',                                      # Default g++ call, pthread, include project root
-    '-std=c++20', '-m64',                                   # Use C++20, build for 64bit environments
-    '-include', 'Lynx/Core/VkDef.hpp',                      # Include forced vulkan macros
-    '-include', 'Lynx/Lynx_config.hpp',                     # Include engine configuration macros
-    f'-ffile-prefix-map={ os.path.abspath(etop) }='         # Fix file prefix in debug infos
-]
-
-
-
-
-EFLG = SFLG + shlex.split(sys.argv[4][len('_EFLG='):])              # Default + user defined flags      #! Passed by the wrapper
-EGLS =        shlex.split(sys.argv[8][len('_EGLS='):])              # Engine GLSL source files          #! Passed by the wrapper
-ECPP =        shlex.split(sys.argv[6][len('_ECPP='):])              # Engine C++  source files          #! Passed by the wrapper
-EOUT = f'{ ptoe }/.engine/bin/Lnx/{ OUTPUT }'                       # Path to the engine binary output directory
-ELIB = f'{ EOUT }/libLynxEngine.a'                                  # Path to the engine static library
-
-ESPV = list((f'./src/Generated/Shaders/{ Path(s).stem }.spv')     for s in EGLS)   # Get output .spv files paths
-EGSI = list((f'./src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in EGLS)   # Get generated shader interfaces source files
-
-EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS) # Get generated shader interfaces .o files
-EOBJ = list((f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP) # Get output .o files of the non-generated C++ source files
-
-
-
-
-AFLG = SFLG + shlex.split(sys.argv[5][ len('_AFLG='):])             # Default + user defined flags      #! Passed by the wrapper
-AGLS =        shlex.split(sys.argv[9][ len('_AGLS='):])             # Application GLSL source files     #! Passed by the wrapper #! Can be empty
-ACPP =        shlex.split(sys.argv[7][ len('_ACPP='):])             # Application C++  source files     #! Passed by the wrapper
-AOUT = f'{ ptoe }/.engine/bin/App/{ OUTPUT }'                       # Path to the engine application binary output directory
-ABIN = f'{ ptoe }/tmp.out'                                          # Path to the application executable file
-
-ASPV = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS)    # Get output .spv files paths                   #! Can be empty
-AGSI = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS)    # Get generated shader interfaces source files  #! Can be empty
-
-AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS)                 # Get generated shader interfaces .o files
-AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)                 # Get output .o files of the non-generated C++ source files
-
 
 
 
@@ -135,7 +87,7 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP):
 
 
 
-def dirs():
+def dirs(EOUT:str, AOUT:str):
     # Create directories for generated files
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated')
     os.makedirs(exist_ok = True, name = f'./src/Generated')
@@ -149,24 +101,79 @@ def dirs():
     os.makedirs(exist_ok = True, name = f'{ AOUT }/Shaders')
 
 
-def elib():
+
+
+def elib(
+    ELIB:str, EXEC:str, EFLG:list,
+    EGLS:list, EGSI:list, ECPP:list,
+    ESPV:list, EGSO:list, EOBJ:list
+):
     BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
     BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP)
     print('Writing Lynx Engine library')
     subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
 
 
-def abin():
+
+
+def abin(
+    ELIB:str, ABIN:str, EXEC:str, AFLG:list,
+    AGLS:list, AGSI:list, ACPP:list,
+    ASPV:list, AGSO:list, AOBJ:list
+):
     BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
     BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
     print('Writing executable file')
     subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
 
 
-def build():
-    dirs()
-    elib()
-    abin()
+
+
+def build(
+    EXEC:str, OUTPUT:str, LINK:list,    # Path to C++ compiler      # Binary output suffix              # Linker options
+    EFLG:list, EGLS:list, ECPP:list,    # Engine flags              # Engine GLS source files           # Engine C++ source files
+    AFLG:list, AGLS:list, ACPP:list     # Application flags         # Application GLS source files      # Application C++ source files
+):
+    LINK += [                                           # Default Likner options
+        '-L/usr/lib64', '-L/lib64',                         # Prefer 64bit libraries                        #TODO fix windows build
+        '-ldl', '-lrt', '-lXrandr', '-lXi',                 # Link dependencies                             #TODO fix windows build
+        '-lXcursor', '-lXinerama', '-lX11',                 # Link dependencies                             #TODO fix windows build
+        '-lvulkan', '-Bstatic', '-lglfw',                   # Link Vulkan dynamically and GLFW statically   #TODO fix windows build
+    ]
+
+    SFLG = [                                            # Shared default C++ flags
+        '-std=c++20', '-m64', '-pthread',                   # Use C++20, build for 64bit environments, use pthread
+        '-I.', '-Isrc', f'-I{ etop }/.engine/src',          # Include from src directories and project root
+        '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros
+        '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros
+        f'-ffile-prefix-map={ os.path.abspath(etop) }=',    # Fix file prefix in debug infos
+        f'-DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',       # Engine path macro #FIXME
+    ]
+
+
+    EFLG += SFLG                                        # Append default flags to user defined flags    #! Passed by the wrapper
+    AFLG += SFLG                                        # Append default flags to user defined flags    #! Passed by the wrapper
+    EOUT = f'{ ptoe }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory
+    AOUT = f'{ ptoe }/.engine/bin/App/{ OUTPUT }'       # Path to the engine application binary output directory
+    ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library
+    ABIN = f'{ ptoe }/tmp.out'                          # Path to the application executable file
+
+
+    ESPV = list((               f'./src/Generated/Shaders/{ Path(s).stem }.spv')     for s in EGLS)     # Get output .spv files paths
+    ASPV = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS)     # Get output .spv files paths                   #! Can be empty
+    EGSI = list((               f'./src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in EGLS)     # Get generated shader interfaces source files
+    AGSI = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS)     # Get generated shader interfaces source files  #! Can be empty
+
+    EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS)     # Get generated shader interfaces .o files
+    AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS)     # Get generated shader interfaces .o files
+    EOBJ = list((f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP)     # Get output .o files of the non-generated C++ source files
+    AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)     # Get output .o files of the non-generated C++ source files
+
+
+    dirs(EOUT = EOUT, AOUT = AOUT)
+    elib(ELIB = ELIB,              EXEC = EXEC, EFLG = EFLG, EGLS = EGLS, EGSI = EGSI, ECPP = ECPP, ESPV = ESPV, EGSO = EGSO, EOBJ = EOBJ)
+    abin(ELIB = ELIB, ABIN = ABIN, EXEC = EXEC, AFLG = AFLG, AGLS = AGLS, AGSI = AGSI, ACPP = ACPP, ASPV = ASPV, AGSO = AGSO, AOBJ = AOBJ)
+
 
 
 
@@ -202,4 +209,5 @@ def clean():
 
 
 
-eval(sys.argv[11] + '()')
+eval(f'build({ ",".join(sys.argv[1:-1]) })')
+# print(f'build({ ",".join(sys.argv[1:-1]) })')

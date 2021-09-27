@@ -258,16 +258,15 @@ with open('.engine/Build.Engine.sh') as f:
 # Run build
 alloyCmd = [ #--debug #--just-print #-p
     'python3', f'{ ptoe }/Alloy_tmp.py',
-    '_EXEC'   f"={ 'g++' if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }",
-    '_OUTPUT' f"={ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }",
-    '_APP'    f'={ etop }', #TODO UNUSED. REMOVE if Alloy reads from file
-    '_EFLG'   f'={ " ".join(                                  eRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',
-    '_AFLG'   f'={ " ".join(                                  aRet.FLAGS) } -DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"', #TODO fix engine path in shipping builds and standalone executables #FIXME replace paths with replative path from engine
-    '_ECPP'   f'={ " ".join(                                  eRet.CPP  ) }',
-    '_ACPP'   f'={ " ".join(os.path.relpath(s, eabs) for s in aRet.CPP  ) }',
-    '_EGLS'   f'={ " ".join(                                  eRet.GLS  ) }',
-    '_AGLS'   f'={ " ".join(os.path.relpath(s, eabs) for s in aRet.GLS  ) }',
-    '_LINK'   f'={ " ".join(                                  aRet.LINK) }', #FIXME only replace actual paths
+    f"EXEC   = \"{ 'g++'   if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }\"",
+    f"OUTPUT = \"{ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }\"",
+    f'EFLG   = { str(eRet.FLAGS) }',
+    f'AFLG   = { str(aRet.FLAGS) }', #FIXME replace paths with replative path from engine
+    f'ECPP   = { str(eRet.CPP  ) }',
+    f'EGLS   = { str(eRet.GLS  ) }',
+    f'ACPP   = { str(list(os.path.relpath(s, eabs) for s in aRet.CPP)) }',
+    f'AGLS   = { str(list(os.path.relpath(s, eabs) for s in aRet.GLS)) }',
+    f'LINK   = { str(aRet.LINK) }', #FIXME only replace actual paths
     'build'
 ]
 sys.exit(subprocess.run(alloyCmd).returncode)
