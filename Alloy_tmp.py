@@ -16,7 +16,7 @@ os.chdir(ptoe)
 
 
 
-
+#TODO
 def debug():
     print(f'EFLG:{ len(EFLG) }\n{ EFLG }\n')
     print(f'ECPP:{ len(ECPP) }\n{ ECPP }\n')
@@ -59,8 +59,14 @@ def debug():
 
 
 
+def progress(cur:int, tot:int):
+    return f"[{ str(cur).rjust(len(str(tot)), '0') }/{ str(tot) } - { '{:3.2f}'.format(cur / tot * 100).rjust(6, '0') }%]"
+
+
+
+
 def checkCmd(args):
-    print(f'> { " ".join(args) }\n')
+    # print(f'> { " ".join(args) }\n')
     r = subprocess.run(args = args,  text = True, capture_output = True)
 
     if r.returncode != 0:
@@ -69,20 +75,25 @@ def checkCmd(args):
         exit(r.returncode)
 
 
+
+
 #TODO check dependencies
 def BuildGSI(SPV, GSI, GLS, isEngine):
-    for v, i, d in zip(SPV, GSI, GLS):
-        print('Compiling shader ' + d)
-        checkCmd(['glslangValidator', '-V', d, '-o', v ])
-        print('Generating shader interface for ' + d)
-        checkCmd(['python3', 'Tools/Build/GlslToCpp.py', d, etop, str(isEngine)])
+    for i, (ov, oi, s) in enumerate(zip(SPV, GSI, GLS)):
+        print(f'{ progress(i + 1, len(GLS)) } Compiling shader ' + s)
+        checkCmd(['glslangValidator', '-V', s, '-o', ov ])
+
+        print(f'{ progress(i + 1, len(GLS)) } Generating shader interface for ' + s)
+        checkCmd(['python3', 'Tools/Build/GlslToCpp.py', s, etop, str(isEngine)])
+
+
 
 
 #TODO check dependencies
 def BuildOBJ(EXEC, FLG, OBJ, CPP):
-    for o, d in zip(OBJ, CPP):
-        print('Compiling ' + d)
-        checkCmd([EXEC] + FLG + ['-c', '-xc++', d, '-o', o ])
+    for i, (o, s) in enumerate(zip(OBJ, CPP)):
+        print(f'{ progress(i + 1, len(CPP)) } Compiling ' + s)
+        checkCmd([EXEC] + FLG + ['-c', '-xc++', s, '-o', o ])
 
 
 
@@ -90,9 +101,9 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP):
 def dirs(EOUT:str, AOUT:str):
     # Create directories for generated files
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated')
-    os.makedirs(exist_ok = True, name = f'./src/Generated')
+    os.makedirs(exist_ok = True, name =                f'./src/Generated')
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
-    os.makedirs(exist_ok = True, name = f'./src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name =                f'./src/Generated/Shaders')
 
     # Create output directories
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
@@ -103,28 +114,6 @@ def dirs(EOUT:str, AOUT:str):
 
 
 
-def elib(
-    ELIB:str, EXEC:str, EFLG:list,
-    EGLS:list, EGSI:list, ECPP:list,
-    ESPV:list, EGSO:list, EOBJ:list
-):
-    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
-    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP)
-    print('Writing Lynx Engine library')
-    subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
-
-
-
-
-def abin(
-    ELIB:str, ABIN:str, EXEC:str, AFLG:list,
-    AGLS:list, AGSI:list, ACPP:list,
-    ASPV:list, AGSO:list, AOBJ:list
-):
-    BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
-    BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
-    print('Writing executable file')
-    subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
 
 
 
@@ -147,22 +136,22 @@ def build(
         '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros
         '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros
         f'-ffile-prefix-map={ os.path.abspath(etop) }=',    # Fix file prefix in debug infos
-        f'-DenginePath=\\"\\\\\\"{ ptoe }\\\\\\"\\"',       # Engine path macro #FIXME
+        f'-DenginePath="{ ptoe }"',                         # Engine path macro #FIXME
     ]
 
 
     EFLG += SFLG                                        # Append default flags to user defined flags    #! Passed by the wrapper
     AFLG += SFLG                                        # Append default flags to user defined flags    #! Passed by the wrapper
-    EOUT = f'{ ptoe }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory
-    AOUT = f'{ ptoe }/.engine/bin/App/{ OUTPUT }'       # Path to the engine application binary output directory
+    EOUT = f'{ etop }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory
+    AOUT = f'{ etop }/.engine/bin/App/{ OUTPUT }'       # Path to the engine application binary output directory
     ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library
-    ABIN = f'{ ptoe }/tmp.out'                          # Path to the application executable file
+    ABIN = f'{ etop }/tmp.out'                          # Path to the application executable file
 
 
     ESPV = list((               f'./src/Generated/Shaders/{ Path(s).stem }.spv')     for s in EGLS)     # Get output .spv files paths
-    ASPV = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS)     # Get output .spv files paths                   #! Can be empty
+    ASPV = list((f'{ etop }/.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS)     # Get output .spv files paths                   #! Can be empty
     EGSI = list((               f'./src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in EGLS)     # Get generated shader interfaces source files
-    AGSI = list((f'{ ptoe }/.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS)     # Get generated shader interfaces source files  #! Can be empty
+    AGSI = list((f'{ etop }/.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS)     # Get generated shader interfaces source files  #! Can be empty
 
     EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS)     # Get generated shader interfaces .o files
     AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS)     # Get generated shader interfaces .o files
@@ -170,9 +159,24 @@ def build(
     AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)     # Get output .o files of the non-generated C++ source files
 
 
+
+
+    # Create missing directories
     dirs(EOUT = EOUT, AOUT = AOUT)
-    elib(ELIB = ELIB,              EXEC = EXEC, EFLG = EFLG, EGLS = EGLS, EGSI = EGSI, ECPP = ECPP, ESPV = ESPV, EGSO = EGSO, EOBJ = EOBJ)
-    abin(ELIB = ELIB, ABIN = ABIN, EXEC = EXEC, AFLG = AFLG, AGLS = AGLS, AGSI = AGSI, ACPP = ACPP, ASPV = ASPV, AGSO = AGSO, AOBJ = AOBJ)
+
+
+    # Build libraries
+    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
+    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP)
+    print(f'Writing Lynx Engine library "{ ELIB }"')
+    subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
+
+
+    # Build executable
+    BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
+    BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
+    print(f'Writing application executable file "{ ABIN }"')
+    subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
 
 
 

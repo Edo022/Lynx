@@ -2,7 +2,7 @@
 #define LNX_H_VOLUME
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/3D/Octree.hpp"
-#include "Lynx/shaders/Volume.gsi.hpp"
+#include "Generated/Shaders/Volume.gsi.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
 #include "Lynx/Types/VPointer.hpp"
 
