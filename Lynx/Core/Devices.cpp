@@ -40,7 +40,7 @@ namespace lnx::core::dvc{
 	alignCache uint32       requiredDeviceExtensionsNum = 1;
 	alignCache const char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
-	#ifdef LNX_DEBUG
+	#ifdef LNX_DBG
 		alignCache VkDebugUtilsMessengerEXT debugMessenger;
 		alignCache uint32       validationLayersNum = 1;
 		alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
@@ -65,7 +65,7 @@ namespace lnx::core::dvc{
 		_dbg(extensions[glfwExtensionCount] = (VK_EXT_DEBUG_UTILS_EXTENSION_NAME));				//Add debug extension if in debug mode
 
 
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			//Create debugCreateInfo structure
 			vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 			core::debug::populateDebugMessengerCreateInfo(debugCreateInfo);
@@ -92,7 +92,7 @@ namespace lnx::core::dvc{
 		;
 
 		//Add validation layers if in debug mode
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			uint32 layerCount = 0;
 
 			//Get layer count

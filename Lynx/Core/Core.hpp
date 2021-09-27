@@ -82,7 +82,7 @@ namespace lnx::core{
 
 
 
-	#ifdef LNX_DEBUG
+	#ifdef LNX_DBG
 	namespace debug {
 		//It's dark magic, idk why or how it works, but it does
 		inline VkResult CreateDebugUtilsMessengerEXT(vk::Instance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {

@@ -178,14 +178,7 @@ def build(
     print(f'Writing application executable file "{ ABIN }"')
     subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
 
-
-
-
-
-
-
-
-# ----------------------------------------- CLEAN ------------------------------------------------- #
+    return 0
 
 
 
@@ -194,24 +187,45 @@ def build(
 
 
 
-def eclean():
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.o',   '-delete'], cwd = f'{ etop }/.engine/bin')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.a',   '-delete'], cwd = f'{ etop }/.engine/bin')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv', '-delete'], cwd = './src/Generated')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp', '-delete'], cwd = './src/Generated')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp', '-delete'], cwd = './src/Generated')
-
-def aclean():
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.o',   '-delete'], cwd = f'{ etop }/.engine/bin')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv', '-delete'], cwd = f'{ etop }/.engine/src/Generated')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp', '-delete'], cwd = f'{ etop }/.engine/src/Generated')
-    subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp', '-delete'], cwd = f'{ etop }/.engine/src/Generated')
-
-def clean():
-    aclean()
-    eclean()
+# ----------------------------------------- CLEAR ------------------------------------------------- #
 
 
 
-eval(f'build({ ",".join(sys.argv[1:-1]) })')
-# print(f'build({ ",".join(sys.argv[1:-1]) })')
+
+
+
+
+
+def eclear():
+    return not(
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = f'{ etop }/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = f'{ etop }/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',     '-delete'], cwd = './src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',     '-delete'], cwd = './src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',     '-delete'], cwd = './src/Generated').returncode
+    )
+
+
+def aclear():
+    return not(
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './App/*.o', '-delete'], cwd = f'{ etop }/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',     '-delete'], cwd = f'{ etop }/.engine/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',     '-delete'], cwd = f'{ etop }/.engine/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',     '-delete'], cwd = f'{ etop }/.engine/src/Generated').returncode
+    )
+
+
+def clear():
+    return not(not aclear() and not eclear())
+
+
+
+
+if sys.argv[-1] in ['clear', 'aclear', 'eclear']:
+    sys.exit(eval(f'{ sys.argv[-1] }()'))
+
+elif sys.argv[-1] == 'build':
+    sys.exit(eval(f'{ sys.argv[-1] }({ ",".join(sys.argv[1:-1]) })'))
+
+else:
+    sys.exit(f'Unknown task "{ sys.argv[-1] }"')

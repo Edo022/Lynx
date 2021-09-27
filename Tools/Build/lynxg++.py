@@ -155,7 +155,7 @@ def run(argv:list):
         LINK  : list = []
 
         if args.m[1] == 'd':
-            FLAGS += [ '-DLNX_DEBUG -rdynamic' ]
+            FLAGS += [ '-DLNX_DBG -rdynamic' ]
 
 
         # Parse -x flags and expand glob paths
@@ -269,4 +269,5 @@ alloyCmd = [ #--debug #--just-print #-p
     f'LINK   = { str(aRet.LINK) }', #FIXME only replace actual paths
     'build'
 ]
+
 sys.exit(subprocess.run(alloyCmd).returncode)

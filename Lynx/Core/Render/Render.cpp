@@ -32,7 +32,7 @@ namespace lnx::core::render{
 
 
 
-	#ifdef LNX_DEBUG
+	#ifdef LNX_DBG
 		void createDebugMessenger() {
 			VkDebugUtilsMessengerCreateInfoEXT createInfo;
 			debug::populateDebugMessengerCreateInfo(createInfo);

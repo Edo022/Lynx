@@ -603,7 +603,7 @@ namespace lnx::ram{
 			if(cell->address) {
 				this->realloc(0);
 				//! owners is not updated. Freeing an allocation does't destroy the pointer
-				#ifdef LNX_DEBUG
+				#ifdef LNX_DBG
 					//! [Call from destructor] No need to set the correct state of the owners, as there are none (they're all out of scope)
 					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) {
 						i->state = __pvt::CellState::eFreed;

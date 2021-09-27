@@ -18,7 +18,7 @@ namespace lnx::core::dvc{
 	extern uint32		requiredDeviceExtensionsNum;
 	extern const char**	requiredDeviceExtensions;
 
-	#ifdef LNX_DEBUG
+	#ifdef LNX_DBG
 		extern VkDebugUtilsMessengerEXT	debugMessenger;
 		extern uint32       validationLayersNum;
 		extern const char**	validationLayers;

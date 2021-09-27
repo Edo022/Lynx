@@ -136,7 +136,7 @@ namespace lnx {
 
 
 
-		#if !defined(LNX_DEBUG) || defined(__INTELLISENSE__)
+		#if !defined(LNX_DBG) || defined(__INTELLISENSE__)
 			/**
 			 * @brief Resizes the array
 			 *     Calls the constructor on each of the new elements

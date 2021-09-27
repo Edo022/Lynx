@@ -44,7 +44,7 @@ namespace lnx::obj{
 
 
 	ram::ptr<char> obj_bb::getShData() {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			switch(objType){
 				//case ObjType::eRender: return this->getShData(); break;
 				//!^ Not an error. obj_bb::getShData is only called if the object didn't reimplement it or it is a structural object
@@ -57,7 +57,7 @@ namespace lnx::obj{
 	}
 	//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
 	vram::Alloc_b<char> obj_bb::getShVData() {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			switch(objType){
 				//case ObjType::eRender: return this->getShVData(); break;
 				//!^ Not an error. obj_bb::getShVData is only called if the object didn't reimplement it or it is a structural object

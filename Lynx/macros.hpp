@@ -34,7 +34,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-#ifdef LNX_DEBUG
+#ifdef LNX_DBG
 #	define _dbg(...) __VA_ARGS__    //Executes a line of code only if in debug   mode
 #	define _rls(...)                //Executes a line of code only if in release mode
 #else
@@ -56,7 +56,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define alignCache  __attribute__((aligned(64)))
 
 
-#ifdef LNX_DEBUG
+#ifdef LNX_DBG
     #undef alwaysInline
     #define alwaysInline inline
 #endif

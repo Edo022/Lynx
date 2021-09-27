@@ -105,7 +105,7 @@ namespace lnx::dbg{
 	static _dbg(neverInline)_rls(alwaysInline) void print(Severity vSeverity, const uint32 vIndex, const char* pFstr, const auto&... pArgs) {
 		using namespace std::chrono;
 		using std::string;
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			//Get time
 			time_t cTime; time(&cTime);				//Get current time
 			tm *lTime; lTime = localtime(&cTime);	//Convert to local time
@@ -196,7 +196,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void logError(const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			print(Severity::eError, 1, pFstr, pArgs...);
 		#endif
 	}
@@ -212,7 +212,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void logWarn(const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			print(Severity::eWarn, 1, pFstr, pArgs...);
 		#endif
 	}
@@ -228,7 +228,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void logInfo(const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			print(Severity::eInfo, 1, pFstr, pArgs...);
 		#endif
 	}
@@ -262,7 +262,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkCond(const bool vCond, const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			if(vCond) lnx::dbg::logError(pFstr, pArgs...);
 		#endif
 	}
@@ -283,7 +283,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkParam(const bool vCond, const char* pParam, const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			if(vCond) {
 				auto callerFunc = caller::func();
 				const char* fstr = "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s";
@@ -312,7 +312,7 @@ namespace lnx::dbg{
 	 * @param pParam The name of the parameter
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* pParam) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			checkParam(vIndex < vMin || vIndex > vMax, pParam, "Index %llu is out of range. Min: %llu, Max: %llu", vIndex, vMin, vMax);
 		#endif
 	}
@@ -333,7 +333,7 @@ namespace lnx::dbg{
 	 * @param vArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkRawPtr(auto* vPtr, const char* pFstr, const auto&... vArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			if(vPtr) {
 				try{ char tmp = *(char*)vPtr; }
 				catch(std::exception& e) { dbg::logError(pFstr, vArgs...); }

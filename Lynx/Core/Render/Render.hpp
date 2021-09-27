@@ -36,7 +36,7 @@ namespace lnx{
 
 
 
-			#ifdef LNX_DEBUG
+			#ifdef LNX_DBG
 				void createDebugMessenger();
 
 				static VKAPI_ATTR VkBool32 VKAPI_CALL vulkanOutputCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
