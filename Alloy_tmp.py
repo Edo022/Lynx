@@ -13,7 +13,9 @@ poolMutex = threading.Lock()
 avlThrs = multiprocessing.cpu_count() - 1
 totThrs = avlThrs
 
-
+bgreen = '\033[1;32m'
+white = '\033[0;37m'
+red = '\033[1;31m'
 
 
 
@@ -72,9 +74,22 @@ def checkCmd(args):
     r = subprocess.run(args = args,  text = True, capture_output = True)
 
     if r.returncode != 0:
-        print(f'\033[31mCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:\033[37m\n')
-        print(f'\033[31mstderr:\033[37m\n{ r.stderr }\n\033[31mstdout:\033[37m\n{ r.stdout }')
+        print(f'{ red }Command "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }\n')
+        print(f'{ red }stderr:\033[37m\n{ r.stderr }\n\033[31mstdout:{ white }\n{ r.stdout }')
         exit(r.returncode)
+
+
+
+
+def needsRebuild(o, s):
+    return (not os.path.exists(o)) or os.path.getmtime(s) > os.path.getmtime(o)
+
+
+def needsRebuildCPP(o, s, FLG):
+    if not os.path.exists(o): return False
+    for h in subprocess.run(['g++', '-M', s] + FLG, capture_output = True, text = True).stdout.strip().replace('\\\n ','').split(' ')[1:]:
+        if(needsRebuild(o, h)): return True
+    return False
 
 
 
@@ -83,18 +98,31 @@ def BuildGSI1(i, ov, oi, s, isEngine, tot):
     global etop
     global poolMutex
     global avlThrs
-    print(f'{ progress(i + 1, tot) } Compiling shader ' + s)
-    checkCmd(['glslangValidator', '-V', s, '-o', ov ])
-    print(f'{ progress(i + 1, tot) } Generating shader interface for ' + s)
-    checkCmd(['python3', 'Tools/Build/GlslToCpp.py', s, etop, str(isEngine)])
+
+    if needsRebuild(ov, s):
+        print(f'{ progress(i + 1, tot) } Compiling shader { ov }')
+        checkCmd(['glslangValidator', '-V', s, '-o', ov ])
+    else:
+        print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
+
+    if needsRebuild(oi, s) or needsRebuild(oi.replace('cpp', 'hpp'), s):
+        print(f'{ progress(i + 1, tot) } Generating shader interface for { s }')
+        checkCmd(['python3', 'Tools/Build/GlslToCpp.py', s, etop, str(isEngine)])
+    else:
+        print(f'{ progress(i + 1, tot) } Target is up to date (Interface of shader { s })')
+
     poolMutex.acquire()
     avlThrs += 1
     poolMutex.release()
+
+
+
 
 def BuildGSI(SPV, GSI, GLS, isEngine):
     global poolMutex
     global avlThrs
     global totThrs
+
     for i, (ov, oi, s) in enumerate(zip(SPV, GSI, GLS)):
         t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, s, isEngine, len(GLS)), daemon = True)
         t.start()
@@ -112,16 +140,25 @@ def BuildGSI(SPV, GSI, GLS, isEngine):
 def BuildOBJ1(EXEC, FLG, i, o, s, tot):
     global poolMutex
     global avlThrs
-    print(f'{ progress(i + 1, tot) } Compiling ' + s)
-    checkCmd([EXEC] + FLG + ['-c', '-xc++', s, '-o', o ])
+
+    if needsRebuildCPP(o, s, FLG):
+        print(f'{ progress(i + 1, tot) } Compiling object file { o }')
+        checkCmd([EXEC] + FLG + ['-c', '-xc++', s, '-o', o ])
+    else:
+        print(f'{ progress(i + 1, tot) } Target is up to date (Object file { o })')
+
     poolMutex.acquire()
     avlThrs += 1
     poolMutex.release()
+
+
+
 
 def BuildOBJ(EXEC, FLG, OBJ, CPP):
     global poolMutex
     global avlThrs
     global totThrs
+
     for i, (o, s) in enumerate(zip(OBJ, CPP)):
         t = threading.Thread(target = BuildOBJ1, args = (EXEC, FLG, i, o, s, len(CPP)), daemon = True)
         t.start()
@@ -212,22 +249,45 @@ def build(
 
 
     # Create missing directories
+    print(f'Using { totThrs } threads')
+    print(f'Creating output directories')
     dirs(EOUT = EOUT, AOUT = AOUT)
+    print(f'\n')
 
 
     # Build libraries
+    print(f'Generating engine files')
     BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
+    print(f'{ bgreen }Engine files generated successfully\n{ white }')
+
+    print(f'Compiling engine source files')
     BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP)
-    print(f'Writing Lynx Engine library "{ ELIB }"')
+    print(f'{ bgreen }Engine source files compiled successfully\n{ white }')
+
+    print(f'Writing Lynx Engine library')
     subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
+    print(f'{ bgreen }Created "{ ELIB }"\n{ white }')
+
 
 
     # Build executable
-    BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
-    BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
-    print(f'Writing application executable file "{ ABIN }"')
-    subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
+    if len(AGLS) > 0:
+        print(f'Generating application files')
+        BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
+        print(f'{ bgreen }Application files generated successfully"\n{ white }')
 
+    if len(ACPP) > 0:
+        print(f'Compiling application source files')
+        BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
+        print(f'{ bgreen }Application source files compiled successfully\n{ white }')
+
+    print(f'Writing application executable file')
+    subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
+    print(f'{ bgreen }Created "{ ABIN }"\n{ white }')
+
+
+
+    print('Build completed successfully')
     return 0
 
 
