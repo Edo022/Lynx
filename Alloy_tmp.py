@@ -86,7 +86,7 @@ def needsRebuild(o, s):
 
 
 def needsRebuildCPP(o, s, FLG):
-    if not os.path.exists(o): return False
+    if not os.path.exists(o): return True
     for h in subprocess.run(['g++', '-M', s] + FLG, capture_output = True, text = True).stdout.strip().replace('\\\n ','').split(' ')[1:]:
         if(needsRebuild(o, h)): return True
     return False
