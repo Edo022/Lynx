@@ -3,10 +3,11 @@
 
 
 #ifdef __INTELLISENSE__
-    #include ".engine/conf.hpp"
-    //!The file is generated in the .engine directory of the user application when they change the build configuration
-    //!This include is only used to allow Intellisense to correctly parse the code
+	#include ".engine/conf.hpp"
+	//!The file is generated in the .engine directory of the user application when they change the build configuration
+	//!This include is only used to allow Intellisense to correctly parse the code
 #endif
+
 
 
 
@@ -35,11 +36,11 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 #ifdef LNX_DBG
-#	define _dbg(...) __VA_ARGS__    //Executes a line of code only if in debug   mode
-#	define _rls(...)                //Executes a line of code only if in release mode
+#	define _dbg(...) __VA_ARGS__	//Executes a line of code only if in debug   mode
+#	define _rls(...)				//Executes a line of code only if in release mode
 #else
-#	define _dbg(...)                //Executes a line of code only if in debug   mode
-#	define _rls(...) __VA_ARGS__    //Executes a line of code only if in release mode
+#	define _dbg(...)				//Executes a line of code only if in debug   mode
+#	define _rls(...) __VA_ARGS__	//Executes a line of code only if in release mode
 #endif
 
 
@@ -57,8 +58,8 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 #ifdef LNX_DBG
-    #undef alwaysInline
-    #define alwaysInline inline
+	#undef alwaysInline
+	#define alwaysInline inline
 #endif
 
 
@@ -72,12 +73,12 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 #ifdef __GNUC__
 	#pragma GCC diagnostic ignored "-Wpmf-conversions"
-    /**
-     * @brief Returns true if the object's class redefines a virtual member function of a base class
-     *     e.g. if(doesRedefine(derivedInstance, &Obj_bb::func)) //...do something
-     * @param object An instance of the derived class
-     * @param vVMFP The virtual member function pointer of the base class
-     */
+	/**
+	 * @brief Returns true if the object's class redefines a virtual member function of a base class
+	 *     e.g. if(doesRedefine(derivedInstance, &Obj_bb::func)) //...do something
+	 * @param object An instance of the derived class
+	 * @param vVMFP The virtual member function pointer of the base class
+	 */
 	#define doesRedefine(vObj, vVMFP) ((void*)((vObj).*(vVMFP)) != (void*)(vVMFP))
 #else
 	static neverInline __attribute__((optimize("O0"), error("\"doesRedefine\" macro is only available in g++"))) bool doesRedefine(auto vObj, auto vVMFP){ return true; }
@@ -90,10 +91,10 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 neverInline const char* getEnginePath();
 
 #ifdef __INTELLISENSE__
-    //FIXME USE EXTERN CONST CHAR INSTEAD OF MACRO AND FUNCTION
-    //Path to the engine files. Generated during user app compilation
-    //This macro may only be used by the user application
-    //DO NOT use this macro in the engine code. Call getEnginePath() instead.
+	//FIXME USE EXTERN CONST CHAR INSTEAD OF MACRO AND FUNCTION
+	//Path to the engine files. Generated during user app compilation
+	//This macro may only be used by the user application
+	//DO NOT use this macro in the engine code. Call getEnginePath() instead.
 	#define enginePath "<generated>"
 #endif
 
@@ -103,6 +104,57 @@ neverInline const char* getEnginePath();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @brief Creates a global reference to a static variable which is initialized and constructed on its first use
+ *     A CfuVarDef in the translation unit is required to define and initialize the variable
+ *     ! This macro is used to prevent the user from breaking the software by accessing uninitialized engine variables through classes which depend on them
+ *     ! Using global variables is strongly discouraged and should be avoided whenever possible
+ * @param type The type and cv qualifiers of the variable
+ * @param name The name of the variable
+ *
+ *     e.g.
+ *     CfuVarDec(f32v3, vector);
+ */
+#define CfuVarDec(type, name)								\
+	type& __lnx_pvt_cfu_##name##_get();						\
+	std::add_const_t<type>& __lnx_pvt_cfu_##name##_init();	\
+	extern type& name //! Put a semicolon after calling the macro
+
+
+/**
+ * @brief Definition and initialization macro for varbiales declared with CfuVarDec
+ *     CFU variables are move or copy constructed
+ *     This macro writes the function that creates the static variable and the signature of the function used to initialize it
+ *     The initializer function returns a reference to the type of the CFU variable and takes no arguments
+ *     It will be automatically called when the variable is used for the first time
+ *
+ *     e.g.
+ *     CfuVarDef(f32v3, vector){
+ *         f32v4 v = { 0, 1, 2}
+ *         cin >> v[1];
+ *         return v;
+ *     }
+ * @param type The type and cv qualifiers of the CFU variable. It must match the type and cv qualifiers used in its declaration
+ * @param name The name of the CFU variable. It must match the name used in its declaration
+ */
+#define CfuVarDef(type, name)								\
+	type& __lnx_pvt_cfu_##name##_get(){						\
+		static type name = __lnx_pvt_cfu_##name##_init();	\
+		return name;										\
+	}														\
+	type& name = __lnx_pvt_cfu_##name##_get();				\
+	std::add_const_t<type>& __lnx_pvt_cfu_##name##_init()
 
 
 

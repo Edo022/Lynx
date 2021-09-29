@@ -17,7 +17,7 @@ namespace lnx::sys{
 	//! And it has to do it after getting the device infos, but before allocating the cells.
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
-	const GpuInfo vram = [](){
+	CfuVarDef(const GpuInfo, vram){
 		//Get GPU informations
 		GpuInfo _vram;
 		_vram.name = core::dvc::graphics.pd.properties.deviceName;
@@ -40,11 +40,11 @@ namespace lnx::sys{
 			_vram.heaps[i] = { .size = memoryProperties.memoryHeaps[i].size, .flags = memoryProperties.memoryHeaps[i].flags };
 		}
 		return _vram;
-	}();
+	}
 
 
 
-
+//FIXME replace LnxAutoInit s
 	LnxAutoInit(LNX_H_VMEMORY) {
 		using namespace vram::__pvt;
 

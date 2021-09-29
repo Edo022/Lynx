@@ -16,7 +16,7 @@
 
 
 namespace lnx::sys{
-    const CpuInfo cpu = [](){
+    CfuVarDef(const CpuInfo, cpu){
         CpuInfo _cpu = {
             .L1D = {
                 .size     = (uint32)sysconf(_SC_LEVEL1_DCACHE_SIZE),
@@ -65,12 +65,12 @@ namespace lnx::sys{
         free(maxFreq);
 
         return _cpu;
-    }();
+    }
 
 
 
 
-    const RamInfo ram = [](){
+    CfuVarDef(const RamInfo, ram){
         RamInfo _ram;
 
         #ifdef _WIN64
@@ -84,9 +84,9 @@ namespace lnx::sys{
         #else
             _ram.pageNum  = (uint64)sysconf(_SC_PHYS_PAGES);
             _ram.pageSize = (uint64)sysconf(_SC_PAGE_SIZE);
-            _ram.size     = (uint64)(sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE));
+            _ram.size     = _ram.pageNum * _ram.pageSize;
         #endif
 
         return _ram;
-    }();
+    }
 }

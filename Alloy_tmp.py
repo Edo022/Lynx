@@ -13,6 +13,7 @@ poolMutex = threading.Lock()
 avlThrs = multiprocessing.cpu_count() - 1
 totThrs = avlThrs
 curThr = 0
+poolErr = False
 
 bgreen = '\033[1;32m'
 white = '\033[0;37m'
@@ -71,13 +72,17 @@ def progress(cur:int, tot:int):
 
 
 def checkCmd(args):
-    # print(f'> { " ".join(args) }\n')
+    global poolErr
     r = subprocess.run(args = args,  text = True, capture_output = True)
 
     if r.returncode != 0:
-        print(f'{ red }Command "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }\n')
-        print(f'{ red }stderr:\033[37m\n{ r.stderr }\n\033[31mstdout:{ white }\n{ r.stdout }')
-        exit(r.returncode)
+        if not poolErr:
+            poolErr = True
+            print(f'{ red }\n\nCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }\n')
+            print(f'{ red }stderr:{ " None" * (not len(r.stderr)) }\033[37m\n{ r.stderr }\n\033[31mstdout:{ " None" * (not len(r.stdout)) }{ white }\n{ r.stdout }')
+            exit(r.returncode)
+        else:
+            print('Alloy: An error occurred. Thread stopped')
 
 
 
@@ -130,6 +135,7 @@ def BuildGSI(SPV, GSI, GLS, isEngine):
     global avlThrs
     global totThrs
     global curThr
+    global poolErr
 
     for i, (ov, oi, s) in enumerate(zip(SPV, GSI, GLS)):
         t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, s, isEngine, len(GLS), i), daemon = True)
@@ -138,6 +144,8 @@ def BuildGSI(SPV, GSI, GLS, isEngine):
         avlThrs -= 1
         poolMutex.release()
         while avlThrs == 0: time.sleep(0.01)
+        if poolErr:
+            sys.exit('Alloy: An error occurred. Build stopped')
     while avlThrs < totThrs: time.sleep(0.01)
     curThr = 0
 
@@ -177,6 +185,7 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP):
     global avlThrs
     global totThrs
     global curThr
+    global poolErr
 
     for i, (o, s) in enumerate(zip(OBJ, CPP)):
         t = threading.Thread(target = BuildOBJ1, args = (EXEC, FLG, i, o, s, len(CPP), i), daemon = True)
@@ -185,6 +194,8 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP):
         avlThrs -= 1
         poolMutex.release()
         while avlThrs == 0: time.sleep(0.01)
+        if poolErr:
+            sys.exit('Alloy: An error occurred. Build stopped')
     while avlThrs < totThrs: time.sleep(0.01)
     curThr = 0
 
