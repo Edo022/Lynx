@@ -47,7 +47,6 @@ We do not provide any support for developement on Windows or Mac.
 |--------------|-----------|---------------------|
 | Linux        | 4.4       | Yes                 |
 | g++          | 11.1.1    | Yes                 |
-| GNU Make     | 4.3       | Yes                 |
 | glslang      | 10:11.0.0 | Yes                 |
 | spirv-tools  | 2020.7    | Yes                 |
 | Mingw        | 8.0.0     | Windows builds only |
