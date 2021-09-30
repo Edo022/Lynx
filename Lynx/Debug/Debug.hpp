@@ -33,6 +33,15 @@
 
 
 namespace lnx::dbg{
+	inline namespace color {
+		static const char* red     = "\033[31m";
+		static const char* green   = "\033[32m";
+		static const char* yellow  = "\033[33m";
+		static const char* blue    = "\033[34m";
+		static const char* magenta = "\033[35m";
+		static const char* white   = "\033[37m";
+	}
+
 	/**
 	 * @brief Formats an std::string using the printf format
 	 *     This is an helper function and should only be called from lnx::dbg::print
@@ -176,10 +185,9 @@ namespace lnx::dbg{
 
 
 			//Print
-			if(vSeverity == Severity::eInfo) Normal else if(vSeverity == Severity::eWarn) Warning else Failure;
-			// printf(out__.c_str()); Normal; fflush(stdout);
-			printf(out.c_str()); NormalNoNl; fflush(stdout);
-			if(vSeverity == Severity::eError) throw std::runtime_error("U.U");
+			printf("%s%s%s\n", vSeverity == Severity::eInfo ? white : (vSeverity == Severity::eWarn ? yellow : red), out.c_str(), white);
+			fflush(stdout);
+			if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
 		#endif
 	}
 

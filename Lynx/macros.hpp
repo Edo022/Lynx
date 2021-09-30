@@ -22,16 +22,6 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-//TODO remove
-#include "Lynx/Core/__tmp__OutputColor.hpp"
-#define Normal				std::cout << __tmp_output_color::white << '\n';
-#define NormalNoNl			std::cout << __tmp_output_color::white;
-#define Failure				std::cout << __tmp_output_color::red << '\n';
-#define Warning				std::cout << __tmp_output_color::yellow	<< '\n';
-
-
-
-
 #ifdef LNX_DBG
 #	define _dbg(...) __VA_ARGS__	//Executes a line of code only if in debug   mode
 #	define _rls(...)				//Executes a line of code only if in release mode
