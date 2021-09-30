@@ -5,15 +5,19 @@ import os, sys
 
 
 def run(mode:str):
+    print()
     pf = mode[0]
     cf = mode[1]
     PF = 'Linux' if pf == 'l' else 'Windows'
     CF = 'Debug' if cf == 'd' else 'Release'
 
-    npf =       'w' if pf == 'l' else pf
-    ncf =       'r' if cf == 'd' else cf
-    NPF = 'Windows' if pf == 'l' else PF
-    NCF = 'Release' if cf == 'd' else CF
+    npf =       'w' if pf == 'l' else 'l'
+    ncf =       'r' if cf == 'd' else 'd'
+    NPF = 'Windows' if pf == 'l' else 'Linux'
+    NCF = 'Release' if cf == 'd' else 'Debug'
+    print(ncf)
+    print(cf)
+    print(CF)
 
     with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 
