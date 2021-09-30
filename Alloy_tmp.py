@@ -195,7 +195,7 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP):
         poolMutex.release()
         while avlThrs == 0: time.sleep(0.01)
         if poolErr:
-            sys.exit('Alloy: An error occurred. Build stopped')
+            sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     while avlThrs < totThrs: time.sleep(0.01)
     curThr = 0
 

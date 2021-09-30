@@ -140,7 +140,7 @@ namespace lnx {
 		template<class tAType, class tAIdxt> inline void specCopyArr(const RaArray<tAType, tAIdxt>& pArr)
 		requires(!std::is_same_v<tIdxt, tAIdxt> || sizeof(tType) != sizeof(tAType) || !std::is_trivially_copy_constructible_v<tAType>){
 			for(tAIdxt i = 0; i < pArr.count(); ++i){
-				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(static_cast<tType>(pArr.data[i].value));
+				if(pArr.isValid(i)) new(&(data[(uint64)i].value)) tType(scast<tType>(pArr.data[i].value));
 				specIdxCnv(data[(uint64)i].next, pArr.data[i].next);
 			}
 		}
@@ -190,7 +190,7 @@ namespace lnx {
 			count_ = (tIdxt)pCont.count(); free_ = 0;
 
 			for(tCIdxt i = 0; i < pCont.count(); ++i){
-				new(&(data[(uint64)i].value)) tType(static_cast<tType>(pCont[i]));
+				new(&(data[(uint64)i].value)) tType(scast<tType>(pCont[i]));
 				;     data[(uint64)i].next = (tIdxt)-1;
 			}
 			return *this;

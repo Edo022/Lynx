@@ -61,7 +61,7 @@ namespace lnx{
 			seq_val(const tType& pVal) : val(&pVal) {};
 
 			void operator=(const tType& pElm){ val = &pElm; } //TODO ADD DETAILED ERROR WHEN CALLING = ON REFERENCE ELEMENTS OF HcArray (NOT FWD)
-			inline tType get(){ return static_cast<tType>(*val); } //TODO
+			inline tType get(){ return scast<tType>(*val); } //TODO
 			//!    ^ Already reference
 		};
 

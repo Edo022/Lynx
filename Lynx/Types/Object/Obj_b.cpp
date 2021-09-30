@@ -103,8 +103,8 @@ namespace lnx::obj{
 		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
 
 		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
-		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
-		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
+		scast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
+		scast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
 	}
 
 

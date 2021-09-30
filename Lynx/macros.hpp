@@ -22,13 +22,10 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-//Console output
+//TODO remove
 #include "Lynx/Core/__tmp__OutputColor.hpp"
 #define Normal				std::cout << __tmp_output_color::white << '\n';
 #define NormalNoNl			std::cout << __tmp_output_color::white;
-#define Success				std::cout << __tmp_output_color::green << '\n';
-#define SuccessNoNl			std::cout << __tmp_output_color::green;
-#define Main				std::cout << __tmp_output_color::magenta << '\n';
 #define Failure				std::cout << __tmp_output_color::red << '\n';
 #define Warning				std::cout << __tmp_output_color::yellow	<< '\n';
 
@@ -47,9 +44,9 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 //Im lazy UwU
-#define scast   static_cast
-#define rcast   reinterpret_cast
-#define noop    ((void)0)
+#define scast static_cast
+#define rcast reinterpret_cast
+#define noop  ((void)0)
 #define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline
 #define neverInline  __attribute__((__noinline__))
 
@@ -127,8 +124,6 @@ neverInline const char* getEnginePath();
  *     CfuVarDec(f32v3, vector);
  */
 #define CfuVarDec(type, name)								\
-	type& __lnx_pvt_cfu_##name##_get();						\
-	std::add_const_t<type>& __lnx_pvt_cfu_##name##_init();	\
 	extern type& name //! Put a semicolon after calling the macro
 
 
@@ -149,7 +144,8 @@ neverInline const char* getEnginePath();
  * @param name The name of the CFU variable. It must match the name used in its declaration
  */
 #define CfuVarDef(type, name)								\
-	type& __lnx_pvt_cfu_##name##_get(){						\
+	std::add_const_t<type>& __lnx_pvt_cfu_##name##_init();	\
+	inline type& __lnx_pvt_cfu_##name##_get(){				\
 		static type name = __lnx_pvt_cfu_##name##_init();	\
 		return name;										\
 	}														\
