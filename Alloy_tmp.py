@@ -1,4 +1,4 @@
-import os, sys, subprocess, shlex, threading, multiprocessing, time
+import os, sys, subprocess, shlex, threading, multiprocessing, time, re
 from pathlib import Path
 #TODO check dependencies
 
@@ -78,12 +78,14 @@ def checkCmd(args):
     if r.returncode != 0:
         if not poolErr:
             poolErr = True
-            print(f'{ red }\n\nCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }\n')
-            print(f'{ red }stderr:{ " None" * (not len(r.stderr)) }\033[37m\n{ r.stderr }\n\033[31mstdout:{ " None" * (not len(r.stdout)) }{ white }\n{ r.stdout }')
+            print(f'{ red }\n\nCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }')
+            print(f'{ red }\nstderr:{ " None" * (not len(r.stderr)) }{ white }\n{ r.stderr }')
+            print(f'{ red }\nstdout:{ " None" * (not len(r.stdout)) }{ white }\n{ r.stdout }')
             exit(r.returncode)
         else:
             print('Alloy: An error occurred. Thread stopped')
-
+    # else:
+        # print(r.stdout) #TODO
 
 
 
@@ -96,6 +98,18 @@ def needsRebuildCPP(o, s, FLG):
     for h in subprocess.run(['g++', '-M', s] + FLG, capture_output = True, text = True).stdout.strip().replace('\\\n ','').split(' ')[1:]:
         if(needsRebuild(o, h)): return True
     return False
+
+
+
+
+
+
+
+
+def BuildInit(CPP):
+    cpp:list = []
+    for s in CPP:
+        checkCmd(['python3', 'Tools/Build/GenInitializer.py', s])
 
 
 
@@ -165,7 +179,7 @@ def BuildOBJ1(EXEC, FLG, i, o, s, tot, thrIndex:int):
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
-        checkCmd([EXEC] + FLG + ['-c', '-xc++', s, '-o', o ])
+        checkCmd([EXEC] + FLG + ['-fdiagnostics-color', '-c', '-xc++', s, '-o', o ])
     else:
         while curThr < thrIndex: time.sleep(0.01)
         print(f'{ progress(i + 1, tot) } Target is up to date (Object file { o })')
@@ -222,6 +236,7 @@ def dirs(EOUT:str, AOUT:str):
     os.makedirs(exist_ok = True, name =                f'./src/Generated')
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
     os.makedirs(exist_ok = True, name =                f'./src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name =                f'./src/Generated/.init')
 
     # Create output directories
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
@@ -251,6 +266,7 @@ def build(
     SFLG = [                                            # Shared default C++ flags
         '-std=c++20', '-m64', '-pthread',                   # Use C++20, build for 64bit environments, use pthread
         '-I.', '-Isrc', f'-I{ etop }/.engine/src',          # Include from src directories and project root
+        '-include', 'Lynx/Core/InitOrder.hpp',              # Include generated engine initializers
         '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros
         '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros
         f'-ffile-prefix-map={ os.path.abspath(etop) }=',    # Fix file prefix in debug infos
@@ -287,6 +303,8 @@ def build(
 
 
     # Build libraries
+    BuildInit(ECPP)
+
     print(f'Generating engine files')
     BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
     print(f'{ bgreen }Engine files generated successfully\n{ white }')

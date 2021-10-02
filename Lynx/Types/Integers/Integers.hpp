@@ -6,10 +6,10 @@
 
 
 namespace lnxc{
-    typedef char      int8,  i8;        //Signed 8-bit integer
-    typedef short     int16, i16;	    //Signed 16-bit integer
-    typedef int       int32, i32;       //Signed 32-bit integer
-    typedef long long int64, i64;		//Signed 64-bit integer
+    typedef signed char     int8,  i8;  //Signed 8-bit integer
+    typedef short           int16, i16;	//Signed 16-bit integer
+    typedef int             int32, i32; //Signed 32-bit integer
+    typedef long long       int64, i64; //Signed 64-bit integer
     //using int128_t int128;            //
     //using int256_t int256;            //
     //using int512_t int512;            //

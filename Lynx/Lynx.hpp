@@ -11,10 +11,10 @@ namespace lnx{
 	/**
 	 * @brief Starts the Lynx Engine
 	 */
-    void start() {
-        core::running = true;
-        core::inputThr(core::inputLoop);
-    }
+    // void start() {
+    //     core::running = true;
+    //     core::inputThr(core::inputLoop);
+    // }
 
 
     /**

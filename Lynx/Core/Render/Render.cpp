@@ -520,7 +520,8 @@ namespace lnx{
 	 */
 	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
-		running = true;
+		// running = true;
+		w->running = true; //FIXME check if this is the correct variable
 		while(running) {
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			auto start = std::chrono::high_resolution_clock::now();
@@ -566,7 +567,8 @@ namespace lnx{
 
 
 			//Stop render if window was closed
-			if(glfwWindowShouldClose(w->window)) running = false;
+			// if(glfwWindowShouldClose(w->window)) running = false;
+			if(glfwWindowShouldClose(w->window)) w->running = false; //FIXME check if this is the correct variable
 		}
 	}
 }

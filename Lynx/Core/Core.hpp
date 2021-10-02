@@ -74,8 +74,8 @@ Object rendering
 
 
 namespace lnx::core{
-	extern std::atomic<bool> running;
-	extern Thread inputThr;
+	__init_var_dec(std::atomic<bool>, running);
+	__init_var_dec(Thread, inputThr);
 
 
 	void inputLoop();

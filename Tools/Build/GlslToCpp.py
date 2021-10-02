@@ -252,7 +252,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
         ['glslangValidator', f'{ os.path.relpath(pathr, ".") }', '-E'],
         text = True
     )
-    # Parse out unnecessary whitespace and comments from the shader code
+    # Parse out unnecessary whitespace and comments from the shader code #TODO move to module
     ncode:str = (
         re.sub(r'([-+])''\x07', r'\g<1> \g<1>',                         # Prevent - - and + + from being merged #! GLSL has no pointers. * * is a syntax error
         re.sub(r' ?([()\[\]{}+*-\/.!<>=&^|?:%,;])( )?',  r'\g<1>',      # Remove spaces near opeartors

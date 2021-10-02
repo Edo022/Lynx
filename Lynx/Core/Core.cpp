@@ -9,8 +9,12 @@
 
 
 namespace lnx::core{
-	alignCache std::atomic<bool>   running;
-	alignCache Thread inputThr;
+	__init_var_set_def(std::atomic<bool>, running, lnx::core::running){
+		pVar = true;
+	}
+	__init_var_set_def(Thread, inputThr, lnx::core::inputThr){
+		pVar(core::inputLoop);
+	}
 
 
 	/**

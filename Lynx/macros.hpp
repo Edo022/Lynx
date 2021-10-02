@@ -100,48 +100,91 @@ neverInline const char* getEnginePath();
 
 
 
-
+//FIXME MOVE TO DEDICATED HEADER
 
 /**
  * @brief Creates a global reference to a static variable which is initialized and constructed on its first use
- *     A CfuVarDef in the translation unit is required to define and initialize the variable
+ *     A __init_var_def in the translation unit is required to define and initialize the variable
  *     ! This macro is used to prevent the user from breaking the software by accessing uninitialized engine variables through classes which depend on them
  *     ! Using global variables is strongly discouraged and should be avoided whenever possible
  * @param type The type and cv qualifiers of the variable
  * @param name The name of the variable
  *
  *     e.g.
- *     CfuVarDec(f32v3, vector);
+ *     __init_var_dec(f32v3, vector);
  */
-#define CfuVarDec(type, name)								\
+#define __init_var_dec(type, name) \
 	extern type& name //! Put a semicolon after calling the macro
 
 
 /**
- * @brief Definition and initialization macro for varbiales declared with CfuVarDec
- *     CFU variables are move or copy constructed
- *     This macro writes the function that creates the static variable and the signature of the function used to initialize it
- *     The initializer function returns a reference to the type of the CFU variable and takes no arguments
- *     It will be automatically called when the variable is used for the first time
+ * @brief Definition and and initialization macro for varbiales declared with __init_var_dec
+ *     This macro writes the function that creates the static variable, the variable definition and the signature of the function used to initialize it
+ *
+ *     The initializer function returns a reference to the type of the init variable and takes no arguments
+ *     It will be automatically called when the variable is used for the first time or when the static initialization reaches its definition, whichever comes first
+ *     The type must have a public copy constructor or a public move constructor
+ *     To default construct the variable and initialize it manually, use __init_var_set_def //TODO rename macros
+ *     init variables in the same translation unit are constructed in the order in which they are defined
  *
  *     e.g.
- *     CfuVarDef(f32v3, vector){
- *         f32v4 v = { 0, 1, 2}
+ *     __init_var_def(f32v3, vector){
+ *         f32v4 v = { 0, 1, 2 }
  *         cin >> v[1];
  *         return v;
  *     }
- * @param type The type and cv qualifiers of the CFU variable. It must match the type and cv qualifiers used in its declaration
- * @param name The name of the CFU variable. It must match the name used in its declaration
+ * @param type The type and cv qualifiers of the init variable. It must match the type and cv qualifiers used in its declaration
+ * @param name The name of the init variable. It must match the name used in its declaration
+ * @param fulln The namespace containing the variable
  */
-#define CfuVarDef(type, name)								\
-	std::add_const_t<type>& __lnx_pvt_cfu_##name##_init();	\
-	inline type& __lnx_pvt_cfu_##name##_get(){				\
-		static type name = __lnx_pvt_cfu_##name##_init();	\
-		return name;										\
+#define __init_var_def(type, name, fulln)					\
+	namespace __pvt{										\
+		std::add_const_t<type>& __init_##name##_init_f();	\
+		inline type& __init_##name##_get(){					\
+			static type* var = new (type)(__init_##name##_init_f());\
+			return *var;									\
+		}													\
 	}														\
-	type& name = __lnx_pvt_cfu_##name##_get();				\
-	std::add_const_t<type>& __lnx_pvt_cfu_##name##_init()
+	/*type& name = __pvt::__init_##name##_get();		*/  \
+	std::add_const_t<type>& __pvt::__init_##name##_init_f()
 
+
+
+
+
+/**
+ * @brief Definition and and initialization macro for varbiales declared with __init_var_dec
+ *     This macro writes the function that creates the static variable, the variable definition and the signature of the function used to initialize it
+ *
+ *     The initializer function provides a variable called "pVar", which is a non const rvalue reference to the default constructed variable that can be used to initialize it
+ *     The initializer function will be automatically called when the variable is used for the first time or when the static initialization reaches its definition, whichever comes first
+ *     The type must have a public default constructor
+ *     init variables in the same translation unit are constructed in the order in which they are defined
+ *
+ *     e.g.
+ *     __init_var_def(f32v3, vector){
+ *         pVar = { 0, 1, 2 }
+ *         cin >> pVar[1];
+ *     }
+ * @param type The type and cv qualifiers of the init variable. It must match the type and cv qualifiers used in its declaration
+ * @param name The name of the init variable. It must match the name used in its declaration
+ * @param fulln The namespace containing the variable
+ */
+#define __init_var_set_def(type, name, fulln)				\
+	namespace __pvt{										\
+		class __init_##name##_init_t{						\
+			public:											\
+			__init_##name##_init_t(type& pVar);				\
+		};													\
+		inline type& __init_##name##_get(){					\
+			static type* var = new (type)();				\
+			static __init_##name##_init_t init_v(*var);		\
+			return *var;									\
+		}													\
+		__init_##name##_init_t __init_##name##_init_v(name);\
+	}														\
+	/*type& name = __pvt::__init_##name##_get();		*/  \
+	__pvt::__init_##name##_init_t::__init_##name##_init_t(type& pVar)
 
 
 

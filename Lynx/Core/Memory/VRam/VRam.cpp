@@ -17,7 +17,7 @@ namespace lnx::sys{
 	//! And it has to do it after getting the device infos, but before allocating the cells.
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
-	CfuVarDef(const GpuInfo, vram){
+	__init_var_def(const GpuInfo, vram, lnx::sys::vram){
 		//Get GPU informations
 		GpuInfo _vram;
 		_vram.name = core::dvc::graphics.pd.properties.deviceName;
