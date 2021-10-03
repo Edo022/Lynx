@@ -29,21 +29,25 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhy
 
 
 namespace lnx::core::dvc{
-	alignCache Device graphics;
-	alignCache RtArray<Device> secondary;
+	__init_var_set_def(Device,          graphics){}
+	__init_var_set_def(RtArray<Device>, secondary){}
 
 
-	alignCache vk::Instance   instance;
-	alignCache GLFWwindow*    dummyWindow;
-	alignCache vk::SurfaceKHR dummySurface;
+	__init_var_set_def(vk::Instance,   instance){}
+	__init_var_set_def(GLFWwindow*,    dummyWindow){}
+	__init_var_set_def(vk::SurfaceKHR, dummySurface){}
 
-	alignCache uint32       requiredDeviceExtensionsNum = 1;
-	alignCache const char** requiredDeviceExtensions    = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	__init_var_set_def(uint32,       requiredDeviceExtensionsNum) { pVar = 1; }
+	__init_var_set_def(const char**, requiredDeviceExtensions) {
+		pVar = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	}
 
 	#ifdef LNX_DBG
-		alignCache VkDebugUtilsMessengerEXT debugMessenger;
-		alignCache uint32       validationLayersNum = 1;
-		alignCache const char** validationLayers    = new const char*{ "VK_LAYER_KHRONOS_validation" };
+		__init_var_set_def(VkDebugUtilsMessengerEXT, debugMessenger){};
+		__init_var_set_def(uint32,       validationLayersNum) { pVar = 1; }
+		__init_var_set_def(const char**, validationLayers) {
+			pVar = new const char*{ "VK_LAYER_KHRONOS_validation"};
+		}
 	#endif
 
 

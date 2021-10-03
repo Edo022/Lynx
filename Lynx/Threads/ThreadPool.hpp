@@ -45,9 +45,9 @@ namespace lnx::thr {
 
 
 
-	extern RtArray<Thread> threads;
-	extern std::deque<ram::ptr<__pvt::Func_b>> queue;
-	extern std::mutex queue_m;
+	__init_var_dec(RtArray<Thread>, threads);
+	__init_var_dec(std::deque<ram::ptr<__pvt::Func_b>>, queue);
+	__init_var_dec(std::mutex, queue_m);
 
 
 

@@ -113,8 +113,28 @@ neverInline const char* getEnginePath();
  *     e.g.
  *     __init_var_dec(f32v3, vector);
  */
-#define __init_var_dec(type, name) \
-	extern type& name //! Put a semicolon after calling the macro
+#define __init_var_dec(type, name, ...)  \
+	/*Get declaration*/                  \
+	namespace __pvt {                    \
+		type& __init_var_##name##_get(); \
+	}                                    \
+	\
+	/*Reference definition*/             \
+	static type& name = __pvt::__init_var_##name##_get() //! Put a semicolon after calling the macro
+
+
+
+#define __init_var_array_dec(type, name, ...)\
+	/*Get declaration*/                  \
+	namespace __pvt {                    \
+		type* __init_var_##name##_get(); \
+	}                                    \
+	\
+	/*Reference definition*/             \
+	static type* name = __pvt::__init_var_##name##_get() //! Put a semicolon after calling the macro
+
+
+
 
 
 /**
@@ -137,16 +157,21 @@ neverInline const char* getEnginePath();
  * @param name The name of the init variable. It must match the name used in its declaration
  * @param fulln The namespace containing the variable
  */
-#define __init_var_def(type, name, fulln)					\
-	namespace __pvt{										\
-		std::add_const_t<type>& __init_##name##_init_f();	\
-		inline type& __init_##name##_get(){					\
-			static type* var = new (type)(__init_##name##_init_f());\
-			return *var;									\
-		}													\
-	}														\
-	/*type& name = __pvt::__init_##name##_get();		*/  \
-	std::add_const_t<type>& __pvt::__init_##name##_init_f()
+#define __init_var_const_def(type, name)     \
+	static_assert(std::is_const_v<type>, "Non-const variable defined with \"__init_var_const_def\"");\
+	namespace __pvt{                         \
+		/*Initializer function declaration*/ \
+		type __init_var_##name##_init_f();   \
+	\
+		/*Get function definition*/          \
+		type& __init_var_##name##_get(){     \
+			static type* var = new (type)(__init_var_##name##_init_f());\
+			return *var;                     \
+		}                                    \
+	}                                        \
+	\
+	/*Initializer function definition*/      \
+	type __pvt::__init_var_##name##_init_f()
 
 
 
@@ -170,21 +195,59 @@ neverInline const char* getEnginePath();
  * @param name The name of the init variable. It must match the name used in its declaration
  * @param fulln The namespace containing the variable
  */
-#define __init_var_set_def(type, name, fulln)				\
-	namespace __pvt{										\
-		class __init_##name##_init_t{						\
-			public:											\
-			__init_##name##_init_t(type& pVar);				\
-		};													\
-		inline type& __init_##name##_get(){					\
-			static type* var = new (type)();				\
-			static __init_##name##_init_t init_v(*var);		\
-			return *var;									\
-		}													\
-		__init_##name##_init_t __init_##name##_init_v(name);\
-	}														\
-	/*type& name = __pvt::__init_##name##_get();		*/  \
-	__pvt::__init_##name##_init_t::__init_##name##_init_t(type& pVar)
+#define __init_var_set_def(type, name)          \
+	namespace __pvt{                            \
+		/*Initializer function declaration*/    \
+		class __init_var_##name##_init_t{       \
+			public:                             \
+			__init_var_##name##_init_t(type& pVar); \
+		};                                      \
+	\
+		/*Get function definition*/             \
+		type& __init_var_##name##_get(){        \
+			static type* var = new (type)();    \
+			static __init_var_##name##_init_t init_v(*var); \
+			return *var;                        \
+		}                                       \
+	}                                           \
+	\
+	/*Initializer function definition*/         \
+	__pvt::__init_var_##name##_init_t::__init_var_##name##_init_t(type& pVar)
+
+
+
+
+#define __init_var_array_def(type, name, count)     \
+	namespace __pvt{                                \
+		/*Initializer function declaration*/        \
+		class __init_var_##name##_init_t{           \
+			public:                                 \
+			__init_var_##name##_init_t(type* pVar); \
+		};                                          \
+	\
+		/*Get function definition*/                         \
+		type* __init_var_##name##_get(){                    \
+			static type* var = new type[count];             \
+			static __init_var_##name##_init_t init_v(var);  \
+			return var;                                     \
+		}                                                   \
+	}                                                       \
+	\
+	/*Initializer function definition*/                     \
+	__pvt::__init_var_##name##_init_t::__init_var_##name##_init_t(type* pVar)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

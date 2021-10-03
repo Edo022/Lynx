@@ -11,7 +11,9 @@
 
 
 namespace lnx::core::render::cmd{
-	alignCache vk::CommandPool singleTimeCommandPool = nullptr;
+	__init_var_set_def(vk::CommandPool, singleTimeCommandPool) {
+		pVar = nullptr;
+	}
 
 
 

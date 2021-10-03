@@ -36,9 +36,9 @@ namespace lnx::ram{
 		std::mutex m; 			//FIXME REMOVE
 	};
 
-	extern Type_t types[];		//Allocated buffers
-	extern RaArrayC<Cell_t> cells;
-	extern thread_local Cell_t dummyCell;
+	__init_var_array_dec(Type_t, types);		//Allocated buffers
+	__init_var_dec(RaArrayC<Cell_t>, cells);
+	__init_var_dec(std::mutex, cells_m);
 
-	extern std::mutex cells_m;
+	static thread_local Cell_t dummyCell = { .owners = 0, .cellSize = 0, .address = nullptr }; //FIXME this variable should be external thread_local
 }

@@ -27,8 +27,8 @@ namespace lnx{
 
 	namespace core{
 		namespace render{
-			extern std::mutex graphicsQueueSubmit_m;
-			extern std::mutex presentQueueSubmit_m;
+			__init_var_dec(std::mutex, graphicsQueueSubmit_m);
+			__init_var_dec(std::mutex, presentQueueSubmit_m);
 
 			vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures);
 			uint32     findMemoryType(const uint32 vTypeFilter, const vk::MemoryPropertyFlags vProperties);

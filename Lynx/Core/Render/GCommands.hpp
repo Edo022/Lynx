@@ -7,7 +7,7 @@
 
 
 namespace lnx::core::render::cmd{
-	extern vk::CommandPool singleTimeCommandPool;
+	__init_var_dec(vk::CommandPool, singleTimeCommandPool);
 
 
 	void              createGraphicsCommandPool();

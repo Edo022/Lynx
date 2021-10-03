@@ -12,9 +12,11 @@
 
 
 namespace lnx::thr {
-	RtArray<Thread> threads(LNX_CNF_GLOBAL_THREAD_POOL_SIZE);
-	std::deque<ram::ptr<__pvt::Func_b>> queue;
-	std::mutex queue_m;
+	__init_var_set_def(RtArray<Thread>, threads){
+		pVar.resize(LNX_CNF_GLOBAL_THREAD_POOL_SIZE);
+	}
+	__init_var_set_def(std::deque<ram::ptr<__pvt::Func_b>>, queue){}
+	__init_var_set_def(std::mutex, queue_m){}
 
 
 

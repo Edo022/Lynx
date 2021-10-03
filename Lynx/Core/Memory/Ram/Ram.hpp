@@ -67,11 +67,12 @@
 
 
 namespace lnx::ram{
-	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
-	struct Type_t;
-	extern Type_t types[];			//Allocated buffers
-	extern RaArrayC<Cell_t> cells;
-	extern std::mutex cells_m;
+	//TODO REMOVE
+	// //! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
+	// struct Type_t;
+	// __init_var_array_dec(Type_t, types);			//Allocated buffers
+	// __init_var_dec(RaArrayC<Cell_t>, cells);
+	// __init_var_dec(std::mutex, cells_m);
 
 
 

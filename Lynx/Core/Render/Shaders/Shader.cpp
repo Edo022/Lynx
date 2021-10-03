@@ -12,9 +12,9 @@
 
 
 namespace lnx::core::shaders{
-	alignCache String shaderPath;
-	alignCache uint32 pipelineNum = 0;
-	alignCache RtArray<shd::ShaderInterface_b::Layout*> pipelineLayouts;
+	__init_var_set_def(String, shaderPath){}
+	__init_var_set_def(uint32, pipelineNum){ pVar = 0; }
+	__init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
 
 
 	LnxAutoInit(LNX_H_SHADER){

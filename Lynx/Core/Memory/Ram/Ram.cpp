@@ -16,10 +16,12 @@
 
 
 namespace lnx::ram{
-	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
-	Type_t types[(uint32)__pvt::CellClassIndex::eNum];
-	RaArrayC<Cell_t> cells;
-	std::mutex cells_m;
+	//TODO REMOVE
+	//! MOVED TO CELL_T.CPP
+	// //! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
+	// __init_var_array_def(Type_t, types, (uint32)__pvt::CellClassIndex::eNum){}
+	// __init_var_set_def(RaArrayC<Cell_t>, cells){}
+	// __init_var_set_def(std::mutex, cells_m){}
 
 
 

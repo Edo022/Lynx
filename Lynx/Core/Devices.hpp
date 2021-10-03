@@ -8,20 +8,20 @@
 
 
 namespace lnx::core::dvc{
-	extern Device graphics;					//Main graphics device
-	extern RtArray<Device> secondary;		//Secondary compute devices
+	__init_var_dec(Device,          graphics);		//Main graphics device
+	__init_var_dec(RtArray<Device>, secondary);		//Secondary compute devices
 
-	extern vk::Instance	instance;			//The only Vulkan instance. This is required in order to use Vulkan
-	extern GLFWwindow*  dummyWindow;		//An invisible window used to create dummySurface
-	extern vk::SurfaceKHR dummySurface;		//A window surface used to initialize the Vulkan devices before the application creates the real windows
+	__init_var_dec(vk::Instance,   instance);		//The only Vulkan instance. This is required in order to use Vulkan
+	__init_var_dec(GLFWwindow*,    dummyWindow);	//An invisible window used to create dummySurface
+	__init_var_dec(vk::SurfaceKHR, dummySurface);	//A window surface used to initialize the Vulkan devices before the application creates the real windows
 
-	extern uint32		requiredDeviceExtensionsNum;
-	extern const char**	requiredDeviceExtensions;
+	__init_var_dec(uint32,       requiredDeviceExtensionsNum);
+	__init_var_dec(const char**, requiredDeviceExtensions);
 
 	#ifdef LNX_DBG
-		extern VkDebugUtilsMessengerEXT	debugMessenger;
-		extern uint32       validationLayersNum;
-		extern const char**	validationLayers;
+		__init_var_dec(VkDebugUtilsMessengerEXT, debugMessenger);
+		__init_var_dec(uint32,       validationLayersNum);
+		__init_var_dec(const char**, validationLayers);
 	#endif
 
 

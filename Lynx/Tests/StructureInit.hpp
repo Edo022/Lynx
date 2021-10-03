@@ -47,7 +47,7 @@ namespace lnx{
 		#	define checkInitList(...)	//Executes a function in a costructor. Debug mode only. Requires genInitCheck;
 		#endif
 
-		extern bool __errors[];
+		__init_var_array_dec(bool, __errors);
 
 
 		/**

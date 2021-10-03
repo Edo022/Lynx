@@ -10,14 +10,14 @@
 
 
 namespace lnx::sys{
-	String dir::thisDir;	//Path to the current directory //Initialized in init function
-
-
-	LnxAutoInit(LNX_H_SYSTEM) {
-		char buff[FILENAME_MAX];					//Create char array to store the path
-		__lp_get_cwd(buff, FILENAME_MAX);			//Get path
-		dir::thisDir = buff;						//Save path
-		_wds(dir::fixWindowsPath(dir::thisDir);)	//Replace silly windows backslashes with normal slashes
+	//Path to the current directory
+	namespace dir {
+		__init_var_set_def(String, thisDir){
+			char buff[FILENAME_MAX];			//Create char array to store the path
+			__lp_get_cwd(buff, FILENAME_MAX);	//Get path
+			pVar = buff;						//Save path
+			_wds(fixWindowsPath(pVar);)			//Replace silly windows backslashes with normal slashes
+		}
 	}
 
 
