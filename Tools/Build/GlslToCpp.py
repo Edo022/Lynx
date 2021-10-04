@@ -470,8 +470,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
             #TODO WRITE ALL COMMAND BUFFERS AT ONCE
             #TODO or use multiple descriptor sets for multiple objects, but in the same command buffer
-            f'\n}}'
-        ))
+            f'\n}}',
+        1))
 
 
 
@@ -484,8 +484,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, { shName }::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
             f'\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
             f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
-            f'\n}}'
-        ))
+            f'\n}}',
+        1))
 
 
 
@@ -493,8 +493,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
         fc.write('\n' * 8 + fixTabs(
             f'\nvoid { shName }::destroy(){{'
             f'\n    //TODO'
-            f'\n}}'
-        ))
+            f'\n}}',
+        1))
 
 
 
@@ -502,7 +502,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
         fc.write('\n' * 8 + fixTabs(
             f'\nShaderInterface_b::Layout { shName }::layout;'
             f'\nuint32 { shName }::pipelineIndex = core::shaders::pipelineNum++;'
-            f'\nLnxAutoInit(){{'
+            f'\nLnxAutoInit(LNX_H_{ shName.upper() }){{'
             f'\n    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);'
             f'\n    core::shaders::pipelineLayouts[{ shName }::pipelineIndex] = &{ shName }::layout;'
             f'\n    {{ //Create descriptor set layout'
@@ -545,8 +545,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n        ;'
             f'\n        switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &{ shName }::layout.pipelineLayout)){{ vkDefaultCases; }}'
             f'\n    }}'
-            f'\n}}'
-        ))
+            f'\n}}',
+        1))
 
         #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
 
