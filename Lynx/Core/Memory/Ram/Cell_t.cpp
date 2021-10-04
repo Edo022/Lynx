@@ -19,7 +19,7 @@ namespace lnx::ram{
 
 
 	LnxAutoInit(LNX_H_CELL_T) {
-		using namespace __pvt;
+		using namespace lnx::ram::__pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)CellClassIndex::eNum; ++i) {

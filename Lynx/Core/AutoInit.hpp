@@ -44,13 +44,12 @@
 // #define LnxAutoInit2(id)
 #define LnxAutoInit(tu)                                                                  \
 	namespace __pvt{                                                                     \
-		void _lnx_init_fun_##tu##_f();                                                   \
 		struct _lnx_init_fun_##tu##_t{                                                   \
-			__attribute__((used)) _lnx_init_fun_##tu##_t() { _lnx_init_fun_##tu##_f(); } \
+			__attribute__((used)) _lnx_init_fun_##tu##_t(); \
 		};                                                                               \
-		__init_var_set_def(_lnx_init_fun_##tu##_t, _lnx_init_fun_##tu##_v){}             \
 	}                                                                                    \
-	void __pvt:: _lnx_init_fun_##tu##_f() //{
+	__init_var_set_def(__pvt::_lnx_init_fun_##tu##_t, _lnx_init_fun_##tu##_v){}             \
+	__pvt::_lnx_init_fun_##tu##_t::_lnx_init_fun_##tu##_t() //{
 		//Implementation
 		//...
 	//}
@@ -61,6 +60,8 @@
 
 
 
-#define _lnx_init_fun_dec(tu)      \
-	struct _lnx_init_fun_##tu##_t; \
-	__init_var_dec(_lnx_init_fun_##tu##_t, _lnx_init_fun_##tu##_v)
+#define _lnx_init_fun_dec(tu)          \
+	namespace __pvt {                  \
+		struct _lnx_init_fun_##tu##_t; \
+	}                                  \
+	__init_var_dec(__pvt::_lnx_init_fun_##tu##_t, _lnx_init_fun_##tu##_v)
