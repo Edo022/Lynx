@@ -295,6 +295,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n//####################################################################################\n'
             f'\n#pragma once'                                                       # Include guard
             f'\n#include \"Lynx/Core/Render/Shaders/ShaderInterface_t.hpp\"'        # Base Shader struct
+            f'\n#include "Lynx/Core/AutoInit.hpp\"'                                 # Auto init
             f'\n'
             f'\n'
             f'\n'
@@ -550,8 +551,11 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
 
         #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
 
-        fh.write('\n    };\n}');    # }; //Struct } //Namespace
-        fc.write('\n}');            # } //Namespace
+        fh.write(f'\n\t}};');         # }; //Struct }
+        fh.write(f'\n\n\n\t_lnx_init_fun_dec(LNX_H_{ shName.upper() });')
+
+        fh.write(f'\n}}');            # } //Namespace
+        fc.write(f'\n}}');            # } //Namespace
     #TODO STRUCTURES HAVE A MINIMUM ALIGNMENT OF 16
 
     return 0

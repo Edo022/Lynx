@@ -1,4 +1,6 @@
 #include "Lynx/Core/Memory/VRam/VCell_t.hpp"
+#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/System/SystemInfo.hpp"
 
 
 
@@ -7,4 +9,28 @@ namespace lnx::vram{
     __init_var_array_def(Type_t2, types, ((uint32)__pvt::VCellClassIndex::eNum << 2) | 0b11){}
     __init_var_set_def(RaArrayC<Cell_t2>, cells){}
     __init_var_set_def(std::mutex, cells_m){}
+
+
+    LnxAutoInit(LNX_H_VCELL_T) {
+		using namespace vram::__pvt;
+
+		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
+		for(uint32 k = 0; k < 2; ++k) { 									//Loop location
+			for(uint32 j = 0; j < 2; ++j) { 									//Loop buffer type
+				for(uint32 i = 0; i < (uint32)VCellClassIndex::eNum; ++i) {			//Loop cell size
+					uint32 buffsNum = sys::vram.size / buffSize;						//Get max number of cells that can fit in the system memory
+					uint32 typeIndex = (i << 2) | (j << 1) | k;							//Calculate buffer type index
+					uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);		//Get number of cells in each buffer
+					new(&vram::types[typeIndex]) vram::Type_t2{							//Create new type struct
+						.cellClass = classEnumFromIndex(i),									//Set class index
+						.memory =  (vram::Cell_t2_csc* )calloc(sizeof(vram::Cell_t2_csc),  buffsNum),//Allocate the max number of buffers. Initialize them with nullptr
+						.cellsPerBuff = cellsPerBuff										//Set the maximum number of cells per buffer
+					};
+					vram::types[typeIndex].cells.init(cellsPerBuff * buffsNum);
+				}
+			}
+		}
+		vram::cells.init(sys::vram.size / (uint64)vram::VCellClass::eA);
+	}
+
 }

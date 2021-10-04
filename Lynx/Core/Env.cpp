@@ -1,17 +1,16 @@
-#define LNX_NH_ENV
 #include <cstdlib>
-#include "Lynx/Core/AutoInit.hpp"
-#include "Lynx/macros.hpp"
 #include <string>
 #include <cstring>
 #include <unistd.h> //TODO write file test for windows
+#include "Lynx/macros.hpp"
+#include "Lynx/Core/Env.hpp"
 //TODO LOAD IMPLICIT LAYER
 //TODO allow user to link the local library instead of the one on their system
 
 
 
 
-LnxAutoInit() {
+LnxAutoInit(LNX_H_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 

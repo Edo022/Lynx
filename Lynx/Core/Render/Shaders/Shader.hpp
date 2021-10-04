@@ -13,6 +13,8 @@ namespace lnx::core::shaders{
 	__init_var_dec(String, shaderPath);   //Path to the shaders folder //TODO EVALUATE AT RUNTIME
 	__init_var_dec(uint32, pipelineNum);  //The number of shaders. Used in static initialization and in Window class to allocate a lookup table for the pipelines
 	__init_var_dec(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts);
+	_lnx_init_fun_dec(LNX_H_SHADER);
+
 
 
 	uint32*          loadSpv(uint64* pLength, const char* pFilePath);

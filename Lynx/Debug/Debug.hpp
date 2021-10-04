@@ -33,6 +33,8 @@
 
 
 namespace lnx::dbg{
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wunused-variable"
 	inline namespace color {
 		static const char* red     = "\033[31m";
 		static const char* green   = "\033[32m";
@@ -41,6 +43,7 @@ namespace lnx::dbg{
 		static const char* magenta = "\033[35m";
 		static const char* white   = "\033[37m";
 	}
+	#pragma GCC diagnostic pop
 
 	/**
 	 * @brief Formats an std::string using the printf format

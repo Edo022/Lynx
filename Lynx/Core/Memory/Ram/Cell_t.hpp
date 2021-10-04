@@ -3,6 +3,7 @@
 #include "Lynx/Core/Memory/Ram/Classes.hpp"
 #include "Lynx/Types/Containers/RaArrayC.hpp"
 #include "Lynx/Types/Dummy.hpp"
+#include "Lynx/Core/AutoInit.hpp"
 #include <mutex>
 
 
@@ -41,4 +42,6 @@ namespace lnx::ram{
 	__init_var_dec(std::mutex, cells_m);
 
 	static thread_local Cell_t dummyCell = { .owners = 0, .cellSize = 0, .address = nullptr }; //FIXME this variable should be external thread_local
+
+	_lnx_init_fun_dec(LNX_H_CELL_T);
 }

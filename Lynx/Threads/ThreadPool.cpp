@@ -2,6 +2,7 @@
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/AutoInit.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
+#include "Lynx/Lynx_config.hpp"
 #include <cstdlib>
 
 
@@ -19,13 +20,7 @@ namespace lnx::thr {
 	__init_var_set_def(std::mutex, queue_m){}
 
 
-
-
-
-
-
-
-	LnxAutoInit() {
+	LnxAutoInit(LNX_H_THREAD_POOL) {
 		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, fwd{ i });
 	}
 

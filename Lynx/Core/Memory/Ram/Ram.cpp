@@ -25,22 +25,22 @@ namespace lnx::ram{
 
 
 
-	LnxAutoInit() {
-		using namespace __pvt;
+	// LnxAutoInit(LNX_H_CELL_T) {
+	// 	using namespace __pvt;
 
-		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
-		for(uint32 i = 0; i < (uint32)CellClassIndex::eNum; ++i) {
-			uint32 buffsNum = sys::ram.size / buffSize;						//Get max number of cells that can fit in the system memory
-			uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
-			new(&types[i]) Type_t{
-				.cellClass = classEnumFromIndex(i),								//Set class index
-				.memory =  (void** )calloc(sizeof(void* ),  buffsNum),			//Allocate the max number of buffers. Initialize them with nullptr
-				.cellsPerBuff = cellsPerBuff
-			};
-			types[i].cells.init(cellsPerBuff * buffsNum);
-		}
-		cells.init(sys::ram.size / (uint64)CellClass::eA);
-	}
+	// 	//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
+	// 	for(uint32 i = 0; i < (uint32)CellClassIndex::eNum; ++i) {
+	// 		uint32 buffsNum = sys::ram.size / buffSize;						//Get max number of cells that can fit in the system memory
+	// 		uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
+	// 		new(&types[i]) Type_t{
+	// 			.cellClass = classEnumFromIndex(i),								//Set class index
+	// 			.memory =  (void** )calloc(sizeof(void* ),  buffsNum),			//Allocate the max number of buffers. Initialize them with nullptr
+	// 			.cellsPerBuff = cellsPerBuff
+	// 		};
+	// 		types[i].cells.init(cellsPerBuff * buffsNum);
+	// 	}
+	// 	cells.init(sys::ram.size / (uint64)CellClass::eA);
+	// }
 
 
 

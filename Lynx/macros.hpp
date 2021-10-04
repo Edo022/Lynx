@@ -59,6 +59,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 #ifdef __GNUC__
+	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wpmf-conversions"
 	/**
 	 * @brief Returns true if the object's class redefines a virtual member function of a base class
@@ -67,6 +68,7 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 	 * @param vVMFP The virtual member function pointer of the base class
 	 */
 	#define doesRedefine(vObj, vVMFP) ((void*)((vObj).*(vVMFP)) != (void*)(vVMFP))
+	#pragma GCC diagnostic pop
 #else
 	static neverInline __attribute__((optimize("O0"), error("\"doesRedefine\" macro is only available in g++"))) bool doesRedefine(auto vObj, auto vVMFP){ return true; }
 #endif
@@ -240,7 +242,7 @@ neverInline const char* getEnginePath();
 
 
 
-
+//TODO MOVE AND RENAME _lnx_init_var_...
 
 
 

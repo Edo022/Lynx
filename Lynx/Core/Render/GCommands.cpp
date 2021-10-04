@@ -16,9 +16,7 @@ namespace lnx::core::render::cmd{
 	}
 
 
-
-
-	LnxAutoInit(){
+	LnxAutoInit(LNX_H_GCOMMANDS){
 		createGraphicsCommandPool();
 		_dbg(createDebugMessenger());
 	}
