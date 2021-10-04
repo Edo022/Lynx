@@ -57,7 +57,7 @@ namespace lnx::core::dvc{
 
 
 
-	LnxAutoInit(LNX_H_DEVICES){
+	LnxAutoInit(){
 		dbg::checkCond(!glfwInit(), "GLFW not initialized");
 
 		//Extensions

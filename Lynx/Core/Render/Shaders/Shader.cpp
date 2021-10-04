@@ -17,7 +17,7 @@ namespace lnx::core::shaders{
 	__init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
 
 
-	LnxAutoInit(LNX_H_SHADER){
+	LnxAutoInit(){
 		shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 

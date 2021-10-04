@@ -11,7 +11,7 @@
 
 
 
-LnxAutoInit(LNX_NH_ENV) {
+LnxAutoInit() {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 

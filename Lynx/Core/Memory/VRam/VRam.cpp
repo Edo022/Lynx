@@ -45,8 +45,7 @@ namespace lnx::sys{ //FIXME update comment
 
 
 
-//FIXME replace LnxAutoInit s
-	LnxAutoInit(LNX_H_VMEMORY) {
+	LnxAutoInit() {
 		using namespace vram::__pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM

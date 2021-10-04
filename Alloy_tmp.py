@@ -186,7 +186,7 @@ def BuildOBJ1(EXEC, FLG, i, o, s, tot, thrIndex:int):
 
 
 
-def BuildOBJ(EXEC, FLG, OBJ, CPP):
+def BuildOBJ(EXEC, FLG, OBJ, CPP, defineTuUuid = False, tuUuidPrefix = ''):
     global poolMutex
     global avlThrs
     global totThrs
@@ -194,7 +194,9 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP):
     global poolErr
 
     for i, (o, s) in enumerate(zip(OBJ, CPP)):
-        t = threading.Thread(target = BuildOBJ1, args = (EXEC, FLG, i, o, s, len(CPP), i), daemon = True)
+        t = threading.Thread(target = BuildOBJ1, args = ( #FIXME automatize uuid prefix
+            EXEC, FLG + [f'-DTU_UUID={ tuUuidPrefix }0x{ hex(i)[2:].zfill(8) }'] if defineTuUuid else FLG, i, o, s, len(CPP), i
+        ), daemon = True)
         t.start()
         poolMutex.acquire()
         avlThrs -= 1
@@ -299,7 +301,7 @@ def build(
     print(f'{ bgreen }Engine files generated successfully\n{ white }')
 
     print(f'Compiling engine source files')
-    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP)
+    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP, defineTuUuid = True, tuUuidPrefix = 'e')
     print(f'{ bgreen }Engine source files compiled successfully\n{ white }')
 
     print(f'Writing Lynx Engine library')
@@ -316,7 +318,7 @@ def build(
 
     if len(ACPP) > 0:
         print(f'Compiling application source files')
-        BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP)
+        BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP, defineTuUuid = True, tuUuidPrefix = 'a')
         print(f'{ bgreen }Application source files compiled successfully\n{ white }')
 
     print(f'Writing application executable file')

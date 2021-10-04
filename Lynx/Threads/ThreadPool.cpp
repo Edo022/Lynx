@@ -25,7 +25,7 @@ namespace lnx::thr {
 
 
 
-	LnxAutoInit(LNX_H_THREAD_POOL) {
+	LnxAutoInit() {
 		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, fwd{ i });
 	}
 
