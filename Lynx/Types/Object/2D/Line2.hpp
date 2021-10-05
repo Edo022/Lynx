@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_2DLINES
+////#define LNX_H_2DLINES
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Render/GCommands.hpp"

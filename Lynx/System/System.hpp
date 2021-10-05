@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_SYSTEM
+////#define LNX_H_SYSTEM
 #include <filesystem>
 #include <cstdio>
 #include "Lynx/Types/Containers/String.hpp"

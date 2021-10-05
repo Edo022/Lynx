@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_INPUT_SURFACE
+////#define LNX_H_INPUT_SURFACE
 #include "Lynx/Types/Object/Obj_b.hpp"
 
 

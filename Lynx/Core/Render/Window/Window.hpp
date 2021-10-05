@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_WINDOW
+////#define LNX_H_WINDOW
 #include <GLFW/glfw3.h>
 #include <atomic>
 #include "Lynx/Core/Render/Window/Swapchain.hpp"

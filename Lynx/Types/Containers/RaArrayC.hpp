@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_RAARRAYC
+////#define LNX_H_RAARRAYC
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
 //FIXME

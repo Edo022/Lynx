@@ -318,7 +318,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n#include "Lynx/Core/AutoInit.hpp\"'                         # Auto init
             f'\n#include "Lynx/Core/Render/Shaders/Shader.hpp\"'            # Engine shader header
             f'\n#include "Lynx/Core/Render/Render.hpp\"'                    # Render core definition
-            f'\n#define LNX_H_{ shName.upper() }'                           # Auto init define
+            f'\n////#define LNX_H_{ shName.upper() }'                           # Auto init define
             f'\n'
             f'\n'
             f'\n'

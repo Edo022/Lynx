@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_LNX_ENGINE
+////#define LNX_H_LNX_ENGINE
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Threads/Thread.hpp"
 #include "Lynx/Core/Devices.hpp"

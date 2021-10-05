@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_HCARRAY
+////#define LNX_H_HCARRAY
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Types/TypeTraits.hpp"
 #include "Lynx/Debug/Debug.hpp"

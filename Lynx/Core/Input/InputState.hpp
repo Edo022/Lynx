@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define LNX_H_INPUT_STATE
+////#define LNX_H_INPUT_STATE
 #include <GLFW/glfw3.h>
 #include <initializer_list>
 #include "Lynx/macros.hpp"

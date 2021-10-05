@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_VCLASSES
+////#define LNX_H_VCLASSES
 #include "Lynx/Types/Integers/Integers.hpp"
 
 

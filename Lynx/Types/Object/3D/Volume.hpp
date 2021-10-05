@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_VOLUME
+////#define LNX_H_VOLUME
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/3D/Octree.hpp"
 #include "Generated/Shaders/Volume.gsi.hpp"

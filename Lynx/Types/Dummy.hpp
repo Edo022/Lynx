@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_DUMMY
+////#define LNX_H_DUMMY
 
 
 struct Dummy{

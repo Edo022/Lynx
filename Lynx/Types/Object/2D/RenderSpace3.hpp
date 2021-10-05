@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_RENDER_SPACE_3D
+////#define LNX_H_RENDER_SPACE_3D
 #include "Lynx/Types/Object/Obj_b.hpp"
 
 

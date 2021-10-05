@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_DEVICES
+////#define LNX_H_DEVICES
 #include <GLFW/glfw3.h>
 #include "Lynx/Core/Devices_t.hpp"
 #include "Lynx/Types/Containers/String.hpp"

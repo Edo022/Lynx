@@ -48,7 +48,7 @@
 			__attribute__((used)) _lnx_init_fun_##tu##_t(); \
 		};                                                                               \
 	}                                                                                    \
-	__init_var_set_def(__pvt::_lnx_init_fun_##tu##_t, _lnx_init_fun_##tu##_v){}             \
+	__init_var_set_def(__pvt::_lnx_init_fun_##tu##_t, tu){}                              \
 	__pvt::_lnx_init_fun_##tu##_t::_lnx_init_fun_##tu##_t() //{
 		//Implementation
 		//...
@@ -64,4 +64,4 @@
 	namespace __pvt {                  \
 		struct _lnx_init_fun_##tu##_t; \
 	}                                  \
-	__init_var_dec(__pvt::_lnx_init_fun_##tu##_t, _lnx_init_fun_##tu##_v)
+	__init_var_dec(__pvt::_lnx_init_fun_##tu##_t, tu)

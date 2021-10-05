@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_MACROS
+////#define LNX_H_MACROS
 
 
 #ifdef __INTELLISENSE__

@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_STRUCTURE_INIT
+////#define LNX_H_STRUCTURE_INIT
 #include "Lynx/macros.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"

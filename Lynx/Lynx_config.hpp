@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_CONFIG
+////#define LNX_H_CONFIG
 //TODO rename Engine_config
 //TODO move to .engine
 
