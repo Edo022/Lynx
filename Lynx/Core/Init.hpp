@@ -187,8 +187,9 @@
 
 
 
-// #define LnxAutoInit2(id)
-#define LnxAutoInit(tu)                                                                  \
+// file://./main.cpp
+// #define _lnx_init_fun_2(id)
+#define _lnx_init_fun_(tu)                                                                  \
 	namespace __pvt{                                                                     \
 		struct _lnx_init_fun_##tu##_t{                                                   \
 			__attribute__((used)) _lnx_init_fun_##tu##_t(); \
@@ -202,7 +203,7 @@
 
 //Creates a function that will be called during the static initialization
 //This macro can only be used in the global scope of .cpp files
-// #define LnxAutoInit() LnxAutoInit2(UUID())
+// #define _lnx_init_fun_() _lnx_init_fun_2(UUID())
 
 
 

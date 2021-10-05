@@ -503,7 +503,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
         fc.write('\n' * 8 + fixTabs(
             f'\nShaderInterface_b::Layout { shName }::layout;'
             f'\nuint32 { shName }::pipelineIndex = core::shaders::pipelineNum++;'
-            f'\nLnxAutoInit(LNX_H_{ shName.upper() }){{'
+            f'\n_lnx_init_fun_(LNX_H_{ shName.upper() }){{'
             f'\n    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);'
             f'\n    core::shaders::pipelineLayouts[{ shName }::pipelineIndex] = &{ shName }::layout;'
             f'\n    {{ //Create descriptor set layout'

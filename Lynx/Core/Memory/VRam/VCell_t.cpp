@@ -11,7 +11,7 @@ namespace lnx::vram{
     _lnx_init_var_set_def(std::mutex, cells_m){}
 
 
-    LnxAutoInit(LNX_H_VCELL_T) {
+    _lnx_init_fun_(LNX_H_VCELL_T) {
 		using namespace vram::__pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM

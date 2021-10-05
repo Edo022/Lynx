@@ -20,7 +20,7 @@ namespace lnx::thr {
 	_lnx_init_var_set_def(std::mutex, queue_m){}
 
 
-	LnxAutoInit(LNX_H_THREAD_POOL) {
+	_lnx_init_fun_(LNX_H_THREAD_POOL) {
 		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, fwd{ i });
 	}
 
