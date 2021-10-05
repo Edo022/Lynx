@@ -1,7 +1,7 @@
 ﻿#include "Lynx/Core/Core.hpp" //FIXME if this is places after Devices.cpp, G++ is unable to find glfwCreateWindowSurface
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 #include <set>
 #include <vector>
@@ -29,23 +29,23 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhy
 
 
 namespace lnx::core::dvc{
-	__init_var_set_def(Device,          graphics){}
-	__init_var_set_def(RtArray<Device>, secondary){}
+	_lnx_init_var_set_def(Device,          graphics){}
+	_lnx_init_var_set_def(RtArray<Device>, secondary){}
 
 
-	__init_var_set_def(vk::Instance,   instance){}
-	__init_var_set_def(GLFWwindow*,    dummyWindow){}
-	__init_var_set_def(vk::SurfaceKHR, dummySurface){}
+	_lnx_init_var_set_def(vk::Instance,   instance){}
+	_lnx_init_var_set_def(GLFWwindow*,    dummyWindow){}
+	_lnx_init_var_set_def(vk::SurfaceKHR, dummySurface){}
 
-	__init_var_set_def(uint32,       requiredDeviceExtensionsNum) { pVar = 1; }
-	__init_var_set_def(const char**, requiredDeviceExtensions) {
+	_lnx_init_var_set_def(uint32,       requiredDeviceExtensionsNum) { pVar = 1; }
+	_lnx_init_var_set_def(const char**, requiredDeviceExtensions) {
 		pVar = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
 	#ifdef LNX_DBG
-		__init_var_set_def(VkDebugUtilsMessengerEXT, debugMessenger){};
-		__init_var_set_def(uint32,       validationLayersNum) { pVar = 1; }
-		__init_var_set_def(const char**, validationLayers) {
+		_lnx_init_var_set_def(VkDebugUtilsMessengerEXT, debugMessenger){};
+		_lnx_init_var_set_def(uint32,       validationLayersNum) { pVar = 1; }
+		_lnx_init_var_set_def(const char**, validationLayers) {
 			pVar = new const char*{ "VK_LAYER_KHRONOS_validation"};
 		}
 	#endif

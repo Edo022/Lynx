@@ -9,10 +9,10 @@
 
 
 namespace lnx::core{
-	__init_var_set_def(std::atomic<bool>, running){
+	_lnx_init_var_set_def(std::atomic<bool>, running){
 		pVar = true;
 	}
-	__init_var_set_def(Thread, inputThr){
+	_lnx_init_var_set_def(Thread, inputThr){
 		pVar(core::inputLoop);
 	}
 

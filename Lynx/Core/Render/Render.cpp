@@ -27,8 +27,8 @@
 
 
 namespace lnx::core::render{
-	__init_var_set_def(std::mutex, graphicsQueueSubmit_m){}
-	__init_var_set_def(std::mutex, presentQueueSubmit_m){}
+	_lnx_init_var_set_def(std::mutex, graphicsQueueSubmit_m){}
+	_lnx_init_var_set_def(std::mutex, presentQueueSubmit_m){}
 
 
 

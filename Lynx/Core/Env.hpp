@@ -1,6 +1,6 @@
 #pragma once
 ////#define LNX_H_ENV
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 
 
 

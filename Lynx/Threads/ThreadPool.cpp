@@ -1,6 +1,6 @@
 #include "Lynx/Threads/ThreadPool.hpp"
 #include "Lynx/Core/Core.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Lynx_config.hpp"
 #include <cstdlib>
@@ -13,11 +13,11 @@
 
 
 namespace lnx::thr {
-	__init_var_set_def(RtArray<Thread>, threads){
+	_lnx_init_var_set_def(RtArray<Thread>, threads){
 		pVar.resize(LNX_CNF_GLOBAL_THREAD_POOL_SIZE);
 	}
-	__init_var_set_def(std::deque<ram::ptr<__pvt::Func_b>>, queue){}
-	__init_var_set_def(std::mutex, queue_m){}
+	_lnx_init_var_set_def(std::deque<ram::ptr<__pvt::Func_b>>, queue){}
+	_lnx_init_var_set_def(std::mutex, queue_m){}
 
 
 	LnxAutoInit(LNX_H_THREAD_POOL) {

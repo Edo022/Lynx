@@ -1,6 +1,6 @@
 #include "Lynx/Core/Memory/VRam/VRam.hpp"
 #include "Lynx/Core/Core.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 //TODO use constant for offset
 
@@ -17,7 +17,7 @@ namespace lnx::sys{ //FIXME update comment
 	//! And it has to do it after getting the device infos, but before allocating the cells.
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
-	__init_var_const_def(const GpuInfo, vram){
+	_lnx_init_var_const_def(const GpuInfo, vram){
 		//Get GPU informations
 		GpuInfo _vram;
 		_vram.name = core::dvc::graphics.pd.properties.deviceName;

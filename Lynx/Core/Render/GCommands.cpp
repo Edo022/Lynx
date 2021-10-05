@@ -1,7 +1,7 @@
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Render/Render.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 
 
 
@@ -11,7 +11,7 @@
 
 
 namespace lnx::core::render::cmd{
-	__init_var_set_def(vk::CommandPool, singleTimeCommandPool) {
+	_lnx_init_var_set_def(vk::CommandPool, singleTimeCommandPool) {
 		pVar = nullptr;
 	}
 

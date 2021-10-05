@@ -1,6 +1,7 @@
 #pragma once
 ////#define LNX_H_STRUCTURE_INIT
 #include "Lynx/macros.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 
@@ -47,7 +48,7 @@ namespace lnx{
 		#	define checkInitList(...)	//Executes a function in a costructor. Debug mode only. Requires genInitCheck;
 		#endif
 
-		__init_var_array_dec(bool, __errors);
+		_lnx_init_var_array_dec(bool, __errors);
 
 
 		/**

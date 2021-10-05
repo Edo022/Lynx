@@ -1,5 +1,5 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
@@ -12,9 +12,9 @@
 
 
 namespace lnx::core::shaders{
-	__init_var_set_def(String, shaderPath){}
-	__init_var_set_def(uint32, pipelineNum){ pVar = 0; }
-	__init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
+	_lnx_init_var_set_def(String, shaderPath){}
+	_lnx_init_var_set_def(uint32, pipelineNum){ pVar = 0; }
+	_lnx_init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
 
 
 	LnxAutoInit(LNX_H_SHADER){

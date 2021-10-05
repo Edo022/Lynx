@@ -1,6 +1,6 @@
 #include "Lynx/Core/Memory/Ram/Cell_t.hpp"
 // #include "Lynx/Core/Memory/Ram/Ram.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 
 
@@ -10,9 +10,9 @@
 //FIXME this variable is defined in the header as a static thread_local. It should be external thread_local
 
 namespace lnx::ram{
-	__init_var_array_def(Type_t, types, (uint32)__pvt::CellClassIndex::eNum){}
-	__init_var_set_def(RaArrayC<Cell_t>, cells){}
-	__init_var_set_def(std::mutex, cells_m){}
+	_lnx_init_var_array_def(Type_t, types, (uint32)__pvt::CellClassIndex::eNum){}
+	_lnx_init_var_set_def(RaArrayC<Cell_t>, cells){}
+	_lnx_init_var_set_def(std::mutex, cells_m){}
 
 
 
@@ -23,6 +23,7 @@ namespace lnx::ram{
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)CellClassIndex::eNum; ++i) {
+			printf("RAM USED\n"); fflush(stdout); //TODO REMOVE DEBUG OUTPUT
 			uint32 buffsNum = sys::ram.size / buffSize;						//Get max number of cells that can fit in the system memory
 			uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
 			new(&types[i]) Type_t{

@@ -295,7 +295,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n//####################################################################################\n'
             f'\n#pragma once'                                                       # Include guard
             f'\n#include \"Lynx/Core/Render/Shaders/ShaderInterface_t.hpp\"'        # Base Shader struct
-            f'\n#include "Lynx/Core/AutoInit.hpp\"'                                 # Auto init
+            f'\n#include "Lynx/Core/Init.hpp\"'                                 # Auto init
             f'\n'
             f'\n'
             f'\n'
@@ -315,7 +315,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n//####################################################################################'
             f'\n#include "Generated/Shaders/{ shName }.gsi.hpp"'
             f'\n'
-            f'\n#include "Lynx/Core/AutoInit.hpp\"'                         # Auto init
+            f'\n#include "Lynx/Core/Init.hpp\"'                         # Auto init
             f'\n#include "Lynx/Core/Render/Shaders/Shader.hpp\"'            # Engine shader header
             f'\n#include "Lynx/Core/Render/Render.hpp\"'                    # Render core definition
             f'\n////#define LNX_H_{ shName.upper() }'                           # Auto init define

@@ -2,7 +2,7 @@
 #include "Lynx/Core/Memory/Ram/Classes.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 #include "Lynx/Debug/Debug.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include <cstring>
 //TODO background cell preallocation
 //TODO add [no AVX2] performance warning
@@ -19,9 +19,9 @@ namespace lnx::ram{
 	//TODO REMOVE
 	//! MOVED TO CELL_T.CPP
 	// //! If you modify those variables change the declarations in Cell_t.hpp and Ram.hpp too
-	// __init_var_array_def(Type_t, types, (uint32)__pvt::CellClassIndex::eNum){}
-	// __init_var_set_def(RaArrayC<Cell_t>, cells){}
-	// __init_var_set_def(std::mutex, cells_m){}
+	// _lnx_init_var_array_def(Type_t, types, (uint32)__pvt::CellClassIndex::eNum){}
+	// _lnx_init_var_set_def(RaArrayC<Cell_t>, cells){}
+	// _lnx_init_var_set_def(std::mutex, cells_m){}
 
 
 

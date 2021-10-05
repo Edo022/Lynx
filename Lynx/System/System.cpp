@@ -1,6 +1,6 @@
 #include "Lynx/System/System.hpp"
 #include "Lynx/Types/Containers/String.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 
 
 
@@ -12,7 +12,7 @@
 namespace lnx::sys{
 	//Path to the current directory
 	namespace dir {
-		__init_var_set_def(String, thisDir){
+		_lnx_init_var_set_def(String, thisDir){
 			char buff[FILENAME_MAX];			//Create char array to store the path
 			__lp_get_cwd(buff, FILENAME_MAX);	//Get path
 			pVar = buff;						//Save path

@@ -1,14 +1,14 @@
 #include "Lynx/Core/Memory/VRam/VCell_t.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 
 
 
 
 namespace lnx::vram{
-    __init_var_array_def(Type_t2, types, ((uint32)__pvt::VCellClassIndex::eNum << 2) | 0b11){}
-    __init_var_set_def(RaArrayC<Cell_t2>, cells){}
-    __init_var_set_def(std::mutex, cells_m){}
+    _lnx_init_var_array_def(Type_t2, types, ((uint32)__pvt::VCellClassIndex::eNum << 2) | 0b11){}
+    _lnx_init_var_set_def(RaArrayC<Cell_t2>, cells){}
+    _lnx_init_var_set_def(std::mutex, cells_m){}
 
 
     LnxAutoInit(LNX_H_VCELL_T) {
