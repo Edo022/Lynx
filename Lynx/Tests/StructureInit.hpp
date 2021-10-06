@@ -64,7 +64,7 @@ namespace lnx{
 		 * @brief //TODO
 		 */
 		inline void disable(error vError) {
-			__errors[(uint32)vError] = false;
+			g___errors()[(uint32)vError] = false;
 		}
 	}
 }

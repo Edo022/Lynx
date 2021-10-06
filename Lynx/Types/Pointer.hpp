@@ -403,15 +403,15 @@ namespace lnx::ram{
 			if(cell->address) {
 				if(!--cell->owners) {
 					if(cell->typeIndex != (uint16)-1) {						//For fixed  size cells,
-						types[cell->typeIndex].m.lock();
-						types[cell->typeIndex].cells.remove(cell->localIndex);	//free the allocation object
-						types[cell->typeIndex].m.unlock();
+						g_types()[cell->typeIndex].m.lock();
+						g_types()[cell->typeIndex].cells.remove(cell->localIndex);	//free the allocation object
+						g_types()[cell->typeIndex].m.unlock();
 					}
 					else std::free(cell->address);							//For custom size cells, free the entire buffer
 
-					cells_m.lock();
-					cells.remove(cell->cellIndex);							//Free the cell object
-					cells_m.unlock();
+					g_cells_m().lock();
+					g_cells().remove(cell->cellIndex);							//Free the cell object
+					g_cells_m().unlock();
 				}
 				popOwner();
 			}
@@ -446,10 +446,10 @@ namespace lnx::ram{
 		 */
 		void alloc_(const uint64 vSize, const CellClass vClass) {
 			using namespace lnx::__pvt;
-			cells_m.lock();
-			const auto cellIndex = cells.add(Cell_t{});						//Save cell index
-			cells_m.unlock();
-			cell = &cells[cellIndex];										//Update cell pointer
+			g_cells_m().lock();
+			const auto cellIndex = g_cells().add(Cell_t{});						//Save cell index
+			g_cells_m().unlock();
+			cell = &g_cells()[cellIndex];										//Update cell pointer
 			*cell = Cell_t{													//Update cell data
 				.typeIndex = __pvt::classIndexFromEnum(vClass),					//Set cell type index
 				.owners = 1,													//Set 1 owner: this pointer
@@ -462,7 +462,7 @@ namespace lnx::ram{
 
 
 			if((uint32)vClass) {											//For fixed class cells
-				auto& type_ = types[__pvt::classIndexFromEnum(vClass)];			//Cache buffer type
+				auto& type_ = g_types()[__pvt::classIndexFromEnum(vClass)];			//Cache buffer type
 				type_.m.lock();
 				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 				type_.m.unlock();
@@ -521,12 +521,12 @@ namespace lnx::ram{
 				else { [[likely]]												//If it's larger than the maximum cell size //TODO check realloc and free returns
 					if(cell->typeIndex != (uint16)-1) {								//If the cell is a fixed size cell
 						tType* oldAddr = (tType*)cell->address;							//Save the old address
-						types[cell->typeIndex].m.lock();
-						types[cell->typeIndex].cells.remove(cell->localIndex);			//Remove old allocation
-						types[cell->typeIndex].m.unlock();
+						g_types()[cell->typeIndex].m.lock();
+						g_types()[cell->typeIndex].cells.remove(cell->localIndex);			//Remove old allocation
+						g_types()[cell->typeIndex].m.unlock();
 						//! ^ this doesn't remove or invalidate the cell object but only the buffer's cell tracker. This is to allow other pointers to use the same cell even after a reallocation
 						if((uint32)vClass) {											//Fixed size --> fixed
-							auto& type_ = types[cell->typeIndex];							//Cache buffer type
+							auto& type_ = g_types()[cell->typeIndex];							//Cache buffer type
 							type_.m.lock();
 							cell->localIndex = type_.cells.add(true);						//Create a new allocation and save its index. Then set the new address
 							type_.m.unlock();

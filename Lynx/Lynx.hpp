@@ -23,16 +23,16 @@ namespace lnx{
      *      Make sure to destroy them or don't use them after calling this function
      */
 	void kill(){
-        core::running = false;
+        core::g_running() = false;
 
-        core::inputThr.join();
-        switch(core::dvc::graphics.ld.waitIdle()){
+        core::g_inputThr().join();
+        switch(core::dvc::g_graphics().ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 			vkDefaultCases;
         }
 
         core::render::cleanup();
-        core::dvc::instance.destroy(nullptr);
+        core::dvc::g_instance().destroy(nullptr);
 		glfwTerminate();
     }
 }

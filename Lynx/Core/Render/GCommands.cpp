@@ -28,8 +28,8 @@ namespace lnx::core::render::cmd{
 	 * @brief //TODO
 	 */
 	void createGraphicsCommandPool() {
-		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::graphics.pd.indices.graphicsFamily);
-		switch(dvc::graphics.ld.createCommandPool(&poolInfo, nullptr, &singleTimeCommandPool)){ vkDefaultCases; }
+		auto poolInfo = vk::CommandPoolCreateInfo().setQueueFamilyIndex(dvc::g_graphics().pd.indices.graphicsFamily);
+		switch(dvc::g_graphics().ld.createCommandPool(&poolInfo, nullptr, &g_singleTimeCommandPool())){ vkDefaultCases; }
 	}
 
 
@@ -44,11 +44,11 @@ namespace lnx::core::render::cmd{
 	vk::CommandBuffer beginSingleTimeCommands() {
 		vk::CommandBuffer commandBuffer;
 		auto allocInfo = vk::CommandBufferAllocateInfo()
-			.setCommandPool        (singleTimeCommandPool)
+			.setCommandPool        (g_singleTimeCommandPool())
 			.setLevel              (vk::CommandBufferLevel::ePrimary)
 			.setCommandBufferCount (1)
 		;
-		switch(dvc::graphics.ld.allocateCommandBuffers(&allocInfo, &commandBuffer)){ vkDefaultCases; }
+		switch(dvc::g_graphics().ld.allocateCommandBuffers(&allocInfo, &commandBuffer)){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 		switch(commandBuffer.begin(&beginInfo)){ vkDefaultCases; }
@@ -70,16 +70,16 @@ namespace lnx::core::render::cmd{
 			.setCommandBufferCount (1)
 			.setPCommandBuffers    (&vCommandBuffer)
 		;
-		core::render::graphicsQueueSubmit_m.lock();
-			switch(dvc::graphics.cqs[0].submit(1, &submitInfo, nullptr)){
+		core::render::g_graphicsQueueSubmit_m().lock();
+			switch(dvc::g_graphics().cqs[0].submit(1, &submitInfo, nullptr)){
 				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
-			switch(dvc::graphics.cqs[0].waitIdle()){
+			switch(dvc::g_graphics().cqs[0].waitIdle()){
 				case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 				vkDefaultCases;
 			}
-		core::render::graphicsQueueSubmit_m.unlock();
-		dvc::graphics.ld.freeCommandBuffers(singleTimeCommandPool, 1, &vCommandBuffer);
+		core::render::g_graphicsQueueSubmit_m().unlock();
+		dvc::g_graphics().ld.freeCommandBuffers(g_singleTimeCommandPool(), 1, &vCommandBuffer);
 	}
 }

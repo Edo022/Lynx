@@ -45,7 +45,7 @@ namespace lnx::shd::gsi{
 			.setPoolSizeCount (1)
 			.setPPoolSizes    (sizes)
 		;
-		switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
+		switch(core::dvc::g_graphics().ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){
 			case vk::Result::eErrorFragmentationEXT:  dbg::logError("Fragmentation error");  break;
 			vkDefaultCases;
 		}
@@ -57,7 +57,7 @@ namespace lnx::shd::gsi{
 			.setDescriptorSetCount (1)
 			.setPSetLayouts        (&FloatToIntBuffer::layout.descriptorSetLayout)
 		;
-		switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
+		switch(core::dvc::g_graphics().ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
 			case vk::Result::eErrorOutOfPoolMemory:   dbg::logError("Out of pool memory");   break;
 			vkDefaultCases;
@@ -117,7 +117,7 @@ namespace lnx::shd::gsi{
 			.setDescriptorType  (vk::DescriptorType::eStorageBuffer)
 			.setPBufferInfo     (&bufferInfo3)
 		;
-		core::dvc::graphics.ld.updateDescriptorSets(4, writeSets, 0, nullptr);
+		core::dvc::g_graphics().ld.updateDescriptorSets(4, writeSets, 0, nullptr);
 	}
 
 
@@ -134,7 +134,7 @@ namespace lnx::shd::gsi{
 			.setCommandBufferCount (1)
 		;
 		commandBuffers.resize(1);
-		switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
+		switch(core::dvc::g_graphics().ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){ vkDefaultCases; }
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
@@ -179,10 +179,10 @@ namespace lnx::shd::gsi{
 
 
 	ShaderInterface_b::Layout FloatToIntBuffer::layout;
-	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::pipelineNum++;
+	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::g_pipelineNum()++;
 	_lnx_init_fun_(LNX_H_FLOATTOINTBUFFER){
-		core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);
-		core::shaders::pipelineLayouts[FloatToIntBuffer::pipelineIndex] = &FloatToIntBuffer::layout;
+		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
+		core::shaders::g_pipelineLayouts()[FloatToIntBuffer::pipelineIndex] = &FloatToIntBuffer::layout;
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
@@ -222,7 +222,7 @@ namespace lnx::shd::gsi{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &FloatToIntBuffer::layout.descriptorSetLayout)){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &FloatToIntBuffer::layout.descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -231,7 +231,7 @@ namespace lnx::shd::gsi{
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
 			uint32* code = core::shaders::loadSpv(&fileLength, "src/Generated/Shaders/FloatToIntBuffer.spv");
-			FloatToIntBuffer::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);
+			FloatToIntBuffer::layout.shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);
 
 			FloatToIntBuffer::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
@@ -243,7 +243,7 @@ namespace lnx::shd::gsi{
 				.setSetLayoutCount (1)
 				.setPSetLayouts    (&FloatToIntBuffer::layout.descriptorSetLayout)
 			;
-			switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &FloatToIntBuffer::layout.pipelineLayout)){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &FloatToIntBuffer::layout.pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

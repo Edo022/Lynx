@@ -89,8 +89,8 @@ namespace lnx::core::dvc{
 		auto createInfo = vk::InstanceCreateInfo()
 			.setPNext                   (_dbg(&debugCreateInfo)    _rls(nullptr))
 			.setPApplicationInfo        (&appInfo)
-			.setEnabledLayerCount       (_dbg(validationLayersNum) _rls(0))
-			.setPpEnabledLayerNames     (_dbg(validationLayers)    _rls(nullptr))
+			.setEnabledLayerCount       (_dbg(g_validationLayersNum()) _rls(0))
+			.setPpEnabledLayerNames     (_dbg(g_validationLayers())    _rls(nullptr))
 			.setEnabledExtensionCount   (glfwExtensionCount _dbg(+ 1))
 			.setPpEnabledExtensionNames (extensions)
 		;
@@ -112,9 +112,9 @@ namespace lnx::core::dvc{
 				vkDefaultCases;
 			};
 
-			for(uint32 i = 0; i < validationLayersNum; ++i) {								//For every layer,
+			for(uint32 i = 0; i < g_validationLayersNum(); ++i) {								//For every layer,
 				for(uint32 j = 0; j < availableLayers.count(); ++j) {							//For every available layer
-					if(0 == strcmp(validationLayers[i], availableLayers[j].layerName)) break;		//Check if the layer is available
+					if(0 == strcmp(g_validationLayers()[i], availableLayers[j].layerName)) break;		//Check if the layer is available
 					else if(i == availableLayers.count() - 1) {										//If not
 						dbg::logError("Validation layers not available. Cannot run in debug mode");	//Print an error
 					}
@@ -122,7 +122,7 @@ namespace lnx::core::dvc{
 			}
 		#endif
 
-		switch(vk::createInstance(&createInfo, nullptr, &core::dvc::instance)){
+		switch(vk::createInstance(&createInfo, nullptr, &core::dvc::g_instance())){
 			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
 			case vk::Result::eErrorLayerNotPresent:      dbg::logError("Layer not present");     break;
 			case vk::Result::eErrorExtensionNotPresent:  dbg::logError("Extension not present"); break;
@@ -136,10 +136,10 @@ namespace lnx::core::dvc{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //TODO automatically get GLFW version
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); //TODO automatically get GLFW version
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		dummyWindow = glfwCreateWindow(1, 1, "", nullptr, nullptr);	//Initialize dummy window
-		glfwHideWindow(dummyWindow);
+		g_dummyWindow() = glfwCreateWindow(1, 1, "", nullptr, nullptr);	//Initialize dummy window
+		glfwHideWindow(g_dummyWindow());
 
-		switch(glfwCreateWindowSurface(instance, dummyWindow, nullptr, rcast<vk::SurfaceKHR::CType*>(&dummySurface))){
+		switch(glfwCreateWindowSurface(g_instance(), g_dummyWindow(), nullptr, rcast<vk::SurfaceKHR::CType*>(&g_dummySurface()))){
 			case VkResult::VK_SUCCESS: break;
 			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::logError("Initialization failed"); break;
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::logError("Extension not present"); break;
@@ -216,13 +216,13 @@ namespace lnx::core::dvc{
 		//Check swapchain support
 		else {
 			uint32 surfaceFormatsCount = 0, presentModesCount = 0;
-			switch(vDevice.getSurfaceFormatsKHR(dummySurface, &surfaceFormatsCount, nullptr)){
+			switch(vDevice.getSurfaceFormatsKHR(g_dummySurface(), &surfaceFormatsCount, nullptr)){
 				case vk::Result::eIncomplete:             dbg::logError("Incomplete surface formats"); break;
 				case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");               break;
 				vkDefaultCases;
 			};
 
-			switch(vDevice.getSurfacePresentModesKHR(dummySurface, &presentModesCount,   nullptr)){
+			switch(vDevice.getSurfacePresentModesKHR(g_dummySurface(), &presentModesCount,   nullptr)){
 				case vk::Result::eIncomplete:             dbg::logError("Incomplete surface formats"); break;
 				case vk::Result::eErrorSurfaceLostKHR:    dbg::logError("Surface lost");               break;
 				vkDefaultCases;
@@ -270,10 +270,10 @@ namespace lnx::core::dvc{
 
 
 		//Check that each required extension is supported
-		for(uint32 i = 0; i < requiredDeviceExtensionsNum; ++i){
+		for(uint32 i = 0; i < g_requiredDeviceExtensionsNum(); ++i){
 			bool r = false;
 			for(uint32 j = 0; j < availableExtensions.count(); ++j){
-				r |= !strcmp(requiredDeviceExtensions[i], availableExtensions[j].extensionName);
+				r |= !strcmp(g_requiredDeviceExtensions()[i], availableExtensions[j].extensionName);
 				if(r) break;
 			}
 			if(!r) return false;
@@ -313,7 +313,7 @@ namespace lnx::core::dvc{
 			if(queueFamilies[i].queueFlags & vk::QueueFlagBits::eCompute ) indices.computeFamilies.add(i);	//Add compute families
 
 			vk::Bool32 hasPresentSupport = false;
-			switch(vDev.getSurfaceSupportKHR(i, dummySurface, &hasPresentSupport)){						//Set present family
+			switch(vDev.getSurfaceSupportKHR(i, g_dummySurface(), &hasPresentSupport)){						//Set present family
 				case vk::Result::eErrorSurfaceLostKHR: dbg::logError("Surface lost"); break;
 				vkDefaultCases;
 			};
@@ -351,7 +351,7 @@ namespace lnx::core::dvc{
 	void getPhysicalDevices() {
 		//Get physical device count
 		uint32 deviceCount = 0;					//Number of physical devices. Used to call vkEnumeratePhysicalDevices
-		switch(instance.enumeratePhysicalDevices(&deviceCount, nullptr)){
+		switch(g_instance().enumeratePhysicalDevices(&deviceCount, nullptr)){
 			case vk::Result::eIncomplete:                dbg::logError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
 			vkDefaultCases;
@@ -361,7 +361,7 @@ namespace lnx::core::dvc{
 
 		//Get physical devices
 		RtArray<vk::PhysicalDevice> physDevices(deviceCount);
-		switch(instance.enumeratePhysicalDevices(&deviceCount, physDevices.begin())){
+		switch(g_instance().enumeratePhysicalDevices(&deviceCount, physDevices.begin())){
 			case vk::Result::eIncomplete:                dbg::logError("Incomplete devices");    break;
 			case vk::Result::eErrorInitializationFailed: dbg::logError("Initialization failed"); break;
 			vkDefaultCases;
@@ -389,20 +389,20 @@ namespace lnx::core::dvc{
 
 
 		if(suitable.count() > 0) {										//If there are suitable devices
-			graphics.pd = *suitable[0];										//Set graphics device at default value
+			g_graphics().pd = *suitable[0];										//Set graphics device at default value
 			for(auto& dev : suitable) {										//For every physical device
 				dev->indices = getQueueFamilies(dev->device);					//Get its queue families
 				dev->score = rate(*dev);										//Get its score. If it has the highest score and an available graphics queue
-				if((dev->score > graphics.pd.score && dev->indices.graphicsFamily != (uint32)-1) || graphics.pd.indices.graphicsFamily == (uint32)-1) {
-					graphics.pd = *dev;												//Set it as the main graphics device
-					createLogicalDevices(graphics.pd, graphics);					//Create the graphics logical device
+				if((dev->score > g_graphics().pd.score && dev->indices.graphicsFamily != (uint32)-1) || g_graphics().pd.indices.graphicsFamily == (uint32)-1) {
+					g_graphics().pd = *dev;												//Set it as the main graphics device
+					createLogicalDevices(g_graphics().pd, g_graphics());					//Create the graphics logical device
 				}
 			}
 			for(auto& dev : suitable) {										//For every physical device
-				if(!sameDevice(*dev, graphics.pd)) {							//If it's not the main graphics device
-					secondary.resize(secondary.count() + 1);						//Add it to the secondary compute devices array
-					secondary[secondary.count() - 1].pd = *dev;						//Create its logical device
-					createLogicalDevices(secondary[secondary.count() - 1].pd, secondary[secondary.count() - 1]);
+				if(!sameDevice(*dev, g_graphics().pd)) {							//If it's not the main graphics device
+					g_secondary().resize(g_secondary().count() + 1);						//Add it to the secondary compute devices array
+					g_secondary()[g_secondary().count() - 1].pd = *dev;						//Create its logical device
+					createLogicalDevices(g_secondary()[g_secondary().count() - 1].pd, g_secondary()[g_secondary().count() - 1]);
 				}
 			}
 
@@ -432,15 +432,15 @@ namespace lnx::core::dvc{
 					dev->properties.deviceName.cbegin(),
 					dev->properties.deviceID,
 					dev->score,
-					sameDevice(*dev, graphics.pd) ? "  |  Main graphics" : ""
+					sameDevice(*dev, g_graphics().pd) ? "  |  Main graphics" : ""
 				);
 			}
 
 			//Print created logical devices and queues
-			dbg::logInfo("    Created %d logical device%s:", 1 + secondary.count(), (secondary.count() ? "s" : ""));
-			dbg::logInfo("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", graphics.pd.indices.computeFamilies.count());
-			if(secondary.count()) {
-				for(auto& dev : secondary){
+			dbg::logInfo("    Created %d logical device%s:", 1 + g_secondary().count(), (g_secondary().count() ? "s" : ""));
+			dbg::logInfo("        Main graphics  |  graphics queues: 1  |  present queues: 1  |  compute queues: %d", g_graphics().pd.indices.computeFamilies.count());
+			if(g_secondary().count()) {
+				for(auto& dev : g_secondary()){
 					dbg::logInfo("        Compute        |  compute queues: %d", dev.pd.indices.computeFamilies.count());
 				}
 			}
@@ -465,7 +465,7 @@ namespace lnx::core::dvc{
 	 */
 	void createLogicalDevices(const _VkPhysicalDevice& pPDev, Device& pDev) {
 		RtArray<uint32> qIndices;
-		if(sameDevice(pPDev, graphics.pd)) {							//If it's the main device for graphics
+		if(sameDevice(pPDev, g_graphics().pd)) {							//If it's the main device for graphics
 			qIndices.addUnique(pPDev.indices.graphicsFamily);				//Add its graphics queue index
 			qIndices.addUnique(pPDev.indices.presentFamily);				//Add its present  queue index
 		}
@@ -494,10 +494,10 @@ namespace lnx::core::dvc{
 		auto deviceCreateInfo = vk::DeviceCreateInfo() 							//Create logical device
 			.setQueueCreateInfoCount     (queueInfos.count())						//Set queue infos count
 			.setPQueueCreateInfos        (queueInfos.begin())						//Set queue infos
-			.setEnabledLayerCount        (_dbg(validationLayersNum) _rls(0))		//Set validation layers count if in debug mode
-			.setPpEnabledLayerNames      (_dbg(validationLayers)    _rls(nullptr))	//Set validation layers       if in debug mode
-			.setEnabledExtensionCount    (requiredDeviceExtensionsNum)				//Set required extentions count
-			.setPpEnabledExtensionNames  (requiredDeviceExtensions)					//Set required extensions
+			.setEnabledLayerCount        (_dbg(g_validationLayersNum()) _rls(0))		//Set validation layers count if in debug mode
+			.setPpEnabledLayerNames      (_dbg(g_validationLayers())    _rls(nullptr))	//Set validation layers       if in debug mode
+			.setEnabledExtensionCount    (g_requiredDeviceExtensionsNum())				//Set required extentions count
+			.setPpEnabledExtensionNames  (g_requiredDeviceExtensions())					//Set required extensions
 			.setPEnabledFeatures         (&enabledFeatures)							//Set physical device enabled features
 		;
 
@@ -515,7 +515,7 @@ namespace lnx::core::dvc{
 
 
 		pDev.ld = _logicalDevice;												//Set logical device
-		if(sameDevice(pPDev, graphics.pd)) {										//If the device is the main graphics device
+		if(sameDevice(pPDev, g_graphics().pd)) {										//If the device is the main graphics device
 			_logicalDevice.getQueue(pPDev.indices.graphicsFamily, 0, &pDev.gq);		//Set graphics queue index
 			_logicalDevice.getQueue(pPDev.indices.presentFamily , 0, &pDev.pq);		//Set present  queue index
 		}

@@ -21,7 +21,7 @@ namespace lnx::thr {
 
 
 	_lnx_init_fun_(LNX_H_THREAD_POOL) {
-		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) threads[i](thrLoop, fwd{ i });
+		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) g_threads()[i](thrLoop, fwd{ i });
 	}
 
 
@@ -40,17 +40,17 @@ namespace lnx::thr {
 		#endif
 
 		while(true) {
-			queue_m.lock();
-			if(!queue.empty()) {
-				ram::ptr<__pvt::Func_b> func = (ram::ptr<__pvt::Func_b>&&)(queue.front());	//Save the function data
-				queue.pop_front();		//Remove the function from the queue
-				queue_m.unlock();		//Unlock to allow other threads to execute the remaining functions
+			g_queue_m().lock();
+			if(!g_queue().empty()) {
+				ram::ptr<__pvt::Func_b> func = (ram::ptr<__pvt::Func_b>&&)(g_queue().front());	//Save the function data
+				g_queue().pop_front();		//Remove the function from the queue
+				g_queue_m().unlock();		//Unlock to allow other threads to execute the remaining functions
 
 				func->exec();			//Execute the function
 				func->_fence->set();	//After returning, set the fence to notify the eventual waiting thread
 				func.free();			//Free the function data
 			}
-			else queue_m.unlock();	//Unlock to allow other threads to execute the remaining functions
+			else g_queue_m().unlock();	//Unlock to allow other threads to execute the remaining functions
 			usleep(0);				//Sleep in order to not consume too much CPU while waiting for other functions
 			// thr::self::yield();
 		}

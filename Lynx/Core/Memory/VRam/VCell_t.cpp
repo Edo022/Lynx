@@ -18,19 +18,19 @@ namespace lnx::vram{
 		for(uint32 k = 0; k < 2; ++k) { 									//Loop location
 			for(uint32 j = 0; j < 2; ++j) { 									//Loop buffer type
 				for(uint32 i = 0; i < (uint32)VCellClassIndex::eNum; ++i) {			//Loop cell size
-					uint32 buffsNum = sys::vram.size / buffSize;						//Get max number of cells that can fit in the system memory
+					uint32 buffsNum = sys::g_vram().size / buffSize;						//Get max number of cells that can fit in the system memory
 					uint32 typeIndex = (i << 2) | (j << 1) | k;							//Calculate buffer type index
 					uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);		//Get number of cells in each buffer
-					new(&vram::types[typeIndex]) vram::Type_t2{							//Create new type struct
+					new(&vram::g_types()[typeIndex]) vram::Type_t2{							//Create new type struct
 						.cellClass = classEnumFromIndex(i),									//Set class index
 						.memory =  (vram::Cell_t2_csc* )calloc(sizeof(vram::Cell_t2_csc),  buffsNum),//Allocate the max number of buffers. Initialize them with nullptr
 						.cellsPerBuff = cellsPerBuff										//Set the maximum number of cells per buffer
 					};
-					vram::types[typeIndex].cells.init(cellsPerBuff * buffsNum);
+					vram::g_types()[typeIndex].cells.init(cellsPerBuff * buffsNum);
 				}
 			}
 		}
-		vram::cells.init(sys::vram.size / (uint64)vram::VCellClass::eA);
+		vram::g_cells().init(sys::g_vram().size / (uint64)vram::VCellClass::eA);
 	}
 
 }

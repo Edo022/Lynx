@@ -22,7 +22,7 @@ namespace lnx::core{
 	 */
 	void inputLoop(){
 		_dbg(thr::self::setName("Lynx | Main"));
-		while(running){
+		while(g_running()){
 			glfwWaitEvents();
 			sleep(0);
 		}

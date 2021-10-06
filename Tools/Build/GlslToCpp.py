@@ -415,7 +415,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n        .setPoolSizeCount ({ str(2 if pGlsl.uniformNum > 0 else 1) })'
             f'\n        .setPPoolSizes    (sizes)'
             f'\n    ;'
-            f'\n    switch(core::dvc::graphics.ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){{'
+            f'\n    switch(core::dvc::g_graphics().ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){{'
             f'\n        case vk::Result::eErrorFragmentationEXT:  dbg::logError(\"Fragmentation error\");  break;'
             f'\n        vkDefaultCases;'
             f'\n    }}'
@@ -425,7 +425,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n        .setDescriptorSetCount (1)'
             f'\n        .setPSetLayouts        (&{ shName }::layout.descriptorSetLayout)'
             f'\n    ;'
-            f'\n    switch(core::dvc::graphics.ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){{'
+            f'\n    switch(core::dvc::g_graphics().ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){{'
             f'\n        case vk::Result::eErrorFragmentedPool:    dbg::logError(\"Fragmented pool\");      break;'
             f'\n        case vk::Result::eErrorOutOfPoolMemory:   dbg::logError(\"Out of pool memory\");   break;'
             f'\n        vkDefaultCases;'
@@ -446,7 +446,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n        .setPBufferInfo     (&bufferInfo{ str(i) })'
             f'\n    ;'
             f''     ) for i, l in enumerate(pGlsl.layouts))) +
-            f'\n\tcore::dvc::graphics.ld.updateDescriptorSets({ str(len(pGlsl.layouts)) }, writeSets, 0, nullptr);'
+            f'\n\tcore::dvc::g_graphics().ld.updateDescriptorSets({ str(len(pGlsl.layouts)) }, writeSets, 0, nullptr);'
             f'\n}}',
         1))
 
@@ -461,7 +461,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n        .setCommandBufferCount (1)'
             f'\n    ;'
             f'\n    commandBuffers.resize(1);'
-            f'\n    switch(core::dvc::graphics.ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){{ vkDefaultCases; }}'
+            f'\n    switch(core::dvc::g_graphics().ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){{ vkDefaultCases; }}'
             f'\n'
             f'\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
             f'\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}'
@@ -502,10 +502,10 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
 
         fc.write('\n' * 8 + fixTabs(
             f'\nShaderInterface_b::Layout { shName }::layout;'
-            f'\nuint32 { shName }::pipelineIndex = core::shaders::pipelineNum++;'
+            f'\nuint32 { shName }::pipelineIndex = core::shaders::g_pipelineNum()++;'
             f'\n_lnx_init_fun_(LNX_H_{ shName.upper() }){{'
-            f'\n    core::shaders::pipelineLayouts.resize(core::shaders::pipelineNum);'
-            f'\n    core::shaders::pipelineLayouts[{ shName }::pipelineIndex] = &{ shName }::layout;'
+            f'\n    core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());'
+            f'\n    core::shaders::g_pipelineLayouts()[{ shName }::pipelineIndex] = &{ shName }::layout;'
             f'\n    {{ //Create descriptor set layout'
             f'\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(pGlsl.layouts)) }];' + (
             f''         '\n'.join((
@@ -523,7 +523,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n            .setPBindings    (bindingLayouts)'
             f'\n        ;'
             f'\n        //Create the descriptor set layout'
-            f'\n        switch(core::dvc::graphics.ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &{ shName }::layout.descriptorSetLayout)){{ vkDefaultCases; }}'
+            f'\n        switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &{ shName }::layout.descriptorSetLayout)){{ vkDefaultCases; }}'
             f'\n    }}'
             f'\n'
             f'\n'
@@ -532,7 +532,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n    {{ //Create pipeline layout'
             f'\n        uint64 fileLength = 0;'
             f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shOutPath }/{ shName }.spv\");'
-            f'\n        { shName }::layout.shaderModule = core::shaders::createModule(core::dvc::graphics.ld, code, fileLength);'
+            f'\n        { shName }::layout.shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
             f'\n'
             f'\n        { shName }::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
             f'\n            .setStage  (vk::ShaderStageFlagBits::eCompute)'
@@ -544,7 +544,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n            .setSetLayoutCount (1)'
             f'\n            .setPSetLayouts    (&{ shName }::layout.descriptorSetLayout)'
             f'\n        ;'
-            f'\n        switch(core::dvc::graphics.ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &{ shName }::layout.pipelineLayout)){{ vkDefaultCases; }}'
+            f'\n        switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &{ shName }::layout.pipelineLayout)){{ vkDefaultCases; }}'
             f'\n    }}'
             f'\n}}',
         1))

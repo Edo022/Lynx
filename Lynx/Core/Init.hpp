@@ -53,10 +53,11 @@
 	/*Get declaration*/                  \
 	namespace __pvt {                    \
 		type& _lnx_init_var_##name##_get(); \
+		static type& _lnx_init_var_##name##_v = _lnx_init_var_##name##_get();\
 	}                                    \
 	\
 	/*Reference definition*/             \
-	static type& name = __pvt::_lnx_init_var_##name##_get() //! Put a semicolon after calling the macro
+	static _rls(alwaysInline) _dbg(inline) type& g_##name(){ return __pvt::_lnx_init_var_##name##_v; }
 
 
 
@@ -64,10 +65,11 @@
 	/*Get declaration*/                  \
 	namespace __pvt {                    \
 		type* _lnx_init_var_##name##_get(); \
+	static type* _lnx_init_var_##name##_v = _lnx_init_var_##name##_get();\
 	}                                    \
 	\
 	/*Reference definition*/             \
-	static type* name = __pvt::_lnx_init_var_##name##_get() //! Put a semicolon after calling the macro
+	static _rls(alwaysInline) _dbg(inline) type* g_##name(){ return __pvt::_lnx_init_var_##name##_v; }
 
 
 
