@@ -49,11 +49,12 @@
  *     e.g.
  *     _lnx_init_var_dec(f32v3, vector);
  */
-#define _lnx_init_var_dec(type, name, ...)  \
+#define _lnx_init_var_dec(type, name) _lnx_init_var_dec2(type, name, _lnx_init_var_##name)
+#define _lnx_init_var_dec2(type, name, id)  \
 	/*Get declaration*/                  \
 	namespace __pvt {                    \
-		type& _lnx_init_var_##name##_get(); \
-		static type& _lnx_init_var_##name##_v = _lnx_init_var_##name##_get();\
+		type& id##_get(); \
+		static type& id##_v = id##_get();\
 	}                                    \
 	\
 	/*Reference definition*/             \
@@ -61,15 +62,16 @@
 
 
 
-#define _lnx_init_var_array_dec(type, name, ...)\
+#define _lnx_init_var_array_dec(type, name) _lnx_init_var_array_dec2(type, name, _lnx_init_var_##name)
+#define _lnx_init_var_array_dec2(type, name, id)\
 	/*Get declaration*/                  \
 	namespace __pvt {                    \
-		type* _lnx_init_var_##name##_get(); \
-	static type* _lnx_init_var_##name##_v = _lnx_init_var_##name##_get();\
+		type* id##_get(); \
+	static type* id##_v = id##_get();\
 	}                                    \
 	\
 	/*Reference definition*/             \
-	static _rls(alwaysInline) _dbg(inline) type* g_##name(){ return __pvt::_lnx_init_var_##name##_v; }
+	static _rls(alwaysInline) _dbg(inline) type* g_##name(){ return __pvt::_lnx_init_var_##name##_v; };
 
 
 
@@ -95,21 +97,22 @@
  * @param name The name of the init variable. It must match the name used in its declaration
  * @param fulln The namespace containing the variable
  */
-#define _lnx_init_var_const_def(type, name)     \
+#define _lnx_init_var_const_def(type, name) _lnx_init_var_const_def2(type, name, _lnx_init_var_##name)
+#define _lnx_init_var_const_def2(type, name, id)     \
 	static_assert(std::is_const_v<type>, "Non-const variable defined with \"_lnx_init_var_const_def\"");\
 	namespace __pvt{                         \
 		/*Initializer function declaration*/ \
-		type _lnx_init_var_##name##_init_f();   \
+		type id##_init_f();   \
 	\
 		/*Get function definition*/          \
-		type& _lnx_init_var_##name##_get(){     \
-			static type* var = new (type)(_lnx_init_var_##name##_init_f());\
+		type& id##_get(){     \
+			static type* var = new (type)(id##_init_f());\
 			return *var;                     \
 		}                                    \
 	}                                        \
 	\
 	/*Initializer function definition*/      \
-	type __pvt::_lnx_init_var_##name##_init_f()
+	type __pvt::id##_init_f()
 
 
 
@@ -133,47 +136,53 @@
  * @param name The name of the init variable. It must match the name used in its declaration
  * @param fulln The namespace containing the variable
  */
-#define _lnx_init_var_set_def(type, name)          \
+#define _lnx_init_var_set_def(type, name) _lnx_init_var_set_def2(type, name, _lnx_init_var_##name)
+#define _lnx_init_var_set_def2(type, name, id)          \
 	namespace __pvt{                            \
 		/*Initializer function declaration*/    \
-		class _lnx_init_var_##name##_init_t{       \
+		class id##_init_t{       \
 			public:                             \
-			_lnx_init_var_##name##_init_t(type& pVar); \
+			id##_init_t(type& pVar); \
 		};                                      \
 	\
 		/*Get function definition*/             \
-		type& _lnx_init_var_##name##_get(){        \
+		type& id##_get(){        \
 			static type* var = new (type)();    \
-			static _lnx_init_var_##name##_init_t init_v(*var); \
+			static id##_init_t init_v(*var); \
 			return *var;                        \
 		}                                       \
 	}                                           \
 	\
 	/*Initializer function definition*/         \
-	__pvt::_lnx_init_var_##name##_init_t::_lnx_init_var_##name##_init_t(type& pVar)
+	__pvt::id##_init_t::id##_init_t(type& pVar)
 
 
 
 
-#define _lnx_init_var_array_def(type, name, count)     \
+#define _lnx_init_var_array_def(type, name, count) _lnx_init_var_array_def2(type, name, count, _lnx_init_var_##name)
+#define _lnx_init_var_array_def2(type, name, count, id)     \
 	namespace __pvt{                                \
 		/*Initializer function declaration*/        \
-		class _lnx_init_var_##name##_init_t{           \
+		class id##_init_t{           \
 			public:                                 \
-			_lnx_init_var_##name##_init_t(type* pVar); \
+			id##_init_t(type* pVar); \
 		};                                          \
 	\
 		/*Get function definition*/                         \
-		type* _lnx_init_var_##name##_get(){                    \
+		type* id##_get(){                    \
 			static type* var = new type[count];             \
-			static _lnx_init_var_##name##_init_t init_v(var);  \
+			static id##_init_t init_v(var);  \
 			return var;                                     \
 		}                                                   \
 	}                                                       \
 	\
+	/*Getter function*/\
 	/*Initializer function definition*/                     \
-	__pvt::_lnx_init_var_##name##_init_t::_lnx_init_var_##name##_init_t(type* pVar)
+	__pvt::id##_init_t::id##_init_t(type* pVar)
 
+	// static _rls(alwaysInline) _dbg(inline) type* g_##name(){
+	// 	return __pvt::_lnx_init_var_##name##_v;
+	// }\
 
 
 

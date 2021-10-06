@@ -114,7 +114,7 @@ def run(argv:list, isEngine:bool):
         with open(args.f, 'r') as f:
             try:
                 fArgs = shlex.split(f.read(), comments = True)
-                return run(fArgs[1:])
+                return run(fArgs[1:], False)
             except FileNotFoundError:
                 print(f'Cannot open file "{ args.f }"')
                 return 1
