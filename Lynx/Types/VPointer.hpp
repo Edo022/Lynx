@@ -343,14 +343,14 @@ namespace lnx::vram{
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
 		void alloc_(const uint64 vSize, const VCellClass vClass) {
-			using namespace lnx::__pvt;
+			using namespace lnx::_pvt;
 			//FIXME WRITE USER INTERFACE
 
 			g_cells_m().lock();
 			const auto cellIndex = g_cells().add(Cell_t2{});					//Save cell index
 			g_cells_m().unlock();
 			Super::cell = &g_cells()[cellIndex];								//Update cell pointer
-			uint16 typeIndex = (vClass == VCellClass::e0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
+			uint16 typeIndex = (vClass == VCellClass::e0) ? (uint16)-1 : ((_pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
 			*Super::cell = Cell_t2{											//Update cell data
 				.typeIndex = typeIndex,											//Set cell type index
 				.cellIndex  = cellIndex,										//Set cell index
@@ -371,7 +371,7 @@ namespace lnx::vram{
 					//!                     ^ Vulkan structures, but they are set to nullptr and treated as pointers, when not used
 					lnx::core::buffers::createBuffer(
 						&type_.memory[buffIndex].buffer, _usage(),
-						__pvt::buffSize,
+						_pvt::buffSize,
 						&type_.memory[buffIndex].memory, _prop(),
 						core::dvc::g_graphics().ld
 					);
@@ -380,7 +380,7 @@ namespace lnx::vram{
 				Super::cell->csc.memory = type_.memory[buffIndex].memory;
 			}
 			else {															//For custom size cells
-				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
+				uint64 size = (vSize / _pvt::incSize + 1) * _pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
 				dbg::checkParam(btype == bufferType::eUniform && core::dvc::g_graphics().pd.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
 				lnx::core::buffers::createBuffer(
@@ -437,7 +437,7 @@ namespace lnx::vram{
 		//  * @param vClass Class of the allocation. It must be a valid lnx::VCellClass value. Default: AUTO
 		//  */
 		// void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::AUTO) {
-		// 	using namespace lnx::__pvt;
+		// 	using namespace lnx::_pvt;
 		// 	checkInit(); checkAllocSize(vSize, vClass);
 		// 	evaluateCellClass(vSize, vClass);
 
@@ -555,7 +555,7 @@ namespace lnx::vram{
 			auto memory = Super::cell->csc.memory;
 			auto offset = Super::cell->localOffset;
 			auto size   = Super::cell->cellSize;
-			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
+			if(size % _pvt::incSize) size = (size / _pvt::memOffset + 1) * _pvt::memOffset;
 
 			core::dvc::g_graphics().ld.mapMemory(memory, offset, size, 0, (void**)&(Super::mapped));
 			const auto range = vk::MappedMemoryRange()
@@ -579,7 +579,7 @@ namespace lnx::vram{
 			auto memory = Super::cell->csc.memory;
 			auto offset = Super::cell->localOffset;
 			auto size   = Super::cell->cellSize;
-			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
+			if(size % _pvt::incSize) size = (size / _pvt::memOffset + 1) * _pvt::memOffset;
 
 			const auto range = vk::MappedMemoryRange()
 				.setMemory (memory)

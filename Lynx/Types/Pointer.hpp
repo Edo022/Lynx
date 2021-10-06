@@ -30,18 +30,18 @@ namespace lnx::ram{
 
 
 		alwaysInline void checkAlloc() const { _dbg(
-			lnx::dbg::checkCond(state == __pvt::CellState::eFreed, "Unable to call this function on invalid allocations: The memory block have been manually freed");
+			lnx::dbg::checkCond(state == _pvt::CellState::eFreed, "Unable to call this function on invalid allocations: The memory block have been manually freed");
 		)}
-		#define isAlloc(a) dbg::checkParam((a).state == __pvt::CellState::eFreed, #a,\
+		#define isAlloc(a) dbg::checkParam((a).state == _pvt::CellState::eFreed, #a,\
 			"Use of invalid allocation: The memory block have been manually freed")
 		;
 
 
 		alwaysInline void checkNullptr()  const { _dbg(
-			lnx::dbg::checkCond(state == __pvt::CellState::eNullptr, "Unable to call this function on unallocated memory blocks");
+			lnx::dbg::checkCond(state == _pvt::CellState::eNullptr, "Unable to call this function on unallocated memory blocks");
 		)}
 		alwaysInline void checkNullptrD() const { _dbg(
-			lnx::dbg::checkCond(state == __pvt::CellState::eNullptr, "Cannot dereference an unallocated memory block");
+			lnx::dbg::checkCond(state == _pvt::CellState::eNullptr, "Cannot dereference an unallocated memory block");
 		)}
 
 
@@ -106,7 +106,7 @@ namespace lnx::ram{
 	public:
 		genInitCheck;
 		Cell_t* cell; 							//A pointer to a lnx::ram::Cell_t object that contains the cell informations
-		_dbg(mutable __pvt::CellState state;)	//[State of the pointer]
+		_dbg(mutable _pvt::CellState state;)	//[State of the pointer]
 		_dbg(mutable ptr<Dummy>* prevOwner;)	//The pointer that acquired the memory before this object
 		_dbg(mutable ptr<Dummy>* nextOwner;)	//The pointer that acquired the memory after this object
 
@@ -133,7 +133,7 @@ namespace lnx::ram{
 		 */
 		alwaysInline ptr() : cell{ &dummyCell } {
 			_dbg(prevOwner = nextOwner = nullptr;)
-			_dbg(state = __pvt::CellState::eNullptr);
+			_dbg(state = _pvt::CellState::eNullptr);
 		}
 		alwaysInline ptr(const std::nullptr_t) : ptr() {}
 
@@ -200,7 +200,7 @@ namespace lnx::ram{
 			alloc_(vSize, vClass);
 			// ++cell->owners; //! no. owners already set in alloc_
 			pushOwner();
-			_dbg(state = __pvt::CellState::eAlloc);
+			_dbg(state = _pvt::CellState::eAlloc);
 		}
 
 
@@ -445,37 +445,37 @@ namespace lnx::ram{
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
 		void alloc_(const uint64 vSize, const CellClass vClass) {
-			using namespace lnx::__pvt;
+			using namespace lnx::_pvt;
 			g_cells_m().lock();
 			const auto cellIndex = g_cells().add(Cell_t{});						//Save cell index
 			g_cells_m().unlock();
 			cell = &g_cells()[cellIndex];										//Update cell pointer
 			*cell = Cell_t{													//Update cell data
-				.typeIndex = __pvt::classIndexFromEnum(vClass),					//Set cell type index
+				.typeIndex = _pvt::classIndexFromEnum(vClass),					//Set cell type index
 				.owners = 1,													//Set 1 owner: this pointer
 				//! ^ This is not an error. Allocations are not shared when passing a nullptr to operator=
 				//!   This means that reallocating a pointer after having assigned it will only reassign the one you are calling the functio on
 				.cellIndex  = cellIndex,										//Set cell index
 				.cellSize = (uint32)vSize,										//Set size specified in function call
 			};
-			_dbg(state = __pvt::CellState::eAlloc);						//Add cell state info if in debug mode
+			_dbg(state = _pvt::CellState::eAlloc);						//Add cell state info if in debug mode
 
 
 			if((uint32)vClass) {											//For fixed class cells
-				auto& type_ = g_types()[__pvt::classIndexFromEnum(vClass)];			//Cache buffer type
+				auto& type_ = g_types()[_pvt::classIndexFromEnum(vClass)];			//Cache buffer type
 				type_.m.lock();
 				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 				type_.m.unlock();
 				cell->localIndex = localIndex;									//Save local index in cell object
 
 				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
-				if(!type_.memory[buffIndex]) type_.memory[buffIndex] = _wds(_aligned_malloc(bufferSize, memOffset)) _lnx(aligned_alloc(__pvt::memOffset, __pvt::buffSize));
+				if(!type_.memory[buffIndex]) type_.memory[buffIndex] = _wds(_aligned_malloc(bufferSize, memOffset)) _lnx(aligned_alloc(_pvt::memOffset, _pvt::buffSize));
 				//															 	 Save allocation address in cell object
 				cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
 			}
 			else {															//For custom size cells
-				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
-				cell->address = _wds(_aligned_malloc(size, __pvt::memOffset)) _lnx(aligned_alloc(__pvt::memOffset, size));
+				uint64 size = (vSize / _pvt::incSize + 1) * _pvt::incSize;	//Calculate the new size and allocate a new buffer
+				cell->address = _wds(_aligned_malloc(size, _pvt::memOffset)) _lnx(aligned_alloc(_pvt::memOffset, size));
 				_dbg(cell->localIndex = 0;)
 			}
 			_dbg(cell->firstOwner = cell->lastOwner = nullptr);
@@ -502,7 +502,7 @@ namespace lnx::ram{
 		 */
 		void realloc(const uint64 vSize, const bool vCopyOldData = true, CellClass vClass = CellClass::eAuto) {
 			//FIXME FREE CUSTOM SIZE BUFFERS
-			using namespace lnx::__pvt;
+			using namespace lnx::_pvt;
 			checkInit(); checkAllocSize(vSize, vClass);
 			evaluateCellClass(vSize, vClass);
 
@@ -514,7 +514,7 @@ namespace lnx::ram{
 			}
 			else { [[likely]]													//If it's allocated
 				if(																	//And the new size is smaller or equal to the maximum cell size
-					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / __pvt::incSize) * __pvt::incSize)) {
+					((uint32)vClass && vSize <= (int64)vClass) || (!(uint32)vClass && vSize <= (vSize / _pvt::incSize) * _pvt::incSize)) {
 					//!                                                                        ^ Not (vSize / incSize + 1)
 					[[unlikely]] cell->cellSize = vSize;								//change the cellSize variable and return //FIXME move to fixed size cell
 				}
@@ -533,12 +533,12 @@ namespace lnx::ram{
 							cell->address = (char*)type_.memory[cell->localIndex / type_.cellsPerBuff] + (uint64)type_.cellClass * cell->localIndex;
 						}
 						else {															//Fixed size --> custom
-							uint64 size_ = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate the new memory
-							cell->address = _wds(_aligned_malloc(size_, __pvt::memOffset)) _lnx(aligned_alloc(__pvt::memOffset, size_));
+							uint64 size_ = (vSize / _pvt::incSize + 1) * _pvt::incSize;	//Calculate the new size and allocate the new memory
+							cell->address = _wds(_aligned_malloc(size_, _pvt::memOffset)) _lnx(aligned_alloc(_pvt::memOffset, size_));
 						}
 						if(vCopyOldData) memcpy(cell->address, oldAddr, cell->cellSize);//Copy old data in the new memory
 						//! ^ The cell still has the same size as before, so it's ok to use it to copy the old data
-						cell->typeIndex = __pvt::classIndexFromEnum(vClass);			//Set the new type index
+						cell->typeIndex = _pvt::classIndexFromEnum(vClass);			//Set the new type index
 					}
 					else {															//Custom size --> custom
 						//FIXME use normal malloc if the data doesnt need to be copied
@@ -606,7 +606,7 @@ namespace lnx::ram{
 				#ifdef LNX_DBG
 					//! [Call from destructor] No need to set the correct state of the owners, as there are none (they're all out of scope)
 					for(auto i = cell->firstOwner; i != nullptr; i = i->nextOwner) {
-						i->state = __pvt::CellState::eFreed;
+						i->state = _pvt::CellState::eFreed;
 					}
 				#endif
 			}

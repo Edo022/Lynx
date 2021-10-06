@@ -16,11 +16,11 @@ namespace lnx::thr {
 	_lnx_init_var_set_def(RtArray<Thread>, threads){
 		pVar.resize(LNX_CNF_GLOBAL_THREAD_POOL_SIZE);
 	}
-	_lnx_init_var_set_def(std::deque<ram::ptr<__pvt::Func_b>>, queue){}
+	_lnx_init_var_set_def(std::deque<ram::ptr<_pvt::Func_b>>, queue){}
 	_lnx_init_var_set_def(std::mutex, queue_m){}
 
 
-	_lnx_init_fun_(LNX_H_THREAD_POOL) {
+	_lnx_init_fun_dec(LNX_H_THREAD_POOL) {
 		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) g_threads()[i](thrLoop, fwd{ i });
 	}
 
@@ -42,7 +42,7 @@ namespace lnx::thr {
 		while(true) {
 			g_queue_m().lock();
 			if(!g_queue().empty()) {
-				ram::ptr<__pvt::Func_b> func = (ram::ptr<__pvt::Func_b>&&)(g_queue().front());	//Save the function data
+				ram::ptr<_pvt::Func_b> func = (ram::ptr<_pvt::Func_b>&&)(g_queue().front());	//Save the function data
 				g_queue().pop_front();		//Remove the function from the queue
 				g_queue_m().unlock();		//Unlock to allow other threads to execute the remaining functions
 

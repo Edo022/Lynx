@@ -138,5 +138,5 @@ namespace lnx::shd::gsi{
 	};
 
 
-	_lnx_init_fun_dec(LNX_H_LINE2);
+	_lnx_init_fun_decdec(LNX_H_LINE2);
 }

@@ -503,7 +503,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
         fc.write('\n' * 8 + fixTabs(
             f'\nShaderInterface_b::Layout { shName }::layout;'
             f'\nuint32 { shName }::pipelineIndex = core::shaders::g_pipelineNum()++;'
-            f'\n_lnx_init_fun_(LNX_H_{ shName.upper() }){{'
+            f'\n_lnx_init_fun_dec(LNX_H_{ shName.upper() }){{'
             f'\n    core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());'
             f'\n    core::shaders::g_pipelineLayouts()[{ shName }::pipelineIndex] = &{ shName }::layout;'
             f'\n    {{ //Create descriptor set layout'
@@ -552,7 +552,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
         #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
 
         fh.write(f'\n\t}};');         # }; //Struct }
-        fh.write(f'\n\n\n\t_lnx_init_fun_dec(LNX_H_{ shName.upper() });')
+        fh.write(f'\n\n\n\t_lnx_init_fun_decdec(LNX_H_{ shName.upper() });')
 
         fh.write(f'\n}}');            # } //Namespace
         fc.write(f'\n}}');            # } //Namespace

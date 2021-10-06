@@ -24,7 +24,7 @@ namespace lnx::core::dvc{
 		_lnx_init_var_dec(const char**, validationLayers);
 	#endif
 
-	_lnx_init_fun_dec(LNX_H_DEVICES);
+	_lnx_init_fun_decdec(LNX_H_DEVICES);
 
 
 

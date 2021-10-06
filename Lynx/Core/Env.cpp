@@ -10,7 +10,7 @@
 
 
 
-_lnx_init_fun_(LNX_H_ENV) {
+_lnx_init_fun_dec(LNX_H_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 

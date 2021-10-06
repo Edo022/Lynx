@@ -10,7 +10,7 @@
 //FIXME this variable is defined in the header as a static thread_local. It should be external thread_local
 
 namespace lnx::ram{
-	_lnx_init_var_array_def(Type_t, types, (uint32)__pvt::CellClassIndex::eNum){}
+	_lnx_init_var_array_def(Type_t, types, (uint32)_pvt::CellClassIndex::eNum){}
 	_lnx_init_var_set_def(RaArrayC<Cell_t>, cells){}
 	_lnx_init_var_set_def(std::mutex, cells_m){}
 
@@ -18,12 +18,11 @@ namespace lnx::ram{
 
 
 
-	_lnx_init_fun_(LNX_H_CELL_T) {
-		using namespace lnx::ram::__pvt;
+	_lnx_init_fun_dec(LNX_H_CELL_T) {
+		using namespace lnx::ram::_pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 		for(uint32 i = 0; i < (uint32)CellClassIndex::eNum; ++i) {
-			printf("RAM USED\n"); fflush(stdout); //TODO REMOVE DEBUG OUTPUT
 			uint32 buffsNum = sys::g_ram().size / buffSize;						//Get max number of cells that can fit in the system memory
 			uint32 cellsPerBuff = buffSize / (uint32)classEnumFromIndex(i);	//Get number of cells in each buffer
 			new(&g_types()[i]) Type_t{

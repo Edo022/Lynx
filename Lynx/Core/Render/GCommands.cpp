@@ -16,7 +16,7 @@ namespace lnx::core::render::cmd{
 	}
 
 
-	_lnx_init_fun_(LNX_H_GCOMMANDS){
+	_lnx_init_fun_dec(LNX_H_GCOMMANDS){
 		createGraphicsCommandPool();
 		_dbg(createDebugMessenger());
 	}

@@ -43,5 +43,5 @@ namespace lnx::ram{
 
 	static thread_local Cell_t dummyCell = { .owners = 0, .cellSize = 0, .address = nullptr }; //FIXME this variable should be external thread_local
 
-	_lnx_init_fun_dec(LNX_H_CELL_T);
+	_lnx_init_fun_decdec(LNX_H_CELL_T);
 }

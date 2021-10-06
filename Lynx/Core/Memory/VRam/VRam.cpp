@@ -45,8 +45,8 @@ namespace lnx::sys{ //FIXME update comment
 
 
 
-	// _lnx_init_fun_() {
-	// 	using namespace vram::__pvt;
+	// _lnx_init_fun_dec() {
+	// 	using namespace vram::_pvt;
 
 	// 	//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 	// 	for(uint32 k = 0; k < 2; ++k) { 									//Loop location

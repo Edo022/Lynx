@@ -179,7 +179,7 @@ namespace lnx::shd::gsi{
 
 	ShaderInterface_b::Layout Border2::layout;
 	uint32 Border2::pipelineIndex = core::shaders::g_pipelineNum()++;
-	_lnx_init_fun_(LNX_H_BORDER2){
+	_lnx_init_fun_dec(LNX_H_BORDER2){
 		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
 		core::shaders::g_pipelineLayouts()[Border2::pipelineIndex] = &Border2::layout;
 		{ //Create descriptor set layout
