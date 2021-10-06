@@ -37,8 +37,9 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 #define scast static_cast
 #define rcast reinterpret_cast
 #define noop  ((void)0)
-#define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline
+#define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline //TODO write that the function definition must be available even when compiling the .o
 #define neverInline  __attribute__((__noinline__))
+#define used  __attribute__((__used__))
 
 #define alignVar(n) __attribute__((aligned(n )))
 #define alignCache  __attribute__((aligned(64)))

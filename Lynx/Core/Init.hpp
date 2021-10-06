@@ -1,4 +1,7 @@
 #pragma once
+#include "Lynx/macros.hpp"
+
+
 
 
 // #define _pvt_uuid_cat2(a, b, c) a ## b ## c
@@ -50,28 +53,30 @@
  *     _lnx_init_var_dec(f32v3, vector);
  */
 #define _lnx_init_var_dec(type, name) _lnx_init_var_dec2(type, name, _lnx_init_var_##name)
-#define _lnx_init_var_dec2(type, name, id)  \
-	/*Get declaration*/                  \
-	namespace __pvt {                    \
-		type& id##_get(); \
-		static type& id##_v = id##_get();\
-	}                                    \
+#define _lnx_init_var_dec2(type, name, id) \
+	/*Get declaration*/                    \
+	namespace __pvt {                      \
+		used        type&          id##_get();                  \
+		used static type& id##_v = id##_get();  \
+	}                                      \
 	\
-	/*Reference definition*/             \
-	static _rls(alwaysInline) _dbg(inline) type& g_##name(){ return __pvt::_lnx_init_var_##name##_v; }
+	/*Reference definition*/               \
+	_rls(used static alwaysInline type& g_##name(){ return __pvt::_lnx_init_var_##name##_v; })\
+	_dbg(used              inline type& g_##name())
 
 
 
 #define _lnx_init_var_array_dec(type, name) _lnx_init_var_array_dec2(type, name, _lnx_init_var_##name)
 #define _lnx_init_var_array_dec2(type, name, id)\
-	/*Get declaration*/                  \
-	namespace __pvt {                    \
-		type* id##_get(); \
-	static type* id##_v = id##_get();\
-	}                                    \
+	/*Get declaration*/               \
+	namespace __pvt {                 \
+		used        type*          id##_get();             \
+		used static type* id##_v = id##_get(); \
+	}                                 \
 	\
-	/*Reference definition*/             \
-	static _rls(alwaysInline) _dbg(inline) type* g_##name(){ return __pvt::_lnx_init_var_##name##_v; };
+	/*Reference definition*/          \
+	_rls(used static alwaysInline type* g_##name(){ return __pvt::_lnx_init_var_##name##_v; });\
+	_dbg(used              inline type* g_##name())
 
 
 
@@ -102,22 +107,27 @@
 	static_assert(std::is_const_v<type>, "Non-const variable defined with \"_lnx_init_var_const_def\"");\
 	namespace __pvt{                         \
 		/*Initializer function declaration*/ \
-		type id##_init_f();   \
+		used type id##_init_f();   \
 	\
 		/*Get function definition*/          \
-		type& id##_get(){     \
-			static type* var = new (type)(id##_init_f());\
+		used type& id##_get(){     \
+			used static type* var = new (type)(id##_init_f());\
 			return *var;                     \
 		}                                    \
 	}                                        \
 	\
+	/*Debug getter definition*/\
+	_dbg(used inline type& g_##name(){)\
+	_dbg(	printf("Used g_" #name "\n");)\
+	_dbg(	return __pvt::id##_v;)\
+	_dbg(};)\
 	/*Initializer function definition*/      \
-	type __pvt::id##_init_f()
+	used type __pvt::id##_init_f()
 
 
 
 
-
+//TODO add used attribute
 /**
  * @brief Definition and and initialization macro for varbiales declared with _lnx_init_var_dec
  *     This macro writes the function that creates the static variable, the variable definition and the signature of the function used to initialize it
@@ -142,19 +152,24 @@
 		/*Initializer function declaration*/    \
 		class id##_init_t{       \
 			public:                             \
-			id##_init_t(type& pVar); \
+			used id##_init_t(type& pVar); \
 		};                                      \
 	\
 		/*Get function definition*/             \
-		type& id##_get(){        \
-			static type* var = new (type)();    \
-			static id##_init_t init_v(*var); \
+		used type& id##_get(){        \
+			used static type* var = new (type)();    \
+			used static id##_init_t init_v(*var); \
 			return *var;                        \
 		}                                       \
 	}                                           \
 	\
 	/*Initializer function definition*/         \
-	__pvt::id##_init_t::id##_init_t(type& pVar)
+	/*Debug getter function*/\
+	_dbg(used inline type& g_##name(){)\
+	_dbg(	printf("Used g_" #name "\n");)\
+	_dbg(	return __pvt::id##_v;)\
+	_dbg(};)\
+	used __pvt::id##_init_t::id##_init_t(type& pVar)
 
 
 
@@ -165,24 +180,28 @@
 		/*Initializer function declaration*/        \
 		class id##_init_t{           \
 			public:                                 \
-			id##_init_t(type* pVar); \
+			used id##_init_t(type* pVar); \
 		};                                          \
 	\
 		/*Get function definition*/                         \
-		type* id##_get(){                    \
-			static type* var = new type[count];             \
-			static id##_init_t init_v(var);  \
+		used type* id##_get(){                    \
+			used static type* var = new type[count];             \
+			used static id##_init_t init_v(var);  \
 			return var;                                     \
 		}                                                   \
 	}                                                       \
 	\
-	/*Getter function*/\
+	/*Debug getter function*/\
+	_dbg(used inline type* g_##name(){)\
+	_dbg(	printf("Used g_" #name "\n");)\
+	_dbg(	return __pvt::id##_v;)\
+	_dbg(};)\
 	/*Initializer function definition*/                     \
-	__pvt::id##_init_t::id##_init_t(type* pVar)
+	used __pvt::id##_init_t::id##_init_t(type* pVar)
 
 	// static _rls(alwaysInline) _dbg(inline) type* g_##name(){
 	// 	return __pvt::_lnx_init_var_##name##_v;
-	// }\
+	// }
 
 
 
@@ -203,11 +222,11 @@
 #define _lnx_init_fun_(tu)                                                                  \
 	namespace __pvt{                                                                     \
 		struct _lnx_init_fun_##tu##_t{                                                   \
-			__attribute__((used)) _lnx_init_fun_##tu##_t(); \
+			used _lnx_init_fun_##tu##_t(); \
 		};                                                                               \
 	}                                                                                    \
 	_lnx_init_var_set_def(__pvt::_lnx_init_fun_##tu##_t, tu){}                              \
-	__pvt::_lnx_init_fun_##tu##_t::_lnx_init_fun_##tu##_t() //{
+	used __pvt::_lnx_init_fun_##tu##_t::_lnx_init_fun_##tu##_t() //{
 		//Implementation
 		//...
 	//}

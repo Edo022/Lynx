@@ -59,7 +59,7 @@ namespace lnx{
 
 		InputCallbackQueues icQueues;
 		void qSpawn(obj::obj_bb* pObject);
-		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
+		used static void resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
 
 	public:
 		Window(uint32 vWidth = 800, uint32 vHeight = 600);
