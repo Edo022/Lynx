@@ -100,7 +100,7 @@ namespace lnx{
 	 * Destroys the render core, the surface and the GLFW window and frees any used resource
 	 *     This function should only be used by the engine
 	 * Complexity: O(n + m) [from RenderCore::clear]
-	 *     where n = this->renderCore.swp.images.count() and m = __renderMaxFramesInFlight
+	 *     where n = this->renderCore.swp.images.count() and m = renderMaxFramesInFlight
 	 */
 	void Window::clear(){
 		renderCore.clear();

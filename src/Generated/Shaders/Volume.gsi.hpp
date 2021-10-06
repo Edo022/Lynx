@@ -71,20 +71,20 @@ namespace lnx::shd::gsi{
 		l_wsize wsize{ true };
 
 
-		struct l__data : public ShaderElm_b<eUniform> {
-			alwaysInline l__data(const bool vExt) : ShaderElm_b() {}
-			inline l__data() : ShaderElm_b(256) {}
-			inline l__data(const l__data& p_data) {
-				ShaderElm_b:: data = p_data. data;
-				ShaderElm_b::vdata = p_data.vdata;
+		struct l_data : public ShaderElm_b<eUniform> {
+			alwaysInline l_data(const bool vExt) : ShaderElm_b() {}
+			inline l_data() : ShaderElm_b(256) {}
+			inline l_data(const l_data& pData) {
+				ShaderElm_b:: data = pData. data;
+				ShaderElm_b::vdata = pData.vdata;
 			}
-			inline l__data& operator=(const l__data& p_data) {
-				ShaderElm_b:: data = p_data. data;
-				ShaderElm_b::vdata = p_data.vdata;
+			inline l_data& operator=(const l_data& pData) {
+				ShaderElm_b:: data = pData. data;
+				ShaderElm_b::vdata = pData.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
 			}
-			inline l__data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
 			}
 			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
@@ -95,7 +95,7 @@ namespace lnx::shd::gsi{
 			f32& r = *(f32*)(ShaderElm_b::data + 16);
 			f32v4& col = *(f32v4*)(ShaderElm_b::data + 32);
 		};
-		l__data _data;
+		l_data data;
 
 
 		void spawn(

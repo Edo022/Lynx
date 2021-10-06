@@ -162,7 +162,7 @@ namespace lnx{
 		}
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
-			createDefaultCommandBuffers__(); //[m]
+			createDefaultCommandBuffers(); //[m]
 		}
 		sh_clear.spawn(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *this);
 	}
@@ -174,7 +174,7 @@ namespace lnx{
 	 * @brief Destroyes the swapchain an frees the resources used by the render core
 	 *     This function must be called from lnx::Window::clear() only
 	 * Complexity: O(n + m) [from Swapchain::clear]
-	 *     where n = this->swp.images.count() and m = __renderMaxFramesInFlight
+	 *     where n = this->swp.images.count() and m = renderMaxFramesInFlight
 	 */
 	void core::RenderCore::clear(){
 		swp.clear();
@@ -194,7 +194,7 @@ namespace lnx{
 	 * Complexity: O(n)
 	 *     where n = this->swp.images.count()
 	 */
-	void core::RenderCore::createDefaultCommandBuffers__() { //TODO
+	void core::RenderCore::createDefaultCommandBuffers() { //TODO
 		{ //Render command pool
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
@@ -549,7 +549,7 @@ namespace lnx{
 
 
 			//Update frame number and flush the window data
-			swp.curFrame = (swp.curFrame + 1) % lnx::core::wnd::__renderMaxFramesInFlight;
+			swp.curFrame = (swp.curFrame + 1) % lnx::core::wnd::renderMaxFramesInFlight;
 			glfwSwapBuffers(w->window);
 
 			updateObjects();

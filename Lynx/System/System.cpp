@@ -14,7 +14,7 @@ namespace lnx::sys{
 	namespace dir {
 		_lnx_init_var_set_def(String, thisDir){
 			char buff[FILENAME_MAX];			//Create char array to store the path
-			__lp_get_cwd(buff, FILENAME_MAX);	//Get path
+			_lnx_get_cwd(buff, FILENAME_MAX);	//Get path
 			pVar = buff;						//Save path
 			_wds(fixWindowsPath(pVar);)			//Replace silly windows backslashes with normal slashes
 		}

@@ -105,9 +105,9 @@ namespace lnx::shd::gsi{
 		;
 
 		auto bufferInfo3 = vk::DescriptorBufferInfo()
-			.setBuffer (_data.vdata.cell->csc.buffer)
-			.setOffset (_data.vdata.cell->localOffset)
-			.setRange  (_data.vdata.cell->cellSize)
+			.setBuffer (data.vdata.cell->csc.buffer)
+			.setOffset (data.vdata.cell->localOffset)
+			.setRange  (data.vdata.cell->cellSize)
 		;
 		writeSets[3] = vk::WriteDescriptorSet()
 			.setDstSet          (descriptorSet)

@@ -24,8 +24,8 @@ namespace lnx::obj {
 		f32v2 _fp0;		//First point of the line
 		f32v2 _fp1;		//Second point of the line
 
-		virtual ram::ptr<char> getShData() override { return data._data.data; }
-		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
+		virtual ram::ptr<char> getShData() override { return data.data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data.data.vdata; }
 
 
 		/**
@@ -41,11 +41,11 @@ namespace lnx::obj {
 		Line2(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			setFp(pFp);
 			setSp(pSp);
-			data._data.col0 = pFc;
-			data._data.col1 = pSc;
-			data._data.wd0 = vFw;
-			data._data.wd1 = vSw;
-			data._data.ID = (uint32)ID;
+			data.data.col0 = pFc;
+			data.data.col1 = pSc;
+			data.data.wd0 = vFw;
+			data.data.wd1 = vSw;
+			data.data.ID = (uint32)ID;
 
 		}
 

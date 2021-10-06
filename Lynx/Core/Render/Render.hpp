@@ -79,7 +79,7 @@ namespace lnx{
 
 			void updateObjects();
 			void sendInputCallbacks();
-			void createDefaultCommandBuffers__();
+			void createDefaultCommandBuffers();
 
 		public:
 			Window* w;									//Address of the window that owns the render core. Initialized in the init function of the window

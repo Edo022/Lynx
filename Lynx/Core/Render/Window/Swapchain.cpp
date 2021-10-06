@@ -17,15 +17,15 @@ namespace lnx::core::wnd{
 	 * @brief Constructor. Resizes the frames array and creates the synchronization objects
 	 *     This function should only be used by the engine
 	 * Complexity: O(n)
-	 *     where n = __renderMaxFramesInFlight
+	 *     where n = renderMaxFramesInFlight
 	 */
 	Swapchain::Swapchain(){
-		frames.resize(__renderMaxFramesInFlight);
+		frames.resize(renderMaxFramesInFlight);
 
 		//Create sync objects
 		auto semaphoreInfo = vk::SemaphoreCreateInfo();
 		auto fenceInfo = vk::FenceCreateInfo().setFlags(vk::FenceCreateFlagBits::eSignaled);
-		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
+		for(uint32 i = 0; i < renderMaxFramesInFlight; ++i) {
 			switch(dvc::g_graphics().ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_aquired )){ vkDefaultCases; }
 			switch(dvc::g_graphics().ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_objects )){ vkDefaultCases; }
 			switch(dvc::g_graphics().ld.createSemaphore(&semaphoreInfo, nullptr, &frames[i].s_copy    )){ vkDefaultCases; }
@@ -223,7 +223,7 @@ namespace lnx::core::wnd{
 
 				//#LLID CCB0000 Recreate copy command buffers
 				w->renderCore.copyCommandBuffers.resize(images.count());	//Resize the command buffer array in the shader
-				w->renderCore.createDefaultCommandBuffers__();				//Create command buffers and command pool
+				w->renderCore.createDefaultCommandBuffers();				//Create command buffers and command pool
 			}
 
 			//Recreate clear shader
@@ -258,7 +258,7 @@ namespace lnx::core::wnd{
 	 * @brief Destroys the swapchain object and frees its resources
 	 *     This function should only be used by the engine
 	 * Complexity: O(n + m)
-	 *     where n = this->images.count() and m = __renderMaxFramesInFlight
+	 *     where n = this->images.count() and m = renderMaxFramesInFlight
 	 */
 	void Swapchain::clear(){
 		switch(core::dvc::g_graphics().ld.waitIdle()){
@@ -268,7 +268,7 @@ namespace lnx::core::wnd{
 		destroy();
 		dvc::g_graphics().ld.destroyRenderPass  (renderPass, nullptr);
 		dvc::g_graphics().ld.destroySwapchainKHR(swapchain,  nullptr);
-		for(uint32 i = 0; i < __renderMaxFramesInFlight; ++i) {
+		for(uint32 i = 0; i < renderMaxFramesInFlight; ++i) {
 			dvc::g_graphics().ld.destroySemaphore(frames[i].s_aquired,  nullptr);
 			dvc::g_graphics().ld.destroySemaphore(frames[i].s_objects,  nullptr);
 			dvc::g_graphics().ld.destroySemaphore(frames[i].s_copy,     nullptr);
