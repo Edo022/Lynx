@@ -1,8 +1,8 @@
 #pragma once
 #define LUX_H_SYSTEM_INFO
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
-#include "Lynx/Core/Init.hpp"
 
 
 

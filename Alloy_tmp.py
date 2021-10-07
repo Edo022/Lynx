@@ -73,6 +73,7 @@ def progress(cur:int, tot:int):
 
 def checkCmd(args):
     global poolErr
+    global avlThrs
     r = subprocess.run(args = args,  text = True, capture_output = True)
 
     if r.returncode != 0:
@@ -81,6 +82,7 @@ def checkCmd(args):
             print(f'{ red }\n\nCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }')
             print(f'{ red }\nstderr:{ " None" * (not len(r.stderr)) }{ white }\n{ r.stderr }')
             print(f'{ red }\nstdout:{ " None" * (not len(r.stdout)) }{ white }\n{ r.stdout }')
+            avlThrs = 999999
             exit(r.returncode)
         else:
             print('Alloy: An error occurred. Thread stopped')
