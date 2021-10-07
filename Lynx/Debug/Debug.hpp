@@ -8,6 +8,9 @@
 #include <cstdarg>
 #include <exception>
 
+// #include <sys/ioctl.h> //TODO MOVE TO SYSTEM INFO
+//TODO add shell information to system info
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #pragma GCC diagnostic ignored "-Wformat-security"
@@ -36,12 +39,21 @@ namespace lnx::dbg{
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wunused-variable"
 	inline namespace color {
-		static const char* red     = "\033[31m";
-		static const char* green   = "\033[32m";
-		static const char* yellow  = "\033[33m";
-		static const char* blue    = "\033[34m";
-		static const char* magenta = "\033[35m";
-		static const char* white   = "\033[37m";
+		static const char* nBlack   = "\033[0;30m";
+		static const char* nRed     = "\033[0;31m";
+		static const char* nGreen   = "\033[0;32m";
+		static const char* nYellow  = "\033[0;33m";
+		static const char* nBlue    = "\033[0;34m";
+		static const char* nMagenta = "\033[0;35m";
+		static const char* nWhite   = "\033[0;37m";
+
+		static const char* bBlack   = "\033[1;30m";
+		static const char* bRed     = "\033[1;31m";
+		static const char* bGreen   = "\033[1;32m";
+		static const char* bYellow  = "\033[1;33m";
+		static const char* bBlue    = "\033[1;34m";
+		static const char* bMagenta = "\033[1;35m";
+		static const char* bWhite   = "\033[1;37m";
 	}
 	#pragma GCC diagnostic pop
 
@@ -100,7 +112,7 @@ namespace lnx::dbg{
 
 
 
-
+//TODO dont use the fancy output when printing infos
 	/** //FIXME use gray or white color for file links
 	 * @brief Prints a message to the standard output, surrounding it with ---- separators and coloring it based on its severity
 	 *     Errors throw exceptions when in debug mode
@@ -118,78 +130,60 @@ namespace lnx::dbg{
 		using namespace std::chrono;
 		using std::string;
 		#ifdef LNX_DBG
+			// //Get terminal size //TODO MOVE TO SYSTEM INFO
+			// struct winsize wsize;
+    		// ioctl(0, TIOCGWINSZ, &wsize);
+
 			//Get time
 			time_t cTime; time(&cTime);				//Get current time
 			tm *lTime; lTime = localtime(&cTime);	//Convert to local time
 			auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) % seconds(1);
 
-			//Format time
-			string out = string_format(
-				"[%02d:%02d:%02d.%03d] ",
-				lTime->tm_hour,
-				lTime->tm_min,
-				lTime->tm_sec,
-				ms.count()
+
+			//Build traceback
+			string traceback = "\n    Address │   Line │ Function";
+			for(uint32 i = 0; ; ++i){
+				auto func = caller::func(vIndex + i);
+				if(func[0] != '?' && func[0] != '\0') {
+					// auto tracebackLine =
+					traceback +=
+						std::string("\n    ") +
+						string_format("%7x", caller::addr(vIndex + i)) + " │ " +
+						string_format("%6d", caller::line(vIndex + i)) + " │ " +
+						func +
+						bBlack + "  [" + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]" + nWhite;
+					;
+					// auto fileLink = std::string("[") + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]";
+
+					// tracebackLine.resize(max(wsize.ws_col - fileLink.length()), ' ');
+					// traceback += tracebackLine + fileLink;
+				}
+				else break;
+				if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
+					traceback += "\n    Too many nested calls. Backtrace stopped";
+					break;
+				}
+			}
+
+
+			//Build output string
+			char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
+			std::string outCol  = (vSeverity == Severity::eInfo) ? bWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
+			std::string msgType = (vSeverity == Severity::eInfo) ? ""     : (vSeverity == Severity::eWarn) ? "Warning"  : "Error:";
+			std::string out = string_format(
+				outCol + "[%02d:%02d:%02d.%03d] ────────────────────────────────────────────────────────────────────────────────────────────" +
+				"\n" + msgType + nWhite +
+				"\n" +
+				"\nThread \"" + thrName + "\"" +
+				"\nTraceback: " + traceback.c_str() +
+				"\n" +
+				"\n" + outCol + pFstr +
+				"\n──────────────────────────────────────────────────────────────────────────────────────────────────────────\n\n" + nWhite,
+				lTime->tm_hour, lTime->tm_min, lTime->tm_sec, ms.count(), pArgs...
 			);
 
-			if(vSeverity == Severity::eInfo){
-				out = string_format(out + pFstr, pArgs...);
-			}
-			else{
-				//Create output string
-				out = string_format(
-					string("\n\n") + out +
-					"%s%s%s",		//Format
-					"%s"			//Separator
-					"%s\n\n"		//Severity
-					"%s\"%s\"\n"	//Thread
-					"%s%s\n\n",		//Traceback
-					pFstr,			//User message
-					"%s"			//Separator
-				);
 
-
-				//Build traceback
-				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-				string traceback = "\n    Address |   Line | Function";
-				for(uint32 i = 0; ; ++i){
-					auto func = caller::func(vIndex + i);
-					if(func[0] != '?' && func[0] != '\0') {
-						traceback +=
-							"\n    " +
-							string_format("%7x", caller::addr(vIndex + i)) + " | " +
-							string_format("%6d", caller::line(vIndex + i)) + " | " +
-							func +
-							" [" + caller::file(vIndex + i) + ":" +
-							string_format("%d", caller::line(vIndex + i)) + "]"
-						;
-					}
-					else break;
-					if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
-						traceback += "\n    Too many nested calls. Backtrace stopped";
-						break;
-					}
-				}
-
-
-				//Merge default text and user data
-				// std::string out__ = string_format(out,
-				out = string_format(out,
-					"------------------------------------------------------------\n",
-					(vSeverity == Severity::eInfo) ? "" : (vSeverity == Severity::eWarn) ? "Warning" : "Error:",
-
-					"Thread   ", thrName,
-					"Traceback: ", traceback.c_str(),
-
-					pArgs...,
-					"\n--------------------------------------------------------------------------\n\n"
-				);
-			}
-
-
-			//Print
-			printf("%s%s%s\n", vSeverity == Severity::eInfo ? white : (vSeverity == Severity::eWarn ? yellow : red), out.c_str(), white);
-			fflush(stdout);
+			printf("%s\n", out.c_str()); fflush(stdout);
 			if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
 		#endif
 	}

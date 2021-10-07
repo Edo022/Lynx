@@ -15,9 +15,6 @@ def run(mode:str):
     ncf =       'r' if cf == 'd' else 'd'
     NPF = 'Windows' if pf == 'l' else 'Linux'
     NCF = 'Release' if cf == 'd' else 'Debug'
-    print(ncf)
-    print(cf)
-    print(CF)
 
     with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 

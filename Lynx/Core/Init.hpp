@@ -124,7 +124,7 @@
 	\
 	/*Debug getter definition*/\
 	_dbg(used inline type& g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #id "\" used before initialization");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -175,7 +175,7 @@
 	\
 	/*Debug getter function*/\
 	_dbg(used inline type& g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #id "\" used before initialization");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -207,7 +207,7 @@
 	\
 	/*Debug getter function*/\
 	_dbg(used inline type* g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #id "\" used before initialization");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
