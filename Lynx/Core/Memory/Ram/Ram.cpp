@@ -25,7 +25,7 @@ namespace lnx::ram{
 
 
 
-	// _lnx_init_fun_dec(LNX_H_CELL_T) {
+	// _lnx_init_fun_def(LNX_H_CELL_T) {
 	// 	using namespace _pvt;
 
 	// 	//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM

@@ -12,7 +12,7 @@
 namespace lnx::sys{
 	//Path to the current directory
 	namespace dir {
-		_lnx_init_var_set_def(String, thisDir){
+		_lnx_init_var_set_def((String), thisDir, lnx::sys::dir){
 			char buff[FILENAME_MAX];			//Create char array to store the path
 			_lnx_get_cwd(buff, FILENAME_MAX);	//Get path
 			pVar = buff;						//Save path

@@ -41,6 +41,15 @@
 
 
 
+//TODO MOVE TO UTILS HEADER
+#define DEL_T2(...) __VA_ARGS__
+#define DEL_T(v) DEL_T2 v
+
+
+
+
+
+
 /**
  * @brief Creates a global reference to a static variable which is initialized and constructed on its first use
  *     A _lnx_init_var_def in the translation unit is required to define and initialize the variable
@@ -52,14 +61,19 @@
  *     e.g.
  *     _lnx_init_var_dec(f32v3, vector);
  */
-#define _lnx_init_var_dec(type, name) _lnx_init_var_dec2(type, name, _lnx_init_var_##name)
-#define _lnx_init_var_dec2(type, name, id) \
+#define _lnx_init_var_dec(      type, name) _lnx_init_var_dec2((DEL_T(type)&), name, _lnx_init_var_##name)
+#define _lnx_init_var_array_dec(type, name) _lnx_init_var_dec2((DEL_T(type)*), name, _lnx_init_var_##name)
+
+
+
+
+// #define _lnx_init_var_dec2(type, name, id) \
 	/*Get declaration*/                    \
-	namespace _pvt {                      \
-		used        type&          id##_get();                  \
-		used static type& id##_v = id##_get();  \
-		extern bool id##_is_init;/*Zero initialized before global constructors*/\
-	}                                      \
+	// namespace _pvt {                      \
+	// 	used        type&          id##_get();                  \
+	// 	used static type& id##_v = id##_get();  \
+	// 	extern bool id##_is_init;/*Zero initialized before global constructors*/\
+	// }                                      \
 	\
 	/*Reference definition*/               \
 	_rls(used static alwaysInline type& g_##name(){ return _pvt::_lnx_init_var_##name##_v; })\
@@ -67,18 +81,45 @@
 
 
 
-#define _lnx_init_var_array_dec(type, name) _lnx_init_var_array_dec2(type, name, _lnx_init_var_##name)
-#define _lnx_init_var_array_dec2(type, name, id)\
+// #define _lnx_init_var_array_dec2(type, name, id)
+#define _lnx_init_var_dec2(type, name, id)\
+	_rls(used static alwaysInline DEL_T(type) g_##name(){ return _pvt::_lnx_init_var_##name##_v; });\
+	_dbg(used              inline DEL_T(type) g_##name())
+
+
 	/*Get declaration*/               \
-	namespace _pvt {                 \
-		used        type*          id##_get();             \
-		used static type* id##_v = id##_get(); \
-		extern bool id##_is_init;/*Zero initialized before global constructors*/\
-	}                                 \
-	\
+	// namespace _pvt {                 \
+	// 	used        DEL_T(type)          id##_get();             \
+	// 	used static DEL_T(type) id##_v = id##_get(); \
+	// 	extern bool id##_is_init;/*Zero initialized before global constructors*/\
+	// }                                 \
+	//\
 	/*Reference definition*/          \
-	_rls(used static alwaysInline type* g_##name(){ return _pvt::_lnx_init_var_##name##_v; });\
-	_dbg(used              inline type* g_##name())
+	// _rls(used static alwaysInline DEL_T(type) g_##name(){ return _pvt::_lnx_init_var_##name##_v; });\
+	// _dbg(used              inline DEL_T(type) g_##name())
+
+
+
+
+
+
+
+#define _lnx_init_fun_def(tu, fullNs) _lnx_init_fun_def2(tu##_FUN, _lnx_init_fun_##tu##_FUN, fullNs)
+
+
+#ifndef __LNX_INITIALIZER_GENERATOR__
+	#define _lnx_init_var_const_def(type, name,        fullNs) _lnx_init_var_const_def2(type, name,        _lnx_init_var_##name)
+	#define _lnx_init_var_set_def(  type, name,        fullNs) _lnx_init_var_set_def2(  type, name,        _lnx_init_var_##name)
+	#define _lnx_init_var_array_def(type, name, count, fullNs) _lnx_init_var_array_def2(type, name, count, _lnx_init_var_##name)
+#else
+	#define _lnx_init_var_const_def(type, name,        fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_T(type)&,_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+	#define _lnx_init_var_set_def(  type, name,        fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_T(type)&,_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+	#define _lnx_init_var_array_def(type, name, count, fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_T(type)*,_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+#endif
+
+
+
+
 
 
 
@@ -104,32 +145,31 @@
  * @param name The name of the init variable. It must match the name used in its declaration
  * @param fulln The namespace containing the variable
  */
-#define _lnx_init_var_const_def(type, name) _lnx_init_var_const_def2(type, name, _lnx_init_var_##name)
 #define _lnx_init_var_const_def2(type, name, id)     \
-	static_assert(std::is_const_v<type>, "Non-const variable defined with \"_lnx_init_var_const_def\"");\
+	static_assert(std::is_const_v<DEL_T(type)>, "Non-const variable defined with \"_lnx_init_var_const_def\"");\
 	namespace _pvt{                         \
 		/*Initializer function declaration*/ \
-		used type id##_init_f();   \
+		used DEL_T(type) id##_init_f();   \
 	\
 		/*is_init definition*/ \
 		used bool id##_is_init;   \
 	\
 		/*Get function definition*/          \
-		used type& id##_get(){     \
-			used static type* var = new (type)(id##_init_f());\
+		used DEL_T(type)& id##_get(){     \
+			used static DEL_T(type)* var = new (DEL_T(type))(id##_init_f());\
 			_dbg(id##_is_init = true;)\
 			return *var;                     \
 		}                                    \
 	}                                        \
 	\
 	/*Debug getter definition*/\
-	_dbg(used inline type& g_##name(){)\
+	_dbg(used inline DEL_T(type)& g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
 	/*Initializer function definition*/      \
-	used type _pvt::id##_init_f()
+	used DEL_T(type) _pvt::id##_init_f()
 
 
 
@@ -153,20 +193,19 @@
  * @param name The name of the init variable. It must match the name used in its declaration
  * @param fulln The namespace containing the variable
  */
-#define _lnx_init_var_set_def(type, name) _lnx_init_var_set_def2(type, name, _lnx_init_var_##name)
 #define _lnx_init_var_set_def2(type, name, id)          \
 	namespace _pvt{                            \
 		/*Initializer type definition*/    \
 		struct id##_init_t{       \
-			used id##_init_t(type& pVar); \
+			used id##_init_t(DEL_T(type)& pVar); \
 		};                                      \
 	\
 		/*is_init definition*/ \
 		used bool id##_is_init;   \
 	\
 		/*Get function definition*/             \
-		used type& id##_get(){        \
-			used static type* var = new (type)();    \
+		used DEL_T(type)& id##_get(){        \
+			used static DEL_T(type)* var = new (DEL_T(type))();    \
 			used static id##_init_t init_v(*var); \
 			_dbg(id##_is_init = true;)\
 			return *var;                        \
@@ -174,31 +213,30 @@
 	}                                           \
 	\
 	/*Debug getter function*/\
-	_dbg(used inline type& g_##name(){)\
+	_dbg(used inline DEL_T(type)& g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
 	/*Initializer function definition*/         \
-	used _pvt::id##_init_t::id##_init_t(type& pVar)
+	used _pvt::id##_init_t::id##_init_t(DEL_T(type)& pVar)
 
 
 
 
-#define _lnx_init_var_array_def(type, name, count) _lnx_init_var_array_def2(type, name, count, _lnx_init_var_##name)
 #define _lnx_init_var_array_def2(type, name, count, id)     \
 	namespace _pvt{                                \
 		/*Initializer type definition*/        \
 		struct id##_init_t{           \
-			used id##_init_t(type* pVar); \
+			used id##_init_t(DEL_T(type)* pVar); \
 		};                                          \
 	\
 		/*is_init definition*/ \
 		used bool id##_is_init;   \
 	\
 		/*Get function definition*/                         \
-		used type* id##_get(){                    \
-			used static type* var = new type[count];             \
+		used DEL_T(type)* id##_get(){                    \
+			used static DEL_T(type)* var = new DEL_T(type)[count];             \
 			used static id##_init_t init_v(var);  \
 			_dbg(id##_is_init = true;)\
 			return var;                                     \
@@ -206,13 +244,13 @@
 	}                                                       \
 	\
 	/*Debug getter function*/\
-	_dbg(used inline type* g_##name(){)\
+	_dbg(used inline DEL_T(type)* g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
 	/*Initializer function definition*/                     \
-	used _pvt::id##_init_t::id##_init_t(type* pVar)
+	used _pvt::id##_init_t::id##_init_t(DEL_T(type)* pVar)
 
 	// static _rls(alwaysInline) _dbg(inline) type* g_##name(){
 	// 	return _pvt::_lnx_init_var_##name##_v;
@@ -231,29 +269,28 @@
 
 
 
-
 // file://./main.cpp
 // #define _lnx_init_fun_dec2(id)
-#define _lnx_init_fun_dec(tu)                                                                  \
+#define _lnx_init_fun_def2(tu, id, fullNs)                                                                  \
 	namespace _pvt{                                                                     \
-		struct _lnx_init_fun_dec_##tu##_t{                                                   \
-			used _lnx_init_fun_dec_##tu##_t(); \
+		struct id##_t{                                                   \
+			used id##_t(); \
 		};                                                                               \
 	}                                                                                    \
-	_lnx_init_var_set_def(_pvt::_lnx_init_fun_dec_##tu##_t, tu){}                              \
-	used _pvt::_lnx_init_fun_dec_##tu##_t::_lnx_init_fun_dec_##tu##_t() //{
+	_lnx_init_var_set_def((_pvt::id##_t), tu, fullNs){}                              \
+	used _pvt::id##_t::id##_t() //{
 		//Implementation
 		//...
 	//}
 
 //Creates a function that will be called during the static initialization
 //This macro can only be used in the global scope of .cpp files
-// #define _lnx_init_fun_dec() _lnx_init_fun_dec2(UUID())
+// #define _lnx_init_fun_def() _lnx_init_fun_dec2(UUID())
 
 
-
-#define _lnx_init_fun_decdec(tu)          \
+#define _lnx_init_fun_dec(tu) _lnx_init_fun_dec2(tu##_FUN, _lnx_init_fun_##tu##_FUN)
+#define _lnx_init_fun_dec2(tu, id)          \
 	namespace _pvt {                  \
-		struct _lnx_init_fun_dec_##tu##_t; \
+		struct id##_t; \
 	}                                  \
-	_lnx_init_var_dec(_pvt::_lnx_init_fun_dec_##tu##_t, tu)
+	_lnx_init_var_dec((_pvt::id##_t), tu)

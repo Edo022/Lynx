@@ -6,12 +6,12 @@
 
 
 namespace lnx::vram{
-    _lnx_init_var_array_def(Type_t2, types, ((uint32)_pvt::VCellClassIndex::eNum << 2) | 0b11){}
-    _lnx_init_var_set_def(RaArrayC<Cell_t2>, cells){}
-    _lnx_init_var_set_def(std::mutex, cells_m){}
+    _lnx_init_var_array_def((Type_t2), types, ((uint32)_pvt::VCellClassIndex::eNum << 2) | 0b11, lnx::vram){}
+    _lnx_init_var_set_def((RaArrayC<Cell_t2, uint32>), cells, lnx::vram){}
+    _lnx_init_var_set_def((std::mutex), cells_m,      lnx::vram){}
 
 
-    _lnx_init_fun_dec(LNX_H_VCELL_T) {
+    _lnx_init_fun_def(LNX_H_VCELL_T, lnx::vram) {
 		using namespace vram::_pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM

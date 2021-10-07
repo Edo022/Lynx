@@ -13,7 +13,7 @@
 
 namespace lnx::sys {
 	namespace dir {
-		_lnx_init_var_dec(String, thisDir);
+		_lnx_init_var_dec((String), thisDir);
 		void fixWindowsPath(const lnx::String& pStr);
 	}
 }

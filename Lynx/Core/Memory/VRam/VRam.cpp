@@ -17,7 +17,7 @@ namespace lnx::sys{ //FIXME update comment
 	//! And it has to do it after getting the device infos, but before allocating the cells.
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
-	_lnx_init_var_const_def(const GpuInfo, vram){
+	_lnx_init_var_const_def((const GpuInfo), vram, lnx::sys){
 		//Get GPU informations
 		GpuInfo _vram;
 		_vram.name = core::dvc::g_graphics().pd.properties.deviceName;
@@ -45,7 +45,7 @@ namespace lnx::sys{ //FIXME update comment
 
 
 
-	// _lnx_init_fun_dec() {
+	// _lnx_init_fun_def() {
 	// 	using namespace vram::_pvt;
 
 	// 	//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM

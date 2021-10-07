@@ -177,9 +177,9 @@ namespace lnx::shd::gsi{
 
 
 
-	ShaderInterface_b::Layout Line2::layout;
+	InterfaceLayout Line2::layout;
 	uint32 Line2::pipelineIndex = core::shaders::g_pipelineNum()++;
-	_lnx_init_fun_dec(LNX_H_LINE2){
+	_lnx_init_fun_def(LNX_H_LINE2, lnx::shd::gsi){
 		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
 		core::shaders::g_pipelineLayouts()[Line2::pipelineIndex] = &Line2::layout;
 		{ //Create descriptor set layout

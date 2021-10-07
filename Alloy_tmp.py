@@ -108,6 +108,18 @@ def needsRebuildCPP(o, s, FLG):
 
 
 
+
+
+
+def BuildInit(CPP):
+    cpp:list = []
+    for s in CPP:
+        checkCmd(['python3', 'Tools/Build/GenInitializers.py', s])
+
+
+
+
+
 def BuildGSI1(i, ov, oi, s, isEngine, tot, thrIndex:int):
     global etop
     global poolMutex
@@ -232,6 +244,7 @@ def dirs(EOUT:str, AOUT:str):
     os.makedirs(exist_ok = True, name =                f'./src/Generated')
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
     os.makedirs(exist_ok = True, name =                f'./src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name =                f'./src/Generated/.init')
 
     # Create output directories
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
@@ -261,6 +274,7 @@ def build(
     SFLG = [                                            # Shared default C++ flags
         '-std=c++20', '-m64', '-pthread',                   # Use C++20, build for 64bit environments, use pthread
         '-I.', '-Isrc', f'-I{ etop }/.engine/src',          # Include from src directories and project root
+        '-include', 'Lynx/Core/InitList.hpp',               # Include generated engine initializers
         '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros
         '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros
         f'-ffile-prefix-map={ os.path.abspath(etop) }/=',
@@ -298,10 +312,11 @@ def build(
 
 
     # Build libraries
-
     print(f'Generating engine files')
     BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
     print(f'{ bgreen }Engine files generated successfully\n{ white }')
+
+    BuildInit(ECPP + EGSI)
 
     print(f'Compiling engine source files')
     BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP, defineTuUuid = True, tuUuidPrefix = 'e')

@@ -12,12 +12,12 @@
 
 
 namespace lnx::core::shaders{
-	_lnx_init_var_set_def(String, shaderPath){}
-	_lnx_init_var_set_def(uint32, pipelineNum){ pVar = 0; }
-	_lnx_init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
+	_lnx_init_var_set_def((String), shaderPath,  lnx::core::shaders){}
+	_lnx_init_var_set_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; }
+	_lnx_init_var_set_def((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts, lnx::core::shaders){}
 
 
-	_lnx_init_fun_dec(LNX_H_SHADER){
+	_lnx_init_fun_def(LNX_H_SHADER, lnx::core::shaders){
 		shaders::g_shaderPath() = sys::dir::g_thisDir() + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 

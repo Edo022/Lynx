@@ -13,7 +13,7 @@
 
 namespace lnx::shd::gsi{
 	struct Border2 : public ShaderInterface_b {
-		static ShaderInterface_b::Layout layout;
+		static InterfaceLayout layout;
 		static uint32 pipelineIndex;
 
 
@@ -134,5 +134,5 @@ namespace lnx::shd::gsi{
 	};
 
 
-	_lnx_init_fun_decdec(LNX_H_BORDER2);
+	_lnx_init_fun_dec(LNX_H_BORDER2);
 }

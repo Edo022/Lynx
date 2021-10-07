@@ -178,9 +178,9 @@ namespace lnx::shd::gsi{
 
 
 
-	ShaderInterface_b::Layout FloatToIntBuffer::layout;
+	InterfaceLayout FloatToIntBuffer::layout;
 	uint32 FloatToIntBuffer::pipelineIndex = core::shaders::g_pipelineNum()++;
-	_lnx_init_fun_dec(LNX_H_FLOATTOINTBUFFER){
+	_lnx_init_fun_def(LNX_H_FLOATTOINTBUFFER, lnx::shd::gsi){
 		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
 		core::shaders::g_pipelineLayouts()[FloatToIntBuffer::pipelineIndex] = &FloatToIntBuffer::layout;
 		{ //Create descriptor set layout

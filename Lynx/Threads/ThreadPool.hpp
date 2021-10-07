@@ -45,10 +45,10 @@ namespace lnx::thr {
 
 
 
-	_lnx_init_var_dec(RtArray<Thread>, threads);
-	_lnx_init_var_dec(std::deque<ram::ptr<_pvt::Func_b>>, queue);
-	_lnx_init_var_dec(std::mutex, queue_m);
-	_lnx_init_fun_decdec(LNX_H_THREAD_POOL);
+	_lnx_init_var_dec((RtArray<Thread, uint32>), threads);
+	_lnx_init_var_dec((std::deque<ram::ptr<_pvt::Func_b>>), queue);
+	_lnx_init_var_dec((std::mutex), queue_m);
+	_lnx_init_fun_dec(LNX_H_THREAD_POOL);
 
 
 

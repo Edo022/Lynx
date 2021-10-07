@@ -13,14 +13,14 @@
 
 
 namespace lnx::thr {
-	_lnx_init_var_set_def(RtArray<Thread>, threads){
+	_lnx_init_var_set_def((RtArray<Thread, uint32>), threads, lnx::thr){
 		pVar.resize(LNX_CNF_GLOBAL_THREAD_POOL_SIZE);
 	}
-	_lnx_init_var_set_def(std::deque<ram::ptr<_pvt::Func_b>>, queue){}
-	_lnx_init_var_set_def(std::mutex, queue_m){}
+	_lnx_init_var_set_def((std::deque<ram::ptr<_pvt::Func_b>>), queue, lnx::thr){}
+	_lnx_init_var_set_def((std::mutex), queue_m, lnx::thr){}
 
 
-	_lnx_init_fun_dec(LNX_H_THREAD_POOL) {
+	_lnx_init_fun_def(LNX_H_THREAD_POOL, lnx::thr) {
 		for(uint32 i = 0; i < LNX_CNF_GLOBAL_THREAD_POOL_SIZE; ++i) g_threads()[i](thrLoop, fwd{ i });
 	}
 

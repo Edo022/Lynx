@@ -29,23 +29,23 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhy
 
 
 namespace lnx::core::dvc{
-	_lnx_init_var_set_def(Device,          graphics){}
-	_lnx_init_var_set_def(RtArray<Device>, secondary){}
+	_lnx_init_var_set_def((Device),          graphics,  lnx::core::dvc){}
+	_lnx_init_var_set_def((RtArray<Device, uint32>), secondary, lnx::core::dvc){}
 
 
-	_lnx_init_var_set_def(vk::Instance,   instance){}
-	_lnx_init_var_set_def(GLFWwindow*,    dummyWindow){}
-	_lnx_init_var_set_def(vk::SurfaceKHR, dummySurface){}
+	_lnx_init_var_set_def((vk::Instance),   instance,     lnx::core::dvc){}
+	_lnx_init_var_set_def((GLFWwindow*),    dummyWindow,  lnx::core::dvc){}
+	_lnx_init_var_set_def((vk::SurfaceKHR), dummySurface, lnx::core::dvc){}
 
-	_lnx_init_var_set_def(uint32,       requiredDeviceExtensionsNum) { pVar = 1; }
-	_lnx_init_var_set_def(const char**, requiredDeviceExtensions) {
+	_lnx_init_var_set_def((uint32),       requiredDeviceExtensionsNum, lnx::core::dvc) { pVar = 1; }
+	_lnx_init_var_set_def((const char**), requiredDeviceExtensions,    lnx::core::dvc) {
 		pVar = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
 	#ifdef LNX_DBG
-		_lnx_init_var_set_def(VkDebugUtilsMessengerEXT, debugMessenger){};
-		_lnx_init_var_set_def(uint32,       validationLayersNum) { pVar = 1; }
-		_lnx_init_var_set_def(const char**, validationLayers) {
+		_lnx_init_var_set_def((VkDebugUtilsMessengerEXT), debugMessenger, lnx::core::dvc){};
+		_lnx_init_var_set_def((uint32),       validationLayersNum,        lnx::core::dvc) { pVar = 1; }
+		_lnx_init_var_set_def((const char**), validationLayers,           lnx::core::dvc) {
 			pVar = new const char*{ "VK_LAYER_KHRONOS_validation"};
 		}
 	#endif
@@ -57,7 +57,7 @@ namespace lnx::core::dvc{
 
 
 
-	_lnx_init_fun_dec(LNX_H_DEVICES){
+	_lnx_init_fun_def(LNX_H_DEVICES, lnx::core::dvc){
 		dbg::checkCond(!glfwInit(), "GLFW not initialized");
 
 		//Extensions

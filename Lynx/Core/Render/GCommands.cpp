@@ -11,12 +11,12 @@
 
 
 namespace lnx::core::render::cmd{
-	_lnx_init_var_set_def(vk::CommandPool, singleTimeCommandPool) {
+	_lnx_init_var_set_def((vk::CommandPool), singleTimeCommandPool, lnx::core::render::cmd) {
 		pVar = nullptr;
 	}
 
 
-	_lnx_init_fun_dec(LNX_H_GCOMMANDS){
+	_lnx_init_fun_def(LNX_H_GCOMMANDS, lnx::core::render::cmd){
 		createGraphicsCommandPool();
 		_dbg(createDebugMessenger());
 	}

@@ -35,6 +35,28 @@ namespace lnx{
 
 
 
+
+
+
+		/**
+		 * @brief //TODO
+		 * ! NOT A GLSL LAYOUT
+		 */
+		struct InterfaceLayout{
+			InterfaceLayout(){};
+			InterfaceLayout(const InterfaceLayout&)  = delete;
+			InterfaceLayout(const InterfaceLayout&&) = delete;
+			void operator==(const InterfaceLayout&)  = delete;
+			void operator==(const InterfaceLayout&&) = delete;
+
+			vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
+			vk::ShaderModule                  shaderModule;			//Shader module created from the compiled shader file
+			vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
+
+			vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
+		};
+
+
 		/**
 		 * @brief Base class for shader interface classes
 		 */
@@ -43,24 +65,6 @@ namespace lnx{
 			vk::DescriptorSet				descriptorSet;			//The descriptor sets of the instance (storage buffers, push constants, uniform buffers etc...)
 			lnx::RtArray<vk::CommandBuffer>	commandBuffers;			//The command buffers to execute the shader or other vulkan commands
 			//TODO SAVE COMMAND BUFFERS ARRAY IN RENDER CORE AND USE ONE BUFFER PER OBJECT
-
-			/**
-			 * @brief //TODO
-			 * ! NOT A GLSL LAYOUT
-			 */
-			struct Layout{
-				Layout(){};
-				Layout(const Layout&) = delete;
-				Layout(const Layout&&) = delete;
-				void operator==(const Layout&) = delete;
-				void operator==(const Layout&&) = delete;
-
-				vk::DescriptorSetLayout	          descriptorSetLayout;	//Layout of the descriptor sets
-				vk::ShaderModule                  shaderModule;			//Shader module created from the compiled shader file
-				vk::PipelineShaderStageCreateInfo shaderStageCreateInfo;//Shader stage
-
-				vk::PipelineLayout                pipelineLayout;		//Layout of the pipeline
-			};
 
 
 			~ShaderInterface_b(){

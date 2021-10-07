@@ -10,15 +10,15 @@
 //FIXME this variable is defined in the header as a static thread_local. It should be external thread_local
 
 namespace lnx::ram{
-	_lnx_init_var_array_def(Type_t, types, (uint32)_pvt::CellClassIndex::eNum){}
-	_lnx_init_var_set_def(RaArrayC<Cell_t>, cells){}
-	_lnx_init_var_set_def(std::mutex, cells_m){}
+	_lnx_init_var_array_def((Type_t), types, (uint32)_pvt::CellClassIndex::eNum, lnx::ram){}
+	_lnx_init_var_set_def((RaArrayC<Cell_t, uint32>), cells, lnx::ram){}
+	_lnx_init_var_set_def((std::mutex), cells_m,             lnx::ram){}
 
 
 
 
-
-	_lnx_init_fun_dec(LNX_H_CELL_T) {
+#define __LNX_INITIALIZER_GENERATOR__
+	_lnx_init_fun_def(LNX_H_CELL_T, lnx::ram) {
 		using namespace lnx::ram::_pvt;
 
 		//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
