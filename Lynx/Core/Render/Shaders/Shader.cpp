@@ -1,5 +1,5 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
@@ -12,13 +12,13 @@
 
 
 namespace lnx::core::shaders{
-	__init_var_set_def(String, shaderPath){}
-	__init_var_set_def(uint32, pipelineNum){ pVar = 0; }
-	__init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
+	_lnx_init_var_set_def(String, shaderPath){}
+	_lnx_init_var_set_def(uint32, pipelineNum){ pVar = 0; }
+	_lnx_init_var_set_def(RtArray<shd::ShaderInterface_b::Layout*>, pipelineLayouts){}
 
 
-	LnxAutoInit(LNX_H_SHADER){
-		shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
+	_lnx_init_fun_dec(LNX_H_SHADER){
+		shaders::g_shaderPath() = sys::dir::g_thisDir() + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
@@ -113,10 +113,10 @@ namespace lnx::core::shaders{
 	 */
 	void createPipeline(const uint32 vPipelineIndex, RenderCore& pRenderCore) {
 		auto pipelineInfo = vk::ComputePipelineCreateInfo()
-			.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)
-			.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)
+			.setStage  (g_pipelineLayouts()[vPipelineIndex]->shaderStageCreateInfo)
+			.setLayout (g_pipelineLayouts()[vPipelineIndex]->pipelineLayout)
 		;
-		auto r = dvc::graphics.ld.createComputePipeline(nullptr, pipelineInfo, nullptr);
+		auto r = dvc::g_graphics().ld.createComputePipeline(nullptr, pipelineInfo, nullptr);
 
 
 		switch(r.result){
@@ -125,7 +125,7 @@ namespace lnx::core::shaders{
 			case vk::Result::eErrorInvalidShaderNV:       dbg::logError("Invalid shader NV");    break;
 			vkDefaultFaulures;
 		}
-		// core::dvc::graphics.ld.destroyShaderModule(layout_.shaderModule, nullptr);
+		// core::dvc::g_graphics().ld.destroyShaderModule(layout_.shaderModule, nullptr);
 		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
 	}
 

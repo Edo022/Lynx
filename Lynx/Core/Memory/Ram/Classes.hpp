@@ -17,7 +17,7 @@ namespace lnx::ram{
 	};
 
 
-    namespace __pvt{
+    namespace _pvt{
 		#ifdef LNX_DBG
 		enum class CellState : uint32{
 			eAlloc   = 1,

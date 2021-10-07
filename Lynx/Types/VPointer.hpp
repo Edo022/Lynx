@@ -343,14 +343,14 @@ namespace lnx::vram{
 		 * @param vClass Class of the allocation. Default: AUTO
 		 */
 		void alloc_(const uint64 vSize, const VCellClass vClass) {
-			using namespace lnx::__pvt;
+			using namespace lnx::_pvt;
 			//FIXME WRITE USER INTERFACE
 
-			cells_m.lock();
-			const auto cellIndex = cells.add(Cell_t2{});					//Save cell index
-			cells_m.unlock();
-			Super::cell = &cells[cellIndex];								//Update cell pointer
-			uint16 typeIndex = (vClass == VCellClass::e0) ? (uint16)-1 : ((__pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
+			g_cells_m().lock();
+			const auto cellIndex = g_cells().add(Cell_t2{});					//Save cell index
+			g_cells_m().unlock();
+			Super::cell = &g_cells()[cellIndex];								//Update cell pointer
+			uint16 typeIndex = (vClass == VCellClass::e0) ? (uint16)-1 : ((_pvt::classIndexFromEnum(vClass) << 2) | (loc << 1) | btype);
 			*Super::cell = Cell_t2{											//Update cell data
 				.typeIndex = typeIndex,											//Set cell type index
 				.cellIndex  = cellIndex,										//Set cell index
@@ -359,7 +359,7 @@ namespace lnx::vram{
 
 
 			if((uint32)vClass) {											//For fixed class cells
-				auto& type_ = types[typeIndex];									//Cache buffer type
+				auto& type_ = g_types()[typeIndex];									//Cache buffer type
 				type_.m.lock();
 				const auto localIndex = type_.cells.add(true);					//Create a new allocation and save its index
 				type_.m.unlock();
@@ -371,23 +371,23 @@ namespace lnx::vram{
 					//!                     ^ Vulkan structures, but they are set to nullptr and treated as pointers, when not used
 					lnx::core::buffers::createBuffer(
 						&type_.memory[buffIndex].buffer, _usage(),
-						__pvt::buffSize,
+						_pvt::buffSize,
 						&type_.memory[buffIndex].memory, _prop(),
-						core::dvc::graphics.ld
+						core::dvc::g_graphics().ld
 					);
 				}
 				Super::cell->csc.buffer = type_.memory[buffIndex].buffer;
 				Super::cell->csc.memory = type_.memory[buffIndex].memory;
 			}
 			else {															//For custom size cells
-				uint64 size = (vSize / __pvt::incSize + 1) * __pvt::incSize;	//Calculate the new size and allocate a new buffer
+				uint64 size = (vSize / _pvt::incSize + 1) * _pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
-				dbg::checkParam(btype == bufferType::eUniform && core::dvc::graphics.pd.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
+				dbg::checkParam(btype == bufferType::eUniform && core::dvc::g_graphics().pd.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
 				lnx::core::buffers::createBuffer(
 					&Super::cell->csc.buffer, _usage(),
 					size,
 					&Super::cell->csc.memory, _prop(),
-					core::dvc::graphics.ld
+					core::dvc::g_graphics().ld
 				);
 				_dbg(Super::cell->localIndex = 0;)
 			}
@@ -437,7 +437,7 @@ namespace lnx::vram{
 		//  * @param vClass Class of the allocation. It must be a valid lnx::VCellClass value. Default: AUTO
 		//  */
 		// void realloc(const uint64 vSize, const bool vCopyOldData = true, VCellClass vClass = VCellClass::AUTO) {
-		// 	using namespace lnx::__pvt;
+		// 	using namespace lnx::_pvt;
 		// 	checkInit(); checkAllocSize(vSize, vClass);
 		// 	evaluateCellClass(vSize, vClass);
 
@@ -523,19 +523,19 @@ namespace lnx::vram{
 		inline void free() {
 			dbg::checkCond(Super::mapped, "free() can only be called on unmapped memory");
             if(Super::cell->typeIndex != (uint16)-1) {										//For fixed  size cells
-                types[Super::cell->typeIndex].m.lock();
-                types[Super::cell->typeIndex].cells.remove(Super::cell->localIndex);			//free the allocation object
-                types[Super::cell->typeIndex].m.unlock();
+                g_types()[Super::cell->typeIndex].m.lock();
+                g_types()[Super::cell->typeIndex].cells.remove(Super::cell->localIndex);			//free the allocation object
+                g_types()[Super::cell->typeIndex].m.unlock();
 				//FIXME FREE BUFFERS
             }
 			else {																			//For custom size cells
-				core::dvc::graphics.ld.freeMemory   (Super::cell->csc.memory, nullptr);			//Free the memory
-				core::dvc::graphics.ld.destroyBuffer(Super::cell->csc.buffer, nullptr);			//Destroy the vulkan buffer object
+				core::dvc::g_graphics().ld.freeMemory   (Super::cell->csc.memory, nullptr);			//Free the memory
+				core::dvc::g_graphics().ld.destroyBuffer(Super::cell->csc.buffer, nullptr);			//Destroy the vulkan buffer object
 			}
 
-            cells_m.lock();
-            cells.remove(Super::cell->cellIndex);											//Free the cell object
-            cells_m.unlock();
+            g_cells_m().lock();
+            g_cells().remove(Super::cell->cellIndex);											//Free the cell object
+            g_cells_m().unlock();
 		}
 
 
@@ -555,15 +555,15 @@ namespace lnx::vram{
 			auto memory = Super::cell->csc.memory;
 			auto offset = Super::cell->localOffset;
 			auto size   = Super::cell->cellSize;
-			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
+			if(size % _pvt::incSize) size = (size / _pvt::memOffset + 1) * _pvt::memOffset;
 
-			core::dvc::graphics.ld.mapMemory(memory, offset, size, 0, (void**)&(Super::mapped));
+			core::dvc::g_graphics().ld.mapMemory(memory, offset, size, 0, (void**)&(Super::mapped));
 			const auto range = vk::MappedMemoryRange()
 				.setMemory (memory)
 				.setOffset (offset)
 				.setSize   (size)
 			;
-			core::dvc::graphics.ld.invalidateMappedMemoryRanges(1, &range); //TODO this seems useless
+			core::dvc::g_graphics().ld.invalidateMappedMemoryRanges(1, &range); //TODO this seems useless
 		}
 
 
@@ -579,15 +579,15 @@ namespace lnx::vram{
 			auto memory = Super::cell->csc.memory;
 			auto offset = Super::cell->localOffset;
 			auto size   = Super::cell->cellSize;
-			if(size % __pvt::incSize) size = (size / __pvt::memOffset + 1) * __pvt::memOffset;
+			if(size % _pvt::incSize) size = (size / _pvt::memOffset + 1) * _pvt::memOffset;
 
 			const auto range = vk::MappedMemoryRange()
 				.setMemory (memory)
 				.setOffset (offset)
 				.setSize   (size)
 			;
-			core::dvc::graphics.ld.flushMappedMemoryRanges(1, &range); //TODO this seems useless
-			core::dvc::graphics.ld.unmapMemory(memory);
+			core::dvc::g_graphics().ld.flushMappedMemoryRanges(1, &range); //TODO this seems useless
+			core::dvc::g_graphics().ld.unmapMemory(memory);
 			_dbg(Super::mapped = nullptr);
 		}
 

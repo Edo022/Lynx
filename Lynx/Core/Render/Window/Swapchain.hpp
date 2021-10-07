@@ -16,7 +16,7 @@ namespace lnx{
 	}
 }
 namespace lnx::core::wnd{
-	constexpr int32 __renderMaxFramesInFlight = 2;	//Default:2
+	constexpr int32 renderMaxFramesInFlight = 2;	//Default:2
 
 
 

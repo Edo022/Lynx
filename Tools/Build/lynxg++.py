@@ -6,7 +6,7 @@ import shlex, glob
 #TODO check if the user build actually has arguments
 
 
-def run(argv:list):
+def run(argv:list, isEngine:bool):
     p = ap.ArgumentParser(prog = 'lynxg++', add_help = False, usage = 'lynxg++ -m=<mode> [<options...>] -<selector>: <g++ arguments...> <GLSL files...>')
 
     p.add_argument('-h', '--help',      action = 'store_true', dest = 'h')
@@ -114,7 +114,7 @@ def run(argv:list):
         with open(args.f, 'r') as f:
             try:
                 fArgs = shlex.split(f.read(), comments = True)
-                return run(fArgs[1:])
+                return run(fArgs[1:], False)
             except FileNotFoundError:
                 print(f'Cannot open file "{ args.f }"')
                 return 1
@@ -154,16 +154,19 @@ def run(argv:list):
         GLS   : list = []
         LINK  : list = []
 
-        if args.m[1] == 'd':
-            FLAGS += [ '-DLNX_DBG -rdynamic' ]
+        if args.m[1] == 'd':        # WHen in debug mode
+            FLAGS += [ '-DLNX_DBG' ]    # Add Lynx debug macro
+            FLAGS += [ '-rdynamic' ]    # Add gcc stack trace informations
+        else:                       # WHen in release mode
+            FLAGS += [ '-DNDEBUG' ]     # Add tandard NDEBUG macro
 
 
         # Parse -x flags and expand glob paths
         #TODO add -xgls and -x gls for GLSL files with no .comp extension
         def expGlob(s:str):     # Expand glob paths
-            os.chdir(ptoe)
-            g = glob.glob(s)        # Get glob result #FIXME use engine or app path
-            os.chdir(etop)
+            if isEngine: os.chdir(ptoe)
+            g = glob.glob(s)        # Get glob result
+            if isEngine: os.chdir(etop)
             if len(g) > 0:          # If it was a glob
                 return g                # Return the list of paths
             else:                   # If it was not
@@ -243,14 +246,14 @@ with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 
 
 # Parse application arguments
-aRet = run(sys.argv[1:])
+aRet = run(sys.argv[1:], False)
 if isinstance(aRet, int):
     sys.exit(aRet)
 
 
 # Parse engine arguments
 with open('.engine/Build.Engine.sh') as f:
-    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:])
+    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:], True)
     if isinstance(eRet, int):
         sys.exit(eRet)
 

@@ -65,8 +65,8 @@ namespace lnx{
 
 			~ShaderInterface_b(){
 				//Clear descriptors sets, descriptor pool and descriptor layout
-				core::dvc::graphics.ld.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
-				core::dvc::graphics.ld.destroyDescriptorPool(descriptorPool, nullptr);
+				core::dvc::g_graphics().ld.freeDescriptorSets(descriptorPool, 1, &descriptorSet);
+				core::dvc::g_graphics().ld.destroyDescriptorPool(descriptorPool, nullptr);
 			}
 		};
 	}

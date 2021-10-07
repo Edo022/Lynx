@@ -7,8 +7,8 @@
 
 
 namespace lnx::core::render::cmd{
-	__init_var_dec(vk::CommandPool, singleTimeCommandPool);
-	_lnx_init_fun_dec(LNX_H_GCOMMANDS);
+	_lnx_init_var_dec(vk::CommandPool, singleTimeCommandPool);
+	_lnx_init_fun_decdec(LNX_H_GCOMMANDS);
 
 	void              createGraphicsCommandPool();
 	vk::CommandBuffer beginSingleTimeCommands();

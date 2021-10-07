@@ -9,10 +9,10 @@
 
 
 namespace lnx::core{
-	__init_var_set_def(std::atomic<bool>, running){
+	_lnx_init_var_set_def(std::atomic<bool>, running){
 		pVar = true;
 	}
-	__init_var_set_def(Thread, inputThr){
+	_lnx_init_var_set_def(Thread, inputThr){
 		pVar(core::inputLoop);
 	}
 
@@ -22,7 +22,7 @@ namespace lnx::core{
 	 */
 	void inputLoop(){
 		_dbg(thr::self::setName("Lynx | Main"));
-		while(running){
+		while(g_running()){
 			glfwWaitEvents();
 			sleep(0);
 		}

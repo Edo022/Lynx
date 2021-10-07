@@ -50,7 +50,7 @@ namespace lnx{
 	 */
 	void Window::init() {
 		window = glfwCreateWindow((i32)width, (i32)height, "Lynx Engine", nullptr, nullptr);
-		switch(glfwCreateWindowSurface(core::dvc::instance, window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
+		switch(glfwCreateWindowSurface(core::dvc::g_instance(), window, nullptr, rcast<vk::SurfaceKHR::CType*>(&surface))){
 			case VkResult::VK_SUCCESS: break;
 			case VkResult::VK_ERROR_INITIALIZATION_FAILED: dbg::logError("Initialization failed"); break;
 			case VkResult::VK_ERROR_EXTENSION_NOT_PRESENT: dbg::logError("Extension not present"); break;
@@ -100,11 +100,11 @@ namespace lnx{
 	 * Destroys the render core, the surface and the GLFW window and frees any used resource
 	 *     This function should only be used by the engine
 	 * Complexity: O(n + m) [from RenderCore::clear]
-	 *     where n = this->renderCore.swp.images.count() and m = __renderMaxFramesInFlight
+	 *     where n = this->renderCore.swp.images.count() and m = renderMaxFramesInFlight
 	 */
 	void Window::clear(){
 		renderCore.clear();
-		core::dvc::instance.destroySurfaceKHR(surface, nullptr);
+		core::dvc::g_instance().destroySurfaceKHR(surface, nullptr);
 		glfwDestroyWindow(window);
 		initialized = false;
 	}

@@ -20,7 +20,7 @@ namespace lnx::vram{
 
 
 
-	namespace __pvt{
+	namespace _pvt{
 		enum class VCellClassIndex : uint16 {
 			eA = 0b000,
 			eB = 0b001,

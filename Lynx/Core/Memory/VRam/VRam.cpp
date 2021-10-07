@@ -1,6 +1,6 @@
 #include "Lynx/Core/Memory/VRam/VRam.hpp"
 #include "Lynx/Core/Core.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 //TODO use constant for offset
 
@@ -17,21 +17,21 @@ namespace lnx::sys{ //FIXME update comment
 	//! And it has to do it after getting the device infos, but before allocating the cells.
 	//! So the function is a lambda that does both by directly initializing the variables and returning a sys::VRamInfo to the const
 
-	__init_var_const_def(const GpuInfo, vram){
+	_lnx_init_var_const_def(const GpuInfo, vram){
 		//Get GPU informations
 		GpuInfo _vram;
-		_vram.name = core::dvc::graphics.pd.properties.deviceName;
-		_vram.type = (core::dvc::graphics.pd.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::DeviceType::eDiscrete : sys::DeviceType::eIntegrated;
-		_vram.maxWgSize[0] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[0];
-		_vram.maxWgSize[1] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[1];
-		_vram.maxWgSize[2] = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupSize[2];
-		_vram.maxWgInvoc   = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupInvocations;
-		_vram.maxWgs[0]    = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupCount[0];
-		_vram.maxWgs[1]    = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupCount[1];
-		_vram.maxWgs[2]    = core::dvc::graphics.pd.properties.limits.maxComputeWorkGroupCount[2];
+		_vram.name = core::dvc::g_graphics().pd.properties.deviceName;
+		_vram.type = (core::dvc::g_graphics().pd.properties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu) ? sys::DeviceType::eDiscrete : sys::DeviceType::eIntegrated;
+		_vram.maxWgSize[0] = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupSize[0];
+		_vram.maxWgSize[1] = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupSize[1];
+		_vram.maxWgSize[2] = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupSize[2];
+		_vram.maxWgInvoc   = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupInvocations;
+		_vram.maxWgs[0]    = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupCount[0];
+		_vram.maxWgs[1]    = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupCount[1];
+		_vram.maxWgs[2]    = core::dvc::g_graphics().pd.properties.limits.maxComputeWorkGroupCount[2];
 
 		//Get VRAM informations
-		auto memoryProperties = core::dvc::graphics.pd.device.getMemoryProperties(); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
+		auto memoryProperties = core::dvc::g_graphics().pd.device.getMemoryProperties(); //FIXME DIFFERENT QUERY FOR INTEGRATED GPUs
 		_vram.heaps.num =  memoryProperties.memoryHeapCount;
 		for(uint32 i = 0; i < memoryProperties.memoryHeapCount; ++i){
 			if(memoryProperties.memoryHeaps[i].flags & vk::MemoryHeapFlagBits::eDeviceLocal){
@@ -45,8 +45,8 @@ namespace lnx::sys{ //FIXME update comment
 
 
 
-	// LnxAutoInit() {
-	// 	using namespace vram::__pvt;
+	// _lnx_init_fun_dec() {
+	// 	using namespace vram::_pvt;
 
 	// 	//Initialize buffer types. Allocate enough cells and buffers to use the whole RAM
 	// 	for(uint32 k = 0; k < 2; ++k) { 									//Loop location

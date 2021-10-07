@@ -5,17 +5,17 @@
 
 namespace lnx{
     //Recursive function that finds the type index
-    template<int32 tNum, int32 tIdx, bool tGet, class tLast, class tType, class... tTypes> struct __get_type_at :
-    public __get_type_at<tNum, tIdx, tNum - (sizeof...(tTypes) + 1) == tIdx, tType, tTypes...>{};
+    template<int32 tNum, int32 tIdx, bool tGet, class tLast, class tType, class... tTypes> struct _lnx_get_type_at :
+    public _lnx_get_type_at<tNum, tIdx, tNum - (sizeof...(tTypes) + 1) == tIdx, tType, tTypes...>{};
 
-    //Specialization of __get_type_at that saves the type
-    template<int32 tNum, int32 tIdx, class tLast, class tType, class... tTypes> struct __get_type_at<tNum, tIdx, true, tLast, tType, tTypes...> {
+    //Specialization of _lnx_get_type_at that saves the type
+    template<int32 tNum, int32 tIdx, class tLast, class tType, class... tTypes> struct _lnx_get_type_at<tNum, tIdx, true, tLast, tType, tTypes...> {
         using type = tLast;
     };
 
-    //__get_type_at helper
+    //_lnx_get_type_at helper
     template<int32 tIdx, class tType, class... tTypes> struct get_type_at_dispatch_t :
-    public __get_type_at<sizeof...(tTypes) + 1/*tType*/ + 1/*void*/, tIdx, tIdx == 0, tType, tType, tTypes..., void> {};
+    public _lnx_get_type_at<sizeof...(tTypes) + 1/*tType*/ + 1/*void*/, tIdx, tIdx == 0, tType, tType, tTypes..., void> {};
 
 
     /**

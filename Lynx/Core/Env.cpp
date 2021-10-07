@@ -4,13 +4,14 @@
 #include <unistd.h> //TODO write file test for windows
 #include "Lynx/macros.hpp"
 #include "Lynx/Core/Env.hpp"
+#include "Lynx/Debug/Debug.hpp"
 //TODO LOAD IMPLICIT LAYER
 //TODO allow user to link the local library instead of the one on their system
 
 
 
 
-LnxAutoInit(LNX_H_ENV) {
+_lnx_init_fun_dec(LNX_H_ENV) {
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wwrite-strings"
 

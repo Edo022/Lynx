@@ -1,6 +1,7 @@
 #pragma once
 ////#define LNX_H_STRUCTURE_INIT
 #include "Lynx/macros.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 
@@ -8,15 +9,15 @@
 
 
 namespace lnx{
-	namespace __pvt{
+	namespace _pvt{
 		//Magic number used by checkInit() or isInit(var) to check if an object is initialized
-		_dbg(constexpr uint64 init_val = 0x94FFD489B48994FF;)
+		_dbg(constexpr uint64 init_num = 0x94FFD489B48994FF;)
 
 		//Private variables used in initialization checks. Those members are inherited and should only be declared once
 		#ifdef LNX_DBG
 			#define genInitCheck 										\
-				mutable uint64 __pvt_init_val = lnx::__pvt::init_val;	\
-				mutable char __pvt_dummy = 'L'
+				mutable uint64 _lnx_init_num = lnx::_pvt::init_num;	\
+				mutable char _lnx_ctor_dummy = 'L'
 		#else
 			#define genInitCheck
 		#endif
@@ -38,16 +39,16 @@ namespace lnx{
 
 	namespace test{
 		#ifdef LNX_DBG
-		#	define checkInit() lnx::dbg::checkCond(this->__pvt_init_val != lnx::__pvt::init_val, "This function cannot be called on uninitialized structures")
-		#	define isInit(var)      dbg::checkParam( var.__pvt_init_val != lnx::__pvt::init_val, #var, "Uninitialized structure used")
-		#	define checkInitList(...) __pvt_dummy{ [&]() { __VA_ARGS__; return char(0x293); }() },
+		#	define checkInit() lnx::dbg::checkCond(this->_lnx_init_num != lnx::_pvt::init_num, "This function cannot be called on uninitialized structures")
+		#	define isInit(var)      dbg::checkParam( var._lnx_init_num != lnx::_pvt::init_num, #var, "Uninitialized structure used")
+		#	define checkInitList(...) _lnx_ctor_dummy{ [&]() { __VA_ARGS__; return char(0x293); }() },
 		#else
 		#	define checkInit()			//Checks if a function parameter is initialized
 		#	define isInit(var)			//Checks if a variable is initialized
 		#	define checkInitList(...)	//Executes a function in a costructor. Debug mode only. Requires genInitCheck;
 		#endif
 
-		__init_var_array_dec(bool, __errors);
+		_lnx_init_var_array_dec(bool, __errors);
 
 
 		/**
@@ -63,7 +64,7 @@ namespace lnx{
 		 * @brief //TODO
 		 */
 		inline void disable(error vError) {
-			__errors[(uint32)vError] = false;
+			g___errors()[(uint32)vError] = false;
 		}
 	}
 }
