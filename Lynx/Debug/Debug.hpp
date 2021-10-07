@@ -148,8 +148,8 @@ namespace lnx::dbg{
 					// auto tracebackLine =
 					traceback +=
 						std::string("\n    ") +
-						string_format("%7x", caller::addr(vIndex + i)) + " │ " +
-						string_format("%6d", caller::line(vIndex + i)) + " │ " +
+						string_format(std::string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
+						string_format(std::string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
 						func +
 						bBlack + "  [" + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]" + nWhite;
 					;

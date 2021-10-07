@@ -261,7 +261,8 @@ def build(
         '-I.', '-Isrc', f'-I{ etop }/.engine/src',          # Include from src directories and project root
         '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros
         '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros
-        f'-ffile-prefix-map={ os.path.abspath(etop) }=',    # Fix file prefix in debug infos
+        f'-ffile-prefix-map={ os.path.abspath(etop) }/=',
+           # Fix file prefix in debug infos
         f'-DenginePath="{ ptoe }"',                         # Engine path macro #FIXME
     ]
 

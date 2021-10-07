@@ -124,7 +124,7 @@
 	\
 	/*Debug getter definition*/\
 	_dbg(used inline type& g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #name "\" used before initialization");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -175,7 +175,7 @@
 	\
 	/*Debug getter function*/\
 	_dbg(used inline type& g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #name "\" used before initialization");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -207,7 +207,7 @@
 	\
 	/*Debug getter function*/\
 	_dbg(used inline type* g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #name "\" used before initialization");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -236,12 +236,12 @@
 // #define _lnx_init_fun_dec2(id)
 #define _lnx_init_fun_dec(tu)                                                                  \
 	namespace _pvt{                                                                     \
-		struct _lnx_init_fun_dec##tu##_t{                                                   \
-			used _lnx_init_fun_dec##tu##_t(); \
+		struct _lnx_init_fun_dec_##tu##_t{                                                   \
+			used _lnx_init_fun_dec_##tu##_t(); \
 		};                                                                               \
 	}                                                                                    \
-	_lnx_init_var_set_def(_pvt::_lnx_init_fun_dec##tu##_t, tu){}                              \
-	used _pvt::_lnx_init_fun_dec##tu##_t::_lnx_init_fun_dec##tu##_t() //{
+	_lnx_init_var_set_def(_pvt::_lnx_init_fun_dec_##tu##_t, tu){}                              \
+	used _pvt::_lnx_init_fun_dec_##tu##_t::_lnx_init_fun_dec_##tu##_t() //{
 		//Implementation
 		//...
 	//}
@@ -254,6 +254,6 @@
 
 #define _lnx_init_fun_decdec(tu)          \
 	namespace _pvt {                  \
-		struct _lnx_init_fun_dec##tu##_t; \
+		struct _lnx_init_fun_dec_##tu##_t; \
 	}                                  \
-	_lnx_init_var_dec(_pvt::_lnx_init_fun_dec##tu##_t, tu)
+	_lnx_init_var_dec(_pvt::_lnx_init_fun_dec_##tu##_t, tu)
