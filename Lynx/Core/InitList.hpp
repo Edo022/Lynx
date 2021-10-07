@@ -59,28 +59,34 @@ namespace lnx{
 
 
 
-#include "Generated/.init/SystemInfo.hpp"
-#include "Generated/.init/StructureInit.hpp"
+#include "Generated/.init/SystemInfo.init.hpp"
+#include "Generated/.init/StructureInit.init.hpp"
 
 // #include "Generated/.init/Ram.hpp"
-#include "Generated/.init/Cell_t.hpp"
+#include "Generated/.init/Cell_t.init.hpp"
 
-#include "Generated/.init/System.hpp"
+#include "Generated/.init/System.init.hpp"
 
-#include "Generated/.init/Devices.hpp"
-#include "Generated/.init/VRam.hpp"
-#include "Generated/.init/VCell_t.hpp"
+#include "Generated/.init/Devices.init.hpp"
+#include "Generated/.init/VRam.init.hpp"
+#include "Generated/.init/VCell_t.init.hpp"
 
 // #include "Generated/.init/GCommands.hpp"
-#include "Generated/.init/Shader.hpp"
+#include "Generated/.init/Shader.init.hpp"
+
+#include "Generated/.init/Shaders/Border2.gsi.init.hpp"
+#include "Generated/.init/Shaders/FloatToIntBuffer.gsi.init.hpp"
+#include "Generated/.init/Shaders/Line2.gsi.init.hpp"
+#include "Generated/.init/Shaders/Volume.gsi.init.hpp"
+//TODO AUTOMATIZE
 // #include "Generated/.init/Window.hpp" //FIXME
 // #include "Generated/.init/Swapchain.hpp"
 
-#include "Generated/.init/Core.hpp"
-#include "Generated/.init/ThreadPool.hpp"
+#include "Generated/.init/Core.init.hpp"
+#include "Generated/.init/ThreadPool.init.hpp"
 
 // #include "Generated/.init/Buffers.hpp"
-#include "Generated/.init/Render.hpp"
+#include "Generated/.init/Render.init.hpp"
 
 // #include "Generated/.init/Input.hpp"
 // #include "Generated/.init/InputState.hpp"

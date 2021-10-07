@@ -111,10 +111,10 @@ def needsRebuildCPP(o, s, FLG):
 
 
 
-def BuildInit(CPP):
+def BuildInit(CPP, initOut):
     cpp:list = []
-    for s in CPP:
-        checkCmd(['python3', 'Tools/Build/GenInitializers.py', s])
+    for s, o in zip(CPP, initOut):
+        checkCmd(['python3', 'Tools/Build/GenInitializers.py', s, o])
 
 
 
@@ -245,6 +245,7 @@ def dirs(EOUT:str, AOUT:str):
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
     os.makedirs(exist_ok = True, name =                f'./src/Generated/Shaders')
     os.makedirs(exist_ok = True, name =                f'./src/Generated/.init')
+    os.makedirs(exist_ok = True, name =                f'./src/Generated/.init/Shaders')
 
     # Create output directories
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
@@ -316,7 +317,10 @@ def build(
     BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
     print(f'{ bgreen }Engine files generated successfully\n{ white }')
 
-    BuildInit(ECPP + EGSI)
+    initOut =\
+        list(f'src/Generated/.init'     f'/{ Path(o).stem }.init.hpp' for o in ECPP) +\
+        list(f'src/Generated/.init/Shaders/{ Path(o).stem }.init.hpp' for o in EGSI)
+    BuildInit(ECPP + EGSI, initOut)
 
     print(f'Compiling engine source files')
     BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP, defineTuUuid = True, tuUuidPrefix = 'e')
