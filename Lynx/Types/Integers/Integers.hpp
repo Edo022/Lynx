@@ -4,7 +4,7 @@
 
 
 
-
+//TODO specify that _pvt must not be used inside lnxc if the namespace is inlined
 namespace lnxc{
     typedef signed char     int8,  i8;  //Signed 8-bit integer
     typedef short           int16, i16;	//Signed 16-bit integer
@@ -40,7 +40,7 @@ namespace lnxc{
 
 
 
-    namespace _pvt{
+    namespace _pvtc{
         //has_conversion_operator helper struct
         template<bool c, class op> struct _lnx_has_conversion_operator_t {};
         template<class op> struct _lnx_has_conversion_operator_t<true, op> {
@@ -75,7 +75,7 @@ namespace lnxc{
      * @tparam tType The type to test
      * @tparam op The type of the operator
      */
-    template<class tType, class op> using has_conversion_operator = decltype(_pvt::_lnx_has_conversion_operator_t<std::is_class_v<tType>, op>::template get<tType>(0));
+    template<class tType, class op> using has_conversion_operator = decltype(_pvtc::_lnx_has_conversion_operator_t<std::is_class_v<tType>, op>::template get<tType>(0));
     template<class tType, class op> static constexpr bool has_conversion_operator_v = has_conversion_operator<tType, op>::value;
 
 

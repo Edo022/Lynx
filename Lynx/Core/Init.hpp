@@ -58,6 +58,7 @@
 	namespace _pvt {                      \
 		used        type&          id##_get();                  \
 		used static type& id##_v = id##_get();  \
+		extern bool id##_is_init;/*Zero initialized before global constructors*/\
 	}                                      \
 	\
 	/*Reference definition*/               \
@@ -72,6 +73,7 @@
 	namespace _pvt {                 \
 		used        type*          id##_get();             \
 		used static type* id##_v = id##_get(); \
+		extern bool id##_is_init;/*Zero initialized before global constructors*/\
 	}                                 \
 	\
 	/*Reference definition*/          \
@@ -109,18 +111,23 @@
 		/*Initializer function declaration*/ \
 		used type id##_init_f();   \
 	\
+		/*is_init definition*/ \
+		used bool id##_is_init;   \
+	\
 		/*Get function definition*/          \
 		used type& id##_get(){     \
 			used static type* var = new (type)(id##_init_f());\
+			_dbg(id##_is_init = true;)\
 			return *var;                     \
 		}                                    \
 	}                                        \
 	\
 	/*Debug getter definition*/\
 	_dbg(used inline type& g_##name(){)\
-	_dbg(	printf("Used \"g_" #name "\"\n");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #id "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
+	\
 	/*Initializer function definition*/      \
 	used type _pvt::id##_init_f()
 
@@ -149,26 +156,30 @@
 #define _lnx_init_var_set_def(type, name) _lnx_init_var_set_def2(type, name, _lnx_init_var_##name)
 #define _lnx_init_var_set_def2(type, name, id)          \
 	namespace _pvt{                            \
-		/*Initializer function declaration*/    \
-		class id##_init_t{       \
-			public:                             \
+		/*Initializer type definition*/    \
+		struct id##_init_t{       \
 			used id##_init_t(type& pVar); \
 		};                                      \
+	\
+		/*is_init definition*/ \
+		used bool id##_is_init;   \
 	\
 		/*Get function definition*/             \
 		used type& id##_get(){        \
 			used static type* var = new (type)();    \
 			used static id##_init_t init_v(*var); \
+			_dbg(id##_is_init = true;)\
 			return *var;                        \
 		}                                       \
 	}                                           \
 	\
-	/*Initializer function definition*/         \
 	/*Debug getter function*/\
 	_dbg(used inline type& g_##name(){)\
-	_dbg(	printf("Used \"g_" #name "\"\n");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #id "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
+	\
+	/*Initializer function definition*/         \
 	used _pvt::id##_init_t::id##_init_t(type& pVar)
 
 
@@ -177,25 +188,29 @@
 #define _lnx_init_var_array_def(type, name, count) _lnx_init_var_array_def2(type, name, count, _lnx_init_var_##name)
 #define _lnx_init_var_array_def2(type, name, count, id)     \
 	namespace _pvt{                                \
-		/*Initializer function declaration*/        \
-		class id##_init_t{           \
-			public:                                 \
+		/*Initializer type definition*/        \
+		struct id##_init_t{           \
 			used id##_init_t(type* pVar); \
 		};                                          \
+	\
+		/*is_init definition*/ \
+		used bool id##_is_init;   \
 	\
 		/*Get function definition*/                         \
 		used type* id##_get(){                    \
 			used static type* var = new type[count];             \
 			used static id##_init_t init_v(var);  \
+			_dbg(id##_is_init = true;)\
 			return var;                                     \
 		}                                                   \
 	}                                                       \
 	\
 	/*Debug getter function*/\
 	_dbg(used inline type* g_##name(){)\
-	_dbg(	printf("Used \"g_" #name "\"\n");)\
+	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global engine variable \"g_" #id "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
+	\
 	/*Initializer function definition*/                     \
 	used _pvt::id##_init_t::id##_init_t(type* pVar)
 
