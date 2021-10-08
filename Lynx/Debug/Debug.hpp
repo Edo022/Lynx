@@ -138,53 +138,59 @@ namespace lnx::dbg{
 			time_t cTime; time(&cTime);				//Get current time
 			tm *lTime; lTime = localtime(&cTime);	//Convert to local time
 			auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) % seconds(1);
+			std::string _time = string_format("[%02d:%02d:%02d.%03d]", lTime->tm_hour, lTime->tm_min, lTime->tm_sec, ms.count());
 
+			std::string outCol  = (vSeverity == Severity::eInfo) ? nWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
+			std::string msgType = (vSeverity == Severity::eInfo) ? "Info" : (vSeverity == Severity::eWarn) ? "Warning"  : "Error:";
 
-			//Build traceback
-			string traceback = "\n    Address │   Line │ Function";
-			for(uint32 i = 0; ; ++i){
-				auto func = caller::func(vIndex + i);
-				if(func[0] != '?' && func[0] != '\0') {
-					// auto tracebackLine =
-					traceback +=
-						std::string("\n    ") +
-						string_format(std::string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
-						string_format(std::string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
-						func +
-						bBlack + "  [" + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]" + nWhite;
-					;
-					// auto fileLink = std::string("[") + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]";
+			if(vSeverity == Severity::eError){
+				//Build traceback
+				string traceback = "\n    Address │   Line │ Function";
+				for(uint32 i = 0; ; ++i){
+					auto func = caller::func(vIndex + i);
+					if(func[0] != '?' && func[0] != '\0') {
+						// auto tracebackLine =
+						traceback +=
+							std::string("\n    ") +
+							string_format(std::string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
+							string_format(std::string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
+							func +
+							bBlack + "  [" + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]" + nWhite;
+						;
+						// auto fileLink = std::string("[") + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]";
 
-					// tracebackLine.resize(max(wsize.ws_col - fileLink.length()), ' ');
-					// traceback += tracebackLine + fileLink;
+						// tracebackLine.resize(max(wsize.ws_col - fileLink.length()), ' ');
+						// traceback += tracebackLine + fileLink;
+					}
+					else break;
+					if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
+						traceback += "\n    Too many nested calls. Backtrace stopped";
+						break;
+					}
 				}
-				else break;
-				if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
-					traceback += "\n    Too many nested calls. Backtrace stopped";
-					break;
-				}
+
+
+				//Build output string
+				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
+				std::string out = string_format(
+					outCol + _time + " ────────────────────────────────────────────────────────────────────────────────────────────" +
+					"\n" + msgType + nWhite +
+					"\n" +
+					"\nThread \"" + thrName + "\"" +
+					"\nTraceback: " + traceback.c_str() +
+					"\n" +
+					"\n" + outCol + pFstr +
+					"\n──────────────────────────────────────────────────────────────────────────────────────────────────────────\n\n" + nWhite,
+					pArgs...
+				);
+				printf("\n\n%s", out.c_str()); fflush(stdout);
+				if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
+			}
+			else{
+				printf((std::string("\n") + outCol + _time + ": " + msgType + pFstr + nWhite).c_str(), pArgs...); fflush(stdout);
 			}
 
 
-			//Build output string
-			char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-			std::string outCol  = (vSeverity == Severity::eInfo) ? bWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
-			std::string msgType = (vSeverity == Severity::eInfo) ? ""     : (vSeverity == Severity::eWarn) ? "Warning"  : "Error:";
-			std::string out = string_format(
-				outCol + "[%02d:%02d:%02d.%03d] ────────────────────────────────────────────────────────────────────────────────────────────" +
-				"\n" + msgType + nWhite +
-				"\n" +
-				"\nThread \"" + thrName + "\"" +
-				"\nTraceback: " + traceback.c_str() +
-				"\n" +
-				"\n" + outCol + pFstr +
-				"\n──────────────────────────────────────────────────────────────────────────────────────────────────────────\n\n" + nWhite,
-				lTime->tm_hour, lTime->tm_min, lTime->tm_sec, ms.count(), pArgs...
-			);
-
-
-			printf("%s\n", out.c_str()); fflush(stdout);
-			if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
 		#endif
 	}
 

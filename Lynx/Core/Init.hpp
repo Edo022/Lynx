@@ -76,7 +76,7 @@
 	// }                                      \
 	\
 	/*Reference definition*/               \
-	_rls(used static alwaysInline type& g_##name(){ return _pvt::_lnx_init_var_##name##_v; })\
+	_rls(used static alwaysInline type& g_##name(){ return _pvt::_lnx_init_var_##name##_v; })\\
 	_dbg(used              inline type& g_##name())
 
 
@@ -156,7 +156,6 @@
 	\
 		/*Get function definition*/          \
 		used DEL_P(type)* id##_get(){     \
-			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new (DEL_P(type))(id##_init_f());\
 			id##_is_init = true;\
 			return var;                     \
@@ -169,7 +168,6 @@
 	/*Debug getter definition*/\
 	_dbg(used inline DEL_P(type)& g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	printf("\nUsing \"" #name "\"\n"));/*TODO REMOVE*/\
 	_dbg(	return *_pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -210,7 +208,6 @@
 	\
 		/*Get function definition*/             \
 		used DEL_P(type)* id##_get(){        \
-			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new (DEL_P(type))();    \
 			used static id##_init_t init_v(*var); \
 			id##_is_init = true;\
@@ -224,7 +221,6 @@
 	/*Debug getter function*/\
 	_dbg(used inline DEL_P(type)& g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	printf("\nUsing \"" #name "\"\n"));/*TODO REMOVE*/\
 	_dbg(	return *_pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -246,7 +242,6 @@
 	\
 		/*Get function definition*/                         \
 		used DEL_P(type)* id##_get(){                    \
-			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new DEL_P(type)[count];             \
 			used static id##_init_t init_v(var);  \
 			id##_is_init = true;\
@@ -260,7 +255,6 @@
 	/*Debug getter function*/\
 	_dbg(used inline DEL_P(type)* g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	printf("\nUsing \"" #name "\"\n"));/*TODO REMOVE*/\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\

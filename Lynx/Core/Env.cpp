@@ -27,7 +27,7 @@ namespace lnx{
 		bool d = false;
 		for(int i = 0; i < 4; ++i) for(int j = 0; j < 3; ++j) for(int k = 0; k < 1; ++k){
 			// sprintf(icdFilename, "%s/%s.%s.json", paths[i], icds[j], ptfs[k]);
-			auto icdFilename = paths[i] + icds[j] + ptfs[k] + ".json";
+			auto icdFilename = paths[i] + "/" + icds[j] + "." + ptfs[k] + ".json";
 			if(access(icdFilename.c_str(), F_OK) == 0){
 				// strcat(icdFilenames, d ? ":" : "VK_ICD_FILENAMES=");
 				icdFilenames += d ? ":" : "VK_ICD_FILENAMES=";
@@ -37,8 +37,9 @@ namespace lnx{
 			}
 		}
 		//TODO optimize
-		char* cIcdFilenames = (char*)malloc(icdFilenames.length());
+		char* cIcdFilenames = (char*)malloc(icdFilenames.length() + 1);
 		strcpy(cIcdFilenames, icdFilenames.c_str());
 		putenv(cIcdFilenames);
+		printf("ICDS: %s\n", cIcdFilenames);
 	}
 }
