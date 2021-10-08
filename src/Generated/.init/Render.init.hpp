@@ -9,13 +9,13 @@
 
 
 namespace lnx::core::render::_pvt {
+    extern bool _lnx_init_var_graphicsQueueSubmit_m_is_init;/*Zero initialized before global constructors*/
     used        std::mutex& _lnx_init_var_graphicsQueueSubmit_m_get();
     used static std::mutex& _lnx_init_var_graphicsQueueSubmit_m_v = _lnx_init_var_graphicsQueueSubmit_m_get();
-    extern bool _lnx_init_var_graphicsQueueSubmit_m_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::render::_pvt {
+    extern bool _lnx_init_var_presentQueueSubmit_m_is_init;/*Zero initialized before global constructors*/
     used        std::mutex& _lnx_init_var_presentQueueSubmit_m_get();
     used static std::mutex& _lnx_init_var_presentQueueSubmit_m_v = _lnx_init_var_presentQueueSubmit_m_get();
-    extern bool _lnx_init_var_presentQueueSubmit_m_is_init;/*Zero initialized before global constructors*/
 }

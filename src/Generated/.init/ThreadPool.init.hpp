@@ -9,21 +9,21 @@
 
 
 namespace lnx::thr::_pvt {
+    extern bool _lnx_init_var_threads_is_init;/*Zero initialized before global constructors*/
     used        RtArray<Thread, uint32>& _lnx_init_var_threads_get();
     used static RtArray<Thread, uint32>& _lnx_init_var_threads_v = _lnx_init_var_threads_get();
-    extern bool _lnx_init_var_threads_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::thr::_pvt {
+    extern bool _lnx_init_var_queue_is_init;/*Zero initialized before global constructors*/
     used        std::deque<ram::ptr<_pvt::Func_b>>& _lnx_init_var_queue_get();
     used static std::deque<ram::ptr<_pvt::Func_b>>& _lnx_init_var_queue_v = _lnx_init_var_queue_get();
-    extern bool _lnx_init_var_queue_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::thr::_pvt {
+    extern bool _lnx_init_var_queue_m_is_init;/*Zero initialized before global constructors*/
     used        std::mutex& _lnx_init_var_queue_m_get();
     used static std::mutex& _lnx_init_var_queue_m_v = _lnx_init_var_queue_m_get();
-    extern bool _lnx_init_var_queue_m_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::thr::_pvt{
@@ -31,7 +31,7 @@ namespace lnx::thr::_pvt{
 }
 
 namespace lnx::thr::_pvt {
+    extern bool _lnx_init_var_LNX_H_THREAD_POOL_FUN_is_init;/*Zero initialized before global constructors*/
     used        _pvt::_lnx_init_fun_LNX_H_THREAD_POOL_FUN_t& _lnx_init_var_LNX_H_THREAD_POOL_FUN_get();
     used static _pvt::_lnx_init_fun_LNX_H_THREAD_POOL_FUN_t& _lnx_init_var_LNX_H_THREAD_POOL_FUN_v = _lnx_init_var_LNX_H_THREAD_POOL_FUN_get();
-    extern bool _lnx_init_var_LNX_H_THREAD_POOL_FUN_is_init;/*Zero initialized before global constructors*/
 }

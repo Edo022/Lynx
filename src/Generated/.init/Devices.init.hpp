@@ -9,63 +9,63 @@
 
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_graphics_is_init;/*Zero initialized before global constructors*/
     used        Device& _lnx_init_var_graphics_get();
     used static Device& _lnx_init_var_graphics_v = _lnx_init_var_graphics_get();
-    extern bool _lnx_init_var_graphics_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_secondary_is_init;/*Zero initialized before global constructors*/
     used        RtArray<Device, uint32>& _lnx_init_var_secondary_get();
     used static RtArray<Device, uint32>& _lnx_init_var_secondary_v = _lnx_init_var_secondary_get();
-    extern bool _lnx_init_var_secondary_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_instance_is_init;/*Zero initialized before global constructors*/
     used        vk::Instance& _lnx_init_var_instance_get();
     used static vk::Instance& _lnx_init_var_instance_v = _lnx_init_var_instance_get();
-    extern bool _lnx_init_var_instance_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_dummyWindow_is_init;/*Zero initialized before global constructors*/
     used        GLFWwindow*& _lnx_init_var_dummyWindow_get();
     used static GLFWwindow*& _lnx_init_var_dummyWindow_v = _lnx_init_var_dummyWindow_get();
-    extern bool _lnx_init_var_dummyWindow_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_dummySurface_is_init;/*Zero initialized before global constructors*/
     used        vk::SurfaceKHR& _lnx_init_var_dummySurface_get();
     used static vk::SurfaceKHR& _lnx_init_var_dummySurface_v = _lnx_init_var_dummySurface_get();
-    extern bool _lnx_init_var_dummySurface_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_requiredDeviceExtensionsNum_is_init;/*Zero initialized before global constructors*/
     used        uint32& _lnx_init_var_requiredDeviceExtensionsNum_get();
     used static uint32& _lnx_init_var_requiredDeviceExtensionsNum_v = _lnx_init_var_requiredDeviceExtensionsNum_get();
-    extern bool _lnx_init_var_requiredDeviceExtensionsNum_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_requiredDeviceExtensions_is_init;/*Zero initialized before global constructors*/
     used        const char**& _lnx_init_var_requiredDeviceExtensions_get();
     used static const char**& _lnx_init_var_requiredDeviceExtensions_v = _lnx_init_var_requiredDeviceExtensions_get();
-    extern bool _lnx_init_var_requiredDeviceExtensions_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_debugMessenger_is_init;/*Zero initialized before global constructors*/
     used        VkDebugUtilsMessengerEXT& _lnx_init_var_debugMessenger_get();
     used static VkDebugUtilsMessengerEXT& _lnx_init_var_debugMessenger_v = _lnx_init_var_debugMessenger_get();
-    extern bool _lnx_init_var_debugMessenger_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_validationLayersNum_is_init;/*Zero initialized before global constructors*/
     used        uint32& _lnx_init_var_validationLayersNum_get();
     used static uint32& _lnx_init_var_validationLayersNum_v = _lnx_init_var_validationLayersNum_get();
-    extern bool _lnx_init_var_validationLayersNum_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_validationLayers_is_init;/*Zero initialized before global constructors*/
     used        const char**& _lnx_init_var_validationLayers_get();
     used static const char**& _lnx_init_var_validationLayers_v = _lnx_init_var_validationLayers_get();
-    extern bool _lnx_init_var_validationLayers_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::dvc::_pvt{
@@ -73,7 +73,7 @@ namespace lnx::core::dvc::_pvt{
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_LNX_H_DEVICES_FUN_is_init;/*Zero initialized before global constructors*/
     used        _pvt::_lnx_init_fun_LNX_H_DEVICES_FUN_t& _lnx_init_var_LNX_H_DEVICES_FUN_get();
     used static _pvt::_lnx_init_fun_LNX_H_DEVICES_FUN_t& _lnx_init_var_LNX_H_DEVICES_FUN_v = _lnx_init_var_LNX_H_DEVICES_FUN_get();
-    extern bool _lnx_init_var_LNX_H_DEVICES_FUN_is_init;/*Zero initialized before global constructors*/
 }

@@ -11,7 +11,7 @@
 
 
 namespace lnx::core::render::cmd{
-	_lnx_init_var_set_def((vk::CommandPool), singleTimeCommandPool, lnx::core::render::cmd) {
+	_lnx_init_var_value_def((vk::CommandPool), singleTimeCommandPool, lnx::core::render::cmd) {
 		pVar = nullptr;
 	}
 

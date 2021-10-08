@@ -9,7 +9,7 @@
 
 
 namespace lnx::test::_pvt {
+    extern bool _lnx_init_var___errors_is_init;/*Zero initialized before global constructors*/
     used        bool* _lnx_init_var___errors_get();
     used static bool* _lnx_init_var___errors_v = _lnx_init_var___errors_get();
-    extern bool _lnx_init_var___errors_is_init;/*Zero initialized before global constructors*/
 }

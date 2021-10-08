@@ -12,9 +12,9 @@
 
 
 namespace lnx::core::shaders{
-	_lnx_init_var_set_def((String), shaderPath,  lnx::core::shaders){}
-	_lnx_init_var_set_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; }
-	_lnx_init_var_set_def((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts, lnx::core::shaders){}
+	_lnx_init_var_value_def((String), shaderPath,  lnx::core::shaders){}
+	_lnx_init_var_value_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; }
+	_lnx_init_var_value_def((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts, lnx::core::shaders){}
 
 
 	_lnx_init_fun_def(LNX_H_SHADER, lnx::core::shaders){

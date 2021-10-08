@@ -9,13 +9,13 @@
 
 
 namespace lnx::core::_pvt {
+    extern bool _lnx_init_var_running_is_init;/*Zero initialized before global constructors*/
     used        std::atomic<bool>& _lnx_init_var_running_get();
     used static std::atomic<bool>& _lnx_init_var_running_v = _lnx_init_var_running_get();
-    extern bool _lnx_init_var_running_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::_pvt {
+    extern bool _lnx_init_var_inputThr_is_init;/*Zero initialized before global constructors*/
     used        Thread& _lnx_init_var_inputThr_get();
     used static Thread& _lnx_init_var_inputThr_v = _lnx_init_var_inputThr_get();
-    extern bool _lnx_init_var_inputThr_is_init;/*Zero initialized before global constructors*/
 }

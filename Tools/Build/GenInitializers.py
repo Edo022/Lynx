@@ -63,8 +63,8 @@ if r!= None and len(r) > 0:
 
             f.write(
                 f'\n\nnamespace { m["fullNs"] }::_pvt {{'
+                f'\n    extern bool { id }_is_init;/*Zero initialized before global constructors*/'
                 f'\n    used        { m["type"] } { id }_get();'
                 f'\n    used static { m["type"] } { id }_v = { id }_get();'
-                f'\n    extern bool { id }_is_init;/*Zero initialized before global constructors*/'
                 f'\n}}'
             )

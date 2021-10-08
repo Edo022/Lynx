@@ -9,9 +9,9 @@
 
 
 namespace lnx::core::render::cmd::_pvt {
+    extern bool _lnx_init_var_singleTimeCommandPool_is_init;/*Zero initialized before global constructors*/
     used        vk::CommandPool& _lnx_init_var_singleTimeCommandPool_get();
     used static vk::CommandPool& _lnx_init_var_singleTimeCommandPool_v = _lnx_init_var_singleTimeCommandPool_get();
-    extern bool _lnx_init_var_singleTimeCommandPool_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::core::render::cmd::_pvt{
@@ -19,7 +19,7 @@ namespace lnx::core::render::cmd::_pvt{
 }
 
 namespace lnx::core::render::cmd::_pvt {
+    extern bool _lnx_init_var_LNX_H_GCOMMANDS_FUN_is_init;/*Zero initialized before global constructors*/
     used        _pvt::_lnx_init_fun_LNX_H_GCOMMANDS_FUN_t& _lnx_init_var_LNX_H_GCOMMANDS_FUN_get();
     used static _pvt::_lnx_init_fun_LNX_H_GCOMMANDS_FUN_t& _lnx_init_var_LNX_H_GCOMMANDS_FUN_v = _lnx_init_var_LNX_H_GCOMMANDS_FUN_get();
-    extern bool _lnx_init_var_LNX_H_GCOMMANDS_FUN_is_init;/*Zero initialized before global constructors*/
 }

@@ -337,7 +337,7 @@ namespace lnx::dbg{
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param vArgs The format arguments
 	 */
-	static _dbg(neverInline)_rls(alwaysInline) void checkRawPtr(auto* vPtr, const char* pFstr, const auto&... vArgs) {
+	static _dbg(neverInline)_rls(alwaysInline) void checkRawPtr(auto* vPtr, const char* pFstr, const auto&... vArgs) { //TODO remove ig
 		#ifdef LNX_DBG
 			if(vPtr) {
 				try{ char tmp = *(char*)vPtr; }

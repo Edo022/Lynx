@@ -9,13 +9,13 @@
 
 
 namespace lnx::sys::_pvt {
+    extern bool _lnx_init_var_cpu_is_init;/*Zero initialized before global constructors*/
     used        const CpuInfo& _lnx_init_var_cpu_get();
     used static const CpuInfo& _lnx_init_var_cpu_v = _lnx_init_var_cpu_get();
-    extern bool _lnx_init_var_cpu_is_init;/*Zero initialized before global constructors*/
 }
 
 namespace lnx::sys::_pvt {
+    extern bool _lnx_init_var_ram_is_init;/*Zero initialized before global constructors*/
     used        const RamInfo& _lnx_init_var_ram_get();
     used static const RamInfo& _lnx_init_var_ram_v = _lnx_init_var_ram_get();
-    extern bool _lnx_init_var_ram_is_init;/*Zero initialized before global constructors*/
 }

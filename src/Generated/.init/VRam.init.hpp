@@ -9,7 +9,7 @@
 
 
 namespace lnx::sys::_pvt {
+    extern bool _lnx_init_var_vram_is_init;/*Zero initialized before global constructors*/
     used        const GpuInfo& _lnx_init_var_vram_get();
     used static const GpuInfo& _lnx_init_var_vram_v = _lnx_init_var_vram_get();
-    extern bool _lnx_init_var_vram_is_init;/*Zero initialized before global constructors*/
 }

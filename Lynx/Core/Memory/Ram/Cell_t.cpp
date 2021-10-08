@@ -11,13 +11,12 @@
 
 namespace lnx::ram{
 	_lnx_init_var_array_def((Type_t), types, (uint32)_pvt::CellClassIndex::eNum, lnx::ram){}
-	_lnx_init_var_set_def((RaArrayC<Cell_t, uint32>), cells, lnx::ram){}
-	_lnx_init_var_set_def((std::mutex), cells_m,             lnx::ram){}
+	_lnx_init_var_value_def((RaArrayC<Cell_t, uint32>), cells, lnx::ram){}
+	_lnx_init_var_value_def((std::mutex), cells_m,             lnx::ram){}
 
 
 
 
-#define __LNX_INITIALIZER_GENERATOR__
 	_lnx_init_fun_def(LNX_H_CELL_T, lnx::ram) {
 		using namespace lnx::ram::_pvt;
 
