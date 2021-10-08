@@ -4,7 +4,6 @@ from pathlib import Path
 
 
 
-
 with open('./.engine/.etop', 'r') as f: etop = f.read()
 with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
 os.chdir(ptoe)
@@ -165,8 +164,10 @@ def BuildGSI(SPV, GSI, GLS, isEngine):
         poolMutex.release()
         while avlThrs == 0: time.sleep(0.01)
         if poolErr:
-            sys.exit('Alloy: An error occurred. Build stopped')
+            sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     while avlThrs < totThrs: time.sleep(0.01)
+    if poolErr:
+        sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     curThr = 0
 
 
@@ -219,6 +220,8 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP, defineTuUuid = False, tuUuidPrefix = ''):
         if poolErr:
             sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     while avlThrs < totThrs: time.sleep(0.01)
+    if poolErr:
+        sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     curThr = 0
 
 
@@ -244,14 +247,18 @@ def dirs(EOUT:str, AOUT:str):
     os.makedirs(exist_ok = True, name =                f'./src/Generated')
     os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
     os.makedirs(exist_ok = True, name =                f'./src/Generated/Shaders')
-    os.makedirs(exist_ok = True, name =                f'./src/Generated/.init')
-    os.makedirs(exist_ok = True, name =                f'./src/Generated/.init/Shaders')
+
+    os.makedirs(exist_ok = True, name = f'./src/Generated/.init')
+    os.makedirs(exist_ok = True, name = f'./src/Generated/.init/Shaders')
+
 
     # Create output directories
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
-    os.makedirs(exist_ok = True, name = f'{ AOUT }')
     os.makedirs(exist_ok = True, name = f'{ EOUT }/Shaders')
+    os.chdir(etop)
+    os.makedirs(exist_ok = True, name = f'{ AOUT }')
     os.makedirs(exist_ok = True, name = f'{ AOUT }/Shaders')
+    os.chdir(ptoe)
 
 
 
@@ -261,11 +268,11 @@ def dirs(EOUT:str, AOUT:str):
 
 
 def build(
-    EXEC:str, OUTPUT:str, LINK:list,    # Path to C++ compiler      # Binary output suffix              # Linker options
-    EFLG:list, EGLS:list, ECPP:list,    # Engine flags              # Engine GLS source files           # Engine C++ source files
-    AFLG:list, AGLS:list, ACPP:list     # Application flags         # Application GLS source files      # Application C++ source files
+    EXEC:str, OUTPUT:str, LINK:list,  # Path to C++ compiler  # Binary output suffix          # Linker options
+    EFLG:list, EGLS:list, ECPP:list,  # Engine flags          # Engine GLS source files       # Engine C++ source files
+    AFLG:list, AGLS:list, ACPP:list   # Application flags     # Application GLS source files  # Application C++ source files
 ):
-    LINK += [                                           # Default Likner options
+    LINK += [                                           # Default Likner options    #! Relative to application
         '-L/usr/lib64', '-L/lib64',                         # Prefer 64bit libraries                        #TODO fix windows build
         '-ldl', '-lrt', '-lXrandr', '-lXi',                 # Link dependencies                             #TODO fix windows build
         '-lXcursor', '-lXinerama', '-lX11',                 # Link dependencies                             #TODO fix windows build
@@ -274,41 +281,52 @@ def build(
 
     SFLG = [                                            # Shared default C++ flags
         '-std=c++20', '-m64', '-pthread',                   # Use C++20, build for 64bit environments, use pthread
-        '-I.', '-Isrc', f'-I{ etop }/.engine/src',          # Include from src directories and project root
-        '-include', 'Lynx/Core/InitList.hpp',               # Include generated engine initializers
-        '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros
-        '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros
-        f'-ffile-prefix-map={ os.path.abspath(etop) }/=',
-           # Fix file prefix in debug infos
         f'-DenginePath="{ ptoe }"',                         # Engine path macro #FIXME
     ]
 
 
-    EFLG += SFLG                                        # Append default flags to user defined flags    #! Passed by the wrapper
-    AFLG += SFLG                                        # Append default flags to user defined flags    #! Passed by the wrapper
-    EOUT = f'{ etop }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory
-    AOUT = f'{ etop }/.engine/bin/App/{ OUTPUT }'       # Path to the engine application binary output directory
-    ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library
-    ABIN = f'{ etop }/tmp.out'                          # Path to the application executable file
+    EFLG += SFLG + [                                    # Append default flags to user defined flags     #! Passed by the wrapper
+        '-include', 'Lynx/Core/InitList.hpp',               # Include generated engine initializers      #! Relative to engine
+        '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros               #! Relative to engine
+        '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros        #! Relative to engine
+        '-I.', '-Isrc',                                     # Include from src directory and engine root #! Relative to engine
+        #FIXME REMOVE -I. AFTER MOVING SRC FILES
+        f'-ffile-prefix-map={ os.path.abspath(etop) }/={ ptoe }/' # Fix file prefix in debug infos
+    ]
+
+    AFLG += SFLG + [                                    # Append default flags to user defined flags        #! Relative to application   #! Passed by the wrapper
+        '-include', f'{ ptoe }/Lynx/Core/InitList.hpp',     # Include generated engine initializers         #!Relative to application
+        '-include', f'{ ptoe }/Lynx/Core/VkDef.hpp',        # Include forced vulkan macros                  #!Relative to application
+        '-include', f'{ ptoe }/Lynx/Lynx_config.hpp',       # Include engine configuration macros           #!Relative to application
+        '-I.', f'-I{ ptoe }', f'-I{ ptoe }/src', f'-I./.engine/src',           # Include from src directories and project root #!Relative to application
+        #FIXME REMOVE -Iptoe AFTER MOVING SRC FILES
+        f'-ffile-prefix-map={ os.path.abspath(etop) }/='    # Fix file prefix in debug infos
+    ]
+
+    EOUT = f'{ etop }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
+    AOUT = f'./.engine/bin/App/{ OUTPUT }'              # Path to the application binary output directory   #! Relative to application
+    ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library                 #! Relative to engine
+    ABIN = f'./tmp.out'                                 # Path to the application executable file           #! Relative to application
 
 
-    ESPV = list((               f'./src/Generated/Shaders/{ Path(s).stem }.spv')     for s in EGLS)     # Get output .spv files paths
-    ASPV = list((f'{ etop }/.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS)     # Get output .spv files paths                   #! Can be empty
-    EGSI = list((               f'./src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in EGLS)     # Get generated shader interfaces source files
-    AGSI = list((f'{ etop }/.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS)     # Get generated shader interfaces source files  #! Can be empty
+    ESPV = list((        f'./src/Generated/Shaders/{ Path(s).stem }.spv')     for s in EGLS) # Output .spv files paths
+    ASPV = list((f'./.engine/src/Generated/Shaders/{ Path(s).stem }.spv')     for s in AGLS) # Output .spv files paths                   #! Relative to application    #! Can be empty
+    EGSI = list((        f'./src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in EGLS) # Generated shader interfaces source files
+    AGSI = list((f'./.engine/src/Generated/Shaders/{ Path(s).stem }.gsi.cpp') for s in AGLS) # Generated shader interfaces source files  #! Relative to application    #! Can be empty
 
-    EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS)     # Get generated shader interfaces .o files
-    AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS)     # Get generated shader interfaces .o files
-    EOBJ = list((f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP)     # Get output .o files of the non-generated C++ source files
-    AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP)     # Get output .o files of the non-generated C++ source files
+    EGSO = list((f'{ EOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in EGLS) # Generated shader interfaces .o files
+    AGSO = list((f'{ AOUT }/Shaders/{ Path(s).stem }.gsi.o') for s in AGLS) # Generated shader interfaces .o files                       #! Relative to application
+    EOBJ = list((f'{ EOUT }'     f'/{ Path(s).stem }.o')     for s in ECPP) # Output .o files of the non-generated C++ source files
+    AOBJ = list((f'{ AOUT }'     f'/{ Path(s).stem }.o')     for s in ACPP) # Output .o files of the non-generated C++ source files      #! Relative to application
 
+    # for i in range(0, A)
 
 
 
     # Create missing directories
     print(f'Using { totThrs } threads')
     print(f'Creating output directories')
-    dirs(EOUT = EOUT, AOUT = AOUT)
+    dirs(EOUT, AOUT)
     print(f'\n')
 
 
@@ -332,7 +350,11 @@ def build(
 
 
 
+
     # Build executable
+    ELIB2 = os.path.relpath(ELIB, etop)
+    os.chdir(etop)
+
     if len(AGLS) > 0:
         print(f'Generating application files')
         BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
@@ -344,8 +366,12 @@ def build(
         print(f'{ bgreen }Application source files compiled successfully\n{ white }')
 
     print(f'Writing application executable file')
-    subprocess.run([EXEC] + AFLG + AGSO + AOBJ + [ELIB] + LINK + ['-o', ABIN])
+    checkCmd([EXEC] + AFLG + AGSO + AOBJ + [ELIB2] + LINK + ['-o', ABIN])
+    if poolErr:
+        sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     print(f'{ bgreen }Created "{ ABIN }"\n{ white }')
+
+    os.chdir(ptoe)
 
 
 

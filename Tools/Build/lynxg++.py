@@ -221,7 +221,7 @@ def run(argv:list, isEngine:bool):
                     i -= 1                                          # Parse element again
             i += 1                                          # Increment counter
         #sorry
-
+#FIXME REMOVE. USE DIFFERENT BUILD FILE SYNTAX
 
 
         return ns(**{ #TODO rename
@@ -264,12 +264,12 @@ alloyCmd = [ #--debug #--just-print #-p
     f"EXEC   = \"{ 'g++'   if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }\"",
     f"OUTPUT = \"{ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }\"",
     f'EFLG   = { str(eRet.FLAGS) }',
-    f'AFLG   = { str(aRet.FLAGS) }', #FIXME replace paths with replative path from engine
-    f'ECPP   = { str(eRet.CPP  ) }',
-    f'EGLS   = { str(eRet.GLS  ) }',
-    f'ACPP   = { str(list(os.path.relpath(s, eabs) for s in aRet.CPP)) }',
-    f'AGLS   = { str(list(os.path.relpath(s, eabs) for s in aRet.GLS)) }',
-    f'LINK   = { str(aRet.LINK) }', #FIXME only replace actual paths
+    f'AFLG   = { str(aRet.FLAGS) }',
+    f'ECPP   = { str(eRet.CPP)   }',
+    f'EGLS   = { str(eRet.GLS)   }',
+    f'ACPP   = { str(aRet.CPP)   }',
+    f'AGLS   = { str(aRet.GLS)   }',
+    f'LINK   = { str(aRet.LINK)  }',
     'build'
 ]
 
