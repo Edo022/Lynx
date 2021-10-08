@@ -50,6 +50,24 @@ namespace lnx::core::dvc::_pvt {
     extern bool _lnx_init_var_requiredDeviceExtensions_is_init;/*Zero initialized before global constructors*/
 }
 
+namespace lnx::core::dvc::_pvt {
+    used        VkDebugUtilsMessengerEXT& _lnx_init_var_debugMessenger_get();
+    used static VkDebugUtilsMessengerEXT& _lnx_init_var_debugMessenger_v = _lnx_init_var_debugMessenger_get();
+    extern bool _lnx_init_var_debugMessenger_is_init;/*Zero initialized before global constructors*/
+}
+
+namespace lnx::core::dvc::_pvt {
+    used        uint32& _lnx_init_var_validationLayersNum_get();
+    used static uint32& _lnx_init_var_validationLayersNum_v = _lnx_init_var_validationLayersNum_get();
+    extern bool _lnx_init_var_validationLayersNum_is_init;/*Zero initialized before global constructors*/
+}
+
+namespace lnx::core::dvc::_pvt {
+    used        const char**& _lnx_init_var_validationLayers_get();
+    used static const char**& _lnx_init_var_validationLayers_v = _lnx_init_var_validationLayers_get();
+    extern bool _lnx_init_var_validationLayers_is_init;/*Zero initialized before global constructors*/
+}
+
 namespace lnx::core::dvc::_pvt{
     struct _lnx_init_fun_LNX_H_DEVICES_FUN_t;
 }

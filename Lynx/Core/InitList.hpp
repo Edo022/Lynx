@@ -58,7 +58,7 @@ namespace lnx{
 
 
 
-
+#include "Generated/.init/Env.init.hpp"
 #include "Generated/.init/SystemInfo.init.hpp"
 #include "Generated/.init/StructureInit.init.hpp"
 
@@ -71,7 +71,7 @@ namespace lnx{
 #include "Generated/.init/VRam.init.hpp"
 #include "Generated/.init/VCell_t.init.hpp"
 
-// #include "Generated/.init/GCommands.hpp"
+#include "Generated/.init/GCommands.init.hpp"
 #include "Generated/.init/Shader.init.hpp"
 
 #include "Generated/.init/Shaders/Border2.gsi.init.hpp"
