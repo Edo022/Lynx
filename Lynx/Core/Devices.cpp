@@ -411,13 +411,12 @@ namespace lnx::core::dvc{
 
 			//If there are discarded devices, print their names
 			if(discarded.count() > 0) {
-				String discardedList = "    Discarded devices:";
+				String discardedList = "Discarded devices:";
 				for(uint32 i = 0; i < discarded.count(); i += 2) {
 					//FIXME use proper lnx::String format function
 					discardedList += dbg::string_format(
-						"        %s  |  %s",
-						(char*)discarded[i].begin(),
-						(char*)discarded[(uint64)i + 1].begin()
+						"\n    %s: %s",
+						(char*)discarded[i].begin(), (char*)discarded[(uint64)i + 1].begin()
 					).c_str();
 				}
 				//FIXME write overload for logs with lnx::String

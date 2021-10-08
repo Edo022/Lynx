@@ -145,13 +145,13 @@ namespace lnx::dbg{
 
 			if(vSeverity != Severity::eInfo){
 				//Build traceback
-				string traceback = "\n    Address │   Line │ Function";
+				string traceback = outCol + "\n│  " + nWhite + "    Address │   Line │ Function";
 				for(uint32 i = 0; ; ++i){
 					auto func = caller::func(vIndex + i);
 					if(func[0] != '?' && func[0] != '\0') {
 						// auto tracebackLine =
 						traceback +=
-							std::string("\n    ") +
+							std::string(outCol + "\n│  ""    ") +
 							string_format(std::string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
 							string_format(std::string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
 							func +
@@ -173,17 +173,17 @@ namespace lnx::dbg{
 				//Build output string
 				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
 				std::string out = string_format(
-					outCol + _time + " ────────────────────────────────────────────────────────────────────────────────────────────" +
-					"\n" + msgType + nWhite +
-					"\n" +
-					"\nThread \"" + thrName + "\"" +
-					"\nTraceback: " + traceback.c_str() +
-					"\n" +
-					"\n" + outCol + pFstr +
-					"\n──────────────────────────────────────────────────────────────────────────────────────────────────────────\n\n" + nWhite,
+					outCol + "\n┌ " + _time + " ───────────────────────────────────────────────────────────────────────────────────────────" +
+					outCol + "\n│  " + msgType + nWhite +
+					outCol + "\n│  " + nWhite +
+					outCol + "\n│  " + nWhite + "Thread \"" + thrName + "\"" +
+					outCol + "\n│  " + nWhite + "Traceback: " + traceback.c_str() +
+					outCol + "\n│  " + nWhite +
+					outCol + "\n│  " + nWhite + outCol + pFstr +
+					outCol + "\n└───────────────────────────────────────────────────────────────────────────────────────────────────────────\n\n" + nWhite,
 					pArgs...
 				);
-				printf("\n\n%s", out.c_str()); fflush(stdout);
+				printf("\n%s", out.c_str()); fflush(stdout);
 				if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
 			}
 			else{
