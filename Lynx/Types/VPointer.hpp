@@ -59,12 +59,12 @@ namespace lnx::vram{
 
 		static alwaysInline void checkAllocSize(uint64 size_, VCellClass _class) { _dbg(
 			if((_class) != VCellClass::e0 && _class != VCellClass::eAuto) {
-				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
-				dbg::checkCond((uint64)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lnx::VCellClass::AUTO to automatically choose it");
+				dbg::assertCond(size_ <= 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
+				dbg::assertCond((uint64)_class >= size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint64)_class, size_, "Use lnx::VCellClass::AUTO to automatically choose it");
 			}
 		)}
 		alwaysInline void checkMapped() const { _dbg(
-			dbg::checkCond(!Super::mapped, "Unable to call this function on unmapped memory blocks");
+			dbg::assertCond(Super::mapped, "Unable to call this function on unmapped memory blocks");
 		)}
 
 
@@ -224,7 +224,7 @@ namespace lnx::vram{
 		 */
 		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkMapped();
-			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((tType*)(Super::mapped))[vIndex];
 		}
 
@@ -382,7 +382,7 @@ namespace lnx::vram{
 			else {															//For custom size cells
 				uint64 size = (vSize / _pvt::incSize + 1) * _pvt::incSize;	//Calculate the new size and allocate a new buffer
 				//FIXME USE ARBITRARY RANGE FOR COMPATIBILITY
-				dbg::checkParam(btype == bufferType::eUniform && core::dvc::g_graphics().pd.properties.limits.maxUniformBufferRange >= vSize, "vSize", "Allocation is too large to be a uniform buffer");
+				dbg::assertParam(!(btype == bufferType::eUniform && core::dvc::g_graphics().pd.properties.limits.maxUniformBufferRange >= vSize), "vSize", "Allocation is too large to be a uniform buffer");
 				lnx::core::buffers::createBuffer(
 					&Super::cell->csc.buffer, _usage(),
 					size,
@@ -422,7 +422,7 @@ namespace lnx::vram{
 
 			if(!Super::cell) alloc_(vSize, vClass);
 			else{
-				dbg::checkCond(Super::mapped, "realloc() can only be called on unmapped memory");
+				dbg::assertCond(!Super::mapped, "realloc() can only be called on unmapped memory");
 				dbg::logWarn("Using partial VRAM rellocation");
 				free();
 				alloc_(vSize, vClass);
@@ -521,7 +521,7 @@ namespace lnx::vram{
 		 * Complexity: O(1)
 		 */
 		inline void free() {
-			dbg::checkCond(Super::mapped, "free() can only be called on unmapped memory");
+			dbg::assertCond(!Super::mapped, "free() can only be called on unmapped memory");
             if(Super::cell->typeIndex != (uint16)-1) {										//For fixed  size cells
                 g_types()[Super::cell->typeIndex].m.lock();
                 g_types()[Super::cell->typeIndex].cells.remove(Super::cell->localIndex);			//free the allocation object
@@ -550,8 +550,8 @@ namespace lnx::vram{
 		 * Complexity: Unknown //TODO
 		 */
 		void map(){
-			dbg::checkCond(Super::mapped, "Memory block mapped twice");
-			dbg::checkCond(!size(), "Cannot map memory blocks with size 0");
+			dbg::assertCond(!Super::mapped, "Memory block mapped twice");
+			dbg::assertCond(size(), "Cannot map memory blocks with size 0");
 			auto memory = Super::cell->csc.memory;
 			auto offset = Super::cell->localOffset;
 			auto size   = Super::cell->cellSize;
@@ -575,7 +575,7 @@ namespace lnx::vram{
 		 * Complexity: Unknown //TODO
 		 */
 		void unmap(){
-			dbg::checkCond(!Super::mapped, "unmap() called on unmapped memory");
+			dbg::assertCond(Super::mapped, "unmap() called on unmapped memory");
 			auto memory = Super::cell->csc.memory;
 			auto offset = Super::cell->localOffset;
 			auto size   = Super::cell->cellSize;

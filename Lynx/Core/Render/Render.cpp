@@ -36,7 +36,7 @@ namespace lnx::core::render{
 		void createDebugMessenger() {
 			VkDebugUtilsMessengerCreateInfoEXT createInfo;
 			debug::populateDebugMessengerCreateInfo(createInfo);
-			dbg::checkCond(VK_SUCCESS != debug::CreateDebugUtilsMessengerEXT(dvc::g_instance(), &createInfo, nullptr, &dvc::g_debugMessenger()), "Failed to set up debug messenger");
+			dbg::assertCond(VK_SUCCESS == debug::CreateDebugUtilsMessengerEXT(dvc::g_instance(), &createInfo, nullptr, &dvc::g_debugMessenger()), "Failed to set up debug messenger");
 		}
 	#endif
 }
@@ -66,7 +66,7 @@ namespace lnx{
 	 * @param pObj The object from which to start the recursion
 	 */
 	void core::RenderCore::recSpawn(obj::obj_bb* pObj){ //FIXME USE RENDER CORE INSTEAS OF WINDOW
-		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
+		//dbg::assertCond(!(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr), "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->updates = pObj->updates & ~obj::eSpawn;					//Clear update bit (prevents redundant updates)
 		pObj->w = w;													//Set owner window
 		pObj->onSpawn(*this);											//Run user callback
@@ -84,7 +84,7 @@ namespace lnx{
 	 * @param pObj The object from which to start the recursion
 	 */
 	void core::RenderCore::recFlush(obj::obj_bb* pObj, vk::CommandBuffer pCB){
-		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
+		//dbg::assertCond(!(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr), "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->updates = pObj->updates & ~obj::eFlush;
 		pObj->onFlush(pCB);
 		for(uint32 i = 0; i < pObj->children.count(); ++i){
@@ -101,7 +101,7 @@ namespace lnx{
 	 * @param pObj The object from which to start the recursion
 	 */
 	void core::RenderCore::recLimit(obj::obj_bb* pObj){
-		//dbg::checkCond(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr, "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
+		//dbg::assertCond(!(render.parentWindow && thr::self::thr() != render.parentWindow->t.thr), "This function can only be called by the render thread."); //TODO ADD THREAD CHECK
 		pObj->updates = pObj->updates & ~obj::eLimit;
 		pObj->onLimit();
 		for(uint32 i = 0; i < pObj->children.count(); ++i){

@@ -39,8 +39,8 @@ namespace lnx{
 
 	namespace test{
 		#ifdef LNX_DBG
-		#	define checkInit() lnx::dbg::checkCond(this->_lnx_init_num != lnx::_pvt::init_num, "This function cannot be called on uninitialized structures")
-		#	define isInit(var)      dbg::checkParam( var._lnx_init_num != lnx::_pvt::init_num, #var, "Uninitialized structure used")
+		#	define checkInit() lnx::dbg::assertCond(this->_lnx_init_num == lnx::_pvt::init_num, "This function cannot be called on uninitialized structures")
+		#	define isInit(var)      dbg::assertParam( var._lnx_init_num == lnx::_pvt::init_num, #var, "Uninitialized structure used")
 		#	define checkInitList(...) _lnx_ctor_dummy{ [&]() { __VA_ARGS__; return char(0x293); }() },
 		#else
 		#	define checkInit()			//Checks if a function parameter is initialized

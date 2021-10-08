@@ -485,7 +485,7 @@ namespace lnx{
 		 * @return a rvalue reference to the element
 		 */
 		template<class tCType> alwaysInline tCType& rtGet(const uint32 vIndex) {
-			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			return (tCType&)*(tCType*)(_pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex));
 		}
 
@@ -497,7 +497,7 @@ namespace lnx{
 		 * @return The addresso f the element
 		 */
 		alwaysInline void* rtGet(const uint32 vIndex) {
-			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			return _pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex);
 		}
 

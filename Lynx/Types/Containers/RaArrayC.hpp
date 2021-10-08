@@ -29,7 +29,7 @@ namespace lnx{
 
 
 		void init(const tIdxt vCount) {
-			dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
+			dbg::assertParam(vCount >= 0, "vCount", "Count cannot be negative");
 			data = (Elm*)malloc(sizeof(Elm) * vCount);
 			tail = 0; head = vCount - 1;
 			for(tIdxt i = 0; i < vCount - 1; ++i) data[i].next = i + 1;
@@ -59,13 +59,13 @@ namespace lnx{
 		}
 
 		inline void remove(const tIdxt vIndex) {
-			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			checkInit(); dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			data[head].next = vIndex;
 			head = vIndex;
 		}
 
 		inline tType& operator[](const tIdxt vIndex) const {
-			checkInit(); dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			checkInit(); dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[vIndex].value;
 		}
 

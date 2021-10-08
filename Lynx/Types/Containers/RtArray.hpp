@@ -152,7 +152,7 @@ namespace lnx {
 			}
 		#else //Check for negative count //FIXME
 			void resize(int64 vCount) {
-				dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative");
+				dbg::assertParam(vCount >= 0, "vCount", "Count cannot be negative");
 				checkInit();
 				Super::resize(vCount);
 			}
@@ -240,8 +240,8 @@ namespace lnx {
 		 */
 		alwaysInline tType& operator[](const tIdxt vIndex) const {
 			checkInit();
-			dbg::checkCond(Super::count() == 0, "This function cannot be called on containers with size 0");
-			dbg::checkIndex(vIndex, 0, Super::count() - 1, "vIndex");
+			dbg::assertCond(Super::count() != 0, "This function cannot be called on containers with size 0");
+			dbg::assertIndex(vIndex, 0, Super::count() - 1, "vIndex");
 			return Super::operator[](vIndex);
 		}
 	};

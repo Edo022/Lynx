@@ -277,9 +277,9 @@ namespace lnx::dbg{
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
 	 */
-	static _dbg(neverInline)_rls(alwaysInline) void checkCond(const bool vCond, const char* pFstr, const auto&... pArgs) {
+	static _dbg(neverInline)_rls(alwaysInline) void assertCond(const bool vCond, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DBG
-			if(vCond) lnx::dbg::logError(pFstr, pArgs...);
+			if(!vCond) lnx::dbg::logError(pFstr, pArgs...);
 		#endif
 	}
 
@@ -298,10 +298,10 @@ namespace lnx::dbg{
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param pArgs The format arguments
 	 */
-	static _dbg(neverInline)_rls(alwaysInline) void checkParam(const bool vCond, const char* pParam, const char* pFstr, const auto&... pArgs) {
+	static _dbg(neverInline)_rls(alwaysInline) void assertParam(const bool vCond, const char* pParam, const char* pFstr, const auto&... pArgs) {
 		#ifdef LNX_DBG
-			if(vCond) {
-				auto callerFunc = caller::func();
+			if(!vCond) {
+				auto callerFunc = caller::func(); //TODO use std::string
 				const char* fstr = "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s";
 				char* str = (char*)malloc(strlen(fstr) + strlen(pParam) + strlen(callerFunc) + strlen(pFstr) + 1);
 				sprintf(str, fstr, pParam, callerFunc, pFstr);
@@ -319,7 +319,7 @@ namespace lnx::dbg{
 	 *     Specifies the minimum and maximum value the function parameter with name pParam can have
 	 *     Indices are printed as uint64
 	 * Complexity:
-	 *     ~O(n) [debug mode, from dbg::checkParam]
+	 *     ~O(n) [debug mode, from dbg::assertParam]
 	 *     O(1)  [release mode, function call is ignored]
 	 *     where n = strlen(pFstr)
 	 * @param vIndex The index to check
@@ -327,9 +327,9 @@ namespace lnx::dbg{
 	 * @param vMax The maximum allowed value of the index
 	 * @param pParam The name of the parameter
 	 */
-	static _dbg(neverInline)_rls(alwaysInline) void checkIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* pParam) {
+	static _dbg(neverInline)_rls(alwaysInline) void assertIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* pParam) {
 		#ifdef LNX_DBG
-			checkParam(vIndex < vMin || vIndex > vMax, pParam, "Index %llu is out of range. Min: %llu, Max: %llu", vIndex, vMin, vMax);
+			assertParam(vIndex >= vMin && vIndex <= vMax, pParam, "Index %llu is out of range. Min: %llu, Max: %llu", vIndex, vMin, vMax);
 		#endif
 	}
 

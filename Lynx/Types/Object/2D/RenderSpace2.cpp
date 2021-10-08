@@ -27,7 +27,7 @@ namespace lnx::obj {
 	//It depends on the render space properties and children alignment
 	//Returns false if the index is invalid
 	void RenderSpace2::setChildLimits(const uint32 vChildIndex) const {
-		dbg::checkParam(vChildIndex > children.count() - 1, "vChildIndex", "Invalid index");
+		dbg::assertParam(vChildIndex < children.count(), "vChildIndex", "Invalid index");
 		switch(alignment) {
 			case AlignmentType::eFixedHorizontal:
 			{ //FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY

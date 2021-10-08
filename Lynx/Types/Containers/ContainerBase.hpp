@@ -127,7 +127,7 @@ namespace lnx {
 
 		//Resizes the array and calls the default constructor on each of the new elements
 		inline void resize(const tIdxt vSize) {
-			checkInit(); dbg::checkParam(vSize < 0, "vSize", "The size of a container cannot be negative");
+			checkInit(); dbg::assertParam(vSize >= 0, "vSize", "The size of a container cannot be negative");
 			auto oldCount = count();
 			data.reallocArr(vSize);
 			updateView();
@@ -170,7 +170,7 @@ namespace lnx {
 
 		//Count constructor
 		inline ContainerBase(const tIdxt vCount) :
-			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count cannot be negative"))
+			checkInitList(dbg::assertParam(vCount >= 0, "vCount", "Count cannot be negative"))
 			data{ sizeof(tType) * vCount } {
 			updateView();
 			initRange(0, count() - 1);
@@ -182,7 +182,7 @@ namespace lnx {
 		//Copy constructor
 		template<class cType, class cIter> inline ContainerBase(const ContainerBase<cType, cIter>& pCont, const Dummy vDummy) :
 			checkInitList(
-				isInit(pCont); dbg::checkParam(sizeof(cIter) > sizeof(tIdxt), "pCont",
+				isInit(pCont); dbg::assertParam(sizeof(cIter) <= sizeof(tIdxt), "pCont",
 				"The iterator of a container must be large enough to contain all the elements.\
 				Max iterator index is %d, but pCont has %d elements", pow(2, sizeof(tIdxt) * 8 - 1), pCont.count())
 			)

@@ -235,7 +235,7 @@ namespace lnx {
 		 * @param vCount The number of elements to preallocate
 		 */
 		inline RaArray(const tIdxt vCount) :
-			checkInitList(dbg::checkParam(vCount < 0, "vCount", "Count must be a positive value"))
+			checkInitList(dbg::assertParam(vCount >= 0, "vCount", "Count must be a positive value"))
 			data(sizeof(Elm) * (uint64)vCount) {
 			tail = 0; head = (uint64)vCount - 1;
 			count_ = vCount; free_ = 0;
@@ -416,8 +416,8 @@ namespace lnx {
 		 */
 		void remove(const tIdxt vIndex) {
 			checkInit();
-			dbg::checkIndex(vIndex, 0, (uint64)count() - 1, "vIndex");
-			dbg::checkParam(!isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
+			dbg::assertIndex(vIndex, 0, (uint64)count() - 1, "vIndex");
+			dbg::assertParam(isValid(vIndex), "vIndex", "Cannot remove element at index %d. It was already deleted", vIndex);
 
 			data[vIndex].value.~tType();					//Destroy the element
 			data[vIndex].next = 0;							//Set the index as free
@@ -575,7 +575,7 @@ namespace lnx {
 		 */
 		alwaysInline bool isValid(const tIdxt vIndex) const {
 			checkInit();
-			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			return data[(uint64)vIndex].next == (tIdxt)-1;
 		}
 
@@ -591,8 +591,8 @@ namespace lnx {
 
 		alwaysInline tType& operator[](const tIdxt vIndex) const {
 			checkInit();
-			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			dbg::checkParam(!isValid(vIndex), "vIndex", "Accessing deleted array element");
+			dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::assertParam(isValid(vIndex), "vIndex", "Accessing deleted array element");
 			return data[(uint64)vIndex].value;
 		}
 

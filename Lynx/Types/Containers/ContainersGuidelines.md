@@ -39,7 +39,7 @@ e.g. (`template<class tType> class Array;`)
  *     Returns -1 if the value is not found
  */
  template<class tType> int Array<tType>::find(const tType* pValue){
-     dbg::checkParam(pValue != nullptr, "pValue", "pValue cannot be null");
+     dbg::assertParam(pValue != nullptr, "pValue", "pValue cannot be null");
      for(int i = 0; i < this->count(); ++i){
         if(this->elms[i] == *pValue) return i;
      }
@@ -75,8 +75,8 @@ e.g. (`template<class tType> class Array;`)
   * @param pValue The new value of the element
   */
   template<class tType> void Array<tType>::set(const int vIndex, const tType& pValue){
-      dbg::checkParam(vIndex >= 0, "vIndex", "Index must be positive";
-      dbg::checkParam(vIndex < this->Count(), "vIndex", "Index out of range";
+      dbg::assertParam(vIndex >= 0, "vIndex", "Index must be positive";
+      dbg::assertParam(vIndex < this->Count(), "vIndex", "Index out of range";
       this->data[vIndex] = pValue;
   }
 ```

@@ -58,7 +58,7 @@ namespace lnx::core::dvc{
 
 
 	_lnx_init_fun_def(LNX_H_DEVICES, lnx::core::dvc){
-		dbg::checkCond(!glfwInit(), "GLFW not initialized");
+		dbg::assertCond(glfwInit(), "GLFW not initialized");
 
 		//Extensions
 		uint32 glfwExtensionCount;

@@ -39,7 +39,7 @@ namespace lnx::core::buffers{
 
 
 		auto memType = render::findMemoryType(memRequirements.memoryTypeBits, vProperties);
-		dbg::checkCond(memType == (uint32)-1, "Failed to find suitable memory type");
+		dbg::assertCond(memType != (uint32)-1, "Failed to find suitable memory type");
 		auto allocInfo = vk::MemoryAllocateInfo()
 			.setAllocationSize  (memRequirements.size)
 			.setMemoryTypeIndex (memType)

@@ -18,15 +18,15 @@ namespace lnx::obj{
 
 
 	void obj_bb::onSpawn(core::RenderCore& pRenderCore){
-		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+		dbg::assertCond(!(w && thr::self::thr() != w->renderCore.t.thr), "This function can only be called by the render thread.");
 	}
 
 	void obj_bb::onLimit(){
-		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+		dbg::assertCond(!(w && thr::self::thr() != w->renderCore.t.thr), "This function can only be called by the render thread.");
 	}
 
 	void obj_bb::onFlush(vk::CommandBuffer pCB){
-		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
+		dbg::assertCond(!(w && thr::self::thr() != w->renderCore.t.thr), "This function can only be called by the render thread.");
 
 		if(objType == ObjType::eRender){
 			pCB.updateBuffer(
@@ -100,7 +100,7 @@ namespace lnx::obj{
 
 
 	void obj2_b::setChildLimits(const uint32 vChildIndex) const {
-		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
+		dbg::assertParam(vChildIndex < obj_bb::children.count(), "vChildIndex", "Invalid index");
 
 		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
 		scast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);

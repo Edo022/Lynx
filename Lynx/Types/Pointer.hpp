@@ -22,33 +22,33 @@ namespace lnx::ram{
 	template<class tType> struct ptr {
 	private:
 		alwaysInline void checkSize()  const { _dbg(
-			lnx::dbg::checkCond(size() == 0, "This function cannot be called on 0-byte memory allocations");
+			lnx::dbg::assertCond(size() != 0, "This function cannot be called on 0-byte memory allocations");
 		)}
 		alwaysInline void checkSizeD() const { _dbg(
-			lnx::dbg::checkCond(size() == 0, "Cannot dereference a 0-byte memory allocation");
+			lnx::dbg::assertCond(size() != 0, "Cannot dereference a 0-byte memory allocation");
 		)}
 
 
 		alwaysInline void checkAlloc() const { _dbg(
-			lnx::dbg::checkCond(state == _pvt::CellState::eFreed, "Unable to call this function on invalid allocations: The memory block have been manually freed");
+			lnx::dbg::assertCond(state != _pvt::CellState::eFreed, "Unable to call this function on invalid allocations: The memory block have been manually freed");
 		)}
-		#define isAlloc(a) dbg::checkParam((a).state == _pvt::CellState::eFreed, #a,\
+		#define isAlloc(a) dbg::assertParam((a).state != _pvt::CellState::eFreed, #a,\
 			"Use of invalid allocation: The memory block have been manually freed")
 		;
 
 
 		alwaysInline void checkNullptr()  const { _dbg(
-			lnx::dbg::checkCond(state == _pvt::CellState::eNullptr, "Unable to call this function on unallocated memory blocks");
+			lnx::dbg::assertCond(state != _pvt::CellState::eNullptr, "Unable to call this function on unallocated memory blocks");
 		)}
 		alwaysInline void checkNullptrD() const { _dbg(
-			lnx::dbg::checkCond(state == _pvt::CellState::eNullptr, "Cannot dereference an unallocated memory block");
+			lnx::dbg::assertCond(state != _pvt::CellState::eNullptr, "Cannot dereference an unallocated memory block");
 		)}
 
 
 		static alwaysInline void checkAllocSize(uint64 size_, CellClass _class) { _dbg(
 			if(_class != CellClass::e0 && _class != CellClass::eAuto) {
-				dbg::checkCond(size_ > 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
-				dbg::checkCond((uint32)_class < size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, size_, "Use lnx::CellClass::AUTO to automatically choose it");
+				dbg::assertCond(size_ <= 0xFFFFffff, "Allocation size cannot exceed 0xFFFFFFFF bytes. The given size was %llu", size_);
+				dbg::assertCond((uint32)_class >= size_, "%lu-bytes class specified for %llu-bytes allocation. The cell class must be large enought to contain the bytes. %s", (uint32)_class, size_, "Use lnx::CellClass::AUTO to automatically choose it");
 			}
 		)};
 
@@ -304,7 +304,7 @@ namespace lnx::ram{
 		 */
 		alwaysInline tType& operator[](const uint64 vIndex) const {
 			checkInit(); checkNullptrD(); checkSize();
-			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
+			dbg::assertIndex(vIndex, 0, count() - 1, "vIndex");
 			return ((tType*)(cell->address))[vIndex];
 		}
 

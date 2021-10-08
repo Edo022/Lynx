@@ -167,7 +167,7 @@
 	\
 	/*Debug getter definition*/\
 	_dbg(used inline DEL_P(type)& g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
+	_dbg(	lnx::dbg::assertCond(_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return *_pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -220,7 +220,7 @@
 	\
 	/*Debug getter function*/\
 	_dbg(used inline DEL_P(type)& g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
+	_dbg(	lnx::dbg::assertCond(_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return *_pvt::id##_v;)\
 	_dbg(};)\
 	\
@@ -254,7 +254,7 @@
 	\
 	/*Debug getter function*/\
 	_dbg(used inline DEL_P(type)* g_##name(){)\
-	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
+	_dbg(	lnx::dbg::assertCond(_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\
