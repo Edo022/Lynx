@@ -134,7 +134,7 @@ def BuildGSI1(i, ov, oi, s, isEngine, tot, thrIndex:int):
         curThr += 1
         poolMutex.release()
         checkCmd(['glslangValidator', '-V', s, '-o', ov ])
-        checkCmd(['python3', 'Tools/Build/GlslToCpp.py', s, etop, str(isEngine)])
+        checkCmd(['python3', 'Tools/Build/GenInterfaces.py', s, etop, str(isEngine)])
     else:
         while curThr < thrIndex: time.sleep(0.01)
         print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
