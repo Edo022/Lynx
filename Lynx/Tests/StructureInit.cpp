@@ -2,5 +2,5 @@
 
 
 namespace lnx::test{
-    bool __errors[(uint32)error::eNum];
+    _lnx_init_var_array_def((bool), __errors, (uint32)error::eNum, lnx::test){}
 }

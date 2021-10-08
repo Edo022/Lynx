@@ -1,12 +1,13 @@
 #pragma once
-#define LNX_H_MACROS
+////#define LNX_H_MACROS
 
 
 #ifdef __INTELLISENSE__
-    #include ".engine/conf.hpp"
-    //!The file is generated in the .engine directory of the user application when they change the build configuration
-    //!This include is only used to allow Intellisense to correctly parse the code
+	#include ".engine/conf.hpp"
+	//!The file is generated in the .engine directory of the user application when they change the build configuration
+	//!This include is only used to allow Intellisense to correctly parse the code
 #endif
+
 
 
 
@@ -21,44 +22,32 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 
-//Console output
-#include "Lynx/Core/__tmp__OutputColor.hpp"
-#define Normal				std::cout << __tmp_output_color::white << '\n';
-#define NormalNoNl			std::cout << __tmp_output_color::white;
-#define Success				std::cout << __tmp_output_color::green << '\n';
-#define SuccessNoNl			std::cout << __tmp_output_color::green;
-#define Main				std::cout << __tmp_output_color::magenta << '\n';
-#define Failure				std::cout << __tmp_output_color::red << '\n';
-#define Warning				std::cout << __tmp_output_color::yellow	<< '\n';
-
-
-
-
-#ifdef LNX_DEBUG
-#	define _dbg(...) __VA_ARGS__    //Executes a line of code only if in debug   mode
-#	define _rls(...)                //Executes a line of code only if in release mode
+#ifdef LNX_DBG
+#	define _dbg(...) __VA_ARGS__	//Executes a line of code only if in debug   mode
+#	define _rls(...)				//Executes a line of code only if in release mode
 #else
-#	define _dbg(...)                //Executes a line of code only if in debug   mode
-#	define _rls(...) __VA_ARGS__    //Executes a line of code only if in release mode
+#	define _dbg(...)				//Executes a line of code only if in debug   mode
+#	define _rls(...) __VA_ARGS__	//Executes a line of code only if in release mode
 #endif
 
 
 
 
 //Im lazy UwU
-#define scast   static_cast
-#define rcast   reinterpret_cast
-#define noop    ((void)0)
-#define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline
+#define scast static_cast
+#define rcast reinterpret_cast
+#define noop  ((void)0)
+#define alwaysInline __attribute__((__always_inline__,warning("function marked alwaysInline cannot be inlined"))) inline //TODO write that the function definition must be available even when compiling the .o
 #define neverInline  __attribute__((__noinline__))
+#define used  __attribute__((__used__))
 
 #define alignVar(n) __attribute__((aligned(n )))
 #define alignCache  __attribute__((aligned(64)))
 
 
-#ifdef LNX_DEBUG
-    #undef alwaysInline
-    #define alwaysInline inline
+#ifdef LNX_DBG
+	#undef alwaysInline
+	#define alwaysInline inline
 #endif
 
 
@@ -71,14 +60,16 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 
 
 #ifdef __GNUC__
+	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wpmf-conversions"
-    /**
-     * @brief Returns true if the object's class redefines a virtual member function of a base class
-     *     e.g. if(doesRedefine(derivedInstance, &Obj_bb::func)) //...do something
-     * @param object An instance of the derived class
-     * @param vVMFP The virtual member function pointer of the base class
-     */
+	/**
+	 * @brief Returns true if the object's class redefines a virtual member function of a base class
+	 *     e.g. if(doesRedefine(derivedInstance, &Obj_bb::func)) //...do something
+	 * @param object An instance of the derived class
+	 * @param vVMFP The virtual member function pointer of the base class
+	 */
 	#define doesRedefine(vObj, vVMFP) ((void*)((vObj).*(vVMFP)) != (void*)(vVMFP))
+	#pragma GCC diagnostic pop
 #else
 	static neverInline __attribute__((optimize("O0"), error("\"doesRedefine\" macro is only available in g++"))) bool doesRedefine(auto vObj, auto vVMFP){ return true; }
 #endif
@@ -90,16 +81,12 @@ template<class ta, class tb, class tc, class ...tn> static inline constexpr auto
 neverInline const char* getEnginePath();
 
 #ifdef __INTELLISENSE__
-    //FIXME USE EXTERN CONST CHAR INSTEAD OF MACRO AND FUNCTION
-    //Path to the engine files. Generated during user app compilation
-    //This macro may only be used by the user application
-    //DO NOT use this macro in the engine code. Call getEnginePath() instead.
+	//FIXME USE EXTERN CONST CHAR INSTEAD OF MACRO AND FUNCTION
+	//Path to the engine files. Generated during user app compilation
+	//This macro may only be used by the user application
+	//DO NOT use this macro in the engine code. Call getEnginePath() instead.
 	#define enginePath "<generated>"
 #endif
-
-
-
-
 
 
 

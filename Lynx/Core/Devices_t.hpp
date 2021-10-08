@@ -1,9 +1,9 @@
 #pragma once
-#define LNX_H_DEVICES_T
+////#define LNX_H_DEVICES_T
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
-
+//TODO MOVE TO DEDICATED NAMESPACE
 
 
 

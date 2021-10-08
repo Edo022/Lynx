@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_SYSTEM_MACROS
+////#define LNX_H_SYSTEM_MACROS
 #include <thread>
 
 
@@ -14,7 +14,7 @@
     #define _wds(...) __VA_ARGS__										//Executes a line of code only when compiling for windows 10
     #define _lnx(...)													//Executes a line of code only when compiling for linux
     #include <direct.h>													//  DIR | For _getcwd()
-    #define __lp_get_cwd _getcwd											//  DIR | Get current working directory
+    #define _lnx_get_cwd _getcwd											//  DIR | Get current working directory
     // #include <windows.h>													//  THR | For SuspendThread() and ResumeThread()
     // #define __lp_suspend_thr(th) SuspendThread(th)						//  THR | Function to suspend a thread
     // #define __lp_resume_thr(th)  ResumeThread(th)						//  THR | Function to resume a thread
@@ -23,7 +23,7 @@
     #define _wds(...)													//Executes a line of code only when compiling for windows 10
     #define _lnx(...) __VA_ARGS__										//Executes a line of code only when compiling for linux
     #include <unistd.h>													//  DIR | For getcwd()
-    #define __lp_get_cwd getcwd											//  DIR | Get current working directory
+    #define _lnx_get_cwd getcwd											//  DIR | Get current working directory
     // #include <pthread.h>													//  THR | For SuspendThread() and ResumeThread()
     // #include <csignal>													//  THR | For SuspendThread() and ResumeThread()
     // #define __lp_suspend_thr(th) pthread_kill(th, SIGSTOP)				//  THR | Function to suspend a thread

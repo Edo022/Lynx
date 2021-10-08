@@ -1,8 +1,8 @@
 #pragma once
 #define LUX_H_SYSTEM_INFO
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
-#include "Lynx/macros.hpp"
 
 
 
@@ -19,7 +19,7 @@ namespace lnx::sys{
             uint64 assoc;       //Cache associativity
         } L1D, L1I, L2, L3, L4;
     };
-    extern const CpuInfo cpu;
+    _lnx_init_var_dec((const CpuInfo), cpu);
 
 
     struct RamInfo{
@@ -29,10 +29,10 @@ namespace lnx::sys{
         uint64 pageSize;        //Size of each memory page in bytes
         uint64 size;            //Total size of the memory in bytes (pageNum * pageSize)
     };
-    extern const RamInfo ram;
+    _lnx_init_var_dec((const RamInfo), ram);
 
 
-    enum class DeviceType{
+    enum class DeviceType{ //FIXME
         eDiscrete,
         eIntegrated
     };
@@ -55,5 +55,5 @@ namespace lnx::sys{
             } heaps_[16];
         } heaps;
     };
-    extern const GpuInfo vram;
+    _lnx_init_var_dec((const GpuInfo), vram);
 }

@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_VCLASSES
+////#define LNX_H_VCLASSES
 #include "Lynx/Types/Integers/Integers.hpp"
 
 
@@ -20,7 +20,7 @@ namespace lnx::vram{
 
 
 
-	namespace __pvt{
+	namespace _pvt{
 		enum class VCellClassIndex : uint16 {
 			eA = 0b000,
 			eB = 0b001,

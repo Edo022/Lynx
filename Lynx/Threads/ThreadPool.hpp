@@ -1,11 +1,12 @@
 #pragma once
-#define LNX_H_THREAD_POOL
+////#define LNX_H_THREAD_POOL
 // #include "Lynx/Lynx_config.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
+#include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Threads/Thread.hpp"
 
 #include <deque>
@@ -28,6 +29,9 @@
 
 
 
+// namespace lnx{
+// 	template<class tType, class tIdxt> struct RtArray;
+// }
 
 namespace lnx::thr {
 	//TODO
@@ -41,10 +45,10 @@ namespace lnx::thr {
 
 
 
-	extern RtArray<Thread> threads;
-	extern std::deque<ram::ptr<__pvt::Func_b>> queue;
-	extern std::mutex queue_m;
-
+	_lnx_init_var_dec((RtArray<Thread, uint32>), threads);
+	_lnx_init_var_dec((std::deque<ram::ptr<_pvt::Func_b>>), queue);
+	_lnx_init_var_dec((std::mutex), queue_m);
+	_lnx_init_fun_dec(LNX_H_THREAD_POOL);
 
 
 
@@ -62,15 +66,15 @@ namespace lnx::thr {
 	 */
 	template<class func_t, class ...args_ts> void runAsync(const func_t vFunc, const fwd<args_ts...>& pArgs, pollFence& vFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-		queue_m.lock();
-		using funct = __pvt::void_std_args_xt<func_t, args_ts...>;
+		g_queue_m().lock();
+		using funct = _pvt::void_std_args_xt<func_t, args_ts...>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &vFence;
 		f->_func = vFunc;
 		f->_args = pArgs;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 	/**
@@ -85,16 +89,16 @@ namespace lnx::thr {
 	 */
 	template<class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(const func_t vFunc, const fwd<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-		queue_m.lock();
-		using funct = __pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
+		g_queue_m().lock();
+		using funct = _pvt::type_std_args_xt<func_t, ret_t, args_ts...>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_func = vFunc;
 		f->_args  = pArgs;
 		f->_ret = pRet;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 
@@ -108,14 +112,14 @@ namespace lnx::thr {
 	 */
 	template<class func_t> alwaysInline void runAsync(const func_t vFunc, pollFence& pFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-		queue_m.lock();
-		using funct = __pvt::void_std_noargs_xt<func_t>;
+		g_queue_m().lock();
+		using funct = _pvt::void_std_noargs_xt<func_t>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_func = vFunc;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 
@@ -130,15 +134,15 @@ namespace lnx::thr {
 	 */
 	template<class func_t, class ret_t> alwaysInline void runAsync(const func_t vFunc, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-		queue_m.lock();
-		using funct = __pvt::type_std_noargs_xt<func_t, ret_t>;
+		g_queue_m().lock();
+		using funct = _pvt::type_std_noargs_xt<func_t, ret_t>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_func = vFunc;
 		f->_ret = pRet;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 
@@ -157,16 +161,16 @@ namespace lnx::thr {
 	 */
 	template<class obj_t, class func_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const fwd<args_ts...>& pArgs, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-		queue_m.lock();
-		using funct = __pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
+		g_queue_m().lock();
+		using funct = _pvt::void_obj_args_xt<obj_t, func_t, args_ts...>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_args = pArgs;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 	/**
@@ -183,8 +187,8 @@ namespace lnx::thr {
 	 */
 	template<class obj_t, class func_t, class ret_t, class ...args_ts> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, const fwd<args_ts...>& pArgs, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-		queue_m.lock();
-		using funct = __pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
+		g_queue_m().lock();
+		using funct = _pvt::type_obj_args_xt<obj_t, func_t, ret_t, args_ts...>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
@@ -192,8 +196,8 @@ namespace lnx::thr {
 		f->_func = pFunc;
 		f->_args = pArgs;
 		f->_ret = pRet;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 
@@ -210,15 +214,15 @@ namespace lnx::thr {
 	 */
 	template<class obj_t, class func_t> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-		queue_m.lock();
-		using funct = __pvt::void_obj_noargs_xt<obj_t, func_t>;
+		g_queue_m().lock();
+		using funct = _pvt::void_obj_noargs_xt<obj_t, func_t>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 	/**
@@ -234,16 +238,16 @@ namespace lnx::thr {
 	 */
 	template<class obj_t, class func_t, class ret_t> alwaysInline void runAsync(obj_t& pObj, const func_t pFunc, ret_t* const pRet, pollFence& pFence)
 	requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-		queue_m.lock();
-		using funct = __pvt::type_obj_noargs_xt<obj_t, func_t, ret_t>;
+		g_queue_m().lock();
+		using funct = _pvt::type_obj_noargs_xt<obj_t, func_t, ret_t>;
 		ram::ptr<funct> f(sizeof(funct));
 		new(f) funct();
 		f->_fence = &pFence;
 		f->_obj = &pObj;
 		f->_func = pFunc;
 		f->_ret = pRet;
-		queue.push_back((ram::ptr<__pvt::Func_b>)f);
-		queue_m.unlock();
+		g_queue().push_back((ram::ptr<_pvt::Func_b>)f);
+		g_queue_m().unlock();
 	}
 
 }

@@ -1,15 +1,15 @@
 #pragma once
-#define LNX_H_INTEGERS
+////#define LNX_H_INTEGERS
 #include <type_traits>
 
 
 
-
+//TODO specify that _pvt must not be used inside lnxc if the namespace is inlined
 namespace lnxc{
-    typedef char      int8,  i8;        //Signed 8-bit integer
-    typedef short     int16, i16;	    //Signed 16-bit integer
-    typedef int       int32, i32;       //Signed 32-bit integer
-    typedef long long int64, i64;		//Signed 64-bit integer
+    typedef signed char     int8,  i8;  //Signed 8-bit integer
+    typedef short           int16, i16;	//Signed 16-bit integer
+    typedef int             int32, i32; //Signed 32-bit integer
+    typedef long long       int64, i64; //Signed 64-bit integer
     //using int128_t int128;            //
     //using int256_t int256;            //
     //using int512_t int512;            //
@@ -40,10 +40,10 @@ namespace lnxc{
 
 
 
-    namespace __pvt{
+    namespace _pvtc{
         //has_conversion_operator helper struct
-        template<bool c, class op> struct __has_conversion_operator_t {};
-        template<class op> struct __has_conversion_operator_t<true, op> {
+        template<bool c, class op> struct _lnx_has_conversion_operator_t {};
+        template<class op> struct _lnx_has_conversion_operator_t<true, op> {
             template<class tType> static consteval std::true_type get(int32, decltype(tType().operator op())* = 0){
                 return std::true_type();
             }
@@ -52,7 +52,7 @@ namespace lnxc{
             }
         };
         //has_conversion_operator helper struct
-        template<class op> struct __has_conversion_operator_t<false, op> {
+        template<class op> struct _lnx_has_conversion_operator_t<false, op> {
             template<class tType> static consteval std::false_type get(auto) {
                 return std::false_type();
             }
@@ -75,7 +75,7 @@ namespace lnxc{
      * @tparam tType The type to test
      * @tparam op The type of the operator
      */
-    template<class tType, class op> using has_conversion_operator = decltype(__pvt::__has_conversion_operator_t<std::is_class_v<tType>, op>::template get<tType>(0));
+    template<class tType, class op> using has_conversion_operator = decltype(_pvtc::_lnx_has_conversion_operator_t<std::is_class_v<tType>, op>::template get<tType>(0));
     template<class tType, class op> static constexpr bool has_conversion_operator_v = has_conversion_operator<tType, op>::value;
 
 

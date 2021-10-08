@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_DEBUG
+////#define LNX_H_DEBUG
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/macros.hpp"
 #include "Lynx/Debug/SourceInfo.hpp"
@@ -8,13 +8,18 @@
 #include <cstdarg>
 #include <exception>
 
+// #include <sys/ioctl.h> //TODO MOVE TO SYSTEM INFO
+//TODO add shell information to system info
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 #pragma GCC diagnostic ignored "-Wformat-security"
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 //TODO ADD FUNCTION TO GET FULL BACKTRACE AS RTARRAY OF HCARRAY
 //TODO output to console window
 
-
+//FIXME MOVE DEFINITIONS TO CPP
 
 
 
@@ -31,6 +36,27 @@
 
 
 namespace lnx::dbg{
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wunused-variable"
+	inline namespace color {
+		static const char* nBlack   = "\033[0;30m";
+		static const char* nRed     = "\033[0;31m";
+		static const char* nGreen   = "\033[0;32m";
+		static const char* nYellow  = "\033[0;33m";
+		static const char* nBlue    = "\033[0;34m";
+		static const char* nMagenta = "\033[0;35m";
+		static const char* nWhite   = "\033[0;37m";
+
+		static const char* bBlack   = "\033[1;30m";
+		static const char* bRed     = "\033[1;31m";
+		static const char* bGreen   = "\033[1;32m";
+		static const char* bYellow  = "\033[1;33m";
+		static const char* bBlue    = "\033[1;34m";
+		static const char* bMagenta = "\033[1;35m";
+		static const char* bWhite   = "\033[1;37m";
+	}
+	#pragma GCC diagnostic pop
+
 	/**
 	 * @brief Formats an std::string using the printf format
 	 *     This is an helper function and should only be called from lnx::dbg::print
@@ -86,7 +112,7 @@ namespace lnx::dbg{
 
 
 
-
+//TODO dont use the fancy output when printing infos
 	/** //FIXME use gray or white color for file links
 	 * @brief Prints a message to the standard output, surrounding it with ---- separators and coloring it based on its severity
 	 *     Errors throw exceptions when in debug mode
@@ -103,52 +129,38 @@ namespace lnx::dbg{
 	static _dbg(neverInline)_rls(alwaysInline) void print(Severity vSeverity, const uint32 vIndex, const char* pFstr, const auto&... pArgs) {
 		using namespace std::chrono;
 		using std::string;
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
+			// //Get terminal size //TODO MOVE TO SYSTEM INFO
+			// struct winsize wsize;
+    		// ioctl(0, TIOCGWINSZ, &wsize);
+
 			//Get time
 			time_t cTime; time(&cTime);				//Get current time
 			tm *lTime; lTime = localtime(&cTime);	//Convert to local time
 			auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) % seconds(1);
+			string _time = string_format("[%02d:%02d:%02d.%03d]", lTime->tm_hour, lTime->tm_min, lTime->tm_sec, ms.count());
 
-			//Format time
-			string out = string_format(
-				"[%02d:%02d:%02d.%03d] ",
-				lTime->tm_hour,
-				lTime->tm_min,
-				lTime->tm_sec,
-				ms.count()
-			);
+			string outCol  = (vSeverity == Severity::eInfo) ? nWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
+			string msgType = (vSeverity == Severity::eInfo) ? "Info" : (vSeverity == Severity::eWarn) ? "Warning"  : "Error";
 
-			if(vSeverity == Severity::eInfo){
-				out = string_format(out + pFstr, pArgs...);
-			}
-			else{
-				//Create output string
-				out = string_format(
-					string("\n\n") + out +
-					"%s%s%s",		//Format
-					"%s"			//Separator
-					"%s\n\n"		//Severity
-					"%s\"%s\"\n"	//Thread
-					"%s%s\n\n",		//Traceback
-					pFstr,			//User message
-					"%s"			//Separator
-				);
-
-
+			if(vSeverity != Severity::eInfo){
 				//Build traceback
-				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-				string traceback = "\n    Address |   Line | Function";
+				string traceback;
 				for(uint32 i = 0; ; ++i){
 					auto func = caller::func(vIndex + i);
 					if(func[0] != '?' && func[0] != '\0') {
+						// auto tracebackLine =
 						traceback +=
-							"\n    " +
-							string_format("%7x", caller::addr(vIndex + i)) + " | " +
-							string_format("%6d", caller::line(vIndex + i)) + " | " +
+							string("\n    ") +
+							string_format(string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
+							string_format(string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
 							func +
-							" [" + caller::file(vIndex + i) + ":" +
-							string_format("%d", caller::line(vIndex + i)) + "]"
+							bBlack + "  [" + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]" + nWhite;
 						;
+						// auto fileLink = string("[") + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]";
+
+						// tracebackLine.resize(max(wsize.ws_col - fileLink.length()), ' ');
+						// traceback += tracebackLine + fileLink;
 					}
 					else break;
 					if(i == LNX_CNF_DBG_MAX_BACKTRACE_DEPTH - 1) {
@@ -158,26 +170,32 @@ namespace lnx::dbg{
 				}
 
 
-				//Merge default text and user data
-				// std::string out__ = string_format(out,
-				out = string_format(out,
-					"------------------------------------------------------------\n",
-					(vSeverity == Severity::eInfo) ? "" : (vSeverity == Severity::eWarn) ? "Warning" : "Error:",
-
-					"Thread   ", thrName,
-					"Traceback: ", traceback.c_str(),
-
-					pArgs...,
-					"\n--------------------------------------------------------------------------\n\n"
+				//Build output string
+				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
+				string out = string_format(
+					string("\n\n") + outCol +
+					[&](){ string s; for(auto c:string(pFstr)) if(c == '\n') s += string("\n") + outCol; else s += c; return s; }() +
+					nWhite +
+					"\n\nThread \"" + thrName + "\""
+					"\nTraceback: " +
+					"\n    Address │   Line │ Function" +
+						traceback.c_str() + "\n",
+					pArgs...
 				);
+				string out2 = (
+					outCol + "\n┌ " + _time + " " + msgType + ": " + [&](){ string s; for(int i = 0; i < 120 - _time.length() - msgType.length() - 2; ++i) s += "─"; return s; }() +
+					[&](){ string s; for(auto c:out) if(c == '\n') s += outCol + "\n│  " + nWhite; else s += c; return s; }() +
+					outCol + "\n└" + [&](){ string s; for(int i = 0; i < 120; ++i) s += "─"; return s; }() + "\n\n" + nWhite
+				);
+
+				printf("\n%s", out2.c_str()); fflush(stdout);
+				if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
+			}
+			else{
+				printf((string("\n") + outCol + _time + " " + msgType + ": " + pFstr + nWhite).c_str(), pArgs...); fflush(stdout);
 			}
 
 
-			//Print
-			if(vSeverity == Severity::eInfo) Normal else if(vSeverity == Severity::eWarn) Warning else Failure;
-			// printf(out__.c_str()); Normal; fflush(stdout);
-			printf(out.c_str()); NormalNoNl; fflush(stdout);
-			if(vSeverity == Severity::eError) throw std::runtime_error("U.U");
 		#endif
 	}
 
@@ -194,7 +212,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void logError(const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			print(Severity::eError, 1, pFstr, pArgs...);
 		#endif
 	}
@@ -210,7 +228,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void logWarn(const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			print(Severity::eWarn, 1, pFstr, pArgs...);
 		#endif
 	}
@@ -226,7 +244,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void logInfo(const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			print(Severity::eInfo, 1, pFstr, pArgs...);
 		#endif
 	}
@@ -260,7 +278,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkCond(const bool vCond, const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			if(vCond) lnx::dbg::logError(pFstr, pArgs...);
 		#endif
 	}
@@ -281,7 +299,7 @@ namespace lnx::dbg{
 	 * @param pArgs The format arguments
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkParam(const bool vCond, const char* pParam, const char* pFstr, const auto&... pArgs) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			if(vCond) {
 				auto callerFunc = caller::func();
 				const char* fstr = "Invalid value passed to \"%s\" parameter of function \"%s\":\n%s";
@@ -310,7 +328,7 @@ namespace lnx::dbg{
 	 * @param pParam The name of the parameter
 	 */
 	static _dbg(neverInline)_rls(alwaysInline) void checkIndex(const uint64 vIndex, const uint64 vMin, const uint64 vMax, const char* pParam) {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			checkParam(vIndex < vMin || vIndex > vMax, pParam, "Index %llu is out of range. Min: %llu, Max: %llu", vIndex, vMin, vMax);
 		#endif
 	}
@@ -330,8 +348,8 @@ namespace lnx::dbg{
 	 * @param pFstr The format string to print as error (standard printf syntax)
 	 * @param vArgs The format arguments
 	 */
-	static _dbg(neverInline)_rls(alwaysInline) void checkRawPtr(auto* vPtr, const char* pFstr, const auto&... vArgs) {
-		#ifdef LNX_DEBUG
+	static _dbg(neverInline)_rls(alwaysInline) void checkRawPtr(auto* vPtr, const char* pFstr, const auto&... vArgs) { //TODO remove ig
+		#ifdef LNX_DBG
 			if(vPtr) {
 				try{ char tmp = *(char*)vPtr; }
 				catch(std::exception& e) { dbg::logError(pFstr, vArgs...); }

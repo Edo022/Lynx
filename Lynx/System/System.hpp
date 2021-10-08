@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_SYSTEM
+////#define LNX_H_SYSTEM
 #include <filesystem>
 #include <cstdio>
 #include "Lynx/Types/Containers/String.hpp"
@@ -13,7 +13,7 @@
 
 namespace lnx::sys {
 	namespace dir {
-		extern String thisDir;
+		_lnx_init_var_dec((String), thisDir);
 		void fixWindowsPath(const lnx::String& pStr);
 	}
 }

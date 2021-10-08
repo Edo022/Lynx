@@ -1,8 +1,8 @@
 #pragma once
-#define LNX_H_VOLUME
+////#define LNX_H_VOLUME
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/3D/Octree.hpp"
-#include "Lynx/shaders/Volume.gsi.hpp"
+#include "Generated/Shaders/Volume.gsi.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
 #include "Lynx/Types/VPointer.hpp"
 
@@ -18,7 +18,7 @@ namespace lnx{
 
     struct Volume : public obj::RenderObj3{
     private:
-        shd::Volume data;
+        shd::gsi::Volume data;
         RaArray<Octree> hbx_nodes; //TODO ?? remove?
 
     public:
@@ -37,16 +37,16 @@ namespace lnx{
             });
 
 
-            data._data.col() = {1,0,0,1};
-            data._data.pos() = {0,0,0};
-            data._data.r() = 1;
+            data.data.col = {1,0,0,1};
+            data.data.pos = {0,0,0};
+            data.data.r = 1;
         }
 
         //TODO specify that this function must be overridden in order to make things work
 		virtual void onSpawn(core::RenderCore& pRenderCore) override;
 
         //TODO specify that those functions must be overridden in order to make things work
-		virtual ram::ptr<char> getShData() override { return data._data.data; }
-		virtual vram::Alloc_b<char> getShVData() override { return data._data.vdata; }
+		virtual ram::ptr<char> getShData() override { return data.data.data; }
+		virtual vram::Alloc_b<char> getShVData() override { return data.data.vdata; }
     };
 }

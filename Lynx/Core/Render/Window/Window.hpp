@@ -1,11 +1,11 @@
 #pragma once
-#define LNX_H_WINDOW
+////#define LNX_H_WINDOW
 #include <GLFW/glfw3.h>
 #include <atomic>
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/FenceDE.hpp"
-#include "Lynx/shaders/FloatToIntBuffer.gsi.hpp"
+#include "Generated/Shaders/FloatToIntBuffer.gsi.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
 #include "Lynx/Core/Render/Render.hpp" //TODO rename as RenderCore
 // #include "Lynx/Types/Object/Obj_b.hpp"
@@ -59,7 +59,7 @@ namespace lnx{
 
 		InputCallbackQueues icQueues;
 		void qSpawn(obj::obj_bb* pObject);
-		static void __attribute__((used)) resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
+		used static void resizeCallback(GLFWwindow* pWindow, int32 vWidth, int32 vHeight);
 
 	public:
 		Window(uint32 vWidth = 800, uint32 vHeight = 600);

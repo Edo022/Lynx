@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_THREAD
+////#define LNX_H_THREAD
 #include "Lynx/Types/Containers/HcArray.hpp"
 #include <pthread.h>
 #include <csignal>
@@ -14,7 +14,7 @@
 namespace lnx{
 	struct pollFence;
 
-	namespace thr::__pvt{
+	namespace thr::_pvt{
 
 		// Functions helper structures ----------------------------------------------------------------------------------------------------------------//
 
@@ -276,24 +276,24 @@ namespace lnx{
 
 		template<class tFun, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const fwd<tArg...>& pArgs)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			using funct = thr::__pvt::void_std_args_t<tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, (const fwd<tArg...>&)pArgs });
+			using funct = thr::_pvt::void_std_args_t<tFun, tArg...>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_void_std_args<tFun, tArg...>, new funct{ vFunc, (const fwd<tArg...>&)pArgs });
 		}
 		template<class tFun, class tRet, class ...tArg> alwaysInline void dispatch(const tFun vFunc, const fwd<tArg...>& pArgs, tRet* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			using funct = thr::__pvt::type_std_args_t<tFun, tRet, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_args<tFun, tRet, tArg...>, new funct{ vFunc, (const fwd<tArg...>&)pArgs, pRet });
+			using funct = thr::_pvt::type_std_args_t<tFun, tRet, tArg...>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_type_std_args<tFun, tRet, tArg...>, new funct{ vFunc, (const fwd<tArg...>&)pArgs, pRet });
 		}
 
 
 		template<class tFun> alwaysInline void dispatch(const tFun vFunc)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_std_noargs<tFun>, (void*)vFunc);
+			pthread_create(&thr, nullptr, thr::_pvt::run_void_std_noargs<tFun>, (void*)vFunc);
 		}
 		template<class tFun, class tRet> alwaysInline void dispatch(const tFun vFunc, tRet* const pRet)
 		requires(std::is_function_v<std::remove_pointer_t<tFun>>) {
-			using funct = thr::__pvt::type_std_noargs_t<tFun, tRet>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_std_noargs<tFun, tRet>, new funct{ vFunc, pRet });
+			using funct = thr::_pvt::type_std_noargs_t<tFun, tRet>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_type_std_noargs<tFun, tRet>, new funct{ vFunc, pRet });
 		}
 
 
@@ -301,25 +301,25 @@ namespace lnx{
 
 		template<class tObj, class tFun, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const fwd<tArg...>& pArgs)
 		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::void_obj_args_t<tObj, tFun, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_args<tObj, tFun, tArg...>, new funct{ pObj, pFunc, (const fwd<tArg...>&)pArgs });
+			using funct = thr::_pvt::void_obj_args_t<tObj, tFun, tArg...>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_void_obj_args<tObj, tFun, tArg...>, new funct{ pObj, pFunc, (const fwd<tArg...>&)pArgs });
 		}
 		template<class tObj, class tFun, class tRet, class ...tArg> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, const fwd<tArg...>& pArgs, tRet* const pRet)
 		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::type_obj_args_t<tObj, tFun, tRet, tArg...>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_args<tObj, tFun, tRet, tArg...>, new funct{ pObj, pFunc, (const fwd<tArg...>&)pArgs, pRet });
+			using funct = thr::_pvt::type_obj_args_t<tObj, tFun, tRet, tArg...>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_type_obj_args<tObj, tFun, tRet, tArg...>, new funct{ pObj, pFunc, (const fwd<tArg...>&)pArgs, pRet });
 		}
 
 
 		template<class tObj, class tFun> alwaysInline void dispatch(tObj& pObj, const tFun pFunc)
 		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::void_obj_noargs_t<tObj, tFun>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_void_obj_noargs<tObj, tFun>, new funct{ pObj, pFunc });
+			using funct = thr::_pvt::void_obj_noargs_t<tObj, tFun>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_void_obj_noargs<tObj, tFun>, new funct{ pObj, pFunc });
 		}
 		template<class tObj, class tFun, class tRet> alwaysInline void dispatch(tObj& pObj, const tFun pFunc, tRet* const pRet)
 		requires(std::is_object_v<tObj> && std::is_member_function_pointer_v<tFun>) {
-			using funct = thr::__pvt::type_obj_noargs_t<tObj, tFun, tRet>;
-			pthread_create(&thr, nullptr, thr::__pvt::run_type_obj_noargs<tObj, tFun, tRet>, new funct{ pObj, pFunc, pRet });
+			using funct = thr::_pvt::type_obj_noargs_t<tObj, tFun, tRet>;
+			pthread_create(&thr, nullptr, thr::_pvt::run_type_obj_noargs<tObj, tFun, tRet>, new funct{ pObj, pFunc, pRet });
 		}
 
 

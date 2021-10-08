@@ -1,5 +1,5 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/Core/Render/Window/Window.hpp"
@@ -12,13 +12,14 @@
 
 
 namespace lnx::core::shaders{
-	alignCache String shaderPath;
-	alignCache uint32 pipelineNum = 0;
-	alignCache RtArray<shd::ShaderInterface_b::Layout*> pipelineLayouts;
+	_lnx_init_var_value_def((String), shaderPath,  lnx::core::shaders){}
+	// _lnx_init_var_value_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; } //! Defined in ShaderPipelineNumDef.cpp
+	_lnx_init_var_value_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; } //! Incremented by shader interface initializers
+	_lnx_init_var_value_def((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts, lnx::core::shaders){}
 
 
-	LnxAutoInit(LNX_H_SHADER){
-		shaders::shaderPath = sys::dir::thisDir + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
+	_lnx_init_fun_def(LNX_H_SHADER, lnx::core::shaders){
+		shaders::g_shaderPath() = sys::dir::g_thisDir() + "/" + getEnginePath() + "/Lynx/shaders/"; //TODO EVALUATE AT RUNTIME
 	}
 
 
@@ -113,10 +114,10 @@ namespace lnx::core::shaders{
 	 */
 	void createPipeline(const uint32 vPipelineIndex, RenderCore& pRenderCore) {
 		auto pipelineInfo = vk::ComputePipelineCreateInfo()
-			.setStage  (pipelineLayouts[vPipelineIndex]->shaderStageCreateInfo)
-			.setLayout (pipelineLayouts[vPipelineIndex]->pipelineLayout)
+			.setStage  (g_pipelineLayouts()[vPipelineIndex]->shaderStageCreateInfo)
+			.setLayout (g_pipelineLayouts()[vPipelineIndex]->pipelineLayout)
 		;
-		auto r = dvc::graphics.ld.createComputePipeline(nullptr, pipelineInfo, nullptr);
+		auto r = dvc::g_graphics().ld.createComputePipeline(nullptr, pipelineInfo, nullptr);
 
 
 		switch(r.result){
@@ -125,7 +126,7 @@ namespace lnx::core::shaders{
 			case vk::Result::eErrorInvalidShaderNV:       dbg::logError("Invalid shader NV");    break;
 			vkDefaultFaulures;
 		}
-		// core::dvc::graphics.ld.destroyShaderModule(layout_.shaderModule, nullptr);
+		// core::dvc::g_graphics().ld.destroyShaderModule(layout_.shaderModule, nullptr);
 		//FIXME^ FREE THE SHADER MODULES WHEN KILLING THE ENGINE (or closing the window? idk)
 	}
 

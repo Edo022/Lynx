@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_VCELL_T
+////#define LNX_H_VCELL_T
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Memory/VRam/VClasses.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"
@@ -35,8 +35,12 @@ namespace lnx{
             std::mutex m;               //Mutex for multithread access
         };
 
-		extern Type_t2 types[];		    //Buffer types
-        extern RaArrayC<Cell_t2> cells; //Preallocated cells
-        extern std::mutex cells_m;      //Mutex for multithread access
+
+
+
+		_lnx_init_var_array_dec((Type_t2), types);			//Buffer types
+        _lnx_init_var_dec((RaArrayC<Cell_t2, uint32>), cells);	//Preallocated cells
+        _lnx_init_var_dec((std::mutex), cells_m);		//Mutex for multithread access
+        _lnx_init_fun_dec(LNX_H_VCELL_T);
     }
 }

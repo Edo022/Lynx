@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_GCOMMANDS
+////#define LNX_H_GCOMMANDS
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
 
@@ -7,8 +7,8 @@
 
 
 namespace lnx::core::render::cmd{
-	extern vk::CommandPool singleTimeCommandPool;
-
+	_lnx_init_var_dec((vk::CommandPool), singleTimeCommandPool);
+	_lnx_init_fun_dec(LNX_H_GCOMMANDS);
 
 	void              createGraphicsCommandPool();
 	vk::CommandBuffer beginSingleTimeCommands();

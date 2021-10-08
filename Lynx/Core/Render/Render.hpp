@@ -1,12 +1,12 @@
 #pragma once
-#define LNX_H_RENDER_CORE
+////#define LNX_H_RENDER_CORE
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
-#include "Lynx/shaders/FloatToIntBuffer.gsi.hpp"
+#include "Generated/Shaders/FloatToIntBuffer.gsi.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 
 
@@ -27,8 +27,8 @@ namespace lnx{
 
 	namespace core{
 		namespace render{
-			extern std::mutex graphicsQueueSubmit_m;
-			extern std::mutex presentQueueSubmit_m;
+			_lnx_init_var_dec((std::mutex), graphicsQueueSubmit_m);
+			_lnx_init_var_dec((std::mutex), presentQueueSubmit_m);
 
 			vk::Format findSupportedFormat(const RtArray<vk::Format>* pCandidates, const vk::ImageTiling vTiling, const vk::FormatFeatureFlags vFeatures);
 			uint32     findMemoryType(const uint32 vTypeFilter, const vk::MemoryPropertyFlags vProperties);
@@ -36,7 +36,7 @@ namespace lnx{
 
 
 
-			#ifdef LNX_DEBUG
+			#ifdef LNX_DBG
 				void createDebugMessenger();
 
 				static VKAPI_ATTR VkBool32 VKAPI_CALL vulkanOutputCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
@@ -79,7 +79,7 @@ namespace lnx{
 
 			void updateObjects();
 			void sendInputCallbacks();
-			void createDefaultCommandBuffers__();
+			void createDefaultCommandBuffers();
 
 		public:
 			Window* w;									//Address of the window that owns the render core. Initialized in the init function of the window
@@ -95,7 +95,7 @@ namespace lnx{
 			vk::CommandPool commandPool;
 			vk::CommandPool copyCommandPool;
 			RtArray<vk::CommandBuffer> copyCommandBuffers;
-			shd::FloatToIntBuffer sh_clear;
+			shd::gsi::FloatToIntBuffer sh_clear;
 
 			std::mutex addObject_m;
 			RtArray<obj::obj_bb*> requests; //TODO USE RAARRAY

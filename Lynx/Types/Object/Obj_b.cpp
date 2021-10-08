@@ -2,6 +2,7 @@
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
 #include "Lynx/Types/Object/2D/Border2.hpp"
+#include "Lynx/Core/Render/Window/Window.hpp"
 
 
 
@@ -43,7 +44,7 @@ namespace lnx::obj{
 
 
 	ram::ptr<char> obj_bb::getShData() {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			switch(objType){
 				//case ObjType::eRender: return this->getShData(); break;
 				//!^ Not an error. obj_bb::getShData is only called if the object didn't reimplement it or it is a structural object
@@ -56,7 +57,7 @@ namespace lnx::obj{
 	}
 	//FIXME USE VRAM PTR INSTEAD OF ALLOC_B
 	vram::Alloc_b<char> obj_bb::getShVData() {
-		#ifdef LNX_DEBUG
+		#ifdef LNX_DBG
 			switch(objType){
 				//case ObjType::eRender: return this->getShVData(); break;
 				//!^ Not an error. obj_bb::getShVData is only called if the object didn't reimplement it or it is a structural object
@@ -102,8 +103,8 @@ namespace lnx::obj{
 		dbg::checkParam(vChildIndex > obj_bb::children.count() - 1, "vChildIndex", "Invalid index");
 
 		//FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
-		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
-		static_cast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
+		scast<obj2_b*>(obj_bb::children[vChildIndex])->setMinLim(minLim);
+		scast<obj2_b*>(obj_bb::children[vChildIndex])->setMaxLim(maxLim);
 	}
 
 

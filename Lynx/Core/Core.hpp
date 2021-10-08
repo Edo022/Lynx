@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define LNX_H_CORE
+////#define LNX_H_CORE
 #include "Lynx/Types/Containers/String.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Core/Render/Render.hpp"
@@ -74,15 +74,15 @@ Object rendering
 
 
 namespace lnx::core{
-	extern std::atomic<bool> running;
-	extern Thread inputThr;
+	_lnx_init_var_dec((std::atomic<bool>), running);
+	_lnx_init_var_dec((Thread), inputThr);
 
 
 	void inputLoop();
 
 
 
-	#ifdef LNX_DEBUG
+	#ifdef LNX_DBG
 	namespace debug {
 		//It's dark magic, idk why or how it works, but it does
 		inline VkResult CreateDebugUtilsMessengerEXT(vk::Instance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {

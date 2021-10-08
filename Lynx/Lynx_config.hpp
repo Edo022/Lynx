@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_CONFIG
+////#define LNX_H_CONFIG
 //TODO rename Engine_config
 //TODO move to .engine
 
@@ -54,7 +54,7 @@
 	//This depends on the number of physical threads of the CPU and the complexity of the application
 	//Too many threads will slow down the engine, but too few won't be able to handle all the tasks
 	//By default, it contains the same number of thread as the logical threads of the user's CPU
-	#define LNX_CNF_GLOBAL_THREAD_POOL_SIZE (lnx::sys::cpu.threads)
+	#define LNX_CNF_GLOBAL_THREAD_POOL_SIZE (lnx::sys::g_cpu().threads)
 
 
 
