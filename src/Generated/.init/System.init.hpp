@@ -10,6 +10,11 @@
 
 namespace lnx::sys::dir::_pvt {
     extern bool _lnx_init_var_thisDir_is_init;/*Zero initialized before global constructors*/
-    used        String& _lnx_init_var_thisDir_get();
-    used static String& _lnx_init_var_thisDir_v = _lnx_init_var_thisDir_get();
+    used        String* _lnx_init_var_thisDir_get();
+    extern      String* _lnx_init_var_thisDir_v;
+
+    struct _lnx_init_var_thisDir_init_t_call_t{
+        _lnx_init_var_thisDir_init_t_call_t(){ _lnx_init_var_thisDir_v = _lnx_init_var_thisDir_get(); }
+    };
+    used static _lnx_init_var_thisDir_init_t_call_t _lnx_init_var_thisDir_init_t_call_v;
 }

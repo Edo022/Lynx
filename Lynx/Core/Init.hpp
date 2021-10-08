@@ -83,7 +83,7 @@
 
 // #define _lnx_init_var_array_dec2(type, name, id)
 #define _lnx_init_var_dec2(type, name, id)\
-	_rls(used static alwaysInline DEL_P(type) g_##name(){ return _pvt::_lnx_init_var_##name##_v; });\
+	_rls(used static alwaysInline DEL_P(type) g_##name(){ return _pvt::id##_v; });\
 	_dbg(used              inline DEL_P(type) g_##name())
 
 
@@ -112,9 +112,9 @@
 	#define _lnx_init_var_value_def(type, name,        fullNs) _lnx_init_var_value_def2(type, name,        _lnx_init_var_##name)
 	#define _lnx_init_var_array_def(type, name, count, fullNs) _lnx_init_var_array_def2(type, name, count, _lnx_init_var_##name)
 #else
-	#define _lnx_init_var_const_def(type, name,        fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type)&,_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
-	#define _lnx_init_var_value_def(type, name,        fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type)&,_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
-	#define _lnx_init_var_array_def(type, name, count, fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type)*,_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+	#define _lnx_init_var_const_def(type, name,        fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type),_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+	#define _lnx_init_var_value_def(type, name,        fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type),_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+	#define _lnx_init_var_array_def(type, name, count, fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type),_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
 #endif
 
 
@@ -155,17 +155,22 @@
 		used bool id##_is_init;   \
 	\
 		/*Get function definition*/          \
-		used DEL_P(type)& id##_get(){     \
+		used DEL_P(type)* id##_get(){     \
+			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new (DEL_P(type))(id##_init_f());\
 			_dbg(id##_is_init = true;)\
-			return *var;                     \
+			return var;                     \
 		}                                    \
+	\
+		/*Pointer definition*/\
+		used DEL_P(type)* id##_v;\
 	}                                        \
 	\
 	/*Debug getter definition*/\
 	_dbg(used inline DEL_P(type)& g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	return _pvt::id##_v;)\
+	_dbg(	printf("\nUsing \"" #name "\"\n"));/*TODO REMOVE*/\
+	_dbg(	return *_pvt::id##_v;)\
 	_dbg(};)\
 	\
 	/*Initializer function definition*/      \
@@ -204,18 +209,23 @@
 		used bool id##_is_init;   \
 	\
 		/*Get function definition*/             \
-		used DEL_P(type)& id##_get(){        \
+		used DEL_P(type)* id##_get(){        \
+			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new (DEL_P(type))();    \
 			used static id##_init_t init_v(*var); \
 			_dbg(id##_is_init = true;)\
-			return *var;                        \
+			return var;                        \
 		}                                       \
+	\
+		/*Pointer definition*/\
+		used DEL_P(type)* id##_v;\
 	}                                           \
 	\
 	/*Debug getter function*/\
 	_dbg(used inline DEL_P(type)& g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	return _pvt::id##_v;)\
+	_dbg(	printf("\nUsing \"" #name "\"\n"));/*TODO REMOVE*/\
+	_dbg(	return *_pvt::id##_v;)\
 	_dbg(};)\
 	\
 	/*Initializer function definition*/         \
@@ -236,16 +246,21 @@
 	\
 		/*Get function definition*/                         \
 		used DEL_P(type)* id##_get(){                    \
+			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new DEL_P(type)[count];             \
 			used static id##_init_t init_v(var);  \
 			_dbg(id##_is_init = true;)\
 			return var;                                     \
 		}                                                   \
+	\
+		/*Pointer definition*/\
+		used DEL_P(type)* id##_v;\
 	}                                                       \
 	\
 	/*Debug getter function*/\
 	_dbg(used inline DEL_P(type)* g_##name(){)\
 	_dbg(	lnx::dbg::checkCond(!_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
+	_dbg(	printf("\nUsing \"" #name "\"\n"));/*TODO REMOVE*/\
 	_dbg(	return _pvt::id##_v;)\
 	_dbg(};)\
 	\

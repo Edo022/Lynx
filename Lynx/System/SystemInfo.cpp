@@ -69,7 +69,7 @@ namespace lnx::sys{
 
 
 
-    _lnx_init_var_const_def2((const RamInfo), ram, _lnx_init_var_ram){
+    _lnx_init_var_const_def((const RamInfo), ram, lnx::sys){
         RamInfo _ram;
 
         #ifdef _WIN64
