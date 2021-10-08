@@ -239,6 +239,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
 
     #Get output shader path and name
     shOutPath : str = os.path.relpath(f'{ etop }/.engine/src/Generated/Shaders' if isEngine else './src/Generated/Shaders', '.')
+    shReadPath : str = os.path.relpath(f'{ etop }/.engine/src/Generated/Shaders' if isEngine else f'{ ptoe }/src/Generated/Shaders', '.') #FIXME USE GENERATED HEADERS
     shOutName : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
     shName    : str = shOutName.replace('.', '_')
     if re.match(r'[a-zA-Z_](\w|\.)*', shOutName) == None:
@@ -301,9 +302,9 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n'
             f'\n'
             f'\nnamespace lnx::shd::gsi{{'                                          # Write namespace and struct declaration
+            f'\n    _lnx_init_var_dec((InterfaceLayout), { shName }_layout);'
+            f'\n    _lnx_init_var_dec((uint32),          { shName }_pipelineIndex);'
             f'\n    struct { shName } : public ShaderInterface_b {{'
-            f'\n        static InterfaceLayout layout;'
-            f'\n        static uint32 pipelineIndex;'
         ))
 
 
@@ -423,7 +424,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n    auto allocateSetInfo = vk::DescriptorSetAllocateInfo()'
             f'\n        .setDescriptorPool     (descriptorPool)'
             f'\n        .setDescriptorSetCount (1)'
-            f'\n        .setPSetLayouts        (&{ shName }::layout.descriptorSetLayout)'
+            f'\n        .setPSetLayouts        (&g_{ shName }_layout().descriptorSetLayout)'
             f'\n    ;'
             f'\n    switch(core::dvc::g_graphics().ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){{'
             f'\n        case vk::Result::eErrorFragmentedPool:    dbg::logError(\"Fragmented pool\");      break;'
@@ -465,8 +466,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n'
             f'\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
             f'\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}'
-            f'\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[{ shName }::pipelineIndex]);'
-            f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, { shName }::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
+            f'\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[g_{ shName }_pipelineIndex()]);'
+            f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_{ shName }_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
             f'\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
             f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
             #TODO WRITE ALL COMMAND BUFFERS AT ONCE
@@ -481,8 +482,8 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\nvoid { shName }::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{'
             f'\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
             f'\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}'
-            f'\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[{ shName }::pipelineIndex]);'
-            f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, { shName }::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
+            f'\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[g_{ shName }_pipelineIndex()]);'
+            f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_{ shName }_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
             f'\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
             f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
             f'\n}}',
@@ -501,11 +502,13 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
 
 
         fc.write('\n' * 8 + fixTabs(
-            f'\nInterfaceLayout { shName }::layout;'
-            f'\nuint32 { shName }::pipelineIndex = core::shaders::g_pipelineNum()++;'
+            f'\n_lnx_init_var_value_def((InterfaceLayout), { shName }_layout,        lnx::shd::gsi){{}}'
+            f'\n_lnx_init_var_value_def((uint32),          { shName }_pipelineIndex, lnx::shd::gsi){{ pVar = core::shaders::g_pipelineNum()++; }}'
+            # f'\nInterfaceLayout g_{ shName }_layout();'
+            # f'\nuint32 { shName }::pipelineIndex = core::shaders::g_pipelineNum()++;'
             f'\n_lnx_init_fun_def(LNX_H_{ shName.upper() }, lnx::shd::gsi){{'
             f'\n    core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());'
-            f'\n    core::shaders::g_pipelineLayouts()[{ shName }::pipelineIndex] = &{ shName }::layout;'
+            f'\n    core::shaders::g_pipelineLayouts()[g_{ shName }_pipelineIndex()] = &g_{ shName }_layout();'
             f'\n    {{ //Create descriptor set layout'
             f'\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(pGlsl.layouts)) }];' + (
             f''         '\n'.join((
@@ -523,7 +526,7 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n            .setPBindings    (bindingLayouts)'
             f'\n        ;'
             f'\n        //Create the descriptor set layout'
-            f'\n        switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &{ shName }::layout.descriptorSetLayout)){{ vkDefaultCases; }}'
+            f'\n        switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &g_{ shName }_layout().descriptorSetLayout)){{ vkDefaultCases; }}'
             f'\n    }}'
             f'\n'
             f'\n'
@@ -531,20 +534,20 @@ def parseShader(pathr:str, etop:str, isEngine:bool):
             f'\n'
             f'\n    {{ //Create pipeline layout'
             f'\n        uint64 fileLength = 0;'
-            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shOutPath }/{ shName }.spv\");'
-            f'\n        { shName }::layout.shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
+            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.spv\");' #FIXME USE GENERATED HEADERS
+            f'\n        g_{ shName }_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
             f'\n'
-            f'\n        { shName }::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
+            f'\n        g_{ shName }_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
             f'\n            .setStage  (vk::ShaderStageFlagBits::eCompute)'
-            f'\n            .setModule ({ shName }::layout.shaderModule)'
+            f'\n            .setModule (g_{ shName }_layout().shaderModule)'
             f'\n            .setPName  (\"main\")'
             f'\n        ;'
             f'\n'
             f'\n        auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()'
             f'\n            .setSetLayoutCount (1)'
-            f'\n            .setPSetLayouts    (&{ shName }::layout.descriptorSetLayout)'
+            f'\n            .setPSetLayouts    (&g_{ shName }_layout().descriptorSetLayout)'
             f'\n        ;'
-            f'\n        switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &{ shName }::layout.pipelineLayout)){{ vkDefaultCases; }}'
+            f'\n        switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &g_{ shName }_layout().pipelineLayout)){{ vkDefaultCases; }}'
             f'\n    }}'
             f'\n}}',
         1))

@@ -54,7 +54,7 @@ namespace lnx::shd::gsi{
 		auto allocateSetInfo = vk::DescriptorSetAllocateInfo()
 			.setDescriptorPool     (descriptorPool)
 			.setDescriptorSetCount (1)
-			.setPSetLayouts        (&Border2::layout.descriptorSetLayout)
+			.setPSetLayouts        (&g_Border2_layout().descriptorSetLayout)
 		;
 		switch(core::dvc::g_graphics().ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){
 			case vk::Result::eErrorFragmentedPool:    dbg::logError("Fragmented pool");      break;
@@ -137,8 +137,8 @@ namespace lnx::shd::gsi{
 
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[g_Border2_pipelineIndex()]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_Border2_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -153,8 +153,8 @@ namespace lnx::shd::gsi{
 	void Border2::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){
 		auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);
 		switch(commandBuffers[0].begin(beginInfo)){ vkDefaultCases; }
-		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[Border2::pipelineIndex]);
-		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, Border2::layout.pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
+		commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[g_Border2_pipelineIndex()]);
+		commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_Border2_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 		commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);
 		switch(commandBuffers[0].end()){ vkDefaultCases; }
 	}
@@ -177,11 +177,11 @@ namespace lnx::shd::gsi{
 
 
 
-	InterfaceLayout Border2::layout;
-	uint32 Border2::pipelineIndex = core::shaders::g_pipelineNum()++;
+	_lnx_init_var_value_def((InterfaceLayout), Border2_layout,        lnx::shd::gsi){}
+	_lnx_init_var_value_def((uint32),          Border2_pipelineIndex, lnx::shd::gsi){ pVar = core::shaders::g_pipelineNum()++; }
 	_lnx_init_fun_def(LNX_H_BORDER2, lnx::shd::gsi){
 		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
-		core::shaders::g_pipelineLayouts()[Border2::pipelineIndex] = &Border2::layout;
+		core::shaders::g_pipelineLayouts()[g_Border2_pipelineIndex()] = &g_Border2_layout();
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
@@ -221,7 +221,7 @@ namespace lnx::shd::gsi{
 				.setPBindings    (bindingLayouts)
 			;
 			//Create the descriptor set layout
-			switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &Border2::layout.descriptorSetLayout)){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &g_Border2_layout().descriptorSetLayout)){ vkDefaultCases; }
 		}
 
 
@@ -229,20 +229,20 @@ namespace lnx::shd::gsi{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, "src/Generated/Shaders/Border2.spv");
-			Border2::layout.shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);
+			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/Border2.spv");
+			g_Border2_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);
 
-			Border2::layout.shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
+			g_Border2_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
 				.setStage  (vk::ShaderStageFlagBits::eCompute)
-				.setModule (Border2::layout.shaderModule)
+				.setModule (g_Border2_layout().shaderModule)
 				.setPName  ("main")
 			;
 
 			auto pipelineLayoutCreateInfo = vk::PipelineLayoutCreateInfo()
 				.setSetLayoutCount (1)
-				.setPSetLayouts    (&Border2::layout.descriptorSetLayout)
+				.setPSetLayouts    (&g_Border2_layout().descriptorSetLayout)
 			;
-			switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &Border2::layout.pipelineLayout)){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &g_Border2_layout().pipelineLayout)){ vkDefaultCases; }
 		}
 	}
 }

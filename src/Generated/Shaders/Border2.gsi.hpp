@@ -12,9 +12,9 @@
 
 
 namespace lnx::shd::gsi{
+	_lnx_init_var_dec((InterfaceLayout), Border2_layout);
+	_lnx_init_var_dec((uint32),          Border2_pipelineIndex);
 	struct Border2 : public ShaderInterface_b {
-		static InterfaceLayout layout;
-		static uint32 pipelineIndex;
 
 
 		struct l_outcol : public ShaderElm_b<eStorage> {

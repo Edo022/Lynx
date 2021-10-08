@@ -19,7 +19,7 @@
 //TODO ADD FUNCTION TO GET FULL BACKTRACE AS RTARRAY OF HCARRAY
 //TODO output to console window
 
-
+//FIXME MOVE DEFINITIONS TO CPP
 
 
 
@@ -138,26 +138,26 @@ namespace lnx::dbg{
 			time_t cTime; time(&cTime);				//Get current time
 			tm *lTime; lTime = localtime(&cTime);	//Convert to local time
 			auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) % seconds(1);
-			std::string _time = string_format("[%02d:%02d:%02d.%03d]", lTime->tm_hour, lTime->tm_min, lTime->tm_sec, ms.count());
+			string _time = string_format("[%02d:%02d:%02d.%03d]", lTime->tm_hour, lTime->tm_min, lTime->tm_sec, ms.count());
 
-			std::string outCol  = (vSeverity == Severity::eInfo) ? nWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
-			std::string msgType = (vSeverity == Severity::eInfo) ? "Info" : (vSeverity == Severity::eWarn) ? "Warning"  : "Error:";
+			string outCol  = (vSeverity == Severity::eInfo) ? nWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
+			string msgType = (vSeverity == Severity::eInfo) ? "Info" : (vSeverity == Severity::eWarn) ? "Warning"  : "Error";
 
 			if(vSeverity != Severity::eInfo){
 				//Build traceback
-				string traceback = outCol + "\n│  " + nWhite + "    Address │   Line │ Function";
+				string traceback;
 				for(uint32 i = 0; ; ++i){
 					auto func = caller::func(vIndex + i);
 					if(func[0] != '?' && func[0] != '\0') {
 						// auto tracebackLine =
 						traceback +=
-							std::string(outCol + "\n│  ""    ") +
-							string_format(std::string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
-							string_format(std::string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
+							string("\n    ") +
+							string_format(string(bBlue) + "%7x" + nWhite, caller::addr(vIndex + i)) + " │ " +
+							string_format(string(bBlue) + "%6d" + nWhite, caller::line(vIndex + i)) + " │ " +
 							func +
 							bBlack + "  [" + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]" + nWhite;
 						;
-						// auto fileLink = std::string("[") + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]";
+						// auto fileLink = string("[") + caller::file(vIndex + i) + ":" + string_format("%d", caller::line(vIndex + i)) + "]";
 
 						// tracebackLine.resize(max(wsize.ws_col - fileLink.length()), ' ');
 						// traceback += tracebackLine + fileLink;
@@ -172,22 +172,27 @@ namespace lnx::dbg{
 
 				//Build output string
 				char thrName[16]; pthread_getname_np(pthread_self(), thrName, 16);
-				std::string out = string_format(
-					outCol + "\n┌ " + _time + " ───────────────────────────────────────────────────────────────────────────────────────────" +
-					outCol + "\n│  " + msgType + nWhite +
-					outCol + "\n│  " + nWhite +
-					outCol + "\n│  " + nWhite + "Thread \"" + thrName + "\"" +
-					outCol + "\n│  " + nWhite + "Traceback: " + traceback.c_str() +
-					outCol + "\n│  " + nWhite +
-					outCol + "\n│  " + nWhite + outCol + pFstr +
-					outCol + "\n└───────────────────────────────────────────────────────────────────────────────────────────────────────────\n\n" + nWhite,
+				string out = string_format(
+					string("\n\n") + outCol +
+					[&](){ string s; for(auto c:string(pFstr)) if(c == '\n') s += string("\n") + outCol; else s += c; return s; }() +
+					nWhite +
+					"\n\nThread \"" + thrName + "\""
+					"\nTraceback: " +
+					"\n    Address │   Line │ Function" +
+						traceback.c_str() + "\n",
 					pArgs...
 				);
-				printf("\n%s", out.c_str()); fflush(stdout);
+				string out2 = (
+					outCol + "\n┌ " + _time + " " + msgType + ": " + [&](){ string s; for(int i = 0; i < 120 - _time.length() - msgType.length() - 2; ++i) s += "─"; return s; }() +
+					[&](){ string s; for(auto c:out) if(c == '\n') s += outCol + "\n│  " + nWhite; else s += c; return s; }() +
+					outCol + "\n└" + [&](){ string s; for(int i = 0; i < 120; ++i) s += "─"; return s; }() + "\n\n" + nWhite
+				);
+
+				printf("\n%s", out2.c_str()); fflush(stdout);
 				if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
 			}
 			else{
-				printf((std::string("\n") + outCol + _time + " " + msgType + ": " + pFstr + nWhite).c_str(), pArgs...); fflush(stdout);
+				printf((string("\n") + outCol + _time + " " + msgType + ": " + pFstr + nWhite).c_str(), pArgs...); fflush(stdout);
 			}
 
 

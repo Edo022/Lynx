@@ -8,6 +8,32 @@
 
 
 
+namespace lnx::shd::gsi::_pvt {
+    extern bool _lnx_init_var_FloatToIntBuffer_layout_is_init; //!Zero initialized
+    used        InterfaceLayout* _lnx_init_var_FloatToIntBuffer_layout_get();
+    extern      InterfaceLayout* _lnx_init_var_FloatToIntBuffer_layout_v;
+
+    struct _lnx_init_var_FloatToIntBuffer_layout_init_t_call_t{
+        _lnx_init_var_FloatToIntBuffer_layout_init_t_call_t(){
+            if(!_lnx_init_var_FloatToIntBuffer_layout_is_init) _lnx_init_var_FloatToIntBuffer_layout_v = _lnx_init_var_FloatToIntBuffer_layout_get();
+        }
+    };
+    used static _lnx_init_var_FloatToIntBuffer_layout_init_t_call_t _lnx_init_var_FloatToIntBuffer_layout_init_t_call_v;
+}
+
+namespace lnx::shd::gsi::_pvt {
+    extern bool _lnx_init_var_FloatToIntBuffer_pipelineIndex_is_init; //!Zero initialized
+    used        uint32* _lnx_init_var_FloatToIntBuffer_pipelineIndex_get();
+    extern      uint32* _lnx_init_var_FloatToIntBuffer_pipelineIndex_v;
+
+    struct _lnx_init_var_FloatToIntBuffer_pipelineIndex_init_t_call_t{
+        _lnx_init_var_FloatToIntBuffer_pipelineIndex_init_t_call_t(){
+            if(!_lnx_init_var_FloatToIntBuffer_pipelineIndex_is_init) _lnx_init_var_FloatToIntBuffer_pipelineIndex_v = _lnx_init_var_FloatToIntBuffer_pipelineIndex_get();
+        }
+    };
+    used static _lnx_init_var_FloatToIntBuffer_pipelineIndex_init_t_call_t _lnx_init_var_FloatToIntBuffer_pipelineIndex_init_t_call_v;
+}
+
 namespace lnx::shd::gsi::_pvt{
     struct _lnx_init_fun_LNX_H_FLOATTOINTBUFFER_FUN_t;
 }

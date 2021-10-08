@@ -12,9 +12,9 @@
 
 
 namespace lnx::shd::gsi{
+	_lnx_init_var_dec((InterfaceLayout), FloatToIntBuffer_layout);
+	_lnx_init_var_dec((uint32),          FloatToIntBuffer_pipelineIndex);
 	struct FloatToIntBuffer : public ShaderInterface_b {
-		static InterfaceLayout layout;
-		static uint32 pipelineIndex;
 
 
 		struct l_src : public ShaderElm_b<eStorage> {
