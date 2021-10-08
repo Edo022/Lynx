@@ -13,7 +13,7 @@
 
 namespace lnx::core::shaders{
 	_lnx_init_var_value_def((String), shaderPath,  lnx::core::shaders){}
-	_lnx_init_var_value_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; }
+	// _lnx_init_var_value_def((uint32), pipelineNum, lnx::core::shaders){ pVar = 0; } //! Defined in ShaderPipelineNumDef.cpp
 	_lnx_init_var_value_def((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts, lnx::core::shaders){}
 
 

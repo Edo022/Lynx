@@ -143,7 +143,7 @@ namespace lnx::dbg{
 			std::string outCol  = (vSeverity == Severity::eInfo) ? nWhite : (vSeverity == Severity::eWarn) ? bYellow    : bRed;
 			std::string msgType = (vSeverity == Severity::eInfo) ? "Info" : (vSeverity == Severity::eWarn) ? "Warning"  : "Error:";
 
-			if(vSeverity == Severity::eError){
+			if(vSeverity != Severity::eInfo){
 				//Build traceback
 				string traceback = "\n    Address │   Line │ Function";
 				for(uint32 i = 0; ; ++i){
@@ -187,7 +187,7 @@ namespace lnx::dbg{
 				if(vSeverity == Severity::eError) throw std::runtime_error("uwu");
 			}
 			else{
-				printf((std::string("\n") + outCol + _time + ": " + msgType + pFstr + nWhite).c_str(), pArgs...); fflush(stdout);
+				printf((std::string("\n") + outCol + _time + " " + msgType + ": " + pFstr + nWhite).c_str(), pArgs...); fflush(stdout);
 			}
 
 

@@ -40,6 +40,5 @@ namespace lnx{
 		char* cIcdFilenames = (char*)malloc(icdFilenames.length() + 1);
 		strcpy(cIcdFilenames, icdFilenames.c_str());
 		putenv(cIcdFilenames);
-		printf("ICDS: %s\n", cIcdFilenames);
 	}
 }
