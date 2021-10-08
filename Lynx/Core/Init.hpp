@@ -158,7 +158,7 @@
 		used DEL_P(type)* id##_get(){     \
 			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new (DEL_P(type))(id##_init_f());\
-			_dbg(id##_is_init = true;)\
+			id##_is_init = true;\
 			return var;                     \
 		}                                    \
 	\
@@ -213,7 +213,7 @@
 			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new (DEL_P(type))();    \
 			used static id##_init_t init_v(*var); \
-			_dbg(id##_is_init = true;)\
+			id##_is_init = true;\
 			return var;                        \
 		}                                       \
 	\
@@ -249,7 +249,7 @@
 			printf("\nInitialized \"" #name "\"\n");/*TODO REMOVE*/\
 			used static DEL_P(type)* var = new DEL_P(type)[count];             \
 			used static id##_init_t init_v(var);  \
-			_dbg(id##_is_init = true;)\
+			id##_is_init = true;\
 			return var;                                     \
 		}                                                   \
 	\

@@ -9,34 +9,40 @@
 
 
 namespace lnx::ram::_pvt {
-    extern bool _lnx_init_var_types_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_types_is_init; //!Zero initialized
     used        Type_t* _lnx_init_var_types_get();
     extern      Type_t* _lnx_init_var_types_v;
 
     struct _lnx_init_var_types_init_t_call_t{
-        _lnx_init_var_types_init_t_call_t(){ _lnx_init_var_types_v = _lnx_init_var_types_get(); }
+        _lnx_init_var_types_init_t_call_t(){
+            if(!_lnx_init_var_types_is_init) _lnx_init_var_types_v = _lnx_init_var_types_get();
+        }
     };
     used static _lnx_init_var_types_init_t_call_t _lnx_init_var_types_init_t_call_v;
 }
 
 namespace lnx::ram::_pvt {
-    extern bool _lnx_init_var_cells_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_cells_is_init; //!Zero initialized
     used        RaArrayC<Cell_t, uint32>* _lnx_init_var_cells_get();
     extern      RaArrayC<Cell_t, uint32>* _lnx_init_var_cells_v;
 
     struct _lnx_init_var_cells_init_t_call_t{
-        _lnx_init_var_cells_init_t_call_t(){ _lnx_init_var_cells_v = _lnx_init_var_cells_get(); }
+        _lnx_init_var_cells_init_t_call_t(){
+            if(!_lnx_init_var_cells_is_init) _lnx_init_var_cells_v = _lnx_init_var_cells_get();
+        }
     };
     used static _lnx_init_var_cells_init_t_call_t _lnx_init_var_cells_init_t_call_v;
 }
 
 namespace lnx::ram::_pvt {
-    extern bool _lnx_init_var_cells_m_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_cells_m_is_init; //!Zero initialized
     used        std::mutex* _lnx_init_var_cells_m_get();
     extern      std::mutex* _lnx_init_var_cells_m_v;
 
     struct _lnx_init_var_cells_m_init_t_call_t{
-        _lnx_init_var_cells_m_init_t_call_t(){ _lnx_init_var_cells_m_v = _lnx_init_var_cells_m_get(); }
+        _lnx_init_var_cells_m_init_t_call_t(){
+            if(!_lnx_init_var_cells_m_is_init) _lnx_init_var_cells_m_v = _lnx_init_var_cells_m_get();
+        }
     };
     used static _lnx_init_var_cells_m_init_t_call_t _lnx_init_var_cells_m_init_t_call_v;
 }
@@ -46,12 +52,14 @@ namespace lnx::ram::_pvt{
 }
 
 namespace lnx::ram::_pvt {
-    extern bool _lnx_init_var_LNX_H_CELL_T_FUN_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_LNX_H_CELL_T_FUN_is_init; //!Zero initialized
     used        _pvt::_lnx_init_fun_LNX_H_CELL_T_FUN_t* _lnx_init_var_LNX_H_CELL_T_FUN_get();
     extern      _pvt::_lnx_init_fun_LNX_H_CELL_T_FUN_t* _lnx_init_var_LNX_H_CELL_T_FUN_v;
 
     struct _lnx_init_var_LNX_H_CELL_T_FUN_init_t_call_t{
-        _lnx_init_var_LNX_H_CELL_T_FUN_init_t_call_t(){ _lnx_init_var_LNX_H_CELL_T_FUN_v = _lnx_init_var_LNX_H_CELL_T_FUN_get(); }
+        _lnx_init_var_LNX_H_CELL_T_FUN_init_t_call_t(){
+            if(!_lnx_init_var_LNX_H_CELL_T_FUN_is_init) _lnx_init_var_LNX_H_CELL_T_FUN_v = _lnx_init_var_LNX_H_CELL_T_FUN_get();
+        }
     };
     used static _lnx_init_var_LNX_H_CELL_T_FUN_init_t_call_t _lnx_init_var_LNX_H_CELL_T_FUN_init_t_call_v;
 }

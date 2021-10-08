@@ -9,23 +9,27 @@
 
 
 namespace lnx::core::render::_pvt {
-    extern bool _lnx_init_var_graphicsQueueSubmit_m_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_graphicsQueueSubmit_m_is_init; //!Zero initialized
     used        std::mutex* _lnx_init_var_graphicsQueueSubmit_m_get();
     extern      std::mutex* _lnx_init_var_graphicsQueueSubmit_m_v;
 
     struct _lnx_init_var_graphicsQueueSubmit_m_init_t_call_t{
-        _lnx_init_var_graphicsQueueSubmit_m_init_t_call_t(){ _lnx_init_var_graphicsQueueSubmit_m_v = _lnx_init_var_graphicsQueueSubmit_m_get(); }
+        _lnx_init_var_graphicsQueueSubmit_m_init_t_call_t(){
+            if(!_lnx_init_var_graphicsQueueSubmit_m_is_init) _lnx_init_var_graphicsQueueSubmit_m_v = _lnx_init_var_graphicsQueueSubmit_m_get();
+        }
     };
     used static _lnx_init_var_graphicsQueueSubmit_m_init_t_call_t _lnx_init_var_graphicsQueueSubmit_m_init_t_call_v;
 }
 
 namespace lnx::core::render::_pvt {
-    extern bool _lnx_init_var_presentQueueSubmit_m_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_presentQueueSubmit_m_is_init; //!Zero initialized
     used        std::mutex* _lnx_init_var_presentQueueSubmit_m_get();
     extern      std::mutex* _lnx_init_var_presentQueueSubmit_m_v;
 
     struct _lnx_init_var_presentQueueSubmit_m_init_t_call_t{
-        _lnx_init_var_presentQueueSubmit_m_init_t_call_t(){ _lnx_init_var_presentQueueSubmit_m_v = _lnx_init_var_presentQueueSubmit_m_get(); }
+        _lnx_init_var_presentQueueSubmit_m_init_t_call_t(){
+            if(!_lnx_init_var_presentQueueSubmit_m_is_init) _lnx_init_var_presentQueueSubmit_m_v = _lnx_init_var_presentQueueSubmit_m_get();
+        }
     };
     used static _lnx_init_var_presentQueueSubmit_m_init_t_call_t _lnx_init_var_presentQueueSubmit_m_init_t_call_v;
 }

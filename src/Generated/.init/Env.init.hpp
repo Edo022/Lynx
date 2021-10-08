@@ -13,12 +13,14 @@ namespace lnx::_pvt{
 }
 
 namespace lnx::_pvt {
-    extern bool _lnx_init_var_LNX_H_ENV_FUN_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_LNX_H_ENV_FUN_is_init; //!Zero initialized
     used        _pvt::_lnx_init_fun_LNX_H_ENV_FUN_t* _lnx_init_var_LNX_H_ENV_FUN_get();
     extern      _pvt::_lnx_init_fun_LNX_H_ENV_FUN_t* _lnx_init_var_LNX_H_ENV_FUN_v;
 
     struct _lnx_init_var_LNX_H_ENV_FUN_init_t_call_t{
-        _lnx_init_var_LNX_H_ENV_FUN_init_t_call_t(){ _lnx_init_var_LNX_H_ENV_FUN_v = _lnx_init_var_LNX_H_ENV_FUN_get(); }
+        _lnx_init_var_LNX_H_ENV_FUN_init_t_call_t(){
+            if(!_lnx_init_var_LNX_H_ENV_FUN_is_init) _lnx_init_var_LNX_H_ENV_FUN_v = _lnx_init_var_LNX_H_ENV_FUN_get();
+        }
     };
     used static _lnx_init_var_LNX_H_ENV_FUN_init_t_call_t _lnx_init_var_LNX_H_ENV_FUN_init_t_call_v;
 }

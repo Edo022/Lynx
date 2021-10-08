@@ -9,34 +9,40 @@
 
 
 namespace lnx::core::shaders::_pvt {
-    extern bool _lnx_init_var_shaderPath_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_shaderPath_is_init; //!Zero initialized
     used        String* _lnx_init_var_shaderPath_get();
     extern      String* _lnx_init_var_shaderPath_v;
 
     struct _lnx_init_var_shaderPath_init_t_call_t{
-        _lnx_init_var_shaderPath_init_t_call_t(){ _lnx_init_var_shaderPath_v = _lnx_init_var_shaderPath_get(); }
+        _lnx_init_var_shaderPath_init_t_call_t(){
+            if(!_lnx_init_var_shaderPath_is_init) _lnx_init_var_shaderPath_v = _lnx_init_var_shaderPath_get();
+        }
     };
     used static _lnx_init_var_shaderPath_init_t_call_t _lnx_init_var_shaderPath_init_t_call_v;
 }
 
 namespace lnx::core::shaders::_pvt {
-    extern bool _lnx_init_var_pipelineNum_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_pipelineNum_is_init; //!Zero initialized
     used        uint32* _lnx_init_var_pipelineNum_get();
     extern      uint32* _lnx_init_var_pipelineNum_v;
 
     struct _lnx_init_var_pipelineNum_init_t_call_t{
-        _lnx_init_var_pipelineNum_init_t_call_t(){ _lnx_init_var_pipelineNum_v = _lnx_init_var_pipelineNum_get(); }
+        _lnx_init_var_pipelineNum_init_t_call_t(){
+            if(!_lnx_init_var_pipelineNum_is_init) _lnx_init_var_pipelineNum_v = _lnx_init_var_pipelineNum_get();
+        }
     };
     used static _lnx_init_var_pipelineNum_init_t_call_t _lnx_init_var_pipelineNum_init_t_call_v;
 }
 
 namespace lnx::core::shaders::_pvt {
-    extern bool _lnx_init_var_pipelineLayouts_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_pipelineLayouts_is_init; //!Zero initialized
     used        RtArray<shd::InterfaceLayout*, uint32>* _lnx_init_var_pipelineLayouts_get();
     extern      RtArray<shd::InterfaceLayout*, uint32>* _lnx_init_var_pipelineLayouts_v;
 
     struct _lnx_init_var_pipelineLayouts_init_t_call_t{
-        _lnx_init_var_pipelineLayouts_init_t_call_t(){ _lnx_init_var_pipelineLayouts_v = _lnx_init_var_pipelineLayouts_get(); }
+        _lnx_init_var_pipelineLayouts_init_t_call_t(){
+            if(!_lnx_init_var_pipelineLayouts_is_init) _lnx_init_var_pipelineLayouts_v = _lnx_init_var_pipelineLayouts_get();
+        }
     };
     used static _lnx_init_var_pipelineLayouts_init_t_call_t _lnx_init_var_pipelineLayouts_init_t_call_v;
 }
@@ -46,12 +52,14 @@ namespace lnx::core::shaders::_pvt{
 }
 
 namespace lnx::core::shaders::_pvt {
-    extern bool _lnx_init_var_LNX_H_SHADER_FUN_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_LNX_H_SHADER_FUN_is_init; //!Zero initialized
     used        _pvt::_lnx_init_fun_LNX_H_SHADER_FUN_t* _lnx_init_var_LNX_H_SHADER_FUN_get();
     extern      _pvt::_lnx_init_fun_LNX_H_SHADER_FUN_t* _lnx_init_var_LNX_H_SHADER_FUN_v;
 
     struct _lnx_init_var_LNX_H_SHADER_FUN_init_t_call_t{
-        _lnx_init_var_LNX_H_SHADER_FUN_init_t_call_t(){ _lnx_init_var_LNX_H_SHADER_FUN_v = _lnx_init_var_LNX_H_SHADER_FUN_get(); }
+        _lnx_init_var_LNX_H_SHADER_FUN_init_t_call_t(){
+            if(!_lnx_init_var_LNX_H_SHADER_FUN_is_init) _lnx_init_var_LNX_H_SHADER_FUN_v = _lnx_init_var_LNX_H_SHADER_FUN_get();
+        }
     };
     used static _lnx_init_var_LNX_H_SHADER_FUN_init_t_call_t _lnx_init_var_LNX_H_SHADER_FUN_init_t_call_v;
 }

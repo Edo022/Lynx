@@ -63,13 +63,15 @@ if r!= None and len(r) > 0:
 
             f.write(
                 f'\n\nnamespace { m["fullNs"] }::_pvt {{'
-                f'\n    extern bool { id }_is_init;/*Zero initialized before global constructors*/'
+                f'\n    extern bool { id }_is_init; //!Zero initialized'
                 f'\n    used        { m["type"] }* { id }_get();'
                 # f'\n    used static { m["type"] }* { id }_v = { id }_get();'
                 f'\n    extern      { m["type"] }* { id }_v;'
                 f'\n'
-                f'\n    struct { id }_init_t_call_t{{' #FIXME REMOVE. merge with _get()
-                f'\n        { id }_init_t_call_t(){{ { id }_v = { id }_get(); }}' #FIXME REMOVE. merge with _get()
+                f'\n    struct { id }_init_t_call_t{{' #FIXME REMOVE. merge with _get()'
+                f'\n        { id }_init_t_call_t(){{'
+                f'\n            if(!{ id }_is_init) { id }_v = { id }_get();'
+                f'\n        }}'
                 f'\n    }};'
                 f'\n    used static { id }_init_t_call_t { id }_init_t_call_v;'
                 f'\n}}'

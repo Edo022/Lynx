@@ -9,23 +9,27 @@
 
 
 namespace lnx::sys::_pvt {
-    extern bool _lnx_init_var_cpu_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_cpu_is_init; //!Zero initialized
     used        const CpuInfo* _lnx_init_var_cpu_get();
     extern      const CpuInfo* _lnx_init_var_cpu_v;
 
     struct _lnx_init_var_cpu_init_t_call_t{
-        _lnx_init_var_cpu_init_t_call_t(){ _lnx_init_var_cpu_v = _lnx_init_var_cpu_get(); }
+        _lnx_init_var_cpu_init_t_call_t(){
+            if(!_lnx_init_var_cpu_is_init) _lnx_init_var_cpu_v = _lnx_init_var_cpu_get();
+        }
     };
     used static _lnx_init_var_cpu_init_t_call_t _lnx_init_var_cpu_init_t_call_v;
 }
 
 namespace lnx::sys::_pvt {
-    extern bool _lnx_init_var_ram_is_init;/*Zero initialized before global constructors*/
+    extern bool _lnx_init_var_ram_is_init; //!Zero initialized
     used        const RamInfo* _lnx_init_var_ram_get();
     extern      const RamInfo* _lnx_init_var_ram_v;
 
     struct _lnx_init_var_ram_init_t_call_t{
-        _lnx_init_var_ram_init_t_call_t(){ _lnx_init_var_ram_v = _lnx_init_var_ram_get(); }
+        _lnx_init_var_ram_init_t_call_t(){
+            if(!_lnx_init_var_ram_is_init) _lnx_init_var_ram_v = _lnx_init_var_ram_get();
+        }
     };
     used static _lnx_init_var_ram_init_t_call_t _lnx_init_var_ram_init_t_call_v;
 }
