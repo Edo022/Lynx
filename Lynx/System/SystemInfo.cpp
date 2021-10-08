@@ -1,6 +1,5 @@
 #include "Lynx/System/SystemInfo.hpp"
 #include "Lynx/Debug/Debug.hpp"
-#include "Lynx/Core/AutoInit.hpp"
 
 
 
@@ -16,7 +15,7 @@
 
 
 namespace lnx::sys{
-    const CpuInfo cpu = [](){
+    _lnx_init_var_const_def((const CpuInfo), cpu, lnx::sys){
         CpuInfo _cpu = {
             .L1D = {
                 .size     = (uint32)sysconf(_SC_LEVEL1_DCACHE_SIZE),
@@ -65,12 +64,12 @@ namespace lnx::sys{
         free(maxFreq);
 
         return _cpu;
-    }();
+    }
 
 
 
 
-    const RamInfo ram = [](){
+    _lnx_init_var_const_def((const RamInfo), ram, lnx::sys){
         RamInfo _ram;
 
         #ifdef _WIN64
@@ -84,9 +83,9 @@ namespace lnx::sys{
         #else
             _ram.pageNum  = (uint64)sysconf(_SC_PHYS_PAGES);
             _ram.pageSize = (uint64)sysconf(_SC_PAGE_SIZE);
-            _ram.size     = (uint64)(sysconf(_SC_PHYS_PAGES) * sysconf(_SC_PAGE_SIZE));
+            _ram.size     = _ram.pageNum * _ram.pageSize;
         #endif
 
         return _ram;
-    }();
+    }
 }

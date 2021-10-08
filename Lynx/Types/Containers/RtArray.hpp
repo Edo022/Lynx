@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define LNX_H_RTARRAY
+////#define LNX_H_RTARRAY
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sent back to the queue
@@ -21,7 +21,7 @@ namespace lnx {
 	 * @tparam tType Type of the elements
 	 * @tparam tIdxt Type of the index. The type of any index or count relative to this object depend on this
 	 */
-	template<class tType, class tIdxt = uint32> struct RtArray : public ContainerBase<tType, tIdxt> {
+	template<class tType, class tIdxt = uint32> struct RtArray : public ContainerBase<tType, tIdxt> { //TODO dont allow non integer indices
 		//!static asserts in ContainerBase
 		using Super = ContainerBase<tType, tIdxt>;
 		genInitCheck;
@@ -136,7 +136,7 @@ namespace lnx {
 
 
 
-		#if !defined(LNX_DEBUG) || defined(__INTELLISENSE__)
+		#if !defined(LNX_DBG) || defined(__INTELLISENSE__)
 			/**
 			 * @brief Resizes the array
 			 *     Calls the constructor on each of the new elements

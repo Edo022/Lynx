@@ -27,16 +27,16 @@
 
 
 namespace lnx::core::render{
-	alignCache std::mutex graphicsQueueSubmit_m;
-	alignCache std::mutex presentQueueSubmit_m;
+	_lnx_init_var_value_def((std::mutex), graphicsQueueSubmit_m, lnx::core::render){}
+	_lnx_init_var_value_def((std::mutex), presentQueueSubmit_m,  lnx::core::render){}
 
 
 
-	#ifdef LNX_DEBUG
+	#ifdef LNX_DBG
 		void createDebugMessenger() {
 			VkDebugUtilsMessengerCreateInfoEXT createInfo;
 			debug::populateDebugMessengerCreateInfo(createInfo);
-			dbg::checkCond(VK_SUCCESS != debug::CreateDebugUtilsMessengerEXT(dvc::instance, &createInfo, nullptr, &dvc::debugMessenger), "Failed to set up debug messenger");
+			dbg::checkCond(VK_SUCCESS != debug::CreateDebugUtilsMessengerEXT(dvc::g_instance(), &createInfo, nullptr, &dvc::g_debugMessenger()), "Failed to set up debug messenger");
 		}
 	#endif
 }
@@ -133,7 +133,7 @@ namespace lnx{
 	 *     where n = core::shaders::pipelineNum, m = number of swapchain images
 	 */
 	void core::RenderCore::init(){
-		pipelines.resize(core::shaders::pipelineNum);
+		pipelines.resize(core::shaders::g_pipelineNum());
 		for(uint32 i = 0; i < pipelines.count(); ++i){ //[n]
 			core::shaders::createPipeline(i, w->renderCore);
 		}
@@ -162,7 +162,7 @@ namespace lnx{
 		}
 		{ //#LLID CCB0000 Create copy command buffers
 			copyCommandBuffers.resize(swp.images.count());	//Resize the command buffer array in the shader
-			createDefaultCommandBuffers__(); //[m]
+			createDefaultCommandBuffers(); //[m]
 		}
 		sh_clear.spawn(fOut_g, iOut_g, wSize_g, zBuff_g, { (w->width * w->height) / (32 * 32) + 1, 1u, 1u }, *this);
 	}
@@ -174,7 +174,7 @@ namespace lnx{
 	 * @brief Destroyes the swapchain an frees the resources used by the render core
 	 *     This function must be called from lnx::Window::clear() only
 	 * Complexity: O(n + m) [from Swapchain::clear]
-	 *     where n = this->swp.images.count() and m = __renderMaxFramesInFlight
+	 *     where n = this->swp.images.count() and m = renderMaxFramesInFlight
 	 */
 	void core::RenderCore::clear(){
 		swp.clear();
@@ -194,13 +194,13 @@ namespace lnx{
 	 * Complexity: O(n)
 	 *     where n = this->swp.images.count()
 	 */
-	void core::RenderCore::createDefaultCommandBuffers__() { //TODO
+	void core::RenderCore::createDefaultCommandBuffers() { //TODO
 		{ //Render command pool
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool create infos
 				.setFlags            (vk::CommandPoolCreateFlagBits::eResetCommandBuffer)	//Command buffers and pool can be reset
-				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::g_graphics().pd.indices.computeFamilies[0])		//Set the compute family where to bind the command pool
 			;
-			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.createCommandPool(&commandPoolCreateInfo, nullptr, &commandPool)){ vkDefaultCases; }
 		}
 
 
@@ -208,16 +208,16 @@ namespace lnx{
 
 		{ //Copy
 			auto commandPoolCreateInfo = vk::CommandPoolCreateInfo() 					//Create command pool
-				.setQueueFamilyIndex (core::dvc::graphics.pd.indices.computeFamilies[0])	//Set the compute family where to bind the command pool
+				.setQueueFamilyIndex (core::dvc::g_graphics().pd.indices.computeFamilies[0])	//Set the compute family where to bind the command pool
 			; //FIXME
-			switch(core::dvc::graphics.ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.createCommandPool(&commandPoolCreateInfo, nullptr, &copyCommandPool)){ vkDefaultCases; }
 
 			auto commandBufferAllocateInfo = vk::CommandBufferAllocateInfo() 			//Allocate one command buffer for each swapchain image
 				.setCommandPool        (copyCommandPool)									//Set command pool where to allocate the command buffer
 				.setLevel              (vk::CommandBufferLevel::ePrimary)					//Set the command buffer as primary level command buffer
 				.setCommandBufferCount (swp.images.count())									//Set command buffer count
 			;
-			switch(core::dvc::graphics.ld.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
+			switch(core::dvc::g_graphics().ld.allocateCommandBuffers(&commandBufferAllocateInfo, copyCommandBuffers.begin())){ vkDefaultCases; }
 
 
 
@@ -284,9 +284,9 @@ namespace lnx{
 			.setPSwapchains        (&swp.swapchain)
 			.setPImageIndices      (&imageIndex)
 		;
-		core::render::presentQueueSubmit_m.lock();
-		auto r = core::dvc::graphics.pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
-		core::render::presentQueueSubmit_m.unlock();
+		core::render::g_presentQueueSubmit_m().lock();
+		auto r = core::dvc::g_graphics().pq.presentKHR(presentInfo); //TODO graphics and present queues could be the same, in some devices. In that case, use the same mutex
+		core::render::g_presentQueueSubmit_m().unlock();
 		return r;
 	}
 
@@ -304,7 +304,7 @@ namespace lnx{
 	 * @param vImgIndex The index of the image to present and replace
 	 */
 	void core::RenderCore::draw(uint32& vImgIndex){
-		switch(core::dvc::graphics.ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
+		switch(core::dvc::g_graphics().ld.waitForFences(1, &swp.frames[swp.curFrame].f_rendered, false, LONG_MAX)){
 			case vk::Result::eTimeout:         dbg::logError("Fence timed out"); break;
 			case vk::Result::eErrorDeviceLost: dbg::logError("Device lost");     break;
 			vkDefaultCases;
@@ -322,7 +322,7 @@ namespace lnx{
 
 		//Acquire swapchain image
 		{
-			switch(core::dvc::graphics.ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &vImgIndex)) {
+			switch(core::dvc::g_graphics().ld.acquireNextImageKHR(swp.swapchain, UINT64_MAX, swp.frames[swp.curFrame].s_aquired, nullptr, &vImgIndex)) {
 				case vk::Result::eTimeout:             dbg::logWarn("Timeout");    break;
 				case vk::Result::eNotReady:            dbg::logWarn("Not ready");  break;
 				case vk::Result::eSuboptimalKHR:       dbg::logWarn("Suboptimal"); break;
@@ -379,7 +379,7 @@ namespace lnx{
 		};
 		addObject_m.unlock(); //FIXME
 
-		switch(core::dvc::graphics.ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
+		switch(core::dvc::g_graphics().ld.resetFences(1, &swp.frames[swp.curFrame].f_rendered)){
 			case vk::Result::eSuccess: break;
 			case vk::Result::eErrorOutOfDeviceMemory: dbg::logError("Out of device memory"); break;
 			// case vk::Result::eErrorOutOfHostMemory: dbg::logError("Out of host memory"); break;
@@ -387,9 +387,9 @@ namespace lnx{
 			default: dbg::logError("Unknown result");
 		}
 
-		core::render::graphicsQueueSubmit_m.lock();
-		switch(core::dvc::graphics.cqs[0].submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
-		core::render::graphicsQueueSubmit_m.unlock();
+		core::render::g_graphicsQueueSubmit_m().lock();
+		switch(core::dvc::g_graphics().cqs[0].submit(3, submitInfos, swp.frames[swp.curFrame].f_rendered)){ vkDefaultCases; }
+		core::render::g_graphicsQueueSubmit_m().unlock();
 	}
 
 
@@ -520,8 +520,9 @@ namespace lnx{
 	 */
 	void core::RenderCore::renderLoop() {
 		auto last = std::chrono::high_resolution_clock::now();
-		running = true;
-		while(running) {
+		// running = true;
+		w->running = true; //FIXME check if this is the correct variable
+		while(g_running()) {
 			sleep(0); //Prevent extra overhead when no object has to be rendered
 			auto start = std::chrono::high_resolution_clock::now();
 			addObject_m.lock();
@@ -548,7 +549,7 @@ namespace lnx{
 
 
 			//Update frame number and flush the window data
-			swp.curFrame = (swp.curFrame + 1) % lnx::core::wnd::__renderMaxFramesInFlight;
+			swp.curFrame = (swp.curFrame + 1) % lnx::core::wnd::renderMaxFramesInFlight;
 			glfwSwapBuffers(w->window);
 
 			updateObjects();
@@ -566,7 +567,8 @@ namespace lnx{
 
 
 			//Stop render if window was closed
-			if(glfwWindowShouldClose(w->window)) running = false;
+			// if(glfwWindowShouldClose(w->window)) running = false;
+			if(glfwWindowShouldClose(w->window)) w->running = false; //FIXME check if this is the correct variable
 		}
 	}
 }
@@ -596,11 +598,11 @@ namespace lnx::core::render{
 	 * @brief //TODO
 	 */
 	void cleanup() { //FIXME MOVE  COMMAND POOL TO RENDER CORE
-		dvc::graphics.ld.destroyCommandPool(cmd::singleTimeCommandPool, nullptr);	//Destroy graphics command pool //FIXME MOVE TO RENDER CORE
-		dvc::graphics.ld.destroy(nullptr);													//Destroy the compute device //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
+		dvc::g_graphics().ld.destroyCommandPool(cmd::g_singleTimeCommandPool(), nullptr);	//Destroy graphics command pool //FIXME MOVE TO RENDER CORE
+		dvc::g_graphics().ld.destroy(nullptr);													//Destroy the compute device //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
 		//for (auto& device : secondary) vkDestroyDevice(device.ld, nullptr);						//Destroy all the secondary devices
 
-		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::instance, dvc::debugMessenger, nullptr));	//Destroy the debug messenger if present //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
+		_dbg(debug::DestroyDebugUtilsMessengerEXT(dvc::g_instance(), dvc::g_debugMessenger(), nullptr));	//Destroy the debug messenger if present //FIXME ONLY DESTROY WHEN CLOSING THE ENGINE
 	}
 
 
@@ -631,7 +633,7 @@ namespace lnx::core::render{
 	 * @return The index of the memory type if one with the specified properties was found, (uint32)-1 otherwise
 	 */
 	uint32 findMemoryType(const uint32 vType, const vk::MemoryPropertyFlags vProp) {
-		auto memProperties = dvc::graphics.pd.device.getMemoryProperties();		//Get memory vProperties
+		auto memProperties = dvc::g_graphics().pd.device.getMemoryProperties();		//Get memory vProperties
 
 		for(uint32 i = 0; i < memProperties.memoryTypeCount; ++i) {				//Search for the memory that has the specified properties and type and return its index
 			if((vType & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & vProp) == vProp) return i;

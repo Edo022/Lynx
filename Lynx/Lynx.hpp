@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_LNX_ENGINE
+////#define LNX_H_LNX_ENGINE
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Threads/Thread.hpp"
 #include "Lynx/Core/Devices.hpp"
@@ -11,10 +11,10 @@ namespace lnx{
 	/**
 	 * @brief Starts the Lynx Engine
 	 */
-    void start() {
-        core::running = true;
-        core::inputThr(core::inputLoop);
-    }
+    // void start() {
+    //     core::running = true;
+    //     core::inputThr(core::inputLoop);
+    // }
 
 
     /**
@@ -23,16 +23,16 @@ namespace lnx{
      *      Make sure to destroy them or don't use them after calling this function
      */
 	void kill(){
-        core::running = false;
+        core::g_running() = false;
 
-        core::inputThr.join();
-        switch(core::dvc::graphics.ld.waitIdle()){
+        core::g_inputThr().join();
+        switch(core::dvc::g_graphics().ld.waitIdle()){
 			case vk::Result::eErrorDeviceLost: dbg::logError("Device lost"); break;
 			vkDefaultCases;
         }
 
         core::render::cleanup();
-        core::dvc::instance.destroy(nullptr);
+        core::dvc::g_instance().destroy(nullptr);
 		glfwTerminate();
     }
 }

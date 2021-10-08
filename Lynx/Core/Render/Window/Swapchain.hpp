@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_SWAPCHAIN
+////#define LNX_H_SWAPCHAIN
 #include "Lynx/Core/Render/Shaders/ShaderInterface_t.hpp"
 
 
@@ -16,7 +16,7 @@ namespace lnx{
 	}
 }
 namespace lnx::core::wnd{
-	constexpr int32 __renderMaxFramesInFlight = 2;	//Default:2
+	constexpr int32 renderMaxFramesInFlight = 2;	//Default:2
 
 
 

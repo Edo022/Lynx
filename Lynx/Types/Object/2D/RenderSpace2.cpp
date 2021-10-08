@@ -32,23 +32,23 @@ namespace lnx::obj {
 			case AlignmentType::eFixedHorizontal:
 			{ //FIXME ADD CHECK IN ADD FUNCTION TO CHECK THAT CHILDREN ARE OBJ2 ONLY
 				auto xElmLen = abs(minLim.x - maxLim.x) / xNum;
-				static_cast<obj2_b*>(children[vChildIndex])->setMinLim({ minLim.x + (xElmLen * vChildIndex), minLim.y });
-				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim({ minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y });
+				scast<obj2_b*>(children[vChildIndex])->setMinLim({ minLim.x + (xElmLen * vChildIndex), minLim.y });
+				scast<obj2_b*>(children[vChildIndex])->setMaxLim({ minLim.x + (xElmLen * vChildIndex) + xElmLen, maxLim.y });
 				break;
 			}
 			case AlignmentType::eFixedVertical:
 			{
 				auto yElmLen = abs(minLim.y - maxLim.y) / xNum;
-				static_cast<obj2_b*>(children[vChildIndex])->setMinLim({ minLim.x, minLim.y + (yElmLen * vChildIndex) });
-				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim({ maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen });
+				scast<obj2_b*>(children[vChildIndex])->setMinLim({ minLim.x, minLim.y + (yElmLen * vChildIndex) });
+				scast<obj2_b*>(children[vChildIndex])->setMaxLim({ maxLim.x, minLim.y + (yElmLen * vChildIndex) + yElmLen });
 				break;
 			}
 			//case AlignmentType::Vertical:
 			//case AlignmentType::Horizontal:
 			case AlignmentType::eFree:
 			{
-				static_cast<obj2_b*>(children[vChildIndex])->setMinLim(minLim);
-				static_cast<obj2_b*>(children[vChildIndex])->setMaxLim(maxLim);
+				scast<obj2_b*>(children[vChildIndex])->setMinLim(minLim);
+				scast<obj2_b*>(children[vChildIndex])->setMaxLim(maxLim);
 				break;
 			}
 			default: dbg::logError("Unknown children alignment type");

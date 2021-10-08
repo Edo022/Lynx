@@ -1,6 +1,6 @@
 #include "Lynx/System/System.hpp"
 #include "Lynx/Types/Containers/String.hpp"
-#include "Lynx/Core/AutoInit.hpp"
+#include "Lynx/Core/Init.hpp"
 
 
 
@@ -10,14 +10,14 @@
 
 
 namespace lnx::sys{
-	String dir::thisDir;	//Path to the current directory //Initialized in init function
-
-
-	LnxAutoInit(LNX_H_SYSTEM) {
-		char buff[FILENAME_MAX];					//Create char array to store the path
-		__lp_get_cwd(buff, FILENAME_MAX);			//Get path
-		dir::thisDir = buff;						//Save path
-		_wds(dir::fixWindowsPath(dir::thisDir);)	//Replace silly windows backslashes with normal slashes
+	//Path to the current directory
+	namespace dir {
+		_lnx_init_var_value_def((String), thisDir, lnx::sys::dir){
+			char buff[FILENAME_MAX];			//Create char array to store the path
+			_lnx_get_cwd(buff, FILENAME_MAX);	//Get path
+			pVar = buff;						//Save path
+			_wds(fixWindowsPath(pVar);)			//Replace silly windows backslashes with normal slashes
+		}
 	}
 
 

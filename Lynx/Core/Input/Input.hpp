@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_INPUT
+////#define LNX_H_INPUT
 #include "Lynx/Core/Input/InputState.hpp"
 #include "Lynx/macros.hpp"
 #include "Lynx/Core/Input/KeyboardInput.hpp"

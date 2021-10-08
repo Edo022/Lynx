@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_CONTAINER_BASE
+////#define LNX_H_CONTAINER_BASE
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include "Lynx/Tests/StructureInit.hpp"

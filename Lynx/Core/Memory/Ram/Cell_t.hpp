@@ -1,8 +1,9 @@
 #pragma once
-#define LNX_H_CELL_T
+////#define LNX_H_CELL_T
 #include "Lynx/Core/Memory/Ram/Classes.hpp"
 #include "Lynx/Types/Containers/RaArrayC.hpp"
 #include "Lynx/Types/Dummy.hpp"
+#include "Lynx/Core/Init.hpp"
 #include <mutex>
 
 
@@ -36,9 +37,11 @@ namespace lnx::ram{
 		std::mutex m; 			//FIXME REMOVE
 	};
 
-	extern Type_t types[];		//Allocated buffers
-	extern RaArrayC<Cell_t> cells;
-	extern thread_local Cell_t dummyCell;
+	_lnx_init_var_array_dec((Type_t), types);		//Allocated buffers
+	_lnx_init_var_dec((RaArrayC<Cell_t, uint32>), cells);
+	_lnx_init_var_dec((std::mutex), cells_m);
 
-	extern std::mutex cells_m;
+	static thread_local Cell_t dummyCell = { .owners = 0, .cellSize = 0, .address = nullptr }; //FIXME this variable should be external thread_local
+
+	_lnx_init_fun_dec(LNX_H_CELL_T);
 }

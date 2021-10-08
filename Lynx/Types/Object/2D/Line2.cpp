@@ -2,6 +2,7 @@
 #include "Lynx/Core/Core.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/2D/Line2.hpp"
+#include "Lynx/Core/Render/Window/Window.hpp"
 
 //TODO DRAW OBJECT-RENDERCORE INTERACTION GRAPH
 //TODO object-RenderCore. similar to client-server
@@ -19,7 +20,7 @@ namespace lnx::obj{
 	void Line2::onLimit() {
 		obj2_b::onLimit();
 		dbg::checkCond(w && thr::self::thr() != w->renderCore.t.thr, "This function can only be called by the render thread.");
-		data._data.fp0 = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
-		data._data.fp1 = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
+		data.data.fp0 = _fp0 * adist(this->minLim, this->maxLim) + this->minLim;
+		data.data.fp1 = _fp1 * adist(this->minLim, this->maxLim) + this->minLim;
 	}
 }

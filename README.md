@@ -26,80 +26,44 @@ The engine features:
 
 &nbsp;
 
-# Software requirements
+# Getting started
 
-## Shipping
-
-Applications can be built for both Linux and Windows.  
-Mac is not supported yet, but it may be in future versions.
-
-&nbsp;
-
-&nbsp;
-
-## Developement
+## Software requirements
 
 The engine is meant to be used on Linux systems only.  
 We do not provide any support for developement on Windows or Mac.  
 
 
-| Software     | Version   | Required            |
-|--------------|-----------|---------------------|
-| Linux        | 4.4       | Yes                 |
-| g++          | 11.1.1    | Yes                 |
-| GNU Make     | 4.3       | Yes                 |
-| glslang      | 10:11.0.0 | Yes                 |
-| spirv-tools  | 2020.7    | Yes                 |
-| Mingw        | 8.0.0     | Windows builds only |
-| **Lynx SDK** | 1.0.0     | Yes                 |
-
-//TODO remove python requirement. Compile an executable file for every script
-The location of those softwares can be changed in the `.engine/Build_config.hpp` file. //TODO
-
-&nbsp;
-
-The engine can automatically generate configuration files for Visual Studio Code.  
-Support for other C++ compilers and editors will be added in future versions.
-
-&nbsp;
+| Software     | Version   |
+|--------------|-----------|
+| Linux        | 4.4       |
+| g++          | 11.1.1    |
+| glslang      | 10:11.0.0 |
+| spirv-tools  | 2020.7    |
 
 &nbsp;
 
 ## Install the required softwares and libraries
 
-Some developement libraries are required in order to build applications.
-
 Fedora  
-`dnf install gcc-c++ make glslang spirv-tools`  
-`dnf install vulkan-devel glfw-devel libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel freeglut-devel libasan libubsan`
+`sudo dnf install gcc-c++ glslang spirv-tools`  
+`sudo dnf install vulkan-devel glfw-devel libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel libXi-devel freeglut-devel libasan libubsan`
 //TODO
 
-Arch
-`pacman -S gcc make glslang`  
-`pacman -S vulkan-devel glfw-x11 libx11 libxcursor libxrandr libxinerama libxi freeglut gcc-libs`
+Arch  
+`sudo pacman -S gcc glslang`  
+`sudo pacman -S vulkan-devel glfw-x11 libx11 libxcursor libxrandr libxinerama libxi freeglut gcc-libs`
 
 //TODO add software for wayland
 
 &nbsp;
-&nbsp;
 
-&nbsp;
-
-## Download the SDK
+## Download the LynxEngine SDK
 
 Clone the repository from GitHub:  
 `git clone https://github.com/Edo022/LynxEngine.git`  
-The same system can use multiple versions of the SDK.
 
 &nbsp;
-
-A project can be linked to an SDK by running its Setup script:  
-`mkdir MyProject`  
-`cd MyProject`  
-`<path_to_sdk>/Tools/Setup/Setup`  
-
-Each version can be used by multiple projects at the same time.  
-Any modification to a version will affect all the projects linked to it.
 
 &nbsp;
 
@@ -109,9 +73,25 @@ Any modification to a version will affect all the projects linked to it.
 
 # Build applications
 
-Applications are built using the `<path_to_sdk>/Tools/Build/lynxg++` executable,
-which is a g++ wrapper that parses the provided arguments, adds everything the engine needs and forwards them to g++.
+## Project structure
 
+Every project is composed of a directory which contains at least one source file and a generated .engine directory.  
+A project can be linked to the SDK by running its Setup script:  
+`mkdir MyProject`  
+`cd MyProject`  
+`touch main.cpp`  
+`<path_to_sdk>/Tools/Setup/Setup`  
+
+The Setup scripy can automatically generate configuration files for Visual Studio Code.  
+Support for other editors will be added in future versions.
+
+//FIXME
+
+## Build system
+
+Applications are built using the `<path_to_sdk>/Tools/Build/lynxg++` executable,
+which is an Alloy wrapper that parses the provided arguments, adds everything the engine needs and forwards them to the build system.
+//TODO write how to use the build file
 lynxg++ allows 2 build configurations:
 
 - Debug  
@@ -132,8 +112,24 @@ See `<path_to_sdk>/Tools/Build/lynxg++ -h` for more informations.
 &nbsp;
 
 e.g. `<path_to_sdk>/Tools/Build/lynxg++ -m=ld -r: -O3 -g0 -d: -O0 -g3 -a: main.cpp`  
-
+//TODO RENAME LYNXG++ AS "Build"
 Examples are located in `<path_to_sdk>/Examples/` and contain the source code, the executable and the commands used to build it.  
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+# Configure and modify an SDK
+ 
+//TODO
+
+The same system can use multiple versions of the SDK.
+
+Each version can be used by multiple projects at the same time.  
+Any modification to a version will affect all the projects linked to it.
+
 
 &nbsp;
 

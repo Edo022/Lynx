@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_VEC2
+////#define LNX_H_VEC2
 #include "Lynx/macros.hpp"
 #include "Lynx/Types/Vectors/Vec_b.hpp"
 

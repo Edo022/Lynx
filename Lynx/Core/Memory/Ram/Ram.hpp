@@ -1,5 +1,5 @@
 ﻿#pragma once
-#define LNX_H_MEMORY
+////#define LNX_H_MEMORY
 #include "Lynx/Types/Pointer.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include <cstring>
@@ -67,11 +67,12 @@
 
 
 namespace lnx::ram{
-	//! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
-	struct Type_t;
-	extern Type_t types[];			//Allocated buffers
-	extern RaArrayC<Cell_t> cells;
-	extern std::mutex cells_m;
+	//TODO REMOVE
+	// //! If you modify those variables change the declarations in Cell_t.hpp and Ram.cpp too
+	// struct Type_t;
+	// _lnx_init_var_array_dec(Type_t, types);			//Allocated buffers
+	// _lnx_init_var_dec(RaArrayC<Cell_t>, cells);
+	// _lnx_init_var_dec(std::mutex, cells_m);
 
 
 

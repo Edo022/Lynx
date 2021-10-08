@@ -1,5 +1,5 @@
 #pragma once
-#define LNX_H_STRING
+////#define LNX_H_STRING
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 //TODO improve concatenation performance
 

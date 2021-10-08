@@ -1,8 +1,8 @@
 #pragma once
-#define LNX_H_HCARRAY
+////#define LNX_H_HCARRAY
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Types/TypeTraits.hpp"
-
+#include "Lynx/Debug/Debug.hpp"
 
 
 
@@ -23,7 +23,7 @@ namespace lnx{
 	template<class ...types> struct HcArray;
 
 
-	namespace __pvt{
+	namespace _pvt{
 		/**
 		 * @brief seq helper struct that manages the values based on their type
 		 * @tparam tType The type of the element
@@ -61,7 +61,7 @@ namespace lnx{
 			seq_val(const tType& pVal) : val(&pVal) {};
 
 			void operator=(const tType& pElm){ val = &pElm; } //TODO ADD DETAILED ERROR WHEN CALLING = ON REFERENCE ELEMENTS OF HcArray (NOT FWD)
-			inline tType get(){ return static_cast<tType>(*val); } //TODO
+			inline tType get(){ return scast<tType>(*val); } //TODO
 			//!    ^ Already reference
 		};
 
@@ -371,7 +371,7 @@ namespace lnx{
 	//Starting index of element iteration
 	#define seqIndex (sizeof...(tTypes) - 1)
 
-	namespace __pvt{
+	namespace _pvt{
 		//Special type used by fwd
 		struct seq_fwd_ctor{};
 	}
@@ -395,7 +395,7 @@ namespace lnx{
 	 *         HcArray arr3{ 1, false, (const char*)"mogu mogu" };		//int, bool, const char*
 	 */
 	template<class... tTypes> struct HcArray :
-	private __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
+	private _pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>{
 	private:
 		template<class... _tTypes> friend struct fwd;
 
@@ -407,8 +407,8 @@ namespace lnx{
 		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠ 	[From seq::seq]
 		 *     Where n = sizeof...(tTypes) and e[i] = copy constructor of the i-th type in tTypes
 		 */
-		alwaysInline HcArray(const __pvt::seq_fwd_ctor, const tTypes... vals) :
-			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
+		alwaysInline HcArray(const _pvt::seq_fwd_ctor, const tTypes... vals) :
+			_pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 		/**
@@ -418,8 +418,8 @@ namespace lnx{
 		 * Complexity: O⎝⎳ i=0 ⎝O(e[i])⎠⎠	[From seq::seq]
 		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
-		alwaysInline HcArray(const __pvt::seq_fwd_ctor) :
-			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
+		alwaysInline HcArray(const _pvt::seq_fwd_ctor) :
+			_pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
 		}
 
 
@@ -439,7 +439,7 @@ namespace lnx{
 		 *     Where n = sizeof...(tTypes) and e[i] = default constructor of the i-th type in tTypes
 		 */
 		alwaysInline HcArray() :
-			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
+			_pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>() {
 		}
 
 
@@ -455,7 +455,7 @@ namespace lnx{
 			sizeof...(tTypes) == 1 &&
 			std::is_same_v<std::remove_reference_t<std::remove_cv_t<get_type_at_t<0, tTypes...>>>, HcArray<tTypes...>>
 		)) :
-			__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
+			_pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>(vals...){
 		}
 
 
@@ -469,7 +469,7 @@ namespace lnx{
 		 */
 		template<uint32 vIndex> alwaysInline auto& get() requires(vIndex < sizeof...(tTypes)) {
 			// _dbg(static_assert(vIndex >= 2, "Index is out of range"));
-			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>:: template seq_get_t<sizeof...(tTypes), __pvt::eChck, seqIndex, tTypes...>::template getFunc<seqIndex - vIndex>();
+			return _pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>:: template seq_get_t<sizeof...(tTypes), _pvt::eChck, seqIndex, tTypes...>::template getFunc<seqIndex - vIndex>();
 		}
 
 		/**
@@ -486,7 +486,7 @@ namespace lnx{
 		 */
 		template<class tCType> alwaysInline tCType& rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return (tCType&)*(tCType*)(__pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex));
+			return (tCType&)*(tCType*)(_pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex));
 		}
 
 
@@ -498,7 +498,7 @@ namespace lnx{
 		 */
 		alwaysInline void* rtGet(const uint32 vIndex) {
 			dbg::checkIndex(vIndex, 0, count() - 1, "vIndex");
-			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex);
+			return _pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::rtGet(vIndex);
 		}
 
 
@@ -522,7 +522,7 @@ namespace lnx{
 		 */
 		template<class func_t> alwaysInline auto exec(func_t pFunc)
 		requires(std::is_function_v<std::remove_pointer_t<func_t>>) {
-			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template exec<func_t>(pFunc);
+			return _pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template exec<func_t>(pFunc);
 		}
 
 
@@ -535,7 +535,7 @@ namespace lnx{
 		 */
 		template<class obj_t, class func_t> alwaysInline auto exec(obj_t& pObject, func_t pFunc)
 		requires(std::is_object_v<obj_t> && std::is_member_function_pointer_v<func_t>) {
-			return __pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template execObj<obj_t, func_t>(pObject, pFunc);
+			return _pvt::seq<sizeof...(tTypes), seqIndex, tTypes...>::template execObj<obj_t, func_t>(pObject, pFunc);
 		}
 
 
@@ -568,7 +568,7 @@ namespace lnx{
 		 * @brief Default constructor
 		 */
 		inline fwd() :
-			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}) {
+			HcArray<tTypes...>(_pvt::seq_fwd_ctor{}) {
 		}
 
 		/**
@@ -581,7 +581,7 @@ namespace lnx{
 		 * @param pVals The values used to initialize each element
 		 */
 		template<class... tTypesc> alwaysInline fwd(tTypesc&&... pVals) :
-			HcArray<tTypes...>(__pvt::seq_fwd_ctor{}, std::forward<tTypesc>(pVals)...) {
+			HcArray<tTypes...>(_pvt::seq_fwd_ctor{}, std::forward<tTypesc>(pVals)...) {
 		}
 		//!Copy and move constructors are shadowed by the list constructor
 
