@@ -1,4 +1,4 @@
-//This file is only compiled in application builds by lynxg++
+//This file is only compiled in application builds by the Build script
 ////#define LNX_H_GET_ENGINE_PATH
 #include "Lynx/macros.hpp"
 #include "Lynx/Core/Init.hpp"

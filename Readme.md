@@ -94,11 +94,11 @@ The minimal application project contains one source file and a generated .engine
 </details>
 <details>
 <summary><b>Build system</b></summary>
-Applications are built using the <code>&lt;path_to_sdk&gt;/Tools/Build/Build</code> executable, which is an Alloy wrapper that parses the provided arguments, adds everything the engine needs and forwards them to the build system.
+Applications are built using the <code>&lt;path_to_sdk&gt;/Tools/Build/Build</code> executable, which is an <a href="https://github.com/d-Qw4w9WgXc-Q/Alloy">Alloy</a> wrapper that parses the provided arguments, adds everything the engine needs and forwards them to the build system.
 <br>The source files and other flags can be specified in the <code>.engine/Build.Application</code> file. See //TODO link to syntax details
 <br>
 <br>//TODO show vscode build tasks
-<br>lynxg++ allows 2 build configurations:
+<br>The Build executable allows 2 build configurations:
 
 - Debug  
   - The code is not optimized and contains any available debug, gdb and gprof information.
@@ -111,9 +111,9 @@ Applications are built using the <code>&lt;path_to_sdk&gt;/Tools/Build/Build</co
   - No validation layers, no runtime tests.
 <br>
 <br>Selectors can be used to enable different arguments based on the target platform and active configuration.
-<br>See <code>&lt;path_to_sdk&gt;/Tools/Build/lynxg++ -h</code> for more informations.
+<br>See <code>&lt;path_to_sdk&gt;/Tools/Build/Build -h</code> for more informations.
 <br>
-<br>e.g. <code>&lt;path_to_sdk&gt;/Tools/Build/lynxg++ -m=ld -r: -O3 -g0 -d: -O0 -g3 -a: main.cpp</code>
+<br>e.g. <code>&lt;path_to_sdk&gt;/Tools/Build/Build -m=ld -r: -O3 -g0 -d: -O0 -g3 -a: main.cpp</code>
 //TODO RENAME LYNXG++ AS "Build"
 <br>Examples are located in <code>&lt;path_to_sdk&gt;/Examples/</code> and contain the source code, the executable and the commands used to build it.
 </details>

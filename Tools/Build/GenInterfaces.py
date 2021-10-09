@@ -2,8 +2,8 @@ import os, re, sys, subprocess
 from textwrap import indent
 from math import ceil
 from argparse import Namespace as ns
-#! Shaders are validated in lynxg++
-#! This script is compiled with lynxg++
+#! Shaders are validated in Build
+#! This script is compiled with Build
 #TODO write what external bindings are and how to use them
 #TODO add matrix support
 #TODO add image support
