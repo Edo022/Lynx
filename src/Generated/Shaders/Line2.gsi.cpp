@@ -8,7 +8,6 @@
 #include "Lynx/Core/Init.hpp"
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Core/Render/Render.hpp"
-////#define LNX_H_LINE2
 
 
 

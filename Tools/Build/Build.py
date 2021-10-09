@@ -114,7 +114,7 @@ def run(argv:list, isEngine:bool):
         with open(args.f, 'r') as f:
             try:
                 fArgs = shlex.split(f.read(), comments = True)
-                return run(fArgs[1:], False)
+                return run(fArgs, False)
             except FileNotFoundError:
                 print(f'Cannot open file "{ args.f }"')
                 return 1
@@ -253,7 +253,7 @@ if isinstance(aRet, int):
 
 # Parse engine arguments
 with open('.engine/Build.Engine.sh') as f:
-    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True)[1:], True)
+    eRet = run([ f"--mode={ aRet.mode }" ] + shlex.split(f.read(), comments = True), True)
     if isinstance(eRet, int):
         sys.exit(eRet)
 

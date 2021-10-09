@@ -285,21 +285,19 @@ def build(
     ]
 
 
-    EFLG += SFLG + [                                    # Append default flags to user defined flags     #! Passed by the wrapper
-        '-include', 'Lynx/Core/InitList.hpp',               # Include generated engine initializers      #! Relative to engine
-        '-include', 'Lynx/Core/VkDef.hpp',                  # Include forced vulkan macros               #! Relative to engine
-        '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros        #! Relative to engine
-        '-I.', '-Isrc',                                     # Include from src directory and engine root #! Relative to engine
-        #FIXME REMOVE -I. AFTER MOVING SRC FILES
+    EFLG += SFLG + [                                    # Append default flags to user defined flags    #! Passed by the wrapper
+        '-include', 'src/Lynx/Core/InitList.hpp',           # Include generated engine initializers     #! Relative to engine
+        '-include', 'src/Lynx/Core/VkDef.hpp',              # Include forced vulkan macros              #! Relative to engine
+        '-include', 'src/Lynx/Lynx_config.hpp',             # Include engine configuration macros       #! Relative to engine
+        '-Isrc',                                            # Include from src directory                #! Relative to engine
         f'-ffile-prefix-map={ os.path.abspath(EtoA) }/={ AtoE }/' # Fix file prefix in debug infos
     ]
 
-    AFLG += SFLG + [                                    # Append default flags to user defined flags        #! Relative to application   #! Passed by the wrapper
-        '-include', f'{ AtoE }/Lynx/Core/InitList.hpp',     # Include generated engine initializers         #!Relative to application
-        '-include', f'{ AtoE }/Lynx/Core/VkDef.hpp',        # Include forced vulkan macros                  #!Relative to application
-        '-include', f'{ AtoE }/Lynx/Lynx_config.hpp',       # Include engine configuration macros           #!Relative to application
-        '-I.', f'-I{ AtoE }', f'-I{ AtoE }/src', f'-I./.engine/src', # Include from src directories and application root #!Relative to application
-        #FIXME REMOVE -IAtoE AFTER MOVING SRC FILES
+    AFLG += SFLG + [                                    # Append default flags to user defined flags    #! Relative to application   #! Passed by the wrapper
+        '-include', f'{ AtoE }/src/Lynx/Core/InitList.hpp', # Include generated engine initializers     #!Relative to application
+        '-include', f'{ AtoE }/src/Lynx/Core/VkDef.hpp',    # Include forced vulkan macros              #!Relative to application
+        '-include', f'{ AtoE }/src/Lynx/Lynx_config.hpp',   # Include engine configuration macros       #!Relative to application
+        '-I.', f'-I{ AtoE }/src', f'-I./.engine/src',       # Include from src directories and app root #!Relative to application
         f'-ffile-prefix-map={ os.path.abspath(EtoA) }/='    # Fix file prefix in debug infos
     ]
 
