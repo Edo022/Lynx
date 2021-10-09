@@ -2,6 +2,8 @@ import os, re, sys, subprocess
 from textwrap import indent
 from math import ceil
 from argparse import Namespace as ns
+import Utils
+
 #! Shaders are validated in Build
 #! This script is compiled with Build
 #TODO write what external bindings are and how to use them
@@ -248,24 +250,8 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
 
-    # Expand macros
-    code:str = subprocess.check_output(
-        ['glslangValidator', f'{ os.path.relpath(pathr, ".") }', '-E'],
-        text = True
-    )
-    # Parse out unnecessary whitespace and comments from the shader code #TODO move to module
-    ncode:str = (
-        re.sub(r'([-+])''\x07', r'\g<1> \g<1>',                         # Prevent - - and + + from being merged #! GLSL has no pointers. * * is a syntax error
-        re.sub(r' ?([()\[\]{}+*-\/.!<>=&^|?:%,;])( )?',  r'\g<1>',      # Remove spaces near opeartors
-        re.sub(r'([-+]) \1', r'\g<1>''\x07',                            # Prevent - - and + + from being merged
-        re.sub(r'\\n',      r'\n',                                      # Remove newlines
-        re.sub(r'\n',       r'',                                        # Remove newlines
-        re.sub(r'(#.*?)\n', r'\g<1>\\n',                                # Remove newlines
-        re.sub(r' +',       r' ',                                       # Remove whitespace
-        code.expandtabs(4)                                              # Convert tabs to spaces
-    ))))))))
-
-
+    # Expand macros and parse out unnecessary whitespace
+    code:str = Utils.clearGls(Utils.preprocessGls(os.path.relpath(pathr, ".")))
 
 
     #Parse layouts

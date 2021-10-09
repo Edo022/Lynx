@@ -22,7 +22,8 @@ if not os.path.exists(source):
 # Get the source code and parse out unnecessary whitespace and comments
 # code = subprocess.run(['g++', '-fpreprocessed', '-dD', '-E', source], capture_output = True, text = True).stdout
 # ncode = subprocess.run(['g++', '-E', source], capture_output = False, text = True).stdout #TODO add include paths
-ncode = subprocess.run(['g++', '-E', '-I.', '-I./src', '-D__LNX_INITIALIZER_GENERATOR__', '-DLNX_DBG', source], capture_output = True, text = True).stdout #TODO add include paths
+ncode = subprocess.run(['g++', '-E', '-I.', '-I./src', '-D__LNX_INITIALIZER_GENERATOR__', '-DLNX_DBG', source], capture_output = True, text = True).stdout #TODO add include paths #FIXME REPLACE WITH UTILS.PREPROCESSCPP
+#FIXME REPLACE WITH UTILS.PREPROCESSCPP
 #                                                                                    FIXME read includes. dont use hard coded LNX_DBG
 # ncode:str = (
 #     re.sub(r' ?([()\[\]{}+*-\/.!<>=&^|?:%,;])( )?',  r'\g<1>',      # Remove spaces near opeartors
