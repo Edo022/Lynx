@@ -238,8 +238,8 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     #Get output shader path and name
-    shOutPath : str = os.path.relpath(f'{ EtoA }/.engine/src/Generated/Shaders' if isEngine else './src/Generated/Shaders', '.')
-    shReadPath : str = os.path.relpath(f'{ EtoA }/.engine/src/Generated/Shaders' if isEngine else f'{ AtoE }/src/Generated/Shaders', '.') #FIXME USE GENERATED HEADERS
+    shOutPath : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
+    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED HEADERS
     shOutName : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
     shName    : str = shOutName.replace('.', '_')
     if re.match(r'[a-zA-Z_](\w|\.)*', shOutName) == None:
@@ -570,4 +570,4 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
 if len(sys.argv) != 4: sys.exit('GenInterfaces: Wrong number of arguments')
-sys.exit(parseShader(sys.argv[1], sys.argv[2], sys.argv[3] == 'e'))
+sys.exit(parseShader(sys.argv[1], sys.argv[2], eval(sys.argv[3])))
