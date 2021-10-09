@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 
-with open('./.engine/.etop', 'r') as f: etop = f.read()
-with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
-os.chdir(ptoe)
+with open('./.engine/.EtoA', 'r') as f: EtoA = f.read()
+with open('./.engine/.AtoE', 'r') as f: AtoE = f.read()
+os.chdir(AtoE)
 
 poolMutex = threading.Lock()
 avlThrs = multiprocessing.cpu_count() - 1
@@ -120,7 +120,7 @@ def BuildInit(CPP, initOut):
 
 
 def BuildGSI1(i, ov, oi, s, isEngine, tot, thrIndex:int):
-    global etop
+    global EtoA
     global poolMutex
     global avlThrs
     global curThr
@@ -133,7 +133,7 @@ def BuildGSI1(i, ov, oi, s, isEngine, tot, thrIndex:int):
         curThr += 1
         poolMutex.release()
         checkCmd(['glslangValidator', '-V', s, '-o', ov ])
-        checkCmd(['python3', 'Tools/Build/GenInterfaces.py', s, etop, str(isEngine)])
+        checkCmd(['python3', 'Tools/Build/GenInterfaces.py', s, EtoA, str(isEngine)])
     else:
         while curThr < thrIndex: time.sleep(0.01)
         print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
@@ -243,9 +243,9 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP, defineTuUuid = False, tuUuidPrefix = ''):
 
 def dirs(EOUT:str, AOUT:str):
     # Create directories for generated files
-    os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated')
+    os.makedirs(exist_ok = True, name = f'{ EtoA }/.engine/src/Generated')
     os.makedirs(exist_ok = True, name =                f'./src/Generated')
-    os.makedirs(exist_ok = True, name = f'{ etop }/.engine/src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name = f'{ EtoA }/.engine/src/Generated/Shaders')
     os.makedirs(exist_ok = True, name =                f'./src/Generated/Shaders')
 
     os.makedirs(exist_ok = True, name = f'./src/Generated/.init')
@@ -255,10 +255,10 @@ def dirs(EOUT:str, AOUT:str):
     # Create output directories
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
     os.makedirs(exist_ok = True, name = f'{ EOUT }/Shaders')
-    os.chdir(etop)
+    os.chdir(EtoA)
     os.makedirs(exist_ok = True, name = f'{ AOUT }')
     os.makedirs(exist_ok = True, name = f'{ AOUT }/Shaders')
-    os.chdir(ptoe)
+    os.chdir(AtoE)
 
 
 
@@ -281,7 +281,7 @@ def build(
 
     SFLG = [                                            # Shared default C++ flags
         '-std=c++20', '-m64', '-pthread',                   # Use C++20, build for 64bit environments, use pthread
-        f'-DenginePath="{ ptoe }"',                         # Engine path macro #FIXME
+        f'-DenginePath="{ AtoE }"',                         # Engine path macro #FIXME
     ]
 
 
@@ -291,19 +291,19 @@ def build(
         '-include', 'Lynx/Lynx_config.hpp',                 # Include engine configuration macros        #! Relative to engine
         '-I.', '-Isrc',                                     # Include from src directory and engine root #! Relative to engine
         #FIXME REMOVE -I. AFTER MOVING SRC FILES
-        f'-ffile-prefix-map={ os.path.abspath(etop) }/={ ptoe }/' # Fix file prefix in debug infos
+        f'-ffile-prefix-map={ os.path.abspath(EtoA) }/={ AtoE }/' # Fix file prefix in debug infos
     ]
 
     AFLG += SFLG + [                                    # Append default flags to user defined flags        #! Relative to application   #! Passed by the wrapper
-        '-include', f'{ ptoe }/Lynx/Core/InitList.hpp',     # Include generated engine initializers         #!Relative to application
-        '-include', f'{ ptoe }/Lynx/Core/VkDef.hpp',        # Include forced vulkan macros                  #!Relative to application
-        '-include', f'{ ptoe }/Lynx/Lynx_config.hpp',       # Include engine configuration macros           #!Relative to application
-        '-I.', f'-I{ ptoe }', f'-I{ ptoe }/src', f'-I./.engine/src',           # Include from src directories and project root #!Relative to application
-        #FIXME REMOVE -Iptoe AFTER MOVING SRC FILES
-        f'-ffile-prefix-map={ os.path.abspath(etop) }/='    # Fix file prefix in debug infos
+        '-include', f'{ AtoE }/Lynx/Core/InitList.hpp',     # Include generated engine initializers         #!Relative to application
+        '-include', f'{ AtoE }/Lynx/Core/VkDef.hpp',        # Include forced vulkan macros                  #!Relative to application
+        '-include', f'{ AtoE }/Lynx/Lynx_config.hpp',       # Include engine configuration macros           #!Relative to application
+        '-I.', f'-I{ AtoE }', f'-I{ AtoE }/src', f'-I./.engine/src', # Include from src directories and application root #!Relative to application
+        #FIXME REMOVE -IAtoE AFTER MOVING SRC FILES
+        f'-ffile-prefix-map={ os.path.abspath(EtoA) }/='    # Fix file prefix in debug infos
     ]
 
-    EOUT = f'{ etop }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
+    EOUT = f'{ EtoA }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
     AOUT = f'./.engine/bin/App/{ OUTPUT }'              # Path to the application binary output directory   #! Relative to application
     ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library                 #! Relative to engine
     ABIN = f'./tmp.out'                                 # Path to the application executable file           #! Relative to application
@@ -352,8 +352,8 @@ def build(
 
 
     # Build executable
-    ELIB2 = os.path.relpath(ELIB, etop)
-    os.chdir(etop)
+    ELIB2 = os.path.relpath(ELIB, EtoA)
+    os.chdir(EtoA)
 
     if len(AGLS) > 0:
         print(f'Generating application files')
@@ -371,7 +371,7 @@ def build(
         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     print(f'{ bgreen }Created "{ ABIN }"\n{ white }')
 
-    os.chdir(ptoe)
+    os.chdir(AtoE)
 
 
 
@@ -396,8 +396,8 @@ def build(
 
 def eclear():
     return not(
-            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = f'{ etop }/.engine/bin').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = f'{ etop }/.engine/bin').returncode
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = f'{ EtoA }/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = f'{ EtoA }/.engine/bin').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',     '-delete'], cwd = './src/Generated').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',     '-delete'], cwd = './src/Generated').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',     '-delete'], cwd = './src/Generated').returncode
@@ -406,10 +406,10 @@ def eclear():
 
 def aclear():
     return not(
-            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './App/*.o', '-delete'], cwd = f'{ etop }/.engine/bin').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',     '-delete'], cwd = f'{ etop }/.engine/src/Generated').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',     '-delete'], cwd = f'{ etop }/.engine/src/Generated').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',     '-delete'], cwd = f'{ etop }/.engine/src/Generated').returncode
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './App/*.o', '-delete'], cwd = f'{ EtoA }/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',     '-delete'], cwd = f'{ EtoA }/.engine/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',     '-delete'], cwd = f'{ EtoA }/.engine/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',     '-delete'], cwd = f'{ EtoA }/.engine/src/Generated').returncode
     )
 
 

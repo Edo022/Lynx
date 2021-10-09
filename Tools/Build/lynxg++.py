@@ -164,9 +164,9 @@ def run(argv:list, isEngine:bool):
         # Parse -x flags and expand glob paths
         #TODO add -xgls and -x gls for GLSL files with no .comp extension
         def expGlob(s:str):     # Expand glob paths
-            if isEngine: os.chdir(ptoe)
+            if isEngine: os.chdir(AtoE)
             g = glob.glob(s)        # Get glob result
-            if isEngine: os.chdir(etop)
+            if isEngine: os.chdir(EtoA)
             if len(g) > 0:          # If it was a glob
                 return g                # Return the list of paths
             else:                   # If it was not
@@ -239,10 +239,10 @@ def run(argv:list, isEngine:bool):
 
 
 # Get paths
-with open('./.engine/.pabs', 'r') as f: pabs = f.read()
-with open('./.engine/.eabs', 'r') as f: eabs = f.read()
-with open('./.engine/.etop', 'r') as f: etop = f.read()
-with open('./.engine/.ptoe', 'r') as f: ptoe = f.read()
+with open('./.engine/.Aabs', 'r') as f: Aabs = f.read()
+with open('./.engine/.Eabs', 'r') as f: Eabs = f.read()
+with open('./.engine/.EtoA', 'r') as f: EtoA = f.read()
+with open('./.engine/.AtoE', 'r') as f: AtoE = f.read()
 
 
 # Parse application arguments
@@ -260,7 +260,7 @@ with open('.engine/Build.Engine.sh') as f:
 
 # Run build
 alloyCmd = [ #--debug #--just-print #-p
-    'python3', f'{ ptoe }/Alloy_tmp.py',
+    'python3', f'{ AtoE }/Alloy_tmp.py',
     f"EXEC   = \"{ 'g++'   if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }\"",
     f"OUTPUT = \"{ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }\"",
     f'EFLG   = { str(eRet.FLAGS) }',

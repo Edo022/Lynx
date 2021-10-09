@@ -10,14 +10,14 @@ import sys, os, re, subprocess
 
 
 
-# Get relative to cwd and absolute project dir
+# Get relative to cwd and absolute application dir
 cwdToP = '.' if len(sys.argv) == 1 else os.path.relpath(sys.argv[1], '.')
 cwdToE = os.path.relpath(os.path.dirname(os.readlink('/proc/self/exe')) + '/../..')
 
 
-# Check the project dir and ask for confirmation
+# Check the application dir and ask for confirmation
 if not os.path.exists(cwdToP):
-    print("The specified project path does not exist")
+    print("The specified application path does not exist")
     exit(-2)
 else:
     print( #TODO update
@@ -27,10 +27,10 @@ else:
         f'\n    │   ├─ Build.Application.sh'
         f'\n    │   ├─ Build.Engine.sh'
         f'\n    │   ├─ Config.hpp'
-        f'\n    │   ├─ .pabs'
-        f'\n    │   ├─ .eabs'
-        f'\n    │   ├─ .ptoe'
-        f'\n    │   └─ .etop'
+        f'\n    │   ├─ .Aabs'
+        f'\n    │   ├─ .Eabs'
+        f'\n    │   ├─ .AtoE'
+        f'\n    │   └─ .EtoA'
         f'\n    └─ .vscode'
         f'\n        ├─ tasks.json'
         f'\n        └─ c_cpp_properties.json'
@@ -48,16 +48,16 @@ if sys.stdin.read(1).lower() == 'y':
 
 
     # Write paths
-    pabs = os.path.abspath(cwdToP)
-    eabs = os.path.abspath(cwdToE)
-    ptoe = os.path.relpath(eabs, cwdToP)
-    etop = os.path.relpath(cwdToP, eabs)
+    Aabs = os.path.abspath(cwdToP)
+    Eabs = os.path.abspath(cwdToE)
+    AtoE = os.path.relpath(Eabs, cwdToP)
+    EtoA = os.path.relpath(cwdToP, Eabs)
 
     os.chdir(cwdToP)
-    with open('.engine/.pabs', 'w') as f: f.write(pabs)   # Absolute path of Project dir
-    with open('.engine/.eabs', 'w') as f: f.write(eabs)   # Absolute path of Engine SDK
-    with open('.engine/.ptoe', 'w') as f: f.write(ptoe)   # Project to Engine relative path
-    with open('.engine/.etop', 'w') as f: f.write(etop)   # Engine to Project relative path
+    with open('.engine/.Aabs', 'w') as f: f.write(Aabs)   # Absolute path of Application dir
+    with open('.engine/.Eabs', 'w') as f: f.write(Eabs)   # Absolute path of Engine SDK
+    with open('.engine/.AtoE', 'w') as f: f.write(AtoE)   # Application to Engine relative path
+    with open('.engine/.EtoA', 'w') as f: f.write(EtoA)   # Engine to Application relative path
 
 
 
@@ -71,7 +71,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n##################################################################'
             f'\n'
             f'\n'
-            f'\n{ ptoe }/Lynx/Tools/Build/lynxg++'
+            f'\n{ AtoE }/Lynx/Tools/Build/lynxg++'
             f'\n'
             f'\n#--mode=ld #! Build mode and target platform are copied from the application build'
             f'\n-a: # Source files'
@@ -184,7 +184,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n##################################################################'
             f'\n'
             f'\n'
-            f'\n{ ptoe }/Lynx/Tools/Build/lynxg++'
+            f'\n{ AtoE }/Lynx/Tools/Build/lynxg++'
             f'\n'
             f'\n'
             f'--mode=ld #! Changed by vscode'
@@ -214,5 +214,5 @@ if sys.stdin.read(1).lower() == 'y':
 
 
 
-    subprocess.run(['python3', f'{ ptoe }/Tools/Setup/UpdateBuild.py', 'ld'])
+    subprocess.run(['python3', f'{ AtoE }/Tools/Setup/UpdateBuild.py', 'ld'])
     print('Setup completed successfully')
