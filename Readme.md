@@ -87,6 +87,7 @@ The minimal application project contains one source file and a generated .engine
 <br>Support for other editors will be added in future versions.
 ![a](./doc/ReadmeMinimalApplication.png)
 <br>//TODO update image. use a rendered output for the hello world
+<br>//TODO link to include paths details
 <br>The source file must define a main function, like any C++ program.
 <br>
 <br>
