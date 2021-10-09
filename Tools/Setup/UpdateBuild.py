@@ -55,7 +55,7 @@ def run(mode:str):
             f'\n            "type": "shell",'
             f'\n            "label": "{ PF }  |  { CF }  |  Clear && Rebuild\",'
             f'\n            "command": "sh",'
-            f'\n            "args": [ "-c", "python3 Lynx/Alloy_tmp.py clear && Lynx/Tools/Build/lynxg++ -f=.engine/Build.Application.sh" ],'
+            f'\n            "args": [ "-c", "python3 { AtoE }/Alloy_tmp.py clear && { AtoE }/Tools/Build/lynxg++ -f=.engine/Build.Application.sh" ],'
             f'\n            "problemMatcher": [ ],'
             f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
             f'\n            "group": "build"'
