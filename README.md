@@ -79,7 +79,7 @@ The minimal application project contains one source file and a generated .engine
 <br>An application project can be linked to the SDK by running its Setup script:
 <br>
 <br><code>mkdir MyApp; cd MyApp</code>
-<br><code>touch main.cpp</code>
+<br><code>touch main.cpp</code> //TODO add an option to the setup script to make it generate a main.cpp
 <br><code>&lt;path_to_sdk&gt;/Tools/Setup/Setup -vsc</code>
 <br><code>code .</code>
 <br>
