@@ -62,7 +62,7 @@ Some softwares and libraries are required in order to build applications with th
 <details>
 <summary><b>Download the LynxEngine SDK</b></summary>
 Clone the repository from GitHub:<br>
-<code>git clone https://github.com/Edo022/LynxEngine.git</code>
+<code>git clone https://github.com/Edo022/Lynx.git</code>
 </details>
 <br>
 <br>
@@ -85,6 +85,8 @@ The minimal application project contains one source file and a generated .engine
 <br>
 <br>The -vsc option tells the setup script to generate configuration files for Visual Studio Code.
 <br>Support for other editors will be added in future versions.
+![a](./doc/ReadmeMinimalApplication.png)
+<br>//TODO update image. use a rendered output for the hello world
 <br>The source file must define a main function, like any C++ program.
 <br>
 <br>
@@ -92,9 +94,9 @@ The minimal application project contains one source file and a generated .engine
 <details>
 <summary><b>Build system</b></summary>
 Applications are built using the <code>&lt;path_to_sdk&gt;/Tools/Build/Build</code> executable, which is an Alloy wrapper that parses the provided arguments, adds everything the engine needs and forwards them to the build system.
-
-<code>.engine/Build.Application</code> file,
-
+<br>The source files and other flags can be specified in the <code>.engine/Build.Application</code> file. See //TODO link to syntax details
+<br>
+<br>//TODO show vscode build tasks
 <br>lynxg++ allows 2 build configurations:
 
 - Debug  
