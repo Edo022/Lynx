@@ -1,8 +1,6 @@
-import re, sys, os, subprocess, argparse as ap
-from argparse import Namespace as ns
-import shlex, glob
-import Utils
-#python3.9 -m py_compile Build.py && { python3 -m PyInstaller -F --clean ./Build.py; cp ./dist/Build ./; rm -r ./dist; rm ./build -r; rm ./Build.spec; }
+import re, sys, os, subprocess, argparse as ap, shlex, glob
+from Paths import *
+import Alloy_tmpp, Utils
 
 
 
@@ -10,39 +8,47 @@ import Utils
 
 
 
+# #FIXME add start parameter
+# #TODO move to utils
+# def expGlob(path:str):          # Expand glob paths
+#     if isEngine: os.chdir(AtoE)     # When parsing the engine, cd into the SDK
+#     g = glob.glob(path)             # Get glob results
+#     if isEngine: os.chdir(EtoA)     # Return to application dir
+#     if len(g) > 0:                  # If it was a glob
+#         return g                        # Return the list of paths
+#     else:                           # If it was not
+#         return [path]                   # Return a list containing the original path only
 
-def expGlob(path:str):          # Expand glob paths
-    if isEngine: os.chdir(AtoE)     # When parsing the engine, cd into the SDK
-    g = glob.glob(path)             # Get glob results
-    if isEngine: os.chdir(EtoA)     # Return to application dir
-    if len(g) > 0:                  # If it was a glob
-        return g                        # Return the list of paths
-    else:                           # If it was not
-        return [path]                   # Return a list containing the original path only
 
 
-
+translateSelector : dict = {
+    'a' : 'a', 'always'  : 'a',
+    'd' : 'd', 'debug'   : 'd',
+    'r' : 'r', 'release' : 'r',
+    'l' : 'l', 'linux'   : 'l',
+    'w' : 'w', 'windows' : 'w'
+}
 
 def isActive(selector:str, mode:str):
-    translateSelector : dict = {
-        'a' : 'a', 'always'  : 'a',
-        'd' : 'd', 'debug'   : 'd',
-        'r' : 'r', 'release' : 'r',
-        'l' : 'l', 'linux'   : 'l',
-        'w' : 'w', 'windows' : 'w'
-    }
-    return (
-        selector == mode or
-        translateSelector[selector] in ['a', mode[0], mode[1]]
-    )
+    if selector in ['ld', 'lr', 'wd', 'wr'] + list(translateSelector.keys()):
+        return selector == mode or translateSelector[selector] in ['a', mode[0], mode[1]]
+    else:
+        if selector in ['dl', 'rl', 'dw', 'rw']:
+            sys.exit(f'Unknown selector "{ selector }". Did you mean: "{ selector[1] + selector[0] }"?')
+        else:
+            sys.exit(f'Unknown selector "{ selector }"')
 
 
 
 
-def parse(file:str, mode:str, isEngine:bool):
+def parse(file:str, mode:str):
     # Read and clear build file
-    with open(file) as f:
-        t = list(Utils.clearBuild(f.read()))[1:-1]
+    try:
+        with open(file) as f:
+            t = list(Utils.clearBuild(f.read()))[1:-1]
+    except FileNotFoundError:
+        sys.exit(f'Cannot open "{ file }": file not found')
+
 
 
     # Parse sections
@@ -75,9 +81,22 @@ def parse(file:str, mode:str, isEngine:bool):
         i += 1                              # Skip section }
 
 
+
+
+    def expSection(section:list):
+        for s in section:
+            for r in Utils.expGlob(s):
+                yield(r)
+
+    sections['cpp']             = list(expSection(sections['cpp']))
+    sections['gls']             = list(expSection(sections['gls']))
+    sections['forced_includes'] = list(expSection(sections['forced_includes']))
+
+
     print(sections)
 
-
+    #TODO move library paths and libraries to dedicated sections
+    return sections
     # #TODO allow sections and selectors inside strings
     # # Parse sections
     # i = 0
@@ -88,26 +107,26 @@ def parse(file:str, mode:str, isEngine:bool):
     #     i += 1
 
 
-    sections = ns(**{
-        'source_files'    : re.match('source_files'   r'\{(.*?)\}', code).group(1),
-        'gcc_flags'       : re.match('gcc_flags'      r'\{(.*?)\}', code).group(1),
-        'defines'         : re.match('defines'        r'\{(.*?)\}', code).group(1),
-        'include_paths'   : re.match('include_paths'  r'\{(.*?)\}', code).group(1),
-        'forced_includes' : re.match('forced_includes'r'\{(.*?)\}', code).group(1),
-        'linker_options'  : re.match('linker_options' r'\{(.*?)\}', code).group(1)
-    })
+    # sections = ns(**{
+    #     'source_files'    : re.match('source_files'   r'\{(.*?)\}', code).group(1),
+    #     'gcc_flags'       : re.match('gcc_flags'      r'\{(.*?)\}', code).group(1),
+    #     'defines'         : re.match('defines'        r'\{(.*?)\}', code).group(1),
+    #     'include_paths'   : re.match('include_paths'  r'\{(.*?)\}', code).group(1),
+    #     'forced_includes' : re.match('forced_includes'r'\{(.*?)\}', code).group(1),
+    #     'linker_options'  : re.match('linker_options' r'\{(.*?)\}', code).group(1)
+    # })
 
 
-    print(ns)
+    # print(ns)
 
 
-    return {
-        'mode'  : args.m,
-        'FLAGS' : FLAGS,
-        'CPP'   : CPP,
-        'GLS'   : GLS,
-        'LINK'  : LINK
-    }
+    # return {
+    #     'mode'  : args.m,
+    #     'FLAGS' : FLAGS,
+    #     'CPP'   : CPP,
+    #     'GLS'   : GLS,
+    #     'LINK'  : LINK
+    # }
 
 
 
@@ -335,41 +354,34 @@ def parse(file:str, mode:str, isEngine:bool):
 
 
 def run(appBuildFile:str, mode:str):
-    # Get paths
-    with open('./.engine/.Aabs', 'r') as f: Aabs = f.read()
-    with open('./.engine/.Eabs', 'r') as f: Eabs = f.read()
-    with open('./.engine/.EtoA', 'r') as f: EtoA = f.read()
-    with open('./.engine/.AtoE', 'r') as f: AtoE = f.read()
+    # Parse engine arguments
+    os.chdir(AtoE)
+    eData = parse(EtoA + '/.engine/Engine.lnxbuild.sh', mode)
+    os.chdir(EtoA)
 
 
     # Parse application arguments
-    aRet = parse(appBuildFile, mode, False)
-    if isinstance(aRet, int):
-        sys.exit(aRet)
+    aData = parse(appBuildFile, mode)
 
 
-    # Parse engine arguments
-    eRet = parse('.engine/Build.Engine.sh', mode, True)
-    if isinstance(eRet, int):
-        sys.exit(eRet)
+    Alloy_tmpp.build('g++', f'{ "Linux" if mode[0] == "l" else "Windows" }/{ "Debug" if mode[1] == "d" else "Release" }', eData, aData)
 
+    # # Run build
+    # alloyCmd = [
+    #     'python3', f'{ AtoE }/Alloy_tmp.py',
+    #     f"EXEC   = \"{ 'g++'   if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }\"",
+    #     f"OUTPUT = \"{ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }\"",
+    #     f'EFLG   = { str(eRet.FLAGS) }',
+    #     f'AFLG   = { str(aRet.FLAGS) }',
+    #     f'ECPP   = { str(eRet.CPP)   }',
+    #     f'EGLS   = { str(eRet.GLS)   }',
+    #     f'ACPP   = { str(aRet.CPP)   }',
+    #     f'AGLS   = { str(aRet.GLS)   }',
+    #     f'LINK   = { str(aRet.LINK)  }',
+    #     'build'
+    # ]
 
-    # Run build
-    alloyCmd = [
-        'python3', f'{ AtoE }/Alloy_tmp.py',
-        f"EXEC   = \"{ 'g++'   if aRet.mode[0] == 'l' else '//''TODO add windows compiler' }\"",
-        f"OUTPUT = \"{ 'Linux' if aRet.mode[0] == 'l' else 'Windows' }/{ 'Debug' if aRet.mode[1] == 'd' else 'Release' }\"",
-        f'EFLG   = { str(eRet.FLAGS) }',
-        f'AFLG   = { str(aRet.FLAGS) }',
-        f'ECPP   = { str(eRet.CPP)   }',
-        f'EGLS   = { str(eRet.GLS)   }',
-        f'ACPP   = { str(aRet.CPP)   }',
-        f'AGLS   = { str(aRet.GLS)   }',
-        f'LINK   = { str(aRet.LINK)  }',
-        'build'
-    ]
-
-    return subprocess.run(alloyCmd).returncode
+    # return subprocess.run(alloyCmd).returncode
 
 
 
@@ -391,10 +403,10 @@ args = p.parse_args()
 if args.h:
     print(
         'Usage:'                                                                                                                                            '\n'
-        '    Build --help'                                                                                                                                '\n'
-        '    Build --version'                                                                                                                             '\n'
-        '    Build -m=<mode> [<options...>] -<selector>: <g++ arguments...> <GLSL files...>'                                                              '\n'
-        '    Build -f=<path/to/InputFile>'                                                                                                                '\n'
+        '    Build --help'                                                                                                                                  '\n'
+        '    Build --version'                                                                                                                               '\n'
+        '    Build -m=<mode> [<options...>] -<selector>: <g++ arguments...> <GLSL files...>'                                                                '\n'
+        '    Build -f=<path/to/InputFile>'                                                                                                                  '\n'
         ''                                                                                                                                                  '\n'
         'Options:'                                                                                                                                          '\n'
         '    -h  --help         Display this information. When this option is used, any other option is ignored'                                            '\n'
@@ -403,7 +415,7 @@ if args.h:
         '    -b  --no-progress  Hide build progress bar. Default: off #TODO'                                                                                '\n'
         ''                                                                                                                                                  '\n'
         '    -m  --mode         Specify target platform and build configuration. This option is always required. e.g. -m=ld'                                '\n'
-        '    -f  --file         Read the Build command from a file. Default:"./engine/Build.Application.sh" Any other option but -h and -v is ignored'    '\n'
+        '    -f  --file         Read the Build command from a file. Default:"./engine/Application.lnxbuild.sh" Any other option but -h and -v is ignored'   '\n'
         '    -p  --pack         Pack all files in a single executable file.       Default: off #TODO'                                                       '\n'
         ''                                                                                                                                                  '\n'
         '    Files with extension .comp are treated as GLSL compute shaders'                                                                                '\n'
@@ -420,7 +432,7 @@ if args.h:
         '    Each selector only affects the arguments between itself and the next selector'                                                                 '\n'
         '    Additionally, -ld:, -lr:, -wd: and -wr: selectors can be used to activate arguments based on both the active configuration and target platform''\n'
         '    Any unrecognized argument inside a selector is forwarded to g++'                                                                               '\n'
-        '    Selectors can be repeated multiple times. The active arguments will preserve their order'                                                             '\n'
+        '    Selectors can be repeated multiple times. The active arguments will preserve their order'                                                      '\n'
         ''                                                                                                                                                  '\n'
         'Verbosity:'                                                                                                                                        '\n'
         '    #TODO'                                                                                                                                         '\n'
@@ -446,7 +458,7 @@ elif args.f != None:
         with open(args.f, 'r') as f:
             sys.exit(run(args.f, args.m))
     except FileNotFoundError:
-        print(f'Cannot open file "{ args.f }"')
+        print(f'Cannot open "{ args.f }": file not found')
         sys.exit(1)
 
 

@@ -1,8 +1,5 @@
 import sys, os, re, subprocess
 
-#python3.9 -m py_compile Setup.py && { python3 -m PyInstaller -F --clean ./Setup.py; cp ./dist/Setup ./; rm -r ./dist; rm ./build -r; rm ./Setup.spec; }
-#! This script must be compiled in an executable file
-
 
 #TODO generate .engine/Path_config.hpp file
 #TODO read paths from config file
@@ -63,7 +60,7 @@ if sys.stdin.read(1).lower() == 'y':
 
 
     # Write vscode tasks
-    with open('.engine/Build.Engine.sh', 'w') as f:
+    with open('.engine/Engine.lnxbuild.sh', 'w') as f:
         f.write(
             f'\n##################################################################'
             f'\n# This file contains the command used to build the Lynx Engine'
@@ -74,7 +71,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n'
             f'\n'
             f'\n{{'
-            f'\n    source_files {{'
+            f'\n    cpp {{'
             f'\n        a {{'
             f'\n            src/Lynx/System/SystemInfo.cpp;'
             f'\n            src/Lynx/Tests/StructureInit.cpp;'
@@ -106,19 +103,18 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n            # App support source files'
             f'\n            src/Lynx/getEnginePath.cpp;'
             f'\n            src/Lynx/Core/Env.cpp;'
-            f'\n'
-            f'\n            # Shader source files'
-            f'\n            src/Lynx/shaders/*.comp'
             f'\n        }}'
+            f'\n    }}'
+            f'\n'
+            f'\n    gls {{'
+            f'\n        a {{ src/Lynx/shaders/*.comp }}'
             f'\n    }}'
             f'\n'
             f'\n    defines         {{}}'
             f'\n    forced_includes {{}}'
             f'\n    include_paths   {{}}'
-            f'\n    linker_options  {{}} #! Used during executable creation'
-            f'\n    output          {{}} #! Hard coded'
             f'\n'
-            f'\n    gcc_flags {{'
+            f'\n    compiler_flags {{'
             f'\n        a {{ -mavx }}'
             f'\n'
             f'\n        d {{ # Debug options'
@@ -127,8 +123,8 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n        }}'
             f'\n'
             f'\n        r {{ # Release options'
-            f'\n            -Ofast; -frename-registers; -funroll-loops;   # Optimizations'
             f'\n            -g0                                           # Debug informations'
+            f'\n            -Ofast; -frename-registers; -funroll-loops;   # Optimizations'
             f'\n        }}'
             f'\n'
             f'\n        d {{ # Sanitizers'
@@ -148,11 +144,24 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n            -Wctor-dtor-privacy; -Wlogical-op; -Wsign-promo; -Wclobbered'
             f'\n        }}'
             f'\n    }}'
+            f'\n'
+            f'\n    #! Used during executable creation'
+            f'\n    linker_flags  {{'
+            f'\n        a {{ #TODO fix windows build'
+            f'\n            -L/usr/lib64; -L/lib64;         # Prefer 64bit libraries'
+            f'\n            -ldl; -lrt; -lXrandr; -lXi;     # Link dependencies'
+            f'\n            -lXcursor; -lXinerama; -lX11;   # Link dependencies'
+            f'\n            -lvulkan; -Bstatic; -lglfw      # Link Vulkan dynamically and GLFW statically'
+            f'\n        }}'
+            f'\n    }}'
+            f'\n'
+            f'\n    #! Hard coded'
+            f'\n    output{{}}'
             f'\n}}'
         )
 
 
-    with open('.engine/Build.Application.sh', 'w') as f:
+    with open('.engine/Application.lnxbuild.sh', 'w') as f:
         f.write(
             f'\n##################################################################'
             f'\n# This file contains the command used to build your application'
@@ -163,20 +172,15 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n'
             f'\n'
             f'\n{{'
-            f'\n    source_files {{ # A list of source files'
-            f'\n        a {{ main.cpp }} #TODO add example file'
-            f'\n    }}'
+            f'\n    cpp {{ a {{ main.cpp }} }}  # A list of C++ source files'
+            f'\n    gls {{}}                  # A list of GLSL source files'
             f'\n'
-            f'\n    defines         {{}}    # -D option           # e.g.  -DVAR=1 -D mogu_mogu'
-            f'\n    forced_includes {{}}    # -include option     # e.g.  -include ./file.hpp -include idk.hpp'
-            f'\n    include_paths   {{}}    # -I option           # e.g.  -I. -Isrc -I path/to/dir'
-            f'\n    linker_options  {{}}    # Any linker option   # e.g.  -L path/to/libs -lm -lvulkan'
+            f'\n    defines         {{}}      # -D option           # e.g.  -DVAR=1 -D mogu_mogu'
+            f'\n    forced_includes {{}}      # -include option     # e.g.  -include ./file.hpp -include idk.hpp'
+            f'\n    include_paths   {{}}      # -I option           # e.g.  -I. -Isrc -I path/to/dir'
             f'\n'
-            f'\n    output {{              # -o option           # e.g.  -o main.out'
-            f'\n        a {{ ./LynxEngineTest }}' #TODO actually read the output path #FIXME allow the user to build libraries
-            f'\n    }}'
-            f'\n'
-            f'\n    gcc_flags {{ # Any other g++ flag'
+            f'\n    # Any other compiler flag'
+            f'\n    compiler_flags {{'
             f'\n        d {{ -ggdb3; -g3; -O0 }}'
             f'\n        r {{ -g0; -O3 }}'
             f'\n'
@@ -185,6 +189,14 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n            -fsanitize=leak,address;    #! Not compatible with thread'
             f'\n            #-fsanitize=thread          #! Not compatible leak or address'
             f'\n        }}'
+            f'\n    }}'
+            f'\n'
+            f'\n    # Any linker flag'
+            f'\n    linker_flags{{}}'
+            f'\n'
+            f'\n    # The output file. It can be a library (.a, .lib, .so, .dll) or an executable file (any other extension, or no extension)'
+            f'\n    output {{'
+            f'\n        a {{ ./LynxEngineTest }}' #TODO actually read the output path #FIXME allow the user to build libraries
             f'\n    }}'
             f'\n}}'
         )

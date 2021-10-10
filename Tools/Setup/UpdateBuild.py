@@ -1,6 +1,5 @@
 import os, sys
 #TODO read paths from config file
-#TODO make this script an executable
 
 
 
@@ -37,7 +36,7 @@ def run(mode:str):
             f'\n            "type": "shell",'
             f'\n            "label": "{ PF }  |  { CF }  |  Build\",'
             f'\n            "command": "{ AtoE }/Tools/Build/Build",'
-            f'\n            "args": [ "-f=.engine/Build.Application.sh", "-m={ pf }{ cf }" ],'
+            f'\n            "args": [ "-f=.engine/Application.lnxbuild.sh", "-m={ pf }{ cf }" ],'
             f'\n            "problemMatcher": [ "$gcc" ],'
             f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
             f'\n            "group": "build"'
@@ -45,8 +44,8 @@ def run(mode:str):
             f'\n        {{'
             f'\n            "type": "shell",'
             f'\n            "label": "{ PF }  |  { CF }  |  Clear\",'
-            f'\n            "command": "python3",'
-            f'\n            "args": [ "{ AtoE }/Alloy_tmp.py", "clear" ],'
+            f'\n            "command": "{ AtoE }/Tools/Build/Alloy_tmpp",'
+            f'\n            "args": [ "clear" ],'
             f'\n            "problemMatcher": [ ],'
             f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
             f'\n            "group": "build"'
@@ -55,7 +54,7 @@ def run(mode:str):
             f'\n            "type": "shell",'
             f'\n            "label": "{ PF }  |  { CF }  |  Clear && Rebuild\",'
             f'\n            "command": "sh",'
-            f'\n            "args": [ "-c", "python3 { AtoE }/Alloy_tmp.py clear && { AtoE }/Tools/Build/Build -f=.engine/Build.Application.sh -m={ pf }{ cf }" ],'
+            f'\n            "args": [ "-c", "{ AtoE }/Tools/Build/Alloy_tmpp clear && { AtoE }/Tools/Build/Build -f=.engine/Build.Application.sh -m={ pf }{ cf }" ],'
             f'\n            "problemMatcher": [ ],'
             f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
             f'\n            "group": "build"'
@@ -63,8 +62,8 @@ def run(mode:str):
             f'\n        {{'
             f'\n            "type": "shell",'
             f'\n            "label": " > Switch to { NPF }",'
-            f'\n            "command": "python3",'
-            f'\n            "args": ["{ AtoE }/Tools/Setup/UpdateBuild.py", "{ npf }{ cf }"],'
+            f'\n            "command": "{ AtoE }/Tools/Setup/UpdateBuild",'
+            f'\n            "args": [ "{ npf }{ cf }"],'
             f'\n            "problemMatcher": [ ],'
             f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
             f'\n            "group": "build"'
@@ -72,8 +71,8 @@ def run(mode:str):
             f'\n        {{'
             f'\n            "type": "shell",'
             f'\n            "label": " > Switch to { NCF }",'
-            f'\n            "command": "python3",'
-            f'\n            "args": ["{ AtoE }/Tools/Setup/UpdateBuild.py", "{ pf }{ ncf }"],'
+            f'\n            "command": "{ AtoE }/Tools/Setup/UpdateBuild",'
+            f'\n            "args": [ "{ pf }{ ncf }"],'
             f'\n            "problemMatcher": [ ],'
             f'\n            "options": {{ "cwd": "${{workspaceFolder}}" }},'
             f'\n            "group": "build"'

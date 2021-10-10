@@ -1,4 +1,20 @@
-import subprocess, re, io, token, tokenize
+import os, subprocess, re, io, token, tokenize, glob
+
+
+
+# Reads a glob path and returns a list containing the expanded paths
+# If the path is not a glob, the return list contains the original path
+def expGlob(path:str, start:str = '.'):
+    cwd = os.getcwd()       # Save cwd
+    os.chdir(start)         # Cd to start
+    g = glob.glob(path)     # Get glob results
+    if len(g) > 0:          # If it was a glob
+        return g                # Return the list of paths
+    else:                   # If it was not
+        return [path]           # Return a list containing the original path only
+    os.chdir(cwd)           # Cd to caller cwd
+
+
 
 
 
