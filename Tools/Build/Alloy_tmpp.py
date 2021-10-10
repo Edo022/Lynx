@@ -43,7 +43,7 @@ def progress(cur:int, tot:int):
 def checkCmd(args):
     global poolErr
     global avlThrs
-    r = subprocess.run(args = args,  text = True, capture_output = True)
+    r = subprocess.run(args, text = True, capture_output = True)
 
     if r.returncode != 0:
         if not poolErr:
@@ -83,7 +83,7 @@ def needsRebuildCPP(o, s, FLG):
 def BuildInit(CPP, outputs, flags):
     cpp:list = []
     for s, o in zip(CPP, outputs):
-        checkCmd(['python3', 'Tools/Build/GenInitializers.py', s, o, ])
+        checkCmd(['Tools/Build/Generators/GenInitializers', s, o, str(flags)])
 
 
 
@@ -103,7 +103,7 @@ def BuildGSI1(i, ov, oi, s, isEngine, tot, thrIndex:int):
         curThr += 1
         poolMutex.release()
         checkCmd(['glslangValidator', '-V', s, '-o', ov ])
-        checkCmd(['python3', 'Tools/Build/GenInterfaces.py', s, EtoA, str(isEngine)])
+        checkCmd(['python3', 'Tools/Build/Generators/GenInterfaces.py', s, EtoA, str(isEngine)])
     else:
         while curThr < thrIndex: time.sleep(0.01)
         print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
@@ -381,9 +381,9 @@ def eclear():
     return not(
             not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = f'{ EtoA }/.engine/bin').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = f'{ EtoA }/.engine/bin').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',     '-delete'], cwd = './src/Generated').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',     '-delete'], cwd = './src/Generated').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',     '-delete'], cwd = './src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',   '-delete'], cwd = './src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',   '-delete'], cwd = './src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',   '-delete'], cwd = './src/Generated').returncode
     )
 
 

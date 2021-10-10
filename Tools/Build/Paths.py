@@ -2,7 +2,7 @@ import os, sys
 
 
 # Get paths
-if not os.path.exists('./.engine'): sys.exit('.engine directory not found')
+if not os.path.exists('./.engine'): raise Exception('.engine directory not found')
 with open('./.engine/.Aabs', 'r') as f: Aabs = f.read()
 with open('./.engine/.Eabs', 'r') as f: Eabs = f.read()
 with open('./.engine/.EtoA', 'r') as f: EtoA = f.read()

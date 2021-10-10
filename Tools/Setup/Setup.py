@@ -203,5 +203,5 @@ if sys.stdin.read(1).lower() == 'y':
 
 
 
-    subprocess.run(['python3', f'{ AtoE }/Tools/Setup/UpdateBuild.py', 'ld'])
+    subprocess.run([f'{ AtoE }/Tools/Setup/UpdateBuild', 'ld'])
     print('Setup completed successfully')

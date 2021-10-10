@@ -109,4 +109,4 @@ def run(mode:str):
 
 
 if(len(sys.argv) == 2): run(sys.argv[1])
-else: sys.exit('Incorrect number of arguments')
+else: raise Exception('Incorrect number of arguments')
