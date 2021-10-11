@@ -1,17 +1,17 @@
 #!/bin/bash
 
 cd ./Setup
-    python3 -m PyInstaller -F --clean ./UpdateBuild.py &
-    python3 -m PyInstaller -F --clean ./Setup.py &
+    python3 -m PyInstaller -F --clean -y ./UpdateBuild.py &
+    python3 -m PyInstaller -F --clean -y ./Setup.py &
     pwd
 cd ../Build
-    python3 -m PyInstaller -F --clean ./Utils.py &
-    python3 -m PyInstaller -F --clean ./Paths.py &
-    python3 -m PyInstaller -F --clean ./Alloy_tmpp.py &
+    python3 -m PyInstaller -F --clean -y ./Utils.py &
+    python3 -m PyInstaller -F --clean -y ./Paths.py &
+    python3 -m PyInstaller -F --clean -y ./Alloy_tmpp.py &
 
-    python3 -m PyInstaller -F --clean ./Build.py &
-    python3 -m PyInstaller -F --clean ./Generators/GenInitializers.py &
-    python3 -m PyInstaller -F --clean ./Generators/GenInterfaces.py &
+    python3 -m PyInstaller -F --clean -y ./Build.py &
+    python3 -m PyInstaller -F --clean -y ./Generators/GenInitializers.py &
+    python3 -m PyInstaller -F --clean -y ./Generators/GenInterfaces.py &
     pwd
 cd ..
 

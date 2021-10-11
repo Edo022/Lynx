@@ -1,45 +1,31 @@
 import sys, re, os, pathlib, subprocess
 from argparse import Namespace as ns
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 import Utils
 
 
 
 
 # Check argv length
-if len(sys.argv) != 4:
+if len(sys.argv) != 3:
     raise Exception(f'Invalid number of arguments: { len(sys.argv) }')
 
 
-# Check source file path
-source = sys.argv[1]        # String
-output = sys.argv[2]        # String
-flags  = eval(sys.argv[3])  # List of strings
-if not os.path.exists(source):
-    raise Exception(f'Unable to find source file "{ source }"')
+# Read inputs
+tmp   : str  = sys.argv[1]          # Input file
+flags : list = eval(sys.argv[2])    # Flags to use for gcc
 
 
 
-# Get the source code and parse out unnecessary whitespace and comments
-# code = subprocess.run(['g++', '-fpreprocessed', '-dD', '-E', source], capture_output = True, text = True).stdout
-# ncode = subprocess.run(['g++', '-E', source], capture_output = False, text = True).stdout #TODO add include paths
-# ncode = subprocess.run(['g++', '-E', '-I.', '-I./src', '-D__LNX_INITIALIZER_GENERATOR__', '-DLNX_DBG', source], capture_output = True, text = True).stdout #TODO add include paths #FIXME REPLACE WITH UTILS.PREPROCESSCPP
-#FIXME REPLACE WITH UTILS.PREPROCESSCPP
-#                                                                                    FIXME read includes. dont use hard coded LNX_DBG
-# ncode:str = (
-#     re.sub(r' ?([()\[\]{}+*-\/.!<>=&^|?:%,;])( )?',  r'\g<1>',      # Remove spaces near opeartors
-#     re.sub(r'\n',       r'',                                        # Remove newlines
-#     re.sub(r' +',       r' ',                                       # Remove whitespace
-#     code.expandtabs(4)                                              # Convert tabs to spaces
-# ))))
-code : str = Utils.preprocessCpp(source, flags + ['-D__LNX_INITIALIZER_GENERATOR__'])
-
-# Get init macro calls
+# Read macro expansions
 r = list(m.groupdict() for m in re.finditer(
     r'_LNX_INITIALIZER_GENERATOR_TYPE=(?P<type>.*?),'
     r'_LNX_INITIALIZER_GENERATOR_NAME=(?P<name>.*?),'
     r'_LNX_INITIALIZER_GENERATOR_FULLNS=(?P<fullNs>.*?);',
-    code
+    Utils.PreprocessCpp(tmp, ['-include', 'src/Lynx/Core/Init.hpp', *flags, '-D__LNX_INITIALIZER_GENERATOR__'])
 ))
+
+
 
 
 # Write initializers header

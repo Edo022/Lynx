@@ -1,7 +1,7 @@
 import os, re, sys, subprocess, math
 from argparse import Namespace as ns
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 import Utils
-#FIXME import from ..
 
 #TODO write what external bindings are and how to use them
 #TODO add matrix support
@@ -252,7 +252,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     #Parse layouts
-    pGlsl = getLayouts(ncode)
+    pGlsl = getLayouts(code)
 
     layouts:list = []
     externs:list = []

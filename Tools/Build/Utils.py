@@ -59,10 +59,12 @@ def preprocessGls(file:str):
 
 
 
+
+
 # Reads a C++ file and returns the preprocessed output as a string
 # Comments are removed
 def preprocessCpp(file:str, flags:list):
     return subprocess.run(
-        ['g++', *flags, file, '-E'],
+        ['g++', *flags, '-E', '-xc++', file],
         capture_output = True, text = True
     ).stdout

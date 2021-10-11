@@ -97,6 +97,15 @@ def parse(file:str, mode:str):
     sections['gls']             = list(expSection(sections['gls']))
     sections['forced_includes'] = list(expSection(sections['forced_includes']))
 
+
+    sections['compiler_flags'] = [                    # Shared default C++ flags
+        '-std=c++20', '-m64', '-pthread',               # Use C++20, build for 64bit environments, use pthread
+        f'-DenginePath="{ AtoE }"',                     # Engine path macro #FIXME
+    ]
+    if mode[1] == 'd': sections['defines'] += ['-DLNX_DBG']
+    else:              sections['defines'] += ['-DNDEBUG']
+
+
     #TODO move library paths and libraries to dedicated sections
     return sections
 
@@ -246,7 +255,7 @@ if args.b != None or args.B != None:
 
     # Run build
     sys.exit(Alloy_tmpp.build(
-        'g++',
-        f'{ "Linux" if args.m[0] == "l" else "Windows" }/{ "Debug" if args.m[1] == "d" else "Release" }',
-        eData, aData, args.B != None
+        EXEC = 'g++',
+        OUTPUT = f'{ "Linux" if args.m[0] == "l" else "Windows" }/{ "Debug" if args.m[1] == "d" else "Release" }',
+        eData = eData, aData = aData, buildEngine = args.B != None
     ))
