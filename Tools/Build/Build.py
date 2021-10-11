@@ -1,6 +1,13 @@
 import re, sys, os, subprocess, argparse as ap, shlex, glob
 from Paths import *
 import Alloy_tmpp, Utils
+#'Selectors allow you to use a single command to build applications for different platforms and configurations'                                      '\n'
+#'    -a:  --always      Always use the arguments, regardless of platform or configuration        e.g. -a: main.cpp"'                                '\n'
+#'    -l:  --linux       Only use the arguments when building for Linux                           e.g. -l: -pthread"    e.g. -l: -pthread -Dlinux"'  '\n'
+#'    -w:  --windows     Only use the arguments when building for Windows                         e.g. -w: -mthread"    e.g. -w: -mthread -Dwin10"'  '\n'
+#'    -d:  --debug       Only use the arguments when building in Debug mode                       e.g. -d: -Og"         e.g. -d: -Og -g3"'           '\n'
+#'    -r:  --release     Only use the arguments when building in Release mode                     e.g. -r: -O3"         e.g. -r: -O3 -g0"'           '\n'
+#TODO
 
 
 
@@ -44,11 +51,8 @@ def isActive(selector:str, mode:str):
 
 def parse(file:str, mode:str):
     # Read and clear build file
-    try:
-        with open(file) as f:
-            t = list(Utils.clearBuild(f.read()))[1:-1]
-    except FileNotFoundError:
-        raise Exception(f'Cannot open "{ file }": file not found')
+    with open(file) as f:
+        t = list(Utils.clearBuild(f.read()))[1:-1]
 
 
 
@@ -103,7 +107,45 @@ def parse(file:str, mode:str):
 
 
 
-# Parse build files ------------------------------------------------------------------------------------------------------------------------#
+# Parse command line flags -----------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
+def eclear():
+    return not(
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = '/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = '/.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',   '-delete'], cwd = f'{ AtoE }/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',   '-delete'], cwd = f'{ AtoE }/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',   '-delete'], cwd = f'{ AtoE }/src/Generated').returncode
+    )
+
+
+def aclear():
+    return not(
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './App/*.o', '-delete'], cwd = './.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',   '-delete'], cwd = './.engine/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',   '-delete'], cwd = './.engine/src/Generated').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',   '-delete'], cwd = './.engine/src/Generated').returncode
+    )
+
+
+def clear():
+    return not(not aclear() and not eclear())
+
+
+
+
+
+
+
+
+# Clear tasks ------------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -113,82 +155,94 @@ def parse(file:str, mode:str):
 
 
 # Parse argv
-p = ap.ArgumentParser(prog = 'Build', add_help = False, usage = 'Build -h\nBuild --version\nBuild -m=<mode> -f=<Path/To/BuildFile> [-v=<verbosity>]')
-p.add_argument('-h', '--help',      action = 'store_true', dest = 'h')
-p.add_argument('--version',         action = 'store_true', dest = 'version')
-p.add_argument('-m', '--mode',      action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'])
-p.add_argument('-f', '--file',      action = 'store',      dest = 'f')
-p.add_argument('-v', '--verbosity', action = 'store',      dest = 'v', choices = [0, 1, 2, 3], default = 2, type = int)
+p = ap.ArgumentParser(prog = 'Build', add_help = False, usage = '-m=<mode> -f=<PathTo/BuildFile> [--verbosity=<verbosity>]')
+p.add_argument('-h',  '--help',      action = 'store_true', dest = 'h')
+p.add_argument('-v',  '--version',   action = 'store_true', dest = 'v')
+p.add_argument('-c',  '--clear',     action = 'store_true', dest = 'c')
+p.add_argument('-ca', '--clear-all', action = 'store_true', dest = 'ca')
+p.add_argument(       '--verbosity', action = 'store',      dest = 'vv', choices = [0, 1, 2, 3], default = 2, type = int)
+p.add_argument('-b',  '--build',     action = 'store',      dest = 'b',  default = None)
+p.add_argument('-ba', '--build-all', action = 'store',      dest = 'ba', default = None)
+p.add_argument('-m',  '--mode',      action = 'store',      dest = 'm',  choices = ['wd', 'wr', 'ld', 'lr'])
+p.add_argument('-p',  '--pack',      action = 'store_true', dest = 'p')
 args = p.parse_args()
+
+
+
+
+# No arguments
+if args.b == None and args.ba == None and not(args.h or args.v or args.c or args.ca):
+    print(
+        '\nI don\'t know what you want me to do u.u'
+        '\nUse Build -h for usage syntax and a list of options'
+    )
+    sys.exit(0)
+
+
 
 
 # Help
 if args.h:
     print(
-        'Usage:'                                                                                                                                            '\n'
-        '    Build --help'                                                                                                                                  '\n'
-        '    Build --version'                                                                                                                               '\n'
-        '    Build -m=<mode> [<options...>] -<selector>: <g++ arguments...> <GLSL files...>'                                                                '\n'
-        '    Build -f=<path/to/InputFile>'                                                                                                                  '\n'
-        ''                                                                                                                                                  '\n'
-        'Options:'                                                                                                                                          '\n'
-        '    -h  --help         Display this information. When this option is used, any other option is ignored'                                            '\n'
-        '        --version      Display the version of the Lynx Engine. When this option is used, any other option but --help is ignored #TODO'             '\n'
-        '    -v  --verbosity    Choose output verbosity. Default: 1. Possible values: 0, 1, 2, 3 #TODO'                                                     '\n'
-        '    -b  --no-progress  Hide build progress bar. Default: off #TODO'                                                                                '\n'
-        ''                                                                                                                                                  '\n'
-        '    -m  --mode         Specify target platform and build configuration. This option is always required. e.g. -m=ld'                                '\n'
-        '    -f  --file         Read the Build command from a file. Default:"./engine/Application.lnxbuild.sh" Any other option but -h and -v is ignored'   '\n'
-        '    -p  --pack         Pack all files in a single executable file.       Default: off #TODO'                                                       '\n'
-        ''                                                                                                                                                  '\n'
-        '    Files with extension .comp are treated as GLSL compute shaders'                                                                                '\n'
-        '    By default, the output .spv file has the same name of the .comp and is placed in the same directory'                                           '\n'
-        '    A different output file can be specified with the syntax <path/to/inputfile>.comp;<path/to/outputfile>.spv'                                    '\n'
-        ''                                                                                                                                                  '\n'
-        'Selectors allow you to use a single command to build applications for different platforms and configurations'                                      '\n'
-        '    -a:  --always      Always use the arguments, regardless of platform or configuration        e.g. -a: main.cpp"'                                '\n'
-        '    -l:  --linux       Only use the arguments when building for Linux                           e.g. -l: -pthread"    e.g. -l: -pthread -Dlinux"'  '\n'
-        '    -w:  --windows     Only use the arguments when building for Windows                         e.g. -w: -mthread"    e.g. -w: -mthread -Dwin10"'  '\n'
-        '    -d:  --debug       Only use the arguments when building in Debug mode                       e.g. -d: -Og"         e.g. -d: -Og -g3"'           '\n'
-        '    -r:  --release     Only use the arguments when building in Release mode                     e.g. -r: -O3"         e.g. -r: -O3 -g0"'           '\n'
-        ''                                                                                                                                                  '\n'
-        '    Each selector only affects the arguments between itself and the next selector'                                                                 '\n'
-        '    Additionally, -ld:, -lr:, -wd: and -wr: selectors can be used to activate arguments based on both the active configuration and target platform''\n'
-        '    Any unrecognized argument inside a selector is forwarded to g++'                                                                               '\n'
-        '    Selectors can be repeated multiple times. The active arguments will preserve their order'                                                      '\n'
-        ''                                                                                                                                                  '\n'
-        'Verbosity:'                                                                                                                                        '\n'
-        '    #TODO'                                                                                                                                         '\n'
+        '\nUsage:'
+        '\n    Build -h'
+        '\n    Build -v'
+        '\n    Build -c'
+        '\n    Build -ca'
+        '\n    Build -m=<mode> -b=<PathTo/BuildFile> [-v=<verbosity>]'
+        '\n    Build -m=<mode> -ba=<PathTo/BuildFile> [-v=<verbosity>]'
+        '\n'
+        '\nActions:'
+        '\n    -h   --help         Display this information'
+        '\n    -v   --version      Display the version of the Lynx Engine'
+        '\n    -c   --clear        Delete any file generated by the build tasks. This action can be specified together with -b or -ba to clean the files before the build starts'
+        '\n    -ca  --clear-all    Same as -c, but also delete the files of the engine. After this action is used, a complete rebuild (-ba) is required in order to use the engine'
+        '\n         --verbosity    Choose output verbosity. Default: 1. Possible values: 0, 1, 2, 3. Ignored when none of -c, -ca, -b and -ba is used'
+        '\n'
+        '\nBuild options:'
+        '\n    -b   --build        Read the Build flags from a file and build the application. Requires -m. Default: "./.engine/Application.lnxbuild.sh"'
+        '\n    -ba  --build-all    Same as -b, but also build the engine. Requires -m. The engine build file path is hard coded ("./.engine/Engine.lnxbuild.sh")'
+        '\n    -m   --mode         Specify target platform and build configuration      Ignored when both -b and -ba are not used'
+        '\n    -p   --pack         Pack all files in a single executable file.          Ignored when both -b and -ba are not used'
+        '\n'
+        '\nVerbosity:'
+        '\n    #''TODO'
     )
-    sys.exit(0)
 
 
 # Version
-elif args.version:
-    print('//TODO implement version option')
-    sys.exit(0)
+if args.v:
+    print('//''TODO implement version option')
 
 
-# Check mode
-elif args.m is None:
-    raise Exception('Build: error: the following arguments are required: -m/--mode')
+# Clear
+if args.ca:
+    sys.exit(aclear())
+elif args.c:
+    sys.exit(clear())
+
 
 
 
 # Read from file
-elif args.f != None:
-    try:
-        with open(args.f, 'r') as f:
-            # Parse arguments
-            os.chdir(AtoE)
-            eData = parse(EtoA + '/.engine/Engine.lnxbuild.sh', args.m)
-            os.chdir(EtoA)
-            aData = parse(args.f, args.m)
-
-            # Run build
-            Alloy_tmpp.build('g++', f'{ "Linux" if args.m[0] == "l" else "Windows" }/{ "Debug" if args.m[1] == "d" else "Release" }', eData, aData)
-
-    except FileNotFoundError:
-        raise Exception(f'Cannot open "{ args.f }": file not found')
+if args.b != None or args.ba != None:
+    # Check mode
+    if args.m is None:
+        raise Exception('Build: error: the following arguments are required: -m/--mode')
 
 
+    # Parse engine arguments
+    os.chdir(AtoE)
+    eData = parse(EtoA + '/.engine/Engine.lnxbuild.sh', args.m)
+    os.chdir(EtoA)
+
+    # Parse application arguments
+    f = args.ba if args.ba != None else args.b
+    parse(f, args.m)
+
+    # Run build
+    sys.exit(Alloy_tmpp.build(
+        'g++',
+        f'{ "Linux" if args.m[0] == "l" else "Windows" }/{ "Debug" if args.m[1] == "d" else "Release" }',
+        eData, aData, args.ba != None
+    ))
