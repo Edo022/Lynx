@@ -1,11 +1,8 @@
-import os, re, sys, subprocess
-from textwrap import indent
-from math import ceil
+import os, re, sys, subprocess, math
 from argparse import Namespace as ns
-from utils import *
+import Utils
+#FIXME import from ..
 
-#! Shaders are validated in Build
-#! This script is compiled with Build
 #TODO write what external bindings are and how to use them
 #TODO add matrix support
 #TODO add image support
@@ -20,7 +17,7 @@ from utils import *
 
 
 
-# Element parsing ################################################################################################################
+# Element parsing --------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -30,7 +27,7 @@ from utils import *
 
 
 def roundUp(x : int, b : int) -> int :
-    return b * ceil(x / b)
+    return b * math.ceil(x / b)
 
 
 
@@ -108,7 +105,7 @@ def parseElms(glsl:str) :
 
 
 
-# Layout parsing ----------------------------------------------------------------------------------------------------------------#
+# Layout parsing ---------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -195,7 +192,7 @@ def getLayouts(glsl:str):
 
 
 
-# File output ####################################################################################################################
+# File output ------------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -251,7 +248,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     # Expand macros and parse out unnecessary whitespace
-    code:str = clearGls(preprocessGls(os.path.relpath(pathr, ".")))
+    code:str = Utils.clearGls(Utils.preprocessGls(os.path.relpath(pathr, ".")))
 
 
     #Parse layouts

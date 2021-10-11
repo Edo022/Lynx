@@ -95,7 +95,7 @@ The minimal application project contains one source file and a generated .engine
 <details>
 <summary><b>Build system</b></summary>
 Applications are built using the <code>&lt;path_to_sdk&gt;/Tools/Build/Build</code> executable, which is an <a href="https://github.com/d-Qw4w9WgXc-Q/Alloy">Alloy</a> wrapper that parses the provided arguments, adds everything the engine needs and forwards them to the build system.
-<br>The source files and other flags can be specified in the <code>.engine/Build.Application</code> file. See //TODO link to syntax details
+<br>The source files and other flags can be specified in the <code>.engine/Application.lnxbuild.sh</code> file. See //TODO link to syntax details
 <br>//TODO 'fancy g++'
 <br>
 <br>//TODO show vscode build tasks

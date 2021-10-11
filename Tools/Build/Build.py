@@ -118,14 +118,12 @@ def parse(file:str, mode:str):
 
 def eclear():
     return not(
-            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = '/.engine/bin').returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = '/.engine/bin').returncode
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.o', '-delete'], cwd = './.engine/bin').returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './Lnx/*.a', '-delete'], cwd = './.engine/bin').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.spv',   '-delete'], cwd = f'{ AtoE }/src/Generated').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',   '-delete'], cwd = f'{ AtoE }/src/Generated').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',   '-delete'], cwd = f'{ AtoE }/src/Generated').returncode
     )
-
-
 def aclear():
     return not(
             not subprocess.run(['find', '.', '-type', 'f', '-wholename', './App/*.o', '-delete'], cwd = './.engine/bin').returncode
@@ -133,10 +131,6 @@ def aclear():
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.cpp',   '-delete'], cwd = './.engine/src/Generated').returncode
         and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './*.hpp',   '-delete'], cwd = './.engine/src/Generated').returncode
     )
-
-
-def clear():
-    return not(not aclear() and not eclear())
 
 
 
@@ -223,9 +217,11 @@ if args.v:
 
 # Clear
 if args.C:
+    sys.exit(eclear())
     sys.exit(aclear())
+
 elif args.c:
-    sys.exit(clear())
+    sys.exit(eclear())
 
 
 
@@ -246,7 +242,7 @@ if args.b != None or args.B != None:
 
     # Parse application arguments
     f = args.B if args.B != None else args.b
-    parse(f, args.m)
+    aData = parse(f, args.m)
 
     # Run build
     sys.exit(Alloy_tmpp.build(

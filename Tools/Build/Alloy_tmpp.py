@@ -4,10 +4,6 @@ import Utils
 
 
 
-# with open('./.engine/.EtoA', 'r') as f: EtoA = f.read()
-# with open('./.engine/.AtoE', 'r') as f: AtoE = f.read()
-#os.chdir(AtoE)
-
 poolMutex = threading.Lock()
 avlThrs = multiprocessing.cpu_count() - 1
 totThrs = avlThrs
@@ -357,6 +353,7 @@ def build(EXEC, OUTPUT, eData, aData, buildEngine):
     ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library                 #! Relative to engine
 
 
+    e = 0
     if buildEngine:
         os.chdir(AtoE)
         eDirs(EOUT)
@@ -366,4 +363,4 @@ def build(EXEC, OUTPUT, eData, aData, buildEngine):
     aDirs(AOUT)
     a = aBuild(EXEC, EOUT, AOUT, SFLG, ELIB, eData, aData)
 
-    return 0 if a == 0 and b == 0 else 1
+    return 0 if e == 0 and a == 0 else 1
