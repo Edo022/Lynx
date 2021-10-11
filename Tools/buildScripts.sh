@@ -1,22 +1,23 @@
 #!/bin/bash
 
 cd ./Setup
-    python3 -m PyInstaller -F --clean -y ./UpdateBuild.py &
-    python3 -m PyInstaller -F --clean -y ./Setup.py &
-    pwd
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./UpdateBuild.py &
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Setup.py
 cd ../Build
-    python3 -m PyInstaller -F --clean -y ./Utils.py &
-    python3 -m PyInstaller -F --clean -y ./Paths.py &
-    python3 -m PyInstaller -F --clean -y ./Alloy_tmpp.py &
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Utils.py &
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Paths.py &
+    wait
 
-    python3 -m PyInstaller -F --clean -y ./Build.py &
-    python3 -m PyInstaller -F --clean -y ./Generators/GenInitializers.py &
-    python3 -m PyInstaller -F --clean -y ./Generators/GenInterfaces.py &
-    pwd
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Generators/GenInitializers.py &
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Generators/GenInterfaces.py
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Alloy_tmpp.py &
+    wait
+
+    python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Build.py &
+    wait
 cd ..
 
 
-wait
 cd ./Setup
     mv ./dist/Setup ./Setup             &&
     mv ./dist/UpdateBuild ./UpdateBuild &&

@@ -196,7 +196,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n'
             f'\n    # The output file. It can be a library (.a, .lib, .so, .dll) or an executable file (any other extension, or no extension)'
             f'\n    output {{'
-            f'\n        a {{ ./LynxEngineTest }}' #TODO actually read the output path #FIXME allow the user to build libraries
+            f'\n        a {{ ./Application }}' #TODO actually read the output path #FIXME allow the user to build libraries
             f'\n    }}'
             f'\n}}'
         )

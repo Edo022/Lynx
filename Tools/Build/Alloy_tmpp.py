@@ -33,9 +33,6 @@ red = '\033[1;31m'
 def progress(cur:int, tot:int):
     return f"[{ str(cur).rjust(len(str(tot)), '0') }/{ str(tot) } - { '{:3.2f}'.format(cur / tot * 100).rjust(6, '0') }%]"
 
-def progress2(cur:int):
-    return f"[{ str(cur).rjust(4, '0') }/? - ?%]"
-
 
 
 
@@ -66,11 +63,11 @@ def needsRebuild(o, s):
 def needsRebuildInit(s, flags):
     # Remove includes
     tmp = f'/tmp/LynxEngineInit-{ str(uuid.uuid4()) }'
-    with open(s, 'r') as fs ,open(tmp, 'w') as fo:
-        fo.write(re.sub(r'(?:(?:\/\*.*\*\/)|(?:\s))*#.*include.*(?:"|<).*(?:>|").*\n', r'', fs.read()))
+    with open(s, 'r') as fs, open(tmp, 'w') as fo:
+        fo.write(re.sub(r'(?:^|\n)(?:(?:\/\*.*\*\/)|(?:\s))*#.*include.*(?:"|<).*(?:>|").*(?:\n|$)', r'\n', fs.read()))
 
-    # Get used includes
-    macros = subprocess.run(['g++', '-dU', '-E', *flags, tmp], capture_output = True, text = True).stdout
+    # Get used includes and check if the init macros are in them
+    macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = False, text = True).stdout
     return (re.match(r'(^|\n)#define _lnx_init_(?:(?:var_(?:const|value|array))|fun)_def', macros) != None, tmp)
 
 
@@ -91,7 +88,7 @@ def needsRebuildCPP(o, s, FLG):
 
 
 
-def BuildInit1(i, o, s, flags):
+def BuildInit1(i, o, s, flags, tot):
     global EtoA
     global poolMutex
     global avlThrs
@@ -101,14 +98,14 @@ def BuildInit1(i, o, s, flags):
     while curThr < i: time.sleep(0.01)
     r = needsRebuildInit(s, flags)
     if r[0]:
-        print(f'{ progress2(i + 1) } Creating initializer header { o }')
+        print(f'{ progress(i + 1, tot) } Creating initializer header { o }')
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
         checkCmd(['Tools/Build/Generators/GenInitializers', r[1], str(flags)])
         os.remove(r[1])
     else:
-        print(f'{ progress2(i + 1) } Initializer header { o } is not required')
+        print(f'{ progress(i + 1, tot) } Initializer header { o } is not required')
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
@@ -127,7 +124,7 @@ def BuildInit(CPP, outputs, flags):
     global poolErr
 
     for i, (o, s) in enumerate(zip(outputs, CPP)):
-        t = threading.Thread(target = BuildInit1, args = (i, o, s, flags), daemon = True)
+        t = threading.Thread(target = BuildInit1, args = (i, o, s, flags, len(CPP)), daemon = True)
         t.start()
         poolMutex.acquire()
         avlThrs -= 1
