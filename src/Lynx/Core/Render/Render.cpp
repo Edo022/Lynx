@@ -5,8 +5,10 @@
 #include "Lynx/Core/Render/Window/Window.hpp"
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
-#include <climits>
-#include <chrono>
+#include <climits> //TODO
+#include <chrono> //TODO
+#include <mutex> //TODO
+#include <thread> //TODO
 //TODO parallelize work from a secondary render thread
 //FIXME ADD COPY FROM RAM FUNCTTION TO VRAM ALLOCATIONS
 
@@ -27,8 +29,8 @@
 
 
 namespace lnx::core::render{
-	_lnx_init_var_redirect_value_def((std::mutex), graphicsQueueSubmit_m, lnx::core::render){}
-	_lnx_init_var_redirect_value_def((std::mutex), presentQueueSubmit_m,  lnx::core::render){}
+	_lnx_init_var_value_def((std::mutex), graphicsQueueSubmit_m, lnx::core::render){}
+	_lnx_init_var_value_def((std::mutex), presentQueueSubmit_m,  lnx::core::render){}
 
 
 

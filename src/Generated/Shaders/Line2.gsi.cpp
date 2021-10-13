@@ -176,8 +176,8 @@ namespace lnx::shd::gsi{
 
 
 
-	_lnx_init_var_redirect_value_def((InterfaceLayout), Line2_layout,        lnx::shd::gsi){}
-	_lnx_init_var_redirect_value_def((uint32),          Line2_pipelineIndex, lnx::shd::gsi){ *pVar = core::shaders::g_pipelineNum()++; }
+	_lnx_init_var_value_def((InterfaceLayout), Line2_layout,        lnx::shd::gsi){}
+	_lnx_init_var_value_def((uint32),          Line2_pipelineIndex, lnx::shd::gsi){ *pVar = core::shaders::g_pipelineNum()++; }
 	_lnx_init_fun_def(LNX_H_LINE2, lnx::shd::gsi){
 		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
 		core::shaders::g_pipelineLayouts()[g_Line2_pipelineIndex()] = &g_Line2_layout();

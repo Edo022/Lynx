@@ -4,15 +4,16 @@
 #include "Lynx/System/System.hpp"
 #include "Lynx/Core/Input/Input.hpp"
 #include "Lynx/Debug/Debug.hpp"
-
+#include <thread> //TODO REMOVE
+#include <chrono> //TODO REMOVE
 
 
 
 namespace lnx::core{
-	_lnx_init_var_redirect_value_def((std::atomic<bool>), running, lnx::core){
+	_lnx_init_var_value_def((std::atomic<bool>), running, lnx::core){
 		*pVar = true;
 	}
-	_lnx_init_var_redirect_value_def((Thread), inputThr, lnx::core){
+	_lnx_init_var_value_def((Thread), inputThr, lnx::core){
 		(*pVar)(core::inputLoop);
 	}
 
@@ -24,7 +25,7 @@ namespace lnx::core{
 		_dbg(thr::self::setName("Lynx | Main"));
 		while(g_running()){
 			glfwWaitEvents();
-			sleep(0);
+			sleep(0); //TODO add sleep to thr::self
 		}
 	}
 }

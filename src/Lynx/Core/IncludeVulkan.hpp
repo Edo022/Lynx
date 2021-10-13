@@ -7,7 +7,7 @@
 #include <vulkan/vulkan.hpp>				//Include C++ Vulkan
 #pragma GCC diagnostic pop
 
-#include "Lynx/macros.hpp"					//Include macros header for _dbg, _rls, and noop macros
+#include "Lynx/Utils.hpp"					//Include macros header for _dbg, _rls, and noop macros
 
 
 

@@ -2,7 +2,7 @@
 #include <string>
 #include <unistd.h>
 #include <cstring>
-#include "Lynx/macros.hpp"
+#include "Lynx/Utils.hpp"
 #include "Lynx/Core/Env.hpp"
 #include "Lynx/Debug/Debug.hpp"
 //TODO LOAD IMPLICIT LAYER

@@ -69,7 +69,7 @@ def needsRebuildInit(s, flags):
     # Get used includes and check if the init macros are in them
     macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = True, text = True).stdout
     # return (re.search(r'#define _lnx_init_(?:(?:var_(?:const|value|array))|fun)_def\(', macros) != None, tmp)
-    return (re.search(r'#define _lnx_init_(?:fun|(?:var_redirect_(?:value|array|const)))_def\(', macros) != None, tmp)
+    return (re.search(r'#define _lnx_init_(?:fun|(?:var_(?:value|array|const)))_def\(', macros) != None, tmp)
 
 
 
@@ -293,8 +293,6 @@ def aDirs(AOUT:str):
 def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     eData['include_paths']   += ['-Isrc']
     eData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(".") }/={ AtoE }/']
-    print('FFILE-PREFIX:')
-    print(f'-ffile-prefix-map={ os.path.abspath(EtoA) }/={ AtoE }/')
     eData['forced_includes'] += [
         '-include', 'src/Lynx/Core/InitList.hpp',                                               # Include generated engine initializers
         '-include', 'src/Lynx/Core/VkDef.hpp',                                                  # Include forced vulkan macros

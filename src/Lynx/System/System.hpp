@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <cstdio>
 #include "Lynx/Types/Containers/String.hpp"
-#include "Lynx/System/SystemMacros.hpp"
 
 
 

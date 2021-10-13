@@ -177,8 +177,8 @@ namespace lnx::shd::gsi{
 
 
 
-	_lnx_init_var_redirect_value_def((InterfaceLayout), FloatToIntBuffer_layout,        lnx::shd::gsi){}
-	_lnx_init_var_redirect_value_def((uint32),          FloatToIntBuffer_pipelineIndex, lnx::shd::gsi){ *pVar = core::shaders::g_pipelineNum()++; }
+	_lnx_init_var_value_def((InterfaceLayout), FloatToIntBuffer_layout,        lnx::shd::gsi){}
+	_lnx_init_var_value_def((uint32),          FloatToIntBuffer_pipelineIndex, lnx::shd::gsi){ *pVar = core::shaders::g_pipelineNum()++; }
 	_lnx_init_fun_def(LNX_H_FLOATTOINTBUFFER, lnx::shd::gsi){
 		core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());
 		core::shaders::g_pipelineLayouts()[g_FloatToIntBuffer_pipelineIndex()] = &g_FloatToIntBuffer_layout();

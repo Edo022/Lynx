@@ -484,8 +484,8 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
         fc.write('\n' * 8 + fixTabs(
-            f'\n_lnx_init_var_redirect_value_def((InterfaceLayout), { shName }_layout,        lnx::shd::gsi){{}}'
-            f'\n_lnx_init_var_redirect_value_def((uint32),          { shName }_pipelineIndex, lnx::shd::gsi){{ *pVar = core::shaders::g_pipelineNum()++; }}'
+            f'\n_lnx_init_var_value_def((InterfaceLayout), { shName }_layout,        lnx::shd::gsi){{}}'
+            f'\n_lnx_init_var_value_def((uint32),          { shName }_pipelineIndex, lnx::shd::gsi){{ *pVar = core::shaders::g_pipelineNum()++; }}'
             # f'\nInterfaceLayout g_{ shName }_layout();'
             # f'\nuint32 { shName }::pipelineIndex = core::shaders::g_pipelineNum()++;'
             f'\n_lnx_init_fun_def(LNX_H_{ shName.upper() }, lnx::shd::gsi){{'

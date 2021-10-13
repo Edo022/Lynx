@@ -1,7 +1,7 @@
 #pragma once
 ////#define LNX_H_POINTER
+#include "Lynx/Utils.hpp" //TODO MOVE TO CPP
 #include "Lynx/Core/Memory/Ram/Cell_t.hpp"
-#include "Lynx/System/SystemMacros.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
 #include "Lynx/Types/Dummy.hpp"
 #include "cstring"
@@ -469,7 +469,7 @@ namespace lnx::ram{
 				cell->localIndex = localIndex;									//Save local index in cell object
 
 				const uint32 buffIndex = localIndex / type_.cellsPerBuff;		//Cache buffer index and allocate a new buffer, if necessary
-				if(!type_.memory[buffIndex]) type_.memory[buffIndex] = _wds(_aligned_malloc(bufferSize, memOffset)) _lnx(aligned_alloc(_pvt::memOffset, _pvt::buffSize));
+				if(!type_.memory[buffIndex]) type_.memory[buffIndex] = _wds(_aligned_malloc(_pvt::bufferSize, _pvt::memOffset)) _lnx(aligned_alloc(_pvt::memOffset, _pvt::buffSize));
 				//															 	 Save allocation address in cell object
 				cell->address = (char*)type_.memory[buffIndex] + (uint64)type_.cellClass * localIndex;
 			}

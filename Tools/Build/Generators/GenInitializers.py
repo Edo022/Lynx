@@ -23,7 +23,7 @@ r = list(m.groupdict() for m in re.finditer(
     r'_LNX_INITIALIZER_GENERATOR_TYPE=(?P<type>.*?),'
     r'_LNX_INITIALIZER_GENERATOR_NAME=(?P<name>.*?),'
     r'_LNX_INITIALIZER_GENERATOR_FULLNS=(?P<fullNs>.*?);',
-    Utils.preprocessCpp(tmp, [*flags, '-D__LNX_INITIALIZER_GENERATOR__'])
+    Utils.preprocessCpp(tmp, [*flags, '-D__LNX_PARSE_INITIALIZER_GENERATOR__', '-D__LNX_PARSE_NO_INCLUDES__'])
 ))
 
 

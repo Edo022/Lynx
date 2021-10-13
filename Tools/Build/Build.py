@@ -102,8 +102,12 @@ def parse(file:str, mode:str):
         '-std=c++20', '-m64', '-pthread',               # Use C++20, build for 64bit environments, use pthread
         f'-DenginePath="{ AtoE }"',                     # Engine path macro #FIXME
     ]
+
+    if mode[0] == 'l': sections['defines'] += ['-DLNX_LNX']
+    else:              sections['defines'] += ['-DLNX_WDS']
+
     if mode[1] == 'd': sections['defines'] += ['-DLNX_DBG']
-    else:              sections['defines'] += ['-DNDEBUG']
+    else:              sections['defines'] += ['-DLNX_RLS', '-DNDEBUG']
 
 
     #TODO move library paths and libraries to dedicated sections

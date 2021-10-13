@@ -1,7 +1,7 @@
 #pragma once
 ////#define LNX_H_DEBUG
 #include "Lynx/Types/Integers/Integers.hpp"
-#include "Lynx/macros.hpp"
+#include "Lynx/Utils.hpp"
 #include "Lynx/Debug/SourceInfo.hpp"
 #include <cstdio>
 #include <string>

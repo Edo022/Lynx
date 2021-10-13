@@ -2,7 +2,7 @@
 ////#define LNX_H_INPUT_STATE
 #include <GLFW/glfw3.h>
 #include <initializer_list>
-#include "Lynx/macros.hpp"
+#include "Lynx/Utils.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 

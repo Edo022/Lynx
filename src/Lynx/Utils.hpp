@@ -1,12 +1,50 @@
 #pragma once
-////#define LNX_H_MACROS
 
+//Check active os
+#ifndef __linux__
+    #error Unsupported operating system. The Lynx Engine can only be compiled on Linux systems
+#endif
 
+//Include defines for intellisense
 #ifdef __INTELLISENSE__
-	#include ".engine/conf.hpp"
+	#include ".engine/.editor/.intellisense.hpp"
 	//!The file is generated in the .engine directory of the user application when they change the build configuration
 	//!This include is only used to allow Intellisense to correctly parse the code
 #endif
+
+//Check compiler
+#if !defined __GNUC__ || !defined __cplusplus		//Use only g++
+    #error g++ compiler required
+#endif
+
+
+
+
+#ifdef LNX_WDS														//Windows
+	#ifndef __LNX_PARSE_NO_INCLUDES__
+		#define _wds(...) __VA_ARGS__										//Executes a line of code only when compiling for windows 10
+		#define _lnx(...)													//Executes a line of code only when compiling for linux
+		#include <direct.h>													//  DIR | For _getcwd()
+	#endif
+	#define _lnx_get_cwd _getcwd											//  DIR | Get current working directory
+	// #include <windows.h>													//  THR | For SuspendThread() and ResumeThread()
+	// #define __lp_suspend_thr(th) SuspendThread(th)						//  THR | Function to suspend a thread
+	// #define __lp_resume_thr(th)  ResumeThread(th)						//  THR | Function to resume a thread
+
+#elif defined LNX_LNX												//Linux
+	#ifndef __LNX_PARSE_NO_INCLUDES__
+		#define _wds(...)													//Executes a line of code only when compiling for windows 10
+		#define _lnx(...) __VA_ARGS__										//Executes a line of code only when compiling for linux
+		#include <unistd.h>													//  DIR | For getcwd()
+	#endif
+	#define _lnx_get_cwd getcwd											//  DIR | Get current working directory //TODO remove
+	// #include <pthread.h>													//  THR | For SuspendThread() and ResumeThread()
+	// #include <csignal>													//  THR | For SuspendThread() and ResumeThread()
+	// #define __lp_suspend_thr(th) pthread_kill(th, SIGSTOP)				//  THR | Function to suspend a thread
+	// #define __lp_resume_thr(th)  pthread_kill(th, SIGCONT)				//  THR | Function to resume a thread
+#endif
+
+
 
 
 

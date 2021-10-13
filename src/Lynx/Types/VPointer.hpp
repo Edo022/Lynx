@@ -3,7 +3,6 @@
 #include "Lynx/Core/Memory/VRam/VCell_t.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Devices.hpp"
-#include "Lynx/System/SystemMacros.hpp"
 #include "Lynx/Tests/StructureInit.hpp"
 #include "Lynx/Types/Dummy.hpp"
 #include "cstring"

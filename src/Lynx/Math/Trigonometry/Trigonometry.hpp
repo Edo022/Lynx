@@ -1,6 +1,6 @@
 #pragma once
 #include "Lynx/Math/Constants.hpp"
-#include "Lynx/macros.hpp"
+#include "Lynx/Utils.hpp"
 
 
 

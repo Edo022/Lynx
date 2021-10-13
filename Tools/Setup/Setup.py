@@ -23,11 +23,13 @@ else:
         f'\n    ├─ .engine'
         f'\n    │   ├─ Application.lnxbuild.sh'
         f'\n    │   ├─ Engine.lnxbuild.sh'
-        f'\n    │   ├─ Config.hpp'
-        f'\n    │   ├─ .Aabs'
-        f'\n    │   ├─ .Eabs'
-        f'\n    │   ├─ .AtoE'
-        f'\n    │   └─ .EtoA'
+        f'\n    │   ├─ .setup'
+        f'\n    │   │   ├─ .Aabs'
+        f'\n    │   │   ├─ .Eabs'
+        f'\n    │   │   ├─ .AtoE'
+        f'\n    │   │   └─ .EtoA'
+        f'\n    │   └─ .editor'
+        f'\n    │       └─ .intellisense.hpp'
         f'\n    └─ .vscode'
         f'\n        ├─ tasks.json'
         f'\n        └─ c_cpp_properties.json'
@@ -40,8 +42,10 @@ os.path.dirname(os.getcwd())
 
 if sys.stdin.read(1).lower() == 'y':
     # Create missing directories
-    if not os.path.exists(cwdToA + "/.engine"): os.mkdir(cwdToA + "/.engine")
     if not os.path.exists(cwdToA + "/.vscode"): os.mkdir(cwdToA + "/.vscode")
+    if not os.path.exists(cwdToA + "/.engine"): os.mkdir(cwdToA + "/.engine")
+    if not os.path.exists(cwdToA + "/.engine/.editor"): os.mkdir(cwdToA + "/.engine/.editor")
+    if not os.path.exists(cwdToA + "/.engine/.setup"): os.mkdir(cwdToA + "/.engine/.setup")
 
 
     # Write paths
@@ -51,10 +55,10 @@ if sys.stdin.read(1).lower() == 'y':
     EtoA = os.path.relpath(cwdToA, Eabs)
 
     os.chdir(cwdToA)
-    with open('.engine/.Aabs', 'w') as f: f.write(Aabs)   # Absolute path of Application dir
-    with open('.engine/.Eabs', 'w') as f: f.write(Eabs)   # Absolute path of Engine SDK
-    with open('.engine/.AtoE', 'w') as f: f.write(AtoE)   # Application to Engine relative path
-    with open('.engine/.EtoA', 'w') as f: f.write(EtoA)   # Engine to Application relative path
+    with open('.engine/.setup/.Aabs', 'w') as f: f.write(Aabs)   # Absolute path of Application dir
+    with open('.engine/.setup/.Eabs', 'w') as f: f.write(Eabs)   # Absolute path of Engine SDK
+    with open('.engine/.setup/.AtoE', 'w') as f: f.write(AtoE)   # Application to Engine relative path
+    with open('.engine/.setup/.EtoA', 'w') as f: f.write(EtoA)   # Engine to Application relative path
 
 
 
@@ -204,4 +208,4 @@ if sys.stdin.read(1).lower() == 'y':
 
 
     subprocess.run([f'{ AtoE }/Tools/Setup/UpdateBuild', 'ld'])
-    print('Setup completed successfully')
+    print('Setup completed successfully') #TODO check if it was actually successful
