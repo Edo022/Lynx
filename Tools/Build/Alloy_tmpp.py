@@ -333,7 +333,6 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
     print(f'{ bgreen }Created "{ ELIB }"\n{ white }')
 
-    os.chdir(EtoA)
 
     return 0
 
@@ -346,7 +345,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
 def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     # Parse arguments
-    aData['include_paths']   += ['-I.', f'-I{ AtoE }/src', f'-I./.engine/src']
+    aData['include_paths']   += ['-I.', f'-I{ AtoE }/src', f'-I.engine/src']
     aData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(EtoA) }/=']
     aData['forced_includes'] += [
         '-include', f'{ AtoE }/src/Lynx/Core/InitList.hpp',                                     # Include generated engine initializers
@@ -387,8 +386,6 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     if poolErr:
         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
     print(f'{ bgreen }Created "{ ABIN }"\n{ white }')
-
-    os.chdir(AtoE)
 
 
 
