@@ -62,13 +62,13 @@ def needsRebuild(o, s):
 
 def needsRebuildInit(s, flags):
     # Remove includes
-    tmp = f'/tmp/LynxEngineInit-{ str(uuid.uuid4()) }'
+    tmp = f'/tmp/LynxEngineInit-{ str(uuid.uuid4()) }-{ os.path.basename(s) }' #TODO REMOVE BASENAME FROM OUTPUT FILE NAME
     with open(s, 'r') as fs, open(tmp, 'w') as fo:
-        fo.write(re.sub(r'(?:^|\n)(?:(?:\/\*.*\*\/)|(?:\s))*#.*include.*(?:"|<).*(?:>|").*(?:\n|$)', r'\n', fs.read()))
+        fo.write(re.sub(r'(?:^|\n)(?:(?:\/\*.*\*\/)|(?:\s))*#.*include.*(?:"|<).*(?:>|").*', r'\n', fs.read()))
 
     # Get used includes and check if the init macros are in them
-    macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = False, text = True).stdout
-    return (re.match(r'(^|\n)#define _lnx_init_(?:(?:var_(?:const|value|array))|fun)_def', macros) != None, tmp)
+    macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = True, text = True).stdout
+    return (re.search(r'#define _lnx_init_(?:(?:var_(?:const|value|array))|fun)_def\(', macros) != None, tmp)
 
 
 
@@ -102,7 +102,7 @@ def BuildInit1(i, o, s, flags, tot):
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
-        checkCmd(['Tools/Build/Generators/GenInitializers', r[1], str(flags)])
+        checkCmd(['Tools/Build/Generators/GenInitializers', r[1], o, str(flags)])
         os.remove(r[1])
     else:
         print(f'{ progress(i + 1, tot) } Initializer header { o } is not required')
@@ -320,7 +320,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     initOutputs =\
         list(f'src/Generated/.init'     f'/{ pl.Path(o).stem }.init.hpp' for o in ECPP) +\
         list(f'src/Generated/.init/Shaders/{ pl.Path(o).stem }.init.hpp' for o in EGSI)
-    BuildInit(ECPP + EGSI, initOutputs, ['-include', 'src/Lynx/Lynx_config.hpp', *eData['defines'], *eData['include_paths']])
+    BuildInit(ECPP + EGSI, initOutputs, ['-include', 'src/Lynx/Lynx_config.hpp', '-include', 'src/Lynx/Core/Init.hpp', *eData['defines'], *eData['include_paths']])
     print(f'{ bgreen }Initializer headers generated successfully\n{ white }')
 
 

@@ -116,7 +116,7 @@ def parseElms(glsl:str) :
 
 # Translates a single layout
 def parseLayout(glsl:str) :
-    rInfo = re.match(
+    rInfo = re.search(
         r'layout.*?\(std(?P<stdv>\d{3}).*?binding=(?P<indx>\d+)\)'
         r'(?P<type>buffer|uniform) (?P<iExt>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
         glsl

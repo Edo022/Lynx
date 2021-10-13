@@ -7,13 +7,14 @@ import Utils
 
 
 # Check argv length
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     raise Exception(f'Invalid number of arguments: { len(sys.argv) }')
 
 
 # Read inputs
-tmp   : str  = sys.argv[1]          # Input file
-flags : list = eval(sys.argv[2])    # Flags to use for gcc
+tmp    : str  = sys.argv[1]          # Input file
+output : str  = sys.argv[2]          # Output file
+flags  : list = eval(sys.argv[3])    # Flags to use for gcc
 
 
 
@@ -22,7 +23,7 @@ r = list(m.groupdict() for m in re.finditer(
     r'_LNX_INITIALIZER_GENERATOR_TYPE=(?P<type>.*?),'
     r'_LNX_INITIALIZER_GENERATOR_NAME=(?P<name>.*?),'
     r'_LNX_INITIALIZER_GENERATOR_FULLNS=(?P<fullNs>.*?);',
-    Utils.PreprocessCpp(tmp, ['-include', 'src/Lynx/Core/Init.hpp', *flags, '-D__LNX_INITIALIZER_GENERATOR__'])
+    Utils.preprocessCpp(tmp, [*flags, '-D__LNX_INITIALIZER_GENERATOR__'])
 ))
 
 
