@@ -91,7 +91,7 @@
 	_dbg(used              inline DEL_P(type)* g_##name())
 
 #define _lnx_init_var_const_dec2(type, name, id)\
-	_rls(used static alwaysInline const DEL_P(type)& g_##name(){ return _pvt::id##_v; });\
+	_rls(used static alwaysInline const DEL_P(type)& g_##name(){ return *_pvt::id##_v; });\
 	_dbg(used              inline const DEL_P(type)& g_##name())
 
 
@@ -257,6 +257,7 @@
 				used static DEL_P(type)* var = new DEL_P(type)[count];             \
 				set(var);\
 				id##_v = var;\
+				printf("\nVariable \"" #name "\" initialized");\
 				id##_is_init = true;\
 			}\
 		}\
@@ -293,6 +294,7 @@
 				used static DEL_P(type)* var = new DEL_P(type)[count];             \
 				set(var);\
 				id##_v = var;\
+				printf("\nVariable \"" #name "\" initialized");\
 				id##_is_init = true;\
 			}\
 		}\
@@ -322,6 +324,7 @@
 				used static DEL_P(type)* var = new DEL_P(type)[count];             \
 				set(var);\
 				id##_v = var;\
+				printf("\nVariable \"" #name "\" initialized");\
 				id##_is_init = true;\
 			}\
 		}\

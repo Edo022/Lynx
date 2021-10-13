@@ -292,7 +292,9 @@ def aDirs(AOUT:str):
 
 def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     eData['include_paths']   += ['-Isrc']
-    eData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(EtoA) }/={ AtoE }/']
+    eData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(".") }/={ AtoE }/']
+    print('FFILE-PREFIX:')
+    print(f'-ffile-prefix-map={ os.path.abspath(EtoA) }/={ AtoE }/')
     eData['forced_includes'] += [
         '-include', 'src/Lynx/Core/InitList.hpp',                                               # Include generated engine initializers
         '-include', 'src/Lynx/Core/VkDef.hpp',                                                  # Include forced vulkan macros

@@ -98,7 +98,7 @@ def parse(file:str, mode:str):
     sections['forced_includes'] = list(expSection(sections['forced_includes']))
 
 
-    sections['compiler_flags'] = [                    # Shared default C++ flags
+    sections['compiler_flags'] += [                 # Shared default C++ flags
         '-std=c++20', '-m64', '-pthread',               # Use C++20, build for 64bit environments, use pthread
         f'-DenginePath="{ AtoE }"',                     # Engine path macro #FIXME
     ]

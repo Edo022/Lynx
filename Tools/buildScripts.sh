@@ -1,5 +1,17 @@
 #!/bin/bash
 
+
+
+cd ./Setup
+    rm -rf ./dist ./build ./*.spec ./__pycache__
+cd ../Build
+    rm -rf ./dist ./build ./*.spec ./__pycache__           &&
+    rm -rf ./dist ./build ./*.spec ./Generators/__pycache__
+cd ..
+
+
+
+
 cd ./Setup
     python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./UpdateBuild.py &
     python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Setup.py
@@ -16,6 +28,8 @@ cd ../Build
     python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Build.py &
     wait
 cd ..
+
+
 
 
 cd ./Setup
