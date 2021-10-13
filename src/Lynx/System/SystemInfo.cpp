@@ -15,7 +15,7 @@
 
 
 namespace lnx::sys{
-    _lnx_init_var_const_def((const CpuInfo), cpu, lnx::sys){
+    _lnx_init_var_redirect_const_def((CpuInfo), cpu, lnx::sys){
         CpuInfo _cpu = {
             .L1D = {
                 .size     = (uint32)sysconf(_SC_LEVEL1_DCACHE_SIZE),
@@ -63,13 +63,13 @@ namespace lnx::sys{
         free(minFreq);
         free(maxFreq);
 
-        return _cpu;
+        *pVar = _cpu;
     }
 
 
 
 
-    _lnx_init_var_const_def((const RamInfo), ram, lnx::sys){
+    _lnx_init_var_redirect_const_def((RamInfo), ram, lnx::sys){
         RamInfo _ram;
 
         #ifdef _WIN64
@@ -86,6 +86,6 @@ namespace lnx::sys{
             _ram.size     = _ram.pageNum * _ram.pageSize;
         #endif
 
-        return _ram;
+        *pVar = _ram;
     }
 }

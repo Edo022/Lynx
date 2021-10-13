@@ -10,30 +10,22 @@
 
 namespace lnx::core::render::cmd::_pvt {
     extern bool _lnx_init_var_singleTimeCommandPool_is_init; //!Zero initialized
-    used        vk::CommandPool* _lnx_init_var_singleTimeCommandPool_get();
     extern      vk::CommandPool* _lnx_init_var_singleTimeCommandPool_v;
 
     struct _lnx_init_var_singleTimeCommandPool_init_t_call_t{
-        _lnx_init_var_singleTimeCommandPool_init_t_call_t(){
-            if(!_lnx_init_var_singleTimeCommandPool_is_init) _lnx_init_var_singleTimeCommandPool_v = _lnx_init_var_singleTimeCommandPool_get();
-        }
+        _lnx_init_var_singleTimeCommandPool_init_t_call_t();
+        void set(vk::CommandPool* pVar);
     };
     used static _lnx_init_var_singleTimeCommandPool_init_t_call_t _lnx_init_var_singleTimeCommandPool_init_t_call_v;
 }
 
-namespace lnx::core::render::cmd::_pvt{
-    struct _lnx_init_fun_LNX_H_GCOMMANDS_FUN_t;
-}
-
 namespace lnx::core::render::cmd::_pvt {
     extern bool _lnx_init_var_LNX_H_GCOMMANDS_FUN_is_init; //!Zero initialized
-    used        _pvt::_lnx_init_fun_LNX_H_GCOMMANDS_FUN_t* _lnx_init_var_LNX_H_GCOMMANDS_FUN_get();
-    extern      _pvt::_lnx_init_fun_LNX_H_GCOMMANDS_FUN_t* _lnx_init_var_LNX_H_GCOMMANDS_FUN_v;
+    extern      Dummy* _lnx_init_var_LNX_H_GCOMMANDS_FUN_v;
 
     struct _lnx_init_var_LNX_H_GCOMMANDS_FUN_init_t_call_t{
-        _lnx_init_var_LNX_H_GCOMMANDS_FUN_init_t_call_t(){
-            if(!_lnx_init_var_LNX_H_GCOMMANDS_FUN_is_init) _lnx_init_var_LNX_H_GCOMMANDS_FUN_v = _lnx_init_var_LNX_H_GCOMMANDS_FUN_get();
-        }
+        _lnx_init_var_LNX_H_GCOMMANDS_FUN_init_t_call_t();
+        void set(Dummy* pVar);
     };
     used static _lnx_init_var_LNX_H_GCOMMANDS_FUN_init_t_call_t _lnx_init_var_LNX_H_GCOMMANDS_FUN_init_t_call_v;
 }

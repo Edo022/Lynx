@@ -19,7 +19,7 @@ namespace lnx::sys{
             uint64 assoc;       //Cache associativity
         } L1D, L1I, L2, L3, L4;
     };
-    _lnx_init_var_dec((const CpuInfo), cpu);
+    _lnx_init_var_const_dec((CpuInfo), cpu);
 
 
     struct RamInfo{
@@ -29,7 +29,7 @@ namespace lnx::sys{
         uint64 pageSize;        //Size of each memory page in bytes
         uint64 size;            //Total size of the memory in bytes (pageNum * pageSize)
     };
-    _lnx_init_var_dec((const RamInfo), ram);
+    _lnx_init_var_const_dec((RamInfo), ram);
 
 
     enum class DeviceType{ //FIXME
@@ -55,5 +55,5 @@ namespace lnx::sys{
             } heaps_[16];
         } heaps;
     };
-    _lnx_init_var_dec((const GpuInfo), vram);
+    _lnx_init_var_const_dec((GpuInfo), vram);
 }

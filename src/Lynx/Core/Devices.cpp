@@ -29,24 +29,24 @@ alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhy
 
 
 namespace lnx::core::dvc{
-	_lnx_init_var_value_def((Device),                  graphics,  lnx::core::dvc){}
-	_lnx_init_var_value_def((RtArray<Device, uint32>), secondary, lnx::core::dvc){}
+	_lnx_init_var_redirect_value_def((Device),                  graphics,  lnx::core::dvc){}
+	_lnx_init_var_redirect_value_def((RtArray<Device, uint32>), secondary, lnx::core::dvc){}
 
 
-	_lnx_init_var_value_def((vk::Instance),   instance,     lnx::core::dvc){}
-	_lnx_init_var_value_def((GLFWwindow*),    dummyWindow,  lnx::core::dvc){}
-	_lnx_init_var_value_def((vk::SurfaceKHR), dummySurface, lnx::core::dvc){}
+	_lnx_init_var_redirect_value_def((vk::Instance),   instance,     lnx::core::dvc){}
+	_lnx_init_var_redirect_value_def((GLFWwindow*),    dummyWindow,  lnx::core::dvc){}
+	_lnx_init_var_redirect_value_def((vk::SurfaceKHR), dummySurface, lnx::core::dvc){}
 
-	_lnx_init_var_value_def((uint32),       requiredDeviceExtensionsNum, lnx::core::dvc) { pVar = 1; }
-	_lnx_init_var_value_def((const char**), requiredDeviceExtensions,    lnx::core::dvc) {
-		pVar = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	_lnx_init_var_redirect_value_def((uint32),       requiredDeviceExtensionsNum, lnx::core::dvc) { *pVar = 1; }
+	_lnx_init_var_redirect_value_def((const char**), requiredDeviceExtensions,    lnx::core::dvc) {
+		*pVar = new const char*{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	}
 
 	#ifdef LNX_DBG
-		_lnx_init_var_value_def((VkDebugUtilsMessengerEXT), debugMessenger, lnx::core::dvc){};
-		_lnx_init_var_value_def((uint32),       validationLayersNum,        lnx::core::dvc) { pVar = 1; }
-		_lnx_init_var_value_def((const char**), validationLayers,           lnx::core::dvc) {
-			pVar = new const char*{ "VK_LAYER_KHRONOS_validation"};
+		_lnx_init_var_redirect_value_def((VkDebugUtilsMessengerEXT), debugMessenger, lnx::core::dvc){};
+		_lnx_init_var_redirect_value_def((uint32),       validationLayersNum,        lnx::core::dvc) { *pVar = 1; }
+		_lnx_init_var_redirect_value_def((const char**), validationLayers,           lnx::core::dvc) {
+			*pVar = new const char*{ "VK_LAYER_KHRONOS_validation"};
 		}
 	#endif
 

@@ -6,9 +6,9 @@
 
 
 namespace lnx::vram{
-    _lnx_init_var_array_def((Type_t2), types, ((uint32)_pvt::VCellClassIndex::eNum << 2) | 0b11, lnx::vram){}
-    _lnx_init_var_value_def((RaArrayC<Cell_t2, uint32>), cells,   lnx::vram){}
-    _lnx_init_var_value_def((std::mutex),                cells_m, lnx::vram){}
+    _lnx_init_var_redirect_array_def((Type_t2), types, ((uint32)_pvt::VCellClassIndex::eNum << 2) | 0b11, lnx::vram){}
+    _lnx_init_var_redirect_value_def((RaArrayC<Cell_t2, uint32>), cells,   lnx::vram){}
+    _lnx_init_var_redirect_value_def((std::mutex),                cells_m, lnx::vram){}
 
 
     _lnx_init_fun_def(LNX_H_VCELL_T, lnx::vram) {

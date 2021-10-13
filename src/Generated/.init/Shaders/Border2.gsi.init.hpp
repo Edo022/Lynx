@@ -10,43 +10,33 @@
 
 namespace lnx::shd::gsi::_pvt {
     extern bool _lnx_init_var_Border2_layout_is_init; //!Zero initialized
-    used        InterfaceLayout* _lnx_init_var_Border2_layout_get();
     extern      InterfaceLayout* _lnx_init_var_Border2_layout_v;
 
     struct _lnx_init_var_Border2_layout_init_t_call_t{
-        _lnx_init_var_Border2_layout_init_t_call_t(){
-            if(!_lnx_init_var_Border2_layout_is_init) _lnx_init_var_Border2_layout_v = _lnx_init_var_Border2_layout_get();
-        }
+        _lnx_init_var_Border2_layout_init_t_call_t();
+        void set(InterfaceLayout* pVar);
     };
     used static _lnx_init_var_Border2_layout_init_t_call_t _lnx_init_var_Border2_layout_init_t_call_v;
 }
 
 namespace lnx::shd::gsi::_pvt {
     extern bool _lnx_init_var_Border2_pipelineIndex_is_init; //!Zero initialized
-    used        uint32* _lnx_init_var_Border2_pipelineIndex_get();
     extern      uint32* _lnx_init_var_Border2_pipelineIndex_v;
 
     struct _lnx_init_var_Border2_pipelineIndex_init_t_call_t{
-        _lnx_init_var_Border2_pipelineIndex_init_t_call_t(){
-            if(!_lnx_init_var_Border2_pipelineIndex_is_init) _lnx_init_var_Border2_pipelineIndex_v = _lnx_init_var_Border2_pipelineIndex_get();
-        }
+        _lnx_init_var_Border2_pipelineIndex_init_t_call_t();
+        void set(uint32* pVar);
     };
     used static _lnx_init_var_Border2_pipelineIndex_init_t_call_t _lnx_init_var_Border2_pipelineIndex_init_t_call_v;
 }
 
-namespace lnx::shd::gsi::_pvt{
-    struct _lnx_init_fun_LNX_H_BORDER2_FUN_t;
-}
-
 namespace lnx::shd::gsi::_pvt {
     extern bool _lnx_init_var_LNX_H_BORDER2_FUN_is_init; //!Zero initialized
-    used        _pvt::_lnx_init_fun_LNX_H_BORDER2_FUN_t* _lnx_init_var_LNX_H_BORDER2_FUN_get();
-    extern      _pvt::_lnx_init_fun_LNX_H_BORDER2_FUN_t* _lnx_init_var_LNX_H_BORDER2_FUN_v;
+    extern      Dummy* _lnx_init_var_LNX_H_BORDER2_FUN_v;
 
     struct _lnx_init_var_LNX_H_BORDER2_FUN_init_t_call_t{
-        _lnx_init_var_LNX_H_BORDER2_FUN_init_t_call_t(){
-            if(!_lnx_init_var_LNX_H_BORDER2_FUN_is_init) _lnx_init_var_LNX_H_BORDER2_FUN_v = _lnx_init_var_LNX_H_BORDER2_FUN_get();
-        }
+        _lnx_init_var_LNX_H_BORDER2_FUN_init_t_call_t();
+        void set(Dummy* pVar);
     };
     used static _lnx_init_var_LNX_H_BORDER2_FUN_init_t_call_t _lnx_init_var_LNX_H_BORDER2_FUN_init_t_call_v;
 }

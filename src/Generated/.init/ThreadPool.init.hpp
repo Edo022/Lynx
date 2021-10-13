@@ -10,56 +10,44 @@
 
 namespace lnx::thr::_pvt {
     extern bool _lnx_init_var_threads_is_init; //!Zero initialized
-    used        RtArray<Thread, uint32>* _lnx_init_var_threads_get();
     extern      RtArray<Thread, uint32>* _lnx_init_var_threads_v;
 
     struct _lnx_init_var_threads_init_t_call_t{
-        _lnx_init_var_threads_init_t_call_t(){
-            if(!_lnx_init_var_threads_is_init) _lnx_init_var_threads_v = _lnx_init_var_threads_get();
-        }
+        _lnx_init_var_threads_init_t_call_t();
+        void set(RtArray<Thread, uint32>* pVar);
     };
     used static _lnx_init_var_threads_init_t_call_t _lnx_init_var_threads_init_t_call_v;
 }
 
 namespace lnx::thr::_pvt {
     extern bool _lnx_init_var_queue_is_init; //!Zero initialized
-    used        std::deque<ram::ptr<_pvt::Func_b>>* _lnx_init_var_queue_get();
     extern      std::deque<ram::ptr<_pvt::Func_b>>* _lnx_init_var_queue_v;
 
     struct _lnx_init_var_queue_init_t_call_t{
-        _lnx_init_var_queue_init_t_call_t(){
-            if(!_lnx_init_var_queue_is_init) _lnx_init_var_queue_v = _lnx_init_var_queue_get();
-        }
+        _lnx_init_var_queue_init_t_call_t();
+        void set(std::deque<ram::ptr<_pvt::Func_b>>* pVar);
     };
     used static _lnx_init_var_queue_init_t_call_t _lnx_init_var_queue_init_t_call_v;
 }
 
 namespace lnx::thr::_pvt {
     extern bool _lnx_init_var_queue_m_is_init; //!Zero initialized
-    used        std::mutex* _lnx_init_var_queue_m_get();
     extern      std::mutex* _lnx_init_var_queue_m_v;
 
     struct _lnx_init_var_queue_m_init_t_call_t{
-        _lnx_init_var_queue_m_init_t_call_t(){
-            if(!_lnx_init_var_queue_m_is_init) _lnx_init_var_queue_m_v = _lnx_init_var_queue_m_get();
-        }
+        _lnx_init_var_queue_m_init_t_call_t();
+        void set(std::mutex* pVar);
     };
     used static _lnx_init_var_queue_m_init_t_call_t _lnx_init_var_queue_m_init_t_call_v;
 }
 
-namespace lnx::thr::_pvt{
-    struct _lnx_init_fun_LNX_H_THREAD_POOL_FUN_t;
-}
-
 namespace lnx::thr::_pvt {
     extern bool _lnx_init_var_LNX_H_THREAD_POOL_FUN_is_init; //!Zero initialized
-    used        _pvt::_lnx_init_fun_LNX_H_THREAD_POOL_FUN_t* _lnx_init_var_LNX_H_THREAD_POOL_FUN_get();
-    extern      _pvt::_lnx_init_fun_LNX_H_THREAD_POOL_FUN_t* _lnx_init_var_LNX_H_THREAD_POOL_FUN_v;
+    extern      Dummy* _lnx_init_var_LNX_H_THREAD_POOL_FUN_v;
 
     struct _lnx_init_var_LNX_H_THREAD_POOL_FUN_init_t_call_t{
-        _lnx_init_var_LNX_H_THREAD_POOL_FUN_init_t_call_t(){
-            if(!_lnx_init_var_LNX_H_THREAD_POOL_FUN_is_init) _lnx_init_var_LNX_H_THREAD_POOL_FUN_v = _lnx_init_var_LNX_H_THREAD_POOL_FUN_get();
-        }
+        _lnx_init_var_LNX_H_THREAD_POOL_FUN_init_t_call_t();
+        void set(Dummy* pVar);
     };
     used static _lnx_init_var_LNX_H_THREAD_POOL_FUN_init_t_call_t _lnx_init_var_LNX_H_THREAD_POOL_FUN_init_t_call_v;
 }

@@ -10,9 +10,9 @@
 //FIXME this variable is defined in the header as a static thread_local. It should be external thread_local
 
 namespace lnx::ram{
-	_lnx_init_var_array_def((Type_t), types, (uint32)_pvt::CellClassIndex::eNum, lnx::ram){}
-	_lnx_init_var_value_def((RaArrayC<Cell_t, uint32>), cells, lnx::ram){}
-	_lnx_init_var_value_def((std::mutex), cells_m,             lnx::ram){}
+	_lnx_init_var_redirect_array_def((Type_t), types, (uint32)_pvt::CellClassIndex::eNum, lnx::ram){}
+	_lnx_init_var_redirect_value_def((RaArrayC<Cell_t, uint32>), cells, lnx::ram){}
+	_lnx_init_var_redirect_value_def((std::mutex), cells_m,             lnx::ram){}
 
 
 

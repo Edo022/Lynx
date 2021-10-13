@@ -10,13 +10,11 @@
 
 namespace lnx::sys::dir::_pvt {
     extern bool _lnx_init_var_thisDir_is_init; //!Zero initialized
-    used        String* _lnx_init_var_thisDir_get();
     extern      String* _lnx_init_var_thisDir_v;
 
     struct _lnx_init_var_thisDir_init_t_call_t{
-        _lnx_init_var_thisDir_init_t_call_t(){
-            if(!_lnx_init_var_thisDir_is_init) _lnx_init_var_thisDir_v = _lnx_init_var_thisDir_get();
-        }
+        _lnx_init_var_thisDir_init_t_call_t();
+        void set(String* pVar);
     };
     used static _lnx_init_var_thisDir_init_t_call_t _lnx_init_var_thisDir_init_t_call_v;
 }
