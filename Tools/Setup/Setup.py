@@ -192,7 +192,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n        }}'
             f'\n'
             f'\n        r {{ # Release options'
-            f'\n            -g0                                           # Debug informations'
+            f'\n            -g0;                                          # Debug informations'
             f'\n            -Ofast; -frename-registers; -funroll-loops;   # Optimizations'
             f'\n        }}'
             f'\n'
