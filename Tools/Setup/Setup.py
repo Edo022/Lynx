@@ -179,9 +179,9 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n    cpp {{ a {{ main.cpp }} }}  # A list of C++ source files'
             f'\n    gls {{}}                  # A list of GLSL source files'
             f'\n'
-            f'\n    defines         {{}}      # -D option           # e.g.  -DVAR=1 -D mogu_mogu'
-            f'\n    forced_includes {{}}      # -include option     # e.g.  -include ./file.hpp -include idk.hpp'
-            f'\n    include_paths   {{}}      # -I option           # e.g.  -I. -Isrc -I path/to/dir'
+            f'\n    defines         {{}}      # -D option           # e.g.  -DVAR=1 -D mogu_mogu'       #TODO REMOVE -D
+            f'\n    forced_includes {{}}      #                     # e.g.  ./file.hpp idk.hpp'
+            f'\n    include_paths   {{}}      # -I option           # e.g.  -I. -Isrc -I path/to/dir'   #TODO REMOVE -I
             f'\n'
             f'\n    # Any other compiler flag'
             f'\n    compiler_flags {{'

@@ -11,8 +11,6 @@
 
 
 
-
-
 #define _lnx_init_var_value_dec(      vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (      DEL_P(vType)&), *)
 #define _lnx_init_var_array_dec(      vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (      DEL_P(vType)*),  )
 #define _lnx_init_var_value_const_dec(vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (const DEL_P(vType)&), *)
@@ -21,8 +19,6 @@
 #define _lnx_init_var_dec2(vName, vId, vEndType, vDeref)\
 	_rls(used static alwaysInline DEL_P(vEndType) g_##vName(){ return vDeref _pvt::vId##_v; });\
 	_dbg(used              inline DEL_P(vEndType) g_##vName())
-
-
 
 
 
@@ -42,28 +38,30 @@
 
 
 
-#define _lnx_init_var_def2(vType, vName, vCount, vId, vEndType, vDeref)   \
-	/*Initialization functions definition*/                               \
-	namespace _pvt{                                                       \
-		used DEL_P(vType)* vId##_v;                                       \
-		used bool vId##_is_init;                                          \
-		vId##_init_t_call_t::vId##_init_t_call_t(){                       \
-			if(!vId##_is_init) {                                          \
-				used static DEL_P(vType)* var = new DEL_P(vType)[vCount]; \
-				set(var);                                                 \
-				vId##_v = var;                                            \
-				vId##_is_init = true;                                     \
-			}                                                             \
-		}                                                                 \
+#define _lnx_init_var_def2(vType, vName, vCount, vId, vEndType, vDeref)    \
+	/*Initialization functions definition*/                                \
+	namespace _pvt{                                                        \
+		used DEL_P(vType)* vId##_v;                                        \
+		used bool vId##_is_init;                                           \
+		vId##_init_t_call_t::vId##_init_t_call_t(){                        \
+			if(!vId##_is_init) {                                           \
+				used static DEL_P(vType)* var = new DEL_P(vType)[vCount];  \
+				set(var);                                                  \
+				vId##_v = var;                                             \
+				vId##_is_init = true;                                      \
+			}                                                              \
+		}                                                                  \
 	\
-	}                                                                     \
-	/*Debug get function definition*/                                     \
-	_dbg(used inline DEL_P(vEndType) g_##vName(){)                        \
-	_dbg(	lnx::dbg::assertCond(_pvt::vId##_is_init, "Global variable \"g_" #vName "\" used before initialization");)\
-	_dbg(	return vDeref _pvt::vId##_v;)                                 \
-	_dbg(};)                                                              \
+	}                                                                      \
+	/*Debug get function definition*/                                      \
+	_dbg(used inline DEL_P(vEndType) g_##vName(){                          \
+		lnx::dbg::assertCond(                                              \
+			_pvt::vId##_is_init,                                           \
+			"Global variable \"g_" #vName "\" used before initialization"  \
+		);                                                                 \
+		return vDeref _pvt::vId##_v;                                       \
+	};)                                                                    \
 	void _pvt::vId##_init_t_call_t::set(DEL_P(vType)* pVar)
-
 
 
 
