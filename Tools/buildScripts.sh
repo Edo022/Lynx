@@ -11,7 +11,7 @@ cd ..
 
 
 
-
+#-OO
 cd ./Setup
     python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./UpdateBuild.py &
     python3 $1 -m PyInstaller -F --clean -y --log-level=WARN ./Setup.py
