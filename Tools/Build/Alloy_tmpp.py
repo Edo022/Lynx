@@ -278,8 +278,8 @@ def eDirs(EOUT:str):
 
 
 def aDirs(AOUT:str):
-    os.makedirs(exist_ok = True, name = './.engine/src/Generated')
-    os.makedirs(exist_ok = True, name = './.engine/src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name = './.engine/.src/Generated')
+    os.makedirs(exist_ok = True, name = './.engine/.src/Generated/Shaders')
     os.makedirs(exist_ok = True, name = f'{ AOUT }')
     os.makedirs(exist_ok = True, name = f'{ AOUT }/Shaders')
 
@@ -346,7 +346,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
 def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     # Parse arguments
-    aData['include_paths']   += ['-I.', f'-I{ AtoE }/src', f'-I.engine/src']
+    aData['include_paths']   += [f'-I{ AtoE }/src', f'-I.engine/.src']
     aData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(EtoA) }/=']
     aData['forced_includes'] += [
         f'{ AtoE }/src/Lynx/Core/InitList.hpp',     # Include generated engine initializers
@@ -356,8 +356,8 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     AFLG = aData['defines'] + list(Utils.prefixList('-include', aData['forced_includes'])) + aData['include_paths'] + aData['compiler_flags']
 
     AGLS = aData['gls']                                                                         # GLS source files
-    ASPV = list((f'./.engine/src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in AGLS)     # Output .spv files paths                  #! Can be empty
-    AGSI = list((f'./.engine/src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in AGLS)     # Generated shader interfaces source files #! Can be empty
+    ASPV = list((f'./.engine/.src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in AGLS)     # Output .spv files paths                  #! Can be empty
+    AGSI = list((f'./.engine/.src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in AGLS)     # Generated shader interfaces source files #! Can be empty
     AGSO = list((               f'{ AOUT }/Shaders/{ pl.Path(s).stem }.gsi.o') for s in AGLS)       # Generated shader interfaces .o files
 
     ACPP = aData['cpp']                                             # C++ source files
@@ -404,9 +404,9 @@ def build(EXEC, OUTPUT, eData, aData, buildEngine):
     print(f'Using { totThrs } threads')
 
 
-    EOUT = f'{ EtoA }/.engine/bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
-    AOUT =        f'./.engine/bin/App/{ OUTPUT }'       # Path to the application binary output directory   #! Relative to application
-    ELIB = f'{ EOUT }/libLynxEngine.a'                  # Path to the engine static library                 #! Relative to engine
+    EOUT = f'{ EtoA }/.engine/.bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
+    AOUT =        f'./.engine/.bin/App/{ OUTPUT }'       # Path to the application binary output directory   #! Relative to application
+    ELIB = f'{ EOUT }/libLynxEngine.a'                   # Path to the engine static library                 #! Relative to engine
 
 
     e = 0
