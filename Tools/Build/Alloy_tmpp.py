@@ -69,13 +69,13 @@ def needsRebuildInit(s, flags):
     # Get used includes and check if the init macros are in them
     macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = True, text = True).stdout
     # return (re.search(r'#define _lnx_init_(?:(?:var_(?:const|value|array))|fun)_def\(', macros) != None, tmp)
-    return (re.search(r'#define _lnx_init_(?:fun|(?:var_(?:value|array|const)))_def\(', macros) != None, tmp)
+    return (re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None, tmp)
 
 
 
-def needsRebuildCPP(o, s, FLG):
+def needsRebuildCPP(o, s, FLG, forced_includes):
     if not os.path.exists(o): return True
-    for h in subprocess.run(['g++', '-MM', s] + FLG, capture_output = True, text = True).stdout.strip().replace('\\\n ','').split(' ')[1:]:
+    for h in forced_includes + subprocess.run(['g++', '-MM', s] + FLG, capture_output = True, text = True).stdout.strip().replace('\\\n ','').split(' ')[1:]:
         if(needsRebuild(o, h)): return True
     return False
 
@@ -199,12 +199,12 @@ def BuildGSI(SPV, GSI, GLS, isEngine):
 
 
 
-def BuildOBJ1(EXEC, FLG, i, o, s, tot):
+def BuildOBJ1(EXEC, FLG, i, o, s, forced_includes, tot):
     global poolMutex
     global avlThrs
     global curThr
 
-    if needsRebuildCPP(o, s, FLG):
+    if needsRebuildCPP(o, s, FLG, forced_includes):
         while curThr < i: time.sleep(0.01)
         print(f'{ progress(i + 1, tot) } Compiling object file { o }')
         poolMutex.acquire()
@@ -225,7 +225,7 @@ def BuildOBJ1(EXEC, FLG, i, o, s, tot):
 
 
 
-def BuildOBJ(EXEC, FLG, OBJ, CPP, defineTuUuid = False, tuUuidPrefix = ''):
+def BuildOBJ(EXEC, FLG, OBJ, CPP, forced_includes, defineTuUuid = False, tuUuidPrefix = ''):
     global poolMutex
     global avlThrs
     global totThrs
@@ -234,7 +234,7 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP, defineTuUuid = False, tuUuidPrefix = ''):
 
     for i, (o, s) in enumerate(zip(OBJ, CPP)):
         t = threading.Thread(target = BuildOBJ1, args = ( #FIXME automatize uuid prefix
-            EXEC, FLG + [f'-DTU_UUID={ tuUuidPrefix }0x{ hex(i)[2:].zfill(8) }'] if defineTuUuid else FLG, i, o, s, len(CPP)
+            EXEC, FLG + [f'-DTU_UUID={ tuUuidPrefix }0x{ hex(i)[2:].zfill(8) }'] if defineTuUuid else FLG, i, o, s, forced_includes, len(CPP)
         ), daemon = True)
         t.start()
         poolMutex.acquire()
@@ -294,19 +294,19 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     eData['include_paths']   += ['-Isrc']
     eData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(".") }/={ AtoE }/']
     eData['forced_includes'] += [
-        '-include', 'src/Lynx/Core/InitList.hpp',                                               # Include generated engine initializers
-        '-include', 'src/Lynx/Core/VkDef.hpp',                                                  # Include forced vulkan macros
-        '-include', 'src/Lynx/Lynx_config.hpp',                                                 # Include engine configuration macros
+        'src/Lynx/Core/InitList.hpp',   # Include generated engine initializers
+        'src/Lynx/Core/VkDef.hpp',      # Include forced vulkan macros
+        'src/Lynx/Lynx_config.hpp',     # Include engine configuration macros
     ]
-    EFLG = eData['defines'] + eData['forced_includes'] + eData['include_paths'] + eData['compiler_flags']
+    EFLG = eData['defines'] + list(Utils.prefixList('-include', eData['forced_includes'])) + eData['include_paths'] + eData['compiler_flags']
 
-    EGLS = eData['gls']                                                                         # GLS source files
-    ESPV = list((        f'./src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in EGLS) # Output .spv files paths
-    EGSI = list((        f'./src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in EGLS) # Generated shader interfaces source files
-    EGSO = list((f'{ EOUT }/Shaders/{ pl.Path(s).stem }.gsi.o') for s in EGLS)                  # Generated shader interfaces .o files
+    EGLS = eData['gls']                                                                 # GLS source files
+    ESPV = list((f'./src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in EGLS)     # Output .spv files paths
+    EGSI = list((f'./src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in EGLS)     # Generated shader interfaces source files
+    EGSO = list((       f'{ EOUT }/Shaders/{ pl.Path(s).stem }.gsi.o')   for s in EGLS)     # Generated shader interfaces .o files
 
-    ECPP = eData['cpp']                                                                         # C++ source files
-    EOBJ = list((f'{ EOUT }'     f'/{ pl.Path(s).stem }.o')     for s in ECPP)                  # Output .o files of the non-generated C++ source files
+    ECPP = eData['cpp']                                             # C++ source files
+    EOBJ = list((f'{ EOUT }/{ pl.Path(s).stem }.o') for s in ECPP)  # Output .o files of the non-generated C++ source files
 
 
 
@@ -326,7 +326,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
 
     print(f'Compiling engine source files')
-    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP, defineTuUuid = True, tuUuidPrefix = 'e')
+    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP, forced_includes = eData['forced_includes'], defineTuUuid = True, tuUuidPrefix = 'e')
     print(f'{ bgreen }Engine source files compiled successfully\n{ white }')
 
 
@@ -349,22 +349,22 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     aData['include_paths']   += ['-I.', f'-I{ AtoE }/src', f'-I.engine/src']
     aData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(EtoA) }/=']
     aData['forced_includes'] += [
-        '-include', f'{ AtoE }/src/Lynx/Core/InitList.hpp',                                     # Include generated engine initializers
-        '-include', f'{ AtoE }/src/Lynx/Core/VkDef.hpp',                                        # Include forced vulkan macros
-        '-include', f'{ AtoE }/src/Lynx/Lynx_config.hpp',                                       # Include engine configuration macros
+        f'{ AtoE }/src/Lynx/Core/InitList.hpp',     # Include generated engine initializers
+        f'{ AtoE }/src/Lynx/Core/VkDef.hpp',        # Include forced vulkan macros
+        f'{ AtoE }/src/Lynx/Lynx_config.hpp',       # Include engine configuration macros
     ]
-    AFLG = aData['defines'] + aData['forced_includes'] + aData['include_paths'] + aData['compiler_flags']
+    AFLG = aData['defines'] + list(Utils.prefixList('-include', aData['forced_includes'])) + aData['include_paths'] + aData['compiler_flags']
 
     AGLS = aData['gls']                                                                         # GLS source files
-    ASPV = list((f'./.engine/src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in AGLS) # Output .spv files paths                  #! Can be empty
-    AGSI = list((f'./.engine/src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in AGLS) # Generated shader interfaces source files #! Can be empty
-    AGSO = list((f'{ AOUT }/Shaders/{ pl.Path(s).stem }.gsi.o') for s in AGLS)                  # Generated shader interfaces .o files
+    ASPV = list((f'./.engine/src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in AGLS)     # Output .spv files paths                  #! Can be empty
+    AGSI = list((f'./.engine/src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in AGLS)     # Generated shader interfaces source files #! Can be empty
+    AGSO = list((               f'{ AOUT }/Shaders/{ pl.Path(s).stem }.gsi.o') for s in AGLS)       # Generated shader interfaces .o files
 
-    ACPP = aData['cpp']                                                                         # C++ source files
-    AOBJ = list((f'{ AOUT }'     f'/{ pl.Path(s).stem }.o')     for s in ACPP)                  # Output .o files of the non-generated C++ source files
+    ACPP = aData['cpp']                                             # C++ source files
+    AOBJ = list((f'{ AOUT }/{ pl.Path(s).stem }.o') for s in ACPP)  # Output .o files of the non-generated C++ source files
 
-    LINK = eData['linker_flags'] + aData['linker_flags']                                        # Linker flags
-    ABIN = aData['output'][0]                                                                   # Path to the application executable file
+    LINK = eData['linker_flags'] + aData['linker_flags']    # Linker flags
+    ABIN = aData['output'][0]                               # Path to the application executable file
 
 
 
@@ -378,7 +378,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
 
     if len(ACPP) > 0:
         print(f'Compiling application source files')
-        BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP, defineTuUuid = True, tuUuidPrefix = 'a')
+        BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP, forced_includes = aData['forced_includes'], defineTuUuid = True, tuUuidPrefix = 'a')
         print(f'{ bgreen }Application source files compiled successfully\n{ white }')
 
 

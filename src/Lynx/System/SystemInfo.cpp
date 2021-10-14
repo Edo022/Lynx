@@ -15,7 +15,7 @@
 
 
 namespace lnx::sys{
-    _lnx_init_var_const_def((CpuInfo), cpu, lnx::sys){
+    _lnx_init_var_value_const_def((CpuInfo), cpu, lnx::sys){
         CpuInfo _cpu = {
             .L1D = {
                 .size     = (uint32)sysconf(_SC_LEVEL1_DCACHE_SIZE),
@@ -69,7 +69,7 @@ namespace lnx::sys{
 
 
 
-    _lnx_init_var_const_def((RamInfo), ram, lnx::sys){
+    _lnx_init_var_value_const_def((RamInfo), ram, lnx::sys){
         RamInfo _ram;
 
         #ifdef _WIN64

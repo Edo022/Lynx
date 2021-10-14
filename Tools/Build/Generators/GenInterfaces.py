@@ -285,8 +285,8 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n'
             f'\n'
             f'\nnamespace lnx::shd::gsi{{' # Write namespace and struct declaration
-            f'\n    _lnx_init_var_dec((InterfaceLayout), { shName }_layout);'
-            f'\n    _lnx_init_var_dec((uint32),          { shName }_pipelineIndex);'
+            f'\n    _lnx_init_var_value_dec((InterfaceLayout), { shName }_layout);'
+            f'\n    _lnx_init_var_value_dec((uint32),          { shName }_pipelineIndex);'
             f'\n    struct { shName } : public ShaderInterface_b {{'
         ))
 

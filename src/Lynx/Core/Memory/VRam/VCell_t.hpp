@@ -38,8 +38,8 @@ namespace lnx{
 
 
 		_lnx_init_var_array_dec((Type_t2), types);			//Buffer types
-        _lnx_init_var_dec((RaArrayC<Cell_t2, uint32>), cells);	//Preallocated cells
-        _lnx_init_var_dec((std::mutex), cells_m);		//Mutex for multithread access
+        _lnx_init_var_value_dec((RaArrayC<Cell_t2, uint32>), cells);	//Preallocated cells
+        _lnx_init_var_value_dec((std::mutex), cells_m);		//Mutex for multithread access
         _lnx_init_fun_dec(LNX_H_VCELL_T);
     }
 }
