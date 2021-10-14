@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_POINTER
 #include "Lynx/Utils.hpp" //TODO MOVE TO CPP
 #include "Lynx/Core/Memory/Ram/Cell_t.hpp"
 #include "Lynx/Tests/StructureInit.hpp"

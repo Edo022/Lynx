@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_VCELL_T
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Memory/VRam/VClasses.hpp"
 #include "Lynx/Types/Containers/RaArray.hpp"

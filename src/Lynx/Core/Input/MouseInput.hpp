@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_MOUSE_INPUT
 
 
 

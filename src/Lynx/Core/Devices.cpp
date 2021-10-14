@@ -13,22 +13,22 @@
 
 
 
-/**
- * @brief Compares 2 _VkPhysicalDevice objects
- *     This function should only be used by the engine
- * Complexity: O(1)
- * @param pA The first device
- * @param pB The second device
- * @return alwaysInline constexpr
- */
-alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhysicalDevice& pB){
-	return pA.properties.deviceID == pB.properties.deviceID;
-}
-
-
-
-
 namespace lnx::core::dvc{
+	/**
+	 * @brief Compares 2 _VkPhysicalDevice objects
+	 *     This function should only be used by the engine
+	 * Complexity: O(1)
+	 * @param pA The first device
+	 * @param pB The second device
+	 * @return alwaysInline constexpr
+	 */
+	alwaysInline constexpr bool sameDevice(const _VkPhysicalDevice& pA, const _VkPhysicalDevice& pB){
+		return pA.properties.deviceID == pB.properties.deviceID;
+	}
+
+
+
+
 	_lnx_init_var_value_def((Device),                  graphics,  lnx::core::dvc){}
 	_lnx_init_var_value_def((RtArray<Device, uint32>), secondary, lnx::core::dvc){}
 

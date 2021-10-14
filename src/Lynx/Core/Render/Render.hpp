@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_RENDER_CORE
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/FenceDE.hpp"
 #include "Lynx/Types/Containers/RtArray.hpp"

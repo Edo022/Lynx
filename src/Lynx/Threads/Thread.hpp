@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_THREAD
 #include "Lynx/Types/Containers/HcArray.hpp"
 #include <pthread.h>
 #include <csignal>

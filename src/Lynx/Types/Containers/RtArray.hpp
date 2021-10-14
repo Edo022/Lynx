@@ -1,5 +1,4 @@
 ﻿#pragma once
-////#define LNX_H_RTARRAY
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 //TODO a low priority thread reorders the points in the meshes
 //TODO If the mesh gets modified, it's sent back to the queue

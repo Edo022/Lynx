@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_LNX_OBJECT
 
 #include "Lynx/Types/Vectors/Vectors.hpp"
 #include "Lynx/Types/Containers/String.hpp"

@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_VMEMORY
 #include "Lynx/Types/Integers/Integers.hpp"
 
 

@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_RAARRAY
 #include "Lynx/Math/Algebra/Algebra.hpp"
 #include "Lynx/Types/Containers/ContainerBase.hpp"
 #include "Lynx/Types/Pointer.hpp"

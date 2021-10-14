@@ -5,13 +5,6 @@
     #error Unsupported operating system. The Lynx Engine can only be compiled on Linux systems
 #endif
 
-//Include defines for intellisense
-#ifdef __INTELLISENSE__
-	#include ".engine/.editor/.intellisense.hpp"
-	//!The file is generated in the .engine directory of the user application when they change the build configuration
-	//!This include is only used to allow Intellisense to correctly parse the code
-#endif
-
 //Check compiler
 #if !defined __GNUC__ || !defined __cplusplus		//Use only g++
     #error g++ compiler required
@@ -129,6 +122,11 @@ neverInline const char* getEnginePath();
 
 
 
+
+
+//Removes the enclosing parentheses of an argument
+#define DEL_P(v) DEL_P2 v
+#define DEL_P2(...) __VA_ARGS__
 
 
 

@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_SOURCE_INFO
 #include "Lynx/Types/Integers/Integers.hpp"
 #include <cstring>
 #include <string>

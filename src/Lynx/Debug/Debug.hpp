@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_DEBUG
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Utils.hpp"
 #include "Lynx/Debug/SourceInfo.hpp"

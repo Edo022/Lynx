@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_STRUCTURE_INIT
 #include "Lynx/Utils.hpp"
 #include "Lynx/Core/Init.hpp"
 #include "Lynx/Debug/Debug.hpp"

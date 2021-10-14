@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_SWAPCHAIN
 #include "Lynx/Core/Render/Shaders/ShaderInterface_t.hpp"
 
 

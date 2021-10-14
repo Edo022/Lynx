@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_CELL_T
 #include "Lynx/Core/Memory/Ram/Classes.hpp"
 #include "Lynx/Types/Containers/RaArrayC.hpp"
 #include "Lynx/Types/Dummy.hpp"

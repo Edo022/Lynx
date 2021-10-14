@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_SHADER_T
 #include "Lynx/Core/IncludeVulkan.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"

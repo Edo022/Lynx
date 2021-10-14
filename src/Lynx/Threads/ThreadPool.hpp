@@ -1,6 +1,4 @@
 #pragma once
-////#define LNX_H_THREAD_POOL
-// #include "Lynx/Lynx_config.hpp"
 #include "Lynx/System/System.hpp"
 #include "Lynx/System/SystemInfo.hpp"
 

@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_VEC4
 #include "Lynx/Utils.hpp"
 #include "Lynx/Types/Vectors/Vec_b.hpp"
 

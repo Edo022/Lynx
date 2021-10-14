@@ -15,7 +15,6 @@
 
 
 
-struct Device;
 
 namespace lnx{
     template<class tType, class tIdxt> struct RaArrayC;
@@ -34,6 +33,10 @@ namespace lnx{
         struct Type_t;
         struct Cell_t;
         template<class tType> struct ptr;
+    }
+
+    namespace core::dvc{
+        struct Device;
     }
 
     namespace vram{

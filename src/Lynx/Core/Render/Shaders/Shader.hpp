@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_SHADER
 #include "Lynx/Core/Render/Shaders/ShaderInterface_t.hpp"
 #include "Lynx/Types/Containers/String.hpp"
 

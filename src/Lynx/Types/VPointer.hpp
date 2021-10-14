@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_VPOINTER
 #include "Lynx/Core/Memory/VRam/VCell_t.hpp"
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Devices.hpp"

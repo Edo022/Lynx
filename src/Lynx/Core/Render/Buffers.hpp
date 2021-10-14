@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_CBUFFERS
 #include "Lynx/Core/IncludeVulkan.hpp"
 
 

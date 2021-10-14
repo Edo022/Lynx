@@ -1,5 +1,4 @@
 #pragma once
-////#define LNX_H_DEVICES
 #include <GLFW/glfw3.h>
 #include "Lynx/Core/Devices_t.hpp"
 #include "Lynx/Types/Containers/String.hpp"
@@ -8,8 +7,8 @@
 
 
 namespace lnx::core::dvc{
-	_lnx_init_var_dec((Device),          graphics);		//Main graphics device
-	_lnx_init_var_dec((RtArray<Device, uint32>), secondary);		//Secondary compute devices
+	_lnx_init_var_dec((Device),                  graphics);		//Main graphics device
+	_lnx_init_var_dec((RtArray<Device, uint32>), secondary);	//Secondary compute devices
 
 	_lnx_init_var_dec((vk::Instance),   instance);		//The only Vulkan instance. This is required in order to use Vulkan
 	_lnx_init_var_dec((GLFWwindow*),    dummyWindow);	//An invisible window used to create dummySurface

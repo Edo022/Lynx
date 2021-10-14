@@ -1,5 +1,4 @@
 ﻿#pragma once
-////#define LNX_H_CORE
 #include "Lynx/Types/Containers/String.hpp"
 #include "Lynx/Types/Integers/Integers.hpp"
 #include "Lynx/Core/Render/Render.hpp"

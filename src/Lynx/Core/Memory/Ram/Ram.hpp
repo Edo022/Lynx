@@ -1,5 +1,4 @@
 ﻿#pragma once
-////#define LNX_H_MEMORY
 #include "Lynx/Types/Pointer.hpp"
 #include "Lynx/Debug/Debug.hpp"
 #include <cstring>
