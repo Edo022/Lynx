@@ -12,8 +12,8 @@
 
 
 namespace lnx::shd::gsi{
-	_lnx_init_var_dec((InterfaceLayout), FloatToIntBuffer_layout);
-	_lnx_init_var_dec((uint32),          FloatToIntBuffer_pipelineIndex);
+	_lnx_init_var_value_dec((InterfaceLayout), FloatToIntBuffer_layout);
+	_lnx_init_var_value_dec((uint32),          FloatToIntBuffer_pipelineIndex);
 	struct FloatToIntBuffer : public ShaderInterface_b {
 
 

@@ -11,26 +11,26 @@
 
 
 
-#define _lnx_init_fun_dec(tu) _lnx_init_var_dec((Dummy), tu##_FUN)
+#define _lnx_init_fun_dec(tu) _lnx_init_var_value_dec((Dummy), tu##_FUN)
 #define _lnx_init_fun_def(tu, fullNs) _lnx_init_var_value_def((Dummy), tu##_FUN, fullNs)
 
-#define _lnx_init_var_dec(      type, name) _lnx_init_var_dec2(      type, name, _lnx_init_var_##name)
-#define _lnx_init_var_array_dec(type, name) _lnx_init_var_array_dec2(type, name, _lnx_init_var_##name)
-#define _lnx_init_var_const_dec(type, name) _lnx_init_var_const_dec2(type, name, _lnx_init_var_##name)
 
 
 
-#define _lnx_init_var_dec2(type, name, id)\
-	_rls(used static alwaysInline DEL_P(type)& g_##name(){ return *_pvt::id##_v; });\
-	_dbg(used              inline DEL_P(type)& g_##name())
 
-#define _lnx_init_var_array_dec2(type, name, id)\
-	_rls(used static alwaysInline DEL_P(type)* g_##name(){ return _pvt::id##_v; });\
-	_dbg(used              inline DEL_P(type)* g_##name())
 
-#define _lnx_init_var_const_dec2(type, name, id)\
-	_rls(used static alwaysInline const DEL_P(type)& g_##name(){ return *_pvt::id##_v; });\
-	_dbg(used              inline const DEL_P(type)& g_##name())
+#define _lnx_init_var_value_const_dec(type, name) _lnx_init_var_dec2((    const DEL_P(type)&), name, _lnx_init_var_##name)
+#define _lnx_init_var_value_dec(      type, name) _lnx_init_var_dec2((          DEL_P(type)&), name, _lnx_init_var_##name)
+#define _lnx_init_var_array_const_dec(type, name) _lnx_init_var_arr_dec2((const DEL_P(type)*), name, _lnx_init_var_##name)
+#define _lnx_init_var_array_dec(      type, name) _lnx_init_var_arr_dec2((      DEL_P(type)*), name, _lnx_init_var_##name)
+
+#define _lnx_init_var_dec2(end_type, name, id)\
+	_rls(used static alwaysInline DEL_P(end_type) g_##name(){ return *_pvt::id##_v; });\
+	_dbg(used              inline DEL_P(end_type) g_##name())
+
+#define _lnx_init_var_arr_dec2(end_type, name, id)\
+	_rls(used static alwaysInline DEL_P(end_type) g_##name(){ return _pvt::id##_v; });\
+	_dbg(used              inline DEL_P(end_type) g_##name())
 
 
 

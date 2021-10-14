@@ -12,8 +12,8 @@
 
 
 namespace lnx::shd::gsi{
-	_lnx_init_var_dec((InterfaceLayout), Volume_layout);
-	_lnx_init_var_dec((uint32),          Volume_pipelineIndex);
+	_lnx_init_var_value_dec((InterfaceLayout), Volume_layout);
+	_lnx_init_var_value_dec((uint32),          Volume_pipelineIndex);
 	struct Volume : public ShaderInterface_b {
 
 

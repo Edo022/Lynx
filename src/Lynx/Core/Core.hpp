@@ -73,8 +73,8 @@ Object rendering
 
 
 namespace lnx::core{
-	_lnx_init_var_dec((std::atomic<bool>), running);
-	_lnx_init_var_dec((Thread), inputThr);
+	_lnx_init_var_value_dec((std::atomic<bool>), running);
+	_lnx_init_var_value_dec((Thread), inputThr);
 
 
 	void inputLoop();

@@ -9,9 +9,9 @@ namespace lnx::core{
 	class RenderCore;
 }
 namespace lnx::core::shaders{
-	_lnx_init_var_dec((String), shaderPath);   //Path to the shaders folder //TODO EVALUATE AT RUNTIME
-	_lnx_init_var_dec((uint32), pipelineNum);  //The number of shaders. Used in static initialization and in Window class to allocate a lookup table for the pipelines
-	_lnx_init_var_dec((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts);
+	_lnx_init_var_value_dec((String), shaderPath);   //Path to the shaders folder //TODO EVALUATE AT RUNTIME
+	_lnx_init_var_value_dec((uint32), pipelineNum);  //The number of shaders. Used in static initialization and in Window class to allocate a lookup table for the pipelines
+	_lnx_init_var_value_dec((RtArray<shd::InterfaceLayout*, uint32>), pipelineLayouts);
 	_lnx_init_fun_dec(LNX_H_SHADER);
 
 

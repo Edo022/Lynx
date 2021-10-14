@@ -12,8 +12,8 @@
 
 
 namespace lnx::shd::gsi{
-	_lnx_init_var_dec((InterfaceLayout), Line2_layout);
-	_lnx_init_var_dec((uint32),          Line2_pipelineIndex);
+	_lnx_init_var_value_dec((InterfaceLayout), Line2_layout);
+	_lnx_init_var_value_dec((uint32),          Line2_pipelineIndex);
 	struct Line2 : public ShaderInterface_b {
 
 
