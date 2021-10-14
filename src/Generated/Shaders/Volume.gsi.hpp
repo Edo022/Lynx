@@ -18,7 +18,7 @@ namespace lnx::shd::gsi{
 
 
 		struct l_outcol : public ShaderElm_b<eStorage> {
-			alwaysInline l_outcol(const bool vExt) : ShaderElm_b() {}
+			alwaysInline l_outcol(const Dummy) : ShaderElm_b() {}
 			inline l_outcol() : ShaderElm_b(512) {}
 			inline l_outcol(const l_outcol& pOutcol) {
 				ShaderElm_b:: data = pOutcol. data;
@@ -37,17 +37,26 @@ namespace lnx::shd::gsi{
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
-			f32v4& arrayh = *(f32v4*)(ShaderElm_b::data + 0);
+		private:
+			f32v4* _pvt_elm_arrayh = (f32v4*)(ShaderElm_b::data + 0);
 			uint64 arrayh_tmp_size = 480;
-			i32& valueh = *(i32*)(ShaderElm_b::data + 480);
-			f32v4& outcol = *(f32v4*)(ShaderElm_b::data + 496);
+		public:
+			alwaysInline f32v4& eArrayh(){ return *_pvt_elm_arrayh; }
+		private:
+			i32* _pvt_elm_valueh = (i32*)(ShaderElm_b::data + 480);
+		public:
+			alwaysInline i32& eValueh(){ return *_pvt_elm_valueh; }
+		private:
+			f32v4* _pvt_elm_outcol = (f32v4*)(ShaderElm_b::data + 496);
 			uint64 outcol_tmp_size = 0;
+		public:
+			alwaysInline f32v4& eOutcol(){ return *_pvt_elm_outcol; }
 		};
-		l_outcol outcol{ true };
+		l_outcol outcol{ Dummy() };
 
 
 		struct l_wsize : public ShaderElm_b<eStorage> {
-			alwaysInline l_wsize(const bool vExt) : ShaderElm_b() {}
+			alwaysInline l_wsize(const Dummy) : ShaderElm_b() {}
 			inline l_wsize() : ShaderElm_b(256) {}
 			inline l_wsize(const l_wsize& pWsize) {
 				ShaderElm_b:: data = pWsize. data;
@@ -66,13 +75,16 @@ namespace lnx::shd::gsi{
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
-			u32v2& wsize = *(u32v2*)(ShaderElm_b::data + 0);
+		private:
+			u32v2* _pvt_elm_wsize = (u32v2*)(ShaderElm_b::data + 0);
+		public:
+			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
 		};
-		l_wsize wsize{ true };
+		l_wsize wsize{ Dummy() };
 
 
 		struct l_data : public ShaderElm_b<eUniform> {
-			alwaysInline l_data(const bool vExt) : ShaderElm_b() {}
+			alwaysInline l_data(const Dummy) : ShaderElm_b() {}
 			inline l_data() : ShaderElm_b(256) {}
 			inline l_data(const l_data& pData) {
 				ShaderElm_b:: data = pData. data;
@@ -91,9 +103,18 @@ namespace lnx::shd::gsi{
 				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
 				return *this;
 			}
-			f32v3& pos = *(f32v3*)(ShaderElm_b::data + 0);
-			f32& r = *(f32*)(ShaderElm_b::data + 16);
-			f32v4& col = *(f32v4*)(ShaderElm_b::data + 32);
+		private:
+			f32v3* _pvt_elm_pos = (f32v3*)(ShaderElm_b::data + 0);
+		public:
+			alwaysInline f32v3& lPos(){ return *_pvt_elm_pos; }
+		private:
+			f32* _pvt_elm_r = (f32*)(ShaderElm_b::data + 16);
+		public:
+			alwaysInline f32& lR(){ return *_pvt_elm_r; }
+		private:
+			f32v4* _pvt_elm_col = (f32v4*)(ShaderElm_b::data + 32);
+		public:
+			alwaysInline f32v4& lCol(){ return *_pvt_elm_col; }
 		};
 		l_data data;
 

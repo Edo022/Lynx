@@ -315,7 +315,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
         fh.write('\n\n' + fixTabs(
             '\n\n'.join(((
             f'\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{'
-            f'\n    alwaysInline { l.cstr }(const bool vExt) : ShaderElm_b() {{}}'    # External layout constructor
+            f'\n    alwaysInline { l.cstr }(const Dummy) : ShaderElm_b() {{}}'    # External layout constructor
             f'\n    inline { l.cstr }() : ShaderElm_b({ l.size }) {{}}'               # Default constructor (Partial construction)
             # Copy constructor
             f'\n    inline { l.cstr }(const { l.cstr }& p{ capitalize1(l.name) }) {{'
@@ -340,14 +340,21 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n    }}') + #TODO add operator= for different buffer types
             # Member references
             f''     ''.join((
-            f'\n    { m.type }& { m.name } = *({ m.type }*)(ShaderElm_b::data + { m.ofst });' + ('' if m.aLen == None else
+            f'\nprivate:'
+            f'\n    { m.type }* _pvt_elm_{ m.name } = ({ m.type }*)(ShaderElm_b::data + { m.ofst });' + (
+            f''     if m.aLen == None else
             f'\n    uint64 { m.name }_tmp_size = { m.size };') +  #!^ offset includes the length of the arrays  #TODO use an actual array #FIXME use an array that automatically reallocates the whole block when resizing the unknown size array
+            f'\npublic:'
+            f'\n    alwaysInline { m.type }& { "e" if l.iExt else "l" }{ capitalize1(m.name) }(){{ return *_pvt_elm_{ m.name }; }}'
             f''     ) for m in l.elms) +
             f'\n}};'
-            f'\n{ l.cstr } { l.name }' + ('{ true }' if l.iExt else '') + ';'
+            f'\n{ l.cstr } { l.name }' + ('{ Dummy() }' if l.iExt else '') + ';'
             f'' ) for l in pGlsl.layouts),
         2))
-
+        #FIXME CONSTRUCT A STRING WITH A READABLE SYNTAX
+        #FIXME ADD DEBUG CHECKS IN GETTER FUNCTIONS
+        #FIXME CHECK THAT EXTERN VARIABLES ARE INITIALIZED BEFORE BEING USED
+        #FIXME CHECK THAT LOCAL VARIABLES ARE INITIALIZED AFTER THE INITIALIZATION OF THE DATA POINTER. !NULL
 
 
 
