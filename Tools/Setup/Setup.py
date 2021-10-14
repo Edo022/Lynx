@@ -32,6 +32,7 @@ else:
         f'\n    │       └─ .intellisense.hpp'
         f'\n    └─ .vscode'
         f'\n        ├─ tasks.json'
+        f'\n        ├─ launch.json'
         f'\n        └─ c_cpp_properties.json'
         f'\n\nContinue? (y/n)'
     )
@@ -42,10 +43,10 @@ os.path.dirname(os.getcwd())
 
 if sys.stdin.read(1).lower() == 'y':
     # Create missing directories
-    if not os.path.exists(cwdToA + "/.vscode"): os.mkdir(cwdToA + "/.vscode")
-    if not os.path.exists(cwdToA + "/.engine"): os.mkdir(cwdToA + "/.engine")
-    if not os.path.exists(cwdToA + "/.engine/.editor"): os.mkdir(cwdToA + "/.engine/.editor")
-    if not os.path.exists(cwdToA + "/.engine/.setup"): os.mkdir(cwdToA + "/.engine/.setup")
+    os.makedirs(exist_ok = True, name = './.vscode')
+    os.makedirs(exist_ok = True, name = './.engine')
+    os.makedirs(exist_ok = True, name = './.engine/.editor')
+    os.makedirs(exist_ok = True, name = './.engine/.setup')
 
 
     # Write paths
@@ -59,6 +60,70 @@ if sys.stdin.read(1).lower() == 'y':
     with open('.engine/.setup/.Eabs', 'w') as f: f.write(Eabs)   # Absolute path of Engine SDK
     with open('.engine/.setup/.AtoE', 'w') as f: f.write(AtoE)   # Application to Engine relative path
     with open('.engine/.setup/.EtoA', 'w') as f: f.write(EtoA)   # Engine to Application relative path
+
+
+
+
+    # Write launch configurations
+    with open('.vscode/launch.json', 'w') as f:
+        f.write(
+            f'\n            {{'
+            f'\n    "version": "0.2.0",'
+            f'\n    "configurations": ['
+            f'\n        {{'
+            f'\n            "name": "Application (debug)",'
+            f'\n            "type": "cppdbg",'
+            f'\n            "request": "launch",'
+            f'\n            "program": "${{workspaceFolder}}/Application",'
+            f'\n            "args": [],'
+            f'\n            "stopAtEntry": false,'
+            f'\n            "cwd": "${{workspaceFolder}}",'
+            f'\n            "environment": [],'
+            f'\n            "externalConsole": false,'
+            f'\n            "MIMode": "gdb",'
+            f'\n            "setupCommands": ['
+            f'\n                {{'
+            f'\n                    "text": "-enable-pretty-printing",'
+            f'\n                    "ignoreFailures": true'
+            f'\n                }},'
+            f'\n                {{'
+            f'\n                    "text": "handle SIGSTOP nostop noprint pass" }},{{      //Suspend thread //TODO'
+            f'\n                    "text": "handle SIGCONT nostop noprint pass"          //Resume thread //TODO'
+            f'\n                }}'
+            f'\n            ]'
+            f'\n        }}'
+            f'\n    ]'
+            f'\n}}'
+        )
+
+
+
+
+    # Write C/C++ file
+    with open('.vscode/c_cpp_properties.json', 'w') as f:
+        f.write(
+            f'\n{{'
+            f'\n    "configurations": ['
+            f'\n        {{'
+            f'\n            "name": "Lynx-editor",'
+            f'\n            "includePath": ['
+            f'\n                "${{workspaceFolder}}/.engine/.src", //Generated source files'
+            f'\n                "${{workspaceFolder}}/{ AtoE }/src" //Lynx Engine source files'
+            f'\n            ],'
+            f'\n            "defines": [],'
+            f'\n            "compilerPath": "/usr/bin/g++",'
+            f'\n            "cStandard": "${{default}}",'
+            f'\n            "cppStandard": "c++20",'
+            f'\n            "intelliSenseMode": "linux-gcc-x64",'
+            f'\n            "forcedInclude": ['
+            f'\n                ".engine/.editor/.intellisense.hpp", //This helps Intellisense to correctly parse your code'
+            f'\n                "${{workspaceFolder}}/{ AtoE }/src/Lynx/Core/InitList.hpp" //Generated initializers'
+            f'\n            ]'
+            f'\n        }}'
+            f'\n    ],'
+            f'\n    "version": 4'
+            f'\n}}'
+        )
 
 
 
