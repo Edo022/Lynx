@@ -11,113 +11,62 @@
 
 
 
-#define _lnx_init_fun_dec(tu) _lnx_init_var_value_dec((Dummy), tu##_FUN)
-#define _lnx_init_fun_def(tu, fullNs) _lnx_init_var_value_def((Dummy), tu##_FUN, fullNs)
 
 
+#define _lnx_init_var_value_dec(      vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (      DEL_P(vType)&), *)
+#define _lnx_init_var_array_dec(      vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (      DEL_P(vType)*),  )
+#define _lnx_init_var_value_const_dec(vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (const DEL_P(vType)&), *)
+#define _lnx_init_var_array_const_dec(vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (const DEL_P(vType)*),  )
 
+#define _lnx_init_var_dec2(vName, vId, vEndType, vDeref)\
+	_rls(used static alwaysInline DEL_P(vEndType) g_##vName(){ return vDeref _pvt::vId##_v; });\
+	_dbg(used              inline DEL_P(vEndType) g_##vName())
 
-
-
-#define _lnx_init_var_value_const_dec(type, name) _lnx_init_var_dec2((    const DEL_P(type)&), name, _lnx_init_var_##name)
-#define _lnx_init_var_value_dec(      type, name) _lnx_init_var_dec2((          DEL_P(type)&), name, _lnx_init_var_##name)
-#define _lnx_init_var_array_const_dec(type, name) _lnx_init_var_arr_dec2((const DEL_P(type)*), name, _lnx_init_var_##name)
-#define _lnx_init_var_array_dec(      type, name) _lnx_init_var_arr_dec2((      DEL_P(type)*), name, _lnx_init_var_##name)
-
-#define _lnx_init_var_dec2(end_type, name, id)\
-	_rls(used static alwaysInline DEL_P(end_type) g_##name(){ return *_pvt::id##_v; });\
-	_dbg(used              inline DEL_P(end_type) g_##name())
-
-#define _lnx_init_var_arr_dec2(end_type, name, id)\
-	_rls(used static alwaysInline DEL_P(end_type) g_##name(){ return _pvt::id##_v; });\
-	_dbg(used              inline DEL_P(end_type) g_##name())
 
 
 
 
 
 #ifndef __LNX_PARSE_INITIALIZER_GENERATOR__
-	#define _lnx_init_var_value_def(type, name, fullNs)        _lnx_init_var_value_def2(type, name,     1, _lnx_init_var_##name)
-	#define _lnx_init_var_array_def(type, name, count, fullNs) _lnx_init_var_array_def2(type, name, count, _lnx_init_var_##name)
-	#define _lnx_init_var_const_def(type, name, fullNs)        _lnx_init_var_const_def2(type, name,     1, _lnx_init_var_##name)
+	#define _lnx_init_var_value_def(      vType, vName,         vFullNamespace) _lnx_init_var_def2(vType, vName,      1, _lnx_init_var_##vName, (      DEL_P(vType)&), *)
+	#define _lnx_init_var_array_def(      vType, vName, vCount, vFullNamespace) _lnx_init_var_def2(vType, vName, vCount, _lnx_init_var_##vName, (      DEL_P(vType)*),  )
+	#define _lnx_init_var_value_const_def(vType, vName,         vFullNamespace) _lnx_init_var_def2(vType, vName,      1, _lnx_init_var_##vName, (const DEL_P(vType)&), *)
+	#define _lnx_init_var_array_const_def(vType, vName, vCount, vFullNamespace) _lnx_init_var_def2(vType, vName, vCount, _lnx_init_var_##vName, (const DEL_P(vType)*),  )
 #else
-	#define _lnx_init_var_value_def(type, name, fullNs)        _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type),_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
-	#define _lnx_init_var_array_def(type, name, count, fullNs) _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type),_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
-	#define _lnx_init_var_const_def(type, name, fullNs)        _LNX_INITIALIZER_GENERATOR_TYPE=DEL_P(type),_LNX_INITIALIZER_GENERATOR_NAME=name,_LNX_INITIALIZER_GENERATOR_FULLNS=fullNs;
+	#define _lnx_init_var_value_def(      vType, vName,         vFullNamespace) _LNX_PARSE_INITIALIZER_GENERATOR_TYPE=DEL_P(vType),_LNX_PARSE_INITIALIZER_GENERATOR_NAME=vName,_LNX_PARSE_INITIALIZER_GENERATOR_FULLNS=vFullNamespace;
+	#define _lnx_init_var_array_def(      vType, vName, vCount, vFullNamespace) _LNX_PARSE_INITIALIZER_GENERATOR_TYPE=DEL_P(vType),_LNX_PARSE_INITIALIZER_GENERATOR_NAME=vName,_LNX_PARSE_INITIALIZER_GENERATOR_FULLNS=vFullNamespace;
+	#define _lnx_init_var_value_const_def(vType, vName,         vFullNamespace) _LNX_PARSE_INITIALIZER_GENERATOR_TYPE=DEL_P(vType),_LNX_PARSE_INITIALIZER_GENERATOR_NAME=vName,_LNX_PARSE_INITIALIZER_GENERATOR_FULLNS=vFullNamespace;
+	#define _lnx_init_var_array_const_def(vType, vName, vCount, vFullNamespace) _LNX_PARSE_INITIALIZER_GENERATOR_TYPE=DEL_P(vType),_LNX_PARSE_INITIALIZER_GENERATOR_NAME=vName,_LNX_PARSE_INITIALIZER_GENERATOR_FULLNS=vFullNamespace;
 #endif
 
 
 
 
-#define _lnx_init_var_array_def2(type, name, count, id)     \
-	_lnx_init_var_call_t_definition(type, name, count, id)\
+#define _lnx_init_var_def2(vType, vName, vCount, vId, vEndType, vDeref)   \
+	/*Initialization functions definition*/                               \
+	namespace _pvt{                                                       \
+		used DEL_P(vType)* vId##_v;                                       \
+		used bool vId##_is_init;                                          \
+		vId##_init_t_call_t::vId##_init_t_call_t(){                       \
+			if(!vId##_is_init) {                                          \
+				used static DEL_P(vType)* var = new DEL_P(vType)[vCount]; \
+				set(var);                                                 \
+				vId##_v = var;                                            \
+				vId##_is_init = true;                                     \
+			}                                                             \
+		}                                                                 \
 	\
-	/*Debug getter function*/\
-	_dbg(used inline DEL_P(type)* g_##name(){)\
-	_dbg(	static_assert(!std::is_const_v<DEL_P(type)>, "Use _lnx_init_var_const_def to define const variables");)\
-	_dbg(	lnx::dbg::assertCond(_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	return _pvt::id##_v;)\
-	_dbg(};)\
-	void _pvt::id##_init_t_call_t::set(DEL_P(type)* pVar)
-
-
-
-
-#define _lnx_init_var_value_def2(type, name, count, id)     \
-	_lnx_init_var_call_t_definition(type, name, count, id)\
-	\
-	/*Debug getter function*/\
-	_dbg(used inline DEL_P(type)& g_##name(){)\
-	_dbg(	static_assert(!std::is_const_v<DEL_P(type)>, "Use _lnx_init_var_const_def to define const variables");)\
-	_dbg(	lnx::dbg::assertCond(_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	return *_pvt::id##_v;)\
-	_dbg(};)\
-	void _pvt::id##_init_t_call_t::set(DEL_P(type)* pVar)
-
-
-
-
-#define _lnx_init_var_const_def2(type, name, count, id)     \
-	_lnx_init_var_call_t_definition(type, name, count, id)\
-	\
-	/*Debug getter function*/\
-	_dbg(used inline const DEL_P(type)& g_##name(){)\
-	_dbg(	static_assert(!std::is_const_v<DEL_P(type)>, "Const type used in const definition");)\
-	_dbg(	lnx::dbg::assertCond(_pvt::id##_is_init, "Global variable \"g_" #name "\" used before initialization");)\
-	_dbg(	return *_pvt::id##_v;)\
-	_dbg(};)\
-	void _pvt::id##_init_t_call_t::set(DEL_P(type)* pVar)
+	}                                                                     \
+	/*Debug get function definition*/                                     \
+	_dbg(used inline DEL_P(vEndType) g_##vName(){)                        \
+	_dbg(	lnx::dbg::assertCond(_pvt::vId##_is_init, "Global variable \"g_" #vName "\" used before initialization");)\
+	_dbg(	return vDeref _pvt::vId##_v;)                                 \
+	_dbg(};)                                                              \
+	void _pvt::vId##_init_t_call_t::set(DEL_P(vType)* pVar)
 
 
 
 
 
-
-
-
-#define _lnx_init_var_call_t_definition(type, name, count, id)\
-	namespace _pvt{                                \
-		used DEL_P(type)* id##_v;\
-		used bool id##_is_init;   \
-		id##_init_t_call_t::id##_init_t_call_t(){\
-			if(!id##_is_init) {\
-				used static DEL_P(type)* var = new DEL_P(type)[count];             \
-				set(var);\
-				id##_v = var;\
-				id##_is_init = true;\
-			}\
-		}\
-		\
-	}
-
-
-
-
-
-
-
-
-
-
-//FIXME PASS THE POINTER WITH THE TYPE WHEN USING ARRAYS
-
+#define _lnx_init_fun_dec(vTranslationUnit)                 _lnx_init_var_value_dec((Dummy), vTranslationUnit##_FUN)
+#define _lnx_init_fun_def(vTranslationUnit, vFullNamespace) _lnx_init_var_value_def((Dummy), vTranslationUnit##_FUN, vFullNamespace)
