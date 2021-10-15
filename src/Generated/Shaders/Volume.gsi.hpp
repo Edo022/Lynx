@@ -17,6 +17,42 @@ namespace lnx::shd::gsi{
 	struct Volume : public ShaderInterface_b {
 
 
+
+
+		struct l_data : public ShaderElm_b<eUniform> {
+			alwaysInline l_data(const Dummy) : ShaderElm_b() {}
+			inline l_data() : ShaderElm_b(256) {}
+			inline l_data(const l_data& pData) {
+				ShaderElm_b:: data = pData. data;
+				ShaderElm_b::vdata = pData.vdata;
+			}
+			inline l_data& operator=(const l_data& pData) {
+				ShaderElm_b:: data = pData. data;
+				ShaderElm_b::vdata = pData.vdata;
+				return *this;
+				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
+			}
+			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
+				return *this;
+			}
+		private:
+			friend struct Volume;
+			f32v3* _pvt_elm_pos = (f32v3*)(ShaderElm_b::data + 0);
+			f32* _pvt_elm_r = (f32*)(ShaderElm_b::data + 16);
+			f32v4* _pvt_elm_col = (f32v4*)(ShaderElm_b::data + 32);
+		public:
+			alwaysInline f32v3& lPos(){ return *_pvt_elm_pos; }
+			alwaysInline f32& lR(){ return *_pvt_elm_r; }
+			alwaysInline f32v4& lCol(){ return *_pvt_elm_col; }
+		};
+		l_data data;
+
+
 		struct l_outcol : public ShaderElm_b<eStorage> {
 			alwaysInline l_outcol(const Dummy) : ShaderElm_b() {}
 			inline l_outcol() : ShaderElm_b(512) {}
@@ -29,6 +65,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pOutcol.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_outcol(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -38,18 +75,15 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			f32v4* _pvt_elm_arrayh = (f32v4*)(ShaderElm_b::data + 0);
+			friend struct Volume;
+			f32v4* _pvt_elm_arrayh = nullptr;
 			uint64 arrayh_tmp_size = 480;
-		public:
-			alwaysInline f32v4& eArrayh(){ return *_pvt_elm_arrayh; }
-		private:
-			i32* _pvt_elm_valueh = (i32*)(ShaderElm_b::data + 480);
-		public:
-			alwaysInline i32& eValueh(){ return *_pvt_elm_valueh; }
-		private:
-			f32v4* _pvt_elm_outcol = (f32v4*)(ShaderElm_b::data + 496);
+			i32* _pvt_elm_valueh = nullptr;
+			f32v4* _pvt_elm_outcol = nullptr;
 			uint64 outcol_tmp_size = 0;
 		public:
+			alwaysInline f32v4& eArrayh(){ return *_pvt_elm_arrayh; }
+			alwaysInline i32& eValueh(){ return *_pvt_elm_valueh; }
 			alwaysInline f32v4& eOutcol(){ return *_pvt_elm_outcol; }
 		};
 		l_outcol outcol{ Dummy() };
@@ -67,6 +101,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pWsize.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -76,49 +111,12 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			u32v2* _pvt_elm_wsize = (u32v2*)(ShaderElm_b::data + 0);
+			friend struct Volume;
+			u32v2* _pvt_elm_wsize = nullptr;
 		public:
 			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
 		};
 		l_wsize wsize{ Dummy() };
-
-
-		struct l_data : public ShaderElm_b<eUniform> {
-			alwaysInline l_data(const Dummy) : ShaderElm_b() {}
-			inline l_data() : ShaderElm_b(256) {}
-			inline l_data(const l_data& pData) {
-				ShaderElm_b:: data = pData. data;
-				ShaderElm_b::vdata = pData.vdata;
-			}
-			inline l_data& operator=(const l_data& pData) {
-				ShaderElm_b:: data = pData. data;
-				ShaderElm_b::vdata = pData.vdata;
-				return *this;
-				//FIXME automatically update render data after calling this function
-			}
-			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
-				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
-			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
-				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
-				return *this;
-			}
-		private:
-			f32v3* _pvt_elm_pos = (f32v3*)(ShaderElm_b::data + 0);
-		public:
-			alwaysInline f32v3& lPos(){ return *_pvt_elm_pos; }
-		private:
-			f32* _pvt_elm_r = (f32*)(ShaderElm_b::data + 16);
-		public:
-			alwaysInline f32& lR(){ return *_pvt_elm_r; }
-		private:
-			f32v4* _pvt_elm_col = (f32v4*)(ShaderElm_b::data + 32);
-		public:
-			alwaysInline f32v4& lCol(){ return *_pvt_elm_col; }
-		};
-		l_data data;
-
-
 		void spawn(
 			const l_outcol& pOutcol,
 			const l_wsize& pWsize,
@@ -128,8 +126,9 @@ namespace lnx::shd::gsi{
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
-	};
+    };
 
 
-	_lnx_init_fun_dec(LNX_H_VOLUME);
+
+    _lnx_init_fun_dec(LNX_H_VOLUME);
 }

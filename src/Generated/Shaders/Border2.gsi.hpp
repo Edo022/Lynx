@@ -17,6 +17,42 @@ namespace lnx::shd::gsi{
 	struct Border2 : public ShaderInterface_b {
 
 
+
+
+		struct l_data : public ShaderElm_b<eUniform> {
+			alwaysInline l_data(const Dummy) : ShaderElm_b() {}
+			inline l_data() : ShaderElm_b(256) {}
+			inline l_data(const l_data& pData) {
+				ShaderElm_b:: data = pData. data;
+				ShaderElm_b::vdata = pData.vdata;
+			}
+			inline l_data& operator=(const l_data& pData) {
+				ShaderElm_b:: data = pData. data;
+				ShaderElm_b::vdata = pData.vdata;
+				return *this;
+				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
+			}
+			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
+			}
+			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
+				return *this;
+			}
+		private:
+			friend struct Border2;
+			f32v2* _pvt_elm_ffp = (f32v2*)(ShaderElm_b::data + 0);
+			f32v2* _pvt_elm_fsp = (f32v2*)(ShaderElm_b::data + 8);
+			u32* _pvt_elm_ID = (u32*)(ShaderElm_b::data + 16);
+		public:
+			alwaysInline f32v2& lFfp(){ return *_pvt_elm_ffp; }
+			alwaysInline f32v2& lFsp(){ return *_pvt_elm_fsp; }
+			alwaysInline u32& lID(){ return *_pvt_elm_ID; }
+		};
+		l_data data;
+
+
 		struct l_outcol : public ShaderElm_b<eStorage> {
 			alwaysInline l_outcol(const Dummy) : ShaderElm_b() {}
 			inline l_outcol() : ShaderElm_b(0) {}
@@ -29,6 +65,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pOutcol.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_outcol(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -38,7 +75,8 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			f32v4* _pvt_elm_outcol = (f32v4*)(ShaderElm_b::data + 0);
+			friend struct Border2;
+			f32v4* _pvt_elm_outcol = nullptr;
 			uint64 outcol_tmp_size = 0;
 		public:
 			alwaysInline f32v4& eOutcol(){ return *_pvt_elm_outcol; }
@@ -58,6 +96,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pWsize.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -67,7 +106,8 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			u32v2* _pvt_elm_wsize = (u32v2*)(ShaderElm_b::data + 0);
+			friend struct Border2;
+			u32v2* _pvt_elm_wsize = nullptr;
 		public:
 			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
 		};
@@ -86,6 +126,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pZbuff.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -95,50 +136,13 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			u32* _pvt_elm_zbuff = (u32*)(ShaderElm_b::data + 0);
+			friend struct Border2;
+			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
 			alwaysInline u32& eZbuff(){ return *_pvt_elm_zbuff; }
 		};
 		l_zbuff zbuff{ Dummy() };
-
-
-		struct l_data : public ShaderElm_b<eUniform> {
-			alwaysInline l_data(const Dummy) : ShaderElm_b() {}
-			inline l_data() : ShaderElm_b(256) {}
-			inline l_data(const l_data& pData) {
-				ShaderElm_b:: data = pData. data;
-				ShaderElm_b::vdata = pData.vdata;
-			}
-			inline l_data& operator=(const l_data& pData) {
-				ShaderElm_b:: data = pData. data;
-				ShaderElm_b::vdata = pData.vdata;
-				return *this;
-				//FIXME automatically update render data after calling this function
-			}
-			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
-				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
-			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
-				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
-				return *this;
-			}
-		private:
-			f32v2* _pvt_elm_ffp = (f32v2*)(ShaderElm_b::data + 0);
-		public:
-			alwaysInline f32v2& lFfp(){ return *_pvt_elm_ffp; }
-		private:
-			f32v2* _pvt_elm_fsp = (f32v2*)(ShaderElm_b::data + 8);
-		public:
-			alwaysInline f32v2& lFsp(){ return *_pvt_elm_fsp; }
-		private:
-			u32* _pvt_elm_ID = (u32*)(ShaderElm_b::data + 16);
-		public:
-			alwaysInline u32& lID(){ return *_pvt_elm_ID; }
-		};
-		l_data data;
-
-
 		void spawn(
 			const l_outcol& pOutcol,
 			const l_wsize& pWsize,
@@ -149,8 +153,9 @@ namespace lnx::shd::gsi{
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
-	};
+    };
 
 
-	_lnx_init_fun_dec(LNX_H_BORDER2);
+
+    _lnx_init_fun_dec(LNX_H_BORDER2);
 }

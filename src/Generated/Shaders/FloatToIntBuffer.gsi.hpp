@@ -17,6 +17,8 @@ namespace lnx::shd::gsi{
 	struct FloatToIntBuffer : public ShaderInterface_b {
 
 
+
+
 		struct l_src : public ShaderElm_b<eStorage> {
 			alwaysInline l_src(const Dummy) : ShaderElm_b() {}
 			inline l_src() : ShaderElm_b(0) {}
@@ -29,6 +31,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pSrc.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_src(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -38,7 +41,8 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			f32v4* _pvt_elm_src = (f32v4*)(ShaderElm_b::data + 0);
+			friend struct FloatToIntBuffer;
+			f32v4* _pvt_elm_src = nullptr;
 			uint64 src_tmp_size = 0;
 		public:
 			alwaysInline f32v4& eSrc(){ return *_pvt_elm_src; }
@@ -58,6 +62,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pDst.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_dst(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -67,7 +72,8 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			u32* _pvt_elm_dst = (u32*)(ShaderElm_b::data + 0);
+			friend struct FloatToIntBuffer;
+			u32* _pvt_elm_dst = nullptr;
 			uint64 dst_tmp_size = 0;
 		public:
 			alwaysInline u32& eDst(){ return *_pvt_elm_dst; }
@@ -87,6 +93,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pWsize.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -96,7 +103,8 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			u32v2* _pvt_elm_wsize = (u32v2*)(ShaderElm_b::data + 0);
+			friend struct FloatToIntBuffer;
+			u32v2* _pvt_elm_wsize = nullptr;
 		public:
 			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
 		};
@@ -115,6 +123,7 @@ namespace lnx::shd::gsi{
 				ShaderElm_b::vdata = pZbuff.vdata;
 				return *this;
 				//FIXME automatically update render data after calling this function
+				//FIXME automatically update render data after calling this function
 			}
 			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
@@ -124,14 +133,13 @@ namespace lnx::shd::gsi{
 				return *this;
 			}
 		private:
-			u32* _pvt_elm_zbuff = (u32*)(ShaderElm_b::data + 0);
+			friend struct FloatToIntBuffer;
+			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
 			alwaysInline u32& eZbuff(){ return *_pvt_elm_zbuff; }
 		};
 		l_zbuff zbuff{ Dummy() };
-
-
 		void spawn(
 			const l_src& pSrc,
 			const l_dst& pDst,
@@ -143,8 +151,9 @@ namespace lnx::shd::gsi{
 		void createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);
 		void destroy();
-	};
+    };
 
 
-	_lnx_init_fun_dec(LNX_H_FLOATTOINTBUFFER);
+
+    _lnx_init_fun_dec(LNX_H_FLOATTOINTBUFFER);
 }
