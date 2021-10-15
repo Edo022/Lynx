@@ -17,7 +17,7 @@
 #define _lnx_init_var_array_const_dec(vType, vName) _lnx_init_var_dec2(vName, _lnx_init_var_##vName, (const DEL_P(vType)*),  )
 
 #define _lnx_init_var_dec2(vName, vId, vEndType, vDeref)\
-	_rls(used static alwaysInline DEL_P(vEndType) g_##vName(){ return vDeref _pvt::vId##_v; });\
+	_rls(used static alwaysInline DEL_P(vEndType) g_##vName(){ return vDeref _pvt::vId##_v; })\
 	_dbg(used              inline DEL_P(vEndType) g_##vName())
 
 

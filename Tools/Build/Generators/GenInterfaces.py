@@ -2,6 +2,7 @@ import os, re, sys, subprocess, math
 from argparse import Namespace as ns
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 import Utils
+from Utils import capitalize1, fixTabs
 
 #TODO write what external bindings are and how to use them
 #TODO add matrix support
@@ -200,32 +201,6 @@ def getLayouts(glsl:str):
 
 
 
-
-def capitalize1(s:str):
-    if len(s) > 1:
-        return s[0].upper() + s[1:]
-    else:
-        return s.upper()
-
-
-
-
-def fixTabs(s:str, indent:int = 0):
-    ls = s.split('\n')
-    for i, l in enumerate(ls):
-        wsLen:int = 0
-        while True:
-            r = re.match(r'^((?:(?: {,3})\t)|(?: {4}))', l)
-            if r == None: break
-            l = l[len(r.group(1)):]
-            wsLen += 1
-        ls[i] = '\t' * (wsLen + indent * (len(l) > 0)) + l
-
-    return '\n'.join(ls)
-
-
-
-
 # Parses a GLSL compute shader and writes 2 C++ interface files
 def parseShader(pathr:str, EtoA:str, isEngine:bool):
     AtoE:str = os.path.relpath('.', EtoA)
@@ -267,6 +242,15 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
 
+    # Header -------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
     #Write output files
     with open(f'{ shOutPath }/{ shName }.gsi.hpp', 'w') as fh, open(f'{ shOutPath }/{ shName }.gsi.cpp', 'w') as fc:
 
@@ -291,6 +275,125 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
         ))
 
 
+
+
+
+
+
+
+        # Write layout structs #FIXME move definition to .cpp
+        s = ''
+        for l in layouts + externs:
+            s += '\n\n'
+
+            c1name = capitalize1(l.name)
+            s += (
+                f'\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{'
+                f'\n    alwaysInline { l.cstr }(const Dummy) : ShaderElm_b() {{}}'    # External layout constructor
+                f'\n    inline { l.cstr }() : ShaderElm_b({ l.size }) {{}}'               # Default constructor (Partial construction)
+                # Copy constructor
+                f'\n    inline { l.cstr }(const { l.cstr }& p{ capitalize1(l.name) }) {{'
+                f'\n    	ShaderElm_b:: data = p{ c1name }. data;'
+                f'\n    	ShaderElm_b::vdata = p{ c1name }.vdata;'
+                f'\n    }}'
+
+                # Copy assignment
+                f'\n    inline { l.cstr }& operator=(const { l.cstr }& p{ capitalize1(l.name) }) {{'
+                f'\n        ShaderElm_b:: data = p{ c1name }. data;'
+                f'\n        ShaderElm_b::vdata = p{ c1name }.vdata;'
+                f'\n        return *this;'
+                f'\n        //FIXME automatically update render data after calling this function'
+                f'\n        //FIXME automatically update render data after calling this function'
+                f'\n    }}'
+
+                # Construct with vdata only #FIXME write specific struct
+                f'\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{' #FIXME check the length
+                f'\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;'
+                f'\n    }}' #TODO add operator= for different buffer types
+
+                # Copy from vdata only #FIXME write specific struct
+                f'\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{' #FIXME check the length
+                f'\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;'
+                f'\n        return *this;'
+                f'\n    }}' #TODO add operator= for different buffer types
+            )
+
+
+            # Member references
+            s += f'\nprivate:'
+            s += f'\n    friend struct { shName };'
+            for m in l.elms:
+                s += f'\n    { m.type }* _pvt_elm_{ m.name } = ' + ('nullptr;' if l.iExt else f'({ m.type }*)(ShaderElm_b::data + { m.ofst });')
+                s += f'\n    uint64 { m.name }_tmp_size = { m.size };' if m.aLen != None else ''
+
+
+            s += f'\npublic:'
+            for m in l.elms:
+                getName = f'{ "e" if l.iExt else "l" }{ capitalize1(m.name) }'
+                s += f'\n    alwaysInline { m.type }& { getName }(){{'
+                if l.iExt:
+                    f'\n        _dbg::assertCond('
+                    f'\n            { m.name } != nullptr'
+                    f'\n            "Extern layout member \"lnx::shd::gsi::{ shName }::{ l.cstr }::{ getName }\" used before initialization");'
+                    f'\n        )'
+                s += f'\n        return *_pvt_elm_{ m.name };'
+                s += f'\n    }}'
+
+
+            s += f'\n}};'
+            s += f'\n{ l.cstr } { l.name }{ "{ Dummy() }" if l.iExt else "" };'
+
+
+
+
+
+
+
+
+        # Write the shader spawn functions
+        s += f'\nvoid spawn('
+
+        for e in externs:
+            s += f'\n    const { e.cstr }& p{ capitalize1(e.name) },'
+
+        s += (
+            f'\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore'
+            f'\n);'
+            f'\nvoid createDescriptorSets();'
+            f'\nvoid createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
+            f'\nvoid updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
+            f'\nvoid destroy();'
+        )
+
+
+
+
+
+
+
+        # Write to file
+        fh.write('\n\n' + fixTabs(s, 2))    # Output code
+        fh.write(f'\n    }};')          # }; Struct
+        fh.write(f'\n\n\n')
+        fh.write(f'\n    _lnx_init_fun_dec(LNX_H_{ shName.upper() });')
+        fh.write(f'\n}}')           # } Namespace
+
+
+
+
+
+
+
+
+        # Translation unit -----------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
         # Write cpp
         fc.write(fixTabs(
             f'\n//####################################################################################'
@@ -311,82 +414,38 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
 
-        # Write layout structs #FIXME move definition to .cpp
-        fh.write('\n\n' + fixTabs(
-            '\n\n'.join(((
-            f'\nstruct { l.cstr } : public ShaderElm_b<e{ l.type.capitalize() }> {{'
-            f'\n    alwaysInline { l.cstr }(const bool vExt) : ShaderElm_b() {{}}'    # External layout constructor
-            f'\n    inline { l.cstr }() : ShaderElm_b({ l.size }) {{}}'               # Default constructor (Partial construction)
-            # Copy constructor
-            f'\n    inline { l.cstr }(const { l.cstr }& p{ capitalize1(l.name) }) {{'
-            f'\n    	ShaderElm_b:: data = p{ capitalize1(l.name) }. data;'
-            f'\n    	ShaderElm_b::vdata = p{ capitalize1(l.name) }.vdata;'
-            f'\n    }}'
-            # Copy assignment
-            f'\n    inline { l.cstr }& operator=(const { l.cstr }& p{ capitalize1(l.name) }) {{'
-            f'\n    	ShaderElm_b:: data = p{ capitalize1(l.name) }. data;'
-            f'\n    	ShaderElm_b::vdata = p{ capitalize1(l.name) }.vdata;'
-            f'\n    	return *this;'
-            f'\n    	//FIXME automatically update render data after calling this function'
-            f'\n    }}'
-            # Construct with vdata only #FIXME write specific struct
-            f'\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{' #FIXME check the length
-            f'\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;'
-            f'\n    }}' #TODO add operator= for different buffer types
-            # Copy from vdata only #FIXME write specific struct
-            f'\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{' #FIXME check the length
-            f'\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;'
-            f'\n        return *this;'
-            f'\n    }}') + #TODO add operator= for different buffer types
-            # Member references
-            f''     ''.join((
-            f'\n    { m.type }& { m.name } = *({ m.type }*)(ShaderElm_b::data + { m.ofst });' + ('' if m.aLen == None else
-            f'\n    uint64 { m.name }_tmp_size = { m.size };') +  #!^ offset includes the length of the arrays  #TODO use an actual array #FIXME use an array that automatically reallocates the whole block when resizing the unknown size array
-            f''     ) for m in l.elms) +
-            f'\n}};'
-            f'\n{ l.cstr } { l.name }' + ('{ true }' if l.iExt else '') + ';'
-            f'' ) for l in pGlsl.layouts),
-        2))
 
 
 
 
-        # Write the shader spawn functions
-        fh.write('\n\n' + fixTabs(
-            f'\nvoid spawn(' + (
-            f''     ','.join((
-            f'\n    const { e.cstr }& p{ capitalize1(e.name) }')for e in externs) + ','
+        s = ''
+        s += f'\nvoid { shName }::spawn('
+        for e in externs:
+            s += f'\n    const { e.cstr }& p{ capitalize1(e.name) },'
+        s += (
             f'\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore'
-            f'\n);') +
-            f'\nvoid createDescriptorSets();'
-            f'\nvoid createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
-            f'\nvoid updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore);'
-            f'\nvoid destroy();',
-        2))
+            f'\n){{'
+            f'\n    pRenderCore.addObject_m.lock();'
+        )
+        for e in externs:
+            s += f'\n        { e.name } = p{ capitalize1(e.name) };'
+            for m in e.elms:
+                s += f'\n        { e.name }._pvt_elm_{ m.name } = ({ m.type }*)({ e.name }.data + { m.ofst });'
 
-
-
-
-        fc.write('\n\n' + fixTabs(
-            f'\nvoid { shName }::spawn(' + (
-            f''     ','.join((
-            f'\n    const { e.cstr }& p{ capitalize1(e.name) }' )for e in externs) + ','
-            f'\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore'
-            f'\n){{') +
-            f'\n    pRenderCore.addObject_m.lock();' + (
-            f''         ''.join((f'\n\t\t{ e.name } = p{ capitalize1(e.name) };') for e in externs)) +
+        s += (
             f'\n'
             f'\n        createDescriptorSets();'
             f'\n        createCommandBuffers(vGroupCount, pRenderCore);'
             f'\n        pRenderCore.swp.shadersCBs.add(commandBuffers[0]);'
             f'\n    pRenderCore.addObject_m.unlock();'
-            f'\n}}',
-        1))
+            f'\n}}'
+        )
 
 
 
 
-        fc.write('\n\n' + fixTabs(
+
+        s += '\n' * 8 + (
             f'\nvoid { shName }::createDescriptorSets(){{'
             f'\n    vk::DescriptorPoolSize sizes[2] = {{'
             f'\n        '   f'vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(pGlsl.storageNum) }),' + (
@@ -414,29 +473,38 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n        vkDefaultCases;'
             f'\n    }}'
             f'\n\n\n'
-            f'\n    vk::WriteDescriptorSet writeSets[{ str(len(pGlsl.layouts)) }];' + (
-            f''     '\n'.join((
-            f'\n    auto bufferInfo{ str(i) } = vk::DescriptorBufferInfo()'
-            f'\n        .setBuffer ({ l.name }.vdata.cell->csc.buffer)'
-            f'\n        .setOffset ({ l.name }.vdata.cell->localOffset)'
-            f'\n        .setRange  ({ l.name }.vdata.cell->cellSize)'
-            f'\n    ;'
-            f'\n    writeSets[{ str(i) }] = vk::WriteDescriptorSet()'
-            f'\n        .setDstSet          (descriptorSet)'
-            f'\n        .setDstBinding      ({ str(l.indx) })'
-            f'\n        .setDescriptorCount (1)'
-            f'\n        .setDescriptorType  (vk::DescriptorType::e{ l.type.capitalize() }Buffer)'
-            f'\n        .setPBufferInfo     (&bufferInfo{ str(i) })'
-            f'\n    ;'
-            f''     ) for i, l in enumerate(pGlsl.layouts))) +
-            f'\n\tcore::dvc::g_graphics().ld.updateDescriptorSets({ str(len(pGlsl.layouts)) }, writeSets, 0, nullptr);'
-            f'\n}}',
-        1))
+            f'\n    vk::WriteDescriptorSet writeSets[{ str(len(layouts) + len(externs)) }];'
+        )
+
+
+        for i, l in enumerate(layouts + externs):
+            s += '\n' + (
+                f'\n    auto bufferInfo{ str(i) } = vk::DescriptorBufferInfo()'
+                f'\n        .setBuffer ({ l.name }.vdata.cell->csc.buffer)'
+                f'\n        .setOffset ({ l.name }.vdata.cell->localOffset)'
+                f'\n        .setRange  ({ l.name }.vdata.cell->cellSize)'
+                f'\n    ;'
+                f'\n    writeSets[{ str(i) }] = vk::WriteDescriptorSet()'
+                f'\n        .setDstSet          (descriptorSet)'
+                f'\n        .setDstBinding      ({ str(l.indx) })'
+                f'\n        .setDescriptorCount (1)'
+                f'\n        .setDescriptorType  (vk::DescriptorType::e{ l.type.capitalize() }Buffer)'
+                f'\n        .setPBufferInfo     (&bufferInfo{ str(i) })'
+                f'\n    ;'
+            )
+
+
+        s += f'\n\tcore::dvc::g_graphics().ld.updateDescriptorSets({ str(len(layouts) + len(externs)) }, writeSets, 0, nullptr);'
+        s += f'\n}}'
 
 
 
 
-        fc.write('\n' * 8 + fixTabs(
+
+
+
+
+        s += '\n' * 8 + (
             f'\nvoid { shName }::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{'
             f'\n    auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
             f'\n        .setCommandPool        (pRenderCore.commandPool)'
@@ -454,13 +522,17 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
             #TODO WRITE ALL COMMAND BUFFERS AT ONCE
             #TODO or use multiple descriptor sets for multiple objects, but in the same command buffer
-            f'\n}}',
-        1))
+            f'\n}}'
+        )
 
 
 
 
-        fc.write('\n' * 8 + fixTabs(
+
+
+
+
+        s += '\n' * 8 + (
             f'\nvoid { shName }::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{'
             f'\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
             f'\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}'
@@ -468,43 +540,56 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_{ shName }_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
             f'\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
             f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
-            f'\n}}',
-        1))
+            f'\n}}'
+        )
 
 
 
 
-        fc.write('\n' * 8 + fixTabs(
+
+
+
+
+        s += '\n' * 8 + (
             f'\nvoid { shName }::destroy(){{'
             f'\n    //TODO'
-            f'\n}}',
-        1))
+            f'\n}}'
+        )
 
 
 
 
-        fc.write('\n' * 8 + fixTabs(
+
+
+
+
+        s += '\n' * 8 + (
             f'\n_lnx_init_var_value_def((InterfaceLayout), { shName }_layout,        lnx::shd::gsi){{}}'
             f'\n_lnx_init_var_value_def((uint32),          { shName }_pipelineIndex, lnx::shd::gsi){{ *pVar = core::shaders::g_pipelineNum()++; }}'
-            # f'\nInterfaceLayout g_{ shName }_layout();'
-            # f'\nuint32 { shName }::pipelineIndex = core::shaders::g_pipelineNum()++;'
             f'\n_lnx_init_fun_def(LNX_H_{ shName.upper() }, lnx::shd::gsi){{'
             f'\n    core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());'
             f'\n    core::shaders::g_pipelineLayouts()[g_{ shName }_pipelineIndex()] = &g_{ shName }_layout();'
             f'\n    {{ //Create descriptor set layout'
-            f'\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(pGlsl.layouts)) }];' + (
-            f''         '\n'.join((
-            f'\n        bindingLayouts[{ str(i) }] = vk::DescriptorSetLayoutBinding()'
-            f'\n            .setBinding            ({ str(l.indx) })'
-            f'\n            .setDescriptorType     (vk::DescriptorType::e{ l.type.capitalize() }Buffer)'
-            f'\n            .setDescriptorCount    (1)'
-            f'\n            .setStageFlags         (vk::ShaderStageFlagBits::eCompute)'
-            f'\n            .setPImmutableSamplers (nullptr)'
-            f'\n        ;'
-            f''         ) for i, l in enumerate(pGlsl.layouts))) +
+            f'\n        vk::DescriptorSetLayoutBinding bindingLayouts[{ str(len(layouts) + len(externs)) }];'
+        )
+
+
+        for i, l in enumerate(layouts + externs):
+            s += '\n\n' + (
+                f'\n        bindingLayouts[{ str(i) }] = vk::DescriptorSetLayoutBinding()'
+                f'\n            .setBinding            ({ str(l.indx) })'
+                f'\n            .setDescriptorType     (vk::DescriptorType::e{ l.type.capitalize() }Buffer)'
+                f'\n            .setDescriptorCount    (1)'
+                f'\n            .setStageFlags         (vk::ShaderStageFlagBits::eCompute)'
+                f'\n            .setPImmutableSamplers (nullptr)'
+                f'\n        ;'
+            )
+
+
+        s += (
             f'\n'
             f'\n        auto layoutCreateInfo = vk::DescriptorSetLayoutCreateInfo()'
-            f'\n            .setBindingCount ({ str(len(pGlsl.layouts)) })'
+            f'\n            .setBindingCount ({ str(len(layouts) + len(externs)) })'
             f'\n            .setPBindings    (bindingLayouts)'
             f'\n        ;'
             f'\n        //Create the descriptor set layout'
@@ -531,16 +616,18 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n        ;'
             f'\n        switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &g_{ shName }_layout().pipelineLayout)){{ vkDefaultCases; }}'
             f'\n    }}'
-            f'\n}}',
-        1))
+            f'\n}}'
+        )
 
         #TODO ADD DESTROY FUNCTION (copy from shaders::destroyShader)
 
-        fh.write(f'\n\t}};');         # }; //Struct }
-        fh.write(f'\n\n\n\t_lnx_init_fun_dec(LNX_H_{ shName.upper() });')
 
-        fh.write(f'\n}}');            # } //Namespace
-        fc.write(f'\n}}');            # } //Namespace
+
+
+
+        # Write to file
+        fc.write('\n\n' + fixTabs(s, 1))    # Output code
+        fc.write(f'\n}}')               # } //Namespace
     #TODO STRUCTURES HAVE A MINIMUM ALIGNMENT OF 16
 
     return 0

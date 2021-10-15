@@ -32,7 +32,7 @@ namespace lnx::obj{
 			pCB.updateBuffer(
 				getShVData().cell->csc.buffer,
 				getShVData().cell->localOffset,
-				getShVData().cell->cellSize,
+				getShVData().cell->cellSize, //TODO MAX 65536 bytes
 				(void*)this->getShData()
 				//!^ Call reimplemented function
 			);
