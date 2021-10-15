@@ -45,7 +45,9 @@ namespace lnx::shd::gsi{
 			f32v4* _pvt_elm_src = nullptr;
 			uint64 src_tmp_size = 0;
 		public:
-			alwaysInline f32v4& eSrc(){ return *_pvt_elm_src; }
+			alwaysInline f32v4& eSrc(){
+				return *_pvt_elm_src;
+			}
 		};
 		l_src src{ Dummy() };
 
@@ -76,7 +78,9 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_dst = nullptr;
 			uint64 dst_tmp_size = 0;
 		public:
-			alwaysInline u32& eDst(){ return *_pvt_elm_dst; }
+			alwaysInline u32& eDst(){
+				return *_pvt_elm_dst;
+			}
 		};
 		l_dst dst{ Dummy() };
 
@@ -106,7 +110,9 @@ namespace lnx::shd::gsi{
 			friend struct FloatToIntBuffer;
 			u32v2* _pvt_elm_wsize = nullptr;
 		public:
-			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
+			alwaysInline u32v2& eWsize(){
+				return *_pvt_elm_wsize;
+			}
 		};
 		l_wsize wsize{ Dummy() };
 
@@ -137,7 +143,9 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
-			alwaysInline u32& eZbuff(){ return *_pvt_elm_zbuff; }
+			alwaysInline u32& eZbuff(){
+				return *_pvt_elm_zbuff;
+			}
 		};
 		l_zbuff zbuff{ Dummy() };
 		void spawn(

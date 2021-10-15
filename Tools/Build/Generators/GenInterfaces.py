@@ -326,14 +326,22 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
                 s += f'\n    { m.type }* _pvt_elm_{ m.name } = ' + ('nullptr;' if l.iExt else f'({ m.type }*)(ShaderElm_b::data + { m.ofst });')
                 s += f'\n    uint64 { m.name }_tmp_size = { m.size };' if m.aLen != None else ''
 
+
             s += f'\npublic:'
             for m in l.elms:
-                s += f'\n    alwaysInline { m.type }& { "e" if l.iExt else "l" }{ capitalize1(m.name) }(){{ return *_pvt_elm_{ m.name }; }}'
+                getName = f'{ "e" if l.iExt else "l" }{ capitalize1(m.name) }'
+                s += f'\n    alwaysInline { m.type }& { getName }(){{'
+                if l.iExt:
+                    f'\n        _dbg::assertCond('
+                    f'\n            { m.name } != nullptr'
+                    f'\n            "Extern layout member \"lnx::shd::gsi::{ shName }::{ l.cstr }::{ getName }\" used before initialization");'
+                    f'\n        )'
+                s += f'\n        return *_pvt_elm_{ m.name };'
+                s += f'\n    }}'
+
 
             s += f'\n}};'
             s += f'\n{ l.cstr } { l.name }{ "{ Dummy() }" if l.iExt else "" };'
-        #FIXME CHECK THAT EXTERN VARIABLES ARE INITIALIZED BEFORE BEING USED
-        #FIXME CHECK THAT LOCAL VARIABLES ARE INITIALIZED AFTER THE INITIALIZATION OF THE DATA POINTER. !NULL
 
 
 

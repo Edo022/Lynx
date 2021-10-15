@@ -46,9 +46,15 @@ namespace lnx::shd::gsi{
 			f32v2* _pvt_elm_fsp = (f32v2*)(ShaderElm_b::data + 8);
 			u32* _pvt_elm_ID = (u32*)(ShaderElm_b::data + 16);
 		public:
-			alwaysInline f32v2& lFfp(){ return *_pvt_elm_ffp; }
-			alwaysInline f32v2& lFsp(){ return *_pvt_elm_fsp; }
-			alwaysInline u32& lID(){ return *_pvt_elm_ID; }
+			alwaysInline f32v2& lFfp(){
+				return *_pvt_elm_ffp;
+			}
+			alwaysInline f32v2& lFsp(){
+				return *_pvt_elm_fsp;
+			}
+			alwaysInline u32& lID(){
+				return *_pvt_elm_ID;
+			}
 		};
 		l_data data;
 
@@ -79,7 +85,9 @@ namespace lnx::shd::gsi{
 			f32v4* _pvt_elm_outcol = nullptr;
 			uint64 outcol_tmp_size = 0;
 		public:
-			alwaysInline f32v4& eOutcol(){ return *_pvt_elm_outcol; }
+			alwaysInline f32v4& eOutcol(){
+				return *_pvt_elm_outcol;
+			}
 		};
 		l_outcol outcol{ Dummy() };
 
@@ -109,7 +117,9 @@ namespace lnx::shd::gsi{
 			friend struct Border2;
 			u32v2* _pvt_elm_wsize = nullptr;
 		public:
-			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
+			alwaysInline u32v2& eWsize(){
+				return *_pvt_elm_wsize;
+			}
 		};
 		l_wsize wsize{ Dummy() };
 
@@ -140,7 +150,9 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
-			alwaysInline u32& eZbuff(){ return *_pvt_elm_zbuff; }
+			alwaysInline u32& eZbuff(){
+				return *_pvt_elm_zbuff;
+			}
 		};
 		l_zbuff zbuff{ Dummy() };
 		void spawn(

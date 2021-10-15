@@ -46,9 +46,15 @@ namespace lnx::shd::gsi{
 			f32* _pvt_elm_r = (f32*)(ShaderElm_b::data + 16);
 			f32v4* _pvt_elm_col = (f32v4*)(ShaderElm_b::data + 32);
 		public:
-			alwaysInline f32v3& lPos(){ return *_pvt_elm_pos; }
-			alwaysInline f32& lR(){ return *_pvt_elm_r; }
-			alwaysInline f32v4& lCol(){ return *_pvt_elm_col; }
+			alwaysInline f32v3& lPos(){
+				return *_pvt_elm_pos;
+			}
+			alwaysInline f32& lR(){
+				return *_pvt_elm_r;
+			}
+			alwaysInline f32v4& lCol(){
+				return *_pvt_elm_col;
+			}
 		};
 		l_data data;
 
@@ -82,9 +88,15 @@ namespace lnx::shd::gsi{
 			f32v4* _pvt_elm_outcol = nullptr;
 			uint64 outcol_tmp_size = 0;
 		public:
-			alwaysInline f32v4& eArrayh(){ return *_pvt_elm_arrayh; }
-			alwaysInline i32& eValueh(){ return *_pvt_elm_valueh; }
-			alwaysInline f32v4& eOutcol(){ return *_pvt_elm_outcol; }
+			alwaysInline f32v4& eArrayh(){
+				return *_pvt_elm_arrayh;
+			}
+			alwaysInline i32& eValueh(){
+				return *_pvt_elm_valueh;
+			}
+			alwaysInline f32v4& eOutcol(){
+				return *_pvt_elm_outcol;
+			}
 		};
 		l_outcol outcol{ Dummy() };
 
@@ -114,7 +126,9 @@ namespace lnx::shd::gsi{
 			friend struct Volume;
 			u32v2* _pvt_elm_wsize = nullptr;
 		public:
-			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
+			alwaysInline u32v2& eWsize(){
+				return *_pvt_elm_wsize;
+			}
 		};
 		l_wsize wsize{ Dummy() };
 		void spawn(

@@ -50,13 +50,27 @@ namespace lnx::shd::gsi{
 			f32* _pvt_elm_wd1 = (f32*)(ShaderElm_b::data + 52);
 			u32* _pvt_elm_ID = (u32*)(ShaderElm_b::data + 56);
 		public:
-			alwaysInline f32v2& lFp0(){ return *_pvt_elm_fp0; }
-			alwaysInline f32v2& lFp1(){ return *_pvt_elm_fp1; }
-			alwaysInline f32v4& lCol0(){ return *_pvt_elm_col0; }
-			alwaysInline f32v4& lCol1(){ return *_pvt_elm_col1; }
-			alwaysInline f32& lWd0(){ return *_pvt_elm_wd0; }
-			alwaysInline f32& lWd1(){ return *_pvt_elm_wd1; }
-			alwaysInline u32& lID(){ return *_pvt_elm_ID; }
+			alwaysInline f32v2& lFp0(){
+				return *_pvt_elm_fp0;
+			}
+			alwaysInline f32v2& lFp1(){
+				return *_pvt_elm_fp1;
+			}
+			alwaysInline f32v4& lCol0(){
+				return *_pvt_elm_col0;
+			}
+			alwaysInline f32v4& lCol1(){
+				return *_pvt_elm_col1;
+			}
+			alwaysInline f32& lWd0(){
+				return *_pvt_elm_wd0;
+			}
+			alwaysInline f32& lWd1(){
+				return *_pvt_elm_wd1;
+			}
+			alwaysInline u32& lID(){
+				return *_pvt_elm_ID;
+			}
 		};
 		l_data data;
 
@@ -87,7 +101,9 @@ namespace lnx::shd::gsi{
 			f32v4* _pvt_elm_outcol = nullptr;
 			uint64 outcol_tmp_size = 0;
 		public:
-			alwaysInline f32v4& eOutcol(){ return *_pvt_elm_outcol; }
+			alwaysInline f32v4& eOutcol(){
+				return *_pvt_elm_outcol;
+			}
 		};
 		l_outcol outcol{ Dummy() };
 
@@ -117,7 +133,9 @@ namespace lnx::shd::gsi{
 			friend struct Line2;
 			u32v2* _pvt_elm_wsize = nullptr;
 		public:
-			alwaysInline u32v2& eWsize(){ return *_pvt_elm_wsize; }
+			alwaysInline u32v2& eWsize(){
+				return *_pvt_elm_wsize;
+			}
 		};
 		l_wsize wsize{ Dummy() };
 
@@ -148,7 +166,9 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
-			alwaysInline u32& eZbuff(){ return *_pvt_elm_zbuff; }
+			alwaysInline u32& eZbuff(){
+				return *_pvt_elm_zbuff;
+			}
 		};
 		l_zbuff zbuff{ Dummy() };
 		void spawn(
