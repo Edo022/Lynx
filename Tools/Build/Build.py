@@ -52,7 +52,7 @@ def isActive(selector:str, mode:str):
 def parse(file:str, mode:str):
     # Read and clear build file
     with open(file) as f:
-        t = list(Utils.clearBuild(f.read()))[1:-1]
+        t = list(Utils.tokenizeBuildFile(f.read()))[1:-1]
 
 
 

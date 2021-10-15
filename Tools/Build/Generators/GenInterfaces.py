@@ -9,12 +9,7 @@ from Utils import capitalize1, fixTabs
 #TODO add image support
 #TODO add std140 support
 
-#FIXME fix array reference translation
 #FIXME stop program if std or other stuff cannot be found
-
-#TODO In WGPU
-#TODO To make uniform buffers portable they have to be std140 and not std430. Uniform structs have to be std140. Storage structs have to be std430
-#TODO Storage buffers for compute shaders can be std140 or std430
 
 
 
@@ -27,15 +22,18 @@ from Utils import capitalize1, fixTabs
 
 
 
-def roundUp(x : int, b : int) -> int :
-    return b * math.ceil(x / b)
+def roundUp(n : int, m : int):
+    r = x % m
+    if (r == 0) return r
+    else return n + m - r
 
 
 
 
 
 
-def parseElms(glsl:str) :
+
+def parseElms(glsl:str, memoryLayout:str) :
     """!
         Parses the elements of a layout
         Returns a namespace with a list of namespaces containing
@@ -51,7 +49,7 @@ def parseElms(glsl:str) :
         'bvec4': 'bv4',    'ivec4': 'i32v4',    'uvec4': 'u32v4',    'vec4': 'f32v4',    'dvec4': 'f64v4',
          'bool': 'bool',     'int': 'i32',       'uint': 'u32',     'float': 'f32',     'double': 'f64'
     }
-    typeSize = {
+    typeAlign = { #TODO ADD MATRIX SUPPORT
         'bvec2': 4 * 2,    'ivec2': 4 * 2,      'uvec2': 4 * 2,      'vec2': 4 * 2,      'dvec2': 8 * 2,
         'bvec3': 4 * 4,    'ivec3': 4 * 4,      'uvec3': 4 * 4,      'vec3': 4 * 4,      'dvec3': 8 * 4,
         'bvec4': 4 * 4,    'ivec4': 4 * 4,      'uvec4': 4 * 4,      'vec4': 4 * 4,      'dvec4': 8 * 4,
@@ -67,7 +65,7 @@ def parseElms(glsl:str) :
         r'(?P<iArr>\[(?P<aLen>.*?)?\])?'                            # Check if it's an array and get its length
         r';',                                                       # Anchor to instruction end
     glsl):                                                      #
-        align:int = typeSize[rInfo['type']]                         # Get type alignment
+        align:int = typeAlign[rInfo['type']]                        # Get type alignment #TODO ADD MATRIX SUPPORT
         maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
 
@@ -117,13 +115,13 @@ def parseElms(glsl:str) :
 
 # Translates a single layout
 def parseLayout(glsl:str) :
-    rInfo = re.search(
+    rInfo = re.search( #TODO TOKENIZE
         r'layout.*?\(std(?P<stdv>\d{3}).*?binding=(?P<indx>\d+)\)'
         r'(?P<type>buffer|uniform) (?P<iExt>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
         glsl
     )
 
-    elmsInfo = parseElms(rInfo['elms'])
+    elmsInfo = parseElms(rInfo['elms'], rInfo['stdv'])
     return ns(**{
         'type': 'storage' if rInfo['type'] == 'buffer' else 'uniform',
         'stdv': int(rInfo['stdv']),
