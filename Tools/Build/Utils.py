@@ -3,11 +3,49 @@ import os, subprocess, re, io, token, tokenize, glob
 
 
 
+
+
+
+
+def capitalize1(s:str):
+    if len(s) > 1:
+        return s[0].upper() + s[1:]
+    else:
+        return s.upper()
+
+
+
+
+def fixTabs(s:str, indent:int = 0):
+    ls = s.split('\n')
+    for i, l in enumerate(ls):
+        wsLen:int = 0
+        while True:
+            r = re.match(r'^((?:(?: {,3})\t)|(?: {4}))', l)
+            if r == None: break
+            l = l[len(r.group(1)):]
+            wsLen += 1
+        ls[i] = '\t' * (wsLen + indent * (len(l) > 0)) + l
+
+    return '\n'.join(ls)
+
+
+
+
 # Adds an element with the vPrefix type and value before each element of vList
 def prefixList(vPrefix, vList:list):
     for e in vList:
         yield(vPrefix)
         yield(e)
+
+
+
+
+# Adds an element with the vPostfix type and value after each element of vList
+def postfixList(vPostfix, vList:list):
+    for e in vList:
+        yield(e)
+        yield(vPrefix)
 
 
 

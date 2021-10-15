@@ -23,15 +23,25 @@ namespace lnx::shd::gsi{
 	){
 		pRenderCore.addObject_m.lock();
 			src = pSrc;
+			src._pvt_elm_src = (f32v4*)(src.data + 0);
 			dst = pDst;
+			dst._pvt_elm_dst = (u32*)(dst.data + 0);
 			wsize = pWsize;
+			wsize._pvt_elm_wsize = (u32v2*)(wsize.data + 0);
 			zbuff = pZbuff;
+			zbuff._pvt_elm_zbuff = (u32*)(zbuff.data + 0);
 
 			createDescriptorSets();
 			createCommandBuffers(vGroupCount, pRenderCore);
 			pRenderCore.swp.shadersCBs.add(commandBuffers[0]);
 		pRenderCore.addObject_m.unlock();
 	}
+
+
+
+
+
+
 
 
 	void FloatToIntBuffer::createDescriptorSets(){
@@ -65,6 +75,7 @@ namespace lnx::shd::gsi{
 
 
 		vk::WriteDescriptorSet writeSets[4];
+
 		auto bufferInfo0 = vk::DescriptorBufferInfo()
 			.setBuffer (src.vdata.cell->csc.buffer)
 			.setOffset (src.vdata.cell->localOffset)
@@ -184,6 +195,8 @@ namespace lnx::shd::gsi{
 		core::shaders::g_pipelineLayouts()[g_FloatToIntBuffer_pipelineIndex()] = &g_FloatToIntBuffer_layout();
 		{ //Create descriptor set layout
 			vk::DescriptorSetLayoutBinding bindingLayouts[4];
+
+
 			bindingLayouts[0] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (0)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
@@ -191,6 +204,7 @@ namespace lnx::shd::gsi{
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
 				.setPImmutableSamplers (nullptr)
 			;
+
 
 			bindingLayouts[1] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (1)
@@ -200,6 +214,7 @@ namespace lnx::shd::gsi{
 				.setPImmutableSamplers (nullptr)
 			;
 
+
 			bindingLayouts[2] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (2)
 				.setDescriptorType     (vk::DescriptorType::eStorageBuffer)
@@ -207,6 +222,7 @@ namespace lnx::shd::gsi{
 				.setStageFlags         (vk::ShaderStageFlagBits::eCompute)
 				.setPImmutableSamplers (nullptr)
 			;
+
 
 			bindingLayouts[3] = vk::DescriptorSetLayoutBinding()
 				.setBinding            (3)

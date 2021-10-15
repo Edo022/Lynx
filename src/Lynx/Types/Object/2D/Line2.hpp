@@ -40,11 +40,11 @@ namespace lnx::obj {
 		Line2(const f32v2& pFp, const f32v2& pSp, const f32v4& pFc, const f32v4& pSc, const float32 vFw, const float32 vSw) {
 			setFp(pFp);
 			setSp(pSp);
-			data.data.col0 = pFc;
-			data.data.col1 = pSc;
-			data.data.wd0 = vFw;
-			data.data.wd1 = vSw;
-			data.data.ID = (uint32)ID;
+			data.data.lCol0() = pFc;
+			data.data.lCol1() = pSc;
+			data.data.lWd0() = vFw;
+			data.data.lWd1() = vSw;
+			data.data.lID() = (uint32)ID;
 
 		}
 

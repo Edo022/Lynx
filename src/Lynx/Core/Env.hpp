@@ -3,4 +3,6 @@
 
 
 
-_lnx_init_fun_dec(LNX_H_ENV);
+namespace lnx {
+    _lnx_init_fun_dec(LNX_H_ENV);
+}
