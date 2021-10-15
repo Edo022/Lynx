@@ -15,14 +15,14 @@ namespace lnx::obj{
 
 
 		Border2() {
-			data.data.ffp = { .0f, .0f };
-			data.data.fsp = { .0f, .0f };
-			data.data.ID = (uint32)ID;
+			data.data.lFfp() = { .0f, .0f };
+			data.data.lFsp() = { .0f, .0f };
+			data.data.lID() = (uint32)ID;
 		}
 		Border2(const f32v2& vFp, const f32v2& vSp) {
-			data.data.ffp = vFp;
-			data.data.fsp = vSp;
-			data.data.ID = (uint32)ID;
+			data.data.lFfp() = vFp;
+			data.data.lFsp() = vSp;
+			data.data.lID() = (uint32)ID;
 		}
 
 		/**

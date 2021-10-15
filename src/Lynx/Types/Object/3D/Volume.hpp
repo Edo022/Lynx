@@ -36,9 +36,9 @@ namespace lnx{
             });
 
 
-            data.data.col = {1,0,0,1};
-            data.data.pos = {0,0,0};
-            data.data.r = 1;
+            data.data.lCol() = {1,0,0,1};
+            data.data.lPos() = {0,0,0};
+            data.data.lR() = 1;
         }
 
         //TODO specify that this function must be overridden in order to make things work

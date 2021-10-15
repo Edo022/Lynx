@@ -211,7 +211,8 @@ namespace lnx::core::wnd{
 			//Update the window size buffer
 			u32v2 wSize = { createInfo.imageExtent.width, createInfo.imageExtent.height };
 			vk::CommandBuffer cb = core::render::cmd::beginSingleTimeCommands();
-			cb.updateBuffer(w->renderCore.wSize_g.cell->csc.buffer, w->renderCore.wSize_g.cell->localOffset, w->renderCore.wSize_g.cell->cellSize, &wSize);
+			// cb.updateBuffer(w->renderCore.wSize_g.cell->csc.buffer, w->renderCore.wSize_g.cell->localOffset, w->renderCore.wSize_g.cell->cellSize, &wSize);
+			cb.updateBuffer(w->renderCore.wSize_g.cell->csc.buffer, w->renderCore.wSize_g.cell->localOffset, sizeof(wSize), &wSize); //TODO MAX 65536 bytes
 			core::render::cmd::endSingleTimeCommands(cb);
 			//FIXME AUTOMATIZE BUFFER UPDATE
 			//FIXME UPDATE ALL BUFFERS TOGETHER AFTER A FRAME IS RENDERED
