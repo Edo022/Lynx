@@ -33,10 +33,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_src(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_src(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -45,7 +45,7 @@ namespace lnx::shd::gsi{
 			f32v4* _pvt_elm_src = nullptr;
 			uint64 src_tmp_size = 0;
 		public:
-			alwaysInline f32v4& eSrc(){
+			alwaysInline f32v4& eSrc() {
 				return *_pvt_elm_src;
 			}
 		};
@@ -66,10 +66,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_dst(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_dst(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -78,7 +78,7 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_dst = nullptr;
 			uint64 dst_tmp_size = 0;
 		public:
-			alwaysInline u32& eDst(){
+			alwaysInline u32& eDst() {
 				return *_pvt_elm_dst;
 			}
 		};
@@ -99,10 +99,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -110,7 +110,7 @@ namespace lnx::shd::gsi{
 			friend struct FloatToIntBuffer;
 			u32v2* _pvt_elm_wsize = nullptr;
 		public:
-			alwaysInline u32v2& eWsize(){
+			alwaysInline u32v2& eWsize() {
 				return *_pvt_elm_wsize;
 			}
 		};
@@ -131,10 +131,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -143,7 +143,7 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
-			alwaysInline u32& eZbuff(){
+			alwaysInline u32& eZbuff() {
 				return *_pvt_elm_zbuff;
 			}
 		};
