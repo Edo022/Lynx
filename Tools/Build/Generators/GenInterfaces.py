@@ -23,7 +23,7 @@ from Utils import capitalize1, fixTabs
 
 
 def roundUp(n : int, m : int):
-    r = x % m
+    r = n % m
     if (r == 0): return r
     else:        return n + m - r
 
@@ -210,10 +210,10 @@ def parseShader(pathr:str, out:str, EtoA:str, isEngine:bool):
 
 
     #Get output shader path and name
-    shOutPath : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
-    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED HEADERS
-    shOutName : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
-    shName    : str = shOutName.replace('.', '_')
+    shOutPath  : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
+    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED SPV HEADERS
+    shOutName  : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
+    shName     : str = shOutName.replace('.', '_')
     if re.match(r'[a-zA-Z_](\w|\.)*', shOutName) == None:
         print(f'Invalid shader name: "{ shOutName }". The name of a shader can only contain alphanumeric characters, periods or underscores and must start with a letter or an underscore')
         return 2
@@ -222,7 +222,6 @@ def parseShader(pathr:str, out:str, EtoA:str, isEngine:bool):
 
     # Expand macros and parse out unnecessary whitespace
     code:str = Utils.clearGls(Utils.preprocessGls(os.path.relpath(pathr, ".")))
-
 
     #Parse layouts
     pGlsl = getLayouts(code)
@@ -601,7 +600,7 @@ def parseShader(pathr:str, out:str, EtoA:str, isEngine:bool):
             f'\n'
             f'\n    {{ //Create pipeline layout'
             f'\n        uint64 fileLength = 0;'
-            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.spv\");' #FIXME USE GENERATED HEADERS
+            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.ilsl.comp.spv\");' #FIXME USE GENERATED HEADERS
             f'\n        g_{ shName }_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
             f'\n'
             f'\n        g_{ shName }_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'

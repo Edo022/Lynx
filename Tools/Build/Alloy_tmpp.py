@@ -10,9 +10,10 @@ totThrs = avlThrs
 curThr = 0
 poolErr = False
 
+bmag   = '\033[1;35m'
 bgreen = '\033[1;32m'
-white = '\033[0;37m'
-red = '\033[1;31m'
+white  = '\033[0;37m'
+red    = '\033[1;31m'
 
 
 
@@ -21,7 +22,7 @@ red = '\033[1;31m'
 
 
 
-# ----------------------------------------- BUILD ------------------------------------------- #
+# Helper function --------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -60,19 +61,29 @@ def needsRebuild(o, s):
     return (not os.path.exists(o)) or os.path.getmtime(s) > os.path.getmtime(o)
 
 
+# def needsRebuildInit(t, s, flags):
+#     # Remove includes
+#     with open(s, 'r') as fs, open(t, 'w') as fo:
+#         fo.write(re.sub(r'#.*include.*(?:"|<).*(?:>|").*', r'\n', fs.read()))
+
+#     # Get used includes and check if the init macros are in them
+#     macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', t], capture_output = True, text = True).stdout
+#     return re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None
+
+
 def needsRebuildInit(s, flags):
     # Remove includes
-    tmp = f'{ EtoA }/.engine/.tmp/init-{ os.path.basename(s) }'
-    with open(s, 'r') as fs, open(tmp, 'w') as fo:
+    t = f'{ EtoA }/.engine/.tmp/init-{ os.path.basename(s) }'
+    with open(s, 'r') as fs, open(t, 'w') as fo:
         fo.write(re.sub(r'#.*include.*(?:"|<).*(?:>|").*', r'\n', fs.read()))
 
     # Get used includes and check if the init macros are in them
-    macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = True, text = True).stdout
-    return (re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None, tmp)
+    macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', t], capture_output = True, text = True).stdout
+    return (re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None, t)
 
 
 
-def needsRebuildCPP(o, s, FLG, forced_includes):
+def needsRebuildCpp(o, s, FLG, forced_includes):
     if not os.path.exists(o): return True
     for h in forced_includes + subprocess.run(['g++', '-MM', s] + FLG, capture_output = True, text = True).stdout.strip().replace('\\\n ','').split(' ')[1:]:
         if(needsRebuild(o, h)): return True
@@ -80,6 +91,12 @@ def needsRebuildCPP(o, s, FLG, forced_includes):
 
 
 
+
+
+
+
+
+# Automated build --------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -141,27 +158,133 @@ def BuildInit(CPP, outputs, flags):
 
 
 
-def BuildGSI1(i, ov, oi, og, s, isEngine, tot):
-    global EtoA
-    global poolMutex
-    global avlThrs
-    global curThr
+# def BuildGSI1(i, ov, oi, og, s, isEngine, tot):
+#     global EtoA
+#     global poolMutex
+#     global avlThrs
+#     global curThr
 
-    if needsRebuild(ov, s) or needsRebuild(oi, s) or needsRebuild(oi.replace('cpp', 'hpp'), s):
+#     if needsRebuild(ov, s) or needsRebuild(oi, s) or needsRebuild(oi.replace('cpp', 'hpp'), s):
+#         while curThr < i: time.sleep(0.01)
+#         print(f'{ progress(i * 3 + 1 + 0, tot * 3) } Generating GLSL source file { og }')
+#         print(f'{ progress(i * 3 + 1 + 1, tot * 3) } Compiling shader { ov }')
+#         print(f'{ progress(i * 3 + 1 + 2, tot * 3) } Generating shader interface for { s }')
+#         poolMutex.acquire()
+#         curThr += 1
+#         poolMutex.release()
+#         checkCmd(['python3', 'Tools/Build/Generators/GenGlsl.py', s, og]) #FIXME use executable
+#         checkCmd(['glslangValidator', '-V', og, '-S', 'comp', '-o', ov ])
+#         checkCmd(['Tools/Build/Generators/GenInterfaces', s, oi, EtoA, str(isEngine)])
+#     else:
+#         while curThr < i: time.sleep(0.01)
+#         print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
+#         print(f'{ progress(i + 1, tot) } Target is up to date (Interface of shader { s })')
+#         poolMutex.acquire()
+#         curThr += 1
+#         poolMutex.release()
+
+#     poolMutex.acquire()
+#     avlThrs += 1
+#     poolMutex.release()
+
+
+
+
+# def BuildGSI(SPV, GSI, GLS, ILS, isEngine):
+#     global poolMutex
+#     global avlThrs
+#     global totThrs
+#     global curThr
+#     global poolErr
+
+#     for i, (ov, oi, og, s) in enumerate(zip(SPV, GSI, GLS, ILS)):
+#         t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, og, s, isEngine, len(ILS)), daemon = True)
+#         t.start()
+#         poolMutex.acquire()
+#         avlThrs -= 1
+#         poolMutex.release()
+#         while avlThrs == 0: time.sleep(0.01)
+#         if poolErr:
+#             sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+#     while avlThrs < totThrs: time.sleep(0.01)
+#     if poolErr:
+#         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+#     curThr = 0
+
+
+
+
+
+
+# def BuildOBJ1(EXEC, FLG, i, o, s, forced_includes, tot):
+#     global poolMutex
+#     global avlThrs
+#     global curThr
+
+#     if needsRebuildCPP(o, s, FLG, forced_includes):
+#         while curThr < i: time.sleep(0.01)
+#         print(f'{ progress(i + 1, tot) } Compiling object file { o }')
+#         poolMutex.acquire()
+#         curThr += 1
+#         poolMutex.release()
+#         checkCmd([EXEC] + FLG + ['-fdiagnostics-color', '-c', '-xc++', s, '-o', o ])
+#     else:
+#         while curThr < i: time.sleep(0.01)
+#         print(f'{ progress(i + 1, tot) } Target is up to date (Object file { o })')
+#         poolMutex.acquire()
+#         curThr += 1
+#         poolMutex.release()
+
+#     poolMutex.acquire()
+#     avlThrs += 1
+#     poolMutex.release()
+
+
+
+
+# def BuildOBJ(EXEC, FLG, OBJ, CPP, forced_includes, defineTuUuid = False, tuUuidPrefix = ''):
+#     global poolMutex
+#     global avlThrs
+#     global totThrs
+#     global curThr
+#     global poolErr
+
+#     for i, (o, s) in enumerate(zip(OBJ, CPP)):
+#         t = threading.Thread(target = BuildOBJ1, args = ( #FIXME automatize uuid prefix
+#             EXEC, FLG + [f'-DTU_UUID={ tuUuidPrefix }0x{ hex(i)[2:].zfill(8) }'] if defineTuUuid else FLG, i, o, s, forced_includes, len(CPP)
+#         ), daemon = True)
+#         t.start()
+#         poolMutex.acquire()
+#         avlThrs -= 1
+#         poolMutex.release()
+#         while avlThrs == 0: time.sleep(0.01)
+#         if poolErr:
+#             sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+#     while avlThrs < totThrs: time.sleep(0.01)
+#     if poolErr:
+#         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+#     curThr = 0
+
+
+
+# BuildN helper function
+def Build1(vCheckFun, vCheckFunArgs:tuple, vTgt:str, vSrc:str, vCmd:list, vCurBuildMsg:str, vCurUpToDateMsg:str, i:int,  tot:int):
+    global poolMutex
+    global avlThrs, curThr
+
+    r = vCheckFun(*vCheckFunArgs)
+    assert isinstance(r, bool), 'vCheckFun must return a boolean value'
+
+    if r:
         while curThr < i: time.sleep(0.01)
-        print(f'{ progress(i * 3 + 1 + 0, tot * 3) } Generating GLSL source file { og }')
-        print(f'{ progress(i * 3 + 1 + 1, tot * 3) } Compiling shader { ov }')
-        print(f'{ progress(i * 3 + 1 + 2, tot * 3) } Generating shader interface for { s }')
+        print(f'{ progress(i + 1, tot) } ' + vCurBuildMsg)
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
-        checkCmd(['python3', 'Tools/Build/Generators/GenGlsl.py', s, og]) #FIXME use executable
-        checkCmd(['glslangValidator', '-V', og, '-o', ov ])
-        checkCmd(['Tools/Build/Generators/GenInterfaces', s, oi, EtoA, str(isEngine)])
+        checkCmd(vCmd)
     else:
         while curThr < i: time.sleep(0.01)
-        print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
-        print(f'{ progress(i + 1, tot) } Target is up to date (Interface of shader { s })')
+        print(f'{ progress(i + 1, tot) } ' + vCurUpToDateMsg)
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
@@ -173,79 +296,67 @@ def BuildGSI1(i, ov, oi, og, s, isEngine, tot):
 
 
 
-def BuildGSI(SPV, GSI, GLS, ILS, isEngine):
-    global poolMutex
-    global avlThrs
-    global totThrs
-    global curThr
-    global poolErr
+def BuildN(vStartMsg:str, vCheckFun, vCheckFunArgs:tuple, vTgt:list, vSrc:list, vCmd:list, vCurBuildMsg:str, vCurUpToDateMsg:str, vSuccessMsg:str):
+    r"""
+        Runs vCmd in a background process for each element of vSrc
 
-    for i, (ov, oi, og, s) in enumerate(zip(SPV, GSI, GLS, ILS)):
-        t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, og, s, isEngine, len(GLS)), daemon = True)
+        vCheckFun:       The function used to check if the target needs to be built. It must return a boolean value
+        vCheckFunArgs:   A tuple containing the arguments to pass to vCheckFun
+        vStartMsg:       The message to print before the commands are ran.             %s and %t are passed literally
+        vSrc:            A list of strings containing the path to each source file.    %s and %t are passed literally
+        vTgt:            A list of strings containing the path to each output file.    %s and %t are passed literally
+        vCmd:            A list of strings containing the command and arguments to run
+        vCurBuildMsg:    The message to print before building each target
+        vCurUpToDateMsg: The message to print if the target is up to date and doesn't need to be built
+        vSuccessMsg:     The message to print after all commands have exited with a success code. %s and %t are passed literally
+
+        vSrc and vTgt can be relative or absolute paths and must contain the same number of elements
+        arguments and strings in the form %s and %t are replaced with the current source file and target file names
+            e.g.  ['g++', '-std=c++20', '-g0', '%s', '-o', '%t']
+            e.g.  needsRebuild, (foo, '%t', '%s', bar)
+            %s and %t can be escaped with a '\' to use the literal '%s' or '%o' as an argument
+    """ #FIXME automatize uuid prefix
+
+    global poolMutex, poolErr
+    global avlThrs, totThrs, curThr
+    assert isinstance(vStartMsg,       str), f'vStartMsg ({ vStartMsg }) must be a string'
+    assert callable(vCheckFun),              f'vCheckFun ({ vCheckFun }) must be callable'
+    assert isinstance(vCurBuildMsg,    str), f'vCurBuildMsg ({ vCurBuildMsg }) must be a string'
+    assert isinstance(vCurUpToDateMsg, str), f'vCurUpToDateMsg ({ vCurUpToDateMsg }) must be a string'
+    assert isinstance(vSuccessMsg,     str), f'vSuccessMsg ({ vSuccessMsg }) must be a string'
+    assert len(vSrc) == len(vTgt),           f'vSrc and vTgt must contain the same number of elements (len(vSrc) = { str(len(vSrc)) }, len(vTgt) = { str(len(vSrc)) })'
+
+
+    print(vStartMsg)
+    for i, (t, s) in enumerate(zip(vTgt, vSrc)):
+        assert isinstance(s, str),                 f'vSrc ({ s }) must contain strings only'
+        assert isinstance(t, str),                 f'vTgt ({ t }) must contain strings only'
+        assert os.path.exists(s),                  f'vSrc ({ s }) elements must be a valid path to an existent file'
+        assert os.path.exists(os.path.dirname(t)), f'vTgt ({ t }) elements must be a valid path'
+
+        t = threading.Thread(
+            target = Build1,
+            args = (
+                vCheckFun,  list((s if a == '%s' else t if a == '%t' else a for a in vCheckFunArgs)),
+                vTgt, vSrc, list((s if a == '%s' else t if a == '%t' else a for a in vCmd)),
+                vCurBuildMsg.   replace('%s', s).replace('%t', t),
+                vCurUpToDateMsg.replace('%s', s).replace('%t', t),
+                i, len(vSrc)
+            ),
+            daemon = True
+        )
         t.start()
+
         poolMutex.acquire()
         avlThrs -= 1
         poolMutex.release()
         while avlThrs == 0: time.sleep(0.01)
         if poolErr:
             sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+
     while avlThrs < totThrs: time.sleep(0.01)
-    if poolErr:
-        sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-    curThr = 0
-
-
-
-
-
-
-def BuildOBJ1(EXEC, FLG, i, o, s, forced_includes, tot):
-    global poolMutex
-    global avlThrs
-    global curThr
-
-    if needsRebuildCPP(o, s, FLG, forced_includes):
-        while curThr < i: time.sleep(0.01)
-        print(f'{ progress(i + 1, tot) } Compiling object file { o }')
-        poolMutex.acquire()
-        curThr += 1
-        poolMutex.release()
-        checkCmd([EXEC] + FLG + ['-fdiagnostics-color', '-c', '-xc++', s, '-o', o ])
-    else:
-        while curThr < i: time.sleep(0.01)
-        print(f'{ progress(i + 1, tot) } Target is up to date (Object file { o })')
-        poolMutex.acquire()
-        curThr += 1
-        poolMutex.release()
-
-    poolMutex.acquire()
-    avlThrs += 1
-    poolMutex.release()
-
-
-
-
-def BuildOBJ(EXEC, FLG, OBJ, CPP, forced_includes, defineTuUuid = False, tuUuidPrefix = ''):
-    global poolMutex
-    global avlThrs
-    global totThrs
-    global curThr
-    global poolErr
-
-    for i, (o, s) in enumerate(zip(OBJ, CPP)):
-        t = threading.Thread(target = BuildOBJ1, args = ( #FIXME automatize uuid prefix
-            EXEC, FLG + [f'-DTU_UUID={ tuUuidPrefix }0x{ hex(i)[2:].zfill(8) }'] if defineTuUuid else FLG, i, o, s, forced_includes, len(CPP)
-        ), daemon = True)
-        t.start()
-        poolMutex.acquire()
-        avlThrs -= 1
-        poolMutex.release()
-        while avlThrs == 0: time.sleep(0.01)
-        if poolErr:
-            sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-    while avlThrs < totThrs: time.sleep(0.01)
-    if poolErr:
-        sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+    if poolErr: sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
+    else:       print(vSuccessMsg)
     curThr = 0
 
 
@@ -255,11 +366,7 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP, forced_includes, defineTuUuid = False, tuUuidP
 
 
 
-
-# ----------------------------------------- SETUP ------------------------------------------- #
-
-
-
+# Setup ------------------------------------------------------------------------------------------------------------------------------------#
 
 
 
@@ -292,6 +399,15 @@ def aDirs(AOUT:str):
 
 
 
+# Build ------------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
 def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     eData['include_paths']   += ['-Isrc']
     eData['compiler_flags']  += [f'-ffile-prefix-map={ os.path.abspath(".") }/={ AtoE }/']
@@ -302,11 +418,11 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     ]
     EFLG = eData['defines'] + list(Utils.prefixList('-include', eData['forced_includes'])) + eData['include_paths'] + eData['compiler_flags']
 
-    EILS = eData['ils']                                                                        # GLS source files
-    EGLS = list(f'{ EtoA }/.engine/.tmp/glsl-{ os.path.basename(s) }.comp'    for s in EILS)   # GLS source files
-    ESPV = list(   f'./src/Generated/Shaders/{ os.path.basename(s) }.spv'     for s in EGLS)   # Output .spv files paths
-    EGSI = list(   f'./src/Generated/Shaders/{ os.path.basename(s) }.cpp' for s in EILS)   # Generated shader interfaces source files
-    EGSO = list(          f'{ EOUT }/Shaders/{ os.path.basename(s) }.o'       for s in EGSI)   # Generated shader interfaces .o files
+    EILS = eData['ils']                                                                         # GLS source files
+    EGLS = list(f'{ EtoA }/.engine/.tmp/glsl-{ os.path.basename(s)     }.comp' for s in EILS)   # GLS source files
+    ESPV = list(   f'./src/Generated/Shaders/{ os.path.basename(s)[5:] }.spv'  for s in EGLS)   # Output .spv files paths
+    EGSI = list(   f'./src/Generated/Shaders/{ os.path.basename(s)     }.cpp'  for s in EILS)   # Generated shader interfaces source files
+    EGSO = list(          f'{ EOUT }/Shaders/{ os.path.basename(s)     }.o'    for s in EGSI)   # Generated shader interfaces .o files
 
     ECPP = eData['cpp']                                             # C++ source files
     EOBJ = list((f'{ EOUT }/{ pl.Path(s).stem }.o') for s in ECPP)  # Output .o files of the non-generated C++ source files
@@ -314,10 +430,35 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
 
 
-    # Build libraries
-    print(f'Generating engine files')
-    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, ILS = EILS, isEngine = True)
-    print(f'{ bgreen }Engine files generated successfully\n{ white }')
+    if len(EILS) > 0: BuildN(
+        'Generating Engine GLSL files',
+        needsRebuild, ('%t', '%s'),
+        EGLS, EILS,
+        ['python3', 'Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        'Generating GLSL source file %t',
+        'Target is up to date (GLSL source file %t)',
+        f'{ bgreen }Engine GLSL source files generated successfully\n{ white }'
+    )
+
+    if len(EILS) > 0: BuildN(
+        'Generating Engine shader interfaces',
+        needsRebuild, ('%t', '%s'),
+        EGSI, EILS,
+        ['Tools/Build/Generators/GenInterfaces', '%s', '%t', EtoA, str(True)],
+        'Generating shader interface for %s',
+        'Target is up to date (Shader interface of %s)',
+        f'{ bgreen }Engine shader interfaces generated successfully\n{ white }'
+    )
+
+    if len(EGLS) > 0: BuildN(
+        'Compiling Engine shaders',
+        needsRebuild, ('%t', '%s'),
+        ESPV, EGLS,
+        ['glslangValidator', '-V', '%s', '-S', 'comp', '-o', '%t' ],
+        'Compiling shader %t',
+        'Target is up to date (Shader %t)',
+        f'{ bgreen }Engine shaders compiled successfully\n{ white }'
+    )
 
 
     print(f'Generating initializer headers')
@@ -328,9 +469,15 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     print(f'{ bgreen }Initializer headers generated successfully\n{ white }')
 
 
-    print(f'Compiling engine source files')
-    BuildOBJ(EXEC = EXEC, FLG = EFLG, OBJ = EGSO + EOBJ, CPP = EGSI + ECPP, forced_includes = eData['forced_includes'], defineTuUuid = True, tuUuidPrefix = 'e')
-    print(f'{ bgreen }Engine source files compiled successfully\n{ white }')
+    BuildN(
+        'Compiling Engine object files',
+        needsRebuildCpp, ('%t', '%s', EFLG, eData['forced_includes']),
+        EGSO + EOBJ, EGSI + ECPP,
+        [EXEC, *EFLG, '-fdiagnostics-color', '-c', '-xc++', '%s', '-o', '%t'],
+        'Compiling object file %t',
+        'Target is up to date (Object file %t)',
+        f'{ bgreen }Engine object files compiled successfully\n{ white }'
+    )
 
 
     print(f'Writing Lynx Engine library')
@@ -358,11 +505,11 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     ]
     AFLG = aData['defines'] + list(Utils.prefixList('-include', aData['forced_includes'])) + aData['include_paths'] + aData['compiler_flags']
 
-    AILS = aData['ils']                                                                             # ILS source files
-    AGLS = list(             f'./.engine/.tmp/glsl-{ os.path.basename(s) }.comp'    for s in AILS)  # Generated GLS source files                #! Can be empty
-    ASPV = list(f'./.engine/.src/Generated/Shaders/{ os.path.basename(s) }.spv'     for s in AGLS)  # Output .spv files paths                   #! Can be empty
-    AGSI = list(f'./.engine/.src/Generated/Shaders/{ os.path.basename(s) }.cpp' for s in AILS)  # Generated shader interfaces source files  #! Can be empty
-    AGSO = list(                f'{ AOUT }/Shaders/{ os.path.basename(s) }.o'       for s in AGSI)  # Generated shader interfaces .o files
+    AILS = aData['ils']                                                                              # ILS source files
+    AGLS = list(             f'./.engine/.tmp/glsl-{ os.path.basename(s)     }.comp' for s in AILS)  # Generated GLS source files                #! Can be empty
+    ASPV = list(f'./.engine/.src/Generated/Shaders/{ os.path.basename(s)[5:] }.spv'  for s in AGLS)  # Output .spv files paths                   #! Can be empty
+    AGSI = list(f'./.engine/.src/Generated/Shaders/{ os.path.basename(s)     }.cpp'  for s in AILS)  # Generated shader interfaces source files  #! Can be empty
+    AGSO = list(                f'{ AOUT }/Shaders/{ os.path.basename(s)     }.o'    for s in AGSI)  # Generated shader interfaces .o files
 
     ACPP = aData['cpp']                                             # C++ source files
     AOBJ = list((f'{ AOUT }/{ pl.Path(s).stem }.o') for s in ACPP)  # Output .o files of the non-generated C++ source files
@@ -372,18 +519,48 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
 
 
 
-    # Build executable
 
-    if len(AILS) > 0:
-        print(f'Generating application files')
-        BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, ILS = AILS, isEngine = False)
-        print(f'{ bgreen }Application files generated successfully"\n{ white }')
+    if len(AILS) > 0: BuildN(
+        'Generating Application GLSL files',
+        needsRebuild, ('%t', '%s'),
+        AGLS, AILS,
+        ['python3', 'Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        'Generating GLSL source file %t',
+        'Target is up to date (GLSL source file %t)',
+        f'{ bgreen }Application GLSL source files generated successfully\n{ white }'
+    )
+
+    if len(AILS) > 0: BuildN(
+        'Generating Application shader interfaces',
+        needsRebuild, ('%t', '%s'),
+        AGSI, AILS,
+        ['Tools/Build/Generators/GenInterfaces', '%s', '%t', EtoA, str(False)],
+        'Generating shader interface for %s',
+        'Target is up to date (Shader interface of %s)',
+        f'{ bgreen }Application shader interfaces generated successfully\n{ white }'
+    )
+
+    if len(AGLS) > 0: BuildN(
+        'Compiling Application shaders',
+        needsRebuild, ('%t', '%s'),
+        ASPV, AGLS,
+        ['glslangValidator', '-V', '%s', '-S', 'comp', '-o', '%t' ],
+        'Compiling shader %t',
+        'Target is up to date (Shader %t)',
+        f'{ bgreen }Application shaders compiled successfully\n{ white }'
+    )
 
 
-    if len(ACPP) > 0:
-        print(f'Compiling application source files')
-        BuildOBJ(EXEC = EXEC, FLG = AFLG, OBJ = AGSO + AOBJ, CPP = AGSI + ACPP, forced_includes = aData['forced_includes'], defineTuUuid = True, tuUuidPrefix = 'a')
-        print(f'{ bgreen }Application source files compiled successfully\n{ white }')
+    BuildN(
+        'Compiling Application object files',
+        needsRebuildCpp, ('%t', '%s', AFLG, aData['forced_includes']),
+        AGSO + AOBJ, AGSI + ACPP,
+        [EXEC, *AFLG, '-fdiagnostics-color', '-c', '-xc++', '%s', '-o', '%t'],
+        'Compiling object file %t',
+        'Target is up to date (Object file of %s)',
+        f'{ bgreen }Application object files compiled successfully\n{ white }'
+    )
+
 
 
     print(f'Writing application executable file')
@@ -404,8 +581,18 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
 
 
 
+# Main task --------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
 def build(EXEC, OUTPUT, eData, aData, buildEngine):
-    print(f'{ white }Using { totThrs } threads')
+    print(f'{ bmag }Working directory: { os.getcwd() }')
+    print(f'Using { totThrs } threads{ white }')
 
 
     EOUT = f'{ EtoA }/.engine/.bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
@@ -415,10 +602,10 @@ def build(EXEC, OUTPUT, eData, aData, buildEngine):
 
     e = 0
     if buildEngine:
-        os.chdir(AtoE)
+        print(f'{ bmag }Moving to directory { os.path.abspath(AtoE) }{ white }'); os.chdir(AtoE)
         eDirs(EOUT)
         e = eBuild(EXEC, EOUT, ELIB, eData)
-        os.chdir(EtoA)
+        print(f'{ bmag }Moving to directory { os.path.abspath(EtoA) }{ white }'); os.chdir(EtoA)
 
     aDirs(AOUT)
     a = aBuild(EXEC, EOUT, AOUT, ELIB, eData, aData)

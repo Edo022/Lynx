@@ -100,7 +100,7 @@ def tokenizeBuildFile(vCode:str):
 # Comments are removed
 def preprocessGls(vFile:str):
     return subprocess.run(
-        ['glslangValidator', vFile, '-E'],
+        ['glslangValidator', vFile, '-S', 'comp', '-E'],
         capture_output = True, text = True
     ).stdout
 
