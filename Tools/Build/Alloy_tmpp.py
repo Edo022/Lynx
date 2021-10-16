@@ -57,18 +57,9 @@ def checkCmd(args):
 
 
 
+
 def needsRebuild(o, s):
     return (not os.path.exists(o)) or os.path.getmtime(s) > os.path.getmtime(o)
-
-
-# def needsRebuildInit(t, s, flags):
-#     # Remove includes
-#     with open(s, 'r') as fs, open(t, 'w') as fo:
-#         fo.write(re.sub(r'#.*include.*(?:"|<).*(?:>|").*', r'\n', fs.read()))
-
-#     # Get used includes and check if the init macros are in them
-#     macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', t], capture_output = True, text = True).stdout
-#     return re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None
 
 
 def needsRebuildInit(s, flags):
@@ -80,7 +71,6 @@ def needsRebuildInit(s, flags):
     # Get used includes and check if the init macros are in them
     macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', t], capture_output = True, text = True).stdout
     return (re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None, t)
-
 
 
 def needsRebuildCpp(o, s, FLG, forced_includes):
@@ -157,113 +147,6 @@ def BuildInit(CPP, outputs, flags):
 
 
 
-
-# def BuildGSI1(i, ov, oi, og, s, isEngine, tot):
-#     global EtoA
-#     global poolMutex
-#     global avlThrs
-#     global curThr
-
-#     if needsRebuild(ov, s) or needsRebuild(oi, s) or needsRebuild(oi.replace('cpp', 'hpp'), s):
-#         while curThr < i: time.sleep(0.01)
-#         print(f'{ progress(i * 3 + 1 + 0, tot * 3) } Generating GLSL source file { og }')
-#         print(f'{ progress(i * 3 + 1 + 1, tot * 3) } Compiling shader { ov }')
-#         print(f'{ progress(i * 3 + 1 + 2, tot * 3) } Generating shader interface for { s }')
-#         poolMutex.acquire()
-#         curThr += 1
-#         poolMutex.release()
-#         checkCmd(['python3', 'Tools/Build/Generators/GenGlsl.py', s, og]) #FIXME use executable
-#         checkCmd(['glslangValidator', '-V', og, '-S', 'comp', '-o', ov ])
-#         checkCmd(['Tools/Build/Generators/GenInterfaces', s, oi, EtoA, str(isEngine)])
-#     else:
-#         while curThr < i: time.sleep(0.01)
-#         print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
-#         print(f'{ progress(i + 1, tot) } Target is up to date (Interface of shader { s })')
-#         poolMutex.acquire()
-#         curThr += 1
-#         poolMutex.release()
-
-#     poolMutex.acquire()
-#     avlThrs += 1
-#     poolMutex.release()
-
-
-
-
-# def BuildGSI(SPV, GSI, GLS, ILS, isEngine):
-#     global poolMutex
-#     global avlThrs
-#     global totThrs
-#     global curThr
-#     global poolErr
-
-#     for i, (ov, oi, og, s) in enumerate(zip(SPV, GSI, GLS, ILS)):
-#         t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, og, s, isEngine, len(ILS)), daemon = True)
-#         t.start()
-#         poolMutex.acquire()
-#         avlThrs -= 1
-#         poolMutex.release()
-#         while avlThrs == 0: time.sleep(0.01)
-#         if poolErr:
-#             sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-#     while avlThrs < totThrs: time.sleep(0.01)
-#     if poolErr:
-#         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-#     curThr = 0
-
-
-
-
-
-
-# def BuildOBJ1(EXEC, FLG, i, o, s, forced_includes, tot):
-#     global poolMutex
-#     global avlThrs
-#     global curThr
-
-#     if needsRebuildCPP(o, s, FLG, forced_includes):
-#         while curThr < i: time.sleep(0.01)
-#         print(f'{ progress(i + 1, tot) } Compiling object file { o }')
-#         poolMutex.acquire()
-#         curThr += 1
-#         poolMutex.release()
-#         checkCmd([EXEC] + FLG + ['-fdiagnostics-color', '-c', '-xc++', s, '-o', o ])
-#     else:
-#         while curThr < i: time.sleep(0.01)
-#         print(f'{ progress(i + 1, tot) } Target is up to date (Object file { o })')
-#         poolMutex.acquire()
-#         curThr += 1
-#         poolMutex.release()
-
-#     poolMutex.acquire()
-#     avlThrs += 1
-#     poolMutex.release()
-
-
-
-
-# def BuildOBJ(EXEC, FLG, OBJ, CPP, forced_includes, defineTuUuid = False, tuUuidPrefix = ''):
-#     global poolMutex
-#     global avlThrs
-#     global totThrs
-#     global curThr
-#     global poolErr
-
-#     for i, (o, s) in enumerate(zip(OBJ, CPP)):
-#         t = threading.Thread(target = BuildOBJ1, args = ( #FIXME automatize uuid prefix
-#             EXEC, FLG + [f'-DTU_UUID={ tuUuidPrefix }0x{ hex(i)[2:].zfill(8) }'] if defineTuUuid else FLG, i, o, s, forced_includes, len(CPP)
-#         ), daemon = True)
-#         t.start()
-#         poolMutex.acquire()
-#         avlThrs -= 1
-#         poolMutex.release()
-#         while avlThrs == 0: time.sleep(0.01)
-#         if poolErr:
-#             sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-#     while avlThrs < totThrs: time.sleep(0.01)
-#     if poolErr:
-#         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-#     curThr = 0
 
 
 
@@ -426,8 +309,6 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
     ECPP = eData['cpp']                                             # C++ source files
     EOBJ = list((f'{ EOUT }/{ pl.Path(s).stem }.o') for s in ECPP)  # Output .o files of the non-generated C++ source files
-
-
 
 
     if len(EILS) > 0: BuildN(
