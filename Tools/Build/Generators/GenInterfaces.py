@@ -1,4 +1,4 @@
-import os, re, sys, subprocess, math
+import os, re, sys, subprocess, math, pathlib
 from argparse import Namespace as ns
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 import Utils
@@ -9,12 +9,7 @@ from Utils import capitalize1, fixTabs
 #TODO add image support
 #TODO add std140 support
 
-#FIXME fix array reference translation
 #FIXME stop program if std or other stuff cannot be found
-
-#TODO In WGPU
-#TODO To make uniform buffers portable they have to be std140 and not std430. Uniform structs have to be std140. Storage structs have to be std430
-#TODO Storage buffers for compute shaders can be std140 or std430
 
 
 
@@ -27,15 +22,18 @@ from Utils import capitalize1, fixTabs
 
 
 
-def roundUp(x : int, b : int) -> int :
-    return b * math.ceil(x / b)
+def roundUp(n : int, m : int):
+    r = n % m
+    if (r == 0): return r
+    else:        return n + m - r
 
 
 
 
 
 
-def parseElms(glsl:str) :
+
+def parseElms(glsl:str, memoryLayout:str) :
     """!
         Parses the elements of a layout
         Returns a namespace with a list of namespaces containing
@@ -51,7 +49,7 @@ def parseElms(glsl:str) :
         'bvec4': 'bv4',    'ivec4': 'i32v4',    'uvec4': 'u32v4',    'vec4': 'f32v4',    'dvec4': 'f64v4',
          'bool': 'bool',     'int': 'i32',       'uint': 'u32',     'float': 'f32',     'double': 'f64'
     }
-    typeSize = {
+    typeAlign = { #TODO ADD MATRIX SUPPORT
         'bvec2': 4 * 2,    'ivec2': 4 * 2,      'uvec2': 4 * 2,      'vec2': 4 * 2,      'dvec2': 8 * 2,
         'bvec3': 4 * 4,    'ivec3': 4 * 4,      'uvec3': 4 * 4,      'vec3': 4 * 4,      'dvec3': 8 * 4,
         'bvec4': 4 * 4,    'ivec4': 4 * 4,      'uvec4': 4 * 4,      'vec4': 4 * 4,      'dvec4': 8 * 4,
@@ -67,7 +65,7 @@ def parseElms(glsl:str) :
         r'(?P<iArr>\[(?P<aLen>.*?)?\])?'                            # Check if it's an array and get its length
         r';',                                                       # Anchor to instruction end
     glsl):                                                      #
-        align:int = typeSize[rInfo['type']]                         # Get type alignment
+        align:int = typeAlign[rInfo['type']]                        # Get type alignment #TODO ADD MATRIX SUPPORT
         maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
 
@@ -117,13 +115,13 @@ def parseElms(glsl:str) :
 
 # Translates a single layout
 def parseLayout(glsl:str) :
-    rInfo = re.search(
+    rInfo = re.search( #TODO TOKENIZE
         r'layout.*?\(std(?P<stdv>\d{3}).*?binding=(?P<indx>\d+)\)'
         r'(?P<type>buffer|uniform) (?P<iExt>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
         glsl
     )
 
-    elmsInfo = parseElms(rInfo['elms'])
+    elmsInfo = parseElms(rInfo['elms'], rInfo['stdv'])
     return ns(**{
         'type': 'storage' if rInfo['type'] == 'buffer' else 'uniform',
         'stdv': int(rInfo['stdv']),
@@ -202,7 +200,7 @@ def getLayouts(glsl:str):
 
 
 # Parses a GLSL compute shader and writes 2 C++ interface files
-def parseShader(pathr:str, EtoA:str, isEngine:bool):
+def parseShader(pathr:str, out:str, EtoA:str, isEngine:bool):
     AtoE:str = os.path.relpath('.', EtoA)
 
     #Check files
@@ -212,10 +210,10 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     #Get output shader path and name
-    shOutPath : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
-    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED HEADERS
-    shOutName : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
-    shName    : str = shOutName.replace('.', '_')
+    shOutPath  : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
+    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED SPV HEADERS
+    shOutName  : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
+    shName     : str = shOutName.replace('.', '_')
     if re.match(r'[a-zA-Z_](\w|\.)*', shOutName) == None:
         print(f'Invalid shader name: "{ shOutName }". The name of a shader can only contain alphanumeric characters, periods or underscores and must start with a letter or an underscore')
         return 2
@@ -224,7 +222,6 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
     # Expand macros and parse out unnecessary whitespace
     code:str = Utils.clearGls(Utils.preprocessGls(os.path.relpath(pathr, ".")))
-
 
     #Parse layouts
     pGlsl = getLayouts(code)
@@ -252,7 +249,9 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     #Write output files
-    with open(f'{ shOutPath }/{ shName }.gsi.hpp', 'w') as fh, open(f'{ shOutPath }/{ shName }.gsi.cpp', 'w') as fc:
+    fhn = f'{ os.path.dirname(out) }/{pathlib.Path(out).stem }.hpp'
+    fcn = out
+    with open(fhn, 'w') as fh, open(fcn, 'w') as fc:
 
 
         # Write header
@@ -400,7 +399,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n// This file was generated by { "" if isEngine else AtoE + "/" }Tools/Build/Generators/GenInterfaces'
             f'\n// Changes could be overwritten without notice'
             f'\n//####################################################################################'
-            f'\n#include "Generated/Shaders/{ shName }.gsi.hpp"'
+            f'\n#include "Generated/Shaders/{ shName }.ilsl.hpp"'
             f'\n'
             f'\n#include "Lynx/Core/Init.hpp\"'                 # Auto init
             f'\n#include "Lynx/Core/Render/Shaders/Shader.hpp\"'    # Engine shader header
@@ -601,7 +600,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n'
             f'\n    {{ //Create pipeline layout'
             f'\n        uint64 fileLength = 0;'
-            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.spv\");' #FIXME USE GENERATED HEADERS
+            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.ilsl.comp.spv\");' #FIXME USE GENERATED HEADERS
             f'\n        g_{ shName }_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
             f'\n'
             f'\n        g_{ shName }_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
@@ -638,5 +637,5 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
 
-if len(sys.argv) != 4: raise Exception('GenInterfaces: Wrong number of arguments')
-sys.exit(parseShader(sys.argv[1], sys.argv[2], eval(sys.argv[3])))
+if len(sys.argv) != 5: raise Exception('GenInterfaces: Wrong number of arguments')
+sys.exit(parseShader(sys.argv[1], sys.argv[2], sys.argv[3], eval(sys.argv[4])))

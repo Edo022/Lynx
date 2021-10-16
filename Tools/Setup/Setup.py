@@ -36,12 +36,20 @@ else:
         f'\n        └─ c_cpp_properties.json'
         f'\n\nContinue? (y/n)'
     )
-os.path.dirname(os.getcwd())
 
 
 
 
 if sys.stdin.read(1).lower() == 'y':
+    # Write paths
+    Aabs = os.path.abspath(cwdToA)
+    Eabs = os.path.abspath(cwdToE)
+    AtoE = os.path.relpath(Eabs, cwdToA)
+    EtoA = os.path.relpath(cwdToA, Eabs)
+    os.chdir(cwdToA)
+    print(os.getcwd())
+
+
     # Create missing directories
     os.makedirs(exist_ok = True, name = './.vscode')
     os.makedirs(exist_ok = True, name = './.engine')
@@ -49,13 +57,6 @@ if sys.stdin.read(1).lower() == 'y':
     os.makedirs(exist_ok = True, name = './.engine/.setup')
 
 
-    # Write paths
-    Aabs = os.path.abspath(cwdToA)
-    Eabs = os.path.abspath(cwdToE)
-    AtoE = os.path.relpath(Eabs, cwdToA)
-    EtoA = os.path.relpath(cwdToA, Eabs)
-
-    os.chdir(cwdToA)
     with open('.engine/.setup/.Aabs', 'w') as f: f.write(Aabs)   # Absolute path of Application dir
     with open('.engine/.setup/.Eabs', 'w') as f: f.write(Eabs)   # Absolute path of Engine SDK
     with open('.engine/.setup/.AtoE', 'w') as f: f.write(AtoE)   # Application to Engine relative path
@@ -99,6 +100,10 @@ if sys.stdin.read(1).lower() == 'y':
 
 
 
+
+
+
+
     # Write C/C++ file
     with open('.vscode/c_cpp_properties.json', 'w') as f:
         f.write(
@@ -124,6 +129,10 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n    "version": 4'
             f'\n}}'
         )
+
+
+
+
 
 
 
@@ -175,8 +184,8 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n        }}'
             f'\n    }}'
             f'\n'
-            f'\n    gls {{'
-            f'\n        a {{ src/Lynx/shaders/*.comp }}'
+            f'\n    ils {{'
+            f'\n        a {{ src/Lynx/shaders/*.ilsl }}'
             f'\n    }}'
             f'\n'
             f'\n    defines         {{}}'
@@ -231,6 +240,12 @@ if sys.stdin.read(1).lower() == 'y':
         )
 
 
+
+
+
+
+
+
     with open('.engine/Application.lnxbuild.sh', 'w') as f:
         f.write(
             f'\n##################################################################'
@@ -243,7 +258,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n'
             f'\n{{'
             f'\n    cpp {{ a {{ main.cpp }} }}  # A list of C++ source files'
-            f'\n    gls {{}}                  # A list of GLSL source files'
+            f'\n    ils {{}}                  # A list of ILSL source files'
             f'\n'
             f'\n    defines         {{}}      # -D option           # e.g.  -DVAR=1 -D mogu_mogu'       #TODO REMOVE -D
             f'\n    forced_includes {{}}      #                     # e.g.  ./file.hpp idk.hpp'

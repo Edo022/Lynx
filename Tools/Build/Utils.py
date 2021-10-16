@@ -88,7 +88,7 @@ def clearGls(vCode:str):
 # Reads a GLS source file
 # Removes any useless withespace near curly braces and replaces any combination of withespace characters with a single space
 # Returns the result as a string. The input code must contain no comments
-def clearBuild(vCode:str):
+def tokenizeBuildFile(vCode:str):
     for t in tokenize.generate_tokens(io.StringIO(vCode).readline):
         if t.type not in [token.INDENT, token.DEDENT, token.NL, token.ENDMARKER, token.NEWLINE, token.COMMENT]:
             yield(t.string)
@@ -100,7 +100,7 @@ def clearBuild(vCode:str):
 # Comments are removed
 def preprocessGls(vFile:str):
     return subprocess.run(
-        ['glslangValidator', vFile, '-E'],
+        ['glslangValidator', vFile, '-S', 'comp', '-E'],
         capture_output = True, text = True
     ).stdout
 

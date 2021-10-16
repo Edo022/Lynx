@@ -1,0 +1,52 @@
+#version 450
+#define gx gl_GlobalInvocationID.x
+#define gy gl_GlobalInvocationID.y
+#define g gl_GlobalInvocationID
+const vec4  col = {  0,  1, 0, 1 };
+
+
+
+
+layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
+
+layout(std430, binding = 0) buffer ext_outcol{ vec4 outcol[]; };
+layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
+layout(std430, binding = 2) buffer ext_zbuff{ uint zbuff[]; };
+
+layout(std140, binding = 3) uniform data{
+	vec2 ffp;	 //Position of the top-left corner
+	vec2 fsp;	 //Position of the bottom-right corner
+	uint ID;	 //TODO
+};
+//TODO use push constants for raw buffer
+
+
+
+
+
+
+void setPixel(vec2 pos, vec4 col) {
+	uint i = uint(pos.y) * wsize.x + uint(pos.x);
+
+	zbuff[i] = -1;
+	outcol[i] = col;
+}
+
+
+
+//TODO use pre calculated workgroup count
+void main() {
+	// vec2 sp = vec2(fsp * wsize);
+	vec2 len = (fsp - ffp) * wsize / (gl_WorkGroupSize.x * gl_NumWorkGroups.x);
+	uvec2 fp = uvec2(ffp * wsize + (len * gl_GlobalInvocationID.x));
+	uvec2 sp = uvec2(fp + len) + 1;
+
+	for(uint x = fp.x; x < sp.x; ++x){
+		setPixel(vec2(x,     0), col);
+		setPixel(vec2(x, fsp.y * wsize.y), col);
+	}
+	for(uint y = fp.y; y < sp.y; ++y){
+		setPixel(vec2(0,     y), col);
+		setPixel(vec2(fsp.x * wsize.x, y), col);
+	}
+}

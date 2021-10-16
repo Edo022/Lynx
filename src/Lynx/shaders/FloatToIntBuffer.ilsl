@@ -1,0 +1,27 @@
+#version 450
+#define WORKGROUP_SIZE 32
+#define gx gl_GlobalInvocationID.x
+#define gy gl_GlobalInvocationID.y
+#define g gl_GlobalInvocationID
+
+
+
+
+layout (local_size_x = 32 * 32, local_size_y = 1, local_size_z = 1 ) in;
+
+layout(std430, binding = 0) buffer ext_src{ vec4 src[]; };
+layout(std430, binding = 1) buffer ext_dst{ uint dst[]; };
+layout(std430, binding = 2) buffer ext_wsize{ uvec2 wsize; };
+layout(std430, binding = 3) buffer ext_zbuff{ uint zbuff[]; };
+
+
+
+
+//TODO use pre calculated workgroup count
+void main() {
+	if(gx >= wsize.x * wsize.y) return;
+
+	dst[gx] = packUnorm4x8(src[gx]);
+	src[gx] = vec4(0);
+	zbuff[gx] = 0;
+}
