@@ -33,42 +33,42 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+			inline l_data(const vram::ptr<auto, eVRam, eUniform>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eUniform>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eUniform>)pVPtr;
 				return *this;
 			}
 		private:
 			friend struct Line2;
 			f32v2* _pvt_elm_fp0 = (f32v2*)(ShaderElm_b::data + 0);
-			f32v2* _pvt_elm_fp1 = (f32v2*)(ShaderElm_b::data + 0);
+			f32v2* _pvt_elm_fp1 = (f32v2*)(ShaderElm_b::data + 8);
 			f32v4* _pvt_elm_col0 = (f32v4*)(ShaderElm_b::data + 16);
-			f32v4* _pvt_elm_col1 = (f32v4*)(ShaderElm_b::data + 0);
-			f32* _pvt_elm_wd0 = (f32*)(ShaderElm_b::data + 0);
-			f32* _pvt_elm_wd1 = (f32*)(ShaderElm_b::data + 0);
-			u32* _pvt_elm_ID = (u32*)(ShaderElm_b::data + 0);
+			f32v4* _pvt_elm_col1 = (f32v4*)(ShaderElm_b::data + 32);
+			f32* _pvt_elm_wd0 = (f32*)(ShaderElm_b::data + 48);
+			f32* _pvt_elm_wd1 = (f32*)(ShaderElm_b::data + 52);
+			u32* _pvt_elm_ID = (u32*)(ShaderElm_b::data + 56);
 		public:
-			alwaysInline f32v2& lFp0(){
+			alwaysInline f32v2& lFp0() {
 				return *_pvt_elm_fp0;
 			}
-			alwaysInline f32v2& lFp1(){
+			alwaysInline f32v2& lFp1() {
 				return *_pvt_elm_fp1;
 			}
-			alwaysInline f32v4& lCol0(){
+			alwaysInline f32v4& lCol0() {
 				return *_pvt_elm_col0;
 			}
-			alwaysInline f32v4& lCol1(){
+			alwaysInline f32v4& lCol1() {
 				return *_pvt_elm_col1;
 			}
-			alwaysInline f32& lWd0(){
+			alwaysInline f32& lWd0() {
 				return *_pvt_elm_wd0;
 			}
-			alwaysInline f32& lWd1(){
+			alwaysInline f32& lWd1() {
 				return *_pvt_elm_wd1;
 			}
-			alwaysInline u32& lID(){
+			alwaysInline u32& lID() {
 				return *_pvt_elm_ID;
 			}
 		};
@@ -89,10 +89,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_outcol(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_outcol(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -101,7 +101,7 @@ namespace lnx::shd::gsi{
 			f32v4* _pvt_elm_outcol = nullptr;
 			uint64 outcol_tmp_size = 0;
 		public:
-			alwaysInline f32v4& eOutcol(){
+			alwaysInline f32v4& eOutcol() {
 				return *_pvt_elm_outcol;
 			}
 		};
@@ -122,10 +122,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_wsize(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -133,7 +133,7 @@ namespace lnx::shd::gsi{
 			friend struct Line2;
 			u32v2* _pvt_elm_wsize = nullptr;
 		public:
-			alwaysInline u32v2& eWsize(){
+			alwaysInline u32v2& eWsize() {
 				return *_pvt_elm_wsize;
 			}
 		};
@@ -154,10 +154,10 @@ namespace lnx::shd::gsi{
 				//FIXME automatically update render data after calling this function
 				//FIXME automatically update render data after calling this function
 			}
-			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline l_zbuff(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 			}
-			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr){
+			inline auto& operator=(const vram::ptr<auto, eVRam, eStorage>& pVPtr) {
 				vdata = (vram::ptr<char, eVRam, eStorage>)pVPtr;
 				return *this;
 			}
@@ -166,7 +166,7 @@ namespace lnx::shd::gsi{
 			u32* _pvt_elm_zbuff = nullptr;
 			uint64 zbuff_tmp_size = 0;
 		public:
-			alwaysInline u32& eZbuff(){
+			alwaysInline u32& eZbuff() {
 				return *_pvt_elm_zbuff;
 			}
 		};

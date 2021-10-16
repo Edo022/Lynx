@@ -1,17 +1,22 @@
-import os, subprocess, re, io, token, tokenize, glob
+import os, subprocess, re, io, token, tokenize, glob, math
 
 
 
 
+
+
+
+def roundUp(n:int, m:int):
+    r = n % m
+    if r == 0: return n
+    else:      return n + m - r
 
 
 
 
 def capitalize1(s:str):
-    if len(s) > 1:
-        return s[0].upper() + s[1:]
-    else:
-        return s.upper()
+    if len(s) > 1: return s[0].upper() + s[1:]
+    else:          return s.upper()
 
 
 
