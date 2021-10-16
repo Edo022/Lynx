@@ -245,7 +245,7 @@ namespace lnx::shd::gsi{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/FloatToIntBuffer.ilsl.comp.spv");
+			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/Lynx-FloatToIntBuffer.ilsl.comp.spv");
 			g_FloatToIntBuffer_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);
 
 			g_FloatToIntBuffer_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

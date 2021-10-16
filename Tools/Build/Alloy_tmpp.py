@@ -303,12 +303,12 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
     EILS = eData['ils']                                                                         # GLS source files
     EGLS = list(f'{ EtoA }/.engine/.tmp/glsl-{ os.path.basename(s)     }.comp' for s in EILS)   # GLS source files
-    ESPV = list(   f'./src/Generated/Shaders/{ os.path.basename(s)[5:] }.spv'  for s in EGLS)   # Output .spv files paths
+    ESPV = list(   f'./src/Generated/Shaders/Lynx-{ os.path.basename(s)[5:] }.spv'  for s in EGLS)   # Output .spv files paths
     EGSI = list(   f'./src/Generated/Shaders/{ os.path.basename(s)     }.cpp'  for s in EILS)   # Generated shader interfaces source files
-    EGSO = list(          f'{ EOUT }/Shaders/{ os.path.basename(s)     }.o'    for s in EGSI)   # Generated shader interfaces .o files
+    EGSO = list(          f'{ EOUT }/Shaders/Lynx-{ os.path.basename(s)     }.o'    for s in EGSI)   # Generated shader interfaces .o files
 
     ECPP = eData['cpp']                                             # C++ source files
-    EOBJ = list((f'{ EOUT }/{ pl.Path(s).stem }.o') for s in ECPP)  # Output .o files of the non-generated C++ source files
+    EOBJ = list((f'{ EOUT }/Lynx-{ pl.Path(s).stem }.o') for s in ECPP)  # Output .o files of the non-generated C++ source files
 
 
     if len(EILS) > 0: BuildN(
@@ -325,7 +325,8 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         'Generating Engine shader interfaces',
         needsRebuild, ('%t', '%s'),
         EGSI, EILS,
-        ['Tools/Build/Generators/GenInterfaces', '%s', '%t', EtoA, str(True)],
+        # ['Tools/Build/Generators/GenInterfaces', '%s', '%t', EtoA, str(True)],
+        ['python3', 'Tools/Build/Generators/GenInterfaces.py', '%s', '%t', EtoA, str(True)],
         'Generating shader interface for %s',
         'Target is up to date (Shader interface of %s)',
         f'{ bgreen }Engine shader interfaces generated successfully\n{ white }'
@@ -405,7 +406,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         'Generating Application GLSL files',
         needsRebuild, ('%t', '%s'),
         AGLS, AILS,
-        ['python3', 'Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        ['python3', f'{ AtoE }/Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
         'Generating GLSL source file %t',
         'Target is up to date (GLSL source file %t)',
         f'{ bgreen }Application GLSL source files generated successfully\n{ white }'
@@ -415,7 +416,8 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         'Generating Application shader interfaces',
         needsRebuild, ('%t', '%s'),
         AGSI, AILS,
-        ['Tools/Build/Generators/GenInterfaces', '%s', '%t', EtoA, str(False)],
+        # [f'{ AtoE }/Tools/Build/Generators/GenInterfaces', '%s', '%t', EtoA, str(False)],
+        ['python3', f'{ AtoE }/Tools/Build/Generators/GenInterfaces.py', '%s', '%t', EtoA, str(False)],
         'Generating shader interface for %s',
         'Target is up to date (Shader interface of %s)',
         f'{ bgreen }Application shader interfaces generated successfully\n{ white }'

@@ -222,7 +222,7 @@ namespace lnx::shd::gsi{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/Volume.ilsl.comp.spv");
+			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/Lynx-Volume.ilsl.comp.spv");
 			g_Volume_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);
 
 			g_Volume_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()

@@ -3,9 +3,6 @@
 #define gy gl_GlobalInvocationID.y
 #define g gl_GlobalInvocationID
 
-//TODO ##################################################
-//TODO DOUBLES AND DOUBLE VECTORS ARE NOT SUPPORTED     #
-//TODO ##################################################
 
 
 struct Point{

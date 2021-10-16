@@ -20,6 +20,9 @@ from Utils import capitalize1, fixTabs, roundUp
 
 
 
+#TODO ##################################################
+#TODO DOUBLES AND DOUBLE VECTORS ARE NOT SUPPORTED     #
+#TODO ##################################################
 
 
 def parseElms(glsl:str, memoryLayout:str):
@@ -590,7 +593,7 @@ def parseShader(pathr:str, out:str, EtoA:str, isEngine:bool):
             f'\n'
             f'\n    {{ //Create pipeline layout'
             f'\n        uint64 fileLength = 0;'
-            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.ilsl.comp.spv\");' #FIXME USE GENERATED HEADERS
+            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/Lynx-{ shName }.ilsl.comp.spv\");' #FIXME USE GENERATED HEADERS
             f'\n        g_{ shName }_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
             f'\n'
             f'\n        g_{ shName }_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'

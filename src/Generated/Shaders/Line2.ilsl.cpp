@@ -243,7 +243,7 @@ namespace lnx::shd::gsi{
 
 		{ //Create pipeline layout
 			uint64 fileLength = 0;
-			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/Line2.ilsl.comp.spv");
+			uint32* code = core::shaders::loadSpv(&fileLength, "Lynx/src/Generated/Shaders/Lynx-Line2.ilsl.comp.spv");
 			g_Line2_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);
 
 			g_Line2_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()
