@@ -77,10 +77,10 @@ namespace lnx{
 #include "Generated/.init/GCommands.init.hpp"
 #include "Generated/.init/Shader.init.hpp"
 
-#include "Generated/.init/Shaders/Border2.gsi.init.hpp"
-#include "Generated/.init/Shaders/FloatToIntBuffer.gsi.init.hpp"
-#include "Generated/.init/Shaders/Line2.gsi.init.hpp"
-#include "Generated/.init/Shaders/Volume.gsi.init.hpp"
+#include "Generated/.init/Shaders/Border2.ilsl.init.hpp"
+#include "Generated/.init/Shaders/FloatToIntBuffer.ilsl.init.hpp"
+#include "Generated/.init/Shaders/Line2.ilsl.init.hpp"
+#include "Generated/.init/Shaders/Volume.ilsl.init.hpp"
 //TODO AUTOMATIZE
 // #include "Generated/.init/Window.hpp" //FIXME
 // #include "Generated/.init/Swapchain.hpp"

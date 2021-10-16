@@ -1,4 +1,4 @@
-import os, sys, subprocess, threading, multiprocessing, time, uuid, re, pathlib as pl
+import os, sys, subprocess, threading, multiprocessing, time, re, pathlib as pl
 from Paths import *
 import Utils
 
@@ -62,13 +62,12 @@ def needsRebuild(o, s):
 
 def needsRebuildInit(s, flags):
     # Remove includes
-    tmp = f'/tmp/LynxEngineInit-{ str(uuid.uuid4()) }-{ os.path.basename(s) }' #TODO REMOVE BASENAME FROM OUTPUT FILE NAME
+    tmp = f'{ EtoA }/.engine/.tmp/init-{ os.path.basename(s) }'
     with open(s, 'r') as fs, open(tmp, 'w') as fo:
-        fo.write(re.sub(r'(?:^|\n)(?:(?:\/\*.*\*\/)|(?:\s))*#.*include.*(?:"|<).*(?:>|").*', r'\n', fs.read()))
+        fo.write(re.sub(r'#.*include.*(?:"|<).*(?:>|").*', r'\n', fs.read()))
 
     # Get used includes and check if the init macros are in them
     macros = subprocess.run(['g++', '-dU', '-E', *flags, '-xc++', tmp], capture_output = True, text = True).stdout
-    # return (re.search(r'#define _lnx_init_(?:(?:var_(?:const|value|array))|fun)_def\(', macros) != None, tmp)
     return (re.search(r'#define _lnx_init(?:_fun|(?:_var(?:_value|_array)(?:_const)?))_def\(', macros) != None, tmp)
 
 
@@ -104,7 +103,6 @@ def BuildInit1(i, o, s, flags, tot):
         curThr += 1
         poolMutex.release()
         checkCmd(['Tools/Build/Generators/GenInitializers', r[1], o, str(flags)])
-        os.remove(r[1])
     else:
         print(f'{ progress(i + 1, tot) } Initializer header { o } is not required')
         poolMutex.acquire()
@@ -143,7 +141,7 @@ def BuildInit(CPP, outputs, flags):
 
 
 
-def BuildGSI1(i, ov, oi, s, isEngine, tot):
+def BuildGSI1(i, ov, oi, og, s, isEngine, tot):
     global EtoA
     global poolMutex
     global avlThrs
@@ -151,13 +149,15 @@ def BuildGSI1(i, ov, oi, s, isEngine, tot):
 
     if needsRebuild(ov, s) or needsRebuild(oi, s) or needsRebuild(oi.replace('cpp', 'hpp'), s):
         while curThr < i: time.sleep(0.01)
-        print(f'{ progress(i + 1, tot) } Compiling shader { ov }')
-        print(f'{ progress(i + 1, tot) } Generating shader interface for { s }')
+        print(f'{ progress(i * 3 + 1 + 0, tot * 3) } Generating GLSL source file { og }')
+        print(f'{ progress(i * 3 + 1 + 1, tot * 3) } Compiling shader { ov }')
+        print(f'{ progress(i * 3 + 1 + 2, tot * 3) } Generating shader interface for { s }')
         poolMutex.acquire()
         curThr += 1
         poolMutex.release()
-        checkCmd(['glslangValidator', '-V', s, '-o', ov ])
-        checkCmd(['Tools/Build/Generators/GenInterfaces', s, EtoA, str(isEngine)])
+        checkCmd(['python3', 'Tools/Build/Generators/GenGlsl.py', s, og]) #FIXME use executable
+        checkCmd(['glslangValidator', '-V', og, '-o', ov ])
+        checkCmd(['Tools/Build/Generators/GenInterfaces', s, oi, EtoA, str(isEngine)])
     else:
         while curThr < i: time.sleep(0.01)
         print(f'{ progress(i + 1, tot) } Target is up to date (Shader { ov })')
@@ -173,15 +173,15 @@ def BuildGSI1(i, ov, oi, s, isEngine, tot):
 
 
 
-def BuildGSI(SPV, GSI, GLS, isEngine):
+def BuildGSI(SPV, GSI, GLS, ILS, isEngine):
     global poolMutex
     global avlThrs
     global totThrs
     global curThr
     global poolErr
 
-    for i, (ov, oi, s) in enumerate(zip(SPV, GSI, GLS)):
-        t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, s, isEngine, len(GLS)), daemon = True)
+    for i, (ov, oi, og, s) in enumerate(zip(SPV, GSI, GLS, ILS)):
+        t = threading.Thread(target = BuildGSI1, args = (i, ov, oi, og, s, isEngine, len(GLS)), daemon = True)
         t.start()
         poolMutex.acquire()
         avlThrs -= 1
@@ -269,17 +269,19 @@ def BuildOBJ(EXEC, FLG, OBJ, CPP, forced_includes, defineTuUuid = False, tuUuidP
 
 
 def eDirs(EOUT:str):
-    os.makedirs(exist_ok = True, name = './src/Generated')
-    os.makedirs(exist_ok = True, name = './src/Generated/Shaders')
-    os.makedirs(exist_ok = True, name = './src/Generated/.init')
-    os.makedirs(exist_ok = True, name = './src/Generated/.init/Shaders')
+    os.makedirs(exist_ok = True, name = f'{ EtoA }/.engine/.tmp')
+    os.makedirs(exist_ok = True, name = f'{ EtoA }/.engine/.tmp/Shaders')
+    os.makedirs(exist_ok = True, name = f'./src/Generated')
+    os.makedirs(exist_ok = True, name = f'./src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name = f'./src/Generated/.init')
+    os.makedirs(exist_ok = True, name = f'./src/Generated/.init/Shaders')
     os.makedirs(exist_ok = True, name = f'{ EOUT }')
     os.makedirs(exist_ok = True, name = f'{ EOUT }/Shaders')
 
 
 def aDirs(AOUT:str):
-    os.makedirs(exist_ok = True, name = './.engine/.src/Generated')
-    os.makedirs(exist_ok = True, name = './.engine/.src/Generated/Shaders')
+    os.makedirs(exist_ok = True, name = f'./.engine/.src/Generated')
+    os.makedirs(exist_ok = True, name = f'./.engine/.src/Generated/Shaders')
     os.makedirs(exist_ok = True, name = f'{ AOUT }')
     os.makedirs(exist_ok = True, name = f'{ AOUT }/Shaders')
 
@@ -300,10 +302,11 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
     ]
     EFLG = eData['defines'] + list(Utils.prefixList('-include', eData['forced_includes'])) + eData['include_paths'] + eData['compiler_flags']
 
-    EGLS = eData['gls']                                                                 # GLS source files
-    ESPV = list((f'./src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in EGLS)     # Output .spv files paths
-    EGSI = list((f'./src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in EGLS)     # Generated shader interfaces source files
-    EGSO = list((       f'{ EOUT }/Shaders/{ pl.Path(s).stem }.gsi.o')   for s in EGLS)     # Generated shader interfaces .o files
+    EILS = eData['ils']                                                                        # GLS source files
+    EGLS = list(f'{ EtoA }/.engine/.tmp/glsl-{ os.path.basename(s) }.comp'    for s in EILS)   # GLS source files
+    ESPV = list(   f'./src/Generated/Shaders/{ os.path.basename(s) }.spv'     for s in EGLS)   # Output .spv files paths
+    EGSI = list(   f'./src/Generated/Shaders/{ os.path.basename(s) }.cpp' for s in EILS)   # Generated shader interfaces source files
+    EGSO = list(          f'{ EOUT }/Shaders/{ os.path.basename(s) }.o'       for s in EGSI)   # Generated shader interfaces .o files
 
     ECPP = eData['cpp']                                             # C++ source files
     EOBJ = list((f'{ EOUT }/{ pl.Path(s).stem }.o') for s in ECPP)  # Output .o files of the non-generated C++ source files
@@ -313,7 +316,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
 
     # Build libraries
     print(f'Generating engine files')
-    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, isEngine = True)
+    BuildGSI(SPV = ESPV, GSI = EGSI, GLS = EGLS, ILS = EILS, isEngine = True)
     print(f'{ bgreen }Engine files generated successfully\n{ white }')
 
 
@@ -355,10 +358,11 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     ]
     AFLG = aData['defines'] + list(Utils.prefixList('-include', aData['forced_includes'])) + aData['include_paths'] + aData['compiler_flags']
 
-    AGLS = aData['gls']                                                                         # GLS source files
-    ASPV = list((f'./.engine/.src/Generated/Shaders/{ pl.Path(s).stem }.spv')     for s in AGLS)     # Output .spv files paths                  #! Can be empty
-    AGSI = list((f'./.engine/.src/Generated/Shaders/{ pl.Path(s).stem }.gsi.cpp') for s in AGLS)     # Generated shader interfaces source files #! Can be empty
-    AGSO = list((               f'{ AOUT }/Shaders/{ pl.Path(s).stem }.gsi.o') for s in AGLS)       # Generated shader interfaces .o files
+    AILS = aData['ils']                                                                             # ILS source files
+    AGLS = list(             f'./.engine/.tmp/glsl-{ os.path.basename(s) }.comp'    for s in AILS)  # Generated GLS source files                #! Can be empty
+    ASPV = list(f'./.engine/.src/Generated/Shaders/{ os.path.basename(s) }.spv'     for s in AGLS)  # Output .spv files paths                   #! Can be empty
+    AGSI = list(f'./.engine/.src/Generated/Shaders/{ os.path.basename(s) }.cpp' for s in AILS)  # Generated shader interfaces source files  #! Can be empty
+    AGSO = list(                f'{ AOUT }/Shaders/{ os.path.basename(s) }.o'       for s in AGSI)  # Generated shader interfaces .o files
 
     ACPP = aData['cpp']                                             # C++ source files
     AOBJ = list((f'{ AOUT }/{ pl.Path(s).stem }.o') for s in ACPP)  # Output .o files of the non-generated C++ source files
@@ -370,9 +374,9 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
 
     # Build executable
 
-    if len(AGLS) > 0:
+    if len(AILS) > 0:
         print(f'Generating application files')
-        BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, isEngine = False)
+        BuildGSI(SPV = ASPV, GSI = AGSI, GLS = AGLS, ILS = AILS, isEngine = False)
         print(f'{ bgreen }Application files generated successfully"\n{ white }')
 
 

@@ -86,6 +86,39 @@ namespace lnx::core::dvc::_pvt {
 }
 
 namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_debugMessenger_is_init; //!Zero initialized
+    extern      VkDebugUtilsMessengerEXT* _lnx_init_var_debugMessenger_v;
+
+    struct _lnx_init_var_debugMessenger_init_t_call_t{
+        _lnx_init_var_debugMessenger_init_t_call_t();
+        void set(VkDebugUtilsMessengerEXT* pVar);
+    };
+    used static _lnx_init_var_debugMessenger_init_t_call_t _lnx_init_var_debugMessenger_init_t_call_v;
+}
+
+namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_validationLayersNum_is_init; //!Zero initialized
+    extern      uint32* _lnx_init_var_validationLayersNum_v;
+
+    struct _lnx_init_var_validationLayersNum_init_t_call_t{
+        _lnx_init_var_validationLayersNum_init_t_call_t();
+        void set(uint32* pVar);
+    };
+    used static _lnx_init_var_validationLayersNum_init_t_call_t _lnx_init_var_validationLayersNum_init_t_call_v;
+}
+
+namespace lnx::core::dvc::_pvt {
+    extern bool _lnx_init_var_validationLayers_is_init; //!Zero initialized
+    extern      const char*** _lnx_init_var_validationLayers_v;
+
+    struct _lnx_init_var_validationLayers_init_t_call_t{
+        _lnx_init_var_validationLayers_init_t_call_t();
+        void set(const char*** pVar);
+    };
+    used static _lnx_init_var_validationLayers_init_t_call_t _lnx_init_var_validationLayers_init_t_call_v;
+}
+
+namespace lnx::core::dvc::_pvt {
     extern bool _lnx_init_var_LNX_H_DEVICES_FUN_is_init; //!Zero initialized
     extern      Dummy* _lnx_init_var_LNX_H_DEVICES_FUN_v;
 

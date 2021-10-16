@@ -3,7 +3,7 @@
 #include "Lynx/Core/Render/Buffers.hpp"
 #include "Lynx/Core/Render/GCommands.hpp"
 #include "Lynx/Core/Render/Render.hpp"
-#include "Generated/Shaders/Line2.gsi.hpp"
+#include "Generated/Shaders/Line2.hpp"
 #include "Lynx/Core/IncludeVulkan.hpp"
 
 

@@ -1,4 +1,4 @@
-﻿#include "Lynx/Core/Core.hpp" //FIXME if this is places after Devices.cpp, G++ is unable to find glfwCreateWindowSurface
+﻿#include "Lynx/Core/Core.hpp" //FIXME if this is placed after Devices.cpp, G++ is unable to find glfwCreateWindowSurface
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Core/Init.hpp"

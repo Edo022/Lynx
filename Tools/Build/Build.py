@@ -94,7 +94,7 @@ def parse(file:str, mode:str):
                 yield(r)
 
     sections['cpp']             = list(expSection(sections['cpp']))
-    sections['gls']             = list(expSection(sections['gls']))
+    sections['ils']             = list(expSection(sections['ils']))
     sections['forced_includes'] = list(expSection(sections['forced_includes']))
 
 
@@ -131,18 +131,14 @@ def parse(file:str, mode:str):
 
 def eclear():
     return not(
-            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './.engine/.bin/Lnx/*.o',          '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './.engine/.bin/Lnx/*.a',          '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', f'./{ AtoE }/src/Generated/*.spv', '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', f'./{ AtoE }/src/Generated/*.cpp', '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', f'./{ AtoE }/src/Generated/*.hpp', '-delete']).returncode
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './.engine/.bin/Lnx/*',        '-delete']).returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './.engine/.tmp/*',            '-delete']).returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', f'./{ AtoE }/src/Generated/*', '-delete']).returncode
     )
 def aclear():
     return not(
-            not subprocess.run(['find', '.', '-type', 'f', '-wholename', '.engine/.bin/App/*.o',         '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', '.engine/.src/Generated/*.spv', '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', '.engine/.src/Generated/*.cpp', '-delete']).returncode
-        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', '.engine/.src/Generated/*.hpp', '-delete']).returncode
+            not subprocess.run(['find', '.', '-type', 'f', '-wholename', './.engine/.bin/App/*', '-delete']).returncode
+        and not subprocess.run(['find', '.', '-type', 'f', '-wholename', './.engine/.src/*',     '-delete']).returncode
     )
 
 
