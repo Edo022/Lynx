@@ -1,20 +1,15 @@
-import os, re, sys, subprocess, math
+import os, re, sys, subprocess, pathlib
 from argparse import Namespace as ns
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
 import Utils
-from Utils import capitalize1, fixTabs
+from Utils import capitalize1, fixTabs, roundUp
 
 #TODO write what external bindings are and how to use them
 #TODO add matrix support
 #TODO add image support
 #TODO add std140 support
 
-#FIXME fix array reference translation
 #FIXME stop program if std or other stuff cannot be found
-
-#TODO In WGPU
-#TODO To make uniform buffers portable they have to be std140 and not std430. Uniform structs have to be std140. Storage structs have to be std430
-#TODO Storage buffers for compute shaders can be std140 or std430
 
 
 
@@ -27,15 +22,7 @@ from Utils import capitalize1, fixTabs
 
 
 
-def roundUp(x : int, b : int) -> int :
-    return b * math.ceil(x / b)
-
-
-
-
-
-
-def parseElms(glsl:str) :
+def parseElms(glsl:str, memoryLayout:str):
     """!
         Parses the elements of a layout
         Returns a namespace with a list of namespaces containing
@@ -51,7 +38,7 @@ def parseElms(glsl:str) :
         'bvec4': 'bv4',    'ivec4': 'i32v4',    'uvec4': 'u32v4',    'vec4': 'f32v4',    'dvec4': 'f64v4',
          'bool': 'bool',     'int': 'i32',       'uint': 'u32',     'float': 'f32',     'double': 'f64'
     }
-    typeSize = {
+    typeAlign = { #TODO ADD MATRIX SUPPORT
         'bvec2': 4 * 2,    'ivec2': 4 * 2,      'uvec2': 4 * 2,      'vec2': 4 * 2,      'dvec2': 8 * 2,
         'bvec3': 4 * 4,    'ivec3': 4 * 4,      'uvec3': 4 * 4,      'vec3': 4 * 4,      'dvec3': 8 * 4,
         'bvec4': 4 * 4,    'ivec4': 4 * 4,      'uvec4': 4 * 4,      'vec4': 4 * 4,      'dvec4': 8 * 4,
@@ -67,7 +54,7 @@ def parseElms(glsl:str) :
         r'(?P<iArr>\[(?P<aLen>.*?)?\])?'                            # Check if it's an array and get its length
         r';',                                                       # Anchor to instruction end
     glsl):                                                      #
-        align:int = typeSize[rInfo['type']]                         # Get type alignment
+        align:int = typeAlign[rInfo['type']]                        # Get type alignment #TODO ADD MATRIX SUPPORT
         maxAlign = max(maxAlign, align)                             # Recalculate maximum alignment #TODO check if this actually works
 
 
@@ -93,7 +80,8 @@ def parseElms(glsl:str) :
     # return dict({ 'func' : ret, 'ext' : ext, 'size' : roundUp(offset, max(maxAlign, 16))})         #BUG crash
     return ns(**{
         'elms' : elms,
-        'size' : roundUp(offset, max(maxAlign, 256))
+        'size' : roundUp(offset, max(maxAlign, 256)) #FIXME USE CALCULATED MAX ALIGNMENT
+        #TODO RETURN STRUCT ALIGNMENT
     })
     # return dict({ 'cpp' : cpp, 'types' : types, 'size' : roundUp(offset, max(maxAlign, 256)) })
     # !NVIDIA has a huge alignment of 256 bytes. #TODO use a different alignment based on the GPU, ig
@@ -116,14 +104,14 @@ def parseElms(glsl:str) :
 
 
 # Translates a single layout
-def parseLayout(glsl:str) :
-    rInfo = re.search(
+def parseLayout(glsl:str):
+    rInfo = re.search( #TODO TOKENIZE
         r'layout.*?\(std(?P<stdv>\d{3}).*?binding=(?P<indx>\d+)\)'
         r'(?P<type>buffer|uniform) (?P<iExt>ext_)?(?P<name>.*?)\{(?P<elms>.*?)\}',
         glsl
     )
 
-    elmsInfo = parseElms(rInfo['elms'])
+    elmsInfo = parseElms(rInfo['elms'], rInfo['stdv'])
     return ns(**{
         'type': 'storage' if rInfo['type'] == 'buffer' else 'uniform',
         'stdv': int(rInfo['stdv']),
@@ -202,7 +190,7 @@ def getLayouts(glsl:str):
 
 
 # Parses a GLSL compute shader and writes 2 C++ interface files
-def parseShader(pathr:str, EtoA:str, isEngine:bool):
+def parseShader(pathr:str, out:str, EtoA:str, isEngine:bool):
     AtoE:str = os.path.relpath('.', EtoA)
 
     #Check files
@@ -212,10 +200,10 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     #Get output shader path and name
-    shOutPath : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
-    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED HEADERS
-    shOutName : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
-    shName    : str = shOutName.replace('.', '_')
+    shOutPath  : str = ('.' if isEngine else './.engine') + '/src/Generated/Shaders'
+    shReadPath : str = (AtoE if isEngine else './.engine') + '/src/Generated/Shaders' #FIXME USE GENERATED SPV HEADERS
+    shOutName  : str = os.path.basename(pathr).rsplit('.', maxsplit = 1)[0]
+    shName     : str = shOutName.replace('.', '_')
     if re.match(r'[a-zA-Z_](\w|\.)*', shOutName) == None:
         print(f'Invalid shader name: "{ shOutName }". The name of a shader can only contain alphanumeric characters, periods or underscores and must start with a letter or an underscore')
         return 2
@@ -224,7 +212,6 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
     # Expand macros and parse out unnecessary whitespace
     code:str = Utils.clearGls(Utils.preprocessGls(os.path.relpath(pathr, ".")))
-
 
     #Parse layouts
     pGlsl = getLayouts(code)
@@ -252,7 +239,9 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
     #Write output files
-    with open(f'{ shOutPath }/{ shName }.gsi.hpp', 'w') as fh, open(f'{ shOutPath }/{ shName }.gsi.cpp', 'w') as fc:
+    fhn = f'{ os.path.dirname(out) }/{pathlib.Path(out).stem }.hpp'
+    fcn = out
+    with open(fhn, 'w') as fh, open(fcn, 'w') as fc:
 
 
         # Write header
@@ -307,12 +296,12 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
                 f'\n    }}'
 
                 # Construct with vdata only #FIXME write specific struct
-                f'\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{' #FIXME check the length
+                f'\n    inline { l.cstr }(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr) {{' #FIXME check the length
                 f'\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;'
                 f'\n    }}' #TODO add operator= for different buffer types
 
                 # Copy from vdata only #FIXME write specific struct
-                f'\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr){{' #FIXME check the length
+                f'\n    inline auto& operator=(const vram::ptr<auto, eVRam, e{ l.type.capitalize() }>& pVPtr) {{' #FIXME check the length
                 f'\n        vdata = (vram::ptr<char, eVRam, e{ l.type.capitalize() }>)pVPtr;'
                 f'\n        return *this;'
                 f'\n    }}' #TODO add operator= for different buffer types
@@ -330,7 +319,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             s += f'\npublic:'
             for m in l.elms:
                 getName = f'{ "e" if l.iExt else "l" }{ capitalize1(m.name) }'
-                s += f'\n    alwaysInline { m.type }& { getName }(){{'
+                s += f'\n    alwaysInline { m.type }& { getName }() {{'
                 if l.iExt:
                     f'\n        _dbg::assertCond('
                     f'\n            { m.name } != nullptr'
@@ -400,7 +389,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n// This file was generated by { "" if isEngine else AtoE + "/" }Tools/Build/Generators/GenInterfaces'
             f'\n// Changes could be overwritten without notice'
             f'\n//####################################################################################'
-            f'\n#include "Generated/Shaders/{ shName }.gsi.hpp"'
+            f'\n#include "Generated/Shaders/{ shName }.ilsl.hpp"'
             f'\n'
             f'\n#include "Lynx/Core/Init.hpp\"'                 # Auto init
             f'\n#include "Lynx/Core/Render/Shaders/Shader.hpp\"'    # Engine shader header
@@ -424,7 +413,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             s += f'\n    const { e.cstr }& p{ capitalize1(e.name) },'
         s += (
             f'\n    const u32v3 vGroupCount, core::RenderCore& pRenderCore'
-            f'\n){{'
+            f'\n) {{'
             f'\n    pRenderCore.addObject_m.lock();'
         )
         for e in externs:
@@ -446,7 +435,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
         s += '\n' * 8 + (
-            f'\nvoid { shName }::createDescriptorSets(){{'
+            f'\nvoid { shName }::createDescriptorSets() {{'
             f'\n    vk::DescriptorPoolSize sizes[2] = {{'
             f'\n        '   f'vk::DescriptorPoolSize().setType(vk::DescriptorType::eStorageBuffer).setDescriptorCount({ str(pGlsl.storageNum) }),' + (
             f'\n        ' + f'vk::DescriptorPoolSize().setType(vk::DescriptorType::eUniformBuffer).setDescriptorCount({ str(pGlsl.uniformNum) })' if pGlsl.uniformNum > 0 else '{}' ) +
@@ -457,7 +446,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n        .setPoolSizeCount ({ str(2 if pGlsl.uniformNum > 0 else 1) })'
             f'\n        .setPPoolSizes    (sizes)'
             f'\n    ;'
-            f'\n    switch(core::dvc::g_graphics().ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)){{'
+            f'\n    switch(core::dvc::g_graphics().ld.createDescriptorPool(&poolInfo, nullptr, &descriptorPool)) {{'
             f'\n        case vk::Result::eErrorFragmentationEXT:  dbg::logError(\"Fragmentation error\");  break;'
             f'\n        vkDefaultCases;'
             f'\n    }}'
@@ -467,7 +456,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n        .setDescriptorSetCount (1)'
             f'\n        .setPSetLayouts        (&g_{ shName }_layout().descriptorSetLayout)'
             f'\n    ;'
-            f'\n    switch(core::dvc::g_graphics().ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)){{'
+            f'\n    switch(core::dvc::g_graphics().ld.allocateDescriptorSets(&allocateSetInfo, &descriptorSet)) {{'
             f'\n        case vk::Result::eErrorFragmentedPool:    dbg::logError(\"Fragmented pool\");      break;'
             f'\n        case vk::Result::eErrorOutOfPoolMemory:   dbg::logError(\"Out of pool memory\");   break;'
             f'\n        vkDefaultCases;'
@@ -505,21 +494,21 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
         s += '\n' * 8 + (
-            f'\nvoid { shName }::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{'
+            f'\nvoid { shName }::createCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore) {{'
             f'\n    auto allocateCbInfo = vk::CommandBufferAllocateInfo()'
             f'\n        .setCommandPool        (pRenderCore.commandPool)'
             f'\n        .setLevel              (vk::CommandBufferLevel::ePrimary)'
             f'\n        .setCommandBufferCount (1)'
             f'\n    ;'
             f'\n    commandBuffers.resize(1);'
-            f'\n    switch(core::dvc::g_graphics().ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())){{ vkDefaultCases; }}'
+            f'\n    switch(core::dvc::g_graphics().ld.allocateCommandBuffers(&allocateCbInfo, commandBuffers.begin())) {{ vkDefaultCases; }}'
             f'\n'
             f'\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-            f'\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}'
+            f'\n    switch(commandBuffers[0].begin(beginInfo)) {{ vkDefaultCases; }}'
             f'\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[g_{ shName }_pipelineIndex()]);'
             f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_{ shName }_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
             f'\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
-            f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
+            f'\n    switch(commandBuffers[0].end()) {{ vkDefaultCases; }}'
             #TODO WRITE ALL COMMAND BUFFERS AT ONCE
             #TODO or use multiple descriptor sets for multiple objects, but in the same command buffer
             f'\n}}'
@@ -533,13 +522,13 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
         s += '\n' * 8 + (
-            f'\nvoid { shName }::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore){{'
+            f'\nvoid { shName }::updateCommandBuffers(const u32v3 vGroupCount, core::RenderCore& pRenderCore) {{'
             f'\n    auto beginInfo = vk::CommandBufferBeginInfo().setFlags(vk::CommandBufferUsageFlagBits::eSimultaneousUse);'
-            f'\n    switch(commandBuffers[0].begin(beginInfo)){{ vkDefaultCases; }}'
+            f'\n    switch(commandBuffers[0].begin(beginInfo)) {{ vkDefaultCases; }}'
             f'\n    commandBuffers[0].bindPipeline       (vk::PipelineBindPoint::eCompute, pRenderCore.pipelines[g_{ shName }_pipelineIndex()]);'
             f'\n    commandBuffers[0].bindDescriptorSets (vk::PipelineBindPoint::eCompute, g_{ shName }_layout().pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);'
             f'\n    commandBuffers[0].dispatch           (vGroupCount.x, vGroupCount.y, vGroupCount.z);'
-            f'\n    switch(commandBuffers[0].end()){{ vkDefaultCases; }}'
+            f'\n    switch(commandBuffers[0].end()) {{ vkDefaultCases; }}'
             f'\n}}'
         )
 
@@ -551,7 +540,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
         s += '\n' * 8 + (
-            f'\nvoid { shName }::destroy(){{'
+            f'\nvoid { shName }::destroy() {{'
             f'\n    //TODO'
             f'\n}}'
         )
@@ -564,9 +553,9 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
         s += '\n' * 8 + (
-            f'\n_lnx_init_var_value_def((InterfaceLayout), { shName }_layout,        lnx::shd::gsi){{}}'
-            f'\n_lnx_init_var_value_def((uint32),          { shName }_pipelineIndex, lnx::shd::gsi){{ *pVar = core::shaders::g_pipelineNum()++; }}'
-            f'\n_lnx_init_fun_def(LNX_H_{ shName.upper() }, lnx::shd::gsi){{'
+            f'\n_lnx_init_var_value_def((InterfaceLayout), { shName }_layout,        lnx::shd::gsi) {{}}'
+            f'\n_lnx_init_var_value_def((uint32),          { shName }_pipelineIndex, lnx::shd::gsi) {{ *pVar = core::shaders::g_pipelineNum()++; }}'
+            f'\n_lnx_init_fun_def(LNX_H_{ shName.upper() }, lnx::shd::gsi) {{'
             f'\n    core::shaders::g_pipelineLayouts().resize(core::shaders::g_pipelineNum());'
             f'\n    core::shaders::g_pipelineLayouts()[g_{ shName }_pipelineIndex()] = &g_{ shName }_layout();'
             f'\n    {{ //Create descriptor set layout'
@@ -593,7 +582,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n            .setPBindings    (bindingLayouts)'
             f'\n        ;'
             f'\n        //Create the descriptor set layout'
-            f'\n        switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &g_{ shName }_layout().descriptorSetLayout)){{ vkDefaultCases; }}'
+            f'\n        switch(core::dvc::g_graphics().ld.createDescriptorSetLayout(&layoutCreateInfo, nullptr, &g_{ shName }_layout().descriptorSetLayout)) {{ vkDefaultCases; }}'
             f'\n    }}'
             f'\n'
             f'\n'
@@ -601,7 +590,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n'
             f'\n    {{ //Create pipeline layout'
             f'\n        uint64 fileLength = 0;'
-            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.spv\");' #FIXME USE GENERATED HEADERS
+            f'\n        uint32* code = core::shaders::loadSpv(&fileLength, \"{ shReadPath }/{ shName }.ilsl.comp.spv\");' #FIXME USE GENERATED HEADERS
             f'\n        g_{ shName }_layout().shaderModule = core::shaders::createModule(core::dvc::g_graphics().ld, code, fileLength);'
             f'\n'
             f'\n        g_{ shName }_layout().shaderStageCreateInfo = vk::PipelineShaderStageCreateInfo()'
@@ -614,7 +603,7 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
             f'\n            .setSetLayoutCount (1)'
             f'\n            .setPSetLayouts    (&g_{ shName }_layout().descriptorSetLayout)'
             f'\n        ;'
-            f'\n        switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &g_{ shName }_layout().pipelineLayout)){{ vkDefaultCases; }}'
+            f'\n        switch(core::dvc::g_graphics().ld.createPipelineLayout(&pipelineLayoutCreateInfo, nullptr, &g_{ shName }_layout().pipelineLayout)) {{ vkDefaultCases; }}'
             f'\n    }}'
             f'\n}}'
         )
@@ -638,5 +627,5 @@ def parseShader(pathr:str, EtoA:str, isEngine:bool):
 
 
 
-if len(sys.argv) != 4: raise Exception('GenInterfaces: Wrong number of arguments')
-sys.exit(parseShader(sys.argv[1], sys.argv[2], eval(sys.argv[3])))
+if len(sys.argv) != 5: raise Exception('GenInterfaces: Wrong number of arguments')
+sys.exit(parseShader(sys.argv[1], sys.argv[2], sys.argv[3], eval(sys.argv[4])))
