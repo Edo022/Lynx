@@ -5,7 +5,7 @@
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/Vectors/Vectors.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
-#include "Generated/Shaders/FloatToIntBuffer.hpp"
+#include "Generated/Shaders/FloatToIntBuffer.ilsl.hpp"
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 
 

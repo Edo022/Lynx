@@ -4,7 +4,7 @@
 #include "Lynx/Core/Render/Window/Swapchain.hpp"
 #include "Lynx/Types/VPointer.hpp"
 #include "Lynx/Types/FenceDE.hpp"
-#include "Generated/Shaders/FloatToIntBuffer.hpp"
+#include "Generated/Shaders/FloatToIntBuffer.ilsl.hpp"
 #include "Lynx/Core/Input/MouseInput.hpp"
 #include "Lynx/Core/Render/Render.hpp" //TODO rename as RenderCore
 // #include "Lynx/Types/Object/Obj_b.hpp"

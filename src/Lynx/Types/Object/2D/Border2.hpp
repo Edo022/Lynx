@@ -1,7 +1,7 @@
 #pragma once
 #include "Lynx/Core/Render/Shaders/Shader.hpp"
 #include "Lynx/Types/Object/Obj_b.hpp"
-#include "Generated/Shaders/Border2.hpp"
+#include "Generated/Shaders/Border2.ilsl.hpp"
 
 
 

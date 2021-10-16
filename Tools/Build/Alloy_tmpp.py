@@ -405,7 +405,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
 
 
 def build(EXEC, OUTPUT, eData, aData, buildEngine):
-    print(f'Using { totThrs } threads')
+    print(f'{ white }Using { totThrs } threads')
 
 
     EOUT = f'{ EtoA }/.engine/.bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
