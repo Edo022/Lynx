@@ -1,0 +1,9 @@
+
+
+#define macro3(name)\
+    print(name)
+
+
+
+
+some random code pt 2

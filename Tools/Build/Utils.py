@@ -3,14 +3,14 @@ import os, subprocess, re, io, token, tokenize, glob, math
 
 
 # Color codes
-nBlk = '\033[0;30m';    bBlk= '"\033[1;30m';    uBlk= '"\033[4;30m'
-nRed = '\033[0;31m';    bRed= '"\033[1;31m';    uRed= '"\033[4;31m'
-nGrn = '\033[0;32m';    bGrn= '"\033[1;32m';    uGrn= '"\033[4;32m'
-nYel = '\033[0;33m';    bYel= '"\033[1;33m';    uYel= '"\033[4;33m'
-nBlu = '\033[0;34m';    bBlu= '"\033[1;34m';    uBlu= '"\033[4;34m'
-nMag = '\033[0;35m';    bMag= '"\033[1;35m';    uMag= '"\033[4;35m'
-nCyn = '\033[0;36m';    bCyn= '"\033[1;36m';    uCyn= '"\033[4;36m'
-nWht = '\033[0;37m';    bWht= '"\033[1;37m';    uWht= '"\033[4;37m'
+nBlk = '\033[0;30m';    bBlk= '\033[1;30m';    uBlk= '"\033[4;30m'
+nRed = '\033[0;31m';    bRed= '\033[1;31m';    uRed= '"\033[4;31m'
+nGrn = '\033[0;32m';    bGrn= '\033[1;32m';    uGrn= '"\033[4;32m'
+nYel = '\033[0;33m';    bYel= '\033[1;33m';    uYel= '"\033[4;33m'
+nBlu = '\033[0;34m';    bBlu= '\033[1;34m';    uBlu= '"\033[4;34m'
+nMag = '\033[0;35m';    bMag= '\033[1;35m';    uMag= '"\033[4;35m'
+nCyn = '\033[0;36m';    bCyn= '\033[1;36m';    uCyn= '"\033[4;36m'
+nWht = '\033[0;37m';    bWht= '\033[1;37m';    uWht= '"\033[4;37m'
 
 
 

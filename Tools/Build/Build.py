@@ -163,7 +163,7 @@ p.add_argument('-h', '--help',      action = 'store_true', dest = 'h')
 p.add_argument('-v', '--version',   action = 'store_true', dest = 'v')
 p.add_argument('-c', '--clear',     action = 'store_true', dest = 'c')
 p.add_argument('-C', '--clear-all', action = 'store_true', dest = 'C')
-p.add_argument('-V'  '--verbosity', action = 'store',      dest = 'V', choices = [0, 1, 2, 3], default = 2, type = int)
+p.add_argument('-V'  '--verbosity', action = 'store',      dest = 'V', choices = [0, 1, 2, 3], default = 2, type = int) #TODO --shut-up = -V0
 p.add_argument('-b', '--build',     action = 'store',      dest = 'b', default = None)
 p.add_argument('-B', '--build-all', action = 'store',      dest = 'B', default = None)
 p.add_argument('-m', '--mode',      action = 'store',      dest = 'm', choices = ['wd', 'wr', 'ld', 'lr'])
