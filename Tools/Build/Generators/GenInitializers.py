@@ -1,7 +1,5 @@
-import sys, re, os, pathlib, subprocess
+import os, sys, re, pathlib, subprocess, Utils as u
 from argparse import Namespace as ns
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/..')
-import Utils
 
 
 
@@ -23,7 +21,7 @@ r = list(m.groupdict() for m in re.finditer(
     r'_LNX_PARSE_INITIALIZER_GENERATOR_TYPE=(?P<type>.*?),'
     r'_LNX_PARSE_INITIALIZER_GENERATOR_NAME=(?P<name>.*?),'
     r'_LNX_PARSE_INITIALIZER_GENERATOR_FULLNS=(?P<fullNs>.*?);',
-    Utils.preprocessCpp(tmp, [*flags, '-D__LNX_PARSE_INITIALIZER_GENERATOR__', '-D__LNX_PARSE_NO_INCLUDES__'])
+    u.preprocessCpp(tmp, [*flags, '-D__LNX_PARSE_INITIALIZER_GENERATOR__', '-D__LNX_PARSE_NO_INCLUDES__'])
 ))
 
 

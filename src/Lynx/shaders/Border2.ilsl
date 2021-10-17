@@ -1,4 +1,3 @@
-#version 450
 #define gx gl_GlobalInvocationID.x
 #define gy gl_GlobalInvocationID.y
 #define g gl_GlobalInvocationID

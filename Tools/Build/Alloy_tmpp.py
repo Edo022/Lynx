@@ -1,6 +1,5 @@
-import os, sys, subprocess, threading, multiprocessing, time, re, pathlib as pl
+import os, sys, subprocess, threading, multiprocessing, time, re, pathlib as pl, Utils as u
 from Paths import *
-import Utils
 
 
 
@@ -9,12 +8,6 @@ avlThrs = multiprocessing.cpu_count() - 1
 totThrs = avlThrs
 curThr = 0
 poolErr = False
-
-bmag   = '\033[1;35m'
-bgreen = '\033[1;32m'
-white  = '\033[0;37m'
-red    = '\033[1;31m'
-
 
 
 
@@ -45,9 +38,9 @@ def checkCmd(args):
     if r.returncode != 0:
         if not poolErr:
             poolErr = True
-            print(f'{ red }\n\nCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ white }')
-            print(f'{ red }\nstderr:{ " None" * (not len(r.stderr)) }{ white }\n{ r.stderr }')
-            print(f'{ red }\nstdout:{ " None" * (not len(r.stdout)) }{ white }\n{ r.stdout }')
+            print(f'{ u.bRed }\n\nCommand "{ " ".join(args) }" failed with exit code { str(r.returncode) }:{ u.nWht }')
+            print(f'{ u.bRed }\nstderr:{ " None" * (not len(r.stderr)) }{ u.nWht }\n{ r.stderr }')
+            print(f'{ u.bRed }\nstdout:{ " None" * (not len(r.stdout)) }{ u.nWht }\n{ r.stdout }')
             avlThrs = 999999
             sys.exit(r.returncode)
         else:
@@ -299,7 +292,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         'src/Lynx/Core/VkDef.hpp',      # Include forced vulkan macros
         'src/Lynx/Lynx_config.hpp',     # Include engine configuration macros
     ]
-    EFLG = eData['defines'] + list(Utils.prefixList('-include', eData['forced_includes'])) + eData['include_paths'] + eData['compiler_flags']
+    EFLG = eData['defines'] + list(u.prefixList('-include', eData['forced_includes'])) + eData['include_paths'] + eData['compiler_flags']
 
     EILS = eData['ils']                                                                         # GLS source files
     EGLS = list(f'{ EtoA }/.engine/.tmp/glsl-{ os.path.basename(s)     }.comp' for s in EILS)   # GLS source files
@@ -318,7 +311,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         ['python3', 'Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
         'Generating GLSL source file %t',
         'Target is up to date (GLSL source file %t)',
-        f'{ bgreen }Engine GLSL source files generated successfully\n{ white }'
+        f'{ u.bGrn }Engine GLSL source files generated successfully\n{ u.nWht }'
     )
 
     if len(EILS) > 0: BuildN(
@@ -329,7 +322,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         ['python3', 'Tools/Build/Generators/GenInterfaces.py', '%s', '%t', EtoA, str(True)],
         'Generating shader interface for %s',
         'Target is up to date (Shader interface of %s)',
-        f'{ bgreen }Engine shader interfaces generated successfully\n{ white }'
+        f'{ u.bGrn }Engine shader interfaces generated successfully\n{ u.nWht }'
     )
 
     if len(EGLS) > 0: BuildN(
@@ -339,7 +332,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         ['glslangValidator', '-V', '%s', '-S', 'comp', '-o', '%t' ],
         'Compiling shader %t',
         'Target is up to date (Shader %t)',
-        f'{ bgreen }Engine shaders compiled successfully\n{ white }'
+        f'{ u.bGrn }Engine shaders compiled successfully\n{ u.nWht }'
     )
 
 
@@ -348,7 +341,7 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         list(f'src/Generated/.init'     f'/{ pl.Path(o).stem }.init.hpp' for o in ECPP) +\
         list(f'src/Generated/.init/Shaders/{ pl.Path(o).stem }.init.hpp' for o in EGSI)
     BuildInit(ECPP + EGSI, initOutputs, ['-include', 'src/Lynx/Lynx_config.hpp', '-include', 'src/Lynx/Core/Init.hpp', *eData['defines'], *eData['include_paths']])
-    print(f'{ bgreen }Initializer headers generated successfully\n{ white }')
+    print(f'{ u.bGrn }Initializer headers generated successfully\n{ u.nWht }')
 
 
     BuildN(
@@ -358,13 +351,13 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         [EXEC, *EFLG, '-fdiagnostics-color', '-c', '-xc++', '%s', '-o', '%t'],
         'Compiling object file %t',
         'Target is up to date (Object file %t)',
-        f'{ bgreen }Engine object files compiled successfully\n{ white }'
+        f'{ u.bGrn }Engine object files compiled successfully\n{ u.nWht }'
     )
 
 
     print(f'Writing Lynx Engine library')
     subprocess.run(['ar', '-rcs', ELIB] + EGSO + EOBJ)
-    print(f'{ bgreen }Created "{ ELIB }"\n{ white }')
+    print(f'{ u.bGrn }Created "{ ELIB }"\n{ u.nWht }')
 
 
     return 0
@@ -385,7 +378,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         f'{ AtoE }/src/Lynx/Core/VkDef.hpp',        # Include forced vulkan macros
         f'{ AtoE }/src/Lynx/Lynx_config.hpp',       # Include engine configuration macros
     ]
-    AFLG = aData['defines'] + list(Utils.prefixList('-include', aData['forced_includes'])) + aData['include_paths'] + aData['compiler_flags']
+    AFLG = aData['defines'] + list(u.prefixList('-include', aData['forced_includes'])) + aData['include_paths'] + aData['compiler_flags']
 
     AILS = aData['ils']                                                                              # ILS source files
     AGLS = list(             f'./.engine/.tmp/glsl-{ os.path.basename(s)     }.comp' for s in AILS)  # Generated GLS source files                #! Can be empty
@@ -409,7 +402,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         ['python3', f'{ AtoE }/Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
         'Generating GLSL source file %t',
         'Target is up to date (GLSL source file %t)',
-        f'{ bgreen }Application GLSL source files generated successfully\n{ white }'
+        f'{ u.bGrn }Application GLSL source files generated successfully\n{ u.nWht }'
     )
 
     if len(AILS) > 0: BuildN(
@@ -420,7 +413,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         ['python3', f'{ AtoE }/Tools/Build/Generators/GenInterfaces.py', '%s', '%t', EtoA, str(False)],
         'Generating shader interface for %s',
         'Target is up to date (Shader interface of %s)',
-        f'{ bgreen }Application shader interfaces generated successfully\n{ white }'
+        f'{ u.bGrn }Application shader interfaces generated successfully\n{ u.nWht }'
     )
 
     if len(AGLS) > 0: BuildN(
@@ -430,7 +423,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         ['glslangValidator', '-V', '%s', '-S', 'comp', '-o', '%t' ],
         'Compiling shader %t',
         'Target is up to date (Shader %t)',
-        f'{ bgreen }Application shaders compiled successfully\n{ white }'
+        f'{ u.bGrn }Application shaders compiled successfully\n{ u.nWht }'
     )
 
 
@@ -441,7 +434,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         [EXEC, *AFLG, '-fdiagnostics-color', '-c', '-xc++', '%s', '-o', '%t'],
         'Compiling object file %t',
         'Target is up to date (Object file of %s)',
-        f'{ bgreen }Application object files compiled successfully\n{ white }'
+        f'{ u.bGrn }Application object files compiled successfully\n{ u.nWht }'
     )
 
 
@@ -450,7 +443,7 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
     checkCmd([EXEC] + AFLG + AGSO + AOBJ + [f'{ AtoE }/{ ELIB }'] + LINK + ['-o', ABIN])
     if poolErr:
         sys.exit('Alloy: An error occurred. Build stopped') #TODO add warning output
-    print(f'{ bgreen }Created "{ ABIN }"\n{ white }')
+    print(f'{ u.bGrn }Created "{ ABIN }"\n{ u.nWht }')
 
 
 
@@ -474,8 +467,8 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
 
 
 def build(EXEC, OUTPUT, eData, aData, buildEngine):
-    print(f'{ bmag }Working directory: { os.getcwd() }')
-    print(f'Using { totThrs } threads{ white }')
+    print(f'{ u.bMag }Working directory: { os.getcwd() }')
+    print(f'Using { totThrs } threads{ u.nWht }')
 
 
     EOUT = f'{ EtoA }/.engine/.bin/Lnx/{ OUTPUT }'       # Path to the engine binary output directory        #! Relative to engine
@@ -485,10 +478,10 @@ def build(EXEC, OUTPUT, eData, aData, buildEngine):
 
     e = 0
     if buildEngine:
-        print(f'{ bmag }Moving to directory { os.path.abspath(AtoE) }{ white }'); os.chdir(AtoE)
+        print(f'{ u.bMag }Moving to directory { os.path.abspath(AtoE) }{ u.nWht }'); os.chdir(AtoE)
         eDirs(EOUT)
         e = eBuild(EXEC, EOUT, ELIB, eData)
-        print(f'{ bmag }Moving to directory { os.path.abspath(EtoA) }{ white }'); os.chdir(EtoA)
+        print(f'{ u.bMag }Moving to directory { os.path.abspath(EtoA) }{ u.nWht }'); os.chdir(EtoA)
 
     aDirs(AOUT)
     a = aBuild(EXEC, EOUT, AOUT, ELIB, eData, aData)
