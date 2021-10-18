@@ -12,7 +12,7 @@ def printError(vStr:str):
 
 def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
     print(
-        f'\n{ u.bRed }GenGlsl: Syntax error on line { str(vLineN) }, file "{ os.path.relpath(vFile, ".") }":'
+        f'\n{ u.bRed }GenGlsl: Syntax error on line { str(vLineN + 1) }, file "{ os.path.relpath(vFile, ".") }":'
         f'\n{ vStr }{ u.nWht }'
         f'\n    { vLine }'
         f'\n\nCompilation stopped'
@@ -30,61 +30,90 @@ def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
 
 
 
-
+#TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
+# A list of all recognized tokens in ILSL
+# b = binary      a = assign      l = logical       t = type    k = keyword     f = function        c = literal constant
 tok = {
-    'op' : {
-        #! %,  &,  |,  ^,  >>  and <<  are not implemented in GLSL. Use the functions
-        #! %=, &=, |=, ^=, >>= and <<= are not implemented in GLSL. Use the functions
-        'unary'      : [r'\+\+',   r'--',      r'!',       r'~'],
-        'binary'     : [r'\+',     r'\*',      r'-',       r'\/',      r'%',       r'&',       r'\|',      r'\^',      r'<<',      r'>>'],
-        'assignment' : [r'\+=',    r'\*=',     r'-=',      r'\/=',     r'%=',      r'&=',      r'\|=',     r'\^=',     r'<<=',     r'>>=',     r'='],
-        'logical'    : [r'&&',     r'\|\|',    r'\^\^',    r'==',      r'!=',      r'<',       r'>',       r'<=',      r'>='],
-        'group'      : [r'\(',     r'\)',      r'\{',      r'\}',      r'\[',      r'\]'],
-        'other'      : [r'\?',     r':',       r'\\',      r',',       r'\.',      r';']
-    },
-    'types' : {
-        'scalar'  : [r'[ui]32',                     r'f(32|64)',                    r'bool'],
-        'vector'  : [r'[ui]32v[234]',               r'f(32|64)v[234]',              r'bv[234]'],
-        'matrix'  : [r'[ui]32m[234](?:x[234])?',    r'f(32|64)m[234](?:x[234])?',   r'bm[234](?:x[234])?'],        #TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
-        'other'   : [r'void']
-    },
-    'keyword' : [
-        r'if', r'else', r'while', r'for', r'break', r'continue', r'do', r'switch', r'case', r'default', r'return',
-        r'local, extern, const, struct'
-    ],
-    'functions' : [
-        r'rad',     r'deg',                     # Degrees to radiants, radiants to degrees
-        r'sin',     r'cos',     r'tan',         # Sine, cosine, tangent
-        r'asin',    r'acos',    r'atan',        # Inverse sine, inverse cosine, arg tangent
-        r'sinh',    r'cosh',    r'tanh',        # Hyperbolic sine, hyperbolic cosine, hyperbolic tangent
-        r'asinh',   r'acosh',   r'atanh',       # Inverse hyperbolic sine, inverse hyperbolic cosine, inverse hyperbolic tangent
-        r'pow',     r'sqrt',    r'isqrt',       # Power, square root, inverse square root
-        r'exp',     r'log',                     # Natural exponentiation, natural logarithm
-        r'exp2',    r'log2',                    # 2 to the power of n, base 2 logarithm of n
-        r'abs',     r'sign',                    # Absolute value, sign (-1 | 1)
-        r'floor',   r'ceil',                    # Floor, ceil
-        r'mfloor'   r'mceil',                   # Floor to multiple, ceil to multiple
-        r'trunc',   r'round',   r'roundEven'    # Truncate to integer, round to the nearest integer, round to the nearest even integer
-        r'fract',   r'modf',
-        r'min',     r'max',
-        r'clamp', r'mix', r'step', r'sstep',
-        r'isnan', r'isinf',
-        r'fBitsToInt', r'fBitsToUint', r'iBitsToFloat', r'uBitsToFloat',
-        r'fma', r'frexp', r'idexp',
-        r'length', r'dist', r'cross', r'norm', r'reflect', r'refract', r'faceforward',
-        r'matrixCompMult', r'OuterProduct', r'transpose', r'determinant', r'inverse'
-    ],
-    'literal' : {
-        'bool' : r'b0(?:[01]+)(?:\.(?:[01]+))?',
-        'dec'  : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',
-        'oct'  : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',
-        'hex'  : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'
-    },
-    'filename'   : r'(?:[a-zA-Z_\.\/\-](?:[a-zA-Z_\.\/\-0-9]*))',
-    'identifier' : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))'
+    #! %,  &,  |,  ^,  >>  and <<  are not implemented in GLSL. Use the functions
+    #! %=, &=, |=, ^=, >>= and <<= are not implemented in GLSL. Use the functions
+
+    'b_sum' : r'\+',        'b_sub' : r'-',         'b_mul' : r'\*',        'b_div' : r'\/',        'b_mod' : r'%',
+    'a_sum' : r'\+=',       'a_sub' : r'-=',        'a_mul' : r'\*=',       'a_div' : r'\/=',       'a_mod' : r'%=',
+    'inc'   : r'\+\+',      'dec'   : r'--',        'u_not' : r'~',
+
+                                                                            'l_le'  : r'<=',        'l_me'  : r'>=',        'l_eq'  : r'==',
+    'b_and' : r'&',         'b_xor' : r'\^',        'b_or'  : r'\|',        'b_ls'  : r'<<',        'b_rs'  : r'>>',        'l_not' : r'!',
+    'a_and' : r'&=',        'a_xor' : r'\^=',       'a_or'  : r'\|=',       'a_ls'  : r'<<=',       'a_rs'  : r'>>=',       'a_set' : r'=',
+    'l_and' : r'&&',        'l_xor' : r'\^\^',      'l_or'  : r'\|\|',      'l_l'   : r'<',         'l_m'   : r'>',         'l_neq' : r'!=',
+
+    'lr'    : r'\(',        'rr'    : r'\)',        'lc'    : r'\{',        'rc'    : r'\}',        'lf'    : r'\[',        'rs'   : r'\]',
+    'ternc' : r'\?',        'terna' : r':',         'esc'   : r'\\',        'comma' : r',',         'field' : r'\.',        'sc'   : r';',
+
+
+    'path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',     # Path
+    'id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',             # Identifier
+    'nid'  : r'(?:[^a-zA-Z_]|^)',                           # Not an identifier
+
+
+    't_scl'  : r'(?:b|f32|f64|u32|i31)',                    # Scalar types
+    't_vec'  : r'(?:b|f32|f64|u32|i31)v[234]',              # Vectors
+    't_mat'  : r'(?:b|f32|f64|u32|i31)m[234](?:x[234])?',   # Matrices
+    't_void' : r'void',                                     # just void
+
+
+    # If-else                   # Loops                 # Flow control              # Switch case
+    'k_if'   : r'if',          'k_whl' : r'while',      'k_cnt' : r'continue',      'k_swch' : r'switch',
+    'k_else' : r'else',        'k_for' : r'for',        'k_brk' : r'break',         'k_case' : r'case',
+    'k_elif' : r'elif',        'k_do'  : r'do',         'k_ret' : r'return',        'k_def'  : r'default',
+
+    # Inputs                    # Other
+    'k_loc' : r'local',         'k_cst' : r'const',
+    'k_ext' : r'extern',        'k_str' : r'struct',
+
+
+    # # Sine          # Cosine            # Tangent
+    # 'f_sin'     : r'sin',         'f_cos'   : r'cos',             'f_tan'   : r'tan',         # Sine,                     cosine,                     tangent
+    # 'f_asin'    : r'asin',        'f_acos'  : r'acos',            'f_atan'  : r'atan',        # Inverse sine,             inverse cosine,             inverse tangent
+    # 'f_sinh'    : r'sinh',        'f_cosh'  : r'cosh',            'f_tanh'  : r'tanh',        # Hyperbolic sine,          hyperbolic cosine,          hyperbolic tangent
+    # 'f_asinh'   : r'asinh',       'f_acosh' : r'acosh',           'f_atanh' : r'atanh',       # Inverse hyperbolic sine,  inverse hyperbolic cosine,  inverse hyperbolic tangent
+    # 'f_pow'     : r'pow',         'f_sqrt'  : r'sqrt',            'f_isqrt' : r'isqrt',       # Exponentiation,           square root,                inverse square root
+    # 'f_exp'     : r'exp',         'f_log'   : r'log',    # Natural exponentiation,   natural logarithm
+    # 'f_exp2'    : r'exp2',        'f_log2'  : r'log2',   # 2 to the power of n,      base 2 logarithm of n
+    # # Vectors       # Matrices          # Bits
+    # 'f_length'  : r'length',      'f_matrixCompMult' : r'matrixCompMult',  'f_fBitsToInt'   : r'fBitsToInt',  # Length of a vector
+    # 'f_dist'    : r'dist',        'f_OuterProduct'   : r'OuterProduct',    'f_fBitsToUint'  : r'fBitsToUint',
+    # 'f_cross'   : r'cross',       'f_transpose'      : r'transpose',       'f_iBitsToFloat' : r'iBitsToFloat',
+    # 'f_norm'    : r'norm',        'f_determinant'    : r'determinant',     'f_uBitsToFloat' : r'uBitsToFloat',
+    # 'f_reflect' : r'reflect',     'f_inverse'        : r'inverse',
+    # 'f_refract' : r'refract',
+    # 'f_faceforward' : r'faceforward',
+    # # Round
+    # 'f_floor'  : r'floor',       'f_ceil'      : r'ceil',                        # Floor, ceil
+    # 'f_mfloor' : r'mfloor',       'f_mceil'    : r'mceil',                      # Floor to multiple, ceil to multiple
+    # 'f_round'  : r'round',       'f_roundEven' : r'roundEven',                   # Truncate to integer, round to the nearest integer, round to the nearest even integer
+    # # Conversion    # Sign          # Comparison
+    # 'f_rad'    : r'rad',         'f_abs'  : r'abs',         'f_min' : r'min',
+    # 'f_deg'    : r'deg',         'f_sign' : r'sign',        'f_max' : r'max',
+    # # Other
+    # 'f_isnan' : r'isnan',       'f_step'  : r'step',        'f_frexp' : r'frexp',
+    # 'f_isinf' : r'isinf',       'f_sstep' : r'sstep',       'f_idexp' : r'idexp',
+    # 'f_fma'   : r'fma',         'f_trunc' : r'trunc',       'f_clamp' : r'clamp',
+    # 'f_mix'   : r'mix',         'f_fract' : r'fract',       'f_modf'  : r'modf',
+
+    # 'c_bin' : r'b0(?:[01]+)(?:\.(?:[01]+))?',                 # Binary        # 0b10100
+    # 'c_dec' : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',            # Decimal       # 90872     # 0d90872
+    # 'c_oct' : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',            # Octal         # 030507    # 0o30507
+    # 'c_hex' : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
 }
+# tok_b = list(t for t in tok)
+# tok_a = list(t for t in tok)
+# tok_l = list(t for t in tok)
+# ok_op = tok_b + tok_a + tok_l
 
-
+# tok_t = list(t for t in tok)
+# tok_k = list(t for t in tok)
+# # tok_f = list(t for t in tok)
+# tok_c = list(t for t in tok)
 
 
 
@@ -104,7 +133,7 @@ tok = {
 # Any combination of whitespace character is replaced with a single space
 # Preprocessor directives are expanded
 # Comments are ignored
-def tokenizeIlsl(vFile:str, vFlags:list):
+def tokenize(vFile:str, vFlags:list):
     code = preprocessC(vFile, vFlags) #TODO add include paths
 
     # Checks if a regex vTok matches the vStr, starting from the character at index vIndex
@@ -150,62 +179,121 @@ def tokenizeIlsl(vFile:str, vFlags:list):
 
 
 
+# Removes the trailing whitespace of each line
+# Consecutive newline characters are preserved
+def clear(vCode:str):
+    return re.sub(r'\s+(\n|$)', r'\n', code)
+
+
+
+
+# Replaces multiline comments with the same number of newlines they contain
+# Single line comments are replaced with a single space
+# Returns the resulting string
+def uncomment(vCode:str, vFile:str):
+    vCode += '\0'   # Prevent out of bounds reads
+    code = ''       # Output code
+    i = 0           # Counter
+    while i < len(vCode):                               # For each character
+        if vCode[i] == '"':                                 # If the character is a double quote
+            strBegin:int = i                                    # Save the string beginning for eventual errors
+            code += vCode[i]                                    # Paste opening "
+            i += 1                                              # Skip opening "
+            while vCode[i] != '"':                              # For each character of the string
+                code += vCode[i]                                    # Paste character
+                i += 1                                              # Update counter
+                if i == len(vCode):                                 # If the string does not end
+                    vLineN:int = 0                                      #
+                    for j in range(0, strBegin):                        # Find the line in which the string begins
+                        if vCode[j] == '\n': vLineN += 1                # [...] Print a syntax error
+                    printSyntaxError(vLineN, vCode.split('\n')[vLineN], vFile, 'Unterminated string')
+            code += vCode[i]                                    # Paste closing "
+            i += 1                                              # Skip closing "
+        elif i < len(vCode) - 1:                            # If there is enough space to start a comment
+            if vCode[i:i + 2] == '//':                          # If the character is the beginning of a single line comment
+                code += ' '                                         # Add a space as token separator
+                i += 2                                              # Ignore //
+                while i < len(vCode) and vCode[i] != '\n':          # For each character of the comment
+                    i += 1                                              # Update the counter and ignore the character
+                i += 1                                              # Ignore \n
+            elif vCode[i:i + 2] == '/*':                        # If the character is the beginning of a multiline comment
+                code += ' '                                         # Add a space as token separator
+                i += 2                                              # Ignore /*
+                while i < len(vCode) and vCode[i:i + 1] == '*/':    # For each character of the comment
+                    if vCode[i] == '\n':                                # If the character is a newline
+                        code += '\n'                                        # Paste the newline
+                    i += 1                                              # Update the counter and ignore the other characters
+                i += 2                                              # Ignore */
+            else:                                               # Else
+                code += vCode[i]                                    # Paste the character
+                i += 1                                              # Update the counter
+        else:                                               # Else
+            code += vCode[i]                                    # Paste the character
+            i += 1                                              # Update the counter
+    return code[:-1]                                    # Return the parsed code
+
+
+
+
+# Parses the member list and returns the macro definition as a list of tokens
+def saveMacro(vLines:list, vName:str, vMembers:str):
+    #TODO
+    None
+
+
+
+
+# Checks if an included path is valid
+# Prints an error if it's not
+def checkIncludeFile(vLineN:str, vLine:list, vFile:str, vName:str):
+    if not re.match('^' + tok['path'] + '$', vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is not a valid file path')
+    if os.path.exists(vName):
+        if vName[-1] == '/' or os.path.isdir(vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is a directory')
+    else:                                            printSyntaxError(vLineN, vLine, vFile, "No such file or directory")
+
+
+
+
+# Creates a code with no includes by pasting all the included files together
+# Returns the resulting string
+# Comments are not preserved
+def include(vCode:str, vFile:str):
+    code = ''
+    ls:list = uncomment(vCode, vFile).split('\n')
+    for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):        # For each line of the code
+        ri = re.match(r'^\s*#include(?:\s*)"(?P<path>.*)"', l)          # Check if it's an include
+        if ri != None:                                                  # If the line is an include statement
+            checkr = checkIncludeFile(i, ol, vFile, ri['path'])             # Check the included file
+            with open(ri['path'], 'r') as f:                                # Open the included file
+                code += include(f.read(), ri['path'])                           # Paste the included code recursively
+        else:                                                           # If not
+            code += l                                                       # Concatenate line
+        code += '\n'                                                    # Add newline
+
+    return code
+
+
+
+
+
+
+
+
+
+
 # Preprocesses an ILSL code
 # Pastes all the included files, expands the macros and removes any comment or trailing whitespace
 # Unknown preprocessor directives cause an error
 def preprocess(vCode:str, vFile:str):
-
-    # Removes all the comments from an ILSL code
-    # Whitespace, newlines and identifiers are preserved
-    # Returns the resulting string
-    def uncomment(vCode:str):
-        return (
-            re.sub(r'\/\/.*(?:\n|$)',              r'\n',   # Replace single line comments with a newline
-            re.sub(r'\/\*.*?\*\/',                 r' ',    # Replace non-multline multiline comment with a space
-            re.sub(r'\/\*(?:(?:.|\n)*?)\n.*?\*\/', r'\n',   # Replace multiline comments with a newline
-        vCode))))
-
-
-    # Removes the trailing whitespace of each line
-    # Consecutive newline characters are preserved
-    def clear(vCode:str):
-        return re.sub(r'\s+(\n|$)', r'\n', code)
-
-
-    # Creates a code with no includes by pasting all the included files together
-    # Returns the resulting string
-    # Comments are not preserved
-    def include(vCode:str, vFile:str):
-        # Remove comments and split the lines
-        l:list = uncomment(vCode).split('\n')
-        code = ''
-
-        # Check preprocessor directives
-        i = 0
-        while i < len(l):                                               # For each line of the code
-            r = re.match(r'\s*#(?P<d>.*)', l[i])                            #
-            if r != None:                                                   # If the line is a preprocessor directive
-                ri = re.match(r'include(?:\s*)"(?P<file>' + tok['filename'] + r')"', r['d']) #TODO check file existence
-                if ri != None:                                                  # If the directive is an include statement
-                    with open(ri['file'], 'r') as f:                               # Open the included file
-                        code += include(f.read(), ri['file'])                      # Paste the included code recursively
-                else:                                                           # If it's not
-                    rm = re.match(r'define(?:\s*)[a-zA-Z]', r['d'])                 #
-                    if rm != None:                                                  # If the directive is a macro definition
-                        code += '//''TODO ADD MACROS'                                   #TODO ADD MACROS
-                    else:
-                        printSyntaxError(i, l[i], vFile, f'Unknown preprocessor directive')
-            else:                               # If it's anything else
-                code += l[i]                        # Paste the line
-            code += '\n'                        # Add newline
-            i += 1                              # Increment counter
-
-        return code
-
-
-
     return include(vCode, vFile)
 
+
+
+
+
+
+
+# Main -------------------------------------------------------------------------------------------------------------------------------------#
 
 
 
