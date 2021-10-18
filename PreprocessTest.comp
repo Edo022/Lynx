@@ -31,14 +31,18 @@ some random code
 
 macroTest
 
- testComment
+ 
 
 
-	*/
+
+
 
 struct Point{
-	vec3 pos;  	 	float r;   	 	vec4 col;  	 };
-	 mment2*/
+	vec3 pos;  	
+	float r;   	
+	vec4 col;  	
+};
+	 
 
 
 
@@ -53,7 +57,11 @@ layout(std430, binding = 0) buffer ext_outcol{
 };
 layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
 layout(std140, binding = 2) uniform data{
-	 		vec3 pos;  	 	float r;   	 	vec4 col;  	 
+	
+		vec3 pos;  	
+	float r;   	
+	vec4 col;  	
+
 };
 
 
@@ -75,7 +83,8 @@ void main() {
 
 	setPixel(vec2(0, 0), vec4(250, 0, 0, 250));
 	setPixel(vec2(0, 0), vec4(1, 0, 0, 1));
-	 }
+	
+}
 
 
-
+ 

@@ -191,7 +191,6 @@ def clear(vCode:str):
 # Single line comments are replaced with a single space
 # Returns the resulting string
 def uncomment(vCode:str, vFile:str):
-    vCode += '\0'   # Prevent out of bounds reads
     code = ''       # Output code
     i = 0           # Counter
     while i < len(vCode):                               # For each character
@@ -211,7 +210,7 @@ def uncomment(vCode:str, vFile:str):
             i += 1                                              # Skip closing "
         elif i < len(vCode) - 1:                            # If there is enough space to start a comment
             if vCode[i:i + 2] == '//':                          # If the character is the beginning of a single line comment
-                code += ' '                                         # Add a space as token separator
+                code += '\n'                                        # Add a newline as token separator
                 i += 2                                              # Ignore //
                 while i < len(vCode) and vCode[i] != '\n':          # For each character of the comment
                     i += 1                                              # Update the counter and ignore the character
@@ -219,7 +218,7 @@ def uncomment(vCode:str, vFile:str):
             elif vCode[i:i + 2] == '/*':                        # If the character is the beginning of a multiline comment
                 code += ' '                                         # Add a space as token separator
                 i += 2                                              # Ignore /*
-                while i < len(vCode) and vCode[i:i + 1] == '*/':    # For each character of the comment
+                while i < len(vCode) and vCode[i:i + 2] != '*/':    # For each character of the comment
                     if vCode[i] == '\n':                                # If the character is a newline
                         code += '\n'                                        # Paste the newline
                     i += 1                                              # Update the counter and ignore the other characters
@@ -230,7 +229,7 @@ def uncomment(vCode:str, vFile:str):
         else:                                               # Else
             code += vCode[i]                                    # Paste the character
             i += 1                                              # Update the counter
-    return code[:-1]                                    # Return the parsed code
+    return code                                         # Return the parsed code
 
 
 
