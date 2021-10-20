@@ -1,6 +1,5 @@
+u32
 // #include "src/Lynx/shaders/stdlib.ilsh"
-
-
 
 #define gx gl_GlobalInvocationID.x
 #define gy gl_GlobalInvocationID.y
@@ -21,13 +20,13 @@
 // };
 
 extern outCol {
-	vec4 outcol[];
+	f32v4 outcol[];
 }
 
 // layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
 
 extern wsize {
-	uvec2 wsize;
+	u32v2 wsize;
 }
 
 // layout(std140, binding = 2) uniform data{
@@ -38,30 +37,30 @@ extern wsize {
 // };
 
 local {
-	vec3 pos;
-	float r;
-	vec4 col;
+	f32v3 pos;
+	f32 r;
+	f32v4 col;
 }
 
 
 
 
 
-void setPixel(vec2 pos, vec4 col) {
-	uint i = uint(pos.y) * wsize.x + uint(pos.x);
+void setPixel(f32v2 pos, f32v4 col) {
+	u32 i = u32(pos.y) * wsize.x + u32(pos.x);
 	outcol[i] = col;
 }
 
 
 void main() {
-	setPixel(vec2(1, 1), vec4(250, 0, 0, 250));
-	setPixel(vec2(1, 1), vec4(1, 0, 0, 1));
+	setPixel(f32v2(1, 1), f32v4(250, 0, 0, 250));
+	setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));
 
-	setPixel(vec2(0.5, 0.5), vec4(250, 0, 0, 250));
-	setPixel(vec2(0.5, 0.5), vec4(1, 0, 0, 1));
+	setPixel(f32v2(0.5, 0.5), f32v4(250, 0, 0, 250));
+	setPixel(f32v2(0.5, 0.5), f32v4(1, 0, 0, 1));
 
-	setPixel(vec2(0, 0), vec4(250, 0, 0, 250));
-	setPixel(vec2(0, 0), vec4(1, 0, 0, 1));
+	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
+	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
 	// setPixel(pos.xy );
 }
 
