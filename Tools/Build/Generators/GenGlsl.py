@@ -30,43 +30,46 @@ def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
 
 
 
-#TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
-# A list of all recognized tokens in ILSL
-# b = binary      a = assign      l = logical       t = type    k = keyword     f = function        c = literal constant
-t_path : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)'     # File path
-t_id   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))'             # Identifier
-t_nidb  : r'(?:[^a-zA-Z_]|^)'                          # Not an identifier beginning
-t_nide  : r'(?:[^a-zA-Z_0-9]|^)'                       # Not an identifier end
+pat = {
+    't_path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',   # File path
+    't_id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',           # Identifier
+    't_nidb' : r'(?:[^a-zA-Z_]|^)',                         # Not an identifier beginning
+    't_nide' : r'(?:[^a-zA-Z_0-9]|^)',                      # Not an identifier end
 
-c_bin = r'b0(?:[01]+)(?:\.(?:[01]+))?'                  # Binary        # 0b10100
-c_dec = r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?'             # Decimal       # 90872     # 0d90872
-c_oct = r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?'             # Octal         # 030507    # 0o30507
-c_hex = r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
-#TODO add boolean literals
-#TODO add type information
+    'c_bool' : r'true|false',                               # Boolean
+    'c_bin'  : r'b0(?:[01]+)(?:\.(?:[01]+))?',              # Binary        # 0b10100
+    'c_dec'  : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',         # Decimal       # 90872     # 0d90872
+    'c_oct'  : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',         # Octal         # 030507    # 0o30507
+    'c_hex'  : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?' # Hexadecimal   # 0x7a0f3
+}
 #TODO add exponential literals
+#TODO precise qualifier
 
-
+#TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
+#TODO add bool and integer matrices
+#FIXME ++, --, +, - and () have different precedence based on their position
+#TODO add line continuation
+#TODO add semicolon
 tok = {
-    'op' : { # TODO
-        #! %,  &,  |,  ^,  >>  and <<  are not implemented in GLSL. Use the functions
-        #! %=, &=, |=, ^=, >>= and <<= are not implemented in GLSL. Use the functions
+    # Operator (type, category, precedence, associativity)
+    'op' : dict((t[0], {'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
 
-        '+',    '-',    '*',    '/',    '%',
-        '+=',   '-=',   '*=',   '/=',   '%=',
-        '++',   '--',   '~',    '<=',   '>=',   '==',
-        '&',    '^',    '|',    '<<',   '>>',   '!',
-        '&=',   '^=',   '|=',   '<<=',  '>>=',  '=',
-        '&&',   '^^',   '||',   '<',    '>',    '!=',
+        ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
+        ('+=', 'set', 16, 'lr'),   ('-=', 'set', 16, 'lr'),   ('*=', 'set', 16, 'lr'),   ('/=',  'set', 16, 'lr'),   ('%=',  'set', 16, 'lr'),
+        ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr')
+        ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr')
+        ('&=', 'set', 16, 'lr'),   ('^=', 'set', 16, 'lr'),   ('|=', 'set', 16, 'lr'),   ('<<=', 'set', 16, 'lr'),   ('>>=', 'set', 16, 'lr'),   ('=',  'set', 16, 'lr')
+        ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr')
 
-        '(',    ')',    '{',    '}',    '[',    ']',
-        '?',    ':',    '\\',   ',',    '.',    ';'
-    },
+        ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'lr'),   ('.',   'fld',  2, 'lr'),
+        (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'lr'),   (',',   'seq', 17, 'lr')
+    ]),
 
-#TODO fix bool and integer matrices
+
+
     #! integer and boolean matrices are implemented as multiple arrays of the base type
-    # (name, category, base type, x, y, alignment)
-    'types' : dict((t[0], {'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
+    # Type (type, base type, x, y, alignment)
+    'types' : dict((t[0], {'type' : 'type', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
         ('b',     'b', 1, 1,  4),    ('u32',     'u32', 1, 1,  4),    ('i32',     'i32', 1, 1,  4),    ('f32',     'f32', 1, 1,  4),    ('f64',     'f64', 1, 1,  8),    # Scalar types
         ('bv2',   'b', 2, 1,  8),    ('u32v2',   'u32', 2, 1,  8),    ('i32v2',   'i32', 2, 1,  8),    ('f32v2',   'f32', 2, 1,  8),    ('f64v2',   'f64', 2, 1, 16),    # 2-component vectors
         ('bv3',   'b', 3, 1, 16),    ('u32v3',   'u32', 3, 1, 16),    ('i32v3',   'i32', 3, 1, 16),    ('f32v3',   'f32', 3, 1, 16),    ('f64v3',   'f64', 3, 1, 32),    # 3-component vectors
@@ -83,20 +86,20 @@ tok = {
         ('bm4x2', 'b', 4, 2, 16),    ('u32m4x2', 'u32', 4, 2, 16),    ('i32m4x2', 'i32', 4, 2, 16),    ('f32m4x2', 'f32', 4, 2, 16),    ('f64m4x2', 'f64', 4, 2, 32),    # 4x2 matrices
         ('bm4x3', 'b', 4, 3, 16),    ('u32m4x3', 'u32', 4, 3, 16),    ('i32m4x3', 'i32', 4, 3, 16),    ('f32m4x3', 'f32', 4, 3, 16),    ('f64m4x3', 'f64', 4, 3, 32),    # 4x3 matrices
         ('bm4x4', 'b', 4, 4, 16),    ('u32m4x4', 'u32', 4, 4, 16),    ('i32m4x4', 'i32', 4, 4, 16),    ('f32m4x4', 'f32', 4, 4, 16),    ('f64m4x4', 'f64', 4, 4, 32),    # 4x4 matrices
-        ('void',    'void', 0, 0, 0)                                                                                                                                     # No size, no alignment. Just void :c
+        ('void','void',0, 0,  0)                                                                                                                                     # No size, no alignment. Just void :c
     ]),
 
 
-    # (category, value)
-    'kw' : list((t, 'kw') for t in [ # TODO
+    # (type, category)
+    'kw' : list((t[0], {'type' : 'kw', 'ctgr' : t[1]}) for t in [
         # If-else       # Loops         # Flow control      # Switch case
-        'if',           'while',        'continue',         'switch',
-        'else',         'for',          'break',            'case',
-        'elif',         'do',           'return',           'default',
+        ('if',   'if'),         ('while', 'loop'),        ('continue', 'fc'),         ('switch',  'switch'),
+        ('else', 'if'),         ('for',   'loop'),        ('break',    'fc'),         ('case',    'switch'),
+        ('elif', 'if'),         ('do',    'loop'),        ('return',   'fc'),         ('default', 'switch'),
 
         # Inputs         # Other
-        'local',         'const',
-        'extern',        'struct'
+        ('local' , 'input')        ('const',  'qualifier')
+        ('extern', 'input')        ('struct', 'struct')
     ])
 }
 
