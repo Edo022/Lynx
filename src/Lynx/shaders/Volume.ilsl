@@ -1,4 +1,5 @@
 u32
+f64m4
 // #include "src/Lynx/shaders/stdlib.ilsh"
 
 #define gx gl_GlobalInvocationID.x

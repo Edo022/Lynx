@@ -1,6 +1,8 @@
 #version 450
 
-{'val': 'u32', 'type': 'type', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': '\n', 'type': 'nl'}
+{'val': 'f64m4', 'type': 'tn', 'base': 'f64', 'x': 4, 'y': 4, 'align': 32}
 {'val': '\n', 'type': 'nl'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\n', 'type': 'nl'}
@@ -51,7 +53,7 @@
 {'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\t', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': ' ', 'type': 'ws'}
 {'val': 'outcol', 'type': 'id'}
 {'val': '[', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
@@ -70,7 +72,7 @@
 {'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\t', 'type': 'ws'}
-{'val': 'u32v2', 'type': 'type', 'base': 'u32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'u32v2', 'type': 'tn', 'base': 'u32', 'x': 2, 'y': 1, 'align': 8}
 {'val': ' ', 'type': 'ws'}
 {'val': 'wsize', 'type': 'id'}
 {'val': ';', 'type': 'semicolon'}
@@ -90,19 +92,19 @@
 {'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\t', 'type': 'ws'}
-{'val': 'f32v3', 'type': 'type', 'base': 'f32', 'x': 3, 'y': 1, 'align': 16}
+{'val': 'f32v3', 'type': 'tn', 'base': 'f32', 'x': 3, 'y': 1, 'align': 16}
 {'val': ' ', 'type': 'ws'}
 {'val': 'pos', 'type': 'id'}
 {'val': ';', 'type': 'semicolon'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\t', 'type': 'ws'}
-{'val': 'f32', 'type': 'type', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
 {'val': ' ', 'type': 'ws'}
 {'val': 'r', 'type': 'id'}
 {'val': ';', 'type': 'semicolon'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\t', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': ' ', 'type': 'ws'}
 {'val': 'col', 'type': 'id'}
 {'val': ';', 'type': 'semicolon'}
@@ -114,16 +116,16 @@
 {'val': '\n', 'type': 'nl'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\n', 'type': 'nl'}
-{'val': 'void', 'type': 'type', 'base': 'void', 'x': 0, 'y': 0, 'align': 0}
+{'val': 'void', 'type': 'tn', 'base': 'void', 'x': 0, 'y': 0, 'align': 0}
 {'val': ' ', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': ' ', 'type': 'ws'}
 {'val': 'pos', 'type': 'id'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': ' ', 'type': 'ws'}
 {'val': 'col', 'type': 'id'}
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
@@ -131,13 +133,13 @@
 {'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\t', 'type': 'ws'}
-{'val': 'u32', 'type': 'type', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
 {'val': ' ', 'type': 'ws'}
 {'val': 'i', 'type': 'id'}
 {'val': ' ', 'type': 'ws'}
 {'val': '=', 'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'rl'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'u32', 'type': 'type', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': 'pos', 'type': 'id'}
 {'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
@@ -152,7 +154,7 @@
 {'val': ' ', 'type': 'ws'}
 {'val': '+', 'type': 'op', 'ctgr': 'bin', 'prec': 3, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'u32', 'type': 'type', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': 'pos', 'type': 'id'}
 {'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
@@ -175,7 +177,7 @@
 {'val': '\n', 'type': 'nl'}
 {'val': '\n', 'type': 'nl'}
 {'val': '\n', 'type': 'nl'}
-{'val': 'void', 'type': 'type', 'base': 'void', 'x': 0, 'y': 0, 'align': 0}
+{'val': 'void', 'type': 'tn', 'base': 'void', 'x': 0, 'y': 0, 'align': 0}
 {'val': ' ', 'type': 'ws'}
 {'val': 'main', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
@@ -186,7 +188,7 @@
 {'val': '\t', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '1', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -195,7 +197,7 @@
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '250', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -214,7 +216,7 @@
 {'val': '\t', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '1', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -223,7 +225,7 @@
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '1', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -243,7 +245,7 @@
 {'val': '\t', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '0.5', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -252,7 +254,7 @@
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '250', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -271,7 +273,7 @@
 {'val': '\t', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '0.5', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -280,7 +282,7 @@
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '1', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -300,7 +302,7 @@
 {'val': '\t', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '0', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -309,7 +311,7 @@
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '250', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -328,7 +330,7 @@
 {'val': '\t', 'type': 'ws'}
 {'val': 'setPixel', 'type': 'id'}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
-{'val': 'f32v2', 'type': 'type', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '0', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
@@ -337,7 +339,7 @@
 {'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
 {'val': ' ', 'type': 'ws'}
-{'val': 'f32v4', 'type': 'type', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
 {'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
 {'val': '1', 'type': 'lc', 'base': 10}
 {'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}

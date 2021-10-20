@@ -5,6 +5,21 @@ import Utils as u
 
 
 
+
+
+
+
+
+
+# More utils -------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
 def printError(vStr:str):
     print(f'\n{ u.bRed }GenGlsl: Error: { bRed }')
     exit(1)
@@ -21,15 +36,7 @@ def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
 
 
 
-
-# Tokens -----------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-
-
-
-
+# Common patterns
 pat = {
     't_path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',   # File path
     't_id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',           # Identifier
@@ -43,74 +50,6 @@ pat = {
     'c_oct'  : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',         # Octal         # 030507    # 0o30507
     'c_hex'  : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?' # Hexadecimal   # 0x7a0f3
 }
-#TODO add exponential literals
-#TODO precise qualifier
-
-#TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
-#TODO add bool and integer matrices
-#TODO add line continuation
-#TODO add semicolon
-tok = {
-    # Operator (type, category, precedence, associativity)
-    #FIXME ++, --, +, - and () have different precedence based on their position
-    #FIXME ++, -- have different associativiry based on their position
-    'op' : list(({'val' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
-
-        ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
-        ('+=', 'set', 16, 'rl'),   ('-=', 'set', 16, 'rl'),   ('*=', 'set', 16, 'rl'),   ('/=',  'set', 16, 'rl'),   ('%=',  'set', 16, 'rl'),
-        ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr'),
-        ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr'),
-        ('&=', 'set', 16, 'rl'),   ('^=', 'set', 16, 'rl'),   ('|=', 'set', 16, 'rl'),   ('<<=', 'set', 16, 'rl'),   ('>>=', 'set', 16, 'rl'),   ('=',  'set', 16, 'rl'),
-        ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr'),
-
-        ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'rl'),   ('.',   'fld',  2, 'lr'),
-        (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'rl'),   (',',   'seq', 17, 'lr')
-    ]),
-
-
-
-    #! integer and boolean matrices are implemented as multiple arrays of the base type
-    # Type (type, base type, x, y, alignment)
-    'types' : list(({'val' : t[0], 'type' : 'type', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
-        ('b',     'b', 1, 1,  4),    ('u32',     'u32', 1, 1,  4),    ('i32',     'i32', 1, 1,  4),    ('f32',     'f32', 1, 1,  4),    ('f64',     'f64', 1, 1,  8),    # Scalar types
-        ('bv2',   'b', 2, 1,  8),    ('u32v2',   'u32', 2, 1,  8),    ('i32v2',   'i32', 2, 1,  8),    ('f32v2',   'f32', 2, 1,  8),    ('f64v2',   'f64', 2, 1, 16),    # 2-component vectors
-        ('bv3',   'b', 3, 1, 16),    ('u32v3',   'u32', 3, 1, 16),    ('i32v3',   'i32', 3, 1, 16),    ('f32v3',   'f32', 3, 1, 16),    ('f64v3',   'f64', 3, 1, 32),    # 3-component vectors
-        ('bv4',   'b', 4, 1, 16),    ('u32v4',   'u32', 4, 1, 16),    ('i32v4',   'i32', 4, 1, 16),    ('f32v4',   'f32', 4, 1, 16),    ('f64v4',   'f64', 4, 1, 32),    # 4-component vectors
-        ('bm2',   'b', 2, 2,  8),    ('u32m2',   'u32', 2, 2,  8),    ('i32m2',   'i32', 2, 2,  8),    ('f32m2',   'f32', 2, 2,  8),    ('f64m2',   'f64', 2, 2, 16),    # 2x2 square matrices
-        ('bm3',   'b', 3, 3, 16),    ('u32m3',   'u32', 3, 3, 16),    ('i32m3',   'i32', 3, 3, 16),    ('f32m3',   'f32', 3, 3, 16),    ('f64m3',   'f64', 3, 3, 32),    # 3x3 square matrices
-        ('bm4',   'b', 4, 4, 16),    ('u32m4',   'u32', 4, 4, 16),    ('i32m4',   'i32', 4, 4, 16),    ('f32m4',   'f32', 4, 4, 16),    ('f64m4',   'f64', 4, 4, 32),    # 4x4 square matrices
-        ('bm2x2', 'b', 2, 2,  8),    ('u32m2x2', 'u32', 2, 2,  8),    ('i32m2x2', 'i32', 2, 2,  8),    ('f32m2x2', 'f32', 2, 2,  8),    ('f64m2x2', 'f64', 2, 2, 16),    # 2x2 matrices
-        ('bm2x3', 'b', 2, 3,  8),    ('u32m2x3', 'u32', 2, 3,  8),    ('i32m2x3', 'i32', 2, 3,  8),    ('f32m2x3', 'f32', 2, 3,  8),    ('f64m2x3', 'f64', 2, 3, 16),    # 2x3 matrices
-        ('bm2x4', 'b', 2, 4,  8),    ('u32m2x4', 'u32', 2, 4,  8),    ('i32m2x4', 'i32', 2, 4,  8),    ('f32m2x4', 'f32', 2, 4,  8),    ('f64m2x4', 'f64', 2, 4, 16),    # 2x4 matrices
-        ('bm3x2', 'b', 3, 2, 16),    ('u32m3x2', 'u32', 3, 2, 16),    ('i32m3x2', 'i32', 3, 2, 16),    ('f32m3x2', 'f32', 3, 2, 16),    ('f64m3x2', 'f64', 3, 2, 32),    # 3x2 matrices
-        ('bm3x3', 'b', 3, 3, 16),    ('u32m3x3', 'u32', 3, 3, 16),    ('i32m3x3', 'i32', 3, 3, 16),    ('f32m3x3', 'f32', 3, 3, 16),    ('f64m3x3', 'f64', 3, 3, 32),    # 3x3 matrices
-        ('bm3x4', 'b', 3, 4, 16),    ('u32m3x4', 'u32', 3, 4, 16),    ('i32m3x4', 'i32', 3, 4, 16),    ('f32m3x4', 'f32', 3, 4, 16),    ('f64m3x4', 'f64', 3, 4, 32),    # 3x4 matrices
-        ('bm4x2', 'b', 4, 2, 16),    ('u32m4x2', 'u32', 4, 2, 16),    ('i32m4x2', 'i32', 4, 2, 16),    ('f32m4x2', 'f32', 4, 2, 16),    ('f64m4x2', 'f64', 4, 2, 32),    # 4x2 matrices
-        ('bm4x3', 'b', 4, 3, 16),    ('u32m4x3', 'u32', 4, 3, 16),    ('i32m4x3', 'i32', 4, 3, 16),    ('f32m4x3', 'f32', 4, 3, 16),    ('f64m4x3', 'f64', 4, 3, 32),    # 4x3 matrices
-        ('bm4x4', 'b', 4, 4, 16),    ('u32m4x4', 'u32', 4, 4, 16),    ('i32m4x4', 'i32', 4, 4, 16),    ('f32m4x4', 'f32', 4, 4, 16),    ('f64m4x4', 'f64', 4, 4, 32),    # 4x4 matrices
-        ('void','void',0, 0,  0)                                                                                                                                         # No size, no alignment. Just void :c
-    ]),
-
-
-    # (type, category)
-    'kw' : list(({'val' : t[0], 'type' : 'kw', 'ctgr' : t[1]}) for t in [
-        # If-else               # Loops                   # Flow control              # Switch case
-        ('if',   'if'),         ('while', 'loop'),        ('continue', 'fc'),         ('switch',  'switch'),
-        ('else', 'if'),         ('for',   'loop'),        ('break',    'fc'),         ('case',    'switch'),
-        ('elif', 'if'),         ('do',    'loop'),        ('return',   'fc'),         ('default', 'switch'),
-
-        # Inputs                   # Other
-        ('local' , 'input'),        ('const',  'qualifier'),
-        ('extern', 'input'),        ('struct', 'struct')
-    ])
-}
-
-
-# Merge and sort the tokens from the largest one
-all2 = tok['op'] + tok['types'] + tok['kw']
-all = sorted(all2, key = lambda s: len(s['val']))[::-1]
-
-
 
 # TODO ADD BUILTIN FUNCTIONS
 # # Sine          # Cosine            # Tangent
@@ -280,6 +219,80 @@ def preprocess(vCode:str, vFile:str):
 
 
 
+#TODO add exponential literals
+#TODO precise qualifier
+
+#TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
+#TODO add bool and integer matrices
+#TODO add line continuation
+#TODO add semicolon
+tok = {
+    # Operator (type, category, precedence, associativity)
+    #FIXME ++, --, +, - and () have different precedence based on their position
+    #FIXME ++, -- have different associativiry based on their position
+    'op' : list(({'val' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
+
+        ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
+        ('+=', 'set', 16, 'rl'),   ('-=', 'set', 16, 'rl'),   ('*=', 'set', 16, 'rl'),   ('/=',  'set', 16, 'rl'),   ('%=',  'set', 16, 'rl'),
+        ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr'),
+        ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr'),
+        ('&=', 'set', 16, 'rl'),   ('^=', 'set', 16, 'rl'),   ('|=', 'set', 16, 'rl'),   ('<<=', 'set', 16, 'rl'),   ('>>=', 'set', 16, 'rl'),   ('=',  'set', 16, 'rl'),
+        ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr'),
+
+        ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'rl'),   ('.',   'fld',  2, 'lr'),
+        (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'rl'),   (',',   'seq', 17, 'lr')
+    ]),
+
+
+
+    #! integer and boolean matrices are implemented as multiple arrays of the base type
+    # Type (type, base type, x, y, alignment)
+    'types' : list(({'val' : t[0], 'type' : 'tn', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
+        ('b',     'b', 1, 1,  4),    ('u32',     'u32', 1, 1,  4),    ('i32',     'i32', 1, 1,  4),    ('f32',     'f32', 1, 1,  4),    ('f64',     'f64', 1, 1,  8),    # Scalar types
+        ('bv2',   'b', 2, 1,  8),    ('u32v2',   'u32', 2, 1,  8),    ('i32v2',   'i32', 2, 1,  8),    ('f32v2',   'f32', 2, 1,  8),    ('f64v2',   'f64', 2, 1, 16),    # 2-component vectors
+        ('bv3',   'b', 3, 1, 16),    ('u32v3',   'u32', 3, 1, 16),    ('i32v3',   'i32', 3, 1, 16),    ('f32v3',   'f32', 3, 1, 16),    ('f64v3',   'f64', 3, 1, 32),    # 3-component vectors
+        ('bv4',   'b', 4, 1, 16),    ('u32v4',   'u32', 4, 1, 16),    ('i32v4',   'i32', 4, 1, 16),    ('f32v4',   'f32', 4, 1, 16),    ('f64v4',   'f64', 4, 1, 32),    # 4-component vectors
+        ('bm2',   'b', 2, 2,  8),    ('u32m2',   'u32', 2, 2,  8),    ('i32m2',   'i32', 2, 2,  8),    ('f32m2',   'f32', 2, 2,  8),    ('f64m2',   'f64', 2, 2, 16),    # 2x2 square matrices
+        ('bm3',   'b', 3, 3, 16),    ('u32m3',   'u32', 3, 3, 16),    ('i32m3',   'i32', 3, 3, 16),    ('f32m3',   'f32', 3, 3, 16),    ('f64m3',   'f64', 3, 3, 32),    # 3x3 square matrices
+        ('bm4',   'b', 4, 4, 16),    ('u32m4',   'u32', 4, 4, 16),    ('i32m4',   'i32', 4, 4, 16),    ('f32m4',   'f32', 4, 4, 16),    ('f64m4',   'f64', 4, 4, 32),    # 4x4 square matrices
+        ('bm2x2', 'b', 2, 2,  8),    ('u32m2x2', 'u32', 2, 2,  8),    ('i32m2x2', 'i32', 2, 2,  8),    ('f32m2x2', 'f32', 2, 2,  8),    ('f64m2x2', 'f64', 2, 2, 16),    # 2x2 matrices
+        ('bm2x3', 'b', 2, 3,  8),    ('u32m2x3', 'u32', 2, 3,  8),    ('i32m2x3', 'i32', 2, 3,  8),    ('f32m2x3', 'f32', 2, 3,  8),    ('f64m2x3', 'f64', 2, 3, 16),    # 2x3 matrices
+        ('bm2x4', 'b', 2, 4,  8),    ('u32m2x4', 'u32', 2, 4,  8),    ('i32m2x4', 'i32', 2, 4,  8),    ('f32m2x4', 'f32', 2, 4,  8),    ('f64m2x4', 'f64', 2, 4, 16),    # 2x4 matrices
+        ('bm3x2', 'b', 3, 2, 16),    ('u32m3x2', 'u32', 3, 2, 16),    ('i32m3x2', 'i32', 3, 2, 16),    ('f32m3x2', 'f32', 3, 2, 16),    ('f64m3x2', 'f64', 3, 2, 32),    # 3x2 matrices
+        ('bm3x3', 'b', 3, 3, 16),    ('u32m3x3', 'u32', 3, 3, 16),    ('i32m3x3', 'i32', 3, 3, 16),    ('f32m3x3', 'f32', 3, 3, 16),    ('f64m3x3', 'f64', 3, 3, 32),    # 3x3 matrices
+        ('bm3x4', 'b', 3, 4, 16),    ('u32m3x4', 'u32', 3, 4, 16),    ('i32m3x4', 'i32', 3, 4, 16),    ('f32m3x4', 'f32', 3, 4, 16),    ('f64m3x4', 'f64', 3, 4, 32),    # 3x4 matrices
+        ('bm4x2', 'b', 4, 2, 16),    ('u32m4x2', 'u32', 4, 2, 16),    ('i32m4x2', 'i32', 4, 2, 16),    ('f32m4x2', 'f32', 4, 2, 16),    ('f64m4x2', 'f64', 4, 2, 32),    # 4x2 matrices
+        ('bm4x3', 'b', 4, 3, 16),    ('u32m4x3', 'u32', 4, 3, 16),    ('i32m4x3', 'i32', 4, 3, 16),    ('f32m4x3', 'f32', 4, 3, 16),    ('f64m4x3', 'f64', 4, 3, 32),    # 4x3 matrices
+        ('bm4x4', 'b', 4, 4, 16),    ('u32m4x4', 'u32', 4, 4, 16),    ('i32m4x4', 'i32', 4, 4, 16),    ('f32m4x4', 'f32', 4, 4, 16),    ('f64m4x4', 'f64', 4, 4, 32),    # 4x4 matrices
+        ('void','void',0, 0,  0)                                                                                                                                         # No size, no alignment. Just void :c
+    ]),
+
+
+    # (type, category)
+    'kw' : list(({'val' : t[0], 'type' : 'kw', 'ctgr' : t[1]}) for t in [
+        # If-else               # Loops                   # Flow control              # Switch case
+        ('if',   'if'),         ('while', 'loop'),        ('continue', 'fc'),         ('switch',  'switch'),
+        ('else', 'if'),         ('for',   'loop'),        ('break',    'fc'),         ('case',    'switch'),
+        ('elif', 'if'),         ('do',    'loop'),        ('return',   'fc'),         ('default', 'switch'),
+
+        # Inputs                   # Other
+        ('local' , 'input'),        ('const',  'qualifier'),
+        ('extern', 'input'),        ('struct', 'struct')
+    ])
+}
+
+
+# Merge and sort the tokens from the largest one
+all2 = tok['op'] + tok['types'] + tok['kw']
+all = sorted(all2, key = lambda s: len(s['val']))[::-1]
+
+
+
+
+
+
+
+
 # Reads an ILSL file and returns its content as a list of tokens
 # Any combination of whitespace character is replaced with a single space
 # Preprocessor directives are expanded
@@ -289,9 +302,7 @@ def tokenize(vCode:str, vFile:str):
     for vLineN, l in enumerate(lines):
         i : int = 0
         while i < len(l):
-            print('') #TODO REMOVE
             for j, t in enumerate(all):
-                print(t['val'], end = ' ') #TODO REMOVE
                 if l[i:].startswith(t['val']):
                     yield(t)
                     i += len(t['val'])
@@ -325,6 +336,26 @@ def tokenize(vCode:str, vFile:str):
                     printSyntaxError(vLineN, l, vFile, f'Unknown token "{ l[i] }"')
                     return
         yield({'val' : '\n', 'type' : 'nl'})
+
+
+
+
+
+
+
+
+
+# Grouping ---------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
+def group(): #TODO
+    None #TODO
 
 
 
