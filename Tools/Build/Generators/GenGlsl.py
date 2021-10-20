@@ -33,8 +33,9 @@ def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
 pat = {
     't_path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',   # File path
     't_id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',           # Identifier
-    't_nidb' : r'(?:[^a-zA-Z_]|^)',                         # Not an identifier beginning
-    't_nide' : r'(?:[^a-zA-Z_0-9]|^)',                      # Not an identifier end
+    't_ppd'  : r'(?:#)',                                    # Preprocessor directive
+    # 't_str'  : r'(?:".*?[^\\]")',                           # String
+    't_whs'  : r'(?:[ \t\r]+)',                           # Whitespace
 
     'c_bool' : r'true|false',                               # Boolean
     'c_bin'  : r'b0(?:[01]+)(?:\.(?:[01]+))?',              # Binary        # 0b10100
@@ -56,10 +57,10 @@ tok = {
 
         ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
         ('+=', 'set', 16, 'lr'),   ('-=', 'set', 16, 'lr'),   ('*=', 'set', 16, 'lr'),   ('/=',  'set', 16, 'lr'),   ('%=',  'set', 16, 'lr'),
-        ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr')
-        ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr')
-        ('&=', 'set', 16, 'lr'),   ('^=', 'set', 16, 'lr'),   ('|=', 'set', 16, 'lr'),   ('<<=', 'set', 16, 'lr'),   ('>>=', 'set', 16, 'lr'),   ('=',  'set', 16, 'lr')
-        ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr')
+        ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr'),
+        ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr'),
+        ('&=', 'set', 16, 'lr'),   ('^=', 'set', 16, 'lr'),   ('|=', 'set', 16, 'lr'),   ('<<=', 'set', 16, 'lr'),   ('>>=', 'set', 16, 'lr'),   ('=',  'set', 16, 'lr'),
+        ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr'),
 
         ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'lr'),   ('.',   'fld',  2, 'lr'),
         (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'lr'),   (',',   'seq', 17, 'lr')
@@ -86,30 +87,32 @@ tok = {
         ('bm4x2', 'b', 4, 2, 16),    ('u32m4x2', 'u32', 4, 2, 16),    ('i32m4x2', 'i32', 4, 2, 16),    ('f32m4x2', 'f32', 4, 2, 16),    ('f64m4x2', 'f64', 4, 2, 32),    # 4x2 matrices
         ('bm4x3', 'b', 4, 3, 16),    ('u32m4x3', 'u32', 4, 3, 16),    ('i32m4x3', 'i32', 4, 3, 16),    ('f32m4x3', 'f32', 4, 3, 16),    ('f64m4x3', 'f64', 4, 3, 32),    # 4x3 matrices
         ('bm4x4', 'b', 4, 4, 16),    ('u32m4x4', 'u32', 4, 4, 16),    ('i32m4x4', 'i32', 4, 4, 16),    ('f32m4x4', 'f32', 4, 4, 16),    ('f64m4x4', 'f64', 4, 4, 32),    # 4x4 matrices
-        ('void','void',0, 0,  0)                                                                                                                                     # No size, no alignment. Just void :c
+        ('void','void',0, 0,  0)                                                                                                                                         # No size, no alignment. Just void :c
     ]),
 
 
     # (type, category)
     'kw' : list((t[0], {'type' : 'kw', 'ctgr' : t[1]}) for t in [
-        # If-else       # Loops         # Flow control      # Switch case
+        # If-else               # Loops                   # Flow control              # Switch case
         ('if',   'if'),         ('while', 'loop'),        ('continue', 'fc'),         ('switch',  'switch'),
         ('else', 'if'),         ('for',   'loop'),        ('break',    'fc'),         ('case',    'switch'),
         ('elif', 'if'),         ('do',    'loop'),        ('return',   'fc'),         ('default', 'switch'),
 
-        # Inputs         # Other
-        ('local' , 'input')        ('const',  'qualifier')
-        ('extern', 'input')        ('struct', 'struct')
+        # Inputs                   # Other
+        ('local' , 'input'),        ('const',  'qualifier'),
+        ('extern', 'input'),        ('struct', 'struct')
     ])
 }
 
 
+# Merge and sort the tokens
+all2 = {}; all2.update(tok['op']); all2.update(tok['types']); all2.update(tok['kw'])
+all = dict(sorted(all2.items(), key = lambda s: len(s[0])))
 
-# ctok = {
-#     'kw' : ((k, v + tok['nide']) for (k, v) in zip(tok['kw'].keys(), tok['kw'].values()))
-# }
 
 
+
+# TODO ADD BUILTIN FUNCTIONS
 # # Sine          # Cosine            # Tangent
 # 'f_sin'     : r'sin',         'f_cos'   : r'cos',             'f_tan'   : r'tan',         # Sine,                     cosine,                     tangent
 # 'f_asin'    : r'asin',        'f_acos'  : r'acos',            'f_atan'  : r'atan',        # Inverse sine,             inverse cosine,             inverse tangent
@@ -145,10 +148,6 @@ tok = {
 # 'c_hex' : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
 
 
-# Removes the trailing whitespace of each line
-# Consecutive newline characters are preserved
-def clear(vCode:str):
-    return re.sub(r'[ \t\v]+(\n|$)', r'\n', vCode)
 
 
 
@@ -285,36 +284,46 @@ def preprocess(vCode:str, vFile:str):
 # Any combination of whitespace character is replaced with a single space
 # Preprocessor directives are expanded
 # Comments are ignored
-def tokenize(vFile:str, vFlags:list):
-    code = preprocessC(vFile, vFlags) #TODO add include paths
+def tokenize(vCode:str, vFile:str):
+    lines = vCode.split('\n')
+    for vLineN, l in enumerate(lines):
+        i : int = 0
+        while i < len(l):
+            for j, t in enumerate(all.items()):
+                if l[i:].startswith(t[0]):
+                    yield(t)
+                    i += len(t[0])
+                    break
 
-    # Checks if a regex vTok matches the vStr, starting from the character at index vIndex
-    # If it matches, the matched string is returned
-    # If it does not match, None is returned
-    # 0 length matches are considered not matched
-    def check(vStr:str, vIndex:int, vTok:str):
-        t = re.match('^' + vTok, vStr[vIndex:])
-        if t != None and len(t.group(0)) > 0:
-            return t.group(0)
-        else:
-            return None
+                if l[i] == ';':
+                    yield((';', 'semicolon'))
+                    i += 1
+                    break
 
-    # Checks a list of tokens on vStr, starting from the character at index vIndex
-    # returns the first matching token
-    def loop(vStr:str, vTokens:list, vIndex:int):
-        for t in vTokens:
-            r = check(vStr, vIndex, t)
-            if r != None: return r
+                r = re.match(pat['t_ppd'],  l[i:])
+                if r != None: yield((r.group(0), 'preprocessor')); i += len(r.group(0)); break
+                r = re.match(pat['t_whs'],  l[i:])
+                if r != None: yield((r.group(0), 'whitespace'));   i += len(r.group(0)); break
+                r = re.match(pat['t_id'],   l[i:])
+                if r != None: yield((r.group(0), 'identifier'));   i += len(r.group(0)); break
 
-    i  : int = 0
-    ts : str = []
+                r = re.match(pat['c_bin'],  l[i:])
+                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                r = re.match(pat['c_oct'],  l[i:])
+                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                r = re.match(pat['c_dec'],  l[i:])
+                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                r = re.match(pat['c_hex'],  l[i:])
+                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                r = re.match(pat['c_bool'], l[i:])
+                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
 
+                elif j == len(all) - 1:
+                    # printSyntaxError(vLineN, vLine, vFile, vStr)
+                    printSyntaxError(vLineN, l, vFile, f'Unknown token "{ l[i] }"')
+                    return
+        yield('\n')
 
-
-
-    tokKeywords
-    while i < len(code):
-        r = loop(code, )
 
 
 
@@ -332,19 +341,26 @@ def tokenize(vFile:str, vFlags:list):
 
 
 
+# Removes the trailing whitespace of each line
+# Consecutive newline characters are preserved
+def clear(vCode:str):
+    return re.sub(r'[ \t\v]+(\n|$)', r'\n', vCode)
+
+
+
+
 def run(vSrc:str, vOut:str):
     # Read input file
     with open(vSrc) as f:
         code = f.read()
 
     # Add hard coded version statement and parse the code
-    s = '#version 450\n'
-    s += clear(preprocess(code, vSrc))
+    ts = list(tokenize(clear(preprocess('/*000000*/\n#version 450\n' + code, vSrc)), vSrc))
 
 
     # Write output file
     with open(vOut, 'w') as outFile:
-        outFile.write(s)
+        outFile.write(str(ts))
 
 
 
