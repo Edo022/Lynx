@@ -1,1 +1,438 @@
-['\n', ('#', 'preprocessor'), ('version', 'identifier'), (' ', 'whitespace'), ('450', 'literal'), '\n', '\n', '\n', '\n', '\n', ('#', 'preprocessor'), ('define', 'identifier'), (' ', 'whitespace'), ('gx', 'identifier'), (' ', 'whitespace'), ('gl_GlobalInvocationID', 'identifier'), ('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}), ('x', 'identifier'), '\n', ('#', 'preprocessor'), ('define', 'identifier'), (' ', 'whitespace'), ('gy', 'identifier'), (' ', 'whitespace'), ('gl_GlobalInvocationID', 'identifier'), ('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}), ('y', 'identifier'), '\n', ('#', 'preprocessor'), ('define', 'identifier'), (' ', 'whitespace'), ('g', 'identifier'), (' ', 'whitespace'), ('gl_GlobalInvocationID', 'identifier'), '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', ('extern', 'identifier'), (' ', 'whitespace'), ('outCol', 'identifier'), (' ', 'whitespace'), ('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', ('\t', 'whitespace'), ('vec4', 'identifier'), (' ', 'whitespace'), ('outcol', 'identifier'), ('[', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), (']', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), (';', 'semicolon'), '\n', ('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', '\n', '\n', '\n', ('extern', 'identifier'), (' ', 'whitespace'), ('wsize', 'identifier'), (' ', 'whitespace'), ('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', ('\t', 'whitespace'), ('uvec2', 'identifier'), (' ', 'whitespace'), ('wsize', 'identifier'), (';', 'semicolon'), '\n', ('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', '\n', ('local', 'identifier'), (' ', 'whitespace'), ('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', ('\t', 'whitespace'), ('vec3', 'identifier'), (' ', 'whitespace'), ('pos', 'identifier'), (';', 'semicolon'), '\n', ('\t', 'whitespace'), ('float', 'identifier'), (' ', 'whitespace'), ('r', 'identifier'), (';', 'semicolon'), '\n', ('\t', 'whitespace'), ('vec4', 'identifier'), (' ', 'whitespace'), ('col', 'identifier'), (';', 'semicolon'), '\n', ('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', '\n', '\n', '\n', '\n', '\n', ('void', 'identifier'), (' ', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), (' ', 'whitespace'), ('pos', 'identifier'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), (' ', 'whitespace'), ('col', 'identifier'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (' ', 'whitespace'), ('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', ('\t', 'whitespace'), ('uint', 'identifier'), (' ', 'whitespace'), ('i', 'identifier'), (' ', 'whitespace'), ('=', {'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'lr'}), (' ', 'whitespace'), ('uint', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('pos', 'identifier'), ('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}), ('y', 'identifier'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (' ', 'whitespace'), ('*', {'type': 'op', 'ctgr': 'bin', 'prec': 4, 'assoc': 'lr'}), (' ', 'whitespace'), ('wsize', 'identifier'), ('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}), ('x', 'identifier'), (' ', 'whitespace'), ('+', {'type': 'op', 'ctgr': 'bin', 'prec': 3, 'assoc': 'lr'}), (' ', 'whitespace'), ('uint', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('pos', 'identifier'), ('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}), ('x', 'identifier'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', ('\t', 'whitespace'), ('outcol', 'identifier'), ('[', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), ('i', 'identifier'), (']', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), (' ', 'whitespace'), ('=', {'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'lr'}), (' ', 'whitespace'), ('col', 'identifier'), (';', 'semicolon'), '\n', ('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', '\n', '\n', ('void', 'identifier'), (' ', 'whitespace'), ('main', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (' ', 'whitespace'), ('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', ('\t', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('1', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('1', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('250', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('250', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', ('\t', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('1', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('1', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('1', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('1', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', '\n', ('\t', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('0.5', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0.5', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('250', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('250', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', ('\t', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('0.5', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0.5', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('1', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('1', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', '\n', ('\t', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('250', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('250', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', ('\t', 'whitespace'), ('setPixel', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('vec2', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('vec4', 'identifier'), ('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), ('1', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('0', 'literal'), (',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}), (' ', 'whitespace'), ('1', 'literal'), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}), (';', 'semicolon'), '\n', '\n', ('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}), '\n', '\n', '\n', '\n', '\n']
+
+
+
+('#', {'type': 'preprocessor'})
+('version', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('450', {'type': 'literal', 'base': 10})
+
+
+
+
+
+
+
+
+
+
+('#', {'type': 'preprocessor'})
+('define', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('gx', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('gl_GlobalInvocationID', {'type': 'identifier'})
+('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'})
+('x', {'type': 'identifier'})
+
+
+('#', {'type': 'preprocessor'})
+('define', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('gy', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('gl_GlobalInvocationID', {'type': 'identifier'})
+('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'})
+('y', {'type': 'identifier'})
+
+
+('#', {'type': 'preprocessor'})
+('define', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('g', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('gl_GlobalInvocationID', {'type': 'identifier'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+('extern', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('outCol', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+('\t', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('outcol', {'type': 'identifier'})
+('[', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+(']', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+
+
+
+
+
+
+('extern', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('wsize', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+('\t', {'type': 'whitespace'})
+('uvec2', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('wsize', {'type': 'identifier'})
+(';', {'type': 'semicolon'})
+
+
+('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+('local', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+('\t', {'type': 'whitespace'})
+('vec3', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('pos', {'type': 'identifier'})
+(';', {'type': 'semicolon'})
+
+
+('\t', {'type': 'whitespace'})
+('float', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('r', {'type': 'identifier'})
+(';', {'type': 'semicolon'})
+
+
+('\t', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('col', {'type': 'identifier'})
+(';', {'type': 'semicolon'})
+
+
+('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+
+
+
+
+
+
+
+
+
+
+('void', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('pos', {'type': 'identifier'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('col', {'type': 'identifier'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+('\t', {'type': 'whitespace'})
+('uint', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('i', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('=', {'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('uint', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('pos', {'type': 'identifier'})
+('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'})
+('y', {'type': 'identifier'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('*', {'type': 'op', 'ctgr': 'bin', 'prec': 4, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('wsize', {'type': 'identifier'})
+('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'})
+('x', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('+', {'type': 'op', 'ctgr': 'bin', 'prec': 3, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('uint', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('pos', {'type': 'identifier'})
+('.', {'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'})
+('x', {'type': 'identifier'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+('\t', {'type': 'whitespace'})
+('outcol', {'type': 'identifier'})
+('[', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+('i', {'type': 'identifier'})
+(']', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('=', {'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('col', {'type': 'identifier'})
+(';', {'type': 'semicolon'})
+
+
+('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+
+
+
+
+('void', {'type': 'identifier'})
+(' ', {'type': 'whitespace'})
+('main', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('{', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+('\t', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('1', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('1', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('250', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('250', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+('\t', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('1', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('1', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('1', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('1', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+
+
+('\t', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('0.5', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0.5', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('250', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('250', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+('\t', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('0.5', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0.5', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('1', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('1', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+
+
+('\t', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('250', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('250', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+('\t', {'type': 'whitespace'})
+('setPixel', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('vec2', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('vec4', {'type': 'identifier'})
+('(', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+('1', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('0', {'type': 'literal', 'base': 10})
+(',', {'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'})
+(' ', {'type': 'whitespace'})
+('1', {'type': 'literal', 'base': 10})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(')', {'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'})
+(';', {'type': 'semicolon'})
+
+
+
+
+('}', {'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'})
+
+
+
+
+
+
+
+
+

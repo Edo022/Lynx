@@ -48,22 +48,23 @@ pat = {
 
 #TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
 #TODO add bool and integer matrices
-#FIXME ++, --, +, - and () have different precedence based on their position
 #TODO add line continuation
 #TODO add semicolon
 tok = {
     # Operator (type, category, precedence, associativity)
+    #FIXME ++, --, +, - and () have different precedence based on their position
+    #FIXME ++, -- have different associativiry based on their position
     'op' : dict((t[0], {'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
 
         ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
-        ('+=', 'set', 16, 'lr'),   ('-=', 'set', 16, 'lr'),   ('*=', 'set', 16, 'lr'),   ('/=',  'set', 16, 'lr'),   ('%=',  'set', 16, 'lr'),
+        ('+=', 'set', 16, 'rl'),   ('-=', 'set', 16, 'rl'),   ('*=', 'set', 16, 'rl'),   ('/=',  'set', 16, 'rl'),   ('%=',  'set', 16, 'rl'),
         ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr'),
         ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr'),
-        ('&=', 'set', 16, 'lr'),   ('^=', 'set', 16, 'lr'),   ('|=', 'set', 16, 'lr'),   ('<<=', 'set', 16, 'lr'),   ('>>=', 'set', 16, 'lr'),   ('=',  'set', 16, 'lr'),
+        ('&=', 'set', 16, 'rl'),   ('^=', 'set', 16, 'rl'),   ('|=', 'set', 16, 'rl'),   ('<<=', 'set', 16, 'rl'),   ('>>=', 'set', 16, 'rl'),   ('=',  'set', 16, 'rl'),
         ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr'),
 
-        ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'lr'),   ('.',   'fld',  2, 'lr'),
-        (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'lr'),   (',',   'seq', 17, 'lr')
+        ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'rl'),   ('.',   'fld',  2, 'lr'),
+        (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'rl'),   (',',   'seq', 17, 'lr')
     ]),
 
 
@@ -296,27 +297,27 @@ def tokenize(vCode:str, vFile:str):
                     break
 
                 if l[i] == ';':
-                    yield((';', 'semicolon'))
+                    yield((';', {'type' : 'semicolon'}))
                     i += 1
                     break
 
                 r = re.match(pat['t_ppd'],  l[i:])
-                if r != None: yield((r.group(0), 'preprocessor')); i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'preprocessor'})); i += len(r.group(0)); break
                 r = re.match(pat['t_whs'],  l[i:])
-                if r != None: yield((r.group(0), 'whitespace'));   i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'whitespace'}));   i += len(r.group(0)); break
                 r = re.match(pat['t_id'],   l[i:])
-                if r != None: yield((r.group(0), 'identifier'));   i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'identifier'}));   i += len(r.group(0)); break
 
                 r = re.match(pat['c_bin'],  l[i:])
-                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'literal', 'base' :  2})); i += len(r.group(0)); break
                 r = re.match(pat['c_oct'],  l[i:])
-                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'literal', 'base' :  8})); i += len(r.group(0)); break
                 r = re.match(pat['c_dec'],  l[i:])
-                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'literal', 'base' : 10})); i += len(r.group(0)); break
                 r = re.match(pat['c_hex'],  l[i:])
-                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'literal', 'base' : 16})); i += len(r.group(0)); break
                 r = re.match(pat['c_bool'], l[i:])
-                if r != None: yield((r.group(0), 'literal')); i += len(r.group(0)); break
+                if r != None: yield((r.group(0), {'type' : 'literal', 'base' :'b'})); i += len(r.group(0)); break
 
                 elif j == len(all) - 1:
                     # printSyntaxError(vLineN, vLine, vFile, vStr)
@@ -360,7 +361,7 @@ def run(vSrc:str, vOut:str):
 
     # Write output file
     with open(vOut, 'w') as outFile:
-        outFile.write(str(ts))
+        outFile.write(''.join('\n' + str(t) for t in ts))
 
 
 
