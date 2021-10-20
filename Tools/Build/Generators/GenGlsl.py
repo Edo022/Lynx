@@ -21,7 +21,7 @@ import Utils as u
 
 
 def printError(vStr:str):
-    print(f'\n{ u.bRed }GenGlsl: Error: { bRed }')
+    print(f'\n{ u.bRed }GenGlsl: Error:\n{ vStr }{ u.bRed }')
     exit(1)
 
 
@@ -383,6 +383,9 @@ def clear(vCode:str):
 
 
 def run(vSrc:str, vOut:str):
+    if not os.path.exists(vSrc): printError(f'"{ vSrc }": No such file or directory')
+    if not os.path.exists(vOut): printError(f'"{ vOut }": No such file or directory')
+
     # Read input file
     with open(vSrc) as f:
         code = f.read()
@@ -400,6 +403,6 @@ def run(vSrc:str, vOut:str):
 
 
 
-if len(sys.argv) != 3: raise Exception('GenGlsl: Wrong number of arguments')
+if len(sys.argv) != 3: raise Exception('GenGlsl: Wrong number of arguments') #TODO replace with argparse
 run(sys.argv[1], sys.argv[2])
 sys.exit(0)
