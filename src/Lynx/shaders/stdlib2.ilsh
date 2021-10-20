@@ -1,9 +1,9 @@
 
 
-#define macro3(name)\
-    print(name)
+//#define macro3(name)\
+//    print(name)
 
 
 
 
-some random code pt 2
+//some random code pt 2

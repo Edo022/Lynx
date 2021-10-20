@@ -33,136 +33,120 @@ def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
 #TODO IMPLEMENT IN LYNX TYPES #TODO ADD RECTANGULAR MATRICES
 # A list of all recognized tokens in ILSL
 # b = binary      a = assign      l = logical       t = type    k = keyword     f = function        c = literal constant
+t_path : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)'     # File path
+t_id   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))'             # Identifier
+t_nidb  : r'(?:[^a-zA-Z_]|^)'                          # Not an identifier beginning
+t_nide  : r'(?:[^a-zA-Z_0-9]|^)'                       # Not an identifier end
+
+c_bin = r'b0(?:[01]+)(?:\.(?:[01]+))?'                  # Binary        # 0b10100
+c_dec = r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?'             # Decimal       # 90872     # 0d90872
+c_oct = r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?'             # Octal         # 030507    # 0o30507
+c_hex = r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
+#TODO add boolean literals
+#TODO add type information
+#TODO add exponential literals
+
+
 tok = {
-    #! %,  &,  |,  ^,  >>  and <<  are not implemented in GLSL. Use the functions
-    #! %=, &=, |=, ^=, >>= and <<= are not implemented in GLSL. Use the functions
+    'op' : { # TODO
+        #! %,  &,  |,  ^,  >>  and <<  are not implemented in GLSL. Use the functions
+        #! %=, &=, |=, ^=, >>= and <<= are not implemented in GLSL. Use the functions
 
-    'b_sum' : r'\+',        'b_sub' : r'-',         'b_mul' : r'\*',        'b_div' : r'\/',        'b_mod' : r'%',
-    'a_sum' : r'\+=',       'a_sub' : r'-=',        'a_mul' : r'\*=',       'a_div' : r'\/=',       'a_mod' : r'%=',
-    'inc'   : r'\+\+',      'dec'   : r'--',        'u_not' : r'~',
+        '+',    '-',    '*',    '/',    '%',
+        '+=',   '-=',   '*=',   '/=',   '%=',
+        '++',   '--',   '~',    '<=',   '>=',   '==',
+        '&',    '^',    '|',    '<<',   '>>',   '!',
+        '&=',   '^=',   '|=',   '<<=',  '>>=',  '=',
+        '&&',   '^^',   '||',   '<',    '>',    '!=',
 
-                                                                            'l_le'  : r'<=',        'l_me'  : r'>=',        'l_eq'  : r'==',
-    'b_and' : r'&',         'b_xor' : r'\^',        'b_or'  : r'\|',        'b_ls'  : r'<<',        'b_rs'  : r'>>',        'l_not' : r'!',
-    'a_and' : r'&=',        'a_xor' : r'\^=',       'a_or'  : r'\|=',       'a_ls'  : r'<<=',       'a_rs'  : r'>>=',       'a_set' : r'=',
-    'l_and' : r'&&',        'l_xor' : r'\^\^',      'l_or'  : r'\|\|',      'l_l'   : r'<',         'l_m'   : r'>',         'l_neq' : r'!=',
+        '(',    ')',    '{',    '}',    '[',    ']',
+        '?',    ':',    '\\',   ',',    '.',    ';'
+    },
 
-    'lr'    : r'\(',        'rr'    : r'\)',        'lc'    : r'\{',        'rc'    : r'\}',        'lf'    : r'\[',        'rs'   : r'\]',
-    'ternc' : r'\?',        'terna' : r':',         'esc'   : r'\\',        'comma' : r',',         'field' : r'\.',        'sc'   : r';',
-
-
-    'path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',     # Path
-    'id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',             # Identifier
-    'nid'  : r'(?:[^a-zA-Z_]|^)',                           # Not an identifier
-
-
-    't_scl'  : r'(?:b|f32|f64|u32|i31)',                    # Scalar types
-    't_vec'  : r'(?:b|f32|f64|u32|i31)v[234]',              # Vectors
-    't_mat'  : r'(?:b|f32|f64|u32|i31)m[234](?:x[234])?',   # Matrices
-    't_void' : r'void',                                     # just void
-
-
-    # If-else                   # Loops                 # Flow control              # Switch case
-    'k_if'   : r'if',          'k_whl' : r'while',      'k_cnt' : r'continue',      'k_swch' : r'switch',
-    'k_else' : r'else',        'k_for' : r'for',        'k_brk' : r'break',         'k_case' : r'case',
-    'k_elif' : r'elif',        'k_do'  : r'do',         'k_ret' : r'return',        'k_def'  : r'default',
-
-    # Inputs                    # Other
-    'k_loc' : r'local',         'k_cst' : r'const',
-    'k_ext' : r'extern',        'k_str' : r'struct',
+#TODO fix bool and integer matrices
+    #! integer and boolean matrices are implemented as multiple arrays of the base type
+    # (name, category, base type, x, y, alignment)
+    'types' : dict((t[0], {'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
+        ('b',     'b', 1, 1,  4),    ('u32',     'u32', 1, 1,  4),    ('i32',     'i32', 1, 1,  4),    ('f32',     'f32', 1, 1,  4),    ('f64',     'f64', 1, 1,  8),    # Scalar types
+        ('bv2',   'b', 2, 1,  8),    ('u32v2',   'u32', 2, 1,  8),    ('i32v2',   'i32', 2, 1,  8),    ('f32v2',   'f32', 2, 1,  8),    ('f64v2',   'f64', 2, 1, 16),    # 2-component vectors
+        ('bv3',   'b', 3, 1, 16),    ('u32v3',   'u32', 3, 1, 16),    ('i32v3',   'i32', 3, 1, 16),    ('f32v3',   'f32', 3, 1, 16),    ('f64v3',   'f64', 3, 1, 32),    # 3-component vectors
+        ('bv4',   'b', 4, 1, 16),    ('u32v4',   'u32', 4, 1, 16),    ('i32v4',   'i32', 4, 1, 16),    ('f32v4',   'f32', 4, 1, 16),    ('f64v4',   'f64', 4, 1, 32),    # 4-component vectors
+        ('bm2',   'b', 2, 2,  8),    ('u32m2',   'u32', 2, 2,  8),    ('i32m2',   'i32', 2, 2,  8),    ('f32m2',   'f32', 2, 2,  8),    ('f64m2',   'f64', 2, 2, 16),    # 2x2 square matrices
+        ('bm3',   'b', 3, 3, 16),    ('u32m3',   'u32', 3, 3, 16),    ('i32m3',   'i32', 3, 3, 16),    ('f32m3',   'f32', 3, 3, 16),    ('f64m3',   'f64', 3, 3, 32),    # 3x3 square matrices
+        ('bm4',   'b', 4, 4, 16),    ('u32m4',   'u32', 4, 4, 16),    ('i32m4',   'i32', 4, 4, 16),    ('f32m4',   'f32', 4, 4, 16),    ('f64m4',   'f64', 4, 4, 32),    # 4x4 square matrices
+        ('bm2x2', 'b', 2, 2,  8),    ('u32m2x2', 'u32', 2, 2,  8),    ('i32m2x2', 'i32', 2, 2,  8),    ('f32m2x2', 'f32', 2, 2,  8),    ('f64m2x2', 'f64', 2, 2, 16),    # 2x2 matrices
+        ('bm2x3', 'b', 2, 3,  8),    ('u32m2x3', 'u32', 2, 3,  8),    ('i32m2x3', 'i32', 2, 3,  8),    ('f32m2x3', 'f32', 2, 3,  8),    ('f64m2x3', 'f64', 2, 3, 16),    # 2x3 matrices
+        ('bm2x4', 'b', 2, 4,  8),    ('u32m2x4', 'u32', 2, 4,  8),    ('i32m2x4', 'i32', 2, 4,  8),    ('f32m2x4', 'f32', 2, 4,  8),    ('f64m2x4', 'f64', 2, 4, 16),    # 2x4 matrices
+        ('bm3x2', 'b', 3, 2, 16),    ('u32m3x2', 'u32', 3, 2, 16),    ('i32m3x2', 'i32', 3, 2, 16),    ('f32m3x2', 'f32', 3, 2, 16),    ('f64m3x2', 'f64', 3, 2, 32),    # 3x2 matrices
+        ('bm3x3', 'b', 3, 3, 16),    ('u32m3x3', 'u32', 3, 3, 16),    ('i32m3x3', 'i32', 3, 3, 16),    ('f32m3x3', 'f32', 3, 3, 16),    ('f64m3x3', 'f64', 3, 3, 32),    # 3x3 matrices
+        ('bm3x4', 'b', 3, 4, 16),    ('u32m3x4', 'u32', 3, 4, 16),    ('i32m3x4', 'i32', 3, 4, 16),    ('f32m3x4', 'f32', 3, 4, 16),    ('f64m3x4', 'f64', 3, 4, 32),    # 3x4 matrices
+        ('bm4x2', 'b', 4, 2, 16),    ('u32m4x2', 'u32', 4, 2, 16),    ('i32m4x2', 'i32', 4, 2, 16),    ('f32m4x2', 'f32', 4, 2, 16),    ('f64m4x2', 'f64', 4, 2, 32),    # 4x2 matrices
+        ('bm4x3', 'b', 4, 3, 16),    ('u32m4x3', 'u32', 4, 3, 16),    ('i32m4x3', 'i32', 4, 3, 16),    ('f32m4x3', 'f32', 4, 3, 16),    ('f64m4x3', 'f64', 4, 3, 32),    # 4x3 matrices
+        ('bm4x4', 'b', 4, 4, 16),    ('u32m4x4', 'u32', 4, 4, 16),    ('i32m4x4', 'i32', 4, 4, 16),    ('f32m4x4', 'f32', 4, 4, 16),    ('f64m4x4', 'f64', 4, 4, 32),    # 4x4 matrices
+        ('void',    'void', 0, 0, 0)                                                                                                                                     # No size, no alignment. Just void :c
+    ]),
 
 
-    # # Sine          # Cosine            # Tangent
-    # 'f_sin'     : r'sin',         'f_cos'   : r'cos',             'f_tan'   : r'tan',         # Sine,                     cosine,                     tangent
-    # 'f_asin'    : r'asin',        'f_acos'  : r'acos',            'f_atan'  : r'atan',        # Inverse sine,             inverse cosine,             inverse tangent
-    # 'f_sinh'    : r'sinh',        'f_cosh'  : r'cosh',            'f_tanh'  : r'tanh',        # Hyperbolic sine,          hyperbolic cosine,          hyperbolic tangent
-    # 'f_asinh'   : r'asinh',       'f_acosh' : r'acosh',           'f_atanh' : r'atanh',       # Inverse hyperbolic sine,  inverse hyperbolic cosine,  inverse hyperbolic tangent
-    # 'f_pow'     : r'pow',         'f_sqrt'  : r'sqrt',            'f_isqrt' : r'isqrt',       # Exponentiation,           square root,                inverse square root
-    # 'f_exp'     : r'exp',         'f_log'   : r'log',    # Natural exponentiation,   natural logarithm
-    # 'f_exp2'    : r'exp2',        'f_log2'  : r'log2',   # 2 to the power of n,      base 2 logarithm of n
-    # # Vectors       # Matrices          # Bits
-    # 'f_length'  : r'length',      'f_matrixCompMult' : r'matrixCompMult',  'f_fBitsToInt'   : r'fBitsToInt',  # Length of a vector
-    # 'f_dist'    : r'dist',        'f_OuterProduct'   : r'OuterProduct',    'f_fBitsToUint'  : r'fBitsToUint',
-    # 'f_cross'   : r'cross',       'f_transpose'      : r'transpose',       'f_iBitsToFloat' : r'iBitsToFloat',
-    # 'f_norm'    : r'norm',        'f_determinant'    : r'determinant',     'f_uBitsToFloat' : r'uBitsToFloat',
-    # 'f_reflect' : r'reflect',     'f_inverse'        : r'inverse',
-    # 'f_refract' : r'refract',
-    # 'f_faceforward' : r'faceforward',
-    # # Round
-    # 'f_floor'  : r'floor',       'f_ceil'      : r'ceil',                        # Floor, ceil
-    # 'f_mfloor' : r'mfloor',       'f_mceil'    : r'mceil',                      # Floor to multiple, ceil to multiple
-    # 'f_round'  : r'round',       'f_roundEven' : r'roundEven',                   # Truncate to integer, round to the nearest integer, round to the nearest even integer
-    # # Conversion    # Sign          # Comparison
-    # 'f_rad'    : r'rad',         'f_abs'  : r'abs',         'f_min' : r'min',
-    # 'f_deg'    : r'deg',         'f_sign' : r'sign',        'f_max' : r'max',
-    # # Other
-    # 'f_isnan' : r'isnan',       'f_step'  : r'step',        'f_frexp' : r'frexp',
-    # 'f_isinf' : r'isinf',       'f_sstep' : r'sstep',       'f_idexp' : r'idexp',
-    # 'f_fma'   : r'fma',         'f_trunc' : r'trunc',       'f_clamp' : r'clamp',
-    # 'f_mix'   : r'mix',         'f_fract' : r'fract',       'f_modf'  : r'modf',
+    # (category, value)
+    'kw' : list((t, 'kw') for t in [ # TODO
+        # If-else       # Loops         # Flow control      # Switch case
+        'if',           'while',        'continue',         'switch',
+        'else',         'for',          'break',            'case',
+        'elif',         'do',           'return',           'default',
 
-    # 'c_bin' : r'b0(?:[01]+)(?:\.(?:[01]+))?',                 # Binary        # 0b10100
-    # 'c_dec' : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',            # Decimal       # 90872     # 0d90872
-    # 'c_oct' : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',            # Octal         # 030507    # 0o30507
-    # 'c_hex' : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
+        # Inputs         # Other
+        'local',         'const',
+        'extern',        'struct'
+    ])
 }
-# tok_b = list(t for t in tok)
-# tok_a = list(t for t in tok)
-# tok_l = list(t for t in tok)
-# ok_op = tok_b + tok_a + tok_l
-
-# tok_t = list(t for t in tok)
-# tok_k = list(t for t in tok)
-# # tok_f = list(t for t in tok)
-# tok_c = list(t for t in tok)
 
 
 
+# ctok = {
+#     'kw' : ((k, v + tok['nide']) for (k, v) in zip(tok['kw'].keys(), tok['kw'].values()))
+# }
 
 
+# # Sine          # Cosine            # Tangent
+# 'f_sin'     : r'sin',         'f_cos'   : r'cos',             'f_tan'   : r'tan',         # Sine,                     cosine,                     tangent
+# 'f_asin'    : r'asin',        'f_acos'  : r'acos',            'f_atan'  : r'atan',        # Inverse sine,             inverse cosine,             inverse tangent
+# 'f_sinh'    : r'sinh',        'f_cosh'  : r'cosh',            'f_tanh'  : r'tanh',        # Hyperbolic sine,          hyperbolic cosine,          hyperbolic tangent
+# 'f_asinh'   : r'asinh',       'f_acosh' : r'acosh',           'f_atanh' : r'atanh',       # Inverse hyperbolic sine,  inverse hyperbolic cosine,  inverse hyperbolic tangent
+# 'f_pow'     : r'pow',         'f_sqrt'  : r'sqrt',            'f_isqrt' : r'isqrt',       # Exponentiation,           square root,                inverse square root
+# 'f_exp'     : r'exp',         'f_log'   : r'log',    # Natural exponentiation,   natural logarithm
+# 'f_exp2'    : r'exp2',        'f_log2'  : r'log2',   # 2 to the power of n,      base 2 logarithm of n
+# # Vectors       # Matrices          # Bits
+# 'f_length'  : r'length',      'f_matrixCompMult' : r'matrixCompMult',  'f_fBitsToInt'   : r'fBitsToInt',  # Length of a vector
+# 'f_dist'    : r'dist',        'f_OuterProduct'   : r'OuterProduct',    'f_fBitsToUint'  : r'fBitsToUint',
+# 'f_cross'   : r'cross',       'f_transpose'      : r'transpose',       'f_iBitsToFloat' : r'iBitsToFloat',
+# 'f_norm'    : r'norm',        'f_determinant'    : r'determinant',     'f_uBitsToFloat' : r'uBitsToFloat',
+# 'f_reflect' : r'reflect',     'f_inverse'        : r'inverse',
+# 'f_refract' : r'refract',
+# 'f_faceforward' : r'faceforward',
+# # Round
+# 'f_floor'  : r'floor',       'f_ceil'      : r'ceil',                        # Floor, ceil
+# 'f_mfloor' : r'mfloor',       'f_mceil'    : r'mceil',                      # Floor to multiple, ceil to multiple
+# 'f_round'  : r'round',       'f_roundEven' : r'roundEven',                   # Truncate to integer, round to the nearest integer, round to the nearest even integer
+# # Conversion    # Sign          # Comparison
+# 'f_rad'    : r'rad',         'f_abs'  : r'abs',         'f_min' : r'min',
+# 'f_deg'    : r'deg',         'f_sign' : r'sign',        'f_max' : r'max',
+# # Other
+# 'f_isnan' : r'isnan',       'f_step'  : r'step',        'f_frexp' : r'frexp',
+# 'f_isinf' : r'isinf',       'f_sstep' : r'sstep',       'f_idexp' : r'idexp',
+# 'f_fma'   : r'fma',         'f_trunc' : r'trunc',       'f_clamp' : r'clamp',
+# 'f_mix'   : r'mix',         'f_fract' : r'fract',       'f_modf'  : r'modf',
 
-# Tokenizer --------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-
-
-
-
-
-# Reads an ILSL file and returns its content as a list of tokens
-# Any combination of whitespace character is replaced with a single space
-# Preprocessor directives are expanded
-# Comments are ignored
-def tokenize(vFile:str, vFlags:list):
-    code = preprocessC(vFile, vFlags) #TODO add include paths
-
-    # Checks if a regex vTok matches the vStr, starting from the character at index vIndex
-    # If it matches, the matched string is returned
-    # If it does not match, None is returned
-    # 0 length matches are considered not matched
-    def check(vStr:str, vIndex:int, vTok:str):
-        t = re.match('^' + vTok, vStr[vIndex:])
-        if t != None and len(t.group(0)) > 0:
-            return t.group(0)
-        else:
-            return None
-
-    # Checks a list of tokens on vStr, starting from the character at index vIndex
-    # returns the first matching token
-    def loop(vStr:str, vTokens:list, vIndex:int):
-        for t in vTokens:
-            r = check(vStr, vIndex, t)
-            if r != None: return r
-
-    i  : int = 0
-    ts : str = []
+# 'c_bin' : r'b0(?:[01]+)(?:\.(?:[01]+))?',                 # Binary        # 0b10100
+# 'c_dec' : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',            # Decimal       # 90872     # 0d90872
+# 'c_oct' : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',            # Octal         # 030507    # 0o30507
+# 'c_hex' : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
 
 
+# Removes the trailing whitespace of each line
+# Consecutive newline characters are preserved
+def clear(vCode:str):
+    return re.sub(r'[ \t\v]+(\n|$)', r'\n', vCode)
 
-
-    tokKeywords
-    while i < len(code):
-        r = loop(code, )
 
 
 
@@ -175,14 +159,6 @@ def tokenize(vFile:str, vFlags:list):
 
 
 
-
-
-
-
-# Removes the trailing whitespace of each line
-# Consecutive newline characters are preserved
-def clear(vCode:str):
-    return re.sub(r'\s+(\n|$)', r'\n', code)
 
 
 
@@ -292,6 +268,58 @@ def preprocess(vCode:str, vFile:str):
 
 
 
+
+# Tokenizer --------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
+# Reads an ILSL file and returns its content as a list of tokens
+# Any combination of whitespace character is replaced with a single space
+# Preprocessor directives are expanded
+# Comments are ignored
+def tokenize(vFile:str, vFlags:list):
+    code = preprocessC(vFile, vFlags) #TODO add include paths
+
+    # Checks if a regex vTok matches the vStr, starting from the character at index vIndex
+    # If it matches, the matched string is returned
+    # If it does not match, None is returned
+    # 0 length matches are considered not matched
+    def check(vStr:str, vIndex:int, vTok:str):
+        t = re.match('^' + vTok, vStr[vIndex:])
+        if t != None and len(t.group(0)) > 0:
+            return t.group(0)
+        else:
+            return None
+
+    # Checks a list of tokens on vStr, starting from the character at index vIndex
+    # returns the first matching token
+    def loop(vStr:str, vTokens:list, vIndex:int):
+        for t in vTokens:
+            r = check(vStr, vIndex, t)
+            if r != None: return r
+
+    i  : int = 0
+    ts : str = []
+
+
+
+
+    tokKeywords
+    while i < len(code):
+        r = loop(code, )
+
+
+
+
+
+
+
+
 # Main -------------------------------------------------------------------------------------------------------------------------------------#
 
 
@@ -302,20 +330,16 @@ def preprocess(vCode:str, vFile:str):
 
 
 def run(vSrc:str, vOut:str):
-    # ts = list(tokenizeIlsl(vSrc, []))
+    # Read input file
     with open(vSrc) as f:
         code = f.read()
 
-    s = '#version 450\n'    # Add hard coded version statement
-    s += preprocess(code, vSrc)
-    # i = 0
-    # while i < len(ts):  # For each token
-    #     s += ' '            # Add space separator
-    #     s += ts[i]          # Concatenate token
-    #     i += 1              # Update counter
+    # Add hard coded version statement and parse the code
+    s = '#version 450\n'
+    s += clear(preprocess(code, vSrc))
 
 
-
+    # Write output file
     with open(vOut, 'w') as outFile:
         outFile.write(s)
 

@@ -3,11 +3,11 @@
 #include "src/Lynx/shaders/stdlib2.ilsh"
 
 
-some random code
+//some random code
 
-#define macroTest(a)\
-    a##test = 45;
-
-#define macroTest2(a, b)\
-    a##b##test = 45;\
-    line2
+//#define macroTest(a)\
+//    a##test = 45;
+//
+//#define macroTest2(a, b)\
+//    a##b##test = 45;\
+//    line2

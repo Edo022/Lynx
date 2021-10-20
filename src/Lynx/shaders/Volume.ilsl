@@ -1,4 +1,4 @@
-#include "src/Lynx/shaders/stdlib.ilsh"
+// #include "src/Lynx/shaders/stdlib.ilsh"
 
 
 
@@ -6,40 +6,42 @@
 #define gy gl_GlobalInvocationID.y
 #define g gl_GlobalInvocationID
 
-macroTest
-
-/*
-	testComment
-
-
-	*/
-
-struct Point{
-	vec3 pos;  	//position
-	float r;   	//radius
-	vec4 col;  	//color
-};
-	/*comment2*/
 
 
 
-layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
-layout(std430, binding = 0) buffer ext_outcol{
-	vec4 arrayh[15 * 2];
-	int valueh;
-	Point p;
-	Point ps[20];
+// layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
+
+// layout(std430, binding = 0) buffer ext_outcol{
+// 	vec4 arrayh[15 * 2];
+// 	int valueh;
+// 	Point p;
+// 	Point ps[20];
+// 	vec4 outcol[];
+// };
+
+extern outCol {
 	vec4 outcol[];
-};
-layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
-layout(std140, binding = 2) uniform data{
-	// Point points;
-		vec3 pos;  	//position
-	float r;   	//radius
-	vec4 col;  	//color
+}
 
-};
+// layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
+
+extern wsize {
+	uvec2 wsize;
+}
+
+// layout(std140, binding = 2) uniform data{
+// 	// Point points;
+// 		vec3 pos;  	//position
+// 	float r;   	//radius
+// 	vec4 col;  	//color
+// };
+
+local {
+	vec3 pos;
+	float r;
+	vec4 col;
+}
 
 
 
