@@ -51,43 +51,6 @@ pat = {
     'c_hex'  : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?' # Hexadecimal   # 0x7a0f3
 }
 
-# TODO ADD BUILTIN FUNCTIONS
-# # Sine          # Cosine            # Tangent
-# 'f_sin'     : r'sin',         'f_cos'   : r'cos',             'f_tan'   : r'tan',         # Sine,                     cosine,                     tangent
-# 'f_asin'    : r'asin',        'f_acos'  : r'acos',            'f_atan'  : r'atan',        # Inverse sine,             inverse cosine,             inverse tangent
-# 'f_sinh'    : r'sinh',        'f_cosh'  : r'cosh',            'f_tanh'  : r'tanh',        # Hyperbolic sine,          hyperbolic cosine,          hyperbolic tangent
-# 'f_asinh'   : r'asinh',       'f_acosh' : r'acosh',           'f_atanh' : r'atanh',       # Inverse hyperbolic sine,  inverse hyperbolic cosine,  inverse hyperbolic tangent
-# 'f_pow'     : r'pow',         'f_sqrt'  : r'sqrt',            'f_isqrt' : r'isqrt',       # Exponentiation,           square root,                inverse square root
-# 'f_exp'     : r'exp',         'f_log'   : r'log',    # Natural exponentiation,   natural logarithm
-# 'f_exp2'    : r'exp2',        'f_log2'  : r'log2',   # 2 to the power of n,      base 2 logarithm of n
-# # Vectors       # Matrices          # Bits
-# 'f_length'  : r'length',      'f_matrixCompMult' : r'matrixCompMult',  'f_fBitsToInt'   : r'fBitsToInt',  # Length of a vector
-# 'f_dist'    : r'dist',        'f_OuterProduct'   : r'OuterProduct',    'f_fBitsToUint'  : r'fBitsToUint',
-# 'f_cross'   : r'cross',       'f_transpose'      : r'transpose',       'f_iBitsToFloat' : r'iBitsToFloat',
-# 'f_norm'    : r'norm',        'f_determinant'    : r'determinant',     'f_uBitsToFloat' : r'uBitsToFloat',
-# 'f_reflect' : r'reflect',     'f_inverse'        : r'inverse',
-# 'f_refract' : r'refract',
-# 'f_faceforward' : r'faceforward',
-# # Round
-# 'f_floor'  : r'floor',       'f_ceil'      : r'ceil',                        # Floor, ceil
-# 'f_mfloor' : r'mfloor',       'f_mceil'    : r'mceil',                      # Floor to multiple, ceil to multiple
-# 'f_round'  : r'round',       'f_roundEven' : r'roundEven',                   # Truncate to integer, round to the nearest integer, round to the nearest even integer
-# # Conversion    # Sign          # Comparison
-# 'f_rad'    : r'rad',         'f_abs'  : r'abs',         'f_min' : r'min',
-# 'f_deg'    : r'deg',         'f_sign' : r'sign',        'f_max' : r'max',
-# # Other
-# 'f_isnan' : r'isnan',       'f_step'  : r'step',        'f_frexp' : r'frexp',
-# 'f_isinf' : r'isinf',       'f_sstep' : r'sstep',       'f_idexp' : r'idexp',
-# 'f_fma'   : r'fma',         'f_trunc' : r'trunc',       'f_clamp' : r'clamp',
-# 'f_mix'   : r'mix',         'f_fract' : r'fract',       'f_modf'  : r'modf',
-
-# 'c_bin' : r'b0(?:[01]+)(?:\.(?:[01]+))?',                 # Binary        # 0b10100
-# 'c_dec' : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',            # Decimal       # 90872     # 0d90872
-# 'c_oct' : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',            # Octal         # 030507    # 0o30507
-# 'c_hex' : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?'    # Hexadecimal   # 0x7a0f3
-
-
-
 
 
 
@@ -162,7 +125,7 @@ def saveMacro(vLines:list, vName:str, vMembers:str):
 # Checks if an included path is valid
 # Prints an error if it's not
 def checkIncludeFile(vLineN:str, vLine:list, vFile:str, vName:str):
-    if not re.match('^' + tok['path'] + '$', vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is not a valid file path')
+    if not re.match('^' + pat['t_path'] + '$', vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is not a valid file path')
     if os.path.exists(vName):
         if vName[-1] == '/' or os.path.isdir(vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is a directory')
     else:                                            printSyntaxError(vLineN, vLine, vFile, "No such file or directory")
