@@ -136,35 +136,20 @@ def checkIncludeFile(vLineN:str, vLine:list, vFile:str, vName:str):
 # Creates a code with no includes by pasting all the included files together
 # Returns the resulting string
 # Comments are not preserved
-def include(vCode:str, vFile:str):
+def include(vCode:str, vFile:str, vLineInfo:int):
     code = ''
     ls:list = uncomment(vCode, vFile).split('\n')
-    for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):        # For each line of the code
-        ri = re.match(r'^\s*#include(?:\s*)"(?P<path>.*)"', l)          # Check if it's an include
-        if ri != None:                                                  # If the line is an include statement
-            checkr = checkIncludeFile(i, ol, vFile, ri['path'])             # Check the included file
-            with open(ri['path'], 'r') as f:                                # Open the included file
-                code += include(f.read(), ri['path'])                           # Paste the included code recursively
-        else:                                                           # If not
-            code += l                                                       # Concatenate line
-        code += '\n'                                                    # Add newline
+    for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):            # For each line of the code
+        if i > 0: code += '\n'                                              # Add newline
+        r = re.match(r'^\s*#include(?:\s*)"(?P<path>.*)"', l)               # Check if it's an include
+        if r != None:                                                       # If the line is an include statement
+            checkr = checkIncludeFile(i, ol, vFile, r['path'])                  # Check the included file
+            with open(r['path'], 'r') as f:                                     # Open the included file
+                code += include(f.read(), r['path'], i + 1)                         # Paste the included code recursively
+        else:                                                               # If not
+            code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'# Concatenate line
 
     return code
-
-
-
-
-
-
-
-
-
-
-# Preprocesses an ILSL code
-# Pastes all the included files, expands the macros and removes any comment or trailing whitespace
-# Unknown preprocessor directives cause an error
-def preprocess(vCode:str, vFile:str):
-    return include(vCode, vFile)
 
 
 
@@ -233,14 +218,16 @@ tok = {
 
     # (type, category)
     'kw' : list(({'val' : t[0], 'type' : 'kw', 'ctgr' : t[1]}) for t in [
-        # If-else               # Loops                   # Flow control              # Switch case
-        ('if',   'if'),         ('while', 'loop'),        ('continue', 'fc'),         ('switch',  'switch'),
-        ('else', 'if'),         ('for',   'loop'),        ('break',    'fc'),         ('case',    'switch'),
-        ('elif', 'if'),         ('do',    'loop'),        ('return',   'fc'),         ('default', 'switch'),
+        # If-else               # Loops                     # Flow control              # Switch case
+        ('if',   'if'),         ('while', 'loop'),          ('continue', 'fc'),         ('switch',  'switch'),
+        ('else', 'if'),         ('for',   'loop'),          ('break',    'fc'),         ('case',    'switch'),
+        ('elif', 'if'),         ('do',    'loop'),          ('return',   'fc'),         ('default', 'switch'),
 
-        # Inputs                   # Other
-        ('local' , 'input'),        ('const',  'qualifier'),
-        ('extern', 'input'),        ('struct', 'struct')
+        # Type qualifiers       # Inputs                    # Other
+        ('highp',  'tq'),       ('local' , 'input'),        ('struct',    'other'),
+        ('medp',   'tq'),       ('extern', 'input'),        ('precision', 'other'),
+        ('lowp',   'tq'),
+        ('const',  'tq')
     ])
 }
 
@@ -252,7 +239,7 @@ all = sorted(all2, key = lambda s: len(s['val']))[::-1]
 
 
 
-
+#TODO ADD OUTPUT QUALIFIER 'out'
 
 
 
@@ -262,8 +249,11 @@ all = sorted(all2, key = lambda s: len(s['val']))[::-1]
 # Comments are ignored
 def tokenize(vCode:str, vFile:str):
     lines = vCode.split('\n')
-    for vLineN, l in enumerate(lines):
-        i : int = 0
+    for vLineN, line in enumerate(lines):
+        lineInfo : str = re.match(r'\/\*.*?\*\/', line).group(0)
+        l        : str = line[len(lineInfo):]
+        i        : int = 0
+        yield({'val' : lineInfo, 'type' : 'lineInfo'})
         while i < len(l):
             for j, t in enumerate(all):
                 if l[i:].startswith(t['val']):
@@ -316,7 +306,6 @@ def tokenize(vCode:str, vFile:str):
 
 
 
-
 def group(): #TODO
     None #TODO
 
@@ -340,7 +329,7 @@ def group(): #TODO
 # Removes the trailing whitespace of each line
 # Consecutive newline characters are preserved
 def clear(vCode:str):
-    return re.sub(r'[ \t\v]+(\n|$)', r'\n', vCode)
+    return re.sub(r'[ \t\v]+(\n|$)', r'\g<1>', vCode)
 
 
 
@@ -354,7 +343,7 @@ def run(vSrc:str, vOut:str):
         code = f.read()
 
     # Add hard coded version statement and parse the code
-    ts = list(tokenize(clear(preprocess(code, vSrc)), vSrc))
+    ts = list(tokenize(clear(include(code, vSrc, 0)), vSrc))
 
 
     # Write output file
