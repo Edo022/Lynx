@@ -54,7 +54,7 @@ tok = {
     # Operator (type, category, precedence, associativity)
     #FIXME ++, --, +, - and () have different precedence based on their position
     #FIXME ++, -- have different associativiry based on their position
-    'op' : dict((t[0], {'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
+    'op' : list(({'value' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
 
         ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
         ('+=', 'set', 16, 'rl'),   ('-=', 'set', 16, 'rl'),   ('*=', 'set', 16, 'rl'),   ('/=',  'set', 16, 'rl'),   ('%=',  'set', 16, 'rl'),
@@ -71,7 +71,7 @@ tok = {
 
     #! integer and boolean matrices are implemented as multiple arrays of the base type
     # Type (type, base type, x, y, alignment)
-    'types' : dict((t[0], {'type' : 'type', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
+    'types' : list(({'value' : t[0], 'type' : 'type', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
         ('b',     'b', 1, 1,  4),    ('u32',     'u32', 1, 1,  4),    ('i32',     'i32', 1, 1,  4),    ('f32',     'f32', 1, 1,  4),    ('f64',     'f64', 1, 1,  8),    # Scalar types
         ('bv2',   'b', 2, 1,  8),    ('u32v2',   'u32', 2, 1,  8),    ('i32v2',   'i32', 2, 1,  8),    ('f32v2',   'f32', 2, 1,  8),    ('f64v2',   'f64', 2, 1, 16),    # 2-component vectors
         ('bv3',   'b', 3, 1, 16),    ('u32v3',   'u32', 3, 1, 16),    ('i32v3',   'i32', 3, 1, 16),    ('f32v3',   'f32', 3, 1, 16),    ('f64v3',   'f64', 3, 1, 32),    # 3-component vectors
@@ -93,7 +93,7 @@ tok = {
 
 
     # (type, category)
-    'kw' : list((t[0], {'type' : 'kw', 'ctgr' : t[1]}) for t in [
+    'kw' : list(({'value' : t[0], 'type' : 'kw', 'ctgr' : t[1]}) for t in [
         # If-else               # Loops                   # Flow control              # Switch case
         ('if',   'if'),         ('while', 'loop'),        ('continue', 'fc'),         ('switch',  'switch'),
         ('else', 'if'),         ('for',   'loop'),        ('break',    'fc'),         ('case',    'switch'),
@@ -107,8 +107,8 @@ tok = {
 
 
 # Merge and sort the tokens
-all2 = {}; all2.update(tok['op']); all2.update(tok['types']); all2.update(tok['kw'])
-all = dict(sorted(all2.items(), key = lambda s: len(s[0])))
+all2 = tok['op'] + tok['types'] + tok['kw']
+all = sorted(all2, key = lambda s: len(s['value']))
 
 
 
@@ -290,34 +290,34 @@ def tokenize(vCode:str, vFile:str):
     for vLineN, l in enumerate(lines):
         i : int = 0
         while i < len(l):
-            for j, t in enumerate(all.items()):
-                if l[i:].startswith(t[0]):
+            for j, t in enumerate(all):
+                if l[i:].startswith(t['value']):
                     yield(t)
-                    i += len(t[0])
+                    i += len(t['value'])
                     break
 
                 if l[i] == ';':
-                    yield((';', {'type' : 'semicolon'}))
+                    yield(({'value' : ';', 'type' : 'semicolon'}))
                     i += 1
                     break
 
                 r = re.match(pat['t_ppd'],  l[i:])
-                if r != None: yield((r.group(0), {'type' : 'preprocessor'})); i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'preprocessor'})); i += len(r.group(0)); break
                 r = re.match(pat['t_whs'],  l[i:])
-                if r != None: yield((r.group(0), {'type' : 'whitespace'}));   i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'whitespace'}));   i += len(r.group(0)); break
                 r = re.match(pat['t_id'],   l[i:])
-                if r != None: yield((r.group(0), {'type' : 'identifier'}));   i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'identifier'}));   i += len(r.group(0)); break
 
                 r = re.match(pat['c_bin'],  l[i:])
-                if r != None: yield((r.group(0), {'type' : 'literal', 'base' :  2})); i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'literal', 'base' :  2})); i += len(r.group(0)); break
                 r = re.match(pat['c_oct'],  l[i:])
-                if r != None: yield((r.group(0), {'type' : 'literal', 'base' :  8})); i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'literal', 'base' :  8})); i += len(r.group(0)); break
                 r = re.match(pat['c_dec'],  l[i:])
-                if r != None: yield((r.group(0), {'type' : 'literal', 'base' : 10})); i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'literal', 'base' : 10})); i += len(r.group(0)); break
                 r = re.match(pat['c_hex'],  l[i:])
-                if r != None: yield((r.group(0), {'type' : 'literal', 'base' : 16})); i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'literal', 'base' : 16})); i += len(r.group(0)); break
                 r = re.match(pat['c_bool'], l[i:])
-                if r != None: yield((r.group(0), {'type' : 'literal', 'base' :'b'})); i += len(r.group(0)); break
+                if r != None: yield(({'value' : r.group(0), 'type' : 'literal', 'base' :'b'})); i += len(r.group(0)); break
 
                 elif j == len(all) - 1:
                     # printSyntaxError(vLineN, vLine, vFile, vStr)
