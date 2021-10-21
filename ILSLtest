@@ -1,0 +1,2276 @@
+#version 450
+
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'rad', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_deg', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'deg', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_rad', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '   ', 'type': 'ws'}
+{'val': 'sin', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_angle', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '   ', 'type': 'ws'}
+{'val': 'cos', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_angle', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '   ', 'type': 'ws'}
+{'val': 'tan', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_angle', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'asin', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'acos', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'atan', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_y_over_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'sinh', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'cosh', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'tanh', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'asinh', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'acosh', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'atanh', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '                                                                ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'atan', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_y', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'pow', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_e', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '   ', 'type': 'ws'}
+{'val': 'exp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '   ', 'type': 'ws'}
+{'val': 'log', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'exp2', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'log2', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'sqrt', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': '  ', 'type': 'ws'}
+{'val': 'sqrt', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'isqrt', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'isqrt', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'abs', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'sign', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'abs', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'sign', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'fract', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'abs', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'sign', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'fract', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'floor', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'ceilf', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'trunc', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'round', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'roundEven', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'floor', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'ceilf', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'trunc', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'round', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'roundEven', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mod', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_x', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mod', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_x', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'modf', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_x', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'out', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mod', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_x', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mod', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_x', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'modf', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_x', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'out', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': '     ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'i32', 'type': 'tn', 'base': 'i32', 'x': 1, 'y': 1, 'align': 4}
+{'val': '     ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'i32', 'type': 'tn', 'base': 'i32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'i32', 'type': 'tn', 'base': 'i32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'i32', 'type': 'tn', 'base': 'i32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'i32', 'type': 'tn', 'base': 'i32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': '     ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'min', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': '     ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'max', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'clamp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '         ', 'type': 'ws'}
+{'val': 'any_d64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'mix', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_min', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_max', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_which', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_which', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_which', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_which', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_b', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '   ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_which', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge0', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge1', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge0', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge1', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge0', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge1', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'step', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge0', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_edge1', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'isnan', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'isinf', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'isnan', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'any_b', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'isinf', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'floatBitsToI32', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_i64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'floatBitsToU32', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'i32BitsToFloat', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'u32BitsToFloat', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_u32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'fma', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_c', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'fma', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_c', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'frexp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'out', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_exp', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'frexp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'highp', 'type': 'kw', 'ctgr': 'other'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_exp', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'frexp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'out', 'type': 'id'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_exp', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'frexp', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '      ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': '       ', 'type': 'ws'}
+{'val': 'any_i32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_exp', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': 'len', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': 'dist', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'anu_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': 'len', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '    ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': 'dist', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'anu_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': 'dot', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'f32v3', 'type': 'tn', 'base': 'f32', 'x': 3, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': 'cross', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v3', 'type': 'tn', 'base': 'f32', 'x': 3, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v3', 'type': 'tn', 'base': 'f32', 'x': 3, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'norm', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': 'dot', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '        ', 'type': 'ws'}
+{'val': 'f64v3', 'type': 'tn', 'base': 'f64', 'x': 3, 'y': 1, 'align': 32}
+{'val': ' ', 'type': 'ws'}
+{'val': 'cross', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f64v3', 'type': 'tn', 'base': 'f64', 'x': 3, 'y': 1, 'align': 32}
+{'val': ' ', 'type': 'ws'}
+{'val': '_a', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f64v3', 'type': 'tn', 'base': 'f64', 'x': 3, 'y': 1, 'align': 32}
+{'val': ' ', 'type': 'ws'}
+{'val': '_b', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'norm', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'faceForward', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_nref', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'faceForward', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_nref', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'reflect', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'refract', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f32', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': '_eta', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'reflect', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '     ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'refract', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_i', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'any_f64', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '_n', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f64', 'type': 'tn', 'base': 'f64', 'x': 1, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': '_eta', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000001*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000002*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000003*/', 'type': 'lineInfo'}
+{'val': '#', 'type': 'ppd'}
+{'val': 'define', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'gx', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'gl_GlobalInvocationID', 'type': 'id'}
+{'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
+{'val': 'x', 'type': 'id'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000004*/', 'type': 'lineInfo'}
+{'val': '#', 'type': 'ppd'}
+{'val': 'define', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'gy', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'gl_GlobalInvocationID', 'type': 'id'}
+{'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
+{'val': 'y', 'type': 'id'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000005*/', 'type': 'lineInfo'}
+{'val': '#', 'type': 'ppd'}
+{'val': 'define', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'g', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'gl_GlobalInvocationID', 'type': 'id'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000006*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000007*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000008*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000009*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000010*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000011*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000012*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000013*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000014*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000015*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000016*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000017*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000018*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000019*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000020*/', 'type': 'lineInfo'}
+{'val': 'extern', 'type': 'kw', 'ctgr': 'input'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'outCol', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000021*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': 'outcol', 'type': 'id'}
+{'val': '[', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': ']', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000022*/', 'type': 'lineInfo'}
+{'val': '}', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000023*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000024*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000025*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000026*/', 'type': 'lineInfo'}
+{'val': 'extern', 'type': 'kw', 'ctgr': 'input'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'wsize', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000027*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'u32v2', 'type': 'tn', 'base': 'u32', 'x': 2, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': 'wsize', 'type': 'id'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000028*/', 'type': 'lineInfo'}
+{'val': '}', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000029*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000030*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000031*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000032*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000033*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000034*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000035*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000036*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000037*/', 'type': 'lineInfo'}
+{'val': 'local', 'type': 'kw', 'ctgr': 'input'}
+{'val': ' ', 'type': 'ws'}
+{'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000038*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'f32v3', 'type': 'tn', 'base': 'f32', 'x': 3, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': 'pos', 'type': 'id'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000039*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'f32', 'type': 'tn', 'base': 'f32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': 'r', 'type': 'id'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000040*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': 'col', 'type': 'id'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000041*/', 'type': 'lineInfo'}
+{'val': '}', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000042*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000043*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000044*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000045*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000046*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000047*/', 'type': 'lineInfo'}
+{'val': 'void', 'type': 'tn', 'base': 'void', 'x': 0, 'y': 0, 'align': 0}
+{'val': ' ', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': ' ', 'type': 'ws'}
+{'val': 'pos', 'type': 'id'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': ' ', 'type': 'ws'}
+{'val': 'col', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000048*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': ' ', 'type': 'ws'}
+{'val': 'i', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '=', 'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'rl'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'pos', 'type': 'id'}
+{'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
+{'val': 'y', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '*', 'type': 'op', 'ctgr': 'bin', 'prec': 4, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'wsize', 'type': 'id'}
+{'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
+{'val': 'x', 'type': 'id'}
+{'val': ' ', 'type': 'ws'}
+{'val': '+', 'type': 'op', 'ctgr': 'bin', 'prec': 3, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'u32', 'type': 'tn', 'base': 'u32', 'x': 1, 'y': 1, 'align': 4}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'pos', 'type': 'id'}
+{'val': '.', 'type': 'op', 'ctgr': 'fld', 'prec': 2, 'assoc': 'lr'}
+{'val': 'x', 'type': 'id'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000049*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'outcol', 'type': 'id'}
+{'val': '[', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': 'i', 'type': 'id'}
+{'val': ']', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '=', 'type': 'op', 'ctgr': 'set', 'prec': 16, 'assoc': 'rl'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'col', 'type': 'id'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000050*/', 'type': 'lineInfo'}
+{'val': '}', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000051*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000052*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000053*/', 'type': 'lineInfo'}
+{'val': 'void', 'type': 'tn', 'base': 'void', 'x': 0, 'y': 0, 'align': 0}
+{'val': ' ', 'type': 'ws'}
+{'val': 'main', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '{', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000054*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '250', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '250', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000055*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000056*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000057*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '0.5', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0.5', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '250', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '250', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000058*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '0.5', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0.5', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000059*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000060*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '250', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '250', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000061*/', 'type': 'lineInfo'}
+{'val': '\t', 'type': 'ws'}
+{'val': 'setPixel', 'type': 'id'}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': 'f32v2', 'type': 'tn', 'base': 'f32', 'x': 2, 'y': 1, 'align': 8}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': 'f32v4', 'type': 'tn', 'base': 'f32', 'x': 4, 'y': 1, 'align': 16}
+{'val': '(', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '0', 'type': 'lc', 'base': 10}
+{'val': ',', 'type': 'op', 'ctgr': 'seq', 'prec': 17, 'assoc': 'lr'}
+{'val': ' ', 'type': 'ws'}
+{'val': '1', 'type': 'lc', 'base': 10}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ')', 'type': 'op', 'ctgr': 'sep', 'prec': 1, 'assoc': 'lr'}
+{'val': ';', 'type': 'sc'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000062*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000063*/', 'type': 'lineInfo'}
+{'val': '}', 'type': 'op', 'ctgr': 'sep', 'prec': 2, 'assoc': 'lr'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000064*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}
+{'val': '/*000065*/', 'type': 'lineInfo'}
+{'val': '\n', 'type': 'nl'}

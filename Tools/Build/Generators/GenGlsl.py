@@ -148,7 +148,7 @@ def include(vCode:str, vFile:str, vLineInfo:int):
     ls:list = uncomment(vCode, vFile).split('\n')
     for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):            # For each line of the code
         if i > 0: code += '\n'                                              # Add newline
-        r = re.match(r'^\s*#include(?:\s*)"(?P<path>.*)"', l)               # Check if it's an include
+        r = re.match(r'^\s*#include(?:\s*)(?:"|<)(?P<path>.*)(?:"|>)', l)   # Check if it's an include
         if r != None:                                                       # If the line is an include statement
             checkr = checkIncludeFile(i, ol, vFile, r['path'])                  # Check the included file
             with open(r['path'], 'r') as f:                                     # Open the included file
@@ -233,9 +233,9 @@ tok = [
         ('elif', 'if'),         ('do',    'loop'),          ('return',   'fc'),         ('default', 'switch'),
 
         # Type qualifiers       # Inputs                    # Other
-        ('highp',  'tq'),       ('local' , 'input'),        ('struct',    'other'),
-        ('medp',   'tq'),       ('extern', 'input'),        ('precision', 'other'),
-        ('lowp',   'tq'),
+        ('highp',  'other'),    ('local' , 'input'),        ('struct',    'other'),
+        ('medp',   'other'),    ('extern', 'input'),        ('precision', 'other'),
+        ('lowp',   'other'),
         ('const',  'tq')
     ])
 ]
@@ -282,20 +282,14 @@ def tokenize(vCode:str, vFile:str):
             elif (r := re.match(pat['t_id'],  l[i:])) != None:
                 id = r.group(0)
 
-                # Save builtin identifiers and operators
-                found:bool = False
-                for t in tok:
-                    if id == t['val']: #FIXME 'do' matches 'dot'
-                        found = True
-                        i += len(t['val'])
-                        yield(t); break
-
-                # Save defined identifiers
-                if not found:
-                    i += len(id)
+                if id in map(lambda x: x['val'], tok):
+                    yield(dict((t['val'], t) for t in tok)[id])
+                else:
                     yield({'val' : id, 'type' : 'id'})
 
+                i += len(id)
                 continue
+
 
 
             # Match literals
@@ -323,7 +317,7 @@ def tokenize(vCode:str, vFile:str):
                 if l[i].startswith(o['val']):
                     found = True
                     i += len(o['val'])
-                    yield(t); break
+                    yield(o); break
             if found:
                 continue
 
