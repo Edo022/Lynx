@@ -21,7 +21,7 @@ import Utils as u
 
 
 def printError(vStr:str):
-    print(f'\n{ u.bRed }GenGlsl: Error:\n{ vStr }{ u.bRed }')
+    print(f'\n{ u.bRed }GenGlsl: Error:\n{ vStr }{ u.nWht }')
     exit(1)
 
 
