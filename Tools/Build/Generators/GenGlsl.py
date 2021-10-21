@@ -38,17 +38,24 @@ def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
 
 # Common patterns
 pat = {
-    't_path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',   # File path
-    't_id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',           # Identifier
-    't_ppd'  : r'(?:#)',                                    # Preprocessor directive
-    # 't_str'  : r'(?:".*?[^\\]")',                           # String
-    't_whs'  : r'(?:[ \t\r]+)',                           # Whitespace
+    't_path' : r'(?:\.?(?:/?(?:[a-zA-Z_\.\-0-9]+))+\/?)',           # File path
+    't_id'   : r'(?:[a-zA-Z_](?:[a-zA-Z0-9_]*))',                   # Identifier
+    't_ppd'  : r'(?:#)',                                            # Preprocessor directive
+    't_whs'  : r'(?:[ \t\r]+)',                                     # Whitespace
 
-    'c_bool' : r'true|false',                               # Boolean
-    'c_bin'  : r'b0(?:[01]+)(?:\.(?:[01]+))?',              # Binary        # 0b10100
-    'c_dec'  : r'(d0)?(?:[0-9]+)(?:\.(?:[0-9]+))?',         # Decimal       # 90872     # 0d90872
-    'c_oct'  : r'(o)?0(?:[0-7]+)(?:\.(?:[0-7]+))?',         # Octal         # 030507    # 0o30507
-    'c_hex'  : r'x0(?:[0-9a-fA-F]+)(?:\.(?:[0-9a-fA-F]+))?' # Hexadecimal   # 0x7a0f3
+
+    'c_bool'    : r'(?:true|false)',                                # Boolean literal
+    'c_pnlc'    : r'(?:\.?(?:[0-9])[0-9a-zA-Z.]*)',                 # Possible numeric literal constant
+
+    'c_bin'  : r'(?:(?:\.?'  r'0b(?:[0-1]'   r'*))|'  r'(?:0b(?:[0-1]'   r'*)(?:\.?)(?:[0-1]+)))',          # Valid binary      literal   # 0b10100
+    'c_oct'  : r'(?:(?:\.?'  r'0o(?:[0-7]'   r'*))|'  r'(?:0o(?:[0-7]'   r'*)(?:\.?)(?:[0-7]+)))',          # Valid octal       literal   # 0o30507
+    'c_hex'  : r'(?:(?:\.?'  r'0x(?:[0-9a-fA-F]*))|'  r'(?:0x(?:[0-9a-fA-F]*)(?:\.?)(?:[0-9a-fA-F]+)))',    # Valid hexadecimal literal   # 0x7a0f3
+    'c_dec'  : r'(?:(?:\.?(?:0d)?(?:[0-9]'   r'*))|(?:(?:0d)?(?:[0-9]'   r'*)(?:\.?)(?:[0-9]+)))',          # Valid decimal     literal   # 90872     # 0d90872
+
+    'c_bin_bgn'  : r'(?:0b)',                                       # Binary      literal beginning
+    'c_oct_bgn'  : r'(?:0o)',                                       # Octal       literal beginning
+    'c_hex_bgn'  : r'(?:0x)',                                       # Hexadecimal literal beginning
+    'c_dec_bgn'  : r'(?:(?:0d)|[0-9])',                             # Decimal     literal beginning
 }
 
 
@@ -174,28 +181,30 @@ def include(vCode:str, vFile:str, vLineInfo:int):
 #TODO add bool and integer matrices
 #TODO add line continuation
 #TODO add semicolon
-tok = {
     # Operator (type, category, precedence, associativity)
     #FIXME ++, --, +, - and () have different precedence based on their position
     #FIXME ++, -- have different associativiry based on their position
-    'op' : list(({'val' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
+op = list(reversed(sorted(list(({'val' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
+    ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
+    ('+=', 'set', 16, 'rl'),   ('-=', 'set', 16, 'rl'),   ('*=', 'set', 16, 'rl'),   ('/=',  'set', 16, 'rl'),   ('%=',  'set', 16, 'rl'),
+    ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr'),
+    ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr'),
+    ('&=', 'set', 16, 'rl'),   ('^=', 'set', 16, 'rl'),   ('|=', 'set', 16, 'rl'),   ('<<=', 'set', 16, 'rl'),   ('>>=', 'set', 16, 'rl'),   ('=',  'set', 16, 'rl'),
+    ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr'),
 
-        ('+',  'bin',  3, 'lr'),   ('-',  'bin',  3, 'lr'),   ('*',  'bin',  4, 'lr'),   ('/',   'bin',  4, 'lr'),   ('%',   'bin',  4, 'lr'),
-        ('+=', 'set', 16, 'rl'),   ('-=', 'set', 16, 'rl'),   ('*=', 'set', 16, 'rl'),   ('/=',  'set', 16, 'rl'),   ('%=',  'set', 16, 'rl'),
-        ('++', 'inc',  3, 'lr'),   ('--', 'dec',  3, 'lr'),   ('~',  'unr',  3, 'lr'),   ('<=',  'cmp',  7, 'lr'),   ('>=',  'cmp',  7, 'lr'),   ('==', 'cmp',  8, 'lr'),
-        ('&',  'bin',  9, 'lr'),   ('^',  'bin', 10, 'lr'),   ('|',  'bin', 11, 'lr'),   ('<<',  'bin',  6, 'lr'),   ('>>',  'bin',  6, 'lr'),   ('!',  'lgc',  3, 'lr'),
-        ('&=', 'set', 16, 'rl'),   ('^=', 'set', 16, 'rl'),   ('|=', 'set', 16, 'rl'),   ('<<=', 'set', 16, 'rl'),   ('>>=', 'set', 16, 'rl'),   ('=',  'set', 16, 'rl'),
-        ('&&', 'lgc', 12, 'lr'),   ('^^', 'lgc', 13, 'lr'),   ('||', 'lgc', 14, 'lr'),   ('<',   'cmp',  7, 'lr'),   ('>',   'cmp',  7, 'lr'),   ('!=', 'cmp',  8, 'lr'),
-
-        ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'rl'),   ('.',   'fld',  2, 'lr'),
-        (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'rl'),   (',',   'seq', 17, 'lr')
-    ]),
-
+    ('(',  'sep',  1, 'lr'),   ('{',  'sep',  2, 'lr'),   ('[',  'sep',  2, 'lr'),   ('?',   'sel', 15, 'rl'),   ('.',   'fld',  2, 'lr'),
+    (')',  'sep',  1, 'lr'),   ('}',  'sep',  2, 'lr'),   (']',  'sep',  2, 'lr'),   (':',   'sel', 15, 'rl'),   (',',   'seq', 17, 'lr')
+]), key = lambda s: len(s['val']))))
 
 
+
+
+
+
+tok = [
     #! integer and boolean matrices are implemented as multiple arrays of the base type
     # Type (type, base type, x, y, alignment)
-    'types' : list(({'val' : t[0], 'type' : 'tn', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
+    *list(({'val' : t[0], 'type' : 'tn', 'base' : t[1], 'x' : t[2], 'y': t[3], 'align' : t[4]}) for t in [
         ('b',     'b', 1, 1,  4),    ('u32',     'u32', 1, 1,  4),    ('i32',     'i32', 1, 1,  4),    ('f32',     'f32', 1, 1,  4),    ('f64',     'f64', 1, 1,  8),    # Scalar types
         ('bv2',   'b', 2, 1,  8),    ('u32v2',   'u32', 2, 1,  8),    ('i32v2',   'i32', 2, 1,  8),    ('f32v2',   'f32', 2, 1,  8),    ('f64v2',   'f64', 2, 1, 16),    # 2-component vectors
         ('bv3',   'b', 3, 1, 16),    ('u32v3',   'u32', 3, 1, 16),    ('i32v3',   'i32', 3, 1, 16),    ('f32v3',   'f32', 3, 1, 16),    ('f64v3',   'f64', 3, 1, 32),    # 3-component vectors
@@ -217,7 +226,7 @@ tok = {
 
 
     # (type, category)
-    'kw' : list(({'val' : t[0], 'type' : 'kw', 'ctgr' : t[1]}) for t in [
+    *list(({'val' : t[0], 'type' : 'kw', 'ctgr' : t[1]}) for t in [
         # If-else               # Loops                     # Flow control              # Switch case
         ('if',   'if'),         ('while', 'loop'),          ('continue', 'fc'),         ('switch',  'switch'),
         ('else', 'if'),         ('for',   'loop'),          ('break',    'fc'),         ('case',    'switch'),
@@ -229,18 +238,18 @@ tok = {
         ('lowp',   'tq'),
         ('const',  'tq')
     ])
-}
+]
 
 
-# Merge and sort the tokens from the largest one
-all2 = tok['op'] + tok['types'] + tok['kw']
-all = sorted(all2, key = lambda s: len(s['val']))[::-1]
+# # Merge and sort the tokens from the largest one
+# all = tok2['op'] + tok2['types'] + tok2['kw']
+# all = sorted(all2, key = lambda s: len(s['val']))[::-1]
 
 
 
 
 #TODO ADD OUTPUT QUALIFIER 'out'
-
+#TODO add token beginning and length
 
 
 # Reads an ILSL file and returns its content as a list of tokens
@@ -249,45 +258,79 @@ all = sorted(all2, key = lambda s: len(s['val']))[::-1]
 # Comments are ignored
 def tokenize(vCode:str, vFile:str):
     lines = vCode.split('\n')
-    for vLineN, line in enumerate(lines):
-        lineInfo : str = re.match(r'\/\*.*?\*\/', line).group(0)
-        l        : str = line[len(lineInfo):]
+    for vLineN, decLine in enumerate(lines):
+        lineInfo : str = re.match(r'\/\*.*?\*\/', decLine).group(0)
+        l        : str = decLine[len(lineInfo):]
         i        : int = 0
         yield({'val' : lineInfo, 'type' : 'lineInfo'})
+
+
         while i < len(l):
-            for j, t in enumerate(all):
-                if l[i:].startswith(t['val']):
-                    yield(t)
-                    i += len(t['val'])
-                    break
+            # Match preprocessor directives and whitespace
+            if (r := re.match(pat['t_ppd'], l[i:])) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'ppd'}); continue
+            if (r := re.match(pat['t_whs'], l[i:])) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'ws'});  continue
 
-                if l[i] == ';':
-                    yield({'val' : ';', 'type' : 'semicolon'})
-                    i += 1
-                    break
 
-                elif j == len(all) - 1:
-                    r = re.match(pat['t_ppd'],  l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'ppd'}); i += len(r.group(0)); break
-                    r = re.match(pat['t_whs'],  l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'ws'});   i += len(r.group(0)); break
-                    r = re.match(pat['t_id'],   l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'id'});   i += len(r.group(0)); break
+            # Match instruction end
+            elif l[i] == ';':
+                i += 1
+                yield({'val' : ';', 'type' : 'sc'})
+                continue
 
-                    r = re.match(pat['c_bin'],  l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'lc', 'base' :  2}); i += len(r.group(0)); break
-                    r = re.match(pat['c_oct'],  l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'lc', 'base' :  8}); i += len(r.group(0)); break
-                    r = re.match(pat['c_dec'],  l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'lc', 'base' : 10}); i += len(r.group(0)); break
-                    r = re.match(pat['c_hex'],  l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'lc', 'base' : 16}); i += len(r.group(0)); break
-                    r = re.match(pat['c_bool'], l[i:])
-                    if r != None: yield({'val' : r.group(0), 'type' : 'lc', 'base' :'b'}); i += len(r.group(0)); break
 
-                    # printSyntaxError(vLineN, vLine, vFile, vStr)
-                    printSyntaxError(vLineN, l, vFile, f'Unknown token "{ l[i] }"')
-                    return
+            # Match identifiers
+            elif (r := re.match(pat['t_id'],  l[i:])) != None:
+                id = r.group(0)
+
+                # Save builtin identifiers and operators
+                found:bool = False
+                for t in tok:
+                    if id == t['val']: #FIXME 'do' matches 'dot'
+                        found = True
+                        i += len(t['val'])
+                        yield(t); break
+
+                # Save defined identifiers
+                if not found:
+                    i += len(id)
+                    yield({'val' : id, 'type' : 'id'})
+
+                continue
+
+
+            # Match literals
+            elif (pnlc := re.match(pat['c_pnlc'], l[i:])) != None:
+                nlc = pnlc.group(0)
+
+                if (r := re.match(pat['c_bool'] + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' :'b'}); continue
+                if (r := re.match(pat['c_bin']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' :  2}); continue
+                if (r := re.match(pat['c_oct']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' :  8}); continue
+                if (r := re.match(pat['c_dec']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' : 10}); continue
+                if (r := re.match(pat['c_hex']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' : 16}); continue
+
+                # Check invalid literals
+                if (r := re.match(pat['c_bin_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid binary '  f'literal "{ nlc }"')
+                if (r := re.match(pat['c_oct_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid octal '   f'literal "{ nlc }"')
+                if (r := re.match(pat['c_dec_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid decimal ' f'literal "{ nlc }"')
+                if (r := re.match(pat['c_hex_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid hexadecimal literal "{ nlc }"')
+
+                # Go to unknown token
+
+
+            # Match operators
+            found:bool = False
+            for o in op:
+                if l[i].startswith(o['val']):
+                    found = True
+                    i += len(o['val'])
+                    yield(t); break
+            if found:
+                continue
+
+
+            # Unknown tokens
+            printSyntaxError(vLineN, l, vFile, f'Unknown token "{ l[i] }"')
+
         yield({'val' : '\n', 'type' : 'nl'})
 
 
@@ -304,6 +347,11 @@ def tokenize(vCode:str, vFile:str):
 
 
 
+
+
+translateType = {
+
+}
 
 
 def group(): #TODO
@@ -336,13 +384,13 @@ def clear(vCode:str):
 
 def run(vSrc:str, vOut:str):
     if not os.path.exists(vSrc): printError(f'"{ vSrc }": No such file or directory')
-    if not os.path.exists(vOut): printError(f'"{ vOut }": No such file or directory')
 
     # Read input file
     with open(vSrc) as f:
         code = f.read()
 
     # Add hard coded version statement and parse the code
+    # ts = list(translate(tokenize(clear(include(code, vSrc, 0)), vSrc)))
     ts = list(tokenize(clear(include(code, vSrc, 0)), vSrc))
 
 

@@ -86,7 +86,7 @@ def expGlob(vPath:str, vStart:str = '.'):
 
 
 
-
+#TODO REMOVE
 # Reads a GLS source file
 # Removes any comment and useless withespace near operators and replaces any combination of withespace characters with a single space
 # Newlines characters after preprocessor directives are preserved
@@ -107,7 +107,7 @@ def clearGls(vCode:str):
 
 
 
-# Reads a GLS source file
+# Reads a Lynx build file
 # Removes any useless withespace near curly braces and replaces any combination of withespace characters with a single space
 # Returns the result as a string. The input code must contain no comments
 def tokenizeBuildFile(vCode:str):
@@ -117,7 +117,7 @@ def tokenizeBuildFile(vCode:str):
 
 
 
-
+#TODO REMOVE
 # Reads a GLS file and returns the preprocessed output as a string
 # Comments are removed
 def preprocessGls(vFile:str):
@@ -140,7 +140,7 @@ def preprocessCpp(vFile:str, vFlags:list):
     ).stdout
 
 
-
+#TODO REMOVE
 # Reads a C file and returns the preprocessed output as a string
 # Comments are removed
 def preprocessC(vFile:str, vFlags:list):
