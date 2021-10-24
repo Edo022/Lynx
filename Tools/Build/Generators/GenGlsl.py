@@ -258,23 +258,23 @@ tok = [
 # Comments are ignored
 def tokenize(vCode:str, vFile:str):
     lines = vCode.split('\n')
-    for vLineN, decLine in enumerate(lines):
-        lineInfo : str = re.match(r'\/\*.*?\*\/', decLine).group(0)
-        l        : str = decLine[len(lineInfo):]
-        i        : int = 0
-        yield({'val' : lineInfo, 'type' : 'lineInfo'})
+    for decLine in lines:
+        lineInfo = re.match(r'\/\*(.*)?\*\/', decLine)
+        lineNum = lineInfo.group(1)
+        l : str = decLine[len(lineInfo.group(0)):]
+        i : int = 0
 
 
         while i < len(l):
             # Match preprocessor directives and whitespace
-            if (r := re.match(pat['t_ppd'], l[i:])) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'ppd'}); continue
-            if (r := re.match(pat['t_whs'], l[i:])) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'ws'});  continue
+            if (r := re.match(pat['t_ppd'], l[i:])) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'ppd'}); i += len(r.group(0)); continue
+            if (r := re.match(pat['t_whs'], l[i:])) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'ws'});  i += len(r.group(0)); continue
 
 
             # Match instruction end
             elif l[i] == ';':
+                yield({'val' : ';', 'line' : lineNum, 'src' : l, 'range' : (i, i + 1), 'type' : 'sc'})
                 i += 1
-                yield({'val' : ';', 'type' : 'sc'})
                 continue
 
 
@@ -283,9 +283,10 @@ def tokenize(vCode:str, vFile:str):
                 id = r.group(0)
 
                 if id in map(lambda x: x['val'], tok):
-                    yield(dict((t['val'], t) for t in tok)[id])
+                    retId = dict((t['val'], t) for t in tok)[id]
+                    yield({'val' : retId['val'], 'line' : lineNum, 'src' : l, 'range' : (i, i + len(id)), 'type' : retId['type']})
                 else:
-                    yield({'val' : id, 'type' : 'id'})
+                    yield({'val' : id, 'line' : lineNum, 'src' : l, 'range' : (i, i + len(id)), 'type' : 'id'})
 
                 i += len(id)
                 continue
@@ -296,17 +297,17 @@ def tokenize(vCode:str, vFile:str):
             elif (pnlc := re.match(pat['c_pnlc'], l[i:])) != None:
                 nlc = pnlc.group(0)
 
-                if (r := re.match(pat['c_bool'] + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' :'b'}); continue
-                if (r := re.match(pat['c_bin']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' :  2}); continue
-                if (r := re.match(pat['c_oct']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' :  8}); continue
-                if (r := re.match(pat['c_dec']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' : 10}); continue
-                if (r := re.match(pat['c_hex']  + '$', nlc)) != None: i += len(r.group(0)); yield({'val' : r.group(0), 'type' : 'lc', 'base' : 16}); continue
+                if (r := re.match(pat['c_bool'] + '$', nlc)) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'lc', 'base' :'b'}); i += len(r.group(0)); continue
+                if (r := re.match(pat['c_bin']  + '$', nlc)) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'lc', 'base' :  2}); i += len(r.group(0)); continue
+                if (r := re.match(pat['c_oct']  + '$', nlc)) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'lc', 'base' :  8}); i += len(r.group(0)); continue
+                if (r := re.match(pat['c_dec']  + '$', nlc)) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'lc', 'base' : 10}); i += len(r.group(0)); continue
+                if (r := re.match(pat['c_hex']  + '$', nlc)) != None: yield({'val' : r.group(0), 'line' : lineNum, 'src' : l, 'range' : (i, i + len(r.group(0))), 'type' : 'lc', 'base' : 16}); i += len(r.group(0)); continue
 
                 # Check invalid literals
-                if (r := re.match(pat['c_bin_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid binary '  f'literal "{ nlc }"')
-                if (r := re.match(pat['c_oct_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid octal '   f'literal "{ nlc }"')
-                if (r := re.match(pat['c_dec_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid decimal ' f'literal "{ nlc }"')
-                if (r := re.match(pat['c_hex_bgn'], nlc)) != None: printSyntaxError(vLineN, l, vFile, f'Invalid hexadecimal literal "{ nlc }"')
+                if (r := re.match(pat['c_bin_bgn'], nlc)) != None: printSyntaxError(lineNum, l, vFile, f'Invalid binary '  f'literal "{ nlc }"')
+                if (r := re.match(pat['c_oct_bgn'], nlc)) != None: printSyntaxError(lineNum, l, vFile, f'Invalid octal '   f'literal "{ nlc }"')
+                if (r := re.match(pat['c_dec_bgn'], nlc)) != None: printSyntaxError(lineNum, l, vFile, f'Invalid decimal ' f'literal "{ nlc }"')
+                if (r := re.match(pat['c_hex_bgn'], nlc)) != None: printSyntaxError(lineNum, l, vFile, f'Invalid hexadecimal literal "{ nlc }"')
 
                 # Go to unknown token
 
@@ -316,16 +317,17 @@ def tokenize(vCode:str, vFile:str):
             for o in op:
                 if l[i].startswith(o['val']):
                     found = True
+                    yield({'val' : o['val'], 'line' : lineNum, 'src' : l, 'range' : (i, i + len(o['val'])), 'type' : o['type'], 'ctgr' : o['ctgr'], 'prec' : o['prec'], 'assoc' : o['assoc']})
                     i += len(o['val'])
-                    yield(o); break
+                    break
             if found:
                 continue
 
 
             # Unknown tokens
-            printSyntaxError(vLineN, l, vFile, f'Unknown token "{ l[i] }"')
+            printSyntaxError(lineNum, l, vFile, f'Unknown token "{ l[i] }"')
 
-        yield({'val' : '\n', 'type' : 'nl'})
+        yield({'val' : '\n', 'line' : lineNum, 'src' : l, 'range' : (i, i + 1), 'type' : 'nl'})
 
 
 
@@ -343,13 +345,11 @@ def tokenize(vCode:str, vFile:str):
 
 
 
-translateType = {
-
-}
 
 
-def group(): #TODO
-    None #TODO
+def group(vTokens:list, vFile:str):
+    return vTokens
+
 
 
 
@@ -384,8 +384,8 @@ def run(vSrc:str, vOut:str):
         code = f.read()
 
     # Add hard coded version statement and parse the code
-    # ts = list(translate(tokenize(clear(include(code, vSrc, 0)), vSrc)))
-    ts = list(tokenize(clear(include(code, vSrc, 0)), vSrc))
+    # ts = list(tokenize(clear(include(code, vSrc, 0)), vSrc))
+    ts = list(group(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc))
 
 
     # Write output file
