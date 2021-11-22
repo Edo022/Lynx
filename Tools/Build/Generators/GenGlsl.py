@@ -347,8 +347,13 @@ def tokenize(vCode:str, vFile:str):
 
 
 
-def group(vTokens:list, vFile:str):
+def scope(vTokens:list, vFile:str):
     return vTokens
+
+
+def group(vTokens:list, vFile:str):
+    for token in vTokens:
+        yield token['val']
 
 
 
@@ -385,12 +390,12 @@ def run(vSrc:str, vOut:str):
 
     # Add hard coded version statement and parse the code
     # ts = list(tokenize(clear(include(code, vSrc, 0)), vSrc))
-    ts = list(group(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc))
+    ts = list(group(list(scope(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc)), vSrc))
 
 
     # Write output file
     with open(vOut, 'w') as outFile:
-        outFile.write('#version 450\n' + (''.join('\n' + str(t) for t in ts)))
+        outFile.write('#version 450\n' + (''.join(t for t in ts)))
 
 
 
