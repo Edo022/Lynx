@@ -31,6 +31,7 @@ def progress(cur:int, tot:int):
 
 
 def checkCmd(args):
+    print(args)
     global poolErr
     global avlThrs
     r = subprocess.run(args, text = True, capture_output = True)
@@ -308,7 +309,8 @@ def eBuild(EXEC:str, EOUT:str, ELIB:str, eData:dict):
         'Generating Engine GLSL files',
         needsRebuild, ('%t', '%s'),
         EGLS, EILS,
-        ['python3', 'Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        # ['python3', 'Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        ['Tools/Build/Generators/GenGlsl', '%s', '%t'], #FIXME use executable
         'Generating GLSL source file %t',
         'Target is up to date (GLSL source file %t)',
         f'{ u.bGrn }Engine GLSL source files generated successfully\n{ u.nWht }'
@@ -399,7 +401,8 @@ def aBuild(EXEC:str, EOUT:str, AOUT:str, ELIB:str, eData:dict, aData:dict):
         'Generating Application GLSL files',
         needsRebuild, ('%t', '%s'),
         AGLS, AILS,
-        ['python3', f'{ AtoE }/Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        # ['python3', f'{ AtoE }/Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
+        [f'{ AtoE }/Tools/Build/Generators/GenGlsl.py', '%s', '%t'], #FIXME use executable
         'Generating GLSL source file %t',
         'Target is up to date (GLSL source file %t)',
         f'{ u.bGrn }Application GLSL source files generated successfully\n{ u.nWht }'

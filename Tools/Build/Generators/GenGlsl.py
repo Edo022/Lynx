@@ -7,7 +7,10 @@ import Utils as u
 
 
 
-
+# TODO REMOVE THIS FILE
+# TODO REMOVE THIS FILE
+# TODO REMOVE THIS FILE
+# TODO REMOVE THIS FILE
 
 
 
@@ -20,19 +23,19 @@ import Utils as u
 
 
 
-def printError(vStr:str):
-    print(f'\n{ u.bRed }GenGlsl: Error:\n{ vStr }{ u.nWht }')
-    exit(1)
+# def printError(vStr:str):
+#     print(f'\n{ u.bRed }GenGlsl: Error:\n{ vStr }{ u.nWht }')
+#     exit(1)
 
 
-def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
-    print(
-        f'\n{ u.bRed }GenGlsl: Syntax error on line { str(vLineN + 1) }, file "{ os.path.relpath(vFile, ".") }":'
-        f'\n{ vStr }{ u.nWht }'
-        f'\n    { vLine }'
-        f'\n\nCompilation stopped'
-    )
-    exit(2)
+# def printSyntaxError(vLineN:int, vLine:str, vFile:str, vStr:str):
+#     print(
+#         f'\n{ u.bRed }GenGlsl: Syntax error on line { str(vLineN + 1) }, file "{ os.path.relpath(vFile, ".") }":'
+#         f'\n{ vStr }{ u.nWht }'
+#         f'\n    { vLine }'
+#         f'\n\nCompilation stopped'
+#     )
+#     exit(2)
 
 
 
@@ -402,6 +405,6 @@ def run(vSrc:str, vOut:str):
 
 
 
-if len(sys.argv) != 3: raise Exception('GenGlsl: Wrong number of arguments') #TODO replace with argparse
-run(sys.argv[1], sys.argv[2])
-sys.exit(0)
+# if len(sys.argv) != 3: raise Exception('GenGlsl: Wrong number of arguments') #TODO replace with argparse
+# run(sys.argv[1], sys.argv[2])
+# sys.exit(0)
