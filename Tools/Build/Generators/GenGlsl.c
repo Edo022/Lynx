@@ -3,9 +3,11 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <string.h>
+#include <assert.h>
+#include <sys/stat.h>
 
-#define MAX_ERR 4000
-
+#define MAX_ERR 4100
+#define MAX_CODE_LEN 2100100
 
 
 
@@ -36,6 +38,47 @@ const char *nCyn = "\033[0;36m", *bCyn = "\033[1;36m", *uCyn = "\033[4;36m";
 const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
+
+//Reads all the contents of the file vFilePath
+//Returns a null terminated memory block containing the data
+const char* readFile(const char* vFilePath){
+    FILE* f = fopen(vFilePath, "r");
+    fseek(f, 0, SEEK_END);
+    int size = ftell(f);
+    rewind(f);
+
+    char* data = malloc(size + 1);
+    fread(data, 1, size, f);
+    data[size] = '\0';
+    return data;
+}
+
+
+
+//Returns the address of the vIndex-th occurrence of vChar in the vSrc string
+const char* strchrn(const char* vSrc, const char vChar, const unsigned vIndex){ //TODO add start_from parameter
+    unsigned n = 0;
+    for(const char* c = vSrc;; ++c) {
+        if(*c == '\0') return NULL;
+        else if(*c == vChar) ++n;
+        if(n == vIndex + 1) return c;
+    }
+}
+
+
+//Splits vSrc based on vChar and returns the vIndex-th string as a null terminated char*
+//The original string is not modified
+//The returned string must be freed
+//Returns NULL if the vIndex-th string does not exist
+char* strtokn(const char* vSrc, const char vChar, const unsigned vIndex){ //TODO add start from parameter
+    const char* a = vIndex ? strchrn(vSrc, vChar, vIndex - 1) : vSrc;
+    const char* b = strchr(a + !!vIndex, vChar);
+    size_t len =  b ? b - a : strlen(a);
+    char* ret = malloc(len);
+    memcpy(ret, a + 1, len - !!len);
+    ret[len] = '\0';
+    return ret;
+}
 
 
 
@@ -70,9 +113,161 @@ void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, co
 
 
 
-const char* include(const char* vCode, const char* vFile, const int vLineInfo){
-    return vCode;
+
+
+
+// Preprocessor ----------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+//Replaces multiline comments with the same number of newlines they contain
+//Single line comments are replaced with a single space
+//Returns the resulting string
+char* uncomment(const char* vCode, const char* vFile){
+    char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
+    int vCodeLen = strlen(vCode);
+    int i = 0;
+    while(i < vCodeLen){                              //For each character
+        if(vCode[i] == '"'){                                //If the character is a double quote
+            int strBegin = i;                                   //Save the string beginning for eventual errors
+            strncat(code, &vCode[i], 1);                              //Paste opening "
+            ++i;                                                //Skip opening "
+            while(vCode[i] != '"'){                              //For each character of the string
+                strncat(code, &vCode[i], 1);                                    //Paste character
+                ++i;                                              //Update counter
+                if(i == vCodeLen){                                 //If the string does not end
+                    int vLineN = 0;                                      //
+                    for(int j = 0; j < strBegin; ++j){                        //Find the line in which the string begins
+                        if(vCode[j] == '\n') ++vLineN;                //[...] Print a syntax error
+                    }
+                    // printSyntaxError(vLineN, vCode.split('\n')[vLineN], vFile, 'Unterminated string'); //FIXME rewrite
+                    const char* errorLine = strchrn(vCode, '\n', vLineN);
+                    printSyntaxError(vLineN, errorLine, vFile, "Unterminated string");
+                }
+            }
+            strncat(code, &vCode[i], 1);                                    //Paste closing "
+            ++i;                                              //Skip closing "
+        }
+        else if(i < vCodeLen - 1){                            //If there is enough space to start a comment
+            if(vCode[i] == '/' && vCode[i + 1] == '/'){                          //If the character is the beginning of a single line comment
+                strcat(code, "\n");                                        //Add a newline as token separator
+                i += 2;                                              //Ignore //
+                while(i < vCodeLen && vCode[i] != '\n'){          //For each character of the comment
+                    ++i;                                              //Update the counter and ignore the character
+                }
+                ++i;                                              //Ignore \n
+            }
+            else if(vCode[i] == '/' && vCode[i + 1] == '*'){                        //If the character is the beginning of a multiline comment
+                strcat(code, " ");                                         //Add a space as token separator
+                i += 2;                                              //Ignore /*
+                while(i < vCodeLen && !(vCode[i] == '*' && vCode[i + 1] == '/')){    //For each character of the comment
+                    if(vCode[i] == '\n'){                                //If the character is a newline
+                        strcat(code, "\n");                                        //Paste the newline
+                    }
+                    ++i;                                              //Update the counter and ignore the other characters
+                }
+                i += 2;                                              //Ignore */
+            }
+            else{                                               //Else
+                strncat(code, &vCode[i], 1);                                    //Paste the character
+                ++i;                                              //Update the counter
+            }
+        }
+        else{                                               //Else
+            strncat(code, &vCode[i], 1);                                    //Paste the character
+            ++i;                                              //Update the counter
+        }
+    }
+
+    return code;                                         //Return the parsed code
 }
+
+
+
+
+
+//Checks if an included path is valid
+//Prints an error if it's not
+void checkIncludeFile(const int vLineN, const char* vLine, const char* vFile, const char* vName){ //TODO check vLine type
+    //if not re.match('^' + pat['t_path'] + '$', vName) printSyntaxError(vLineN, vLine, vFile, "\"%s\" is not a valid file path", vName) //FIXME
+    if(access(vName, F_OK) == 0) {
+        struct stat fileStat; stat(vName, &fileStat);
+        if(S_ISDIR(fileStat.st_mode)) {
+            printSyntaxError(vLineN, vLine, vFile, "\"%s\" is a directory", vName);
+        }
+    }
+    else {
+        printSyntaxError(vLineN, vLine, vFile, "No such file or directory");
+    }
+}
+
+
+
+
+//Creates a code with no includes by pasting all the included files together
+//Returns the resulting string
+//Comments are not preserved
+char* include(const char* vCode, const char* vFile, const int vLineInfo){
+    // ls:list = uncomment(vCode, vFile).split('\n')
+    char* code = uncomment(vCode, vFile); //!Shredded by strsep
+    char* ret = malloc(MAX_CODE_LEN); ret[0] = '\0';
+    // for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):            # For each line of the code
+    // char* start = strchr()
+    // for()            // For each line of the code
+    char* line;
+    while((line = strsep(&code, "\n")) != NULL){
+        // if i > 0: code += '\n'                                              // Add newline
+        // r = re.match(r'^\s*#include(?:\s*)(?:"|<)(?P<path>.*)(?:"|>)', l)   // Check if it's an include
+        // if r != None:                                                       // If the line is an include statement
+        //     // checkIncludeFile(i, ol, vFile, r['path'])                  // Check the included file
+        //     checkIncludeFile(i, ol, vFile, r['path'])                  // Check the included file
+        //     // with open(r['path'], 'r') as f:                                     // Open the included file
+        //     //     code += include(f.read(), r['path'], i + 1)                         // Paste the included code recursively
+        //     const char* includedCode = readFile(r['path']);
+        //     strcat(code, includedCode);
+        // else:                                                               // If not
+        //     code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'// Concatenate line
+        strcat(ret, line); //TODO REMOVE
+    }
+    return ret;
+}
+
+
+
+
+
+
+
+
+
+// Tokenizer -------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+//
+
+
+
+
+
+
+
+
+
+// Main -------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
 
 
 
@@ -84,9 +279,7 @@ void run(const char* vSrc, const char* vOut){
 
 
     //Read input file
-    FILE* ifile = fopen(src, "r");                                      //Open file stream
-    fseek(ifile, 0, SEEK_END); int isize = ftell(ifile); rewind(ifile); //Get file size
-    char* code = malloc(isize + 1); fread(code, 1, isize, ifile);       //Read contents
+    const char* code = readFile(src);
 
 
     //Add hard coded version statement and parse the code
