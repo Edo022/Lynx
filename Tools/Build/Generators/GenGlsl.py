@@ -77,49 +77,49 @@ pat = {
 
 
 
-# Replaces multiline comments with the same number of newlines they contain
-# Single line comments are replaced with a single space
-# Returns the resulting string
-def uncomment(vCode:str, vFile:str):
-    code = ''       # Output code
-    i = 0           # Counter
-    while i < len(vCode):                               # For each character
-        if vCode[i] == '"':                                 # If the character is a double quote
-            strBegin:int = i                                    # Save the string beginning for eventual errors
-            code += vCode[i]                                    # Paste opening "
-            i += 1                                              # Skip opening "
-            while vCode[i] != '"':                              # For each character of the string
-                code += vCode[i]                                    # Paste character
-                i += 1                                              # Update counter
-                if i == len(vCode):                                 # If the string does not end
-                    vLineN:int = 0                                      #
-                    for j in range(0, strBegin):                        # Find the line in which the string begins
-                        if vCode[j] == '\n': vLineN += 1                # [...] Print a syntax error
-                    printSyntaxError(vLineN, vCode.split('\n')[vLineN], vFile, 'Unterminated string')
-            code += vCode[i]                                    # Paste closing "
-            i += 1                                              # Skip closing "
-        elif i < len(vCode) - 1:                            # If there is enough space to start a comment
-            if vCode[i:i + 2] == '//':                          # If the character is the beginning of a single line comment
-                code += '\n'                                        # Add a newline as token separator
-                i += 2                                              # Ignore //
-                while i < len(vCode) and vCode[i] != '\n':          # For each character of the comment
-                    i += 1                                              # Update the counter and ignore the character
-                i += 1                                              # Ignore \n
-            elif vCode[i:i + 2] == '/*':                        # If the character is the beginning of a multiline comment
-                code += ' '                                         # Add a space as token separator
-                i += 2                                              # Ignore /*
-                while i < len(vCode) and vCode[i:i + 2] != '*/':    # For each character of the comment
-                    if vCode[i] == '\n':                                # If the character is a newline
-                        code += '\n'                                        # Paste the newline
-                    i += 1                                              # Update the counter and ignore the other characters
-                i += 2                                              # Ignore */
-            else:                                               # Else
-                code += vCode[i]                                    # Paste the character
-                i += 1                                              # Update the counter
-        else:                                               # Else
-            code += vCode[i]                                    # Paste the character
-            i += 1                                              # Update the counter
-    return code                                         # Return the parsed code
+# # Replaces multiline comments with the same number of newlines they contain
+# # Single line comments are replaced with a single space
+# # Returns the resulting string
+# def uncomment(vCode:str, vFile:str):
+#     code = ''       # Output code
+#     i = 0           # Counter
+#     while i < len(vCode):                               # For each character
+#         if vCode[i] == '"':                                 # If the character is a double quote
+#             strBegin:int = i                                    # Save the string beginning for eventual errors
+#             code += vCode[i]                                    # Paste opening "
+#             i += 1                                              # Skip opening "
+#             while vCode[i] != '"':                              # For each character of the string
+#                 code += vCode[i]                                    # Paste character
+#                 i += 1                                              # Update counter
+#                 if i == len(vCode):                                 # If the string does not end
+#                     vLineN:int = 0                                      #
+#                     for j in range(0, strBegin):                        # Find the line in which the string begins
+#                         if vCode[j] == '\n': vLineN += 1                # [...] Print a syntax error
+#                     printSyntaxError(vLineN, vCode.split('\n')[vLineN], vFile, 'Unterminated string')
+#             code += vCode[i]                                    # Paste closing "
+#             i += 1                                              # Skip closing "
+#         elif i < len(vCode) - 1:                            # If there is enough space to start a comment
+#             if vCode[i:i + 2] == '//':                          # If the character is the beginning of a single line comment
+#                 code += '\n'                                        # Add a newline as token separator
+#                 i += 2                                              # Ignore //
+#                 while i < len(vCode) and vCode[i] != '\n':          # For each character of the comment
+#                     i += 1                                              # Update the counter and ignore the character
+#                 i += 1                                              # Ignore \n
+#             elif vCode[i:i + 2] == '/*':                        # If the character is the beginning of a multiline comment
+#                 code += ' '                                         # Add a space as token separator
+#                 i += 2                                              # Ignore /*
+#                 while i < len(vCode) and vCode[i:i + 2] != '*/':    # For each character of the comment
+#                     if vCode[i] == '\n':                                # If the character is a newline
+#                         code += '\n'                                        # Paste the newline
+#                     i += 1                                              # Update the counter and ignore the other characters
+#                 i += 2                                              # Ignore */
+#             else:                                               # Else
+#                 code += vCode[i]                                    # Paste the character
+#                 i += 1                                              # Update the counter
+#         else:                                               # Else
+#             code += vCode[i]                                    # Paste the character
+#             i += 1                                              # Update the counter
+#     return code                                         # Return the parsed code
 
 
 
@@ -132,34 +132,34 @@ def saveMacro(vLines:list, vName:str, vMembers:str):
 
 
 
-# Checks if an included path is valid
-# Prints an error if it's not
-def checkIncludeFile(vLineN:str, vLine:list, vFile:str, vName:str):
-    if not re.match('^' + pat['t_path'] + '$', vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is not a valid file path')
-    if os.path.exists(vName):
-        if vName[-1] == '/' or os.path.isdir(vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is a directory')
-    else:                                            printSyntaxError(vLineN, vLine, vFile, "No such file or directory")
+# # Checks if an included path is valid
+# # Prints an error if it's not
+# def checkIncludeFile(vLineN:str, vLine:list, vFile:str, vName:str):
+#     if not re.match('^' + pat['t_path'] + '$', vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is not a valid file path')
+#     if os.path.exists(vName):
+#         if vName[-1] == '/' or os.path.isdir(vName): printSyntaxError(vLineN, vLine, vFile, f'"{ vName }" is a directory')
+#     else:                                            printSyntaxError(vLineN, vLine, vFile, "No such file or directory")
 
 
 
 
-# Creates a code with no includes by pasting all the included files together
-# Returns the resulting string
-# Comments are not preserved
-def include(vCode:str, vFile:str, vLineInfo:int):
-    code = ''
-    ls:list = uncomment(vCode, vFile).split('\n')
-    for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):            # For each line of the code
-        if i > 0: code += '\n'                                              # Add newline
-        r = re.match(r'^\s*#include(?:\s*)(?:"|<)(?P<path>.*)(?:"|>)', l)   # Check if it's an include
-        if r != None:                                                       # If the line is an include statement
-            checkr = checkIncludeFile(i, ol, vFile, r['path'])                  # Check the included file
-            with open(r['path'], 'r') as f:                                     # Open the included file
-                code += include(f.read(), r['path'], i + 1)                         # Paste the included code recursively
-        else:                                                               # If not
-            code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'# Concatenate line
+# # Creates a code with no includes by pasting all the included files together
+# # Returns the resulting string
+# # Comments are not preserved
+# def include(vCode:str, vFile:str, vLineInfo:int):
+#     code = ''
+#     ls:list = uncomment(vCode, vFile).split('\n')
+#     for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):            # For each line of the code
+#         if i > 0: code += '\n'                                              # Add newline
+#         r = re.match(r'^\s*#include(?:\s*)(?:"|<)(?P<path>.*)(?:"|>)', l)   # Check if it's an include
+#         if r != None:                                                       # If the line is an include statement
+#             checkr = checkIncludeFile(i, ol, vFile, r['path'])                  # Check the included file
+#             with open(r['path'], 'r') as f:                                     # Open the included file
+#                 code += include(f.read(), r['path'], i + 1)                         # Paste the included code recursively
+#         else:                                                               # If not
+#             code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'# Concatenate line
 
-    return code
+#     return code
 
 
 

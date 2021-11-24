@@ -248,43 +248,27 @@ char* isInclude(const char* vLine){
 //Returns the resulting string
 //Comments are not preserved
 char* include(const char* vCode, const char* vFile, const int vLineInfo){
-    // ls:list = uncomment(vCode, vFile).split('\n')
     char* code = uncomment(vCode, vFile); //!Shredded by strsep
     char* ret = malloc(MAX_CODE_LEN); ret[0] = '\0';
-    // for i, (l, ol) in enumerate(zip(ls, vCode.split('\n'))):            # For each line of the code
-    // char* start = strchr()
-    // for()            // For each line of the code
-    char* line;
+    char *line, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
     for(int i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
-        // if(i > 0) strcat(ret, "\n");                                              // Add newline
-        // r = re.match(r'^\s*#include(?:\s*)(?:"|<)(?P<path>.*)(?:"|>)', l)   // Check if it's an include
-        const char* r = isInclude(line);
-        // if r != None:                                                       // If the line is an include statement
+        sprintf(lineStr, "/*%06x*/", vLineInfo ? vLineInfo : i + 1);
+        char* r = isInclude(line);
         if(r != NULL){                                                       // If the line is an include statement
-            // checkIncludeFile(i, ol, vFile, r['path'])                  // Check the included file
             checkIncludeFile(i, line, vFile, r);                  // Check the included file
-            // with open(r['path'], 'r') as f:                                     // Open the included file
-            //     code += include(f.read(),c r['path'], i + 1)                         // Paste the included code recursively
             char* includedCode = readFile(r);
-            char* includedCode2 = uncomment(includedCode, vFile);
+            // char* includedCode2 = uncomment(includedCode, vFile);
+            char* includedCode2 = include(includedCode, vFile, i + 1);
             strcat(ret, includedCode2);
-            strcat(ret, "\n");
             free(includedCode);
             free(includedCode2);
+            //TODO save original files
         }
         else{                                                               // If not
-            // code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'// Concatenate line
-
-            strcat(ret, "/*");
-            char* lineStr = itoa(vLineInfo ? vLineInfo : i + 1, 10);
-            for(int j = 0; j < 6 - strlen(lineStr); ++j) strcat(ret, "0");
             strcat(ret, lineStr);
-            strcat(ret, "*/");
-
             strcat(ret, line);
             strcat(ret, "\n");
         }
-        // strcat(ret, line); //TODO REMOVE
     }
     free(code);
     return ret;
