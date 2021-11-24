@@ -6,12 +6,23 @@
 #include <assert.h>
 #include <sys/stat.h>
 
-#define MAX_ERR         4100
+#define MAX_ERR         4100100
 #define MAX_CODE_LEN    4100100
 #define MAX_CODE_LINES  2100100
 #define MAX_PATH        512
 
 
+
+
+
+
+
+
+struct Line {
+    unsigned line;
+    char* str;
+    size_t len;
+};
 
 
 
@@ -40,16 +51,6 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
 
-char* itoa(int val, int base){
-	static char buf[32] = {0};
-	int i = 30;
-	for(; val && i ; --i, val /= base){
-		buf[i] = "0123456789abcdef"[val % base];
-    }
-	return &buf[i+1];
-}
-
-
 
 //Reads all the contents of the file vFilePath
 //Returns a null terminated memory block containing the data
@@ -60,8 +61,19 @@ char* readFile(const char* vFilePath){
     rewind(f);
 
     char* data = malloc(size + 1);
-    fread(data, 1, size, f);
-    data[size] = '\0';
+    // fread(data, 1, size, f);
+    // data[size] = '\0';
+    int j;
+    for(int i = j = 0; i < size; ++i) {
+        char c = fgetc(f);
+        if(c != '\r'){
+            data[j] = c;
+            ++j;
+        }
+    }
+    data[j] = '\0';
+
+    fclose(f);
     return data;
 }
 
@@ -133,6 +145,29 @@ void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, co
 
 
 
+
+
+
+
+
+//Removes the trailing whitespace of each line
+//Consecutive newline characters are preserved
+struct Line* clear(struct Line* vLines, const size_t vNum){
+    for(size_t i = 0; i < vNum; ++i){
+        struct Line* l = &vLines[i];
+        for(int j = l->len - 1; j >= 0; --j){
+            char c = l->str[j];
+            if(c != '\t' && c != '\r' && c != ' ' && c != '\n') {
+                l->str[j + 1] = '\0';
+                l->len = j;
+                break;
+            }
+        }
+        printf("<%d - \"%s\">\n", i, l->str); //TODO REMOVE
+    }
+    printf("aaaaaaaaaaa");
+    // return re.sub(r'[ \t\v]+(\n|$)', r'\g<1>', vCode)
+}
 
 
 
@@ -246,13 +281,6 @@ char* isInclude(const char* vLine){
 
 
 
-struct Line {
-    unsigned line;
-    char* str;
-    size_t len;
-};
-
-
 
 //Creates a code with no includes by pasting all the included files together
 //Returns the resulting string
@@ -277,7 +305,7 @@ struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, 
             // printf("%d", includedLen); //TODO REMOVE
             // strcat(ret, includedCode2);
             // ret = malloc(sizeof(struct Line*) * )
-            memcpy(ret + len, included2, includedLen);
+            memcpy(ret + len, included2, sizeof(struct Line) * includedLen);
             free(included);
             free(included2);
             len += includedLen;
@@ -288,13 +316,14 @@ struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, 
             ret[len].line = lineNum;
             ret[len].len = strlen(line);//TODO rename local len
             // strcat(ret, line);
-            ret[len].str = strdup(line);
+            ret[len].str = strdup(line); //FIXME use the string left by strsep //FIXME write somewhere that the strings in the array must not be freed as they are all in the same block
+            // ret[len].str[ret[len].len - 1] = '\0'; //Remove \n
             // printf("%s\n", strdup(line));
             // strcat(ret, "\n");
             ++len;
         }
     }
-    free(code);
+    free(code); //FIXME dont free and assign the strings to the array elements
     *pLen = len;
     return ret;
 }
@@ -341,23 +370,25 @@ void run(const char* vSrc, const char* vOut){
 
 
     //Read input file
-    char* code = readFile(src);
-
+    // char* code = readFile(src);
+    const char* code = readFile(src);
+    char* line;
 
     //Add hard coded version statement and parse the code
     // output = list(group(list(scope(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc)), vSrc))
     size_t outputLen;
     struct Line* output = include(code, vSrc, 0, &outputLen);
-
+    struct Line* output2 = clear(output, outputLen);
 
     //Write output file
     FILE* ofile = fopen(vOut, "w");
     // fprintf(ofile, "#version 450\n%s", output);
     fprintf(ofile, "#version 450\n");
     for(int i = 0; i < outputLen; ++i) {
-        // fprintf(ofile, "%s", output[i].str);
-        printf("\"%s\"\n", output[i].str); fflush(stdout);
+        fprintf(ofile, "\"%s\"", output2[i].str);
+        // printf("\"%s\"\n", output[i].str); fflush(stdout);
     }
+    fclose(ofile);
 }
 
 
