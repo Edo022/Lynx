@@ -7,7 +7,8 @@
 #include <sys/stat.h>
 
 #define MAX_ERR         4100
-#define MAX_CODE_LEN    2100100
+#define MAX_CODE_LEN    4100100
+#define MAX_CODE_LINES  2100100
 #define MAX_PATH        512
 
 
@@ -166,9 +167,9 @@ char* uncomment(const char* vCode, const char* vFile){
         }
         else if(i < vCodeLen - 1){                            //If there is enough space to start a comment
             if(vCode[i] == '/' && vCode[i + 1] == '/'){                          //If the character is the beginning of a single line comment
-                strcat(code, "\n");                                        //Add a newline as token separator
                 i += 2;                                              //Ignore //
                 while(i < vCodeLen && vCode[i] != '\n'){          //For each character of the comment
+                    if(vCode[i + 1] == '\n') strcat(code, "\n");                                        //Add a newline as token separator
                     ++i;                                              //Update the counter and ignore the character
                 }
                 ++i;                                              //Ignore \n
@@ -176,6 +177,7 @@ char* uncomment(const char* vCode, const char* vFile){
             else if(vCode[i] == '/' && vCode[i + 1] == '*'){                        //If the character is the beginning of a multiline comment
                 strcat(code, " ");                                         //Add a space as token separator
                 i += 2;                                              //Ignore /*
+                strcat(code, "\n");
                 while(i < vCodeLen && !(vCode[i] == '*' && vCode[i + 1] == '/')){    //For each character of the comment
                     if(vCode[i] == '\n'){                                //If the character is a newline
                         strcat(code, "\n");                                        //Paste the newline
@@ -221,7 +223,6 @@ void checkIncludeFile(const int vLineN, const char* vLine, const char* vFile, co
 
 
 
-
 //Returns the path of the included file if the line is an include statement, or NULL if it's not
 char* isInclude(const char* vLine){
     //TODO add withespace parsing
@@ -244,33 +245,57 @@ char* isInclude(const char* vLine){
 }
 
 
+
+struct Line {
+    unsigned line;
+    char* str;
+    size_t len;
+};
+
+
+
 //Creates a code with no includes by pasting all the included files together
 //Returns the resulting string
 //Comments are not preserved
-char* include(const char* vCode, const char* vFile, const int vLineInfo){
+//TODO use structs
+// char* include(const char* vCode, const char* vFile, const int vLineInfo){
+struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, size_t* pLen){
     char* code = uncomment(vCode, vFile); //!Shredded by strsep
-    char* ret = malloc(MAX_CODE_LEN); ret[0] = '\0';
-    char *line, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
+    struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES); //ret[0] = '\0';
+    char *line;//, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
+    // struct Line* ret;
+    size_t len = 0;
     for(int i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
-        sprintf(lineStr, "/*%06x*/", vLineInfo ? vLineInfo : i + 1);
+        // sprintf(lineStr, "/*%06x*/", vLineInfo ? vLineInfo : i + 1);
+        size_t lineNum = vLineInfo ? vLineInfo : i + 1;
         char* r = isInclude(line);
         if(r != NULL){                                                       // If the line is an include statement
             checkIncludeFile(i, line, vFile, r);                  // Check the included file
-            char* includedCode = readFile(r);
-            // char* includedCode2 = uncomment(includedCode, vFile);
-            char* includedCode2 = include(includedCode, vFile, i + 1);
-            strcat(ret, includedCode2);
-            free(includedCode);
-            free(includedCode2);
+            char* included = readFile(r);
+            size_t includedLen;
+            struct Line* included2 = include(included, vFile, i + 1, &includedLen);
+            // printf("%d", includedLen); //TODO REMOVE
+            // strcat(ret, includedCode2);
+            // ret = malloc(sizeof(struct Line*) * )
+            memcpy(ret + len, included2, includedLen);
+            free(included);
+            free(included2);
+            len += includedLen;
             //TODO save original files
         }
         else{                                                               // If not
-            strcat(ret, lineStr);
-            strcat(ret, line);
-            strcat(ret, "\n");
+            // strcat(ret, lineStr);
+            ret[len].line = lineNum;
+            ret[len].len = strlen(line);//TODO rename local len
+            // strcat(ret, line);
+            ret[len].str = strdup(line);
+            // printf("%s\n", strdup(line));
+            // strcat(ret, "\n");
+            ++len;
         }
     }
     free(code);
+    *pLen = len;
     return ret;
 }
 
@@ -321,12 +346,18 @@ void run(const char* vSrc, const char* vOut){
 
     //Add hard coded version statement and parse the code
     // output = list(group(list(scope(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc)), vSrc))
-    const char* output = include(code, vSrc, 0);
+    size_t outputLen;
+    struct Line* output = include(code, vSrc, 0, &outputLen);
 
 
     //Write output file
     FILE* ofile = fopen(vOut, "w");
-    fprintf(ofile, "#version 450\n%s", output);
+    // fprintf(ofile, "#version 450\n%s", output);
+    fprintf(ofile, "#version 450\n");
+    for(int i = 0; i < outputLen; ++i) {
+        // fprintf(ofile, "%s", output[i].str);
+        printf("\"%s\"\n", output[i].str); fflush(stdout);
+    }
 }
 
 
