@@ -6,9 +6,9 @@
 #include <assert.h>
 #include <sys/stat.h>
 
-#define MAX_ERR 4100
-#define MAX_CODE_LEN 2100100
-
+#define MAX_ERR         4100
+#define MAX_CODE_LEN    2100100
+#define MAX_PATH        512
 
 
 
@@ -39,9 +39,20 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
 
+char* itoa(int val, int base){
+	static char buf[32] = {0};
+	int i = 30;
+	for(; val && i ; --i, val /= base){
+		buf[i] = "0123456789abcdef"[val % base];
+    }
+	return &buf[i+1];
+}
+
+
+
 //Reads all the contents of the file vFilePath
 //Returns a null terminated memory block containing the data
-const char* readFile(const char* vFilePath){
+char* readFile(const char* vFilePath){
     FILE* f = fopen(vFilePath, "r");
     fseek(f, 0, SEEK_END);
     int size = ftell(f);
@@ -98,11 +109,11 @@ void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, co
     vsprintf(vStr, vFormat, vArgs);
 
     printf(
-        "%s\nGenGlsl: Syntax error on line %d, file \"{ os.path.relpath(vFile, \".\") }\":" //FIXME
+        "%s\nGenGlsl: Syntax error on line %d, file \"%s\":" //FIXME
         "\n%s%s"
         "\n    %s"
         "\n\nCompilation stopped",
-        bRed, vLineN + 1, vStr, nWht, vLine
+        bRed, vLineN + 1, realpath(vFile, NULL), vStr, nWht, vLine
     );
     exit(2);
 }
@@ -209,6 +220,30 @@ void checkIncludeFile(const int vLineN, const char* vLine, const char* vFile, co
 
 
 
+
+
+//Returns the path of the included file if the line is an include statement, or NULL if it's not
+char* isInclude(const char* vLine){
+    //TODO add withespace parsing
+    //TODO optimize strlen
+    const char* s = "#include ";
+    char* ret = malloc(MAX_PATH);
+    if(memcmp(vLine, s, strlen(s)) == 0){
+        const char c = vLine[strlen(s)];
+        if(c == '"' || c == '<'){
+            for(int i = strlen(s) + 1, j = 0; i < strlen(vLine); ++i, ++j){
+                if(vLine[i] == (c == '<' ? '>' : '"')) {
+                    ret[j] = '\0';
+                    return ret;
+                }
+                ret[j] = vLine[i];
+            }
+        }
+    }
+    return NULL;
+}
+
+
 //Creates a code with no includes by pasting all the included files together
 //Returns the resulting string
 //Comments are not preserved
@@ -220,20 +255,38 @@ char* include(const char* vCode, const char* vFile, const int vLineInfo){
     // char* start = strchr()
     // for()            // For each line of the code
     char* line;
-    while((line = strsep(&code, "\n")) != NULL){
-        // if i > 0: code += '\n'                                              // Add newline
+    for(int i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
+        // if(i > 0) strcat(ret, "\n");                                              // Add newline
         // r = re.match(r'^\s*#include(?:\s*)(?:"|<)(?P<path>.*)(?:"|>)', l)   // Check if it's an include
+        const char* r = isInclude(line);
         // if r != None:                                                       // If the line is an include statement
-        //     // checkIncludeFile(i, ol, vFile, r['path'])                  // Check the included file
-        //     checkIncludeFile(i, ol, vFile, r['path'])                  // Check the included file
-        //     // with open(r['path'], 'r') as f:                                     // Open the included file
-        //     //     code += include(f.read(), r['path'], i + 1)                         // Paste the included code recursively
-        //     const char* includedCode = readFile(r['path']);
-        //     strcat(code, includedCode);
-        // else:                                                               // If not
-        //     code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'// Concatenate line
-        strcat(ret, line); //TODO REMOVE
+        if(r != NULL){                                                       // If the line is an include statement
+            // checkIncludeFile(i, ol, vFile, r['path'])                  // Check the included file
+            checkIncludeFile(i, line, vFile, r);                  // Check the included file
+            // with open(r['path'], 'r') as f:                                     // Open the included file
+            //     code += include(f.read(),c r['path'], i + 1)                         // Paste the included code recursively
+            char* includedCode = readFile(r);
+            char* includedCode2 = uncomment(includedCode, vFile);
+            strcat(ret, includedCode2);
+            strcat(ret, "\n");
+            free(includedCode);
+            free(includedCode2);
+        }
+        else{                                                               // If not
+            // code += f'/*{ str(i + 1 if vLineInfo == 0 else vLineInfo).zfill(6) }*/{ l }'// Concatenate line
+
+            strcat(ret, "/*");
+            char* lineStr = itoa(vLineInfo ? vLineInfo : i + 1, 10);
+            for(int j = 0; j < 6 - strlen(lineStr); ++j) strcat(ret, "0");
+            strcat(ret, lineStr);
+            strcat(ret, "*/");
+
+            strcat(ret, line);
+            strcat(ret, "\n");
+        }
+        // strcat(ret, line); //TODO REMOVE
     }
+    free(code);
     return ret;
 }
 
@@ -279,7 +332,7 @@ void run(const char* vSrc, const char* vOut){
 
 
     //Read input file
-    const char* code = readFile(src);
+    char* code = readFile(src);
 
 
     //Add hard coded version statement and parse the code
