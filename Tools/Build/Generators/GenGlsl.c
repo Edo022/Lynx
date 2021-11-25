@@ -109,7 +109,7 @@ char* strtokn(const char* vSrc, const char vChar, const unsigned vIndex){ //TODO
 void printError(const char* vFormat, ...){
     va_list vArgs; va_start(vArgs, 0);
     char vStr[MAX_ERR];
-    vsprintf(vStr, vFormat, vArgs);
+    vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
     printf("\n%sGenGlsl: Error:\n%s%s", bRed, vStr, nWht);
     exit(1);
@@ -119,7 +119,7 @@ void printError(const char* vFormat, ...){
 void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, const char* vFormat, ...){
     va_list vArgs; va_start(vArgs, 0);
     char vStr[MAX_ERR];
-    vsprintf(vStr, vFormat, vArgs);
+    vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
     printf(
         "%s\nGenGlsl: Syntax error on line %d, file \"%s\":" //FIXME
@@ -152,7 +152,7 @@ void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, co
 
 //Removes the trailing whitespace of each line
 //Consecutive newline characters are preserved
-struct Line* clear(struct Line* vLines, const size_t vNum){
+void clear(struct Line* vLines, const size_t vNum){
     for(size_t i = 0; i < vNum; ++i){
         struct Line* l = &vLines[i];
         for(int j = l->len - 1; j >= 0; --j){
@@ -163,9 +163,8 @@ struct Line* clear(struct Line* vLines, const size_t vNum){
                 break;
             }
         }
-        printf("<%d - \"%s\">\n", i, l->str); //TODO REMOVE
+        // printf("<%d - %d/%d - \"%s\">\n", l->line, i, vNum, l->str); //TODO REMOVE
     }
-    printf("aaaaaaaaaaa");
     // return re.sub(r'[ \t\v]+(\n|$)', r'\g<1>', vCode)
 }
 
@@ -288,6 +287,7 @@ char* isInclude(const char* vLine){
 //TODO use structs
 // char* include(const char* vCode, const char* vFile, const int vLineInfo){
 struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, size_t* pLen){
+    // printf("a"); fflush(stdout); //TODO REMOVE
     char* code = uncomment(vCode, vFile); //!Shredded by strsep
     struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES); //ret[0] = '\0';
     char *line;//, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
@@ -325,6 +325,7 @@ struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, 
     }
     free(code); //FIXME dont free and assign the strings to the array elements
     *pLen = len;
+    // printf("b"); fflush(stdout); //TODO REMOVE
     return ret;
 }
 
@@ -378,16 +379,18 @@ void run(const char* vSrc, const char* vOut){
     // output = list(group(list(scope(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc)), vSrc))
     size_t outputLen;
     struct Line* output = include(code, vSrc, 0, &outputLen);
-    struct Line* output2 = clear(output, outputLen);
+    clear(output, outputLen);
 
     //Write output file
     FILE* ofile = fopen(vOut, "w");
     // fprintf(ofile, "#version 450\n%s", output);
     fprintf(ofile, "#version 450\n");
     for(int i = 0; i < outputLen; ++i) {
-        fprintf(ofile, "\"%s\"", output2[i].str);
-        // printf("\"%s\"\n", output[i].str); fflush(stdout);
+        fprintf(ofile, "%d - %s\n", output[i].line, output[i].str);
+        // printf("\"%s\"\n", output2[i].str); fflush(stdout);
     }
+        // printf("\"%s\"\n", output2[0].str); fflush(stdout);
+    // printf("aaaaaaaaaaa"); fflush(stdout);
     fclose(ofile);
 }
 
