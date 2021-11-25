@@ -376,10 +376,10 @@ def group(vTokens:list, vFile:str):
 
 
 
-# Removes the trailing whitespace of each line
-# Consecutive newline characters are preserved
-def clear(vCode:str):
-    return re.sub(r'[ \t\v]+(\n|$)', r'\g<1>', vCode)
+# # Removes the trailing whitespace of each line
+# # Consecutive newline characters are preserved
+# def clear(vCode:str):
+#     return re.sub(r'[ \t\v]+(\n|$)', r'\g<1>', vCode)
 
 
 
