@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -31,23 +32,24 @@ struct Line {
 
 enum TokenID {
 	//Types
-	t_b,        t_u32,        t_i32,        t_f32,        t_f64,        //Scalar types
-	t_bv2,      t_u32v2,      t_i32v2,      t_f32v2,      t_f64v2,      //2-component vectors
-	t_bv3,      t_u32v3,      t_i32v3,      t_f32v3,      t_f64v3,      //3-component vectors
-	t_bv4,      t_u32v4,      t_i32v4,      t_f32v4,      t_f64v4,      //4-component vectors
-	t_bm2,      t_u32m2,      t_i32m2,      t_f32m2,      t_f64m2,      //2x2 square matrices
-	t_bm3,      t_u32m3,      t_i32m3,      t_f32m3,      t_f64m3,      //3x3 square matrices
-	t_bm4,      t_u32m4,      t_i32m4,      t_f32m4,      t_f64m4,      //4x4 square matrices
-	t_bm2x2,    t_u32m2x2,    t_i32m2x2,    t_f32m2x2,    t_f64m2x2,    //2x2 matrices
-	t_bm2x3,    t_u32m2x3,    t_i32m2x3,    t_f32m2x3,    t_f64m2x3,    //2x3 matrices
-	t_bm2x4,    t_u32m2x4,    t_i32m2x4,    t_f32m2x4,    t_f64m2x4,    //2x4 matrices
-	t_bm3x2,    t_u32m3x2,    t_i32m3x2,    t_f32m3x2,    t_f64m3x2,    //3x2 matrices
-	t_bm3x3,    t_u32m3x3,    t_i32m3x3,    t_f32m3x3,    t_f64m3x3,    //3x3 matrices
-	t_bm3x4,    t_u32m3x4,    t_i32m3x4,    t_f32m3x4,    t_f64m3x4,    //3x4 matrices
-	t_bm4x2,    t_u32m4x2,    t_i32m4x2,    t_f32m4x2,    t_f64m4x2,    //4x2 matrices
-	t_bm4x3,    t_u32m4x3,    t_i32m4x3,    t_f32m4x3,    t_f64m4x3,    //4x3 matrices
-	t_bm4x4,    t_u32m4x4,    t_i32m4x4,    t_f32m4x4,    t_f64m4x4,    //4x4 matrices
-	t_void,                                                             //Just void
+	t_b,        t_u32,        t_i32,        t_f32,        t_f64,        // Scalar types
+	t_bv2,      t_u32v2,      t_i32v2,      t_f32v2,      t_f64v2,      // 2-component vectors
+	t_bv3,      t_u32v3,      t_i32v3,      t_f32v3,      t_f64v3,      // 3-component vectors
+	t_bv4,      t_u32v4,      t_i32v4,      t_f32v4,      t_f64v4,      // 4-component vectors
+	t_bm2,      t_u32m2,      t_i32m2,      t_f32m2,      t_f64m2,      // 2x2 square matrices
+	t_bm3,      t_u32m3,      t_i32m3,      t_f32m3,      t_f64m3,      // 3x3 square matrices
+	t_bm4,      t_u32m4,      t_i32m4,      t_f32m4,      t_f64m4,      // 4x4 square matrices
+	t_bm2x2,    t_u32m2x2,    t_i32m2x2,    t_f32m2x2,    t_f64m2x2,    // 2x2 matrices
+	t_bm2x3,    t_u32m2x3,    t_i32m2x3,    t_f32m2x3,    t_f64m2x3,    // 2x3 matrices
+	t_bm2x4,    t_u32m2x4,    t_i32m2x4,    t_f32m2x4,    t_f64m2x4,    // 2x4 matrices
+	t_bm3x2,    t_u32m3x2,    t_i32m3x2,    t_f32m3x2,    t_f64m3x2,    // 3x2 matrices
+	t_bm3x3,    t_u32m3x3,    t_i32m3x3,    t_f32m3x3,    t_f64m3x3,    // 3x3 matrices
+	t_bm3x4,    t_u32m3x4,    t_i32m3x4,    t_f32m3x4,    t_f64m3x4,    // 3x4 matrices
+	t_bm4x2,    t_u32m4x2,    t_i32m4x2,    t_f32m4x2,    t_f64m4x2,    // 4x2 matrices
+	t_bm4x3,    t_u32m4x3,    t_i32m4x3,    t_f32m4x3,    t_f64m4x3,    // 4x3 matrices
+	t_bm4x4,    t_u32m4x4,    t_i32m4x4,    t_f32m4x4,    t_f64m4x4,    // 4x4 matrices
+	t_void,                                                             // Just void
+
 
 	//If-else    Loops         Flow control     Switch case
 	k_if,        k_while,      k_continue,      k_switch,
@@ -60,40 +62,43 @@ enum TokenID {
 	k_lowp,
 	k_const,
 
-	//Maximum value of the TokenID enum
-	tokenid_max
+	types_num = t_void + 1,   //! Number of hard coded types
+	tokens_num = k_const + 1, //! Number of hard coded tokens
+	tokenid_user_defined,     //! User defined identifiers
+	tokenid_other             //! Anything that isn't an identifier
 };
 
 
 
 struct TypeData_t {
-	char* glsltype;
-	enum TokenID baseType;
-	size_t x;
-	size_t y;
-	size_t align;
+	char* glsltype;        // The corresponding GLSL type
+	enum TokenID baseType; // Base type of the type  e.g. the base type of a f32 matrix is f32
+	size_t x;              // Width   e.g. a 2x3 matrix has x = 2, a scalar type has x = 1
+	size_t y;              // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
+	size_t align;          // Alignment of the type in bytes
 };
 
 struct LiteralData_t{
-	enum TokenID type;   //The type of the value
-	// const char* value;
-	char value[8];       //Contains a float, a double, an int or an unsigned int
-	// unsigned base;     //2, 8, 10, 16
+	enum TokenID type;     // Type of the value. This can only be the ID of a base type
+	char value[8];         // Actual value. Contains a float, a double, an int or an unsigned int, depending on the type
 };
 
 enum TokenType{
-	e_type,
-	e_keyword,
-	e_literal,
-	e_identifier
+	e_type,                // Hard coded types
+	e_keyword,             // Hard coded keywords
+	e_literal,             // Literal constants
+	e_whitespace,          // Spaces, newlines, tabs, carriage return
+	e_identifier           // User defined identifiers
 };
 
-
 struct Token{
-	char* value;
-	enum TokenType type;
-	enum TokenID id;
-	void* data; //Points to a TypeData_t or a LiteralData_t
+	char* value;           // The string value of the token  e.g. "const", "uint32"
+	char* line;            // The line that contains the token
+	size_t start;          // Index of the token's first character in its line
+	size_t len;            // Length of the token
+	enum TokenType type;   // Type of the token    e.g. e_identifier, e_type
+	enum TokenID id;       // The ID of the token  e.g. t_uint32, t_f64, k_while
+	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
 };
 
 
@@ -120,6 +125,14 @@ const char *nBlu = "\033[0;34m", *bBlu = "\033[1;34m", *uBlu = "\033[4;34m";
 const char *nMag = "\033[0;35m", *bMag = "\033[1;35m", *uMag = "\033[4;35m";
 const char *nCyn = "\033[0;36m", *bCyn = "\033[1;36m", *uCyn = "\033[4;36m";
 const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
+
+
+
+
+int strstartswith(const char *restrict string, const char *restrict prefix){
+    while(*prefix) if(*prefix++ != *string++) return 0;
+    return 1;
+}
 
 
 
@@ -412,8 +425,45 @@ struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, 
 // Tokenizer -------------------------------------------------------------------------------------------------------------------------------//
 
 
+
+
+
+const char* tokenValues[] = {
+	//Types
+	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
+	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
+	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
+	"bv4",      "u32v4",      "i32v4",      "f32v4",      "f64v4",      //4-component vectors
+	"bm2",      "u32m2",      "i32m2",      "f32m2",      "f64m2",      //2x2 square matrices
+	"bm3",      "u32m3",      "i32m3",      "f32m3",      "f64m3",      //3x3 square matrices
+	"bm4",      "u32m4",      "i32m4",      "f32m4",      "f64m4",      //4x4 square matrices
+	"bm2x2",    "u32m2x2",    "i32m2x2",    "f32m2x2",    "f64m2x2",    //2x2 matrices
+	"bm2x3",    "u32m2x3",    "i32m2x3",    "f32m2x3",    "f64m2x3",    //2x3 matrices
+	"bm2x4",    "u32m2x4",    "i32m2x4",    "f32m2x4",    "f64m2x4",    //2x4 matrices
+	"bm3x2",    "u32m3x2",    "i32m3x2",    "f32m3x2",    "f64m3x2",    //3x2 matrices
+	"bm3x3",    "u32m3x3",    "i32m3x3",    "f32m3x3",    "f64m3x3",    //3x3 matrices
+	"bm3x4",    "u32m3x4",    "i32m3x4",    "f32m3x4",    "f64m3x4",    //3x4 matrices
+	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
+	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
+	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
+	"void",                                                             //Just void
+
+	//If-else      Loops           Flow control       Switch case
+	"if",          "while",        "continue",        "switch",
+	"else",        "for",          "break",           "case",
+	"elif",        "do",           "return",          "default",
+
+	//Qualifiers   Inputs          Other
+	"highp",       "local",        "struct",
+	"medp",        "extern",       "preicison",
+	"lowp",
+	"const"
+};
+
+
+
 //FIXME GLSL doesnt suppotr bool and integer matrices
-const struct TypeData_t typeData[] = {
+struct TypeData_t typeData[] = {
 	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
 	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
 	{ "bvec3",   t_b, 3, 1, 16 },    { "uvec3",   t_u32, 3, 1, 16 },    { "ivec3",   t_i32, 3, 1, 16 },    { "vec3",   t_f32, 3, 1, 16 },    { "dvec3",   t_f64, 3, 1, 32 },
@@ -434,10 +484,68 @@ const struct TypeData_t typeData[] = {
 };
 
 
+
+
+
+size_t startsWithIdentifier(const char* vLine){
+	size_t len = 0;
+	char c = *vLine;
+	if(len = isalpha(c) || c == '_'){
+		++vLine;
+		for(c = *vLine;; ++vLine, ++len, c = *vLine) {
+			if(!(isalnum(c) || c == '_')) break;
+		}
+	}
+	return len;
+}
+
+
+
 struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum){
 	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
-	for(int i = 0; i < vLineNum; ++i){
-		ret[i].value = vLines[i].str;
+	for(int i = 0, tok_j = 0; i < vLineNum; ++i){
+		char* l = vLines[i].str;
+		size_t lLen = strlen(l);
+		for(int j = 0; j < lLen; ++tok_j){
+			ret[tok_j].start = j;
+			ret[tok_j].line = l;
+			//Check identifiers
+			size_t idLen = startsWithIdentifier(l + j);
+			if(idLen){
+				ret[tok_j].value = strndup(l + j, idLen);
+				ret[tok_j].len = idLen;
+				j += idLen;
+				// printf("%d - \"%s\"\n", ret[tok_j].len, ret[tok_j].value); //TODO REMOVE
+
+				//Compare hard coded identifers
+				for(int t = 0; t < tokens_num; ++t){
+					if(strncmp(l + j, tokenValues[i], idLen) == 0, lLen){
+						ret[tok_j].id = t;
+						if(t < types_num){
+							ret[tok_j].type = e_type;
+							ret[tok_j].data = &typeData[t];
+						}
+						else {
+							ret[tok_j].type =  e_keyword;
+							ret[tok_j].data = NULL;
+						}
+						goto break_continue;
+					}
+				}
+
+				//Save unknown identifiers
+				ret[tok_j].type = e_identifier;
+				ret[tok_j].id = tokenid_user_defined;
+				ret[tok_j].data = NULL;
+			}
+			else{
+				ret[tok_j].value = strndup(l + j, 1);
+				ret[tok_j].len = 1;
+				// printf("%d - \"%s\"\n", ret[tok_j].len, ret[tok_j].value);//TODO REMOVE
+				++j;
+			}
+			break_continue:
+		}
 	}
 	*pNum = vLineNum;
 	return ret;
@@ -489,7 +597,7 @@ void run(const char* vSrc, const char* vOut){
 	// fprintf(ofile, "#version 450\n%s", output);
 	fprintf(ofile, "#version 450\n");
 	for(int i = 0; i < outputTokensNum; ++i) {
-		fprintf(ofile, "%s\n", outputTokens[i].value);
+		fprintf(ofile, "%s", outputTokens[i].value);
 		// printf("\"%s\"\n", output2[i].str); fflush(stdout);
 	}
 		// printf("\"%s\"\n", output2[0].str); fflush(stdout);
