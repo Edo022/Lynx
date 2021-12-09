@@ -32,7 +32,7 @@ cd ../Build
         [ -r ./GenInitializers ] && rm ./GenInitializers
         [ -r ./GenInterfaces ]   && rm ./GenInterfaces
         # python3 $opt -m PyInstaller --paths=.. -F --clean -y --log-level=WARN ./GenGlsl.py &
-        gcc ./GenGlsl.c -o GenGlsl
+        gcc -std=c11 ./GenGlsl.c -o ./GenGlsl
         python3 $opt -m PyInstaller --paths=.. -F --clean -y --log-level=WARN ./GenInitializers.py &
         python3 $opt -m PyInstaller --paths=.. -F --clean -y --log-level=WARN ./GenInterfaces.py &
     cd ..

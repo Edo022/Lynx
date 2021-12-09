@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -87,7 +88,8 @@ enum TokenType{
 	e_type,                // Hard coded types
 	e_keyword,             // Hard coded keywords
 	e_literal,             // Literal constants
-	e_whitespace,          // Spaces, newlines, tabs, carriage return
+	e_whitespace,          // Spaces, tabs, carriage return
+	e_newline,             // Line feed
 	e_identifier           // User defined identifiers
 };
 
@@ -503,51 +505,67 @@ size_t startsWithIdentifier(const char* vLine){
 
 struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum){
 	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
-	for(int i = 0, tok_j = 0; i < vLineNum; ++i){
+	int tok_j = 0;
+	for(int i = 0; i < vLineNum; ++i){
 		char* l = vLines[i].str;
 		size_t lLen = strlen(l);
 		for(int j = 0; j < lLen; ++tok_j){
-			ret[tok_j].start = j;
-			ret[tok_j].line = l;
+			struct Token* ret1 = ret + tok_j;
+			ret1->start = j;
+			ret1->line = l;
 			//Check identifiers
 			size_t idLen = startsWithIdentifier(l + j);
 			if(idLen){
-				ret[tok_j].value = strndup(l + j, idLen);
-				ret[tok_j].len = idLen;
+				ret1->value = strndup(l + j, idLen);
+				ret1->len = idLen;
 				j += idLen;
-				// printf("%d - \"%s\"\n", ret[tok_j].len, ret[tok_j].value); //TODO REMOVE
 
 				//Compare hard coded identifers
 				for(int t = 0; t < tokens_num; ++t){
 					if(strncmp(l + j, tokenValues[i], idLen) == 0, lLen){
 						ret[tok_j].id = t;
 						if(t < types_num){
-							ret[tok_j].type = e_type;
-							ret[tok_j].data = &typeData[t];
+							ret1->type = e_type;
+							ret1->data = &typeData[t];
 						}
 						else {
-							ret[tok_j].type =  e_keyword;
-							ret[tok_j].data = NULL;
+							ret1->type =  e_keyword;
+							ret1->data = NULL;
 						}
 						goto break_continue;
 					}
 				}
 
 				//Save unknown identifiers
-				ret[tok_j].type = e_identifier;
-				ret[tok_j].id = tokenid_user_defined;
-				ret[tok_j].data = NULL;
+				ret1->type = e_identifier;
+				ret1->id = tokenid_user_defined;
+				ret1->data = NULL;
 			}
 			else{
-				ret[tok_j].value = strndup(l + j, 1);
-				ret[tok_j].len = 1;
-				// printf("%d - \"%s\"\n", ret[tok_j].len, ret[tok_j].value);//TODO REMOVE
+				ret1->value = strndup(l + j, 1);
+				ret1->len = 1;
 				++j;
 			}
 			break_continue:
 		}
+
+		//Add newline token
+		if(i < vLineNum - 1) {
+			struct Token* ret1 = ret + tok_j;
+
+			ret1->id = tokenid_other;
+			ret1->start = 0;
+			ret1->line = l;
+			ret1->type = e_newline;
+			ret1->len = 1;
+			ret1->value = strdup("\n");
+			// ret1->value = strndup(l, 1);
+			ret1->data = NULL;
+
+			++tok_j;
+		}
 	}
-	*pNum = vLineNum;
+	*pNum = tok_j;
 	return ret;
 }
 
