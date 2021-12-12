@@ -102,7 +102,6 @@ enum TokenID {
 
 	e_user_defined,  //! User defined identifiers
 	e_literal,       // Literal constants
-	e_whitespace,    // Spaces and tabs (carriage return is ignored)
 	e_newline,       // Line feed
 	e_identifier,    // User defined identifiers
 	e_preprocessor,  // # characters
@@ -156,6 +155,7 @@ struct Token{
 	size_t len;            // Length of the token
 	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
+	char* leading_ws;
 	char* line;            // The line that contains the token
 	size_t lineNum;        // The number if the line
 	size_t start;          // Index of the token's first character in its line
@@ -510,11 +510,14 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 	for(size_t i = 0; i < vLineNum; ++i){
 		char* l = vLines[i].str;
 		size_t lLen = strlen(l);
+		char* leading_ws = NULL;
 		for(size_t j = 0; j < lLen; ++tok_j){
 			struct Token* curToken = ret + tok_j;
 			curToken->line    = l;
 			curToken->lineNum = i;
 			curToken->start   = j;
+
+			if(leading_ws) curToken->leading_ws = leading_ws;
 
 
 
@@ -529,12 +532,10 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 			size_t wsLen = swWhitespace(l + j);
 			if(wsLen){
-				curToken->value = strndup(l + j, wsLen);
-				curToken->len   = wsLen;
-				curToken->id    = e_whitespace;
-				curToken->data  = NULL;
-				j += wsLen; continue;
+				leading_ws = strndup(l + j, wsLen);
+				j += wsLen; --tok_j; continue;
 			}
+			else leading_ws = NULL;
 
 			// Check identifiers
 			size_t idLen = swIdentifier(l + j);
@@ -571,6 +572,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 		//Add newline token
 		if(i < vLineNum - 1) {
 			struct Token* curToken = ret + tok_j;
+			if(leading_ws) curToken->leading_ws = leading_ws;
 
 			curToken->value   = strdup("\n");
 			curToken->len     = 1;
@@ -625,13 +627,14 @@ void run(const char* vSrc, const char* vOut){
 	fprintf(ofile, "#version 450\n");
 	for(int i = 0; i < outputTokensNum; ++i) {
 		fprintf(
-			ofile, "{ lineNum : %09d, len : %04d, start : %04d, id : %03d, data : %x, value : \"%s\" }\n",
+			ofile, "{ lineNum : %09d, len : %04d, start : %04d, id : %03d, data : %x, value : \"%s\", leading : \"%s\" }\n",
 			outputTokens[i].lineNum,
 			outputTokens[i].len,
 			outputTokens[i].start,
 			outputTokens[i].id,
 			outputTokens[i].data,
-			outputTokens[i].value
+			(outputTokens[i].id == e_newline) ? "\\n" : outputTokens[i].value,
+			outputTokens[i].leading_ws
 		);
 	}
 	fclose(ofile);
