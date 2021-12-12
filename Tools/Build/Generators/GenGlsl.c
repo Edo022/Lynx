@@ -1,4 +1,6 @@
-#define _DEFAULT_SOURCE
+//gcc GenGlsl.c -std=c11 -o GenGlsl
+
+#define _DEFAULT_SOURCE // Required for realpath and strsep
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -29,6 +31,38 @@ struct Line {
 
 
 
+
+const char* tokenValues[] = {
+	//Types
+	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
+	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
+	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
+	"bv4",      "u32v4",      "i32v4",      "f32v4",      "f64v4",      //4-component vectors
+	"bm2",      "u32m2",      "i32m2",      "f32m2",      "f64m2",      //2x2 square matrices
+	"bm3",      "u32m3",      "i32m3",      "f32m3",      "f64m3",      //3x3 square matrices
+	"bm4",      "u32m4",      "i32m4",      "f32m4",      "f64m4",      //4x4 square matrices
+	"bm2x2",    "u32m2x2",    "i32m2x2",    "f32m2x2",    "f64m2x2",    //2x2 matrices
+	"bm2x3",    "u32m2x3",    "i32m2x3",    "f32m2x3",    "f64m2x3",    //2x3 matrices
+	"bm2x4",    "u32m2x4",    "i32m2x4",    "f32m2x4",    "f64m2x4",    //2x4 matrices
+	"bm3x2",    "u32m3x2",    "i32m3x2",    "f32m3x2",    "f64m3x2",    //3x2 matrices
+	"bm3x3",    "u32m3x3",    "i32m3x3",    "f32m3x3",    "f64m3x3",    //3x3 matrices
+	"bm3x4",    "u32m3x4",    "i32m3x4",    "f32m3x4",    "f64m3x4",    //3x4 matrices
+	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
+	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
+	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
+	"void",                                                             //Just void
+
+	//If-else      Loops           Flow control       Switch case
+	"if",          "while",        "continue",        "switch",
+	"else",        "for",          "break",           "case",
+	"elif",        "do",           "return",          "default",
+
+	//Qualifiers   Inputs          Other
+	"highp",       "local",        "struct",
+	"medp",        "extern",       "preicison",
+	"lowp",
+	"const"
+};
 
 
 enum TokenID {
@@ -63,11 +97,20 @@ enum TokenID {
 	k_lowp,
 	k_const,
 
-	types_num = t_void + 1,   //! Number of hard coded types
-	tokens_num = k_const + 1, //! Number of hard coded tokens
-	tokenid_user_defined,     //! User defined identifiers
-	tokenid_other             //! Anything that isn't an identifier
+	t_max = t_void,   //! Max value of hard coded types
+	k_max = k_const,  //! Max value of hard coded keywords
+
+	e_user_defined,  //! User defined identifiers
+	e_literal,       // Literal constants
+	e_whitespace,    // Spaces and tabs (carriage return is ignored)
+	e_newline,       // Line feed
+	e_identifier,    // User defined identifiers
+	e_preprocessor,  // # characters
+	e_unknown,       // Anything else
+
+	e_max = e_unknown
 };
+
 
 
 
@@ -79,28 +122,43 @@ struct TypeData_t {
 	size_t align;          // Alignment of the type in bytes
 };
 
+//FIXME GLSL doesnt suppotr bool and integer matrices
+struct TypeData_t typeData[] = {
+	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
+	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
+	{ "bvec3",   t_b, 3, 1, 16 },    { "uvec3",   t_u32, 3, 1, 16 },    { "ivec3",   t_i32, 3, 1, 16 },    { "vec3",   t_f32, 3, 1, 16 },    { "dvec3",   t_f64, 3, 1, 32 },
+	{ "bvec4",   t_b, 4, 1, 16 },    { "uvec4",   t_u32, 4, 1, 16 },    { "ivec4",   t_i32, 4, 1, 16 },    { "vec4",   t_f32, 4, 1, 16 },    { "dvec4",   t_f64, 4, 1, 32 },
+	{ "bmat2",   t_b, 2, 2,  8 },    { "umat2",   t_u32, 2, 2,  8 },    { "imat2",   t_i32, 2, 2,  8 },    { "mat2",   t_f32, 2, 2,  8 },    { "dmat2",   t_f64, 2, 2, 16 },
+	{ "bmat3",   t_b, 3, 3, 16 },    { "umat3",   t_u32, 3, 3, 16 },    { "imat3",   t_i32, 3, 3, 16 },    { "mat3",   t_f32, 3, 3, 16 },    { "dmat3",   t_f64, 3, 3, 32 },
+	{ "bmat4",   t_b, 4, 4, 16 },    { "umat4",   t_u32, 4, 4, 16 },    { "imat4",   t_i32, 4, 4, 16 },    { "mat4",   t_f32, 4, 4, 16 },    { "dmat4",   t_f64, 4, 4, 32 },
+	{ "bmat2x2", t_b, 2, 2,  8 },    { "umat2x2", t_u32, 2, 2,  8 },    { "imat2x2", t_i32, 2, 2,  8 },    { "mat2x2", t_f32, 2, 2,  8 },    { "dmat2x2", t_f64, 2, 2, 16 },
+	{ "bmat2x3", t_b, 2, 3,  8 },    { "umat2x3", t_u32, 2, 3,  8 },    { "imat2x3", t_i32, 2, 3,  8 },    { "mat2x3", t_f32, 2, 3,  8 },    { "dmat2x3", t_f64, 2, 3, 16 },
+	{ "bmat2x4", t_b, 2, 4,  8 },    { "umat2x4", t_u32, 2, 4,  8 },    { "imat2x4", t_i32, 2, 4,  8 },    { "mat2x4", t_f32, 2, 4,  8 },    { "dmat2x4", t_f64, 2, 4, 16 },
+	{ "bmat3x2", t_b, 3, 2, 16 },    { "umat3x2", t_u32, 3, 2, 16 },    { "imat3x2", t_i32, 3, 2, 16 },    { "mat3x2", t_f32, 3, 2, 16 },    { "dmat3x2", t_f64, 3, 2, 32 },
+	{ "bmat3x3", t_b, 3, 3, 16 },    { "umat3x3", t_u32, 3, 3, 16 },    { "imat3x3", t_i32, 3, 3, 16 },    { "mat3x3", t_f32, 3, 3, 16 },    { "dmat3x3", t_f64, 3, 3, 32 },
+	{ "bmat3x4", t_b, 3, 4, 16 },    { "umat3x4", t_u32, 3, 4, 16 },    { "imat3x4", t_i32, 3, 4, 16 },    { "mat3x4", t_f32, 3, 4, 16 },    { "dmat3x4", t_f64, 3, 4, 32 },
+	{ "bmat4x2", t_b, 4, 2, 16 },    { "umat4x2", t_u32, 4, 2, 16 },    { "imat4x2", t_i32, 4, 2, 16 },    { "mat4x2", t_f32, 4, 2, 16 },    { "dmat4x2", t_f64, 4, 2, 32 },
+	{ "bmat4x3", t_b, 4, 3, 16 },    { "umat4x3", t_u32, 4, 3, 16 },    { "imat4x3", t_i32, 4, 3, 16 },    { "mat4x3", t_f32, 4, 3, 16 },    { "dmat4x3", t_f64, 4, 3, 32 },
+	{ "bmat4x1", t_b, 4, 4, 16 },    { "umat4x1", t_u32, 4, 4, 16 },    { "imat4x1", t_i32, 4, 4, 16 },    { "mat4x1", t_f32, 4, 4, 16 },    { "dmat4x1", t_f64, 4, 4, 32 },
+	{ "void", t_void, 0, 0,  0 }
+};
+
+
+
+
 struct LiteralData_t{
 	enum TokenID type;     // Type of the value. This can only be the ID of a base type
 	char value[8];         // Actual value. Contains a float, a double, an int or an unsigned int, depending on the type
 };
 
-enum TokenType{
-	e_type,                // Hard coded types
-	e_keyword,             // Hard coded keywords
-	e_literal,             // Literal constants
-	e_whitespace,          // Spaces, tabs, carriage return
-	e_newline,             // Line feed
-	e_identifier           // User defined identifiers
-};
-
 struct Token{
 	char* value;           // The string value of the token  e.g. "const", "uint32"
-	char* line;            // The line that contains the token
-	size_t start;          // Index of the token's first character in its line
 	size_t len;            // Length of the token
-	enum TokenType type;   // Type of the token    e.g. e_identifier, e_type
-	enum TokenID id;       // The ID of the token  e.g. t_uint32, t_f64, k_while
+	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
+	char* line;            // The line that contains the token
+	size_t lineNum;        // The number if the line
+	size_t start;          // Index of the token's first character in its line
 };
 
 
@@ -371,48 +429,34 @@ char* isInclude(const char* vLine){
 //Creates a code with no includes by pasting all the included files together
 //Returns the resulting string
 //Comments are not preserved
-//TODO use structs
-// char* include(const char* vCode, const char* vFile, const int vLineInfo){
 struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, size_t* pNum){
-	// printf("a"); fflush(stdout); //TODO REMOVE
 	char* code = uncomment(vCode, vFile); //!Shredded by strsep
 	struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES); //ret[0] = '\0';
 	char *line;//, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
-	// struct Line* ret;
 	size_t len = 0;
 	for(int i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
-		// sprintf(lineStr, "/*%06x*/", vLineInfo ? vLineInfo : i + 1);
 		size_t lineNum = vLineInfo ? vLineInfo : i + 1;
 		char* r = isInclude(line);
-		if(r != NULL){                                                       // If the line is an include statement
-			checkIncludeFile(i, line, vFile, r);                  // Check the included file
+		if(r != NULL){								// If the line is an include statement
+			checkIncludeFile(i, line, vFile, r);		// Check the included file
 			char* included = readFile(r);
 			size_t includedLen;
 			struct Line* included2 = include(included, vFile, i + 1, &includedLen);
-			// printf("%d", includedLen); //TODO REMOVE
-			// strcat(ret, includedCode2);
-			// ret = malloc(sizeof(struct Line*) * )
 			memcpy(ret + len, included2, sizeof(struct Line) * includedLen);
 			free(included);
 			free(included2);
 			len += includedLen;
 			//TODO save original files
 		}
-		else{                                                               // If not
-			// strcat(ret, lineStr);
+		else{ // If not
 			ret[len].line = lineNum;
 			ret[len].len = strlen(line);//TODO rename local len
-			// strcat(ret, line);
 			ret[len].str = strdup(line); //FIXME use the string left by strsep //FIXME write somewhere that the strings in the array must not be freed as they are all in the same block
-			// ret[len].str[ret[len].len - 1] = '\0'; //Remove \n
-			// printf("%s\n", strdup(line));
-			// strcat(ret, "\n");
 			++len;
 		}
 	}
 	free(code); //FIXME dont free and assign the strings to the array elements
 	*pNum = len;
-	// printf("b"); fflush(stdout); //TODO REMOVE
 	return ret;
 }
 
@@ -430,66 +474,10 @@ struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, 
 
 
 
-const char* tokenValues[] = {
-	//Types
-	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
-	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
-	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
-	"bv4",      "u32v4",      "i32v4",      "f32v4",      "f64v4",      //4-component vectors
-	"bm2",      "u32m2",      "i32m2",      "f32m2",      "f64m2",      //2x2 square matrices
-	"bm3",      "u32m3",      "i32m3",      "f32m3",      "f64m3",      //3x3 square matrices
-	"bm4",      "u32m4",      "i32m4",      "f32m4",      "f64m4",      //4x4 square matrices
-	"bm2x2",    "u32m2x2",    "i32m2x2",    "f32m2x2",    "f64m2x2",    //2x2 matrices
-	"bm2x3",    "u32m2x3",    "i32m2x3",    "f32m2x3",    "f64m2x3",    //2x3 matrices
-	"bm2x4",    "u32m2x4",    "i32m2x4",    "f32m2x4",    "f64m2x4",    //2x4 matrices
-	"bm3x2",    "u32m3x2",    "i32m3x2",    "f32m3x2",    "f64m3x2",    //3x2 matrices
-	"bm3x3",    "u32m3x3",    "i32m3x3",    "f32m3x3",    "f64m3x3",    //3x3 matrices
-	"bm3x4",    "u32m3x4",    "i32m3x4",    "f32m3x4",    "f64m3x4",    //3x4 matrices
-	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
-	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
-	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
-	"void",                                                             //Just void
-
-	//If-else      Loops           Flow control       Switch case
-	"if",          "while",        "continue",        "switch",
-	"else",        "for",          "break",           "case",
-	"elif",        "do",           "return",          "default",
-
-	//Qualifiers   Inputs          Other
-	"highp",       "local",        "struct",
-	"medp",        "extern",       "preicison",
-	"lowp",
-	"const"
-};
 
 
 
-//FIXME GLSL doesnt suppotr bool and integer matrices
-struct TypeData_t typeData[] = {
-	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
-	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
-	{ "bvec3",   t_b, 3, 1, 16 },    { "uvec3",   t_u32, 3, 1, 16 },    { "ivec3",   t_i32, 3, 1, 16 },    { "vec3",   t_f32, 3, 1, 16 },    { "dvec3",   t_f64, 3, 1, 32 },
-	{ "bvec4",   t_b, 4, 1, 16 },    { "uvec4",   t_u32, 4, 1, 16 },    { "ivec4",   t_i32, 4, 1, 16 },    { "vec4",   t_f32, 4, 1, 16 },    { "dvec4",   t_f64, 4, 1, 32 },
-	{ "bmat2",   t_b, 2, 2,  8 },    { "umat2",   t_u32, 2, 2,  8 },    { "imat2",   t_i32, 2, 2,  8 },    { "mat2",   t_f32, 2, 2,  8 },    { "dmat2",   t_f64, 2, 2, 16 },
-	{ "bmat3",   t_b, 3, 3, 16 },    { "umat3",   t_u32, 3, 3, 16 },    { "imat3",   t_i32, 3, 3, 16 },    { "mat3",   t_f32, 3, 3, 16 },    { "dmat3",   t_f64, 3, 3, 32 },
-	{ "bmat4",   t_b, 4, 4, 16 },    { "umat4",   t_u32, 4, 4, 16 },    { "imat4",   t_i32, 4, 4, 16 },    { "mat4",   t_f32, 4, 4, 16 },    { "dmat4",   t_f64, 4, 4, 32 },
-	{ "bmat2x2", t_b, 2, 2,  8 },    { "umat2x2", t_u32, 2, 2,  8 },    { "imat2x2", t_i32, 2, 2,  8 },    { "mat2x2", t_f32, 2, 2,  8 },    { "dmat2x2", t_f64, 2, 2, 16 },
-	{ "bmat2x3", t_b, 2, 3,  8 },    { "umat2x3", t_u32, 2, 3,  8 },    { "imat2x3", t_i32, 2, 3,  8 },    { "mat2x3", t_f32, 2, 3,  8 },    { "dmat2x3", t_f64, 2, 3, 16 },
-	{ "bmat2x4", t_b, 2, 4,  8 },    { "umat2x4", t_u32, 2, 4,  8 },    { "imat2x4", t_i32, 2, 4,  8 },    { "mat2x4", t_f32, 2, 4,  8 },    { "dmat2x4", t_f64, 2, 4, 16 },
-	{ "bmat3x2", t_b, 3, 2, 16 },    { "umat3x2", t_u32, 3, 2, 16 },    { "imat3x2", t_i32, 3, 2, 16 },    { "mat3x2", t_f32, 3, 2, 16 },    { "dmat3x2", t_f64, 3, 2, 32 },
-	{ "bmat3x3", t_b, 3, 3, 16 },    { "umat3x3", t_u32, 3, 3, 16 },    { "imat3x3", t_i32, 3, 3, 16 },    { "mat3x3", t_f32, 3, 3, 16 },    { "dmat3x3", t_f64, 3, 3, 32 },
-	{ "bmat3x4", t_b, 3, 4, 16 },    { "umat3x4", t_u32, 3, 4, 16 },    { "imat3x4", t_i32, 3, 4, 16 },    { "mat3x4", t_f32, 3, 4, 16 },    { "dmat3x4", t_f64, 3, 4, 32 },
-	{ "bmat4x2", t_b, 4, 2, 16 },    { "umat4x2", t_u32, 4, 2, 16 },    { "imat4x2", t_i32, 4, 2, 16 },    { "mat4x2", t_f32, 4, 2, 16 },    { "dmat4x2", t_f64, 4, 2, 32 },
-	{ "bmat4x3", t_b, 4, 3, 16 },    { "umat4x3", t_u32, 4, 3, 16 },    { "imat4x3", t_i32, 4, 3, 16 },    { "mat4x3", t_f32, 4, 3, 16 },    { "dmat4x3", t_f64, 4, 3, 32 },
-	{ "bmat4x1", t_b, 4, 4, 16 },    { "umat4x1", t_u32, 4, 4, 16 },    { "imat4x1", t_i32, 4, 4, 16 },    { "mat4x1", t_f32, 4, 4, 16 },    { "dmat4x1", t_f64, 4, 4, 32 },
-	{ "void", t_void, 0, 0,  0 }
-};
-
-
-
-
-
-size_t startsWithIdentifier(const char* vLine){
+size_t swIdentifier(const char* vLine){
 	size_t len = 0;
 	char c = *vLine;
 	if(len = isalpha(c) || c == '_'){
@@ -502,48 +490,79 @@ size_t startsWithIdentifier(const char* vLine){
 }
 
 
+size_t swWhitespace(const char* vLine){
+	char c = *vLine;
+	for(int i = 0;; c = vLine[++i]) {
+		if(!(c == '\t' || c == ' ')) return i;
+	}
+}
+
+
+size_t swPreprocessor(const char* vLine){
+	return *vLine == '#';
+}
+
+//TODO REMOVE LINE STRDUP AND LINE FIELD
 
 struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum){
 	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
-	int tok_j = 0;
-	for(int i = 0; i < vLineNum; ++i){
+	size_t tok_j = 0;
+	for(size_t i = 0; i < vLineNum; ++i){
 		char* l = vLines[i].str;
 		size_t lLen = strlen(l);
-		for(int j = 0; j < lLen; ++tok_j){
-			struct Token* ret1 = ret + tok_j;
-			ret1->start = j;
-			ret1->line = l;
-			//Check identifiers
-			size_t idLen = startsWithIdentifier(l + j);
-			if(idLen){
-				ret1->value = strndup(l + j, idLen);
-				ret1->len = idLen;
-				j += idLen;
+		for(size_t j = 0; j < lLen; ++tok_j){
+			struct Token* curToken = ret + tok_j;
+			curToken->line    = l;
+			curToken->lineNum = i;
+			curToken->start   = j;
 
-				//Compare hard coded identifers
-				for(int t = 0; t < tokens_num; ++t){
-					if(strncmp(l + j, tokenValues[i], idLen) == 0, lLen){
-						ret[tok_j].id = t;
-						if(t < types_num){
-							ret1->type = e_type;
-							ret1->data = &typeData[t];
-						}
-						else {
-							ret1->type =  e_keyword;
-							ret1->data = NULL;
-						}
-						goto break_continue;
+
+
+			size_t ppdLen = swPreprocessor(l + j);
+			if(ppdLen){
+				curToken->value = strdup("#");
+				curToken->len   = ppdLen;
+				curToken->id    = e_preprocessor;
+				curToken->data  = NULL;
+				j += ppdLen; continue;
+			}
+
+			size_t wsLen = swWhitespace(l + j);
+			if(wsLen){
+				curToken->value = strndup(l + j, wsLen);
+				curToken->len   = wsLen;
+				curToken->id    = e_whitespace;
+				curToken->data  = NULL;
+				j += wsLen; continue;
+			}
+
+			// Check identifiers
+			size_t idLen = swIdentifier(l + j);
+			if(idLen){
+				curToken->value = strndup(l + j, idLen);
+				curToken->len = idLen;
+
+				// Compare hard coded identifers
+				for(int t = 0; t <= k_max; ++t){
+					if(strncmp(l + j, tokenValues[t], idLen) == 0){
+						curToken->id   = t;
+						curToken->data = (t <= t_max) ? &typeData[t] : NULL;
+						j += idLen; goto break_continue;
 					}
 				}
 
 				//Save unknown identifiers
-				ret1->type = e_identifier;
-				ret1->id = tokenid_user_defined;
-				ret1->data = NULL;
+				curToken->id   = e_user_defined;
+				curToken->data = NULL;
+				j += idLen; continue;
 			}
-			else{
-				ret1->value = strndup(l + j, 1);
-				ret1->len = 1;
+
+			// Tokenize anything else as a single character
+			{
+				curToken->value = strndup(l + j, 1);
+				curToken->len   = 1;
+				curToken->id    = e_unknown;
+				curToken->data  = NULL;
 				++j;
 			}
 			break_continue:
@@ -551,16 +570,15 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 		//Add newline token
 		if(i < vLineNum - 1) {
-			struct Token* ret1 = ret + tok_j;
+			struct Token* curToken = ret + tok_j;
 
-			ret1->id = tokenid_other;
-			ret1->start = 0;
-			ret1->line = l;
-			ret1->type = e_newline;
-			ret1->len = 1;
-			ret1->value = strdup("\n");
-			// ret1->value = strndup(l, 1);
-			ret1->data = NULL;
+			curToken->value   = strdup("\n");
+			curToken->len     = 1;
+			curToken->id      = e_newline;
+			curToken->data    = NULL;
+			curToken->line    = l;
+			curToken->lineNum = i;
+			curToken->start   = 0;
 
 			++tok_j;
 		}
@@ -568,12 +586,6 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 	*pNum = tok_j;
 	return ret;
 }
-
-
-// struct TokKeyword {
-
-// };
-
 
 
 
@@ -597,12 +609,10 @@ void run(const char* vSrc, const char* vOut){
 
 
 	//Read input file
-	// char* code = readFile(src);
 	const char* code = readFile(src);
 	char* line;
 
 	//Add hard coded version statement and parse the code
-	// output = list(group(list(scope(list(tokenize(clear(include(code, vSrc, 0)), vSrc)), vSrc)), vSrc))
 	size_t outputLinesNum;
 	struct Line* outputLines = include(code, vSrc, 0, &outputLinesNum);
 	clear(outputLines, outputLinesNum);
@@ -612,14 +622,18 @@ void run(const char* vSrc, const char* vOut){
 
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");
-	// fprintf(ofile, "#version 450\n%s", output);
 	fprintf(ofile, "#version 450\n");
 	for(int i = 0; i < outputTokensNum; ++i) {
-		fprintf(ofile, "%s", outputTokens[i].value);
-		// printf("\"%s\"\n", output2[i].str); fflush(stdout);
+		fprintf(
+			ofile, "{ lineNum : %09d, len : %04d, start : %04d, id : %03d, data : %x, value : \"%s\" }\n",
+			outputTokens[i].lineNum,
+			outputTokens[i].len,
+			outputTokens[i].start,
+			outputTokens[i].id,
+			outputTokens[i].data,
+			outputTokens[i].value
+		);
 	}
-		// printf("\"%s\"\n", output2[0].str); fflush(stdout);
-	// printf("aaaaaaaaaaa"); fflush(stdout);
 	fclose(ofile);
 }
 
