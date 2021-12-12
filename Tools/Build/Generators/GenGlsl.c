@@ -610,8 +610,9 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 			strcpy(ret + j, curTok->leading_ws);
 			j += strlen(curTok->leading_ws);
 		}
-		strcpy(ret + j, curTok->value);
-		j += curTok->len;
+
+		strcpy(ret + j, curTok->id <= t_max ?        typeData[curTok->id].glsltype  : curTok->value);
+		j +=            curTok->id <= t_max ? strlen(typeData[curTok->id].glsltype) : curTok->len;
 	}
 	ret[j + 1] = '\0';
 	return ret;
