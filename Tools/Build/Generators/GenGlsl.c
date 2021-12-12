@@ -297,6 +297,7 @@ void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, co
 
 //Removes the trailing whitespace of each line
 //Consecutive newline characters are preserved
+//TODO replace tabs with spaces
 void clear(struct Line* vLines, const size_t vNum){
 	for(size_t i = 0; i < vNum; ++i){
 		struct Line* l = &vLines[i];
@@ -503,7 +504,7 @@ size_t swPreprocessor(const char* vLine){
 }
 
 //TODO REMOVE LINE STRDUP AND LINE FIELD
-
+//TODO replace tabs with spaces
 struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum){
 	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
 	size_t tok_j = 0;
@@ -516,8 +517,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 			curToken->line    = l;
 			curToken->lineNum = i;
 			curToken->start   = j;
-
-			if(leading_ws) curToken->leading_ws = strdup(leading_ws);
+			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
 
 
 
@@ -545,7 +545,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 				// Compare hard coded identifers
 				for(int t = 0; t <= k_max; ++t){
-					if(strncmp(l + j, tokenValues[t], idLen) == 0){
+					if(strcmp(strndup(l + j, idLen), tokenValues[t]) == 0){
 						curToken->id   = t;
 						curToken->data = (t <= t_max) ? &typeData[t] : NULL;
 						j += idLen; goto break_continue;
@@ -572,7 +572,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 		//Add newline token
 		if(i < vLineNum - 1) {
 			struct Token* curToken = ret + tok_j;
-			if(leading_ws) curToken->leading_ws = strdup(leading_ws);
+			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
 
 			curToken->value   = strdup("\n");
 			curToken->len     = 1;
