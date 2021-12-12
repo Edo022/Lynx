@@ -517,7 +517,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 			curToken->lineNum = i;
 			curToken->start   = j;
 
-			if(leading_ws) curToken->leading_ws = leading_ws;
+			if(leading_ws) curToken->leading_ws = strdup(leading_ws);
 
 
 
@@ -572,7 +572,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 		//Add newline token
 		if(i < vLineNum - 1) {
 			struct Token* curToken = ret + tok_j;
-			if(leading_ws) curToken->leading_ws = leading_ws;
+			if(leading_ws) curToken->leading_ws = strdup(leading_ws);
 
 			curToken->value   = strdup("\n");
 			curToken->len     = 1;
@@ -592,6 +592,30 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 
 
+
+
+
+
+// idk --------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+char* translate(const struct Token* vTokens, const size_t vTokensNum){
+	char* ret = malloc(MAX_CODE_LEN);
+	size_t j = 0;
+	for(size_t i = 0; i < vTokensNum; ++i){
+		const struct Token* curTok = vTokens + i;
+		if(curTok->leading_ws){
+			strcpy(ret + j, curTok->leading_ws);
+			j += strlen(curTok->leading_ws);
+		}
+		strcpy(ret + j, curTok->value);
+		j += curTok->len;
+	}
+	ret[j + 1] = '\0';
+	return ret;
+}
 
 
 
@@ -618,25 +642,22 @@ void run(const char* vSrc, const char* vOut){
 	size_t outputLinesNum;
 	struct Line* outputLines = include(code, vSrc, 0, &outputLinesNum);
 	clear(outputLines, outputLinesNum);
+
 	size_t outputTokensNum;
 	struct Token* outputTokens = tokenize(outputLines, outputLinesNum, vSrc, &outputTokensNum);
 
+	char* outputStr = translate(outputTokens, outputTokensNum);
 
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");
 	fprintf(ofile, "#version 450\n");
-	for(int i = 0; i < outputTokensNum; ++i) {
-		fprintf(
-			ofile, "{ lineNum : %09d, len : %04d, start : %04d, id : %03d, data : %x, value : \"%s\", leading : \"%s\" }\n",
-			outputTokens[i].lineNum,
-			outputTokens[i].len,
-			outputTokens[i].start,
-			outputTokens[i].id,
-			outputTokens[i].data,
-			(outputTokens[i].id == e_newline) ? "\\n" : outputTokens[i].value,
-			outputTokens[i].leading_ws
-		);
-	}
+	// for(int i = 0; i < outputTokensNum; ++i) {
+		// fprintf(
+		// 	ofile, "{ lineNum : %09d, len : %04d, start : %04d, id : %03d, data : %x, value : \"%s\", leading : \"%s\" }\n",
+		// 	outputTokens[i].lineNum, outputTokens[i].len, outputTokens[i].start, outputTokens[i].id, outputTokens[i].data, (outputTokens[i].id == e_newline) ? "\\n" : outputTokens[i].value, outputTokens[i].leading_ws
+		// );
+	// }
+	fprintf(ofile, "%s", outputStr);
 	fclose(ofile);
 }
 
