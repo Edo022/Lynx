@@ -54,7 +54,7 @@ This language is part of the Lynx SDK.
 
 ## 2. Syntax
 
-The syntax is almost identical to the C language syntax, except for some additional operators and constructs
+The syntax is almost identical to the C language syntax, except for some additional operators and constructs.
 
 ### 2.1. Identifiers
 

@@ -6,11 +6,7 @@
 
 //TODO RENAME .count() AS .len()
 //TODO RENAME .count() AS .len()
-//TODO RENAME .count() AS .len()
-//TODO RENAME .count() AS .len()
-//TODO RENAME .count() AS .len()
-//TODO RENAME .count() AS .len()
-//TODO RENAME .count() AS .len()
+//TODO add spaces before any comment // like this
 
 namespace lnx{
 	/**

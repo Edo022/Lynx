@@ -519,8 +519,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 			curToken->start   = j;
 			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
 
-
-
+			// Match preprocessor directives
 			size_t ppdLen = swPreprocessor(l + j);
 			if(ppdLen){
 				curToken->value = strdup("#");
@@ -530,6 +529,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 				j += ppdLen; continue;
 			}
 
+			// Match whitespace
 			size_t wsLen = swWhitespace(l + j);
 			if(wsLen){
 				leading_ws = strndup(l + j, wsLen);
@@ -537,7 +537,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 			}
 			else leading_ws = NULL;
 
-			// Check identifiers
+			// Match identifiers
 			size_t idLen = swIdentifier(l + j);
 			if(idLen){
 				curToken->value = strndup(l + j, idLen);
@@ -545,7 +545,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 				// Compare hard coded identifers
 				for(int t = 0; t <= k_max; ++t){
-					if(strcmp(strndup(l + j, idLen), tokenValues[t]) == 0){
+					if(strcmp(curToken->value, tokenValues[t]) == 0){
 						curToken->id   = t;
 						curToken->data = (t <= t_max) ? &typeData[t] : NULL;
 						j += idLen; goto break_continue;
@@ -557,6 +557,16 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 				curToken->data = NULL;
 				j += idLen; continue;
 			}
+
+			// // Match literals
+			// size_t lcLen = swPreprocessor(l + j);
+			// if(lcLen){
+			// 	curToken->value = strndup(l + j, idLen);
+			// 	curToken->len   = lcLen;
+			// 	curToken->id    = e_preprocessor;
+			// 	curToken->data  = NULL;
+			// 	j += lcLen; continue;
+			// }
 
 			// Tokenize anything else as a single character
 			{
