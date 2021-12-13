@@ -4,7 +4,13 @@
 #include "Lynx/Core/Devices.hpp"
 #include "Lynx/Core/Render/Render.hpp"
 
-
+//TODO RENAME .count() AS .len()
+//TODO RENAME .count() AS .len()
+//TODO RENAME .count() AS .len()
+//TODO RENAME .count() AS .len()
+//TODO RENAME .count() AS .len()
+//TODO RENAME .count() AS .len()
+//TODO RENAME .count() AS .len()
 
 namespace lnx{
 	/**
