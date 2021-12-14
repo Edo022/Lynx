@@ -146,8 +146,8 @@ struct TypeData_t typeData[] = {
 
 
 struct LiteralData_t{
-	enum TokenID type;     // Type of the value. This can only be the ID of a base type
-	char value[8];         // Actual value. Contains a float, a double, an int or an unsigned int, depending on the type
+	enum TokenID type;          // Type of the value. This can only be the ID of a base type
+	char value[sizeof(double)]; // Actual value. Contains a float, a double, an int or an unsigned int, depending on the type
 };
 
 struct Token{
@@ -189,9 +189,25 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
 
-int strstartswith(const char *restrict string, const char *restrict prefix){
-    while(*prefix) if(*prefix++ != *string++) return 0;
-    return 1;
+/**
+ * @brief
+ *
+ * @param vStr
+ * @param vBase min 2, max 36 //TODO
+ * @return double
+ */
+double bstrtolf(const char* vStr, const int vBase){
+    double res = 0, div = 1;
+    for(int dec = 0; *vStr; ++vStr) {
+        if(*vStr == '.') dec = 1;
+        else {
+			char digit = tolower(*vStr);
+            double digitVal = digit - ((digit >= 'a') ? 'a' - 10 : '0');
+            if(dec) { div *= vBase; res += digitVal / div; }
+            else    { res *= vBase; res += digitVal; }
+        }
+    }
+    return res;
 }
 
 
@@ -503,9 +519,67 @@ size_t swPreprocessor(const char* vLine){
 	return *vLine == '#';
 }
 
+size_t popLiteral(const char* vLine, struct Token* const pToken, const char* iLine, const unsigned iLineNum, const char* iFileName){
+	if(isdigit(vLine[0])){
+		pToken->id = e_literal;
+		pToken->data = malloc(sizeof(struct LiteralData_t));
+
+		enum TokenID* literalType = &((struct LiteralData_t*)pToken->data)->type;
+		*literalType = t_u32;
+		size_t v = 1, i, base;
+		size_t offset = (vLine[0] == '0' && isalpha(vLine[1])) ? 2 : 0;
+		const char* baseName;
+
+		if(vLine[0] == '0' && vLine[1] == 'b') {
+			for(i = 2; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
+				if(vLine[i] != '.') v &= !!(vLine[i] == '0' || vLine[i] == '1');
+				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
+			}
+			base = 2; baseName = "binary";
+		}
+		else if(vLine[0] == '0' && vLine[1] == 'o') {
+			for(i = 2; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
+				if(vLine[i] != '.') v &= !!(vLine[i] >= '0' && vLine[i] <= '7');
+				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
+			}
+			base = 8; baseName = "octal";
+		}
+		else if(vLine[0] == '0' && vLine[1] == 'x') {
+			for(i = 2; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
+				if(vLine[i] != '.') v &= !!isxdigit(vLine[i]);
+				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
+			}
+			base = 16; baseName = "hexadecimal";
+		}
+		else {
+			for(i = offset; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
+				if(vLine[i] != '.') v &= !!isdigit(vLine[i]);
+				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
+			}
+			base = 10; baseName = "decimal";
+		}
+
+		char* strValue = strndup(vLine, i);
+		if(!v) printSyntaxError(iLineNum, iLine, iFileName, "Invalid %s literal \"%s\"", baseName, strValue);
+		pToken->value = strValue;
+		pToken->len   = i;
+		if(*literalType == t_u32) *(unsigned*)(&((struct LiteralData_t*)pToken->data)->value) =  strtoul(pToken->value + offset, NULL, base);
+		else                        *(double*)(&((struct LiteralData_t*)pToken->data)->value) = bstrtolf(pToken->value + offset, base);
+		return i;
+	}
+	else return 0;
+}
+
+
+
+
+
+
+
+
 //TODO REMOVE LINE STRDUP AND LINE FIELD
 //TODO replace tabs with spaces
-struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum){
+struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum, const char* iFileName){
 	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
 	size_t tok_j = 0;
 	for(size_t i = 0; i < vLineNum; ++i){
@@ -513,6 +587,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 		size_t lLen = strlen(l);
 		char* leading_ws = NULL;
 		for(size_t j = 0; j < lLen; ++tok_j){
+			size_t tokLen;
 			struct Token* curToken = ret + tok_j;
 			curToken->line    = l;
 			curToken->lineNum = i;
@@ -558,15 +633,22 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 				j += idLen; continue;
 			}
 
-			// // Match literals
-			// size_t lcLen = swPreprocessor(l + j);
+			// Match literals
+			// int base; enum TokenID type;
+			// size_t lcLen = swLiteral(l + j, &base, &type);
 			// if(lcLen){
 			// 	curToken->value = strndup(l + j, idLen);
 			// 	curToken->len   = lcLen;
-			// 	curToken->id    = e_preprocessor;
-			// 	curToken->data  = NULL;
+			// 	curToken->id    = e_literal;
+
+			// 	struct LiteralData_t* data = malloc(sizeof(LiteralData_t));
+			// 	data->type  = type;
+			// 	data->value = type == t_u32 ? strtoul() : type == t_i32 strtol() : strtof()
+			// 	curToken->data = data;
+
 			// 	j += lcLen; continue;
 			// }
+			if(tokLen = popLiteral(l + j, curToken, l, vLines[i].line, iFileName)) { j += tokLen; continue; }
 
 			// Tokenize anything else as a single character
 			{
@@ -621,8 +703,22 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 			j += strlen(curTok->leading_ws);
 		}
 
-		strcpy(ret + j, curTok->id <= t_max ?        typeData[curTok->id].glsltype  : curTok->value);
-		j +=            curTok->id <= t_max ? strlen(typeData[curTok->id].glsltype) : curTok->len;
+		if(curTok->id == e_literal){
+			struct LiteralData_t* tokData = curTok->data;
+			char strValue[64];
+			if(tokData->type == t_u32) snprintf(strValue, 64, "%d", *(unsigned*)tokData->value);
+			else                       snprintf(strValue, 64, "%lf",  *(double*)tokData->value);
+			strcpy(ret + j, strValue);
+			j += strlen(strValue);
+		}
+		else if(curTok->id <= t_max){
+			strcpy(ret + j, typeData[curTok->id].glsltype);
+			j +=     strlen(typeData[curTok->id].glsltype);
+		}
+		else{
+			strcpy(ret + j, curTok->value);
+			j += curTok->len;
+		}
 	}
 	ret[j + 1] = '\0';
 	return ret;
@@ -655,7 +751,7 @@ void run(const char* vSrc, const char* vOut){
 	clear(outputLines, outputLinesNum);
 
 	size_t outputTokensNum;
-	struct Token* outputTokens = tokenize(outputLines, outputLinesNum, vSrc, &outputTokensNum);
+	struct Token* outputTokens = tokenize(outputLines, outputLinesNum, vSrc, &outputTokensNum, vSrc);
 
 	char* outputStr = translate(outputTokens, outputTokensNum);
 

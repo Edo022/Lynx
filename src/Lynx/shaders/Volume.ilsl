@@ -42,6 +42,25 @@ local {
 
 
 
+0980	//ok
+00980	//ok
+// 09G		//error
+980		//ok
+0d980	//ok
+0d0980.43	//ok
+0d		//ok
+
+0x3D4	//ok
+0x03D4.ffa2	//ok
+// 3D4		//error
+// 0x3G4	//error
+0x		//error
+
+0b1111010100	//ok
+0b001111010100.01	//ok
+// 0b001111010102	//error
+0b				//error
+
 
 
 void setPixel(f32v2 pos, f32v4 col) {
