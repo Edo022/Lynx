@@ -469,11 +469,10 @@ struct Line* include(const char* vCode, const char* vFile, const int32_t vLineIn
 		else{ // If not
 			ret[len].line = lineNum;
 			ret[len].len = strlen(line);//TODO rename local len
-			ret[len].str = strdup(line); //FIXME use the string left by strsep //FIXME write somewhere that the strings in the array must not be freed as they are all in the same block
+			ret[len].str = line;
 			++len;
 		}
 	}
-	free(code); //FIXME dont free and assign the strings to the array elements
 	*pNum = len;
 	return ret;
 }

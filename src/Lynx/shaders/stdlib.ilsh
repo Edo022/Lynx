@@ -86,14 +86,14 @@ any_f64 frexp(      any_f64 _n, out       any_i32 _exp);      any_f64 frexp(    
 f32 len(any_f32 _n);    f32 dist(any_f32 _a, anu_f32 _b);
 f64 len(any_f64 _n);    f64 dist(any_f64 _a, anu_f64 _b);
 
-f32 dot(any_f32 _a, any_f32 _b);        f32v3 cross(f32v3 _a, f32v3 _b)     any_f32 norm(any_f32 _n)
-f64 dot(any_f64 _a, any_f64 _b);        f64v3 cross(f64v3 _a, f64v3 _b)     any_f64 norm(any_f64 _n)
+f32 dot(any_f32 _a, any_f32 _b);        f32v3 cross(f32v3 _a, f32v3 _b);     any_f32 norm(any_f32 _n);
+f64 dot(any_f64 _a, any_f64 _b);        f64v3 cross(f64v3 _a, f64v3 _b);     any_f64 norm(any_f64 _n);
 
-any_f32 faceForward(any_f32 _n, any_f32 _i, any_f32 _nref)
-any_f64 faceForward(any_f64 _n, any_f64 _i, any_f64 _nref)
+any_f32 faceForward(any_f32 _n, any_f32 _i, any_f32 _nref);
+any_f64 faceForward(any_f64 _n, any_f64 _i, any_f64 _nref);
 
-any_f32 reflect(any_f32 _i, any_f32 _n)     any_f32 refract(any_f32 _i, any_f32 _n, f32 _eta)
-any_f64 reflect(any_f64 _i, any_f64 _n)     any_f64 refract(any_f64 _i, any_f64 _n, f64 _eta)
+any_f32 reflect(any_f32 _i, any_f32 _n);     any_f32 refract(any_f32 _i, any_f32 _n, f32 _eta);
+any_f64 reflect(any_f64 _i, any_f64 _n);     any_f64 refract(any_f64 _i, any_f64 _n, f64 _eta);
 
 
 
