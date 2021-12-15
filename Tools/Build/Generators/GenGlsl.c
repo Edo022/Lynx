@@ -3,6 +3,7 @@
 #define _DEFAULT_SOURCE // Required for realpath and strsep
 #include <stdio.h>
 #include <ctype.h>
+#include <inttypes.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -24,7 +25,7 @@
 
 
 struct Line {
-	unsigned line;
+	uint32_t line;
 	char* str;
 	size_t len;
 };
@@ -196,9 +197,9 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
  * @param vBase min 2, max 36 //TODO
  * @return double
  */
-double bstrtolf(const char* vStr, const int vBase){
+double bstrtolf(const char* vStr, const int32_t vBase){
     double res = 0, div = 1;
-    for(int dec = 0; *vStr; ++vStr) {
+    for(int32_t dec = 0; *vStr; ++vStr) {
         if(*vStr == '.') dec = 1;
         else {
 			char digit = tolower(*vStr);
@@ -218,14 +219,14 @@ double bstrtolf(const char* vStr, const int vBase){
 char* readFile(const char* vFilePath){
 	FILE* f = fopen(vFilePath, "r");
 	fseek(f, 0, SEEK_END);
-	int size = ftell(f);
+	int32_t size = ftell(f);
 	rewind(f);
 
 	char* data = malloc(size + 1);
 	// fread(data, 1, size, f);
 	// data[size] = '\0';
-	int j;
-	for(int i = j = 0; i < size; ++i) {
+	int32_t j;
+	for(int32_t i = j = 0; i < size; ++i) {
 		char c = fgetc(f);
 		if(c != '\r'){
 			data[j] = c;
@@ -241,8 +242,8 @@ char* readFile(const char* vFilePath){
 
 
 //Returns the address of the vIndex-th occurrence of vChar in the vSrc string
-const char* strchrn(const char* vSrc, const char vChar, const unsigned vIndex){ //TODO add start_from parameter
-	unsigned n = 0;
+const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex){ //TODO add start_from parameter
+	uint32_t n = 0;
 	for(const char* c = vSrc;; ++c) {
 		if(*c == '\0') return NULL;
 		else if(*c == vChar) ++n;
@@ -255,7 +256,7 @@ const char* strchrn(const char* vSrc, const char vChar, const unsigned vIndex){ 
 //The original string is not modified
 //The returned string must be freed
 //Returns NULL if the vIndex-th string does not exist
-char* strtokn(const char* vSrc, const char vChar, const unsigned vIndex){ //TODO add start from parameter
+char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){ //TODO add start from parameter
 	const char* a = vIndex ? strchrn(vSrc, vChar, vIndex - 1) : vSrc;
 	const char* b = strchr(a + !!vIndex, vChar);
 	size_t len =  b ? b - a : strlen(a);
@@ -277,7 +278,7 @@ void printError(const char* vFormat, ...){
 }
 
 
-void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, const char* vFormat, ...){
+void printSyntaxError(const int32_t vLineN, const char* vLine, const char* vFile, const char* vFormat, ...){
 	va_list vArgs; va_start(vArgs, 0);
 	char vStr[MAX_ERR];
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
@@ -317,7 +318,7 @@ void printSyntaxError(const int vLineN, const char* vLine, const char* vFile, co
 void clear(struct Line* vLines, const size_t vNum){
 	for(size_t i = 0; i < vNum; ++i){
 		struct Line* l = &vLines[i];
-		for(int j = l->len - 1; j >= 0; --j){
+		for(int32_t j = l->len - 1; j >= 0; --j){
 			char c = l->str[j];
 			if(c != '\t' && c != '\r' && c != ' ' && c != '\n') {
 				l->str[j + 1] = '\0';
@@ -338,19 +339,19 @@ void clear(struct Line* vLines, const size_t vNum){
 //Returns the resulting string
 char* uncomment(const char* vCode, const char* vFile){
 	char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
-	int vCodeLen = strlen(vCode);
-	int i = 0;
+	int32_t vCodeLen = strlen(vCode);
+	int32_t i = 0;
 	while(i < vCodeLen){                              //For each character
 		if(vCode[i] == '"'){                                //If the character is a double quote
-			int strBegin = i;                                   //Save the string beginning for eventual errors
+			int32_t strBegin = i;                                   //Save the string beginning for eventual errors
 			strncat(code, &vCode[i], 1);                              //Paste opening "
 			++i;                                                //Skip opening "
 			while(vCode[i] != '"'){                              //For each character of the string
 				strncat(code, &vCode[i], 1);                                    //Paste character
 				++i;                                              //Update counter
 				if(i == vCodeLen){                                 //If the string does not end
-					int vLineN = 0;                                      //
-					for(int j = 0; j < strBegin; ++j){                        //Find the line in which the string begins
+					int32_t vLineN = 0;                                      //
+					for(int32_t j = 0; j < strBegin; ++j){                        //Find the line in which the string begins
 						if(vCode[j] == '\n') ++vLineN;                //[...] Print a syntax error
 					}
 					// printSyntaxError(vLineN, vCode.split('\n')[vLineN], vFile, 'Unterminated string'); //FIXME rewrite
@@ -402,7 +403,7 @@ char* uncomment(const char* vCode, const char* vFile){
 
 //Checks if an included path is valid
 //Prints an error if it's not
-void checkIncludeFile(const int vLineN, const char* vLine, const char* vFile, const char* vName){ //TODO check vLine type
+void checkIncludeFile(const int32_t vLineN, const char* vLine, const char* vFile, const char* vName){ //TODO check vLine type
 	//if not re.match('^' + pat['t_path'] + '$', vName) printSyntaxError(vLineN, vLine, vFile, "\"%s\" is not a valid file path", vName) //FIXME
 	if(access(vName, F_OK) == 0) {
 		struct stat fileStat; stat(vName, &fileStat);
@@ -428,7 +429,7 @@ char* isInclude(const char* vLine){
 	if(memcmp(vLine, s, strlen(s)) == 0){
 		const char c = vLine[strlen(s)];
 		if(c == '"' || c == '<'){
-			for(int i = strlen(s) + 1, j = 0; i < strlen(vLine); ++i, ++j){
+			for(int32_t i = strlen(s) + 1, j = 0; i < strlen(vLine); ++i, ++j){
 				if(vLine[i] == (c == '<' ? '>' : '"')) {
 					ret[j] = '\0';
 					return ret;
@@ -446,12 +447,12 @@ char* isInclude(const char* vLine){
 //Creates a code with no includes by pasting all the included files together
 //Returns the resulting string
 //Comments are not preserved
-struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, size_t* pNum){
+struct Line* include(const char* vCode, const char* vFile, const int32_t vLineInfo, size_t* pNum){
 	char* code = uncomment(vCode, vFile); //!Shredded by strsep
 	struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES); //ret[0] = '\0';
 	char *line;//, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
 	size_t len = 0;
-	for(int i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
+	for(int32_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
 		size_t lineNum = vLineInfo ? vLineInfo : i + 1;
 		char* r = isInclude(line);
 		if(r != NULL){								// If the line is an include statement
@@ -494,80 +495,106 @@ struct Line* include(const char* vCode, const char* vFile, const int vLineInfo, 
 
 
 
-size_t swIdentifier(const char* vLine){
-	size_t len = 0;
-	char c = *vLine;
-	if(len = isalpha(c) || c == '_'){
-		++vLine;
-		for(c = *vLine;; ++vLine, ++len, c = *vLine) {
-			if(!(isalnum(c) || c == '_')) break;
-		}
-	}
-	return len;
-}
 
 
-size_t swWhitespace(const char* vLine){
+
+
+size_t findSpaces(const char* vLine){
 	char c = *vLine;
-	for(int i = 0;; c = vLine[++i]) {
+	for(int32_t i = 0;; c = vLine[++i]) {
 		if(!(c == '\t' || c == ' ')) return i;
 	}
 }
 
 
-size_t swPreprocessor(const char* vLine){
-	return *vLine == '#';
+
+
+size_t getPreprocessor(const char* vLine, struct Token* const pToken){
+	if(*vLine == '#'){
+		pToken->value = strdup("#");
+		pToken->len   = 1;
+		pToken->id    = e_preprocessor;
+		pToken->data  = NULL;
+		return 1;
+	}
+	return 0;
 }
 
-size_t popLiteral(const char* vLine, struct Token* const pToken, const char* iLine, const unsigned iLineNum, const char* iFileName){
-	if(isdigit(vLine[0])){
-		pToken->id = e_literal;
-		pToken->data = malloc(sizeof(struct LiteralData_t));
 
-		enum TokenID* literalType = &((struct LiteralData_t*)pToken->data)->type;
-		*literalType = t_u32;
-		size_t v = 1, i, base;
-		size_t offset = (vLine[0] == '0' && isalpha(vLine[1])) ? 2 : 0;
-		const char* baseName;
 
-		if(vLine[0] == '0' && vLine[1] == 'b') {
-			for(i = 2; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
-				if(vLine[i] != '.') v &= !!(vLine[i] == '0' || vLine[i] == '1');
-				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
-			}
-			base = 2; baseName = "binary";
-		}
-		else if(vLine[0] == '0' && vLine[1] == 'o') {
-			for(i = 2; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
-				if(vLine[i] != '.') v &= !!(vLine[i] >= '0' && vLine[i] <= '7');
-				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
-			}
-			base = 8; baseName = "octal";
-		}
-		else if(vLine[0] == '0' && vLine[1] == 'x') {
-			for(i = 2; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
-				if(vLine[i] != '.') v &= !!isxdigit(vLine[i]);
-				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
-			}
-			base = 16; baseName = "hexadecimal";
-		}
-		else {
-			for(i = offset; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
-				if(vLine[i] != '.') v &= !!isdigit(vLine[i]);
-				else if(*literalType == t_u32) *literalType = t_f64; else v = 0;
-			}
-			base = 10; baseName = "decimal";
-		}
 
-		char* strValue = strndup(vLine, i);
-		if(!v) printSyntaxError(iLineNum, iLine, iFileName, "Invalid %s literal \"%s\"", baseName, strValue);
-		pToken->value = strValue;
-		pToken->len   = i;
-		if(*literalType == t_u32) *(unsigned*)(&((struct LiteralData_t*)pToken->data)->value) =  strtoul(pToken->value + offset, NULL, base);
-		else                        *(double*)(&((struct LiteralData_t*)pToken->data)->value) = bstrtolf(pToken->value + offset, base);
-		return i;
+size_t getIdentifier(const char* vLine, struct Token* const pToken){
+	size_t i;
+	if(isalpha(vLine[0]) || vLine[0] == '_'){
+		for(i = 1; isalnum(vLine[i]) || vLine[i] == '_'; ++i);	// Get the length
+		pToken->value = strndup(vLine, i);						// Save the identifier
+		pToken->len   = i;										// Save the length
+
+		for(int32_t t = 0; t <= k_max; ++t){					// For each hard coded identifier
+			if(strcmp(pToken->value, tokenValues[t]) == 0){			// If it matches the current identifier
+				pToken->id   = t;										// Set token id to the corresponding identifier id
+				pToken->data = (t <= t_max) ? &typeData[t] : NULL;		// Set token data to the hard coded data of the corresponding type, or NULL if the token is not a type
+				return i;												// Return the length
+			}
+		}
+		pToken->id    = e_user_defined;							// Set token id to user defined identifier
+		pToken->data  = NULL;									// Set token data to NULL
+		return i;												// Return the length
 	}
-	else return 0;
+	return 0;
+}
+
+
+
+
+//TODO comment
+//TODO check empty literals like 0x, 0d, 0o
+size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLine, const uint32_t iLineNum, const char* iFileName){
+	if(isdigit(vLine[0])){
+		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
+
+		size_t isValid = 1, i, base;									// 1 if the literal is valid, loop index and literal length, literal base
+		size_t offset = (vLine[0] == '0' && isalpha(vLine[1])) ? 2 : 0;	// 0 or 2 if the literal has a prefix
+		const char* baseName;											// The complete name of the base
+
+		// Get literal base and complete base name
+		if     (vLine[0] == '0' && vLine[1] == 'b') { base =  2; baseName = "binary";      }
+		else if(vLine[0] == '0' && vLine[1] == 'o') { base =  8; baseName = "octal";       }
+		else if(vLine[0] == '0' && vLine[1] == 'x') { base = 16; baseName = "hexadecimal"; }
+		else                                        { base = 10; baseName = "decimal";     }
+
+		// Get literal length and type and check if it's valid
+		enum TokenID* literalType = &((struct LiteralData_t*)pToken->data)->type;	// Cache the address of the type
+		*literalType = t_u32;														// Default type is u32, set to f64 if the loop finds a '.'
+		for(i = offset; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
+			if(vLine[i] != '.') isValid &= !!(base == 16 ? isxdigit(vLine[i]) : vLine[i] >= '0' && vLine[i] <= '0' + base);
+			else if(*literalType == t_u32) *literalType = t_f64; else isValid = 0;
+		}
+
+		// Get and save the string value of the literal and print an error if it's not valid
+		pToken->value = strndup(vLine, i);
+		if(!isValid) printSyntaxError(iLineNum, iLine, iFileName, "Invalid %s literal \"%s\"", baseName, pToken->value);
+
+		// Convert the literal to an unsigned or a double and save it in the value of the allocated data
+		if(*literalType == t_u32) *(uint32_t*)(&((struct LiteralData_t*)pToken->data)->value) =  strtoul(pToken->value + offset, NULL, base);
+		else                        *(double*)(&((struct LiteralData_t*)pToken->data)->value) = bstrtolf(pToken->value + offset,       base);
+
+		pToken->len   = i;			// Save the length
+		pToken->id    = e_literal;	// Set token id to literal
+		return i;					// Return the length
+	}
+	return 0; //TODO REMOVE
+}
+
+
+
+
+size_t getUnknown(const char* vLine, struct Token* const pToken) {
+	pToken->value = strndup(vLine, 1);
+	pToken->len   = 1;
+	pToken->id    = e_unknown;
+	pToken->data  = NULL;
+	return 1;
 }
 
 
@@ -587,78 +614,28 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 		size_t lLen = strlen(l);
 		char* leading_ws = NULL;
 		for(size_t j = 0; j < lLen; ++tok_j){
-			size_t tokLen;
-			struct Token* curToken = ret + tok_j;
-			curToken->line    = l;
-			curToken->lineNum = i;
-			curToken->start   = j;
-			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
+			struct Token* curToken = ret + tok_j;	// Cache the address of the current token
+			curToken->line    = l;					// Set the line //TODO remove line
+			curToken->lineNum = i;					// Set the number of the line
+			curToken->start   = j;					// Set the start index to j
+			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL; // Save leading whitespace
 
-			// Match preprocessor directives
-			size_t ppdLen = swPreprocessor(l + j);
-			if(ppdLen){
-				curToken->value = strdup("#");
-				curToken->len   = ppdLen;
-				curToken->id    = e_preprocessor;
-				curToken->data  = NULL;
-				j += ppdLen; continue;
-			}
 
-			// Match whitespace
-			size_t wsLen = swWhitespace(l + j);
+			// Get leading whitespace
+			size_t wsLen = findSpaces(l + j);
 			if(wsLen){
 				leading_ws = strndup(l + j, wsLen);
 				j += wsLen; --tok_j; continue;
 			}
 			else leading_ws = NULL;
 
-			// Match identifiers
-			size_t idLen = swIdentifier(l + j);
-			if(idLen){
-				curToken->value = strndup(l + j, idLen);
-				curToken->len = idLen;
-
-				// Compare hard coded identifers
-				for(int t = 0; t <= k_max; ++t){
-					if(strcmp(curToken->value, tokenValues[t]) == 0){
-						curToken->id   = t;
-						curToken->data = (t <= t_max) ? &typeData[t] : NULL;
-						j += idLen; goto break_continue;
-					}
-				}
-
-				//Save unknown identifiers
-				curToken->id   = e_user_defined;
-				curToken->data = NULL;
-				j += idLen; continue;
-			}
-
-			// Match literals
-			// int base; enum TokenID type;
-			// size_t lcLen = swLiteral(l + j, &base, &type);
-			// if(lcLen){
-			// 	curToken->value = strndup(l + j, idLen);
-			// 	curToken->len   = lcLen;
-			// 	curToken->id    = e_literal;
-
-			// 	struct LiteralData_t* data = malloc(sizeof(LiteralData_t));
-			// 	data->type  = type;
-			// 	data->value = type == t_u32 ? strtoul() : type == t_i32 strtol() : strtof()
-			// 	curToken->data = data;
-
-			// 	j += lcLen; continue;
-			// }
-			if(tokLen = popLiteral(l + j, curToken, l, vLines[i].line, iFileName)) { j += tokLen; continue; }
-
-			// Tokenize anything else as a single character
-			{
-				curToken->value = strndup(l + j, 1);
-				curToken->len   = 1;
-				curToken->id    = e_unknown;
-				curToken->data  = NULL;
-				++j;
-			}
-			break_continue:
+			// Find the first token, save into the array and update j
+			size_t tokLen;
+			if     (tokLen = getPreprocessor(l + j, curToken)){}
+			else if(tokLen =   getIdentifier(l + j, curToken)){}
+			else if(tokLen =      getLiteral(l + j, curToken, l, vLines[i].line, iFileName)){}
+			else    tokLen =      getUnknown(l + j, curToken);
+			j += tokLen;
 		}
 
 		//Add newline token
@@ -706,7 +683,7 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 		if(curTok->id == e_literal){
 			struct LiteralData_t* tokData = curTok->data;
 			char strValue[64];
-			if(tokData->type == t_u32) snprintf(strValue, 64, "%d", *(unsigned*)tokData->value);
+			if(tokData->type == t_u32) snprintf(strValue, 64, "%d", *(uint32_t*)tokData->value);
 			else                       snprintf(strValue, 64, "%lf",  *(double*)tokData->value);
 			strcpy(ret + j, strValue);
 			j += strlen(strValue);
@@ -773,7 +750,7 @@ void run(const char* vSrc, const char* vOut){
 
 
 
-int main(int argc, char* argv[]){
+int32_t main(int32_t argc, char* argv[]){
 	if(argc != 3){
 		printf("GenGlsl: Wrong number of arguments");
 		return 1;
