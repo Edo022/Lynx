@@ -99,38 +99,36 @@ const char* keywordValues[] = {
 enum TokenID {
 	//Types
 	t_start = 0,
-	t_b      =  0,   t_u32      = 17,   t_i32      = 33,   t_f32      = 49,   t_f64      = 65,   // Scalar types
-	t_bv2    =  1,   t_u32v2    = 18,   t_i32v2    = 34,   t_f32v2    = 50,   t_f64v2    = 66,   // 2-component vectors
-	t_bv3    =  2,   t_u32v3    = 19,   t_i32v3    = 35,   t_f32v3    = 51,   t_f64v3    = 67,   // 3-component vectors
-	t_bv4    =  3,   t_u32v4    = 20,   t_i32v4    = 36,   t_f32v4    = 52,   t_f64v4    = 68,   // 4-component vectors
-	t_bm2    =  4,   t_u32m2    = 21,   t_i32m2    = 37,   t_f32m2    = 53,   t_f64m2    = 69,   // 2x2 square matrices
-	t_bm3    =  5,   t_u32m3    = 22,   t_i32m3    = 38,   t_f32m3    = 54,   t_f64m3    = 70,   // 3x3 square matrices
-	t_bm4    =  6,   t_u32m4    = 23,   t_i32m4    = 39,   t_f32m4    = 55,   t_f64m4    = 71,   // 4x4 square matrices
-	t_bm2x2  =  7,   t_u32m2x2  = 24,   t_i32m2x2  = 40,   t_f32m2x2  = 56,   t_f64m2x2  = 72,   // 2x2 matrices
-	t_bm2x3  =  8,   t_u32m2x3  = 25,   t_i32m2x3  = 41,   t_f32m2x3  = 57,   t_f64m2x3  = 73,   // 2x3 matrices
-	t_bm2x4  =  9,   t_u32m2x4  = 26,   t_i32m2x4  = 42,   t_f32m2x4  = 58,   t_f64m2x4  = 74,   // 2x4 matrices
-	t_bm3x2  = 10,   t_u32m3x2  = 27,   t_i32m3x2  = 43,   t_f32m3x2  = 59,   t_f64m3x2  = 75,   // 3x2 matrices
-	t_bm3x3  = 11,   t_u32m3x3  = 28,   t_i32m3x3  = 44,   t_f32m3x3  = 60,   t_f64m3x3  = 76,   // 3x3 matrices
-	t_bm3x4  = 12,   t_u32m3x4  = 29,   t_i32m3x4  = 45,   t_f32m3x4  = 61,   t_f64m3x4  = 77,   // 3x4 matrices
-	t_bm4x2  = 13,   t_u32m4x2  = 30,   t_i32m4x2  = 46,   t_f32m4x2  = 62,   t_f64m4x2  = 78,   // 4x2 matrices
-	t_bm4x3  = 14,   t_u32m4x3  = 31,   t_i32m4x3  = 47,   t_f32m4x3  = 63,   t_f64m4x3  = 79,   // 4x3 matrices
-	t_bm4x4  = 15,   t_u32m4x4  = 32,   t_i32m4x4  = 48,   t_f32m4x4  = 64,   t_f64m4x4  = 80,   // 4x4 matrices
-	t_void   = 16, // Just void
+	t_b     =  0,   t_u32     =  1,   t_i32     =  2,   t_f32     =  3,   t_f64     =  4,   // Scalar types
+	t_bv2   =  5,   t_u32v2   =  6,   t_i32v2   =  7,   t_f32v2   =  8,   t_f64v2   =  9,   // 2-component vectors
+	t_bv3   = 10,   t_u32v3   = 11,   t_i32v3   = 12,   t_f32v3   = 13,   t_f64v3   = 14,   // 3-component vectors
+	t_bv4   = 15,   t_u32v4   = 16,   t_i32v4   = 17,   t_f32v4   = 18,   t_f64v4   = 19,   // 4-component vectors
+	t_bm2   = 20,   t_u32m2   = 21,   t_i32m2   = 22,   t_f32m2   = 23,   t_f64m2   = 24,   // 2x2 square matrices
+	t_bm3   = 25,   t_u32m3   = 26,   t_i32m3   = 27,   t_f32m3   = 28,   t_f64m3   = 29,   // 3x3 square matrices
+	t_bm4   = 30,   t_u32m4   = 31,   t_i32m4   = 32,   t_f32m4   = 33,   t_f64m4   = 34,   // 4x4 square matrices
+	t_bm2x2 = 35,   t_u32m2x2 = 36,   t_i32m2x2 = 37,   t_f32m2x2 = 38,   t_f64m2x2 = 39,   // 2x2 matrices
+	t_bm2x3 = 40,   t_u32m2x3 = 41,   t_i32m2x3 = 42,   t_f32m2x3 = 43,   t_f64m2x3 = 44,   // 2x3 matrices
+	t_bm2x4 = 45,   t_u32m2x4 = 46,   t_i32m2x4 = 47,   t_f32m2x4 = 48,   t_f64m2x4 = 49,   // 2x4 matrices
+	t_bm3x2 = 50,   t_u32m3x2 = 51,   t_i32m3x2 = 52,   t_f32m3x2 = 53,   t_f64m3x2 = 54,   // 3x2 matrices
+	t_bm3x3 = 55,   t_u32m3x3 = 56,   t_i32m3x3 = 57,   t_f32m3x3 = 58,   t_f64m3x3 = 59,   // 3x3 matrices
+	t_bm3x4 = 60,   t_u32m3x4 = 61,   t_i32m3x4 = 62,   t_f32m3x4 = 63,   t_f64m3x4 = 64,   // 3x4 matrices
+	t_bm4x2 = 65,   t_u32m4x2 = 66,   t_i32m4x2 = 67,   t_f32m4x2 = 68,   t_f64m4x2 = 69,   // 4x2 matrices
+	t_bm4x3 = 70,   t_u32m4x3 = 71,   t_i32m4x3 = 72,   t_f32m4x3 = 73,   t_f64m4x3 = 74,   // 4x3 matrices
+	t_bm4x4 = 75,   t_u32m4x4 = 76,   t_i32m4x4 = 77,   t_f32m4x4 = 78,   t_f64m4x4 = 79,   // 4x4 matrices
+	t_void  = 80, // Just void
 	t_end = 80, //! Update this value when adding new types
 
 
 	// Keywords
 	k_start = 1000,
-	// If-else           Loops                Flow control            Switch case
-	k_if   = 1001,       k_while = 1004,      k_continue = 1007,      k_switch  = 1010,
-	k_else = 1002,       k_for   = 1005,      k_break    = 1008,      k_case    = 1011,
-	k_elif = 1003,       k_do    = 1006,      k_return   = 1009,      k_default = 1012,
+	k_if       = 1001,    k_else      = 1005,    k_elif    = 1009,                      // If-else
+	k_while    = 1002,    k_for       = 1006,    k_do      = 1010,                      // Loops
+	k_continue = 1003,    k_break     = 1007,    k_return  = 1011,                      // Flow control
+	k_switch   = 1004,    k_case      = 1008,    k_default = 1012,                      // Switch case
 
-	k_highp = 1013,
-	k_medp  = 1014,
-	k_lowp  = 1015,      k_local  = 1017,     k_struct    = 1019,
-	k_const = 1016,      k_extern = 1018,     k_preicison = 1020,
-	// Qualifiers        Inputs               Other
+	k_highp    = 1013,    k_medp      = 1016,    k_lowp    = 1019,    k_const = 1020,   // Qualifiers
+	k_local    = 1014,    k_extern    = 1017,                                           // Inputs
+	k_struct   = 1015,    k_preicison = 1018,                                           // Other
 	k_end = 1020, //! Update this value when adding new keywords
 
 
@@ -763,6 +761,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 
 char* translate(const struct Token* vTokens, const size_t vTokensNum){
+	typeData[t_f32v4 - t_start].glslType = "aaaaa";
 	char* ret = malloc(MAX_CODE_LEN);
 	size_t j = 0;
 	for(size_t i = 0; i < vTokensNum; ++i){
