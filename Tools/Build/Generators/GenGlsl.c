@@ -62,7 +62,7 @@ struct OperatorData_t op[] = { // Sorted by length
 
 
 
-const char* tokenValues[] = {
+const char* typeValues[] = {
 	//Types
 	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
 	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
@@ -80,8 +80,9 @@ const char* tokenValues[] = {
 	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
 	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
 	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
-	"void",                                                             //Just void
-
+	"void"                                                              //Just void
+};
+const char* keywordValues[] = {
 	//If-else      Loops           Flow control       Switch case
 	"if",          "while",        "continue",        "switch",
 	"else",        "for",          "break",           "case",
@@ -157,12 +158,14 @@ enum TokenID {
 
 	e_max = e_unknown
 };
-
+int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
+int isKeyword (enum TokenID vID){ return vID >= k_start && vID < k_end; }
+int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
 
 
 
 struct TypeData_t {
-	char* glsltype;        // The corresponding GLSL type
+	char* glslType;        // The corresponding GLSL type
 	enum TokenID baseType; // Base type of the type  e.g. the base type of a f32 matrix is f32
 	size_t x;              // Width   e.g. a 2x3 matrix has x = 2, a scalar type has x = 1
 	size_t y;              // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
@@ -590,7 +593,7 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 
 		// Types
 		for(int32_t t = t_start; t < t_end; ++t){				// For each hard coded type
-			if(!strcmp(pToken->value, tokenValues[t - t_start])){	// If it matches the current identifier
+			if(!strcmp(pToken->value, typeValues[t - t_start])){	// If it matches the current identifier
 				pToken->id   = t;										// Set token id to the corresponding type id
 				pToken->data = &typeData[t - t_start];					// Set token data to the hard coded data of the corresponding type
 				return i;												// Return the length
@@ -598,9 +601,9 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 		}
 
 		// Keywords
-		for(int32_t t = k_start; t < k_end; ++t){				// For each hard coded keyword
-			if(!strcmp(pToken->value, tokenValues[t - k_start])){	// If it matches the current identifier
-				pToken->id   = t;										// Set token id to the corresponding identifier id
+		for(int32_t k = k_start; k < k_end; ++k){				// For each hard coded keyword
+			if(!strcmp(pToken->value, keywordValues[k - k_start])){	// If it matches the current identifier
+				pToken->id   = k;										// Set token id to the corresponding identifier id
 				pToken->data = NULL;									// Set token data to NULL
 				return i;												// Return the length
 			}
@@ -660,6 +663,24 @@ size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLi
 
 
 
+size_t getOperator(const char* vLine, struct Token* const pToken){
+	size_t opLen;
+	for(int32_t o = o_start; o < o_end; ++o){			// For each hard coded operator
+		opLen = strlen(op[o - o_start].value);				// Cache operator length
+		if(!strncmp(vLine, op[o - o_start].value, opLen)){	// If it matches the current operator
+			pToken->value = op[o - o_start].value;				// Save the operator
+			pToken->len   = opLen;								// Save the length
+			pToken->id    = o;									// Set token id to the corresponding operator id
+			pToken->data  = &op[o - o_start];					// Set token data to the hard coded data of the corresponding operator
+			return opLen;										// Return the length
+		}
+	}
+	return 0;
+}
+
+
+
+
 size_t getUnknown(const char* vLine, struct Token* const pToken) {
 	pToken->value = strndup(vLine, 1);
 	pToken->len   = 1;
@@ -667,24 +688,6 @@ size_t getUnknown(const char* vLine, struct Token* const pToken) {
 	pToken->data  = NULL;
 	return 1;
 }
-
-
-
-size_t getOperator(const char* vLine, struct Token* const pToken){
-	// size_t i, opLen;
-	// for(int32_t o = o_start; o < o_end; ++o){					// For each hard coded operator
-	// 	opLen = strlen(op[o - o_start].value);						// Cache operator length
-	// 	if(!strncmp(pToken->value, op[o - o_start].value, opLen)){	// If it matches the current operator
-	// 		pToken->value = op[o - o_start].value;						// Save the operator
-	// 		pToken->len   = i;											// Save the length
-	// 		pToken->id    = o;											// Set token id to the corresponding operator id
-	// 		pToken->data  = &op[o - o_start];							// Set token data to the hard coded data of the corresponding operator
-	// 		return i;													// Return the length
-	// 	}
-	// }
-	return 0;
-}
-
 
 
 
@@ -777,9 +780,17 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 			strcpy(ret + j, strValue);
 			j += strlen(strValue);
 		}
-		else if(curTok->id >= t_start && curTok->id < t_end){
-			strcpy(ret + j, typeData[curTok->id].glsltype);
-			j +=     strlen(typeData[curTok->id].glsltype);
+		else if(isType(curTok->id)){
+			strcpy(ret + j, ((struct TypeData_t*)(curTok->data))->glslType);
+			j +=     strlen(((struct TypeData_t*)(curTok->data))->glslType);
+		}
+		else if(isKeyword(curTok->id)){
+			strcpy(ret + j, keywordValues[curTok->id - k_start]);
+			j +=     strlen(keywordValues[curTok->id - k_start]);
+		}
+		else if(isOperator(curTok->id)){
+			strcpy(ret + j, ((struct OperatorData_t*)(curTok->data))->value);
+			j +=     strlen(((struct OperatorData_t*)(curTok->data))->value);
 		}
 		else{
 			strcpy(ret + j, curTok->value);
