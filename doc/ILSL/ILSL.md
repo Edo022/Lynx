@@ -290,6 +290,7 @@ the struct has to run `core.start(<extern allocations...>)` in the first instruc
 | `\|\|`                                                         | 14         | Left to right | Logical or                                                                             |
 | `?` `:`                                                        | 15         | Right to left | Ternary                                                                                |
 | `=`<br>`+=` `-=` `*=` `/=` `%=`<br>`<<=` `>>=` `&=` `^=` `\|=` | 16         | Right to left | Assignment<br>Arithmetic assignment<br>Bitwise assignment                              |
+| `,`                                                            | 17         | Left to right | List                                                                                   |
 
 
 | Type                                                                                              | Size (bytes)               | Name                                                                                                                                                                   |                                          |
@@ -308,3 +309,4 @@ the struct has to run `core.start(<extern allocations...>)` in the first instruc
 | `bm4x3`      <br>`u32m4x3`        <br>`i32m4x3`        <br>`f32m4x3`        <br>`f64m4x3`         | 16<br>16<br>16<br>16<br>32 | 4x3 matrix of booleans<br>4x3 matrix of 32-bit unsigned integers<br>4x3 matrix of 32-bit signed integers<br>4x3 matrix of 32-bit floats<br>4x3 matrix of 64-bit floats | ▅ ▅ ▅<br>▅ ▅ ▅<br>▅ ▅ ▅<br>▅ ▅ ▅         |
 | `bm4x4` `bm4`<br>`u32m4x4` `u32m4`<br>`i32m4x4` `i32m4`<br>`f32m4x4` `f32m4`<br>`f64m4x4` `f64m4` | 16<br>16<br>16<br>16<br>32 | 4x4 matrix of booleans<br>4x4 matrix of 32-bit unsigned integers<br>4x4 matrix of 32-bit signed integers<br>4x4 matrix of 32-bit floats<br>4x4 matrix of 64-bit floats | ▅ ▅ ▅ ▅<br>▅ ▅ ▅ ▅<br>▅ ▅ ▅ ▅<br>▅ ▅ ▅ ▅ |
 | `void`                                                                                            | -                          | Void                                                                                                                                                                   | -                                        |
+//TODO add scope

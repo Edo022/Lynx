@@ -10,11 +10,11 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/stat.h>
+#include <linux/limits.h>
 
 #define MAX_ERR         4100100
 #define MAX_CODE_LEN    4100100		//FIXME use dynamic reallocations
 #define MAX_CODE_LINES  2100100		//FIXME use dynamic reallocations or pass the size
-#define MAX_PATH        512			//FIXME read from system informations
 #define MAX_TOKENS		8100100		//FIXME use dynamic reallocations
 
 
@@ -30,6 +30,35 @@ struct Line {
 	size_t len;
 };
 
+
+// op = list(reversed(sorted(list(({'val' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
+
+enum OperatorType {
+	ot_logical,		// == !=          && || ^^ <   >   !
+	ot_arithmetic,	// +  -  *  /  %  &  |  ^  <<  >>  ~
+	ot_assignment,	// += -= *= /= %= &= |= ^= <<= >>= =
+	ot_inc_dec,		// ++n n++ --n n--         <=  >=
+	ot_ternary,		// ? :
+	ot_field,		// .
+	ot_list,		// ,
+	ot_group,		// ()
+	ot_scope,		// {}
+	ot_subscript,	// []
+};
+struct OperatorData_t {
+	char* value;			// String value of the operator
+	enum OperatorType type;	// Type of the operator
+	int32_t precedence;		// Operator precedence. Higher values have higher precedence
+	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
+};
+struct OperatorData_t op[] = { // Sorted by length
+	{ "<<=", ot_assignment, 16, 'r' }, { ">>=", ot_assignment, 16, 'r' }, { "+=", ot_assignment, 16, 'r' }, { "*=", ot_assignment, 16, 'r' }, { "-=", ot_assignment, 16, 'r' }, { "/=", ot_assignment, 16, 'r' }, { "%=", ot_assignment, 16, 'r' }, { "&=", ot_assignment, 16, 'r' }, { "|=", ot_assignment, 16, 'r' }, { "^=", ot_assignment, 16, 'r' },
+	{ "<=",  ot_logical,     7, 'l' }, { ">=",  ot_logical,     7, 'l' }, { "==", ot_logical,     8, 'l' }, { "!=", ot_logical,     8, 'l' }, { "&&", ot_logical,    12, 'l' }, { "||", ot_logical,    14, 'l' }, { "^^", ot_logical,    13, 'l' },
+	{ "++",  ot_inc_dec,     2, 'l' }, { "--",  ot_inc_dec,     2, 'l' }, //! Can be prefix or postfix. The actual precedence and associativity is determined after the tokenization
+	{ "<<",  ot_arithmetic,  6, 'l' }, { ">>" , ot_arithmetic,  6, 'l' }, { "+",  ot_arithmetic,  5, 'l' }, { "*",  ot_arithmetic,  4, 'l' }, { "-",  ot_arithmetic,  5, 'l' }, { "/",  ot_arithmetic,  4, 'l' }, { "%",  ot_arithmetic,  4, 'l' }, { "&",  ot_arithmetic,  9, 'l' }, { "|",  ot_arithmetic, 11, 'l' }, { "^",  ot_arithmetic, 10, 'l' },
+	{ "<",   ot_logical,     7, 'l' }, { ">",   ot_logical,     7, 'l' }, { "=",  ot_assignment, 16, 'r' }, { "!",  ot_logical,     3, 'r' }, { "~",  ot_arithmetic,  3, 'l' }, //! Same with unary +, -, ~
+	{ "?",   ot_ternary,    15, 'r' }, { ":",   ot_ternary,    15, 'r' }, { ".",  ot_field,       2, 'l' }, { ",",  ot_list,       17, 'l' }, { "(",  ot_group,       1, 'n' }, { ")",  ot_group,       1, 'n' }, { "[",  ot_subscript,   2, 'l' }, { "]",  ot_subscript,   2, 'l' }, { "{",  ot_scope,       1, 'n' }, { "}",  ot_scope,       1, 'n' }
+};
 
 
 
@@ -68,45 +97,63 @@ const char* tokenValues[] = {
 
 enum TokenID {
 	//Types
-	t_b,        t_u32,        t_i32,        t_f32,        t_f64,        // Scalar types
-	t_bv2,      t_u32v2,      t_i32v2,      t_f32v2,      t_f64v2,      // 2-component vectors
-	t_bv3,      t_u32v3,      t_i32v3,      t_f32v3,      t_f64v3,      // 3-component vectors
-	t_bv4,      t_u32v4,      t_i32v4,      t_f32v4,      t_f64v4,      // 4-component vectors
-	t_bm2,      t_u32m2,      t_i32m2,      t_f32m2,      t_f64m2,      // 2x2 square matrices
-	t_bm3,      t_u32m3,      t_i32m3,      t_f32m3,      t_f64m3,      // 3x3 square matrices
-	t_bm4,      t_u32m4,      t_i32m4,      t_f32m4,      t_f64m4,      // 4x4 square matrices
-	t_bm2x2,    t_u32m2x2,    t_i32m2x2,    t_f32m2x2,    t_f64m2x2,    // 2x2 matrices
-	t_bm2x3,    t_u32m2x3,    t_i32m2x3,    t_f32m2x3,    t_f64m2x3,    // 2x3 matrices
-	t_bm2x4,    t_u32m2x4,    t_i32m2x4,    t_f32m2x4,    t_f64m2x4,    // 2x4 matrices
-	t_bm3x2,    t_u32m3x2,    t_i32m3x2,    t_f32m3x2,    t_f64m3x2,    // 3x2 matrices
-	t_bm3x3,    t_u32m3x3,    t_i32m3x3,    t_f32m3x3,    t_f64m3x3,    // 3x3 matrices
-	t_bm3x4,    t_u32m3x4,    t_i32m3x4,    t_f32m3x4,    t_f64m3x4,    // 3x4 matrices
-	t_bm4x2,    t_u32m4x2,    t_i32m4x2,    t_f32m4x2,    t_f64m4x2,    // 4x2 matrices
-	t_bm4x3,    t_u32m4x3,    t_i32m4x3,    t_f32m4x3,    t_f64m4x3,    // 4x3 matrices
-	t_bm4x4,    t_u32m4x4,    t_i32m4x4,    t_f32m4x4,    t_f64m4x4,    // 4x4 matrices
-	t_void,                                                             // Just void
+	t_start = 0,
+	t_b      =  0,   t_u32      = 17,   t_i32      = 33,   t_f32      = 49,   t_f64      = 65,   // Scalar types
+	t_bv2    =  1,   t_u32v2    = 18,   t_i32v2    = 34,   t_f32v2    = 50,   t_f64v2    = 66,   // 2-component vectors
+	t_bv3    =  2,   t_u32v3    = 19,   t_i32v3    = 35,   t_f32v3    = 51,   t_f64v3    = 67,   // 3-component vectors
+	t_bv4    =  3,   t_u32v4    = 20,   t_i32v4    = 36,   t_f32v4    = 52,   t_f64v4    = 68,   // 4-component vectors
+	t_bm2    =  4,   t_u32m2    = 21,   t_i32m2    = 37,   t_f32m2    = 53,   t_f64m2    = 69,   // 2x2 square matrices
+	t_bm3    =  5,   t_u32m3    = 22,   t_i32m3    = 38,   t_f32m3    = 54,   t_f64m3    = 70,   // 3x3 square matrices
+	t_bm4    =  6,   t_u32m4    = 23,   t_i32m4    = 39,   t_f32m4    = 55,   t_f64m4    = 71,   // 4x4 square matrices
+	t_bm2x2  =  7,   t_u32m2x2  = 24,   t_i32m2x2  = 40,   t_f32m2x2  = 56,   t_f64m2x2  = 72,   // 2x2 matrices
+	t_bm2x3  =  8,   t_u32m2x3  = 25,   t_i32m2x3  = 41,   t_f32m2x3  = 57,   t_f64m2x3  = 73,   // 2x3 matrices
+	t_bm2x4  =  9,   t_u32m2x4  = 26,   t_i32m2x4  = 42,   t_f32m2x4  = 58,   t_f64m2x4  = 74,   // 2x4 matrices
+	t_bm3x2  = 10,   t_u32m3x2  = 27,   t_i32m3x2  = 43,   t_f32m3x2  = 59,   t_f64m3x2  = 75,   // 3x2 matrices
+	t_bm3x3  = 11,   t_u32m3x3  = 28,   t_i32m3x3  = 44,   t_f32m3x3  = 60,   t_f64m3x3  = 76,   // 3x3 matrices
+	t_bm3x4  = 12,   t_u32m3x4  = 29,   t_i32m3x4  = 45,   t_f32m3x4  = 61,   t_f64m3x4  = 77,   // 3x4 matrices
+	t_bm4x2  = 13,   t_u32m4x2  = 30,   t_i32m4x2  = 46,   t_f32m4x2  = 62,   t_f64m4x2  = 78,   // 4x2 matrices
+	t_bm4x3  = 14,   t_u32m4x3  = 31,   t_i32m4x3  = 47,   t_f32m4x3  = 63,   t_f64m4x3  = 79,   // 4x3 matrices
+	t_bm4x4  = 15,   t_u32m4x4  = 32,   t_i32m4x4  = 48,   t_f32m4x4  = 64,   t_f64m4x4  = 80,   // 4x4 matrices
+	t_void   = 16, // Just void
+	t_end = 80, //! Update this value when adding new types
 
 
-	//If-else    Loops         Flow control     Switch case
-	k_if,        k_while,      k_continue,      k_switch,
-	k_else,      k_for,        k_break,         k_case,
-	k_elif,      k_do,         k_return,        k_default,
+	// Keywords
+	k_start = 1000,
+	// If-else           Loops                Flow control            Switch case
+	k_if   = 1001,       k_while = 1004,      k_continue = 1007,      k_switch  = 1010,
+	k_else = 1002,       k_for   = 1005,      k_break    = 1008,      k_case    = 1011,
+	k_elif = 1003,       k_do    = 1006,      k_return   = 1009,      k_default = 1012,
 
-	//Qualifiers Inputs        Other
-	k_highp,     k_local,      k_struct,
-	k_medp,      k_extern,     k_preicison,
-	k_lowp,
-	k_const,
+	k_highp = 1013,
+	k_medp  = 1014,
+	k_lowp  = 1015,      k_local  = 1017,     k_struct    = 1019,
+	k_const = 1016,      k_extern = 1018,     k_preicison = 1020,
+	// Qualifiers        Inputs               Other
+	k_end = 1020, //! Update this value when adding new keywords
 
-	t_max = t_void,   //! Max value of hard coded types
-	k_max = k_const,  //! Max value of hard coded keywords
 
-	e_user_defined,  //! User defined identifiers
-	e_literal,       // Literal constants
-	e_newline,       // Line feed
-	e_identifier,    // User defined identifiers
-	e_preprocessor,  // # characters
-	e_unknown,       // Anything else
+	//Operators
+	o_start = 2000,
+	o_set_bw_lshift = 2000,    o_log_less_eq = 2010,    o_inc = 2017,    o_bw_lshift = 2019,    o_log_less = 2029,    o_ter_0      = 2034,
+	o_set_bw_rshift = 2001,    o_log_more_eq = 2011,    o_dec = 2018,    o_bw_rshift = 2020,    o_log_more = 2030,    o_ter_1      = 2035,
+	o_set_sum       = 2002,    o_log_eq      = 2012,                     o_sum       = 2021,    o_set      = 2031,    o_field      = 2036,
+	o_set_mul       = 2003,    o_log_diff    = 2013,                     o_mul       = 2022,    o_log_not  = 2032,    o_list       = 2037,
+	o_set_sub       = 2004,    o_log_and     = 2014,                     o_sub       = 2023,    o_bw_not   = 2033,    o_lgroup     = 2038,
+	o_set_div       = 2005,    o_log_or      = 2015,                     o_div       = 2024,                          o_rgroup     = 2039,
+	o_set_mod       = 2006,    o_log_xor     = 2016,                     o_mod       = 2025,                          o_lsubscript = 2040,
+	o_set_bw_and    = 2007,                                              o_bw_and    = 2026,                          o_rsubscript = 2041,
+	o_set_bw_or     = 2008,                                              o_bw_or     = 2027,                          o_lscope     = 2042,
+	o_set_bw_xor    = 2009,                                              o_bw_xor    = 2028,                          o_rscope     = 2043,
+	o_end = 2043, //! Update this value when adding new operators
+
+
+	e_user_defined = 1000000,  // User defined identifiers
+	e_literal      = 1000001,  // Literal constants
+	e_newline      = 1000002,  // Line feed
+	e_identifier   = 1000003,  // User defined identifiers
+	e_preprocessor = 1000004,  // # characters
+	e_unknown      = 1000005,  // Anything else
 
 	e_max = e_unknown
 };
@@ -420,19 +467,25 @@ void checkIncludeFile(const int32_t vLineN, const char* vLine, const char* vFile
 
 
 
-//Returns the path of the included file if the line is an include statement, or NULL if it's not
+/**
+ * @brief Checks if vLine is an include statement and returns the path of the included file
+ * @param vLine The line to parse
+ * @return The path of the included file, or NULL if the line is not an include statement
+ */
 char* isInclude(const char* vLine){
 	//TODO add withespace parsing
 	//TODO optimize strlen
-	const char* s = "#include ";
-	char* ret = malloc(MAX_PATH);
-	if(memcmp(vLine, s, strlen(s)) == 0){
-		const char c = vLine[strlen(s)];
-		if(c == '"' || c == '<'){
-			for(int32_t i = strlen(s) + 1, j = 0; i < strlen(vLine); ++i, ++j){
-				if(vLine[i] == (c == '<' ? '>' : '"')) {
-					ret[j] = '\0';
-					return ret;
+	const char* inc_start = "#include ";			// Beginning of the include statements
+	size_t i = strlen(inc_start);					// Skip the length of include_start
+	char* ret = malloc(PATH_MAX);					// Allocate space for the included file path
+	if(!memcmp(vLine, inc_start, i)){				// If the line is an include statement
+		const char c = vLine[i];						// Check if '<' or '"' are used
+		if(c == '"' || c == '<'){						// If they are
+			++i;											//
+			for(size_t j = 0; i < strlen(vLine); ++i, ++j){	// Get the file path
+				if(vLine[i] == (c == '<' ? '>' : '"')) {	//
+					ret[j] = '\0';							//
+					return ret;								//Return the path
 				}
 				ret[j] = vLine[i];
 			}
@@ -444,11 +497,17 @@ char* isInclude(const char* vLine){
 
 
 
-//Creates a code with no includes by pasting all the included files together
-//Returns the resulting string
-//Comments are not preserved
+/**
+ * @brief Creates a code with no includes by recursively pasting all the included files together
+ *     Comments are not preserved
+ * @param vCode The code containing the include statements
+ * @param vFile The path of the file
+ * @param vLineInfo The absolute line from which the file was included. 0 if the file is not included
+ * @param pNum The address of a size_t variable where to store the total number of lines
+ * @return An array of Line structures of size *pNum containing the lines of all the included files
+ */
 struct Line* include(const char* vCode, const char* vFile, const int32_t vLineInfo, size_t* pNum){
-	char* code = uncomment(vCode, vFile); //!Shredded by strsep
+	char* code = uncomment(vCode, vFile);
 	struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES); //ret[0] = '\0';
 	char *line;//, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
 	size_t len = 0;
@@ -529,13 +588,25 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 		pToken->value = strndup(vLine, i);						// Save the identifier
 		pToken->len   = i;										// Save the length
 
-		for(int32_t t = 0; t <= k_max; ++t){					// For each hard coded identifier
-			if(strcmp(pToken->value, tokenValues[t]) == 0){			// If it matches the current identifier
-				pToken->id   = t;										// Set token id to the corresponding identifier id
-				pToken->data = (t <= t_max) ? &typeData[t] : NULL;		// Set token data to the hard coded data of the corresponding type, or NULL if the token is not a type
+		// Types
+		for(int32_t t = t_start; t < t_end; ++t){				// For each hard coded type
+			if(!strcmp(pToken->value, tokenValues[t - t_start])){	// If it matches the current identifier
+				pToken->id   = t;										// Set token id to the corresponding type id
+				pToken->data = &typeData[t - t_start];					// Set token data to the hard coded data of the corresponding type
 				return i;												// Return the length
 			}
 		}
+
+		// Keywords
+		for(int32_t t = k_start; t < k_end; ++t){				// For each hard coded keyword
+			if(!strcmp(pToken->value, tokenValues[t - k_start])){	// If it matches the current identifier
+				pToken->id   = t;										// Set token id to the corresponding identifier id
+				pToken->data = NULL;									// Set token data to NULL
+				return i;												// Return the length
+			}
+		}
+
+		// User defined
 		pToken->id    = e_user_defined;							// Set token id to user defined identifier
 		pToken->data  = NULL;									// Set token data to NULL
 		return i;												// Return the length
@@ -548,6 +619,7 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 
 //TODO comment
 //TODO check empty literals like 0x, 0d, 0o
+//TODO check decimal literals starting with .
 size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLine, const uint32_t iLineNum, const char* iFileName){
 	if(isdigit(vLine[0])){
 		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
@@ -578,11 +650,11 @@ size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLi
 		if(*literalType == t_u32) *(uint32_t*)(&((struct LiteralData_t*)pToken->data)->value) =  strtoul(pToken->value + offset, NULL, base);
 		else                        *(double*)(&((struct LiteralData_t*)pToken->data)->value) = bstrtolf(pToken->value + offset,       base);
 
-		pToken->len   = i;			// Save the length
-		pToken->id    = e_literal;	// Set token id to literal
+		pToken->len = i;			// Save the length
+		pToken->id  = e_literal;	// Set token id to literal
 		return i;					// Return the length
 	}
-	return 0; //TODO REMOVE
+	return 0;
 }
 
 
@@ -594,6 +666,23 @@ size_t getUnknown(const char* vLine, struct Token* const pToken) {
 	pToken->id    = e_unknown;
 	pToken->data  = NULL;
 	return 1;
+}
+
+
+
+size_t getOperator(const char* vLine, struct Token* const pToken){
+	// size_t i, opLen;
+	// for(int32_t o = o_start; o < o_end; ++o){					// For each hard coded operator
+	// 	opLen = strlen(op[o - o_start].value);						// Cache operator length
+	// 	if(!strncmp(pToken->value, op[o - o_start].value, opLen)){	// If it matches the current operator
+	// 		pToken->value = op[o - o_start].value;						// Save the operator
+	// 		pToken->len   = i;											// Save the length
+	// 		pToken->id    = o;											// Set token id to the corresponding operator id
+	// 		pToken->data  = &op[o - o_start];							// Set token data to the hard coded data of the corresponding operator
+	// 		return i;													// Return the length
+	// 	}
+	// }
+	return 0;
 }
 
 
@@ -630,10 +719,11 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 			// Find the first token, save into the array and update j
 			size_t tokLen;
-			if     (tokLen = getPreprocessor(l + j, curToken)){}
-			else if(tokLen =   getIdentifier(l + j, curToken)){}
-			else if(tokLen =      getLiteral(l + j, curToken, l, vLines[i].line, iFileName)){}
-			else    tokLen =      getUnknown(l + j, curToken);
+			if     (tokLen = getPreprocessor (l + j, curToken)){}
+			else if(tokLen = getIdentifier   (l + j, curToken)){}
+			else if(tokLen = getLiteral      (l + j, curToken, l, vLines[i].line, iFileName)){}
+			else if(tokLen = getOperator     (l + j, curToken)){}
+			else    tokLen = getUnknown      (l + j, curToken);
 			j += tokLen;
 		}
 
@@ -687,7 +777,7 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 			strcpy(ret + j, strValue);
 			j += strlen(strValue);
 		}
-		else if(curTok->id <= t_max){
+		else if(curTok->id >= t_start && curTok->id < t_end){
 			strcpy(ret + j, typeData[curTok->id].glsltype);
 			j +=     strlen(typeData[curTok->id].glsltype);
 		}
