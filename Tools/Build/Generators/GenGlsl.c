@@ -30,9 +30,6 @@ struct Line {
 	size_t len;
 };
 
-
-// op = list(reversed(sorted(list(({'val' : t[0], 'type' : 'op', 'ctgr' : t[1], 'prec' : t[2], 'assoc' : t[3]}) for t in [
-
 enum OperatorType {
 	ot_logical,		// == !=          && || ^^ <   >   !
 	ot_arithmetic,	// +  -  *  /  %  &  |  ^  <<  >>  ~
@@ -46,18 +43,28 @@ enum OperatorType {
 	ot_subscript,	// []
 };
 struct OperatorData_t {
-	char* value;			// String value of the operator
 	enum OperatorType type;	// Type of the operator
 	int32_t precedence;		// Operator precedence. Higher values have higher precedence
 	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
 };
-struct OperatorData_t op[] = { // Sorted by length
-	{ "<<=", ot_assignment, 16, 'r' }, { ">>=", ot_assignment, 16, 'r' }, { "+=", ot_assignment, 16, 'r' }, { "*=", ot_assignment, 16, 'r' }, { "-=", ot_assignment, 16, 'r' }, { "/=", ot_assignment, 16, 'r' }, { "%=", ot_assignment, 16, 'r' }, { "&=", ot_assignment, 16, 'r' }, { "|=", ot_assignment, 16, 'r' }, { "^=", ot_assignment, 16, 'r' },
-	{ "<=",  ot_logical,     7, 'l' }, { ">=",  ot_logical,     7, 'l' }, { "==", ot_logical,     8, 'l' }, { "!=", ot_logical,     8, 'l' }, { "&&", ot_logical,    12, 'l' }, { "||", ot_logical,    14, 'l' }, { "^^", ot_logical,    13, 'l' },
-	{ "++",  ot_inc_dec,     2, 'l' }, { "--",  ot_inc_dec,     2, 'l' }, //! Can be prefix or postfix. The actual precedence and associativity is determined after the tokenization
-	{ "<<",  ot_arithmetic,  6, 'l' }, { ">>" , ot_arithmetic,  6, 'l' }, { "+",  ot_arithmetic,  5, 'l' }, { "*",  ot_arithmetic,  4, 'l' }, { "-",  ot_arithmetic,  5, 'l' }, { "/",  ot_arithmetic,  4, 'l' }, { "%",  ot_arithmetic,  4, 'l' }, { "&",  ot_arithmetic,  9, 'l' }, { "|",  ot_arithmetic, 11, 'l' }, { "^",  ot_arithmetic, 10, 'l' },
-	{ "<",   ot_logical,     7, 'l' }, { ">",   ot_logical,     7, 'l' }, { "=",  ot_assignment, 16, 'r' }, { "!",  ot_logical,     3, 'r' }, { "~",  ot_arithmetic,  3, 'l' }, //! Same with unary +, -, ~
-	{ "?",   ot_ternary,    15, 'r' }, { ":",   ot_ternary,    15, 'r' }, { ".",  ot_field,       2, 'l' }, { ",",  ot_list,       17, 'l' }, { "(",  ot_group,       1, 'n' }, { ")",  ot_group,       1, 'n' }, { "[",  ot_subscript,   2, 'l' }, { "]",  ot_subscript,   2, 'l' }, { "{",  ot_scope,       1, 'n' }, { "}",  ot_scope,       1, 'n' }
+struct OperatorData_t operatorData[] = { // Sorted by length
+	{ ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' },
+	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,    12, 'l' }, { ot_logical,    14, 'l' }, { ot_logical,    13, 'l' },
+	{ ot_inc_dec,     2, 'l' }, { ot_inc_dec,     2, 'l' },
+	{ ot_arithmetic,  6, 'l' }, { ot_arithmetic,  6, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  9, 'l' }, { ot_arithmetic, 11, 'l' }, { ot_arithmetic, 10, 'l' },
+	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_assignment, 16, 'r' }, { ot_logical,     3, 'r' }, { ot_arithmetic,  3, 'l' },
+	{ ot_ternary,    15, 'r' }, { ot_ternary,    15, 'r' }, { ot_field,       2, 'l' }, { ot_list,       17, 'l' }, { ot_group,       1, 'n' }, { ot_group,       1, 'n' }, { ot_subscript,   2, 'l' }, { ot_subscript,   2, 'l' }, { ot_scope,       1, 'n' }, { ot_scope,       1, 'n' }
+	//! Both ++ and -- an be prefix or postfix. The actual precedence and associativity is determined after the tokenization
+	//! Same with +, -, ~. They can be unary or arithmetic
+};
+const char* operatorValues[] = {
+	"<<=",">>=", "+=", "*=", "-=", "/=", "%=", "&=", "|=", "^=",
+	"<=", ">=",  "==", "!=", "&&", "||", "^^",
+	"++", "--",
+	"<<", ">>",  "+",  "*",  "-",  "/",  "%",  "&",  "|",  "^",
+	"<",  ">",   "=",  "!",  "~",
+	"?",  ":",   ".",  ",",  "(",  ")",  "[",  "]",  "{",  "}"
+	//! Operator values and data are sorted by value length to simplify the parsing
 };
 
 
@@ -200,12 +207,12 @@ struct LiteralData_t{
 };
 
 struct Token{
-	char* value;           // The string value of the token  e.g. "const", "uint32"
+	const char* value;     // The string value of the token  e.g. "const", "uint32"
 	size_t len;            // Length of the token
 	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
-	char* leading_ws;
-	char* line;            // The line that contains the token
+	const char* leading_ws;
+	const char* line;      // The line that contains the token
 	size_t lineNum;        // The number if the line
 	size_t start;          // Index of the token's first character in its line
 };
@@ -663,14 +670,14 @@ size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLi
 
 size_t getOperator(const char* vLine, struct Token* const pToken){
 	size_t opLen;
-	for(int32_t o = o_start; o < o_end; ++o){			// For each hard coded operator
-		opLen = strlen(op[o - o_start].value);				// Cache operator length
-		if(!strncmp(vLine, op[o - o_start].value, opLen)){	// If it matches the current operator
-			pToken->value = op[o - o_start].value;				// Save the operator
-			pToken->len   = opLen;								// Save the length
-			pToken->id    = o;									// Set token id to the corresponding operator id
-			pToken->data  = &op[o - o_start];					// Set token data to the hard coded data of the corresponding operator
-			return opLen;										// Return the length
+	for(int32_t o = o_start; o < o_end; ++o){				// For each hard coded operator
+		opLen = strlen(operatorValues[o - o_start]);			// Cache operator length
+		if(!strncmp(vLine, operatorValues[o - o_start], opLen)){// If it matches the current operator
+			pToken->value = operatorValues[o - o_start];			// Save the operator
+			pToken->len   = opLen;									// Save the length
+			pToken->id    = o;										// Set token id to the corresponding operator id
+			pToken->data  = &operatorData[o - o_start];				// Set token data to the hard coded data of the corresponding operator
+			return opLen;											// Return the length
 		}
 	}
 	return 0;
@@ -755,13 +762,26 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 
 
+
+// Syntax ----------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+
+
+
+
 // idk --------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
 
 char* translate(const struct Token* vTokens, const size_t vTokensNum){
-	typeData[t_f32v4 - t_start].glslType = "aaaaa";
 	char* ret = malloc(MAX_CODE_LEN);
 	size_t j = 0;
 	for(size_t i = 0; i < vTokensNum; ++i){
@@ -788,8 +808,8 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 			j +=     strlen(keywordValues[curTok->id - k_start]);
 		}
 		else if(isOperator(curTok->id)){
-			strcpy(ret + j, ((struct OperatorData_t*)(curTok->data))->value);
-			j +=     strlen(((struct OperatorData_t*)(curTok->data))->value);
+			strcpy(ret + j, operatorValues[curTok->id - o_start]);
+			j +=     strlen(operatorValues[curTok->id - o_start]);
 		}
 		else{
 			strcpy(ret + j, curTok->value);
