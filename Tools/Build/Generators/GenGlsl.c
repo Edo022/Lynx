@@ -14,9 +14,11 @@
 
 #define MAX_ERR         4100100
 #define MAX_CODE_LEN    4100100		//FIXME use dynamic reallocations
-#define MAX_CODE_LINES  2100100		//FIXME use dynamic reallocations or pass the size
+#define MAX_CODE_LINES  800100100		//FIXME use dynamic reallocations or pass the size
 #define MAX_TOKENS		8100100		//FIXME use dynamic reallocations
 
+//FIXME GLSL doesnt suppotr bool and integer matrices
+//TODO check returns values
 
 
 
@@ -24,83 +26,14 @@
 
 
 
-struct Line {
-	uint32_t line;
-	char* str;
-	size_t len;
-};
 
-enum OperatorType {
-	ot_logical,		// == !=          && || ^^ <   >   !
-	ot_arithmetic,	// +  -  *  /  %  &  |  ^  <<  >>  ~
-	ot_assignment,	// += -= *= /= %= &= |= ^= <<= >>= =
-	ot_inc_dec,		// ++n n++ --n n--         <=  >=
-	ot_ternary,		// ? :
-	ot_field,		// .
-	ot_list,		// ,
-	ot_group,		// ()
-	ot_scope,		// {}
-	ot_subscript,	// []
-};
-struct OperatorData_t {
-	enum OperatorType type;	// Type of the operator
-	int32_t precedence;		// Operator precedence. Higher values have higher precedence
-	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
-};
-struct OperatorData_t operatorData[] = { // Sorted by length
-	{ ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' },
-	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,    12, 'l' }, { ot_logical,    14, 'l' }, { ot_logical,    13, 'l' },
-	{ ot_inc_dec,     2, 'l' }, { ot_inc_dec,     2, 'l' },
-	{ ot_arithmetic,  6, 'l' }, { ot_arithmetic,  6, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  9, 'l' }, { ot_arithmetic, 11, 'l' }, { ot_arithmetic, 10, 'l' },
-	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_assignment, 16, 'r' }, { ot_logical,     3, 'r' }, { ot_arithmetic,  3, 'l' },
-	{ ot_ternary,    15, 'r' }, { ot_ternary,    15, 'r' }, { ot_field,       2, 'l' }, { ot_list,       17, 'l' }, { ot_group,       1, 'n' }, { ot_group,       1, 'n' }, { ot_subscript,   2, 'l' }, { ot_subscript,   2, 'l' }, { ot_scope,       1, 'n' }, { ot_scope,       1, 'n' }
-	//! Both ++ and -- an be prefix or postfix. The actual precedence and associativity is determined after the tokenization
-	//! Same with +, -, ~. They can be unary or arithmetic
-};
-const char* operatorValues[] = {
-	"<<=",">>=", "+=", "*=", "-=", "/=", "%=", "&=", "|=", "^=",
-	"<=", ">=",  "==", "!=", "&&", "||", "^^",
-	"++", "--",
-	"<<", ">>",  "+",  "*",  "-",  "/",  "%",  "&",  "|",  "^",
-	"<",  ">",   "=",  "!",  "~",
-	"?",  ":",   ".",  ",",  "(",  ")",  "[",  "]",  "{",  "}"
-	//! Operator values and data are sorted by value length to simplify the parsing
-};
+// Tokens -----------------------------------------------------------------------------------------------------------------------------------//
 
 
 
-const char* typeValues[] = {
-	//Types
-	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
-	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
-	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
-	"bv4",      "u32v4",      "i32v4",      "f32v4",      "f64v4",      //4-component vectors
-	"bm2",      "u32m2",      "i32m2",      "f32m2",      "f64m2",      //2x2 square matrices
-	"bm3",      "u32m3",      "i32m3",      "f32m3",      "f64m3",      //3x3 square matrices
-	"bm4",      "u32m4",      "i32m4",      "f32m4",      "f64m4",      //4x4 square matrices
-	"bm2x2",    "u32m2x2",    "i32m2x2",    "f32m2x2",    "f64m2x2",    //2x2 matrices
-	"bm2x3",    "u32m2x3",    "i32m2x3",    "f32m2x3",    "f64m2x3",    //2x3 matrices
-	"bm2x4",    "u32m2x4",    "i32m2x4",    "f32m2x4",    "f64m2x4",    //2x4 matrices
-	"bm3x2",    "u32m3x2",    "i32m3x2",    "f32m3x2",    "f64m3x2",    //3x2 matrices
-	"bm3x3",    "u32m3x3",    "i32m3x3",    "f32m3x3",    "f64m3x3",    //3x3 matrices
-	"bm3x4",    "u32m3x4",    "i32m3x4",    "f32m3x4",    "f64m3x4",    //3x4 matrices
-	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
-	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
-	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
-	"void"                                                              //Just void
-};
-const char* keywordValues[] = {
-	//If-else      Loops           Flow control       Switch case
-	"if",          "while",        "continue",        "switch",
-	"else",        "for",          "break",           "case",
-	"elif",        "do",           "return",          "default",
 
-	//Qualifiers   Inputs          Other
-	"highp",       "local",        "struct",
-	"medp",        "extern",       "preicison",
-	"lowp",
-	"const"
-};
+
+
 
 
 enum TokenID {
@@ -154,18 +87,105 @@ enum TokenID {
 	o_end = 2043, //! Update this value when adding new operators
 
 
+	// Other
+	e_start = 1000000,
 	e_user_defined = 1000000,  // User defined identifiers
 	e_literal      = 1000001,  // Literal constants
 	e_newline      = 1000002,  // Line feed
 	e_identifier   = 1000003,  // User defined identifiers
 	e_preprocessor = 1000004,  // # characters
 	e_unknown      = 1000005,  // Anything else
-
-	e_max = e_unknown
+	e_end
 };
 int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
 int isKeyword (enum TokenID vID){ return vID >= k_start && vID < k_end; }
 int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
+
+
+struct Token{
+	const char* value;     // The string value of the token  e.g. "const", "uint32"
+	size_t len;            // Length of the token
+	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
+	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
+	const char* leading_ws;
+	// const char* line;      // The line that contains the token
+	size_t lineNum;        // The number if the line
+	size_t start;          // Index of the token's first character in its line
+};
+
+
+struct Line {
+	uint32_t line;
+	char* str;
+	size_t len;
+};
+
+
+
+
+
+
+
+
+// Operators --------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+enum OperatorType {
+	ot_logical,		// == !=          && || ^^ <   >   !
+	ot_arithmetic,	// +  -  *  /  %  &  |  ^  <<  >>  ~
+	ot_assignment,	// += -= *= /= %= &= |= ^= <<= >>= =
+	ot_inc_dec,		// ++n n++ --n n--         <=  >=
+	ot_ternary,		// ? :
+	ot_field,		// .
+	ot_list,		// ,
+	ot_group,		// ()
+	ot_scope,		// {}
+	ot_subscript,	// []
+};
+struct OperatorData_t {
+	enum OperatorType type;	// Type of the operator
+	int32_t precedence;		// Operator precedence. Higher values have higher precedence
+	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
+};
+struct OperatorData_t operatorData[] = { // Sorted by length
+	{ ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' },
+	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,    12, 'l' }, { ot_logical,    14, 'l' }, { ot_logical,    13, 'l' },
+	{ ot_inc_dec,     2, 'l' }, { ot_inc_dec,     2, 'l' },
+	{ ot_arithmetic,  6, 'l' }, { ot_arithmetic,  6, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  9, 'l' }, { ot_arithmetic, 11, 'l' }, { ot_arithmetic, 10, 'l' },
+	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_assignment, 16, 'r' }, { ot_logical,     3, 'r' }, { ot_arithmetic,  3, 'l' },
+	{ ot_ternary,    15, 'r' }, { ot_ternary,    15, 'r' }, { ot_field,       2, 'l' }, { ot_list,       17, 'l' }, { ot_group,       1, 'n' }, { ot_group,       1, 'n' }, { ot_subscript,   2, 'l' }, { ot_subscript,   2, 'l' }, { ot_scope,       1, 'n' }, { ot_scope,       1, 'n' }
+	//! Both ++ and -- an be prefix or postfix. The actual precedence and associativity is determined after the tokenization
+	//! Same with +, -, ~. They can be unary or arithmetic
+};
+const char* operatorValues[] = {
+	"<<=",">>=", "+=", "*=", "-=", "/=", "%=", "&=", "|=", "^=",
+	"<=", ">=",  "==", "!=", "&&", "||", "^^",
+	"++", "--",
+	"<<", ">>",  "+",  "*",  "-",  "/",  "%",  "&",  "|",  "^",
+	"<",  ">",   "=",  "!",  "~",
+	"?",  ":",   ".",  ",",  "(",  ")",  "[",  "]",  "{",  "}"
+	//! Operator values and data are sorted by value length to simplify the parsing
+};
+
+
+
+
+
+
+
+
+// Types ------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
 
 
 
@@ -176,8 +196,6 @@ struct TypeData_t {
 	size_t y;              // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
 	size_t align;          // Alignment of the type in bytes
 };
-
-//FIXME GLSL doesnt suppotr bool and integer matrices
 struct TypeData_t typeData[] = {
 	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
 	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
@@ -197,6 +215,67 @@ struct TypeData_t typeData[] = {
 	{ "bmat4x1", t_b, 4, 4, 16 },    { "umat4x1", t_u32, 4, 4, 16 },    { "imat4x1", t_i32, 4, 4, 16 },    { "mat4x1", t_f32, 4, 4, 16 },    { "dmat4x1", t_f64, 4, 4, 32 },
 	{ "void", t_void, 0, 0,  0 }
 };
+const char* typeValues[] = {
+	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
+	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
+	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
+	"bv4",      "u32v4",      "i32v4",      "f32v4",      "f64v4",      //4-component vectors
+	"bm2",      "u32m2",      "i32m2",      "f32m2",      "f64m2",      //2x2 square matrices
+	"bm3",      "u32m3",      "i32m3",      "f32m3",      "f64m3",      //3x3 square matrices
+	"bm4",      "u32m4",      "i32m4",      "f32m4",      "f64m4",      //4x4 square matrices
+	"bm2x2",    "u32m2x2",    "i32m2x2",    "f32m2x2",    "f64m2x2",    //2x2 matrices
+	"bm2x3",    "u32m2x3",    "i32m2x3",    "f32m2x3",    "f64m2x3",    //2x3 matrices
+	"bm2x4",    "u32m2x4",    "i32m2x4",    "f32m2x4",    "f64m2x4",    //2x4 matrices
+	"bm3x2",    "u32m3x2",    "i32m3x2",    "f32m3x2",    "f64m3x2",    //3x2 matrices
+	"bm3x3",    "u32m3x3",    "i32m3x3",    "f32m3x3",    "f64m3x3",    //3x3 matrices
+	"bm3x4",    "u32m3x4",    "i32m3x4",    "f32m3x4",    "f64m3x4",    //3x4 matrices
+	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
+	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
+	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
+	"void"                                                              //Just void
+};
+
+
+
+
+
+
+
+
+// Keywords ---------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+const char* keywordValues[] = {
+	//If-else      Loops           Flow control       Switch case
+	"if",          "while",        "continue",        "switch",
+	"else",        "for",          "break",           "case",
+	"elif",        "do",           "return",          "default",
+
+	//Qualifiers   Inputs          Other
+	"highp",       "local",        "struct",
+	"medp",        "extern",       "preicison",
+	"lowp",
+	"const"
+};
+
+
+
+
+
+
+
+
+// Literals ---------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
 
 
 
@@ -206,16 +285,7 @@ struct LiteralData_t{
 	char value[sizeof(double)]; // Actual value. Contains a float, a double, an int or an unsigned int, depending on the type
 };
 
-struct Token{
-	const char* value;     // The string value of the token  e.g. "const", "uint32"
-	size_t len;            // Length of the token
-	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
-	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
-	const char* leading_ws;
-	const char* line;      // The line that contains the token
-	size_t lineNum;        // The number if the line
-	size_t start;          // Index of the token's first character in its line
-};
+
 
 
 
@@ -269,8 +339,12 @@ double bstrtolf(const char* vStr, const int32_t vBase){
 
 
 
-//Reads all the contents of the file vFilePath
-//Returns a null terminated memory block containing the data
+/**
+ * @brief Reads all the contents of the file vFilePath
+ *     Removes any '\r' character
+ * @param vFilePath The path of the file
+ * @return A null terminated memory block containing the data
+ */
 char* readFile(const char* vFilePath){
 	FILE* f = fopen(vFilePath, "r");
 	fseek(f, 0, SEEK_END);
@@ -278,8 +352,6 @@ char* readFile(const char* vFilePath){
 	rewind(f);
 
 	char* data = malloc(size + 1);
-	// fread(data, 1, size, f);
-	// data[size] = '\0';
 	int32_t j;
 	for(int32_t i = j = 0; i < size; ++i) {
 		char c = fgetc(f);
@@ -296,8 +368,14 @@ char* readFile(const char* vFilePath){
 
 
 
-//Returns the address of the vIndex-th occurrence of vChar in the vSrc string
-const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex){ //TODO add start_from parameter
+/**
+ * @brief Returns the address of the vIndex-th occurrence of vChar in the vSrc string
+ * @param vSrc The source string
+ * @param vChar The character to find
+ * @param vIndex The index of the occurrence to find
+ * @return The address of the vIndex-th occurrence of vChar
+ */
+const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex){
 	uint32_t n = 0;
 	for(const char* c = vSrc;; ++c) {
 		if(*c == '\0') return NULL;
@@ -305,13 +383,19 @@ const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex){ 
 		if(n == vIndex + 1) return c;
 	}
 }
+//TODO add start_from parameter
 
 
-//Splits vSrc based on vChar and returns the vIndex-th string as a null terminated char*
-//The original string is not modified
-//The returned string must be freed
-//Returns NULL if the vIndex-th string does not exist
-char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){ //TODO add start from parameter
+/**
+ * @brief Splits vSrc based on vChar and returns the vIndex-th string as a null terminated char*
+ *     The original string is not modified
+ *     The returned string must be freed
+ * @param vSrc The source string
+ * @param vChar The character used to split the string
+ * @param vIndex The index of the resulting string to return
+ * @return The vIndex-th resulting string, or NULL if it does not exist
+ */
+char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){
 	const char* a = vIndex ? strchrn(vSrc, vChar, vIndex - 1) : vSrc;
 	const char* b = strchr(a + !!vIndex, vChar);
 	size_t len =  b ? b - a : strlen(a);
@@ -320,9 +404,17 @@ char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){ //TODO
 	ret[len] = '\0';
 	return ret;
 }
+//TODO add start from parameter
 
 
 
+
+/**
+ * @brief Prints an error using the printf format specifiers
+ *     This function does not return
+ * @param vFormat The format string
+ * @param ... A list of arguments for the format string
+ */
 void printError(const char* vFormat, ...){
 	va_list vArgs; va_start(vArgs, 0);
 	char vStr[MAX_ERR];
@@ -333,7 +425,16 @@ void printError(const char* vFormat, ...){
 }
 
 
-void printSyntaxError(const int32_t vLineN, const char* vLine, const char* vFile, const char* vFormat, ...){
+/**
+ * @brief Prints an error using the printf format specifiers, specifying the line and file in which the error occurred
+ *     This function does not return
+ * @param iLineN The number of the line. Used to print additional informations
+ * @param iLine The line value. Used to print additional informations
+ * @param iFile The name of the file. Used to print additional informations
+ * @param vFormat The format string
+ * @param ... A list of arguments for the format string
+ */
+void printSyntaxError(const int32_t iLineN, const char* iLine, const char* iFile, const char* vFormat, ...){
 	va_list vArgs; va_start(vArgs, 0);
 	char vStr[MAX_ERR];
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
@@ -343,12 +444,10 @@ void printSyntaxError(const int32_t vLineN, const char* vLine, const char* vFile
 		"\n%s%s"
 		"\n    %s"
 		"\n\nCompilation stopped",
-		bRed, vLineN + 1, realpath(vFile, NULL), vStr, nWht, vLine
+		bRed, iLineN + 1, realpath(iFile, NULL), vStr, nWht, iLine
 	);
 	exit(2);
 }
-
-
 
 
 
@@ -366,10 +465,12 @@ void printSyntaxError(const int32_t vLineN, const char* vLine, const char* vFile
 
 
 
-
-//Removes the trailing whitespace of each line
-//Consecutive newline characters are preserved
-//TODO replace tabs with spaces
+/**
+ * @brief Removes the trailing whitespace of each line
+ *     Consecutive newline characters are preserved
+ * @param vLines An array of Line structs containing the lines to clear
+ * @param vNum The number of lines
+ */
 void clear(struct Line* vLines, const size_t vNum){
 	for(size_t i = 0; i < vNum; ++i){
 		struct Line* l = &vLines[i];
@@ -381,96 +482,99 @@ void clear(struct Line* vLines, const size_t vNum){
 				break;
 			}
 		}
-		// printf("<%d - %d/%d - \"%s\">\n", l->line, i, vNum, l->str); //TODO REMOVE
 	}
-	// return re.sub(r'[ \t\v]+(\n|$)', r'\g<1>', vCode)
 }
+//TODO replace tabs with spaces
 
 
 
 
-//Replaces multiline comments with the same number of newlines they contain
-//Single line comments are replaced with a single space
-//Returns the resulting string
-char* uncomment(const char* vCode, const char* vFile){
+/**
+ * @brief Replaces multiline comments with a space + a number of '\n' corresponding to the number of newlines they contain
+ *     Single line comments are replaced with one '\n' character
+ * @param vCode The code to uncomment
+ * @param iFile The path of the file containing the code. This is used to print syntax errors
+ * @return The resulting string
+ */
+char* uncomment(const char* vCode, const char* iFile){
 	char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
 	int32_t vCodeLen = strlen(vCode);
 	int32_t i = 0;
-	while(i < vCodeLen){                              //For each character
-		if(vCode[i] == '"'){                                //If the character is a double quote
-			int32_t strBegin = i;                                   //Save the string beginning for eventual errors
-			strncat(code, &vCode[i], 1);                              //Paste opening "
-			++i;                                                //Skip opening "
-			while(vCode[i] != '"'){                              //For each character of the string
-				strncat(code, &vCode[i], 1);                                    //Paste character
-				++i;                                              //Update counter
-				if(i == vCodeLen){                                 //If the string does not end
-					int32_t vLineN = 0;                                      //
-					for(int32_t j = 0; j < strBegin; ++j){                        //Find the line in which the string begins
-						if(vCode[j] == '\n') ++vLineN;                //[...] Print a syntax error
-					}
-					// printSyntaxError(vLineN, vCode.split('\n')[vLineN], vFile, 'Unterminated string'); //FIXME rewrite
+	while(i < vCodeLen){								//For each character
+		if(vCode[i] == '"'){								//If the character is a double quote
+			int32_t strBegin = i;								//Save the string beginning for eventual errors
+			strcat(code, "\"");									//Paste opening "
+			++i;												//Skip opening "
+			while(vCode[i] != '"'){								//For each character of the string
+				strncat(code, &vCode[i], 1);						//Paste character
+				++i;												//Update counter
+				if(i == vCodeLen){									//If the string does not end
+					int32_t vLineN = 0;										//
+					for(int32_t j = 0; j < strBegin; ++j){				//Find the line in which the string begins
+						if(vCode[j] == '\n') ++vLineN;						//
+					}													// [...] Print a syntax error
 					const char* errorLine = strchrn(vCode, '\n', vLineN);
-					printSyntaxError(vLineN, errorLine, vFile, "Unterminated string");
+					printSyntaxError(vLineN, errorLine, iFile, "Unterminated string");
 				}
 			}
-			strncat(code, &vCode[i], 1);                                    //Paste closing "
-			++i;                                              //Skip closing "
+			strcat(code, "\"");									//Paste closing '"'
+			++i;												//Skip closing '"'
 		}
-		else if(i < vCodeLen - 1){                            //If there is enough space to start a comment
-			if(vCode[i] == '/' && vCode[i + 1] == '/'){                          //If the character is the beginning of a single line comment
-				i += 2;                                              //Ignore //
-				while(i < vCodeLen && vCode[i] != '\n'){          //For each character of the comment
-					if(vCode[i + 1] == '\n') strcat(code, "\n");                                        //Add a newline as token separator
-					++i;                                              //Update the counter and ignore the character
-				}
-				++i;                                              //Ignore \n
+		else if(i < vCodeLen - 1){							//If there is enough space to start a comment
+			if(vCode[i] == '/' && vCode[i + 1] == '/'){			//If the character is the beginning of a single line comment
+				i += 2;												//Ignore "//"
+				while(i < vCodeLen && vCode[i] != '\n') ++i;		//Ignore the whole comment
+				++i;												//Ignore '\n'
+				strcat(code, "\n"); 								// Write '\n'
 			}
-			else if(vCode[i] == '/' && vCode[i + 1] == '*'){                        //If the character is the beginning of a multiline comment
-				strcat(code, " ");                                         //Add a space as token separator
-				i += 2;                                              //Ignore /*
-				strcat(code, "\n");
-				while(i < vCodeLen && !(vCode[i] == '*' && vCode[i + 1] == '/')){    //For each character of the comment
-					if(vCode[i] == '\n'){                                //If the character is a newline
-						strcat(code, "\n");                                        //Paste the newline
+			else if(vCode[i] == '/' && vCode[i + 1] == '*'){	//If the character is the beginning of a multiline comment
+				strcat(code, " ");									//Add a space as token separator
+				i += 2;												//Ignore "/*"
+				while(i < vCodeLen && !(vCode[i] == '*' && vCode[i + 1] == '/')){ //For each character of the comment
+					if(vCode[i] == '\n'){								//If the character is a newline
+						strcat(code, "\n");									//Paste the newline
 					}
-					++i;                                              //Update the counter and ignore the other characters
+					++i;												//Update the counter and ignore the other characters
 				}
-				i += 2;                                              //Ignore */
+				i += 2;												//Ignore "*/"
 			}
-			else{                                               //Else
-				strncat(code, &vCode[i], 1);                                    //Paste the character
-				++i;                                              //Update the counter
+			else{												//Else
+				strncat(code, &vCode[i], 1);						//Paste the character
+				++i;												//Update the counter
 			}
 		}
-		else{                                               //Else
-			strncat(code, &vCode[i], 1);                                    //Paste the character
-			++i;                                              //Update the counter
+		else{												//Else
+			strncat(code, &vCode[i], 1);						//Paste the character
+			++i;												//Update the counter
 		}
 	}
 
-	return code;                                         //Return the parsed code
+	return code; //Return the parsed code
 }
+//FIXME dont use strcat and strncat or just start from an index
 
 
 
 
-
-//Checks if an included path is valid
-//Prints an error if it's not
-void checkIncludeFile(const int32_t vLineN, const char* vLine, const char* vFile, const char* vName){ //TODO check vLine type
-	//if not re.match('^' + pat['t_path'] + '$', vName) printSyntaxError(vLineN, vLine, vFile, "\"%s\" is not a valid file path", vName) //FIXME
-	if(access(vName, F_OK) == 0) {
-		struct stat fileStat; stat(vName, &fileStat);
+/**
+ * @brief Checks if an included path is valid
+ *     Prints an error if it's not
+ * @param iLineN The number of the line. Used to print errors
+ * @param iLine The line value. Used to print errors
+ * @param iFile The file path. Used to print errors
+ * @param vPath The path of the included file
+ */
+void checkIncludeFile(const int32_t iLineN, const char* iLine, const char* iFile, const char* vPath){ //TODO check vLine type
+	if(access(vPath, F_OK) == 0) {
+		struct stat fileStat; stat(vPath, &fileStat);
 		if(S_ISDIR(fileStat.st_mode)) {
-			printSyntaxError(vLineN, vLine, vFile, "\"%s\" is a directory", vName);
+			printSyntaxError(iLineN, iLine, iFile, "\"%s\" is a directory", vPath);
 		}
 	}
 	else {
-		printSyntaxError(vLineN, vLine, vFile, "No such file or directory");
+		printSyntaxError(iLineN, iLine, iFile, "No such file or directory");
 	}
 }
-
 
 
 
@@ -487,13 +591,13 @@ char* isInclude(const char* vLine){
 	size_t i = strlen(inc_start);					// Skip the length of include_start
 	char* ret = malloc(PATH_MAX);					// Allocate space for the included file path
 	if(!memcmp(vLine, inc_start, i)){				// If the line is an include statement
-		const char c = vLine[i];						// Check if '<' or '"' are used
+		const char c = vLine[i];						// Check if either '<' or '"' are used
 		if(c == '"' || c == '<'){						// If they are
 			++i;											//
 			for(size_t j = 0; i < strlen(vLine); ++i, ++j){	// Get the file path
 				if(vLine[i] == (c == '<' ? '>' : '"')) {	//
 					ret[j] = '\0';							//
-					return ret;								//Return the path
+					return ret;								// Return the path
 				}
 				ret[j] = vLine[i];
 			}
@@ -511,14 +615,14 @@ char* isInclude(const char* vLine){
  * @param vCode The code containing the include statements
  * @param vFile The path of the file
  * @param vLineInfo The absolute line from which the file was included. 0 if the file is not included
- * @param pNum The address of a size_t variable where to store the total number of lines
+ * @param pLineNum The address of a size_t variable where to store the total number of lines
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-struct Line* include(const char* vCode, const char* vFile, const int32_t vLineInfo, size_t* pNum){
+struct Line* include(const char* vCode, const char* vFile, const int32_t vLineInfo, size_t* pLineNum){
 	char* code = uncomment(vCode, vFile);
-	struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES); //ret[0] = '\0';
-	char *line;//, lineStr[6 + 1 + 4]; //6 digits + '\0' + "/**/"
-	size_t len = 0;
+	struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);
+	char *line;
+	size_t totLineNum = 0;
 	for(int32_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
 		size_t lineNum = vLineInfo ? vLineInfo : i + 1;
 		char* r = isInclude(line);
@@ -527,20 +631,20 @@ struct Line* include(const char* vCode, const char* vFile, const int32_t vLineIn
 			char* included = readFile(r);
 			size_t includedLen;
 			struct Line* included2 = include(included, vFile, i + 1, &includedLen);
-			memcpy(ret + len, included2, sizeof(struct Line) * includedLen);
+			memcpy(ret + totLineNum, included2, sizeof(struct Line) * includedLen);
 			free(included);
 			free(included2);
-			len += includedLen;
+			totLineNum += includedLen;
 			//TODO save original files
 		}
 		else{ // If not
-			ret[len].line = lineNum;
-			ret[len].len = strlen(line);//TODO rename local len
-			ret[len].str = line;
-			++len;
+			ret[totLineNum].line = lineNum;
+			ret[totLineNum].len = strlen(line);//TODO rename local len
+			ret[totLineNum].str = line;
+			++totLineNum;
 		}
 	}
-	*pNum = len;
+	*pLineNum = totLineNum;
 	return ret;
 }
 
@@ -550,13 +654,7 @@ struct Line* include(const char* vCode, const char* vFile, const int32_t vLineIn
 
 
 
-
-
 // Tokenizer -------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
 
 
 
@@ -626,8 +724,6 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 
 
 //TODO comment
-//TODO check empty literals like 0x, 0d, 0o
-//TODO check decimal literals starting with .
 size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLine, const uint32_t iLineNum, const char* iFileName){
 	if(isdigit(vLine[0])){
 		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
@@ -664,6 +760,8 @@ size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLi
 	}
 	return 0;
 }
+//TODO check empty literals like 0x, 0d, 0o
+//TODO check decimal literals starting with .
 
 
 
@@ -700,7 +798,7 @@ size_t getUnknown(const char* vLine, struct Token* const pToken) {
 
 
 
-//TODO REMOVE LINE STRDUP AND LINE FIELD
+
 //TODO replace tabs with spaces
 struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum, const char* iFileName){
 	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
@@ -711,7 +809,6 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 		char* leading_ws = NULL;
 		for(size_t j = 0; j < lLen; ++tok_j){
 			struct Token* curToken = ret + tok_j;	// Cache the address of the current token
-			curToken->line    = l;					// Set the line //TODO remove line
 			curToken->lineNum = i;					// Set the number of the line
 			curToken->start   = j;					// Set the start index to j
 			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL; // Save leading whitespace
@@ -744,7 +841,6 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 			curToken->len     = 1;
 			curToken->id      = e_newline;
 			curToken->data    = NULL;
-			curToken->line    = l;
 			curToken->lineNum = i;
 			curToken->start   = 0;
 
@@ -762,7 +858,6 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 
 
-
 // Syntax ----------------------------------------------------------------------------------------------------------------------------------//
 
 
@@ -772,11 +867,20 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 
 
+//
 
 
 
 
-// idk --------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+// Output assembler -------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
 
 
 
@@ -819,6 +923,10 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 	ret[j + 1] = '\0';
 	return ret;
 }
+
+
+
+
 
 
 

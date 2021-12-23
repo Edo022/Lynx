@@ -74,10 +74,14 @@ void main() {
 	setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));
 
 	setPixel(f32v2(0.5, 0.5), f32v4(250, 0, 0, 250));
-	setPixel(f32v2(0.5, 0.5), f32v4(1, 0, 0, 1));
-
+	setPixel(f32v2(0.5, 0.5), f32v4(1, 0, 0, 1)); //a
+	//a
 	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
-	// setPixel(pos.xy );
+	a /* setPixel(pos.xy );*/
+	/**/
+	//
+	// /**/
+	/**/ //
 }
 
