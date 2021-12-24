@@ -14,8 +14,8 @@
 
 #define MAX_ERR         4100100
 #define MAX_CODE_LEN    4100100		//FIXME use dynamic reallocations
-#define MAX_CODE_LINES  800100100		//FIXME use dynamic reallocations or pass the size
-#define MAX_TOKENS		8100100		//FIXME use dynamic reallocations
+#define MAX_CODE_LINES  800100100	//FIXME use dynamic reallocations or pass the size
+#define MAX_TOKENS      8100100		//FIXME use dynamic reallocations
 
 //FIXME GLSL doesnt suppotr bool and integer matrices
 //TODO check returns values
@@ -104,19 +104,19 @@ int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
 
 struct Token{
 	const char* value;     // The string value of the token  e.g. "const", "uint32"
-	size_t len;            // Length of the token
+	uint64_t len;          // Length of the token
 	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
 	const char* leading_ws;// The value of the leading whitespace
-	size_t lineNum;        // The number if the line
-	size_t start;          // Index of the token's first character in its line
+	uint64_t lineNum;      // The number if the line
+	uint64_t start;        // Index of the token's first character in its line
 };
 
 
 struct Line {
 	uint32_t line;
 	char* str;
-	size_t len;
+	uint64_t len;
 };
 
 
@@ -191,9 +191,9 @@ const char* operatorValues[] = {
 struct TypeData_t {
 	char* glslType;        // The corresponding GLSL type
 	enum TokenID baseType; // Base type of the type  e.g. the base type of a f32 matrix is f32
-	size_t x;              // Width   e.g. a 2x3 matrix has x = 2, a scalar type has x = 1
-	size_t y;              // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
-	size_t align;          // Alignment of the type in bytes
+	uint64_t x;            // Width   e.g. a 2x3 matrix has x = 2, a scalar type has x = 1
+	uint64_t y;            // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
+	uint64_t align;        // Alignment of the type in bytes
 };
 struct TypeData_t typeData[] = {
 	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
@@ -300,8 +300,6 @@ struct LiteralData_t{
 
 
 
-//TODO move to utils
-//TODO add c bindings
 const char *nBlk = "\033[0;30m", *bBlk = "\033[1;30m", *uBlk = "\033[4;30m";
 const char *nRed = "\033[0;31m", *bRed = "\033[1;31m", *uRed = "\033[4;31m";
 const char *nGrn = "\033[0;32m", *bGrn = "\033[1;32m", *uGrn = "\033[4;32m";
@@ -315,11 +313,10 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
 /**
- * @brief
- *
- * @param vStr
+ * @brief //TODO
+ * @param vStr //TODO
  * @param vBase min 2, max 36 //TODO
- * @return double
+ * @return //TODO
  */
 double bstrtolf(const char* vStr, const int32_t vBase){
     double res = 0, div = 1;
@@ -346,7 +343,7 @@ double bstrtolf(const char* vStr, const int32_t vBase){
  * @param vTabSize The length of tab characters. Max 8
  * @return A null terminated memory block containing the data
  */
-char* readFile(const char* vFilePath, size_t vTabSize){
+char* readFile(const char* vFilePath, uint64_t vTabSize){
 	if(vTabSize > 8) vTabSize = 8;
 	FILE* const f = fopen(vFilePath, "r");
 	fseek(f, 0, SEEK_END);
@@ -360,7 +357,7 @@ char* readFile(const char* vFilePath, size_t vTabSize){
 		switch(c){
 			case '\r': break;
 			case '\t': {
-				const size_t n = vTabSize - line_i % vTabSize;
+				const uint64_t n = vTabSize - line_i % vTabSize;
 				strncpy(data + j, "        ", n);
 				j += n;
 				line_i += n;
@@ -410,10 +407,10 @@ const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex){
  * @return The vIndex-th resulting string, or NULL if it does not exist
  */
 char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){
-	const char* a = vIndex ? strchrn(vSrc, vChar, vIndex - 1) : vSrc;
-	const char* b = strchr(a + !!vIndex, vChar);
-	size_t len =  b ? b - a : strlen(a);
-	char* ret = malloc(len);
+	const char* const a = vIndex ? strchrn(vSrc, vChar, vIndex - 1) : vSrc;
+	const char* const b = strchr(a + !!vIndex, vChar);
+	const uint64_t len =  b ? b - a : strlen(a);
+	char* const ret = malloc(len);
 	memcpy(ret, a + 1, len - !!len);
 	ret[len] = '\0';
 	return ret;
@@ -485,13 +482,11 @@ void printSyntaxError(const int32_t iLineN, const char* iLine, const char* iFile
  * @param vLines An array of Line structs containing the lines to clear
  * @param vNum The number of lines
  */
-void clear(struct Line* vLines, const size_t vNum){
-	for(size_t i = 0; i < vNum; ++i){
-		struct Line* l = &vLines[i];
+void clear(struct Line* vLines, const uint64_t vNum){
+	for(uint64_t i = 0; i < vNum; ++i){
+		struct Line* const l = &vLines[i];
 
 		for(int64_t j = l->len - 1;; --j){
-			char c = l->str[j];
-
 			//Lines containing only whitespace or empty lines
 			if(j < 0){
 				l->str[0] = '\0';
@@ -499,7 +494,7 @@ void clear(struct Line* vLines, const size_t vNum){
 				break;
 			}
 			// Lines with trailing whitespace or none
-			else if(c != ' ') {
+			else if(l->str[j] != ' ') {
 			//!^ '\r' are removed, tabs are replaced with spaces and newlines are not part of the line value
 				l->str[j + 1] = '\0';
 				l->len = j;
@@ -523,19 +518,19 @@ void clear(struct Line* vLines, const size_t vNum){
  */
 char* uncomment(const char* vCode, const char* iFile){
 	char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
-	int32_t vCodeLen = strlen(vCode);
-	int32_t i = 0;
+	const uint64_t vCodeLen = strlen(vCode);
+	uint64_t i = 0;
 	while(i < vCodeLen){								//For each character
 		if(vCode[i] == '"'){								//If the character is a double quote
-			int32_t strBegin = i;								//Save the string beginning for eventual errors
+			const uint64_t strBegin = i;						//Save the string beginning for eventual errors
 			strcat(code, "\"");									//Paste opening "
 			++i;												//Skip opening "
 			while(vCode[i] != '"'){								//For each character of the string
 				strncat(code, &vCode[i], 1);						//Paste character
 				++i;												//Update counter
 				if(i == vCodeLen){									//If the string does not end
-					int32_t vLineN = 0;										//
-					for(int32_t j = 0; j < strBegin; ++j){				//Find the line in which the string begins
+					uint64_t vLineN = 0;								//
+					for(uint64_t j = 0; j < strBegin; ++j){				//Find the line in which the string begins
 						if(vCode[j] == '\n') ++vLineN;						//
 					}													// [...] Print a syntax error
 					const char* errorLine = strchrn(vCode, '\n', vLineN);
@@ -589,7 +584,7 @@ char* uncomment(const char* vCode, const char* iFile){
  * @param iFile The file path. Used to print errors
  * @param vPath The path of the included file
  */
-void checkIncludeFile(const int32_t iLineN, const char* iLine, const char* iFile, const char* vPath){ //TODO check vLine type
+void checkIncludeFile(const int32_t iLineN, const char* const iLine, const char* const iFile, const char* vPath){ //TODO check vLine type
 	if(access(vPath, F_OK) == 0) {
 		struct stat fileStat; stat(vPath, &fileStat);
 		if(S_ISDIR(fileStat.st_mode)) {
@@ -609,20 +604,20 @@ void checkIncludeFile(const int32_t iLineN, const char* iLine, const char* iFile
  * @param vLine The line to parse
  * @return The path of the included file, or NULL if the line is not an include statement
  */
-char* isInclude(const char* vLine){
+char* isInclude(const char* const vLine){
 	//TODO add withespace parsing
 	//TODO optimize strlen
-	const char* inc_start = "#include ";			// Beginning of the include statements
-	size_t i = strlen(inc_start);					// Skip the length of include_start
-	char* ret = malloc(PATH_MAX);					// Allocate space for the included file path
+	const char* const inc_start = "#include ";		// Beginning of the include statements
+	uint64_t i = strlen(inc_start);					// Skip the length of include_start
+	char* const ret = malloc(PATH_MAX);				// Allocate space for the included file path
 	if(!memcmp(vLine, inc_start, i)){				// If the line is an include statement
 		const char c = vLine[i];						// Check if either '<' or '"' are used
 		if(c == '"' || c == '<'){						// If they are
 			++i;											//
-			for(size_t j = 0; i < strlen(vLine); ++i, ++j){	// Get the file path
-				if(vLine[i] == (c == '<' ? '>' : '"')) {	//
-					ret[j] = '\0';							//
-					return ret;								// Return the path
+			for(uint64_t j = 0; i < strlen(vLine); ++i, ++j){// Get the file path
+				if(vLine[i] == (c == '<' ? '>' : '"')) {		//
+					ret[j] = '\0';								//
+					return ret;									// Return the path
 				}
 				ret[j] = vLine[i];
 			}
@@ -640,21 +635,21 @@ char* isInclude(const char* vLine){
  * @param vCode The code containing the include statements
  * @param vFile The path of the file
  * @param vLineInfo The absolute line from which the file was included. 0 if the file is not included
- * @param pLineNum The address of a size_t variable where to store the total number of lines
+ * @param pLineNum The address of a uint64_t variable where to store the total number of lines
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-struct Line* include(const char* vCode, const char* vFile, const int32_t vLineInfo, size_t* pLineNum){
+struct Line* include(const char* const vCode, const char* const vFile, const int32_t vLineInfo, uint64_t* const pLineNum){
 	char* code = uncomment(vCode, vFile);
-	struct Line* ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);
+	struct Line* const ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);
 	char *line;
-	size_t totLineNum = 0;
-	for(int32_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
-		size_t lineNum = vLineInfo ? vLineInfo : i + 1;
-		char* r = isInclude(line);
+	uint64_t totLineNum = 0;
+	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
+		const uint64_t lineNum = vLineInfo ? vLineInfo : i + 1;
+		char* const r = isInclude(line);
 		if(r != NULL){								// If the line is an include statement
 			checkIncludeFile(i, line, vFile, r);		// Check the included file
 			char* included = readFile(r, 4);
-			size_t includedLen;
+			uint64_t includedLen;
 			struct Line* included2 = include(included, vFile, i + 1, &includedLen);
 			memcpy(ret + totLineNum, included2, sizeof(struct Line) * includedLen);
 			free(included);
@@ -688,17 +683,16 @@ struct Line* include(const char* vCode, const char* vFile, const int32_t vLineIn
 
 
 
-size_t findSpaces(const char* vLine){
-	char c = *vLine;
-	for(int32_t i = 0;; c = vLine[++i]) {
-		if(!(c == '\t' || c == ' ')) return i;
+uint64_t findSpaces(const char* const vLine){
+	for(uint64_t i = 0;; ++i) {
+		if(!(vLine[i] == '\t' || vLine[i] == ' ')) return i;
 	}
 }
 
 
 
 
-size_t getPreprocessor(const char* vLine, struct Token* const pToken){
+uint64_t getPreprocessor(const char* const vLine, struct Token* const pToken){
 	if(*vLine == '#'){
 		pToken->value = strdup("#");
 		pToken->len   = 1;
@@ -712,15 +706,15 @@ size_t getPreprocessor(const char* vLine, struct Token* const pToken){
 
 
 
-size_t getIdentifier(const char* vLine, struct Token* const pToken){
-	size_t i;
+uint64_t getIdentifier(const char* const vLine, struct Token* const pToken){
 	if(isalpha(vLine[0]) || vLine[0] == '_'){
+		uint64_t i;
 		for(i = 1; isalnum(vLine[i]) || vLine[i] == '_'; ++i);	// Get the length
 		pToken->value = strndup(vLine, i);						// Save the identifier
 		pToken->len   = i;										// Save the length
 
 		// Types
-		for(int32_t t = t_start; t < t_end; ++t){				// For each hard coded type
+		for(uint64_t t = t_start; t < t_end; ++t){				// For each hard coded type
 			if(!strcmp(pToken->value, typeValues[t - t_start])){	// If it matches the current identifier
 				pToken->id   = t;										// Set token id to the corresponding type id
 				pToken->data = &typeData[t - t_start];					// Set token data to the hard coded data of the corresponding type
@@ -729,7 +723,7 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 		}
 
 		// Keywords
-		for(int32_t k = k_start; k < k_end; ++k){				// For each hard coded keyword
+		for(uint64_t k = k_start; k < k_end; ++k){				// For each hard coded keyword
 			if(!strcmp(pToken->value, keywordValues[k - k_start])){	// If it matches the current identifier
 				pToken->id   = k;										// Set token id to the corresponding identifier id
 				pToken->data = NULL;									// Set token data to NULL
@@ -749,12 +743,12 @@ size_t getIdentifier(const char* vLine, struct Token* const pToken){
 
 
 //TODO comment
-size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLine, const uint32_t iLineNum, const char* iFileName){
+uint64_t getLiteral(const char* vLine, struct Token* const pToken, const char* const iLine, const uint32_t iLineNum, const char* const iFileName){
 	if(isdigit(vLine[0])){
 		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
 
-		size_t isValid = 1, i, base;									// 1 if the literal is valid, loop index and literal length, literal base
-		size_t offset = (vLine[0] == '0' && isalpha(vLine[1])) ? 2 : 0;	// 0 or 2 if the literal has a prefix
+		uint64_t isValid = 1, i, base;									// 1 if the literal is valid, loop index and literal length, literal base
+		uint64_t offset = (vLine[0] == '0' && isalpha(vLine[1])) ? 2 : 0;	// 0 or 2 if the literal has a prefix
 		const char* baseName;											// The complete name of the base
 
 		// Get literal base and complete base name
@@ -791,9 +785,8 @@ size_t getLiteral(const char* vLine, struct Token* const pToken, const char* iLi
 
 
 
-size_t getOperator(const char* vLine, struct Token* const pToken){
-	size_t opLen;
-	for(int32_t o = o_start; o < o_end; ++o){				// For each hard coded operator
+uint64_t getOperator(const char* const vLine, struct Token* const pToken){
+	for(uint64_t opLen, o = o_start; o < o_end; ++o){			// For each hard coded operator
 		opLen = strlen(operatorValues[o - o_start]);			// Cache operator length
 		if(!strncmp(vLine, operatorValues[o - o_start], opLen)){// If it matches the current operator
 			pToken->value = operatorValues[o - o_start];			// Save the operator
@@ -809,7 +802,7 @@ size_t getOperator(const char* vLine, struct Token* const pToken){
 
 
 
-size_t getUnknown(const char* vLine, struct Token* const pToken) {
+uint64_t getUnknown(const char* const vLine, struct Token* const pToken) {
 	pToken->value = strndup(vLine, 1);
 	pToken->len   = 1;
 	pToken->id    = e_unknown;
@@ -825,22 +818,22 @@ size_t getUnknown(const char* vLine, struct Token* const pToken) {
 
 
 //TODO replace tabs with spaces
-struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* vFile, size_t* pNum, const char* iFileName){
-	struct Token* ret = malloc(sizeof(struct Token) * MAX_TOKENS);
-	size_t tok_j = 0;
-	for(size_t i = 0; i < vLineNum; ++i){
-		char* l = vLines[i].str;
-		size_t lLen = strlen(l);
+struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint64_t* pNum, const char* const iFileName){
+	struct Token* const ret = malloc(sizeof(struct Token) * MAX_TOKENS);
+	uint64_t tok_j = 0;
+	for(uint64_t i = 0; i < vLineNum; ++i){
+		char* const l = vLines[i].str;
+		const uint64_t lLen = strlen(l);
 		char* leading_ws = NULL;
-		for(size_t j = 0; j < lLen; ++tok_j){
-			struct Token* curToken = ret + tok_j;	// Cache the address of the current token
-			curToken->lineNum = i;					// Set the number of the line
-			curToken->start   = j;					// Set the start index to j
+		for(uint64_t j = 0; j < lLen; ++tok_j){
+			struct Token* const curToken = ret + tok_j;	// Cache the address of the current token
+			curToken->lineNum = i;						// Set the number of the line
+			curToken->start   = j;						// Set the start index to j
 			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL; // Save leading whitespace
 
 
 			// Get leading whitespace
-			size_t wsLen = findSpaces(l + j);
+			const uint64_t wsLen = findSpaces(l + j);
 			if(wsLen){
 				leading_ws = strndup(l + j, wsLen);
 				j += wsLen; --tok_j; continue;
@@ -848,7 +841,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 			else leading_ws = NULL;
 
 			// Find the first token, save into the array and update j
-			size_t tokLen;
+			uint64_t tokLen;
 			if     (tokLen = getPreprocessor (l + j, curToken)){}
 			else if(tokLen = getIdentifier   (l + j, curToken)){}
 			else if(tokLen = getLiteral      (l + j, curToken, l, vLines[i].line, iFileName)){}
@@ -859,7 +852,7 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 		//Add newline token
 		if(i < vLineNum - 1) {
-			struct Token* curToken = ret + tok_j;
+			struct Token* const curToken = ret + tok_j;
 			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
 
 			curToken->value   = strdup("\n");
@@ -910,18 +903,18 @@ struct Token* tokenize(struct Line* vLines, const size_t vLineNum, const char* v
 
 
 
-char* translate(const struct Token* vTokens, const size_t vTokensNum){
-	char* ret = malloc(MAX_CODE_LEN);
-	size_t j = 0;
-	for(size_t i = 0; i < vTokensNum; ++i){
-		const struct Token* curTok = vTokens + i;
+char* translate(const struct Token* vTokens, const uint64_t vTokensNum){
+	char* const ret = malloc(MAX_CODE_LEN);
+	uint64_t j = 0;
+	for(uint64_t i = 0; i < vTokensNum; ++i){
+		const struct Token* const curTok = vTokens + i;
 		if(curTok->leading_ws){
 			strcpy(ret + j, curTok->leading_ws);
 			j += strlen(curTok->leading_ws);
 		}
 
 		if(curTok->id == e_literal){
-			struct LiteralData_t* tokData = curTok->data;
+			struct LiteralData_t* const tokData = curTok->data;
 			char strValue[64];
 			if(tokData->type == t_u32) snprintf(strValue, 64, "%d", *(uint32_t*)tokData->value);
 			else                       snprintf(strValue, 64, "%lf",  *(double*)tokData->value);
@@ -965,24 +958,23 @@ char* translate(const struct Token* vTokens, const size_t vTokensNum){
 
 
 
-void run(const char* vSrc, const char* vOut){
-	const char* src = realpath(vSrc, NULL); //Resolve symbolic links
+void run(const char* const vSrc, const char* const vOut){
+	const char* const src = realpath(vSrc, NULL); //Resolve symbolic links
 	if(access(src, F_OK) != 0) printError("\"%s\": No such file or directory", vSrc);
 
 
 	//Read input file
-	const char* code = readFile(src, 4);
-	char* line;
+	const char* const code = readFile(src, 4);
 
 	//Add hard coded version statement and parse the code
-	size_t outputLinesNum;
-	struct Line* outputLines = include(code, vSrc, 0, &outputLinesNum);
+	uint64_t outputLinesNum;
+	struct Line* const outputLines = include(code, vSrc, 0, &outputLinesNum);
 	clear(outputLines, outputLinesNum);
 
-	size_t outputTokensNum;
-	struct Token* outputTokens = tokenize(outputLines, outputLinesNum, vSrc, &outputTokensNum, vSrc);
+	uint64_t outputTokensNum;
+	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
 
-	char* outputStr = translate(outputTokens, outputTokensNum);
+	char* const outputStr = translate(outputTokens, outputTokensNum);
 
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");
