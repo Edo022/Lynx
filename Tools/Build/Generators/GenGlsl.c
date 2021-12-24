@@ -474,14 +474,24 @@ void printSyntaxError(const int32_t iLineN, const char* iLine, const char* iFile
 void clear(struct Line* vLines, const size_t vNum){
 	for(size_t i = 0; i < vNum; ++i){
 		struct Line* l = &vLines[i];
-		for(int32_t j = l->len - 1; j >= 0; --j){
+
+		for(int64_t j = l->len - 1;; --j){
 			char c = l->str[j];
-			if(c != '\t' && c != '\r' && c != ' ' && c != '\n') {
+
+			//Lines containing only whitespace or empty lines
+			if(j < 0){
+				l->str[0] = '\0';
+				l->len = 0;
+				break;
+			}
+			// Lines with trailing whitespace or none
+			else if(c != '\t' && c != '\r' && c != ' ' && c != '\n') {
 				l->str[j + 1] = '\0';
 				l->len = j;
 				break;
 			}
 		}
+
 	}
 }
 //TODO replace tabs with spaces
