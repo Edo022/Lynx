@@ -107,8 +107,7 @@ struct Token{
 	size_t len;            // Length of the token
 	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
-	const char* leading_ws;
-	// const char* line;      // The line that contains the token
+	const char* leading_ws;// The value of the leading whitespace
 	size_t lineNum;        // The number if the line
 	size_t start;          // Index of the token's first character in its line
 };
@@ -342,22 +341,37 @@ double bstrtolf(const char* vStr, const int32_t vBase){
 /**
  * @brief Reads all the contents of the file vFilePath
  *     Removes any '\r' character
+ *     Tabs are replaced with spaces
  * @param vFilePath The path of the file
+ * @param vTabSize The length of tab characters. Max 8
  * @return A null terminated memory block containing the data
  */
-char* readFile(const char* vFilePath){
-	FILE* f = fopen(vFilePath, "r");
+char* readFile(const char* vFilePath, size_t vTabSize){
+	if(vTabSize > 8) vTabSize = 8;
+	FILE* const f = fopen(vFilePath, "r");
 	fseek(f, 0, SEEK_END);
-	int32_t size = ftell(f);
+	const uint64_t size = ftell(f);
 	rewind(f);
 
-	char* data = malloc(size + 1);
-	int32_t j;
-	for(int32_t i = j = 0; i < size; ++i) {
-		char c = fgetc(f);
-		if(c != '\r'){
-			data[j] = c;
-			++j;
+	char* const data = malloc(vTabSize * size + 1);
+	uint64_t i, j, line_i;
+	for(i = j = line_i = 0; i < size; ++i) {
+		const char c = fgetc(f);
+		switch(c){
+			case '\r': break;
+			case '\t': {
+				const size_t n = vTabSize - line_i % vTabSize;
+				strncpy(data + j, "        ", n);
+				j += n;
+				line_i += n;
+				break;
+			}
+			default: {
+				data[j++] = c;
+				++line_i;
+				if(c == '\n') line_i = 0;
+				break;
+			}
 		}
 	}
 	data[j] = '\0';
@@ -485,7 +499,8 @@ void clear(struct Line* vLines, const size_t vNum){
 				break;
 			}
 			// Lines with trailing whitespace or none
-			else if(c != '\t' && c != '\r' && c != ' ' && c != '\n') {
+			else if(c != ' ') {
+			//!^ '\r' are removed, tabs are replaced with spaces and newlines are not part of the line value
 				l->str[j + 1] = '\0';
 				l->len = j;
 				break;
@@ -638,7 +653,7 @@ struct Line* include(const char* vCode, const char* vFile, const int32_t vLineIn
 		char* r = isInclude(line);
 		if(r != NULL){								// If the line is an include statement
 			checkIncludeFile(i, line, vFile, r);		// Check the included file
-			char* included = readFile(r);
+			char* included = readFile(r, 4);
 			size_t includedLen;
 			struct Line* included2 = include(included, vFile, i + 1, &includedLen);
 			memcpy(ret + totLineNum, included2, sizeof(struct Line) * includedLen);
@@ -956,7 +971,7 @@ void run(const char* vSrc, const char* vOut){
 
 
 	//Read input file
-	const char* code = readFile(src);
+	const char* code = readFile(src, 4);
 	char* line;
 
 	//Add hard coded version statement and parse the code
