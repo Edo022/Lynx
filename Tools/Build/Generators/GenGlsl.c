@@ -337,7 +337,7 @@ double bstrtolf(const char* vStr, const int32_t vBase){
 
 /**
  * @brief Reads all the contents of the file vFilePath
- *     Removes any '\r' character
+ *     Removes any '\r' and '\v' character
  *     Tabs are replaced with spaces
  * @param vFilePath The path of the file
  * @param vTabSize The length of tab characters. Max 8
@@ -356,6 +356,7 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 		const char c = fgetc(f);
 		switch(c){
 			case '\r': break;
+			case '\v': break;
 			case '\t': {
 				const uint64_t n = vTabSize - line_i % vTabSize;
 				strncpy(data + j, "        ", n);
@@ -520,27 +521,37 @@ char* uncomment(const char* vCode, const char* iFile){
 	char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
 	const uint64_t vCodeLen = strlen(vCode);
 	uint64_t i = 0;
-	while(i < vCodeLen){								//For each character
-		if(vCode[i] == '"'){								//If the character is a double quote
-			const uint64_t strBegin = i;						//Save the string beginning for eventual errors
-			strcat(code, "\"");									//Paste opening "
-			++i;												//Skip opening "
-			while(vCode[i] != '"'){								//For each character of the string
-				strncat(code, &vCode[i], 1);						//Paste character
-				++i;												//Update counter
-				if(i == vCodeLen){									//If the string does not end
-					uint64_t vLineN = 0;								//
-					for(uint64_t j = 0; j < strBegin; ++j){				//Find the line in which the string begins
-						if(vCode[j] == '\n') ++vLineN;						//
-					}													// [...] Print a syntax error
-					const char* errorLine = strchrn(vCode, '\n', vLineN);
-					printSyntaxError(vLineN, errorLine, iFile, "Unterminated string");
+
+
+	//For each character
+	while(i < vCodeLen){
+
+		//If the character is a double quote
+		if(vCode[i] == '"'){
+			//Check if the string ends
+			const char* const str_begin = vCode + i;
+			int ends = 1;
+			for(++i; vCode[i] != '"'; ++i){
+				if(!vCode[i] || vCode[i] == '\n') {
+					ends = 0; break;
 				}
 			}
-			strcat(code, "\"");									//Paste closing '"'
-			++i;												//Skip closing '"'
+
+			// If it does, paste it and skip closing '"'
+			if(ends) {
+				strncat(code, str_begin, i - (str_begin - vCode) + 1);
+				++i;
+			}
+			// If it doesn't, print a syntax error
+			else{
+				uint64_t vLineN = 0; for(const char* c = vCode; c < str_begin; ++c) vLineN += *c == '\n';
+				const char* errorLine = vLineN ? strchrn(vCode, '\n', vLineN - 1) : vCode;
+				printSyntaxError(vLineN, strndup(errorLine, strchrn(vCode, '\n', vLineN) - errorLine), iFile, "Unterminated string");
+			}
 		}
-		else if(i < vCodeLen - 1){							//If there is enough space to start a comment
+
+		// If it's not and there is enough space to start a comment
+		else if(i < vCodeLen - 1){
 			if(vCode[i] == '/' && vCode[i + 1] == '/'){			//If the character is the beginning of a single line comment
 				i += 2;												//Ignore "//"
 				while(i < vCodeLen && vCode[i] != '\n') ++i;		//Ignore the whole comment
@@ -563,13 +574,17 @@ char* uncomment(const char* vCode, const char* iFile){
 				++i;												//Update the counter
 			}
 		}
-		else{												//Else
-			strncat(code, &vCode[i], 1);						//Paste the character
-			++i;												//Update the counter
+
+		// Else paste whatever character was read
+		else{
+			strncat(code, &vCode[i], 1);
+			++i;
 		}
 	}
 
-	return code; //Return the parsed code
+
+	//Return the parsed code
+	return code;
 }
 //FIXME dont use strcat and strncat or just start from an index
 
@@ -599,31 +614,39 @@ void checkIncludeFile(const int32_t iLineN, const char* const iLine, const char*
 
 
 
+uint64_t findSpaces(const char* const vLine);
 /**
  * @brief Checks if vLine is an include statement and returns the path of the included file
  * @param vLine The line to parse
  * @return The path of the included file, or NULL if the line is not an include statement
  */
-char* isInclude(const char* const vLine){
-	//TODO add withespace parsing
-	//TODO optimize strlen
-	const char* const inc_start = "#include ";		// Beginning of the include statements
-	uint64_t i = strlen(inc_start);					// Skip the length of include_start
+char* isInclude(const char* const vLine, const int32_t iLineN, const char* iFile){
+	// Check #
+	uint64_t i = findSpaces(vLine);
+	if(vLine[i] != '#') return NULL;
+	i += findSpaces(vLine + ++i);
+
+	// Check "include "
+	const char* const include_value = "include ";
+	const uint64_t include_len = strlen(include_value);
+	if(memcmp(vLine + i, include_value, include_len)) return NULL;
+	i += include_len;
+
+	// Get included file path
 	char* const ret = malloc(PATH_MAX);				// Allocate space for the included file path
-	if(!memcmp(vLine, inc_start, i)){				// If the line is an include statement
-		const char c = vLine[i];						// Check if either '<' or '"' are used
-		if(c == '"' || c == '<'){						// If they are
-			++i;											//
-			for(uint64_t j = 0; i < strlen(vLine); ++i, ++j){// Get the file path
-				if(vLine[i] == (c == '<' ? '>' : '"')) {		//
-					ret[j] = '\0';								//
-					return ret;									// Return the path
-				}
-				ret[j] = vLine[i];
+	const char c = vLine[i] == '<' ? '>' : vLine[i] == '"' ? '"' : '\0';
+	if(c){												// If either '<' or '"' are used
+		++i;												// Ignore '<' or '"'
+		const uint64_t line_len = strlen(vLine);			// Cache the length of the line
+		for(uint64_t j = 0; i < line_len; ++i, ++j){		// Get the file path
+			if(vLine[i] == c) {								//
+				ret[j] = '\0';								//
+				return ret;									// Return the path
 			}
+			ret[j] = vLine[i];
 		}
 	}
-	return NULL;
+	printSyntaxError(iLineN, vLine, iFile, "Invalid include statement");
 }
 
 
@@ -645,7 +668,7 @@ struct Line* include(const char* const vCode, const char* const vFile, const int
 	uint64_t totLineNum = 0;
 	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
 		const uint64_t lineNum = vLineInfo ? vLineInfo : i + 1;
-		char* const r = isInclude(line);
+		char* const r = isInclude(line, i, vFile);
 		if(r != NULL){								// If the line is an include statement
 			checkIncludeFile(i, line, vFile, r);		// Check the included file
 			char* included = readFile(r, 4);
@@ -685,7 +708,7 @@ struct Line* include(const char* const vCode, const char* const vFile, const int
 
 uint64_t findSpaces(const char* const vLine){
 	for(uint64_t i = 0;; ++i) {
-		if(!(vLine[i] == '\t' || vLine[i] == ' ')) return i;
+		if(vLine[i] != ' ') return i;
 	}
 }
 
