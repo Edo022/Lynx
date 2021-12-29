@@ -78,7 +78,8 @@ void main() {
 	//a
 	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
-	a /* setPixel(pos.xy );*/
+a /* setPixel(pos.xy );*/
+	aaaaa
 	/**/
 	//
 	//  	 /**/

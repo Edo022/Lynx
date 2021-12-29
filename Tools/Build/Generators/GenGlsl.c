@@ -1,4 +1,6 @@
 //gcc GenGlsl.c -std=c11 -o GenGlsl
+//Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
+
 
 #define _DEFAULT_SOURCE // Required for realpath and strsep
 #include <stdio.h>
@@ -351,7 +353,7 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 	rewind(f);
 
 	char* const data = malloc(vTabSize * size + 1);
-	uint64_t i, j, line_i;
+	uint64_t i, j, line_i, newlines = 0;
 	for(i = j = line_i = 0; i < size; ++i) {
 		const char c = fgetc(f);
 		switch(c){
@@ -364,10 +366,21 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 				line_i += n;
 				break;
 			}
+			case '\n': {
+				if(data[j - 1] == '\\') {
+					--j;
+					++newlines;
+				}
+				else {
+					data[j++] = c;
+					for(; newlines; --newlines) data[j++] = '\n';
+					line_i = 0;
+				}
+				break;
+			}
 			default: {
 				data[j++] = c;
 				++line_i;
-				if(c == '\n') line_i = 0;
 				break;
 			}
 		}
@@ -377,6 +390,7 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 	fclose(f);
 	return data;
 }
+//TODO add newline continuation
 
 
 
