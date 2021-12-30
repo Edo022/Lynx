@@ -922,7 +922,9 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 
 
-//
+void checkSyntax(){
+
+}
 
 
 
