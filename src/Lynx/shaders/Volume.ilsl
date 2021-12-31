@@ -1,3 +1,5 @@
+
+
 #include <src/Lynx/shaders/stdlib.ilsh>
 
 #define gx gl_GlobalInvocationID.x
@@ -57,7 +59,8 @@ local {
  0x		//error
 
   0b1111010100	//ok
-	  	0b001111010100.01	//ok
+	  	0b001\
+111010100.01	//ok
 // 0b001111010102	//error
 0b				//error
 
@@ -78,7 +81,8 @@ void main() {
 	//a
 	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
-a /* setPixel(pos.xy );*/
+a /* setPixel(pos\
+.xy );*/
 	aaaaa
 	/**/
 	//

@@ -21,7 +21,32 @@
 
 //FIXME GLSL doesnt suppotr bool and integer matrices
 //TODO check returns values
+//TODO ADD MACROS
+//TODO ADD INCLUDE LISTS
 
+
+
+
+
+
+
+
+// Files ------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+struct File {
+	char* path;			// The path to the file
+	struct File* from;	// The file from which this file was included, or 0 for source files
+	uint64_t fromLine;	// The line from which this file was included, unset for source files
+}
+struct File* files;		// A list of all the compiled files
+uint64_t filesNum;		// The number of compiled files
 
 
 
@@ -154,7 +179,7 @@ struct OperatorData_t {
 	int32_t precedence;		// Operator precedence. Higher values have higher precedence
 	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
 };
-struct OperatorData_t operatorData[] = { // Sorted by length
+static struct OperatorData_t operatorData[] = { // Sorted by length
 	{ ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' },
 	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,    12, 'l' }, { ot_logical,    14, 'l' }, { ot_logical,    13, 'l' },
 	{ ot_inc_dec,     2, 'l' }, { ot_inc_dec,     2, 'l' },
@@ -164,7 +189,7 @@ struct OperatorData_t operatorData[] = { // Sorted by length
 	//! Both ++ and -- an be prefix or postfix. The actual precedence and associativity is determined after the tokenization
 	//! Same with +, -, ~. They can be unary or arithmetic
 };
-const char* operatorValues[] = {
+static const char* operatorValues[] = {
 	"<<=",">>=", "+=", "*=", "-=", "/=", "%=", "&=", "|=", "^=",
 	"<=", ">=",  "==", "!=", "&&", "||", "^^",
 	"++", "--",
@@ -197,7 +222,7 @@ struct TypeData_t {
 	uint64_t y;            // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
 	uint64_t align;        // Alignment of the type in bytes
 };
-struct TypeData_t typeData[] = {
+static struct TypeData_t typeData[] = {
 	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
 	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
 	{ "bvec3",   t_b, 3, 1, 16 },    { "uvec3",   t_u32, 3, 1, 16 },    { "ivec3",   t_i32, 3, 1, 16 },    { "vec3",   t_f32, 3, 1, 16 },    { "dvec3",   t_f64, 3, 1, 32 },
@@ -216,7 +241,7 @@ struct TypeData_t typeData[] = {
 	{ "bmat4x1", t_b, 4, 4, 16 },    { "umat4x1", t_u32, 4, 4, 16 },    { "imat4x1", t_i32, 4, 4, 16 },    { "mat4x1", t_f32, 4, 4, 16 },    { "dmat4x1", t_f64, 4, 4, 32 },
 	{ "void", t_void, 0, 0,  0 }
 };
-const char* typeValues[] = {
+static const char* typeValues[] = {
 	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
 	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
 	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
@@ -675,19 +700,19 @@ char* isInclude(const char* const vLine, const int32_t iLineN, const char* iFile
  * @param pLineNum The address of a uint64_t variable where to store the total number of lines
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-struct Line* include(const char* const vCode, const char* const vFile, const int32_t vLineInfo, uint64_t* const pLineNum){
+struct Line* include(const char* const vCode, const char* const vFile, const uint64_t vLineInfo, uint64_t* const pLineNum){
 	char* code = uncomment(vCode, vFile);
 	struct Line* const ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);
 	char *line;
 	uint64_t totLineNum = 0;
 	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
-		const uint64_t lineNum = vLineInfo ? vLineInfo : i + 1;
+		const uint64_t lineNum = vLineInfo == (uint64_t)-1 ? i + 1 : vLineInfo;
 		char* const r = isInclude(line, i, vFile);
 		if(r != NULL){								// If the line is an include statement
 			checkIncludeFile(i, line, vFile, r);		// Check the included file
 			char* included = readFile(r, 4);
 			uint64_t includedLen;
-			struct Line* included2 = include(included, vFile, i + 1, &includedLen);
+			struct Line* included2 = include(included, vFile, i, &includedLen);
 			memcpy(ret + totLineNum, included2, sizeof(struct Line) * includedLen);
 			free(included);
 			free(included2);
@@ -922,8 +947,19 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 
 
-void checkSyntax(){
-
+void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines, const char* const iFileName){
+	size_t lineNum = 0;
+	for(size_t i = 0; i < vTokenNum;){
+		const struct Token* t = &vTokens[i];
+		switch(t->id){
+			case e_newline: ++lineNum; ++i; break;
+			case e_preprocessor: {
+				//FIXME actually check the syntax and save the arguments
+				while(vTokens[i].id != e_newline) ++i;
+			}
+			default: printSyntaxError(iLines[lineNum].line, iLines[lineNum].str, iFileName, "Unexpected token \"%s\"", t->value);
+		}
+	}
 }
 
 
@@ -998,32 +1034,27 @@ char* translate(const struct Token* vTokens, const uint64_t vTokensNum){
 
 
 void run(const char* const vSrc, const char* const vOut){
+	//Read input file
 	const char* const src = realpath(vSrc, NULL); //Resolve symbolic links
 	if(access(src, F_OK) != 0) printError("\"%s\": No such file or directory", vSrc);
-
-
-	//Read input file
 	const char* const code = readFile(src, 4);
 
 	//Add hard coded version statement and parse the code
 	uint64_t outputLinesNum;
-	struct Line* const outputLines = include(code, vSrc, 0, &outputLinesNum);
+	struct Line* const outputLines = include(code, vSrc, (uint64_t)-1, &outputLinesNum);
 	clear(outputLines, outputLinesNum);
 
+	// Tokenize the code
 	uint64_t outputTokensNum;
 	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
 
+	// Check the syntax and write the GLSL code
+	checkSyntax(outputTokens, outputTokensNum, outputLines, vSrc);
 	char* const outputStr = translate(outputTokens, outputTokensNum);
 
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");
 	fprintf(ofile, "#version 450\n");
-	// for(int i = 0; i < outputTokensNum; ++i) {
-		// fprintf(
-		// 	ofile, "{ lineNum : %09d, len : %04d, start : %04d, id : %03d, data : %x, value : \"%s\", leading : \"%s\" }\n",
-		// 	outputTokens[i].lineNum, outputTokens[i].len, outputTokens[i].start, outputTokens[i].id, outputTokens[i].data, (outputTokens[i].id == e_newline) ? "\\n" : outputTokens[i].value, outputTokens[i].leading_ws
-		// );
-	// }
 	fprintf(ofile, "%s", outputStr);
 	fclose(ofile);
 }
