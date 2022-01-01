@@ -1,5 +1,6 @@
-//gcc GenGlsl.c -std=c11 -o GenGlsl
-//Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
+//exec          gcc GenGlsl.c -std=c11 -o GenGlsl
+//exec          gcc GenGlsl.c -std=c11 -ggdb3 -g3 -O0 -o GenGlsl
+//run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
 
 
 #define _DEFAULT_SOURCE // Required for realpath and strsep
@@ -15,8 +16,8 @@
 #include <linux/limits.h>
 
 #define MAX_ERR         4100100
-#define MAX_CODE_LEN    4100100		//FIXME use dynamic reallocations
-#define MAX_CODE_LINES  800100100	//FIXME use dynamic reallocations or pass the size
+#define MAX_CODE_LEN    800100100	//FIXME use dynamic reallocations
+#define MAX_CODE_LINES  4100100		//FIXME use dynamic reallocations or pass the size
 #define MAX_TOKENS      8100100		//FIXME use dynamic reallocations
 
 //FIXME GLSL doesnt suppotr bool and integer matrices
@@ -40,13 +41,25 @@
 
 
 
-struct File {
-	char* path;			// The path to the file
-	struct File* from;	// The file from which this file was included, or 0 for source files
-	uint64_t fromLine;	// The line from which this file was included, unset for source files
-}
-struct File* files;		// A list of all the compiled files
+struct File {			// A struct containing informations about a file
+	char* path;				// The path to the file
+	struct File* from;		// The file from which this file was included, or 0 for source files
+	uint64_t fromLine;		// The line from which this file was included, unset for source files
+};
+struct File* files;		// A list of all the compiled files. Reallocated dynamically
 uint64_t filesNum;		// The number of compiled files
+
+
+
+
+struct Line {			// A struct containing informations about a line
+	char* value;			// String value of the line
+	uint64_t len;			// Length of the line, '\n' or '\0' excluded
+	struct File* file;		// A pointer to the file containing this line
+	uint32_t lineNum;		// The number of the line. Starts from 0
+};
+
+
 
 
 
@@ -66,36 +79,36 @@ uint64_t filesNum;		// The number of compiled files
 enum TokenID {
 	//Types
 	t_start = 0,
-	t_b     =  0,   t_u32     =  1,   t_i32     =  2,   t_f32     =  3,   t_f64     =  4,   // Scalar types
-	t_bv2   =  5,   t_u32v2   =  6,   t_i32v2   =  7,   t_f32v2   =  8,   t_f64v2   =  9,   // 2-component vectors
-	t_bv3   = 10,   t_u32v3   = 11,   t_i32v3   = 12,   t_f32v3   = 13,   t_f64v3   = 14,   // 3-component vectors
-	t_bv4   = 15,   t_u32v4   = 16,   t_i32v4   = 17,   t_f32v4   = 18,   t_f64v4   = 19,   // 4-component vectors
-	t_bm2   = 20,   t_u32m2   = 21,   t_i32m2   = 22,   t_f32m2   = 23,   t_f64m2   = 24,   // 2x2 square matrices
-	t_bm3   = 25,   t_u32m3   = 26,   t_i32m3   = 27,   t_f32m3   = 28,   t_f64m3   = 29,   // 3x3 square matrices
-	t_bm4   = 30,   t_u32m4   = 31,   t_i32m4   = 32,   t_f32m4   = 33,   t_f64m4   = 34,   // 4x4 square matrices
-	t_bm2x2 = 35,   t_u32m2x2 = 36,   t_i32m2x2 = 37,   t_f32m2x2 = 38,   t_f64m2x2 = 39,   // 2x2 matrices
-	t_bm2x3 = 40,   t_u32m2x3 = 41,   t_i32m2x3 = 42,   t_f32m2x3 = 43,   t_f64m2x3 = 44,   // 2x3 matrices
-	t_bm2x4 = 45,   t_u32m2x4 = 46,   t_i32m2x4 = 47,   t_f32m2x4 = 48,   t_f64m2x4 = 49,   // 2x4 matrices
-	t_bm3x2 = 50,   t_u32m3x2 = 51,   t_i32m3x2 = 52,   t_f32m3x2 = 53,   t_f64m3x2 = 54,   // 3x2 matrices
-	t_bm3x3 = 55,   t_u32m3x3 = 56,   t_i32m3x3 = 57,   t_f32m3x3 = 58,   t_f64m3x3 = 59,   // 3x3 matrices
-	t_bm3x4 = 60,   t_u32m3x4 = 61,   t_i32m3x4 = 62,   t_f32m3x4 = 63,   t_f64m3x4 = 64,   // 3x4 matrices
-	t_bm4x2 = 65,   t_u32m4x2 = 66,   t_i32m4x2 = 67,   t_f32m4x2 = 68,   t_f64m4x2 = 69,   // 4x2 matrices
-	t_bm4x3 = 70,   t_u32m4x3 = 71,   t_i32m4x3 = 72,   t_f32m4x3 = 73,   t_f64m4x3 = 74,   // 4x3 matrices
-	t_bm4x4 = 75,   t_u32m4x4 = 76,   t_i32m4x4 = 77,   t_f32m4x4 = 78,   t_f64m4x4 = 79,   // 4x4 matrices
+	t_b     =  0,   t_u32     =  1,   t_i32     =  2,   t_f32     =  3,   t_f64     =  4,	// Scalar types
+	t_bv2   =  5,   t_u32v2   =  6,   t_i32v2   =  7,   t_f32v2   =  8,   t_f64v2   =  9,	// 2-component vectors
+	t_bv3   = 10,   t_u32v3   = 11,   t_i32v3   = 12,   t_f32v3   = 13,   t_f64v3   = 14,	// 3-component vectors
+	t_bv4   = 15,   t_u32v4   = 16,   t_i32v4   = 17,   t_f32v4   = 18,   t_f64v4   = 19,	// 4-component vectors
+	t_bm2   = 20,   t_u32m2   = 21,   t_i32m2   = 22,   t_f32m2   = 23,   t_f64m2   = 24,	// 2x2 square matrices
+	t_bm3   = 25,   t_u32m3   = 26,   t_i32m3   = 27,   t_f32m3   = 28,   t_f64m3   = 29,	// 3x3 square matrices
+	t_bm4   = 30,   t_u32m4   = 31,   t_i32m4   = 32,   t_f32m4   = 33,   t_f64m4   = 34,	// 4x4 square matrices
+	t_bm2x2 = 35,   t_u32m2x2 = 36,   t_i32m2x2 = 37,   t_f32m2x2 = 38,   t_f64m2x2 = 39,	// 2x2 matrices
+	t_bm2x3 = 40,   t_u32m2x3 = 41,   t_i32m2x3 = 42,   t_f32m2x3 = 43,   t_f64m2x3 = 44,	// 2x3 matrices
+	t_bm2x4 = 45,   t_u32m2x4 = 46,   t_i32m2x4 = 47,   t_f32m2x4 = 48,   t_f64m2x4 = 49,	// 2x4 matrices
+	t_bm3x2 = 50,   t_u32m3x2 = 51,   t_i32m3x2 = 52,   t_f32m3x2 = 53,   t_f64m3x2 = 54,	// 3x2 matrices
+	t_bm3x3 = 55,   t_u32m3x3 = 56,   t_i32m3x3 = 57,   t_f32m3x3 = 58,   t_f64m3x3 = 59,	// 3x3 matrices
+	t_bm3x4 = 60,   t_u32m3x4 = 61,   t_i32m3x4 = 62,   t_f32m3x4 = 63,   t_f64m3x4 = 64,	// 3x4 matrices
+	t_bm4x2 = 65,   t_u32m4x2 = 66,   t_i32m4x2 = 67,   t_f32m4x2 = 68,   t_f64m4x2 = 69,	// 4x2 matrices
+	t_bm4x3 = 70,   t_u32m4x3 = 71,   t_i32m4x3 = 72,   t_f32m4x3 = 73,   t_f64m4x3 = 74,	// 4x3 matrices
+	t_bm4x4 = 75,   t_u32m4x4 = 76,   t_i32m4x4 = 77,   t_f32m4x4 = 78,   t_f64m4x4 = 79,	// 4x4 matrices
 	t_void  = 80, // Just void
 	t_end = 80, //! Update this value when adding new types
 
 
 	// Keywords
 	k_start = 1000,
-	k_if       = 1001,    k_else      = 1005,    k_elif    = 1009,                      // If-else
-	k_while    = 1002,    k_for       = 1006,    k_do      = 1010,                      // Loops
-	k_continue = 1003,    k_break     = 1007,    k_return  = 1011,                      // Flow control
-	k_switch   = 1004,    k_case      = 1008,    k_default = 1012,                      // Switch case
+	k_if       = 1001,    k_else      = 1005,    k_elif    = 1009,						// If-else
+	k_while    = 1002,    k_for       = 1006,    k_do      = 1010,						// Loops
+	k_continue = 1003,    k_break     = 1007,    k_return  = 1011,						// Flow control
+	k_switch   = 1004,    k_case      = 1008,    k_default = 1012,						// Switch case
 
-	k_highp    = 1013,    k_medp      = 1016,    k_lowp    = 1019,    k_const = 1020,   // Qualifiers
-	k_local    = 1014,    k_extern    = 1017,                                           // Inputs
-	k_struct   = 1015,    k_preicison = 1018,                                           // Other
+	k_highp    = 1013,    k_medp      = 1016,    k_lowp    = 1019,    k_const = 1020,	// Qualifiers
+	k_local    = 1014,    k_extern    = 1017,											// Inputs
+	k_struct   = 1015,    k_preicison = 1018,											// Other
 	k_end = 1020, //! Update this value when adding new keywords
 
 
@@ -116,12 +129,12 @@ enum TokenID {
 
 	// Other
 	e_start = 1000000,
-	e_user_defined = 1000000,  // User defined identifiers
-	e_literal      = 1000001,  // Literal constants
-	e_newline      = 1000002,  // Line feed
-	e_identifier   = 1000003,  // User defined identifiers
-	e_preprocessor = 1000004,  // # characters
-	e_unknown      = 1000005,  // Anything else
+	e_user_defined = 1000000,	// User defined identifiers
+	e_literal      = 1000001,	// Literal constants
+	e_newline      = 1000002,	// Line feed
+	e_identifier   = 1000003,	// User defined identifiers
+	e_preprocessor = 1000004,	// # characters
+	e_unknown      = 1000005,	// Anything else
 	e_end
 };
 int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
@@ -130,20 +143,13 @@ int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
 
 
 struct Token{
-	const char* value;     // The string value of the token  e.g. "const", "uint32"
-	uint64_t len;          // Length of the token
-	enum TokenID id;       // The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
-	void* data;            // A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
-	const char* leading_ws;// The value of the leading whitespace
-	uint64_t lineNum;      // The number if the line
-	uint64_t start;        // Index of the token's first character in its line
-};
-
-
-struct Line {
-	uint32_t line;
-	char* str;
-	uint64_t len;
+	const char* value;		// The string value of the token  e.g. "const", "uint32"
+	uint64_t len;			// Length of the token
+	enum TokenID id;		// The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
+	void* data;				// A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
+	const char* leading_ws;	// The value of the leading whitespace
+	uint64_t lineNum;		// The number if the line
+	uint64_t start;			// Index of the token's first character in its line
 };
 
 
@@ -485,17 +491,17 @@ void printError(const char* vFormat, ...){
  * @param vFormat The format string
  * @param ... A list of arguments for the format string
  */
-void printSyntaxError(const int32_t iLineN, const char* iLine, const char* iFile, const char* vFormat, ...){
+void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ...){
 	va_list vArgs; va_start(vArgs, 0);
 	char vStr[MAX_ERR];
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
-	printf(
-		"%s\nGenGlsl: Syntax error on line %d, file \"%s\":" //FIXME
-		"\n%s%s"
+	printf("%s\nGenGlsl: Syntax error on line %06d, file \"%s\":", bRed, iLineInfo.lineNum + 1, realpath(iLineInfo.file->path, NULL));
+
+	printf("\n%s%s"
 		"\n    %s"
 		"\n\nCompilation stopped",
-		bRed, iLineN + 1, realpath(iFile, NULL), vStr, nWht, iLine
+		vStr, nWht, iLineInfo.value
 	);
 	exit(2);
 }
@@ -529,14 +535,14 @@ void clear(struct Line* vLines, const uint64_t vNum){
 		for(int64_t j = l->len - 1;; --j){
 			//Lines containing only whitespace or empty lines
 			if(j < 0){
-				l->str[0] = '\0';
+				l->value[0] = '\0';
 				l->len = 0;
 				break;
 			}
 			// Lines with trailing whitespace or none
-			else if(l->str[j] != ' ') {
+			else if(l->value[j] != ' ') {
 			//!^ '\r' are removed, tabs are replaced with spaces and newlines are not part of the line value
-				l->str[j + 1] = '\0';
+				l->value[j + 1] = '\0';
 				l->len = j;
 				break;
 			}
@@ -555,8 +561,8 @@ void clear(struct Line* vLines, const uint64_t vNum){
  * @param vCode The code to uncomment
  * @param iFile The path of the file containing the code. This is used to print syntax errors
  * @return The resulting string
- */
-char* uncomment(const char* vCode, const char* iFile){
+ */ //FIXME WRITE THE RESULT IN THE SAME ALLOCATION AND DONT RETURN IT
+char* uncomment(const char* vCode, struct File* const iFile){
 	char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
 	const uint64_t vCodeLen = strlen(vCode);
 	uint64_t i = 0;
@@ -585,7 +591,14 @@ char* uncomment(const char* vCode, const char* iFile){
 			else{
 				uint64_t vLineN = 0; for(const char* c = vCode; c < str_begin; ++c) vLineN += *c == '\n';
 				const char* errorLine = vLineN ? strchrn(vCode, '\n', vLineN - 1) : vCode;
-				printSyntaxError(vLineN, strndup(errorLine, strchrn(vCode, '\n', vLineN) - errorLine), iFile, "Unterminated string");
+				const char* iLineValue = strndup(errorLine, strchrn(vCode, '\n', vLineN) - errorLine);
+
+				struct Line iLineInfo;
+				iLineInfo.len     = strlen(iLineValue);
+				iLineInfo.value   = strdup(iLineValue);
+				iLineInfo.file    = iFile;
+				iLineInfo.lineNum = vLineN;
+				printSyntaxError(iLineInfo, "Unterminated string");
 			}
 		}
 
@@ -633,20 +646,20 @@ char* uncomment(const char* vCode, const char* iFile){
 /**
  * @brief Checks if an included path is valid
  *     Prints an error if it's not
- * @param iLineN The number of the line. Used to print errors
- * @param iLine The line value. Used to print errors
+ * @param iLineValue The line value. Used to print errors
+ * @param iLineNum The number of the line. Used to print errors
  * @param iFile The file path. Used to print errors
  * @param vPath The path of the included file
  */
-void checkIncludeFile(const int32_t iLineN, const char* const iLine, const char* const iFile, const char* vPath){ //TODO check vLine type
+void checkIncludeFile(const struct Line iLineInfo, const char* vPath){ //TODO check vLine type
 	if(access(vPath, F_OK) == 0) {
 		struct stat fileStat; stat(vPath, &fileStat);
 		if(S_ISDIR(fileStat.st_mode)) {
-			printSyntaxError(iLineN, iLine, iFile, "\"%s\" is a directory", vPath);
+			printSyntaxError(iLineInfo, "\"%s\" is a directory", vPath);
 		}
 	}
 	else {
-		printSyntaxError(iLineN, iLine, iFile, "No such file or directory");
+		printSyntaxError(iLineInfo, "No such file or directory");
 	}
 }
 
@@ -656,36 +669,36 @@ void checkIncludeFile(const int32_t iLineN, const char* const iLine, const char*
 uint64_t findSpaces(const char* const vLine);
 /**
  * @brief Checks if vLine is an include statement and returns the path of the included file
- * @param vLine The line to parse
+ * @param vLineValue The line to parse
  * @return The path of the included file, or NULL if the line is not an include statement
  */
-char* isInclude(const char* const vLine, const int32_t iLineN, const char* iFile){
+char* isInclude(const struct Line iLineInfo){
 	// Check #
-	uint64_t i = findSpaces(vLine);
-	if(vLine[i] != '#') return NULL;
-	i += findSpaces(vLine + ++i);
+	uint64_t i = findSpaces(iLineInfo.value);
+	if(iLineInfo.value[i] != '#') return NULL;
+	i += findSpaces(iLineInfo.value + ++i);
 
 	// Check "include "
 	const char* const include_value = "include ";
 	const uint64_t include_len = strlen(include_value);
-	if(memcmp(vLine + i, include_value, include_len)) return NULL;
+	if(memcmp(iLineInfo.value + i, include_value, include_len)) return NULL;
 	i += include_len;
 
 	// Get included file path
 	char* const ret = malloc(PATH_MAX);				// Allocate space for the included file path
-	const char c = vLine[i] == '<' ? '>' : vLine[i] == '"' ? '"' : '\0';
+	const char c = iLineInfo.value[i] == '<' ? '>' : iLineInfo.value[i] == '"' ? '"' : '\0';
 	if(c){												// If either '<' or '"' are used
 		++i;												// Ignore '<' or '"'
-		const uint64_t line_len = strlen(vLine);			// Cache the length of the line
+		const uint64_t line_len = strlen(iLineInfo.value);		// Cache the length of the line
 		for(uint64_t j = 0; i < line_len; ++i, ++j){		// Get the file path
-			if(vLine[i] == c) {								//
+			if(iLineInfo.value[i] == c) {						//
 				ret[j] = '\0';								//
 				return ret;									// Return the path
 			}
-			ret[j] = vLine[i];
+			ret[j] = iLineInfo.value[i];
 		}
 	}
-	printSyntaxError(iLineN, vLine, iFile, "Invalid include statement");
+	printSyntaxError(iLineInfo, "Invalid include statement");
 }
 
 
@@ -696,36 +709,60 @@ char* isInclude(const char* const vLine, const int32_t iLineN, const char* iFile
  *     Comments are not preserved
  * @param vCode The code containing the include statements
  * @param vFile The path of the file
- * @param vLineInfo The absolute line from which the file was included. 0 if the file is not included
+ * @param vLineInfo The absolute line from which the file was included. UINT64_MAX if the file is not included
  * @param pLineNum The address of a uint64_t variable where to store the total number of lines
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-struct Line* include(const char* const vCode, const char* const vFile, const uint64_t vLineInfo, uint64_t* const pLineNum){
-	char* code = uncomment(vCode, vFile);
-	struct Line* const ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);
-	char *line;
-	uint64_t totLineNum = 0;
-	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){
-		const uint64_t lineNum = vLineInfo == (uint64_t)-1 ? i + 1 : vLineInfo;
-		char* const r = isInclude(line, i, vFile);
-		if(r != NULL){								// If the line is an include statement
-			checkIncludeFile(i, line, vFile, r);		// Check the included file
-			char* included = readFile(r, 4);
-			uint64_t includedLen;
-			struct Line* included2 = include(included, vFile, i, &includedLen);
-			memcpy(ret + totLineNum, included2, sizeof(struct Line) * includedLen);
-			free(included);
-			free(included2);
-			totLineNum += includedLen;
-			//TODO save original files
+struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
+	//Reallocate file array
+	//TODO MOVE TO FUNCTION >
+	size_t step;
+	__asm__("bsr %1, %0" : "=r"(step) : "r"(filesNum));
+	step = 0b10 << step;
+
+	if(filesNum + 1 >= step) files = realloc(files, sizeof(struct File) * step);
+	//TODO MOVE TO FUNCTION <
+
+	files[filesNum].path = strdup(vFile);
+	files[filesNum].fromLine = vFromLine;
+	files[filesNum].from = vFromFile;
+	++filesNum;
+
+
+
+	char* code = readFile(vFile, 4);									// Read the file
+	code = uncomment(code, &files[filesNum - 1]);											// Uncomment it
+	struct Line* const ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
+
+
+
+	char *line; uint64_t totLineNum = 0;
+	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){			// For each line of the code
+		const uint64_t lineNum = vFromLine == UINT64_MAX ? i : vFromLine;		// Get the number of the line from which the file was included
+
+		struct Line tmp_isinclude_info; //TODO
+		tmp_isinclude_info.file = &files[filesNum - 1];
+		tmp_isinclude_info.value = line;
+		tmp_isinclude_info.len = strlen(line);
+		tmp_isinclude_info.lineNum = i;
+		char* const r = isInclude(tmp_isinclude_info);								// Check the line
+		if(r != NULL){															// If the line is an include statement
+			checkIncludeFile(tmp_isinclude_info, r);									// Check the included file
+			uint64_t includedLen;													//
+			struct Line* included = include(vFile, i, &files[filesNum - 1], &includedLen);// Get the lines of the included file
+			memcpy(ret + totLineNum, included, sizeof(struct Line) * includedLen);	// Copy them in the return array
+			free(included);															// Free the saved lines
+			totLineNum += includedLen;												// Update the line counter
 		}
-		else{ // If not
-			ret[totLineNum].line = lineNum;
-			ret[totLineNum].len = strlen(line);//TODO rename local len
-			ret[totLineNum].str = line;
-			++totLineNum;
+		else{																	// If it's not
+			ret[totLineNum].lineNum = lineNum;										// Set the line numer
+			ret[totLineNum].len     = strlen(line);									// Set the line length
+			ret[totLineNum].value   = line;											// Set the line value
+			ret[totLineNum].file    = &files[filesNum - 1];							// Set the line file
+			++totLineNum;															// Update the line counter
 		}
 	}
+
 	*pLineNum = totLineNum;
 	return ret;
 }
@@ -805,7 +842,7 @@ uint64_t getIdentifier(const char* const vLine, struct Token* const pToken){
 
 
 //TODO comment
-uint64_t getLiteral(const char* vLine, struct Token* const pToken, const char* const iLine, const uint32_t iLineNum, const char* const iFileName){
+uint64_t getLiteral(const char* vLine, struct Token* const pToken, const struct Line iLineInfo ){
 	if(isdigit(vLine[0])){
 		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
 
@@ -829,7 +866,7 @@ uint64_t getLiteral(const char* vLine, struct Token* const pToken, const char* c
 
 		// Get and save the string value of the literal and print an error if it's not valid
 		pToken->value = strndup(vLine, i);
-		if(!isValid) printSyntaxError(iLineNum, iLine, iFileName, "Invalid %s literal \"%s\"", baseName, pToken->value);
+		if(!isValid) printSyntaxError(iLineInfo, "Invalid %s literal \"%s\"", baseName, pToken->value);
 
 		// Convert the literal to an unsigned or a double and save it in the value of the allocated data
 		if(*literalType == t_u32) *(uint32_t*)(&((struct LiteralData_t*)pToken->data)->value) =  strtoul(pToken->value + offset, NULL, base);
@@ -884,7 +921,7 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 	struct Token* const ret = malloc(sizeof(struct Token) * MAX_TOKENS);
 	uint64_t tok_j = 0;
 	for(uint64_t i = 0; i < vLineNum; ++i){
-		char* const l = vLines[i].str;
+		char* const l = vLines[i].value;
 		const uint64_t lLen = strlen(l);
 		char* leading_ws = NULL;
 		for(uint64_t j = 0; j < lLen; ++tok_j){
@@ -906,7 +943,7 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 			uint64_t tokLen;
 			if     (tokLen = getPreprocessor (l + j, curToken)){}
 			else if(tokLen = getIdentifier   (l + j, curToken)){}
-			else if(tokLen = getLiteral      (l + j, curToken, l, vLines[i].line, iFileName)){}
+			else if(tokLen = getLiteral      (l + j, curToken, vLines[i])){}
 			else if(tokLen = getOperator     (l + j, curToken)){}
 			else    tokLen = getUnknown      (l + j, curToken);
 			j += tokLen;
@@ -957,7 +994,7 @@ void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, co
 				//FIXME actually check the syntax and save the arguments
 				while(vTokens[i].id != e_newline) ++i;
 			}
-			default: printSyntaxError(iLines[lineNum].line, iLines[lineNum].str, iFileName, "Unexpected token \"%s\"", t->value);
+			default: printSyntaxError(iLines[lineNum], "Unexpected token \"%s\"", t->value);
 		}
 	}
 }
@@ -1034,14 +1071,15 @@ char* translate(const struct Token* vTokens, const uint64_t vTokensNum){
 
 
 void run(const char* const vSrc, const char* const vOut){
+	files = malloc(sizeof(struct File) * 2);
+
 	//Read input file
 	const char* const src = realpath(vSrc, NULL); //Resolve symbolic links
 	if(access(src, F_OK) != 0) printError("\"%s\": No such file or directory", vSrc);
-	const char* const code = readFile(src, 4);
 
 	//Add hard coded version statement and parse the code
 	uint64_t outputLinesNum;
-	struct Line* const outputLines = include(code, vSrc, (uint64_t)-1, &outputLinesNum);
+	struct Line* const outputLines = include(vSrc, UINT64_MAX, NULL, &outputLinesNum);
 	clear(outputLines, outputLinesNum);
 
 	// Tokenize the code
