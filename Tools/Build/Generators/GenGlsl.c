@@ -498,8 +498,8 @@ void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ..
 
 
 	printf("%s\nGenGlsl: Syntax error on line %s:%06d", bRed, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
-	for(struct File* from = iLineInfo.file->from; from; from = from->from){
-		printf("\n                Included from %s:%06d", realpath(from->path, NULL), from->fromLine + 1);
+	for(struct File* f = iLineInfo.file; f->from; f = f->from){
+		printf("\n                Included from %s:%06d", realpath(f->from->path, NULL), f->fromLine + 1);
 	}
 	printf("\n%s%s\n    %s\n\nCompilation stopped", vStr, nWht, iLineInfo.value);
 
@@ -740,7 +740,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 
 	char *line; uint64_t totLineNum = 0;
 	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){			// For each line of the code
-		const uint64_t lineNum = vFromLine == UINT64_MAX ? i : vFromLine;		// Get the number of the line from which the file was included
+		// const uint64_t lineNum = vFromLine == UINT64_MAX ? i : vFromLine;		// Get the number of the line from which the file was included
 
 		struct Line tmp_isinclude_info; //TODO
 		tmp_isinclude_info.file = &files[filesNum - 1];
@@ -757,7 +757,8 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 			totLineNum += includedLen;												// Update the line counter
 		}
 		else{																	// If it's not
-			ret[totLineNum].lineNum = lineNum;										// Set the line numer
+			// ret[totLineNum].lineNum = lineNum;										// Set the line numer
+			ret[totLineNum].lineNum = i;										// Set the line numer
 			ret[totLineNum].len     = strlen(line);									// Set the line length
 			ret[totLineNum].value   = line;											// Set the line value
 			ret[totLineNum].file    = &files[filesNum - 1];							// Set the line file
