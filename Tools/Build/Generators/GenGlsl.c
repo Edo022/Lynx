@@ -398,7 +398,7 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 				break;
 			}
 			case '\n': {
-				if(data[j - 1] == '\\') {
+				if(j && data[j - 1] == '\\') {
 					--j;
 					++newlines;
 				}
@@ -492,17 +492,18 @@ void printError(const char* vFormat, ...){
  * @param ... A list of arguments for the format string
  */
 void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ...){
-	va_list vArgs; va_start(vArgs, 0);
+	va_list vArgs; va_start(vArgs, vFormat);
 	char vStr[MAX_ERR];
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
-	printf("%s\nGenGlsl: Syntax error on line %06d, file \"%s\":", bRed, iLineInfo.lineNum + 1, realpath(iLineInfo.file->path, NULL));
 
-	printf("\n%s%s"
-		"\n    %s"
-		"\n\nCompilation stopped",
-		vStr, nWht, iLineInfo.value
-	);
+	printf("%s\nGenGlsl: Syntax error on line %s:%06d", bRed, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
+	for(struct File* from = iLineInfo.file->from; from; from = from->from){
+		printf("\n                Included from %s:%06d", realpath(from->path, NULL), from->fromLine + 1);
+	}
+	printf("\n%s%s\n    %s\n\nCompilation stopped", vStr, nWht, iLineInfo.value);
+
+	va_end(vArgs);
 	exit(2);
 }
 
@@ -720,6 +721,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 	__asm__("bsr %1, %0" : "=r"(step) : "r"(filesNum));
 	step = 0b10 << step;
 
+	// printf("\n%d - %d - %s\n", filesNum, step, vFile); fflush(stdout); //TODO REMOVE
 	if(filesNum + 1 >= step) files = realloc(files, sizeof(struct File) * step);
 	//TODO MOVE TO FUNCTION <
 
@@ -749,7 +751,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 		if(r != NULL){															// If the line is an include statement
 			checkIncludeFile(tmp_isinclude_info, r);									// Check the included file
 			uint64_t includedLen;													//
-			struct Line* included = include(vFile, i, &files[filesNum - 1], &includedLen);// Get the lines of the included file
+			struct Line* included = include(r, i, &files[filesNum - 1], &includedLen);// Get the lines of the included file
 			memcpy(ret + totLineNum, included, sizeof(struct Line) * includedLen);	// Copy them in the return array
 			free(included);															// Free the saved lines
 			totLineNum += includedLen;												// Update the line counter
