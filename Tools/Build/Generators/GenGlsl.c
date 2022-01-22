@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <inttypes.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
@@ -47,7 +48,7 @@ struct File {			// A struct containing informations about a file
 	uint64_t fromLine;		// The line from which this file was included, unset for source files
 };
 struct File* files;		// A list of all the compiled files. Reallocated dynamically
-uint64_t filesNum;		// The number of compiled files
+uint64_t filesNum = 0;		// The number of compiled files
 
 
 
@@ -150,6 +151,61 @@ struct Token{
 	const char* leading_ws;	// The value of the leading whitespace
 	uint64_t lineNum;		// The number if the line
 	uint64_t start;			// Index of the token's first character in its line
+};
+
+
+
+
+
+
+
+
+// idk how this is called qwq ---------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+
+struct Var;
+struct Function;
+struct Struct;
+
+struct Scope{
+    struct Scope* parent;		// The parent scope of the scope
+    struct Function* functionv;	// An array  of functions declared in the scope
+    uint64_t functionc;			// The numer of functions declared in the scope
+    struct Var* varv;			// An array  of variables declared in the scope
+    uint64_t varc;				// The numer of variables declared in the scope
+    struct Struct* structv;		// An array  of structures declared in the scope
+    uint64_t strctc;			// The numer of structures declared in the scope
+};
+
+struct Var{
+    struct Scope* parent;		// The parent scope of the variable
+    enum TokenID type;			// THe type of the variable
+    bool is_const;				// True if the function has const type, false otherwise
+    char* name;					// The name of the function
+};
+
+struct Struct{
+    struct Scope* parent;		// The parent scope of the struct
+    char* name;					// The name of the struct
+    struct Var* memberv;		// An array of members
+    uint64_t memberc;			// The number of members
+};
+
+
+struct Function{
+    struct Scope* parent;		// The parent scope of the function
+    enum TokenID type;			// The type of the function
+    char* name;					// The name of the function
+    // struct Var* paramv;			// An array of parameters //TODO same the variables in the function's scope
+    // uint64_t paramc;			// The number of parameters
+    struct Scope scope;			// The scope of the function
+    struct Token* exec; 		//runtime lines as a list of tokens
 };
 
 
@@ -344,9 +400,24 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
 
+// Bit scan reverse //TODO add to Lynx Engine
+size_t bsr(size_t value){
+	size_t ret;
+	__asm__("bsr %1, %0" : "=r"(ret) : "r"(value));
+	return ret;
+}
+
+// Bit scanf forward //TODO add to Lynx Engine
+size_t bsf(size_t value){
+	size_t ret;
+	__asm__("bsf %1, %0" : "=r"(ret) : "r"(value));
+	return ret;
+}
+
+
 
 /**
- * @brief //TODO
+ * @brief //TODOvv
  * @param vStr //TODO
  * @param vBase min 2, max 36 //TODO
  * @return //TODO
@@ -497,9 +568,9 @@ void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ..
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
 
-	printf("%s\nGenGlsl: Syntax error on line %s:%06d", bRed, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
+	printf("%s\nGenGlsl: Syntax error on line %s:%d", bRed, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
 	for(struct File* f = iLineInfo.file; f->from; f = f->from){
-		printf("\n                Included from %s:%06d", realpath(f->from->path, NULL), f->fromLine + 1);
+		printf("\n                Included from %s:%d", realpath(f->from->path, NULL), f->fromLine + 1);
 	}
 	printf("\n%s%s\n    %s\n\nCompilation stopped", vStr, nWht, iLineInfo.value);
 
@@ -717,9 +788,7 @@ char* isInclude(const struct Line iLineInfo){
 struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
 	//Reallocate file array
 	//TODO MOVE TO FUNCTION >
-	size_t step;
-	__asm__("bsr %1, %0" : "=r"(step) : "r"(filesNum));
-	step = 0b10 << step;
+	size_t step = 0b10 << bsr(filesNum);
 
 	// printf("\n%d - %d - %s\n", filesNum, step, vFile); fflush(stdout); //TODO REMOVE
 	if(filesNum + 1 >= step) files = realloc(files, sizeof(struct File) * step);
@@ -988,17 +1057,20 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 
 void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines, const char* const iFileName){
-	size_t lineNum = 0;
+	struct Scope g;			// Global scope
+	size_t lineNum = 0;		// Line number
+
 	for(size_t i = 0; i < vTokenNum;){
 		const struct Token* t = &vTokens[i];
-		switch(t->id){
-			case e_newline: ++lineNum; ++i; break;
-			case e_preprocessor: {
-				//FIXME actually check the syntax and save the arguments
-				while(vTokens[i].id != e_newline) ++i;
-			}
-			default: printSyntaxError(iLines[lineNum], "Unexpected token \"%s\"", t->value);
+		if(isType(t->id)){}
+		else if(t->id == e_newline){
+			++lineNum; ++i;
 		}
+		else if(t->id == e_preprocessor) {
+			//FIXME actually check the syntax and save the arguments
+			while(vTokens[i].id != e_newline) ++i;
+		}
+		else printSyntaxError(iLines[lineNum], "Unexpected token \"%s\"", t->value);
 	}
 }
 
