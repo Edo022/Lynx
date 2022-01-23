@@ -9,74 +9,74 @@
 
 //Trigonometry
 
-any_f32 rad(any_f32 _deg);
-any_f32 deg(any_f32 _rad);
+f32 rad(f32 _deg);
+f32 deg(f32 _rad);
 
-any_f32   sin(any_f32 _angle);  any_f32   cos(any_f32 _angle);  any_f32   tan(any_f32 _angle);
-any_f32  asin(any_f32 _n);      any_f32  acos(any_f32 _n);      any_f32  atan(any_f32 _y_over_n);
-any_f32  sinh(any_f32 _n);      any_f32  cosh(any_f32 _n);      any_f32  tanh(any_f32 _n);
-any_f32 asinh(any_f32 _n);      any_f32 acosh(any_f32 _n);      any_f32 atanh(any_f32 _n);
-                                                                any_f32  atan(any_f32 _y, any_f32 _n);
+f32   sin(f32 _angle);  f32   cos(f32 _angle);  f32   tan(f32 _angle);
+f32  asin(f32 _n);      f32  acos(f32 _n);      f32  atan(f32 _y_over_n);
+f32  sinh(f32 _n);      f32  cosh(f32 _n);      f32  tanh(f32 _n);
+f32 asinh(f32 _n);      f32 acosh(f32 _n);      f32 atanh(f32 _n);
+                                                                f32  atan(f32 _y, f32 _n);
 
 
 
 
 //Exponential
 
-any_f32 pow(any_f32 _b, any_f32 _e);
-any_f32   exp(any_f32 _n);      any_f32   log(any_f32 _n);
-any_f32  exp2(any_f32 _n);      any_f32  log2(any_f32 _n);
-any_f32  sqrt(any_f32 _n);      any_f64  sqrt(any_f64 _n);
-any_f32 isqrt(any_f32 _n);      any_f64 isqrt(any_f64 _n);
+f32 pow(f32 _b, f32 _e);
+f32   exp(f32 _n);      f32   log(f32 _n);
+f32  exp2(f32 _n);      f32  log2(f32 _n);
+f32  sqrt(f32 _n);      f64  sqrt(f64 _n);
+f32 isqrt(f32 _n);      f64 isqrt(f64 _n);
 
 
 
 
 //Common functions
 
-any_i32 abs(any_i32 _n);        any_i32 sign(any_i32 _n);
-any_f32 abs(any_f32 _n);        any_f32 sign(any_f32 _n);       any_f32 fract(any_f32 _n);
-any_f64 abs(any_f64 _n);        any_f64 sign(any_f64 _n);       any_f64 fract(any_f64 _n);
+i32 abs(i32 _n);        i32 sign(i32 _n);
+f32 abs(f32 _n);        f32 sign(f32 _n);       f32 fract(f32 _n);
+f64 abs(f64 _n);        f64 sign(f64 _n);       f64 fract(f64 _n);
 
-any_f32 floor(any_f32 _n);      any_f32 ceilf(any_f32 _n);      any_f32 trunc(any_f32 _n);      any_f32 round(any_f32 _n);      any_f32 roundEven(any_f32 _n);
-any_f64 floor(any_f64 _n);      any_f64 ceilf(any_f64 _n);      any_f64 trunc(any_f64 _n);      any_f64 round(any_f64 _n);      any_f64 roundEven(any_f64 _n);
+f32 floor(f32 _n);      f32 ceilf(f32 _n);      f32 trunc(f32 _n);      f32 round(f32 _n);      f32 roundEven(f32 _n);
+f64 floor(f64 _n);      f64 ceilf(f64 _n);      f64 trunc(f64 _n);      f64 round(f64 _n);      f64 roundEven(f64 _n);
 
-any_f32 mod(any_f32 _x, any_f32);         any_f64 mod(any_f64 _x, any_f64);         any_f64 modf(any_f64 _x, out any_f64 _i);
-any_f32 mod(any_f32 _x,     f32);         any_f64 mod(any_f64 _x,     f64);         any_f64 modf(any_f64 _x, out any_f32 _i);
+f32 mod(f32 _x, f32);         f64 mod(f64 _x, f64);         f64 modf(f64 _x, out f64 _i);
+f32 mod(f32 _x,     f32);         f64 mod(f64 _x,     f64);         f64 modf(f64 _x, out f32 _i);
 
-any_u32 min(any_u32 _a, any_i64 _b);       any_u32 max(any_u32 _a, any_i64 _b);       any_u32 clamp(any_u32 _a, any_i64 _b);         any_u32 mix(any_u32 _n, any_i64 _min, any_i64 _max);
-any_i32 min(any_i32 _a, any_i32 _b);       any_i32 max(any_i32 _a, any_i32 _b);       any_i32 clamp(any_i32 _a, any_i32 _b);         any_i32 mix(any_i32 _n, any_i32 _min, any_i32 _max);
-any_f32 min(any_f32 _a, any_f32 _b);       any_f32 max(any_f32 _a, any_f32 _b);       any_f32 clamp(any_f32 _a, any_f32 _b);         any_f32 mix(any_f32 _n, any_f32 _min, any_f32 _max);
-any_d64 min(any_f64 _a, any_f64 _b);       any_d64 max(any_f64 _a, any_f64 _b);       any_d64 clamp(any_f64 _a, any_f64 _b);         any_d64 mix(any_f64 _n, any_f64 _min, any_f64 _max);
-any_u32 min(any_u32 _a, u32     _b);       any_u32 max(any_u32 _a,     u32 _b);       any_u32 clamp(any_u32 _a,     u32 _b);         any_u32 mix(any_u32 _n,     u32 _min,     u32 _max);
-any_i32 min(any_i32 _a, i32     _b);       any_i32 max(any_i32 _a,     i32 _b);       any_i32 clamp(any_i32 _a,     i32 _b);         any_i32 mix(any_i32 _n,     i32 _min,     i32 _max);
-any_f32 min(any_f32 _a, f32     _b);       any_f32 max(any_f32 _a,     f32 _b);       any_f32 clamp(any_f32 _a,     f32 _b);         any_f32 mix(any_f32 _n,     f32 _min,     f32 _max);
-any_d64 min(any_f64 _a, f64     _b);       any_d64 max(any_f64 _a,     f64 _b);       any_d64 clamp(any_f64 _a,     f64 _b);         any_d64 mix(any_f64 _n,     f64 _min,     f64 _max);
+u32 min(u32 _a, i64 _b);       u32 max(u32 _a, i64 _b);       u32 clamp(u32 _a, i64 _b);         u32 mix(u32 _n, i64 _min, i64 _max);
+i32 min(i32 _a, i32 _b);       i32 max(i32 _a, i32 _b);       i32 clamp(i32 _a, i32 _b);         i32 mix(i32 _n, i32 _min, i32 _max);
+f32 min(f32 _a, f32 _b);       f32 max(f32 _a, f32 _b);       f32 clamp(f32 _a, f32 _b);         f32 mix(f32 _n, f32 _min, f32 _max);
+d64 min(f64 _a, f64 _b);       d64 max(f64 _a, f64 _b);       d64 clamp(f64 _a, f64 _b);         d64 mix(f64 _n, f64 _min, f64 _max);
+u32 min(u32 _a, u32     _b);       u32 max(u32 _a,     u32 _b);       u32 clamp(u32 _a,     u32 _b);         u32 mix(u32 _n,     u32 _min,     u32 _max);
+i32 min(i32 _a, i32     _b);       i32 max(i32 _a,     i32 _b);       i32 clamp(i32 _a,     i32 _b);         i32 mix(i32 _n,     i32 _min,     i32 _max);
+f32 min(f32 _a, f32     _b);       f32 max(f32 _a,     f32 _b);       f32 clamp(f32 _a,     f32 _b);         f32 mix(f32 _n,     f32 _min,     f32 _max);
+d64 min(f64 _a, f64     _b);       d64 max(f64 _a,     f64 _b);       d64 clamp(f64 _a,     f64 _b);         d64 mix(f64 _n,     f64 _min,     f64 _max);
 
-any_f32(any_f32 _a, any_f32 _b, any_b _which);
-any_f64(any_f64 _a, any_f64 _b, any_b _which);
-any_u32(any_u32 _a, any_u32 _b, any_b _which);
-any_i32(any_i32 _a, any_i32 _b, any_b _which);
-any_b(    any_b _a,   any_b _b, any_b _which);
+f32(f32 _a, f32 _b, b _which);
+f64(f64 _a, f64 _b, b _which);
+u32(u32 _a, u32 _b, b _which);
+i32(i32 _a, i32 _b, b _which);
+b(    b _a,   b _b, b _which);
 
-any_f32 step(any_f32 _edge, any_f32 _n);        any_f32 step(any_f32 _edge0, any_f32 _edge1, any_f32 _n);
-any_f64 step(any_f64 _edge, any_f64 _n);        any_f64 step(any_f64 _edge0, any_f64 _edge1, any_f64 _n);
-any_f32 step(    f32 _edge, any_f32 _n);        any_f32 step(    f32 _edge0,     f32 _edge1, any_f32 _n);
-any_f64 step(    f64 _edge, any_f64 _n);        any_f64 step(    f64 _edge0,     f64 _edge1, any_f64 _n);
+f32 step(f32 _edge, f32 _n);        f32 step(f32 _edge0, f32 _edge1, f32 _n);
+f64 step(f64 _edge, f64 _n);        f64 step(f64 _edge0, f64 _edge1, f64 _n);
+f32 step(    f32 _edge, f32 _n);        f32 step(    f32 _edge0,     f32 _edge1, f32 _n);
+f64 step(    f64 _edge, f64 _n);        f64 step(    f64 _edge0,     f64 _edge1, f64 _n);
 
-any_b isnan(any_f32 _n);        any_b isinf(any_f64 _n);
-any_b isnan(any_f32 _n);        any_b isinf(any_f64 _n);
+b isnan(f32 _n);        b isinf(f64 _n);
+b isnan(f32 _n);        b isinf(f64 _n);
 
-any_i32 floatBitsToI32(highp any_f32 _n);
-any_i64 floatBitsToU32(highp any_f64 _n);
-any_f32 i32BitsToFloat(highp any_i32 _n);
-any_f32 u32BitsToFloat(highp any_u32 _n);
+i32 floatBitsToI32(highp f32 _n);
+i64 floatBitsToU32(highp f64 _n);
+f32 i32BitsToFloat(highp i32 _n);
+f32 u32BitsToFloat(highp u32 _n);
 
-any_f32 fma(any_f32 _a, any_f32 _b, any_f32 _c);
-any_f64 fma(any_f64 _a, any_f64 _b, any_f64 _c);
+f32 fma(f32 _a, f32 _b, f32 _c);
+f64 fma(f64 _a, f64 _b, f64 _c);
 
-any_f32 frexp(highp any_f32 _n, out highp any_i32 _exp);      any_f32 frexp(highp any_f32 _n, highp any_i32 _exp);
-any_f64 frexp(      any_f64 _n, out       any_i32 _exp);      any_f64 frexp(      any_f64 _n,       any_i32 _exp);
+f32 frexp(highp f32 _n, out highp i32 _exp);      f32 frexp(highp f32 _n, highp i32 _exp);
+f64 frexp(      f64 _n, out       i32 _exp);      f64 frexp(      f64 _n,       i32 _exp);
 
 
 
@@ -86,17 +86,17 @@ any_f64 frexp(      any_f64 _n, out       any_i32 _exp);      any_f64 frexp(    
 
 //Geometric functions
 
-f32 len(any_f32 _n);    f32 dist(any_f32 _a, anu_f32 _b);
-f64 len(any_f64 _n);    f64 dist(any_f64 _a, anu_f64 _b);
+f32 len(f32 _n);    f32 dist(f32 _a, anu_f32 _b);
+f64 len(f64 _n);    f64 dist(f64 _a, anu_f64 _b);
 
-f32 dot(any_f32 _a, any_f32 _b);        f32v3 cross(f32v3 _a, f32v3 _b);     any_f32 norm(any_f32 _n);
-f64 dot(any_f64 _a, any_f64 _b);        f64v3 cross(f64v3 _a, f64v3 _b);     any_f64 norm(any_f64 _n);
+f32 dot(f32 _a, f32 _b);        f32v3 cross(f32v3 _a, f32v3 _b);     f32 norm(f32 _n);
+f64 dot(f64 _a, f64 _b);        f64v3 cross(f64v3 _a, f64v3 _b);     f64 norm(f64 _n);
 
-any_f32 faceForward(any_f32 _n, any_f32 _i, any_f32 _nref);
-any_f64 faceForward(any_f64 _n, any_f64 _i, any_f64 _nref);
+f32 faceForward(f32 _n, f32 _i, f32 _nref);
+f64 faceForward(f64 _n, f64 _i, f64 _nref);
 
-any_f32 reflect(any_f32 _i, any_f32 _n);     any_f32 refract(any_f32 _i, any_f32 _n, f32 _eta);
-any_f64 reflect(any_f64 _i, any_f64 _n);     any_f64 refract(any_f64 _i, any_f64 _n, f64 _eta);
+f32 reflect(f32 _i, f32 _n);     f32 refract(f32 _i, f32 _n, f32 _eta);
+f64 reflect(f64 _i, f64 _n);     f64 refract(f64 _i, f64 _n, f64 _eta);
 
 
 
@@ -104,3 +104,132 @@ any_f64 reflect(any_f64 _i, any_f64 _n);     any_f64 refract(any_f64 _i, any_f64
 
 //Matrix functions
 //TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////#include "src/Lynx/shaders/stdlib2.ilsh"
+//
+//
+//
+//
+//
+//
+//
+////Trigonometry
+//
+//f32 rad(f32 _deg);
+//f32 deg(f32 _rad);
+//
+//f32   sin(f32 _angle);  f32   cos(f32 _angle);  f32   tan(f32 _angle);
+//f32  asin(f32 _n);      f32  acos(f32 _n);      f32  atan(f32 _y_over_n);
+//f32  sinh(f32 _n);      f32  cosh(f32 _n);      f32  tanh(f32 _n);
+//f32 asinh(f32 _n);      f32 acosh(f32 _n);      f32 atanh(f32 _n);
+//                                                                f32  atan(f32 _y, f32 _n);
+//
+//
+//
+//
+////Exponential
+//
+//f32 pow(f32 _b, f32 _e);
+//f32   exp(f32 _n);      f32   log(f32 _n);
+//f32  exp2(f32 _n);      f32  log2(f32 _n);
+//f32  sqrt(f32 _n);      f64  sqrt(f64 _n);
+//f32 isqrt(f32 _n);      f64 isqrt(f64 _n);
+//
+//
+//
+//
+////Common functions
+//
+//i32 abs(i32 _n);        i32 sign(i32 _n);
+//f32 abs(f32 _n);        f32 sign(f32 _n);       f32 fract(f32 _n);
+//f64 abs(f64 _n);        f64 sign(f64 _n);       f64 fract(f64 _n);
+//
+//f32 floor(f32 _n);      f32 ceilf(f32 _n);      f32 trunc(f32 _n);      f32 round(f32 _n);      f32 roundEven(f32 _n);
+//f64 floor(f64 _n);      f64 ceilf(f64 _n);      f64 trunc(f64 _n);      f64 round(f64 _n);      f64 roundEven(f64 _n);
+//
+//f32 mod(f32 _x, f32);         f64 mod(f64 _x, f64);         f64 modf(f64 _x, out f64 _i);
+//f32 mod(f32 _x,     f32);         f64 mod(f64 _x,     f64);         f64 modf(f64 _x, out f32 _i);
+//
+//u32 min(u32 _a, i64 _b);       u32 max(u32 _a, i64 _b);       u32 clamp(u32 _a, i64 _b);         u32 mix(u32 _n, i64 _min, i64 _max);
+//i32 min(i32 _a, i32 _b);       i32 max(i32 _a, i32 _b);       i32 clamp(i32 _a, i32 _b);         i32 mix(i32 _n, i32 _min, i32 _max);
+//f32 min(f32 _a, f32 _b);       f32 max(f32 _a, f32 _b);       f32 clamp(f32 _a, f32 _b);         f32 mix(f32 _n, f32 _min, f32 _max);
+//d64 min(f64 _a, f64 _b);       d64 max(f64 _a, f64 _b);       d64 clamp(f64 _a, f64 _b);         d64 mix(f64 _n, f64 _min, f64 _max);
+//u32 min(u32 _a, u32     _b);       u32 max(u32 _a,     u32 _b);       u32 clamp(u32 _a,     u32 _b);         u32 mix(u32 _n,     u32 _min,     u32 _max);
+//i32 min(i32 _a, i32     _b);       i32 max(i32 _a,     i32 _b);       i32 clamp(i32 _a,     i32 _b);         i32 mix(i32 _n,     i32 _min,     i32 _max);
+//f32 min(f32 _a, f32     _b);       f32 max(f32 _a,     f32 _b);       f32 clamp(f32 _a,     f32 _b);         f32 mix(f32 _n,     f32 _min,     f32 _max);
+//d64 min(f64 _a, f64     _b);       d64 max(f64 _a,     f64 _b);       d64 clamp(f64 _a,     f64 _b);         d64 mix(f64 _n,     f64 _min,     f64 _max);
+//
+//f32(f32 _a, f32 _b, b _which);
+//f64(f64 _a, f64 _b, b _which);
+//u32(u32 _a, u32 _b, b _which);
+//i32(i32 _a, i32 _b, b _which);
+//b(    b _a,   b _b, b _which);
+//
+//f32 step(f32 _edge, f32 _n);        f32 step(f32 _edge0, f32 _edge1, f32 _n);
+//f64 step(f64 _edge, f64 _n);        f64 step(f64 _edge0, f64 _edge1, f64 _n);
+//f32 step(    f32 _edge, f32 _n);        f32 step(    f32 _edge0,     f32 _edge1, f32 _n);
+//f64 step(    f64 _edge, f64 _n);        f64 step(    f64 _edge0,     f64 _edge1, f64 _n);
+//
+//b isnan(f32 _n);        b isinf(f64 _n);
+//b isnan(f32 _n);        b isinf(f64 _n);
+//
+//i32 floatBitsToI32(highp f32 _n);
+//i64 floatBitsToU32(highp f64 _n);
+//f32 i32BitsToFloat(highp i32 _n);
+//f32 u32BitsToFloat(highp u32 _n);
+//
+//f32 fma(f32 _a, f32 _b, f32 _c);
+//f64 fma(f64 _a, f64 _b, f64 _c);
+//
+//f32 frexp(highp f32 _n, out highp i32 _exp);      f32 frexp(highp f32 _n, highp i32 _exp);
+//f64 frexp(      f64 _n, out       i32 _exp);      f64 frexp(      f64 _n,       i32 _exp);
+//
+//
+//
+//
+////Packing/unpacking
+////TODO
+//
+////Geometric functions
+//
+//f32 len(f32 _n);    f32 dist(f32 _a, anu_f32 _b);
+//f64 len(f64 _n);    f64 dist(f64 _a, anu_f64 _b);
+//
+//f32 dot(f32 _a, f32 _b);        f32v3 cross(f32v3 _a, f32v3 _b);     f32 norm(f32 _n);
+//f64 dot(f64 _a, f64 _b);        f64v3 cross(f64v3 _a, f64v3 _b);     f64 norm(f64 _n);
+//
+//f32 faceForward(f32 _n, f32 _i, f32 _nref);
+//f64 faceForward(f64 _n, f64 _i, f64 _nref);
+//
+//f32 reflect(f32 _i, f32 _n);     f32 refract(f32 _i, f32 _n, f32 _eta);
+//f64 reflect(f64 _i, f64 _n);     f64 refract(f64 _i, f64 _n, f64 _eta);
+//
+//
+//
+//
+//
+////Matrix functions
+////TODO

@@ -416,6 +416,27 @@ size_t bsf(size_t value){
 
 
 
+
+/**
+ * @brief Reallocates pAlloc to (vSize) * (the closest power of 2 that can contain (vOldNum + 1) elements)
+ *     //TODO
+ * @param pAlloc The memory block to reallocate
+ *     If the number of elements allocated in pAlloc is smaller than vOldNum, it must be a power of 2
+ * @param vSize The size of each element
+ * @param vOldNum The number of elements that are currently allocated //TODO
+ * @return The address of the new memory block. This is the same as pAlloc if it has enough free space
+ */
+void* realloc2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
+	uint64_t step = 0b10 << bsr(vOldNum);
+	if(vOldNum + 1 >= step) pAlloc = realloc(pAlloc, vSize * step);
+	return pAlloc;
+}
+
+
+
+
+
+
 /**
  * @brief //TODOvv
  * @param vStr //TODO
@@ -787,12 +808,7 @@ char* isInclude(const struct Line iLineInfo){
  */
 struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
 	//Reallocate file array
-	//TODO MOVE TO FUNCTION >
-	size_t step = 0b10 << bsr(filesNum);
-
-	// printf("\n%d - %d - %s\n", filesNum, step, vFile); fflush(stdout); //TODO REMOVE
-	if(filesNum + 1 >= step) files = realloc(files, sizeof(struct File) * step);
-	//TODO MOVE TO FUNCTION <
+	files = realloc2(files, sizeof(struct File), filesNum);
 
 	files[filesNum].path = strdup(vFile);
 	files[filesNum].fromLine = vFromLine;
@@ -1062,7 +1078,7 @@ void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, co
 
 	for(size_t i = 0; i < vTokenNum;){
 		const struct Token* t = &vTokens[i];
-		if(isType(t->id)){}
+		if(isType(t->id)){ ++i; }
 		else if(t->id == e_newline){
 			++lineNum; ++i;
 		}
