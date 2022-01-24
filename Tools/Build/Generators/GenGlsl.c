@@ -130,12 +130,12 @@ enum TokenID {
 
 	// Other
 	e_start = 1000000,
-	e_user_defined = 1000000,	// User defined identifiers
-	e_literal      = 1000001,	// Literal constants
-	e_newline      = 1000002,	// Line feed
-	e_identifier   = 1000003,	// User defined identifiers
-	e_preprocessor = 1000004,	// # characters
-	e_unknown      = 1000005,	// Anything else
+	e_user_defined    = 1000000,	// User defined identifiers
+	e_literal         = 1000001,	// Literal constants
+	e_newline         = 1000002,	// Line feed
+	e_instruction_end = 1000003,	// Semicolon
+	e_preprocessor    = 1000004,	// # characters
+	e_unknown         = 1000005,	// Anything else
 	e_end
 };
 int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
@@ -401,6 +401,7 @@ const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
 
 
 // Bit scan reverse //TODO add to Lynx Engine
+// value cannot be 0
 size_t bsr(size_t value){
 	size_t ret;
 	__asm__("bsr %1, %0" : "=r"(ret) : "r"(value));
@@ -408,10 +409,27 @@ size_t bsr(size_t value){
 }
 
 // Bit scanf forward //TODO add to Lynx Engine
+// value cannot be 0
 size_t bsf(size_t value){
 	size_t ret;
 	__asm__("bsf %1, %0" : "=r"(ret) : "r"(value));
 	return ret;
+}
+
+// Bit scan reverse //TODO add to Lynx Engine
+// Returns 0 if value is 0
+size_t bsrz(size_t value){
+	size_t ret;
+	__asm__("bsr %1, %0" : "=r"(ret) : "r"(value));
+	return ret * !!value;
+}
+
+// Bit scanf forward //TODO add to Lynx Engine
+// Returns 0 if value is 0
+size_t bsfz(size_t value){
+	size_t ret;
+	__asm__("bsf %1, %0" : "=r"(ret) : "r"(value));
+	return ret * !!value;
 }
 
 
@@ -427,7 +445,7 @@ size_t bsf(size_t value){
  * @return The address of the new memory block. This is the same as pAlloc if it has enough free space
  */
 void* realloc2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
-	uint64_t step = 0b10 << bsr(vOldNum);
+	uint64_t step = 0b10 << bsrz(vOldNum);
 	if(vOldNum + 1 >= step) pAlloc = realloc(pAlloc, vSize * step);
 	return pAlloc;
 }
@@ -999,6 +1017,16 @@ uint64_t getUnknown(const char* const vLine, struct Token* const pToken) {
 
 
 
+uint64_t getInstructionEnd(const char* const vLine, struct Token* const pToken) {
+	pToken->value = strdup(";");
+	pToken->len   = 1;
+	pToken->id    = e_instruction_end;
+	pToken->data  = NULL;
+	return 1;
+}
+
+
+
 
 
 
@@ -1029,11 +1057,12 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 			// Find the first token, save into the array and update j
 			uint64_t tokLen;
-			if     (tokLen = getPreprocessor (l + j, curToken)){}
-			else if(tokLen = getIdentifier   (l + j, curToken)){}
-			else if(tokLen = getLiteral      (l + j, curToken, vLines[i])){}
-			else if(tokLen = getOperator     (l + j, curToken)){}
-			else    tokLen = getUnknown      (l + j, curToken);
+			if     (tokLen = getPreprocessor   (l + j, curToken)){}
+			else if(tokLen = getInstructionEnd (l + j, curToken)){}
+			else if(tokLen = getIdentifier     (l + j, curToken)){}
+			else if(tokLen = getLiteral        (l + j, curToken, vLines[i])){}
+			else if(tokLen = getOperator       (l + j, curToken)){}
+			else    tokLen = getUnknown        (l + j, curToken);
 			j += tokLen;
 		}
 
@@ -1073,20 +1102,39 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 
 void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines, const char* const iFileName){
-	struct Scope g;			// Global scope
-	size_t lineNum = 0;		// Line number
+	size_t curLine = 0;		// Current line number
+	struct Scope g = {			// Global scope
+		.functionc = 0,
+		.strctc    = 0,
+		.varc      = 0,
+		.parent    = NULL
+	};
 
+	//! Whitespace is not saved as tokens
 	for(size_t i = 0; i < vTokenNum;){
-		const struct Token* t = &vTokens[i];
-		if(isType(t->id)){ ++i; }
-		else if(t->id == e_newline){
-			++lineNum; ++i;
+		if(isType(vTokens[i].id)){
+			const struct Token* constructType = &vTokens[i++];
+			if(i < vTokenNum && vTokens[i].id == e_user_defined) {
+				const struct Token* constructName = &vTokens[i++];
+				if(vTokens[i].id == o_rgroup){
+
+				}
+				else if(vTokens[i].id == o_log_eq || vTokens[i].value[0] == ';'){
+
+				}
+				else printSyntaxError(iLines[curLine], "Expected a function declaration or a global variable after identifier \"%s\"", constructName->value);
+			}
+			//FIXME check multiple definitions
+			else printSyntaxError(iLines[curLine], "Expected identifier after type \"%s\"", constructType->value);
 		}
-		else if(t->id == e_preprocessor) {
+		else if(vTokens[i].id == e_newline){
+			++curLine; ++i;
+		}
+		else if(vTokens[i].id == e_preprocessor) {
 			//FIXME actually check the syntax and save the arguments
 			while(vTokens[i].id != e_newline) ++i;
 		}
-		else printSyntaxError(iLines[lineNum], "Unexpected token \"%s\"", t->value);
+		else printSyntaxError(iLines[curLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
 }
 
