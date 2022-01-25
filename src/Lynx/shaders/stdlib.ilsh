@@ -9,7 +9,7 @@
 
 //Trigonometry
 
-f32 rad(f32 _deg);
+f32 rad aAAA$
 f32 deg(f32 _rad);
 
 f32   sin(f32 _angle);  f32   cos(f32 _angle);  f32   tan(f32 _angle);
