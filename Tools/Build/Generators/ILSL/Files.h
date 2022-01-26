@@ -9,8 +9,8 @@ struct File {			// A struct containing informations about a file
 	struct File* from;		// The file from which this file was included, or 0 for source files
 	uint64_t fromLine;		// The line from which this file was included, unset for source files
 };
-struct File* files;		// A list of all the compiled files. Reallocated dynamically
-uint64_t filesNum = 0;		// The number of compiled files
+extern struct File* files;		// A list of all the compiled files. Reallocated dynamically
+extern uint64_t filesNum;		// The number of compiled files
 
 
 

@@ -66,9 +66,9 @@ enum TokenID {
 	e_unknown         = 1000005,	// Anything else
 	e_end
 };
-int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
-int isKeyword (enum TokenID vID){ return vID >= k_start && vID < k_end; }
-int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
+static inline int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
+static inline int isKeyword (enum TokenID vID){ return vID >= k_start && vID < k_end; }
+static inline int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
 
 
 struct Token{

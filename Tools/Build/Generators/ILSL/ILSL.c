@@ -1,12 +1,14 @@
 //TODO change output name
-//exec          gcc ILSL/ILSL.c -I. -std=c11 -o GenGlsl
-//exec          gcc ILSL/ILSL.c -I. -std=c11 -ggdb3 -g3 -O0 -o GenGlsl
+//exec          gcc ILSL/ILSL.c ILSL/Utils.c ILSL/Tokenizer/Tokenizer.c ILSL/Files.c -I. -std=c11 -o GenGlsl
+//exec          gcc ILSL/ILSL.c ILSL/Utils.c ILSL/Tokenizer/Tokenizer.c ILSL/Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o GenGlsl
 //run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
 
 //TODO MOVE TOOLS SOURCE FILES TO /src/Tools
 
 
-#define _DEFAULT_SOURCE // Required for realpath and strsep
+//TODO remove useless includes
+#include "ILSL/Utils.h"
+#include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <inttypes.h>
@@ -14,191 +16,26 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
-#include <string.h>
 #include <assert.h>
 #include <sys/stat.h>
 #include <linux/limits.h>
 
-#define MAX_ERR         4100100
-#define MAX_CODE_LEN    800100100	//FIXME use dynamic reallocations
-#define MAX_CODE_LINES  4100100		//FIXME use dynamic reallocations or pass the size
-#define MAX_TOKENS      8100100		//FIXME use dynamic reallocations
+
 
 //FIXME GLSL doesnt suppotr bool and integer matrices
 //TODO check returns values
-//TODO ADD MACROS
-//TODO ADD INCLUDE LISTS
+//TODO add macros
+//TODO add include lists
 
 
-#include "ILSL/Tokens.h"
+//TODO remove useless includes
+#include "ILSL/Tokenizer/Tokens.h"
 #include "ILSL/Constructs.h"
 
-
-
-
-// Operators --------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-enum OperatorType {
-	ot_logical,		// == !=          && || ^^ <   >   !
-	ot_arithmetic,	// +  -  *  /  %  &  |  ^  <<  >>  ~
-	ot_assignment,	// += -= *= /= %= &= |= ^= <<= >>= =
-	ot_inc_dec,		// ++n n++ --n n--         <=  >=
-	ot_ternary,		// ? :
-	ot_field,		// .
-	ot_list,		// ,
-	ot_group,		// ()
-	ot_scope,		// {}
-	ot_subscript,	// []
-};
-struct OperatorData_t {
-	enum OperatorType type;	// Type of the operator
-	int32_t precedence;		// Operator precedence. Higher values have higher precedence
-	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
-};
-static struct OperatorData_t operatorData[] = { // Sorted by length
-	{ ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' },
-	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,    12, 'l' }, { ot_logical,    14, 'l' }, { ot_logical,    13, 'l' },
-	{ ot_inc_dec,     2, 'l' }, { ot_inc_dec,     2, 'l' },
-	{ ot_arithmetic,  6, 'l' }, { ot_arithmetic,  6, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  5, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  4, 'l' }, { ot_arithmetic,  9, 'l' }, { ot_arithmetic, 11, 'l' }, { ot_arithmetic, 10, 'l' },
-	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_assignment, 16, 'r' }, { ot_logical,     3, 'r' }, { ot_arithmetic,  3, 'l' },
-	{ ot_ternary,    15, 'r' }, { ot_ternary,    15, 'r' }, { ot_field,       2, 'l' }, { ot_list,       17, 'l' }, { ot_group,       1, 'n' }, { ot_group,       1, 'n' }, { ot_subscript,   2, 'l' }, { ot_subscript,   2, 'l' }, { ot_scope,       1, 'n' }, { ot_scope,       1, 'n' }
-	//! Both ++ and -- an be prefix or postfix. The actual precedence and associativity is determined after the tokenization
-	//! Same with +, -, ~. They can be unary or arithmetic
-};
-static const char* operatorValues[] = {
-	"<<=",">>=", "+=", "*=", "-=", "/=", "%=", "&=", "|=", "^=",
-	"<=", ">=",  "==", "!=", "&&", "||", "^^",
-	"++", "--",
-	"<<", ">>",  "+",  "*",  "-",  "/",  "%",  "&",  "|",  "^",
-	"<",  ">",   "=",  "!",  "~",
-	"?",  ":",   ".",  ",",  "(",  ")",  "[",  "]",  "{",  "}"
-	//! Operator values and data are sorted by value length to simplify the parsing
-};
-
-
-
-
-
-
-
-
-// Types ------------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-struct TypeData_t {
-	char* glslType;        // The corresponding GLSL type
-	enum TokenID baseType; // Base type of the type  e.g. the base type of a f32 matrix is f32
-	uint64_t x;            // Width   e.g. a 2x3 matrix has x = 2, a scalar type has x = 1
-	uint64_t y;            // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
-	uint64_t align;        // Alignment of the type in bytes
-};
-static struct TypeData_t typeData[] = {
-	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
-	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
-	{ "bvec3",   t_b, 3, 1, 16 },    { "uvec3",   t_u32, 3, 1, 16 },    { "ivec3",   t_i32, 3, 1, 16 },    { "vec3",   t_f32, 3, 1, 16 },    { "dvec3",   t_f64, 3, 1, 32 },
-	{ "bvec4",   t_b, 4, 1, 16 },    { "uvec4",   t_u32, 4, 1, 16 },    { "ivec4",   t_i32, 4, 1, 16 },    { "vec4",   t_f32, 4, 1, 16 },    { "dvec4",   t_f64, 4, 1, 32 },
-	{ "bmat2",   t_b, 2, 2,  8 },    { "umat2",   t_u32, 2, 2,  8 },    { "imat2",   t_i32, 2, 2,  8 },    { "mat2",   t_f32, 2, 2,  8 },    { "dmat2",   t_f64, 2, 2, 16 },
-	{ "bmat3",   t_b, 3, 3, 16 },    { "umat3",   t_u32, 3, 3, 16 },    { "imat3",   t_i32, 3, 3, 16 },    { "mat3",   t_f32, 3, 3, 16 },    { "dmat3",   t_f64, 3, 3, 32 },
-	{ "bmat4",   t_b, 4, 4, 16 },    { "umat4",   t_u32, 4, 4, 16 },    { "imat4",   t_i32, 4, 4, 16 },    { "mat4",   t_f32, 4, 4, 16 },    { "dmat4",   t_f64, 4, 4, 32 },
-	{ "bmat2x2", t_b, 2, 2,  8 },    { "umat2x2", t_u32, 2, 2,  8 },    { "imat2x2", t_i32, 2, 2,  8 },    { "mat2x2", t_f32, 2, 2,  8 },    { "dmat2x2", t_f64, 2, 2, 16 },
-	{ "bmat2x3", t_b, 2, 3,  8 },    { "umat2x3", t_u32, 2, 3,  8 },    { "imat2x3", t_i32, 2, 3,  8 },    { "mat2x3", t_f32, 2, 3,  8 },    { "dmat2x3", t_f64, 2, 3, 16 },
-	{ "bmat2x4", t_b, 2, 4,  8 },    { "umat2x4", t_u32, 2, 4,  8 },    { "imat2x4", t_i32, 2, 4,  8 },    { "mat2x4", t_f32, 2, 4,  8 },    { "dmat2x4", t_f64, 2, 4, 16 },
-	{ "bmat3x2", t_b, 3, 2, 16 },    { "umat3x2", t_u32, 3, 2, 16 },    { "imat3x2", t_i32, 3, 2, 16 },    { "mat3x2", t_f32, 3, 2, 16 },    { "dmat3x2", t_f64, 3, 2, 32 },
-	{ "bmat3x3", t_b, 3, 3, 16 },    { "umat3x3", t_u32, 3, 3, 16 },    { "imat3x3", t_i32, 3, 3, 16 },    { "mat3x3", t_f32, 3, 3, 16 },    { "dmat3x3", t_f64, 3, 3, 32 },
-	{ "bmat3x4", t_b, 3, 4, 16 },    { "umat3x4", t_u32, 3, 4, 16 },    { "imat3x4", t_i32, 3, 4, 16 },    { "mat3x4", t_f32, 3, 4, 16 },    { "dmat3x4", t_f64, 3, 4, 32 },
-	{ "bmat4x2", t_b, 4, 2, 16 },    { "umat4x2", t_u32, 4, 2, 16 },    { "imat4x2", t_i32, 4, 2, 16 },    { "mat4x2", t_f32, 4, 2, 16 },    { "dmat4x2", t_f64, 4, 2, 32 },
-	{ "bmat4x3", t_b, 4, 3, 16 },    { "umat4x3", t_u32, 4, 3, 16 },    { "imat4x3", t_i32, 4, 3, 16 },    { "mat4x3", t_f32, 4, 3, 16 },    { "dmat4x3", t_f64, 4, 3, 32 },
-	{ "bmat4x1", t_b, 4, 4, 16 },    { "umat4x1", t_u32, 4, 4, 16 },    { "imat4x1", t_i32, 4, 4, 16 },    { "mat4x1", t_f32, 4, 4, 16 },    { "dmat4x1", t_f64, 4, 4, 32 },
-	{ "void", t_void, 0, 0,  0 }
-};
-static const char* typeValues[] = {
-	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
-	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
-	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors
-	"bv4",      "u32v4",      "i32v4",      "f32v4",      "f64v4",      //4-component vectors
-	"bm2",      "u32m2",      "i32m2",      "f32m2",      "f64m2",      //2x2 square matrices
-	"bm3",      "u32m3",      "i32m3",      "f32m3",      "f64m3",      //3x3 square matrices
-	"bm4",      "u32m4",      "i32m4",      "f32m4",      "f64m4",      //4x4 square matrices
-	"bm2x2",    "u32m2x2",    "i32m2x2",    "f32m2x2",    "f64m2x2",    //2x2 matrices
-	"bm2x3",    "u32m2x3",    "i32m2x3",    "f32m2x3",    "f64m2x3",    //2x3 matrices
-	"bm2x4",    "u32m2x4",    "i32m2x4",    "f32m2x4",    "f64m2x4",    //2x4 matrices
-	"bm3x2",    "u32m3x2",    "i32m3x2",    "f32m3x2",    "f64m3x2",    //3x2 matrices
-	"bm3x3",    "u32m3x3",    "i32m3x3",    "f32m3x3",    "f64m3x3",    //3x3 matrices
-	"bm3x4",    "u32m3x4",    "i32m3x4",    "f32m3x4",    "f64m3x4",    //3x4 matrices
-	"bm4x2",    "u32m4x2",    "i32m4x2",    "f32m4x2",    "f64m4x2",    //4x2 matrices
-	"bm4x3",    "u32m4x3",    "i32m4x3",    "f32m4x3",    "f64m4x3",    //4x3 matrices
-	"bm4x4",    "u32m4x4",    "i32m4x4",    "f32m4x4",    "f64m4x4",    //4x4 matrices
-	"void"                                                              //Just void
-};
-
-
-
-
-
-
-
-
-// Keywords ---------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-const char* keywordValues[] = {
-	//If-else      Loops           Flow control       Switch case
-	"if",          "while",        "continue",        "switch",
-	"else",        "for",          "break",           "case",
-	"elif",        "do",           "return",          "default",
-
-	//Qualifiers   Inputs          Other
-	"highp",       "local",        "struct",
-	"medp",        "extern",       "preicison",
-	"lowp",
-	"const"
-};
-
-
-
-
-
-
-
-
-// Literals ---------------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-struct LiteralData_t{
-	enum TokenID type;          // Type of the value. This can only be the ID of a base type
-	char value[sizeof(double)]; // Actual value. Contains a float, a double, an int or an unsigned int, depending on the type
-};
-
-
-
-
-
-#include "ILSL/Utils.h"
+#include "ILSL/Operators.h"
+#include "ILSL/Types.h"
+#include "ILSL/Keywords.h"
+#include "ILSL/Literals.h"
 
 
 
@@ -461,211 +298,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 // Tokenizer -------------------------------------------------------------------------------------------------------------------------------//
 
 
-
-
-
-
-
-
-uint64_t findSpaces(const char* const vLine){
-	for(uint64_t i = 0;; ++i) {
-		if(vLine[i] != ' ') return i;
-	}
-}
-
-
-
-
-uint64_t getPreprocessor(const char* const vLine, struct Token* const pToken){
-	if(*vLine == '#'){
-		pToken->value = strdup("#");
-		pToken->len   = 1;
-		pToken->id    = e_preprocessor;
-		pToken->data  = NULL;
-		return 1;
-	}
-	return 0;
-}
-
-
-
-
-uint64_t getIdentifier(const char* const vLine, struct Token* const pToken){
-	if(isalpha(vLine[0]) || vLine[0] == '_'){
-		uint64_t i;
-		for(i = 1; isalnum(vLine[i]) || vLine[i] == '_'; ++i);	// Get the length
-		pToken->value = strndup(vLine, i);						// Save the identifier
-		pToken->len   = i;										// Save the length
-
-		// Types
-		for(uint64_t t = t_start; t < t_end; ++t){				// For each hard coded type
-			if(!strcmp(pToken->value, typeValues[t - t_start])){	// If it matches the current identifier
-				pToken->id   = t;										// Set token id to the corresponding type id
-				pToken->data = &typeData[t - t_start];					// Set token data to the hard coded data of the corresponding type
-				return i;												// Return the length
-			}
-		}
-
-		// Keywords
-		for(uint64_t k = k_start; k < k_end; ++k){				// For each hard coded keyword
-			if(!strcmp(pToken->value, keywordValues[k - k_start])){	// If it matches the current identifier
-				pToken->id   = k;										// Set token id to the corresponding identifier id
-				pToken->data = NULL;									// Set token data to NULL
-				return i;												// Return the length
-			}
-		}
-
-		// User defined
-		pToken->id    = e_user_defined;							// Set token id to user defined identifier
-		pToken->data  = NULL;									// Set token data to NULL
-		return i;												// Return the length
-	}
-	return 0;
-}
-
-
-
-
-//TODO comment
-uint64_t getLiteral(const char* vLine, struct Token* const pToken, const struct Line iLineInfo ){
-	if(isdigit(vLine[0])){
-		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
-
-		uint64_t isValid = 1, i, base;									// 1 if the literal is valid, loop index and literal length, literal base
-		uint64_t offset = (vLine[0] == '0' && isalpha(vLine[1])) ? 2 : 0;	// 0 or 2 if the literal has a prefix
-		const char* baseName;											// The complete name of the base
-
-		// Get literal base and complete base name
-		if     (vLine[0] == '0' && vLine[1] == 'b') { base =  2; baseName = "binary";      }
-		else if(vLine[0] == '0' && vLine[1] == 'o') { base =  8; baseName = "octal";       }
-		else if(vLine[0] == '0' && vLine[1] == 'x') { base = 16; baseName = "hexadecimal"; }
-		else                                        { base = 10; baseName = "decimal";     }
-
-		// Get literal length and type and check if it's valid
-		enum TokenID* literalType = &((struct LiteralData_t*)pToken->data)->type;	// Cache the address of the type
-		*literalType = t_u32;														// Default type is u32, set to f64 if the loop finds a '.'
-		for(i = offset; isalnum(vLine[i]) || vLine[i] == '.'; ++i){
-			if(vLine[i] != '.') isValid &= !!(base == 16 ? isxdigit(vLine[i]) : vLine[i] >= '0' && vLine[i] <= '0' + base);
-			else if(*literalType == t_u32) *literalType = t_f64; else isValid = 0;
-		}
-
-		// Get and save the string value of the literal and print an error if it's not valid
-		pToken->value = strndup(vLine, i);
-		if(!isValid) printSyntaxError(iLineInfo, "Invalid %s literal \"%s\"", baseName, pToken->value);
-
-		// Convert the literal to an unsigned or a double and save it in the value of the allocated data
-		if(*literalType == t_u32) *(uint32_t*)(&((struct LiteralData_t*)pToken->data)->value) =  strtoul(pToken->value + offset, NULL, base);
-		else                        *(double*)(&((struct LiteralData_t*)pToken->data)->value) = bstrtolf(pToken->value + offset,       base);
-
-		pToken->len = i;			// Save the length
-		pToken->id  = e_literal;	// Set token id to literal
-		return i;					// Return the length
-	}
-	return 0;
-}
-//TODO check empty literals like 0x, 0d, 0o
-//TODO check decimal literals starting with .
-
-
-
-
-uint64_t getOperator(const char* const vLine, struct Token* const pToken){
-	for(uint64_t opLen, o = o_start; o < o_end; ++o){			// For each hard coded operator
-		opLen = strlen(operatorValues[o - o_start]);			// Cache operator length
-		if(!strncmp(vLine, operatorValues[o - o_start], opLen)){// If it matches the current operator
-			pToken->value = operatorValues[o - o_start];			// Save the operator
-			pToken->len   = opLen;									// Save the length
-			pToken->id    = o;										// Set token id to the corresponding operator id
-			pToken->data  = &operatorData[o - o_start];				// Set token data to the hard coded data of the corresponding operator
-			return opLen;											// Return the length
-		}
-	}
-	return 0;
-}
-
-
-
-
-uint64_t getUnknown(const char* const vLine, struct Token* const pToken) {
-	pToken->value = strndup(vLine, 1);
-	pToken->len   = 1;
-	pToken->id    = e_unknown;
-	pToken->data  = NULL;
-	return 1;
-}
-
-
-
-uint64_t getInstructionEnd(const char* const vLine, struct Token* const pToken) {
-	if(vLine[0] == ';'){
-		pToken->value = strdup(";");
-		pToken->len   = 1;
-		pToken->id    = e_instruction_end;
-		pToken->data  = NULL;
-		return 1;
-	}
-	return 0;
-}
-
-
-
-
-
-
-
-
-//TODO replace tabs with spaces
-struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint64_t* pNum, const char* const iFileName){
-	struct Token* const ret = malloc(sizeof(struct Token) * MAX_TOKENS);
-	uint64_t tok_j = 0;
-	for(uint64_t i = 0; i < vLineNum; ++i){
-		char* const l = vLines[i].value;
-		const uint64_t lLen = strlen(l);
-		char* leading_ws = NULL;
-		for(uint64_t j = 0; j < lLen; ++tok_j){
-			struct Token* const curToken = ret + tok_j;	// Cache the address of the current token
-			curToken->lineNum = i;						// Set the number of the line
-			curToken->start   = j;						// Set the start index to j
-			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL; // Save leading whitespace
-
-
-			// Get leading whitespace
-			const uint64_t wsLen = findSpaces(l + j);
-			if(wsLen){
-				leading_ws = strndup(l + j, wsLen);
-				j += wsLen; --tok_j; continue;
-			}
-			else leading_ws = NULL;
-
-			// Find the first token, save into the array and update j
-			uint64_t tokLen;
-			if     (tokLen = getPreprocessor   (l + j, curToken)){}
-			else if(tokLen = getInstructionEnd (l + j, curToken)){}
-			else if(tokLen = getIdentifier     (l + j, curToken)){}
-			else if(tokLen = getLiteral        (l + j, curToken, vLines[i])){}
-			else if(tokLen = getOperator       (l + j, curToken)){}
-			else    tokLen = getUnknown        (l + j, curToken);
-			j += tokLen;
-		}
-
-		//Add newline token
-		if(i < vLineNum - 1) {
-			struct Token* const curToken = ret + tok_j;
-			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
-
-			curToken->value   = strdup("\n");
-			curToken->len     = 1;
-			curToken->id      = e_newline;
-			curToken->data    = NULL;
-			curToken->lineNum = i;
-			curToken->start   = 0;
-
-			++tok_j;
-		}
-	}
-	*pNum = tok_j;
-	return ret;
-}
+#include "ILSL/Tokenizer/Tokenizer.h"
 
 
 
