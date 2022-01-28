@@ -1,13 +1,13 @@
-#include "ILSL/Utils.h"
+#include "Utils.h"
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "ILSL/Tokenizer/Tokenizer.h"
-#include "ILSL/Types.h"
-#include "ILSL/Keywords.h"
-#include "ILSL/Literals.h"
-#include "ILSL/Operators.h"
+#include "Tokenizer/Tokenizer.h"
+#include "Types.h"
+#include "Keywords.h"
+#include "Literals.h"
+#include "Operators.h"
 
 
 

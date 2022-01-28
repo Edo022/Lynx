@@ -1,4 +1,4 @@
-#include "ILSL/Utils.h"
+#include "Utils.h"
 #include <linux/limits.h>
 #include <string.h>
 #include <stdlib.h>
@@ -179,11 +179,11 @@ void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ..
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
 
-	printf("%s\nGenGlsl: Syntax error on line %s:%d", bRed, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
+	printf("%s\nGenGlsl: Syntax error%s on line %s:%d", bRed, nWht, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
 	for(struct File* f = iLineInfo.file; f->from; f = f->from){
 		printf("\n                Included from %s:%d", realpath(f->from->path, NULL), f->fromLine + 1);
 	}
-	printf("\n%s%s\n    %s\n\nCompilation stopped", vStr, nWht, iLineInfo.value);
+	printf("\n%s%s%s\n    %s\n\nCompilation stopped", bRed, vStr, nWht, iLineInfo.value);
 
 	va_end(vArgs);
 	exit(2);

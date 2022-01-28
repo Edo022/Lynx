@@ -1,13 +1,15 @@
 //TODO change output name
-//exec          gcc ILSL/ILSL.c ILSL/Utils.c ILSL/Tokenizer/Tokenizer.c ILSL/Files.c -I. -std=c11 -o GenGlsl
-//exec          gcc ILSL/ILSL.c ILSL/Utils.c ILSL/Tokenizer/Tokenizer.c ILSL/Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o GenGlsl
+// > from Lynx/Tools/Build/Generators/ILSL
+//exec          gcc ILSL.c Utils.c Tokenizer/Tokenizer.c Files.c -I. -std=c11 -o ../GenGlsl
+//exec          gcc ILSL.c Utils.c Tokenizer/Tokenizer.c Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o ../GenGlsl
+// > from Lynx
 //run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
 
 //TODO MOVE TOOLS SOURCE FILES TO /src/Tools
 
 
 //TODO remove useless includes
-#include "ILSL/Utils.h"
+#include "Utils.h"
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -29,13 +31,13 @@
 
 
 //TODO remove useless includes
-#include "ILSL/Tokenizer/Tokens.h"
-#include "ILSL/Constructs.h"
+#include "Tokenizer/Tokens.h"
+#include "Constructs.h"
 
-#include "ILSL/Operators.h"
-#include "ILSL/Types.h"
-#include "ILSL/Keywords.h"
-#include "ILSL/Literals.h"
+#include "Operators.h"
+#include "Types.h"
+#include "Keywords.h"
+#include "Literals.h"
 
 
 
@@ -298,7 +300,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 // Tokenizer -------------------------------------------------------------------------------------------------------------------------------//
 
 
-#include "ILSL/Tokenizer/Tokenizer.h"
+#include "Tokenizer/Tokenizer.h"
 
 
 
