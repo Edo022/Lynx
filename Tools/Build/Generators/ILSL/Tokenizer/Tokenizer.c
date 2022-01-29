@@ -4,10 +4,10 @@
 #include <stdlib.h>
 
 #include "Tokenizer/Tokenizer.h"
-#include "Types.h"
-#include "Keywords.h"
-#include "Literals.h"
-#include "Operators.h"
+#include "Data/Types.h"
+#include "Data/Keywords.h"
+#include "Data/Literals.h"
+#include "Data/Operators.h"
 
 
 

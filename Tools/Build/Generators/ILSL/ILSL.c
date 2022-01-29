@@ -32,12 +32,12 @@
 
 //TODO remove useless includes
 #include "Tokenizer/Tokens.h"
-#include "Constructs.h"
+#include "Data/Constructs.h"
 
-#include "Operators.h"
-#include "Types.h"
-#include "Keywords.h"
-#include "Literals.h"
+#include "Data/Operators.h"
+#include "Data/Types.h"
+#include "Data/Keywords.h"
+#include "Data/Literals.h"
 
 
 
