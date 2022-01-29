@@ -195,7 +195,7 @@ void checkIncludeFile(const struct Line iLineInfo, const char* vPath){ //TODO ch
 
 
 
-uint64_t findSpaces(const char* const vLine);
+uint64_t statChar(const char* const vLine, const char vChar);
 /**
  * @brief Checks if vLine is an include statement and returns the path of the included file
  * @param vLineValue The line to parse
@@ -203,9 +203,9 @@ uint64_t findSpaces(const char* const vLine);
  */
 char* isInclude(const struct Line iLineInfo){
 	// Check #
-	uint64_t i = findSpaces(iLineInfo.value);
+	uint64_t i = countChar(iLineInfo.value, ' ');
 	if(iLineInfo.value[i] != '#') return NULL;
-	i += findSpaces(iLineInfo.value + ++i);
+	i += countChar(iLineInfo.value + ++i, ' ');
 
 	// Check "include "
 	const char* const include_value = "include ";
@@ -244,7 +244,7 @@ char* isInclude(const struct Line iLineInfo){
  */
 struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
 	//Reallocate file array
-	files = realloc2(files, sizeof(struct File), filesNum);
+	files = reallocPow2(files, sizeof(struct File), filesNum);
 
 	files[filesNum].path = strdup(vFile);
 	files[filesNum].fromLine = vFromLine;

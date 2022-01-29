@@ -59,11 +59,13 @@ static inline uint64_t bsfz(uint64_t value){
 }
 
 
-
-void* realloc2(void* pAlloc, uint64_t vSize, uint64_t vOldNum);
+uint64_t countChar(const char* const vLine, const char vChar);
+void* reallocPow2(void* pAlloc, uint64_t vSize, uint64_t vOldNum);
 double bstrtolf(const char* vStr, const int32_t vBase);
 char* readFile(const char* vFilePath, uint64_t vTabSize);
+
 const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex);
 char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex);
+
 void printError(const char* vFormat, ...);
 void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ...);

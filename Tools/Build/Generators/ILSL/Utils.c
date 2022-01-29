@@ -7,8 +7,27 @@
 
 
 
+
+
 /**
- * @brief Reallocates pAlloc to (vSize) * (the closest power of 2 that can contain (vOldNum + 1) elements)
+ * @brief Returns the number of characters vChar at the beginning of the string
+ * @param vLine The string in which to search the characters
+ * @param vChar The characters to count
+ * @return the number of characters vChar at the beginning of the string
+ *     Empty strings return 0
+ */
+uint64_t countChar(const char* const vLine, const char vChar){
+	const char* s = vLine;
+	for(; *s == vChar; ++s);
+	return s - vLine;
+}
+
+
+
+
+
+/**
+ * @brief Reallocates pAlloc to (vSize) * (the smallest power of 2 that can contain (vOldNum + 1) elements)
  *     //TODO
  * @param pAlloc The memory block to reallocate
  *     If the number of elements allocated in pAlloc is smaller than vOldNum, it must be a power of 2
@@ -16,7 +35,7 @@
  * @param vOldNum The number of elements that are currently allocated //TODO
  * @return The address of the new memory block. This is the same as pAlloc if it has enough free space
  */
-void* realloc2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
+void* reallocPow2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
 	uint64_t step = 0b10 << bsrz(vOldNum);
 	if(vOldNum + 1 >= step) pAlloc = realloc(pAlloc, vSize * step);
 	return pAlloc;

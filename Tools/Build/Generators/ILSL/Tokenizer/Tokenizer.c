@@ -13,16 +13,7 @@
 
 
 
-uint64_t findSpaces(const char* const vLine){
-	for(uint64_t i = 0;; ++i) {
-		if(vLine[i] != ' ') return i;
-	}
-}
-
-
-
-
-uint64_t getPreprocessor(const char* const vLine, struct Token* const pToken){
+uint64_t pushStrPreprocessor(const char* const vLine, struct Token* const pToken){
 	if(*vLine == '#'){
 		pToken->value = strdup("#");
 		pToken->len   = 1;
@@ -36,7 +27,7 @@ uint64_t getPreprocessor(const char* const vLine, struct Token* const pToken){
 
 
 
-uint64_t getIdentifier(const char* const vLine, struct Token* const pToken){
+uint64_t pushStrIdentifier(const char* const vLine, struct Token* const pToken){
 	if(isalpha(vLine[0]) || vLine[0] == '_'){
 		uint64_t i;
 		for(i = 1; isalnum(vLine[i]) || vLine[i] == '_'; ++i);	// Get the length
@@ -73,7 +64,7 @@ uint64_t getIdentifier(const char* const vLine, struct Token* const pToken){
 
 
 //TODO comment
-uint64_t getLiteral(const char* vLine, struct Token* const pToken, const struct Line iLineInfo){
+uint64_t pushStrLiteral(const char* vLine, struct Token* const pToken, const struct Line iLineInfo){
 	if(isdigit(vLine[0])){
 		pToken->data = malloc(sizeof(struct LiteralData_t));			// Allocate a block for the data
 
@@ -115,7 +106,7 @@ uint64_t getLiteral(const char* vLine, struct Token* const pToken, const struct 
 
 
 
-uint64_t getOperator(const char* const vLine, struct Token* const pToken){
+uint64_t pushStrOperator(const char* const vLine, struct Token* const pToken){
 	for(uint64_t opLen, o = o_start; o < o_end; ++o){			// For each hard coded operator
 		opLen = strlen(operatorValues[o - o_start]);			// Cache operator length
 		if(!strncmp(vLine, operatorValues[o - o_start], opLen)){// If it matches the current operator
@@ -132,7 +123,7 @@ uint64_t getOperator(const char* const vLine, struct Token* const pToken){
 
 
 
-uint64_t getUnknown(const char* const vLine, struct Token* const pToken) {
+uint64_t pushStrUnknown(const char* const vLine, struct Token* const pToken) {
 	pToken->value = strndup(vLine, 1);
 	pToken->len   = 1;
 	pToken->id    = e_unknown;
@@ -142,7 +133,7 @@ uint64_t getUnknown(const char* const vLine, struct Token* const pToken) {
 
 
 
-uint64_t getInstructionEnd(const char* const vLine, struct Token* const pToken) {
+uint64_t pushStrInstructionEnd(const char* const vLine, struct Token* const pToken) {
 	if(vLine[0] == ';'){
 		pToken->value = strdup(";");
 		pToken->len   = 1;
@@ -176,7 +167,7 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 
 			// Get leading whitespace
-			const uint64_t wsLen = findSpaces(l + j);
+			const uint64_t wsLen = countChar(l + j, ' ');
 			if(wsLen){
 				leading_ws = strndup(l + j, wsLen);
 				j += wsLen; --tok_j; continue;
@@ -185,12 +176,12 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 
 			// Find the first token, save into the array and update j
 			uint64_t tokLen;
-			if     (tokLen = getPreprocessor   (l + j, curToken)){}
-			else if(tokLen = getInstructionEnd (l + j, curToken)){}
-			else if(tokLen = getIdentifier     (l + j, curToken)){}
-			else if(tokLen = getLiteral        (l + j, curToken, vLines[i])){}
-			else if(tokLen = getOperator       (l + j, curToken)){}
-			else    tokLen = getUnknown        (l + j, curToken);
+			if     (tokLen = pushStrPreprocessor   (l + j, curToken)){}
+			else if(tokLen = pushStrInstructionEnd (l + j, curToken)){}
+			else if(tokLen = pushStrIdentifier     (l + j, curToken)){}
+			else if(tokLen = pushStrLiteral        (l + j, curToken, vLines[i])){}
+			else if(tokLen = pushStrOperator       (l + j, curToken)){}
+			else    tokLen = pushStrUnknown        (l + j, curToken);
 			j += tokLen;
 		}
 
