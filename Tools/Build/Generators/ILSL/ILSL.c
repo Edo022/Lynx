@@ -364,37 +364,77 @@ uint64_t statTok(const struct Token* const vTokens, const uint64_t vTokenNum, co
 //TODO graphic output of the syntax tree
 /**
  * @brief Creates an abstract syntax tree from an array of tokens
- * @param vTokens The tokens to analyze
- * @param vTokenNum The totla number of tokens
+ * @param vParent The address of the parent of this scope, or NULL if the scope is the global scope
+ * @param vTokens An array of tokens that contain the scope
+ *     If the scope is not the global scope, the first token must be its opening bracket
+ * @param vTokenNum The maximum number of tokens to read
+ *     Prints an error if the opening bracket isn't matched
  * @param iLines Line informations
- * @return A Scope struct containing the global scope
+ * @return A Scope struct containing the syntax tree of the scope
  */
-void buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
-	uint64_t curLine = 0;			// Current line number
-	struct Scope g; initScope(&g);	//Global scope
+struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
+	// Current scope
+	struct Scope* s = malloc(sizeof(struct Scope));
+	initScope(s); s->parent = vParent;
 
 
 	//! Whitespace is not saved as tokens //TODO REMOVE
+	uint64_t scopeDepth = 0, curLine = 0;
 	for(uint64_t i = 0; i < vTokenNum;){
+		// printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+
+		// Scope delimiters
+		if(vTokens[i].id == o_lscope) { //TODO print error if in global scope
+			++scopeDepth; //TODO call recursively
+		}
+		else if(vTokens[i].id == o_rscope) {
+			if(vParent && !--scopeDepth) return s;
+		}
 
 		// Variable or function definition
-		if(isType(vTokens[i].id)){
+		else if(isType(vTokens[i].id)){
 			const struct Token* constructType = &vTokens[i++];
+			printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 			if(i < vTokenNum && vTokens[i].id == e_user_defined) {
 				const struct Token* constructName = &vTokens[i++];
-				if(vTokens[i].id == o_rgroup){
-					//TODO write recursive get-something functions
-					//TODO getExpression takes the max number of tokens to check
+				printf("A\n"); fflush(stdout); //TODO REMOVE
+				printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+				if(vTokens[i].id == o_lgroup){
+					//FIXME actually read the argument list
+					struct Fun fun = {
+						.name = constructName->value,
+						.type = constructType->id,
+						.paramNum = 0, //TODO
+						.scope = NULL, //TODO
+						.exec = NULL, //TODO
+						.parent = s
+					};
+					addFun(s, &fun);
+					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
 				}
-				else if(vTokens[i].id == o_log_eq || vTokens[i].value[0] == ';'){
-
+				else if(vTokens[i].value[0] == ';'){
+					struct Var var = {
+						.is_const = false,
+						.name = constructName->value,
+						.type = constructType->id,
+						.parent = s
+					};
+					addVar(s, &var);
 				}
+				// else if(vTokens[i].id == o_log_eq){ //TODO ADD INLINE INITIALIZATION
 				else printSyntaxError(iLines[curLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
+				++i;
 			}
 			//FIXME check multiple definitions
-			//FIXME <multiple definitions of identifier "uwu": first definition at myproject/file:54
+			//FIXME
+			//FIXME Multiple definitions of identifier "uwu"
+			//FIXME Definition 0 at myproject/file:54
+			//FIXME     int uwu;
+			//FIXME Definition 1 at myproject/file:993
+			//FIXME     void uwu(int a){
 			//TODO print a more detailed error if the identifier is a language keyword
 			//TODO <keyword used as identifier>
+			else if(isKeyword(vTokens[i].id)) printSyntaxError(iLines[curLine], "Keyword \"%s\" used as identifier", vTokens[i].value);
 			else printSyntaxError(iLines[curLine], "Expected identifier after type \"%s\"", constructType->value);
 		}
 
@@ -412,8 +452,15 @@ void buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum
 		// Anything else
 		else printSyntaxError(iLines[curLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
+
+	return s;
 }
 
+
+//TODO REMOVE
+struct Scope* buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
+	struct Scope* g = buildScopeSyntaxTree(NULL, vTokens, vTokenNum, iLines);
+}
 
 
 
@@ -502,8 +549,16 @@ void run(const char* const vSrc, const char* const vOut){
 	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
 
 	// Check the syntax and write the GLSL code
-	checkSyntax(outputTokens, outputTokensNum, outputLines, vSrc);
-	char* const outputStr = translate(outputTokens, outputTokensNum);
+	struct Scope* scope = buildSyntaxTree(outputTokens, outputTokensNum, outputLines);
+	// char* const outputStr = translate(outputTokens, outputTokensNum);
+
+	//TODO REMOVE or something, idk
+	char* const outputStr = malloc(MAX_CODE_LEN); outputStr[0] = '\0';
+	for(uint64_t i = 0; i < scope->varNum; ++i) strcat(outputStr, scope->varArr[i].name); strcat(outputStr, "\n");
+	for(uint64_t i = 0; i < scope->funNum; ++i) strcat(outputStr, scope->funArr[i].name); strcat(outputStr, "\n");
+	for(uint64_t i = 0; i < scope->strNum; ++i) strcat(outputStr, scope->strArr[i].name); strcat(outputStr, "\n");
+	//TODO REMOVE
+
 
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");

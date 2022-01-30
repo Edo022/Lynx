@@ -77,6 +77,6 @@ struct Token{
 	enum TokenID id;		// The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;				// A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
 	const char* leading_ws;	// The value of the leading whitespace
-	uint64_t lineNum;		// The number if the line
+	uint64_t lineNum;		// The number of the local line
 	uint64_t start;			// Index of the token's first character in its line
 };

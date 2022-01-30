@@ -69,3 +69,4 @@ char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex);
 
 void printError(const char* vFormat, ...);
 void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ...);
+//TODO add a printsyntaxerror that takes Token* instead of a Line or replace this one

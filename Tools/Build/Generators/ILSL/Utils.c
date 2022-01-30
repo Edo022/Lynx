@@ -37,8 +37,9 @@ uint64_t countChar(const char* const vLine, const char vChar){
  */
 void* reallocPow2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
 	uint64_t step = 0b10 << bsrz(vOldNum);
-	if(vOldNum + 1 >= step) pAlloc = realloc(pAlloc, vSize * step);
-	return pAlloc;
+	// if(vOldNum + 1 == step) pAlloc = realloc(pAlloc, vSize * step);
+	return realloc(pAlloc, vSize * step);
+	// return pAlloc;
 }
 
 
