@@ -195,7 +195,6 @@ void checkIncludeFile(const struct Line iLineInfo, const char* vPath){ //TODO ch
 
 
 
-uint64_t statChar(const char* const vLine, const char vChar);
 /**
  * @brief Checks if vLine is an include statement and returns the path of the included file
  * @param vLineValue The line to parse
@@ -305,11 +304,54 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 
 
 
+//TODO MOVE "Files" header and preprocessing functions to ILSL/Preprocessor dir
 
 
 
 
 // Syntax ----------------------------------------------------------------------------------------------------------------------------------//
+// syntax analyzer
+//TODO MOVE TO ILSL/SyntaxAnalyzer
+//TODO rename Data dir as Constructs and move it to ILSL/SyntaxAnalyzer
+
+//TODO add token infos to printSyntaxError
+//TODO add PrintSemanticError
+
+
+
+/**
+ * @brief Returns the index of the right delimiter that matches the first left delimiter
+ * @param vTokens An array of tokens. The first token must be a left delimiter
+ *     If the first token is not a left delimiter, the return value is undefined
+ * @param vTokenNum The total number of tokens
+ * @param vLeft The left delimiter
+ * @param vRight The right delimiter
+ * @param iLines Line informations
+ * @return The index of the right delimiter that matches the first left delimiter
+ *     Prints an error if it is unmatched
+ */
+uint64_t statTokGroup(const struct Token* const vTokens, const uint64_t vTokenNum, const enum TokenID vLeft, const enum TokenID vRight, const struct Line* const iLines){
+	uint64_t n = 1;
+	for(uint64_t i = 1; i < vTokenNum; ++i) {
+		if     (vTokens[i].id == vLeft) ++n;
+		else if(vTokens[i].id == vRight) {
+			if(--n) return i;
+		}
+	}
+	printSyntaxError(iLines[vTokens->lineNum], "Unmatched delimiter \"%s\"", vTokens->value);
+}
+
+/**
+ * @brief Returns the index of the first occurrence of a token
+ * @param vTokens An array of tokens
+ * @param vTokenNum The total number of tokens
+ * @param vToken The token to find
+ * @return The index of the first occurrence of a token, or UINT64_MAX if there are none
+ */
+uint64_t statTok(const struct Token* const vTokens, const uint64_t vTokenNum, const enum TokenID vToken){
+	for(uint64_t i = 0; i < vTokenNum; ++i) if(vTokens[i].id == vToken) return i;
+	return UINT64_MAX;
+}
 
 
 
@@ -317,18 +359,25 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 
 
 
+//TODO DONT SAVE WHITESPACE
+//TODO add semantic analyzer
+//TODO graphic output of the syntax tree
+/**
+ * @brief Creates an abstract syntax tree from an array of tokens
+ * @param vTokens The tokens to analyze
+ * @param vTokenNum The totla number of tokens
+ * @param iLines Line informations
+ * @return A Scope struct containing the global scope
+ */
+void buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
+	uint64_t curLine = 0;			// Current line number
+	struct Scope g; initScope(&g);	//Global scope
 
-void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines, const char* const iFileName){
-	size_t curLine = 0;		// Current line number
-	struct Scope g = {			// Global scope
-		.functionc = 0,
-		.strctc    = 0,
-		.varc      = 0,
-		.parent    = NULL
-	};
 
-	//! Whitespace is not saved as tokens
-	for(size_t i = 0; i < vTokenNum;){
+	//! Whitespace is not saved as tokens //TODO REMOVE
+	for(uint64_t i = 0; i < vTokenNum;){
+
+		// Variable or function definition
 		if(isType(vTokens[i].id)){
 			const struct Token* constructType = &vTokens[i++];
 			if(i < vTokenNum && vTokens[i].id == e_user_defined) {
@@ -343,15 +392,24 @@ void checkSyntax(const struct Token* const vTokens, const uint64_t vTokenNum, co
 				else printSyntaxError(iLines[curLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
 			}
 			//FIXME check multiple definitions
+			//FIXME <multiple definitions of identifier "uwu": first definition at myproject/file:54
+			//TODO print a more detailed error if the identifier is a language keyword
+			//TODO <keyword used as identifier>
 			else printSyntaxError(iLines[curLine], "Expected identifier after type \"%s\"", constructType->value);
 		}
+
+		// Newline tokens
 		else if(vTokens[i].id == e_newline){
 			++curLine; ++i;
 		}
+
+		// Preprocessor directives
 		else if(vTokens[i].id == e_preprocessor) {
 			//FIXME actually check the syntax and save the arguments
 			while(vTokens[i].id != e_newline) ++i;
 		}
+
+		// Anything else
 		else printSyntaxError(iLines[curLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
 }
