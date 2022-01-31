@@ -161,7 +161,8 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 		char* leading_ws = NULL;
 		for(uint64_t j = 0; j < lLen; ++tok_j){
 			struct Token* const curToken = ret + tok_j;	// Cache the address of the current token
-			curToken->lineNum = i;						// Set the number of the line
+			curToken->absLine = i;						// Set the absolute index of the line
+			curToken->locLine = vLines[i].locLine;		// Set the local index of the line
 			curToken->start   = j;						// Set the start index to j
 			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL; // Save leading whitespace
 
@@ -185,20 +186,20 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 			j += tokLen;
 		}
 
-		//Add newline token
-		if(i < vLineNum - 1) {
-			struct Token* const curToken = ret + tok_j;
-			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
+		// //Add newline token
+		// if(i < vLineNum - 1) {
+		// 	struct Token* const curToken = ret + tok_j;
+		// 	curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
 
-			curToken->value   = strdup("\n");
-			curToken->len     = 1;
-			curToken->id      = e_newline;
-			curToken->data    = NULL;
-			curToken->lineNum = i;
-			curToken->start   = 0;
+		// 	curToken->value   = strdup("\n");
+		// 	curToken->len     = 1;
+		// 	curToken->id      = e_newline;
+		// 	curToken->data    = NULL;
+		// 	curToken->locLine = i;
+		// 	curToken->start   = 0;
 
-			++tok_j;
-		}
+		// 	++tok_j;
+		// }
 	}
 	*pNum = tok_j;
 	return ret;

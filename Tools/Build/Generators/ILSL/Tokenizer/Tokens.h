@@ -60,11 +60,11 @@ enum TokenID {
 	e_start = 1000000,
 	e_user_defined    = 1000000,	// User defined identifiers
 	e_literal         = 1000001,	// Literal constants
-	e_newline         = 1000002,	// Line feed
 	e_instruction_end = 1000003,	// Semicolon
 	e_preprocessor    = 1000004,	// # characters
 	e_unknown         = 1000005,	// Anything else
 	e_end
+	//! Newlines are not saves as tokens
 };
 static inline int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
 static inline int isKeyword (enum TokenID vID){ return vID >= k_start && vID < k_end; }
@@ -77,6 +77,7 @@ struct Token{
 	enum TokenID id;		// The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;				// A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
 	const char* leading_ws;	// The value of the leading whitespace
-	uint64_t lineNum;		// The number of the local line
+	uint64_t absLine;		// The absolute index of the line containing the token
+	uint64_t locLine;		// The local index of the line containing the token
 	uint64_t start;			// Index of the token's first character in its line
 };

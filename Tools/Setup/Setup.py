@@ -108,6 +108,7 @@ if sys.stdin.read(1).lower() == 'y':
     with open('.vscode/c_cpp_properties.json', 'w') as f:
         f.write(
             f'\n{{'
+            f'\n    "version": 4,'
             f'\n    "configurations": ['
             f'\n        {{'
             f'\n            "name": "Lynx-editor",'
@@ -137,8 +138,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n            "intelliSenseMode": "linux-gcc-x64",'
             f'\n            "forcedInclude": []'
             f'\n        }}'
-            f'\n    ],'
-            f'\n    "version": 4'
+            f'\n    ]'
             f'\n}}'
         )
 

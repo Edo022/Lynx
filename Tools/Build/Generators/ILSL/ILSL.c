@@ -126,7 +126,7 @@ char* uncomment(const char* vCode, struct File* const iFile){
 				iLineInfo.len     = strlen(iLineValue);
 				iLineInfo.value   = strdup(iLineValue);
 				iLineInfo.file    = iFile;
-				iLineInfo.lineNum = vLineN;
+				iLineInfo.locLine = vLineN;
 				printSyntaxError(iLineInfo, "Unterminated string");
 			}
 		}
@@ -266,7 +266,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 		tmp_isinclude_info.file = &files[filesNum - 1];
 		tmp_isinclude_info.value = line;
 		tmp_isinclude_info.len = strlen(line);
-		tmp_isinclude_info.lineNum = i;
+		tmp_isinclude_info.locLine = i;
 		char* const r = isInclude(tmp_isinclude_info);								// Check the line
 		if(r != NULL){															// If the line is an include statement
 			checkIncludeFile(tmp_isinclude_info, r);									// Check the included file
@@ -278,7 +278,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 		}
 		else{																	// If it's not
 			// ret[totLineNum].lineNum = lineNum;										// Set the line numer
-			ret[totLineNum].lineNum = i;										// Set the line numer
+			ret[totLineNum].locLine = i;										// Set the line numer
 			ret[totLineNum].len     = strlen(line);									// Set the line length
 			ret[totLineNum].value   = line;											// Set the line value
 			ret[totLineNum].file    = &files[filesNum - 1];							// Set the line file
@@ -335,10 +335,10 @@ uint64_t statTokGroup(const struct Token* const vTokens, const uint64_t vTokenNu
 	for(uint64_t i = 1; i < vTokenNum; ++i) {
 		if     (vTokens[i].id == vLeft) ++n;
 		else if(vTokens[i].id == vRight) {
-			if(--n) return i;
+			if(!--n) return i;
 		}
 	}
-	printSyntaxError(iLines[vTokens->lineNum], "Unmatched delimiter \"%s\"", vTokens->value);
+	printSyntaxError(iLines[vTokens->absLine], "Unmatched delimiter \"%s\"", vTokens->value);
 }
 
 /**
@@ -394,11 +394,11 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		// Variable or function definition
 		else if(isType(vTokens[i].id)){
 			const struct Token* constructType = &vTokens[i++];
-			printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+			printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 			if(i < vTokenNum && vTokens[i].id == e_user_defined) {
 				const struct Token* constructName = &vTokens[i++];
 				printf("A\n"); fflush(stdout); //TODO REMOVE
-				printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+				printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 				if(vTokens[i].id == o_lgroup){
 					//FIXME actually read the argument list
 					struct Fun fun = {
@@ -411,6 +411,8 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 					};
 					addFun(s, &fun);
 					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
+					++i; //Skip )
+					i += 2; //skip {} //FIXME read the function
 				}
 				else if(vTokens[i].value[0] == ';'){
 					struct Var var = {
@@ -420,10 +422,10 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.parent = s
 					};
 					addVar(s, &var);
+					++i; //Skip ;
 				}
 				// else if(vTokens[i].id == o_log_eq){ //TODO ADD INLINE INITIALIZATION
-				else printSyntaxError(iLines[curLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
-				++i;
+				else printSyntaxError(iLines[vTokens[i].absLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
 			}
 			//FIXME check multiple definitions
 			//FIXME
@@ -434,23 +436,24 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 			//FIXME     void uwu(int a){
 			//TODO print a more detailed error if the identifier is a language keyword
 			//TODO <keyword used as identifier>
-			else if(isKeyword(vTokens[i].id)) printSyntaxError(iLines[curLine], "Keyword \"%s\" used as identifier", vTokens[i].value);
-			else printSyntaxError(iLines[curLine], "Expected identifier after type \"%s\"", constructType->value);
+			else if(isKeyword(vTokens[i].id)) printSyntaxError(iLines[vTokens[i].absLine], "Keyword \"%s\" used as identifier", vTokens[i].value);
+			else printSyntaxError(iLines[vTokens[i].absLine], "Expected identifier after type \"%s\"", constructType->value);
 		}
 
-		// Newline tokens
-		else if(vTokens[i].id == e_newline){
-			++curLine; ++i;
-		}
+		// // Newline tokens
+		// else if(vTokens[i].id == e_newline){
+		// 	++curLine; ++i;
+		// }
 
 		// Preprocessor directives
 		else if(vTokens[i].id == e_preprocessor) {
 			//FIXME actually check the syntax and save the arguments
-			while(vTokens[i].id != e_newline) ++i;
+			while(i < vTokenNum && vTokens[i].absLine == vTokens[i + 1].absLine) ++i;
+			++i;
 		}
 
 		// Anything else
-		else printSyntaxError(iLines[curLine], "Unexpected token \"%s\"", vTokens[i].value);
+		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
 
 	return s;

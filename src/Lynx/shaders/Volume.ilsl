@@ -19,15 +19,15 @@
 // 	vec4 outcol[];
 // };
 
-extern outCol {
-	f32v4 outcol[];
-}
+// extern outCol {
+// 	f32v4 outcol[];
+// }
 
 // layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
 
-extern wsize {
-	u32v2 wsize;
-}
+// extern wsize {
+// 	u32v2 wsize;
+// }
 
 // layout(std140, binding = 2) uniform data{
 // 	// Point points;
@@ -36,33 +36,33 @@ extern wsize {
 // 	vec4 col;  	//color
 // };
 
-local {
-	f32v3 pos;
-	f32 r;
-	f32v4 col;
-}
+// local {
+// 	f32v3 pos;
+// 	f32 r;
+// 	f32v4 col;
+// }
 
 
 
-0980	//ok
-00980	//ok
-// 09G		//error
-980		//ok
-0d980	//ok
-0d0980.43	//ok
-	 	0d		//ok
+// 0980	//ok
+// 00980	//ok
+// // 09G		//error
+// 980		//ok
+// 0d980	//ok
+// 0d0980.43	//ok
+// 	 	0d		//ok
 
-		0x3D4	//ok
-   	0x03D4.ffa2	//ok
-// 3D4		//error
-// 0x3G4	//error
- 0x		//error
+// 		0x3D4	//ok
+//    	0x03D4.ffa2	//ok
+// // 3D4		//error
+// // 0x3G4	//error
+//  0x		//error
 
-  0b1111010100	//ok
-	  	0b001\
-111010100.01	//ok
-// 0b001111010102	//error
-0b				//error
+//   0b1111010100	//ok
+// 	  	0b001\
+// 111010100.01	//ok
+// // 0b001111010102	//error
+// 0b				//error
 
 
 
@@ -72,7 +72,7 @@ void setPixel(f32v2 pos, f32v4 col) {
 }
 
 
-void main() {
+void main(f32v4 outcol[], u32v2 wsize, f32v3 pos, f32 r, f32v4 col) {
 	setPixel(f32v2(1, 1), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));
 
@@ -81,9 +81,9 @@ void main() {
 	//a
 	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
-a /* setPixel(pos\
+// a /* setPixel(pos\
 .xy );*/
-	aaaaa
+	// aaaaa
 	/**/
 	//
 	//  	 /**/

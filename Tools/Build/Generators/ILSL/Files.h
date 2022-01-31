@@ -19,5 +19,5 @@ struct Line {			// A struct containing informations about a line
 	char* value;			// String value of the line
 	uint64_t len;			// Length of the line, '\n' or '\0' excluded
 	struct File* file;		// A pointer to the file containing this line
-	uint32_t lineNum;		// The number of the line. Starts from 0
+	uint32_t locLine;		// The local index of the line. Starts from 0
 };

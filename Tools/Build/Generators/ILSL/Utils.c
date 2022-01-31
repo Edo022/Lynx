@@ -199,7 +199,7 @@ void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ..
 	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
 
 
-	printf("%s\nGenGlsl: Syntax error%s on line %s:%d", bRed, nWht, realpath(iLineInfo.file->path, NULL), iLineInfo.lineNum + 1);
+	printf("%s\nGenGlsl: Syntax error%s on line %s:%d", bRed, nWht, realpath(iLineInfo.file->path, NULL), iLineInfo.locLine + 1);
 	for(struct File* f = iLineInfo.file; f->from; f = f->from){
 		printf("\n                Included from %s:%d", realpath(f->from->path, NULL), f->fromLine + 1);
 	}
