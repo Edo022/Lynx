@@ -30,15 +30,15 @@ enum TokenID {
 
 	// Keywords
 	k_start = 1000,
-	k_if       = 1001,    k_else      = 1005,    k_elif    = 1009,						// If-else
-	k_while    = 1002,    k_for       = 1006,    k_do      = 1010,						// Loops
-	k_continue = 1003,    k_break     = 1007,    k_return  = 1011,						// Flow control
-	k_switch   = 1004,    k_case      = 1008,    k_default = 1012,						// Switch case
+	k_if       = 1000,    k_else      = 1004,    k_elif    = 1008,						// If-else
+	k_while    = 1001,    k_for       = 1005,    k_do      = 1009,						// Loops
+	k_continue = 1002,    k_break     = 1006,    k_return  = 1010,						// Flow control
+	k_switch   = 1003,    k_case      = 1007,    k_default = 1011,						// Switch case
 
-	k_highp    = 1013,    k_medp      = 1016,    k_lowp    = 1019,    k_const = 1020,	// Qualifiers
-	k_local    = 1014,    k_extern    = 1017,											// Inputs
-	k_struct   = 1015,    k_preicison = 1018,											// Other
-	k_end = 1020, //! Update this value when adding new keywords
+	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1029,	// Qualifiers
+	k_local    = 1013,    k_extern    = 1016,											// Inputs
+	k_struct   = 1014,    k_preicison = 1017,											// Other
+	k_end = 1019, //! Update this value when adding new keywords
 
 
 	//Operators
@@ -63,12 +63,12 @@ enum TokenID {
 	e_instruction_end = 1000003,	// Semicolon
 	e_preprocessor    = 1000004,	// # characters
 	e_unknown         = 1000005,	// Anything else
-	e_end
 	//! Newlines are not saves as tokens
+	e_end = 1000005	//! Update this value when adding new categories
 };
-static inline int isType    (enum TokenID vID){ return vID >= t_start && vID < t_end; }
-static inline int isKeyword (enum TokenID vID){ return vID >= k_start && vID < k_end; }
-static inline int isOperator(enum TokenID vID){ return vID >= o_start && vID < o_end; }
+static inline int isType    (enum TokenID vID){ return vID >= t_start && vID <= t_end; }
+static inline int isKeyword (enum TokenID vID){ return vID >= k_start && vID <= k_end; }
+static inline int isOperator(enum TokenID vID){ return vID >= o_start && vID <= o_end; }
 
 
 struct Token{

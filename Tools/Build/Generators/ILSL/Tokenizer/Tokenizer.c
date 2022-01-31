@@ -35,7 +35,7 @@ uint64_t pushStrIdentifier(const char* const vLine, struct Token* const pToken){
 		pToken->len   = i;										// Save the length
 
 		// Types
-		for(uint64_t t = t_start; t < t_end; ++t){				// For each hard coded type
+		for(uint64_t t = t_start; t <= t_end; ++t){				// For each hard coded type
 			if(!strcmp(pToken->value, typeValues[t - t_start])){	// If it matches the current identifier
 				pToken->id   = t;										// Set token id to the corresponding type id
 				pToken->data = &typeData[t - t_start];					// Set token data to the hard coded data of the corresponding type
@@ -44,7 +44,7 @@ uint64_t pushStrIdentifier(const char* const vLine, struct Token* const pToken){
 		}
 
 		// Keywords
-		for(uint64_t k = k_start; k < k_end; ++k){				// For each hard coded keyword
+		for(uint64_t k = k_start; k <= k_end; ++k){				// For each hard coded keyword
 			if(!strcmp(pToken->value, keywordValues[k - k_start])){	// If it matches the current identifier
 				pToken->id   = k;										// Set token id to the corresponding identifier id
 				pToken->data = NULL;									// Set token data to NULL
@@ -107,7 +107,7 @@ uint64_t pushStrLiteral(const char* vLine, struct Token* const pToken, const str
 
 
 uint64_t pushStrOperator(const char* const vLine, struct Token* const pToken){
-	for(uint64_t opLen, o = o_start; o < o_end; ++o){			// For each hard coded operator
+	for(uint64_t opLen, o = o_start; o <= o_end; ++o){			// For each hard coded operator
 		opLen = strlen(operatorValues[o - o_start]);			// Cache operator length
 		if(!strncmp(vLine, operatorValues[o - o_start], opLen)){// If it matches the current operator
 			pToken->value = operatorValues[o - o_start];			// Save the operator
