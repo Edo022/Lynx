@@ -24,7 +24,7 @@
 
 
 
-//FIXME GLSL doesnt suppotr bool and integer matrices
+//FIXME GLSL doesnt support bool and integer matrices
 //TODO check returns values
 //TODO add macros
 //TODO add include lists
@@ -232,7 +232,7 @@ char* isInclude(const struct Line iLineInfo){
 
 
 
-/**
+/** //TODO fix comment
  * @brief Creates a code with no includes by recursively pasting all the included files together
  *     Comments are not preserved
  * @param vCode The code containing the include statements
@@ -248,14 +248,14 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 	files[filesNum].path = strdup(vFile);
 	files[filesNum].fromLine = vFromLine;
 	files[filesNum].from = vFromFile;
+	struct File* curFile = &files[filesNum];
 	++filesNum;
 
 
 
 	char* code = readFile(vFile, 4);									// Read the file
-	code = uncomment(code, &files[filesNum - 1]);											// Uncomment it
+	code = uncomment(code, curFile);											// Uncomment it
 	struct Line* const ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
-
 
 
 	char *line; uint64_t totLineNum = 0;
@@ -263,25 +263,24 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 		// const uint64_t lineNum = vFromLine == UINT64_MAX ? i : vFromLine;		// Get the number of the line from which the file was included
 
 		struct Line tmp_isinclude_info; //TODO
-		tmp_isinclude_info.file = &files[filesNum - 1];
+		tmp_isinclude_info.file = curFile;
 		tmp_isinclude_info.value = line;
 		tmp_isinclude_info.len = strlen(line);
 		tmp_isinclude_info.locLine = i;
-		char* const r = isInclude(tmp_isinclude_info);								// Check the line
-		if(r != NULL){															// If the line is an include statement
-			checkIncludeFile(tmp_isinclude_info, r);									// Check the included file
+		char* const r = isInclude(tmp_isinclude_info);							// Check the line
+		if(r){																	// If the line is an include statement
+			checkIncludeFile(tmp_isinclude_info, r);								// Check the included file
 			uint64_t includedLen;													//
-			struct Line* included = include(r, i, &files[filesNum - 1], &includedLen);// Get the lines of the included file
+			struct Line* included = include(r, i, curFile, &includedLen);			// Get the lines of the included file
 			memcpy(ret + totLineNum, included, sizeof(struct Line) * includedLen);	// Copy them in the return array
 			free(included);															// Free the saved lines
 			totLineNum += includedLen;												// Update the line counter
 		}
 		else{																	// If it's not
-			// ret[totLineNum].lineNum = lineNum;										// Set the line numer
-			ret[totLineNum].locLine = i;										// Set the line numer
+			ret[totLineNum].locLine = i;											// Set the line numer
 			ret[totLineNum].len     = strlen(line);									// Set the line length
 			ret[totLineNum].value   = line;											// Set the line value
-			ret[totLineNum].file    = &files[filesNum - 1];							// Set the line file
+			ret[totLineNum].file    = curFile;										// Set the line file
 			++totLineNum;															// Update the line counter
 		}
 	}
