@@ -11,20 +11,24 @@ struct Str;
 struct Scope{
 	struct Scope* parent;	// The parent scope of the scope
 	uint64_t strNum;		// The numer of structures declared in the scope
-	uint64_t funNum;		// The numer of functions declared in the scope
-	uint64_t varNum;		// The numer of variables declared in the scope
+	uint64_t funNum;		// The numer of functions  declared in the scope
+	uint64_t varNum;		// The numer of variables  declared in the scope
+	uint64_t scpNum;		// The numer of scopes     declared in the scope
 	struct Str* strArr;		// An array  of structures declared in the scope
-	struct Fun* funArr;		// An array  of functions declared in the scope
-	struct Var* varArr;		// An array  of variables declared in the scope
+	struct Fun* funArr;		// An array  of functions  declared in the scope
+	struct Var* varArr;		// An array  of variables  declared in the scope
+	struct Scope* scpArr;		// An array  of scopes     declared in the scope //TODO rename to Scp
 };
 static void initScope(struct Scope* pScope){
 	pScope->parent = NULL;
 	pScope->strNum = 0;
 	pScope->funNum = 0;
 	pScope->varNum = 0;
+	pScope->scpNum = 0;
 	pScope->strArr = NULL;
 	pScope->funArr = NULL;
 	pScope->varArr = NULL;
+	pScope->scpArr = NULL;
 }
 
 
@@ -66,4 +70,8 @@ static void addFun(struct Scope* const pScope, const struct Fun* const vFun){ //
 static void addVar(struct Scope* const pScope, const struct Var* const vVar){ //TODO make not static
 	pScope->varArr = reallocPow2(pScope->varArr, sizeof(struct Var), pScope->varNum);
 	pScope->varArr[pScope->varNum++] = *vVar;
+}
+static void addScp(struct Scope* const pScope, const struct Scope* const vScope){ //TODO make not static
+	pScope->scpArr = reallocPow2(pScope->scpArr, sizeof(struct Scope), pScope->scpNum);
+	pScope->scpArr[pScope->scpNum++] = *vScope;
 }

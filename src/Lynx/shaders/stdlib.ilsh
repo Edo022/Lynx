@@ -86,8 +86,8 @@ f64 frexp(      f64 _n, out       i32 _exp){}      f64 frexp(      f64 _n,      
 
 //Geometric functions
 
-f32 len(f32 _n){}    f32 dist(f32 _a, anu_f32 _b){}
-f64 len(f64 _n){}    f64 dist(f64 _a, anu_f64 _b){}
+f32 len(f32 _n){}    f32 dist(f32 _a, f32 _b){}
+f64 len(f64 _n){}    f64 dist(f64 _a, f64 _b){}
 
 f32 dot(f32 _a, f32 _b){}        f32v3 cross(f32v3 _a, f32v3 _b){}     f32 norm(f32 _n){}
 f64 dot(f64 _a, f64 _b){}        f64v3 cross(f64v3 _a, f64v3 _b){}     f64 norm(f64 _n){}

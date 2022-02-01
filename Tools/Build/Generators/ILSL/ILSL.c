@@ -379,22 +379,32 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 
 	//! Whitespace is not saved as tokens //TODO REMOVE
-	uint64_t scopeDepth = 0, curLine = 0;
+	uint64_t scopeDepth = !vParent;
 	for(uint64_t i = 0; i < vTokenNum;){
 		// printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 
 		// Scope delimiters
 		if(vTokens[i].id == o_lscope) { //TODO print error if in global scope
-			++scopeDepth; //TODO call recursively
+			if(vParent){
+				if(++scopeDepth > 1) {
+					uint64_t subScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
+					addScp(s, buildScopeSyntaxTree(s, vTokens + i, subScopeLen, iLines));
+					i += subScopeLen; // Skip subscope
+				}
+				else ++i; // Skip own '{'
+			}
+			else printSyntaxError(iLines[vTokens[i].absLine], "Unnamed scopes can only be used inside function definitions");
 		}
 		else if(vTokens[i].id == o_rscope) {
-			if(vParent && !--scopeDepth) return s;
+			// if(vParent && !--scopeDepth) return s;
+			++i; // Skip own '}'
+			return s;
 		}
 
 		// Variable or function definition
 		else if(isType(vTokens[i].id)){
-			const struct Token* constructType = &vTokens[i++];
 			printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+			const struct Token* constructType = &vTokens[i++];
 			if(i < vTokenNum && vTokens[i].id == e_user_defined) {
 				const struct Token* constructName = &vTokens[i++];
 				printf("A\n"); fflush(stdout); //TODO REMOVE
@@ -405,16 +415,22 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.name = constructName->value,
 						.type = constructType->id,
 						.paramNum = 0, //TODO
-						.scope = NULL, //TODO
+						.scope = NULL,
 						.exec = NULL, //TODO
 						.parent = s
 					};
-					addFun(s, &fun);
 					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
-					++i; //Skip )
-					i += 2; //skip {} //FIXME read the function
+					++i; //Skip ')'
+
+					// Analyze the function definition
+					uint64_t funScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
+					fun.scope = *buildScopeSyntaxTree(s, vTokens + i, funScopeLen, iLines);
+					i += funScopeLen; //skip nested scope
+
+					// Save the function
+					addFun(s, &fun);
 				}
-				else if(vTokens[i].value[0] == ';'){
+				else if(vTokens[i].id == e_instruction_end){
 					struct Var var = {
 						.is_const = false,
 						.name = constructName->value,
