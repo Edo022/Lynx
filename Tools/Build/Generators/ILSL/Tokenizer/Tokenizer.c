@@ -1,13 +1,14 @@
 #include "Utils.h"
+#include "Tokenizer/Tokenizer.h"
+
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "Tokenizer/Tokenizer.h"
+#include "Data/Operators.h"
 #include "Data/Types.h"
 #include "Data/Keywords.h"
 #include "Data/Literals.h"
-#include "Data/Operators.h"
 
 
 

@@ -17,7 +17,7 @@ struct Scope{
 	struct Fun* funArr;		// An array  of functions declared in the scope
 	struct Var* varArr;		// An array  of variables declared in the scope
 };
-void initScope(struct Scope* pScope){
+static void initScope(struct Scope* pScope){
 	pScope->parent = NULL;
 	pScope->strNum = 0;
 	pScope->funNum = 0;

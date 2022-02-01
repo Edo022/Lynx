@@ -1,7 +1,5 @@
 #pragma once
 #define _DEFAULT_SOURCE // Required for non standard functions
-#include <inttypes.h>
-#include <stdio.h>
 #include "Files.h"
 
 

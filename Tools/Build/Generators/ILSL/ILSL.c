@@ -5,22 +5,25 @@
 // > from Lynx
 //run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
 
+//Filter includes
+// cd Lynx/Tools/Build/Generators/ILSL; gcc -Werror ILSL.c Utils.c Tokenizer/Tokenizer.c Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o ../GenGlsl
+
+
+
 //TODO MOVE TOOLS SOURCE FILES TO /src/Tools
 
 
 //TODO remove useless includes
 #include "Utils.h"
+
 #include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <inttypes.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdarg.h>
-#include <assert.h>
 #include <sys/stat.h>
 #include <linux/limits.h>
+
+#include "Data/Constructs.h"
 
 
 
@@ -31,8 +34,6 @@
 
 
 //TODO remove useless includes
-#include "Tokenizer/Tokens.h"
-#include "Data/Constructs.h"
 
 #include "Data/Operators.h"
 #include "Data/Types.h"
