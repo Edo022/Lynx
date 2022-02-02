@@ -320,7 +320,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 
 
 /**
- * @brief Returns the index of the right delimiter that matches the first left delimiter
+ * @brief Returns the number of tokens that are between the left and right delimiters. This includes the delimiters
  * @param vTokens An array of tokens. The first token must be a left delimiter
  *     If the first token is not a left delimiter, the return value is undefined
  * @param vTokenNum The total number of tokens
@@ -335,7 +335,7 @@ uint64_t statTokGroup(const struct Token* const vTokens, const uint64_t vTokenNu
 	for(uint64_t i = 1; i < vTokenNum; ++i) {
 		if     (vTokens[i].id == vLeft) ++n;
 		else if(vTokens[i].id == vRight) {
-			if(!--n) return i;
+			if(!--n) return i + 1;
 		}
 	}
 	printSyntaxError(iLines[vTokens->absLine], "Unmatched delimiter \"%s\"", vTokens->value);
@@ -393,7 +393,8 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 				}
 				else ++i; // Skip own '{'
 			}
-			else printSyntaxError(iLines[vTokens[i].absLine], "Unnamed scopes can only be used inside function definitions");
+			else printSyntaxError(iLines[vTokens[i].absLine], "Unnamed scopes can only be used inside function definitions"); //FIXME error doesnt work
+			//FIXME instruction analysis is skipped
 		}
 		else if(vTokens[i].id == o_rscope) {
 			// if(vParent && !--scopeDepth) return s;
@@ -401,7 +402,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 			return s;
 		}
 
-		// Variable or function definition
+		// Variable or function definition //FIXME add const keyword
 		else if(isType(vTokens[i].id)){
 			printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 			const struct Token* constructType = &vTokens[i++];
@@ -420,7 +421,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.parent = s
 					};
 					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
-					++i; //Skip ')'
+					// ++i; //Skip ')'
 
 					// Analyze the function definition
 					uint64_t funScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
@@ -468,10 +469,17 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 			++i;
 		}
 
+		// Flow control
+		else if(vParent && isKeyword(vTokens[i].id)){
+
+		}
+		// else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub)){
+
 		// Anything else
 		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
-
+	// if(vParent) printSyntaxError(iLines[vTokens[i].absLine], "Unmatched scope");
+	//! Unmatched '{' are checked in statTokGroup
 	return s;
 }
 

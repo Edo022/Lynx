@@ -15,7 +15,17 @@ a
 
 
 void setPixel(f32v2 pos, f32v4 col) {
-	u32 i = u32(pos.y) * wsize.x + u32(pos.x);
+	//TODO REMOVE -- test
+	if(pos.x == 0){ pos.y = 1; }
+	elif(pos.x == 1) { pos.y = 2; }
+	else { pos.y = 3; }
+	//TODO REMOVE -- test
+
+
+	// u32 i = u32(pos.y) * wsize.x + u32(pos.x); //FIXME add asignment in declaration
+	u32 i;
+	i = u32(pos.y) * wsize.x + u32(pos.x);
+
 	outcol[i] = col;
 }
 

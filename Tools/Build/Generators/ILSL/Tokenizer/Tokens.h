@@ -34,11 +34,11 @@ enum TokenID {
 	k_while    = 1001,    k_for       = 1005,    k_do      = 1009,						// Loops
 	k_continue = 1002,    k_break     = 1006,    k_return  = 1010,						// Flow control
 	k_switch   = 1003,    k_case      = 1007,    k_default = 1011,						// Switch case
+	k_end = 1011, //! Update this value when adding new keywords
 
-	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1029,	// Qualifiers
-	k_local    = 1013,    k_extern    = 1016,											// Inputs
-	k_struct   = 1014,    k_preicison = 1017,											// Other
-	k_end = 1019, //! Update this value when adding new keywords
+	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1029,	// Qualifiers	//TODO fix prefix - those aren't keywords but qualifiers
+	k_local    = 1013,    k_extern    = 1016,											// Inputs		//TODO fix prefix - those aren't keywords but qualifiers
+	k_struct   = 1014,    k_preicison = 1017,											// Other		//TODO fix prefix - those aren't keywords but qualifiers
 
 
 	//Operators

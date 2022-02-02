@@ -51,7 +51,7 @@ f64 min(f64 _a, f64 _b){}       f64 max(f64 _a, f64 _b){}       f64 clamp(f64 _a
 u32 min(u32 _a, u32     _b){}       u32 max(u32 _a,     u32 _b){}       u32 clamp(u32 _a,     u32 _b){}         u32 mix(u32 _n,     u32 _min,     u32 _max){}
 i32 min(i32 _a, i32     _b){}       i32 max(i32 _a,     i32 _b){}       i32 clamp(i32 _a,     i32 _b){}         i32 mix(i32 _n,     i32 _min,     i32 _max){}
 f32 min(f32 _a, f32     _b){}       f32 max(f32 _a,     f32 _b){}       f32 clamp(f32 _a,     f32 _b){}         f32 mix(f32 _n,     f32 _min,     f32 _max){}
-f64 min(f64 _a, f64     _b){}       f64 max(f64 _a,     f64 _b){}       f64 clamp(f64 _a,     f64 _b){}         f64 mix(f64 _n,     f64 _min,     f64 _max){}
+f64 min(f64 _a, f64     _b){}       f64 max(f64 _a,     f64 _b){}       f64 clamp(f64 _a,     f64 _b){}         f64 mvix(f64 _n,     f64 _min,     f64 _max){}
 
 //f32(f32 _a, f32 _b, b _which){}
 //f64(f64 _a, f64 _b, b _which){}
