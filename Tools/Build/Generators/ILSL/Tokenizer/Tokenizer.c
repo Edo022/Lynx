@@ -5,10 +5,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "Data/Operators.h"
-#include "Data/Types.h"
-#include "Data/Keywords.h"
-#include "Data/Literals.h"
+#include "Tokenizer/Operators.h"
+#include "Tokenizer/Types.h"
+#include "Tokenizer/Keywords.h"
+#include "Tokenizer/Literals.h"
 
 
 

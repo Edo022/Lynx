@@ -1,5 +1,6 @@
 #pragma once
 #include "Tokenizer/Tokens.h"
+#include "Tokenizer/Operators.h"
 
 
 
@@ -114,11 +115,12 @@ enum OperandType {
 
 //TODO manage ternary operators
 struct OpNode {
-	enum TokenID id; // The ID of the operator
-	enum OperandType operandType_0;
-	enum OperandType operandType_1;
-	void* operand_0;
-	void* operand_1;
+	enum TokenID id; 				// The ID of the operator. Redundant
+	struct OperatorData_t data;		// The properties of the operator
+	enum OperandType operandType_0;	// The type of the first  operand
+	enum OperandType operandType_1;	// The type of the second operand
+	void* operand_0;				// The address of the struct representing the first  operand
+	void* operand_1;				// The address of the struct representing the second operand. NULL in unary operators
 };
 
 
