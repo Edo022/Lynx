@@ -431,7 +431,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 					// Save the function
 					addFun(s, &fun);
 				}
-				else if(vTokens[i].id == e_instruction_end){
+				else if(vTokens[i].id == e_instruction_end){ //FIXME check variables declared as void
 					struct Var var = {
 						.is_const = false,
 						.name = constructName->value,
@@ -441,7 +441,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 					addVar(s, &var);
 					++i; //Skip ;
 				}
-				// else if(vTokens[i].id == o_log_eq){ //TODO ADD INLINE INITIALIZATION
+				// else if(vTokens[i].id == o_log_eq){ //TODO ADD INLINE INITIALIZATION TO VARIABLES //FIXME check variables declared as void
 				else printSyntaxError(iLines[vTokens[i].absLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
 			}
 			//FIXME check multiple definitions
@@ -470,7 +470,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		}
 
 		// Flow control
-		else if(vParent && isKeyword(vTokens[i].id)){
+		else if(vParent && vTokens[i].id == c_if){
 
 		}
 		// else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub)){

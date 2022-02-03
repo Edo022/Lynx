@@ -9,8 +9,7 @@
 
 
 //
-// layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;\
-a
+// layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
 
 
@@ -19,6 +18,20 @@ void setPixel(f32v2 pos, f32v4 col) {
 	if(pos.x == 0){ pos.y = 1; }
 	elif(pos.x == 1) { pos.y = 2; }
 	else { pos.y = 3; }
+
+	int i; int j;
+	for(i = 0; i < 14; ++i){
+		col.y = i + 4;
+
+		while(j < 4){
+			j += 2;
+			func(45 + j, i);
+		}
+	}
+	while(j < 4){
+		j += 2;
+		func2(~j+!j+j-j*j);
+	}
 	//TODO REMOVE -- test
 
 

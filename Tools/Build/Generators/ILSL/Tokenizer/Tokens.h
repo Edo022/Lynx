@@ -1,7 +1,7 @@
 #pragma once
 #include "Files.h"
 
-
+//TODO add bool literals
 
 
 
@@ -25,35 +25,39 @@ enum TokenID {
 	t_bm4x3 = 70,   t_u32m4x3 = 71,   t_i32m4x3 = 72,   t_f32m4x3 = 73,   t_f64m4x3 = 74,	// 4x3 matrices
 	t_bm4x4 = 75,   t_u32m4x4 = 76,   t_i32m4x4 = 77,   t_f32m4x4 = 78,   t_f64m4x4 = 79,	// 4x4 matrices
 	t_void  = 80, // Just void
-	t_end = 80, //! Update this value when adding new types
+	t_end = 80, //! This value has to be manually updated
+
+
+	// Flow control
+	c_start = 1000,
+	c_if       = 1000,    c_else      = 1004,    c_elif    = 1008,						// If-else
+	c_while    = 1001,    c_for       = 1005,    c_do      = 1009,						// Loops
+	c_continue = 1002,    c_break     = 1006,    c_return  = 1010,						// Iterations, return
+	c_switch   = 1003,    c_case      = 1007,    c_default = 1011,						// Switch case
+	c_end = 1011, //! This value has to be manually updated
 
 
 	// Keywords
-	k_start = 1000,
-	k_if       = 1000,    k_else      = 1004,    k_elif    = 1008,						// If-else
-	k_while    = 1001,    k_for       = 1005,    k_do      = 1009,						// Loops
-	k_continue = 1002,    k_break     = 1006,    k_return  = 1010,						// Flow control
-	k_switch   = 1003,    k_case      = 1007,    k_default = 1011,						// Switch case
-	k_end = 1011, //! Update this value when adding new keywords
-
-	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1029,	// Qualifiers	//TODO fix prefix - those aren't keywords but qualifiers
-	k_local    = 1013,    k_extern    = 1016,											// Inputs		//TODO fix prefix - those aren't keywords but qualifiers
-	k_struct   = 1014,    k_preicison = 1017,											// Other		//TODO fix prefix - those aren't keywords but qualifiers
+	k_start = 2000,
+	k_highp    = 2000,    k_medp      = 2003,    k_lowp    = 2006,    k_const = 2007,	// Qualifiers
+	k_local    = 2001,    k_extern    = 2004,											// Inputs
+	k_struct   = 2002,    k_preicison = 2005,											// Other
+	k_end = 2007, //! This value has to be manually updated
 
 
 	//Operators
-	o_start = 2000,
-	o_set_bw_lshift = 2000,    o_log_less_eq = 2010,    o_inc = 2017,    o_bw_lshift = 2019,    o_log_less = 2029,    o_ter_0      = 2034,
-	o_set_bw_rshift = 2001,    o_log_more_eq = 2011,    o_dec = 2018,    o_bw_rshift = 2020,    o_log_more = 2030,    o_ter_1      = 2035,
-	o_set_sum       = 2002,    o_log_eq      = 2012,                     o_sum       = 2021,    o_set      = 2031,    o_field      = 2036,
-	o_set_mul       = 2003,    o_log_diff    = 2013,                     o_mul       = 2022,    o_log_not  = 2032,    o_list       = 2037,
-	o_set_sub       = 2004,    o_log_and     = 2014,                     o_sub       = 2023,    o_bw_not   = 2033,    o_lgroup     = 2038,
-	o_set_div       = 2005,    o_log_or      = 2015,                     o_div       = 2024,                          o_rgroup     = 2039,
-	o_set_mod       = 2006,    o_log_xor     = 2016,                     o_mod       = 2025,                          o_lsubscript = 2040,
-	o_set_bw_and    = 2007,                                              o_bw_and    = 2026,                          o_rsubscript = 2041,
-	o_set_bw_or     = 2008,                                              o_bw_or     = 2027,                          o_lscope     = 2042,
-	o_set_bw_xor    = 2009,                                              o_bw_xor    = 2028,                          o_rscope     = 2043,
-	o_end = 2043, //! Update this value when adding new operators
+	o_start = 3000,
+	o_set_bw_lshift = 3000,    o_log_less_eq = 3010,    o_inc = 3017,    o_bw_lshift = 3019,    o_log_less = 3029,    o_ter_0      = 3034,
+	o_set_bw_rshift = 3001,    o_log_more_eq = 3011,    o_dec = 3018,    o_bw_rshift = 3020,    o_log_more = 3030,    o_ter_1      = 3035,
+	o_set_sum       = 3002,    o_log_eq      = 3012,                     o_sum       = 3021,    o_set      = 3031,    o_field      = 3036,
+	o_set_mul       = 3003,    o_log_diff    = 3013,                     o_mul       = 3022,    o_log_not  = 3032,    o_list       = 3037,
+	o_set_sub       = 3004,    o_log_and     = 3014,                     o_sub       = 3023,    o_bw_not   = 3033,    o_lgroup     = 3038,
+	o_set_div       = 3005,    o_log_or      = 3015,                     o_div       = 3024,                          o_rgroup     = 3039,
+	o_set_mod       = 3006,    o_log_xor     = 3016,                     o_mod       = 3025,                          o_lsubscript = 3040,
+	o_set_bw_and    = 3007,                                              o_bw_and    = 3026,                          o_rsubscript = 3041,
+	o_set_bw_or     = 3008,                                              o_bw_or     = 3027,                          o_lscope     = 3042,
+	o_set_bw_xor    = 3009,                                              o_bw_xor    = 3028,                          o_rscope     = 3043,
+	o_end = 3043, //! This value has to be manually updated
 
 
 	// Other
@@ -63,12 +67,13 @@ enum TokenID {
 	e_instruction_end = 1000003,	// Semicolon
 	e_preprocessor    = 1000004,	// # characters
 	e_unknown         = 1000005,	// Anything else
+	e_end = 1000005	//! This value has to be manually updated
 	//! Newlines are not saves as tokens
-	e_end = 1000005	//! Update this value when adding new categories
 };
-static inline int isType    (enum TokenID vID){ return vID >= t_start && vID <= t_end; }
-static inline int isKeyword (enum TokenID vID){ return vID >= k_start && vID <= k_end; }
-static inline int isOperator(enum TokenID vID){ return vID >= o_start && vID <= o_end; }
+static inline int isType       (enum TokenID vID){ return vID >= t_start && vID <= t_end; }
+static inline int isFlowControl(enum TokenID vID){ return vID >= c_start && vID <= c_end; } //TODO remove. prob useless
+static inline int isKeyword    (enum TokenID vID){ return vID >= k_start && vID <= k_end; } //TODO remove. prob useless
+static inline int isOperator   (enum TokenID vID){ return vID >= o_start && vID <= o_end; }
 
 
 struct Token{
