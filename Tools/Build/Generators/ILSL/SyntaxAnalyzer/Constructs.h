@@ -4,10 +4,13 @@
 
 
 
+//TODO use Expr alias for OpNode*
+
 
 struct Var;
 struct Fun;
 struct Str;
+struct OpNode;
 
 struct Scope {
 	struct Scope* parent;	// The parent scope of the scope
@@ -18,8 +21,12 @@ struct Scope {
 	struct Str* strArr;		// An array  of structures declared in the scope
 	struct Fun* funArr;		// An array  of functions  declared in the scope
 	struct Var* varArr;		// An array  of variables  declared in the scope
-	struct Scope* scpArr;		// An array  of scopes     declared in the scope //TODO rename to Scp
+	struct Scope* scpArr;	// An array  of scopes     declared in the scope //TODO rename to Scp
+
+	uint64_t        expNum;	// The number of runtime instructions
+	struct OpNode** expArr;	// An array   of runtime instructions
 };
+
 static void initScope(struct Scope* pScope) {
 	pScope->parent = NULL;
 	pScope->strNum = 0;
@@ -30,7 +37,12 @@ static void initScope(struct Scope* pScope) {
 	pScope->funArr = NULL;
 	pScope->varArr = NULL;
 	pScope->scpArr = NULL;
+
+	pScope->expNum = 0;
+	pScope->expArr = NULL;
 }
+
+
 
 
 struct Var {
@@ -55,7 +67,6 @@ struct Fun {
 	// struct Var* paramv;			// An array of parameters //TODO remove. save as variables in the function body
 	uint64_t paramNum;			// The number of parameters. The parameters are saved in the first paramNum elements of the scope's variable array
 	struct Scope scope;			// The scope of the function //TODO rename as "body" //FIXME make this a pointer
-	struct Token* exec; 		//runtime lines as a list of tokens //FIXME write Instruction struct and use an array of struct Instruction
 };
 
 

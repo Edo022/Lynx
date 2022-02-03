@@ -46,6 +46,31 @@ uint64_t statTok(const struct Token* const vTokens, const uint64_t vTokenNum, co
 
 
 
+
+
+
+struct OpNode* buildTreeIf(   const struct Token* const vTokens, const uint64_t vTokenNum){
+
+}
+
+
+struct OpNode* buildTreeFor(  const struct Token* const vTokens, const uint64_t vTokenNum){
+
+}
+
+
+struct OpNode* buildTreeWhile(const struct Token* const vTokens, const uint64_t vTokenNum){
+
+}
+
+
+
+
+
+
+
+
+
 //TODO DONT SAVE WHITESPACE
 //TODO add semantic analyzer
 //TODO graphic output of the syntax tree
@@ -104,7 +129,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.type = constructType->id,
 						.paramNum = 0, //TODO
 						.scope = NULL,
-						.exec = NULL, //TODO
+						// .exec = NULL, //TODO
 						.parent = s
 					};
 					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
@@ -157,7 +182,9 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		}
 
 		// Flow control
-		else if(vParent && vTokens[i].id == c_if){
+		else if(vParent && vTokens[i].id == c_if){ //TODO replace with nested if else and a len variable
+			buildTreeIf(vTokens + i, vTokenNum - i);
+			//TODO move to parent scope
 
 		}
 		// else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub)){
