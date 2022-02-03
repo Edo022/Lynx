@@ -11,68 +11,49 @@
 //
 // layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
-// layout(std430, binding = 0) buffer ext_outcol{
-// 	vec4 arrayh[15 * 2];
-// 	int valueh;
-// 	Point p;
-// 	Point ps[20];
-// 	vec4 outcol[];
-// };
-
-extern outCol {
-	f32v4 outcol[];
-}
-
-// layout(std430, binding = 1) buffer ext_wsize{ uvec2 wsize; };
-
-extern wsize {
-	u32v2 wsize;
-}
-
-// layout(std140, binding = 2) uniform data{
-// 	// Point points;
-// 		vec3 pos;  	//position
-// 	float r;   	//radius
-// 	vec4 col;  	//color
-// };
-
-local {
-	f32v3 pos;
-	f32 r;
-	f32v4 col;
-}
-
-
-
-0980	//ok
-00980	//ok
-// 09G		//error
-980		//ok
-0d980	//ok
-0d0980.43	//ok
-	 	0d		//ok
-
-		0x3D4	//ok
-   	0x03D4.ffa2	//ok
-// 3D4		//error
-// 0x3G4	//error
- 0x		//error
-
-  0b1111010100	//ok
-	  	0b001\
-111010100.01	//ok
-// 0b001111010102	//error
-0b				//error
-
 
 
 void setPixel(f32v2 pos, f32v4 col) {
-	u32 i = u32(pos.y) * wsize.x + u32(pos.x);
+	//TODO REMOVE -- test
+	if(pos.x == 0){ pos.y = 1; }
+	elif(pos.x == 1) { pos.y = 2; }
+	else { pos.y = 3; }
+
+	int i; int j;
+	for(i = 0; i < 14; ++i){
+		col.y = i + 4;
+
+		while(j < 4){
+			j += 2;
+			func(45 + j, i);
+		}
+	}
+	while(j < 4){
+		j += 2;
+		func2(~j+!j+j-j*j);
+	}
+	//TODO REMOVE -- test
+
+
+	// u32 i = u32(pos.y) * wsize.x + u32(pos.x); //FIXME add asignment in declaration
+	u32 i;
+	i = u32(pos.y) * wsize.x + u32(pos.x);
+
 	outcol[i] = col;
 }
 
+void main(extern f32v4 outcol[], extern u32v2 wsize, local f32v3 pos, local f32 r, local f32v4 col) {
+	for(i32 idk = 0; idk < 3; idk++){
+		//something
+	}
+	/*multiline
+		comment */
 
-void main() {
+	/*multiline comment in one line*/
+
+	//single line comment
+	0x3
+
 	setPixel(f32v2(1, 1), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));
 
@@ -81,12 +62,4 @@ void main() {
 	//a
 	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
-a /* setPixel(pos\
-.xy );*/
-	aaaaa
-	/**/
-	//
-	//  	 /**/
-	/**/ //
 }
-

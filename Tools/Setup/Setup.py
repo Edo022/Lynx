@@ -108,6 +108,7 @@ if sys.stdin.read(1).lower() == 'y':
     with open('.vscode/c_cpp_properties.json', 'w') as f:
         f.write(
             f'\n{{'
+            f'\n    "version": 4,'
             f'\n    "configurations": ['
             f'\n        {{'
             f'\n            "name": "Lynx-editor",'
@@ -124,9 +125,20 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n                ".engine/.editor/.intellisense.hpp", //This helps Intellisense to correctly parse your code'
             f'\n                "${{workspaceFolder}}/{ AtoE }/src/Lynx/Core/InitList.hpp" //Generated initializers'
             f'\n            ]'
+            f'\n        }},'
+            f'\n        {{'
+            f'\n            "name": "ILSL",'
+            f'\n            "includePath": ['
+            f'\n                "${{workspaceFolder}}/{ AtoE }/Tools/Build/Generators/ILSL" //TODO MOVE TO SRC'
+            f'\n            ],'
+            f'\n            "defines": [],'
+            f'\n            "compilerPath": "/usr/bin/gcc",'
+            f'\n            "cStandard": "c11",'
+            f'\n            "cppStandard": "${{default}}",'
+            f'\n            "intelliSenseMode": "linux-gcc-x64",'
+            f'\n            "forcedInclude": []'
             f'\n        }}'
-            f'\n    ],'
-            f'\n    "version": 4'
+            f'\n    ]'
             f'\n}}'
         )
 
