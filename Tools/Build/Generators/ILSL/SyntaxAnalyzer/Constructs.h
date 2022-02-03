@@ -37,6 +37,9 @@ static void initScope(struct Scope* pScope) {
 	pScope->funArr = NULL;
 	pScope->varArr = NULL;
 	pScope->scpArr = NULL;
+
+	pScope->expNum = 0;
+	pScope->expArr = NULL;
 }
 
 

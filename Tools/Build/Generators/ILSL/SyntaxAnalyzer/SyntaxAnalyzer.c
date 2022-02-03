@@ -129,7 +129,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.type = constructType->id,
 						.paramNum = 0, //TODO
 						.scope = NULL,
-						.exec = NULL, //TODO
+						// .exec = NULL, //TODO
 						.parent = s
 					};
 					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
