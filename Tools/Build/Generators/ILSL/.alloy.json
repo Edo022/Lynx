@@ -1,5 +1,5 @@
 {
 	"compiler": "gcc",
-	"bin": "./GenGlsl",
+	"bin": "../GenGlsl",
 	"flags": "-std=c11 -ggdb3 -g3 -O0 -I."
 }
