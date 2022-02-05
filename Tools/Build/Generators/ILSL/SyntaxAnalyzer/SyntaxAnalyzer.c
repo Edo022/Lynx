@@ -116,12 +116,12 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 		// Variable or function definition //FIXME add const keyword
 		else if(isType(vTokens[i].id)){
-			printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+			// printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 			const struct Token* constructType = &vTokens[i++];
 			if(i < vTokenNum && vTokens[i].id == e_user_defined) {
 				const struct Token* constructName = &vTokens[i++];
-				printf("A\n"); fflush(stdout); //TODO REMOVE
-				printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
+				// printf("A\n"); fflush(stdout); //TODO REMOVE
+				// printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 				if(vTokens[i].id == o_lgroup){
 					//FIXME actually read the argument list
 					struct Fun fun = {
@@ -190,7 +190,10 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		// else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub)){
 
 		// Anything else
-		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
+		else {
+			printf("[%d]\n",vTokens[i].id);
+			printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
+		}
 	}
 	// if(vParent) printSyntaxError(iLines[vTokens[i].absLine], "Unmatched scope");
 	//! Unmatched '{' are checked in statTokGroup
