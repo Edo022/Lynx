@@ -183,20 +183,17 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 		// Flow control
 		else if(vParent && vTokens[i].id == c_if){ //TODO replace with nested if else and a len variable
-			buildTreeIf(vTokens + i, vTokenNum - i);
-			//TODO move to parent scope
-
+			uint64_t ifScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
+			buildTreeIf(vTokens + i, ifScopeLen); //FIXME implement the function
+			i += ifScopeLen;
 		}
 		// else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub)){
 
 		// Anything else
-		else {
-			printf("[%d]\n",vTokens[i].id);
-			printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
-		}
+		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
 	// if(vParent) printSyntaxError(iLines[vTokens[i].absLine], "Unmatched scope");
-	//! Unmatched '{' are checked in statTokGroup
+	//! Unmatched scope '{' are checked in statTokGroup
 	return s;
 }
 

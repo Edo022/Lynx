@@ -6,7 +6,7 @@
 
 
 enum TokenID {
-	//Types
+	// Built-in types
 	t_start = 0,
 	t_b     =  0,   t_u32     =  1,   t_i32     =  2,   t_f32     =  3,   t_f64     =  4,	// Scalar types
 	t_bv2   =  5,   t_u32v2   =  6,   t_i32v2   =  7,   t_f32v2   =  8,   t_f64v2   =  9,	// 2-component vectors
@@ -38,7 +38,7 @@ enum TokenID {
 	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1019,	// Qualifiers
 	k_local    = 1013,    k_extern    = 1016,											// Inputs
 	k_struct   = 1014,    k_preicison = 1017,											// Other
-	k_end = 1020, //! This value has to be manually updated
+	k_end = 1019, //! This value has to be manually updated
 
 
 	//Operators
