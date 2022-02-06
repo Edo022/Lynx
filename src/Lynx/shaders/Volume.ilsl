@@ -19,7 +19,7 @@ void setPixel(f32v2 pos, f32v4 col) {
 	elif(pos.x == 1) { pos.y = 2; }
 	else { pos.y = 3; }
 
-	int i; int j;
+	i32 i; i32 j;
 	for(i = 0; i < 14; ++i){
 		col.y = i + 4;
 
