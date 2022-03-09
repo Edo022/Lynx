@@ -49,21 +49,23 @@ uint64_t statTok(const struct Token* const vTokens, const uint64_t vTokenNum, co
 
 
 
-struct OpNode* buildTreeIf(   const struct Token* const vTokens, const uint64_t vTokenNum){
+struct If* buildTreeIf(const struct Token* const vTokens, const uint64_t vTokenNum){
 
 }
 
 
-struct OpNode* buildTreeFor(  const struct Token* const vTokens, const uint64_t vTokenNum){
+struct For* buildTreeFor(const struct Token* const vTokens, const uint64_t vTokenNum){
 
 }
 
 
-struct OpNode* buildTreeWhile(const struct Token* const vTokens, const uint64_t vTokenNum){
+struct While* buildTreeWhile(const struct Token* const vTokens, const uint64_t vTokenNum){
 
 }
 
+struct Expr* parseExpr(const struct Token* const vTokens, const uint64_t vTokenNum){
 
+}
 
 
 
@@ -189,6 +191,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		//FIXME MERGE
 		//FIXME MERGE
 		else if(vParent && vTokens[i].id == c_if){ //TODO replace with nested if else and a len variable
+			//TODO MOVE CONDITION PARSING TO buildTreeIf
 			if(vTokens[++i].id != o_lgroup) printSyntaxError(iLines[vTokens[i].absLine], "Expected '(' after flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t ifSExprLen = statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
 			//FIXME actually read the expression
@@ -196,7 +199,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t ifScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-			buildTreeIf(vTokens + i, ifScopeLen); //FIXME implement the function
+			buildTreeIf(vTokens + i, ifScopeLen); //TODO save this thing //FIXME implement the function
 			i += ifScopeLen;
 			//FIXME read elif and else constructs
 		}
@@ -230,6 +233,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 
 		else if(vParent && vTokens[i].id == c_while){ //TODO replace with nested if else and a len variable
+			//TODO MOVE CONDITION PARSING TO buildTreeWhile
 			if(vTokens[++i].id != o_lgroup) printSyntaxError(iLines[vTokens[i].absLine], "Expected '(' after flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t whileExprLen = statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
 			//FIXME actually read the expression
@@ -237,10 +241,11 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t whileScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-			buildTreeWhile(vTokens + i, whileScopeLen); //FIXME implement the function
+			addInstructionWhile(s, buildTreeWhile(vTokens + i, whileScopeLen)); //FIXME implement the function
 			i += whileScopeLen;
 		}
 		else if(vParent && vTokens[i].id == c_for){ //TODO replace with nested if else and a len variable
+			//TODO MOVE CONDITION PARSING TO buildTreeFor
 			if(vTokens[++i].id != o_lgroup) printSyntaxError(iLines[vTokens[i].absLine], "Expected '(' after flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t forExprLen = statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
 			//FIXME actually read the expressions
@@ -248,10 +253,13 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t forScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-			buildTreeFor(vTokens + i, forScopeLen); //FIXME implement the function
+			addInstructionFor(s, buildTreeFor(vTokens + i, forScopeLen)); //FIXME implement the function
 			i += forScopeLen;
 		}
-		// else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub)){
+		else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub  || vTokens[i].id == e_instruction_end)){ //TODO add struct and base types constructors analysis
+			uint64_t exprLen = statTok(vTokens + i, vTokenNum - i, e_instruction_end);
+			i += exprLen + 1; // len + ';'
+		}
 
 		// Anything else
 		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
@@ -262,7 +270,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 }
 
 
-//TODO REMOVE
-struct Scope* buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
-	struct Scope* g = buildScopeSyntaxTree(NULL, vTokens, vTokenNum, iLines);
-}
+// //TODO REMOVE
+// struct Scope* buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
+// 	struct Scope* g = buildScopeSyntaxTree(NULL, vTokens, vTokenNum, iLines);
+// }

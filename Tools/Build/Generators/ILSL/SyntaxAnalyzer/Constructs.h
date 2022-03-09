@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 #include "Tokenizer/Tokens.h"
 #include "Tokenizer/Operators.h"
 
@@ -10,7 +11,7 @@
 struct Var;
 struct Fun;
 struct Str;
-struct OpNode;
+struct Instruction;
 
 struct Scope {
 	struct Scope* parent;	// The parent scope of the scope
@@ -23,8 +24,8 @@ struct Scope {
 	struct Var* varArr;		// An array  of variables  declared in the scope
 	struct Scope* scpArr;	// An array  of scopes     declared in the scope //TODO rename to Scp
 
-	uint64_t        expNum;	// The number of runtime instructions
-	struct OpNode** expArr;	// An array   of runtime instructions
+	uint64_t            instructionNum;	// The number of runtime Instructions
+	struct Instruction* instructionArr;	// An array   of runtime Instructions
 };
 
 static void initScope(struct Scope* pScope) {
@@ -38,8 +39,8 @@ static void initScope(struct Scope* pScope) {
 	pScope->varArr = NULL;
 	pScope->scpArr = NULL;
 
-	pScope->expNum = 0;
-	pScope->expArr = NULL;
+	pScope->instructionNum = 0;
+	pScope->instructionArr = NULL;
 }
 
 
@@ -71,22 +72,11 @@ struct Fun {
 
 
 
-static void addStr(struct Scope* const pScope, const struct Str* const vStr){ //TODO make not static
-	pScope->strArr = reallocPow2(pScope->strArr, sizeof(struct Str), pScope->strNum);
-	pScope->strArr[pScope->strNum++] = *vStr;
-}
-static void addFun(struct Scope* const pScope, const struct Fun* const vFun){ //TODO make not static
-	pScope->funArr = reallocPow2(pScope->funArr, sizeof(struct Fun), pScope->funNum);
-	pScope->funArr[pScope->funNum++] = *vFun;
-}
-static void addVar(struct Scope* const pScope, const struct Var* const vVar){ //TODO make not static
-	pScope->varArr = reallocPow2(pScope->varArr, sizeof(struct Var), pScope->varNum);
-	pScope->varArr[pScope->varNum++] = *vVar;
-}
-static void addScp(struct Scope* const pScope, const struct Scope* const vScope){ //TODO make not static
-	pScope->scpArr = reallocPow2(pScope->scpArr, sizeof(struct Scope), pScope->scpNum);
-	pScope->scpArr[pScope->scpNum++] = *vScope;
-}
+void addStr(struct Scope* const pScope, const struct Str* const vStr);
+void addFun(struct Scope* const pScope, const struct Fun* const vFun);
+void addVar(struct Scope* const pScope, const struct Var* const vVar);
+void addScp(struct Scope* const pScope, const struct Scope* const vScope);
+
 
 
 
@@ -98,55 +88,88 @@ static void addScp(struct Scope* const pScope, const struct Scope* const vScope)
 //TODO ----------------------------------------------------------------------------------------------
 //TODO MOVE TO FlowControl.h
 
-enum InstructionType {
-	inst_if,		// If-else statement.                      data Points to a struct If
-	inst_for,		// For loop statement.                     data Points to a struct For
-	inst_while,		// While loop statement.                   data Points to a struct While
-	inst_expr,		// An expression whose value is discarded. data Points to the root node of a struct Op tree
-	inst_continue,	// Continue statement.                     data is NULL
-	inst_break,		// Break statement.                        data is NULL
-	inst_return		// Return statement.                       data Points to the root node of a struct Op tree
+
+struct ExprElm;
+/**
+ * @brief An instruction composed of function calls, operators, literals and variables
+ */
+struct Expr {
+	struct ExprElm* elmArr;
+	uint64_t        elmNum;
 };
 
+
+/**
+ * @brief The type of a runtime instruction
+ *     This defines the active value of its data member
+ */
+enum InstructionType {
+	inst_if,		// If-else statement.                      Active data value: _if;
+	inst_for,		// For loop statement.                     Active data value: _for;
+	inst_while,		// While loop statement.                   Active data value: _while;
+
+	inst_expr,		// An expression whose value is discarded. Active data value: expr;
+
+	inst_continue,	// Continue statement.
+	inst_break,		// Break statement.
+	inst_return		// Return statement.                       Active data value: expr;
+};
+
+/**
+ * @brief A runtime instruction
+ *     This can be an expression or a flow control construct or directive
+ */
 struct Instruction {
 	enum InstructionType type;
-	void* data;
+	union {
+		struct If*    _if;
+		struct For*   _for;
+		struct While* _while;
+		struct Expr*  expr;
+	} data;
+};
+void addInstructionIf(struct Scope* const pScope, struct If* const vInstruction);
+void addInstructionWhile(struct Scope* const pScope, struct While* const vInstruction);
+void addInstructionFor(struct Scope* const pScope, struct For* const vInstruction);
+void addInstructionExpr(struct Scope* const pScope, struct Expr* const vInstruction);
+
+
+
+
+
+
+
+/**
+ * @brief The type of an ExprElm struct
+ *     This defines the active value of its data member
+ */
+enum ExprElmType {
+	expr_operator,	// Operators.                          Active data value: operator
+	expr_literal,	// Literal constants.                  Active data value: literal
+	expr_variable,	// Variables. data contains its name   Active data value: name           Active data value: name
+	expr_function	// Function calls. data contains its name. The subsequent elements are a literal representing the number of arguments and the list of arguments
+};
+
+/**
+ * @brief An element of an expression
+ */
+struct ExprElm {
+	enum ExprElmType type;
+	union {
+		struct OperatorData_t* operator;
+		struct LiteralData_t*  literal;
+		const char*            name;
+	} data;
 };
 
 
 
 
-enum OperandType {
-	operand_op,			// Another operator.    The operand points to a struct OpNode
-	operand_call,		// A function call.     The operand points to a struct Call
-	operand_literal,	// A numeric literal.   The operand points to a struct LiteralData_t (from Tokenizer)
-};
-
-
-
-//TODO manage ternary operators
-struct OpNode {
-	enum TokenID id; 				// The ID of the operator. Redundant
-	struct OperatorData_t data;		// The properties of the operator
-	enum OperandType operandType_0;	// The type of the first  operand
-	enum OperandType operandType_1;	// The type of the second operand
-	void* operand_0;				// The address of the struct representing the first  operand
-	void* operand_1;				// The address of the struct representing the second operand. NULL in unary operators
-};
-
-
-struct Call {
-	uint64_t argNum;		// The number of arguments. //! This might be incorrect. Checked by the semantic analyzer
-	struct Tree** argArr;	// An array of operator trees that are used as arguments
-};
-
-
-
-
-
-
+/**
+ * @brief If flow control construct node
+ */
 struct If {
-	struct OpNode* condition;	// The condition to check as an operator tree
+	struct Expr*  condition;	// The condition to check as an operator tree
 	struct Scope* trueBody;		// Instructions in the if   body
 	struct Scope* falseBody;	// Instructions in the else body
 	//! elif constructs are saved as a series of nested if-else
@@ -154,16 +177,22 @@ struct If {
 
 //TODO add switch
 
+/**
+ * @brief While flow control construct node
+ */
 struct While{
-	struct OpNode* condition;	// The condition to check as an operator tree
+	struct Expr*  condition;	// The condition to check as an operator tree
 	struct Scope* body;			// The instructions in the loop body
 }; //TODO add while - else
 
 
+/**
+ * @brief For flow control construct node
+ */
 struct For {
-	struct OpNode* init; //TODO idk, prob useless
-	struct OpNode* condition;	// The condition to check as an operator tree
-	struct OpNode* inc; //TODO same
+	struct Expr*  init; //TODO idk, prob useless
+	struct Expr*  condition;	// The condition to check as an operator tree
+	struct Expr*  inc; //TODO same
 	struct Scope* body;			// The instructions in the loop body
 };
 

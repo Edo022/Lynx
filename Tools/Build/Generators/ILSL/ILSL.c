@@ -13,6 +13,8 @@
 //TODO MOVE TOOLS SOURCE FILES TO /src/Tools
 
 
+//FIXME USE NULL TERMINATING TOKEN INSTEAD OF PASSING THE SIZE IN EVERY FUNCTION
+
 #include "Utils.h"
 
 #include <string.h>
@@ -28,6 +30,7 @@
 #include "Preprocessor/Preprocessor.h"
 #include "Tokenizer/Tokenizer.h"
 #include "SyntaxAnalyzer/SyntaxAnalyzer.h"
+#include "Translator.h"
 
 
 
@@ -51,64 +54,6 @@
 
 //TODO add token infos to printSyntaxError
 //TODO add PrintSemanticError
-
-
-
-
-
-
-
-
-
-
-// Output assembler -------------------------------------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
-
-char* translate(const struct Token* vTokens, const uint64_t vTokensNum){
-	char* const ret = malloc(MAX_CODE_LEN);
-	uint64_t j = 0;
-	for(uint64_t i = 0; i < vTokensNum; ++i){
-		const struct Token* const curTok = vTokens + i;
-		if(curTok->leading_ws){
-			strcpy(ret + j, curTok->leading_ws);
-			j += strlen(curTok->leading_ws);
-		}
-
-		if(curTok->id == e_literal){
-			struct LiteralData_t* const tokData = curTok->data;
-			char strValue[64];
-			if(tokData->type == t_u32) snprintf(strValue, 64, "%d", *(uint32_t*)tokData->value);
-			else                       snprintf(strValue, 64, "%lf",  *(double*)tokData->value);
-			strcpy(ret + j, strValue);
-			j += strlen(strValue);
-		}
-		else if(isType(curTok->id)){
-			strcpy(ret + j, ((struct TypeData_t*)(curTok->data))->glslType);
-			j +=     strlen(((struct TypeData_t*)(curTok->data))->glslType);
-		}
-		else if(isKeyword(curTok->id)){
-			strcpy(ret + j, keywordValues[curTok->id - k_start]);
-			j +=     strlen(keywordValues[curTok->id - k_start]);
-		}
-		else if(isOperator(curTok->id)){
-			strcpy(ret + j, operatorValues[curTok->id - o_start]);
-			j +=     strlen(operatorValues[curTok->id - o_start]);
-		}
-		else{
-			strcpy(ret + j, curTok->value);
-			j += curTok->len;
-		}
-	}
-	ret[j + 1] = '\0';
-	return ret;
-}
-
 
 
 
@@ -142,22 +87,16 @@ void run(const char* const vSrc, const char* const vOut){
 	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
 
 	// Check the syntax and write the GLSL code
-	struct Scope* scope = buildSyntaxTree(outputTokens, outputTokensNum, outputLines);
+	// struct Scope* scope = buildSyntaxTree(outputTokens, outputTokensNum, outputLines);
+	struct Scope* scope = buildScopeSyntaxTree(NULL, outputTokens, outputTokensNum, outputLines);
 	// char* const outputStr = translate(outputTokens, outputTokensNum);
 
+
 	//TODO REMOVE or something, idk
-	char* const outputStr = malloc(MAX_CODE_LEN); outputStr[0] = '\0';
-	for(uint64_t i = 0; i < scope->varNum; ++i) strcat(outputStr, scope->varArr[i].name); strcat(outputStr, "\n");
-	for(uint64_t i = 0; i < scope->funNum; ++i) strcat(outputStr, scope->funArr[i].name); strcat(outputStr, "\n");
-	for(uint64_t i = 0; i < scope->strNum; ++i) strcat(outputStr, scope->strArr[i].name); strcat(outputStr, "\n");
-	//TODO REMOVE
-
-
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");
-	fprintf(ofile, "#version 450\n");
-	fprintf(ofile, "%s", outputStr);
-	fclose(ofile);
+	fprintf(ofile, "#version 450");
+	translate(scope, ofile);
 }
 
 

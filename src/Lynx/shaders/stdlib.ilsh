@@ -1,5 +1,6 @@
 
 //#include "src/Lynx/shaders/stdlib2.ilsh"
+//TODO fix built in functions
 
 
 
@@ -41,10 +42,10 @@ f64 abs(f64 _n){}        f64 sign(f64 _n){}       f64 fract(f64 _n){}
 f32 floor(f32 _n){}      f32 ceilf(f32 _n){}      f32 trunc(f32 _n){}      f32 round(f32 _n){}      f32 roundEven(f32 _n){}
 f64 floor(f64 _n){}      f64 ceilf(f64 _n){}      f64 trunc(f64 _n){}      f64 round(f64 _n){}      f64 roundEven(f64 _n){}
 
-f32 mod(f32 _x, f32){}         f64 mod(f64 _x, f64){}         f64 modf(f64 _x, out f64 _i){}
-f32 mod(f32 _x,     f32){}         f64 mod(f64 _x,     f64){}         f64 modf(f64 _x, out f32 _i){}
+f32 mod(f32 _x, f32){}         f64 mod(f64 _x, f64){}         f64 modf(f64 _x, f64 _i){}
+f32 mod(f32 _x,     f32){}         f64 mod(f64 _x,     f64){}         f64 modf(f64 _x, f32 _i){}
 
-u32 min(u32 _a, i64 _b){}       u32 max(u32 _a, i64 _b){}       u32 clamp(u32 _a, i64 _b){}         u32 mix(u32 _n, i64 _min, i64 _max){}
+// u32 min(u32 _a, i64 _b){}       u32 max(u32 _a, i64 _b){}       u32 clamp(u32 _a, i64 _b){}         u32 mix(u32 _n, i64 _min, i64 _max){}
 i32 min(i32 _a, i32 _b){}       i32 max(i32 _a, i32 _b){}       i32 clamp(i32 _a, i32 _b){}         i32 mix(i32 _n, i32 _min, i32 _max){}
 f32 min(f32 _a, f32 _b){}       f32 max(f32 _a, f32 _b){}       f32 clamp(f32 _a, f32 _b){}         f32 mix(f32 _n, f32 _min, f32 _max){}
 f64 min(f64 _a, f64 _b){}       f64 max(f64 _a, f64 _b){}       f64 clamp(f64 _a, f64 _b){}         f64 mix(f64 _n, f64 _min, f64 _max){}
@@ -75,8 +76,8 @@ f32 u32BitsToFloat(highp u32 _n){}
 f32 fma(f32 _a, f32 _b, f32 _c){}
 f64 fma(f64 _a, f64 _b, f64 _c){}
 
-f32 frexp(highp f32 _n, out highp i32 _exp){}      f32 frexp(highp f32 _n, highp i32 _exp){}
-f64 frexp(      f64 _n, out       i32 _exp){}      f64 frexp(      f64 _n,       i32 _exp){}
+// f32 frexp(highp f32 _n, highp i32 _exp){}      f32 frexp(highp f32 _n, highp i32 _exp){}
+f64 frexp(      f64 _n,       i32 _exp){}      f64 frexp(      f64 _n,       i32 _exp){}
 
 
 

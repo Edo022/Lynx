@@ -7,7 +7,16 @@
 #define g gl_GlobalInvocationID
 
 
+u32 f;
+bv4 f2;
+/*struct s{
+	i32 a;
+	f32 b;
+};*/
 
+
+bv4 f3; /*struct s22{ f32m3x4 sdadewrdfew;
+	f32 b;};*/
 //
 // layout (local_size_x = 32, local_size_y = 1, local_size_z = 1 ) in;
 
@@ -15,7 +24,7 @@
 
 void setPixel(f32v2 pos, f32v4 col) {
 	//TODO REMOVE -- test
-	if(pos.x == 0){ pos.y = 1; }
+	if(pos.x == 0){ pos.y = 1; } //FIXME this expression is skipped
 	elif(pos.x == 1) { pos.y = 2; }
 	else { pos.y = 3; }
 
@@ -36,7 +45,7 @@ void setPixel(f32v2 pos, f32v4 col) {
 
 
 	// u32 i = u32(pos.y) * wsize.x + u32(pos.x); //FIXME add asignment in declaration
-	u32 i;
+	u32 i; //FIXME this should be a redefinition error
 	i = u32(pos.y) * wsize.x + u32(pos.x);
 
 	outcol[i] = col;
