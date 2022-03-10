@@ -21,7 +21,7 @@ static void translate_fun(struct Fun* const fun, FILE* const f){
 	}
 	fprintf(f, "\"Unknown argument list\""); //TODO actually read the arguments
 	fprintf(f, ") {");
-	translate(&fun->scope, f);
+	translate_scope(fun->scope, f);
 	fprintf(f, "\n}");
 }
 
@@ -72,7 +72,7 @@ static void translate_instruction(struct Instruction* const instruction, FILE* c
 
 
 
-void translate(struct Scope* const s, FILE* f){
+void translate_scope(struct Scope* const s, FILE* f){
     // Structs
 	fprintf(f, "\n");
 	for(uint64_t i = 0; i < s->strNum; ++i) {

@@ -8,14 +8,13 @@
 
 
 
-/**
+/** //TODO prob useless, remove the function
  * @brief Removes the trailing whitespace of each line
  *     Consecutive newline characters are preserved
  * @param vLines An array of Line structs containing the lines to clear
- * @param vNum The number of lines
  */
-void clear(struct Line* vLines, const uint64_t vNum){
-	for(uint64_t i = 0; i < vNum; ++i){
+void clear(struct Line* vLines){
+	for(uint64_t i = 0; vLines[i].value; ++i){
 		struct Line* const l = &vLines[i];
 
 		for(int64_t j = l->len - 1;; --j){
@@ -33,7 +32,6 @@ void clear(struct Line* vLines, const uint64_t vNum){
 				break;
 			}
 		}
-
 	}
 }
 
@@ -187,6 +185,7 @@ char* isInclude(const struct Line iLineInfo){
 
 
 
+//  * @param pLineNum The address of a uint64_t variable where to store the total number of lines
 
 /** //TODO fix comment
  * @brief Creates a code with no includes by recursively pasting all the included files together
@@ -194,10 +193,10 @@ char* isInclude(const struct Line iLineInfo){
  * @param vCode The code containing the include statements
  * @param vFile The path of the file
  * @param vLineInfo The absolute line from which the file was included. UINT64_MAX if the file is not included
- * @param pLineNum The address of a uint64_t variable where to store the total number of lines
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
+// struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
+uint64_t include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, struct Line** const pLines){
 	//Reallocate file array
 	files = reallocPow2(files, sizeof(struct File), filesNum);
 
@@ -211,7 +210,7 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 
 	char* code = readFile(vFile, 4);									// Read the file
 	code = uncomment(code, curFile);											// Uncomment it
-	struct Line* const ret = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
+	*pLines = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
 
 
 	char *line; uint64_t totLineNum = 0;
@@ -226,22 +225,28 @@ struct Line* include(const char* const vFile, const uint64_t vFromLine, struct F
 		char* const r = isInclude(tmp_isinclude_info);							// Check the line
 		if(r){																	// If the line is an include statement
 			checkIncludeFile(tmp_isinclude_info, r);								// Check the included file
-			uint64_t includedLen;													//
-			struct Line* included = include(r, i, curFile, &includedLen);			// Get the lines of the included file
-			memcpy(ret + totLineNum, included, sizeof(struct Line) * includedLen);	// Copy them in the return array
+			struct Line* included;			// Get the lines of the included file
+			uint64_t includedLen = include(r, i, curFile, &included);	//
+			memcpy(*pLines + totLineNum, included, sizeof(struct Line) * includedLen);	// Copy them in the return array
 			free(included);															// Free the saved lines
 			totLineNum += includedLen;												// Update the line counter
 		}
 		else{																	// If it's not
-			ret[totLineNum].locLine = i;											// Set the line numer
-			ret[totLineNum].len     = strlen(line);									// Set the line length
-			ret[totLineNum].value   = line;											// Set the line value
-			ret[totLineNum].file    = curFile;										// Set the line file
+			(*pLines)[totLineNum].locLine = i;											// Set the line numer
+			(*pLines)[totLineNum].len     = strlen(line);									// Set the line length
+			(*pLines)[totLineNum].value   = line;											// Set the line value
+			(*pLines)[totLineNum].file    = curFile;										// Set the line file
 			++totLineNum;															// Update the line counter
 		}
 	}
 
-	*pLineNum = totLineNum;
-	return ret;
+	// Null terminator line
+	(*pLines)[totLineNum].value = NULL;
+	(*pLines)[totLineNum].file = NULL;
+	(*pLines)[totLineNum].len = 0;
+	(*pLines)[totLineNum].locLine = (uint32_t)-1;
+
+
+	return totLineNum;
 }
 

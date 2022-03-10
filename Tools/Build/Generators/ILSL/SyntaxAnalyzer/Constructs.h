@@ -68,7 +68,7 @@ struct Fun {
 	const char* name;			// The name of the function
 	// struct Var* paramv;			// An array of parameters //TODO remove. save as variables in the function body
 	uint64_t paramNum;			// The number of parameters. The parameters are saved in the first paramNum elements of the scope's variable array
-	struct Scope scope;			// The scope of the function //TODO rename as "body" //FIXME make this a pointer
+	struct Scope* scope;			// The scope of the function //TODO rename as "body" //FIXME make this a pointer
 };
 
 

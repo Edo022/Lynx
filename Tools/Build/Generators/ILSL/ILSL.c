@@ -79,27 +79,22 @@ void run(const char* const vSrc, const char* const vOut){
 	if(access(src, F_OK) != 0) printError("\"%s\": No such file or directory", vSrc);
 
 	//Add hard coded version statement and parse the code
-	uint64_t outputLinesNum;
-	struct Line* const outputLines = include(vSrc, UINT64_MAX, NULL, &outputLinesNum);
-	clear(outputLines, outputLinesNum);
+	struct Line* outputLines;
+	include(vSrc, UINT64_MAX, NULL, &outputLines);
+	clear(outputLines);
 
 	// Tokenize the code
-	// uint64_t outputTokensNum;
-	// struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
-	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, vSrc);
+	struct Token* const outputTokens = tokenize(outputLines, vSrc);
 
 	// Check the syntax and write the GLSL code
-	// struct Scope* scope = buildSyntaxTree(outputTokens, outputTokensNum, outputLines);
-	// struct Scope* scope = buildScopeSyntaxTree(NULL, outputTokens, outputTokensNum, outputLines);
-	struct Scope* scope = buildScopeSyntaxTree(NULL, outputTokens, outputLines);
-	// char* const outputStr = translate(outputTokens, outputTokensNum);
+	struct Scope* scope;
+	buildScopeSyntaxTree(NULL, outputTokens, outputLines, &scope);
 
 
-	//TODO REMOVE or something, idk
 	//Write output file
 	FILE* ofile = fopen(vOut, "w");
-	fprintf(ofile, "#version 450");
-	translate(scope, ofile);
+	fprintf(ofile, "#version 450"); //TODO USE 460
+	translate_scope(scope, ofile);
 }
 
 

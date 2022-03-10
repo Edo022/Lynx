@@ -3,4 +3,4 @@
 #include "SyntaxAnalyzer/Constructs.h"
 
 
-void translate(struct Scope* const s, FILE* f);
+void translate_scope(struct Scope* const s, FILE* f);

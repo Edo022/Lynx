@@ -88,16 +88,27 @@ struct Expr* parseExpr(const struct Token* const vTokens){
  * @param iLines Line informations
  * @return A Scope struct containing the syntax tree of the scope
  */
-// struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
-struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* const vTokens, const struct Line* const iLines){
+uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* const vTokens, const struct Line* const iLines, struct Scope** const pScope){
 	// Current scope
-	struct Scope* s = malloc(sizeof(struct Scope));
-	initScope(s); s->parent = vParent;
+	*pScope = malloc(sizeof(struct Scope));
+	initScope(*pScope); (*pScope)->parent = vParent;
 
 
 	//! Whitespace is not saved as tokens //TODO REMOVE
-	uint64_t scopeDepth = !vParent;
-	for(uint64_t i = 0; vTokens[i].value && vTokens[i].id != o_rscope;){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
+	uint64_t i = 0, scopeDepth = !vParent;
+	// while(vTokens[i].id != o_rscope){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
+	while(true){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
+		if(!vTokens[i].value) {
+			if(vParent) printSyntaxError(iLines[vTokens->absLine], "Unmatched scope delimiter \"%s\"", vTokens->value);
+			else return i;
+		}
+		else if(vTokens[i].id == o_rscope) {
+			// if(vParent && !--scopeDepth) return s;
+			++i; // Skip own '}'
+			// return s;
+			return i;
+		}
+
 		// printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 
 		// Scope delimiters
@@ -105,19 +116,16 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 			if(vParent){
 				if(++scopeDepth > 1) {
 					// uint64_t subScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-					uint64_t subScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines); //TODO return this from buildScopeSyntaxTree and parse it once. print the error from the scope builder
-					addScp(s, buildScopeSyntaxTree(s, vTokens + i, iLines));
-					i += subScopeLen; // Skip subscope
+					// uint64_t subScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
+					struct Scope* subScope;
+					uint64_t subScopeSize = buildScopeSyntaxTree(*pScope, vTokens + i, iLines, &subScope);
+					addScp(*pScope, subScope);
+					i += subScopeSize; // Skip subscope
 				}
-				else ++i; // Skip own '{'
+				else ++i; // Skip own '{' //FIXME start from own { + 1, do the same for stat functions and other analysis functions
 			}
 			else printSyntaxError(iLines[vTokens[i].absLine], "Unnamed scopes can only be used inside function definitions"); //FIXME error doesnt work
 			//FIXME instruction analysis is skipped
-		}
-		else if(vTokens[i].id == o_rscope) {
-			// if(vParent && !--scopeDepth) return s;
-			++i; // Skip own '}'
-			return s;
 		}
 
 		// Variable or function definition //FIXME add const keyword
@@ -136,7 +144,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.paramNum = 0, //TODO
 						.scope = NULL,
 						// .exec = NULL, //TODO
-						.parent = s
+						.parent = *pScope
 					};
 					i += statTokGroup(vTokens + i, o_lgroup, o_rgroup, iLines);
 					// fun.paramNum = 0; //TODO
@@ -144,19 +152,19 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 					// ++i; //Skip ')'
 
 					// Analyze the function definition
-					uint64_t funScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
-					fun.scope = *buildScopeSyntaxTree(s, vTokens + i, iLines);
+					// uint64_t funScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
+					uint64_t funScopeLen = buildScopeSyntaxTree(*pScope, vTokens + i, iLines, &fun.scope);
 					i += funScopeLen; //skip nested scope
 
 					// Save the function
-					addFun(s, &fun);
+					addFun(*pScope, &fun);
 				}
 				else {
 					struct Var var = {
 						.is_const = false,
 						.name = constructName->value,
 						.type = constructType->id,
-						.parent = s
+						.parent = *pScope
 					};
 					if(vTokens[i].id == e_instruction_end){ //FIXME check variables declared as void
 						var.init = NULL;
@@ -169,7 +177,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						var.init = 1; //FIXME ACTUALLY READ THE EXPRESSION
 					}
 					else printSyntaxError(iLines[vTokens[i].absLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
-					addVar(s, &var);
+					addVar(*pScope, &var);
 				}
 			}
 			//FIXME check multiple definitions
@@ -212,7 +220,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t ifScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
-			addInstructionIf(s, buildTreeIf(vTokens + i)); //TODO save this thing //FIXME implement the function
+			addInstructionIf(*pScope, buildTreeIf(vTokens + i)); //TODO save this thing //FIXME implement the function
 			i += ifScopeLen;
 			//FIXME read elif and else constructs
 		}
@@ -256,7 +264,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t whileScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
-			addInstructionWhile(s, buildTreeWhile(vTokens + i)); //FIXME implement the function
+			addInstructionWhile(*pScope, buildTreeWhile(vTokens + i)); //FIXME implement the function
 			i += whileScopeLen;
 		}
 		else if(vParent && vTokens[i].id == c_for){ //TODO replace with nested if else and a len variable
@@ -268,12 +276,12 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t forScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
-			addInstructionFor(s, buildTreeFor(vTokens + i)); //FIXME implement the function
+			addInstructionFor(*pScope, buildTreeFor(vTokens + i)); //FIXME implement the function
 			i += forScopeLen;
 		}
 		else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub  || vTokens[i].id == e_instruction_end)){ //TODO add struct and base types constructors analysis
 			uint64_t exprLen = statTok(vTokens + i, e_instruction_end);
-			addInstructionExpr(s, parseExpr(vTokens + i));
+			addInstructionExpr(*pScope, parseExpr(vTokens + i));
 			i += exprLen + 1; // len + ';'
 		}
 
@@ -281,12 +289,8 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
 	// if(vParent) printSyntaxError(iLines[vTokens[i].absLine], "Unmatched scope");
-	//! Unmatched scope '{' are checked in statTokGroup
-	return s;
+	// //! Unmatched scope '{' are checked in statTokGroup
+	// return i + 1; //len + own '}'
 }
 
 
-// //TODO REMOVE
-// struct Scope* buildSyntaxTree(const struct Token* const vTokens, const uint64_t vTokenNum, const struct Line* const iLines){
-// 	struct Scope* g = buildScopeSyntaxTree(NULL, vTokens, vTokenNum, iLines);
-// }
