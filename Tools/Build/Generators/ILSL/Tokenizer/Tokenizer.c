@@ -153,10 +153,11 @@ uint64_t pushStrInstructionEnd(const char* const vLine, struct Token* const pTok
 
 
 //TODO replace tabs with spaces
-struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint64_t* pNum, const char* const iFileName){
-	struct Token* const ret = malloc(sizeof(struct Token) * MAX_TOKENS);
+// struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint64_t* pNum, const char* const iFileName){
+struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, const char* const iFileName){
+	struct Token* const ret = malloc(sizeof(struct Token) * MAX_TOKENS); //TODO USE DYNAMIC ALLOCATION
 	uint64_t tok_j = 0;
-	for(uint64_t i = 0; i < vLineNum; ++i){
+	for(uint64_t i = 0; i < vLineNum; ++i){ //TODO use null terminator
 		char* const l = vLines[i].value;
 		const uint64_t lLen = strlen(l);
 		char* leading_ws = NULL;
@@ -202,7 +203,15 @@ struct Token* tokenize(struct Line* const vLines, const uint64_t vLineNum, uint6
 		// 	++tok_j;
 		// }
 	}
-	*pNum = tok_j;
+
+	// Null terminator token
+	ret[tok_j].value   = NULL;
+	ret[tok_j].id      = e_NULL;
+	ret[tok_j].absLine = (uint64_t)-1;
+	ret[tok_j].locLine = (uint64_t)-1;
+	ret[tok_j].len     = 0;
+	ret[tok_j].start   = 0;
+
 	return ret;
 }
 

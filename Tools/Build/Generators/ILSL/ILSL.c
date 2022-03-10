@@ -84,12 +84,14 @@ void run(const char* const vSrc, const char* const vOut){
 	clear(outputLines, outputLinesNum);
 
 	// Tokenize the code
-	uint64_t outputTokensNum;
-	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
+	// uint64_t outputTokensNum;
+	// struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, &outputTokensNum, vSrc);
+	struct Token* const outputTokens = tokenize(outputLines, outputLinesNum, vSrc);
 
 	// Check the syntax and write the GLSL code
 	// struct Scope* scope = buildSyntaxTree(outputTokens, outputTokensNum, outputLines);
-	struct Scope* scope = buildScopeSyntaxTree(NULL, outputTokens, outputTokensNum, outputLines);
+	// struct Scope* scope = buildScopeSyntaxTree(NULL, outputTokens, outputTokensNum, outputLines);
+	struct Scope* scope = buildScopeSyntaxTree(NULL, outputTokens, outputLines);
 	// char* const outputStr = translate(outputTokens, outputTokensNum);
 
 

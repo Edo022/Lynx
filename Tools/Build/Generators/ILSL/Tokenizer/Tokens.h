@@ -63,8 +63,11 @@ enum TokenID {
 	e_instruction_end = 1000003,	// Semicolon
 	e_preprocessor    = 1000004,	// # characters
 	e_unknown         = 1000005,	// Anything else
-	e_end = 1000005	//! This value has to be manually updated
+	e_end = 1000005, //! This value has to be manually updated
 	//! Newlines are not saves as tokens
+
+	// Null terminator token
+	e_NULL = (uint32_t)-1
 };
 static inline int isType       (enum TokenID vID){ return vID >= t_start && vID <= t_end; }
 static inline int isKeyword    (enum TokenID vID){ return vID >= k_start && vID <= k_end; } //TODO remove. prob useless
