@@ -135,6 +135,8 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 						.parent = s
 					};
 					i += statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
+					// fun.paramNum = 0; //TODO
+					//FIXME ACTUALLY READ THE ARGUMENTS AND SAVE THEM AS VARIABLES
 					// ++i; //Skip ')'
 
 					// Analyze the function definition
@@ -145,18 +147,26 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 					// Save the function
 					addFun(s, &fun);
 				}
-				else if(vTokens[i].id == e_instruction_end){ //FIXME check variables declared as void
+				else {
 					struct Var var = {
 						.is_const = false,
 						.name = constructName->value,
 						.type = constructType->id,
 						.parent = s
 					};
+					if(vTokens[i].id == e_instruction_end){ //FIXME check variables declared as void
+						var.init = NULL;
+						++i; //Skip ;
+					}
+					else if(vTokens[i].id == o_set){ //TODO ADD INLINE INITIALIZATION TO VARIABLES //FIXME check variables declared as void
+						++i; // Skip =
+						uint64_t exprLen = statTok(vTokens + i, vTokenNum - i, e_instruction_end);
+						i += exprLen + 1; // len + ';'
+						var.init = 1; //FIXME ACTUALLY READ THE EXPRESSION
+					}
+					else printSyntaxError(iLines[vTokens[i].absLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
 					addVar(s, &var);
-					++i; //Skip ;
 				}
-				// else if(vTokens[i].id == o_log_eq){ //TODO ADD INLINE INITIALIZATION TO VARIABLES //FIXME check variables declared as void
-				else printSyntaxError(iLines[vTokens[i].absLine], "Expected a function argument list or a variable definition after global identifier \"%s\"", constructName->value);
 			}
 			//FIXME check multiple definitions
 			//FIXME
@@ -176,7 +186,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		// 	++curLine; ++i;
 		// }
 
-		// Preprocessor directives
+		// Preprocessor directives //TODO
 		else if(vTokens[i].id == e_preprocessor) {
 			//FIXME actually check the syntax and save the arguments
 			while(i < vTokenNum && vTokens[i].absLine == vTokens[i + 1].absLine) ++i;
@@ -194,12 +204,11 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 			//TODO MOVE CONDITION PARSING TO buildTreeIf
 			if(vTokens[++i].id != o_lgroup) printSyntaxError(iLines[vTokens[i].absLine], "Expected '(' after flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t ifSExprLen = statTokGroup(vTokens + i, vTokenNum - i, o_lgroup, o_rgroup, iLines);
-			//FIXME actually read the expression
 			i += ifSExprLen;
 
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t ifScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-			buildTreeIf(vTokens + i, ifScopeLen); //TODO save this thing //FIXME implement the function
+			addInstructionIf(s, buildTreeIf(vTokens + i, ifScopeLen)); //TODO save this thing //FIXME implement the function
 			i += ifScopeLen;
 			//FIXME read elif and else constructs
 		}
@@ -212,13 +221,15 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 			if(vTokens[i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"elif\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t elifScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
 			// buildTreeIf(vTokens + i, elifScopeLen); //FIXME implement the function
+			//addInstructionIf //TODO
 			i += elifScopeLen;
 			//FIXME read elif and else constructs
 		}
 		else if(vParent && vTokens[i].id == c_else){ //TODO replace with nested if else and a len variable
 			if(vTokens[++i].id != o_lscope) printSyntaxError(iLines[vTokens[i].absLine], "Expected '{' or an expression after condition of flow control construct \"else\""); //FIXME make scope operators optional with single instruction bodies
 			uint64_t elseScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-			buildTreeIf(vTokens + i, elseScopeLen); //FIXME implement the function
+			// buildTreeIf(vTokens + i, elseScopeLen); //FIXME implement the function
+			//addInstructionIf //TODO
 			i += elseScopeLen;
 			//FIXME read elif and else constructs
 		}
@@ -258,6 +269,7 @@ struct Scope* buildScopeSyntaxTree(struct Scope* const vParent, const struct Tok
 		}
 		else if(vParent && (vTokens[i].id == e_literal || vTokens[i].id == e_user_defined || vTokens[i].id == o_sub  || vTokens[i].id == e_instruction_end)){ //TODO add struct and base types constructors analysis
 			uint64_t exprLen = statTok(vTokens + i, vTokenNum - i, e_instruction_end);
+			addInstructionExpr(s, parseExpr(vTokens + i, vTokenNum - i));
 			i += exprLen + 1; // len + ';'
 		}
 

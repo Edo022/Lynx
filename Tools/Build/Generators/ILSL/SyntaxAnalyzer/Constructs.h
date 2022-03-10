@@ -45,12 +45,13 @@ static void initScope(struct Scope* pScope) {
 
 
 
-
+struct Expr;
 struct Var {
 	struct Scope* parent;		// The parent scope of the variable
 	enum TokenID type;			// THe type of the variable
 	bool is_const;				// True if the function has const type, false otherwise
 	const char* name;			// The name of the function
+	struct Expr* init;			// Initializer value
 };
 
 struct Str {

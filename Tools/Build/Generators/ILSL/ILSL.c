@@ -5,8 +5,9 @@
 // > from Lynx
 //run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
 
-//Filter includes
-// cd Lynx/Tools/Build/Generators/ILSL; gcc -Werror ILSL.c Utils.c  Preprocessor/Preprocessor.c SyntaxAnalyzer/SyntaxAnalyzer.c Tokenizer/Tokenizer.c Preprocessor/Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o ../GenGlsl
+// //Filter includes
+// // cd Lynx/Tools/Build/Generators/ILSL; make CMAKE_C_FLAGS="-Werror"
+// // doesnt work
 
 
 

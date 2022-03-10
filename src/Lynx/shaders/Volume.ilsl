@@ -8,7 +8,7 @@
 
 
 u32 f;
-bv4 f2;
+bv4 f2 = f + 2;
 /*struct s{
 	i32 a;
 	f32 b;
@@ -61,7 +61,7 @@ void main(extern f32v4 outcol[], extern u32v2 wsize, local f32v3 pos, local f32 
 	/*multiline comment in one line*/
 
 	//single line comment
-	0x3
+	0x3;
 
 	setPixel(f32v2(1, 1), f32v4(250, 0, 0, 250));
 	setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));

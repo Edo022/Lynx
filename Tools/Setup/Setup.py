@@ -1,6 +1,9 @@
 import sys, os, re, subprocess
 
 
+#TODO generate .vscode/settings.json with extension associations
+
+
 #TODO generate .engine/Path_config.hpp file
 #TODO read paths from config file
 
