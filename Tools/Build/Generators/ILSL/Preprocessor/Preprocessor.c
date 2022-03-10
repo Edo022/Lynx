@@ -240,7 +240,7 @@ uint64_t include(const char* const vFile, const uint64_t vFromLine, struct File*
 		}
 	}
 
-	// Null terminator line
+	// Null terminator line //TODO MOVE TO Tokens.h
 	(*pLines)[totLineNum].value = NULL;
 	(*pLines)[totLineNum].file = NULL;
 	(*pLines)[totLineNum].len = 0;

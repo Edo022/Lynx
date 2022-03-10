@@ -2,7 +2,20 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "SyntaxAnalyzer/SyntaxAnalyzer.h"
+
 //TODO add error codes and a detailed explanation for each error
+//TODO add semantic analyzer
+//TODO graphic output of the syntax tree
+
+//FIXME check multiple definitions
+//FIXME
+//FIXME Multiple definitions of identifier "uwu"
+//FIXME Definition 0 at myproject/file:54
+//FIXME     int uwu;
+//FIXME Definition 1 at myproject/file:993
+//FIXME     void uwu(int a){
+//TODO print a more detailed error if the identifier is a language keyword
+//TODO <keyword used as identifier>
 
 
 
@@ -17,7 +30,6 @@
  * @return The index of the right delimiter that matches the first left delimiter
  *     Prints an error if it is unmatched
  */
-// uint64_t statTokGroup(const struct Token* const vTokens, const uint64_t vTokenNum, const enum TokenID vLeft, const enum TokenID vRight, const struct Line* const iLines){
 uint64_t statTokGroup(const struct Token* const vTokens, const enum TokenID vLeft, const enum TokenID vRight, const struct Line* const iLines){
 	uint64_t n = 1; // Skip first left delimiter
 	for(uint64_t i = 1; vTokens[i].value; ++i) {
@@ -36,7 +48,6 @@ uint64_t statTokGroup(const struct Token* const vTokens, const enum TokenID vLef
  * @param vToken The token to find
  * @return The index of the first occurrence of a token, or UINT64_MAX if there are none
  */
-// uint64_t statTok(const struct Token* const vTokens, const uint64_t vTokenNum, const enum TokenID vToken){
 uint64_t statTok(const struct Token* const vTokens, const enum TokenID vToken){
 	for(uint64_t i = 0;; ++i) if(vTokens[i].id == vToken) return i;
 	return UINT64_MAX;
@@ -75,9 +86,6 @@ struct Expr* parseExpr(const struct Token* const vTokens){
 
 
 
-//TODO DONT SAVE WHITESPACE
-//TODO add semantic analyzer
-//TODO graphic output of the syntax tree
 /**
  * @brief Creates an abstract syntax tree from an array of tokens
  * @param vParent The address of the parent of this scope, or NULL if the scope is the global scope
@@ -92,30 +100,19 @@ uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* c
 	*pScope = malloc(sizeof(struct Scope));
 	initScope(*pScope); (*pScope)->parent = vParent;
 
-	// Skip own '{'
-	uint64_t i = !!vParent;
 
-	//! Whitespace is not saved as tokens //TODO REMOVE
-	// while(vTokens[i].id != o_rscope){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
-	while(true){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
+	// For each construct or instruction
+	uint64_t i = !!vParent; // Skip own '{'
+	while(vTokens[i].id != o_rscope){
+		// Unmatched brackets
 		if(!vTokens[i].value) {
 			if(vParent) printSyntaxError(iLines[vTokens->absLine], "Unmatched scope delimiter \"%s\"", vTokens->value);
 			else return i;
 		}
-		else if(vTokens[i].id == o_rscope) {
-			// if(vParent && !--scopeDepth) return s;
-			++i; // Skip own '}'
-			// return s;
-			return i;
-		}
 
-		// printf("line %d | token \"%s\" | ID %d\n", curLine, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
-
-		// Scope delimiters
+		// Sub scopes
 		if(vTokens[i].id == o_lscope) { //TODO print error if in global scope
 			if(vParent){
-				// uint64_t subScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-				// uint64_t subScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
 				struct Scope* subScope;
 				uint64_t subScopeSize = buildScopeSyntaxTree(*pScope, vTokens + i, iLines, &subScope);
 				addScp(*pScope, subScope);
@@ -127,12 +124,9 @@ uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* c
 
 		// Variable or function definition //FIXME add const keyword
 		else if(isType(vTokens[i].id)){
-			// printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 			const struct Token* constructType = &vTokens[i++];
 			if(vTokens[i].id == e_user_defined) {
 				const struct Token* constructName = &vTokens[i++];
-				// printf("A\n"); fflush(stdout); //TODO REMOVE
-				// printf("line %d | token \"%s\" | ID %d\n", vTokens[i].locLine + 1, vTokens[i].value, vTokens[i].id); fflush(stdout); //TODO REMOVE
 				if(vTokens[i].id == o_lgroup){
 					//FIXME actually read the argument list
 					struct Fun fun = {
@@ -149,7 +143,6 @@ uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* c
 					// ++i; //Skip ')'
 
 					// Analyze the function definition
-					// uint64_t funScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
 					uint64_t funScopeLen = buildScopeSyntaxTree(*pScope, vTokens + i, iLines, &fun.scope);
 					i += funScopeLen; //skip nested scope
 
@@ -177,23 +170,9 @@ uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* c
 					addVar(*pScope, &var);
 				}
 			}
-			//FIXME check multiple definitions
-			//FIXME
-			//FIXME Multiple definitions of identifier "uwu"
-			//FIXME Definition 0 at myproject/file:54
-			//FIXME     int uwu;
-			//FIXME Definition 1 at myproject/file:993
-			//FIXME     void uwu(int a){
-			//TODO print a more detailed error if the identifier is a language keyword
-			//TODO <keyword used as identifier>
 			else if(isKeyword(vTokens[i].id)) printSyntaxError(iLines[vTokens[i].absLine], "Keyword \"%s\" used as identifier", vTokens[i].value);
 			else printSyntaxError(iLines[vTokens[i].absLine], "Expected identifier after type \"%s\"", constructType->value);
 		}
-
-		// // Newline tokens
-		// else if(vTokens[i].id == e_newline){
-		// 	++curLine; ++i;
-		// }
 
 		// Preprocessor directives //TODO
 		else if(vTokens[i].id == e_preprocessor) {
@@ -282,12 +261,14 @@ uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* c
 			i += exprLen + 1; // len + ';'
 		}
 
-		// Anything else
+		// Anything else is a syntax error
 		else printSyntaxError(iLines[vTokens[i].absLine], "Unexpected token \"%s\"", vTokens[i].value);
 	}
-	// if(vParent) printSyntaxError(iLines[vTokens[i].absLine], "Unmatched scope");
-	// //! Unmatched scope '{' are checked in statTokGroup
-	// return i + 1; //len + own '}'
+
+
+	// Successful parsing
+	++i;		// Skip own '}'
+	return i;	// Return its index
 }
 
 

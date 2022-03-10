@@ -159,24 +159,14 @@ struct Token* tokenize(struct Line* const vLines, const char* const iFileName){
 	for(uint64_t i = 0; vLines[i].value; ++i){ //TODO use null terminator
 		char* const l = vLines[i].value;
 		const uint64_t lLen = strlen(l);
-		char* leading_ws = NULL;
 		for(uint64_t j = 0; j < lLen; ++tok_j){
 			struct Token* const curToken = ret + tok_j;	// Cache the address of the current token
 			curToken->absLine = i;						// Set the absolute index of the line
 			curToken->locLine = vLines[i].locLine;		// Set the local index of the line
 			curToken->start   = j;						// Set the start index to j
-			curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL; // Save leading whitespace
 
 
-			// Get leading whitespace
-			const uint64_t wsLen = countChar(l + j, ' ');
-			if(wsLen){
-				leading_ws = strndup(l + j, wsLen);
-				j += wsLen; --tok_j; continue;
-			}
-			else leading_ws = NULL;
-
-			// Find the first token, save into the array and update j
+			// Find the first token, save it in the array and update j
 			uint64_t tokLen;
 			if     (tokLen = pushStrPreprocessor   (l + j, curToken)){}
 			else if(tokLen = pushStrInstructionEnd (l + j, curToken)){}
@@ -186,21 +176,6 @@ struct Token* tokenize(struct Line* const vLines, const char* const iFileName){
 			else    tokLen = pushStrUnknown        (l + j, curToken);
 			j += tokLen;
 		}
-
-		// //Add newline token
-		// if(i < vLineNum - 1) {
-		// 	struct Token* const curToken = ret + tok_j;
-		// 	curToken->leading_ws = leading_ws ? strdup(leading_ws) : NULL;
-
-		// 	curToken->value   = strdup("\n");
-		// 	curToken->len     = 1;
-		// 	curToken->id      = e_newline;
-		// 	curToken->data    = NULL;
-		// 	curToken->locLine = i;
-		// 	curToken->start   = 0;
-
-		// 	++tok_j;
-		// }
 	}
 
 	// Null terminator token //TODO MOVE TO Tokens.h
