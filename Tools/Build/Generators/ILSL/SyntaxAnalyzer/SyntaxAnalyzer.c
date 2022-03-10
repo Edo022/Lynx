@@ -19,7 +19,7 @@
  */
 // uint64_t statTokGroup(const struct Token* const vTokens, const uint64_t vTokenNum, const enum TokenID vLeft, const enum TokenID vRight, const struct Line* const iLines){
 uint64_t statTokGroup(const struct Token* const vTokens, const enum TokenID vLeft, const enum TokenID vRight, const struct Line* const iLines){
-	uint64_t n = 1;
+	uint64_t n = 1; // Skip first left delimiter
 	for(uint64_t i = 1; vTokens[i].value; ++i) {
 		if     (vTokens[i].id == vLeft) ++n;
 		else if(vTokens[i].id == vRight) {
@@ -83,19 +83,19 @@ struct Expr* parseExpr(const struct Token* const vTokens){
  * @param vParent The address of the parent of this scope, or NULL if the scope is the global scope
  * @param vTokens An array of tokens that contain the scope
  *     If the scope is not the global scope, the first token must be its opening bracket
- * @param vTokenNum The maximum number of tokens to read
- *     Prints an error if the opening bracket isn't matched
  * @param iLines Line informations
- * @return A Scope struct containing the syntax tree of the scope
+ * @param pScope the address of a pointer where to store the scope struct
+ * @return The index of the closing bracket of the scope
  */
 uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* const vTokens, const struct Line* const iLines, struct Scope** const pScope){
-	// Current scope
+	// Allocate the current scope
 	*pScope = malloc(sizeof(struct Scope));
 	initScope(*pScope); (*pScope)->parent = vParent;
 
+	// Skip own '{'
+	uint64_t i = !!vParent;
 
 	//! Whitespace is not saved as tokens //TODO REMOVE
-	uint64_t i = 0, scopeDepth = !vParent;
 	// while(vTokens[i].id != o_rscope){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
 	while(true){ /*TODO checking .value is useless if the null terminator doesnt have o_rscope ID*/
 		if(!vTokens[i].value) {
@@ -114,17 +114,14 @@ uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* c
 		// Scope delimiters
 		if(vTokens[i].id == o_lscope) { //TODO print error if in global scope
 			if(vParent){
-				if(++scopeDepth > 1) {
-					// uint64_t subScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
-					// uint64_t subScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
-					struct Scope* subScope;
-					uint64_t subScopeSize = buildScopeSyntaxTree(*pScope, vTokens + i, iLines, &subScope);
-					addScp(*pScope, subScope);
-					i += subScopeSize; // Skip subscope
-				}
-				else ++i; // Skip own '{' //FIXME start from own { + 1, do the same for stat functions and other analysis functions
+				// uint64_t subScopeLen = statTokGroup(vTokens + i, vTokenNum - i, o_lscope, o_rscope, iLines);
+				// uint64_t subScopeLen = statTokGroup(vTokens + i, o_lscope, o_rscope, iLines);
+				struct Scope* subScope;
+				uint64_t subScopeSize = buildScopeSyntaxTree(*pScope, vTokens + i, iLines, &subScope);
+				addScp(*pScope, subScope);
+				i += subScopeSize; // Skip subscope
 			}
-			else printSyntaxError(iLines[vTokens[i].absLine], "Unnamed scopes can only be used inside function definitions"); //FIXME error doesnt work
+			else printSyntaxError(iLines[vTokens[i].absLine], "Unnamed scopes can only be used inside function definitions");
 			//FIXME instruction analysis is skipped
 		}
 
