@@ -178,7 +178,7 @@ void print_generic_error(const char* format, ...){
 	char str[MAX_ERR];
 	vsnprintf(str, MAX_ERR, format, args);
 
-	printf("\n%sILSL: Error:\n%s%s", bRed, str, nWht);
+	printf(col_bred "\nILSL: Error:\n%s" col_nwht, str);
 	exit(1);
 }
 
@@ -196,11 +196,11 @@ void print_syntax_error(const struct Line line_info, const char* const format, .
 	vsnprintf(str, MAX_ERR, format, args);
 
 
-	printf("%s\nILSL: Syntax error%s on line %s:%d", bRed, nWht, realpath(line_info.parent_file->path, NULL), line_info.loc_line + 1);
+	printf(col_bred "\nILSL: Syntax error" col_nwht " on line %s:%d", realpath(line_info.parent_file->path, NULL), line_info.loc_line + 1);
 	for(struct File* f = line_info.parent_file; f->parent_file; f = f->parent_file){
 		printf("\n                Included from %s:%d", realpath(f->parent_file->path, NULL), f->parent_line + 1);
 	}
-	printf("\n%s%s%s\n    %s\n\nCompilation stopped", bRed, str, nWht, line_info.str_val);
+	printf(col_bred "\n%s" col_nwht "\n    %s\n\nCompilation stopped", str, line_info.str_val);
 
 	va_end(args);
 	exit(2);

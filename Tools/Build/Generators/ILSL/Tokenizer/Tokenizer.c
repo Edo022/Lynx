@@ -37,16 +37,16 @@ uint64_t push_str_identifier(const char* const line, struct Token* const out_tok
 
 		// Types
 		for(uint64_t t = t_start; t <= t_end; ++t){				// For each hard coded type
-			if(!strcmp(out_tok->value, type_values[t - t_start])){	// If it matches the current identifier
+			if(!strcmp(out_tok->value, type_to_str(t))){	// If it matches the current identifier
 				out_tok->id   = t;										// Set token id to the corresponding type id
-				out_tok->data = &type_data[t - t_start];					// Set token data to the hard coded data of the corresponding type
+				out_tok->data = type_get_data(t);					// Set token data to the hard coded data of the corresponding type
 				return i;												// Return the length
 			}
 		}
 
 		// Keywords
 		for(uint64_t k = k_start; k <= k_end; ++k){				// For each hard coded keyword
-			if(!strcmp(out_tok->value, keyword_values[k - k_start])){	// If it matches the current identifier
+			if(!strcmp(out_tok->value, keyword_to_str(k))){	// If it matches the current identifier
 				out_tok->id   = k;										// Set token id to the corresponding identifier id
 				out_tok->data = NULL;									// Set token data to NULL
 				return i;												// Return the length
@@ -109,12 +109,12 @@ uint64_t push_str_literal(const char* line, struct Token* const out_tok, const s
 
 uint64_t push_str_operator(const char* const line, struct Token* const out_tok){
 	for(uint64_t op_len, o = o_start; o <= o_end; ++o){			// For each hard coded operator
-		op_len = strlen(operator_values[o - o_start]);			// Cache operator length
-		if(!strncmp(line, operator_values[o - o_start], op_len)){// If it matches the current operator
-			out_tok->value = operator_values[o - o_start];			// Save the operator
+		op_len = strlen(operator_to_string(o));			// Cache operator length
+		if(!strncmp(line, operator_to_string(o), op_len)){// If it matches the current operator
+			out_tok->value = operator_to_string(o);			// Save the operator
 			out_tok->len   = op_len;									// Save the length
 			out_tok->id    = o;										// Set token id to the corresponding operator id
-			out_tok->data  = &operator_data[o - o_start];				// Set token data to the hard coded data of the corresponding operator
+			out_tok->data  = operator_get_data(o);				// Set token data to the hard coded data of the corresponding operator
 			return op_len;											// Return the length
 		}
 	}

@@ -6,7 +6,7 @@
 
 static void translate_var(struct Var* const var, FILE* const f){
 	if(var->is_const) fprintf(f, "const ");
-	fprintf(f, "\n%s %s", type_data[var->type].glsl_type, var->name);
+	fprintf(f, "\n%s %s", type_get_data(var->type)->glsl_type, var->name);
 	if(var->init) fprintf(f, " = %s", "\"Unknown expression\"");
 	fprintf(f, ";");
 }
@@ -15,7 +15,7 @@ static void translate_var(struct Var* const var, FILE* const f){
 
 
 static void translate_fun(struct Fun* const fun, FILE* const f){
-	fprintf(f, "\n%s %s(", type_data[fun->type].glsl_type, fun->name);
+	fprintf(f, "\n%s %s(", type_get_data(fun->type)->glsl_type, fun->name);
 	for(uint64_t j = 0; j < fun->param_num; ++j){
 		// strcat(outputStr, );
 	}

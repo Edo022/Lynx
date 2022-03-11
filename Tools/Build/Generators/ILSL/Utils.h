@@ -13,14 +13,32 @@
 
 
 //TODO use defines in lux engine
-static const char *nBlk = "\033[0;30m", *bBlk = "\033[1;30m", *uBlk = "\033[4;30m";
-static const char *nRed = "\033[0;31m", *bRed = "\033[1;31m", *uRed = "\033[4;31m";
-static const char *nGrn = "\033[0;32m", *bGrn = "\033[1;32m", *uGrn = "\033[4;32m";
-static const char *nYel = "\033[0;33m", *bYel = "\033[1;33m", *uYel = "\033[4;33m";
-static const char *nBlu = "\033[0;34m", *bBlu = "\033[1;34m", *uBlu = "\033[4;34m";
-static const char *nMag = "\033[0;35m", *bMag = "\033[1;35m", *uMag = "\033[4;35m";
-static const char *nCyn = "\033[0;36m", *bCyn = "\033[1;36m", *uCyn = "\033[4;36m";
-static const char *nWht = "\033[0;37m", *bWht = "\033[1;37m", *uWht = "\033[4;37m";
+#define col_nblk "\033[0;30m"
+#define col_nred "\033[0;31m"
+#define col_ngrn "\033[0;32m"
+#define col_nyel "\033[0;33m"
+#define col_nblu "\033[0;34m"
+#define col_nmag "\033[0;35m"
+#define col_ncyn "\033[0;36m"
+#define col_nwht "\033[0;37m"
+
+#define col_bblk "\033[1;30m"
+#define col_bred "\033[1;31m"
+#define col_bgrn "\033[1;32m"
+#define col_byel "\033[1;33m"
+#define col_bblu "\033[1;34m"
+#define col_bmag "\033[1;35m"
+#define col_bcyn "\033[1;36m"
+#define col_bwht "\033[1;37m"
+
+#define col_ublk "\033[4;30m";
+#define col_ured "\033[4;31m";
+#define col_ugrn "\033[4;32m";
+#define col_uyel "\033[4;33m";
+#define col_ublu "\033[4;34m";
+#define col_umag "\033[4;35m";
+#define col_ucyn "\033[4;36m";
+#define col_uwht "\033[4;37m";
 
 
 
@@ -45,7 +63,7 @@ static inline uint64_t bsf(uint64_t value){
 static inline uint64_t bsrz(uint64_t value){
 	uint64_t ret;
 	__asm__("bsr %1, %0" : "=r"(ret) : "r"(value));
-	return ret * !!value;
+	return value ? ret : 0;
 }
 
 // Bit scanf forward //TODO add to Lynx Engine
@@ -53,7 +71,7 @@ static inline uint64_t bsrz(uint64_t value){
 static inline uint64_t bsfz(uint64_t value){
 	uint64_t ret;
 	__asm__("bsf %1, %0" : "=r"(ret) : "r"(value));
-	return ret * !!value;
+	return value ? ret : 0;
 }
 
 
