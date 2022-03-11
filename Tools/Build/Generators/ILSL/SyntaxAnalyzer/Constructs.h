@@ -15,32 +15,32 @@ struct Instruction;
 
 struct Scope {
 	struct Scope* parent;	// The parent scope of the scope
-	uint64_t strNum;		// The numer of structures declared in the scope
-	uint64_t funNum;		// The numer of functions  declared in the scope
-	uint64_t varNum;		// The numer of variables  declared in the scope
-	uint64_t scpNum;		// The numer of scopes     declared in the scope
-	struct Str* strArr;		// An array  of structures declared in the scope
-	struct Fun* funArr;		// An array  of functions  declared in the scope
-	struct Var* varArr;		// An array  of variables  declared in the scope
-	struct Scope* scpArr;	// An array  of scopes     declared in the scope //TODO rename to Scp
+	uint64_t str_num;		// The numer of structures declared in the scope
+	uint64_t fun_num;		// The numer of functions  declared in the scope
+	uint64_t var_num;		// The numer of variables  declared in the scope
+	uint64_t scp_num;		// The numer of scopes     declared in the scope
+	struct Str* str_arr;		// An array  of structures declared in the scope
+	struct Fun* fun_arr;		// An array  of functions  declared in the scope
+	struct Var* var_arr;		// An array  of variables  declared in the scope
+	struct Scope* scp_arr;	// An array  of scopes     declared in the scope //TODO rename to Scp
 
-	uint64_t            instructionNum;	// The number of runtime Instructions
-	struct Instruction* instructionArr;	// An array   of runtime Instructions
+	uint64_t            inst_num;	// The number of runtime Instructions
+	struct Instruction* inst_arr;	// An array   of runtime Instructions
 };
 
-static void initScope(struct Scope* pScope) {
-	pScope->parent = NULL;
-	pScope->strNum = 0;
-	pScope->funNum = 0;
-	pScope->varNum = 0;
-	pScope->scpNum = 0;
-	pScope->strArr = NULL;
-	pScope->funArr = NULL;
-	pScope->varArr = NULL;
-	pScope->scpArr = NULL;
+static void init_scope(struct Scope* scope) {
+	scope->parent = NULL;
+	scope->str_num = 0;
+	scope->fun_num = 0;
+	scope->var_num = 0;
+	scope->scp_num = 0;
+	scope->str_arr = NULL;
+	scope->fun_arr = NULL;
+	scope->var_arr = NULL;
+	scope->scp_arr = NULL;
 
-	pScope->instructionNum = 0;
-	pScope->instructionArr = NULL;
+	scope->inst_num = 0;
+	scope->inst_arr = NULL;
 }
 
 
@@ -57,26 +57,26 @@ struct Var {
 struct Str {
 	struct Scope* parent;		// The parent scope of the struct
 	const char* name;			// The name of the struct
-	struct Var* memberArr;		// An array of members
-	uint64_t memberNum;			// The number of members
+	struct Var* member_arr;		// An array of members
+	uint64_t member_num;			// The number of members
 };
 
 
 struct Fun {
-	struct Scope* parent;		// The parent scope of the function
+	// struct Scope* parent;		// The parent scope of the function //TODO prob useless. use the parent of the own scope
+	struct Scope* scope;			// The scope of the function //TODO rename as "body" //FIXME make this a pointer
 	enum TokenID type;			// The type of the function
 	const char* name;			// The name of the function
 	// struct Var* paramv;			// An array of parameters //TODO remove. save as variables in the function body
-	uint64_t paramNum;			// The number of parameters. The parameters are saved in the first paramNum elements of the scope's variable array
-	struct Scope* scope;			// The scope of the function //TODO rename as "body" //FIXME make this a pointer
+	uint64_t param_num;			// The number of parameters. The parameters are saved in the first param_num elements of the scope's variable array
 };
 
 
 
-void addStr(struct Scope* const pScope, const struct Str* const vStr);
-void addFun(struct Scope* const pScope, const struct Fun* const vFun);
-void addVar(struct Scope* const pScope, const struct Var* const vVar);
-void addScp(struct Scope* const pScope, const struct Scope* const vScope);
+void scope_add_str(struct Scope* const scope, const struct Str* const str);
+void scope_add_fun(struct Scope* const scope, const struct Fun* const fun);
+void scope_add_var(struct Scope* const scope, const struct Var* const var);
+void scope_add_scp(struct Scope* const scope, const struct Scope* const scp);
 
 
 
@@ -95,8 +95,8 @@ struct ExprElm;
  * @brief An instruction composed of function calls, operators, literals and variables
  */
 struct Expr {
-	struct ExprElm* elmArr;
-	uint64_t        elmNum;
+	struct ExprElm* elm_arr;
+	uint64_t        elm_num;
 };
 
 
@@ -129,10 +129,10 @@ struct Instruction {
 		struct Expr*  expr;
 	} data;
 };
-void addInstructionIf(struct Scope* const pScope, struct If* const vInstruction);
-void addInstructionWhile(struct Scope* const pScope, struct While* const vInstruction);
-void addInstructionFor(struct Scope* const pScope, struct For* const vInstruction);
-void addInstructionExpr(struct Scope* const pScope, struct Expr* const vInstruction);
+void scope_add_inst_if   (struct Scope* const scope, struct If*    const inst);
+void scope_add_inst_while(struct Scope* const scope, struct While* const inst);
+void scope_add_inst_for  (struct Scope* const scope, struct For*   const inst);
+void scope_add_inst_expr (struct Scope* const scope, struct Expr*  const inst);
 
 
 
@@ -171,8 +171,8 @@ struct ExprElm {
  */
 struct If {
 	struct Expr*  condition;	// The condition to check as an operator tree
-	struct Scope* trueBody;		// Instructions in the if   body
-	struct Scope* falseBody;	// Instructions in the else body
+	struct Scope* true_body;		// Instructions in the if   body
+	struct Scope* false_body;	// Instructions in the else body
 	//! elif constructs are saved as a series of nested if-else
 };
 

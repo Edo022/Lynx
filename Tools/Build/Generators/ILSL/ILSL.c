@@ -71,30 +71,24 @@
 
 
 
-void run(const char* const vSrc, const char* const vOut){
-	files = malloc(sizeof(struct File) * 2);
+void run(const char* const src_name, const char* const out_name){
+	source_files_arr = malloc(sizeof(struct File) * 2);
 
 	//Read input file
-	const char* const src = realpath(vSrc, NULL); //Resolve symbolic links
-	if(access(src, F_OK) != 0) printError("\"%s\": No such file or directory", vSrc);
+	const char* const src = realpath(src_name, NULL); //Resolve symbolic links
+	if(access(src, F_OK) != 0) print_generic_error("\"%s\": No such file or directory", src_name);
 
-	//Add hard coded version statement and parse the code
-	struct Line* outputLines;
-	include(vSrc, UINT64_MAX, NULL, &outputLines);
-	clear(outputLines);
 
-	// Tokenize the code
-	struct Token* const outputTokens = tokenize(outputLines, vSrc);
-
-	// Check the syntax and write the GLSL code
-	struct Scope* scope;
-	buildScopeSyntaxTree(NULL, outputTokens, outputLines, &scope);
+	// Process the code
+	struct Line*  out_lines;  include_file(src_name, UINT64_MAX, NULL,             &out_lines);		//Add hard coded version statement and parse the code
+	struct Token* out_tokens; tokenize(out_lines, src_name,                        &out_tokens);	// Tokenize the code
+	struct Scope* out_scope;  build_scope_syntax_tree(NULL, out_tokens, out_lines, &out_scope);		// Check the syntax and write the GLSL code
 
 
 	//Write output file
-	FILE* ofile = fopen(vOut, "w");
+	FILE* ofile = fopen(out_name, "w");
 	fprintf(ofile, "#version 450"); //TODO USE 460
-	translate_scope(scope, ofile);
+	translate_scope(out_scope, ofile);
 }
 
 

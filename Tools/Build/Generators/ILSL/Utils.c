@@ -4,21 +4,21 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdarg.h>
-
+//TODO rewrite those weird and confusing comments
 
 
 
 /**
- * @brief Returns the number of characters vChar at the beginning of the string
- * @param vLine The string in which to search the characters
- * @param vChar The characters to count
- * @return the number of characters vChar at the beginning of the string
+ * @brief Returns the number of characters chr at the beginning of the string
+ * @param str The string in which to search the characters
+ * @param chr The characters to count
+ * @return the number of characters chr at the beginning of the string
  *     Empty strings return 0
  */
-uint64_t countChar(const char* const vLine, const char vChar){
-	const char* s = vLine;
-	for(; *s == vChar; ++s);
-	return s - vLine;
+uint64_t count_chars(const char* const str, const char chr){
+	const char* s = str;
+	for(; *s == chr; ++s);
+	return s - str;
 }
 
 
@@ -26,19 +26,19 @@ uint64_t countChar(const char* const vLine, const char vChar){
 
 
 /**
- * @brief Reallocates pAlloc to (vSize) * (the smallest power of 2 that can contain (vOldNum + 1) elements)
+ * @brief Reallocates ptr to (size) * (the smallest power of 2 that can contain (cur_num + 1) elements)
  *     //TODO
- * @param pAlloc The memory block to reallocate
- *     If the number of elements allocated in pAlloc is smaller than vOldNum, it must be a power of 2
- * @param vSize The size of each element
- * @param vOldNum The number of elements that are currently allocated //TODO
- * @return The address of the new memory block. This is the same as pAlloc if it has enough free space
+ * @param ptr The memory block to reallocate
+ *     If the number of elements allocated in ptr is smaller than cur_num, it must be a power of 2
+ * @param size The size of each element
+ * @param cur_num The number of elements that are currently allocated //TODO
+ * @return The address of the new memory block. This is the same as ptr if it has enough free space
  */
-void* reallocPow2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
-	uint64_t step = 0b10 << bsrz(vOldNum);
-	// if(vOldNum + 1 == step) pAlloc = realloc(pAlloc, vSize * step);
-	return realloc(pAlloc, vSize * step);
-	// return pAlloc;
+void* relloc_pow2(void* ptr, uint64_t size, uint64_t cur_num){
+	uint64_t step = 0b10 << bsrz(cur_num);
+	// if(cur_num + 1 == step) ptr = realloc(ptr, size * step);
+	return realloc(ptr, size * step);
+	// return ptr;
 }
 
 
@@ -48,19 +48,19 @@ void* reallocPow2(void* pAlloc, uint64_t vSize, uint64_t vOldNum){
 
 /**
  * @brief //TODOvv
- * @param vStr //TODO
- * @param vBase min 2, max 36 //TODO
+ * @param str //TODO
+ * @param base min 2, max 36 //TODO
  * @return //TODO
  */
-double bstrtolf(const char* vStr, const int32_t vBase){
+double bstrtolf(const char* str, const int32_t base){
     double res = 0, div = 1;
-    for(int32_t dec = 0; *vStr; ++vStr) {
-        if(*vStr == '.') dec = 1;
+    for(int32_t dec = 0; *str; ++str) {
+        if(*str == '.') dec = 1;
         else {
-			char digit = tolower(*vStr);
-            double digitVal = digit - ((digit >= 'a') ? 'a' - 10 : '0');
-            if(dec) { div *= vBase; res += digitVal / div; }
-            else    { res *= vBase; res += digitVal; }
+			char digit = tolower(*str);
+            double digit_val = digit - ((digit >= 'a') ? 'a' - 10 : '0');
+            if(dec) { div *= base; res += digit_val / div; }
+            else    { res *= base; res += digit_val; }
         }
     }
     return res;
@@ -70,21 +70,21 @@ double bstrtolf(const char* vStr, const int32_t vBase){
 
 
 /**
- * @brief Reads all the contents of the file vFilePath
+ * @brief Reads all the contents of the file path
  *     Removes any '\r' and '\v' character
  *     Tabs are replaced with spaces
- * @param vFilePath The path of the file
- * @param vTabSize The length of tab characters. Max 8
+ * @param path The path of the file
+ * @param tab_size The length of tab characters. Max 8
  * @return A null terminated memory block containing the data
  */
-char* readFile(const char* vFilePath, uint64_t vTabSize){
-	if(vTabSize > 8) vTabSize = 8;
-	FILE* const f = fopen(vFilePath, "r");
+char* read_sanitized_file(const char* path, uint64_t tab_size){
+	if(tab_size > 8) tab_size = 8;
+	FILE* const f = fopen(path, "r");
 	fseek(f, 0, SEEK_END);
 	const uint64_t size = ftell(f);
 	rewind(f);
 
-	char* const data = malloc(vTabSize * size + 1);
+	char* const data = malloc(tab_size * size + 1);
 	uint64_t i, j, line_i, newlines = 0;
 	for(i = j = line_i = 0; i < size; ++i) {
 		const char c = fgetc(f);
@@ -92,7 +92,7 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 			case '\r': break;
 			case '\v': break;
 			case '\t': {
-				const uint64_t n = vTabSize - line_i % vTabSize;
+				const uint64_t n = tab_size - line_i % tab_size;
 				strncpy(data + j, "        ", n);
 				j += n;
 				line_i += n;
@@ -127,35 +127,35 @@ char* readFile(const char* vFilePath, uint64_t vTabSize){
 
 
 /**
- * @brief Returns the address of the vIndex-th occurrence of vChar in the vSrc string
- * @param vSrc The source string
- * @param vChar The character to find
- * @param vIndex The index of the occurrence to find
- * @return The address of the vIndex-th occurrence of vChar
+ * @brief Returns the address of the index-th occurrence of chr in the str string
+ * @param str The source string
+ * @param chr The character to find
+ * @param index The index of the occurrence to find
+ * @return The address of the index-th occurrence of chr
  */
-const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex){
+const char* strchrn(const char* str, const char chr, const uint32_t index){
 	uint32_t n = 0;
-	for(const char* c = vSrc;; ++c) {
+	for(const char* c = str;; ++c) {
 		if(*c == '\0') return NULL;
-		else if(*c == vChar) ++n;
-		if(n == vIndex + 1) return c;
+		else if(*c == chr) ++n;
+		if(n == index + 1) return c;
 	}
 }
 //TODO add start_from parameter
 
 
 /**
- * @brief Splits vSrc based on vChar and returns the vIndex-th string as a null terminated char*
+ * @brief Splits str based on chr and returns the index-th string as a null terminated char*
  *     The original string is not modified
  *     The returned string must be freed
- * @param vSrc The source string
- * @param vChar The character used to split the string
- * @param vIndex The index of the resulting string to return
- * @return The vIndex-th resulting string, or NULL if it does not exist
+ * @param str The source string
+ * @param chr The character used to split the string
+ * @param index The index of the resulting string to return
+ * @return The index-th resulting string, or NULL if it does not exist
  */
-char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){
-	const char* const a = vIndex ? strchrn(vSrc, vChar, vIndex - 1) : vSrc;
-	const char* const b = strchr(a + !!vIndex, vChar);
+char* strtokn(const char* str, const char chr, const uint32_t index){
+	const char* const a = index ? strchrn(str, chr, index - 1) : str;
+	const char* const b = strchr(a + !!index, chr);
 	const uint64_t len =  b ? b - a : strlen(a);
 	char* const ret = malloc(len);
 	memcpy(ret, a + 1, len - !!len);
@@ -170,15 +170,15 @@ char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex){
 /**
  * @brief Prints an error using the printf format specifiers
  *     This function does not return
- * @param vFormat The format string
+ * @param format The format string
  * @param ... A list of arguments for the format string
  */
-void printError(const char* vFormat, ...){
-	va_list vArgs; va_start(vArgs, 0);
-	char vStr[MAX_ERR];
-	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
+void print_generic_error(const char* format, ...){
+	va_list args; va_start(args, 0);
+	char str[MAX_ERR];
+	vsnprintf(str, MAX_ERR, format, args);
 
-	printf("\n%sILSL: Error:\n%s%s", bRed, vStr, nWht);
+	printf("\n%sILSL: Error:\n%s%s", bRed, str, nWht);
 	exit(1);
 }
 
@@ -186,25 +186,23 @@ void printError(const char* vFormat, ...){
 /**
  * @brief Prints an error using the printf format specifiers, specifying the line and file in which the error occurred
  *     This function does not return
- * @param iLineN The number of the line. Used to print additional informations
- * @param iLine The line value. Used to print additional informations
- * @param iFile The name of the file. Used to print additional informations
- * @param vFormat The format string
+ * @param line_info additional line informations
+ * @param format The format string
  * @param ... A list of arguments for the format string
  */
-void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ...){
-	va_list vArgs; va_start(vArgs, vFormat);
-	char vStr[MAX_ERR];
-	vsnprintf(vStr, MAX_ERR, vFormat, vArgs);
+void print_syntax_error(const struct Line line_info, const char* const format, ...){
+	va_list args; va_start(args, format);
+	char str[MAX_ERR];
+	vsnprintf(str, MAX_ERR, format, args);
 
 
-	printf("%s\nILSL: Syntax error%s on line %s:%d", bRed, nWht, realpath(iLineInfo.file->path, NULL), iLineInfo.locLine + 1);
-	for(struct File* f = iLineInfo.file; f->from; f = f->from){
-		printf("\n                Included from %s:%d", realpath(f->from->path, NULL), f->fromLine + 1);
+	printf("%s\nILSL: Syntax error%s on line %s:%d", bRed, nWht, realpath(line_info.parent_file->path, NULL), line_info.loc_line + 1);
+	for(struct File* f = line_info.parent_file; f->parent_file; f = f->parent_file){
+		printf("\n                Included from %s:%d", realpath(f->parent_file->path, NULL), f->parent_line + 1);
 	}
-	printf("\n%s%s%s\n    %s\n\nCompilation stopped", bRed, vStr, nWht, iLineInfo.value);
+	printf("\n%s%s%s\n    %s\n\nCompilation stopped", bRed, str, nWht, line_info.str_val);
 
-	va_end(vArgs);
+	va_end(args);
 	exit(2);
 }
 

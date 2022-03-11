@@ -8,118 +8,89 @@
 
 
 
-/** //TODO prob useless, remove the function
- * @brief Removes the trailing whitespace of each line
- *     Consecutive newline characters are preserved
- * @param vLines An array of Line structs containing the lines to clear
- */
-void clear(struct Line* vLines){
-	for(uint64_t i = 0; vLines[i].value; ++i){
-		struct Line* const l = &vLines[i];
-
-		for(int64_t j = l->len - 1;; --j){
-			//Lines containing only whitespace or empty lines
-			if(j < 0){
-				l->value[0] = '\0';
-				l->len = 0;
-				break;
-			}
-			// Lines with trailing whitespace or none
-			else if(l->value[j] != ' ') {
-			//!^ '\r' are removed, tabs are replaced with spaces and newlines are not part of the line value
-				l->value[j + 1] = '\0';
-				l->len = j;
-				break;
-			}
-		}
-	}
-}
-
-
-
 
 /**
  * @brief Replaces multiline comments with a space + a number of '\n' corresponding to the number of newlines they contain
  *     Single line comments are replaced with one '\n' character
- * @param vCode The code to uncomment
- * @param iFile The path of the file containing the code. This is used to print syntax errors
+ * @param code The code to uncomment
+ * @param file_path The path of the file containing the code. This is used to print syntax errors
  * @return The resulting string
  */ //FIXME WRITE THE RESULT IN THE SAME ALLOCATION AND DONT RETURN IT
-char* uncomment(const char* vCode, struct File* const iFile){
-	char* code = malloc(MAX_CODE_LEN); code[0] = '\0';
-	const uint64_t vCodeLen = strlen(vCode);
+char* uncomment(const char* code, struct File* const file_path){
+	char* ret = malloc(MAX_CODE_LEN); ret[0] = '\0';
+	const uint64_t code_len = strlen(code);
 	uint64_t i = 0;
 
 
 	//For each character
-	while(i < vCodeLen){
+	while(i < code_len){
 
 		//If the character is a double quote
-		if(vCode[i] == '"'){
+		if(code[i] == '"'){
 			//Check if the string ends
-			const char* const str_begin = vCode + i;
+			const char* const str_begin = code + i;
 			int ends = 1;
-			for(++i; vCode[i] != '"'; ++i){
-				if(!vCode[i] || vCode[i] == '\n') {
+			for(++i; code[i] != '"'; ++i){
+				if(!code[i] || code[i] == '\n') {
 					ends = 0; break;
 				}
 			}
 
 			// If it does, paste it and skip closing '"'
 			if(ends) {
-				strncat(code, str_begin, i - (str_begin - vCode) + 1);
+				strncat(ret, str_begin, i - (str_begin - code) + 1);
 				++i;
 			}
 			// If it doesn't, print a syntax error
 			else{
-				uint64_t vLineN = 0; for(const char* c = vCode; c < str_begin; ++c) vLineN += *c == '\n';
-				const char* errorLine = vLineN ? strchrn(vCode, '\n', vLineN - 1) : vCode;
-				const char* iLineValue = strndup(errorLine, strchrn(vCode, '\n', vLineN) - errorLine);
+				uint64_t cur_line_num = 0; for(const char* c = code; c < str_begin; ++c) cur_line_num += *c == '\n';
+				const char* error_line = cur_line_num ? strchrn(code, '\n', cur_line_num - 1) : code;
+				const char* line_str_val = strndup(error_line, strchrn(code, '\n', cur_line_num) - error_line);
 
-				struct Line iLineInfo;
-				iLineInfo.len     = strlen(iLineValue);
-				iLineInfo.value   = strdup(iLineValue);
-				iLineInfo.file    = iFile;
-				iLineInfo.locLine = vLineN;
-				printSyntaxError(iLineInfo, "Unterminated string");
+				struct Line cur_line_info;
+				cur_line_info.str_len     = strlen(line_str_val);
+				cur_line_info.str_val     = strdup(line_str_val);
+				cur_line_info.parent_file = file_path;
+				cur_line_info.loc_line    = cur_line_num;
+				print_syntax_error(cur_line_info, "Unterminated string");
 			}
 		}
 
 		// If it's not and there is enough space to start a comment
-		else if(i < vCodeLen - 1){
-			if(vCode[i] == '/' && vCode[i + 1] == '/'){			//If the character is the beginning of a single line comment
+		else if(i < code_len - 1){
+			if(code[i] == '/' && code[i + 1] == '/'){			//If the character is the beginning of a single line comment
 				i += 2;												//Ignore "//"
-				while(i < vCodeLen && vCode[i] != '\n') ++i;		//Ignore the whole comment
+				while(i < code_len && code[i] != '\n') ++i;		//Ignore the whole comment
 				++i;												//Ignore '\n'
-				strcat(code, "\n"); 								// Write '\n'
+				strcat(ret, "\n"); 								// Write '\n'
 			}
-			else if(vCode[i] == '/' && vCode[i + 1] == '*'){	//If the character is the beginning of a multiline comment
-				strcat(code, " ");									//Add a space as token separator
+			else if(code[i] == '/' && code[i + 1] == '*'){	//If the character is the beginning of a multiline comment
+				strcat(ret, " ");									//Add a space as token separator
 				i += 2;												//Ignore "/*"
-				while(i < vCodeLen && !(vCode[i] == '*' && vCode[i + 1] == '/')){ //For each character of the comment
-					if(vCode[i] == '\n'){								//If the character is a newline
-						strcat(code, "\n");									//Paste the newline
+				while(i < code_len && !(code[i] == '*' && code[i + 1] == '/')){ //For each character of the comment
+					if(code[i] == '\n'){								//If the character is a newline
+						strcat(ret, "\n");									//Paste the newline
 					}
 					++i;												//Update the counter and ignore the other characters
 				}
 				i += 2;												//Ignore "*/"
 			}
 			else{												//Else
-				strncat(code, &vCode[i], 1);						//Paste the character
+				strncat(ret, &code[i], 1);						//Paste the character
 				++i;												//Update the counter
 			}
 		}
 
 		// Else paste whatever character was read
 		else{
-			strncat(code, &vCode[i], 1);
+			strncat(ret, &code[i], 1);
 			++i;
 		}
 	}
 
 
 	//Return the parsed code
-	return code;
+	return ret;
 }
 //FIXME dont use strcat and strncat or just start from an index
 
@@ -128,21 +99,19 @@ char* uncomment(const char* vCode, struct File* const iFile){
 
 /**
  * @brief Checks if an included path is valid
- *     Prints an error if it's not
- * @param iLineValue The line value. Used to print errors
- * @param iLineNum The number of the line. Used to print errors
- * @param iFile The file path. Used to print errors
- * @param vPath The path of the included file
+ *     Prints an error if it isn't
+ * @param line_info The number of the line. Used to print errors
+ * @param path The path to the included file
  */
-void checkIncludeFile(const struct Line iLineInfo, const char* vPath){ //TODO check vLine type
-	if(access(vPath, F_OK) == 0) {
-		struct stat fileStat; stat(vPath, &fileStat);
-		if(S_ISDIR(fileStat.st_mode)) {
-			printSyntaxError(iLineInfo, "\"%s\" is a directory", vPath);
+void check_included_file(const struct Line line_info, const char* path){ //TODO check vLine type
+	if(access(path, F_OK) == 0) {
+		struct stat file_stat; stat(path, &file_stat);
+		if(S_ISDIR(file_stat.st_mode)) {
+			print_syntax_error(line_info, "\"%s\" is a directory", path);
 		}
 	}
 	else {
-		printSyntaxError(iLineInfo, "No such file or directory");
+		print_syntax_error(line_info, "No such file or directory");
 	}
 }
 
@@ -154,33 +123,33 @@ void checkIncludeFile(const struct Line iLineInfo, const char* vPath){ //TODO ch
  * @param vLineValue The line to parse
  * @return The path of the included file, or NULL if the line is not an include statement
  */
-char* isInclude(const struct Line iLineInfo){
+char* is_include(const struct Line line_info){
 	// Check #
-	uint64_t i = countChar(iLineInfo.value, ' ');
-	if(iLineInfo.value[i] != '#') return NULL;
-	i += countChar(iLineInfo.value + ++i, ' ');
+	uint64_t i = count_chars(line_info.str_val, ' ');
+	if(line_info.str_val[i] != '#') return NULL;
+	i += count_chars(line_info.str_val + ++i, ' ');
 
 	// Check "include "
 	const char* const include_value = "include ";
 	const uint64_t include_len = strlen(include_value);
-	if(memcmp(iLineInfo.value + i, include_value, include_len)) return NULL;
+	if(memcmp(line_info.str_val + i, include_value, include_len)) return NULL;
 	i += include_len;
 
 	// Get included file path
 	char* const ret = malloc(PATH_MAX);				// Allocate space for the included file path
-	const char c = iLineInfo.value[i] == '<' ? '>' : iLineInfo.value[i] == '"' ? '"' : '\0';
+	const char c = line_info.str_val[i] == '<' ? '>' : line_info.str_val[i] == '"' ? '"' : '\0';
 	if(c){												// If either '<' or '"' are used
 		++i;												// Ignore '<' or '"'
-		const uint64_t line_len = strlen(iLineInfo.value);		// Cache the length of the line
+		const uint64_t line_len = strlen(line_info.str_val);		// Cache the length of the line
 		for(uint64_t j = 0; i < line_len; ++i, ++j){		// Get the file path
-			if(iLineInfo.value[i] == c) {						//
+			if(line_info.str_val[i] == c) {						//
 				ret[j] = '\0';								//
 				return ret;									// Return the path
 			}
-			ret[j] = iLineInfo.value[i];
+			ret[j] = line_info.str_val[i];
 		}
 	}
-	printSyntaxError(iLineInfo, "Invalid include statement");
+	print_syntax_error(line_info, "Invalid include statement");
 }
 
 
@@ -191,62 +160,61 @@ char* isInclude(const struct Line iLineInfo){
  * @brief Creates a code with no includes by recursively pasting all the included files together
  *     Comments are not preserved
  * @param vCode The code containing the include statements
- * @param vFile The path of the file
+ * @param file_path The path of the file
  * @param vLineInfo The absolute line from which the file was included. UINT64_MAX if the file is not included
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-// struct Line* include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, uint64_t* const pLineNum){
-uint64_t include(const char* const vFile, const uint64_t vFromLine, struct File* vFromFile, struct Line** const pLines){
+uint64_t include_file(const char* const path, const uint64_t parent_line, struct File* parent_file, struct Line** const out_lines){
 	//Reallocate file array
-	files = reallocPow2(files, sizeof(struct File), filesNum);
+	source_files_arr = relloc_pow2(source_files_arr, sizeof(struct File), source_files_num);
 
-	files[filesNum].path = strdup(vFile);
-	files[filesNum].fromLine = vFromLine;
-	files[filesNum].from = vFromFile;
-	struct File* curFile = &files[filesNum];
-	++filesNum;
-
-
-
-	char* code = readFile(vFile, 4);									// Read the file
-	code = uncomment(code, curFile);											// Uncomment it
-	*pLines = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
+	source_files_arr[source_files_num].path = strdup(path);
+	source_files_arr[source_files_num].parent_line = parent_line;
+	source_files_arr[source_files_num].parent_file = parent_file;
+	struct File* cur_file = &source_files_arr[source_files_num];
+	++source_files_num;
 
 
-	char *line; uint64_t totLineNum = 0;
+
+	char* code = read_sanitized_file(path, 4);									// Read the file
+	code = uncomment(code, cur_file);											// Uncomment it
+	*out_lines = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
+
+
+	char *line; uint64_t tot_line_num = 0;
 	for(uint64_t i = 0; (line = strsep(&code, "\n")) != NULL; ++i){			// For each line of the code
-		// const uint64_t lineNum = vFromLine == UINT64_MAX ? i : vFromLine;		// Get the number of the line from which the file was included
+		// const uint64_t lineNum = parent_line == UINT64_MAX ? i : parent_line;		// Get the number of the line from which the file was included
 
 		struct Line tmp_isinclude_info; //TODO
-		tmp_isinclude_info.file = curFile;
-		tmp_isinclude_info.value = line;
-		tmp_isinclude_info.len = strlen(line);
-		tmp_isinclude_info.locLine = i;
-		char* const r = isInclude(tmp_isinclude_info);							// Check the line
+		tmp_isinclude_info.parent_file = cur_file;
+		tmp_isinclude_info.str_val = line;
+		tmp_isinclude_info.str_len = strlen(line);
+		tmp_isinclude_info.loc_line = i;
+		char* const r = is_include(tmp_isinclude_info);							// Check the line
 		if(r){																	// If the line is an include statement
-			checkIncludeFile(tmp_isinclude_info, r);								// Check the included file
-			struct Line* included;			// Get the lines of the included file
-			uint64_t includedLen = include(r, i, curFile, &included);	//
-			memcpy(*pLines + totLineNum, included, sizeof(struct Line) * includedLen);	// Copy them in the return array
-			free(included);															// Free the saved lines
-			totLineNum += includedLen;												// Update the line counter
+			check_included_file(tmp_isinclude_info, r);								// Check the included file
+			struct Line* included_lines;			// Get the lines of the included file
+			uint64_t included_lines_num = include_file(r, i, cur_file, &included_lines);	//
+			memcpy(*out_lines + tot_line_num, included_lines, sizeof(struct Line) * included_lines_num);	// Copy them in the return array
+			free(included_lines);															// Free the saved lines
+			tot_line_num += included_lines_num;												// Update the line counter
 		}
 		else{																	// If it's not
-			(*pLines)[totLineNum].locLine = i;											// Set the line numer
-			(*pLines)[totLineNum].len     = strlen(line);									// Set the line length
-			(*pLines)[totLineNum].value   = line;											// Set the line value
-			(*pLines)[totLineNum].file    = curFile;										// Set the line file
-			++totLineNum;															// Update the line counter
+			(*out_lines)[tot_line_num].loc_line = i;											// Set the line numer
+			(*out_lines)[tot_line_num].str_len     = strlen(line);									// Set the line length
+			(*out_lines)[tot_line_num].str_val   = line;											// Set the line value
+			(*out_lines)[tot_line_num].parent_file    = cur_file;										// Set the line file
+			++tot_line_num;															// Update the line counter
 		}
 	}
 
 	// Null terminator line //TODO MOVE TO Tokens.h
-	(*pLines)[totLineNum].value = NULL;
-	(*pLines)[totLineNum].file = NULL;
-	(*pLines)[totLineNum].len = 0;
-	(*pLines)[totLineNum].locLine = (uint32_t)-1;
+	(*out_lines)[tot_line_num].str_val = NULL;
+	(*out_lines)[tot_line_num].parent_file = NULL;
+	(*out_lines)[tot_line_num].str_len = 0;
+	(*out_lines)[tot_line_num].loc_line = (uint32_t)-1;
 
 
-	return totLineNum;
+	return tot_line_num;
 }
 

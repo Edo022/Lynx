@@ -6,14 +6,14 @@
 
 
 struct TypeData_t {
-	char* glslType;        // The corresponding GLSL type
-	enum TokenID baseType; // Base type of the type  e.g. the base type of a f32 matrix is f32
+	char* glsl_type;        // The corresponding GLSL type
+	enum TokenID base_type; // Base type of the type  e.g. the base type of a f32 matrix is f32
 	uint64_t x;            // Width   e.g. a 2x3 matrix has x = 2, a scalar type has x = 1
 	uint64_t y;            // Height  e.g. a 2x3 matrix has y = 3, a scalar type has x = 1
 	uint64_t align;        // Alignment of the type in bytes
 };
 
-static struct TypeData_t typeData[] = {
+static struct TypeData_t type_data[] = {
 	{ "bool",    t_b, 1, 1,  4 },    { "uint",    t_u32, 1, 1,  4 },    { "int",     t_i32, 1, 1,  4 },    { "float",  t_f32, 1, 1,  4 },    { "double",  t_f64, 1, 1,  8 },
 	{ "bvec2",   t_b, 2, 1,  8 },    { "uvec2",   t_u32, 2, 1,  8 },    { "ivec2",   t_i32, 2, 1,  8 },    { "vec2",   t_f32, 2, 1,  8 },    { "dvec2",   t_f64, 2, 1, 16 },
 	{ "bvec3",   t_b, 3, 1, 16 },    { "uvec3",   t_u32, 3, 1, 16 },    { "ivec3",   t_i32, 3, 1, 16 },    { "vec3",   t_f32, 3, 1, 16 },    { "dvec3",   t_f64, 3, 1, 32 },
@@ -33,7 +33,7 @@ static struct TypeData_t typeData[] = {
 	{ "void", t_void, 0, 0,  0 }
 };
 
-static const char* typeValues[] = {
+static const char* type_values[] = {
 	"b",        "u32",        "i32",        "f32",        "f64",        //Scalar types
 	"bv2",      "u32v2",      "i32v2",      "f32v2",      "f64v2",      //2-component vectors
 	"bv3",      "u32v3",      "i32v3",      "f32v3",      "f64v3",      //3-component vectors

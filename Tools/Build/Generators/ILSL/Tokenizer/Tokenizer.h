@@ -4,11 +4,11 @@
 
 
 
-uint64_t pushStrPreprocessor   (const char* const vLine, struct Token* const pToken);
-uint64_t pushStrIdentifier     (const char* const vLine, struct Token* const pToken);
-uint64_t pushStrLiteral        (const char*       vLine, struct Token* const pToken, const struct Line iLineInfo);
-uint64_t pushStrOperator       (const char* const vLine, struct Token* const pToken);
-uint64_t pushStrUnknown        (const char* const vLine, struct Token* const pToken) ;
-uint64_t pushStrInstructionEnd (const char* const vLine, struct Token* const pToken) ;
+uint64_t push_str_preprocessor(const char* const line, struct Token* const tok);
+uint64_t push_str_identifier  (const char* const line, struct Token* const tok);
+uint64_t push_str_literal     (const char*       line, struct Token* const tok, const struct Line line_info);
+uint64_t push_str_operator    (const char* const line, struct Token* const tok);
+uint64_t push_str_unknown     (const char* const line, struct Token* const tok) ;
+uint64_t push_str_inst_end    (const char* const line, struct Token* const tok) ;
 
-struct Token* tokenize(struct Line* const vLines, const char* const iFileName);
+uint64_t tokenize(struct Line* const lines, const char* const file_name, struct Token** out_tokens);

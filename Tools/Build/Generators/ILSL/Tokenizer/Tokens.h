@@ -69,9 +69,9 @@ enum TokenID {
 	// Null terminator token
 	e_NULL = (uint32_t)-1
 };
-static inline int isType       (enum TokenID vID){ return vID >= t_start && vID <= t_end; }
-static inline int isKeyword    (enum TokenID vID){ return vID >= k_start && vID <= k_end; } //TODO remove. prob useless
-static inline int isOperator   (enum TokenID vID){ return vID >= o_start && vID <= o_end; }
+static inline int tok_is_type    (enum TokenID vID){ return vID >= t_start && vID <= t_end; }
+static inline int tok_is_keyword (enum TokenID vID){ return vID >= k_start && vID <= k_end; } //TODO remove. prob useless
+static inline int tok_is_operator(enum TokenID vID){ return vID >= o_start && vID <= o_end; }
 
 
 struct Token{
@@ -79,7 +79,7 @@ struct Token{
 	uint64_t len;			// Length of the token
 	enum TokenID id;		// The ID of the token or its type  e.g. t_uint32, t_f64, k_while, e_whitespace
 	void* data;				// A memory block that contains a TypeData_t or a LiteralData_t depending on the type of the token
-	uint64_t absLine;		// The absolute index of the line containing the token
-	uint64_t locLine;		// The local index of the line containing the token
+	uint64_t abs_line;		// The absolute index of the line containing the token
+	uint64_t loc_line;		// The local index of the line containing the token
 	uint64_t start;			// Index of the token's first character in its line
 };

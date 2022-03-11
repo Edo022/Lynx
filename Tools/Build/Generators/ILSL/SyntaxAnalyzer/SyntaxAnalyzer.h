@@ -3,16 +3,14 @@
 
 
 
-//TODO MOVE TO .c
-uint64_t statTokGroup(const struct Token* const vTokens, const enum TokenID vLeft, const enum TokenID vRight, const struct Line* const iLines);
-uint64_t statTok     (const struct Token* const vTokens, const enum TokenID vToken);
+uint64_t stat_tok_group(const struct Token* const tokens, const enum TokenID left_del, const enum TokenID right_del, const struct Line* const line_info);
+uint64_t stat_tok      (const struct Token* const tokens, const enum TokenID tok);
 
 
 
-//TODO MOVE TO .c
-struct If*    buildTreeIf   (const struct Token* const vTokens);
-struct For*   buildTreeFor  (const struct Token* const vTokens);
-struct While* buildTreeWhile(const struct Token* const vTokens);
+struct If*    build_tree_if   (const struct Token* const tokens);
+struct For*   build_tree_for  (const struct Token* const tokens);
+struct While* build_tree_while(const struct Token* const tokens);
 
 
-uint64_t buildScopeSyntaxTree(struct Scope* const vParent, const struct Token* const vTokens, const struct Line* const iLines, struct Scope** const pScope);
+uint64_t build_scope_syntax_tree(struct Scope* const parent, const struct Token* const tokens, const struct Line* const line_info, struct Scope** const out_scope);

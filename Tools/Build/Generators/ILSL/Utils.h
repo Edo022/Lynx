@@ -12,7 +12,7 @@
 #define MAX_TOKENS      8100100		//FIXME use dynamic reallocations
 
 
-
+//TODO use defines in lux engine
 static const char *nBlk = "\033[0;30m", *bBlk = "\033[1;30m", *uBlk = "\033[4;30m";
 static const char *nRed = "\033[0;31m", *bRed = "\033[1;31m", *uRed = "\033[4;31m";
 static const char *nGrn = "\033[0;32m", *bGrn = "\033[1;32m", *uGrn = "\033[4;32m";
@@ -57,14 +57,14 @@ static inline uint64_t bsfz(uint64_t value){
 }
 
 
-uint64_t countChar(const char* const vLine, const char vChar);
-void* reallocPow2(void* pAlloc, uint64_t vSize, uint64_t vOldNum);
-double bstrtolf(const char* vStr, const int32_t vBase);
-char* readFile(const char* vFilePath, uint64_t vTabSize);
+uint64_t count_chars(const char* const str, const char chr);
+void*    relloc_pow2(void* ptr, uint64_t size, uint64_t cur_num);
+double   bstrtolf(const char* str, const int32_t base);
+char*    read_sanitized_file(const char* path, uint64_t tab_size);
 
-const char* strchrn(const char* vSrc, const char vChar, const uint32_t vIndex);
-char* strtokn(const char* vSrc, const char vChar, const uint32_t vIndex);
+const char* strchrn(const char* str, const char chr, const uint32_t index);
+char*       strtokn(const char* str, const char chr, const uint32_t index);
 
-void printError(const char* vFormat, ...);
-void printSyntaxError(const struct Line iLineInfo, const char* const vFormat, ...);
+void print_generic_error(const char* format, ...);
+void print_syntax_error(const struct Line line_info, const char* const format, ...);
 //TODO add a printsyntaxerror that takes Token* instead of a Line or replace this one

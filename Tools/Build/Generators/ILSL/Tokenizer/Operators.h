@@ -23,7 +23,7 @@ struct OperatorData_t {
 	char associativity; 	//'l'(left associative), 'r'(right associative) or 'n'(non associative)
 };
 
-static struct OperatorData_t operatorData[] = { // Sorted by length
+static struct OperatorData_t operator_data[] = { // Sorted by length
 	{ ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' }, { ot_assignment, 16, 'r' },
 	{ ot_logical,     7, 'l' }, { ot_logical,     7, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,     8, 'l' }, { ot_logical,    12, 'l' }, { ot_logical,    14, 'l' }, { ot_logical,    13, 'l' },
 	{ ot_inc_dec,     2, 'l' }, { ot_inc_dec,     2, 'l' },
@@ -34,7 +34,7 @@ static struct OperatorData_t operatorData[] = { // Sorted by length
 	//! Same with +, -, ~. They can be unary or arithmetic
 };
 
-static const char* operatorValues[] = {
+static const char* operator_values[] = {
 	"<<=",">>=", "+=", "*=", "-=", "/=", "%=", "&=", "|=", "^=",
 	"<=", ">=",  "==", "!=", "&&", "||", "^^",
 	"++", "--",
