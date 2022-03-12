@@ -5,56 +5,112 @@
 
 //TODO add links
 
+//TODO matrices and 2d arrays are the same thing. remove the matrices
+//TODO vectors only exist to call .x, .y, .z and .w on them
+
+
+
+
+//TODO
+free expression
+enclosed expression
+
+syntactic structure
+e.g.
+if(expression) {
+  instructions
+} else {
+  instructions
+}
+
+for(instruction; expression; instruction) {
+  instructions
+}
+
+
+
+
+
+//TODO
+array [0]        = 0;
+array [0, 2, n]  = 0;
+array [0, 2..60] = 0;
+
+array [0]        = 0;
+array [0, 2, n]  = { n - 1, 5, 5 };
+array [0, 2..60] = array[102..161];
+array [0, 2..60] = array[102..161];
+
+
+
+
+
+
+
 - 1\. Overview
-- 2\. Syntax
-  - 2.1\. Identifiers
-  - 2.2\. Variables
-  - 2.4\. Scope
-  - 2.5\. Functions
-- 3\. Flow control
-  - 3.1\. Logical operators
-  - 3.2\. Selection statements
-  - 3.4\. Ternary operator
-  - 3.5\. While and for loops
-  - 3.6\. Continue and break statements
-  - 3.7\. Do-while
-  - 3.8\. For-else
-  - 3.9\. Return
+- 2\. Preprocessor directives
+  - 2.1\. Include statements
+  - 2.2\. Macros
+  - 2.3\. Conditionals
+  - 2.4\. Line continuation token
+- 3\. Language constructs
+  - 3.1\. Variables
+  - 3.2\. Functions
+  - 3.3\. Const qualifier
+  - 3.4\. Local and extern qualifiers
 - 4\. Types
   - 4.1\. Scalar types
-  - 4.2\. Vectors
-  - 4.3\. Matrices
-  - 2.4\. Arithmetic and binary operators
-  - 4.5\. Structures
-  - 4.6\. Input/output arrays
-  - 4.7\. Local and extern qualifiers
-- 5\. Built-in variables
-- 6\. Built-in functions
-- 7\. Preprocessor
-  - 7.1\. Comments
-  - 7.2\. Headers
-  - 7.3\. Macros
-  - 7.4\. Selection directives
-  - 7.5\. Inline GLSL
+  - 4.2\. Structs
+  - 4.3\. Arrays
+  - 4.4\. Vectors
+  - 4.5\. Type constructors
+- 5\. Operators
+  - 5.1\. Arithmetic operators
+  - 5.2\. Binary operators
+  - 5.2\. Logical operators
+  - 5.2\. Ternary operator
+  - 5.3\. Implicit conversions
+- 6\. Runtime instructions
+  - 6.1\. Expressions
+    - 6.1.1\. Operators
+    - 6.1.2\. Literals
+    - 6.1.3\. Grouping
+    - 6.1.4\. Function calls
+    - 6.1.5\. Array subscript and ranges
+  - 6.2\. Selection
+    - 6.2.1\. If-elif-else clause
+    - 6.2.2\. Switch clause
+    - 6.2.3\. Fallthrough statement
+  - 6.3\. Iteration
+    - 6.3.1\. For loop
+    - 6.3.2\. For-else loop
+    - 6.3.3\. While loop
+    - 6.3.4\. Do-while loop
+    - 6.3.5\. Continue and break statements
+  - 6.4\. Return statement
+- 7\. Built-in functions
 - 8\. Compilation
   - 8.1\. C++ interface
   - 8.2\. ILSL/C++ data compatibility
+  - 8.3\. Compiler optimizations
+
 
 <br><br><br><br>
 
 ## 1. Overview
 
-ILSL is a high level compiled shading language based on GLSL 4.5 and the C language syntax.<br>
-A shader defines the appearence of a render object and is composed of one or more source files.<br>
-This language is part of the Lynx SDK.
-
-//TODO
+ILSL is a high level compiled shading language based on GLSL 4.6, designed to allow developers to efficiently write shaders without going through the laborious work of manually managing arrays and interfaces.<br><br>
+The syntax and semantics of the languare are similar to C.<br>
+Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and management of multidimensional data.<br><br>
+A shader controls the graphical output of a class of objects.<br>
+Each shader is composed of a single source file (.ilsl) which can include one or more header files (.ilsh).<br>
+Header files can also include other header files.<br><br>
+Althought files extensions are only a convention and can be changed or omitted, it is still recommended to use the correct ones as some softwares may use them to determine the language of the source file.<br><br>
+ILSL is part of the Lynx SDK.
 
 <br><br><br><br>
 
 ## 2. Syntax
-
-The syntax is almost identical to the C language syntax, except for some additional operators and constructs.
 
 ### 2.1. Identifiers
 
