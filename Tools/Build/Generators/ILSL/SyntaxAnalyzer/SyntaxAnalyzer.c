@@ -68,7 +68,8 @@ uint64_t build_statement_if(struct Scope* const parent, const struct Token* cons
 	// Condition
 	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ')'
-	i += parse_expr(tokens + i, dst->condition, line_info);
+	i += parse_expr(tokens + i, &dst->condition, line_info);
+	if(!dst->condition) print_syntax_error(line_info[tokens[i].abs_line], "Condition of \"%s\" statement cannot be empty", tokens[-1].value);
 	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '('
 
@@ -84,6 +85,7 @@ uint64_t build_statement_if(struct Scope* const parent, const struct Token* cons
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
 	}
+	else dst->_else = NULL;
 
 	return i;
 }
@@ -95,18 +97,21 @@ uint64_t build_statement_for(struct Scope* const parent, const struct Token* con
 	// Condition
 	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ')'
-	i += parse_expr(tokens + i, dst->init, line_info); //FIXME replace with var declaration parsing
+	i += parse_expr(tokens + i, &dst->init, line_info); //FIXME replace with var declaration parsing
 	if(tokens[i].id != e_instruction_end) print_syntax_error(line_info[tokens[i].abs_line], "Expected ';' after initializer statement of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ';'
-	i += parse_expr(tokens + i, dst->condition, line_info);
+
+	i += parse_expr(tokens + i, &dst->condition, line_info);
+	if(!dst->condition) print_syntax_error(line_info[tokens[i].abs_line], "Condition of \"%s\" statement cannot be empty", tokens[-1].value);
 	if(tokens[i].id != e_instruction_end) print_syntax_error(line_info[tokens[i].abs_line], "Expected ';' after condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ';'
-	i += parse_expr(tokens + i, dst->last, line_info);
+
+	i += parse_expr(tokens + i, &dst->last, line_info);
 	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' after iterated statement of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '('
 
 	// Body
-	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after arguments of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '{'
 	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
 
@@ -117,6 +122,7 @@ uint64_t build_statement_for(struct Scope* const parent, const struct Token* con
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_then);
 	}
+	else dst->_then = NULL;
 
 	// Else
 	if(tokens[i].id == c_else) {
@@ -125,6 +131,7 @@ uint64_t build_statement_for(struct Scope* const parent, const struct Token* con
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
 	}
+	else dst->_else = NULL;
 
 	return i;
 }
@@ -136,7 +143,9 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
 	// Condition
 	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ')'
-	i += parse_expr(tokens + i, dst->condition, line_info);
+	uint64_t arg_len = parse_expr(tokens + i, &dst->condition, line_info);
+	i += arg_len;
+	if(!arg_len) print_syntax_error(line_info[tokens[i].abs_line], "Condition of \"%s\" statement cannot be empty", tokens[-1].value);
 	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '('
 
@@ -152,6 +161,7 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_then);
 	}
+	else dst->_then = NULL;
 
 	// Else
 	if(tokens[i].id == c_else) {
@@ -160,6 +170,7 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
 	}
+	else dst->_else = NULL;
 
 	return i;
 }
@@ -173,10 +184,16 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
  * @param line_info
  * @return The index of the last character of the expression
  */
-uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, const struct Line* const line_info){
-	uint64_t i = 0;
+uint64_t parse_expr(const struct Token* const tokens, struct Expr** const dst, const struct Line* const line_info){
+	struct Expr* tmp_expr; //FIXME REMOVE, actually save the output expression;
 
-	while(tokens[i].id != o_rgroup && tokens[i].id != e_instruction_end && tokens[i].id != e_list){
+	uint64_t i = 0;
+	bool is_expr_end(const enum TokenID id) {
+		return id == o_rgroup ||  id == o_rscope || id == e_instruction_end || id == e_list;
+	}
+
+	*dst = is_expr_end(tokens[i].id) ? NULL : malloc(sizeof(struct Expr));
+	while(!is_expr_end(tokens[i].id)){
 		if(!tokens[i].value) print_syntax_error(line_info[tokens[i].abs_line], "File ended unexpectedly while reading an expression");
 
 		//FIXME grouping
@@ -187,7 +204,7 @@ uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, co
 		if(tokens[i].id == o_lgroup){ // Grouping
 			//TODO save
 			++i; // Skip '('
-			i += parse_expr(tokens + i, NULL, line_info); //FIXME
+			i += parse_expr(tokens + i, &tmp_expr, line_info); //FIXME
 			if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' after expression, token \"%s\" found instead", tokens[i].value);
 			++i; // Skip ')'
 		}
@@ -197,7 +214,7 @@ uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, co
 				++i; // Skip function name
 				while(tokens[i].id != o_rgroup) {
 					++i; // Skip '(' or ','
-					i += parse_expr(tokens + i, NULL, line_info); //FIXME
+					i += parse_expr(tokens + i, &tmp_expr, line_info); //FIXME
 					if(tokens[i].id != e_list && tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ',' or ')' after expression list, token \"%s\" found instead", tokens[i].value);
 				}
 				++i; // Skip ')'
@@ -214,6 +231,7 @@ uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, co
 		}
 		else print_syntax_error(line_info[tokens[i].abs_line], "Unexpected token \"%s\" inside an expression", tokens[i].value);
 	}
+
 	return i;
 }
 

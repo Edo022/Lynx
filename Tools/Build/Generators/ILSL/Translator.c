@@ -1,68 +1,110 @@
 #include "Translator.h"
 #include "Tokenizer/Types.h"
 
+#define TAB_SIZE 4
+
+void indent(const uint64_t depth, FILE* const f){
+	fprintf(f, "\n%*s", TAB_SIZE * depth, "");
+}
 
 
-
-static void translate_var(struct Var* const var, FILE* const f){
+static void translate_var(const uint64_t depth, struct Var* const var, FILE* const f){
+	indent(depth, f); fprintf(f, "");
 	if(var->is_const) fprintf(f, "const ");
-	fprintf(f, "\n%s %s", type_get_data(var->type)->glsl_type, var->name);
-	if(var->init) fprintf(f, " = %s", "\"Unknown expression\"");
+	fprintf(f, "%s %s", type_get_data(var->type)->glsl_type, var->name);
+	if(var->init) fprintf(f, " = %s", "?");
 	fprintf(f, ";");
 }
 
 
 
 
-static void translate_fun(struct Fun* const fun, FILE* const f){
-	fprintf(f, "\n%s %s(", type_get_data(fun->type)->glsl_type, fun->name);
+static void translate_fun(const uint64_t depth, struct Fun* const fun, FILE* const f){
+	indent(depth, f);
+	fprintf(f, "%s %s(", type_get_data(fun->type)->glsl_type, fun->name);
 	for(uint64_t j = 0; j < fun->param_num; ++j){
 		// strcat(outputStr, );
 	}
-	fprintf(f, "\"Unknown argument list\""); //TODO actually read the arguments
+	fprintf(f, "?"); //TODO actually read the arguments
 	fprintf(f, ") {");
-	translate_scope(fun->scope, f);
-	fprintf(f, "\n}");
+	translate_scope(depth + 1, fun->scope, f);
+	indent(depth, f); fprintf(f, "}");
 }
 
 
 
 
-static void translate_instruction(struct Instruction* const instruction, FILE* const f){
+static void translate_instruction(const uint64_t depth, struct Instruction* const instruction, FILE* const f){
 	switch(instruction->type){
 		case inst_if: {
 			// fprintf(f, s->inst_arr[i].data._if->condition); //TODO
-			// fprintf(f, s->inst_arr[i].data._if->false_body); //TODO
-			// fprintf(f, s->inst_arr[i].data._if->true_body); //TODO
-			fprintf(f, "if(%s){ %s }", "\"Unknown condition\"", "\"Unknown expression\"");
+			indent(depth, f); fprintf(f, "if(%s){", "?");
+			translate_scope(depth + 1, instruction->data._if->body, f);
+			indent(depth, f); fprintf(f, "}");
+
+			if(instruction->data._if->_else) {
+				indent(depth, f); fprintf(f, "else {");
+				translate_scope(depth + 1, instruction->data._if->_else, f);
+				indent(depth, f); fprintf(f, "}");
+			}
+
 			break;
 		}
 		case inst_for:  {
-			// fprintf(f, s->inst_arr[i].data._for->init); //TODO
-			// fprintf(f, s->inst_arr[i].data._for->inc); //TODO
-			// fprintf(f, s->inst_arr[i].data._for->condition); //TODO
-			// fprintf(f, s->inst_arr[i].data._for->body); //TODO
-			fprintf(f, "for(%s;%s;%s){ %s }", "\"Unknown expression\"", "\"Unknown condition\"", "\"Unknown expression\"", "\"Unknown expression\"");
+			indent(depth, f); fprintf(f, "for(%s; %s;", instruction->data._for->init ? "?" : "", "?"); //TODO
+			if(instruction->data._for->last) fprintf(f, " %s", "?"); //TODO
+			fprintf(f, "){");
+			translate_scope(depth + 1, instruction->data._for->body, f);
+			indent(depth, f); fprintf(f, "}");
+
+			if(instruction->data._for->_then) {
+				indent(depth, f); fprintf(f, "then {");
+				translate_scope(depth + 1, instruction->data._for->_then, f);
+				indent(depth, f); fprintf(f, "}");
+			}
+			if(instruction->data._for->_else) {
+				indent(depth, f); fprintf(f, "else {");
+				translate_scope(depth + 1, instruction->data._for->_else, f);
+				indent(depth, f); fprintf(f, "}");
+			}
+
 			break;
 		}
 		case inst_while:  {
 			// fprintf(f, s->inst_arr[i].data._while->condition); //TODO
-			// fprintf(f, s->inst_arr[i].data._while->body); //TODO
-			fprintf(f, "while(%s){ %s }", "\"Unknown condition\"", "\"Unknown expression\"");
+			indent(depth, f); fprintf(f, "while(%s){", "?");
+			translate_scope(depth + 1, instruction->data._while->body, f);
+			indent(depth, f); fprintf(f, "}");
+
+			if(instruction->data._while->_then) {
+				indent(depth, f); fprintf(f, "then {");
+				translate_scope(depth + 1, instruction->data._while->_then, f);
+				indent(depth, f); fprintf(f, "}");
+			}
+			if(instruction->data._while->_else) {
+				indent(depth, f); fprintf(f, "else {");
+				translate_scope(depth + 1, instruction->data._while->_else, f);
+				indent(depth, f); fprintf(f, "}");
+			}
+
 			break;
 		}
 
 		case inst_expr: {
 			// fprintf(f, s->inst_arr[i].data.expr); //TODO
-			fprintf(f, "%s;", "\"Unknown expression\"");
+			indent(depth, f); fprintf(f, "%s;", "?");
 			break;
 		}
 
-		case inst_continue: fprintf(f, "continue;"); break;
-		case inst_break:    fprintf(f, "break;");    break;
+		case inst_continue: {
+			indent(depth, f); fprintf(f, "continue;"); break;
+		}
+		case inst_break:    {
+			indent(depth, f); fprintf(f, "break;");    break;
+		}
 		case inst_return: {
 			// fprintf(f, s->inst_arr[i].data.expr); //TODO
-			fprintf(f, "return %s;", "\"Unknown expression\"");
+			indent(depth, f); fprintf(f, "return %s;", "?");
 			break;
 		}
 	}
@@ -72,29 +114,27 @@ static void translate_instruction(struct Instruction* const instruction, FILE* c
 
 
 
-void translate_scope(struct Scope* const s, FILE* f){
+void translate_scope(const uint64_t depth, struct Scope* const s, FILE* f){
     // Structs
-	fprintf(f, "\n");
 	for(uint64_t i = 0; i < s->str_num; ++i) {
-		fprintf(f, "\nstruct %s{};", s->str_arr[i].name);
-        //TODO nested structs
+		indent(depth, f); //TODO move to translate_struct
+		fprintf(f, "\n");
+		fprintf(f, "struct %s{};", s->str_arr[i].name); //TODO move to translate_struct
 	}
 
     // Variables
-	fprintf(f, "\n");
 	for(uint64_t i = 0; i < s->var_num; ++i) {
-		translate_var(&s->var_arr[i], f);
+		translate_var(depth, &s->var_arr[i], f);
 	}
 
     // Functions
-	fprintf(f, "\n");
 	for(uint64_t i = 0; i < s->fun_num; ++i) {
-		translate_fun(&s->fun_arr[i], f);
+		fprintf(f, "\n");
+		translate_fun(depth, &s->fun_arr[i], f);
 	}
 
 	// Instructions
 	if(s->parent) for(uint64_t i = 0; i < s->inst_num; ++i){
-		fprintf(f, "\n");
-		translate_instruction(&s->inst_arr[i], f);
+		translate_instruction(depth, &s->inst_arr[i], f);
 	}
 }

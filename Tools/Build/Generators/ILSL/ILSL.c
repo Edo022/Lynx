@@ -86,7 +86,7 @@ void run(const char* const src_name, const char* const out_name){
 	//Write output file
 	FILE* ofile = fopen(out_name, "w");
 	fprintf(ofile, "#version 450"); //TODO USE 460
-	translate_scope(out_scope, ofile);
+	translate_scope(0, out_scope, ofile);
 }
 
 

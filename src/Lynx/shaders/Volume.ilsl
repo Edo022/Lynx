@@ -38,6 +38,17 @@ void setPixel(f32v2 pos, f32v4 col) {
 			j += 2;
 			func(45 + j, i);
 		}
+		then {
+			func(0);
+		}
+		else {
+			if(1){
+				for(n = 0; i; ++n){}
+				for(; i; ++n){}
+				for(n = 0; i;){}
+				for(; i;){}
+			}
+		}
 	}
 	while(j < 4){
 		j += 2;

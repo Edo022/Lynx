@@ -130,7 +130,7 @@ struct Instruction {
 struct If*    scope_new_statement_if   (struct Scope* const scope);
 struct While* scope_new_statement_while(struct Scope* const scope);
 struct For*   scope_new_statement_for  (struct Scope* const scope);
-struct Expr*  scope_new_statement_expr (struct Scope* const scope);
+struct Expr** scope_new_statement_expr (struct Scope* const scope);
 
 
 

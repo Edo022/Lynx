@@ -51,9 +51,9 @@ struct For* scope_new_statement_for(struct Scope* const scope){
 	scope->inst_arr[scope->inst_num].data._for = malloc(sizeof(struct For)); //TODO prob move to build_statement_something functions
 	return scope->inst_arr[scope->inst_num++].data._for;
 }
-struct Expr* scope_new_statement_expr(struct Scope* const scope){
+struct Expr** scope_new_statement_expr(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_expr;
 	scope->inst_arr[scope->inst_num].data.expr = malloc(sizeof(struct Expr)); //TODO prob move to build_statement_something functions
-	return scope->inst_arr[scope->inst_num++].data.expr;
+	return &(scope->inst_arr[scope->inst_num++].data.expr);
 }
