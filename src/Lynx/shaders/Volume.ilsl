@@ -75,12 +75,12 @@ void main(extern f32v4 outcol[], extern u32v2 wsize, local f32v3 pos, local f32 
 	// //a
 	// setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
 	// setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
-	setPixel({ 1, 1 }, { 250, 0, 0, 250 ));
-	setPixel({ 1, 1 }, { 1, 0, 0, 1 });
+	setPixel(1, 1, 250, 0, 0, 250);
+	setPixel(1, 1, 1, 0, 0, 1);
 
-	setPixel({ 0.5, 0.5 }, { 250, 0, 0, 250 });
-	setPixel({ 0.5, 0.5 }, { 1, 0, 0, 1 }); //a
+	setPixel(0.5, 0.5, 250, 0, 0, 250);
+	setPixel(0.5, 0.5, 1, 0, 0, 1); //a
 	//a
-	setPixel({ 0, 0 }, { 250, 0, 0, 250 });
-	setPixel({ 0, 0 }, { 1, 0, 0, 1 });
+	setPixel(0, 0, 250, 0, 0, 250);
+	setPixel(0, 0, 1, 0, 0, 1);
 }

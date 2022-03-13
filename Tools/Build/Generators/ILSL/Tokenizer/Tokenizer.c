@@ -134,6 +134,19 @@ uint64_t push_str_unknown(const char* const line, struct Token* const out_tok) {
 
 
 
+uint64_t push_str_list(const char* const line, struct Token* const out_tok) {
+	if(line[0] == ','){
+		out_tok->value = strdup(",");
+		out_tok->len   = 1;
+		out_tok->id    = e_list;
+		out_tok->data  = NULL;
+		return 1;
+	}
+	return 0;
+}
+
+
+
 uint64_t push_str_inst_end(const char* const line, struct Token* const out_tok) {
 	if(line[0] == ';'){
 		out_tok->value = strdup(";");
@@ -176,6 +189,7 @@ uint64_t tokenize(struct Line* const lines, const char* const file_name, struct 
 			// Find the first token, save it in the array and update j
 			uint64_t tok_len;
 			if     (tok_len = push_str_preprocessor(l + j, cur_tok)){}
+			else if(tok_len = push_str_list        (l + j, cur_tok)){}
 			else if(tok_len = push_str_inst_end    (l + j, cur_tok)){}
 			else if(tok_len = push_str_identifier  (l + j, cur_tok)){}
 			else if(tok_len = push_str_literal     (l + j, cur_tok, lines[i])){}

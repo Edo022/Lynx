@@ -43,25 +43,26 @@ enum TokenID {
 
 	//Operators
 	o_start = 2000,
-	o_set_bw_lshift = 2000,    o_log_less_eq = 2010,    o_inc = 2017,    o_bw_lshift = 2019,    o_log_less = 2029,    o_ter_0      = 2034,
-	o_set_bw_rshift = 2001,    o_log_more_eq = 2011,    o_dec = 2018,    o_bw_rshift = 2020,    o_log_more = 2030,    o_ter_1      = 2035,
-	o_set_sum       = 2002,    o_log_eq      = 2012,                     o_sum       = 2021,    o_set      = 2031,    o_field      = 2036,
-	o_set_mul       = 2003,    o_log_diff    = 2013,                     o_mul       = 2022,    o_log_not  = 2032,    o_list       = 2037,
-	o_set_sub       = 2004,    o_log_and     = 2014,                     o_sub       = 2023,    o_bw_not   = 2033,    o_lgroup     = 2038,
-	o_set_div       = 2005,    o_log_or      = 2015,                     o_div       = 2024,                          o_rgroup     = 2039,
-	o_set_mod       = 2006,    o_log_xor     = 2016,                     o_mod       = 2025,                          o_lsubscript = 2040,
-	o_set_bw_and    = 2007,                                              o_bw_and    = 2026,                          o_rsubscript = 2041,
-	o_set_bw_or     = 2008,                                              o_bw_or     = 2027,                          o_lscope     = 2042,
-	o_set_bw_xor    = 2009,                                              o_bw_xor    = 2028,                          o_rscope     = 2043,
+	o_set_bw_lshift = 2000,    o_log_less_eq = 2010,    o_inc = 2017,    o_bw_lshift = 2020,    o_log_less = 2030,    o_ter_0      = 2035,
+	o_set_bw_rshift = 2001,    o_log_more_eq = 2011,    o_dec = 2018,    o_bw_rshift = 2021,    o_log_more = 2031,    o_ter_1      = 2036,
+	o_set_sum       = 2002,    o_log_eq      = 2012,    o_seq = 2019,    o_sum       = 2022,    o_set      = 2032,    o_field      = 2037,
+	o_set_mul       = 2003,    o_log_diff    = 2013,                     o_mul       = 2023,    o_log_not  = 2033,    o_lgroup     = 2038,
+	o_set_sub       = 2004,    o_log_and     = 2014,                     o_sub       = 2024,    o_bw_not   = 2034,    o_rgroup     = 2039,
+	o_set_div       = 2005,    o_log_or      = 2015,                     o_div       = 2025,                          o_lsubscript = 2040,
+	o_set_mod       = 2006,    o_log_xor     = 2016,                     o_mod       = 2026,                          o_rsubscript = 2041,
+	o_set_bw_and    = 2007,                                              o_bw_and    = 2027,                          o_lscope     = 2042,
+	o_set_bw_or     = 2008,                                              o_bw_or     = 2028,                          o_rscope     = 2043,
+	o_set_bw_xor    = 2009,                                              o_bw_xor    = 2029,
 	o_end = 2043, //! This value has to be manually updated
 
 
 	// Other
 	e_start = 1000000,
-	e_user_defined    = 1000000,	// User defined identifiers
-	e_literal         = 1000001,	// Literal constants
-	e_instruction_end = 1000003,	// Semicolon
-	e_preprocessor    = 1000004,	// # characters
+	e_list            = 1000000,	// ,
+	e_instruction_end = 1000001,	// ;
+	e_preprocessor    = 1000002,	// #
+	e_user_defined    = 1000003,	// User defined identifiers
+	e_literal         = 1000004,	// Literal constants
 	e_unknown         = 1000005,	// Anything else
 	e_end = 1000005, //! This value has to be manually updated
 	//! Newlines are not saves as tokens

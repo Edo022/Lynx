@@ -66,6 +66,7 @@ array [0, 2..60] = array[102..161];
   - 5.2\. Logical operators
   - 5.2\. Ternary operator
   - 5.3\. Implicit conversions
+  - 5.3\. Array operations
 - 6\. Runtime instructions
   - 6.1\. Expressions
     - 6.1.1\. Operators

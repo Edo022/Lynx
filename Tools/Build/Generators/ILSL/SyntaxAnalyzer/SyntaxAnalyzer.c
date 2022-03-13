@@ -176,7 +176,7 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
 uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, const struct Line* const line_info){
 	uint64_t i = 0;
 
-	while(tokens[i].id != o_rgroup && tokens[i].id != e_instruction_end && tokens[i].id != o_list){
+	while(tokens[i].id != o_rgroup && tokens[i].id != e_instruction_end && tokens[i].id != e_list){
 		if(!tokens[i].value) print_syntax_error(line_info[tokens[i].abs_line], "File ended unexpectedly while reading an expression");
 
 		//FIXME grouping
@@ -198,7 +198,7 @@ uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, co
 				while(tokens[i].id != o_rgroup) {
 					++i; // Skip '(' or ','
 					i += parse_expr(tokens + i, NULL, line_info); //FIXME
-					if(tokens[i].id != o_list && tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ',' or ')' after expression list, token \"%s\" found instead", tokens[i].value);
+					if(tokens[i].id != e_list && tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ',' or ')' after expression list, token \"%s\" found instead", tokens[i].value);
 				}
 				++i; // Skip ')'
 			}
