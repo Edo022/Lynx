@@ -48,13 +48,15 @@ void setPixel(f32v2 pos, f32v4 col) {
 
 	// u32 i = u32(pos.y) * wsize.x + u32(pos.x); //FIXME add asignment in declaration
 	u32 i; //FIXME this should be a redefinition error
-	i = u32(pos.y) * wsize.x + u32(pos.x);
+	// i = u32(pos.y) * wsize.x + u32(pos.x);
+	i = pos.y * wsize.x + pos.x;
 
 	outcol[i] = col;
 }
 
 void main(extern f32v4 outcol[], extern u32v2 wsize, local f32v3 pos, local f32 r, local f32v4 col) {
-	for(i32 idk = 0; idk < 3; idk++){
+	i32 idk;
+	for(idk = 0; idk < 3; idk++){
 		//something
 	}
 	/*multiline
@@ -65,12 +67,20 @@ void main(extern f32v4 outcol[], extern u32v2 wsize, local f32v3 pos, local f32 
 	//single line comment
 	0x3;
 
-	setPixel(f32v2(1, 1), f32v4(250, 0, 0, 250));
-	setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));
+	// setPixel(f32v2(1, 1), f32v4(250, 0, 0, 250));
+	// setPixel(f32v2(1, 1), f32v4(1, 0, 0, 1));
 
-	setPixel(f32v2(0.5, 0.5), f32v4(250, 0, 0, 250));
-	setPixel(f32v2(0.5, 0.5), f32v4(1, 0, 0, 1)); //a
+	// setPixel(f32v2(0.5, 0.5), f32v4(250, 0, 0, 250));
+	// setPixel(f32v2(0.5, 0.5), f32v4(1, 0, 0, 1)); //a
+	// //a
+	// setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
+	// setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
+	setPixel({ 1, 1 }, { 250, 0, 0, 250 ));
+	setPixel({ 1, 1 }, { 1, 0, 0, 1 });
+
+	setPixel({ 0.5, 0.5 }, { 250, 0, 0, 250 });
+	setPixel({ 0.5, 0.5 }, { 1, 0, 0, 1 }); //a
 	//a
-	setPixel(f32v2(0, 0), f32v4(250, 0, 0, 250));
-	setPixel(f32v2(0, 0), f32v4(1, 0, 0, 1));
+	setPixel({ 0, 0 }, { 250, 0, 0, 250 });
+	setPixel({ 0, 0 }, { 1, 0, 0, 1 });
 }

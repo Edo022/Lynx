@@ -8,12 +8,7 @@
 //TODO matrices and 2d arrays are the same thing. remove the matrices
 //TODO vectors only exist to call .x, .y, .z and .w on them
 
-
-
-
 //TODO
-free expression
-enclosed expression
 
 syntactic structure
 e.g.
@@ -96,6 +91,8 @@ array [0, 2..60] = array[102..161];
   - 8.1\. C++ interface //TODO REMOVE
   - 8.2\. ILSL/C++ data compatibility //TODO change to lynx language compatibility
   - 8.3\. Compiler optimizations
+<br><br>
+- Cheat sheets
 
 
 <br><br><br><br>

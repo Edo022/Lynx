@@ -69,18 +69,18 @@ uint64_t build_statement_if(struct Scope* const parent, const struct Token* cons
 	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ')'
 	i += parse_expr(tokens + i, dst->condition, line_info);
-	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '('
 
 	// Body
-	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '{'
 	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
 
 	// Else
 	if(tokens[i].id == c_else) {
 		++i; // Skip 'else'
-		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
 	}
@@ -93,21 +93,27 @@ uint64_t build_statement_for(struct Scope* const parent, const struct Token* con
 	uint64_t i = 0;
 
 	// Condition
-	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ')'
+	i += parse_expr(tokens + i, dst->init, line_info); //FIXME replace with var declaration parsing
+	if(tokens[i].id != e_instruction_end) print_syntax_error(line_info[tokens[i].abs_line], "Expected ';' after initializer statement of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	++i; // Skip ';'
 	i += parse_expr(tokens + i, dst->condition, line_info);
-	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	if(tokens[i].id != e_instruction_end) print_syntax_error(line_info[tokens[i].abs_line], "Expected ';' after condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	++i; // Skip ';'
+	i += parse_expr(tokens + i, dst->last, line_info);
+	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' after iterated statement of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '('
 
 	// Body
-	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '{'
 	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
 
 	// Then
 	if(tokens[i].id == c_then) {
 		++i; // Skip "then"
-		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_then);
 	}
@@ -115,7 +121,7 @@ uint64_t build_statement_for(struct Scope* const parent, const struct Token* con
 	// Else
 	if(tokens[i].id == c_else) {
 		++i; // Skip "else"
-		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
 	}
@@ -128,21 +134,21 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
 	uint64_t i = 0;
 
 	// Condition
-	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip ')'
 	i += parse_expr(tokens + i, dst->condition, line_info);
-	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' in condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '('
 
 	// Body
-	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" loop, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
 	++i; // Skip '{'
 	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
 
 	// Then
 	if(tokens[i].id == c_then) {
 		++i; // Skip "then"
-		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_then);
 	}
@@ -150,7 +156,7 @@ uint64_t build_statement_while(struct Scope* const parent, const struct Token* c
 	// Else
 	if(tokens[i].id == c_else) {
 		++i; // Skip "else"
-		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
 		++i; // Skip '{'
 		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
 	}
@@ -188,12 +194,12 @@ uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, co
 		else if(tokens[i].id == e_user_defined){
 			if(tokens[i + 1].id == o_lgroup){ // Functions
 				//TODO save
-				i += 2; // Skip "fun("
-				do {
+				++i; // Skip function name
+				while(tokens[i].id != o_rgroup) {
+					++i; // Skip '(' or ','
 					i += parse_expr(tokens + i, NULL, line_info); //FIXME
-				} while(tokens[i].id == o_list);
-
-				if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' after expression list, token \"%s\" found instead", tokens[i].value);
+					if(tokens[i].id != o_list && tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ',' or ')' after expression list, token \"%s\" found instead", tokens[i].value);
+				}
 				++i; // Skip ')'
 			}
 			else { //Variables
