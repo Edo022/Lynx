@@ -22,17 +22,17 @@
 /**
  * @brief Returns the number of tokens that are between the left and right delimiters. This includes the delimiters
  * @param vTokens An array of tokens. The first token must be a left delimiter
- *     If the first token is not a left delimiter, the return value is undefined
+ *     The token list must start with the first token after the first left delimiter
  * @param vTokenNum The total number of tokens
  * @param vLeft The left delimiter
  * @param vRight The right delimiter
  * @param iLines Line informations
- * @return The index of the right delimiter that matches the first left delimiter
+ * @return The index of the first token after the right delimiter that matches the first left delimiter
  *     Prints an error if it is unmatched
  */
 uint64_t stat_tok_group(const struct Token* const tokens, const enum TokenID left_del, const enum TokenID right_del, const struct Line* const line_info){
-	uint64_t n = 1; // Skip first left delimiter
-	for(uint64_t i = 1; tokens[i].value; ++i) {
+	uint64_t n = 1; // Count first left delimiter
+	for(uint64_t i = 0; tokens[i].value; ++i) {
 		if     (tokens[i].id == left_del) ++n;
 		else if(tokens[i].id == right_del) {
 			if(!--n) return i + 1;
@@ -269,10 +269,13 @@ uint64_t build_scope_syntax_tree(struct Scope* const parent, const struct Token*
 						// .exec = NULL, //TODO
 						// .parent = *pScope
 					};
+					++i; //Skip '('
 					i += stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
 					// fun.param_num = 0; //TODO
 					//FIXME ACTUALLY READ THE ARGUMENTS AND SAVE THEM AS VARIABLES
-					// ++i; //Skip ')'
+
+					if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected token '{' after parameter list of function \"%s\", token \"%s\" found instead", construct_name->value, tokens[i].value);
+					++i; // Skip '{'
 
 					// Analyze the function definition
 					uint64_t fun_scope_len = build_scope_syntax_tree(*out_scope, tokens + i, line_info, &fun.scope);
@@ -394,17 +397,17 @@ uint64_t build_scope_syntax_tree(struct Scope* const parent, const struct Token*
 
 		else if(parent) switch(tokens[i].id){
 			case c_if: {
-				++i;
+				++i; // Skip "if"
 				i += build_statement_if(parent, tokens + i, scope_new_statement_if(*out_scope), line_info);
 				break;
 			}
 			case c_while: {
-				++i;
+				++i; // Skip "while"
 				i += build_statement_while(parent, tokens + i, scope_new_statement_while(*out_scope), line_info);
 				break;
 			}
 			case c_for: {
-				++i;
+				++i; // Skip "for"
 				i += build_statement_for(parent, tokens + i, scope_new_statement_for(*out_scope), line_info);
 				break;
 			}
