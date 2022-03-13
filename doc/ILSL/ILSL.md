@@ -58,6 +58,7 @@ array [0, 2..60] = array[102..161];
   - 3.2\. Functions
   - 3.3\. Const qualifier
   - 3.4\. Local and extern qualifiers
+  - 3.5\. Temporary variables
 - 4\. Types
   - 4.1\. Scalar types
   - 4.2\. Structs
@@ -76,22 +77,24 @@ array [0, 2..60] = array[102..161];
     - 6.1.2\. Literals
     - 6.1.3\. Grouping
     - 6.1.4\. Function calls
-    - 6.1.5\. Array subscript and ranges
+    - 6.1.5\. Array subscript
+    - 6.1.6\. Ranges
   - 6.2\. Selection
-    - 6.2.1\. If-elif-else clause
-    - 6.2.2\. Switch clause
+    - 6.2.1\. If statement
+    - 6.2.2\. Select statement
     - 6.2.3\. Fallthrough statement
   - 6.3\. Iteration
     - 6.3.1\. For loop
-    - 6.3.2\. For-else loop
-    - 6.3.3\. While loop
-    - 6.3.4\. Do-while loop
-    - 6.3.5\. Continue and break statements
-  - 6.4\. Return statement
+    - 6.3.2\. While loop
+    - 6.3.3\. Do-while loop
+    - 6.3.4\. Continue and break statements
+    - 6.3.5\. Then statement
+  - 6.4\. Else statement
+  - 6.5\. Return statement
 - 7\. Built-in functions
 - 8\. Compilation
-  - 8.1\. C++ interface
-  - 8.2\. ILSL/C++ data compatibility
+  - 8.1\. C++ interface //TODO REMOVE
+  - 8.2\. ILSL/C++ data compatibility //TODO change to lynx language compatibility
   - 8.3\. Compiler optimizations
 
 
@@ -99,14 +102,18 @@ array [0, 2..60] = array[102..161];
 
 ## 1. Overview
 
-ILSL is a high level compiled shading language based on GLSL 4.6, designed to allow developers to efficiently write shaders without going through the laborious work of manually managing arrays and interfaces.<br><br>
-The syntax and semantics of the languare are similar to C.<br>
-Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and management of multidimensional data.<br><br>
-A shader controls the graphical output of a class of objects.<br>
+ILSL is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, designed to allow developers to efficiently write shaders without going through the laborious work of manually managing arrays and interfaces.
+
+The language features <b>C-like syntax</b> and semantics.<br>
+Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and management of multidimensional data.
+
+Shaders control the graphical output of a class of objects.<br>
 Each shader is composed of a single source file (.ilsl) which can include one or more header files (.ilsh).<br>
-Header files can also include other header files.<br><br>
-Althought files extensions are only a convention and can be changed or omitted, it is still recommended to use the correct ones as some softwares may use them to determine the language of the source file.<br><br>
-ILSL is part of the Lynx SDK.
+Header files can also include other header files.
+
+Althought files extensions are only a convention and can be changed or omitted, it is still recommended to use the correct ones, as some softwares may use them to determine the language of the source file.
+
+ILSL is part of the <b>Lynx SDK</b>.
 
 <br><br><br><br>
 

@@ -16,6 +16,11 @@
 
 //FIXME USE NULL TERMINATING TOKEN INSTEAD OF PASSING THE SIZE IN EVERY FUNCTION
 
+//FIXME prevent header files to be included multiple times
+//FIXME use hashes for this
+
+
+
 #include "Utils.h"
 
 #include <string.h>
@@ -40,13 +45,6 @@
 //TODO check returns values
 //TODO add macros
 //TODO add include lists
-
-
-
-
-
-
-
 
 
 

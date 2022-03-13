@@ -5,10 +5,10 @@
 
 static const char* keyword_to_str(const enum TokenID id){
 	static const char* values[] = {
-		//If-else      Loops           Flow control       Switch case
-		"if",          "while",        "continue",        "switch",
+		//If, then     Loops           Iterations, return Select case
+		"if",          "while",        "continue",        "select",
 		"else",        "for",          "break",           "case",
-		"elif",        "do",           "return",          "default",
+	    "then",        "do",           "return",          "default",
 
 		//Qualifiers   Inputs          Other
 		"highp",       "local",        "struct",

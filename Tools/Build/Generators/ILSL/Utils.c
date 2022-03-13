@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdarg.h>
-//TODO rewrite those weird and confusing comments
+//TODO rewrite these weird and confusing comments
 
 
 

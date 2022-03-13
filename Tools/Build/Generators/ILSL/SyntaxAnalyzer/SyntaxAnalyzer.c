@@ -17,7 +17,7 @@
 //TODO print a more detailed error if the identifier is a language keyword
 //TODO <keyword used as identifier>
 
-
+//TODO arr[0..n]
 
 /**
  * @brief Returns the number of tokens that are between the left and right delimiters. This includes the delimiters
@@ -62,22 +62,152 @@ uint64_t stat_tok(const struct Token* const tokens, const enum TokenID tok){
 
 
 
-struct If* build_tree_if(const struct Token* const tokens){
+uint64_t build_statement_if(struct Scope* const parent, const struct Token* const tokens, struct If* const dst, const struct Line* const line_info){
+	uint64_t i = 0;
 
+	// Condition
+	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	++i; // Skip "if"
+	i += parse_expr(tokens + i, dst->condition, line_info);
+	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' in condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	++i; // Skip '('
+
+	// Body
+	if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	++i; // Skip '{'
+	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
+
+	// Else
+	if(tokens[i].id == c_else) {
+		++i; // Skip "else"
+		if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		++i; // Skip '{'
+		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
+	}
+
+	return i;
 }
 
 
-struct For* build_tree_for(const struct Token* const tokens){
+uint64_t build_statement_for(struct Scope* const parent, const struct Token* const tokens, struct For* const dst, const struct Line* const line_info){
+	uint64_t i = 0;
 
+	// Condition
+	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	++i; // Skip "for"
+	i += parse_expr(tokens + i, dst->condition, line_info);
+	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' in condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	++i; // Skip '('
+
+	// Body
+	if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	++i; // Skip '{'
+	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
+
+	// Then
+	if(tokens[i].id == c_then) {
+		++i; // Skip "then"
+		if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		++i; // Skip '{'
+		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_then);
+	}
+
+	// Else
+	if(tokens[i].id == c_else) {
+		++i; // Skip "else"
+		if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		++i; // Skip '{'
+		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
+	}
+
+	return i;
 }
 
 
-struct While* build_tree_while(const struct Token* const tokens){
+uint64_t build_statement_while(struct Scope* const parent, const struct Token* const tokens, struct While* const dst, const struct Line* const line_info){
+	uint64_t i = 0;
 
+	// Condition
+	if(tokens->id != o_lgroup) print_syntax_error(line_info[tokens->abs_line], "Expected '(' after \"%s\" statement, token \"%s\" found instead", tokens[-1].value, tokens[i].value);
+	++i; // Skip "while"
+	i += parse_expr(tokens + i, dst->condition, line_info);
+	if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' in condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	++i; // Skip '('
+
+	// Body
+	if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' after condition of \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+	++i; // Skip '{'
+	i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->body);
+
+	// Then
+	if(tokens[i].id == c_then) {
+		++i; // Skip "then"
+		if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		++i; // Skip '{'
+		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_then);
+	}
+
+	// Else
+	if(tokens[i].id == c_else) {
+		++i; // Skip "else"
+		if(tokens[i].id != o_rscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' \"%s\" statement, token \"%s\" found instead", tokens[i - 1].value, tokens[i].value);
+		++i; // Skip '{'
+		i += build_scope_syntax_tree(parent, tokens + i, line_info, &dst->_else);
+	}
+
+	return i;
 }
 
-struct Expr* parse_expr(const struct Token* const tokens){
 
+/**
+ * @brief Parses an expression and //TODO
+ *     The parsing stops at the first ';', unmatched ')', ']' or '}' or unenclosed ','
+ * @param tokens
+ * @param dst
+ * @param line_info
+ * @return The index of the last character of the expression
+ */
+uint64_t parse_expr(const struct Token* const tokens, struct Expr* const dst, const struct Line* const line_info){
+	uint64_t i = 0;
+
+	while(tokens[i].id != o_rgroup && tokens[i].id != e_instruction_end && tokens[i].id != o_list){
+		if(!tokens[i].value)
+
+		//FIXME grouping
+		//TODO array subscript
+		//TODO array ranges
+		//TODO constructors
+		//TODO range constructors
+		if(tokens[i].id == o_lgroup){ // Grouping
+			//TODO save
+			++i; // Skip '('
+			i += parse_expr(tokens + i, NULL, line_info); //FIXME
+			if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' after expression, token \"%s\" found instead", tokens[i].value);
+			++i; // Skip ')'
+		}
+		else if(tokens[i].id == e_user_defined){
+			if(tokens[i + 1].id == o_lgroup){ // Functions
+				//TODO save
+				i += 2; // Skip "fun("
+				while(tokens[i].id == o_list){
+					parse_expr(tokens + i, NULL, line_info); //FIXME
+				}
+				if(tokens[i].id != o_rgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected ')' after expression list, token \"%s\" found instead", tokens[i].value);
+				++i; // Skip ')'
+			}
+			else { //Variables
+				//TODO save
+				++i;
+			}
+		}
+		else if(tok_is_operator(tokens[i].id) || tokens[i].id == e_literal){ //TODO
+			//TODO check the syntax
+			//TODO save
+			++i;
+		}
+		else print_syntax_error(line_info[tokens[i].abs_line], "Unexpected token \"%s\" inside an expression", tokens[i].value);
+	}
+	return i;
 }
 
 
@@ -88,31 +218,33 @@ struct Expr* parse_expr(const struct Token* const tokens){
 
 /**
  * @brief Creates an abstract syntax tree from an array of tokens
- * @param parnet The address of the parent of this scope, or NULL if the scope is the global scope
+ * @param parent The address of the parent of this scope, or NULL if the scope is the global scope
  * @param vTokens An array of tokens that contain the scope
  *     If the scope is not the global scope, the first token must be its opening bracket
  * @param line_info Line informations
  * @param pScope the address of a pointer where to store the scope struct
- * @return The index of the closing bracket of the scope
+ * @return The index of the first token after the scope
  */
-uint64_t build_scope_syntax_tree(struct Scope* const parnet, const struct Token* const tokens, const struct Line* const line_info, struct Scope** const out_scope){
+uint64_t build_scope_syntax_tree(struct Scope* const parent, const struct Token* const tokens, const struct Line* const line_info, struct Scope** const out_scope){
 	// Allocate the current scope
 	*out_scope = malloc(sizeof(struct Scope));
-	init_scope(*out_scope); (*out_scope)->parent = parnet;
+	init_scope(*out_scope); (*out_scope)->parent = parent;
 
 
 	// For each construct or instruction
-	uint64_t i = !!parnet; // Skip own '{'
+	// uint64_t i = !!parent; // Skip own '{'
+	uint64_t i = 0;
 	while(tokens[i].id != o_rscope){
 		// Unmatched brackets
 		if(!tokens[i].value) {
-			if(parnet) print_syntax_error(line_info[tokens->abs_line], "Unmatched scope delimiter \"%s\"", tokens->value);
+			if(parent) print_syntax_error(line_info[tokens->abs_line], "Unmatched scope delimiter \"%s\"", tokens->value);
 			else return i;
 		}
 
 		// Sub scopes
 		if(tokens[i].id == o_lscope) { //TODO print error if in global scope
-			if(parnet){
+			if(parent){
+				++i; // Skip subscope '{'
 				struct Scope* sub_scope;
 				uint64_t sub_scope_len = build_scope_syntax_tree(*out_scope, tokens + i, line_info, &sub_scope);
 				scope_add_scp(*out_scope, sub_scope);
@@ -185,90 +317,115 @@ uint64_t build_scope_syntax_tree(struct Scope* const parnet, const struct Token*
 
 
 
-		//FIXME MERGE
-		//FIXME MERGE
-		//FIXME MERGE
-		else if(parnet && tokens[i].id == c_if){ //TODO replace with nested if else and a len variable
-			//TODO MOVE CONDITION PARSING TO buildTreeIf
-			if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t if_expr_len = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
-			i += if_expr_len;
+		// //FIXME MERGE
+		// //FIXME MERGE
+		// //FIXME MERGE
+		// else if(parent && tokens[i].id == c_if){ //TODO replace with nested if else and a len variable
+		// 	//TODO MOVE CONDITION PARSING TO buildTreeIf
+		// 	if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t if_expr_len = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
+		// 	i += if_expr_len;
 
-			if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t if_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
-			scope_add_inst_if(*out_scope, build_tree_if(tokens + i)); //TODO save this thing //FIXME implement the function
-			i += if_scope_len;
-			//FIXME read elif and else constructs
+		// 	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"if\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t if_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
+		// 	scope_add_inst_if(*out_scope, build_tree_if(tokens + i)); //TODO save this thing //FIXME implement the function
+		// 	i += if_scope_len;
+		// 	//FIXME read elif and else constructs
+		// }
+		// else if(parent && tokens[i].id == c_elif){ //TODO replace with nested if else and a len variable
+		// 	if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"elif\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t elif_expr_len = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
+		// 	//FIXME actually read the expression
+		// 	i += elif_expr_len;
+
+		// 	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"elif\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t elif_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
+		// 	// buildTreeIf(vTokens + i, elifScopeLen); //FIXME implement the function
+		// 	//scope_add_inst_if //TODO
+		// 	i += elif_scope_len;
+		// 	//FIXME read elif and else constructs
+		// }
+		// else if(parent && tokens[i].id == c_else){ //TODO replace with nested if else and a len variable
+		// 	if(tokens[++i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"else\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t else_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
+		// 	// buildTreeIf(vTokens + i, elseScopeLen); //FIXME implement the function
+		// 	//scope_add_inst_if //TODO
+		// 	i += else_scope_len;
+		// 	//FIXME read elif and else constructs
+		// }
+		// //FIXME MERGE
+		// //FIXME MERGE
+		// //FIXME MERGE
+
+
+
+
+
+		// else if(parent && tokens[i].id == c_while){ //TODO replace with nested if else and a len variable
+		// 	//TODO MOVE CONDITION PARSING TO buildTreeWhile
+		// 	if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t while_scope_expr = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
+		// 	//FIXME actually read the expression
+		// 	i += while_scope_expr;
+
+		// 	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t while_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
+		// 	scope_add_inst_while(*out_scope, build_tree_while(tokens + i)); //FIXME implement the function
+		// 	i += while_scope_len;
+		// }
+		// else if(parent && tokens[i].id == c_for){ //TODO replace with nested if else and a len variable
+		// 	//TODO MOVE CONDITION PARSING TO buildTreeFor
+		// 	if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t for_expr_len = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
+		// 	//FIXME actually read the expressions
+		// 	i += for_expr_len;
+
+		// 	if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
+		// 	uint64_t for_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
+		// 	scope_add_inst_for(*out_scope, build_tree_for(tokens + i)); //FIXME implement the function
+		// 	i += for_scope_len;
+		// }
+		// else if(parent && (tokens[i].id == e_literal || tokens[i].id == e_user_defined || tokens[i].id == o_sub  || tokens[i].id == e_instruction_end)){ //TODO add struct and base types constructors analysis
+		// 	uint64_t expr_len = stat_tok(tokens + i, e_instruction_end);
+		// 	scope_add_inst_expr(*out_scope, parse_expr(tokens + i));
+		// 	i += expr_len + 1; // len + ';'
+		// }
+
+
+		else if(parent) switch(tokens[i].id){
+			case c_if: {
+				++i;
+				i += build_statement_if(parent, tokens + i, scope_new_statement_if(*out_scope), line_info);
+				break;
+			}
+			case c_while: {
+				++i;
+				i += build_statement_while(parent, tokens + i, scope_new_statement_while(*out_scope), line_info);
+				break;
+			}
+			case c_for: {
+				++i;
+				i += build_statement_for(parent, tokens + i, scope_new_statement_for(*out_scope), line_info);
+				break;
+			}
+			default: {
+				i += parse_expr(tokens + i, scope_new_statement_expr(*out_scope), line_info);
+				break;
+			}
 		}
-		else if(parnet && tokens[i].id == c_elif){ //TODO replace with nested if else and a len variable
-			if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"elif\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t elif_expr_len = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
-			//FIXME actually read the expression
-			i += elif_expr_len;
-
-			if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"elif\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t elif_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
-			// buildTreeIf(vTokens + i, elifScopeLen); //FIXME implement the function
-			//scope_add_inst_if //TODO
-			i += elif_scope_len;
-			//FIXME read elif and else constructs
-		}
-		else if(parnet && tokens[i].id == c_else){ //TODO replace with nested if else and a len variable
-			if(tokens[++i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"else\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t else_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
-			// buildTreeIf(vTokens + i, elseScopeLen); //FIXME implement the function
-			//scope_add_inst_if //TODO
-			i += else_scope_len;
-			//FIXME read elif and else constructs
-		}
-		//FIXME MERGE
-		//FIXME MERGE
-		//FIXME MERGE
 
 
-
-
-
-
-
-		else if(parnet && tokens[i].id == c_while){ //TODO replace with nested if else and a len variable
-			//TODO MOVE CONDITION PARSING TO buildTreeWhile
-			if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t while_scope_expr = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
-			//FIXME actually read the expression
-			i += while_scope_expr;
-
-			if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"while\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t while_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
-			scope_add_inst_while(*out_scope, build_tree_while(tokens + i)); //FIXME implement the function
-			i += while_scope_len;
-		}
-		else if(parnet && tokens[i].id == c_for){ //TODO replace with nested if else and a len variable
-			//TODO MOVE CONDITION PARSING TO buildTreeFor
-			if(tokens[++i].id != o_lgroup) print_syntax_error(line_info[tokens[i].abs_line], "Expected '(' after flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t for_expr_len = stat_tok_group(tokens + i, o_lgroup, o_rgroup, line_info);
-			//FIXME actually read the expressions
-			i += for_expr_len;
-
-			if(tokens[i].id != o_lscope) print_syntax_error(line_info[tokens[i].abs_line], "Expected '{' or an expression after condition of flow control construct \"for\""); //FIXME make scope operators optional with single instruction bodies
-			uint64_t for_scope_len = stat_tok_group(tokens + i, o_lscope, o_rscope, line_info);
-			scope_add_inst_for(*out_scope, build_tree_for(tokens + i)); //FIXME implement the function
-			i += for_scope_len;
-		}
-		else if(parnet && (tokens[i].id == e_literal || tokens[i].id == e_user_defined || tokens[i].id == o_sub  || tokens[i].id == e_instruction_end)){ //TODO add struct and base types constructors analysis
-			uint64_t expr_len = stat_tok(tokens + i, e_instruction_end);
-			scope_add_inst_expr(*out_scope, parse_expr(tokens + i));
-			i += expr_len + 1; // len + ';'
-		}
 
 		// Anything else is a syntax error
-		else print_syntax_error(line_info[tokens[i].abs_line], "Unexpected token \"%s\"", tokens[i].value);
+		else {
+			print_syntax_error(line_info[tokens[i].abs_line], "Unexpected token \"%s\"", tokens[i].value);
+		}
 	}
 
 
 	// Successful parsing
 	++i;		// Skip own '}'
-	return i;	// Return its index
+	return i;	// Return the index of the first token after it
 }
 
 

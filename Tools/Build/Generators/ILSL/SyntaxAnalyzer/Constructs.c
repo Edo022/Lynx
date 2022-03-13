@@ -3,6 +3,8 @@
 
 
 
+//FIXME rename as scope_new_something
+//FIXME make these functions return the new element
 
 void scope_add_str(struct Scope* const scope, const struct Str* const str){ //TODO remove if not used
 	scope->str_arr = relloc_pow2(scope->str_arr, sizeof(struct Str), scope->str_num);
@@ -25,28 +27,29 @@ void scope_add_scp(struct Scope* const scope, const struct Scope* const scp){ //
 
 
 
+//FIXME these ones are ok
 
-void scope_add_inst_if(struct Scope* const scope, struct If* const inst){ //TODO remove if not used
+struct If* scope_new_statement_if(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_if;
-	scope->inst_arr[scope->inst_num].data._if = inst;
 	scope->inst_num++;
+	return scope->inst_arr[scope->inst_num].data._if;
 }
-void scope_add_inst_while(struct Scope* const scope, struct While* const inst){ //TODO remove if not used
+struct While* scope_new_statement_while(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_while;
-	scope->inst_arr[scope->inst_num].data._while = inst;
 	scope->inst_num++;
+	return scope->inst_arr[scope->inst_num].data._while;
 }
-void scope_add_inst_for(struct Scope* const scope, struct For* const inst){ //TODO remove if not used
+struct For* scope_new_statement_for(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_for;
-	scope->inst_arr[scope->inst_num].data._for = inst;
 	scope->inst_num++;
+	return scope->inst_arr[scope->inst_num].data._for;
 }
-void scope_add_inst_expr(struct Scope* const scope, struct Expr* const inst){ //TODO remove if not used
+struct Expr* scope_new_statement_expr(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_expr;
-	scope->inst_arr[scope->inst_num].data.expr = inst;
 	scope->inst_num++;
+	return scope->inst_arr[scope->inst_num].data.expr;
 }

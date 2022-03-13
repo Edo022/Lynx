@@ -3,7 +3,7 @@
 #include "Tokenizer/Tokens.h"
 #include "Tokenizer/Operators.h"
 
-
+//TODO rename instruction as statement
 
 //TODO use Expr alias for OpNode*
 
@@ -86,8 +86,6 @@ void scope_add_scp(struct Scope* const scope, const struct Scope* const scp);
 
 
 
-//TODO ----------------------------------------------------------------------------------------------
-//TODO MOVE TO FlowControl.h
 
 
 struct ExprElm;
@@ -129,10 +127,10 @@ struct Instruction {
 		struct Expr*  expr;
 	} data;
 };
-void scope_add_inst_if   (struct Scope* const scope, struct If*    const inst);
-void scope_add_inst_while(struct Scope* const scope, struct While* const inst);
-void scope_add_inst_for  (struct Scope* const scope, struct For*   const inst);
-void scope_add_inst_expr (struct Scope* const scope, struct Expr*  const inst);
+struct If*    scope_new_statement_if   (struct Scope* const scope);
+struct While* scope_new_statement_while(struct Scope* const scope);
+struct For*   scope_new_statement_for  (struct Scope* const scope);
+struct Expr*  scope_new_statement_expr (struct Scope* const scope);
 
 
 
@@ -166,35 +164,40 @@ struct ExprElm {
 
 
 
+
+
+
+//TODO add select
+
 /**
- * @brief If flow control construct node
+ * @brief If statement
  */
 struct If {
-	struct Expr*  condition;	// The condition to check as an operator tree
-	struct Scope* true_body;		// Instructions in the if   body
-	struct Scope* false_body;	// Instructions in the else body
-	//! elif constructs are saved as a series of nested if-else
+	struct Expr*  condition;	// The condition to check
+	struct Scope* body;			// Statements in the if body
+	struct Scope* _else;		// Statements in the else body. NULL if else is not used
 };
 
-//TODO add switch
-
 /**
- * @brief While flow control construct node
+ * @brief While loop
  */
 struct While{
-	struct Expr*  condition;	// The condition to check as an operator tree
-	struct Scope* body;			// The instructions in the loop body
-}; //TODO add while - else
-
+	struct Expr*  condition;	// The condition to check
+	struct Scope* body;			// Statements in the loop body
+	struct Scope* _then;		// Statements in the then body. NULL if then is not used
+	struct Scope* _else;		// Statements in the else body. NULL if else is not used
+};
 
 /**
- * @brief For flow control construct node
+ * @brief For loop
  */
 struct For {
-	struct Expr*  init; //TODO idk, prob useless
-	struct Expr*  condition;	// The condition to check as an operator tree
-	struct Expr*  inc; //TODO same
-	struct Scope* body;			// The instructions in the loop body
+	struct Expr*  init;			// Initializer statements
+	struct Expr*  condition;	// The condition to check
+	struct Expr*  last; 		// The statements that are ran after the loop body
+	struct Scope* body;			// Statements in the loop body
+	struct Scope* _then;		// Statements in the then body. NULL if then is not used
+	struct Scope* _else;		// Statements in the else body. NULL if else is not used
 };
 
 

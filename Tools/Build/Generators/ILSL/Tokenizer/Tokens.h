@@ -30,10 +30,10 @@ enum TokenID {
 
 	// Flow control keywords
 	k_start = 1000,
-	c_if       = 1000,    c_else      = 1004,    c_elif    = 1008,						// If-else
+	c_if       = 1000,    c_else      = 1004,    c_then    = 1008,						// If, else, then
 	c_while    = 1001,    c_for       = 1005,    c_do      = 1009,						// Loops
-	c_continue = 1002,    c_break     = 1006,    c_return  = 1010,						// Iterations, return
-	c_switch   = 1003,    c_case      = 1007,    c_default = 1011,						// Switch case
+	c_continue = 1002,    c_break     = 1006,    c_return  = 1010,						// continue, break, return
+	c_select   = 1003,    c_case      = 1007,    c_default = 1011,						// Select case
 	// Other keywords
 	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1019,	// Qualifiers
 	k_local    = 1013,    k_extern    = 1016,											// Inputs
