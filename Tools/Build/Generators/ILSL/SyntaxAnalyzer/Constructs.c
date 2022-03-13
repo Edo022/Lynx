@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "SyntaxAnalyzer/Constructs.h"
 #include "Utils.h"
 
@@ -29,27 +30,30 @@ void scope_add_scp(struct Scope* const scope, const struct Scope* const scp){ //
 
 //FIXME these ones are ok
 
+
+//TODO replace realloc_pow2 with a safer version that takes both the current size and the allocated size
+
 struct If* scope_new_statement_if(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_if;
-	scope->inst_num++;
-	return scope->inst_arr[scope->inst_num].data._if;
+	scope->inst_arr[scope->inst_num].data._if = malloc(sizeof(struct If)); //TODO prob move to build_statement_something functions
+	return scope->inst_arr[scope->inst_num++].data._if;
 }
 struct While* scope_new_statement_while(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_while;
-	scope->inst_num++;
-	return scope->inst_arr[scope->inst_num].data._while;
+	scope->inst_arr[scope->inst_num].data._while = malloc(sizeof(struct While)); //TODO prob move to build_statement_something functions
+	return scope->inst_arr[scope->inst_num++].data._while;
 }
 struct For* scope_new_statement_for(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_for;
-	scope->inst_num++;
-	return scope->inst_arr[scope->inst_num].data._for;
+	scope->inst_arr[scope->inst_num].data._for = malloc(sizeof(struct For)); //TODO prob move to build_statement_something functions
+	return scope->inst_arr[scope->inst_num++].data._for;
 }
 struct Expr* scope_new_statement_expr(struct Scope* const scope){
 	scope->inst_arr = relloc_pow2(scope->inst_arr, sizeof(struct Instruction), scope->inst_num);
 	scope->inst_arr[scope->inst_num].type = inst_expr;
-	scope->inst_num++;
-	return scope->inst_arr[scope->inst_num].data.expr;
+	scope->inst_arr[scope->inst_num].data.expr = malloc(sizeof(struct Expr)); //TODO prob move to build_statement_something functions
+	return scope->inst_arr[scope->inst_num++].data.expr;
 }
