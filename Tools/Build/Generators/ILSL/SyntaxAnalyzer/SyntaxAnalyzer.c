@@ -284,7 +284,8 @@ uint64_t build_scope_syntax_tree(struct Scope* const parent, const struct Token*
 			const struct Token* construct_type = &tokens[i++];
 			if(tokens[i].id == e_user_defined) {
 				const struct Token* construct_name = &tokens[i++];
-				if(tokens[i].id == o_lgroup){
+				if(tokens[i].id == o_lgroup){ // And Codics says, "Let it be legal"; and legal it is
+
 					//FIXME actually read the argument list
 					struct Fun fun = {
 						.name = construct_name->value,

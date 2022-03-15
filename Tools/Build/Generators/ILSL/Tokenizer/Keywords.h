@@ -10,9 +10,9 @@ static const char* keyword_to_str(const enum TokenID id){
 		"else",        "for",          "break",           "case",
 	    "then",        "do",           "return",          "default",
 
-		//Qualifiers   Inputs          Other
-		"highp",       "local",        "struct",
-		"medp",        "extern",       "preicison",
+		//Qualifiers   Other
+		"highp",       "struct",
+		"medp",        "preicison",
 		"lowp",
 		"const"
 	};

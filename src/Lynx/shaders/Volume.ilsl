@@ -24,7 +24,7 @@ bv4 f3; /*struct s22{ f32m3x4 sdadewrdfew;
 
 void setPixel(f32v2 pos, f32v4 col) {
 	//TODO REMOVE -- test
-	if(pos.x == 0){ pos.y = 1; } //FIXME this expression is skipped
+	if(pos.x == 0){ pos.y = 1; }
 	else {
 		if(pos.x == 1) { pos.y = 2; }
 		else { pos.y = 3; }

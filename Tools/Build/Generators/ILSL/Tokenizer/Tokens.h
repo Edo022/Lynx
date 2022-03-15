@@ -15,17 +15,9 @@ enum TokenID {
 	t_bm2   = 20,   t_u32m2   = 21,   t_i32m2   = 22,   t_f32m2   = 23,   t_f64m2   = 24,	// 2x2 square matrices
 	t_bm3   = 25,   t_u32m3   = 26,   t_i32m3   = 27,   t_f32m3   = 28,   t_f64m3   = 29,	// 3x3 square matrices
 	t_bm4   = 30,   t_u32m4   = 31,   t_i32m4   = 32,   t_f32m4   = 33,   t_f64m4   = 34,	// 4x4 square matrices
-	t_bm2x2 = 35,   t_u32m2x2 = 36,   t_i32m2x2 = 37,   t_f32m2x2 = 38,   t_f64m2x2 = 39,	// 2x2 matrices
-	t_bm2x3 = 40,   t_u32m2x3 = 41,   t_i32m2x3 = 42,   t_f32m2x3 = 43,   t_f64m2x3 = 44,	// 2x3 matrices
-	t_bm2x4 = 45,   t_u32m2x4 = 46,   t_i32m2x4 = 47,   t_f32m2x4 = 48,   t_f64m2x4 = 49,	// 2x4 matrices
-	t_bm3x2 = 50,   t_u32m3x2 = 51,   t_i32m3x2 = 52,   t_f32m3x2 = 53,   t_f64m3x2 = 54,	// 3x2 matrices
-	t_bm3x3 = 55,   t_u32m3x3 = 56,   t_i32m3x3 = 57,   t_f32m3x3 = 58,   t_f64m3x3 = 59,	// 3x3 matrices
-	t_bm3x4 = 60,   t_u32m3x4 = 61,   t_i32m3x4 = 62,   t_f32m3x4 = 63,   t_f64m3x4 = 64,	// 3x4 matrices
-	t_bm4x2 = 65,   t_u32m4x2 = 66,   t_i32m4x2 = 67,   t_f32m4x2 = 68,   t_f64m4x2 = 69,	// 4x2 matrices
-	t_bm4x3 = 70,   t_u32m4x3 = 71,   t_i32m4x3 = 72,   t_f32m4x3 = 73,   t_f64m4x3 = 74,	// 4x3 matrices
-	t_bm4x4 = 75,   t_u32m4x4 = 76,   t_i32m4x4 = 77,   t_f32m4x4 = 78,   t_f64m4x4 = 79,	// 4x4 matrices
-	t_void  = 80, // Just void
-	t_end = 80, //! This value has to be manually updated
+	t_auto  = 35, // Automatic type deduction
+	t_void  = 36, // Just void
+	t_end = 36, //! This value has to be manually updated
 
 
 	// Flow control keywords
@@ -35,10 +27,9 @@ enum TokenID {
 	c_continue = 1002,    c_break     = 1006,    c_return  = 1010,						// continue, break, return
 	c_select   = 1003,    c_case      = 1007,    c_default = 1011,						// Select case
 	// Other keywords
-	k_highp    = 1012,    k_medp      = 1015,    k_lowp    = 1018,    k_const = 1019,	// Qualifiers
-	k_local    = 1013,    k_extern    = 1016,											// Inputs
-	k_struct   = 1014,    k_preicison = 1017,											// Other
-	k_end = 1019, //! This value has to be manually updated
+	k_highp    = 1012,    k_medp      = 1014,    k_lowp    = 1016,    k_const = 1017,	// Qualifiers
+	k_struct   = 1013,    k_preicison = 1015,											// Other
+	k_end = 1017, //! This value has to be manually updated
 
 
 	//Operators
