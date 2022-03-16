@@ -13,8 +13,6 @@ array elements        array constructors
 variables             literals
 temporary variables   function return values
 
-
-
 array [0]        = 0;
 array [0, 2, n]  = 0;
 array [0, 2..60] = 0;
@@ -66,8 +64,10 @@ ILSL is part of the <b>Lynx SDK</b>.<br>
   + [2.4.6. Baseof operator](#baseof-operator)
   + [2.4.7. Auto specifier](#auto-specifier)
 + [2.6. Functions](#functions)
-  + [2.6.1. Template functions](#template-functions)
-  + [2.6.2. Type classes](#type-classes)
+  + [2.6.1. Parameters and references](#parameters-and-references)
+  + [2.6.2. Return statement](#return-statement)
+  + [2.6.3. Template functions](#template-functions)
+  + [2.6.4. Type classes](#type-classes)
 + [2.7. Const qualifier](#const-qualifier)
 
 <br>
@@ -100,7 +100,6 @@ ILSL is part of the <b>Lynx SDK</b>.<br>
   + [3.4.4. Once statement](#once-statement)
   + [3.4.5. Then statement](#then-statement)
 + [3.5. Else statement](#else-statement)
-+ [3.6. Return statement](#return-statement)
 
 <br>
 
@@ -261,6 +260,8 @@ See [Literals](#literals), [Operators](#operators), [Scopes](#scopes)
 
 ## Scopes
 
+Scopes define what the code has access to
+
 <br>
 
 ## Variables
@@ -386,6 +387,8 @@ void main(){
 ```
 
 <br>
+
+### Parameters and references
 
 A function can take an <b>arbitrary number</b> of <b>parameters</b> of any type. Parameters are declared like variables and behave in the same exact way.<br>
 The expressions used to call the function are called arguments.<br>

@@ -195,10 +195,9 @@ void print_syntax_error(const struct Line line_info, const char* const format, .
 	char str[MAX_ERR];
 	vsnprintf(str, MAX_ERR, format, args);
 
-
-	printf(col_bred "\nILSL: Syntax error" col_nwht " on line %s:%d", realpath(line_info.parent_file->path, NULL), line_info.loc_line + 1);
+	printf(col_bred "\nILSL: Syntax error" col_nwht " on line %s:%d", line_info.parent_file->abs_path, line_info.loc_line + 1);
 	for(struct File* f = line_info.parent_file; f->parent_file; f = f->parent_file){
-		printf("\n                Included from %s:%d", realpath(f->parent_file->path, NULL), f->parent_line + 1);
+		printf("\n                Included from %s:%d", f->parent_file->abs_path, f->parent_line + 1);
 	}
 	printf(col_bred "\n%s" col_nwht "\n    %s\n\nCompilation stopped", str, line_info.str_val);
 

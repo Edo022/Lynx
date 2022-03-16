@@ -101,14 +101,19 @@ char* uncomment(const char* code, struct File* const file_path){
  * @brief Checks if an included path is valid
  *     Prints an error if it isn't
  * @param line_info The number of the line. Used to print errors
- * @param path The path to the included file
+ * @param abs_path The absolute path to the included file
+ * @return False if the file has already been included, true otherwise
  */
-void check_included_file(const struct Line line_info, const char* path){ //TODO check vLine type
-	if(access(path, F_OK) == 0) {
-		struct stat file_stat; stat(path, &file_stat);
+bool check_included_file(const struct Line line_info, const char* abs_path){ //TODO check vLine type
+	if(access(abs_path, F_OK) == 0) {
+		struct stat file_stat; stat(abs_path, &file_stat);
 		if(S_ISDIR(file_stat.st_mode)) {
-			print_syntax_error(line_info, "\"%s\" is a directory", path);
+			print_syntax_error(line_info, "\"%s\" is a directory", abs_path);
 		}
+		else for(uint64_t i = 0; i < source_files_num; ++i) {
+			if(0 == strcmp(source_files_arr[i].abs_path, abs_path)) return false;
+		}
+		return true;
 	}
 	else {
 		print_syntax_error(line_info, "No such file or directory");
@@ -121,7 +126,7 @@ void check_included_file(const struct Line line_info, const char* path){ //TODO 
 /**
  * @brief Checks if vLine is an include statement and returns the path of the included file
  * @param vLineValue The line to parse
- * @return The path of the included file, or NULL if the line is not an include statement
+ * @return The absolute path of the included file or NULL if the line is not an include statement
  */
 char* is_include(const struct Line line_info){
 	// Check #
@@ -144,7 +149,7 @@ char* is_include(const struct Line line_info){
 		for(uint64_t j = 0; i < line_len; ++i, ++j){		// Get the file path
 			if(line_info.str_val[i] == c) {						//
 				ret[j] = '\0';								//
-				return ret;									// Return the path
+				return realpath(ret, NULL);									// Return the path
 			}
 			ret[j] = line_info.str_val[i];
 		}
@@ -164,11 +169,12 @@ char* is_include(const struct Line line_info){
  * @param vLineInfo The absolute line from which the file was included. UINT64_MAX if the file is not included
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-uint64_t include_file(const char* const path, const uint64_t parent_line, struct File* parent_file, struct Line** const out_lines){
+uint64_t include_file(const char* const abs_path, const uint64_t parent_line, struct File* parent_file, struct Line** const out_lines){
 	//Reallocate file array
 	source_files_arr = relloc_pow2(source_files_arr, sizeof(struct File), source_files_num);
 
-	source_files_arr[source_files_num].path = strdup(path);
+	// source_files_arr[source_files_num].path = strdup(path);
+	source_files_arr[source_files_num].abs_path = abs_path;
 	source_files_arr[source_files_num].parent_line = parent_line;
 	source_files_arr[source_files_num].parent_file = parent_file;
 	struct File* cur_file = &source_files_arr[source_files_num];
@@ -176,7 +182,7 @@ uint64_t include_file(const char* const path, const uint64_t parent_line, struct
 
 
 
-	char* code = read_sanitized_file(path, 4);									// Read the file
+	char* code = read_sanitized_file(abs_path, 4);								// Read the file
 	code = uncomment(code, cur_file);											// Uncomment it
 	*out_lines = malloc(sizeof(struct Line) * MAX_CODE_LINES);	// Allocate the return array
 
@@ -190,16 +196,17 @@ uint64_t include_file(const char* const path, const uint64_t parent_line, struct
 		tmp_isinclude_info.str_val = line;
 		tmp_isinclude_info.str_len = strlen(line);
 		tmp_isinclude_info.loc_line = i;
-		char* const r = is_include(tmp_isinclude_info);							// Check the line
-		if(r){																	// If the line is an include statement
-			check_included_file(tmp_isinclude_info, r);								// Check the included file
-			struct Line* included_lines;			// Get the lines of the included file
-			uint64_t included_lines_num = include_file(r, i, cur_file, &included_lines);	//
-			memcpy(*out_lines + tot_line_num, included_lines, sizeof(struct Line) * included_lines_num);	// Copy them in the return array
-			free(included_lines);															// Free the saved lines
-			tot_line_num += included_lines_num;												// Update the line counter
+		char* const included_abs_path = is_include(tmp_isinclude_info);							// Check the line
+		if(included_abs_path){																// If the line is an include statement
+			if(check_included_file(tmp_isinclude_info, included_abs_path)){								// Check the included file
+				struct Line* included_lines;			// Get the lines of the included file
+				uint64_t included_lines_num = include_file(included_abs_path, i, cur_file, &included_lines);	//
+				memcpy(*out_lines + tot_line_num, included_lines, sizeof(struct Line) * included_lines_num);	// Copy them in the return array
+				free(included_lines);															// Free the saved lines
+				tot_line_num += included_lines_num;												// Update the line counter
+			}
 		}
-		else{																	// If it's not
+		else {																	// If it's not
 			(*out_lines)[tot_line_num].loc_line = i;											// Set the line numer
 			(*out_lines)[tot_line_num].str_len     = strlen(line);									// Set the line length
 			(*out_lines)[tot_line_num].str_val   = line;											// Set the line value
