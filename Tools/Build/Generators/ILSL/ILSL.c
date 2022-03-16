@@ -19,6 +19,7 @@
 //FIXME prevent header files to be included multiple times
 //FIXME use hashes for this
 
+//TODO function track_expr to backtrack all the symbols and determine if an expression is const
 
 
 #include "Utils.h"
