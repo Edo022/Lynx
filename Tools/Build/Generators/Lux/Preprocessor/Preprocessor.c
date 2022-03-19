@@ -169,7 +169,7 @@ char* is_include(const struct Line line_info){
  * @param vLineInfo The absolute line from which the file was included. UINT64_MAX if the file is not included
  * @return An array of Line structures of size *pNum containing the lines of all the included files
  */
-uint64_t include_file(const char* const abs_path, const uint64_t parent_line, struct File* parent_file, struct Line** const out_lines){
+uint64_t include_file(char* const abs_path, const uint64_t parent_line, struct File* parent_file, struct Line** const out_lines){
 	//Reallocate file array
 	source_files_arr = relloc_pow2(source_files_arr, sizeof(struct File), source_files_num);
 

@@ -1,12 +1,12 @@
 //TODO change output name
-// > from Lynx/Tools/Build/Generators/ILSL
-//exec          gcc ILSL.c Utils.c Preprocessor/Preprocessor.c SyntaxAnalyzer/SyntaxAnalyzer.c Tokenizer/Tokenizer.c Preprocessor/Files.c -I. -std=c11 -o ../GenGlsl
-//exec          gcc ILSL.c Utils.c Preprocessor/Preprocessor.c SyntaxAnalyzer/SyntaxAnalyzer.c Tokenizer/Tokenizer.c Preprocessor/Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o ../GenGlsl
+// > from Lynx/Tools/Build/Generators/Lux
+//exec          gcc Lux.c Utils.c Preprocessor/Preprocessor.c SyntaxAnalyzer/SyntaxAnalyzer.c Tokenizer/Tokenizer.c Preprocessor/Files.c -I. -std=c11 -o ../GenGlsl
+//exec          gcc Lux.c Utils.c Preprocessor/Preprocessor.c SyntaxAnalyzer/SyntaxAnalyzer.c Tokenizer/Tokenizer.c Preprocessor/Files.c -I. -std=c11 -ggdb3 -g3 -O0 -o ../GenGlsl
 // > from Lynx
-//run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.ilsl ../.engine/.tmp/glsl-Volume.ilsl.comp
+//run           Tools/Build/Generators/GenGlsl src/Lynx/shaders/Volume.lux ../.engine/.tmp/glsl-Volume.lux.comp
 
 // //Filter includes
-// // cd Lynx/Tools/Build/Generators/ILSL; make CMAKE_C_FLAGS="-Werror"
+// // cd Lynx/Tools/Build/Generators/Lux; make CMAKE_C_FLAGS="-Werror"
 // // doesnt work
 
 
@@ -70,7 +70,7 @@
 
 
 
-void run(const char* const src_name, const char* const out_name){
+void run(char* const src_name, const char* const out_name){
 	source_files_arr = malloc(sizeof(struct File) * 2);
 
 	//Read input file

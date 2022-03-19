@@ -10,6 +10,16 @@ from argparse import Namespace as ns
 
 #FIXME stop program if std or other stuff cannot be found
 
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
+#TODO MOVE TO LUX COMPILER
 
 
 # Element parsing --------------------------------------------------------------------------------------------------------------------------#

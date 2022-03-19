@@ -130,9 +130,9 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n            ]'
             f'\n        }},'
             f'\n        {{'
-            f'\n            "name": "ILSL",'
+            f'\n            "name": "Lux",' #FIXME
             f'\n            "includePath": ['
-            f'\n                "${{workspaceFolder}}/{ AtoE }/Tools/Build/Generators/ILSL" //TODO MOVE TO SRC'
+            f'\n                "${{workspaceFolder}}/{ AtoE }/Tools/Build/Generators/Lux" //TODO MOVE TO SRC' #FIXME
             f'\n            ],'
             f'\n            "defines": [],'
             f'\n            "compilerPath": "/usr/bin/gcc",'
@@ -200,7 +200,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n    }}'
             f'\n'
             f'\n    ils {{'
-            f'\n        a {{ src/Lynx/shaders/*.ilsl }}'
+            f'\n        a {{ src/Lynx/shaders/*.ilsl }}' #FIXME
             f'\n    }}'
             f'\n'
             f'\n    defines         {{}}'
@@ -273,7 +273,7 @@ if sys.stdin.read(1).lower() == 'y':
             f'\n'
             f'\n{{'
             f'\n    cpp {{ a {{ main.cpp }} }}  # A list of C++ source files'
-            f'\n    ils {{}}                  # A list of ILSL source files'
+            f'\n    ils {{}}                  # A list of ILSL source files' #FIXME
             f'\n'
             f'\n    defines         {{}}      # -D option           # e.g.  -DVAR=1 -D mogu_mogu'       #TODO REMOVE -D
             f'\n    forced_includes {{}}      #                     # e.g.  ./file.hpp idk.hpp'

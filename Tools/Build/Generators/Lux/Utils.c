@@ -178,7 +178,7 @@ void print_generic_error(const char* format, ...){
 	char str[MAX_ERR];
 	vsnprintf(str, MAX_ERR, format, args);
 
-	printf(col_bred "\nILSL: Error:\n%s" col_nwht, str);
+	printf(col_bred "\nLux: Error:\n%s" col_nwht, str); //TODO change name if the compiler is the same
 	exit(1);
 }
 
@@ -195,7 +195,7 @@ void print_syntax_error(const struct Line line_info, const char* const format, .
 	char str[MAX_ERR];
 	vsnprintf(str, MAX_ERR, format, args);
 
-	printf(col_bred "\nILSL: Syntax error" col_nwht " on line %s:%d", line_info.parent_file->abs_path, line_info.loc_line + 1);
+	printf(col_bred "\nLux: Syntax error" col_nwht " on line %s:%d", line_info.parent_file->abs_path, line_info.loc_line + 1); //TODO change name if the compiler is the same
 	for(struct File* f = line_info.parent_file; f->parent_file; f = f->parent_file){
 		printf("\n                Included from %s:%d", f->parent_file->abs_path, f->parent_line + 1);
 	}
