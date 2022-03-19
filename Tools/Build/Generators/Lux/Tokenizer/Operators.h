@@ -4,12 +4,15 @@
 
 
 
+//TODO add:=
+//TODO remove ,
+//TODO remove {}
 
 enum OperatorType {
-	ot_logical,		// == !=          && || ^^ <   >   !
+	ot_logical,		// == !=          && || ^^ <   >   !  <=  >=
 	ot_arithmetic,	// +  -  *  /  %  &  |  ^  <<  >>  ~
 	ot_assignment,	// += -= *= /= %= &= |= ^= <<= >>= =
-	ot_inc_dec,		// ++n n++ --n n--         <=  >=
+	ot_inc_dec,		// ++n n++ --n n--
 	ot_ternary,		// ? :
 	ot_field,		// .
 	ot_seq,			// ,

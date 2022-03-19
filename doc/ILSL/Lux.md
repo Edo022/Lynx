@@ -1,17 +1,40 @@
 # Lux - Lynx shading language
 
-<style>
-    .h {
-        color: gray;
-}
-</style>
+<head>
+    <style>
+        .h {
+            color: gray;
+            white-space:nowrap;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        code {
+            white-space:nowrap;
+        }
+        .op_template {
+            color: gray;
+            white-space:nowrap;
+            font-size: smaller;
+        }
+        .op_syntax {
+            white-space:nowrap;
+        }
+    </style>
+</head>
 
-Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, written to allow developers to efficiently create shaders without going through the laborious work of manually managing arrays and interfaces.
+Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.
 
 The language features <b>C-like syntax</b> and semantics.<br>
-Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and management of multidimensional data.
+Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and better control over multidimensional data.
 
-Lux is meant to be used alongside Umbra, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.
+Lux is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.
 
 Lux is part of the <b>Lynx SDK</b>.
 
@@ -54,18 +77,21 @@ Lux is part of the <b>Lynx SDK</b>.
 
 ## 3. Runtime statements
 
-+ [3.1. Values](#values)
-  + [3.1.1. Left and right values](#variables)
-  + [3.1.2. Literals](#literals)
-  + [3.1.3. Temporary variables](#temporary-variables)
-  + [2.4.5. Constructors](#constructors)
-+ [3.2. Operators](#operators)
-  + [3.2.1 Arithmetic operators](#arithmetic-operators)
-  + [3.2.2 Binary operators](#binary-operators)
-  + [3.2.3 Logical operators](#logical-operators)
-  + [3.2.4 Ternary operator](#ternary-operator)
-  + [3.2.5 Grouping](#grouping)
-  + [3.2.6 Array operations](#array-operations)
++ [3.1. Expressions](#expression)
+  + [3.1.1. Literals](#literals)
+  + [3.1.2. Temporary variables](#temporary-variables)
+  + [3.1.3. Function calls](#function-calls)
+  + [3.1.4. Constructors](#constructors)
+  + [3.1.5 Arithmetic operators](#arithmetic-operators)
+  + [3.1.6 Binary operators](#binary-operators)
+  + [3.1.7 Logical operators](#logical-operators)
+  + [3.1.8 Ternary operator](#ternary-operator)
+  + [3.1.9 Grouping](#grouping)
+  + [3.1.10 Array operations](#array-operations)
++ [3.2. Assignments](#assignments)
+  + [3.1.1. Left and right values](#left-and-right-values)
+  + [3.2.2. Composite assignments](#composite-assignments)
+  + [3.2.3. Multiple assignments](#composite-assignments)
 + [3.3. Selection](#selection)
   + [3.3.1. If statement](#if-statement)
   + [3.3.2. Select statement](#select-statement)
@@ -83,7 +109,7 @@ Lux is part of the <b>Lynx SDK</b>.
 
 + [5.1. Modules](#modules)
 + [5.1. Compilation phases and error types](#compilation-phases-and-error-types)
-+ [5.2. Variables initialization order](#variable-initialization-order)
++ [5.2. Global initialization order](#variable-initialization-order)
 + [5.3. Branching performance](#branching-performance)
 + [5.4. Compiler optimizations](#compiler-optimizations)
 
@@ -224,15 +250,129 @@ Comments, newline characters, whitespace characters and preprocessor directives 
 
 Each token can be classified as one of the following:
 
-| Type                                                 | Pattern                                                                                        | Example                                            |
-|------------------------------------------------------|------------------------------------------------------------------------------------------------|----------------------------------------------------|
-| Identifier                                           | Any sequence of `alphanumeric characters`, `$` and `_` that doesn't start with a decimal digit | `Var_1` `function` `$0` `NOT$A$MACRO`              |
-| Literal                                              | Any sequence of `alphanumeric characters` and `.` that start withs a decimal digit             | `0x12a4bc` `266250` `0b1010001` `0invalid_literal` |
-| Keywords                                             | Predefined alphabetic identifiers                                                              | `for` `if` `namespace` `then`                      |
-| Operator                                             | Predefined sequences of symbols                                                                |  `=` `<<=` `+` `~`                                 |
-| Function arguments, scope and constructor delimiters | `(` `)` `{` `}` `[` `]`                                                                        |                                                    |
-| Expression, statement, type and scope separators     | `,` `;` `\|` `::`                                                                              |                                                    |
-| Reference token                                      | `&`                                                                                            |                                                    |
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th style="text-align: center;" colspan=4>Pattern</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Identifier</td>
+            <td align="center" colspan=4>Any sequence of <code>alphanumeric characters</code>, <code>$</code> and <code>_</code> that doesn't start with a decimal digit</td>
+        </tr>
+        <tr>
+            <td>Literal</td>
+            <td align="center" colspan=4>Any sequence of <code>alphanumeric characters</code> and <code>.</code> that starts with a decimal digit</td>
+        </tr>
+        <tr>
+            <td>Keywords</td>
+            <td align="center" colspan=2>
+                <code>namespace</code>
+                <code>enum</code>
+                <code>struct</code>
+                <code>auto</code>
+                <code>typeof</code>
+                <code>baseof</code>
+                <code>class</code>
+                <code>const</code>
+                <code>alias</code>
+            </td>
+            <td align="center" colspan=2>
+                <code>if</code>
+                <code>select</code>
+                <code>for</code>
+                <code>while</code>
+                <code>do</code>
+                <code>continue</code>
+                <code>break</code>
+                <code>once</code>
+                <code>then</code>
+                <code>else</code>
+                <code>return</code>
+            </td>
+        </tr>
+        <tr>
+            <td>Operator</td>
+            <td align="center">
+                <code>!</code>
+                <code>==</code>
+                <code>!=</code>
+                <code>:=</code>
+                <code>&&</code>
+                <code>^^</code>
+                <code>||</code>
+                <code>&lt;</code>
+                <code>&lt;=</code>
+                <code>&gt;</code>
+                <code>&gt;=</code>
+            </td>
+            <td align="center">
+                <code>+</code>
+                <code>-</code>
+                <code>++</code>
+                <code>--</code>
+                <code>*</code>
+                <code>/</code>
+                <code>%</code>
+            </td>
+            <td align="center">
+                <code>&</code>
+                <code>|</code>
+                <code>^</code>
+                <code>&lt;&lt;</code>
+                <code>&gt;&gt;</code>
+                <code>~</code>
+            </td>
+            <td align="center">
+                <kbd><code>(</code><code>)</code></kbd>
+                <kbd><code>[</code><code>]</code></kbd>
+                <code>.</code>
+                <kbd><code>?</code><code>:</code></kbd>
+            </td>
+        </tr>
+        <tr>
+            <td>Function arguments, scope or constructor delimiter</td>
+            <td align="center" ><code>(</code> <code>)</code></td>
+            <td align="center" ><code>{</code> <code>}</code></td>
+            <td align="center"  colspan=2><code>[</code> <code>]</code></td>
+        </tr>
+        <tr>
+            <td>Assignment token</td>
+            <td align="center"><code>=</code></td>
+            <td align="center">
+                <code>+=</code>
+                <code>*=</code>
+                <code>-=</code>
+                <code>/=</code>
+                <code>%=</code>
+            </td>
+            <td align="center" colspan=2><div style="width: 50%;">
+                <code>&=</code>
+                <code>|=</code>
+                <code>^=</code>
+                <code><<=</code>
+                <code>>>=</code>
+            </div></td>
+        </tr>
+        <tr>
+            <td>Expression, statement, type or scope separator</td>
+            <td align="center" style="width: 18%;"><code>,</code></td>
+            <td align="center" style="width: 18%;"><code>;</code></td>
+            <td align="center" style="width: 18%;"><code>|</code></td>
+            <td align="center" style="width: 18%;"><code>::</code></td>
+        </tr>
+        <tr>
+            <td>Reference token</td>
+            <td align="center" colspan=4><code>&</code></td>
+        </tr>
+        <tr>
+            <td>For each token</td>
+            <td align="center" colspan=4><code>:</code></td>
+        </tr>
+    </tbody>
+</table>
 
 <br>
 
@@ -260,7 +400,7 @@ Other identifiers are only allowed to be declared in certain scopes, following t
 | Module            | `Functions`<br><i>`Variables`<br>`Type classes`</i>                 | -                                   |
 | Namespace         | `Functions`<br><i>`Variables`<br>`Type classes`</i>                 | Any scope                           |
 | Enum              | <i>`Enum elements`</i>                                              | Any scope                           |
-| Struct            | <i>`Struct fields`</i>                                              | Any scope                           |
+| Struct            | <i>`Struct members`</i>                                             | Any scope                           |
 | Function          | `Runtime statements`<br><i>`Variables`<br>`Function parameters`</i> | Module scope                        |
 | Runtime statement | `Runtime statements`<br><i>`Variables`<br></i>                      | `Functions`<br>`Runtime statements` |
 
@@ -385,7 +525,7 @@ The name of the enum can be used as a type to prevent unknown values to be saved
 <h5>Syntax</h5>
 <pre>
 enum<span class=h>·</span><kbd>symbol identifier</kbd> : <kbd>base type</kbd> {
-    <kbd>element identifier</kbd> = <kbd>(base type) expression</kbd>;
+    <kbd>element identifier</kbd> = <kbd><kbd>(base type)</kbd> expression</kbd>;
     <kbd>...</kbd>
 }
 </pre>
@@ -456,17 +596,21 @@ Elements are declared in the same way as variables, and they can be of any type,
 
 Structs can be referenced before their definition.<br>
 It is allowed to declare structures, enums and symbol aliases inside a struct.<br>
-Struct fields are referenced using the `.` token. They cannot be const and cannot have an initializer value.<br>
-Structs with no elements are not allowed.
+Struct members are referenced using the `.` token, or through their index.<br>
 
+Indices must be known at compile time and they can be listed to reference multiple elements at once.<br>
+The members cannot be const and cannot have an initializer value. Empty structs are not allowed.
+
+//TODO MOVE VALUE LISTS TO #multiple-assignments
 <h5>Syntax</h5>
-<pre>
+<pre> 
 struct<span class=h>·</span><kbd>symbol identifier</kbd> {
-    <kbd>field type</kbd><span class=h>·</span><kbd>field identifier</kbd>;
+    <kbd>member type</kbd><span class=h>·</span><kbd>member identifier</kbd>;
     <kbd>...</kbd>
 }
 </pre>
-<pre><kbd>symbol identifier</kbd>.<kbd>field identifier</kbd></pre>
+<pre><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>]</pre>
+<pre><kbd>symbol identifier</kbd>.<kbd>member identifier</kbd></pre>
 
 <h5>Example</h5>
 
@@ -476,23 +620,29 @@ struct idk {
     f64 c;
 }
 
-void main(){
+
+void main(u32 i){
     idk var;
-    var.a = 4;
-    var.b = var.a * 4;
+
+    var.a = 4;              // Ok, var = (4, ?, ?)
+    var.b = var.a * 4;      // Ok, var = (4, 8, ?)
+    var[2] = 0.33;          // Ok, var = (4, 8, 0.33)
+    var[2, 0] = var[3, 2];  // Ok, var = (4, ?, ?)
+    //var[4] = 0.33;        // Error, invalid index
+    //var[i] = 0.33;        // Error, unknown index
 }
 ```
 
 <br>
 
-Like enums, structs can also be unnamed and their symbol and fields types can be referenced through `typeof`.<br>
+Like enums, structs can also be unnamed and their symbol and members types can be referenced through `typeof`.<br>
 Defining unnamed structs without a symbol declaration will also generate a warning.
 
 <h5>Syntax</h5>
 
 <pre>
 struct {
-    <kbd>field type</kbd><span class=h>·</span><kbd>field identifier</kbd>;
+    <kbd>member type</kbd><span class=h>·</span><kbd>member identifier</kbd>;
     <kbd>...</kbd>
 } <kbd>symbol identifier</kbd>;
 </pre>
@@ -524,12 +674,12 @@ See [Arrays](#arrays), [Typeof and baseof specifiers](#typeof-and-baseof-specifi
 ### Arrays
 
 Arrays can aggregate values of the same type.<br>
-Functions, parameters, right values, variables and struct fields can all be of an array type.
+Functions, parameters, right values, variables and struct member can all have array type.
 
 Arrays can use any base type, including structs, enums and other arrays.<br>
 An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
 
-Array declarations are identical to the normal types, but `[` `]` tokens follow the symbol identifier, optionally enclosing an expression to specify the number of elements.<br>
+Array declarations are identical to normal types, but `[` `]` tokens follow the symbol identifier, optionally enclosing an expression to specify the number of elements.<br>
 Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
 If the `[` `]` are left empty, the number of elements is determined by the inizializer value, which becomes required and must be of an implicitly convertible array type.
 
@@ -550,14 +700,58 @@ u32 arr4[5] = 1;                // Ok, arr4 = (1, 1, 1, 1, 1)
 u32 arr5[] = (8, 7, 6);         // Ok, arr5 = (8,  7,  6)
 u32 arr6[] = arr4 * 2;          // Ok, arr6 = (16, 14, 12)
 
-//u32 arr1[4] = (1, 2, 3);      // Error, inizializer cannot convert as it doesn't have enough elements
+//u32 arr1[4] = (1, 2, 3);      // Error, inizializer doesn't have enough elements
 //u32 arr1[]  = 1;              // Error, cannot determine the array size
 ```
 
 <br>
 
+Array <b>elements</b> are referenced through their <b>index</b>.<br>
+Negative values are not supported.
+
+One-dimensional arrays with a <b>maximum of 4 elements</b> can use special <b>named identifiers</b> to refer to them.<br>
+Referencing elements of multidimensional arrays require two or more indices.<br>
+Referencing elements that are <b>not</b> in the <b>array range</b> has <b>undefined behaviour</b>.
+
+| Element | Named identifier 1 | Named identifier 2 |
+|:-------:|:------------------:|:------------------:|
+| `[0]`   | `x`                | `r`                |
+| `[1]`   | `y`                | `g`                |
+| `[2]`   | `z`                | `b`                |
+| `[3]`   | `w`                | `a`                |
+
+<br>
+//TODO MOVE VALUE LISTS TO #multiple-assignments
+Both named identifiers and indices can be listed to reference multiple elements at once.<br>
+Referencing the same element more than once in a left value is a semantic error. If it happens during runtime, it has undefined behaviour.
+
 <h5>Syntax</h5>
+
+<pre><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>]</pre>
+<pre><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>]<kbd>...</kbd></pre>
+<pre><kbd>symbol identifier</kbd>.<kbd>named identifier</kbd><kbd>...</kbd></pre>
+
 <h5>Example</h5>
+
+```c
+void main() { //TODO multidimensional arrays
+    u32 arr1[5];
+    arr1[3] = 0;                // Ok, arr1 = (?, ?, ?, 0, ?)
+    //arr1[5] = 0;              // Undefined behaviour, index 5 is out of range
+    //arr1.a = 0;               // Error, arrays with more than 5 elements don't have named identifiers
+
+    //u32 arr2[] = arr1[0, 1, 2, 3];    // Error, some of these elements are not initialized
+    arr1[0, 1, 4] = 2;                  // Ok, arr1 =(2, 2, ?, 0, 2)
+    u32 arr2[] = arr1[0, 1, 4, 3];      // Ok, arr2 = (2, 2, 2, 0)
+
+    u32 arr2.b = 9;                     // Ok, arr2 = (2, 2, 9, 0)
+    arr2.xyz = arr2.zrz;                // Ok, arr1 = (0, 2, 0, 0)
+    arr2.wyrb *= 3;                     // Ok, arr1 = (0, 6, 0, 0)
+    //arr2.xyz = arr2.zrga;             // Error, the arrays have different length
+    //arr2.yy = arr2.xx;                // Error, element [0] referenced twice in left value
+    //arr2.yy = arr2.xa;                // Error, element [0] referenced twice in left value
+}
+```
 
 See [Primitive types](#primitive-types), [Implicit conversions](#implicit-conversions), [Constructors](#constructors)
 
@@ -572,84 +766,86 @@ Primitive types are all implicitly convertible between them.<br>
 The conversions follow these rules:
 
 <table>
-    <tr>
+    <thead><tr>
         <th>Expression type</th>
         <th>Expected type</th>
         <th>Behaviour</th>
-    </tr>
-    <tr>
-        <td rowspan="3"><code>u32</code></td>
-        <td><code>i32</code></td>
-        <td>Values over <code>limits::i32::max</code> overflow to <code>limits::i32::min&nbsp;+&nbsp;n&nbsp;-&nbsp;1</code></td>
-    </tr>
-    <tr>
-        <td><code>f32</code><code>f64</code></td>
-        <td>No changes</td>
-    </tr>
-    <tr>
-        <td><code>b</code></td>
-        <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-    </tr>
-    <tr>
-        <td rowspan="3"><code>i32</code></td>
-        <td><code>u32</code></td>
-        <td>Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code></td>
-    </tr>
-    <tr>
-        <td><code>f32</code><code>f64</code></td>
-        <td>No changes</td>
-    </tr>
-    <tr>
-        <td><code>b</code></td>
-        <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-    </tr>
-    <tr>
-        <td rowspan="4"><code>f32</code></td>
-        <td><code>u32</code></td>
-        <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
-        If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
-    </tr>
-    <tr>
-        <td><code>i32</code></td>
-        <td>The decimal part is truncated.<br>
-        If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
-    </tr>
-    <tr>
-        <td><code>f64</code></td>
-        <td>No changes</td>
-    </tr>
-    <tr>
-        <td><code>b</code></td>
-        <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-    </tr>
-    <tr>
-        <td rowspan="4"><code>f64</code></td>
-        <td><code>u32</code></td>
-        <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
-        If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
-    </tr>
-    <tr>
-        <td><code>i32</code></td>
-        <td>The decimal part is truncated.<br>
-        If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
-    </tr>
-    <tr>
-        <td><code>f32</code></td>
-        <td>The result is approximated using the maximum precision available</td>
-    </tr>
-    <tr>
-        <td><code>b</code></td>
-        <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-    </tr>
-    <tr>
-        <td rowspan="3"><code>b</code></td>
-        <td><code>u32</code><code>i32</code></td>
-        <td><code>true</code> is evaluated as <code>1</code>, <code>false</code> as <code>0</code></td>
-    </tr>
-    <tr>
-        <td><code>f32</code><code>f64</code></td>
-        <td><code>true</code> is evaluated as <code>1.0</code>, <code>false</code> as <code>0.0</code></td>
-    </tr>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <td rowspan="3"><code>u32</code></td>
+            <td><code>i32</code></td>
+            <td>Values over <code>limits::i32::max</code> overflow to <code>limits::i32::min&nbsp;+&nbsp;n&nbsp;-&nbsp;1</code></td>
+        </tr>
+        <tr>
+            <td><code>f32</code><code>f64</code></td>
+            <td>No changes</td>
+        </tr>
+        <tr>
+            <td><code>b</code></td>
+            <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+        </tr>
+        <tr>
+            <td rowspan="3"><code>i32</code></td>
+            <td><code>u32</code></td>
+            <td>Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code></td>
+        </tr>
+        <tr>
+            <td><code>f32</code><code>f64</code></td>
+            <td>No changes</td>
+        </tr>
+        <tr>
+            <td><code>b</code></td>
+            <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+        </tr>
+        <tr>
+            <td rowspan="4"><code>f32</code></td>
+            <td><code>u32</code></td>
+            <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
+            If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
+        </tr>
+        <tr>
+            <td><code>i32</code></td>
+            <td>The decimal part is truncated.<br>
+            If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
+        </tr>
+        <tr>
+            <td><code>f64</code></td>
+            <td>No changes</td>
+        </tr>
+        <tr>
+            <td><code>b</code></td>
+            <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+        </tr>
+        <tr>
+            <td rowspan="4"><code>f64</code></td>
+            <td><code>u32</code></td>
+            <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
+            If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
+        </tr>
+        <tr>
+            <td><code>i32</code></td>
+            <td>The decimal part is truncated.<br>
+            If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
+        </tr>
+        <tr>
+            <td><code>f32</code></td>
+            <td>The result is approximated using the maximum precision available</td>
+        </tr>
+        <tr>
+            <td><code>b</code></td>
+            <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+        </tr>
+        <tr>
+            <td rowspan="3"><code>b</code></td>
+            <td><code>u32</code><code>i32</code></td>
+            <td><code>true</code> is evaluated as <code>1</code>, <code>false</code> as <code>0</code></td>
+        </tr>
+        <tr>
+            <td><code>f32</code><code>f64</code></td>
+            <td><code>true</code> is evaluated as <code>1.0</code>, <code>false</code> as <code>0.0</code></td>
+        </tr>
+    </tbody>
 </table>
 
 <br>
@@ -972,9 +1168,9 @@ f64 fun(f64 const arg) {            // Ok, const parameter
 
 ### Function calls and variables
 
-### Array subscript
+### Array subscription
 
-### Struct fields
+### Struct members
 
 ### Implicit conversions
 
@@ -1068,3 +1264,327 @@ this::pos.z
 
 sequence function //TODO
 sequence(start, end, step)
+
+
+
+
+
+
+
+<h5>Arithmetic operators</h5>
+<table>
+    <tr><thead>
+        <th>Precedence</th>
+        <th>Operator</th>
+        <th align="center">Syntax</th>
+        <th>Result</th>
+        <th>Name</th>
+        <th>Category</th>
+    </thead></tr>
+    <tbody>
+        <tr>
+            <td align="center" >1</td>
+            <td align="center">
+                <span class="op_template">With T as any</span><br>
+                <kbd><code>(</code><code>)</code></kbd>
+            </td>
+            <td align="center">
+                <span class=op_syntax>( <kbd>T <kbd>expr</kbd></kbd> )</span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Grouping</td>
+            <td>Other</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=6>2</td>
+            <td align="center" rowspan=2>
+                <span class="op_template">With T as any</span><br>
+                <kbd><code>[</code><code>]</code></kbd>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T[] <kbd>array</kbd></kbd>[ <kbd>u32 <kbd>index</kbd></kbd> ]</span>
+            </td>
+            <td><code>T lvalue</code></td>
+            <td>Subscription</td>
+            <td>Other</td>
+        </tr>
+        <tr>
+            <td align="center" style="white-space:nowrap">
+                <span class=op_syntax><kbd>any_struct <kbd>struct</kbd></kbd>[ <kbd>u32 <kbd>index</kbd></kbd> ]</span>
+            </td>
+            <td><code>typeof(member)</code><br><code>lvalue</code></td>
+            <td>Subscription</td>
+            <td>Other</td>
+        </tr>
+        <tr>
+            <td align="center"><code>.</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Struct member</td>
+            <td>Other</td>
+        </tr>
+        <tr>
+            <td align="center"><code>.</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Named array element identifier</td>
+            <td>Other</td>
+        </tr>
+        <tr>
+            <td align="center"><code>++</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Postfix increment</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center"><code>--</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Postfix decrement</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=6>3</td>
+            <td align="center"><code>++</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Prefix increment</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center"><code>--</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Prefix decrement</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center"><code>+</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Promotion</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center"><code>-</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Inversion</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center"><code>~</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Bitwise NOT</td>
+            <td>Binary</td>
+        </tr>
+        <tr>
+            <td align="center"><code>!</code></td>
+            <td align="center" ></td>
+            <td Result</td>
+            <td >Logical NOT</td>
+            <td>Logical</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=3>4</td>
+            <td align="center">
+                <span class="op_template">With T as any</span><br>
+                <code>*</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> &#42; <kbd>T <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Multiplication</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center">
+                <span class="op_template">With T as any</span><br>
+                <code>/</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> / <kbd>T <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Division</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center">
+                <span class="op_template">With T as any - b</span><br>
+                <code>%</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> % <kbd>T <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Modulo</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=2>5</td>
+            <td align="center">
+                <span class="op_template">With T as any</span><br>
+                <code>+</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> + <kbd>T <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Addition</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center">
+                <span class="op_template">With T as any</span><br>
+                <code>-</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> - <kbd>T <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Subtraction</td>
+            <td>Arithmetic</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=2>6</td>
+            <td align="center">
+                <span class="op_template">With T as any_int</span><br>
+                <code>&lt;&lt;</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> &lt;&lt; <kbd>u32 <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Left bit shift</td>
+            <td>Binary</td>
+        </tr>
+        <tr>
+            <td align="center">
+                <span class="op_template">With T as any_int</span><br>
+                <code>&gt;&gt;</code>
+            </td>
+            <td align="center">
+                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> &gt;&gt; <kbd>u32 <kbd>b</kbd></kbd></span>
+            </td>
+            <td><code>T rvalue</code></td>
+            <td>Right bit shift</td>
+            <td>Binary</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=4>7</td>
+            <td align="center"><code>&lt;</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Less than</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center"><code>&lt;=</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Less or equal than</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center"><code>&gt;</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Greater than</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center"><code>&gt;=</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Greater or equal than</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center" rowspan=3>8</td>
+            <td align="center"><code>==</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Equality</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center"><code>!=</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Inequality</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center"><code>:=</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Existence</td>
+            <td>Comparison</td>
+        </tr>
+        <tr>
+            <td align="center">9</td>
+            <td align="center"><code>&</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Bitwise AND</td>
+            <td>Binary</td>
+        </tr>
+        <tr>
+            <td align="center">10</td>
+            <td align="center"><code>^</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Bitwise XOR</td>
+            <td>Binary</td>
+        </tr>
+        <tr>
+            <td align="center">11</td>
+            <td align="center"><code>|</code></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Bitwise OR</td>
+            <td>Binary</td>
+        </tr>
+        <tr>
+            <td align="center">12</td>
+            <td align="center"><code>&&</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Logical AND</td>
+            <td>Logical</td>
+        </tr>
+        <tr>
+            <td align="center">13</td>
+            <td align="center"><code>^^</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Logical XOR</td>
+            <td>Logical</td>
+        </tr>
+        <tr>
+            <td align="center">14</td>
+            <td align="center"><code>||</code></td>
+            <td align="center"></td>
+            <td><code>b rvalue</code></td>
+            <td>Logical OR</td>
+            <td>Logical</td>
+        </tr>
+        <tr>
+            <td align="center">15</td>
+            <td align="center"><kbd><code>?</code><code>:</code></kbd></td>
+            <td align="center"></td>
+            <td><code>Result</code></td>
+            <td>Selection operator</td>
+            <td>Other</td>
+        </tr>
+    </tbody>
+</table>
+
+Operators cannot be used as value. Only their members can
+
+//TODO add as keyword
+//TODO add with keyword
