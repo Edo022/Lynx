@@ -1,22 +1,164 @@
-# Lux - Lynx shading language
-
+<html>
 <head>
     <style>
-        .h {
-            color: gray;
-            white-space:nowrap;
+        :root {
+            --link-color: rgb(80, 170, 280);
+            --bg-color: #0d1117;
+            --code-bg-color: #333941;
+            --separator-color: #333941;
+            --pre-bg-color: #161b22;
+            --default-text-color: rgb(210, 210, 210);
+            --hidden-color: #555555;
+            --table-bg-color: #0d1117;
+            --table-border-color: #333941;
+
+            --lynx-comment-color: #6d757e;
+            --lynx-literal-color: #598cbb;
+            --lynx-type-color: #489948;
+            --lynx-func-color: #c5c356;
+            --lynx-var-color: #4d8acf;
+            --lynx-keyword-color: #bb72c2;
+            --lynx-string-color: #db966e;
         }
-        body {
-            margin: 0;
-            padding: 0;
+
+        .right  { text-align: right;  }
+        .left   { text-align: left;   }
+        .center { text-align: center; }
+
+        .small  { font-size: small;  }
+        .medium { font-size: medium; }
+        .large  { font-size: large;  }
+
+        .lynx-comment {color: var(--lynx-comment-color); font-size: medium;}
+        .lynx-literal {color: var(--lynx-literal-color); font-size: medium;}
+        .lynx-type    {color: var(--lynx-type-color);    font-size: medium;}
+        .lynx-func    {color: var(--lynx-func-color);    font-size: medium;}
+        .lynx-var     {color: var(--lynx-var-color);     font-size: medium;}
+        .lynx-keyword {color: var(--lynx-keyword-color); font-size: medium;}
+        .lynx-string  {color: var(--lynx-string-color);  font-size: medium;}
+
+        .example-container {
+            background-color: var(--pre-bg-color);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 0px;
+            margin: 0px;
+        }
+        .example-main {
+            margin-left: -8ch;
+            padding: 20px;
+            font-family: monospace;
+            font-size: medium;
+        }
+        .pre-syntax {
+            border-radius: 10px;
+            padding: 20px;
+            background-color: var(--pre-bg-color);
+            font-family: monospace;
+            font-size: medium;
+        }
+        .code-name {
+            font-family: monospace;
+            font-size: small;
+            font-weight: bold;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background-color: var(--pre-bg-color);
+            max-width: min-content;
+            padding: 8px;
+            padding-bottom: 3ch;
+            margin-bottom: -5ch;
+            z-index: -5;
+            white-space: nowrap;
+        }
+
+        .separator-1 {
+            background-color: var(--separator-color);
             width: 100%;
+            height: 5px;
+            border-radius: 10px;
+            margin-top: 10ch;
+            margin-bottom: 10ch;
+        }
+        .separator-2 {
+            background-color: var(--separator-color);
+            width: 100%;
+            height: 1px;
+            border-radius: 10px;
+            margin-top: 6ch;
+            margin-bottom: 6ch;
+        }
+        .separator-3 {
+            background-color: transparent;
+            width: 100%;
+            margin-top: 8ch;
+        }
+
+
+        .index-section {
+            font-size: x-large;
+            font-weight: bold;
+            padding: 20px 0px 10px 0px;
+            max-width: min-content;
+            white-space: nowrap;
+        }
+        .index-section li {
+            font-size: medium;
+            font-weight: normal;
+            padding: 2px 0px 2px 0px;
+            max-width: min-content;
+            white-space:nowrap;
+            color: var(--link-color);
+        }
+
+        .syntax-elm {
+            border: 1px solid var(--separator-color);
+            border-radius: 10px;
+            padding: 4px 8px 4px 8px;
+            background-color: var(--pre-bg-color);
+            font-size: small;
+            white-space: nowrap;
+        }
+
+        .hidden {
+            color: var(--hidden-color);
+            white-space: nowrap;
+        }
+
+
+        body {
+            padding: 5%;
+            background-color: var(--bg-color);
+            font-size: medium;
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--default-text-color);
         }
         table {
+            border: 2px solid var(--table-border-color);
             border-collapse: collapse;
-            width: 100%;
+            background-color: var(--table-bg-color);
+            line-height: 2.4ch;
+        }
+        .wide-table {
+            line-height: 3ch;
+        }
+        td {
+            border: 1px solid var(--table-border-color);
+            padding: 10px;
+        }
+        th {
+            border: 2px solid var(--table-border-color);
+            padding: 10px;
+            font-size: large;
         }
         code {
             white-space:nowrap;
+            border-radius: 10px;
+            padding: 4px 8px 4px 8px;
+            background-color: var(--code-bg-color);
+            font-family: monospace;
+            color: var(--default-text-color);
+            font-size: small;
         }
         .op_template {
             color: gray;
@@ -26,1565 +168,1618 @@
         .op_syntax {
             white-space:nowrap;
         }
+
+        a:hover, a:visited, a:link {
+            text-decoration: none;
+            color: var(--link-color);
+        }
+        ol { counter-reset: item }
+        li { display: block }
+        li:before { content: counters(item, ".") " "; counter-increment: item }
     </style>
+
+    <br>
+    <h1>Lux - Lynx shading language</h1>
 </head>
 
-Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.
-
-The language features <b>C-like syntax</b> and semantics.<br>
-Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and better control over multidimensional data.
-
-Lux is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.
-
-Lux is part of the <b>Lynx SDK</b>.
 
-[Quick reference tabs](#quick-reference-tabs)
 
-<br><br><br><br>
 
-## 1. Preprocessor
-
-+ [1.1. Comments](#comments)
-+ [1.2. Include statement](#include-statement)
-+ [1.3. Macros](#macros) //TODO
-+ [1.4. Conditionals](#conditionals) //TODO
-+ [1.5. Line continuation token](#line-continuation-token)
 
-<br>
 
-## 2. Language components
 
-+ [2.1. Tokens and identifiers](#tokens-and-identifiers)
-+ [2.2. Scopes and symbols](#scopes-and-symbols)
-+ [2.3. Namespaces](#namespaces)
-+ [2.4. Types](#types)
-  + [2.4.1. Primitive types](#primitive-types)
-  + [2.4.2. Enums](#enums)
-  + [2.4.3. Structs](#structs)
-  + [2.4.4. Arrays](#arrays)
-  + [2.4.6. Implicit conversions](#implicit-conversions)
-  + [2.4.7. Auto specifier](#auto-specifier)
-  + [2.4.8. Typeof and baseof specifiers](#typeof-and-baseof-specifiers)
-+ [2.6. Functions](#functions)
-  + [2.6.1. Parameters and references](#parameters-and-references)
-  + [2.6.2. Return statement](#return-statement)
-  + [2.6.3. Template functions](#template-functions)
-  + [2.6.4. Type classes](#type-classes)
-+ [2.7. Const qualifier](#const-qualifier)
-+ [2.8. Symbol aliases](#symbol-aliases)
 
-<br>
+<body>
+    <p>Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.</p>
+    <p>
+        The language features <b>C-like syntax</b> and semantics.<br>
+        Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and better control over multidimensional data.
+    </p>
+    <p>Lux is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
+    <p>Lux is part of the <b>Lynx SDK</b>.</p>
+    <p>[Quick reference tabs](#quick-reference-tabs)</p>
+
+    <div class="separator-2"></div>
+
+    <ol style="padding-left:0;">
+        <li class="index-section" style="padding-top: 0px;">Preprocessor
+            <ol>
+                <a href="#include-statement"><li>Include statement</li></a>
+                <a href="#macros"><li>Macros //TODO</li></a>
+                <a href="#conditionals"><li>Conditionals //TODO</li></a>
+                <a href="#line-continuation-token"><li>Line continuation token</li></a>
+            </ol>
+        </li>
+        <li class="index-section">Language components
+            <ol>
+                <a href="#tokens-and-identifiers"><li>Tokens and identifiers</li></a>
+                <a href="#scopes-and-symbols"><li>Scopes and symbols</li></a>
+                <a href="#namespaces"><li>Namespaces</li></a>
+                <a href="#types"><li>Types
+                    <ol>
+                        <a href="#primitive-types"><li>Primitive types</li></a>
+                        <a href="#enums"><li>Enums</li></a>
+                        <a href="#structs"><li>Structs</li></a>
+                        <a href="#arrays"><li>Arrays</li></a>
+                        <a href="#implicit-conversions"><li>Implicit conversions</li></a>
+                        <a href="#auto-specifier"><li>Auto specifier</li></a>
+                        <a href="#typeof-and-baseof-specifiers"><li>Typeof and baseof specifiers</li></a>
+                    </ol>
+                </li></a>
+                <a href="#variables"><li>Variables
+                    <ol>
+                        <a href="#temporary-variables"><li>Temporary variables</li></a>
+                    </ol>
+                </li></a>
+                <a href="#functions"><li>functions
+                    <ol>
+                        <a href="#function-calls"><li>Function calls</li></a>
+                        <a href="#parameters-and-references"><li>Parameters and references</li></a>
+                        <a href="#return-statement"><li>Return statement</li></a>
+                        <a href="#template-functions"><li>Template functions</li></a>
+                        <a href="#type-classes"><li>Type classes</li></a>
+                    </ol>
+                </li></a>
+                <a href="#const-qualifier"><li>Const qualifier</li></a>
+                <a href="#symbol-aliases"><li>Symbol aliases</li></a>
+            </ol>
+        </li>
+        <li class="index-section">Runtime statements
+            <ol>
+                <a href="#left-and-right-values"><li>Left and right values</li></a>
+                <a href="#expressions"><li>Expressions
+                    <ol>
+                        <a href="#literals"><li>Literals</li></a>
+                        <a href="#constructors"><li>Constructors</li></a>
+                        <a href="#operators"><li>Operators</li></a>
+                        <a href="#special-operators"><li>Special operators</li></a>
+                        <a href="#array-operations"><li>Array operations</li></a>
+                    </ol>
+                </li></a>
+                <a href="#assignments"><li>Assignments
+                    <ol>
+                        <a href="#composite-assignments"><li>Composite assignments</li></a>
+                        <a href="#multiple-assignments"><li>Multiple assignments</li></a>
+                    </ol>
+                </li></a>
+                <a href="#selection"><li>Selection
+                    <ol>
+                        <a href="#if-statement"><li>If statement</li></a>
+                        <a href="#select-statement"><li>Select statement</li></a>
+                    </ol>
+                </li></a>
+                <a href="#iteration"><li>Iteration
+                    <ol>
+                        <a href="#for-loops"><li>For loops</li></a>
+                        <a href="#while-loops"><li>While loops</li></a>
+                        <a href="#continue-and-break-statements"><li>Continue and break statements</li></a>
+                        <a href="#once-statement"><li>Once statement</li></a>
+                        <a href="#then-statement"><li>Then statement</li></a>
+                    </ol>
+                <a href="#else-statement"><li>Else statement</li></a>
+                </li></a>
+            </ol>
+        </li>
+        <li class="index-section">Compilation
+            <ol>
+                <a href="modules"><li>Modules</li></a>
+                <a href="compilation-phases-and-error-types"><li>Compilation phases and error types</li></a>
+                <a href="global-initialization-order"><li>Global initialization order</li></a>
+                <a href="branching-performance"><li>Branching performance</li></a>
+                <a href="compiler-optimizations"><li>Compiler optimizations</li></a>
+            </ol>
+        </li>
+        <li class="index-section">Standard modules
+            <ol>
+                <a href=""><li>idk</li></a>
+            </ol>
+        </li>
+    </ol>
 
-## 3. Runtime statements
 
-+ [3.1. Expressions](#expression)
-  + [3.1.1. Literals](#literals)
-  + [3.1.2. Temporary variables](#temporary-variables)
-  + [3.1.3. Function calls](#function-calls)
-  + [3.1.4. Constructors](#constructors)
-  + [3.1.5 Arithmetic operators](#arithmetic-operators)
-  + [3.1.6 Binary operators](#binary-operators)
-  + [3.1.7 Logical operators](#logical-operators)
-  + [3.1.8 Ternary operator](#ternary-operator)
-  + [3.1.9 Grouping](#grouping)
-  + [3.1.10 Array operations](#array-operations)
-+ [3.2. Assignments](#assignments)
-  + [3.1.1. Left and right values](#left-and-right-values)
-  + [3.2.2. Composite assignments](#composite-assignments)
-  + [3.2.3. Multiple assignments](#composite-assignments)
-+ [3.3. Selection](#selection)
-  + [3.3.1. If statement](#if-statement)
-  + [3.3.2. Select statement](#select-statement)
-+ [3.4. Iteration](#iteration)
-  + [3.4.1. For loops](#for-loops)
-  + [3.4.2. While loops](#while-loops)
-  + [3.4.3. Continue and break statements](#continue-and-break-statements)
-  + [3.4.4. Once statement](#once-statement)
-  + [3.4.5. Then statement](#then-statement)
-+ [3.5. Else statement](#else-statement)
 
-<br>
 
-## 4. Compilation
 
-+ [5.1. Modules](#modules)
-+ [5.1. Compilation phases and error types](#compilation-phases-and-error-types)
-+ [5.2. Global initialization order](#variable-initialization-order)
-+ [5.3. Branching performance](#branching-performance)
-+ [5.4. Compiler optimizations](#compiler-optimizations)
 
-<br>
 
-## 5. Standard modules
 
-+ [4.1. Built-in functions](#built-in-functions) //TODO
+    <div class="separator-1"></div>
+    <h1 id=preprocessor>Preprocessor</h1>
+    <p>
+        As in the C language, the preprocessing phase is performed <b>before</b> compiling the code.<br>
+        It removes comments and evaluates preprocessor directives and line continuation tokens.
+    </p>
+    <p>
+        Preprocessor directives are special instructions that allow the code to be programmatically modified.<br>
+        All the preprocessor directives are identified by the <code>#</code> character followed by their name and definition.<br>
+        Each directive spans over a single, complete line of code.<br>
+        Preprocessor directives are always <b>case sensitive</b>.
+    </p>
 
-<br><br><br><br>
 
----
 
-<br><br><br><br>
 
-# Preprocessor
+    <div class="separator-2"></div>
+    <h2 id=comments>Comments</h2>
+    <p>
+        Comments are portions of code that are purposely ignored.<br>
+        They can be used to provide informations or temporarily exclude lines of code.<br>
+        Comments are allowed to contain any sequence of unicode characters of any length.<br>
+    </p>
+    <p>
+        Single line comments start with <code>//</code> and end at the first newline character<br>
+        Multiline comments start with <code>/*</code> and end with <code>*/</code>
+    </p>
 
-As in the C language, the preprocessing phase is performed <b>before</b> compiling the code.<br>
-It removes comments and evaluates preprocessor directives and line continuation tokens.
+    <div class="code-name">Syntax 1</div>
+    <pre class="pre-syntax">//<span class="syntax-elm">Comment string</span><span class="hidden">↩</span></pre>
+    <div class="code-name">Syntax 2</div>
+    <pre class="pre-syntax">/*<span class="syntax-elm">Comment string</span>*/</pre>
 
-Preprocessor directives are special instructions that allow the code to be programmatically modified.<br>
-All the preprocessor directives are identified by the `#` character followed by their name and definition.<br>
-Each directive spans over a single, complete line of code.<br>
-Preprocessor directives are always <b>case sensitive</b>.
+    <div class="code-name">Example</div>
+    <div class="example-container"><pre class = "example-main">
+        <span class="lynx-comment">// Single line comment</span>
 
-<br><br>
+        <span class="lynx-comment">/* Multi
+        line
+        comment */</span>
+    </pre></div>
 
-## Comments
 
-Comments are portions of code that are purposely ignored.<br>
-They can be used to provide informations or temporarily exclude lines of code.<br>
-Comments are allowed to contain any sequence of unicode characters of any length.<br>
-//TODO
 
-Single line comments start with `//` and end at the first newline character<br>
-Multiline comments start with `/*` and end with `*/`
 
-<h5>Syntax<h5>
-<pre>//<kbd>Comment string</kbd><span class=h>↩</span></pre>
-<pre>/*<kbd>Comment string</kbd>*/</pre>
+    <div class="separator-2"></div>
+    <h2 id=include-statement>Include statement</h2>
+    <p>
+        Include statements are used to <b>paste code</b> from other files.<br>
+        Any existent file can be included, regardless of its contents or extension.<br>
+        The path to the included file must be enclosed in <code>"</code> <code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
+        Both <b>absolute</b> and <b>relative</b> paths are supported.
+    </p>
+    <div class="code-name">Syntax 1</div>
+    <pre class="pre-syntax">#include<span class="hidden">·</span>"<span class="syntax-elm">absolute/path/to/file</span>"<span class="hidden">↩</span></pre>
+    <div class="code-name">Syntax 2</div>
+    <pre class="pre-syntax">#include<span class="hidden">·</span>"./<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
+    <div class="code-name">Syntax 3</div>
+    <pre class="pre-syntax">#include<span class="hidden">·</span>"<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
 
-<h5>Example<h5>
+    <div class="code-name">Example</div>
+    <div class="example-container"><pre class = "example-main">
+        <span class="lynx-comment">// Ok</span>
+        <span class="lynx-keyword">#include</span> <span class="lynx-string">"/home/Lynx/Lux/file.ilsh"</span>
+        <span class="lynx-keyword">#include</span> <span class="lynx-string">"./file.ilsh"</span>
+        <span class="lynx-keyword">#include</span> <span class="lynx-string">"file.ilsh"</span>
 
-```c
-// Single line comment
+        <span class="lynx-comment">// Error</span>
+        <span class="lynx-comment">//#include ./file.ilsh</span>
+        <span class="lynx-comment">//#include "./non_existent_file"</span>
+        <span class="lynx-comment">//#include ""</span>
+    </pre></div>
 
-/* Multi
-   line 
-   comment */
-```
 
-<br><br>
 
-## Include statements
 
-Include statements are used to <b>paste code</b> from other files.<br>
-Any existent file can be included, regardless of its contents or extension.<br>
-The path to the included file must be enclosed in `"` `"` and can only contain alphanumeric characters, dots and slashes. //TODO <br>
-Both <b>absolute</b> and <b>relative</b> paths are supported.
+    <div class="separator-2"></div>
+    <h2 id="macros">Macros</h2>
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="conditionals">Conditionals</h2>
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="line-continuation-token">Line continuation token</h2>
+    <p>
+        The line continuation token can be used to merge multiple lines and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
+        It consists of a <code>\</code> <b>immediatly</b> followed by a <b>newline character</b>.
+    </p>
+
+    <h5>Syntax</h5>
+    <pre>\<span class="hidden">↩</span></pre>
+    <h5>These are all allowed</h5>
+    ```c
+    // single line comment\
+    on two lines
+
+    // #include "path/to/file"
+    #include "pat\
+    h/to/file\
+    "
+
+    // void function() {
+    //   var += b;
+    // }
+    vo\
+    id fun\
+    ction() {
+    v\
+    ar +\
+    = b;
+    }
+
+    ```
+
+
+
+
+
+
+
+    <div class="separator-1"></div>
+    <h1>Language components</h1>
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="tokens-and-identifiers">Tokens and identifiers</h2>
+    <p>
+        Any sequence of one or more characters that is left after the preprocessing phase and is recognizable according to the grammar of the language is called a token.<br>
+        Comments and whitespace characters can be freely written between two tokens without altering the GLSL output.<br>
+        Tokens are always <b>case sensitive</b>.<br>
+        Comments, newline characters, whitespace characters and preprocessor directives are <b>not tokens</b>.
+    </p>
+
+    Each token can be classified as one of the following:
+    <table class="wide-table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th style="text-align: center;" colspan=4>Pattern</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Identifier</td>
+                <td class="center" colspan=4>Any sequence of <code>alphanumeric characters</code>, <code>$</code> and <code>_</code> that doesn't start with a decimal digit</td>
+            </tr>
+            <tr>
+                <td>Literal</td>
+                <td class="center" colspan=4>Any sequence of <code>alphanumeric characters</code> and <code>.</code> that starts with a decimal digit</td>
+            </tr>
+            <tr>
+                <td>Keyword</td>
+                <td class="center" colspan=2>
+                    <code>namespace</code>
+                    <code>enum</code>
+                    <code>struct</code>
+                    <code>auto</code>
+                    <code>typeof</code>
+                    <code>baseof</code>
+                    <code>class</code>
+                    <code>const</code>
+                    <code>alias</code>
+                </td>
+                <td class="center" colspan=2>
+                    <code>if</code>
+                    <code>select</code>
+                    <code>for</code>
+                    <code>while</code>
+                    <code>do</code>
+                    <code>continue</code>
+                    <code>break</code>
+                    <code>once</code>
+                    <code>then</code>
+                    <code>else</code>
+                    <code>return</code>
+                </td>
+            </tr>
+            <tr>
+                <td>Operator</td>
+                <td class="center">
+                    <code>!</code>
+                    <code>==</code>
+                    <code>!=</code>
+                    <code>:=</code>
+                    <code>&&</code>
+                    <code>^^</code>
+                    <code>||</code>
+                    <code>&lt;</code>
+                    <code>&lt;=</code>
+                    <code>&gt;</code>
+                    <code>&gt;=</code>
+                </td>
+                <td class="center">
+                    <code>+</code>
+                    <code>-</code>
+                    <code>++</code>
+                    <code>--</code>
+                    <code>*</code>
+                    <code>/</code>
+                    <code>%</code>
+                </td>
+                <td class="center">
+                    <code>&</code>
+                    <code>|</code>
+                    <code>^</code>
+                    <code>&lt;&lt;</code>
+                    <code>&gt;&gt;</code>
+                    <code>~</code>
+                </td>
+                <td class="center">
+                    <span class="syntax-elm"><code>(</code><code>)</code></span>
+                    <span class="syntax-elm"><code>[</code><code>]</code></span>
+                    <code>.</code>
+                    <span class="syntax-elm"><code>?</code><code>:</code></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Function arguments, scope or constructor delimiter</td>
+                <td class="center" ><code>(</code> <code>)</code></td>
+                <td class="center" ><code>{</code> <code>}</code></td>
+                <td class="center"  colspan=2><code>[</code> <code>]</code></td>
+            </tr>
+            <tr>
+                <td>Assignment token</td>
+                <td class="center"><code>=</code></td>
+                <td class="center">
+                    <code>+=</code>
+                    <code>*=</code>
+                    <code>-=</code>
+                    <code>/=</code>
+                    <code>%=</code>
+                </td>
+                <td class="center" colspan=2><div style="width: 50%;">
+                    <code>&=</code>
+                    <code>|=</code>
+                    <code>^=</code>
+                    <code>&lt;&lt;=</code>
+                    <code>&gt;&gt;=</code>
+                </div></td>
+            </tr>
+            <tr>
+                <td>Expression, statement, type or scope separator</td>
+                <td class="center" style="width: 18%;"><code>,</code></td>
+                <td class="center" style="width: 18%;"><code>;</code></td>
+                <td class="center" style="width: 18%;"><code>|</code></td>
+                <td class="center" style="width: 18%;"><code>::</code></td>
+            </tr>
+            <tr>
+                <td>Reference token</td>
+                <td class="center" colspan=4><code>&</code></td>
+            </tr>
+            <tr>
+                <td>For each token</td>
+                <td class="center" colspan=4><code>:</code></td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        Identifiers are used to name functions, variables, structs, aliases, type classes and namespaces.<br>
+        They must be unique to the current scope and not overlap with keywords.<br>
+        Temporary variables are the only identifiers that are allowed to start with a <code>$</code>.
+    </p>
+
+    See [Literals](#literals), [Operators](#operators), [Scopes](#scopes)
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="scopes-and-symbols">Scopes and symbols</h2>
+    <p>A symbol is any identifier that can be referenced unambiguously through its absolute name.</p>
+    <p>
+        Scopes define which <b>symbols</b> the code can <b>reference</b> and the absolute and relative names of each of them.<br>
+        Any portion of code enclosed in <code>{</code> <code>}</code> defines a new scope. This includes <code>functions</code>, <code>structs</code>, <code>namespaces</code>, <code>unnamed scopes</code> and <code>runtime statements</code>.<br>
+        The only exception is the <b>module scope</b>. It contains all the symbols and scopes declared in the module and can be referenced using the <code>this</code> keyword.
+    </p>
+    <p>
+        <code>Namespaces</code>, <code>Enums</code>, <code>Structs</code> and <code>Symbol aliases</code> can be <b>declared</b> in <b>any scope</b>.<br>
+        Other identifiers are only allowed to be declared in certain scopes, following this table:
+    </p>
+
+    | Scope type        | Can contain                                                         | Can be declared in                  |
+    |-------------------|:-------------------------------------------------------------------:|:-----------------------------------:|
+    | Module            | <code>Functions</code><br><i><code>Variables</code><br><code>Type classes</code></i>                 | -                                   |
+    | Namespace         | <code>Functions</code><br><i><code>Variables</code><br><code>Type classes</code></i>                 | Any scope                           |
+    | Enum              | <i><code>Enum elements</code></i>                                              | Any scope                           |
+    | Struct            | <i><code>Struct members</code></i>                                             | Any scope                           |
+    | Function          | <code>Runtime statements</code><br><i><code>Variables</code><br><code>Function parameters</code></i> | Module scope                        |
+    | Runtime statement | <code>Runtime statements</code><br><i><code>Variables</code><br></i>                      | <code>Functions</code><br><code>Runtime statements</code> |
+    <p>
+        Local names are used to reference identifiers declared in the current scope or one of the enclosing scopes.<br>
+        Relative names, instead, can reference any symbol declared in the module. They consist of the names of the enclosing scopes and the identifier of the symbol separated by <code>::</code> tokens.<br>
+        A relative name that starts from the module scope is called an absolute name.
+    </p>
+    <p>
+        Identifiers declared in unnamed scopes cannot be referenced from outside.<br>
+        Declaring a symbol with the same identifier as one in an enclosing scope will shadow the old identifier, and any use of the identifier in the current and sub scopes will refer to the new symbol.<br>
+        Declaring the same identifier more than once in the same scope is only allowed for function overloading. Anything else is a semantic error.<br>
+    </p>
+
+    <h5>Example</h5>
+    ```c
+    // Module scope
+    // Local name: this
+
+
+    // Local name: s
+    // Relative names: this::s
+    struct s { u32 n; }
 
-<h5>Syntax</h5>
-<pre>#include<span class=h>·</span>"<kbd>absolute/path/to/file</kbd>"<span class=h>↩</span></pre>
-<pre>#include<span class=h>·</span>"./<kbd>relative/path/to/file</kbd>"<span class=h>↩</span></pre>
-<pre>#include<span class=h>·</span>"<kbd>relative/path/to/file</kbd>"<span class=h>↩</span></pre>
-
-<h5>Example</h5>
-
-```c
-// Ok
-#include "/home/Lynx/Lux/file.ilsh"
-#include "./file.ilsh"
-#include "file.ilsh"
-
-// Error
-//#include ./file.ilsh
-//#include "./non_existent_file"
-//#include ""
-```
-
-<br><br>
-
-## Macros
-
-<br><br>
-
-## Conditionals
-
-<br><br>
-
-## Line continuation token
-
-The line continuation token can be used to merge multiple lines and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
-It consists of a `\` <b>immediatly</b> followed by a <b>newline character</b>.
-
-<h5>Syntax</h5>
-<pre>\<span class=h>↩</span></pre>
-
-<h5>These are all allowed</h5>
-
-```c
-// single line comment\
-   on two lines
-
-// #include "path/to/file"
-#include "pat\
-h/to/file\
-"
-
-// void function() {
-//   var += b;
-// }
-vo\
-id fun\
-ction() {
-  v\
-ar +\
-= b;
-}
-
-```
-
-<br><br><br><br>
-
----
-
-<br><br><br><br>
-
-# Language components
-
-<br><br><br><br>
-
-## Tokens and identifiers
-
-Any sequence of one or more characters that is left after the preprocessing phase and is recognizable according to the grammar of the language is called a token.<br>
-Comments and whitespace characters can be freely written between two tokens without altering the GLSL output.<br>
-Tokens are always <b>case sensitive</b>.<br>
-Comments, newline characters, whitespace characters and preprocessor directives are <b>not tokens</b>.
-
-Each token can be classified as one of the following:
-
-<table>
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th style="text-align: center;" colspan=4>Pattern</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Identifier</td>
-            <td align="center" colspan=4>Any sequence of <code>alphanumeric characters</code>, <code>$</code> and <code>_</code> that doesn't start with a decimal digit</td>
-        </tr>
-        <tr>
-            <td>Literal</td>
-            <td align="center" colspan=4>Any sequence of <code>alphanumeric characters</code> and <code>.</code> that starts with a decimal digit</td>
-        </tr>
-        <tr>
-            <td>Keywords</td>
-            <td align="center" colspan=2>
-                <code>namespace</code>
-                <code>enum</code>
-                <code>struct</code>
-                <code>auto</code>
-                <code>typeof</code>
-                <code>baseof</code>
-                <code>class</code>
-                <code>const</code>
-                <code>alias</code>
-            </td>
-            <td align="center" colspan=2>
-                <code>if</code>
-                <code>select</code>
-                <code>for</code>
-                <code>while</code>
-                <code>do</code>
-                <code>continue</code>
-                <code>break</code>
-                <code>once</code>
-                <code>then</code>
-                <code>else</code>
-                <code>return</code>
-            </td>
-        </tr>
-        <tr>
-            <td>Operator</td>
-            <td align="center">
-                <code>!</code>
-                <code>==</code>
-                <code>!=</code>
-                <code>:=</code>
-                <code>&&</code>
-                <code>^^</code>
-                <code>||</code>
-                <code>&lt;</code>
-                <code>&lt;=</code>
-                <code>&gt;</code>
-                <code>&gt;=</code>
-            </td>
-            <td align="center">
-                <code>+</code>
-                <code>-</code>
-                <code>++</code>
-                <code>--</code>
-                <code>*</code>
-                <code>/</code>
-                <code>%</code>
-            </td>
-            <td align="center">
-                <code>&</code>
-                <code>|</code>
-                <code>^</code>
-                <code>&lt;&lt;</code>
-                <code>&gt;&gt;</code>
-                <code>~</code>
-            </td>
-            <td align="center">
-                <kbd><code>(</code><code>)</code></kbd>
-                <kbd><code>[</code><code>]</code></kbd>
-                <code>.</code>
-                <kbd><code>?</code><code>:</code></kbd>
-            </td>
-        </tr>
-        <tr>
-            <td>Function arguments, scope or constructor delimiter</td>
-            <td align="center" ><code>(</code> <code>)</code></td>
-            <td align="center" ><code>{</code> <code>}</code></td>
-            <td align="center"  colspan=2><code>[</code> <code>]</code></td>
-        </tr>
-        <tr>
-            <td>Assignment token</td>
-            <td align="center"><code>=</code></td>
-            <td align="center">
-                <code>+=</code>
-                <code>*=</code>
-                <code>-=</code>
-                <code>/=</code>
-                <code>%=</code>
-            </td>
-            <td align="center" colspan=2><div style="width: 50%;">
-                <code>&=</code>
-                <code>|=</code>
-                <code>^=</code>
-                <code><<=</code>
-                <code>>>=</code>
-            </div></td>
-        </tr>
-        <tr>
-            <td>Expression, statement, type or scope separator</td>
-            <td align="center" style="width: 18%;"><code>,</code></td>
-            <td align="center" style="width: 18%;"><code>;</code></td>
-            <td align="center" style="width: 18%;"><code>|</code></td>
-            <td align="center" style="width: 18%;"><code>::</code></td>
-        </tr>
-        <tr>
-            <td>Reference token</td>
-            <td align="center" colspan=4><code>&</code></td>
-        </tr>
-        <tr>
-            <td>For each token</td>
-            <td align="center" colspan=4><code>:</code></td>
-        </tr>
-    </tbody>
-</table>
-
-<br>
-
-Identifiers are used to name functions, variables, structs, aliases, type classes and namespaces.<br>
-They must be unique to the current scope and not overlap with keywords.<br>
-Temporary variables are the only identifiers that are allowed to start with a `$`.
-
-See [Literals](#literals), [Operators](#operators), [Scopes](#scopes)
-
-<br><br><br><br>
-
-## Scopes and symbols
-
-A symbol is any identifier that can be referenced unambiguously through its absolute name.
-
-Scopes define which <b>symbols</b> the code can <b>reference</b> and the absolute and relative names of each of them.<br>
-Any portion of code enclosed in `{` `}` defines a new scope. This includes `functions`, `structs`, `namespaces`, `unnamed scopes` and `runtime statements`.<br>
-The only exception is the <b>module scope</b>. It contains all the symbols and scopes declared in the module and can be referenced using the `this` keyword.
-
-`Namespaces`, `Enums`, `Structs` and `Symbol aliases` can be <b>declared</b> in <b>any scope</b>.<br>
-Other identifiers are only allowed to be declared in certain scopes, following this table:
-
-| Scope type        | Can contain                                                         | Can be declared in                  |
-|-------------------|:-------------------------------------------------------------------:|:-----------------------------------:|
-| Module            | `Functions`<br><i>`Variables`<br>`Type classes`</i>                 | -                                   |
-| Namespace         | `Functions`<br><i>`Variables`<br>`Type classes`</i>                 | Any scope                           |
-| Enum              | <i>`Enum elements`</i>                                              | Any scope                           |
-| Struct            | <i>`Struct members`</i>                                             | Any scope                           |
-| Function          | `Runtime statements`<br><i>`Variables`<br>`Function parameters`</i> | Module scope                        |
-| Runtime statement | `Runtime statements`<br><i>`Variables`<br></i>                      | `Functions`<br>`Runtime statements` |
-
-<br>
-
-Local names are used to reference identifiers declared in the current scope or one of the enclosing scopes.<br>
-Relative names, instead, can reference any symbol declared in the module. They consist of the names of the enclosing scopes and the identifier of the symbol separated by `::` tokens.<br>
-A relative name that starts from the module scope is called an absolute name.
-
-Identifiers declared in unnamed scopes cannot be referenced from outside.<br>
-Declaring a symbol with the same identifier as one in an enclosing scope will shadow the old identifier, and any use of the identifier in the current and sub scopes will refer to the new symbol.<br>
-Declaring the same identifier more than once in the same scope is only allowed for function overloading. Anything else is a semantic error.<br>
-
-<h5>Example</h5>
-
-```c
-// Module scope
-// Local name: this
-
-
-// Local name: s
-// Relative names: this::s
-struct s { u32 n; }
-
-// Unnamed, cannot be referenced from outside
-namespace {
-    // Local name: fun
-    void fun(u32 n) {}
-}
-
-
-// Local name: fun
-// Relative names: this::fun
-void fun(u32 n) {
     // Unnamed, cannot be referenced from outside
-    if(n){
-        // Local name: s2
-        struct s2 { u32 n; };
+    namespace {
+        // Local name: fun
+        void fun(u32 n) {}
     }
 
-    // Local name: s, shadows this::s
-    // Relative names: this::fun::s, fun::s
-    struct s { u32 a, b; }
-}
-```
 
-See [Namespaces](#namespaces), [Variables](#variables), [Functions](#functions), [Structs](#structs), [Enums](#enums), [Selection](#selection), [Iteration](#iteration), [Else statement](#else-statement), [Symbol aliases](#symbol-aliases)
+    // Local name: fun
+    // Relative names: this::fun
+    void fun(u32 n) {
+        // Unnamed, cannot be referenced from outside
+        if(n){
+            // Local name: s2
+            struct s2 { u32 n; };
+        }
 
-<br><br><br><br>
+        // Local name: s, shadows this::s
+        // Relative names: this::fun::s, fun::s
+        struct s { u32 a, b; }
+    }
+    ```
 
-## Namespaces
+    See [Namespaces](#namespaces), [Variables](#variables), [Functions](#functions), [Structs](#structs), [Enums](#enums), [Selection](#selection), [Iteration](#iteration), [Else statement](#else-statement), [Symbol aliases](#symbol-aliases)
 
-Namespaces are used to create named scopes which can contain variables, functions, enums, structs and symbol aliases.<br>
-They don't affect the runtime behaviour and can be declared in any scope.<br>
-Unnamed namespaces are allowed.
 
-<h5>Syntax</h5>
-<pre>
-namespace<span class=h>·</span><kbd>namespace identifier</kbd> {
-    <kbd>...</kbd>
-}
-</pre>
-<pre>
-namespace {
-    <kbd>...</kbd>
-}
-</pre>
 
-See [Variables](#variables), [Functions](#functions), [Structs](#structs), [Enums](#enums), [Symbol aliases](#symbol-aliases)
 
-<br><br><br><br>
+    <div class="separator-2"></div>
+    <h2 id="namespaces">Namespaces</h2>
+    <p>
+        Namespaces are used to create named scopes which can contain variables, functions, enums, structs and symbol aliases.<br>
+        They don't affect the runtime behaviour and can be declared in any scope.<br>
+        Unnamed namespaces are allowed.
+    </p>
 
-## Types
+    <h5>Syntax</h5>
+    <pre>
+    namespace<span class="hidden">·</span><span class="syntax-elm">namespace identifier</span> {
+        <span class="syntax-elm">...</span>
+    }
+    </pre>
+    <pre>
+    namespace {
+        <span class="syntax-elm">...</span>
+    }
+    </pre>
 
-Data types define the way runtime values are interpreted and how they can be used within expressions.<br>
-Lux features five primitives types, which can be used to define more complex types such as structs, arrays and enums.
+    See [Variables](#variables), [Functions](#functions), [Structs](#structs), [Enums](#enums), [Symbol aliases](#symbol-aliases)
 
-Every value has an associated type, regardless of it being a right or a left value.<br>
-Like any symbol, declearing a new type or other symbols will shadow the ones that were declared in the enclosing scopes using the same identifier.<br>
-Primitive types can also be shadowed and they behave as if they were declared in the module namespace.
 
-<br>
 
-### Primite types
 
-The primitive types are:
+    <div class="separator-2"></div>
+    <h2 id="types">Types</h2>
+    <p>
+        Data types define the way runtime values are interpreted and how they can be used within expressions.<br>
+        Lux features five primitives types, which can be used to define more complex types such as structs, arrays and enums.
+    </p>
+    <p>
+        Every value has an associated type, regardless of it being a right or a left value.<br>
+        Like any symbol, declearing a new type or other symbols will shadow the ones that were declared in the enclosing scopes using the same identifier.<br>
+        Primitive types can also be shadowed and they behave as if they were declared in the module namespace.
+    </p>
 
-| Lux type  | Actual GLSL type | C equivalent | Description                      |
-|-----------|------------------|--------------|----------------------------------|
-| `u32`     | uint             | unsigned int | 32 bit unsigned integer          |
-| `i32`     | int              | int          | 32 bit signed integer            |
-| `f32`     | float            | float        | 32 bit floating point            |
-| `f64`     | double           | double       | 64 bit floating point            |
-| `b`       | bool             | -            | Boolean value. `true` or `false` |
 
-<br>
+    <div class="separator-3"></div>
+    <h3 id="primitive-types">Primitive types</h3>
 
-As in most programming languages, the boolean `true` and `false` values correspond to the integer literals `1` and `0` and they can be used interchangeably.<br>
-Unsigned integers can't hold negative values, but the maximum value is twice as high as their signed counterpart.<br>
-There are no 64 bit integers as they aren't a standard type in GLSL.
+    <p>The primitive types are:</p>
+    | Lux type  | Actual GLSL type | C equivalent | Description                      |
+    |-----------|------------------|--------------|----------------------------------|
+    | <code>u32</code>     | uint             | unsigned int | 32 bit unsigned integer          |
+    | <code>i32</code>     | int              | int          | 32 bit signed integer            |
+    | <code>f32</code>     | float            | float        | 32 bit floating point            |
+    | <code>f64</code>     | double           | double       | 64 bit floating point            |
+    | <code>b</code>       | bool             | -            | Boolean value. <code>true</code> or <code>false</code> |
+    <p>
+        As in most programming languages, the boolean <code>true</code> and <code>false</code> values correspond to the integer literals <code>1</code> and <code>0</code> and they can be used interchangeably.<br>
+        Unsigned integers can't hold negative values, but the maximum value is twice as high as their signed counterpart.<br>
+        There are no 64 bit integers as they aren't a standard type in GLSL.
+    </p>
 
-See [Values](#values), [Literals](#literals), [Implicit conversions](#implicit-conversions)
+    See [Values](#values), [Literals](#literals), [Implicit conversions](#implicit-conversions)
 
-<br>
 
-### Enums
+    <div class="separator-3"></div>
+    <h3 id="enums">Enums</h3>
+    <p>
+        Enums are used to name and group literal constants of the same type.<br>
+        The base type of the enum can be specified after its name and it must be one of the primitive types.<br>
+        Elements are declared in the same way as variables, but neither the type nor the const qualifier are specified explicitly.<br>
+        The values of each variable are implicitly converted to the base type of the enum.
+    </p>
+    <p>
+        Elements of integer enums which are not initizlied will have the value of the preceeding element + 1, or 0 if they are the first.<br>
+        Elements of bool and float enums must always be initialized.<br>
+        Multiple elements can have the same value, but each element can only be defined once.<br>
+        Enums with no elements are not allowed.
+    </p>
+    <p>
+        Enums can be referenced before their definition.<br>
+        It is allowed to declare structures, enums and symbol aliases inside an enum.<br>
+        The name of the enum can be used as a type to prevent unknown values to be saved in it.
+    </p>
 
-Enums are used to name and group literal constants of the same type.<br>
-The base type of the enum can be specified after its name and it must be one of the primitive types.<br>
-Elements are declared in the same way as variables, but neither the type nor the const qualifier are specified explicitly.<br>
-The values of each variable are implicitly converted to the base type of the enum.
+    <h5>Syntax</h5>
+    <pre>
+    enum<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> : <span class="syntax-elm">base type</span> {
+        <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="syntax-elm">(base type)</span> expression</span>;
+        <span class="syntax-elm">...</span>
+    }
+    </pre>
 
-Elements of integer enums which are not initizlied will have the value of the preceeding element + 1, or 0 if they are the first.<br>
-Elements of bool and float enums must always be initialized.<br>
-Multiple elements can have the same value, but each element can only be defined once.<br>
-Enums with no elements are not allowed.
+    <h5>Example</h5>
+    ```c
+    enum : u32 {                    // Ok, unnamed enum
+        value_1,        value_2;    // Ok, value_1 = 0,    value_2 = 1
+        value_3 = 9999, value_4;    // Ok, value_3 = 9999, value_4 = 10000
 
-Enums can be referenced before their definition.<br>
-It is allowed to declare structures, enums and symbol aliases inside an enum.<br>
-The name of the enum can be used as a type to prevent unknown values to be saved in it.
+        struct s {
+            u32 n1 = value_1;       // Ok
+            u32 n3 = 5;             // Ok
+            //e   n4 = 5;           // Error, unknown this::e value
+        }
 
-<h5>Syntax</h5>
-<pre>
-enum<span class=h>·</span><kbd>symbol identifier</kbd> : <kbd>base type</kbd> {
-    <kbd>element identifier</kbd> = <kbd><kbd>(base type)</kbd> expression</kbd>;
-    <kbd>...</kbd>
-}
-</pre>
+        value_5;                    // Ok, value_5 = 10001
+    }
 
-<h5>Example</h5>
+    enum c : f64 {
+        pi          = 3.14159;      // Ok
+        e           = 2.71828,      // Ok
+        another_e,  = 2.71828;      // Ok
+        another_e_2 = e;            // Ok
+        another_e_3 = this::c::e;   // Ok, used absolute name
+        //invalid_val;              // Error, uninitialized f64 enum value
+    }
+    ```
+    <p>
+        When an enum doesn't have to be explicitly referenced more than once, unnamed enums can be used to define both the type and the symbol in the same construct.<br>
+        Similarly to the C syntax, the name is not specified and the enum definition is used as type of the symbol.
+    </p>
+    <p>
+        The elements and the enum can still be referenced through the <code>typeof</code> specifier.<br>
+        Defining an unnamed enum without declaring a symbol is allowed, but it will generate a warning as it its elements are unaccessible and the symbol hiding mechanic can be achieved through unnamed namespaces.
+    </p>
 
-```c
-enum : u32 {                    // Ok, unnamed enum
-    value_1,        value_2;    // Ok, value_1 = 0,    value_2 = 1
-    value_3 = 9999, value_4;    // Ok, value_3 = 9999, value_4 = 10000
+    <h5>Syntax</h5>
+    <pre>
+    enum : <span class="syntax-elm">base type</span> {
+        <span class="syntax-elm">element identifier</span> = <span class="syntax-elm">(base type) expression</span>;
+        <span class="syntax-elm">...</span>
+    } <span class="syntax-elm">symbol identifier</span>;
+    </pre>
 
+    <h5>Example</h5>
+    ```c
+    enum : b {
+        on = true;
+        off = false;
+    } grasses;
+
+    void main(){
+        self.grasses = typeof(grasses)::on;
+    }
+    ```
+
+    See [Typeof and baseof specifiers](#typeof-and-baseof-specifiers)
+
+
+    <div class="separator-3"></div>
+    <h3 id="structs">Structs</h3>
+    <p>
+        Structs are used to group multiple values of different types.<br>
+        Elements are declared in the same way as variables, and they can be of any type, including enums, arrays and other structures.
+    </p>
+    <p>
+        Structs can be referenced before their definition.<br>
+        It is allowed to declare structures, enums and symbol aliases inside a struct.<br>
+        Struct members are referenced using the <code>.</code> token, or through their index.<br>
+    </p>
+    <p>
+        Indices must be known at compile time and they can be listed to reference multiple elements at once.<br>
+        The members cannot be const and cannot have an initializer value. Empty structs are not allowed.
+        //TODO MOVE VALUE LISTS TO #multiple-assignments
+    </p>
+
+    <h5>Syntax</h5>
+    <pre>
+    struct<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> {
+        <span class="syntax-elm">member type</span><span class="hidden">·</span><span class="syntax-elm">member identifier</span>;
+        <span class="syntax-elm">...</span>
+    }
+    </pre>
+    <pre><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(u32) expression</span>]</pre>
+    <pre><span class="syntax-elm">symbol identifier</span>.<span class="syntax-elm">member identifier</span></pre>
+
+    <h5>Example</h5>
+    ```c
+    struct idk {
+        u32 a, b;
+        f64 c;
+    }
+
+
+    void main(u32 i){
+        idk var;
+
+        var.a = 4;              // Ok, var = (4, ?, ?)
+        var.b = var.a * 4;      // Ok, var = (4, 8, ?)
+        var[2] = 0.33;          // Ok, var = (4, 8, 0.33)
+        var[2, 0] = var[3, 2];  // Ok, var = (4, ?, ?)
+        //var[4] = 0.33;        // Error, invalid index
+        //var[i] = 0.33;        // Error, unknown index
+    }
+    ```
+    <p>
+        Like enums, structs can also be unnamed and their symbol and members types can be referenced through `typeof`.<br>
+        Defining unnamed structs without a symbol declaration will also generate a warning.
+    </p>
+
+    <h5>Syntax</h5>
+    <pre>
+    struct {
+        <span class="syntax-elm">member type</span><span class="hidden">·</span><span class="syntax-elm">member identifier</span>;
+        <span class="syntax-elm">...</span>
+    } <span class="syntax-elm">symbol identifier</span>;
+    </pre>
+
+    <h5>Example</h5>
+    ```c
+    struct {
+        u32 a, b;
+        enum {
+            idk1;
+            idk2;
+        } c;
+    } var;
+
+    void main(){
+        // Both are allowed
+        var.c = typeof(var.c)::idk1;
+        var.c = typeof(typeof(var)::c)::idk2;
+
+        typeof(var.a) _a = 0;
+    }
+    ```
+
+    See [Arrays](#arrays), [Typeof and baseof specifiers](#typeof-and-baseof-specifiers)
+
+
+    <div class="separator-3"></div>
+    <h3 id="arrays">Arrays</h3>
+    <p>
+        Arrays can aggregate values of the same type.<br>
+        Functions, parameters, right values, variables and struct member can all have array type.
+    </p>
+    <p>
+        Arrays can use any base type, including structs, enums and other arrays.<br>
+        An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
+    </p>
+    <p>
+        Array declarations are identical to normal types, but <code>[</code> <code>]</code> tokens follow the symbol identifier, optionally enclosing an expression to specify the number of elements.<br>
+        Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
+        If the <code>[</code> <code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be of an implicitly convertible array type.
+    </p>
+    <p>
+        There are no dynamic arrays.
+    </p>
+
+    <h5>Syntax</h5>
+    <pre><span class="syntax-elm">base type</span><span class="hidden">·</span><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(u32) expression</span>];</pre>
+    <pre><span class="syntax-elm">base type</span><span class="hidden">·</span><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(u32) expression</span>] = <span class="syntax-elm">(base type[]) expression</span>;</pre>
+    <pre><span class="syntax-elm">base type</span><span class="hidden">·</span><span class="syntax-elm">symbol identifier</span>[] = <span class="syntax-elm">(base type[]) expression</span>;</pre>
+
+    <h5>Example</h5>
+    ```c
+    u32 arr1[4] = (1, 2, 3, 4);     // Ok, arr1 = (1, 2, 3, 4)
+    u32 arr2[2][2] = (1, 2, 3, 4);  // Ok, arr2 = ((1, 2), (3, 4)). Explained in Constructors
+    u32 arr3[2][2] = arr1;          // Ok, arr3 = ((1, 2), (3, 4)). Explained in Constructors
+    u32 arr4[5] = 1;                // Ok, arr4 = (1, 1, 1, 1, 1)
+    u32 arr5[] = (8, 7, 6);         // Ok, arr5 = (8,  7,  6)
+    u32 arr6[] = arr4 * 2;          // Ok, arr6 = (16, 14, 12)
+
+    //u32 arr1[4] = (1, 2, 3);      // Error, inizializer doesn't have enough elements
+    //u32 arr1[]  = 1;              // Error, cannot determine the array size
+    ```
+    <p>
+        Array <b>elements</b> are referenced through their <b>index</b>.<br>
+        Negative values are not supported.
+    </p>
+    <p>
+        One-dimensional arrays with a <b>maximum of 4 elements</b> can use special <b>named identifiers</b> to refer to them.<br>
+        Referencing elements of multidimensional arrays require two or more indices.<br>
+        Referencing elements that are <b>not</b> in the <b>array range</b> has <b>undefined behaviour</b>.
+    </p>
+    | Element | Named identifier 1 | Named identifier 2 |
+    |:-------:|:------------------:|:------------------:|
+    | <code>[0]</code>   | <code>x</code>                | <code>r</code>                |
+    | <code>[1]</code>   | <code>y</code>                | <code>g</code>                |
+    | <code>[2]</code>   | <code>z</code>                | <code>b</code>                |
+    | <code>[3]</code>   | <code>w</code>                | <code>a</code>                |
+    <p>
+        //TODO MOVE VALUE LISTS TO #multiple-assignments
+        Both named identifiers and indices can be listed to reference multiple elements at once.<br>
+        Referencing the same element more than once in a left value is a semantic error. If it happens during runtime, it has undefined behaviour.
+    </p>
+
+    <h5>Syntax</h5>
+    <pre><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(u32) expression</span>]</pre>
+    <pre><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(u32) expression</span>]<span class="syntax-elm">...</span></pre>
+    <pre><span class="syntax-elm">symbol identifier</span>.<span class="syntax-elm">named identifier</span><span class="syntax-elm">...</span></pre>
+
+    <h5>Example</h5>
+    ```c
+    void main() { //TODO multidimensional arrays
+        u32 arr1[5];
+        arr1[3] = 0;                // Ok, arr1 = (?, ?, ?, 0, ?)
+        //arr1[5] = 0;              // Undefined behaviour, index 5 is out of range
+        //arr1.a = 0;               // Error, arrays with more than 5 elements don't have named identifiers
+
+        //u32 arr2[] = arr1[0, 1, 2, 3];    // Error, some of these elements are not initialized
+        arr1[0, 1, 4] = 2;                  // Ok, arr1 =(2, 2, ?, 0, 2)
+        u32 arr2[] = arr1[0, 1, 4, 3];      // Ok, arr2 = (2, 2, 2, 0)
+
+        u32 arr2.b = 9;                     // Ok, arr2 = (2, 2, 9, 0)
+        arr2.xyz = arr2.zrz;                // Ok, arr1 = (0, 2, 0, 0)
+        arr2.wyrb *= 3;                     // Ok, arr1 = (0, 6, 0, 0)
+        //arr2.xyz = arr2.zrga;             // Error, the arrays have different length
+        //arr2.yy = arr2.xx;                // Error, element [0] referenced twice in left value
+        //arr2.yy = arr2.xa;                // Error, element [0] referenced twice in left value
+    }
+    ```
+
+    See [Primitive types](#primitive-types), [Implicit conversions](#implicit-conversions), [Constructors](#constructors)
+
+
+    <div class="separator-3"></div>
+    <h3 id="implicit-conversions">Implicit conversions</h3>
+    <p>
+        Implicit conversions are performed when an expression of the incorrect type is used in place of the expected one.<br>
+        In function overloads and templates, the actual type of the value always takes precedence over conversions.
+    </p>
+    <p>
+        Primitive types are all implicitly convertible between them.<br>
+        The conversions follow these rules:
+    </p>
+    <table>
+        <thead><tr>
+            <th>Expression type</th>
+            <th>Expected type</th>
+            <th>Behaviour</th>
+        </tr></thead>
+        <tbody>
+            <tr>
+                <td rowspan="3"><code>u32</code></td>
+                <td><code>i32</code></td>
+                <td>Values over <code>limits::i32::max</code> overflow to <code>limits::i32::min&nbsp;+&nbsp;n&nbsp;-&nbsp;1</code></td>
+            </tr>
+            <tr>
+                <td><code>f32</code><code>f64</code></td>
+                <td>No changes</td>
+            </tr>
+            <tr>
+                <td><code>b</code></td>
+                <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+            </tr>
+            <tr>
+                <td rowspan="3"><code>i32</code></td>
+                <td><code>u32</code></td>
+                <td>Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code></td>
+            </tr>
+            <tr>
+                <td><code>f32</code><code>f64</code></td>
+                <td>No changes</td>
+            </tr>
+            <tr>
+                <td><code>b</code></td>
+                <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+            </tr>
+            <tr>
+                <td rowspan="4"><code>f32</code></td>
+                <td><code>u32</code></td>
+                <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
+                If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
+            </tr>
+            <tr>
+                <td><code>i32</code></td>
+                <td>The decimal part is truncated.<br>
+                If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
+            </tr>
+            <tr>
+                <td><code>f64</code></td>
+                <td>No changes</td>
+            </tr>
+            <tr>
+                <td><code>b</code></td>
+                <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+            </tr>
+            <tr>
+                <td rowspan="4"><code>f64</code></td>
+                <td><code>u32</code></td>
+                <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
+                If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
+            </tr>
+            <tr>
+                <td><code>i32</code></td>
+                <td>The decimal part is truncated.<br>
+                If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
+            </tr>
+            <tr>
+                <td><code>f32</code></td>
+                <td>The result is approximated using the maximum precision available</td>
+            </tr>
+            <tr>
+                <td><code>b</code></td>
+                <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
+            </tr>
+            <tr>
+                <td rowspan="3"><code>b</code></td>
+                <td><code>u32</code><code>i32</code></td>
+                <td><code>true</code> is evaluated as <code>1</code>, <code>false</code> as <code>0</code></td>
+            </tr>
+            <tr>
+                <td><code>f32</code><code>f64</code></td>
+                <td><code>true</code> is evaluated as <code>1.0</code>, <code>false</code> as <code>0.0</code></td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        Additional conversions between arrays and primitive types are described in the following table,<br>
+        with <code>T</code> and <code>U</code> representing two different types of any kind:
+    </p>
+    | Expression type | Expected type | Behaviour                                                                                                               |
+    |-----------------|---------------|-------------------------------------------------------------------------------------------------------------------------|
+    | <code>T</code>             | <code>U[n]</code>        | Each element of the result is initialized with the value of the starting data, converted from <code>T</code> to <code>U</code>                |
+    | <code>T[n]</code>          | <code>U[n]</code>        | Each element of the result is initialized with the corresponding value of the starting array, converted from <code>T</code> to <code>U</code> |
+    | <code>T[n]</code>          | <code>b</code>           | Evaluated as <code>true</code> if all the elements of the initial array converted from <code>T</code> to<code>`b</code> evaluate as <code>true</code>, <code>false</code> otherwise         |
+    <p>
+        Values cannot be explicitly casted as in C. To convert a value, constructors are used.<br>
+        Attempting to convert incompatible types will result in a semantic error.<br>
+        Structs are not convertible.
+    </p>
+
+    <h5>Example</h5>
+    ```c
+    void fun(u32 a[5]) {}
+    void fun2(b a) {}
+
+    void main(){
+        struct { u32 n; } var = (0);
+        //fun(var);                               // Error, structs cannot be converted
+        //fun(f32[2](1.0, 4.4));                  // Error, arrays have different lengths
+        fun(2);                                   // Ok, a = (2, 2, 2, 2, 2)
+        fun(f32[5](1.0, 4.4, 5.5, -33, 2.11));    // Ok, a = (1, 4, 5, 4294967263, 2)
+
+        fun2(2);                                  // Ok, a = true
+        fun2(f32[5](1.0, 4.4, 5.5, -33, 2.11));   // Ok, a = true
+        fun2(f32[5](1.0, 4.4, 5.5, -33, 0   ));   // Ok, a = false
+
+        u32 arr[1.2];                             // Ok, arr has 1 element
+    }
+    ```
+
+    See [Arrays](#arrays), [Constructors](#constructors), [Standard modules](#standard-modules)
+
+
+    <div class="separator-3"></div>
+    <h3 id="auto-specifier">Auto specifier</h3>
+
+
+    <div class="separator-3"></div>
+    <h3 id="typeof-and-baseof-specifiers">Typeof and baseof specifiers</h3>
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="variables">Variables</h2>
+
+    Variables are <b>named memory locations</b> that can contain values of the specified type.<br>
+    Each variable <b>must be declared</b> before it is used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
+
+    A variable declaration consists of the type, the name and an optional <code>=</code> followed by an expression of a compatible type that is used to <b>inizialize it</b>.<br>
+    If an initializer expression is not specified, the value of the variable is <b>undefined</b>.<br>
+    <b>Evaluating</b> an expression that can result in an <b>undefined value</b> is considered a <b>logical error</b> and will stop the compilation process.<br>
+    Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
+
+    Syntax:<br>
+    `type identifier;`<br>
+    `type identifier = expression;`<br>
+
+    ```c
+    u32 variable = 0;       // Ok, variable has value 0
+    f32 nya = 5 + variable; // Ok, nya ha value 5.0
+    b var$;                 // Ok, var$ has undefined value
+    //b var_2 = var$;       // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions
+
+    //f64 variable;         // Error, the identifier "variable" is already declared
+    //f64 foo               // Error, ';' is not optional
+    //b $var;               // Error, invalid identifier
+    //b 2var;               // Error, invalid identifier
+    ```
+
+    See [Types](#types), [Expressions](#expressions), [Functions](#functions)
+
+
+    <div class="separator-3"></div>
+    <h3 id="temporary-variables">Temporary variables</h3>
+    <p>
+        Temporary variables are a special set of identifiers that have dynamic type and don't need to be declared.<br>
+        These identifiers are meant to replace local variables whose only purpose is holding values that don't need to be used more than a few times.<br>
+        A temporary variable is identified by the <code>$</code> character followed by an arbitrary number of decimal digits, which denote its name.<br>
+    </p>
+    <p>
+        They are always <b>function-level scoped</b> and cannot be used outside of function definitions.<br>
+        There is no limit to the number of temporary variables a function can use.<br>
+    </p>
+    <p>
+        The <b>type</b> of a temporary variable can only be changed through direct assignments (<code>=</code>) and it must be <b>unambiguously determinable</b> in order for the variable to be evaulated.
+        This means that reading the value of a temporary variable after one or more branches that may have assigned it <b>different types</b> is not allowed and will result in a <b>semantic error</b>.<br>
+        Using temporary variables whose type is undefined will also result in a semantic error.
+    </p>
+    <p>They act as normal variables for anything else.</p>
+    ```c
+    u32v3 fun1(b arg) {
+        $0 = 1;             // Ok, $0 has type u32 and value 1
+        //$2 = $1;          // Error, $1 has undefined type
+
+        u32v3 vec = { 0, 1, 2 };
+        $2 = true;          // Ok, $2 has type b and value true
+        $2 = vec;           // Ok, $2 has type u32v3 and value { 0, 1, 2 }
+    }
+
+    void fun2(u32v3 vec) {
+        u32 var = $2;       // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2
+    }
+
+    u32 var = $9;           // Error, temporary variables cannot be used outside of functions
+    ```
+    ```c
+    void fun3(b arg, u32v2 &ref) {
+        if(arg) $0 = 1;             // $0 has type u32
+        else    $0 = { 0, 1 };      // $0 has type u32v2
+        //ref = $0;                 // Error, cannot determine the type of $0
+        $0 = ref;                   // Ok, $0 has type u32v2 and the same value as ref
+
+        if(arg) $0 = { 0, 1 };      // $0 has type u32v2
+        else    $0 = { 2, 3 };      // $0 has type u32v2
+        ref = $0;                   // Ok, $0 has type u32v2
+    }
+    ```
+
+    See [Types](#types), [Selection](#selection), [Functions](#functions), [Expressions](#expressions)
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="functions">Functions</h2>
+    <p>
+        Functions are the <b>main component</b> of the language. They contain the statements that will be executed during run time and manage inputs and outputs of the shader.<br>
+        Similarly to variables, each function <b>must be defined</b> in order to be called, but their <b>position</b> in the code is <b>irrelevant</b>. Functions <b>cannot be redefined</b>.
+    </p>
+    <p>
+        A function definition consists of its type and name followed by a list of arguments and its statements enclosed in <code>{</code> <code>}</code> delimiters.<br>
+        Functions are allowed to take no arguments.
+    </p>
+    <p>
+        The <b>type</b> of the function defines the type of the <b>value</b> that is <b>returned</b> by the function when called.<br>
+        Values are returned using the <code>return</code> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
+        Functions that <b>don't return</b> a value must be defined using the <b><code>void</code> type</b>.<br>
+        Void functions are allowed to contain no statements. <b>Non-void</b> functions must <b>always return</b> a value.
+    </p>
+
+    Syntax:
+    ```.txt
+    type name(type arg_identifier, ...) {
+        statement;
+        ...
+    }
+    ```
+    ```c
+    void empty_function_1() { return; }   // Ok
+    void empty_function_2() {}            // Ok
+
+    u32 empty_function_3() { return 0; }  // Ok
+    //u32 empty_function_4() {}           // Error, non-void functions must return a value
+
+    u32 f(u32 n) { return n * 2; }        // Ok
+    //void f() { }                        // Error, f is already defined
+
+    void main(){
+        u32 n = empty_function_3();       // Ok
+        n = f(f(n));                      // Ok
+        //f32 f;                          // Error, f is already defined as a function
+    }
+    ```
+
+    See [Runtime statements](#runtime-statements), [Types](#types)
+
+
+    <div class="separator-3"></div>
+    <h3 id="function-call">Function calls<h3>
+
+
+    <div class="separator-3"></div>
+    <h3 id="parameters-and-references">Parameters and references</h3>
+    <p>
+        A function can take an <b>arbitrary number</b> of <b>parameters</b> of any type. Parameters are declared like variables and behave in the same exact way.<br>
+        The expressions used to call the function are called arguments.<br>
+        Each argument <b>must be implicitly convertible</b> to the type of the parameter.
+    </p>
+    <p>
+        By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
+        If a parameter name is preceeded by a <b><code>&</code></b> token, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
+    </p>
+
+    <p>
+        Declaring a reference parameter as const is a syntax error and passing an unnamed value as argument of a reference parameter is a semantic error.<br>
+        Notice that in this case, the <code>&</code> token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
+    </p>
+    ```c
+    void fun1(u32 arg1, u32 &arg2) {
+        arg1 = 0;     // This doesn't modify main::a, but the local argument in which its value was copied
+        arg2 = 0;     // This modifies main::b
+    }
+
+    void main(){
+        u32 a, b;
+        fun1(a, b);   // a keeps an undefined value, b is set to 0
+        //fun1(a, 5); // Error, cannot pass literals to reference parameters
+    }
+
+    //void fun2(const i32 &arg1){} // Error, references cannot be const
+    ```
+    <p>
+        The <code>main</code> function is where the <b>code execution starts and ends</b>.<br>
+        Every shader <b>must define</b> the <b>main</b> as a <b>void</b> function. As such, it cannot return values.<br>
+    </p>
+
+    see [Const qualifier](#const-qualifier), [Literals and unnamed values](#literals-and-unnamed-values)
+
+
+    <div class="separator-3"></div>
+    <h3 id="return-statement">Return statement</h3>
+
+
+    <div class="separator-3"></div>
+    <h3 id="template-functions">Template functions</h3>
+
+
+    <div class="separator-3"></div>
+    <h3 id="type-classes">Type classes</h3>
+
+
+
+
+    <div class="separator-2"></div>
+    <h2 id="const-qualifier">Const qualifier</h2>
+    <p>
+        The <code>const</code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
+        Reference const parameters are not allowed, as well as const functions and const struct members.<br>
+    </p>
+    <p>
+        As opposed to C and GLSL, const identifiers can be initialized using non-const expressions.<br>
+        The qualifier doesn't affect compiler optimizations or the GLSL output in any way.
+    </p>
+    <p>Passing a const identifier as argument of reference parameters is not allowed and will result in a semantic error.</p>
+    ```c
     struct s {
-        u32 n1 = value_1;       // Ok
-        u32 n3 = 5;             // Ok
-        //e   n4 = 5;           // Error, unknown this::e value
+        u32 a;            // Ok, non-const member
+        //u32 const b;    // Error, struct members cannot be const
+    } const var;          // Ok, const global variable
+
+    //f64 const fun(){}                 // Error, functions cannot be const
+    //f64 fun(f64 const &arg){}         // Error, references cannot be const
+
+    f64 fun(f64 const arg) {            // Ok, const parameter
+        u64 const a, const b = arg, c;  // Ok, uninitialized const, inizialized const and uninitialized variables;
+        //a = 2;                        // Error, cannot assign values to const variables
+        //a = b;                        // Error, cannot assign values to const variables
+        c = a + b;                      // Ok
     }
+    ```
+    see [Compiler optimizations](#compiler-optimizations)
 
-    value_5;                    // Ok, value_5 = 10001
-}
-
-enum c : f64 {
-    pi          = 3.14159;      // Ok
-    e           = 2.71828,      // Ok
-    another_e,  = 2.71828;      // Ok
-    another_e_2 = e;            // Ok
-    another_e_3 = this::c::e;   // Ok, used absolute name
-    //invalid_val;              // Error, uninitialized f64 enum value
-}
-```
-
-<br>
-
-When an enum doesn't have to be explicitly referenced more than once, unnamed enums can be used to define both the type and the symbol in the same construct.<br>
-Similarly to the C syntax, the name is not specified and the enum definition is used as type of the symbol.
-
-The elements and the enum can still be referenced through the `typeof` specifier.<br>
-Defining an unnamed enum without declaring a symbol is allowed, but it will generate a warning as it its elements are unaccessible and the symbol hiding mechanic can be achieved through unnamed namespaces.
-
-<h5>Syntax</h5>
-<pre>
-enum : <kbd>base type</kbd> {
-    <kbd>element identifier</kbd> = <kbd>(base type) expression</kbd>;
-    <kbd>...</kbd>
-} <kbd>symbol identifier</kbd>;
-</pre>
-
-<h5>Example</h5>
 
-```c
-enum : b {
-    on = true;
-    off = false;
-} grasses;
 
-void main(){
-    self.grasses = typeof(grasses)::on;
-}
-```
 
-See [Typeof and baseof specifiers](#typeof-and-baseof-specifiers)
+    <div class="separator-2"></div>
+    <h2 id="symbol-aliases">Symbol aliases</h2>
 
-<br>
 
-### Structs
 
-Structs are used to group multiple values of different types.<br>
-Elements are declared in the same way as variables, and they can be of any type, including enums, arrays and other structures.
 
-Structs can be referenced before their definition.<br>
-It is allowed to declare structures, enums and symbol aliases inside a struct.<br>
-Struct members are referenced using the `.` token, or through their index.<br>
 
-Indices must be known at compile time and they can be listed to reference multiple elements at once.<br>
-The members cannot be const and cannot have an initializer value. Empty structs are not allowed.
 
-//TODO MOVE VALUE LISTS TO #multiple-assignments
-<h5>Syntax</h5>
-<pre> 
-struct<span class=h>·</span><kbd>symbol identifier</kbd> {
-    <kbd>member type</kbd><span class=h>·</span><kbd>member identifier</kbd>;
-    <kbd>...</kbd>
-}
-</pre>
-<pre><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>]</pre>
-<pre><kbd>symbol identifier</kbd>.<kbd>member identifier</kbd></pre>
 
-<h5>Example</h5>
 
-```c
-struct idk {
-    u32 a, b;
-    f64 c;
-}
-
+    <div class="separator-1"></div>
+    <h1>3. Runtime statements</h1>
 
-void main(u32 i){
-    idk var;
-
-    var.a = 4;              // Ok, var = (4, ?, ?)
-    var.b = var.a * 4;      // Ok, var = (4, 8, ?)
-    var[2] = 0.33;          // Ok, var = (4, 8, 0.33)
-    var[2, 0] = var[3, 2];  // Ok, var = (4, ?, ?)
-    //var[4] = 0.33;        // Error, invalid index
-    //var[i] = 0.33;        // Error, unknown index
-}
-```
 
-<br>
 
-Like enums, structs can also be unnamed and their symbol and members types can be referenced through `typeof`.<br>
-Defining unnamed structs without a symbol declaration will also generate a warning.
 
-<h5>Syntax</h5>
-
-<pre>
-struct {
-    <kbd>member type</kbd><span class=h>·</span><kbd>member identifier</kbd>;
-    <kbd>...</kbd>
-} <kbd>symbol identifier</kbd>;
-</pre>
+    <div class="separator-2"></div>
+    <h2 id="expressions">Expressions</h2>
 
-<h5>Example</h5>
-
-```c
-struct {
-    u32 a, b;
-    enum {
-        idk1;
-        idk2;
-    } c;
-} var;
 
-void main(){
-    // Both are allowed
-    var.c = typeof(var.c)::idk1;
-    var.c = typeof(typeof(var)::c)::idk2;
+    <div class="separator-3"></div>
+    <h3 id="literals">Literals</h3>
 
-    typeof(var.a) _a = 0;
-}
-```
 
-See [Arrays](#arrays), [Typeof and baseof specifiers](#typeof-and-baseof-specifiers)
+    <div class="separator-3"></div>
+    <h3 id="constructors">Constructors</h3>
 
-<br>
 
-### Arrays
-
-Arrays can aggregate values of the same type.<br>
-Functions, parameters, right values, variables and struct member can all have array type.
-
-Arrays can use any base type, including structs, enums and other arrays.<br>
-An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
-
-Array declarations are identical to normal types, but `[` `]` tokens follow the symbol identifier, optionally enclosing an expression to specify the number of elements.<br>
-Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
-If the `[` `]` are left empty, the number of elements is determined by the inizializer value, which becomes required and must be of an implicitly convertible array type.
-
-There are no dynamic arrays.
-
-<h5>Syntax</h5>
-<pre><kbd>base type</kbd><span class=h>·</span><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>];</pre>
-<pre><kbd>base type</kbd><span class=h>·</span><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>] = <kbd>(base type[]) expression</kbd>;</pre>
-<pre><kbd>base type</kbd><span class=h>·</span><kbd>symbol identifier</kbd>[] = <kbd>(base type[]) expression</kbd>;</pre>
-
-<h5>Example</h5>
-
-```c
-u32 arr1[4] = (1, 2, 3, 4);     // Ok, arr1 = (1, 2, 3, 4)
-u32 arr2[2][2] = (1, 2, 3, 4);  // Ok, arr2 = ((1, 2), (3, 4)). Explained in Constructors
-u32 arr3[2][2] = arr1;          // Ok, arr3 = ((1, 2), (3, 4)). Explained in Constructors
-u32 arr4[5] = 1;                // Ok, arr4 = (1, 1, 1, 1, 1)
-u32 arr5[] = (8, 7, 6);         // Ok, arr5 = (8,  7,  6)
-u32 arr6[] = arr4 * 2;          // Ok, arr6 = (16, 14, 12)
-
-//u32 arr1[4] = (1, 2, 3);      // Error, inizializer doesn't have enough elements
-//u32 arr1[]  = 1;              // Error, cannot determine the array size
-```
-
-<br>
-
-Array <b>elements</b> are referenced through their <b>index</b>.<br>
-Negative values are not supported.
-
-One-dimensional arrays with a <b>maximum of 4 elements</b> can use special <b>named identifiers</b> to refer to them.<br>
-Referencing elements of multidimensional arrays require two or more indices.<br>
-Referencing elements that are <b>not</b> in the <b>array range</b> has <b>undefined behaviour</b>.
-
-| Element | Named identifier 1 | Named identifier 2 |
-|:-------:|:------------------:|:------------------:|
-| `[0]`   | `x`                | `r`                |
-| `[1]`   | `y`                | `g`                |
-| `[2]`   | `z`                | `b`                |
-| `[3]`   | `w`                | `a`                |
-
-<br>
-//TODO MOVE VALUE LISTS TO #multiple-assignments
-Both named identifiers and indices can be listed to reference multiple elements at once.<br>
-Referencing the same element more than once in a left value is a semantic error. If it happens during runtime, it has undefined behaviour.
-
-<h5>Syntax</h5>
-
-<pre><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>]</pre>
-<pre><kbd>symbol identifier</kbd>[<kbd>(u32) expression</kbd>]<kbd>...</kbd></pre>
-<pre><kbd>symbol identifier</kbd>.<kbd>named identifier</kbd><kbd>...</kbd></pre>
-
-<h5>Example</h5>
-
-```c
-void main() { //TODO multidimensional arrays
-    u32 arr1[5];
-    arr1[3] = 0;                // Ok, arr1 = (?, ?, ?, 0, ?)
-    //arr1[5] = 0;              // Undefined behaviour, index 5 is out of range
-    //arr1.a = 0;               // Error, arrays with more than 5 elements don't have named identifiers
-
-    //u32 arr2[] = arr1[0, 1, 2, 3];    // Error, some of these elements are not initialized
-    arr1[0, 1, 4] = 2;                  // Ok, arr1 =(2, 2, ?, 0, 2)
-    u32 arr2[] = arr1[0, 1, 4, 3];      // Ok, arr2 = (2, 2, 2, 0)
-
-    u32 arr2.b = 9;                     // Ok, arr2 = (2, 2, 9, 0)
-    arr2.xyz = arr2.zrz;                // Ok, arr1 = (0, 2, 0, 0)
-    arr2.wyrb *= 3;                     // Ok, arr1 = (0, 6, 0, 0)
-    //arr2.xyz = arr2.zrga;             // Error, the arrays have different length
-    //arr2.yy = arr2.xx;                // Error, element [0] referenced twice in left value
-    //arr2.yy = arr2.xa;                // Error, element [0] referenced twice in left value
-}
-```
-
-See [Primitive types](#primitive-types), [Implicit conversions](#implicit-conversions), [Constructors](#constructors)
-
-<br>
-
-### Implicit conversions
-
-Implicit conversions are performed when an expression of the incorrect type is used in place of the expected one.<br>
-In function overloads and templates, the actual type of the value always takes precedence over conversions.
-
-Primitive types are all implicitly convertible between them.<br>
-The conversions follow these rules:
-
-<table>
-    <thead><tr>
-        <th>Expression type</th>
-        <th>Expected type</th>
-        <th>Behaviour</th>
-    </tr></thead>
-    <tbody>
-        <tr>
-            <td rowspan="3"><code>u32</code></td>
-            <td><code>i32</code></td>
-            <td>Values over <code>limits::i32::max</code> overflow to <code>limits::i32::min&nbsp;+&nbsp;n&nbsp;-&nbsp;1</code></td>
-        </tr>
-        <tr>
-            <td><code>f32</code><code>f64</code></td>
-            <td>No changes</td>
-        </tr>
-        <tr>
-            <td><code>b</code></td>
-            <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-        </tr>
-        <tr>
-            <td rowspan="3"><code>i32</code></td>
-            <td><code>u32</code></td>
-            <td>Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code></td>
-        </tr>
-        <tr>
-            <td><code>f32</code><code>f64</code></td>
-            <td>No changes</td>
-        </tr>
-        <tr>
-            <td><code>b</code></td>
-            <td><code>1</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-        </tr>
-        <tr>
-            <td rowspan="4"><code>f32</code></td>
-            <td><code>u32</code></td>
-            <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
-            If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
-        </tr>
-        <tr>
-            <td><code>i32</code></td>
-            <td>The decimal part is truncated.<br>
-            If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
-        </tr>
-        <tr>
-            <td><code>f64</code></td>
-            <td>No changes</td>
-        </tr>
-        <tr>
-            <td><code>b</code></td>
-            <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-        </tr>
-        <tr>
-            <td rowspan="4"><code>f64</code></td>
-            <td><code>u32</code></td>
-            <td>The decimal part is truncated. Negative values underflow to <code>limits::u32::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
-            If the value is not between <code>limits::u32::min</code> and <code>limits::u32::max</code>, the result is <b>undefined</b></td>
-        </tr>
-        <tr>
-            <td><code>i32</code></td>
-            <td>The decimal part is truncated.<br>
-            If the value is not between <code>limits::i32::min</code> and <code>limits::i32::max</code>, the result is <b>undefined</b></td>
-        </tr>
-        <tr>
-            <td><code>f32</code></td>
-            <td>The result is approximated using the maximum precision available</td>
-        </tr>
-        <tr>
-            <td><code>b</code></td>
-            <td><code>1.0</code> is evaluated as <code>true</code>, any other value as <code>false</code></td>
-        </tr>
-        <tr>
-            <td rowspan="3"><code>b</code></td>
-            <td><code>u32</code><code>i32</code></td>
-            <td><code>true</code> is evaluated as <code>1</code>, <code>false</code> as <code>0</code></td>
-        </tr>
-        <tr>
-            <td><code>f32</code><code>f64</code></td>
-            <td><code>true</code> is evaluated as <code>1.0</code>, <code>false</code> as <code>0.0</code></td>
-        </tr>
-    </tbody>
-</table>
-
-<br>
-
-Additional conversions between arrays and primitive types are described in the following table,<br>
-with `T` and `U` representing two different types of any kind:
-
-| Expression type | Expected type | Behaviour                                                                                                               |
-|-----------------|---------------|-------------------------------------------------------------------------------------------------------------------------|
-| `T`             | `U[n]`        | Each element of the result is initialized with the value of the starting data, converted from `T` to `U`                |
-| `T[n]`          | `U[n]`        | Each element of the result is initialized with the corresponding value of the starting array, converted from `T` to `U` |
-| `T[n]`          | `b`           | Evaluated as `true` if all the elements of the initial array converted from `T` to `b` evaluate as `true`, `false` otherwise         |
-
-<br>
-
-Values cannot be explicitly casted as in C. To convert a value, constructors are used.<br>
-Attempting to convert incompatible types will result in a semantic error.<br>
-Structs are not convertible.
-
-<h5>Example</h5>
-
-```c
-void fun(u32 a[5]) {}
-void fun2(b a) {}
-
-void main(){
-    struct { u32 n; } var = (0);
-    //fun(var);                               // Error, structs cannot be converted
-    //fun(f32[2](1.0, 4.4));                  // Error, arrays have different lengths
-    fun(2);                                   // Ok, a = (2, 2, 2, 2, 2)
-    fun(f32[5](1.0, 4.4, 5.5, -33, 2.11));    // Ok, a = (1, 4, 5, 4294967263, 2)
-
-    fun2(2);                                  // Ok, a = true
-    fun2(f32[5](1.0, 4.4, 5.5, -33, 2.11));   // Ok, a = true
-    fun2(f32[5](1.0, 4.4, 5.5, -33, 0   ));   // Ok, a = false
-
-    u32 arr[1.2];                             // Ok, arr has 1 element
-}
-```
-
-<br>
-
-See [Arrays](#arrays), [Constructors](#constructors), [Standard modules](#standard-modules)
-
-<br>
-
-### Auto specifier
-
-
-
-<br>
-
-### Typeof and baseof specifiers
-
-<br><br><br><br>
-
-## Functions
-
-<br>
-
-### Parameters and references
-
-<br>
-
-### Return statement
-
-<br>
-
-### Template functions
-
-<br>
-
-### Type classes
-
-<br><br><br><br>
-
-## Const qualifier
-
-<br><br><br><br>
-
-## Symbol aliases
-
-<br><br><br><br>
-
----
-
-<br><br><br><br>
-
-# 3. Runtime statements
-
-<br><br><br><br>
-
-## Variables
-
-Variables are <b>named memory locations</b> that can contain values of the specified type.<br>
-Each variable <b>must be declared</b> before it is used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
-
-A variable declaration consists of the type, the name and an optional `=` followed by an expression of a compatible type that is used to <b>inizialize it</b>.<br>
-If an initializer expression is not specified, the value of the variable is <b>undefined</b>.<br>
-<b>Evaluating</b> an expression that can result in an <b>undefined value</b> is considered a <b>logical error</b> and will stop the compilation process.<br>
-Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
-
-Syntax:<br>
-`type identifier;`<br>
-`type identifier = expression;`<br>
-
-```c
-u32 variable = 0;       // Ok, variable has value 0
-f32 nya = 5 + variable; // Ok, nya ha value 5.0
-b var$;                 // Ok, var$ has undefined value
-//b var_2 = var$;       // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions
-
-//f64 variable;         // Error, the identifier "variable" is already declared
-//f64 foo               // Error, ';' is not optional
-//b $var;               // Error, invalid identifier
-//b 2var;               // Error, invalid identifier
-```
-
-See [Types](#types), [Expressions](#expressions), [Functions](#functions)
-
-<br>
-
-## Temporary variables
-
-Temporary variables are a special set of identifiers that have dynamic type and don't need to be declared.<br>
-These identifiers are meant to replace local variables whose only purpose is holding values that don't need to be used more than a few times.<br>
-A temporary variable is identified by the `$` character followed by an arbitrary number of decimal digits, which denote its name.<br>
-
-They are always <b>function-level scoped</b> and cannot be used outside of function definitions.<br>
-There is no limit to the number of temporary variables a function can use.<br>
-
-The <b>type</b> of a temporary variable can only be changed through direct assignments (`=`) and it must be <b>unambiguously determinable</b> in order for the variable to be evaulated.
-This means that reading the value of a temporary variable after one or more branches that may have assigned it <b>different types</b> is not allowed and will result in a <b>semantic error</b>.<br>
-Using temporary variables whose type is undefined will also result in a semantic error.
-
-They act as normal variables for anything else.
-
-See [Types](#types), [Selection](#selection), [Functions](#functions), [Expressions](#expressions)
-
-```c
-u32v3 fun1(b arg) {
-    $0 = 1;             // Ok, $0 has type u32 and value 1
-    //$2 = $1;          // Error, $1 has undefined type
-
-    u32v3 vec = { 0, 1, 2 };
-    $2 = true;          // Ok, $2 has type b and value true
-    $2 = vec;           // Ok, $2 has type u32v3 and value { 0, 1, 2 }
-}
+    <div class="separator-3"></div>
+    <h3 id="operators">Operators</h3>
 
-void fun2(u32v3 vec) {
-    u32 var = $2;       // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2
-}
 
-u32 var = $9;           // Error, temporary variables cannot be used outside of functions
-```
+    <div class="separator-3"></div>
+    <h3 id="special-operators">Special operators</h3>
 
-```c
-void fun3(b arg, u32v2 &ref) {
-    if(arg) $0 = 1;             // $0 has type u32
-    else    $0 = { 0, 1 };      // $0 has type u32v2
-    //ref = $0;                 // Error, cannot determine the type of $0
-    $0 = ref;                   // Ok, $0 has type u32v2 and the same value as ref
 
-    if(arg) $0 = { 0, 1 };      // $0 has type u32v2
-    else    $0 = { 2, 3 };      // $0 has type u32v2
-    ref = $0;                   // Ok, $0 has type u32v2
-}
-```
+    <div class="separator-3"></div>
+    <h3 id="array-operations">Array operations</h3>
 
-<br>
 
-## Functions
 
-Functions are the <b>main component</b> of the language. They contain the statements that will be executed during run time and manage inputs and outputs of the shader.<br>
-Similarly to variables, each function <b>must be defined</b> in order to be called, but their <b>position</b> in the code is <b>irrelevant</b>. Functions <b>cannot be redefined</b>.
 
-A function definition consists of its type and name followed by a list of arguments and its statements enclosed in `{` `}` delimiters.<br>
-Functions are allowed to take no arguments.
+    <div class="separator-2"></div>
+    <h2 id="assignments">Assignments</h2>
 
-The <b>type</b> of the function defines the type of the <b>value</b> that is <b>returned</b> by the function when called.<br>
-Values are returned using the `return` statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
-Functions that <b>don't return</b> a value must be defined using the <b>`void` type</b>.<br>
-Void functions are allowed to contain no statements. <b>Non-void</b> functions must <b>always return</b> a value.
 
-Syntax:
+    <div class="separator-3"></div>
+    <h3 id="composite-assignments">Composite assignments</h3>
 
-```.txt
-type name(type arg_identifier, ...) {
-    statement;
-    ...
-}
-```
 
-See [Runtime statements](#runtime-statements), [Types](#types)
+    <div class="separator-3"></div>
+    <h3 id="multiple-assignments">Multiple assignments</h3>
 
-```c
-void empty_function_1() { return; }   // Ok
-void empty_function_2() {}            // Ok
 
-u32 empty_function_3() { return 0; }  // Ok
-//u32 empty_function_4() {}           // Error, non-void functions must return a value
 
-u32 f(u32 n) { return n * 2; }        // Ok
-//void f() { }                        // Error, f is already defined
 
-void main(){
-    u32 n = empty_function_3();       // Ok
-    n = f(f(n));                      // Ok
-    //f32 f;                          // Error, f is already defined as a function
-}
-```
+    <div class="separator-2"></div>
+    <h2 id="selection">Selection</h2>
 
-<br>
 
-### Parameters and references
+    <div class="separator-3"></div>
+    <h3 id="if-statement">If statement</h3>
 
-A function can take an <b>arbitrary number</b> of <b>parameters</b> of any type. Parameters are declared like variables and behave in the same exact way.<br>
-The expressions used to call the function are called arguments.<br>
-Each argument <b>must be implicitly convertible</b> to the type of the parameter.
 
-By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
-If a parameter name is preceeded by a <b>`&`</b> token, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
+    <div class="separator-3"></div>
+    <h3 id="select-statement">Select statement</h3>
 
-Declaring a reference parameter as const is a syntax error and passing an unnamed value as argument of a reference parameter is a semantic error.<br>
-Notice that in this case, the `&` token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
 
-see [Const qualifier](#const-qualifier), [Literals and unnamed values](#literals-and-unnamed-values)
 
-```c
-void fun1(u32 arg1, u32 &arg2) {
-    arg1 = 0;     // This doesn't modify main::a, but the local argument in which its value was copied
-    arg2 = 0;     // This modifies main::b
-}
 
-void main(){
-    u32 a, b;
-    fun1(a, b);   // a keeps an undefined value, b is set to 0
-    //fun1(a, 5); // Error, cannot pass literals to reference parameters
-}
+    <div class="separator-2"></div>
+    <h2 id="iteration">Iteration</h2>
 
-//void fun2(const i32 &arg1){} // Error, references cannot be const
-```
 
-<br>
+    <div class="separator-3"></div>
+    <h3 id="for-loops">For loops</h3>
 
-The `main` function is where the <b>code execution starts and ends</b>.<br>
-Every shader <b>must define</b> the <b>main</b> as a <b>void</b> function. As such, it cannot return values.<br>
 
-<br>
+    <div class="separator-3"></div>
+    <h3 id="while-loops">While loops</h3>
 
-## Const qualifier
 
-The `const` qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
-Reference const parameters are not allowed, as well as const functions and const struct members.<br>
+    <div class="separator-3"></div>
+    <h3 id="continue-and-break-statements">Continue and break statements</h3>
 
-As opposed to C and GLSL, const identifiers can be initialized using non-const expressions.<br>
-The qualifier doesn't affect compiler optimizations or the GLSL output in any way.
 
-Passing a const identifier as argument of reference parameters is not allowed and will result in a semantic error.
+    <div class="separator-3"></div>
+    <h3 id="once-statement">Once statement</h3>
 
-see [Compiler optimizations](#compiler-optimizations)
 
-```c
-struct s {
-    u32 a;            // Ok, non-const member
-    //u32 const b;    // Error, struct members cannot be const
-} const var;          // Ok, const global variable
+    <div class="separator-3"></div>
+    <h3 id="then-statement">Then statement</h3>
 
-//f64 const fun(){}                 // Error, functions cannot be const
-//f64 fun(f64 const &arg){}         // Error, references cannot be const
 
-f64 fun(f64 const arg) {            // Ok, const parameter
-    u64 const a, const b = arg, c;  // Ok, uninitialized const, inizialized const and uninitialized variables;
-    //a = 2;                        // Error, cannot assign values to const variables
-    //a = b;                        // Error, cannot assign values to const variables
-    c = a + b;                      // Ok
-}
-```
 
-<br>
 
-## Namespaces
+    <div class="separator-2"></div>
+    <h2 id="else-statement">Else statement</h2>
 
-<br><br><br><br>
 
-# Types
 
-<br>
 
-## Scalar types
 
-<br>
 
-## Structs
 
-<br>
 
-## Arrays
+    <div class="separator-1"></div>
+    <h1>Compilation</h1>
 
-<br>
 
-## Vectors
 
-<br>
 
-## Type constructors
+    <div class="separator-2"></div>
+    <h2 id="modules">Modules</h2>
 
-<br><br><br><br>
+    <p>Althought the file extension is only a convention and can be changed or omitted, it is still recommended to use the correct one, as some softwares may use it to determine the language of the source file.</p>
 
-# Runtime statements
 
-<br>
 
-## Expressions
 
-### Literals and unnamed values
+    <div class="separator-2"></div>
+    <h2 id="compilation-phases-and-error-types">Compilation phases and error types</h2>
 
-//TODO constructors are also literals
-//TODO literals don't have to be compile time
 
-### Function calls and variables
 
-### Array subscription
 
-### Struct members
+    <div class="separator-2"></div>
+    <h2 id="global-initialization-order">Global initialization order</h2>
 
-### Implicit conversions
 
-### Operators
 
-#### Arithmetic operators
 
-#### Binary operators
+    <div class="separator-2"></div>
+    <h2 id="branching-performance">Branching performance</h2>
 
-#### Logical operators
 
-#### Ternary operator
 
-#### Array operations
 
-#### Sequence operator
+    <div class="separator-2"></div>
+    <h2 id="compiler-optimizations">Compiler optimizations</h2>
 
-### Grouping
 
-<br>
 
-## Selection
 
-### If statement
 
-### Select statement
 
-### Fallthrough statement
 
-<br>
 
-## Iteration
+    <div class="separator-1"></div>
+    <h1>Standard modules</h1>
 
-### For loop
 
-### While loop
 
-### Continue and break statements
 
-### Once statement
 
-### Then statement
 
-<br>
 
-## Else statement
 
-<br>
+    <div class="separator-1"></div>
+    <h1>Quick reference tabs</h1>
 
-## Return statement
+    //TODO
+    //this.x this.y this.z
+    this::pos.x
+    this::pos.y
+    this::pos.z
+    ^ coordinates in current workspace
 
-<br><br><br><br>
 
-# Built-in functions
 
-<br><br><br><br>
 
-# Compilation
+    sequence function //TODO
+    sequence(start, end, step)
 
-<br>
 
-# Modules
 
-Althought the file extension is only a convention and can be changed or omitted, it is still recommended to use the correct one, as some softwares may use it to determine the language of the source file.
 
-<br>
 
-## Compilation phases and error types
 
-<br>
 
-## Selection directives performance
+    <h5>Arithmetic operators</h5>
+    <table>
+        <tr><thead>
+            <th class="center">Precedence</th>
+            <th class="center">Operator</th>
+            <th class="center">Syntax</th>
+            <th class="center">Result</th>
+            <th class="left">Name</th>
+            <th class="left">Category</th>
+        </thead></tr>
+        <tbody>
+            <tr>
+                <td class="center" >1</td>
+                <td class="center">
+                    <span class="op_template">With T as any</span><br>
+                    <span class="syntax-elm"><code>(</code><code>)</code></span>
+                </td>
+                <td class="center"><span class="op_syntax">(<span class="syntax-elm lynx-type">T</span>)</span></td>
+                <td class="center"><span class="syntax-elm lynx-type">T</span><span class="syntax-elm">r-value</span></td>
+                <td class="left">Grouping</td>
+                <td class="left" rowspan=5>Other</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=6>2</td>
+                <td class="center" rowspan=2>
+                    <span class="op_template">With T as any</span><br>
+                    <span class="syntax-elm"><code>[</code><code>]</code></span><br>
+                    <span class="op_template">With T as any_struct</span>
+                </td>
+                <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T[ ]</span>[<span class="syntax-elm lynx-type">u32</span>]</span></td>
+                <td class="center"><span class="syntax-elm lynx-type">T</span><span class="syntax-elm">l-value</span></td>
+                <td class="left" rowspan=2>Subscription</td>
+            </tr>
+            <tr>
+                <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span>[<span class="syntax-elm lynx-type">u32</span>]</span></td>
+                <td class="center"><span class="syntax-elm lynx-type">member type</span><span class="syntax-elm">l-value</span></td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=2>
+                    <span class="op_template">With T as any</span><br>
+                    <code>.</code><br>
+                    <span class="op_template">With T as any_struct</span>
+                </td>
+                <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T[ ]</span>.<span class="syntax-elm lynx-var">identifier</span></span></td>
+                <td class="center"><span class="syntax-elm lynx-type">T</span><span class="syntax-elm">l-value</span></td>
+                <td class="left" rowspan=2>Member access</td>
+            </tr>
+            <tr>
+                <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span>.<span class="syntax-elm lynx-var">identifier</span></span></td>
+                <td class="center"><span class="syntax-elm lynx-type">member type</span><span class="syntax-elm">l-value</span></td>
+            </tr>
+            <tr>
+                <td class="center"><code>++</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Postfix increment</td>
+                <td class="left" rowspan=6>Arithmetic</td>
+            </tr>
+            <tr>
+                <td class="center"><code>--</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Postfix decrement</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=6>3</td>
+                <td class="center"><code>++</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Prefix increment</td>
+            </tr>
+            <tr>
+                <td class="center"><code>--</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Prefix decrement</td>
+            </tr>
+            <tr>
+                <td class="center"><code>+</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Promotion</td>
+            </tr>
+            <tr>
+                <td class="center"><code>-</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Inversion</td>
+            </tr>
+            <tr>
+                <td class="center"><code>~</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Bitwise NOT</td>
+                <td class="left">Binary</td>
+            </tr>
+            <tr>
+                <td class="center"><code>!</code></td>
+                <td class="center" ></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Logical NOT</td>
+                <td class="left">Logical</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=3>4</td>
+                <td class="center">
+                    <span class="op_template">With T as any</span><br>
+                    <code>*</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> &#42; <span class="syntax-elm">T <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Multiplication</td>
+                <td class="left" rowspan=5>Arithmetic</td>
+            </tr>
+            <tr>
+                <td class="center">
+                    <span class="op_template">With T as any</span><br>
+                    <code>/</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> / <span class="syntax-elm">T <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Division</td>
+            </tr>
+            <tr>
+                <td class="center">
+                    <span class="op_template">With T as any - b</span><br>
+                    <code>%</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> % <span class="syntax-elm">T <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Modulo</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=2>5</td>
+                <td class="center">
+                    <span class="op_template">With T as any</span><br>
+                    <code>+</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> + <span class="syntax-elm">T <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Addition</td>
+            </tr>
+            <tr>
+                <td class="center">
+                    <span class="op_template">With T as any</span><br>
+                    <code>-</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> - <span class="syntax-elm">T <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Subtraction</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=2>6</td>
+                <td class="center">
+                    <span class="op_template">With T as any_int</span><br>
+                    <code>&lt;&lt;</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> &lt;&lt; <span class="syntax-elm">u32 <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Left bit shift</td>
+                <td class="left" rowspan=2>Binary</td>
+            </tr>
+            <tr>
+                <td class="center">
+                    <span class="op_template">With T as any_int</span><br>
+                    <code>&gt;&gt;</code>
+                </td>
+                <td class="center">
+                    <span class="op_syntax"><span class="syntax-elm">T <span class="syntax-elm">a</span></span> &gt;&gt; <span class="syntax-elm">u32 <span class="syntax-elm">b</span></span></span>
+                </td>
+                <td class="center"><span class="syntax-elm">T r-value</span></td>
+                <td class="left">Right bit shift</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=4>7</td>
+                <td class="center"><code>&lt;</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Less than</td>
+                <td class="left" rowspan=7>Comparison</td>
+            </tr>
+            <tr>
+                <td class="center"><code>&lt;=</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Less or equal than</td>
+            </tr>
+            <tr>
+                <td class="center"><code>&gt;</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Greater than</td>
+            </tr>
+            <tr>
+                <td class="center"><code>&gt;=</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Greater or equal than</td>
+            </tr>
+            <tr>
+                <td class="center" rowspan=3>8</td>
+                <td class="center"><code>==</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Equality</td>
+            </tr>
+            <tr>
+                <td class="center"><code>!=</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Inequality</td>
+            </tr>
+            <tr>
+                <td class="center"><code>:=</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Existence</td>
+            </tr>
+            <tr>
+                <td class="center">9</td>
+                <td class="center"><code>&</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Bitwise AND</td>
+                <td class="left" rowspan=3>Binary</td>
+            </tr>
+            <tr>
+                <td class="center">10</td>
+                <td class="center"><code>^</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Bitwise XOR</td>
+            </tr>
+            <tr>
+                <td class="center">11</td>
+                <td class="center"><code>|</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Bitwise OR</td>
+            </tr>
+            <tr>
+                <td class="center">12</td>
+                <td class="center"><code>&&</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Logical AND</td>
+                <td class="left" rowspan=3>Logical</td>
+            </tr>
+            <tr>
+                <td class="center">13</td>
+                <td class="center"><code>^^</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Logical XOR</td>
+            </tr>
+            <tr>
+                <td class="center">14</td>
+                <td class="center"><code>||</code></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">b r-value</span></td>
+                <td class="left">Logical OR</td>
+            </tr>
+            <tr>
+                <td class="center">15</td>
+                <td class="center"><span class="syntax-elm"><code>?</code><code>:</code></span></td>
+                <td class="center"></td>
+                <td class="center"><span class="syntax-elm">Result</span></td>
+                <td class="left">Selection operator</td>
+                <td class="left">Other</td>
+            </tr>
+        </tbody>
+    </table>
+
+    Operators cannot be used as value. Only their members can
+
+    //TODO add as keyword
+    //TODO add with keyword
+
+</body>
+</html>
 
-<br>
-
-## Compiler optimizations
-
-<br><br><br><br>
-
-# Quick reference tabs
-
-//TODO
-//this.x this.y this.z
-this::pos.x
-this::pos.y
-this::pos.z
-^ coordinates in current workspace
-
-
-
-
-sequence function //TODO
-sequence(start, end, step)
-
-
-
-
-
-
-
-<h5>Arithmetic operators</h5>
-<table>
-    <tr><thead>
-        <th>Precedence</th>
-        <th>Operator</th>
-        <th align="center">Syntax</th>
-        <th>Result</th>
-        <th>Name</th>
-        <th>Category</th>
-    </thead></tr>
-    <tbody>
-        <tr>
-            <td align="center" >1</td>
-            <td align="center">
-                <span class="op_template">With T as any</span><br>
-                <kbd><code>(</code><code>)</code></kbd>
-            </td>
-            <td align="center">
-                <span class=op_syntax>( <kbd>T <kbd>expr</kbd></kbd> )</span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Grouping</td>
-            <td>Other</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=6>2</td>
-            <td align="center" rowspan=2>
-                <span class="op_template">With T as any</span><br>
-                <kbd><code>[</code><code>]</code></kbd>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T[] <kbd>array</kbd></kbd>[ <kbd>u32 <kbd>index</kbd></kbd> ]</span>
-            </td>
-            <td><code>T lvalue</code></td>
-            <td>Subscription</td>
-            <td>Other</td>
-        </tr>
-        <tr>
-            <td align="center" style="white-space:nowrap">
-                <span class=op_syntax><kbd>any_struct <kbd>struct</kbd></kbd>[ <kbd>u32 <kbd>index</kbd></kbd> ]</span>
-            </td>
-            <td><code>typeof(member)</code><br><code>lvalue</code></td>
-            <td>Subscription</td>
-            <td>Other</td>
-        </tr>
-        <tr>
-            <td align="center"><code>.</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Struct member</td>
-            <td>Other</td>
-        </tr>
-        <tr>
-            <td align="center"><code>.</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Named array element identifier</td>
-            <td>Other</td>
-        </tr>
-        <tr>
-            <td align="center"><code>++</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Postfix increment</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center"><code>--</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Postfix decrement</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=6>3</td>
-            <td align="center"><code>++</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Prefix increment</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center"><code>--</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Prefix decrement</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center"><code>+</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Promotion</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center"><code>-</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Inversion</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center"><code>~</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Bitwise NOT</td>
-            <td>Binary</td>
-        </tr>
-        <tr>
-            <td align="center"><code>!</code></td>
-            <td align="center" ></td>
-            <td Result</td>
-            <td >Logical NOT</td>
-            <td>Logical</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=3>4</td>
-            <td align="center">
-                <span class="op_template">With T as any</span><br>
-                <code>*</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> &#42; <kbd>T <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Multiplication</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center">
-                <span class="op_template">With T as any</span><br>
-                <code>/</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> / <kbd>T <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Division</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center">
-                <span class="op_template">With T as any - b</span><br>
-                <code>%</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> % <kbd>T <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Modulo</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=2>5</td>
-            <td align="center">
-                <span class="op_template">With T as any</span><br>
-                <code>+</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> + <kbd>T <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Addition</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center">
-                <span class="op_template">With T as any</span><br>
-                <code>-</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> - <kbd>T <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Subtraction</td>
-            <td>Arithmetic</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=2>6</td>
-            <td align="center">
-                <span class="op_template">With T as any_int</span><br>
-                <code>&lt;&lt;</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> &lt;&lt; <kbd>u32 <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Left bit shift</td>
-            <td>Binary</td>
-        </tr>
-        <tr>
-            <td align="center">
-                <span class="op_template">With T as any_int</span><br>
-                <code>&gt;&gt;</code>
-            </td>
-            <td align="center">
-                <span class=op_syntax><kbd>T <kbd>a</kbd></kbd> &gt;&gt; <kbd>u32 <kbd>b</kbd></kbd></span>
-            </td>
-            <td><code>T rvalue</code></td>
-            <td>Right bit shift</td>
-            <td>Binary</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=4>7</td>
-            <td align="center"><code>&lt;</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Less than</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center"><code>&lt;=</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Less or equal than</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center"><code>&gt;</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Greater than</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center"><code>&gt;=</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Greater or equal than</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center" rowspan=3>8</td>
-            <td align="center"><code>==</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Equality</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center"><code>!=</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Inequality</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center"><code>:=</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Existence</td>
-            <td>Comparison</td>
-        </tr>
-        <tr>
-            <td align="center">9</td>
-            <td align="center"><code>&</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Bitwise AND</td>
-            <td>Binary</td>
-        </tr>
-        <tr>
-            <td align="center">10</td>
-            <td align="center"><code>^</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Bitwise XOR</td>
-            <td>Binary</td>
-        </tr>
-        <tr>
-            <td align="center">11</td>
-            <td align="center"><code>|</code></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Bitwise OR</td>
-            <td>Binary</td>
-        </tr>
-        <tr>
-            <td align="center">12</td>
-            <td align="center"><code>&&</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Logical AND</td>
-            <td>Logical</td>
-        </tr>
-        <tr>
-            <td align="center">13</td>
-            <td align="center"><code>^^</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Logical XOR</td>
-            <td>Logical</td>
-        </tr>
-        <tr>
-            <td align="center">14</td>
-            <td align="center"><code>||</code></td>
-            <td align="center"></td>
-            <td><code>b rvalue</code></td>
-            <td>Logical OR</td>
-            <td>Logical</td>
-        </tr>
-        <tr>
-            <td align="center">15</td>
-            <td align="center"><kbd><code>?</code><code>:</code></kbd></td>
-            <td align="center"></td>
-            <td><code>Result</code></td>
-            <td>Selection operator</td>
-            <td>Other</td>
-        </tr>
-    </tbody>
-</table>
-
-Operators cannot be used as value. Only their members can
-
-//TODO add as keyword
-//TODO add with keyword
