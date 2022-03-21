@@ -1,194 +1,252 @@
 <html>
+<style>
+    :root {
+        --link-color: rgb(80, 170, 280);
+        --bg-color: #0d1117;
+        --code-bg-color: #333941;
+        --separator-color: #333941;
+        --pre-bg-color: #161b22;
+        --default-text-color: rgb(210, 210, 210);
+        --hidden-color: #555555;
+        --table-bg-color: #161a20;
+        --table-border-color: #333941;
+
+        --lynx-comment-color: #6d757e;
+        --lynx-literal-color: #598cbb;
+        --lynx-type-color: #4d8acf;
+        --lynx-func-color: #d1d09c;
+        --lynx-arg-color: #5bd1da;
+        --lynx-keyword-color: #bb72c2;
+        --lynx-string-color: #db966e;
+    }
+
+    .right  { text-align: right;  }
+    .left   { text-align: left;   }
+    .center { text-align: center; }
+
+    .small  { font-size: small;  }
+    .medium { font-size: medium; }
+    .large  { font-size: large;  }
+
+    .lynx-comment {color: var(--lynx-comment-color); font-size: medium; font-weight: 300; }
+    .lynx-literal {color: var(--lynx-literal-color); font-size: medium;}
+    .lynx-type    {color: var(--lynx-type-color);    font-size: medium;}
+    .lynx-func    {color: var(--lynx-func-color);    font-size: medium;}
+    .lynx-arg     {color: var(--lynx-arg-color);     font-size: medium;}
+    .lynx-keyword {color: var(--lynx-keyword-color); font-size: medium;}
+    .lynx-string  {color: var(--lynx-string-color);  font-size: medium;}
+
+    .fancy-code-multi-line-fix {
+        margin-top: 10px;
+        background-color: var(--pre-bg-color);
+        border-radius: 10px;
+        overflow: hidden;
+        padding: 0px;
+        font-family: monospace;
+        font-size: small;
+        line-height: 18px;
+    }
+    .fancy-code-multi-line {
+        margin-left: -10ch;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding: 20px;
+        font-family: monospace;
+        font-size: small;
+        line-height: 18px;
+    }
+    .fancy-code-single-line {
+        margin-top: 10px;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: var(--pre-bg-color);
+        font-family: monospace;
+        font-size: small;
+        line-height: 18px;
+        white-space: nowrap;
+    }
+    .fancy-code-label {
+        font-family: monospace;
+        font-size: small;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        background-color: var(--pre-bg-color);
+        max-width: min-content;
+        padding: 8px;
+        padding-top: 4px;
+        padding-bottom: 22px;
+        margin-bottom: -38px;
+        z-index: -5;
+        white-space: nowrap;
+    }
+
+    .separator-1 {
+        background-color: var(--separator-color);
+        width: 100%;
+        height: 5px;
+        border-radius: 10px;
+        margin-top: 10ch;
+        margin-bottom: 10ch;
+    }
+    .separator-2 {
+        background-color: var(--separator-color);
+        width: 100%;
+        height: 1px;
+        border-radius: 10px;
+        margin-top: 6ch;
+        margin-bottom: 6ch;
+    }
+    .separator-3 {
+        background-color: transparent;
+        width: 100%;
+        margin-top: 8ch;
+    }
+
+
+    .index-section {
+        font-size: x-large;
+        font-weight: bold;
+        padding: 20px 0px 10px 0px;
+        max-width: min-content;
+        white-space: nowrap;
+    }
+    .index-section li {
+        font-size: medium;
+        font-weight: normal;
+        padding: 2px 0px 2px 0px;
+        max-width: min-content;
+        white-space:nowrap;
+        color: var(--link-color);
+    }
+
+    .syntax-elm {
+        border: 1px solid var(--separator-color);
+        border-radius: 10px;
+        padding: 4px 8px 7px 8px;
+        background-color: var(--pre-bg-color);
+        font-size: small;
+        white-space: nowrap;
+    }
+
+    .hidden {
+        color: var(--hidden-color);
+        white-space: nowrap;
+    }
+
+
+    body {
+        padding: 5%;
+        background-color: var(--bg-color);
+        font-size: medium;
+        font-family: Cantarell;
+        font-weight: 450;
+        color: var(--default-text-color);
+        line-height: 25px;
+        word-spacing: 3px;
+        padding-left: 20%;
+        padding-right: 20%;
+    }
+    table {
+        border: 2px solid var(--table-border-color);
+        border-collapse: collapse;
+        background-color: var(--table-bg-color);
+        line-height: 2.4ch;
+        width: 100%;
+    }
+    .wide-table-cell {
+        line-height: 3ch;
+    }
+    td {
+        border: 1px solid var(--table-border-color);
+        padding: 10px;
+    }
+    th {
+        border: 2px solid var(--table-border-color);
+        padding: 10px;
+        font-size: large;
+    }
+    code {
+        white-space:nowrap;
+        border-radius: 10px;
+        padding: 4px 8px 4px 8px;
+        background-color: var(--code-bg-color);
+        font-family: monospace;
+        color: var(--default-text-color);
+        font-size: small;
+    }
+    .op_template {
+        color: gray;
+        white-space:nowrap;
+        font-size: smaller;
+    }
+    .op_syntax {
+        white-space:nowrap;
+    }
+
+
+
+    .table-grid {
+        display: grid;
+        border: 1px solid var(--table-border-color);
+        border-left: 2px solid var(--table-border-color);
+        border-top: 2px solid var(--table-border-color);
+        grid-template-columns: repeat(12, 1fr);
+        text-align: center;
+        overflow-x: auto;
+    }
+    .grid-1-cell {
+        background-color: var(--table-bg-color);
+        border: 1px solid var(--table-border-color);
+        border-left-width: 0;
+        border-top-width: 0;
+        margin: 0;
+        padding: 5px;
+
+        min-height: 9ch;
+        aspect-ratio: 1/1;
+    }
+    .grid-1-header {
+        border-right: 2px solid var(--table-border-color);
+        border-bottom: 2px solid var(--table-border-color);
+        font-weight: bold;
+    }
+    .grid-1-y {
+        background-color: #0b83003a;
+    }
+    .grid-1-n {
+        background-color: #8300003a;
+    }.vertical-center {
+  margin: 0;
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+
+
+    a:hover, a:visited, a:link {
+        text-decoration: none;
+        color: var(--link-color);
+    }
+    ol { counter-reset: item }
+    li { display: block }
+    li:before { content: counters(item, ".") " "; counter-increment: item }
+    ::-webkit-slider-thumb {
+        color: red;
+    }
+</style>
+
+
+
+
+
+
+
 <head>
-    <style>
-        :root {
-            --link-color: rgb(80, 170, 280);
-            --bg-color: #0d1117;
-            --code-bg-color: #333941;
-            --separator-color: #333941;
-            --pre-bg-color: #161b22;
-            --default-text-color: rgb(210, 210, 210);
-            --hidden-color: #555555;
-            --table-bg-color: #0d1117;
-            --table-border-color: #333941;
-
-            --lynx-comment-color: #6d757e;
-            --lynx-literal-color: #598cbb;
-            --lynx-type-color: #489948;
-            --lynx-func-color: #c5c356;
-            --lynx-var-color: #4d8acf;
-            --lynx-keyword-color: #bb72c2;
-            --lynx-string-color: #db966e;
-        }
-
-        .right  { text-align: right;  }
-        .left   { text-align: left;   }
-        .center { text-align: center; }
-
-        .small  { font-size: small;  }
-        .medium { font-size: medium; }
-        .large  { font-size: large;  }
-
-        .lynx-comment {color: var(--lynx-comment-color); font-size: medium;}
-        .lynx-literal {color: var(--lynx-literal-color); font-size: medium;}
-        .lynx-type    {color: var(--lynx-type-color);    font-size: medium;}
-        .lynx-func    {color: var(--lynx-func-color);    font-size: medium;}
-        .lynx-var     {color: var(--lynx-var-color);     font-size: medium;}
-        .lynx-keyword {color: var(--lynx-keyword-color); font-size: medium;}
-        .lynx-string  {color: var(--lynx-string-color);  font-size: medium;}
-
-        .example-container {
-            background-color: var(--pre-bg-color);
-            border-radius: 10px;
-            overflow: hidden;
-            padding: 0px;
-            margin: 0px;
-        }
-        .example-main {
-            margin-left: -8ch;
-            padding: 20px;
-            font-family: monospace;
-            font-size: medium;
-        }
-        .pre-syntax {
-            border-radius: 10px;
-            padding: 20px;
-            background-color: var(--pre-bg-color);
-            font-family: monospace;
-            font-size: medium;
-        }
-        .code-name {
-            font-family: monospace;
-            font-size: small;
-            font-weight: bold;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            background-color: var(--pre-bg-color);
-            max-width: min-content;
-            padding: 8px;
-            padding-bottom: 3ch;
-            margin-bottom: -5ch;
-            z-index: -5;
-            white-space: nowrap;
-        }
-
-        .separator-1 {
-            background-color: var(--separator-color);
-            width: 100%;
-            height: 5px;
-            border-radius: 10px;
-            margin-top: 10ch;
-            margin-bottom: 10ch;
-        }
-        .separator-2 {
-            background-color: var(--separator-color);
-            width: 100%;
-            height: 1px;
-            border-radius: 10px;
-            margin-top: 6ch;
-            margin-bottom: 6ch;
-        }
-        .separator-3 {
-            background-color: transparent;
-            width: 100%;
-            margin-top: 8ch;
-        }
-
-
-        .index-section {
-            font-size: x-large;
-            font-weight: bold;
-            padding: 20px 0px 10px 0px;
-            max-width: min-content;
-            white-space: nowrap;
-        }
-        .index-section li {
-            font-size: medium;
-            font-weight: normal;
-            padding: 2px 0px 2px 0px;
-            max-width: min-content;
-            white-space:nowrap;
-            color: var(--link-color);
-        }
-
-        .syntax-elm {
-            border: 1px solid var(--separator-color);
-            border-radius: 10px;
-            padding: 4px 8px 4px 8px;
-            background-color: var(--pre-bg-color);
-            font-size: small;
-            white-space: nowrap;
-        }
-
-        .hidden {
-            color: var(--hidden-color);
-            white-space: nowrap;
-        }
-
-
-        body {
-            padding: 5%;
-            background-color: var(--bg-color);
-            font-size: medium;
-            font-family: Arial, Helvetica, sans-serif;
-            color: var(--default-text-color);
-        }
-        table {
-            border: 2px solid var(--table-border-color);
-            border-collapse: collapse;
-            background-color: var(--table-bg-color);
-            line-height: 2.4ch;
-        }
-        .wide-table {
-            line-height: 3ch;
-        }
-        td {
-            border: 1px solid var(--table-border-color);
-            padding: 10px;
-        }
-        th {
-            border: 2px solid var(--table-border-color);
-            padding: 10px;
-            font-size: large;
-        }
-        code {
-            white-space:nowrap;
-            border-radius: 10px;
-            padding: 4px 8px 4px 8px;
-            background-color: var(--code-bg-color);
-            font-family: monospace;
-            color: var(--default-text-color);
-            font-size: small;
-        }
-        .op_template {
-            color: gray;
-            white-space:nowrap;
-            font-size: smaller;
-        }
-        .op_syntax {
-            white-space:nowrap;
-        }
-
-        a:hover, a:visited, a:link {
-            text-decoration: none;
-            color: var(--link-color);
-        }
-        ol { counter-reset: item }
-        li { display: block }
-        li:before { content: counters(item, ".") " "; counter-increment: item }
-    </style>
-
-    <br>
     <h1>Lux - Lynx shading language</h1>
 </head>
-
-
-
-
-
-
-
-
 <body>
     <p>Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.</p>
     <p>
@@ -197,7 +255,7 @@
     </p>
     <p>Lux is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
     <p>Lux is part of the <b>Lynx SDK</b>.</p>
-    <p>[Quick reference tabs](#quick-reference-tabs)</p>
+    <p><a href="#quick-reference-tabs">Quick reference tabs</a></p>
 
     <div class="separator-2"></div>
 
@@ -331,13 +389,13 @@
         Multiline comments start with <code>/*</code> and end with <code>*/</code>
     </p>
 
-    <div class="code-name">Syntax 1</div>
-    <pre class="pre-syntax">//<span class="syntax-elm">Comment string</span><span class="hidden">↩</span></pre>
-    <div class="code-name">Syntax 2</div>
-    <pre class="pre-syntax">/*<span class="syntax-elm">Comment string</span>*/</pre>
+    <div class="fancy-code-label">Syntax 1</div>
+    <pre class="fancy-code-single-line">//<span class="syntax-elm">Comment string</span><span class="hidden">↩</span></pre>
+    <div class="fancy-code-label">Syntax 2</div>
+    <pre class="fancy-code-single-line">/*<span class="syntax-elm">Comment string</span>*/</pre>
 
-    <div class="code-name">Example</div>
-    <div class="example-container"><pre class = "example-main">
+    <div class="fancy-code-label">Example</div>
+    <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
         <span class="lynx-comment">// Single line comment</span>
 
         <span class="lynx-comment">/* Multi
@@ -353,18 +411,18 @@
     <p>
         Include statements are used to <b>paste code</b> from other files.<br>
         Any existent file can be included, regardless of its contents or extension.<br>
-        The path to the included file must be enclosed in <code>"</code> <code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
+        The path to the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
         Both <b>absolute</b> and <b>relative</b> paths are supported.
     </p>
-    <div class="code-name">Syntax 1</div>
-    <pre class="pre-syntax">#include<span class="hidden">·</span>"<span class="syntax-elm">absolute/path/to/file</span>"<span class="hidden">↩</span></pre>
-    <div class="code-name">Syntax 2</div>
-    <pre class="pre-syntax">#include<span class="hidden">·</span>"./<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
-    <div class="code-name">Syntax 3</div>
-    <pre class="pre-syntax">#include<span class="hidden">·</span>"<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
+    <div class="fancy-code-label">Syntax 1</div>
+    <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"<span class="syntax-elm">absolute/path/to/file</span>"<span class="hidden">↩</span></pre>
+    <div class="fancy-code-label">Syntax 2</div>
+    <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"./<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
+    <div class="fancy-code-label">Syntax 3</div>
+    <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
 
-    <div class="code-name">Example</div>
-    <div class="example-container"><pre class = "example-main">
+    <div class="fancy-code-label">Example</div>
+    <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
         <span class="lynx-comment">// Ok</span>
         <span class="lynx-keyword">#include</span> <span class="lynx-string">"/home/Lynx/Lux/file.ilsh"</span>
         <span class="lynx-keyword">#include</span> <span class="lynx-string">"./file.ilsh"</span>
@@ -398,30 +456,30 @@
         It consists of a <code>\</code> <b>immediatly</b> followed by a <b>newline character</b>.
     </p>
 
-    <h5>Syntax</h5>
-    <pre>\<span class="hidden">↩</span></pre>
-    <h5>These are all allowed</h5>
-    ```c
-    // single line comment\
-    on two lines
+    <div class="fancy-code-label">Syntax</div>
+    <pre class="fancy-code-single-line">\<span class="hidden">↩</span></pre>
 
-    // #include "path/to/file"
-    #include "pat\
-    h/to/file\
-    "
+    <div class="fancy-code-label">These are all allowed</div>
+    <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
+        <span class="lynx-comment">// single line comment</span>\
+        <span class="lynx-comment">on two lines</span>
 
-    // void function() {
-    //   var += b;
-    // }
-    vo\
-    id fun\
-    ction() {
-    v\
-    ar +\
-    = b;
-    }
+        <span class="lynx-comment">// #include "path/to/file"</span>
+        <span class="lynx-keyword">#include</span> <span class="lynx-string">"pat</span>\
+        <span class="lynx-string">h/to/file</span>\
+        <span class="lynx-string">"</span>
 
-    ```
+        <span class="lynx-comment">// void function() {
+        //   var += b;
+        // }</span>
+        <span class="lynx-type">vo</span>\
+        <span class="lynx-type">id</span> <span class="lynx-func">fun</span>\
+        <span class="lynx-func">ction</span>() {
+        v\
+        ar +\
+        = b;
+        }
+    </pre></div>
 
 
 
@@ -444,8 +502,8 @@
         Comments, newline characters, whitespace characters and preprocessor directives are <b>not tokens</b>.
     </p>
 
-    Each token can be classified as one of the following:
-    <table class="wide-table">
+    <p>Each token can be classified as one of the following:</p>
+    <table>
         <thead>
             <tr>
                 <th>Type</th>
@@ -520,7 +578,7 @@
                     <code>&gt;&gt;</code>
                     <code>~</code>
                 </td>
-                <td class="center">
+                <td class="center wide-table-cell">
                     <span class="syntax-elm"><code>(</code><code>)</code></span>
                     <span class="syntax-elm"><code>[</code><code>]</code></span>
                     <code>.</code>
@@ -528,10 +586,20 @@
                 </td>
             </tr>
             <tr>
-                <td>Function arguments, scope or constructor delimiter</td>
-                <td class="center" ><code>(</code> <code>)</code></td>
-                <td class="center" ><code>{</code> <code>}</code></td>
-                <td class="center"  colspan=2><code>[</code> <code>]</code></td>
+                <td>Punctuation tokens</td>
+                <td class="center wide-table-cell" width="20%">
+                    <span class="syntax-elm"><code>(</code><code>)</code></span>
+                    <span class="syntax-elm"><code>{</code><code>}</code></span>
+                    <span class="syntax-elm"><code>[</code><code>]</code></span>
+                </td>
+                <td class="center" width="20%">
+                    <code>,</code>
+                    <code>;</code>
+                    <code>|</code>
+                    <code>::</code>
+                </td>
+                <td class="center" width="20%"><code>&</code></td>
+                <td class="center" width="20%"><code>:</code></td>
             </tr>
             <tr>
                 <td>Assignment token</td>
@@ -551,21 +619,6 @@
                     <code>&gt;&gt;=</code>
                 </div></td>
             </tr>
-            <tr>
-                <td>Expression, statement, type or scope separator</td>
-                <td class="center" style="width: 18%;"><code>,</code></td>
-                <td class="center" style="width: 18%;"><code>;</code></td>
-                <td class="center" style="width: 18%;"><code>|</code></td>
-                <td class="center" style="width: 18%;"><code>::</code></td>
-            </tr>
-            <tr>
-                <td>Reference token</td>
-                <td class="center" colspan=4><code>&</code></td>
-            </tr>
-            <tr>
-                <td>For each token</td>
-                <td class="center" colspan=4><code>:</code></td>
-            </tr>
         </tbody>
     </table>
     <p>
@@ -573,8 +626,12 @@
         They must be unique to the current scope and not overlap with keywords.<br>
         Temporary variables are the only identifiers that are allowed to start with a <code>$</code>.
     </p>
-
-    See [Literals](#literals), [Operators](#operators), [Scopes](#scopes)
+    <p>
+        See
+        <a href="#literals">Literals</a>,
+        <a href="#operators">Operators</a>,
+        <a href="#scopes">Scopes</a>
+    </p>
 
 
 
@@ -584,7 +641,7 @@
     <p>A symbol is any identifier that can be referenced unambiguously through its absolute name.</p>
     <p>
         Scopes define which <b>symbols</b> the code can <b>reference</b> and the absolute and relative names of each of them.<br>
-        Any portion of code enclosed in <code>{</code> <code>}</code> defines a new scope. This includes <code>functions</code>, <code>structs</code>, <code>namespaces</code>, <code>unnamed scopes</code> and <code>runtime statements</code>.<br>
+        Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. This includes <code>functions</code>, <code>structs</code>, <code>namespaces</code>, <code>unnamed scopes</code> and <code>runtime statements</code>.<br>
         The only exception is the <b>module scope</b>. It contains all the symbols and scopes declared in the module and can be referenced using the <code>this</code> keyword.
     </p>
     <p>
@@ -592,14 +649,98 @@
         Other identifiers are only allowed to be declared in certain scopes, following this table:
     </p>
 
-    | Scope type        | Can contain                                                         | Can be declared in                  |
-    |-------------------|:-------------------------------------------------------------------:|:-----------------------------------:|
-    | Module            | <code>Functions</code><br><i><code>Variables</code><br><code>Type classes</code></i>                 | -                                   |
-    | Namespace         | <code>Functions</code><br><i><code>Variables</code><br><code>Type classes</code></i>                 | Any scope                           |
-    | Enum              | <i><code>Enum elements</code></i>                                              | Any scope                           |
-    | Struct            | <i><code>Struct members</code></i>                                             | Any scope                           |
-    | Function          | <code>Runtime statements</code><br><i><code>Variables</code><br><code>Function parameters</code></i> | Module scope                        |
-    | Runtime statement | <code>Runtime statements</code><br><i><code>Variables</code><br></i>                      | <code>Functions</code><br><code>Runtime statements</code> |
+    <div class="table-grid">
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Can<br>contain</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Function</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Variable</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Type class</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Runtime statement</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Function parameter</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Enum element</div></div>
+        <div class="grid-1-cell grid-1-header small" style=" border-right-width: 1px;"><div class="vertical-center">Struct element</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Struct</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Enum</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Namespace</div></div>
+        <div class="grid-1-cell grid-1-header small"><div class="vertical-center">Symbol alias</div></div>
+
+        <div class="grid-1-cell grid-1-header-v"><div class="vertical-center">Module</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+
+        <div class="grid-1-cell grid-1-header-v"><div class="vertical-center">Namespace</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+
+        <div class="grid-1-cell grid-1-header-v"><div class="vertical-center">Enum</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+
+        <div class="grid-1-cell grid-1-header-v"><div class="vertical-center">Struct</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+
+        <div class="grid-1-cell grid-1-header-v"><div class="vertical-center">Function</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+
+        <div class="grid-1-cell grid-1-header-v"><div class="vertical-center">Runtime statement</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-n"><div class="vertical-center">No</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+        <div class="grid-1-cell grid-1-y"><div class="vertical-center">Yes</div></div>
+    </div>
     <p>
         Local names are used to reference identifiers declared in the current scope or one of the enclosing scopes.<br>
         Relative names, instead, can reference any symbol declared in the module. They consist of the names of the enclosing scopes and the identifier of the symbol separated by <code>::</code> tokens.<br>
@@ -611,40 +752,49 @@
         Declaring the same identifier more than once in the same scope is only allowed for function overloading. Anything else is a semantic error.<br>
     </p>
 
-    <h5>Example</h5>
-    ```c
-    // Module scope
-    // Local name: this
+    <div class="fancy-code-label">Example</div>
+    <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
+        <span class="lynx-comment">// Module scope</span>
+        <span class="lynx-comment">// Local name: this</span>
 
 
-    // Local name: s
-    // Relative names: this::s
-    struct s { u32 n; }
+        <span class="lynx-comment">// Local name: s</span>
+        <span class="lynx-comment">// Relative names: this::s</span>
+        <span class="lynx-comment">struct s { u32 n; }</span>
 
-    // Unnamed, cannot be referenced from outside
-    namespace {
-        // Local name: fun
-        void fun(u32 n) {}
-    }
-
-
-    // Local name: fun
-    // Relative names: this::fun
-    void fun(u32 n) {
-        // Unnamed, cannot be referenced from outside
-        if(n){
-            // Local name: s2
-            struct s2 { u32 n; };
+        <span class="lynx-comment">// Unnamed, cannot be referenced from outside</span>
+        <span class="lynx-keyword">namespace</span> {
+            <span class="lynx-comment">// Local name: fun</span>
+            void fun(u32 n) {}
         }
 
-        // Local name: s, shadows this::s
-        // Relative names: this::fun::s, fun::s
-        struct s { u32 a, b; }
-    }
-    ```
 
-    See [Namespaces](#namespaces), [Variables](#variables), [Functions](#functions), [Structs](#structs), [Enums](#enums), [Selection](#selection), [Iteration](#iteration), [Else statement](#else-statement), [Symbol aliases](#symbol-aliases)
+        <span class="lynx-comment">// Local name: fun</span>
+        <span class="lynx-comment">// Relative names: this::fun</span>
+        <span class="lynx-type">void</span> <span class="lynx-func">fun</span>(<span class="lynx-type">u32</span> <span class="lynx-arg">n</span>) {
+            <span class="lynx-comment">// Unnamed, cannot be referenced from outside</span>
+            <span class="lynx-keyword">if</span>(n){
+                <span class="lynx-comment">// Local name: s2</span>
+                <span class="lynx-type">struct s2</span> { <span class="lynx-type">u32</span> n; };
+            }
 
+            <span class="lynx-comment">// Local name: s, shadows this::s</span>
+            <span class="lynx-comment">// Relative names: this::fun::s, fun::s</span>
+            <span class="lynx-type">struct s</span> { <span class="lynx-type">u32</span> a, b; }
+        }
+    </pre></div>
+    <p>
+        See
+        <a href="#namespaces">Namespaces</a>,
+        <a href="#variables">Variables</a>,
+        <a href="#functions">Functions</a>,
+        <a href="#structs">Structs</a>,
+        <a href="#enums">Enums</a>,
+        <a href="#selection">Selection</a>,
+        <a href="#iteration">Iteration</a>,
+        <a href="#else-statement">Else statement</a>,
+        <a href="#symbol-aliases">Symbol aliases</a>
+    </p>
 
 
 
@@ -882,9 +1032,9 @@
         An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
     </p>
     <p>
-        Array declarations are identical to normal types, but <code>[</code> <code>]</code> tokens follow the symbol identifier, optionally enclosing an expression to specify the number of elements.<br>
+        Array declarations are identical to normal types, but <code>[</code><code>]</code> tokens follow the symbol identifier, optionally enclosing an expression to specify the number of elements.<br>
         Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
-        If the <code>[</code> <code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be of an implicitly convertible array type.
+        If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be of an implicitly convertible array type.
     </p>
     <p>
         There are no dynamic arrays.
@@ -1336,6 +1486,7 @@
 
     <div class="separator-3"></div>
     <h3 id="constructors">Constructors</h3>
+    <p>CONSTRUCTORS ARE SPECIAL FUNCTION //TODO</p>
 
 
     <div class="separator-3"></div>
@@ -1469,7 +1620,7 @@
 
 
     <div class="separator-1"></div>
-    <h1>Quick reference tabs</h1>
+    <h1 id="quick-reference-tabs">Quick reference tabs</h1>
 
     //TODO
     //this.x this.y this.z
