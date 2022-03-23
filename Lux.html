@@ -10,8 +10,9 @@
         :root {
             --word-spacing: 3px;
 
-            --main-padding:         80px;
-            --main-center-distance: 40px;
+            --main-left-padding:    2%;
+            --main-right-padding:   4%;
+            --main-center-distance: 4%;
             --main-left-max-width:  15%;
 
             --bg-color:        #0d1117;
@@ -228,24 +229,21 @@
             position:fixed;
             height: 100%;
             max-height: 100%;
-            width: 100%;
+            width: calc(100% - var(--main-left-padding));
             max-width: 100%;
             margin: 0;
             padding: 0;
-            padding-left: var(--main-padding);
-            white-space: nowrap;
+            padding-left: var(--main-left-padding);
+            display: flex;
         }.main-right-container {
-            display: inline-block;
-            white-space: normal;
             height: 100%;
             max-height: 100%;
             width: 100%;
-            max-width: calc(100% - var(--main-center-distance) - var(--main-padding) * 2 - var(--main-left-max-width));
             padding-left: var(--main-center-distance);
+            padding-right: var(--main-right-padding);
             overflow-y: scroll;
         }.main-left-container {
-            display: inline-block;
-            white-space: normal;
+            resize:horizontal;
             height: 100%;
             max-height: 100%;
             max-width: var(--main-left-max-width);
