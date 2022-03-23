@@ -26,7 +26,7 @@
 .hide-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome */
 } .hide-scrollbar {
-    -ms-overflow-style: none;  /* IE,  Edge */
+    -ms-overflow-style: none;  /* IE, Edge */
     scrollbar-width: none;     /* Firefox */
 }
 
@@ -129,34 +129,7 @@
 
 
 /* Page layout */
-div.main-container {
-    position:fixed;
-    height: 100%;
-    max-height: 100%;
-    width: calc(100% - var(--main-padding));
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    padding-left: var(--main-left-padding);
-    display: flex;
-} div.main-right-container {
-    height: 100%;
-    max-height: 100%;
-    width: 100%;
-    padding-left: var(--main-padding);
-    padding-right: var(--main-padding);
-    overflow-y: scroll;
-} div.main-left-container {
-    resize:horizontal;
-    height: 100%;
-    max-height: 100%;
-    max-width: var(--main-left-max-width);
-    position:relative;
-    overflow-y: scroll;
-    overflow-x: auto;
-    vertical-align: top;
-    overflow-y: scroll;
-} body {
+body {
     background-color: var(--bg-color);
     font-size: medium;
     font-family: Cantarell;
@@ -166,6 +139,34 @@ div.main-container {
     word-spacing: var(--word-spacing);
     padding: 0;
     margin: 0;
+} div.main-container {
+    position:fixed;
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+} div.main-right-container {
+    height: 100%;
+    max-height: 100%;
+    width: 100%;
+    max-width: calc(100% - var(--main-left-max-width) - 1%);
+    padding-left: var(--main-padding);
+    padding-right: var(--main-padding);
+    overflow-y: scroll;
+} div.main-left-container {
+    resize:horizontal;
+    height: 100%;
+    max-height: 100%;
+    padding-left: var(--main-left-padding);
+    max-width: var(--main-left-max-width);
+    position:relative;
+    overflow-y: scroll;
+    overflow-x: auto;
+    vertical-align: top;
+    overflow-y: scroll;
 }
 
 
@@ -244,7 +245,6 @@ div.table-container {
     font-size: medium;
     font-weight: normal;
     padding: 0;
-    color: var(--link-color);
 } ul.index {
     counter-reset: section;
     list-style-type: none;
@@ -266,17 +266,48 @@ div.table-container {
 
 
 
-
-.parallax {
+/* omg this is so dumb */
+.logo {
     background-color: black;
-    padding: 5% 0 5% 0;
-    height: 80%;
-    /* background-image:*/
-
+    padding: 0;
+    height: 100vh;
     background-attachment: fixed;
     background-position: center;
-    background-position-x: center;
     background-repeat: no-repeat;
     background-size:50%;
+} .logo-right {
+    position: relative;
+    z-index: -4;
+    margin: var(--main-padding) 0 0 0;
+    height: calc(100vh - var(--main-padding) * 2);
+    border: 1px solid var(--separator-color);
+    width: 100%;
+    max-width: 100%;
 }
-
+.logo-right-top {
+    max-width: calc(100vw - var(--main-padding) * 2 - var(--main-left-max-width));
+    width: 100%;
+    position: fixed;
+} .logo-right-top-fix {
+    top: 0;
+    background-color: var(--bg-color);
+    height: var(--main-padding);
+    max-height: var(--main-padding);
+    border-bottom: 1px solid var(--separator-color);
+    z-index: -3;
+} .logo-right-bottom-fix {
+    background-color: transparent;
+    width: 100%;
+    max-width: 100%;
+    height: var(--main-padding);
+    position: relative;
+} .logo-right-hide-top-fix {
+    border: 1px solid var(--bg-color);
+    background-color: var(--bg-color);
+    width: calc(var(--main-padding) - 1px);
+    max-width: var(--main-padding);
+    height: 100%;
+    max-height: var(--main-padding);
+    position: fixed;
+    right:0;
+}
