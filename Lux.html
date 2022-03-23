@@ -5,11 +5,45 @@
     <meta charset="UTF-8">
     <meta name="author" content="//TODO">
     <meta name="description" content="//TODO">
+
     <link rel="stylesheet" type="text/css" href="Style.css" media="screen">
+    <style>
+        .table-1-container {
+            white-space: nowrap;
+            padding: 0;
+            margin: 0;
+            min-width: 100%;
+            border-radius: 10px 0 0 0;
+            overflow: hidden;
+            word-spacing: -9999ch;
+            text-align: center;
+        }.table-1-right-container {
+            vertical-align: top;
+            overflow-x: scroll;
+            display: inline-block;
+            max-width: calc(100% - 24ch);
+        }.table-1-right {
+            border-radius: 0 10px 10px 0;
+            word-spacing: var(--word-spacing);
+        }.table-1-left-container {
+            vertical-align: top;
+            overflow-x: scroll;
+            display: inline-block;
+            max-width: 24ch;
+            border-bottom-left-radius: 10px;
+        }.table-1-left {
+            border-radius: 10px 0 0 10px;
+            word-spacing: var(--word-spacing);
+        }.table-1-y {
+            background-color: hsla(115, 100%, 24%, 0.227);
+        }.table-1-n {
+            background-color: hsla(0, 100%, 24%, 0.227);
+        }
+    </style>
 </head>
 <body>
-<div class="main-container">
-    <div class="main-left-container">
+<div class="main-container hide-scrollbar">
+    <div class="main-left-container hide-scrollbar">
         <ul style="padding-left:0;" class="index">
             <li class="index-section" style="margin-top: 0px;">Preprocessor
                 <ul>
@@ -46,7 +80,7 @@
                             <a href="#return-statement"><li>Return statement</li></a>
                             <a href="#function-calls"><li>Function calls</li></a>
                             <a href="#template-functions"><li>Template functions</li></a>
-                            <a href="#type-classes"><li>Type classes</li></a>
+                            <a href="#type-groups"><li>Type groups</li></a>
                         </ul>
                     </li></a>
                     <a href="#const-qualifier"><li>Const qualifier</li></a>
@@ -105,7 +139,10 @@
             </li>
         </ul>
     </div>
+    <div style="width: 1px; height: 100%; background-color: var(--separator-color);"></div>
     <div class="main-right-container">
+        <div style="background-color: var(--bg-color); width: 100%; height: var(--main-padding); position: fixed; z-index: -1;"></div>
+        <div class="parallax" style="background-image: url('Lux-logo.png'); position: relative; z-index: -2; margin-bottom: var(--main-padding);"></div>
         <h1>Lux - Lynx shading language</h1><br><br>
         <p>Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.</p>
         <p>
@@ -411,7 +448,7 @@
             </tbody>
         </table></div>
         <p>
-            Identifiers are used to name functions, variables, structs, aliases, type classes and namespaces.<br>
+            Identifiers are used to name functions, variables, structs, aliases, type groups and namespaces.<br>
             They must be unique to the current scope and not overlap with keywords.<br>
             Temporary variables are the only identifiers that are allowed to start with a <code>$</code>.
         </p>
@@ -1280,17 +1317,14 @@
         <h2 id="functions">Functions</h2>
         <p>
             Functions are the <b>main component</b> of the language. They contain the statements that will be executed during run time and manage inputs and outputs of the shader.<br>
-            Similarly to variables, each function <b>must be defined</b> in order to be called, but their <b>position</b> in the code is <b>irrelevant</b>. Functions <b>cannot be redefined</b>.
         </p>
         <p>
             A function definition consists of its type and name followed by a list of arguments and its statements enclosed in <code>{</code><code>}</code> delimiters.<br>
             Functions are allowed to take no arguments.
         </p>
         <p>
-            The <b>type</b> of the function defines the type of the <b>value</b> that is <b>returned</b> by the function when called.<br>
-            Values are returned using the <code class="lynx-keyword">return</code> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
-            Functions that <b>don't return</b> a value must be defined using the <b><code class="lynx-type">void</code> type</b>.<br>
-            Void functions are allowed to contain no statements. <b>Non-void</b> functions must <b>always return</b> a value.
+            The <code class="lynx-func">main</code> function is where the <b>code execution starts and ends</b>.<br>
+            Every shader <b>must define</b> the <b>main</b> as a <b>void</b> function. As such, it cannot return values.<br>
         </p>
 
         <div class="fancy-code-label">Syntax</div>
@@ -1298,18 +1332,11 @@
 
         <div class="fancy-code-label">Example</div>
         <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-            <span class="lynx-type">void</span> <span class="lynx-func">empty_function_1</span>() { <span class="lynx-keyword">return</span>; }   <span class="lynx-comment">// Ok</span>
-            <span class="lynx-type">void</span> <span class="lynx-func">empty_function_2</span>() {}            <span class="lynx-comment">// Ok</span>
-
-            <span class="lynx-type">uint</span> <span class="lynx-func">empty_function_3</span>() { <span class="lynx-keyword">return</span> <span class="lynx-literal">0</span>; }  <span class="lynx-comment">// Ok</span>
-            <span class="lynx-comment">//uint empty_function_4() {}           // Error, non-void functions must return a value</span>
-
-            <span class="lynx-type">uint</span> <span class="lynx-func">f</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) { <span class="lynx-keyword">return</span> n * <span class="lynx-literal">2</span>; }       <span class="lynx-comment">// Ok</span>
-            <span class="lynx-comment">//void f() { }                         // Error, f is already defined</span>
+            <span class="lynx-type">void</span> <span class="lynx-func">func1</span>() {}
 
             <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                <span class="lynx-type">uint</span> n = <span class="lynx-func">empty_function_3</span>();       <span class="lynx-comment">// Ok</span>
-                n = <span class="lynx-func">f</span>(<span class="lynx-func">f</span>(<span class="lynx-literal">n</span>));                       <span class="lynx-comment">// Ok</span>
+                <span class="lynx-type">int</span> n = <span class="lynx-literal">0</span>;
+                <span class="lynx-comment">// ...</span>
             }
         </pre></div>
         <p>
@@ -1333,7 +1360,6 @@
             By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
             If a parameter name is preceeded by a <b><code>&</code></b> token, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
         </p>
-
         <p>
             Declaring a reference parameter as const is a syntax error and passing an unnamed value as argument of a reference parameter is a semantic error.<br>
             Notice that in this case, the <code>&</code> token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
@@ -1354,11 +1380,6 @@
 
             <span class="lynx-comment">//void fun2(const int &arg1){} // Error, references cannot be const</span>
         </pre></div>
-
-        <p>
-            The <code class="lynx-func">main</code> function is where the <b>code execution starts and ends</b>.<br>
-            Every shader <b>must define</b> the <b>main</b> as a <b>void</b> function. As such, it cannot return values.<br>
-        </p>
         <p>
             See
             <a href="#const-qualifier">Const qualifier</a>,
@@ -1371,6 +1392,30 @@
         <!--------------------------------------------------------------------->
         <div class="separator-3"></div>
         <h3 id="return-statement">Return statement</h3>
+        <p>
+            The <b>type</b> of the function defines the type of the <b>value</b> that is <b>returned</b> by the function when called.<br>
+            Values are returned using the <code class="lynx-keyword">return</code> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
+            Functions that <b>don't return</b> a value must be defined using the <b><code class="lynx-type">void</code> type</b>.<br>
+            Void functions are allowed to contain no statements. <b>Non-void</b> functions must <b>always return</b> a value.
+        </p>
+
+        <div class="fancy-code-label">Syntax</div>
+        <pre class="fancy-code-single-line"><span class="syntax-elm">return</span><span class="hidden">·</span><span class="syntax-elm">expression</span>;</pre>
+        <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
+            <span class="lynx-type">void</span> <span class="lynx-func">empty_function_1</span>() { <span class="lynx-keyword">return</span>; }   <span class="lynx-comment">// Ok</span>
+            <span class="lynx-type">void</span> <span class="lynx-func">empty_function_2</span>() {}            <span class="lynx-comment">// Ok</span>
+
+            <span class="lynx-type">uint</span> <span class="lynx-func">empty_function_3</span>() { <span class="lynx-keyword">return</span> <span class="lynx-literal">0</span>; }  <span class="lynx-comment">// Ok</span>
+            <span class="lynx-comment">//uint empty_function_4() {}           // Error, non-void functions must return a value</span>
+
+            <span class="lynx-type">uint</span> <span class="lynx-func">f</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) { <span class="lynx-keyword">return</span> n * <span class="lynx-literal">2</span>; }       <span class="lynx-comment">// Ok</span>
+            <span class="lynx-comment">//void f() { }                         // Error, f is already defined</span>
+
+            <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
+                <span class="lynx-type">uint</span> n = <span class="lynx-func">empty_function_3</span>();       <span class="lynx-comment">// Ok</span>
+                n = <span class="lynx-func">f</span>(<span class="lynx-func">f</span>(<span class="lynx-literal">n</span>));                       <span class="lynx-comment">// Ok</span>
+            }
+        </pre></div>
 
 
         <!--------------------------------------------------------------------->
@@ -1388,10 +1433,10 @@
 
 
         <!--------------------------------------------------------------------->
-        <!-- Type classes                                                    -->
+        <!-- Type groups                                                     -->
         <!--------------------------------------------------------------------->
         <div class="separator-3"></div>
-        <h3 id="type-classes">Type classes</h3>
+        <h3 id="type-groups">Type groups</h3>
 
 
 
