@@ -4,14 +4,14 @@
 
     --main-left-padding:    2vw;
     --main-padding:         4vw;
-    --main-left-max-width:  15vw;
+    --main-left-max-width:  20vw;
 
     --bg-color:           #0d1117;
     --bg-color-code:      #222931;
     --bg-color-pre:       #161b22;
 
     --link-color:         #50aaff;
-    --separator-color:    #333941;
+    --separator-color:    #282d33;
     --text-color:         #d2d2d2;
     --hidden-color:       #555555;
 
@@ -66,7 +66,7 @@
     font-size: small;
     line-height: 18px;
 }.fancy-code-multi-line {
-    margin-left: -12ch;
+    margin-left: -16ch;
     margin-top: 0px;
     margin-bottom: 0px;
     background-color: transparent;
@@ -152,23 +152,51 @@ body {
     height: 100%;
     max-height: 100%;
     width: 100%;
-    max-width: calc(100% - var(--main-left-max-width) - 1%);
-    padding-left: var(--main-padding);
-    padding-right: var(--main-padding);
+    max-width: calc(100% - var(--main-left-max-width) - var(--main-padding) * 2);
+    padding: 0 var(--main-padding) 0 var(--main-padding);
     overflow-y: scroll;
+    overflow-x: hidden;
 } div.main-left-container {
-    resize:horizontal;
+    background-color: var(--bg-color);
     height: 100%;
     max-height: 100%;
-    padding-left: var(--main-left-padding);
-    max-width: var(--main-left-max-width);
+    width: 100vw;
+    padding: 0 var(--main-left-padding) 0 var(--main-left-padding);
+    border-right: 1px solid var(--separator-color);
+    max-width: calc(var(--main-left-max-width) - var(--main-left-padding) * 2 - 1px); /* 1px right border */
     position:relative;
     overflow-y: scroll;
     overflow-x: auto;
     vertical-align: top;
-    overflow-y: scroll;
+    z-index: 1;
 }
 
+/* Language logo */
+.logo {
+    background-color: black;
+    padding: 0;
+    height: 100vh;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:50%;
+    z-index: -2;
+} .logo-right {
+    position: relative;
+    margin: var(--main-padding) 0 var(--main-padding) 0;
+    height: calc(100vh - var(--main-padding) * 2);
+    width: calc(100% - 2px);
+    max-width: 100%;
+} .logo-right-top {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    right: var(--main-padding);
+    background-color: var(--bg-color);
+    height: var(--main-padding);
+    max-height: var(--main-padding);
+    z-index: -1;
+}
 
 
 
@@ -261,53 +289,4 @@ div.table-container {
 } a:hover, a:visited, a:link {
     text-decoration: none;
     color: var(--link-color);
-}
-
-
-
-
-/* omg this is so dumb */
-.logo {
-    background-color: black;
-    padding: 0;
-    height: 100vh;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size:50%;
-} .logo-right {
-    position: relative;
-    z-index: -4;
-    margin: var(--main-padding) 0 0 0;
-    height: calc(100vh - var(--main-padding) * 2);
-    border: 1px solid var(--separator-color);
-    width: 100%;
-    max-width: 100%;
-}
-.logo-right-top {
-    max-width: calc(100vw - var(--main-padding) * 2 - var(--main-left-max-width));
-    width: 100%;
-    position: fixed;
-} .logo-right-top-fix {
-    top: 0;
-    background-color: var(--bg-color);
-    height: var(--main-padding);
-    max-height: var(--main-padding);
-    border-bottom: 1px solid var(--separator-color);
-    z-index: -3;
-} .logo-right-bottom-fix {
-    background-color: transparent;
-    width: 100%;
-    max-width: 100%;
-    height: var(--main-padding);
-    position: relative;
-} .logo-right-hide-top-fix {
-    border: 1px solid var(--bg-color);
-    background-color: var(--bg-color);
-    width: calc(var(--main-padding) - 1px);
-    max-width: var(--main-padding);
-    height: 100%;
-    max-height: var(--main-padding);
-    position: fixed;
-    right:0;
 }

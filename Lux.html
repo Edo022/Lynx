@@ -35,9 +35,9 @@
             border-radius: 10px 0 0 10px;
             word-spacing: var(--word-spacing);
         }.table-1-y {
-            background-color: hsla(115, 100%, 24%, 0.227);
+            background-color: #0a7a003a;
         }.table-1-n {
-            background-color: hsla(0, 100%, 24%, 0.227);
+            background-color: #7a00003a;
         }
     </style>
 </head>
@@ -47,7 +47,7 @@
     <!--------------------------------------------------------------------->
     <!-- Index                                                           -->
     <!--------------------------------------------------------------------->
-    <div class="main-left-container hide-scrollbar" style="border-right: 1px solid var(--separator-color);">
+    <div class="main-left-container hide-scrollbar">
         <ul style="padding-left:0;" class="index">
             <li class="index-section" style="margin-top: 0px;"><a href="#overview-no-header">Overview</a></li>
             <li class="index-section" style="margin-top: 0px;"><a href="#preprocessor">Preprocessor</a>
@@ -151,17 +151,15 @@
         <!--------------------------------------------------------------------->
         <!-- Logo                                                            -->
         <!--------------------------------------------------------------------->
-        <div class="logo-right-top logo-right-top-fix"></div>
-        <div class="logo-right-hide-top-fix"></div>
+        <div class="logo-right-top"></div>
         <div class="logo logo-right" style="background-image: url('Lux-logo.png');"></div>
 
         <div style="background-color: var(--bg-color);">
-            <div class="logo-right-bottom-fix"></div>
-
             <!--------------------------------------------------------------------->
             <!-- Overview                                                        -->
             <!--------------------------------------------------------------------->
-            <h1 id="overview-no-header">Lux - Lynx shading language</h1><br><br>
+            <div style="margin-top: var(--main-padding);"></div>
+            <h1 id="overview-no-header">Lux - Lynx shading language</h1>
             <p>Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.</p>
             <p>
                 The language features <b>C-like syntax</b> and semantics.<br>
