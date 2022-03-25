@@ -73,6 +73,7 @@
                             <li><a href="#implicit-conversions">Implicit conversions</a></li>
                             <li><a href="#auto-specifier">Auto specifier</a></li>
                             <li><a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a></li>
+                            <li><a href="#unnamed-types">Unnamed types</a></li>
                         </ul>
                     </li>
                     <li><a href="#variables">Variables</a>
@@ -160,12 +161,12 @@
             <!--------------------------------------------------------------------->
             <div style="margin-top: var(--main-padding);"></div>
             <h1 id="overview-no-header">Lux - Lynx shading language</h1>
-            <p>Lux is a <b>high level compiled shading language</b> based on <b>GLSL 4.6</b>, with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing arrays and interfaces.</p>
+            <div class="separator-3"></div>
             <p>
-                The language features <b>C-like syntax</b> and semantics.<br>
-                Additional constructs and keywords allow for better abstraction on data types and a more direct approach to flow control and better control over multidimensional data.
+                Lux is a <b>high level compiled shading language</b> with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing buffers and shaders.<br>
+                It compiles to <b>GLSL 4.6</b>.
             </p>
-            <p>Lux is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
+            <p>The language is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
             <p>Lux is part of the <b>Lynx SDK</b>.</p>
             <p><a href="#quick-reference-tabs">Quick reference tabs</a></p>
 
@@ -182,14 +183,14 @@
             <div class="separator-1"></div>
             <h1 id=preprocessor>Preprocessor</h1>
             <p>
-                As in the C language, the preprocessing phase is performed <b>before</b> compiling the code.<br>
+                The <b>preprocessing</b> phase is done <b>before compiling</b> the code.<br>
                 It removes comments and evaluates preprocessor directives and line continuation tokens.
             </p>
             <p>
-                Preprocessor directives are special instructions that allow the code to be programmatically modified.<br>
+                <b>Preprocessor directives</b> are special instructions that allow the <b>code</b> to be <b>programmatically modified</b>.<br>
                 All the preprocessor directives are identified by the <code>#</code> character followed by their name and definition.<br>
                 Each directive spans over a single, complete line of code.<br>
-                Preprocessor directives are always <b>case sensitive</b>.
+                Preprocessor directives are always case sensitive.
             </p>
 
 
@@ -201,12 +202,12 @@
             <div class="separator-2"></div>
             <h2 id=comments>Comments</h2>
             <p>
-                Comments are portions of code that are purposely ignored.<br>
+                <b>Comments</b> are <b>portions of code</b> that are <b>purposely ignored</b>.<br>
                 They can be used to provide informations or temporarily exclude lines of code.<br>
                 Comments are allowed to contain any sequence of unicode characters of any length.<br>
             </p>
             <p>
-                Single line comments start with <code>//</code> and end at the first newline character<br>
+                Single line comments start with <code>//</code> and end at the first newline character.<br>
                 Multiline comments start with <code>/*</code> and end with <code>*/</code>
             </p>
 
@@ -223,6 +224,7 @@
                 line
                 comment */</span>
             </pre></div>
+            <p>Comments cannot be nested.</p>
 
 
 
@@ -233,10 +235,10 @@
             <div class="separator-2"></div>
             <h2 id=include-statement>Include statement</h2>
             <p>
-                Include statements are used to <b>paste code</b> from other files.<br>
+                <b>Include statements</b> are used to <b>paste code</b> from other files.<br>
                 Any existent file can be included, regardless of its contents or extension.<br>
                 The path to the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
-                Both <b>absolute</b> and <b>relative</b> paths are supported.
+                Both absolute and relative paths are supported.
             </p>
             <div class="fancy-code-label">Syntax 1</div>
             <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"<span class="syntax-elm">absolute/path/to/file</span>"<span class="hidden">↩</span></pre>
@@ -285,10 +287,12 @@
             <div class="separator-2"></div>
             <h2 id="line-continuation-token">Line continuation token</h2>
             <p>
-                The line continuation token can be used to merge multiple lines and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
-                It consists of a <code>\</code> <b>immediatly</b> followed by a <b>newline character</b>.
+                The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
+                It consists of a <code>\</code> immediatly followed by a newline character.
             </p>
-
+            <p>
+                Line continuation tokens can be used inside comments or other preprocessor directives.
+            </p>
             <div class="fancy-code-label">Syntax</div>
             <pre class="fancy-code-single-line">\<span class="hidden">↩</span></pre>
 
@@ -323,6 +327,7 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Language components                                             -->
             <!--------------------------------------------------------------------->
@@ -338,9 +343,9 @@
             <div class="separator-2"></div>
             <h2 id="tokens-and-identifiers">Tokens and identifiers</h2>
             <p>
-                Any sequence of one or more characters that is left after the preprocessing phase and is recognizable according to the grammar of the language is called a token.<br>
+                Any sequence of one or more characters that is left after the preprocessing phase is called a token.<br>
                 Comments and whitespace characters can be freely written between two tokens without altering the GLSL output.<br>
-                Tokens are always <b>case sensitive</b>.<br>
+                Tokens are always case sensitive.<br>
                 Comments, newline characters, whitespace characters and preprocessor directives are <b>not tokens</b>.
             </p>
 
@@ -428,7 +433,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Punctuation tokens</td>
+                        <td>Punctuation token</td>
                         <td class="center wide-lines" width="20%">
                             <span class="syntax-elm"><code>(</code><code>)</code></span>
                             <span class="syntax-elm"><code>{</code><code>}</code></span>
@@ -464,7 +469,7 @@
                 </tbody>
             </table></div>
             <p>
-                Identifiers are used to name functions, variables, structs, aliases, type groups and namespaces.<br>
+                Identifiers are used to name symbols.<br>
                 They must be unique to the current scope and not overlap with keywords.<br>
                 Temporary variables are the only identifiers that are allowed to start with a <code>$</code>.
             </p>
@@ -483,11 +488,11 @@
             <!--------------------------------------------------------------------->
             <div class="separator-2"></div>
             <h2 id="scopes-and-symbols">Scopes and symbols</h2>
-            <p>A symbol is any identifier that can be referenced unambiguously through its absolute name.</p>
+            <p>A <b>symbol</b> is any <b>language component</b> that can be declared.</p>
             <p>
-                Scopes define which <b>symbols</b> the code can <b>reference</b> and their absolute and relative names.<br>
-                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. This includes <code>functions</code>, <code>structs</code>, <code>namespaces</code>, <code>unnamed scopes</code> and <code>runtime statements</code>.<br>
-                The only exception is the <b>module scope</b>. It contains all the symbols and scopes declared in the module and can be referenced using the <code>this</code> keyword.
+                <b>Scopes</b> define which <b>symbols</b> the code can <b>reference</b> and their absolute and relative names.<br>
+                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. This includes <code>functions</code>, <code>structs</code>,  <code>enums</code>, <code>namespaces</code>, <code>unnamed scopes</code> and <code>runtime statements</code>.<br>
+                The only exception is the <b>module scope</b>. It is always defined and contains all the symbols and scopes declared in the module. It can be referenced using the <code>this</code> keyword.
             </p>
             <p>
                 Each scope can only contain certain types of symbols:
@@ -591,15 +596,15 @@
                 </table></div>
             </div>
             <p>
-                Local names are used to reference identifiers declared in the current scope or one of the enclosing scopes.<br>
-                Relative names, instead, can reference any symbol declared in the module. They consist of the names of the enclosing scopes and the identifier of the symbol separated by <code>::</code> tokens.<br>
+                <b>Local names</b> are used to reference symbols declared in the <b>current scope</b> or in one of the <b>enclosing scopes</b>.<br>
+                <b>Relative names</b>, instead, can reference <b>any symbol</b> declared in the module. They consist of the local names of an enclosing scope, the symbol and all the enclosing scopes in between, separated by <code>::</code> tokens, in the same order as they were declared in the code.<br>
                 A relative name that starts from the module scope is called an absolute name.
             </p>
             <p>
-                Identifiers declared in unnamed scopes cannot be referenced from outside.<br>
-                Declaring a symbol with the same identifier as one in an enclosing scope will shadow the old identifier, and any use of the identifier in the current and sub scopes will refer to the new symbol.<br>
+                Declaring a symbol with the same identifier as one declared in an enclosing scope will shadow the old symbol, and any use of the local identifier in the current and sub scopes will refer to the new symbol.<br>
                 Declaring the same identifier more than once in the same scope is only allowed for function overloading. Anything else is a semantic error.<br>
             </p>
+            <p>Symbols declared in unnamed scopes cannot be referenced from outside, and unnamed symbols cannot be referenced at all</p>
 
             <div class="fancy-code-label">Example</div>
             <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
@@ -611,9 +616,9 @@
                 <span class="lynx-comment">// Relative names: this::s</span>
                 <span class="lynx-keyword">struct</span> <span class="lynx-type">s</span> { <span class="lynx-type">uint</span> n; }</span>
 
-                <span class="lynx-comment">// Unnamed, cannot be referenced from outside</span>
                 <span class="lynx-keyword">namespace</span> {
                     <span class="lynx-comment">// Local name: fun</span>
+                    <span class="lynx-comment">// Unnamed enclosing scope, cannot be referenced from outside</span>
                     <span class="lynx-type">void</span> <span class="lynx-func">fun</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) {}
                 }
 
@@ -621,9 +626,9 @@
                 <span class="lynx-comment">// Local name: fun</span>
                 <span class="lynx-comment">// Relative names: this::fun</span>
                 <span class="lynx-type">void</span> <span class="lynx-func">fun</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) {
-                    <span class="lynx-comment">// Unnamed, cannot be referenced from outside</span>
                     <span class="lynx-keyword">if</span>(n){
                         <span class="lynx-comment">// Local name: s2</span>
+                        <span class="lynx-comment">// Unnamed enclosing scope, cannot be referenced from outside</span>
                         <span class="lynx-keyword">struct</span> <span class="lynx-type">s2</span></span> { <span class="lynx-type">uint</span> n; };
                     }
 
@@ -631,6 +636,15 @@
                     <span class="lynx-comment">// Relative names: this::fun::s, fun::s</span>
                     <span class="lynx-keyword">struct</span> <span class="lynx-type">s</span></span> { <span class="lynx-type">uint</span> a, b; }
                 }
+            </pre></div>
+            <p>Symbols can be declared anywhere in the scope, except for variables, which have to be declared before they are used in expressions.</p>
+            <div class="fancy-code-label">Example</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
+                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
+                    <span class="lynx-comment">var.n = 8;       // Error</span>
+                    <span class="lynx-type">s</span> var = (<span class="lynx-literal">16</span>); <span class="lynx-comment">   // Ok</span>
+                }
+                <span class="lynx-keyword">struct</span> s { <span class="lynx-type">int</span> n; }
             </pre></div>
             <p>
                 See
@@ -654,7 +668,7 @@
             <div class="separator-2"></div>
             <h2 id="namespaces">Namespaces</h2>
             <p>
-                Namespaces are used to create named scopes which can contain variables, functions, enums, structs and symbol aliases.<br>
+                <b>Namespaces</b> are used to create <b>named scopes</b> which can contain variables, functions, enums, structs, type groups and symbol aliases.<br>
                 They don't affect the runtime behaviour and can be declared in any scope.<br>
                 Unnamed namespaces are allowed.
             </p>
@@ -681,13 +695,8 @@
             <div class="separator-2"></div>
             <h2 id="types">Types</h2>
             <p>
-                Data types define the way runtime values are interpreted and how they can be used within expressions.<br>
-                Lux features five primitives types, which can be used to define more complex types such as structs, arrays and enums.
-            </p>
-            <p>
-                Every value has an associated type, regardless of it being a right or a left value.<br>
-                Like any symbol, declearing a new type or other symbols will shadow the ones that were declared in the enclosing scopes using the same identifier.<br>
-                Primitive types can also be shadowed and they behave as if they were declared in the module namespace.
+                <b>Data types</b> define how <b>values</b> are <b>interpreted</b> during runtime and how they can be used within expressions.<br>
+                Every value has an associated type, regardless of it being a right or a left value.
             </p>
 
 
@@ -696,56 +705,56 @@
             <!--------------------------------------------------------------------->
             <div class="separator-3"></div>
             <h3 id="primitive-types">Primitive types</h3>
-
+            <p>Lux features <b>five primitive types</b>, which can be used to define more complex types such as structs, arrays and enums.</p>
+            <p>
+                Those types are always present and they act as if they were declared in the module scope.<br>
+                Primitive types are <b>not keywords</b> and can be shadowed like any other symbol.
+            </p>
             <p>The primitive types are:</p>
             <div class="table-container"><table>
                 <tr>
-                    <th>Lux type               </th>
-                    <th>Actual GLSL type       </th>
-                    <th>C equivalent           </th>
-                    <th>Description            </th>
+                    <th>Type name   </th>
+                    <th>Size (bytes)</th>
+                    <th>Value type  </th>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">uint</code>  </td>
-                    <td>uint                   </td>
-                    <td>unsigned int           </td>
-                    <td>32 bit unsigned integer</td>
+                    <td><code class="lynx-type">uint</code></td>
+                    <td class="center">4</td>
+                    <td>Unsigned integral number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">int</code>   </td>
-                    <td>int                    </td>
-                    <td>int                    </td>
-                    <td>32 bit signed integer  </td>
+                    <td><code class="lynx-type">int</code></td>
+                    <td class="center">4</td>
+                    <td>Signed integral number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">float</code> </td>
-                    <td>float                  </td>
-                    <td>float                  </td>
-                    <td>32 bit floating point  </td>
+                    <td><code class="lynx-type">float</code></td>
+                    <td class="center">4</td>
+                    <td>Floating point number</td>
                 </tr>
                 <tr>
                     <td><code class="lynx-type">double</code></td>
-                    <td>double                 </td>
-                    <td>double                 </td>
-                    <td>64 bit floating point  </td>
+                    <td class="center">8</td>
+                    <td>Floating point number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">bool</code>  </td>
-                    <td>bool                   </td>
-                    <td>-                      </td>
-                    <td>Boolean value. <code class="lynx-literal">true</code> or <code class="lynx-literal">false</code> </td>
+                    <td><code class="lynx-type">bool</code></td>
+                    <td class="center">4</td>
+                    <td>Boolean value. <code class="lynx-literal">true</code> or <code class="lynx-literal">false</code></td>
                 </tr>
             </table></div>
             <p>
-                As in most programming languages, the boolean <code class="lynx-literal">true</code> and <code class="lynx-literal">false</code> values correspond to the integer literals <code class="lynx-literal">1</code> and <code class="lynx-literal">0</code> and they can be used interchangeably.<br>
-                Unsigned integers can't hold negative values, but the maximum value is twice as high as their signed counterpart.<br>
-                There are no 64 bit integers as they aren't a standard type in GLSL.
+                As in most programming languages, the boolean <code class="lynx-literal">true</code> and <code class="lynx-literal">false</code> values correspond to the integral literals <code class="lynx-literal">1</code> and <code class="lynx-literal">0</code>. They can be used interchangeably.<br>
+                Unsigned integers cannot represent negative numbers, but the maximum value is twice as high as their signed counterpart.
+            </p>
+            <p>
+                All primitives types are convertible to each other. This is explained in detail in <a href="#implicit-conversions">Implicit conversions</a>.<br>
+                There are no 64 bit integers, characters or strings.
             </p>
             <p>
                 See
                 <a href="#values">Values</a>,
-                <a href="#literals">Literals</a>,
-                <a href="#implicit-conversions">Implicit conversions</a>
+                <a href="#literals">Literals</a>
             </p>
 
 
@@ -755,21 +764,16 @@
             <div class="separator-3"></div>
             <h3 id="enums">Enums</h3>
             <p>
-                Enums are used to name and group literal constants of the same type.<br>
+                <b>Enums</b> are used to <b>name</b> and <b>group</b> literal <b>constants</b> of the same type.<br>
                 The base type of the enum can be specified after its name and it must be one of the primitive types.<br>
                 Elements are declared in the same way as variables, but neither the type nor the const qualifier are specified explicitly.<br>
-                The values of each variable are implicitly converted to the base type of the enum.
+                The initializer values are implicitly converted to the base type of the enum.
             </p>
             <p>
-                Elements of integer enums which are not initizlied will have the value of the preceeding element + 1, or 0 if they are the first.<br>
-                Elements of bool and float enums must always be initialized.<br>
-                Multiple elements can have the same value, but each element can only be defined once.<br>
+                Elements of integral enums which are not initizlied will have the value of the preceeding element + 1, or 0 if they are the first.<br>
+                Elements of boolean and floating point enums must always be initialized.<br>
+                Multiple elements can have the same value, but each element can only be declared once.<br>
                 Enums with no elements are not allowed.
-            </p>
-            <p>
-                Enums can be referenced before their definition.<br>
-                It is allowed to declare structures, enums and symbol aliases inside an enum.<br>
-                The name of the enum can be used as a type to prevent unknown values to be saved in it.
             </p>
 
             <div class="fancy-code-label">Syntax</div>
@@ -780,64 +784,61 @@
                 }
             </pre></div>
 
-            <div class="fancy-code-label">Example</div>
+            <div class="fancy-code-label">Example 1</div>
             <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">enum</span> : <span class="lynx-type">uint</span> {                   <span class="lynx-comment">// Ok, unnamed enum</span>
-                    value_1,        value_2;    <span class="lynx-comment">// Ok, value_1 = 0,    value_2 = 1</span>
-                    value_3 = <span class="lynx-literal">9999</span>, value_4;    <span class="lynx-comment">// Ok, value_3 = 9999, value_4 = 10000</span>
-
-                    <span class="lynx-keyword">struct</span> <span class="lynx-type">s</span> { <span class="lynx-comment">                 // Ok, but this struct is unaccessible. It will generate a warning</span>
-                        <span class="lynx-type">uint</span> n1;
-                        <span class="lynx-type">c</span>   n2;
-                    }
-
-                    value_5;                    <span class="lynx-comment">// Ok, value_5 = 10001</span>
+                <span class="lynx-keyword">enum</span> <span class="lynx-type">e</span> : <span class="lynx-type">int</span> {
+                    a, b;              <span class="lynx-comment">// Ok, a = 0, b = 1</span>
+                    c = <span class="lynx-literal">-266250</span>;       <span class="lynx-comment">// Ok, c = -266250</span>
+                    d, e = 0;          <span class="lynx-comment">// Ok, d = -266249, e = 0</span>
                 }
-
+            </pre></div>
+            <div class="fancy-code-label">Example 2</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
                 <span class="lynx-keyword">enum</span> <span class="lynx-type">c</span> : <span class="lynx-type">double</span> {
-                    pi          = <span class="lynx-literal">3.14159</span>;      <span class="lynx-comment">// Ok</span>
-                    e           = <span class="lynx-literal">2.71828</span>,      <span class="lynx-comment">// Ok</span>
-                    another_e,  = <span class="lynx-literal">2.71828</span>;      <span class="lynx-comment">// Ok</span>
-                    another_e_2 = <span class="lynx-literal">e</span>;            <span class="lynx-comment">// Ok</span>
-                    another_e_3 = <span class="lynx-literal">this::c::e</span>;   <span class="lynx-comment">// Ok, used absolute name</span>
-                    <span class="lynx-comment">//invalid_val;              // Error, uninitialized double enum value</span>
+                    pi = <span class="lynx-literal">3.14159</span>;      <span class="lynx-comment">// Ok</span>
+                    e  = <span class="lynx-literal">2.71828</span>;      <span class="lynx-comment">// Ok</span>
+                    <span class="lynx-comment">//phi;             // Error, uninitialized non-integral enum value</span>
                 }
 
                 <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">c</span> n1 = <span class="lynx-literal">3.14159</span>;             <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-comment">//c n2 = 5;                 // Error, unknown this::c value</span>
+                    <span class="lynx-type">c</span> a = <span class="lynx-literal">c::pi</span>;       <span class="lynx-comment">// Ok</span>
+                    <span class="lynx-type">c</span> b = <span class="lynx-literal">3.14159</span>;     <span class="lynx-comment">// Ok</span>
+                    <span class="lynx-type">int</span> c = <span class="lynx-literal">a</span>;         <span class="lynx-comment">// Ok, implicit conversion from c (double) to int</span>
                 }
             </pre></div>
-            <p>
-                When an enum doesn't have to be explicitly referenced more than once, unnamed enums can be used to define both the type and the symbol in the same construct.<br>
-                Similarly to the C syntax, the name is not specified and the enum definition is used as type of the symbol.
-            </p>
-            <p>
-                The elements and the enum can still be referenced through the <code class="lynx-type">typeof</code> specifier.<br>
-                Defining an unnamed enum without declaring a symbol is allowed, but it will generate a warning as it its elements are unaccessible and the symbol hiding mechanic can be achieved through unnamed namespaces.
-            </p>
 
+            <p>
+                By default, all enums behave exactly as their base types, much like a <a href="#symbol-aliases">Symbol alias</a>.<br>
+                When implicit conversions from other types are undesirable, enums can be declared as <code class="lynx-keyword">strict</code>.<br>
+                Stict enums only allow values of the same enum, but can still be implicitly converted to other types.
+            </p>
             <div class="fancy-code-label">Syntax</div>
             <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                enum : <span class="syntax-elm lynx-type">T</span> {
+                strict<span class="hidden">·</span>enum<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> : <span class="syntax-elm lynx-type">T</span> {
                     <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
                     <span class="syntax-elm">...</span>
-                } <span class="syntax-elm">symbol identifier</span>;
+                }
             </pre></div>
+
             <div class="fancy-code-label">Example</div>
             <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">enum</span> : <span class="lynx-type">bool</span> {
-                    on = <span class="lynx-literal">true</span>;
-                    off = <span class="lynx-literal">false</span>;
-                } grasses;
+                <span class="lynx-keyword">strict enum</span> <span class="lynx-type">c</span> : <span class="lynx-type">double</span> {
+                    pi  = <span class="lynx-literal">3.14159</span>;
+                    e   = <span class="lynx-literal">2.71828</span>;
+                    phi = <span class="lynx-literal">1.61803</span>;
+                }
 
                 <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    self.grasses = <span class="lynx-literal">typeof(grasses)::on</span>;
+                    <span class="lynx-type">c</span> a = <span class="lynx-literal">c::phi</span>;      <span class="lynx-comment">// Ok</span>
+                    <span class="lynx-comment">//c b = 1.61803;   // Error, cannot convert from double to strict enum</span>
+                    <span class="lynx-type">int</span> c = <span class="lynx-literal">a</span>;         <span class="lynx-comment">// Ok, implicit conversion from c (double) to int</span>
                 }
             </pre></div>
             <p>
-                See
-                <a href="#typeof-and-baseof-specifier">Typeof and baseof specifiers</a>
+                See //TODO fix see things from beginning to here
+                See //TODO ADD LINKS TO KEYWORDS USED IN PARAGRAPHS
+                <a href="#primitive-types">Primitive types</a>,
+                <a href="#implicit-conversions">Implicit conversions</a>
             </p>
 
 
@@ -887,36 +888,6 @@
                     var[<span class="lynx-literal">2</span>, <span class="lynx-literal">0</span>] = <span class="lynx-literal">var</span>[<span class="lynx-literal">3</span>, <span class="lynx-literal">2</span>];  <span class="lynx-comment">// Ok, var = (4, ?, ?)</span>
                     <span class="lynx-comment">//var[4] = 0.33;        // Error, invalid index</span>
                     <span class="lynx-comment">//var[i] = 0.33;        // Error, unknown index</span>
-                }
-            </pre></div>
-            <p>
-                Like enums, structs can also be unnamed and their symbol and members types can be referenced through `typeof`.<br>
-                Defining unnamed structs without a symbol declaration will also generate a warning.
-            </p>
-
-            <div class="fancy-code-label">Syntax</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                struct {
-                    <span class="syntax-elm lynx-type">member type</span><span class="hidden">·</span><span class="syntax-elm">member identifier</span>;
-                    <span class="syntax-elm">...</span>
-                } <span class="syntax-elm">symbol identifier</span>;
-            </pre></div>
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">struct</span> {
-                    <span class="lynx-type">uint</span> a, b;
-                    <span class="lynx-keyword">enum</span> {
-                        idk1;
-                        idk2;
-                    } c;
-                } var;
-
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-comment">// Both are allowed</span>
-                    var.c = <span class="lynx-type">typeof</span>(var.c)::<span class="lynx-literal">idk1</span></span>;
-                    var.c = <span class="lynx-type">typeof</span>(<span class="lynx-type">typeof</span>(var)::c)::<span class="lynx-literal">idk2</span></span>;
-
-                    <span class="lynx-type">typeof</span>(var.a) _a = <span class="lynx-literal">0</span>;
                 }
             </pre></div>
             <p>
@@ -1221,6 +1192,85 @@
                 <a href="#functions">Functions</a>,
                 <a href="#return-statement">Return statement</a>
             </p>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Unnamed types                                                   -->
+            <!--------------------------------------------------------------------->
+            <div class="separator-3"></div>
+            <h2 id="unnamed-types">Unnamed types</h2>
+            <p>
+                When a type doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the type and the symbol in the same construct.<br>
+                Similarly to the C syntax, the type name is not specified and the definition is used as type of the symbol.
+            </p>
+            <p>
+                Any symbol defined inside those types can still be referenced through the <code class="lynx-type">typeof</code> and <code class="lynx-type">auto</code> specifiers.<br>
+                Members of unnamed structs can be accessed using the member access operator, like normal structs.<br>
+                Defining an unnamed type without also declaring the symbol is allowed, but it generates a warning as it would just be a weird <a href="#namespaces"><code class="lynx-keyword">namespace</code></a>.
+            </p>
+
+            <div class="fancy-code-label">Struct syntax</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
+                struct {
+                    <span class="syntax-elm lynx-type">member type</span><span class="hidden">·</span><span class="syntax-elm">member identifier</span>;
+                    <span class="syntax-elm">...</span>
+                } <span class="syntax-elm">symbol identifier</span>;
+            </pre></div>
+            <div class="fancy-code-label">Enum syntax 1</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
+                enum : <span class="syntax-elm lynx-type">T</span> {
+                    <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
+                    <span class="syntax-elm">...</span>
+                } <span class="syntax-elm">symbol identifier</span>;
+            </pre></div>
+            <div class="fancy-code-label">Enum syntax 2</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
+                strict enum : <span class="syntax-elm lynx-type">T</span> {
+                    <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
+                    <span class="syntax-elm">...</span>
+                } <span class="syntax-elm">symbol identifier</span>;
+            </pre></div>
+
+            <div class="fancy-code-label">Example 1</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
+                <span class="lynx-keyword">strict enum</span> : <span class="lynx-type">bool</span> {
+                    on = <span class="lynx-literal">true</span>;
+                    off = <span class="lynx-literal">false</span>;
+                } grasses;
+
+                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
+                    this.grasses = <span class="lynx-type">typeof</span>(grasses)::<span class="lynx-literal">on</span>;
+                }
+            </pre></div>
+            <div class="fancy-code-label">Example 2</div>
+            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
+                <span class="lynx-keyword">struct</span> {
+                    <span class="lynx-type">uint</span> a, b;
+                    <span class="lynx-keyword">enum</span> : int {
+                        idk1;
+                        idk2;
+                    } c;
+                } <span class="lynx-func">fun</span>(){
+                    <span class="lynx-keyword">return</span> { <span class="lynx-literal">1</span>, <span class="lynx-literal">1</span>, <span class="lynx-literal">0</span> }; <span class="lynx-comment">// Ok, unnamed struct constructor</span>
+                }
+
+                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
+                    <span class="lynx-type">auto</span> var = fun();
+
+                    <span class="lynx-comment">// Both are allowed</span>
+                    var.c = <span class="lynx-type">typeof</span>(var.c)::<span class="lynx-literal">idk1</span></span>;
+                    var.c = <span class="lynx-type">typeof</span>(<span class="lynx-type">typeof</span>(<span class="lynx-func">fun</span>)::c)::<span class="lynx-literal">idk2</span></span>;
+
+                    <span class="lynx-type">typeof</span>(var.a) a = <span class="lynx-literal">0</span>;
+                }
+            </pre></div>
+            <p>
+                See
+                <a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a>,
+                <a href="#auto-specifier">Auto specifier</a>
+            </p>
+
+
 
 
             <!--------------------------------------------------------------------->
